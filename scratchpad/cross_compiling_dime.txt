@@ -30,13 +30,13 @@ Create a cross-compiling enviroment.
 
 http://www.mingw.org/download.shtml
 
-	You should retreive the "current", "src" versions for the following packages:
+	You should retreive the "src" versions for the following packages:
 
 	binutils gcc
 
 	For this tutorial the versions used where:
 
-	binutils-2.13.90-20030111-1-src.tar.gz
+	binutils-2.14.90-20030807-1-src.tar.gz
 	gcc-3.2.3-20030504-1-src.tar.gz
 
 1.3 Configure options explained
@@ -89,13 +89,13 @@ http://www.mingw.org/download.shtml
 
 Unzip-untar:
 
-tar xvfz binutils-2.13.90-20030111-1-src.tar.gz 
+tar xvfz binutils-2.14.90-20030807-1-src.tar.gz 
 
 Build it (in a separate dir from the source):
 
 mkdir build-binutils
 cd build-binutils
-../binutils-2.13.90-20030111-1-src/configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --target=i686-pc-mingw32 --prefix=$PREFIX
+../binutils-2.14.90-20030807-1/configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --target=i686-pc-mingw32 --prefix=$PREFIX
 
 Note: if the version of binutils you're installing is different, replace the name of the directory. Same applies to the rest of the packages.
 
@@ -103,11 +103,14 @@ Now you should have the Makefile in the current dir. Just build the software:
 
 make
 
-And after that you install it (usually as user root):
+And after that you install it:
 
 make install
 
-Go back to your normal user. You'll have cross-compilation binutils installed:
+Usually you need to do "make install" as root, so you can type instead the following command, and type the root password when prompted:
+su -c "make install"
+
+Now you should have cross-compilation binutils installed:
 
 ls /usr/local/cross
 bin  i686-pc-mingw32  info  lib  man  share
@@ -118,15 +121,52 @@ bin  i686-pc-mingw32  info  lib  man  share
 
 	This way the cross tools will take precedence over the local tools.
 
-2.3 Mingw
+2.3 Copy mingw C standard headers
+
+	We will have standard C headers for mingw in $PREFIX/target/include
 
 	Go back to your build dir and untar mingw:
 
 	cd ..
-	tar xvfz mingw-whatever.tar.gz
+	tar xvfz mingw-runtime-3.2-src.tar.gz
 
+	cp -r mingw-runtime-3.2/include $PREFIX/i686-pc-mingw32/include
+
+	Usually you'd need to enter the previous command as root, type this instead:
+	su -c "cp -r mingw-runtime-3.2/include $PREFIX/i686-pc-mingw32/include"
+
+	Now you should have populated the following directory:
+	/usr/local/cross/i686-pc-mingw32/include
+
+2.4 Install GCC
+
+	Now you should build and install GCC in a similar way as you did with binutils:
+
+	tar xvfz gcc-3.2.3-20030504-1-src.tar.gz
+	mkdir build-gcc
+	cd build-gcc
+	../gcc-3.2.3-20030504-1/configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --target=i686-pc-mingw32 --prefix=$PREFIX --without-headers --with-newlib --disable-threads --enable-languages=c
+
+	//TODO: when configuring gcc, if run with a normal user it gives an error in the beginning saying it can't copy some stuff to /usr/local/cross. I had to configure (and make) to get rid of this error. When doing it as root I get other error as well...
+
+	Error when configuring as normal user:
+
+	Copying no to /usr/local/cross/i686-pc-mingw32/sys-include
+	mkdir: cannot create directory `/usr/local/cross/i686-pc-mingw32/sys-include': Permission denied
+	cp: cannot create regular file `/usr/local/cross/i686-pc-mingw32/sys-include/_inst.15999_': No such file or directory
+	../gcc-3.2.3-20030504-1/configure: line 193: cd: no: No such file or directory
+	../gcc-3.2.3-20030504-1/configure: line 193: cd: /usr/local/cross/i686-pc-mingw32/sys-include: No such file or directory
+	../gcc-3.2.3-20030504-1/configure: line 199: /usr/local/cross/i686-pc-mingw32/sys-include/COPIED: No such file or directory
+
+	Error when configuring as root:
+
+	Copying no to /usr/local/cross/i686-pc-mingw32/sys-include
+	../gcc-3.2.3-20030504-1/configure: line 193: cd: no: No such file or directory
+
+	make
+	make install (or su -c "make install")
 	
-	
 
+2.5 Install win32 API
 
-
+:
