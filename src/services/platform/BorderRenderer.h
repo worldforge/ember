@@ -107,7 +107,7 @@ namespace dime {
 	/**
 	 * Creates a new BorderRenderer with the value provided
 	 */
-	BorderRenderer(const Rectangle &rect, unsigned int width, Renderer* prototype);
+	BorderRenderer(const Rectangle &rect, unsigned int width, const Renderer* prototype);
 
 	//----------------------------------------------------------------------
 	// Destructor
@@ -140,7 +140,7 @@ namespace dime {
 	/**
 	 * Sets up the border's Renderers based on a prototype.
 	 */
-	void setBorderContents(Renderer *prototype);
+	void setBorderContents(const Renderer *prototype);
 	
 	/**
 	 * Sets the positions and sizes of the border's Renderers.

@@ -305,6 +305,10 @@ namespace dime
 	 * The default value is INFO.
 	 */
         MessageImportance myImportance;
+	/**
+	 * Singleton instance
+	 */
+	static LoggingService* theInstance;
 
 
         //======================================================================
@@ -320,8 +324,12 @@ namespace dime
      */
         static LoggingService *getInstance ()
         {
-            static LoggingService singleinstance;
-            return &singleinstance;
+	    if( !theInstance )
+	      {
+		theInstance = new LoggingService;
+	      }
+
+	    return theInstance;
         }
 
         //----------------------------------------------------------------------

@@ -136,8 +136,9 @@ class TextBox : public Label
 	  myText(text),
 	  myRight(text.length()-1)
     {
-	  myBackRect = new ColorRenderer(rect,255,255,255);
-	  myBorder = new BorderRenderer(rect, 2, new ColorRenderer(rect, 125, 125, 255));
+      myBackRect = new ColorRenderer(rect,255,255,255);
+      ColorRenderer proto(rect, 125, 125, 255);
+      myBorder = new BorderRenderer(rect, 2, &proto);
       rebuildRight();
     }
 
@@ -147,8 +148,9 @@ class TextBox : public Label
       myText(text.begin(), text.end()),
       myRight(text.length()-1)
     {
-	  myBackRect = new ColorRenderer(rect,255,255,255);
-	  myBorder = new BorderRenderer(rect, 2, new ColorRenderer(rect, 125, 125, 255));
+      myBackRect = new ColorRenderer(rect,255,255,255);
+      ColorRenderer proto(rect, 125, 125, 255);
+      myBorder = new BorderRenderer(rect, 2, &proto);
 #if 0
       Font::FontString temp;
 	
@@ -197,6 +199,8 @@ class TextBox : public Label
     virtual ~TextBox()
     {
         // TODO: Free any allocated resources here.
+      if (myBackRect) delete myBackRect;
+      if (myBorder) delete myBorder;
     }
 
 

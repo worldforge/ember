@@ -10,7 +10,18 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.43  2002-12-07 21:33:56  xmp
+ *      Revision 1.44  2002-12-07 23:57:36  xmp
+ *      2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * ConfigService.cpp: Initialise static member theInstance to NULL.
+ *
+ *              * Application.cpp: Fixed it so that myStateManager is inited to NULL.
+ *
+ *              * InputDevice.cpp: Fixed a delete to a delete[].  Fix loads of memory
+ *                leaks.
+ *
+ *              * ColorRenderer.cpp/h BorderRenderer.cpp/h: made some stuff const.
+ *
+ *      Revision 1.43  2002/12/07 21:33:56  xmp
  *      2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
  *              * ConfigService.cpp: Initialise static member theInstance to NULL.
  *
@@ -327,14 +338,12 @@ namespace dime
 
 	// Initialize the InputService
 	myInputService = InputService::getInstance();
+	// Dunno why this is needed but it is
+	// TODO: investigate InputService
+	myKeyboardDev = new KeyboardDevice;
 
 	// Initialize the ConfigService
 	DimeServices::getInstance()->getConfigService()->start();
-
-	// Mouse and Keyboard are needed, so create them
-	// %TODO xmp,5: WHAT THE...? I suspect that these are in error
-	new MouseDevice;
-	new KeyboardDevice;
 
 	// Initialize the GuiService.
 	// Initialize the DrawDevice
@@ -385,6 +394,8 @@ namespace dime
 	{
 	  SDL_FreeSurface(myScreen);
 	}
+      if (myKeyboardDev) delete myKeyboardDev;
+      if (myStateManager) delete myStateManager;
       SDL_Quit();
     }
 

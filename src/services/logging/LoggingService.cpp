@@ -1,6 +1,8 @@
 #include "LoggingService.h"
 #include <framework/Service.h>
 
+dime::LoggingService* dime::LoggingService::theInstance = NULL;
+
 dime::Service::Status dime::LoggingService::start ()
 {
     setRunning (true);

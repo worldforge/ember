@@ -3,7 +3,10 @@
 
 	* Application.cpp: Fixed it so that myStateManager is inited to NULL.
 
-	* InputDevice.cpp: Fixed a delete to a delete[].
+	* InputDevice.cpp: Fixed a delete to a delete[].  Fix loads of memory
+	  leaks.
+
+	* ColorRenderer.cpp/h BorderRenderer.cpp/h: made some stuff const.
 
 2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
 	* NEWS: update

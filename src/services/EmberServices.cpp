@@ -19,4 +19,4 @@
 
 #include "DimeServices.h"
 
-dime::DimeServices *dime::DimeServices::theInstance = NULL;
+dime::DimeServices* dime::DimeServices::theInstance = NULL;

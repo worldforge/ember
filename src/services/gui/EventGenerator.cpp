@@ -79,6 +79,7 @@ void dime::EventGenerator::MouseMotion(InputDevice *mouse, InputDevice * otherDe
         {
             eventDest->mouseMove( event );
         }
+    delete event;
 }
 
 void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mouse, const DimeKey &key, dime::InputMapping::InputSignalType signaltype)
@@ -123,12 +124,14 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
         {
             event = new MouseButtonEvent(mouse, eventDest, button, MouseButtonEvent::PRESSED);
             eventDest->mouseDown( event );
+	    delete event;
         }
     else if (mouse->getKeyState(key) == dime::InputDevice::RELEASED)
         {
             event = new MouseButtonEvent(mouse, eventDest, button, MouseButtonEvent::RELEASED);
 	    giveWidgetFocus(myPointedWidget);
             eventDest->mouseUp( event );
+	    delete event;
         }
 }
 
@@ -160,11 +163,13 @@ void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice 
         {
             event = new KeyPressEvent(keyboard, eventDest, KeyPressEvent::PRESSED, key);
             eventDest->keyPress( event );
+	    delete event;
         }
     else if (keyboard->getKeyState(key) == dime::InputDevice::RELEASED)
         {
             event = new KeyPressEvent(keyboard, eventDest, KeyPressEvent::RELEASED, key);
             eventDest->keyPress( event );
+	    delete event;
         }
 
 	return;
@@ -173,49 +178,51 @@ void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice 
 
 
 void dime::EventGenerator::updatePointedWidget( int mx, int my, InputDevice *device) {
-    // Checks which widget the mouse pointer currently is in and
-    // sets myPointedWidget to point at it.  Calls mouseExit for the previous
-    // myPointedWidget and mouseEnter for the new one.
-    MouseMotionEvent *event;
+  // Checks which widget the mouse pointer currently is in and
+  // sets myPointedWidget to point at it.  Calls mouseExit for the previous
+  // myPointedWidget and mouseEnter for the new one.
+  MouseMotionEvent *event;
     
-    if (!myRootWidget) {
-        myPointedWidget = NULL;
-        return;
-    }
+  if (!myRootWidget) {
+    myPointedWidget = NULL;
+    return;
+  }
     
-    // Check if myPointedWidget changed:
-    dime::Widget *p = myRootWidget->getWidgetAt( mx, my );
-    if (p != myPointedWidget) {
-        // Exit old widget object:
-        if (myPointedWidget) 
-            {
-                event = new MouseMotionEvent(device, myPointedWidget);
-                myPointedWidget->mouseExit( event );
-            }
+  // Check if myPointedWidget changed:
+  dime::Widget *p = myRootWidget->getWidgetAt( mx, my );
+  if (p != myPointedWidget) {
+    // Exit old widget object:
+    if (myPointedWidget) 
+      {
+	event = new MouseMotionEvent(device, myPointedWidget);
+	myPointedWidget->mouseExit( event );
+	delete event;
+      }
         
                     
         
-        // Set default (desktop(?)) cursor if the mouse isn't captured
-        // and no new widget is pointed at:
-        /*if (!myMouseCaptureWidget && !p) {
-        //      if (style) set_mouse_sprite( style->mouseCursorPic );
-        else set_mouse_sprite( NULL );
-        }*/
+    // Set default (desktop(?)) cursor if the mouse isn't captured
+    // and no new widget is pointed at:
+    /*if (!myMouseCaptureWidget && !p) {
+    //      if (style) set_mouse_sprite( style->mouseCursorPic );
+    else set_mouse_sprite( NULL );
+    }*/
         
-        if (p) {
-            // Enter new widgets object:
-            event = new MouseMotionEvent(device, p);
-            p->mouseEnter( event );
+    if (p) {
+      // Enter new widgets object:
+      event = new MouseMotionEvent(device, p);
+      p->mouseEnter( event );
+      delete event;
             
-            // Set mouse cursor to that of the new pointed widget
-            // (if it has one and the mouse isn't captured):
-            /*if (!myMouseCaptureWidget && p->getGuiStyle())
-              set_mouse_sprite( p->getGuiStyle()->mouseCursorPic );
-            */
-        }
-        
-        myPointedWidget = p;
+      // Set mouse cursor to that of the new pointed widget
+      // (if it has one and the mouse isn't captured):
+      /*if (!myMouseCaptureWidget && p->getGuiStyle())
+	set_mouse_sprite( p->getGuiStyle()->mouseCursorPic );
+      */
     }
+        
+    myPointedWidget = p;
+  }
     
 } // updatePointedWidget
 
@@ -258,46 +265,46 @@ void dime::EventGenerator::giveWidgetFocus( dime::Widget *widget) {
 
 /*--------------------------------------------------------------------------*/
 bool dime::EventGenerator::captureMouse( dime::Widget *widget ) {
-    // Captures mouse input and directs it to the specified widget until
-    // releaseMouse is called.  Returns true on success, false if mouse
-    // already captured.
+  // Captures mouse input and directs it to the specified widget until
+  // releaseMouse is called.  Returns true on success, false if mouse
+  // already captured.
     
-    if (myMouseCaptureWidget == widget) return true;  // Already has it.
-    if (myMouseCaptureWidget)        return false; // Somebody else has it.
+  if (myMouseCaptureWidget == widget) return true;  // Already has it.
+  if (myMouseCaptureWidget)        return false; // Somebody else has it.
     
-    myMouseCaptureWidget = widget;
+  myMouseCaptureWidget = widget;
     
-    // Set mouse cursor to the default specified for the capturing widget,
-    // or the default cursor if the widget doesn't have any.
-    /*if (myMouseCaptureWidget) {
-      if (myMouseCaptureWidget->getGuiStyle())
-      set_mouse_sprite( myMouseCaptureWidget->getGuiStyle()->mouseCursorPic );
-      else if (style)
-      set_mouse_sprite( style->mouseCursorPic );
-      else set_mouse_sprite( NULL );
-      }
-    */
+  // Set mouse cursor to the default specified for the capturing widget,
+  // or the default cursor if the widget doesn't have any.
+  /*if (myMouseCaptureWidget) {
+    if (myMouseCaptureWidget->getGuiStyle())
+    set_mouse_sprite( myMouseCaptureWidget->getGuiStyle()->mouseCursorPic );
+    else if (style)
+    set_mouse_sprite( style->mouseCursorPic );
+    else set_mouse_sprite( NULL );
+    }
+  */
     
-    return true;
+  return true;
 } // captureMouse
 
 /*--------------------------------------------------------------------------*/
 void dime::EventGenerator::releaseMouse( dime::Widget *widget ) {
-    // Releases the mouse if it was captured by widget,
-    // mouse input again goes to the widget the mouse currently is in.
+  // Releases the mouse if it was captured by widget,
+  // mouse input again goes to the widget the mouse currently is in.
     
-    if (myMouseCaptureWidget == widget) {
-        myMouseCaptureWidget = NULL;
+  if (myMouseCaptureWidget == widget) {
+    myMouseCaptureWidget = NULL;
         
-        // Set mouse cursor to the default specified for the pointed widget,
-        // or the default cursor if the widget doesn't have any.
-        /*if (myPointedWidget && myPointedWidget->getGuiStyle())
-          set_mouse_sprite( myPointedWidget->getGuiStyle()->mouseCursorPic );
-          else if (style)
-          set_mouse_sprite( style->mouseCursorPic );
-          else set_mouse_sprite( NULL );
-        */
-    }
+    // Set mouse cursor to the default specified for the pointed widget,
+    // or the default cursor if the widget doesn't have any.
+    /*if (myPointedWidget && myPointedWidget->getGuiStyle())
+      set_mouse_sprite( myPointedWidget->getGuiStyle()->mouseCursorPic );
+      else if (style)
+      set_mouse_sprite( style->mouseCursorPic );
+      else set_mouse_sprite( NULL );
+    */
+  }
     
     
 } // releaseMouse

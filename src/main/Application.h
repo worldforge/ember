@@ -10,7 +10,18 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.23  2002-12-02 20:08:03  xmp
+ *      Revision 1.24  2002-12-07 23:57:36  xmp
+ *      2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * ConfigService.cpp: Initialise static member theInstance to NULL.
+ *
+ *              * Application.cpp: Fixed it so that myStateManager is inited to NULL.
+ *
+ *              * InputDevice.cpp: Fixed a delete to a delete[].  Fix loads of memory
+ *                leaks.
+ *
+ *              * ColorRenderer.cpp/h BorderRenderer.cpp/h: made some stuff const.
+ *
+ *      Revision 1.23  2002/12/02 20:08:03  xmp
  *      2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
  *              * Various Makefile.am's: Altered for the new place where DimeServices.
  *                cpp/h have been put.  Added some stuff to EXTRA_DIST
@@ -266,6 +277,11 @@ namespace dime
 	 * Pointer to our state manager
 	 */
 	StateManager *myStateManager;
+
+	/**
+	 * Pointer to keyboard device
+	 */
+	KeyboardDevice* myKeyboardDev;
 
 	/**
 	 * Pointer to ourselves

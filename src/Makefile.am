@@ -1,1 +1,1 @@
-SUBDIRS = services components framework main
+SUBDIRS = services framework components main

@@ -123,9 +123,9 @@ namespace dime {
 	//----------------------------------------------------------------------
 	// Getters
 	
-	Color getColor()
+	const Color& getColor() const
 	{
-		return myColor;
+	  return myColor;
 	}
 
 	//----------------------------------------------------------------------
