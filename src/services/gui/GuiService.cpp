@@ -3,10 +3,12 @@
 
 void dime::GuiService::refresh()
 {
-	if (myDrawTarget != NULL)
-	{
-		myRootWidget.draw(myDrawTarget);
-	}
+    if (myDrawTarget != NULL)
+        {
+            myRootWidget.draw(myDrawTarget);
+            myDrawTarget->update();
+            
+        }
 	else
 	{
 		dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::ERROR, "Unable to refresh Gui as no draw target has been specified");

@@ -22,7 +22,7 @@
 // Included headers from the current project
 #include <framework/Service.h>
 #include <services/input/InputService.h>
-#include "Container.h"
+#include "Widget.h"
 #include <services/platform/DrawDevice.h>
 
 // Included custom library headers
@@ -52,7 +52,7 @@ class GuiService : public Service, public SigC::Object
 	//======================================================================
     private:
 
-    Container myRootWidget;
+    Widget myRootWidget;
 
 	InputService *myInputService;
 	
@@ -89,7 +89,7 @@ class GuiService : public Service, public SigC::Object
 	/**
 	 * Returns the root widget
 	 */
-	Container& getRootWidget()
+	Widget& getRootWidget()
 	{
 		return myRootWidget;
 	}

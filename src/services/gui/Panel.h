@@ -20,7 +20,7 @@
 #define PANEL_H
 
 // Included headers from the current project
-#include "Container.h"
+#include "Widget.h"
 #include <services/platform/RectangleRenderer.h>
 
 // Included custom library headers
@@ -33,14 +33,14 @@ namespace dime {
 /**
  * Panel widget Arranges children widgets on top of a background.
  *
- * Derived from Container. Useful for creating dialogs.
+ * Derived from Widget. Useful for creating dialogs.
  * 
  * TODO: A short piece of example code demonstrating how this class is used,
  * and in what context, is encouraged.
  *
  * @author Adam Gregory
  */
-class Panel : public Container
+class Panel : public Widget
 
 {
 	//======================================================================
@@ -117,7 +117,7 @@ class Panel : public Container
     /**
     * Creates a new Panel using default values.
     */
-    Panel() : Container()
+    Panel() : Widget()
     {
     }
 

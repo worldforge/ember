@@ -34,8 +34,6 @@
 
 namespace dime {
 
-// Forward declarations
-class Container;
 	
 /**
  * The basic Widget for the Dime Gui
@@ -70,10 +68,12 @@ class Widget : public SigC::Object
 	Rectangle myRectangle;
 	
 	/**
-	 * Pointer to the parent Container of this Widget. NULL if none
+	 * Pointer to the parent Widget of this Widget. NULL if none
 	 */
-	 Container* myParent;
+	 Widget* myParent;
 
+    std::vector<Widget *> myChildren;
+    
     //======================================================================
     // Private Variables
     //======================================================================
@@ -142,7 +142,7 @@ class Widget : public SigC::Object
 	/**
 	 * Returns a pointer to the parent of this Widget
 	 */
-	Container* getParent()
+	Widget* getParent()
 	{
 		return myParent;
 	}
@@ -185,7 +185,7 @@ class Widget : public SigC::Object
 	/**
 	 * Sets the pointer to the parent widget
 	 */
-	void setParent(Container* parent);
+	void setParent(Widget* parent);
     
     /**
     * Sets the rectangular area of this Widget
@@ -225,13 +225,13 @@ class Widget : public SigC::Object
 	/**
 	 * Draws the widget, and/or its children.
 	 */
-    virtual int draw(DrawDevice *target) = 0;
+    virtual int draw(DrawDevice *target);
 
 	
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
 	 */
-	virtual bool checkMouseEvent(std::vector<int> coords) = 0;
+	virtual bool checkMouseEvent(std::vector<int> coords);
 	
 	/**
 	 * Moves the widget to the co-ordinates provided
@@ -263,6 +263,18 @@ class Widget : public SigC::Object
 			myRectangle.setHeight(height);
 	}
 
+    /**
+     * Adds a new child widget to myChildren.
+     */
+    void addWidget(Widget* source);
+	
+	
+    /**
+    * Removes pointer to widget from myChildren.
+    * 
+    */
+    int removeWidget(Widget* target);
+    
 }; // End of class
 
 

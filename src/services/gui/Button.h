@@ -21,7 +21,6 @@
 
 // Included headers from the current project
 #include "Widget.h"
-#include "Container.h"
 #include <services/platform/RectangleRenderer.h>
 
 // Included custom library headers
