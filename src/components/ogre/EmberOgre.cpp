@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.3  2003-04-24 20:27:26  aglanor
+ *      Revision 1.4  2003-04-24 21:21:07  aglanor
+ *      more namespace removal
+ *
+ *      Revision 1.3  2003/04/24 20:27:26  aglanor
  *      bughunting
  *
  *      Revision 1.2  2003/04/24 20:02:08  aglanor
@@ -189,9 +192,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 void DimeOgre::createScene(void)
 {
-  mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+  mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   // Create a light
-  Light* l = mSceneMgr->createLight("MainLight");
+  Ogre::Light* l = mSceneMgr->createLight("MainLight");
   l->setPosition(20,80,50);
 
   // create a Skydome
@@ -206,7 +209,7 @@ void DimeOgre::createScene(void)
   mShip = mSceneMgr->createEntity("blackdog", "squirel_of_doom.mesh");
 
   // create the node
-  mShipNode = dynamic_cast<SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+  mShipNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
   mShipNode->setPosition(10,25,128);
   mShipNode->setScale(0.01,0.01,0.01);
 
@@ -215,23 +218,23 @@ void DimeOgre::createScene(void)
 //#endif
 
 	// a hack from the OGRE GUI sample
-	Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
-	ActionTarget* at = static_cast<BorderButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
+	Ogre::Overlay* o = (Ogre::Overlay*)Ogre::OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
+	Ogre::ActionTarget* at = static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
 
 
 	at->addActionListener(this);
-	at = static_cast<BorderButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
+	at = static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
 	at->addActionListener(this);
 
 
-	ListChanger* list = static_cast<ListGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/AvailableGamesList"));
+	Ogre::ListChanger* list = static_cast<Ogre::ListGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/AvailableGamesList"));
 
-	list->addListItem(new StringResource("test1"));
-	list->addListItem(new StringResource("test2"));
+	list->addListItem(new Ogre::StringResource("test1"));
+	list->addListItem(new Ogre::StringResource("test2"));
 
-	(GuiManager::getSingleton().getGuiElement("Core/CurrFps"))->addMouseListener(this);
+	(Ogre::GuiManager::getSingleton().getGuiElement("Core/CurrFps"))->addMouseListener(this);
 
-	GuiContainer* pCursorGui = OverlayManager::getSingleton().getCursorGui();
+	Ogre::GuiContainer* pCursorGui = Ogre::OverlayManager::getSingleton().getCursorGui();
 	pCursorGui->setMaterialName("Cursor/default");
 }
 
@@ -270,10 +273,10 @@ void DimeOgre::createCamera(void)
   mCamera = mSceneMgr->createCamera("PlayerCam");
 
   // Position it at 500 in Z direction
-  mCamera->setPosition(Vector3(128,25,75));
+  mCamera->setPosition(Ogre::Vector3(128,25,75));
 
   // Look back along -Z
-  mCamera->lookAt(Vector3(0,0,-300));
+  mCamera->lookAt(Ogre::Vector3(0,0,-300));
   mCamera->setNearClipDistance( 1 );
   // do not clip at far distance
   // so we can see the skydome
@@ -350,11 +353,11 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 {
 
 	// create the ogre entity
-	Entity* ogreEntity = mSceneMgr->createEntity(e->getID(), "squirel_of_doom.mesh");
+	Ogre::Entity* ogreEntity = mSceneMgr->createEntity(e->getID(), "squirel_of_doom.mesh");
 
 	// create the ogre node
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
-	SceneNode* ogreNode = dynamic_cast<SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 
 	// set the node position based on eris entity position
 	WFMath::Point<3> position = e->getPosition();
@@ -451,7 +454,7 @@ int main(int argc, char **argv)
 
     try {
         app.go();
-    } catch( Exception& e ) {
+    } catch( Ogre::Exception& e ) {
 #if OGRE_PLATFORM == PLATFORM_WIN32
         MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
