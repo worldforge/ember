@@ -187,6 +187,8 @@ AC_REQUIRE_CPP
 AC_OUTPUT([
   Makefile
   src/Makefile
+  src/components/Makefile
+  src/components/debug/Makefile
   src/framework/Makefile
   src/services/Makefile
   src/services/config/Makefile
