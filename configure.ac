@@ -106,7 +106,7 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, wfmath-0.2 >= 0.2.10 \
- eris-1.0 \
+ eris-1.2 \
  atlascpp-0.4 \
  varconf-1.0,
 	[

@@ -1,3 +1,7 @@
+2003-08-26 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* configure.ac: pumped up eris version to eris-1.2 
+	(Eris 0.9.8)
+
 2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
         * Cal3DConverter: converts Cal3D materials to Ogre
         materials, and assigns material and texture mapping
