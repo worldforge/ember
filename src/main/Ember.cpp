@@ -87,7 +87,7 @@ int main(int argc, char **argv)
       }
     catch ( ... )
       {
-	std::cerr << "Unknown exception dying" <<endl;
+	std::cerr << "Unknown exception dying" << std::endl;
       }
     
     return 0;

@@ -1,4 +1,11 @@
 2002-10-09 Al Riddoch <alriddoch@zepler.org>
+	* src/services/server/OOGChat.cpp: Fix connecting of disappearance
+	  method to Disappearance signal. Get rid of trailing "0" on
+	  some console messages.
+
+	* src/main/Dime.cpp: std:: namespace fix.
+
+2002-10-09 Al Riddoch <alriddoch@zepler.org>
 	* src/services/font/Font.h: Use standard std::wstring for font strings.
 
 2002-10-07 Al Riddoch <alriddoch@zepler.org>

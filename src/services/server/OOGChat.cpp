@@ -41,7 +41,7 @@ namespace dime {
       myLobby->Talk.connect(SigC::slot(*this,&OOGChat::talk));
       myLobby->Emote.connect(SigC::slot(*this,&OOGChat::emote));
       myLobby->Appearance.connect(SigC::slot(*this,&OOGChat::appearance));
-      myLobby->Disappearance.connect(SigC::slot(*this,&OOGChat::appearance));
+      myLobby->Disappearance.connect(SigC::slot(*this,&OOGChat::disappearance));
       myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
 
       ConsoleBackend::getMainConsole()->registerCommand( CMD_SAY, this );
@@ -133,7 +133,7 @@ namespace dime {
   {
     std::ostrstream temp;
 
-    temp << "["<< room->getName()<<"] "<<name<<" "<<msg<< ENDM;
+    temp << "["<< room->getName()<<"] "<<name<<" "<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
     temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
@@ -153,7 +153,7 @@ namespace dime {
   {
     std::ostrstream temp;
 
-    temp << account << " disappears from "<< room->getName()<<ENDM;
+    temp << account << " disappears from "<< room->getName();
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)<<temp.str()<<ENDM;
     temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
