@@ -1,33 +1,45 @@
-/*  Copyright (C) 2002 Miguel Guzmán Miranda (Aglanor)
-	Based on the templategameview.h code by
-	Alistair Davidson and Martin Pollard (Xmp) 
-	and the Worldforge Project
+/*
+  Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (Xmp)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifndef OGRE_GAME_VIEW_H
 #define OGRE_GAME_VIEW_H
 
+#include <Eris/Entity.h>
 #include <Eris/World.h>
+
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
+
+#include "services/platform/DrawDevice.h"
+#include "framework/ConsoleBackend.h"
+//#include "framework/Component.h"
 
 namespace dime {
 
 /**
- * Ogre game view version of the template game view
- * (a template game view for use by DIME game view developers).
+ * This is a debugging game view for use by DIME game view developers.
  *
  * It contains all the essential methods and code, with plenty of comments to
  * show you how to use it. Essentially, it should be possible to "fill in the
@@ -35,6 +47,7 @@ namespace dime {
  * be easy though ;)
  *
  * @author: AlistairD
+ * @author: Xmp
  *
  *
  * Class declaration
@@ -45,9 +58,16 @@ namespace dime {
  * Component is a standard dime class that also has to be inherited from.
  */
 
-class OgreGameView : public SigC::Object : public Component
+class OgreGameView : public ConsoleObject,
+  virtual public SigC::Object //, public Component
 {
 
+    //======================================================================
+    // Private Constants
+    //======================================================================
+    private:
+    
+    // List of OgreGameView's console commands
 
     //======================================================================
     //Public Methods
@@ -74,7 +94,7 @@ class OgreGameView : public SigC::Object : public Component
          *
          * Iterate through your world model and blit to your heart's content :)
          */
-        void repaint();
+        void repaint(DrawDevice *ddevice);
 
         /* Eris::World entity signals (see eris\src\world.h for more info) */
 
@@ -143,6 +163,7 @@ class OgreGameView : public SigC::Object : public Component
         /**
          * I'm not sure what this does. Let's ignore it until I can track down
          * James and bop him on the head for writing unhelpful comments ;)
+         * NOTES: I suspect this is when an attribute of the object is changed.
          */
         void changed( const Eris::StringSet &s, Eris::Entity *e );
 
@@ -151,13 +172,13 @@ class OgreGameView : public SigC::Object : public Component
          * of the media pointer in your world model... this may involve
          * removing it from where it was before the entity moved and
          * placing it in the new position, in which case you'll need
-         * a reverse-lookup of some kinda- Eris::Coord &c is the new
+         * a reverse-lookup of some kinda- WFMath::Point<3> is the new
          * entity coordinate, the old one is only known if stored by you.
          *
          * @param c The new coordinates of the entity
          * @param e A pointer to the Eris entity that has moved
          */
-        void moved( const Eris::Coord &c, Eris::Entity *e );
+        void moved( const WFMath::Point< 3 > &, Eris::Entity *e );
 
         /**
          * Called when the entity speaks. You'll probably want to display the
@@ -167,6 +188,21 @@ class OgreGameView : public SigC::Object : public Component
          * @param e A pointer to the Eris entity
          */
         void say( const std::string &s, Eris::Entity *e );
+
+        /**
+         * Sadly undocumented
+         */
+        void addedMember(Eris::Entity *e);
+
+        /**
+         * Also sadly undocumented
+         */
+        void removedMember(Eris::Entity *e);
+
+	/**
+	 * Receive commands from console
+	 */
+	void runCommand(const std::string &command, const std::string &args);
 
     private:
 
@@ -181,3 +217,5 @@ class OgreGameView : public SigC::Object : public Component
 }; //End of class declaration
 
 } // End of application namespace
+
+#endif // DEBUG_GAME_VIEW_H

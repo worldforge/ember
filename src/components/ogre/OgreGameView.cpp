@@ -1,6 +1,5 @@
-/*  Copyright (C) 2002 Miguel Guzmán Miranda (Aglanor)
-	Based on the templategameview.cpp code by
-	Alistair Davidson and the Worldforge Project
+/*
+    Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (xmp)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,9 +16,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "templategameview.h"
+#include "OgreGameView.h"
 
-#include "main/DimeServices.h"
+#include "services/DimeServices.h"
 
 namespace dime {
 
@@ -27,45 +26,45 @@ OgreGameView::OgreGameView()
 {
 
     /* Find out where the Eris world instance resides... */
-    new Eris::World *w = DimeService.getInstance()->getServerService()->getWorld();
+    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( this, &EntityCreate ) );
+    w->EntityCreate.connect( SigC::slot( *this, &OgreGameView::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( this, &EntityDelete ) );
+    w->EntityDelete.connect( SigC::slot( *this, &OgreGameView::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( this, &Entered ) );
+    w->Entered.connect( SigC::slot( *this, &OgreGameView::entered ) );
 
-    w->Appearance.connect( SigC::slot( this, &Appearance ) );
+    w->Appearance.connect( SigC::slot( *this, &OgreGameView::appearance ) );
 
-    w->Disappearance.connect( SigC::slot( this, &Disappearances) );
-
+    w->Disappearance.connect( SigC::slot( *this, &OgreGameView::disappearance ) );
 }
 
 OgreGameView::~OgreGameView()
 {}
 
-void OgreGameView::repaint()
+void OgreGameView::repaint(DrawDevice* ddevice)
 {}
 
 /* Eris::World entity signals */
 
-void OgreGameView::EntityCreate( Eris::Entity *e )
+void OgreGameView::entityCreate( Eris::Entity *e )
 {
-
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
-    e->AddedMember.connect( SigC::slot( this, &AddedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( this, &RemovedMember ) );
+    // Xmp's Notes: hmm need to work out how to connect these
+    e->AddedMember.connect( SigC::slot( *this, &OgreGameView::addedMember ) );
 
-    e->Recontainered.connect( SigC::slot( this, &Recontainered ) );
+    e->RemovedMember.connect( SigC::slot( *this, &OgreGameView::removedMember ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( this, &Changed ), e ) );
+    e->Recontainered.connect( SigC::slot( *this, &OgreGameView::recontainered ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( this, &Moved ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( *this, &OgreGameView::changed ), e ) );
 
-    e->Say.connect( SigC::bind(SigC::slot( this, &Say ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( *this, &OgreGameView::moved ), e ) );
+
+    e->Say.connect( SigC::bind( SigC::slot( *this, &OgreGameView::say ), e ) );
 }
 
 
@@ -89,11 +88,22 @@ void OgreGameView::recontainered( Eris::Entity *e, Eris::Entity *c )
 void OgreGameView::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {}
 
-void OgreGameView::moved( const Eris::Coord &c, Eris::Entity *e )
+void OgreGameView::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
 {}
 
 void OgreGameView::say( const std::string &s, Eris::Entity *e )
+{
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
+}
+
+void OgreGameView::addedMember(Eris::Entity *e)
 {}
 
+void OgreGameView::removedMember(Eris::Entity *e)
+{}
+
+void OgreGameView::runCommand(const std::string &command, const std::string &args)
+{
+}
 
 }
