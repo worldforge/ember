@@ -200,7 +200,7 @@ public:
 				Material* mat = (Material*)MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
 				mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
 				v->setOverlaysEnabled(false);
-				//rttTex->addListener(mReflectionListener);
+				rttTex->addListener(mReflectionListener);
 			}
 			
 			// Define a floor plane mesh
