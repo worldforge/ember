@@ -20,7 +20,7 @@
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "main/DimeServices.h"
+#include "services/DimeServices.h"
 #include "services/input/InputService.h"
 
 namespace dime
