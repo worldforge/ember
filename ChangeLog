@@ -1,3 +1,8 @@
+2004-01-20 Ron Steinke <rsteinke@w-link.net>
+	* configure.ac: Add $SDL_LIBS as the 'additional libs' argument
+	  of AC_CHECK_LIB for SDL_image. This will hopefully allow the
+	  test to link on win32.
+
 2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
         * src/components/ogre: fixed rotation and viewing for the Avatar. 
 

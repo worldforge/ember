@@ -65,7 +65,7 @@ AM_PATH_SDL(1.2.0, ,
 
 AC_CHECK_LIB(SDL_image, IMG_Load, , [
     AC_MSG_ERROR([libSDL_image not found])
-])
+],$SDL_LIBS)
 
 CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
