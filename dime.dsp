@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=dime - Win32 Debug
+CFG=dime - Win32 Debug CppUnit
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=dime - Win32 Debug
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "dime.mak" CFG="dime - Win32 Debug"
+!MESSAGE NMAKE /f "dime.mak" CFG="dime - Win32 Debug CppUnit"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
 !MESSAGE "dime - Win32 Release" (basierend auf  "Win32 (x86) Application")
 !MESSAGE "dime - Win32 Debug" (basierend auf  "Win32 (x86) Application")
+!MESSAGE "dime - Win32 Debug CppUnit" (basierend auf  "Win32 (x86) Application")
+!MESSAGE "dime - Win32 Release CppUnit" (basierend auf  "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -36,24 +38,24 @@ RSC=rc.exe
 # PROP BASE Output_Dir "Release"
 # PROP BASE Intermediate_Dir "Release"
 # PROP BASE Target_Dir ""
-# PROP Use_MFC 0
+# PROP Use_MFC 2
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I ".\src\\" /I "." /FI"mscprag.h" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I ".\src\\" /I "." /FI"mscprag.h" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
-# ADD RSC /l 0x407 /d "NDEBUG"
+# ADD RSC /l 0x407 /d "NDEBUG" /d "_AFXDLL"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo /o"bin_release/dime.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
+# ADD LINK32 sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Debug"
@@ -81,6 +83,64 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none /nodefaultlib
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Debug CppUnit"
+
+# PROP BASE Use_MFC 2
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "dime___Win32_Debug_CppUnit"
+# PROP BASE Intermediate_Dir "dime___Win32_Debug_CppUnit"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 2
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Debug_CppUnit"
+# PROP Intermediate_Dir "Debug_CppUnit"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I ".\src\\" /I "." /FI"mscprag.h" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I ".\src\\" /I "." /FI"mscprag.h" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "USE_CPP_UNIT" /D "_AFXDLL" /FR /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x407 /d "_DEBUG" /d "_AFXDLL"
+# ADD RSC /l 0x407 /d "_DEBUG" /d "_AFXDLL"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo /o"bin/dime.bsc"
+# ADD BSC32 /nologo /o"bin/dime.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Release CppUnit"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "dime___Win32_Release_CppUnit"
+# PROP BASE Intermediate_Dir "dime___Win32_Release_CppUnit"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 2
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Release_CppUnit"
+# PROP Intermediate_Dir "Release_CppUnit"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I ".\src\\" /I "." /FI"mscprag.h" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I ".\src\\" /I "." /FI"mscprag.h" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "USE_CPP_UNIT" /D "_AFXDLL" /YX /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x407 /d "NDEBUG"
+# ADD RSC /l 0x407 /d "NDEBUG" /d "_AFXDLL"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo /o"bin_release/dime.bsc"
+# ADD BSC32 /nologo /o"bin_release/dime.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -89,6 +149,8 @@ LINK32=link.exe
 
 # Name "dime - Win32 Release"
 # Name "dime - Win32 Debug"
+# Name "dime - Win32 Debug CppUnit"
+# Name "dime - Win32 Release CppUnit"
 # Begin Group "Quellcodedateien"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

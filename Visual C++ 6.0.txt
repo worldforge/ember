@@ -1,8 +1,17 @@
 Using the dime.dsw workspace you may compile dime with Visual C++ 6.0. 
 
 Therefore you should do (or have done already):
-- Install the SDL.
-- Add the lib-/and include path to your Visual C++ 6.0 options.
-- Copy SDL.dll in the dime/bin and/or dime/bin_release subdirectories (to run Dime properly).
+- Download the below listed libraries (developer packages if available) and extract them
+  to a path of your choice
+- Build them (if necessary)
+- Add the lib-/and include path to your Visual C++ 6.0 options. Remember that you should leave the last subpath to the #include-directives. E.g. if you have installed boost into "C:\dev\libs\boost\" you should just enter this path into the options dialog. Do not write "C:\dev\libs\boost\boost\", though the include files are situated there.
+- Copy the *.dlls into the .\bin\ and the .\bin_release\-subdirectory of dime or another directory in the search path. (Create the subdirectories, if the're not existing.)
 
-If you have any suggestions concerning the workspace/the project file, contact T.Enderling@web.de.
+Libraries:
+* SDL (www.libsdl.org) 
+* SDL_image (www.libsdl.org/projects/SDL_image/)
+* libSigC++ 1.0.1 - this the only version working (libsigc.sourceforge.net)
+* Boost (www.boost.org)
+* Optional to you is to install CppUnit (http://sourceforge.net/projects/cppunit). This makes available some basic function tests run at the startup of Dime.
+
+If you have any suggestions/questions concerning the workspace/the project file, feel free to contact T.Enderling@web.de.

@@ -16,6 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifdef USE_CPPUNIT
+
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <main/DimeServices.h>
@@ -29,8 +31,6 @@ namespace dime
  * example errors and failures
  *
  */
-
-
 
 class InputServiceTestCase : public CppUnit::TestCase, public SigC::Object 
 {
@@ -179,3 +179,5 @@ void InputServiceTestCase::eventWasFired(InputDevice * device, SDLKey const & ke
 }
 
 }
+
+#endif

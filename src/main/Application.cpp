@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.8  2002-03-31 19:15:45  tim
+ *      Revision 1.9  2002-04-02 21:15:40  tim
+ *      Fixed the project files/Install for VisualC++
+ *
+ *      Revision 1.8  2002/03/31 19:15:45  tim
  *      Bugfixes, MSVC compatibility fixes, Since boost is working ImageService is now caching
  *
  *      Revision 1.7  2002/03/30 09:33:06  adamgreg
@@ -49,9 +52,6 @@
 #include "DimeServices.h"
 #include <iostream>
 #include <iomanip>
-
-//TODO: Put this into a config file/configuration for MSVC
-#define USE_CPP_UNIT
 
 //Needed for CppUnit
 #ifdef USE_CPP_UNIT
