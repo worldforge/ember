@@ -86,11 +86,11 @@ class SoundService: public Service, public ConsoleObject
     //----------------------------------------------------------------------
     // Methods
 
-    Service::Status start();
+	Service::Status start();
 
-    void stop(int code);
+	void stop(int code);
 
-    void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args);
 
 	bool LoadWAV(const char *fname,int buffer);
 

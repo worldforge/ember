@@ -1,3 +1,8 @@
+2005-03-20 Miguel Guzman (Aglanor)
+
+	* added back Sound Service and reenabled the playsound command
+	(type /playsound for a test)
+
 2005-03-19  Miguel Guzman (Aglanor)
 
 	* added name of speaking entity to chat widget line.

@@ -145,7 +145,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
-	//TODO: (Aglanor) I don't know what is this for
+	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
 }
 

@@ -139,7 +139,7 @@ namespace Ember
 
 		TestPlatform();  // a test
 
-		alutLoadWAV("../../media/sounds/boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
+		alutLoadWAV("/usr/local/share/ember/data/media/sounds/boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
 		{

@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.77  2005-03-20 15:40:45  erik
+ *      Revision 1.78  2005-03-20 20:21:26  aglanor
+ *      2005-03-20 Miguel Guzman (Aglanor)
+ *
+ *              * added back Sound Service and reenabled the playsound command
+ *      	        (type /playsound for a test)
+ *
+ *      Revision 1.77  2005/03/20 15:40:45  erik
  *      2005-03-20  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* EmberOgre.h: added convenience getRootSceneNode
@@ -610,6 +616,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
+#include "services/sound/SoundService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 
@@ -1402,7 +1409,7 @@ void EmberOgre::initializeEmberServices(void)
 	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig("ember.conf");
 
 
-/*
+
 	// Initialize the Sound Service
 #ifndef WIN32
 	// Test that /dev/dsp is availible
@@ -1415,7 +1422,6 @@ void EmberOgre::initializeEmberServices(void)
 #ifndef WIN32
 	}
 #endif
-*/
 
 	// Initialize and start the Metaserver Service.
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
