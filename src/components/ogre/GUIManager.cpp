@@ -133,7 +133,14 @@ void GUIManager::appendOOGChatLine(std::string line)
 	current.append(line);
 	current.append((CEGUI::utf8*)"\n");
 	mChat->setText(current);
-	fprintf(stderr, "CEGUI - SHOULD APPEND LINE HERE");
+}
+
+void GUIManager::appendIGChatLine(std::string line)
+{
+	CEGUI::String current = mChat->getText();
+	current.append(line);
+	current.append((CEGUI::utf8*)"\n");
+	mChat->setText(current);
 }
 
 /*

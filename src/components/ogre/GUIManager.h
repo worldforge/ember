@@ -41,6 +41,7 @@ public:
 	virtual ~GUIManager();
 	//static MotionManager & getSingleton(void);
 	
+	void appendIGChatLine(std::string line);
 	void appendOOGChatLine(std::string line);
 	
 	/*

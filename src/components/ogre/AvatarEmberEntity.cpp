@@ -16,11 +16,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
+#include "framework/ConsoleBackend.h"
 #include "DimeEntity.h"
 #include "Avatar.h"
 #include "DimePhysicalEntity.h"
 #include "AvatarDimeEntity.h"
+#include "GUIManager.h"
 
 namespace DimeOgre {
 
@@ -56,6 +57,13 @@ void AvatarDimeEntity::handleMove()
 
 void AvatarDimeEntity::handleTalk(const std::string &msg)
 {
+	std::string message = "<";
+	message.append(getName());
+	message.append("> ");
+	message.append(msg);
+	GUIManager::getSingleton().appendIGChatLine(message);
+	std::cout << "TRACE - AVATAR SAYS: [" << message << "]\n" << std::endl;
+	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
 
 void AvatarDimeEntity::setVisible(bool vis)

@@ -102,7 +102,7 @@ void DimeEntity::handleTalk(const std::string &msg)
 	message.append(getName());
 	message.append("> ");
 	message.append(msg);
-	GUIManager::getSingleton().appendOOGChatLine(message);
+	GUIManager::getSingleton().appendIGChatLine(message);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 }

@@ -18,7 +18,7 @@
 */
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
-
+#include "GUIManager.h"
 #include "DimeEntityFactory.h"
 
 #include "DimeEntity.h"
@@ -126,7 +126,7 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
     message.append("> ");
     message.append(msg);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
 
 void DimePhysicalEntity::setVisible(bool vis)

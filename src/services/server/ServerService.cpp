@@ -45,17 +45,18 @@
 namespace dime
 {
 
-    // List of ServerService's console commands
-    const char * const ServerService::CONNECT = "connect";
-    const char * const ServerService::RECONNECT = "reconnect";
-    const char * const ServerService::DISCONNECT = "disconnect";
-    const char * const ServerService::CREATEACC = "create";
-    const char * const ServerService::LOGIN = "login";
-    const char * const ServerService::LOGOUT = "logout";
-    const char * const ServerService::CREATECHAR = "add";
-    const char * const ServerService::TAKECHAR = "take";
-    const char * const ServerService::LISTCHARS = "list";
-    const char * const ServerService::TOUCH = "touch";
+	// List of ServerService's console commands
+	const char * const ServerService::CONNECT    = "connect";
+	const char * const ServerService::RECONNECT  = "reconnect";
+	const char * const ServerService::DISCONNECT = "disconnect";
+	const char * const ServerService::CREATEACC  = "create";
+	const char * const ServerService::LOGIN      = "login";
+	const char * const ServerService::LOGOUT     = "logout";
+	const char * const ServerService::CREATECHAR = "add";
+	const char * const ServerService::TAKECHAR   = "take";
+	const char * const ServerService::LISTCHARS  = "list";
+	const char * const ServerService::SAY        = "say";
+	const char * const ServerService::TOUCH      = "touch";
 
   /* ctor */
   ServerService::ServerService() : myConn(NULL), myPlayer(NULL),
@@ -79,17 +80,18 @@ namespace dime
     myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
     myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
-    ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
-    ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);
-    ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this);
-    ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this);
-    ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this);
-    ConsoleBackend::getMainConsole()->registerCommand(LOGOUT,this);
-    ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this);
-    ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this);
-    ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
+	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
+	ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);
+	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this);
+	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this);
+	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this);
+	ConsoleBackend::getMainConsole()->registerCommand(LOGOUT,this);
+	ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this);
+	ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this);
+	ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
+	ConsoleBackend::getMainConsole()->registerCommand(SAY,this);
 	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this);
-	ConsoleBackend::getMainConsole()->registerCommand("movetest",this);
+
   }
 
   /* dtor */
@@ -290,182 +292,183 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
     ConsoleBackend::getMainConsole()->pushMessage("Logged out from server");
   }
 
-  void ServerService::runCommand(const std::string &command, const std::string &args)
-  {
-    if(command == CONNECT){
+	void ServerService::runCommand(const std::string &command, const std::string &args)
+	{
+		// Connect command
+		if(command == CONNECT){
+			// Split string into server / port pair
+			Tokeniser tokeniser = Tokeniser();
+			tokeniser.initTokens(args);
+			std::string server = tokeniser.nextToken();
+			std::string port = tokeniser.remainingTokens();
+			std::string msg;
+			msg = "Connecting to: [" + server + "]";
+			ConsoleBackend::getMainConsole()->pushMessage(msg);
+			if (port=="")
+				connect(server);
+			else
+			connect(server, (short)atoi(port.c_str()));
+			ConsoleBackend::getMainConsole()->pushMessage("Connected.");
 
-      // Split string into server / port pair
-      Tokeniser tokeniser = Tokeniser();
-      tokeniser.initTokens(args);
-      std::string server = tokeniser.nextToken();
-      std::string port = tokeniser.remainingTokens();
-	std::string msg;
-	msg = "Connecting to: [" + server + "]";
-	ConsoleBackend::getMainConsole()->pushMessage(msg);
-      if (port=="")
-        connect(server);
-      else
-        connect(server, (short)atoi(port.c_str()));
-	ConsoleBackend::getMainConsole()->pushMessage("Connected.");
-    } else if(command == RECONNECT) {
-	ConsoleBackend::getMainConsole()->pushMessage("Reconnecting...");
-      reconnect();
-    } else if (command==DISCONNECT){
-      disconnect();
-    } else if (command == CREATEACC) {	
-      if (!myPlayer) return;
-      Tokeniser tokeniser = Tokeniser();
-      tokeniser.initTokens(args);
-      std::string uname = tokeniser.nextToken();
-      std::string password = tokeniser.nextToken();
-      std::string realname = tokeniser.remainingTokens();
-      
-		std::string msg;
-		msg = "Creating account: Name: [" + uname + "], Password: [" + password + "], Real Name: [" + realname + "]";
-		
-		try {
-			myPlayer->createAccount(uname,realname,password);
-		} 
-		catch (Eris::BaseException except)
-		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on account creation: " << except._msg << ENDM;
-			return;
-		}
-		catch (std::runtime_error except)
-		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on account creation: " << except.what() << ENDM;
-			return;
-		}      
+		// Reconnect command
+		} else if(command == RECONNECT) {
+			ConsoleBackend::getMainConsole()->pushMessage("Reconnecting...");
+			reconnect();
 
-    } else if (command==LOGIN) {
+		// Disonnect command
+		} else if (command==DISCONNECT){
+			disconnect();
 
-	// TODO: put this in a separate method
-      if (myPlayer)
-      {
-        // Split string into userid / password pair
-        Tokeniser tokeniser = Tokeniser();
-        tokeniser.initTokens(args);
-        std::string userid = tokeniser.nextToken();
-        std::string password = tokeniser.remainingTokens();
+		// Create Account command
+		} else if (command == CREATEACC) {	
+			if (!myPlayer) return;
+			Tokeniser tokeniser = Tokeniser();
+			tokeniser.initTokens(args);
+			std::string uname = tokeniser.nextToken();
+			std::string password = tokeniser.nextToken();
+			std::string realname = tokeniser.remainingTokens();
 	
-	std::string msg;
-	msg = "Login: [" + userid + "," + password + "]";
+			std::string msg;
+			msg = "Creating account: Name: [" + uname + "], Password: [" + password + "], Real Name: [" + realname + "]";
+			
+			try {
+				myPlayer->createAccount(uname,realname,password);
+			} 
+			catch (Eris::BaseException except)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on account creation: " << except._msg << ENDM;
+				return;
+			}
+			catch (std::runtime_error except)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on account creation: " << except.what() << ENDM;
+				return;
+			}      
+			
+		// Login command
+		} else if (command==LOGIN) {
 	
-        myPlayer->login(userid,password);
-
-	  ConsoleBackend::getMainConsole()->pushMessage(msg);
-	  } else {
-	  ConsoleBackend::getMainConsole()->pushMessage("not connected");
-	  }
-    } else if (command==LOGOUT) {
-	ConsoleBackend::getMainConsole()->pushMessage("Loggin out...");
-      if (myPlayer)
-      {
-        myPlayer->logout();
-      }
-    } else if (command==CREATECHAR) {
-		ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
-      if (myPlayer)
-      {
-		// Split string into name/type/sex/description
-		Tokeniser tokeniser = Tokeniser();
-		tokeniser.initTokens(args);
-		std::string name = tokeniser.nextToken();
-		std::string sex  = tokeniser.nextToken();
-		std::string type = tokeniser.nextToken();
-		std::string description = tokeniser.remainingTokens();     
-		
-		std::string msg;
-		msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
-		ConsoleBackend::getMainConsole()->pushMessage(msg);
-		
-		fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
-		Atlas::Objects::Entity::GameEntity character;
-		character.setParents(Atlas::Message::Element::ListType(1,type));	//TODO: settler shouldn't be fixed
-		character.setName(name);
-		character.setAttr("sex", sex);
-		character.setAttr("description", description);
-		fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
-		try {
-			myAvatar = myPlayer->createCharacter(character);
-			myWorld = myAvatar->getWorld();
-		} 
-		catch (Eris::BaseException except)
-		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
-			return;
-		}
-		catch (std::runtime_error except)
-		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
-			return;
-		}
-		fprintf(stderr, "TRACE - DONE\n");
-		if (myAvatar) {
-			GotAvatar.emit(myAvatar);
-			myWorld = myAvatar->getWorld();
-			if (myWorld) {
-				GotWorld.emit(myWorld);
+		// TODO: put this in a separate method
+			if (myPlayer)
+			{
+				// Split string into userid / password pair
+				Tokeniser tokeniser = Tokeniser();
+				tokeniser.initTokens(args);
+				std::string userid = tokeniser.nextToken();
+				std::string password = tokeniser.remainingTokens();
+	
+				myPlayer->login(userid,password);
+				
+				std::string msg;
+				msg = "Login: [" + userid + "," + password + "]";
+				ConsoleBackend::getMainConsole()->pushMessage(msg);
+			} else {
+				ConsoleBackend::getMainConsole()->pushMessage("not connected");
 			}
-		}
-      } else {
-		ConsoleBackend::getMainConsole()->pushMessage("Not logged in. Can't create char...");
-	  }
-    } else if (command==TAKECHAR) {
-      if (myPlayer)
-      {
-		myAvatar = myPlayer->takeCharacter(args);
-		if (myAvatar) {
-			GotAvatar.emit(myAvatar);
-			myWorld = myAvatar->getWorld();
-			if (myWorld) {
-				GotWorld.emit(myWorld);
+
+		// Logout command
+		} else if (command==LOGOUT) {
+			ConsoleBackend::getMainConsole()->pushMessage("Loggin out...");
+			if (myPlayer)
+			{
+				myPlayer->logout();
 			}
-		}
-      }
-    } else if (command==LISTCHARS) {
-      if (myPlayer)
-      {
-        myPlayer->refreshCharacterInfo();
-      }
-    } else if (command==TOUCH) {
+		
+		// Create Character command
+		} else if (command==CREATECHAR) {
+			ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
+			if (myPlayer)
+			{
+				// Split string into name/type/sex/description
+				Tokeniser tokeniser = Tokeniser();
+				tokeniser.initTokens(args);
+				std::string name = tokeniser.nextToken();
+				std::string sex  = tokeniser.nextToken();
+				std::string type = tokeniser.nextToken();
+				std::string description = tokeniser.remainingTokens();     
+				
+				std::string msg;
+				msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
+				ConsoleBackend::getMainConsole()->pushMessage(msg);
+				
+				fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
+				Atlas::Objects::Entity::GameEntity character;
+				character.setParents(Atlas::Message::Element::ListType(1,type));	//TODO: settler shouldn't be fixed
+				character.setName(name);
+				character.setAttr("sex", sex);
+				character.setAttr("description", description);
+				fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
+				try {
+					myAvatar = myPlayer->createCharacter(character);
+					myWorld = myAvatar->getWorld();
+				} 
+				catch (Eris::BaseException except)
+				{
+					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
+					return;
+				}
+				catch (std::runtime_error except)
+				{
+					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
+					return;
+				}
+				fprintf(stderr, "TRACE - DONE\n");
+				if (myAvatar) {
+					GotAvatar.emit(myAvatar);
+					myWorld = myAvatar->getWorld();
+					if (myWorld) {
+						GotWorld.emit(myWorld);
+					}
+				}
+			} else {
+				ConsoleBackend::getMainConsole()->pushMessage("Not logged in. Can't create char...");
+			}
 
-		// TODO: polish this rough check
-		fprintf(stderr, "TRACE - TOUCHING\n");
-		if(!myAvatar) {
-			fprintf(stderr, "TRACE - NO AVATAR\n");
-			return;
-		}
+		// Take Character Command
+		} else if (command==TAKECHAR) {
+			if (myPlayer)
+			{
+				myAvatar = myPlayer->takeCharacter(args);
+				if (myAvatar) {
+					GotAvatar.emit(myAvatar);
+					myWorld = myAvatar->getWorld();
+					if (myWorld) {
+						GotWorld.emit(myWorld);
+					}
+				}
+			}
 
-		Atlas::Objects::Operation::Touch touch;
-		Atlas::Message::Element::MapType opargs;
+		// List Characters Command
+		} else if (command==LISTCHARS) {
+			if (myPlayer)
+			{
+				myPlayer->refreshCharacterInfo();
+			}
 
-		opargs["id"] = args;
-		touch.setFrom(myAvatar->getID());
-		touch.setArgs(Atlas::Message::Element::ListType(1, opargs));
+		// Say (In-Game chat) Command
+		} else if (command==SAY) {
+			say(args);
 
-		Eris::Connection::Instance()->send(touch);
-	} else if (command=="movetest") { // TODO: hack! this shall be properly done
-		// TODO: polish this rough check
-		ConsoleBackend::getMainConsole()->pushMessage("TRACE - MOVETEST");
-		if(!myAvatar) {
-			ConsoleBackend::getMainConsole()->pushMessage("TRACE - NO AVATAR");
-			return;
-		}
-
-		Atlas::Objects::Operation::Move move;
-		Atlas::Message::Element::MapType opargs;
-		Atlas::Message::Element::ListType pos;
-
-		opargs["pos"] = pos;
-		opargs["loc"] = myAvatar->getEntity()->getContainer()->getID();
-		opargs["id"] = myAvatar->getID();
-		move.setFrom(myAvatar->getID());
-		move.setArgs(Atlas::Message::Element::ListType(1, opargs));
-		ConsoleBackend::getMainConsole()->pushMessage("Sending move op...");
-		Eris::Connection::Instance()->send(move);
+		// Touch Command
+		} else if (command==TOUCH) {
+			// TODO: make this switch call the touch method
+			// TODO: polish this rough check
+			fprintf(stderr, "TRACE - TOUCHING\n");
+			if(!myAvatar) {
+				fprintf(stderr, "TRACE - NO AVATAR\n");
+				return;
+			}
+	
+			Atlas::Objects::Operation::Touch touch;
+			Atlas::Message::Element::MapType opargs;
+	
+			opargs["id"] = args;
+			touch.setFrom(myAvatar->getID());
+			touch.setArgs(Atlas::Message::Element::ListType(1, opargs));
+	
+			Eris::Connection::Instance()->send(touch);
+		}	
 	}
-  }
   
    	void ServerService::moveToPoint(const WFMath::Point<3>& dest) {
  		if(!myAvatar) {
@@ -487,10 +490,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
  			return;
  		}
 
-
-
  	}
-
 
    	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
  		if(!myAvatar) {
@@ -558,6 +558,31 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
  		}
    	}   		
    		
-
+	void ServerService::say(const std::string &message) {
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar when saying" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->say(message);
+			
+			std::string msg;
+			msg = "Saying: [" + message + "]. ";
+			ConsoleBackend::getMainConsole()->pushMessage(msg);
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << msg << ENDM;
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+			/// _key_map.insert(InputKeyMap::value_type(SDLK_SLASH, KC_SLASH)); at SDLInput ctor
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on say: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on say: " << except.what() << ENDM;
+ 			return;
+ 		}	
+	}
  
 } // namespace dime

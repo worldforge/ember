@@ -2,6 +2,9 @@
 	* /src/services/server/OOGChat.(h|cpp):
 	Changed OOG send msg command from "say" to "talk", "say" will be
 	reserved for In-Game chat.
+	* /src/services/server/ServerService.(h|cpp), /src/components/ogre/...:
+	Now "say" or no command sends In-Game chat message. 
+	Messages from the player are correctly displayed.
 
 2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* /src/components/ogre/GUIManager.(h|cpp) and others related:

@@ -141,16 +141,17 @@ class ServerService : public Service, public ConsoleObject,
 	return myWorld;
       }
       
-    void moveToPoint(const WFMath::Point<3>& dest); 
-    void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
-    void moveInDirection(const WFMath::Vector<3>& velocity);
-   	void touch(Eris::Entity* entity);
-   	
+	void moveToPoint(const WFMath::Point<3>& dest); 
+	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
+	void moveInDirection(const WFMath::Vector<3>& velocity);
+	void say(const std::string &message);
+	void touch(Eris::Entity* entity);
+
     //----------------------------------------------------------------------
-   	// Signals
-   	SigC::Signal1<void, Eris::Avatar*> GotAvatar;
-   	SigC::Signal1<void, Eris::World*> GotWorld;
-   	SigC::Signal1<void, Eris::Connection*> GotConnection;
+	// Signals
+	SigC::Signal1<void, Eris::Avatar*> GotAvatar;
+	SigC::Signal1<void, Eris::World*> GotWorld;
+	SigC::Signal1<void, Eris::Connection*> GotConnection;
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
@@ -182,17 +183,18 @@ class ServerService : public Service, public ConsoleObject,
 
     void logoutComplete(bool);
 
-    // List of ServerService's console commands
-    static const char * const CONNECT;
-    static const char * const RECONNECT;
-    static const char * const DISCONNECT;
-    static const char * const CREATEACC;
-    static const char * const LOGIN;
-    static const char * const LOGOUT;
-    static const char * const CREATECHAR;
-    static const char * const TAKECHAR;
-    static const char * const LISTCHARS;
-    static const char * const TOUCH;	
+	// List of ServerService's console commands
+	static const char * const CONNECT;
+	static const char * const RECONNECT;
+	static const char * const DISCONNECT;
+	static const char * const CREATEACC;
+	static const char * const LOGIN;
+	static const char * const LOGOUT;
+	static const char * const CREATECHAR;
+	static const char * const TAKECHAR;
+	static const char * const LISTCHARS;
+	static const char * const SAY;
+	static const char * const TOUCH;	
 }; //ServerService
 
 } // namespace dime
