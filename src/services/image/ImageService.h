@@ -25,6 +25,7 @@
 #include <list>
 #include <map>
 #include <string>
+//#include <boost/shared_ptr.hpp>
 
 namespace dime {
 
@@ -37,15 +38,22 @@ namespace dime {
  */
 class ImageService : public Service
 {
+	//======================================================================
+	// Inner Classes, Typedefs, and Enums
+	//======================================================================
+public:
+
+//	typedef boost::shared_ptr<SDL_Surface> SDL_SurfacePtr;
+
     //======================================================================
     // Private Variables
     //======================================================================
 private:
 
     std::list<std::string> mySearchPaths;
-    std::map<std::string, SDL_Surface *> myImages;
-    
-    
+//    std::map<std::string, SDL_SurfacePtr> myImages;
+	std::map<std::string, SDL_Surface*> myImages;
+	static ImageService *theInstance;
 
     //----------------------------------------------------------------------
     // Constructors & Destructor
@@ -65,9 +73,9 @@ public:
         mySearchPaths.push_back(newPath);
     }
     
-    /*
-     * because this class is a singleton you must use this method to obtain a copy.
-     */
+    /**
+    * because this class is a singleton you must use this method to obtain a copy.
+    */
     static ImageService *getInstance()
     {
         if(theInstance == NULL)
@@ -84,14 +92,14 @@ public:
     }
     
     //----------------------------------------------------------------------
-    // Methods
+    // Other public methods
 	
 	SDL_Surface *loadImage(std::string imageName);
-    
+
 
 private:
     
-    /** Creates a new ConfigService using default values. */
+    /** Creates a new ImageService using default values. */
     ImageService() 
     {
         setName("Image Service");
@@ -99,10 +107,8 @@ private:
         addPath("./");
         addPath("../");
         addPath("./data/");
+        addPath("./src/main/data/");
     }
-    
-    
-    static ImageService *theInstance;
 
 }; //ImageService
 

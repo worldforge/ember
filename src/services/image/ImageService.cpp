@@ -1,6 +1,5 @@
 /*
-    Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
-    Based on YUP::Metacmd code by Adam Wendt
+    Copyright (C) 2002  Lakin Wecker [nikal]
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,25 +24,55 @@ namespace dime
 
     ImageService *ImageService::theInstance = NULL;
 
+/*    SDL_Surface *ImageService::loadImage(std::string imageName)
+    {
+        SDL_SurfacePtr image;
+        std::string newName;
+        
+		image = myImages[imageName];
+		
+		if (image.get() == NULL)
+		{
+			image.reset(IMG_Load(imageName.c_str()));
+
+			std::list<std::string>::iterator cur = mySearchPaths.begin();
+			std::list<std::string>::iterator last = mySearchPaths.end();
+        
+			while(image.get() == NULL && cur != last)
+            {
+                newName = (*cur) + imageName;
+                image.reset(IMG_Load(newName.c_str()));
+                ++cur;
+            }
+			if (image.get() != NULL) myImages[imageName] = image;
+		}
+        return image.get();
+    }
+*/
+
     SDL_Surface *ImageService::loadImage(std::string imageName)
     {
         SDL_Surface *image;
-        string newName;
+        std::string newName;
         
-        image = IMG_Load(imageName.c_str());
+		image = myImages[imageName];
+		
+		if (image == NULL)
+		{
+			image = IMG_Load(imageName.c_str());
+
+			std::list<std::string>::iterator cur = mySearchPaths.begin();
+			std::list<std::string>::iterator last = mySearchPaths.end();
         
-        std::list<std::string>::iterator cur = mySearchPaths.begin();
-        std::list<std::string>::iterator last = mySearchPaths.end();
-        
-        
-        while(image == NULL && cur != last)
+			while(image == NULL && cur != last)
             {
                 newName = (*cur) + imageName;
                 image = IMG_Load(newName.c_str());
                 ++cur;
             }
+			if (image != NULL) myImages[imageName] = image;
+		}
         return image;
     }
-    
-	
+
 } // namespace dime

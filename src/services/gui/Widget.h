@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "Dimension.h"
+#include "Rectangle.h"
 
 // Included custom library headers
 
@@ -52,43 +53,6 @@ class Container;
 class Widget : public SigC::Object
 
 {
-
-    //======================================================================
-    // Public Signals
-    //======================================================================
-    public:
-    
-    /**
-     * Connect a slot here to observe when a mouse button is pressed.
-     */
-    SigC::Signal1<void, Widget*> onMouseDown;
-	
-    /**
-     * Connect a slot here to observe when a mouse button is released.
-     */
-    SigC::Signal1<void, Widget*> onMouseUp;
-    
-    /**
-     * Connect a slot here to observe MouseMotions
-     */
-    SigC::Signal1<void, Widget*> onMouseMove;
-    
-    /**
-     * Connect a slot here to observe when MouseMoves over this Widget
-     */
-    SigC::Signal1<void, Widget*> onMouseEnter;
-    
-    /**
-     * Connect a slot here to observe when a Mouse leaves this Widget
-     */
-    SigC::Signal1<void, Widget*> onMouseExit;
-    
-    /**
-     * Connect a slot here to observe when a key is pressed and this Widget has focus.
-     */
-    SigC::Signal2<void, Widget*, SDLKey> onKeyPress;
-
-
     //======================================================================
     // Protected Variables
     //======================================================================
@@ -98,46 +62,35 @@ class Widget : public SigC::Object
 	 * Whether the mouse cursor is inside this widget or not
 	 */
 	bool myMouseIsInside;
+	
+    /**
+    * The dimensions of this Widget
+    */
+	Rectangle myRectangle;
+	
+	/**
+	 * Pointer to the parent Container of this Widget. NULL if none
+	 */
+	 Container* myParent;
 
     //======================================================================
     // Private Variables
     //======================================================================
     private:
 
-	/**
-	 * Pointer to the parent Container of this Widget. NULL if none
-	 */
-	 
-	 Container* myParent;
-
     /**
-     * The X position of this widget relative to the application
-     */
-    int myX;
-    
-    /**
-     *The Y position of this widget relative to the application
-     */
-    int myY;
-
-    /**
-     * The dimensions of this Widget
-     */
-    Dimension myDimension;
-
-    /**
-     * The maximum Dimension of this widget
-     */
+    * The maximum Dimension of this widget
+    */
     Dimension myMaxDimension;
     
     /**
-     * The minimum Dimension of this widget
-     */
+    * The minimum Dimension of this widget
+    */
     Dimension myMinDimension;
     
     /**
-     * The prefered Dimension of this widget
-     */
+    * The prefered Dimension of this widget
+    */
     Dimension myPrefDimension;
 
 
@@ -150,8 +103,8 @@ class Widget : public SigC::Object
     // Constructors
 
     /**
-     * Cretaes a new Widget using default values.
-     */
+    * Creates a new Widget using default values.
+    */
     Widget()
     {
 		myParent = NULL;
@@ -159,8 +112,8 @@ class Widget : public SigC::Object
 
 
     /**
-     * Copy constructor.
-     */
+    * Copy constructor.
+    */
     Widget( const Widget &source )
     {
         // Use assignment operator to do the copy
@@ -168,17 +121,17 @@ class Widget : public SigC::Object
         *this = source;
     }
 
-     /**
-     * Assignment operator.
-     */
+	/**
+	 * Assignment operator.
+	 */
     Widget &operator= ( const Widget &source );
 
     //----------------------------------------------------------------------
     // Destructor
 
     /**
-     * Deletes a Widget instance.
-     */
+    * Deletes a Widget instance.
+    */
     virtual ~Widget();
 
 	
@@ -192,50 +145,34 @@ class Widget : public SigC::Object
 	{
 		return myParent;
 	}
-	
+    
     /**
-     * Returns the X position for this Widget
-     */
-    virtual int getX() const
+    * Returns the rectangular area of this Widget
+    */
+    virtual Rectangle getRectangle() const
     {
-        return myX;
-    }
-
-    /**
-     * Returns the Y position for this Widget
-     */
-    virtual int getY() const
-    {
-        return myY;
+        return myRectangle;
     }
     
     /**
-     * Returns the dimensions of this Widget
-     */
-    virtual Dimension getDimension() const
+    * Returns the maximum Dimension for this Widget
+    */
+    virtual Dimension* getMaxDimension()
     {
-        return myDimension;
+        return &myMaxDimension;
     }
     
     /**
-     * Returns the maximum Dimension for this Widget
-     */
-    virtual Dimension getMaxDimension() const
-    {
-        return myMaxDimension;
-    }
-    
-    /**
-     * Returns the minimum Dimension for this Widget
-     */
+    * Returns the minimum Dimension for this Widget
+    */
     virtual Dimension getMinDimension() const
     {
         return myMinDimension;
     }    
     
     /**
-     * Returns the prefered Dimension for this Widget
-     */
+    * Returns the prefered Dimension for this Widget
+    */
     virtual Dimension getPrefDimension() const
     {
         return myPrefDimension;
@@ -248,50 +185,34 @@ class Widget : public SigC::Object
 	 * Sets the pointer to the parent widget
 	 */
 	void setParent(Container* parent);
-
-	/**
-	 * Sets theX position for this Widget
-	 */
-	virtual void setX(int x)
-    {
-        myX = x;
-    }
-
+    
     /**
-     * Sets the Y position for this Widget
-     */
-    virtual void setY(int y)
+    * Sets the rectangular area of this Widget
+    */
+    virtual void setRectangle(Rectangle rectangle) 
     {
-        myY = y;
+        myRectangle = rectangle;
     }
     
     /**
-     * Sets the dimensions of this Widget
-     */
-    virtual void setDimension(Dimension dimension) 
-    {
-        myDimension = dimension;
-    }
-    
-    /**
-     * sets the maximum Dimension for this Widget
-     */
+    * sets the maximum Dimension for this Widget
+    */
     virtual void setMaxDimension(Dimension dimension) 
     {
         myMaxDimension = dimension;
     }
     
     /**
-     * Sets the minimum Dimension for this Widget
-     */
+    * Sets the minimum Dimension for this Widget
+    */
     virtual void setMinDimension(Dimension dimension)
     {
        myMinDimension = dimension;
     }    
     
     /**
-     * Sets the prefered Dimension for this Widget
-     */
+    * Sets the prefered Dimension for this Widget
+    */
     virtual void setPrefDimension(Dimension dimension)
     {
         myPrefDimension = dimension;
@@ -309,8 +230,37 @@ class Widget : public SigC::Object
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
 	 */
-	virtual bool checkMouseEvent(std::vector<int> coords);
-
+	virtual bool checkMouseEvent(std::vector<int> coords) = 0;
+	
+	/**
+	 * Moves the widget to the co-ordinates provided
+	 */
+	virtual void move(std::vector<int> coords)
+	{
+		if (coords.size() == 2)
+		{
+			myRectangle.setX(coords[0]);
+			myRectangle.setY(coords[1]);
+		}
+	}
+	virtual void move(int x, int y)
+	{
+			myRectangle.setX(x);
+			myRectangle.setY(y);
+	}
+	
+	/**
+	 * Resizes the widget to the dimensions provided
+	 */
+	virtual void resize(Dimension dimension)
+	{
+			myRectangle.setDimensions(dimension);
+	}
+	virtual void resize(int width, int height)
+	{
+			myRectangle.setWidth(width);
+			myRectangle.setHeight(height);
+	}
 
 }; // End of class
 

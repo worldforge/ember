@@ -78,6 +78,7 @@ AC_OUTPUT([
   src/services/test/Makefile
   src/services/metaserver/Makefile
   src/services/input/Makefile
+  src/services/image/Makefile
   src/services/gui/Makefile
   src/services/platform/Makefile
   src/main/Makefile

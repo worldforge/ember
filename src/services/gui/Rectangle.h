@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Lakin Wecker aka(nikal)
+    Copyright (C) 2002  Adam Gregory
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,28 +16,29 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef DIMENSION_H
-#define DIMENSION_H
+#ifndef RECTANGLE_H
+#define RECTANGLE_H
 
 // Included headers from the current project
+#include <services/gui/Dimension.h>
 
 // Included custom library headers
 
 // Included system headers
+#include <SDL/SDL.h>
+#include <vector>
 
 namespace dime{
 
 /**
- * Provides a simple api for the Dimensions of stuff.
+ * Provides a simple api to describe rectangular areas.
  *
- * This class could also have been called "Size".  however
- * dimension seemed to be a more generic name which worked better.
- * This class provides the Dimensions for Widgets and Layout etc. 
+ * 
  *
- * @author Lakin Wecker
+ * @author Adam Gregory
  *
  */
-class Dimension
+class Rectangle
 
 {
 
@@ -47,15 +48,31 @@ class Dimension
     //======================================================================
     private:
 
+	
+	/**
+    * The horizontal position of this Rectangle
+    */
+    int myX;
+
     /**
-    * The width of this Dimension
+    * The vertical position of this Rectangle
+    */
+    int myY;
+	
+    /**
+    * The width of this Rectangle
     */
     int myWidth;
 
     /**
-    * The height of this dimensions
+    * The height of this Rectangle
     */
     int myHeight;
+
+	/**
+	 * SDL_Rect representation of this Rectangle.
+	 */
+	SDL_Rect mySDL_Rect;
 
     //======================================================================
     // Public Methods
@@ -68,21 +85,24 @@ class Dimension
     /**
     * Creates a new NameOfClass using default values.
     */
-    Dimension(int w, int h)
-        : myWidth(w), myHeight(h)
+    Rectangle(int x, int y, int w, int h)
     {
+		setX(x);
+		setY(y);
+		setWidth(w);
+		setHeight(h);
     }
 
 
-    Dimension()
-        : myWidth(0), myHeight(0)
+    Rectangle()
+        : myX(0), myY(0), myWidth(0), myHeight(0)
     {
     }
     
     /**
     * Copy constructor.
     */
-    Dimension( const Dimension &source )
+    Rectangle( const Rectangle &source )
     {
         *this = source;
     }
@@ -91,11 +111,14 @@ class Dimension
     /**
     * Assignment operator.
     */
-    Dimension &operator= ( const Dimension &source )
+    Rectangle &operator= ( const Rectangle &source )
     {
         // Copy fields from source class to this class here.
+		this->myX = source.getX();
+		this->myY = source.getY();
         this->myWidth = source.getWidth();
         this->myHeight = source.getHeight();
+		this->mySDL_Rect = source.getSDL_Rect();
         // Return this object with new value
         return *this;
     }
@@ -105,9 +128,9 @@ class Dimension
     // Destructor
 
     /**
-    * Deletes a Dimension instance.
+    * Deletes a Rectangle instance.
     */
-    virtual ~Dimension()
+    virtual ~Rectangle()
     {
         // TODO: Free any allocated resources here.
     }
@@ -117,45 +140,125 @@ class Dimension
     // Getters
 
     /**
-     * Returns the Width of the Dimension
-     */
+    * Returns the horizontal position of the Rectangle
+    */
+    virtual int getX() const
+    {
+        return myX;
+    }
+
+    /**
+    * Returns the vertical position of the Rectangle
+    */
+    virtual int getY() const
+    {
+        return myY;
+    }
+
+    /**
+    * Returns the Width of the Rectangle
+    */
     virtual int getWidth() const
     {
         return myWidth;
     }
 
     /**
-    * Returns the Height of the Dimension
+    * Returns the Height of the Rectangle
     */
     virtual int getHeight() const
     {
         return myHeight;
     }
+	
+	/**
+	 * Sets the dimensions for this Rectangle
+	 */
+	virtual Dimension getDimensions() const
+	{
+		return Dimension(getWidth(),getHeight());
+	}
+	
+	/**
+	 * Returns the SDL_Rect representation of this Rectangle
+	 */
+	virtual SDL_Rect getSDL_Rect() const
+	{
+		return mySDL_Rect;
+	}
 
     //----------------------------------------------------------------------
     // Setters
 
     /**
-    * Sets the width for this Dimension
+    * Sets the horizontal position for this Rectangle
+    */
+	virtual void setX(int x)
+	{
+		myX = x;
+		mySDL_Rect.x = x;
+	}
+    
+    /**
+    * Sets the vertical position of this Rectangle
+    */
+    virtual void setY(int y)
+    {
+		myY = y;
+		mySDL_Rect.y = y;
+    }
+
+    /**
+    * Sets the width for this Rectangle
     */
     virtual void setWidth(int width)
     {
         if(width>0)
             {
                 myWidth = width;
+				mySDL_Rect.w = width;
             }
     }
     
     /**
-    * Sets the height for this Dimension
+    * Sets the height for this Rectangle
     */
     virtual void setHeight(int height)
     {
         if(height>0)
             {
                 myHeight = height;
+                mySDL_Rect.h = height;
             }
     }
+	
+	/**
+	 * Sets the dimensions for this Rectangle
+	 */
+	virtual void setDimensions(Dimension dimension)
+	{
+		setWidth(dimension.getWidth());
+		setHeight(dimension.getHeight());
+	}
+	
+    //----------------------------------------------------------------------
+    // Other public functions
+	
+	/**
+	 * Tests if a set of co-ordinates lies inside this rectangle
+	 */
+	virtual bool contains(std::vector<int> coords)
+	{
+		if (coords.size() != 2)
+		{
+			return false; // Invalid coordinates vector.
+		}
+		if ((coords[0] > getX()) && (coords[0] < getX() + getWidth()) && (coords[1] > getY()) && (coords[1] < getY() + getHeight()))
+		{
+			return true;
+		}
+		return false;
+	}
 
 }; // End of class
 

@@ -29,9 +29,7 @@ dime::GuiService::GuiService()
 	setDescription( "Handles the Widgets that make up the GUI" );
 	dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::INFO, "GuiService initialized.");
 	
-	myRootWidget.setX(0);
-	myRootWidget.setY(0);
-	myRootWidget.setDimension(Dimension(640,480));	//TODO: get real screen dimensions. Maybe do this elsewhere.
+	myRootWidget.setRectangle(dime::Rectangle(0,0,640,480));	//TODO: get real screen dimensions. Maybe do this elsewhere.
 	
 	myInputService = dime::InputService::getInstance();
 	dime::InputDevice *mouse = myInputService->getInputDevice(dime::InputDevice::MOUSE);

@@ -10,7 +10,15 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.3  2002-03-30 09:33:06  adamgreg
+ *      Revision 1.4  2002-03-31 08:42:06  adamgreg
+ *
+ *      Added Rectangle class for Widget to use. Later should make RR use it too so that people creating widgets don't have to worry about calling Rectangle::getSDL_Rect(). Kept Dimension, for defining max/min/pref dimensions. Quite a few functions in Rectangle so that they'll play nicely together.
+ *      Messed a bit with nikal's ImageService - added image caching. There's a complete implementation using Boost shared pointers, which is commented out for now because I don't know if many people have or want the boost dev files. Incomplete implementation that loads but doesn't unload from cache properly.
+ *      Did some tidying of RectangleRenderer, and tried to make it a bit safer and easier to use. And implemented bitmap type RRs using ImageService and DrawDevice.
+ *      ...pretty bitmapped buttons!
+ *      (now nikal won't shout at me :)
+ *
+ *      Revision 1.3  2002/03/30 09:33:06  adamgreg
  *
  *      Input now successfully obtained by GuiService from InputService. Button Widget added. Widget events work. Proper use of RectangleRenderers.
  *      The upshot is : pretty thing on screen that does stuff. Check it out!
@@ -31,6 +39,8 @@
 
 #include <string>
 
+#include <services/image/ImageService.h>
+
 #include "RectangleRenderer.h"
 
 /**
@@ -38,86 +48,84 @@
  */
 
 /**
- * Constructor for a flat solid color rectangle.
+ * Constructor for a flat solid color RectangleRenderer.
  */
 dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
         Uint8 red, Uint8 green, Uint8 blue)
 {
-	SolidColor(renderFlag, red, green, blue);
+	solidColor(red, green, blue);
 	myRect = *rect;
 }
 
 
 /**
- * Constructor for a flat solid color rectangle.
+ * Constructor for a flat solid color RectangleRenderer.
  */
 dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
         dime::Color color )
 {
-	SolidColor(renderFlag, color);
+	solidColor(color);
 	myRect = *rect;
 }
 
 /**
- * Constructs a bitmap instance
- * Saves the bitmap or loads it into myBitmap.
+ * Constructor for a bitmap filled RectangleRenderer
  */
-/*dime::RectangleRenderer::RectangleRenderer(int renderFlag, Rectangle *rect,
-  SDL_Surface *bitmapSurface, const std::string bitmapString)
-  {
-  if (bitmapSurface)
-  {
-  myBitmap = bitmapSurface;
-  }
-  else
-  {
-  myBitmap = SDL_LoadBMP(bitmapString.c_str());
-  }
-  
-  myType = renderFlag;
-  myRect = *rect;
-  }
-*/
+dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect, const std::string bitmapString)
+{
+	bitmap(bitmapString);
+	myRect = *rect;
+}
+
 
 /**
- * Sets up a gradient instance
+ * Constructor for a gradient filled RectangleRenderer
  */
 dime::RectangleRenderer::RectangleRenderer(int renderFlag, 
                                            SDL_Rect *rect, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
 {
-	Gradient(renderFlag, color1, color2, color3, color4);
+	gradient(color1, color2, color3, color4);
 	myRect = *rect;
 }
 
 /**
- * Constructor for a flat solid color rectangle.
+ * Sets up a flat solid color RectangleRenderer.
  */
-void dime::RectangleRenderer::SolidColor(int renderFlag, Uint8 red, Uint8 green, Uint8 blue)
+void dime::RectangleRenderer::solidColor(Uint8 red, Uint8 green, Uint8 blue)
 {
-	myType = renderFlag;
 	myColor = Color(red,green,blue);
+	myType = FLAT_COLOR;
 }
 
 
 /**
- * Constructor for a flat solid color rectangle.
+ * Sets up a flat solid color RectangleRenderer.
  */
-void dime::RectangleRenderer::SolidColor(int renderFlag, dime::Color color )
+void dime::RectangleRenderer::solidColor(dime::Color color)
 {
-	myType = renderFlag;
 	myColor = color;
+	myType = FLAT_COLOR;
 }
 
 /**
  * Sets up a gradient
  */
-void dime::RectangleRenderer::Gradient(int renderFlag, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
+void dime::RectangleRenderer::gradient(dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
 {
-	myType = renderFlag;
 	myColor = color1;
 	myColor2 = color2;
 	myColor3 = color3;
 	myColor4 = color4;
+	myType = GRADIENT;
+}
+
+/**
+ * Sets up a bitmap
+ */
+void dime::RectangleRenderer::bitmap(std::string bitmapString)
+{
+	mySurface = ImageService::getInstance()->loadImage(bitmapString);
+	myType = BITMAP;
 }
 
 
@@ -140,14 +148,12 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
         }
         case BITMAP:
         {
-            //renderBitmap(device);
+            renderBitmap(device);
             break;
         }
         case GRID:
         {
-            renderGrid(device,
-                       3, 3);
-            
+            renderGrid(device, 3, 3);
             break;
         }
     }
@@ -155,20 +161,20 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
 }
 
 /**
- * Renders a bitmap specified by the first argument
+ * Renders a bitmap
  */
-int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device, SDL_Surface *surface)
+int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 {
     SDL_Rect src, dest;
-
+	src.x = 0;
+	src.y = 0;
+	src.w = myRect.w;
+	src.h = myRect.h;
     dest.x = myRect.x;
     dest.y = myRect.y;
-
-    src.x = 0;
-    src.y = 0;
-    dest.w = src.w = surface->w;
-    dest.h = src.h = surface->h;
-    device->blitSurface(&src, &dest, surface);
+    dest.w = myRect.w;
+    dest.h = myRect.h;
+    device->blitSurface(&src, &dest, mySurface);
     device->update();
 
     return (1);

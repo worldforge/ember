@@ -98,6 +98,7 @@ class Container : public Widget
      */
     virtual ~Container()
     {
+		myParent = NULL;
         // TODO: Free any allocated resources here.
     }
 

@@ -22,10 +22,12 @@
 // Included headers from the current project
 #include <services/platform/Color.h>
 #include <services/platform/DrawDevice.h>
+
 // Included custom library headers
 
 // Included system headers
 #include <SDL/SDL.h>
+#include <string>
 
 /**
  * Flags to specify which type of rendering should be used
@@ -84,16 +86,24 @@ namespace dime {
         //======================================================================
     private:
 
+        /**
+       * The fill type of the rectangle
+       */
         int myType;
 
         /**
-         * Coordinates/size of the rectangle
-         */
+       * The surface that this RectangleRenderer acts upon
+       */
+        SDL_Surface *mySurface;
+
+        /**
+       * Coordinates/size of the rectangle
+       */
         SDL_Rect myRect;
         
         /*
-         * The colors
-         */
+       * The colors
+       */
         Color myColor;
         Color myColor2;
         Color myColor3;
@@ -113,27 +123,33 @@ namespace dime {
         //----------------------------------------------------------------------
         // Constructors
 
-        /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
+		/**
+       * Creates a new empty RectangleRenderer
+       */
+        RectangleRenderer()
+		{
+		}
+
+		/**
+       * Creates a new RectangleRenderer using supplied values..
+       */
         RectangleRenderer(int renderFlag, SDL_Rect *rect,
                           Uint8 red, Uint8 green, Uint8 blue);
 
-        /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
+		/**
+		 * Creates a new RectangleRenderer using supplied values..
+		 */
         RectangleRenderer(int renderFlag, SDL_Rect *rect,
                           Color color);
 
-        /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
-        //RectangleRenderer(int renderFlag, SDL_Rect *rect,
-        //                SDL_Surface *surface, const std::string bitmapString);
+		/**
+		 * Creates a new RectangleRenderer using supplied values..
+		 */
+        RectangleRenderer(int renderFlag, SDL_Rect *rect, const std::string bitmapString);
 
         /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
+		 * Creates a new RectangleRenderer using supplied values..
+		 */
         RectangleRenderer(int renderFlag, SDL_Rect *rect,
                           Color color1, Color color2, Color color3, Color color4);
 
@@ -142,9 +158,9 @@ namespace dime {
         //----------------------------------------------------------------------
         // Destructor
     
-        /**
-         * Deletes a RectangleRenderer instance.
-         */
+		/**
+		 * Deletes a RectangleRenderer instance.
+		 */
         virtual ~RectangleRenderer();
 
         //----------------------------------------------------------------------
@@ -157,23 +173,28 @@ namespace dime {
         // Other public methods	
 
        /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
-        void SolidColor(int renderFlag, Uint8 red, Uint8 green, Uint8 blue);
+		 * Sets this RectangleRenderer using supplied values..
+		 */
+        void solidColor(Uint8 red, Uint8 green, Uint8 blue);
 
         /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
-        void SolidColor(int renderFlag, Color color);
+		 * Sets this RectangleRenderer using supplied values..
+		 */
+        void solidColor(Color color);
 
         /**
-         * Creates a new RectangleRenderer using supplied values..
-         */
-        void Gradient(int renderFlag, Color color1, Color color2, Color color3, Color color4);
+		 * Sets this RectangleRenderer using supplied values..
+		 */
+        void gradient(Color color1, Color color2, Color color3, Color color4);
+		
+        /**
+		 * Sets this RectangleRenderer using supplied values..
+		 */
+		void bitmap(const std::string bitmapString);
 
         /**
-         * Calls appropriate private function to render 
-         */
+		 * Calls appropriate private function to render 
+		 */
         int render(DrawDevice *device);
 	
         //======================================================================
@@ -189,28 +210,28 @@ namespace dime {
         // API
 
         /**
-         * Renders a bitmap, for now an SDL bitmap.
-         */
-        int renderBitmap(DrawDevice *device, SDL_Surface *surface);
+		 * Renders a bitmap, for now an SDL bitmap.
+		 */
+        int renderBitmap(DrawDevice *device);
 
         /**
-         * Renders a solid color.
-         */
+		 * Renders a solid color.
+		 */
         int renderFlat(DrawDevice *device);
 
         /**
-         * Renders a gradient, might have to be several implementations
-         */
+		 * Renders a gradient, might have to be several implementations
+		 */
         int renderGradient(DrawDevice *device);
 
         /**
-         * Render a diagonal gradient
-         */
+		 * Render a diagonal gradient
+		 */
         int renderDiagonalGradient(DrawDevice *device);
 
         /**
-         * Renders a grid.  Going to be hard to do this one.
-         */
+		 * Renders a grid.  Going to be hard to do this one.
+		 */
         int renderGrid(DrawDevice *device,
                        int cols,
                        int rows);

@@ -22,14 +22,13 @@ bool dime::Container::checkMouseEvent(std::vector<int> coords)
 	}
 	else
 	{
-		if ((coords[0] > getX()) && (coords[0] < getX() + getDimension().getWidth()) && (coords[1] > getY()) && (coords[1] < getY() + getDimension().getHeight()))
+		if (myRectangle.contains(coords))
 		{
 			// Coordinates lie inside this widget.
 			if (!myMouseIsInside)
 			{
 				// Mouse has just entered widget.
 				myMouseIsInside = true;
-				onMouseEnter.emit(this);
 			}
 			std::vector<Widget*>::iterator end = myChildren.end();
 			for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
@@ -50,7 +49,6 @@ bool dime::Container::checkMouseEvent(std::vector<int> coords)
 			{
 				// Mouse just exited this widget.
 				myMouseIsInside = false;
-				onMouseExit.emit(this);
 			}
 			return false;
 		}

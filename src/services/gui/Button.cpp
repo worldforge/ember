@@ -2,17 +2,17 @@
 
 int dime::Button::draw()
 {
-	myBackground->render(&SDLDrawDevice(SDL_GetVideoSurface()));
+	myBackground.render(&SDLDrawDevice(SDL_GetVideoSurface()));
 }
 
 void dime::Button::highlight()
 {
-	myBackground->Gradient(GRADIENT,dime::Color(255,0,0),dime::Color(0,255,0),dime::Color(0,0,255),dime::Color(0,0,0));
+	myBackground.bitmap("masonwindowback2.jpg");
 }
 
 void dime::Button::lowlight()
 {
-	myBackground->Gradient(GRADIENT,dime::Color(0,0,0),dime::Color(0,0,255),dime::Color(0,255,0),dime::Color(255,0,0));
+	myBackground.bitmap("masonwindowback.jpg");
 }
 
 bool dime::Button::checkMouseEvent(std::vector<int> coords)
@@ -23,7 +23,7 @@ bool dime::Button::checkMouseEvent(std::vector<int> coords)
 	}
 	else
 	{
-		if ((coords[0] > getX()) && (coords[0] < getX() + getDimension().getWidth()) && (coords[1] > getY()) && (coords[1] < getY() + getDimension().getHeight()))
+		if (myRectangle.contains(coords))
 		{
 			// Coordinates lie inside this widget.
 			if (!myMouseIsInside)

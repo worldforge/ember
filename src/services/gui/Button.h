@@ -46,7 +46,7 @@ namespace dime {
  *
  *
  */
-class Button : public Widget, public SigC::Object
+class Button : public Widget
 
 {
 	//======================================================================
@@ -107,7 +107,7 @@ class Button : public Widget, public SigC::Object
     //======================================================================
     private:
 
-		RectangleRenderer *myBackground;
+		RectangleRenderer myBackground;
 
     //======================================================================
     // Public Methods
@@ -156,6 +156,7 @@ class Button : public Widget, public SigC::Object
      */
     virtual ~Button()
     {
+		myParent = NULL;
         // TODO: Free any allocated resources here.
     }
 
@@ -170,7 +171,7 @@ class Button : public Widget, public SigC::Object
     /**
      * Sets the background RectangleRenderer of this Widget
      */	
-	virtual void setBackground(RectangleRenderer *background)
+	virtual void setBackground(RectangleRenderer background)
 	{
 		myBackground = background;
 	}
