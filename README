@@ -7,10 +7,10 @@ MEDIA:
 
 All media has been removed from Dime CVS.  You now need to download the
 following tarballs:
-dime-media.tar.bz2      : For common media (sounds, fonts, music,
-                          common graphics, etc.)
-dime-media-ogre.tar.bz2 : For OGRE Engine-specific media
-dime-media-sdl.tar.bz2  : For SDL Engine-specific media
+dime-media-0.1.tar.bz2      : For common media (sounds, fonts, music,
+                              common graphics, etc.)
+dime-media-ogre-0.1.tar.bz2 : For OGRE Engine-specific media
+dime-media-sdl-0.1.tar.bz2  : For SDL Engine-specific media
 
 The media can be retrieved from ftp://<enter media FTP URL here>/<media file>[0] .
 To install the media, uncompress the above tarballs to /usr/share/games/dime .
