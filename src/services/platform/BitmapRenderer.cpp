@@ -1,7 +1,7 @@
 #include "BitmapRenderer.h"
 
-inline int dimeroundf(float x) {return x + (x > 0) ? 0.5 : -0.5;}
-
+inline int dimeroundf(float x) {return x + ((int (x > 0) ? 0.5 : -0.5;}
+	
 /**
  * Constructor for a bitmap filled RectangleRenderer
  */
@@ -83,7 +83,16 @@ dime::BitmapRenderer::BitmapRenderer(const dime::Rectangle &rect,
 	}
 	case BitmapRenderer::CENTER:
 	{
-	break;
+		SDL_Rect src, dest;
+		src.w = mySourceSurface->w;
+		src.h = mySourceSurface->h;
+		dest.w = myRect.getWidth();
+		dest.h = myRect.getHeight();
+		dest.y = (dest.h - src.h) / 2;
+		dest.x = (dest.w - src.w) / 2;
+		
+		SDL_BlitSurface(mySourceSurface,NULL,mySurface,&dest);
+		break;
 	}
     }
 }
@@ -116,8 +125,6 @@ void dime::BitmapRenderer::render(dime::DrawDevice *device)
 		}
 		case CENTER:
 		{
-		dest.y -= (dest.h - src.h) / 2;
-		dest.x += (dest.w - src.w) / 2;
 		device->blitSurface(&src, &dest, mySurface);
 		}
 		default:
