@@ -1,0 +1,45 @@
+%define name @PACKAGE@
+%define version @VERSION@
+%define release 1
+
+Summary: Dime - a client for Worldforge
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Source0: %{name}-%{version}.tar.gz
+URL: http://www.worldforge.org
+Copyright: GPL
+Group: Games
+BuildRoot: /var/tmp/%{name}-buildroot
+Prefix: %{_prefix}
+
+%description
+Dime is a client for MMORPGs using the Worldforge system.
+
+
+%prep
+rm -rf ${RPM_BUILD_ROOT}
+
+%setup -q 
+
+%build
+CFLAGS="$RPM_OPT_FLAGS" 
+./autogen.sh --prefix=%{prefix}
+make -j 4
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install prefix=$RPM_BUILD_ROOT/%{prefix}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+#%doc COPYING README INSTALL AUTHORS
+#%{prefix}/lib/*
+%{prefix}/share/*
+%{prefix}/bin/*
+
+
+# end of file

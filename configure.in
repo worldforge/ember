@@ -142,6 +142,7 @@ AC_OUTPUT([
   src/main/Makefile
   test/Makefile
   dime.dox
+  dime.spec
 ])
 
 
