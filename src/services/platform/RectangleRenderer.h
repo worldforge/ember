@@ -20,15 +20,17 @@
 #define RECTANGLERENDERER_H
 
 // Included headers from the current project
-#include <services/platform/Color.h>
-#include <services/platform/DrawDevice.h>
-#include <services/platform/Rectangle.h>
+#include "services/image/ImageService.h"
+#include "services/platform/Color.h"
+#include "services/platform/DrawDevice.h"
+#include "services/platform/Rectangle.h"
 
 // Included custom library headers
 
 // Included system headers
 #include <SDL/SDL.h>
 #include <string>
+#include <vector>
 
 
 namespace dime {
@@ -102,20 +104,24 @@ namespace dime {
          */
         RenderType  myType;
         
+
         /**
          * The surface that this RectangleRenderer acts upon
          */
         SDL_Surface *mySurface;
+
         
         /**
          * The bitmap style
          */
         BitmapStyle myStyle;
         
+        
         /**
          * Coordinates/size of the rectangle
          */
         Rectangle myRect;
+        
         
         /*
          * The colors
@@ -131,42 +137,85 @@ namespace dime {
         int myColor2X;
         int myColor2Y;
 
+
+	/**
+	 * Vector of RectRenderers kept for a grid.
+	 */
+	std::vector<RectangleRenderer> myGrid;
+
+
+	/**
+	 * Where the separation between rectangles is made.
+	 */
+	std::vector<int> myLines;
+
+
+	/**
+	 * Rows and columns for the grid
+	 */
+	int myColumns;
+	int myRows;
+
+
         // ===================================================================
         // Public Methods
         // ===================================================================
     public:
 
+        /**
+	 * Calls appropriate private function to render 
+	 */
+        int render(DrawDevice *device);
+
+
+	/**
+	 * Update all the grid's rectangles.
+	 */
+	void updateGridDimensions();
+	
         //----------------------------------------------------------------------
         // Constructors
 
-		/**
-		 * Creates a new empty RectangleRenderer
-		 */
+	/**
+	 * Creates a new empty RectangleRenderer
+	 */
         RectangleRenderer()
-		{
-		}
+	{
+	}
+        
+        
         /**
-         * Creates a new RectangleRenderer for a solid color based on red, green and blue.
+         * Creates a new RectangleRenderer for a solid color based on red,
+	 * green and blue.
          */
         RectangleRenderer(const Rectangle &rect,
                           Uint8 red, Uint8 green, Uint8 blue);
+        
+        
         /**
          * Creates a new RectangleRenderer with a solid color.
          */
-        RectangleRenderer(const Rectangle &rect, Color color);
+        RectangleRenderer(const Rectangle &rect, const Color &color);
+        
         
         /**
          * Creates a new RectangleRenderer with a bitmap background
          */
         RectangleRenderer(const Rectangle &rect, const std::string bitmapString, BitmapStyle syle);
 
+        
         /**
          * Creates a new RectangleRenderer as a gradient
          */
-        RectangleRenderer(const Rectangle &rect,
-                          Color color1, Color color2, Color color3, Color color4);
+        RectangleRenderer(const Rectangle &rect, Color color1, Color color2,
+		Color color3, Color color4);
 
-        
+	
+	/**
+	 * Constructor for a grid object.
+	 */
+	RectangleRenderer(const Rectangle &rect, std::vector<RectangleRenderer>
+		&gridVector, int columns, int rows, std::vector<int> &lines);
         
         //----------------------------------------------------------------------
         // Destructor
@@ -180,35 +229,36 @@ namespace dime {
 
         //----------------------------------------------------------------------
         // Setters
+	
+	void setRect(const Rectangle &rect);
 
         //----------------------------------------------------------------------
         // Other public methods	
 
-       /**
-		 * Sets this RectangleRenderer using supplied values..
-		 */
+	/**
+	 * Sets this RectangleRenderer using supplied values..
+	 */
         void solidColor(Uint8 red, Uint8 green, Uint8 blue);
+        
 
         /**
-		 * Sets this RectangleRenderer using supplied values..
-		 */
+	 * Sets this RectangleRenderer using supplied values..
+	 */
         void solidColor(Color color);
+        
 
         /**
-		 * Sets this RectangleRenderer using supplied values..
-		 */
+	 * Sets this RectangleRenderer using supplied values..
+	 */
         void gradient(Color color1, Color color2, Color color3, Color color4);
 		
+        
         /**
-		 * Sets this RectangleRenderer using supplied values..
-		 */
-		void bitmap(const std::string bitmapString);
+	 * Sets this RectangleRenderer using supplied values..
+	 */
+	void bitmap(const std::string bitmapString);
+        
 
-        /**
-		 * Calls appropriate private function to render 
-		 */
-        int render(DrawDevice *device);
-	
         //======================================================================
         // Protected Methods
         //======================================================================
@@ -222,26 +272,27 @@ namespace dime {
         // API
 
         /**
-		 * Renders a bitmap, for now an SDL bitmap.
-		 */
-        int renderBitmap(DrawDevice *device);
+	 * Renders a bitmap, for now an SDL bitmap.
+	 */
+        void renderBitmap(DrawDevice *device);
+        
 
         /**
-		 * Renders a solid color.
-		 */
-        int renderFlat(DrawDevice *device);
+	 * Renders a solid color.
+	 */
+        void renderFlat(DrawDevice *device);
+        
 
         /**
-		 * Renders a gradient
-		 */
-        int renderGradient(DrawDevice *device);
+	 * Renders a gradient
+	 */
+        void renderGradient(DrawDevice *device);
+        
 
         /**
-		 * Renders a grid.  Going to be hard to do this one.
-		 */
-        int renderGrid(DrawDevice *device,
-                       int cols,
-                       int rows);
+	 * Renders a grid.  Going to be hard to do this one.
+	 */
+        void renderGrid(DrawDevice *device);
                        /*int numOfColumns, int numOfRows, float splitLineRelativePosition[2][2],
                          int splitLineOffsetPosition[2][2],
                          dime::RectangleRenderer *rectangleGrid[3][3]);*/

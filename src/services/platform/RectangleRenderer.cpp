@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.11  2002-06-08 19:01:07  nikal
+ *      Revision 1.12  2002-08-05 17:33:52  winand
+ *      Changed the constructors to initialize variables.  Removed unneccessary
+ *      calls in the constructors.  Implemented the grid constructor/renderer.
+ *
+ *      Revision 1.11  2002/06/08 19:01:07  nikal
  *      quick fix for the Tiling problem
  *
  *      Revision 1.10  2002/05/20 22:30:28  nikal
@@ -56,41 +60,42 @@
  *
  */
 
-#include <string>
-
-#include <services/image/ImageService.h>
-
 #include "RectangleRenderer.h"
 
+
 /**
  * Constructor for a flat solid color RectangleRenderer.
  */
-dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
-                                           Uint8 red, Uint8 green, Uint8 blue)
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, Uint8 red,
+	Uint8 green, Uint8 blue) : myType(FLAT_COLOR),
+	myRect(rect),
+	myColor(Color(red, green, blue))
 {
-	solidColor(red, green, blue);
-	myRect = rect;
 }
 
 
 /**
  * Constructor for a flat solid color RectangleRenderer.
  */
-dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, dime::Color color )
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, 
+	const dime::Color &color) : 
+	myType(FLAT_COLOR),
+	myRect(rect),
+	myColor(color)
 {
-	solidColor(color);
-	myRect = rect;
 }
+
 
 /**
  * Constructor for a bitmap filled RectangleRenderer
  */
 dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, 
-                                           const std::string bitmapString, BitmapStyle style)
+	const std::string bitmapString, BitmapStyle style) : 
+	myType(BITMAP),
+	myStyle(style),
+	myRect(rect)
 {
-    bitmap(bitmapString);
-    myRect = rect;
-    myStyle = style;   
+    mySurface = ImageService::getInstance()->loadImage(bitmapString);
 }
 
 
@@ -98,50 +103,85 @@ dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
  * Constructor for a gradient filled RectangleRenderer
  */
 dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, 
-                                           dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
+	dime::Color color1, dime::Color color2, dime::Color color3, 
+	dime::Color color4) :
+	myType(GRADIENT),
+	myRect(rect),
+	myColor(color1),
+	myColor2(color2),
+	myColor3(color3),
+	myColor4(color4)
 {
-	gradient(color1, color2, color3, color4);
-	myRect = rect;
-}
-
-/**
- * Sets up a flat solid color RectangleRenderer.
- */
-void dime::RectangleRenderer::solidColor(Uint8 red, Uint8 green, Uint8 blue)
-{
-	myColor = Color(red,green,blue);
-	myType = FLAT_COLOR;
 }
 
 
 /**
- * Sets up a flat solid color RectangleRenderer.
+ * Constructor for a grid object
  */
-void dime::RectangleRenderer::solidColor(dime::Color color)
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
+	std::vector<RectangleRenderer> &gridVector, int columns, int rows,
+	std::vector<int> &lines) : 
+	myType(GRID),
+	myRect(rect),
+	myGrid(gridVector),
+	myLines(lines),
+	myColumns(columns),
+	myRows(rows)
 {
-	myColor = color;
-	myType = FLAT_COLOR;
+    updateGridDimensions();
 }
 
-/**
- * Sets up a gradient
- */
-void dime::RectangleRenderer::gradient(dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
-{
-	myColor = color1;
-	myColor2 = color2;
-	myColor3 = color3;
-	myColor4 = color4;
-	myType = GRADIENT;
-}
 
 /**
- * Sets up a bitmap
+ * Updates dimensions of all the grid's rectangles.
  */
-void dime::RectangleRenderer::bitmap(std::string bitmapString)
+void dime::RectangleRenderer::updateGridDimensions()
 {
-	mySurface = ImageService::getInstance()->loadImage(bitmapString);
-	myType = BITMAP;
+    int xOffset, yOffset;
+    int rectHeight, rectWidth;
+
+    yOffset = 0;
+    for (int i=0;i < myRows;i++)
+    {
+	if (i == myRows - 1)
+	{
+	    rectHeight = myRect.getHeight() - myLines[myRows + myColumns - 3];
+	}
+	else
+	{
+	    rectHeight = myLines[myColumns - 1 + i];
+	}
+
+	xOffset = 0;
+	for (int j=0;j < myColumns;j++)
+	{
+	    if (j == myColumns - 1)
+	    {
+		rectWidth = myRect.getWidth() - myLines[myColumns - 2];
+	    }
+	    else
+	    {
+		rectWidth = myLines[j];
+	    }
+
+	    myGrid[(i * myColumns)+j].setRect(dime::Rectangle(myRect.getX()
+			+ xOffset, myRect.getY()+yOffset, rectWidth,
+			rectHeight));
+
+	    xOffset = rectWidth;
+	}
+
+	yOffset = rectHeight;
+    }
+}
+
+
+/**
+ * Setter for the myRect member
+ */
+void dime::RectangleRenderer::setRect(const Rectangle &rect)
+{
+    myRect = rect;
 }
 
 
@@ -169,7 +209,7 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
         }
         case GRID:
         {
-            renderGrid(device, 3, 3);
+            renderGrid(device);
             break;
         }
     }
@@ -178,10 +218,11 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
 	return 0;
 }
 
+
 /**
  * Renders a bitmap
  */
-int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
+void dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 {
     SDL_Rect src, dest, curDest;
     src.x = 0;
@@ -207,42 +248,47 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
             
             device->blitSurface(&src, &dest, mySurface );
             break;
+
+	case CENTER:
+	default:
+	    break;
         }
-    
-    return (1);
 }
+
 
 /**
  * Renders a flat color, not much error checking though.
  */
-int dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
+void dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
 {
     device->fillRect(&myRect.getSDL_Rect(), myColor);
 	
 	//TODO: What should be returned here?
-	return 0;
 }
+
 
 /**
  * Renders a gradient fill, blending a color from each corner.
  */
-int dime::RectangleRenderer::renderGradient(dime::DrawDevice *device)
+void dime::RectangleRenderer::renderGradient(dime::DrawDevice *device)
 {
     device->drawGradient(&myRect.getSDL_Rect(), myColor, myColor2, myColor3, myColor4);
 
 	//TODO: What should be returned here?
-	return 0;
 }
 
-int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
-                                        int cols, int rows)
+
+/**
+ * Renders a grid object
+ */
+void dime::RectangleRenderer::renderGrid(dime::DrawDevice *device)
                                         /*
                                           int nrOfColumns, int nrOfRows, float splitLineRelativePosition[2][2],
                                           int splitLineOffsetPosition[2][2],
                                           dime::RectangleRenderer *rectangleGrid[3][3])
                                         */
 {
-    int colOffset, rowOffset;
+    /*int colOffset, rowOffset;
     if(rows >0 && cols >0)
         {
             colOffset = myRect.getWidth() / cols;
@@ -251,10 +297,14 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
     else
         {
             return -1;
-        }
+        }*/
     
+    for (int i=0;i < myColumns*myRows;i++)
+    {
+	myGrid[i].render(device);
+    }
     
-    int topY, bottomY; //The y values of the top line and bottom sides
+    /*int topY, bottomY; //The y values of the top line and bottom sides
     int rightX, leftX;  // the x values of the right and left sides
     topY = myRect.getY();
     bottomY = myRect.getY()+myRect.getHeight();
@@ -277,6 +327,8 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
 
 	//TODO: What should be returned here?
 	return 0;
+
+	*/
 }
 
 
