@@ -1,3 +1,6 @@
+2004-01-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* Fixed ogre component to get less warnings.
+
 2004-01-26 Al Riddoch <alriddoch@zepler.org>
 
 	* src/services/server/ServerService.cpp,

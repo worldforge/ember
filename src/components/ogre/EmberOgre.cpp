@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.35  2003-12-08 21:25:06  aglanor
+ *      Revision 1.36  2004-01-28 17:26:18  aglanor
+ *      2004-01-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Fixed ogre component to get less warnings.
+ *
+ *      Revision 1.35  2003/12/08 21:25:06  aglanor
  *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: fixed rotation and viewing for the Avatar.
  *
@@ -44,7 +48,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *              not created by this service anymore, instead is
  *              retrieved from myAvatar after taking/creating char.
  *              Modified touch op so we can touch any entity.
- *              * src/components/ogre/*: overall improvement.
+ *              * src/components/ogre: overall improvement.
  *              Added EntityListener.(h|cpp) to listen to and act
  *              upon Eris entity-related signals.
  *

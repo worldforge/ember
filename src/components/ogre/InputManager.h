@@ -43,6 +43,7 @@ class InputManager : public Ogre::FrameListener
 		class MouseListener
 		{
 			public:
+				virtual ~MouseListener() {}; // to avoid warnings complaining about non-virtual dtors in children classes
 				virtual void mouseMoved(short newX, short newY, short oldX, short oldY) = 0;
 				virtual void mousePressed(unsigned char button) = 0;
 				virtual void mouseReleased(unsigned char button) = 0;
@@ -50,7 +51,10 @@ class InputManager : public Ogre::FrameListener
 		static InputManager & getSingleton(void);
 
 		bool frameStarted(const Ogre::FrameEvent & evt);
-		bool frameEnded(const Ogre::FrameEvent & evt) {}
+		bool frameEnded(const Ogre::FrameEvent & evt)
+		{
+			return true;
+		}
 
 		bool isKeyDown(Ogre::KeyCode kc) { return mKeyDown[kc]; };
 

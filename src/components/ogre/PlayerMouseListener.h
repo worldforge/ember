@@ -26,7 +26,6 @@
 
 class PlayerMouseListener : public InputManager::MouseListener
 {
-
 	public:
 
 	~PlayerMouseListener();
