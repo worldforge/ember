@@ -135,7 +135,7 @@ void DataModelTestCase::testLink()
 
 	dest->setDescription("Destination");
 
-	PDataObject link = p->addChild("Link", "/LinkDest");
+	PDataObject link = p->addChild("Link", "/unittest/LinkDest");
 	
 	CPPUNIT_ASSERT(dest.get() != NULL);
 	CPPUNIT_ASSERT(link.get() != NULL);
