@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.5  2003-04-24 23:21:09  aglanor
+ *      Revision 1.6  2003-04-25 00:48:14  aglanor
+ *      basic media selection:
+ *          - if Eris Entity is a settler, it will look like a robot
+ *          - else, will look like the good old squirrel
+ *
+ *      heh, we're short of OGRE models around here ;)
+ *
+ *      Revision 1.5  2003/04/24 23:21:09  aglanor
  *      DimeOgre app is again linked back from the FrameListener, so entities sighted
  *      are created in the Ogre SceneManager (as squirrels, of course).
  *      I've also made the sample entity the ogrehead.mesh, you need to have it
@@ -102,6 +109,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #else
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
+#include <Eris/TypeInfo.h>
 #endif
 
 // ------------------------------
@@ -338,9 +346,18 @@ void DimeOgre::connectWorldSignals(void) {
 
 void DimeOgre::entityCreate( Eris::Entity *e )
 {
-
+	Ogre::Entity* ogreEntity;
 	// create the ogre entity
-	Ogre::Entity* ogreEntity = mSceneMgr->createEntity(e->getID(), "squirel_of_doom.mesh");
+        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
+		fprintf(stderr, "TRACE - FOUND A SETTLER - ROBOT MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
+	}
+	else {
+		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - SQUIRREL MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "squirel_of_doom.mesh");
+	}
+
+
 
 	// create the ogre node
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
@@ -349,12 +366,23 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	// set the node position based on eris entity position
 	WFMath::Point<3> position = e->getPosition();
 	ogreNode->setPosition(position.x(),position.y(),position.z());
-	ogreNode->setScale(0.20,0.20,0.20);
+
+	// scale HACK. This is very hacky. Fix this.
+        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
+		ogreNode->setScale(0.1,0.1,0.1);		// robots are bigger :P
+	}
+	else {
+		ogreNode->setScale(0.02,0.02,0.02);
+	}
+
+
+
 
 	// attach the node to the entity
 	ogreNode->attachObject(ogreEntity);
 
 	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
+	fprintf(stderr, "%s\n", e->getType()->getName().c_str());
 
     // Whenever a new entity is created, make sure to connect to those signals too
 
