@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="slopewall">
+  <submodels>
+    <submodel mesh="3d_objects/items/building_element/models/normal_slope_wall/normal_slope_wall.mesh">
+      <parts>
+        <part name="main" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

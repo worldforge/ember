@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="roof">
+  <submodels>
+    <submodel mesh="3d_objects/items/building_element/models/door_element/door_element.mesh">
+      <parts>
+        <part name="main" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>
