@@ -151,7 +151,7 @@ OGRE_VERSION=0.10.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS /usr/local/lib/OGRE/Plugin_GuiElements.so"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS /home/nikal/dev/opt/lib/OGRE/Plugin_GuiElements.so"
 	],
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
