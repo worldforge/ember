@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.21  2003-10-18 23:18:37  sandalle
+ *      Revision 1.22  2003-10-21 20:48:37  aglanor
+ *      Restored SkyBox
+ *
+ *      Revision 1.21  2003/10/18 23:18:37  sandalle
  *      * src/components/ogre/DimeOgre.cpp:290: Actually comment it out...
  *
  *      Revision 1.20  2003/09/29 06:28:15  aglanor
@@ -69,7 +72,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *
  *      Revision 1.11  2003/05/05 01:41:06  aglanor
  *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
+ *      	* Cal3DConverter: converts cal3d meshes to ogre meshes,
  *      	without material, textures or animations yet. Does the
  *      	appropiate Atlas->Ogre rotation on the mesh.
  *
@@ -80,21 +83,21 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      Revision 1.9  2003/04/28 00:55:06  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
- *      		There is also a little ogre head marking (0,0,0).
- *      			The more detailed the scene, the easiest it is
- *      				to spot strange behaviors.
- *      					And it looks cool :)
+ *      	There is also a little ogre head marking (0,0,0).
+ *      	The more detailed the scene, the easiest it is
+ *      	to spot strange behaviors.
+ *      	And it looks cool :)
  *
  *      Revision 1.8  2003/04/27 23:46:30  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* MathConverter.h: Point, Vector and Quaternion converter
- *      		for world-centric coordinates (Atlas-wfmath like)
- *      			to/from screen-centric coordinates (Ogre like).
- *      				See file for more info.
- *      					Only point conversion currently, more will come later.
- *      						* Cal3DOgreConverter.h/cpp: model converter.
- *      							Just added files, it is not coded yet.
- *      								* Makefile.am: added Cal3D2Ogre binary file.
+ *      	for world-centric coordinates (Atlas-wfmath like)
+ *      	to/from screen-centric coordinates (Ogre like).
+ *      	See file for more info.
+ *      	Only point conversion currently, more will come later.
+ *      	* Cal3DOgreConverter.h/cpp: model converter.
+ *      	Just added files, it is not coded yet.
+ *      	* Makefile.am: added Cal3D2Ogre binary file.
  *
  *      Revision 1.7  2003/04/26 14:57:26  aglanor
  *      quick coordinates hack to fix position of entities when entering the world.
@@ -307,7 +310,7 @@ void DimeOgre::createScene(void)
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(0.001,0.001,0.001);
+	mOgreHeadNode->setScale(0.1,0.1,0.1);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -317,17 +320,17 @@ void DimeOgre::createScene(void)
 
 
 
-	// A Water Plane for the fancyness of it ;)
+	// A Ground Plane for the fancyness of it ;)
 	// ----------------------------------------
-        Ogre::Entity *waterEntity;
-        Ogre::Plane waterPlane;
+        Ogre::Entity *groundEntity;
+        Ogre::Plane groundPlane;
 
         // create a water plane/scene node
-        waterPlane.normal = Ogre::Vector3::UNIT_Y;	// normal points up
-        waterPlane.d = 0;				// sea level is at 0 ;)
+        groundPlane.normal = Ogre::Vector3::UNIT_Y;	// normal points up
+        groundPlane.d = 0;
         Ogre::MeshManager::getSingleton().createPlane(
-            "WaterPlane",
-            waterPlane,
+            "GroundPlane",
+            groundPlane,
             2800, 2800,
             20, 20,
             true, 1,
@@ -335,13 +338,13 @@ void DimeOgre::createScene(void)
             Ogre::Vector3::UNIT_Z
         );
 
-        waterEntity = mSceneMgr->createEntity("water", "WaterPlane");
-	waterEntity->setMaterialName("Examples/RustySteel");
+		groundEntity = mSceneMgr->createEntity("ground", "GroundPlane");
+		groundEntity->setMaterialName("Examples/RustySteel");
 
-        Ogre::SceneNode *waterNode = static_cast<Ogre::SceneNode*>(
-            mSceneMgr->getRootSceneNode()->createChild("WaterNode"));
-        waterNode->attachObject(waterEntity);
-        waterNode->translate(1000, 0, 1000);
+		Ogre::SceneNode *groundNode = static_cast<Ogre::SceneNode*>(
+		mSceneMgr->getRootSceneNode()->createChild("GroundNode"));
+        groundNode->attachObject(groundEntity);
+        groundNode->translate(1000, 0, 1000);
 
 	// end Water Plane
 	// ----------------------------------------

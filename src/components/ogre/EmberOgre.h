@@ -24,7 +24,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.10  2003-09-28 15:16:06  aglanor
+ *      Revision 1.11  2003-10-21 20:48:37  aglanor
+ *      Restored SkyBox
+ *
+ *      Revision 1.10  2003/09/28 15:16:06  aglanor
  *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * /src/components/ogre/Makefile.am: removed the cal3d
  *              to Ogre converter, this app will no longer be here.
@@ -375,8 +378,6 @@ protected:
         vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
-
-	// Removed this viewport temporally because it clutters the output
 
 	Ogre::Viewport* mapvp = mWindow->addViewport(mPlayerMapCamera,1,0.70,0.05,0.25,0.25);
 	mapvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
