@@ -1,0 +1,141 @@
+// Ogre overlay scripts
+Core/DebugOverlay
+{
+	zorder 500
+	// Stats block
+	container BorderPanel(Core/StatPanel)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		left 5 
+		top -92
+		width 220
+		height 87
+		material Core/StatsBlockCenter
+        	border_size 1 1 1 1
+        	border_material Core/StatsBlockBorder
+        	border_topleft_uv     0.0000 1.0000 0.0039 0.9961
+	    	border_top_uv         0.0039 1.0000 0.9961 0.9961
+	    	border_topright_uv    0.9961 1.0000 1.0000 0.9961
+	    	border_left_uv        0.0000 0.9961 0.0039 0.0039
+	    	border_right_uv       0.9961 0.9961 1.0000 0.0039
+	    	border_bottomleft_uv  0.0000 0.0039 0.0039 0.0000
+        	border_bottom_uv      0.0039 0.0039 0.9961 0.0000
+	    	border_bottomright_uv 0.9961 0.0039 1.0000 0.0000
+
+		container Panel(Core/BreakPanel)
+		{
+			metrics_mode pixels
+			left 5 
+			top 22
+			width 210
+			height 1
+			material Core/StatsBreak
+		}
+		    
+		element TextArea(Core/CurrFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 5
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 19
+			caption Current FPS:
+			colour_top 0.7 1 0.7
+			colour_bottom 0.3 0.5 0.3
+		}
+		element TextArea(Core/AverageFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 25
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			caption AVERAGE FPS:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+		element TextArea(Core/WorstFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 40
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			caption WORST FPS:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+		element TextArea(Core/BestFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 55
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			caption BEST FPS:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+		element TextArea(Core/NumTris)
+		{
+			metrics_mode pixels
+			left 5
+			top 70
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			caption Triangle Count:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+		element TextArea(Core/DebugText)
+		{
+			metrics_mode pixels
+			left 230
+			top 70
+			width 200
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+				
+	}
+	container Panel(Core/LogoPanel)
+	{	
+		metrics_mode pixels
+		horz_align right
+		vert_align bottom
+		top -75
+		left -165
+		width 150
+		height 75
+		material Core/OgreText
+	}
+}
+
+// A silly example of how you would do a 3D cockpit
+Examples/KnotCockpit
+{
+	zorder 100
+	entity knot.mesh(hudKnot)
+	{
+		position 0 0 -50
+		rotation 0 0 0 0
+	}
+
+}
+
+
+
