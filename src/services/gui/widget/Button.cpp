@@ -69,7 +69,7 @@ void dime::Button::mouseUp( MouseButtonEvent *event )
       releaseMouse();
       myPressed = false;
 
-      if (myMouseIsInside)
+      if (myRectangle.contains(event->getPos()))
 	{
 	  onClicked.emit(this);
 	}

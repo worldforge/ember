@@ -114,6 +114,14 @@ namespace dime {
           x = myX;
           y = myY;
       }
+
+      std::vector<int> getPos()
+	{
+	  std::vector<int> coords(2);
+	  coords[0] = myX;
+	  coords[1] = myY;
+	  return coords;
+	}
       
 
 
