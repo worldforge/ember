@@ -37,6 +37,10 @@ namespace dime {
  *
  * Stablishes the basic variables and methods to be shared by all services.
  *
+ * TODO(zzorn, 2002-01-19): It seems that we don't need this class, as
+ *                          the Service class already has default implementations
+ *                          for most of the methods.
+ *
  * @author Miguel Guzman Miranda
  *
  * @see OtherSubsystem::AnOtherRelatedClass
@@ -48,12 +52,16 @@ class AbstractService: public Service
     // Private Variables
     //======================================================================
     private:
-		
+
+
+    //======================================================================
+    // Public Methods
+    //======================================================================
+	public:
+	
     //----------------------------------------------------------------------
     // Constructors & Destructor
 
-	public:
-	
     /** Creates a new AbstractService using default values. */
     AbstractService()
     {

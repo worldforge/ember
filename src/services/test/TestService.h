@@ -54,11 +54,11 @@ class TestService: public AbstractService
     TestService();
 
 
-
     /** Deletes a Service instance. */
     ~TestService()
     {
     }
+
 
     //----------------------------------------------------------------------
     // Getters & Setters

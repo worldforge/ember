@@ -19,13 +19,12 @@
 #ifndef SERVICE_H
 #define SERVICE_H
 
-// Include system headers here
-#include <string>
-
+// Include other headers of the current program here
 
 // Include library headers here
 
-// Include other headers of the current program here
+// Include system headers here
+#include <string>
 
 namespace dime {
 	namespace services {
@@ -33,7 +32,7 @@ namespace dime {
 /**
  * Abstract class for interface common denominator of services.
  *
- * Stablishes the basic variables and methods to be shared by all services.
+ * Establishes the basic variables and methods to be shared by all services.
  *
  * @author Miguel Guzman Miranda
  *
@@ -44,89 +43,127 @@ class Service
 
 {
     //======================================================================
+    // Public Constants
+    //======================================================================
+    public:
+
+    // TODO: Create an enum called 'Status' to represent current status:
+    // 0 = OK             - Service working normally
+    // 1 = NOTE           - Service working, but there is something that may need user attention.
+    // 2 = WARNING        - Service is working to some degree, but there was some problems encountered, or non-critical parts that are not working.
+    // 3 = ERROR          - Service is not working.  A resource it depends on is not present, or the service is unimplemented.
+    // 4 = CRITICAL_ERROR - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.
+
+    //======================================================================
     // Private Variables
     //======================================================================
     private:
+
     	/** Stores the unique name of the service */
 		std::string myName;
+
 		/** Stores the description of the service */
 		std::string myDescription;
-		/** Tells if the service is active or not */
-		bool myActive;
+
+		/** Tells if the service is running or not */
+		bool myRunning;
+
+        // TODO(zzorn): Change this into an enum type variable
 		/** Current status code */
 		int myStatus;
+
+		/** Textual description of the current status, especially if it is some problem. */
+		std::string myStatusText;
 		
 
+    //======================================================================
+    // Public methods
+    //======================================================================
+	public:
+	
     //----------------------------------------------------------------------
     // Constructors & Destructor
 
-	public:
-	
     /** Creates a new Service using default values. */
     Service()
     {
+		myName         = "";
+		myDescription  = "";
+		myRunning      = false;
+		myStatus       = 0;       // TODO: Change to OK
+		myStatusText   = "";
     }
 
 
     /** Copy constructor. */
     Service( const Service &source )
     {
+        // Use the assignment operator to initialize the new class.
+        *this = source;
     }
 
 
     /** Assignment operator. */
-    Service &operator= ( const Service &source )
+    virtual Service &operator= ( const Service &source )
     {
+		myName         = source.myName;
+		myDescription  = source.myDescription;
+
+		myRunning      = false;    // The new service has not been initialized...
+		myStatus       = 0;        // TODO: Change to OK
+		myStatusText   = "";       // Initial value
+
+        // Return reference to this instance.
+        return *this;
     }
 
     /** Deletes a Service instance. */
-    ~Service()
+    virtual ~Service()
     {
     }
 
+
     //----------------------------------------------------------------------
-    // Getters & Setters
+    // Getters
 
     /** Returns the name of this Service. */
-    std::string getName() const
+    virtual std::string getName() const
     {
         return myName;
     }
 
-    /** Sets the name of this Service. */
-    void setName( std::string name )
-    {
-    	myName = name;
-    }
 
     /** Returns the description of this Service. */
-    std::string getDescription() const
+    virtual std::string getDescription() const
     {
         return myDescription;
     }
 
-    /** Sets the description of this Service. */
-    void setDescription( std::string description )
-    {
-    	myDescription = description;
-    }
 
     /** Returns the status of this Service. */
-    int getStatus() const
+    virtual int getStatus() const
     {
         return myStatus;
     }
 
-    /** Sets the description of this Service. */
-    void setStatus( int status )
+
+    /** Returns true if the service is currently running. */
+    virtual bool isRunning()
     {
-    	myStatus = status;
+    	return myRunning;
     }
 
-    /** Ask for active state */
-    bool isActive()
+
+    /**
+     * Returns the textual status message for this Service.
+     * It is a description of the current status,
+     * especially if there is some problem.
+     * (If everything is fine, then this can be empty, as the status code can be
+     * used to determine this.)
+     */
+    virtual std::string getStatusText()
     {
-    	return myActive;
+    	return myStatusText;
     }
 
 
@@ -134,20 +171,94 @@ class Service
     // Methods
 	
 	/**
-	 *	Interface method for starting the service
+	 * This method is used to start the service.
+     * It should take care of aquiring needed resources, initializing
+     * data structures, and so on. <p>
+     *
+     * If the initialization suceeds, it should also call setRunning( true )
+     * to indicate that the service is running.  <p>
+     *
+     * If initialization fails, it should set appropriate status code and
+     * status text.  It could also write an entry into a log through the logging
+     * service.  <p>
+     *
+     * This method must be implemented by all inheriting classes.  <p>
 	 *
-	 * @ returns success or error code
+     * TODO(zzorn): Change return type to the status enum type.
+     *
+	 * @returns success or error code
 	 */
-    virtual int start()=0;
+    virtual int start() = 0;
+
 
 	/**
-	 *	Interface method for stopping the service
+	 * This method stops the service, and frees any used resources.
+     * If the service has no special resources that need to be freed,
+     * or de-initialization to be done, this
+     * method can be left to the default implementation (which just sets the
+     * running state to false).  <p>
+     *
+     * Otherwise this method should be overridden, and setRunning( false )
+     * should be called if the service was stopped.  <p>
 	 *
 	 * @ param code code which represents the cause of the service halt
+     * TODO(zzorn): What do we need it for?
 	 */
-	virtual void stop(int code)=0;
+	virtual void stop( int code )
+    {
+        setRunning( false );
+    }
+
 	
+    //======================================================================
+    // Protected methods
+    //======================================================================
+    protected:
 	
+    //----------------------------------------------------------------------
+    // Setters
+
+    /** Sets the name of this Service. */
+    virtual void setName( std::string name )
+    {
+    	myName = name;
+    }
+
+
+    /** Sets the description of this Service. */
+    virtual void setDescription( std::string description )
+    {
+    	myDescription = description;
+    }
+
+
+    /** Sets the description of this Service. */
+    virtual void setStatus( int status )
+    {
+    	myStatus = status;
+    }
+
+
+    /** Specifies wether this service is currently running or not. */
+    virtual void setRunning( bool running )
+    {
+    	myRunning = running;
+    }
+
+
+    /**
+     * Sets the textual status message for this Service.
+     * It is a description of the current status,
+     * especially if there is some problem.
+     * (If everything is fine, then this can be empty, as the status code can be
+     * used to determine this.)
+     */
+    virtual void setStatusText( std::string statusText )
+    {
+    	myStatusText = statusText;
+    }
+
+
 }; // Service
 
 	} // namespace services

@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-
 namespace dime {
    namespace services {
 
@@ -54,15 +53,9 @@ class ServiceManager
     /** Creates a new Service using default values. */
     ServiceManager();
 
-
-    /** Copy constructor. */
-    ServiceManager( const ServiceManager &source );
-
-    /** Assignment operator. */
-    ServiceManager &operator= ( const ServiceManager &source );
-
     /** Deletes an instance. */
     ~ServiceManager();
+
 
     //----------------------------------------------------------------------
     // Getters & Setters
@@ -72,22 +65,85 @@ class ServiceManager
     // Methods
 
    /**
-    * Stop all services.
+    * Starts all services.
+    * 
+    */
+    void startAll()
+    {
+        // TODO..
+    }
+   
+   /**
+    * Stops all services.
     * 
     * @param code Cause of the halt
     */
     void stopAll(int code);
-   
+
    /**
-    * List all service names.
+    * Lists all services to the standard output.
+    *
     */
     void listAll();
      
+   /**
+    * Returns pointers to all registered service instances.
+    *
+    * @return iterator to go through a collection of pointers to services.
+    */
+    std::vector< Service* >::iterator getServices()
+    {
+        return myServiceVector.begin();
+    }
+     
    /** 
     * Deletes all the services, freeing the memory.
+    * TODO(zzorn): I don't think we want to delete the services from here, as
+    *              we don't own them (they are just registered here with a pointer,
+    *              they are created elsewhere and for clarity should probably be
+    *              deleted in the same place where they were created.
     */
    void deleteAll();
+
    
+   /**
+    * Registers a new service and adds it to the list of registered services, if it isn't
+    * already registered.
+    * @return true if successfully added & registered, false otherwise.
+    */
+   bool addService( Service *service )
+   {
+      // TODO: Implement.
+   }
+
+   
+   /**
+    * Unregisters a service and removes it from the list of registered services,
+    * if it was registered.  If it was removed sucessfully, true is returned.
+    * If it wasn't registered or there was som other problem, false is returned.
+    * @return true if successfully removed and unregistered, false otherwise.
+    */
+   bool removeService( Service *service )
+   {
+      // TODO: Implement.
+   }
+
+
+    //======================================================================
+    // Unimplemented copy constructor and assignment operator
+    //======================================================================
+    private:
+
+    /** Copy constructor not provided. */
+    ServiceManager( const ServiceManager &source )
+    {
+    }
+
+    /** Assignment operator not provided. */
+    ServiceManager &operator= ( const ServiceManager &source )
+    {
+    }
+
    
 }; // Service
 

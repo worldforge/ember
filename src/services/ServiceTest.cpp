@@ -15,9 +15,9 @@ int main()
    /* Test the Test Service */
    dime::services::test::TestService myTestService;
    myTestService.start();
-   myTestService.setName("Test Test Service");
+//   myTestService.setName("Test Test Service");   // NOTE(zzorn): I changed these to protected, as they should only be written to by the service itself.
    cout << "my name is " << myTestService.getName() << endl;
-   myTestService.setDescription("I am the Test for the Test Service");
+//   myTestService.setDescription("I am the Test for the Test Service");
    cout << myTestService.getDescription() << endl;
    myTestService.stop(0);
 
