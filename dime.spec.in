@@ -24,7 +24,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" 
-./autogen.sh --prefix=%{prefix}
+./configure --prefix=%{prefix}
 make -j 4
 
 %install
@@ -36,7 +36,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-#%doc COPYING README INSTALL AUTHORS
+%doc COPYING README INSTALL AUTHORS doc/user_guide.txt
 #%{prefix}/lib/*
 %{prefix}/share/*
 %{prefix}/bin/*

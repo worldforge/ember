@@ -1,3 +1,17 @@
+2002-10-10 M Pollard <circlemaster@blueyonder.co.uk>
+	* autogen.sh, NEWS: Made automake do automake --gnu and added needed
+	  files.
+	
+	* configure.ac: added AM_MAINTAINER_MODE.
+
+	* dime.spec.in: tweaked a bit to add docs and build right.
+
+2002-10-09 M Pollard <circlemaster@blueyonder.co.uk>
+	* All of the Makefile.am's: Fixed these to allow make dist.
+
+	* src/services/font/Font.h: Changed font strings to basic_string
+	<wchar_t> rather than wstring due to gcc 2.95 issues.
+
 2002-10-10 Al Riddoch <alriddoch@zepler.org>
 	* src/services/font/Font.h: std:: namespace fix.
 
@@ -19,6 +33,8 @@
 
 	* src/services/gui/EventGenerator.h: ISO C++ require
 	  "friend class foo" rather than just "friend foo".
+
+BIG GAP HERE DUE TO DEVELOPER LAZINESS sorry!
 
 2002-07-20 16:47  nikal
 

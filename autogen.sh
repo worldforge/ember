@@ -8,5 +8,5 @@ fi
 aclocal $ACLOCAL_FLAGS
 libtoolize --force --copy
 autoheader
-automake --foreign --add-missing --copy
+automake --gnu --add-missing --copy
 autoconf

@@ -11,6 +11,9 @@ AC_PROG_CPP
 AC_PROG_CXX
 dnl AM_PROG_LEX
 
+dnl Allow maintainer mode
+AM_MAINTAINER_MODE
+
 dnl Check for C++ libraries:
 AC_LANG_CPLUSPLUS
 
