@@ -49,6 +49,11 @@ int main()
 	cout << "***TESTING METASERVER SERVICE***" << endl;
 	dime::MetaserverService myMsService;
 	myMsService.start();
+	myMsService.poll();
+	while(true)
+	{
+		myMsService.poll();
+	}
 	cout << "My name is: " << myMsService.getName() << endl;
 	cout << myMsService.getDescription() << endl;
 	myMsService.stop(0);

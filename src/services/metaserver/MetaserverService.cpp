@@ -99,5 +99,10 @@ namespace dime
     	cout << "Got Meta-server error: " << msg << endl;
 	}	
 	
+	void MetaserverService::poll()
+	{
+		msrv->poll();
+	}
+	
 } // namespace dime
 

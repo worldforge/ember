@@ -73,9 +73,11 @@ class MetaserverService: public Service, public SigC::Object
 
 	void stop(int code) ;
 
-   	void MetaserverService::GotServerCount(int count);
+   	void GotServerCount(int count);
 	
-	void MetaserverService::GotFailure(string msg);
+	void GotFailure(string msg);
+	
+	void poll();
 
 }; //MetaserverService
 
