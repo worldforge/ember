@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.39  2002-10-09 13:41:22  xmp
+ *      Revision 1.40  2002-11-12 17:46:47  xmp
+ *      Readded configure.in
+ *
+ *      Revision 1.39  2002/10/09 13:41:22  xmp
  *      -Updated documentation
  *      -Polished a few things
  *      -Added quit command
@@ -334,14 +337,18 @@ namespace dime
 #endif
 
 	ConsoleBackend::getMainConsole()->registerCommand(CMD_QUIT,this);
+	
+	// Bring our StateManager into being
+	getStateMgr();
     }
 
-    Application::~Application() {
-        if(myScreen != NULL)
-            {
-                SDL_FreeSurface(myScreen);
-            }
-        SDL_Quit();
+    Application::~Application()
+    {
+      if(myScreen != NULL)
+	{
+	  SDL_FreeSurface(myScreen);
+	}
+      SDL_Quit();
     }
 
     void Application::mainLoopStep() 

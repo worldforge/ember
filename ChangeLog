@@ -1,3 +1,6 @@
+2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
+        * configure.ac: modernised the syntax
+
 2002-11-11 M Pollard <circlemaster@blueyonder.co.uk>
 	* StateManager.cpp, StateManager.h: Begun work on new format here.
 

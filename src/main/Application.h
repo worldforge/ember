@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.20  2002-10-09 13:41:23  xmp
+ *      Revision 1.21  2002-11-12 17:46:47  xmp
+ *      Readded configure.in
+ *
+ *      Revision 1.20  2002/10/09 13:41:23  xmp
  *      -Updated documentation
  *      -Polished a few things
  *      -Added quit command
@@ -101,6 +104,7 @@
 #include "main/DimeServices.h"
 #include "services/platform/SDLDrawDevice.h"
 #include "framework/ConsoleObject.h"
+#include "StateManager.h"
 
 namespace dime 
 {
@@ -177,6 +181,31 @@ namespace dime
 	  }
 
 	/**
+	 * Semi-singleton one StateManager per Application
+	 */
+	StateManager *getStateMgr()
+	  {
+	    if( !myStateManager )
+	      {
+		try
+		  {
+		    myStateManager = new StateManager("states.xml",
+						      "Initial State");
+		  }
+		catch( char* stateMgrErr )
+		  {
+		    DimeServices::getInstance()->getLoggingService()->log(__FILE__, __LINE__,
+				 dime::LoggingService::FAILURE,
+				 stateMgrErr);
+		    
+		    return NULL;
+		  }
+	      }
+
+	    return myStateManager;
+	  }
+
+	/**
 	 * Callback for running Console Commands
 	 */
 	void runCommand(const std::string&,const std::string&);
@@ -206,6 +235,11 @@ namespace dime
          * Our pointer to the SDL_surface we use as the screen
          */
         SDL_Surface *myScreen;
+
+	/**
+	 * Pointer to our state manager
+	 */
+	StateManager *myStateManager;
 
 	/**
 	 * Pointer to ourselves
