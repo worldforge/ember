@@ -21,8 +21,10 @@ namespace DimeOgre {
 	{
 		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - ENTERING\n";
 		mState = CS_CLOSED;
-		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->setScroll(0, 1);
-		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->show();
+		Ogre::Overlay* consoleOverlay = static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"));
+		assert(consoleOverlay);
+		consoleOverlay->setScroll(0, 1);
+		consoleOverlay->show();
 		int i;
 		for(i=0; i<getNumLines(); i++)
 		{
