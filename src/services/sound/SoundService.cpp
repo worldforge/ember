@@ -38,13 +38,13 @@ namespace dime
   }
 	
   /* dtor */
-  ServerService::~ServerService()
+  SoundService::~SoundService()
   {
 
   }
 	
   /* Method for starting this service 	*/
-  Service::Status ServerService::start()
+  Service::Status SoundService::start()
   {
     setStatus(Service::OK);
     setRunning( true );
@@ -54,7 +54,7 @@ namespace dime
   }
 
   /* Interface method for stopping this service 	*/
-  void ServerService::stop(int code)
+  void SoundService::stop(int code)
   {
     setStatus(Service::OK);
     setRunning( false );
