@@ -310,6 +310,18 @@ namespace dime {
 	    myVisible = visible;
 	  }
 
+	//----------------------------------------------------------------------
+	// Togglers
+
+	/**
+	 * Toggles visiblity
+	 */
+	virtual bool toggleVisible()
+	{
+	  myVisible = !myVisible;
+	  return myVisible;
+	}
+
         //----------------------------------------------------------------------
         // Other public methods
     
