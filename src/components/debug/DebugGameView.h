@@ -34,7 +34,7 @@
 
 #include "services/platform/DrawDevice.h"
 #include "framework/ConsoleBackend.h"
-//#include "framework/Component.h"
+#include "framework/EntityListener.h"
 
 namespace dime {
 
@@ -58,8 +58,7 @@ namespace dime {
  * Component is a standard dime class that also has to be inherited from.
  */
 
-class DebugGameView : public ConsoleObject,
-  virtual public SigC::Object //, public Component
+class DebugGameView : public ConsoleObject, public EntityListener
 {
 
     //======================================================================

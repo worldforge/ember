@@ -22,22 +22,8 @@
 
 namespace dime {
 
-DebugGameView::DebugGameView()
+DebugGameView::DebugGameView() : EntityListener()
 {
-
-    /* Find out where the Eris world instance resides... */
-    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
-
-    /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( *this, &DebugGameView::entityCreate ) );
-
-    w->EntityDelete.connect( SigC::slot( *this, &DebugGameView::entityDelete ) );
-
-    w->Entered.connect( SigC::slot( *this, &DebugGameView::entered ) );
-
-    w->Appearance.connect( SigC::slot( *this, &DebugGameView::appearance ) );
-
-    w->Disappearance.connect( SigC::slot( *this, &DebugGameView::disappearance ) );
 }
 
 DebugGameView::~DebugGameView()
@@ -50,21 +36,8 @@ void DebugGameView::repaint(DrawDevice* ddevice)
 
 void DebugGameView::entityCreate( Eris::Entity *e )
 {
-    /* Whenever a new entity is created, make sure to connect to those signals
-       too */
-
-    // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( *this, &DebugGameView::addedMember ) );
-
-    e->RemovedMember.connect( SigC::slot( *this, &DebugGameView::removedMember ) );
-
-    e->Recontainered.connect( SigC::slot( *this, &DebugGameView::recontainered ) );
-
-    e->Changed.connect( SigC::bind( SigC::slot( *this, &DebugGameView::changed ), e ) );
-
-    e->Moved.connect( SigC::bind( SigC::slot( *this, &DebugGameView::moved ), e ) );
-
-    e->Say.connect( SigC::bind( SigC::slot( *this, &DebugGameView::say ), e ) );
+    // Call base class to connect signals
+    EntityListener::entityCreate( Eris::Entity *e )
 }
 
 
