@@ -10,7 +10,14 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.48  2003-10-23 09:54:46  lee
+ *      Revision 1.49  2003-10-29 19:05:22  aglanor
+ *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * configure.ac, src/main/Application.cpp and some Makefile.am's:
+ *              Removed DataModel inclusion.
+ *              Commented out boost check while configuring: it's not needed
+ *              at this time. One less dependancy!
+ *
+ *      Revision 1.48  2003/10/23 09:54:46  lee
  *      Removed code and includes from DimeServices.h and put them in
  *      DimeServices.cpp
  *
@@ -220,8 +227,8 @@
 #endif
 
 #include "services/DimeServices.h"
-#include "services/datamodel/DataObject.h"
-#include "services/datamodel/DataModelService.h"
+//#include "services/datamodel/DataObject.h"
+//#include "services/datamodel/DataModelService.h"
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
 #include "services/server/ServerService.h"

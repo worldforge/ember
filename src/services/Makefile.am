@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src
 
-SUBDIRS = config logging metaserver input gui platform image font server sound datamodel test
+SUBDIRS = config logging metaserver input gui platform image font server sound test #datamodel 
 
 noinst_LIBRARIES = libServices.a
 

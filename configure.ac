@@ -142,8 +142,8 @@ AC_MSG_RESULT([
 	])
 
 # Check for the Boost shared_ptr.hpp shared pointer header
-AC_CHECK_HEADER(boost/shared_ptr.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
-	AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
+#AC_CHECK_HEADER(boost/shared_ptr.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
+#	AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
@@ -280,7 +280,6 @@ AC_CONFIG_FILES([Makefile
 		 src/services/platform/Makefile
 		 src/services/server/Makefile
 		 src/services/sound/Makefile
-		 src/services/datamodel/Makefile
 		 test/Makefile
 		 src/main/Makefile
 		 dime.dox
