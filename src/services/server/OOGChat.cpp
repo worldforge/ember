@@ -22,6 +22,8 @@
 
 #include <Eris/Person.h>
 
+#include <strstream>
+
 namespace dime {
 
     OOGChat::OOGChat() : myLobby(NULL)
@@ -90,6 +92,7 @@ namespace dime {
       myLobby->say(args);
       return;
     } else if (command == CMD_EMOTE || command == CMD_ME) {
+      myLobby->emote(args);
       return;
     } else if (command == CMD_JOIN) {
       return;
@@ -107,22 +110,42 @@ namespace dime {
 
   void OOGChat::talk(Eris::Room *room, const std::string& name, const std::string& msg)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "["<< room->getName()<<"] "<<name<<" says: "<<msg<< ENDM;    
+    std::ostrstream temp;
+
+    temp << "["<< room->getName()<<"] "<<name<<" says: "<<msg;
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+    temp<<ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void OOGChat::emote(Eris::Room *room, const std::string& name, const std::string& msg)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "["<< room->getName()<<"] "<<name<<" "<<msg<< ENDM;    
+    std::ostrstream temp;
+
+    temp << "["<< room->getName()<<"] "<<name<<" "<<msg<< ENDM;
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+    temp<<ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void OOGChat::appearance(Eris::Room *room, const std::string& account)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << account << " appears in "<< room->getName()<<ENDM;
+    std::ostrstream temp;
+
+    temp << account << " appears in "<< room->getName();
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() <<ENDM;
+    temp<<ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void OOGChat::disappearance(Eris::Room* room, const std::string& account)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << account << " disappears from "<< room->getName()<<ENDM;
+    std::ostrstream temp;
+
+    temp << account << " disappears from "<< room->getName()<<ENDM;
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)<<temp.str()<<ENDM;
+    temp<<ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void OOGChat::changed(const Eris::StringSet& sset, Eris::Room *room)
