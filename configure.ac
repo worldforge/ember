@@ -69,11 +69,9 @@ AC_CHECK_LIB(openal,
 	)
 
 # Test for libxml2
-PKG_CHECK_MODULES(libxml-2.0, libxml-2.0 >= 2.4.23,
+PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
 	[
-		CFLAGS="$CPPFLAGS $XML_CFLAGS"
-		CPPFLAGS="$CPPFLAGS $XML_CPPFLAGS"
-		CXXFLAGS="$CPPFLAGS $XML_CXXFLAGS"
+		CPPFLAGS="$CPPFLAGS $XML_CFLAGS"
 		LDFLAGS="$LDFLAGS $XML_LIBS"
 	],
  AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)

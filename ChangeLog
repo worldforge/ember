@@ -1,3 +1,6 @@
+2003-09-15 Damien McGinnes
+	* configure.ac: fixed libxml config check
+
 2003-09-07 Martin Pollard <circlemaster [at] blueyonder [dot] co [dot] uk>
 	* configure.ac: changed libxml to pkg-config check - untested so if
 	it breaks, please fix.
