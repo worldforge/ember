@@ -71,7 +71,7 @@ InputManager::InputManager(void)
 
 //	mEventQueue = mEventProcessor->
 	
-	createMouseCursor();
+	//createMouseCursor();
 	
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
@@ -84,12 +84,7 @@ InputManager::InputManager(void)
 
 	mScreenX = Ogre::Root::getSingleton().getAutoCreatedWindow()->getWidth();
 	mScreenY = Ogre::Root::getSingleton().getAutoCreatedWindow()->getHeight();
-	
-
-	// hack: fallback in case there's no way to exit the app;
-	timer=6000;
-	worldConnected = false; // UGLY HACK
-	
+		
 }
 
 InputManager::~InputManager()
@@ -101,19 +96,21 @@ InputManager::~InputManager()
 	delete mEventProcessor;
 }
 
-
+/*
 void InputManager::toggleMouse()
 {
 	mEventProcessor->toggleMouse();
 	connectMouseListeners();
 }
-
+*/
 bool InputManager::isMouseUsed()
 {
-	return mEventProcessor->isMouseUsed();	
+	//TODO: remove
+	return true;	
 }
 
 
+/*
 void InputManager::createMouseCursor()
 {
     Ogre::OverlayManager::getSingleton().createCursorOverlay();
@@ -122,7 +119,9 @@ void InputManager::createMouseCursor()
 	pCursorGui->setDimensions(32.0/640.0, 32.0/480.0);	
 	pCursorGui->setPosition (0.5, 0.5);
 }
+*/
 
+/*
 void InputManager::connectMouseListeners() 
 {
 	if (mEventProcessor->isMouseUsed()) {
@@ -139,13 +138,16 @@ void InputManager::connectMouseListeners()
 	
 }
 
+*/
+
 void InputManager::createEventProcessor() 
 {
-	mEventProcessor = new DimeEventProcessor();
+/*	mEventProcessor = new Ogre::EventProcessor();
 	mEventProcessor->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow());
-	mEventProcessor->startProcessingEvents();
-	mEventProcessor->addKeyListener(this);
-	connectMouseListeners();
+	mEventProcessor->startProcessingEvents();*/
+//	mEventProcessor->addKeyListener(this);
+//	mEventProcessor->addMouseMotionListener(this);
+//	mEventProcessor->addMouseListener(this);
 }
 
 void InputManager::keyClicked(Ogre::KeyEvent* e) {}
@@ -155,6 +157,7 @@ void InputManager::keyPressed(Ogre::KeyEvent* e)
 	//fprintf(stderr, ((Ogre::KeyEvent*)e)->getKey());
 	mKeyDown[e->getKey()]=true;
 	
+/*
 	//allow the user to release the mouse from the application
 	//we'll put this here because it's such a central function
 	if(e->getKey() == Ogre::KC_F9) 
@@ -162,25 +165,28 @@ void InputManager::keyPressed(Ogre::KeyEvent* e)
         S_LOG_VERBOSE() << "Toggle mouse\n";
         toggleMouse();
 	}
-	
+*/	
 	// print screenshot
 	if (e->getKey() == Ogre::KC_SYSRQ || e->getKey() == Ogre::KC_F8)
         {
 	 	S_LOG_VERBOSE() << "Taking screenshot\n";
-		mEventProcessor->takeScreenshot();
+		//TODO: implement screenshot taking mechanism
+		//mEventProcessor->takeScreenshot();
         }
 	
-	std::list<Ogre::KeyListener*>::iterator i;
+/*	std::list<Ogre::KeyListener*>::iterator i;
 	for(i=mKeyListenerList.begin(); i!=mKeyListenerList.end(); i++)
 		(*i)->keyPressed((Ogre::KeyEvent*)e);
+		*/
 }
 
 void InputManager::keyReleased(Ogre::KeyEvent* e)
 {
 	mKeyDown[e->getKey()]=false;
-	std::list<Ogre::KeyListener*>::iterator i;
+/*	std::list<Ogre::KeyListener*>::iterator i;
 	for(i=mKeyListenerList.begin(); i!=mKeyListenerList.end(); i++)
 		(*i)->keyReleased(e);
+		*/
 }
 
 
@@ -192,7 +198,8 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
  
  void InputManager::mousePressed(Ogre::MouseEvent* e)
  {
- 	
+ 	S_LOG_VERBOSE() << "Mouse pressed\n";
+ 	/*
 	std::list<MouseListener*>::iterator i;
 	for(i=mMouseListenerList.begin(); i!=mMouseListenerList.end(); i++)
 	{
@@ -202,12 +209,13 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
 			(*i)->mousePressed(1);
 		else if(e->getButtonID() == 64)
 			(*i)->mousePressed(2);
-	}	
+	}
+	*/	
  }
  
  void InputManager::mouseReleased(Ogre::MouseEvent* e) {
 
-	std::list<MouseListener*>::iterator i;
+/*	std::list<MouseListener*>::iterator i;
 	for(i=mMouseListenerList.begin(); i!=mMouseListenerList.end(); i++)
 	{
 		if(e->getButtonID() == 16)
@@ -217,21 +225,28 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
 		else if(e->getButtonID() == 64)
 			(*i)->mouseReleased(2);
 	}	
+	*/
  }
  
  
  void InputManager::mouseMoved(Ogre::MouseEvent* e)
  {
- 	mouseMovedOrDragged(e);
+ 	fprintf(stderr, "Mouse moved\n");
+ 	//mouseMovedOrDragged(e);
  }
  	
  void InputManager::mouseDragged(Ogre::MouseEvent* e) {
- 	mouseMovedOrDragged(e);
+  	fprintf(stderr, "Mouse dragged\n");
+ 	//mouseMovedOrDragged(e);
  }
  
- void InputManager::mouseMovedOrDragged(Ogre::MouseEvent* e)
+ void InputManager::mouseDragMoved(Ogre::MouseEvent* e)
  {
- 			std::list<MouseListener*>::iterator i;
+   	fprintf(stderr, "Mouse draggedmoved\n");
+ 	//mMouseX = e->getRelX();
+	//mMouseY = e->getRelY();
+ 	
+/* 			std::list<MouseListener*>::iterator i;
 			for(i=mMouseListenerList.begin(); i!=mMouseListenerList.end(); i++)
 			{
 				(*i)->mouseMoved((short)(e->getX()*mScreenX),
@@ -239,20 +254,13 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
 								(short)((e->getX()-e->getRelX())*mScreenX),
 								(short)((e->getY()-e->getRelY())*mScreenY));
 			}
- 	
+ */	
  }
 
 
 bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 {
 
-	mMouseX = Ogre::OverlayManager::getSingleton().getMouseX();
-	mMouseY = Ogre::OverlayManager::getSingleton().getMouseY();
-	// Eris poll. It might remain here or be moved to a better place. We'll see.
-	Eris::PollDefault::poll();
-
-	assert(mAvatarController);
-	mAvatarController->frameStarted(evt, mEventProcessor->getInputReader());
 
 	return true;
 }
@@ -262,7 +270,7 @@ void InputManager::setAvatarController(AvatarController* avatarController)
 	mAvatarController = avatarController;	
 }
 
-
+/*
 void InputManager::addKeyListener(Ogre::KeyListener *l)
 {
 	mKeyListenerList.push_back(l);
@@ -283,6 +291,7 @@ void InputManager::removeMouseListener(MouseListener *l)
 	// TODO do this...i am lazy now
 }
 
+*/
 }
 
 

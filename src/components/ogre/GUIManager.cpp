@@ -16,72 +16,64 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
+#include "widgets/Widget.h"
+#include "widgets/ConsoleWidget.h"
+#include "widgets/ChatWidget.h"
+#include "MousePicker.h"
 #include "GUIManager.h"
-#include "CEGUI/CEGUIBase.h"
-#include "CEGUI/CEGUIExceptions.h"
-#include "CEGUI/CEGUISystem.h"
-#include "CEGUI/CEGUISchemeManager.h"
-#include "CEGUI/CEGUIWindow.h"
-#include "CEGUI/CEGUIWindowManager.h"
-#include "CEGUI/CEGUIImageset.h"
-#include "CEGUI/elements/CEGUIStaticImage.h"
-#include "CEGUI/elements/CEGUIPushButton.h"
-#include "CEGUI/renderers/OgreGUIRenderer/ogrerenderer.h"
-#include <Ogre.h>
+
 
 namespace DimeOgre {
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
+: mWindow(window)
+, mQuit(false)
+, mMouseMotionListener(0)
+, mMouseListener(0)
+, mKeyListener(0)
+, mInGUIMode(true)
 {
 
+	mEventProcessor = new Ogre::EventProcessor();
+	mEventProcessor->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow());
+	mEventProcessor->startProcessingEvents();
+
+/*	
 	try {
-	
+*/	
 		fprintf(stderr, "CEGUI - ENTERING CTOR\n");
 		
-		CEGUI::OgreRenderer* GUIRenderer = new CEGUI::OgreRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, sceneMgr);
+		mGuiRenderer = new CEGUI::OgreRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, sceneMgr);
 		fprintf(stderr, "CEGUI - RENDERER CREATED\n");
 		
-		//GUIRenderer->setTargetSceneManager(sceneMgr);
+		mGuiRenderer->setTargetSceneManager(sceneMgr);
 		fprintf(stderr, "CEGUI - AND SCENE MANAGER SET\n");
 		
-		new CEGUI::System(GUIRenderer); 
+		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		fprintf(stderr, "CEGUI - SYSTEM CREATED\n");
 
-		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"testscheme.xml");
+		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"guischeme.xml");
 		fprintf(stderr, "CEGUI - TEST SCHEME LOADED\n");
 		
-		CEGUI::System::getSingleton().setDefaultMouseCursor((CEGUI::utf8*)"TaharezImagery", (CEGUI::utf8*)"MouseArrow");
-		CEGUI::System::getSingleton().setDefaultFont((CEGUI::utf8*)"Tahoma-14"); 
+		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezImagery", (CEGUI::utf8*)"MouseArrow");
+		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-14"); 
 		fprintf(stderr, "CEGUI - DEFAULTS SET\n");
 		
-		CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
-		CEGUI::System::getSingleton().setGUISheet(sheet); 
+		mSheet = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
+		mGuiSystem->setGUISheet(mSheet); 
+		mSheet->subscribeEvent(CEGUI::ButtonBase::MouseClickEvent, 
+		boost::bind(&GUIManager::mSheet_MouseClick, this, _1));
+
 		fprintf(stderr, "CEGUI - SHEET CREATED\n");
+
+
 		
-		
-		CEGUI::Window* fwnd = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez Frame Window", (CEGUI::utf8*)"DemoWindow");
-		fwnd->setPosition(CEGUI::Point(0.01f, 0.01f));
-		fwnd->setSize(CEGUI::Size(0.43f, 0.1f));
-		fwnd->setText((CEGUI::utf8*)"Worldforge - proud CEGUI user");
-		sheet->addChildWindow(fwnd); 
-		fprintf(stderr, "CEGUI - SAMPLE WINDOW CREATED\n");
-		
-		CEGUI::Window* button = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez Button", (CEGUI::utf8*)"SomeButton");
-		button->setPosition(CEGUI::Point(0.08f, 0.05f));
-		button->setSize(CEGUI::Size(0.1f, 0.1f));
-		//fwnd->setText((CEGUI::utf8*)"Worldforge - proud CEGUI user");
-		sheet->addChildWindow(button); 
-		fprintf(stderr, "CEGUI - SAMPLE BUTTON CREATED\n");
 	
-		mChat = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez MultiLineEditbox", (CEGUI::utf8*)"chat");
-		mChat->setPosition(CEGUI::Point(0.01f, 0.5f));
-		mChat->setSize(CEGUI::Size(0.4f, 0.4f));
-		mChat->setAlpha(0.5f);
-		mChat->setFont((CEGUI::utf8*)"Tahoma-8");
-		mChat->setText((CEGUI::utf8*)"IG Chat>>\n");
-		sheet->addChildWindow(mChat);
+
+		
+		
+		
 		
 		/*
 		CEGUI::PushButton* btn = (CEGUI::PushButton*)CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez Button", (CEGUI::utf8*)"Demo7/Window1/Quit");
@@ -119,40 +111,225 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		fprintf(stderr, "CEGUI - GUI RENDERED\n");
 		*/
 		
-	} catch(CEGUI::Exception e) {
+/*	} catch(CEGUI::Exception e) {
 		fprintf(stderr, "Exception creating CEGUI - can't show message because it's protected. WTF?\n");
+	}
+*/	mEventProcessor->addKeyListener(this);
+	mEventProcessor->addMouseMotionListener(this);
+	mEventProcessor->addMouseListener(this);
+	Ogre::Root::getSingleton().addFrameListener(this);
+
+}
+
+
+GUIManager::~GUIManager()
+{
+	mEventProcessor->removeKeyListener(this);
+	mEventProcessor->removeMouseMotionListener(this);
+	mEventProcessor->removeMouseListener(this);
+	delete mEventProcessor;
+	delete mGuiSystem;
+	delete mGuiRenderer;
+
+}
+
+void GUIManager::initialize()
+{
+		fprintf(stderr, "CEGUI - CREATING CONSOLE\n");
+	
+		mConsoleWidget = new ConsoleWidget(this);
+		mConsoleWidget->buildWidget();
+		addWidget(mConsoleWidget);
+		fprintf(stderr, "CEGUI - CREATED CONSOLE\n");
+	
+}
+
+CEGUI::Window* GUIManager::getMainSheet() 
+{ 
+	return mSheet; 
+}
+
+void GUIManager::removeWidget(Widget* widget)
+{
+	mWidgets.erase(widget);
+}
+
+void GUIManager::addWidget(Widget* widget)
+{
+	mWidgets.insert(widget);
+}
+
+
+bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
+{
+	//iterate over all widgets and send them a frameStarted event
+	std::set<Widget*>::iterator I = mWidgets.begin();
+	std::set<Widget*>::iterator I_end = mWidgets.end();
+	
+	for (; I != I_end; ++I) {
+		Widget* aWidget = *I;
+		aWidget->frameStarted(evt);
+	}
+	
+	if (mQuit) {
+		mEventProcessor->removeKeyListener(this);
+		mEventProcessor->removeMouseMotionListener(this);
+		mEventProcessor->removeMouseListener(this);
+		delete mEventProcessor;
+	
+		return false;
+	} else {
+//		updateStats();
+		return true;
+	}
+
+}
+
+void GUIManager::mSheet_MouseClick(const CEGUI::EventArgs& args)
+{
+
+//TODO: implement this
+/*
+	if (mMousePicker) {
+		mMousePicker->performMousePicking(mMousePressedOgreEvent, args);
+	}
+*/
+}
+
+
+
+
+
+void GUIManager::mouseMoved (Ogre::MouseEvent *e)
+{
+	if (mInGUIMode) {
+		mGuiSystem->injectMouseMove(e->getRelX() * mGuiRenderer->getWidth(), e->getRelY() * mGuiRenderer->getHeight());
+		e->consume();
+	} else {
+		if (mMouseMotionListener) {
+			mMouseMotionListener->mouseMoved(e);
+		}
+	}
+}
+
+
+void GUIManager::mouseDragged (Ogre::MouseEvent *e)
+{
+	mouseMoved(e);
+}
+
+
+void GUIManager::keyPressed (Ogre::KeyEvent *e)
+{
+	if (mInGUIMode) {
+		// do event injection
+		// key down
+		mGuiSystem->injectKeyDown(e->getKey());
+	
+		// now character
+		mGuiSystem->injectChar(e->getKeyChar());
+	
+		e->consume();
+	} else {
+		if (mKeyListener) {
+			mKeyListener->keyPressed(e);
+		}
 	}
 	
 }
-GUIManager::~GUIManager()
-{}
 
-void GUIManager::appendOOGChatLine(std::string line) 
+
+void GUIManager::keyReleased (Ogre::KeyEvent *e)
 {
-	CEGUI::String current = mChat->getText();
-	current.append(line);
-	current.append((CEGUI::utf8*)"\n");
-	mChat->setText(current);
+
+	if (mInGUIMode) {
+		//toggle the console
+		//we've put it here because we wan't the console to always be available
+		if(e->getKey() == Ogre::KC_GRAVE || e->getKey() == Ogre::KC_F12)
+		{
+			mConsoleWidget->toggleActive();
+		}
+			
+		mGuiSystem->injectKeyUp(e->getKey());
+		e->consume();
+	} else {
+		if (mKeyListener) {
+			mKeyListener->keyReleased(e);
+		}
+	}
+
+
 }
 
-void GUIManager::appendIGChatLine(std::string line)
+
+
+void GUIManager::mousePressed (Ogre::MouseEvent *e)
 {
-	CEGUI::String current = mChat->getText();
-	current.append(line);
-	current.append((CEGUI::utf8*)"\n");
-	mChat->setText(current);
+	mMousePressedOgreEvent = e;
+	//if the right mouse button is pressed, switch from gui mode
+	if (e->getButtonID() == Ogre::MouseEvent::BUTTON1_MASK) {
+		mInGUIMode = false;
+	}
+	if (mInGUIMode) {
+		mGuiSystem->injectMouseButtonDown(convertOgreButtonToCegui(e->getButtonID()));
+		e->consume();
+	} else {
+		if (mMouseListener) {
+			mMouseListener->mousePressed(e);
+		}
+	}
+
 }
 
-/*
-MotionManager* MotionManager::_instance = 0;
 
-MotionManager & MotionManager::getSingleton(void)
+void GUIManager::mouseReleased (Ogre::MouseEvent *e)
 {
-	if(_instance == 0)
-		_instance = new MotionManager;
-	return *_instance;
+	mMouseReleasedOgreEvent = e;
+	//if the right mouse button is released, switch to gui mode
+	if (e->getButtonID() == Ogre::MouseEvent::BUTTON1_MASK) {
+		mInGUIMode = true;
+	}
+	if (mInGUIMode) {
+		mGuiSystem->injectMouseButtonUp(convertOgreButtonToCegui(e->getButtonID()));
+		e->consume();
+	} else {
+		if (mMouseListener) {
+			mMouseListener->mouseReleased(e);
+		}
+	}
+
 }
-*/
+
+CEGUI::MouseButton GUIManager::convertOgreButtonToCegui(int ogre_button_id)
+{
+	switch (ogre_button_id)
+	{
+	case Ogre::MouseEvent::BUTTON0_MASK:
+		return CEGUI::LeftButton;
+		break;
+
+	case Ogre::MouseEvent::BUTTON1_MASK:
+		return CEGUI::RightButton;
+		break;
+
+	case Ogre::MouseEvent::BUTTON2_MASK:
+		return CEGUI::MiddleButton;
+		break;
+
+	case Ogre::MouseEvent::BUTTON3_MASK:
+		return CEGUI::X1Button;
+		break;
+
+	default:
+		return CEGUI::LeftButton;
+		break;
+	}
+
+}
+
+
+
+
 template<> GUIManager* dime::Singleton<GUIManager>::ms_Singleton = 0;
 
 }

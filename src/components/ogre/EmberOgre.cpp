@@ -23,7 +23,20 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.48  2004-09-11 23:50:59  erik
+ *      Revision 1.49  2004-10-06 22:32:48  erik
+ *      2004-10-07 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      *Moved completely to CEGUI. We now use no overlays.
+ *      *Changed the way the input system and the camera works:
+ *      	- Normal mode is gui mode where the mouse can be moved around, windows changed and interacted with. If one clicks on the Ogre render window mouse picking in the 3d world will occur (not implemented yet)
+ *      	- By pressing and holding the right mouse button one enters Movement mode. Mouse movement here will change the camera, which is centered on the avatar.
+ *      	- Pressing keys will move the avatar, UNLESS we're in Normal mode and a CEGUI widget says otherwise (the console for instance). This is not yet fully implemented.
+ *
+ *      *Implemented a widget system. Each widget is something like a map, an inventory, avatar stats etc.. These should preferrably be loaded through dynamic libs as plugins in the future. We'll also add lua-scripting (which should be easy since it's almost already in CEGUI).
+ *
+ *      *Removed references to InputManager since it's obsolete now.
+ *
+ *      Revision 1.48  2004/09/11 23:50:59  erik
  *      2004-09-12 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre/:
@@ -405,7 +418,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
 #include "AvatarController.h"
-#include "PlayerMouseListener.h"
 #include "EntityListener.h"
 #include "DimeEntityFactory.h"
 #include "MotionManager.h"
@@ -548,6 +560,21 @@ DimeOgre::DimeOgre() :
 mRoot(0)
 {}
 
+bool DimeOgre::frameStarted(const Ogre::FrameEvent & evt)
+{
+	Eris::PollDefault::poll();
+	return true;
+}
+
+
+void DimeOgre::go(void)
+{
+	if (!setup())
+		return;
+
+	mRoot->startRendering();
+}
+
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
@@ -561,23 +588,29 @@ bool DimeOgre::setup(void)
     if (!carryOn) return false;
 
     chooseSceneManager();
-    // Create the scene
+
+	//add ourself as a frame listener
+	Ogre::Root::getSingleton().addFrameListener(this);
+    
+	mGUIManager = new GUIManager(mWindow, mSceneMgr);
+	mGUIManager->initialize();
+	
+	// Create the scene
     createScene();
 
-    mGUIManager = new GUIManager(mWindow, mSceneMgr);
-	mTerrainGenerator = new TerrainGenerator();
+ 	mTerrainGenerator = new TerrainGenerator();
 	mMotionManager = new MotionManager();
 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
 	mInputManager = new InputManager();
-
+	
 	// Avatar
 	mAvatar = new Avatar(mSceneMgr);
 //	EntityListener::getSingleton().setDimeAvatar(mAvatar);
 	
-	AvatarController* avatarController = new AvatarController(mAvatar, mInputManager, mWindow);
+	AvatarController* avatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
 
 
-    createViewports();
+    //createViewports();
 
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
@@ -637,25 +670,6 @@ void DimeOgre::chooseSceneManager(void)
 void DimeOgre::createViewports(void)
 {
 
-    // Create 1st person viewport, entire window
-//    Ogre::Viewport* vp = mWindow->addViewport(mAvatar->getCamera());
-//    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-
-//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
-/*
-		Ogre::Viewport* rightvp = mWindow->addViewport(mAvatar.getAvatarTopCamera(),1,0.70,0.05,0.25,0.25);
-		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-		rightvp->setOverlaysEnabled(false);
-*/
-	//Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar1pCamera(),9,0.05,0.05,0.25,0.25);
-	//leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	//leftvp->setOverlaysEnabled(false);
-
-	/*
-	Ogre::Viewport* spyvp = mWindow->addViewport(mOgreHeadCamera,10,0.05,0.70,0.25,0.25);
-	spyvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	spyvp->setOverlaysEnabled(false);
-	*/
 }
 
 /// Method which will define the source of resources (other than current folder)
@@ -777,11 +791,11 @@ void DimeOgre::createFrameListener(void)
 	//mRoot->addFrameListener(playerFrameListener);
 	fprintf(stderr, "TRACE - CREATING INPUT MANAGER\n");
 	
-	mInputManager->addKeyListener(&(Console::getSingleton()));
-	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
-	mRoot->addFrameListener(&(Console::getSingleton()));
+	//mInputManager->addKeyListener(&(Console::getSingleton()));
+	//fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
+	//mRoot->addFrameListener(&(Console::getSingleton()));
 	mRoot->addFrameListener(mMotionManager);
-	mRoot->addFrameListener(&(DebugListener::getSingleton()));
+	//mRoot->addFrameListener(&(DebugListener::getSingleton()));
 	//AvatarCamera* camera = new AvatarCamera(mAvatar.getAvatar1pCamera(), &mAvatar, mSceneMgr);
 	//mRoot->addFrameListener(camera);
 	ConsoleObjectImpl::getSingleton();

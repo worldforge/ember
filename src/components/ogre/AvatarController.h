@@ -28,11 +28,14 @@
 #include "InputManager.h"
 
 
+
 namespace DimeOgre {
 class Avatar;
 class DebugListener;
 class DimeEntity;
 class AvatarCamera;
+
+class GUIManager;
 
 class InputManager;
 //class InputManager::MouseListener;
@@ -48,24 +51,28 @@ struct AvatarControllerMovement
 	Ogre::Quaternion cameraOrientation;
 };
 
-class AvatarController : public InputManager::MouseListener
+class AvatarController 
+: public Ogre::KeyListener, public Ogre::FrameListener
+//: public InputManager::MouseListener
 {
 public:
 	//static AvatarController & getSingleton(void);
     
-    AvatarController(Avatar* avatar, InputManager* inputManager, Ogre::RenderWindow* window);
+    AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager);
 
 	virtual ~AvatarController();
 
 
 	void frameStarted(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
-//	bool frameEnded(const Ogre::FrameEvent & event);
+	
+	
+	bool frameStarted(const Ogre::FrameEvent & event);
 
 	//
 	//InputManager::MouseListener methods
-	void mouseMoved(short newX, short newY, short oldX, short oldY);
-	void mousePressed(unsigned char button);
-	void mouseReleased(unsigned char button);
+//	void mouseMoved(short newX, short newY, short oldX, short oldY);
+//	void mousePressed(unsigned char button);
+//	void mouseReleased(unsigned char button);
 	
 //TODO:this is temporary
 //	void setSceneManager(Ogre::SceneManager* sceneManager) {mSceneManager = sceneManager;}
@@ -74,16 +81,24 @@ public:
 	
 	AvatarCamera* getAvatarCamera() const;
 
+	
+	virtual void 	keyPressed (Ogre::KeyEvent *e);
+	virtual void 	keyReleased (Ogre::KeyEvent *e);
+	// do-nothing events
+	virtual void 	keyClicked (Ogre::KeyEvent *e) {}
+	
 
 protected:
 
 	Ogre::RenderWindow* mWindow;
+	
+	GUIManager* mGUIManager;
 
 	/*
 	 * Check what object is under the mouse and puts this in mEntityUnderCursor
 	 */
 	virtual DimeEntity* doMousePicking(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
-	virtual void checkMouseMovement(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
+	//virtual void checkMouseMovement(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 	virtual void checkMovementKeys(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 	virtual void checkMouseClicks(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 
@@ -95,10 +110,10 @@ protected:
 //TODO:this is temporary
 	//Ogre::SceneManager* mSceneManager;
 
-	bool mMouseButton0Pressed;
+/*	bool mMouseButton0Pressed;
 	bool mMouseButton1Pressed;
 	bool mMouseButton2Pressed;
-
+*/
 
 	/**
 	 * Instance variable for singleton avatar controller implementation.
@@ -120,7 +135,6 @@ protected:
 	 */
 	Avatar* mAvatar;
 	
-	InputManager* mInputManager;
 	
 	//======================================================================
     // Disabled constructors and operators
@@ -148,6 +162,18 @@ protected:
     DimeEntity* mSelectedEntity;
     
     AvatarControllerMovement movementForFrame;
+	
+	Ogre::KeyCode mKeyCodeForForwardMovement;
+	Ogre::KeyCode mKeyCodeForBackwardsMovement;
+	Ogre::KeyCode mKeyCodeForLeftMovement;
+	Ogre::KeyCode mKeyCodeForRightMovement;
+	
+	bool mIsForwardMovement;
+	bool mIsBackwardsMovement;
+	bool mIsLeftMovement;
+	bool mIsRightMovement;
+	
+	
     
 		
 };

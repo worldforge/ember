@@ -44,7 +44,7 @@ class AvatarController;
 class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, public Ogre::MouseListener, public Ogre::MouseMotionListener
 {
 	public:
-		class MouseListener
+/*		class MouseListener
 		{
 			public:
 				virtual ~MouseListener() {}; // to avoid warnings complaining about non-virtual dtors in children classes
@@ -52,6 +52,7 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 				virtual void mousePressed(unsigned char button) = 0;
 				virtual void mouseReleased(unsigned char button) = 0;
 		};
+*/
 		//static InputManager & getSingleton(void);
 
 		bool frameStarted(const Ogre::FrameEvent & evt);
@@ -65,28 +66,28 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		Ogre::Real getMouseX(void) { return mMouseX; };
 		Ogre::Real getMouseY(void) { return mMouseY; };
 
-		void addKeyListener(Ogre::KeyListener *l);
+/*		void addKeyListener(Ogre::KeyListener *l);
 		void removeKeyListener(Ogre::KeyListener *l);
 
 		void addMouseListener(MouseListener *l);
 		void removeMouseListener(MouseListener *l);
-
+*/
 		//these are for Ogre::KeyListener
-		void keyClicked(Ogre::KeyEvent* e); 
-		void keyPressed(Ogre::KeyEvent* e); 
-		void keyReleased(Ogre::KeyEvent* e);
+		virtual void keyClicked(Ogre::KeyEvent* e); 
+		virtual void keyPressed(Ogre::KeyEvent* e); 
+		virtual void keyReleased(Ogre::KeyEvent* e);
 		
 		//these are for Ogre::MouseListener
-		void mouseClicked(Ogre::MouseEvent* e);
- 		void mouseEntered(Ogre::MouseEvent* e);
- 		void mouseExited(Ogre::MouseEvent* e);
-  		void mousePressed(Ogre::MouseEvent* e);
- 		void mouseReleased(Ogre::MouseEvent* e);
+		virtual void mouseClicked(Ogre::MouseEvent* e);
+ 		virtual void mouseEntered(Ogre::MouseEvent* e);
+ 		virtual void mouseExited(Ogre::MouseEvent* e);
+  		virtual void mousePressed(Ogre::MouseEvent* e);
+ 		virtual void mouseReleased(Ogre::MouseEvent* e);
  		
  		//these are for Ogre::MouseMotionListener
- 		void mouseMoved(Ogre::MouseEvent* e);
-		void mouseDragged(Ogre::MouseEvent* e);
-		void mouseMovedOrDragged(Ogre::MouseEvent* e);
+ 		virtual void mouseMoved(Ogre::MouseEvent* e);
+		virtual void mouseDragged(Ogre::MouseEvent* e);
+		virtual void mouseDragMoved(Ogre::MouseEvent* e);
  		
 		void setAvatarController(AvatarController* avatarController);
 
@@ -97,25 +98,26 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		
 		InputManager(void);
 		~InputManager();
+		
+		Ogre::EventProcessor* getEventProcessor() { return mEventProcessor; }
 
 	protected:
-		virtual void connectMouseListeners() ;
+//		virtual void connectMouseListeners() ;
 		
 		//creates a new DimeEventProcessor which will take care of all input processing
 		//this (mEventProcessor) is hooked to methods such as keyPressed and so on
 		virtual void createEventProcessor();		
 		
 		//creates a mouse cursor which can be moved around the scene
-		virtual void createMouseCursor();
+		//virtual void createMouseCursor();
 
-		DimeEventProcessor* mEventProcessor;
+		Ogre::EventProcessor* mEventProcessor;
 
 		AvatarController* mAvatarController;
 		
 		
 	private:
 		static InputManager* _instance;
-		bool worldConnected; // UGLY HACK!!
 		
 
 
@@ -136,7 +138,6 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		unsigned short mScreenX;
 		unsigned short mScreenY;
 
-		int timer;
 		
 		
 		

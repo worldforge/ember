@@ -27,16 +27,30 @@
 #define AVATARCAMERA_H
 
 #include <Ogre.h>
+
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
+
 namespace DimeOgre {
 
 class Avatar;
+class InputManager;
+class GUIManager;
 
 class AvatarCamera 
+:virtual public SigC::Object , Ogre::MouseMotionListener
 //: public Ogre::FrameListener 
 {
 public:
 
-	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window);
+	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager);
 	virtual ~AvatarCamera();
 
 	/*
@@ -49,17 +63,17 @@ public:
 	/*
 	 * Pitches the camera the supplied degrees
 	 */
-	virtual void pitch(Ogre::Real degrees);
+	virtual void pitch(Ogre::Degree degrees);
 	
 	/*
 	 * Yaws the camera the supplied degrees
 	 */
-	virtual void yaw(Ogre::Real degrees);
+	virtual void yaw(Ogre::Degree degrees);
 	
 	/*
 	 * returns the current degrees of pitch from the cameras initial position
 	 */
-	Ogre::Real getPitch()
+	Ogre::Degree getPitch()
 	{
 		return degreePitch;
 	}
@@ -67,7 +81,7 @@ public:
 	/*
 	 * returns the current degrees of yaw from the cameras initial position
 	 */
-	Ogre::Real getYaw()
+	Ogre::Degree getYaw()
 	{
 		return degreeYaw;
 	}
@@ -96,6 +110,15 @@ public:
 	 */
 	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
 	
+	SigC::Signal1<void, Ogre::Camera*> MovedCamera;
+	
+	void updateFromMouseMovement(const Ogre::FrameEvent & event, InputManager* inputManager);
+	
+	void mouseMoved (Ogre::MouseEvent *e);
+	void mouseDragged (Ogre::MouseEvent *e) {};
+
+
+	
 protected:
 
 	/*
@@ -104,6 +127,7 @@ protected:
 	void createNodesAndCamera();
 	
 	void createViewPort();
+	GUIManager* mGUIManager;
 	
 	
 	Ogre::Camera* mCamera;
@@ -115,8 +139,11 @@ protected:
 	Ogre::SceneNode* mAvatarCameraPitchNode;
 	Ogre::SceneNode* mAvatarCameraNode;
 
-	Ogre::Real degreePitch;	
-	Ogre::Real degreeYaw;	
+	Ogre::Degree mDegreeOfPitchPerSecond;
+	Ogre::Degree mDegreeOfYawPerSecond;
+
+	Ogre::Degree degreePitch;	
+	Ogre::Degree degreeYaw;	
 	Ogre::RenderWindow* mWindow;
 	Ogre::Viewport* mViewPort;
 };

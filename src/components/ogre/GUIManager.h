@@ -19,9 +19,30 @@
 #ifndef GUIMANAGER_H
 #define GUIMANAGER_H
 
-#include "CEGUI/CEGUIWindow.h"
+#include <CEGUIBase.h>
+#include <CEGUIExceptions.h>
+#include <CEGUISystem.h>
+#include <CEGUISchemeManager.h>
+#include <CEGUIWindow.h>
+#include <CEGUIWindowManager.h>
+#include <CEGUIImageset.h>
+#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIPushButton.h>
+#include <renderers/OgreGUIRenderer/ogrerenderer.h>
+#include <boost/bind.hpp>
+
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
 
 #include <Ogre.h>
+#include <OgreKeyEvent.h> 
 //#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 
@@ -30,100 +51,111 @@ namespace DimeOgre {
 class DimeEntity;
 class TerrainGenerator;
 class CEGUI::Window;
+class Widget;
+class ConsoleWidget;
+class MousePicker;
 
 /*
  * This class will be responsible for all the GUI related things
  */
-class GUIManager : public dime::Singleton<GUIManager> {
+class GUIManager : 
+public dime::Singleton<GUIManager>, 
+Ogre::MouseMotionListener, 
+Ogre::MouseListener,
+Ogre::KeyListener,
+Ogre::FrameListener,
+virtual public SigC::Object
+{
 public:
 
 	GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr);
 	virtual ~GUIManager();
 	//static MotionManager & getSingleton(void);
 	
-	void appendIGChatLine(std::string line);
-	void appendOOGChatLine(std::string line);
+	SigC::Signal1<void, const std::string& > AppendIGChatLine;
+	SigC::Signal1<void, const std::string& > AppendOOGChatLine;
 	
-	/*
-	 * Adds a DimeEntity to the movement list.
-	 * That means that until removeEntity is called for the specific entity
-	 * new positions for the entity will be calculated for each frame.
-	 */
-	//void addEntity(DimeEntity* entity) {mMotionSet.insert(entity);}
-	//void removeEntity(DimeEntity* entity) {mMotionSet.erase(entity);}
+	void testClick(const CEGUI::EventArgs& args);
 	
-	/*
-	 * Registers an animationState. After registration it will be enough to use
-	 * AnimationState::enabled(bool) to toggle the animation on and off
-	 */
-	//void addAnimation(Ogre::AnimationState* animationState);
-	/*
-	 * Deregisters an animationState
-	 */
-	//void removeAnimation(Ogre::AnimationState* animationState);
-	/*
-	 * Pauses the supplies animationState
-	 */
-	//void pauseAnimation(Ogre::AnimationState* animationState);
-	/*
-	 * Unpauses (starts) an already paused animationState
-	 */
-	//void unpauseAnimation(Ogre::AnimationState* animationState);
-	
+	void removeWidget(Widget* widget);
+	void addWidget(Widget* widget);
 
 
-	/*
-	 * Methods from Ogre::FrameListener
-	 */
-	//bool frameStarted(const Ogre::FrameEvent& event);
-	//bool frameEnded(const Ogre::FrameEvent& event);
-	
-	/*
-	 * Adjusts the height of the supplied node
-	 */
-	//void adjustHeightPositionForNode(Ogre::SceneNode* sceneNode);
 
-	//void setTerrainGenerator(TerrainGenerator* generator);
+	virtual void 	mouseMoved (Ogre::MouseEvent *e);
+	virtual void 	mouseDragged (Ogre::MouseEvent *e);
+	virtual void 	keyPressed (Ogre::KeyEvent *e);
+	virtual void 	keyReleased (Ogre::KeyEvent *e);
+	virtual void 	mousePressed (Ogre::MouseEvent *e);
+	virtual void 	mouseReleased (Ogre::MouseEvent *e);
+
+	// do-nothing events
+	virtual void 	keyClicked (Ogre::KeyEvent *e) {}
+	virtual void 	mouseClicked (Ogre::MouseEvent *e) {}
+	virtual void 	mouseEntered (Ogre::MouseEvent *e) {}
+	virtual void 	mouseExited (Ogre::MouseEvent *e) {}
+
+
+	bool frameStarted(const Ogre::FrameEvent& evt);
+
+	CEGUI::Window* getMainSheet();
 	
+	Ogre::EventProcessor* getEventProcessor() { return mEventProcessor; }
 	
-private:
+	void initialize();
+	
+	void setKeyListener(Ogre::KeyListener* listener) {mKeyListener; }
+	void setMouseListener(Ogre::MouseListener* listener) {mMouseListener = listener; }
+	void setMouseMotionListener(Ogre::MouseMotionListener* listener) {mMouseMotionListener = listener;}
+	
+
+	bool isInGUIMode() { return mInGUIMode; }
+	
+protected:
+
 
 	CEGUI::Window* mChat;
 	
-	/*
-	 * A pointer to the applications ControllerManager. This will take care of 
-	 * keeping tabs on all controllers.
-	 */
-	//Ogre::ControllerManager* mControllerManager;
-	//typedef Ogre::Controller<Ogre::Real> animationControllerType;
-	//typedef std::map<Ogre::AnimationState*, animationControllerType*> animationStateMap;
-	/*
-	 * A map of AnimationState's and their corresponding Controllers
-	 */
-	//animationStateMap mAnimations;
-
-
-	//static MotionManager* _instance;
-
-	/* This method will iterate over all registered moving entities and update
-	 * their positions.
-	 */
-	//void doMotionUpdate(Ogre::Real timeSlice);
-
-	/* 
-	 * Update the motion for a single DimeEntity
-	 */
-	//void updateMotionForEntity(DimeEntity* entity, Ogre::Real timeSlice);
-
-	/*
-	 * This contains all of the entities that will be moved each frame
-	 */
-	//std::set<DimeEntity*> mMotionSet;
+	CEGUI::Window* mSheet;
 	
-	//TerrainGenerator* mTerrainGenerator;
+	ConsoleWidget* mConsoleWidget;
+
+	Ogre::EventProcessor* mEventProcessor;
+	Ogre::RenderWindow* mWindow;
+	CEGUI::System* mGuiSystem;
+	CEGUI::OgreRenderer* mGuiRenderer;
+
+	std::set<Widget*> mWidgets;
+
+
+
+	CEGUI::MouseButton convertOgreButtonToCegui(int ogre_button_id);
+	void updateStats(void);
+
+
+	float	mSkipCount;
+	float	mUpdateFreq;
+
+	bool mQuit;
+		
+	bool mInGUIMode;
 	
+	//these will recieve input when we're not in GUI mode
+	Ogre::MouseMotionListener* mMouseMotionListener;
+	Ogre::MouseListener* mMouseListener;
+	Ogre::KeyListener* mKeyListener;
+	
+	Ogre::MouseEvent* mMouseReleasedOgreEvent;
+	Ogre::MouseEvent* mMousePressedOgreEvent;
+	
+	MousePicker* mMousePicker;
+
+	//events
+	void mSheet_MouseClick(const CEGUI::EventArgs& args);
+	
+
 };
 }
 
 
-#endif // MOTIONMANAGER_H
+#endif 

@@ -17,20 +17,27 @@
 */
 
 #include "Avatar.h"
+#include "InputManager.h"
+#include "GUIManager.h"
+
 #include "AvatarCamera.h"
 
 namespace DimeOgre {
 
-AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window) :
+AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
 	mAvatarNode(avatarNode),
 	mSceneManager(sceneManager),
 	mWindow(window),
+	mGUIManager(guiManager),
 	degreePitch(0),
 	degreeYaw(0),
-	mViewPort(0)
+	mViewPort(0),
+	mDegreeOfPitchPerSecond(50),
+	mDegreeOfYawPerSecond(50)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesAndCamera();
+	mGUIManager->setMouseMotionListener(this);
 }
 
 AvatarCamera::~AvatarCamera()
@@ -98,16 +105,101 @@ void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 }
 
 
-void AvatarCamera::pitch(Ogre::Real degrees)
+void AvatarCamera::pitch(Ogre::Degree degrees)
 {
 	degreePitch += degrees;
-	mAvatarCameraPitchNode->pitch((Ogre::Degree)degrees);
+	mAvatarCameraPitchNode->pitch(degrees);
 }
-void AvatarCamera::yaw(Ogre::Real degrees)
+void AvatarCamera::yaw(Ogre::Degree degrees)
 {
 	degreeYaw += degrees;
-	mAvatarCameraRootNode->yaw((Ogre::Degree)degrees);
+	mAvatarCameraRootNode->yaw(degrees);
 	
+}
+
+void AvatarCamera::mouseMoved (Ogre::MouseEvent *e)
+{
+	Ogre::Degree diffX(50 * e->getRelX());
+	Ogre::Degree diffY(50 * e->getRelY());
+//	Ogre::Degree diffX = mDegreeOfYawPerSecond * e->getRelX();
+//	Ogre::Degree diffY = mDegreeOfPitchPerSecond * e->getRelY();
+
+
+	if (diffX.valueDegrees()) {
+		this->yaw(-diffX);
+//		this->yaw(diffX * e->timeSinceLastFrame);
+	}
+	if (diffY.valueDegrees()) {
+		this->pitch(-diffY);
+//		this->pitch(diffY * e->timeSinceLastFrame);
+	}
+	
+	if (diffY.valueDegrees() || diffX.valueDegrees()) {
+		MovedCamera.emit(mCamera);
+	}
+}
+
+void AvatarCamera::updateFromMouseMovement(const Ogre::FrameEvent & event, InputManager* inputManager) {
+
+ 	
+ 	/*this is in percent how much of the border areas that are "hot", i.e. makes the 
+ 	 * view rotate when the mouse moves over them.
+ 	 * Think of it as a picture frame.
+ 	 */
+/*	const float sizeOfHotBorder = .25;
+
+	//this is in percent how much of the border that makes the movement max out
+	const float sizeOfMaxHotBorder = .05;
+	
+	// Max movement per second. I guess this is in degrees, but I'm not sure. 
+	//  Seemed as a nice value though
+	 
+	const float maxMovement = 50; 
+	
+	int screenX = Ogre::Root::getSingleton().getAutoCreatedWindow()->getWidth();
+	int screenY = Ogre::Root::getSingleton().getAutoCreatedWindow()->getHeight();
+	
+	//we must use this obscure method, else all other overlays would "obstruct"
+	//the mouse pointer, giving us no data
+	float mouseX = inputManager->getMouseX();
+	float mouseY = inputManager->getMouseY();
+	
+	float diffX = 0.0, diffY = 0.0;
+	
+	
+	//this calculates how close the pointer is to the border and determines how
+	//much we should move
+	if (mouseX <= sizeOfHotBorder) {
+		diffX = (mouseX <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseX) / sizeOfHotBorder);
+	} else if (mouseX >= 1 - sizeOfHotBorder) {
+		diffX = (1.0 - mouseX <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseX - 1.0)) / sizeOfHotBorder) * maxMovement;
+	}	
+	if (mouseY <= sizeOfHotBorder) {
+		diffY = (mouseY <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseY) / sizeOfHotBorder);
+	} else if (mouseY >= 1 - sizeOfHotBorder) {
+		diffY = (1.0 - mouseY <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseY - 1.0)) / sizeOfHotBorder) * maxMovement;
+	}	
+			
+//	movementForFrame.rotationDegHoriz = diffX;
+//	movementForFrame.rotationDegVert = diffY;
+//	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
+	
+
+
+	//we do the camera pitch instantly and correct the avatar to the new position 
+	//when it's suitable
+	if (diffX) {
+		this->yaw(diffX * event.timeSinceLastFrame);
+	}
+	if (diffY) {
+		this->pitch(diffY * event.timeSinceLastFrame);
+	}
+	
+	if (diffY || diffX) {
+		MovedCamera.emit(mCamera);
+	}
+//	movementForFrame.cameraOrientation = mAvatar->getAvatarCamera()->getOrienation();
+*/
 }
 
 }

@@ -24,7 +24,20 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.23  2004-08-04 23:39:43  aglanor
+ *      Revision 1.24  2004-10-06 22:32:48  erik
+ *      2004-10-07 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      *Moved completely to CEGUI. We now use no overlays.
+ *      *Changed the way the input system and the camera works:
+ *      	- Normal mode is gui mode where the mouse can be moved around, windows changed and interacted with. If one clicks on the Ogre render window mouse picking in the 3d world will occur (not implemented yet)
+ *      	- By pressing and holding the right mouse button one enters Movement mode. Mouse movement here will change the camera, which is centered on the avatar.
+ *      	- Pressing keys will move the avatar, UNLESS we're in Normal mode and a CEGUI widget says otherwise (the console for instance). This is not yet fully implemented.
+ *
+ *      *Implemented a widget system. Each widget is something like a map, an inventory, avatar stats etc.. These should preferrably be loaded through dynamic libs as plugins in the future. We'll also add lua-scripting (which should be easy since it's almost already in CEGUI).
+ *
+ *      *Removed references to InputManager since it's obsolete now.
+ *
+ *      Revision 1.23  2004/08/04 23:39:43  aglanor
  *      2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* /src/components/ogre/GUIManager.(h|cpp) and others related:
  *      	Added basic GUI support, including display of In-Game chat.
@@ -294,7 +307,7 @@ class GUIManager;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre : public dime::Singleton<DimeOgre>, virtual public SigC::Object //, public Ogre::ActionListener, public Ogre::MouseListener
+class DimeOgre : public dime::Singleton<DimeOgre>, virtual public SigC::Object, public Ogre::FrameListener //, public Ogre::ActionListener, public Ogre::MouseListener
 // TODO: the DimeOgre ConsoleObject will be included in a different class
 {
 public:
@@ -313,14 +326,13 @@ public:
             delete mRoot;
     }
 
-    /// Start the example
-    virtual void go(void)
-    {
-        if (!setup())
-            return;
-
-        mRoot->startRendering();
-    }
+	bool frameStarted(const Ogre::FrameEvent & evt);
+	bool frameEnded(const Ogre::FrameEvent & evt)
+	{
+		return true;
+	}
+	
+    virtual void go(void);
 
 	// Initialize all dime services needed for this application
 	void initializeDimeServices(void);

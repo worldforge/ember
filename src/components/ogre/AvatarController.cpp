@@ -30,6 +30,7 @@
 #include "PersonDimeEntity.h"
 #include "AvatarDimeEntity.h"
 #include "AvatarCamera.h"
+#include "GUIManager.h"
 #include "AvatarController.h"
 
 using namespace Ogre;
@@ -47,25 +48,34 @@ AvatarController& AvatarController::getSingleton(void)
 
 */
 
-AvatarController::AvatarController(Avatar* avatar, InputManager* inputManager, Ogre::RenderWindow* window) 
+AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager) 
 : mEntityUnderCursor(NULL) 
 , mSelectedEntity(NULL)
-, mInputManager(inputManager)
+, mGUIManager(guiManager)
 , mWindow(window)
 , mAvatarCamera(NULL)
 {
 	setAvatar(avatar);
 	mUpdateInterval = 1.0;
 	mTimeToUpdate = mUpdateInterval;
-	mMouseButton0Pressed = false;
+/*	mMouseButton0Pressed = false;
 	mMouseButton1Pressed = false;
 	mMouseButton2Pressed = false;
+*/
 	//AvatarController* avatarController = this;
 	//DimeOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
 	createAvatarCameras(avatar->getAvatarSceneNode());
-	mInputManager->addMouseListener(this);
-	mInputManager->setAvatarController(this);
+//	mInputManager->addMouseListener(this);
+//	mInputManager->setAvatarController(this);
 	mAvatar->setAvatarController(this);
+	
+	Ogre::Root::getSingleton().addFrameListener(this);
+	
+	
+	mKeyCodeForForwardMovement = Ogre::KC_W;
+	mKeyCodeForBackwardsMovement = Ogre::KC_S;
+	mKeyCodeForLeftMovement = Ogre::KC_A;
+	mKeyCodeForRightMovement = Ogre::KC_D;
 
 }
 AvatarController::~AvatarController()
@@ -74,7 +84,7 @@ AvatarController::~AvatarController()
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
 	if (mAvatarCamera == NULL) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, DimeOgre::getSingletonPtr()->getSceneManager(), mWindow);
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, DimeOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager);
 	} else {
 		mAvatarCamera->setAvatarNode(avatarSceneNode);
 	}
@@ -108,14 +118,15 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 	
 	*/
 	//is this the correct order to check things?
-	if (mInputManager->isMouseUsed()) {
+/*	if (mInputManager->isMouseUsed()) {
 		checkMouseClicks(event, inputReader);
-		checkMouseMovement(event, inputReader);
+		//mAvatarCamera->updateFromMouseMovement(event, mInputManager);
 		
 	}
-	checkMovementKeys(event, inputReader);
-	movementForFrame.timeSlice = event.timeSinceLastFrame;
-
+	*/
+//	checkMovementKeys(event, inputReader);
+	//movementForFrame.timeSlice = event.timeSinceLastFrame;
+/*
 	if (movementForFrame.isMoving) {
 		std::string aString;
 		Ogre::Vector3 pos = mAvatar->mAvatarNode->getPosition();
@@ -127,7 +138,7 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 	}
 
 	
-	mAvatar->updateFrame(movementForFrame);
+	//mAvatar->updateFrame(movementForFrame);
 	
 	// check if a second has passed, then check for entity equailty, then make Avatar update the server
 	// or something!
@@ -137,17 +148,16 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 		mTimeToUpdate = mUpdateInterval;
 	}
 
-
+*/
 	
 }
 
-/*
- * Part of this is taken from code posted by bad_camel at the Ogre3d forums 2004
- */
 DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputReader* inputReader) 
 {
-	Real mouseX = mInputManager->getMouseX();
-	Real mouseY = mInputManager->getMouseY();
+//	Real mouseX = inputReader->getMouseX();
+//	Real mouseY = inputReader->getMouseY();
+	Real mouseX;
+	Real mouseY;
 	
 	// Start a new ray query 
 	Ray cameraRay = getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
@@ -222,7 +232,7 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 
 void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* inputReader) {
 
-	if (mMouseButton0Pressed) {
+/*	if (mMouseButton0Pressed) {
 		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
 		if ( dimeEntity == NULL ) {    
 	     	// Nada! 
@@ -243,95 +253,146 @@ void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* i
 			mAvatar->touch(dimeEntity);
 		}
 	}
-	
+	*/
 }
 
-void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader* inputReader) {
- 	//TODO refactor into a 3d person view class thing
- 	
- 	/*this is in percent how much of the border areas that are "hot", i.e. makes the 
- 	 * view rotate when the mouse moves over them.
- 	 * Think of it as a picture frame.
- 	 */
-	const float sizeOfHotBorder = .25;
 
-	/*this is in percent how much of the border that makes the movement max out
-	 */										
-	const float sizeOfMaxHotBorder = .05;
-	
-	/* Max movement per second. I guess this is in degrees, but I'm not sure. 
-	 * Seemed as a nice value though
-	 */
-	const float maxMovement = 50; 
-	
-	int screenX = Root::getSingleton().getAutoCreatedWindow()->getWidth();
-	int screenY = Root::getSingleton().getAutoCreatedWindow()->getHeight();
-	
-	//we must use this obscure method, else all other overlays would "obstruct"
-	//the mouse pointer, giving us no data
-	float mouseX = mInputManager->getMouseX();
-	float mouseY = mInputManager->getMouseY();
-	
-	float diffX = 0.0, diffY = 0.0;
-	
-	
-	//this calculates how close the pointer is to the border and determines how
-	//much we should move
-	if (mouseX <= sizeOfHotBorder) {
-		diffX = (mouseX <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseX) / sizeOfHotBorder);
-	} else if (mouseX >= 1 - sizeOfHotBorder) {
-		diffX = (1.0 - mouseX <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseX - 1.0)) / sizeOfHotBorder) * maxMovement;
-	}	
-	if (mouseY <= sizeOfHotBorder) {
-		diffY = (mouseY <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseY) / sizeOfHotBorder);
-	} else if (mouseY >= 1 - sizeOfHotBorder) {
-		diffY = (1.0 - mouseY <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseY - 1.0)) / sizeOfHotBorder) * maxMovement;
-	}	
-			
-//	movementForFrame.rotationDegHoriz = diffX;
-//	movementForFrame.rotationDegVert = diffY;
-//	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
-	
-	//we do the camera pitch instantly and correct the avatar to the new position 
-	//when it's suitable
-	mAvatar->getAvatarCamera()->yaw(diffX * event.timeSinceLastFrame);
-	mAvatar->getAvatarCamera()->pitch(diffY * event.timeSinceLastFrame);
-//	movementForFrame.cameraOrientation = mAvatar->getAvatarCamera()->getOrienation();
+//void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader* inputReader) {
+// 	//TODO refactor into a 3d person view class thing
+// 	
+// 	/*this is in percent how much of the border areas that are "hot", i.e. makes the 
+// 	 * view rotate when the mouse moves over them.
+// 	 * Think of it as a picture frame.
+// 	 */
+//	const float sizeOfHotBorder = .25;
+//
+//	/*this is in percent how much of the border that makes the movement max out
+//	 */										
+//	const float sizeOfMaxHotBorder = .05;
+//	
+//	/* Max movement per second. I guess this is in degrees, but I'm not sure. 
+//	 * Seemed as a nice value though
+//	 */
+//	const float maxMovement = 50; 
+//	
+//	int screenX = Root::getSingleton().getAutoCreatedWindow()->getWidth();
+//	int screenY = Root::getSingleton().getAutoCreatedWindow()->getHeight();
+//	
+//	//we must use this obscure method, else all other overlays would "obstruct"
+//	//the mouse pointer, giving us no data
+//	float mouseX = mInputManager->getMouseX();
+//	float mouseY = mInputManager->getMouseY();
+//	
+//	float diffX = 0.0, diffY = 0.0;
+//	
+//	
+//	//this calculates how close the pointer is to the border and determines how
+//	//much we should move
+//	if (mouseX <= sizeOfHotBorder) {
+//		diffX = (mouseX <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseX) / sizeOfHotBorder);
+//	} else if (mouseX >= 1 - sizeOfHotBorder) {
+//		diffX = (1.0 - mouseX <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseX - 1.0)) / sizeOfHotBorder) * maxMovement;
+//	}	
+//	if (mouseY <= sizeOfHotBorder) {
+//		diffY = (mouseY <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseY) / sizeOfHotBorder);
+//	} else if (mouseY >= 1 - sizeOfHotBorder) {
+//		diffY = (1.0 - mouseY <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseY - 1.0)) / sizeOfHotBorder) * maxMovement;
+//	}	
+//			
+////	movementForFrame.rotationDegHoriz = diffX;
+////	movementForFrame.rotationDegVert = diffY;
+////	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
+//	
+//	//we do the camera pitch instantly and correct the avatar to the new position 
+//	//when it's suitable
+//	mAvatar->getAvatarCamera()->yaw(diffX * event.timeSinceLastFrame);
+//	mAvatar->getAvatarCamera()->pitch(diffY * event.timeSinceLastFrame);
+////	movementForFrame.cameraOrientation = mAvatar->getAvatarCamera()->getOrienation();
+//}
+
+
+void AvatarController::keyPressed (Ogre::KeyEvent *e)
+{
+/*	if (mKeyCodeForForwardMovement)
+		mIsForwardMovement = true;
+		
+	if (mKeyCodeForBackwardsMovement)
+		mIsBackwardsMovement = true;
+		
+	if (mKeyCodeForLeftMovement)
+		mIsLeftMovement = true;
+		
+	if (mKeyCodeForRightMovement)
+		mIsRightMovement = true;
+	*/
 }
+
+
+void AvatarController::keyReleased (Ogre::KeyEvent *e)
+{
+// 	if (mKeyCodeForForwardMovement)
+// 		mIsForwardMovement = false;
+// 		
+// 	if (mKeyCodeForBackwardsMovement)
+// 		mIsBackwardsMovement = false;
+// 		
+// 	if (mKeyCodeForLeftMovement)
+// 		mIsLeftMovement = false;
+// 		
+// 	if (mKeyCodeForRightMovement)
+// 		mIsRightMovement = false;
+
+}
+
+
+bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
+{
+	if (!mGUIManager->isInGUIMode()) {
+		checkMovementKeys(event, mGUIManager->getEventProcessor()->getInputReader());
+		
+		movementForFrame.timeSlice = event.timeSinceLastFrame;
+		
+		mAvatar->updateFrame(movementForFrame);
+	}
+
+	return true;
+}
+
+
 
 void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* inputReader)
 {
 		//Real timePassed = event.timeSinceLastFrame;
-		bool isRunning = mInputManager->isKeyDown(KC_LSHIFT);
+		bool isRunning = inputReader->isKeyDown(KC_LSHIFT);
 
 		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
 		bool isMovement = false; 
 
 		// forwards / backwards
-		if(mInputManager->isKeyDown(KC_UP))  // W also, and same for the rest
+		if(inputReader->isKeyDown(mKeyCodeForForwardMovement))  // W also, and same for the rest
 		{
 			movement.x = 1; 	//scale this
 			isMovement = true;
 		}
-		else if(mInputManager->isKeyDown(KC_DOWN))
+		else if(inputReader->isKeyDown(mKeyCodeForBackwardsMovement))
 		{
 			movement.x = -1;		//scale
 			isMovement = true;
 		}
 
 		// strafe
-		if(mInputManager->isKeyDown(KC_LEFT))
+		if(inputReader->isKeyDown(mKeyCodeForLeftMovement))
 		{
 			movement.z = -1;
 			isMovement = true;
 		}
-		else if(mInputManager->isKeyDown(KC_RIGHT))
+		else if(inputReader->isKeyDown(mKeyCodeForRightMovement))
 		{
 			movement.z = 1;
 			isMovement = true;
 		}
 
-		// up down
+/*		// up down
 		if(mInputManager->isKeyDown(KC_PGDOWN))
 		{
 			movement.y = -1;
@@ -342,6 +403,7 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* 
 			movement.y = 1;
 			isMovement = true;
 		}
+*/		
 		if(isMovement)
 		{
 			movementForFrame.movementDirection = movement;
@@ -358,7 +420,7 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* 
 		}
 }
 
-
+/*
 void AvatarController::mouseMoved(short newX, short newY, short oldX, short oldY)
 {
 	//we don't need this
@@ -388,7 +450,7 @@ void AvatarController::mouseReleased(unsigned char button)
 	}
 //	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
 }
-
+*/
 AvatarCamera* AvatarController::getAvatarCamera() const
 {
 	return mAvatarCamera;	
