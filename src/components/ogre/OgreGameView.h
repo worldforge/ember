@@ -84,7 +84,7 @@ class OgreGameView : public ConsoleObject,
          */
         OgreGameView();
 
-        /** Destructor, stick cleanup stuff her as per usual */
+        /** Destructor, stick cleanup stuff here as per usual */
         ~OgreGameView();
 
         /**

@@ -1,6 +1,6 @@
 /*
 -----------------------------------------------------------------------------
-This source file is part of DIME
+This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://ogre.sourceforge.net/
 
@@ -29,8 +29,8 @@ Description: Base class for all the OGRE examples
 -----------------------------------------------------------------------------
 */
 
-#ifndef __BaseApplication_H__
-#define __BaseApplication_H__
+#ifndef __OgreApplication_H__
+#define __OgreApplication_H__
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
@@ -47,17 +47,17 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class BaseApplication
+class OgreApplication
 {
 public:
     /// Standard constructor
-    BaseApplication()
+    OgreApplication()
     {
         mFrameListener = 0;
         mRoot = 0;
     }
     /// Standard destructor
-    virtual ~BaseApplication()
+    virtual ~OgreApplication()
     {
         if (mFrameListener)
             delete mFrameListener;
@@ -73,6 +73,13 @@ public:
 
         mRoot->startRendering();
     }
+	
+	// Initialize all dime services needed for this application
+	void OgreApplication::initializeDimeServices(void);
+	
+	// TODO: these are for tests. Remove them later
+	Entity* mShip;
+	SceneNode* mShipNode;
 
 protected:
     Root *mRoot;
@@ -130,27 +137,14 @@ protected:
     virtual void chooseSceneManager(void)
     {
         // Get the SceneManager, in this case a generic one
-        mSceneMgr = mRoot->getSceneManager(ST_GENERIC);
-    }
-    virtual void createCamera(void)
-    {
-        // Create the camera
-        mCamera = mSceneMgr->createCamera("PlayerCam");
-
-        // Position it at 500 in Z direction
-        mCamera->setPosition(Vector3(0,0,500));
-        // Look back along -Z
-        mCamera->lookAt(Vector3(0,0,-300));
-        mCamera->setNearClipDistance(5);
-
-    }
-    virtual void createFrameListener(void)
-    {
-        mFrameListener= new BaseFrameListener(mWindow, mCamera);
-        mRoot->addFrameListener(mFrameListener);
+        mSceneMgr = mRoot->getSceneManager(ST_EXTERIOR_CLOSE);
     }
 
-    virtual void createScene(void) = 0;    // pure virtual - this has to be overridden
+    void createCamera(void);
+
+	void createFrameListener(void);
+
+    void createScene(void);
 
     virtual void createViewports(void)
     {
@@ -178,8 +172,6 @@ protected:
         }
     }
 
-
-
 };
 
 // ----------------------------------------------------------------------------
@@ -190,13 +182,14 @@ protected:
 // specialise the setup routine, otherwise the only mandatory override is the
 // 'createScene' method which is where you set up your own personal scene.
 // ----------------------------------------------------------------------------
+/*
 class OgreApp : public BaseApplication
 {
 public:
     // Basic constructor
     OgreApp() {}
-	Entity* mShip;
-	SceneNode* mShipNode;
+	dime::OgreGameView* mGameview;
+
 
 protected:
 
@@ -205,7 +198,7 @@ protected:
 
   // Override this too.
   void createFrameListener(void);
-	
+
   virtual void chooseSceneManager(void)
     {
       // Get the SceneManager
@@ -216,5 +209,5 @@ protected:
 
 
 };
-
+*/
 #endif

@@ -24,7 +24,7 @@ namespace dime {
 
 OgreGameView::OgreGameView()
 {
-
+	fprintf(stderr,"WOOHOOO --- GAMEVIEW IS CREATED");
     /* Find out where the Eris world instance resides... */
     Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
 
@@ -52,7 +52,7 @@ void OgreGameView::entityCreate( Eris::Entity *e )
 {
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
-
+	fprintf(stderr,"WOOHOOO --- AN ENTITY IS CREATED");
     // Xmp's Notes: hmm need to work out how to connect these
     e->AddedMember.connect( SigC::slot( *this, &OgreGameView::addedMember ) );
 

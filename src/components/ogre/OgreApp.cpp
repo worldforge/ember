@@ -32,6 +32,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 */
 
 // ------------------------------
+// Include OGRE dime client files
+// ------------------------------
+#include "OgreGameView.h"
+
+// ------------------------------
 // Include dime header files
 // ------------------------------
 #include "services/DimeServices.h"
@@ -269,9 +274,21 @@ class TerrainListener : public BaseFrameListener
 class DimeFrameListener : public BaseFrameListener
 {
 
+private:
+
+	dime::OgreGameView* mGameview;
+
 public:
 
 	DimeFrameListener(RenderWindow* win, Camera* cam) : BaseFrameListener(win, cam) {}
+	
+	~DimeFrameListener()
+	{
+		if(mGameview!=NULL)
+		{
+			delete mGameview;
+		}
+	}
 
 	bool frameStarted(const FrameEvent& evt)
 	{
@@ -317,10 +334,10 @@ public:
 			// TODO: this is an ugly hack (Aglanor)
 			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","ogre_207");
 			timeUntilNextToggle = 1;
-		}
+			fprintf(stderr, "WOHOOOO - LOGED IN");
+			mGameview = new dime::OgreGameView();
 
-		// login ogretest ogretest
-		
+		}
 
 
 		return true;
@@ -332,7 +349,7 @@ class CameraFrameListener : public BaseFrameListener
 protected:
 	Camera* mCamera;
 	SceneDetailLevel normal;
-		SceneDetailLevel wireframe;
+	SceneDetailLevel wireframe;
 	SceneDetailLevel sdl;
 
 public:
@@ -418,7 +435,7 @@ public:
 
 };
 
-void OgreApp::createScene(void)
+void OgreApplication::createScene(void)
 {
   mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
   // Create a light
@@ -434,19 +451,19 @@ void OgreApp::createScene(void)
 //#if 0
   
   //create the entity
-  mShip = mSceneMgr->createEntity("robot", "robot.mesh");
+  mShip = mSceneMgr->createEntity("blackdog", "squirel_of_doom.mesh");
 
   // create the node
   mShipNode = mSceneMgr->getRootSceneNode()->createChild();
   mShipNode->setPosition(10,25,128);
-  mShipNode->setScale(0.2,0.2,0.2);
+  mShipNode->setScale(0.01,0.01,0.01);
 
   // attach the node to the entity
   mShipNode->attachObject(mShip);
 //#endif
 }
 
-void OgreApp::createFrameListener(void)
+void OgreApplication::createFrameListener(void)
 {
   mFrameListener= new TerrainListener(mWindow, mCamera);
   mRoot->addFrameListener(mFrameListener);
@@ -460,7 +477,7 @@ void OgreApp::createFrameListener(void)
 #endif
 }
 
-void OgreApp::createCamera(void)
+void OgreApplication::createCamera(void)
 {
   // Create the camera
   mCamera = mSceneMgr->createCamera("PlayerCam");
@@ -477,31 +494,16 @@ void OgreApp::createCamera(void)
 
 }
 
-
-// ----------------------------------------------------------------------------
-// Main function, just boots the application object
-// ----------------------------------------------------------------------------
-#if OGRE_PLATFORM == PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-
-
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
-int main(int argc, char **argv)
-#endif
+void OgreApplication::initializeDimeServices(void)
 {
-    // Create application object
-    OgreApp app;
-	
 	// Initialize dime services
-	
+
 	// Initialize the Logging service and an error observer
 	dime::LoggingService *logging = dime::DimeServices::getInstance()->getLoggingService();
 	CerrLogObserver* obs = new CerrLogObserver();
 	obs->setFilter(dime::LoggingService::VERBOSE);
 	logging->addObserver(obs);
-	
+
 
 	// Initialize the Configuration Service
 	dime::DimeServices::getInstance()->getConfigService()->start();
@@ -531,6 +533,30 @@ int main(int argc, char **argv)
 	// Initialize the Server Service
 	dime::DimeServices::getInstance()->getServerService()->start();
 #endif
+
+
+
+}
+
+
+// ----------------------------------------------------------------------------
+// Main function, just boots the application object
+// ----------------------------------------------------------------------------
+#if OGRE_PLATFORM == PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"
+
+
+INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+#else
+int main(int argc, char **argv)
+#endif
+{
+    // Create application object
+    OgreApplication app;
+	
+	// Initialize all dime services needed for this application
+	app.initializeDimeServices();
 
     try {
         app.go();
