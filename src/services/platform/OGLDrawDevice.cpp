@@ -141,7 +141,7 @@ void dime::OGLDrawDevice::update()
   ratio = ( GLfloat )myScreenWidth / ( GLfloat )myScreenHeight;
 
   // Setup our viewport
-  glViewport( 100, 100, ( GLsizei )myScreenWidth-100, ( GLsizei )myScreenHeight-100 );
+  glViewport( 0, 0, ( GLsizei )myScreenWidth, ( GLsizei )myScreenHeight );
 
   // change to the projection matrix and set our viewing volume.
   glMatrixMode( GL_PROJECTION );
