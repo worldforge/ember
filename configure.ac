@@ -20,16 +20,12 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
+AC_PROG_RANLIB
 dnl AM_PROG_LEX
 
 # Allow maintainer mode
 AM_MAINTAINER_MODE
 
-# Check for C++ libraries:
-AC_LANG([C++])
-
-# Check for the Boost shared_ptr.hpp shared pointer header
-AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
 
 # Check for C libraries:
 AC_LANG([C])
@@ -46,6 +42,40 @@ AC_CHECK_LIB(SDL_image, IMG_Load, , [
 CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
+
+AC_CHECK_LIB(GL,
+	     glViewport,
+	     LIBS="$LIBS -lGL",
+	     AC_MSG_ERROR([
+	     Unable to find An OpenGL environment
+	     ])
+	)
+
+# OpenAL check
+
+AC_CHECK_LIB(openal,
+	alutInit ,
+	     LIBS="$LIBS -lopenal",
+	     AC_MSG_ERROR([
+	     Unable to find OpenAL (Open Audio Layer)
+	     ])
+	)
+
+ Test for libxml2
+AM_PATH_XML2(2.4.23,[
+    CFLAGS="$CFLAGS $XML_CFLAGS"
+    CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
+    LDFLAGS="$LDFLAGS $XML_LIBS"
+    ],
+AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
+)
+
+# Check for C++ libraries:
+AC_LANG([C++])
+
+# Check for the Boost shared_ptr.hpp shared pointer header
+AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
+
 
 # Check for SigC++
 SIGC_VERSION=1.0.4
@@ -175,32 +205,6 @@ AM_PATH_CPPUNIT(1.8.0, [
 ]))
 fi
 
-# OpenGL and GLU check
-
-AC_CHECK_LIB(GL,
-	     glViewport,
-	     LIBS="$LIBS -lGL",
-	     AC_MSG_ERROR([
-	     Unable to find An OpenGL environment
-	     ])
-	)
-#AC_CHECK_LIB(GLU,
-#	     gluPerspective,
-#	     LIBS="$LIBS -lGLU",
-#	     AC_MSG_ERROR([
-#	     Unable to find the GLU library
-#	     ])
-#)
-
-# OpenAL check
-
-AC_CHECK_LIB(openal,
-	alutInit ,
-	     LIBS="$LIBS -lopenal",
-	     AC_MSG_ERROR([
-	     Unable to find OpenAL (Open Audio Layer)
-	     ])
-	)
 
 # debugging option
 AC_ARG_ENABLE(debug,[  --enable-debug     creates debugging code [default=no]],
@@ -235,17 +239,6 @@ if test "$ac_use_gprof_code" = "yes"; then
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
 
-AC_LANG_SAVE
-AC_LANG([C])
- Test for libxml2
-AM_PATH_XML2(2.4.23,[
-    CFLAGS="$CFLAGS $XML_CFLAGS"
-    CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
-    LDFLAGS="$LDFLAGS $XML_LIBS"
-    ],
-AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
-)
-AC_LANG_RESTORE
 
 # Checks for header files.
 AC_HEADER_STDC
