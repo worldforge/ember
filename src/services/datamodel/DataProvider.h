@@ -62,7 +62,7 @@ public:
 	const T & getKey() { return myKey; }
 	virtual ~DataKeyImpl() {} //This causes to free myKey
 
-	static T spec/*ialize*/(boost::shared_ptr<DataKey> ptr) 
+	static T& spec/*ialize*/(boost::shared_ptr<DataKey> ptr) 
 	{		
 		return static_cast<DataKeyImpl<T> *>(ptr.get())->myKey;
 	}

@@ -290,8 +290,6 @@ void DataProvider::fireGeneralSignal(DataType event)
 
 	for (i = myConns.begin(); i != myConns.end(); i++)
 	{
-		DataConnectionList * list = i->second;
-		DataConnectionList::iterator j;
 		fireSignal(i->first, event);
 	}
 }
