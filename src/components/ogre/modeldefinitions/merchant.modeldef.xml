@@ -1,0 +1,76 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="merchant" height="1.7" width="0.4" depth="0.2" scale="1" >
+  <submodels>
+    <submodel mesh="malebuilder.mesh" >
+      <parts>
+        <part name="Body" show="true" >
+          <subentities>
+            <subentity name="Lowpoly_left_arm" />
+            <subentity name="Lowpoly_lower_legs" />
+            <subentity name="Lowpoly_feet" />
+            <subentity name="lowpoly mitten_hand_l" />
+            <subentity name="lowpoly mitten_hand_l.0" />
+            <subentity name="lowpoly mitten_hand_r" />
+            <subentity name="lowpoly mitten_hand_r.0" />
+            <subentity name="Lowpoly_right_arm" />
+            <subentity name="Lowpoly_torso" />
+	  </subentities>
+        </part>      
+        <part name="GroinArea" show="false" >
+          <subentities>
+            <subentity name="Lowpoly_groin" />
+            <subentity name="Lowpoly_upper_legs" />
+	  </subentities>
+        </part>      
+        <part name="Eyes" show="true" >
+          <subentities>
+            <subentity name="eye_l" />
+            <subentity name="eye_r" />
+	  </subentities>
+        </part>      
+        <part name="Head" show="true" >
+          <subentities>
+            <subentity name="Head_02" />
+            <subentity name="Head_02.0" />
+          </subentities>
+        </part>
+        <part name="Head/Brutus" show="false" >
+          <subentities>
+            <subentity name="head_brutus" />
+            <subentity name="head_brutus.0" />
+            <subentity name="neck_brutus_01" />
+            <subentity name="neck_brutus_01.0" />
+         </subentities>
+        </part>
+        <part name="Boxers" show="false" >
+          <subentities>
+            <subentity name="Lowpoly_boxers" />
+          </subentities>
+        </part>
+        <part name="Cloak" show="true" >
+          <subentities>
+            <subentity name="Lowpoly_cloak" material="Malebuilder/Dress/Sun" />
+            <subentity name="Lowpoly_cloak.0" material="Malebuilder/Dress/Sun" />
+          </subentities>
+        </part>
+	<part name="Pants" show="true" >
+          <subentities>
+            <subentity name="Lowpoly_pants" material="Malebuilder/Dress/Sun" />
+            <subentity name="Lowpoly_pants.0" material="Malebuilder/Dress/Sun" />
+          </subentities>
+        </part>      
+        <part name="Shirt" show="false" >
+          <subentities>
+            <subentity name="Lowpoly_Shirt" material="Malebuilder/Dress/Sun" />
+            <subentity name="Lowpoly_Shirt.0" material="Malebuilder/Dress/Sun" />
+          </subentities>
+        </part>  
+        <part name="ShirtTuckedLongSleeve" show="true" >
+          <subentities>
+            <subentity name="Shirt tucked long sleeve" material="Malebuilder/Dress/Sun" />
+          </subentities>
+        </part>      
+      </parts>
+    </submodel>
+  </submodels>
+</model>

@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="field" height="0.001" width="0.001" depth="0.001" scale="10" >
+  <submodels>
+    <submodel mesh="acorn.mesh" >
+      <parts>
+        <part name="Acorn" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

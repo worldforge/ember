@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="sty" height="1" width="10" depth="10" rotation="-90">
+  <submodels>
+    <submodel mesh="sty.mesh" >
+      <parts>
+        <part name="Sty" show="true" >
+      </parts>
+    </submodel>
+  </submodels>
+</model>

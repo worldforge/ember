@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="pig" height="0.5" width="0.3" depth="1" scale="1" >
+  <submodels>
+    <submodel mesh="pig.mesh" >
+      <parts>
+        <part name="Pig" show="true" >
+      </parts>
+    </submodel>
+  </submodels>
+</model>

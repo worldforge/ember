@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="goblin" height="1.7" width="0.4" depth="0.2" scale="0.1" >
+  <submodels>
+    <submodel mesh="GoblinHead.mesh">
+      <parts>
+        <part name="Head" show="true" >
+      </parts>
+    </submodel>
+    <submodel mesh="GoblinEyes.mesh" >
+      <parts>
+        <part name="Eyes" show="true" >
+      </parts>
+    </submodel>
+    <submodel mesh="GoblinBody.mesh">
+      <parts>
+        <part name="Body" show="true" >
+      </parts>
+    </submodel>
+    <submodel mesh="GoblinMouth.mesh">
+      <parts>
+        <part name="Mouth" show="true" >
+      </parts>
+    </submodel>
+  </submodels>
+</model>
