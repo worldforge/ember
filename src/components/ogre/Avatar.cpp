@@ -24,10 +24,10 @@
 #include "config.h"
 #endif
 #include <Ogre.h>
-/*
+
 #include "services/server/ServerService.h"
 #include "services/DimeServices.h"
-
+/*
 #include "EntityListener.h"
 #include <Ogre.h>
 
@@ -38,6 +38,8 @@
 #include "MathConverter.h"
 */
 
+
+#include "DimeEntity.h"
 #include "Avatar.h"
 
 
@@ -196,3 +198,7 @@ void Avatar::enteredWorld(Eris::Entity *e)
 	mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
 }
 
+void Avatar::touch(DimeEntity* entity)
+{
+	dime::DimeServices::getInstance()->getServerService()->touch(entity);
+}

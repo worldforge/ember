@@ -23,6 +23,8 @@
 #include "DimeOgre.h"
 #include "EntityListener.h"
 
+#include "DimeEntity.h"
+
 #include "AvatarController.h"
 
 using namespace Ogre;
@@ -36,7 +38,7 @@ AvatarController& AvatarController::getSingleton(void)
 	return *_instance;
 }
 
-AvatarController::AvatarController()
+AvatarController::AvatarController() : mEntityUnderCursor(NULL) , mSelectedEntity(NULL)
 {
 	mUpdateInterval = 1.0;
 	mTimeToUpdate = mUpdateInterval;
@@ -62,6 +64,7 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 		if (InputManager::getSingleton().isMouseUsed()) {
 			checkMouseClicks(event, inputReader);
 			checkMouseMovement(event, inputReader);
+			
 		}
 		checkMovementKeys(event, inputReader);
 		
@@ -75,34 +78,32 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 	
 }
 
-
 /*
  * Part of this is taken from code posted by bad_camel at the Ogre3d forums 2004
  */
-void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* inputReader) {
-
-	if (mMouseButton0Pressed || mMouseButton1Pressed || mMouseButton2Pressed) {
-		fprintf(stderr, "CHECKING OBJECT PICKEDn\n");
-		
-		Real mouseX = InputManager::getSingleton().getMouseX();
-		Real mouseY = InputManager::getSingleton().getMouseY();
-		
-		SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
-		// Start a new ray query 
-		Ray cameraRay = mAvatar->getAvatar1pCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-		RaySceneQuery *raySceneQuery = sceneManager->createRayQuery( cameraRay ); 
-		raySceneQuery->execute(); 
-		RaySceneQueryResult result = raySceneQuery->getLastResults(); 
-		   
-		MovableObject *closestObject = NULL; 
-		//in meters how far we can pick objects
-		Real closestDistance = WF2OGRE(10000.0); 
-		 
-		std::list< RaySceneQueryResultEntry >::iterator rayIterator; 
-		   
-		for ( rayIterator = result.begin( ); 
-			rayIterator != result.end( ); 
-			rayIterator++ ) {
+DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputReader* inputReader) 
+{
+	Real mouseX = InputManager::getSingleton().getMouseX();
+	Real mouseY = InputManager::getSingleton().getMouseY();
+	
+	SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
+	// Start a new ray query 
+	Ray cameraRay = mAvatar->getAvatar1pCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	RaySceneQuery *raySceneQuery = sceneManager->createRayQuery( cameraRay ); 
+	raySceneQuery->execute(); 
+	RaySceneQueryResult result = raySceneQuery->getLastResults(); 
+	   
+	MovableObject *closestObject = NULL; 
+	//in meters how far we can pick objects
+	Real closestDistance = WF2OGRE(10000.0); //TODO:set this to something closer, 10000m is for debugging
+	 
+	std::list< RaySceneQueryResultEntry >::iterator rayIterator; 
+	   
+	for ( rayIterator = result.begin( ); 
+		rayIterator != result.end( ); 
+		rayIterator++ ) {
+		//only pick entities that have a userobject attached
+		if (( *rayIterator ).movable->getUserObject() != NULL) {
 			//we don't want to pick ourselves
 			if ( ( *rayIterator ).movable->getName() != "AvatarEntity" ) { 
 				if ( ( *rayIterator ).distance < closestDistance ) { 
@@ -110,23 +111,45 @@ void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* i
 					closestDistance = ( *rayIterator ).distance; 
 				}
 			} 
-		} 
+		}
+	} 
  
    // No movable clicked 
-   if ( closestObject == NULL ) {    
+	if ( closestObject == NULL ) {    
      // Nada! 
-     Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
-   } else { 
-   	Root::getSingleton().getAutoCreatedWindow()->setDebugText(closestObject->getName());
-//     fprintf(stderr, strcat("PICKEDn\n");
+	     mEntityUnderCursor == NULL;
+	     return NULL;
+		Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
+	} else { 
+		mEntityUnderCursor = dynamic_cast<DimeEntity*>(closestObject->getUserObject());
+		return  mEntityUnderCursor;
      // Yippee! 
-   } 		
-		
-		
-		
-		
-		
-		
+	} 		
+	
+}
+
+void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* inputReader) {
+
+	if (mMouseButton0Pressed) {
+		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
+		if ( dimeEntity == NULL ) {    
+	     	// Nada! 
+			Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
+		} else { 
+			std::string aString;
+			aString = "OgreID: " + dimeEntity->getOgreEntity()->getName();
+			aString += " ErisID: " + dimeEntity->getID();
+			aString += " ErisName: " + dimeEntity->getName();
+			Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
+		} 	
+	} else if (mMouseButton1Pressed) {
+		//we should expand this into some kind of chooser of what action will be taken
+		//perhaps by using a small dropdownlist
+		//waiting for CEGUI...
+		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
+		if (dimeEntity != NULL) {
+			mAvatar->touch(dimeEntity);
+		}
 	}
 	
 }

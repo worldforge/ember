@@ -129,6 +129,9 @@ class ServerService : public Service, public ConsoleObject,
       {
 	return myWorld;
       }
+      
+    void moveToPoint(const WFMath::Point<3>& dest); 
+   	void touch(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
     // Callbacks from Eris

@@ -43,6 +43,8 @@
 #include <sigc++/object_slot.h>
 #endif
 
+class DimeEntity;
+
 #include "MathConverter.h"
 
 using namespace Ogre;
@@ -109,6 +111,8 @@ class Avatar : virtual public SigC::Object
 	
 	
 	void enteredWorld(Eris::Entity *e);
+	
+	void touch(DimeEntity* entity);
 
 private:
 	

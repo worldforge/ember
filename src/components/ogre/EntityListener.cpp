@@ -51,7 +51,7 @@ EntityListener::~EntityListener()
 
 EntityListener & EntityListener::getSingleton(void)
 {
-	fprintf(stderr, "TRACE - ENTITY LISTENER - SINGLETON ENTERING\n");
+	//fprintf(stderr, "TRACE - ENTITY LISTENER - SINGLETON ENTERING\n");
 	if(_instance == 0)
 		_instance = new EntityListener;
 	return *_instance;

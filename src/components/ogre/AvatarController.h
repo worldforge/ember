@@ -52,6 +52,10 @@ public:
 
 protected:
 
+	/*
+	 * Check what object is under the mouse and puts this in mEntityUnderCursor
+	 */
+	virtual DimeEntity* doMousePicking(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 	virtual void checkMouseMovement(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 	virtual void checkMovementKeys(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 	virtual void checkMouseClicks(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
@@ -110,6 +114,10 @@ private:
     {
         return *this;
     }
+    
+    DimeEntity* mEntityUnderCursor;
+    DimeEntity* mSelectedEntity;
+    
 		
 };
 
