@@ -56,6 +56,11 @@ class ServerService: public Service, public SigC::Object
     short myPort;
     string myHost;
 
+    /**
+     * True if and only if we are successfully connected to the server
+     */
+    bool myConnected;
+
 		
     //----------------------------------------------------------------------
     // Constructors & Destructor
@@ -63,7 +68,7 @@ class ServerService: public Service, public SigC::Object
 	public:
 	
     /** Creates a new ServerService using default values. */
-    ServerService(const std::string& host, short port = 6767);
+    ServerService();
 
 
     /** Deletes a ServerService instance. */
@@ -71,16 +76,23 @@ class ServerService: public Service, public SigC::Object
 
     //----------------------------------------------------------------------
     // Getters & Setters
+    bool isConnected() const
+      {
+	return myConnected;
+      }
 
     //----------------------------------------------------------------------
     // Methods
 	
 	Service::Status start();
 
+	bool connect(const std::string& host, short port = 6767);
+
 	void stop(int code);
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
+ private:
 
 	// Connection Callbacks
 	
