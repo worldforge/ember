@@ -20,7 +20,8 @@
 #define GUISERVICE_H
 
 // Included headers from the current project
-#include "../../framework/Service.h"
+#include <framework/Service.h>
+#include <services/input/InputService.h>
 #include "Container.h"
 
 // Included custom library headers
@@ -38,8 +39,9 @@ namespace dime {
  *
  *
  * @author Hans Häggström
+ * @author Adam Gregory
  */
-class GuiService : public Service
+class GuiService : public Service, public SigC::Object
 
 {
 
@@ -50,11 +52,8 @@ class GuiService : public Service
 
     Container myRootWidget;
 
-
-    /**
-     * This variable is used to keep track of the next free ID number for a new gizmo.
-     */
-    static int theNextId;
+	InputService *myInputService;
+	InputDevice *myMouse;
 
     //======================================================================
     // Public Methods
@@ -65,24 +64,21 @@ class GuiService : public Service
     // Constructors
 
     /**
-     * Creates a new GuiService using default values.
-     */
-    GuiService() 
-    {
-    }
+    * Creates a new GuiService using default values.
+    */
+    GuiService();
     
 
     //----------------------------------------------------------------------
     // Destructor
 
     /**
-     * Deletes a GuiService instance.
-     */
+    * Deletes a GuiService instance.
+    */
     virtual ~GuiService()
     {
     }
     
-
 
     //----------------------------------------------------------------------
     // Getters
@@ -106,19 +102,25 @@ class GuiService : public Service
 	 */
 	int refresh();
 	
+	/**
+	 * Passes mouse input events down to widget tree
+	 */
+
+	void MouseMotion(InputDevice *, const SDLKey &, InputMapping::InputSignalType);
+	
     //----------------------------------------------------------------------
     // Methods inherited from Service
     /**
-     * This method is used to start the service.
-     * It takes care of aquiring needed resources, initializing
-     * data structures, and so on. <p>
-     *
-     * If initialization fails, it should set appropriate status code and
-     * status text.  It could also write an entry into a log through the logging
-     * service.  <p>
-     *
-     * @returns success or error code
-     */
+    * This method is used to start the service.
+    * It takes care of aquiring needed resources, initializing
+    * data structures, and so on. <p>
+    *
+    * If initialization fails, it should set appropriate status code and
+    * status text.  It could also write an entry into a log through the logging
+    * service.  <p>
+    *
+    * @returns success or error code
+    */
     virtual int start()
     {
         setRunning( true );
@@ -157,16 +159,16 @@ class GuiService : public Service
     private:
 
     /**
-     * Copy constructor not provided.
-     */
+    * Copy constructor not provided.
+    */
     GuiService( const GuiService &source )
     {
     }
 
 
     /**
-     * Assignment operator not provided.
-     */
+    * Assignment operator not provided.
+    */
     GuiService &operator= ( const GuiService &source )
     {
         return *this;

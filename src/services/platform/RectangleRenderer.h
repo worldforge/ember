@@ -148,7 +148,7 @@ class RectangleRenderer
     RectangleRenderer(int renderFlag, Rectangle *rect,
         Color *color1, Color *color2, Color *color3, Color *color4);
 
-    int render(SDL_Surface *rectScreen);
+
 
     //----------------------------------------------------------------------
     // Destructor
@@ -164,12 +164,20 @@ class RectangleRenderer
     //----------------------------------------------------------------------
     // Setters
 
+    //----------------------------------------------------------------------
+    // Other public methods	
+	
+	/**
+	 * Calls appropriate private function to render 
+	int render(SDL_Surface *rectScreen);
+	
     //======================================================================
     // Protected Methods
     //======================================================================
     protected:
 
-    //======================================================================        // Private Methods
+    //======================================================================
+	 // Private Methods
     //======================================================================
     private:
     //----------------------------------------------------------------------

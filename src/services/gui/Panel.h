@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "Container.h"
+#include "../platform/RectangleRenderer.h"
 
 // Included custom library headers
 
@@ -65,6 +66,9 @@ class Panel : public Container
     //======================================================================
     private:
 	
+	/**
+	 * RectangleRenderer to display background of Panel.
+	 */
 	RectangleRenderer myBackground;
 
     //======================================================================
@@ -76,7 +80,7 @@ class Panel : public Container
     // Constructors
 
     /**
-     * Cretaes a new NameOfClass using default values.
+     * Cretaes a new Panel using default values.
      */
     Panel()
     {
@@ -110,7 +114,7 @@ class Panel : public Container
     // Destructor
 
     /**
-     * Deletes a NameOfClass instance.
+     * Deletes a Panel instance.
      */
     virtual ~Panel()
     {

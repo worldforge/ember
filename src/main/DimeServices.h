@@ -23,6 +23,7 @@
 #include <services/test/TestService.h>
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
+#include <services/gui/GuiService.h>
 
 // Include custom library headers here
 
@@ -84,6 +85,11 @@ class DimeServices
 	 * The instance of the InputService
      */
     dime::InputService *myInputService;
+	
+	/*
+	 * The instance of the GuiService
+     */
+    dime::GuiService *myGuiService;
 
     /**
      * The DimeServices singleton instance.
@@ -154,6 +160,14 @@ class DimeServices
     dime::InputService *getInputService()
     {
         return myInputService;
+    }
+	
+	/**
+     * Returns an instance of the GuiService
+     */
+    dime::GuiService *getGuiService()
+    {
+        return myGuiService;
     }
 
     //----------------------------------------------------------------------
