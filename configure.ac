@@ -27,7 +27,25 @@ AM_MAINTAINER_MODE
 
 
 # Check for C libraries:
-AC_LANG([C])
+AC_LANG([C++])
+AC_REQUIRE_CPP
+
+AC_LANG_PUSH([C])
+
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([stdlib.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_STRUCT_TM
+
+# Checks for library functions.
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([memset select])
 
 AC_MSG_RESULT([
 
@@ -62,7 +80,10 @@ AC_CHECK_LIB(GL,
 
 AC_CHECK_LIB(openal,
 	alutInit ,
-	     LIBS="$LIBS -lopenal",
+	[
+	     LIBS="$LIBS -lopenal"
+	     AC_DEFINE(HAVE_LIBOPENAL,1,openAL)
+	],
 	     AC_MSG_ERROR([
 	     Unable to find OpenAL (Open Audio Layer)
 	     ])
@@ -73,45 +94,6 @@ PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
 	[
 		CPPFLAGS="$CPPFLAGS $XML_CFLAGS"
 		LDFLAGS="$LDFLAGS $XML_LIBS"
-	],
- AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
-)
-
-
-# Check for C++ libraries:
-AC_LANG([C++])
-
-AC_MSG_RESULT([
-
-		**************************************
-		* Checking for C++ Libraries
-		**************************************
-
-	])
-
-# Check for the Boost shared_ptr.hpp shared pointer header
-AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
-
-AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
-
-OGRE_VERSION=0.10.0
-PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
-	[
-		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS"
-	],
-	[
-		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
-	])
-
-# Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, wfmath-0.2 >= 0.2.10 \
- eris-1.2 \
- atlascpp-0.5 \
- varconf-1.0,
-	[
-		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"
-		LDFLAGS="$LDFLAGS $WF_LIBS"
 	],
  AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
 )
@@ -149,6 +131,46 @@ else
     CXXFLAGS="$CXXFLAGS `$FREETYPE_CONFIG $freetypeconf_args --cflags`"
     LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
 fi
+
+# Check for C++ libraries:
+AC_LANG_POP([C])
+
+AC_MSG_RESULT([
+
+		**************************************
+		* Checking for C++ Libraries
+		**************************************
+
+	])
+
+# Check for the Boost shared_ptr.hpp shared pointer header
+AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
+
+AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
+
+OGRE_VERSION=0.10.0
+PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
+	[
+		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS"
+	],
+	[
+		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
+	])
+
+# Check for the WorldForge libs
+PKG_CHECK_MODULES(WF, wfmath-0.2 >= 0.2.10 \
+ eris-1.2 \
+ atlascpp-0.5 \
+ varconf-1.0,
+	[
+		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"
+		LDFLAGS="$LDFLAGS $WF_LIBS"
+	],
+ AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
+)
+
+
 
 # Cppunit check
  
@@ -214,35 +236,24 @@ if test "$ac_use_gprof_code" = "yes"; then
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
 
-AC_ARG_WITH(cal3d, [--with-cal3d=prefix 	Specify where Cal3d is installed too], [
-	CPPFLAGS="$CPPFLAGS -I$withval/include"
-	LIBS="$LIBS -L$withval/lib"
-])
 
-AC_CHECK_HEADER(cal3d/cal3d.h,,AC_MSG_ERROR(Couldn't find the Cal3d headers))
+dnl disabled cal3d, until needed
+
+#AC_ARG_WITH(cal3d, [--with-cal3d=prefix 	Specify where Cal3d is installed too], [
+#	CPPFLAGS="$CPPFLAGS -I$withval/include"
+#	LIBS="$LIBS -L$withval/lib"
+#])
+
+#AC_CHECK_HEADER(cal3d/cal3d.h,,AC_MSG_ERROR(Couldn't find the Cal3d headers))
 
 # verify that we can link against Cal3d, but don't add it to LIBS
-saved_LIBS=$LIBS
-AC_CHECK_LIB(cal3d, main, , AC_MSG_ERROR(Couldn't find the Cal3d library))
-LIBS=$saved_LIBS
+#saved_LIBS=$LIBS
+#AC_CHECK_LIB(cal3d, main, , AC_MSG_ERROR(Couldn't find the Cal3d library))
+#LIBS=$saved_LIBS
 
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h])
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_INLINE
-AC_STRUCT_TM
+#AC_LANG([C++])
 
-# Checks for library functions.
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_MALLOC
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([memset select])
-
-AC_LANG([C++])
-AC_REQUIRE_CPP
 
 AC_MSG_RESULT([
 

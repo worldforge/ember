@@ -1,3 +1,7 @@
+2003-10-32 Lee Begg <llnz@paradise.net.nz>
+	* configure.ac: moved some of the tests around, made it a bit nicer
+	Now defines HAVE_LIBOPENAL when it finds openAL
+
 2003-10-20 Eric Sandall <eric [at] sandall [dot] us>
 	* README: Typo in media filenames
 
