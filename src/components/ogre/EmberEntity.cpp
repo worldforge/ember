@@ -41,6 +41,11 @@ mSceneManager(sceneManager)
 
 EmberEntity::~EmberEntity()
 {
+	Ogre::SceneNode *parent = dynamic_cast<Ogre::SceneNode*>(getSceneNode()->getParent());
+	if (parent) {
+		parent->removeAndDestroyChild(getSceneNode()->getName());
+	}
+	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
 
 void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)

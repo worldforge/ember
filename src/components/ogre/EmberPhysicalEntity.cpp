@@ -45,6 +45,11 @@ EmberEntity(id, ty, vw, sceneManager)
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
+	delete mModel;
+	Ogre::SceneNode *parent = dynamic_cast<Ogre::SceneNode*>(getScaleNode()->getParent());
+	if (parent) {
+		parent->removeAndDestroyChild(getScaleNode()->getName());
+	}
 /*
   	if (mAnimationState_Walk) {
 		MotionManager::getSingleton().removeAnimation(mAnimationState_Walk);
