@@ -1,4 +1,3 @@
-#define round
 /*
  *  File:       RectangleRenderer.cpp
  *  Summary:    The class for rendering backgrounds.
@@ -11,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.17  2002-08-17 16:53:13  adamgreg
+ *      Revision 1.18  2002-08-17 19:44:14  xmp
+ *      Remove a define that snuck in
+ *
+ *      Revision 1.17  2002/08/17 16:53:13  adamgreg
  *      modified configure.ac to check for shared_ptr,hpp from boost. Doesn't work.
  *
  *      Revision 1.16  2002/08/16 23:17:25  xmp
@@ -76,6 +78,7 @@
 
 #include "RectangleRenderer.h"
 #include <math.h>
+
 inline int dimeroundf(float x) {return x + (x > 0) ? 0.5 : -0.5;}
 
 
