@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="campfire">
+<model name="column_3">
   <submodels>
-    <submodel mesh="3d_objects/items/fire/models/campfire/campfire.mesh">
+	  <submodel mesh="3d_objects/items/building_primitives/models/columns/turned_cylindrical_column.mesh">
       <parts>
         <part name="main" show="true" />
       </parts>

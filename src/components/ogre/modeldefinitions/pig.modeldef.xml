@@ -7,9 +7,4 @@
       </parts>
     </submodel>
   </submodels>
-  <Actions>
-	<Action name="walk">
-		<animationpart name="Walk" weight="1" />
-	</Action> 
-  </Actions>
 </model>

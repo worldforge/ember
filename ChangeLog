@@ -1,3 +1,8 @@
+2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* added modeldefs for columns and walls from munin
+	* fixed paths for some models
+
 2005-03-30  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* fixed the names of some materials and changed to low res textures
