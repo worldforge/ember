@@ -21,5 +21,7 @@ $(top_srcdir)/src/services/libServices.a
 DimeOgre_SOURCES = DimeOgre.cpp
 Cal3D2Ogre_SOURCES = Cal3DOgreConverter.cpp
 
+Cal3D2Ogre_LDADD = -lcal3d
+
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

@@ -22,7 +22,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.1  2003-04-27 23:46:30  aglanor
+ *      Revision 1.2  2003-05-02 12:48:45  aglanor
+ *      Cal3D converter half-done. Retrieves the list of vertices, normals, etc from each Submesh. Need still to create a GeometryData and store it all within.
+ *
+ *      Revision 1.1  2003/04/27 23:46:30  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* MathConverter.h: Point, Vector and Quaternion converter
  *      		for world-centric coordinates (Atlas-wfmath like)
@@ -48,6 +51,7 @@ Description: Cal3D<-->Ogre model converter
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
+#include "cal3d/cal3d.h"
 
 
 /**
@@ -59,16 +63,33 @@ public:
 	// Standard constructor
 	Cal3DOgreConverter()
 	{
+		mOgreRoot = NULL;
+		m_scale = 1.0f;
 	}
 
 	// Standard destructor
 	virtual ~Cal3DOgreConverter()
 	{
+		if (mOgreRoot)
+		{
+			delete mOgreRoot;
+		}
+		m_calCoreModel.destroy();
 	}
 
-	void Cal3DOgreConverter::convertCal3DOgreMesh();
+	virtual bool setup(void)
+	{
+		mOgreRoot = new Ogre::Root();
+		return true;
+	}
+
+	bool parseModelConfiguration(const std::string& strFilename);
+	void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, int calCoreMeshId);
 
 protected:
-
+	Ogre::Root *mOgreRoot;
+	CalCoreModel m_calCoreModel;
+  	CalModel m_calModel;
+  	float m_scale;
 };
 #endif

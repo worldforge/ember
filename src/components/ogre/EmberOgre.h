@@ -24,7 +24,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.5  2003-04-28 22:42:06  aglanor
+ *      Revision 1.6  2003-05-02 12:48:45  aglanor
+ *      Cal3D converter half-done. Retrieves the list of vertices, normals, etc from each Submesh. Need still to create a GeometryData and store it all within.
+ *
+ *      Revision 1.5  2003/04/28 22:42:06  aglanor
  *      Added new viewport for a mini-map and quaternion conversion.
  *      Eris entities are now displayed with orientation.
  *
@@ -341,7 +344,8 @@ protected:
 
 	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
 	Ogre::Viewport* mapvp = mWindow->addViewport(mPlayerMapCamera,1,0.70,0.05,0.25,0.25);
-	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	mapvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	mapvp->setOverlaysEnabled(false);
     }
 
     /// Method which will define the source of resources (other than current folder)
