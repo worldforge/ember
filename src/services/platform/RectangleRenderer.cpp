@@ -1,3 +1,4 @@
+#define round
 /*
  *  File:       RectangleRenderer.cpp
  *  Summary:    The class for rendering backgrounds.
@@ -10,7 +11,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.16  2002-08-16 23:17:25  xmp
+ *      Revision 1.17  2002-08-17 16:53:13  adamgreg
+ *      modified configure.ac to check for shared_ptr,hpp from boost. Doesn't work.
+ *
+ *      Revision 1.16  2002/08/16 23:17:25  xmp
  *      Credits to R Steinke for this round function for use where a system's libc lacks it.
  *
  *      Revision 1.14  2002/08/16 22:37:12  xmp

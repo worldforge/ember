@@ -11,6 +11,9 @@ AC_PROG_CPP
 AC_PROG_CXX
 dnl AM_PROG_LEX
 
+dnl Check for the Boost shared_ptr.hpp shared pointer header
+AC_CHECK_HEADER(shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
+
 dnl Check for SDL and SDL_image
 AM_PATH_SDL(1.2.0, , 
 	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
