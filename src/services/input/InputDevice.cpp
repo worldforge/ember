@@ -40,16 +40,25 @@ InputDevice::~InputDevice()
 	InputService * inputService = DimeServices::getInstance()->getInputService();
 
 	//all mappings have to be removed prior to deleting this input device
-        InputService::InputMappingIterator i;
-	for (i = myMotionMappings.begin(); 
-			i != myMotionMappings.end(); i++)
+	while (!myMotionMappings.empty())
 	{
-		inputService->removeInputMapping(*i);		
+		inputService->removeInputMapping(*myMotionMappings.begin());		
 	}
 
-	for (i = myKeyMappings.begin(); i != myKeyMappings.end(); i++)
+	while (!myKeyMappings.empty())
 	{
-		inputService->removeInputMapping(*i);		
+		inputService->removeInputMapping(*myKeyMappings.begin());		
+	}
+
+	InputService::InputDeviceIterator i2;
+
+	for (i2 = inputService->myInputDevices.begin(); i2 != inputService->myInputDevices.end(); i2++)
+	{
+		if (*i2 == this)
+		{
+			inputService->myInputDevices.erase(i2);
+			break;
+		}
 	}
 }
 

@@ -366,52 +366,55 @@ class LoggingService: public Service
      *
 	 */
 
-	void log(const string & message, ...) 
+	 //ATTENTION (by tim): I've changed this back to my initial version, because the presented
+	 // ones didn't compile using MSVC. Is there any problem with this on 
+
+	void log(const string message, ...) 
 	{
 	    va_list vl;
-		va_start(vl, &message);
+		va_start(vl, message);
 		logVarParam("", -1, INFO, message, vl);
 		va_end(vl);
 	}
 
-	void log(const string & file, const string & message, ...)
+	void log(const string & file, const string message, ...)
 	{
 		va_list vl;
-		va_start(vl, &message);
+		va_start(vl, message);
 		logVarParam(file, -1, INFO, message, vl);
 		va_end(vl);
 	}
 
-	void log(const string & file, const int line, const string & message, ...)
+	void log(const string & file, const int line, const string  message, ...)
 	{
 		va_list vl;
-		va_start(vl, &message);
+		va_start(vl, message);
 		logVarParam(file, line, INFO, message, vl);
 		va_end(vl);
 	}
 
-	void log(const MessageImportance importance, const string & message, ...)
+	void log(const MessageImportance importance, const string message, ...)
 	{
 		va_list vl;
-		va_start(vl, &message);
+		va_start(vl, message);
 		logVarParam("", -1, importance, message, vl);
 		va_end(vl);
 	}
 
 	void log(const string & file, const MessageImportance importance, 
-					 const string & message, ...)
+					 const string message, ...)
 	{
 		va_list vl;
-		va_start(vl, &message);
+		va_start(vl, message);
 		logVarParam(file, -1, importance, message, vl);
 		va_end(vl);
 	}
 
 	void log(const string & file, const int line, const MessageImportance importance, 
-					const string & message, ...)
+					const string message, ...)
 	{
 		va_list vl;
-		va_start(vl, &message);
+		va_start(vl, message);
 		logVarParam(file, line, importance, message, vl);
 		va_end(vl);
 	}
