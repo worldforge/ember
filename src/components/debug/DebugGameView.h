@@ -19,6 +19,9 @@
 #define DEBUG_GAME_VIEW_H
 
 #include <Eris/Entity.h>
+#include <Eris/World.h>
+
+#include <sigc++/signal_system.h>
 
 //#include "framework/Component.h"
 
@@ -88,7 +91,7 @@ class DebugGameView : public SigC::Object //: public Component
          *
          * @param e A pointer to the Eris entity that has been created.
          */
-        void EntityCreate( Eris::Entity *e );
+        void entityCreate( Eris::Entity *e );
 
         /**
          * Called on entity deletion. You should remove all information you
@@ -97,7 +100,7 @@ class DebugGameView : public SigC::Object //: public Component
          * @param e A pointer to the Eris entity that has been deleted.
          *
          */
-        void EntityDelete( Eris::Entity *e );
+        void entityDelete( Eris::Entity *e );
 
         /**
          * Called only once, when the player enters the game world. It's
@@ -106,7 +109,7 @@ class DebugGameView : public SigC::Object //: public Component
          * @param e A pointer to the Eris entity
          *
          */
-        void Entered( Eris::Entity *e );
+        void entered( Eris::Entity *e );
 
         /** Called when an entity become visible. You'll probably want to add
          * a media pointer to your world model at this point.
@@ -114,7 +117,7 @@ class DebugGameView : public SigC::Object //: public Component
          * @param e A pointer to the Eris entity
          *
          */
-        void Appearance( Eris::Entity *e );
+        void appearance( Eris::Entity *e );
 
         /**
          * Called when an entity becomes invisible. You should remove the media
@@ -124,7 +127,7 @@ class DebugGameView : public SigC::Object //: public Component
          * @param e A pointer to the Eris entity
          *
          */
-        void Disappearance( Eris::Entity *e );
+        void disappearance( Eris::Entity *e );
 
 
         /* Eris::Entity signals  (see eris\src\entity.h for more info)*/
@@ -137,26 +140,26 @@ class DebugGameView : public SigC::Object //: public Component
          * @param e A pointer to the Eris entity that has been recontainered
          * @param c A pointer to the Eris entity that is the new container for e
          */
-        void Recontainered( Eris::Entity *e, Eris::Entity *c );
+        void recontainered( Eris::Entity *e, Eris::Entity *c );
 
         /**
          * I'm not sure what this does. Let's ignore it until I can track down
          * James and bop him on the head for writing unhelpful comments ;)
          */
-        void Changed( const Eris::StringSet &s, Eris::Entity *e );
+        void changed( const Eris::StringSet &s, Eris::Entity *e );
 
         /**
          * Called when the entity moves. Here you should alter the position
          * of the media pointer in your world model... this may involve
          * removing it from where it was before the entity moved and
          * placing it in the new position, in which case you'll need
-         * a reverse-lookup of some kinda- Eris::Coord &c is the new
+         * a reverse-lookup of some kinda- WFMath::Point<3> is the new
          * entity coordinate, the old one is only known if stored by you.
          *
          * @param c The new coordinates of the entity
          * @param e A pointer to the Eris entity that has moved
          */
-        void Moved( const Eris::Coord &c, Eris::Entity *e );
+        void moved( const WFMath::Point< 3 > &, Eris::Entity *e );
 
         /**
          * Called when the entity speaks. You'll probably want to display the
@@ -165,7 +168,17 @@ class DebugGameView : public SigC::Object //: public Component
          * @param s A string containing the speech
          * @param e A pointer to the Eris entity
          */
-        void Say( const std::string &s, Eris::Entity *e );
+        void say( const std::string &s, Eris::Entity *e );
+
+	/**
+	 * Sadly undocumented
+	 */
+	void addedMember(Eris::Entity *e);
+
+	/**
+	 * Also sadly undocumented
+	 */
+	void removedMember(Eris::Entity *e);
 
     private:
 

@@ -17,24 +17,26 @@
 
 #include "DebugGameView.h"
 
+#include "main/DimeServices.h"
+
 namespace dime {
 
 DebugGameView::DebugGameView()
 {
 
     /* Find out where the Eris world instance resides... */
-    new Eris::World *w = DimeService.getInstance()->getServerService()->getWorld();
+    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( this, &EntityCreate() ) );
+    w->EntityCreate.connect( SigC::slot( this, &DebugGameView::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( this, &EntityDelete() ) );
+    w->EntityDelete.connect( SigC::slot( this, &DebugGameView::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( this, &Entered() ) );
+    w->Entered.connect( SigC::slot( this, &DebugGameView::entered ) );
 
-    w->Appearance.connect( SigC::slot( this, &Appearance() ) );
+    w->Appearance.connect( SigC::slot( this, &DebugGameView::appearance ) );
 
-    w->Disappearance.connect( SigC::slot( this, &Disappearance() ) );
+    w->Disappearance.connect( SigC::slot( this, &DebugGameView::disappearance ) );
 
 }
 
@@ -46,50 +48,55 @@ void DebugGameView::repaint()
 
 /* Eris::World entity signals */
 
-void DebugGameView::EntityCreate( Eris::Entity *e )
+void DebugGameView::entityCreate( Eris::Entity *e )
 {
 
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
-    e->AddedMember.connect( SigC::slot( this, &AddedMember() ) );
+    e->AddedMember.connect( SigC::slot( this, &addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( this, &RemovedMember() ) );
+    e->RemovedMember.connect( SigC::slot( this, &removedMember ) );
 
-    e->Recontainered.connect( SigC::slot( this, &Recontainered() ) );
+    e->Recontainered.connect( SigC::slot( this, &recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( this, &Changed() ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( this, &changed ), e ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( this, &Moved() ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( this, &moved ), e ) );
 
-    e->Say.connect( SigC::slot( SigC::slot( this, &Say() ), e ) );
+    e->Say.connect( SigC::slot( SigC::slot( this, &say ), e ) );
 }
 
 
-void DebugGameView::EntityDelete( Eris::Entity *e )
+void DebugGameView::entityDelete( Eris::Entity *e )
 {}
 
-void DebugGameView::Entered( Eris::Entity *e )
+void DebugGameView::entered( Eris::Entity *e )
 {}
 
-void DebugGameView::Appearance( Eris::Entity *e )
+void DebugGameView::appearance( Eris::Entity *e )
 {}
 
-void DebugGameView::Disappearance( Eris::Entity *e )
+void DebugGameView::disappearance( Eris::Entity *e )
 {}
 
 /* Eris::Entity signals */
 
-void DebugGameView::Recontainered( Eris::Entity *e, Eris::Entity *c )
+void DebugGameView::recontainered( Eris::Entity *e, Eris::Entity *c )
 {}
 
-void DebugGameView::Changed( const Eris::StringSet &s, Eris::Entity *e  )
+void DebugGameView::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {}
 
-void DebugGameView::Moved( const Eris::Coord &c, Eris::Entity *e )
+void DebugGameView::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
 {}
 
-void DebugGameView::Say( const std::string &s, Eris::Entity *e )
+void DebugGameView::say( const std::string &s, Eris::Entity *e )
 {}
 
+void DebugGameView::addedMember(Eris::Entity *e)
+{}
+
+void DebugGameView::removedMember(Eris::Entity *e)
+{}
 
 }
