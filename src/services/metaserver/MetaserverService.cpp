@@ -24,6 +24,7 @@
 //#include <services/datamodel/DataModelService.h>
 #include <services/datamodel/IntProvider.h>
 #include <services/datamodel/DataObject.h>
+#include <services/datamodel/FloatProvider.h>
 
 // System headers
 #include <iostream>
@@ -135,7 +136,7 @@ namespace dime
 			"Number of clients connected to the server"));
 		entry->addChild("ping", new IntProvider(sInfo.getPing(),
 			"Estimated round-trip-time (ping) in milliseconds"));
-		entry->addChild("uptime", new IntProvider(sInfo.getUptime(),
+		entry->addChild("uptime", new FloatProvider(sInfo.getUptime(),
 			"Server uptime in seconds"));
 
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
@@ -167,10 +168,10 @@ namespace dime
 		
 		for(Iter i = l.begin(); i != l.end(); i++)
 		{	
-			//HINT: Always use .data() for compatibility to MSVC
+			//HINT: Always use .c_str() for compatibility to MSVC
 			Eris::ServerInfo inf = *i;
 
-			out << "Hostname: " << (i)->getHostname().data() << endl;
+			out << "Hostname: " << (i)->getHostname().c_str() << endl;
 		}
 
 		out.put(0);
