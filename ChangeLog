@@ -1,3 +1,9 @@
+2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/services/components/ogre:
+	Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
+	Moved Ogre response to console commands from the app
+	to its own class, ConsoleObjectImpl.
+
 2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/services/components/ogre/: DimeOgre.(h|cpp):
 	Added ConsoleObject inheritance, it runs the Quit command.
