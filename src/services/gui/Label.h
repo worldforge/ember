@@ -192,7 +192,8 @@ class Label : public Widget
      */
     virtual ~Label()
     {
-        // TODO: Free any allocated resources here.
+	if (myParent != NULL) myParent->removeWidget(this);
+       // TODO: Free any allocated resources here.
     }
 
 
