@@ -40,6 +40,7 @@
 
 #include "SDLDrawDevice.h"
 #include <math.h>
+#include <stdlib.h>
 
 
 
