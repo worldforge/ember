@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.49  2003-10-29 19:05:22  aglanor
+ *      Revision 1.50  2003-11-20 06:00:48  nikal
+ *      Ripped out the CerrLogObserver, and turned it into StreamLogObserver in the framework.  Then created an instance of StreamLogObserver in Application.cpp and passed it std::cerr as it's being created.  This should effectively work the same, and preliminary test show that it does.  Hopefully this will encourage people to use StreamLogObserver.
+ *
+ *      Revision 1.49  2003/10/29 19:05:22  aglanor
  *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * configure.ac, src/main/Application.cpp and some Makefile.am's:
  *              Removed DataModel inclusion.
@@ -236,6 +239,7 @@
 #include "services/logging/LoggingService.h"
 #include "services/sound/SoundService.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/StreamLogObserver.h"
 
 #include <iostream>
 #include <iomanip>
@@ -257,70 +261,10 @@
 
 namespace dime
 {
-    /**
-     * Predefined implementation of Observer-class for std::cerr 
-     * The format of messages written to std::cerr is the following:
-     *
-     * timeStamp importance file "\t" line "\t" message
-     */
 
     Application* Application::theApplication = NULL;
     const char* const Application::CMD_QUIT = "quit";
 
-    class CerrLogObserver: public dime::LoggingService::Observer
-    {
-    public:
-        CerrLogObserver()
-        {
-        }
-
-        virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                  const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp)
-        {
-            tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
-		
-	    std::cerr.fill('0');
-            std::cerr << "[";
-	    std::cerr.width(2);		
-	    std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
-	    std::cerr.width(2);					
-	    std::cerr << ctm->tm_mon+1 << "-";
-	    std::cerr.width(2);			
-	    std::cerr << ctm->tm_mday << " ";
-	    std::cerr.width(2);
-	    std::cerr << ctm->tm_hour << ":";
-	    std::cerr.width(2);
-	    std::cerr <<  ctm->tm_min << ":";
-	    std::cerr.width(2);			
-	    std::cerr << ctm->tm_sec << "] ";			
-	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
-
-            if(importance == dime::LoggingService::CRITICAL)
-                {
-                    std::cerr << "CRITICAL";
-                }
-            else  if(importance == dime::LoggingService::FAILURE)
-                {
-                    std::cerr << "FAILURE";
-                } 
-            else if(importance == dime::LoggingService::WARNING)
-                {
-                    std::cerr << "WARNING";
-                }
-            else if(importance == dime::LoggingService::INFO)
-                {
-                    std::cerr << "INFO";
-                }
-	    else
-                {
-                    std::cerr << "VERBOSE";
-                }
-            std::cerr << ") " <<message << std::endl;
-        }
-
-    private: 
-
-    };
 
 #if 0
   void onMetaserverService(PDataObject p, DataType t)
@@ -348,7 +292,7 @@ namespace dime
 
 
         LoggingService *logging = DimeServices::getInstance()->getLoggingService();
-	CerrLogObserver* obs = new CerrLogObserver();
+	StreamLogObserver* obs = new StreamLogObserver(std::cerr);
 	obs->setFilter(LoggingService::VERBOSE);
 	logging->addObserver(obs);
 
