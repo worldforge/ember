@@ -20,11 +20,11 @@
 #define INPUT_SERVICE_H
 
 // Include other headers of the current program here
-#include "InputEvent.h"
 #include "InputMapping.h"
-#include "InputEventListener.h"
+#include "InputDevice.h"
 
 // Include library headers here
+#include <SDL/SDL_events.h>
 
 // Include system headers here
 #include <string>
@@ -34,27 +34,29 @@
 
 namespace dime {
 
+
+//General TODOs:
+// - test if it compiles under Unix especially
+// - test if it works
+// - Add debug assertions
+// - No eating up of events till now. Add it if we need it.
+
 /**
  * A service for getting input from the user, and sending it to
- * different listeners. Thus it is the owner of all input mappings.
- * 
+ * different listeners. 
  *
- * See InputMapping for more details.
+ * Thus it is the owner of all input mappings. If an input mapping
+ * is not removed from the list before the dtor of InputService is called, it is automatically 
+ * deleteted.
+ * 
+ * It also owns a list of input devices, that handles their input events. 
+ * 
+ * See InputDevice and InputMapping for more details.
  *
  * @author Hans Häggström/Tim Enderling
  */
 
-/*The joystick axis event just contains the new position of the axis (or several), and is sent to anybody listening to the joystick..
-<zzorn_2> Btw, we should probably use a similar way to represent different axis, such as mouse x,y, joystick x,y, joystick throttle, hat, etc..
-*** Grimicus (~grim@24.125.66.narf-34395) has joined #dime
-<Grimicus> DON'T DO IT!
-<Grimicus> AHHHHH!!!!
-* Grimicus grins
-<zzorn_2> a floating point number from 0 to 1, or perhaps -1 to 1 seems fine..
-Also, at least in case of mice we should also record the delta from the actual latest position (mickeys), even if the mouse already is at the screen edge..
-*/
 class InputService: public Service
-
 {
     //======================================================================
     // Inner classes and typedefs
@@ -62,10 +64,17 @@ class InputService: public Service
     public:
 
     /**
-     * The type of const iterators used to iterate through the input mappings table.
+     * The type of iterators used to iterate through the input mappings table.
      */
-    typedef vector< InputMapping * >::const_iterator InputMappingIterator;
+	typedef vector<InputMapping *>::iterator InputMappingIterator;
+    typedef vector<InputMapping *>::const_iterator ConstInputMappingIterator;
 
+	/**
+	 * They type of iterators used to iterate through the input devices table.
+	 */
+
+	typedef vector<InputDevice*>::iterator InputDeviceIterator;
+	typedef vector<InputDevice*>::const_iterator ConstInputDeviceIterator;
 
     //======================================================================
     // Public Constants
@@ -83,6 +92,7 @@ class InputService: public Service
      * one that handles a certain input event.
      */
     vector<InputMapping *> myInputMappings;
+	vector<InputDevice  *> myInputDevices;
 
     //======================================================================
     // Public methods
@@ -117,52 +127,81 @@ class InputService: public Service
     /**
      * Returns a const iterator that can be used to iterate through the input mappings
      */
-    virtual InputMappingIterator getInputMappings() const
+    virtual ConstInputMappingIterator getInputMappings() const
     {
         return myInputMappings.begin();
     }
 
-
     /**
-     * Adds a new input mapping at the specified index.
+     * Adds a new input mapping.
      *
-     * @param inputMapping reference to the input mapping to add.
-     * @param index the index in the input mapping sequence to add it to
-     *              ( 0 = start, before any other).  If the index is outside the range,
-     *              then it is added to the end (or beginning).
+     * @param inputMapping pointer to the input mapping to add.
      */
-    virtual void addInputMapping( InputMapping &inputMapping, int index )
+    virtual void addInputMapping( InputMapping * inputMapping)
     {
-        // TODO
-    }
+		myInputMappings.push_back(inputMapping);
 
+		InputDevice * device = inputMapping->getMotionDevice();
+
+		if (device != NULL)
+		{
+			device->myMotionMappings.push_back(inputMapping);
+		}
+
+		device = inputMapping->getKeyDevice();
+
+		if (device != NULL)
+		{
+			device->myKeyMappings.push_back(inputMapping);
+		}
+    }
 
     /**
      * Removes the specified input mapping. (but doesn't delete it).
      */
-    virtual void removeInputMapping( InputMapping &inputMapping )
+    virtual void removeInputMapping( InputMapping * inputMapping )
     {
-        // TODO
+		for (InputMappingIterator i = myInputMappings.begin(); i != myInputMappings.end(); i++)
+		{
+			if (*i == inputMapping)
+			{
+				myInputMappings.erase(i);
+
+				InputDevice * device = inputMapping->getMotionDevice();
+
+				if (device != NULL)
+				{
+					for (i = device->myMotionMappings.begin(); 
+								i != myMotionMappings.end(); i++)
+					{
+						if (i * == inputMapping)
+						{
+							device->myMotionMappings.erase(i);
+							break;
+						}
+					}
+				}
+
+				device = inputMapping->getKeyDevice();
+
+				if (device != NULL)
+				{
+					for (i = device->myKeyMappings.begin(); 
+								i != myKeyMappings.end(); i++)
+					{
+						if (i * == inputMapping)
+						{
+							device->myKeyMappings.erase(i);
+							break;
+						}
+					}
+				}
+
+				return;
+			}
+		}		
     }
-
-
-    //----------------------------------------------------------------------
-    // Event Listener methods
-	
-    /**
-     * Returns the InputEventListener that handles the specified event.
-     * Does not send the event to the event listener,
-     * so this method can also be queried to get the event listeners
-     * currently bound to different keys or mouse buttons.
-     *
-     * @param event The event to deterimen the listener for.
-     * @return The listener that handles the given event, or null if nobody handles it.
-     */
-    virtual InputEventListener *getListenerForEvent( InputEvent &event )
-    {
-        // TODO
-    }
-
+    
 
     //----------------------------------------------------------------------
     // Methods inherited from Service
@@ -217,56 +256,22 @@ class InputService: public Service
     // Event handling methods
 	
     /**
-     * This method handles the next event from the input queue,
-     * sending it off to a listener, removing it from the queue, and deleting it.
+     * This method handles the next event from the SDL event queue, 
+     * sending it off to a listener.
      *
-     * TODO: Do we need a queue for incoming events at all, or
-     * can we just call this from the SDL callback function directly?
-     */
-    virtual void handleEvent()
+	 * Should return TRUE only if it's _absolutely sure_, that no other event handler needs 
+	 * this event. Thus returning TRUE means that the event has been 'eaten up' by handleEvent.
+	 */
+
+    virtual bool handleEvent(SDLEvent & event)
     {
-        // TODO
+        for (InputDeviceIterator i = myInputDevices.begin(); i != myInputDevices.end(); i++)
+		{
+			if ((*i)->handleEvent(event)) return TRUE;
+		}
+
+		return FALSE;
     }
-
-
-    /**
-     * Adds a new event to the event queue.
-     *
-     * TODO: Add parameters for all necessary fields to compose the event.
-     */
-    virtual void addEvent( /* various parameters.. */ )
-    {
-        // TODO
-    }
-
-
-    // TODO: Callback method that SDL events are sent to from SDL. (has to be non C++ method...?)
-    //       It should call addEvent(), or perhaps handleEvent(...) ?
-
-
-    // Implementation note about events and threads:
-
-    // If we add events to a queue, we need an event dispatcher thread that
-    // goes through the queue and calls event listeners.
-    // This thread would then be the thread in which much of the UI and other
-    // user driven functionality would be executed.  There might be problems
-    // if other services, or the data model, have own threads..
-
-    // Alternatively we could just handle the event from the SDL callback
-    // function.  IIRC, SDL is single threaded?
-    // Then everything would run in this thread, except heavy calculation or
-    // network communication type things, that would have their own threads in
-    // any case.
-
-    // Personally I like alternative two better, because it seems simpler,
-    // and (judging from Java programs that have the GUI and program logic in
-    // the same thread normally) also works well.
-    // -- zzorn
-
-    // Btw, the GUI will likely have just one InputEventListener, that
-    // calls method such as onMouseMove, onKeyPress, etc. of the GUI widgets.
-
-
 
 }; // InputService
 

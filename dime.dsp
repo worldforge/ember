@@ -102,6 +102,10 @@ SOURCE=.\src\services\config\ConfigService.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\components\cs\CSComponent.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\main\Dime.cpp
 # End Source File
 # Begin Source File
@@ -110,11 +114,19 @@ SOURCE=.\src\main\DimeServices.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\input\InputDevice.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\logging\LoggingService.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\services\metaserver\MetaserverService.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\server\ServerService.cpp
 # End Source File
 # Begin Source File
 
@@ -130,11 +142,31 @@ SOURCE=.\src\main\Application.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\framework\Component.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\framework\ComponentFactory.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\config\ConfigService.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\components\cs\CSComponent.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\main\DimeServices.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\GuiService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\input\InputDevice.h
 # End Source File
 # Begin Source File
 
@@ -151,6 +183,10 @@ SOURCE=.\src\services\logging\LoggingService.h
 # Begin Source File
 
 SOURCE=.\src\services\metaserver\MetaserverService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\server\ServerService.h
 # End Source File
 # Begin Source File
 

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002 Hans Tim Enderling
+    Copyright (C) 2002 Tim Enderling
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 #define INPUT_MAPPING_H
 
 // Include other headers of the current program here
+#include "InputDevice.h"
 
 // Include library headers here
-#include <sdl/SDL_keysym.h>
 #include <sigc++/signal_system.h>
 
 
@@ -32,10 +32,16 @@
 //General TODOs:
 // - test if it compiles under Unix especially
 // - test if it works
+// - Add debug assertions
 // - Is there a way for timing out handling of input events? (Just to avoid the 'user presses
 // button serveral times, because he sees no reaction and afterwards he has to wait, because
 // all events are really processed...')
-// - Add debug assertions.
+// - Should InputMappings be autoregistring? (ATM: No.)
+// - Is a state only true, if the modifiers where pressed _before_ the base key? (ATM: Yes.)
+// - Should KEY_RELEASED also occur, 
+//    if the modifiers are released _before_ the base key? (ATM: No.)
+// - Should KEY_PRESSED events also occur, if there are more modifiers pressed than
+//   specified in the mapping? (ATM: No.)
 
 namespace dime {
 
@@ -45,92 +51,69 @@ namespace dime {
  * In general input mapping is based on the combination of two principles: 
  * (Motion) events and (key/button) states.
  * 
- * Motion events include:
- * - mouse motion
- * - joystick axis motion
- * - joystick hat motion
- * - joystick ball motion
- *
- * Two special events, that are also available for convenience:
- *
- * - A 'void' event, that never occurs
- * - A repetition event, that occurs in equal distances of time
- *
  * All these motions are seen as changes of the some axis vectors, where it is possible to 
- * change more than one axis by one event. The axis values are scaled to a floating point
- * value in the range -1 to 1, where -1/1 correspond to some preset minimum/maximum of physical 
- * value. 
- *  
- * States include:
- * - keyboard key pressed?
- * - mouse button pressed?
- * - joystick button pressed?
+ * change more than one axis by one event. 
+ * 
+ * See InputDevice for more details on available motion events and key states.
+ *
+ * For convenience also a range of keys (of the same input device) can be used instead 
+ * of one key. The range includes it's border item.
  *
  * Further there is a way to combine some states by 'AND'. This you have a base state 
- * (arbitrary key/button) and some modifiers. Available modifiers are:
- * - capslock
- * - left/right control
- * - left/right shift
- * - left/right alt
- * - any of the shift keys
- * - any of the alt keys
- * - any of the control keys
- * 
+ * (arbitrary key/button) and some modifiers (not only a modifier!). Available modifiers are
+ * capslock, left/right control/shift/alt/meta and any of both control/shift/alt/meta keys.
+ *  * 
  * HINT: If you want the user to press multiple modifiers, you have to combine them by bitwise
  * or |. An exception of this rule is connecting the left and the right version of the same key
- * In this case the user can press any of both keys, not both at the same time!
- * 
- * The result is, that input mapping can be done by providing:
- * a) A basic state and it's modifiers.
- * b) An event that has to occur 
- *
- * [TODO: Is a state only true, if the modifiers where true before the base key was pressed?]
+ * In this case the user can press any of both keys, not only both at the same time.
  *
  * An input signal is fired when
- * - a) becomes true  (STATE_BECAME_TRUE)
- * - b) occurs, while a) is true. (EVENT_OCCURED) 
- * - a) becomes false (STATE_BECAME_FALSE) 
+ * - A key and it's modifiers were pressed synchronously. (KEY_PRESSED)
+ * - The motion event occurs, while the key is pressed is true.  
+ *   (one of the key's pressed is passed to the signal handler) (EVENT_OCCURED) 
+ * - The key or one of it's modifiers was released. (KEY_RELEASED) 
  *
- * The key codes and the modifiers are taken from SDL.
+ * For a key range you get seperate a KEY_PRESSED/KEY_RELEASED signal for each key.
+ *
+ * The types of input signals can be or'd together to get only those types wanted, like
+ * you would expect it.
+ *
+ * Same examples of adding InputMappings to InputDevice:
+ *
+ * <code>
+ * //assuming your in dime namespace
+ * InputService * inputService;
+ * //and you have a pointer to the inputService
+ *
+ * //get the default input devices
+ * InputDevice * keyboard = inputService->getDevice(InputDevice::KEYBOARD);
+ * InputDevice * mouse = inputService->getDevice(InputDevice::MOUSE);
+ * InputDevice * repetitor = inputService->getDevice(InputDevice::REPETITOR);
+ * 
+ * //Single action on return
+ * inputService.addMapping(new 
+ *   InputMapping(keyboard, SDLK_RETURN, FALSE, slot(dialog,&dialog::onDefault)))
+ *
+ * //Observing a key being pressed and released
+ * inputService.addMapping(new
+ *   InputMapping(keyboard, SDLK_CAPS, TRUE, 
+ *
+ * //Observing mouse movement only
+ * inputService.addMapping(new 
+ *   InputMapping(mouse, slot(dialog, &dialog::updateMousePosition));
+ *
+ * [TODO]
+ * 
+ * </code>
  *
  * @author Tim Enderling
  */
 
-/*The joystick axis event just contains the new position of the axis (or several), and is sent to anybody listening to the joystick..
-<zzorn_2> Btw, we should probably use a similar way to represent different axis, such as mouse x,y, joystick x,y, joystick throttle, hat, etc..
-*** Grimicus (~grim@24.125.66.narf-34395) has joined #dime
-<Grimicus> DON'T DO IT!
-<Grimicus> AHHHHH!!!!
-* Grimicus grins
-<zzorn_2> a floating point number from 0 to 1, or perhaps -1 to 1 seems fine..
-Also, at least in case of mice we should also record the delta from the actual latest position (mickeys), even if the mouse already is at the screen edge..
-*/
-	
-//extensions of SDL key enum type	
-//left mouse button
-const SDLKey SDLK_LEFT_MB =  static_cast<SDLKey>( static_cast<SDLKey>(SDLK_LAST)+1); 
- //middle mouse button
-const SDLKey SDLK_MIDDLE_MB = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_LAST)+2);
-//right mouse button
-const SDLKey SDLK_RIGHT_MB = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_LAST)+3); 
-
-//joystick buttons 
-const SDLKey SDLK_JB0      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_LAST)+4); 
-const SDLKey SDLK_JB1      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+1); 
-const SDLKey SDLK_JB2      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+2); 
-const SDLKey SDLK_JB3      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+3); 
-const SDLKey SDLK_JB4      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+4); 
-const SDLKey SDLK_JB5      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+5); 
-const SDLKey SDLK_JB6      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+6); 
-const SDLKey SDLK_JB7      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+7); 
-const SDLKey SDLK_JB8      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+8); 
-const SDLKey SDLK_JB9      = static_cast<SDLKey>( static_cast<SDLKey>(SDLK_JB0)+9); 
-
-typedef basic_string<float> FloatString;
-
 class InputMapping
 
 {
+	friend class InputDevice;
+
     //======================================================================
     // Inner classes and typedefs
     //======================================================================
@@ -138,12 +121,16 @@ class InputMapping
 
 	/**
 	 * A signal takes the following params:
-	 * - FloatString & axis
-	 * - InputSignalType type (of event)
+	 * - InputDevice * motionDevice 
+	 * - const SDLKey & key (pressed)
+	 * - InputSignalType type 
+	 *
+	 * HINT: With the help of sigc++ extenders you can pass further constant
+	 * params to your handling function (usually called 'cockie').
 	 */
 
-	typedef Signal2<void, FloatString &, InputSignalType> InputSignal;
-	typedef Slot2<void, FloatString &, InputSignalType>   InputSlot;
+	typedef Signal2<void, InputDevice *, const SDLKey & key, InputSignalType> InputSignal;
+	typedef Slot2<void, InputDevice *, const SDLKey & key, InputSignalType>   InputSlot;
 
     //======================================================================
     // Public Constants
@@ -156,19 +143,9 @@ class InputMapping
 
 	enum InputSignalType
 	{
-		STATE_BECAME_TRUE  = 0x1,
-		STATE_BECAME_FALSE = 0x2,
-		EVENT_OCCURED	   = 0x4
-	};
-	
-	enum InputEvent
-	{
-		MOUSE_MOTION,
-		JOYSTICK_AXIS_MOTION,
-		JOYSTICK_BALL_MOTION,
-		JOYSTICK_HAT_MOTION,
-		VOID_EVENT,
-		REPETITION_EVENT
+		KEY_PRESSED  = 0x1,
+		KEY_RELEASED = 0x2,
+		EVENT_OCCURED = 0x4
 	};	
 
     //======================================================================
@@ -176,11 +153,17 @@ class InputMapping
     //======================================================================
     private:
 
-	InputEvent  myEvent;
-	SDLKey	    myBaseKey;
-	SDLMod      myModifiers;
-	InputSignal mySignal;
+	InputDevice   * myMotionDevice;
+	InputDevice   *	myKeyDevice;
+	SDLKey			myKeyRangeStart;
+	SDLKey			myKeyRangeEnd;
+	SDLMod		    myModifiers;
+	InputSignal		mySignal;
+	InputSignalType myTypes;
 
+	set<SDLKey>     myKeysPressed;
+
+	
 
     //======================================================================
     // Public methods
@@ -190,18 +173,137 @@ class InputMapping
     //----------------------------------------------------------------------
     // Constructors & Destructor
 
-    /** Creates a new InputMapping*/
+    /** 
+	 * Creates a new InputMapping. Exists in various forms to fit everyone's needs.
+	 *
+	 * @param motionDevice Input device to observe motion of.
+	 * @param keyDevice Input device to observe key state of.
+	 * @param baseKey Key to listen to.
+	 * @param keyRangeStart Start of the key range.
+	 * @param keyRangeEnd End of the key range.
+	 * @param modifiers Key modifiers that should be pressed synchronous to baseKey/ a key
+	 *				    inner key range.
+	 * @param slot A callback or some other signal slot.
+	 * @param types Types of input signals to pass through the slot. Can be any OR-combination
+	 *				of InputSignalType enum's items. 
+	 * @param fireOnRelease Decides wether to fire a signal on key releasing, i.e. wether
+	 *						include KEY_RELEASED into types or not.
+	 */
 
-	//TODO: Is there a practical case of multiple connections (= slots) to the signal?
+	/**
+	 * Version used to observe a motion only.
+	 */
+	InputMapping(InputDevice * motionDevice, InputSlot & slot)
+	{
+		myMotionDevice		= motionDevice;
+		myKeyDevice			= NULL;
+		myTypes				= EVENT_OCCURED;
+		
+		myKeysPressed.push_back(SDKL_UNKNOWN); //adds a pseudo key, that is always 'pressed'
 
-    InputMapping(InputEvent event, SDLKey baseKey, SDLMod modifier, InputSlot & slot)
+		mySignal.connect(slot);		
+	}
+
+	/**
+	 * Version used to observe a key only.
+	 */
+    InputMapping(InputDevice * keyDevice, SDLKey baseKey, 
+				  bool fireOnRelease, InputSlot & slot)
     {
-		myEvent = event;
-		myBaseKey = baseKey;
-		myModifiers = modifier;
+		myMotionDevice		= NULL;
+		myKeyDevice			= keyDevice;
+		myKeyRangeStart		= baseKey;
+		myKeyRangeEnd		= baseKey;
+		myModifiers			= KMOD_NONE;
+		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+
+		mySignal.connect(slot);	
+	}
+
+	/**
+	 * Version used to observe a key and some modifiers.
+	 */
+    InputMapping(InputDevice * keyDevice, SDLKey baseKey, SDLMod modifiers, 
+				 bool fireOnRelease, InputSlot & slot)
+    {
+		myMotionDevice		= NULL;
+		myKeyDevice			= keyDevice;
+		myKeyRangeStart		= baseKey;
+		myKeyRangeEnd		= baseKey;
+		myModifiers			= modifiers;
+		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		
 		mySignal.connect(slot);
 	}
 
+	
+	/**
+	 * Version used to observe a key range.
+	 */
+    InputMapping(InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd,
+				   bool fireOnRelease, InputSlot & slot)
+    {
+		myMotionDevice		= NULL;
+		myKeyDevice			= keyDevice;
+		myKeyRangeStart		= keyRangeStart;
+		myKeyRangeEnd		= keyRangeEnd;
+		myModifiers			= KMOD_NONE;
+		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		
+		mySignal.connect(slot);		
+	}
+
+	/**
+	 * Version used to observe a key range and some modifiers.
+	 */
+    InputMapping(InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd, 
+				SDLMod modifiers, bool fireOnRelease, InputSlot & slot)
+    {
+		myMotionDevice		= NULL;
+		myKeyDevice			= keyDevice;
+		myKeyRangeStart		= keyRangeStart;
+		myKeyRangeEnd		= keyRangeEnd;
+		myModifiers			= modifiers;
+		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		
+		mySignal.connect(slot);
+	}
+
+	/**
+	 * Version used to observe a motion event and a key with modifiers.
+	 */
+	
+	InputMapping(InputDevice * motionDevice, 
+				InputDevice * keyDevice, SDLKey baseKey,  
+				SDLMod modifiers, InputSignalType types, InputSlot & slot)
+    {
+		myMotionDevice		= motionDevice;
+		myKeyDevice			= keyDevice;
+		myKeyRangeStart		= baseKey;
+		myKeyRangeEnd		= baseKey;
+		myModifiers			= modifiers;
+		myTypes				= types;
+
+		mySignal.connect(slot);
+	}
+
+	/**
+	 * Version used to observe a motion event and a key range with modifiers.
+	 */
+	
+	InputMapping(InputDevice * motionDevice, 
+				InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd,  
+				SDLMod modifiers, InputSignalType types, InputSlot & slot)
+    {
+		myMotionDevice		= motionDevice;
+		myKeyDevice			= keyDevice;
+		myKeyRangeStart		= keyRangeStart;
+		myKeyRangeEnd		= keyRangeEnd;
+		myModifiers			= modifiers;
+		myTypes				= types;
+
+		mySignal.connect(slot);
+	}
 
     /** Deletes a InputMapping instance. */
     virtual ~InputMapping()
@@ -209,14 +311,106 @@ class InputMapping
         // Free any allocated memory and resources
     }
 	
+    //----------------------------------------------------------------------
+    // Public properties
+		
+	InputDevice * getKeyDevice()
+	{
+		return myKeyDevice;
+	}
+
+	InputDevice * getMotionDevice()
+	{
+		return myMotionDevice;
+	}
+
     //======================================================================
     // Protected methods
     //======================================================================
     protected:
 
+	/**
+	 * Is called by the InputDevice mapped as keyDevice, whenever a key
+	 * was pressed.
+	 *
+	 * For performance reasons this should be inline in any case.
+	 */
 
-  
+	inline void keyPressed(SDLKey & key, SDLMod modifier)
+	{
+		if (key >= myKeyRangeStart && key <= myKeyRangeEnd)
+		{
+			if ((KMOD_CTRL & myModifiers == KMOD_CTRL) && (modifier & KMOD_CTRL))
+			{
+				modifier |= KMOD_CTRL;
+			}
 
+			if ((KMOD_SHIFT & myModifiers == KMOD_SHIFT) && (modifier & KMOD_SHIFT))
+			{
+				modifier |= KMOD_SHIFT;
+			}
+
+			if ((KMOD_ALT & myModifiers == KMOD_ALT) && (modifier & KMOD_ALT))
+			{
+				modifier |= KMOD_ALT;
+			}
+
+			if ((KMOD_META & myModifiers == KMOD_META) && (modifier & KMOD_META))
+			{
+				modifier |= KMOD_META;
+			}
+			
+			if (modifier & myModifiers == myModifiers)
+			{
+				myKeysPressed.insert(key);			
+
+				if (myTypes & KEY_PRESSED)
+				{
+					mySignal(myMotionDevice, key, KEY_PRESSED);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Is called by the InputDevice mapped as keyDevice, whenever a key
+	 * was released.
+	 *
+	 * For performance reasons this should be inline in any case.
+	 */
+
+	inline void keyReleased(SDLKey & key)
+	{
+		if (key >= myKeyRangeStart && key <= myKeyRangeEnd)
+		{
+			//remove only keys that was pressed synchronous with their modifiers.
+			if (myKeysPressed.erase(key))
+			{
+				if (myTypes & KEY_RELEASED)
+				{
+					mySignal(myMotionDevice, key, KEY_RELEASED);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Is called by the InputDevice mapped as motionDevice, whenever at least one axis
+	 * position changes.
+	 *
+	 * For performance reasons this should be inline in any case.
+	 */
+
+	inline void motion()
+	{
+		if (myTypes & EVENT_OCCURED)
+		{
+			for (set<SDLKey>::iterator i = myKeysPressed.begin(); i != myKeysPressed.end(); i++)
+			{		
+				mySignal(myMotionDevice, *i, EVENT_OCCURED);
+			}
+		}
+	}
 }; // InputMapping
 
 } // namespace dime
