@@ -99,7 +99,7 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 
 	if (movementForFrame.isMoving) {
 		std::string aString;
-		Vector3 pos = mAvatar->mAvatarNode->getPosition();
+		Ogre::Vector3 pos = mAvatar->mAvatarNode->getPosition();
 		aString += "X: " + StringConverter::toString((long)OGRE2WF(pos.x));
 		aString += " Y: " + StringConverter::toString((long)OGRE2WF(pos.y));
 		aString += " Z: " + StringConverter::toString((long)OGRE2WF(pos.z));
@@ -255,7 +255,7 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* 
 		//Real timePassed = event.timeSinceLastFrame;
 		bool isRunning = mInputManager->isKeyDown(KC_LSHIFT);
 
-		Vector3 movement = Vector3::ZERO;
+		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
 		bool isMovement = false; 
 
 		// forwards / backwards
@@ -301,7 +301,7 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* 
 			
 //			mAvatar->attemptMove(movement, isRunning);
 		} else {
-			movementForFrame.movementDirection = Vector3::ZERO;
+			movementForFrame.movementDirection = Ogre::Vector3::ZERO;
 			movementForFrame.isRunning = false;
 			movementForFrame.isMoving = false;
 

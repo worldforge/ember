@@ -58,7 +58,8 @@ Avatar::Avatar()
 {
 }
 
-Avatar::Avatar(Ogre::SceneManager* sceneManager)  	
+Avatar::Avatar(Ogre::SceneManager* sceneManager)  
+: mErisAvatarEntity(NULL)
 {
 	mTimeSinceLastServerMessage = 0;
 	mMinIntervalOfRotationChanges = 1; //seconds
@@ -124,75 +125,6 @@ void Avatar::createAnimations() {
 }
 
 
-/*
-void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
-{
-	if (mAvatarCamera == NULL) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, mSceneMgr);
-	} else {
-		mAvatarCamera->setAvatarNode(avatarSceneNode);
-	}
-
-/*	if (mAvatar1pCameraNode != NULL) {
-		Ogre::String cameraNodeName = mAvatar1pCameraNode->getName();
-		mAvatar1pCameraNode->getParent()->removeChild(cameraNodeName);
-		avatarSceneNode->addChild(mAvatar1pCameraNode);
-	} else {
-			
-		
-		
-		
-		// 1st person, 3rd person and Top camera nodes
-		mAvatar1pCameraNode = static_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("Avatar1pCameraNode"));
-		mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
-		mAvatar1pCameraNode->setFixedYawAxis(true);
-		
-		//rotate to sync with WF world
-	    mAvatar1pCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90);
-		//mAvatar1pCameraNode->showBoundingBox(true);
-		mAvatar3pCameraNode = static_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
-		
-		Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,500);
-		//mAvatar3pCameraNode->setPosition(15000,2500,0);
-		mAvatar3pCameraNode->setPosition(pos);
-		
-		mAvatarTopCameraNode = static_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("AvatarTopCameraNode"));
-		mAvatarTopCameraNode->setPosition(WF2OGRE_VECTOR3(2,200,0));
-	
-		// Create the camera
-		mAvatar1pCamera = mSceneMgr->createCamera("Avatar1pCam");
-		mAvatar1pCameraNode->attachObject(mAvatar1pCamera);
-	
-		// Look back along x axis
-		//mAvatar1pCamera->lookAt(mOgreHeadNode->getPosition());
-		mAvatar1pCamera->setNearClipDistance(1);
-	
-		// do not clip at far distance
-		// so we can see the skydome
-		mAvatar1pCamera->setFarClipDistance( WF2OGRE(384) );
-	
-		//3rd person camera
-		mAvatar3pCamera = mSceneMgr->createCamera("Avatar3pCamera");
-		mAvatar3pCameraNode->attachObject(mAvatar3pCamera);
-		// Look to the Avatar's head
-		//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
-		mAvatar3pCamera->setNearClipDistance(WF2OGRE(0.01));
-		mAvatar3pCamera->setFarClipDistance( WF2OGRE(384) * 100);
-		//mAvatar3pCamera->setDetailLevel (Ogre::SDL_WIREFRAME);
-	
-		// Create the Top camera
-		mAvatarTopCamera = mSceneMgr->createCamera("AvatarTopCamera");
-		mAvatarTopCameraNode->attachObject(mAvatarTopCamera);
-		// Look to the Avatar's head
-		mAvatarTopCamera->setAutoTracking(true, avatarSceneNode);
-		mAvatarTopCamera->setNearClipDistance(1);
-		mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
-		mAvatarTopCamera->setFarClipDistance( WF2OGRE(384) );
-	}	
-	*/
-	/*
-}
-*/
 
 void Avatar::updateFrame(AvatarControllerMovement movement)
 {
@@ -300,7 +232,10 @@ void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
 {
 	//get the new coordinates of the avatar and check with mercator to adjust for
 	//height
-	MotionManager::getSingleton().adjustHeightPositionForNode(mAvatarNode);
+	if (mErisAvatarEntity) {
+		mErisAvatarEntity->adjustHeightPosition();
+	}
+//	MotionManager::getSingleton().adjustHeightPositionForNode(mAvatarNode);
 }
 
 
@@ -400,7 +335,7 @@ void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
 	//delete mAnimStateWalk;	
 	mSceneMgr->destroySceneNode(mAvatarNode->getName());
 	
-	mAvatarController->createAvatarCameras(dimeEntity->getSceneNode());
+	mAvatarController->createAvatarCameras(dimeEntity->getAvatarSceneNode());
 	mAvatarNode = dimeEntity->getSceneNode();
 	mAvatarEntity = dimeEntity->getOgreEntity();
 	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	

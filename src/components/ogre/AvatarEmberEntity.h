@@ -53,6 +53,8 @@ public:
 	 */
 	void setAvatar(Avatar* avatar) {mAvatar = avatar;}
 	Avatar* getAvatar() {return mAvatar;}
+	
+	Ogre::SceneNode* getAvatarSceneNode();
 
 	
 protected: 

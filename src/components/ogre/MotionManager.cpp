@@ -60,7 +60,8 @@ void MotionManager::updateMotionForEntity(DimeEntity* entity, Ogre::Real timeSli
 	//sceneNode->setOrientation(Atlas2Ogre(entity->getOrientation()));
 //	sceneNode->translate(sceneNode->getOrientation() * (WF2OGRE(velocity) * timeSlice));
 	sceneNode->translate(WF2OGRE(velocity) * timeSlice);
-	adjustHeightPositionForNode(sceneNode);
+	entity->adjustHeightPosition();
+	//adjustHeightPositionForNode(sceneNode);
 }
 
 void MotionManager::adjustHeightPositionForNode(Ogre::SceneNode* sceneNode) {

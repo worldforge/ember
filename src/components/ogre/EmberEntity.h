@@ -90,6 +90,21 @@ public:
 	after a disappearance (vis = false), the server will not send any futher messages to the
 	entity. At some point, invisible entities get flushed by Eris using an LRU scheme. */
 	virtual void setVisible(bool vis);
+
+	/**
+	 * Called by contained entites to determine how they snap to the ground.
+	 * For instance a house entitiy containing a player entity.
+	 * This should of course be extended to a more dynamic physics simulation
+	 * in the future
+	 */
+	virtual void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity);
+
+	/**
+	 * Adjust the height of the entity so that it "snaps" to the ground.
+	 * This is most often done by making a call to the containing node's
+	 * adjustHeightPositionForContainedNode method.
+	 */
+	virtual void DimeEntity::adjustHeightPosition(); 
 	
 
 protected: 
@@ -98,6 +113,7 @@ protected:
 	virtual void createOgreEntity(Ogre::SceneManager* sceneManager);
 	Ogre::Entity* mOgreEntity;
 	Ogre::SceneNode* mOgreNode;
+	Ogre::SceneNode* mScaleNode;
 	Ogre::SceneManager* mSceneManager;
 	
 	/*

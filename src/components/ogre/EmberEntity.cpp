@@ -90,9 +90,12 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 		}
 		
 	}		
-	mOgreNode->setInheritScale(false);
-	mOgreNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
-	//mOgreNode->showBoundingBox(true);
+	Ogre::String id = getID();
+	id += "_scaleNode";
+	mScaleNode = static_cast<Ogre::SceneNode*>(mOgreNode->createChild(id));
+	//mScaleNode->setInheritScale(false);
+	mScaleNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
+	mOgreNode->showBoundingBox(true);
 
 /*
 	// create the ogre entity
@@ -108,24 +111,24 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
 		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-		mOgreNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
+		mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
 	}
 	else if(!strcmp(getType()->getName().c_str(),"merchant"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
 		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-		mOgreNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
+		mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
 	}
 	else if(!strcmp(getType()->getName().c_str(),"pig"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "pig.mesh");
-		mOgreNode->setScale(0.4,0.4,0.4);
+		mScaleNode->setScale(0.4,0.4,0.4);
 		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
 	}
 	else if(!strcmp(getType()->getName().c_str(),"sty"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "Sty.mesh");
-		mOgreNode->setScale(1,1,1);
+		mScaleNode->setScale(1,1,1);
 	}
 	else if(!strcmp(getType()->getName().c_str(),"squirrel"))
 	{
@@ -134,12 +137,12 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	else if(!strcmp(getType()->getName().c_str(),"fir"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
-		mOgreNode->setScale(0.02,0.02,0.02);
+		mScaleNode->setScale(0.02,0.02,0.02);
 	}
 	else if(!strcmp(getType()->getName().c_str(),"oak"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "Oak.mesh");
-		mOgreNode->setScale(0.04,0.04,0.04);
+		mScaleNode->setScale(0.04,0.04,0.04);
 	}
 	else
 	{
@@ -162,7 +165,7 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 
 
 	// attach the node to the entity
-	mOgreNode->attachObject(mOgreEntity);
+	mScaleNode->attachObject(mOgreEntity);
 	mOgreEntity->setUserObject(this);
 	//scaleNode(0.01);
 
@@ -257,6 +260,25 @@ void DimeEntity::setContainer(Entity *pr)
 	}		
 	Entity::setContainer(pr);
 }
+
+void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity) 
+{
+	//for generic entities we set the height to 0
+	Ogre::SceneNode* sceneNode = entity->getSceneNode();
+	Ogre::Vector3 position = sceneNode->getPosition();
+	sceneNode->setPosition(position.x, 0,position.z);
+}
+
+void DimeEntity::adjustHeightPosition()
+{
+	DimeEntity* container = (DimeEntity*)getContainer();
+	if (container) {
+		container->adjustHeightPositionForContainedNode(this);
+	}
+	
+}
+
+
 /*
 void DimeEntity::addMember(Entity *e) 
 {

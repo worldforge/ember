@@ -94,19 +94,30 @@ void AvatarDimeEntity::rmvMember(Entity *e)
 
 void AvatarDimeEntity::setContainer(Entity *pr)
 {
-		
+	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
 	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(pr);
 	if (dimeEntity) {
 		//detach from our current object and add to the new entity
 		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
 		dimeEntity->getSceneNode()->addChild(getSceneNode());
-				
 	} else {
 		//detach from our current object and add to the world
 		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
 		getSceneNode()->getCreator()->getRootSceneNode()->addChild(getSceneNode());
 	}		
 	Entity::setContainer(pr);
+	
+	//we adjust the entity so it retains it's former position in the world
+	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
+	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 }
+
+Ogre::SceneNode* AvatarDimeEntity::getAvatarSceneNode()
+{
+	return mScaleNode;	
+}
+
+
+
 }
 

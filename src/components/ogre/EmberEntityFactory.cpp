@@ -32,6 +32,7 @@
 #include "DimeEntity.h"
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
+#include "WorldDimeEntity.h"
 
 namespace DimeOgre {
 
@@ -86,7 +87,7 @@ bool DimeEntityFactory::accept(const Atlas::Objects::Entity::GameEntity &ge, Eri
 
 
 Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world) {
-    Eris::Entity *we = new Eris::Entity(ge, world);
+    WorldDimeEntity *we = new WorldDimeEntity(ge, world, mSceneManager, mTerrainGenerator);
       // Extract base points and send to terrain        
       //TerrainEntity * te = new TerrainEntity(ge,w);
 	mTerrainGenerator->initTerrain(we, world);
