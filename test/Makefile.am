@@ -1,5 +1,5 @@
-INCLUDES = -I$(top_srcdir)/src
-
 noinst_LIBRARIES = libTestServices.a
 
-libTestServices_a_SOURCES = DataModelTest.h DataModelTest.cpp TestServices.h TestServices.cpp InputServiceTest.cpp StateManagerTest.cpp
+libTestServices_a_SOURCES = DataModelTest.cpp TestServices.cpp InputServiceTest.cpp StateManagerTest.cpp
+
+noinst_HEADERS = DataModelTest.h TestServices.h 

@@ -2,5 +2,6 @@ INCLUDES = -I$(top_srcdir)/src
 
 noinst_LIBRARIES = libFontService.a
 
-libFontService_a_SOURCES = FontService.cpp FontService.h Font.cpp Font.h Glyph.h FontRenderer.cpp FontRenderer.h
+libFontService_a_SOURCES = FontService.cpp Font.cpp FontRenderer.cpp
 
+noinst_HEADERS = FontService.h Font.h Glyph.h FontRenderer.h
