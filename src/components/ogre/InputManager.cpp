@@ -155,7 +155,14 @@ void InputManager::keyPressed(Ogre::KeyEvent* e)
 	{
         S_LOG_VERBOSE() << "Toggle mouse\n";
         toggleMouse();
-	}			
+	}
+	
+	// print screenshot
+	if (e->getKey() == Ogre::KC_SYSRQ || e->getKey() == Ogre::KC_F8)
+        {
+	 	S_LOG_VERBOSE() << "Taking screenshot\n";
+		mEventProcessor->takeScreenshot();
+        }
 	
 	std::list<Ogre::KeyListener*>::iterator i;
 	for(i=mKeyListenerList.begin(); i!=mKeyListenerList.end(); i++)

@@ -1,5 +1,11 @@
 2004-07-08 Miguel Guzman <aglanor [at] telefonica [dot] net>
 
+	* DimeEventProcessor, InputManager: added screenshot support.
+	Pressing F8 will write screenshot as:
+		screenshot_yyyymmdd_hhmmss.png
+
+2004-07-08 Miguel Guzman <aglanor [at] telefonica [dot] net>
+
 	* DimeEntity.cpp, resources.cfg: added checks for i
 	pig and squirrel models.
 	* Makefile.am: removed (temporarily) an unused file.

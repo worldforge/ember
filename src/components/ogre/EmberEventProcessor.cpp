@@ -16,7 +16,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <time.h>
+
 #include "DimeEventProcessor.h"
+
 
 DimeEventProcessor::DimeEventProcessor() : Ogre::EventProcessor()
 {
@@ -44,6 +47,54 @@ void DimeEventProcessor::toggleMouse()
 	createInputReader(mUseMouse);
 //	mInputReader->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow(), true, false);
 
+}
+
+std::string DimeEventProcessor::takeScreenshot() 
+{
+	// retrieve current time
+	time_t rawtime;
+	struct tm* timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	
+	// construct filename string
+	// padding with 0 for single-digit values
+	std::stringstream filename;
+	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
+	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
+	if(month <= 9) 
+	{
+		filename << "0";	
+	}
+	filename << month;
+	int day = (*timeinfo).tm_mday;
+	if(day <= 9) 
+	{
+		filename << "0";	
+	}
+	filename << day << "_";
+	int hour = (*timeinfo).tm_hour;
+	if(hour <= 9) 
+	{
+		filename << "0"; 
+	}
+	filename << hour;
+	int min = (*timeinfo).tm_min;
+	if(min <= 9) 
+	{
+		filename << "0";	 
+	}
+	filename << min;
+	int sec = (*timeinfo).tm_sec;
+	if(sec <= 9) 
+	{
+		filename << "0";
+	} 
+	filename << sec << ".png";
+	
+	// take screenshot
+	mWin->writeContentsToFile(filename.str());
+	mWin->setDebugText(std::string("Screenshot: ") + filename.str());
 }
 
 bool DimeEventProcessor::isMouseUsed()

@@ -47,6 +47,12 @@ public:
 	void toggleMouse();
 	
 	/*
+	 * takes a screenshot and writes it to a file
+	 * returns the name of the screenshot
+	 */
+	std::string takeScreenshot(); 
+	
+	/*
 	 * Returns true if the application has grabbed the mouse.
 	 */
 	bool isMouseUsed();
