@@ -214,7 +214,8 @@ namespace Ember
     myAccount->LoginFailure.connect(SigC::slot(*this,&ServerService::loginFailure));
     myAccount->LoginSuccess.connect(SigC::slot(*this,&ServerService::loginSuccess));
     myAccount->LogoutComplete.connect(SigC::slot(*this,&ServerService::logoutComplete));
-
+	myAccount->AvatarSuccess.connect(SigC::slot(*this,&ServerService::gotAvatarSuccess));
+	
 	GotAccount.emit(myAccount);
     // Init OOGChat controller
     myOOGChat = new OOGChat(myAccount);
@@ -299,12 +300,19 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
   }
   
   void ServerService::takeCharacter(const std::string &id){
-		myAvatar = myAccount->takeCharacter(id);
-		if (myAvatar) {
+		myAccount->takeCharacter(id);
+	}
+	
+	void ServerService::gotAvatarSuccess(Eris::Avatar* avatar) {
+		//if we already have a avatar, do nothing
+		//TODO: perhaps signal an error?
+		if (!myAvatar) {
+			myAvatar = avatar;
 			GotAvatar.emit(myAvatar);
 			myView = myAvatar->getView();
 			GotView.emit(myView);
 		}
+	
 	}
 
 
@@ -423,8 +431,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 				character->setAttr("description", description);
 				fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
 				try {
-					myAvatar = myAccount->createCharacter(character);
-					myView = myAvatar->getView();
+					myAccount->createCharacter(character);
 				} 
 				catch (Eris::BaseException except)
 				{

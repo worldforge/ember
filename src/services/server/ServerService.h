@@ -186,6 +186,8 @@ class ServerService : public Service, public ConsoleObject,
 
     // Account Callbacks
 
+	void gotAvatarSuccess(Eris::Avatar* avatar);
+
     void gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &);
 
     void gotAllCharacters();
