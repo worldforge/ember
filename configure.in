@@ -60,24 +60,6 @@ AC_MSG_ERROR(Couldn't find Varconf [or tests failed])
 )
 
 
-found_cppunit=no
-
-AM_PATH_CPPUNIT(1.8.0, [
-  AC_MSG_RESULT(
-*** Found CppUnit
-*** Setting up make check to run tests...)
-	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
-	LDFLAGS="$LDFLAGS $CPPUNIT_LIBS"
-], 
-  AC_MSG_RESULT([
-
-*** Unable to find a recent enough CppUnit
-*** Will not run unit testing!!
-*** 
-*** To get CppUnit see http://cppunit.sourceforge.net
-]))
-
-
 dnl Check for the FreeType 2 library
 dnl
 dnl Get the cflags and libraries from the freetype-config script
@@ -112,12 +94,28 @@ else
     LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
 fi
 
+dnl Cppunit check
+
+found_cppunit=no
+
+AM_PATH_CPPUNIT(1.8.0, [
+  AC_MSG_RESULT(
+*** Found CppUnit
+*** Setting up make check to run tests...)
+	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
+	LDFLAGS="$LDFLAGS $CPPUNIT_LIBS"
+], 
+  AC_MSG_RESULT([
+
+*** Unable to find a recent enough CppUnit
+*** Will not run unit testing!!
+*** 
+*** To get CppUnit see http://cppunit.sourceforge.net
+]))
 
 
 dnl AC_CHECK_LIB(eris,main)
 dnl AC_CHECK_LIB(skstream,main)
-
-
 
 
 AC_LANG_CPLUSPLUS
@@ -143,6 +141,7 @@ AC_OUTPUT([
   test/Makefile
   src/main/Makefile
   test/Makefile
+  dime.dox
 ])
 
 
