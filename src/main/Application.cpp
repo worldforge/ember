@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.36  2002-08-30 19:31:33  aglanor
+ *      Revision 1.37  2002-09-07 13:38:10  aglanor
+ *      Configuration service is now started with the application. I've also break the log line in the src/main Makefile.am which loads the serrvice static libs, now it's more readable.
+ *
+ *      Revision 1.36  2002/08/30 19:31:33  aglanor
  *      sound service is now created and started in the application
  *
  *      Revision 1.35  2002/08/28 21:46:35  xmp
@@ -188,7 +191,7 @@ namespace dime
 			std::cerr << ctm->tm_sec << "] ";			
 			std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
 
-            if(importance == dime::LoggingService::CRITICAL) 
+            if(importance == dime::LoggingService::CRITICAL)
                 {
                     std::cerr << "CRITICAL";
                 }
@@ -272,6 +275,9 @@ namespace dime
 		// Initialize the InputService
 		myInputService = InputService::getInstance();
 
+		// Initialize the ConfigService
+		myConfigService = DimeServices::getInstance()->getConfigService();
+		myConfigService->start();
 
 
 		// Mouse and Keyboard are needed, so create them

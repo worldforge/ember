@@ -64,6 +64,7 @@ namespace dime
 
     Service::Status ConfigService::start()
     {
+	cout << "TRACE: Config service started (TODO: this should go through logging service)" << endl;
 	setRunning(true);
 	return Service::OK;
     }

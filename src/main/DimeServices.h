@@ -22,6 +22,7 @@
 // Include headers from the current project here
 #include <services/test/TestService.h>
 #include <services/logging/LoggingService.h>
+#include <services/config/ConfigService.h>
 #include <services/input/InputService.h>
 #include <services/gui/GuiService.h>
 #include <services/sound/SoundService.h>
@@ -87,6 +88,11 @@ class DimeServices
      * The instance of the LoggingService
      */
     dime::LoggingService *myLoggingService;
+
+	/*
+	* The instance of the ConfigService
+	*/
+	dime::ConfigService *myConfigService;
 
 	/*
 	* The instance of the InputService
@@ -183,6 +189,9 @@ class DimeServices
         return NULL;
     }
 
+
+
+
     /**
      * Returns an instance of the LoggingService
      */
@@ -190,6 +199,14 @@ class DimeServices
     {
         return dime::LoggingService::getInstance();
     }
+
+	/**
+	 * Returns an instance of the ConfigService
+	 */
+	dime::ConfigService *getConfigService()
+	{
+		return dime::ConfigService::getInstance();
+	}
 
 	/**
      * Returns an instance of the InputService

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.17  2002-08-30 19:31:33  aglanor
+ *      Revision 1.18  2002-09-07 13:38:10  aglanor
+ *      Configuration service is now started with the application. I've also break the log line in the src/main Makefile.am which loads the serrvice static libs, now it's more readable.
+ *
+ *      Revision 1.17  2002/08/30 19:31:33  aglanor
  *      sound service is now created and started in the application
  *
  *      Revision 1.16  2002/05/13 19:37:53  nikal
@@ -185,7 +188,12 @@ namespace dime
          * Our pointer to the LoggingService
          */
         dime::LoggingService *myLoggingService;
-		
+
+		/**
+		* Our pointer to the ConfigService
+		 */
+		dime::ConfigService *myConfigService;
+
         /**
          * Our pointer to the GuiService
          */
@@ -214,10 +222,10 @@ namespace dime
 		 */
 		SDLDrawDevice *myDrawDevice;
 
-        /**
-         * Our pointer to the SoundService
-         */
-	dime::SoundService *mySoundService;
+		/**
+		* Our pointer to the SoundService
+		 */
+		dime::SoundService *mySoundService;
 
 		/**
 		 * Pointer to ourselves

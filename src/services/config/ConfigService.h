@@ -99,7 +99,7 @@ class ConfigService: public Service
      * Returns reference to the singleton.
      *
      */
-    ConfigService* getInstance(void);
+    static ConfigService* getInstance(void);
 
     /**
      * Starts ConfigService.  Returns status.
