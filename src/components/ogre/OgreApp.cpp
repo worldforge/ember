@@ -19,17 +19,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
+
+ *  Change History (most recent first):
+ *
+ *      $Log$
+ *      Revision 1.10  2002-12-10 00:02:45  aglanor
+ *      2002-12-07 Miguel Guzman (Aglanor) <aglanor@telefonica.net>
+ *
+ *      	* OgreApp.cpp: meshes are placed into the OGRE scene when an entity is created.
+ *      	Currently they're all squirrels of doom.
+ *
+ *      	* OgreApp.cpp/h: removed "using namespace ogre". OGRE should not be
+ *      	more relevant here than dime or eris. Now it uses the default namesp
+ *
+
 -----------------------------------------------------------------------------
 */
 
-/**
-    \brief
-        This file can be used as a starting point for building an OGRE application.
-        I have deliberately compressed both declarations and definitions into 1 file
-        to avoid name dependencies here (so you can easily rename this file), if you
-        get serious you will definitely want to split all this stuff up into separate
-        .h and .cpp files for tidiness, but this is just a jump-start.
-*/
 
 // ------------------------------
 // Include OGRE dime client files
@@ -51,6 +57,14 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #endif
+
+// ------------------------------
+// Include WFmath header files
+// ------------------------------
+#include <wfmath/point.h>
+#include <wfmath/vector.h>
+#include <wfmath/axisbox.h>
+#include <wfmath/quaternion.h>
 
 
 // ----------------------------------------------------------------------------
@@ -559,7 +573,22 @@ void OgreApplication::connectWorldSignals(void) {
 void OgreApplication::entityCreate( Eris::Entity *e )
 {
 
-	fprintf(stderr, "TRACE - ENTITY CREATED - EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+	// create the ogre entity
+	Entity* ogreEntity = mSceneMgr->createEntity(e->getID(), "squirel_of_doom.mesh");
+
+	// create the ogre node
+	// TODO: use Eris entity hierarchy for the node hierarchy !!
+	SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChild();
+
+	// set the node position based on eris entity position
+	WFMath::Point<3> position = e->getPosition();
+	ogreNode->setPosition(position.x(),position.y(),position.z());
+	ogreNode->setScale(0.05,0.05,0.05);
+
+	// attach the node to the entity
+	ogreNode->attachObject(ogreEntity);
+
+	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
 
     /* Whenever a new entity is created, make sure to connect to those signals
        too */

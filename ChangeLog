@@ -1,3 +1,12 @@
+2002-12-07 Miguel Guzman (Aglanor) <aglanor@telefonica.net>
+
+	* OgreApp.cpp: meshes are placed into the OGRE scene when an entity is created. 
+	Currently they're all squirrels of doom.
+	
+	* OgreApp.cpp/h: removed "using namespace ogre". OGRE should not be 
+	more relevant here than dime or eris. Now it uses the default namesp.
+
+
 2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
 	* ConfigService.cpp: Initialise static member theInstance to NULL.
 

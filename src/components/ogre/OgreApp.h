@@ -20,6 +20,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
+
+ *  Change History (most recent first):
+ *
+ *      $Log$
+ *      Revision 1.6  2002-12-10 00:02:45  aglanor
+ *      2002-12-07 Miguel Guzman (Aglanor) <aglanor@telefonica.net>
+ *
+ *      	* OgreApp.cpp: meshes are placed into the OGRE scene when an entity is created.
+ *      	Currently they're all squirrels of doom.
+ *
+ *      	* OgreApp.cpp/h: removed "using namespace ogre". OGRE should not be
+ *      	more relevant here than dime or eris. Now it uses the default namesp
+ *
+
 -----------------------------------------------------------------------------
 */
 /*
@@ -55,8 +69,6 @@ Description: Base class for all the OGRE examples
 #include <sigc++/object_slot.h>
 #endif
 
-
-using namespace Ogre;
 
 class TerrainListener;
 
