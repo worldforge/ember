@@ -32,7 +32,7 @@ namespace dime {
  *
  * Maintains a list of services and performs operations on them.
  *
- * @author Miguel Guzman Miranda
+ * @author Miguel Guzman Miranda [Aglanor]
  *
  */
 class ServiceManager
@@ -111,10 +111,7 @@ class ServiceManager
     * already registered.
     * @return true if successfully added & registered, false otherwise.
     */
-   bool addService( Service *service )
-   {
-      // TODO: Implement.
-   }
+   bool addService( Service *service );
 
    
    /**
@@ -123,10 +120,7 @@ class ServiceManager
     * If it wasn't registered or there was som other problem, false is returned.
     * @return true if successfully removed and unregistered, false otherwise.
     */
-   bool removeService( Service *service )
-   {
-      // TODO: Implement.
-   }
+   bool removeService( Service *service );
 
 
     //======================================================================
