@@ -40,6 +40,7 @@
 
 #include "GUIManager.h"
 #include "input/Input.h"
+// #include "jesus/JesusMousePicker.h"
 
 namespace EmberOgre {
 
@@ -123,6 +124,7 @@ public:
 // 	void mouseDragged (Ogre::MouseEvent *e) {};
 
 	EmberEntity* pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
+	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
 	inline void setClosestPickingDistance(Ogre::Real distance) { mClosestPickingDistance = distance; }
 	inline Ogre::Real getClosestPickingDistance() { return mClosestPickingDistance; }

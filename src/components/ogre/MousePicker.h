@@ -51,7 +51,7 @@ public:
 
     ~MousePicker();
 
-	void doMousePicking(const Ogre::Real x, const Ogre::Real y, const CEGUI::MouseEventArgs& args);
+	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const CEGUI::MouseEventArgs& args);
 
 
 

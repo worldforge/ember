@@ -58,6 +58,21 @@ AttachPair::AttachPair(const std::string& name, const std::string& type, AttachP
 	mPoint2.setAttachPair(this);
 }
 
+const std::vector<const AttachPoint*> BlockSpec::getAllPoints() const
+{
+	std::vector<const AttachPoint*> points;
+	
+	std::map<const std::string, AttachPair>::const_iterator I = mAttachPairs.begin();
+	std::map<const std::string, AttachPair>::const_iterator I_end = mAttachPairs.end();
+	
+	for (;I != I_end; ++I) {
+		points.push_back(&I->second.getPoint1());
+		points.push_back(&I->second.getPoint2());
+	}
+	return points;
+	
+}
+
 bool BlockSpec::addAttachPair(AttachPair* pair)
 {
 	if (mAttachPairs.find(pair->getName()) != mAttachPairs.end()) 

@@ -121,6 +121,11 @@ public:
 	inline const WFMath::Quaternion& getOrientation() const { return mOrientation;}
 	
 	inline const BuildingBlockSpec* getBuildingBlockSpec() const { return mBuildingBlockSpec; }
+	
+	inline const BlockSpec* getBlockSpec() const { return mBuildingBlockSpec->getBlockSpec(); }
+	
+	const std::vector<const AttachPoint*> getAllPoints() const;
+	
 protected: 	
 	//ModelBlock mModelBlock;
 	BuildingBlockSpec* mBuildingBlockSpec;

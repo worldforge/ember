@@ -36,6 +36,8 @@ XERCES_CPP_NAMESPACE_USE
 #include <string>
 #include <map>
 
+#include "../EmberOgre.h"
+
 
 namespace Carpenter
 {
@@ -53,7 +55,10 @@ class Carpenter;
 
 };
 
+
 namespace EmberOgre {
+
+TYPEDEF_STL_MAP(const std::string, Ogre::ColourValue, AttachPointColourValueMap);
 
 class Model;
 class ModelBlock;
@@ -66,6 +71,13 @@ Classes for handling Carpenter instances and building creation in Ember. These c
 */
 class Jesus{
 public:
+
+	enum ClickMasks
+	{
+		CM_MODELBLOCK = 1<<6,
+		CM_ATTACHPOINT = 1<<7
+	};
+
     Jesus(Carpenter::Carpenter* carpenter);
 
     ~Jesus();
@@ -110,6 +122,14 @@ public:
 	 * @return A Model instance or 0
 	 */
 	Model* createModelForBlockType(const std::string& blockType,  const std::string& modelName);
+	
+	
+	/**
+	 *    Finds the colour associated to the supplied attachpoint. If no colour is registered, a ColourValue of 1,1,1 will be returned
+	 * @param point 
+	 * @return 
+	 */
+	Ogre::ColourValue getColourForAttachPoint(const Carpenter::AttachPoint* point) const;
 
 protected:
 	/**
@@ -127,8 +147,29 @@ protected:
 	*/
 	std::map<const std::string, WFMath::Vector<3> > mNormalTypes;
 	
+	/**
+	Map of colours for Attach point types.
+	*/
+	AttachPointColourValueMap mColourMap;
+	
+	void addAttachPointType(const std::string & type);
 
 };
+
+class AttachPointNode
+{
+public:
+	AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour, Ogre::BillboardSet* billboardSet);
+	void select();
+	
+protected:
+	const ModelBlock* mModelBlock;
+	Ogre::SceneNode* mModelNode;
+	const Carpenter::AttachPoint* mAttachPoint;
+	Ogre::Billboard* mFlare;
+	Ogre::ColourValue mColour;
+};
+
 
 /**
 
@@ -136,11 +177,22 @@ A mapping between a Carpenter::BuildingBlock and an Ember::Model.
 */
 class ModelBlock
 {
-	ModelBlock(Carpenter::BuildingBlock* buildingBlock,  Model* model);
+public:
+	ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock,  Model* model, Jesus* jesus);
+	void selectAttachPointNode(AttachPointNode* selectedNode);
+	
+	inline const Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
+	
+	void createAttachPointNodes();
+	void select();
 protected:
 	Carpenter::BuildingBlock* mBuildingBlock;
 	Model* mModel;
-
+	
+	std::vector<AttachPointNode*> mAttachPointNodes;
+	Ogre::SceneNode *mNode, *mModelNode;
+	Ogre::BillboardSet* mPointBillBoardSet;
+	Jesus* mJesus;
 };
 
 /**
@@ -164,13 +216,14 @@ class Construction
 public:
 	Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::SceneNode* node);
 	
+	//inline Ogre::BillboardSet* getBillBoardSet() const { return mPointBillBoardSet; }
 protected:
 	Carpenter::BluePrint* mBlueprint;
 	Ogre::SceneNode* mBaseNode;
 	Jesus* mJesus;
 	
-	std::vector<ModelBlock> mModelBlocks;
-
+	std::vector<ModelBlock*> mModelBlocks;
+	
 };
 
 

@@ -122,6 +122,8 @@ public:
 	bool addAttachPair(AttachPair* pair);
 	void setBoundingBox(WFMath::AxisBox<3> bbox);
 	
+	const std::vector<const AttachPoint*> getAllPoints() const;
+	
 protected:
 	std::string mName;
 	WFMath::AxisBox<3> mBoundingBox;

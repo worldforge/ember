@@ -28,6 +28,8 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#include "jesus/JesusPickerObject.h"
+
 namespace EmberOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
@@ -173,6 +175,74 @@ void AvatarCamera::mouseMoved(const MouseMotion& motion, bool isInGuimode)
 		}
 	}
 }
+
+std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask )
+{
+	fprintf(stderr, "TRACE - TRYING TO PICK AN ENTITY\n");
+
+	std::vector<Ogre::RaySceneQueryResultEntry> finalResult;
+	
+	// Start a new ray query 
+	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
+	//don't know why
+
+	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , querymask); 
+	
+	raySceneQuery->setSortByDistance(true);
+	raySceneQuery->execute(); 
+	Ogre::RaySceneQueryResult result = raySceneQuery->getLastResults(); 
+	   
+	//T *closestObject = *ptrClosestObject; 
+	Ogre::Real closestDistance = mClosestPickingDistance;
+	 
+	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator; 
+	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end; 
+	
+	std::vector<Ogre::UserDefinedObject*>::iterator excludeStart = exclude.begin();
+	std::vector<Ogre::UserDefinedObject*>::iterator excludeEnd = exclude.end();
+
+	rayIterator = result.begin( );
+	rayIterator_end = result.end( );
+	if (rayIterator != rayIterator_end) {
+		for ( ; 
+			rayIterator != rayIterator_end; 
+			rayIterator++ ) {
+			//only pick entities that have a userobject attached
+
+			Ogre::MovableObject* movable = ( *rayIterator ).movable;
+			
+// 			if (movable && movable->getUserObject() != 0 && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
+			if (movable && movable->getUserObject()) {
+				//check that it's not in the exclude list
+				bool isNotInInclude = true;
+				for (std::vector<Ogre::UserDefinedObject*>::iterator exclude_I = excludeStart; exclude_I != excludeEnd; ++exclude_I) {
+					if (*exclude_I == movable->getUserObject()) {
+						isNotInInclude = true;
+					}
+				}
+				
+				if (isNotInInclude) {
+					if ( ( *rayIterator ).distance < mClosestPickingDistance ) { 
+						finalResult.push_back(*rayIterator);
+					}
+				}
+			}
+		} 
+	}
+
+	if ( finalResult.size() == 0 ) {    
+
+		fprintf(stderr, "TRACE - PICKED NONE\n");
+	} else { 
+		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
+
+	} 		
+	
+	return finalResult;
+	
+}
+
 
 EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
 {

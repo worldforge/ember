@@ -3,7 +3,7 @@
   <submodels>
     <submodel mesh="3d_objects/items/building_element/models/standard_wall/standard_wall.mesh">
       <parts>
-        <part name="wall" show="true" />
+        <part name="main" show="true" />
       </parts>
     </submodel>
   </submodels>

@@ -18,11 +18,11 @@ uninstall-local:
 INCLUDES = -I$(top_srcdir)/src -DETCDIR=\"$(sysconfdir)\" -DEMBERDATADIR=\"@datadir@/ember/data/\"
 METASOURCES = AUTO
 noinst_LIBRARIES = libWidgets.a
-libWidgets_a_SOURCES = Widget.cpp Widget.h ChatWidget.cpp ChatWidget.h ConsoleWidget.cpp \
-		ConsoleWidget.h DebugWidget.cpp DebugWidget.h EntityPickerWidget.cpp \
-		EntityPickerWidget.h GiveWidget.cpp GiveWidget.h IngameChatWidget.cpp IngameChatWidget.h \
-		IngameEventsWidget.cpp IngameEventsWidget.h InspectWidget.cpp InspectWidget.h \
-		InventoryWidget.cpp InventoryWidget.h MakeEntityWidget.cpp MakeEntityWidget.h \
-		ServerBrowserWidget.cpp ServerBrowserWidget.h ServerWidget.cpp ServerWidget.h  \
-		 Performance.cpp Performance.h WidgetDefinitions.cpp
-noinst_HEADERS = WidgetDefinitions.h
+libWidgets_a_SOURCES = Widget.cpp Widget.h ChatWidget.cpp ChatWidget.h \
+	ConsoleWidget.cpp 		ConsoleWidget.h DebugWidget.cpp DebugWidget.h EntityPickerWidget.cpp \
+			EntityPickerWidget.h GiveWidget.cpp GiveWidget.h IngameChatWidget.cpp IngameChatWidget.h \
+			IngameEventsWidget.cpp IngameEventsWidget.h InspectWidget.cpp InspectWidget.h \
+			InventoryWidget.cpp InventoryWidget.h MakeEntityWidget.cpp MakeEntityWidget.h \
+			ServerBrowserWidget.cpp ServerBrowserWidget.h ServerWidget.cpp ServerWidget.h 		 \
+	Performance.cpp Performance.h WidgetDefinitions.cpp JesusEdit.cpp
+noinst_HEADERS = WidgetDefinitions.h JesusEdit.h

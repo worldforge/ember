@@ -41,6 +41,7 @@ mOrientation.identity();
 
 }
 
+
 void BluePrint::doBindingsForBlock(BuildingBlock *block)
 {
 	std::map<BuildingBlock* , std::vector<BuildingBlockBinding*> > relatedBindings;
@@ -303,5 +304,11 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 
 } 
 
+const std::vector< const AttachPoint * > BuildingBlock::getAllPoints( ) const
+{
+	return getBlockSpec()->getAllPoints();
+}
+
 
 };
+

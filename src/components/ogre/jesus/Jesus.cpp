@@ -24,6 +24,8 @@
 #include "../carpenter/Carpenter.h"
 #include "../carpenter/BluePrint.h"
 #include "../model/Model.h"
+#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
+#include "JesusPickerObject.h"
 
 
 namespace EmberOgre {
@@ -45,6 +47,19 @@ Jesus::Jesus(Carpenter::Carpenter* carpenter)
 Jesus::~Jesus()
 {
 	delete mCarpenter;
+}
+
+AttachPointNode::AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour,Ogre::BillboardSet* billboardSet )
+: mModelBlock(modelBlock), mModelNode(modelNode), mAttachPoint(attachPoint), mColour(colour)
+{
+	
+	std::string name = modelBlock->getBuildingBlock()->getName() + "_" + attachPoint->getAttachPair()->getName() + "_" + attachPoint->getName();
+	
+	Ogre::Vector3 position = Atlas2Ogre(attachPoint->getPosition());
+// 	mFlare = billboardSet->createBillboard(modelBlock->getBuildingBlock()->getWorldPositionForPoint(attachPoint) , colour);
+	mFlare = billboardSet->createBillboard(position , colour);
+//	mFlare = billboardSet->createBillboard(0,0,0 , colour);
+
 }
 	
 bool Jesus::loadModelBlockMapping(const std::string& filename)
@@ -206,6 +221,7 @@ bool Jesus::loadBlockSpec(const std::string& filename)
 			xercesc::XMLString::transcode("type", tempStr, 99);
 			std::string type = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(attachpairNodes->item(i))->getAttribute(tempStr));
 			
+			addAttachPointType(type);
 			
 			xercesc::XMLString::transcode("attachpoint", tempStr, 99);
 			xercesc::DOMNodeList* attachpointNodes = dynamic_cast<xercesc::DOMElement*>(attachpairNodes->item(i))->getElementsByTagName(tempStr);
@@ -344,6 +360,17 @@ bool Jesus::loadBuildingBlockSpecDefinition(const std::string& filename)
 	parser->release();
 
 	return true;
+
+}
+
+void Jesus::addAttachPointType(const std::string & type) 
+{
+	
+	AttachPointColourValueMap::iterator J = mColourMap.find(type);
+	if (J == mColourMap.end()) {
+		Ogre::ColourValue colour = Ogre::ColourValue(0.5,0.5,0.1 * mColourMap.size());
+		mColourMap.insert(AttachPointColourValueMap::value_type(type, colour));
+	} 
 
 }
 
@@ -501,6 +528,7 @@ Carpenter::BluePrint* Jesus::loadBlueprint(std::string filename)
 Construction::Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::SceneNode* node)
 : mBlueprint(blueprint), mBaseNode(node), mJesus(jesus)
 {
+
 	std::vector<Carpenter::BuildingBlock*> buildingBlocks = blueprint->getAttachedBlocks();
 	
 	std::vector<Carpenter::BuildingBlock*>::const_iterator J = buildingBlocks.begin();
@@ -510,37 +538,17 @@ Construction::Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::
 	{
 		Carpenter::BuildingBlock* block = *J;
 		if (block->isAttached()) {
-			Ogre::SceneNode* node = mBaseNode->createChildSceneNode(EmberOgre::Atlas2Ogre(block->getPosition()), EmberOgre::Atlas2Ogre(block->getOrientation()));
-			
 			std::string blockSpecName = block->getBuildingBlockSpec()->getName();
 			
-			EmberOgre::Model* model = mJesus->createModelForBlockType(blockSpecName, block->getName());
-			if (model) {
-				node->attachObject(model);
-				
-				const Ogre::AxisAlignedBox ogreBoundingBox = model->getBoundingBox();
-				const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
-				const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
+			Model* model = mJesus->createModelForBlockType(blockSpecName, block->getName());
+			ModelBlock* modelBlock = new ModelBlock(mBaseNode, block, model, jesus);
+			mModelBlocks.push_back(modelBlock);
 			
-		
-				const WFMath::AxisBox<3> wfBoundingBox = block->getBuildingBlockSpec()->getBlockSpec()->getBoundingBox();	
-				const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
-				const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
-				
-				Ogre::Real scaleX;		
-				Ogre::Real scaleY;		
-				Ogre::Real scaleZ;		
 			
-				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
-
-				node->setScale(scaleX, scaleY, scaleZ);
-				
-			}
+			modelBlock->createAttachPointNodes();
 		}
 	}
-
+	//mModelBlocks[0]->createAttachPointNodes();
 }
 
 Model* Jesus::createModelForBlockType(const std::string& blockType, const std::string& modelName)
@@ -549,16 +557,93 @@ Model* Jesus::createModelForBlockType(const std::string& blockType, const std::s
 	if (I == mModelMappings.end()) {
 		return 0;
 	}
-	return EmberOgre::Model::Create(I->second + ".modeldef.xml", modelName);
+	return Model::Create(I->second + ".modeldef.xml", modelName);
 }
 
-ModelBlock::ModelBlock(Carpenter::BuildingBlock* buildingBlock, Model* model)
-: mBuildingBlock(buildingBlock), mModel(model)
+ModelBlock::ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock, Model* model, Jesus* jesus)
+: mBuildingBlock(buildingBlock), mModel(model), mJesus(jesus)
 {
+	
+	
+	mNode = baseNode->createChildSceneNode(Atlas2Ogre(buildingBlock->getPosition()), Atlas2Ogre(buildingBlock->getOrientation()));
+	
+	
+	mPointBillBoardSet = EmberOgre::getSingleton().getSceneManager()->createBillboardSet( buildingBlock->getName() + "_billboardset");
+	mPointBillBoardSet->setDefaultDimensions(1, 1);
+	mPointBillBoardSet->setMaterialName("carpenter/flare");
+	mPointBillBoardSet->setVisible(false);
+//	Ogre::SceneNode* aNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	mNode->attachObject(mPointBillBoardSet);
+	
+		
+	if (model) {
+		JesusPickerObject* pickerObject = new JesusPickerObject(this, 0);
+		model->setUserObject(pickerObject);
+		
+		
+		mModelNode = mNode->createChildSceneNode();
+		mModelNode->attachObject(model);
+		model->setQueryFlags(Jesus::CM_MODELBLOCK);
+		const Ogre::AxisAlignedBox ogreBoundingBox = model->getBoundingBox();
+		const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
+		const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
+	
+
+		const WFMath::AxisBox<3> wfBoundingBox = buildingBlock->getBuildingBlockSpec()->getBlockSpec()->getBoundingBox();	
+		const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
+		const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
+		
+		Ogre::Real scaleX;		
+		Ogre::Real scaleY;		
+		Ogre::Real scaleZ;		
+	
+		scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+		scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+		scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+
+		mModelNode->setScale(scaleX, scaleY, scaleZ);
+		
+	}
+
 }
 
+void ModelBlock::createAttachPointNodes( )
+{
+	std::vector<const Carpenter::AttachPoint* > allPoints = mBuildingBlock->getAllPoints();
+	
+	std::vector<const Carpenter::AttachPoint* >::const_iterator I = allPoints.begin();
+	std::vector<const Carpenter::AttachPoint* >::const_iterator I_end = allPoints.end();
+
+	for(; I != I_end; ++I) {
+		Ogre::ColourValue colour = mJesus->getColourForAttachPoint(*I);
+		AttachPointNode* pointNode = new AttachPointNode(this, mNode, *I, colour, mPointBillBoardSet);
+		mAttachPointNodes.push_back(pointNode);
+	}
+}
+
+void ModelBlock::select()
+{
+	mModelNode->showBoundingBox(true);
+	mPointBillBoardSet->setVisible(true);
+}
+
+
+Ogre::ColourValue Jesus::getColourForAttachPoint(const Carpenter::AttachPoint* point) const
+{
+	AttachPointColourValueMap::const_iterator I = mColourMap.find(point->getAttachPair()->getType());
+	if (I == mColourMap.end()) {
+		return Ogre::ColourValue(1,1,1);
+	}
+	return I->second;
+}
+
+void AttachPointNode::select()
+{
+//NOTE: stub
+}
 
 };
+
 
 
 

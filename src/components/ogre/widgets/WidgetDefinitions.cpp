@@ -35,6 +35,7 @@
 #include "IngameChatWidget.h"
 #include "ConsoleWidget.h"
 #include "Performance.h"
+#include "JesusEdit.h"
 
 #include "Widget.h"
 namespace EmberOgre
@@ -54,6 +55,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<IngameChatWidget>);
 	WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);
 	WidgetLoader::registerWidget("Performance", &WidgetLoader::createWidgetInstance<Performance>);
+	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 
 
 }

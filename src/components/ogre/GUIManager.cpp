@@ -50,9 +50,6 @@
 
 namespace EmberOgre {
 
-class ServerBrowserWidget;
-
-
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window)
@@ -110,7 +107,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 		fprintf(stderr, "CEGUI - SYSTEM SET UP\n");
 
-		mMousePicker = new MousePicker();
+		MousePicker* picker = new MousePicker();
+		pushMousePicker(picker);
 		
 		mInput = new Input(mGuiSystem, mGuiRenderer);
 //	mGUIManager->getInput()->MouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
@@ -139,8 +137,8 @@ GUIManager::~GUIManager()
 	mGuiSystem = 0;*/
 	delete mGuiRenderer;
 	mGuiRenderer = 0;
-	delete mMousePicker;
-	mMousePicker = 0;
+	//delete mMousePicker;
+	//mMousePicker = 0;
 
 }
 
@@ -172,6 +170,7 @@ void GUIManager::initialize()
 		createWidget("ServerWidget");
 		createWidget("GiveWidget");
 		createWidget("EntityPickerWidget");
+		createWidget("JesusEdit");
 
 /*		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
 		mSheet->addChildWindow(helpWindow );*/
@@ -318,12 +317,12 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 	mSheet->activate();
 	mSheet->captureInput();
 
-	if (mMousePicker) {
+	if (getMousePicker()) {
 		CEGUI::Point position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
 		Ogre::Real x = position.d_x;
 		Ogre::Real y = position.d_y;
 
-		mMousePicker->doMousePicking(x, y, mouseArgs);
+		getMousePicker()->doMousePicking(x, y, mouseArgs);
 	}
 
 
@@ -384,8 +383,22 @@ void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 
 
 
+void GUIManager::pushMousePicker( MousePicker * mousePicker )
+{
+	mMousePickers.push(mousePicker);
+}
+
+MousePicker * GUIManager::popMousePicker()
+{
+	//only pop if there's more than one registered picker
+	if (mMousePicker.size() > 1) 
+		mMousePickers.pop();
+	return mMousePickers.top();
+}
 
 
 template<> GUIManager* Ember::Singleton<GUIManager>::ms_Singleton = 0;
 
 }
+
+

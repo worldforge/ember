@@ -48,6 +48,7 @@
 #include "framework/Singleton.h"
 
 #include <SDL.h>
+#include <stack>
 
 namespace EmberOgre {
 
@@ -89,22 +90,6 @@ public:
 	void removeWidget(Widget* widget);
 	void addWidget(Widget* widget);
 
-
-
-// 	virtual void 	mouseMoved (Ogre::MouseEvent *e);
-// 	virtual void 	mouseDragged (Ogre::MouseEvent *e);
-// 	virtual void 	keyPressed (Ogre::KeyEvent *e);
-// 	virtual void 	keyReleased (Ogre::KeyEvent *e);
-// 	virtual void 	mousePressed (Ogre::MouseEvent *e);
-// 	virtual void 	mouseReleased (Ogre::MouseEvent *e);
-// 
-// 	// do-nothing events
-// 	virtual void 	keyClicked (Ogre::KeyEvent *e) {}
-// 	virtual void 	mouseClicked (Ogre::MouseEvent *e) {}
-// 	virtual void 	mouseEntered (Ogre::MouseEvent *e) {}
-// 	virtual void 	mouseExited (Ogre::MouseEvent *e) {}
-
-
 	bool frameStarted(const Ogre::FrameEvent& evt);
 
 	CEGUI::Window* getMainSheet();
@@ -122,8 +107,21 @@ public:
 	const bool isInGUIMode() const;
 	const bool isInMovementKeysMode() const;
 	
-	inline MousePicker* getMousePicker() { return mMousePicker; }
+	inline MousePicker* getMousePicker() { return  mMousePickers.top(); }
 	Input* getInput() const;
+	
+	/**
+	 *    Pushes a new mouse picker onto the stack, "pushing down" the current mouse picker.
+	 * @param mousePicker 
+	 */
+	void pushMousePicker(MousePicker* mousePicker);
+	
+	/**
+	 *    Pops the current mouse picker from the stack and returns the next in line.
+	 *    It's not possible to empty the stack. If there's only one picker left, no popping will be done, and the last picker will be returned.
+	 * @return 
+	 */
+	MousePicker* popMousePicker();
 protected:
 
 
@@ -145,26 +143,18 @@ protected:
 	
 	Widget* createWidget(const std::string& name);
 
-// 	//polls the mouse for new events and movements
-// 	void pollMouse(const Ogre::FrameEvent& evt);
-
-	
-/*	CEGUI::MouseButton convertOgreButtonToCegui(int ogre_button_id);*/
 	void updateStats(void);
 
 
-//	float	mSkipCount;
-//	float	mUpdateFreq;
-
-		
-	
-/*	Ogre::MouseListener* mMouseListener;*/
 	Ogre::KeyListener* mKeyListener;
 	
-	//Ogre::MouseEvent* mMouseReleasedOgreEvent;
-	//Ogre::MouseEvent* mMousePressedOgreEvent;
-	
-	MousePicker* mMousePicker;
+
+	/**
+	A stack of the mouse pickers used. This allows for a component to "push down" the current mouse picker in favor of its own
+	*/
+	std::stack<MousePicker*> mMousePickers;
+		
+	//MousePicker* mMousePicker;
 
 	//events
 	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
