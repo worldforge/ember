@@ -22,9 +22,11 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <freetype/ftoutln.h>
+
 #include <string>
 #include <map>
 #include <math.h>
+
 #include "Glyph.h"
 
 namespace dime {
@@ -48,7 +50,8 @@ public:
     
     static const int NUM_GRAYS;
 
-    typedef std::wstring FontString;
+    // %TODO xmp,3:Replace this with wstring as soon as we decide to force gcc < 3
+    typedef basic_string <wchar_t> FontString;
     
     //======================================================================
     // Private Variables

@@ -116,7 +116,12 @@ namespace dime {
 
   void OOGChat::entered(Eris::Room *room)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Entry of "<< room->getName()<<" complete"<< ENDM;    
+    std::ostrstream temp;
+
+    temp << "Entry of "<< room->getName()<<" complete";
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+    temp<<std::ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void OOGChat::talk(Eris::Room *room, const std::string& name, const std::string& msg)
