@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2002  Martin Pollard (Xmp)
+ Copyright (C) 2002  Martin Pollard
 	
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,26 +16,15 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef STYLE_H
-#define STYLE_H
-
-/**
- * TODO: methods to handle the addition and deletion of icon and
- * text styles
- */
-
+#ifndef ICONSTYLE_H
+#define ICONSTYLE_H
 
 // Included headers from the current project
 #include "services/platform/Color.h"
-#include "TextStyle.h"
-#include "IconStyle.h"
-#include "BackgroundStyle.h"
 
 // Included custom library headers
 
 // Included system headers
-#include <string>
-#include <map>
 
 namespace dime {
 
@@ -58,14 +47,12 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see dime::TextStyle
- * @see dime::IconStyle
- * @see dime::BackgroundStyle
+ * @see OtherSubsystem::AnOtherRelatedClass
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class Style
+class IconStyle
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -90,11 +77,12 @@ class Style
     //======================================================================/
     private:
 
-        std::string myParentStyle;
-	Color myForegroundColor;
-	std::map<std::string, TextStyle> myTextStyles;
-        std::map<std::string, IconStyle> myIconStyles;
-        BackgroundStyle myBackgroundStyle;
+        int myXOffset;
+        int myYOffset;
+        float myColorStrength;
+        Color myColor;
+        float myHeightFactor;
+        float myWidthFactor;
 
     //======================================================================
     // Public Methods
@@ -105,16 +93,16 @@ class Style
     // Constructors
 
     /**
-     * Creates a new Style using default values.
+     * Creates a new IconStyle using default values.
      */
-     Style()
+     IconStyle()
      {
      }
 
     /**
      * Copy constructor.
      */
-    Style( const Style &source )
+    IconStyle( const IconStyle &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -125,7 +113,7 @@ class Style
     /**
      * Assignment operator.
      */
-    Style &operator= ( const Style &source )
+    IconStyle &operator= ( const IconStyle &source )
     {
         // Copy fields from source class to this class here.
 
@@ -138,9 +126,9 @@ class Style
     // Destructor
 
     /**
-     * Deletes a Style instance.
+     * Deletes a IconStyle instance.
      */
-    virtual ~Style ()
+    virtual ~IconStyle ()
     {
         // TODO: Free any allocated resources here.
     }
@@ -152,27 +140,51 @@ class Style
     // Example of a getter method:
 
     /**
-     * Gets the value of backgroundStyle of this Style
+     * Gets the value of colorStrength of this IconStyle
      */
-    BackgroundStyle getBackgroundStyle() const
+    float getColorStrength() const
     {
-        return myBackgroundStyle;
+        return myColorStrength;
     }
 
     /**
-     * Gets the value of parentStyle of this Style
+     * Gets the value of heightFactor of this IconStyle
      */
-    std::string getParentStyle() const
+    float getHeightFactor() const
     {
-        return myParentStyle;
+        return myHeightFactor;
     }
 
     /**
-     * Gets the value of foregroundColor of this Style
+     * Gets the value of yOffset of this IconStyle
      */
-    Color getForegroundColor() const
+    int getYOffset() const
     {
-        return myForegroundColor;
+        return myYOffset;
+    }
+
+    /**
+     * Gets the value of xOffset of this IconStyle
+     */
+    int getXOffset() const
+    {
+        return myXOffset;
+    }
+
+    /**
+     * Gets the value of widthFactor of this IconStyle
+     */
+    float getWidthFactor() const
+    {
+        return myWidthFactor;
+    }
+
+    /**
+     * Gets the value of color of this IconStyle
+     */
+    Color getColor() const
+    {
+        return myColor;
     }
 
 
@@ -180,27 +192,51 @@ class Style
     // Setters
 
     /**
-     * Sets the value of backgroundStyle of this Style
+     * Sets the value of colorStrength of this IconStyle
      */
-    void setBackgroundStyle( BackgroundStyle backgroundStyle )
+    void setColorStrength( float colorStrength )
     {
-        myBackgroundStyle = backgroundStyle;
+        myColorStrength = colorStrength;
     }
 
     /**
-     * Sets the value of parentStyle of this Style
+     * Sets the value of heightFactor of this IconStyle
      */
-    void setParentStyle( const std::string& parentStyle )
+    void setHeightFactor( float heightFactor )
     {
-        myParentStyle = parentStyle;
+        myHeightFactor = heightFactor;
     }
 
     /**
-     * Sets the value of foregroundColor of this Style
+     * Sets the value of yOffset of this IconStyle
      */
-    void setForegroundColor( Color foregroundColor )
+    void setYOffset( int yOffset )
     {
-        myForegroundColor = foregroundColor;
+        myYOffset = yOffset;
+    }
+
+    /**
+     * Sets the value of xOffset of this IconStyle
+     */
+    void setXOffset( int xOffset )
+    {
+        myXOffset = xOffset;
+    }
+
+    /**
+     * Sets the value of widthFactor of this IconStyle
+     */
+    void setWidthFactor( float widthFactor )
+    {
+        myWidthFactor = widthFactor;
+    }
+
+    /**
+     * Sets the value of color of this IconStyle
+     */
+    void setColor( Color color )
+    {
+        myColor = color;
     }
 
 
@@ -226,7 +262,7 @@ class Style
     private:
 
 
-}; // End of Style
+}; // End of IconStyle
 
 } // End of dime namespace
 

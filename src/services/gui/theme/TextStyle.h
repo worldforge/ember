@@ -20,6 +20,7 @@
 #define TEXTSTYLE_H
 
 // Included headers from the current project
+#include "services/platform/Color.h"
 
 // Included custom library headers
 
@@ -77,12 +78,12 @@ class TextStyle
     //======================================================================/
     private:
 
-        Color myTextColor;
-        bool myIsItalic;
-        int myYOffset;
         int myXOffset;
+        int myYOffset;
+	Color myTextColor;
         std::string myFontPath;
         bool myIsBold;
+        bool myIsItalic;
 
     //======================================================================
     // Public Methods
@@ -137,50 +138,48 @@ class TextStyle
     //----------------------------------------------------------------------
     // Getters
 
-    // Example of a getter method:
-
     /**
-     * Gets the value of TextColor of this TextStyle
+     * Gets the value of textColor of this TextStyle
      */
-    Color getTextColor()
+    Color getTextColor() const
     {
         return myTextColor;
     }
 
     /**
-     * Gets the value of IsItalic of this TextStyle
+     * Gets the value of isItalic of this TextStyle
      */
-    bool getIsItalic()
+    bool getIsItalic() const
     {
         return myIsItalic;
     }
 
     /**
-     * Gets the value of YOffset of this TextStyle
+     * Gets the value of yOffset of this TextStyle
      */
-    int getYOffset()
+    int getYOffset() const
     {
         return myYOffset;
     }
 
     /**
-     * Gets the value of XOffset of this TextStyle
+     * Gets the value of xOffset of this TextStyle
      */
-    int getXOffset()
+    int getXOffset() const
     {
         return myXOffset;
     }
 
     /**
-     * Gets the value of FontPath of this TextStyle
+     * Gets the value of fontPath of this TextStyle
      */
-    std::string getFontPath()
+    std::string getFontPath() const
     {
         return myFontPath;
     }
 
     /**
-     * Gets the value of IsBold of this TextStyle
+     * Gets the value of isBold of this TextStyle
      */
     bool getIsBold()
     {
@@ -192,51 +191,51 @@ class TextStyle
     // Setters
 
     /**
-     * Sets the value of TextColor of this TextStyle
+     * Sets the value of textColor of this TextStyle
      */
-    void setTextColor( Color )
+    void setTextColor( Color textColor )
     {
-        myTextColor = TextColor;
+        myTextColor = textColor;
     }
 
     /**
-     * Sets the value of IsItalic of this TextStyle
+     * Sets the value of isItalic of this TextStyle
      */
-    void setIsItalic( bool )
+    void setIsItalic( bool isItalic )
     {
-        myIsItalic = IsItalic;
+        myIsItalic = isItalic;
     }
 
     /**
-     * Sets the value of YOffset of this TextStyle
+     * Sets the value of yOffset of this TextStyle
      */
-    void setYOffset( int )
+    void setYOffset( int yOffset )
     {
-        myYOffset = YOffset;
+        myYOffset = yOffset;
     }
 
     /**
-     * Sets the value of XOffset of this TextStyle
+     * Sets the value of xOffset of this TextStyle
      */
-    void setXOffset( int )
+    void setXOffset( int xOffset )
     {
-        myXOffset = XOffset;
+        myXOffset = xOffset;
     }
 
     /**
-     * Sets the value of FontPath of this TextStyle
+     * Sets the value of fontPath of this TextStyle
      */
-    void setFontPath( std::string )
+    void setFontPath( const std::string& fontPath )
     {
-        myFontPath = FontPath;
+        myFontPath = fontPath;
     }
 
     /**
-     * Sets the value of IsBold of this TextStyle
+     * Sets the value of isBold of this TextStyle
      */
-    void setIsBold( bool )
+    void setIsBold( bool isBold )
     {
-        myIsBold = IsBold;
+        myIsBold = isBold;
     }
 
 
