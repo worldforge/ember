@@ -21,14 +21,14 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#include "services/server/ServerService.h"
+#include "services/EmberServices.h"
 #include "Widget.h"
 
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIMultiColumnList.h> 
 
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include "GUIManager.h"
 #include "ServerBrowserWidget.h"
 
@@ -112,7 +112,7 @@ bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 	
 	if (manualNameWindow->getText() != "") {
 		serverName = std::string(manualNameWindow->getText().c_str());
-	} else {
+	} else if (mServerList->getFirstSelectedItem()){
 		uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
 	
 	/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
