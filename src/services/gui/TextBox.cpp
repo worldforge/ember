@@ -22,7 +22,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
             int w;
             Font::FontString fittedText;
             
-            if(event->getSDLKey() == SDLK_BACKSPACE)
+            if(event->getKey().getKey() == SDLK_BACKSPACE)
                 {
                     if(myText.length() > 1)
                         {
@@ -36,7 +36,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
                 }
             else
                 {
-                    myText += event->getKey();
+                    myText += event->getKey().getUnicode();
                 }
             Label::setText(myText);
             Font *font = myFontRenderer->getFont();

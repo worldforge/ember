@@ -95,7 +95,7 @@ InputDevice::KeyState InputDevice::getKeyState(SDLKey key)
 	return UNSUPPORTED_KEY;
 }
 
-void InputDevice::keyPressed(SDLKey & key)
+void InputDevice::keyPressed(DimeKey & key)
 {
 	SDLMod modifiers = SDL_GetModState();
 
@@ -105,7 +105,7 @@ void InputDevice::keyPressed(SDLKey & key)
 	}
 }
 
-void InputDevice::keyReleased(SDLKey & key)
+void InputDevice::keyReleased(DimeKey & key)
 {
 	for (MappingIterator i = myKeyMappings.begin(); i != myKeyMappings.end(); i++)
 	{
@@ -161,16 +161,17 @@ InputDevice::KeyState KeyboardDevice::getKeyState(SDLKey key)
 
 bool KeyboardDevice::handleEvent(SDL_Event & event)
 {
+    DimeKey key(event.key.keysym.sym, event.key.keysym.unicode);
 	switch(event.type)
 	{
 	case SDL_KEYDOWN:
 		myKeys[static_cast<int>(event.key.keysym.sym)] = PRESSED;
-		keyPressed(event.key.keysym.sym);
+		keyPressed(key);
 		return true;
-	
+
 	case SDL_KEYUP:
 		myKeys[static_cast<int>(event.key.keysym.sym)] = RELEASED;
-		keyReleased(event.key.keysym.sym);
+		keyReleased(key);
 		return true;
 
 	default:
@@ -243,7 +244,7 @@ void MouseDevice::initAxis()
 	
 bool MouseDevice::handleEvent(SDL_Event & event)
 {
-	SDLKey key;
+	DimeKey key(static_cast<SDLKey>(event.button.button),static_cast<Uint16>(event.button.button));
 
 	switch (event.type)
 	{
@@ -259,13 +260,11 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 		return true;
 
 	case SDL_MOUSEBUTTONDOWN:
-		key = static_cast<SDLKey>(event.button.button);
 		keyPressed(key);
 		return true;
 	
 
 	case SDL_MOUSEBUTTONUP:	
-		key = static_cast<SDLKey>(event.button.button);
 		keyReleased(key);
 		return true;
 	
@@ -314,8 +313,9 @@ Uint32 RepetitionDevice::TimerCallback(Uint32 interval, void *param)
 }
 
 void RepetitionDevice::switchOn(InputDevice * motionDevice, InputDevice * keyDevice, 
-				const SDLKey & Key, InputMapping::InputSignalType type)
+				const DimeKey & Key, InputMapping::InputSignalType type)
 {
+
 	if (type == InputMapping::KEY_PRESSED)
 	{
 		if (myTimerID)

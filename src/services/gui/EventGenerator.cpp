@@ -4,7 +4,7 @@
 //---------------------------------------------------------------------------------------------------
 // Event slots.
 //---------------------------------------------------------------------------------------------------
-void dime::EventGenerator::MouseMotion(InputDevice *mouse, InputDevice * otherDevice, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
+void dime::EventGenerator::MouseMotion(InputDevice *mouse, InputDevice * otherDevice, const DimeKey &key, dime::InputMapping::InputSignalType signaltype)
 {
     assert(mouse);
     
@@ -37,7 +37,7 @@ void dime::EventGenerator::MouseMotion(InputDevice *mouse, InputDevice * otherDe
         }
 }
 
-void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
+void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mouse, const DimeKey &key, dime::InputMapping::InputSignalType signaltype)
 {
     assert(mouse);
     
@@ -62,15 +62,15 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
         {
             eventDest = myPointedWidget;
         }
-    if(key == SDLK_LEFT_MB) 
+    if(key.getKey() == SDLK_LEFT_MB) 
         {
             button = MouseButtonEvent::LEFTBUTTON;
         }
-    else if(key == SDLK_MIDDLE_MB)
+    else if(key.getKey() == SDLK_MIDDLE_MB)
         {
             button = MouseButtonEvent::MIDDLEBUTTON;
         }
-    else if(key == SDLK_RIGHT_MB)
+    else if(key.getKey() == SDLK_RIGHT_MB)
         {
             button = MouseButtonEvent::RIGHTBUTTON;
         }
@@ -88,7 +88,7 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
         }
 }
 
-void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice *keyboard, const SDLKey &key, InputMapping::InputSignalType signaltype)
+void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice *keyboard,const DimeKey &key, InputMapping::InputSignalType signaltype)
 {
 	assert( keyboard );
 
@@ -110,12 +110,12 @@ void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice 
    
     if(keyboard->getKeyState(key) == dime::InputDevice::PRESSED)
         {
-            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::PRESSED, key);
+            event = new KeyPressEvent(keyboard, eventDest, KeyPressEvent::PRESSED, key);
             eventDest->keyPress( event );
         }
     else if (keyboard->getKeyState(key) == dime::InputDevice::RELEASED)
         {
-            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::RELEASED, key);
+            event = new KeyPressEvent(keyboard, eventDest, KeyPressEvent::RELEASED, key);
             eventDest->keyPress( event );
         }
 

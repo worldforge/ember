@@ -66,7 +66,7 @@ class RepetitionDevice: public InputDevice, public SigC::Object
 	 */
 
 	void switchOn(InputDevice * motionDevice, InputDevice * keyDevice, 
-			const SDLKey & Key, InputMapping::InputSignalType type);
+			const DimeKey & Key, InputMapping::InputSignalType type);
 
     //----------------------------------------------------------------------
     // Constructors & Destructor

@@ -151,10 +151,10 @@ class InputMapping
 	 * params to your handling function (usually called 'cockie').
 	 */
 
-	typedef SigC::Signal4<void, InputDevice *, InputDevice *, const SDLKey & , 
+	typedef SigC::Signal4<void, InputDevice *, InputDevice *, const DimeKey & , 
 		InputSignalType, SigC::Marshal<void> > InputSignal;
 
-	typedef SigC::Slot4<void, InputDevice *, InputDevice *, const SDLKey &, InputSignalType> InputSlot;
+	typedef SigC::Slot4<void, InputDevice *, InputDevice *, const DimeKey &, InputSignalType> InputSlot;
 
    
     //======================================================================
@@ -361,9 +361,10 @@ class InputMapping
 	 * For performance reasons this should be inline in any case.
 	 */
 
-	inline void keyPressed(SDLKey & key, SDLMod modifier)
+	inline void keyPressed(DimeKey & key, SDLMod modifier)
 	{
-		if (key >= myKeyRangeStart && key <= myKeyRangeEnd)
+        SDLKey sdlkey = key.getKey();
+		if (sdlkey >= myKeyRangeStart && sdlkey <= myKeyRangeEnd)
 		{
 			if (((KMOD_CTRL & myModifiers) == KMOD_CTRL) && (modifier & KMOD_CTRL))
 			{
@@ -387,7 +388,7 @@ class InputMapping
 			
 			if ((modifier & myModifiers) == myModifiers)
 			{
-				myKeysPressed.insert(key);			
+				myKeysPressed.insert(sdlkey);			
 
 				if (myTypes & KEY_PRESSED)
 				{
@@ -404,12 +405,14 @@ class InputMapping
 	 * For performance reasons this should be inline in any case.
 	 */
 
-	inline void keyReleased(SDLKey & key)
+	inline void keyReleased(DimeKey & key)
 	{
-		if (key >= myKeyRangeStart && key <= myKeyRangeEnd)
+        SDLKey sdlkey = key.getKey();
+        
+		if (sdlkey >= myKeyRangeStart && sdlkey <= myKeyRangeEnd)
 		{
 			//remove only keys that was pressed synchronous with their modifiers.
-			if (myKeysPressed.erase(key))
+			if (myKeysPressed.erase(sdlkey))
 			{
 				if (myTypes & KEY_RELEASED)
 				{
@@ -432,7 +435,8 @@ class InputMapping
 		{
 			for (std::set<SDLKey>::iterator i = myKeysPressed.begin(); i != myKeysPressed.end(); i++)
 			{		
-				mySignal(myMotionDevice, myKeyDevice, *i, EVENT_OCCURED);
+                DimeKey key(*i,static_cast<Uint16>(*i));
+				mySignal(myMotionDevice, myKeyDevice, key, EVENT_OCCURED);
 			}
 		}
 	}

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.15  2002-05-11 00:02:43  xmp
+ *      Revision 1.16  2002-05-13 19:37:53  nikal
+ *      Preliminary Unicode support.  I think this breaks TextBox, but I'm not sure. :)
+ *
+ *      Revision 1.15  2002/05/11 00:02:43  xmp
  *      Final fixes and tidy up.  Application now a singleton.
  *
  *      Revision 1.14  2002/05/10 23:51:25  xmp
@@ -135,7 +138,7 @@ namespace dime
 		 */
 		void quit();
 	   
-		void escPressed(InputDevice * , InputDevice * keyDevice, const SDLKey &key, InputMapping::InputSignalType signaltype)
+		void escPressed(InputDevice * , InputDevice * keyDevice, const DimeKey &key, InputMapping::InputSignalType signaltype)
 		{
 			quit();
 		}

@@ -30,6 +30,7 @@
 #define KEYPRESSEVENT_H
 
 #include "Event.h"
+#include <services/input/DimeKey.h>
 #include <assert.h>
 
 namespace dime {
@@ -59,8 +60,8 @@ namespace dime {
       }*/
       
       
-    KeyPressEvent(InputDevice *device, Widget *widget, char key, State state, const SDLKey &SDLKey)
-        : Event(device, widget), myState(state), myKey(key), mySDLKey(SDLKey)
+    KeyPressEvent(InputDevice *device, Widget *widget, State state, const DimeKey &key)
+        : Event(device, widget), myState(state), myKey(key)
       {
           assert(device);
       }
@@ -91,21 +92,17 @@ namespace dime {
      *
      * @return State for this event.
      */
-      char getKey()
-      {
-          return myKey;
-      }
+      
     
 
-      SDLKey getSDLKey()
+      DimeKey getKey()
       {
-          return mySDLKey;
+          return myKey;
       }
       
           
   protected:
-      char myKey;
-      const SDLKey mySDLKey;
+      const DimeKey myKey;
       State myState;
   };
   

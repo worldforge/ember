@@ -20,6 +20,7 @@
 #define INPUT_DEVICE_H
 
 // Include other headers of the current program here
+#include "DimeKey.h"
 
 // Include library headers here
 #include <SDL/SDL_keysym.h>
@@ -70,8 +71,9 @@ const SDLKey SDLK_JB5      = static_cast<SDLKey>(5);
 const SDLKey SDLK_JB6      = static_cast<SDLKey>(6); 
 const SDLKey SDLK_JB7      = static_cast<SDLKey>(7); 
 const SDLKey SDLK_JB8      = static_cast<SDLKey>(8); 
-const SDLKey SDLK_JB9      = static_cast<SDLKey>(9); 
+const SDLKey SDLK_JB9      = static_cast<SDLKey>(9);
 
+        
 
 /**
  * General base class for any kind of input device.
@@ -186,7 +188,12 @@ class InputDevice
 	int getAxisPosition(int axis);
 	float getAxisScaledPosition(int axis);
 
-	virtual KeyState getKeyState(SDLKey key);
+	virtual KeyState getKeyState(SDLKey key);	
+    virtual KeyState getKeyState(DimeKey key)
+    {
+        getKeyState(key.getKey());
+    }
+    
 	
     //======================================================================
     // Protected methods
@@ -218,8 +225,8 @@ class InputDevice
 	 * Helping functions called by all derived input devices to signal changes.
 	 */
 	
-	void keyPressed(SDLKey & key);
-	void keyReleased(SDLKey & key);
+	void keyPressed(DimeKey & key);
+	void keyReleased(DimeKey & key);
 	void motion();
 
 }; // InputMapping
@@ -307,6 +314,7 @@ class MouseDevice: public InputDevice
     // Public properties
 
 	virtual KeyState getKeyState(SDLKey key);
+
 	
     //======================================================================
     // Protected methods
