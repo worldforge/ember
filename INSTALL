@@ -11,9 +11,14 @@ Simple DirectMedia Layer
 Version: 1.2.3
 http://www.libsdl.org
 
-skstream2
-socket stream v2
-CVS version
+libsigc++
+install this library from your distro CDs
+(needed for Eris, see below)
+
+skstream
+socket stream
+Version: 0.2.1 
+ftp://victor.worldforge.org/pub/worldforge/libs/skstream
 (needed for Eris, see below)
 
 Atlas-C++
