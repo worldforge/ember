@@ -227,7 +227,12 @@ class DimeServices
     DimeServices()
     {
 		myGuiService = NULL;
-    }
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+		myMetaserverService = NULL;
+#endif
+	}
 
 
     /**
