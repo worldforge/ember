@@ -90,7 +90,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
 		{
 		  Uint16 keyIn = event->getKey().getUnicode();
 		  // TODO: make this insert at Caret position
-		  myText.insert( myCaretPos, &keyIn );
+		  myText.insert( myCaretPos, 1, keyIn );
 		  myCaretPos++;
 		}
 	      }
