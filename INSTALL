@@ -1,15 +1,26 @@
 Dime Installation Instructions
+(Last Updated: 2002.05.09)
 
 ****************
 * dependencies *
 ****************
 
-currently dime depends on the following libraries:
+Dime currently depends on the following libraries:
 
 SDL
 Simple DirectMedia Layer
-Version: 1.2.3
+Version: 1.2.3 or 1.2.4 (depending on version of SDL_image you install, below)
 http://www.libsdl.org
+
+SDL_image
+SDL image library
+Version: Any? (SDL_image 1.2.2 is tested, but requires SDL 1.2.4)
+http://www.libsdl.org/projects/SDL_image/index.html
+
+SDL_mixer
+SDL mixer library
+Version Any? (SDL_mixer 1.2.3 is tested)
+http://www.libsdl.org/projects/SDL_mixer/index.html
 
 libsigc++
 install this library from your distro CDs
@@ -28,16 +39,25 @@ Version: 0.4.4
 ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
 (needed for Eris, see below)
 
+wfmath
+Worldforge math library
+Version: CVS
+(needed for Eris, see below)
+
 Eris
 client side session layer
 Version: CVS
 
 CPPUnit
-C++ unit testing Library  (will become optional at some point)
-Version: 1.6.2 but older versions should work and hack the configure.in
-    to make it let you use it.
+C++ unit testing Library
+Version: >= 1.6.2 but older versions should work if you hack the configure.in
+         to make it let you use it.
 http://sf.net/projects/cppunit
 
+Boost
+Portable C++ Source Libraries
+Version: Any? (Tested with 1.27.0)
+http://www.boost.org
 
 If you want a 3D gameview (which is not mandatory, and currently not even
 supported <grin>) you'll need:
@@ -68,10 +88,15 @@ here we'll address typical problems with the installation, and how to fix them
 * Mandrake 8.1 (and other RPM systems) *
 ****************************************
 
-When installing SDL (and SDL_ttf, SDL_image and SDL_mixer) using packages
-made for you system, please be aware that you will need *ALL* the libraries
-and devel packages it was built against.  These are often not installed by 
-default.  The total number for MDK8.1 was about 15 packages.
-(Data from Lee's fresh install of MDK8.1)
+When installing SDL (and SDL_image and SDL_mixer) using packages made for your
+system, please be aware that you will need *ALL* the libraries and devel
+packages it was built against.  These are often not installed by default.  The 
+total number for MDK8.1 was about 15 packages.  (Data from Lee's fresh install 
+of MDK8.1)
 
-
+nullstar's addendum: 
+Binary and -devel RPMs of the SDL libraries are released for Mandrake and some
+other distros, but not Red Hat.  Source RPMs exist, but don't include the -devel
+files -- not helpful if you're wanting to compile Dime but not willing to trust
+a Mandrake RPM to play nice on RH. I used source/stow. (Of course, you might not
+want to trust stow.)
