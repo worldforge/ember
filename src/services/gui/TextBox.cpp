@@ -143,9 +143,7 @@ void TextBox::rebuildLeft()
   fittedText = myText.substr(myLeft, myLeft+i-1);
             
   myFontRenderer->setText(fittedText);
-  //CHECKME: is this correct?
   myRight = myLeft+i-1;
-  cout<<"myLeft:"<<myLeft<<" myRight:"<<myRight<<endl;
 }
 
 // TODO: REVIEW THIS CODE AND CRITIC THE ALGO
@@ -172,7 +170,6 @@ void TextBox::rebuildRight()
             
   myFontRenderer->setText(fittedText);
   myLeft = myRight-i+1;
-  cout<<"myLeft:"<<myLeft<<" myRight:"<<myRight<<endl;
 }
 
 void TextBox::drawCaret(DrawDevice* target)
