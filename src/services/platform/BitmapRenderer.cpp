@@ -7,10 +7,8 @@ inline int dimeroundf(float x) {return x + (x > 0) ? 0.5 : -0.5;}
  */
 dime::BitmapRenderer::BitmapRenderer(const dime::Rectangle &rect, 
 	const std::string filename, dime::BitmapRenderer::BitmapStyle style) : 
-	 myImageName(filename), myStyle(style)
+	RectangleRenderer(rect), myImageName(filename), myStyle(style)
 {
-	myRect = rect;
-
     SDL_Rect src, dest;
     src.x = 0;
     src.y = 0;

@@ -122,6 +122,11 @@ namespace dime {
 
 	//----------------------------------------------------------------------
 	// Getters
+	
+	Color getColor()
+	{
+		return myColor;
+	}
 
 	//----------------------------------------------------------------------
 	// Setters
@@ -139,12 +144,20 @@ namespace dime {
 	/**
 	 * Sets this RectangleRenderer using supplied values..
 	 */
-	void solidColor(Uint8 red, Uint8 green, Uint8 blue);
+	void setColor(Uint8 red, Uint8 green, Uint8 blue)
+	{
+		myColor.setR(red);
+		myColor.setG(green);
+		myColor.setB(blue);
+	}
         
 	/**
 	 * Sets this RectangleRenderer using supplied values..
 	 */
-	void solidColor(Color color);
+	void setColor(Color color)
+	{
+		myColor = color;
+	}
 
 	//======================================================================
 	// Protected Methods

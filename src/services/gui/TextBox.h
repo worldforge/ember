@@ -26,6 +26,7 @@
 #include "services/platform/RectangleRenderer.h"
 #include "services/platform/BitmapRenderer.h"
 #include "services/platform/ColorRenderer.h"
+#include "services/platform/BorderRenderer.h"
 
 
 // Included custom library headers
@@ -84,6 +85,11 @@ class TextBox : public Label
      * Rectangle renderer used to draw what's behind the the text
      */
     RectangleRenderer *myBackRect;
+	
+	/**
+	 * Border Renderer used to draw a border around this text box
+	 */
+	 BorderRenderer *myBorder;
 
     /*
      * Position of Caret in textbox
@@ -125,7 +131,8 @@ class TextBox : public Label
 	  myText(text),
 	  myRight(text.length()-1)
     {
-	  myBackRect = new BitmapRenderer(rect,"textboxback.png", BitmapRenderer::TILE);
+	  myBackRect = new ColorRenderer(rect,255,255,255);
+	  myBorder = new BorderRenderer(rect, 2, new ColorRenderer(rect, 125, 125, 255));
       rebuildRight();
     }
 
@@ -135,7 +142,8 @@ class TextBox : public Label
       myText(text.begin(), text.end()),
       myRight(text.length()-1)
     {
-	  myBackRect = new BitmapRenderer(rect,"textboxback.png", BitmapRenderer::TILE);
+	  myBackRect = new ColorRenderer(rect,255,255,255);
+	  myBorder = new BorderRenderer(rect, 2, new ColorRenderer(rect, 125, 125, 255));
       Font::FontString temp;
 /*	
       for(const char* c = text.c_str();*c != '\0';c++)

@@ -4,18 +4,16 @@
  * Constructor for a flat solid color RectangleRenderer.
  */
 dime::ColorRenderer::ColorRenderer(const Rectangle &rect, Uint8 red,
-	Uint8 green, Uint8 blue) : myColor(Color(red, green, blue))
+	Uint8 green, Uint8 blue) : RectangleRenderer(rect), myColor(Color(red, green, blue))
 {
-	myRect = rect;
 }
 
 /**
  * Constructor for a flat solid color RectangleRenderer.
  */
 dime::ColorRenderer::ColorRenderer(const Rectangle &rect, 
-	const dime::Color &color) : myColor(color)
+	const dime::Color &color) : RectangleRenderer(rect), myColor(color)
 {
-	myRect = rect;
 }
 
 /**

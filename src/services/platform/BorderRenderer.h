@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Dean Dickison
+    Copyright (C) 2002  Adam Gregory
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,14 +16,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef RECTANGLERENDERER_H
-#define RECTANGLERENDERER_H
+#ifndef BORDERRENDERER_H
+#define BORDERRENDERER_H
 
 // Included headers from the current project
-#include "services/image/ImageService.h"
-#include "services/platform/Color.h"
 #include "services/platform/DrawDevice.h"
 #include "services/platform/Rectangle.h"
+#include "services/platform/RectangleRenderer.h"
 
 // Included custom library headers
 
@@ -37,61 +36,58 @@
 namespace dime {
 
     /**
-     * This contains the RectangleRenderer class.  This class does the drawing
-     * of backgrounds using an image, gradient or solid color.  These backgrounds
-     * can make up a larger background.
+     * This contains the BorderRenderer class.  This class creates a border around a given rectangular area
+	 * This border is composed of 8 RectangleRenderers created from a prototype.
      *
-     * Instances of the class are created by one of four constructor methods,
-     * each one storing appropriate variables that describe the rectangle.
      * When the instance needs to be drawn, the render() member method is called.
-     * A grid of RectangleRenderers can be made using the GRID constructor.
      *
      * Ex:
      * dime::RectangleRenderer *myRectangleRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
-     *     &myRect, 100, 100, 255);
+     * myRectangleRenderer = new dime::BorderRenderer(myRect, 4, new dime::ColorRenderer(100, 100, 255));
      * myRectangleRenderer->render(myScreen);
-     * 
-     * @author Dean Dickison (Winand)
-	 * @author Adam Gregory (Adamgreg)
 	 *
-	 * @todo Renaming. RectangleRenderer -> Renderer. xRecRenderer -> xRenderer. RRFactory -> RFactory/RendererFactory.
-	 * @todo Make into base class of FontRenderer if suitable.
+     * 
+  	 * @author Adam Gregory (Adamgreg)
      */
 
-    class RectangleRenderer
+	class BorderRenderer : public RectangleRenderer
     
-    {
+	{
 	//======================================================================
 	// Inner Classes, Typedefs, and Enums
 	//======================================================================
     public:
+
     
 	//======================================================================
 	// Public Constants
 	//======================================================================
     public:
+        
 
 	//======================================================================
 	// Private Constants
 	//======================================================================
     private:
         
+		
 	//======================================================================
-	// Protected Variables
+	// Private Variables
 	//======================================================================
-    protected:     
+    private:
+	
+	/**
+	 * Vector of RectangleRenderers kept for lines (and corners) of the border.
+	 * items of the vector from top left corner, clockwise.
+	 * e.g. the line constituting the bottom of the border is myLines[5].
+	 */
+	std::vector<RectangleRenderer*> myLines;
 
 	/**
-	 * The surface that this RectangleRenderer acts upon
+	 * Width of the border.
 	 */
-	SDL_Surface *mySurface;
-
-	/**
-	 * Coordinates/size of the rectangle
-	 */
-	Rectangle myRect;
+	unsigned int myWidth;
 
 	// ===================================================================
 	// Public Methods
@@ -102,67 +98,90 @@ namespace dime {
 	// Constructors
 
 	/**
-	 * Creates a new empty RectangleRenderer
+	 * Creates a new empty BorderRenderer
 	 */
-	RectangleRenderer() {};
-	
+    BorderRenderer()
+	{
+	}
+
 	/**
-	 * Creates a new RectangleRenderer using values provided.
+	 * Creates a new BorderRenderer with the value provided
 	 */
-	RectangleRenderer(const Rectangle &rect) : myRect(rect) {};
+	BorderRenderer(const Rectangle &rect, unsigned int width, RectangleRenderer* prototype);
 
 	//----------------------------------------------------------------------
 	// Destructor
 
 	/**
-	 * Deletes a RectangleRenderer instance.
+	 * Deletes a BorderRenderer instance.
 	 */
-	virtual ~RectangleRenderer();
+	virtual ~BorderRenderer()
+	{
+	};
 
 	//----------------------------------------------------------------------
 	// Getters
 
 	//----------------------------------------------------------------------
 	// Setters
-
-	/**
-	 * Setter for the myRect member
-	 */
-	void setRect(const Rectangle &rect)
-	{
-    myRect = rect;
-	};
+	
+	void setRect(const Rectangle &rect);
+	
+	void setWidth(unsigned int width);
 
 	//----------------------------------------------------------------------
 	// Other public methods	
 
 	/**
-	 * Calls appropriate private function to render 
+	 * Renders using a DrawDevice
 	 */
-	virtual void render(DrawDevice *device) = 0;
+	void render(DrawDevice *device);
+	
+	/**
+	 * Sets up the border's RectangleRenderers based on a prototype.
+	 */
+	void setBorderContents(RectangleRenderer *prototype);
+	
+	/**
+	 * Sets the positions and sizes of the border's RectangleRenderers.
+	 */
+	void generateBorder();
+
 
 	//======================================================================
 	// Protected Methods
 	//======================================================================
-    protected:
+	protected:
 
 	//======================================================================
 	// Private Methods
 	//======================================================================
-    private:
+	private:
+	
+	/**
+	 * Checks that the contents of myLines have been initialized
+	 */
+	 bool checkLines()
+	 {
+		 for (Uint8 i = 0; i < 8; i++)
+		{
+			if (myLines[i] == NULL)
+			{
+				// Log error with LoggingService.
+				return false;
+			}
+		}
+		return true;
+	}
 
 	//======================================================================
 	// Disabled constructors and operators
 	//======================================================================
-    private:
+	private:
 
 
-    };  // End of class
+	};  // End of class
 
 }   // End of application namespace
-
-//what are these for? aren't they declared in the SDL header?
-Uint32 getpixel(SDL_Surface *surface, int x, int y);
-void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
 #endif

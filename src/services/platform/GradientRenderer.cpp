@@ -5,12 +5,12 @@
  */
 dime::GradientRenderer::GradientRenderer(const Rectangle &rect, dime::Color topleft,
 	dime::Color topright, dime::Color bottomleft, dime::Color bottomright) :
+	RectangleRenderer(rect),
 	myColor(topleft),
 	myColor2(topright),
 	myColor3(bottomleft),
 	myColor4(bottomright)
 {
-	myRect = rect;
 }
 
 dime::GradientRenderer::GradientRenderer(const dime::Rectangle &rect, dime::Color color1, dime::Color color2, dime::GradientRenderer::GradientStyle style)

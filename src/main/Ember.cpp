@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 	    dime::Console myTestConsole(dime::Rectangle(10,300,620,120));
 
 	    dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
-	    dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(10,40,100,35));
+	    dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(13,43,97,32));
 
             dime::Button myTestButton(dime::Rectangle(535,450,100,25));
             
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
             
             dime::Panel myTestPanel(dime::Rectangle(550,0,90,90));
             myTestPanel.setBackground(new dime::BitmapRenderer(myTestPanel.getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
-            
+
             myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
             myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));
             
