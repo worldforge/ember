@@ -67,8 +67,9 @@ class ServerService: public Service, public ConsoleObject, public SigC::Object
      */
     Eris::World *myWorld;
 
-    short myPort;
     std::string myHost;
+
+    short myPort;
 
     /**
      * True if and only if we are successfully connected to the server

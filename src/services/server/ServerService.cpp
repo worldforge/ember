@@ -69,6 +69,9 @@ namespace dime
   ServerService::~ServerService()
   {
     if (myConn) delete myConn;
+    if (myPlayer) delete myPlayer;
+    if (myLobby) delete myLobby;
+    if (myWorld) delete myWorld;
   }
 	
   /* Method for starting this service 	*/
@@ -100,10 +103,15 @@ namespace dime
       // If the connection fails here an exception is thrown
       myConn->connect( myHost, myPort );
     }
+    catch (Eris::BaseException except)
+    {
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on connect:" << except._msg << ENDM;
+        return false;
+    }
     catch (...)
       {
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on connect" << ENDM;
-	return false;
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on connect" << ENDM;
+        return false;
       }
     myConnected = true;
     return true;
@@ -115,9 +123,15 @@ namespace dime
     try {
         myConn->reconnect();
       }
-    catch(...)
+    catch (Eris::BaseException except)
+    {
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on connect:" << except._msg << ENDM;
+        return;
+    }
+    catch (...)
       {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect" << ENDM;
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on connect" << ENDM;
+        return;
       }
   }
 
@@ -127,9 +141,15 @@ namespace dime
     try {
       myConn->disconnect();
       }
-    catch(...)
+    catch (Eris::BaseException except)
+    {
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on connect:" << except._msg << ENDM;
+        return;
+    }
+    catch (...)
       {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on disconnect" << ENDM;
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on connect" << ENDM;
+        return;
       }
   }
 	
