@@ -187,9 +187,12 @@ namespace dime
 
   void MetaserverService::runCommand(const std::string &command, const std::string &args)
   {
+    if (!msrv) return;
     if (command == META_LIST){
     } else if (command == META_ABORT) {
+      msrv->cancel();
     } else if (command == META_REFRESH) {
+      msrv->refresh();
     }
 
     return;
