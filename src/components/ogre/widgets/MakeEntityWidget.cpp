@@ -68,8 +68,7 @@ void MakeEntityWidget::buildWidget()
 	
 	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/CreateButton"));
 	
-	button->subscribeEvent(CEGUI::ButtonBase::EventMouseClick, 
-		boost::bind(&MakeEntityWidget::createButton_Click, this, _1));
+	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick,MakeEntityWidget::createButton_Click );
 
 	
 	

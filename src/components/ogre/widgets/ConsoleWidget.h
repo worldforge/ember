@@ -4,7 +4,6 @@
 #include "framework/ConsoleBackend.h"
 #include <elements/CEGUIMultiLineEditbox.h>
 #include <elements/CEGUIEditbox.h>
-#include <boost/bind.hpp>
 namespace EmberOgre {
 	
 class Widget;

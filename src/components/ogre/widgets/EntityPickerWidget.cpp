@@ -97,8 +97,7 @@ void EntityPickerWidget::buildWidget()
 
 	CEGUI::PushButton* touchButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/TouchButton"));
 	
-	touchButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
-		boost::bind(&EntityPickerWidget::buttonTouch_Click, this, _1));
+	BIND_CEGUI_EVENT(touchButton, CEGUI::ButtonBase::EventMouseButtonUp,EntityPickerWidget::buttonTouch_Click );
 	touchButton->setText((CEGUI::utf8*)"Touch");
 	touchButton->setSize(CEGUI::Size(1.0f, 0.2f));
 	touchButton->setPosition(CEGUI::Point(0.0f, 0.0f));
@@ -118,8 +117,7 @@ void EntityPickerWidget::buildWidget()
 	
 	
 	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/GiveButton"));
-	giveButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
-		boost::bind(&EntityPickerWidget::buttonGive_Click, this, _1));
+	BIND_CEGUI_EVENT(giveButton, CEGUI::ButtonBase::EventMouseButtonUp,EntityPickerWidget::buttonGive_Click );
 	giveButton->setText((CEGUI::utf8*)"Give");
 	giveButton->setSize(CEGUI::Size(1.0f, 0.2f));
 	giveButton->setPosition(CEGUI::Point(0.0f, 0.4f));
@@ -128,8 +126,7 @@ void EntityPickerWidget::buildWidget()
 	mButtonSet.insert(giveButton);	
 	
 	CEGUI::PushButton* inspectButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/InspectButton"));
-	inspectButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
-		boost::bind(&EntityPickerWidget::buttonInspect_Click, this, _1));
+	BIND_CEGUI_EVENT(inspectButton, CEGUI::ButtonBase::EventMouseButtonUp,EntityPickerWidget::buttonInspect_Click );
 	inspectButton->setText((CEGUI::utf8*)"Inspect");
 	inspectButton->setSize(CEGUI::Size(1.0f, 0.2f));
 	inspectButton->setPosition(CEGUI::Point(0.0f, 0.6f));
@@ -139,8 +136,6 @@ void EntityPickerWidget::buildWidget()
 
 	CEGUI::PushButton* useButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/UseButton"));
 	BIND_CEGUI_EVENT(useButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonUse_Click);
-/*	useButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
-		boost::bind(&EntityPickerWidget::buttonUse_Click, this, _1));*/
 	useButton->setText((CEGUI::utf8*)"Use");
 	useButton->setSize(CEGUI::Size(1.0f, 0.2f));
 	useButton->setPosition(CEGUI::Point(0.0f, 0.8f));

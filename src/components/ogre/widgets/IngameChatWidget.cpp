@@ -228,8 +228,7 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 			
 			
 			
-			responseText->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
-				boost::bind(&ActiveChatWindow::buttonResponse_Click, this, _1));
+			BIND_CEGUI_EVENT(responseText, CEGUI::ButtonBase::EventMouseButtonUp,IngameChatWidget::ActiveChatWindow::buttonResponse_Click );
 			responseText->setText(*I);
 			responseText->setSize(CEGUI::Size(1.0f, 0.3f));
 			responseText->setPosition(CEGUI::Point(0.0f, i * 0.3f));

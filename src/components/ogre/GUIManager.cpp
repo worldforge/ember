@@ -98,10 +98,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
-		mSheet->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonDown, 
-			boost::bind(&GUIManager::mSheet_MouseButtonDown, this, _1));
-		mSheet->subscribeEvent(CEGUI::Window::EventInputCaptureLost, 
-			boost::bind(&GUIManager::mSheet_CaptureLost, this, _1));
+		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
+		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 			
 
 		fprintf(stderr, "CEGUI - SYSTEM SET UP\n");

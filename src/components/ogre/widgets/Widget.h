@@ -15,7 +15,6 @@
 
 #include <CEGUIWindowManager.h>
 // #include <CEGUIImageset.h>
-#include <boost/bind.hpp>
 
 // #include <elements/CEGUIStaticImage.h>
 // #include <elements/CEGUIPushButton.h>
@@ -35,7 +34,7 @@
 
 namespace EmberOgre {
 
-#define BIND_CEGUI_EVENT(window, event, method) window->subscribeEvent(event, boost::bind(&method, this, _1)); 
+#define BIND_CEGUI_EVENT(window, event, method) window->subscribeEvent(event, CEGUI::Event::Subscriber(&method, this)); 
 
 
 class GUIManager;

@@ -30,7 +30,6 @@
 #include "EmberOgrePrerequisites.h"
 #include <elements/CEGUIPushButton.h>
 #include <OgreCEGUIRenderer.h>
-// #include <boost/bind.hpp>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>

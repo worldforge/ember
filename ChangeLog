@@ -1,3 +1,7 @@
+2005-03-14  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* removed all dependencies of boost since CEGUI since 0.2.0 doesn't use it anymore
+
 2005-03-09  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* made the sun a bit brighter

@@ -178,8 +178,8 @@ AC_MSG_RESULT([
 #	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
 
 #Check for the Boost bind header
-AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
-	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
+#AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
+#	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
 
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)

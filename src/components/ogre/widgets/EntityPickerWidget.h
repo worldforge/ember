@@ -25,7 +25,6 @@
 
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
-#include <boost/bind.hpp>
 #include <CEGUIEvent.h> 
 
 namespace EmberOgre {

@@ -24,13 +24,10 @@ void ConsoleWidget::buildWidget()
 	
 	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild("Console/InputBox"));
 	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild("Console/TextBox"));
-	mInputBox->subscribeEvent(CEGUI::Editbox::EventCharacterKey, 
-		boost::bind(&ConsoleWidget::consoleTextBox_Character, this, _1));
-	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyUp, 
-		boost::bind(&ConsoleWidget::consoleTextBox_KeyUp, this, _1));
+	BIND_CEGUI_EVENT(mInputBox, CEGUI::Editbox::EventCharacterKey, ConsoleWidget::consoleTextBox_Character);
+	BIND_CEGUI_EVENT(mInputBox, CEGUI::Editbox::EventKeyUp, ConsoleWidget::consoleTextBox_KeyUp);
+	BIND_CEGUI_EVENT(mInputBox, CEGUI::Editbox::EventTextAccepted, ConsoleWidget::consoleInputBox_TextAcceptedEvent);
 	
-	mInputBox->subscribeEvent(CEGUI::Editbox::EventTextAccepted, 
-		boost::bind(&ConsoleWidget::consoleInputBox_TextAcceptedEvent, this, _1));
 	
 /*	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleTextBox"));
 	mConsoleTextBox->subscribeEvent(CEGUI::MultiLineEditbox::CharacterEvent, 
