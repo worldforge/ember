@@ -1,0 +1,99 @@
+/*
+    Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef SERVICEMANAGER_H
+#define SERVICEMANAGER_H
+
+#include "Service.h"
+
+#include <string>
+#include <vector>
+
+
+namespace dime {
+   namespace services {
+
+/**
+ * Service Manager: keeps track and controls the dime services.
+ *
+ * Maintains a list of services and performs operations on them.
+ *
+ * @author Miguel Guzman Miranda
+ *
+ */
+class ServiceManager
+
+{
+    //======================================================================
+    // Private Variables
+    //======================================================================
+    private:
+        /** Dime Service Vector */
+        vector < Service* > myServiceVector;
+
+    //----------------------------------------------------------------------
+    // Constructors & Destructor
+
+	public:
+	
+    /** Creates a new Service using default values. */
+    ServiceManager();
+
+
+    /** Copy constructor. */
+    ServiceManager( const ServiceManager &source );
+
+    /** Assignment operator. */
+    ServiceManager &operator= ( const ServiceManager &source );
+
+    /** Deletes an instance. */
+    ~ServiceManager();
+
+    //----------------------------------------------------------------------
+    // Getters & Setters
+
+
+    //----------------------------------------------------------------------
+    // Methods
+
+   /**
+    * Stop all services.
+    * 
+    * @param code Cause of the halt
+    */
+    void stopAll(int code);
+   
+   /**
+    * List all service names.
+    */
+    void listAll();
+     
+   /** 
+    * Deletes all the services, freeing the memory.
+    */
+   void deleteAll();
+   
+   
+}; // Service
+
+	} // namespace services
+} // namespace dime
+
+#endif
+
+
