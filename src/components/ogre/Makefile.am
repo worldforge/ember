@@ -43,5 +43,5 @@ dist_ceguischema_DATA = cegui/datafiles/layouts/GUILayout.xsd cegui/datafiles/im
 
 INCLUDES = -I$(top_srcdir)/src -DETCDIR=\"@sysconfdir@\"
 confdir = @sysconfdir@/ember/
-dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg  terrain.cfg
+dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg 
 
