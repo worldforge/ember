@@ -22,7 +22,6 @@
 
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
-#include <services/datamodel/StringProvider.h>
 
 #include <sigc++/object.h>
 #include <Eris/Metaserver.h>
