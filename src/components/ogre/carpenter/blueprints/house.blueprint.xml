@@ -1,13 +1,42 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<blueprint strartingblock="mainfloor">
+<blueprint startingblock="mainfloor">
   <buildingblocks>
-    <buildingblock modelblock="floor24" name="mainfloor" />
-    <buildingblock modelblock="wall24" name="westwall" />
-    <buildingblock modelblock="wall24" name="eastwall" />
-    <buildingblock modelblock="wall24" name="northwall" />
-    <buildingblock modelblock="wall24" name="southwall" />
+    <buildingblock blocktype="floor/24/stone" name="mainfloor" />
+    <buildingblock blocktype="wall/24/timber" name="westwall" />
+    <buildingblock blocktype="wall/24/timber" name="eastwall" />
+    <buildingblock blocktype="wall/24/timber" name="northwall" />
+    <buildingblock blocktype="wall/12/timber" name="southwall_east" />
+    <buildingblock blocktype="wall/6/timber" name="southwall_west_west" />
+    <buildingblock blocktype="wall/3/timber" name="southwallwest_east_east" />
+   
+    <buildingblock blocktype="wall_with_door/3/timber" name="southdoorwallwest_east_west" />
+
+    <buildingblock blocktype="adapter/a/6/3" name="southwalladapter_up_west_east" />
+    <buildingblock blocktype="adapter/a/12/6" name="southwalladapter_up_west" />
+    <buildingblock blocktype="adapter/a/24/12" name="southwalladapter_up" />
+    
+    <buildingblock blocktype="adapter/a/6/3" name="southwalladapter_down_west_east" />
+    <buildingblock blocktype="adapter/a/12/6" name="southwalladapter_down_west" />
+    <buildingblock blocktype="adapter/a/24/12" name="southwalladapter_down" />
+    
+        
+    <buildingblock blocktype="roof/24/stone" name="northroof" />
+    <buildingblock blocktype="roof/24/stone" name="southroof" />
+    
+    <buildingblock blocktype="adapter/a/24/12" name="eastwalladapter" />
+    <buildingblock blocktype="adapter/a/24/12" name="westwalladapter" />
+    
+    <buildingblock blocktype="slopewall/12/timber" name="eastslopewallsouth" />
+    <buildingblock blocktype="slopewall/12/timber" name="eastslopewallnorth" />
+    <buildingblock blocktype="slopewall/12/timber" name="westslopewallsouth" />
+    <buildingblock blocktype="slopewall/12/timber" name="westslopewallnorth" />
+    
+    
+    
   </buildingblocks>
   <bindings>
+  
+  <!-- walls start -->
     <binding point1="upwest/north" point2="down/left" block1="mainfloor" block2="westwall" />
     <binding point1="upwest/south" point2="down/right" block1="mainfloor" block2="westwall" />
   
@@ -17,8 +46,92 @@
     <binding point1="upnorth/east" point2="down/right" block1="mainfloor" block2="northwall" />
     <binding point1="upnorth/west" point2="down/left" block1="mainfloor" block2="northwall" />
     
-    <binding point1="upsouth/east" point2="down/left" block1="mainfloor" block2="southwall" />
-    <binding point1="upsouth/west" point2="down/right" block1="mainfloor" block2="southwall" />
+    <!-- south wall start -->
+    
+    <binding point1="upsouth/east" point2="up/left" block1="mainfloor" block2="southwalladapter_down" />
+    <binding point1="upsouth/west" point2="up/right" block1="mainfloor" block2="southwalladapter_down" />
+    
+    <binding point1="down_left/left" point2="down/left" block1="southwalladapter_down" block2="southwall_east" />
+    <binding point1="down_left/right" point2="down/right" block1="southwalladapter_down" block2="southwall_east" />
+
+    <binding point1="down_right/left" point2="up/left" block1="southwalladapter_down" block2="southwalladapter_down_west" />
+    <binding point1="down_right/right" point2="up/right" block1="southwalladapter_down" block2="southwalladapter_down_west" />
+    
+    <binding point1="down_left/left" point2="down/left" block1="southwalladapter_down_west" block2="southwall_west_west" />
+    <binding point1="down_left/right" point2="down/right" block1="southwalladapter_down_west" block2="southwall_west_west" />
+
+    <binding point1="down_right/left" point2="up/left" block1="southwalladapter_down_west" block2="southwalladapter_down_west_east" />
+    <binding point1="down_right/right" point2="up/right" block1="southwalladapter_down_west" block2="southwalladapter_down_west_east" />
+ 
+     <binding point1="down_left/left" point2="down/left" block1="southwalladapter_down_west_east" block2="southwallwest_east_east" />
+    <binding point1="down_left/right" point2="down/right" block1="southwalladapter_down_west_east" block2="southwallwest_east_east" />
+
+    <binding point1="down_right/left" point2="down/left" block1="southwalladapter_down_west_east" block2="southdoorwallwest_east_west" />
+    <binding point1="down_right/right" point2="down/right" block1="southwalladapter_down_west_east" block2="southdoorwallwest_east_west" />
+    
+    
+    
+    
+     <binding point1="up/left" point2="down_left/left" block1="southwallwest_east_east" block2="southwalladapter_up_west_east" />
+    <binding point1="up/right" point2="down_left/right" block1="southwallwest_east_east" block2="southwalladapter_up_west_east" />
+
+    <binding point1="up/left" point2="down_right/left" block1="southdoorwallwest_east_west" block2="southwalladapter_up_west_east" />
+    <binding  point1="up/right" point2="down_right/right" block1="southdoorwallwest_east_west" block2="southwalladapter_up_west_east" />
+    
+     <binding point1="up/left" point2="down_left/left" block1="southwall_west_west" block2="southwalladapter_up_west" />
+    <binding point1="up/right" point2="down_left/right" block1="southwall_west_west" block2="southwalladapter_up_west" />
+
+    <binding point1="up/left" point2="down_right/left" block1="southwalladapter_up_west_east" block2="southwalladapter_up_west" />
+    <binding  point1="up/right" point2="down_right/right" block1="southwalladapter_up_west_east" block2="southwalladapter_up_west" />
+     
+     <binding point1="up/left" point2="down_left/left" block1="southwall_east" block2="southwalladapter_up" />
+    <binding point1="up/right" point2="down_left/right" block1="southwall_east" block2="southwalladapter_up" />
+
+    <binding point1="up/left" point2="down_right/left" block1="southwalladapter_up_west" block2="southwalladapter_up" />
+    <binding  point1="up/right" point2="down_right/right" block1="southwalladapter_up_west" block2="southwalladapter_up" />
+    
+   
+    <!-- south wall end -->
+  <!-- walls end -->
+    
+    
+       
+        
+ 
+  <!-- sloped walls start -->    
+    <binding point1="up/left" point2="up/left" block1="westwall" block2="westwalladapter" />
+    <binding point1="up/right" point2="up/right" block1="westwall" block2="westwalladapter" />
+  
+    <binding point1="up/right" point2="up/right" block1="eastwall" block2="eastwalladapter" />
+    <binding point1="up/left" point2="up/left" block1="eastwall" block2="eastwalladapter" />
+    
+    
+     <binding point1="down_left/left" point2="down/right" block1="westwalladapter" block2="westslopewallsouth" />
+     <binding point1="down_left/right" point2="down/left" block1="westwalladapter" block2="westslopewallsouth" />
+     
+     <binding point1="down_right/left" point2="down/right" block1="westwalladapter" block2="westslopewallnorth" />
+     <binding point1="down_right/right" point2="down/left" block1="westwalladapter" block2="westslopewallnorth" />
+  
+     <binding point1="down_left/left" point2="down/right" block1="eastwalladapter" block2="eastslopewallsouth" />
+     <binding point1="down_left/right" point2="down/left" block1="eastwalladapter" block2="eastslopewallsouth" />
+     
+     <binding point1="down_right/left" point2="down/right" block1="eastwalladapter" block2="eastslopewallnorth" />
+     <binding point1="down_right/right" point2="down/left" block1="eastwalladapter" block2="eastslopewallnorth" />
+  <!-- sloped walls end -->    
+  
+    
+    
+    
+    
+     
+    
+    
+    <binding point1="up/left" point2="down/right" block1="northwall" block2="northroof" />
+    <binding point1="up/right" point2="down/left" block1="northwall" block2="northroof" />
+    
+    <binding point1="up/left" point2="down/right" block1="southwalladapter_up" block2="southroof" />
+    <binding point1="up/right" point2="down/left" block1="southwalladapter_up" block2="southroof" />
+    
   
   </bindings>
 </blueprint>

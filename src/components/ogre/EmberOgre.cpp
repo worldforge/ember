@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.73  2005-02-22 23:51:32  erik
+ *      Revision 1.74  2005-02-27 21:08:21  erik
+ *      2005-02-27  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Moved Ember specific stuff of Carpenter into Jesus.
+ *      	* Added Adapters to Carpenter.
+ *      	* Added a first prototype house. Need to change the way the floors and walls are attached to allow for rounded corners etc.
+ *
+ *      Revision 1.73  2005/02/22 23:51:32  erik
  *      2005-02-23  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Change name of main exec to "ember"
@@ -603,6 +610,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "environment/meshtree/TParameters.h"
 #include "environment/Tree.h"
 
+#include "carpenter/Carpenter.h"
+#include "carpenter/BluePrint.h"
 
 
 
@@ -666,6 +675,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <sys/types.h>
 #include <dirent.h>
 
+
+#include "jesus/Jesus.h"
 
 namespace EmberOgre {
 
@@ -1109,6 +1120,7 @@ void EmberOgre::createScene(void)
 */
 	//set fog, do this before calling TerrainSceneManager::setViewGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
+mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 	Ogre::ColourValue fadeColour(1,1,1);
 	double fogstartDistance = 192; //default for fog
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
@@ -1116,15 +1128,27 @@ void EmberOgre::createScene(void)
 	}
 	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, 256);
 	
-	mCarpenter.loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/floors.blockspec.xml");
-	mCarpenter.loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/walls.blockspec.xml");
-	mCarpenter.loadModelBlockDefinition("/home/erik/ember/src/components/ogre/carpenter/modelblockspecs/general.modelblocks.xml");
 	
-	Carpenter::BluePrint* housePrint = mCarpenter.loadBlueprint("/home/erik/ember/src/components/ogre/carpenter/blueprints/house.blueprint.xml");
 	
-        Ogre::SceneNode* node;
-        node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	housePrint->compile(node);	
+	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
+	Jesus* jesus = new Jesus(carpenter);
+
+	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/floors.blockspec.xml");
+	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/walls.blockspec.xml");
+	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/roofs.blockspec.xml");
+	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/slopewalls.blockspec.xml");
+	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/adapters.blockspec.xml");
+	jesus->loadBuildingBlockSpecDefinition("/home/erik/ember/src/components/ogre/carpenter/modelblockspecs/general.modelblocks.xml");
+	
+	jesus->loadModelBlockMapping("/home/erik/ember/src/components/ogre/jesus/modelmappings/general.modelmapping.xml");
+	
+	
+	Carpenter::BluePrint* housePrint = jesus->loadBlueprint("/home/erik/ember/src/components/ogre/carpenter/blueprints/house.blueprint.xml");
+	
+    Ogre::SceneNode* node;
+    node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	housePrint->compile();
+	Construction* house = new Construction(housePrint, jesus, node);
 	
 
   // create a Skydome

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<modelmappings>
+  <modelmapping model="wall" blocktype="wall/24/timber" />
+  <modelmapping model="wall" blocktype="wall/12/timber" />
+  <modelmapping model="wall" blocktype="wall/6/timber" />
+  <modelmapping model="wall" blocktype="wall/3/timber" />
+  <modelmapping model="floor" blocktype="floor/24/stone" />
+  <modelmapping model="roof" blocktype="roof/24/stone" />
+  <modelmapping model="slopewall" blocktype="slopewall/24/timber" />
+  <modelmapping model="slopewall" blocktype="slopewall/12/timber" />
+  <modelmapping model="wall_with_door" blocktype="wall_with_door/3/timber" />
+</modelmappings>

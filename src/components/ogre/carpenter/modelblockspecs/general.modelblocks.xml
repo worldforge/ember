@@ -1,5 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<modelblocks>
-  <modelblock model="wall" blockspec="wall24" name="wall24" />
-  <modelblock model="floor" blockspec="floor24" name="floor24" />
-</modelblocks>
+<buildingblockspecs>
+  <buildingblockspec blockspec="wall24" name="wall/24/timber" />
+  <buildingblockspec blockspec="wall12" name="wall/12/timber" />
+  <buildingblockspec blockspec="wall6" name="wall/6/timber" />
+  <buildingblockspec blockspec="wall3" name="wall/3/timber" />
+  <buildingblockspec blockspec="floor24" name="floor/24/stone" />
+  <buildingblockspec blockspec="roof24" name="roof/24/stone" />
+  <buildingblockspec blockspec="slopewall24" name="slopewall/24/timber" />
+  <buildingblockspec blockspec="slopewall12" name="slopewall/12/timber" />
+  <buildingblockspec blockspec="wall3" name="wall_with_door/3/timber" />
+  <buildingblockspec blockspec="adapter_a_24_12" name="adapter/a/24/12" />
+  <buildingblockspec blockspec="adapter_a_12_6" name="adapter/a/12/6" />
+  <buildingblockspec blockspec="adapter_a_6_3" name="adapter/a/6/3" />
+</buildingblockspecs>

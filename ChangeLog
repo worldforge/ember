@@ -1,3 +1,9 @@
+2005-02-27  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Moved Ember specific stuff of Carpenter into Jesus.
+	* Added Adapters to Carpenter. 
+	* Added a first prototype house. Need to change the way the floors and walls are attached to allow for rounded corners etc.
+
 2005-02-23  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Change name of main exec to "ember"

@@ -23,18 +23,17 @@
 #ifndef EMBEROGRECARPENTER_H
 #define EMBEROGRECARPENTER_H
 
-//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-//this seems to be because both uses their own internal memory handlers
-#include <xercesc/util/XMemory.hpp>
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-// indicate using Xerces-C++ namespace in general
-XERCES_CPP_NAMESPACE_USE
 
+// ------------------------------
+// Include WFmath header files
+// ------------------------------
+#include <wfmath/point.h>
+#include <wfmath/vector.h>
+#include <wfmath/axisbox.h>
+#include <wfmath/quaternion.h>
 
 #include "../EmberOgrePrerequisites.h"
-#include "../model/Model.h"
+//#include "../model/Model.h"
 
  namespace Carpenter {
 
@@ -45,8 +44,8 @@ XERCES_CPP_NAMESPACE_USE
 class AttachPair;
 class BlockSpec;
 class BuildingBlock;
-class ModelBlock;
-class ModelBlockDefinition;
+class BuildingBlockSpec;
+class BuildingBlockSpecDefinition;
 class BuildingBlockBinding;
 class BuildingBlockBindingDefinition;
 // class ModelBlockDefinition
@@ -60,145 +59,106 @@ class AttachPoint
 {
 friend class AttachPair;
 friend class BlockSpec;
+friend class Carpenter;
 public:
+	AttachPoint(const std::string& mName, WFMath::Point<3> position, WFMath::Vector<3> normal);
+	inline const std::string& getName() const { return mName; }
+	inline const WFMath::Vector<3>& getNormal() const { return mNormal; }
+	inline const WFMath::Point<3>& getPosition() const { return mPosition; }
+
+	inline const AttachPair* getAttachPair() const { return mAttachPair; }
+	const AttachPoint* getSibling() const;
+protected:
 	WFMath::Vector<3> mNormal;
 	WFMath::Point<3> mPosition;
 	std::string mName;
 	AttachPair* mAttachPair;
-	const AttachPoint* getSibling() const;
+	void setAttachPair(AttachPair* pair) { mAttachPair = pair; }
 };
 
 class AttachPair
 {
 friend class BlockSpec;
+friend class AttachPoint;
+friend class Carpenter;
 public:
-	AttachPoint point1;	
-	AttachPoint point2;	
-//	const AttachPoint& [] getPoints() const;
-	std::string mName;
-	std::string mType;
-	
 	const AttachPoint* getAttachPoint(const std::string & name) const { 
-		if (point1.mName == name) {
-			return &point1;
-		} else if (point2.mName == name) {
-			return &point2;
+		if (mPoint1.mName == name) {
+			return &mPoint1;
+		} else if (mPoint2.mName == name) {
+			return &mPoint2;
 		} else {
 			//"No pair with that name."
 			throw std::exception();
 		}
 		
 	}
+	
+	AttachPair(const std::string& name, const std::string& type, AttachPoint point1, AttachPoint point2);
+	
+	inline const AttachPoint& getPoint1() const { return mPoint1; }
+	inline const AttachPoint& getPoint2() const { return mPoint2; }
+	inline const std::string& getName() const { return mName; }
+	inline const std::string& getType() const { return mType; }
+
+protected:
+	AttachPoint mPoint1;	
+	AttachPoint mPoint2;	
+//	const AttachPoint& [] getPoints() const;
+	const std::string mName;
+	const std::string mType;
+	
 };
 
 class BlockSpec
 {
+friend class Carpenter;
 public:
+	inline const std::string& getName() const { return mName; }
+	inline const WFMath::AxisBox<3>& getBoundingBox() const { return mBoundingBox; }
+	const AttachPair* getAttachPairForPoint(AttachPoint* point) const;
+	const AttachPair* getAttachPair(const std::string & name) const  { return &(mAttachPairs.find(name)->second); }
+	
+	bool addAttachPair(AttachPair* pair);
+	void setBoundingBox(WFMath::AxisBox<3> bbox);
+	
+protected:
 	std::string mName;
 	WFMath::AxisBox<3> mBoundingBox;
 	std::map<const std::string, AttachPair> mAttachPairs;
 	
-	const AttachPair* getAttachPairForPoint(AttachPoint* point);
-	const AttachPair* getAttachPair(const std::string & name)  { return &(mAttachPairs[name]); }
 };
 
-class BuildingBlockBindingDefinition
+class BuildingBlockSpecDefinition
 {
 public:
-	std::string mBlock1Name;
-	std::string mBlock2Name;
-	std::string mPoint1Name;
-	std::string mPoint2Name;
-};
-
-class BuildingBlockBinding
-{
-public:
-	BuildingBlockBindingDefinition mDefinition;
-	const std::string& getType() const;
-	BuildingBlock* mBlock1;
-	const AttachPoint* mPoint1;
-	BuildingBlock* mBlock2;
-	const AttachPoint* mPoint2;
-	//std::string mType;
-};
-
-class ModelBlock
-{
-public:
-	ModelBlockDefinition* mDefinition;
-	BlockSpec* mBlockSpec;
-	EmberOgre::Model* mModel;
-};
-
-class ModelBlockDefinition
-{
-public:
+	BuildingBlockSpecDefinition();
 	std::string mName;
 	std::string mBlockSpecName;
-	std::string mModelName;
+	//std::string mModelName;
 	//ModelBlock getModelBlock();
 };
 
 
-
-class BuildingBlockDefinition
+class BuildingBlockSpec
 {
+friend class Carpenter;
 public:
-	std::string mName;
-	std::string mModelBlock;
-};
-
-class BuildingBlock
-{
-public:
-	BuildingBlock();
-	const std::string& getName() const { return mBlockDefinition.mName; }
-	ModelBlock mModelBlock;
-	EmberOgre::Model* getModel() const { return mModelBlock.mModel;}
-	Ogre::SceneNode* mNode;
-	const std::vector<BuildingBlockBinding*>& getBindingsForBlock() const;
-	BuildingBlockDefinition mBlockDefinition;
-	const AttachPair* getAttachPair(const std::string& name);
-	
-	WFMath::Point<3> mPosition;
-	WFMath::Quaternion mRotation;
-	
-	WFMath::Point<3> getWorldPositionForPoint(const AttachPoint* point);
-	bool mAttached;
-	bool isAttached() const { return mAttached; }
-	
-	
-
-	/**
-		A vector of all points that are already bound
-	*/
-	std::vector<const AttachPoint*> mBoundPoints;
+	BuildingBlockSpec();
+	const BuildingBlockSpecDefinition& getDefinition() const { return mDefinition; }
+	const BlockSpec*  getBlockSpec() const { return mBlockSpec; }
+	inline const std::string& getName() const { return mDefinition.mName; }
+protected:
+	BuildingBlockSpecDefinition mDefinition;
+	BlockSpec* mBlockSpec;
+	//EmberOgre::Model* mModel;
 };
 
 
 
-class BluePrint
-{
-public:
-	//std::map<std::string, BuildingBlockDefinition> mBuildingBlockDefinitions;
-	std::map<const std::string,  BuildingBlock> mBuildingBlocks;
-	std::vector< BuildingBlockBinding> mBindings;
-	
-	void compile(Ogre::SceneNode* baseNode);
-	
-	/**
-	 *    Places the unbound block in the supplied bindings correctly
-	 * @param binding 
-	 */
-	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*>& bindings);
-	
-	void doBindingsForBlock(BuildingBlock *block);
 
-	
-	BuildingBlock* mStartingBlock;
 
-};
+
 
 
 
@@ -208,17 +168,21 @@ public:
     Carpenter();
 
     ~Carpenter();
-	bool loadBlockSpec(const std::string& filename);
-	bool loadModelBlockDefinition(const std::string& filename);
+/*	bool loadBlockSpec(const std::string& filename);
+	bool loadModelBlockDefinition(const std::string& filename);*/
 	
-	BluePrint* loadBlueprint(std::string filename);
+	BluePrint* createBlueprint(std::string name);
+	
+	BuildingBlockSpec* getBuildingBlockSpec(const std::string& name);
+	
+	BlockSpec* createBlockSpec(std::string name);
+	BuildingBlockSpec* createBuildingBlockSpec(BuildingBlockSpecDefinition definition);
+
 protected:
 	std::map<const std::string , BlockSpec > mBlockSpecs;
-	std::map<const std::string , ModelBlockDefinition > mModelBlockDefinitions;
+	std::map<const std::string , BuildingBlockSpec > mBuildingBlockSpecs;
+	std::map<const std::string , BluePrint> mBluePrints;
 	
-	std::map<const std::string, WFMath::Vector<3> > mNormalTypes;
-	template <typename T>
-	void fillFromElement(xercesc::DOMElement* , T& );
 
 
 };

@@ -1,0 +1,54 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<blockspecs>
+  <blockspec name="roof24" >
+    <attachpairs>
+      <attachpair name="up" type="roof24" >
+        <attachpoint name="left" >
+          <normal type="NORTH" />
+          <position x="-4" y="6" z="3" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="NORTH" />
+          <position x="4" y="6" z="3"/>
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down" type="a24" >
+        <attachpoint name="left" >
+          <normal type="DOWN" />
+          <position x="-4" y="-6" z="-3" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="4" y="-6" z="-3"/>
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+    <bbox x="12" y="6" z="3"  >
+    </bbox>
+  </blockspec>
+  <blockspec name="roof12" >
+    <attachpairs>
+      <attachpair name="up" type="roof12" >
+        <attachpoint name="left" >
+          <normal type="NORTH" />
+          <position x="-2" y="3" z="1.5" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="NORTH" />
+          <position x="2" y="3" z="1.5"/>
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down" type="a12" >
+        <attachpoint name="left" >
+          <normal type="DOWN" />
+          <position x="-2" y="-3" z="-1.5" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="2" y="-3" z="-1.5"/>
+        </attachpoint>
+      </attachpair>
+     </attachpairs>
+    <bbox x="6" y="3" z="1.5" />
+  </blockspec>
+</blockspecs>

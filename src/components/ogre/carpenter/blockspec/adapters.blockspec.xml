@@ -1,0 +1,105 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<blockspecs>
+  <blockspec name="adapter_a_24_12" >
+    <attachpairs>
+      <attachpair name="up" type="a24" >
+        <attachpoint name="left" >
+          <normal type="UP" />
+          <position x="-4" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="UP" />
+          <position x="4" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down_left" type="a12" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="-8" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="-4" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down_right" type="a12" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="8" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="4" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+  </blockspec>
+  <blockspec name="adapter_a_12_6" >
+    <attachpairs>
+      <attachpair name="up" type="a12" >
+        <attachpoint  name="left" >
+          <normal type="UP" />
+          <position x="-2" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="UP" />
+          <position x="2" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down_left" type="a6" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="-4" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="-2" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down_right" type="a6" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="4" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="2" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+  </blockspec>
+  <blockspec name="adapter_a_6_3" >
+    <attachpairs>
+      <attachpair name="up" type="a6" >
+        <attachpoint  name="left" >
+          <normal type="UP" />
+          <position x="-1" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="UP" />
+          <position x="1" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down_left" type="a6" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="-2" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="-1" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="down_right" type="a6" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="1" z="0" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="2" z="0" y="0" />
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+  </blockspec>
+</blockspecs>

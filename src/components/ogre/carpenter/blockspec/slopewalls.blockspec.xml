@@ -1,0 +1,51 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<blockspecs>
+  <blockspec name="slopewall24" >
+    <attachpairs>
+      <attachpair name="down" type="a24" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="-4" z="-6" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="4" z="-6" y="0" />
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+    <bbox x="12" z="6" y="0.15" >
+<!--bounding boxes with only three values defined assume that the center of the block is at 0,0,0 and expands the bounding box in all directions.
+So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2 and it's second at 12,1.5,0.2.
+-->    </bbox>
+  </blockspec>
+  <blockspec name="slopewall12" >
+    <attachpairs>
+      <attachpair name="down" type="a12" >
+        <attachpoint  name="left" >
+          <normal type="DOWN" />
+          <position x="-2" z="-3" y="0" />
+        </attachpoint>
+        <attachpoint  name="right" >
+          <normal type="DOWN" />
+          <position x="2" z="-3" y="0" />
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+    <bbox x="6" z="3" y="0.15" />
+  </blockspec>
+  <blockspec name="slopewall6" >
+    <attachpairs>
+      <attachpair name="down" type="a6" >
+        <attachpoint name="left" >
+          <normal type="DOWN" />
+          <position x="-1" z="-1.5" y="0" />
+        </attachpoint>
+        <attachpoint name="right" >
+          <normal type="DOWN" />
+          <position x="1" z="-1.5" y="0" />
+        </attachpoint>
+      </attachpair>
+    </attachpairs>
+    <bbox x="3" z="1.5" y="0.15" />
+  </blockspec>
+</blockspecs>

@@ -1,5 +1,5 @@
 SUBDIRS = environment model EmberSceneManager modeldefinitions input widgets \
-	carpenter
+		carpenter jesus
 
 
 bin_PROGRAMS = ember
@@ -51,7 +51,8 @@ ember_LDADD = $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/EmberSceneManager/src/libEmberSceneManager.a $(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
-	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a $(EMBER_EXT_LIBS)
+	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a \
+	$(top_builddir)/src/components/ogre/jesus/libJesus.a $(EMBER_EXT_LIBS)
 
 
 ember_SOURCES = Avatar.cpp EntityListener.cpp ConsoleObjectImpl.cpp \

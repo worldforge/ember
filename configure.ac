@@ -366,6 +366,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/model/Makefile
 		 src/components/ogre/input/Makefile
 		 src/components/ogre/carpenter/Makefile
+		 src/components/ogre/jesus/Makefile
 		 src/components/ogre/EmberSceneManager/Makefile
 		 src/components/ogre/EmberSceneManager/src/Makefile
 		 src/components/ogre/EmberSceneManager/include/Makefile

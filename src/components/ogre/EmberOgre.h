@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.40  2005-02-22 23:51:32  erik
+ *      Revision 1.41  2005-02-27 21:08:21  erik
+ *      2005-02-27  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Moved Ember specific stuff of Carpenter into Jesus.
+ *      	* Added Adapters to Carpenter.
+ *      	* Added a first prototype house. Need to change the way the floors and walls are attached to allow for rounded corners etc.
+ *
+ *      Revision 1.40  2005/02/22 23:51:32  erik
  *      2005-02-23  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Change name of main exec to "ember"
@@ -400,7 +407,6 @@ Description: Base class for all the OGRE examples
 
 #include "framework/Singleton.h"
 
-#include "carpenter/Carpenter.h"
 
 // #include <OgreConfigFile.h>
 
@@ -409,11 +415,11 @@ class View;
 class Connection;
 }
 
-// namespace Carpenter
-// {
-// class Carpenter;
-// class BluePrint;
-// }
+namespace Carpenter
+{
+class Carpenter;
+class BluePrint;
+}
 
 
 namespace EmberOgre {
@@ -595,7 +601,6 @@ protected:
             Ogre::Root::getSingleton().getRenderSystem()->shutdown();
 	}
 	*/
-	Carpenter::Carpenter mCarpenter;
 
 
 };
