@@ -39,14 +39,12 @@ namespace dime
 	{
 	    setName("Server Service");
 		setDescription("Service for Server session");
-		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
-		//        setStatus( Service::Status::OK );
 	}
 	
 	/* dtor */
 	ServerService::~ServerService()
 	{
-	    delete myConn;
+//	    delete myConn;
 	}
 	
 	/* Method for starting this service 	*/
@@ -57,7 +55,7 @@ namespace dime
 
 		// Create new instance of myConn
 	  // We are connected without debuging enabled thus the false
-		myConn = new Connection("dime", false);
+		myConn = Connection::Instance();
 
 		// Bind failure signal
 		myConn->Failure.connect(SigC::slot(*this, &ServerService::GotFailure));
@@ -73,7 +71,7 @@ namespace dime
 		}
 		catch (...)
 		  {
-		    delete myConn;
+		    //delete myConn;
 		    myConn = NULL;
 		    return Service::FAILURE;
 		  }
@@ -100,6 +98,7 @@ namespace dime
 	void Connected()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
+    // Set up the lobby
 	}
 
 	bool Disconnecting()
