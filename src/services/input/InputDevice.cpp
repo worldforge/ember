@@ -42,7 +42,8 @@ InputDevice::~InputDevice()
 	InputService * inputService = DimeServices::getInstance()->getInputService();
 
 	//all mappings have to be removed prior to deleting this input device
-	for (InputService::InputMappingIterator i = myMotionMappings.begin(); 
+        InputService::InputMappingIterator i;
+	for (i = myMotionMappings.begin(); 
 			i != myMotionMappings.end(); i++)
 	{
 		inputService->removeInputMapping(*i);		
@@ -312,3 +313,4 @@ bool RepetitionDevice::handleEvent(SDL_Event & event)
 }
 
 } // namespace dime
+

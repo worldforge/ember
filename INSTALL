@@ -32,6 +32,13 @@ Eris
 client side session layer
 Version: CVS
 
+CPPUnit
+C++ unit testing Library  (will become optional at some point)
+Version: 1.6.2 but older versions should work and hack the configure.in
+    to make it let you use it.
+http://sf.net/projects/cppunit
+
+
 If you want a 3D gameview (which is not mandatory, and currently not even
 supported <grin>) you'll need:
 
@@ -43,6 +50,7 @@ http://crystal.sourceforge.net
 ****************
 * installation *
 ****************
+(for Linux/Unix)
 
 execute the following (usual) commands:
 
@@ -65,4 +73,5 @@ made for you system, please be aware that you will need *ALL* the libraries
 and devel packages it was built against.  These are often not installed by 
 default.  The total number for MDK8.1 was about 15 packages.
 (Data from Lee's fresh install of MDK8.1)
+
 

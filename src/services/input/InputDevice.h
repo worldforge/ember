@@ -22,11 +22,11 @@
 // Include other headers of the current program here
 
 // Include library headers here
-#include <sdl/SDL_keysym.h>
-#include <sdl/SDL_events.h>
-#include <sdl/SDL_mouse.h>
+#include <SDL/SDL_keysym.h>
+#include <SDL/SDL_events.h>
+#include <SDL/SDL_mouse.h>
 #include <sigc++/signal_system.h>
-#include <sdl/SDL_timer.h>
+#include <SDL/SDL_timer.h>
 
 
 // Include system headers here
@@ -381,5 +381,6 @@ class RepetitionDevice: public InputDevice
 } // namespace dime
 
 #endif
+
 
 
