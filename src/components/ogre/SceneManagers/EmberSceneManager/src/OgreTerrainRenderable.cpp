@@ -436,7 +436,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const Vector3& TerrainRenderable::getWorldPosition(void) const
     {
-        return mParentNode->_getDerivedPosition();
+        return mCenter;
+		// mParentNode->_getDerivedPosition();
     }
     //-----------------------------------------------------------------------
     bool TerrainRenderable::_checkSize( int n )
@@ -460,7 +461,13 @@ namespace Ogre
         for ( int level = 1; level < msOptions->maxGeoMipMapLevel; level++ )
         {
             mMinLevelDistSqr[ level ] = 0;
-
+			
+			//make sure that the tile at the camera always is at LOD 0
+			if (level == 1) {
+	            mMinLevelDistSqr[ level ] = msOptions->tileSize * msOptions->tileSize;
+				
+			}
+			
             int step = 1 << level;
             // The step of the next higher LOD
             int higherstep = step >> 1;
@@ -494,6 +501,7 @@ namespace Ogre
                     Vector3 v2(_vertex( i + step, j, 0 ), _vertex( i + step, j, 1 ), _vertex( i + step, j, 2 ));
                     Vector3 v3(_vertex( i, j + step, 0 ), _vertex( i, j + step, 1 ), _vertex( i, j + step, 2 ));
                     Vector3 v4(_vertex( i + step, j + step, 0 ), _vertex( i + step, j + step, 1 ), _vertex( i + step, j + step, 2 ));
+					
 
                     Plane t1, t2;
                     bool backwardTri = false;
@@ -559,19 +567,37 @@ namespace Ogre
 
                             Real D2 = delta * delta * C * C;
 
-                            if ( mMinLevelDistSqr[ level ] < D2 )
-                                mMinLevelDistSqr[ level ] = D2;
+							//only update the distance if none of the heights are 0.0
+							//this is to allow for invalid Mercator::Segments without messing up the tricount
+							//the reason is that mercator defines the height of all invald segments to 0.0
+							//if such a segment was to be next to a normal segment, the delta would be way to high, 
+							//resulting in a tile which was always in LOD 0
+							bool isInValidVertex = v1.y == 0.0 || v2.y == 0.0 || v3.y == 0.0 || v4.y == 0.0;
+							if (!isInValidVertex) {
+								if ( mMinLevelDistSqr[ level ] < D2 )
+									mMinLevelDistSqr[ level ] = D2;
 
-                            // Should be save height difference?
-                            // Don't morph along edges
-                            if (msOptions->lodMorph && 
-                                fulldetailx != 0  && fulldetailx != (msOptions->tileSize - 1) && 
-                                fulldetailz != 0  && fulldetailz != (msOptions->tileSize - 1) )
-                            {
-                                // Save height difference 
-                                pDeltas[fulldetailx + (fulldetailz * msOptions->tileSize)] = 
-                                    interp_h - actual_h;
-                            }
+								// Should be save height difference?
+								// Don't morph along edges
+								if (msOptions->lodMorph && 
+									fulldetailx != 0  && fulldetailx != (msOptions->tileSize - 1) && 
+									fulldetailz != 0  && fulldetailz != (msOptions->tileSize - 1) )
+								{
+									// Save height difference 
+									pDeltas[fulldetailx + (fulldetailz * msOptions->tileSize)] = 
+										interp_h - actual_h;
+								}
+							} else {
+								if (msOptions->lodMorph && 
+									fulldetailx != 0  && fulldetailx != (msOptions->tileSize - 1) && 
+									fulldetailz != 0  && fulldetailz != (msOptions->tileSize - 1) )
+								{
+									// Save height difference 
+									pDeltas[fulldetailx + (fulldetailz * msOptions->tileSize)] = 
+										0;
+								}
+							
+							}
 
                         }
 
