@@ -45,8 +45,9 @@ namespace dime
 		setDescription("Service for Metaserver session");
 		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
 		//        setStatus( Service::Status::OK );
+		cout << "TRACE: Metaserver Service created" << endl;
 	}
-	
+
 	/* dtor */
 	MetaserverService::~MetaserverService()
 	{
