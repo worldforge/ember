@@ -1,0 +1,905 @@
+<h1>Dime Tasks and Project Plan</h1>
+
+
+<h2>Abstract</h2>
+<p>Contains the list of features to be implemented for Dime divided up into suitably sized 
+tasks, and with notes of which ones should be implemented in the current iteration.
+Focus is on features to be implemented in release  two (version 0.2.0).
+</p>
+<p>We will work towards release two in many iterations, each about a month long, 
+and each increasing the minor version number (0.1.1, 0.1.2, etc).
+</p>
+<p>Also contains some project metrics.
+</p>
+
+<h2>Notation</h2>
+<h3>Version</h3>
+<p>
+Version is the version of dime a feature should go in.  Version numbers consist 
+of &lt;major_release.release.iteration&gt;.
+</p>
+
+<h3>Priority</h3>
+<p>
+Priority goes from 0 to 10, where 0 = we don't want it, 3 = extra, could be nice, 
+5 = optional, 7 = important, 9 = really needed, 10 = fundamentally required.  
+Since the priorities have to be seen always in conjunction with the version the 
+features are planned for, they have a global meaning. To derive the current 
+priority of a feature, look on the set of features the programmer is also working 
+on and the versions they are planned for.
+</p>
+
+
+<h3>Effort</h3>
+<p>
+Effort is measured in ideal working days, that is, the number of days it would 
+take if you could concentrate on it 8 hours a day (this is later multiplied by 
+a Load Factor calculated from project metrics to estimate the actual number of days).   
+4 or 5 is a good number, 1 or 2 might be a bit too small, and 8 or above means 
+that the feature should be split into smaller ones.
+</p>
+<p>
+Effort should be estimated by the developers actually doing the implementation, 
+if it is estimated by someone else it is suffixed by a question mark. 
+Like the priority the effort is a global and constant measure and not the effort 
+left on the implementation. If a major change on a feature has to be taken after 
+it is done, a new feature should be introduced (to see which part of it is already 
+implemented).
+</p>
+
+<h3>Sorting</h3>
+<p>
+The entries of the table should be sorted by version, then by priority and then 
+unassigned features first.  If a task has no version assigned, then it is listed 
+after ones wih assigned versions.
+</p>
+
+<h2>Tasks</h2>
+<table class="chart" cellpadding="5">
+
+<tr>
+<th>Task</th>
+<th>Version</th>
+<th>Priority</th>
+<th>Effort</th>
+<th>Developer 1</th>
+<th>Developer 2</th>
+<th>Progress</th>
+<th>Description</th>
+</tr>
+
+<tr>
+<td class="subcaption" colspan="8">Iteration 0.1.0 - Completed</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>0.1.0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>Done</td>
+<td>Various unlisted tasks.</td>
+</tr>
+
+<tr>
+<td>LoggingService</td>
+<td>0.1.0</td>
+<td>4</td>
+<td>3</td>
+<td>Tim</td>
+<td></td>
+<td>Done</td>
+<td>Allows logging to a specified file or output stream.</td>
+</tr>
+
+
+
+
+<tr>
+<td class="subcaption" colspan="8">Iteration 0.1.1 - Completed</td>
+</tr>
+
+
+
+
+<tr>
+<td>InputService</td>
+<td>0.1.1</td>
+<td>8</td>
+<td>6</td>
+<td>Tim</td>
+<td></td>
+<td>Done</td>
+<td>Polls SDL input events, sends updates to listeners</td>
+</tr>
+
+<tr>
+<td>Use Cases and UI drafts</td>
+<td>0.1.1</td>
+<td>6</td>
+<td>5</td>
+<td>nullstar</td>
+<td></td>
+<td>Acorn completed, mason and other games to be split into separate tasks.</td>
+<td>
+<p>Create a number of usage scenarios and user interface configurations, 
+that different kind of dime users might want.  This serves as a guide to what
+types of components we will need, and what services we need to support them.
+</p>
+<p>The use cases can be simple stories telling what the user does and what happens,
+and the UI sketches can be drawn in a paint program, or a presentation
+or spreadsheet program.  The UI sketches should have accompanying notes that describe
+the behaviour and content of various widgets and groups of widgets.
+</p>  
+<p>The use cases should be centered on Mason and
+Acorn play, although some others could be created too (of other types of games, 
+or other applications that Dime would seem suitable for) to give some idea of possible 
+future developement, and perhaps inspiration for new solutions to current components too. 
+</p>
+See <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200202141956.irc#line139">
+Task: Designing example interface layouts for Dime.</a> for a more detailed task description.
+</td>
+</tr>
+
+
+
+
+
+<tr>
+<td class="subcaption" colspan="8">Iteration 0.1.2 - Completed</td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+<tr>
+<td>ConfigService</td>
+<td>?</td>
+<td>8.5</td>
+<td>2</td>
+<td>nullstar</td>
+<td></td>
+<td>Started by derwiath.  Currently done but not yet used.</td>
+<td>Uses varconf for handling the config files.  See this 
+<a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200201241943.irc#line118">
+discussion about ConfigService</a> for more information.
+</td> 
+</tr>
+
+
+
+<tr>
+<td>GuiService</td>
+<td>0.1.2</td>
+<td>8</td>
+<td>7</td>
+<td>adamgreg</td>
+<td>Nikal</td>
+<td>Nearly Halfway</td>
+<td>Implementing a simple GUI interface.  
+See this <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200202190812.irc"> discussion on GUI requirements </a> for more background.
+ </td>
+</tr>
+
+<tr>
+<td>Component and GameView base classes</td>
+<td>0.1.2</td>
+<td>8</td>
+<td>2</td>
+<td></td>
+<td></td>
+<td>Partly done.  Not much to do, only Widget *getUi() method and DataModel *getDataModel() methods for Component, and things like getName().  Might have to wait until DataModel and GuiService are ready, or alternatively use some stubs.</td>
+<td></td>
+</tr>
+
+
+<tr>
+<td>MetaServerService</td>
+<td>0.1.2</td>
+<td>7</td>
+<td>4?</td>
+<td>(Aglanor)</td>
+<td>Xmp</td>
+<td>Done</td>
+<td>Queries metaserver</td>
+</tr>
+
+<tr>
+<td>PlatformService - RectangleRenderer</td>
+<td>?</td>
+<td>7</td>
+<td>5</td>
+<td>Winand</td>
+<td></td>
+<td>Done for SDL</td>
+<td>
+<p>
+RectangleRenderer is a class used to render ractangles that can consist of many sections that are bittmapped (tiled, stretched etc) or have gradients or solid colors.
+It's used for themed panel, button, and other widget backgrounds.
+There'll be a BorderRenderer too probably that can be used to render a border around some rectangular area.
+</p>
+<p>
+There's an in depth discussion about the subject <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200203141950.irc#line244">here </a>.
+There's some example pictures also: <a href="http://purple.worldforge.org/wf/zzorn/themed_rectangle_background_with_border.png">background1</a>, 
+<a href="http://purple.worldforge.org/wf/zzorn/themed_rectangle_background_with_border_2.png">background2</a>,
+<a href="http://purple.worldforge.org/wf/zzorn/themed_rectangle_background_with_border_3.png">background3</a>.
+</p>
+It is part of the platform independet layer that the GuiService is built on.  It should work with both OpenGL and SDL, although an initial implementation could be SDL only. 
+It could have a portable base class and inheriting implementations that do the actual work on OpenGL or SDL.
+</td>
+</tr>
+
+
+<tr>
+<td>PlatformService - BorderRenderer</td>
+<td>0.1.2</td>
+<td>7</td>
+<td>3?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+Uses eight RectangleRendereres to render a border
+Portable base class and inheriting implementations that do the actual work on OpenGL or SDL.
+</td>
+</tr>
+
+<tr>
+<td>PlatformService - Core & Factory classes</td>
+<td>0.1.2</td>
+<td>7</td>
+<td>5?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+Init routines and any needed core classes for the the platform service.  
+Factory for creating *Renderer classes depending on wether OpenGL or SDL is used.
+</td>
+</tr>
+
+<tr>
+<td>PlatformService - FontRenderer</td>
+<td>0.1.2</td>
+<td>7</td>
+<td>4?</td>
+<td>Nikal</td>
+<td></td>
+<td>Done, a little polishing needed.</td>
+<td>
+Draw fonts with different color, size, etc.  
+Portable base class and inheriting implementations that do the actual work on OpenGL or SDL.
+</td>
+</tr>
+
+
+<tr>
+<td>Example Component</td>
+<td>?</td>
+<td>6</td>
+<td>4?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>For testing and teaching purposes</td>
+</tr>
+
+
+<tr>
+<td>Theme Format</td>
+<td>0.1.2</td>
+<td>7</td>
+<td>5</td>
+<td>zzorn</td>
+<td>Skyhook</td>
+<td>Complete</td>
+<td>
+<p>Create theme format DTD and documentation.  
+</p>
+There's existing format proposals/drafts by <a href="http://www.worldforge.org/dev/eng/clients/dime/working_notes/theme_format">zzorn</a> and <a href="http://home.pacbell.net/eclangel/wf/wthm.htm">Skyhook.</a>
+</td>
+</tr>
+
+
+
+
+<tr>
+<td class="subcaption" colspan="8">Iteration 0.1.3 - No date yet set for completion</td>
+</tr>
+
+<tr>
+<td>3DGameView - Terrain rendering</td>
+<td>0.1.3</td>
+<td>9</td>
+<td>8?</td>
+<td>tbp</td>
+<td></td>
+<td>Being worked on, yet to be integrated with rest of Dime</td>
+<td>
+Rendering 3D terrain for the 3D game view(s).
+<p>
+See this <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200202190812.irc"> discussion on 3D game views </a> for more background.
+</p>
+</td>
+</tr>
+
+<tr>
+<td>Example Theme(s)</td>
+<td>0.1.3</td>
+<td>6</td>
+<td>6</td>
+<td>?</td>
+<td></td>
+<td></td>
+<td>
+Example themes for testing theme support in ThemeService, PlatformService, and GuiService, to create pretty screen shots and optionally a good default theme.
+</td>
+</tr>
+
+
+<tr>
+<td>ServerService</td>
+<td>0.1.3</td>
+<td>8</td>
+<td>5?</td>
+<td>Xmp</td>
+<td></td>
+<td>Started</td>
+<td>Keeps list of services and known facts about them, initializes connection</td>
+</tr>
+
+<tr>
+<td>Data Model</td>
+<td>0.1.3</td>
+<td>8</td>
+<td>7</td>
+<td>Tim</td>
+<td></td>
+<td>Done</td>
+<td></td>
+</tr>
+
+<tr>
+<td>ThemeService - Core classes</td>
+<td>0.1.3</td>
+<td>6</td>
+<td>3?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+The ThemeService class and any other needed core classes.
+</td>
+</tr>
+
+<tr>
+<td>ThemeService - Theme</td>
+<td>0.1.3</td>
+<td>6</td>
+<td>3?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+A Theme class to hold various theme information.  Contains a set of ThemeSchemes.
+</td>
+</tr>
+
+<tr>
+<td>ThemeService - ThemeScheme</td>
+<td>0.1.3</td>
+<td>6</td>
+<td>3?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+Holds theme details for some named widget type.  Will be passed to and used by RectangleRenderer and the other renderer classes.
+</td>
+</tr>
+
+<tr>
+<td>Platform Service - OpenGL support</td>
+<td>0.1.3</td>
+<td></td>
+<td></td>
+<td>Nikal</td>
+<td></td>
+<td>Partially done</td>
+<td>
+Add support to render the widgets on an OpenGL drawing surface.
+</td>
+</tr>
+
+<tr>
+<td>SoundService</td>
+<td>?</td>
+<td>7</td>
+<td>5?</td>
+<td>nikal</td>
+<td></td>
+<td>Researching</td>
+<td>Plays sound effects.</td>
+</tr>
+
+<tr>
+<td>MusicService</td>
+<td>?</td>
+<td>6</td>
+<td>5?</td>
+<td>nikal</td>
+<td></td>
+<td>Researching</td>
+<td>
+Plays background music.  The music can be in MOD formats or ogg format.
+<p>
+Support for mood based music selection would be nice (if mods are set up 
+in a suitable way, we can do this very quickly with them, by switching tracks,
+or changing the next track. For ogg, however, we have to wait until a piece is finished
+before picking another that fits the current mood).
+(At a later date support for experimental generated music could be implemented, it 
+could react directly to changes in the mood).
+See <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200202161849.irc#line575">
+Current mood in the game, and what it can be used for</a> for a discussion about
+a mood system in the client, and some implementation ideas. 
+</p>
+<p>
+The mood is provided from outside this service (perhaps some read only fields in
+the central data model).  It could be sent from the server if the current game / server
+supports moods, or calculated by the client based on events and some heuristics.
+</p>
+</td>
+</tr>
+
+<tr>
+<td class="subcaption" colspan="8">Unscheduled tasks</td>
+</tr>
+
+
+
+
+
+
+
+<tr>
+<td>Design Control Interface protocol</td>
+<td>?</td>
+<td>7</td>
+<td>5</td>
+<td>cyanide</td>
+<td>zzorn</td>
+<td></td>
+<td>
+<p>Design an extension to the Atlas protocol, or a protocol on top of it, 
+that is used to communicate what an Avatar can do, what properties it has,
+what sensory stream(s) it provides, what control interfaces it is using,  
+and metadata for all of those and the control interface itself.  
+</p>
+<p>Also create a sensory input stream concept, and device a way to associate 
+sights and other perceptions of the world to one sensory stream. 
+</p>
+<p>
+Present the protocol to the rest of WF for acceptance, rejection, or corrections.  
+</p>
+<p>
+See recent <a href="http://brenda.worldforge.org:8080/logs/mason/mason_index.html">mason bookmark</a>  for an in depth description and discussion of this.
+</p>
+</td>
+</tr>
+
+
+<tr>
+<td>3DGameView</td>
+<td>?</td>
+<td>9</td>
+<td>30?</td>
+<td>tbp</td>
+<td></td>
+<td>Terrain renderer being worked on, yet to be integrated with rest of Dime</td>
+<td>
+<p>A 3D game view.  Uses existing libraries or code such as Demeter, Cal3D, and OpenSceneGraph, or some other ones.
+<p>
+<b>Should be broken down into smaller tasks.</b>  For example:
+<ul>
+<li> scene, 
+</li><li>terrain [separated task],
+</li><li>indoor (houses are built from elements), 
+</li><li>entities (static mesh models), 
+</li><li>character models (animated, bone based), 
+</li><li>skybox (clouds, weather, etc),  
+</li><li>static entities on the terrain (forests, trees, stones, etc.), 
+</li><li>underground (different from indoor in that the server probably tells about the spaces, instead of listing a set of elements that confine a space fully or partially.  But in any case it will not be needed until much later games, so should be left out until then).
+</li>
+</ul>
+See this <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200202190812.irc"> discussion on 3D game views </a> for more background.
+</p>
+
+</td>
+</tr>
+
+
+
+
+
+
+
+<tr>
+<td>MapService</td>
+<td>?</td>
+<td>8</td>
+<td>8?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Wrappers for Coal?  Provides terrain height and terrain type information.
+Might also list visible static entities on the map, such as trees and stones. </td>
+</tr>
+
+<tr>
+<td>Interface Layout file format / object structure</td>
+<td>?</td>
+<td>8</td>
+<td>4?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Define a file format that describes the layout of components and scripts with visible ui:s, 
+and the connections from them to other visible or invisible component or script instances,
+and the central data model.  Look at using the persistance service for loading and saving, 
+and just defining the object structure that is fed to the persistence service when saving an interface layout.</td>
+</tr>
+
+<tr>
+<td>Interface Layout loading and saving</td>
+<td>?</td>
+<td>8</td>
+<td>6?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+Create a service that can load interface layout files into a specific part of the UI (a panel or so?),
+or replacing the whole current UI.  It creates component and script instances, sets up connections, etc.
+Similarily, it should be able to take the whole (or a part??) of the current UI, and write it 
+into a interface layout format.  It could perhaps use the persistence service for saving/loading the data.  
+</td>
+</tr>
+
+
+<tr>
+<td>Identify needed Components</td>
+<td>?</td>
+<td>8</td>
+<td>6?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+<p>Based on the use cases and UI drafts, identify a set of components, and create tasks in this list for them.
+A component should be generic and configurable enough to be used for many different purposes, 
+but also self contained, easy to use, and have good defaults.  More complex structures 
+can be built with scripts or interface layouts.  
+</p>
+
+<p>Components use the basic 
+widgets provided by the GuiService to build their UI:s, if they have one. 
+Some components could be specialized at some non-visible tasks, that need to be accessible
+from scripts (and thus can't be placed in services), and don't make sense to access
+through the central data model.  
+</p>
+
+<p>Start with a small basic set of components that
+can be used to implement a simple interface for playing Acorn, for example, and
+then add more components later based on feedback from the usage of the previous ones.  
+</p>
+</td>
+</tr>
+
+<tr>
+<td>Main dime application updates</td>
+<td>?</td>
+<td>7</td>
+<td>2?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Make sure it compiles, add test code for creating test components.</td>
+</tr>
+
+<tr>
+<td>Service & Service startup</td>
+<td>?</td>
+<td>7</td>
+<td>3?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Clean up and do refactoring on the Service classes, make sure the client initializes
+    the services on startup, and log / print startup status messages for services.</td>
+</tr>
+
+<tr>
+<td>DebugGameView</td>
+<td>0.1.1</td>
+<td>6</td>
+<td>3</td>
+<td>AlistairD</td>
+<td></td>
+<td>?</td>
+<td>text based</td>
+</tr>
+
+<tr>
+<td>IsoGameView</td>
+<td>?</td>
+<td>6</td>
+<td>6?</td>
+<td>AlistairD</td>
+<td></td>
+<td></td>
+<td>2D isometric</td>
+</tr>
+
+<tr>
+<td>Update the Test Service</td>
+<td>?</td>
+<td>6</td>
+<td>2?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>For testing and teaching purposes.  Tidy up, add test for any new service interfaces.</td>
+</tr>
+
+<tr>
+<td>EntityService</td>
+<td>?</td>
+<td>6</td>
+<td>5?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Handles Eris instances</td>
+</tr>
+
+<tr>
+<td>MediaService</td>
+<td>?</td>
+<td>6</td>
+<td>7?</td>
+<td>Lee</td>
+<td></td>
+<td>Starting</td>
+<td>Muse implemented as separate library, MediaService wraps it.</td>
+</tr>
+
+
+<tr>
+<td>InputService - Joystick Support</td>
+<td>?</td>
+<td>5</td>
+<td>4?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Add reading of  joystic input to the input service.</td>
+</tr>
+
+
+<tr>
+<td>PersistenceService</td>
+<td>?</td>
+<td>5</td>
+<td>6?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>It is not currently clear if we need this.  Config service might be used in many cases instead of it.  
+Stores large amounts of structured data persistently for services.  See this 
+<a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200201241943.irc#line63">
+discussion about PersistenceService</a> for more information
+</td>
+</tr>
+
+
+<tr>
+<td>AtlasService</td>
+<td>?</td>
+<td>3</td>
+<td>5?</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Listening to various atlas messages?</td>
+</tr>
+
+<tr>
+<td>MoriaGameView</td>
+<td>?</td>
+<td>3</td>
+<td>5?</td>
+<td>AlistairD</td>
+<td></td>
+<td></td>
+<td>Moria like</td>
+</tr>
+
+</table>
+
+
+<h2>Iterations</h2>
+This is a list of the iterations, their planned and actual lengths, the effort 
+planned and actually done in them, and a load factor calculated from these values.
+<table class="chart" cellpadding="5">
+
+<tr>
+<th>Iteration</th>
+<th>Plan. End Date</th>
+<th>Act. End Date</th>
+<th>Plan. Length</th>
+<th>Act. Length</th>
+<th>Plan. tasks</th>
+<th>Act. tasks</th>
+<th>Plan. Effort</th>
+<th>Act. Effort</th>
+<th>Plan. max effort for a person</th>
+<th>Est. len.</th>
+<th>persons</th>
+<th>Load Factor</th>
+</tr>
+
+<tr>
+<td>0.1.0</td>
+<td>-</td>
+<td>2002-02-16</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>?</td>
+<td>-</td>
+<td>?</td>
+<td>-</td>
+<td>-</td>
+<td>~5</td>
+<td>4 (estimated)</td>
+</tr>
+
+<tr>
+<td>0.1.1</td>
+<td>2002-03-16</td>
+<td>2002-03-17</td>
+<td>28</td>
+<td>29</td>
+<td>7</td>
+<td>2</td>
+<td>32</td>
+<td>11</td>
+<td>7</td>
+<td>28 days</td>
+<td>8</td>
+<td></td>
+</tr>
+
+<tr>
+<td>0.1.2</td>
+<td>2002-04-17</td>
+<td></td>
+<td>27</td>
+<td></td>
+<td>18</td>
+<td></td>
+<td>81</td>
+<td></td>
+<td>10</td>
+<td></td>
+<td>9</td>
+<td></td>
+</tr>
+
+<tr>
+<td>0.1.3</td>
+<td>Not set.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+(Effort measured in ideal work days.)
+
+
+
+<h2>Change History</h2>
+
+<table class="versionhistory" cellpadding="5">
+<tr>
+<th>Date</th>
+<th>Author</th>
+<th>Change</th>
+</tr>
+
+<tr>
+<td>2002-07-05</td>
+<td>Xmp</td>
+<td>Another update.</td>
+</tr>
+
+
+<tr>
+<td>2002-05-25</td>
+<td>Xmp</td>
+<td>Updated things as a result of the 0.1.2 release.  Moved several tasks to the 0.1.3 revision because of the
+reality of the matter.</td>
+</tr>
+
+<tr>
+<td>2002-03-17</td>
+<td>zzorn</td>
+<td>Updated things as a result of iteration planning for 0.1.2</td>
+</tr>
+
+<tr>
+<td>2002-02-16</td>
+<td>zzorn</td>
+<td>Calculated features to be implemented for iteration 0.1.1</td>
+</tr>
+<tr>
+<td>2002-03-15</td>
+<td>zzorn</td>
+<td>Added RectangleRenderer</td>
+</tr>
+<tr>
+<td>2002-02-16</td>
+<td> zzorn </td>
+<td>Added updates from project meeting</td>
+</tr>
+
+<tr>
+<td>2002-02-13 </td>
+<td>AlistairD </td>
+<td>Tinkered with priority and effort for his areas, corrected ErisService's description.</td>
+</tr>
+
+<tr>
+<td>2002-02-12 </td>
+<td>Tim </td>
+<td>Fixed priority and effort to a global meaning. </td> 
+</tr>
+
+<tr>
+<td>2002-02-12 </td>
+<td>zzorn </td>
+<td>Changed priority and effort to numerical bounded estimates.</td>
+</tr>
+
+<tr>
+<td>2002-02-11 </td>
+<td>zzorn </td>
+<td>first version</td>
+</tr>
+
+</table>
+
+
+<br />
+<br />
+<br />      <br /><br />
+    </td>
+  </tr>
+</table>

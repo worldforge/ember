@@ -1,0 +1,282 @@
+<h2>Battleplan</h2>
+<p>
+
+<p>
+Contains the overal strategy that is used to achieve the goals set in the concept document.  Contains a high level plan of the client developement
+up to version 1.0, and what general features should be implemented for each milestone.  Contains a more detailed plan for the next few iterations.
+Updated whenever required features are implemented.
+</p>
+
+<div class="instruction"><i>
+A battleplan defines the high level strategy for reaching the goals set in the concept document.
+It defines what functionality should be in every version up to 1.0, and can suggest some goals to pursue
+after that.  It also defines a bit more specific goals for the next few iterations, and should be updated
+whenever those goals are met, to decide when the version number of the client can be increased.
+The Battleplan is laid out as a series of milestones.  Each milestone usually
+increases the minor version number, and generates some deliverable.
+</i></div>
+
+
+<h2>Version History</h2>
+Draft 2001-11-16  nikal  Initial battle plan.<br />
+Draft 2001-11-16  zzorn  Merged in comments from the <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200111151814.irc#line169">Battleplan Discussion</a>. <br />
+Reviewed 2001-11-16  zzorn  Merged in comments from the <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200111152223.irc#line27">Battleplan Review</a>. <br />
+Reviewed 2002-01-19 nikal & zzorn  Revised the first few iterations so there were clearer goals to work for.
+
+
+
+
+<h2>Introduction</h2>
+
+<div class="template">
+General notes about the battleplan, what is required of it, 
+how is it affected by the battleplans or implementation state of other 
+products, how is needed effort and estimated number of dedicated develpers
+balanced, any special deadlines we want to have something running for 
+(trade shows, etc), and the overal goals and strategy used when 
+creating this battleplan.
+</div>
+
+
+
+<h2>Milestone 1</h2>
+
+Implements version 0.1
+
+<p>
+Version 0.1 should be able to connect to STAGE or Cyphesis, and do Out Of Game chat.
+It should also support lists of people present, emotes, etc.
+Should have working packages for the most popular linux distributions,
+some installer or easily installable package for windows,
+and preferably also a working binary for Mac or some other platform.
+</p>
+
+<h3>Version 0.0.1</h3>
+
+The purpose of the first iteration is to set down the initial framework and build process, to serve as a starting point for subsequent work.
+<UL>
+<li>The basic Dime Application will be written.  It will have it's own main loop.[DONE]</li>
+<li>Register at least one test service with the service manager, start them before the main loop, and stop them after the main loop.  Write out notes to the console about stopping and starting services, and the success of starting them.[DONE]</li>
+<li>The dime application will pop up an SDL window and the main loop will run until "ESC" is pressed.  The Application will then stop all running services and exit.[DONE]</li>
+<li>The release must compile and run in both Windows(MingW, and MSVC), and Linux(gcc) based on compile scripts that we write.[LINUX: done]</li>
+<li>Build Scripts for binaries, document, perhaps also initial work on automatically building rpm and deb packages.</li>
+
+</UL>
+
+
+<h3>Version 0.0.2</h3>
+The main goal of the second iteration is to create an usable framework API and documentation for it, to make it easy for new developers to implement new components and services.
+
+<ul>
+<li>
+Basic functionality of the framework classes(Services, Components, DataModel*) should be more or less usable in iteration 0.0.2.  We should also have documents explaining the architecture and API.
+</li>
+<li>
+An example service, and component, will be written which create and use things in the data model.  This can serve as a tutorial for newbies who want to write services/components.
+</li>
+<li>We can use 0.0.2 as a review point of the build scripts we sat up in 0.0.1.
+</li>
+<li>Preliminary Isometric GameView will be used in the pop up window
+</li>
+<li>Work will be done to get CS able to be displayed on an SDL window also.
+</li>
+<li>Initial work on scripting
+</li>
+</ul>
+
+<h3>Version 0.0.3</h3>
+The main goal for this iteration is to create several services and components, to find problems and improvement ideas for the framework API.
+<ul>
+<li> Initial implementations of the most important and simplest services will be done in order to review the Services API/architecture.
+</li>
+<li>Initial implementations of some simple components will be done in order to review the Component API/Architecture.
+</li>
+<li>Initial work on GUI to allow a ComponentView class that represents the visual UI for a component will be done.
+</li>
+<li>Pick up more developers, and find suitable services, components, and framework parts for them to work on.
+</li>
+
+</ul>
+
+
+
+<h3>Version 0.0.4</h3>
+The main goal for this iteration is stable framework classes.
+<ul>
+<li>Service API/architecture will be modified to reflect the review done in 0.0.3, and all services will be rewritten to reflect the API changes.
+</li>
+<li>Component API/architecture will be modififed to reflect the review done in 0.0.3, and all components will be rewritten to reflect the API changes.
+</li>
+<li>Work will be started to create the GameView(2D and 3D) classes and display them as a UI component which may or may not use the entire SDL surface.
+</li>
+<li>
+Simple scripting should now be possible.
+</li>
+</ul>
+
+
+
+<h3>Version 0.0.5</h3>
+The main goal for 0.0.5 is to be able to connect to a server, and log in.  Focus is on network, communication with servers, and atlas.
+<ul>
+<li>Support functions in a service for finding a game server through the meta server, and logging in.
+</li>
+<li>Implementation of services to establish connection to a server, and handling atlas messages.
+</li>
+<li>Working Atlas debug panel, with ability to view incoming messages, and manually compose messages for sending.
+</li>
+<li>Server information and selection Panel created from components or as a single component.
+</li>
+</ul>
+
+<h3>Version 0.0.6</h3>
+The main goal for 0.0.6 is to be able to participate in Out Of Game chat on a 
+STAGE and/or cyphesis server.
+<ul>
+<li>Having the chat panel listen to the relevant messages, and sending back new messages.
+</li><li>A very simple GameView showing the different rooms (and persons in each room, if that data is available?).  Or alternatively, a tab system in the chat panel to switch between channels?
+</li><li>Optional work on logging in simultaneously with multiple characters?
+</li><li>Optionally connecting to an Acorn/Mason server and displaying terrain and perhaps entities in the 2D ISO GameView.
+</li><li> Beginnings of sound module, should do beeps in chat, and optionally special signal when users nick is adressed.
+</li>
+<li>
+Support python, lua, and/or some other existing scripting language, and provide a scripting API for accessing the data model, and for managing components and connections between scripts, components, and the data model.
+</li>
+</ul>
+
+<h3>Version 0.0.7</h3>
+The main goal for 0.0.7 is to have a stable and usable client that can be used
+to participate in STAGE meetings, and for Out Of Game chat.  
+Focus is on stability, usability, portability, and good packages.
+<ul>
+<li>Add some small features needed to improve usability, such as nick completition, 
+good default colors and perhaps saving of user color settings, logging, etc.
+</li>
+<li>
+Add some interface features implemented with scripting, to test it (this could be combined with the above point).
+</li>
+<li>
+Establish the standard layout to be used in Dime for the Data Model.
+</li>
+<li>Good packaging for all supported platforms.
+</li><li>Fixing existing bugs.
+</li><li>A neat default theme.
+</li><li> User documentation, installation instructions.
+</li>
+</ul>
+
+
+<h3>Version 0.1.0</h3>
+<p>
+When the client has been tested for some time, it is promoted to 0.1 and released
+officially on freshmeat.  Downloadable packages should be available on victor and other relevant places. 
+</p>
+<p>
+Version 0.1 should be able to connect to STAGE or Cyphesis, and do Out Of Game chat.
+It should also support lists of people present, emotes, etc.
+Should have working packages for the most popular linux distributions,
+some installer or easily installable package for windows,
+and preferably also a working binary for Mac or some other platform.
+</p>
+
+<ul>
+<li>FAQ
+</li>
+<li>Polished documentation.
+</li><li>Bug fixes
+</li><li>Announcement to freshmeat, CB, etc.
+</li><li>
+</li>
+</ul>
+
+
+ 
+
+<h2>Milestone 2</h2>
+
+Implements version 0.2
+
+<p>
+Acorn
+</p>
+
+<div class="template">
+</div>
+
+
+
+<h2>Milestone 3</h2>
+
+<p>
+Integrate Yup as a 3D GameView
+</p>
+
+
+
+<h2>Milestone 4</h2>
+
+<p>
+Basic Mason support
+</p>
+
+
+
+<h2>Milestone 5</h2>
+
+<p>
+Full Mason support, information object editing, scripting (Python and/or Lua?).
+</p>
+
+
+
+<h2>Version 1.0</h2>
+
+<p>
+<div class="template">
+Requirements for the 1.0 version
+</div>
+</p>
+
+
+
+<h2>Future Versions</h2>
+
+<div class="template">
+Some ideas for where to steer the developement after an 1.0 version.
+<ul>
+  <li>
+    New features.
+  </li>
+  <li>
+    Stability. 
+  </li>
+  <li>
+    Performance. 
+  </li>
+  <li>
+    Security. 
+  </li>
+  <li>
+    Maintenance. 
+  </li>
+</ul>
+</div>
+
+
+
+<h2>Conclusion</h2>
+
+<div class="template">
+General comments about the battleplan, summary of central ideas.
+</div>
+
+
+
+
+
+
+</p>
+      <br /><br />
+    </td>
+  </tr>
+</table>

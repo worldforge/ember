@@ -1,0 +1,224 @@
+<p><h1>Dime Concept Document</h1>
+<i>by Nikal</i></p>
+<p><br /></p>
+<p><p>
+This document describes the history and motivations that led to the
+starting of the Dime client, and our goals for it.
+</p></p>
+<p><br /></p>
+<p><table class="versionhistory" cellpadding="4" cellspacing="2" border="0">
+    <tr>
+        <th class="caption" colspan="3">   
+            Version History
+        </th>
+    </tr><p>    <tr>
+        <th>Date</th>
+        <th>Author</th>
+        <th>Comments</th>
+    </tr></p>
+<p>    <tr>
+        <td>2001-12-01</td>  
+        <td>nikal</td>
+        <td>Original version</td>
+    </tr></p>
+<p>    <tr>
+        <td>2001-12-01</td>
+        <td>zzorn</td>
+        <td>Edited, html-ified, added goals.</td>
+    </tr></p>
+<p>    <tr>
+                <td>2001-12-02</td>
+                <td>Tim</td>
+                <td>Added goals.</td>
+    </tr></p>
+<p>    <tr>
+                <td>2001-12-07</td>
+                <td>phil</td>
+                <td>Added goals.</td>
+    </tr></p>
+</p>
+<p></table></p>
+<p><br /></p>
+<p><h2>Introduction</h2></p>
+<p><p>
+    I originally came up with the idea of Dime when trying to compile Uclient for the 15th time
+    one fateful weekend.  I eventually failed in getting Uclient to compile.  The 
+    frustration I had resulted in my idea to start (egads!) yet another client.  I felt 
+    my aim was much different from most of the other clients.  
+</p></p>
+<p><p>
+    Most new clients tend to focus on fancy graphics, glitzy interfaces, etc, in an effort 
+    to produce a very enjoyable experience for the Worldforge end-user.  While this isn't 
+    necessarily a bad approach I feel most of the joy in using a client dissappears when 
+    it fails to compile and/or run properly.  In thinking more about my idea I also 
+    realized that Worldforge has a lot of potential players who come seeking something 
+    to play as a "test".  50% of these players are dazzled by uclient and it's wonderful 
+    artwork/graphics right away, while 25% fight with it for a long time before successfuly 
+    compiling it, and the other 25% fail to compile it or give up before succeeding.  
+    (Those percentages are probably exagerated, and may be biased).   However,  I wanted 
+    to improve that percentage.  Dime was born.
+</p></p>
+<p><h2>Goals</h2></p>
+<p><p>
+    My original goals were and still are as follows:
+    <ol>
+        <li>
+            The client must compile and run correctly on three or more platforms.  
+        </li> 
+        <li> 
+            There should be releases for this client in both binary and source form which have 
+            been thoroughly tested to be working.
+        </li> 
+        <li> 
+            The code needs to be heavily commented so anyone can pick up the source-base and 
+            get a feel of what's going on.
+        </li> 
+    </ol>
+</p></p>
+<p><p>     
+    In having these three original goals, I didn't envision having the latest and greatest 
+    graphics or rendering engine etc.  Just imagined something that would be usable, 
+    and usable quick.  I also envisioned as little setup for the enduser as possible.  
+    Pondering all of this, and pondering what I would like to see in a client I also came 
+    up with the idea of an MDI interface that allowed multiple game views, and possibly 
+    multiple games in the same client, so one could be playing acorn and possibly chatting 
+    on STAGE at the same time.
+</p>    </p>
+<p><p>     
+    AlistairD then came online, and I met him began talking, mentioned Dime, explained it 
+    to him and he jumped on board.  He said he could work with the graphics end of it and 
+    that pleased me greatly.   zzorn then heard me talking to alien about a possible theme 
+    for the client, and became interested.  I talked to him, explained my vision, and he 
+    jumped on board also.   With both of these additions to the team came many great ideas.  
+    Both zzorn and I had many conversations about the client, it's GUI, and the way to go 
+    about it.  During these idealistic discussions Dime grew into a very ambitious project. 
+    We were brought back to the real world, however, by the addition of a very pragmatic 
+    developer, Tim. he balances our idealism back into realism, and puts the finishing 
+    touches on a very excited Dime development team.
+</p>    </p>
+<p><p>     
+    Dime's goals as I see them start with the first three which are the major goals, 
+    and then also include some more.
+</p>    </p>
+<p><p>     
+        nikal's goals:
+        <ol>
+            <li>
+                    The client must compile and run correctly on three or more platforms.  
+            </li>
+            <li>
+                  There should be releases for this client in both binary and source form which 
+                have been thoroughly tested to be working.
+            </li>
+            <li>
+                    The code needs to be heavily commented so anyone can pick up the source-base 
+                and get a feel of what's going on.
+            </li>
+            <li>
+                    We develop a good framework to build on which allows for alot of flexability.
+            </li>
+            <li>
+                    We don't forget coding and just design. IE: at every point we are working 
+                towards a specific release.
+            </li>
+        </ol>
+</p>    </p>
+<p><p>     
+        AlistairD's goals:
+        <ol>
+            <li>
+                The client should use existing libraries wherever possible.
+            </li>
+            <li>
+                Whenever something is created that can be spun off as a library, 
+                this should done.
+            </li>
+            <li>
+                A tight release schedule, too many WF projects are "v0.4" or whatever.
+            </li>
+            <li>
+                An advanced graphics display module that also manages to be well-documented
+                and fairly easy to understand.  
+            </li>
+        </ol>
+</p>    </p>
+<p><p>     
+        zzorn's goals:
+        <ol>
+            <li>
+                Create a framework which allows game views and controls to be easily 
+                added and work independently from each other.  
+            </li>
+            <li>
+                Flexible layout and theming system, allowing the user to reconfigure 
+                the user interface on the fly.
+            </li>
+            <li>
+                Supporting Control Interfaces (planned for Mason), that specify what
+                actions, attributes, perception streams, and so on an Avatar or device in the 
+                game has, and automatically presenting these to the user in a 
+                configurable way.
+            </li>
+            <li>
+                Good user interfaces for the client and it's different components.
+            </li>
+            <li>
+                Producing useful and up to date documentation, both on the website and 
+                in the code.
+            </li>
+            <li>
+                Follow good OOP practices, Design Patterns, 
+                and Extreme Programming philosophy.
+            </li>
+        </ol>
+</p>    </p>
+<p><p>     
+        Tim's goals:
+        <ol>
+            <li>
+                Never forget coding about aiming to fit one's goals.
+                Never forget one's goals about coding.
+                Never overdo generalizing. (Like I've done here ;-)
+            </li>
+            <li>
+                Full and easy control to the user and the opportunity to save his settings.
+            </li>
+            <li>
+                Learn from the design errors done in MFC (and other GUI libs).
+            </li>
+            <li>
+                Comment regularly. Write code that needs no commenting.
+            </li>
+            <li>
+                Provide rich error recovery and tracing facilities. 
+                (Write error handling code regularly. Write code that needs no error handling.)
+            </li>
+            <li>
+                Make a smart installer for (the ordinary) Win (user).
+            </li>
+        </ol></p>
+<p></p>    </p>
+<p><p>     
+        phil's goals:
+        <ol>
+            <li>
+            have as much fun as possible
+            </li>    
+            <li>
+            experiment with themes
+            </li>    <p>            <li>
+            be as nice as possible
+            </li>    </p>
+<p>            <li>
+            be cross plateform and easy to install
+            </li></p>
+<p>            <li>
+            implement a very nice sound system (including changing music)
+            </li></p>
+</p>
+<p><br /></p>
+      <br /><br />
+    </td>
+  </tr>
+</table>
+

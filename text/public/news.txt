@@ -1,0 +1,142 @@
+Dime News<br />
+<p><h1>Archived News</h1></p>
+<h1><table class="chart">    </h1>
+<p>  <tr>
+    <td class="subcaption">
+      <b>2002-Feb-04</b> - Implementational Document about Dime's Data Model added<i>
+    </td>
+  </tr>
+  <tr>
+     <td>
+      <p>First attempt of implementing the Data Model. Suggestions/corrections absolutely wanted.</p>
+       <i>Tim</i>
+     </td>
+  </tr>
+  <tr>
+    <td class="subcaption">
+      <b>2002-Feb-03</b> - <i>Dime Design Document added<i><br>
+    </td>
+  </tr> 
+  <tr>
+    <td>
+<p>
+I wrote a design document that describes the <a href="developer_doc/design">internal architecture of Dime</a>.  It brings together many of the things that we have discussed 
+and designed in IRC, and should give a clearer idea for both Dime developers and other interested developers
+about the design of Dime.
+</p>
+<p>
+Also updated the look of teh dime main page a bit.
+</p>
+      <i>zzorn</i>
+    </td>
+  </tr></p>
+<p>  <tr>
+    <td class="subcaption">
+      <b>2002-Jan-30</b> - <i>Updates and GuiService<i><br>
+    </td>
+  </tr> 
+  <tr>
+    <td></p>
+<p>Added GuiService to the <a href="developer_doc/services">services document</a>, and also wrote some general musings there about Commands.
+<p>
+Also updated the front page a bit, marking out of date sections so.
+</p><p>      <i>zzorn</i>
+    </td>
+  </tr></p>
+<p>  <tr>
+    <td class="subcaption">
+      <b>2002-Jan-28</b> - <i>More services<i><br>
+    </td>
+  </tr> 
+  <tr>
+    <td >
+<p>
+      Added new services (Configuration, Input, Logging and Test) to the <a href="developer_doc/services">services document</a>. Also, added a little color to the news :).
+</p>
+      <i><font color="red">Aglanor</font></i>
+    </td>
+  </tr></p>
+<p>  <tr> 
+    <td class="subcaption"> 
+<b>2002-Jan-20</b><i><i><br> 
+    </td> 
+  </tr>  
+  <tr> 
+    <td > 
+    Added a few services with descriptions to the <a href="developer_doc/services">services document</a>.<br> 
+      <i>zzorn</i> 
+    </td> 
+  </tr> </p>
+<p>  <tr> 
+    <td class="subcaption"> 
+      <b>2002-Jan-19</b><i><i><br> 
+    </td> 
+  </tr>  
+  <tr> 
+    <td > 
+    Updated the <a href="developer_doc/battleplan">battleplan</a> to better reflect the current plans.<br> 
+      <i></i> 
+    </td> 
+  </tr> </p>
+<p>  <tr> 
+    <td class="subcaption"> 
+      <b>2002-Jan-18</b><i><i><br> 
+    </td> 
+  </tr>  
+  <tr> 
+    <td > 
+    Dime developement is progressing again at a nice pace.  Recently the detailed architecture has been 
+hashed out in more detail, and implementation is underway on the initial 0.0.1 release. 
+As always, you can get a good idea of what is going on by looking at the  
+<a href="http://brenda.worldforge.org:8080/logs/dime/dime_index.html">Dime IRC bookmarks</a>. 
+I also added a list of data model top level contents to the <a href="developer_doc/data_model">Data Model design document</a>.<br> 
+      <i>zzorn</i> 
+    </td> 
+  </tr> </p>
+<p>  <tr> 
+    <td class="subcaption"> 
+      <b>2001-Dec-01</b><i><i><br> 
+    </td> 
+  </tr>  
+  <tr> 
+    <td > 
+    We had a good <a href="meetings/2001-12-01_project_meeting">Project Meeting</a>, mostly discussing the Meadow GUI toolkit, and related issues.<br> 
+      <i></i> 
+    </td> 
+  </tr> </p>
+<p>  <tr> 
+    <td class="subcaption"> 
+      <b>2001-Nov-30</b><i><i><br> 
+    </td> 
+  </tr>  
+  <tr> 
+    <td > 
+    We had a <a href="meetings/2001-11-30_gui_library_workshop">GUI Library Workshop</a> in #dime.<br> 
+      <i></i> 
+    </td> 
+  </tr> 
+</table></p>
+</p>
+      <br /><br />
+    </td>
+  </tr>
+</table>
+
+<table border="1" cellspacing="0" width="99%" class="main">
+  <tr> 
+    <td class="tdfooter">
+      <span class="smallgrey">
+      This site is hosted by <br /> <a href="http://www.seul.org/"><img src="http://www.seul.org/images/seul1.jpg" alt="SEUL Project" /></a>
+      </span>
+    </td>
+    <td class="tdfooter">
+      <span class="smallgrey">The content on this site is distributed under the terms of the 
+      <a href="http://www.gnu.org/copyleft/fdl.html" class="nav">GNU Free Documentation License</a> unless expressly stated otherwise. 
+      <br />
+      Copyright &copy; 1998-2002 by the authors of each page
+      </span>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

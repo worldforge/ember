@@ -1,0 +1,472 @@
+<h2>Abstract</h2>
+<p>This document contains the basic agreement used to implement a Data Model in 
+    Dime.</p>
+<p>ATTENTION: Though you can in general rely on the interface specification now, 
+    minor details could be changed (and probably will). Thus apply good documenting 
+    on your code, so that you can understand it yet some days later. ;-)</p>
+<p>TODOs:
+    <ul>
+        <li>
+        Insert functions as Data Objects.
+        <li>
+            Do we want default child nodes for folders and lists?
+        </li>
+    </ul>
+<P></P>
+<h2>Version History</h2>
+<table class="chart" id="Table1">
+    <tr>
+        <th>
+            Version</th>
+        <th>
+            Date</th>
+        <th>
+            Author</th>
+        <th>
+            Nick</th>
+        <th>
+            Changes</th></tr>
+    <tr>
+        <td>0.1</td>
+        <td>2002-02-03</td>
+        <td>Tim Enderling</td>
+        <td>Tim</td>
+        <td>Initial version.</td>
+    </tr>
+    <tr>
+        <td>0.3</td>
+        <td>2002-02-09</td>
+        <td>Tim Enderling</td>
+        <td>Tim</td>
+        <td>Reviewed version after discussion with zzorn on #dime.</td>
+    </tr>
+    <tr>
+        <td>0.4</td>
+        <td>2002-04-04</td>
+        <td>Tim Enderling</td>
+        <td>Tim</td>
+        <td>Last? review before actual implementation</td>
+    </tr>
+    <tr>
+        <td>0.9</td>
+        <td>2002-06-02</td>
+        <td>Tim Enderling</td>
+        <td>Tim</td>
+        <td>Review after implementation, changed it to a more useful doc, I hope ;-)</td>
+    </tr>
+</table>
+<h2>General idea of a Data Model</h2>
+<p>A Data Model like used in Dime is the homogenous collection of most if not all 
+    available data of the application. This is considered as very useful in 
+    connection with scripting and debugging or - in general - to make data more 
+    accessible and managable. I.e. it allows us to support different games or parts 
+    of a game, that expose different kinds of interfaces, without having to hard 
+    code a user interface for the different new features and recompile. This allows 
+    much more dynamic control of the avatar and game. E.g. when controlling a car 
+    or airship, custom UIs can be shown.</p>
+<p>Of course, this approach has been taken by many developers, before: Take e.g. 
+    the proc filesystem of Linux or the IDispatch interface of the Component Object 
+    Model especially used in M$ VB, the Windows registry and many more... Thus it 
+    is not necessary to convince anybody how many advantages can grow of such a 
+    framework.</p>
+<p>Nevertheless (and to give newbies some starting point...) I will list some of 
+    the flashing features of DDM (short for dime's data model):</p>
+<ul>
+    <li>
+    It's free (hehehe).
+    <li>
+    It's OOP.
+    <li>
+    It has a uniform interface.
+    <li>
+    It has a tree structure - the most powerful and not confusing way to organize 
+    large amounts of data.
+    <li>
+    The path of a node in this tree is unique and doesn't change throughout the 
+    node's lifetime.
+    <li>
+    Usual to unix people: The ID's of the path are separated by '/', are case 
+    sensitive and the root of the tree is "/".
+    <li>
+    Absolute paths start with "/" (/Trash/LastWeek/Monday) while subpaths (relative 
+    ones) has no leading "/" (LastWeek/Monday relative to /Trash). Thus also a 
+    single ID can be a subpath (Monday relative to /Trash/LastWeek). Note that 
+    there's no trailing "/" in any kind of path.
+    <li>
+    You can easily retrieve type infos.
+    <li>
+    You can easily get and set values. If you use different typed getters and 
+    setters, the values are automatically converted.
+    <li>
+    You can easily add new nodes or remove old and iterate through existing ones.
+    <li>
+    Builtin types are boolean, integer, float and string.
+    <li>
+    It has fully integrated link support. Thus links are guaranteed to act like 
+    their destinations in nearly every way of manipulation - even when the 
+    destination is a link, too.
+    <li>
+    With the help of libsigc++ any kind of observer can listen to any kind of 
+    change of a particular node.
+    <li>
+    You can also listen to all direct and indirect child nodes.
+    <li>
+    Many predefined implementors (DMPs) should ease the pain of providing 
+    information.
+    <li>
+        .... Found anything interesting to DDM newbies? Feel free to add here. ....
+    </li>
+</ul>
+<h2>Terms used in this document (and in the code, of course)</h2>
+<table>
+    <tr>
+        <td>&lt;Terms from graph theory&gt;</td>
+        <td>... see the dusty maths books in your shelf, if you really don't know.</td>
+    </tr>
+    <tr>
+        <td>
+            <P>(Dime's) Data Model - DDM<BR>
+                (pronounce: dim)</P>
+        </td>
+        <td>... you know, the whole ugly thing (see above for more detailed info) - 
+            sometimes also the tree.</td>
+    </tr>
+    <tr>
+        <td>Data Object</td>
+        <td>... a single node of DDM</td>
+    </tr>
+    <tr>
+        <td>Data Model Provider - DMP (pronounce: dimp)</td>
+        <td>... class implementing the DataProvider interface (DataModelProvider was to 
+            long and abbreviations in code are not that cool) and thus hosting one branch 
+            of DDM.</td>
+    </tr>
+    <tr>
+        <td>Observer</td>
+        <td>... some code that registered to be called back when some event occurs. See 
+            also <a href="http://libsigc.sourceforge.net/">libsigc++</a> for what observers 
+            can be.</td>
+    </tr>
+    <tr>
+        <td>
+            <P>Data Model Service - DMS (pronounce: dims)</P>
+        </td>
+        <td>... one of the many services of dime. This one is holding the root of the Data 
+            Model.</td>
+    </tr>
+    <tr>
+        <td>Data Model User</td>
+        <td>... anything that calls DataObject's interface functions.</td>
+    </tr>
+    <tr>
+        <td>Classes starting with P</td>
+        <td>... smart pointers (usings <a href="http://www.boost.org/libs/smart_ptr/">boost's 
+                implementation</a>) to the classes appearing when removing the front P.</td>
+    </tr>
+</table>
+<h2>Internal organization of the Data Model</h2>
+<IMG src="./datamodelpng/datamodelpngdata">
+<p>Being supported by many different classes, also called DMPs, the homogenous tree 
+    structure of DDM has to be puzzled together someway, which is done 'magically' 
+    by DataObject class. Looking a bit more thorough, you'll see that each Data 
+    Object has it's specific provider, or more precisely each provider hosts one 
+    branch of the tree, following paths from&nbsp;it's root node to arbitrary 
+    direct and indirect childs.</p>
+<p>Within one DMP special Data Keys are used to uniquely identify a node. This Data 
+    Key is a kind of cockie of arbitrary class (but must be derived from 
+    DataKey&nbsp;class). It is used instead of the subpath of a child node passing 
+    a request to the DMP. Due to the use of OOP tricks and smart pointers it is 
+    automatically destroyed if not needed anymore.</p>
+<p>The root of the whole tree is hold by a FolderProvider, which is instantiated by 
+    the DMS. This one, like any DMP could do, adopts other DMP's root nodes. I.e. 
+    it gives some pointer&nbsp;to the responsible adopted DMP when asked for the 
+    child node representing it. It has not to implement any part of the interface 
+    of this node (value setting/getting, child managing, etc.), but only to hold a 
+    pointer to it. The rest, thus to find out responsible provider&nbsp;for 
+    a&nbsp;given&nbsp;path and use it's interface all the time,&nbsp;is left to the 
+    DataObject class.&nbsp;Data Keys that are only used to identify the root nodes 
+    of adopted DMPs are also called Adoption Keys.
+</p>
+<p>In constrast to <em>adopting</em> a DMP the LinkProvider <em>mimics</em> it's 
+    desination. The differences look trivial but make important points for 
+    implementing this two kinds of DMP connection: While you can only <EM>adopt</EM>
+    the root node of a DMP and each DMP can only be adopted once, you can <EM>mimic</EM>
+    any node and arbitrarily often. You can be really lucky that there's 
+    LinkProvider managing this for you.
+</p>
+<p>The handling of observers is implemented in the DataProvider, the general base 
+    class of all DMPs. It also passes the events back to the parent DMP to support 
+    listening to&nbsp;child nodes. The only thing the derived DMP has to do, is 
+    to&nbsp;fire the signals through the DataProvider interface,&nbsp;when events 
+    occure, giving the subpath of the affected node as a parameter.
+</p>
+<h2>Events and Signals in the Data Model</h2>
+<p>The terms event and signal are synonymously used within this document and denote 
+    actions that change of any detail, i.e. structure/value, of the Data Model. 
+    Observing of events is done by libsigc++. There are two possibilities to 
+    observe such events:</p>
+<ul>
+    <li>
+    Observe all events of a certain Data Object.
+    <li>
+        Observe all events of a Data Object's direct and indirect childs. Use 
+        FIRE_ON_CHILD_EVENT.
+    </li>
+</ul>
+<p>Possible events are:</p>
+<table class="chart" id="Table2">
+    <tr>
+        <th>
+            C++-identifier</th>
+        <th>
+            This event is fired ...</th></tr>
+    <tr>
+        <td>PRE_VALUE_CHANGE</td>
+        <td>... before the value is changed. (So Data Model Users have the possibility to 
+            retrieve the old value.)</td>
+    </tr>
+    <tr>
+        <td>POST_VALUE_CHANGE</td>
+        <td>... after the value has changed.</td>
+    </tr>
+    <tr>
+        <td>POST_CHILD_ADDITION</td>
+        <td>... after a <b>direct</b> child, which can also be a link, was added.</td>
+    </tr>
+    <tr>
+        <td>PRE_CHILD_DELETION</td>
+        <td>... before a <b>direct</b> child object, which also can be a link, is removed.</td>
+    </tr>
+    <tr>
+        <td>PRE_DELETION</td>
+        <td>... before a Data Object will be deleted. This should be really implemented by 
+            every DMP.</td>
+    </tr>
+</table>
+<p>Since not every observer wants to handle all types of events, you can OR them 
+    together to get a combination of interesting flags. Futhermore not 
+    all&nbsp;DMPs can support all types of events. Which events are fired for a 
+    specific Data Object is included in the type information available for all Data 
+    Objects.</p>
+<h2>Type information</h2>
+<p>The type information of a Data Object is a combination of the following flags (I 
+    don't think I have to mention that some flags exclude others... Oops, so I've 
+    done it though.)</p>
+<table class="chart" id="Table3">
+    <tr>
+        <th>
+            C++-Identifier</th>
+        <th>
+            If the flag is set, ...</th></tr>
+    <tr>
+        <td>(event types, see above)</td>
+        <td>... the Data Model Provider fires this type of event.</td>
+    </tr>
+    <tr>
+        <td>VOID (is pointer to NULL), FOLDER, LIST, STREAM, BOOLEAN, INTEGER, FLOAT, 
+            STRING, CUSTOM_TYPE</td>
+        <td>... a Data Object is of a certain type. This information is not - as one can 
+            assume - necessary to use the Data Object. Instead all modes of usage are 
+            described separately below. But for information (as for debugging purposes) it 
+            should be really useful and it is needed for the framework. Custom Type means, 
+            that none of the predefined types fits so well and the conversion routines are 
+            implemented by the DMP itself, not by DataObject class.</td>
+    <tr>
+        <td>HAS_CHILDS</td>
+        <td>... the Data Object can have child nodes in general.</td>
+    </tr>
+    <tr>
+        <td>ADOPTS_CHILDS</td>
+        <td>... the Data Object can have child nodes owned by other Data Model Providers. 
+            This also means that you can use links as child nodes.</td>
+    </tr>
+    <tr>
+        <td>CAN_SET_VALUE</td>
+        <td>... Data Model Users can change it's values.</td>
+    </tr>
+    <tr>
+        <td>CAN_ADD_CHILDS</td>
+        <td>... Data Model Users can add childs.</td>
+    </tr>
+    <tr>
+        <td>CAN_REMOVE_CHILDS</td>
+        <td>... Data Model Users can remove childs.</td>
+    </tr>
+    <tr>
+        <td>IS_LINK</td>
+        <td>... the Data Object is actually a link. Though it is not necessary - due to the 
+            implementational approach of links - to know when you treat a link and when an 
+            actual data object, this is considered as useful for debugging purposes.</td>
+    </tr>
+</table>
+<p>DMPs should always be polite in cases of invalid calls to their interface 
+    functions by at least ignoring them. The only exception of this is, that a Data 
+    Model Provider can be sure that the getting and setting functions are only 
+    called for the correct type.</p>
+<h2>How to ...</h2>
+<h3>... get a DataObject by it's path</h3>
+<pre><code>    PDataObject obj = DataObject::getRoot("/The/Absolute/Path");</CODE></pre>
+<h3>... test on a certain type</h3>
+<pre><code>    if (obj-&gt;getType() &amp; INTEGER) 
+    {
+        <FONT color=#0033cc>//We now that this is an int!</FONT>	
+    }
+    
+    if (obj-&gt;getType() &amp; VOID)
+    {
+	<FONT color=#0033cc>//This object has been already removed actually.</FONT>
+    }
+    </CODE></pre>
+<h3>... get the value of a Data Object</h3>
+<pre><code>    std::string strVal = obj-&gt;getStringValue();<FONT color=#0033cc> //get the value in a printable version</FONT>
+    int         nVal   = obj-&gt;getIntValue(); <FONT color=#0033cc>//get the same value but converted to int</FONT></CODE></pre>
+<h3>... set it's value</h3>
+<pre><code>    try 
+    {
+       obj-&gt;setStringValue("none");
+       obj-&gt;setIntValue(275); <FONT color=#0033cc>//set the same value but converted from int</FONT>
+    }
+    catch (Exception &amp; e)
+    {
+       <FONT color=#0033cc> //throws expections if CAN_SET_VALUE is not set for the DataObject</FONT>
+    }</CODE></pre>
+<h3>... compare two Data Objects</h3>
+<pre><code><FONT color=#0033cc>    //Comparing the pointers wouldn't work! Use the paths instead. 
+    //This will not work for links though.</FONT>
+    bool equal = (obj1-&gt;getPath() == obj2-&gt;getPath());</CODE></pre>
+<h3>... add a child</h3>
+<pre><code>    try
+    {
+        if (parent-&gt;getType() &amp; ADOPTS_CHILDS)
+        {
+            <FONT color=#0033cc>//Could add a child handled by another DMP.
+            //Will throw an exception if something is wrong with the DMP.</FONT>
+            
+            PDataObject child = parent-&gt;addChild("AdoptedChildID", new IntProvider(25, 
+                    "Some child containing the int 25"));                       
+            PDataObject link  = parent-&gt;addChild("AdoptedChildID2", "/Destination/Of/Link");
+        }
+        
+  
+        if (child-&gt;getType() &amp; CUSTOM_TYPE)
+        {
+            <FONT color=#0033cc>//Can set the type by the first setting call.</FONT>
+            
+            if (childIsURL)
+            {
+                <FONT color=#0033cc>//E.g. this could say that the added child should be a URL.</FONT>
+                child-&gt;setStringValue("http://www.somedomain.org/picture.png");
+            }
+            else
+            {
+                <FONT color=#0033cc>//This can mean that a certain system picture should be used.</FONT>
+                child-&gt;setIntValue(5);
+            }
+        }  
+       
+        <FONT color=#0033cc>//No idea which  ID to choose? No problem, just use "" as a placeholder.</FONT>                                                           
+        PDataObject child2 = parent-&gt;addChild("");                
+   }
+   catch (Exception &amp; e)
+   {
+<FONT color=#0033cc>        //Calls to addChild can lead to exceptions in general, when the DataObject doesn't
+        //support adding child node (missing CAN_ADD_CHILDS).</FONT>
+   }</CODE></pre>
+<h3>... listen to a DataObject</h3>
+<pre><code>
+void MyClass::listening(PDataObject subject, DataType event)
+{
+    <FONT color=#0033cc>//handle the events here</FONT>   
+}
+
+[...]
+
+DataConnection connection = obj-&gt;addConnection(SigC::slot(*this, MyClass::listening), 
+                            static_cast&lt;DataType&gt;(PRE_DELETION | POST_VALUE_CHANGE));                            
+<FONT color=#0033cc>//Call this if you want to remove the connection.
+</FONT>connection.disconnect();
+</CODE></pre>
+<p>Missing something of importance here? Feel free to ask <a href="mailto:T.Enderling@web.de">
+        Tim Enderling</a> or to add it here even.</p>
+<h2>Making your own DMP</h2>
+<p>You're going to make your own DMP? I just want to briefly provide some basic 
+    hints in a kind of battleplan. This cannot spare you from reading some other 
+    parts of this document.</p>
+<ol>
+    <li>
+        Look around you if you really need a new DMP. There are many predefined DMPs 
+        already fitting for the most common tasks.</li>
+    <li>
+        If you've really decided to do your own DMP, you should now think of it's 
+        function. Keep in mind that if you do your job well, others could use it, too. 
+        Does your DMP support child nodes? Does your DMP adopt other DMPs? Is there a 
+        certain structure in your branch?</li>
+    <li>
+        Having this, you should work on your <code>DataKey</code>-based type at first. 
+        There's a special template class <code>DataKeyImpl&lt;class T&gt;</code> that 
+        helps you to do this. If you have a structure called <code>Item</code>, that 
+        holds all necessary data to uniquely identify one of your child nodes, your 
+        Data Key is <code>DataKeyImpl&lt;Item&gt;</code>.</li>
+    <li>
+        Use <code>DataKeyImpl&lt;Item&gt;::spec(PDataKey key)</code> to get a reference 
+        to your struct and <code>DataKeyImpl&lt;Item&gt;::gen(Item & item)</code> to 
+        get a PDataKey from your struct. Remember that <code>NULL</code> is used as 
+        Data Key for the root node and since smartpointers are used, you have to test 
+        on <code>(key.get() == NULL)</code>. You can by the way rely on the convention,
+        that Data Keys of removed nodes that support <code>PRE_DELETION</code>-signal
+        are never used. So it should be one of your most private goals to provide the
+        PRE_DELETION signal.</li>
+    <li>
+        The first function you're going to implement is 
+        <code>PDataKey getChild(PDataKey parent, std::string ID, DataProvider *& provider)</code>.
+        If you don't support child nodes, just return <code>PDataKey(NULL)</code>, which means
+        that there's no child with specified ID. Otherwise you have to return a Data Key
+        for each given parent and it's ID. If the specified child is an adopted DMP return
+        the AdoptionKey and set the provider to the adopted one.
+    </li>
+    <li>
+        Another function working in conjunction with <code>getChild</code> is 
+        <code>void getChilds(PDataKey parent, std::vector<std::string> & listOfChilds)</code>.
+        It should fill a list with all IDs of child nodes of a certain parent.
+        To make it possible to convert Data Keys back to subpaths the function 
+        <code>std::string getSubpath(PDataKey key)</code> has to be implemented.
+    </li>
+    <li>
+        The second most important function is <code>DataType getType(PDataKey key)</code>.
+        Here you should return the type, the permission and feature flags and 
+        the fired events or'd together. Support as many events as possible. 
+        And don't forget to fire them at the right places, otherwise ugly bugs may occur. 
+        If the actual data is not hold by your DMP but by another class, this class 
+        should also contain also calls to <code>fireSignal</code>.
+    </li>
+    <li>
+        The third very important bundle of functions is the group of getters and setters -
+        a pair of them for each of the four primitive types. You've to implement only
+        those one to handle a specific node, that are part of the type returned by
+        <code>getType</code> on this node. If you use CUSTOM_TYPE no automatic type
+        conversion is performed and you have to implement all eight functions. Though
+        you may think that it's done automatically, it is not: You have to fire the 
+        changing signals if you want to support them.
+    </li>
+    <li>
+        At last but not least, your DMP can provide the possibility to add and remove child nodes
+        (or one of both). This first one is done by implementing 	
+        <code>void addChild(PDataKey parent, std::string & suggestedID,
+        DataProvider * provider = NULL)</code>. The only thing to mention here is that
+        your DMP has not to use the suggested child ID, but in any case it  has to
+        set the correct ID to <code>suggestedID</code> at least. 
+	</li>
+	<li>
+	    As you can see from the DataProvider.h there are two removal functions:        
+	    <code>void remove(PDataKey key)</code> and <code>void 
+	    removeAdopted(PDataKey adopted)</code>. The first one is called, whenever
+	    a Data Model User removes a key. You should remove the node if it's an 
+	    Adoption Key, but instead just <code>delete</code> the adopted DMP. Namely, 
+	    whenever an adopted DMP is deleted, it calls <code>removeAdopted</code>-function 
+	    of it's parent. This is necessary because an adopted DMP can also be deleted
+	    for other reasons than being removed by a Data Model User.
+    </li>
+</ol>      <br /><br />
+    </td>
+  </tr>
+</table>

@@ -32,7 +32,7 @@
   <tr>
      <td>
      <p>
-      Added a preliminary version of the <a href="working_notes/theme_format">WF Theme Proposal</a>
+      Added a preliminary version of the <a href="working_notes/theme_format.html">WF Theme Proposal</a>
      </p>
        <i>zzorn</i>
      </td>
@@ -44,7 +44,7 @@
   <tr>
      <td>
      <p>
-      The <a href="features">Dime Task List</a> (formerly feature list) was updated, and the tasks planned for the next iteration (Dime version 0.1.1) were marked.
+      The <a href="features.html">Dime Task List</a> (formerly feature list) was updated, and the tasks planned for the next iteration (Dime version 0.1.1) were marked.
       It also contains a section on project metrics at the end.
      </p>
        <i>zzorn</i>
@@ -89,26 +89,26 @@
      <td>
       <p>
        There was an <a href="http://brenda.worldforge.org:8080/logs/info.php?file=dime200202111926.irc#line297">interesting discussion</a> about possible ways to apply extreme programming methodologies to Dime.<br /><br />
-      A draft of a <a href="developer_doc/development_methodology">development methodology for dime</a> was created as a result.<br /><br />
-       We also started collecting a <a href="features">list of features for iteration 2</a> (and sometimes later iterations).
+      A draft of a <a href="developer_doc/development_methodology.html">development methodology for dime</a> was created as a result.<br /><br />
+       We also started collecting a <a href="features.html">list of features for iteration 2</a> (and sometimes later iterations).
      </p>
        <i>zzorn</i>
      </td>
   </tr>  </p>
 </p>
 <p></table></p>
-<p><a href="News">Archived News</a>
+<p><a href="news.html">Archived News</a>
 <br /></p>
 <p><h2>Meetings and Discussions</h2></p>
 <p><h3><a href="http://brenda.worldforge.org:8080/logs/dime/dime_index.html">IRC Bookmarks</a></h3>
 Bookmarks of Dime discussions and meetings on IRC (#dime at irc.worldforge.org).</p>
 <p><h2>Documents</h2></p>
-<p><h3><a href="concept_doc">Dime Concept Document</a></h3>
+<p><h3><a href="concept_doc.html">Dime Concept Document</a></h3>
 This document describes the history and motivations that led to the
 starting of the Dime client, and our goals for it.</p>
-<p><h3><a href="developer_doc/battleplan">Battleplan for Dime</a></h3>
+<p><h3><a href="developer_doc/battleplan.html">Battleplan for Dime</a></h3>
 The dime battleplan, detailed goals for the near future and general goals up to version 1.0.</p>
-<p><h3><a href="features">Dime Task List and Project Plan</a></h3>
+<p><h3><a href="features.html">Dime Task List and Project Plan</a></h3>
 <p>Contains the list of features to be implemented for Dime divided up into suitably sized 
 tasks, and with notes of which ones should be implemented in the current iteration.
 Focus is on features to be implemented in release  two (version 0.2.0).
@@ -118,45 +118,43 @@ and each increasing the minor version number (0.1.1, 0.1.2, etc).
 </p>
 <p>Also contains some project metrics.
 </p></p>
-<p><h3><a href="developer_doc/design">Dime Design Document</a></h3>
+<p><h3><a href="developer_doc/design.html">Dime Design Document</a></h3>
 The core Dime system is built as an application framework.
 It consists of Services, a central Data Model, Components, Scripting capability, and Interface Layout support.
 This document provides a view to the internal design of Dime.</p>
-<p><h3><a href="developer_doc/services">Services</a></h3>
+<p><h3><a href="developer_doc/services.html">Services</a></h3>
 Services provide various low level services to higher level platform and implementation independent
 components and scripts.  This document describes what Services are in more detail, and what services we will implement for Dime.</p>
-<p><h3><a href="developer_doc/data_model">Data Model</a></h3>
+<p><h3><a href="developer_doc/data_model.html">Data Model</a></h3>
 The Data Model allows components and scripts to use and monitor information provided by different services,
 and to set properties and invoke actions provided by services, through a standardized interface.
 This design document takes a closer look at the Data Model, and the standard directory structure it will have in Dime.</p>
-<p><h3><a href="developer_doc/components">Components</a></h3>
+<p><h3><a href="developer_doc/components.html">Components</a></h3>
 <span class="todo">TODO: To be written.</span></p>
-<p><h3><a href="developer_doc/scripting">Scripting</a></h3>
+<p><h3><a href="developer_doc/scripting.html">Scripting</a></h3>
 <span class="todo">TODO: To be written.</span></p>
-<p><h2><a href="working_notes">Working Notes</a></h2>
+<p><h2><a href="working_notes/">Working Notes</a></h2>
 This section contains various design notes 
 produced during development, that are used 
 for communicating between developers, and to put down designs or ideas.  They are normally not kept
 up to date, but they are listed here in cronological order 
 so that new developers can follow the trail of ideas.</p>
-<p><h3><a href="developer_doc/development_methodology">Dime Development Methodology</a></h3>
+<p><h3><a href="developer_doc/development_methodology.html">Dime Development Methodology</a></h3>
 Various practices and rules borrowed from XP and other places, that we try to follow.</p>
-<p><h3><a href="developer_doc/DataModelFW">Data Model Framework Implementation</a></h3>
+<p><h3><a href="developer_doc/data_model_fw.html">Data Model Framework Implementation</a></h3>
 An implementer's view on the Data Model. The question is, how to keep both, the effort of using it and providing additional branches of the directory structure, to a minimum.</p>
-<p><h3><a href="developer_doc/architecture">Architecture document</a></h3>
+<p><h3><a href="developer_doc/architecture.html">Architecture document</a></h3>
 The modules and libraries that make up the Dime client, and their internal dependencies and roles.
 <p>
 <i>Out of date, as it seems we will not split up dime itself in different libraries, or if we do, in a generic framework
 library and in a Dime application that implements dime specific services and functionality, and uses the framework.</i>
 <span class="TODO">TODO: Update this document to mainly describe the external libraries we use.</span>
 </p></p>
-<p><h3><a href="developer_doc/paragui_extensions_classdiagram_01">ParaGui Extension library class diagram draft</a></h3>
-Some GUI classes needed for docking panels, internal windows, and similar things.
 <p>
 <i>[Outdated, we can implement docking panels in a better way (a docking panel can accept drag & dropped docking panels to any of it's edges,
 to the center of it (creating a tab), or to the seam between two docking panels that it contains).  Ask zzorn for details.]</i>
 </p></p>
-<p><h3><a href="working_notes/theme_format">WF Theme Proposal The</a></h3>
+<p><h3><a href="working_notes/theme_format.html">WF Theme Proposal The</a></h3>
 Prposal for generic theme format to use for new WF clients.</p>
 <p><h2>External Resources</h2>
 Some quick links to useful external resources and interesting reading for Dime Developers</p>
