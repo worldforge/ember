@@ -24,16 +24,13 @@ This is the media for use with Ember.
 %prep
 rm -rf ${RPM_BUILD_ROOT}
 
-%build
-# Requires java in path and WFUT.jar in the BUILD dir
-# There is problably a much better way of doing this
-# uing the Requires: tag
-tar -jxf %{name}-%{version}.tar.bz2
+%setup -q 
+
 
 %install
 echo $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/ember/data/
-cp -r sear-media $RPM_BUILD_ROOT/%{_datadir}/ember/data/
+cp -r media $RPM_BUILD_ROOT/%{_datadir}/ember/data/
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
