@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"bin_release/dime.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 sdlmain.lib sdl.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
+# ADD LINK32 sdlmain.lib sdl.lib freetype206MT.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 2
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
+# PROP Output_Dir "bin"
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -79,10 +79,10 @@ LINK32=link.exe
 # ADD RSC /l 0x407 /d "_DEBUG" /d "_AFXDLL"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo /o"bin/dime.bsc"
+# ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# ADD LINK32 libsigc.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Debug CppUnit"
@@ -111,7 +111,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# ADD LINK32 libsigc.lib cppunitcd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Release CppUnit"
@@ -140,7 +140,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
+# ADD LINK32 cppunit.lib sdlmain.lib sdl.lib freetype206MT.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -180,6 +180,18 @@ SOURCE=.\src\services\gui\EventGenerator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\font\Font.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\font\FontRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\font\FontService.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\gui\GuiService.cpp
 # End Source File
 # Begin Source File
@@ -193,6 +205,10 @@ SOURCE=.\src\services\input\InputDevice.cpp
 # Begin Source File
 
 SOURCE=.\src\services\input\InputServiceTest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Label.cpp
 # End Source File
 # Begin Source File
 
@@ -272,6 +288,22 @@ SOURCE=.\src\services\gui\EventGenerator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\font\Font.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\font\FontRenderer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\font\FontService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\font\Glyph.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\gui\GuiService.h
 # End Source File
 # Begin Source File
@@ -324,14 +356,6 @@ SOURCE=.\src\services\gui\Panel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\ParaGuiApplication.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\ParaGuiService.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\services\platform\PlatformService.h
 # End Source File
 # Begin Source File
@@ -378,6 +402,40 @@ SOURCE=.\src\services\gui\Widget.h
 # Begin Group "Ressourcendateien"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\src\main\data\masonwindowback.jpg
+
+!IF  "$(CFG)" == "dime - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Debug CppUnit"
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Release CppUnit"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\main\data\masonwindowback2.jpg
+
+!IF  "$(CFG)" == "dime - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Debug CppUnit"
+
+!ELSEIF  "$(CFG)" == "dime - Win32 Release CppUnit"
+
+!ENDIF 
+
+# End Source File
 # End Group
 # End Target
 # End Project
