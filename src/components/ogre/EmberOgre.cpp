@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.70  2005-01-22 22:54:29  erik
+ *      Revision 1.71  2005-02-10 00:54:03  erik
+ *      2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* send event on eris polling start and stop
+ *
+ *      Revision 1.70  2005/01/22 22:54:29  erik
  *      2005-01-22 Erik Hjortsberg <erik@katastrof.nu>
  *
  *      	* updated INSTALL, TODO and README texts
@@ -745,7 +750,11 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
+	EventStartErisPoll.emit();
 	Eris::PollDefault::poll(1);
+	EventEndErisPoll.emit();
+	
+	
 	if (!mKeepOnRunning)
 		fprintf(stderr, "Shutting down EmberOgre.\n");
 	return mKeepOnRunning;

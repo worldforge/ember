@@ -1,5 +1,9 @@
 2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* send event on eris polling start and stop
+
+2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* set the aspect ratio
 	* code cleanup and comments added
 

@@ -24,7 +24,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.38  2005-01-07 02:42:48  erik
+ *      Revision 1.39  2005-02-10 00:54:03  erik
+ *      2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* send event on eris polling start and stop
+ *
+ *      Revision 1.38  2005/01/07 02:42:48  erik
  *      2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* check for, and if not found, copy config files from share to user's home dir
@@ -474,8 +479,21 @@ public:
 	EmberEntityFactory* getEntityFactory();
 	AvatarCamera* getMainCamera();
 	
+	inline Ogre::RenderWindow* getRenderWindow() const { return mWindow; }
+	
+	
 	SigC::Signal1<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	SigC::Signal1<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
+	
+	/**
+	Emitted before the eris polling is started
+	*/
+	SigC::Signal0<void> EventStartErisPoll;
+	
+	/**
+	Emitted after the eris polling has finished
+	*/
+	SigC::Signal0<void> EventEndErisPoll;
 	
 	//returns the scenenode of the world entity
 	//throws en exception if no such node has been created
