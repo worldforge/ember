@@ -6,7 +6,10 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.2  2003-04-24 20:02:08  aglanor
+ *      Revision 1.3  2003-04-24 21:12:49  aglanor
+ *      removed ogre namespace
+ *
+ *      Revision 1.2  2003/04/24 20:02:08  aglanor
  *      Makefile and include changes after the renaming
  *
  *      Revision 1.1  2003/04/24 19:42:09  aglanor
@@ -68,13 +71,28 @@ Description: Defines an example frame listener which responds to frame events.
 #include "OgreKeyEvent.h"
 #include "OgreEventListeners.h"
 
-using namespace Ogre;
+// ------------------------------
+// Include dime header files
+// ------------------------------
+#include "services/DimeServices.h"
+#include "framework/ConsoleBackend.h"
 
-class PlayerFrameListener: public FrameListener, public KeyListener
+// ------------------------------
+// Include Eris header files
+// ------------------------------
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#endif
+
+
+class PlayerFrameListener: public Ogre::FrameListener, public Ogre::KeyListener
 {
 public:
 	// Constructor takes a RenderWindow because it uses that to determine input context
-	PlayerFrameListener(RenderWindow* win, Camera* cam, bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
+	PlayerFrameListener(Ogre::RenderWindow* win, Ogre::Camera* cam, bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
 	{
 		mUseBufferedInputKeys = useBufferedInputKeys;
 		mUseBufferedInputMouse = useBufferedInputMouse;
@@ -82,9 +100,9 @@ public:
 
 		if (mInputTypeSwitchingOn)
 		{
-			mEventProcessor = new EventProcessor();
+			mEventProcessor = new Ogre::EventProcessor();
 			mEventProcessor->initialise(win);
-			OverlayManager::getSingleton().createCursorOverlay();
+			Ogre::OverlayManager::getSingleton().createCursorOverlay();
 			mEventProcessor->startProcessingEvents();
 			mEventProcessor->addKeyListener(this);
 			mInputDevice = mEventProcessor->getInputReader();
@@ -92,7 +110,7 @@ public:
 		}
 		else
 		{
-			mInputDevice = PlatformManager::getSingleton().createInputReader();
+			mInputDevice = Ogre::PlatformManager::getSingleton().createInputReader();
 			mInputDevice->initialise(win,true,true);
 		}
 
@@ -111,109 +129,148 @@ public:
 		}
 		else
 		{
-			PlatformManager::getSingleton().destroyInputReader( mInputDevice );
+			Ogre::PlatformManager::getSingleton().destroyInputReader( mInputDevice );
 		}
 	}
 
-    bool processUnbufferedKeyInput(const FrameEvent& evt)
-    {
-        if (mInputDevice->isKeyDown(KC_A))
-        {
-            // Move camera left
-            mTranslateVector.x = -mMoveScale;
-        }
+	bool processUnbufferedKeyInput(const Ogre::FrameEvent& evt)
+	{
+		if (mInputDevice->isKeyDown(Ogre::KC_A))
+		{
+			// Move camera left
+			mTranslateVector.x = -mMoveScale;
+		}
 
-        if (mInputDevice->isKeyDown(KC_D))
-        {
-            // Move camera RIGHT
-            mTranslateVector.x = mMoveScale;
-        }
+		if (mInputDevice->isKeyDown(Ogre::KC_D))
+		{
+			// Move camera RIGHT
+			mTranslateVector.x = mMoveScale;
+		}
 
-        /* Move camera forward by keypress. */
-        if (mInputDevice->isKeyDown(KC_UP) || mInputDevice->isKeyDown(KC_W) )
-        {
-            mTranslateVector.z = -mMoveScale;
-        }
-        /* Move camera forward by mousewheel. */
-        if( mInputDevice->getMouseRelativeZ() > 0 )
-        {
-            mTranslateVector.z = -mMoveScale * 8.0;
-        }
+		/* Move camera forward by keypress. */
+		if (mInputDevice->isKeyDown(Ogre::KC_UP) || mInputDevice->isKeyDown(Ogre::KC_W) )
+		{
+			mTranslateVector.z = -mMoveScale;
+		}
 
-        /* Move camera backward by keypress. */
-        if (mInputDevice->isKeyDown(KC_DOWN) || mInputDevice->isKeyDown(KC_S) )
-        {
-            mTranslateVector.z = mMoveScale;
-        }
+		/* Move camera forward by mousewheel. */
+		if( mInputDevice->getMouseRelativeZ() > 0 )
+		{
+			mTranslateVector.z = -mMoveScale * 8.0;
+		}
 
-        /* Move camera backward by mouse wheel. */
-        if( mInputDevice->getMouseRelativeZ() < 0 )
-        {
-            mTranslateVector.z = mMoveScale * 8.0;
-        }
+		/* Move camera backward by keypress. */
+		if (mInputDevice->isKeyDown(Ogre::KC_DOWN) || mInputDevice->isKeyDown(Ogre::KC_S) )
+		{
+			mTranslateVector.z = mMoveScale;
+		}
 
-        if (mInputDevice->isKeyDown(KC_PGUP))
-        {
-            // Move camera up
-            mTranslateVector.y = mMoveScale;
-        }
+		/* Move camera backward by mouse wheel. */
+		if( mInputDevice->getMouseRelativeZ() < 0 )
+		{
+			mTranslateVector.z = mMoveScale * 8.0;
+		}
 
-        if (mInputDevice->isKeyDown(KC_PGDOWN))
-        {
-            // Move camera down
-            mTranslateVector.y = -mMoveScale;
-        }
+		if (mInputDevice->isKeyDown(Ogre::KC_PGUP))
+		{
+			// Move camera up
+			mTranslateVector.y = mMoveScale;
+		}
 
-        if (mInputDevice->isKeyDown(KC_RIGHT))
-        {
-            mCamera->yaw(-mRotScale);
-        }
-		
-        if (mInputDevice->isKeyDown(KC_LEFT))
-        {
-            mCamera->yaw(mRotScale);
-        }
+		if (mInputDevice->isKeyDown(Ogre::KC_PGDOWN))
+		{
+			// Move camera down
+			mTranslateVector.y = -mMoveScale;
+		}
 
-        if( mInputDevice->isKeyDown( KC_ESCAPE) )
-        {            
-            return false;
-        }
+		if (mInputDevice->isKeyDown(Ogre::KC_RIGHT))
+		{
+			mCamera->yaw(-mRotScale);
+		}
+
+		if (mInputDevice->isKeyDown(Ogre::KC_LEFT))
+		{
+			mCamera->yaw(mRotScale);
+		}
+
+		if( mInputDevice->isKeyDown(Ogre::KC_ESCAPE))
+		{
+			return false;
+		}
 
 		// see if switching is on, and you want to toggle
-		if (mInputTypeSwitchingOn && mInputDevice->isKeyDown(KC_M) && mTimeUntilNextToggle <= 0)
+		if (mInputTypeSwitchingOn && mInputDevice->isKeyDown(Ogre::KC_M) && mTimeUntilNextToggle <= 0)
 		{
 			switchMouseMode();
 			mTimeUntilNextToggle = 1;
 		}
 
-		if (mInputTypeSwitchingOn && mInputDevice->isKeyDown(KC_K) && mTimeUntilNextToggle <= 0)
+		if (mInputTypeSwitchingOn && mInputDevice->isKeyDown(Ogre::KC_K) && mTimeUntilNextToggle <= 0)
 		{
 			// must be going from immediate keyboard to buffered keyboard
 			switchKeyMode();
 			mTimeUntilNextToggle = 1;
 		}
 
-		if (mInputDevice->isKeyDown(KC_F) && mTimeUntilNextToggle <= 0)
+		if (mInputDevice->isKeyDown(Ogre::KC_F) && mTimeUntilNextToggle <= 0)
 		{
 			mStatsOn = !mStatsOn;
-			Root::getSingleton().showDebugOverlay(mStatsOn);
+			Ogre::Root::getSingleton().showDebugOverlay(mStatsOn);
 			mTimeUntilNextToggle = 1;
 		}
 
-		if (mInputDevice->isKeyDown(KC_SYSRQ) && mTimeUntilNextToggle <= 0)
+		if (mInputDevice->isKeyDown(Ogre::KC_SYSRQ) && mTimeUntilNextToggle <= 0)
 		{
 			char tmp[20];
 			sprintf(tmp, "screenshot_%d.png", ++mNumScreenShots);
 			mWindow->writeContentsToFile(tmp);
 			mTimeUntilNextToggle = 0.5;
-			mWindow->setDebugText(String("Wrote ") + tmp);
+			mWindow->setDebugText(Ogre::String("Wrote ") + tmp);
 		}
+
+
+// Eris polling
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+		Eris::PollDefault::poll();
+#endif
+		// Pressing 1 queries the metaserver
+		if(mInputDevice->isKeyDown(Ogre::KC_1)) {
+			// TODO: use META_REFRESH here, passing a string like this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getMetaserverService()->runCommand("meta_refresh","");
+		}
+		
+		// Pressing 2 connects to red.worldforge.org
+		if(mInputDevice->isKeyDown(Ogre::KC_2) && mTimeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","65.100.132.92");
+			mTimeUntilNextToggle = 1;
+		}
+
+		// Pressing 3 logs in with the account 'ogretest'
+		if(mInputDevice->isKeyDown(Ogre::KC_3) && mTimeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getServerService()->runCommand("login","ogretest ogretest");
+			mTimeUntilNextToggle = 1;
+		}
+
+		// Pressing 4 takes the character ''
+		if(mInputDevice->isKeyDown(Ogre::KC_4) && mTimeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","ogre_207");
+			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
+			// TODO: connect these world signals
+			//mOgreApplication->connectWorldSignals();
+			mTimeUntilNextToggle = 1;
+		}
+
 
 		// Return true to continue rendering
 		return true;
 	}
 
-	bool processUnbufferedMouseInput(const FrameEvent& evt)
+	bool processUnbufferedMouseInput(const Ogre::FrameEvent& evt)
 	{
 		/* Rotation factors, may not be used if the second mouse button is pressed. */
 
@@ -243,7 +300,7 @@ public:
 	}
 
 	// Override frameStarted event to process that (don't care about frameEnded)
-	bool frameStarted(const FrameEvent& evt)
+	bool frameStarted(const Ogre::FrameEvent& evt)
 	{
 
 		if (!mInputTypeSwitchingOn)
@@ -273,7 +330,7 @@ public:
 			}
 			mRotX = 0;
 			mRotY = 0;
-			mTranslateVector = Vector3::ZERO;
+			mTranslateVector = Ogre::Vector3::ZERO;
 		}
 
 		if (mUseBufferedInputKeys)
@@ -325,7 +382,7 @@ public:
 		mInputDevice->setBufferedInput(mUseBufferedInputKeys, mUseBufferedInputMouse);
 	}
 
-	void keyClicked(KeyEvent* e)
+	void keyClicked(Ogre::KeyEvent* e)
 	{
 		if (e->getKeyChar() == 'm')
 		{
@@ -338,22 +395,22 @@ public:
 		}
 
 	}
-	void keyPressed(KeyEvent* e) {}
-	void keyReleased(KeyEvent* e) {}
+	void keyPressed(Ogre::KeyEvent* e) {}
+	void keyReleased(Ogre::KeyEvent* e) {}
 
 protected:
-	EventProcessor* mEventProcessor;
-	InputReader* mInputDevice;
-	Camera* mCamera;
-	Vector3 mTranslateVector;
-	RenderWindow* mWindow;
+	Ogre::EventProcessor* mEventProcessor;
+	Ogre::InputReader* mInputDevice;
+	Ogre::Camera* mCamera;
+	Ogre::Vector3 mTranslateVector;
+	Ogre::RenderWindow* mWindow;
 	bool mStatsOn;
 	bool mUseBufferedInputKeys, mUseBufferedInputMouse, mInputTypeSwitchingOn;
 	unsigned int mNumScreenShots;
 	float mMoveScale;
 	float mRotScale;
 	// just to stop toggles flipping too fast
-	Real mTimeUntilNextToggle ;
+	Ogre::Real mTimeUntilNextToggle ;
 	float mRotX, mRotY;
 
 };
