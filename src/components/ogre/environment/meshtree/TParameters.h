@@ -1,7 +1,7 @@
 #ifndef __TParameters_H__
 #define __TParameters_H__
 
-#include "Ogre.h"
+#include <Ogre.h>
 #include "TTypes.h"
 
 /*

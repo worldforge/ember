@@ -1,5 +1,10 @@
 2005-01-30  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Added newline at end of files.
+	* Fix include of Ogre.h
+
+2005-01-30  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Fix for config files.
 	* Use /usr/lib/OGRE as default path for plugins.
 
