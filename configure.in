@@ -23,7 +23,7 @@ dnl the next are just in for show right now.
 dnl they don't die yet as we don't need them yet.
 dnl they will be moved up above once they become necessary.
 AC_CHECK_LIB(SDL_image, IMG_Load, , [
-dnl AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
+    AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
 ])
 AC_CHECK_LIB(SDL_mixer, Mix_PlayingMusic, , [
 dnl AC_MSG_ERROR(libSDL_mixer not found, please install it.  It can be found at www.libsdl.org under "libraries")
