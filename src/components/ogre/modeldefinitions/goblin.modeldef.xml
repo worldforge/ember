@@ -1,22 +1,22 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="goblin" usescaleof="height" >
   <submodels>
-    <submodel mesh="GoblinHead.mesh">
+    <submodel mesh="placeholder.mesh">
       <parts>
         <part name="Head" show="true" >
       </parts>
     </submodel>
-    <submodel mesh="GoblinEyes.mesh" >
+    <submodel mesh="placeholder.mesh" >
       <parts>
         <part name="Eyes" show="true" >
       </parts>
     </submodel>
-    <submodel mesh="GoblinBody.mesh">
+    <submodel mesh="placeholder.mesh">
       <parts>
         <part name="Body" show="true" >
       </parts>
     </submodel>
-    <submodel mesh="GoblinMouth.mesh">
+    <submodel mesh="placeholder.mesh">
       <parts>
         <part name="Mouth" show="true" >
       </parts>
