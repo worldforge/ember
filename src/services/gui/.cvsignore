@@ -1,2 +1,4 @@
 Makefile
 *.o
+.deps
+Makefile.in
