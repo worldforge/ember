@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="butcher" usescaleof="height" >
   <submodels>
-    <submodel mesh="malebuilder.mesh" >
+    <submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
       <parts>
         <part name="Body" show="true" >
           <subentities>

@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="chicken" rotation="90" >
   <submodels>
-    <submodel mesh="Chicken.mesh">
+    <submodel mesh="3d_objects/creatures/avian/models/chicken/chicken.mesh">
       <parts>
-        <part name="Chicken" show="true" />
+        <part name="main" show="true" />
       </parts>
     </submodel>
   </submodels>

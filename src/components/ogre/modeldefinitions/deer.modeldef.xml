@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="deer" usescaleof="height" >
   <submodels>
-    <submodel mesh="Deer.mesh">
+    <submodel mesh="3d_objects/creatures/quadruped_v2/models/deer/deer.mesh">
       <parts>
-        <part name="Deer" show="true" />
+        <part name="main" show="true" />
       </parts>
     </submodel>
   </submodels>

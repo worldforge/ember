@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="fir" usescaleof="height" >
   <submodels>
-    <submodel mesh="Fir.mesh" >
+    <submodel mesh="3d_objects/plants/fir/models/fir/fir.mesh" >
       <parts>
-        <part name="Tree" show="true" >
+        <part name="main" show="true" >
       </parts>
     </submodel>
   </submodels>

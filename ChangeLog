@@ -1,3 +1,11 @@
+2005-03-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* moved and cleaned up the media definitions. Now almost all needed media is in svn. The directory media/common should point to the svn repository.
+
+2005-03-22  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added ember specific media and media definitions.
+
 2005-03-22  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* decrease the minimum camera distance 

@@ -1,10 +1,15 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="squirrel" >
   <submodels>
-    <submodel mesh="squirrel.mesh">
+    <submodel mesh="3d_objects/creatures/quadruped/models/squirrel/squirrel.mesh">
       <parts>
-        <part name="Squirrel" show="true" />
+        <part name="main" show="true" />
       </parts>
     </submodel>
   </submodels>
+   <Actions>
+  	<Action name="walk">
+		<animationpart name="Walk" weight="1" />
+	</Action>
+  </Actions> 
 </model>

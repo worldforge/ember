@@ -25,12 +25,12 @@
         </part>
         <part name="Dress1" show="false" >
           <subentities>
-            <subentity name="dress1" material="Malebuilder/Dress/Sun" />
+            <subentity name="dress1" material="/global/clothes/dress/sun" />
           </subentities>
         </part>
         <part name="Dress2" show="true" >
           <subentities>
-            <subentity name="dress2" material="Malebuilder/Dress/Sun" />
+            <subentity name="dress2" material="/global/clothes/dress/sun" />
           </subentities>
         </part>
         <part name="Boots" show="true" >
@@ -47,6 +47,7 @@
 	</Action>
   	<Action name="walk">
 		<animationpart name="_walk.BAKED" weight="1" />
+		<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
 	</Action>
   </Actions>
  </model>

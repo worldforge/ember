@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="marshall" usescaleof="height" >
   <submodels>
-    <submodel mesh="malebuilder.mesh" >
+    <submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
       <parts>
         <part name="Body" show="true" >
           <subentities>
@@ -25,27 +25,27 @@
         </part>
         <part name="Boxers" show="false" >
           <subentities>
-            <subentity name="boxers" material="Malebuilder/Dress/Fine" />
+            <subentity name="boxers" material="/global/clothes/dress/fine" />
           </subentities>
         </part>
         <part name="Cloak" show="true" >
           <subentities>
-            <subentity name="cloak" material="Malebuilder/Dress/Fine" />
+            <subentity name="cloak" material="/global/clothes/dress/fine" />
           </subentities>
         </part>
 	<part name="Pants" show="true" >
           <subentities>
-            <subentity name="pants" material="Malebuilder/Dress/Fine" />
+            <subentity name="pants" material="/global/clothes/dress/fine" />
           </subentities>
         </part>      
         <part name="Shirt" show="false" >
           <subentities>
-            <subentity name="shirt" material="Malebuilder/Dress/Fine" />
+            <subentity name="shirt" material="/global/clothes/dress/fine" />
           </subentities>
         </part>  
         <part name="ShirtTuckedLongSleeve" show="true" >
           <subentities>
-            <subentity name="shirt/tucked_long_sleeve" material="Malebuilder/Dress/Fine" />
+            <subentity name="shirt/tucked_long_sleeve" material="/global/clothes/dress/fine" />
           </subentities>
         </part>      
       </parts>      

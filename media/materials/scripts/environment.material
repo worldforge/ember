@@ -10,8 +10,8 @@ material /global/fire
 		alpha_rejection greater_equal 128            
            texture_unit
             {
-                texture 3d_objects/environment/material/textures/fire.png
-	    }
+                texture 3d_objects/items/fire/textures/flame/flame.png
+	    	}
         }
     }
 }

@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="sty" usescaleof="width" rotation="-180">
   <submodels>
-    <submodel mesh="sty.mesh" >
+    <submodel mesh="3d_objects/items/building_element/models/wooden_fence/pig-sty.mesh" >
       <parts>
-        <part name="Sty" show="true" >
+        <part name="main" show="true" >
       </parts>
     </submodel>
   </submodels>

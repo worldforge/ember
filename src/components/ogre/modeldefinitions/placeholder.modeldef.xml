@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="placeholder" >
   <submodels>
-    <submodel mesh="Placeholder.mesh" >
+    <submodel mesh="placeholder.mesh" >
       <parts>
-        <part name="PlaceHolder" show="true" >
+        <part name="main" show="true" >
       </parts>
     </submodel>
   </submodels>
