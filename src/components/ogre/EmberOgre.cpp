@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.12  2003-05-06 22:16:48  aglanor
+ *      Revision 1.13  2003-05-07 23:28:43  aglanor
+ *      Added a little more variety to the media. Now there's different media
+ *      for settlers (malebuilder), pig (skeleton), merchant (robot) and
+ *      everything else.
+ *      The camera is set to the Avatar position/orientation when entering the game world.
+ *
+ *      Revision 1.12  2003/05/06 22:16:48  aglanor
  *      added directory and filenames management to the cal3d converter.
  *
  *      Revision 1.11  2003/05/05 01:41:06  aglanor
@@ -266,7 +272,7 @@ void DimeOgre::createScene(void)
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(1,1,1);
+	mOgreHeadNode->setScale(0.01,0.01,0.01);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -436,22 +442,36 @@ void DimeOgre::connectWorldSignals(void) {
 
 void DimeOgre::entityCreate( Eris::Entity *e )
 {
-	Ogre::Entity* ogreEntity;
-	// create the ogre entity
-        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
-		fprintf(stderr, "TRACE - FOUND A SETTLER - ROBOT MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
-	}
-	else {
-		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "razor.mesh");
-	}
-
-
-
-	// create the ogre node
+	// create the ogre node and the
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
 	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	Ogre::Entity* ogreEntity;
+
+	// create the ogre entity
+        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
+		fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "malebuilder.mesh");
+		ogreNode->setScale(0.01,0.01,0.01);
+	}
+	else if(!strcmp(e->getType()->getName().c_str(),"merchant"))
+	{
+		fprintf(stderr, "TRACE - FOUND A MERCHANT - ROBOT MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
+		ogreNode->setScale(0.025,0.025,0.025);
+	}
+	else if(!strcmp(e->getType()->getName().c_str(),"pig"))
+	{
+		fprintf(stderr, "TRACE - FOUND A PIG - SKELETON MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "skeleton.mesh");
+		ogreNode->setScale(0.01,0.01,0.01);
+	}
+	else
+	{
+		// TODO: razor should be a coin
+		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "razor.mesh");
+		ogreNode->setScale(0.001,0.001,0.001);
+	}
 
 	// set the Ogre node position and orientation based on Atlas data
 	ogreNode->setPosition(Atlas2Ogre(e->getPosition()));
@@ -467,14 +487,11 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 
 	// scale HACK. This is very hacky. Fix this.
         if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
-		ogreNode->setScale(0.05,0.05,0.05);		// robots are bigger :P
+				// robots are bigger :P
 	}
 	else {
-		ogreNode->setScale(0.02,0.02,0.02);
+
 	}
-
-
-
 
 	// attach the node to the entity
 	ogreNode->attachObject(ogreEntity);
@@ -506,7 +523,12 @@ void DimeOgre::entityDelete( Eris::Entity *e )
 
 void DimeOgre::entered( Eris::Entity *e )
 {
-	fprintf(stderr, "TRACE - ENTITY ENTERED\n");
+	fprintf(stderr, "TRACE - PLAYER ENTERED THE WORLD\n");
+	std::cout << "THE PLAYER IS ENTITY " <<  e->getID() << std::endl;
+	// Set the Player camera accordingly
+	// TODO: do this when the avatar moves too
+	mCamera->setPosition(Atlas2Ogre(e->getPosition()));
+	mCamera->setOrientation(Atlas2Ogre(e->getOrientation()));
 }
 
 void DimeOgre::appearance( Eris::Entity *e )

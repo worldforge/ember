@@ -6,7 +6,13 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.5  2003-04-28 00:55:06  aglanor
+ *      Revision 1.6  2003-05-07 23:28:43  aglanor
+ *      Added a little more variety to the media. Now there's different media
+ *      for settlers (malebuilder), pig (skeleton), merchant (robot) and
+ *      everything else.
+ *      The camera is set to the Avatar position/orientation when entering the game world.
+ *
+ *      Revision 1.5  2003/04/28 00:55:06  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
  *      		There is also a little ogre head marking (0,0,0).
@@ -277,7 +283,7 @@ public:
 		// Pressing 4 takes the character ''
 		if(mInputDevice->isKeyDown(Ogre::KC_4) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","Bob_1");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","Bob_214");
 			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
 			mDimeOgre->connectWorldSignals();	// connect Eris signals
 			mTimeUntilNextToggle = 1;
