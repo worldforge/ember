@@ -203,6 +203,29 @@ class Button : public Widget
 	
 	virtual void lowlight();
 	
+	/**
+     * The mouse has just entered win.
+     * win is the window at position x, y (normally 'this').
+     */
+    virtual void mouseEnter( MouseMotionEvent *event )
+    {
+		// Change how we look
+		lowlight();
+
+		Widget::mouseEnter( event );
+    }
+
+    /**
+     * The mouse has just left win.
+     * win is the window at position x, y (normally 'this').
+     */
+    virtual void mouseExit( MouseMotionEvent *event ) 
+    {
+		// Change how we look
+		highlight();
+
+		Widget::mouseExit( event );
+    }
     //======================================================================
     // Protected Methods
     //======================================================================

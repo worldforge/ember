@@ -6,16 +6,6 @@
 //#include <SDL/SDL_keysym.h>
 #include <iostream>
 
-void mouseenterbutton(dime::MouseMotionEvent* event)
-{
-    ((dime::Button *)event->getWidget())->highlight();
-}
-
-void mouseexitbutton(dime::MouseMotionEvent* event)
-{
-    ((dime::Button *)event->getWidget())->lowlight();
-}
-
 void onMouseButtonDown(dime::MouseButtonEvent *event)
 {
 }
@@ -36,9 +26,6 @@ int main(int argc, char **argv)
 	myTestButton.setRectangle(dime::Rectangle(300,300,100,75));
 	myTestButton.setBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"masonwindowback.jpg"));
 	myTestButton.setHighlightBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"masonwindowback2.jpg"));
-
-	myTestButton.onMouseEnter.connect(SigC::slot(mouseenterbutton)); //TODO: internalize this to Button.
-	myTestButton.onMouseExit.connect(SigC::slot(mouseexitbutton));
 
 	dime::Panel myTestPanel;
 	myTestPanel.setRectangle(dime::Rectangle(200,200,300,200));
