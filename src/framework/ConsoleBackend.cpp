@@ -35,11 +35,20 @@ const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 dime::ConsoleBackend *dime::ConsoleBackend::theMainConsole = NULL;
 
 void ConsoleBackend::pushMessage(const std::string &message) {
+  //only save message if onGotMessage returns true
+  if (!onGotMessage(message)) {
   // If we have reached our message limit, remove the oldest message
-  if (myConsoleMessages.size() >= MAX_MESSAGES)
-    myConsoleMessages.erase(myConsoleMessages.begin());
-  myConsoleMessages.push_back(message);
+	if (myConsoleMessages.size() >= MAX_MESSAGES)
+	myConsoleMessages.erase(myConsoleMessages.begin());
+	myConsoleMessages.push_back(message);
+  }
 }
+
+bool ConsoleBackend::onGotMessage(const std::string &message)
+{
+	return GotMessage.emit(message);
+}
+
 
 void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *object)
 {

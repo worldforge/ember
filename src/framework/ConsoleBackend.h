@@ -24,11 +24,22 @@
 #include "Tokeniser.h"
 
 // Included custom library headers
-
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
 // Included system headers
 #include <string>
 #include <list>
 #include <map>
+
+
+
 
 namespace dime {
 
@@ -57,6 +68,7 @@ namespace dime {
  */
 
 class ConsoleBackend : public ConsoleObject
+,  virtual public SigC::Object
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -210,11 +222,24 @@ class ConsoleBackend : public ConsoleObject
      * args is the commands arguments
      */ 
     void runCommand(const std::string &command, const std::string &args);
+    
+
+    //------------------------------------
+    // Events
+ 
+    
+    /**
+     * This event is raised every time a message is pushed to the console.
+     * If True is returned, the message won't be saved in myConsoleMessages 
+     */ 
+    SigC::Signal1<bool, const std::string&> GotMessage;
 
     //======================================================================
     // Protected Methods
     //======================================================================
     protected:
+    
+    virtual bool onGotMessage(const std::string &message);
 
 
     //======================================================================

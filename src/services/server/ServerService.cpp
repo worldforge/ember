@@ -61,7 +61,7 @@ namespace dime
   /* ctor */
   ServerService::ServerService() : myConn(NULL), myPlayer(NULL),
 				   myWorld(NULL), myOOGChat(NULL),
-				   myConnected(false)
+				   myConnected(false), myAvatar(NULL)
   {
     setName("Server Service");
     setDescription("Service for Server session");
