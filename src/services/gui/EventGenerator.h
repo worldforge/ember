@@ -77,29 +77,26 @@ namespace dime
         //---------------------------------------------------------------------------------------------------
         	
 	/**
-	 * Passes mouse motion events down to widget tree
+	 * Passes mouse motion events down to widget tree or to the widget
+	 * that has captured the mouse.
 	 */
 	void MouseMotion(InputDevice *mouse, InputDevice * otherDevice, const DimeKey &key, InputMapping::InputSignalType signaltype);
 	
 	/**
-	 * Passes mouse motion events down to widget tree
+	 * Passes mouse motion events down to widget tree or to the widget
+	 * that has captured the mouse.
 	 */
 	void MouseClick(InputDevice * otherDevice, InputDevice *mouse, const DimeKey &key, InputMapping::InputSignalType signaltype);
 
 	/**
-	 * Passes keyboard events down to widget tree
+	 * Passes keyboard events down to widget tree or to the widget that
+	 * has captured the keyboard.
 	 */
 	void KeyboardPress(InputDevice * otherDevice, InputDevice *keyboard, const DimeKey &key, InputMapping::InputSignalType signaltype);
 
         //---------------------------------------------------------------------------------------------------
         // Keyboard events: 
         //---------------------------------------------------------------------------------------------------
-
-        /**
-         * Checks the keyboard input and redirects keyboard events to the main
-         * widget or the widget that has captured the keyboard.
-         */
-        virtual void handleKeyboardEvent();
                 
         /**
          * Captures keyboard input and directs it to the specified widget until
@@ -124,11 +121,6 @@ namespace dime
         // Mouse events
         //---------------------------------------------------------------------------------------------------
 
-        /**
-         * Checks the mouse input queue and redirects mouse events to the main
-         * widget or the widget that has captured the mouse.
-         */
-        virtual void handleMouseEvent(int x, int y);
         /**
          * Captures mouse input and directs it to the specified widget until
          * releaseMouse is called.  Returns true on success, false if mouse

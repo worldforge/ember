@@ -197,16 +197,6 @@ void dime::EventGenerator::updatePointedWidget( int mx, int my, InputDevice *dev
 /*----[ Keyboard events: ]--------------------------------------------------*/
 /*--------------------------------------------------------------------------*/
 
-void dime::EventGenerator::handleKeyboardEvent() {
-// Checks the keyboard input and redirects keyboard events to the main
-// widget or the widget that has captured the keyboard.
-    /*if (keypressed()) {
-      int k = readkey();
-      if (myKeyboardCaptureWidget) myKeyboardCaptureWidget->keyPress(k);
-      else if (myRootWidget) myRootWidget->keyPress(k);  // or keyPressed(k) ?
-      }*/
-} // checkKeyboard
-
 /*--------------------------------------------------------------------------*/
 bool dime::EventGenerator::captureKeyboard( dime::Widget *widget ) {
   // Captures keyboard input and directs it to the specified widget until
@@ -239,48 +229,6 @@ void dime::EventGenerator::giveWidgetFocus( dime::Widget *widget) {
 /*--------------------------------------------------------------------------*/
 /*----[ Mouse events: ]-----------------------------------------------------*/
 /*--------------------------------------------------------------------------*/
-
-void dime::EventGenerator::handleMouseEvent(int x, int y) {
-    // Checks the mouse input queue and redirects mouse events to the main
-    // widget or the widget that has captured the mouse.
-    /*
-      int x, y, button, event, loop = 0;
-      while ( loop < TTGUI_MAX_CHECKMOUSE_LOOP &&
-      ttGetMouseEvent( x, y, button, event ) ) {
-      loop++;
-    */
-    // Select mouse event destination:
-    dime::Widget *eventDest  = NULL;
-    
-    // Get the widget the mouse is over:
-    //updatePointedWidget( x, y );
-    
-    if (myMouseCaptureWidget) eventDest = myMouseCaptureWidget;
-    else                 eventDest = myPointedWidget;
-    
-    //if (!eventDest) continue; // Read away the rest of the mouse events. (?)
-    
-    
-    // Determine event type and redirect it:
-    /*switch (event) {
-      case TTGUI_MOUSE_UP:
-      eventDest->mouseUp( x, y, button, myPointedWidget );
-      break;
-      
-      case TTGUI_MOUSE_DOWN:
-      eventDest->mouseDown( x, y, button, myPointedWidget );
-      break;
-      
-      case TTGUI_MOUSE_MOVE:
-      eventDest->mouseMove( x, y, myPointedWidget );
-      break;
-      
-      default:
-      break;
-      } // end switch.
-    */
-    
-} // checkMouse
 
 /*--------------------------------------------------------------------------*/
 bool dime::EventGenerator::captureMouse( dime::Widget *widget ) {
