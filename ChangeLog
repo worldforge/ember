@@ -1,5 +1,10 @@
 2005-03-15  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* fix for check for CEGUI
+	* fix missing comma in check for devIL
+
+2005-03-15  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Since Ogre 1.0.0 doesn't contain CEGUI-OGRE.pc, don't look for it. It is however in Ogre CVS (they just forgot it in 1.0.0).
 
 2005-03-15  Erik Hjortsberg  <erik@katastrof.nu>

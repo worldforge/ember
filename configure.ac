@@ -194,7 +194,7 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.0,
 # Check for CEGUI
 #uncomment this when Ogre includes the CEGUI-OGRE.pc file again (should be the next release after 1.0.0)
 #PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
-PKG_CHECK_MODULES(CEGUI,,
+PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.2,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
@@ -225,11 +225,11 @@ PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.3 \
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
 
 
-AC_CHECK_LIB(IL, ilInit
-#	[
-#		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
-#		LDFLAGS="$LDFLAGS $IL_LIBS"
-#	]
+AC_CHECK_LIB(IL, ilInit,
+	[
+		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
+		LDFLAGS="$LDFLAGS $IL_LIBS"
+	]
 ,AC_MSG_ERROR([
 ****************************************************************
 * You do not have DevIL installed.  This is required to build. *
