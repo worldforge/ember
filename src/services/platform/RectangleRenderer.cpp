@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.13  2002-08-06 23:59:50  winand
+ *      Revision 1.14  2002-08-16 22:37:12  xmp
+ *      Script to run dime from correct dir
+ *
+ *      Revision 1.13  2002/08/06 23:59:50  winand
  *      Stretching render now works, but only for stretching to larger height and
  *      width, trying to shrink an image using stretch probably won't work.
  *
@@ -65,6 +68,8 @@
  */
 
 #include "RectangleRenderer.h"
+#include <math.h>
+#define roundf
 
 
 /**
@@ -124,11 +129,11 @@ dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
 		SDL_Rect smallRect;
 		for (int y=0;y < src.h;y++)
 		{
-		    yCheck = (int)round(yProportion*(y));
+		    yCheck = (int)roundf( yProportion * (float)y );
 		    lastXCheck = 0;
 		    for (int x=0; x < src.w; x++)
 		    {
-			xCheck = (int)round(xProportion*(x));
+			xCheck = (int)roundf( xProportion * (float)x );
 			color = getpixel(mySurface, x, y);
 			if ((yCheck - lastYCheck == 1) && (xCheck 
 				    - lastXCheck == 1))

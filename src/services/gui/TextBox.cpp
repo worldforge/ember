@@ -61,7 +61,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      case SDLK_RIGHT:
 	      {
 		// Move caret right
-        // FIXME: Don't pass the end of line if we do tack a space onto it
+        // FIXME: Don't pass the end of line if we do tack a space onto itn
 		myCaretPos++;
 	      }
 	      break;

@@ -257,7 +257,7 @@ class InputService: public Service
      * It takes care of aquiring needed resources, initializing
      * data structures, and so on. <p>
      *
-     * If the initialization suceeds, it should also call setRunning( true )
+     * If the initialization succeeds, it should also call setRunning( true )
      * to indicate that the service is running.  <p>
      *
      * If initialization fails, it should set appropriate status code and
