@@ -28,7 +28,6 @@
 #include <framework/Service.h>
 #include <services/logging/LoggingService.h>
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <list>
 #include <map>
 #include <string>
