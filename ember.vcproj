@@ -372,9 +372,6 @@
 					RelativePath=".\test\DataModelTest.cpp">
 				</File>
 				<File
-					RelativePath=".\src\services\input\InputServiceTest.cpp">
-				</File>
-				<File
 					RelativePath="test\TestServices.cpp">
 				</File>
 			</Filter>
