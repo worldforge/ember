@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Hans Häggström
+    Copyright (C) 2002 Hans Häggström, Tim Enderling
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef SERVICE_H
-#define SERVICE_H
+#ifndef INPUT_SERVICE_H
+#define INPUT_SERVICE_H
 
 // Include other headers of the current program here
 #include "InputEvent.h"
@@ -36,10 +36,23 @@ namespace dime {
 
 /**
  * A service for getting input from the user, and sending it to
- * different listeners.
+ * different listeners. Thus it is the owner of all input mappings.
+ * 
  *
- * @author Hans Häggström
+ * See InputMapping for more details.
+ *
+ * @author Hans Häggström/Tim Enderling
  */
+
+/*The joystick axis event just contains the new position of the axis (or several), and is sent to anybody listening to the joystick..
+<zzorn_2> Btw, we should probably use a similar way to represent different axis, such as mouse x,y, joystick x,y, joystick throttle, hat, etc..
+*** Grimicus (~grim@24.125.66.narf-34395) has joined #dime
+<Grimicus> DON'T DO IT!
+<Grimicus> AHHHHH!!!!
+* Grimicus grins
+<zzorn_2> a floating point number from 0 to 1, or perhaps -1 to 1 seems fine..
+Also, at least in case of mice we should also record the delta from the actual latest position (mickeys), even if the mouse already is at the screen edge..
+*/
 class InputService: public Service
 
 {
@@ -69,7 +82,7 @@ class InputService: public Service
      * Stores a list of input mappings that are searched in order to find
      * one that handles a certain input event.
      */
-    vector< InputMapping * > myInputMappings;
+    vector<InputMapping *> myInputMappings;
 
     //======================================================================
     // Public methods
@@ -90,10 +103,11 @@ class InputService: public Service
     /** Deletes a InputService instance. */
     virtual ~InputService()
     {
-        // Free any allocated memory and resources
-
-        // TODO: Delete all input events and mappings??
-        //       Who owns the mappings??
+        //delete all mappings
+		for (InputMappingIterator i = myInputMappings.begin(); i != myInputMappings.end(); i++)
+		{
+			delete *i;
+		}
     }
 
 

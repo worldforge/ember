@@ -138,6 +138,10 @@ SOURCE=.\src\main\DimeServices.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\input\InputMapping.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\input\InputService.h
 # End Source File
 # Begin Source File

@@ -38,9 +38,6 @@ using namespace std;
 namespace dime {
 
 //General TODOs:
-// - resolve minor TODOs
-// - test if it compiles under Unix especially
-// - test if it works
 // - make LoggingService threadsafe!
 // - Is it necessary to support UNICODE/wide characters?
 // - Add debug assertions. (How are the platform independent macros called?)
