@@ -19,6 +19,8 @@
 #include "Widget.h"
 #include <assert.h>
 
+long dime::Widget::theIDNext = 0;
+
 void dime::Widget::setParent(Widget* parent)
 {
 	if (myParent != NULL) myParent->removeWidget(this); // Remove this Widget's previous listing before changing parents.
@@ -56,7 +58,8 @@ dime::Widget &dime::Widget::operator= ( const dime::Widget &source )
 
 dime::Widget::~Widget()
 {
-	if (myParent != NULL) myParent->removeWidget(this);
+  if (myParent != NULL) myParent->removeWidget(this);
+  removeAllWidgets();
 }
 
 void dime::Widget::addWidget(Widget *source)
@@ -69,21 +72,22 @@ void dime::Widget::addWidget(Widget *source)
 
 int dime::Widget::removeWidget(Widget* target)
 {
-	//iterate through children Widgets, erasing target if it is amongst them.
-	std::vector<Widget*>::iterator end = myChildren.end();
-	for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
+  //iterate through children Widgets, erasing target if it is amongst them.
+  std::vector<Widget*>::iterator end = myChildren.end();
+  for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
+    {
+      if (*i == target)
 	{
-		if (*i == target)
-		{
-			myChildren.erase(i);
-			return 0; //success.
-		}
+	  myChildren.erase(i);
+	  return 0; //success.
 	}
-	return 1; //target is not amongst myChildren.
+    }
+  return 1; //target is not amongst myChildren.
 }
 
 void dime::Widget:: removeAllWidgets()
 {
+  // TODO: Check this deletes all the child widgets
   myChildren.clear();
 }
 

@@ -119,35 +119,36 @@ bool StateManager::setState( const std::string& newState )
   // Load new state
 
   return true;
-#else
-  // Create the Widgets
-  dime::Console* myTestConsole = new dime::Console(dime::Rectangle(10,300,620,120));
-  dime::Label* myTestLabel = new dime::Label("Dime test!", dime::Rectangle(10,10,200,30));
-  dime::TextBox* myTestTextBox = new dime::TextBox("TextBox!", dime::Rectangle(13,43,97,32));
-  dime::Button* myTestButton = new dime::Button(dime::Rectangle(535,450,100,25));
-  dime::Panel* myTestPanel = new dime::Panel(dime::Rectangle(550,0,90,90));
-            
-  // Set Additional options for myTestButton
-  myTestButton->setBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
-  myTestButton->setHighlightBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
-  myTestButton->setPressedBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
-  // Set Additional options for my TestPanel
-  myTestPanel->setBackground(new dime::BitmapRenderer(myTestPanel->getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
-  myTestButton->onClicked.connect(SigC::slot(quitButton));
-
-  // Bind Escape to quit
-  dime::InputService* pIS = dime::InputService::getInstance();
-  pIS->addInputMapping( new dime::InputMapping(
-			    pIS->getInputDevice(dime::InputDevice::KEYBOARD),
-			    SDLK_ESCAPE, false,
-			    SigC::slot(*dime::Application::getInstance(),
-				       &dime::Application::escPressed)));
-            
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestPanel);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestLabel);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestTextBox);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestConsole);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestButton);
-  return true;
 #endif
+  if (newState == "initial state")
+    {
+      // Create the Widgets
+      dime::Console* myTestConsole = new dime::Console(dime::Rectangle(10,300,620,120));
+      dime::Label* myTestLabel = new dime::Label("Dime test!", dime::Rectangle(10,10,200,30));
+      dime::TextBox* myTestTextBox = new dime::TextBox("TextBox!", dime::Rectangle(13,43,97,32));
+      dime::Button* myTestButton = new dime::Button(dime::Rectangle(535,450,100,25));
+      dime::Panel* myTestPanel = new dime::Panel(dime::Rectangle(550,0,90,90));
+            
+      // Set Additional options for myTestButton
+      myTestButton->setBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
+      myTestButton->setHighlightBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
+      myTestButton->setPressedBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
+      // Set Additional options for my TestPanel
+      myTestPanel->setBackground(new dime::BitmapRenderer(myTestPanel->getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
+      myTestButton->onClicked.connect(SigC::slot(quitButton));
+
+      // Bind Escape to quit
+      dime::InputService* pIS = dime::InputService::getInstance();
+      pIS->addInputMapping( new dime::InputMapping( pIS->getInputDevice(dime::InputDevice::KEYBOARD),
+						    SDLK_ESCAPE, false,
+						    SigC::slot(*dime::Application::getInstance(),
+							       &dime::Application::escPressed)));
+
+      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestPanel);
+      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestLabel);
+      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestTextBox);
+      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestConsole);
+      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestButton);
+      return true;
+    }
 }

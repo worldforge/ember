@@ -21,14 +21,14 @@
 
 void dime::GuiService::refresh()
 {
-  if (myDrawTarget != NULL)
+  if (myDrawTarget != NULL && myRootWidget != NULL)
     {
-      myRootWidget.draw(myDrawTarget);
+      myRootWidget->draw(myDrawTarget);
       myDrawTarget->update();
     }
   else
     {
-      dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, "Unable to refresh Gui as no draw target has been specified");
+      dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, "Unable to refresh Gui as no draw target has been specified or Root Widget does not exist");
     }    
 }
 
@@ -56,14 +56,28 @@ dime::GuiService::GuiService()
     setName( "GuiService" );
     setDescription( "Handles the Widgets that make up the GUI" );
     
-    myEventGenerator = new dime::EventGenerator(&myRootWidget);
-    myRootWidget.setEventGenerator(myEventGenerator);
+    myRootWidget = new Widget();
+    myEventGenerator = new dime::EventGenerator(myRootWidget);
+    myRootWidget->setEventGenerator(myEventGenerator);
     
     myDrawTarget = NULL;
     
     dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::INFO, "GuiService initialized.");
-    myInputService = dime::InputService::getInstance();
-    
-    
-  
+    myInputService = dime::InputService::getInstance();  
+}
+
+long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
+{
+  // Parses the node with the widget info in it
+
+  return 0;
+}
+
+void dime::GuiService::nukeWidget( long id )
+{
+}
+
+void dime::GuiService::nukeAllWidgets()
+{
+  delete myRootWidget;
 }

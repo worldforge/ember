@@ -82,7 +82,7 @@ class MetaserverService: public Service,
 	
     void gotFailure(const std::string& msg);
 
-    void receivedServerInfo(Eris::ServerInfo sInfo);
+    void receivedServerInfo(const Eris::ServerInfo& sInfo);
 	
     void completedServerList();
 

@@ -25,6 +25,7 @@
 #include "EventGenerator.h"
 #include "widget/Widget.h"
 #include <services/platform/DrawDevice.h>
+#include <services/platform/Rectangle.h>
 
 // Included custom library headers
 
@@ -47,154 +48,171 @@ namespace dime {
 class GuiService : public Service, public SigC::Object
 
 {
-
-	//======================================================================
-	// Private Variables
-	//======================================================================
-private:
+  //======================================================================
+  // Private Variables
+  //======================================================================
+ private:
     
-    Widget myRootWidget;
+  Widget *myRootWidget;
     
-    InputService *myInputService;
-	
-    DrawDevice *myDrawTarget;
+  InputService *myInputService;
+
+  DrawDevice *myDrawTarget;
     
-    EventGenerator *myEventGenerator;
+  EventGenerator *myEventGenerator;
 
-    //======================================================================
-    // Public Methods
-    //======================================================================
-    public:
+  //======================================================================
+  // Public Methods
+  //======================================================================
+ public:
 
-    //----------------------------------------------------------------------
-    // Constructors
+  //----------------------------------------------------------------------
+  // Constructor(s)
+
+  /**
+   * Creates a new GuiService using default values.
+   */
+  GuiService();
     
-    /**
-    * Creates a new GuiService using default values.
-    */
-    GuiService();
-    
 
-    //----------------------------------------------------------------------
-    // Destructor
+  //----------------------------------------------------------------------
+  // Destructor
 
-    /**
-    * Deletes a GuiService instance.
-    */
-    virtual ~GuiService()
+  /**
+   * Deletes a GuiService instance.
+   */
+  virtual ~GuiService()
     {
+      delete myRootWidget;
     }
     
 
-    //----------------------------------------------------------------------
-    // Getters
+  //----------------------------------------------------------------------
+  // Getters
 
-	/**
-	 * Returns the root widget
-	 */
-	Widget& getRootWidget()
-	{
-		return myRootWidget;
-	}
+  /**
+   * Returns the root widget (Depreicated)
+   */
+  Widget& getRootWidget()
+    {
+      return *myRootWidget;
+    }
 	
-    //----------------------------------------------------------------------
-    // Setters
+  //----------------------------------------------------------------------
+  // Setters
 
-    //----------------------------------------------------------------------
-    // Other public methods
+  //----------------------------------------------------------------------
+  // Other public methods
 	
-	/**
-	 * Sets the target DrawDevice target for GuiService to render Widgets onto.
-	 */
-	void setDrawTarget(DrawDevice *target)
-	{
-		myDrawTarget = target;
-		myRootWidget.resize(target->getDimensions());
-	}
+  /**
+   * Sets the target DrawDevice target for GuiService to render Widgets onto.
+   */
+  void setDrawTarget(DrawDevice *target)
+    {
+      myDrawTarget = target;
+      myRootWidget->resize(target->getDimensions());
+    }
 
-	/**
-	 * Draws the GUI
-	 */
-	void refresh();
+  /**
+   * Draws the GUI
+   */
+  void refresh();
+
+  /**
+   * Creates a widget and adds it to the Root Widget
+   * @returns 0 if fails else id num of widget.
+   */
+  long createWidget(xmlNodePtr widgetNode, xmlDocPtr doc);
+
+  /**
+   * Destroys a widget and all child widgets below it.
+   * @param id: the id of widget to be nuked
+   */
+  void nukeWidget(long id);
+
+  /**
+   * Destroys the RootWidget thus destroying all others.
+   */
+  void nukeAllWidgets();
 
 // Commented out for some reason, probably used
 #if 0    	
-      /**
-      * Passes mouse motion events down to widget tree
-      */
-      void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+  /**
+   * Passes mouse motion events down to widget tree
+   */
+  void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
       
-      /**
-      * Passes mouse motion events down to widget tree
-      */
-      void MouseClick(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+  /**
+   * Passes mouse motion events down to widget tree
+   */
+  void MouseClick(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
 #endif
     
-    //----------------------------------------------------------------------
-    // Methods inherited from Service
-    /**
-    * This method is used to start the service.
-    * It takes care of aquiring needed resources, initializing
-    * data structures, and so on. <p>
-    *
-    * If initialization fails, it should set appropriate status code and
-    * status text.  It could also write an entry into a log through the logging
-    * service.  <p>
-    *
-    * @returns success or error code
-    */
-    virtual Service::Status start()
+  //----------------------------------------------------------------------
+  // Methods inherited from Service
+  /**
+   * This method is used to start the service.
+   * It takes care of aquiring needed resources, initializing
+   * data structures, and so on. <p>
+   *
+   * If initialization fails, it should set appropriate status code and
+   * status text.  It could also write an entry into a log through the logging
+   * service.  <p>
+   *
+   * @returns success or error code
+   */
+  virtual Service::Status start()
     {
-        setRunning( true );
-        setStatus(Service::OK);
+      setRunning( true );
+      setStatus(Service::OK);
 
-        return Service::OK;
+      return Service::OK;
     }
 
 
-	/**
-	 * This method stops the service, and frees any used resources.
-	 *
-	 * @ param code code which represents the cause of the service halt
-	 */
-    virtual void stop( int code )
+  /**
+   * This method stops the service, and frees any used resources.
+   *
+   * @ param code code which represents the cause of the service halt
+   */
+  virtual void stop( int code )
     {
-        setRunning( false );
+      setRunning( false );
     }
 
 
 
-    //======================================================================
-    // Protected Methods
-    //======================================================================
-    protected:
+  //======================================================================
+  // Protected Methods
+  //======================================================================
+ protected:
 
 
-    //======================================================================
-    // Private Methods
-    //======================================================================
-    private:
+  //======================================================================
+  // Private Methods
+  //======================================================================
+ private:
 
 
-    //======================================================================
-    // Disabled constructors and operators
-    //======================================================================
-    private:
+  //======================================================================
+  // Disabled constructors and operators
+  //======================================================================
+ private:
 
-    /**
-    * Copy constructor not provided.
-    */
-    GuiService( const GuiService &source )
+  /**
+   * Copy constructor not provided.
+   */
+  GuiService( const GuiService &source )
     {
     }
 
 
-    /**
-    * Assignment operator not provided.
-    */
-    GuiService &operator= ( const GuiService &source )
+  /**
+   * Assignment operator not provided.
+   */
+  GuiService &operator= ( const GuiService &source )
     {
-        return *this;
+      return *this;
     }
 
 

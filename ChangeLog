@@ -1,3 +1,11 @@
+2002-11-17 M Pollard <circlemaster@blueyonder.co.uk>
+	* MetaserverService.cpp: Reformated, adapted for Ron's change to the
+	  signal
+
+	* StateManager.cpp: tidy up.
+
+	* GuiService.cpp/h Widget.h: Altered for new factory idea.
+
 2002-11-13 M Pollard <circlemaster@blueyonder.co.uk>
 	* StateManager.cpp: Fixed the bug where widgets were going out of
 	  scope, thus causing them not to be drawn.
