@@ -19,21 +19,22 @@
 
 #include "DimeEntity.h"
 #include "Avatar.h"
+#include "DimePhysicalEntity.h"
 #include "AvatarDimeEntity.h"
 
 namespace DimeOgre {
 
 
-AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager) : 
-mAvatar(NULL),
-DimeEntity(ge, vw, sceneManager)
+AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithEntity, Ogre::Vector3 scaler) : 
+mAvatar(NULL)
+,DimePhysicalEntity(ge, vw, sceneManager, nodeWithEntity, scaler)
 {
 }
 
 AvatarDimeEntity::~AvatarDimeEntity()
 {}
 
-
+/*
 void AvatarDimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild());
 
@@ -42,6 +43,7 @@ void AvatarDimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	// attach the node to the entity
 	ogreNode->attachObject(mOgreEntity);
 }
+*/
 
 void AvatarDimeEntity::handleMove()
 {

@@ -31,12 +31,19 @@ class TerrainGenerator;
 namespace DimeOgre {
 
 
+/*
+ * This is a specialization of Ogre::TerrainSceneManager.
+ * Basically, some sort of paging has been added.
+ * I'm not sure if we're going to use this, or some other plugin
+ * such as paginglandscape, instead.
+ * 
+ * @see Ogre::TerrainSceneManager
+ */
 class DimeTerrainSceneManager  : public Ogre::TerrainSceneManager {
 public:
 
 
 
-//	static DimeTerrainSceneManager & getSingleton(void);
 
 
 	DimeTerrainSceneManager();
@@ -45,18 +52,34 @@ public:
 	void attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page,float maxY, float minY);
 	Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
 
+	/*
+	 * Resizes the octree. Do this after adding pages.
+	 */
 	void doResize();
 	
+	/*
+	 * The scenemanager stores the pages in vectors. This does not allow
+	 * for pages with negative indices.
+	 * But WF uses negative terrain coordinates.
+	 * Thus we need to offset the indices.
+	 */
 	int getPageOffset();
 	
-//	void buildTerrain(long segmentXStart, long segmentZStart, long numberOfSegments);
-//	void setGenerator(TerrainGenerator* generator) { mGenerator = generator;}
-//	void setPositionOfAvatar(Ogre::Vector3 point) { mPositionOfAvatar = point; }
-//	void buildTerrainAroundAvatar();
 protected:
+
+	/* 
+	 * @see DimeOgre::DimeTerrainSceneManager::getPageOffset()
+	 */
 	Ogre::ushort mPageOffset;
+	
+	/*
+	 * Stitches the neighbours, preventing gaps
+	 */
 	void setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page); 
 
+	/*
+	 * Max and min values for the world. Used to resize the octree.
+	 */
 	float mMaxX;
 	float mMaxY;
 	float mMaxZ;
@@ -66,10 +89,6 @@ protected:
 	
 
 private:
-//	static DimeTerrainSceneManager* _instance;
-	
-//	Ogre::Vector3 mPositionOfAvatar;
-//	TerrainGenerator* mGenerator;
 };
 
 }

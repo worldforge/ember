@@ -180,7 +180,7 @@ void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* i
 			Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 		} else { 
 			std::string aString;
-			aString = "OgreID: " + dimeEntity->getOgreEntity()->getName();
+			aString = "OgreID: " + dimeEntity->getSceneNode()->getName();
 			aString += " ErisID: " + dimeEntity->getID();
 			aString += " ErisName: " + dimeEntity->getName();
 			Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);

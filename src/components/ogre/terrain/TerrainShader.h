@@ -46,7 +46,7 @@ public:
 	 * addTextureUnitsToPass(...) but works on card with a low number of
 	 * TextureUnits.
 	 */
-	void addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName);
+	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName);
 	
 protected:
 	const Ogre::String mTextureName;

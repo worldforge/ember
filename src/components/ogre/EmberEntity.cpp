@@ -17,6 +17,8 @@
 */
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
+
+#include "DimeEntityFactory.h"
 #include "DimeEntity.h"
 using namespace Ogre;
 
@@ -25,150 +27,38 @@ namespace DimeOgre {
 /*eris 1.3
 DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, , Ogre::Entity* ogreEntity) : Eris::Entity(ge, ty, vw) 
 */
-DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager)
-//, Ogre::Entity* ogreEntity) 
-: mSceneManager(sceneManager),
-mAnimationState_Walk(NULL),
-mOgreEntity(NULL),
-mOgreNode(NULL),
-//mOgreNode(dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild(ge.getId()))),
-Eris::Entity(ge, vw) 
+DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw,Ogre::SceneManager* sceneManager)
+:
+mSceneManager(sceneManager)
+, Eris::Entity(ge, vw) 
 {
-	//mOgreEntity = ogreEntity;
-	this->createOgreEntity(sceneManager);
+	
+	createSceneNode();
 	
 	// set the Ogre node position and orientation based on Atlas data
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-	std::cout << "Entity " << getID() << " placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	
+	std::cout << "Entity " << getID() << " placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
 	
 }
+
 DimeEntity::~DimeEntity()
 {
-	if (mAnimationState_Walk) {
-		MotionManager::getSingleton().removeAnimation(mAnimationState_Walk);
-	}
-/*	mSceneManager->removeEntity(mOgreEntity);
-	mSceneManager->removeEntity(mOgreEntity);
-	
-	delete mOgreEntity;
-	delete mSceneNode;
-	*/
 }
 
-void DimeEntity::scaleNode(Ogre::Real scalingFactor) {
-
-	if (hasBBox()) {
-		const WFMath::AxisBox<3> boundingBox = getBBox();	
-		WFMath::CoordType WFHeight = boundingBox.upperBound(2);
-		Ogre::Real ogreNodeHeight  = getSceneNode()->_getWorldAABB().getMaximum().y;
-		Ogre::Real scaler = ((ogreNodeHeight  / scalingFactor) / WFHeight) ;
-		getSceneNode()->setScale(scaler, scaler, scaler);
-	}
-	
-	
-}
-
-void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
-	// create the ogre node and the
-	// TODO: use Eris entity hierarchy for the node hierarchy !!
-	
-//	typeService->getTypeByName("world");
-	
-	//Eris::TypeInfo* type = getContainer()->getType();
-//	Eris::StringSet parents = getContainer()->getInherits();
-	DimeEntity* container = (DimeEntity*)getContainer();
+void DimeEntity::createSceneNode()
+{
+	DimeEntity* container = dynamic_cast<DimeEntity*>(getContainer());
 	if (container == NULL) {
-		mOgreNode = static_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild(getID()));
+		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getID()));
 	} else {
 		Ogre::SceneNode * node = container->getSceneNode();
 		if (node) {
 			mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getID()));
 		} else {
-			mOgreNode = static_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild(getID()));
+			mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getID()));
 		}
-		
 	}		
-	Ogre::String id = getID();
-	id += "_scaleNode";
-	mScaleNode = static_cast<Ogre::SceneNode*>(mOgreNode->createChild(id));
-	//mScaleNode->setInheritScale(false);
-	mScaleNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
-	mOgreNode->showBoundingBox(true);
-
-/*
-	// create the ogre entity
-	if(!strcmp(ge.getID().c_str(),avatarID.c_str())) { // if it's the player
-		dime::ConsoleBackend::getMainConsole()->pushMessage("Creating player entity");
-		fprintf(stderr, "TRACE - CREATING PLAYER ENTITY\n");
-		ogreEntity = mSceneManager->createEntity(ge.getID(), "dragon.mesh");
-		//ogreNode->setScale(OGRESCALER);
-	}
-	else 
-*/	
-	if(!strcmp(getType()->getName().c_str(),"settler"))	// 0 if strings are equal
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
-		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-		mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
-	}
-	else if(!strcmp(getType()->getName().c_str(),"merchant"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
-		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-		mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
-	}
-	else if(!strcmp(getType()->getName().c_str(),"pig"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "pig.mesh");
-		mScaleNode->setScale(0.4,0.4,0.4);
-		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-	}
-	else if(!strcmp(getType()->getName().c_str(),"sty"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "Sty.mesh");
-		mScaleNode->setScale(1,1,1);
-	}
-	else if(!strcmp(getType()->getName().c_str(),"squirrel"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "squirrel.mesh");
-	}
-	else if(!strcmp(getType()->getName().c_str(),"fir"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
-		mScaleNode->setScale(0.02,0.02,0.02);
-	}
-	else if(!strcmp(getType()->getName().c_str(),"oak"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "Oak.mesh");
-		mScaleNode->setScale(0.04,0.04,0.04);
-	}
-	else
-	{
-		// TODO: razor should be a coin
-		//fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH: ");
-		fprintf(stderr, getType()->getName().c_str());
-		fprintf(stderr, "\n");
-
-		mOgreEntity = sceneManager->createEntity(getID(), "razor.mesh");
-		//ogreNode->setScale(1,1,1);
-		//mOgreNode->setScale(0.1,0.1,0.1);
-	}
-
-	
-	if (mAnimationState_Walk) {
-		MotionManager::getSingleton().addAnimation(mAnimationState_Walk);
-	}
-	
-	mOgreEntity->setVisible(false);
-
-
-	// attach the node to the entity
-	mScaleNode->attachObject(mOgreEntity);
-	mOgreEntity->setUserObject(this);
-	//scaleNode(0.01);
-
 }
 
 /*
@@ -179,15 +69,12 @@ SceneNode* DimeEntity::getSceneNode() {
 	return mOgreNode;	
 }
 
-Ogre::Entity* DimeEntity::getOgreEntity() {
-	return mOgreEntity;	
-}
 
-/*
- * TODO: extend this method to allow for smooth movement
- */
 void DimeEntity::handleMove()
 {
+	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
+	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+	/*
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	MotionManager* motionManager = &MotionManager::getSingleton();
@@ -205,6 +92,7 @@ void DimeEntity::handleMove()
 		}
 	}
 	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
+	 */
 }
 
 void DimeEntity::handleTalk(const std::string &msg)
@@ -218,29 +106,21 @@ void DimeEntity::handleTalk(const std::string &msg)
 	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 }
 
+
 void DimeEntity::setVisible(bool vis)
 {
-	mOgreEntity->setVisible(vis);	
+//	mOgreEntity->setVisible(vis);	
 }
 
-/*
-void DimeEntity::setContainer(Entity *pr)
+
+void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity) 
 {
-		
-	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(pr);
-	if (dimeEntity) {
-		//detach from our current object and add to the new entity
-		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
-		dimeEntity->getSceneNode()->addChild(getSceneNode());
-				
-	} else {
-		//detach from our current object and add to the world
-		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
-		getSceneNode()->getCreator()->getRootSceneNode()->addChild(getSceneNode());
-	}		
-	
+	//for generic entities we set the height to 0
+	Ogre::SceneNode* sceneNode = entity->getSceneNode();
+	Ogre::Vector3 position = sceneNode->getPosition();
+	sceneNode->setPosition(position.x, 0,position.z);
 }
-*/
+
 
 void DimeEntity::setContainer(Entity *pr)
 {
@@ -256,26 +136,9 @@ void DimeEntity::setContainer(Entity *pr)
 				
 	} else {
 		//add to the world
-		getSceneNode()->getCreator()->getRootSceneNode()->addChild(getSceneNode());
+		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 	}		
-	Entity::setContainer(pr);
-}
-
-void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity) 
-{
-	//for generic entities we set the height to 0
-	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	Ogre::Vector3 position = sceneNode->getPosition();
-	sceneNode->setPosition(position.x, 0,position.z);
-}
-
-void DimeEntity::adjustHeightPosition()
-{
-	DimeEntity* container = (DimeEntity*)getContainer();
-	if (container) {
-		container->adjustHeightPositionForContainedNode(this);
-	}
-	
+	Eris::Entity::setContainer(pr);
 }
 
 

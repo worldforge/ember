@@ -26,6 +26,7 @@
 namespace DimeOgre {
 
 class DimeEntity;
+class DimePhysicalEntity;
 class TerrainGenerator;
 
 /*
@@ -46,8 +47,8 @@ public:
 	 * That means that until removeEntity is called for the specific entity
 	 * new positions for the entity will be calculated for each frame.
 	 */
-	void addEntity(DimeEntity* entity) {mMotionSet.insert(entity);}
-	void removeEntity(DimeEntity* entity) {mMotionSet.erase(entity);}
+	void addEntity(DimePhysicalEntity* entity) {mMotionSet.insert(entity);}
+	void removeEntity(DimePhysicalEntity* entity) {mMotionSet.erase(entity);}
 	
 	/*
 	 * Registers an animationState. After registration it will be enough to use
@@ -108,12 +109,12 @@ private:
 	/* 
 	 * Update the motion for a single DimeEntity
 	 */
-	void updateMotionForEntity(DimeEntity* entity, Ogre::Real timeSlice);
+	void updateMotionForEntity(DimePhysicalEntity* entity, Ogre::Real timeSlice);
 
 	/*
 	 * This contains all of the entities that will be moved each frame
 	 */
-	std::set<DimeEntity*> mMotionSet;
+	std::set<DimePhysicalEntity*> mMotionSet;
 	
 	TerrainGenerator* mTerrainGenerator;
 	

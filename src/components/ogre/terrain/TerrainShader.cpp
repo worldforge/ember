@@ -35,7 +35,7 @@ void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, Ogre::String splatTe
 	
 }
 
-void TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName) {
+Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName) {
 	Ogre::Pass* pass = technique->createPass();
 	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	//pass->setLightingEnabled(false);
@@ -55,6 +55,8 @@ void TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::String 
     textureUnitState->setTextureName(mTextureName);
     textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
     textureUnitState->setTextureCoordSet(1);
+    
+    return pass; 
 //	textureUnitState->setColourOperationEx(LBX_BLEND_CURRENT_ALPHA, LBS_TEXTURE, LBS_CURRENT);
 	
 }

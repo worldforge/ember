@@ -41,6 +41,7 @@
 
 
 #include "DimeEntity.h"
+#include "DimePhysicalEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
 //#include "TerrainGenerator.h"

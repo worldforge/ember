@@ -17,6 +17,7 @@
 */
 
 #include "DimeEntity.h"
+#include "DimePhysicalEntity.h"
 
 #include "MathConverter.h"
 #include "MotionManager.h"
@@ -46,13 +47,13 @@ template<> MotionManager* dime::Singleton<MotionManager>::ms_Singleton = 0;
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 {
-	std::set<DimeEntity*>::iterator I;
+	std::set<DimePhysicalEntity*>::iterator I;
 	for (I = mMotionSet.begin();I != mMotionSet.end(); ++I) {
 		updateMotionForEntity(*I, timeSlice);
 	}
 }
 
-void MotionManager::updateMotionForEntity(DimeEntity* entity, Ogre::Real timeSlice)
+void MotionManager::updateMotionForEntity(DimePhysicalEntity* entity, Ogre::Real timeSlice)
 {
 	//update the position of the entity
 	Ogre::Vector3 velocity = Atlas2Ogre(entity->getVelocity());

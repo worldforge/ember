@@ -30,6 +30,7 @@
 #include "DimeTerrainPageSource.h"
 
 #include "DimeEntity.h"
+#include "DimePhysicalEntity.h"
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
 #include "WorldDimeEntity.h"
@@ -38,11 +39,14 @@ namespace DimeOgre {
 
 
 DimeEntityFactory::DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
-: mSceneManager(sceneManager), mTerrainGenerator(terrainGenerator), mTypeService(typeService)
+: mSceneManager(sceneManager)
+, mTerrainGenerator(terrainGenerator)
+, mTypeService(typeService)
 {
-	mTerrainType = typeService->getTypeByName("world");
+	mTerrainType = mTypeService->getTypeByName("world");
 	dime::ServerService* serverService = dime::DimeServices::getInstance()->getServerService();
-
+	loadMeshDefinitions();
+	
 	serverService->GotAvatar.connect(SigC::slot(*this, &DimeEntityFactory::setAvatar));
 }
 
@@ -59,21 +63,44 @@ Eris::Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameE
 {
 	
 //	dime::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
-
-    Eris::TypeInfoPtr type = world->getConnection()->getTypeService()->getTypeForAtlas(ge);
+	Eris::Entity* dimeEntity;
+    Eris::TypeInfoPtr type = mTypeService->getTypeForAtlas(ge);
     if (ge.getId() == mAvatar->getID()) {
-    	AvatarDimeEntity* avatarEntity = new AvatarDimeEntity(ge, world,mSceneManager);
+   	
+    	AvatarDimeEntity* avatarEntity = createAvatarEntity(ge, world);
     	CreatedAvatarEntity.emit(avatarEntity);
-    	return avatarEntity;
-    } else if (!type->safeIsA(mTerrainType)) {
-		//perhaps we should store this somewhere so we can do proper memory handling?
-		DimeEntity* dimeEntity = new DimeEntity(ge, world, mSceneManager);
-	
-		fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
-		return dimeEntity;
+    	dimeEntity = avatarEntity;
+ 
+    } else if (type->safeIsA(mTypeService->getTypeByName("boundary"))) {
+
+    	//we don't want this to have any Ogre::Entity
+		dimeEntity = new DimeEntity(ge, world, mSceneManager);
+
+    } else if (type->safeIsA(mTerrainType)) {
+
+    	dimeEntity = createWorld(ge, world);
+
     } else {
-    	return createWorld(ge, world);
+
+    	dimeEntity = createPhysicalEntity(ge, world);
+ 
     }
+
+	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
+	return dimeEntity;
+}
+
+AvatarDimeEntity* DimeEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world)
+{
+	Ogre::String id = ge.getId();
+	id += "_scaleNode";
+	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
+	Ogre::Entity* ogreEntity = mSceneManager->createEntity(ge.getId(), "robot.mesh");
+
+	// attach the node to the entity
+	scaleNode->attachObject(ogreEntity);
+    	
+    return new AvatarDimeEntity(ge, world,mSceneManager, scaleNode, Ogre::Vector3::UNIT_SCALE);
 	
 }
 
@@ -117,6 +144,133 @@ void DimeEntityFactory::buildTerrainAroundAvatar()
 	mTerrainGenerator->prepareSegments(lowXBound, lowYBound, (size * 2) + 1);
 */
 }
+
+
+
+DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world) {
+	
+	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
+	Ogre::Entity* ogreEntity;
+	Ogre::String id = ge.getId();
+	id += "_scaleNode";
+	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
+	//mScaleNode->setInheritScale(false);
+	//mScaleNode->setScale(Ogre::Vector3(0.01,0.01,0.01));	
+	//scaleNode->showBoundingBox(true);
+
+	std::string typeName = mTypeService->getTypeForAtlas(ge)->getName();
+	if (typeName == "pig") {
+		int i = 0;
+	}
+	MeshDefinitionMap::const_iterator I = meshDefinitions.find(typeName);
+	if (I != meshDefinitions.end()) {
+		ogreEntity = mSceneManager->createEntity(ge.getId(), I->second.modelName);
+		scaler = I->second.scaler;
+	} else {
+		//create placeholder
+		ogreEntity = mSceneManager->createEntity(ge.getId(), "razor.mesh");
+	}
+	ogreEntity->setVisible(false);
+	
+	scaleNode->attachObject(ogreEntity);
+	return new DimePhysicalEntity(ge, world, mSceneManager, scaleNode, scaler);
+	
+	
+/*		
+	MeshDefiniton def
+
+	if(!strcmp(getType()->getName().c_str(),"settler"))	// 0 if strings are equal
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
+		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
+//		mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
+	}
+	else if(!strcmp(getType()->getName().c_str(),"merchant"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
+		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
+		//mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
+	}
+	else if(!strcmp(getType()->getName().c_str(),"pig"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "pig.mesh");
+//		mScaleNode->setScale(0.4,0.4,0.4);
+		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
+	}
+	else if(!strcmp(getType()->getName().c_str(),"sty"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "Sty.mesh");
+//		mScaleNode->setScale(1,1,1);
+	}
+	else if(!strcmp(getType()->getName().c_str(),"squirrel"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "squirrel.mesh");
+	}
+	else if(!strcmp(getType()->getName().c_str(),"fir"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
+//		mScaleNode->setScale(0.02,0.02,0.02);
+	}
+	else if(!strcmp(getType()->getName().c_str(),"oak"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "Oak.mesh");
+//		mScaleNode->setScale(0.04,0.04,0.04);
+	}
+	else
+	{
+		// TODO: razor should be a coin
+		//fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH: ");
+		fprintf(stderr, getType()->getName().c_str());
+		fprintf(stderr, "\n");
+
+		mOgreEntity = sceneManager->createEntity(getID(), "razor.mesh");
+		//ogreNode->setScale(1,1,1);
+		//mOgreNode->setScale(0.1,0.1,0.1);
+	}
+
+*/	
+	
+
+
+	// attach the node to the entity
+//	mScaleNode->attachObject(mOgreEntity);
+//	scaleNode(0.01);
+
+}
+
+
+void DimeEntityFactory::loadMeshDefinitions()
+{
+	MeshDefinition def;
+	def.scaler = Ogre::Vector3::UNIT_SCALE;
+	
+	def.modelName = "robot.mesh";
+	meshDefinitions["settler"] = def;
+	
+	def.modelName = "robot.mesh";
+	meshDefinitions["merchant"] = def;
+
+	def.modelName = "pig.mesh";
+	def.scaler = Ogre::Vector3(5,5,5);
+	meshDefinitions["pig"] = def;
+
+	def.modelName = "Sty.mesh";
+	def.scaler = Ogre::Vector3::UNIT_SCALE;
+	meshDefinitions["sty"] = def;
+
+	def.modelName = "squirrel.mesh";
+	meshDefinitions["squirrel"] = def;
+	
+	def.modelName = "Fir.mesh";
+	meshDefinitions["fir"] = def;
+	
+	def.modelName = "Oak.mesh";
+	meshDefinitions["oak"] = def;
+
+	
+}
+
+
 /* namespace Sear */
 
 

@@ -48,47 +48,26 @@
 namespace DimeOgre {
 class DimeEntityFactory;
 
+/*
+ * A representation of an Eris::Entity, ie. a world entity.
+ * Note that most entities in the game world will be of type DimePhysicalEntity
+ * as they will have some sort of physical representation.
+ * For things such as boundaries and weather, this is a nice class.
+ */
 class DimeEntity : public Ogre::UserDefinedObject, public Eris::Entity {
 	friend class DimeEntityFactory;
 public:
 
-/*eris 1.3
-	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, Ogre::Entity* ogreEntity); 
-*/
 	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager);
-//	, Ogre::Entity* ogreEntity); 
 	virtual ~DimeEntity();
 	
 	/*
-	 * return the scenenode to which this entity belongs
+	 * Overridden from Eris::Entity
+	 * @see Eris::Entity
 	 */
-	Ogre::SceneNode* getSceneNode();
-	
-	/*
-	 * return the Ogre::Entity of this object
-	 */
-	Ogre::Entity* getOgreEntity();
-	
-	/* from eris 1.2 */
 	virtual void handleMove();
 	virtual void handleTalk(const std::string &msg);
-// not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
-	/// update the container of this entity (may be NULL)
 	virtual void setContainer(Entity *pr);
-	
-//	virtual void setContents(const Atlas::Message::Element::ListType &contents);
-	
-	/// add a contained entity to this object (sets container)
-	//virtual void addMember(Entity *e);
-	
-	/// remove an contained entity
-	/** remove a contained entity; throws InvalidOperation if not found. Note
-	that the container of e is <i>not<i/> reset */
-	//virtual void rmvMember(Entity *e);
-	
-	/** called by World in response to Appearance/Disappearance messages : note that
-	after a disappearance (vis = false), the server will not send any futher messages to the
-	entity. At some point, invisible entities get flushed by Eris using an LRU scheme. */
 	virtual void setVisible(bool vis);
 
 	/**
@@ -97,29 +76,29 @@ public:
 	 * This should of course be extended to a more dynamic physics simulation
 	 * in the future
 	 */
-	virtual void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity);
+	virtual void adjustHeightPositionForContainedNode(DimeEntity* const entity);
 
-	/**
-	 * Adjust the height of the entity so that it "snaps" to the ground.
-	 * This is most often done by making a call to the containing node's
-	 * adjustHeightPositionForContainedNode method.
+	/*
+	 * return the scenenode to which this entity belongs
 	 */
-	virtual void DimeEntity::adjustHeightPosition(); 
-	
+	Ogre::SceneNode* getSceneNode();
+
+
 
 protected: 
 
-	virtual void scaleNode(Ogre::Real scalingFactor);
-	virtual void createOgreEntity(Ogre::SceneManager* sceneManager);
-	Ogre::Entity* mOgreEntity;
-	Ogre::SceneNode* mOgreNode;
-	Ogre::SceneNode* mScaleNode;
-	Ogre::SceneManager* mSceneManager;
-	
-	/*
-	 * this will hold the animation for the "Walk" movement
+	/* 
+	 * Creates the main scene node which holds the entity.
 	 */
-	Ogre::AnimationState* mAnimationState_Walk;
+	void DimeEntity::createSceneNode();
+
+	/*
+	 * The main SceneNode which holds the entity in the ogre world space.
+	 */
+	Ogre::SceneNode* mOgreNode;
+	
+	Ogre::SceneManager* mSceneManager;
+
 };
 
 }

@@ -30,12 +30,13 @@
 namespace DimeOgre {
 	
 class DimeEntity;
+class DimePhysicalEntity;
 class Avatar;
 
-class AvatarDimeEntity: public DimeEntity {
+class AvatarDimeEntity: public DimePhysicalEntity {
 public:
 
-	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager);
+	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithEntity, Ogre::Vector3 scaler);
 	virtual ~AvatarDimeEntity();
 	
 	
@@ -54,12 +55,14 @@ public:
 	void setAvatar(Avatar* avatar) {mAvatar = avatar;}
 	Avatar* getAvatar() {return mAvatar;}
 	
+	/*
+	 * returns the Ogre::SceneNode which represents the avatar
+	 */
 	Ogre::SceneNode* getAvatarSceneNode();
 
 	
 protected: 
 
-	virtual void createOgreEntity(Ogre::SceneManager* sceneManager);
 	Avatar* mAvatar;
 	
 };
