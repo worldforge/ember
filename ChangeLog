@@ -1,3 +1,17 @@
+2004-02-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fix deps so that we no longer get 2 potentially conflicting
+	  versions of wfmath.
+
+	* src/services/gui/widget/Widget.cpp,
+	  src/services/gui/widget/Widget.h: Remove some incorrect use
+	  of the inline keyword.
+
+	* src/services/metaserver/MetaserverService.cpp,
+	  src/services/platform/BitmapRenderer.cpp,
+	  src/services/platform/BorderRenderer.cpp: Get rid of
+	  some silly warnings.
+
 2004-02-19 Ron Steinke <rsteinke@w-link.net>
 	* configure.ac: Cleaned up the OpenAL and libxml error messages.
 

@@ -173,10 +173,10 @@ dime::Widget *dime::Widget::getWidgetAt(int x, int y)
 	
 }
 
-inline bool dime::Widget::captureMouse() {
+bool dime::Widget::captureMouse() {
   return myEventGenerator->captureMouse(this);
 }
 
-inline void dime::Widget::releaseMouse() {
+void dime::Widget::releaseMouse() {
   myEventGenerator->releaseMouse(this);
 }

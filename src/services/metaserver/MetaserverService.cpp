@@ -169,7 +169,7 @@ namespace dime
       << "\n\rServer Type: "<<sInfo.getServer()
       << "\n\rClients: "<<sInfo.getNumClients()
       << " Ping: "<< sInfo.getPing()
-      << " Uptime: "<< sInfo.getUptime()
+      << " Uptime: "<< (int)sInfo.getUptime()
       << ENDM;
 
     return;

@@ -52,7 +52,7 @@ void dime::BorderRenderer::setBorderContents(const Renderer *prototype)
 
 void dime::BorderRenderer::generateBorder()
 {
-  if (!checkLines()) exit;
+  if (!checkLines()) return;
 	
   int x = myRect.getX();
   int y = myRect.getY();
