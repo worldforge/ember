@@ -66,7 +66,10 @@ protected:
 	ActiveChatWindowMap mActiveChatWindows;
 	
 	//the length in seconds a window should be shown after it has been activated
-	float activeTime;
+	float timeShown;
+	
+	//how far away, in meters, the window should be visible
+	float distanceShown;
 	
 	
 

@@ -1,5 +1,9 @@
 2005-01-05  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* chat windows now fade out over time, and are removed when the player moves away from the npc. This can be set in the config file.
+
+2005-01-05  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* correct ordering of libs to avoid compile error
 
 2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>

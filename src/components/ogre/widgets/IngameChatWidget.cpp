@@ -44,13 +44,29 @@
 #include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 
 
 namespace EmberOgre {
 
 IngameChatWidget::IngameChatWidget(GUIManager* guiManager)
-: activeTime(60), Widget::Widget(guiManager)
+: Widget::Widget(guiManager)
 {
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	if (configSrv->itemExists("ingamechatwidget", "timeshown")) {
+		timeShown = (double)configSrv->getValue("ingamechatwidget", "timeshown");
+	} else {
+		timeShown = 0;
+	}
+	
+	if (configSrv->itemExists("ingamechatwidget", "distanceshown")) {
+		distanceShown = (double)configSrv->getValue("ingamechatwidget", "distanceshown");
+	} else {
+		distanceShown = 100;
+	}
+
 }
 
 
@@ -106,6 +122,7 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 			
 			activeWindow.appendIGChatLine(line);
 		} else {
+			I->second.elapsedTimeSinceLastUpdate = 0.0f;
 			I->second.appendIGChatLine(line);
 /*			chatWindow = I->second.window;*/
 		}
@@ -113,6 +130,7 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 		//chatWindow->setAlpha(1.0f);
 		
 		//TODO: make this better
+		//cegui seems to crash when calling it
 		//chatWindow->moveToBack();
 		
 		
@@ -155,10 +173,22 @@ void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 		placeWindowOnEntity(window->window, window->entity);
 		
 		window->elapsedTimeSinceLastUpdate += event.timeSinceLastFrame;
-		//make the windows fade over time
-		//window->window->setAlpha(window->elapsedTimeSinceLastUpdate / activeTime);
-		if (window->elapsedTimeSinceLastUpdate >= activeTime) {
+		
+		Ogre::Vector3 entityWorldCoords = window->entity->getModel()->getWorldBoundingBox(true).getCenter();
+		Ogre::Vector3 cameraCoords = EmberOgre::getSingletonPtr()->getMainCamera()->getCamera()->getDerivedPosition();
+		Ogre::Vector3 diff = entityWorldCoords - cameraCoords;
+		
+		if (diff.length() > distanceShown) {
 			windowsToRemove.push_back(I->first);
+		} else {
+			//unless timeShown is 0 windows will fade over time
+			if (timeShown != 0) {
+				//make the windows fade over time
+				window->window->setAlpha(1 - (window->elapsedTimeSinceLastUpdate / timeShown));
+				if (window->elapsedTimeSinceLastUpdate >= timeShown) {
+					windowsToRemove.push_back(I->first);
+				}
+			}
 		}
 	}
 	
@@ -198,23 +228,18 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::appendIGChatLine( const std:
 	{
 		CEGUI::Window* responseWidget = static_cast<CEGUI::Window*>(window->getChild(std::string("IngameChatWidget/") + entity->getId() + "/" + "ResponseList"));
 			
+		
+		//remove all existing response windows
 		std::vector<CEGUI::Window*>::const_iterator responses_I = responseTextWidgets.begin();
 		std::vector<CEGUI::Window*>::const_iterator responses_I_end = responseTextWidgets.end();
-		
 		for (; responses_I != responses_I_end; ++responses_I)
 		{
 			windowManager->destroyWindow(*responses_I);
 		}
 		responseTextWidgets.clear();
 		
-/*		//remove all existing response windows
-		uint childNum = responseWidget->getChildCount();
-		for (uint childIter = 0; childIter < childNum; ++childIter) 
-		{
-			mWindowManager->destroyWindow(responseWidget->getChildAtIdx(0));
-			
-		}*/
-		
+
+		//for each response, create a button
 		std::vector<std::string> responses = entity->getSuggestedResponses();
 		std::vector<std::string>::const_iterator I = responses.begin();
 		std::vector<std::string>::const_iterator I_end = responses.end();
