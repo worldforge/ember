@@ -11,7 +11,7 @@ void dime::Widget::setParent(Widget* parent)
 
 void dime::Widget::setEventGenerator(EventGenerator *generator)
 {
-    assert(generator);
+    //assert(generator);
     myEventGenerator = generator;
     
     std::vector<Widget*>::iterator end = myChildren.end();

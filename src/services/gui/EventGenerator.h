@@ -40,7 +40,22 @@ namespace dime
         EventGenerator() { };
         
     private:
-        
+        //---------------------------------------------------------------------------------------------------
+        //  The methods that we connect to the InputService to listen to events.
+        //---------------------------------------------------------------------------------------------------
+        	
+	/**
+	 * Passes mouse motion events down to widget tree
+	 */
+	void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+	
+	/**
+	 * Passes mouse motion events down to widget tree
+	 */
+	void MouseClick(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+
+
+
         //---------------------------------------------------------------------------------------------------
         // Keyboard events: 
         //---------------------------------------------------------------------------------------------------
@@ -72,7 +87,7 @@ namespace dime
          * Checks the mouse input queue and redirects mouse events to the main
          * widget or the widget that has captured the mouse.
          */
-        virtual void handleMouseEvent();
+        virtual void handleMouseEvent(int x, int y);
         /**
          * Captures mouse input and directs it to the specified widget until
          * releaseMouse is called.  Returns true on success, false if mouse
