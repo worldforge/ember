@@ -19,11 +19,9 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-// Include system headers here
+#include <string>
 
-// Include library headers here
-
-// Include other headers of the current program here
+#include "ComponentFactory.h"
 
 namespace dime {
 namespace components {
