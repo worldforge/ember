@@ -202,7 +202,10 @@ class DimeServices
      */
     dime::ConfigService *getConfigService()
       {
-	return dime::ConfigService::getInstance();
+	if (myConfigService == NULL)
+	  myConfigService = new dime::ConfigService();
+
+	return myConfigService;
       }
 
     /**
@@ -291,15 +294,16 @@ class DimeServices
      */
     DimeServices()
     {
-		myGuiService = NULL;
+      myConfigService = NULL;
+      myGuiService = NULL;
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
+      // GNDN: MSVC < version 7 is broken
 #else
-		myMetaserverService = NULL;
-		myServerService = NULL;
+      myMetaserverService = NULL;
+      myServerService = NULL;
 #endif
-		mySoundService = NULL;
-	}
+      mySoundService = NULL;
+    }
 
 
     /**

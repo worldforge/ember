@@ -1,7 +1,8 @@
 2002-12-10 M Pollard <circlemaster@blueyonder.co.uk>
 	* templategameview.cpp/h: Updated this.
 
-	* ConfigService.cpp/h: standardised the instancing mechanism.
+	* DimeServices.cpp/h ConfigService.cpp/h: standardised the instancing
+	  mechanism.
 
 	* LoggingService.cpp/h ConfigService.cpp/h: made sure Service() was
 	  instanced.
