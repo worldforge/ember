@@ -97,8 +97,8 @@ void dime::FontRenderer::renderText(DrawDevice *device)
      SDL_Rect src, dest;
      src.x = 0;
      src.y = 0;
-     src.w = myRectangle.getWidth();
-     src.h = myRectangle.getHeight();
+     src.w = myTextSurface->w;//myRectangle.getWidth();
+     src.h = myTextSurface->h;//myRectangle.getHeight();
      dest = myRectangle.getSDL_Rect();
      if(myTextSurface)
          {
