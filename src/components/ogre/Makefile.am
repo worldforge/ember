@@ -23,11 +23,12 @@ $(top_srcdir)/src/services/logging/libLoggingService.a \
 $(top_srcdir)/src/framework/libFramework.a \
 $(top_srcdir)/src/services/libServices.a
 
+LDFLAGS = @LDFLAGS@ -L$(OGRE_PATH)/OgreMain/src -lOgreMain
+CXXFLAGS = @CXXFLAGS@ -DEXT_HASH
+
 OgreApp_SOURCES = OgreApp.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
-
-LDFLAGS += -L$(OGRE_PATH)/OgreMain/src -lOgreMain
 
 #	g++ -DHAVE_CONFIG_H -I. -I.  -I$(OGRE_PATH)/OgreMain/include \
 #	-g -O2 -I/usr/include/SDL -I$(OGRE_PATH)/Samples/Common/include -D_REENTRANT -c OgreApp.cpp \
