@@ -31,6 +31,7 @@
 #include <SDL/SDL.h>
 #include <string>
 #include <vector>
+#include <math.h>
 
 
 namespace dime {
@@ -109,6 +110,7 @@ namespace dime {
          * The surface that this RectangleRenderer acts upon
          */
         SDL_Surface *mySurface;
+	SDL_Surface *myStretchedSurface;
 
         
         /**
@@ -308,5 +310,8 @@ namespace dime {
 
 }   // End of application namespace
 
+
+Uint32 getpixel(SDL_Surface *surface, int x, int y);
+void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
 #endif

@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.12  2002-08-05 17:33:52  winand
+ *      Revision 1.13  2002-08-06 23:59:50  winand
+ *      Stretching render now works, but only for stretching to larger height and
+ *      width, trying to shrink an image using stretch probably won't work.
+ *
+ *      Revision 1.12  2002/08/05 17:33:52  winand
  *      Changed the constructors to initialize variables.  Removed unneccessary
  *      calls in the constructors.  Implemented the grid constructor/renderer.
  *
@@ -95,7 +99,77 @@ dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
 	myStyle(style),
 	myRect(rect)
 {
+    SDL_Rect src, dest;
+    src.x = 0;
+    src.y = 0;
+    dest = myRect.getSDL_Rect();
+
     mySurface = ImageService::getInstance()->loadImage(bitmapString);
+    src.w = mySurface->w;
+    src.h = mySurface->h;
+    myStretchedSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, dest.w,
+	    dest.h, mySurface->format->BitsPerPixel, 0, 0, 0, 0);
+
+    switch (myStyle)
+    {
+	case STRETCH:
+	    {
+		float xProportion, yProportion;
+
+		xProportion = (float)dest.w / (float)src.w;
+		yProportion = (float)dest.h / (float)src.h;
+
+		Uint32 color;
+		int yCheck=0, xCheck=0, lastYCheck=0, lastXCheck=0;
+		SDL_Rect smallRect;
+		for (int y=0;y < src.h;y++)
+		{
+		    yCheck = (int)round(yProportion*(y));
+		    lastXCheck = 0;
+		    for (int x=0; x < src.w; x++)
+		    {
+			xCheck = (int)round(xProportion*(x));
+			color = getpixel(mySurface, x, y);
+			if ((yCheck - lastYCheck == 1) && (xCheck 
+				    - lastXCheck == 1))
+			{
+			    putpixel(myStretchedSurface, lastXCheck, lastYCheck, color);
+			}
+			else if ((yCheck - lastYCheck > 0) || (xCheck
+				    - lastXCheck > 0))
+			{
+			    smallRect.x = lastXCheck;
+			    smallRect.y = lastYCheck;
+			    smallRect.w = xCheck - lastXCheck;
+			    smallRect.h = yCheck - lastYCheck;
+			    SDL_FillRect(myStretchedSurface, &smallRect, color);
+			}
+			lastXCheck = xCheck;
+			
+		    }
+		    lastYCheck = yCheck;
+		}
+		
+		src.w = dest.w;
+		src.h = dest.h;
+		break;
+	    }
+    case TILE:
+    {
+	SDL_Rect curDest;
+	curDest.w = src.w;
+	curDest.h = src.h;
+	for(curDest.x = 0;curDest.x < dest.w; curDest.x += src.w)
+	{
+	    for (curDest.y = 0; curDest.y < dest.h;curDest.y += src.h)
+	    {
+		SDL_BlitSurface(mySurface, &src, myStretchedSurface, &curDest);
+		//device->blitSurface(&src, &curDest, mySurface);
+	    }
+	}
+	break;
+	}
+    }
 }
 
 
@@ -224,34 +298,33 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
  */
 void dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 {
-    SDL_Rect src, dest, curDest;
+    SDL_Rect src, dest;
     src.x = 0;
     src.y = 0;
-    src.w = mySurface->w;
-    src.h = mySurface->h;
+    src.w = myStretchedSurface->w;
+    src.h = myStretchedSurface->h;
     dest = myRect.getSDL_Rect();
-    curDest.w = src.w;
-    curDest.h = src.h;
 
     switch(myStyle)
         {
         case TILE:
-            for( curDest.x = dest.x; curDest.x < dest.x + dest.w; curDest.x += curDest.w)
-                {
-                    for ( curDest.y = dest.y; curDest.y < dest.y + dest.h; curDest.y += curDest.h)
-                        {
-                            device->blitSurface(&src, &curDest, mySurface);
-                        }
-                }
-            break;
+	    {
+		device->blitSurface(&src, &dest, myStretchedSurface);
+		break;
+	    }
         case STRETCH:
-            
-            device->blitSurface(&src, &dest, mySurface );
-            break;
+	    {
+		src.w = dest.w;
+		src.h = dest.h;
+		device->blitSurface(&src, &dest, myStretchedSurface);
+	       break;
 
+	    }
 	case CENTER:
 	default:
+	    {
 	    break;
+	    }
         }
 }
 
@@ -335,4 +408,73 @@ void dime::RectangleRenderer::renderGrid(dime::DrawDevice *device)
 dime::RectangleRenderer::~RectangleRenderer()
 {
 
+}
+
+
+Uint32 getpixel(SDL_Surface *surface, int x, int y)
+{
+    int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1:
+        return *p;
+
+    case 2:
+        return *(Uint16 *)p;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
+            return p[0] << 16 | p[1] << 8 | p[2];
+        else
+            return p[0] | p[1] << 8 | p[2] << 16;
+    case 4:
+        return *(Uint32 *)p;
+
+    default:
+        return 0;       /* shouldn't happen, but avoids warnings */
+    }
+}
+
+
+void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+    int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to set */
+
+    switch(bpp) {
+    case 1: {
+	Uint8 *bufp;
+	bufp = (Uint8 *)surface->pixels + y*surface->pitch + x;
+	*bufp = pixel;
+        break;
+	    }
+    case 2: {
+	Uint16 *bufp;
+	bufp = (Uint16 *)surface->pixels + y*surface->pitch/2 + x;
+	*bufp = pixel;
+        break;
+	    }
+    case 3: {
+	Uint8 *bufp;
+	bufp = (Uint8 *)surface->pixels + y*surface->pitch + x * 3;
+        if(SDL_BYTEORDER == SDL_LIL_ENDIAN) {
+	    bufp[0] = pixel;
+	    bufp[1] = pixel >> 8;
+	    bufp[2] = pixel >> 16;
+        } else {
+	    bufp[2] = pixel;
+	    bufp[1] = pixel >> 8;
+	    bufp[0] = pixel >> 16;
+        }
+        break;
+	    }
+    case 4: {
+	Uint32 *bufp;
+	bufp = (Uint32 *)surface->pixels + y*surface->pitch/4 + x;
+	*bufp = pixel;
+        break;
+	    }
+    }
 }
