@@ -27,6 +27,7 @@
 // Included headers from the current project
 #include "framework/ConsoleObject.h"
 #include "services/gui/Widget.h"
+#include "Tokeniser.h"
 
 // Included custom library headers
 

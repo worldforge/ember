@@ -195,6 +195,17 @@ class FontRenderer
         myText = text;
         myUpdate = true;
     }
+
+    void setText(const std::string& text)
+      {
+	//FIXME: I'm unsure as to whether the conversion algo works
+	Font::FontString fontString;
+	for(unsigned int i = 0; i < text.length(); ++i)
+          {
+	    fontString+=text[i];
+          }
+	setText(fontString);
+      }
     
     void setColor(const Color &color)
     {
