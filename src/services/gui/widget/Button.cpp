@@ -25,16 +25,6 @@ int dime::Button::draw(DrawDevice *target)
 	return 0;
 }
 
-void dime::Button::highlight()
-{
-	myCurrentBackground = &myHighlightBackground;
-}
-
-void dime::Button::lowlight()
-{
-	myCurrentBackground = &myStandardBackground;
-}
-
 bool dime::Button::checkMouseEvent(std::vector<int> coords)
 {
 	if (coords.size() != 2)
@@ -50,7 +40,7 @@ bool dime::Button::checkMouseEvent(std::vector<int> coords)
 			{
 				// Mouse has just entered widget.
 				myMouseIsInside = true;
-                //				onMouseEnter.emit(this);
+				//onMouseEnter.emit(this);
 			}
 
 			// Coordinates lie inside this widget.
@@ -69,4 +59,18 @@ bool dime::Button::checkMouseEvent(std::vector<int> coords)
 			return false;
 		}
 	}
+}
+
+void dime::Button::mouseUp( MouseButtonEvent *event ) 
+{
+  if (myPressed)
+    {
+      // Uncapture the mouse
+      if (myMouseIsInside)
+	{
+	  onClicked.emit(this);
+	}
+    }
+
+  Widget::mouseUp(event);
 }

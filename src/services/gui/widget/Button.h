@@ -53,40 +53,15 @@ namespace dime {
 class Button : public Widget
 
 {
-	//======================================================================
+    //======================================================================
     // Public Signals
     //======================================================================
     public:
     
     /**
-    * Connect a slot here to observe when a mouse button is pressed.
+    * Connect a slot here to observe when the button is clicked.
     */
-    //    SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseDown;
-	
-    /**
-    * Connect a slot here to observe when a mouse button is released.
-    */
-    //SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseUp;
-    
-    /**
-    * Connect a slot here to observe MouseMotions
-    */
-    //SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseMove;
-    
-    /**
-    * Connect a slot here to observe when MouseMoves over this Widget
-    */
-    //SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseEnter;
-    
-    /**
-    * Connect a slot here to observe when a Mouse leaves this Widget
-    */
-    //SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseExit;
-    
-    /**
-    * Connect a slot here to observe when a key is pressed and this Widget has focus.
-    */
-    //SigC::Signal2<void, Button*, SDLKey, SigC::Marshal<void> > onKeyPress;
+    SigC::Signal1<void, Button*, SigC::Marshal<void> > onClicked;
 
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -110,10 +85,11 @@ class Button : public Widget
     // Private Variables
     //======================================================================
     private:
-
-		RectangleRenderer *myHighlightBackground;
-		RectangleRenderer *myStandardBackground;
-		RectangleRenderer **myCurrentBackground;
+    RectangleRenderer *myPressedBackground;
+    RectangleRenderer *myHighlightBackground;
+    RectangleRenderer *myStandardBackground;
+    RectangleRenderer **myCurrentBackground;
+    bool myPressed;
 
     //======================================================================
     // Public Methods
@@ -126,7 +102,10 @@ class Button : public Widget
     /**
     * Creates a new Button using default values.
     */
-    Button() : Widget()
+    Button() : Widget(), myPressedBackground(NULL),
+      myHighlightBackground(NULL),
+      myStandardBackground(NULL),
+      myPressed(false)
     {
 		myCurrentBackground = &myStandardBackground;
     }
@@ -134,7 +113,10 @@ class Button : public Widget
     /**
     * Creates a new Button using rect.
     */
-    Button(Rectangle rect) : Widget(rect)
+    Button(Rectangle rect) : Widget(rect), myPressedBackground(NULL),
+      myHighlightBackground(NULL),
+      myStandardBackground(NULL),
+      myPressed(false)
     {
 		myCurrentBackground = &myStandardBackground;
     }
@@ -156,13 +138,14 @@ class Button : public Widget
     */
     Button &operator= ( const Button &source )
     {
-        // Copy fields from source class to this class here.
-		myStandardBackground = source.myStandardBackground;
-		myHighlightBackground = source.myHighlightBackground;
-		myCurrentBackground = source.myCurrentBackground;
+      // Copy fields from source class to this class here.
+      myPressedBackground = source.myPressedBackground;
+      myStandardBackground = source.myStandardBackground;
+      myHighlightBackground = source.myHighlightBackground;
+      myCurrentBackground = source.myCurrentBackground;
 
-        // Return this object with new value
-        return *this;
+      // Return this object with new value
+      return *this;
     }
 
 
@@ -174,8 +157,8 @@ class Button : public Widget
     */
     virtual ~Button()
     {
-		if (myParent != NULL) myParent->removeWidget(this);
-        // TODO: Free any allocated resources here.
+      if (myParent != NULL) myParent->removeWidget(this);
+      // TODO: Free any allocated resources here.
     }
 
 
@@ -187,16 +170,24 @@ class Button : public Widget
     // Setters
 
     /**
-    * Sets the highlighted background RectangleRenderer of this Widget
-    */	
+     * Sets the pressed background RectangleRenderer of this Widget
+     */
+    virtual void setPressedBackground(RectangleRenderer *background)
+      {
+	myPressedBackground = background;
+      }
+
+    /**
+     * Sets the highlighted background RectangleRenderer of this Widget
+     */	
 	virtual void setHighlightBackground(RectangleRenderer *background)
 	{
 		myHighlightBackground = background;
 	}
 
-	/**
-    * Sets the standard background RectangleRenderer of this Widget
-    */	
+    /**
+     * Sets the standard background RectangleRenderer of this Widget
+     */	
 	virtual void setBackground(RectangleRenderer *background)
 	{
 		myStandardBackground = background;
@@ -205,30 +196,57 @@ class Button : public Widget
     //----------------------------------------------------------------------
     // Other public methods
 
-	/**
-	 * Draws the widget, and/or its children.
-	 */
+    /**
+     * Draws the widget, and/or its children.
+     */
     virtual int draw(DrawDevice *target);
 
-	/**
-	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
-	 */
-	virtual bool checkMouseEvent(std::vector<int> coords);
+    /**
+     * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
+     */
+    virtual bool checkMouseEvent(std::vector<int> coords);
 
-	virtual void highlight();
+    virtual void setHighlighted() { myCurrentBackground = &myHighlightBackground; }
 	
-	virtual void lowlight();
+    virtual void setLowlighted(){ myCurrentBackground = &myStandardBackground; }
+
+    virtual void setPressed(){ myCurrentBackground = &myPressedBackground; }
 	
-	/**
+    /**
+     * A mouse button was pressed.
+     * button is 1 for left, 2 for right and 3 for middle.
+     * win is the window at position x, y (normally 'this').
+     */
+    virtual void mouseDown( MouseButtonEvent *event )
+      {
+	myPressed = true;
+	setPressed();
+
+	// Capture the mouse
+
+        Widget::mouseDown(event);      
+      }
+        
+    /**
+     * A mouse button was released.
+     * button is 1 for left, 2 for right and 3 for middle.
+     * win is the window at position x, y (normally 'this').
+     */
+    virtual void mouseUp( MouseButtonEvent *event );
+
+    /**
      * The mouse has just entered win.
      * win is the window at position x, y (normally 'this').
      */
     virtual void mouseEnter( MouseMotionEvent *event )
     {
-		// Change how we look
-		highlight();
+      // Change how we look
+      if (myPressed)
+	setPressed();
+      else
+	setHighlighted();
 
-		Widget::mouseEnter( event );
+      Widget::mouseEnter( event );
     }
 
     /**
@@ -237,10 +255,10 @@ class Button : public Widget
      */
     virtual void mouseExit( MouseMotionEvent *event ) 
     {
-		// Change how we look
-		lowlight();
+      // Change how we look
+      setLowlighted();
 
-		Widget::mouseExit( event );
+      Widget::mouseExit( event );
     }
     //======================================================================
     // Protected Methods

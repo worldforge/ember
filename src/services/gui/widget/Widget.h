@@ -60,6 +60,8 @@ namespace dime {
      *
      */
 
+    //%TODO xmp,1: Should we make this sigc ref virtual inheritance?
+
     class Widget : public SigC::Object
 
     {

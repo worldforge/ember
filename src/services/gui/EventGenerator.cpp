@@ -209,9 +209,10 @@ void dime::EventGenerator::handleKeyboardEvent() {
 
 /*--------------------------------------------------------------------------*/
 bool dime::EventGenerator::captureKeyboard( dime::Widget *widget ) {
-// Captures keyboard input and directs it to the specified widget until
-// releaseKeyboard is called.  Returns true on success, false if keyboard
-// already captured.
+  // Captures keyboard input and directs it to the specified widget until
+  // releaseKeyboard is called.  Returns true on success, false if keyboard
+  // already captured.
+
   if (myKeyboardCaptureWidget == widget) return true;  // Already has it.
   if (myKeyboardCaptureWidget)        return false; // Somebody else has it.
 
@@ -221,8 +222,8 @@ bool dime::EventGenerator::captureKeyboard( dime::Widget *widget ) {
 
 /*--------------------------------------------------------------------------*/
 void dime::EventGenerator::releaseKeyboard( dime::Widget *widget ) {
-// Releases the keyboard if it is captured by widget,
-// keyboard input again goes to the widget that has the focus.
+  // Releases the keyboard if it is captured by widget,
+  // keyboard input again goes to the widget that has the focus.
 
   if (myKeyboardCaptureWidget == widget)
     myKeyboardCaptureWidget = NULL;

@@ -63,7 +63,7 @@ namespace dime
 			keyBoardMapping->getSignal()->connect(SigC::slot(*repDevice, &dime::RepetitionDevice::switchOn) );
 		
 			// NULL out this lot
-            myPointedWidget = NULL;
+			myPointedWidget = NULL;
 			myMouseCaptureWidget = NULL;
 			myKeyboardCaptureWidget= NULL;
             
