@@ -52,8 +52,7 @@ enum DataType
   POST_VALUE_CHANGE = 0x0002,
 
   /**
-   * is called after a data object was added. (Useful only in combination
-   * with FIRE_ON_CHILD_EVENT, of course.)
+   * is called after a data object was added.
    */
   POST_ADDITION = 0x0004,
 

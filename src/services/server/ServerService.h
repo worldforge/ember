@@ -54,7 +54,7 @@ class ServerService: public Service, public SigC::Object
     Eris::Lobby *myLobby;
 
     short myPort;
-    string myHost;
+	std::string myHost;
 
     /**
      * True if and only if we are successfully connected to the server
@@ -96,7 +96,7 @@ class ServerService: public Service, public SigC::Object
 
 	// Connection Callbacks
 	
-	void gotFailure(const string& msg);
+	 void gotFailure(const std::string& msg);
 
 	void connected();
 

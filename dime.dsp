@@ -236,7 +236,7 @@ SOURCE=.\src\framework\ServiceManager.cpp
 # End Group
 # Begin Group "DataProviders"
 
-# PROP Default_Filter "*.cpp"
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\src\services\datamodel\DataProvider.cpp
@@ -244,6 +244,10 @@ SOURCE=.\src\services\datamodel\DataProvider.cpp
 # Begin Source File
 
 SOURCE=.\src\services\datamodel\FolderProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\IntProvider.cpp
 # End Source File
 # Begin Source File
 
@@ -255,7 +259,7 @@ SOURCE=.\src\services\datamodel\LinkProvider.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\src\services\datamodel\DataModelTest.cpp
+SOURCE=.\test\DataModelTest.cpp
 # End Source File
 # Begin Source File
 
@@ -332,6 +336,10 @@ SOURCE=.\src\services\config\ConfigService.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Container.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\components\cs\CSComponent.h
 # End Source File
 # Begin Source File
@@ -361,6 +369,10 @@ SOURCE=.\src\main\DimeServices.h
 # Begin Source File
 
 SOURCE=.\src\services\platform\DrawDevice.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Event.h
 # End Source File
 # Begin Source File
 
@@ -409,6 +421,10 @@ SOURCE=.\src\services\input\InputMapping.h
 # Begin Source File
 
 SOURCE=.\src\services\input\InputService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\IntProvider.h
 # End Source File
 # Begin Source File
 
@@ -481,6 +497,10 @@ SOURCE=.\src\services\test\TestService.h
 # Begin Source File
 
 SOURCE=.\src\services\gui\Theme.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\ThemeAuthor.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"

@@ -15,3 +15,6 @@ Libraries:
 * Optional to you is to install CppUnit (http://sourceforge.net/projects/cppunit). This makes available some basic function tests run at the startup of Dime.
 
 If you have any suggestions/questions concerning the workspace/the project file, feel free to contact T.Enderling@web.de.
+
+Support for Visual C++ 6.0 broken (due to unsolveable problems with compiler bugs). 
+VC7 is supported and the according doc will come soon.

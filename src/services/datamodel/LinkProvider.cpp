@@ -28,7 +28,7 @@ namespace dime {
 
 /**
  * Most of the LinkProviders actions are:
- * - Replace the NULL-DataKey by the destination Key
+ * - Replace the NULL-DataKey by the Root destination Key
  * - Pass through to the other provider
  *
  * Also it translates subpaths and forwards all signals.
@@ -37,13 +37,25 @@ namespace dime {
 /**
  * Really short for 'real key'
  **/
-#define RK(key) ((key.get() != NULL) ? (key) : (myDestKey))
+#define RK(key) ((key.get() != NULL) ? &myRoot : (&Key::spec(key)))
+
+/**
+ * Really short for 'real key variable'
+ */
+
+#define RKV(key) Item * item = RK(key) /*;*/
 
 PDataKey LinkProvider::getChild(PDataKey parent, std::string ID, DataProvider *& provider)
 {
-	if (myProvider)
+	RKV(parent);
+
+	if (myRoot.myDest)
 	{
-		return myProvider->getChild(RK(parent), ID, provider);	
+		Item newItem;
+		newItem.myDestKey = 
+		item->myDest->getChild(item->myDestKey, ID, newItem.myDest);	
+		newItem.mySubpath = DataProvider::makeSubpath(item->mySubpath, ID);
+		return Key::gen(newItem);
 	}
 	else
 	{
@@ -53,31 +65,23 @@ PDataKey LinkProvider::getChild(PDataKey parent, std::string ID, DataProvider *&
 
 std::string LinkProvider::getSubpath(PDataKey key)
 {
-	if (myProvider)
+	if (myRoot.myDest)
 	{
-		if (key.get() == NULL)
-		{
-			return "";
-		}
-		else
-		{
-			//remove the hidden part of the subpath 
-			return myProvider->getSubpath(RK(key)).substr(myDestSubpath.size()+1);
-		}
+		return RK(key)->mySubpath;
 	}
 	else
 	{
 		// @todo: Should an exception be thrown instead?
 		return "";
 	}
-
 }
 
 DataType LinkProvider::getType(PDataKey key)
 {
-	if (myProvider)
+	if (myRoot.myDest)
 	{
-		return static_cast<DataType>(myProvider->getType(RK(key)) | IS_LINK);
+		RKV(key);
+		return static_cast<DataType>(item->myDest->getType(item->myDestKey) | IS_LINK);
 	}
 	else
 	{
@@ -87,9 +91,10 @@ DataType LinkProvider::getType(PDataKey key)
 
 std::string LinkProvider::getDescription(PDataKey key)
 {
-	if (myProvider)
+	if (myRoot.myDest)
 	{
-		return myProvider->getDescription(RK(key));
+		RKV(key);
+		return item->myDest->getDescription(item->myDestKey);
 	}
 	else
 	{
@@ -99,56 +104,66 @@ std::string LinkProvider::getDescription(PDataKey key)
 
 void LinkProvider::setDescription(PDataKey key, std::string description)
 {
-	if (myProvider)
+	if (myRoot.myDest)
 	{
-		myProvider->setDescription(RK(key), description);
+		RKV(key);
+		item->myDest->setDescription(item->myDestKey, description);
 	}
 }
 
 bool LinkProvider::getBoolVal(PDataKey key)
 {
-	return myProvider->getBoolVal(RK(key));
+	RKV(key);
+	return item->myDest->getBoolVal(item->myDestKey);
 }
 
 void LinkProvider::setBoolVal(PDataKey key, bool newValue)
 {
-	myProvider->setBoolVal(RK(key), newValue);
+	RKV(key);
+	item->myDest->setBoolVal(item->myDestKey, newValue);
 }
 
 int  LinkProvider::getIntVal(PDataKey key)
 {
-	return myProvider->getIntVal(RK(key));
+	RKV(key);
+	return item->myDest->getIntVal(item->myDestKey);
 }
 
 void LinkProvider::setIntVal(PDataKey key, int newValue)
 {
-	myProvider->setIntVal(RK(key), newValue);
+	RKV(key);
+	item->myDest->setIntVal(item->myDestKey, newValue);
 }
 
 float LinkProvider::getFloatVal(PDataKey key)
 {
-	return myProvider->getFloatVal(RK(key));
+	RKV(key);
+	return item->myDest->getFloatVal(item->myDestKey);
 }
 
 void  LinkProvider::setFloatVal(PDataKey key, float newValue)
 {
-	myProvider->setFloatVal(RK(key), newValue);
+	RKV(key);
+	item->myDest->setFloatVal(item->myDestKey, newValue);
 }
 
 std::string LinkProvider::getStringVal(PDataKey key)
 {
-	return myProvider->getStringVal(RK(key));
+	RKV(key);
+	return item->myDest->getStringVal(item->myDestKey);
 }
 
 void LinkProvider::setStringVal(PDataKey key, const std::string & newValue)
 {
-	myProvider->setStringVal(RK(key), newValue);
+	RKV(key);
+	item->myDest->setStringVal(item->myDestKey, newValue);
 }
 
 void LinkProvider::addChild(PDataKey parent, std::string & suggestedID, 
 				DataProvider * provider)
 {
-	myProvider->addChild(RK(parent), suggestedID, provider);
+	RKV(parent);
+	item->myDest->addChild(item->myDestKey, suggestedID, provider);
 }
 
 void LinkProvider::remove(PDataKey child)
@@ -159,7 +174,8 @@ void LinkProvider::remove(PDataKey child)
 	}
 	else
 	{
-		myProvider->remove(child);
+		RKV(child);
+		item->myDest->remove(item->myDestKey);
 	}
 }
 
@@ -170,7 +186,8 @@ void LinkProvider::removeAdopted(PDataKey adopted)
 
 void LinkProvider::getChilds(PDataKey parent, std::vector<std::string> & listOfChilds)
 {
-	myProvider->getChilds(RK(parent), listOfChilds);
+	RKV(parent);
+	item->myDest->getChilds(item->myDestKey, listOfChilds);
 }
 
 void LinkProvider::onSignal(PDataObject object, DataType event)
@@ -200,7 +217,7 @@ void LinkProvider::onSignal(PDataObject object, DataType event)
 		if (subpath.empty())
 		{
 			//lost connection to the provider
-			myProvider = NULL;
+			myRoot.myDest = NULL;
 			fireSignal("", POST_LINK_CHANGE);
 		}
 		else
@@ -217,13 +234,13 @@ std::string LinkProvider::getLinkDest()
 
 LinkProvider::LinkProvider(std::string destPath)
 {
-	myProvider = NULL;
+	myRoot.myDest = NULL;
 	myDestPath = destPath;
-	myDestSubpath = destPath;
+	std::string destSubpath = destPath;
 
-	DataObject::findObject(myDestSubpath, myProvider, myDestKey);
+	DataObject::findObject(destSubpath, myRoot.myDest, myRoot.myDestKey);
 	
-	myProvider->addConnection(myDestSubpath, SigC::slot(*this, &LinkProvider::onSignal), 
+	myRoot.myDest->addConnection(destSubpath, SigC::slot(*this, &LinkProvider::onSignal), 
 	 static_cast<DataType>(PRE_VALUE_CHANGE | POST_VALUE_CHANGE |  POST_ADDITION  | PRE_DELETION |
 	  PRE_LINK_CHANGE | POST_LINK_CHANGE | FIRE_ON_CHILD_EVENT));
 	
@@ -233,10 +250,7 @@ LinkProvider::~LinkProvider()
 {
 	myConnection.disconnect();
 
-	DataConnectionMap::iterator i; 
-
 	// Fire a removal event to all observers listening to removal events		
 	fireGeneralSignal(PRE_DELETION);
 }
-
 } //dime 

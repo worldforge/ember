@@ -47,6 +47,21 @@ class LinkProvider: public DataProvider, public SigC::Object
     //======================================================================	 
 	public:
 	
+	class Item
+	{
+	public:
+		Item()
+		{
+			myDest = NULL;			
+		}
+
+		std::string		mySubpath;
+		DataProvider *  myDest;
+		PDataKey		myDestKey;
+	};
+
+	typedef DataKeyImpl<Item> Key;
+
     //======================================================================
     // Private Constants
     //======================================================================
@@ -56,10 +71,8 @@ class LinkProvider: public DataProvider, public SigC::Object
     // Private Variables
     //======================================================================
 
+	Item		   myRoot;
 	std::string	   myDestPath;
-	PDataKey	   myDestKey;
-	DataProvider * myProvider;
-	std::string	   myDestSubpath;
 	DataConnection myConnection;
 
     //======================================================================

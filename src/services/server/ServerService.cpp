@@ -99,7 +99,7 @@ namespace dime
     return true;
   }
 	
-  void ServerService::gotFailure(const string& msg)
+  void ServerService::gotFailure(const std::string & msg)
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
   }	
