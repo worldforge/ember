@@ -10,6 +10,9 @@ int TextBox::draw(DrawDevice *target)
 	// Use fontservice to draw the text of the widget
 	Label::draw(target);
 
+	// Now draw the caret
+	drawCaret();
+
 	//TODO: what should be returned here?
 	return 0;
 }
@@ -104,4 +107,19 @@ bool TextBox::keyPress( KeyPressEvent *event)
             myFontRenderer->setText(fittedText);
         }
     return true;        
+}
+
+void TextBox::drawCaret()
+{
+  // --- Calculate the location where to draw the caret  ---
+
+  // The fun bit is we're probably using a variable width font
+  // maybe ask nikal to provide us with an auto calc for given
+  // text in fontrenderer.
+
+  // Work out where on screen our text is starting
+
+  // Add values together
+
+  // --- Draw it at calculated spot ---
 }

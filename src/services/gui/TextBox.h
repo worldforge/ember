@@ -178,6 +178,11 @@ class TextBox : public Label
     //======================================================================
     protected:
 
+    /*
+     * Calculates where the caret should be for us and draws it
+     */
+    void TextBox::drawCaret();
+
 
     //======================================================================
     // Private Methods
