@@ -1,5 +1,20 @@
-// This file may be redistributed and modified only under the terms of
-// the GNU General Public License (See COPYING for details).
+/*
+    Copyright (C) 2002  Martin Pollard (Xmp), Simon Goodall
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 // Rewritten for Dime by Martin Pollard (Xmp)
 
@@ -9,11 +24,16 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+// Included headers from the current project
+#include "ConsoleObject.h"
+
+// Included custom library headers
+
+// Included system headers
 #include <string>
 #include <list>
 #include <map>
 
-#include "ConsoleObject.h"
 
 
 namespace dime {
@@ -38,8 +58,18 @@ class System;
 class Render;
 
 /**
+ * The console widget
+ *
  * The console class handles the onscreen console, the screen messages and keeps track of all the console commands in use.
- */ 
+ *
+ * Example code?
+ *
+ * @author Xmp (Martin Pollard)
+ * @author Simon Goodall
+ *
+ * @see Widget
+ *
+ */
 class Console : public ConsoleObject, public Widget {
 public:
   Console(System *system);
