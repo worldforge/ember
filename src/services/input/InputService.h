@@ -71,13 +71,6 @@ class InputService: public Service
      */
     vector< InputMapping * > myInputMappings;
 
-    /**
-     * This is a list with all the input events.
-     * New ones are added at the beginning, and old ones are removed at the end.
-     */
-    list< InputEvent * > myInputEvents;
-
-
     //======================================================================
     // Public methods
     //======================================================================

@@ -428,7 +428,7 @@ class LoggingService: public Service
 								const string & message, va_list argptr)
 	{
 		char Buffer[MESSAGE_BUFFER_SIZE];
-		vsprintf((char*)Buffer, message.data(), argptr);
+		vsprintf((char*)Buffer, message.c_str(), argptr);
 		
 		sendMessage(string((char*)Buffer), file, line, importance);
 	}
