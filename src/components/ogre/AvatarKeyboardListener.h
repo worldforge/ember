@@ -38,7 +38,7 @@ namespace Ogre
 
 // the above is broken so we directly include Ogre.h
 #include <Ogre.h>
-#include <Avatar.h>
+#include "Avatar.h"
 
 class AvatarKeyboardListener
 {
@@ -51,6 +51,9 @@ class AvatarKeyboardListener
 
 	void setAvatar(Avatar* avatar);
 	void act(Ogre::Real timePassed);
+
+	float updateInterval;
+	float timeToUpdate;
 
 	private:
 

@@ -1,3 +1,6 @@
+2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+        * src/components/ogre: fixed rotation and viewing for the Avatar. 
+
 2003-12-08 Al Riddoch <alriddoch@zepler.org>
 	* src/services/test/TestService.cpp: Use <iostream> instead of
 	  <iostream.h> and fix std:: namespace usage.

@@ -24,7 +24,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.16  2003-11-29 01:25:58  aglanor
+ *      Revision 1.17  2003-12-08 21:25:06  aglanor
+ *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: fixed rotation and viewing for the Avatar.
+ *
+ *      Revision 1.16  2003/11/29 01:25:58  aglanor
  *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: added AvatarKeyboardListener.(h|cpp)
  *      	        and restored local avatar movement.
@@ -425,10 +429,11 @@ protected:
 		leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 		leftvp->setOverlaysEnabled(false);
 
+		/*
 		Ogre::Viewport* spyvp = mWindow->addViewport(mOgreHeadCamera,10,0.05,0.70,0.25,0.25);
 		spyvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 		spyvp->setOverlaysEnabled(false);
-
+		*/
     }
 
     /// Method which will define the source of resources (other than current folder)

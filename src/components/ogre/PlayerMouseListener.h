@@ -22,6 +22,7 @@
 
 // Inherits from InputManager::MouseListener
 #include "InputManager.h"
+#include "Avatar.h"
 
 class PlayerMouseListener : public InputManager::MouseListener
 {
@@ -35,10 +36,16 @@ class PlayerMouseListener : public InputManager::MouseListener
 	void mousePressed(unsigned char button);
 	void mouseReleased(unsigned char button);
 
+	void setAvatar(Avatar* avatar);
 	// TODO: hack... camera won't be here, we'll control player entity instead
 	void setCamera(Ogre::Camera* cam);
 
 	private:
+
+	/**
+	 * Avatar
+	 */
+	Avatar* mAvatar;
 
 	// TODO: hack... camera won't be here, we'll control player entity instead
 	Ogre::Camera* mCamera;

@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.34  2003-11-29 01:25:58  aglanor
+ *      Revision 1.35  2003-12-08 21:25:06  aglanor
+ *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: fixed rotation and viewing for the Avatar.
+ *
+ *      Revision 1.34  2003/11/29 01:25:58  aglanor
  *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: added AvatarKeyboardListener.(h|cpp)
  *      	        and restored local avatar movement.
@@ -516,6 +520,7 @@ void DimeOgre::createFrameListener(void)
 	ConsoleObjectImpl::getSingleton();
 	InputManager::getSingleton().addMouseListener(&(PlayerMouseListener::getSingleton()));
 	PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
+	PlayerMouseListener::getSingleton().setAvatar(&mAvatar);
 	EntityListener::getSingleton().setSceneManager(mSceneMgr);
 	AvatarKeyboardListener::getSingleton().setAvatar(&mAvatar);
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");

@@ -40,6 +40,7 @@ class Avatar
 	Ogre::Camera* getAvatarTopCamera(void);
 
 	void move(Ogre::Vector3 move);
+	void Avatar::rotate(float degHoriz, float degVert);
 
 	private:
 

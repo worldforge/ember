@@ -45,7 +45,8 @@ AvatarKeyboardListener& AvatarKeyboardListener::getSingleton(void)
 
 AvatarKeyboardListener::AvatarKeyboardListener(void)
 {
-	//mSceneMgr = Ogre::Root::getSingleton().getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
+	updateInterval = 1.0;
+	timeToUpdate = updateInterval;
 }
 
 AvatarKeyboardListener::~AvatarKeyboardListener()
@@ -53,8 +54,6 @@ AvatarKeyboardListener::~AvatarKeyboardListener()
 
 }
 
-
-// TODO: hack... camera won't be here, we'll control player entity instead
 void AvatarKeyboardListener::setAvatar(Avatar* avatar)
 {
 	mAvatar = avatar;
@@ -62,30 +61,41 @@ void AvatarKeyboardListener::setAvatar(Avatar* avatar)
 
 void AvatarKeyboardListener::act(Ogre::Real timePassed) // why was this const under DIE???
 {
+		float speed;
+
+		if(InputManager::getSingleton().isKeyDown(Ogre::KC_LSHIFT))
+		{
+			speed = 5.0;
+		}
+		else
+		{
+			speed = 2.0; // TODO: fix this, swap walk/run, etc
+		}
+
 		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
 		bool send = false; // do this checking against zero or something
 
 		// forwards / backwards
 		if(InputManager::getSingleton().isKeyDown(Ogre::KC_UP))  // W also, and same for the rest
 		{
-			movement.z = -1; 	//scale this
+			movement.z = -(speed*timePassed); 	//scale this
 			send = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(Ogre::KC_DOWN))
 		{
-			movement.z = 1;		//scale
+			movement.z = (speed*timePassed);		//scale
 			send = true;
 		}
 
 		// strafe
 		if(InputManager::getSingleton().isKeyDown(Ogre::KC_LEFT))
 		{
-			movement.x = -1;
+			movement.x = -(speed*timePassed);
 			send = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(Ogre::KC_RIGHT))
 		{
-			movement.x = 1;
+			movement.x = (speed*timePassed);
 			send = true;
 		}
 
@@ -94,14 +104,14 @@ void AvatarKeyboardListener::act(Ogre::Real timePassed) // why was this const un
 			mAvatar->move(movement);
 		}
 
-		//else
-				//mCar->setDrive(Car::DO_NONE);
+		// check if a second has passed, then check for entity equailty, then make Avatar update the server
+		// or something!
+		timeToUpdate = timeToUpdate - timePassed;
+		if(timeToUpdate<=0) {
+			std::cout << "	UPDATINTG INTO SERVER" << std::endl;
+			timeToUpdate = updateInterval;
+		}
 
-				/*
-
-		else
-				mCar->setSteer(0);
-				*/
 
 }
 

@@ -54,11 +54,14 @@ PlayerMouseListener::~PlayerMouseListener()
 
 void PlayerMouseListener::mouseMoved(short newX, short newY, short oldX, short oldY)
 {
+	// TODO: very important! Take into account here the screen width and height
+	// IF NOT, THE ROTATION WILL DEPEND ON SCREEN SIZE;
 	float diffX = -(newX - oldX) * 0.13;
 	float diffY = -(newY - oldY) * 0.13;
 	//std::cout << "MOVED MOUSE: " << diffX << " " << diffY << std::endl;
-	mCamera->yaw(diffX);
-	mCamera->pitch(diffY);
+	//mCamera->yaw(diffX);
+	//mCamera->pitch(diffY);
+	mAvatar->rotate(diffX,diffY);
 }
 
 void PlayerMouseListener::mousePressed(unsigned char button)
@@ -71,7 +74,12 @@ void PlayerMouseListener::mouseReleased(unsigned char button)
 	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
 }
 
-// TODO: hack... camera won't be here, we'll control player entity instead
+void PlayerMouseListener::setAvatar(Avatar* avatar)
+{
+	mAvatar = avatar;
+}
+
+// TODO: enough with this... shall be removed
 void PlayerMouseListener::setCamera(Ogre::Camera* cam)
 {
 	mCamera = cam;

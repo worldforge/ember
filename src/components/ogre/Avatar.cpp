@@ -65,6 +65,7 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
 	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "robot.mesh");
 	mAvatarModelNode->attachObject(mAvatarEntity);
+	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
 
 	// 1st person, 3rd person and Top camera nodes
 	mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("Avatar1pCameraNode"));
@@ -101,8 +102,9 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	mAvatarTopCamera = mSceneMgr->createCamera("AvatarTopCamera");
 	mAvatarTopCameraNode->attachObject(mAvatarTopCamera);
 	// Look to the Avatar's head
-	mAvatarTopCamera->setAutoTracking(true, mAvatarNode);   // TODO: make this (And the others) a "following" camera
+	mAvatarTopCamera->setAutoTracking(true, mAvatarNode);
 	mAvatarTopCamera->setNearClipDistance(1);
+	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
 }
 
 Avatar::~Avatar()
@@ -114,6 +116,25 @@ void Avatar::move(Ogre::Vector3 move)
 {
 	//fprintf(stderr, "TRACE - AVATAR MOVING\n");
 	mAvatarNode->translate(mAvatarNode->getOrientation()*move);
+}
+
+void Avatar::rotate(float degHoriz, float degVert)
+{
+	// rotate the Avatar Node only in X position (no vertical rotation)
+	mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,degHoriz);
+
+	// rotate the 1p Camera
+	//mAvatar1pCameraNode->yaw(degHoriz);
+	mAvatar1pCameraNode->pitch(degVert);
+
+	// TODO: rotate 3p cam and rotate *back* top camera
+
+	// Rotate top camera *back*
+	// The mini-map will always be in the same position
+	// (Up is North)
+	// TODO: study why do I need twice the angle!
+	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
+	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
 }
 
 
