@@ -118,6 +118,7 @@ AC_OUTPUT([
   src/services/font/Makefile
   src/services/gui/Makefile
   src/services/platform/Makefile
+  src/services/server/Makefile
   src/main/Makefile
   dnl dime.dox
 ])
