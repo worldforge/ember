@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.35  2004-11-13 21:08:01  erik
+ *      Revision 1.36  2004-11-17 21:09:11  erik
+ *      2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* added output of the eris log to debug widget
+ *      	* fixed Wield and Use ops
+ *
+ *      Revision 1.35  2004/11/13 21:08:01  erik
  *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Removed some bugs which in various ways stopped the main loop.
@@ -328,13 +334,12 @@ Description: Base class for all the OGRE examples
 #ifndef __EmberOgre_H__
 #define __EmberOgre_H__
 
-#include <OgreNoMemoryMacros.h>
+#include "EmberOgrePrerequisites.h"
 
 //#include <Mercator/Terrain.h>
 
 
 //#include <OgreFrameListener.h>
-#include <framework/ConsoleObject.h> //TODO: this will be included in a different class
 
 
 // Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
@@ -349,12 +354,6 @@ Description: Base class for all the OGRE examples
 */
 
 // ------------------------------
-// Include Eris header files
-// ------------------------------
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-
-// ------------------------------
 // Include sigc header files
 // ------------------------------
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -366,10 +365,16 @@ Description: Base class for all the OGRE examples
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
+
 #include "framework/Singleton.h"
 
-#include "EmberOgrePrerequisites.h"
-#include <OgreConfigFile.h>
+// #include <OgreConfigFile.h>
+
+namespace Eris {
+class View;
+class Connection;
+}
+
 
 namespace EmberOgre {
 

@@ -1,3 +1,9 @@
+2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* added output of the eris log to debugwidget
+	* fixed Wield and Use ops
+	* removed reference to unneeded Makefile.in
+
 2004-11-14  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Implemented Wield and Use operations. Though they don't seem to work at the moment.

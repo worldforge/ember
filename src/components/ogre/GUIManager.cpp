@@ -34,9 +34,12 @@
 #include "widgets/InspectWidget.h"
 #include "widgets/MakeEntityWidget.h"
 #include "widgets/GiveWidget.h"
+#include "widgets/DebugWidget.h"
 #include "MousePicker.h"
 
 #include "EmberEventProcessor.h"
+#include "AvatarCamera.h"
+#include "EmberOgre.h"
 
 namespace EmberOgre {
 
@@ -135,13 +138,14 @@ void GUIManager::initialize()
 	addWidget(mConsoleWidget);
 	fprintf(stderr, "CEGUI - CREATED CONSOLE\n");
 	
+	DebugWidget* debugWidget = new DebugWidget(this);
+	debugWidget->buildWidget();
+	addWidget(debugWidget);
+	
 	ChatWidget* chatWidget = new ChatWidget(this);
 	chatWidget->buildWidget();
 	addWidget(chatWidget);		
 	
-	EntityPickerWidget* entityPicker = new EntityPickerWidget(this);
-	entityPicker->buildWidget();
-	addWidget(entityPicker);		
 	
 	InventoryWidget* inventory = new InventoryWidget(this);
 	inventory->buildWidget();
@@ -166,6 +170,11 @@ void GUIManager::initialize()
 	GiveWidget* giveWidget = new GiveWidget(this);
 	giveWidget->buildWidget();
 	addWidget(giveWidget);
+	
+	EntityPickerWidget* entityPicker = new EntityPickerWidget(this);
+	entityPicker->buildWidget();
+	addWidget(entityPicker);		
+	
 }
 
 void GUIManager::setDebugText(std::string text)
@@ -349,6 +358,18 @@ void GUIManager::keyReleased (Ogre::KeyEvent *e)
 		if(e->getKey() == Ogre::KC_F8)
 		{
 			setDebugText("Wrote image: " +takeScreenshot());
+		}
+		
+		//switch render mode
+		if(e->getKey() == Ogre::KC_F7)
+		{
+			setDebugText("Switching rendemode.");
+			Ogre::Camera* ogreCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+			if (ogreCamera->getDetailLevel() == Ogre::SDL_SOLID) {
+				ogreCamera->setDetailLevel(Ogre::SDL_WIREFRAME);
+			} else {
+				ogreCamera->setDetailLevel(Ogre::SDL_SOLID);
+			}
 		}
 		
 			

@@ -3,7 +3,7 @@
 
 	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.0 y:0.5" /> 
-		<Property Name="Size" Value="w:0.2 h:0.3" /> 
+		<Property Name="Size" Value="w:0.2 h:0.4" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Entity creator" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">

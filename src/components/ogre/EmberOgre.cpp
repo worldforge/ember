@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.64  2004-11-14 18:07:44  erik
+ *      Revision 1.65  2004-11-17 21:09:11  erik
+ *      2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* added output of the eris log to debug widget
+ *      	* fixed Wield and Use ops
+ *
+ *      Revision 1.64  2004/11/14 18:07:44  erik
  *      2004-11-14  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* fix stupid segfault on exit
@@ -493,6 +499,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 // Headers to stop compile problems from headers
 #include <stdlib.h>
+// ------------------------------
+// Include Eris header files
+// ------------------------------
+#include <Eris/Entity.h>
+#include <Eris/View.h>
 
 //Ember headers
 #include "services/EmberServices.h"
@@ -501,6 +512,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 
 
 // ------------------------------

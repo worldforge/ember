@@ -57,7 +57,7 @@ WieldData *WieldData::getDefaultObjectInstance()
         defaults_WieldData->attr_seconds = 0.0;
         defaults_WieldData->attr_future_seconds = 0.0;
         defaults_WieldData->attr_stamp = 0.0;
-        defaults_WieldData->attr_parents = std::list<std::string>(1, "action");
+        defaults_WieldData->attr_parents = std::list<std::string>(1, "wield");
     }
     return defaults_WieldData;
 }

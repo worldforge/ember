@@ -2,7 +2,15 @@
 #define DEBUGWIDGET_H
 
 
+#include <Eris/Log.h>
 
+namespace CEGUI {
+	class MultiLineEditbox;
+	class ComboDropList;
+	class Listbox;
+	class Combobox;
+	class EventArgs;
+}
 namespace EmberOgre {
 
 class Widget;
@@ -16,15 +24,20 @@ public:
 	DebugWidget(GUIManager* guiManager);
 	virtual ~DebugWidget();
 	
-	void frameStarted(const Ogre::FrameEvent & evt);
+/*	void frameStarted(const Ogre::FrameEvent & evt);*/
 	
 	void buildWidget();
 	
+	void recieveLog(Eris::LogLevel level, const std::string&);
 protected:
-	CEGUI::Window* mFwnd;
-	CEGUI::Window* mSheet;
 
-	void updateStats(void);
+// 	void updateStats(void);
+	
+	CEGUI::MultiLineEditbox* mLogTextBox;
+	CEGUI::Combobox* mLoglevelDroplist;
+	
+	void fillListWithLogLevels(CEGUI::Combobox* list);
+	bool loglevel_SelectionChanged(const CEGUI::EventArgs& args);
 	
 };
 

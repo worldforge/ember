@@ -110,8 +110,7 @@ void EntityPickerWidget::buildWidget()
 	
 
 	CEGUI::PushButton* takeButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/TakeButton"));
-	takeButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
-		boost::bind(&EntityPickerWidget::buttonTake_Click, this, _1));
+	BIND_CEGUI_EVENT(takeButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonTake_Click);
 	takeButton->setText((CEGUI::utf8*)"Take");
 	takeButton->setSize(CEGUI::Size(1.0f, 0.2f));
 	takeButton->setPosition(CEGUI::Point(0.0f, 0.2f));

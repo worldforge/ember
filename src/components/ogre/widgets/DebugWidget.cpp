@@ -2,8 +2,22 @@
 #include "DebugWidget.h"
 
 #include <CEGUIWindow.h>
+#include <elements/CEGUIMultiLineEditbox.h>
+#include <elements/CEGUIComboDropList.h> 
+#include <elements/CEGUICombobox.h> 
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxItem.h> 
+#include <elements/CEGUIListboxTextItem.h> 
 
 namespace EmberOgre {
+class DebugWidgetListItem : public CEGUI::ListboxTextItem
+{
+public:
+	DebugWidgetListItem(const CEGUI::String& text, uint item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
+	{
+		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	}
+};
 
 DebugWidget::DebugWidget(GUIManager* guiManager) 
 : Widget::Widget(guiManager)
@@ -16,22 +30,60 @@ DebugWidget::~DebugWidget()
 
 void DebugWidget::buildWidget()
 {
-	mFwnd = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez Frame Window", (CEGUI::utf8*)"DebugWindow");
-	mFwnd->setPosition(CEGUI::Point(0.01f, 0.01f));
-	mFwnd->setSize(CEGUI::Size(0.43f, 0.1f));
-	mFwnd->setText((CEGUI::utf8*)"Debug");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/DebugWidget.xml", "Debug/");
+//	mMainWindow->setAlwaysOnTop(true);
 	
+	mLogTextBox = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Debug/TextBox"));
+	mLoglevelDroplist = static_cast<CEGUI::Combobox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Debug/LogLevelDropList"));
+	fillListWithLogLevels(mLoglevelDroplist);
 	
-	mSheet->addChildWindow(mFwnd); 
+	BIND_CEGUI_EVENT(mLoglevelDroplist, CEGUI::Combobox::EventListSelectionAccepted, DebugWidget::loglevel_SelectionChanged);
+	
+	getMainSheet()->addChildWindow(mMainWindow); 
+	
+	Eris::Logged.connect(SigC::slot(*this, &DebugWidget::recieveLog));
+
 }
 
-void DebugWidget::frameStarted(const Ogre::FrameEvent & evt)
+void DebugWidget::recieveLog(Eris::LogLevel level, const std::string& line)
 {
-	updateStats();
+	mLogTextBox->setText(line + "\n" + mLogTextBox->getText());
 }
 
-void DebugWidget::updateStats(void)
+void DebugWidget::fillListWithLogLevels(CEGUI::Combobox* list) 
 {
+
+	CEGUI::ListboxItem* item = new DebugWidgetListItem("error", (uint)Eris::LOG_ERROR, 0);
+	list->addItem(item);
+	item = new DebugWidgetListItem("warning", Eris::LOG_WARNING, 0);
+	list->addItem(item);
+	item = new DebugWidgetListItem("notice", Eris::LOG_NOTICE, 0);
+	list->addItem(item);
+	item = new DebugWidgetListItem("verbose", Eris::LOG_VERBOSE, 0);
+	list->addItem(item);
+	item = new DebugWidgetListItem("debug", Eris::LOG_DEBUG, 0);
+	list->addItem(item);
+	
+}
+
+bool DebugWidget::loglevel_SelectionChanged(const CEGUI::EventArgs& args)
+{
+	CEGUI::ListboxItem* item = mLoglevelDroplist->getSelectedItem();
+	if (item) {
+		Eris::LogLevel level = (Eris::LogLevel)item->getID();
+		Eris::setLogLevel(level);
+	}
+	return true;
+
+}
+
+// void DebugWidget::frameStarted(const Ogre::FrameEvent & evt)
+// {
+// 	updateStats();
+// }
+
+/*void DebugWidget::updateStats(void)
+{*/
 /*	static CEGUI::String currFps = (CEGUI::utf8*)"Current FPS: ";
 	static CEGUI::String avgFps = (CEGUI::utf8*)"Average FPS: ";
 	static CEGUI::String bestFps = (CEGUI::utf8*)"Best FPS: ";
@@ -75,7 +127,7 @@ void DebugWidget::updateStats(void)
 		mSkipCount++;
 	}
 */
-}
+// }
 
 
 }

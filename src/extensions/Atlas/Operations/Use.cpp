@@ -57,7 +57,7 @@ UseData *UseData::getDefaultObjectInstance()
         defaults_UseData->attr_seconds = 0.0;
         defaults_UseData->attr_future_seconds = 0.0;
         defaults_UseData->attr_stamp = 0.0;
-        defaults_UseData->attr_parents = std::list<std::string>(1, "action");
+        defaults_UseData->attr_parents = std::list<std::string>(1, "use");
     }
     return defaults_UseData;
 }
