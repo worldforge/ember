@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.4  2002-03-31 08:42:06  adamgreg
+ *      Revision 1.5  2002-03-31 19:15:46  tim
+ *      Bugfixes, MSVC compatibility fixes, Since boost is working ImageService is now caching
+ *
+ *      Revision 1.4  2002/03/31 08:42:06  adamgreg
  *
  *      Added Rectangle class for Widget to use. Later should make RR use it too so that people creating widgets don't have to worry about calling Rectangle::getSDL_Rect(). Kept Dimension, for defining max/min/pref dimensions. Quite a few functions in Rectangle so that they'll play nicely together.
  *      Messed a bit with nikal's ImageService - added image caching. There's a complete implementation using Boost shared pointers, which is commented out for now because I don't know if many people have or want the boost dev files. Incomplete implementation that loads but doesn't unload from cache properly.
@@ -158,6 +161,8 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
         }
     }
 
+	//TODO: What should be returned here?
+	return 0;
 }
 
 /**
@@ -187,6 +192,9 @@ int dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
 {
     device->fillRect(&myRect, myColor);
     device->update();    
+	
+	//TODO: What should be returned here?
+	return 0;
 }
 
 /**
@@ -197,6 +205,9 @@ int dime::RectangleRenderer::renderGradient(dime::DrawDevice *device)
 {
     device->drawGradient(&myRect, myColor, myColor2, myColor3, myColor4);
 	device->update();
+
+	//TODO: What should be returned here?
+	return 0;
 }
 
 int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
@@ -226,11 +237,13 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
     leftX = myRect.x;
     rightX = myRect.x+myRect.w;
     
-    for(int index = 0; index < cols; ++index)
+	int index;
+
+    for(index = 0; index < cols; ++index)
         {
             device->drawLine(leftX+(index*colOffset), topY, leftX+(index*colOffset), bottomY, myColor);
         }
-    for(int index = 0; index < rows; ++index)
+    for(index = 0; index < rows; ++index)
         {
             device->drawLine(leftX, topY+(index*rowOffset), rightX, topY+(index*rowOffset), myColor);
         }
@@ -239,6 +252,9 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
     device->drawLine(rightX, bottomY, leftX, bottomY, myColor);
     
     device->update();
+
+	//TODO: What should be returned here?
+	return 0;
 }
 
 

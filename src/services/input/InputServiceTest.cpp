@@ -133,7 +133,7 @@ void InputServiceTestCase::testInputMappings()
 
 void InputServiceTestCase::setUp ()
 {
-	myIS = DimeServices::getInstance()->getInputService();
+	myIS = InputService::getInstance();
 
 	CPPUNIT_ASSERT (myIS != NULL);
 	CPPUNIT_ASSERT (myIS->getName().compare("InputService") == 0);

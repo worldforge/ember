@@ -33,6 +33,6 @@ dime::GuiService::GuiService()
 	
 	myInputService = dime::InputService::getInstance();
 	dime::InputDevice *mouse = myInputService->getInputDevice(dime::InputDevice::MOUSE);
-	myInputService->addInputMapping(new dime::InputMapping(mouse, slot(*this,&dime::GuiService::MouseMotion)));
-	myInputService->addInputMapping(new dime::InputMapping(mouse, mouse, SDLK_LEFT_MB, SDLK_RIGHT_MB, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), slot(*this,&dime::GuiService::MouseClick)));
+	myInputService->addInputMapping(new dime::InputMapping(mouse, SigC::slot(*this,&dime::GuiService::MouseMotion)));
+	myInputService->addInputMapping(new dime::InputMapping(mouse, mouse, SDLK_LEFT_MB, SDLK_RIGHT_MB, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this,&dime::GuiService::MouseClick)));
 }

@@ -3,6 +3,8 @@
 int dime::Button::draw()
 {
 	myBackground.render(&SDLDrawDevice(SDL_GetVideoSurface()));
+	//TODO: what should be returned here?
+	return 0;
 }
 
 void dime::Button::highlight()

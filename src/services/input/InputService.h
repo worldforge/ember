@@ -69,15 +69,15 @@ class InputService: public Service
     /**
      * The type of iterators used to iterate through the input mappings table.
      */
-	typedef vector<InputMapping *>::iterator InputMappingIterator;
-    typedef vector<InputMapping *>::const_iterator ConstInputMappingIterator;
+	typedef std::vector<InputMapping *>::iterator InputMappingIterator;
+    typedef std::vector<InputMapping *>::const_iterator ConstInputMappingIterator;
 
 	/**
 	 * They type of iterators used to iterate through the input devices table.
 	 */
 
-	typedef vector<InputDevice*>::iterator InputDeviceIterator;
-	typedef vector<InputDevice*>::const_iterator ConstInputDeviceIterator;
+	typedef std::vector<InputDevice*>::iterator InputDeviceIterator;
+	typedef std::vector<InputDevice*>::const_iterator ConstInputDeviceIterator;
 
     //======================================================================
     // Public Constants
@@ -94,11 +94,11 @@ class InputService: public Service
      * Stores a list of input mappings that are searched in order to find
      * one that handles a certain input event.
      */
-    vector<InputMapping *> myInputMappings;
+	std::vector<InputMapping *> myInputMappings;
 
 	protected:
 
-	vector<InputDevice  *> myInputDevices;
+	std::vector<InputDevice  *> myInputDevices;
 
     //======================================================================
     // Public methods

@@ -25,7 +25,7 @@
 #include <list>
 #include <map>
 #include <string>
-//#include <boost/shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace dime {
 
@@ -43,7 +43,7 @@ class ImageService : public Service
 	//======================================================================
 public:
 
-//	typedef boost::shared_ptr<SDL_Surface> SDL_SurfacePtr;
+	typedef boost::shared_ptr<SDL_Surface> SDL_SurfacePtr;
 
     //======================================================================
     // Private Variables
@@ -51,8 +51,7 @@ public:
 private:
 
     std::list<std::string> mySearchPaths;
-//    std::map<std::string, SDL_SurfacePtr> myImages;
-	std::map<std::string, SDL_Surface*> myImages;
+    std::map<std::string, SDL_SurfacePtr> myImages;
 	static ImageService *theInstance;
 
     //----------------------------------------------------------------------
@@ -88,7 +87,8 @@ public:
     
     int start()
     {
-        
+		//TODO: What should be returned here?
+        return 0;
     }
     
     //----------------------------------------------------------------------

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.7  2002-03-30 09:33:06  adamgreg
+ *      Revision 1.8  2002-03-31 19:15:45  tim
+ *      Bugfixes, MSVC compatibility fixes, Since boost is working ImageService is now caching
+ *
+ *      Revision 1.7  2002/03/30 09:33:06  adamgreg
  *
  *      Input now successfully obtained by GuiService from InputService. Button Widget added. Widget events work. Proper use of RectangleRenderers.
  *      The upshot is : pretty thing on screen that does stuff. Check it out!
@@ -107,6 +110,8 @@ namespace dime
     Application::Application(int width, int height, std::string title)
         : myShouldQuit(false) 
     {
+
+
         myLoggingService = DimeServices::getInstance()->getLoggingService();
         myLoggingService->addObserver(new CerrLogObserver());
 		
@@ -132,7 +137,23 @@ namespace dime
         // Setting title.  The second argument is for an Icon. 
         // Remember if passing a std::string to a char * function, you must use .c_str()
         SDL_WM_SetCaption(title.c_str(), NULL);
-			
+		
+#ifdef USE_CPP_UNIT
+		CppUnit::TextTestResult result;
+		CppUnit::TestFactoryRegistry::getRegistry().makeTest()->run(&result);
+		result.print(cerr);
+
+		//See <services/input/InputServiceTest.cpp> for how to write your own tests.
+#endif 
+
+		// Initialize the InputService
+		myInputService = InputService::getInstance();
+	
+		// Mouse and Keyboard is needed, so create them
+
+		new MouseDevice;
+		new KeyboardDevice;
+
 		// Initialize the GuiService.
 		myGuiService = DimeServices::getInstance()->getGuiService();
     }
@@ -161,14 +182,14 @@ namespace dime
                     break;
                 case SDL_KEYUP:
                     // Looking for the ESC key.
-                    if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
+                  /*  if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
                         {
                             myShouldQuit = true;
-                            myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                                  "Caught escape. Quitting...");
+
+                  
                         }
                     myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_KEYUP");
+                                          "SDL_KEYUP");*/
                     break;
                 case SDL_MOUSEMOTION:
                     //generates too much noise -nikal
@@ -206,15 +227,6 @@ namespace dime
 
     void Application::mainLoop() 
     {
-
-#ifdef USE_CPP_UNIT
-		CppUnit::TextTestResult result;
-		CppUnit::TestFactoryRegistry::getRegistry().makeTest()->run(&result);
-		result.print(cerr);
-
-		//See <services/input/InputServiceTest.cpp> for how to write your own tests.
-#endif 
-
         while(myShouldQuit == false) 
             {
                 mainLoopStep();
@@ -225,5 +237,9 @@ namespace dime
         return myShouldQuit;
     }
 
+	void Application::quit()
+	{
+		myShouldQuit = true;
+	}
 
 }

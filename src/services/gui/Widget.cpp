@@ -1,5 +1,6 @@
 #include "Widget.h"
 #include "Container.h"
+#include <assert.h>
 
 void dime::Widget::setParent(Container* parent)
 {

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.5  2002-03-30 09:33:06  adamgreg
+ *      Revision 1.6  2002-03-31 19:15:45  tim
+ *      Bugfixes, MSVC compatibility fixes, Since boost is working ImageService is now caching
+ *
+ *      Revision 1.5  2002/03/30 09:33:06  adamgreg
  *
  *      Input now successfully obtained by GuiService from InputService. Button Widget added. Widget events work. Proper use of RectangleRenderers.
  *      The upshot is : pretty thing on screen that does stuff. Check it out!
@@ -48,7 +51,7 @@
 
 namespace dime 
 {
-    class Application 
+    class Application : public SigC::Object
     {
 
         
@@ -95,7 +98,16 @@ namespace dime
          * @return true if "shouldquit" else false
          */
         bool shouldQuit();
+
+		/**
+		 * Causes the application to quit.
+		 */
+		void quit();
 	   
+		void escPressed(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype)
+		{
+			quit();
+		}
 	 
     private:
         /**
@@ -122,6 +134,12 @@ namespace dime
          * Our pointer to the GuiService
          */
         dime::GuiService *myGuiService;
+
+        /**
+         * Our pointer to the InputService
+         */
+        dime::InputService *myInputService;
+
 
         /**
          * Our pointer to the SDL_surface we use as the screen

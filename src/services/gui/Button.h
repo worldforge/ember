@@ -57,32 +57,32 @@ class Button : public Widget
     /**
      * Connect a slot here to observe when a mouse button is pressed.
      */
-    SigC::Signal1<void, Button*> onMouseDown;
+    SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseDown;
 	
     /**
      * Connect a slot here to observe when a mouse button is released.
      */
-    SigC::Signal1<void, Button*> onMouseUp;
+    SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseUp;
     
     /**
      * Connect a slot here to observe MouseMotions
      */
-    SigC::Signal1<void, Button*> onMouseMove;
+    SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseMove;
     
     /**
      * Connect a slot here to observe when MouseMoves over this Widget
      */
-    SigC::Signal1<void, Button*> onMouseEnter;
+    SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseEnter;
     
     /**
      * Connect a slot here to observe when a Mouse leaves this Widget
      */
-    SigC::Signal1<void, Button*> onMouseExit;
+    SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseExit;
     
     /**
      * Connect a slot here to observe when a key is pressed and this Widget has focus.
      */
-    SigC::Signal2<void, Button*, SDLKey> onKeyPress;
+    SigC::Signal2<void, Button*, SDLKey, SigC::Marshal<void> > onKeyPress;
 
     //======================================================================
     // Inner Classes, Typedefs, and Enums

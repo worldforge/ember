@@ -1,4 +1,5 @@
 #include "Container.h"
+#include <assert.h>
 
 int dime::Container::draw()
 {

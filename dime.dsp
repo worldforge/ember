@@ -54,6 +54,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Debug"
 
@@ -79,8 +80,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"bin/dime.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
-# SUBTRACT LINK32 /profile
+# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 
@@ -97,7 +98,15 @@ SOURCE=.\src\main\Application.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Button.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\config\ConfigService.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Container.cpp
 # End Source File
 # Begin Source File
 
@@ -106,6 +115,14 @@ SOURCE=.\src\main\Dime.cpp
 # Begin Source File
 
 SOURCE=.\src\main\DimeServices.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\GuiService.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\image\ImageService.cpp
 # End Source File
 # Begin Source File
 
@@ -121,7 +138,27 @@ SOURCE=.\src\services\logging\LoggingService.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Panel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\PlatformService.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\RectangleRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\SDLDrawDevice.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\framework\ServiceManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Widget.cpp
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
@@ -138,6 +175,10 @@ SOURCE=.\src\services\gui\Application.h
 # Begin Source File
 
 SOURCE=.\src\services\gui\Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\Color.h
 # End Source File
 # Begin Source File
 
@@ -169,7 +210,15 @@ SOURCE=.\src\main\DimeServices.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\platform\DrawDevice.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\gui\GuiService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\image\ImageService.h
 # End Source File
 # Begin Source File
 
@@ -201,11 +250,31 @@ SOURCE=.\src\services\metaserver\MetaserverService.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Panel.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\gui\ParaGuiApplication.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\services\gui\ParaGuiService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\PlatformService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Rectangle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\RectangleRenderer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\SDLDrawDevice.h
 # End Source File
 # Begin Source File
 

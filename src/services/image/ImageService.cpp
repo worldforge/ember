@@ -24,7 +24,7 @@ namespace dime
 
     ImageService *ImageService::theInstance = NULL;
 
-/*    SDL_Surface *ImageService::loadImage(std::string imageName)
+   SDL_Surface *ImageService::loadImage(std::string imageName)
     {
         SDL_SurfacePtr image;
         std::string newName;
@@ -47,32 +47,6 @@ namespace dime
 			if (image.get() != NULL) myImages[imageName] = image;
 		}
         return image.get();
-    }
-*/
-
-    SDL_Surface *ImageService::loadImage(std::string imageName)
-    {
-        SDL_Surface *image;
-        std::string newName;
-        
-		image = myImages[imageName];
-		
-		if (image == NULL)
-		{
-			image = IMG_Load(imageName.c_str());
-
-			std::list<std::string>::iterator cur = mySearchPaths.begin();
-			std::list<std::string>::iterator last = mySearchPaths.end();
-        
-			while(image == NULL && cur != last)
-            {
-                newName = (*cur) + imageName;
-                image = IMG_Load(newName.c_str());
-                ++cur;
-            }
-			if (image != NULL) myImages[imageName] = image;
-		}
-        return image;
     }
 
 } // namespace dime
