@@ -22,6 +22,7 @@
 #include "widgets/EntityPickerWidget.h"
 #include "widgets/InventoryWidget.h"
 #include "widgets/ServerBrowserWidget.h"
+#include "widgets/InspectWidget.h"
 #include "MousePicker.h"
 #include "GUIManager.h"
 
@@ -132,6 +133,10 @@ void GUIManager::initialize()
 	ServerBrowserWidget* serverBrowser = new ServerBrowserWidget(this);
 	serverBrowser->buildWidget();
 	addWidget(serverBrowser);
+	
+	InspectWidget* inspectBrowser = new InspectWidget(this);
+	inspectBrowser->buildWidget();
+	addWidget(inspectBrowser);
 	
 }
 

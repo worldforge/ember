@@ -59,7 +59,7 @@ void EntityPickerWidget::buildWidget()
 
 	mMainWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));
-	mMainWindow->setSize(CEGUI::Size(0.1f, 0.15f));
+	mMainWindow->setSize(CEGUI::Size(0.1f, 0.2f));
 	mMainWindow->setAlpha(0.5f);
 	mMainWindow->setVisible(false);
 	mMainWindow->setEnabled(false);
@@ -96,7 +96,7 @@ void EntityPickerWidget::buildWidget()
 	touchButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
 		boost::bind(&EntityPickerWidget::buttonTouch_Click, this, _1));
 	touchButton->setText((CEGUI::utf8*)"Touch");
-	touchButton->setSize(CEGUI::Size(1.0f, 0.5f));
+	touchButton->setSize(CEGUI::Size(1.0f, 0.33f));
 	touchButton->setPosition(CEGUI::Point(0.0f, 0.0f));
 	touchButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(touchButton);
@@ -107,11 +107,21 @@ void EntityPickerWidget::buildWidget()
 	takeButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
 		boost::bind(&EntityPickerWidget::buttonTake_Click, this, _1));
 	takeButton->setText((CEGUI::utf8*)"Take");
-	takeButton->setSize(CEGUI::Size(1.0f, 0.5f));
-	takeButton->setPosition(CEGUI::Point(0.0f, 0.5f));
+	takeButton->setSize(CEGUI::Size(1.0f, 0.33f));
+	takeButton->setPosition(CEGUI::Point(0.0f, 0.33f));
 	takeButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(takeButton);
 	mButtonSet.insert(takeButton);	
+	
+	CEGUI::PushButton* inspectButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/InspectButton"));
+	inspectButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
+		boost::bind(&EntityPickerWidget::buttonInspect_Click, this, _1));
+	inspectButton->setText((CEGUI::utf8*)"Inspect");
+	inspectButton->setSize(CEGUI::Size(1.0f, 0.33f));
+	inspectButton->setPosition(CEGUI::Point(0.0f, 0.66f));
+	inspectButton->setInheritsAlpha(true);	
+	mMenuWindow->addChildWindow(inspectButton);
+	mButtonSet.insert(inspectButton);	
 	
 
 }
@@ -154,6 +164,7 @@ void EntityPickerWidget::pickedNothing(const CEGUI::MouseEventArgs& args)
 bool EntityPickerWidget::buttonTouch_Click(const CEGUI::EventArgs& args)
 {
 	DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity()->getErisAvatar()->touch(mPickedEntity);
+	mGuiManager->EventEntityAction("tuoch", mPickedEntity);
 	mGuiManager->setDebugText(std::string("Touched ") + mPickedEntity->getName() );
 	removeMenu();
 	return true;
@@ -162,7 +173,15 @@ bool EntityPickerWidget::buttonTouch_Click(const CEGUI::EventArgs& args)
 bool EntityPickerWidget::buttonTake_Click(const CEGUI::EventArgs& args)
 {
 	DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity()->getErisAvatar()->take(mPickedEntity);
+	mGuiManager->EventEntityAction("take", mPickedEntity);
 	mGuiManager->setDebugText(std::string("Took ") + mPickedEntity->getName());
+	removeMenu();
+	return true;
+}
+
+bool EntityPickerWidget::buttonInspect_Click(const CEGUI::EventArgs& args)
+{
+	mGuiManager->EventEntityAction("inspect", mPickedEntity);
 	removeMenu();
 	return true;
 }

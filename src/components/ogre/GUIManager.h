@@ -75,6 +75,8 @@ public:
 	SigC::Signal1<void, const std::string& > AppendIGChatLine;
 	SigC::Signal1<void, const std::string& > AppendOOGChatLine;
 	
+	SigC::Signal2<void, const std::string&, DimeEntity*> EventEntityAction;
+	
 	void testClick(const CEGUI::EventArgs& args);
 	
 	void removeWidget(Widget* widget);
