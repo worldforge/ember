@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.16  2002-04-26 12:16:50  xmp
+ *      Revision 1.17  2002-04-29 19:23:48  xmp
+ *      Moved to new eris polling method
+ *
+ *      Revision 1.16  2002/04/26 12:16:50  xmp
  *      Replaced my previous hacky style #ifdefs with one #if per metaserver location.
  *
  *      Revision 1.15  2002/04/25 22:35:32  xmp
@@ -78,6 +81,12 @@
 #include <iostream>
 #include <iomanip>
 
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+#include <eris/PollDefault.h>
+#endif
+
 //Needed for CppUnit
 #ifdef USE_CPP_UNIT
 	#include <cppunit/TextTestResult.h> 
@@ -113,9 +122,9 @@ namespace dime
                 {
                     std::cerr << "CRITICAL";
                 }
-            else  if(importance == dime::LoggingService::ERROR)
+            else  if(importance == dime::LoggingService::FAILURE)
                 {
-                    std::cerr << "ERROR";
+                    std::cerr << "FAILURE";
                 } 
             else if(importance == dime::LoggingService::WARNING)
                 {
@@ -150,7 +159,7 @@ namespace dime
             }
         if((SDL_Init(SDL_INIT_VIDEO)==-1)) 
             {
-                myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::ERROR, 
+                myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, 
                                       "Couldn't init SDL");
                 //std::cerr << "Couldn't init SDL";
                 return;
@@ -216,12 +225,11 @@ namespace dime
             }
         myGuiService->refresh();
 
-	// Metaserver polling
-	// TODO: this shall later be a DefaultPoll::Poll to poll all eris connections
+	// Eris polling
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-	myMetaserverService->poll();
+		Eris::PollDefault::poll();
 #endif
     }
 
