@@ -1,2 +1,2 @@
 INCLUDES = -I$(top_srcdir)/src
-SUBDIRS = src test
+SUBDIRS = test src
