@@ -1,7 +1,7 @@
 #include "Container.h"
 #include <assert.h>
 
-int dime::Container::draw(SDLDrawDevice *target)
+int dime::Container::draw(DrawDevice *target)
 {
 	//iterate through children Widgets, telling them all to draw.
 	int retval; //return value

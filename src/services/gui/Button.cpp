@@ -1,8 +1,8 @@
 #include "Button.h"
 
-int dime::Button::draw(SDLDrawDevice *target)
+int dime::Button::draw(DrawDevice *target)
 {
-	myCurrentBackground->render(&SDLDrawDevice(SDL_GetVideoSurface()));
+	myCurrentBackground->render(target);
 	//TODO: what should be returned here?
 	return 0;
 }

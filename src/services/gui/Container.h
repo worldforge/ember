@@ -42,14 +42,19 @@ namespace dime {
 class Container : public Widget
 {
     //======================================================================
+    // Protected Variables
+    //======================================================================
+    protected:
+		
+	/**
+	 * Vector of the Container's children
+	 */
+	std::vector<Widget*> myChildren;
+
+    //======================================================================
     // Private Variables
     //======================================================================
     private:
-		
-	/**
-	* Vector of the Container's children
-	*/
-	std::vector<Widget*> myChildren;
 	
     //======================================================================
     // Public Methods
@@ -60,16 +65,16 @@ class Container : public Widget
     // Constructors
 
     /**
-     * Creates a new Container using default values.
-     */
+    * Creates a new Container using default values.
+    */
     Container() : Widget()
     {
     }
 
 
     /**
-     * Copy constructor.
-     */
+	 * Copy constructor.
+	 */
     Container( const Container &source )
     {
         // Use assignment operator to do the copy
@@ -79,8 +84,8 @@ class Container : public Widget
 
 
     /**
-     * Assignment operator.
-     */
+	 * Assignment operator.
+	 */
     Container &operator= ( const Container &source )
     {
         // Copy fields from source class to this class here.
@@ -94,8 +99,8 @@ class Container : public Widget
     // Destructor
 
     /**
-     * Deletes a Container instance.
-     */
+	 * Deletes a Container instance.
+	 */
     virtual ~Container()
     {
 		if (myParent != NULL) myParent->removeWidget(this);
@@ -116,7 +121,7 @@ class Container : public Widget
 	/**
 	 * Tells the children widgets in myChildren to draw themselves.
 	 */
-	virtual int draw(SDLDrawDevice *target);
+	virtual int draw(DrawDevice *target);
 
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals

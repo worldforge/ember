@@ -20,7 +20,7 @@
 #define RECTANGLE_H
 
 // Included headers from the current project
-#include <services/gui/Dimension.h>
+#include <services/platform/Dimension.h>
 
 // Included custom library headers
 

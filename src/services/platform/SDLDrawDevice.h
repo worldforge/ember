@@ -49,12 +49,11 @@ namespace dime {
         // Private Variables
         //======================================================================
     private:
-        /*
-         * the surface on which we perform all operations
-         */
+		/*
+		 * the surface on which we perform all operations
+		 */
         SDL_Surface *mySurface;
 
-        
         //======================================================================
         // Public Methods
         //======================================================================   
@@ -64,24 +63,30 @@ namespace dime {
         // Constructors
 
         /*
-         * The default constructor which requires an SDL_Surface pointer on which to operate.
-         */
-        SDLDrawDevice(SDL_Surface *surface)
+		 * The default constructor which requires an SDL_Surface pointer on which to operate.
+		 */
+        SDLDrawDevice(SDL_Surface *surface)// : myDimensions(surface->w,surface->h) Why doesn't this work?
         {
             assert(surface);
             mySurface = surface;
+			myDimensions = Dimension(surface->w,surface->h); // gah
         }
-        
+
+        //----------------------------------------------------------------------
+        // Destructor
+
         /*
-         * The virtual destructor
-         */
+		 * The virtual destructor
+		 */
         virtual ~SDLDrawDevice()
         {
         }
 
+		//----------------------------------------------------------------------
+		// Other public methods
         /*
-         * Draw a pixel of Color "color" at (x.y)
-         */
+		 * Draw a pixel of Color "color" at (x.y)
+		 */
         virtual void drawPixel(int x, int y, Color color);
 
         /*

@@ -23,7 +23,6 @@
 #include "Widget.h"
 #include "Container.h"
 #include <services/platform/RectangleRenderer.h>
-#include <services/platform/SDLDrawDevice.h>
 
 // Included custom library headers
 // (1) Include the signal system in headers file.
@@ -56,33 +55,33 @@ class Button : public Widget
     public:
     
     /**
-     * Connect a slot here to observe when a mouse button is pressed.
-     */
+    * Connect a slot here to observe when a mouse button is pressed.
+    */
     SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseDown;
 	
     /**
-     * Connect a slot here to observe when a mouse button is released.
-     */
+    * Connect a slot here to observe when a mouse button is released.
+    */
     SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseUp;
     
     /**
-     * Connect a slot here to observe MouseMotions
-     */
+    * Connect a slot here to observe MouseMotions
+    */
     SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseMove;
     
     /**
-     * Connect a slot here to observe when MouseMoves over this Widget
-     */
+    * Connect a slot here to observe when MouseMoves over this Widget
+    */
     SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseEnter;
     
     /**
-     * Connect a slot here to observe when a Mouse leaves this Widget
-     */
+    * Connect a slot here to observe when a Mouse leaves this Widget
+    */
     SigC::Signal1<void, Button*, SigC::Marshal<void> > onMouseExit;
     
     /**
-     * Connect a slot here to observe when a key is pressed and this Widget has focus.
-     */
+    * Connect a slot here to observe when a key is pressed and this Widget has focus.
+    */
     SigC::Signal2<void, Button*, SDLKey, SigC::Marshal<void> > onKeyPress;
 
     //======================================================================
@@ -121,8 +120,8 @@ class Button : public Widget
     // Constructors
 
     /**
-     * Creates a new Button using default values.
-     */
+    * Creates a new Button using default values.
+    */
     Button() : Widget()
     {
 		myCurrentBackground = &myStandardBackground;
@@ -130,8 +129,8 @@ class Button : public Widget
 
 
     /**
-     * Copy constructor.
-     */
+    * Copy constructor.
+    */
     Button( const Button &source )
     {
         // Use assignment operator to do the copy
@@ -141,8 +140,8 @@ class Button : public Widget
 
 
     /**
-     * Assignment operator.
-     */
+    * Assignment operator.
+    */
     Button &operator= ( const Button &source )
     {
         // Copy fields from source class to this class here.
@@ -156,8 +155,8 @@ class Button : public Widget
     // Destructor
 
     /**
-     * Deletes a Button instance.
-     */
+    * Deletes a Button instance.
+    */
     virtual ~Button()
     {
 		if (myParent != NULL) myParent->removeWidget(this);
@@ -173,16 +172,16 @@ class Button : public Widget
     // Setters
 
     /**
-     * Sets the highlighted background RectangleRenderer of this Widget
-     */	
+    * Sets the highlighted background RectangleRenderer of this Widget
+    */	
 	virtual void setHighlightBackground(const RectangleRenderer &background)
 	{
 		myHighlightBackground = background;
 	}
 
 	/**
-     * Sets the standard background RectangleRenderer of this Widget
-     */	
+    * Sets the standard background RectangleRenderer of this Widget
+    */	
 	virtual void setBackground(const RectangleRenderer &background)
 	{
 		myStandardBackground = background;
@@ -194,17 +193,16 @@ class Button : public Widget
 	/**
 	 * Draws the widget, and/or its children.
 	 */
-    virtual int draw(SDLDrawDevice *target);
+    virtual int draw(DrawDevice *target);
 
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
 	 */
 	virtual bool checkMouseEvent(std::vector<int> coords);
-	
+
 	virtual void highlight();
 	
 	virtual void lowlight();
-
 	
     //======================================================================
     // Protected Methods

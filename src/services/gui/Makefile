@@ -96,7 +96,7 @@ INCLUDES = -I$(top_srcdir)/src
 
 noinst_LIBRARIES = libGuiService.a
 
-libGuiService_a_SOURCES = GuiService.cpp Widget.cpp Container.cpp Button.cpp
+libGuiService_a_SOURCES = GuiService.cpp Widget.cpp Container.cpp Button.cpp Panel.cpp
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -109,7 +109,7 @@ LDFLAGS =  -L/usr/lib -lSDL -lpthread -lsigc -lpthread -L/usr/local/lib -lAtlasO
 LIBS = -lSDL_ttf -lSDL_mixer -lSDL_image 
 libGuiService_a_LIBADD = 
 libGuiService_a_OBJECTS =  GuiService.$(OBJEXT) Widget.$(OBJEXT) \
-Container.$(OBJEXT) Button.$(OBJEXT)
+Container.$(OBJEXT) Button.$(OBJEXT) Panel.$(OBJEXT)
 AR = ar
 CXXFLAGS = -g -O2 -I/usr/include/SDL -D_REENTRANT -I/usr/lib/sigc++-1.0/include -I/usr/include/sigc++-1.0 -I/usr/local/include -I/usr/local/include -I/usr/local/include -I/usr/local/include
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -124,7 +124,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/Button.P .deps/Container.P .deps/GuiService.P \
-.deps/Widget.P
+.deps/Panel.P .deps/Widget.P
 SOURCES = $(libGuiService_a_SOURCES)
 OBJECTS = $(libGuiService_a_OBJECTS)
 

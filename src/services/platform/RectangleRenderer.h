@@ -22,7 +22,7 @@
 // Included headers from the current project
 #include <services/platform/Color.h>
 #include <services/platform/DrawDevice.h>
-#include <services/gui/Rectangle.h>
+#include <services/platform/Rectangle.h>
 
 // Included custom library headers
 

@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.7  2002-04-07 05:38:25  adamgreg
+ *      Revision 1.8  2002-04-08 07:51:28  adamgreg
+ *
+ *      Added simple panels. Cleaned up the way my Gui code was using SDLDrawDevices instead of the DrawDevice base class. Made GuiService get the root widget dimensions properly. Moved Rectangle.h and Dimension.h to services/platform/ because they're used there and not just in the gui, and are pretty useful for other things. Probably did some other things I've forgotten about :). Mostly just cleaning it up.
+ *
+ *      Revision 1.7  2002/04/07 05:38:25  adamgreg
  *
  *      Made GuiService draw widgets to a DrawDevice associated with it. So that the Gui can now be drawn to areas other than the main screen if desired. Also more general for when an OpenGL version turns up.
  *
@@ -52,13 +56,12 @@
 #include <string>
 #include <SDL/SDL.h>
 #include <main/DimeServices.h>
+#include <services/platform/SDLDrawDevice.h>
 
 namespace dime 
 {
     class Application : public SigC::Object
     {
-
-        
         //======================================================================
         // Inner Classes, Typedefs, and Enums
         //======================================================================

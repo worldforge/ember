@@ -21,20 +21,26 @@
 #define DRAWDEVICE_H
 
 #include "Color.h"
+#include <services/platform/Dimension.h>
 
 #include <SDL/SDL.h>
 
 namespace dime {
-    
+
+	/**
+	 * Interface for DrawDevice.
+	 *
+	 * @author Lakin Wecker
+	 *
+	 */
+
 class DrawDevice {
-
-    /**
-     * Interface for DrawDevice.
-     *
-     * @author Lakin Wecker
-     *
-     */
-
+	//======================================================================
+	// Protected Variables
+	//======================================================================
+    protected:
+	
+	Dimension myDimensions;
 
     //======================================================================
     // Public Methods
@@ -42,33 +48,52 @@ class DrawDevice {
 	
 public:
     /**
-     * Creates a new DrawDevice using default values.
-     */
+    * Creates a new DrawDevice using default values.
+    */
     DrawDevice(){}
     
     /**
-     * Virtual destructor
-     */
+    * Virtual destructor
+    */
     virtual ~DrawDevice(){}
+		
+	//----------------------------------------------------------------------
+	// Getters
+
+	const Dimension &getDimensions() const
+	{
+		return myDimensions;
+	}
+		
+	//----------------------------------------------------------------------
+	// Setters
+
+	void setDimensions(Dimension dimensions)
+	{
+		myDimensions = dimensions;
+	}
+		
+	//----------------------------------------------------------------------
+	// Other public methods
 
     /**
-     * Draws a pixel of color at (x,y)
-     */
+    * Draws a pixel of color at (x,y)
+    */
     virtual void drawPixel(int x, int y, Color color) = 0;
     
     /**
-     * Draws a line of color from (x1,y1) to (x2,y2)
-     */
+    * Draws a line of color from (x1,y1) to (x2,y2)
+    */
     virtual void drawLine(int x1, int y1, int x2, int y2, Color color) = 0;
     
-    /*
-     * Fills the rectangle destRect with color
-     */
+	/**
+    * Fills the rectangle destRect with color
+    */
     virtual void fillRect(SDL_Rect *destRect, Color color) = 0;
     
-    /*
-     * Fills destRect with a gradient produces from the four colors
-     */
+	/*
+	 * Fills destRect with a gradient produces from the four colors
+	 */
     virtual void drawGradient(SDL_Rect *destRect,
                               Color leftTop, 
                               Color rightTop, 

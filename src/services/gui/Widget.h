@@ -20,9 +20,9 @@
 #define WIDGET_H
 
 // Included headers from the current project
-#include "Dimension.h"
-#include "Rectangle.h"
-#include <services/platform/SDLDrawDevice.h>
+#include <services/platform/Dimension.h>
+#include <services/platform/Rectangle.h>
+#include <services/platform/DrawDevice.h>
 
 // Included custom library headers
 
@@ -225,7 +225,7 @@ class Widget : public SigC::Object
 	/**
 	 * Draws the widget, and/or its children.
 	 */
-    virtual int draw(SDLDrawDevice *target) = 0;
+    virtual int draw(DrawDevice *target) = 0;
 
 	
 	/**

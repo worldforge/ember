@@ -43,6 +43,41 @@ namespace dime {
 class Panel : public Container
 
 {
+	//======================================================================
+    // Public Signals
+    //======================================================================
+    public:
+    
+    /**
+    * Connect a slot here to observe when a mouse button is pressed.
+    */
+    SigC::Signal1<void, Panel*, SigC::Marshal<void> > onMouseDown;
+	
+    /**
+    * Connect a slot here to observe when a mouse button is released.
+    */
+    SigC::Signal1<void, Panel*, SigC::Marshal<void> > onMouseUp;
+    
+    /**
+    * Connect a slot here to observe MouseMotions
+    */
+    SigC::Signal1<void, Panel*, SigC::Marshal<void> > onMouseMove;
+    
+    /**
+    * Connect a slot here to observe when MouseMoves over this Widget
+    */
+    SigC::Signal1<void, Panel*, SigC::Marshal<void> > onMouseEnter;
+    
+    /**
+    * Connect a slot here to observe when a Mouse leaves this Widget
+    */
+    SigC::Signal1<void, Panel*, SigC::Marshal<void> > onMouseExit;
+    
+    /**
+    * Connect a slot here to observe when a key is pressed and this Widget has focus.
+    */
+    SigC::Signal2<void, Panel*, SDLKey, SigC::Marshal<void> > onKeyPress;
+
     //======================================================================
     // Inner Classes, Typedefs, and Enums
     //======================================================================
@@ -80,16 +115,15 @@ class Panel : public Container
     // Constructors
 
     /**
-     * Cretaes a new Panel using default values.
-     */
-    Panel()
+    * Creates a new Panel using default values.
+    */
+    Panel() : Container()
     {
     }
 
-
     /**
-     * Copy constructor.
-     */
+    * Copy constructor.
+    */
     Panel( const Panel &source )
     {
         // Use assignment operator to do the copy
@@ -97,10 +131,9 @@ class Panel : public Container
         *this = source;
     }
 
-
     /**
-     * Assignment operator.
-     */
+    * Assignment operator.
+    */
     Panel &operator= ( const Panel &source )
     {
         // Copy fields from source class to this class here.
@@ -109,15 +142,15 @@ class Panel : public Container
         return *this;
     }
 
-
     //----------------------------------------------------------------------
     // Destructor
 
     /**
-     * Deletes a Panel instance.
-     */
+    * Deletes a Panel instance.
+    */
     virtual ~Panel()
     {
+		if (myParent != NULL) myParent->removeWidget(this);
         // TODO: Free any allocated resources here.
     }
 
@@ -129,10 +162,26 @@ class Panel : public Container
     //----------------------------------------------------------------------
     // Setters
 
+	/**
+    * Sets the standard background RectangleRenderer of this Widget
+    */	
+	virtual void setBackground(const RectangleRenderer &background)
+	{
+		myBackground = background;
+	}
 
     //----------------------------------------------------------------------
     // Other public methods
-	
+
+	/**
+	 * Draws the widget, and/or its children.
+	 */
+    virtual int draw(DrawDevice *target);
+
+	/**
+	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
+	 */
+	virtual bool checkMouseEvent(std::vector<int> coords);
 
     //======================================================================
     // Protected Methods
