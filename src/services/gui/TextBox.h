@@ -78,9 +78,17 @@ class TextBox : public Label
 
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
-	RectangleRenderer myBackRect;
+    /*
+     * Rectangle renderer used to draw what's behind the the text
+     */
+    RectangleRenderer myBackRect;
+
+    /*
+     * Position of Caret in textbox
+     */
+    unsigned int myCaretPos;
     
-	//======================================================================
+    //======================================================================
     // Public Methods
     //======================================================================
     public:
@@ -89,21 +97,22 @@ class TextBox : public Label
     // Constructors
 
     /**
-     * Cretaes a new TextBox using default values.
+     * Creates a new TextBox using default values.
      */
-	TextBox() : Label()
+    TextBox() : Label(), myCaretPos(0)
     {
     }
 
 	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
-                                                            myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH)
+	  myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH),
+	  myCaretPos(text.length())
     {
     }
 
     TextBox(std::string text, const Rectangle& rect) :
         Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
-        myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH)
-        
+      myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH),
+      myCaretPos(text.length())
     {
     }
     /**
