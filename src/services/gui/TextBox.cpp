@@ -29,19 +29,14 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      {
 	      case SDLK_BACKSPACE:
                 {
+                    // FIXME: reinventing the wheel bigtime, use std::string::erase(index,len)
+                    // rather than all that stupid substringing.
 		  unsigned int len = myText.length();
 
-                    if(len > 1)
+                    if(len > 0)
                         {
-                            myText = myText.substr(0, myText.length()-1);
-			    myCaretPos--;
-                        }
-                    else if(len ==1)
-                        {
-			  myText = (Uint16*)"";
-			  //myText.clear(); Backed out because of lackings of
-			  // certain versions of gcc's STL
-			  myCaretPos--;
+                            myText.erase(myCaretPos,1);
+                            myCaretPos--;
                         }
                     
                 }
@@ -66,6 +61,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      case SDLK_RIGHT:
 	      {
 		// Move caret right
+        // FIXME: Don't pass the end of line if we do tack a space onto it
 		myCaretPos++;
 	      }
 	      break;
