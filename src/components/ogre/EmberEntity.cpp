@@ -16,6 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "EmberOgrePrerequisites.h"
 #include "framework/Service.h"
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"
@@ -61,7 +62,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 	Ogre::Quaternion orientation = Atlas2Ogre(getOrientation());
 	getSceneNode()->setOrientation(orientation);
-	std::cout << "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
+	S_LOG_INFO( "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")")
 }
 
 
@@ -69,7 +70,7 @@ void EmberEntity::createSceneNode()
 {
 	EmberEntity* container = dynamic_cast<EmberEntity*>(getLocation());
 	if (container == NULL) {
-		std::cout << "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" << std::endl;
+		S_LOG_INFO( "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" )
 
 		//mSceneManager->createSceneNode(getId());
 		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode(getId()));
@@ -123,10 +124,10 @@ void EmberEntity::setMoving(bool moving)
 	std::string type = getType()->getName(); // Eris type as a string
 	if(type.compare("pig")==0) { 	// if it's a pig
 		if(moving) { 				// and the pig *starts* moving
-			std::cout << "THE PIG STARTS MOVING" << std::endl;
+			S_LOG_INFO( "THE PIG STARTS MOVING" )
 			Ember::EmberServices::getInstance()->getSoundService()->playTestGrunt();
 		} else {					// the pig is stopping
-			std::cout << "THE PIG STOPS MOVING" << std::endl;
+			S_LOG_INFO( "THE PIG STOPS MOVING" )
 		}
 	}
 	
@@ -167,13 +168,13 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
-	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
+	S_LOG_INFO( "TRACE - ENTITY SAYS: [" << message << "]\n" )
 	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 	// Make a sound if it's the merchant speaking
 	if(type.compare("merchant")==0) {
-		std::cout << "THE MERCHANT IS SPEAKING" << std::endl;
+		S_LOG_INFO( "THE MERCHANT IS SPEAKING" )
 		Ember::EmberServices::getInstance()->getSoundService()->playTestGYPH();
 	}
 	// Call the method of the base class (since we've overloaded it)
@@ -218,7 +219,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	if (getLocation() == oldLocation)
 	{
-		std::cout << "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" << std::endl;
+		S_LOG_INFO( "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" )
 		return Eris::Entity::onLocationChanged(oldLocation);
 	
 	}
@@ -236,19 +237,20 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		
 			// add to the new entity
 			newLocationEntity->getSceneNode()->addChild(getSceneNode());
-			std::cout << "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" << std::endl;
+			S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" )
 			
 			getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	} else {
 		//add to the world
-		std::cout << "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" << std::endl;
+		S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" )
 //		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 	}		
 	
 	checkVisibility(isVisible());
-	
-	std::cout << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " << getOrientation() << std::endl;
+    std::stringstream ss;
+	ss << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " <<  getOrientation();                                                      
+	S_LOG_INFO( ss.str() )
 
 	//we adjust the entity so it retains it's former position in the world
 	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
@@ -260,7 +262,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 void EmberEntity::onAction(const Atlas::Objects::Root& act)
 {
 	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString());
-	std::cout << std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString() << "\n";
+	S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString())
 }
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)

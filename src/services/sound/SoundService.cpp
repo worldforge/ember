@@ -79,12 +79,10 @@ namespace Ember
 		alutInit(NULL,0);
 		if(alGetError() != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error initiatin AL" << ENDM;
+			S_LOG_FAILURE( "Error initiatin AL" )
 			return Service::FAILURE;
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-				<< "AL initiated"  << ENDM;
+			S_LOG_INFO( "AL initiated"  )
 		}
 
 		// Generate buffers
@@ -92,14 +90,14 @@ namespace Ember
 		if (!alGenBuffers(1,&systemBuffer)) return Service::FAILURE;
 		if (!alIsBuffer(systemBuffer)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating system buffer" << ENDM;
+			S_LOG_FAILURE("Error creating system buffer")
 			return Service::FAILURE;
 		}
 *//*
 		//alGenBuffers(1,&musicBuffer);
 		if (!alIsBuffer(musicBuffer)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating music buffer" << ENDM;
+			S_LOG_FAILURE("Error creating music buffer")
 			return Service::FAILURE;
 		}*/
 
@@ -108,8 +106,7 @@ namespace Ember
 		{
 			if (!alIsBuffer(worldBuffers[i]))
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-					<< "Error creating world buffers" << ENDM;
+				S_LOG_FAILURE( "Error creating world buffers" )
 				return Service::FAILURE;
 			}
 		}
@@ -119,14 +116,14 @@ namespace Ember
 		alGenSources(1,systemSource);
 		if (!alIsSource(systemSource)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating system source" << ENDM;
+			S_LOG_FAILURE("Error creating system source")
 			return Service::FAILURE;
 		}
 
 		alGenSources(1,&musicSource);
 		if (!alIsSource(musicSource)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating music source" << ENDM;
+			S_LOG_FAILURE("Error creating music source")
 			return Service::FAILURE;
 		}*/
 
@@ -135,7 +132,7 @@ namespace Ember
 		{
 			if (!alIsSource(worldSources[i]))
 			{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating world sources" << ENDM;
+			S_LOG_FAILURE("Error creating world sources")
 				return Service::FAILURE;
 			}
 		}
@@ -145,37 +142,29 @@ namespace Ember
 		
 		soundsDirPath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() 
 			+ "media/sounds/";
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << 
-			"Sound Media Path: [" << soundsDirPath << "]" << ENDM;
+		S_LOG_INFO( "Sound Media Path: [" << soundsDirPath << "]" )
 
 		std::stringstream gyphPath;
 		gyphPath << soundsDirPath << "gyph.wav";
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << 
-			"Loading sound: [" << gyphPath.str() << "]" << ENDM;
+		S_LOG_INFO(
+			"Loading sound: [" << gyphPath.str() << "]")
 		alutLoadWAV(gyphPath.str().c_str(),&data,&format,&size,&bits,&freq);
 		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error loading wav" << ENDM;
+			S_LOG_FAILURE( "Error loading wav" )
 			return Service::FAILURE;
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-				<< "WAV file loaded"  << ENDM;
+			S_LOG_INFO( "WAV file loaded"  )
 		}
 
 
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-			<< "Loaded WAV file? let's check"  << ENDM;
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-			<< "format: " << format << ENDM;
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-			 << "size: " << size << ENDM;
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-			<< "bits: " << bits << ENDM;
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-			<< "freq: " << freq << ENDM;
+		S_LOG_INFO( "Loaded WAV file? let's check"  )
+		S_LOG_INFO( "format: " << format )
+		S_LOG_INFO( "size: " << size )
+		S_LOG_INFO( "bits: " << bits )
+		S_LOG_INFO( "freq: " << freq )
 
 		// Connect WAV to buffer
 		alBufferData(worldBuffers[0],format,data,size,freq);
@@ -183,12 +172,10 @@ namespace Ember
 
 		if(alGetError() != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error connecting wav to buffer" << ENDM;
+			S_LOG_FAILURE( "Error connecting wav to buffer" )
 			return Service::FAILURE;
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-				<< "WAV connected to buffer"  << ENDM;
+			S_LOG_INFO( "WAV connected to buffer"  )
 		}
 
 
@@ -204,11 +191,9 @@ namespace Ember
 		int error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error in listener parameters: " << error << ENDM;
+			S_LOG_FAILURE( "Error in listener parameters: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-				<< "Listener Parameters OK" << ENDM;
+			S_LOG_INFO( "Listener Parameters OK" )
 		}
 
 		alSourcef(worldSources[0],AL_PITCH,1.0f);	// source Frequency
@@ -216,11 +201,9 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error in source parameter pitch: " << error << ENDM;
+			S_LOG_FAILURE( "Error in source parameter pitch: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-				<< "Source parameter pitch OK" << ENDM;
+			S_LOG_INFO( "Source parameter pitch OK" )
 		}
 
 		alSourcef(worldSources[0],AL_GAIN,1.0f);	// source gain
@@ -228,11 +211,9 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-				<< "Error in source parameter gain: " << error << ENDM;
+			S_LOG_FAILURE( "Error in source parameter gain: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-				<< "Source parameter gain OK" << ENDM;
+			S_LOG_INFO( "Source parameter gain OK" )
 		}
 
 
@@ -242,11 +223,9 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-				<< "Error in source parameter position: " << error << ENDM;
+			S_LOG_FAILURE( "Error in source parameter position: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-				<< "Source parameter position OK" << ENDM;
+			S_LOG_INFO( "Source parameter position OK" )
 		}
 
 
@@ -255,11 +234,9 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-				<< "Error in source parameter velocity: " << error << ENDM;
+			S_LOG_FAILURE( "Error in source parameter velocity: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-				<< "Source parameter velocity OK" << ENDM;
+			S_LOG_INFO( "Source parameter velocity OK" )
 		}
 
 
@@ -268,11 +245,9 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-				<< "Error in source parameter looping: " << error << ENDM;
+			S_LOG_FAILURE( "Error in source parameter looping: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-				<< "Source parameter looping OK" << ENDM;
+			S_LOG_INFO( "Source parameter looping OK" )
 		}
 
 
@@ -282,17 +257,15 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-				<< "Error attaching buffer to source: " << error << ENDM;
+			S_LOG_FAILURE( "Error attaching buffer to source: " << error )
 		} else {
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-				<< "Buffer attached OK" << ENDM;
+			S_LOG_INFO( "Buffer attached OK" )
 		}
 
 
 		/*
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-			<< "Press 1 to play sound, 2 to stop, 3 to go on with Ember." << ENDM;
+			<< "Press 1 to play sound, 2 to stop, 3 to go on with Ember." )
 		*/
 
 
@@ -301,16 +274,16 @@ namespace Ember
 		char a; bool loop = true;
 	do {
 		cin >> a;
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "a: " << a << ENDM;
+		S_LOG_INFO("a: " << a)
  		switch (a)
 		{
 			case '1':
 
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "playing"<< ENDM;
+				S_LOG_INFO("playing")
 				break;
 			case '2':
 				alSourceStop(worldSources[0]);
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "stopping" << ENDM;
+				S_LOG_INFO("stopping")
 				break;
 			case '3':
 				loop = false;
@@ -319,7 +292,7 @@ namespace Ember
 			error = alGetError();
 			if(error != AL_NO_ERROR)
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error: " << error << ENDM;
+				S_LOG_FAILURE("Error: " << error)
 			}
 
 	} while (loop);
@@ -327,7 +300,7 @@ namespace Ember
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error playing wav: " << error << ENDM;
+			S_LOG_FAILURE("Error playing wav: " << error)
 
 			return Service::FAILURE;
 		}
@@ -344,8 +317,7 @@ namespace Ember
 		setStatus(Service::OK);
 		setStatusText("Sound Service status OK.");
 
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-			<< getName() << " initialized" << ENDM;
+		S_LOG_INFO( " initialized" )
 		return Service::OK;
 
   }
@@ -367,13 +339,13 @@ namespace Ember
 			int error = alGetError();
 			if(error != AL_NO_ERROR)
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error playing sound: " << error << ENDM;
+				S_LOG_FAILURE("Error playing sound: " << error)
 			}
 
 		}
 		else if(command == PLAYMUSIC)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " I should be playing music" << ENDM;
+			S_LOG_INFO(getName() << " I should be playing music")
 		}
 	}
 
@@ -391,7 +363,7 @@ namespace Ember
 
 		alutLoadWAV(fname,&data,&format,&size,&bits,&freq);		// Load WAV file
 		alBufferData(buffer,format,data,size,freq);				// Connect WAV to buffer
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Loading WAV and stuff" << ENDM;
+		S_LOG_INFO("Loading WAV and stuff")
 
 #endif
 
@@ -421,17 +393,17 @@ namespace Ember
 	void SoundService::TestPlatform(void)
 	{
 
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Testing Platform" << ENDM;
+		S_LOG_INFO("Testing Platform")
 
 #ifdef _WIN32 //Windows
 
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Windows Platform found" << ENDM;
+		S_LOG_INFO("Windows Platform found")
 
 #endif
 
 #ifdef _LINUX // Linux
 
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Linux Platform found" << ENDM;
+		S_LOG_INFO("Linux Platform found")
 
 #endif
 
@@ -443,8 +415,7 @@ namespace Ember
 		int error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error playing sound: " << error << ENDM;
+			S_LOG_FAILURE("Error playing sound: " << error)
 		}
 	}
 
@@ -452,8 +423,7 @@ namespace Ember
 	
 		std::stringstream gruntPath;
 		gruntPath << soundsDirPath << "pig_grunt.wav";
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << 
-			"Loading sound: [" << gruntPath.str() << "]" << ENDM;
+		S_LOG_INFO( "Loading sound: [" << gruntPath.str() << "]" )
 		alutLoadWAV(gruntPath.str().c_str(),&data,&format,&size,&bits,&freq);
 		
 		// Connect WAV to buffer
@@ -468,8 +438,7 @@ namespace Ember
 		{
 			char* errorStr = (char*)alGetString(error);
 			//std::string errorStr = alGetString(error);
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
-				<< "Error playing sound: " << errorStr << ENDM;
+			S_LOG_FAILURE( "Error playing sound: " << errorStr )
 		}
 	}
 	
