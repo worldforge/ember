@@ -25,7 +25,8 @@ void dime::FontRenderer::updateTextBlended()
 
     /* Get the dimensions of the text surface */
     if ((myFont->sizeText(myText, &width, NULL)) || !width ) {
-		THROW("Font width zero or sizeText error.")
+        myTextSurface = NULL;
+        THROW("Font width zero or sizeText error.")
         // Should throw an error
     }
     height = myFont->getHeight();
@@ -96,6 +97,9 @@ void dime::FontRenderer::renderText(DrawDevice *device)
      src.w = myRectangle.getWidth();
      src.h = myRectangle.getHeight();
      dest = myRectangle.getSDL_Rect();
-     device->blitSurface(&src, &dest, myTextSurface);
+     if(myTextSurface)
+         {
+             device->blitSurface(&src, &dest, myTextSurface);
+         }
     
 }

@@ -21,9 +21,10 @@
 
 // Included headers from the current project
 #include "Font.h"
-#include "services/platform/Color.h"
-#include "services/platform/Rectangle.h"
-#include "services/platform/DrawDevice.h"
+#include <services/platform/Color.h>
+#include <services/platform/Rectangle.h>
+#include <services/platform/DrawDevice.h>
+#include <framework/Exception.h>
 // Included custom library headers
 
 // Included system headers
@@ -80,7 +81,7 @@ class FontRenderer
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
     Type myType;
-    std::string myText;
+    Font::FontString myText;
     SDL_Surface *myTextSurface;
     Font *myFont;
     Color myColor;
@@ -106,7 +107,7 @@ class FontRenderer
      *@param color the color for the text.
      */
 
-    FontRenderer(const Type type, const std::string text, Font *font, const Color &color, const Rectangle &rectangle)
+    FontRenderer(const Type type, const Font::FontString text, Font *font, const Color &color, const Rectangle &rectangle)
         : myType(type), myText(text), myTextSurface(NULL), myFont(font), myColor(color),  myUpdate(false), myRectangle(rectangle)
     {
         updateTextBlended();
@@ -155,7 +156,7 @@ class FontRenderer
         return myType;
     }
     
-    std::string getText() const
+    Font::FontString getText() const
     {
         return myText;
     }
@@ -188,7 +189,7 @@ class FontRenderer
         myUpdate = true;
     }
     
-    void setText(const std::string &text)
+    void setText(const Font::FontString &text)
     {
         myText = text;
         myUpdate = true;
@@ -224,7 +225,16 @@ class FontRenderer
             case BLENDED:
                 if(myUpdate)
                     {
-                        updateTextBlended();
+                        try
+                            {
+                                updateTextBlended();
+                            }
+                        
+                        catch (Exception e)
+                            {
+                                // std::cout << e.getError() << std::endl;
+                            }
+                        
                     }
                 renderText(device);
             }

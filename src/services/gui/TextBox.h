@@ -95,11 +95,16 @@ class TextBox : public Label
     {
     }
 
-	TextBox(std::string text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+5, rect.getY()+15, rect.getWidth()-10,rect.getHeight()-10)),
+	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+5, rect.getY()+15, rect.getWidth()-10,rect.getHeight()-10)),
 		myBackRect(RectangleRenderer::BITMAP, rect,"textboxback.png")
     {
     }
 
+    TextBox(std::string text, const Rectangle& rect) :
+        Label(text, Rectangle(rect.getX()+5, rect.getY()+15, rect.getWidth()-10,rect.getHeight()-10)),
+        myBackRect(RectangleRenderer::BITMAP, rect,"textboxback.png")
+    {
+    }
     /**
      * Copy constructor.
      */

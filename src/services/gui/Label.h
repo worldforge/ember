@@ -72,7 +72,7 @@ class Label : public Widget
     protected:
 
 	FontRenderer *myFontRenderer;
-
+    
     //======================================================================
     // Private Variables
     //======================================================================
@@ -99,7 +99,7 @@ class Label : public Widget
       dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
 #endif 
       assert(font);
-      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(0,0,0), Rectangle(0,0,0,0));
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(100,100,0), Rectangle(0,0,0,0));
     }
     
     /**
@@ -114,10 +114,24 @@ class Label : public Widget
       dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
 #endif 
       assert(font);
-      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(0,0,0), rect);
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(0,0,255), rect);
     }
 
     
+	/**
+     * Creates a new Label using rect and text.
+     */
+    Label(const Font::FontString text, const Rectangle& rect) 
+        : Widget(rect)
+    {
+#ifdef _MSC_VER
+      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
+#else
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
+#endif 
+      assert(font);
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, text, font, Color(0,0,255), rect);
+    }
 	/**
      * Creates a new Label using rect and text.
      */
@@ -130,9 +144,14 @@ class Label : public Widget
       dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
 #endif 
       assert(font);
-      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, text, font, Color(0,0,0), rect);
+      Font::FontString fontString;
+      for(int i = 0; i < text.length(); ++i)
+          {
+              fontString+=text[i];
+          }
+      
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, fontString, font, Color(0,0,255), rect);
     }
-
     /**
      * Copy constructor.
      */
@@ -178,7 +197,7 @@ class Label : public Widget
     /**
      * Returns the text of the Label
      */
-    virtual std::string getText() const
+    virtual Font::FontString getText() const
     {
         return myFontRenderer->getText();
     }
@@ -192,7 +211,7 @@ class Label : public Widget
 	 *
 	 * @param text The new text to go in label
      */
-    virtual void setText( const std::string& text ) {
+    virtual void setText( const Font::FontString& text ) {
 		myFontRenderer->setText(text);
 	}
 

@@ -42,11 +42,14 @@ public:
     //======================================================================
     
     static const int STYLE_NORMAL;
-     static const int STYLE_BOLD;
+    static const int STYLE_BOLD;
     static const int STYLE_ITALIC;
     static const int STYLE_UNDERLINE;
-     
+    
     static const int NUM_GRAYS;
+
+    typedef std::basic_string<Uint16> FontString;
+    
     //======================================================================
     // Private Variables
     //======================================================================
@@ -113,7 +116,7 @@ public:
                         int *miny, int *maxy, int *advance);
     
     /* Get the dimensions of a rendered string of text */
-    bool sizeText(std::string text, int *w, int *h);
+    bool sizeText(FontString text, int *w, int *h);
     //int sizeUTF8(const char *text, int *w, int *h);
     //int sizeUNICODE(const char *text, int *w, int *h);
     

@@ -190,7 +190,7 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
     return true;
 }
 
-bool dime::Font::sizeText(std::string text, int *w, int *h)
+bool dime::Font::sizeText(FontString text, int *w, int *h)
 {
     int status;
     int x, z, index;

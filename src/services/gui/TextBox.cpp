@@ -13,21 +13,26 @@ int TextBox::draw(DrawDevice *target)
 	return 0;
 }
 
-virtual bool TextBox::keyPress( KeyPressEvent *event)
+bool TextBox::keyPress( KeyPressEvent *event)
  { 
     if (event->getState() == KeyPressEvent::PRESSED)
         {
-		std::string myText = Label::getText();
+            Font::FontString myText = Label::getText();
             int i = 0;
             int w;
-            std::string fittedText;
-
+            Font::FontString fittedText;
+            
             if(event->getSDLKey() == SDLK_BACKSPACE)
                 {
-                    if(myText.length() > 0)
+                    if(myText.length() > 1)
                         {
                             myText = myText.substr(0, myText.length()-1);
                         }
+                    else if(myText.length() ==1)
+                        {
+                            myText = (Uint16*)"";
+                        }
+                    
                 }
             else
                 {
