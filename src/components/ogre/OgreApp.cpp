@@ -57,14 +57,14 @@ http://www.gnu.org/copyleft/lesser.txt.
 // a lot easier. It automatically sets up all the main objects and allows you to
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
-#include "ExampleApplication.h"
+#include "OgreApp.h"
 
 
 
-class TerrainListener : public ExampleFrameListener
+class TerrainListener : public BaseFrameListener
 {
   public:
-    TerrainListener(RenderWindow* win, Camera* cam) :ExampleFrameListener(win, cam) { };
+    TerrainListener(RenderWindow* win, Camera* cam) :BaseFrameListener(win, cam) { };
 
  // Override frameStarted event to process that (don't care about frameEnded)
     bool frameStarted(const FrameEvent& evt)
@@ -195,7 +195,7 @@ class TerrainListener : public ExampleFrameListener
 
 };
 
-class CameraRotator : public ExampleFrameListener
+class CameraRotator : public BaseFrameListener
 {
 
 protected:
@@ -206,7 +206,7 @@ protected:
         Real mRotationSpeed;
 
 public:
-        CameraRotator(RenderWindow* win, Camera* cam, SceneNode* centralNode, Vector3 initialPosition) : ExampleFrameListener(win, cam)
+        CameraRotator(RenderWindow* win, Camera* cam, SceneNode* centralNode, Vector3 initialPosition) : BaseFrameListener(win, cam)
         {
                 mCamera = cam;
                 mCentralNode = centralNode;
@@ -242,13 +242,13 @@ public:
 
 // ----------------------------------------------------------------------------
 // Define the application object
-// This is derived from ExampleApplication which is the class OGRE provides to
+// This is derived from BaseApplication which is the class OGRE provides to
 // make it easier to set up OGRE without rewriting the same code all the time.
-// You can override extra methods of ExampleApplication if you want to further
+// You can override extra methods of BaseApplication if you want to further
 // specialise the setup routine, otherwise the only mandatory override is the
 // 'createScene' method which is where you set up your own personal scene.
 // ----------------------------------------------------------------------------
-class OgreApp : public ExampleApplication
+class OgreApp : public BaseApplication
 {
 public:
     // Basic constructor
