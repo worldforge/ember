@@ -23,7 +23,7 @@
         </attachpoint>
       </attachpair>
     </attachpairs>
-    <bbox x="12" y="6" z="3"  >
+    <bbox x="24" y="12" z="6"  >
     </bbox>
   </blockspec>
   <blockspec name="roof12" >
@@ -49,6 +49,6 @@
         </attachpoint>
       </attachpair>
      </attachpairs>
-    <bbox x="6" y="3" z="1.5" />
+    <bbox x="12" y="6" z="3" />
   </blockspec>
 </blockspecs>

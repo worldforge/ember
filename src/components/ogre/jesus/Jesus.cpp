@@ -266,10 +266,12 @@ bool Jesus::loadBlockSpec(const std::string& filename)
 		if (bboxNodes->getLength()) {
 			xercesc::DOMElement* bboxNode = dynamic_cast<xercesc::DOMElement*>(bboxNodes->item(0));
 			
-			WFMath::Point<3> bboxPoint1;
+			WFMath::Point<3> bboxPoint_temp;
 			
-			fillFromElement(bboxNode, bboxPoint1);
-			WFMath::Point<3> bboxPoint2(-bboxPoint1.x(),-bboxPoint1.y(),-bboxPoint1.z());
+			fillFromElement(bboxNode, bboxPoint_temp);
+			WFMath::Point<3> bboxPoint1(bboxPoint_temp.x() * 0.5, bboxPoint_temp.y() * 0.5, bboxPoint_temp.z() * 0.5);
+			WFMath::Point<3> bboxPoint2(-bboxPoint_temp.x() * 0.5, -bboxPoint_temp.y() * 0.5, -bboxPoint_temp.z() * 0.5);
+			//(-bboxPoint1.x(),-bboxPoint1.y(),-bboxPoint1.z());
 			
 			WFMath::AxisBox<3> bbox(bboxPoint1, bboxPoint2);
 			blockSpec->setBoundingBox(bbox);
@@ -509,6 +511,8 @@ void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, std::string fil
 			   
 			   //set the starting block
               rootElem->setAttribute(X("startingblock"), X(blueprint->getStartingBlock().c_str()));
+              //and name
+			  rootElem->setAttribute(X("name"), X(blueprint->getName().c_str()));
 			   
 			  //now iterate over all building blocks
                DOMElement*  bblocksElem = doc->createElement(X("buildingblocks"));
@@ -632,9 +636,12 @@ Carpenter::BluePrint* Jesus::loadBlueprint(std::string filename)
 	
 	xercesc::XMLString::transcode("startingblock", tempStr, 99);
 	std::string startingBlockName = xercesc::XMLString::transcode(root->getAttribute(tempStr));
+	
+	xercesc::XMLString::transcode("name", tempStr, 99);
+	std::string name = xercesc::XMLString::transcode(root->getAttribute(tempStr));
 
 	
-	Carpenter::BluePrint* blueprint = mCarpenter->createBlueprint(filename);
+	Carpenter::BluePrint* blueprint = mCarpenter->createBlueprint(name);
 	 
 
 	xercesc::XMLString::transcode("buildingblock", tempStr, 99);

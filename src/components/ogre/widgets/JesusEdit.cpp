@@ -58,9 +58,8 @@ void JesusEdit::buildWidget()
 {
 	
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEdit.widget", "JesusEdit/");
-	mMainWindow->setVisible(true);
+	mMainWindow->setVisible(false);
 	
-	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
 	
 
 	
@@ -109,8 +108,9 @@ void JesusEdit::buildWidget()
 	EmberOgre::getSingleton().EventCreatedJesus.connect(SigC::slot(*this, &JesusEdit::createdJesus));
 	
 	getMainSheet()->addChildWindow(mMainWindow); 
-	getMainSheet()->addChildWindow(mPreviewWindow); 
+//	getMainSheet()->addChildWindow(mPreviewWindow); 
 	
+	//make sure the buttons are disabled by default
 	updateBindingButton();
 	updateCreateButton();
 
@@ -214,6 +214,7 @@ bool JesusEdit::CurrentBlocksList_SelectionChanged( const CEGUI::EventArgs & arg
 bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & args )
 {
 	const Carpenter::BuildingBlockSpec* bblockSpec = getNewBuildingBlockSpec( );
+	removeBindings();
 	if (bblockSpec) {
 		fillNewAttachPointList(bblockSpec->getBlockSpec());
 		
@@ -233,6 +234,12 @@ bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & a
 	updateCreateButton();
 	return true;
 
+}
+
+void JesusEdit::removeBindings()
+{
+
+	mBindings.clear();
 }
 
 void JesusEdit::fillNewAttachPointList(const Carpenter::BlockSpec * blockspec )
@@ -385,7 +392,7 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 	if (bblock->isAttached()) {
 		mCurrentConstruction->createModelBlock(bblock, true);
 	}
-	mBindings.clear();
+	removeBindings();
 	loadConstruction(mCurrentConstruction);
 }
 
@@ -437,6 +444,9 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 : mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(1), mMaxCameraDistance(40)
 {
+	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
+	
+	
 	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	mEntityNode->setPosition(Ogre::Vector3(100000,100000,100000));
@@ -583,6 +593,8 @@ void JesusEditPreview::createPreviewTexture()
 
 bool EmberOgre::JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 {
+
+	mCurrentConstruction->getJesus()->saveBlueprintToFile(mCurrentConstruction->getBluePrint() , "/tmp/test.blueprint.xml");
 }
 
 

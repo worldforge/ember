@@ -13,10 +13,8 @@
         </attachpoint>
       </attachpair>
     </attachpairs>
-    <bbox x="12" z="6" y="0.15" >
-<!--bounding boxes with only three values defined assume that the center of the block is at 0,0,0 and expands the bounding box in all directions.
-So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2 and it's second at 12,1.5,0.2.
--->    </bbox>
+    <bbox x="24" z="12" y="0.3" >
+    </bbox>
   </blockspec>
   <blockspec name="slopewall12" >
     <attachpairs>
@@ -31,7 +29,7 @@ So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2
         </attachpoint>
       </attachpair>
     </attachpairs>
-    <bbox x="6" z="3" y="0.15" />
+    <bbox x="12" z="6" y="0.3" />
   </blockspec>
   <blockspec name="slopewall6" >
     <attachpairs>
@@ -46,6 +44,6 @@ So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2
         </attachpoint>
       </attachpair>
     </attachpairs>
-    <bbox x="3" z="1.5" y="0.15" />
+    <bbox x="6" z="3" y="0.3" />
   </blockspec>
 </blockspecs>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<blueprint startingblock="mainfloor">
+<blueprint name="house" startingblock="mainfloor">
   <buildingblocks>
     <buildingblock blocktype="floor/24/stone" name="mainfloor" />
     <buildingblock blocktype="wall/24/timber" name="westwall" />

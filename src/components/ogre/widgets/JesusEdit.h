@@ -109,6 +109,7 @@ public:
 	void setZoom(float value);
 
 protected:
+	CEGUI::Window* mPreviewWindow;
 	Jesus* mJesus;
 	Construction* mConstruction;
 	GUIManager* mGuiManager;
@@ -138,6 +139,7 @@ protected:
 	The currently selected AttachPointNode
 	*/
 	AttachPointNode* mSelectedAttachPointNode;
+	
 };
 
 
@@ -153,38 +155,134 @@ public:
 	
 protected:
 
-	CEGUI::Window* mPreviewWindow;
-	
+	/**
+	if set to true, we're in edit mode
+	*/
 	bool mInJesusMode;
+	
+	/**
+	mouse picker which picks building blocks
+	*/
 	JesusMousePicker mMousePicker; 
 	
+	
+	/**
+	 *    method bound to EmberOgre::EventCreatedJesus
+	 *    
+	 * @param jesus 
+	 */
 	void createdJesus(Jesus* jesus);
+	
+	
+	/**
+	 *    set up the whole system from a Jesus instance
+	 * @param jesus 
+	 */
 	void loadFromJesus(Jesus* jesus);
 	
+	
+	
+	///---------start CEGUI callback methods
+	
+	/**
+	 *    switches between normal gui mode and JesusEdit mode
+	 * @param args 
+	 * @return 
+	 */
 	bool SwitchMode_Click(const CEGUI::EventArgs& args);
+	
+	
+	/**
+	 *    tries to bind two attach points
+	 * @param args 
+	 * @return 
+	 */
 	bool Bind_Click(const CEGUI::EventArgs& args);
+	
+	
+	/**
+	 *    tries to create a new bblock
+	 * @param args 
+	 * @return 
+	 */
 	bool Create_Click(const CEGUI::EventArgs& args);
+	
+	
+	/**
+	 *    creates a new Construction
+	 * @param args 
+	 * @return 
+	 */
 	bool CreateNew_Click(const CEGUI::EventArgs& args);
 
+	
+	
 	bool AvailableBlocksList_SelectionChanged(const CEGUI::EventArgs& args);
 	bool CurrentBlocksList_SelectionChanged(const CEGUI::EventArgs& args);
 	bool CurrentPointsList_SelectionChanged(const CEGUI::EventArgs& args);
 	bool NewPointsList_SelectionChanged(const CEGUI::EventArgs& args);
 	
-
+	///-----------end CEGUI callback methods
+	
+	
+	/**
+	 *    checks whether the Bind button should be enabled
+	 */
 	void updateBindingButton();
+	/**
+	 *    checks whether the Create button should be enabled
+	 */
 	void updateCreateButton();
 	
+	/**
+	 *    gets the selected AttachPoint for the current block
+	 * @return null if no block selected
+	 */
 	const Carpenter::AttachPoint* getSelectedPointForCurrentBlock() const;
+	/**
+	 *    gets the selected AttachPoint for the new
+	 * @return null if no block selected
+	 */
 	const Carpenter::AttachPoint* getSelectedPointForNewBlock() const;
 	
+	
+	/**
+	 *    bound to JesusMousePicker::EventPickedModelBlock
+	 * @param modelBlock 
+	 * @param  
+	 */
 	void pickedModelBlock(ModelBlock* modelBlock, const CEGUI::MouseEventArgs&);
+	
+	/**
+	 *    bound to JesusMousePicker::EventPickedAttachPointNode
+	 * @param pointNode 
+	 * @param  
+	 */
 	void pickedAttachPointNode(AttachPointNode* pointNode, const CEGUI::MouseEventArgs&);
 
+	
+	/**
+	 *    fill the attach point list with values taken from the supplied ModelBlock
+	 * @param block 
+	 */
 	void fillAttachPointList(ModelBlock* block);
+	
+	
+	/**
+	 *    fill the "new attach point" list with values from the supplied BlockSpec
+	 * @param blockspec 
+	 */
 	void fillNewAttachPointList(const Carpenter::BlockSpec* blockspec);
+	
+	
+	/**
+	 *    loads the supplied construction
+	 * @param construction 
+	 */
 	void loadConstruction(Construction* construction);
 
+	
+	///---------start CEGUI elements
 	CEGUI::PushButton* mBind;
 	CEGUI::PushButton* mCreate;
 	CEGUI::PushButton* mCreateNew;
@@ -196,7 +294,21 @@ protected:
 	CEGUI::Listbox* mCurrentPointsList;
 	CEGUI::Listbox* mNewPointsList;
 	
+	///----------end CEGUI elements
+	
+	
+	/**
+	 *    creates and returns a vector of BuildingBlockBinding for the supplied BuildingBlock
+	 * @param newBlock 
+	 * @return 
+	 */
 	std::vector<Carpenter::BuildingBlockBinding*> createBindingsForNewBlock(Carpenter::BuildingBlock* newBlock);
+	
+	/**
+	 * removes all current bindings
+	 */
+	void removeBindings();
+
 	
 	Construction* mCurrentConstruction;
 	inline ModelBlock* getSelectedBlock() { return mCurrentlySelectedBlock;};

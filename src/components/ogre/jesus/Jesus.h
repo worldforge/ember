@@ -147,6 +147,16 @@ public:
 	 * @return 
 	 */
 	inline Carpenter::Carpenter* getCarpenter() const { return mCarpenter; }
+	
+	bool addBluePrint(Carpenter::BluePrint* blueprint);
+	
+	/**
+	 *    returns a blueprint with the supplied name
+	 *	  note that the blueprint must already be loaded and added to Jesus with addBluePrint(...)
+	 * @param name 
+	 * @return 
+	 */
+	Carpenter::BluePrint* getBluePrint(const std::string& name);
 
 protected:
 	/**
@@ -170,6 +180,8 @@ protected:
 	AttachPointColourValueMap mColourMap;
 	
 	void addAttachPointType(const std::string & type);
+	
+	std::map<std::string , Carpenter::BluePrint* > mBlueprints;
 
 };
 

@@ -150,6 +150,7 @@ class BluePrint
 public:
 	BluePrint(const std::string & name, Carpenter* carpenter);
 	
+	inline const std::string& getName() const {return mName;}
 	
 	/**
 	 *    compiles the blueprint into a structure
