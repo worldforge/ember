@@ -202,7 +202,7 @@ Widget* GUIManager::createWidget(const std::string& name)
 }
 
 
-void GUIManager::setDebugText(std::string text)
+void GUIManager::setDebugText(const std::string& text)
 {
 	if (mDebugText)
 	{

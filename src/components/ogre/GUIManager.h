@@ -84,7 +84,6 @@ public:
 	
 	SigC::Signal2<void, const std::string&, EmberEntity*> EventEntityAction;
 	
-	void testClick(const CEGUI::EventArgs& args);
 	
 	void removeWidget(Widget* widget);
 	void addWidget(Widget* widget);
@@ -94,19 +93,37 @@ public:
 	CEGUI::Window* getMainSheet();
 	
 	void pressedKey(const SDL_keysym& key, bool isInGuimode);
-	//EmberEventProcessor* getEventProcessor() { return mEventProcessor; }
 	
 	void initialize();
 	
-/*	void setKeyListener(Ogre::KeyListener* listener) {mKeyListener; }
-	void setMouseListener(Ogre::MouseListener* listener) {mMouseListener = listener; }*/
 	
-	void setDebugText(std::string text);
+	/**
+	 *    sets a text to be shown somewhere on the screen, used for debugging purposes
+	 * @param text 
+	 */
+	void setDebugText(const std::string& text);
 
+	/**
+	 *    true if we're in GUI mode, which means that input events will be sent to the CEGUI system instead of the "world"
+	 * @return 
+	 */
 	const bool isInGUIMode() const;
+	
+	
+	/**
+	 *    true if keyboard input should make the avatar move
+	 *    this happens when wither 1) we're not in gui mode 2) the background sheet has the input control (thus, when something else, like an edit box has input control, that edit box will recieve key strokes
+	 * @return 
+	 */
 	const bool isInMovementKeysMode() const;
 	
 	inline MousePicker* getMousePicker() { return  mMousePickers.top(); }
+	
+	
+	/**
+	 *    accessor for the Input instance object
+	 * @return 
+	 */
 	Input* getInput() const;
 	
 	/**
@@ -126,13 +143,10 @@ public:
 protected:
 
 
-	CEGUI::Window* mChat;
-	
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
 	CEGUI::StaticText* mDebugText;
 	
-/*ServerBrowserWidget* t;*/
 	ConsoleWidget* mConsoleWidget;
 	//EmberEventProcessor* mEventProcessor;
 	Input *mInput;
@@ -140,14 +154,21 @@ protected:
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreCEGUIRenderer* mGuiRenderer;
 
+	
+	/**
+	all loaded widgets are stored here
+	*/
 	std::set<Widget*> mWidgets;
 	
+	
+	/**
+	 *    creates a widget 
+	 *    @see WidgetLoader
+	 * @param name the type of widget to create
+	 * @return 
+	 */
 	Widget* createWidget(const std::string& name);
 
-	void updateStats(void);
-
-
-	//Ogre::KeyListener* mKeyListener;
 	
 
 	/**
@@ -155,7 +176,6 @@ protected:
 	*/
 	std::stack<MousePicker*> mMousePickers;
 		
-	//MousePicker* mMousePicker;
 
 	//events
 	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);

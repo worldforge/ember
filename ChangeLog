@@ -1,5 +1,10 @@
 2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* added comments, removed old code
+	* send string by reference
+
+2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* removed dependeny on GUIManager
 
 2005-03-18  Erik Hjortsberg  <erik@katastrof.nu>
