@@ -61,6 +61,8 @@ AC_MSG_RESULT([
 WF_CHECK_SDL_IMAGE(1.2.0)
 dnl don't add SDL flags yet, SDL_main confuses later checks
 
+AC_LANG_PUSH(C)
+
 AC_CHECK_LIB(GL,glViewport,,
     AC_CHECK_LIB(opengl32,glViewport,,
       AC_MSG_ERROR(Could not find OpenGL library)
@@ -75,6 +77,8 @@ AC_CHECK_LIB(openal,
 	     Unable to find OpenAL (Open Audio Layer)
 	     ])
 	)
+
+AC_LANG_POP(C)
 
 # Test for libxml2
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
