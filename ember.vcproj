@@ -168,7 +168,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libsigc.lib cppunitcd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
+				AdditionalDependencies="libsigc.lib cppunitd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
 				OutputFile="bin/dime.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -374,6 +374,9 @@
 				<File
 					RelativePath=".\src\services\input\InputServiceTest.cpp">
 				</File>
+				<File
+					RelativePath="test\TestServices.cpp">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -510,6 +513,9 @@
 			</File>
 			<File
 				RelativePath=".\src\services\test\TestService.h">
+			</File>
+			<File
+				RelativePath="test\TestServices.h">
 			</File>
 			<File
 				RelativePath=".\src\services\gui\Theme.h">
