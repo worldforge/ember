@@ -1,21 +1,37 @@
-/* Copyright (C) Alistair Davidson and the Worldforge Project, 2001 
- * Licensed under the General Public License of the Free Software Foundation.
- * See file "COPYING" for details.
- */
+/*  Copyright (C) 2002  Alistair Davidson and the Worldforge Project
 
-/* Template Game View.
- *
- * Revision history:
- * ver  - yyyy/mm/dd - author    - change descriptor
- * 0.01 - 2002/02/16 - AlistairD - Class derived from very early version of DebugGameView
- */
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-/* MAIN PROG BEGINS */
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef TEMPLATE_GAME_VIEW_H
+#define TEMPLATE_GAME_VIEW_H
 
 namespace dime {
 
-/* Class declaration
+/**
+ * This is a template game view for use by DIME game view developers.
+ *
+ * It contains all the essential methods and code, with plenty of comments to
+ * show you how to use it. Essentially, it should be possible to "fill in the
+ * blanks" to create a working game view. That's not to say that doing so will
+ * be easy though ;)
+ *
+ * @author: AlistairD
+ *
+ *
+ * Class declaration
  * We're using SigC++, so we have to inherit from SigC::Object... you should
  * read up on SigC++ ( http://libsigc.sourceforge.net ) if you're not familiar
  * with it.
@@ -26,74 +42,136 @@ namespace dime {
 class TemplateGameView : public SigC::Object : public Component
 {
 
+
+    //======================================================================
+    //Public Methods
+    //======================================================================
     public:
 
+
+        /**
+         * Constructor
+         * This grabs a pointer to the current Eris entity from DimeService and
+         * connects ithe relevant signals to Game View methods. If you're not using
+         * any of those methods (Entered is the most likely to be unused IMO) then you
+         * should also remove the connection code.
+         */
         TemplateGameView();
+
+        /** Destructor, stick cleanup stuff her as per usual */
         ~TemplateGameView();
 
-        /* For the time being at least (the API isn't even vaguely stable yet),
+        /**
+         * For the time being at least (the API isn't even vaguely stable yet),
          * every GameView needs a "repaint()" function. This is where you put
          * your drawing code.
+         *
+         * Iterate through your world model and blit to your heart's content :)
          */
         void repaint();
 
         /* Eris::World entity signals (see eris\src\world.h for more info) */
 
-        /* Called on entity creation. This should add a MediaObject pointer to
-         * your world model. More on that in the .cpp */            
+        /**
+         * Called when an entity is created. This connects entity-specific
+         * signals to methods in the game view. In the case of Changed and
+         * Moved, a pointer to the entity is bound in because these signals
+         * do not provide the pointer by themselves.
+         *
+         * You should add in code that inserts a pointer to the entity's media
+         * into your world model.
+         *
+         * @param e A pointer to the Eris entity that has been created.
+         */
         void EntityCreate( Eris::Entity *e );
 
-        /* Called on entity deletion. This should remove the pointer added
-         * in EntityCreate. */
+        /**
+         * Called on entity deletion. You should remove all information you
+         * hold about the entity.
+         *
+         * @param e A pointer to the Eris entity that has been deleted.
+         *
+         */
         void EntityDelete( Eris::Entity *e );
 
-        /* Called only once, when the player enters the game world. It's
-         * possible that you won't need this one. */
+        /**
+         * Called only once, when the player enters the game world. It's
+         * possible that you won't need this one.
+         *
+         * @param e A pointer to the Eris entity
+         *
+         */
         void Entered( Eris::Entity *e );
 
-        /* Called when an entity appears. Probably treated similarly to
-         * EntityCreate. */
+        /** Called when an entity become visible. You'll probably want to add
+         * a media pointer to your world model at this point.
+         *
+         * @param e A pointer to the Eris entity
+         *
+         */
         void Appearance( Eris::Entity *e );
 
-        /* Called when an entity disappears. Probably treated similarly to
-         * EntityCreate, but without removing metadata and so on. */
+        /**
+         * Called when an entity becomes invisible. You should remove the media
+         * pointer corresponding to the entity from your world view, but retain
+         * any additional data you're holding about the entity.
+         *
+         * @param e A pointer to the Eris entity
+         *
+         */
         void Disappearance( Eris::Entity *e );
 
 
         /* Eris::Entity signals  (see eris\src\entity.h for more info)*/
 
-        /* Called when an entity changes its container. This may require
+        /**
+         * Called when an entity changes its container. This may require
          * changes to your world model, but some gameviews can safely ignore
-         * this signal. */
-        void Recontainered( Eris::Entity *e, Eris::Entity *c ); 
+         * this signal.
+         *
+         * @param e A pointer to the Eris entity that has been recontainered
+         * @param c A pointer to the Eris entity that is the new container for e
+         */
+        void Recontainered( Eris::Entity *e, Eris::Entity *c );
 
-        /* I'm not sure what this does. Let's ignore it until I can track down
-         * James and bop him on the head for writing unhelpful comments ;) */
+        /**
+         * I'm not sure what this does. Let's ignore it until I can track down
+         * James and bop him on the head for writing unhelpful comments ;)
+         */
         void Changed( const Eris::StringSet &s, Eris::Entity *e );
 
-        /* Called when the entity moves. Here you should alter the position
+        /**
+         * Called when the entity moves. Here you should alter the position
          * of the media pointer in your world model... this may involve
          * removing it from where it was before the entity moved and
          * placing it in the new position, in which case you'll need
          * a reverse-lookup of some kinda- Eris::Coord &c is the new
-         * entity coordinate, the old one is only known if stored by you. */
+         * entity coordinate, the old one is only known if stored by you.
+         *
+         * @param c The new coordinates of the entity
+         * @param e A pointer to the Eris entity that has moved
+         */
         void Moved( const Eris::Coord &c, Eris::Entity *e );
 
-        /* Called when the entity speaks. You'll probably want to display the
-         * speech on the screen somehow. */
+        /**
+         * Called when the entity speaks. You'll probably want to display the
+         * speech on the screen somehow.
+         *
+         * @param s A string containing the speech
+         * @param e A pointer to the Eris entity
+         */
         void Say( const std::string &s, Eris::Entity *e );
 
     private:
 
-        /* You should have some form of world model here. For example, the
+        /**
+         * You should have some form of world model here. For example, the
          * one-dimensional DebugGameView uses a vector.
          *
          * James has suggested a Quad Tree for 3D game views (that includes
          * layered 2D views)
          */
 
-};
+}; //End of class decleration
 
-
-
-}
+} // End of application namespace
