@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="field" height="1.7" width="0.4" depth="0.2" scale="1" >
+<model name="field"  >
   <submodels>
     <submodel mesh="field.mesh" >
       <parts>

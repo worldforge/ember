@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="oak" height="15" width="10" depth="10" scale="0.025" >
+<model name="oak" usescaleof="height"  >
   <submodels>
     <submodel mesh="Straight_up_tree.mesh" >
       <parts>

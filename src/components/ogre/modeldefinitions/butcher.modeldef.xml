@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="mercenary" usescaleof="height" >
+<model name="butcher" usescaleof="height" >
   <submodels>
     <submodel mesh="malebuilder.mesh" >
       <parts>
@@ -25,30 +25,30 @@
         </part>
         <part name="Boxers" show="false" >
           <subentities>
-            <subentity name="boxers" material="Malebuilder/Dress/Dark_rags" />
+            <subentity name="boxers" />
           </subentities>
         </part>
         <part name="Cloak" show="false" >
           <subentities>
-            <subentity name="cloak" material="Malebuilder/Dress/Dark_rags" />
+            <subentity name="cloak" />
           </subentities>
         </part>
 	<part name="Pants" show="true" >
           <subentities>
-            <subentity name="pants" material="Malebuilder/Dress/Dark_rags" />
+            <subentity name="pants" />
           </subentities>
         </part>      
-        <part name="Shirt" show="true" >
+        <part name="Shirt" show="false" >
           <subentities>
-            <subentity name="shirt" material="Malebuilder/Dress/Dark_rags" />
+            <subentity name="shirt" />
           </subentities>
         </part>  
         <part name="ShirtTuckedLongSleeve" show="false" >
           <subentities>
-            <subentity name="shirt/tucked_long_sleeve" material="Malebuilder/Dress/Dark_rags" />
+            <subentity name="shirt/tucked_long_sleeve" />
           </subentities>
         </part>      
-      </parts>      
+      </parts>
     </submodel>
   </submodels>
 </model>

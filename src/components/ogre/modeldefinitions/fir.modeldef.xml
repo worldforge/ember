@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="fir" height="15" width="10" depth="10" scale="0.025" >
+<model name="fir" usescaleof="height" >
   <submodels>
     <submodel mesh="Fir.mesh" >
       <parts>

@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="field" >
+<model name="squirrel" >
   <submodels>
-    <submodel mesh="acorn.mesh" >
+    <submodel mesh="squirrel.mesh">
       <parts>
-        <part name="Acorn" show="true" />
+        <part name="Squirrel" show="true" />
       </parts>
     </submodel>
   </submodels>
