@@ -257,12 +257,12 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 		return true;
 
 	case SDL_MOUSEBUTTONDOWN:
-		keyPressed((SDLKey&)(event.button.button));
+		keyPressed(static_cast<SDLKey>(event.button.button));
 		return true;
 	
 
 	case SDL_MOUSEBUTTONUP:
-		keyReleased((SDLKey&)(event.button.button));
+		keyReleased(static_cast<SDLKey>(event.button.button));
 		return true;
 	
 	case SDL_VIDEORESIZE:

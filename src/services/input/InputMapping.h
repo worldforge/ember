@@ -200,9 +200,11 @@ class InputMapping
 	/**
 	 * Version used to observe a motion only.
 	 */
-	InputMapping(InputDevice * motionDevice, const InputSlot &slot)
-	{
-		myMotionDevice		= motionDevice;
+	
+    InputMapping(InputDevice * motionDevice, const InputSlot &slot)
+    {
+        assert(this);
+        myMotionDevice		= motionDevice;
 		myKeyDevice			= NULL;
 		myTypes				= EVENT_OCCURED;
 		
@@ -217,15 +219,15 @@ class InputMapping
     InputMapping(InputDevice * keyDevice, SDLKey baseKey, 
 				  bool fireOnRelease, const InputSlot &slot)
     {
-		myMotionDevice		= NULL;
-		myKeyDevice			= keyDevice;
-		myKeyRangeStart		= baseKey;
-		myKeyRangeEnd		= baseKey;
-		myModifiers			= KMOD_NONE;
-		myTypes				= static_cast<InputSignalType>
+        assert(this);
+        myMotionDevice		= NULL;
+        myKeyDevice			= keyDevice;
+        myKeyRangeStart		= baseKey;
+        myKeyRangeEnd		= baseKey;
+        myModifiers			= KMOD_NONE;
+        myTypes				= static_cast<InputSignalType>
 									(KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0));
-
-		mySignal.connect(slot);	
+        mySignal.connect(slot);	
 	}
 
 	/**
@@ -234,6 +236,7 @@ class InputMapping
     InputMapping(InputDevice * keyDevice, SDLKey baseKey, SDLMod modifiers, 
 				 bool fireOnRelease, const InputSlot &slot)
     {
+        assert(this);
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
 		myKeyRangeStart		= baseKey;
@@ -252,6 +255,7 @@ class InputMapping
     InputMapping(InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd,
 				   bool fireOnRelease, const InputSlot &slot)
     {
+        assert(this);
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
 		myKeyRangeStart		= keyRangeStart;
@@ -269,6 +273,7 @@ class InputMapping
     InputMapping(InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd, 
 				SDLMod modifiers, bool fireOnRelease, const InputSlot &slot)
     {
+        assert(this);
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
 		myKeyRangeStart		= keyRangeStart;
@@ -288,6 +293,7 @@ class InputMapping
 				InputDevice * keyDevice, SDLKey baseKey,  
 				SDLMod modifiers, InputSignalType types, const InputSlot &slot)
     {
+        assert(this);
 		myMotionDevice		= motionDevice;
 		myKeyDevice			= keyDevice;
 		myKeyRangeStart		= baseKey;
@@ -306,6 +312,7 @@ class InputMapping
 				InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd,  
 				SDLMod modifiers, InputSignalType types, const InputSlot &slot)
     {
+        assert(this);
 		myMotionDevice		= motionDevice;
 		myKeyDevice			= keyDevice;
 		myKeyRangeStart		= keyRangeStart;

@@ -32,7 +32,7 @@ bool dime::Button::checkMouseEvent(std::vector<int> coords)
 			{
 				// Mouse has just entered widget.
 				myMouseIsInside = true;
-				onMouseEnter.emit(this);
+                //				onMouseEnter.emit(this);
 			}
 
 			// Coordinates lie inside this widget.
@@ -46,7 +46,7 @@ bool dime::Button::checkMouseEvent(std::vector<int> coords)
 			{
 				// Mouse just exited this widget.
 				myMouseIsInside = false;
-				onMouseExit.emit(this);
+				//onMouseExit.emit(this);
 			}
 			return false;
 		}

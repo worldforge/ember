@@ -21,6 +21,9 @@
 
 // Included headers from the current project
 #include "EventGenerator.h"
+#include "MouseButtonEvent.h"
+#include "MouseMotionEvent.h"
+
 #include <services/platform/Dimension.h>
 #include <services/platform/Rectangle.h>
 #include <services/platform/DrawDevice.h>
@@ -34,9 +37,9 @@
 #include <sigc++/signal_system.h>
 
 namespace dime {
-
-	class EventGenerator;
     
+    class EventGenerator;
+
     /**
      * The basic Widget for the Dime Gui
      *
@@ -149,27 +152,37 @@ namespace dime {
         /**
          * Connect a slot here to observe when a mouse button is pressed.
          */
-        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseDown;
+        SigC::Signal1<void, MouseButtonEvent *, SigC::Marshal<void> > onMouseDown;
         
         /**
          * Connect a slot here to observe when a mouse button is released.
          */
-        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseUp;
+        SigC::Signal1<void, MouseButtonEvent*, SigC::Marshal<void> > onMouseUp;
+        
+        /**
+         * Connect a slot here to observe a mouse Click
+         */
+        SigC::Signal1<void, MouseButtonEvent*, SigC::Marshal<void> > onMouseClick;
+        
+        /**
+         * Connect a slot here to observer a moust multiclick
+         */
+        SigC::Signal1<void, MouseButtonEvent*, SigC::Marshal<void> > onMouseMultiClick;
         
         /**
          * Connect a slot here to observe MouseMotions
          */
-        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseMove;
+        SigC::Signal1<void, MouseMotionEvent*, SigC::Marshal<void> > onMouseMove;
         
         /**
          * Connect a slot here to observe when MouseMoves over this Widget
          */
-        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseEnter;
+        SigC::Signal1<void, MouseMotionEvent*, SigC::Marshal<void> > onMouseEnter;
         
         /**
          * Connect a slot here to observe when a Mouse leaves this Widget
          */
-        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseExit;
+        SigC::Signal1<void, MouseMotionEvent*, SigC::Marshal<void> > onMouseExit;
         
         /**
          * Connect a slot here to observe when a key is pressed and this Widget has focus.
@@ -318,7 +331,7 @@ namespace dime {
          *
          * @return bool true if obj is accepted false if not
          */
-        virtual bool widgetDragDrop( int x, int y, int button, Widget *obj ) { };
+        //virtual bool widgetDragDrop( DragDropEvent *event ) { };
         
         
         /**
@@ -343,7 +356,10 @@ namespace dime {
          * Override the event methods in derived classes when neccesary.
          */
         
-        virtual bool keyPress( int key){ };
+        //       virtual bool keyPress( KeyPressEvent *event)
+        //{ 
+            
+        //}
         
 
         /**
@@ -351,12 +367,12 @@ namespace dime {
         * until releaseKeyboard is called.  Returns true if keyboard was successfully
         * captured (if some other window already had it captureKeyboard fails).
         */
-        virtual bool captureKeyboard() { };
+        virtual bool captureKeyboard() { }
         
         /**
          * Releases the keyboard if it was captured by captureKeyboard().
          */
-        virtual void releaseKeyboard() { };
+        virtual void releaseKeyboard() { }
         
 
 
@@ -365,14 +381,15 @@ namespace dime {
          * A mouseclick.  button is 1 for left, 2 for right and 3 for middle.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseClick( int x, int y, int button, Widget *win ) { };        
+        virtual void mouseClick( MouseButtonEvent* ) { }
 
         /**
          * A mouse button was double-clicked.
          * button is 1 for left, 2 for right and 3 for middle.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseDblClick( int x, int y, int button, Widget *win ) { };
+        virtual void mouseDblClick( MouseButtonEvent *event) { }
+
 
         /**
          * The window object was dragged with some mouse button
@@ -382,7 +399,7 @@ namespace dime {
          * captures the mouse and moves when the mouse is moved).
          * False if the drag should be ignored.
          */
-        virtual bool mouseDragStart( int x, int y, int button, Widget *win ) { };
+        //        virtual bool mouseDragStart( DragDropEvent *event) { }
         
         /**
          * The dragging was canceled by pressing any other mouse button than
@@ -390,7 +407,7 @@ namespace dime {
          * returned to its previous host object and coordinates.
          * Button is the button pressed to cancel the drag.
          */
-        virtual void mouseDragCancel( int x, int y, int button, Widget *win ) { };
+        //virtual void mouseDragCancel( DragDropEvent *event ) { };
         
         /*
          * The mouse button used to drag the window object was released.
@@ -400,24 +417,24 @@ namespace dime {
          * Calls the objectDragDrop method of destination window,
          * and cancells the drag if destination->objectDragDrop returns false.
          */
-        virtual bool mouseDragEnd( int x, int y, int button, Widget *dest ) { }
+        //virtual bool mouseDragEnd( DragDropEvent *event ) { }
 
         /**
          * The mouse has just entered win.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseEnter( int x, int y, Widget *win ) 
+        virtual void mouseEnter( MouseMotionEvent *event )
         {
-            onMouseEnter.emit(this);
+            onMouseEnter.emit(event);
         }
 
         /**
          * The mouse has just left win.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseExit( int x, int y, Widget *win ) 
+        virtual void mouseExit( MouseMotionEvent *event ) 
         {
-            onMouseExit.emit(this);
+            onMouseExit.emit(event);
         }
 
         /**
@@ -439,24 +456,31 @@ namespace dime {
          * button is 1 for left, 2 for right and 3 for middle.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseDown( int x, int y, int button, Widget *win ) { };
+        virtual void mouseDown( MouseButtonEvent *event )
+        {
+            onMouseDown.emit(event);
+            
+        }
         
         /*
          * A mouse button was released.
          * button is 1 for left, 2 for right and 3 for middle.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseUp( int x, int y, int button, Widget *win ) { };
+        virtual void mouseUp( MouseButtonEvent *event ) 
+        {
+            onMouseUp.emit(event);
+        }
 
         /**
          * The mouse was moved.  x and y are the new mouse coordinates.
          * win is the window at position x, y (normally 'this').
          * Check for dragging and calls mouseDragStart if neccesary.
          */
-        virtual void mouseMove( int x, int y, Widget *win ) 
+        virtual void mouseMove( MouseMotionEvent *event )
         {
-            
-        };
+
+        }
 
 
         //---------------------------------------------------------------------------------------------------

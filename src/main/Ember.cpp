@@ -6,15 +6,26 @@
 //#include <SDL/SDL_keysym.h>
 
 
-void mouseenterbutton(dime::Widget* button)
+void mouseenterbutton(dime::MouseMotionEvent* event)
 {
-	((dime::Button *)button)->highlight();
+    ((dime::Button *)event->getWidget())->highlight();
 }
 
-void mouseexitbutton(dime::Widget* button)
+void mouseexitbutton(dime::MouseMotionEvent* event)
 {
-	((dime::Button *)button)->lowlight();
+    ((dime::Button *)event->getWidget())->lowlight();
 }
+
+void onMouseButtonDown(dime::MouseButtonEvent *event)
+{
+    std::cout << "DORK!\n" << std::flush;
+}
+
+void onMouseButtonUp(dime::MouseButtonEvent *event)
+{
+    std::cout << "Mouse UP!\n" << std::flush;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -35,6 +46,9 @@ int main(int argc, char **argv)
 	myTestPanel.setRectangle(dime::Rectangle(200,200,300,200));
 	myTestPanel.setBackground(dime::RectangleRenderer(BITMAP,myTestPanel.getRectangle(),"masonwindowback2.jpg"));
 	myTestPanel.addWidget(&myTestButton);
+    myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
+    myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));
+    
 
 	dime::InputService * pIS = dime::InputService::getInstance();
 

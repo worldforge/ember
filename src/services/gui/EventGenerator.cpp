@@ -6,7 +6,11 @@
 //---------------------------------------------------------------------------------------------------
 void dime::EventGenerator::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
 {
-    int x, y, button, event, loop = 0;
+    assert(mouse);
+    
+
+    MouseMotionEvent *event;
+    int x, y;
     x = mouse->getAxisPosition(0);
     y  = mouse->getAxisPosition(1);
 
@@ -14,7 +18,7 @@ void dime::EventGenerator::MouseMotion(InputDevice *mouse, const SDLKey &key, di
     dime::Widget *eventDest  = NULL;
     
     // Get the widget the mouse is over:
-    updatePointedWidget( x, y );
+    updatePointedWidget( x, y, mouse );
     
     if (myMouseCaptureWidget) 
         {
@@ -24,32 +28,30 @@ void dime::EventGenerator::MouseMotion(InputDevice *mouse, const SDLKey &key, di
         {
             eventDest = myPointedWidget;
         }
+    event = new MouseMotionEvent(mouse, eventDest);
     
     // Determine event type and redirect it:
     if(eventDest)
         {
-            eventDest->mouseMove( x, y, myPointedWidget );
+            eventDest->mouseMove( event );
         }
 }
 
 void dime::EventGenerator::MouseClick(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
 {
-
-    int x, y, button, event, loop = 0;
+    assert(mouse);
+    
+    MouseButtonEvent *event;
+    MouseButtonEvent::Button button;
+    int x, y;
     x = mouse->getAxisPosition(0);
-    y = mouse->getAxisPosition(1);
-    //  dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::INFO) << "Mouse click of button " << key << " at (" << coords[0] << ", " << coords[1] << ") received" << ENDM;
-    //myRootWidget.checkMouseEvent(coords);
-    
-    // Checks the mouse input queue and redirects mouse events to the main
-    // widget or the widget that has captured the mouse.
-    
+    y = mouse->getAxisPosition(1);    
     
     // Select mouse event destination:
     dime::Widget *eventDest  = NULL;
     
     // Get the widget the mouse is over:
-    updatePointedWidget( x, y );
+    updatePointedWidget( x, y, mouse );
     
     if (myMouseCaptureWidget)
         {
@@ -60,18 +62,37 @@ void dime::EventGenerator::MouseClick(InputDevice *mouse, const SDLKey &key, dim
         {
             eventDest = myPointedWidget;
         }
+    if(key == SDLK_LEFT_MB) 
+        {
+            button = MouseButtonEvent::LEFTBUTTON;
+        }
+    else if(key == SDLK_MIDDLE_MB)
+        {
+            button = MouseButtonEvent::MIDDLEBUTTON;
+        }
+    else if(key == SDLK_RIGHT_MB)
+        {
+            button = MouseButtonEvent::RIGHTBUTTON;
+        }
     
-    
-    //eventDest->mouseUp( x, y, button, myPointedWidget );
-    //eventDest->mouseDown( x, y, button, myPointedWidget );
-    
+    if(mouse->getKeyState(key) == dime::InputDevice::PRESSED)
+        {
+            event = new MouseButtonEvent(mouse, eventDest, button, MouseButtonEvent::PRESSED);
+            eventDest->mouseDown( event );
+        }
+    else if (mouse->getKeyState(key) == dime::InputDevice::RELEASED)
+        {
+            event = new MouseButtonEvent(mouse, eventDest, button, MouseButtonEvent::RELEASED);
+            eventDest->mouseUp( event );
+        }
 }
 
 
-void dime::EventGenerator::updatePointedWidget( int mx, int my ) {
+void dime::EventGenerator::updatePointedWidget( int mx, int my, InputDevice *device) {
     // Checks which widget the mouse pointer currently is in and
     // sets myPointedWidget to point at it.  Calls mouseExit for the previous
     // myPointedWidget and mouseEnter for the new one.
+    MouseMotionEvent *event;
     
     if (!myRootWidget) {
         myPointedWidget = NULL;
@@ -82,7 +103,13 @@ void dime::EventGenerator::updatePointedWidget( int mx, int my ) {
     dime::Widget *p = myRootWidget->getWidgetAt( mx, my );
     if (p != myPointedWidget) {
         // Exit old widget object:
-        if (myPointedWidget) myPointedWidget->mouseExit( mx, my, p );
+        if (myPointedWidget) 
+            {
+                event = new MouseMotionEvent(device, myPointedWidget);
+                myPointedWidget->mouseExit( event );
+            }
+        
+                    
         
         // Set default (desktop(?)) cursor if the mouse isn't captured
         // and no new widget is pointed at:
@@ -93,7 +120,8 @@ void dime::EventGenerator::updatePointedWidget( int mx, int my ) {
         
         if (p) {
             // Enter new widgets object:
-            p->mouseEnter( mx, my, p );
+            event = new MouseMotionEvent(device, p);
+            p->mouseEnter( event );
             
             // Set mouse cursor to that of the new pointed widget
             // (if it has one and the mouse isn't captured):

@@ -361,18 +361,17 @@ class LoggingService: public Service
 	 */
 
 	 //ATTENTION (by tim): I've changed this back to my initial version, because the presented
-	 // ones didn't compile using MSVC. Is there any problem with this on 
-
-	void log(const string message, ...) 
-	{
-	    va_list vl;
-		va_start(vl, message);
-		logVarParam("", -1, INFO, message, vl);
-		va_end(vl);
-	}
-
-	void log(const string & file, const string message, ...)
-	{
+	 // ones didn't compile using MSVC. Is there any problem with this on
+    void log(const string message, ...)
+    {
+        va_list vl;
+        va_start(vl, message);
+        logVarParam("", -1, INFO, message, vl);
+        va_end(vl);  
+    }
+    
+        void log(const string & file, const string message, ...)
+            {
 		va_list vl;
 		va_start(vl, message);
 		logVarParam(file, -1, INFO, message, vl);

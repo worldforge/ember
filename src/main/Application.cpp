@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.12  2002-04-17 04:02:09  nikal
+ *      Revision 1.13  2002-04-20 17:19:24  nikal
+ *      Events now have their own classes which are passed to the listeners.  and buttonup, buttondown, mousexit, and mouseenter all work properly.
+ *
+ *      Revision 1.12  2002/04/17 04:02:09  nikal
  *      Dime is now using the event generator, and events have been sped up.  (previously we were only processing one event per screen refresh.  now we process all events the do the screen refresh.)  The event system is very close to being in place, new widgets will come over the next few days.
  *
  *      Revision 1.11  2002/04/15 05:53:15  nikal
@@ -188,55 +191,6 @@ namespace dime
         SDL_Event nextEvent;
         while(SDL_PollEvent(&nextEvent)) 
             {
-                switch(nextEvent.type) {
-                case SDL_ACTIVEEVENT:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_ACTIVEEVENT");
-                    break;
-                case SDL_KEYDOWN:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_KEYDOWN");
-                    break;
-                case SDL_KEYUP:
-                    // Looking for the ESC key.
-                  /*  if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
-                        {
-                            myShouldQuit = true;
-
-                  
-                        }
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_KEYUP");*/
-                    break;
-                case SDL_MOUSEMOTION:
-                    //generates too much noise -nikal
-                    //std::cout << " SDL_MOUSEMOTION\n";
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_MOUSEBUTTONDOWN");
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_MOUSEBUTTONUP");
-                    break;
-                case SDL_SYSWMEVENT:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_SYSWMEVENT");
-                    break;
-                case SDL_VIDEORESIZE:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_VIDEORESIZE");
-                    break;
-                case SDL_VIDEOEXPOSE:
-                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
-                                          "SDL_VIDEOEXPOSE");
-                    break;
-                case SDL_QUIT:
-                    myShouldQuit = true;
-                    break;
-                }
-
                 dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
             }
         myGuiService->refresh();

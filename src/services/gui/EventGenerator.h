@@ -21,6 +21,8 @@
 
 // Include project specific headers here
 #include "Widget.h"
+#include "MouseMotionEvent.h"
+#include "MouseButtonEvent.h"
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
 
@@ -116,7 +118,7 @@ namespace dime
          * sets pointedWidget to point at it.  Calls mouseExit for the previous
          * pointedWidget and mouseEnter for the new one.
          */
-        virtual void updatePointedWidget( int mx, int my );
+        virtual void updatePointedWidget( int mx, int my, InputDevice *device);
         
         //---------------------------------------------------------------------------------------------------
         // Style
@@ -130,33 +132,33 @@ namespace dime
         // Accessors
         //---------------------------------------------------------------------------------------------------
         virtual Widget *getMainWidget() 
-        { 
+	  { 
             return myRootWidget; 
-        }
+	  }
         virtual Widget *getMouseCaptureWidget()    
-        { 
+	  { 
             return myMouseCaptureWidget; 
-        }
+	  }
         virtual Widget *getKeyboardCaptureWidget() 
-        { 
+	  { 
             return myKeyboardCaptureWidget; 
-        }
+	  }
         virtual Widget *getPointedWidget()         
-        { 
+	  { 
             return myPointedWidget;      
-        }
+	  }
         virtual Widget *getFocusedWidget() 
-        { 
-            return myFocusedWidget;      
-        }
+	  { 
+	    return myFocusedWidget;      
+	  }
         virtual void setFocusedWidget(Widget *widget) 
-        { 
-            myFocusedWidget = widget;  
-        }
-     
+	  { 
+	    myFocusedWidget = widget;  
+	  }
+	
         
-
-  protected:
+	
+    protected:
         
         Widget *myRootWidget;
         Widget *myMouseCaptureWidget;  // NULL if mouse not captured, else all mouse
