@@ -27,12 +27,12 @@
 namespace dime {
 
     // List of OOGChat's console commands
-    const char * const OOGChat::CMD_SAY = "say";
+    const char * const OOGChat::CMD_TALK  = "talk";
     const char * const OOGChat::CMD_EMOTE = "emote";
-    const char * const OOGChat::CMD_ME = "me";
-    const char * const OOGChat::CMD_JOIN = "join";
-    const char * const OOGChat::CMD_PART = "part";
-    const char * const OOGChat::CMD_MSG = "msg";
+    const char * const OOGChat::CMD_ME    = "me";
+    const char * const OOGChat::CMD_JOIN  = "join";
+    const char * const OOGChat::CMD_PART  = "part";
+    const char * const OOGChat::CMD_MSG   = "msg";
 
     OOGChat::OOGChat() : myLobby(NULL)
     {
@@ -52,7 +52,7 @@ namespace dime {
       myLobby->Disappearance.connect(SigC::slot(*this,&OOGChat::disappearance));
       myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
 
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_SAY, this );
+      ConsoleBackend::getMainConsole()->registerCommand( CMD_TALK, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_EMOTE, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_ME, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_JOIN, this );
@@ -64,7 +64,7 @@ namespace dime {
     {
       // TODO: Free any allocated resources here.
       // Deregister our console commands
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_SAY );
+      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_TALK );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_EMOTE );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_ME );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_JOIN );
@@ -106,7 +106,7 @@ namespace dime {
     // %FIXME xmp,4: Don't allow talk until we have logged in
     // %FIXME xmp,4: Stop just using myLobby to allow chat to multiple rooms
 
-    if (command==CMD_SAY)
+    if (command==CMD_TALK)
     {
       myLobby->say(args);
       return;
