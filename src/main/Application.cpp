@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.32  2002-07-14 16:34:43  tim
+ *      Revision 1.33  2002-07-15 22:51:33  nikal
+ *      Moved the errant #include to the top of the file.
+ *
+ *      Revision 1.32  2002/07/14 16:34:43  tim
  *      *** empty log message ***
  *
  *      Revision 1.31  2002/07/03 11:38:48  xmp
@@ -128,6 +131,7 @@
 #include <strstream>
 #include <services/datamodel/DataObject.h>
 #include <services/datamodel/DataModelService.h>
+#include <iterator>
 
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
@@ -198,7 +202,7 @@ namespace dime
 
     };
 
-#include <iterator>
+
 	void onMetaserverService(PDataObject p, DataType t)
 	{
 		//fired whenever the state changed
