@@ -29,7 +29,8 @@ void CoalTestResult::addFailure (CppUnit::Test *test, CppUnit::Exception *e)
 {
     TestResult::addFailure (test, e);
 	std::cout << std::endl << std::endl
-			  << e->fileName() << ":" << e->lineNumber()
+			  << e->sourceLine().fileName() << ":"
+		          << e->sourceLine().lineNumber()
               << "\t*** FAILURE!! ***" << std::endl;
 }
 
@@ -51,7 +52,7 @@ int main (int argc, char **argv)
     CppUnit::TestSuite suite;
     CoalTestResult res;
 
-    DataModelTestCase myDMtestcase("DataModelTestCase");
+    dime::DataModelTestCase myDMtestcase("DataModelTestCase");
     myDMtestcase.registerTests(suite);
     
     // Report results
