@@ -259,7 +259,9 @@ bool Console::keyPress( KeyPressEvent *event )
 	      }
 	      break;
 	      default:
-		  myCommand+=event->getKey().getKey();
+		if (event->getKey().getUnicode() < 0x80 && event->getKey().getUnicode() > 0) {
+		  myCommand+=(char)event->getKey().getUnicode();
+		}
 	      }
 
 	  return true;
