@@ -21,15 +21,18 @@
 
 #include <iostream>
 #include <sigc++/object_slot.h>
-#include <stdint.h>
+//#include <stdint.h>
 #include <sigc++/object.h>
+
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Utils.h>
-#include <stdint.h>
+//#include <stdint.h>
 #include <list>
 
 #include <algorithm>
+
+using namespace std;
 
 namespace dime
 {
@@ -46,6 +49,7 @@ namespace dime
 		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
 		//        setStatus( Service::Status::OK );
 		cout << "TRACE: Metaserver Service created" << endl;
+		msrv = NULL;
 	}
 
 	/* dtor */
@@ -61,8 +65,8 @@ namespace dime
         setRunning( true );
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
-		msrv->GotServerCount.connect(SigC::slot(this, &MetaserverService::GotServerCount));
-		msrv->Failure.connect(SigC::slot(this, &MetaserverService::GotFailure));
+		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::GotServerCount));
+		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::GotFailure));
     	listed = false;
 
     	// waiting for James to implement this

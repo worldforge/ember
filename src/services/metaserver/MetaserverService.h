@@ -23,7 +23,7 @@
 #include <framework/Service.h>
 #include <Eris/Metaserver.h>
 #include <Eris/Utils.h>
-#include <stdint.h>
+// #include <stdint.h> Not needed handled by eris
 #include <sigc++/object.h>
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
@@ -75,7 +75,7 @@ class MetaserverService: public Service, public SigC::Object
 
    	void GotServerCount(int count);
 	
-	void GotFailure(string msg);
+	void GotFailure(std::string msg);
 	
 	void poll();
 
