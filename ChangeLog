@@ -1,5 +1,9 @@
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Fix for distcheck.
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added missing files for tree generation.
 
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
