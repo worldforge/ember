@@ -1,3 +1,10 @@
+2003-11-12 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/components/ogre: added PlayerMouseListener,
+	which brings back mouselook. 
+	Makefile.am: modified to include PlayerMouseListener.
+	DimeOgre.cpp: instantiates and configures 
+	PlayerMouseListener.
+
 2003-11-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/components/ogre:
 	MediaDeployer.(h|cpp): added methods for adding media.

@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.29  2003-11-05 08:10:56  aglanor
+ *      Revision 1.30  2003-11-12 07:32:35  aglanor
+ *      2003-11-12 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: added PlayerMouseListener,
+ *              which brings back mouselook.
+ *              Makefile.am: modified to include PlayerMouseListener.
+ *              DimeOgre.cpp: instantiates and configures
+ *              PlayerMouseListener.
+ *
+ *      Revision 1.29  2003/11/05 08:10:56  aglanor
  *      2003-11-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre:
  *              MediaDeployer.(h|cpp): added methods for adding media.
@@ -239,7 +247,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "InputManager.h"
 #include "Console.h"
 #include "ConsoleObjectImpl.h"
-
+#include "PlayerMouseListener.h"
 
 // ------------------------------
 // Include dime header files
@@ -454,6 +462,8 @@ void DimeOgre::createFrameListener(void)
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
 	mRoot->addFrameListener(&(Console::getSingleton()));
 	ConsoleObjectImpl::getSingleton();
+	InputManager::getSingleton().addMouseListener(&(PlayerMouseListener::getSingleton()));
+	PlayerMouseListener::getSingleton().setCamera(mCamera);
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }

@@ -18,7 +18,7 @@ $(top_srcdir)/src/services/logging/libLoggingService.a \
 $(top_srcdir)/src/framework/libFramework.a 
 
 
-DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
+DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp PlayerMouseListener.cpp \
 		   ConsoleObjectImpl.cpp \
 		   MediaDeployer.cpp
 
