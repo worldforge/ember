@@ -121,6 +121,13 @@ namespace dime {
 
         }
 
+        /**
+         * Creates a new Widget using rect.
+         */
+        Widget(Rectangle rect): myParent(NULL), myRectangle(rect)
+        {
+
+        }
 
         /**
          * Copy constructor.

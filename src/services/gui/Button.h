@@ -126,6 +126,14 @@ class Button : public Widget
 		myCurrentBackground = &myStandardBackground;
     }
 
+    /**
+    * Creates a new Button using rect.
+    */
+    Button(Rectangle rect) : Widget(rect)
+    {
+		myCurrentBackground = &myStandardBackground;
+    }
+
 
     /**
     * Copy constructor.

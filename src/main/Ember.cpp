@@ -22,13 +22,11 @@ int main(int argc, char **argv)
 	dime::ImageService::getInstance()->addPath("./bin/");
 	dime::ImageService::getInstance()->addPath("../../bin/");
 
-	dime::Button myTestButton;
-	myTestButton.setRectangle(dime::Rectangle(300,300,100,75));
+	dime::Button myTestButton(dime::Rectangle(300,300,100,75));
 	myTestButton.setBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"masonwindowback.jpg"));
 	myTestButton.setHighlightBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"masonwindowback2.jpg"));
 
-	dime::Panel myTestPanel;
-	myTestPanel.setRectangle(dime::Rectangle(200,200,300,200));
+	dime::Panel myTestPanel(dime::Rectangle(200,200,300,200));
 	myTestPanel.setBackground(dime::RectangleRenderer(BITMAP,myTestPanel.getRectangle(),"masonwindowback2.jpg"));
 	myTestPanel.addWidget(&myTestButton);
     myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));

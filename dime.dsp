@@ -232,10 +232,6 @@ SOURCE=.\src\main\Application.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\Application.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\services\gui\Button.h
 # End Source File
 # Begin Source File
@@ -257,10 +253,6 @@ SOURCE=.\src\services\config\ConfigService.h
 # Begin Source File
 
 SOURCE=.\src\components\cs\CSComponent.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\Dimension.h
 # End Source File
 # Begin Source File
 
@@ -341,10 +333,6 @@ SOURCE=.\src\services\gui\ParaGuiService.h
 # Begin Source File
 
 SOURCE=.\src\services\platform\PlatformService.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\Rectangle.h
 # End Source File
 # Begin Source File
 

@@ -122,6 +122,13 @@ class Panel : public Widget
     }
 
     /**
+    * Creates a new Panel using rect
+    */
+    Panel(Rectangle rect) : Widget(rect)
+    {
+    }
+
+    /**
     * Copy constructor.
     */
     Panel( const Panel &source )
