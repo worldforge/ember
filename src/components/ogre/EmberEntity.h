@@ -69,7 +69,7 @@ public:
 	/* from eris 1.2 */
 	virtual void handleMove();
 	virtual void handleTalk(const std::string &msg);
-//	virtual void setPosition(const WFMath::Point<3>& pt);
+// not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
 	/// update the container of this entity (may be NULL)
 //	virtual void setContainer(Entity *pr);
 	
@@ -89,11 +89,8 @@ public:
 	virtual void setVisible(bool vis);
 	
 
-//HACK!!!
-	virtual void markAsMainAvatar(Ogre::SceneManager* sceneManager); 
 protected: 
 
-	bool mIsMainAvatar;
 	virtual void createOgreEntity(Ogre::SceneManager* sceneManager);
 	Ogre::Entity* mOgreEntity;
 	Ogre::SceneNode* mOgreNode;
