@@ -59,14 +59,14 @@ void EntityPickerWidget::buildWidget()
 
 	mMainWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));
-	mMainWindow->setSize(CEGUI::Size(0.2f, 0.2f));
+	mMainWindow->setSize(CEGUI::Size(0.1f, 0.15f));
 	mMainWindow->setAlpha(0.5f);
 	mMainWindow->setVisible(false);
 	mMainWindow->setEnabled(false);
 	mMainWindow->setAlwaysOnTop(true);
 	
 	mMenuWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/Menu");
-	mMenuWindow->setPosition(CEGUI::Point(0.1, 0.3f));
+	mMenuWindow->setPosition(CEGUI::Point(0.0, 0.3f));
 	mMenuWindow->setSize(CEGUI::Size(1.0f, 0.7f));
 	mMenuWindow->setInheritsAlpha(true);	
 	mMainWindow->addChildWindow(mMenuWindow);
@@ -76,6 +76,9 @@ void EntityPickerWidget::buildWidget()
 	mEntityName->setSize(CEGUI::Size(1.0f, 0.3f));
 	mEntityName->setPosition(CEGUI::Point(0.0f, 0.0f));
 	mEntityName->setInheritsAlpha(true);	
+	mEntityName->setFrameEnabled(false);
+	//mEntityName->setBackgroundEnabled(false);
+	mEntityName->setHorizontalFormatting(CEGUI::StaticText::HorzCentred);
 	mMainWindow->addChildWindow(mEntityName);
 
 
