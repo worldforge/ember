@@ -39,7 +39,7 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
   mSun->setCastShadows(false);
   mSun->setAttenuation(10000, 1, 0, 0);
   
-  sceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
+  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
 
 }
 
