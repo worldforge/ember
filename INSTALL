@@ -1,5 +1,5 @@
 Dime Installation Instructions
-(Last Updated: 2002.05.09)
+(Last Updated: 2004.07.19)
 
 ****************
 * dependencies *
@@ -35,7 +35,7 @@ ftp://victor.worldforge.org/pub/worldforge/libs/skstream
 
 Atlas-C++
 C++ implementation of Worldforge Protocol ("Atlas")
-Version: 0.4.5
+Version: 0.5
 ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
 (needed for Eris, see below)
 
@@ -46,7 +46,7 @@ Version: CVS
 
 Eris
 client side session layer
-Version: 0.9.7 pref CVS
+Version: 1.2
 
 Varconf
 config files stuff
@@ -69,6 +69,22 @@ http://www.freetype.org
 It seems that if you have Freetype1 installed along 
 with Freetype2 then we have compile problems. 
 We're working on a solution for that.
+
+Ogre
+Object-Oriented Graphics Rendering Engine
+A very flexible, cross platform rendering engine.
+Version 0.14 or higher is required.
+http://www.ogre3d.org
+For the moment we are using a subclass TerrainSceneManager, which is
+one of Ogre's many scenemanagers. This will in most cases be installed by default.
+The header will not however. You thus have to make this yourself.
+You can either copy all of the .h files in ogrenew/PlugIns/OctreeSceneManager/include to
+the same place where the other ogre headers reside.
+The other option is to change the file ogrenew/PlugIns/OctreeSceneManager/include/Makefile.am.
+Change the first line so it reads:
+pkginclude_HEADERS = OgreOctreeCamera.h ...
+That way, after you've run automake and friends, "make install" will install the headers in the
+correct locations.
 
 
 ****************
