@@ -19,18 +19,21 @@
 
 #include "MetaserverService.h"
 
-#include <iostream>
-#include <sigc++/object_slot.h>
-//#include <stdint.h>
-#include <sigc++/object.h>
+// Current project
+#include <services/logging/LoggingService.h>
 
+// System headers
+#include <iostream>
+#include <list>
+#include <algorithm>
+
+// Libraries we are using
+#include <sigc++/object_slot.h>
+#include <sigc++/object.h>
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Utils.h>
-//#include <stdint.h>
-#include <list>
 
-#include <algorithm>
 
 using namespace std;
 
@@ -95,19 +98,21 @@ namespace dime
 
 	void MetaserverService::GotServerCount(int count)
 	{
-   		char str[1024];
-    	cout << "Got" << count << "game servers." << endl;
+	  char str[1024];
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got" << count << "game servers." << ENDM;
 	}	
 	
 	void MetaserverService::GotFailure(string msg)
 	{
-    	cout << "Got Meta-server error: " << msg << endl;
+	 LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
 	}	
 	
-	void MetaserverService::poll()
+#if 0
+  	void MetaserverService::poll()
 	{
 	  //msrv->poll(); Non existant
 	}
+#endif
 	
 } // namespace dime
 
