@@ -62,13 +62,14 @@ Portable C++ Source Libraries
 Version: Any? (Tested with 1.27.0)
 http://www.boost.org
 
-If you want a 3D gameview (which is not mandatory, and currently not even
-supported <grin>) you'll need:
+Freetype2
+A portable font library which includes antialiased fonts.
+Version: At least 2.* but the latest would be nice.
+http://www.freetype.org
+It seems that if you have Freetype1 installed along 
+with Freetype2 then we have compile problems. 
+We're working on a solution for that.
 
-Crystalspace
-3D engine
-Version: 0.92
-http://crystal.sourceforge.net
 
 ****************
 * installation *
