@@ -36,9 +36,9 @@ const char* const Console::CONSOLE_PROMPT_STRING = "> ";
 const char* const Console::CONSOLE_CURSOR_STRING = "_";
 
 #ifdef _MSC_VER
-  const char* const Console::FONT_FILE = "..\\bin\\wf_opal.ttf";
+  const char* const Console::FONT_FILE = "..\\media\\fonts\\wf_opal.ttf";
 #else
-  const char* const Console::FONT_FILE = "../../bin/wf_opal.ttf";
+  const char* const Console::FONT_FILE = "../../media/fonts/wf_opal.ttf";
 #endif
 
 //%TODO Xmp,3: abstract SDL_GetTicks()

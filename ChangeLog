@@ -1,3 +1,24 @@
+2003-10-18 Eric Sandall <eric [at] sandall [dot] us>
+	* src/services/gui/widget/Console.cpp:39,41: Fonts are located in dime/media/fonts
+	* src/services/gui/widget/Label.cpp:22,24: Fonts are located in dime/media/fonts
+	* src/services/sound/SoundService.cpp:132: Sounds are located in dime/media/sounds
+	* src/components/ogre/resources.cfg, src/components/ogre/media/:
+	Media now comes in a separate tarball which will decompress to
+	dime/media/ogre and dime/media/common
+	* src/main/data/: Media now comes in a separate tarball which will
+	decoompress to dime/media/sdl
+	* bin/: Removed all files here, as media now comes in a
+	separate tarball which will decompress to dime/media/common
+	dime/media/sounds, and dime/media/<engine>
+	* src/main/states.xml:11-14: Media is located in dime/media
+	* configure.ac:256: Remove bin/Makefile from the autoconf rules
+	* Makefile.am:2: Remove bin/ from SUBDIRS
+	* README: Added documentation on changes top media and where to
+	retrieve it and install it.
+	* src/components/ogre/DimeOgre.cpp:290: Commented out loading of the sky
+	as there is no reference anywhere to any CloudySky media that I can find
+
+
 2003-10-16 Eric Sandall <eric [at] sandall [dot] us>
 	* src/framework/ComponentFactory.h: std::String -> std::string
 	* src/framework/Component.h: std::String -> std::string

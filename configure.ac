@@ -253,7 +253,6 @@ AC_MSG_RESULT([
 	])
 
 AC_CONFIG_FILES([Makefile
-		 bin/Makefile
 		 src/Makefile
 		 src/components/Makefile
 		 src/components/debug/Makefile

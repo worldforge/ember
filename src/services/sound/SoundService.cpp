@@ -129,7 +129,7 @@ namespace dime
 
 		TestPlatform();  // a test
 
-		alutLoadWAV("../../bin/boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
+		alutLoadWAV("../../media/sounds/boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
 		{

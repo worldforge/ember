@@ -1,1 +1,0 @@
-EXTRA_DIST = dimelogo_big.png dimelogo_small2.png dimelogo_small.png masonlogo.png quitbutton2.png quitbutton3.png quitbutton.png textboxback.png nasal.ttf boom.wav AUTHORS

@@ -19,9 +19,9 @@
 #include "Label.h"
 
 #ifdef _MSC_VER
-  const char* const dime::Label::FONT_FILE = "..\\bin\\wf_opal.ttf";
+  const char* const dime::Label::FONT_FILE = "..\\media\\fonts\\wf_opal.ttf";
 #else
-  const char* const dime::Label::FONT_FILE = "../../bin/wf_opal.ttf";
+  const char* const dime::Label::FONT_FILE = "../../media/fonts/wf_opal.ttf";
 #endif
 
 int dime::Label::draw(DrawDevice *target)

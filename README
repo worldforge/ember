@@ -3,5 +3,24 @@ This is the Dime Client.
 See the doc directory and http://www.worldforge.org/dev/eng/clients/dime/
 for more information.
 
+MEDIA:
 
+All media has been removed from Dime CVS.  You now need to download the
+following tarballs:
+dime-media.tar.bz2      : For common media (sounds, fonts, music,
+                          common graphics, etc.)
+dime-meida-ogre.tar.bz2 : For OGRE Engine-specific media
+dime-media-sdl.tar.bz2  : For SDL Engine-specific media
+
+The media can be retrieved from ftp://<enter media FTP URL here>/<media file> .
+To install the media, uncompress the above tarballs to /usr/share/games/dime .
+They will create their own directories under media, so you should have something
+that looks like the following (if you install all of the media):
+
+/usr/share/games/dime/media/common
+/usr/share/games/dime/media/fonts
+/usr/share/games/dime/media/music
+/usr/share/games/dime/media/ogre
+/usr/share/games/dime/media/sdl
+/usr/share/games/dime/media/sounds
 
