@@ -110,6 +110,9 @@ void JesusEdit::buildWidget()
 	
 	getMainSheet()->addChildWindow(mMainWindow); 
 	getMainSheet()->addChildWindow(mPreviewWindow); 
+	
+	updateBindingButton();
+	updateCreateButton();
 
 	
 }

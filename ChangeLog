@@ -1,5 +1,9 @@
 2005-03-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* make sure the Bind button is disabled by default
+
+2005-03-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* added modeldef's for buildingblocks
 
 2005-03-17  Erik Hjortsberg  <erik@katastrof.nu>

@@ -37,11 +37,11 @@
 			</Window>
 
 			<Window Type="TaharezLook/Button" Name="Bind">
+				<Property Name="Enabled" Value="False" /> 
 				<Property Name="Position" Value="x:0.2 y:0.9" /> 
 				<Property Name="Size" Value="w:0.2 h:0.1" /> 
 				<Property Name="Text" Value="Bind" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Enabled" Value="False" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="CreateNew">
 				<Property Name="Position" Value="x:0.4 y:0.9" /> 
