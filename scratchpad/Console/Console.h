@@ -72,7 +72,7 @@ class Render;
  */
 class Console : public ConsoleObject, public Widget {
 public:
-  Console(System *system);
+  Console();
   ~Console();
   
   bool init();
@@ -86,6 +86,10 @@ public:
    */ 
   void pushMessage(const std::string &message, int type, int duration);
   /**
+    * Draws the widget, and/or its children.
+    */
+  virtual int draw(DrawDevice *target);
+  /**
    * This method renders the console.
    * command is the current command string
    */ 
@@ -93,11 +97,17 @@ public:
   /**
    * Toggles whether the console is visible or not
    */ 
-  //void toggleConsole();
+  virtual bool toggleVisible();
+
   /**
-   * Returns whether the console is visible or not
-   */ 
-  //bool consoleStatus() { return showConsole; }
+    * A key was pressed.
+    * key is the value returned by allegros readkey -function.
+    * (it contains both scancode and ascii info.)
+    * Returns true if the keypress was processed.
+    * Override the event methods in derived classes when neccesary.
+    */
+
+  virtual bool keyPress( KeyPressEvent *event);
 
   /**
    * Registers a command with the console

@@ -29,13 +29,13 @@
 #include "services/logging/LoggingService.h"
 
 namespace dime {
-
-Console::Console(System *system) :
+// TODO: abstract SDL_GetTicks()
+Console::Console(const Rectangle& rect) :
+  Widget(rect),
   animateConsole(0),
   consoleHeight(0),
   console_messages(std::list<std::string>()), // (TO STAY)
   screen_messages(std::list<screenMessage>()), // (TO STAY)
-  _system(system),// Used to get access to getTime() and the renderer (TO GO)
 { }
 
 Console::~Console() {}
@@ -56,7 +56,7 @@ void Console::pushMessage(const std::string &message, int type, int duration) {
   if (type & SCREEN_MESSAGE) {	
     //If we have reached our message limit, remove the oldest message regardless of duration
     if (screen_messages.size() >= MAX_MESSAGES) screen_messages.erase(screen_messages.begin());
-    screen_messages.push_back(screenMessage(message, _system->getTime() + duration));
+    screen_messages.push_back(screenMessage(message, SDL_GetTicks() + duration));
   }
   // Is this a console message?
   if (type & CONSOLE_MESSAGE) {
@@ -139,7 +139,7 @@ void Console::renderScreenMessages() {
   // Get screen height so we can calculate offset correctly
   int height = _renderer->getWindowHeight();
   //Get time so we can remove expired messages
-  unsigned int current_time = _system->getTime();
+  unsigned int current_time = SDL_GetTicks(); 
   //Render messges
   for (I = screen_messages.begin(), i = 0; I != screen_messages.end(); I++, i++) {
     const std::string str = (const std::string)((*I).first);
@@ -163,13 +163,13 @@ void Console::renderScreenMessages() {
   }
 }
 
-/* The showconsole bit is no longer required dunno about the animate console bit
-void Console::toggleConsole() {
+
+bool Console::toggleVisible() {
   // Start the animation	
   animateConsole = 1;
   // Toggle state
-  //showConsole = !showConsole;
-}*/
+  return Widget::toggleVisible();
+}
 
 void Console::registerCommand(const std::string &command, ConsoleObject *object) {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
@@ -210,7 +210,7 @@ void Console::runCommand(const std::string &command) {
 void Console::runCommand(const std::string &command, const std::string &args) {
   // This command toggles the console
   if (command == TOGGLE_CONSOLE) {
-    toggleConsole();
+    toggleVisible();
   }
   // This commands prints all currently registers commands to the Log File
   else if (command == LIST_CONSOLE_COMMANDS) {
@@ -219,6 +219,11 @@ void Console::runCommand(const std::string &command, const std::string &args) {
       LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << I->first<< ENDM;
     }
   }
+}
+
+bool keyPress( KeyPressEvent *event )
+{
+  return false;
 }
 
 } /* namespace dime */
