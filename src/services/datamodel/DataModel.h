@@ -108,7 +108,7 @@ enum DataType
  * Signal type for data model change signals.
  * The form is void DataObjectChanged(PDataObject subject, type event).
  */
-typedef SigC::Signal2<void, PDataObject, DataType, SigC::Marshal<void> > DataSignal;
+typedef SigC::Signal2<void, PDataObject, DataType> DataSignal;
 
 /**
  * Slot type for data model change signals.

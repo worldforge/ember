@@ -68,6 +68,8 @@ void DataConnection::disconnect()
 		
 		DataObject::findObject(path, provider, key);
 
+
+//FIXME: How to assure that myI is valid?
 		provider->removeConnection(path, myI);						
 	}
 	catch(...)

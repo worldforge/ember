@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libsigc.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
+				AdditionalDependencies="libsigcd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
 				OutputFile=".\bin/dime.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -168,7 +168,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libsigc.lib cppunitd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
+				AdditionalDependencies="libsigcd.lib cppunitd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
 				OutputFile="bin/dime.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -556,6 +556,12 @@
 				RelativePath=".\src\main\data\masonwindowback2.jpg">
 			</File>
 		</Filter>
+		<File
+			RelativePath="bin\stderr.txt">
+		</File>
+		<File
+			RelativePath="bin\stdout.txt">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

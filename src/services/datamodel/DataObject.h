@@ -100,8 +100,7 @@ class DataObject: public SigC::Object
     public:
 
     /**
-     * returns the real ID of the node. (In cases it is a link this is different from the
-     * destination of the link.)
+     * returns the ID of the node.
      */
     std::string getID();
 	
@@ -111,7 +110,7 @@ class DataObject: public SigC::Object
     PDataObject getLinkDest();
 	
     /**
-     * returns the real path to the node from the root node.
+     * returns the path to the node from the root node.
      */
     std::string getPath();
 	
@@ -225,7 +224,7 @@ class DataObject: public SigC::Object
 	/**
 	 * Returns a new root data object for the specified path.
 	 */
-	static PDataObject getRoot();
+	static PDataObject getRoot(std::string path = "/");
 
 	static void findObject(std::string & subpath,
 						   DataProvider *& provider,

@@ -637,9 +637,9 @@ PDataObject DataObject::getByPath(std::string path)
 /**
  * Returns a new root data object for the specified path.
  */
-PDataObject DataObject::getRoot()
+PDataObject DataObject::getRoot(std::string path)
 {
-	return PDataObject(new DataObject("/"));
+	return PDataObject(new DataObject(path));
 }
 
 //----------------------------------------------------------------------

@@ -37,7 +37,7 @@ namespace dime {
 /**
  * Really short for 'real key'
  **/
-#define RK(key) ((key.get() != NULL) ? &myRoot : (&Key::spec(key)))
+#define RK(key) ((key.get() == NULL) ? &myRoot : (&Key::spec(key)))
 
 /**
  * Really short for 'real key variable'

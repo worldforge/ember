@@ -231,8 +231,18 @@ void MouseDevice::initAxis()
 	myPhysicalMin[0] = 0;
 	myPhysicalMax[1] = 0;
 	
-	myPhysicalMax[0] = SDL_GetVideoSurface()->w;
-	myPhysicalMax[1] = SDL_GetVideoSurface()->h;
+	SDL_Surface * surf = SDL_GetVideoSurface();
+
+	if (surf)
+	{
+		myPhysicalMax[0] = surf->w;
+		myPhysicalMax[1] = surf->h;
+	}
+	else
+	{
+		myPhysicalMax[0] = 800;
+		myPhysicalMax[1] = 600;
+	}
 
 	int x, y;
 

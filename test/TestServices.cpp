@@ -12,6 +12,7 @@ bool runTests()
     CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();
     runner.addTest( registry.makeTest() );
     bool wasSucessful = runner.run( "", false );
+
     return wasSucessful;
 }
 
