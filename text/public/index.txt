@@ -9,6 +9,19 @@
 <p><table class="chart">   
   <tr>
     <td class="subcaption">
+      <b>2002-Aug-25</b> - Another Flurry.
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <p>
+      We've had another flurry of activity.  Xmp has gotten sear's console widget to work!!!  Adamgreg is back and has been working hard at refactoring the RectangleRenderers, which will soon be renamed "Renderers".  nikal has been working on themes and should have something by mid-week.  sir_botchalot has joined and has been looking into fixing the fonts.
+    </p>
+      <i>nikal</i>
+    </td>
+  </tr>  
+  <tr>
+    <td class="subcaption">
       <b>2002-May-13</b> - Flurry of Activity.
     </td>
   </tr>
