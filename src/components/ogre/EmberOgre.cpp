@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.54  2004-11-02 01:19:55  erik
+ *      Revision 1.55  2004-11-03 02:01:14  erik
+ *      2004-11-03 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Added configuration through Varconf. All configuration is now done from the directory ~/.ember
+ *      * Added distorted fresnel water. One step closer to FarCry scenery :) This requires a GPU with support for Pixel Shader v. 2.0 (GeForceFX and higher for example)
+ *      Screens can be found at the usual place, http://purple.worldforge.org/~erik/ember/screens/?C=M;O=D
+ *      * Began work to separate environment into own classes (water, sun, sky etc.)
+ *
+ *      Revision 1.54  2004/11/02 01:19:55  erik
  *      2004-11-02 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -464,6 +473,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DebugListener.h"
 #include "GUIManager.h"
 
+#include "environment/Water.h"
+
 #include "GroundCover.h"
 
 #include "DimeTerrainSceneManager.h"
@@ -616,8 +627,15 @@ void DimeOgre::shutdown()
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
 bool DimeOgre::setup(void)
 {
-    mRoot = new Ogre::Root();
+	dime::ConfigService* configSrv = dime::DimeServices::getInstance()->getConfigService();
 
+		std::string pluginrc =  configSrv->getHomeDirectory() + std::string(configSrv->getValue("ogre", "pluginrc"));
+
+		std::string configrc =  configSrv->getHomeDirectory() + std::string(configSrv->getValue("ogre", "ogrerc"));
+
+
+    mRoot = new Ogre::Root(pluginrc, configrc);
+	
     setupResources();
 
     bool carryOn = configure();
@@ -631,8 +649,6 @@ bool DimeOgre::setup(void)
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
     
 	
-	// Create the scene
-    createScene();
 
  	mTerrainGenerator = new TerrainGenerator();
 	mMotionManager = new MotionManager();
@@ -659,6 +675,9 @@ bool DimeOgre::setup(void)
     createFrameListener();
 
 	mGUIManager->initialize();
+	
+	// Create the scene
+    createScene();
 
 	
 /*
@@ -708,14 +727,19 @@ void DimeOgre::chooseSceneManager(void)
 /// Method which will define the source of resources (other than current folder)
 void DimeOgre::setupResources(void)
 {
-    // Load resource paths from config file
+	std::string resourcesrc = "resources.cfg";
+	if (dime::DimeServices::getInstance()->getConfigService()->itemExists("ogre", "resourcesrc")) {
+		resourcesrc =  dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(dime::DimeServices::getInstance()->getConfigService()->getValue("ogre", "resourcesrc"));
+	} 
+    
+	// Load resource paths from config file
     Ogre::ConfigFile cf;
-    cf.load("resources.cfg");
+    cf.load(resourcesrc);
 
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
-	std::string mediaHomePath = std::string(getenv("HOME")) + "/.ember/Media/";
+	std::string mediaHomePath = dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
 //	Ogre::ResourceManager::addCommonSearchPath(std::string();
     Ogre::String typeName, archName;
     while (i.hasMoreElements())
@@ -774,33 +798,9 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
 //  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
   mSceneMgr->setSkyBox(true, "Sky/Waterworld09", 253);
 
-        Ogre::Entity *waterEntity;
-        Ogre::Plane waterPlane;
-
-
-        // create a water plane/scene node
-        waterPlane.normal = Ogre::Vector3::UNIT_Y; 
-        waterPlane.d = 0; 
-        Ogre::MeshManager::getSingleton().createPlane(
-            "WaterPlane",
-            waterPlane,
-            WF2OGRE(1400), WF2OGRE(1400),
-            20, 20,
-            true, 1, 
-            100, 100,
-            Ogre::Vector3::UNIT_Z
-        );
-
-        waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
-        waterEntity->setMaterialName("Water"); 
-        waterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
-		waterEntity->setCastShadows(false);
-		
-        Ogre::SceneNode *waterNode = 
-        mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
-        waterNode->attachObject(waterEntity); 
-        waterNode->translate(WF2OGRE(500), 0, WF2OGRE(500));
-        
+		mWater = new Water(getMainCamera()->getCamera(), getSceneManager());
+  
+         
 	 
 	
 }
@@ -879,6 +879,7 @@ void DimeOgre::initializeDimeServices(void)
 
 	// Initialize the Configuration Service
 	dime::DimeServices::getInstance()->getConfigService()->start();
+	dime::DimeServices::getInstance()->getConfigService()->loadSavedConfig(dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + "ember.conf");
 
 
 /*

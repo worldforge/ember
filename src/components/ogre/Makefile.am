@@ -17,7 +17,7 @@ EmberOgre_SOURCES = DimeOgre.cpp InputManager.cpp \
 			MediaDeployer.cpp DimeEventProcessor.cpp \
 			AvatarController.cpp DebugListener.cpp \
 			DimeEntity.cpp DimeEntityFactory.cpp \
-			DimeTerrainPageSource.cpp \
+			DimeTerrainPageSource.cpp environment/Water.cpp \
 			TerrainGenerator.cpp AvatarDimeEntity.cpp \
 			MotionManager.cpp AvatarCamera.cpp \
 			DimeTerrainSceneManager.cpp TerrainShader.cpp \

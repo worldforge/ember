@@ -15,8 +15,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
+#include "services/DimeServices.h"
 #include "services/logging/LoggingService.h"
+#include "services/config/ConfigService.h"
 
 #include "DimeOgre.h"
 
@@ -30,6 +31,7 @@
 #include "GroundCover.h"
 
 #include "TerrainGenerator.h"
+
 
 
 using namespace Ogre;
@@ -62,17 +64,25 @@ TerrainGenerator::TerrainGenerator()
   */
   
 //    this->addShader(new TerrainShader("granite.png", new Mercator::FillShader()));
-    this->addShader(new TerrainShader("terr_rock6.jpg", new Mercator::FillShader()));
-    this->addShader(new TerrainShader("sand.png", new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
-    this->addShader(new TerrainShader("rabbithill_grass_hh.png", new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-/*    this->addShader(new TerrainShader("dark.png", new Mercator::DepthShader(0.f, -10.f))); // Underwater
-    this->addShader(new TerrainShader("snow.png", new Mercator::HighShader(110.f))); // Snow
+
+//    this->addShader(new TerrainShader("terr_rock6.jpg", new Mercator::FillShader()));
+	dime::ConfigService* configSrv = dime::DimeServices::getInstance()->getConfigService();
+
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+/*    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
+    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
   */  
     mTerrainPageSource = new DimeTerrainPageSource(this);
-    DimeOgre::getSingleton().getSceneManager()->registerPageSource("DimeTerrain", mTerrainPageSource);
-    
-    const Ogre::String config = Ogre::String("terrain.cfg");
-    DimeOgre::getSingleton().getSceneManager()->setWorldGeometry(config);
+    DimeOgre::getSingleton().getSceneManager()->registerPageSource("EmberTerrain", mTerrainPageSource);
+
+	std::string terrainrc = "terrain.cfg";
+	terrainrc = dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(dime::DimeServices::getInstance()->getConfigService()->getValue("ogre", "terrainrc"));
+
+
+    DimeOgre::getSingleton().getSceneManager()->setWorldGeometry(terrainrc);
 
 }
 
@@ -209,7 +219,7 @@ void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long
 	
 	Ogre::TerrainSceneManager* sceneManager = DimeOgre::getSingleton().getSceneManager();
 	std::stringstream materialNameSS;
-	materialNameSS << "DimeTerrain_Segment";
+	materialNameSS << "EmberTerrain_Segment";
 	materialNameSS << "_" << segmentX << "_" << segmentY;
 	const Ogre::String materialName = materialNameSS.str();
 	Ogre::Material* material = sceneManager->createMaterial(materialName);

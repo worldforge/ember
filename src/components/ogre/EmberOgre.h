@@ -24,7 +24,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.30  2004-11-02 01:19:55  erik
+ *      Revision 1.31  2004-11-03 02:01:14  erik
+ *      2004-11-03 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Added configuration through Varconf. All configuration is now done from the directory ~/.ember
+ *      * Added distorted fresnel water. One step closer to FarCry scenery :) This requires a GPU with support for Pixel Shader v. 2.0 (GeForceFX and higher for example)
+ *      Screens can be found at the usual place, http://purple.worldforge.org/~erik/ember/screens/?C=M;O=D
+ *      * Began work to separate environment into own classes (water, sun, sky etc.)
+ *
+ *      Revision 1.30  2004/11/02 01:19:55  erik
  *      2004-11-02 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -354,6 +363,8 @@ class InputManager;
 
 class GUIManager;
 
+class Water;
+
 
 
 /** Base class which manages the standard startup of an Ogre application.
@@ -424,6 +435,9 @@ protected:
 	//Ogre::Camera* mCamera;
 //	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;
+	
+	
+	Water* mWater;
 	
 //	TerrainGenerator* mTerrainGenerator;
 

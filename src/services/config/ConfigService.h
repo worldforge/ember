@@ -132,6 +132,14 @@ class ConfigService: public Service
      * @param Name of file to save to.
      */
     bool saveConfig(const std::string& filename);
+	
+	
+	/**
+	* returns the path to the home directory, where all configuration is stored
+	*/
+	std::string getHomeDirectory() const;
+	
+	
 
 }; //ConfigService
 

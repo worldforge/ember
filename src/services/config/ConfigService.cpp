@@ -78,5 +78,12 @@ namespace dime
     {
 	return varconf::Config::inst()->writeToFile(filename);
     }
+	
+	std::string ConfigService::getHomeDirectory() const
+	{
+		return std::string(getenv("HOME")) + "/.ember/";
+
+	}
+
 
 } // namespace dime
