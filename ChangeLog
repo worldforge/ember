@@ -1,3 +1,6 @@
+2002-10-10 Al Riddoch <alriddoch@zepler.org>
+	* src/services/font/Font.h: std:: namespace fix.
+
 2002-10-09 Al Riddoch <alriddoch@zepler.org>
 	* src/services/server/OOGChat.cpp: Fix connecting of disappearance
 	  method to Disappearance signal. Get rid of trailing "0" on

@@ -51,7 +51,7 @@ public:
     static const int NUM_GRAYS;
 
     // %TODO xmp,3:Replace this with wstring as soon as we decide to force gcc < 3
-    typedef basic_string <wchar_t> FontString;
+    typedef std::basic_string <wchar_t> FontString;
     
     //======================================================================
     // Private Variables
