@@ -73,8 +73,8 @@ class ConsoleBackend : public ConsoleObject
     // Private Constants
     //======================================================================
     private:
-    
-    static const unsigned int MAX_MESSAGES = 7;
+
+    static const unsigned int MAX_MESSAGES;
 
     // List of ConsoleBackend's console commands
     static const char * const LIST_CONSOLE_COMMANDS;

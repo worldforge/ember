@@ -29,8 +29,8 @@
 namespace dime {
 
 // List of ConsoleBackend's console commands
-ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
-
+const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
+const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
 dime::ConsoleBackend *dime::ConsoleBackend::theMainConsole = NULL;
 
