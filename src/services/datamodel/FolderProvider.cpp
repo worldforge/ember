@@ -35,7 +35,7 @@ PDataKey FolderProvider::getChild(PDataKey parent, std::string ID, DataProvider 
 	
 	ItemMap::iterator i = parentItem->myMap.find(ID);
 
-	if (i == parentItem->myMap.end()) return PDataKey(NULL);
+	if (i == parentItem->myMap.end()) return PDataKey();
 
 	if (i->second->myDest)
 	{

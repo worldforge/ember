@@ -63,7 +63,7 @@ PDataObject DataObject::getLinkDest()
 
 	THROW1("DataObject %s is not a link.", myPath.c_str());
 
-	return PDataObject(NULL);
+	return PDataObject();
 }
 
 /**
@@ -544,7 +544,7 @@ PDataObject DataObject::addChild(std::string suggestedID, DataProvider * provide
 
 	if (provider)
 	{
-		return PDataObject(new DataObject(provider, PDataKey(NULL), "", 
+		return PDataObject(new DataObject(provider, PDataKey(), "", 
 			DataProvider::makePath(myPath, suggestedID)));
 	}
 	else
@@ -700,7 +700,7 @@ static_cast<DataProvider*>(DataModelService::getInstance()->getRootProvider());
 			}
 
 			provider = newProvider;
-			key.reset(NULL);
+			key.reset();
 		}
 		
 		if (i == std::basic_string<char>::npos)

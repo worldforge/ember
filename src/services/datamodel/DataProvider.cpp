@@ -191,7 +191,7 @@ void DataProvider::removeAllConnections(std::string subpath)
 
 void DataProvider::fireSignal(std::string subpath, DataType event)
 {
-	PDataObject subject(new DataObject(this, PDataKey(NULL), subpath, 
+	PDataObject subject(new DataObject(this, PDataKey(), subpath, 
 		makePath(myPath, subpath)));
 
 	// Event for this data object first.
