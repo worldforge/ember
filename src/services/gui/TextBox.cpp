@@ -23,7 +23,7 @@ using namespace dime;
 int TextBox::draw(DrawDevice *target)
 {
 	// Draw the background rect
-	myBackRect.render(target);
+	myBackRect->render(target);
 
 	// Use fontservice to draw the text of the widget
 	Label::draw(target);
@@ -205,6 +205,6 @@ void TextBox::drawCaret(DrawDevice* target)
   int y = Label::getRectangle().getY();
 
   // --- Draw it at calculated spot ---
-  RectangleRenderer cursor(Rectangle(x,y,1,height),dime::Color(255,0,0));
+  ColorRenderer cursor(Rectangle(x,y,1,height),dime::Color(255,0,0));
   cursor.render(target);
 }

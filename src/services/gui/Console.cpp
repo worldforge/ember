@@ -28,6 +28,7 @@
 #include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
 #include "services/logging/LoggingService.h"
+#include "services/platform/ColorRenderer.h"
 
 #ifdef _MSC_VER
 #define FONT_FILE "..\\bin\\nasal.ttf"
@@ -52,7 +53,7 @@ Console::Console(const Rectangle& rect) :
 {
   // Precache our renderers
   // Make panel slightly transparent
-  myRectangleRenderer = new RectangleRenderer(rect,Color(0.0f,0.0f,100.0f,8.5f));
+  myRectangleRenderer = new ColorRenderer(rect,Color(0.0f,0.0f,100.0f,8.5f));
   dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,FONT_HEIGHT);
   assert(font);
   myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(255.0f,255.0f,0,255.0f), rect);

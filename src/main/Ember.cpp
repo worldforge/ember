@@ -62,11 +62,11 @@ int main(int argc, char **argv)
 
             dime::Button myTestButton(dime::Rectangle(535,450,100,25));
             
-            myTestButton.setBackground(dime::RectangleRenderer(myTestButton.getRectangle(),"quitbutton2.png", dime::RectangleRenderer::TILE));
-            myTestButton.setHighlightBackground(dime::RectangleRenderer(myTestButton.getRectangle(),"quitbutton.png", dime::RectangleRenderer::TILE));
+            myTestButton.setBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
+            myTestButton.setHighlightBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
             
             dime::Panel myTestPanel(dime::Rectangle(558,10,72,90));
-            myTestPanel.setBackground(dime::RectangleRenderer(myTestPanel.getRectangle(),"dimelogo_small.png", dime::RectangleRenderer::TILE));
+            myTestPanel.setBackground(new dime::BitmapRenderer(myTestPanel.getRectangle(),"dimelogo_small.png", dime::BitmapRenderer::TILE));
             
             myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
             myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));

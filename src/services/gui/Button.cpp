@@ -20,7 +20,7 @@
 
 int dime::Button::draw(DrawDevice *target)
 {
-	myCurrentBackground->render(target);
+	(*myCurrentBackground)->render(target);
 	//%TODO nikal,2: what should be returned here?
 	return 0;
 }

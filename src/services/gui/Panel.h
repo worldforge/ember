@@ -104,7 +104,7 @@ class Panel : public Widget
 	/**
 	 * RectangleRenderer to display background of Panel.
 	 */
-	RectangleRenderer myBackground;
+	RectangleRenderer *myBackground;
 
     //======================================================================
     // Public Methods
@@ -172,7 +172,7 @@ class Panel : public Widget
 	/**
     * Sets the standard background RectangleRenderer of this Widget
     */	
-	virtual void setBackground(const RectangleRenderer &background)
+	virtual void setBackground(RectangleRenderer *background)
 	{
 		myBackground = background;
 	}

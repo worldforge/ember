@@ -24,6 +24,8 @@
 #include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
 #include "services/platform/RectangleRenderer.h"
+#include "services/platform/BitmapRenderer.h"
+#include "services/platform/ColorRenderer.h"
 
 
 // Included custom library headers
@@ -81,7 +83,7 @@ class TextBox : public Label
     /*
      * Rectangle renderer used to draw what's behind the the text
      */
-    RectangleRenderer myBackRect;
+    RectangleRenderer *myBackRect;
 
     /*
      * Position of Caret in textbox
@@ -119,21 +121,21 @@ class TextBox : public Label
     }
 
 	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
-	  myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
 	  myCaretPos(text.length()),
 	  myText(text),
 	  myRight(text.length()-1)
     {
+	  myBackRect = new BitmapRenderer(rect,"textboxback.png", BitmapRenderer::TILE);
       rebuildRight();
     }
 
     TextBox(std::string text, const Rectangle& rect) :
         Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
-      myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
       myCaretPos(text.length()),
       myText(text.begin(), text.end()),
       myRight(text.length()-1)
     {
+	  myBackRect = new BitmapRenderer(rect,"textboxback.png", BitmapRenderer::TILE);
       Font::FontString temp;
 /*	
       for(const char* c = text.c_str();*c != '\0';c++)

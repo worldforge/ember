@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Dean Dickison
+    Copyright (C) 2002  Adam Gregory
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,14 +16,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef RECTANGLERENDERER_H
-#define RECTANGLERENDERER_H
+#ifndef GRADIENTRENDERER_H
+#define GRADIENTRENDERER_H
 
 // Included headers from the current project
-#include "services/image/ImageService.h"
 #include "services/platform/Color.h"
 #include "services/platform/DrawDevice.h"
 #include "services/platform/Rectangle.h"
+#include "services/platform/RectangleRenderer.h"
 
 // Included custom library headers
 
@@ -37,61 +37,63 @@
 namespace dime {
 
     /**
-     * This contains the RectangleRenderer class.  This class does the drawing
-     * of backgrounds using an image, gradient or solid color.  These backgrounds
+     * This contains the GradientRenderer class.  This class does the drawing
+     * of backgrounds using a gradient or solid color.  These backgrounds
      * can make up a larger background.
      *
-     * Instances of the class are created by one of four constructor methods,
-     * each one storing appropriate variables that describe the rectangle.
      * When the instance needs to be drawn, the render() member method is called.
-     * A grid of RectangleRenderers can be made using the GRID constructor.
      *
      * Ex:
      * dime::RectangleRenderer *myRectangleRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
-     *     &myRect, 100, 100, 255);
+     * myRectangleRenderer = new dime::GradientRenderer(&myRect, 100, 100, 255);
      * myRectangleRenderer->render(myScreen);
+	 *
      * 
      * @author Dean Dickison (Winand)
 	 * @author Adam Gregory (Adamgreg)
-	 *
-	 * @todo Renaming. RectangleRenderer -> Renderer. xRecRenderer -> xRenderer. RRFactory -> RFactory/RendererFactory.
-	 * @todo Make into base class of FontRenderer if suitable.
      */
 
-    class RectangleRenderer
+	class GradientRenderer : public RectangleRenderer
     
-    {
+	{
 	//======================================================================
 	// Inner Classes, Typedefs, and Enums
 	//======================================================================
     public:
+	/**
+	 * bitmap rendering flags
+	 */
+	enum GradientStyle
+	{
+	HORIZONTAL,
+	VERTICAL
+	};
     
 	//======================================================================
 	// Public Constants
 	//======================================================================
     public:
+        
 
 	//======================================================================
 	// Private Constants
 	//======================================================================
     private:
         
+		
 	//======================================================================
-	// Protected Variables
+	// Private Variables
 	//======================================================================
-    protected:     
+    private:
 
-	/**
-	 * The surface that this RectangleRenderer acts upon
-	 */
-	SDL_Surface *mySurface;
-
-	/**
-	 * Coordinates/size of the rectangle
-	 */
-	Rectangle myRect;
+    /*
+     * The colors
+     */
+    Color myColor;
+	Color myColor2;
+	Color myColor3;
+	Color myColor4;
 
 	// ===================================================================
 	// Public Methods
@@ -102,62 +104,76 @@ namespace dime {
 	// Constructors
 
 	/**
-	 * Creates a new empty RectangleRenderer
+	 * Creates a new empty GradientRenderer
 	 */
-	RectangleRenderer() {};
+    GradientRenderer()
+	{
+	}
+        
+	/**
+	 * Creates a new GradientRenderer for a 4-corner gradient
+	 */
+	GradientRenderer(const Rectangle &rect, Color topleft, Color topright, Color bottomleft, Color bottomright);
+        
+	/**
+	 * Creates a new GradientRenderer with a horizontal/vertical gradient.
+	 */
+	GradientRenderer(const Rectangle &rect, Color color1, Color color2, GradientStyle style);
 
 	//----------------------------------------------------------------------
 	// Destructor
 
 	/**
-	 * Deletes a RectangleRenderer instance.
+	 * Deletes a GradientRenderer instance.
 	 */
-	virtual ~RectangleRenderer();
+	virtual ~GradientRenderer()
+	{
+	};
 
 	//----------------------------------------------------------------------
 	// Getters
 
 	//----------------------------------------------------------------------
 	// Setters
-
-	/**
-	 * Setter for the myRect member
-	 */
-	void setRect(const Rectangle &rect)
-	{
-    myRect = rect;
-	};
+	
+	void setRect(const Rectangle &rect);
 
 	//----------------------------------------------------------------------
 	// Other public methods	
 
 	/**
-	 * Calls appropriate private function to render 
+	 * Renders using a DrawDevice
 	 */
-	virtual void render(DrawDevice *device) = 0;
+	void render(DrawDevice *device);
+
+	/**
+	 * Sets this RectangleRenderer using supplied values..
+	 */
+	void Gradient(Color topleft, Color topright, Color bottomleft, Color bottomright);
+        
+	/**
+	 * Sets this RectangleRenderer using supplied values..
+	 */
+	void Gradient(Color color1, Color color2, GradientStyle style);
 
 	//======================================================================
 	// Protected Methods
 	//======================================================================
-    protected:
+	protected:
 
 	//======================================================================
 	// Private Methods
 	//======================================================================
-    private:
+	private:
 
 	//======================================================================
 	// Disabled constructors and operators
 	//======================================================================
-    private:
+	private:
 
 
-    };  // End of class
+	};  // End of class
 
 }   // End of application namespace
-
-//what are these for? aren't they declared in the SDL header?
-Uint32 getpixel(SDL_Surface *surface, int x, int y);
-void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
 #endif

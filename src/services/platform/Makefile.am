@@ -2,6 +2,6 @@ INCLUDES = -I$(top_srcdir)/src
 
 noinst_LIBRARIES = libPlatformService.a
 
-libPlatformService_a_SOURCES = SDLDrawDevice.cpp RectangleRenderer.cpp PlatformService.cpp OGLDrawDevice.cpp
+libPlatformService_a_SOURCES = SDLDrawDevice.cpp RectangleRenderer.cpp PlatformService.cpp OGLDrawDevice.cpp BitmapRenderer.cpp GridRenderer.cpp GradientRenderer.cpp ColorRenderer.cpp
 
-noinst_HEADERS = SDLDrawDevice.h DrawDevice.h RectangleRenderer.h PlatformService.h OGLDrawDevice.h
+noinst_HEADERS = SDLDrawDevice.h DrawDevice.h RectangleRenderer.h PlatformService.h OGLDrawDevice.h BitmapRenderer.h GridRenderer.h GradientRenderer.h ColorRenderer.h

@@ -23,7 +23,7 @@ int dime::Panel::draw(DrawDevice *target)
 	//iterate through children Widgets, telling them all to draw.
 	int retval; //return value
 
-	myBackground.render(target);
+	myBackground->render(target);
 
 	std::vector<Widget*>::iterator end = myChildren.end();
 	for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)

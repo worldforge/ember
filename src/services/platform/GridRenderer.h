@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Dean Dickison
+    Copyright (C) 2002  Adam Gregory
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,14 +16,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef RECTANGLERENDERER_H
-#define RECTANGLERENDERER_H
+#ifndef GRIDRENDERER_H
+#define GRIDRENDERER_H
 
 // Included headers from the current project
-#include "services/image/ImageService.h"
-#include "services/platform/Color.h"
 #include "services/platform/DrawDevice.h"
 #include "services/platform/Rectangle.h"
+#include "services/platform/RectangleRenderer.h"
 
 // Included custom library headers
 
@@ -37,61 +36,64 @@
 namespace dime {
 
     /**
-     * This contains the RectangleRenderer class.  This class does the drawing
-     * of backgrounds using an image, gradient or solid color.  These backgrounds
-     * can make up a larger background.
+     * This contains the GridRenderer class.  This class acts as a container
+	 * and marshaller for other RectangleRenderers, forming them into a grid. A common
+	 * usage will be for bordered widgets.
      *
-     * Instances of the class are created by one of four constructor methods,
-     * each one storing appropriate variables that describe the rectangle.
      * When the instance needs to be drawn, the render() member method is called.
-     * A grid of RectangleRenderers can be made using the GRID constructor.
      *
      * Ex:
      * dime::RectangleRenderer *myRectangleRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
-     *     &myRect, 100, 100, 255);
+     * myRectangleRenderer = new dime::GridRenderer(&myRect, 100, 100, 255);
      * myRectangleRenderer->render(myScreen);
+	 *
      * 
      * @author Dean Dickison (Winand)
 	 * @author Adam Gregory (Adamgreg)
-	 *
-	 * @todo Renaming. RectangleRenderer -> Renderer. xRecRenderer -> xRenderer. RRFactory -> RFactory/RendererFactory.
-	 * @todo Make into base class of FontRenderer if suitable.
      */
 
-    class RectangleRenderer
+	class GridRenderer : public RectangleRenderer
     
-    {
+	{
 	//======================================================================
 	// Inner Classes, Typedefs, and Enums
 	//======================================================================
     public:
+
     
 	//======================================================================
 	// Public Constants
 	//======================================================================
     public:
+        
 
 	//======================================================================
 	// Private Constants
 	//======================================================================
     private:
         
+		
 	//======================================================================
-	// Protected Variables
+	// Private Variables
 	//======================================================================
-    protected:     
+    private:
+	
+	/**
+	 * Vector of RectRenderers kept for a grid.
+	 */
+	std::vector<RectangleRenderer*> myGrid;
 
 	/**
-	 * The surface that this RectangleRenderer acts upon
+	 * Where the separation between rectangles is made.
 	 */
-	SDL_Surface *mySurface;
+	std::vector<int> myLines;
 
 	/**
-	 * Coordinates/size of the rectangle
+	 * Rows and columns for the grid
 	 */
-	Rectangle myRect;
+	int myColumns;
+	int myRows;
 
 	// ===================================================================
 	// Public Methods
@@ -102,62 +104,67 @@ namespace dime {
 	// Constructors
 
 	/**
-	 * Creates a new empty RectangleRenderer
+	 * Creates a new empty GridRenderer
 	 */
-	RectangleRenderer() {};
+    GridRenderer()
+	{
+	}
+
+	/**
+	 * Creates a new GridRenderer with the value provided
+	 */
+	GridRenderer(const Rectangle &rect, std::vector<RectangleRenderer*>
+		&gridVector, int columns, int rows, std::vector<int> &lines);
 
 	//----------------------------------------------------------------------
 	// Destructor
 
 	/**
-	 * Deletes a RectangleRenderer instance.
+	 * Deletes a GridRenderer instance.
 	 */
-	virtual ~RectangleRenderer();
+	virtual ~GridRenderer()
+	{
+	};
 
 	//----------------------------------------------------------------------
 	// Getters
 
 	//----------------------------------------------------------------------
 	// Setters
-
-	/**
-	 * Setter for the myRect member
-	 */
-	void setRect(const Rectangle &rect)
-	{
-    myRect = rect;
-	};
+	
+	void setRect(const Rectangle &rect);
 
 	//----------------------------------------------------------------------
 	// Other public methods	
 
 	/**
-	 * Calls appropriate private function to render 
+	 * Renders using a DrawDevice
 	 */
-	virtual void render(DrawDevice *device) = 0;
+	void render(DrawDevice *device);
+	
+	/**
+	 * Updates the dimensions of the grid.
+	 */	
+	void updateGridDimensions();
 
 	//======================================================================
 	// Protected Methods
 	//======================================================================
-    protected:
+	protected:
 
 	//======================================================================
 	// Private Methods
 	//======================================================================
-    private:
+	private:
 
 	//======================================================================
 	// Disabled constructors and operators
 	//======================================================================
-    private:
+	private:
 
 
-    };  // End of class
+	};  // End of class
 
 }   // End of application namespace
-
-//what are these for? aren't they declared in the SDL header?
-Uint32 getpixel(SDL_Surface *surface, int x, int y);
-void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
 #endif

@@ -21,7 +21,7 @@
 
 // Included headers from the current project
 #include "Widget.h"
-#include <services/platform/RectangleRenderer.h>
+#include <services/platform/BitmapRenderer.h>
 
 // Included custom library headers
 // (1) Include the signal system in headers file.
@@ -106,9 +106,9 @@ class Button : public Widget
     //======================================================================
     private:
 
-		RectangleRenderer myHighlightBackground;
-		RectangleRenderer myStandardBackground;
-		RectangleRenderer *myCurrentBackground;
+		RectangleRenderer *myHighlightBackground;
+		RectangleRenderer *myStandardBackground;
+		RectangleRenderer **myCurrentBackground;
 
     //======================================================================
     // Public Methods
@@ -154,7 +154,7 @@ class Button : public Widget
         // Copy fields from source class to this class here.
 		myStandardBackground = source.myStandardBackground;
 		myHighlightBackground = source.myHighlightBackground;
-		myCurrentBackground = &myStandardBackground;
+		myCurrentBackground = source.myCurrentBackground;
 
         // Return this object with new value
         return *this;
@@ -184,7 +184,7 @@ class Button : public Widget
     /**
     * Sets the highlighted background RectangleRenderer of this Widget
     */	
-	virtual void setHighlightBackground(const RectangleRenderer &background)
+	virtual void setHighlightBackground(RectangleRenderer *background)
 	{
 		myHighlightBackground = background;
 	}
@@ -192,7 +192,7 @@ class Button : public Widget
 	/**
     * Sets the standard background RectangleRenderer of this Widget
     */	
-	virtual void setBackground(const RectangleRenderer &background)
+	virtual void setBackground(RectangleRenderer *background)
 	{
 		myStandardBackground = background;
 	}
