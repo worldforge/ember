@@ -78,6 +78,11 @@ execute the following (usual) commands:
 ./configure
 make
 
+You'll need to add a TrueType font (.ttf) to dime/bin, in order for Dime to run
+(otherwise, it will fail with an assertion immediately). The font must
+be named 'nasal.ttf'. Note that at present it is assumed you run dime
+by cd-ing to dime/src/main and running ./dime
+
 *******************
 * troubleshooting *
 *******************

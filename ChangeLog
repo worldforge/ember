@@ -1,3 +1,9 @@
+2002-05-12 James Turner <james@worldforge.org>
+
+    * Added more macros to acinclude.m4 to make configure a bit
+      more robust in the face of missing packages and so on.
+    * Added a note to INSTALL about currently needing nasal.ttf
+
 2002-03-27 Dan Tomalesky <grim@xynesis.com>
     * Added eris into configure.in and added the m4 macro for eris into 
       acinclude.m4 so that configure reports nicely that you don't have it
