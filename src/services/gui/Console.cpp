@@ -38,15 +38,16 @@
 namespace dime {
 const char* Console::CONSOLE_PROMPT_STRING = "> ";
 const char* Console::CONSOLE_CURSOR_STRING = "_";
+std::list<Console::screenMessage> Console::screen_messages = std::list<Console::screenMessage>();
+std::map<std::string, ConsoleObject*> Console::_registered_commands = std::map<std::string, ConsoleObject*>();
+std::list<std::string> Console::console_messages = std::list<std::string>();
 
 
 //%TODO Xmp,3: abstract SDL_GetTicks()
 Console::Console(const Rectangle& rect) :
   Widget(rect),
   animateConsole(0),
-  consoleHeight(CONSOLE_HEIGHT),
-  console_messages(std::list<std::string>()),
-  screen_messages(std::list<screenMessage>())
+  consoleHeight(CONSOLE_HEIGHT)
 {
   // Register console commands
   registerCommand(TOGGLE_CONSOLE, this);
@@ -77,6 +78,7 @@ int Console::draw(DrawDevice* target){
   //  the raise height a tad
   if (animateConsole && myVisible) {
     consoleHeight += CONSOLE_SPEED;
+
     // Have we reached full height?
     if (consoleHeight >= CONSOLE_HEIGHT) {
       // Disable animation
@@ -92,6 +94,7 @@ int Console::draw(DrawDevice* target){
     if (consoleHeight <= 0) {
       //Disable animation
       consoleHeight = 0;
+
       animateConsole = 0;
     }
     renderConsoleMessages(target);

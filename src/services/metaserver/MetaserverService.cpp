@@ -25,6 +25,7 @@
 #include <services/datamodel/IntProvider.h>
 #include <services/datamodel/DataObject.h>
 #include <services/datamodel/FloatProvider.h>
+#include <services/gui/Console.h>
 
 // System headers
 #include <iostream>
@@ -58,6 +59,9 @@ namespace dime
 		//        setStatus( Service::Status::OK );
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
 		msrv = NULL;
+    Console::registerCommand(META_LIST,this);
+    Console::registerCommand(META_REFRESH,this);
+    Console::registerCommand(META_ABORT,this);
 	}
 
 	/* dtor */

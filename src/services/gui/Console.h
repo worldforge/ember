@@ -45,8 +45,6 @@ namespace dime {
 
 // Forward Declarations
 class ConsoleObject;
-class System;
-class Render;
 
 /**
  * The console widget
@@ -86,7 +84,7 @@ public:
    * type is where to display the message: CONSOLE_MESSAGE and/or SCREEN_MESSAGE
    * duration is how long the SCREEN_MESSAGE lasts before being removed
    */ 
-  void pushMessage(const std::string &message, int type, int duration);
+  static void pushMessage(const std::string &message, int type, int duration);
   /**
     * Draws the widget, and/or its children.
     */
@@ -111,7 +109,8 @@ public:
    * command is the command to register
    * object is the originating object
    */ 
-  void registerCommand(const std::string &command, ConsoleObject *object);
+  static void registerCommand(const std::string &command, ConsoleObject *object);
+
   /**
    * This is the method the determines what object the pass the command onto
    * command is the command string to process
@@ -132,7 +131,7 @@ protected:
   /**
    * Current command string
    */
- std::string myCommand;
+  std::string myCommand;
 
   /**
    *  This render the console messges plus the current command string
@@ -146,16 +145,25 @@ protected:
 
   bool animateConsole; // Flag determining whether console is moving
   int consoleHeight; // the height of the console. determined by number of messages allowed
-  std::list<std::string> console_messages; // Current console messages
-  std::list<screenMessage> screen_messages; // Current screen messages
 
-  // Mapping of registered commands to assoicated object
-  std::map<std::string, ConsoleObject*> _registered_commands;
+  /**
+   * Current console messages
+   */
+  static std::list<std::string> console_messages;
+  
+  /**
+   * Current screen messages
+   */
+  static std::list<screenMessage> screen_messages;
+
+  /**
+    * Mapping of registered commands to associated object
+    */
+  static std::map<std::string, ConsoleObject*> _registered_commands;
  
   // List of Console's console commands
   static const char * const TOGGLE_CONSOLE = "toggle_console";
   static const char * const LIST_CONSOLE_COMMANDS = "list_commands";
-  
 };
 
 } /* namespace dime */
