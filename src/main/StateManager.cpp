@@ -173,7 +173,7 @@ void StateManager::parseStateLayout(xmlNodePtr widgetNode)
     if (!xmlStrcmp(cur->name, (const xmlChar *)"layout")){
       while (cur2 != NULL) {
 	// For each widget in a layout create it
-	gs->createWidget(cur2,myStateDoc);
+	gs->createWidget(cur, cur2, myStateDoc);
 	cur2 = cur2->next;
       }
 

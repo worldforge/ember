@@ -125,7 +125,8 @@ class GuiService : public Service, public SigC::Object
    * Creates a widget and adds it to the Root Widget
    * @returns 0 if fails else id num of widget.
    */
-  long createWidget(xmlNodePtr widgetNode, xmlDocPtr doc);
+  long createWidget(xmlNodePtr stateNode, xmlNodePtr widgetNode,
+		    xmlDocPtr doc);
 
   /**
    * Destroys a widget and all child widgets below it.
@@ -198,7 +199,7 @@ class GuiService : public Service, public SigC::Object
   /**
    * Parse a widget containing a panel
    */
-  long parsePanel(xmlNodePtr widgetNode, xmlDocPtr doc);
+  long parsePanel(xmlNodePtr stateNode, xmlNodePtr widgetNode, xmlDocPtr doc);
 
   //======================================================================
   // Private Methods

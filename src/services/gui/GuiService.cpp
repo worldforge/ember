@@ -69,7 +69,8 @@ dime::GuiService::GuiService()
 }
 
 // Returns Widget ID produced
-long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
+long dime::GuiService::createWidget(xmlNodePtr stateNode, xmlNodePtr widgetNode,
+				    xmlDocPtr doc)
 {
   // Parses the node with the widget info in it
 
@@ -77,7 +78,7 @@ long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
   if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"label")) {
     return parseLabel(widgetNode, doc);
   } else if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"panel")) {
-    return parsePanel(widgetNode, doc);
+    return parsePanel(stateNode, widgetNode, doc);
   }
 
   // Even if we are not the correct name bail as
@@ -86,7 +87,8 @@ long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
   return 0;
 }
 
-long dime::GuiService::parsePanel(xmlNodePtr widgetNode, xmlDocPtr doc)
+long dime::GuiService::parsePanel(xmlNodePtr stateNode, xmlNodePtr widgetNode,
+				  xmlDocPtr doc)
 {
   // Get name
   xmlGetProp(widgetNode, (const xmlChar *)"name");
