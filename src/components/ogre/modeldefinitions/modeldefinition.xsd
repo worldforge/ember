@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  
+    <xsd:element name="Model">
+	    <xsd:complexType>
+			<xsd:attribute name="Rotation" type="xsd:string" use="optional"/> 
+			<xsd:attribute name="UseScaleOf" type="xsd:string" use="optional"/> 
+			<xsd:element name="SubModels">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="SubModel">
+							<xsd:attribute name="Mesh" type="xsd:string" use="required"/> 
+							<xsd:complexType>
+								<xsd:element name="Parts">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Part">
+												<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+												<xsd:attribute name="Show" type="xsd:boolean" use="required"/> 
+												<xsd:complexType>
+													<xsd:element name="SubEntities">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="SubEntity">
+																	<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>					
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Animations">
+				<xsd:complexType>
+					<xsd:sequence>					
+						<xsd:element name="Animation">
+							<xsd:complexType>
+								<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+								<xsd:sequence>					
+									<xsd:element name="Animation">
+										<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+										<xsd:attribute name="Weight" type="xsd:string" use="required"/> 
+									</xsd:element>
+								</xsd:sequence>					
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>					
+				</xsd:complexType>
+			</xsd:element>	
+ 		</xsd:complexType>
+    </xsd:element>
+</xsd:schema>
