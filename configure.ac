@@ -294,7 +294,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/EmberSceneManager/src/Makefile
 		 src/components/ogre/EmberSceneManager/include/Makefile
 		 src/extensions/Makefile
-		 src/extensions/Atlas/Makefile
 ])
 
 #		 src/tests/Makefile
