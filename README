@@ -10,9 +10,9 @@ following tarballs:
 dime-media-0.1.tar.bz2         : For common media (sounds, fonts, music,
                                  common graphics, etc.)
 dime-media-sdl-0.1.tar.bz2     : For SDL Engine-specific media
-dime-media-ogre-0.1.tar.bz2    : For OGRE Engine-specific media which comes
+dime-media-ogre-0.2.tar.bz2    : For OGRE Engine-specific media which comes
 				 with OGRE release
-dime-media-ogre-wf-0.1.tar.bz2 : For OGRE Engine-specific media
+dime-media-ogre-wf-0.2.tar.bz2 : For OGRE Engine-specific media
 				 done by worldforge
 
 The media can be retrieved from ftp://<enter media FTP URL here>/<media file>[0] .
@@ -27,10 +27,16 @@ that looks like the following (if you install all of the media):
 /usr/share/games/dime/media/sdl
 /usr/share/games/dime/media/sounds
 
-[0] Temporary storage is at: http://purple.worldforge.org/~aglanor/dime/media/<filename>
+[0] Temporary storage is at: http://purple.worldforge.org/~erik/dime/media/<filename>
+
+NOTE FOR DIMEOGRE:
+
+At the moment development for DimeOgre is very experimental. Installation of the ogremedia 
+should therefore be in the root of the source directory. When DimeOgre becomes more stable
+we'll move it to system path, but for now we'll keep it in the source dir.
 
 Note that the file dime-media-ogre-<version> does not need to be downloaded, you already
-have it in the OGRE release. You can simply copy the media from
+have it in the OGRE release. You can simply copy or symlink the media from
 <ogre_dir>/ogrenew/Samples/Media
 to
 <dime_dir>/media/ogre
