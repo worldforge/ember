@@ -1,3 +1,6 @@
+2004-02-09 Ron Steinke <rsteinke@w-link.net>
+	* configure.ac: Modifed open GL test to also work on win32.
+
 2004-02-08 Ron Steinke <rsteinke@w-link.net>
 	* configure.ac, acinclude.m4: Use new combined macro for libz, libpng,
 	  SDL and SDL_image check that will also work under win32.

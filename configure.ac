@@ -61,7 +61,13 @@ AC_MSG_RESULT([
 WF_CHECK_SDL_IMAGE(1.2.0)
 dnl don't add SDL flags yet, SDL_main confuses later checks
 
-AC_CHECK_LIB(GL,
+if test x$win32 == xtrue ; then
+    GLLIB="opengl32"
+else
+    GLLIB="GL"
+fi
+
+AC_CHECK_LIB($GLLIB,
 	     glViewport,,
 	     AC_MSG_ERROR([
 	     Unable to find An OpenGL environment
