@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.63  2004-11-13 21:08:01  erik
+ *      Revision 1.64  2004-11-14 18:07:44  erik
+ *      2004-11-14  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* fix stupid segfault on exit
+ *
+ *      Revision 1.63  2004/11/13 21:08:01  erik
  *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Removed some bugs which in various ways stopped the main loop.
@@ -662,8 +667,8 @@ EmberOgre::~EmberOgre()
 		delete mAvatarController;
 	if (mModelDefinitionManager)
 		delete mModelDefinitionManager;
-	if (mEmberEntityFactory)
-		delete mEmberEntityFactory;
+/*	if (mEmberEntityFactory)
+		delete mEmberEntityFactory;*/
 	if (mRoot)
 		delete mRoot;
 		
