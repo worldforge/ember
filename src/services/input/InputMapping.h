@@ -200,7 +200,7 @@ class InputMapping
 	/**
 	 * Version used to observe a motion only.
 	 */
-	InputMapping(InputDevice * motionDevice, InputSlot & slot)
+	InputMapping(InputDevice * motionDevice, const InputSlot &slot)
 	{
 		myMotionDevice		= motionDevice;
 		myKeyDevice			= NULL;
@@ -215,7 +215,7 @@ class InputMapping
 	 * Version used to observe a key only.
 	 */
     InputMapping(InputDevice * keyDevice, SDLKey baseKey, 
-				  bool fireOnRelease, InputSlot & slot)
+				  bool fireOnRelease, const InputSlot &slot)
     {
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
@@ -232,7 +232,7 @@ class InputMapping
 	 * Version used to observe a key and some modifiers.
 	 */
     InputMapping(InputDevice * keyDevice, SDLKey baseKey, SDLMod modifiers, 
-				 bool fireOnRelease, InputSlot & slot)
+				 bool fireOnRelease, const InputSlot &slot)
     {
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
@@ -250,7 +250,7 @@ class InputMapping
 	 * Version used to observe a key range.
 	 */
     InputMapping(InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd,
-				   bool fireOnRelease, InputSlot & slot)
+				   bool fireOnRelease, const InputSlot &slot)
     {
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
@@ -267,7 +267,7 @@ class InputMapping
 	 * Version used to observe a key range and some modifiers.
 	 */
     InputMapping(InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd, 
-				SDLMod modifiers, bool fireOnRelease, InputSlot & slot)
+				SDLMod modifiers, bool fireOnRelease, const InputSlot &slot)
     {
 		myMotionDevice		= NULL;
 		myKeyDevice			= keyDevice;
@@ -286,7 +286,7 @@ class InputMapping
 	
 	InputMapping(InputDevice * motionDevice, 
 				InputDevice * keyDevice, SDLKey baseKey,  
-				SDLMod modifiers, InputSignalType types, InputSlot & slot)
+				SDLMod modifiers, InputSignalType types, const InputSlot &slot)
     {
 		myMotionDevice		= motionDevice;
 		myKeyDevice			= keyDevice;
@@ -304,7 +304,7 @@ class InputMapping
 	
 	InputMapping(InputDevice * motionDevice, 
 				InputDevice * keyDevice, SDLKey keyRangeStart, SDLKey keyRangeEnd,  
-				SDLMod modifiers, InputSignalType types, InputSlot & slot)
+				SDLMod modifiers, InputSignalType types, const InputSlot &slot)
     {
 		myMotionDevice		= motionDevice;
 		myKeyDevice			= keyDevice;

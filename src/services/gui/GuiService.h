@@ -53,7 +53,6 @@ class GuiService : public Service, public SigC::Object
     Container myRootWidget;
 
 	InputService *myInputService;
-	InputDevice *myMouse;
 
     //======================================================================
     // Public Methods
@@ -106,8 +105,7 @@ class GuiService : public Service, public SigC::Object
 	 * Passes mouse input events down to widget tree
 	 */
 
-	void MouseMotion(InputDevice *, const SDLKey &, InputMapping::InputSignalType);
-	
+	void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
     //----------------------------------------------------------------------
     // Methods inherited from Service
     /**
