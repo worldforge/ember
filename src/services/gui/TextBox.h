@@ -87,7 +87,12 @@ class TextBox : public Label
      * Position of Caret in textbox
      */
     unsigned int myCaretPos;
-    
+
+    /*
+     * The text in our window visible or not
+     */
+    Font::FontString myText;
+
     //======================================================================
     // Public Methods
     //======================================================================
@@ -105,7 +110,8 @@ class TextBox : public Label
 
 	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
 	  myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
-	  myCaretPos(text.length())
+	  myCaretPos(text.length()),
+	  myText(text)
     {
     }
 
@@ -113,6 +119,7 @@ class TextBox : public Label
         Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
       myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
       myCaretPos(text.length())
+      /*, myText(text)*/ // Will this cause issues?
     {
     }
     /**

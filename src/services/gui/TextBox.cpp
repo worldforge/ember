@@ -21,7 +21,6 @@ bool TextBox::keyPress( KeyPressEvent *event)
  { 
     if (event->getState() == KeyPressEvent::PRESSED)
         {
-            Font::FontString myText = Label::getText();
             int i = 0;
             int w;
             Font::FontString fittedText;
@@ -93,7 +92,6 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      }
 
 	    // TODO: redraw caret
-            Label::setText(myText);
             Font *font = myFontRenderer->getFont();
             font->sizeText(myText.substr(i, myText.length()-i), &w, NULL);
             
