@@ -114,7 +114,10 @@ Core/StatsBreak
 }
 Cursor/default
 {
-	{
-		texture terr_dirt-grass.jpg
-	}
+         scene_blend alpha_blend
+         {
+                 tex_address_mode clamp
+                 texture cursor.png
+         }
 }
+

@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.13  2003-04-19 21:26:14  nikal
+ *      Revision 1.14  2003-04-22 22:35:33  nikal
+ *      changes for aglanor
+ *
+ *      Revision 1.13  2003/04/19 21:26:14  nikal
  *      Some changes to get Ogre app to compile with the latest version of OGRE
  *
  *      Revision 1.12  2003/01/06 03:48:20  aglanor
@@ -432,7 +435,7 @@ public:
 		// Pressing 2 connects to red.worldforge.org
 		if(mInputDevice->isKeyDown(Ogre::KC_2) && timeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","68.45.81.20");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","65.100.132.92");
 			timeUntilNextToggle = 1;
 		}
 

@@ -128,11 +128,14 @@ Examples/TextureEffect2
 		scroll_anim 0.5 0
 	}
 }
+//	ambient 0.2 0.2 0.2
+
+
 
 //Watery effect
 Examples/TextureEffect3
 {
-	ambient 0.2 0.2 0.2
+	ambient 0.7 0.7 0.7
 	// double-sided
 	cull_hardware none
 	cull_software none
@@ -147,6 +150,21 @@ Examples/TextureEffect3
 		colour_op add
 	}
 }
+
+//Watery effect 
+Examples/TextureEffect4
+{ 
+   ambient 0.3 0.3 0.3 
+   scene_blend modulate
+   // double-sided 
+   cull_hardware none 
+   cull_software none 
+
+   { 
+      texture Water02.jpg 
+      scroll_anim .01 .01
+   } 
+} 
 
 // Plain metal (2-sided)
 Examples/BumpyMetal
@@ -221,5 +239,67 @@ Examples/Robot
 	diffuse 1.0 1.0 1.0
 	{
 		texture r2skin.jpg
+	}
+}
+
+
+// Scrollbar Textures
+Examples/Scrollbar/Up
+{
+	{
+		texture scr-up.png
+	}
+}
+
+
+// Scrollbar Textures
+Examples/Scrollbar/Up/Pressed
+{
+	{
+		texture scr-up-p.png
+	}
+}
+
+
+// Scrollbar Textures
+Examples/Scrollbar/Down
+{
+	{
+		texture scr-down.png
+	}
+}
+
+
+// Scrollbar Textures
+Examples/Scrollbar/Down/Pressed
+{
+	{
+		texture scr-down-p.png
+	}
+}
+
+
+// Scrollbar Textures
+Examples/Scrollbar/Thumb
+{
+	{
+		texture scr-thumb.png
+	}
+}
+
+
+// Scrollbar Textures
+Examples/Scrollbar/Background
+{
+	{
+		texture scr-back.png
+	}
+}
+
+
+Examples/Hilite/Yellow
+{
+	{
+		texture dkyellow.png
 	}
 }

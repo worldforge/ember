@@ -1,46 +1,6 @@
 // Ogre overlay scripts
+#include <BasicOgreGuiTemplates.inc>
 
-template container BorderPanel(SS/Templates/BasicBorderPanel)
-{
-	left 0 
-	top 0
-	width 1
-	height 1
-	material Core/StatsBlockCenter
-    border_size 0.05 0.05 0.06665 0.06665
-    border_material Core/StatsBlockBorder
-    border_topleft_uv     0.0000 1.0000 0.1914 0.7969
-	border_top_uv         0.1914 1.0000 0.8086 0.7969
-	border_topright_uv    0.8086 1.0000 1.0000 0.7969
-	border_left_uv        0.0000 0.7969 0.1914 0.2148
-	border_right_uv       0.8086 0.7969 1.0000 0.2148
-	border_bottomleft_uv  0.0000 0.2148 0.1914 0.0000
-    border_bottom_uv      0.1914 0.2148 0.8086 0.0000
-	border_bottomright_uv 0.8086 0.2148 1.0000 0.0000
-}
-
-template element TextArea(SS/Templates/BasicText)
-{
-	font_name Ogre
-	char_height 0.08
-	colour_top 1 1 0
-	colour_bottom 1 0.2 0.2
-	left 0.03
-	top 0.02
-	width 0.12
-	height 0.09
-}
-
-template container Button(SS/Templates/BasicButton) : SS/Templates/BasicBorderPanel
-{
-	left 0.82
-	top 0.45
-	width 0.16
-	height 0.13
-	material Core/StatsBlockCenter
-	border_up_material Core/StatsBlockBorder/Up
-	border_down_material Core/StatsBlockBorder/Down
-}
 
 SS/Setup/HostScreen/Overlay
 {
@@ -69,13 +29,14 @@ SS/Setup/HostScreen/Overlay
 				top 0.1
 				width 0.4
 				height 0.6
-				item_material_selected Ogre/Eyes
+				item_material_selected Examples/Hilite/Yellow
 				material Core/StatsBlockCenter
+				scroll_bar SS/Templates/ScrollBar
 			}
 
 		}
 		    
-		container Button(SS/Setup/HostScreen/Host) : SS/Templates/BasicButton
+		container BorderButton(SS/Setup/HostScreen/Host) : SS/Templates/BasicButton
 		{
 			left 0.82
 			top 0.45
@@ -83,20 +44,25 @@ SS/Setup/HostScreen/Overlay
 		}
 
 
-		container Button(SS/Setup/HostScreen/Join) : SS/Templates/BasicButton
+		container BorderButton(SS/Setup/HostScreen/Join) : SS/Templates/BasicButton
 		{
 			left 0.82
 			top 0.60
 			caption SS/Templates/BasicText JOIN
 		}
 
-		container Button(SS/Setup/HostScreen/Exit) : SS/Templates/BasicButton
+		container BorderButton(SS/Setup/HostScreen/Exit) : SS/Templates/BasicButton
 		{
 			left 0.82
 			top 0.75
 			caption SS/Templates/BasicText EXIT
 		}
 				
+
+		container TextBox(SS/Setup/HostScreen/Text) : SS/Templates/BasicTextBox
+		{
+		}
+
 	}
 	
 }
