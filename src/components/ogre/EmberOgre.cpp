@@ -23,7 +23,21 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.25  2003-10-23 09:54:45  lee
+ *      Revision 1.26  2003-10-25 21:07:40  aglanor
+ *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/services/components/ogre/: Makefile.am,
+ *              Console.(h|cpp), InputManager.(h|cpp), DimeOgre.cpp:
+ *              Added InputManager and Console from Die (thanks to
+ *              wolfman8k).
+ *              Press ~ or F12 to show the console. The console is not
+ *              funtional yet (to be done ASAP).
+ *              As keyboard controls are disabled atm, the program
+ *              exits after 600 rendered frames.
+ *              * configure.ac: added /user/local/lib/Ogre/Plugin_GuiElements.so
+ *              to LDFLAGS. This is harcoded and an ugly hack, but I don't know
+ *              if Ogre has a way to add Plugin so's with the autotools.
+ *
+ *      Revision 1.25  2003/10/23 09:54:45  lee
  *      Removed code and includes from DimeServices.h and put them in
  *      DimeServices.cpp
  *
@@ -203,6 +217,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "PlayerFrameListener.h"
 #include "OgreGameView.h"
 #include "MathConverter.h"
+#include "InputManager.h"
+#include "Console.h"
 
 
 // ------------------------------
@@ -409,10 +425,18 @@ void DimeOgre::createScene(void)
 void DimeOgre::createFrameListener(void)
 {
 
-	fprintf(stderr, "TRACE - CREATING FRAME LISTENER\n");
-	PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, this, false, false);
-	mRoot->addFrameListener(playerFrameListener);
-	fprintf(stderr, "TRACE - CREATED FRAME LISTENER\n");
+	fprintf(stderr, "TRACE - CREATING FRAME LISTENERS\n");
+	//PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, this, false, false);
+	//mRoot->addFrameListener(playerFrameListener);
+	//Console* pConsole = Console::getSingleton();
+	fprintf(stderr, "TRACE - CREATING INPUT MANAGER\n");
+	//mRoot->addFrameListener(&(Console::getSingleton()));
+	InputManager::getSingleton();
+	InputManager::getSingleton().addKeyListener(&(Console::getSingleton()));
+	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
+	mRoot->addFrameListener(&(Console::getSingleton()));
+	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
+	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 
 }
 

@@ -1,3 +1,16 @@
+2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/services/components/ogre/: Makefile.am,
+	Console.(h|cpp), InputManager.(h|cpp), DimeOgre.cpp:
+	Added InputManager and Console from Die (thanks to 
+	wolfman8k). 
+	Press ~ or F12 to show the console. The console is not 
+	funtional yet (to be done ASAP).
+	As keyboard controls are disabled atm, the program
+	exits after 600 rendered frames.
+	* configure.ac: added /user/local/lib/Ogre/Plugin_GuiElements.so
+	to LDFLAGS. This is harcoded and an ugly hack, but I don't know
+	if Ogre has a way to add Plugin so's with the autotools.
+
 2003-10-25 Lee Begg <llnz@paradise.net.nz>
 	* src/services/sound/SoundService.(h|cpp): Made SoundService a bit
 	more generic. Removed most includes from header.
