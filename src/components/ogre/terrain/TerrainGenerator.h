@@ -62,7 +62,7 @@ public:
 	//void loadSegmentAt(WFMath::Point<3> aPoint);
 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments);
 	
-	virtual float getHeight(long x, long z);
+	virtual float getHeight(float x, float z);
 	virtual bool initTerrain(Eris::Entity *we, Eris::World *world);
 
 

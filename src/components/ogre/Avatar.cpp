@@ -42,6 +42,7 @@
 
 #include "DimeEntity.h"
 #include "AvatarController.h"
+#include "TerrainGenerator.h"
 
 #include "DimeTerrainSceneManager.h"
 
@@ -171,12 +172,16 @@ void Avatar::updateFrame(AvatarControllerMovement movement)
 	attemptRotate(movement);
 	//this next method will however send send stuff to the server
 	attemptMove(movement);
+	
+	adjustAvatarToNewPosition(&movement);
+	
 	/*
 	//for now we'll just rotate without notifying the server
 	attemptRotate(movement.rotationDegHoriz, movement.rotationDegVert, movement.timeSlice);
 	//this next method will however send send stuff to the server
 	attemptMove(movement.movementDirection, movement.isRunning, movement.timeSlice);
 	*/
+	
 }
 
 void Avatar::attemptMove(AvatarControllerMovement movement)
@@ -260,6 +265,16 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 	}
 	mCurrentMovementState = newMovementState;
 }
+
+void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
+{
+	//get the new coordinates of the avatar and check with mercator to adjust for
+	//height
+	Ogre::Vector3 position = mAvatarNode->getPosition();
+	float height = TerrainGenerator::getSingleton().getHeight(OGRE2WF(position.x), OGRE2WF(position.z));
+	mAvatarNode->setPosition(position.x, WF2OGRE(height),position.z);
+}
+
 
 void Avatar::attemptJump() {}
 
@@ -353,7 +368,7 @@ void Avatar::enteredWorld(Eris::Entity *e)
 	mErisAvatarEntity = e;
 	DimeTerrainSceneManager::getSingleton().setPositionOfAvatar(Atlas2Ogre(e->getPosition()));
 	//we debug so we'll remove this for now
-	e->Moved.connect(SigC::slot( *this, &Avatar::movedInWorld ));
+	//e->Moved.connect(SigC::slot( *this, &Avatar::movedInWorld ));
 
 	
 }

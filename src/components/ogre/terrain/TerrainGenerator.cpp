@@ -60,12 +60,12 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 }
 
 
-float TerrainGenerator::getHeight(long ogreX, long ogreZ)
+float TerrainGenerator::getHeight(float ogreX, float ogreZ)
 {
 	
 	//convert our ogre coordinates to atlas
-	long atlasX = ogreX;
-	long atlasY = -ogreZ;
+	float atlasX = ogreX;
+	float atlasY = -ogreZ;
 	
 	float height = mTerrain.get(atlasX, atlasY);
 	return height;

@@ -92,7 +92,16 @@ class Avatar : virtual public SigC::Object
 	
 	void updateFrame(AvatarControllerMovement movement);
 
-private:
+protected:
+	
+	/*
+	 * adjust the avatar to the new position in the terrain
+	 * for now this means setting the correct heigth 
+	 * accoring to mercator terrain, but it will probably
+	 * be extended to also include stuff as positioning the avatars feet
+	 * right
+	 */
+	void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement);
 	
 	/*
 	 * This method will determine if it's ok to send a small movement change, such as
