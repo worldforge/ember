@@ -15,6 +15,10 @@ AM_PATH_SDL(1.2.0, ,
 	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
 )
 
+AC_CHECK_LIB(SDL_image, IMG_Load, , [
+    AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
+])
+
 CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
@@ -22,9 +26,6 @@ LDFLAGS="$LDFLAGS $SDL_LIBS"
 dnl the next are just in for show right now.
 dnl they don't die yet as we don't need them yet.
 dnl they will be moved up above once they become necessary.
-AC_CHECK_LIB(SDL_image, IMG_Load, , [
-    AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
-])
 AC_CHECK_LIB(SDL_mixer, Mix_PlayingMusic, , [
 dnl AC_MSG_ERROR(libSDL_mixer not found, please install it.  It can be found at www.libsdl.org under "libraries")
 ])
@@ -49,7 +50,16 @@ AM_PATH_ERIS(0.9.5 ,[
     LDFLAGS="$LDFLAGS $ERIS_LIBS"
     ],
 AC_MSG_ERROR(Couldn't find Eris [or tests failed])
-		      )
+)
+
+AM_PATH_VARCONF(0.5.2 ,[
+    CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
+    LDFLAGS="$LDFLAGS $VARCONF_LIBS"
+    ],
+AC_MSG_ERROR(Couldn't find Varconf [or tests failed])
+)
+
+
 found_cppunit=no
 
 # Don't necessarily need 1.6.2; let me know if an older

@@ -48,6 +48,10 @@ Eris
 client side session layer
 Version: 0.9.5 pref CVS
 
+Varconf
+config files stuff
+Version: 0.5.2 works dunno about earlier ones
+
 CPPUnit
 C++ unit testing Library
 Version: >= 1.6.2 but older versions should work if you hack the configure.in
