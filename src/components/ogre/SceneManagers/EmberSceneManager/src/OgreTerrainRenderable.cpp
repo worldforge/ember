@@ -46,7 +46,6 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreException.h"
 #include <OgreNoMemoryMacros.h>
 
-#include "components/ogre/GUIManager.h"
 
 namespace Ogre
 {

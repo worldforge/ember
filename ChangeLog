@@ -1,3 +1,11 @@
+2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* removed dependeny on GUIManager
+
+2005-03-18  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added ability to save blueprints to xml files.
+
 2005-03-17  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* make sure the Bind button is disabled by default
