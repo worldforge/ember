@@ -1,4 +1,4 @@
 
-doxygen dime.dox
+doxygen dime.dox.in
 
 pause

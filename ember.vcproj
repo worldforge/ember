@@ -419,9 +419,6 @@
 				RelativePath=".\src\services\config\ConfigService.h">
 			</File>
 			<File
-				RelativePath=".\src\services\gui\Container.h">
-			</File>
-			<File
 				RelativePath=".\src\services\datamodel\DataModel.h">
 			</File>
 			<File
@@ -471,6 +468,9 @@
 			</File>
 			<File
 				RelativePath=".\src\services\gui\GuiService.h">
+			</File>
+			<File
+				RelativePath="src\services\gui\theme\IconStyle.h">
 			</File>
 			<File
 				RelativePath=".\src\services\image\ImageService.h">
@@ -536,16 +536,22 @@
 				RelativePath="src\services\datamodel\StringProvider.h">
 			</File>
 			<File
+				RelativePath="src\services\gui\theme\Style.h">
+			</File>
+			<File
 				RelativePath=".\src\services\test\TestService.h">
 			</File>
 			<File
 				RelativePath="test\TestServices.h">
 			</File>
 			<File
-				RelativePath=".\src\services\gui\Theme.h">
+				RelativePath="src\services\gui\theme\TextStyle.h">
 			</File>
 			<File
-				RelativePath=".\src\services\gui\ThemeAuthor.h">
+				RelativePath="src\services\gui\theme\Theme.h">
+			</File>
+			<File
+				RelativePath="src\services\gui\theme\ThemeAuthor.h">
 			</File>
 			<File
 				RelativePath=".\src\mscprag.h">
