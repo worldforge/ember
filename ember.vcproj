@@ -148,7 +148,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\src\,."
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;USE_CPP_UNIT;__WIN32__;_WIN32;CPPUNIT_DONT_USE_TYPEINFO"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;USE_CPP_UNIT;__WIN32__;_WIN32;CPPUNIT_DONT_USE_TYPEINFO;_REENTRANT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -168,12 +168,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="stlport_vc7.lib libsigcd.lib cppunitcd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
+				AdditionalDependencies="libsigcd.lib cppunitd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
 				OutputFile="bin/dime.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD.LIB"
+				IgnoreDefaultLibraryNames="LIBCD.LIB; LIBCMTD.LIB"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_CppUnit/dime.pdb"
 				SubSystem="2"/>
@@ -269,6 +269,9 @@
 				RelativePath=".\src\main\Application.cpp">
 			</File>
 			<File
+				RelativePath="src\services\datamodel\BoolProvider.cpp">
+			</File>
+			<File
 				RelativePath=".\src\services\datamodel\DataObject.cpp">
 			</File>
 			<File
@@ -359,6 +362,9 @@
 					RelativePath=".\src\services\datamodel\DataProvider.cpp">
 				</File>
 				<File
+					RelativePath="src\services\datamodel\FloatProvider.cpp">
+				</File>
+				<File
 					RelativePath=".\src\services\datamodel\FolderProvider.cpp">
 				</File>
 				<File
@@ -369,6 +375,9 @@
 				</File>
 				<File
 					RelativePath="src\services\datamodel\StringProvider.cpp">
+				</File>
+				<File
+					RelativePath="test\TestServices.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -383,9 +392,6 @@
 				<File
 					RelativePath="test\StateManagerTest.cpp">
 				</File>
-				<File
-					RelativePath="test\TestServices.cpp">
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -393,6 +399,9 @@
 			Filter="h;hpp;hxx;hm;inl">
 			<File
 				RelativePath=".\src\main\Application.h">
+			</File>
+			<File
+				RelativePath="src\services\datamodel\BoolProvider.h">
 			</File>
 			<File
 				RelativePath=".\src\components\cs\CSComponent.h">
@@ -441,6 +450,9 @@
 			</File>
 			<File
 				RelativePath=".\src\framework\Exception.h">
+			</File>
+			<File
+				RelativePath="src\services\datamodel\FloatProvider.h">
 			</File>
 			<File
 				RelativePath=".\src\services\datamodel\FolderProvider.h">

@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef STRINGPROVIDER_H
-#define STRINGPROVIDER_H
+#ifndef FLOATPROVIDER_H
+#define FLOATPROVIDER_H
 
 // Include other headers of the current program here
 #include "DataProvider.h"
@@ -29,12 +29,12 @@
 namespace dime {
 
 /**
- * Provider for a holding a single string.
+ * Provider for a holding a single float.
  * 
  * @author Tim Enderling
  */
 
-class StringProvider: public DataProvider, public SigC::Object
+class FloatProvider: public DataProvider, public SigC::Object
 {
     //======================================================================
     // Public Constants and enums
@@ -55,7 +55,7 @@ class StringProvider: public DataProvider, public SigC::Object
     //======================================================================
     // Private Variables
     //======================================================================
-	std::string  myValue;
+	float	 myValue;
 	DataType myPermissions; //determines whether the data model users
 						    //can change the value or not/remove it our not, etc.
 	std::string myDescription;
@@ -91,20 +91,20 @@ class StringProvider: public DataProvider, public SigC::Object
 	virtual void removeAdopted(PDataKey adopted);
 	virtual void getChilds(PDataKey parent, std::vector<std::string> & listOfChilds);
 
-	std::string getValue();
-	void setValue(std::string newValue);
+	float getValue();
+	void setValue(float newValue);
 	void setPermissions(DataType permissions);
 
 	//----------------------------------------------------------------------
     // Constructors
 
-	StringProvider(std::string initialValue, std::string description,
+	FloatProvider(float initialValue, std::string description,
 		DataType permissions = static_cast<DataType>(0));
 
     //----------------------------------------------------------------------
     // Destructor
 
-	virtual ~StringProvider();
+	virtual ~FloatProvider();
     
 	//----------------------------------------------------------------------
     // Getters
@@ -126,7 +126,7 @@ class StringProvider: public DataProvider, public SigC::Object
     private:
 							
 
-}; // StringProvider
+}; // FloatProvider
 
 
 } // namespace dime

@@ -168,6 +168,8 @@ namespace dime
 		for(Iter i = l.begin(); i != l.end(); i++)
 		{	
 			//HINT: Always use .data() for compatibility to MSVC
+			Eris::ServerInfo inf = *i;
+
 			out << "Hostname: " << (i)->getHostname().data() << endl;
 		}
 

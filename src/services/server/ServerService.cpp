@@ -27,8 +27,7 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace Eris;
-
+// HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
 
 namespace dime
 {
@@ -44,7 +43,7 @@ namespace dime
     // singleton instance up.  Do _not_ use Connection::Instance()
     // this does not create a new connection.
     // We are connected without debuging enabled thus the false
-    myConn = new Connection("dime",false);
+	myConn = new Eris::Connection("dime",false);
 
     // Bind signals
     myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
@@ -110,7 +109,7 @@ namespace dime
     myConnected = true;
 
     // Set up the lobby
-    myLobby=Lobby::instance();
+	myLobby=Eris::Lobby::instance();
     myLobby->SightPerson.connect(SigC::slot(*this,&ServerService::sightPerson));
     myLobby->PrivateTalk.connect(SigC::slot(*this,&ServerService::privateTalk));
     myLobby->LoggedIn.connect(SigC::slot(*this,&ServerService::loggedIn));
