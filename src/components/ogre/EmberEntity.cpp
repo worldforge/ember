@@ -131,10 +131,26 @@ void DimeEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 
 void DimeEntity::onVisibilityChanged(bool vis)
 {
+	checkVisibility(vis);
 	Eris::Entity::onVisibilityChanged(vis);
 //	mOgreEntity->setVisible(vis);	
 }
 
+void DimeEntity::checkVisibility(bool vis)
+{
+	DimeEntity* container = dynamic_cast<DimeEntity*>(getLocation());
+	if (container) {
+		//check with the parent first if we should show ourselves
+		if (vis && container->allowVisibilityOfMember(this)) {
+			getSceneNode()->setVisible(true);	
+		} else {
+			getSceneNode()->setVisible(false);	
+		}
+		
+	} else {
+		getSceneNode()->setVisible(vis);
+	}
+}
 
 void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity) 
 {
@@ -144,19 +160,18 @@ void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity)
 	sceneNode->setPosition(position.x, 0,position.z);
 }
 
-void DimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation)
+void DimeEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
 //	return Eris::Entity::onLocationChanged(oldLocation, newLocation);
 	
-	if (oldLocation == newLocation)
+	if (getLocation() == oldLocation)
 	{
 		std::cout << "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" << std::endl;
-		return Eris::Entity::onLocationChanged(oldLocation, newLocation);
+		return Eris::Entity::onLocationChanged(oldLocation);
 	
 	}
 
-	DimeEntity* newLocationEntity = dynamic_cast<DimeEntity*>(newLocation);
-	DimeEntity* oldLocationEntity = dynamic_cast<DimeEntity*>(oldLocation);
+	DimeEntity* newLocationEntity = dynamic_cast<DimeEntity*>(getLocation());
 	
 	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
 	
@@ -179,18 +194,21 @@ void DimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newL
 //		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 	}		
 	
+	checkVisibility(isVisible());
+	
 	std::cout << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " << getOrientation() << std::endl;
 
 	//we adjust the entity so it retains it's former position in the world
 	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
 	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 	
-	Eris::Entity::onLocationChanged(oldLocation, newLocation);
+	Eris::Entity::onLocationChanged(oldLocation);
 }
 
 void DimeEntity::onAction(const Atlas::Objects::Root& act)
 {
-	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: "+act->getName());
+	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString());
+	std::cout << std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString() << "\n";
 }
 
 void DimeEntity::onImaginary(const Atlas::Objects::Root& act)

@@ -32,6 +32,12 @@
 
 #include "ServerWidget.h"
 
+#include <elements/CEGUIListbox.h> 
+#include <elements/CEGUIListboxItem.h> 
+#include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIStaticText.h> 
+
+
 namespace DimeOgre {
 
 class ServerWidgetListItem : public CEGUI::ListboxTextItem
@@ -140,8 +146,9 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) 
 {
-	mGuiManager->removeWidget(this);
-	delete this;
+	mMainWindow->setVisible(false);
+/*	mGuiManager->removeWidget(this);
+	delete this;*/
 }
 
 

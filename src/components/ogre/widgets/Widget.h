@@ -4,21 +4,21 @@
 #include "DimeOgrePrerequisites.h"
 
 #include <Ogre.h>
-#include <CEGUI.h>
-#include <CEGUIEvent.h> 
-#include <CEGUIBase.h>
-#include <CEGUIExceptions.h>
-#include <CEGUISystem.h>
-#include <CEGUISchemeManager.h>
-#include <CEGUIWindow.h>
+// #include <CEGUI.h>
+// #include <CEGUIEvent.h> 
+// #include <CEGUIBase.h>
+// #include <CEGUIExceptions.h>
+// #include <CEGUISystem.h>
+// #include <CEGUISchemeManager.h>
+// #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
-#include <CEGUIImageset.h>
+// #include <CEGUIImageset.h>
 #include <boost/bind.hpp>
 
-#include <elements/CEGUIStaticImage.h>
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIGUISheet.h>
-#include <renderers/OgreGUIRenderer/ogrerenderer.h>
+// #include <elements/CEGUIStaticImage.h>
+// #include <elements/CEGUIPushButton.h>
+// #include <elements/CEGUIGUISheet.h>
+// #include <renderers/OgreGUIRenderer/ogrerenderer.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>

@@ -83,7 +83,7 @@ void AvatarDimeEntity::setVisible(bool vis)
 */
 
 //void AvatarDimeEntity::addMember(Entity *e) 
-void AvatarDimeEntity::childAdded(Entity *e, Entity *e_) 
+void AvatarDimeEntity::onChildAdded(Entity *e) 
 {
 	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
 	//PersonDimeEntity::addMember(e);
@@ -92,7 +92,7 @@ void AvatarDimeEntity::childAdded(Entity *e, Entity *e_)
 
 
 /*void AvatarDimeEntity::rmvMember(Entity *e)*/
-void AvatarDimeEntity::childRemoved(Entity *e, Entity *e_)
+void AvatarDimeEntity::onChildRemoved(Entity *e)
 {
 	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
 //	PersonDimeEntity::rmvMember(e);	

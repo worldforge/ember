@@ -17,6 +17,7 @@
 			<Property Name="Text" Value="" /> 
 			<Property Name="Position" Value="x:0 y:0.95" /> 
 			<Property Name="Size" Value="w:1 h:0.05" /> 
+			<Property Name="NormalTextColour" Value="00FFFFFF" />
 		</Window>
 		
 	</Window>

@@ -110,7 +110,7 @@ protected:
 	virtual void onTalk(const Atlas::Objects::Root& obj);
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
-	virtual void onLocationChanged(Eris::Entity *newLocation, Eris::Entity *oldLocation);
+	virtual void onLocationChanged(Eris::Entity *oldLocation);
     virtual void onAction(const Atlas::Objects::Root& act);
     virtual void onImaginary(const Atlas::Objects::Root& act);
 		
@@ -121,6 +121,7 @@ protected:
 	
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 
+	virtual void checkVisibility(bool vis);
 
 
 	/*

@@ -76,9 +76,9 @@ void WorldDimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const ent
  {
  	Eris::Entity::onVisibilityChanged(vis);
  }
- void WorldDimeEntity::onLocationChanged(Eris::Entity *newLocation, Eris::Entity *oldLocation)
+ void WorldDimeEntity::onLocationChanged(Eris::Entity *oldLocation)
  {
- 	Eris::Entity::onLocationChanged(newLocation, oldLocation);
+ 	Eris::Entity::onLocationChanged(oldLocation);
  }
 
 

@@ -25,6 +25,8 @@
 
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIMultiColumnList.h> 
+
 #include "services/DimeServices.h"
 #include "services/server/ServerService.h"
 #include "GUIManager.h"

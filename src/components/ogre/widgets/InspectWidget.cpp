@@ -27,6 +27,10 @@
 
 #include "InspectWidget.h"
 
+#include <elements/CEGUIListbox.h> 
+#include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIStaticText.h> 
+
 namespace DimeOgre {
 
 InspectWidget::InspectWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
@@ -56,10 +60,9 @@ void InspectWidget::buildWidget()
 
 void InspectWidget::handleAction(const std::string& action, DimeEntity* entity) {
 
-	showEntityInfo(entity);
-/*	if (action == "inspect") {
+	if (action == "inspect") {
 		showEntityInfo(entity);
-	}*/
+	}
 }
 
 void InspectWidget::showEntityInfo(DimeEntity* entity)
@@ -71,6 +74,7 @@ void InspectWidget::showEntityInfo(DimeEntity* entity)
 	std::stringstream ss;
 	
 	ss << "Name: " << entity->getName() << "\n";
+	ss << "Id: " << entity->getId() << "\n";
 	ss << "Parent: ";
 	if (parent) {
 		ss << parent->getName() << " (Id: " << parent->getId() << ")";
@@ -82,6 +86,7 @@ void InspectWidget::showEntityInfo(DimeEntity* entity)
 	ss << "Position: " << entity->getPosition() << "\n";
 	ss << "Velocity: " << entity->getVelocity() << "\n";
 	ss << "Orientation: " << entity->getOrientation() << "\n";
+	ss << "Boundingbox: " << entity->getBBox() << "\n";
 	
 /*	std::set<std::string> parents = entity->getInherits();
 	
@@ -104,7 +109,7 @@ void InspectWidget::showEntityInfo(DimeEntity* entity)
 	
 	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
 		Eris::Entity* child = entity->getContained(i);
-		std::string name =  child->getName() + " (Id: " + child->getId() + ")";
+		CEGUI::String name(child->getType()->getName() + " ("+ child->getId() +" : "+child->getName()+")");
 		mChildList->addItem(new CEGUI::ListboxTextItem(name));
 	}
 	

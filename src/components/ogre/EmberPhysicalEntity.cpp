@@ -202,23 +202,7 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
 }
 */
 
-void DimePhysicalEntity::onVisibilityChanged(bool vis)
-//void DimePhysicalEntity::setVisible(bool vis)
-{
-	DimeEntity* container = dynamic_cast<DimeEntity*>(getLocation());
-	if (container) {
-		//check with the parent first if we should show ourselves
-		if (vis && container->allowVisibilityOfMember(this)) {
-			getModel()->setVisible(true);	
-		} else {
-			getModel()->setVisible(false);	
-		}
-		
-	} else {
-		getModel()->setVisible(vis);
-	}
-	Eris::Entity::onVisibilityChanged(vis);
-}
+
 
 /*
 void DimePhysicalEntity::setContainer(Entity *pr)

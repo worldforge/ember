@@ -8,8 +8,8 @@
 		<Property Name="Text" Value="Inventory" />
 		
 		<Window Type="TaharezLook/Listbox" Name="Inventory/ListBox">
-			<Property Name="Position" Value="x:0 y:0" /> 
-			<Property Name="Size" Value="w:1 h:0.8" /> 
+			<Property Name="Position" Value="x:0 y:0.05" /> 
+			<Property Name="Size" Value="w:1 h:0.75" /> 
 			<Property Name="InheritsAlpha" Value="false" /> 
 		</Window>
 		<Window Type="TaharezLook/Button" Name="Inventory/Drop">

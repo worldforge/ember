@@ -42,7 +42,7 @@ protected:
 	virtual void onTalk(const Atlas::Objects::Root& obj);
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
-	virtual void onLocationChanged(Eris::Entity *newLocation, Eris::Entity *oldLocation);
+	virtual void onLocationChanged(Eris::Entity *oldLocation);
 
 };
 

@@ -572,6 +572,51 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
    	}   		
+   	
+	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
+   	{
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->drop(entity, offset);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on dropping: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on dropping: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   		
+	
+	void ServerService::place(Eris::Entity* entity, Eris::Entity* target)
+   	{
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->place(entity, target);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on dropping: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on dropping: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   		
+
    		
 	void ServerService::say(const std::string &message) {
  		if(!myAvatar) {

@@ -16,6 +16,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "DimeOgrePrerequisites.h"
+#include "GUIManager.h"
+#include <CEGUISchemeManager.h>
+#include <elements/CEGUIStaticText.h>
+
 #include "widgets/ServerWidget.h"
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
@@ -25,8 +30,8 @@
 #include "widgets/ServerBrowserWidget.h"
 #include "widgets/InspectWidget.h"
 #include "widgets/MakeEntityWidget.h"
+#include "widgets/GiveWidget.h"
 #include "MousePicker.h"
-#include "GUIManager.h"
 
 
 namespace DimeOgre {
@@ -147,6 +152,9 @@ void GUIManager::initialize()
 	serverWidget->buildWidget();
 	addWidget(serverWidget);
 	
+	GiveWidget* giveWidget = new GiveWidget(this);
+	giveWidget->buildWidget();
+	addWidget(giveWidget);
 }
 
 void GUIManager::setDebugText(std::string text)

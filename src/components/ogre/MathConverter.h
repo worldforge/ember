@@ -11,7 +11,15 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.9  2004-10-30 17:32:38  erik
+ *      Revision 1.10  2004-10-31 20:26:54  erik
+ *      2004-10-31 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Implemented give and drop actions, making Mason fully playable now.
+ *      * Various gui fixes.
+ *      * Updates for the latest Eris cvs.
+ *
+ *      Revision 1.9  2004/10/30 17:32:38  erik
  *      2004-10-30 Erik Hjortsberg <erik@hysteriskt.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -211,9 +219,9 @@ inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3> v){
 }
 
 inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
-/*	if (!aq.isValid()) {
+	if (!aq.isValid()) {
 		return Ogre::Quaternion::IDENTITY;
-	}*/
+	}
 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 }
 

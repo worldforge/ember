@@ -149,6 +149,8 @@ class ServerService : public Service, public ConsoleObject,
 	void moveInDirection(const WFMath::Vector<3>& velocity);
 	void say(const std::string &message);
 	void touch(Eris::Entity* entity);
+	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
+	void place(Eris::Entity* entity, Eris::Entity* target);
 
     //----------------------------------------------------------------------
 	// Signals

@@ -146,14 +146,14 @@ class EntityListener : virtual public SigC::Object //, public Component
          * @param e A pointer to the Eris entity that has been recontainered
          * @param c A pointer to the Eris entity that is the new container for e
          */
-        virtual void recontainered( Eris::Entity *e, Eris::Entity *c ) = 0;
+        virtual void recontainered( Eris::Entity *e ) = 0;
 
         /**
          * I'm not sure what this does. Let's ignore it until I can track down
          * James and bop him on the head for writing unhelpful comments ;)
          * NOTES: I suspect this is when an attribute of the object is changed.
          */
-        virtual void changed( Eris::Entity *e , const Eris::StringSet &s) = 0;
+        virtual void changed(const Eris::StringSet &s) = 0;
 
         /**
          * Called when the entity moves. Here you should alter the position
@@ -166,7 +166,7 @@ class EntityListener : virtual public SigC::Object //, public Component
          * @param c The new coordinates of the entity
          * @param e A pointer to the Eris entity that has moved
          */
-        virtual void moved(Eris::Entity *e) = 0;
+        virtual void moved() = 0;
 
         /**
          * Called when the entity speaks. You'll probably want to display the
@@ -180,12 +180,12 @@ class EntityListener : virtual public SigC::Object //, public Component
         /**
          * Sadly undocumented
          */
-        virtual void addedMember(Eris::Entity *e, Eris::Entity *e) = 0;
+        virtual void addedMember(Eris::Entity *e) = 0;
 
         /**
          * Also sadly undocumented
          */
-        virtual void removedMember(Eris::Entity *e, Eris::Entity *e) = 0;
+        virtual void removedMember(Eris::Entity *e) = 0;
 
     private:
 

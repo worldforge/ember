@@ -28,6 +28,8 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <Eris/Entity.h>
 
+
+
 namespace DimeOgre {
 class DimeEntity;
 class AvatarDimeEntity;
@@ -49,13 +51,15 @@ public:
 
 protected:
 	CEGUI::Listbox* mListBox;
+	std::map<DimeEntity*, CEGUI::ListboxItem*> mListBoxMap;
 
 /*	void removedEntity(DimeEntity* dimeEntity);
 	void addedEntity(DimeEntity* dimeEntity);*/
 	void removedEntity(DimeEntity* dimeEntity);
 	void addedEntity(DimeEntity* dimeEntity);
 	void createdAvatarDimeEntity(AvatarDimeEntity* entity);
-	
+	bool Drop_Click(const CEGUI::EventArgs& args);
+
 
 
 	

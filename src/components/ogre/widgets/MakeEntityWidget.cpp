@@ -40,6 +40,13 @@
 
 #include "MakeEntityWidget.h"
 
+#include <CEGUIWindow.h>
+#include <elements/CEGUIListbox.h> 
+#include <elements/CEGUIListboxItem.h> 
+#include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIEditbox.h> 
+#include <elements/CEGUIPushButton.h> 
+
 namespace DimeOgre {
 
 MakeEntityWidget::MakeEntityWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
@@ -114,10 +121,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	
 	Atlas::Message::MapType msg;
 	msg["loc"] = avatar->getLocation()->getId();
-	Ogre::SceneNode* node = avatar->getSceneNode();
-//	Ogre::Vector3 newPos = node->getPosition() + (node->getOrientation() * Ogre::Vector3(0,0,-2));
-	Ogre::Vector3 newPos = node->getPosition() + ( Ogre::Vector3(0,0,-2));
-	WFMath::Point<3> pos = Ogre2Atlas(newPos);
+	WFMath::Point<3> pos = avatar->getPosition() + WFMath::Vector<3>(0,2,0);
 
 	msg["pos"] = pos.toAtlas();
 	msg["name"] = mName->getText().c_str();

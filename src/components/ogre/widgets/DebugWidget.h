@@ -5,6 +5,8 @@
 
 namespace DimeOgre {
 
+class Widget;
+class GUIManager;
 
 class DebugWidget
 : public Widget

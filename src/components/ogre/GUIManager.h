@@ -19,17 +19,17 @@
 #ifndef GUIMANAGER_H
 #define GUIMANAGER_H
 
-#include <CEGUIBase.h>
+/*#include <CEGUIBase.h>
 #include <CEGUIExceptions.h>
 #include <CEGUISystem.h>
 #include <CEGUISchemeManager.h>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
 #include <CEGUIImageset.h>
-#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIStaticImage.h>*/
 #include <elements/CEGUIPushButton.h>
 #include <renderers/OgreGUIRenderer/ogrerenderer.h>
-#include <boost/bind.hpp>
+// #include <boost/bind.hpp>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>

@@ -1,5 +1,8 @@
 #include "Widget.h"
 #include "DebugWidget.h"
+
+#include <CEGUIWindow.h>
+
 namespace DimeOgre {
 
 DebugWidget::DebugWidget(GUIManager* guiManager) 

@@ -39,6 +39,8 @@
 
 #include "EntityPickerWidget.h"
 
+#include <elements/CEGUIStaticText.h>
+
 //#include <CEGUIWindowProperties.h> 
 
 namespace DimeOgre {
@@ -154,7 +156,8 @@ void EntityPickerWidget::showMenu(CEGUI::Point position)
 void EntityPickerWidget::pickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args)
 {
 	showMenu(args.position);
-	mEntityName->setText(entity->getName());
+	CEGUI::String name(entity->getType()->getName() + " ("+ entity->getName() +")");
+	mEntityName->setText(name);
 	mPickedEntity = entity;
 	
 	//TODO: bind the guiManagers onMouseUp event to remove the menu
@@ -177,7 +180,7 @@ void EntityPickerWidget::pickedNothing(const CEGUI::MouseEventArgs& args)
 bool EntityPickerWidget::buttonTouch_Click(const CEGUI::EventArgs& args)
 {
 	DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity()->getErisAvatar()->touch(mPickedEntity);
-	mGuiManager->EventEntityAction("tuoch", mPickedEntity);
+	mGuiManager->EventEntityAction("touch", mPickedEntity);
 	mGuiManager->setDebugText(std::string("Touched ") + mPickedEntity->getName() );
 	removeMenu();
 	return true;

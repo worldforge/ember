@@ -63,8 +63,8 @@ public:
 	
 protected: 
 
-	void childAdded(Entity *e, Entity *e_);
-	void childRemoved(Entity *e, Entity *e_);
+	virtual void onChildAdded(Entity *e);
+	virtual void onChildRemoved(Entity *e);
 
 	/*Eris methods, see Eris::Entity.h for documentation */
 //	virtual void handleTalk(const std::string &msg);

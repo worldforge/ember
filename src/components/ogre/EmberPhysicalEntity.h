@@ -106,7 +106,7 @@ protected:
 	entity. At some point, invisible entities get flushed by Eris using an LRU scheme. */
 	//virtual void setVisible(bool vis);
 
-	virtual void onVisibilityChanged( bool vis);
+	//virtual void onVisibilityChanged( bool vis);
 
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 
