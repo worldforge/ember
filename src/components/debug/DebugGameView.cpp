@@ -55,17 +55,17 @@ void DebugGameView::entityCreate( Eris::Entity *e )
        too */
 
     // Xmp's Notes: hmm need to work out how to connect these
-    //e->AddedMember.connect( SigC::slot( this, &addedMember ) );
+    e->AddedMember.connect( SigC::slot( this, &DebugGameView::addedMember ) );
 
-    //e->RemovedMember.connect( SigC::slot( this, &removedMember ) );
+    e->RemovedMember.connect( SigC::slot( this, &DebugGameView::removedMember ) );
 
-    //e->Recontainered.connect( SigC::slot( this, &recontainered ) );
+    e->Recontainered.connect( SigC::slot( this, &DebugGameView::recontainered ) );
 
-    //e->Changed.connect( SigC::bind( SigC::slot( this, &changed ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( this, &DebugGameView::changed ), e ) );
 
-    //e->Moved.connect( SigC::bind( SigC::slot( this, &moved ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( this, &DebugGameView::moved ), e ) );
 
-    //e->Say.connect( SigC::slot( SigC::slot( this, &say ), e ) );
+    e->Say.connect( SigC::bind( SigC::slot( this, &DebugGameView::say ), e ) );
 }
 
 
