@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="deer"  >
+<model name="deer" usescaleof="height" >
   <submodels>
     <submodel mesh="Deer.mesh">
       <parts>
