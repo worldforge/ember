@@ -191,7 +191,7 @@ class InputDevice
 	virtual KeyState getKeyState(SDLKey key);	
     virtual KeyState getKeyState(DimeKey key)
     {
-        getKeyState(key.getKey());
+        return getKeyState(key.getKey());
     }
     
 	

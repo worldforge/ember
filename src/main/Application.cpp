@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.21  2002-05-11 00:02:43  xmp
+ *      Revision 1.22  2002-05-13 20:52:39  nikal
+ *      Unicode should be working
+ *
+ *      Revision 1.21  2002/05/11 00:02:43  xmp
  *      Final fixes and tidy up.  Application now a singleton.
  *
  *      Revision 1.20  2002/05/10 23:56:41  tim
@@ -185,7 +188,7 @@ namespace dime
         // Setting title.  The second argument is for an Icon. 
         // Remember if passing a std::string to a char * function, you must use .c_str()
         SDL_WM_SetCaption(title.c_str(), NULL);
-		
+		SDL_EnableUNICODE(1);
 #ifdef USE_CPP_UNIT
 		CppUnit::TextTestResult result;
 		CppUnit::TestFactoryRegistry::getRegistry().makeTest()->run(&result);
