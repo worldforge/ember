@@ -23,6 +23,7 @@
 
 #include <sigc++/signal_system.h>
 
+#include "services/platform/DrawDevice.h"
 //#include "framework/Component.h"
 
 namespace dime {
