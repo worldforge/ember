@@ -87,7 +87,6 @@
 
 
 namespace applicationNamespace {
-namespace subsystemNamespace {
 
 /**
  * Short sentence with a general description of the class, ending in period.
@@ -319,7 +318,6 @@ class NameOfClass
 
 }; // End of class
 
-} // End of subsystem namespace
 } // End of application namespace
 
 #endif
