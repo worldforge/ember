@@ -127,8 +127,6 @@ KeyboardDevice::KeyboardDevice():
 			myKeys[i] = RELEASED;
 		}
 	}
-
-	delete keys;
 }
 
 KeyboardDevice::~KeyboardDevice()

@@ -22,6 +22,7 @@
 // Include headers from the current project here
 #include <services/test/TestService.h>
 #include <services/logging/LoggingService.h>
+#include <services/input/InputService.h>
 
 // Include custom library headers here
 
@@ -79,12 +80,15 @@ class DimeServices
      */
     dime::LoggingService *myLoggingService;
 
+	/*
+	 * The instance of the InputService
+     */
+    dime::InputService *myInputService;
+
     /**
      * The DimeServices singleton instance.
      */
     static DimeServices *theInstance;
-
-    
 
     //======================================================================
     // Public Methods
@@ -144,6 +148,14 @@ class DimeServices
         return myLoggingService;
     }
 
+	/**
+     * Returns an instance of the InputService
+     */
+    dime::InputService *getInputService()
+    {
+        return myInputService;
+    }
+
     //----------------------------------------------------------------------
     // Setters
 
@@ -174,6 +186,7 @@ class DimeServices
     DimeServices()
     {
         myLoggingService = new dime::LoggingService();
+		myInputService	 = new dime::InputService();
     }
 
 

@@ -114,8 +114,6 @@ namespace dime {
  * @author Tim Enderling
  */
 
-using namespace SigC;
-
 class InputMapping
 {
 	friend class InputDevice;
@@ -151,7 +149,7 @@ class InputMapping
 	 * params to your handling function (usually called 'cockie').
 	 */
 
-	typedef SigC::Signal3<void, InputDevice *, const SDLKey & , InputSignalType, Marshal<void> 
+	typedef SigC::Signal3<void, InputDevice *, const SDLKey & , InputSignalType, SigC::Marshal<void> 
 		> InputSignal;
 
 	typedef SigC::Slot3<void, InputDevice *, const SDLKey &, InputSignalType> InputSlot;

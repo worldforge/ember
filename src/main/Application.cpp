@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.5  2002-01-27 23:20:53  nikal
+ *      Revision 1.6  2002-02-18 21:51:06  tim
+ *      Added CppUnit stuff.
+ *
+ *      Revision 1.5  2002/01/27 23:20:53  nikal
  *      Some minor changes reflecting Dime's decision to use only dime:: as a namespace
  *
  *      Revision 1.4  2002/01/27 17:57:52  nikal
@@ -38,6 +41,16 @@
 #include "DimeServices.h"
 #include <iostream>
 #include <iomanip>
+
+//TODO: Put this into a config file/configuration for MSVC
+#define USE_CPP_UNIT
+
+//Needed for CppUnit
+#ifdef USE_CPP_UNIT
+	#include <cppunit/TextTestResult.h> 
+	#include <cppunit/TestSuite.h> 
+	#include <cppunit/extensions/TestFactoryRegistry.h> 
+#endif
 
 namespace dime
 {
@@ -183,6 +196,15 @@ namespace dime
 
     void Application::mainLoop() 
     {
+
+#ifdef USE_CPP_UNIT
+		CppUnit::TextTestResult result;
+		CppUnit::TestFactoryRegistry::getRegistry().makeTest()->run(&result);
+		result.print(cerr);
+
+		//See <services/input/InputServiceTest.cpp> for how to write your own tests.
+#endif 
+
         while(myShouldQuit == false) 
             {
                 mainLoopStep();
