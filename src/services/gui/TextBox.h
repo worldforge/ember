@@ -95,8 +95,8 @@ class TextBox : public Label
     {
     }
 
-	TextBox(std::string text, const Rectangle& rect) : Label(text ,rect),
-		myBackRect(RectangleRenderer::FLAT_COLOR, rect, Color(255,0,0))
+	TextBox(std::string text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+5, rect.getY()+15, rect.getWidth()-10,rect.getHeight()-10)),
+		myBackRect(RectangleRenderer::BITMAP, rect,"textboxback.png")
     {
     }
 
