@@ -130,7 +130,7 @@ bool dime::Widget::checkMouseEvent(std::vector<int> coords)
 				}
 			}
 			// Coordinates lie inside this widget and none of its children.
-			// TODO: If a mouse click then give focus to THIS widget, since no children qualify.
+			//%TODO nikal,2: If a mouse click then give focus to THIS widget, since no children qualify.
 			return true;
 		}
 		else

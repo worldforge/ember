@@ -70,9 +70,9 @@ class ComponentFactory
      */
     std::String myDescription;
 
-    // TODO: Reference to UI data?
-    // TODO: List of connection slot descriptions
-    // TODO: Icon
+    //%TODO zzorn,2: Reference to UI data?
+    //%TODO zzorn,2: List of connection slot descriptions
+    //%TODO zzorn,2: Icon
 
 
     //======================================================================
@@ -107,7 +107,7 @@ class ComponentFactory
      */
     ComponentFactory &operator= ( const ComponentFactory &source )
     {
-        // TODO: Copy fields from source class to this class here.
+        //%TODO zzorn,2: Copy fields from source class to this class here.
 
         // Return result
         return *this;

@@ -40,9 +40,9 @@ namespace dime
 {
 
 //General TODOs:
-// - make LoggingService threadsafe!
-// - Is it necessary to support UNICODE/wide characters?
-// - Add debug assertions. (How are the platform independent macros called?)
+//%TASK Tim,2: make LoggingService threadsafe!
+//%TASK Tim,2: Is it necessary to support UNICODE/wide characters?
+//%TASK Tim,2: Add debug assertions. (How are the platform independent macros called?)
 
 
 

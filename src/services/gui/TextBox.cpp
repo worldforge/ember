@@ -31,7 +31,7 @@ int TextBox::draw(DrawDevice *target)
 	// Now draw the caret
 	drawCaret(target);
 
-	//TODO: what should be returned here?
+	//%TODO Xmp,2: what should be returned here?
 	return 0;
 }
 
@@ -70,14 +70,14 @@ bool TextBox::keyPress( KeyPressEvent *event)
 		break;
 	      case SDLK_RETURN:
 	      {
-		// TODO: Accept input and either call default widget pressed
+		//%TODO nikal,2: Accept input and either call default widget pressed
 		//       or jump to next textbox in sequence
 		onEnter.emit(myText);
 	      }
 	      break;
 	      case SDLK_TAB:
 	      {
-		// TODO: Pass focus to next control
+		//%TODO nikal,2: Pass focus to next control
 	      }
 	      break;
 	      case SDLK_LEFT:
@@ -138,7 +138,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
     return true;
 }
 
-// TODO: REVIEW THIS CODE AND CRITIC THE ALGO
+//%TODO xmp,4: REVIEW THIS CODE AND CRITIC THE ALGO
 void TextBox::rebuildLeft()
 {
   /* Start with zero chars and keep on expanding till we get too big.
@@ -163,7 +163,7 @@ void TextBox::rebuildLeft()
   myRight = myLeft+i-1;
 }
 
-// TODO: REVIEW THIS CODE AND CRITIC THE ALGO
+//%TODO xmp,4: REVIEW THIS CODE AND CRITIC THE ALGO
 void TextBox::rebuildRight()
 {
   /* Start with zero chars and keep on expanding till we get too big.
@@ -200,7 +200,7 @@ void TextBox::drawCaret(DrawDevice* target)
   myFontRenderer->getFont()->sizeText(pretext, &width, &height);
 
   // Work out where on screen our text is starting
-  // TODO: replace the +1 with + half the width of a space
+  //%TODO xmp,3: replace the +1 with + half the width of a space
   int x = Label::getRectangle().getX()+1+width;
   int y = Label::getRectangle().getY();
 

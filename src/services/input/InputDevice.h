@@ -35,10 +35,8 @@
 #include <vector>
 
 //General TODOs
-// - Add JoystickDevice, JoystickHatDevice and JoystickBallDevice
-// - test if it compiles under Unix especially
-// - test if it works
-// - Add debug assertions
+//%TODO Tim,2: Add JoystickDevice, JoystickHatDevice and JoystickBallDevice
+//%TODO Tim,2: Add debug assertions
 
 namespace dime {
 

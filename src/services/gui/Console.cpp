@@ -40,7 +40,7 @@ const char* Console::CONSOLE_PROMPT_STRING = "> ";
 const char* Console::CONSOLE_CURSOR_STRING = "_";
 
 
-// TODO: abstract SDL_GetTicks()
+//%TODO Xmp,3: abstract SDL_GetTicks()
 Console::Console(const Rectangle& rect) :
   Widget(rect),
   animateConsole(0),
@@ -104,7 +104,7 @@ int Console::draw(DrawDevice* target){
   return 0;
 }
 
-// TODO: refactor this to do the majority of the renderer creation in 
+//%TODO Xmp,4: refactor this to do the majority of the renderer creation in 
 //       the constructor
 void Console::renderConsoleMessages(DrawDevice *ddevice) {
   std::list<std::string>::const_iterator I;

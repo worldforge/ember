@@ -36,17 +36,15 @@
 #include <assert.h>
 
 //General TODOs:
-// - test if it compiles under Unix especially
-// - test if it works
-// - Add debug assertions
-// - Is there a way for timing out handling of input events? (Just to avoid the 'user presses
+//%TASK Tim,2: Add debug assertions
+//%TASK Tim,2: Is there a way for timing out handling of input events? (Just to avoid the 'user presses
 // button serveral times, because he sees no reaction and afterwards he has to wait, because
 // all events are really processed...')
-// - Should InputMappings be autoregistring? (ATM: No.)
-// - Is a state only true, if the modifiers where pressed _before_ the base key? (ATM: Yes.)
-// - Should KEY_RELEASED also occur, 
+//%TASK Tim,2: Should InputMappings be autoregistring? (ATM: No.)
+//%TASK Tim,2: Is a state only true, if the modifiers where pressed _before_ the base key? (ATM: Yes.)
+//%TASK Tim,2: Should KEY_RELEASED also occur, 
 //    if the modifiers are released _before_ the base key? (ATM: No.)
-// - Should KEY_PRESSED events also occur, if there are more modifiers pressed than
+//%TASK Tim,2: Should KEY_PRESSED events also occur, if there are more modifiers pressed than
 //   specified in the mapping? (ATM: No.)
 
 namespace dime {

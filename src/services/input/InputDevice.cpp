@@ -130,7 +130,7 @@ KeyboardDevice::KeyboardDevice():
 
 	for (int i = 0; i < myKeyCount; i++)
 	{
-		//TODO: Test if the key is actually supported. Supported by SDL?
+		//%TODO Tim,2: Test if the key is actually supported. Supported by SDL?
 
 		if (keys[i] == 1)
 		{
@@ -182,7 +182,7 @@ bool KeyboardDevice::handleEvent(SDL_Event & event)
 MouseDevice::MouseDevice():
 		  InputDevice(MOUSE, 0, 0)
 {
-	//TODO: Really test if the mouse has three buttons
+	//%TODO Tim,2: Really test if the mouse has three buttons
 	myHasThreeButtons = true;
 	
 	initAxis();
@@ -259,7 +259,7 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 	switch (event.type)
 	{
 	case SDL_MOUSEMOTION:
-		//TODO: Test if this works properly also, if the cursor is hidden
+		//%TODO Tim,2: Test if this works properly also, if the cursor is hidden
 		//esp. concerning if the mouse movements are cut at the screen borders
 
 		myPhysicalPosition[0] = event.motion.x;

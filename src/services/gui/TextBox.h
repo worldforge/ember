@@ -131,10 +131,11 @@ class TextBox : public Label
         Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
       myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
       myCaretPos(text.length()),
+      myText(text.begin(), text.end()),
       myRight(text.length()-1)
     {
       Font::FontString temp;
-
+/*	
       for(const char* c = text.c_str();*c != '\0';c++)
 	{
 	  temp+=(Uint16)c;
@@ -142,6 +143,7 @@ class TextBox : public Label
       assert(text.length()==temp.length());
 
       myText = temp;
+      */
       rebuildRight();
     }
 

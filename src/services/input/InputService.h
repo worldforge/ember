@@ -37,10 +37,8 @@ namespace dime {
 
 
 //General TODOs:
-// - test if it compiles under Unix especially
-// - test if it works
-// - Add debug assertions
-// - No eating up of events till now. Add it if we need it.
+//%TASK Tim,2: Add debug assertions
+//%TASK Tim,1: No eating up of events till now. Add it if we need it.
 
 /**
  * A service for getting input from the user, and sending it to

@@ -205,9 +205,8 @@ namespace dime {
         /**
          * Connect a slot here to observe when a key is pressed and this Widget has focus.
          */
-        SigC::Signal2<void, Widget*, SDLKey, SigC::Marshal<void> > onKeyPress;
+        SigC::Signal1<void, KeyPressEvent*, SigC::Marshal<void> > onKeyPress;
         
-
 
 
 	
@@ -337,7 +336,7 @@ namespace dime {
          *@return bool whether something was updated or not.
          */
         virtual bool update(DrawDevice *target) { 
-			//TODO: What should be returned here
+			//%TODO nikal,2: What should be returned here
 			return false; };
         
         
@@ -407,7 +406,8 @@ namespace dime {
         
 	virtual bool keyPress( KeyPressEvent *event)
         {
-			return false;
+	    onKeyPress.emit(event);
+            return false;
         }
         
 
@@ -417,7 +417,7 @@ namespace dime {
         * captured (if some other window already had it captureKeyboard fails).
         */
         virtual bool captureKeyboard() {
-			//TODO: What should be returned here
+			//%TODO nikal,2: What should be returned here
 			return false;
 		}
         
@@ -495,7 +495,7 @@ namespace dime {
          * captured (if some other window already had it captureMouse fails).
          */
         virtual bool captureMouse() { 
-			//TODO: What should be returned here
+			//%TODO nikal,2: What should be returned here
 			return false;};
 
         /**
