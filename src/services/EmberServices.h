@@ -20,18 +20,14 @@
 #define DIME_SERVICES_H
 
 // Include headers from the current project here
-#include <services/test/TestService.h>
-#include <services/logging/LoggingService.h>
-#include <services/config/ConfigService.h>
-#include <services/input/InputService.h>
-#include <services/gui/GuiService.h>
-#include <services/sound/SoundService.h>
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
-#include <services/metaserver/MetaserverService.h>
-#include <services/server/ServerService.h>
-#endif
+#include "services/test/TestService.h"
+#include "services/logging/LoggingService.h"
+#include "services/config/ConfigService.h"
+#include "services/input/InputService.h"
+#include "services/gui/GuiService.h"
+#include "services/sound/SoundService.h"
+#include "services/metaserver/MetaserverService.h"
+#include "services/server/ServerService.h"
 
 // Include custom library headers here
 
@@ -107,20 +103,12 @@ class DimeServices
     /**
      * The instance of the MetaserverService
      */
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
     dime::MetaserverService *myMetaserverService;
-#endif
 
     /**
      * The instance of the ServerService
      */
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
     dime::ServerService *myServerService;
-#endif
 
     /**
      * The instance of the SoundService
@@ -149,12 +137,8 @@ class DimeServices
       // TODO: Free any allocated resources here.
       delete myConfigService;
       delete myGuiService;
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
       delete myMetaserverService;
       delete myServerService;
-#endif
     }
 
 
@@ -204,7 +188,9 @@ class DimeServices
     dime::ConfigService *getConfigService()
       {
 	if (myConfigService == NULL)
-	  myConfigService = new dime::ConfigService();
+	  {
+	    myConfigService = new dime::ConfigService();
+	  }
 
 	return myConfigService;
       }
@@ -231,30 +217,22 @@ class DimeServices
     /**
      * Returns an instance of the MetaserverService
      */
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
     dime::MetaserverService *getMetaserverService()
     {
         if (myMetaserverService == NULL)
 	  myMetaserverService = new dime::MetaserverService();
 	return myMetaserverService;
     }
-#endif
 
     /**
      * Returns an instance of the ServerService
      */
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
     dime::ServerService *getServerService()
     {
         if (myServerService == NULL)
 	  myServerService = new dime::ServerService();
 	return myServerService;
     }
-#endif
 
     /**
      * Returns an instance of the SoundService
@@ -293,17 +271,9 @@ class DimeServices
     /**
      * The constructor is private, and only used to create the singleton instance.
      */
-    DimeServices()
+    DimeServices() : myConfigService(NULL), myGuiService(NULL),
+      myMetaserverService(NULL), myServerService(NULL), mySoundService(NULL)
     {
-      myConfigService = NULL;
-      myGuiService = NULL;
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-      // GNDN: MSVC < version 7 is broken
-#else
-      myMetaserverService = NULL;
-      myServerService = NULL;
-#endif
-      mySoundService = NULL;
     }
 
 

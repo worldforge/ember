@@ -30,7 +30,12 @@
 #include <list>
 #include <algorithm>
 #include <iostream>
+#if 0
 #include <strstream>
+#define stringstream strstream
+#else
+#include <sstream>
+#endif
 
 // HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
 
@@ -171,12 +176,14 @@ namespace dime
 	
   void ServerService::gotFailure(const std::string & msg)
   {
-    std::ostrstream temp;
+    std::ostringstream temp;
 
     temp << "Got Server error: " << msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)  << temp.str()<< ENDM;
 
+#if 0 // not new sstream
     temp<<std::ends;
+#endif
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 	
@@ -235,11 +242,13 @@ namespace dime
 
   void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
   {
-    std::ostrstream temp;
+    std::ostringstream temp;
 
     temp<< "Login Failure:"<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
+#if 0 // not new sstream
     temp<<std::ends;    
+#endif
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 

@@ -1,3 +1,7 @@
+2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
+	* ServerService.cpp, OOGChat.cpp: update obsolete <strstream> to
+	  <sstream>.
+
 2003-04-13 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* Configure.ac: created check for wfmath. Moved to PKG_CONFIG checking
 	the checks for some libraries.

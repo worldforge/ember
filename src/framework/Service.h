@@ -76,19 +76,19 @@ class Service
     private:
 
     	/** Stores the unique name of the service */
-		std::string myName;
+	std::string myName;
 
-		/** Stores the description of the service */
-		std::string myDescription;
+	/** Stores the description of the service */
+	std::string myDescription;
 
-		/** Tells if the service is running or not */
-		bool myRunning;
+	/** Tells if the service is running or not */
+	bool myRunning;
 
-		/** Current status code */
-		Status myStatus;
+	/** Current status code */
+	Status myStatus;
 
-		/** Textual description of the current status, especially if it is some problem. */
-		std::string myStatusText;
+	/** Textual description of the current status, especially if it is some problem. */
+	std::string myStatusText;
 		
 
     //======================================================================
@@ -102,11 +102,11 @@ class Service
     /** Creates a new Service using default values. */
     Service()
     {
-        setName( "" );
-        setDescription( "" );
-		setStatusText( "" );
-		myStatus       = OK;
-		myRunning      = false;
+      setName( "" );
+      setDescription( "" );
+      setStatusText( "" );
+      myStatus       = OK;
+      myRunning      = false;
     }
 
 
@@ -121,15 +121,15 @@ class Service
     /** Assignment operator. */
     virtual Service &operator= ( const Service &source )
     {
-		myName         = source.myName;
-		myDescription  = source.myDescription;
+      myName         = source.myName;
+      myDescription  = source.myDescription;
 
-		myRunning      = false;    // The new service has not been initialized...
-		myStatus       = OK;
-		myStatusText   = "";       // Initial value
+      myRunning      = false;    // The new service has not been initialized...
+      myStatus       = OK;
+      myStatusText   = "";       // Initial value
 
-        // Return reference to this instance.
-        return *this;
+      // Return reference to this instance.
+      return *this;
     }
 
     /** Deletes a Service instance. */
@@ -185,8 +185,8 @@ class Service
     //----------------------------------------------------------------------
     // Methods
 	
-	/**
-	 * This method is used to start the service.
+    /**
+     * This method is used to start the service.
      * It should take care of aquiring needed resources, initializing
      * data structures, and so on. <p>
      *
@@ -198,15 +198,15 @@ class Service
      * service.  <p>
      *
      * This method must be implemented by all inheriting classes.  <p>
-	 *
      *
-	 * @returns success or error code
-	 */
+     *
+     * @returns success or error code
+     */
     virtual Status start() = 0;
 
 
-	/**
-	 * This method stops the service, and frees any used resources.
+    /**
+     * This method stops the service, and frees any used resources.
      * If the service has no special resources that need to be freed,
      * or de-initialization to be done, this
      * method can be left to the default implementation (which just sets the
@@ -214,11 +214,11 @@ class Service
      *
      * Otherwise this method should be overridden, and setRunning( false )
      * should be called if the service was stopped.  <p>
-	 *
-	 * @ param code code which represents the cause of the service halt
+     *
+     * @ param code code which represents the cause of the service halt
      * TODO(zzorn): What do we need it for?
-	 */
-	virtual void stop( int code )
+     */
+    virtual void stop( int code )
     {
         setRunning( false );
     }
@@ -233,14 +233,14 @@ class Service
     // Setters
 
     /** Sets the name of this Service. */
-    virtual void setName( std::string name )
+    virtual void setName( const std::string& name )
     {
     	myName = name;
     }
 
 
     /** Sets the description of this Service. */
-    virtual void setDescription( std::string description )
+    virtual void setDescription( const std::string& description )
     {
     	myDescription = description;
     }
@@ -269,7 +269,7 @@ class Service
      * (If everything is fine, then this can be empty, as the status code can be
      * used to determine this.)
      */
-    virtual void setStatusText( std::string statusText )
+    virtual void setStatusText( const std::string& statusText )
     {
     	myStatusText = statusText;
     }
