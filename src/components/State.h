@@ -31,7 +31,7 @@
 namespace dime {
 
 /**
- * Short sentence with a general description of the class, ending in period.
+ * Contains the information to draw a given state.
  *
  * More detailed description of the class, it's purpose, what it does,
  * how to use it and so on.
@@ -49,9 +49,9 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see OtherSubsystem::AnOtherRelatedClass
+ * @see dime::StateManager
+ * @see dime::WidgetInfo
  *
- * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
 class State
@@ -114,6 +114,8 @@ class State
     State &operator= ( const State &source )
     {
         // Copy fields from source class to this class here.
+        myName=source.myName;
+	myWidgets=source.myWidgets;
 
         // Return this object with new value
         return *this;
@@ -170,7 +172,7 @@ class State
      */
     void setWidgets( std::list<WidgetInfo> widgets )
     {
-        myWidgets = widgets ;
+        myWidgets = widgets;
     }
 
 
