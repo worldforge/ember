@@ -7,10 +7,13 @@ MEDIA:
 
 All media has been removed from Dime CVS.  You now need to download the
 following tarballs:
-dime-media-0.1.tar.bz2      : For common media (sounds, fonts, music,
-                              common graphics, etc.)
-dime-media-ogre-0.1.tar.bz2 : For OGRE Engine-specific media
-dime-media-sdl-0.1.tar.bz2  : For SDL Engine-specific media
+dime-media-0.1.tar.bz2         : For common media (sounds, fonts, music,
+                                 common graphics, etc.)
+dime-media-sdl-0.1.tar.bz2     : For SDL Engine-specific media
+dime-media-ogre-0.1.tar.bz2    : For OGRE Engine-specific media which comes
+				 with OGRE release
+dime-media-ogre-wf-0.1.tar.bz2 : For OGRE Engine-specific media
+				 done by worldforge
 
 The media can be retrieved from ftp://<enter media FTP URL here>/<media file>[0] .
 To install the media, uncompress the above tarballs to /usr/share/games/dime .
@@ -24,4 +27,13 @@ that looks like the following (if you install all of the media):
 /usr/share/games/dime/media/sdl
 /usr/share/games/dime/media/sounds
 
-[0] Temporary storage is at: http://www.wsu.edu/~sandalle/wf/<filename>
+[0] Temporary storage is at: http://purple.worldforge.org/~aglanor/dime/media/<filename>
+
+Note that the file dime-media-ogre-<version> does not need to be downloaded, you already
+have it in the OGRE release. You can simply copy the media from
+<ogre_dir>/ogrenew/Samples/Media
+to
+<dime_dir>/media/ogre
+
+You still need to retrieve dime-media-ogre-wf-<version>, which is worldforge specific
+media for the OGRE engine which does not come with the OGRE release.
