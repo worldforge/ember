@@ -133,13 +133,9 @@ protected:
   void renderScreenMessages();
 
   bool animateConsole; // Flag determining whether console is moving
-  //bool showConsole; // flag to say whether console is visible/useable or not
   int consoleHeight; // the height of the console. determined by number of messages allowed
   std::list<std::string> console_messages; // Current console messages
   std::list<screenMessage> screen_messages; // Current screen messages
-  int panel_id; // The texture id of the console's panel texture
-  System *_system;
-  Render *_renderer;
 
   // Mapping of registered commands to assoicated object
   std::map<std::string, ConsoleObject*> _registered_commands;

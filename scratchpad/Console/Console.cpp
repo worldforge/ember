@@ -1,19 +1,32 @@
-// This file may be redistributed and modified only under the terms of
-// the GNU General Public License (See COPYING for details).
+/*
+    Copyright (C) 2002  Martin Pollard (Xmp), Simon Goodall
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 // Rewritten for Dime by Martin Pollard (Xmp)
 
 // Originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002 
 
-//#include "common/Utility.h" // Check for functions we need 
-#include "services/logging/LoggingService.h" // Converted
 
 #include "Console.h"
 #include "ConsoleObject.h"
-//#include "System.h" // What to replace with?
-//#include "Graphics.h" // Ditto
-//#include "Render.h" // Ditto
+#include "services/platform/RectangleRenderer.h"
+#include "services/font/FontRenderer.h"
+#include "services/logging/LoggingService.h"
 
 namespace dime {
 
@@ -23,17 +36,11 @@ Console::Console(System *system) :
   console_messages(std::list<std::string>()), // (TO STAY)
   screen_messages(std::list<screenMessage>()), // (TO STAY)
   _system(system),// Used to get access to getTime() and the renderer (TO GO)
-  _renderer(NULL)
 { }
 
 Console::~Console() {}
 
 bool Console::init() {
-  // Grab the render object. This is not available when console is created
-  // and cannot be passed into the constructor.
-  _renderer = _system->getGraphics()->getRender();
-  // Preload texture
-  panel_id = _renderer->requestTexture("ui", "panel");
   // Register console commands
   registerCommand(TOGGLE_CONSOLE, this);
   registerCommand(LIST_CONSOLE_COMMANDS, this);
@@ -91,28 +98,36 @@ void Console::draw(const std::string &command) {
 }
 
 void Console::renderConsoleMessages(const std::string &command) {
-  if (!_renderer) {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::CRITICAL) << "Console: Renderer object not created"<< ENDM;
-    return;
-  }
   std::list<std::string>::const_iterator I;
   int i;
-  //Render console panel
+
+  // Render console panel
   int consoleOffset = CONSOLE_HEIGHT - consoleHeight;
-  _renderer->stateChange("panel");
-  //Make panel slightly transparent
-  _renderer->setColour(0.0f, 0.0f, 1.0f, 0.85f);
-  _renderer->drawTextRect(0, 0, _renderer->getWindowWidth(), consoleHeight, panel_id);
-  _renderer->stateChange("font");
-  _renderer->setColour(1.0f, 1.0f, 0.0f, 1.0f);
-  //Render console messges
+  // Make panel slightly transparent
+  RectangleRenderer rrenderer(myRectangle,Color(0.0f,0.0f,1.0f,0.85f));
+  rrenderer.render(ddevice);
+
+  // TODO: sort out params for this constructor
+  FontRenderer frenderer();
+  frenderer->setColour(1.0f, 1.0f, 0.0f, 1.0f);
+
+  // Render console messages
+  // TODO: Change this to the real font height
+  int font_height = FONT_HEIGHT;
   for (I = console_messages.begin(), i = 0; I != console_messages.end(); I++, i++) {
     int j = console_messages.size() - i;
-    _renderer->print(CONSOLE_TEXT_OFFSET_X, CONSOLE_TEXT_OFFSET_Y + j * FONT_HEIGHT - consoleOffset, (char*)(*I).c_str(), 0);
+    frenderer.setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,
+				     myRectangle.getY()+CONSOLE_TEXT_OFFSET_Y + j * font_height - consoleOffset,
+				     myRectangle.getWidth(),font_height));
+    frenderer.setText(*I);
+    frenderer.renderText(ddevice);
   }
-  //Render current command string
+
+  // Render current command string
   std::string str = CONSOLE_PROMPT_STRING + command + CONSOLE_CURSOR_STRING;
-  _renderer->print(CONSOLE_TEXT_OFFSET_X, CONSOLE_TEXT_OFFSET_Y - consoleOffset, (char *)str.c_str(), 0);
+  frenderer.setRectangle(CONSOLE_TEXT_OFFSET_X, CONSOLE_TEXT_OFFSET_Y - consoleOffset,myRectangle.getWidth(),font_height);
+  frenderer.setText(str);
+  frenderer.renderText(ddevice);
 }
 
 void Console::renderScreenMessages() {
