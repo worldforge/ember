@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     /* Sets up OpenGL double buffering */
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   SDL_Surface *screen;
-  screen=SDL_SetVideoMode(640,480,32,SDL_HWSURFACE|SDL_OPENGL);
+  screen=SDL_SetVideoMode(640,480,32,SDL_HWSURFACE|SDL_OPENGL|SDL_GL_DOUBLEBUFFER);
 
   if ( screen == NULL )
   {
