@@ -1,0 +1,10 @@
+Dime Installation Instructions
+
+* dependencies *
+
+currently dime only depends on SDL:
+
+SDL: Simple DirectMedia Layer
+http://www.libsdl.org
+
+

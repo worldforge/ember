@@ -41,7 +41,7 @@ namespace dime
 		
 	void ServiceManager::listAll()
 	{
-		cout << "this should list them all" << endl;
+		cout << "listing all services" << endl;
 		for(Iter i = myServiceVector.begin(); i != myServiceVector.end(); i++)
 		{	
 			//HINT: Always use .data() for compatibility to MSVC

@@ -555,14 +555,14 @@ class LoggingService: public Service
 	LoggingService & operator<< (const int intToAdd)
 	{
 		char buffer[NUMBER_BUFFER_SIZE];
-		myMessage += itoa(intToAdd, (char*)buffer, 10);
+		myMessage += _itoa(intToAdd, (char*)buffer, 10);
 		return *this;
 	}
 
 	LoggingService & operator<< (const HexNumber & intHexToAdd)
 	{
 		char buffer[NUMBER_BUFFER_SIZE];
-		myMessage += itoa(intHexToAdd.myNumber, (char*)buffer, 16);
+		myMessage += _itoa(intHexToAdd.myNumber, (char*)buffer, 16);
 		return *this;
 	}
 

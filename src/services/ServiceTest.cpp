@@ -4,6 +4,7 @@
 #include "ServiceManager.h"
 #include "AbstractService.h"
 #include "test/TestService.h"
+//#include "LoggingService.h"
 
 #include <iostream.h>
 
@@ -35,6 +36,7 @@ int main()
 	myServiceManager.listAll();
 	cout << "***END OF TESTING SERVICE MANAGER***" << endl;
 	cout << "Dime Service Test ends" << endl;
+	//dime::services::LoggingService ls;
    
 	return 0;
    
