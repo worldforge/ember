@@ -78,8 +78,17 @@ namespace dime {
          */
         Widget* myParent;
 
+	/**
+         * Children of this Widget
+         */
         std::vector<Widget *> myChildren;
     
+	/**
+	 * Is widget visible? If a widget is not visible then it's children are not visible also
+	 * (Except for the root widget who isn't called a by the draw() function)
+	 */
+	bool myVisible;
+
         //======================================================================
         // Private Variables
         //======================================================================
@@ -117,7 +126,7 @@ namespace dime {
         /**
          * Creates a new Widget using default values.
          */
-        Widget(): myParent(NULL)
+        Widget(): myParent(NULL), myVisible(true)
         {
 
         }
@@ -125,7 +134,8 @@ namespace dime {
         /**
          * Creates a new Widget using rect.
          */
-        Widget(const Rectangle& rect): myRectangle(rect), myParent(NULL)
+        Widget(const Rectangle& rect): myRectangle(rect), myParent(NULL),
+	  myVisible(true)
         {
 
         }
@@ -244,6 +254,14 @@ namespace dime {
             return myPrefDimension;
         }
 
+	/**
+         * Returns whether or not this Widget is visible
+         */
+	virtual bool getVisible () const
+	  {
+	    return myVisible;
+	  }
+
         //----------------------------------------------------------------------
         // Setters
 
@@ -283,7 +301,15 @@ namespace dime {
         {
             myPrefDimension = dimension;
         }
-	
+
+	/**
+         * Sets whether or not a widget is visible
+         */
+	virtual void setVisible(bool visible)
+	  {
+	    myVisible = visible;
+	  }
+
         //----------------------------------------------------------------------
         // Other public methods
     
@@ -366,7 +392,7 @@ namespace dime {
          * Override the event methods in derived classes when neccesary.
          */
         
-		virtual bool keyPress( KeyPressEvent *event)
+	virtual bool keyPress( KeyPressEvent *event)
         {
 			return false;
         }

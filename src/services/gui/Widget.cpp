@@ -31,6 +31,7 @@ dime::Widget &dime::Widget::operator= ( const dime::Widget &source )
     myMaxDimension = source.myMaxDimension;
     myMinDimension = source.myMinDimension;
     myPrefDimension = source.myPrefDimension;
+    myVisible = source.myVisible;
     //Return this object with new value
     return *this;
 }
@@ -76,9 +77,13 @@ int dime::Widget::draw(DrawDevice *target)
 	std::vector<Widget*>::iterator end = myChildren.end();
 	for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
 	{
-		retval = (*i)->draw(target);
-		if (retval != 0) return retval;
+		if( (*i)->myVisible == true )
+		  {
+		    retval = (*i)->draw(target);
+		    if (retval != 0) return retval;
+		  }
 	}
+
 	return 0;
 }
 
