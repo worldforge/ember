@@ -24,6 +24,7 @@
 // Included custom library headers
 
 // Included system headers
+#include <string>
 
 namespace dime {
 
@@ -46,7 +47,7 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see OtherSubsystem::AnOtherRelatedClass
+ * @see dime::Style
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */

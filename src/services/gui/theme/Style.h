@@ -16,21 +16,24 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef ICONSTYLE_H
-#define ICONSTYLE_H
+#ifndef STYLE_H
+#define STYLE_H
 
 // Included headers from the current project
 #include "services/platform/Color.h"
-#include "services/font/Font.h
+#include "TextStyle.h"
+#include "IconStyle.h"
+#include "BackgroundStyle.h"
 
 // Included custom library headers
 
 // Included system headers
+#include <string>
 
 namespace dime {
 
 /**
- * Container class for Theme's IconStyle's.
+ * Container Class for Theme's generic Styles.
  *
  * More detailed description of the class, it's purpose, what it does,
  * how to use it and so on.
@@ -48,12 +51,14 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see dime::Theme
+ * @see dime::TextStyle
+ * @see dime::IconStyle
+ * @see dime::BackgroundStyle
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class IconStyle
+class Style
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -78,13 +83,11 @@ class IconStyle
     //======================================================================/
     private:
 
-        int myXOffset;
-        int myYOffset;
-        Color myTextColour;
-        Font myFont;
-        unsigned int myFontSize;
-        bool myBold;
-        bool myItalic;
+        std::string myParentStyle;
+	Color myForegroundColor;
+	TextStyle myTextStyle;
+        IconStyle myIconStyle;
+        BackgroundStyle myBackgroundStyle;
 
     //======================================================================
     // Public Methods
@@ -95,16 +98,16 @@ class IconStyle
     // Constructors
 
     /**
-     * Creates a new IconStyle using default values.
+     * Creates a new Style using default values.
      */
-     IconStyle()
+     Style()
      {
      }
 
     /**
      * Copy constructor.
      */
-    IconStyle( const IconStyle &source )
+    Style( const Style &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -115,7 +118,7 @@ class IconStyle
     /**
      * Assignment operator.
      */
-    IconStyle &operator= ( const IconStyle &source )
+    Style &operator= ( const Style &source )
     {
         // Copy fields from source class to this class here.
 
@@ -128,9 +131,9 @@ class IconStyle
     // Destructor
 
     /**
-     * Deletes a IconStyle instance.
+     * Deletes a Style instance.
      */
-    virtual ~IconStyle ()
+    virtual ~Style ()
     {
         // TODO: Free any allocated resources here.
     }
@@ -142,59 +145,43 @@ class IconStyle
     // Example of a getter method:
 
     /**
-     * Gets the value of textColour of this IconStyle
+     * Gets the value of backgroundStyle of this Style
      */
-    Color getTextColor() const
+    BackgroundStyle getBackgroundStyle() const
     {
-        return myTextColor;
+        return myBackgroundStyle;
     }
 
     /**
-     * Gets the value of italic of this IconStyle
+     * Gets the value of textStyle of this Style
      */
-    bool getItalic() const
+    TextStyle getTextStyle() const
     {
-        return myItalic;
+        return myTextStyle;
     }
 
     /**
-     * Gets the value of font of this IconStyle
+     * Gets the value of parentStyle of this Style
      */
-    Font getFont() const
+    std::string getParentStyle() const
     {
-        return myFont;
+        return myParentStyle;
     }
 
     /**
-     * Gets the value of fontSize of this IconStyle
+     * Gets the value of iconStyle of this Style
      */
-    unsigned int getFontSize() const
+    IconStyle getIconStyle() const
     {
-        return myFontSize;
+        return myIconStyle;
     }
 
     /**
-     * Gets the value of yOffset of this IconStyle
+     * Gets the value of foregroundColor of this Style
      */
-    int getYOffset() const
+    Color getForegroundColor() const
     {
-        return myYOffset;
-    }
-
-    /**
-     * Gets the value of xOffset of this IconStyle
-     */
-    int getXOffset() const
-    {
-        return myXOffset;
-    }
-
-    /**
-     * Gets the value of bold of this IconStyle
-     */
-    bool getBold() const
-    {
-        return myBold;
+        return myForegroundColor;
     }
 
 
@@ -202,59 +189,43 @@ class IconStyle
     // Setters
 
     /**
-     * Sets the value of textColour of this IconStyle
+     * Sets the value of backgroundStyle of this Style
      */
-    void setTextColour( Color textColour )
+    void setBackgroundStyle( BackgroundStyle backgroundStyle )
     {
-        myTextColour = textColour;
+        myBackgroundStyle = backgroundStyle;
     }
 
     /**
-     * Sets the value of italic of this IconStyle
+     * Sets the value of textStyle of this Style
      */
-    void setItalic( bool italic )
+    void setTextStyle( TextStyle textStyle )
     {
-        myItalic = italic;
+        myTextStyle = textStyle;
     }
 
     /**
-     * Sets the value of font of this IconStyle
+     * Sets the value of parentStyle of this Style
      */
-    void setfont( Font font )
+    void setParentStyle( std::string parentStyle )
     {
-        myFont = font;
+        myParentStyle = parentStyle;
     }
 
     /**
-     * Sets the value of fontSize of this IconStyle
+     * Sets the value of iconStyle of this Style
      */
-    void setfontSize( unsigned int fontSize )
+    void setIconStyle( IconStyle iconStyle )
     {
-        myFontSize = fontSize;
+        myIconStyle = iconStyle;
     }
 
     /**
-     * Sets the value of yOffset of this IconStyle
+     * Sets the value of foregroundColor of this Style
      */
-    void setyOffset( int yOffset )
+    void setForegroundColor( Color foregroundColor )
     {
-        myYOffset = yOffset;
-    }
-
-    /**
-     * Sets the value of xOffset of this IconStyle
-     */
-    void setxOffset( int xOffset )
-    {
-        myXOffset = xOffset;
-    }
-
-    /**
-     * Sets the value of bold of this IconStyle
-     */
-    void setbold( bool bold )
-    {
-        myBold = bold;
+        myForegroundColor = foregroundColor;
     }
 
 
@@ -280,7 +251,7 @@ class IconStyle
     private:
 
 
-}; // End of IconStyle
+}; // End of Style
 
 } // End of dime namespace
 
