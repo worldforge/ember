@@ -267,7 +267,6 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
     ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
-	fprintf(stderr, "TRACE - LOGGED IN\n\n\n");
   }
 
   void ServerService::logoutComplete(bool clean) {
@@ -315,13 +314,20 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
         std::string userid = tokeniser.nextToken();
         std::string password = tokeniser.remainingTokens();
         myPlayer->login(userid,password);
-      }
+		std::string temp;
+		//temp << "Loggin in [" << userid <<"," << password << "]";
+	  ConsoleBackend::getMainConsole()->pushMessage(userid);
+	  } else {
+	  ConsoleBackend::getMainConsole()->pushMessage("not connected");
+	  }
     } else if (command==LOGOUT) {
+	ConsoleBackend::getMainConsole()->pushMessage("Loggin out...");
       if (myPlayer)
       {
         myPlayer->logout();
       }
     } else if (command==CREATECHAR) {
+		ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
       if (myPlayer)
       {
 		fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
@@ -334,7 +340,9 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		myAvatar = myPlayer->createCharacter(character);
 		myWorld = myAvatar->getWorld();
 		fprintf(stderr, "TRACE - DONE\n");
-      }
+      } else {
+		ConsoleBackend::getMainConsole()->pushMessage("Not logged in. Can't create char...");
+	  }
     } else if (command==TAKECHAR) {
       if (myPlayer)
       {

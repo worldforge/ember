@@ -30,6 +30,17 @@
 // Headers to stop compile problems from headers
 #include <stdlib.h>
 
+// ------------------------------
+// Include Eris header files
+// ------------------------------
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#endif
+
+
 //Dime headers
 #include "services/DimeServices.h"
 #include "services/logging/LoggingService.h"
@@ -160,7 +171,7 @@ void EmberText::initializeDimeServices(void)
 void EmberText::loop()
 {
 
-int n=10;
+int n=30;
 std::string command;
 while(n>=0)
 {
@@ -183,6 +194,9 @@ while(n>=0)
 		++index;
 	}
 	std::cout << "End queue." << std::endl;
+
+	// Eris polling
+	Eris::PollDefault::poll();
 
 	n--;
 }
