@@ -107,6 +107,7 @@ class GuiService : public Service, public SigC::Object
 	 */
 
 	void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+	
     //----------------------------------------------------------------------
     // Methods inherited from Service
     /**

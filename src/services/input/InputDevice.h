@@ -184,6 +184,7 @@ class InputDevice
 	int getAxisCount();
 	int getAxisPosition(int axis);
 	float getAxisScaledPosition(int axis);
+	int getAxis(int);
 
 	virtual KeyState getKeyState(SDLKey key);
 	
