@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Hans Häggström
+    Copyright (C) 2002  Lakin Wecker
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,18 +16,19 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef GUISERVICE_H
-#define GUISERVICE_H
+#ifndef PARAGUISERVICE_H
+#define PARAGUISERVICE_H
 
 // Included headers from the current project
 #include "framework/Service.h"
-#include "Application.h"
+#include "GuiService.h"
+#include "ParaGuiApplication.h"
 
 // Included custom library headers
 
 // Included system headers
 #include <string>
-
+#include <paragui/pgapplication.h>
 
 namespace dime {
 
@@ -39,9 +40,15 @@ namespace dime {
  *
  * @author Hans Häggström
  */
-class GuiService : public Service
+class ParaGuiService : public GuiService
 
 {
+    //======================================================================
+    // Private Variables
+    //======================================================================
+   private:
+    
+    
 
     //======================================================================
     // Public Methods
@@ -54,11 +61,11 @@ class GuiService : public Service
     /**
      * Creates a new GuiService using default values.
      */
-    GuiService() 
+    ParaGuiService()
     {
+        setName( "ParaGuiService" );
+        setDescription( "Provides a GUI widget wrapper for ParaGUI." );
     }
-    
-    
 
 
     //----------------------------------------------------------------------
@@ -67,23 +74,25 @@ class GuiService : public Service
     /**
      * Deletes a GuiService instance.
      */
-    virtual ~GuiService()
+    virtual ~ParaGuiService()
     {
+        // TODO: Free any allocated resources here.
     }
-    
 
 
     //----------------------------------------------------------------------
     // Getters
 
+
+
     //----------------------------------------------------------------------
     // Setters
+
+
 
     //----------------------------------------------------------------------
     // Other public methods
 
-    virtual Application *createApplication(int width, int height) = 0;
-    
 	
     //----------------------------------------------------------------------
     // Methods inherited from Service
@@ -101,22 +110,26 @@ class GuiService : public Service
     virtual int start()
     {
         setRunning( true );
-
+        
         return 0;
     }
-
-
-	/**
-	 * This method stops the service, and frees any used resources.
-	 *
-	 * @ param code code which represents the cause of the service halt
-	 */
-	virtual void stop( int code )
+    /**
+     * This method stops the service, and frees any used resources.
+     *
+     * @ param code code which represents the cause of the service halt
+     */
+    virtual void stop( int code )
     {
         setRunning( false );
     }
-
-
+    
+    /**
+     * This creates an application window based on the ParaGUI Application
+     *
+     * @ param width the desired width of the Application
+     * @ param height the desired height of the Application
+     */
+    virtual Application *createApplication(int width, int height);
 
     //======================================================================
     // Protected Methods
@@ -138,7 +151,7 @@ class GuiService : public Service
     /**
      * Copy constructor not provided.
      */
-    GuiService( const GuiService &source )
+    ParaGuiService( const GuiService &source )
     {
     }
 
@@ -146,7 +159,7 @@ class GuiService : public Service
     /**
      * Assignment operator not provided.
      */
-    GuiService &operator= ( const GuiService &source )
+    ParaGuiService &operator= ( const GuiService &source )
     {
         return *this;
     }
@@ -157,7 +170,6 @@ class GuiService : public Service
 } // End of application namespace
 
 #endif
-
 
 
 

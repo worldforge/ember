@@ -29,7 +29,7 @@
 // Included system headers
 
 
-namespace Dime {
+namespace dime {
 
 /**
  * The basic Widget for the Dime Gui
@@ -52,31 +52,34 @@ class Widget
     // Public Signals
     //======================================================================
     public:
+    class MouseClick { };
+    class MouseMotion { };
+    class KeyPress { };
     
     /**
      * Connect a slot here to Observe MouseClicks.
      */
-    Signal1<void, MouseClick> onMouseClick;
+    SigC::Signal1<void, MouseClick> onMouseClick;
     
     /**
      * Connect a slot here to observe MouseMotions
      */
-    Signal1<void, MouseMotion> onMouseMove;
+    SigC::Signal1<void, MouseMotion> onMouseMove;
     
     /**
      * Connect a slot here to observe when MouseMoves over this Widget
      */
-    Signal1<void, MouseMotion> onMouseEnter;
+    SigC::Signal1<void, MouseMotion> onMouseEnter;
     
     /**
      * Connect a slot here to observe when a Mouse leaves this Widget
      */
-    Signal1<void, MouseMotion> onMouseExit;
+    SigC::Signal1<void, MouseMotion> onMouseExit;
     
     /**
      * Connect a slot here to observe when a key is pressed and this Widget has focus.
      */
-    Signal1<void, KeyPress> onKeyPress;
+    SigC::Signal1<void, KeyPress> onKeyPress;
 
     
 
@@ -143,18 +146,10 @@ class Widget
         *this = source;
     }
 
-
-    /**
+     /**
      * Assignment operator.
      */
-    Widget &operator= ( const Widget &source )
-    {
-        // Copy fields from source class to this class here.
-
-        // Return this object with new value
-        return &this;
-    }
-
+    Widget &operator= ( const Widget &source );
 
     //----------------------------------------------------------------------
     // Destructor
@@ -265,7 +260,7 @@ class Widget
     /**
      * Sets the prefered Dimension for this Widget
      */
-    virtual setPrefDimension(Dimension dimension)
+    virtual void setPrefDimension(Dimension dimension)
     {
         myPrefDimension = dimension;
     }
