@@ -47,12 +47,29 @@ class Service
     //======================================================================
     public:
 
-    // TODO: Create an enum called 'Status' to represent current status:
-    // 0 = OK             - Service working normally
-    // 1 = NOTE           - Service working, but there is something that may need user attention.
-    // 2 = WARNING        - Service is working to some degree, but there was some problems encountered, or non-critical parts that are not working.
-    // 3 = ERROR          - Service is not working.  A resource it depends on is not present, or the service is unimplemented.
-    // 4 = CRITICAL_ERROR - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.
+    /**
+     * Contains the different error states that a service can be in.  <p>
+     * <ul>
+     * <li> OK          - Service working normally.  </li>
+     * <li> NOTE        - Service working, but there is something that may need user attention.  </li>
+     * <li> WARNING     - Service is working to some degree, but there was some problems encountered, or non-critical parts that are not working.  </li>
+     * <li> ERROR       - Service is not working.  A resource it depends on is not present, or the service is unimplemented.  </li>
+     * <li> CRITICAL    - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.  </li>
+     * </ul>
+     *
+     * (The difference between ERROR and CRITICAL is basically that Errors
+     * mean that the rest of the systm may still work fine, while critical means
+     * that the whole program is likely to be unstable.)
+     */
+	enum Status
+	{
+		OK       = 0,
+		NOTE     = 1,
+		WARNING  = 2,
+		ERROR    = 3,
+		CRITICAL = 4
+	};
+
 
     //======================================================================
     // Private Variables
