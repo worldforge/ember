@@ -93,10 +93,11 @@ private:
 	Ogre::ControllerManager* mControllerManager;
 	typedef Ogre::Controller<Ogre::Real> animationControllerType;
 	typedef std::map<Ogre::AnimationState*, animationControllerType*> animationStateMap;
+	typedef std::set<Ogre::AnimationState*> AnimationStateSet;
 	/*
 	 * A map of AnimationState's and their corresponding Controllers
 	 */
-	animationStateMap mAnimations;
+	AnimationStateSet mAnimations;
 
 
 	//static MotionManager* _instance;
@@ -105,6 +106,12 @@ private:
 	 * their positions.
 	 */
 	void doMotionUpdate(Ogre::Real timeSlice);
+
+	/* This method will iterate over all registered animationStates and update
+	 * those that are enabled
+	 */
+	void doAnimationUpdate(Ogre::Real timeSlice);
+
 
 	/* 
 	 * Update the motion for a single DimeEntity

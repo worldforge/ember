@@ -68,7 +68,10 @@ void DimeTerrainPageSource::generatePage(int x, int y)
 	Ogre::Material* material = mGenerator->getMaterialForSegment(x, -y - 1 );
 	assert(material);
 	TerrainPage* page = buildPage(heightData, material);
-	
+	page->tiles[0][0]->setCastShadows(false);
+	page->tiles[0][1]->setCastShadows(false);
+	page->tiles[1][0]->setCastShadows(false);
+	page->tiles[1][1]->setCastShadows(false);
 	
 	getDimeTerrainSceneManager()->attachPage(x, y, page, mGenerator->getMaxHeightForSegment(x,y), mGenerator->getMinHeightForSegment(x,y));
 

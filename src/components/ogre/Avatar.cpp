@@ -127,9 +127,9 @@ void Avatar::createAnimations() {
 	//let's set the current animation state to walking
 	
 
-	mAnimStateWalk = mAvatarModel->getAnimationState("walk");	
+	//mAnimStateWalk = mAvatarModel->getAnimationState("walk");	
 	
-	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
+	//MotionManager::getSingleton().addAnimation(mAnimStateWalk);
 	
 /*	Ogre::ControllerManager* controllerManager = &Ogre::ControllerManager::getSingleton();
 	mAvatarAnimationControllerFunction = new Ogre::AnimationControllerFunction(mAnimStateWalk->getLength());
@@ -194,7 +194,8 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 			sendToServer = true;		
 
 			//we'll also start the animation of the avatar's movement animation
-			mAnimStateWalk->setEnabled(true);
+			mAvatarModel->startAnimation("walk");
+//			mAnimStateWalk->setEnabled(true);
 			//fprintf(stderr, "TRACE - AVATAR START WALKING ANIMATION\n");
 		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
 			//we have rotated since last server update
@@ -212,7 +213,8 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 			//we have stopped; we must alert the server
 			sendToServer = true;
 			//plus stop the animation of the avatar
-			mAnimStateWalk->setEnabled(false);
+			mAvatarModel->stopAnimation("walk");
+			//mAnimStateWalk->setEnabled(false);
 		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
 			//either the speed or the direction has changed
 			sendToServer = true;
@@ -346,9 +348,10 @@ void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
 
 	//it got created as a DimeEntity, do some reshuffeling
 	//dimeEntity->markAsMainAvatar(mSceneMgr);
-	MotionManager::getSingleton().removeAnimation(mAnimStateWalk);
+	//MotionManager::getSingleton().removeAnimation(mAnimStateWalk);
 	//delete mAnimStateWalk;	
 	mSceneMgr->destroySceneNode(mAvatarNode->getName());
+	
 	
 	mAvatarController->createAvatarCameras(dimeEntity->getAvatarSceneNode());
 	mAvatarNode = dimeEntity->getSceneNode();

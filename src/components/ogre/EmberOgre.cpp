@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.47  2004-08-22 22:20:01  erik
+ *      Revision 1.48  2004-09-11 23:50:59  erik
+ *      2004-09-12 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre/:
+ *      *added preliminary ground cover through the class GroundCover, this requires some new meshes (small_plant and path_01)
+ *      *fixes and additions to the animation system
+ *
+ *      Revision 1.47  2004/08/22 22:20:01  erik
  *      2004-08-23 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre/:
@@ -406,6 +413,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DebugListener.h"
 #include "GUIManager.h"
 
+#include "GroundCover.h"
 
 #include "DimeTerrainSceneManager.h"
 
@@ -673,12 +681,40 @@ void DimeOgre::setupResources(void)
 
 void DimeOgre::createScene(void)
 {
+/*  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
 	//mSceneMgr->showBoundingBoxes(true);
-  mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
+ mSceneMgr->setAmbientLight(Ogre::ColourValue(0, 0, 0));
+  mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+  mSceneMgr->setShowDebugShadows(true);
+//  mSceneMgr->setShadowFarDistance(2000);
+ */
+ mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
   // Create a light
-  Ogre::Light* l = mSceneMgr->createLight("MainLight");
-  l->setPosition(WF2OGRE_VECTOR3(150,150,150));
+  Ogre::Light* l = mSceneMgr->createLight("SunLight");
+  l->setType(Ogre::Light::LT_DIRECTIONAL);
+  l->setPosition(WF2OGRE_VECTOR3(-1500,50,150));
+	Ogre::Vector3 dir;
+	dir = -l->getPosition();
+	dir.normalise();
+	l->setDirection(dir);
+  l->setDiffuseColour(1, 1, 0.7); //yellow
+  l->setSpecularColour(1, 1, 0.7); //yellow
+  l->setCastShadows(false);
+  l->setAttenuation(10000, 1, 0, 0);
+  
 
+
+/*  
+        Ogre::SceneNode* node;
+        node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+        Ogre::Entity* mAthene = mSceneMgr->createEntity( "athene", "athene.mesh" );
+        //mAnimState = pEnt->getAnimationState("Walk");
+        //mAnimState->setEnabled(true);
+        node->attachObject( mAthene );
+        node->translate(0, 10, 0);
+        node->scale(0.1,0.1,0.1);
+        node->yaw(90);
+*/
 	//set fog, do this before calling TerrainSceneManager::setWorldGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	Ogre::ColourValue fadeColour(1,1,1);
@@ -708,7 +744,7 @@ void DimeOgre::createScene(void)
         waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
         waterEntity->setMaterialName("Water"); 
         waterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
-		
+		waterEntity->setCastShadows(false);
 		
         Ogre::SceneNode *waterNode = 
             mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
@@ -761,6 +797,18 @@ void DimeOgre::createFrameListener(void)
 	
 	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
+/*  GroundCover* ground = new GroundCover(mSceneMgr, Ogre::Vector3(128,128,128), 2,2);
+  ground->add(Ogre::Vector3(0,0,1), "field.mesh", "pig.mesh");
+  ground->add(Ogre::Vector3(4,0,1), "field.mesh", "pig.mesh");
+  ground->add(Ogre::Vector3(4,0,1), "field.mesh", "pig.mesh");
+  ground->add(Ogre::Vector3(6,0,1), "field.mesh", "pig.mesh");
+  ground->add(Ogre::Vector3(8,0,1), "field.mesh", "pig.mesh");
+  ground->add(Ogre::Vector3(10,0,1), "field.mesh", "pig.mesh");
+  ground->add(Ogre::Vector3(12,0,1), "field.mesh", "pig.mesh");
+  
+  ground->compile();
+  ground->update(mAvatar->getAvatarCamera()->getCamera());
+*/
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }

@@ -20,6 +20,8 @@
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
+#include "MotionManager.h"
+
 namespace DimeOgre {
 
 Ogre::String Model::msMovableType = "Model";
@@ -31,15 +33,27 @@ Model::Model(Ogre::SceneManager* sceneManager, std::string name)
 , mScale(0)
 , mRotation(0)
 , mVisible(true)
+, mSkeletonInstance(0)
 {}
 Model::~Model()
-{}
+{
+	resetAnimations();
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+ 		SubModel* submodel = *I;
+		mSceneManager->removeEntity(submodel->getEntity());
+	}
+	delete mAnimationStateSet;
+}
 
 bool Model::addSubmodel(SubModel* submodel)
 {
 	if (mSubmodels.size()) {
 		SubModel* existingSubmodel = *(mSubmodels.begin());
 		submodel->getEntity()->shareSkeletonInstanceWith(existingSubmodel->getEntity());
+	} else {
+		mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 	}
 	mSubmodels.insert(submodel);
 	SubModelPartMap* submodelMap = submodel->getSubModelPartMap();
@@ -86,6 +100,99 @@ const unsigned short Model::getUseScaleOf() const
 {
 	return mUseScaleOf;
 }
+
+void Model::startAnimation(std::string nameOfAnimation)
+{
+
+	if (mRunningAnimations.find(nameOfAnimation) == mRunningAnimations.end()) 
+	{
+		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+		if (partmap_iter != mAnimationPartMap.end()) {
+			std::cout << "Starting animation: " << nameOfAnimation << "\n";
+			mRunningAnimations.insert(nameOfAnimation);
+			std::multiset< AnimationPart* >* part = partmap_iter->second;
+			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+			for (; I != I_end; ++I) {
+				std::cout << "Starting subanimation: " << (*I)->name << "\n";
+				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+				MotionManager::getSingleton().addAnimation(&J->second);
+			}
+		}
+	} if (mPausedAnimations.find(nameOfAnimation) == mPausedAnimations.end()) {
+		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+		if (partmap_iter != mAnimationPartMap.end()) {
+			mPausedAnimations.erase(nameOfAnimation);
+			std::multiset< AnimationPart* >* part = partmap_iter->second;
+			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+			for (; I != I_end; ++I) {
+				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+				MotionManager::getSingleton().unpauseAnimation(&J->second);
+			}
+		}
+	}
+	
+	//TODO check in pausedanimation to see if the anim is paused
+	
+}
+void Model::pauseAnimation(std::string nameOfAnimation)
+{
+	if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
+	{
+		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+		if (partmap_iter != mAnimationPartMap.end()) {
+			mPausedAnimations.insert(nameOfAnimation);
+			std::multiset< AnimationPart* >* part = partmap_iter->second;
+			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+			for (; I != I_end; ++I) {
+				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+				MotionManager::getSingleton().pauseAnimation(&J->second);
+			}
+		}
+	}	
+}
+
+void Model::stopAnimation(std::string nameOfAnimation)
+{
+	if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
+	{
+		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+		if (partmap_iter != mAnimationPartMap.end()) {
+			mRunningAnimations.erase(nameOfAnimation);
+			std::multiset< AnimationPart* >* part = partmap_iter->second;
+			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+			for (; I != I_end; ++I) {
+				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+				MotionManager::getSingleton().removeAnimation(&J->second);
+			}
+		}
+	}	
+	
+}
+
+void Model::resetAnimations()
+{
+	std::set< std::string >::const_iterator iter_running = mRunningAnimations.begin();
+	std::set< std::string >::const_iterator iter_running_end = mRunningAnimations.begin();
+	
+	for (; iter_running != iter_running_end; ++iter_running) {
+		std::multiset< AnimationPart* >* part = mAnimationPartMap[*iter_running];
+		std::multiset< AnimationPart* >::const_iterator I = part->begin();
+		std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+		for (; I != I_end; ++I) {
+			Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+			MotionManager::getSingleton().removeAnimation(&J->second);
+		}
+	}	
+	
+	mRunningAnimations.clear();	
+	mPausedAnimations.clear();	
+
+}
+
 
 
 bool Model::createFromXML(std::string path)
@@ -148,11 +255,6 @@ bool Model::createFromXML(std::string path)
 		}
 	}
 	 
-	xercesc::XMLString::transcode("animations", tempStr, 99);
-	xercesc::DOMNodeList* animationNodes = doc->getElementsByTagName(tempStr);
-	if (animationNodes->getLength()) {
-		readAnimations(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(0)));
-	}	 
 
 	xercesc::XMLString::transcode("submodel", tempStr, 99);
 	xercesc::DOMNodeList* submodelsNodes = doc->getElementsByTagName(tempStr);
@@ -202,6 +304,14 @@ bool Model::createFromXML(std::string path)
 		submodel->createSubModelParts(submodelPartMapping);
 		addSubmodel(submodel);
 	}
+
+	xercesc::XMLString::transcode("animations", tempStr, 99);
+	xercesc::DOMNodeList* animationNodes = doc->getElementsByTagName(tempStr);
+	if (animationNodes->getLength()) {
+		readAnimations(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(0)));
+	}	 
+
+
 	std::vector<std::string>::const_iterator I = showPartVector.begin();
 	std::vector<std::string>::const_iterator I_end = showPartVector.end();
 	for (;I != I_end; I++) {
@@ -234,15 +344,21 @@ void Model::readAnimations(xercesc::DOMElement* animationsNode)
 			Ogre::Real weight = atof(xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationPartNodes->item(j))->getAttribute(tempStr)));
 			animPart->name = name;
 			animPart->weight = weight;
+			//also set the weight of the animations
+			Ogre::AnimationStateSet::iterator I = mAnimationStateSet->find(name);
+			I->second.setWeight(weight);
 			animationPartSet->insert(animPart);
 		}
 		xercesc::XMLString::transcode("name", tempStr, 99);
 		std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getAttribute(tempStr));
+		std::cout << "Added animation: " << name << "\n";
 		mAnimationPartMap.insert(AnimationPartMap::value_type(name, animationPartSet));
 
 	}
 	
 }
+
+
 
 
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)

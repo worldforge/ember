@@ -70,13 +70,37 @@ public:
 
 	bool addSubmodel(SubModel* submodel);
  	bool removeSubmodel(SubModel* submodel);
+ 	
+ 	void startAnimation(std::string nameOfAnimation);
+ 	void pauseAnimation(std::string nameOfAnimation);
+ 	void stopAnimation(std::string nameOfAnimation);
+ 	void resetAnimations();
 
+	/*
+	 * hides and shows a certain part of the model
+	 */
 	void showPart(std::string partName);
 	void hidePart(std::string partName);
 	void setVisible(bool visible);
 	
+	/*
+	 * if defined in the modeldef, returns a scaler by which the node containing 
+	 * the model can be scaled
+	 */
 	const Ogre::Real getScale() const;
+
+	/*
+	 * if defined in the modeldef, returns an amount of degrees by which the node containing 
+	 * the model can be rotated
+	 */
 	const Ogre::Real getRotation() const;
+	
+	/*
+	 * if defined in the modeldef, returns an axis by which the model can be scaled
+	 * I.e. when dealing with something such as a fir tree, you want to use the
+	 * height of the tree to determine how much it should be scaled, since the 
+	 * bounding box supplied by eris doesn't take the branches into account
+	 */
 	const unsigned short getUseScaleOf() const;
 	
 	bool createFromXML(std::string path);
@@ -86,6 +110,8 @@ public:
 	Ogre::SkeletonInstance * getSkeleton ();
 	void attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	Ogre::MovableObject * detachObjectFromBone (const Ogre::String &movableName);
+	
+	inline bool isAnimated() { return mAnimationPartMap.size(); }
 
 
         /** Overridden - see MovableObject.
@@ -131,6 +157,10 @@ public:
         /** Overridden from MovableObject */
         virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);	
 protected:
+
+	std::set< std::string > mRunningAnimations;
+	std::set< std::string > mPausedAnimations;
+
 	static Ogre::String msMovableType;
 	
 	/*
@@ -157,6 +187,8 @@ protected:
 	unsigned short mUseScaleOf;
 	
 	bool mVisible;
+	
+	Ogre::AnimationStateSet* mAnimationStateSet;
 	
 };
 

@@ -50,6 +50,8 @@
 
 #include <Atlas/Objects/Entity/GameEntity.h>
 */
+class GroundCover;
+
 namespace DimeOgre {
 	
 class TerrainShader;
@@ -100,6 +102,8 @@ public:
 	bool isValidTerrainAt(int x, int y);
 
 
+	GroundCover* mGround;
+	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
 
 protected:
 

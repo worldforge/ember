@@ -50,10 +50,11 @@ mScaleNode(nodeWithModel)
 
 DimePhysicalEntity::~DimePhysicalEntity()
 {
-	if (mAnimationState_Walk) {
+/*
+  	if (mAnimationState_Walk) {
 		MotionManager::getSingleton().removeAnimation(mAnimationState_Walk);
 	}
-/*	mSceneManager->removeEntity(mOgreEntity);
+	mSceneManager->removeEntity(mOgreEntity);
 	mSceneManager->removeEntity(mOgreEntity);
 	
 	delete mOgreEntity;
@@ -64,7 +65,12 @@ DimePhysicalEntity::~DimePhysicalEntity()
 
 void DimePhysicalEntity::loadAnimationsFromModel()
 {
-	Ogre::AnimationStateSet* states = mModel->getAllAnimationStates();
+	if (mModel->isAnimated()) {
+		//start with the idle animation
+		mModel->startAnimation("idle");
+	}
+/*
+ * 	Ogre::AnimationStateSet* states = mModel->getAllAnimationStates();
 	if (states->size()) {
 		Ogre::AnimationStateSet::iterator itr_end = states->end();
 		Ogre::AnimationStateSet::iterator itr;
@@ -78,6 +84,7 @@ void DimePhysicalEntity::loadAnimationsFromModel()
 			MotionManager::getSingleton().addAnimation(mAnimationState_Walk);
 		}
 	}	
+	*/
 }
 
 Model* DimePhysicalEntity::getModel() const
@@ -152,16 +159,18 @@ void DimePhysicalEntity::handleMove()
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	MotionManager* motionManager = &MotionManager::getSingleton();
 	if (getVelocity() != WFMath::Vector<3>().zero()) {
+		//the entity is moving
 		motionManager->addEntity(this);
-		if (mAnimationState_Walk) {
-			mAnimationState_Walk->setEnabled(true);
-//			motionManager->addAnimation(mAnimationState_Walk);
+		if (mModel->isAnimated()) {
+			mModel->stopAnimation("idle");
+			mModel->startAnimation("walk");
 		}
 	} else {
+		//the entity has stopped moving
 		motionManager->removeEntity(this);
-		if (mAnimationState_Walk) {
-			mAnimationState_Walk->setEnabled(false);
-//			motionManager->removeAnimation(mAnimationState_Walk);
+		if (mModel->isAnimated()) {
+			mModel->stopAnimation("walk");
+			mModel->startAnimation("idle");
 		}
 	}
 	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
