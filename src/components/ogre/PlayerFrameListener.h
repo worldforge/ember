@@ -6,7 +6,10 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.6  2003-05-07 23:28:43  aglanor
+ *      Revision 1.7  2003-07-03 20:12:25  aglanor
+ *      added sample animation to demo mesh
+ *
+ *      Revision 1.6  2003/05/07 23:28:43  aglanor
  *      Added a little more variety to the media. Now there's different media
  *      for settlers (malebuilder), pig (skeleton), merchant (robot) and
  *      everything else.
@@ -260,6 +263,9 @@ public:
 		// Eris polling
 		Eris::PollDefault::poll();
 
+		// update animations
+		mDimeOgre->updateAnimations(evt.timeSinceLastFrame);
+
 		// Pressing 1 queries the metaserver
 		if(mInputDevice->isKeyDown(Ogre::KC_1)) {
 			// TODO: use META_REFRESH here, passing a string like this is an ugly hack (Aglanor)
@@ -269,7 +275,7 @@ public:
 		// Pressing 2 connects to red.worldforge.org
 		if(mInputDevice->isKeyDown(Ogre::KC_2) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","65.100.132.92");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","65.200.24.220");
 			mTimeUntilNextToggle = 1;
 		}
 
@@ -283,7 +289,7 @@ public:
 		// Pressing 4 takes the character ''
 		if(mInputDevice->isKeyDown(Ogre::KC_4) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","Bob_214");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","bob_122");
 			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
 			mDimeOgre->connectWorldSignals();	// connect Eris signals
 			mTimeUntilNextToggle = 1;

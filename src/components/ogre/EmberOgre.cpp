@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.14  2003-06-23 01:20:34  aglanor
+ *      Revision 1.15  2003-07-03 20:12:25  aglanor
+ *      added sample animation to demo mesh
+ *
+ *      Revision 1.14  2003/06/23 01:20:34  aglanor
  *      2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * Cal3DConverter: converts Cal3D materials to Ogre
  *              materials, and assigns material and texture mapping
@@ -276,7 +279,7 @@ void DimeOgre::createScene(void)
 	// ----------------------------------------
 
 	//create the entity
-	mOgreHead = mSceneMgr->createEntity("test", "pig.mesh");
+	mOgreHead = mSceneMgr->createEntity("test", "robot.mesh");
 
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
@@ -325,6 +328,7 @@ void DimeOgre::createScene(void)
 
 
 	// a hack from the OGRE GUI sample
+	/*
 	Ogre::Overlay* o = (Ogre::Overlay*)Ogre::OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
 	Ogre::ActionTarget* at =
 		static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
@@ -344,6 +348,7 @@ void DimeOgre::createScene(void)
 
 	Ogre::GuiContainer* pCursorGui = Ogre::OverlayManager::getSingleton().getCursorGui();
 	pCursorGui->setMaterialName("Cursor/default");
+	*/
 }
 
 void DimeOgre::createFrameListener(void)
@@ -460,12 +465,14 @@ void DimeOgre::entityCreate( Eris::Entity *e )
         if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
 		fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "malebuilder.mesh");
+		//ogreNode->setScale(1,1,1);
 		ogreNode->setScale(0.01,0.01,0.01);
 	}
 	else if(!strcmp(e->getType()->getName().c_str(),"merchant"))
 	{
 		fprintf(stderr, "TRACE - FOUND A MERCHANT - ROBOT MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
+		//ogreNode->setScale(1,1,1);
 		ogreNode->setScale(0.025,0.025,0.025);
 	}
 	else if(!strcmp(e->getType()->getName().c_str(),"pig"))
@@ -479,6 +486,7 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 		// TODO: razor should be a coin
 		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "razor.mesh");
+		//ogreNode->setScale(1,1,1);
 		ogreNode->setScale(0.001,0.001,0.001);
 	}
 
@@ -559,12 +567,14 @@ void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
 void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {
 	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR " << e->getID() << std::endl;
+	/*
 	Ogre::Entity* o = mSceneMgr->getEntity(e->getID());
 	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
 	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
 	o = mSceneMgr->getEntity("Bob_214");
 	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
 	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
+	*/
 }
 
 void DimeOgre::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
@@ -590,6 +600,15 @@ void DimeOgre::removedMember(Eris::Entity *e)
 
 void DimeOgre::runCommand(const std::string &command, const std::string &args)
 {
+}
+
+void DimeOgre::updateAnimations(Ogre::Real time) {
+
+	Ogre::AnimationState* animState;
+	animState=mOgreHead->getAnimationState("Walk");
+	animState->setEnabled(true);
+	animState->addTime(time);
+
 }
 
 

@@ -24,7 +24,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.8  2003-06-23 01:20:34  aglanor
+ *      Revision 1.9  2003-07-03 20:12:25  aglanor
+ *      added sample animation to demo mesh
+ *
+ *      Revision 1.8  2003/06/23 01:20:34  aglanor
  *      2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * Cal3DConverter: converts Cal3D materials to Ogre
  *              materials, and assigns material and texture mapping
@@ -100,6 +103,7 @@ Description: Base class for all the OGRE examples
 #include "OgreFrameListener.h"
 
 // Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
+/*
 #include "OgreOverlayManager.h"
 #include "OgreCursorGuiElement.h"
 #include "OgreBorderButtonGuiElement.h"
@@ -107,6 +111,7 @@ Description: Base class for all the OGRE examples
 #include "OgreListChanger.h"
 #include "OgreEventProcessor.h"
 #include "OgreStringResource.h"
+*/
 
 // ------------------------------
 // Include Eris header files
@@ -137,7 +142,7 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre: virtual public SigC::Object, public Ogre::ActionListener, public Ogre::MouseListener
+class DimeOgre: virtual public SigC::Object //, public Ogre::ActionListener, public Ogre::MouseListener
 {
 public:
     /// Standard constructor
@@ -167,10 +172,9 @@ public:
 	// Initialize all dime services needed for this application
 	void initializeDimeServices(void);
 
-	       /* Eris::World entity signals (see eris\src\world.h for more info) */
-		   
-		// TODO: comment this
-		void connectWorldSignals(void);
+	/* Eris::World entity signals (see eris\src\world.h for more info) */
+	// TODO: comment this
+	void connectWorldSignals(void);
 
         /**
          * Called when an entity is created. This connects entity-specific
@@ -278,6 +282,10 @@ public:
 	 */
 	void runCommand(const std::string &command, const std::string &args);
 
+	/**
+	 * Update the scene animations for all entities
+	 */
+	void updateAnimations(Ogre::Real time);
 
 	// TODO: these are for tests. Remove them later
 	Ogre::Entity* mOgreHead;
@@ -386,11 +394,13 @@ protected:
         }
     }
 
+        /*
 	void mouseClicked(Ogre::MouseEvent* e) {}
 	void mouseEntered(Ogre::MouseEvent* e) {}
 	void mouseExited(Ogre::MouseEvent* e) {}
 	void mousePressed(Ogre::MouseEvent* e) {}
 	void mouseReleased(Ogre::MouseEvent* e) {}
+
 
 	void actionPerformed(Ogre::ActionEvent* e)
 	{
@@ -401,7 +411,7 @@ protected:
         if (action == "SS/Setup/HostScreen/Exit")
             Ogre::Root::getSingleton().getRenderSystem()->shutdown();
 	}
-
+	*/
 
 
 
