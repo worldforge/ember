@@ -18,7 +18,17 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "SoundService.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+
+#include "framework/Service.h"
+#include "framework/ConsoleObject.h"
+
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
@@ -29,7 +39,7 @@
 */
 
 
-
+#include "SoundService.h"
 
 
 namespace dime
@@ -327,7 +337,7 @@ namespace dime
 		}
 	}
 
-	ALboolean SoundService::LoadWAV(const char *fname,int buffer)
+	bool SoundService::LoadWAV(const char *fname,int buffer)
 	{
 
 #ifdef _WIN32 // Windows
@@ -345,12 +355,12 @@ namespace dime
 
 #endif
 
-	return AL_TRUE;
+	return true;
 
 	}
 
-	ALboolean SoundService::UnloadWAV(void)
-	{
+  bool SoundService::UnloadWAV(void)
+  {
 
 #ifdef _WIN32 //Windows
 
@@ -364,7 +374,7 @@ namespace dime
 
 #endif
 
-	return AL_TRUE;
+	return true;
 
 	}
 

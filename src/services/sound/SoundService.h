@@ -22,26 +22,11 @@
 #define NUM_WORLD_SOURCES 16
 #define NUM_WORLD_BUFFERS 16
 
-#include <framework/Service.h>
-#include <framework/ConsoleObject.h>	// so this object is able to listen to console commands
 
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
-
-/*
-#ifdef _WIN32  // include para Windows
-#include <al\al.h>
-#include <al\alut.h>
-#endif
-
-#ifdef _LINUX // include para Linux
-#include <AL/al.h>
-#include <AL/alut.h>
-#endif
-*/
-
-// #include <sigc++/object.h>
+class Service;
+//class ConsoleObject;
+//I only break my own rules for very good reasons
+#include "framework/ConsoleObject.h"
 
 namespace dime {
 
@@ -60,25 +45,26 @@ class SoundService: public Service, public ConsoleObject
     //======================================================================
     private:
 
-	ALCdevice *device;  // device for the Audio Layer Context
+  //ALCdevice *device;  // device for the Audio Layer Context
+  //this should be a void* if it is enabled again.  It is not currently used
 
 
 
 	/** System source - this source will play system sounds, like user input request or program error. Will always remain in the same relative position to the listener. */
-	static ALuint systemSource;
+	static unsigned int systemSource;
 	/** System buffer - buffer used to load system sounds files */
-	static ALuint systemBuffer;
+	static unsigned int systemBuffer;
 	/** Music source - this source will play background music. Will always remain in the same relative position to the listener. */
-	static ALuint musicSource;
+	static unsigned int musicSource;
 	/** Music buffer - buffer used to load background music files */
-	static ALuint musicBuffer;
+	static unsigned int musicBuffer;
 	/** World sources - array of sources to play world sounds. They will be placed in 3D space. This field may change depending on the data model */
-	ALuint worldSources[NUM_WORLD_SOURCES];
+	unsigned int worldSources[NUM_WORLD_SOURCES];
 	/** Wold buffers - array of buffers for loading world sounds */
-	ALuint worldBuffers[NUM_WORLD_BUFFERS];
+	unsigned int worldBuffers[NUM_WORLD_BUFFERS];
 
 
-	ALsizei size,freq,bits,format;
+	int size,freq,bits,format;
 	void *data;
 
 
@@ -106,9 +92,9 @@ class SoundService: public Service, public ConsoleObject
 
     void runCommand(const std::string &command, const std::string &args);
 
-	ALboolean LoadWAV(const char *fname,int buffer);
+	bool LoadWAV(const char *fname,int buffer);
 
-	ALboolean UnloadWAV(void);
+	bool UnloadWAV(void);
 
 	void TestPlatform(void);
 

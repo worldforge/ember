@@ -1,6 +1,10 @@
-2003-10-32 Lee Begg <llnz@paradise.net.nz>
+2003-10-25 Lee Begg <llnz@paradise.net.nz>
+	* src/services/sound/SoundService.(h|cpp): Made SoundService a bit
+	more generic. Removed most includes from header.
+
+2003-10-23 Lee Begg <llnz@paradise.net.nz>
 	* configure.ac: moved some of the tests around, made it a bit nicer
-	Now defines HAVE_LIBOPENAL when it finds openAL
+	Now defines HAVE_LIB* when it finds a library (not all checks do)
 	* src/services/DimeServices.(h|cpp): moved code the cpp, removed
 	includes from h.  Updated other files as necessary
 
