@@ -24,7 +24,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.11  2003-10-21 20:48:37  aglanor
+ *      Revision 1.12  2003-10-29 18:25:25  aglanor
+ *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/services/components/ogre/: DimeOgre.(h|cpp):
+ *              Added ConsoleObject inheritance, it runs the Quit command.
+ *
+ *      Revision 1.11  2003/10/21 20:48:37  aglanor
  *      Restored SkyBox
  *
  *      Revision 1.10  2003/09/28 15:16:06  aglanor
@@ -113,6 +118,7 @@ Description: Base class for all the OGRE examples
 #include <Ogre.h>
 #include <OgreConfigFile.h>
 #include "OgreFrameListener.h"
+#include <framework/ConsoleObject.h> //TODO: this will be included in a different class
 
 // Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
 /*
@@ -154,7 +160,8 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre: virtual public SigC::Object //, public Ogre::ActionListener, public Ogre::MouseListener
+class DimeOgre: virtual public SigC::Object, public dime::ConsoleObject //, public Ogre::ActionListener, public Ogre::MouseListener
+// TODO: the DimeOgre ConsoleObject will be included in a different class
 {
 public:
     /// Standard constructor
@@ -423,6 +430,15 @@ protected:
 	}
 	*/
 
+	// TODO: these should be private methods of OgreConsoleListener
+	void quit();
+
+	private:
+
+	// List of Ogre's console commands
+	static const char * const QUIT;
+	static const char * const ADDMEDIA;
+	static const char * const MOVEMEDIA;
 
 
 };

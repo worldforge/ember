@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.26  2003-10-25 21:07:40  aglanor
+ *      Revision 1.27  2003-10-29 18:25:25  aglanor
+ *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/services/components/ogre/: DimeOgre.(h|cpp):
+ *              Added ConsoleObject inheritance, it runs the Quit command.
+ *
+ *      Revision 1.26  2003/10/25 21:07:40  aglanor
  *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre/: Makefile.am,
  *              Console.(h|cpp), InputManager.(h|cpp), DimeOgre.cpp:
@@ -208,6 +213,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
+#include "framework/ConsoleBackend.h"
 
 
 // ------------------------------
@@ -271,6 +277,12 @@ http://www.gnu.org/copyleft/lesser.txt.
 // a lot easier. It automatically sets up all the main objects and allows you to
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
+
+
+	// List of Ogre's console commands
+	const char * const DimeOgre::QUIT = "quit";
+	const char * const DimeOgre::ADDMEDIA = "addmedia";
+	const char * const DimeOgre::MOVEMEDIA = "movemedia";
 
 
 
@@ -438,6 +450,9 @@ void DimeOgre::createFrameListener(void)
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 
+    dime::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
+    dime::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
+    dime::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
 }
 
 void DimeOgre::createCamera(void)
@@ -546,7 +561,7 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	// create the ogre entity
         if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
 		fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "malebuilder.mesh");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 		//ogreNode->setScale(1,1,1);
 		ogreNode->setScale(0.01,0.01,0.01);
 	}
@@ -560,7 +575,7 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	else if(!strcmp(e->getType()->getName().c_str(),"pig"))
 	{
 		fprintf(stderr, "TRACE - FOUND A PIG - PIG MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "pig.mesh");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 		ogreNode->setScale(0.5,0.5,0.5);
 	}
 	else
@@ -690,9 +705,17 @@ void DimeOgre::removedMember(Eris::Entity *e)
 
 void DimeOgre::runCommand(const std::string &command, const std::string &args)
 {
+	if(command == QUIT){
+		dime::ConsoleBackend::getMainConsole()->pushMessage("Bye");
+		quit();
+	} else {
+		dime::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
+	}
+
 }
 
-void DimeOgre::updateAnimations(Ogre::Real time) {
+void DimeOgre::updateAnimations(Ogre::Real time)
+{
 
 	Ogre::AnimationState* animState;
 	animState=mOgreHead->getAnimationState("Walk");
@@ -702,6 +725,17 @@ void DimeOgre::updateAnimations(Ogre::Real time) {
 }
 
 
+void DimeOgre::quit()
+{
+	mRoot->shutdown();
+}
+
+
+/*
+void DimeOgre::addMedia() {
+	//S_LOG_VERBOSE() << "ADDING MEDIA\n";
+}
+*/
 
 
 // ----------------------------------------------------------------------------

@@ -1,4 +1,8 @@
-2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/services/components/ogre/: DimeOgre.(h|cpp):
+	Added ConsoleObject inheritance, it runs the Quit command.
+
+2003-10-27 Miguel Guzman <aglanor [at] telefonica [dot] net>
         * src/services/components/ogre/: Console.cpp, InputManager.cpp:
 	Cleanup of traces. Added F11 to write the slash.
 	* AUTHORS: removed Razor123. To the extent of my knowledge
@@ -6,7 +10,7 @@
 	Razor123 is of course welcomed into the Dime team, and when he
 	contributes actual code he'll be restored as author.
 
-2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+2003-10-25 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/services/components/ogre/: Makefile.am,
 	Console.(h|cpp), InputManager.(h|cpp), DimeOgre.cpp:
 	Added InputManager and Console from Die (thanks to 
