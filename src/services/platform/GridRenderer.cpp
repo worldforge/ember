@@ -4,7 +4,7 @@
  * Constructor for a grid object
  */
 dime::GridRenderer::GridRenderer(const Rectangle &rect,
-	std::vector<RectangleRenderer*> &gridVector, int columns, int rows,
+	std::vector<Renderer*> &gridVector, int columns, int rows,
 	std::vector<int> &lines) : 
 	myGrid(gridVector),
 	myLines(lines),
@@ -72,7 +72,7 @@ void dime::GridRenderer::render(dime::DrawDevice *device)
                                         /*
                                           int nrOfColumns, int nrOfRows, float splitLineRelativePosition[2][2],
                                           int splitLineOffsetPosition[2][2],
-                                          dime::RectangleRenderer *rectangleGrid[3][3])
+                                          dime::Renderer *rectangleGrid[3][3])
                                         */
 {
     /*int colOffset, rowOffset;

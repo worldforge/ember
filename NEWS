@@ -1,3 +1,9 @@
+Xmp - 04/12/2002
+StateManager is well underway, Labels work, now aiming for panels and after
+that buttons.
+
+OGRE is being experimented with as a potential 3D engine.
+
 Xmp - 11/11/2002
 
 The statemanager work is now in progess.  The states will be specified in XML &

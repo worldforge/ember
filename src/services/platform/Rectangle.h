@@ -182,7 +182,7 @@ class Rectangle
 	/**
 	 * Returns the SDL_Rect representation of this Rectangle
 	 */
-	virtual SDL_Rect getSDL_Rect() const
+	virtual const SDL_Rect& getSDL_Rect() const
 	{
 		return mySDL_Rect;
 	}

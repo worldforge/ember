@@ -24,7 +24,7 @@
 
 #include "Console.h"
 #include "framework/ConsoleObject.h"
-#include "services/platform/RectangleRenderer.h"
+#include "services/platform/Renderer.h"
 #include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
 #include "services/logging/LoggingService.h"
@@ -41,7 +41,7 @@ Console::Console(const Rectangle& rect) :
 {
   // Precache our renderers
   // Make panel slightly transparent
-  myRectangleRenderer = new ColorRenderer(rect,Color(0.0f,0.0f,100.0f,8.5f));
+  myRenderer = new ColorRenderer(rect,Color(0.0f,0.0f,100.0f,8.5f));
   dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,FONT_HEIGHT);
   assert(font);
   myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(255.0f,255.0f,0,255.0f), rect);
@@ -92,7 +92,7 @@ void Console::renderConsoleMessages(DrawDevice *ddevice) {
 
   // Render console panel
   int consoleOffset = fullHeight - consoleHeight;
-  myRectangleRenderer->render(ddevice);
+  myRenderer->render(ddevice);
 
   // Render console messages
   int font_height = myFontRenderer->getFont()->getHeight();

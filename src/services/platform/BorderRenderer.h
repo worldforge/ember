@@ -20,9 +20,9 @@
 #define BORDERRENDERER_H
 
 // Included headers from the current project
-#include "services/platform/DrawDevice.h"
-#include "services/platform/Rectangle.h"
-#include "services/platform/RectangleRenderer.h"
+#include "DrawDevice.h"
+#include "Rectangle.h"
+#include "Renderer.h"
 
 // Included custom library headers
 
@@ -37,21 +37,21 @@ namespace dime {
 
     /**
      * This contains the BorderRenderer class.  This class creates a border around a given rectangular area
-	 * This border is composed of 8 RectangleRenderers created from a prototype.
+	 * This border is composed of 8 Renderers created from a prototype.
      *
      * When the instance needs to be drawn, the render() member method is called.
      *
      * Ex:
-     * dime::RectangleRenderer *myRectangleRenderer;
+     * dime::Renderer *myRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::BorderRenderer(myRect, 4, new dime::ColorRenderer(100, 100, 255));
-     * myRectangleRenderer->render(myScreen);
+     * myRenderer = new dime::BorderRenderer(myRect, 4, new dime::ColorRenderer(100, 100, 255));
+     * myRenderer->render(myScreen);
 	 *
      * 
   	 * @author Adam Gregory (Adamgreg)
      */
 
-	class BorderRenderer : public RectangleRenderer
+	class BorderRenderer : public Renderer
     
 	{
 	//======================================================================
@@ -78,11 +78,11 @@ namespace dime {
     private:
 	
 	/**
-	 * Vector of RectangleRenderers kept for lines (and corners) of the border.
+	 * Vector of Renderers kept for lines (and corners) of the border.
 	 * items of the vector from top left corner, clockwise.
 	 * e.g. the line constituting the bottom of the border is myLines[5].
 	 */
-	std::vector<RectangleRenderer*> myLines;
+	std::vector<Renderer*> myLines;
 
 	/**
 	 * Width of the border.
@@ -107,7 +107,7 @@ namespace dime {
 	/**
 	 * Creates a new BorderRenderer with the value provided
 	 */
-	BorderRenderer(const Rectangle &rect, unsigned int width, RectangleRenderer* prototype);
+	BorderRenderer(const Rectangle &rect, unsigned int width, Renderer* prototype);
 
 	//----------------------------------------------------------------------
 	// Destructor
@@ -138,12 +138,12 @@ namespace dime {
 	void render(DrawDevice *device);
 	
 	/**
-	 * Sets up the border's RectangleRenderers based on a prototype.
+	 * Sets up the border's Renderers based on a prototype.
 	 */
-	void setBorderContents(RectangleRenderer *prototype);
+	void setBorderContents(Renderer *prototype);
 	
 	/**
-	 * Sets the positions and sizes of the border's RectangleRenderers.
+	 * Sets the positions and sizes of the border's Renderers.
 	 */
 	void generateBorder();
 

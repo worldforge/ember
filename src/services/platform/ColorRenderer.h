@@ -20,10 +20,10 @@
 #define COLORRENDERER_H
 
 // Included headers from the current project
-#include "services/platform/Color.h"
-#include "services/platform/DrawDevice.h"
-#include "services/platform/Rectangle.h"
-#include "services/platform/RectangleRenderer.h"
+#include "Color.h"
+#include "DrawDevice.h"
+#include "Rectangle.h"
+#include "Renderer.h"
 
 // Included custom library headers
 
@@ -44,17 +44,17 @@ namespace dime {
      * When the instance needs to be drawn, the render() member method is called.
      *
      * Ex:
-     * dime::RectangleRenderer *myRectangleRenderer;
+     * dime::Renderer *myRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::ColorRenderer(&myRect, 100, 100, 255);
-     * myRectangleRenderer->render(myScreen);
+     * myRenderer = new dime::ColorRenderer(&myRect, 100, 100, 255);
+     * myRenderer->render(myScreen);
 	 *
      * 
      * @author Dean Dickison (Winand)
 	 * @author Adam Gregory (Adamgreg)
      */
 
-	class ColorRenderer : public RectangleRenderer
+	class ColorRenderer : public Renderer
     
 	{
 	//======================================================================
@@ -142,7 +142,7 @@ namespace dime {
 	void render(DrawDevice *device);
 
 	/**
-	 * Sets this RectangleRenderer using supplied values..
+	 * Sets this Renderer using supplied values..
 	 */
 	void setColor(Uint8 red, Uint8 green, Uint8 blue)
 	{
@@ -152,7 +152,7 @@ namespace dime {
 	}
         
 	/**
-	 * Sets this RectangleRenderer using supplied values..
+	 * Sets this Renderer using supplied values..
 	 */
 	void setColor(Color color)
 	{

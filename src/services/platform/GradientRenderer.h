@@ -20,10 +20,10 @@
 #define GRADIENTRENDERER_H
 
 // Included headers from the current project
-#include "services/platform/Color.h"
-#include "services/platform/DrawDevice.h"
-#include "services/platform/Rectangle.h"
-#include "services/platform/RectangleRenderer.h"
+#include "Color.h"
+#include "DrawDevice.h"
+#include "Rectangle.h"
+#include "Renderer.h"
 
 // Included custom library headers
 
@@ -44,7 +44,7 @@ namespace dime {
      * When the instance needs to be drawn, the render() member method is called.
      *
      * Ex:
-     * dime::RectangleRenderer *myRectangleRenderer;
+     * dime::Renderer *myRectangleRenderer;
      * Rectangle myRect(0,0,64,64);
      * myRectangleRenderer = new dime::GradientRenderer(&myRect, 100, 100, 255);
      * myRectangleRenderer->render(myScreen);
@@ -54,7 +54,7 @@ namespace dime {
 	 * @author Adam Gregory (Adamgreg)
      */
 
-	class GradientRenderer : public RectangleRenderer
+	class GradientRenderer : public Renderer
     
 	{
 	//======================================================================
@@ -147,12 +147,12 @@ namespace dime {
 	void render(DrawDevice *device);
 
 	/**
-	 * Sets this RectangleRenderer using supplied values..
+	 * Sets this Renderer using supplied values..
 	 */
 	void Gradient(Color topleft, Color topright, Color bottomleft, Color bottomright);
         
 	/**
-	 * Sets this RectangleRenderer using supplied values..
+	 * Sets this Renderer using supplied values..
 	 */
 	void Gradient(Color color1, Color color2, GradientStyle style);
 

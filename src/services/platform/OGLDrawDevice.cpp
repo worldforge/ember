@@ -164,7 +164,7 @@ void dime::OGLDrawDevice::update()
   SDL_GL_SwapBuffers( );
 }
 
-void dime::OGLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
+void dime::OGLDrawDevice::fillRect(const SDL_Rect *destRect, dime::Color color)
 {
     saveMatrices();
     glBegin(GL_QUADS);
@@ -179,7 +179,7 @@ void dime::OGLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
     restoreMatrices();
 }
 
-void dime::OGLDrawDevice::drawGradient(SDL_Rect *destRect, 
+void dime::OGLDrawDevice::drawGradient(const SDL_Rect *destRect, 
                                  dime::Color leftTop, 
                                  dime::Color rightTop, 
                                  dime::Color leftBottom, 

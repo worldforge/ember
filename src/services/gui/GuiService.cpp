@@ -19,7 +19,8 @@
 #include "GuiService.h"
 #include "widget/Label.h"
 #include "widget/Panel.h"
-#include <services/logging/LoggingService.h>
+#include "services/logging/LoggingService.h"
+#include "services/platform/RendererFactory.h"
 
 void dime::GuiService::refresh()
 {
@@ -100,9 +101,8 @@ long dime::GuiService::parsePanel(xmlNodePtr stateNode, xmlNodePtr widgetNode,
 
   // Ok missing bit here need to access the renderers from the state
   // and ask them for our background renderer
-  xmlGetProp(widgetNode, (const xmlChar *)"bg");
-
-  dime::Panel* newPanel = new dime::Panel(rect);
+  Renderer* renderer = RendererFactory::getInstance()->getRenderer((const char*)xmlGetProp(widgetNode, (const xmlChar *)"bg"),rect,stateNode,doc);
+  dime::Panel* newPanel = new dime::Panel(rect,renderer);
 
   myRootWidget->addWidget(newPanel);
 

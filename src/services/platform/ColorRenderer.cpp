@@ -1,18 +1,18 @@
 #include "ColorRenderer.h"
 
 /**
- * Constructor for a flat solid color RectangleRenderer.
+ * Constructor for a flat solid color Renderer.
  */
 dime::ColorRenderer::ColorRenderer(const Rectangle &rect, Uint8 red,
-	Uint8 green, Uint8 blue) : RectangleRenderer(rect), myColor(Color(red, green, blue))
+	Uint8 green, Uint8 blue) : Renderer(rect), myColor(Color(red, green, blue))
 {
 }
 
 /**
- * Constructor for a flat solid color RectangleRenderer.
+ * Constructor for a flat solid color Renderer.
  */
 dime::ColorRenderer::ColorRenderer(const Rectangle &rect, 
-	const dime::Color &color) : RectangleRenderer(rect), myColor(color)
+	const dime::Color &color) : Renderer(rect), myColor(color)
 {
 }
 
@@ -22,8 +22,6 @@ dime::ColorRenderer::ColorRenderer(const Rectangle &rect,
 void dime::ColorRenderer::render(dime::DrawDevice *device)
 {
     device->fillRect(&myRect.getSDL_Rect(), myColor);
-	
-	//TODO: What should be returned here?
 }
 
 dime::ColorRenderer::~ColorRenderer()

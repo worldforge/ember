@@ -101,7 +101,7 @@ namespace dime {
         /*
          * Fill a rectangle with Color.  The rectangle is defined by destRect
          */
-        virtual void fillRect(SDL_Rect *destRect, Color color);
+        virtual void fillRect(const SDL_Rect *destRect, Color color);
 
         /*
          * blits the src surface to our surface.  Src rect defines which portion of the src to blit.
@@ -115,7 +115,7 @@ namespace dime {
         /*
          * creates a gradient rect on our surface size and position equal to destRect
          */
-        virtual void drawGradient(SDL_Rect *destRect, 
+        virtual void drawGradient(const SDL_Rect *destRect, 
                                   Color leftTop, 
                                   Color rightTop, 
                                   Color leftBottom, 

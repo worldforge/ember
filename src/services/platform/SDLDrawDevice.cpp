@@ -133,16 +133,19 @@ void dime::SDLDrawDevice::init()
   // TODO: Placeholder for now import stuff from application.cpp
 }
 
-void dime::SDLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
+void dime::SDLDrawDevice::fillRect(const SDL_Rect *destRect, dime::Color color)
 {
     Uint32 myColor = SDL_MapRGB(mySurface->format,
                                 (unsigned char)color.getR(),
                                 (unsigned char)color.getG(), 
                                 (unsigned char)color.getB());
-    SDL_FillRect(mySurface, destRect, myColor);
+
+    // The const cast here is to get round SDL API sillyness
+    // They aren't modifying our rect so it should accept const but it doesn't
+    SDL_FillRect(mySurface, const_cast<SDL_Rect*>(destRect), myColor);
 }
 
-void dime::SDLDrawDevice::drawGradient(SDL_Rect *destRect, 
+void dime::SDLDrawDevice::drawGradient(const SDL_Rect *destRect, 
                                  dime::Color leftTop, 
                                  dime::Color rightTop, 
                                  dime::Color leftBottom, 

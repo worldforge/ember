@@ -27,7 +27,7 @@
 // Included headers from the current project
 #include "framework/ConsoleBackend.h"
 #include "services/gui/widget/Widget.h"
-#include "services/platform/RectangleRenderer.h"
+#include "services/platform/Renderer.h"
 #include "services/font/FontRenderer.h"
 
 // Included custom library headers
@@ -128,9 +128,9 @@ protected:
   FontRenderer* myFontRenderer;
 
   /**
-   * Cached RectangleRenderer
+   * Cached Renderer
    */
-  RectangleRenderer* myRectangleRenderer;
+  Renderer* myRenderer;
 
   /**
    * Current command string

@@ -3,11 +3,11 @@
 inline int dimeroundf(float x) {return x + (x > 0) ? 0.5 : -0.5;}
 
 /**
- * Constructor for a bitmap filled RectangleRenderer
+ * Constructor for a bitmap filled Renderer
  */
 dime::BitmapRenderer::BitmapRenderer(const dime::Rectangle &rect, 
 	const std::string filename, dime::BitmapRenderer::BitmapStyle style) : 
-	RectangleRenderer(rect), myImageName(filename), myStyle(style)
+	Renderer(rect), myImageName(filename), myStyle(style)
 {
     SDL_Rect src, dest;
     src.x = 0;

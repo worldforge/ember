@@ -21,7 +21,7 @@
 
 // Included headers from the current project
 #include "Widget.h"
-#include <services/platform/RectangleRenderer.h>
+#include <services/platform/Renderer.h>
 
 // Included custom library headers
 
@@ -102,9 +102,9 @@ class Panel : public Widget
     private:
 	
     /**
-     * RectangleRenderer to display background of Panel.
+     * Renderer to display background of Panel.
      */
-    RectangleRenderer *myBackground;
+    Renderer *myBackground;
 
     //======================================================================
     // Public Methods
@@ -131,7 +131,7 @@ class Panel : public Widget
     /**
     * Creates a new Panel using rect and renderer
     */
-    Panel(Rectangle rect, RectangleRenderer* rr) : Widget(rect),
+    Panel(Rectangle rect, Renderer* rr) : Widget(rect),
       myBackground(rr)
     {
     }
@@ -177,10 +177,10 @@ class Panel : public Widget
     //----------------------------------------------------------------------
     // Setters
 
-	/**
-    * Sets the standard background RectangleRenderer of this Widget
+    /**
+    * Sets the standard background Renderer of this Widget
     */	
-	virtual void setBackground(RectangleRenderer *background)
+	virtual void setBackground(Renderer *background)
 	{
 		myBackground = background;
 	}
@@ -188,15 +188,15 @@ class Panel : public Widget
     //----------------------------------------------------------------------
     // Other public methods
 
-	/**
-	 * Draws the widget, and/or its children.
-	 */
+    /**
+     * Draws the widget, and/or its children.
+     */
     virtual int draw(DrawDevice *target);
 
-	/**
-	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
-	 */
-	virtual bool checkMouseEvent(std::vector<int> coords);
+    /**
+     * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
+     */
+    virtual bool checkMouseEvent(std::vector<int> coords);
 
     //======================================================================
     // Protected Methods

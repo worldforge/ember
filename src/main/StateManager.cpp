@@ -155,15 +155,15 @@ bool StateManager::setState( const std::string& newState )
   return false;
 }
 
-void StateManager::parseStateLayout(xmlNodePtr widgetNode)
+void StateManager::parseStateLayout(xmlNodePtr stateNode)
 {
   dime::GuiService* gs = dime::DimeServices::getInstance()->getGuiService();
   // Paranoid code
-  if ((xmlStrcmp(widgetNode->name, (const xmlChar *)"stateinfo"))){
+  if ((xmlStrcmp(stateNode->name, (const xmlChar *)"stateinfo"))){
     // Perhaps throw exception here
     return;
   }
-  xmlNodePtr cur = widgetNode->xmlChildrenNode;
+  xmlNodePtr cur = stateNode->xmlChildrenNode;
 
   // Search for Layout within StateInfo
   while (cur != NULL) {
@@ -173,7 +173,7 @@ void StateManager::parseStateLayout(xmlNodePtr widgetNode)
     if (!xmlStrcmp(cur->name, (const xmlChar *)"layout")){
       while (cur2 != NULL) {
 	// For each widget in a layout create it
-	gs->createWidget(cur, cur2, myStateDoc);
+	gs->createWidget(stateNode, cur2, myStateDoc);
 	cur2 = cur2->next;
       }
 

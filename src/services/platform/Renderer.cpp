@@ -1,7 +1,7 @@
 /*
- *  File:       RectangleRenderer.cpp
+ *  File:       Renderer.cpp
  *  Summary:    The class for rendering backgrounds.
- *  Written by: Dean Dickison, aka Winand
+ *  Written by: Dean Dickison, aka Winand, Martin Pollard
  *
  *  Copyright (C) 2002, Winand.
  *  This code is distributed under the GPL.
@@ -10,7 +10,20 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.19  2002-09-04 23:07:27  adamgreg
+ *      Revision 1.1  2002-12-06 14:56:20  xmp
+ *      2002-12-04 M Pollard <circlemaster@blueyonder.co.uk>
+ *            * RectangleRenderer.cpp/h Renderer.cpp/h: Renamed the file and the
+ *              class RectangleRenderer to Renderer for better clarity of naming.
+ *
+ *            * *Renderer.cpp/h Panel.h TextBox.h Console.cpp/h: Button.h
+ *              Changed for Renderer name change.
+ *
+ *            * Rectangle.h: Made SDLRect returned by getSDLRect a const.
+ *
+ *            * DrawDevice.h OGLDrawDevice.cpp/h SDLDrawDevice.cpp/h:
+ *              Adjusted for changes to Rectangle.
+ *
+ *      Revision 1.19  2002/09/04 23:07:27  adamgreg
  *      RectangleRenderer rewrite finished. BitmapRenderer, GradientRenderer, ColorRenderer and GridRenderer added. It even compiles and runs.
  *
  *      Revision 1.2  2002/08/23 02:38:12  adamgreg
@@ -82,10 +95,10 @@
  *
  */
 
-#include "RectangleRenderer.h"
+#include "Renderer.h"
 #include <math.h>
 
-dime::RectangleRenderer::~RectangleRenderer()
+dime::Renderer::~Renderer()
 {
 
 }

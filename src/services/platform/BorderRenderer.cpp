@@ -6,7 +6,7 @@
  * Constructor for a BorderRenderer
  */
 dime::BorderRenderer::BorderRenderer(const Rectangle &rect,
-	unsigned int width, RectangleRenderer *prototype) : RectangleRenderer(rect),
+	unsigned int width, Renderer *prototype) : Renderer(rect),
 	myLines(8), myWidth(width)
 {
 	setBorderContents(prototype);
@@ -15,9 +15,9 @@ dime::BorderRenderer::BorderRenderer(const Rectangle &rect,
 
 
 /**
- * Generates the border's RectangleRenderers based on a prototype.
+ * Generates the border's Renderers based on a prototype.
  */
-void dime::BorderRenderer::setBorderContents(RectangleRenderer *prototype)
+void dime::BorderRenderer::setBorderContents(Renderer *prototype)
 {
 	ColorRenderer *colorprototype = dynamic_cast<ColorRenderer *> (prototype);
 	if (colorprototype != NULL)

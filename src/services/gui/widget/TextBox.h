@@ -23,7 +23,7 @@
 #include "Label.h"
 #include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
-#include "services/platform/RectangleRenderer.h"
+#include "services/platform/Renderer.h"
 #include "services/platform/BitmapRenderer.h"
 #include "services/platform/ColorRenderer.h"
 #include "services/platform/BorderRenderer.h"
@@ -87,14 +87,14 @@ class TextBox : public Label
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
     /*
-     * Rectangle renderer used to draw what's behind the the text
+     * Renderer used to draw what's behind the the text
      */
-    RectangleRenderer *myBackRect;
+    Renderer *myBackRect;
 	
-	/**
-	 * Border Renderer used to draw a border around this text box
-	 */
-	 BorderRenderer *myBorder;
+    /**
+     * Border Renderer used to draw a border around this text box
+     */
+    BorderRenderer *myBorder;
 
     /*
      * Position of Caret in textbox

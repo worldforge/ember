@@ -1,3 +1,15 @@
+2002-12-04 M Pollard <circlemaster@blueyonder.co.uk>
+	* RectangleRenderer.cpp/h Renderer.cpp/h: Renamed the file and the
+	  class RectangleRenderer to Renderer for better clarity of naming.
+
+	* *Renderer.cpp/h Panel.h TextBox.h Console.cpp/h: Button.h
+	  Changed for Renderer name change.
+
+	* Rectangle.h: Made SDLRect returned by getSDLRect a const.
+
+	* DrawDevice.h OGLDrawDevice.cpp/h SDLDrawDevice.cpp/h:
+	  Adjusted for changes to Rectangle.
+	
 2002-12-03 M Pollard <circlemaster@blueyonder.co.uk>
 	* OgreApp.cpp/h: Tidy up and the prefix "Example" of Application and
 	  FrameListener to "Base"

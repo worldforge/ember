@@ -1,11 +1,11 @@
 #include "GradientRenderer.h"
 
 /**
- * Constructor for a gradient filled RectangleRenderer
+ * Constructor for a gradient filled Renderer
  */
 dime::GradientRenderer::GradientRenderer(const Rectangle &rect, dime::Color topleft,
 	dime::Color topright, dime::Color bottomleft, dime::Color bottomright) :
-	RectangleRenderer(rect),
+	Renderer(rect),
 	myColor(topleft),
 	myColor2(topright),
 	myColor3(bottomleft),

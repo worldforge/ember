@@ -20,9 +20,9 @@
 #define GRIDRENDERER_H
 
 // Included headers from the current project
-#include "services/platform/DrawDevice.h"
-#include "services/platform/Rectangle.h"
-#include "services/platform/RectangleRenderer.h"
+#include "DrawDevice.h"
+#include "Rectangle.h"
+#include "Renderer.h"
 
 // Included custom library headers
 
@@ -37,23 +37,23 @@ namespace dime {
 
     /**
      * This contains the GridRenderer class.  This class acts as a container
-	 * and marshaller for other RectangleRenderers, forming them into a grid. A common
+	 * and marshaller for other Renderers, forming them into a grid. A common
 	 * usage will be for bordered widgets.
      *
      * When the instance needs to be drawn, the render() member method is called.
      *
      * Ex:
-     * dime::RectangleRenderer *myRectangleRenderer;
+     * dime::Renderer *myRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::GridRenderer(&myRect, 100, 100, 255);
-     * myRectangleRenderer->render(myScreen);
+     * myRenderer = new dime::GridRenderer(&myRect, 100, 100, 255);
+     * myRenderer->render(myScreen);
 	 *
      * 
      * @author Dean Dickison (Winand)
 	 * @author Adam Gregory (Adamgreg)
      */
 
-	class GridRenderer : public RectangleRenderer
+	class GridRenderer : public Renderer
     
 	{
 	//======================================================================
@@ -82,7 +82,7 @@ namespace dime {
 	/**
 	 * Vector of RectRenderers kept for a grid.
 	 */
-	std::vector<RectangleRenderer*> myGrid;
+	std::vector<Renderer*> myGrid;
 
 	/**
 	 * Where the separation between rectangles is made.
@@ -113,7 +113,7 @@ namespace dime {
 	/**
 	 * Creates a new GridRenderer with the value provided
 	 */
-	GridRenderer(const Rectangle &rect, std::vector<RectangleRenderer*>
+	GridRenderer(const Rectangle &rect, std::vector<Renderer*>
 		&gridVector, int columns, int rows, std::vector<int> &lines);
 
 	//----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Dean Dickison
+    Copyright (C) 2002  Dean Dickison, Martin Pollard
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef RECTANGLERENDERER_H
-#define RECTANGLERENDERER_H
+#ifndef RENDERER_H
+#define RENDERER_H
 
 // Included headers from the current project
 #include "services/image/ImageService.h"
@@ -37,30 +37,30 @@
 namespace dime {
 
     /**
-     * This contains the RectangleRenderer class.  This class does the drawing
+     * This contains the Renderer class.  This class does the drawing
      * of backgrounds using an image, gradient or solid color.  These backgrounds
      * can make up a larger background.
      *
      * Instances of the class are created by one of four constructor methods,
      * each one storing appropriate variables that describe the rectangle.
      * When the instance needs to be drawn, the render() member method is called.
-     * A grid of RectangleRenderers can be made using the GRID constructor.
+     * A grid of Renderers can be made using the GRID constructor.
      *
      * Ex:
-     * dime::RectangleRenderer *myRectangleRenderer;
+     * dime::Renderer *myRenderer;
      * Rectangle myRect(0,0,64,64);
-     * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
+     * myRenderer = new dime::Renderer(FLAT_COLOR,
      *     &myRect, 100, 100, 255);
-     * myRectangleRenderer->render(myScreen);
+     * myRenderer->render(myScreen);
      * 
      * @author Dean Dickison (Winand)
-	 * @author Adam Gregory (Adamgreg)
-	 *
-	 * @todo Renaming. RectangleRenderer -> Renderer. xRecRenderer -> xRenderer. RRFactory -> RFactory/RendererFactory.
-	 * @todo Make into base class of FontRenderer if suitable.
+     * @author Adam Gregory (Adamgreg)
+     *
+     * @todo Renaming. xRecRenderer -> xRenderer. RRFactory -> RFactory/RendererFactory.
+     * @todo Make into base class of FontRenderer if suitable.
      */
 
-    class RectangleRenderer
+    class Renderer
     
     {
 	//======================================================================
@@ -84,7 +84,7 @@ namespace dime {
     protected:     
 
 	/**
-	 * The surface that this RectangleRenderer acts upon
+	 * The surface that this Renderer acts upon
 	 */
 	SDL_Surface *mySurface;
 
@@ -102,22 +102,22 @@ namespace dime {
 	// Constructors
 
 	/**
-	 * Creates a new empty RectangleRenderer
+	 * Creates a new empty Renderer
 	 */
-	RectangleRenderer() {};
+	Renderer() {};
 	
 	/**
-	 * Creates a new RectangleRenderer using values provided.
+	 * Creates a new Renderer using values provided.
 	 */
-	RectangleRenderer(const Rectangle &rect) : myRect(rect) {};
+	Renderer(const Rectangle &rect) : myRect(rect) {};
 
 	//----------------------------------------------------------------------
 	// Destructor
 
 	/**
-	 * Deletes a RectangleRenderer instance.
+	 * Deletes a Renderer instance.
 	 */
-	virtual ~RectangleRenderer();
+	virtual ~Renderer();
 
 	//----------------------------------------------------------------------
 	// Getters
@@ -130,7 +130,7 @@ namespace dime {
 	 */
 	void setRect(const Rectangle &rect)
 	{
-    myRect = rect;
+	  myRect = rect;
 	};
 
 	//----------------------------------------------------------------------

@@ -85,10 +85,10 @@ class Button : public Widget
     // Private Variables
     //======================================================================
     private:
-    RectangleRenderer *myPressedBackground;
-    RectangleRenderer *myHighlightBackground;
-    RectangleRenderer *myStandardBackground;
-    RectangleRenderer **myCurrentBackground;
+    Renderer *myPressedBackground;
+    Renderer *myHighlightBackground;
+    Renderer *myStandardBackground;
+    Renderer **myCurrentBackground;
     bool myPressed;
 
     //======================================================================
@@ -170,25 +170,25 @@ class Button : public Widget
     // Setters
 
     /**
-     * Sets the pressed background RectangleRenderer of this Widget
+     * Sets the pressed background Renderer of this Widget
      */
-    virtual void setPressedBackground(RectangleRenderer *background)
+    virtual void setPressedBackground(Renderer *background)
       {
 	myPressedBackground = background;
       }
 
     /**
-     * Sets the highlighted background RectangleRenderer of this Widget
+     * Sets the highlighted background Renderer of this Widget
      */	
-	virtual void setHighlightBackground(RectangleRenderer *background)
+	virtual void setHighlightBackground(Renderer *background)
 	{
 		myHighlightBackground = background;
 	}
 
     /**
-     * Sets the standard background RectangleRenderer of this Widget
+     * Sets the standard background Renderer of this Widget
      */	
-	virtual void setBackground(RectangleRenderer *background)
+	virtual void setBackground(Renderer *background)
 	{
 		myStandardBackground = background;
 	}

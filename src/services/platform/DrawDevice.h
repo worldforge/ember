@@ -95,12 +95,12 @@ public:
 	/**
     * Fills the rectangle destRect with color
     */
-    virtual void fillRect(SDL_Rect *destRect, Color color) = 0;
+    virtual void fillRect(const SDL_Rect *destRect, Color color) = 0;
     
 	/*
 	 * Fills destRect with a gradient produces from the four colors
 	 */
-    virtual void drawGradient(SDL_Rect *destRect,
+    virtual void drawGradient(const SDL_Rect *destRect,
                               Color leftTop, 
                               Color rightTop, 
                               Color leftBottom, 
