@@ -194,17 +194,19 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	for (i = mXmin; i < mXmax; ++i) {
 		for (j = mYmin; j < mYmax; ++j) {
 			Mercator::Segment* segment = mTerrain->getSegment(i, j);
-			segment->populate();
-			segment->populateNormals();
-			segment->populateSurfaces();
+			if (segment) {
+				segment->populate();
+				segment->populateNormals();
+				segment->populateSurfaces();
+			}
 		}
 	}
 
 	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
 	int xNumberOfPages = ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
 	int yNumberOfPages = ceil((mYmax - mYmin) / (double)mercatorSegmentsPerPage);
-	int xStart = floor(mXmin / (double)xNumberOfPages);
-	int yStart = floor(mYmin / (double)yNumberOfPages);
+	int xStart = floor(mXmin / (double)(mercatorSegmentsPerPage));
+	int yStart = floor(mYmin / (double)(mercatorSegmentsPerPage));
 	for (i = 0; i < xNumberOfPages; ++i) {
 		for (j = 0; j < yNumberOfPages; ++j) {
 			TerrainPosition pos(xStart + i, yStart + j);

@@ -60,7 +60,8 @@ TerrainPage::TerrainPage(TerrainPosition& position, const std::map<const Mercato
 			Mercator::Segment* segment = mGenerator->getTerrain().getSegment((int)((mPosition.x() * segmentsPerAxis) + x_axis), (int)((mPosition.y() * segmentsPerAxis) + y_axis));
 //			Mercator::Segment* segment = mGenerator->getTerrain().getSegment((int)((mPosition.x() ) + x_axis), (int)((mPosition.y() ) + y_axis));
 			//assert(segment);
-			mMercatorSegments.push_back(segment);
+			if (segment && segment->isValid()) 
+				mMercatorSegments.push_back(segment);
 		}
 	}
 }
@@ -365,7 +366,7 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 	
 	//we'll start by getting a the first surface of the first segment, since we're only interested in the name of the texture used for the backdrop (we won't be needing any alpha texture)    
     //const Mercator::Segment::Surfacestore & surfaces
-	Mercator::Segment* aValidSegment;
+	Mercator::Segment* aValidSegment = 0;
 	typedef std::list<Mercator::Surface*>::iterator vectorOfSurfaceListIterator;
 //	std::vector<std::list<Mercator::Surface*>::iterator> surfaceListIterators;
 	std::map<Mercator::Segment*, vectorOfSurfaceListIterator> segmentSurfaceListIteratorMapping;
@@ -382,6 +383,9 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 			*tempI = 0;
 			surfaceListIterators.push_back(tempI);*/
 		}
+	}
+	if (!aValidSegment) {
+		return material;
 	}
 	
 	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
@@ -461,41 +465,43 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 				if (*I && i < 4) {
 					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[*(I)];
 					surface = *surfaceListI;
-					std::stringstream splatTextureNameSS_;
-					splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
-					Ogre::MemoryDataStream tempChunk = Ogre::MemoryDataStream(surface->getData(), 65*65, false);
-					
-/*					if (mPosition.x() == -1 && mPosition.y() == -1 && x == getNumberOfSegmentsPerAxis() - 2 && y == getNumberOfSegmentsPerAxis() - 2) 
-						fillAlphaLayer(*finalChunk, *tempChunk, i, (getNumberOfSegmentsPerAxis() - x + 1) * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);*/
-//					if (mPosition.x() == -1 && mPosition.y() == -1 && x == 0  && y == 0 ) 
-// 					if (x == 1  && y == 1 ) 
-// 						fillAlphaLayer(*finalChunk, *tempChunk, i, (2) * 64, (2) * 64);
-
-
-// 					if (x == 3  && y == 3 ) 
-					//we have to do this strange convertion because the ogre-wf coord convertion is a bit of a mess with the 
-					//fillAlphaLayer(...) method. I don't have time to fix this now.
-					int x_ = (x == (getNumberOfSegmentsPerAxis() - 1)) ? 0 : x + 1;
-					fillAlphaLayer(finalChunk, tempChunk, i, x_ * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
-
-
-
-																		
-/*					Ogre::MemoryDataStreamPtr tempChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), i - 1);*/
-/*// 					printTextureToImage(tempChunk, splatTextureNameSS_.str(), pixelFormat, 64, 64);
-					
-					ILuint tempImageName;
-					ilGenImages( 1, &tempImageName );
-					ilBindImage( tempImageName );
-					ilTexImage(64 , 64, 1, mBytesPerPixel, IL_BGRA, IL_UNSIGNED_BYTE, tempChunk->getPtr());
-					ilBindImage(ImageName);
-					ilOverlayImage(tempImageName, x * 64, y * 64, 0);
-					
-	// 				char name[100];
-	// 				strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureNameSS_.str() + std::string(".png")).c_str());
-	// 				ilSaveImage(name);
+					if (surface->isValid()) {
+						std::stringstream splatTextureNameSS_;
+						splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
+						Ogre::MemoryDataStream tempChunk = Ogre::MemoryDataStream(surface->getData(), 65*65, false);
+						
+	/*					if (mPosition.x() == -1 && mPosition.y() == -1 && x == getNumberOfSegmentsPerAxis() - 2 && y == getNumberOfSegmentsPerAxis() - 2) 
+							fillAlphaLayer(*finalChunk, *tempChunk, i, (getNumberOfSegmentsPerAxis() - x + 1) * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);*/
+	//					if (mPosition.x() == -1 && mPosition.y() == -1 && x == 0  && y == 0 ) 
+	// 					if (x == 1  && y == 1 ) 
+	// 						fillAlphaLayer(*finalChunk, *tempChunk, i, (2) * 64, (2) * 64);
 	
-					ilDeleteImages(1, &tempImageName);*/
+	
+	// 					if (x == 3  && y == 3 ) 
+						//we have to do this strange convertion because the ogre-wf coord convertion is a bit of a mess with the 
+						//fillAlphaLayer(...) method. I don't have time to fix this now.
+						int x_ = (x == (getNumberOfSegmentsPerAxis() - 1)) ? 0 : x + 1;
+						fillAlphaLayer(finalChunk, tempChunk, i, x_ * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
+	
+	
+	
+																			
+	/*					Ogre::MemoryDataStreamPtr tempChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), i - 1);*/
+	/*// 					printTextureToImage(tempChunk, splatTextureNameSS_.str(), pixelFormat, 64, 64);
+						
+						ILuint tempImageName;
+						ilGenImages( 1, &tempImageName );
+						ilBindImage( tempImageName );
+						ilTexImage(64 , 64, 1, mBytesPerPixel, IL_BGRA, IL_UNSIGNED_BYTE, tempChunk->getPtr());
+						ilBindImage(ImageName);
+						ilOverlayImage(tempImageName, x * 64, y * 64, 0);
+						
+		// 				char name[100];
+		// 				strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureNameSS_.str() + std::string(".png")).c_str());
+		// 				ilSaveImage(name);
+		
+						ilDeleteImages(1, &tempImageName);*/
+					}
 				}
 				++I;
 			}
