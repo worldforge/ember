@@ -38,7 +38,7 @@ void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, Ogre::String splatTe
 void TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName) {
 	Ogre::Pass* pass = technique->createPass();
 	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-	pass->setLightingEnabled(false);
+	//pass->setLightingEnabled(false);
 	
 	
 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
