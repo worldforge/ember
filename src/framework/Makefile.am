@@ -2,4 +2,4 @@ check_PROGRAMS = ServiceTest
 
 dime_SOURCES = ServiceManager.cpp
 
-ServiceTest_SOURCES = ServiceTest.cpp
+servicetest_SOURCES = $(topsrcdir)/src/services/config/ConfigService.cpp
