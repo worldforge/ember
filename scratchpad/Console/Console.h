@@ -37,17 +37,17 @@
 
 
 namespace dime {
-#define MAX_MESSAGES (5)
-#define FONT_HEIGHT  (15)
-#define LINE_SPACING (5)
-#define CONSOLE_TEXT_OFFSET_X (5)
-#define CONSOLE_TEXT_OFFSET_Y (5)
+const int MAX_MESSAGES = 5;
+const int FONT_HEIGHT = 15;
+const int LINE_SPACING = 5;
+const int CONSOLE_TEXT_OFFSET_X = 5;
+const int CONSOLE_TEXT_OFFSET_Y = 5;
 
-const int CONSOLE_SPEED = 10
-const int CONSOLE_HEIGHT = 100
+const int CONSOLE_SPEED = 10;
+const int CONSOLE_HEIGHT = 100;
 
-const char* CONSOLE_PROMPT_STRING = "> "
-const char* CONSOLE_CURSOR_STRING = "_"
+const char* CONSOLE_PROMPT_STRING = "> ";
+const char* CONSOLE_CURSOR_STRING = "_";
 
 #define CONSOLE_MESSAGE 0x1
 #define SCREEN_MESSAGE  0x2
@@ -93,11 +93,11 @@ public:
   /**
    * Toggles whether the console is visible or not
    */ 
-  void toggleConsole();
+  //void toggleConsole();
   /**
    * Returns whether the console is visible or not
    */ 
-  bool consoleStatus() { return showConsole; }
+  //bool consoleStatus() { return showConsole; }
 
   /**
    * Registers a command with the console
@@ -133,7 +133,7 @@ protected:
   void renderScreenMessages();
 
   bool animateConsole; // Flag determining whether console is moving
-  bool showConsole; // flag to say whether console is visible/useable or not
+  //bool showConsole; // flag to say whether console is visible/useable or not
   int consoleHeight; // the height of the console. determined by number of messages allowed
   std::list<std::string> console_messages; // Current console messages
   std::list<screenMessage> screen_messages; // Current screen messages

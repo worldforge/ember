@@ -7,9 +7,7 @@
 // Original Copyright (C) 2001 - 2002 
 
 //#include "common/Utility.h" // Check for functions we need 
-#include "services/logging/LoggingService.h"
-//#include "common/Log.h" // Quite similar to ours will redo the logging
-// statements line for line
+#include "services/logging/LoggingService.h" // Converted
 
 #include "Console.h"
 #include "ConsoleObject.h"
@@ -21,7 +19,6 @@ namespace dime {
 
 Console::Console(System *system) :
   animateConsole(0),
-  showConsole(0), // To be replaced by widget's in built show and hide feature (TO GO)
   consoleHeight(0),
   console_messages(std::list<std::string>()), // (TO STAY)
   screen_messages(std::list<screenMessage>()), // (TO STAY)
@@ -44,8 +41,7 @@ bool Console::init() {
 }
 
 void Console::shutdown() {
-  Log::writeLog("Shutting down console.", Log::LOG_DEFAULT);
-  
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Shutting down console."<< ENDM;  
 }
 
 void Console::pushMessage(const std::string &message, int type, int duration) {
@@ -96,7 +92,7 @@ void Console::draw(const std::string &command) {
 
 void Console::renderConsoleMessages(const std::string &command) {
   if (!_renderer) {
-    Log::writeLog("Console: Error - Renderer object not created", Log::LOG_ERROR);
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::CRITICAL) << "Console: Renderer object not created"<< ENDM;
     return;
   }
   std::list<std::string>::const_iterator I;
@@ -152,15 +148,16 @@ void Console::renderScreenMessages() {
   }
 }
 
+/* The showconsole bit is no longer required dunno about the animate console bit
 void Console::toggleConsole() {
   // Start the animation	
   animateConsole = 1;
   // Toggle state
-  showConsole = !showConsole;
-}
+  //showConsole = !showConsole;
+}*/
 
 void Console::registerCommand(const std::string &command, ConsoleObject *object) {
-  Log::writeLog(std::string("registering: ") + command, Log::LOG_INFO);
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
   // Assign the ConsoleObject to the command
   _registered_commands[command] = object;
 }
@@ -190,7 +187,7 @@ void Console::runCommand(const std::string &command) {
   // If object exists, run the command
   if (con_obj) con_obj->runCommand(cmd, args);
   else { // Else print error message
-    Log::writeLog(std::string("Unknown command: ") + command, Log::LOG_ERROR);
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
     pushMessage("Unknown command" , CONSOLE_MESSAGE, 0);
   }
 }
@@ -204,7 +201,7 @@ void Console::runCommand(const std::string &command, const std::string &args) {
   else if (command == LIST_CONSOLE_COMMANDS) {
     for (std::map<std::string, ConsoleObject*>::const_iterator I = _registered_commands.begin(); I != _registered_commands.end(); I++) {
       // TODO - should we check to see if I->second is valid?
-      Log::writeLog(I->first, Log::LOG_INFO);
+      LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << I->first<< ENDM;
     }
   }
 }
