@@ -20,6 +20,7 @@
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "DimeEntityFactory.h"
+#include "Model.h"
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
@@ -27,22 +28,21 @@
 namespace DimeOgre {
 
 
-DimePhysicalEntity::DimePhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithEntity, Ogre::Vector3 scaler) : 
+DimePhysicalEntity::DimePhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 DimeEntity(ge, vw, sceneManager),
 mAnimationState_Walk(NULL),
-mScaleNode(nodeWithEntity)
+mScaleNode(nodeWithModel)
 {
-	mOgreEntity = static_cast<Ogre::Entity*>(nodeWithEntity->getAttachedObject(0));
-	
+//	mOgreEntity = static_cast<Ogre::Entity*>(nodeWithEntity->getAttachedObject(0));
+	mModel = static_cast<Model*>(nodeWithModel->getAttachedObject(0));
+
 	assert(mOgreNode);
 	assert(mScaleNode);
-	scaleNode(scaler);
+	scaleNode();
 	mOgreNode->addChild(mScaleNode);
-	
-	if (mAnimationState_Walk) {
-		MotionManager::getSingleton().addAnimation(mAnimationState_Walk);
-	}
-	mOgreEntity->setUserObject(this);
+	loadAnimationsFromModel();
+
+	mModel->setUserObject(this);
 	
 	
 }
@@ -61,45 +61,77 @@ DimePhysicalEntity::~DimePhysicalEntity()
 }
 
 
-
-Ogre::Entity* DimePhysicalEntity::getOgreEntity() {
-	return mOgreEntity;	
+void DimePhysicalEntity::loadAnimationsFromModel()
+{
+	Ogre::AnimationStateSet* states = mModel->getAllAnimationStates();
+	if (states->size()) {
+		Ogre::AnimationStateSet::iterator itr_end = states->end();
+		Ogre::AnimationStateSet::iterator itr;
+		itr = states->find(std::string("Walk"));
+		if (itr == itr_end) {
+			itr = states->find(std::string("walk"));
+		}
+		if (itr != itr_end) {
+			std::cout << "Found animation state";
+			mAnimationState_Walk = &(itr->second);
+			MotionManager::getSingleton().addAnimation(mAnimationState_Walk);
+		}
+	}	
 }
 
-void DimePhysicalEntity::scaleNode(Ogre::Vector3 scaler) {
-	const Ogre::AxisAlignedBox ogreBoundingBox = mOgreEntity->getBoundingBox();
-	const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
-	const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
+Model* DimePhysicalEntity::getModel() const
+{
+	return mModel;	
+}
 
-	if (hasBBox()) {
-		const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
-		const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
-		const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
-		
-		Ogre::Real scaleX = ((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x)) * scaler.x;		
-		Ogre::Real scaleY = ((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y)) * scaler.y;		
-		Ogre::Real scaleZ = ((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z)) * scaler.z;		
-		
-		Ogre::Real finalScale = std::max(scaleX, scaleY);
-		finalScale = std::max(finalScale, scaleZ);
-		mScaleNode->setScale(finalScale, finalScale, finalScale);
-		
+
+void DimePhysicalEntity::scaleNode() {
+	if (mModel->getRotation()) {
+		mScaleNode->rotate(Ogre::Vector3::UNIT_Y,mModel->getRotation());
+	}
+	if (mModel->getScale()) {
+		if (mModel->getScale() != 1) {
+			//only scale if it's not 1
+			mScaleNode->setScale(mModel->getScale(), mModel->getScale(), mModel->getScale());
+		}
 	} else {
-		//set to small size
 		
-		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x)) * scaler.x;		
-		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y)) * scaler.y;		
-		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z)) * scaler.z;		
-		mScaleNode->setScale(scaleX, scaleY, scaleZ);
-	}		
+/*		const Ogre::AxisAlignedBox ogreBoundingBox = mOgreEntity->getBoundingBox();
+		const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
+		const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
 	
+		if (hasBBox()) {
+*/
+			const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
+			const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
+			const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
+			Ogre::Vector3 dimensions = mModel->getDimensions();
+			
+			Ogre::Real scaleX = ((wfMax.x() - wfMin.x()) / dimensions.x);		
+			Ogre::Real scaleY = ((wfMax.z() - wfMin.z()) / dimensions.y);		
+			Ogre::Real scaleZ = ((wfMax.y() - wfMin.y()) / dimensions.z);		
+			
+			Ogre::Real finalScale = std::max(scaleX, scaleY);
+			finalScale = std::max(finalScale, scaleZ);
+			mScaleNode->setScale(finalScale, finalScale, finalScale);
+			
+/*		} else {
+			//set to small size
+			
+			Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x)) * scaler.x;		
+			Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y)) * scaler.y;		
+			Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z)) * scaler.z;		
+			mScaleNode->setScale(scaleX, scaleY, scaleZ);
+		}		
+*/
+	}	
 	
 }
 
 
 void DimePhysicalEntity::handleMove()
 {
-	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
+	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	MotionManager* motionManager = &MotionManager::getSingleton();
 	if (getVelocity() != WFMath::Vector<3>().zero()) {
@@ -131,7 +163,8 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
 
 void DimePhysicalEntity::setVisible(bool vis)
 {
-	mOgreEntity->setVisible(vis);	
+	//TODO
+	mModel->setVisible(vis);	
 }
 
 /*

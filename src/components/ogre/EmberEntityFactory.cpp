@@ -34,6 +34,7 @@
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
 #include "WorldDimeEntity.h"
+#include "Model.h"
 
 namespace DimeOgre {
 
@@ -71,7 +72,8 @@ Eris::Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameE
     	CreatedAvatarEntity.emit(avatarEntity);
     	dimeEntity = avatarEntity;
  
-    } else if (type->safeIsA(mTypeService->getTypeByName("boundary"))) {
+    } else if (type->safeIsA(mTypeService->getTypeByName("boundary")) 
+    || type->safeIsA(mTypeService->getTypeByName("weather"))) {
 
     	//we don't want this to have any Ogre::Entity
 		dimeEntity = new DimeEntity(ge, world, mSceneManager);
@@ -95,12 +97,22 @@ AvatarDimeEntity* DimeEntityFactory::createAvatarEntity(const Atlas::Objects::En
 	Ogre::String id = ge.getId();
 	id += "_scaleNode";
 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
-	Ogre::Entity* ogreEntity = mSceneManager->createEntity(ge.getId(), "robot.mesh");
+	Model* model = new Model(mSceneManager, ge.getId());
+	
+	//rotate node to fit with WF space
+	//perhaps this is something to put in the model spec instead?
+	scaleNode->rotate(Ogre::Vector3::UNIT_Y,90);
+	
+	model->createFromXML("modeldefinitions/settler.modeldef.xml");
+	
+//	Ogre::Entity* ogreEntity = mSceneManager->createEntity(ge.getId(), "robot.mesh");
+//	mAnimStateWalk = model->getAnimationState("walk");	
+//	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
 
 	// attach the node to the entity
-	scaleNode->attachObject(ogreEntity);
+	scaleNode->attachObject(model);
     	
-    return new AvatarDimeEntity(ge, world,mSceneManager, scaleNode, Ogre::Vector3::UNIT_SCALE);
+    return new AvatarDimeEntity(ge, world,mSceneManager, scaleNode);
 	
 }
 
@@ -150,7 +162,6 @@ void DimeEntityFactory::buildTerrainAroundAvatar()
 DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world) {
 	
 	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
-	Ogre::Entity* ogreEntity;
 	Ogre::String id = ge.getId();
 	id += "_scaleNode";
 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
@@ -159,21 +170,22 @@ DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects
 	//scaleNode->showBoundingBox(true);
 
 	std::string typeName = mTypeService->getTypeForAtlas(ge)->getName();
-	if (typeName == "pig") {
-		int i = 0;
+	Model* model = new Model(mSceneManager, ge.getId());
+
+	//try to open the model definition file
+	bool result = model->createFromXML(std::string("modeldefinitions/") + typeName + ".modeldef.xml");
+	if (!result) 
+	{
+		std::cout << "Could not find " << typeName << ", using placeholder.";
+		model->createFromXML("modeldefinitions/placeholder.modeldef.xml");
 	}
-	MeshDefinitionMap::const_iterator I = meshDefinitions.find(typeName);
-	if (I != meshDefinitions.end()) {
-		ogreEntity = mSceneManager->createEntity(ge.getId(), I->second.modelName);
-		scaler = I->second.scaler;
-	} else {
-		//create placeholder
-		ogreEntity = mSceneManager->createEntity(ge.getId(), "razor.mesh");
-	}
-	ogreEntity->setVisible(false);
 	
-	scaleNode->attachObject(ogreEntity);
-	return new DimePhysicalEntity(ge, world, mSceneManager, scaleNode, scaler);
+	//rotate node to fit with WF space
+	//perhaps this is something to put in the model spec instead?
+	scaleNode->rotate(Ogre::Vector3::UNIT_Y,90);
+
+	scaleNode->attachObject(model);
+	return new DimePhysicalEntity(ge, world, mSceneManager, scaleNode);
 	
 	
 /*		
@@ -244,10 +256,10 @@ void DimeEntityFactory::loadMeshDefinitions()
 	MeshDefinition def;
 	def.scaler = Ogre::Vector3::UNIT_SCALE;
 	
-	def.modelName = "robot.mesh";
+	def.modelName = "Face.mesh";
 	meshDefinitions["settler"] = def;
 	
-	def.modelName = "robot.mesh";
+	def.modelName = "Face.mesh";
 	meshDefinitions["merchant"] = def;
 
 	def.modelName = "pig.mesh";

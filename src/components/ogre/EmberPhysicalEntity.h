@@ -33,6 +33,7 @@
 namespace DimeOgre {
 
 class DimeEntity;
+class Model;
 	
 /*
  * Represents a dime entity with a physical representation in the world.
@@ -44,7 +45,7 @@ public:
 /*eris 1.3
 	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, Ogre::Entity* ogreEntity); 
 */
-	DimePhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithEntity, Ogre::Vector3 scaler);
+	DimePhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
 //	, Ogre::Entity* ogreEntity); 
 	virtual ~DimePhysicalEntity();
 	
@@ -52,7 +53,13 @@ public:
 	/*
 	 * return the Ogre::Entity of this object
 	 */
-	Ogre::Entity* getOgreEntity();
+//	Ogre::MovableObject* getOgreEntity();
+
+	/*
+	 * return the Model of this object
+	 */
+	Model* getModel() const;
+	
 	
 	/* from eris 1.2 */
 	virtual void handleMove();
@@ -88,15 +95,25 @@ public:
 protected: 
 
 	/*
-	 * Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity
-	 * An Vector3 can be supplied which will be added to the computed scaling
+	 * Checks the model for animations and assign registers them with MotionManager
 	 */
-	virtual void scaleNode(Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE);
+	void loadAnimationsFromModel();
+
+
+	/*
+	 * Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity
+	 */
+	virtual void scaleNode();
 	
 	/*
 	 * The main Ogre::Entity
 	 */
-	Ogre::Entity* mOgreEntity;
+//	Ogre::MovableObject* mOgreEntity;
+	
+	/*
+	 * The model of the entity
+	 */
+	 Model* mModel;
 	
 	/*
 	 * We need to scale the Ogre::Entity, because the underlying media is not

@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.45  2004-08-04 23:39:43  aglanor
+ *      Revision 1.46  2004-08-19 21:23:48  erik
+ *      2004-08-19 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre/:
+ *      *added support for models using modeldef.xml format
+ *
+ *      Revision 1.45  2004/08/04 23:39:43  aglanor
  *      2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* /src/components/ogre/GUIManager.(h|cpp) and others related:
  *      	Added basic GUI support, including display of In-Game chat.
@@ -542,6 +548,7 @@ bool DimeOgre::setup(void)
     // Create the scene
     createScene();
 
+    mGUIManager = new GUIManager(mWindow, mSceneMgr);
 	mTerrainGenerator = new TerrainGenerator();
 	mMotionManager = new MotionManager();
 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
@@ -604,7 +611,6 @@ void DimeOgre::chooseSceneManager(void)
     DimeTerrainSceneManager* mDimeTerr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
     assert(mDimeTerr);
     
-    mGUIManager = new GUIManager(mWindow, mSceneMgr);
  //   const Ogre::String terrainTexture = Ogre::String("terrain_texture.jpg");
  //   const Ogre::String terrainDetail = Ogre::String("terrain_detail.jpg");
     
@@ -682,11 +688,11 @@ void DimeOgre::createScene(void)
 	//set fog, do this before calling TerrainSceneManager::setWorldGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	Ogre::ColourValue fadeColour(1,1,1);
-//	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
+	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
 
   // create a Skydome
 //  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
-  mSceneMgr->setSkyBox(true, "Sky/Waterworld09");
+  mSceneMgr->setSkyBox(true, "Sky/Waterworld09", 253);
 
         Ogre::Entity *waterEntity;
         Ogre::Plane waterPlane;

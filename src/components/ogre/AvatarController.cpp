@@ -26,6 +26,8 @@
 #include "DimeOgre.h"
 
 #include "DimeEntity.h"
+#include "DimePhysicalEntity.h"
+#include "AvatarDimeEntity.h"
 #include "AvatarCamera.h"
 #include "AvatarController.h"
 
@@ -142,13 +144,14 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 	 
 	std::list< RaySceneQueryResultEntry >::iterator rayIterator; 
 	   
+	Ogre::UserDefinedObject* avatarObject = dynamic_cast<Ogre::UserDefinedObject*>(mAvatar->mErisAvatarEntity);
 	for ( rayIterator = result.begin( ); 
 		rayIterator != result.end( ); 
 		rayIterator++ ) {
 		//only pick entities that have a userobject attached
 		if (( *rayIterator ).movable->getUserObject() != NULL) {
 			//we don't want to pick ourselves
-			if ( ( *rayIterator ).movable != mAvatar->mAvatarEntity) { 
+			if ( ( *rayIterator ).movable->getUserObject() != avatarObject) { 
 				if ( ( *rayIterator ).distance < closestDistance ) { 
 					closestObject = ( *rayIterator ).movable; 
 					closestDistance = ( *rayIterator ).distance; 

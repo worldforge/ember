@@ -15,20 +15,19 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
-#include "framework/ConsoleBackend.h"
 #include "DimeEntity.h"
-#include "Avatar.h"
 #include "DimePhysicalEntity.h"
-#include "AvatarDimeEntity.h"
+#include "framework/ConsoleBackend.h"
+#include "Avatar.h"
 #include "GUIManager.h"
+#include "AvatarDimeEntity.h"
 
 namespace DimeOgre {
 
 
-AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithEntity, Ogre::Vector3 scaler) : 
+AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 mAvatar(NULL)
-,DimePhysicalEntity(ge, vw, sceneManager, nodeWithEntity, scaler)
+,DimePhysicalEntity(ge, vw, sceneManager, nodeWithModel)
 {
 }
 
@@ -66,29 +65,25 @@ void AvatarDimeEntity::handleTalk(const std::string &msg)
 	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
 
+/*
 void AvatarDimeEntity::setVisible(bool vis)
 {
-	mOgreEntity->setVisible(true);	
+	//TODO
+	//mOgreEntity->setVisible(true);	
 }
-/*
+*/
+
 void AvatarDimeEntity::addMember(Entity *e) 
 {
-	try{
-		SceneNode* sceneNode = mSceneManager->getSceneNode(e->getID());
-
-		getSceneNode()->addChild(sceneNode);
-		//don't show it though
-		//sceneNode->setVisible(false);
-	} catch(Ogre::Exception ex) {
-		//the contained item haven't been initialised yet
-		//this is no problem though because when it do get initialized
-		//it's container will be set
+	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
+	if (dimeEntity) {
+		dimeEntity->setVisible(false);
 	}
 
-	Entity::addMember(e);
+	DimePhysicalEntity::addMember(e);
 	
 }
-
+/*
 void AvatarDimeEntity::rmvMember(Entity *e)
 {
 	try{

@@ -28,15 +28,16 @@
 #include <Eris/Entity.h>
 
 namespace DimeOgre {
-	
-class DimeEntity;
+
 class DimePhysicalEntity;
+class DimeEntity;
 class Avatar;
+class Model;
 
 class AvatarDimeEntity: public DimePhysicalEntity {
 public:
 
-	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithEntity, Ogre::Vector3 scaler);
+	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
 	virtual ~AvatarDimeEntity();
 	
 	
@@ -44,10 +45,10 @@ public:
 	/*Eris methods, see Eris::Entity.h for documentation */
 	virtual void handleTalk(const std::string &msg);
 	virtual void handleMove();
-	//virtual void addMember(Entity *e);
+	virtual void addMember(Entity *e);
 	//virtual void rmvMember(Entity *e);
-	virtual void setVisible(bool vis);	
-	virtual void setContainer(Entity *pr);
+	//virtual void setVisible(bool vis);	
+	virtual void setContainer(Eris::Entity *pr);
 	
 	/* 
 	 * used by the main application to set the DimeOgre::Avatar connected to this instance 

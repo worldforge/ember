@@ -50,6 +50,8 @@
 //#include "DimeTerrainSceneManager.h"
 
 #include "AvatarDimeEntity.h"
+#include "Model.h"
+#include "SubModel.h"
 
 #include "Avatar.h"
 
@@ -91,9 +93,9 @@ void Avatar::createAvatar()
 {
 	// The avatar itself
 	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mAvatarNode->setPosition(WF2OGRE_VECTOR3(0,0,5));
+	mAvatarNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
 	//mAvatarNode->setOrientation(0,1,0,0);
-	mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
+	//mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
 	
 	//mAvatarNode->setScale(OGRESCALER);
 	// TODO: very important! When the scale is set to default (1,1,1)
@@ -104,16 +106,27 @@ void Avatar::createAvatar()
 	// Model Node and Entity for display
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
-	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "robot.mesh");
-	mAvatarModelNode->attachObject(mAvatarEntity);
-//	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
+/*	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "fish.mesh");
+	Ogre::Entity* robot = mSceneMgr->createEntity("AvatarEntity_robot", "robot.mesh");
+*/	
+	Model* model = new Model(mSceneMgr, "AvatarEntity");
+	//TODO add better resource handling
+	model->createFromXML("modeldefinitions/malebuilder.modeldef.xml");
+
+	mAvatarModel = model;
+	
+	mAvatarModelNode->attachObject(mAvatarModel);
+	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
+	//mAvatarModelNode->showBoundingBox(true);
 
 	createAnimations();
 }
 
 void Avatar::createAnimations() {
 	//let's set the current animation state to walking
-	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	
+	
+
+	mAnimStateWalk = mAvatarModel->getAnimationState("walk");	
 	
 	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
 	
@@ -338,9 +351,9 @@ void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
 	
 	mAvatarController->createAvatarCameras(dimeEntity->getAvatarSceneNode());
 	mAvatarNode = dimeEntity->getSceneNode();
-	mAvatarEntity = dimeEntity->getOgreEntity();
-	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	
-	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
+	mAvatarModel = dimeEntity->getModel();
+	mAnimStateWalk = dynamic_cast<Model*>(mAvatarModel)->getAnimationState("walk");	
+//	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
 	
 	//here we should disconnect signals, if I only found out how...
 	//TODO: disconnect signals

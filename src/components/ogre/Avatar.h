@@ -53,6 +53,7 @@ class AvatarCamera;
 class AvatarController;
 class AvatarDimeEntity;
 struct AvatarControllerMovement;
+class Model;
 
 struct AvatarMovementState
 {
@@ -205,7 +206,7 @@ protected:
 	/*
 	 * The main avatar entity
 	 */
-	Ogre::Entity* mAvatarEntity;
+	Model* mAvatarModel;
 	
 	/* 
 	 * The main avatar scenenode

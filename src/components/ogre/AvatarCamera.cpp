@@ -61,22 +61,22 @@ void AvatarCamera::createNodesAndCamera()
 	
 	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarCameraRootNode"));
 	//we need to adjust for the height of the avatar mesh
-	mAvatarCameraRootNode->setPosition(WF2OGRE_VECTOR3(0,100,-1));
+	mAvatarCameraRootNode->setPosition(WF2OGRE_VECTOR3(0,2,0));
 	//rotate to sync with WF world
-    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,-90);
+    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,180);
 
 	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
 	mAvatarCameraPitchNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
 	mAvatarCameraNode = static_cast<Ogre::SceneNode*>(mAvatarCameraPitchNode->createChild("AvatarCameraPitchNode"));
-	Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,500);
+	Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,10);
 	mAvatarCameraNode->setPosition(pos);
 	
 	mCamera = mSceneManager->createCamera("AvatarCamera");
 	mAvatarCameraNode->attachObject(mCamera);
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
-	mCamera->setNearClipDistance(WF2OGRE(0.01));
-	mCamera->setFarClipDistance( WF2OGRE(384) * 100);
+	mCamera->setNearClipDistance(0.01);
+	mCamera->setFarClipDistance(6000);
 	
 	createViewPort();
 }
