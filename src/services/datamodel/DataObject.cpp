@@ -662,8 +662,8 @@ static_cast<DataProvider*>(DataModelService::getInstance()->getRootProvider());
 		
 		subpath = subpath.substr(1);
 	}
-	
-	if (subpath[0] == '/')
+
+	if (!subpath.empty() && subpath[0] == '/')
 	{
 		THROW1("Invalid subpath - needs no trailing '/': %s'.", subpath.c_str());
 	}
