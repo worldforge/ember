@@ -106,7 +106,7 @@ namespace dime {
         /*
          * creates a gradient rect on our surface size and position equal to destRect
          */
-        virtual void gradientRect(SDL_Rect *destRect, 
+        virtual void drawGradient(SDL_Rect *destRect, 
                                   Color leftTop, 
                                   Color rightTop, 
                                   Color leftBottom, 

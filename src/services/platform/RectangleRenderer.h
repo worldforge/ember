@@ -1,4 +1,3 @@
-//  ----------------------< Start of template >---------------------------
 /*
     Copyright (C) 2002  Dean Dickison
 
@@ -21,7 +20,8 @@
 #define RECTANGLERENDERER_H
 
 // Included headers from the current project
-
+#include <services/platform/Color.h>
+#include <services/platform/DrawDevice.h>
 // Included custom library headers
 
 // Included system headers
@@ -42,199 +42,187 @@
 #define VERTICAL        2
 #define DIAGONAL        3
 
-typedef struct RectangleStruct Rectangle;
-
-struct RectangleStruct
-{
-    int x, y;
-    int width, height;
-};
-
-typedef struct ColorStruct Color;
-
-struct ColorStruct
-{
-    int red, green, blue;
-};
 
 namespace dime {
 
-/**
- * This contains the RectangleRenderer class.  This class does the drawing
- * of backgrounds using an image, gradient or solid color.  These backgrounds
- * can make up a larger background.
- *
- * Instances of the class are created by one of four constructor methods,
- * each one storing appropriate variables that describe the rectangle.
- * When the instance needs to be drawn, the render() member method is called.
- * A grid of RectangleRenderers can be made using the GRID constructor.
- *
- * Ex:
- * dime::RectangleRenderer *myRectangleRenderer;
- * Rectangle myRect;
- * myRect.x = 0;
- * myRect.y = 0;
- * myRect.width = 64;
- * myRect.height = 64;
- * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
- *     &myRect, 100, 100, 255);
- * myRectangleRenderer->render(myScreen);
- * 
- * @author Dean Dickison (Winand)
- */
+    /**
+     * This contains the RectangleRenderer class.  This class does the drawing
+     * of backgrounds using an image, gradient or solid color.  These backgrounds
+     * can make up a larger background.
+     *
+     * Instances of the class are created by one of four constructor methods,
+     * each one storing appropriate variables that describe the rectangle.
+     * When the instance needs to be drawn, the render() member method is called.
+     * A grid of RectangleRenderers can be made using the GRID constructor.
+     *
+     * Ex:
+     * dime::RectangleRenderer *myRectangleRenderer;
+     * SDL_Rect myRect;
+     * myRect.x = 0;
+     * myRect.y = 0;
+     * myRect.w = 64;
+     * myRect.h = 64;
+     * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
+     *     &myRect, 100, 100, 255);
+     * myRectangleRenderer->render(myScreen);
+     * 
+     * @author Dean Dickison (Winand)
+     */
 
-class RectangleRenderer
+    class RectangleRenderer
     
-{
-    //======================================================================
-    // Inner Classes, Typedefs, and Enums
-    //======================================================================
+    {
+        //======================================================================
+        // Inner Classes, Typedefs, and Enums
+        //======================================================================
     public:
     
-    //======================================================================
-    // Public Constants
-    //======================================================================
+        //======================================================================
+        // Public Constants
+        //======================================================================
     public:
 
-    //======================================================================
-    // Private Constants
-    //======================================================================
+        //======================================================================
+        // Private Constants
+        //======================================================================
     private:
 
-    //======================================================================
-    // Private Variables
-    //======================================================================
+        //======================================================================
+        // Private Variables
+        //======================================================================
     private:
 
-    /**
-     * Coordinates/size of the rectangle
-     */
-    Rectangle myRect;
-    /**
-     * The SDL surface keep.
-     */
-    SDL_Surface *myBitmap;
+        int myType;
 
-    int myType;
-    int myGradientType;
-    Color myColor;
-    Color myColor1;
-    Color myColor2;
-    Color myColor3;
-    Color myColor4;
+        /**
+         * Coordinates/size of the rectangle
+         */
+        SDL_Rect myRect;
+        
+        /*
+         * The colors
+         */
+        Color myColor;
+        Color myColor2;
+        Color myColor3;
+        Color myColor4;
 
-    int myColor1X;
-    int myColor1Y;
-    int myColor2X;
-    int myColor2Y;
+        int myGradientType;
 
-    // ===================================================================
-    // Public Methods
-    // ===================================================================
+       
+
+
+        int myColor1X;
+        int myColor1Y;
+        int myColor2X;
+        int myColor2Y;
+
+        // ===================================================================
+        // Public Methods
+        // ===================================================================
     public:
 
-    //----------------------------------------------------------------------
-    // Constructors
+        //----------------------------------------------------------------------
+        // Constructors
 
-    /**
-     * Creates a new RectangleRenderer using default values.
-     */
-    RectangleRenderer(int renderFlag, Rectangle *rect,
-        Uint8 red, Uint8 green, Uint8 blue);
+        /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        RectangleRenderer(int renderFlag, SDL_Rect *rect,
+                          Uint8 red, Uint8 green, Uint8 blue);
 
-    RectangleRenderer(int renderFlag, Rectangle *rect,
-        SDL_Surface *bitmapSurface, const std::string bitmapString);
+        /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        RectangleRenderer(int renderFlag, SDL_Rect *rect,
+                          Color color);
 
-    RectangleRenderer(int renderFlag, Rectangle *rect,
-        Color *color1, Color *color2, Color *color3, Color *color4);
+        /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        //RectangleRenderer(int renderFlag, SDL_Rect *rect,
+        //                SDL_Surface *surface, const std::string bitmapString);
+
+        /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        RectangleRenderer(int renderFlag, int gradientFlag, SDL_Rect *rect,
+                          Color color1, Color color2, Color color3, Color color4);
 
 
 
-    //----------------------------------------------------------------------
-    // Destructor
+        //----------------------------------------------------------------------
+        // Destructor
     
-    /**
-     * Deletes a RectangleRenderer instance.
-     */
-    ~RectangleRenderer();
+        /**
+         * Deletes a RectangleRenderer instance.
+         */
+        virtual ~RectangleRenderer();
 
-    //----------------------------------------------------------------------
-    // Getters
+        //----------------------------------------------------------------------
+        // Getters
 
-    //----------------------------------------------------------------------
-    // Setters
+        //----------------------------------------------------------------------
+        // Setters
 
-    //----------------------------------------------------------------------
-    // Other public methods	
+        //----------------------------------------------------------------------
+        // Other public methods	
 	
-	/**
-	 * Calls appropriate private function to render 
-	int render(SDL_Surface *rectScreen);
+        /**
+         * Calls appropriate private function to render 
+         */
+        int render(DrawDevice *device);
 	
-    //======================================================================
-    // Protected Methods
-    //======================================================================
+        //======================================================================
+        // Protected Methods
+        //======================================================================
     protected:
 
-    //======================================================================
-	 // Private Methods
-    //======================================================================
+        //======================================================================
+        // Private Methods
+        //======================================================================
     private:
-    //----------------------------------------------------------------------
-    // API
+        //----------------------------------------------------------------------
+        // API
 
-    /**
-     * Renders a bitmap, for now an SDL bitmap.
-     */
-    int renderBitmap(SDL_Surface *rootSurface);
+        /**
+         * Renders a bitmap, for now an SDL bitmap.
+         */
+        int renderBitmap(DrawDevice *device, SDL_Surface *surface);
 
-    /**
-     * Renders a solid color.
-     */
-    int renderFlat(SDL_Surface *rootSurface);
+        /**
+         * Renders a solid color.
+         */
+        int renderFlat(DrawDevice *device);
 
-    /**
-     * Renders a gradient, might have to be several implementations
-     */
-    int renderGradient(SDL_Surface *rootSurface);
+        /**
+         * Renders a gradient, might have to be several implementations
+         */
+        int renderGradient(DrawDevice *device);
 
-    /**
-     * Render a diagonal gradient
-     */
-    int renderDiagonalGradient(SDL_Surface *rootSurface);
+        /**
+         * Render a diagonal gradient
+         */
+        int renderDiagonalGradient(DrawDevice *device);
 
-    /**
-     * Renders a grid.  Going to be hard to do this one.
-     */
-    int renderGrid(SDL_Surface *rootSurface,
-        int nrOfColumns, int nrOfRows, float splitLineRelativePosition[2][2],
-        int splitLineOffsetPosition[2][2],
-        dime::RectangleRenderer *rectangleGrid[3][3]);
-
-    /**
-     * A regular old pixel drawing function, stolen from a libsdl tutorial.
-     */
-    void drawPixel(SDL_Surface *screen, int x, int y, Uint32 color);
-
-    /**
-     * Draws a gradient.
-     */
-    int drawScene(SDL_Surface *rootSurface);
-
-    /**
-     * These lock or unlock a surface, dunno why they're needed.
-     */
-    int sLock(SDL_Surface *rootSurface);
-    int sULock(SDL_Surface *rootSurface);
-
-
-    //======================================================================
-    // Disabled constructors and operators
-    //======================================================================
+        /**
+         * Renders a grid.  Going to be hard to do this one.
+         */
+        int renderGrid(DrawDevice *device,
+                       int cols,
+                       int rows);
+                       /*int numOfColumns, int numOfRows, float splitLineRelativePosition[2][2],
+                         int splitLineOffsetPosition[2][2],
+                         dime::RectangleRenderer *rectangleGrid[3][3]);*/
+                       
+        
+        //======================================================================
+        // Disabled constructors and operators
+        //======================================================================
     private:
 
 
-};  // End of class
+    };  // End of class
 
 }   // End of application namespace
 

@@ -73,22 +73,22 @@ DLLTOOL = @DLLTOOL@
 ECHO = echo
 ERIS_CFLAGS = -I/usr/local/include
 ERIS_CONFIG = /usr/local/bin/eris-config
-ERIS_LIBS = -L/usr/local/lib -leris -lwfmath
+ERIS_LIBS = -L/usr/local/lib -leris
 EXEEXT = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
-MAKEINFO = /home/adam/Projects/forge/clients/dime/missing makeinfo
+MAKEINFO = /home/nikal/dev/forge/clients/dime/missing makeinfo
 OBJDUMP = @OBJDUMP@
 OBJEXT = o
 PACKAGE = Dime
 RANLIB = ranlib
-SDL_CFLAGS = -I/usr/include/SDL -D_REENTRANT
-SDL_CONFIG = /usr/bin/sdl-config
-SDL_LIBS = -L/usr/lib -lSDL -lpthread
-SIGC_CFLAGS = -I/usr/lib/sigc++-1.0/include -I/usr/include/sigc++-1.0
-SIGC_CONFIG = /usr/bin/sigc-config
-SIGC_LIBS = -lsigc -lpthread
-SIGC_MACROS = -I /usr/include/sigc++-1.0/sigc++/macros
+SDL_CFLAGS = -I/usr/local/include -I/usr/local/include/SDL -D_REENTRANT
+SDL_CONFIG = /usr/local/bin/sdl-config
+SDL_LIBS = -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL -lpthread
+SIGC_CFLAGS = -I/usr/local/lib/sigc++-1.0/include -I/usr/local/include/sigc++-1.0
+SIGC_CONFIG = /usr/local/bin/sigc-config
+SIGC_LIBS = -L/usr/local/lib -lsigc -lpthread
+SIGC_MACROS = -I /usr/local/include/sigc++-1.0/sigc++/macros
 STRIP = strip
 VERSION = 0.0.1
 
@@ -105,13 +105,13 @@ LIBRARIES =  $(noinst_LIBRARIES)
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../../..
 CPPFLAGS = 
-LDFLAGS =  -L/usr/lib -lSDL -lpthread -lsigc -lpthread -L/usr/local/lib -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -L/usr/local/lib -leris -lwfmath -L/usr/local/lib -lcppunit
+LDFLAGS =  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL -lpthread -L/usr/local/lib -lsigc -lpthread -L/usr/local/lib -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -L/usr/local/lib -leris -L/usr/local/lib -lcppunit
 LIBS = -lSDL_ttf -lSDL_mixer -lSDL_image 
 libGuiService_a_LIBADD = 
 libGuiService_a_OBJECTS =  GuiService.$(OBJEXT) Widget.$(OBJEXT) \
 Container.$(OBJEXT)
 AR = ar
-CXXFLAGS = -g -O2 -I/usr/include/SDL -D_REENTRANT -I/usr/lib/sigc++-1.0/include -I/usr/include/sigc++-1.0 -I/usr/local/include -I/usr/local/include -I/usr/local/include -I/usr/local/include
+CXXFLAGS = -g -O2 -I/usr/local/include -I/usr/local/include/SDL -D_REENTRANT -I/usr/local/lib/sigc++-1.0/include -I/usr/local/include/sigc++-1.0 -I/usr/local/include -I/usr/local/include -I/usr/local/include -I/usr/local/include
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)

@@ -24,7 +24,7 @@
 // the algo for this is stolen from Frederic Ntwaniga's code, (a good friend of mine)
 // and I believe he stole it from the SDL Documentation site.
 
-void SDLDrawDevice::drawPixel(int x, int y, Color color)
+void dime::SDLDrawDevice::drawPixel(int x, int y, dime::Color color)
 {
     Uint32 myColor = SDL_MapRGB(mySurface->format, 
                                 (Uint8)color.getR(), 
@@ -84,7 +84,7 @@ void SDLDrawDevice::drawPixel(int x, int y, Color color)
 // the algo for this is stolen from Frederic Ntwaniga's code, (a good friend of mine)
 // and I believe he stole it from some university's site, credit goes out to whoever wrote this.
 
-void SDLDrawDevice::drawLine(int x1, int y1, int x2, int y2, Color color)
+void dime::SDLDrawDevice::drawLine(int x1, int y1, int x2, int y2, dime::Color color)
 {
     int dy;
     int dx;
@@ -122,17 +122,17 @@ void SDLDrawDevice::drawLine(int x1, int y1, int x2, int y2, Color color)
     }
 }
 
-void SDLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL_Surface *src)
+void dime::SDLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL_Surface *src)
 {
     SDL_BlitSurface(src, srcRect, mySurface, destRect);
 }
 
-void SDLDrawDevice::update()
+void dime::SDLDrawDevice::update()
 {
     SDL_UpdateRect(mySurface, 0, 0, mySurface->w, mySurface->h);
 }
 
-void SDLDrawDevice::fillRect(SDL_Rect *destRect, Color color)
+void dime::SDLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
 {
     Uint32 myColor = SDL_MapRGB(mySurface->format,
                                 (unsigned char)color.getR(),
@@ -141,11 +141,11 @@ void SDLDrawDevice::fillRect(SDL_Rect *destRect, Color color)
     SDL_FillRect(mySurface, destRect, myColor);
 }
 
-void SDLDrawDevice::gradientRect(SDL_Rect *destRect, 
-                                 Color leftTop, 
-                                 Color rightTop, 
-                                 Color leftBottom, 
-                                 Color rightBottom)
+void dime::SDLDrawDevice::drawGradient(SDL_Rect *destRect, 
+                                 dime::Color leftTop, 
+                                 dime::Color rightTop, 
+                                 dime::Color leftBottom, 
+                                 dime::Color rightBottom)
 {
 	int x1 = destRect->x;
 	int x2 = destRect->x+destRect->w;

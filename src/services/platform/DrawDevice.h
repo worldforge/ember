@@ -68,8 +68,8 @@ public:
     
     /*
      * Fills destRect with a gradient produces from the four colors
-     *;/
-    virtual void gradientRect(SDL_Rect *destRect,
+     */
+    virtual void drawGradient(SDL_Rect *destRect,
                               Color leftTop, 
                               Color rightTop, 
                               Color leftBottom, 

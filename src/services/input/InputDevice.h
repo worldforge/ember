@@ -182,6 +182,7 @@ class InputDevice
 
 	DeviceType getType();
 	int getAxisCount();
+        int getAxis(int axis);
 	int getAxisPosition(int axis);
 	float getAxisScaledPosition(int axis);
 
