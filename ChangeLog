@@ -1,3 +1,9 @@
+2003-10-15 Eric Sandall <eric [at] sandall [dot] us>
+	* src/services/config/ConfigService.cpp: Fix an ambiguous overload
+	(needing typecasting to std::string)
+	* src/services/font/Font.cpp: Tried to use assert() without including
+	assert.h
+
 2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* resources.cfg: added file: OgreCore.zip
 	* Serverservice.h: added declaration for TOUCH command
