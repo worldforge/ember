@@ -1,0 +1,7 @@
+These are patches needed to get ogre working with dime. Eventually these patches will be incorporated into the main ogre code base, thus removing the need for these files. Apply these in your ogre source tree before compiling. They should work with ogre cvs <= 2004-08-01
+
+Apply OgreMain.diff under $OGRE_SRC_DIR/OgreMain
+Apply OctreeSceneManager.diff under $OGRE_SRC_DIR/Plugins/OctreeSceneManager
+
+
+
