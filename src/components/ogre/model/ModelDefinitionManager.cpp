@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+
+//perhaps this will make it build in debug mode without getting memory manager compile errors...
+#include <OgreNoMemoryMacros.h>
+
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
 
