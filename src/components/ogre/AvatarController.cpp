@@ -56,17 +56,10 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mAvatarCamera(NULL)
 {
 	setAvatar(avatar);
-	mUpdateInterval = 1.0;
-	mTimeToUpdate = mUpdateInterval;
-/*	mMouseButton0Pressed = false;
-	mMouseButton1Pressed = false;
-	mMouseButton2Pressed = false;
-*/
+	
 	//AvatarController* avatarController = this;
 	//DimeOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
 	createAvatarCameras(avatar->getAvatarSceneNode());
-//	mInputManager->addMouseListener(this);
-//	mInputManager->setAvatarController(this);
 	mAvatar->setAvatarController(this);
 	
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -152,12 +145,12 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 	
 }
 
-DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputReader* inputReader) 
+DimeEntity* AvatarController::doMousePicking(const Ogre::MouseEvent* event) 
 {
 //	Real mouseX = inputReader->getMouseX();
 //	Real mouseY = inputReader->getMouseY();
-	Real mouseX;
-	Real mouseY;
+	Real mouseX = event->getX();
+	Real mouseY = event->getY();
 	
 	// Start a new ray query 
 	Ray cameraRay = getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
@@ -230,85 +223,7 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 	
 }
 
-void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* inputReader) {
 
-/*	if (mMouseButton0Pressed) {
-		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
-		if ( dimeEntity == NULL ) {    
-	     	// Nada! 
-			Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
-		} else { 
-			std::string aString;
-			aString = "OgreID: " + dimeEntity->getSceneNode()->getName();
-			aString += " ErisID: " + dimeEntity->getID();
-			aString += " ErisName: " + dimeEntity->getName();
-			Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
-		} 	
-	} else if (mMouseButton1Pressed) {
-		//we should expand this into some kind of chooser of what action will be taken
-		//perhaps by using a small dropdownlist
-		//waiting for CEGUI...
-		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
-		if (dimeEntity != NULL) {
-			mAvatar->touch(dimeEntity);
-		}
-	}
-	*/
-}
-
-
-//void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader* inputReader) {
-// 	//TODO refactor into a 3d person view class thing
-// 	
-// 	/*this is in percent how much of the border areas that are "hot", i.e. makes the 
-// 	 * view rotate when the mouse moves over them.
-// 	 * Think of it as a picture frame.
-// 	 */
-//	const float sizeOfHotBorder = .25;
-//
-//	/*this is in percent how much of the border that makes the movement max out
-//	 */										
-//	const float sizeOfMaxHotBorder = .05;
-//	
-//	/* Max movement per second. I guess this is in degrees, but I'm not sure. 
-//	 * Seemed as a nice value though
-//	 */
-//	const float maxMovement = 50; 
-//	
-//	int screenX = Root::getSingleton().getAutoCreatedWindow()->getWidth();
-//	int screenY = Root::getSingleton().getAutoCreatedWindow()->getHeight();
-//	
-//	//we must use this obscure method, else all other overlays would "obstruct"
-//	//the mouse pointer, giving us no data
-//	float mouseX = mInputManager->getMouseX();
-//	float mouseY = mInputManager->getMouseY();
-//	
-//	float diffX = 0.0, diffY = 0.0;
-//	
-//	
-//	//this calculates how close the pointer is to the border and determines how
-//	//much we should move
-//	if (mouseX <= sizeOfHotBorder) {
-//		diffX = (mouseX <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseX) / sizeOfHotBorder);
-//	} else if (mouseX >= 1 - sizeOfHotBorder) {
-//		diffX = (1.0 - mouseX <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseX - 1.0)) / sizeOfHotBorder) * maxMovement;
-//	}	
-//	if (mouseY <= sizeOfHotBorder) {
-//		diffY = (mouseY <= sizeOfMaxHotBorder) ? (maxMovement) : maxMovement * ((sizeOfHotBorder - mouseY) / sizeOfHotBorder);
-//	} else if (mouseY >= 1 - sizeOfHotBorder) {
-//		diffY = (1.0 - mouseY <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseY - 1.0)) / sizeOfHotBorder) * maxMovement;
-//	}	
-//			
-////	movementForFrame.rotationDegHoriz = diffX;
-////	movementForFrame.rotationDegVert = diffY;
-////	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
-//	
-//	//we do the camera pitch instantly and correct the avatar to the new position 
-//	//when it's suitable
-//	mAvatar->getAvatarCamera()->yaw(diffX * event.timeSinceLastFrame);
-//	mAvatar->getAvatarCamera()->pitch(diffY * event.timeSinceLastFrame);
-////	movementForFrame.cameraOrientation = mAvatar->getAvatarCamera()->getOrienation();
-//}
 
 
 void AvatarController::keyPressed (Ogre::KeyEvent *e)
