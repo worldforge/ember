@@ -24,7 +24,7 @@
 #include "MathConverter.h"
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
-#include "DimeTerrainRenderable.h"
+//#include "DimeTerrainRenderable.h"
 #include "TerrainShader.h"
 #include "DimeTerrainPageSource.h"
 

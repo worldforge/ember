@@ -32,7 +32,7 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include "services/platform/DrawDevice.h"
+//#include "services/platform/DrawDevice.h"
 #include "framework/ConsoleBackend.h"
 //#include "framework/Component.h"
 

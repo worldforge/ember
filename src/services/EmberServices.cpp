@@ -20,10 +20,10 @@
 #include "config.h"
 #endif
 
-#include "test/TestService.h"
+//#include "test/TestService.h"
 #include "logging/LoggingService.h"
 #include "config/ConfigService.h"
-#include "input/InputService.h"
+//#include "input/InputService.h"
 //#include "gui/GuiService.h"
 #include "sound/SoundService.h"
 #include "metaserver/MetaserverService.h"
@@ -76,10 +76,12 @@ DimeServices* DimeServices::theInstance = NULL;
     return myConfigService;
   }
 
-  InputService* DimeServices::getInputService()
+/*  InputService* DimeServices::getInputService()
   {
     return dime::InputService::getInstance();
   }
+  */
+
 /*
   GuiService* DimeServices::getGuiService()
   {

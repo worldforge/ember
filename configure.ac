@@ -285,13 +285,12 @@ AC_CONFIG_FILES([Makefile
 		 src/services/metaserver/Makefile
 		 src/services/server/Makefile
 		 src/services/sound/Makefile
-		 test/Makefile
-		 src/main/Makefile
 		 ember.dox
 		 ember.spec
 		 src/components/ogre/Makefile
 ])
 
+#		 src/tests/Makefile
 #		 src/components/text/Makefile
 #		 src/services/input/Makefile
 #		 src/services/image/Makefile

@@ -45,8 +45,6 @@
 //#include "DimeEntityFactory.h"
 //#include "EntityListener.h"
 
-#include "Console.h"
-
 #include "InputManager.h"
 
 using dime::LoggingService;

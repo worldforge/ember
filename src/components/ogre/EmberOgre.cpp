@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.55  2004-11-03 02:01:14  erik
+ *      Revision 1.56  2004-11-03 19:38:02  erik
+ *      2004-11-03 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Removed references to unused files.
+ *      * Various fixes in preparation for distribution.
+ *
+ *      Revision 1.55  2004/11/03 02:01:14  erik
  *      2004-11-03 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -462,7 +469,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TerrainGenerator.h"
 
 #include "InputManager.h"
-#include "Console.h"
+
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
 #include "AvatarController.h"
