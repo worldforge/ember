@@ -1,0 +1,4 @@
+2002-03-27 Dan Tomalesky <grim@xynesis.com>
+    * Added eris into configure.in and added the m4 macro for eris into 
+      acinclude.m4 so that configure reports nicely that you don't have it
+      instead of crazy automake errors.
