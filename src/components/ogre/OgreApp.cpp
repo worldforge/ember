@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.14  2003-04-22 22:35:33  nikal
+ *      Revision 1.15  2003-04-23 21:47:33  aglanor
+ *      Added a new FrameListener capable of switching between modes.
+ *
+ *      Revision 1.14  2003/04/22 22:35:33  nikal
  *      changes for aglanor
  *
  *      Revision 1.13  2003/04/19 21:26:14  nikal
@@ -58,7 +61,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include OGRE dime client files
 // ------------------------------
+#include "DimeOgreFrameListener.h"
 #include "OgreGameView.h"
+
 
 // ------------------------------
 // Include dime header files
@@ -602,6 +607,11 @@ void OgreApplication::createScene(void)
 
 void OgreApplication::createFrameListener(void)
 {
+
+	DimeOgreFrameListener* dimeOgreFrameListener = new DimeOgreFrameListener(mWindow, mCamera, false, false);
+	mRoot->addFrameListener(dimeOgreFrameListener);
+
+	/*
 	MouseFrameListener* mouseFrameListener = new MouseFrameListener(mWindow, mCamera, false);
 	mRoot->addFrameListener(mouseFrameListener);
 	mFrameListener= new TerrainListener(mWindow, mCamera);
@@ -609,7 +619,7 @@ void OgreApplication::createFrameListener(void)
 	CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
 	mRoot->addFrameListener(cameraFrameListener);
 	DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera, this);
-	mRoot->addFrameListener(dimeFrameListener);
+	mRoot->addFrameListener(dimeFrameListener);*/
 
 #if 0
     CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
