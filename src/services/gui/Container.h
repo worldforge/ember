@@ -115,18 +115,18 @@ class Container : Widget
 	/**
 	 * Tells the children widgets in myChildren to draw themselves.
 	 */
-	int Draw();
+	virtual int draw();
 
 	/**
 	 * Adds a new child widget to myChildren.
 	 */
-	void AddWidget(Widget* source);
+	void addWidget(Widget* source);
 	
 	/**
 	 * Removes pointer to widget from myChildren.
 	 * 
 	 */
-	int dime::Container::RemoveWidget(Widget* destructee);
+	int removeWidget(Widget* target);
 
 }; // End of class
 

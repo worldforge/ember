@@ -1,9 +1,9 @@
 #include "Widget.h"
 #include "Container.h"
 
-void dime::Widget::SetParent(Container* parent)
+void dime::Widget::setParent(Container* parent)
 {
-	if (myParent != NULL) myParent->RemoveWidget(this); // Remove this Widget's previous listing before changing parents.
+	if (myParent != NULL) myParent->removeWidget(this); // Remove this Widget's previous listing before changing parents.
 	
 	assert(parent);
 	myParent = parent;
@@ -29,5 +29,5 @@ dime::Widget &dime::Widget::operator= ( const dime::Widget &source )
 
 dime::Widget::~Widget()
 {
-	myParent->RemoveWidget(this);
+	myParent->removeWidget(this);
 }

@@ -104,7 +104,7 @@ class GuiService : public Service
 	/**
 	 * Draws the GUI
 	 */
-	int Draw();
+	int refresh();
 	
     //----------------------------------------------------------------------
     // Methods inherited from Service

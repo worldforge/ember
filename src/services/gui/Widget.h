@@ -176,7 +176,7 @@ class Widget
 	/**
 	 * Returns a pointer to the parent of this Widget
 	 */
-	Container* GetParent()
+	Container* getParent()
 	{
 		return myParent;
 	}
@@ -236,7 +236,7 @@ class Widget
 	/**
 	 * Sets the pointer to the parent widget
 	 */
-	void SetParent(Container* parent);
+	void setParent(Container* parent);
 
 	/**
 	 * Sets theX position for this Widget
@@ -292,7 +292,7 @@ class Widget
 	/**
 	* Draws the widget, and/or its children.
 	*/
-    virtual int Draw() = 0;
+    virtual int draw() = 0;
 
 
 }; // End of class

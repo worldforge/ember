@@ -1,6 +1,6 @@
 #include "GuiService.h"
 
-int dime::GuiService::Draw()
+int dime::GuiService::refresh()
 {
-	return myRootWidget.Draw();
+	return myRootWidget.draw();
 }
