@@ -17,7 +17,7 @@ ConsoleWidget::~ConsoleWidget()
 void ConsoleWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("widgets/ConsoleWidget.xml", "Console/");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/widgets/ConsoleWidget.xml", "Console/");
 	mMainWindow->setAlwaysOnTop(true);
 	
 	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild("Console/InputBox"));
@@ -107,7 +107,7 @@ bool ConsoleWidget::consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& ar
 bool ConsoleWidget::consoleTextBox_KeyUp(const CEGUI::EventArgs& args)
 {
 	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
-	fprintf(stderr, (std::string("CEGUI - KEY UP:") + keyargs.scancode + "\n").c_str());
+//	fprintf(stderr, (std::string("CEGUI - KEY UP:") + keyargs.scancode + "\n").c_str());
 
 /*
 	//TODO: add history handling

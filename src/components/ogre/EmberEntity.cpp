@@ -54,7 +54,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	
 	
 	// set the Ogre node position and orientation based on Atlas data
-	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
+	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 	Ogre::Quaternion orientation = Atlas2Ogre(getOrientation());
 	getSceneNode()->setOrientation(orientation);
 	std::cout << "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
@@ -88,7 +88,7 @@ void EmberEntity::createSceneNode()
 
 void EmberEntity::onMoved()
 {
-	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
+	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getViewOrientation()));
 	Eris::Entity::onMoved();
 	/*
@@ -119,15 +119,28 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
         Eris::Entity::onTalk(talkArgs);
 		return;
     }
+	
+	mSuggestedResponses.clear();
+	if (talkArgs->hasAttr("responses")) {
+		if (talkArgs->getAttr("responses").isList()) {
+			const Atlas::Message::ListType & responseList = talkArgs->getAttr("responses").asList();
+			Atlas::Message::ListType::const_iterator I = responseList.begin();
+			for(; I != responseList.end(); ++I) {
+				mSuggestedResponses.push_back(I->asString());
+			}
+		
+		}
+	}
+	
 	std::string msg = talkArgs->getAttr("say").asString();
     
 
 
+	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 	std::string message = "<";
 	message.append(getName());
 	message.append("> ");
 	message.append(msg);
-	GUIManager::getSingleton().AppendIGChatLine.emit(message);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 	Eris::Entity::onTalk(talkArgs);
@@ -226,6 +239,16 @@ bool EmberEntity::allowVisibilityOfMember(EmberEntity* entity) {
 	return true;
 }
 
+std::vector< std::string > EmberEntity::getSuggestedResponses( ) const
+{
+	return mSuggestedResponses;
+}
+
+bool EmberEntity::hasSuggestedResponses( ) const
+{
+	return mSuggestedResponses.size() > 0;
+}
+
 /*
 void EmberEntity::addMember(Entity *e) 
 {
@@ -273,4 +296,8 @@ void EmberEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
 
 */
 }
+
+
+
+
 

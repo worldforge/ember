@@ -23,7 +23,23 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.65  2004-11-17 21:09:11  erik
+ *      Revision 1.66  2005-01-04 23:02:36  erik
+ *      2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* moved all use of terrain coordinates, both in ogre and in atlas, to the common class TerrainPosition
+ *      	* (EmberTerrainSceneManager.cpp) increased the page offset
+ *      	* ember now loads all terrain at start, this might be slow on older machines. In the future we'll implement a paging mechanism.
+ *      	* removed WF2OGRE_VECTOR3 macros
+ *      	* moved to CEGUI 0.1.0, which uses ogre's resource system, thus making it easier to manage resources. This prompted some changes to the paths for gui elements.
+ *      	* (DebugWidget)minor modifications
+ *      	* (AvatarCamera)added method to get the screen coords for a given entity
+ *      	* implement the use of EmberOgrePrerequisites.h
+ *      	* (EmberEntity)added support for suggested responses from the server when an entity says something
+ *      	* (EmberEntityFactory, EmberOgre)added method for accessing the world entity
+ *      	* added IngameChatWidget for displaying "bubbles" over NPC's head when they speak
+ *      	* (ServerService)better use of the wield op
+ *
+ *      Revision 1.65  2004/11/17 21:09:11  erik
  *      2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* added output of the eris log to debug widget
@@ -534,6 +550,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DebugListener.h"
 #include "GUIManager.h"
 
+#include "EmberEntity.h"
+#include "WorldEmberEntity.h"
+
 
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
@@ -1016,6 +1035,16 @@ Ogre::Root* EmberOgre::getOgreRoot()
 	return mRoot;
 }
 
+Ogre::SceneNode * EmberOgre::getWorldSceneNode( )
+{
+	return mEmberEntityFactory->getWorld()->getSceneNode();
+/*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
+	//TODO: implement better exception handling
+	if (node == 0)
+		throw Exception();
+	return node;*/
+}
+
 AvatarCamera* EmberOgre::getMainCamera()
 {
 	return mAvatar->getAvatarCamera();
@@ -1112,5 +1141,6 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
 
 

@@ -73,7 +73,7 @@ void MotionManager::updateMotionForEntity(EmberPhysicalEntity* entity, Ogre::Rea
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	//sceneNode->setOrientation(Atlas2Ogre(entity->getOrientation()));
 //	sceneNode->translate(sceneNode->getOrientation() * (WF2OGRE(velocity) * timeSlice));
-	sceneNode->translate(WF2OGRE(velocity) * timeSlice);
+	sceneNode->translate(velocity * timeSlice);
 	entity->adjustHeightPosition();
 	//adjustHeightPositionForNode(sceneNode);
 }
@@ -82,8 +82,9 @@ void MotionManager::adjustHeightPositionForNode(Ogre::SceneNode* sceneNode) {
 	Ogre::Vector3 position = sceneNode->getPosition();
 	//get the height from Mercator through the TerrainGenerator
 	assert(mTerrainGenerator);
-	float height = mTerrainGenerator->getHeight(OGRE2WF(position.x), OGRE2WF(position.z));
-	sceneNode->setPosition(position.x, WF2OGRE(height),position.z);
+	TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+	float height = mTerrainGenerator->getHeight(pos);
+	sceneNode->setPosition(position.x, height,position.z);
 
 }
 

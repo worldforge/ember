@@ -29,6 +29,8 @@ public:
  	
  	const std::string getName() const;
 	
+	const SubEntitySet& getSubentities() const;
+
 protected:
 	std::string mName;
 	SubEntitySet mSubEntities;

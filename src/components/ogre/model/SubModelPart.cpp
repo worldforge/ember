@@ -45,5 +45,10 @@ void SubModelPart::hide()
 	}	
 }
 
+const SubModelPart::SubEntitySet& SubModelPart::getSubentities() const
+{
+	return mSubEntities;
+}
+
 }
 

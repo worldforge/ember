@@ -1,0 +1,21 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+	<Window Type="DefaultGUISheet" Name="MainWindow">
+		<Property Name="Size" Value="w:0.3 h:0.3" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		
+		<Window Type="TaharezLook/StaticText" Name="Text">
+			<Property Name="Position" Value="x:0 y:0" /> 
+			<Property Name="Size" Value="w:0.4 h:1" /> 
+			<Property Name="InheritsAlpha" Value="true" /> 
+			<Property Name="HorzFormatting" Value="WordWrapLeftAligned" /> 
+			<Property Name="VertFormatting" Value="TopAligned" /> 
+			<Property Name="FrameEnabled" Value="False" /> 
+		</Window>
+		<Window Type="DefaultGUISheet" Name="ResponseList">
+			<Property Name="Position" Value="x:0.6 y:0" /> 
+			<Property Name="Size" Value="w:0.4 h:1" /> 
+			<Property Name="InheritsAlpha" Value="true" /> 
+		</Window>
+	</Window>
+ </GUILayout> 

@@ -52,28 +52,31 @@ void Foliage::setVisible(bool visible)
 
 
 //This is all very quick and messy, to be replaced by something better in the future
-void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
+void Foliage::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent)
 {
+
+	mExtentMin = minExtent;
+	mExtentMax = maxExtent;
+
+	Ogre::Vector3 startPosition = Atlas2Ogre(minExtent);
+	Ogre::Vector3 endPosition = Atlas2Ogre(maxExtent);
+
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 	int submeshSize = (int)configSrv->getValue("foliage", "submeshsize");
 	double grassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
 	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
-
-	Ogre::Root::getSingleton().addFrameListener(this);
+	
+	
 
 	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
-	long xStart = segmentXStart * 64;
-	long zStart = segmentZStart * 64;
-	
-	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), submeshSize, Ogre::Vector3(0,0,0));
+
+	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(endPosition.x - startPosition.x,0, startPosition.z - endPosition.z ), submeshSize, Ogre::Vector3(0,0,0));
 	
 	double spaceBetween = grassSpacing;
 	
-	long i_end = xStart + numberOfSegments * 64;
-	long j_end = zStart + numberOfSegments * 64;
-	for (double i = xStart; i < i_end; i = i + spaceBetween) {
-		for (double j = zStart; j < j_end; j = j + spaceBetween) {
+	for (double i = startPosition.x; i < endPosition.x; i = i + spaceBetween) {
+		for (double j = endPosition.z; j < startPosition.z; j = j + spaceBetween) {
 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real random = Ogre::Math::UnitRandom();
@@ -88,7 +91,8 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 				typeOfGrass = "bittergrass";
 			}
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/small_plant/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/small_plant/") + typeOfGrass + "/low.mesh");
-			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(xPos,zPos), zPos);
+			TerrainPosition pos(xPos,zPos);
+			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(pos), zPos);
 			Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE * Ogre::Math::RangeRandom(0.8f, 1.0f);
 			instance->vScale = scale;
 			Ogre::Quaternion rotation;
@@ -99,10 +103,8 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 	}
 	
 	spaceBetween = bushSpacing;
-	i_end = xStart + numberOfSegments * 64;
-	j_end = zStart + numberOfSegments * 64;
-	for (double i = xStart; i < i_end; i = i + spaceBetween) {
-		for (double j = zStart; j < j_end; j = j + spaceBetween) {
+	for (double i = startPosition.x; i < endPosition.x; i = i + spaceBetween) {
+		for (double j = endPosition.z; j < startPosition.z; j = j + spaceBetween) {
 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real random = Ogre::Math::UnitRandom();
@@ -117,7 +119,8 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 				typeOfGrass = "bittergrass";
 			}
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
-			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(xPos,zPos), zPos);
+			TerrainPosition pos(xPos,zPos);
+			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(pos), zPos);
 			Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE * Ogre::Math::RangeRandom(0.8f, 1.0f);
 			//make the patches a bit smaller
 			instance->vScale = scale * 0.5;
@@ -130,6 +133,8 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 	mGround->setCullParameters(cullDistance, cullDistance, 120);
 	mGround->compile();
 	mGround->update(mCamera);
+
+	Ogre::Root::getSingleton().addFrameListener(this);
 		
 }
 

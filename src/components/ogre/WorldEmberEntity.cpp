@@ -64,13 +64,16 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	//mOgreNode = mSceneManager->getRootSceneNode();
 	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);
-	mTerrainGenerator->prepareAllSegments(false);
+	mTerrainGenerator->prepareAllSegments(true);
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage")) {
 		mFoliage = new Foliage(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 		bool vis = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
-		mFoliage->generateUnderVegetation(-2, -2, 4);
-		mFoliage->setVisible(vis);
+		if (vis) {
+			mFoliage->generateUnderVegetation(mTerrainGenerator->getMin(), mTerrainGenerator->getMax());
+			mFoliage->setVisible(vis);
+		}
+//		mFoliage->setVisible(vis);
 	}
 	
 	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
@@ -87,8 +90,9 @@ void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const e
 	Ogre::Vector3 position = sceneNode->getPosition();
 	//get the height from Mercator through the TerrainGenerator
 	assert(mTerrainGenerator);
-	float height = mTerrainGenerator->getHeight(OGRE2WF(position.x), OGRE2WF(position.z));
-	sceneNode->setPosition(position.x, WF2OGRE(height),position.z);
+	TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+	float height = mTerrainGenerator->getHeight(pos);
+	sceneNode->setPosition(position.x, height,position.z);
 
 }
 

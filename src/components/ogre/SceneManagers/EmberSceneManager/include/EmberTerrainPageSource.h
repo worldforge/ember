@@ -46,7 +46,7 @@ protected:
 	Ogre::ushort mX;
 	Ogre::ushort mZ;
 	bool mHasTerrain;
-	void generatePage(int x, int y);
+	void generatePage(TerrainPosition& atPosition);
 	EmberTerrainSceneManager* getEmberTerrainSceneManager() const;
 
 public:
@@ -63,7 +63,7 @@ public:
 	 * Returns false if no page at that place has been initialized through Mercator
 	 * Don't forget to call resizeTerrain() after adding pages.
 	 */
-	bool pushPage(int x, int y);
+	bool pushPage(TerrainPosition& point);
 	
 	/*
 	 * Resizes the octree in the scenemanager.

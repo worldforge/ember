@@ -19,6 +19,7 @@
 #include "EmberTerrainSceneManager.h"
 
 #include "EmberTerrainPageSource.h"
+#include "components/ogre/EmberOgrePrerequisites.h"
 
 using namespace Ogre;
 namespace EmberOgre {
@@ -52,57 +53,70 @@ void EmberTerrainPageSource::expirePage(Ogre::ushort x, Ogre::ushort z)
 {
 }
 
-void EmberTerrainPageSource::generatePage(int x, int y)
+void EmberTerrainPageSource::generatePage(TerrainPosition& point)
 {
-	int arraySize = (mPageSize) *(mPageSize);
-	Ogre::Real heightData[arraySize] ;
-	long xStart = x * (mPageSize-1);
-	long yStart = y * (mPageSize-1);
-	long xIter, yIter;
-	int pointer = 0;
-	
-	for (yIter = yStart; yIter < (yStart + mPageSize); ++yIter) {
-		for (xIter = xStart; xIter < (xStart + mPageSize); ++xIter) {
-			Ogre::Real height = mGenerator->getHeight(xIter, yIter) / 100;
-			heightData[pointer++] = height;
+	Ogre::Material* material = mGenerator->getMaterialForSegment(point);
+	if (material == 0) {
+		std::cerr << "No material found for page at position: " << point << std::endl;
+	} else {
+		Ogre::Vector3 vector = Atlas2Ogre(point);
+		//we have to do this in order to align the pages correctly
+		vector.z = vector.z - 1;
+		int arraySize = (mPageSize) *(mPageSize);
+		Ogre::Real heightData[arraySize] ;
+		long xStart = (long)vector.x * (mPageSize - 1);
+		long zStart = (long)vector.z * (mPageSize - 1);
+		long xIter, zIter;
+		int pointer = 0;
+		
+		for (zIter = zStart; zIter < (zStart + mPageSize); ++zIter) {
+			for (xIter = xStart; xIter < (xStart + mPageSize); ++xIter) {
+				Ogre::Vector3 _pos(xIter, 0, zIter);
+				TerrainPosition pos = Ogre2Atlas_TerrainPosition(_pos);
+				Ogre::Real height = mGenerator->getHeight(pos);
+				heightData[pointer++] = height / 100.0;
+			}
 		}
+		TerrainPage* page = buildPage(heightData, material);
+	/*	page->tiles[0][0]->setCastShadows(false);
+		page->tiles[0][1]->setCastShadows(false);
+		page->tiles[1][0]->setCastShadows(false);
+		page->tiles[1][1]->setCastShadows(false);*/
+		
+		getEmberTerrainSceneManager()->attachPage((long)vector.x, (long)vector.z, page, mGenerator->getMaxHeightForSegment(point), mGenerator->getMinHeightForSegment(point));
 	}
-	Ogre::Material* material = mGenerator->getMaterialForSegment(x, -y - 1 );
-	assert(material);
-	TerrainPage* page = buildPage(heightData, material);
-/*	page->tiles[0][0]->setCastShadows(false);
-	page->tiles[0][1]->setCastShadows(false);
-	page->tiles[1][0]->setCastShadows(false);
-	page->tiles[1][1]->setCastShadows(false);*/
-	
-	getEmberTerrainSceneManager()->attachPage(x, y, page, mGenerator->getMaxHeightForSegment(x,y), mGenerator->getMinHeightForSegment(x,y));
-
 	
 }
 
 void EmberTerrainPageSource::setHasTerrain(bool hasTerrain)
 {
+	//TODO: check with the maximum defined terrain first so we won't get any segfaults
 	mHasTerrain = hasTerrain;	
-
-//	generatePage(-1, -1);
-	int size = 3;
-//	this is temporary until we've got paging working
-	for (int i = 0 - size; i <= 0 + size; ++i) {
-		for (int j = 0 - size; j <= 0 + size; ++j) {
-			mX = i;
-			mZ = j;
-			generatePage(i, j);
-
-		}
-	}
-	resizeTerrain();
+// 	generatePage(0,0);
+// 	generatePage(0,1);
+// 	generatePage(-1,0);
+// 	generatePage(-1,1);
+// 	resizeTerrain();
+// 	return;
+// //	generatePage(-1, -1);
+// 	int size = 1;
+// //	this is temporary until we've got paging working
+// 	for (int i = 0 - size; i <= 0 + size; ++i) {
+// 		for (int j = 0 - size; j <= 0 + size; ++j) {
+// 			mX = i;
+// 			mZ = j;
+// 			generatePage(i, j);
+// 
+// 		}
+// 	}
+// 	resizeTerrain();
 	
 }
 
-bool EmberTerrainPageSource::pushPage(int x, int y)
+bool EmberTerrainPageSource::pushPage(TerrainPosition& point )
 {
-	if (mGenerator->isValidTerrainAt(x, y)) {
-		generatePage(x, y);
+	if (mGenerator->isValidTerrainAt(point)) {
+		generatePage(point);
 	} else {
 		return false;
 	}

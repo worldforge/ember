@@ -1,3 +1,20 @@
+2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* moved all use of terrain coordinates, both in ogre and in atlas, to the common class TerrainPosition
+	* (EmberTerrainSceneManager.cpp) increased the page offset
+	* ember now loads all terrain at start, this might be slow on older machines. In the future we'll implement a paging mechanism.
+	* removed WF2OGRE_VECTOR3 macros
+	* moved to CEGUI 0.1.0, which uses ogre's resource system, thus making it easier to manage resources. This prompted some changes to the paths for gui elements.
+	* (DebugWidget)minor modifications
+	* (AvatarCamera)added method to get the screen coords for a given entity
+	* implement the use of EmberOgrePrerequisites.h
+	* (EmberEntity)added support for suggested responses from the server when an entity says something
+	* (EmberEntityFactory, EmberOgre)added method for accessing the world entity
+	* added IngameChatWidget for displaying "bubbles" over NPC's head when they speak
+	* (ServerService)better use of the wield op
+	
+	
+
 2004-11-25  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Fix a bug where all foliage wasn't disabled if told so by the config file.

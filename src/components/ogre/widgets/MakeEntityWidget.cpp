@@ -62,7 +62,7 @@ MakeEntityWidget::~MakeEntityWidget()
 void MakeEntityWidget::buildWidget()
 {
 
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/MakeEntityWidget.xml", "MakeEntity/");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/MakeEntityWidget.xml", "MakeEntity/");
 	mMainWindow->setVisible(false);
 	
 	mTypeList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/TypeList"));

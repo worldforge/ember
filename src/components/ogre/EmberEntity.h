@@ -98,6 +98,16 @@ public:
 	 */
 	virtual bool allowVisibilityOfMember(EmberEntity* entity);
 
+	
+	/*
+	*return true if the entity has a list of suggested responses
+	*/
+	bool hasSuggestedResponses() const;
+	
+	/*
+	* returns a list of all suggested responses
+	*/
+	std::vector<std::string> getSuggestedResponses() const;
 
 
 protected: 
@@ -123,6 +133,7 @@ protected:
 
 	virtual void checkVisibility(bool vis);
 
+	std::vector<std::string> mSuggestedResponses;
 
 	/*
 	 * The main SceneNode which holds the entity in the ogre world space.

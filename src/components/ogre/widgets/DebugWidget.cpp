@@ -30,7 +30,7 @@ DebugWidget::~DebugWidget()
 
 void DebugWidget::buildWidget()
 {
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/DebugWidget.xml", "Debug/");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/DebugWidget.xml", "Debug/");
 //	mMainWindow->setAlwaysOnTop(true);
 	
 	mLogTextBox = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Debug/TextBox"));

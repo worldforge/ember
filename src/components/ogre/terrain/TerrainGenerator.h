@@ -95,22 +95,25 @@ public:
 	 */
 	void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain);
 	
-	virtual float getHeight(float x, float z) const;
+	virtual float getHeight(TerrainPosition& atPosition) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
-	Ogre::Material* getMaterialForSegment(long x, long y);
+	Ogre::Material* getMaterialForSegment(TerrainPosition& atPosition);
 
-	float TerrainGenerator::getMaxHeightForSegment(int ogreX, int ogreZ) const;
-	float TerrainGenerator::getMinHeightForSegment(int ogreX, int ogreZ) const;
+	float TerrainGenerator::getMaxHeightForSegment(TerrainPosition& atPosition) const;
+	float TerrainGenerator::getMinHeightForSegment(TerrainPosition& atPosition) const;
 	
 	/*
 	 * Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain with a corresponding material-
 	 */
-	bool isValidTerrainAt(int x, int y);
+	bool isValidTerrainAt(TerrainPosition& atPosition);
 	
 	const Ogre::TerrainOptions& getTerrainOptions() const;
 
 	const Mercator::Terrain& getTerrain() const;
+	
+	const TerrainPosition getMax() const;
+	const TerrainPosition getMin() const;
 
 // 	GroundCover* mGround;
 // 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
@@ -141,7 +144,7 @@ protected:
 	 * The created material is then put into mShaderMap.
 	 * Use getMaterialForSegment(...) to access the material.
 	 */
-	void generateTerrainMaterials(Mercator::Segment* segment, long segmentX, long segmentY);
+	void generateTerrainMaterials(Mercator::Segment* segment, TerrainPosition& atPosition);
 
 	void loadTerrainOptions();
 	

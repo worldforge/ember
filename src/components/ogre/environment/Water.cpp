@@ -137,15 +137,15 @@ public:
 		Ogre::MeshManager::getSingleton().createPlane(
 			"WaterPlane",
 			waterPlane,
-			1400, 1400,
-			20, 20,
+			1000, 1000,
+			5, 5,
 			true, 1, 
 			100, 100,
 			Ogre::Vector3::UNIT_Z
 		);
 		
-		mWaterNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
-		mWaterNode->translate(500, 0, 500);
+		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode();
+		//mWaterNode->translate(500, 0, 500);
 
 			
 		mRefractionListener = new RefractionTextureListener();

@@ -163,16 +163,18 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 		for (j = segmentZStart; j < segmentZStart + numberOfSegments; ++j) {
 			if (i >= mXmin && i <= mXmax && j >= mYmin && j <=mYmax) {
 				mTerrain->getSegment(i, j)->populate();
-				generateTerrainMaterials(mTerrain->getSegment(i, j), i,j);
+				TerrainPosition pos(i,j);
+				generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
 				if (alsoPushOntoTerrain) {
-					mTerrainPageSource->pushPage(i, j);
+					TerrainPosition pos(i, j);
+					mTerrainPageSource->pushPage(pos);
 				}
 			}
 		}
 	}
 //	generateUnderVegetation(0, 0, 1);
 //	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
-	//mTerrainPageSource->setHasTerrain(true);
+	mTerrainPageSource->setHasTerrain(true);
 	if (alsoPushOntoTerrain) {
 		mTerrainPageSource->resizeTerrain();
 	}
@@ -181,16 +183,39 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 
 void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 {
+	
+// 	mTerrain->getSegment(0, 0)->populate();
+// 	TerrainPosition pos(0,0);
+// 	generateTerrainMaterials(mTerrain->getSegment(0, 0), pos);
+// 	if (alsoPushOntoTerrain) {
+// 		mTerrainPageSource->pushPage(pos);
+// 	}
+// 	mTerrainPageSource->setHasTerrain(true);
+// 	if (alsoPushOntoTerrain) {
+// 		mTerrainPageSource->resizeTerrain();
+// 	}
+// 
+// 	return;	
+	
+	
+	
 	int i,j;
 	for (i = mXmin; i < mXmax; ++i) {
 		for (j = mYmin; j < mYmax; ++j) {
 			mTerrain->getSegment(i, j)->populate();
-			generateTerrainMaterials(mTerrain->getSegment(i, j), i,j);
+		}
+	}
+
+	for (i = mXmin; i < mXmax; ++i) {
+		for (j = mYmin; j < mYmax; ++j) {
+			TerrainPosition pos(i,j);
+			generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
 			if (alsoPushOntoTerrain) {
-				mTerrainPageSource->pushPage(i, j);
+				mTerrainPageSource->pushPage(pos);
 			}
 		}
 	}
+	
 //	generateUnderVegetation(-2, -2, 4);
 	
 	mTerrainPageSource->setHasTerrain(true);
@@ -200,76 +225,21 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	
 }
 
-// void TerrainGenerator::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
-// {
-// 	Ogre::Real xStart = segmentXStart * 64;
-// 	Ogre::Real zStart = segmentZStart * 64;
-// 	
-// 	mGround = new GroundCover(EmberOgre::getSingleton().getSceneManager(), Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
-// 	
-// 	long spaceBetween = 3;
-// 	
-// 	long i_end = xStart + numberOfSegments * 64;
-// 	long j_end = zStart + numberOfSegments * 64;
-// 	for (long i = xStart; i < i_end; i = i + spaceBetween) {
-// 		for (long j = zStart; j < j_end; j = j + spaceBetween) {
-// 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-// 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-// 			Ogre::Real random = Ogre::Math::UnitRandom();
-// 			Ogre::String typeOfGrass;
-// 			if (random > 0.9) {
-// 				typeOfGrass = "heartblood";
-// 			} else if (random > 0.8) {
-// 				typeOfGrass = "teardrops";
-// 			} else if (random > 0.5) {
-// 				typeOfGrass = "bittergrass";
-// 			} else {
-// 				typeOfGrass = "thingrass";
-// 			}
-// 			mGround->add(Ogre::Vector3(xPos, getHeight(xPos,zPos), zPos), std::string("environment/field/small_plant/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/small_plant/") + typeOfGrass + "/low.mesh");
-// 		}
-// 	}
-// 	
-// 	spaceBetween = 10;
-// 	i_end = xStart + numberOfSegments * 64;
-// 	j_end = zStart + numberOfSegments * 64;
-// 	for (long i = xStart; i < i_end; i = i + spaceBetween) {
-// 		for (long j = zStart; j < j_end; j = j + spaceBetween) {
-// 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-// 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-// 			Ogre::Real random = Ogre::Math::UnitRandom();
-// 			Ogre::String typeOfGrass;
-// 			if (random > 0.9) {
-// 				typeOfGrass = "heartblood";
-// 			} else if (random > 0.8) {
-// 				typeOfGrass = "teardrops";
-// 			} else if (random > 0.5) {
-// 				typeOfGrass = "bittergrass";
-// 			} else {
-// 				typeOfGrass = "thingrass";
-// 			}
-// 			mGround->add(Ogre::Vector3(xPos, getHeight(xPos,zPos), zPos), std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
-// 		}
-// 	}
-// 
-// 	mGround->setCullParameters(32, 32, 120);
-// 	mGround->compile();
-// 		
-// 		
-// }
 
 
-
-bool TerrainGenerator::isValidTerrainAt(int x, int y)
+bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
 {
+	int x = (int)position.x();
+	int y = (int)position.y();
 	Mercator::Segment* segment = mTerrain->getSegment(x,y);
-	return (segment &&	segment->isValid() && getMaterialForSegment(x, y));
+	return (segment &&	segment->isValid() && getMaterialForSegment(position));
 }
 
 
 
-void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long segmentX, long segmentY) {
-	
+void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, TerrainPosition& position) {
+	long segmentX = (long)position.x();
+	long segmentY = (long)position.y();
  
 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 
@@ -524,38 +494,42 @@ void TerrainGenerator::printTextureToImage(Ogre::DataChunk* dataChunk, const Ogr
 	
 }
 
-float TerrainGenerator::getHeight(float ogreX, float ogreZ) const
+float TerrainGenerator::getHeight(TerrainPosition& point) const
 {
 	
-	//convert our ogre coordinates to atlas
-	float atlasX = ogreX;
-	float atlasY = -ogreZ;
+// 	//convert our ogre coordinates to atlas
+// 	float atlasX = ogreX;
+// 	float atlasY = -ogreZ;
 	
-	float height = mTerrain->get(atlasX, atlasY);
+	float height = 0;
+	WFMath::Vector<3> vector;
+	
+	mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
+
 	return height;
 	
 }
 
 
-float TerrainGenerator::getMaxHeightForSegment(int ogreX, int ogreZ) const
+float TerrainGenerator::getMaxHeightForSegment(TerrainPosition& point) const
 {
 	
-	//convert our ogre coordinates to atlas
+/*	//convert our ogre coordinates to atlas
 	int atlasX = ogreX;
-	int atlasY = -ogreZ;
+	int atlasY = -ogreZ;*/
 	
-	return mTerrain->getSegment(atlasX, atlasY)->getMax();
+	return mTerrain->getSegment((int)point.x(), (int)point.y())->getMax();
 	
 }
 
-float TerrainGenerator::getMinHeightForSegment(int ogreX, int ogreZ) const
+float TerrainGenerator::getMinHeightForSegment(TerrainPosition& point) const
 {
 	
-	//convert our ogre coordinates to atlas
+/*	//convert our ogre coordinates to atlas
 	int atlasX = ogreX;
-	int atlasY = -ogreZ;
+	int atlasY = -ogreZ;*/
 	
-	return mTerrain->getSegment(atlasX, atlasY)->getMin();
+	return mTerrain->getSegment((int)point.x(), (int)point.y())->getMin();
 	
 }
 
@@ -674,13 +648,25 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
     return true;
 }
 
-Ogre::Material* TerrainGenerator::getMaterialForSegment(long x, long y)
+Ogre::Material* TerrainGenerator::getMaterialForSegment(TerrainPosition& atPosition)
 {
+	long x = (long)atPosition.x();
+	long y = (long)atPosition.y();
 	std::stringstream ss;
 	ss << x <<":"<<y;
 	return materialStore[ss.str()];
 }
 
+const TerrainPosition TerrainGenerator::getMax( ) const
+{
+	return TerrainPosition(mXmax * 64, mYmax * 64);
+}
+
+const TerrainPosition TerrainGenerator::getMin( ) const
+{
+	return TerrainPosition(mXmin * 64, mYmin * 64);
+}
 
 }
+
 

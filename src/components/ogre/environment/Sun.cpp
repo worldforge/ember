@@ -29,7 +29,7 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
   mSun = sceneMgr->createLight("SunLight");
   mSun->setType(Ogre::Light::LT_DIRECTIONAL);
-  mSun->setPosition(WF2OGRE_VECTOR3(-1500,50,150));
+  mSun->setPosition(-1500,50,150);
 	Ogre::Vector3 dir;
 	dir = -mSun->getPosition();
 	dir.normalise();

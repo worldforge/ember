@@ -74,8 +74,8 @@ public:
 	virtual ~GUIManager();
 	//static MotionManager & getSingleton(void);
 	
-	SigC::Signal1<void, const std::string& > AppendIGChatLine;
-	SigC::Signal1<void, const std::string& > AppendOOGChatLine;
+	SigC::Signal2<void, const std::string&, EmberEntity*> AppendIGChatLine;
+	SigC::Signal2<void, const std::string&, EmberEntity* > AppendOOGChatLine;
 	
 	SigC::Signal2<void, const std::string&, EmberEntity*> EventEntityAction;
 	

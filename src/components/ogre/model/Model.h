@@ -113,6 +113,11 @@ public:
 	 */
 	const unsigned short getUseScaleOf() const;
 	
+	const SubModelPartMap& getSubmodelParts() const
+	{
+		return mSubModelPartMap;
+	}
+	
 // 	bool createFromXML(std::string path);
 
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);

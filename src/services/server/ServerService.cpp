@@ -632,10 +632,11 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
  		try {
+/*			Atlas::Objects::Operation::Action wieldOp;
+			wieldOp->setParents(std::list<std::string>(1, "wield"));*/
 			Wield wieldOp;
 			wieldOp->setFrom(myAvatar->getEntity()->getId());
 			Atlas::Objects::Entity::GameEntity what;
-			what->setLoc(myAvatar->getEntity()->getId());
 			what->setId(entity->getId());
     		wieldOp->setArgs1(what);
     		getConnection()->send(wieldOp);

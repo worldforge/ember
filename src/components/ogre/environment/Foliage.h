@@ -40,7 +40,11 @@ public:
 	void setVisible(bool visible);
 	
 	bool frameStarted(const Ogre::FrameEvent & evt);
-	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
+	
+	//generates and compiles the undervegetation
+	//this might take a while
+	void generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent);
+	
 
 protected:
 	GroundCover* mGround;
@@ -49,6 +53,9 @@ protected:
 	
 	Ogre::Camera* mCamera;
 	Ogre::SceneManager* mSceneMgr;
+	
+	//defines the extent of the foliage
+	TerrainPosition mExtentMin, mExtentMax;
 
 };
 

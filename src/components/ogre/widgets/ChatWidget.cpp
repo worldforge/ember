@@ -25,6 +25,7 @@
 #include "Widget.h"
 #include "../GUIManager.h"
 #include "ChatWidget.h"
+#include "EmberEntity.h"
 
 namespace EmberOgre {
 
@@ -40,7 +41,7 @@ ChatWidget::~ChatWidget()
 void ChatWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/ChatWidget.xml", "Chat/");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/ChatWidget.xml", "Chat/");
 //	mMainWindow->setAlwaysOnTop(true);
 	
 	mChatTextBox = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Chat/TextBox"));
@@ -51,7 +52,7 @@ void ChatWidget::buildWidget()
 
 }
 
-void ChatWidget::appendOOGChatLine(const std::string& line) 
+void ChatWidget::appendOOGChatLine(const std::string& line, EmberEntity* entity) 
 {
 	CEGUI::String current = mChatTextBox->getText();
 	current.append(line);
@@ -59,7 +60,7 @@ void ChatWidget::appendOOGChatLine(const std::string& line)
 	mChatTextBox->setText(current);
 }
 
-void ChatWidget::appendIGChatLine(const std::string& line)
+void ChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
 {
 	CEGUI::String current = mChatTextBox->getText();
 	current.append(line);

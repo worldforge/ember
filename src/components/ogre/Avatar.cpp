@@ -25,6 +25,8 @@
 #endif
 #include <typeinfo>
 
+#include "EmberOgrePrerequisites.h"
+
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
 
@@ -53,7 +55,6 @@
 #include "model/Model.h"
 #include "model/SubModel.h"
 
-#include "EmberOgrePrerequisites.h"
 
 #include "Avatar.h"
 
@@ -73,8 +74,8 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 
 	//mAvatarCamera = NULL;
 
-	mWalkSpeed = WF2OGRE(5.0);
-	mRunSpeed = WF2OGRE(20.0);
+	mWalkSpeed = 5.0;
+	mRunSpeed = 20.0;
 
 	mSceneMgr = sceneManager; // TODO: assert it's not null
 
@@ -96,7 +97,7 @@ void Avatar::createAvatar()
 {
 	// The avatar itself
 	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mAvatarNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
+	mAvatarNode->setPosition(Ogre::Vector3(0,0,0));
 	//mAvatarNode->setOrientation(0,1,0,0);
 	//mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
 	
@@ -241,7 +242,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 		
 
 		//for now we'll only send velocity
-		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(OGRE2WF(newMovementState.orientation * newMovementState.velocity)), Ogre2Atlas(newMovementState.orientation));
+		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(newMovementState.orientation * newMovementState.velocity), Ogre2Atlas(newMovementState.orientation));
 
 //		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
 
@@ -335,7 +336,7 @@ void Avatar::movedInWorld()
 {
 	if (!mCurrentMovementState.isMoving) 
 	{
-		mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(mErisAvatarEntity->getPosition()));
+		mAvatarNode->setPosition(Atlas2Ogre(mErisAvatarEntity->getPosition()));
 		mAvatarNode->setOrientation(Atlas2Ogre(mErisAvatarEntity->getOrientation()));
 	}
 	

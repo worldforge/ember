@@ -35,6 +35,7 @@
 #include "widgets/MakeEntityWidget.h"
 #include "widgets/GiveWidget.h"
 #include "widgets/DebugWidget.h"
+#include "widgets/IngameChatWidget.h"
 #include "MousePicker.h"
 
 #include "EmberEventProcessor.h"
@@ -137,10 +138,16 @@ void GUIManager::initialize()
 	mConsoleWidget->buildWidget();
 	addWidget(mConsoleWidget);
 	fprintf(stderr, "CEGUI - CREATED CONSOLE\n");
+
+	IngameChatWidget* ingamechatWidget = new IngameChatWidget(this);
+	ingamechatWidget->buildWidget();
+	addWidget(ingamechatWidget);		
+	
 	
 	DebugWidget* debugWidget = new DebugWidget(this);
 	debugWidget->buildWidget();
 	addWidget(debugWidget);
+	
 	
 	ChatWidget* chatWidget = new ChatWidget(this);
 	chatWidget->buildWidget();

@@ -123,6 +123,14 @@ public:
 	inline void setClosestPickingDistance(Ogre::Real distance) { mClosestPickingDistance = distance; }
 	inline Ogre::Real getClosestPickingDistance() { return mClosestPickingDistance; }
 
+	// worldToScreenPos 
+	// 
+	// returns true if the worldPos is on screen, putting the screen pos into the x & y of the 
+	// second Vector2 
+	// returns false if the worldPos is off screen 
+	// 
+	bool worldToScreen(Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
+
 	
 protected:
 

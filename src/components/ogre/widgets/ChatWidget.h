@@ -30,6 +30,7 @@
 namespace EmberOgre {
 
 class Widget;
+class EmberEntity;
 
 /**
 @author Erik Hjortsberg
@@ -41,8 +42,8 @@ public:
     ~ChatWidget();
 	void buildWidget();
 
-	void appendOOGChatLine(const std::string& line);
-	void appendIGChatLine(const std::string& line);
+	void appendOOGChatLine(const std::string& line, EmberEntity* entity);
+	void appendIGChatLine(const std::string& line, EmberEntity* entity);
 protected:
 	CEGUI::MultiLineEditbox* mChatTextBox;
 

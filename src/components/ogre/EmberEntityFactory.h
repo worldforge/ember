@@ -88,6 +88,10 @@ public:
     returns one. */
     virtual int priority();
     
+	/**
+	Returns the main world entity.
+	*/
+	WorldEmberEntity* getWorld() const;
 
 
 /*	//virtual bool Accept(const Atlas::Message::Element &o) = 0;

@@ -155,6 +155,11 @@ Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::Game
     return mWorldEntity;
 }
 
+WorldEmberEntity* EmberEntityFactory::getWorld() const
+{
+	return mWorldEntity;
+}
+
 void EmberEntityFactory::setAvatar(Eris::Avatar* avatar)
 {
 	mAvatar = avatar;	

@@ -73,14 +73,14 @@ void AvatarCamera::createNodesAndCamera()
 	
 	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode("AvatarCameraRootNode"));
 	//we need to adjust for the height of the avatar mesh
-	mAvatarCameraRootNode->setPosition(WF2OGRE_VECTOR3(0,2,0));
+	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
 	//rotate to sync with WF world
     mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
 
 	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
-	mAvatarCameraPitchNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
+	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
 	mAvatarCameraNode = static_cast<Ogre::SceneNode*>(mAvatarCameraPitchNode->createChild("AvatarCameraNode"));
-	Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,10);
+	Ogre::Vector3 pos(0,0,10);
 	mAvatarCameraNode->setPosition(pos);
 	
 	mCamera = mSceneManager->createCamera("AvatarCamera");
@@ -239,6 +239,23 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 	
 }
 
+	bool AvatarCamera::worldToScreen(Ogre::Vector3& worldPos, Ogre::Vector3& screenPos) 
+	{ 
+		Ogre::Vector3 hcsPosition = mCamera->getProjectionMatrix() * (mCamera->getViewMatrix() * worldPos); 
+	
+		if ((hcsPosition.x < -1.0f) || 
+		(hcsPosition.x > 1.0f) || 
+		(hcsPosition.y < -1.0f) || 
+		(hcsPosition.y > 1.0f)) 
+		return false; 
+	
+	
+		screenPos.x = (hcsPosition.x + 1) * 0.5; 
+		screenPos.y = (-hcsPosition.y + 1) * 0.5; 
+	
+		return true; 
+	}
+
 void AvatarCamera::updateFromMouseMovement(const Ogre::FrameEvent & event, InputManager* inputManager) {
 
  	
@@ -303,6 +320,7 @@ void AvatarCamera::updateFromMouseMovement(const Ogre::FrameEvent & event, Input
 }
 
 }
+
 
 
 

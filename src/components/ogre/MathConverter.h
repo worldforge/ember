@@ -11,7 +11,23 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.12  2004-11-13 21:08:01  erik
+ *      Revision 1.13  2005-01-04 23:02:36  erik
+ *      2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* moved all use of terrain coordinates, both in ogre and in atlas, to the common class TerrainPosition
+ *      	* (EmberTerrainSceneManager.cpp) increased the page offset
+ *      	* ember now loads all terrain at start, this might be slow on older machines. In the future we'll implement a paging mechanism.
+ *      	* removed WF2OGRE_VECTOR3 macros
+ *      	* moved to CEGUI 0.1.0, which uses ogre's resource system, thus making it easier to manage resources. This prompted some changes to the paths for gui elements.
+ *      	* (DebugWidget)minor modifications
+ *      	* (AvatarCamera)added method to get the screen coords for a given entity
+ *      	* implement the use of EmberOgrePrerequisites.h
+ *      	* (EmberEntity)added support for suggested responses from the server when an entity says something
+ *      	* (EmberEntityFactory, EmberOgre)added method for accessing the world entity
+ *      	* added IngameChatWidget for displaying "bubbles" over NPC's head when they speak
+ *      	* (ServerService)better use of the wield op
+ *
+ *      Revision 1.12  2004/11/13 21:08:01  erik
  *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Removed some bugs which in various ways stopped the main loop.
@@ -218,21 +234,61 @@ Description:	Point, Vector and Quaternion converter
 
 namespace EmberOgre {
 
+typedef WFMath::Point<2> TerrainPosition;
 
+// //note that this will ignore the y value of the supplied ogre vector
+// inline TerrainPosition Ogre2Atlas(Ogre::Vector3& p) {
+// 	return WFMath::Point<2>(p.x,-p.z);
+// }
+
+/*inline Ogre::Vector3 Atlas2Ogre(TerrainPosition& p) {
+	return Ogre::Vector3(p.x(),0,-p.y());
+}*/
+inline Ogre::Vector3 Atlas2Ogre(TerrainPosition p) {
+	return Ogre::Vector3(p.x(),0,-p.y());
+}
+
+// inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3& p) {
+// 	return WFMath::Point<3>(p.x,-p.z,p.y);
+// }
+
+/*inline WFMath::Vector<3> Ogre2Atlas_Vector3(Ogre::Vector3& p) {
+	return WFMath::Vector<3>(p.x,-p.z,p.y);
+}*/
 inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3 p) {
 	return WFMath::Point<3>(p.x,-p.z,p.y);
+}
+
+inline TerrainPosition Ogre2Atlas_TerrainPosition(Ogre::Vector3 p) {
+	return TerrainPosition(p.x,-p.z);
 }
 
 inline WFMath::Vector<3> Ogre2Atlas_Vector3(Ogre::Vector3 p) {
 	return WFMath::Vector<3>(p.x,-p.z,p.y);
 }
+
+// inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3>& p){
+// 	return Ogre::Vector3(p.x(),p.z(),-p.y());
+// }
+
 inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3> p){
 	return Ogre::Vector3(p.x(),p.z(),-p.y());
 }
 
+// inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3>& v){
+// 	return Ogre::Vector3(v.x(),v.z(),-v.y());
+// }
+
 inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3> v){
 	return Ogre::Vector3(v.x(),v.z(),-v.y());
 }
+
+// inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion& aq){
+// 	if (!aq.isValid()) {
+// 		return Ogre::Quaternion::IDENTITY;
+// 	}
+// 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
+// }
 
 inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
 	if (!aq.isValid()) {
@@ -242,20 +298,20 @@ inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
 }
 
 //is this correct?
+// inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion& aq){
+// 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
+// }
 inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion aq){
 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
 }
 
 
-/*
- * used when scaling Ogre models to the units used ny WF, i.e. 1 unit == 1 meter
- * Ogre seems to use 1 unit == 1 centimeter
- */
-#define OGRE2WF(x) x 
-#define WF2OGRE(x) x
-#define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
-#define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
-#define OGRESCALER Ogre::Vector3(1,1,1)
+//these methods are obsolete
+// #define OGRE2WF(x) x 
+// #define WF2OGRE(x) x
+// #define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
+// #define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
+// #define OGRESCALER Ogre::Vector3(1,1,1)
 
 }
 

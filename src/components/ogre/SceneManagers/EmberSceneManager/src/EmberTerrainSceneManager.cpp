@@ -45,7 +45,7 @@ EmberTerrainSceneManager::EmberTerrainSceneManager()
 	mPagingEnabled = true;
 	mLivePageMargin = 1;
 	mBufferedPageMargin = 20;
-	mPageOffset = 10;
+	mPageOffset = 15;
 
 }
 EmberTerrainSceneManager::~EmberTerrainSceneManager()
