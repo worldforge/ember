@@ -69,7 +69,7 @@ namespace dime {
 		 * The default constructor which requires an OGL_Surface pointer on which to operate.
 		 */
         OGLDrawDevice(int width, int height) 
-            : DrawDevice(width, height), myScreenWidth(width)// : myDimensions(surface->w,surface->h) Why doesn't this work?
+            : DrawDevice(width, height), myScreenWidth(width), myScreenHeight(height)// : myDimensions(surface->w,surface->h) Why doesn't this work?
         {
            
         }

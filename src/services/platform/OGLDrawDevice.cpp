@@ -128,34 +128,6 @@ void dime::OGLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL
 
 void dime::OGLDrawDevice::update()
 {
-  // TODO: please verify the correctness of this for me please thanks
-  // Xmp
-
-  // Height / width ration
-  GLfloat ratio;
- 
-  // Protect against a divide by zero
-  if ( myScreenHeight == 0 )
-    myScreenHeight = 1;
-
-  ratio = ( GLfloat )myScreenWidth / ( GLfloat )myScreenHeight;
-
-  // Setup our viewport
-  glViewport( 0, 0, ( GLsizei )myScreenWidth, ( GLsizei )myScreenHeight );
-
-  // change to the projection matrix and set our viewing volume.
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity( );
-    
-  // Set our perspective
-  gluPerspective( 45.0f, ratio, 0.1f, 100.0f );
-
-  // Make sure we're chaning the model view and not the projection
-  glMatrixMode( GL_MODELVIEW );
-
-  // Reset The View
-  glLoadIdentity( );
-
   // Probably should assume double-buffering
   SDL_GL_SwapBuffers( );
 }
@@ -231,24 +203,51 @@ void dime::OGLDrawDevice::clearScreen()
 
 void dime::OGLDrawDevice::init()
 {
-    /* Enable Texture Mapping ( NEW ) */
-    glEnable( GL_TEXTURE_2D );
+  /* Enable Texture Mapping ( NEW ) */
+  glEnable( GL_TEXTURE_2D );
 
-    /* Enable smooth shading */
-    glShadeModel( GL_SMOOTH );
+  /* Enable smooth shading */
+  glShadeModel( GL_SMOOTH );
 
-    /* Set the background black */
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+  /* Set the background black */
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
 
-    /* Depth buffer setup */
-    glClearDepth( 1.0f );
+  /* Depth buffer setup */
+  glClearDepth( 1.0f );
 
-    /* Enables Depth Testing */
-    glEnable( GL_DEPTH_TEST );
+  /* Enables Depth Testing */
+  glEnable( GL_DEPTH_TEST );
 
-    /* The Type Of Depth Test To Do */
-    glDepthFunc( GL_LEQUAL );
+  /* The Type Of Depth Test To Do */
+  glDepthFunc( GL_LEQUAL );
 
-    /* Really Nice Perspective Calculations */
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+  /* Really Nice Perspective Calculations */
+  glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+  // TODO: please verify the correctness of this for me please thanks
+  // Xmp
+
+  // Height / width ration
+  GLfloat ratio;
+ 
+  // Protect against a divide by zero
+  if ( myScreenHeight == 0 )
+    myScreenHeight = 1;
+
+  ratio = ( GLfloat )myScreenWidth / ( GLfloat )myScreenHeight;
+    
+  // Setup our viewport
+  glViewport( 0, 0, ( GLsizei )myScreenWidth, ( GLsizei )myScreenHeight );
+
+  // change to the projection matrix and set our viewing volume.
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity( );
+    
+  // Set our perspective
+  gluPerspective( 45.0f, ratio, 0.1f, 100.0f );
+
+  // Make sure we're chaning the model view and not the projection
+  glMatrixMode( GL_MODELVIEW );
+
+  // Reset The View
+  glLoadIdentity( );
 }
