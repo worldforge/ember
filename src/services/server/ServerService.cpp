@@ -22,11 +22,11 @@
 #include <iostream>
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
-//#include <Eris/Metaserver.h>
+// #include <Eris/>
 #include <Eris/ServerInfo.h>
 #include <Eris/Utils.h>
-#include <list>
 
+#include <list>
 #include <algorithm>
 
 namespace dime
@@ -95,7 +95,7 @@ namespace dime
 	
 	void ServerService::GotFailure(string msg)
 	{
-    	cout << "Got Server error: " << msg << endl;
+    	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
 	}	
 	
 /*	void ServerService::poll() // Out of use
