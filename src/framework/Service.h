@@ -84,7 +84,7 @@ class Service
 		/** Tells if the service is running or not */
 		bool myRunning;
 
-        // TODO(zzorn): Change this into an enum type variable
+        // TODO(zzorn): Change this into an enum type variable (Service::Status)
 		/** Current status code */
 		int myStatus;
 
@@ -103,11 +103,11 @@ class Service
     /** Creates a new Service using default values. */
     Service()
     {
-		myName         = "";
-		myDescription  = "";
-		myRunning      = false;
+        setName( "" );
+        setDescription( "" );
+		setStatusText( "" );
 		myStatus       = 0;       // TODO: Change to OK
-		myStatusText   = "";
+		myRunning      = false;
     }
 
 
@@ -248,11 +248,25 @@ class Service
     }
 
 
-    /** Sets the description of this Service. */
+    /**
+     * Sets the description of this Service.
+     * @deprecated.  Replaced by setStatus( Service::Status )
+     */
     virtual void setStatus( int status )
     {
     	myStatus = status;
     }
+
+    /* *
+     * Sets the description of this Service.
+     */
+    /* TODO: Check that this compiles..
+    virtual void setStatus( Service::Status status )
+    {
+        // TODO
+    	// myStatus = status;
+    }
+    */
 
 
     /** Specifies wether this service is currently running or not. */
