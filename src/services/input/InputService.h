@@ -39,7 +39,7 @@ namespace dime {
  *
  * @author Hans Häggström
  */
-class InputService
+class InputService: public Service
 
 {
     //======================================================================
