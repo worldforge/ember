@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
+    Based on YUP::Metacmd code by Adam Wendt
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,13 @@
 #define METASERVERSERVICE_H
 
 #include <framework/Service.h>
+#include <Eris/Metaserver.h>
+#include <Eris/Utils.h>
+#include <stdint.h>
+#include <sigc++/object.h>
+#include <Eris/Metaserver.h>
+#include <Eris/ServerInfo.h>
+#include <Eris/Utils.h>
 
 namespace dime {
 
@@ -38,6 +46,10 @@ class MetaserverService: public Service
     //======================================================================
     private:
 
+    Eris::Meta * msrv;
+    //Eris::Serverlist serverlist;
+    bool listed;
+
 		
     //----------------------------------------------------------------------
     // Constructors & Destructor
@@ -49,10 +61,7 @@ class MetaserverService: public Service
 
 
     /** Deletes a ConfigService instance. */
-    ~MetaserverService()
-    {
-    }
-
+    ~MetaserverService();
 
     //----------------------------------------------------------------------
     // Getters & Setters
@@ -60,10 +69,13 @@ class MetaserverService: public Service
     //----------------------------------------------------------------------
     // Methods
 	
-   int start();
+	int start();
 
-   void stop(int code) ;
+	void stop(int code) ;
+
+   	void MetaserverService::GotServerCount(int count);
 	
+	void MetaserverService::GotFailure(string msg);
 
 }; //MetaserverService
 
