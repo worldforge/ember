@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "Font.h"
+#include <services/logging/LoggingService.h>
 #include <services/platform/Color.h>
 #include <services/platform/Rectangle.h>
 #include <services/platform/DrawDevice.h>
@@ -232,7 +233,7 @@ class FontRenderer
                         
                         catch (Exception e)
                             {
-                                // std::cout << e.getError() << std::endl;
+                                LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << e.getError() << ENDM;
                             }
                         
                     }

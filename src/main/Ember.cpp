@@ -27,11 +27,13 @@ int main(int argc, char **argv)
         {
             
             dime::Application *myApp = dime::Application::getInstance();
+
             dime::ImageService::getInstance()->addPath("./bin/");
             dime::ImageService::getInstance()->addPath("../../bin/");
-            
-            dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
-            dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(10,40,100,35));
+
+	    dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
+	    dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(10,40,100,35));
+
             dime::Button myTestButton(dime::Rectangle(300,300,100,25));
             
             myTestButton.setBackground(dime::RectangleRenderer(dime::RectangleRenderer::BITMAP,myTestButton.getRectangle(),"quitbutton2.png"));
@@ -49,12 +51,12 @@ int main(int argc, char **argv)
                                                         SigC::slot(*myApp, &dime::Application::escPressed)));
             
             dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestPanel);
-            dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
-            dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
-            
+	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
+	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
+          
             myApp->mainLoop();
         }
-    catch ( dime::Exception e)
+    catch ( dime::Exception e )
         {
             std::cout << e.getError() << endl;
         }

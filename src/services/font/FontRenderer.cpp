@@ -27,13 +27,11 @@ void dime::FontRenderer::updateTextBlended()
     if ((myFont->sizeText(myText, &width, NULL)) || !width ) {
         myTextSurface = NULL;
         THROW("Font width zero or sizeText error.")
-        // Should throw an error
     }
     height = myFont->getHeight();
     textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 32,
                                0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
     if ( textbuf == NULL ) {
-        //Should throw an error
 		THROW("Unable to allocate an SDL surface for textbuf drawing.")
     }
 
@@ -47,7 +45,6 @@ void dime::FontRenderer::updateTextBlended()
             if( !glyph ) {
                 SDL_FreeSurface( textbuf );
 				THROW("Glyph undefined in font unable to render.")
-                //should throw and error
             }
             width = glyph->getPixmap().width;
             src = (Uint8 *)glyph->getPixmap().buffer;

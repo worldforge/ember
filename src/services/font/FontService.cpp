@@ -23,8 +23,9 @@
 #define FT_CEIL(X)	(((X + 63) & -64) / 64)
 
 #include "FontService.h"
+#include "framework/Exception.h"
 
-dime::Font *dime::FontService::loadFontIndex(std::string fontName, int pointSize, int index)
+dime::Font *dime::FontService::loadFontIndex(const std::string& fontName, int pointSize, int index)
 {
     dime::Font* font;
     FT_Error error;
@@ -39,7 +40,8 @@ dime::Font *dime::FontService::loadFontIndex(std::string fontName, int pointSize
         myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
             << "Couldn't load font File: [" << fontName << "], PointSize: [" << pointSize << "], Index: [" << index << "]\n";
         delete font;
-        return NULL;
+	THROW("Can't load font file")
+	  //return NULL;
     }
     if ( index != 0 ) {
         if ( face->num_faces > index ) {
@@ -49,13 +51,15 @@ dime::Font *dime::FontService::loadFontIndex(std::string fontName, int pointSize
                 myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
                     << "Couldn't get font face.\n";
                 delete font;
-                return NULL;
+		THROW("Can't get font face")
+		  //return NULL;
             }
         } else {
             myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
                 << "No Such font face.\n";
             delete font;
-            return NULL;
+	    THROW("No such font face")
+	      //return NULL;
         }
     }
     
@@ -64,7 +68,8 @@ dime::Font *dime::FontService::loadFontIndex(std::string fontName, int pointSize
         myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
             << "Font face is not scalable";
         closeFont( font );
-        return NULL;
+	THROW("Font face is not scalable")
+	  //return NULL;
     }
     /* Set the character size and use default DPI (72) */
     error = FT_Set_Char_Size( face, 0, pointSize * 64, 0, 0 );
@@ -72,7 +77,8 @@ dime::Font *dime::FontService::loadFontIndex(std::string fontName, int pointSize
         myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
             << "Couldn't set font size";
         closeFont( font );
-        return NULL;
+        THROW("Couldn't set font size")
+	//return NULL;
     }
     /* Get the scalable font metrics for this font */
     scale = face->size->metrics.y_scale;
@@ -107,7 +113,7 @@ dime::Font *dime::FontService::loadFontIndex(std::string fontName, int pointSize
     return font;
 }
 
-dime::Font *dime::FontService::loadFont(std::string fontName, int pointSize)
+dime::Font *dime::FontService::loadFont(const std::string& fontName, int pointSize)
 {
     return loadFontIndex(fontName, pointSize, 0);
 }

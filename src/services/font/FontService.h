@@ -96,8 +96,8 @@ public:
     
     //----------------------------------------------------------------------
     // Other public methods
-    Font *loadFontIndex(std::string fontName, int pointSize, int index);
-    Font *loadFont(std::string fontName, int pointSize);
+    Font *loadFontIndex(const std::string& fontName, int pointSize, int index);
+    Font *loadFont(const std::string& fontName, int pointSize);
     void closeFont( dime::Font* font );
     void flushGlyph( dime::Glyph* glyph );
     void flushCache( Font* font );
