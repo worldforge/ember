@@ -431,16 +431,19 @@ void OgreApp::createScene(void)
   // set the world geometry
   mSceneMgr->setWorldGeometry("terrain.cfg");
 
-#if 0
-  // create the entity
-  mShip = mSceneMgr->createEntity("razor", "razor.mesh");
+//#if 0
+  
+  //create the entity
+  mShip = mSceneMgr->createEntity("robot", "robot.mesh");
 
   // create the node
   mShipNode = mSceneMgr->getRootSceneNode()->createChild();
+  mShipNode->setPosition(10,25,128);
+  mShipNode->setScale(0.2,0.2,0.2);
 
   // attach the node to the entity
   mShipNode->attachObject(mShip);
-#endif
+//#endif
 }
 
 void OgreApp::createFrameListener(void)
@@ -463,7 +466,7 @@ void OgreApp::createCamera(void)
   mCamera = mSceneMgr->createCamera("PlayerCam");
 
   // Position it at 500 in Z direction
-  mCamera->setPosition(Vector3(128,25,128));
+  mCamera->setPosition(Vector3(128,25,75));
 
   // Look back along -Z
   mCamera->lookAt(Vector3(0,0,-300));
