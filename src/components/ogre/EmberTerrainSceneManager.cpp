@@ -41,6 +41,7 @@ DimeTerrainSceneManager::~DimeTerrainSceneManager()
 
 void DimeTerrainSceneManager::buildTerrainAroundAvatar()
 {
+	//decide how many segments we need
     long lowXBound = lrintf(OGRE2WF(mPositionOfAvatar.x) / TerrainGenerator::segSize) - 2,
          lowZBound = lrintf(OGRE2WF(mPositionOfAvatar.z) / TerrainGenerator::segSize) - 2;
 	buildTerrain(lowXBound, lowZBound, 5);
@@ -206,15 +207,15 @@ void DimeTerrainSceneManager::buildTerrain(long segmentXStart, long segmentZStar
 	
 	//mTerrainRoot->rotate(Ogre::Vector3::UNIT_Y,180);
 
-    /*
+    
      for ( j = 0; j < size; j++ )
      {
          for ( i = 0; i < size; i++ )
          {
-             mTiles[ i ][ j ] -> _generateVertexLighting( Vector3( 255, 50, 255 ), ColourValue( .25, .25, .25 ) );
+             mTiles[ i ][ j ] -> _generateVertexLighting( Ogre::Vector3( 255, 50, 255 ), Ogre::ColourValue( .25, .25, .25 ) );
          }
      }
-     */
+     
 
 
 

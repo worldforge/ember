@@ -16,6 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "framework/ConsoleBackend.h"
+#include "MotionManager.h"
 #include "DimeEntity.h"
 using namespace Ogre;
 
@@ -24,31 +25,60 @@ DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeI
 */
 DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager)
 //, Ogre::Entity* ogreEntity) 
-: Eris::Entity(ge, vw) 
+: mSceneManager(sceneManager),
+mAnimationState_Walk(NULL),
+mOgreEntity(NULL),
+mOgreNode(NULL),
+//mOgreNode(dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild(ge.getId()))),
+Eris::Entity(ge, vw) 
 {
 	//mOgreEntity = ogreEntity;
 	createOgreEntity(sceneManager);
 	
 	// set the Ogre node position and orientation based on Atlas data
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-	std::cout << "Entity placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
+	std::cout << "Entity " << getID() << " placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
 	//WFMath::Quaternion wq = e->getOrientation();
 	//WFMath::Vector<3> wv = wq.vector();
 	//Ogre::Quaternion oq = Ogre::Quaternion(Atlas2Ogre(e-getOrientation()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	
-	mOgreEntity->setUserObject(this);
 	
 }
 DimeEntity::~DimeEntity()
 {
-	mOgreEntity = NULL;
+	if (mAnimationState_Walk) {
+		MotionManager::getSingleton().removeAnimation(mAnimationState_Walk);
+	}
+/*	mSceneManager->removeEntity(mOgreEntity);
+	mSceneManager->removeEntity(mOgreEntity);
+	
+	delete mOgreEntity;
+	delete mSceneNode;
+	*/
 }
 
 void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	// create the ogre node and the
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
-	mOgreNode = dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild());
+	
+//	typeService->getTypeByName("world");
+	
+	//Eris::TypeInfo* type = getContainer()->getType();
+//	Eris::StringSet parents = getContainer()->getInherits();
+	DimeEntity* container = (DimeEntity*)getContainer();
+	if (container == NULL) {
+		mOgreNode = static_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild(getID()));
+	} else {
+		Ogre::SceneNode * node = container->getSceneNode();
+		if (node) {
+			mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getID()));
+		} else {
+			mOgreNode = static_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild(getID()));
+		}
+		
+	}		
+	mOgreNode->setInheritScale(false);
 
 
 /*
@@ -64,15 +94,18 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	if(!strcmp(getType()->getName().c_str(),"settler"))	// 0 if strings are equal
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
+		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
 	}
 	else if(!strcmp(getType()->getName().c_str(),"merchant"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
+		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
 	}
 	else if(!strcmp(getType()->getName().c_str(),"pig"))
 	{
 		mOgreEntity = sceneManager->createEntity(getID(), "pig.mesh");
 		mOgreNode->setScale(20,20,20);
+		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
 	}
 	else if(!strcmp(getType()->getName().c_str(),"squirrel"))
 	{
@@ -95,13 +128,20 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 
 		mOgreEntity = sceneManager->createEntity(getID(), "razor.mesh");
 		//ogreNode->setScale(1,1,1);
-		mOgreNode->setScale(0.1,0.1,0.1);
+		//mOgreNode->setScale(0.1,0.1,0.1);
 	}
-	//mOgreEntity->setVisible(false);
+	
+	if (mAnimationState_Walk) {
+		MotionManager::getSingleton().addAnimation(mAnimationState_Walk);
+	}
+	
+	mOgreEntity->setVisible(false);
 
 
 	// attach the node to the entity
 	mOgreNode->attachObject(mOgreEntity);
+	mOgreEntity->setUserObject(this);
+
 }
 
 /*
@@ -109,7 +149,7 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
  */
 SceneNode* DimeEntity::getSceneNode() {
 
-	return static_cast<Ogre::SceneNode*>(mOgreEntity->getParentNode());	
+	return mOgreNode;	
 }
 
 Ogre::Entity* DimeEntity::getOgreEntity() {
@@ -123,6 +163,20 @@ void DimeEntity::handleMove()
 {
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+	MotionManager* motionManager = &MotionManager::getSingleton();
+	if (getVelocity() != WFMath::Vector<3>().zero()) {
+		motionManager->addEntity(this);
+		if (mAnimationState_Walk) {
+			mAnimationState_Walk->setEnabled(true);
+//			motionManager->addAnimation(mAnimationState_Walk);
+		}
+	} else {
+		motionManager->removeEntity(this);
+		if (mAnimationState_Walk) {
+			mAnimationState_Walk->setEnabled(false);
+//			motionManager->removeAnimation(mAnimationState_Walk);
+		}
+	}
 	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
 }
 
@@ -160,7 +214,7 @@ void DimeEntity::setContainer(Entity *pr)
 	
 }
 */
-/*
+
 void DimeEntity::addMember(Entity *e) 
 {
 /*	
@@ -168,29 +222,37 @@ void DimeEntity::addMember(Entity *e)
  * DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
 	if (dimeEntity) {
 	*/
-/*//	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
-	DimeEntity* dimeEntity = (DimeEntity*)e;
+//	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
+/*	const std::string id = e->getID();
+	*/
+	try{
+		SceneNode* sceneNode = mSceneManager->getSceneNode(e->getID());
+
 	
-	dimeEntity->getSceneNode()->getParent()->removeChild(dimeEntity->getSceneNode()->getName());	
-	getSceneNode()->addChild(dimeEntity->getSceneNode());
-	
+		//sceneNode->getParent()->removeChild(sceneNode->getName());	
+		getSceneNode()->addChild(sceneNode);
+	} catch(Ogre::Exception ex) {
+		//the contained item haven't been initialised yet
+		//this is no problem though because when it do get initialized
+		//it's container will be set
+	}
+
 	Entity::addMember(e);
 	
 }
-	
+
 void DimeEntity::rmvMember(Entity *e)
 {
-//	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
-//	if (dimeEntity) {
-	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
-	dimeEntity->getSceneNode()->removeChild(dimeEntity->getSceneNode()->getName());	
-	getSceneNode()->getParent()->addChild(dimeEntity->getSceneNode());
-//	}
+	try{
+		getSceneNode()->removeChild(e->getID());
+	} catch(Ogre::Exception ex) {
+		//the contained item haven't been initialised yet
+		//this is no problem though because when it do get initialized
+		//it's container will be set
+	}
 	Entity::rmvMember(e);	
-
-	
 }
-*/
+
 /*
 void DimeEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
 {

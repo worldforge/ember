@@ -42,7 +42,8 @@
 
 #include "DimeEntity.h"
 #include "AvatarController.h"
-#include "TerrainGenerator.h"
+//#include "TerrainGenerator.h"
+#include "MotionManager.h"
 
 #include "DimeTerrainSceneManager.h"
 
@@ -270,9 +271,7 @@ void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
 {
 	//get the new coordinates of the avatar and check with mercator to adjust for
 	//height
-	Ogre::Vector3 position = mAvatarNode->getPosition();
-	float height = TerrainGenerator::getSingleton().getHeight(OGRE2WF(position.x), OGRE2WF(position.z));
-	mAvatarNode->setPosition(position.x, WF2OGRE(height),position.z);
+	MotionManager::getSingleton().adjustHeightPositionForNode(mAvatarNode);
 }
 
 

@@ -11,7 +11,14 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.4  2004-07-12 22:00:14  erik
+ *      Revision 1.5  2004-07-18 23:26:24  erik
+ *      2004-07-19 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      src/components/ogre:
+ *
+ *      *implemented containers, though it's not completely solid yet. You'll notice that all avatars are carrying coins through our use of a rather big placeholder.
+ *      *added the class MotionManager, this takes care of both motion and animation. This means that both fluid motion of all entites and animation for those that have defined skeletons is implemented
+ *
+ *      Revision 1.4  2004/07/12 22:00:14  erik
  *      2004-07-12 Erik Hjortsberg <erik by hysteriskt speck nu>
  *      src/components/ogre:
  *      *added movement on server, although the axes are messed up right now
@@ -130,6 +137,10 @@ inline WFMath::Vector<3> Ogre2Atlas_Vector3(Ogre::Vector3 p) {
 }
 inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3> p){
 	return Ogre::Vector3(p.x(),p.z(),-p.y());
+}
+
+inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3> v){
+	return Ogre::Vector3(v.x(),v.z(),-v.y());
 }
 
 inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){

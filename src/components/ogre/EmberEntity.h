@@ -19,7 +19,10 @@
 #ifndef DIMEENTITY_H
 #define DIMEENTITY_H
 
+#include <Atlas/Objects/Entity/GameEntity.h>
+
 #include <Ogre.h>
+#include <OgreException.h>
 #include <Eris/Entity.h>
 #include <Eris/World.h>
 #include <Eris/PollDefault.h>
@@ -71,12 +74,12 @@ public:
 //	virtual void setContents(const Atlas::Message::Element::ListType &contents);
 	
 	/// add a contained entity to this object (sets container)
-	//virtual void addMember(Entity *e);
+	virtual void addMember(Entity *e);
 	
 	/// remove an contained entity
 	/** remove a contained entity; throws InvalidOperation if not found. Note
 	that the container of e is <i>not<i/> reset */
-	//virtual void rmvMember(Entity *e);
+	virtual void rmvMember(Entity *e);
 	
 	/** called by World in response to Appearance/Disappearance messages : note that
 	after a disappearance (vis = false), the server will not send any futher messages to the
@@ -89,7 +92,12 @@ protected:
 	virtual void createOgreEntity(Ogre::SceneManager* sceneManager);
 	Ogre::Entity* mOgreEntity;
 	Ogre::SceneNode* mOgreNode;
-	//Eris::Entity* mErisEntity;
+	Ogre::SceneManager* mSceneManager;
+	
+	/*
+	 * this will hold the animation for the "Walk" movement
+	 */
+	Ogre::AnimationState* mAnimationState_Walk;
 };
 
 #endif // DIMEENTITY_H

@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.39  2004-07-16 21:21:56  erik
+ *      Revision 1.40  2004-07-18 23:26:24  erik
+ *      2004-07-19 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      src/components/ogre:
+ *
+ *      *implemented containers, though it's not completely solid yet. You'll notice that all avatars are carrying coins through our use of a rather big placeholder.
+ *      *added the class MotionManager, this takes care of both motion and animation. This means that both fluid motion of all entites and animation for those that have defined skeletons is implemented
+ *
+ *      Revision 1.39  2004/07/16 21:21:56  erik
  *      2004-07-16 Erik Hjortsberg <erik@hysteriskt.nu>
  *      /src/components/ogre:
  *      *added support for mercator terrain by using a subclass of Ogre's OctreeSceneManager, it includes some preparation in order to access the Ogre headers, I'll add instructions tomorrow
@@ -307,6 +314,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "PlayerMouseListener.h"
 #include "EntityListener.h"
 #include "DimeEntityFactory.h"
+#include "MotionManager.h"
 
 #include "TerrainGenerator.h"
 #include "DimeTerrainSceneManager.h"
@@ -713,6 +721,7 @@ void DimeOgre::createFrameListener(void)
 	InputManager::getSingleton().addKeyListener(&(Console::getSingleton()));
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
 	mRoot->addFrameListener(&(Console::getSingleton()));
+	mRoot->addFrameListener(&(MotionManager::getSingleton()));
 	ConsoleObjectImpl::getSingleton();
 	
 	//Ogre::OverlayManager::getSingleton().addMouseMotionListener(&(DebugListener::getSingleton()));
