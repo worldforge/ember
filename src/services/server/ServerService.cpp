@@ -55,9 +55,14 @@ namespace dime
     myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
     myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
-    Console::registerCommand(SERV_CONNECT,this);
-    Console::registerCommand(SERV_RECONNECT,this);
-    Console::registerCommand(SERV_DISCONNECT,this);
+    Console::registerCommand(CONNECT,this);
+    Console::registerCommand(RECONNECT,this);
+    Console::registerCommand(DISCONNECT,this);
+    Console::registerCommand(LOGIN,this);
+    Console::registerCommand(LOGOUT,this);
+    Console::registerCommand(CREATECHAR,this);
+    Console::registerCommand(LISTCHARS,this);
+    Console::registerCommand(TAKECHAR,this);
   }
 	
   /* dtor */
@@ -107,13 +112,25 @@ namespace dime
   void ServerService::reconnect()
   {
     if (!myConn) return;
-    myConn->reconnect();
+    try {
+        myConn->reconnect();
+      }
+    catch(...)
+      {
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect" << ENDM;
+      }
   }
 
   void ServerService::disconnect()
   {
     if (!myConn) return;
-    myConn->disconnect();
+    try {
+      myConn->disconnect();
+      }
+    catch(...)
+      {
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on disconnect" << ENDM;
+      }
   }
 	
   void ServerService::gotFailure(const std::string & msg)
@@ -126,8 +143,16 @@ namespace dime
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
     myConnected = true;
 
-    // Set up the lobby
-	myLobby=Eris::Lobby::instance();
+    // Set up the player object
+    myPlayer=new Eris::Player(myConn);
+    myPlayer->GotCharacterInfo.connect(SigC::slot(*this,&ServerService::gotCharacterInfo));
+    myPlayer->GotAllCharacters.connect(SigC::slot(*this,&ServerService::gotAllCharacters));
+    myPlayer->LoginFailure.connect(SigC::slot(*this,&ServerService::loginFailure));
+    myPlayer->LoginSuccess.connect(SigC::slot(*this,&ServerService::loginSuccess));
+    myPlayer->LogoutComplete.connect(SigC::slot(*this,&ServerService::logoutComplete));
+
+    // Set up the lobby object
+    myLobby=Eris::Lobby::instance();
     myLobby->SightPerson.connect(SigC::slot(*this,&ServerService::sightPerson));
     myLobby->PrivateTalk.connect(SigC::slot(*this,&ServerService::privateTalk));
     myLobby->LoggedIn.connect(SigC::slot(*this,&ServerService::loggedIn));
@@ -143,8 +168,10 @@ namespace dime
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
 
-    // NULL out lobby so noone gets tempted to play with an unconnected lobby
+    // NULL out lobby & player so noone gets tempted to play with an unconnected lobby/player
     // Should we disconnect the callback events?
+    delete myPlayer;
+    myPlayer=NULL;
     myLobby=NULL;
   }
 
@@ -170,10 +197,25 @@ namespace dime
   {
   }
 
+  void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &) {}
+
+  void ServerService::gotAllCharacters() {}
+
+  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &) {}
+
+  void ServerService::loginSuccess(){
+    myWorld = new Eris::World(myPlayer, myConn);
+  }
+
+  void ServerService::logoutComplete(bool clean) {
+    delete myWorld;
+    myWorld = NULL;
+  }
+
   void ServerService::runCommand(const string &command, const string &args)
   {
-    if(command == SERV_CONNECT){
-      // Split string into command / arguments pair
+    if(command == CONNECT){
+      // Split string into server / port pair
       Tokeniser tokeniser = Tokeniser();
       tokeniser.initTokens(args);
       std::string server = tokeniser.nextToken();
@@ -182,11 +224,40 @@ namespace dime
         connect(server);
       else
         connect(server, (short)atoi(port.c_str()));
-    } else if(command == SERV_RECONNECT) {
+    } else if(command == RECONNECT) {
       reconnect();
-    } else if (command==SERV_CONNECT){
+    } else if (command==CONNECT){
       disconnect();
+    } else if (command==LOGIN) {
+      if (myPlayer)
+      {
+        // Split string into userid / password pair
+        Tokeniser tokeniser = Tokeniser();
+        tokeniser.initTokens(args);
+        std::string userid = tokeniser.nextToken();
+        std::string password = tokeniser.remainingTokens();
+        myPlayer->login(userid,password);
+      }
+    } else if (command==LOGOUT) {
+      if (myPlayer)
+      {
+        myPlayer->logout();
+      }
+    } else if (command==CREATECHAR) {
+      if (myPlayer)
+      {
+        //myPlayer->createCharacter();
+      }
+    } else if (command==TAKECHAR) {
+      if (myPlayer)
+      {
+        //myPlayer->takeCharacter();
+      }
+    } else if (command==LISTCHARS) {
+      if (myPlayer)
+      {
+        myPlayer->refreshCharacterInfo();
+      }
     }
   }
 } // namespace dime
-

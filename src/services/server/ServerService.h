@@ -23,7 +23,9 @@
 #include <framework/ConsoleObject.h>
 
 #include <Eris/Connection.h>
+#include <Eris/Player.h>
 #include <Eris/Lobby.h>
+#include <Eris/World.h>
 
 #include <sigc++/object.h>
 
@@ -45,30 +47,40 @@ class ServerService: public Service, public ConsoleObject, public SigC::Object
     //======================================================================
     private:
 
-  /** 
-   * Holds our connection to the server
-   */
+    /** 
+     * Holds our connection to the server
+     */
     Eris::Connection *myConn;
 
-  /**
-   * Holds the lobby of this server
-   */
+    /**
+     * Holds the player object we are connected with
+     */
+    Eris::Player *myPlayer;
+
+    /**
+     * Holds the lobby of this server
+     */
     Eris::Lobby *myLobby;
 
+    /**
+     * Holds the world object of this server
+     */
+    Eris::World *myWorld;
+
     short myPort;
-	std::string myHost;
+    std::string myHost;
 
     /**
      * True if and only if we are successfully connected to the server
      */
     bool myConnected;
 
-		
+
     //----------------------------------------------------------------------
     // Constructors & Destructor
 
-	public:
-	
+  public:
+
     /** Creates a new ServerService using default values. */
     ServerService();
 
@@ -80,54 +92,71 @@ class ServerService: public Service, public ConsoleObject, public SigC::Object
     // Getters & Setters
     bool isConnected() const
       {
-	return myConnected;
+        return myConnected;
       }
 
     //----------------------------------------------------------------------
     // Methods
-	
-	Service::Status start();
 
-  void stop(int code);
+    Service::Status start();
 
-	bool connect(const std::string& host, short port = 6767);
+    void stop(int code);
 
-  void reconnect();
+    bool connect(const std::string& host, short port = 6767);
 
-	void disconnect();
+    void reconnect();
 
-  void runCommand(const string &, const string &);
+    void disconnect();
+
+    void runCommand(const string &, const string &);
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
- private:
+  private:
 
-	// Connection Callbacks
-	
-	 void gotFailure(const std::string& msg);
+    // Connection Callbacks
 
-	void connected();
+    void gotFailure(const std::string& msg);
 
-	bool disconnecting();
+    void connected();
 
-	void disconnected();
+    bool disconnecting();
 
-	void statusChanged(Eris::BaseConnection::Status);
+    void disconnected();
 
-	void timeout(Eris::BaseConnection::Status);
+    void statusChanged(Eris::BaseConnection::Status);
 
-	// Lobby Callbacks
+    void timeout(Eris::BaseConnection::Status);
 
-	void sightPerson(Eris::Person*);
+    // Player Callbacks
 
-	void privateTalk(const std::string&, const std::string&); 
+    void gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &);
 
-	void loggedIn( const Atlas::Objects::Entity::Player& );
+    void gotAllCharacters();
 
-  // List of ServerService's console commands
-  static const char * const SERV_CONNECT = "connect";
-  static const char * const SERV_RECONNECT = "reconnect";
-  static const char * const SERV_DISCONNECT = "disconnect";
+    void loginFailure(Eris::LoginFailureType, const std::string &);
+
+    void loginSuccess();
+
+    void logoutComplete(bool);
+
+    // Lobby Callbacks
+
+    void sightPerson(Eris::Person*);
+
+    void privateTalk(const std::string&, const std::string&); 
+
+    void loggedIn( const Atlas::Objects::Entity::Player& );
+
+    // List of ServerService's console commands
+    static const char * const CONNECT = "connect";
+    static const char * const RECONNECT = "reconnect";
+    static const char * const DISCONNECT = "disconnect";
+    static const char * const LOGIN = "login";
+    static const char * const LOGOUT = "logout";
+    static const char * const CREATECHAR = "createchar";
+    static const char * const TAKECHAR = "takechar";
+    static const char * const LISTCHARS = "listchars";
 }; //ServerService
 
 } // namespace dime
