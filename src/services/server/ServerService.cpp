@@ -30,12 +30,7 @@
 #include <list>
 #include <algorithm>
 #include <iostream>
-#if 0
-#include <strstream>
-#define stringstream strstream
-#else
 #include <sstream>
-#endif
 
 // HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
 

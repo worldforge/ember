@@ -4,7 +4,7 @@
 
 namespace dime
 {
-void DataModelService::dump(PDataObject toDump, std::strstream & dumpDest, bool recursive, 
+void DataModelService::dump(PDataObject toDump, std::stringstream & dumpDest, bool recursive, 
 								int level)
 {	
 	//@todo advance functionality by adding dump level (to dump out types, description, etc.)

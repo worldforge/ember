@@ -33,12 +33,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
-#if 0
-#include <strstream>
-#define strstream stringstream
-#else
 #include <sstream>
-#endif
 
 // Libraries we are using
 #include <sigc++/object.h>

@@ -24,7 +24,7 @@
 #include "ConsoleBackend.h"
 #include "services/logging/LoggingService.h"
 
-#include <strstream>
+#include <sstream>
 
 namespace dime {
 
@@ -97,7 +97,7 @@ void ConsoleBackend::runCommand(const std::string &command)
 
 void ConsoleBackend::runCommand(const std::string &command, const std::string &args)
 {
-  std::ostrstream temp;
+  std::ostringstream temp;
 
   // This commands prints all currently registers commands to the Log File
   if (command == LIST_CONSOLE_COMMANDS) {

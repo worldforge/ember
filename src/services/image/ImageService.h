@@ -109,6 +109,15 @@ private:
         addPath("./data/");
     }
 
+
+	/**
+	 * Copy Constructor not provided
+	 */
+	ImageService(const ImageService &source) 
+	{
+	}
+
+	
 }; //ImageService
 
 } // namespace dime

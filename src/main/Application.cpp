@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.46  2003-04-19 23:12:25  xmp
+ *      Revision 1.47  2003-04-20 01:01:30  nikal
+ *      Changing strstream includes to sstream.  and strstream instances to stringstream.
+ *
+ *      Revision 1.46  2003/04/19 23:12:25  xmp
  *      2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
  *      * Application.cpp, Application.h:
  *        Sort out init's in headers that don't work anymore.
@@ -212,12 +215,7 @@
 
 #include <iostream>
 #include <iomanip>
-#if 0
-#include <strstream>
-#define strstream stringstream
-#else
 #include <sstream>
-#endif
 #include <iterator>
 #ifndef WIN32
 #include <stdio.h>

@@ -22,12 +22,7 @@
 
 #include <Eris/Person.h>
 
-#if 0
-#include <strstream>
-#define stringstream strstream
-#else
 #include <sstream>
-#endif
 
 namespace dime {
 
