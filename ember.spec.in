@@ -8,7 +8,7 @@ Version: %{version}
 Release: %{release}
 Source0: %{name}-%{version}.tar.gz
 URL: http://www.worldforge.org/dev/eng/clients/ember
-Copyright: GPL
+License: GPL
 Group: Amusements/Games
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Prefix: %{_prefix}
