@@ -137,9 +137,11 @@ const std::vector< BuildingBlock*> BluePrint::getAttachedBlocks() const
 
 BuildingBlock* BluePrint::createBuildingBlock(BuildingBlockDefinition definition)
 {
-	if (definition.mName == "") {
-		definition.mName = std::string("_buildingBlock") + mBuildingBlocks.size();
-	}
+// 	if (definition.mName == "") {
+// 		std::stringstream ss;
+// 		ss << mBuildingBlocks.size();
+// 		definition.mName = std::string("_buildingBlock") + ss.str();
+// 	}
 	mBuildingBlocks[definition.mName];
 	BuildingBlockSpec *buildingBlockSpec = mCarpenter->getBuildingBlockSpec(definition.mBuildingBlockSpec);
 	mBuildingBlocks[definition.mName].mBlockDefinition = definition;
