@@ -22,31 +22,31 @@
 namespace dime
 {
 
-    ImageService *ImageService::theInstance = NULL;
+  ImageService *ImageService::theInstance = NULL;
 
-   SDL_Surface *ImageService::loadImage(std::string imageName)
-    {
-        SDL_SurfacePtr image;
-        std::string newName;
+  SDL_Surface *ImageService::loadImage(const std::string& imageName)
+  {
+    SDL_SurfacePtr image;
+    std::string newName;
         
-		image = myImages[imageName];
+    image = myImages[imageName];
 		
-		if (image.get() == NULL)
-		{
-			image.reset(IMG_Load(imageName.c_str()));
+    if (image.get() == NULL)
+      {
+	image.reset(IMG_Load(imageName.c_str()));
 
-			std::list<std::string>::iterator cur = mySearchPaths.begin();
-			std::list<std::string>::iterator last = mySearchPaths.end();
+	std::list<std::string>::iterator cur = mySearchPaths.begin();
+	std::list<std::string>::iterator last = mySearchPaths.end();
         
-			while(image.get() == NULL && cur != last)
-            {
-                newName = (*cur) + imageName;
-                image.reset(IMG_Load(newName.c_str()));
-                ++cur;
-            }
-			if (image.get() != NULL) myImages[imageName] = image;
-		}
-        return image.get();
-    }
+	while(image.get() == NULL && cur != last)
+	  {
+	    newName = (*cur) + imageName;
+	    image.reset(IMG_Load(newName.c_str()));
+	    ++cur;
+	  }
+	if (image.get() != NULL) myImages[imageName] = image;
+      }
+    return image.get();
+  }
 
 } // namespace dime

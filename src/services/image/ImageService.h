@@ -38,21 +38,21 @@ namespace dime {
  */
 class ImageService : public Service
 {
-	//======================================================================
-	// Inner Classes, Typedefs, and Enums
-	//======================================================================
+  //======================================================================
+  // Inner Classes, Typedefs, and Enums
+  //======================================================================
 public:
 
-	typedef boost::shared_ptr<SDL_Surface> SDL_SurfacePtr;
+  typedef boost::shared_ptr<SDL_Surface> SDL_SurfacePtr;
 
-    //======================================================================
-    // Private Variables
-    //======================================================================
+  //======================================================================
+  // Private Variables
+  //======================================================================
 private:
 
     std::list<std::string> mySearchPaths;
     std::map<std::string, SDL_SurfacePtr> myImages;
-	static ImageService *theInstance;
+    static ImageService* theInstance;
 
     //----------------------------------------------------------------------
     // Constructors & Destructor
@@ -67,9 +67,9 @@ public:
     //----------------------------------------------------------------------
     // Getters & Setters
     
-    void addPath(std::string newPath)
+    void addPath(const std::string& newPath)
     {
-        mySearchPaths.push_back(newPath);
+      mySearchPaths.push_back(newPath);
     }
     
     /**
@@ -77,12 +77,12 @@ public:
     */
     static ImageService *getInstance()
     {
-        if(theInstance == NULL)
-            {
-                theInstance = new ImageService();
-            }
+      if(theInstance == NULL)
+	{
+	  theInstance = new ImageService();
+	}
         
-        return theInstance;
+      return theInstance;
     }
     
     Service::Status start()
@@ -94,7 +94,7 @@ public:
     //----------------------------------------------------------------------
     // Other public methods
 	
-	SDL_Surface *loadImage(std::string imageName);
+    SDL_Surface *loadImage(const std::string& imageName);
 
 
 private:

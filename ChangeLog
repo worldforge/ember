@@ -1,4 +1,7 @@
-2002-13-10 M Pollard <circlemaster@blueyonder.co.uk>
+2002-12-15 M Pollard <circlemaster@blueyonder.co.uk>
+	* ImageService.cpp/h: Quick tidy up.
+
+2002-12-13 M Pollard <circlemaster@blueyonder.co.uk>
 	* EntityListener.cpp/h: Rename of gameview creation of new pure virtual
 	  base class.  Reviews welcome!
 
