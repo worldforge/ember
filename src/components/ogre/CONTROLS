@@ -1,0 +1,19 @@
+Controls for dime - OGRE
+This is a temporary file, when dime is more advanced the controls will be defined via the configuration service.
+
+MOUSE: look around
+
+W: walk forward
+S: walk backwards
+A: sidestep left
+D: sidestep right
+
+O: camera
+P: camera
+I: camera
+K: camera
+
+F: toggle GUI on / off
+Y: toggle wireframe mode
+
+ESC: quit game
