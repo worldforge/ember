@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.14  2002-08-16 22:37:12  xmp
+ *      Revision 1.15  2002-08-16 22:38:52  xmp
+ *      Revert something that snuck in
+ *
+ *      Revision 1.14  2002/08/16 22:37:12  xmp
  *      Script to run dime from correct dir
  *
  *      Revision 1.13  2002/08/06 23:59:50  winand
@@ -69,7 +72,6 @@
 
 #include "RectangleRenderer.h"
 #include <math.h>
-#define roundf
 
 
 /**
