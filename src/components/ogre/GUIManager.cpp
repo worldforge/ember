@@ -16,13 +16,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "widgets/ServerWidget.h"
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
 #include "widgets/ChatWidget.h"
 #include "widgets/EntityPickerWidget.h"
 #include "widgets/InventoryWidget.h"
 #include "widgets/ServerBrowserWidget.h"
-#include "widgets/ServerWidget.h"
 #include "widgets/InspectWidget.h"
 #include "widgets/MakeEntityWidget.h"
 #include "MousePicker.h"

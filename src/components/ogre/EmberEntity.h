@@ -19,12 +19,10 @@
 #ifndef DIMEENTITY_H
 #define DIMEENTITY_H
 
-#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Entity.h>
 
-#include <Ogre.h>
-#include <OgreException.h>
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
@@ -42,6 +40,9 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
+
+#include <Ogre.h>
+#include <OgreException.h>
 
 #include "MathConverter.h"
 
@@ -68,17 +69,9 @@ public:
 		CM_TERRAIN = 1<<5
 	};
 
-	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager);
+	DimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
 	virtual ~DimeEntity();
 	
-	/*
-	 * Overridden from Eris::Entity
-	 * @see Eris::Entity
-	 */
-	virtual void handleMove();
-	virtual void handleTalk(const std::string &msg);
-	virtual void setContainer(Entity *pr);
-	virtual void setVisible(bool vis);
 
 	/**
 	 * Called by contained entites to determine how they snap to the ground.
@@ -104,10 +97,24 @@ public:
 
 protected: 
 
+	/*
+	 * Overridden from Eris::Entity
+	 * @see Eris::Entity
+	 */
+	virtual void onMoved();
+	virtual void onTalk(const Atlas::Objects::Root& obj);
+//	virtual void setContainer(Entity *pr);
+	virtual void onVisibilityChanged(bool vis);
+	virtual void onLocationChanged(Eris::Entity *newLocation, Eris::Entity *oldLocation);
+	
 	/* 
 	 * Creates the main scene node which holds the entity.
 	 */
 	void DimeEntity::createSceneNode();
+	
+	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+
+
 
 	/*
 	 * The main SceneNode which holds the entity in the ogre world space.
@@ -115,6 +122,8 @@ protected:
 	Ogre::SceneNode* mOgreNode;
 	
 	Ogre::SceneManager* mSceneManager;
+	
+	Eris::View* mView;
 
 };
 

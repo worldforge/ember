@@ -20,16 +20,16 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-
 #include "Widget.h"
+
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
 #include "PersonDimeEntity.h"
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
 #include "DimeOgre.h"
-#include "InventoryWidget.h"
 #include "Avatar.h"
+#include "InventoryWidget.h"
 
 namespace DimeOgre {
 
@@ -63,12 +63,12 @@ void InventoryWidget::createdAvatarDimeEntity(AvatarDimeEntity* entity)
 }
 void InventoryWidget::addedEntity(DimeEntity* dimeEntity) {
 	
-	CEGUI::ListboxItem* item = new CEGUI::ListboxTextItem(CEGUI::String(dimeEntity->getName()), atoi(dimeEntity->getID().c_str()), dimeEntity);
+	CEGUI::ListboxItem* item = new CEGUI::ListboxTextItem(CEGUI::String(dimeEntity->getName()), atoi(dimeEntity->getId().c_str()), dimeEntity);
 	mListBox->addItem(item);
 
 }
 void InventoryWidget::removedEntity(DimeEntity* dimeEntity) {
-	CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi(dimeEntity->getID().c_str()));
+	CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi(dimeEntity->getId().c_str()));
 	if (item) {
 		mListBox->removeItem(item);
 	}

@@ -26,7 +26,6 @@
 #include <sigc++/object.h>
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
 
 #include <string>
 
@@ -81,13 +80,12 @@ class MetaserverService: public Service,
 
     void stop(int code) ;
 	
-    void gotServerCount(int count);
 	
     void gotFailure(const std::string& msg);
 
     void receivedServerInfo(const Eris::ServerInfo& sInfo);
 	
-    void completedServerList();
+    void completedServerList(int count);
 
     /**
      * This is the function that needs to be extended to use the console.

@@ -39,18 +39,11 @@ class PersonDimeEntity;
 class AvatarDimeEntity: public PersonDimeEntity {
 public:
 
-	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);
+	AvatarDimeEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);
 	virtual ~AvatarDimeEntity();
 	
 	
 	
-	/*Eris methods, see Eris::Entity.h for documentation */
-//	virtual void handleTalk(const std::string &msg);
-	virtual void handleMove();
-	virtual void addMember(Entity *e);
-	virtual void rmvMember(Entity *e);
-	//virtual void setVisible(bool vis);	
-	virtual void setContainer(Eris::Entity *pr);
 	
 	/* 
 	 * used by the main application to set the DimeOgre::Avatar connected to this instance 
@@ -69,6 +62,20 @@ public:
 
 	
 protected: 
+
+	void childAdded(Entity *e, Entity *e_);
+	void childRemoved(Entity *e, Entity *e_);
+
+	/*Eris methods, see Eris::Entity.h for documentation */
+//	virtual void handleTalk(const std::string &msg);
+	virtual void onMoved();
+/*	virtual void addMember(Entity *e);
+	virtual void rmvMember(Entity *e);*/
+	//virtual void setVisible(bool vis);	
+	//virtual void setContainer(Eris::Entity *pr);
+	//virtual void onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation);
+	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+
 
 	Avatar* mAvatar;
 	Eris::Avatar* mErisAvatar;

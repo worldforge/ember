@@ -15,10 +15,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+#include "services/logging/LoggingService.h"
 
 #include "TerrainGenerator.h"
 //#include "DimeTerrainRenderable.h"
-#include "services/logging/LoggingService.h"
 #include "MathConverter.h"
 
 #include "DimeTerrainSceneManager.h"

@@ -15,44 +15,49 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "Model.h"
+
+//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
+//this seems to be because both uses their own internal memory handlers
+#include <xercesc/util/XMemory.hpp>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+
+
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
 #include "PersonDimeEntity.h"
 #include "framework/ConsoleBackend.h"
 #include "Avatar.h"
 #include "GUIManager.h"
+#include "Model.h"
 #include "AvatarDimeEntity.h"
+#include "DimeOgre.h"
 
 namespace DimeOgre {
 
 
-AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
+AvatarDimeEntity::AvatarDimeEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
 mAvatar(NULL), mErisAvatar(erisAvatar)
-,PersonDimeEntity(ge, vw, sceneManager, nodeWithModel)
+,PersonDimeEntity(id, type, vw, sceneManager, nodeWithModel)
 {
-	this->mModel->setQueryFlags(DimeEntity::CM_AVATAR);
 }
 
 AvatarDimeEntity::~AvatarDimeEntity()
 {}
 
-/*
-void AvatarDimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
-	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild());
-
-	mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
-
-	// attach the node to the entity
-	ogreNode->attachObject(mOgreEntity);
+void AvatarDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+{
+	PersonDimeEntity::init(ge);
+	mModel->setQueryFlags(DimeEntity::CM_AVATAR);
 }
-*/
 
-void AvatarDimeEntity::handleMove()
+void AvatarDimeEntity::onMoved()
 {
 	if (getAvatar()) {
 		getAvatar()->movedInWorld();
 	}
+	Eris::Entity::onMoved();
 //	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
 //	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 }
@@ -77,40 +82,55 @@ void AvatarDimeEntity::setVisible(bool vis)
 }
 */
 
-void AvatarDimeEntity::addMember(Entity *e) 
+//void AvatarDimeEntity::addMember(Entity *e) 
+void AvatarDimeEntity::childAdded(Entity *e, Entity *e_) 
 {
 	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
-	PersonDimeEntity::addMember(e);
+	//PersonDimeEntity::addMember(e);
 	
 }
 
 
-void AvatarDimeEntity::rmvMember(Entity *e)
+/*void AvatarDimeEntity::rmvMember(Entity *e)*/
+void AvatarDimeEntity::childRemoved(Entity *e, Entity *e_)
 {
-	mAvatar->mEntitiesToBeRemvedFromInventory.insert(e);
-	PersonDimeEntity::rmvMember(e);	
+	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
+//	PersonDimeEntity::rmvMember(e);	
 }
 
 
-void AvatarDimeEntity::setContainer(Entity *pr)
-{
-	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
-	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(pr);
-	if (dimeEntity) {
-		//detach from our current object and add to the new entity
-		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
-		dimeEntity->getSceneNode()->addChild(getSceneNode());
-	} else {
-		//detach from our current object and add to the world
-		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
-		getSceneNode()->getCreator()->getRootSceneNode()->addChild(getSceneNode());
-	}		
-	Entity::setContainer(pr);
-	
-	//we adjust the entity so it retains it's former position in the world
-	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
-	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
-}
+
+// void AvatarDimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation)
+// {
+// 	return DimeEntity::onLocationChanged(oldLocation, newLocation);
+// 	
+// 	
+// 	
+// 	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+// 	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(newLocation);
+// 	Ogre::SceneNode* newOgreParentNode = dimeEntity->getSceneNode();
+// 	
+// /*	if (dimeEntity)
+// 	{
+// 		newOgreParentNode = dimeEntity->getSceneNode();
+// 	} else {
+// 		newOgreParentNode = DimeOgre::getSingleton().getSceneManager()->getSceneNode(newLocation->getId());
+// 	}*/
+// 		
+// 	if (getSceneNode()->getParent()) {
+// 		//detach from our current object and add to the new entity
+// 		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
+// 	}
+// 	newOgreParentNode->addChild(getSceneNode());
+// 	
+// 
+// //	Entity::setContainer(pr);
+// 	Eris::Entity::onLocationChanged(oldLocation, newLocation);
+// 	
+// 	//we adjust the entity so it retains it's former position in the world
+// 	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
+// 	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+// }
 
 Ogre::SceneNode* AvatarDimeEntity::getAvatarSceneNode()
 {

@@ -45,7 +45,6 @@
 #endif
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
 
 
 using namespace std;
@@ -89,8 +88,7 @@ namespace dime
 
     std::string metaserver = "metaserver.worldforge.org";
 
-    msrv = new Eris::Meta("dime", metaserver, 10);
-    msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::gotServerCount));
+    msrv = new Eris::Meta(metaserver, 10);
     msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
     msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
     msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
@@ -126,10 +124,6 @@ namespace dime
 #endif
   }
 
-  void MetaserverService::gotServerCount(int count)
-  {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got " << count << " game servers." << ENDM;
-  }
     
   void MetaserverService::gotFailure(const string& msg)
   {
@@ -175,7 +169,7 @@ namespace dime
     return;
   }
 
-  void MetaserverService::completedServerList()
+  void MetaserverService::completedServerList(int count)
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Server List completed." << ENDM;
     listed = true;
@@ -185,19 +179,19 @@ namespace dime
 #endif
 
     // waiting for James to implement this
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << ENDM;
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << count << ENDM;
     //Eris::Serverlist whatever;
-    svrl l = msrv -> getGameServerList ();
 	
     stringstream out;
     out << "Listing hostnames..." << endl;
 		
-    for(Iter i = l.begin(); i != l.end(); i++)
+    for(int i = 0; i < count; i++)
       {	
 	//HINT: Always use .c_str() for compatibility to MSVC
-	Eris::ServerInfo inf = *i;
+	Eris::ServerInfo inf = msrv->getInfoForServer(i);
+	
 
-	out << "Hostname: " << (i)->getHostname().c_str() << endl;
+	out << "Hostname: " << inf.getHostname().c_str() << endl;
       }
 
 #if 0 // not new sstream

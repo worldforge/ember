@@ -29,10 +29,10 @@
 #include <Eris/Entity.h>
 #include <Eris/Exceptions.h>
 
-#include <Atlas/Objects/Entity/GameEntity.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
+
 
 #include <list>
 #include <algorithm>
@@ -59,8 +59,8 @@ namespace dime
 	const char * const ServerService::TOUCH      = "touch";
 
   /* ctor */
-  ServerService::ServerService() : myConn(NULL), myPlayer(NULL),
-				   myWorld(NULL), myOOGChat(NULL),
+  ServerService::ServerService() : myConn(NULL), myAccount(NULL),
+				   myView(NULL), myOOGChat(NULL),
 				   myConnected(false), myAvatar(NULL)
   {
     setName("Server Service");
@@ -98,8 +98,8 @@ namespace dime
   ServerService::~ServerService()
   {
     if (myConn) delete myConn;
-    if (myPlayer) delete myPlayer;
-    if (myWorld) delete myWorld;
+    if (myAccount) delete myAccount;
+    if (myView) delete myView;
   }
 	
   /* Method for starting this service 	*/
@@ -198,19 +198,20 @@ namespace dime
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
     myConnected = true;
+    GotConnection.emit(myConn);
 
     // Set up the player object
-    myPlayer=new Eris::Player(myConn);
-    myPlayer->GotCharacterInfo.connect(SigC::slot(*this,&ServerService::gotCharacterInfo));
-    myPlayer->GotAllCharacters.connect(SigC::slot(*this,&ServerService::gotAllCharacters));
-    myPlayer->LoginFailure.connect(SigC::slot(*this,&ServerService::loginFailure));
-    myPlayer->LoginSuccess.connect(SigC::slot(*this,&ServerService::loginSuccess));
-    myPlayer->LogoutComplete.connect(SigC::slot(*this,&ServerService::logoutComplete));
+    myAccount=new Eris::Account(myConn);
+    myAccount->GotCharacterInfo.connect(SigC::slot(*this,&ServerService::gotCharacterInfo));
+    myAccount->GotAllCharacters.connect(SigC::slot(*this,&ServerService::gotAllCharacters));
+    myAccount->LoginFailure.connect(SigC::slot(*this,&ServerService::loginFailure));
+    myAccount->LoginSuccess.connect(SigC::slot(*this,&ServerService::loginSuccess));
+    myAccount->LogoutComplete.connect(SigC::slot(*this,&ServerService::logoutComplete));
 
+	GotAccount.emit(myAccount);
     // Init OOGChat controller
-    myOOGChat = new OOGChat;
+    myOOGChat = new OOGChat(myAccount);
     
-    GotConnection.emit(myConn);
 
     ConsoleBackend::getMainConsole()->pushMessage("Connected to Server");
   }
@@ -226,8 +227,8 @@ namespace dime
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
 
     // NULL out OOGChat & player so noone gets tempted to play with an unconnected lobby/player
-    delete myPlayer;
-    myPlayer=NULL;
+    delete myAccount;
+    myAccount=NULL;
     delete myOOGChat;
     myOOGChat = NULL;
 
@@ -245,27 +246,31 @@ namespace dime
     ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
   }
 
-void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
+void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & info)
 {
 	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Character Info"<< ENDM;
 	ConsoleBackend::getMainConsole()->pushMessage("Got character info");
+	
+	GotCharacterInfo.emit(info);
 }
 
   void ServerService::gotAllCharacters()
   {
 	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got All Characters"<< ENDM;
 	ConsoleBackend::getMainConsole()->pushMessage("Got all characters");
-	Eris::CharacterMap cm = myPlayer->getCharacters();
+	Eris::CharacterMap cm = myAccount->getCharacters();
 	Eris::CharacterMap::iterator i;
 	for(i=cm.begin();i!=cm.end();i++) {
 		std::string msg;
 		msg = "Character ID: [" + (*i).first + "].";
 		ConsoleBackend::getMainConsole()->pushMessage(msg);
 	}
+	GotAllCharacters.emit(myAccount);
 
   }
 
-  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
+//  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
+  void ServerService::loginFailure(const std::string &msg) 
   {
     std::ostringstream temp;
 
@@ -275,18 +280,30 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
     temp<<std::ends;    
 #endif
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+	LoginFailure.emit(myAccount);
   }
 
   void ServerService::loginSuccess(){
-    //myWorld = new Eris::World(myPlayer, myConn);
+    //myView = new Eris::View(myAccount, myConn);
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
     ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
+	LoginSuccess.emit(myAccount);
   }
+  
+  void ServerService::takeCharacter(const std::string &id){
+		myAvatar = myAccount->takeCharacter(id);
+		if (myAvatar) {
+			GotAvatar.emit(myAvatar);
+			myView = myAvatar->getView();
+			GotView.emit(myView);
+		}
+	}
+
 
   void ServerService::logoutComplete(bool clean) {
-    delete myWorld;
-    myWorld = NULL;
+    delete myView;
+    myView = NULL;
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
     ConsoleBackend::getMainConsole()->pushMessage("Logged out from server");
@@ -321,7 +338,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 
 		// Create Account command
 		} else if (command == CREATEACC) {	
-			if (!myPlayer) return;
+			if (!myAccount) return;
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
 			std::string uname = tokeniser.nextToken();
@@ -332,7 +349,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 			msg = "Creating account: Name: [" + uname + "], Password: [" + password + "], Real Name: [" + realname + "]";
 			
 			try {
-				myPlayer->createAccount(uname,realname,password);
+				myAccount->createAccount(uname,realname,password);
 			} 
 			catch (Eris::BaseException except)
 			{
@@ -349,7 +366,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		} else if (command==LOGIN) {
 	
 		// TODO: put this in a separate method
-			if (myPlayer)
+			if (myAccount)
 			{
 				// Split string into userid / password pair
 				Tokeniser tokeniser = Tokeniser();
@@ -357,7 +374,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 				std::string userid = tokeniser.nextToken();
 				std::string password = tokeniser.remainingTokens();
 	
-				myPlayer->login(userid,password);
+				myAccount->login(userid,password);
 				
 				std::string msg;
 				msg = "Login: [" + userid + "," + password + "]";
@@ -369,15 +386,15 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		// Logout command
 		} else if (command==LOGOUT) {
 			ConsoleBackend::getMainConsole()->pushMessage("Loggin out...");
-			if (myPlayer)
+			if (myAccount)
 			{
-				myPlayer->logout();
+				myAccount->logout();
 			}
 		
 		// Create Character command
 		} else if (command==CREATECHAR) {
 			ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
-			if (myPlayer)
+			if (myAccount)
 			{
 				// Split string into name/type/sex/description
 				Tokeniser tokeniser = Tokeniser();
@@ -393,14 +410,14 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 				
 				fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
 				Atlas::Objects::Entity::GameEntity character;
-				character.setParents(Atlas::Message::Element::ListType(1,type));	//TODO: settler shouldn't be fixed
-				character.setName(name);
-				character.setAttr("sex", sex);
-				character.setAttr("description", description);
+				character->setParentsAsList(Atlas::Message::ListType(1,type));
+				character->setName(name);
+				character->setAttr("sex", sex);
+				character->setAttr("description", description);
 				fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
 				try {
-					myAvatar = myPlayer->createCharacter(character);
-					myWorld = myAvatar->getWorld();
+					myAvatar = myAccount->createCharacter(character);
+					myView = myAvatar->getView();
 				} 
 				catch (Eris::BaseException except)
 				{
@@ -415,9 +432,9 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 				fprintf(stderr, "TRACE - DONE\n");
 				if (myAvatar) {
 					GotAvatar.emit(myAvatar);
-					myWorld = myAvatar->getWorld();
-					if (myWorld) {
-						GotWorld.emit(myWorld);
+					myView = myAvatar->getView();
+					if (myView) {
+						GotView.emit(myView);
 					}
 				}
 			} else {
@@ -426,23 +443,16 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 
 		// Take Character Command
 		} else if (command==TAKECHAR) {
-			if (myPlayer)
+			if (myAccount)
 			{
-				myAvatar = myPlayer->takeCharacter(args);
-				if (myAvatar) {
-					GotAvatar.emit(myAvatar);
-					myWorld = myAvatar->getWorld();
-					if (myWorld) {
-						GotWorld.emit(myWorld);
-					}
-				}
+				takeCharacter(args);
 			}
 
 		// List Characters Command
 		} else if (command==LISTCHARS) {
-			if (myPlayer)
+			if (myAccount)
 			{
-				myPlayer->refreshCharacterInfo();
+				myAccount->refreshCharacterInfo();
 			}
 
 		// Say (In-Game chat) Command
@@ -460,13 +470,13 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 			}
 	
 			Atlas::Objects::Operation::Touch touch;
-			Atlas::Message::Element::MapType opargs;
+			Atlas::Message::MapType opargs;
 	
 			opargs["id"] = args;
-			touch.setFrom(myAvatar->getID());
-			touch.setArgs(Atlas::Message::Element::ListType(1, opargs));
+			touch->setFrom(myAvatar->getId());
+			touch->setArgsAsList(Atlas::Message::ListType(1, opargs));
 	
-			Eris::Connection::Instance()->send(touch);
+			myConn->send(touch);
 		}	
 	}
   
@@ -496,6 +506,11 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
  		if(!myAvatar) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		if(myAvatar->getEntity()->getLocation() == 0) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Avatar in limbo." << ENDM;
  			return;
  		}
  		try {

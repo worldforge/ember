@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (Xmp)
+  Copyright (C) 2002  Alistair Davidson, the Viewforge Project, Martin Pollard (Xmp)
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #define ENTITY_LISTENER_H
 
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -84,7 +84,7 @@ class EntityListener : virtual public SigC::Object //, public Component
         /** Destructor, stick cleanup stuff here as per usual */
         ~EntityListener();
 
-        /* Eris::World entity signals (see eris\src\world.h for more info) */
+        /* Eris::View entity signals (see eris\src\world.h for more info) */
 
         /**
          * Called when an entity is created. This connects entity-specific
@@ -153,7 +153,7 @@ class EntityListener : virtual public SigC::Object //, public Component
          * James and bop him on the head for writing unhelpful comments ;)
          * NOTES: I suspect this is when an attribute of the object is changed.
          */
-        virtual void changed( const Eris::StringSet &s, Eris::Entity *e ) = 0;
+        virtual void changed( Eris::Entity *e , const Eris::StringSet &s) = 0;
 
         /**
          * Called when the entity moves. Here you should alter the position
@@ -166,7 +166,7 @@ class EntityListener : virtual public SigC::Object //, public Component
          * @param c The new coordinates of the entity
          * @param e A pointer to the Eris entity that has moved
          */
-        virtual void moved( const WFMath::Point< 3 > &, Eris::Entity *e ) = 0;
+        virtual void moved(Eris::Entity *e) = 0;
 
         /**
          * Called when the entity speaks. You'll probably want to display the
@@ -175,17 +175,17 @@ class EntityListener : virtual public SigC::Object //, public Component
          * @param s A string containing the speech
          * @param e A pointer to the Eris entity
          */
-        virtual void say( const std::string &s, Eris::Entity *e ) = 0;
+        virtual void say(const std::string &s) = 0;
 
         /**
          * Sadly undocumented
          */
-        virtual void addedMember(Eris::Entity *e) = 0;
+        virtual void addedMember(Eris::Entity *e, Eris::Entity *e) = 0;
 
         /**
          * Also sadly undocumented
          */
-        virtual void removedMember(Eris::Entity *e) = 0;
+        virtual void removedMember(Eris::Entity *e, Eris::Entity *e) = 0;
 
     private:
 

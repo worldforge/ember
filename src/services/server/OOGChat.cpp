@@ -21,6 +21,8 @@
 #include "framework/ConsoleBackend.h"
 
 #include <Eris/Person.h>
+#include <Eris/Lobby.h>
+#include <Eris/Account.h>
 
 #include <sstream>
 
@@ -34,23 +36,24 @@ namespace dime {
     const char * const OOGChat::CMD_PART  = "part";
     const char * const OOGChat::CMD_MSG   = "msg";
 
-    OOGChat::OOGChat() : myLobby(NULL)
+    OOGChat::OOGChat(Eris::Account* account) : myLobby(NULL)
     {
       // Set up the lobby object
-      myLobby = Eris::Lobby::instance();
+      //HACK: to get it to work with eris 1.3
+	  myLobby = new Eris::Lobby(account);
 
       // Specfic to lobby Callbacks setup
       myLobby->SightPerson.connect(SigC::slot(*this,&OOGChat::sightPerson));
       myLobby->PrivateTalk.connect(SigC::slot(*this,&OOGChat::privateTalk));
-      myLobby->LoggedIn.connect(SigC::slot(*this,&OOGChat::loggedIn));
+      //myLobby->LoggedIn.connect(SigC::slot(*this,&OOGChat::loggedIn));
 
       // Ordinary rooms callbacks
       myLobby->Entered.connect(SigC::slot(*this,&OOGChat::entered));
-      myLobby->Talk.connect(SigC::slot(*this,&OOGChat::talk));
+      myLobby->Speech.connect(SigC::slot(*this,&OOGChat::talk));
       myLobby->Emote.connect(SigC::slot(*this,&OOGChat::emote));
       myLobby->Appearance.connect(SigC::slot(*this,&OOGChat::appearance));
       myLobby->Disappearance.connect(SigC::slot(*this,&OOGChat::disappearance));
-      myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
+//      myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
 
       ConsoleBackend::getMainConsole()->registerCommand( CMD_TALK, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_EMOTE, this );
@@ -80,11 +83,11 @@ namespace dime {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sighted Person name:\""<< person->getName()<<"\" id:"<<person->getAccount()<< ENDM;    
   }
 
-  void OOGChat::privateTalk(const std::string& name, const std::string& msg)
+  void OOGChat::privateTalk(Eris::Person* person, const std::string& msg)
   {
     std::ostringstream temp;
 
-    temp << "PRIVMSG("<<name<<") says:"<<msg;
+    temp << "PRIVMSG("<<person->getName()<<") says:"<<msg;
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<<temp.str()<<ENDM;
 
@@ -136,21 +139,21 @@ namespace dime {
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
-  void OOGChat::talk(Eris::Room *room, const std::string& name, const std::string& msg)
+  void OOGChat::talk(Eris::Room *room, Eris::Person* person, const std::string& msg)
   {
     std::ostringstream temp;
 
-    temp << "["<< room->getName()<<"] "<<name<<" says: "<<msg;
+    temp << "["<< room->getName()<<"] "<<person->getName()<<" says: "<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
     temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
-  void OOGChat::emote(Eris::Room *room, const std::string& name, const std::string& msg)
+  void OOGChat::emote(Eris::Room *room, Eris::Person* person, const std::string& msg)
   {
     std::ostringstream temp;
 
-    temp << "["<< room->getName()<<"] "<<name<<" "<<msg;
+    temp << "["<< room->getName()<<"] "<<person->getName()<<" "<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
 #if 0 // not new sstream
     temp<<std::ends;
@@ -158,11 +161,11 @@ namespace dime {
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
-  void OOGChat::appearance(Eris::Room *room, const std::string& account)
+  void OOGChat::appearance(Eris::Room *room,  Eris::Person* person)
   {
     std::ostringstream temp;
 
-    temp << account << " appears in "<< room->getName();
+    temp << person->getName() << " appears in "<< room->getName();
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() <<ENDM;
 #if 0 // not new sstream
     temp<<std::ends;
@@ -170,11 +173,11 @@ namespace dime {
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
-  void OOGChat::disappearance(Eris::Room* room, const std::string& account)
+  void OOGChat::disappearance(Eris::Room* room,  Eris::Person* person)
   {
     std::ostringstream temp;
 
-    temp << account << " disappears from "<< room->getName();
+    temp << person->getName() << " disappears from "<< room->getName();
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)<<temp.str()<<ENDM;
 #if 0 // if not new sstream
     temp<<std::ends;

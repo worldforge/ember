@@ -1,6 +1,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include "DimeOgrePrerequisites.h"
+
 #include <Ogre.h>
 #include <CEGUI.h>
 #include <CEGUIEvent.h> 

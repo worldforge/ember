@@ -21,8 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#include "GUIManager.h"
 #include "Widget.h"
+#include "GUIManager.h"
 #include "DimeEntity.h"
 
 #include "InspectWidget.h"
@@ -67,13 +67,13 @@ void InspectWidget::showEntityInfo(DimeEntity* entity)
 	mMainWindow->setVisible(true);
 	
 	
-	Eris::Entity* parent = entity->getContainer();
+	Eris::Entity* parent = entity->getLocation();
 	std::stringstream ss;
 	
 	ss << "Name: " << entity->getName() << "\n";
 	ss << "Parent: ";
 	if (parent) {
-		ss << parent->getName() << " (Id: " << parent->getID() << ")";
+		ss << parent->getName() << " (Id: " << parent->getId() << ")";
 	} else {
 		ss << "none";
 	}
@@ -83,7 +83,7 @@ void InspectWidget::showEntityInfo(DimeEntity* entity)
 	ss << "Velocity: " << entity->getVelocity() << "\n";
 	ss << "Orientation: " << entity->getOrientation() << "\n";
 	
-	std::set<std::string> parents = entity->getInherits();
+/*	std::set<std::string> parents = entity->getInherits();
 	
 	ss << "Inherits:\n";
 	std::set<std::string>::iterator I = parents.begin();
@@ -91,17 +91,20 @@ void InspectWidget::showEntityInfo(DimeEntity* entity)
 	
 	for (; I != I_end; ++I) {
 		ss << "    " << *I;
-	}
+	}*/
 	
+	ss << "Type: " << entity->getType()->getName() << "\n";
+
+		
 	mInfo->setText(ss.str());
 	
 	
-	unsigned int numberOfChildren = entity->getNumMembers();
+	unsigned int numberOfChildren = entity->numContained();
 	mChildList->resetList();
 	
 	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
-		Eris::Entity* child = entity->getMember(i);
-		std::string name =  child->getName() + " (Id: " + child->getID() + ")";
+		Eris::Entity* child = entity->getContained(i);
+		std::string name =  child->getName() + " (Id: " + child->getId() + ")";
 		mChildList->addItem(new CEGUI::ListboxTextItem(name));
 	}
 	

@@ -77,7 +77,7 @@ AC_LANG_POP(C)
 # Test for libxml2
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
 	[
-		CPPFLAGS="$CPPFLAGS $XML_CFLAGS"
+		CXXFLAGS="$CPPFLAGS $XML_CFLAGS"
 		LDFLAGS="$LDFLAGS $XML_LIBS"
 	],
  AC_MSG_ERROR(Couldn't find libxml)
@@ -139,7 +139,7 @@ OGRE_VERSION=0.14.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.14.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS /usr/local/lib/OGRE/Plugin_GuiElements.so /usr/local/lib/OGRE/Plugin_OctreeSceneManager.so"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS /opt/lib/OGRE/Plugin_OctreeSceneManager.so"
 	],
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
@@ -157,7 +157,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, eris-1.2 \
+PKG_CHECK_MODULES(WF, eris-1.3 \
  varconf-1.0 mercator-0.2,
 	[
 		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"
@@ -165,7 +165,7 @@ PKG_CHECK_MODULES(WF, eris-1.2 \
 	],
  AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
 )
-
+AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
 
 
 # Cppunit check

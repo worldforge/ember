@@ -16,21 +16,34 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "Model.h"
+//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
+//this seems to be because both uses their own internal memory handlers
+#include <xercesc/util/XMemory.hpp>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
+#include "Model.h"
+
 #include "PersonDimeEntity.h"
 namespace DimeOgre {
 
-PersonDimeEntity::PersonDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
-DimePhysicalEntity(ge, vw, sceneManager, nodeWithModel)
+PersonDimeEntity::PersonDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
+DimePhysicalEntity(id, ty, vw, sceneManager, nodeWithModel)
 
 {
-	this->mModel->setQueryFlags(DimeEntity::CM_PERSONS);
-
 }
+
 PersonDimeEntity::~PersonDimeEntity()
 {}
+
+void PersonDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+{
+	DimePhysicalEntity::init(ge);
+	mModel->setQueryFlags(DimeEntity::CM_PERSONS);
+}
 
 bool PersonDimeEntity::allowVisibilityOfMember(DimeEntity* entity)
 {

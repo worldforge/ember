@@ -24,9 +24,9 @@
 #include "OOGChat.h"
 
 #include <Eris/Connection.h>
-#include <Eris/Player.h>
+#include <Eris/Account.h>
 #include <Eris/Lobby.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 #include <Eris/Avatar.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -65,12 +65,12 @@ class ServerService : public Service, public ConsoleObject,
     /**
      * Holds the player object we are connected with
      */
-    Eris::Player *myPlayer;
+    Eris::Account *myAccount;
 
     /**
      * Holds the world object of this server
      */
-    Eris::World *myWorld;
+    Eris::View *myView;
 
 	/**
      * Holds the current avatar
@@ -133,12 +133,15 @@ class ServerService : public Service, public ConsoleObject,
     void reconnect();
 
     void disconnect();
+	
+    void takeCharacter(const std::string &id);
+
 
     void runCommand(const std::string &, const std::string &);
 
-    Eris::World* getWorld()
+    Eris::View* getView()
       {
-	return myWorld;
+	return myView;
       }
       
 	void moveToPoint(const WFMath::Point<3>& dest); 
@@ -150,8 +153,14 @@ class ServerService : public Service, public ConsoleObject,
     //----------------------------------------------------------------------
 	// Signals
 	SigC::Signal1<void, Eris::Avatar*> GotAvatar;
-	SigC::Signal1<void, Eris::World*> GotWorld;
+	SigC::Signal1<void, Eris::View*> GotView;
 	SigC::Signal1<void, Eris::Connection*> GotConnection;
+	SigC::Signal1<void, Eris::Account*> GotAccount;
+	SigC::Signal1<void, Eris::Account *> LoginSuccess;
+	SigC::Signal1<void, Eris::Account *> LoginFailure;
+	SigC::Signal1<void, const Atlas::Objects::Entity::GameEntity &> GotCharacterInfo;
+	SigC::Signal1<void, Eris::Account *> GotAllCharacters;
+
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
@@ -171,13 +180,14 @@ class ServerService : public Service, public ConsoleObject,
 
     void timeout(Eris::BaseConnection::Status);
 
-    // Player Callbacks
+    // Account Callbacks
 
     void gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &);
 
     void gotAllCharacters();
 
-    void loginFailure(Eris::LoginFailureType, const std::string &);
+//    void loginFailure(Eris::LoginFailureType, const std::string &);
+    void loginFailure(const std::string &);
 
     void loginSuccess();
 

@@ -24,7 +24,7 @@
 #define DIMEOGREMAKEENTITYWIDGET_H
 
 
-#include <Eris/typeService.h>
+#include <Eris/TypeService.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>

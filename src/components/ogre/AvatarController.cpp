@@ -17,12 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "OgreStringConverter.h"
 
 
-#include "Avatar.h"
-#include "DebugListener.h"
-#include "DimeOgre.h"
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
@@ -30,6 +26,11 @@
 #include "AvatarDimeEntity.h"
 #include "AvatarCamera.h"
 #include "GUIManager.h"
+#include "OgreStringConverter.h"
+#include "Avatar.h"
+#include "DebugListener.h"
+#include "DimeOgre.h"
+
 #include "AvatarController.h"
 
 using namespace Ogre;
@@ -184,6 +185,8 @@ void AvatarController::keyReleased (Ogre::KeyEvent *e)
 
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 {
+
+	//getAvatarCamera()->yaw(Ogre::Degree(1.0f));
 	movementForFrame.movementDirection = Ogre::Vector3::ZERO;
 	movementForFrame.isRunning = false;
 	movementForFrame.isMoving = false;	

@@ -24,19 +24,20 @@
 #define DIMEOGRESERVERWIDGET_H
 
 #include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
-#include <Eris/Player.h>
+#include <Eris/Account.h>
 
-#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Entity.h>
 #include <Atlas/Message/Element.h>
 
+#include "Widget.h"
 
 
 namespace DimeOgre {
 
 class GUIManager;
+class Widget;
 /**
 @author Erik Hjortsberg
 */
@@ -50,17 +51,17 @@ public:
 
 protected:
 
-	Eris::Player* mPlayer;
+	Eris::Account* mAccount;
 	CEGUI::Listbox* mCharacterList;
 
-	void createdPlayer(Eris::Player* player);
+	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool Choose_Click(const CEGUI::EventArgs& args);
 	
-	void loginSuccess(Eris::Player* player);
-	void gotAllCharacters(Eris::Player* player);
+	void loginSuccess(Eris::Account* account);
+	void gotAllCharacters(Eris::Account* account);
 
 
 

@@ -19,9 +19,8 @@
 #ifndef DIMEENTITYFACTORY_H
 #define DIMEENTITYFACTORY_H
 
-#include <Ogre.h>
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
@@ -30,8 +29,9 @@
 
 #include <Eris/Connection.h>
 
-#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Entity.h>
 
+#include <Ogre.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -51,8 +51,9 @@ class AvatarDimeEntity;
 class DimeTerrainPageSource;
 class DimePhysicalEntity;
 class DimeEntity;
-class WorldDimeEntity;
+class ViewDimeEntity;
 class TerrainGenerator;
+class WorldDimeEntity;
 
 /*
  * Creates the DimeEntities required.
@@ -75,25 +76,24 @@ public:
 	/// Accept is called by the world to test if this factory can instantiate the specified object
     /** Accept is called when an entity must be constructed; this will be called every time
     an object is created, so avoid lengthy processing if possible. */
-/*
+
     virtual bool accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type);
 
     /// create whatever entity the client desires
-    virtual Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::World* w);
+    virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View* w);
     
     /** retrieve this factory's priority level; higher priority factories
     get first chance to process a recieved Atlas entity. The default implementation
     returns one. */
-/*    virtual int priority();
+    virtual int priority();
     
-*/
 
-	//virtual bool Accept(const Atlas::Message::Element &o) = 0;
-	virtual bool accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
+
+/*	//virtual bool Accept(const Atlas::Message::Element &o) = 0;
+	virtual bool accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::View *world);
 
 	/// create whatever entity the client desires
-	virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
-	void setAvatar(Eris::Avatar* avatar);
+	virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::View *world);*/
 
 
 
@@ -102,14 +102,18 @@ protected:
 
 	void buildTerrainAroundAvatar();
 
-	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world);
-	DimePhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
-	AvatarDimeEntity* createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
+	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge,Eris::TypeInfo* type, Eris::View *world);
+	DimePhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
+	AvatarDimeEntity* createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 
 	/*
 	 * loads data about the different entity types, such as which ones are persons
 	 */
 	void loadTypeInfo();
+	
+	void setAvatar(Eris::Avatar* avatar);
+	void gotAvatarCharacter(Eris::Entity* entity);
+
 
 
 	Ogre::TerrainSceneManager* mSceneManager;
@@ -121,6 +125,9 @@ protected:
 	Eris::Avatar* mAvatar;
 	
 	StringSet mPersonSet;
+	
+	WorldDimeEntity *mWorldEntity;
+
 	
 };
 

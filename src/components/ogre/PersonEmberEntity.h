@@ -26,10 +26,14 @@ class DimePhysicalEntity;
 class PersonDimeEntity : public DimePhysicalEntity {
 public:
 
-	PersonDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
+	PersonDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
 	virtual ~PersonDimeEntity();
 
 	virtual bool allowVisibilityOfMember(DimeEntity* entity);
+	
+protected:
+	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+
 
 };
 

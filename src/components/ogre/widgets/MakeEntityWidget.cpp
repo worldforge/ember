@@ -20,6 +20,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Message/Element.h>
+#include <wfmath/atlasconv.h>
 
 #include "Widget.h"
 #include "DimeOgre.h"
@@ -28,11 +31,7 @@
 #include "services/logging/LoggingService.h"
 #include "Avatar.h"
 
-#include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Message/Element.h>
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
@@ -111,10 +110,10 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	
 	Atlas::Objects::Operation::Create c;
 	AvatarDimeEntity* avatar = DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity();
-	c.setFrom(avatar->getID());
+	c->setFrom(avatar->getId());
 	
-	Atlas::Message::Element::MapType msg;
-	msg["loc"] = avatar->getContainer()->getID();
+	Atlas::Message::MapType msg;
+	msg["loc"] = avatar->getLocation()->getId();
 	Ogre::SceneNode* node = avatar->getAvatarSceneNode();
 //	Ogre::Vector3 newPos = node->getPosition() + (node->getOrientation() * Ogre::Vector3(0,0,-2));
 	Ogre::Vector3 newPos = node->getPosition() + ( Ogre::Vector3(0,0,-2));
@@ -122,8 +121,8 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 
 	msg["pos"] = pos.toAtlas();
 	msg["name"] = mName->getText().c_str();
-	msg["parents"] = Atlas::Message::Element::ListType(1, typeinfo->getName());
-	c.setArgs(Atlas::Message::Element::ListType(1, msg));
+	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
+	c->setArgsAsList(Atlas::Message::ListType(1, msg));
 	mConn->send(c);
 //	dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }

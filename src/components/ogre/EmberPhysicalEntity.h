@@ -20,12 +20,12 @@
 #ifndef DIMEPHYSICALENTITY_H
 #define DIMEPHYSICALENTITY_H
 
-#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Entity.h>
 
 #include <Ogre.h>
 #include <OgreException.h>
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
@@ -45,7 +45,7 @@ public:
 /*eris 1.3
 	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, Ogre::Entity* ogreEntity); 
 */
-	DimePhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
+	DimePhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
 //	, Ogre::Entity* ogreEntity); 
 	virtual ~DimePhysicalEntity();
 	
@@ -61,8 +61,21 @@ public:
 	Model* getModel() const;
 	
 	
+
+
+	/**
+	 * Adjust the height of the entity so that it "snaps" to the ground.
+	 * This is most often done by making a call to the containing node's
+	 * adjustHeightPositionForContainedNode method.
+	 */
+	virtual void adjustHeightPosition(); 
+	
+
+protected: 
+
+
 	/* from eris 1.2 */
-	virtual void handleMove();
+	virtual void onMoved();
 //	virtual void handleTalk(const std::string &msg);
 // not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
 	/// update the container of this entity (may be NULL)
@@ -78,21 +91,15 @@ public:
 	that the container of e is <i>not<i/> reset */
 	//virtual void rmvMember(Entity *e);
 	
-	/** called by World in response to Appearance/Disappearance messages : note that
+	/** called by View in response to Appearance/Disappearance messages : note that
 	after a disappearance (vis = false), the server will not send any futher messages to the
 	entity. At some point, invisible entities get flushed by Eris using an LRU scheme. */
-	virtual void setVisible(bool vis);
+	//virtual void setVisible(bool vis);
 
+	virtual void onVisibilityChanged( bool vis);
 
-	/**
-	 * Adjust the height of the entity so that it "snaps" to the ground.
-	 * This is most often done by making a call to the containing node's
-	 * adjustHeightPositionForContainedNode method.
-	 */
-	virtual void adjustHeightPosition(); 
-	
+	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 
-protected: 
 
 	/*
 	 * Checks the model for animations and assign registers them with MotionManager
@@ -104,6 +111,8 @@ protected:
 	 * Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity
 	 */
 	virtual void scaleNode();
+	
+	void setNodes();
 	
 	/*
 	 * The main Ogre::Entity

@@ -21,17 +21,20 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#include "DimeOgre.h"
-#include "Avatar.h"
 #include "Widget.h"
-#include "DimeEntity.h"
-#include "MousePicker.h"
-#include "GUIManager.h"
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
 #include "PersonDimeEntity.h"
 #include "AvatarDimeEntity.h"
+
+
+#include "DimeOgre.h"
+#include "Avatar.h"
+#include "DimeEntity.h"
+#include "MousePicker.h"
+#include "GUIManager.h"
+
 
 
 #include "EntityPickerWidget.h"

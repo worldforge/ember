@@ -27,7 +27,6 @@
 namespace DimeOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
-	mAvatarNode(avatarNode),
 	mSceneManager(sceneManager),
 	mWindow(window),
 	mGUIManager(guiManager),
@@ -36,10 +35,12 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mViewPort(0),
 	mDegreeOfPitchPerSecond(50),
 	mDegreeOfYawPerSecond(50),
-	mClosestPickingDistance(10000)
+	mClosestPickingDistance(10000),
+	mAvatarNode(0)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesAndCamera();
+	setAvatarNode(avatarNode);
 	mGUIManager->setMouseMotionListener(this);
 }
 
@@ -69,7 +70,7 @@ void AvatarCamera::createNodesAndCamera()
 {
 	//create the nodes for the camera
 	
-	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarCameraRootNode"));
+	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode("AvatarCameraRootNode"));
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(WF2OGRE_VECTOR3(0,2,0));
 	//rotate to sync with WF world
@@ -77,7 +78,7 @@ void AvatarCamera::createNodesAndCamera()
 
 	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
 	mAvatarCameraPitchNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
-	mAvatarCameraNode = static_cast<Ogre::SceneNode*>(mAvatarCameraPitchNode->createChild("AvatarCameraPitchNode"));
+	mAvatarCameraNode = static_cast<Ogre::SceneNode*>(mAvatarCameraPitchNode->createChild("AvatarCameraNode"));
 	Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,10);
 	mAvatarCameraNode->setPosition(pos);
 	
@@ -103,6 +104,9 @@ void AvatarCamera::createViewPort()
 
 void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 {
+	if (mAvatarNode) {
+		mAvatarNode->removeChild(mAvatarCameraRootNode->getName());
+	}
 	mAvatarNode = sceneNode;
 	mAvatarNode->addChild(mAvatarCameraRootNode);
 }
@@ -127,6 +131,7 @@ void AvatarCamera::mouseMoved (Ogre::MouseEvent *e)
 //	Ogre::Degree diffX = mDegreeOfYawPerSecond * e->getRelX();
 //	Ogre::Degree diffY = mDegreeOfPitchPerSecond * e->getRelY();
 
+	//fprintf(stderr, (std::string("X: ") << diffX.valueDegrees << "\n").c_str() );
 
 	if (diffX.valueDegrees()) {
 		this->yaw(-diffX);
@@ -144,7 +149,8 @@ void AvatarCamera::mouseMoved (Ogre::MouseEvent *e)
 
 DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
 {
-	
+	fprintf(stderr, "TRACE - TRYING TO PICK AN ENTITY\n");
+
 	// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
@@ -203,9 +209,11 @@ DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
    // No movable clicked 
 	if ( closestObject == NULL ) {    
 
+		fprintf(stderr, "TRACE - PICKED NONE\n");
 	     return NULL;
 		//Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 	} else { 
+		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
 		return  dynamic_cast<DimeEntity*>(closestObject->getUserObject());
 
 	} 		

@@ -25,7 +25,6 @@
 
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
 #include <Eris/Connection.h>
 
 #include "Widget.h"
@@ -48,13 +47,12 @@ protected:
 
 	CEGUI::MultiColumnList* mServerList;
 
-	void gotServerCount(int count);
 	
     void gotFailure(const std::string& msg);
 
     void receivedServerInfo(const Eris::ServerInfo& sInfo);
 	
-    void completedServerList();
+    void completedServerList(int count);
 	
 	void connectToServer();
 	

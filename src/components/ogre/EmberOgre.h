@@ -24,7 +24,19 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.27  2004-10-14 00:13:14  erik
+ *      Revision 1.28  2004-10-27 23:45:21  erik
+ *      2004-10-28 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * moved to Eris 1.3
+ *      This requires some changes to the way enties are handled etc..
+ *      There's a big bug which I can't seem to track down. It manifests itself in that entities attached to other entities (i.e. not directly attached to the root node) can't change their orientation. An interim solution for now is to direct all entities attached to the world to the root node. This works for now, but the effect can be seen when the avatar walk into the sty.
+ *      *moved to Ogre 0.15.0
+ *      Ember now compiles and works against the latest ogre point release. We'll try to keep it this way.
+ *      As a result of the move to 0.15.0 I've updated the meshes (Since there's been changes to the binary .mesh format. New meshes can be downloaded from http://purple.worldforge.org/~erik/ember/media/Media.tar.gz.).
+ *      *added some more functionality to ServerBrowserWidget and ServerWidget
+ *
+ *      Revision 1.27  2004/10/14 00:13:14  erik
  *      2004-10-14 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      * moved EventCreatedAvatarEntity to DimeOgre class and adjusted inventory
@@ -262,8 +274,6 @@ Description: Base class for all the OGRE examples
 //#include <Mercator/Terrain.h>
 
 
-#include <Ogre.h>
-#include <OgreConfigFile.h>
 //#include <OgreFrameListener.h>
 #include <framework/ConsoleObject.h> //TODO: this will be included in a different class
 
@@ -283,7 +293,7 @@ Description: Base class for all the OGRE examples
 // Include Eris header files
 // ------------------------------
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 
 // ------------------------------
 // Include sigc header files
@@ -298,6 +308,9 @@ Description: Base class for all the OGRE examples
 #include <sigc++/object_slot.h>
 #endif
 #include "framework/Singleton.h"
+
+#include <Ogre.h>
+#include <OgreConfigFile.h>
 #include <OgreTerrainSceneManager.h>
 
 namespace DimeOgre {
@@ -359,7 +372,7 @@ public:
 	// Initialize all dime services needed for this application
 	void initializeDimeServices(void);
 
-	void connectWorldSignals(Eris::World* world);
+	void connectViewSignals(Eris::View* world);
 	void connectedToServer(Eris::Connection* connection);
 
 
@@ -412,8 +425,6 @@ protected:
 	void createFrameListener(void);
 
 	void createScene(void);
-
-    virtual void createViewports(void);
 
     /// Method which will define the source of resources (other than current folder)
     virtual void setupResources(void);

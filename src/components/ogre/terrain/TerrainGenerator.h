@@ -38,7 +38,7 @@
 #include <Mercator/Matrix.h>
 
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 /*
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
@@ -89,7 +89,7 @@ public:
 	void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain);
 	
 	virtual float getHeight(float x, float z) const;
-	virtual bool initTerrain(Eris::Entity *we, Eris::World *world);
+	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
 	Ogre::Material* getMaterialForSegment(long x, long y);
 
 	float TerrainGenerator::getMaxHeightForSegment(int ogreX, int ogreZ) const;

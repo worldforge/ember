@@ -1,6 +1,6 @@
 /*
 	EntityListener.cpp by Miguel Guzman (Aglanor)
-	Copyright (C) 2003 Miguel Guzman & The Worldforge Project
+	Copyright (C) 2003 Miguel Guzman & The Viewforge Project
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -28,9 +28,11 @@
 
 #include "framework/ConsoleBackend.h"
 
-#include "MathConverter.h"
 #include "DimeEntity.h"
 #include "Avatar.h"
+
+#include "MathConverter.h"
+
 #include "EntityListener.h"
 
 namespace DimeOgre {
@@ -45,7 +47,7 @@ EntityListener::EntityListener()
 EntityListener::~EntityListener()
 {
 #if 0
-    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
+    Eris::View *w = DimeServices::getInstance()->getServerService()->getView();
     w->EntityCreate.disconnect();
 #endif
 }
@@ -64,29 +66,29 @@ void EntityListener::setSceneManager(Ogre::SceneManager* sceneMgr)
 	dime::ConsoleBackend::getMainConsole()->pushMessage("Scene Manager set on Entity Listener");
 }
 
-void EntityListener::connectWorldSignals(void) {
+void EntityListener::connectViewSignals(void) {
 
 	dime::ConsoleBackend::getMainConsole()->pushMessage("Connecting world signals");
 
     /* Find out where the Eris world instance resides... */
-    Eris::World *w = dime::DimeServices::getInstance()->getServerService()->getWorld();
+    Eris::View *w = dime::DimeServices::getInstance()->getServerService()->getView();
 
-    /* Connect to the relevant World signals */
+    /* Connect to the relevant View signals */
     //w->EntityCreate.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
+    w->EntityDeleted.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
 
-    //w->Entered.connect( SigC::slot( *mDimeAvatar, &Avatar::enteredWorld ) );
+    //w->Entered.connect( SigC::slot( *mDimeAvatar, &Avatar::enteredView ) );
 
     w->Appearance.connect( SigC::slot( *this, &EntityListener::appearance ) );
 
     w->Disappearance.connect( SigC::slot( *this, &EntityListener::disappearance ) );
 
-	dime::ConsoleBackend::getMainConsole()->pushMessage("World signals connected");
+	dime::ConsoleBackend::getMainConsole()->pushMessage("View signals connected");
 
 }
 
-/* Eris::World entity signals */
+/* Eris::View entity signals */
 /*
 void EntityListener::entityCreate( Eris::Entity *e )
 {
@@ -188,8 +190,8 @@ void EntityListener::entityDelete( Eris::Entity *e )
 void EntityListener::entered( Eris::Entity *e )
 {
 	fprintf(stderr, "TRACE - PLAYER ENTERED THE WORLD\n");
-	std::cout << "THE PLAYER IS ENTITY " <<  e->getID() << std::endl;
-	avatarID = e->getID();
+	std::cout << "THE PLAYER IS ENTITY " <<  e->getId() << std::endl;
+	avatarID = e->getId();
 	dime::ConsoleBackend::getMainConsole()->pushMessage("Entering the world...");
 	// Set the Player camera accordingly
 	// TODO: do this when the avatar moves too

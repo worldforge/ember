@@ -1,6 +1,6 @@
 /*
 	EntityListener.h
-	Copyright (C) 2002 Alistair Davidson, the Worldforge Project, Martin Pollard (Xmp)
+	Copyright (C) 2002 Alistair Davidson, the Viewforge Project, Martin Pollard (Xmp)
 
 
 	This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,7 @@
 #include <Ogre.h>
 
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
@@ -105,11 +105,11 @@ class EntityListener : virtual public SigC::Object //, public Component
 
 
 		/** TODO: comment this properly */
-		void connectWorldSignals();
+		void connectViewSignals();
 
 		void setSceneManager(Ogre::SceneManager* sceneMgr);
 
-        /* Eris::World entity signals (see eris\src\world.h for more info) */
+        /* Eris::View entity signals (see eris\src\world.h for more info) */
 
         /**
          * Called when an entity is created. This connects entity-specific

@@ -25,6 +25,7 @@
 // Included custom library headers
 #include <Eris/Lobby.h>
 #include <Eris/Room.h>
+#include <Eris/Account.h>
 #include <sigc++/object.h>
 #include <sigc++/bind.h>
 
@@ -104,7 +105,7 @@ class OOGChat : virtual public SigC::Object, public ConsoleObject
     /**
      * Creates a new OOGChat using default values.
      */
-    OOGChat();
+    OOGChat(Eris::Account* account);
 
     /**
      * Copy constructor.
@@ -186,19 +187,19 @@ class OOGChat : virtual public SigC::Object, public ConsoleObject
 
     void sightPerson(Eris::Person*);
 
-    void privateTalk(const std::string&, const std::string&); 
+    void privateTalk(Eris::Person* person, const std::string&); 
 
     void loggedIn( const Atlas::Objects::Entity::Player& );
 
     void entered(Eris::Room *room);
 
-    void talk(Eris::Room *room, const std::string& name, const std::string& msg);
+    void talk(Eris::Room *room, Eris::Person* person, const std::string& msg);
 
-    void emote(Eris::Room *room, const std::string& name, const std::string& msg);
+    void emote(Eris::Room *room, Eris::Person* person, const std::string& msg);
 
-    void appearance(Eris::Room *room, const std::string& account);
+    void appearance(Eris::Room *room,  Eris::Person* person);
 
-    void disappearance(Eris::Room *room, const std::string& account);
+    void disappearance(Eris::Room *room,  Eris::Person* person);
 
     void changed(const Eris::StringSet& sset, Eris::Room *room);
 

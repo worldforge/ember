@@ -16,9 +16,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "framework/ConsoleBackend.h"
+#include "DimeEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
-#include "DimeEntityFactory.h"
 #include "DimeEntity.h"
 using namespace Ogre;
 
@@ -27,37 +27,49 @@ namespace DimeOgre {
 /*eris 1.3
 DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, , Ogre::Entity* ogreEntity) : Eris::Entity(ge, ty, vw) 
 */
-DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw,Ogre::SceneManager* sceneManager)
+DimeEntity::DimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
 mSceneManager(sceneManager)
-, Eris::Entity(ge, vw) 
+, mView(vw)
+, Eris::Entity(id, ty, vw) 
 {
-	
 	createSceneNode();
-	
-	// set the Ogre node position and orientation based on Atlas data
-	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	std::cout << "Entity " << getID() << " placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
-	
 }
 
 DimeEntity::~DimeEntity()
 {
 }
 
+void DimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+{
+	Eris::Entity::init(ge);
+	
+	
+	// set the Ogre node position and orientation based on Atlas data
+	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
+	Ogre::Quaternion orientation = Atlas2Ogre(getOrientation());
+	getSceneNode()->setOrientation(orientation);
+	std::cout << "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")" << std::endl;
+}
+
+
 void DimeEntity::createSceneNode()
 {
-	DimeEntity* container = dynamic_cast<DimeEntity*>(getContainer());
+	DimeEntity* container = dynamic_cast<DimeEntity*>(getLocation());
 	if (container == NULL) {
-		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getID()));
+		std::cout << "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" << std::endl;
+
+		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode(getId()));
+//		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getId()));
+		
 	} else {
 		Ogre::SceneNode * node = container->getSceneNode();
-		if (node) {
-			mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getID()));
+		mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getId()));
+/*		if (node) {
+			mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getId()));
 		} else {
-			mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getID()));
-		}
+			mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getId()));
+		}*/
 	}		
 }
 
@@ -70,10 +82,11 @@ SceneNode* DimeEntity::getSceneNode() {
 }
 
 
-void DimeEntity::handleMove()
+void DimeEntity::onMoved()
 {
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+	getSceneNode()->setOrientation(Atlas2Ogre(getViewOrientation()));
+	Eris::Entity::onMoved();
 	/*
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
@@ -95,9 +108,17 @@ void DimeEntity::handleMove()
 	 */
 }
 
-void DimeEntity::handleTalk(const std::string &msg)
+void DimeEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 {
 	
+    if (!talkArgs->hasAttr("say")) {
+        Eris::Entity::onTalk(talkArgs);
+		return;
+    }
+	std::string msg = talkArgs->getAttr("say").asString();
+    
+
+
 	std::string message = "<";
 	message.append(getName());
 	message.append("> ");
@@ -105,11 +126,13 @@ void DimeEntity::handleTalk(const std::string &msg)
 	GUIManager::getSingleton().AppendIGChatLine.emit(message);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	Eris::Entity::onTalk(talkArgs);
 }
 
 
-void DimeEntity::setVisible(bool vis)
+void DimeEntity::onVisibilityChanged(bool vis)
 {
+	Eris::Entity::onVisibilityChanged(vis);
 //	mOgreEntity->setVisible(vis);	
 }
 
@@ -122,24 +145,47 @@ void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity)
 	sceneNode->setPosition(position.x, 0,position.z);
 }
 
-
-void DimeEntity::setContainer(Entity *pr)
+void DimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation)
 {
-		
-	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(pr);
-	if (getSceneNode()) {
-		//detach from our current object
-		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
+//	return Eris::Entity::onLocationChanged(oldLocation, newLocation);
+	
+	if (oldLocation == newLocation)
+	{
+		std::cout << "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" << std::endl;
+		return Eris::Entity::onLocationChanged(oldLocation, newLocation);
+	
 	}
-	if (dimeEntity) {
-		// add to the new entity
-		dimeEntity->getSceneNode()->addChild(getSceneNode());
-				
+
+	DimeEntity* newLocationEntity = dynamic_cast<DimeEntity*>(newLocation);
+	DimeEntity* oldLocationEntity = dynamic_cast<DimeEntity*>(oldLocation);
+	if (getSceneNode()->getParentSceneNode()) {
+		//detach from our current object
+		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
+	}
+	if (newLocationEntity) {
+		if (newLocationEntity->getId() == "0") {
+			//we have to do this because there's some bug
+			//somewhere that will mess up our camera if we let the world node be the parent 
+			//don't know why, it's driving me nuts!!!!
+			mSceneManager->getRootSceneNode()->addChild(getSceneNode());//DEBUG!!!!
+		} else {
+		
+			// add to the new entity
+			newLocationEntity->getSceneNode()->addChild(getSceneNode());
+			std::cout << "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" << std::endl;
+			
+			getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
+			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+		}
 	} else {
 		//add to the world
-		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
+		std::cout << "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" << std::endl;
+//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 	}		
-	Eris::Entity::setContainer(pr);
+	
+	std::cout << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " << getOrientation() << std::endl;
+
+	Eris::Entity::onLocationChanged(oldLocation, newLocation);
 }
 
 bool DimeEntity::allowVisibilityOfMember(DimeEntity* entity) {

@@ -1,8 +1,7 @@
 /*
     Copyright (C) 2004  Erik Hjortsberg
-    some parts Copyright (C) 2004 bad_camel at Ogre3d forums
-
-    This program is free software; you can redistribute it and/or modify
+    
+	This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -16,11 +15,16 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "Model.h"
+
+#include "DimeOgrePrerequisites.h"
+
+
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "DimeEntityFactory.h"
+#include "Model.h"
+
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
@@ -28,24 +32,13 @@
 namespace DimeOgre {
 
 
-DimePhysicalEntity::DimePhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
-DimeEntity(ge, vw, sceneManager),
+DimePhysicalEntity::DimePhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 mAnimationState_Walk(NULL),
-mScaleNode(nodeWithModel)
+mScaleNode(nodeWithModel),
+DimeEntity(id, ty, vw, sceneManager)
 {
-//	mOgreEntity = static_cast<Ogre::Entity*>(nodeWithEntity->getAttachedObject(0));
-	mModel = static_cast<Model*>(nodeWithModel->getAttachedObject(0));
-	mModel->setQueryFlags(DimeEntity::CM_UNDEFINED);
-
-	assert(mOgreNode);
-	assert(mScaleNode);
-	scaleNode();
-	mOgreNode->addChild(mScaleNode);
+	mModel = static_cast<Model*>(mScaleNode->getAttachedObject(0));
 	loadAnimationsFromModel();
-
-	mModel->setUserObject(this);
-	
-	
 }
 
 DimePhysicalEntity::~DimePhysicalEntity()
@@ -60,6 +53,19 @@ DimePhysicalEntity::~DimePhysicalEntity()
 	delete mOgreEntity;
 	delete mSceneNode;
 	*/
+}
+
+void DimePhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+{
+	DimeEntity::init(ge);
+	mModel->setQueryFlags(DimeEntity::CM_UNDEFINED);
+
+	assert(mOgreNode);
+	assert(mScaleNode);
+	scaleNode();
+	mOgreNode->addChild(mScaleNode);
+
+	mModel->setUserObject(this);
 }
 
 
@@ -117,6 +123,13 @@ void DimePhysicalEntity::scaleNode() {
 			Ogre::Real scaleY;		
 			Ogre::Real scaleZ;		
 
+			
+			if ((wfMax.x() - wfMin.x()) > 100 || (wfMax.y() - wfMin.y()) > 100 || (wfMax.z() - wfMin.z()) > 100) 
+			{
+				//big!!!
+				int i = 0;
+			}
+			
 			switch (mModel->getUseScaleOf()) {
 				case Model::MODEL_HEIGHT:
 					scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
@@ -153,7 +166,7 @@ void DimePhysicalEntity::scaleNode() {
 }
 
 
-void DimePhysicalEntity::handleMove()
+void DimePhysicalEntity::onMoved()
 {
 	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
@@ -173,6 +186,7 @@ void DimePhysicalEntity::handleMove()
 			mModel->startAnimation("idle");
 		}
 	}
+	Eris::Entity::onMoved();
 	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
 }
 
@@ -189,9 +203,10 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
 }
 */
 
-void DimePhysicalEntity::setVisible(bool vis)
+void DimePhysicalEntity::onVisibilityChanged(bool vis)
+//void DimePhysicalEntity::setVisible(bool vis)
 {
-	DimeEntity* container = dynamic_cast<DimeEntity*>(getContainer());
+	DimeEntity* container = dynamic_cast<DimeEntity*>(getLocation());
 	if (container) {
 		//check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {
@@ -203,6 +218,7 @@ void DimePhysicalEntity::setVisible(bool vis)
 	} else {
 		mModel->setVisible(vis);
 	}
+	Eris::Entity::onVisibilityChanged(vis);
 }
 
 /*
@@ -229,7 +245,7 @@ void DimePhysicalEntity::setContainer(Entity *pr)
 
 void DimePhysicalEntity::adjustHeightPosition()
 {
-	DimePhysicalEntity* container = static_cast<DimePhysicalEntity*>(getContainer());
+	DimeEntity* container = static_cast<DimeEntity*>(getLocation());
 	if (container) {
 		container->adjustHeightPositionForContainedNode(this);
 	}

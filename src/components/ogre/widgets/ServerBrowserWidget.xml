@@ -28,6 +28,12 @@
 				<Property Name="Text" Value="Refresh" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
+			<Window Type="TaharezLook/Editbox" Name="ServerBrowser/ManualServerName">
+				<Property Name="Text" Value="" /> 
+				<Property Name="Position" Value="x:0 y:0.95" /> 
+				<Property Name="Size" Value="w:0.3 h:0.05" /> 
+			</Window>
+
 		</Window>
 	</Window>
  </GUILayout> 

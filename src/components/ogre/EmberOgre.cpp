@@ -23,7 +23,19 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.51  2004-10-14 00:13:14  erik
+ *      Revision 1.52  2004-10-27 23:45:21  erik
+ *      2004-10-28 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * moved to Eris 1.3
+ *      This requires some changes to the way enties are handled etc..
+ *      There's a big bug which I can't seem to track down. It manifests itself in that entities attached to other entities (i.e. not directly attached to the root node) can't change their orientation. An interim solution for now is to direct all entities attached to the world to the root node. This works for now, but the effect can be seen when the avatar walk into the sty.
+ *      *moved to Ogre 0.15.0
+ *      Ember now compiles and works against the latest ogre point release. We'll try to keep it this way.
+ *      As a result of the move to 0.15.0 I've updated the meshes (Since there's been changes to the binary .mesh format. New meshes can be downloaded from http://purple.worldforge.org/~erik/ember/media/Media.tar.gz.).
+ *      *added some more functionality to ServerBrowserWidget and ServerWidget
+ *
+ *      Revision 1.51  2004/10/14 00:13:14  erik
  *      2004-10-14 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      * moved EventCreatedAvatarEntity to DimeOgre class and adjusted inventory
@@ -195,7 +207,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *
  *      Revision 1.31  2003/11/18 19:26:27  aglanor
  *      2003-11-18 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *              * src/services/server/ServerService.cpp: myWorld is
+ *              * src/services/server/ServerService.cpp: myView is
  *              not created by this service anymore, instead is
  *              retrieved from myAvatar after taking/creating char.
  *              Modified touch op so we can touch any entity.
@@ -459,6 +471,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
+#include <Eris/Factory.h>
 #endif
 
 // ------------------------------
@@ -556,17 +569,7 @@ namespace DimeOgre {
     };
     
 template<> DimeOgre* dime::Singleton<DimeOgre>::ms_Singleton = 0;
-//DimeOgre* DimeOgre::_instance = 0;
-/*   
-DimeOgre & DimeOgre::getSingleton(void)
-{
-	//fprintf(stderr, "TRACE - ENTITY LISTENER - SINGLETON ENTERING\n");
-	if(_instance == 0)
-		_instance = new DimeOgre;
-	return *_instance;
-}
-  
-*/  
+
 DimeOgre::DimeOgre() :
 //mFrameListener(0),
 mRoot(0)
@@ -574,7 +577,7 @@ mRoot(0)
 
 bool DimeOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
-	Eris::PollDefault::poll();
+	Eris::PollDefault::poll(1);
 	return true;
 }
 
@@ -617,12 +620,10 @@ bool DimeOgre::setup(void)
 	
 	// Avatar
 	mAvatar = new Avatar(mSceneMgr);
-//	EntityListener::getSingleton().setDimeAvatar(mAvatar);
 	
 	AvatarController* avatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
 
 
-    //createViewports();
 
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
@@ -642,7 +643,7 @@ bool DimeOgre::setup(void)
 /*
     dimeEntityFactory = new DimeEntityFactory(mSceneMgr);
     
-    dime::DimeServices::getInstance()->getServerService()->getWorld()->registerFactory(dimeEntityFactory);
+    dime::DimeServices::getInstance()->getServerService()->getView()->registerFactory(dimeEntityFactory);
 */
     return true;
 
@@ -682,10 +683,6 @@ void DimeOgre::chooseSceneManager(void)
     
 }
 
-void DimeOgre::createViewports(void)
-{
-
-}
 
 /// Method which will define the source of resources (other than current folder)
 void DimeOgre::setupResources(void)
@@ -711,11 +708,11 @@ void DimeOgre::setupResources(void)
 void DimeOgre::createScene(void)
 {
 /*  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-	//mSceneMgr->showBoundingBoxes(true);
  mSceneMgr->setAmbientLight(Ogre::ColourValue(0, 0, 0));
   mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
   mSceneMgr->setShowDebugShadows(true);
 //  mSceneMgr->setShadowFarDistance(2000);
+	mSceneMgr->showBoundingBoxes(true);
  */
  mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
   // Create a light
@@ -744,7 +741,7 @@ void DimeOgre::createScene(void)
         node->scale(0.1,0.1,0.1);
         node->yaw(90);
 */
-	//set fog, do this before calling TerrainSceneManager::setWorldGeometry 
+	//set fog, do this before calling TerrainSceneManager::setViewGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	Ogre::ColourValue fadeColour(1,1,1);
 	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
@@ -784,11 +781,12 @@ void DimeOgre::createScene(void)
 	
 }
 
-void DimeOgre::connectWorldSignals(Eris::World* world)
+void DimeOgre::connectViewSignals(Eris::View* world)
 {
-    world->registerFactory(mDimeEntityFactory, 10);
+    Eris::Factory::registerFactory(mDimeEntityFactory);
+	//world->registerFactory(mDimeEntityFactory, 10);
 	
-	EntityListener::getSingleton().connectWorldSignals();
+	EntityListener::getSingleton().connectViewSignals();
 }
 
 void DimeOgre::connectedToServer(Eris::Connection* connection) 
@@ -885,7 +883,7 @@ void DimeOgre::initializeDimeServices(void)
 
 	// Initialize the Server Service
 	dime::DimeServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &DimeOgre::connectedToServer));
-	dime::DimeServices::getInstance()->getServerService()->GotWorld.connect(SigC::slot(*this, &DimeOgre::connectWorldSignals));
+	dime::DimeServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &DimeOgre::connectViewSignals));
 	
 	dime::DimeServices::getInstance()->getServerService()->start();
 #endif

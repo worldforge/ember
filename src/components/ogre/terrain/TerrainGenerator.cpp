@@ -16,12 +16,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "services/logging/LoggingService.h"
+
 #include "DimeOgre.h"
 
 #include "MathConverter.h"
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
-#include "services/logging/LoggingService.h"
 #include "DimeTerrainRenderable.h"
 #include "TerrainShader.h"
 #include "DimeTerrainPageSource.h"
@@ -355,13 +356,8 @@ void TerrainGenerator::createAlphaTexture(Ogre::String name, Mercator::Surface* 
 	 */
 	Ogre::DataChunk* finalChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), factor);
 	
-	//For debugging
-/*	{
-		const Mercator::Shader* mercShader = &((*I)->m_shader);
-		TerrainShader* shader = mShaderMap[mercShader];
-		printTextureToImage(finalChunk, shader->getTextureName() + Ogre::StringConverter::toString(segmentX)+ Ogre::StringConverter::toString(segmentY), pixelFormat);
-	}
-	*/
+	printTextureToImage(finalChunk, name, pixelFormat);
+	
 	//create the new alpha texture
 	Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(name, *finalChunk, (mNumberOfTilesInATerrainPage - 1) * factor, (mNumberOfTilesInATerrainPage - 1) * factor, pixelFormat);
 	
@@ -423,35 +419,35 @@ float TerrainGenerator::getMinHeightForSegment(int ogreX, int ogreZ) const
 }
 
 
-bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::World *world) 
+bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world) 
 {
 
-   if (!we->hasProperty("terrain")) {
-        std::cerr << "World entity has no terrain" << std::endl << std::flush;
-        std::cerr << "World entity id " << we->getID() << std::endl
+   if (!we->hasAttr("terrain")) {
+        std::cerr << "View entity has no terrain" << std::endl << std::flush;
+        std::cerr << "View entity id " << we->getId() << std::endl
                   << std::flush;
         return false;
     }
-    const Atlas::Message::Element &terrain = we->getProperty("terrain");
+    const Atlas::Message::Element &terrain = we->valueOfAttr("terrain");
     if (!terrain.isMap()) {
         std::cerr << "Terrain is not a map" << std::endl << std::flush;
     }
-    const Atlas::Message::Element::MapType & tmap = terrain.asMap();
-    Atlas::Message::Element::MapType::const_iterator I = tmap.find("points");
+    const Atlas::Message::MapType & tmap = terrain.asMap();
+    Atlas::Message::MapType::const_iterator I = tmap.find("points");
     int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
     if (I == tmap.end()) {
         std::cerr << "No terrain points" << std::endl << std::flush;
     }
 	if (I->second.isList()) {
         // Legacy support for old list format.
-        const Atlas::Message::Element::ListType & plist = I->second.asList();
-        Atlas::Message::Element::ListType::const_iterator J = plist.begin();
+        const Atlas::Message::ListType & plist = I->second.asList();
+        Atlas::Message::ListType::const_iterator J = plist.begin();
         for(; J != plist.end(); ++J) {
             if (!J->isList()) {
                 std::cout << "Non list in points" << std::endl << std::flush;
                 continue;
             }
-            const Atlas::Message::Element::ListType & point = J->asList();
+            const Atlas::Message::ListType & point = J->asList();
             if (point.size() != 3) {
                 std::cout << "point without 3 nums" << std::endl << std::flush;
                 continue;
@@ -467,14 +463,46 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::World *world)
         }
     } else if (I->second.isMap()) {
 
-        const Atlas::Message::Element::MapType & plist = I->second.asMap();
-        Atlas::Message::Element::MapType::const_iterator J = plist.begin();
+        const Atlas::Message::MapType & plist = I->second.asMap();
+        Atlas::Message::MapType::const_iterator J = plist.begin();
         for(; J != plist.end(); ++J) {
             if (!J->second.isList()) {
                 std::cout << "Non list in points" << std::endl << std::flush;
                 continue;
             }
-            const Atlas::Message::Element::ListType & point = J->second.asList();
+            const Atlas::Message::ListType & point = J->second.asList();
+            if (point.size() != 3) {
+                std::cout << "point without 3 nums" << std::endl << std::flush;
+                continue;
+            }
+            int x = (int)point[0].asNum();
+            int y = (int)point[1].asNum();
+            float z = point[2].asNum();
+            Mercator::BasePoint bp;
+            if (mTerrain.getBasePoint(x, y, bp) && (z == bp.height())) {
+                std::cout << "Point [" << x << "," << y << " unchanged"
+                          << std::endl << std::flush;
+                continue;
+            }
+            xmin = std::min(xmin, x);
+            xmax = std::max(xmax, x);
+            ymin = std::min(ymin, y);
+            ymax = std::max(ymax, y);
+            bp.height() = z;
+            // FIXME Sort out roughness and falloff, and generally
+            // verify this code is the same as that in Terrain layer
+            mTerrain.setBasePoint(x, y, bp);
+        }
+	
+	
+/*        const Atlas::Message::MapType & plist = I->second.asMap();
+        Atlas::Message::MapType::const_iterator J = plist.begin();
+        for(; J != plist.end(); ++J) {
+            if (!J->second.isList()) {
+                std::cout << "Non list in points" << std::endl << std::flush;
+                continue;
+            }
+            const Atlas::Message::ListType & point = J->second.asList();
             if (point.size() != 3) {
                 std::cout << "point without 3 nums" << std::endl << std::flush;
                 continue;
@@ -489,7 +517,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::World *world)
 			mTerrain.setBasePoint(x,y,point[2].asNum());
 //System::instance()->getGraphics()->getTerrainRenderer()->m_terrain.setBasePoint(x,y,point[2].asNum());
 //System::Instance()->getGraphics(x,y,point[2].asNum());
-        }
+        }*/
 
       
 

@@ -1,6 +1,6 @@
 /*
 	InputManager.h by Wolfman8k
-	Adapted to Worldforge by Miguel Guzman (Aglanor)
+	Adapted to Viewforge by Miguel Guzman (Aglanor)
 	with permission and lots of help from Wolfman8k
 
 	This program is free software; you can redistribute it and/or modify

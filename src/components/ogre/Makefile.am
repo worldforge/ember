@@ -14,7 +14,7 @@ $(top_builddir)/src/services/logging/libLoggingService.a \
 $(top_builddir)/src/framework/libFramework.a 
 
 
-DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
+DimeOgre_SOURCES = DimeOgre.cpp InputManager.cpp \
 			Avatar.cpp \
 			EntityListener.cpp ConsoleObjectImpl.cpp \
 			MediaDeployer.cpp DimeEventProcessor.cpp \

@@ -1,6 +1,6 @@
 /*
 	Avatar.h by Miguel Guzman (Aglanor)
-	Copyright (C) 2002 Miguel Guzman & The Worldforge Project
+	Copyright (C) 2002 Miguel Guzman & The Viewforge Project
 	Copyright (C) 2004 Erik Hjortsberg
 
 	This program is free software; you can redistribute it and/or modify
@@ -24,11 +24,9 @@
 #define AVATAR_H
 
 
-#include <Ogre.h>
-#include <OgrePredefinedControllers.h> 
 
 #include <Eris/Entity.h>
-#include <Eris/World.h>
+#include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
@@ -43,6 +41,8 @@
 #include <sigc++/object_slot.h>
 #endif
 
+#include <Ogre.h>
+#include <OgrePredefinedControllers.h> 
 
 #include "MathConverter.h"
 
@@ -179,8 +179,6 @@ protected:
 	 */
 	void createAvatar();
 	
-	void createAnimations();
-	
 	
 	/**
 	 * Creates and sets up the different cameras.
@@ -202,16 +200,6 @@ protected:
 	 */
 	float mRunSpeed;
 	
-	
-	
-	/**
-	 * Animation states of the avatar. This should really be taken care of by
-	 * some kind of AnimationController
-	 * TODO: Make an AnimationController
-	 */
-	Ogre::AnimationState* mAnimStateWalk;
-	Ogre::Controller<Ogre::Real>* mAvatarAnimationController;
-	Ogre::AnimationControllerFunction* mAvatarAnimationControllerFunction;
 	
 	Ogre::SceneManager* mSceneMgr;
 	/*
@@ -242,7 +230,7 @@ protected:
 	AvatarController* mAvatarController;
 
 	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
-	std::set<Eris::Entity*> mEntitiesToBeRemvedFromInventory;
+	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
 
 	
 }; //End of class declaration

@@ -21,6 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#include "Widget.h"
+
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include "services/DimeServices.h"
@@ -79,7 +81,7 @@ void ServerBrowserWidget::buildWidget()
 
 		
 	connectToServer();
-	metaServer->refresh();
+	//metaServer->refresh();
 
 
 }
@@ -102,13 +104,24 @@ bool ServerBrowserWidget::Refresh_Click(const CEGUI::EventArgs& args)
 
 bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 {
-	uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
+	std::string serverName;	
 
-/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
-	if (selectedRowIndex != -1) {
-		CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 0));
-		const CEGUI::String ipadress = selectedItem->getText();
-		dime::DimeServices::getInstance()->getServerService()->connect(std::string(ipadress.c_str()));
+	CEGUI::Window* manualNameWindow = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ManualServerName");
+	
+	if (manualNameWindow->getText() != "") {
+		serverName = std::string(manualNameWindow->getText().c_str());
+	} else {
+		uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
+	
+	/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
+		if (selectedRowIndex != -1) {
+			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 0));
+			serverName = std::string(selectedItem->getText().c_str());
+		}
+	}
+		
+	if (serverName != "") {
+		dime::DimeServices::getInstance()->getServerService()->connect(serverName);
 	}
 	return true;
 
@@ -116,16 +129,13 @@ bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 
 void ServerBrowserWidget::connectToServer()
 {
-    metaServer = new Eris::Meta("ember", "metaserver.worldforge.org", 10);
-    metaServer->GotServerCount.connect(SigC::slot(*this, &ServerBrowserWidget::gotServerCount));
+    metaServer = new Eris::Meta("metaserver.worldforge.org", 10);
+//    metaServer->GotServerCount.connect(SigC::slot(*this, &ServerBrowserWidget::gotServerCount));
     metaServer->Failure.connect(SigC::slot(*this, &ServerBrowserWidget::gotFailure));
     metaServer->ReceivedServerInfo.connect(SigC::slot(*this, &ServerBrowserWidget::receivedServerInfo));
     metaServer->CompletedServerList.connect(SigC::slot(*this, &ServerBrowserWidget::completedServerList));
 }
 
-void ServerBrowserWidget::gotServerCount(int count)
-{
-}
 	
 void ServerBrowserWidget::gotFailure(const std::string& msg)
 {
@@ -163,8 +173,9 @@ void ServerBrowserWidget::receivedServerInfo(const Eris::ServerInfo& sInfo)
 }
 
 
-void ServerBrowserWidget::completedServerList()
+void ServerBrowserWidget::completedServerList(int count)
 {
+	mGuiManager->setDebugText("Completet server list.");
 }
 
 

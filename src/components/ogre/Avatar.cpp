@@ -1,6 +1,6 @@
 /*
-	Avatar.h by Miguel Guzman (Aglanor)
-	Copyright (C) 2002 Miguel Guzman & The Worldforge
+	Avatar.cpp by Erik Hjortsberg
+	Copyright (C) 2002 Miguel Guzman, Erik Hjortsberg & The Worldforge
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include <Ogre.h>
 #include <typeinfo>
 
 #include "services/server/ServerService.h"
@@ -53,6 +52,8 @@
 #include "AvatarDimeEntity.h"
 #include "Model.h"
 #include "SubModel.h"
+
+#include <Ogre.h>
 
 #include "Avatar.h"
 
@@ -118,23 +119,6 @@ void Avatar::createAvatar()
 	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	//mAvatarModelNode->showBoundingBox(true);
 
-	createAnimations();
-}
-
-void Avatar::createAnimations() {
-	//let's set the current animation state to walking
-	
-
-	//mAnimStateWalk = mAvatarModel->getAnimationState("walk");	
-	
-	//MotionManager::getSingleton().addAnimation(mAnimStateWalk);
-	
-/*	Ogre::ControllerManager* controllerManager = &Ogre::ControllerManager::getSingleton();
-	mAvatarAnimationControllerFunction = new Ogre::AnimationControllerFunction(mAnimStateWalk->getLength());
-	mAvatarAnimationController = controllerManager->createController(controllerManager->getFrameTimeSource(), mAnimStateWalk, mAvatarAnimationControllerFunction);
-*/
-	
-	
 }
 
 bool Avatar::frameStarted(const Ogre::FrameEvent & event)
@@ -153,9 +137,9 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 	}	
 
 	
-	if (mEntitiesToBeRemvedFromInventory.size() > 0) {
-		std::set<Eris::Entity*>::iterator J = mEntitiesToBeRemvedFromInventory.begin();
-		std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemvedFromInventory.end();
+	if (mEntitiesToBeRemovedFromInventory.size() > 0) {
+		std::set<Eris::Entity*>::iterator J = mEntitiesToBeRemovedFromInventory.begin();
+		std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemovedFromInventory.end();
 		
 		for (; J != J_end; ++J) {
 			DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(*J);
@@ -163,7 +147,7 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 				EventRemovedEntityFromInventory.emit(dimeEntity);
 		}
 		
-		mEntitiesToBeRemvedFromInventory.clear();
+		mEntitiesToBeRemovedFromInventory.clear();
 	}
 	return true;
 }
@@ -224,7 +208,6 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 
 			//we'll also start the animation of the avatar's movement animation
 			mAvatarModel->startAnimation("walk");
-//			mAnimStateWalk->setEnabled(true);
 			//fprintf(stderr, "TRACE - AVATAR START WALKING ANIMATION\n");
 		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
 			//we have rotated since last server update
@@ -243,7 +226,6 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 			sendToServer = true;
 			//plus stop the animation of the avatar
 			mAvatarModel->stopAnimation("walk");
-			//mAnimStateWalk->setEnabled(false);
 		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
 			//either the speed or the direction has changed
 			sendToServer = true;
@@ -349,7 +331,6 @@ void Avatar::setAvatarController(AvatarController* avatarController)
 
 void Avatar::movedInWorld()
 {
-
 	if (!mCurrentMovementState.isMoving) 
 	{
 		mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(mErisAvatarEntity->getPosition()));
@@ -361,33 +342,25 @@ void Avatar::movedInWorld()
 
 void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
 {
-
-	//it got created as a DimeEntity, do some reshuffeling
-	//dimeEntity->markAsMainAvatar(mSceneMgr);
-	//MotionManager::getSingleton().removeAnimation(mAnimStateWalk);
-	//delete mAnimStateWalk;	
-	mSceneMgr->destroySceneNode(mAvatarNode->getName());
-	
+	Ogre::SceneNode* oldAvatar = mAvatarNode;
 	
 	mAvatarController->createAvatarCameras(dimeEntity->getAvatarSceneNode());
+	
+	
+	//HACK!!! DEBUG!!
+	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
+	//dimeEntity->getSceneNode()->addChild(mAvatarNode);
+//	mSceneMgr->getRootSceneNode()->addChild(mAvatarNode);
+	//HACK!!! DEBUG!!
+	
 	mAvatarNode = dimeEntity->getSceneNode();
 	mAvatarModel = dimeEntity->getModel();
-	mAnimStateWalk = dynamic_cast<Model*>(mAvatarModel)->getAnimationState("walk");	
-//	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
-	
-	//here we should disconnect signals, if I only found out how...
-	//TODO: disconnect signals
-	//e->Moved.
-
-	//mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
-	//mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
 
 	mErisAvatarEntity = dimeEntity;
-	//DimeTerrainSceneManager::getSingleton().setPositionOfAvatar(Atlas2Ogre(dimeEntity->getPosition()));
-	//we debug so we'll remove this for now
-	//e->Moved.connect(SigC::slot( *this, &Avatar::movedInWorld ));
 	dimeEntity->setAvatar(this);
 	
+	mSceneMgr->destroySceneNode(oldAvatar->getName());
+
 }
 
 // void Avatar::touch(DimeEntity* entity)

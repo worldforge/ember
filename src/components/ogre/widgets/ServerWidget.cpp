@@ -23,7 +23,6 @@
 
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
 #include <Eris/Connection.h>
 #include "services/DimeServices.h"
 #include "services/server/ServerService.h"
@@ -50,8 +49,10 @@ ServerWidget::ServerWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
 }
 
 
+
 ServerWidget::~ServerWidget()
 {
+	//delete mMainWindow;
 }
 
 void ServerWidget::buildWidget()
@@ -69,7 +70,7 @@ void ServerWidget::buildWidget()
 	BIND_CEGUI_EVENT(choose, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
 	
 		
-	dime::DimeServices::getInstance()->getServerService()->GotPlayer.connect(SigC::slot(*this, &ServerWidget::createdPlayer));
+	dime::DimeServices::getInstance()->getServerService()->GotAccount.connect(SigC::slot(*this, &ServerWidget::createdAccount));
 	dime::DimeServices::getInstance()->getServerService()->LoginSuccess.connect(SigC::slot(*this, &ServerWidget::loginSuccess));
 	dime::DimeServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &ServerWidget::gotAvatar));
 	dime::DimeServices::getInstance()->getServerService()->GotAllCharacters.connect(SigC::slot(*this, &ServerWidget::gotAllCharacters));
@@ -81,32 +82,32 @@ void ServerWidget::buildWidget()
 
 }
 
-void ServerWidget::createdPlayer(Eris::Player* player) 
+void ServerWidget::createdAccount(Eris::Account* account) 
 {
-	mPlayer = player;
+	mAccount = account;
 	mMainWindow->setVisible(true);
 }
 
-void ServerWidget::loginSuccess(Eris::Player* player) 
+void ServerWidget::loginSuccess(Eris::Account* account) 
 {
 	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel")->setVisible(false);
 	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel")->setVisible(true);
-	player->refreshCharacterInfo();
+	account->refreshCharacterInfo();
 	
 }
 
-void ServerWidget::gotAllCharacters(Eris::Player* player) 
+void ServerWidget::gotAllCharacters(Eris::Account* account) 
 {
-	Eris::CharacterMap cm = player->getCharacters();
+	Eris::CharacterMap cm = account->getCharacters();
 	Eris::CharacterMap::iterator I = cm.begin();
 	Eris::CharacterMap::iterator I_end = cm.end();
 	
 	for(;I != I_end; ++I) {
 		const Atlas::Objects::Entity::GameEntity entity = (*I).second;
-		const Atlas::Message::Element nameElement = entity.getAttr("name");
+		const Atlas::Message::Element nameElement = entity->getAttr("name");
 		ServerWidgetListItem* item = new ServerWidgetListItem(nameElement.asString());
-		std::string id = std::string(entity.getId());
-		item->setUserData(&(id));
+		std::string* id = new std::string(entity->getId());
+		item->setUserData(id);
 		mCharacterList->addItem(item);
 	}
 	
@@ -115,11 +116,13 @@ void ServerWidget::gotAllCharacters(Eris::Player* player)
 bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 {
 	CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
+	if (item) {
 /*	const Atlas::Objects::Entity::GameEntity & entity = static_cast<const Atlas::Objects::Entity::GameEntity &>(item->getUserData());*/
 	
-	std::string* id = static_cast<std::string*>(item->getUserData());
-	
-	dime::DimeServices::getInstance()->getServerService()->takeCharacter(*id);
+		std::string* id = static_cast<std::string*>(item->getUserData());
+		
+		dime::DimeServices::getInstance()->getServerService()->takeCharacter(*id);
+	}
 }
 
 
@@ -131,7 +134,7 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 	CEGUI::String name = nameBox->getText();
 	CEGUI::String password = passwordBox->getText();
 	
-	mPlayer->login(std::string(name.c_str()), std::string(password.c_str()));
+	mAccount->login(std::string(name.c_str()), std::string(password.c_str()));
 
 }
 

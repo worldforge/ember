@@ -28,13 +28,22 @@ class WorldDimeEntity : public DimeEntity {
 public:
 
 
-	WorldDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
+	WorldDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
 	virtual ~WorldDimeEntity();
 
 	virtual void WorldDimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity);
 
 protected:
 	TerrainGenerator* mTerrainGenerator;
+	
+	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+
+	virtual void onMoved();
+	virtual void onTalk(const Atlas::Objects::Root& obj);
+//	virtual void setContainer(Entity *pr);
+	virtual void onVisibilityChanged(bool vis);
+	virtual void onLocationChanged(Eris::Entity *newLocation, Eris::Entity *oldLocation);
+
 };
 
 }

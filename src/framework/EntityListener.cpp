@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (xmp)
+    Copyright (C) 2002  Alistair Davidson, the Viewforge Project, Martin Pollard (xmp)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,14 +32,14 @@ EntityListener::EntityListener()
 {
 
     /* Find out where the Eris world instance resides... */
-    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
+    Eris::View *w = DimeServices::getInstance()->getServerService()->getView();
 
-    /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
+    /* Connect to the relevant View signals */
+    w->EntityCreated.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
+    w->EntityDeleted.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( *this, &EntityListener::entered ) );
+    w->EntitySeen.connect( SigC::slot( *this, &EntityListener::entered ) );
 
     w->Appearance.connect( SigC::slot( *this, &EntityListener::appearance ) );
 
@@ -49,13 +49,13 @@ EntityListener::EntityListener()
 EntityListener::~EntityListener()
 {
 #if 0
-    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
+    Eris::View *w = DimeServices::getInstance()->getServerService()->getView();
     w->EntityCreate.disconnect();
 #endif
 }
 
 
-/* Eris::World entity signals */
+/* Eris::View entity signals */
 
 void EntityListener::entityCreate( Eris::Entity *e )
 {
@@ -63,17 +63,17 @@ void EntityListener::entityCreate( Eris::Entity *e )
        too */
 
     // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( *this, &EntityListener::addedMember ) );
+    e->ChildAdded.connect( SigC::slot( *this, &EntityListener::addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( *this, &EntityListener::removedMember ) );
+    e->ChildRemoved.connect( SigC::slot( *this, &EntityListener::removedMember ) );
 
-    e->Recontainered.connect( SigC::slot( *this, &EntityListener::recontainered ) );
+    e->LocationChanged.connect( SigC::slot( *this, &EntityListener::recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( *this, &EntityListener::changed ), e ) );
+    e->Changed.connect( SigC::slot( *this, &EntityListener::changed ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( *this, &EntityListener::moved ), e ) );
+    e->Moved.connect( SigC::slot( *this, &EntityListener::moved ) );
 
-    e->Say.connect( SigC::bind( SigC::slot( *this, &EntityListener::say ), e ) );
+    e->Say.connect( SigC::slot( *this, &EntityListener::say ) );
 }
 
 
