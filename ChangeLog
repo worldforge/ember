@@ -1,5 +1,10 @@
 2005-01-23  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Added tahoma-10 font definition.
+	* Changed default resolution to 1024x768
+
+2005-01-23  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Make default mouse movement factor greater
 	* Reworked the way widgets are loaded. Now each widget is associated to a string (a name). This allows us to use text files for defining which widgets should be loaded for which game type etc.
 	* Added more error checks to Model.

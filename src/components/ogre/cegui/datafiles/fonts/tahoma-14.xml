@@ -1,2 +1,2 @@
 <?xml version="1.0" ?>
-<Font Name="Tahoma-14" Filename="cegui/datafiles/fonts/tahoma.ttf" AntiAlias="true" Type="Dynamic" Size="14" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="true"  FirstCodepoint="1" LastCodepoint="300" />
+<Font Name="Tahoma-14" Filename="cegui/datafiles/fonts/tahoma.ttf" AntiAlias="true" Type="Dynamic" Size="14" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false"  FirstCodepoint="1" LastCodepoint="300" />
