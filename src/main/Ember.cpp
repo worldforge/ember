@@ -14,14 +14,15 @@ void onMouseButtonDown(dime::MouseButtonEvent *event)
 
 void onMouseButtonUp(dime::MouseButtonEvent *event)
 {
-    exit(0);
-    
+    dime::Application *myApp = dime::Application::getInstance();
+    myApp->quit();    
 }
 
 
 int main(int argc, char **argv)
 {
-    dime::Application myApp;
+    dime::Application *myApp = NULL;
+	dime::Application::getInstanceNew();
 	
 	dime::ImageService::getInstance()->addPath("./bin/");
 	dime::ImageService::getInstance()->addPath("../../bin/");
@@ -46,12 +47,12 @@ int main(int argc, char **argv)
 	dime::InputService * pIS = dime::InputService::getInstance();
 
 	pIS->addInputMapping(new dime::InputMapping(pIS->getInputDevice(dime::InputDevice::KEYBOARD), SDLK_ESCAPE, false,
-		SigC::slot(myApp, &dime::Application::escPressed)));
+		SigC::slot(*myApp, &dime::Application::escPressed)));
 
 	dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestPanel);
 	dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
 	dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
 	
-    myApp.mainLoop();
+    myApp->mainLoop();
     return 0;
 }

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.13  2002-04-26 12:16:51  xmp
+ *      Revision 1.14  2002-05-10 23:51:25  xmp
+ *      A slightly broken attempt to turn Application into a singleton.  Still needs work
+ *
+ *      Revision 1.13  2002/04/26 12:16:51  xmp
  *      Replaced my previous hacky style #ifdefs with one #if per metaserver location.
  *
  *      Revision 1.12  2002/04/25 22:35:32  xmp
@@ -134,6 +137,17 @@ namespace dime
 			quit();
 		}
 	 
+		static Application *getInstanceNew()
+		{
+			theApplication = new Application;
+			return theApplication;
+		}
+		
+		static Application *getInstance()
+		{
+			return theApplication;
+		}
+
     private:
         /**
          * The width of the screen
@@ -182,6 +196,11 @@ namespace dime
 		 * Our pointer to a DrawDevice wrapped around the SDL_surface we use as the screen
 		 */
 		SDLDrawDevice *myDrawDevice;
+
+		/**
+		 * Pointer to ourselves
+		 */
+		static Application *theApplication;
        
     };//class Application
 }//namespace dime
