@@ -1,3 +1,8 @@
+2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* Cal3DConverter: converts cal3d meshes to ogre meshes,
+	without material, textures or animations yet. Does the 
+	appropiate Atlas->Ogre rotation on the mesh.
+
 2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* DimeOgre.h/cpp: added a Water Plane at height 0.
 	There is also a little ogre head marking (0,0,0).

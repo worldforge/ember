@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.10  2003-04-28 22:42:06  aglanor
+ *      Revision 1.11  2003-05-05 01:41:06  aglanor
+ *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
+ *      	without material, textures or animations yet. Does the
+ *      	appropiate Atlas->Ogre rotation on the mesh.
+ *
+ *      Revision 1.10  2003/04/28 22:42:06  aglanor
  *      Added new viewport for a mini-map and quaternion conversion.
  *      Eris entities are now displayed with orientation.
  *
@@ -252,12 +258,12 @@ void DimeOgre::createScene(void)
 	// ----------------------------------------
 
 	//create the entity
-	mOgreHead = mSceneMgr->createEntity("ogre", "ogrehead.mesh");
+	mOgreHead = mSceneMgr->createEntity("test", "test.mesh");
 
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(0.02,0.02,0.02);
+	mOgreHeadNode->setScale(1,1,1);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);

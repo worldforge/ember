@@ -22,7 +22,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.2  2003-05-02 12:48:45  aglanor
+ *      Revision 1.3  2003-05-05 01:41:06  aglanor
+ *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
+ *      	without material, textures or animations yet. Does the
+ *      	appropiate Atlas->Ogre rotation on the mesh.
+ *
+ *      Revision 1.2  2003/05/02 12:48:45  aglanor
  *      Cal3D converter half-done. Retrieves the list of vertices, normals, etc from each Submesh. Need still to create a GeometryData and store it all within.
  *
  *      Revision 1.1  2003/04/27 23:46:30  aglanor
@@ -85,9 +91,12 @@ public:
 
 	bool parseModelConfiguration(const std::string& strFilename);
 	void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, int calCoreMeshId);
+	void createOgreMesh(const std::string& name);
+	void writeOgreMesh(const std::string& name);	
 
 protected:
-	Ogre::Root *mOgreRoot;
+	Ogre::Root* mOgreRoot;
+	Ogre::Mesh* m_ogreMesh;
 	CalCoreModel m_calCoreModel;
   	CalModel m_calModel;
   	float m_scale;

@@ -18,7 +18,13 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.2  2003-05-02 12:48:45  aglanor
+ *      Revision 1.3  2003-05-05 01:41:06  aglanor
+ *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
+ *      	without material, textures or animations yet. Does the
+ *      	appropiate Atlas->Ogre rotation on the mesh.
+ *
+ *      Revision 1.2  2003/05/02 12:48:45  aglanor
  *      Cal3D converter half-done. Retrieves the list of vertices, normals, etc from each Submesh. Need still to create a GeometryData and store it all within.
  *
  *      Revision 1.1  2003/04/27 23:46:30  aglanor
@@ -206,36 +212,112 @@ void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, in
 	int nCalCoreSubmesh = pCalCoreMesh->getCoreSubmeshCount();
 	std::cout << "Mesh [" << calCoreMeshId << ":" << strFilename << "] has " << nCalCoreSubmesh << " submeshes" << std::endl;
 	CalCoreSubmesh* pCalCoreSubmesh;
-	for(int i=0; i < nCalCoreSubmesh; i++) {
-		pCalCoreSubmesh = pCalCoreMesh->getCoreSubmesh(i);
+
+	// TODO: loop through the vector instead of using the index
+	int iSubMesh;
+	for(iSubMesh=0; iSubMesh < nCalCoreSubmesh; iSubMesh++) {
+
+		// Submeshes
+		pCalCoreSubmesh = pCalCoreMesh->getCoreSubmesh(iSubMesh);		// pointer to cal3d submesh
+		Ogre::SubMesh* pOgreSubMesh = m_ogreMesh->createSubMesh();	// pointer to ogre submesh
+
+
+		pOgreSubMesh->useSharedVertices=false;
+		pOgreSubMesh->useTriStrips=false;
+
+		// Set the faces
+		int nFaces = pCalCoreSubmesh->getFaceCount();
+		pOgreSubMesh->numFaces = nFaces;	// set the number of faces
+		pOgreSubMesh->faceVertexIndices = new unsigned short[nFaces*3];
+		std::vector<CalCoreSubmesh::Face> c3dFaces = pCalCoreSubmesh->getVectorFace();
+		std::vector<CalCoreSubmesh::Face>::iterator iterFaces;
+		CalCoreSubmesh::Face iFace;
+		int index = 0;
+		for(iterFaces=c3dFaces.begin(); iterFaces != c3dFaces.end(); iterFaces++)
+		{
+			iFace = *iterFaces;
+			pOgreSubMesh->faceVertexIndices[index] = iFace.vertexId[0];
+			index++;
+			pOgreSubMesh->faceVertexIndices[index] = iFace.vertexId[1];
+			index++;
+			pOgreSubMesh->faceVertexIndices[index] = iFace.vertexId[2];
+			index++;
+
+		}
+
+		// Set the geometry
 		int nVertex = pCalCoreSubmesh->getVertexCount();
-		std::cout << "Submesh " << i << " has " << nVertex << " vertices" << std::endl;
+		std::cout << "Submesh " << iSubMesh << " has " << nVertex << " vertices" << std::endl;
 
-		//Ogre::GeometryData ogreGeometryData = new OgreGeometryData();
+		pOgreSubMesh->geometry.numVertices = nVertex;
+		pOgreSubMesh->geometry.hasNormals = true;
+		pOgreSubMesh->geometry.hasColours = false;
+		pOgreSubMesh->geometry.pVertices = new Ogre::Real[nVertex*3];
+		pOgreSubMesh->geometry.pNormals = new Ogre::Real[nVertex*3];
+		pOgreSubMesh->geometry.numTexCoords = 0;
+		//pOgreSubMesh->geometry.pTexCoords = new Ogre::Real[6][0];
+		pOgreSubMesh->geometry.vertexStride = 0;
+		pOgreSubMesh->geometry.normalStride = 0;
+		pOgreSubMesh->geometry.colourStride = 0;
 
-		// get the list of vertices
+		// get the list of vertices from cal3d submesh
 		std::vector<CalCoreSubmesh::Vertex> vertices;
 		vertices = pCalCoreSubmesh->getVectorVertex();
+
 
 		// variables for the iteration through the vertices list
 		std::vector<CalCoreSubmesh::Vertex>::iterator iter;
 		CalCoreSubmesh::Vertex iVertex;
 		CalVector iPosition;
 		CalVector iNormal;
+		index = 0;
 		for (iter=vertices.begin(); iter != vertices.end(); iter++)
 		{
 			iVertex = *iter;
 			iPosition = iVertex.position;
 			iNormal = iVertex.normal;
-			std::cout << "Vertex: position: (" <<  iPosition.x << "," << iPosition.y << "," << iPosition.z
+			/*std::cout << "Vertex: position: (" <<  iPosition.x << "," << iPosition.y << "," << iPosition.z
 				 << ") normal: (" << iNormal.x << "," << iNormal.y << "," << iNormal.z
-				 << ") collapse: " << iVertex.collapseId << std::endl;
+				 << ") collapse: " << iVertex.collapseId << std::endl;*/
+
+			pOgreSubMesh->geometry.pVertices[index] = iPosition.x;
+			pOgreSubMesh->geometry.pNormals[index]  = iNormal.x;
+			index++;
+			pOgreSubMesh->geometry.pVertices[index] = iPosition.z;
+			pOgreSubMesh->geometry.pNormals[index]  = iNormal.z;
+			index++;
+			pOgreSubMesh->geometry.pVertices[index] = -iPosition.y;
+			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.y;
+			index++;
 		}
+
+
 
 	}
 
 }
 
+
+
+void Cal3DOgreConverter::createOgreMesh(const std::string& name)
+{
+	m_ogreMesh = Ogre::MeshManager::getSingleton().createManual(name);
+}
+
+
+void Cal3DOgreConverter::writeOgreMesh(const std::string& name)
+{
+	m_ogreMesh->_updateBounds();
+	std::cout << "Updated Mesh bounds" << std::endl;
+
+	std::cout << "This mesh has " << m_ogreMesh->getNumSubMeshes() << " submeshes." << std::endl;
+
+	Ogre::MeshSerializer meshSerializer;
+	meshSerializer.exportMesh(m_ogreMesh, "test.mesh");
+	std::cout << "Mesh exported to " << name << ".mesh" << std::endl;
+
+
+}
 
 
 
@@ -254,15 +336,19 @@ int main(int argc, char **argv)
 {
 
 	Cal3DOgreConverter myConverter;
+
 	myConverter.setup();
+
+	// TODO: check argv[1] and store it into string meshname or smthg
+	myConverter.createOgreMesh(argv[1]);
 	// parse the model configuration file
       	if(!myConverter.parseModelConfiguration(argv[1])) {
 		std::cout << "Error parsing model" << std::endl;
 		return 0;
 	}
-	//myConverter.convertCal3DOgre();
 
-	//myConverter.convertCal3DOgre();
+	myConverter.writeOgreMesh(argv[1]);
+
 
 	return 0;
 }
