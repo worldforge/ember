@@ -29,8 +29,8 @@
 */
 
 
-#ifndef BASEEXCEPTION_H
-#define BASEEXCEPTION_H
+#ifndef EXCEPTION_H
+#define EXCEPTION_H
 
 // Included headers from the current project
 
