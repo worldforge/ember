@@ -22,23 +22,21 @@
 
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
-// #include <Eris/>
-#include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
+#include <Eris/Connection.h>
 
 #include <list>
 #include <algorithm>
 #include <iostream>
 
+using namespace Eris;
+
+
 namespace dime
 {
 
-//	typedef std::list<Eris::ServerInfo> svrl;
-//	typedef svrl::iterator Iter;
-
 
 	/* ctor */
-	ServerService::ServerService()
+  ServerService::ServerService(const std::string& host, short port ) : myHost(host), myPort(port)
 	{
 	    setName("Server Service");
 		setDescription("Service for Server session");
@@ -49,34 +47,33 @@ namespace dime
 	/* dtor */
 	ServerService::~ServerService()
 	{
-	    //delete msrv;
+	    delete myConn;
 	}
 	
 	/* Method for starting this service 	*/
 	int ServerService::start()
 	{
 		setStatus(1);
-        setRunning( true );
+		setRunning( true );
 
-		// This stuff seems to all belong to metaserver wonder how it got here?
-		/*msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
-		msrv->GotServerCount.connect(SigC::slot(this, &ServerService::GotServerCount));
-		msrv->Failure.connect(SigC::slot(this, &ServerService::GotFailure));
-    	listed = false;
+		// Create new instance of myConn
+	        // We are connected without debuging enabled thus the false
+		myConn = new Connection("dime", false);
 
-    	// waiting for James to implement this
-		// cout << "Servers: " << msrv->getGameServerCount() << "endl";
-		//Eris::Serverlist whatever;
-		svrl l = msrv -> getGameServerList ();
-		
-		cout << "listing hostnames" << endl;
-		
-		for(Iter i = l.begin(); i != l.end(); i++)
-		{	
-			//HINT: Always use .data() for compatibility to MSVC
-			cout << "Hostname: " << (i)->getHostname().data() << endl;
-	    }*/
-		
+		// Bind failure signal
+		myConn->Failure.connect(SigC::slot(*this, &ServerService::GotFailure));
+
+		try {
+		  myConn->connect( myHost, myPort );
+		}
+		catch (...)
+		  {
+		    // If the connection fails here an exception is thrown
+		    delete myConn;
+		    myConn = NULL;
+		    return -1;
+		  }
+
 		return 0;
 	
 	}
@@ -86,22 +83,16 @@ namespace dime
 	{
 		setStatus(0);
 		setRunning( false );
+		myConn->disconnect();
+		delete myConn;
+		myConn=NULL;
 	}
-
-/*	void ServerService::GotServerCount(int count)
-	{
-   		char str[1024];
-    	cout << "Got" << count << "game servers." << endl;
-	}	*/
 	
-	void ServerService::GotFailure(string msg)
+	void ServerService::GotFailure(const string& msg)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
 	}	
 	
-/*	void ServerService::poll() // Out of use
-	{
-	}*/
 	
 } // namespace dime
 

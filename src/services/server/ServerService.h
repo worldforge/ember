@@ -21,18 +21,17 @@
 #define SERVERSERVICE_H
 
 #include <framework/Service.h>
-//#include <Eris/Metaserver.h>
-#include <Eris/Utils.h>
-//#include <stdint.h>
+
+#include <Eris/Connection.h>
+
 #include <sigc++/object.h>
-#include <Eris/ServerInfo.h>
 
 namespace dime {
 
 /**
  * Dime Server Service
  *
- * @author Miguel Guzman Miranda [Aglanor]
+ * @author Martin Pollard (Xmp)
  *
  * @see dime::Service
  * @see dime::MetaserverService
@@ -44,9 +43,13 @@ class ServerService: public Service, public SigC::Object
     //======================================================================
     private:
 
-    //Eris::Meta * msrv;
-    //Eris::Serverlist serverlist;
-    //bool listed;
+  /** 
+   * Holds our connection to the server
+   */
+    Eris::Connection *myConn;
+
+    short myPort;
+    string myHost;
 
 		
     //----------------------------------------------------------------------
@@ -54,11 +57,11 @@ class ServerService: public Service, public SigC::Object
 
 	public:
 	
-    /** Creates a new ConfigService using default values. */
-    ServerService();
+    /** Creates a new ServerService using default values. */
+    ServerService(const std::string& host, short port = 6767);
 
 
-    /** Deletes a ConfigService instance. */
+    /** Deletes a ServerService instance. */
     ~ServerService();
 
     //----------------------------------------------------------------------
@@ -69,18 +72,12 @@ class ServerService: public Service, public SigC::Object
 	
 	int start();
 
-	void stop(int code) ;
-
-   	//void GotServerCount(int count);
+	void stop(int code);
 	
-	void GotFailure(string msg);
-	
-	//void poll();
+	void GotFailure(const string& msg);
 
-}; //MetaserverService
+}; //ServerService
 
 } // namespace dime
 
 #endif
-
-
