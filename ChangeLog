@@ -1,4 +1,9 @@
 2003-11-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/components/ogre:
+	MediaDeployer.(h|cpp): added methods for adding media.
+	DimeOgre.cpp: some cleanup.
+
+2003-11-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* README: cleanup of media files, moved to purple.
 	* src/components/ogre/MediaDeployer.(h|cpp):
 	added class to deploy media on demand.

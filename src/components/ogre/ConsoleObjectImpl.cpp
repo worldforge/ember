@@ -29,7 +29,9 @@
 
 // local headers
 #include "ConsoleObjectImpl.h"
+#include "MediaDeployer.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/Tokeniser.h"
 
 // List of Ogre's console commands
 const char * const ConsoleObjectImpl::QUIT 		= "quit";
@@ -59,10 +61,18 @@ ConsoleObjectImpl::~ConsoleObjectImpl()
 
 void ConsoleObjectImpl::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == QUIT)
-	{
+	if(command == QUIT) {
 		dime::ConsoleBackend::getMainConsole()->pushMessage("Bye");
 		quit();
+	} else if(command == ADDMEDIA) {
+	    // Split string
+        dime::Tokeniser tokeniser = dime::Tokeniser();
+        tokeniser.initTokens(args);
+        std::string modelName = tokeniser.nextToken();
+        std::string id = tokeniser.nextToken();
+		Ogre::Vector3 position = Ogre::Vector3(0,0,0);
+        MediaDeployer::getSingleton().addMedia(modelName,id,position);
+
 	} else {
 		dime::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
 	}

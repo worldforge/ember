@@ -30,6 +30,9 @@
 // local headers
 #include "MediaDeployer.h"
 
+//TODO: add a sequence for mediadeployer ids
+//TODO: add several methods for adding media with different params
+
 MediaDeployer* MediaDeployer::_mediaDeployerInstance = 0;
 
 MediaDeployer & MediaDeployer::getSingleton(void)
@@ -41,10 +44,28 @@ MediaDeployer & MediaDeployer::getSingleton(void)
 
 MediaDeployer::MediaDeployer(void)
 {
-
+	mSceneMgr = Ogre::Root::getSingleton().getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
 }
 
 MediaDeployer::~MediaDeployer()
 {
 
+}
+
+bool MediaDeployer::addMedia(std::string modelName)
+{
+	return true;
+}
+
+bool MediaDeployer::addMedia(std::string modelName, std::string id, Ogre::Vector3 position)
+{
+
+	// create the ogre node and entity
+	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	Ogre::Entity* ogreEntity;
+	ogreEntity = mSceneMgr->createEntity(id,modelName);
+	ogreNode->setPosition(position);
+	ogreNode->attachObject(ogreEntity);
+
+	return true;
 }

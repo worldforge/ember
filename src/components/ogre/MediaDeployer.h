@@ -29,6 +29,9 @@ class MediaDeployer
 
 	static MediaDeployer & getSingleton(void);
 
+	bool addMedia(std::string);
+	bool addMedia(std::string, std::string, Ogre::Vector3);
+
 	private:
 
 	/**

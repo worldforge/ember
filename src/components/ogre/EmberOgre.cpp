@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.28  2003-10-30 07:37:41  aglanor
+ *      Revision 1.29  2003-11-05 08:10:56  aglanor
+ *      2003-11-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre:
+ *              MediaDeployer.(h|cpp): added methods for adding media.
+ *              DimeOgre.cpp: some cleanup.
+ *
+ *      Revision 1.28  2003/10/30 07:37:41  aglanor
  *      2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre:
  *              Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
@@ -442,9 +448,7 @@ void DimeOgre::createFrameListener(void)
 	fprintf(stderr, "TRACE - CREATING FRAME LISTENERS\n");
 	//PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, this, false, false);
 	//mRoot->addFrameListener(playerFrameListener);
-	//Console* pConsole = Console::getSingleton();
 	fprintf(stderr, "TRACE - CREATING INPUT MANAGER\n");
-	//mRoot->addFrameListener(&(Console::getSingleton()));
 	InputManager::getSingleton();
 	InputManager::getSingleton().addKeyListener(&(Console::getSingleton()));
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
