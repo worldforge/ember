@@ -66,7 +66,6 @@ class SoundService: public Service, public ConsoleObject
 	ALsizei size,freq,bits,format;
 	void *data;
 
-	ALfloat listenerPos[3];
 
     //----------------------------------------------------------------------
     // Constructors & Destructor

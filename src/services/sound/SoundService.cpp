@@ -62,7 +62,7 @@ namespace dime
 	Service::Status SoundService::start()
 	{
 
-	ALfloat listenerPos[]={0.0,0.0,0.0};						// listener position
+	ALfloat listenerPos[3]={0.0,0.0,0.0};						// listener position
 	ALfloat listenerVel[3]={0.0,0.0,0.0};							// listener velocity
 	ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};		// listener orientation
 
@@ -83,39 +83,68 @@ namespace dime
 				return Service::FAILURE;
 			}
 		}
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "trace1" << ENDM;
-
-
 
 		TestPlatform();
 					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "trace2" << ENDM;
 
-		alutLoadWAV("boomboom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file
-					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "trace3" << ENDM;
+		alutLoadWAV("boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file
+					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Loaded WAV file? let's check"  << ENDM;
 
+LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "format: " << format << ENDM;
 
-		//alBufferData(myBuffers[0],format,data,size,freq);				// Connect WAV to buffer
-		/*if(alGetError() != AL_NO_ERROR)
+LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "size: " << size << ENDM;
+
+LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "bits: " << bits << ENDM;
+
+LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "freq: " << freq << ENDM;
+
+		alBufferData(myBuffers[0],format,data,size,freq);				// Connect WAV to buffer
+		if(alGetError() != AL_NO_ERROR)
 		{
 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error reading wav" << ENDM;
 			return Service::FAILURE;
 		}
-*/
+
 	//	 UnloadWAV();
 
 		// set listener initial parameters
-		alListenerfv(AL_POSITION,listenerPos); //posicion
-		alListenerfv(AL_VELOCITY,listenerVel); //velocidad
-		alListenerfv(AL_ORIENTATION,listenerOri); //orientación
+		alListenerfv(AL_POSITION,listenerPos);			// position
+		alListenerfv(AL_VELOCITY,listenerVel);			// velocity
+		alListenerfv(AL_ORIENTATION,listenerOri);		// orientation
 
-alSourcef(mySources[0],AL_PITCH,1.0f);  // Con esto podemos disminuir la frecuencia
-alSourcef(mySources[0],AL_GAIN,1.0f); // Con esto definimos la ganancia en amplitud ( intensidad de sonido)
-alSourcefv(mySources[0],AL_POSITION,sourcePos); // posición
-alSourcefv(mySources[0],AL_VELOCITY,sourceVel); // velocidad
-alSourcei(mySources[0],AL_BUFFER,myBuffers[0]); // Con esto pasamos el archivo wav del buffer a la fuente
-alSourcei(mySources[0],AL_LOOPING,AL_FALSE); // Con esto le indicamos que la fuente no se reproduzca una y otra vez
+		alSourcef(mySources[0],AL_PITCH,1.0f); 					// source Frequency
+		alSourcef(mySources[0],AL_GAIN,1.0f);						// source gain
+		alSourcefv(mySources[0],AL_POSITION,sourcePos);	// source position
+		alSourcefv(mySources[0],AL_VELOCITY,sourceVel);	// source velocity
+		alSourcei(mySources[0],AL_BUFFER,myBuffers[0]);		// link the source to the buffer
+		alSourcei(mySources[0],AL_LOOPING,AL_TRUE);		// looping play
 
-		alSourcePlay(mySources[0]);
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Press 1 to play sound, 2 to stop, 3 to go on with dime." << ENDM;
+
+		char a; bool loop = true;
+	do {
+		cin >> a;
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "a: " << a << ENDM;
+ 		switch (a)
+		{
+			case '1':
+				alSourcePlay(mySources[0]);
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "playing"<< ENDM;
+				break;
+			case '2':
+				alSourceStop(mySources[0]);
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "stopping" << ENDM;
+				break;
+			case '3':
+				loop = false;
+
+		}
+	} while (loop);
+
+
+
+	alSourceStop(mySources[0]);
+
 
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sound Service initialized" << ENDM;
 
