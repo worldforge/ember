@@ -110,6 +110,16 @@ PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2.1,
      AC_MSG_WARN(Please note the we will drop support for this version of SigC++ eventually)
      ])
 
+OGRE_VERSION=0.10.0
+PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
+	[
+		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS"
+	],
+	[
+		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
+	])
+
 # Check for Atlas
 AM_PATH_ATLAS(0.4.5 ,[
     CXXFLAGS="$CXXFLAGS $ATLAS_CFLAGS"
@@ -117,6 +127,8 @@ AM_PATH_ATLAS(0.4.5 ,[
     ],
 AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
+
+
 
 # Check for wfmath
 WFMATH_VERSION=0.2.10
