@@ -1,0 +1,24 @@
+<theme>
+    <name>simpletheme</name>
+    <shortDescription>
+    	This is a simple theme which I created to test themeing within Dime
+    </shortDescription>
+    <longDescription>
+    	A simple theme which consists of a Font.  And some basic styles for
+	theming a GUI.  It has Blue borders on all the widgets, and black 
+	backgrounds, with a white font.
+    </longDescription>
+    <author>
+       <contribution>
+           Designed, and implemented this theme.
+       </contribution>
+       <authorInfo>
+           <userName>nikal</userName>
+	   <firstName>Lakin</firstName>
+	   <lastName>Wecker</lastName>
+	   <email>nikal@telusplanet.net</email>
+       </authorInfo>
+    </author>
+    <defaultWidget>
+    	<name>default widget style</name>
+	
