@@ -80,10 +80,6 @@ AC_MSG_RESULT([
 	])
 	
 AM_PATH_SDL(1.2.0, 
-#	    [  
-#  CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-#  LDFLAGS="$LDFLAGS $SDL_LIBS"
-#]
 	    ,
 [
   AC_MSG_ERROR(Couldn't find SDL or insufficent version found. Please goto http://www.libsdl.org/ and get at least version $SDL_VERSION)
@@ -226,11 +222,11 @@ PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.3 \
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
 
 
-AC_CHECK_LIB(IL, ilInit,
-	[
-		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
-		LDFLAGS="$LDFLAGS $IL_LIBS"
-	]
+AC_CHECK_LIB(IL, ilInit
+#	[
+#		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
+#		LDFLAGS="$LDFLAGS $IL_LIBS"
+#	]
 ,AC_MSG_ERROR([
 ****************************************************************
 * You do not have DevIL installed.  This is required to build. *

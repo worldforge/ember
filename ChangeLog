@@ -1,3 +1,6 @@
+2005-03-14  Eric Sandalll  <eric@sandall.us>
+	* configure.ac: Fix ilInit check
+
 2005-03-14  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* removed all dependencies of boost since CEGUI since 0.2.0 doesn't use it anymore
