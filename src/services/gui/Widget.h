@@ -28,9 +28,11 @@
 
 // Included system headers
 
-
 namespace dime {
 
+// Forward declarations
+class Container;
+	
 /**
  * The basic Widget for the Dime Gui
  *
@@ -40,10 +42,11 @@ namespace dime {
  * A short piece of example code demonstarting how this class it is used,
  * and in what context, is encouraged.
  *
- * @author  Lakin Wecker
- *
+ * @author Lakin Wecker
+ * @author Adam Gregory
  *
  */
+
 class Widget
 
 {
@@ -87,6 +90,12 @@ class Widget
     // Private Variables
     //======================================================================
     private:
+
+	/**
+	 * Pointer to the parent Container of this Widget. NULL if none
+	 */
+	 
+	 Container* myParent;
 
     /**
      * The X position of this widget relative to the application
@@ -133,6 +142,7 @@ class Widget
      */
     Widget()
     {
+		myParent = NULL;
     }
 
 
@@ -157,16 +167,22 @@ class Widget
     /**
      * Deletes a Widget instance.
      */
-    virtual ~Widget()
-    {
-        // TODO: Free any allocated resources here.
-    }
+    virtual ~Widget();
 
-
+	
     //----------------------------------------------------------------------
     // Getters
+	
+	/**
+	 * Returns a pointer to the parent of this Widget
+	 */
+	Container* GetParent()
+	{
+		return myParent;
+	}
+	
     /**
-     * Returns theX position for this Widget
+     * Returns the X position for this Widget
      */
     virtual int getX() const
     {
@@ -217,10 +233,15 @@ class Widget
     //----------------------------------------------------------------------
     // Setters
 
-     /**
-      * Sets theX position for this Widget
-      */
-    virtual void setX(int x)
+	/**
+	 * Sets the pointer to the parent widget
+	 */
+	void SetParent(Container* parent);
+
+	/**
+	 * Sets theX position for this Widget
+	 */
+	virtual void setX(int x)
     {
         myX = x;
     }
@@ -264,6 +285,14 @@ class Widget
     {
         myPrefDimension = dimension;
     }
+	
+    //----------------------------------------------------------------------
+    // Other public methods	
+	
+	/**
+	* Draws the widget, and/or its children.
+	*/
+    virtual int Draw() = 0;
 
 
 }; // End of class

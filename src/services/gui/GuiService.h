@@ -20,8 +20,8 @@
 #define GUISERVICE_H
 
 // Included headers from the current project
-#include "framework/Service.h"
-#include "Application.h"
+#include "../../framework/Service.h"
+#include "Container.h"
 
 // Included custom library headers
 
@@ -43,6 +43,19 @@ class GuiService : public Service
 
 {
 
+	//======================================================================
+	// Private Variables
+	//======================================================================
+    private:
+
+    Container myRootWidget;
+
+
+    /**
+     * This variable is used to keep track of the next free ID number for a new gizmo.
+     */
+    static int theNextId;
+
     //======================================================================
     // Public Methods
     //======================================================================
@@ -58,8 +71,6 @@ class GuiService : public Service
     {
     }
     
-    
-
 
     //----------------------------------------------------------------------
     // Destructor
@@ -76,14 +87,24 @@ class GuiService : public Service
     //----------------------------------------------------------------------
     // Getters
 
+	/**
+	 * Returns the root widget
+	 */
+	Container& GetRootWidget()
+	{
+		return myRootWidget;
+	}
+	
     //----------------------------------------------------------------------
     // Setters
 
     //----------------------------------------------------------------------
     // Other public methods
-
-    virtual Application *createApplication(int width, int height) = 0;
-    
+	
+	/**
+	 * Draws the GUI
+	 */
+	int Draw();
 	
     //----------------------------------------------------------------------
     // Methods inherited from Service

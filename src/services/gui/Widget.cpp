@@ -1,5 +1,15 @@
 #include "Widget.h"
-Dime::Widget &Dime::Widget::operator= ( const Dime::Widget &source );
+#include "Container.h"
+
+void dime::Widget::SetParent(Container* parent)
+{
+	if (myParent != NULL) myParent->RemoveWidget(this); // Remove this Widget's previous listing before changing parents.
+	
+	assert(parent);
+	myParent = parent;
+}
+
+dime::Widget &dime::Widget::operator= ( const dime::Widget &source )
 {
     // Copy fields from source class to this class here.
     onMouseClick = source.onMouseClick;
@@ -14,5 +24,10 @@ Dime::Widget &Dime::Widget::operator= ( const Dime::Widget &source );
     myMinDimension = source.myMinDimension;
     myPrefDimension = source.myPrefDimension;
     //Return this object with new value
-    return &this;
+    return *this;
+}
+
+dime::Widget::~Widget()
+{
+	myParent->RemoveWidget(this);
 }

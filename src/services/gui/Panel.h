@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Lakin Wecker
+    Copyright (C) 2002  Adam Gregory
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,39 +16,56 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef PARAGUISERVICE_H
-#define PARAGUISERVICE_H
+#ifndef PANEL_H
+#define PANEL_H
 
 // Included headers from the current project
-#include "framework/Service.h"
-#include "GuiService.h"
-#include "ParaGuiApplication.h"
+#include "Container.h"
 
 // Included custom library headers
 
 // Included system headers
-#include <string>
-#include <paragui/pgapplication.h>
+
 
 namespace dime {
 
 /**
- * This service provides a GUI widget system.
- * It can create various basic GUI Widgets, and connect them to listeners / data sources (of Data Model type?).
- * It also holds the root window.
+ * Panel widget Arranges children widgets on top of a background.
  *
+ * Derived from Container. Useful for creating dialogs.
+ * 
+ * TODO: A short piece of example code demonstrating how this class is used,
+ * and in what context, is encouraged.
  *
- * @author Hans Häggström
+ * @author Adam Gregory
  */
-class ParaGuiService : public GuiService
+class Panel : public Container
 
 {
     //======================================================================
+    // Inner Classes, Typedefs, and Enums
+    //======================================================================
+    public:
+
+
+    //======================================================================
+    // Public Constants
+    //======================================================================
+    public:
+
+
+    //======================================================================
+    // Private Constants
+    //======================================================================
+    private:
+
+
+    //======================================================================
     // Private Variables
     //======================================================================
-   private:
-    
-    
+    private:
+	
+	RectangleRenderer myBackground;
 
     //======================================================================
     // Public Methods
@@ -59,12 +76,33 @@ class ParaGuiService : public GuiService
     // Constructors
 
     /**
-     * Creates a new GuiService using default values.
+     * Cretaes a new NameOfClass using default values.
      */
-    ParaGuiService()
+    Panel()
     {
-        setName( "ParaGuiService" );
-        setDescription( "Provides a GUI widget wrapper for ParaGUI." );
+    }
+
+
+    /**
+     * Copy constructor.
+     */
+    Panel( const Panel &source )
+    {
+        // Use assignment operator to do the copy
+        // NOTE: If you need to do custom initialization in the constructor this may not be enough.
+        *this = source;
+    }
+
+
+    /**
+     * Assignment operator.
+     */
+    Panel &operator= ( const Panel &source )
+    {
+        // Copy fields from source class to this class here.
+
+        // Return this object with new value
+        return *this;
     }
 
 
@@ -72,9 +110,9 @@ class ParaGuiService : public GuiService
     // Destructor
 
     /**
-     * Deletes a GuiService instance.
+     * Deletes a NameOfClass instance.
      */
-    virtual ~ParaGuiService()
+    virtual ~Panel()
     {
         // TODO: Free any allocated resources here.
     }
@@ -84,52 +122,13 @@ class ParaGuiService : public GuiService
     // Getters
 
 
-
     //----------------------------------------------------------------------
     // Setters
 
 
-
     //----------------------------------------------------------------------
     // Other public methods
-
 	
-    //----------------------------------------------------------------------
-    // Methods inherited from Service
-    /**
-     * This method is used to start the service.
-     * It takes care of aquiring needed resources, initializing
-     * data structures, and so on. <p>
-     *
-     * If initialization fails, it should set appropriate status code and
-     * status text.  It could also write an entry into a log through the logging
-     * service.  <p>
-     *
-     * @returns success or error code
-     */
-    virtual int start()
-    {
-        setRunning( true );
-        
-        return 0;
-    }
-    /**
-     * This method stops the service, and frees any used resources.
-     *
-     * @ param code code which represents the cause of the service halt
-     */
-    virtual void stop( int code )
-    {
-        setRunning( false );
-    }
-    
-    /**
-     * This creates an application window based on the ParaGUI Application
-     *
-     * @ param width the desired width of the Application
-     * @ param height the desired height of the Application
-     */
-    virtual Application *createApplication(int width, int height);
 
     //======================================================================
     // Protected Methods
@@ -148,28 +147,9 @@ class ParaGuiService : public GuiService
     //======================================================================
     private:
 
-    /**
-     * Copy constructor not provided.
-     */
-    ParaGuiService( const GuiService &source )
-    {
-    }
-
-
-    /**
-     * Assignment operator not provided.
-     */
-    ParaGuiService &operator= ( const GuiService &source )
-    {
-        return *this;
-    }
-
 
 }; // End of class
 
 } // End of application namespace
 
 #endif
-
-
-

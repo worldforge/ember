@@ -25,7 +25,7 @@
 // Included custom library headers
 
 // Included system headers
-
+#include <vector>
 
 namespace dime {
     
@@ -36,12 +36,21 @@ namespace dime {
  *
  *
  * @author Lakin Wecker
+ * @author Adam Gregory
  *
  */
 class Container : Widget
 {
-
-
+    //======================================================================
+    // Private Variables
+    //======================================================================
+    private:
+		
+	/**
+	* Vector of the Container's children
+	*/
+	std::vector<Widget*> myChildren;
+	
     //======================================================================
     // Public Methods
     //======================================================================
@@ -51,7 +60,7 @@ class Container : Widget
     // Constructors
 
     /**
-     * Cretaes a new Container using default values.
+     * Creates a new Container using default values.
      */
     Container()
     {
@@ -100,10 +109,26 @@ class Container : Widget
     //----------------------------------------------------------------------
     // Setters
 
+    //----------------------------------------------------------------------
+    // Other public methods
 
+	/**
+	 * Tells the children widgets in myChildren to draw themselves.
+	 */
+	int Draw();
+
+	/**
+	 * Adds a new child widget to myChildren.
+	 */
+	void AddWidget(Widget* source);
+	
+	/**
+	 * Removes pointer to widget from myChildren.
+	 * 
+	 */
+	int dime::Container::RemoveWidget(Widget* destructee);
 
 }; // End of class
-
 
 } // End of application namespace
 
