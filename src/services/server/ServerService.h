@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
-    Based on YUP::Metacmd code by Adam Wendt
+    Based on Silence-c++ by James and YUP code by Adam Wendt
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef METASERVERSERVICE_H
-#define METASERVERSERVICE_H
+#ifndef SERVERSERVICE_H
+#define SERVERSERVICE_H
 
 #include <framework/Service.h>
 #include <Eris/Metaserver.h>
@@ -32,14 +32,14 @@
 namespace dime {
 
 /**
- * Dime Metaserver Service
+ * Dime Server Service
  *
  * @author Miguel Guzman Miranda [Aglanor]
  *
  * @see dime::Service
- * @see dime::ServerService
+ * @see dime::MetaserverService
  */
-class MetaserverService: public Service, public SigC::Object
+class ServerService: public Service, public SigC::Object
 {
     //======================================================================
     // Private Variables
@@ -57,11 +57,11 @@ class MetaserverService: public Service, public SigC::Object
 	public:
 	
     /** Creates a new ConfigService using default values. */
-    MetaserverService();
+    ServerService();
 
 
     /** Deletes a ConfigService instance. */
-    ~MetaserverService();
+    ~ServerService();
 
     //----------------------------------------------------------------------
     // Getters & Setters

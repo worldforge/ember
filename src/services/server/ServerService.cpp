@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
-    Based on YUP::Metacmd code by Adam Wendt
+    Based on Silence-c++ by James and YUP code by Adam Wendt
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "MetaserverService.h"
+#include "ServerService.h"
 
 #include <iostream>
 #include <sigc++/object_slot.h>
@@ -39,29 +39,29 @@ namespace dime
 
 
 	/* ctor */
-	MetaserverService::MetaserverService()
+	ServerService::ServerService()
 	{
-	    setName("Metaserver Service");
-		setDescription("Service for Metaserver session");
+	    setName("Server Service");
+		setDescription("Service for Server session");
 		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
 		//        setStatus( Service::Status::OK );
 	}
 	
 	/* dtor */
-	MetaserverService::~MetaserverService()
+	ServerService::~ServerService()
 	{
 	    delete msrv;
 	}
 	
 	/* Method for starting this service 	*/
-	int MetaserverService::start()
+	int ServerService::start()
 	{
 		setStatus(1);
         setRunning( true );
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
-		msrv->GotServerCount.connect(SigC::slot(this, &MetaserverService::GotServerCount));
-		msrv->Failure.connect(SigC::slot(this, &MetaserverService::GotFailure));
+		msrv->GotServerCount.connect(SigC::slot(this, &ServerService::GotServerCount));
+		msrv->Failure.connect(SigC::slot(this, &ServerService::GotFailure));
     	listed = false;
 
     	// waiting for James to implement this
@@ -82,24 +82,24 @@ namespace dime
 	}
 
 	/* Interface method for stopping this service 	*/
-	void MetaserverService::stop(int code)
+	void ServerService::stop(int code)
 	{
 		setStatus(0);
 		setRunning( false );
 	}
 
-	void MetaserverService::GotServerCount(int count)
+	void ServerService::GotServerCount(int count)
 	{
    		char str[1024];
     	cout << "Got" << count << "game servers." << endl;
 	}	
 	
-	void MetaserverService::GotFailure(string msg)
+	void ServerService::GotFailure(string msg)
 	{
     	cout << "Got Meta-server error: " << msg << endl;
 	}	
 	
-	void MetaserverService::poll()
+	void ServerService::poll()
 	{
 		msrv->poll();
 	}
