@@ -66,6 +66,9 @@ void dime::Button::mouseUp( MouseButtonEvent *event )
   if (myPressed)
     {
       // Uncapture the mouse
+      releaseMouse();
+      myPressed = false;
+
       if (myMouseIsInside)
 	{
 	  onClicked.emit(this);

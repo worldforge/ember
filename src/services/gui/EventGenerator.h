@@ -41,6 +41,7 @@ namespace dime
     
     class EventGenerator : public SigC::Object
     {
+      friend dime::Widget;
         
     public:
         // Start all event handlers here.

@@ -501,14 +501,12 @@ namespace dime {
          * until releaseMouse is called.  Returns true if mouse was successfully
          * captured (if some other window already had it captureMouse fails).
          */
-        virtual bool captureMouse() { 
-			//%TODO nikal,2: What should be returned here
-			return false;};
+        virtual inline bool captureMouse();
 
         /**
          * Releases the mouse if it was captured by captureMouse().
          */
-        virtual void releaseMouse() { };
+        virtual inline void releaseMouse();
 
         /*----[ Low level mouse events: ]---------------------------------------*/
 

@@ -223,6 +223,7 @@ class Button : public Widget
 	setPressed();
 
 	// Capture the mouse
+	captureMouse();
 
         Widget::mouseDown(event);      
       }
