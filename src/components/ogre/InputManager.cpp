@@ -1,10 +1,42 @@
+/*
+	InputManager.cpp by Wolfman8k
+	Adapted to Worldforge by Miguel Guzman (Aglanor)
+	with permission and lots of help from Wolfman8k
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
 #include <OgreKeyEvent.h>
 #include <OgreInput.h>
 #include <OgreRoot.h>
 #include <OgreNoMemoryMacros.h>
 
+
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#include <Eris/World.h>
+
+// ------------------------------
+// Include dime header files
+// ------------------------------
+#include "services/DimeServices.h"
+#include "services/server/ServerService.h"
+
 #include "InputManager.h"
 #include "Console.h"
+#include "EntityListener.h"
 
 
 InputManager* InputManager::_instance = 0;
@@ -37,7 +69,8 @@ InputManager::InputManager(void)
 	mScreenY = Ogre::Root::getSingleton().getAutoCreatedWindow()->getHeight();
 
 	// hack: fallback in case there's no way to exit the app;
-	timer=600;
+	timer=6000;
+	worldConnected = false; // UGLY HACK
 
 	fprintf(stderr, "TRACE - INPUT MANAGER - CONTRUCTOR DONE\n");
 }
@@ -58,6 +91,20 @@ bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 	if(timer<=0)
 	{
 		return false;
+	}
+
+	// Eris poll. It might remain here or be moved to a better place. We'll see.
+	Eris::PollDefault::poll();
+
+	// VERY UGLY HACK
+	// Grab world. If it's set, connect world signals on the entity thing...
+	if(!worldConnected) // to connect only once
+	{
+		// if world is initialized, connect the signals (once)
+		if((dime::DimeServices::getInstance()->getServerService()->getWorld())!=0) {
+			EntityListener::getSingleton().connectWorldSignals();
+			worldConnected = true;
+		}
 	}
 
 	mInputReader->capture();

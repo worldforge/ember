@@ -1,3 +1,12 @@
+2003-11-18 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/services/server/ServerService.cpp: myWorld is
+	not created by this service anymore, instead is 
+	retrieved from myAvatar after taking/creating char.
+	Modified touch op so we can touch any entity.
+	* src/components/ogre/*: overall improvement. 
+	Added EntityListener.(h|cpp) to listen to and act 
+	upon Eris entity-related signals.
+
 2003-11-12 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/components/ogre: added PlayerMouseListener,
 	which brings back mouselook. 

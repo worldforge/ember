@@ -19,7 +19,7 @@ $(top_srcdir)/src/framework/libFramework.a
 
 
 DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp PlayerMouseListener.cpp \
-		   ConsoleObjectImpl.cpp \
+		   EntityListener.cpp ConsoleObjectImpl.cpp \
 		   MediaDeployer.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg

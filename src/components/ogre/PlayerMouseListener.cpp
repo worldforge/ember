@@ -56,7 +56,7 @@ void PlayerMouseListener::mouseMoved(short newX, short newY, short oldX, short o
 {
 	float diffX = -(newX - oldX) * 0.13;
 	float diffY = -(newY - oldY) * 0.13;
-	std::cout << "MOVED MOUSE: " << diffX << " " << diffY << std::endl;
+	//std::cout << "MOVED MOUSE: " << diffX << " " << diffY << std::endl;
 	mCamera->yaw(diffX);
 	mCamera->pitch(diffY);
 }

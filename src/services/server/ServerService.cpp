@@ -86,6 +86,7 @@ namespace dime
     ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this);
     ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this);
     ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
+	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this);
 	ConsoleBackend::getMainConsole()->registerCommand("movetest",this);
   }
 
@@ -264,7 +265,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
   }
 
   void ServerService::loginSuccess(){
-    myWorld = new Eris::World(myPlayer, myConn);
+    //myWorld = new Eris::World(myPlayer, myConn);
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
     ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
@@ -365,12 +366,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		}
 
 		Atlas::Objects::Operation::Touch touch;
-		Atlas::Message::Element::MapType args;
+		Atlas::Message::Element::MapType opargs;
 
 		touch = Atlas::Objects::Operation::Touch::Instantiate();
-		args["id"] = 1;
+		opargs["id"] = args;
 		touch.setFrom(myAvatar->getID());
-		touch.setArgs(Atlas::Message::Element::ListType(1, args));
+		touch.setArgs(Atlas::Message::Element::ListType(1, opargs));
 
 		Eris::Connection::Instance()->send(touch);
 	} else if (command=="movetest") { // TODO: hack! this shall be properly done
@@ -382,6 +383,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		}
 
 		Atlas::Objects::Operation::Move move;
+		
 
 	}
   }

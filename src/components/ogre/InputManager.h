@@ -1,3 +1,23 @@
+/*
+	InputManager.h by Wolfman8k
+	Adapted to Worldforge by Miguel Guzman (Aglanor)
+	with permission and lots of help from Wolfman8k
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
 #ifndef InputManager_H__
 #define InputManager_H__
 
@@ -45,6 +65,7 @@ class InputManager : public Ogre::FrameListener
 
 	private:
 		static InputManager* _instance;
+		bool worldConnected; // UGLY HACK!!
 
 		InputManager(void);
 		~InputManager();

@@ -23,7 +23,17 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.30  2003-11-12 07:32:35  aglanor
+ *      Revision 1.31  2003-11-18 19:26:27  aglanor
+ *      2003-11-18 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/services/server/ServerService.cpp: myWorld is
+ *              not created by this service anymore, instead is
+ *              retrieved from myAvatar after taking/creating char.
+ *              Modified touch op so we can touch any entity.
+ *              * src/components/ogre/*: overall improvement.
+ *              Added EntityListener.(h|cpp) to listen to and act
+ *              upon Eris entity-related signals.
+ *
+ *      Revision 1.30  2003/11/12 07:32:35  aglanor
  *      2003-11-12 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: added PlayerMouseListener,
  *              which brings back mouselook.
@@ -243,11 +253,12 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DimeOgre.h"
 #include "PlayerFrameListener.h"
 #include "OgreGameView.h"
-#include "MathConverter.h"
+//#include "MathConverter.h"
 #include "InputManager.h"
 #include "Console.h"
 #include "ConsoleObjectImpl.h"
 #include "PlayerMouseListener.h"
+#include "EntityListener.h"
 
 // ------------------------------
 // Include dime header files
@@ -383,7 +394,7 @@ void DimeOgre::createScene(void)
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(0.1,0.1,0.1);
+	mOgreHeadNode->setScale(0.01,0.01,0.01);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -464,6 +475,7 @@ void DimeOgre::createFrameListener(void)
 	ConsoleObjectImpl::getSingleton();
 	InputManager::getSingleton().addMouseListener(&(PlayerMouseListener::getSingleton()));
 	PlayerMouseListener::getSingleton().setCamera(mCamera);
+	EntityListener::getSingleton().setSceneManager(mSceneMgr);
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }
@@ -539,183 +551,7 @@ void DimeOgre::initializeDimeServices(void)
 	dime::DimeServices::getInstance()->getServerService()->start();
 #endif
 
-
-
 }
-
-
-void DimeOgre::connectWorldSignals(void) {
-
-    /* Find out where the Eris world instance resides... */
-    Eris::World *w = dime::DimeServices::getInstance()->getServerService()->getWorld();
-
-    /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( *this, &DimeOgre::entityCreate ) );
-
-    w->EntityDelete.connect( SigC::slot( *this, &DimeOgre::entityDelete ) );
-
-    w->Entered.connect( SigC::slot( *this, &DimeOgre::entered ) );
-
-    w->Appearance.connect( SigC::slot( *this, &DimeOgre::appearance ) );
-
-    w->Disappearance.connect( SigC::slot( *this, &DimeOgre::disappearance ) );
-
-}
-
-/* Eris::World entity signals */
-
-void DimeOgre::entityCreate( Eris::Entity *e )
-{
-	// create the ogre node and the
-	// TODO: use Eris entity hierarchy for the node hierarchy !!
-	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	Ogre::Entity* ogreEntity;
-
-	// create the ogre entity
-        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
-		fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
-		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.01,0.01,0.01);
-	}
-	else if(!strcmp(e->getType()->getName().c_str(),"merchant"))
-	{
-		fprintf(stderr, "TRACE - FOUND A MERCHANT - ROBOT MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
-		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.025,0.025,0.025);
-	}
-	else if(!strcmp(e->getType()->getName().c_str(),"pig"))
-	{
-		fprintf(stderr, "TRACE - FOUND A PIG - PIG MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
-		ogreNode->setScale(0.5,0.5,0.5);
-	}
-	else
-	{
-		// TODO: razor should be a coin
-		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "razor.mesh");
-		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.001,0.001,0.001);
-	}
-
-	// set the Ogre node position and orientation based on Atlas data
-	ogreNode->setPosition(Atlas2Ogre(e->getPosition()));
-	std::cout << "Entity placed at (" << e->getPosition().x() << "," << e->getPosition().y() << "," << e->getPosition().x() << ")" << std::endl;
-	//WFMath::Quaternion wq = e->getOrientation();
-	//WFMath::Vector<3> wv = wq.vector();
-	//Ogre::Quaternion oq = Ogre::Quaternion(Atlas2Ogre(e-getOrientation()));
-	ogreNode->setOrientation(Atlas2Ogre(e->getOrientation()));
-
-	// old code, just for the record
-	/** WFMath::Point<3> position = e->getPosition();
-	ogreNode->setPosition(position.x(),position.z(),-position.y());*/
-
-	// scale HACK. This is very hacky. Fix this.
-        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
-				// robots are bigger :P
-	}
-	else {
-
-	}
-
-	// attach the node to the entity
-	ogreNode->attachObject(ogreEntity);
-
-	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
-
-    // Whenever a new entity is created, make sure to connect to those signals too
-
-    // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( *this, &DimeOgre::addedMember ) );
-
-    e->RemovedMember.connect( SigC::slot( *this, &DimeOgre::removedMember ) );
-
-    e->Recontainered.connect( SigC::slot( *this, &DimeOgre::recontainered ) );
-
-    e->Changed.connect( SigC::bind( SigC::slot( *this, &DimeOgre::changed ), e ) );
-
-    e->Moved.connect( SigC::bind( SigC::slot( *this, &DimeOgre::moved ), e ) );
-
-    e->Say.connect( SigC::bind( SigC::slot( *this, &DimeOgre::say ), e ) );
-}
-
-
-void DimeOgre::entityDelete( Eris::Entity *e )
-{
-	fprintf(stderr, "TRACE - ENTITY DELETED\n");
-}
-
-void DimeOgre::entered( Eris::Entity *e )
-{
-	fprintf(stderr, "TRACE - PLAYER ENTERED THE WORLD\n");
-	std::cout << "THE PLAYER IS ENTITY " <<  e->getID() << std::endl;
-	// Set the Player camera accordingly
-	// TODO: do this when the avatar moves too
-	mCamera->setPosition(Atlas2Ogre(e->getPosition()));
-	Ogre::Vector3 height(0,1.75,0);
-	mCamera->move(height);
-	mCamera->setOrientation(Atlas2Ogre(e->getOrientation()));
-        mWindow->setDebugText("Avatar entered the world");
-
-}
-
-void DimeOgre::appearance( Eris::Entity *e )
-{
-	fprintf(stderr, "TRACE - ENTITY APPEARS\n");
-}
-
-void DimeOgre::disappearance( Eris::Entity *e )
-{
-	fprintf(stderr, "TRACE - ENTITY DISAPPPEARS\n");
-}
-
-/* Eris::Entity signals */
-
-void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
-{
-	fprintf(stderr, "TRACE - ENTITY RECONTAINERED\n");
-}
-
-void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
-{
-	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR "  << e->getID() << std::endl;
-	/*
-        TODO: ENTITY CHANGES HERE
-	*/
-}
-
-void DimeOgre::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
-{
-	fprintf(stderr, "TRACE - ENTITY MOVED\n");
-
-	Ogre::Entity* o = mSceneMgr->getEntity(e->getID());
-	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
-	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
-}
-
-void DimeOgre::say( const std::string &s, Eris::Entity *e )
-{
-        std::string message = "<";
-        message.append(e->getName());
-        message.append("> ");
-        message.append(s);
-	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-        mWindow->setDebugText(message);
-
-	// TODO: fix this one
-	/*
-    dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
-	*/
-}
-
-void DimeOgre::addedMember(Eris::Entity *e)
-{}
-
-void DimeOgre::removedMember(Eris::Entity *e)
-{}
-
 
 void DimeOgre::updateAnimations(Ogre::Real time)
 {
@@ -726,13 +562,6 @@ void DimeOgre::updateAnimations(Ogre::Real time)
 	animState->addTime(time);
 
 }
-
-
-/*
-void DimeOgre::addMedia() {
-	//S_LOG_VERBOSE() << "ADDING MEDIA\n";
-}
-*/
 
 
 // ----------------------------------------------------------------------------
