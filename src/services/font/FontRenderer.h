@@ -20,11 +20,14 @@
 #define FONTRENDERER_H
 
 // Included headers from the current project
-
+#include "Font.h"
+#include "services/platform/Color.h"
+#include "services/platform/Rectangle.h"
+#include "services/platform/DrawDevice.h"
 // Included custom library headers
 
 // Included system headers
-
+#include <string>
 
 namespace dime {
 
@@ -59,7 +62,12 @@ class FontRenderer
     // Inner Classes, Typedefs, and Enums
     //======================================================================
     public:
-
+    enum Type 
+        {
+            MONO,
+            BLENDED
+        };
+    
 
     //======================================================================
     // Public Constants
@@ -80,6 +88,13 @@ class FontRenderer
 
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
+    Type myType;
+    std::string myText;
+    SDL_Surface *myTextSurface;
+    Color myColor;
+    Rectangle myRectangle;
+    bool myUpdate;
+    Font *myFont;
 
 
 
@@ -93,9 +108,15 @@ class FontRenderer
 
     /**
      * Creates a new FontRenderer using default values.
+     *
+     *@param type MONO = no anti-aliasing.  BLENDED = antialiasing which fades to transparent
+     *@param text the text for this FontRenderer
+     *@param color the color for the text.
      */
-    FontRenderer()
+    FontRenderer(const Type type, const std::string text, const Color &color, const Rectangle &rectangle)
+        : myType(type), myText(text), myTextSurface(NULL), myColor(color),  myUpdate(false), myRectangle(rectangle)
     {
+        updateTextBlended();
     }
 
 
@@ -136,16 +157,90 @@ class FontRenderer
 
     //----------------------------------------------------------------------
     // Getters
-
-
+    Type getType()
+    {
+        return myType;
+    }
+    
+    std::string getText()
+    {
+        return myText;
+    }
+    
+    SDL_Surface *getTextSurface()
+    {
+        return myTextSurface;
+    }
+    
+    Color getColor()
+    {
+        return myColor;
+    }
+    
+    Rectangle getRectangle()
+    {
+        return myRectangle;
+    }
+    
+    Font *getFont()
+    {
+        return myFont;
+    }
 
     //----------------------------------------------------------------------
     // Setters
-
+    void setType(const Type &type)
+    {
+        myType;
+        myUpdate = true;
+    }
+    
+    void setText(const std::string &text)
+    {
+        myText = text;
+        myUpdate = true;
+    }
+    
+    void setColor(const Color &color)
+    {
+        myColor = color;
+        myUpdate = true;
+    }
+    
+    void setRectangle(const Rectangle &rectangle)
+    {
+        myRectangle = rectangle;
+        myUpdate = true;
+    }
+    
+    void getFont(Font *font)
+    {
+        myFont = font;
+        myUpdate = true;
+    }
     //----------------------------------------------------------------------
     // Other public methods
 
-
+    int render(DrawDevice *device)
+    {
+        switch(myType)
+            {
+            case MONO:
+                
+                break;
+            case BLENDED:
+                if(myUpdate)
+                    {
+                        updateTextBlended();
+                    }
+                renderText(device);
+            }
+        
+    }
+    
+    
+    
+    
     //======================================================================
     // Protected Methods
     //======================================================================
@@ -156,7 +251,23 @@ class FontRenderer
     // Private Methods
     //======================================================================
     private:
-
+    void updateTextBlended();
+    void renderText(DrawDevice *device);
+    /* Create a 32-bit ARGB surface and render the given text at high quality,
+       using alpha blending to dither the font with the given color.
+       This function returns the new surface, or NULL if there was an error.
+    */
+    //SDL_Surface *renderTextBlended(const char *text, SDL_Color fg);
+    //SDL_Surface *renderUTF8_Blended(const char *text, SDL_Color fg);
+    //SDL_Surface *renderUNICODE_Blended(const Uint16 *text, SDL_Color fg);
+    
+    /* Create a 32-bit ARGB surface and render the given glyph at high quality,
+       using alpha blending to dither the font with the given color.
+       The glyph is rendered without any padding or centering in the X
+       direction, and aligned normally in the Y direction.
+       This function returns the new surface, or NULL if there was an error.
+    */
+    //    SDL_Surface *renderGlyphBlended(Uint16 ch, SDL_Color fg);
 
     //======================================================================
     // Disabled constructors and operators

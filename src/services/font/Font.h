@@ -79,9 +79,7 @@ private:
     Glyph myGlyphScratch;
     //----------------------------------------------------------------------
     // private member functions.
-    bool findGlyph(Uint16 ch);
-    bool loadGlyph(Uint16 ch, Glyph *cached);
-    
+       
 
 
     //----------------------------------------------------------------------
@@ -118,21 +116,9 @@ public:
     //int sizeUTF8(const char *text, int *w, int *h);
     //int sizeUNICODE(const Uint16 *text, int *w, int *h);
     
-    /* Create a 32-bit ARGB surface and render the given text at high quality,
-       using alpha blending to dither the font with the given color.
-       This function returns the new surface, or NULL if there was an error.
-    */
-    SDL_Surface *renderTextBlended(const char *text, SDL_Color fg);
-    //SDL_Surface *renderUTF8_Blended(const char *text, SDL_Color fg);
-    //SDL_Surface *renderUNICODE_Blended(const Uint16 *text, SDL_Color fg);
-    
-    /* Create a 32-bit ARGB surface and render the given glyph at high quality,
-       using alpha blending to dither the font with the given color.
-       The glyph is rendered without any padding or centering in the X
-       direction, and aligned normally in the Y direction.
-       This function returns the new surface, or NULL if there was an error.
-    */
-    SDL_Surface *renderGlyph_Blended(Uint16 ch, SDL_Color fg);
+    Glyph *findGlyph(Uint16 ch);
+    bool loadGlyph(Uint16 ch, Glyph *cached);
+  
     
     
     
