@@ -21,12 +21,10 @@
 
 #include <iostream>
 #include <sigc++/object_slot.h>
-#include <stdint.h>
 #include <sigc++/object.h>
-#include <Eris/Metaserver.h>
+//#include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Utils.h>
-#include <stdint.h>
 #include <list>
 
 #include <algorithm>
@@ -34,8 +32,8 @@
 namespace dime
 {
 
-	typedef std::list<Eris::ServerInfo> svrl;
-	typedef svrl::iterator Iter;
+//	typedef std::list<Eris::ServerInfo> svrl;
+//	typedef svrl::iterator Iter;
 
 
 	/* ctor */
@@ -50,7 +48,7 @@ namespace dime
 	/* dtor */
 	ServerService::~ServerService()
 	{
-	    delete msrv;
+	    //delete msrv;
 	}
 	
 	/* Method for starting this service 	*/
@@ -59,7 +57,8 @@ namespace dime
 		setStatus(1);
         setRunning( true );
 
-		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
+		// This stuff seems to all belong to metaserver wonder how it got here?
+		/*msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
 		msrv->GotServerCount.connect(SigC::slot(this, &ServerService::GotServerCount));
 		msrv->Failure.connect(SigC::slot(this, &ServerService::GotFailure));
     	listed = false;
@@ -75,7 +74,7 @@ namespace dime
 		{	
 			//HINT: Always use .data() for compatibility to MSVC
 			cout << "Hostname: " << (i)->getHostname().data() << endl;
-	    }
+	    }*/
 		
 		return 0;
 	
@@ -88,21 +87,20 @@ namespace dime
 		setRunning( false );
 	}
 
-	void ServerService::GotServerCount(int count)
+/*	void ServerService::GotServerCount(int count)
 	{
    		char str[1024];
     	cout << "Got" << count << "game servers." << endl;
-	}	
+	}	*/
 	
 	void ServerService::GotFailure(string msg)
 	{
-    	cout << "Got Meta-server error: " << msg << endl;
+    	cout << "Got Server error: " << msg << endl;
 	}	
 	
-	void ServerService::poll()
+/*	void ServerService::poll() // Out of use
 	{
-		msrv->poll();
-	}
+	}*/
 	
 } // namespace dime
 

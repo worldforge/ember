@@ -21,13 +21,11 @@
 #define SERVERSERVICE_H
 
 #include <framework/Service.h>
-#include <Eris/Metaserver.h>
+//#include <Eris/Metaserver.h>
 #include <Eris/Utils.h>
-#include <stdint.h>
+//#include <stdint.h>
 #include <sigc++/object.h>
-#include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
-#include <Eris/Utils.h>
 
 namespace dime {
 
@@ -46,9 +44,9 @@ class ServerService: public Service, public SigC::Object
     //======================================================================
     private:
 
-    Eris::Meta * msrv;
+    //Eris::Meta * msrv;
     //Eris::Serverlist serverlist;
-    bool listed;
+    //bool listed;
 
 		
     //----------------------------------------------------------------------
@@ -73,11 +71,11 @@ class ServerService: public Service, public SigC::Object
 
 	void stop(int code) ;
 
-   	void GotServerCount(int count);
+   	//void GotServerCount(int count);
 	
 	void GotFailure(string msg);
 	
-	void poll();
+	//void poll();
 
 }; //MetaserverService
 
