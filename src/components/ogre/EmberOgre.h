@@ -24,7 +24,22 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.17  2003-12-08 21:25:06  aglanor
+ *      Revision 1.18  2004-07-12 04:05:48  erik
+ *      2004-07-12 Erik Hjortsberg erik by hysteriskt speck org
+ *      * src/components/ogre:
+ *      Changed the way input is handled through the use of an Ogre::EventProcessor
+ *      By default mouse is not grabbed, press F9 to grab and ungrab it.
+ *      The mouse now shows a cursor, movement happens when the mouse goes near the edges of the screen.
+ *      Various code cleanups, forward declarations and movement of code from .h-files to .cpp-files.
+ *      Addition of preprocessor declarations in MathConverter.h to easily convert between WF and Ogre units.
+ *      Revamping of how entities are handled though the new class DimeEntity and changes to EntityListener.
+ *      Rudimentary animation of the avatar.
+ *      Addition of a debug layer to show triangles, fps etc. Taken from Ogre.
+ *      Usage of ogre.cfg for reading configuration values instead of using the console each time.
+ *      Some cleanup of the world. The only thing you see now is a ground plane. But it gets populated when connected to a server.
+ *      Had some problem with the top cam so I disabled it.
+ *
+ *      Revision 1.17  2003/12/08 21:25:06  aglanor
  *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: fixed rotation and viewing for the Avatar.
  *
@@ -143,11 +158,12 @@ Description: Base class for all the OGRE examples
 #ifndef __DimeOgre_H__
 #define __DimeOgre_H__
 
+
 #include <Ogre.h>
 #include <OgreConfigFile.h>
 #include "OgreFrameListener.h"
 #include <framework/ConsoleObject.h> //TODO: this will be included in a different class
-#include "Avatar.h"
+
 
 // Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
 /*
@@ -185,6 +201,10 @@ class TerrainListener;
 class CameraRotator;
 
 class CameraFrameListener;
+
+class Avatar;
+
+class DimeEntityFactory;
 
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
@@ -340,71 +360,32 @@ public:
 	Avatar* getAvatar() {
 		return &mAvatar;
 	}
+	
+	//should this be here really?
+	static Ogre::SceneManager* getSceneManager();
 
+/*private:
+	static Ogre::SceneManager* sceneMgr;
+*/
 protected:
 	Ogre::Root *mRoot;
+    Ogre::SceneManager* mSceneMgr;
 	//Ogre::Camera* mCamera;
-	Ogre::SceneManager* mSceneMgr;
 	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;
 
 	// Avatar setup
 	Avatar mAvatar;
+	
+	DimeEntityFactory* dimeEntityFactory;
 
     // These internal methods package up the stages in the startup process
     /** Sets up the application - returns false if the user chooses to abandon configuration. */
-    virtual bool setup(void)
-    {
-        mRoot = new Ogre::Root();
-
-        setupResources();
-
-        bool carryOn = configure();
-        if (!carryOn) return false;
-
-        chooseSceneManager();
-
-        // Create the scene
-        createScene();
-
-        createCamera();
-        createViewports();
-
-        // Set default mipmap level (NB some APIs ignore this)
-        Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
-
-
-
-        createFrameListener();
-
-        return true;
-
-    }
+    virtual bool setup(void);
     /** Configures the application - returns false if the user chooses to abandon configuration. */
-    virtual bool configure(void)
-    {
-        // Show the configuration dialog and initialise the system
-        // You can skip this and use root.restoreConfig() to load configuration
-        // settings if you were sure there are valid ones saved in ogre.cfg
-        if(mRoot->showConfigDialog())
-        {
-            // If returned true, user clicked OK so initialise
-            // Here we choose to let the system create a default rendering window by passing 'true'
-            mWindow = mRoot->initialise(true);
-            //mRoot->showDebugOverlay(true);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    virtual bool configure(void);
 
-    virtual void chooseSceneManager(void)
-    {
-        // Get the SceneManager, in this case a generic one
-        mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
-    }
+    virtual void chooseSceneManager(void);
 
 	void createCamera(void);
 
@@ -412,48 +393,12 @@ protected:
 
 	void createScene(void);
 
-    virtual void createViewports(void)
-    {
-
-        // Create 1st person viewport, entire window
-        Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getAvatar1pCamera());
-        vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-
-	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
-
-		Ogre::Viewport* rightvp = mWindow->addViewport(mAvatar.getAvatarTopCamera(),1,0.70,0.05,0.25,0.25);
-		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-		rightvp->setOverlaysEnabled(false);
-
-		Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar3pCamera(),9,0.05,0.05,0.25,0.25);
-		leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-		leftvp->setOverlaysEnabled(false);
-
-		/*
-		Ogre::Viewport* spyvp = mWindow->addViewport(mOgreHeadCamera,10,0.05,0.70,0.25,0.25);
-		spyvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-		spyvp->setOverlaysEnabled(false);
-		*/
-    }
+    virtual void createViewports(void);
 
     /// Method which will define the source of resources (other than current folder)
-    virtual void setupResources(void)
-    {
-        // Load resource paths from config file
-        Ogre::ConfigFile cf;
-        cf.load("resources.cfg");
-
-        // Go through all settings in the file
-        Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
-
-        Ogre::String typeName, archName;
-        while (i.hasMoreElements())
-        {
-            typeName = i.peekNextKey();
-            archName = i.getNext();
-            Ogre::ResourceManager::addCommonArchiveEx( archName, typeName );
-        }
-    }
+    virtual void setupResources(void);
+    
+    
 
         /*
 	void mouseClicked(Ogre::MouseEvent* e) {}

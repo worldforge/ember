@@ -23,7 +23,22 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.36  2004-01-28 17:26:18  aglanor
+ *      Revision 1.37  2004-07-12 04:05:48  erik
+ *      2004-07-12 Erik Hjortsberg erik by hysteriskt speck org
+ *      * src/components/ogre:
+ *      Changed the way input is handled through the use of an Ogre::EventProcessor
+ *      By default mouse is not grabbed, press F9 to grab and ungrab it.
+ *      The mouse now shows a cursor, movement happens when the mouse goes near the edges of the screen.
+ *      Various code cleanups, forward declarations and movement of code from .h-files to .cpp-files.
+ *      Addition of preprocessor declarations in MathConverter.h to easily convert between WF and Ogre units.
+ *      Revamping of how entities are handled though the new class DimeEntity and changes to EntityListener.
+ *      Rudimentary animation of the avatar.
+ *      Addition of a debug layer to show triangles, fps etc. Taken from Ogre.
+ *      Usage of ogre.cfg for reading configuration values instead of using the console each time.
+ *      Some cleanup of the world. The only thing you see now is a ground plane. But it gets populated when connected to a server.
+ *      Had some problem with the top cam so I disabled it.
+ *
+ *      Revision 1.36  2004/01/28 17:26:18  aglanor
  *      2004-01-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * Fixed ogre component to get less warnings.
  *
@@ -33,7 +48,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *
  *      Revision 1.34  2003/11/29 01:25:58  aglanor
  *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *              * src/components/ogre: added AvatarKeyboardListener.(h|cpp)
+ *              * src/components/ogre: added AvatarController.(h|cpp)
  *      	        and restored local avatar movement.
  *
  *      Revision 1.33  2003/11/26 19:03:43  aglanor
@@ -269,23 +284,25 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include OGRE dime client files
 // ------------------------------
-#include "DimeOgre.h"
-#include "PlayerFrameListener.h"
 #include "OgreGameView.h"
 //#include "MathConverter.h"
 #include "InputManager.h"
 #include "Console.h"
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
-#include "AvatarKeyboardListener.h"
+#include "AvatarController.h"
 #include "PlayerMouseListener.h"
 #include "EntityListener.h"
+#include "DimeEntityFactory.h"
 
 // ------------------------------
 // Include dime header files
 // ------------------------------
 
 #include "framework/ConsoleBackend.h"
+
+
+#include "DimeOgre.h"
 
 // ------------------------------
 // Include Eris header files
@@ -389,44 +406,160 @@ http://www.gnu.org/copyleft/lesser.txt.
     private:
 
     };
+    
+    
+// These internal methods package up the stages in the startup process
+/** Sets up the application - returns false if the user chooses to abandon configuration. */
+bool DimeOgre::setup(void)
+{
+    mRoot = new Ogre::Root();
+
+    setupResources();
+
+    bool carryOn = configure();
+    if (!carryOn) return false;
+
+    chooseSceneManager();
+
+    // Create the scene
+    createScene();
+
+    createCamera();
+    createViewports();
+
+    // Set default mipmap level (NB some APIs ignore this)
+    Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
+    
+    // Set default animation mode
+	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
+
+
+    createFrameListener();
+
+/*
+    dimeEntityFactory = new DimeEntityFactory(mSceneMgr);
+    
+    dime::DimeServices::getInstance()->getServerService()->getWorld()->registerFactory(dimeEntityFactory);
+*/
+    return true;
+
+}
+/** Configures the application - returns false if the user chooses to abandon configuration. */
+bool DimeOgre::configure(void)
+{
+    // Show the configuration dialog and initialise the system
+    // You can skip this and use root.restoreConfig() to load configuration
+    // settings if you were sure there are valid ones saved in ogre.cfg
+    if(mRoot->restoreConfig())
+    {
+        // If returned true, user clicked OK so initialise
+        // Here we choose to let the system create a default rendering window by passing 'true'
+        mWindow = mRoot->initialise(true);
+        //mRoot->showDebugOverlay(true);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void DimeOgre::chooseSceneManager(void)
+{
+    // Get the SceneManager, in this case a generic one
+    mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
+    //DimeOgre::sceneMgr = mSceneMgr;
+}
+
+void DimeOgre::createViewports(void)
+{
+
+    // Create 1st person viewport, entire window
+    Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getAvatar1pCamera());
+    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
+//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
+/*
+		Ogre::Viewport* rightvp = mWindow->addViewport(mAvatar.getAvatarTopCamera(),1,0.70,0.05,0.25,0.25);
+		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+		rightvp->setOverlaysEnabled(false);
+*/
+	Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar3pCamera(),9,0.05,0.05,0.25,0.25);
+	leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	leftvp->setOverlaysEnabled(false);
+
+	/*
+	Ogre::Viewport* spyvp = mWindow->addViewport(mOgreHeadCamera,10,0.05,0.70,0.25,0.25);
+	spyvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	spyvp->setOverlaysEnabled(false);
+	*/
+}
+
+/// Method which will define the source of resources (other than current folder)
+void DimeOgre::setupResources(void)
+{
+    // Load resource paths from config file
+    Ogre::ConfigFile cf;
+    cf.load("resources.cfg");
+
+    // Go through all settings in the file
+    Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
+
+    Ogre::String typeName, archName;
+    while (i.hasMoreElements())
+    {
+        typeName = i.peekNextKey();
+        archName = i.getNext();
+        Ogre::ResourceManager::addCommonArchiveEx( archName, typeName );
+    }
+}
+
+
 
 void DimeOgre::createScene(void)
 {
+	
 /*
-	Ogre::Entity* mDebug_0_0_0 = mOgreHead = mSceneMgr->createEntity("test", "ogrehad.mesh");
-	Ogre::SceneNode* mDebug_0_0_0_Node;
-*/
+	//we can't scale because it screws up the bounding boxes and messes with 
+	//vertex shaders
+	//perhaps in a future release of Ogre
+	//mSceneMgr->getRootSceneNode()->setScale(OGRESCALER);
 	Ogre::Entity* 		mDebug_0_0_1_Enty;
 	Ogre::SceneNode* 	mDebug_0_0_1_Node;
 	Ogre::Entity* 		mDebug_1_0_0_Enty;
 	Ogre::SceneNode* 	mDebug_1_0_0_Node;
 
-	mDebug_0_0_1_Enty = mOgreHead = mSceneMgr->createEntity("Debug_0_0_1", "robot.mesh");
-	mDebug_0_0_1_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mDebug_0_0_1_Node->setPosition(0,0,-5);
-	mDebug_0_0_1_Node->setScale(0.01,0.01,0.01);
+
+	mDebug_0_0_1_Enty = mOgreHead = mSceneMgr->createEntity("Debug_0_0_1", "Oak.mesh");
+	mDebug_0_0_1_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChildSceneNode());
+//	mDebug_0_0_1_Node->setPosition(0,0,-5);
+	mDebug_0_0_1_Node->setPosition(WF2OGRE_VECTOR3(0,0,-5));
+	//mDebug_0_0_1_Node->showBoundingBox(true);
+	//mDebug_0_0_1_Node->setScale(0.1,0.1,0.1);
 	mDebug_0_0_1_Node->attachObject(mDebug_0_0_1_Enty);
 
 	mDebug_1_0_0_Enty = mOgreHead = mSceneMgr->createEntity("Debug_1_0_0", "robot.mesh");
-	mDebug_1_0_0_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mDebug_1_0_0_Node->setPosition(5,0,0);
-	mDebug_1_0_0_Node->setScale(0.01,0.01,0.01);
+	mDebug_1_0_0_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChildSceneNode("Debug_1_0_0_Node"));
+	mDebug_1_0_0_Node->setPosition(WF2OGRE_VECTOR3(5,0,0));
+	//mDebug_1_0_0_Node->setScale(OGRESCALER);
 	mDebug_1_0_0_Node->attachObject(mDebug_1_0_0_Enty);
+	//mDebug_1_0_0_Node->showBoundingBox(true);
+*/	
 
   mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   // Create a light
   Ogre::Light* l = mSceneMgr->createLight("MainLight");
-  l->setPosition(150,150,150);
+  l->setPosition(WF2OGRE_VECTOR3(150,150,150));
 
   // create a Skydome
   mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
   // set the world geometry
-  mSceneMgr->setWorldGeometry("terrain.cfg");
+  //mSceneMgr->setWorldGeometry("terrain.cfg");
 
 //#if 0
 
-
+/*
 	// A little Ogre head to mark the center of the scene
 	// ----------------------------------------
 
@@ -434,9 +567,10 @@ void DimeOgre::createScene(void)
 	mOgreHead = mSceneMgr->createEntity("test", "ogrehead.mesh");
 
 	// create the node
-	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChildSceneNode());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(0.01,0.01,0.01);
+	//mOgreHeadNode->setScale(OGRESCALER);
+	//mOgreHeadNode->showBoundingBox(true);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -444,7 +578,7 @@ void DimeOgre::createScene(void)
 	// end little Ogre Head
 	// ----------------------------------------
 
-
+*/
 
 	// A Ground Plane for the fancyness of it ;)
 	// ----------------------------------------
@@ -466,14 +600,16 @@ void DimeOgre::createScene(void)
         );
 
 		groundEntity = mSceneMgr->createEntity("ground", "GroundPlane");
-		groundEntity->setMaterialName("Examples/RustySteel");
+		groundEntity->setMaterialName("Ground/MixedForestGround");
 
 		Ogre::SceneNode *groundNode = static_cast<Ogre::SceneNode*>(
 		mSceneMgr->getRootSceneNode()->createChild("GroundNode"));
         groundNode->attachObject(groundEntity);
-        groundNode->translate(1000, 0, 1000);
+        //groundNode->translate(1000, 0, 1000);
+        //groundNode->setScale(OGRESCALER);
+      
 
-	std::cout << "	CREATING SPY CAMERA" << std::endl;
+/*	std::cout << "	CREATING SPY CAMERA" << std::endl;
 
 	//spycam
 	Ogre::SceneNode* spyCamNode = dynamic_cast<Ogre::SceneNode*>(mOgreHeadNode->createChild("SpyCamNode"));
@@ -481,10 +617,11 @@ void DimeOgre::createScene(void)
 
  	mOgreHeadCamera = mSceneMgr->createCamera("SpyCamera");
 	spyCamNode->attachObject(mOgreHeadCamera);
-	//mOgreHeadCamera->setAutoTracking(true, mAvatar.getAvatar1pCamera());
+*/	//mOgreHeadCamera->setAutoTracking(true, mAvatar.getAvatar1pCamera()->getNode());
 
 	// Avatar
 	mAvatar = Avatar(mSceneMgr);
+	EntityListener::getSingleton().setDimeAvatar(&mAvatar);
 
 	// a hack from the OGRE GUI sample
 	/*
@@ -517,16 +654,20 @@ void DimeOgre::createFrameListener(void)
 	//PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, this, false, false);
 	//mRoot->addFrameListener(playerFrameListener);
 	fprintf(stderr, "TRACE - CREATING INPUT MANAGER\n");
-	InputManager::getSingleton();
+	
 	InputManager::getSingleton().addKeyListener(&(Console::getSingleton()));
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
 	mRoot->addFrameListener(&(Console::getSingleton()));
 	ConsoleObjectImpl::getSingleton();
-	InputManager::getSingleton().addMouseListener(&(PlayerMouseListener::getSingleton()));
-	PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
-	PlayerMouseListener::getSingleton().setAvatar(&mAvatar);
+	
+	//Ogre::OverlayManager::getSingleton().addMouseMotionListener(&(DebugListener::getSingleton()));
+	
+	InputManager::getSingleton().addMouseListener(&(AvatarController::getSingleton()));
+	//PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
+	//PlayerMouseListener::getSingleton().setAvatar(&mAvatar);
 	EntityListener::getSingleton().setSceneManager(mSceneMgr);
-	AvatarKeyboardListener::getSingleton().setAvatar(&mAvatar);
+	AvatarController::getSingleton().setAvatar(&mAvatar);
+
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }
@@ -582,6 +723,10 @@ void DimeOgre::initializeDimeServices(void)
 
 }
 
+/*this can be done with Ogre::AnimationControllerFunction
+ * but perhaps it's not optimal for large scenes
+ * preferrably this should be handled by a different class, a AnimationManager of sorts
+ */
 void DimeOgre::updateAnimations(Ogre::Real time)
 {
 
@@ -591,6 +736,7 @@ void DimeOgre::updateAnimations(Ogre::Real time)
 	animState->addTime(time);
 
 }
+
 
 
 // ----------------------------------------------------------------------------
