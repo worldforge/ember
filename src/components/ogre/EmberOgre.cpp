@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.13  2003-05-07 23:28:43  aglanor
+ *      Revision 1.14  2003-06-23 01:20:34  aglanor
+ *      2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts Cal3D materials to Ogre
+ *              materials, and assigns material and texture mapping
+ *              to the Ogre mesh accordingly.
+ *
+ *      	Check screenshot of fully textured pig within dime here:
+ *      	http://purple.worldforge.org/~aglanor/screenshots/dime_20030623.png
+ *
+ *      Revision 1.13  2003/05/07 23:28:43  aglanor
  *      Added a little more variety to the media. Now there's different media
  *      for settlers (malebuilder), pig (skeleton), merchant (robot) and
  *      everything else.
@@ -267,12 +276,12 @@ void DimeOgre::createScene(void)
 	// ----------------------------------------
 
 	//create the entity
-	mOgreHead = mSceneMgr->createEntity("test", "test.mesh");
+	mOgreHead = mSceneMgr->createEntity("test", "pig.mesh");
 
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(0.01,0.01,0.01);
+	mOgreHeadNode->setScale(1,1,1);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -461,9 +470,9 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	}
 	else if(!strcmp(e->getType()->getName().c_str(),"pig"))
 	{
-		fprintf(stderr, "TRACE - FOUND A PIG - SKELETON MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "skeleton.mesh");
-		ogreNode->setScale(0.01,0.01,0.01);
+		fprintf(stderr, "TRACE - FOUND A PIG - PIG MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "pig.mesh");
+		ogreNode->setScale(1,1,1);
 	}
 	else
 	{
@@ -497,7 +506,6 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	ogreNode->attachObject(ogreEntity);
 
 	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
-	fprintf(stderr, "%s\n", e->getType()->getName().c_str());
 
     // Whenever a new entity is created, make sure to connect to those signals too
 
@@ -550,7 +558,13 @@ void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
 
 void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {
-	fprintf(stderr, "TRACE - ENTITY CHANGED\n");
+	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR " << e->getID() << std::endl;
+	Ogre::Entity* o = mSceneMgr->getEntity(e->getID());
+	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
+	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
+	o = mSceneMgr->getEntity("Bob_214");
+	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
+	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
 }
 
 void DimeOgre::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )

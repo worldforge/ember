@@ -18,7 +18,16 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.4  2003-05-06 22:16:48  aglanor
+ *      Revision 1.5  2003-06-23 01:20:34  aglanor
+ *      2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts Cal3D materials to Ogre
+ *              materials, and assigns material and texture mapping
+ *              to the Ogre mesh accordingly.
+ *
+ *      	Check screenshot of fully textured pig within dime here:
+ *      	http://purple.worldforge.org/~aglanor/screenshots/dime_20030623.png
+ *
+ *      Revision 1.4  2003/05/06 22:16:48  aglanor
  *      added directory and filenames management to the cal3d converter.
  *
  *      Revision 1.3  2003/05/05 01:41:06  aglanor
@@ -33,13 +42,13 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *      Revision 1.1  2003/04/27 23:46:30  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* MathConverter.h: Point, Vector and Quaternion converter
- *      		for world-centric coordinates (Atlas-wfmath like)
- *      			to/from screen-centric coordinates (Ogre like).
- *      				See file for more info.
- *      					Only point conversion currently, more will come later.
- *      						* Cal3DOgreConverter.h/cpp: model converter.
- *      							Just added files, it is not coded yet.
- *      								* Makefile.am: added Cal3D2Ogre binary file.
+ *      	for world-centric coordinates (Atlas-wfmath like)
+ *      	to/from screen-centric coordinates (Ogre like).
+ *      	See file for more info.
+ *      	Only point conversion currently, more will come later.
+ *      	* Cal3DOgreConverter.h/cpp: model converter.
+ *      	Just added files, it is not coded yet.
+ *      	* Makefile.am: added Cal3D2Ogre binary file.
  *
 
 -----------------------------------------------------------------------------
@@ -64,6 +73,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #endif
 
 #include <Ogre.h>
+#include <OgreMaterialSerializer.h>
 
 #ifdef DEBUGTEMP
 #undef DEBUGTEMP
@@ -168,33 +178,36 @@ bool Cal3DOgreConverter::parseModelConfiguration(const std::string& strFilename)
         return false;
       }
     }
-    else if(strKey == "mesh")
-    {
-      // calculate the relative path appending the directory at the beginning
-      //strData = m_directory.append(strData);
-      // load core mesh
-      std::cout << "Loading mesh '" << strData << "'..." << std::endl;
-      int calCoreMeshId = m_calCoreModel.loadCoreMesh(strData);
-      if( calCoreMeshId == -1)
-      {
-        CalError::printLastError();
-        return false;
-      }
-	std::cout << "Loaded mesh '" << strData << "' into " << calCoreMeshId << std::endl;
-	// create the Ogre mesh from this cal3d mesh
-	convertCal3DOgreMesh(strData, calCoreMeshId);
-
-    }
-    else if(strKey == "material")
-    {
-      // load core material
-      std::cout << "Loading material '" << strData << "'..." << std::endl;
-      if(m_calCoreModel.loadCoreMaterial(strData) == -1)
-      {
-        CalError::printLastError();
-        return false;
-      }
-    }
+	else if(strKey == "mesh")
+	{
+		// calculate the relative path appending the directory at the beginning
+		//strData = m_directory.append(strData);
+		// load core mesh
+		std::cout << "Loading mesh '" << strData << "'..." << std::endl;
+		int calCoreMeshId = m_calCoreModel.loadCoreMesh(strData);
+		if( calCoreMeshId == -1)
+		{
+			CalError::printLastError();
+			return false;
+		}
+		std::cout << "Loaded mesh '" << strData << "' into " << calCoreMeshId << std::endl;
+		// create the Ogre mesh from this cal3d mesh
+		convertCal3DOgreMesh(strData, calCoreMeshId);
+	}
+	else if(strKey == "material")
+	{
+	// load core material
+		std::cout << "Loading material '" << strData << "'..." << std::endl;
+		int calCoreMaterialId = m_calCoreModel.loadCoreMaterial(strData);
+		if(calCoreMaterialId == -1)
+		{
+			CalError::printLastError();
+			return false;
+      		}
+		std::cout << "Loaded material '" << strData << "' into " << calCoreMaterialId << std::endl;
+		// create the Ogre material from this cal3d material
+		convertCal3DOgreMaterial(strData, calCoreMaterialId);
+	}
     else
     {
       // everything else triggers an error message, but is ignored
@@ -208,16 +221,17 @@ bool Cal3DOgreConverter::parseModelConfiguration(const std::string& strFilename)
   return true;
 }
 
-void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, int calCoreMeshId)
+void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strData, int calCoreMeshId)
 {
 
+	// Create the Ogre mesh
 	Ogre::Mesh* ogreMesh;
-	ogreMesh = Ogre::MeshManager::getSingleton().createManual("conv_test.mesh");
+	ogreMesh = Ogre::MeshManager::getSingleton().createManual(strData);
 
-
+	// Retrieve the Cal3D mesh
 	CalCoreMesh* pCalCoreMesh = m_calCoreModel.getCoreMesh(calCoreMeshId);
 	int nCalCoreSubmesh = pCalCoreMesh->getCoreSubmeshCount();
-	std::cout << "Mesh [" << calCoreMeshId << ":" << strFilename << "] has " << nCalCoreSubmesh << " submeshes" << std::endl;
+	std::cout << "Mesh [" << calCoreMeshId << ":" << strData << "] has " << nCalCoreSubmesh << " submeshes" << std::endl;
 	CalCoreSubmesh* pCalCoreSubmesh;
 
 	// TODO: loop through the vector instead of using the index
@@ -288,22 +302,97 @@ void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, in
 				 << ") collapse: " << iVertex.collapseId << std::endl;*/
 
 			pOgreSubMesh->geometry.pVertices[index] = iPosition.x;
-			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.x;
+			pOgreSubMesh->geometry.pNormals[index]  = iNormal.x;
 			index++;
 			pOgreSubMesh->geometry.pVertices[index] = iPosition.z;
-			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.z;
+			pOgreSubMesh->geometry.pNormals[index]  = iNormal.z;
 			index++;
 			pOgreSubMesh->geometry.pVertices[index] = -iPosition.y;
-			pOgreSubMesh->geometry.pNormals[index]  = iNormal.y;
+			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.y;
 			index++;
 		}
 
+		int cmti = pCalCoreSubmesh->getCoreMaterialThreadId();
+		std::cout << "The core material thread id for this submesh is [" << cmti << "]." << std::endl;
+		int cmi = m_calCoreModel.getCoreMaterialId(cmti,0);
+		std::cout << "The core material id is [" << cmi << "]." << std::endl;
+		pOgreSubMesh->setMaterialName("sear_new/objects/pig/pig.crf");
 
+
+		// Texture Coordinates
+		// Retrieve the vector vector of texture coordinates
+		std::vector< std::vector< CalCoreSubmesh::TextureCoordinate > > vvTC =
+			pCalCoreSubmesh->getVectorVectorTextureCoordinate();
+		std::vector< std::vector< CalCoreSubmesh::TextureCoordinate > >::iterator iter_vvTC;
+		int index_vTC = 0;
+		std::vector<CalCoreSubmesh::TextureCoordinate> ivTC; 			// for each texture coordinate vector
+		std::vector<CalCoreSubmesh::TextureCoordinate>::iterator iter_vTC;	// iterator for each texture coordinate vector
+		CalCoreSubmesh::TextureCoordinate iTC;				// each Texture Coordinate
+
+		// Initialize number of texture coordinate maps and its dimensions
+		std::cout << "Number of texture coordinates vectors: [" << vvTC.size() << "]" << std::endl;
+		pOgreSubMesh->geometry.numTexCoords = vvTC.size();
+		pOgreSubMesh->geometry.numTexCoordDimensions[0] = 2; 	// Right now this is hardcoded TODO: fix this hack
+
+		for (iter_vvTC=vvTC.begin(); iter_vvTC != vvTC.end(); iter_vvTC++)
+		{
+			ivTC = *iter_vvTC;
+			std::cout << "Creating texture coordinates vector: [" << index_vTC << "] of size [" << ivTC.size() << "]." << std::endl;
+			pOgreSubMesh->geometry.pTexCoords[index_vTC] = new Ogre::Real[2*ivTC.size()];	// ivTC has u and v coordinates
+			int index_TC = 0;
+			for (iter_vTC=ivTC.begin(); iter_vTC != ivTC.end(); iter_vTC++)
+			{
+				iTC = *iter_vTC;
+				pOgreSubMesh->geometry.pTexCoords[index_vTC][index_TC] = iTC.u;
+				index_TC++;
+				pOgreSubMesh->geometry.pTexCoords[index_vTC][index_TC] = iTC.v;
+				index_TC++;
+				// std::cout << "Written texture coordinate [" << "0" << "] [" << index_TC << "]." << std::endl;
+			}
+			index_vTC++;
+
+		}
 
 	}
 
 }
 
+void Cal3DOgreConverter::convertCal3DOgreMaterial(const std::string& strData, int calCoreMaterialId)
+{
+	// Create the Ogre material
+	std::cout << "Creating Ogre Material [" << strData << "]" << std::endl;
+	Ogre::Material* pOgreMaterial;
+	pOgreMaterial = Ogre::MaterialManager::getSingleton().createDeferred (strData);
+
+	// Retrieve the Cal3D material
+	CalCoreMaterial* pCalCoreMaterial = m_calCoreModel.getCoreMaterial(calCoreMaterialId);
+
+
+
+	// TODO: do the actual transformation here
+	// Currently here's a dirty mess of tests
+	pOgreMaterial->setShininess(1.0);
+	//pOgreMaterial->addTextureLayer("simple_pig_small.jpg");
+
+	// Texture Maps
+	// Iterate through the vector of texture maps and add them to the ogre material
+	std::cout << "Number of Cal Texture Maps: [" << pCalCoreMaterial->getMapCount() << "]." << std::endl;
+	std::vector<CalCoreMaterial::Map> vMap = pCalCoreMaterial->getVectorMap();
+	CalCoreMaterial::Map iMap;
+	std::vector<CalCoreMaterial::Map>::iterator iter;
+	for (iter=vMap.begin(); iter != vMap.end(); iter++)
+	{
+		iMap = *iter;
+		pOgreMaterial->addTextureLayer(iMap.strFilename);
+		std::cout << "Texture map [" << iMap.strFilename << "] added." << std::endl;
+	}
+
+	m_materialSerializer.queueForExport(pOgreMaterial);
+
+	/*int nCalCoreSubmesh = pCalCoreMesh->getCoreSubmeshCount();
+	std::cout << "Mesh [" << calCoreMeshId << ":" << strData << "] has " << nCalCoreSubmesh << " submeshes" << std::endl;
+	CalCoreSubmesh* pCalCoreSubmesh;*/
+}
 
 bool Cal3DOgreConverter::parsePath(const std::string& path)
 {
@@ -349,7 +438,7 @@ void Cal3DOgreConverter::createOgreMesh(const std::string& name)
 }
 
 
-void Cal3DOgreConverter::writeOgreMesh(const std::string& name)
+void Cal3DOgreConverter::writeOgreMesh()
 {
 	m_ogreMesh->_updateBounds();
 	std::cout << "Updated Mesh bounds" << std::endl;
@@ -357,13 +446,32 @@ void Cal3DOgreConverter::writeOgreMesh(const std::string& name)
 	std::cout << "This mesh has " << m_ogreMesh->getNumSubMeshes() << " submeshes." << std::endl;
 
 	Ogre::MeshSerializer meshSerializer;
-	std::string ogreFile = m_directory;
-	ogreFile.append(m_modelName);
-	ogreFile.append(".mesh");
-	meshSerializer.exportMesh(m_ogreMesh, ogreFile);
-	std::cout << "Mesh exported to " << ogreFile << std::endl;
+	std::string meshFile = m_directory;
+	meshFile.append(m_modelName);
+	meshFile.append(".mesh");
+	meshSerializer.exportMesh(m_ogreMesh, meshFile);
+	std::cout << "Mesh exported to " << meshFile << std::endl;
+}
 
+void Cal3DOgreConverter::writeOgreMaterial()
+{
+	//std::cout << "This mesh has " << m_ogreMesh->getNumSubMeshes() << " submeshes." << std::endl;
 
+	Ogre::String queue;
+	queue = m_materialSerializer.getQueuedAsString();
+	if(queue == NULL)
+	{
+		std::cout << "No materials queued for export." << std::endl;
+		return;
+	}
+
+	std::cout << "Materials queued for export:\n" << queue << "." << std::endl;
+	std::string materialFile = m_directory;
+	materialFile.append(m_modelName);
+	materialFile.append(".material");
+	m_materialSerializer.exportQueued (materialFile);
+	std::cout << "Materials exported to " << materialFile << std::endl;
+	return;
 }
 
 
@@ -405,7 +513,8 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	myConverter.writeOgreMesh(argv[1]);
+	myConverter.writeOgreMesh();
+	myConverter.writeOgreMaterial();
 
 
 	return 0;

@@ -24,7 +24,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.7  2003-05-07 23:28:43  aglanor
+ *      Revision 1.8  2003-06-23 01:20:34  aglanor
+ *      2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts Cal3D materials to Ogre
+ *              materials, and assigns material and texture mapping
+ *              to the Ogre mesh accordingly.
+ *
+ *      	Check screenshot of fully textured pig within dime here:
+ *      	http://purple.worldforge.org/~aglanor/screenshots/dime_20030623.png
+ *
+ *      Revision 1.7  2003/05/07 23:28:43  aglanor
  *      Added a little more variety to the media. Now there's different media
  *      for settlers (malebuilder), pig (skeleton), merchant (robot) and
  *      everything else.
@@ -351,11 +360,11 @@ protected:
 	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
 
 	// Removed this viewport temporally because it clutters the output
-	/*
+
 	Ogre::Viewport* mapvp = mWindow->addViewport(mPlayerMapCamera,1,0.70,0.05,0.25,0.25);
 	mapvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	mapvp->setOverlaysEnabled(false);
-	*/
+	
     }
 
     /// Method which will define the source of resources (other than current folder)

@@ -1,12 +1,17 @@
+2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
+        * Cal3DConverter: converts Cal3D materials to Ogre
+        materials, and assigns material and texture mapping
+	to the Ogre mesh accordingly.
+
 2003-05-10 James Turner <james at worldforge dot org>
 	* Allow the prefix where Cal3d is installed to too
 	be specific via a --with-cal3d= argument to configure.
-	* Verify the eixstence of cal3d.h and the Cal3d lib
+	* Verify the existence of cal3d.h and the Cal3d lib
 	in configure.
 
 2003-05-09 James Turner <james at worldforge dot org>
-    * Overhaul configure.ac to be totally pkg-config
-    based, to work with the current stable release of all
+	* Overhaul configure.ac to be totally pkg-config
+	based, to work with the current stable release of all
 	the WorldForge libs.
 	* Remove all the copied AM_PATH_xxxx macros from
 	acinlude.m4, since they are no longer necessary.

@@ -22,7 +22,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.4  2003-05-06 22:16:48  aglanor
+ *      Revision 1.5  2003-06-23 01:20:34  aglanor
+ *      2003-06-23 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * Cal3DConverter: converts Cal3D materials to Ogre
+ *              materials, and assigns material and texture mapping
+ *              to the Ogre mesh accordingly.
+ *
+ *      	Check screenshot of fully textured pig within dime here:
+ *      	http://purple.worldforge.org/~aglanor/screenshots/dime_20030623.png
+ *
+ *      Revision 1.4  2003/05/06 22:16:48  aglanor
  *      added directory and filenames management to the cal3d converter.
  *
  *      Revision 1.3  2003/05/05 01:41:06  aglanor
@@ -37,13 +46,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      Revision 1.1  2003/04/27 23:46:30  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* MathConverter.h: Point, Vector and Quaternion converter
- *      		for world-centric coordinates (Atlas-wfmath like)
- *      			to/from screen-centric coordinates (Ogre like).
- *      				See file for more info.
- *      					Only point conversion currently, more will come later.
- *      						* Cal3DOgreConverter.h/cpp: model converter.
- *      							Just added files, it is not coded yet.
- *      								* Makefile.am: added Cal3D2Ogre binary file.
+ *      	for world-centric coordinates (Atlas-wfmath like)
+ *      	to/from screen-centric coordinates (Ogre like).
+ *      	See file for more info.
+ *      	Only point conversion currently, more will come later.
+ *      	* Cal3DOgreConverter.h/cpp: model converter.
+ *      	Just added files, it is not coded yet.
+ *      	* Makefile.am: added Cal3D2Ogre binary file.
  *
 
 -----------------------------------------------------------------------------
@@ -60,6 +69,7 @@ Description: Cal3D<-->Ogre model converter
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
+#include <OgreMaterialSerializer.h>
 #include "cal3d/cal3d.h"
 
 
@@ -95,14 +105,17 @@ public:
 	}
 
 	bool parseModelConfiguration(const std::string& strFilename);
-	void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, int calCoreMeshId);
+	void convertCal3DOgreMesh(const std::string& strData, int calCoreMeshId);
+	void convertCal3DOgreMaterial(const std::string& strData, int calCoreMeshId);
 	void createOgreMesh(const std::string& name);
-	void writeOgreMesh(const std::string& name);
+	void writeOgreMesh();
+	void writeOgreMaterial();
 	bool parsePath(const std::string& path);
 
 protected:
 	Ogre::Root* mOgreRoot;
 	Ogre::Mesh* m_ogreMesh;
+	Ogre::MaterialSerializer m_materialSerializer;
 	CalCoreModel m_calCoreModel;
   	CalModel m_calModel;
   	float m_scale;
