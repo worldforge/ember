@@ -38,7 +38,7 @@
 
 
 namespace dime {
-const int MAX_MESSAGES = 5;
+const unsigned int MAX_MESSAGES = 5;
 const int FONT_HEIGHT = 15;
 const int LINE_SPACING = 5;
 const int CONSOLE_TEXT_OFFSET_X = 5;
@@ -91,11 +91,6 @@ public:
     */
   virtual int draw(DrawDevice *target);
   /**
-   * This method renders the console.
-   * command is the current command string
-   */ 
-  void draw(const std::string &command);
-  /**
    * Toggles whether the console is visible or not
    */ 
   virtual bool toggleVisible();
@@ -134,14 +129,19 @@ protected:
   typedef std::pair<std::string, unsigned int> screenMessage;
 
   /**
+   * Current command string
+   */
+ std::string myCommand;
+
+  /**
    *  This render the console messges plus the current command string
    *  command is the current command string
    */ 
-  void renderConsoleMessages(const std::string &command);
+  void renderConsoleMessages(DrawDevice* ddevice);
   /**
    * This renders the screen messages
    */ 
-  void renderScreenMessages();
+  void renderScreenMessages(DrawDevice* ddevice);
 
   bool animateConsole; // Flag determining whether console is moving
   int consoleHeight; // the height of the console. determined by number of messages allowed

@@ -73,7 +73,7 @@ void Console::pushMessage(const std::string &message, int type, int duration) {
   }
 }
 
-void Console::draw(const std::string &command) {
+int Console::draw(DrawDevice* target){
   // If we are animating and putting console into visible state,
   //  the raise height a tad
   if (animateConsole && myVisible) {
@@ -84,7 +84,7 @@ void Console::draw(const std::string &command) {
       consoleHeight = CONSOLE_HEIGHT;
       animateConsole = 0;
     }
-    renderConsoleMessages(command);
+    renderConsoleMessages(target);
   // If we are animating and putting console into hidden state,
   //  the lower height a tad
   } else if (animateConsole && !myVisible) {
@@ -95,18 +95,19 @@ void Console::draw(const std::string &command) {
       consoleHeight = 0;
       animateConsole = 0;
     }
-    renderConsoleMessages(command);
+    renderConsoleMessages(target);
   // Else are we just plain visible?    
   } else if (myVisible) {
-    renderConsoleMessages(command);
+    renderConsoleMessages(target);
   }
   //Screen messages are always visible
-  renderScreenMessages();
+  renderScreenMessages(target);
+  return 0;
 }
 
 // TODO: refactor this to do the majority of the renderer creation in 
 //       the constructor
-void Console::renderConsoleMessages(const std::string &command) {
+void Console::renderConsoleMessages(DrawDevice *ddevice) {
   std::list<std::string>::const_iterator I;
   int i;
 
@@ -118,9 +119,7 @@ void Console::renderConsoleMessages(const std::string &command) {
 
   dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
   assert(font);
-  FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(100,100,0), Rectangle(0,0,0,0));
-  FontRenderer frenderer();
-  frenderer->setColour(1.0f, 1.0f, 0.0f, 1.0f);
+  FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(1.0f,1.0f,0,1.0f), Rectangle(0,0,0,0));
 
   // Render console messages
   int font_height = font->getHeight();
@@ -130,17 +129,17 @@ void Console::renderConsoleMessages(const std::string &command) {
 				     myRectangle.getY()+CONSOLE_TEXT_OFFSET_Y + j * font_height - consoleOffset,
 				     myRectangle.getWidth(),font_height));
     frenderer.setText(*I);
-    frenderer.renderText(ddevice);
+    frenderer.render(ddevice);
   }
 
   // Render current command string
-  std::string str = CONSOLE_PROMPT_STRING + command + CONSOLE_CURSOR_STRING;
-  frenderer.setRectangle(CONSOLE_TEXT_OFFSET_X, CONSOLE_TEXT_OFFSET_Y - consoleOffset,myRectangle.getWidth(),font_height);
+  std::string str = CONSOLE_PROMPT_STRING + myCommand + CONSOLE_CURSOR_STRING;
+  frenderer.setRectangle(Rectangle(CONSOLE_TEXT_OFFSET_X, CONSOLE_TEXT_OFFSET_Y - consoleOffset,myRectangle.getWidth(),font_height));
   frenderer.setText(str);
-  frenderer.renderText(ddevice);
+  frenderer.render(ddevice);
 }
 
-void Console::renderScreenMessages() {
+void Console::renderScreenMessages(DrawDevice *ddevice) {/*
   if (screen_messages.empty()) return;	
   std::list<screenMessage>::const_iterator I;
   int i;
@@ -163,14 +162,14 @@ void Console::renderScreenMessages() {
   bool loop = true;
   while (loop) {
   if (screen_messages.empty()) break;	
-    loop = false; // break unless it gets set to true again
-    screenMessage sm = *screen_messages.begin(); // Get first messge
-    unsigned int message_time = sm.second;
-    if (current_time > message_time) { // Check expiry time
-      screen_messages.erase(screen_messages.begin());
-      loop = true; // Go again
-    }
+  loop = false; // break unless it gets set to true again
+  screenMessage sm = *screen_messages.begin(); // Get first messge
+  unsigned int message_time = sm.second;
+  if (current_time > message_time) { // Check expiry time
+  screen_messages.erase(screen_messages.begin());
+  loop = true; // Go again
   }
+  }*/
 }
 
 
