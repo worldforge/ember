@@ -42,6 +42,7 @@ namespace dime {
   public:
          enum Button
           {
+	      INVALIDBUTTON,
               LEFTBUTTON,
               MIDDLEBUTTON,
               RIGHTBUTTON

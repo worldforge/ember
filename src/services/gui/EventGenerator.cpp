@@ -42,7 +42,7 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
     assert(mouse);
     
     MouseButtonEvent *event;
-    MouseButtonEvent::Button button;
+    MouseButtonEvent::Button button = MouseButtonEvent::INVALIDBUTTON;
     int x, y;
     x = mouse->getAxisPosition(0);
     y = mouse->getAxisPosition(1);    
