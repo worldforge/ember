@@ -24,6 +24,12 @@
 #include <services/datamodel/DataObject.h>
 #include <framework/Exception.h>
 
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#endif
+
 namespace dime
 {
 
