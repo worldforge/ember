@@ -546,6 +546,11 @@ namespace dime {
          * 
          */
         int removeWidget(Widget* target);
+
+	/**
+	 * Removes all child widgets
+	 */
+	void removeAllWidgets();
     
     }; // End of class
 

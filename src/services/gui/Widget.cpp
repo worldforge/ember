@@ -63,6 +63,11 @@ int dime::Widget::removeWidget(Widget* target)
 	return 1; //target is not amongst myChildren.
 }
 
+void dime::Widget:: removeAllWidgets()
+{
+  myChildren.clear();
+}
+
 int dime::Widget::draw(DrawDevice *target)
 {
 	//iterate through children Widgets, telling them all to draw.

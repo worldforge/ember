@@ -80,8 +80,8 @@ class StateManager
     //======================================================================/
     private:
 
-        State myCurrentState;
-	std::list<State> myStates;
+    State myCurrentState;
+    std::list<State> myStates;
 
     //======================================================================
     // Public Methods
@@ -130,6 +130,8 @@ class StateManager
     virtual ~StateManager ()
     {
         // TODO: Free any allocated resources here.
+        // If my understanding of STL is correct then all elements in
+        // myStates are deleted by their container.
     }
 
 
@@ -141,9 +143,9 @@ class StateManager
     /**
      * Gets the value of State of this StateManager
      */
-    State getState() const
+    std::string getStateName() const
     {
-        return myCurrentState;
+        return myCurrentState.getName();
     }
 
 
@@ -155,7 +157,9 @@ class StateManager
      */
     void setState( const std::string& newState )
       {
+	myCurrentState.unload();
 	myCurrentState = findState(newState);
+	myCurrentState.load();
       }
 
 

@@ -26,6 +26,7 @@
 
 // Included system headers
 #include <string>
+#include <vector>
 
 namespace dime {
 
@@ -83,6 +84,11 @@ class WidgetInfo
 	 * Type of widget (IE the theme we are getting this widget from.
 	 */
         std::string myType;
+
+	/*
+	 * Children of Widget
+	 */
+	std::vector<WidgetInfo> myChildren;
 
     //======================================================================
     // Public Methods

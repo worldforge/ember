@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "WidgetInfo.h"
+#include "main/DimeServices.h"
 
 // Included custom library headers
 
@@ -179,6 +180,20 @@ class State
     //----------------------------------------------------------------------
     // Other public methods
     // NOTE: Group related public methods together and crate a separator comment like above for them.
+
+    void load()
+      {
+	Widget* root = DimeServices::getInstance()->getGuiService()->getRootWidget();
+
+	// For each widget in myWidgets ask it to make itself and
+	// children. Then return a pointer to the made Widget for
+	// addition to root widget.
+      }
+
+    void unload()
+      {
+	DimeServices::getInstance()->getGuiService()->getRootWidget()->removeAllWidgets();
+      }
     
     //======================================================================
     // Protected Methods
