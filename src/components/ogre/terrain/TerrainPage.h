@@ -157,14 +157,18 @@ private:
 	 * Method used when the mapping between mercator segments and ogre pages is 1:1
 	 * @return 
 	 */
-	Ogre::MaterialPtr generateTerrainMaterialSimple();
+	void generateTerrainTechniqueSimple(Ogre::Technique* technique);
 	
 	
+	/**
+	 *    generates the techniques for debug material
+	 */
+	void generateTerrainTechniqueDebug();
 	/**
 	 * Method used when the mapping between mercator segments and ogre pages isn't 1:1
 	 * @return 
 	 */
-	Ogre::MaterialPtr generateTerrainMaterialComplex();
+	void generateTerrainTechniqueComplex(Ogre::Technique* technique);
 	
 	/**
 	EmberOgre::Shaders used for this page
