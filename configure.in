@@ -15,8 +15,8 @@ AM_PATH_SDL(1.2.0, ,
 	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
 )
 
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
+CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
 
 dnl the next are just in for show right now.
