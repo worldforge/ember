@@ -13,7 +13,7 @@ Group: Amusements/Games
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Prefix: %{_prefix}
 BuildArchitectures: noarch
-Requires: ember >= @VERSION@
+#Requires: ember >= @VERSION@
 
 %description
 Ember is a client for MMORPGs using the Worldforge system.
