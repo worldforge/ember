@@ -44,14 +44,14 @@ void DataModelTestCase::testRoot()
 
 void DataModelTestCase::testAdd()
 {
-	PDataObject p = DataObject::getRoot();
+	PDataObject p = DataObject::getRoot()->addChild("unittest");
 
 	//simply add a child
 	PDataObject q = p->addChild("Child1");
 	
 	CPPUNIT_ASSERT(q.get() != NULL);
 	CPPUNIT_ASSERT(q->getID() == "Child1");
-	CPPUNIT_ASSERT(q->getPath() == "/Child1");
+	CPPUNIT_ASSERT(q->getPath() == "/unittest/Child1");
 	CPPUNIT_ASSERT(p->getChild("Child1")->getPath() == q->getPath());
 	CPPUNIT_ASSERT(q->getType() & HAS_CHILDS);
 	CPPUNIT_ASSERT(q->getType() & CAN_ADD_CHILDS);
@@ -61,9 +61,9 @@ void DataModelTestCase::testAdd()
 	
 	CPPUNIT_ASSERT(r.get() != NULL);
 	CPPUNIT_ASSERT(r->getID() == "Subchild1");
-	CPPUNIT_ASSERT(r->getPath() == "/Child1/Subchild1");
+	CPPUNIT_ASSERT(r->getPath() == "/unittest/Child1/Subchild1");
 	CPPUNIT_ASSERT(r->getPath() == 
-				DataObject::getByPath("/Child1/Subchild1")->getPath());
+				DataObject::getRoot("/unittest/Child1/Subchild1")->getPath());
 	CPPUNIT_ASSERT(r->getPath() == q->getChild("Subchild1")->getPath());
 
 	bool bFailedToAddSame = false;
@@ -85,7 +85,7 @@ void DataModelTestCase::testRemove()
 {
 	//Tests also event handling on the sample of PRE_DELETION
     
-	PDataObject p = DataObject::getRoot();
+	PDataObject p = DataObject::getRoot()->addChild("unittest");
 	
 	//add something, register as observer and remove it
     PDataObject q = p->addChild("Child2");
@@ -128,7 +128,7 @@ void DataModelTestCase::testLink()
 {
 	//Link one child to another
 	//and test on various things
-	PDataObject p = DataObject::getRoot();
+	PDataObject p = DataObject::getRoot()->addChild("unittest");
 	PDataObject dest = p->addChild("LinkDest");
 	PDataObject destChild  = dest->addChild("DestChild");
 	PDataObject destChild2 = dest->addChild("DestChild2");
@@ -144,18 +144,18 @@ void DataModelTestCase::testLink()
 	link->setDescription("Now a link");
 	CPPUNIT_ASSERT(dest->getDescription() == "Now a link");
 	CPPUNIT_ASSERT(link->getChild("DestChild")->getPath() 
-						== "/Link/DestChild");	
+						== "/unittest/Link/DestChild");	
 
 	std::vector<PDataObject> childs;
 	link->getChildList(childs);
 
 	CPPUNIT_ASSERT(childs.size() == 2);
 	
-	CPPUNIT_ASSERT(childs[0]->getPath() == "/Link/DestChild"
-				|| childs[1]->getPath() == "/Link/DestChild");
+	CPPUNIT_ASSERT(childs[0]->getPath() == "/unittest/Link/DestChild"
+				|| childs[1]->getPath() == "/unittest/Link/DestChild");
 	
-	CPPUNIT_ASSERT(childs[0]->getPath() == "/Link/DestChild2"
-				|| childs[1]->getPath() == "/Link/DestChild2");
+	CPPUNIT_ASSERT(childs[0]->getPath() == "/unittest/Link/DestChild2"
+				|| childs[1]->getPath() == "/unittest/Link/DestChild2");
 
 	myDeleted = 0;
 
@@ -179,7 +179,12 @@ void DataModelTestCase::testLink()
 
 void DataModelTestCase::tearDown()
 {
-	
+	try
+	{
+		DataObject::getRoot("/unittest")->remove();
+	}
+	catch(...)
+	{ }
 }
 
 void DataModelTestCase::onDelete(PDataObject p, DataType t)

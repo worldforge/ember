@@ -217,9 +217,9 @@ class DataObject: public SigC::Object
 	DataConnection addConnection(const DataSlot & slot, DataType types);
 
 	/**
-	 * Returns a new data object for the specified path. 
+	 * Returns a unique ID string.
 	 */
-	static PDataObject getByPath(std::string path);
+	static std::string DataObject::getUniqueID();
 
 	/**
 	 * Returns a new root data object for the specified path.

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.31  2002-07-03 11:38:48  xmp
+ *      Revision 1.32  2002-07-14 16:34:43  tim
+ *      *** empty log message ***
+ *
+ *      Revision 1.31  2002/07/03 11:38:48  xmp
  *      Hook eris's logging service into Dime's
  *
  *      Revision 1.30  2002/07/02 22:00:13  tim
@@ -155,10 +158,23 @@ namespace dime
                                   const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp)
         {
             tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+		
+			std::cerr.fill('0');			
+            std::cerr << "[";
+			std::cerr.width(2);		
+			std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
+			std::cerr.width(2);					
+			std::cerr << ctm->tm_mon+1 << "-";
+			std::cerr.width(2);			
+			std::cerr << ctm->tm_mday << " ";
+			std::cerr.width(2);
+			std::cerr << ctm->tm_hour << ":";
+			std::cerr.width(2);
+			std::cerr <<  ctm->tm_min << ":";
+			std::cerr.width(2);			
+			std::cerr << ctm->tm_sec << "] ";			
+			std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
 
-            std::cerr << "[" << ctm->tm_year+1900 << "-" << ctm->tm_mon+1 << "-" << ctm->tm_mday 
-                      << " " << ctm->tm_hour << ":" <<  ctm->tm_min << ":" << ctm->tm_sec << "] "
-                      << "[File: " << file << ", Line #:" <<  line << "] (";
             if(importance == dime::LoggingService::CRITICAL) 
                 {
                     std::cerr << "CRITICAL";
@@ -182,7 +198,7 @@ namespace dime
 
     };
 
-	
+#include <iterator>
 	void onMetaserverService(PDataObject p, DataType t)
 	{
 		//fired whenever the state changed

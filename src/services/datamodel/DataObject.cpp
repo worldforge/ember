@@ -509,6 +509,17 @@ void DataObject::getChildList(ChildList & childList)
 	}
 }
 
+std::string DataObject::getUniqueID()
+{
+		static int uniqueCounter = 0; //2^32 should be enough of uniqueness ;-)
+		uniqueCounter++;
+		
+		char buffer[CONVERT_BUFFER_SIZE];
+		sprintf(buffer, "~@#x%X", uniqueCounter); //some prefixing to not collide with non-generated names
+		
+		return buffer;
+}
+
 /**
  * returns a new Data Object added as child node. You can specify the new data object
  * to be another provider's top node.
@@ -534,13 +545,7 @@ PDataObject DataObject::addChild(std::string suggestedID, DataProvider * provide
 
 	if (suggestedID.empty())
 	{		
-		static int uniqueCounter = 0; //2^32 should be enough of uniqueness ;-)
-		uniqueCounter++;
-		
-		char buffer[CONVERT_BUFFER_SIZE];
-		sprintf(buffer, "~@#x%X", uniqueCounter); //some prefixing to not collide with non-generated names
-		
-		suggestedID = buffer;			
+		suggestedID = getUniqueID();
 	}		
 
 	myProvider->addChild(myKey, suggestedID, provider);	
@@ -627,14 +632,6 @@ DataConnection DataObject::addConnection(const DataSlot & slot, DataType types)
 		// @todo: Should it throw an exception, that there's nothing to connect instead?
 		return DataConnection();
 	}	
-}
-
-/**
- * Returns a new data object for the specified path. 
- */
-PDataObject DataObject::getByPath(std::string path)
-{
-	return PDataObject(new DataObject(path));	
 }
 
 /**
