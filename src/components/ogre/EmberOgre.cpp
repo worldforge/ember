@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.43  2004-07-31 11:53:59  erik
+ *      Revision 1.44  2004-07-31 23:42:15  erik
+ *      2004-08-01 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *use skybox instead of skydome
+ *
+ *      Revision 1.43  2004/07/31 11:53:59  erik
  *      2004-07-31 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre:
@@ -666,12 +672,13 @@ void DimeOgre::createScene(void)
   l->setPosition(WF2OGRE_VECTOR3(150,150,150));
 
 	//set fog, do this before calling TerrainSceneManager::setWorldGeometry 
-	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
-//	Ogre::ColourValue fadeColour(1,1,1);
-	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
+//	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
+	Ogre::ColourValue fadeColour(1,1,1);
+//	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
 
   // create a Skydome
-  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+//  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+  mSceneMgr->setSkyBox(true, "Sky/Waterworld09");
 
         Ogre::Entity *waterEntity;
         Ogre::Plane waterPlane;
