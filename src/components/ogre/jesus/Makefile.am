@@ -2,14 +2,14 @@ current = $(PWD)
 
 dist-hook:
 	mkdir -p $(distdir)
-	(cd $(top_srcdir)/src/components/ogre/jesus/modelmappings; tar cf - `find . -name \*.xml` | ( cd $(current); cd $(distdir); tar xf -))
+	(cd $(top_srcdir)/src/components/ogre/jesus; tar cf - `find . -name \*.xml` | ( cd $(current); cd $(distdir); tar xf -))
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ember/data/jesus/modelmappings 
-	(cd $(top_srcdir)/src/components/ogre/jesus/modelmappings; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/ember/data/jesus/modelmappings; tar xf -)
+	mkdir -p $(DESTDIR)$(datadir)/ember/data/jesus 
+	(cd $(top_srcdir)/src/components/ogre/jesus; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/ember/data/jesus; tar xf -)
 
 uninstall-local:
-	find $(DESTDIR)$(datadir)/ember/data/jesus/modelmappings/ -name  \*.xml | xargs rm
+	find $(DESTDIR)$(datadir)/ember/data/jesus/ -name  \*.xml | xargs rm -f
 
 
 

@@ -3,7 +3,10 @@
   <modelmapping model="wall" blocktype="wall/24/timber" />
   <modelmapping model="wall" blocktype="wall/12/timber" />
   <modelmapping model="wall" blocktype="wall/6/timber" />
-  <modelmapping model="wall" blocktype="wall/3/timber" />
+  <modelmapping model="wall_3" blocktype="wall/3/timber" />
+  <modelmapping model="wall_3" blocktype="wall/3/timber_" />
+  <modelmapping model="column_3" blocktype="column/3/timber" />
+  <modelmapping model="wall_1.5" blocktype="wall/1.5/timber" />
   <modelmapping model="floor" blocktype="floor/24/stone" />
   <modelmapping model="roof" blocktype="roof/24/stone" />
   <modelmapping model="slopewall" blocktype="slopewall/24/timber" />

@@ -137,48 +137,138 @@
     <bbox x="6" z="3" y="0.3" />
   </blockspec>
   <blockspec name="wall3" >
-    <attachpairs>
-      <attachpair name="up" type="a3" >
-        <attachpoint name="left" >
-          <normal type="UP" />
-          <position x="-0.5" z="1.5" y="0" />
-        </attachpoint>
-        <attachpoint name="right" >
-          <normal type="UP" />
-          <position x="0.5" z="1.5" y="0" />
-        </attachpoint>
-      </attachpair>
-      <attachpair name="down" type="a3" >
-        <attachpoint name="left" >
-          <normal type="DOWN" />
-          <position x="-0.5" z="-1.5" y="0" />
-        </attachpoint>
-        <attachpoint name="right" >
-          <normal type="DOWN" />
-          <position x="0.5" z="-1.5" y="0" />
-        </attachpoint>
-      </attachpair>
-      <attachpair name="left" type="b3" >
-        <attachpoint name="up" >
-          <normal type="WEST" />
-          <position x="-1.5" z="0.5" y="0" />
-        </attachpoint>
-        <attachpoint name="down" >
-          <normal type="WEST" />
-          <position x="-1.5" z="-0.5" y="0" />
-        </attachpoint>
-      </attachpair>
-      <attachpair name="right" type="b3" >
-        <attachpoint name="up" >
-          <normal type="EAST" />
-          <position x="1.5" z="0.5" y="0" />
-        </attachpoint>
-        <attachpoint name="down" >
-          <normal type="EAST" />
-          <position x="1.5" z="-0.5" y="0" />
-        </attachpoint>
-      </attachpair>
-    </attachpairs>
-    <bbox x="3" z="3" y="0.3" />
+	  <attachpairs>
+		  <attachpair name="up" type="a3" >
+			  <attachpoint name="left" >
+				  <normal type="UP" />
+				  <position x="-0.5" z="1.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="right" >
+				  <normal type="UP" />
+				  <position x="0.5" z="1.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down" type="a3" >
+			  <attachpoint name="left" >
+				  <normal type="DOWN" />
+				  <position x="-0.5" z="-1.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="right" >
+				  <normal type="DOWN" />
+				  <position x="0.5" z="-1.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="left" type="b3" >
+			  <attachpoint name="up" >
+				  <normal type="WEST" />
+				  <position x="-1.5" z="0.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="WEST" />
+				  <position x="-1.5" z="-0.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="right" type="b3" >
+			  <attachpoint name="up" >
+				  <normal type="EAST" />
+				  <position x="1.5" z="0.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="EAST" />
+				  <position x="1.5" z="-0.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+	  <bbox x="3" z="3" y="0.3" />
+  </blockspec>
+  <blockspec name="wall/3" >
+	  <attachpairs>
+		  <attachpair name="left" type="wall3" >
+			  <attachpoint name="up" >
+				  <normal type="WEST" />
+				  <position x="-1.5" z="0.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="WEST" />
+				  <position x="-1.5" z="-0.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="right" type="wall3" >
+			  <attachpoint name="up" >
+				  <normal type="EAST" />
+				  <position x="1.5" z="0.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="EAST" />
+				  <position x="1.5" z="-0.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="left_column" type="column" >
+			  <attachpoint name="up" >
+				  <normal type="WEST" />
+				  <position x="-1.35" z="0.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="WEST" />
+				  <position x="-1.35" z="-0.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="right_column" type="column" >
+			  <attachpoint name="up" >
+				  <normal type="EAST" />
+				  <position x="1.35" z="0.5" y="0" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="EAST" />
+				  <position x="1.35" z="-0.5" y="0" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+	  <bbox x="3" z="3" y="0.3" />
+  </blockspec>
+  <blockspec name="column/3" >
+	  <bbox x="1" y="1" z="3" />
+	  <attachpairs>
+		  <attachpair name="north" type="column" >
+			  <attachpoint name="up" >
+				  <normal type="NORTH" />
+				  <position x="0"  y="0.15" z="0.5" />
+			  </attachpoint>
+			  <attachpoint  name="down" >
+				  <normal type="NORTH" />
+				  <position x="0" y="0.15" z="-0.5" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="south" type="column" >
+			  <attachpoint name="up" >
+				  <normal type="SOUTH" />
+				  <position x="0"  y="-0.15" z="0.5" />
+			  </attachpoint>
+			  <attachpoint  name="down" >
+				  <normal type="SOUTH" />
+				  <position x="0" y="-0.15" z="-0.5" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="east" type="column" >
+			  <attachpoint name="up" >
+				  <normal type="EAST" />
+				  <position x="0.15"  y="0" z="0.5" />
+			  </attachpoint>
+			  <attachpoint  name="down" >
+				  <normal type="EAST" />
+				  <position x="0.15" y="0" z="-0.5" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="west" type="column" >
+			  <attachpoint name="up" >
+				  <normal type="WEST" />
+				  <position x="-0.15"  y="0" z="0.5" />
+			  </attachpoint>
+			  <attachpoint  name="down" >
+				  <normal type="WEST" />
+				  <position x="-0.15" y="0" z="-0.5" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
   </blockspec>
 </blockspecs>

@@ -1,5 +1,9 @@
 2005-03-30  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Started to add columns, and fixed a dist build bug in the Makefile.
+
+2005-03-30  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added ability to remove building blocks and to create new construction from scratch.
 
 2005-03-30  Erik Hjortsberg  <erik@katastrof.nu>
