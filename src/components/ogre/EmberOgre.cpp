@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.74  2005-02-27 21:08:21  erik
+ *      Revision 1.75  2005-03-04 01:14:05  erik
+ *      2005-03-04  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Added more functionality and bug fixes to JesusEdit.
+ *      	* It's now possible to create new buildings. The interface and the classes are a bit rough though. There's also no way to save the blueprints.
+ *
+ *      Revision 1.74  2005/02/27 21:08:21  erik
  *      2005-02-27  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Moved Ember specific stuff of Carpenter into Jesus.
@@ -852,15 +858,17 @@ bool EmberOgre::setup(void)
 
 
 
+	mRoot->addFrameListener(mMotionManager);
+	ConsoleObjectImpl::getSingleton();
+	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
-    createFrameListener();
 
 	mGUIManager->initialize();
 	
 	// Create the scene
     createScene();
 
-	
+	setupJesus();
 /*
     EmberEntityFactory = new EmberEntityFactory(mSceneMgr);
     
@@ -1094,6 +1102,35 @@ void EmberOgre::preloadMedia(void)
 
 }
 
+void EmberOgre::setupJesus()
+{
+	const std::string datadir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory();
+
+	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
+	mJesus = new Jesus(carpenter);
+
+	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/floors.blockspec.xml");
+	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/walls.blockspec.xml");
+	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/roofs.blockspec.xml");
+	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/slopewalls.blockspec.xml");
+	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/adapters.blockspec.xml");
+	mJesus->loadBuildingBlockSpecDefinition(datadir + "/carpenter/modelblockspecs/general.modelblocks.xml");
+	
+	mJesus->loadModelBlockMapping(datadir + "/jesus/modelmappings/general.modelmapping.xml");
+	
+	
+//	Carpenter::BluePrint* housePrint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/house.blueprint.xml");
+	Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/empty.blueprint.xml");
+	
+    Ogre::SceneNode* node;
+    node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	blueprint->compile();
+	Construction* construction = new Construction(blueprint, mJesus, node);
+	
+	EventCreatedJesus.emit(mJesus);
+
+}
+
 void EmberOgre::createScene(void)
 {
 /*  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
@@ -1130,25 +1167,6 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 	
 	
 	
-	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
-	Jesus* jesus = new Jesus(carpenter);
-
-	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/floors.blockspec.xml");
-	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/walls.blockspec.xml");
-	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/roofs.blockspec.xml");
-	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/slopewalls.blockspec.xml");
-	jesus->loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/adapters.blockspec.xml");
-	jesus->loadBuildingBlockSpecDefinition("/home/erik/ember/src/components/ogre/carpenter/modelblockspecs/general.modelblocks.xml");
-	
-	jesus->loadModelBlockMapping("/home/erik/ember/src/components/ogre/jesus/modelmappings/general.modelmapping.xml");
-	
-	
-	Carpenter::BluePrint* housePrint = jesus->loadBlueprint("/home/erik/ember/src/components/ogre/carpenter/blueprints/house.blueprint.xml");
-	
-    Ogre::SceneNode* node;
-    node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	housePrint->compile();
-	Construction* house = new Construction(housePrint, jesus, node);
 	
 
   // create a Skydome
@@ -1175,15 +1193,7 @@ void EmberOgre::connectedToServer(Eris::Connection* connection)
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
 
-void EmberOgre::createFrameListener(void)
-{
 
-	mRoot->addFrameListener(mMotionManager);
-	ConsoleObjectImpl::getSingleton();
-	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
-
-	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
-}
 
 Avatar* EmberOgre::getAvatar() {
 	return mAvatar;

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<blueprint startingblock="mainfloor">
+  <buildingblocks>
+    <buildingblock blocktype="floor/24/stone" name="mainfloor" />
+  
+  </buildingblocks>
+
+</blueprint>

@@ -80,7 +80,7 @@
           <position x="1" z="0" y="0" />
         </attachpoint>
       </attachpair>
-      <attachpair name="down_left" type="a6" >
+      <attachpair name="down_left" type="a3" >
         <attachpoint  name="left" >
           <normal type="DOWN" />
           <position x="-2" z="0" y="0" />
@@ -90,7 +90,7 @@
           <position x="-1" z="0" y="0" />
         </attachpoint>
       </attachpair>
-      <attachpair name="down_right" type="a6" >
+      <attachpair name="down_right" type="a3" >
         <attachpoint  name="left" >
           <normal type="DOWN" />
           <position x="1" z="0" y="0" />

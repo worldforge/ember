@@ -179,11 +179,16 @@ public:
 	
 	BlockSpec* createBlockSpec(std::string name);
 	BuildingBlockSpec* createBuildingBlockSpec(BuildingBlockSpecDefinition definition);
+	
+	const std::map<const std::string , BlockSpec >* getBlockSpecs() const {return &mBlockSpecs;}
+	const std::map<const std::string , BuildingBlockSpec >* getBuildingBlockSpecs() const {return &mBuildingBlockSpecs;}
+	const std::map<const std::string , BluePrint>* getBluePrints() const {return &mBluePrints;}
 
 protected:
 	std::map<const std::string , BlockSpec > mBlockSpecs;
 	std::map<const std::string , BuildingBlockSpec > mBuildingBlockSpecs;
 	std::map<const std::string , BluePrint> mBluePrints;
+
 	
 
 

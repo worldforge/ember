@@ -62,6 +62,7 @@ TYPEDEF_STL_MAP(const std::string, Ogre::ColourValue, AttachPointColourValueMap)
 
 class Model;
 class ModelBlock;
+class Construction;
 
 /**
 @author Erik Hjortsberg
@@ -130,6 +131,12 @@ public:
 	 * @return 
 	 */
 	Ogre::ColourValue getColourForAttachPoint(const Carpenter::AttachPoint* point) const;
+	
+	/**
+	 *    Accessor for the Carpenter object.
+	 * @return 
+	 */
+	inline Carpenter::Carpenter* getCarpenter() const { return mCarpenter; }
 
 protected:
 	/**
@@ -156,11 +163,29 @@ protected:
 
 };
 
+
+/** This class 'wibbles' the billboard */
+class LightWibbler : public Ogre::ControllerValue<Ogre::Real>
+{
+public:
+	LightWibbler(const Ogre::ColourValue& originalColour, Ogre::Billboard* billboard);
+
+	virtual Ogre::Real  getValue (void) const;
+	virtual void  setValue (Ogre::Real value);
+protected:
+	Ogre::Billboard* mBillboard;
+	Ogre::ColourValue mOriginalColour;
+	Ogre::Real intensity;
+};
+
+
 class AttachPointNode
 {
 public:
 	AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour, Ogre::BillboardSet* billboardSet);
 	void select();
+	void deselect();
+	inline const Carpenter::AttachPoint* getAttachPoint() const { return mAttachPoint;}
 	
 protected:
 	const ModelBlock* mModelBlock;
@@ -168,6 +193,7 @@ protected:
 	const Carpenter::AttachPoint* mAttachPoint;
 	Ogre::Billboard* mFlare;
 	Ogre::ColourValue mColour;
+	Ogre::Controller<Ogre::Real>* mController;
 };
 
 
@@ -178,13 +204,16 @@ A mapping between a Carpenter::BuildingBlock and an Ember::Model.
 class ModelBlock
 {
 public:
-	ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock,  Model* model, Jesus* jesus);
+	ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock,  Model* model, Construction* construction);
 	void selectAttachPointNode(AttachPointNode* selectedNode);
 	
-	inline const Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
-	
+	inline Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
+	inline Construction* getConstruction() const { return mConstruction; }
 	void createAttachPointNodes();
 	void select();
+	void deselect();
+	
+	std::vector<AttachPointNode*> getAttachPointNodes() const;
 protected:
 	Carpenter::BuildingBlock* mBuildingBlock;
 	Model* mModel;
@@ -192,7 +221,8 @@ protected:
 	std::vector<AttachPointNode*> mAttachPointNodes;
 	Ogre::SceneNode *mNode, *mModelNode;
 	Ogre::BillboardSet* mPointBillBoardSet;
-	Jesus* mJesus;
+	Construction* mConstruction;
+	//Jesus* mJesus;
 };
 
 /**
@@ -217,6 +247,17 @@ public:
 	Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::SceneNode* node);
 	
 	//inline Ogre::BillboardSet* getBillBoardSet() const { return mPointBillBoardSet; }
+	inline Jesus* getJesus() const { return mJesus; }
+	inline Carpenter::BluePrint* getBluePrint() const { return mBlueprint; }
+	
+	/**
+	 *    Creates a new ModelBlock and adds it to the construction.
+	 * @param buildingBlock 
+	 * @return 
+	 */
+	ModelBlock* createModelBlock(Carpenter::BuildingBlock* buildingBlock);
+	
+	std::vector<ModelBlock*> getModelBlocks() const;
 protected:
 	Carpenter::BluePrint* mBlueprint;
 	Ogre::SceneNode* mBaseNode;

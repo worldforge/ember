@@ -137,6 +137,9 @@ const std::vector< BuildingBlock*> BluePrint::getAttachedBlocks() const
 
 BuildingBlock* BluePrint::createBuildingBlock(BuildingBlockDefinition definition)
 {
+	if (definition.mName == "") {
+		definition.mName = std::string("_buildingBlock") + mBuildingBlocks.size();
+	}
 	mBuildingBlocks[definition.mName];
 	BuildingBlockSpec *buildingBlockSpec = mCarpenter->getBuildingBlockSpec(definition.mBuildingBlockSpec);
 	mBuildingBlocks[definition.mName].mBlockDefinition = definition;
@@ -158,29 +161,37 @@ WFMath::Point<3> BuildingBlock::getWorldPositionForPoint(const AttachPoint* poin
 }
 
 
-void BluePrint::addBinding(BuildingBlockBindingDefinition definition)
+BuildingBlockBinding* BluePrint::addBinding(BuildingBlockBindingDefinition definition)
 {
-	BuildingBlockBinding binding;
-	binding.mDefinition = definition;
-	binding.mBlock1 = &mBuildingBlocks[definition.mBlock1Name];
-	binding.mBlock2 = &mBuildingBlocks[definition.mBlock2Name];
+	//BuildingBlockBinding binding;
+//	binding.mDefinition = definition;
+	BuildingBlock* block1 = &mBuildingBlocks[definition.mBlock1Name];
+	BuildingBlock* block2 = &mBuildingBlocks[definition.mBlock2Name];
 	
 	
-	const AttachPair *pair1 = binding.mBlock1->getAttachPair(definition.mPair1Name);
-	binding.mPoint1 = pair1->getAttachPoint(definition.mPoint1Name);
+	const AttachPair *pair1 = block1->getAttachPair(definition.mPair1Name);
+	const AttachPoint* point1 = pair1->getAttachPoint(definition.mPoint1Name);
 	
-	const AttachPair *pair2 = binding.mBlock2->getAttachPair(definition.mPair2Name);
-	binding.mPoint2 = pair2->getAttachPoint(definition.mPoint2Name);
+	const AttachPair *pair2 = block2->getAttachPair(definition.mPair2Name);
+	const AttachPoint* point2 = pair2->getAttachPoint(definition.mPoint2Name);
 	
-	mBindings.push_back(binding);
-
+	return addBinding(block1, point1, block2, point2);
 }
 
-
-void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*>& bindings)
+BuildingBlockBinding* BluePrint::addBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2)
 {
-	BuildingBlockBinding* binding1 = bindings[0];
-	BuildingBlockBinding* binding2 = bindings[1];
+	BuildingBlockBinding binding(block1, point1, block2, point2);
+	
+	mBindings.push_back(binding);
+	return &(*(--mBindings.end()));
+	
+}
+
+void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings)
+{
+	std::vector<BuildingBlockBinding*>::iterator I = bindings.begin();
+	BuildingBlockBinding* binding1 = *I;
+	BuildingBlockBinding* binding2 = *(++I);
 	
 	BuildingBlock * boundBlock;
 	
@@ -309,6 +320,12 @@ const std::vector< const AttachPoint * > BuildingBlock::getAllPoints( ) const
 	return getBlockSpec()->getAllPoints();
 }
 
+BuildingBlockBinding::BuildingBlockBinding( BuildingBlock * block1, const AttachPoint * point1, BuildingBlock * block2, const AttachPoint * point2)
+: mBlock1(block1), mPoint1(point1), mBlock2(block2), mPoint2(point2)
+{
+}
 
 };
+
+
 

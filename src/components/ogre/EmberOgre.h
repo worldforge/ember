@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.41  2005-02-27 21:08:21  erik
+ *      Revision 1.42  2005-03-04 01:14:05  erik
+ *      2005-03-04  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Added more functionality and bug fixes to JesusEdit.
+ *      	* It's now possible to create new buildings. The interface and the classes are a bit rough though. There's also no way to save the blueprints.
+ *
+ *      Revision 1.41  2005/02/27 21:08:21  erik
  *      2005-02-27  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Moved Ember specific stuff of Carpenter into Jesus.
@@ -363,34 +369,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 -----------------------------------------------------------------------------
 */
-/*
------------------------------------------------------------------------------
-Filename:    BaseApplication.h
-Description: Base class for all the OGRE examples
------------------------------------------------------------------------------
-*/
 
 #ifndef __EmberOgre_H__
 #define __EmberOgre_H__
 
 #include "EmberOgrePrerequisites.h"
-
-//#include <Mercator/Terrain.h>
-
-
-//#include <OgreFrameListener.h>
-
-
-// Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
-/*
-#include "OgreOverlayManager.h"
-#include "OgreCursorGuiElement.h"
-#include "OgreBorderButtonGuiElement.h"
-#include "OgreListGuiElement.h"
-#include "OgreListChanger.h"
-#include "OgreEventProcessor.h"
-#include "OgreStringResource.h"
-*/
 
 // ------------------------------
 // Include sigc header files
@@ -408,7 +391,6 @@ Description: Base class for all the OGRE examples
 #include "framework/Singleton.h"
 
 
-// #include <OgreConfigFile.h>
 
 namespace Eris {
 class View;
@@ -423,8 +405,6 @@ class BluePrint;
 
 
 namespace EmberOgre {
-
-//class TerrainListener;
 
 class CameraRotator;
 
@@ -452,20 +432,23 @@ class GUIManager;
 
 class ModelDefinitionManager;
 
+class Jesus;
 
 
 
 
 
-/** Base class which manages the standard startup of an Ogre application.
-    Designed to be subclassed for specific examples if required.
+
+/** 
+
+The main class of ember. This functions as a hub for almost all subsystems. (Perhaps this should be refactored?)
+
 */
 class EmberOgre : public Ember::Singleton<EmberOgre>, virtual public SigC::Object, public Ogre::FrameListener //, public Ogre::ActionListener, public Ogre::MouseListener
 // TODO: the EmberOgre ConsoleObject will be included in a different class
 {
 public:
  
- 	//static EmberOgre & getSingleton(void);
  
     /// Standard constructor
     EmberOgre();
@@ -474,7 +457,7 @@ public:
     ~EmberOgre();
 
 	bool frameStarted(const Ogre::FrameEvent & evt);
-	bool frameEnded(const Ogre::FrameEvent & evt)
+	inline bool frameEnded(const Ogre::FrameEvent & evt)
 	{
 		return true;
 	}
@@ -482,7 +465,10 @@ public:
     virtual void go(void);
 	void shutdown();
 
-	// Initialize all Ember services needed for this application
+	/**
+	 * Initialize all Ember services needed for this application
+	 * @param  
+	 */
 	void initializeEmberServices(void);
 
 	void connectViewSignals(Eris::View* world);
@@ -499,11 +485,14 @@ public:
 	EmberEntityFactory* getEntityFactory();
 	AvatarCamera* getMainCamera();
 	
+	inline Jesus* getJesus() const { return mJesus; }
+	
 	inline Ogre::RenderWindow* getRenderWindow() const { return mWindow; }
 	
 	
 	SigC::Signal1<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	SigC::Signal1<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
+	SigC::Signal1<void, Jesus*> EventCreatedJesus;
 	
 	/**
 	Emitted before the eris polling is started
@@ -515,52 +504,75 @@ public:
 	*/
 	SigC::Signal0<void> EventEndErisPoll;
 	
-	//returns the scenenode of the world entity
-	//throws en exception if no such node has been created
+	/**
+	 * returns the scenenode of the world entity
+	 * throws en exception if no such node has been created
+	 * @return 
+	 */
 	Ogre::SceneNode* getWorldSceneNode();
 	
 
-//private:
-//	static Ogre::SceneManager* sceneMgr;
+
 
 protected:
 
-	// Avatar setup
+	/**
+	* The main user avatar
+	*/
 	Avatar* mAvatar;
 	
 	//This class controls the avatar
 	AvatarController* mAvatarController;
 
-	/** Instance of EmberOgre */
-	//static EmberOgre* _instance;
 
 	Ogre::Root *mRoot;
     EmberTerrainSceneManager* mSceneMgr;
-	//Ogre::Camera* mCamera;
-//	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;
 	
 	
 	
-//	TerrainGenerator* mTerrainGenerator;
 
 	
 	EmberEntityFactory* mEmberEntityFactory;
 
-    // These internal methods package up the stages in the startup process
-    /** Sets up the application - returns false if the user chooses to abandon configuration. */
+    /**
+     * Sets up the application - returns false if the user chooses to abandon configuration.
+     * @param  
+     * @return 
+     */
     virtual bool setup(void);
-    /** Configures the application - returns false if the user chooses to abandon configuration. */
-    virtual bool configure(void);
+  
+	
+	/**
+	 * Configures the application - returns false if the user chooses to abandon configuration.
+	 * @param  
+	 * @return 
+	 */
+	virtual bool configure(void);
 
+    /**
+     * chooses and sets up the correct scene manager
+     * @param  
+     */
     virtual void chooseSceneManager(void);
 
-	void createCamera(void);
 
-	void createFrameListener(void);
-
+	/**
+	 *    Creates the basic scene with a single avatar, just for testing purpose.
+	 * NOTE: remove this when going final
+	 * @param  
+	 */
 	void createScene(void);
 	
+	/**
+	 *    Sets up Jesus. This inialized the mJesus member.
+	 */
+	void setupJesus();
+	
+	/**
+	 *    Preloads the media, thus avoiding frame rate drops ingame.
+	 * @param  
+	 */
 	void preloadMedia(void);
 
 	void getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section = "media", std::string type = "FileSystem");
@@ -576,71 +588,19 @@ protected:
     
 //    EmberTerrainPageSource* mPageSource;
 	TerrainGenerator* mTerrainGenerator;
-	//InputManager* mInputManager;
+	
 	MotionManager* mMotionManager;
 	GUIManager* mGUIManager;  
 	ModelDefinitionManager* mModelDefinitionManager;
 	
 	bool mKeepOnRunning;
-
-        /*
-	void mouseClicked(Ogre::MouseEvent* e) {}
-	void mouseEntered(Ogre::MouseEvent* e) {}
-	void mouseExited(Ogre::MouseEvent* e) {}
-	void mousePressed(Ogre::MouseEvent* e) {}
-	void mouseReleased(Ogre::MouseEvent* e) {}
+	
+	Jesus* mJesus;
 
 
-	void actionPerformed(Ogre::ActionEvent* e)
-	{
-        // Think about doing something here
-        std::string action = e->getActionCommand();
-        Ogre::LogManager::getSingleton().logMessage("Got event: " + action);
-
-        if (action == "SS/Setup/HostScreen/Exit")
-            Ogre::Root::getSingleton().getRenderSystem()->shutdown();
-	}
-	*/
 
 
 };
-
-// ----------------------------------------------------------------------------
-// Define the application object
-// This is derived from BaseApplication which is the class OGRE provides to
-// make it easier to set up OGRE without rewriting the same code all the time.
-// You can override extra methods of BaseApplication if you want to further
-// specialise the setup routine, otherwise the only mandatory override is the
-// 'createScene' method which is where you set up your own personal scene.
-// ----------------------------------------------------------------------------
-/*
-class OgreApp : public BaseApplication
-{
-public:
-    // Basic constructor
-    OgreApp() {}
-	Ember::OgreGameView* mGameview;
-
-
-protected:
-
-  // Just override the mandatory create scene method
-  void createScene(void);
-
-  // Override this too.
-  void createFrameListener(void);
-
-  virtual void chooseSceneManager(void)
-    {
-      // Get the SceneManager
-      mSceneMgr = mRoot->getSceneManager( ST_EXTERIOR_CLOSE );
-    }
-
-  virtual void createCamera(void);
-
-
-};
-*/
 
 }
 

@@ -68,8 +68,8 @@ class BuildingBlockBinding
 {
 friend class BluePrint;
 public:
+	BuildingBlockBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2);
 	const std::string& getType() const;
-	const BuildingBlockBindingDefinition& getDefinition() { return mDefinition; }
 	const BuildingBlock* getBlock1() const { return mBlock1; }
 	const BuildingBlock* getBlock2() const { return mBlock2; }
 	const AttachPoint* getAttachPoint1() const { return mPoint1; }
@@ -77,12 +77,11 @@ public:
 
 
 protected:
-	BuildingBlockBindingDefinition mDefinition;
-	BuildingBlock* mBlock1;
+	int wtf;
 	const AttachPoint* mPoint1;
 	BuildingBlock* mBlock2;
 	const AttachPoint* mPoint2;
-	//std::string mType;
+	BuildingBlock* mBlock1;
 };
 
 
@@ -158,11 +157,17 @@ public:
 	void compile();
 	
 	BuildingBlock* createBuildingBlock(BuildingBlockDefinition);
-	void addBinding(BuildingBlockBindingDefinition definition);
-	
+	BuildingBlockBinding* addBinding(BuildingBlockBindingDefinition definition);
+	BuildingBlockBinding* addBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2);
 	const std::vector< BuildingBlock*> getAttachedBlocks() const;
 
 	void setStartingBlock(const std::string& name);
+	
+	/**
+	 *    Places the unbound block in the supplied bindings correctly
+	 * @param binding 
+	 */
+	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings);
 
 protected:
 	std::map<const std::string,  BuildingBlock> mBuildingBlocks;
@@ -174,11 +179,6 @@ protected:
 	
 	Carpenter* mCarpenter;
 	
-	/**
-	 *    Places the unbound block in the supplied bindings correctly
-	 * @param binding 
-	 */
-	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*>& bindings);
 	
 	void doBindingsForBlock(BuildingBlock *block);
 

@@ -50,7 +50,7 @@ Jesus::~Jesus()
 }
 
 AttachPointNode::AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour,Ogre::BillboardSet* billboardSet )
-: mModelBlock(modelBlock), mModelNode(modelNode), mAttachPoint(attachPoint), mColour(colour)
+: mModelBlock(modelBlock), mModelNode(modelNode), mAttachPoint(attachPoint), mColour(colour), mController(0)
 {
 	
 	std::string name = modelBlock->getBuildingBlock()->getName() + "_" + attachPoint->getAttachPair()->getName() + "_" + attachPoint->getName();
@@ -538,18 +538,34 @@ Construction::Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::
 	{
 		Carpenter::BuildingBlock* block = *J;
 		if (block->isAttached()) {
-			std::string blockSpecName = block->getBuildingBlockSpec()->getName();
-			
-			Model* model = mJesus->createModelForBlockType(blockSpecName, block->getName());
-			ModelBlock* modelBlock = new ModelBlock(mBaseNode, block, model, jesus);
-			mModelBlocks.push_back(modelBlock);
-			
-			
-			modelBlock->createAttachPointNodes();
+			createModelBlock(block);
 		}
 	}
 	//mModelBlocks[0]->createAttachPointNodes();
 }
+
+ModelBlock* Construction::createModelBlock(Carpenter::BuildingBlock* buildingBlock)
+{
+	std::string blockSpecName = buildingBlock->getBuildingBlockSpec()->getName();
+	
+	Model* model = mJesus->createModelForBlockType(blockSpecName, buildingBlock->getName());
+	ModelBlock* modelBlock = new ModelBlock(mBaseNode, buildingBlock, model, this);
+	mModelBlocks.push_back(modelBlock);
+	
+	modelBlock->createAttachPointNodes();
+	return modelBlock;	
+}
+
+std::vector<ModelBlock*> Construction::getModelBlocks() const
+{
+	return mModelBlocks;
+}
+
+std::vector<AttachPointNode*> ModelBlock::getAttachPointNodes() const
+{
+	return mAttachPointNodes;
+}
+
 
 Model* Jesus::createModelForBlockType(const std::string& blockType, const std::string& modelName)
 {
@@ -560,8 +576,8 @@ Model* Jesus::createModelForBlockType(const std::string& blockType, const std::s
 	return Model::Create(I->second + ".modeldef.xml", modelName);
 }
 
-ModelBlock::ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock, Model* model, Jesus* jesus)
-: mBuildingBlock(buildingBlock), mModel(model), mJesus(jesus)
+ModelBlock::ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock, Model* model, Construction* construction)
+: mBuildingBlock(buildingBlock), mModel(model), mConstruction(construction), mModelNode(0)
 {
 	
 	
@@ -615,7 +631,7 @@ void ModelBlock::createAttachPointNodes( )
 	std::vector<const Carpenter::AttachPoint* >::const_iterator I_end = allPoints.end();
 
 	for(; I != I_end; ++I) {
-		Ogre::ColourValue colour = mJesus->getColourForAttachPoint(*I);
+		Ogre::ColourValue colour = mConstruction->getJesus()->getColourForAttachPoint(*I);
 		AttachPointNode* pointNode = new AttachPointNode(this, mNode, *I, colour, mPointBillBoardSet);
 		mAttachPointNodes.push_back(pointNode);
 	}
@@ -623,8 +639,18 @@ void ModelBlock::createAttachPointNodes( )
 
 void ModelBlock::select()
 {
-	mModelNode->showBoundingBox(true);
-	mPointBillBoardSet->setVisible(true);
+	if (mModelNode) 
+		mModelNode->showBoundingBox(true);
+	if (mPointBillBoardSet)
+		mPointBillBoardSet->setVisible(true);
+}
+
+void ModelBlock::deselect()
+{
+	if (mModelNode) 
+		mModelNode->showBoundingBox(false);
+	if (mPointBillBoardSet)
+		mPointBillBoardSet->setVisible(false);
 }
 
 
@@ -639,8 +665,45 @@ Ogre::ColourValue Jesus::getColourForAttachPoint(const Carpenter::AttachPoint* p
 
 void AttachPointNode::select()
 {
-//NOTE: stub
+	Ogre::ControllerFunctionRealPtr func = Ogre::ControllerFunctionRealPtr(
+			new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0.0, 2));
+	Ogre::ControllerManager& contMgr = Ogre::ControllerManager::getSingleton();
+		
+	Ogre::ControllerValueRealPtr val = Ogre::ControllerValueRealPtr(
+			new LightWibbler(mColour, mFlare));
+	mController = contMgr.createController(contMgr.getFrameTimeSource(), val, func);
 }
+
+void AttachPointNode::deselect()
+{
+	mFlare->setDimensions(1,1);
+	mFlare->setColour(mColour);
+	Ogre::ControllerManager::getSingleton().destroyController(mController);
+	mController = 0;
+}
+
+LightWibbler::LightWibbler(const Ogre::ColourValue& originalColour, Ogre::Billboard* billboard)
+{
+	mOriginalColour = originalColour;
+	mBillboard = billboard;
+}
+
+Ogre::Real  LightWibbler::getValue (void) const
+{
+	return intensity;
+}
+
+void  LightWibbler::setValue (Ogre::Real value)
+{
+	intensity = value;
+
+	Ogre::ColourValue newColour(intensity, intensity, intensity);
+
+	mBillboard->setColour(mOriginalColour * newColour);
+	mBillboard->setDimensions(1 + (intensity * 2),1 + (intensity * 2));
+
+}
+
 
 };
 

@@ -163,21 +163,21 @@ So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2
       <attachpair name="left" type="b3" >
         <attachpoint name="up" >
           <normal type="WEST" />
-          <position x="-0.5" z="0.5" y="0" />
+          <position x="-1.5" z="0.5" y="0" />
         </attachpoint>
         <attachpoint name="down" >
           <normal type="WEST" />
-          <position x="-0.5" z="-0.5" y="0" />
+          <position x="-1.5" z="-0.5" y="0" />
         </attachpoint>
       </attachpair>
       <attachpair name="right" type="b3" >
         <attachpoint name="up" >
           <normal type="EAST" />
-          <position x="0.5" z="0.5" y="0" />
+          <position x="1.5" z="0.5" y="0" />
         </attachpoint>
         <attachpoint name="down" >
           <normal type="EAST" />
-          <position x="0.5" z="-0.5" y="0" />
+          <position x="1.5" z="-0.5" y="0" />
         </attachpoint>
       </attachpair>
     </attachpairs>
