@@ -124,6 +124,11 @@ namespace dime {
         virtual void update();
         
 	virtual void clearScreen();
+
+	/*
+	 * Setup
+	 */
+	virtual void init();
         //---------------------------------------------------------------------------
         // Private Methods
         //---------------------------------------------------------------------------

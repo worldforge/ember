@@ -198,7 +198,11 @@ void dime::OGLDrawDevice::restoreMatrices()
 
 void dime::OGLDrawDevice::clearScreen()
 {
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+}
 
+void dime::OGLDrawDevice::init()
+{
     /* Enable Texture Mapping ( NEW ) */
     glEnable( GL_TEXTURE_2D );
 
@@ -219,5 +223,4 @@ void dime::OGLDrawDevice::clearScreen()
 
     /* Really Nice Perspective Calculations */
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }

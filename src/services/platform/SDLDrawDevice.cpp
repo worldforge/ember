@@ -128,6 +128,11 @@ void dime::SDLDrawDevice::update()
     SDL_UpdateRect(mySurface, 0, 0, mySurface->w, mySurface->h);
 }
 
+void dime::SDLDrawDevice::init()
+{
+  // TODO: Placeholder for now import stuff from application.cpp
+}
+
 void dime::SDLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
 {
     Uint32 myColor = SDL_MapRGB(mySurface->format,

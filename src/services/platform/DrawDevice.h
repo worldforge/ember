@@ -112,6 +112,7 @@ public:
     */
     virtual void blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL_Surface *src) = 0;
     virtual void update() = 0;
+    virtual void init() = 0;
 };
  
 }

@@ -48,7 +48,7 @@ namespace dime {
         // Private Variables
         //======================================================================
     private:
-		/*
+      /**
 		 * the surface on which we perform all operations
 		 */
         SDL_Surface *mySurface;
@@ -61,7 +61,7 @@ namespace dime {
         //----------------------------------------------------------------------
         // Constructors
 
-        /*
+        /**
 		 * The default constructor which requires an SDL_Surface pointer on which to operate.
 		 */
         SDLDrawDevice(SDL_Surface *surface)// : myDimensions(surface->w,surface->h) Why doesn't this work?
@@ -74,7 +74,7 @@ namespace dime {
         //----------------------------------------------------------------------
         // Destructor
 
-        /*
+        /**
 		 * The virtual destructor
 		 */
         virtual ~SDLDrawDevice()
@@ -82,22 +82,22 @@ namespace dime {
 		}        
 		//---------------------------------------------------------------------
 		// Other public methods
-        /*
+        /**
 		 * Draw a pixel of Color "color" at (x.y)
 		 */
         virtual void drawPixel(int x, int y, Color color);
 
-        /*
+        /**
          * Draw a line from (x1,y1) to (x2, y2) with Color "color"
          */
         virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
 
-        /*
+        /**
          * Fill a rectangle with Color.  The rectangle is defined by destRect
          */
         virtual void fillRect(SDL_Rect *destRect, Color color);
 
-        /*
+        /**
          * blits the src surface to our surface.  Src rect defines which portion of the src to blit.
          * 
          *@param srcRect the SDL_Rect to blit from the src surface.  Use the whole surface if it's NULL
@@ -106,7 +106,7 @@ namespace dime {
          */
         virtual void blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL_Surface *src);
 
-        /*
+        /**
          * creates a gradient rect on our surface size and position equal to destRect
          */
         virtual void drawGradient(SDL_Rect *destRect, 
@@ -115,11 +115,15 @@ namespace dime {
                                   Color leftBottom, 
                                   Color rightBottom);
 
-        /*
+        /**
          * does a full update of our surface
          */
         virtual void update();
-   	
+
+	/**
+	 *
+	 */
+   	virtual void init();
     };
 
 }
