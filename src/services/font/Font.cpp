@@ -193,7 +193,8 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
 bool dime::Font::sizeText(FontString text, int *w, int *h)
 {
     int status;
-    int x, z, index;
+    int x, z;
+    unsigned int index;
     int minx, maxx;
     int miny, maxy;
     Glyph *glyph;

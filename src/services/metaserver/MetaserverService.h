@@ -71,13 +71,13 @@ class MetaserverService: public Service, public SigC::Object
 
 	void stop(int code) ;
 
-   	void GotServerCount(int count);
+   	void gotServerCount(int count);
 	
-	void GotFailure(const std::string& msg);
+	void gotFailure(const std::string& msg);
 
-	void ReceivedServerInfo(Eris::ServerInfo sInfo);
+	void receivedServerInfo(Eris::ServerInfo sInfo);
 	
-	void CompletedServerList();
+	void completedServerList();
 
 	  //	void poll();
 

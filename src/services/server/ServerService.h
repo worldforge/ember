@@ -22,6 +22,7 @@
 #include <framework/Service.h>
 
 #include <Eris/Connection.h>
+#include <Eris/Lobby.h>
 
 #include <sigc++/object.h>
 
@@ -46,6 +47,11 @@ class ServerService: public Service, public SigC::Object
    * Holds our connection to the server
    */
     Eris::Connection *myConn;
+
+  /**
+   * Holds the lobby of this server
+   */
+    Eris::Lobby *myLobby;
 
     short myPort;
     string myHost;
@@ -73,17 +79,17 @@ class ServerService: public Service, public SigC::Object
 
 	void stop(int code);
 	
-	void GotFailure(const string& msg);
+	void gotFailure(const string& msg);
 
-	void Connected();
+	void connected();
 
-	bool Disconnecting();
+	bool disconnecting();
 
-	void Disconnected();
+	void disconnected();
 
-	void StatusChanged(Eris::BaseConnection::Status);
+	void statusChanged(Eris::BaseConnection::Status);
 
-	void Timeout(Eris::BaseConnection::Status);
+	void timeout(Eris::BaseConnection::Status);
 }; //ServerService
 
 } // namespace dime

@@ -1,6 +1,6 @@
 AC_INIT(src/main/Dime.cpp)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(Dime, 0.0.1)
+AM_INIT_AUTOMAKE(Dime, 0.1.3)
 
 dnl Detect the canonical host and target build environment.
 AC_CANONICAL_HOST

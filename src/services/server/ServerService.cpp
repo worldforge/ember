@@ -35,7 +35,8 @@ namespace dime
 
 
 	/* ctor */
-  ServerService::ServerService(const std::string& host, short port ) : myPort(port), myHost(host)
+  ServerService::ServerService(const std::string& host, short port ) : myConn(NULL), myLobby(NULL),
+                                                                        myPort(port), myHost(host)
 	{
 	    setName("Server Service");
 		setDescription("Service for Server session");
@@ -58,12 +59,12 @@ namespace dime
 		myConn = Connection::Instance();
 
 		// Bind failure signal
-		myConn->Failure.connect(SigC::slot(*this, &ServerService::GotFailure));
-		myConn->Connected.connect(SigC::slot(*this, &ServerService::Connected));
-		myConn->Disconnected.connect(SigC::slot(*this, &ServerService::Disconnected));
-		myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::Disconnecting));
-		myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::StatusChanged));
-		myConn->Timeout.connect(SigC::slot(*this, &ServerService::Timeout));
+		myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
+		myConn->Connected.connect(SigC::slot(*this, &ServerService::connected));
+		myConn->Disconnected.connect(SigC::slot(*this, &ServerService::disconnected));
+		myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::disconnecting));
+		myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
+		myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
 		try {
 		    // If the connection fails here an exception is thrown
@@ -86,38 +87,38 @@ namespace dime
 		setStatus(Service::OK);
 		setRunning( false );
 		myConn->disconnect();
-		delete myConn;
+		//delete myConn;
 		myConn=NULL;
 	}
 	
-	void ServerService::GotFailure(const string& msg)
+	void ServerService::gotFailure(const string& msg)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
 	}	
 	
-	void Connected()
+	void connected()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
     // Set up the lobby
 	}
 
-	bool Disconnecting()
+	bool disconnecting()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnecting"<< ENDM;
 	  return true;
 	}
 
-	void Disconnected()
+	void disconnected()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
 	}
 
-	void StatusChanged(Eris::BaseConnection::Status status)
+	void statusChanged(Eris::BaseConnection::Status status)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Status Changed to: "<<status<<ENDM;
 	}
 
-	void Timeout(Eris::BaseConnection::Status status)
+	void timeout(Eris::BaseConnection::Status status)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Connection Timed Out"<< ENDM;
 	}

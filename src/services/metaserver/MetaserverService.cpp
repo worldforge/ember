@@ -69,10 +69,10 @@ namespace dime
 		setRunning( true );
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
-		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::GotServerCount));
-		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::GotFailure));
-		msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::ReceivedServerInfo));
-		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::CompletedServerList));
+		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::gotServerCount));
+		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
+		msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
+		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
 		listed = false;
 
 		return Service::OK;
@@ -85,17 +85,17 @@ namespace dime
 		setRunning( false );
 	}
 
-	void MetaserverService::GotServerCount(int count)
+	void MetaserverService::gotServerCount(int count)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got " << count << " game servers." << ENDM;
 	}
     
-    void MetaserverService::GotFailure(const string& msg)
+    void MetaserverService::gotFailure(const string& msg)
     {
         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
     }
     
-    void MetaserverService::ReceivedServerInfo(Eris::ServerInfo sInfo)
+    void MetaserverService::receivedServerInfo(Eris::ServerInfo sInfo)
     {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
 										  << "Hostname: " <<sInfo.getHostname()
@@ -108,7 +108,7 @@ namespace dime
 										  << ENDM;
     return;
   }
-  void MetaserverService::CompletedServerList()
+  void MetaserverService::completedServerList()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Server List completed." << ENDM;
 	  listed = true;
@@ -130,13 +130,6 @@ namespace dime
 
 		return;
 	}
-	
-#if 0
-  	void MetaserverService::poll()
-	{
-	  //msrv->poll(); Non existant
-	}
-#endif
-	
+
 } // namespace dime
 
