@@ -27,7 +27,6 @@
 #include <string>
 
 namespace dime {
-	namespace framework {
 
 /**
  * Abstract class for interface common denominator of services.
@@ -278,7 +277,6 @@ class Service
 
 }; // Service
 
-	} // namespace framework
 } // namespace dime
 
 #endif

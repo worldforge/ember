@@ -6,10 +6,6 @@ using namespace dime::framework;
 
 namespace dime
 {
-   namespace services
-     {
-	namespace test
-	  {
 
 	/* ctor */
 	     TestService::TestService()
@@ -45,11 +41,4 @@ namespace dime
           setRunning( false );
 	       }
 
-	  }
-	// namespace testservice
-     }
-   // namespace services
-}
-// namespace dime
-//
-//
+} // namespace dime

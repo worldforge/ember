@@ -24,7 +24,6 @@
 #include <hash_map>
 
 namespace dime {
-	namespace services {
 
 /**
  * Dime Configuration Service
@@ -33,7 +32,7 @@ namespace dime {
  *
  * @see dime::Service
  */
-class ConfigService: public framework::Service
+class ConfigService: public Service
 {
     //======================================================================
     // Private Variables
@@ -86,7 +85,6 @@ class ConfigService: public framework::Service
 
 }; //ConfigService
 
-	} // namespace services
 } // namespace dime
 
 #endif

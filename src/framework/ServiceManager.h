@@ -25,7 +25,6 @@
 #include <vector>
 
 namespace dime {
-   namespace framework {
 
 /**
  * Service Manager: keeps track and controls the dime services.
@@ -128,7 +127,6 @@ class ServiceManager
    
 }; // Service
 
-	} // namespace framework
 } // namespace dime
 
 #endif

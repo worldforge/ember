@@ -5,8 +5,6 @@
 
 namespace dime
 {
-   namespace framework
-     {
 
      /** Typedef for the iterator */
 	typedef std::vector<Service*> Container;
@@ -78,5 +76,4 @@ namespace dime
 		return false; // the service was not there
 	}	
 
-	} // namespace framework
 } // namespace dime

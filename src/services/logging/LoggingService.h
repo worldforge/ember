@@ -40,7 +40,6 @@ using namespace std;
 // Include system headers here
 
 namespace dime {
-namespace services {
 
 //General TODOs:
 // - resolve minor TODOs
@@ -119,7 +118,7 @@ const int MESSAGE_BUFFER_SIZE = 1024;
  * @author Tim Enderling
  */
 
-class LoggingService: public framework::Service
+class LoggingService: public Service
 {
     //======================================================================
     // Public Constants and enums
@@ -615,9 +614,8 @@ class LoggingService: public framework::Service
 	}
 							
 
-}; // End of class
+}; // LoggingService
 
-} // End of subsystem namespace
-} // End of application namespace
+} // namespace dime
 
 #endif

@@ -32,7 +32,6 @@
 #include <list>
 
 namespace dime {
-	namespace services {
 
 /**
  * A service for getting input from the user, and sending it to
@@ -263,7 +262,6 @@ class InputService
 
 }; // InputService
 
-	} // namespace services
 } // namespace dime
 
 #endif

@@ -23,8 +23,6 @@
 #include <string>
 
 namespace dime {
-	namespace services {
-		namespace test {
 
 /**
  * Basic test service for testing and debugging.
@@ -34,7 +32,7 @@ namespace dime {
  * @see dime::framework::Service
  * @see dime::framework::AbstractService
  */
-class TestService : public framework::Service
+class TestService : public Service
 {
     //======================================================================
     // Private Variables
@@ -71,8 +69,6 @@ class TestService : public framework::Service
 
 }; // TestService
 
-		} // namespace testservice
-	} // namespace services
 } // namespace dime
 
 #endif
