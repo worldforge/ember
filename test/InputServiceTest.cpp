@@ -18,6 +18,12 @@
 
 #ifdef USE_CPP_UNIT
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "services/gui/GuiService.h"
+
 #include "InputServiceTest.h"
 
 namespace dime
