@@ -19,7 +19,8 @@ $(top_srcdir)/src/framework/libFramework.a
 
 
 DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
-		   ConsoleObjectImpl.cpp
+		   ConsoleObjectImpl.cpp \
+		   MediaDeployer.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 
