@@ -45,7 +45,7 @@ class MetaserverService: public Service, public SigC::Object
     private:
 
     Eris::Meta * msrv;
-    //Eris::Serverlist serverlist;
+    Eris::ServerList serverlist;
     bool listed;
 
 		
