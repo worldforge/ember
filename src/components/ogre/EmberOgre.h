@@ -24,7 +24,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.2  2003-04-24 20:02:08  aglanor
+ *      Revision 1.3  2003-04-24 20:27:28  nikal
+ *      Adding Ogre:: to all the variables which are in the Ogre namespace
+ *
+ *      Revision 1.2  2003/04/24 20:02:08  aglanor
  *      Makefile and include changes after the renaming
  *
  *      Revision 1.1  2003/04/24 19:42:09  aglanor
@@ -104,7 +107,7 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre: virtual public SigC::Object, public ActionListener, public MouseListener
+class DimeOgre: virtual public SigC::Object, public Ogre::ActionListener, public Ogre::MouseListener
 {
 public:
     /// Standard constructor
@@ -247,21 +250,21 @@ public:
 
 
 	// TODO: these are for tests. Remove them later
-	Entity* mShip;
-	SceneNode* mShipNode;
+	Ogre::Entity* mShip;
+	Ogre::SceneNode* mShipNode;
 
 protected:
-    Root *mRoot;
-    Camera* mCamera;
-    SceneManager* mSceneMgr;
-    FrameListener* mFrameListener;
-    RenderWindow* mWindow;
+	Ogre::Root *mRoot;
+	Ogre::Camera* mCamera;
+	Ogre::SceneManager* mSceneMgr;
+	Ogre::FrameListener* mFrameListener;
+	Ogre::RenderWindow* mWindow;
 
     // These internal methods package up the stages in the startup process
     /** Sets up the application - returns false if the user chooses to abandon configuration. */
     virtual bool setup(void)
     {
-        mRoot = new Root();
+        mRoot = new Ogre::Root();
 
         setupResources();
 
@@ -273,7 +276,7 @@ protected:
         createViewports();
 
         // Set default mipmap level (NB some APIs ignore this)
-        TextureManager::getSingleton().setDefaultNumMipMaps(5);
+        Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
 
         // Create the scene
         createScene();
@@ -306,7 +309,7 @@ protected:
     virtual void chooseSceneManager(void)
     {
         // Get the SceneManager, in this case a generic one
-        mSceneMgr = mRoot->getSceneManager(ST_EXTERIOR_CLOSE);
+        mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
     }
 
     void createCamera(void);
@@ -318,43 +321,43 @@ protected:
     virtual void createViewports(void)
     {
         // Create one viewport, entire window
-        Viewport* vp = mWindow->addViewport(mCamera);
-        vp->setBackgroundColour(ColourValue(0,0,0));
+        Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+        vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
     }
 
     /// Method which will define the source of resources (other than current folder)
     virtual void setupResources(void)
     {
         // Load resource paths from config file
-        ConfigFile cf;
+        Ogre::ConfigFile cf;
         cf.load("resources.cfg");
 
         // Go through all settings in the file
-        ConfigFile::SettingsIterator i = cf.getSettingsIterator();
+        Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
-        String typeName, archName;
+        Ogre::String typeName, archName;
         while (i.hasMoreElements())
         {
             typeName = i.peekNextKey();
             archName = i.getNext();
-            ResourceManager::addCommonArchiveEx( archName, typeName );
+            Ogre::ResourceManager::addCommonArchiveEx( archName, typeName );
         }
     }
 
-	void mouseClicked(MouseEvent* e) {}
-	void mouseEntered(MouseEvent* e) {}
-	void mouseExited(MouseEvent* e) {}
-	void mousePressed(MouseEvent* e) {}
-	void mouseReleased(MouseEvent* e) {}
+	void mouseClicked(Ogre::MouseEvent* e) {}
+	void mouseEntered(Ogre::MouseEvent* e) {}
+	void mouseExited(Ogre::MouseEvent* e) {}
+	void mousePressed(Ogre::MouseEvent* e) {}
+	void mouseReleased(Ogre::MouseEvent* e) {}
 
-	void actionPerformed(ActionEvent* e)
+	void actionPerformed(Ogre::ActionEvent* e)
 	{
         // Think about doing something here
         std::string action = e->getActionCommand();
-        LogManager::getSingleton().logMessage("Got event: " + action);
+        Ogre::LogManager::getSingleton().logMessage("Got event: " + action);
 
         if (action == "SS/Setup/HostScreen/Exit")
-            Root::getSingleton().getRenderSystem()->shutdown();
+            Ogre::Root::getSingleton().getRenderSystem()->shutdown();
 	}
 
 
