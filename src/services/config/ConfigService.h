@@ -21,7 +21,7 @@
 
 #include <framework/Service.h>
 #include <string>
-#include <hash_map>
+#include <map>
 
 namespace dime {
 
@@ -48,7 +48,7 @@ class ConfigService: public Service
   			}
 		};
 
-		std::hash_map<const char*, const char*, hash<const char*>, eqstr> inputMap;
+		std::map<const char*, const char*, eqstr> inputMap;
 
 		
     //----------------------------------------------------------------------

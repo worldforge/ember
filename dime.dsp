@@ -98,7 +98,7 @@ SOURCE=.\src\main\Application.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\main\Application.h
+SOURCE=.\src\services\config\ConfigService.cpp
 # End Source File
 # Begin Source File
 
@@ -106,23 +106,19 @@ SOURCE=.\src\main\Dime.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\main\DimeServices.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\logging\LoggingService.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\logging\LoggingService.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\framework\Service.h
+SOURCE=.\src\services\metaserver\MetaserverService.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\framework\ServiceManager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\framework\ServiceManager.h
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
@@ -130,7 +126,35 @@ SOURCE=.\src\framework\ServiceManager.h
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\src\main\Application.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\config\ConfigService.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\main\DimeServices.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\input\InputService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\logging\LoggingService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\metaserver\MetaserverService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\framework\Service.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\framework\ServiceManager.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"

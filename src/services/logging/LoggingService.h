@@ -20,7 +20,7 @@
 #define LOGGINGSERVICE_H
 
 //#ifdef _MSC_VER	
-	#pragma warning( disable : 4786 )
+#pragma warning( disable : 4786 )
 //#endif 
 
 // Include other headers of the current program here
@@ -33,7 +33,7 @@
 #include <stdio.h> 
 #include <stdarg.h>
 #include <ctime>
-//#include <varargs.h> //Needed by unix?
+//#include <varargs.h> //TODO: Needed by unix?
 
 using namespace std;
 
@@ -228,7 +228,7 @@ class LoggingService: public Service
 				(importance == CRITICAL) ?  "CRITICAL" : 
 					((importance == ERROR) ?  "ERROR" : 
 						((importance == WARNING) ? "WARNING" : "INFO")),
-				file.data(), line, message.data());
+				file.c_str(), line, message.c_str());
 		}
 
 		FILE * getFile()
