@@ -18,6 +18,7 @@
 */
 
 #include "ConfigService.h"
+#include "services/logging/LoggingService.h"
 
 #include <iostream>
 
@@ -64,9 +65,9 @@ namespace dime
 
     Service::Status ConfigService::start()
     {
-	cout << "TRACE: Config service started (TODO: this should go through logging service)" << endl;
-	setRunning(true);
-	return Service::OK;
+		setRunning(true);
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
+		return Service::OK;
     }
 
     void ConfigService::stop(int code)

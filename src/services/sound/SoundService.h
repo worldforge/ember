@@ -19,8 +19,8 @@
 #ifndef SOUNDSERVICE_H
 #define SOUNDSERVICE_H
 
-#define NUM_BUFFERS 1
-#define NUM_SOURCES 1
+#define NUM_WORLD_SOURCES 16
+#define NUM_WORLD_BUFFERS 16
 
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>	// so this object is able to listen to console commands
@@ -29,11 +29,16 @@
 #include <AL/alc.h>
 #include <AL/alut.h>
 
-/* here i should do the AL includes
-#include <Eris/Connection.h>
-#include <Eris/Player.h>
-#include <Eris/Lobby.h>
-#include <Eris/World.h>
+/*
+#ifdef _WIN32  // include para Windows
+#include <al\al.h>
+#include <al\alut.h>
+#endif
+
+#ifdef _LINUX // include para Linux
+#include <AL/al.h>
+#include <AL/alut.h>
+#endif
 */
 
 // #include <sigc++/object.h>
@@ -59,9 +64,19 @@ class SoundService: public Service, public ConsoleObject
 
 
 
+	/** System source - this source will play system sounds, like user input request or program error. Will always remain in the same relative position to the listener. */
+	static ALuint systemSource;
+	/** System buffer - buffer used to load system sounds files */
+	static ALuint systemBuffer;
+	/** Music source - this source will play background music. Will always remain in the same relative position to the listener. */
+	static ALuint musicSource;
+	/** Music buffer - buffer used to load background music files */
+	static ALuint musicBuffer;
+	/** World sources - array of sources to play world sounds. They will be placed in 3D space. This field may change depending on the data model */
+	ALuint worldSources[NUM_WORLD_SOURCES];
+	/** Wold buffers - array of buffers for loading world sounds */
+	ALuint worldBuffers[NUM_WORLD_BUFFERS];
 
-	ALuint myBuffers[NUM_BUFFERS];
-	ALuint mySources[NUM_SOURCES];
 
 	ALsizei size,freq,bits,format;
 	void *data;
@@ -97,7 +112,9 @@ class SoundService: public Service, public ConsoleObject
 
 	void TestPlatform(void);
 
-
+	// List of SoundService's console commands
+	static const char * const PLAYSOUND = "playsound";
+	static const char * const PLAYMUSIC = "playmusic";
 
 
 }; //SoundService

@@ -26,19 +26,7 @@
 /*
 #include <list>
 #include <algorithm>
-#include <iostream>
 */
-
-#ifdef _WIN32  // include para Windows
-#include <al\al.h>
-#include <al\alut.h>
-#endif
-
-#ifdef _LINUX // include para Linux
-#include <AL/al.h>
-#include <AL/alut.h>
-#endif
-
 
 
 
@@ -49,8 +37,10 @@ namespace dime
 
   /* ctor */
   SoundService::SoundService()
-  {
-  }
+	{
+		setName("Sound Service");
+		setDescription("Service for reproduction of sound effects and background music");
+	}
 
   /* dtor */
   SoundService::~SoundService()
@@ -75,25 +65,53 @@ namespace dime
 		alutInit(NULL,0);
 
 		// Generate buffers
-		alGenBuffers(NUM_BUFFERS,myBuffers);
-
-		for (int i=0;i<NUM_BUFFERS;i++)
+		/*
+		alGenBuffers(1,&systemBuffer);
+		if (!alIsBuffer(systemBuffer)
 		{
-			if (!alIsBuffer(myBuffers[i]))
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating system buffer" << ENDM;
+			return Service::FAILURE;
+		}
+*//*
+		//alGenBuffers(1,&musicBuffer);
+		if (!alIsBuffer(musicBuffer)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating music buffer" << ENDM;
+			return Service::FAILURE;
+		}*/
+
+		alGenBuffers(NUM_WORLD_BUFFERS,worldBuffers);
+		for (int i=0;i<NUM_WORLD_BUFFERS;i++)
+		{
+			if (!alIsBuffer(worldBuffers[i]))
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating buffers" << ENDM;
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating world buffers" << ENDM;
 				return Service::FAILURE;
 			}
 		}
 
+		/*
 		// Generate sources
-		alGenSources(NUM_SOURCES,mySources);
-
-		for (int i=0;i<NUM_SOURCES;i++)
+		alGenSources(1,systemSource);
+		if (!alIsSource(systemSource)
 		{
-			if (!alIsSource(mySources[i]))
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating system source" << ENDM;
+			return Service::FAILURE;
+		}
+
+		alGenSources(1,&musicSource);
+		if (!alIsSource(musicSource)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating music source" << ENDM;
+			return Service::FAILURE;
+		}*/
+
+		alGenSources(NUM_WORLD_SOURCES,worldSources);
+		for (int i=0;i<NUM_WORLD_SOURCES;i++)
+		{
+			if (!alIsSource(worldSources[i]))
 			{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating sources" << ENDM;
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating world sources" << ENDM;
 				return Service::FAILURE;
 			}
 		}
@@ -101,7 +119,7 @@ namespace dime
 
 		TestPlatform();  // a test
 
-		alutLoadWAV("boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
+		alutLoadWAV("../../bin/boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
 		{
@@ -122,7 +140,7 @@ namespace dime
 
 	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "freq: " << freq << ENDM;
 
-		alBufferData(myBuffers[0],format,data,size,freq);				// Connect WAV to buffer
+		alBufferData(worldBuffers[0],format,data,size,freq);				// Connect WAV to buffer
 
 		if(alGetError() != AL_NO_ERROR)
 		{
@@ -150,7 +168,7 @@ namespace dime
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Listener Parameters OK" << ENDM;
 			}
 
-		alSourcef(mySources[0],AL_PITCH,1.0f); 					// source Frequency
+		alSourcef(worldSources[0],AL_PITCH,1.0f); 					// source Frequency
 
 		error = alGetError();
 			if(error != AL_NO_ERROR)
@@ -160,7 +178,7 @@ namespace dime
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source parameter pitch OK" << ENDM;
 			}
 
-		alSourcef(mySources[0],AL_GAIN,1.0f);						// source gain
+		alSourcef(worldSources[0],AL_GAIN,1.0f);						// source gain
 
 		error = alGetError();
 			if(error != AL_NO_ERROR)
@@ -172,7 +190,7 @@ namespace dime
 
 
 
-		alSourcefv(mySources[0],AL_POSITION,sourcePos);	// source position
+		alSourcefv(worldSources[0],AL_POSITION,sourcePos);	// source position
 
 		error = alGetError();
 			if(error != AL_NO_ERROR)
@@ -184,7 +202,7 @@ namespace dime
 
 
 
-		alSourcefv(mySources[0],AL_VELOCITY,sourceVel);	// source velocity
+		alSourcefv(worldSources[0],AL_VELOCITY,sourceVel);	// source velocity
 		error = alGetError();
 			if(error != AL_NO_ERROR)
 			{
@@ -194,15 +212,7 @@ namespace dime
 			}
 
 
-		error = alGetError();
-			if(error != AL_NO_ERROR)
-			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameters: " << error << ENDM;
-			} else {
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source Parameters OK" << ENDM;
-			}
-
-		alSourcei(mySources[0],AL_LOOPING,AL_FALSE);		// looping play
+		alSourcei(worldSources[0],AL_LOOPING,AL_FALSE);		// looping play
 
 		error = alGetError();
 			if(error != AL_NO_ERROR)
@@ -214,7 +224,7 @@ namespace dime
 
 
 
-		alSourcei(mySources[0],AL_BUFFER,myBuffers[0]);		// link the source to the buffer
+		alSourcei(worldSources[0],AL_BUFFER,worldBuffers[0]);		// link the source to the buffer
 
 		error = alGetError();
 			if(error != AL_NO_ERROR)
@@ -227,7 +237,9 @@ namespace dime
 
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Press 1 to play sound, 2 to stop, 3 to go on with dime." << ENDM;
 
-		/*
+
+// This code is not useful anymore. Kept in order to use it as base for other methods, but will be removed. Do not uncomment, it does not work anymore. Use /playsound console command instead.
+/*
 		char a; bool loop = true;
 	do {
 		cin >> a;
@@ -235,11 +247,11 @@ namespace dime
  		switch (a)
 		{
 			case '1':
-				alSourcePlay(mySources[0]);
+
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "playing"<< ENDM;
 				break;
 			case '2':
-				alSourceStop(mySources[0]);
+				alSourceStop(worldSources[0]);
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "stopping" << ENDM;
 				break;
 			case '3':
@@ -253,7 +265,7 @@ namespace dime
 			}
 
 	} while (loop);
-*/
+
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
@@ -262,16 +274,18 @@ namespace dime
 			return Service::FAILURE;
 		}
 
-	alSourceStop(mySources[0]);
+	alSourceStop(worldSources[0]);
+*/
 
 
+		Console::registerCommand(PLAYSOUND,this);
+		Console::registerCommand(PLAYMUSIC,this);
 
-
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sound Service initialized" << ENDM;
-
-		setStatus(Service::OK);
 		setRunning( true );
+		setStatus(Service::OK);
+		setStatusText("Sound Service status OK.");
 
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
 		return Service::OK;
 
   }
@@ -279,15 +293,29 @@ namespace dime
 	/* Interface method for stopping this service 	*/
 	void SoundService::stop(int code)
 	{
+		alSourceStop(worldSources[0]);
 		alutExit();		// Finalize OpenAL
 		setStatus(Service::OK);
 		setRunning( false );
 	}
 
-  void SoundService::runCommand(const std::string &command, const std::string &args)
-  {
+	void SoundService::runCommand(const std::string &command, const std::string &args)
+	{
+		if(command == PLAYSOUND)
+		{
+			alSourcePlay(worldSources[0]);
+			int error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error playing sound: " << error << ENDM;
+			}
 
-  }
+		}
+		else if(command == PLAYMUSIC)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " I should be playing music" << ENDM;
+		}
+	}
 
 	ALboolean SoundService::LoadWAV(const char *fname,int buffer)
 	{
