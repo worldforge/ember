@@ -111,7 +111,8 @@ public:
 	
 	WFMath::Point<3> getWorldPositionForPoint(const AttachPoint* point);
 	inline bool isAttached() const { return mAttached; }
-	void setStartingBlock(const std::string& name);
+	
+	
 
 	inline void setPosition(WFMath::Point<3> position) { mPosition = position;}
 	inline void setOrientation(WFMath::Quaternion orientation) { mOrientation = orientation;}
@@ -156,11 +157,24 @@ public:
 	void compile();
 	
 	BuildingBlock* createBuildingBlock(BuildingBlockDefinition);
+	
+	/**
+	 *    deletes a building block from the blueprint
+	 * @param name 
+	 */
+//    	void deleteBuildingBlock(const std::string & name);
+
 	BuildingBlockBinding* addBinding(BuildingBlockBindingDefinition definition);
 	BuildingBlockBinding* addBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2);
 	const std::vector< BuildingBlock*> getAttachedBlocks() const;
+	const std::list< BuildingBlockBinding>* getBindings() const;
 
+	/**
+	 *    accessor for the name of the starting block
+	 * @param name 
+	 */
 	void setStartingBlock(const std::string& name);
+	const std::string& getStartingBlock() {return mName;}
 	
 	/**
 	 *    Places the unbound block in the supplied bindings correctly

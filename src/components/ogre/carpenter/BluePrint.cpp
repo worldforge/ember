@@ -35,7 +35,8 @@ BluePrint::BluePrint(const std::string & name, Carpenter* carpenter)
 // }
 
 BuildingBlock::BuildingBlock() 
-: mAttached(false)
+: mAttached(false), mPosition(0,0,0)
+
 {
 mOrientation.identity();
 
@@ -134,6 +135,17 @@ const std::vector< BuildingBlock*> BluePrint::getAttachedBlocks() const
 {
 	return mAttachedBlocks;
 }
+
+const std::list< BuildingBlockBinding>* BluePrint::getBindings() const
+{
+	return &mBindings;
+}
+
+
+// void BluePrint::deleteBuildingBlock(const std::string & name)
+// {
+// 	mBuildingBlocks.erase(name);
+// }
 
 BuildingBlock* BluePrint::createBuildingBlock(BuildingBlockDefinition definition)
 {

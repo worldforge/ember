@@ -27,8 +27,71 @@
 #include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "JesusPickerObject.h"
 
+#include <xercesc/dom/DOMWriter.hpp>
+
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
+#include <xercesc/util/OutOfMemoryException.hpp>
+
+
+
+
+using namespace xercesc;
 
 namespace EmberOgre {
+
+
+//taken from Xerces C++ Sample CreateDOMDocument
+// ---------------------------------------------------------------------------
+//  This is a simple class that lets us do easy (though not terribly efficient)
+//  trancoding of char* data to XMLCh data.
+// ---------------------------------------------------------------------------
+class XStr
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    XStr(const char* const toTranscode)
+    {
+        // Call the private transcoding method
+        fUnicodeForm = XMLString::transcode(toTranscode);
+    }
+
+    ~XStr()
+    {
+        XMLString::release(&fUnicodeForm);
+    }
+
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const XMLCh* unicodeForm() const
+    {
+        return fUnicodeForm;
+    }
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fUnicodeForm
+    //      This is the Unicode XMLCh format of the string.
+    // -----------------------------------------------------------------------
+    XMLCh*   fUnicodeForm;
+};
+
+#define X(str) XStr(str).unicodeForm()
+
+
+
+
+
+
+
+
+
+
 
 Jesus::Jesus(Carpenter::Carpenter* carpenter)
 : mCarpenter(carpenter)
@@ -400,6 +463,128 @@ void Jesus::fillFromElement(xercesc::DOMElement* element, T& geometryObject)
 
 }
 
+void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, std::string filename)
+{
+	if (filename == "") {
+		return;
+	}
+	
+	try {
+	        xercesc::XMLPlatformUtils::Initialize();
+	}
+	catch (const xercesc::XMLException& toCatch) {
+	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
+	        std::cout << "Error during initialization! :\n"
+	         << message << "\n";
+	    xercesc::XMLString::release(&message);
+	    return;
+	}
+	
+	
+   {
+       //  Nest entire test in an inner block.
+       //  The tree we create below is the same that the XercesDOMParser would
+       //  have created, except that no whitespace text nodes would be created.
+
+       // <company>
+       //     <product>Xerces-C</product>
+       //     <category idea='great'>XML Parsing Tools</category>
+       //     <developedBy>Apache Software Foundation</developedBy>
+       // </company>
+
+       DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("LS"));
+       DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+       XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(X(filename.c_str()));
+
+       if (impl != NULL)
+       {
+           try
+           {
+               DOMDocument* doc = impl->createDocument(
+                           0,                    // root element namespace URI.
+                           X("blueprint"),         // root element name
+                           0);                   // document type object (DTD).
+
+               DOMElement* rootElem = doc->getDocumentElement();
+			   
+			   //set the starting block
+              rootElem->setAttribute(X("startingblock"), X(blueprint->getStartingBlock().c_str()));
+			   
+			  //now iterate over all building blocks
+               DOMElement*  bblocksElem = doc->createElement(X("buildingblocks"));
+               rootElem->appendChild(bblocksElem);
+			   
+			   const std::vector< Carpenter::BuildingBlock*> bblocks = blueprint->getAttachedBlocks();
+			   
+			   std::vector< Carpenter::BuildingBlock*>::const_iterator I = bblocks.begin();
+			   std::vector< Carpenter::BuildingBlock*>::const_iterator I_end = bblocks.end();
+			   
+			   for (;I != I_end; ++I) {
+					DOMElement*  bblockElem = doc->createElement(X("buildingblock"));
+					bblockElem->setAttribute(X("blocktype"), X( (*I)->getBuildingBlockSpec()->getName().c_str() ));
+					bblockElem->setAttribute(X("name"), X((*I)->getName().c_str()));
+					bblocksElem->appendChild(bblockElem);
+			  		
+			   }
+			   
+			   
+			   //iterate over the bindings
+               DOMElement*  bindingsElem = doc->createElement(X("bindings"));
+               rootElem->appendChild(bindingsElem);
+			   
+			   const std::list< Carpenter::BuildingBlockBinding>* bindings = blueprint->getBindings();
+			   std::list< Carpenter::BuildingBlockBinding>::const_iterator J = bindings->begin();
+			   std::list< Carpenter::BuildingBlockBinding>::const_iterator J_end = bindings->end();
+			   
+			   for (;J != J_end; ++J) {
+					DOMElement*  bindingElem = doc->createElement(X("binding"));
+					bindingElem->setAttribute(X("block1"), X((*J).getBlock1()->getName().c_str()));
+					bindingElem->setAttribute(X("block2"), X((*J).getBlock2()->getName().c_str()));
+					const Carpenter::AttachPoint* point1 = (*J).getAttachPoint1();
+					std::string point1Name = point1->getAttachPair()->getName() + "/" + point1->getName();
+					const Carpenter::AttachPoint* point2 = (*J).getAttachPoint2();
+					std::string point2Name = point2->getAttachPair()->getName() + "/" + point2->getName();
+					bindingElem->setAttribute(X("point1"), X(point1Name.c_str()));
+					bindingElem->setAttribute(X("point2"), X(point2Name.c_str()));
+					
+					bindingsElem->appendChild(bindingElem);
+			  		
+			   }
+			   
+			  
+           		theSerializer->writeNode(myFormTarget, *doc);
+            delete theSerializer;
+            delete myFormTarget;
+
+//               doc->release();
+           }
+           catch (const OutOfMemoryException&)
+           {
+               XERCES_STD_QUALIFIER cerr << "OutOfMemoryException" << XERCES_STD_QUALIFIER endl;
+//               errorCode = 5;
+           }
+           catch (const DOMException& e)
+           {
+               XERCES_STD_QUALIFIER cerr << "DOMException code is:  " << e.code << XERCES_STD_QUALIFIER endl;
+//               errorCode = 2;
+           }
+           catch (...)
+           {
+               XERCES_STD_QUALIFIER cerr << "An error occurred creating the document" << XERCES_STD_QUALIFIER endl;
+//               errorCode = 3;
+           }
+       }  // (inpl != NULL)
+       else
+       {
+           XERCES_STD_QUALIFIER cerr << "Requested implementation is not supported" << XERCES_STD_QUALIFIER endl;
+//           errorCode = 4;
+       }
+   }
+
+   XMLPlatformUtils::Terminate();
+   //return errorCode;
+	
+}
 
 Carpenter::BluePrint* Jesus::loadBlueprint(std::string filename)
 {

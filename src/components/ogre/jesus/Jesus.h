@@ -110,10 +110,20 @@ public:
 	/**
 	 *    Loads and creates an instance of a BluePrint from a xml file.
 	 *    Note that you have to call compile() on the resulting BluePrint to get it to arrange the BuildingBlocks.
+	 *    NOTE: this should perhaps be moved to another class
 	 * @param filename 
 	 * @return 
 	 */
 	Carpenter::BluePrint* loadBlueprint(std::string filename);
+	
+	/**
+	 *    Saves the supplied blueprint to a xml filename
+	 *    NOTE: this should perhaps be moved to another class
+	 * @param blueprint 
+	 * @param filename 
+	 * @return 
+	 */
+	void saveBlueprintToFile(Carpenter::BluePrint* blueprint, std::string filename);
 	
 	/**
 	 *    Creates a new Model instance for the supplied block type.
