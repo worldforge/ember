@@ -13,6 +13,8 @@ void onMouseButtonDown(dime::MouseButtonEvent *event)
 
 void onMouseButtonUp(dime::MouseButtonEvent *event)
 {
+    exit(0);
+    
 }
 
 
@@ -26,8 +28,8 @@ int main(int argc, char **argv)
 	dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 
 	dime::Button myTestButton(dime::Rectangle(300,300,100,75));
-	myTestButton.setBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"masonwindowback.jpg"));
-	myTestButton.setHighlightBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"masonwindowback2.jpg"));
+	myTestButton.setBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"quitbutton2.png"));
+	myTestButton.setHighlightBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"quitbutton.png"));
 
 	dime::Panel myTestPanel(dime::Rectangle(200,200,300,200));
 	myTestPanel.setBackground(dime::RectangleRenderer(BITMAP,myTestPanel.getRectangle(),"masonwindowback2.jpg"));
