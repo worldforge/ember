@@ -140,6 +140,7 @@ AC_OUTPUT([
   src/framework/Makefile
   src/services/Makefile
   src/services/config/Makefile
+  src/services/logging/Makefile
   src/services/test/Makefile
   src/services/metaserver/Makefile
   src/services/input/Makefile

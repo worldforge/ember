@@ -1,4 +1,4 @@
-SUBDIRS = config metaserver input gui platform image font server datamodel test
+SUBDIRS = config logging metaserver input gui platform image font server datamodel test
 
 check_PROGRAMS = servicetest
 servicetest_SOURCES = ServiceTest.cpp

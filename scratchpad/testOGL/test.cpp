@@ -1,4 +1,6 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <iostream>
 #include <services/platform/RectangleRenderer.h>
 #include <services/platform/OGLDrawDevice.h>
 
@@ -11,7 +13,7 @@ int main(int argc, char **argv) {
   }
 
     /* Sets up OpenGL double buffering */
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   SDL_Surface *screen;
   screen=SDL_SetVideoMode(640,480,32,SDL_HWSURFACE|SDL_OPENGL|SDL_GL_DOUBLEBUFFER);
 
@@ -22,15 +24,18 @@ int main(int argc, char **argv) {
   }
   int done=0;
 
-  dime::OGLDrawDevice myDevice(screen->w, screen->h);
-
-  //dime::Rectangle myR(50,10, 1,1);
+	dime::OGLDrawDevice myDevice(screen->w, screen->h);
+	dime::Rectangle myR(50,10, 100,100);
   
-  //dime::RectangleRenderer myRR(myR, "test.png", dime::RectangleRenderer::TILE);
+  dime::RectangleRenderer myRR(myR, "nehe.bmp", dime::RectangleRenderer::TILE);
 
-  //myRR.render(&myDevice);
+  
+  SDL_Surface *picture;
+  picture = IMG_Load("test.png");
+  std::cout << picture->format->Rmask << " " << picture->format->Gmask << " "<< picture->format->Bmask ;
   myDevice.init();
   myDevice.clearScreen();
+  myRR.render(&myDevice);
   myDevice.drawPixel(100,100,dime::Color(100,100,100));
   myDevice.drawLine(0, 0, 100, 00, dime::Color(0,0,255));
   myDevice.update();
@@ -48,8 +53,9 @@ int main(int argc, char **argv) {
         if ( event.key.keysym.sym == SDLK_ESCAPE ) { done = 1; }
       }
     }
-
+	
     myDevice.clearScreen();
+    myRR.render(&myDevice);
     myDevice.drawPixel(100,100,dime::Color(100,100,100));
     myDevice.drawLine(0, 0, 100, 100, dime::Color(0,0,255));
     myDevice.update();
