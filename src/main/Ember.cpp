@@ -79,8 +79,16 @@ int main(int argc, char **argv)
         }
     catch ( dime::Exception e )
         {
-			std::cout << e.getError() << std::endl;
+	  std::cerr << "Uncaught Dime exception: "<< e.getError() << std::endl;
         }
+    catch ( Eris::BaseException e )
+      {
+	std::cerr << "Uncaught Eris exception: "<< e._msg << std::endl;
+      }
+    catch ( ... )
+      {
+	std::cerr << "Unknown exception dying" <<endl;
+      }
     
     return 0;
 }
