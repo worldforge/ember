@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "Widget.h"
+#include "Container.h"
 #include <services/platform/RectangleRenderer.h>
 #include <services/platform/SDLDrawDevice.h>
 
@@ -107,7 +108,9 @@ class Button : public Widget
     //======================================================================
     private:
 
-		RectangleRenderer myBackground;
+		RectangleRenderer myHighlightBackground;
+		RectangleRenderer myStandardBackground;
+		RectangleRenderer *myCurrentBackground;
 
     //======================================================================
     // Public Methods
@@ -156,7 +159,7 @@ class Button : public Widget
      */
     virtual ~Button()
     {
-		myParent = NULL;
+		if (myParent != NULL) myParent->removeWidget(this);
         // TODO: Free any allocated resources here.
     }
 
@@ -169,11 +172,19 @@ class Button : public Widget
     // Setters
 
     /**
-     * Sets the background RectangleRenderer of this Widget
+     * Sets the highlighted background RectangleRenderer of this Widget
      */	
-	virtual void setBackground(RectangleRenderer background)
+	virtual void setHighlightBackground(const RectangleRenderer &background)
 	{
-		myBackground = background;
+		myHighlightBackground = background;
+	}
+
+	/**
+     * Sets the standard background RectangleRenderer of this Widget
+     */	
+	virtual void setBackground(const RectangleRenderer &background)
+	{
+		myStandardBackground = background;
 	}
 
     //----------------------------------------------------------------------

@@ -105,9 +105,9 @@ class Widget : public SigC::Object
     /**
     * Creates a new Widget using default values.
     */
-    Widget()
+    Widget(): myParent(NULL)
     {
-		myParent = NULL;
+
     }
 
 
@@ -149,7 +149,7 @@ class Widget : public SigC::Object
     /**
     * Returns the rectangular area of this Widget
     */
-    virtual Rectangle getRectangle() const
+    virtual const Rectangle &getRectangle() const
     {
         return myRectangle;
     }

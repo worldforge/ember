@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.5  2002-03-31 19:15:46  tim
+ *      Revision 1.6  2002-04-01 07:18:46  adamgreg
+ *
+ *      Fixed segfault when destroying some widgets. Added standard and highlight RectangleRenderers to Button. Made RectangleRenderers use the new Rectangle class. Added another (blank for now) constructor to RectangleRenderer to make it fetch themescheme info to initialize itself with.
+ *
+ *      Revision 1.5  2002/03/31 19:15:46  tim
  *      Bugfixes, MSVC compatibility fixes, Since boost is working ImageService is now caching
  *
  *      Revision 1.4  2002/03/31 08:42:06  adamgreg
@@ -53,31 +57,31 @@
 /**
  * Constructor for a flat solid color RectangleRenderer.
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
+dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect,
         Uint8 red, Uint8 green, Uint8 blue)
 {
 	solidColor(red, green, blue);
-	myRect = *rect;
+	myRect = rect;
 }
 
 
 /**
  * Constructor for a flat solid color RectangleRenderer.
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
+dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect,
         dime::Color color )
 {
 	solidColor(color);
-	myRect = *rect;
+	myRect = rect;
 }
 
 /**
  * Constructor for a bitmap filled RectangleRenderer
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect, const std::string bitmapString)
+dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect, const std::string bitmapString)
 {
 	bitmap(bitmapString);
-	myRect = *rect;
+	myRect = rect;
 }
 
 
@@ -85,10 +89,10 @@ dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect, const
  * Constructor for a gradient filled RectangleRenderer
  */
 dime::RectangleRenderer::RectangleRenderer(int renderFlag, 
-                                           SDL_Rect *rect, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
+                                           const Rectangle &rect, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
 {
 	gradient(color1, color2, color3, color4);
-	myRect = *rect;
+	myRect = rect;
 }
 
 /**
@@ -173,12 +177,9 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
     SDL_Rect src, dest;
 	src.x = 0;
 	src.y = 0;
-	src.w = myRect.w;
-	src.h = myRect.h;
-    dest.x = myRect.x;
-    dest.y = myRect.y;
-    dest.w = myRect.w;
-    dest.h = myRect.h;
+	src.w = myRect.getWidth();
+	src.h = myRect.getHeight();
+	dest = myRect.getSDL_Rect();
     device->blitSurface(&src, &dest, mySurface);
     device->update();
 
@@ -190,20 +191,19 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
  */
 int dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
 {
-    device->fillRect(&myRect, myColor);
-    device->update();    
+    device->fillRect(&myRect.getSDL_Rect(), myColor);
+    device->update();
 	
 	//TODO: What should be returned here?
 	return 0;
 }
 
 /**
- * I really have no idea how to do a gradient.
- * This is going to be a real pain.
+ * Renders a gradient fill, blending a color from each corner.
  */
 int dime::RectangleRenderer::renderGradient(dime::DrawDevice *device)
 {
-    device->drawGradient(&myRect, myColor, myColor2, myColor3, myColor4);
+    device->drawGradient(&myRect.getSDL_Rect(), myColor, myColor2, myColor3, myColor4);
 	device->update();
 
 	//TODO: What should be returned here?
@@ -221,8 +221,8 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
     int colOffset, rowOffset;
     if(rows >0 && cols >0)
         {
-            colOffset = myRect.w / cols;
-            rowOffset = myRect.h / rows;
+            colOffset = myRect.getWidth() / cols;
+            rowOffset = myRect.getHeight() / rows;
         }
     else
         {
@@ -232,10 +232,10 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
     
     int topY, bottomY; //The y values of the top line and bottom sides
     int rightX, leftX;  // the x values of the right and left sides
-    topY = myRect.y;
-    bottomY = myRect.y+myRect.h;
-    leftX = myRect.x;
-    rightX = myRect.x+myRect.w;
+    topY = myRect.getY();
+    bottomY = myRect.getY()+myRect.getHeight();
+    leftX = myRect.getX();
+    rightX = myRect.getX()+myRect.getWidth();
     
 	int index;
 

@@ -22,6 +22,7 @@
 // Included headers from the current project
 #include <services/platform/Color.h>
 #include <services/platform/DrawDevice.h>
+#include <services/gui/Rectangle.h>
 
 // Included custom library headers
 
@@ -51,11 +52,7 @@ namespace dime {
      *
      * Ex:
      * dime::RectangleRenderer *myRectangleRenderer;
-     * SDL_Rect myRect;
-     * myRect.x = 0;
-     * myRect.y = 0;
-     * myRect.w = 64;
-     * myRect.h = 64;
+     * Rectangle myRect(0,0,64,64);
      * myRectangleRenderer = new dime::RectangleRenderer(FLAT_COLOR,
      *     &myRect, 100, 100, 255);
      * myRectangleRenderer->render(myScreen);
@@ -86,22 +83,22 @@ namespace dime {
         //======================================================================
     private:
 
-        /**
-       * The fill type of the rectangle
-       */
+		/**
+		 * The fill type of the rectangle
+		 */
         int myType;
 
-        /**
+      /**
        * The surface that this RectangleRenderer acts upon
        */
         SDL_Surface *mySurface;
 
-        /**
+      /**
        * Coordinates/size of the rectangle
        */
-        SDL_Rect myRect;
+        Rectangle myRect;
         
-        /*
+      /*
        * The colors
        */
         Color myColor;
@@ -124,33 +121,39 @@ namespace dime {
         // Constructors
 
 		/**
-       * Creates a new empty RectangleRenderer
-       */
+		 * Creates a new empty RectangleRenderer
+		 */
         RectangleRenderer()
 		{
 		}
 
 		/**
-       * Creates a new RectangleRenderer using supplied values..
-       */
-        RectangleRenderer(int renderFlag, SDL_Rect *rect,
+		 * Creates a new RectangleRenderer from a ThemeScheme obtained from ThemeService.
+		 * @param themeid string identifier specifying appropriate themescheme for this RR. Passed to InputService.
+		 */
+        RectangleRenderer(std::string themeid);
+
+		/**
+		 * Creates a new RectangleRenderer using supplied values..
+		 */
+        RectangleRenderer(int renderFlag, const Rectangle &rect,
                           Uint8 red, Uint8 green, Uint8 blue);
 
 		/**
 		 * Creates a new RectangleRenderer using supplied values..
 		 */
-        RectangleRenderer(int renderFlag, SDL_Rect *rect,
+        RectangleRenderer(int renderFlag, const Rectangle &rect,
                           Color color);
 
 		/**
 		 * Creates a new RectangleRenderer using supplied values..
 		 */
-        RectangleRenderer(int renderFlag, SDL_Rect *rect, const std::string bitmapString);
+        RectangleRenderer(int renderFlag, const Rectangle &rect, const std::string bitmapString);
 
         /**
 		 * Creates a new RectangleRenderer using supplied values..
 		 */
-        RectangleRenderer(int renderFlag, SDL_Rect *rect,
+        RectangleRenderer(int renderFlag, const Rectangle &rect,
                           Color color1, Color color2, Color color3, Color color4);
 
 
@@ -220,14 +223,9 @@ namespace dime {
         int renderFlat(DrawDevice *device);
 
         /**
-		 * Renders a gradient, might have to be several implementations
+		 * Renders a gradient
 		 */
         int renderGradient(DrawDevice *device);
-
-        /**
-		 * Render a diagonal gradient
-		 */
-        int renderDiagonalGradient(DrawDevice *device);
 
         /**
 		 * Renders a grid.  Going to be hard to do this one.

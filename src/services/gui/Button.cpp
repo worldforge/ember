@@ -2,19 +2,19 @@
 
 int dime::Button::draw()
 {
-	myBackground.render(&SDLDrawDevice(SDL_GetVideoSurface()));
+	myCurrentBackground->render(&SDLDrawDevice(SDL_GetVideoSurface()));
 	//TODO: what should be returned here?
 	return 0;
 }
 
 void dime::Button::highlight()
 {
-	myBackground.bitmap("masonwindowback2.jpg");
+	myCurrentBackground = &myHighlightBackground;
 }
 
 void dime::Button::lowlight()
 {
-	myBackground.bitmap("masonwindowback.jpg");
+	myCurrentBackground = &myStandardBackground;
 }
 
 bool dime::Button::checkMouseEvent(std::vector<int> coords)

@@ -23,5 +23,5 @@ dime::Widget &dime::Widget::operator= ( const dime::Widget &source )
 
 dime::Widget::~Widget()
 {
-	myParent->removeWidget(this);
+	if (myParent != NULL) myParent->removeWidget(this);
 }

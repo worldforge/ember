@@ -98,7 +98,7 @@ class Container : public Widget
      */
     virtual ~Container()
     {
-		myParent = NULL;
+		if (myParent != NULL) myParent->removeWidget(this);
         // TODO: Free any allocated resources here.
     }
 
