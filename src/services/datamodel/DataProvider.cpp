@@ -210,7 +210,7 @@ void DataProvider::fireSignal(std::string subpath, DataType event)
 	// Events for all parent data objects.
 	DataProvider * provider = this;
 
-	int a;
+	unsigned int a;
 	if (subpath.empty())
 	{		
 		provider = provider->myParent;

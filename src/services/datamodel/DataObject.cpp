@@ -297,7 +297,7 @@ std::string DataObject::getStringVal()
 		
 		std::string buffer = "{ ";
 
-		for (int i = 0; i < listOfChilds.size(); i++)
+		for (unsigned int i = 0; i < listOfChilds.size(); i++)
 		{
 			
 			buffer += listOfChilds[i];
@@ -469,8 +469,8 @@ void DataObject::setStringVal(std::string newValue)
 	}
 
 	{
-		double dest = 0.0;
-		sscanf(newValue.c_str(), "%2.10f", &dest);
+		float dest = 0.0;
+		sscanf(newValue.c_str(), "%f", &dest);
 		myProvider->setFloatVal(myKey, dest);
 	}
 }
@@ -500,7 +500,7 @@ void DataObject::getChildList(ChildList & childList)
 	std::vector<std::string> IDList;
 	myProvider->getChilds(myKey, IDList);			
 	
-	for (int i = 0; i < IDList.size(); i++)
+	for (unsigned int i = 0; i < IDList.size(); i++)
 	{
 		childList.push_back(getChild(IDList[i]));
 	}
@@ -668,7 +668,7 @@ static_cast<DataProvider*>(DataModelService::getInstance()->getRootProvider());
 		THROW1("Invalid subpath - needs no trailing '/': %s'.", subpath.c_str());
 	}
 
-	int i;
+	unsigned int i;
 	std::string	ID;
 
 	std::string path = DataProvider::makePath(provider->myPath, subpath);
