@@ -53,7 +53,11 @@ namespace dime
 
 			// Add a new input mapping for the keyboard for keys going from 0 to SDLK_PAGEDOWN numbered on the keyboard, fire the event on press and release, tie to EventGenerator::KeyboardPress
 			// repetition delay 500ms.
-			myInputService->addInputMapping(new dime::InputMapping(new RepetitionDevice(500), keyboard, SDLK_FIRST, SDLK_PAGEDOWN, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this, &dime::EventGenerator::KeyboardPress) ) );
+			RepetitionDevice * repDevice = new RepetitionDevice(1000, 200);
+			InputMapping * keyBoardMapping = new dime::InputMapping(repDevice, keyboard, SDLK_FIRST, SDLK_PAGEDOWN, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this, &dime::EventGenerator::KeyboardPress) );
+			myInputService->addInputMapping(keyBoardMapping);
+			keyBoardMapping->getSignal()->connect(SigC::slot(*repDevice, &dime::RepetitionDevice::switchOn) );
+		
 			// NULL out this lot
             myPointedWidget = NULL;
 			myMouseCaptureWidget = NULL;

@@ -22,7 +22,7 @@
 // Include other headers of the current program here
 #include <framework/Service.h>
 #include "InputMapping.h"
-#include "InputDevice.h"
+#include "RepetitionDevice.h"
 
 // Include library headers here
 #include <SDL/SDL_events.h>

@@ -278,18 +278,27 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 	}
 }
 
-RepetitionDevice::RepetitionDevice(long unsigned int delay):
+RepetitionDevice::RepetitionDevice(long unsigned int initialDelay, long unsigned int delay,
+								   bool alwaysRunning):
 	InputDevice(REPETITOR, 0, 0)
 {
-	myDelay = delay;
+	myInitialDelay = initialDelay;
+	myDelay = delay;	
+	myTimerID = 0;
 
-	myTimerID = SDL_AddTimer(delay, TimerCallback, static_cast<void*>(this));
+	if (alwaysRunning)
+	{
+		myTimerID = SDL_AddTimer(delay, TimerCallback, static_cast<void*>(this));	
+	}
+
 }
 
 RepetitionDevice::~RepetitionDevice()
 {
-	SDL_RemoveTimer(myTimerID);	
-	return;
+	if (myTimerID)
+	{
+		SDL_RemoveTimer(myTimerID);
+	}
 }
 
 Uint32 RepetitionDevice::TimerCallback(Uint32 interval, void *param)
@@ -301,9 +310,23 @@ Uint32 RepetitionDevice::TimerCallback(Uint32 interval, void *param)
 
 	SDL_PushEvent(&event);
 
-	return interval;
+	return ((RepetitionDevice*)param)->myDelay;
 }
 
+void RepetitionDevice::switchOn(InputDevice * motionDevice, InputDevice * keyDevice, 
+				const SDLKey & Key, InputMapping::InputSignalType type)
+{
+	if (type == InputMapping::KEY_PRESSED)
+	{
+		if (myTimerID)
+		{
+			SDL_RemoveTimer(myTimerID);
+			myTimerID = 0;
+		}
+
+		myTimerID = SDL_AddTimer(myInitialDelay, TimerCallback, static_cast<void*>(this));	
+	}
+}
 
 long unsigned int RepetitionDevice::getDelay()
 {

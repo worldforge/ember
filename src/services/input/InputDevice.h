@@ -317,69 +317,6 @@ class MouseDevice: public InputDevice
 	virtual void initAxis();
 };
 
-/**
- * Special derivation of input device for automatic repition. RepitionDevice 
- * Objects send motion events in constant delays. This can be useful for
- * key repetition.
- *
- * HINT: Because timer functions are called from other threads, the repetition
- * device uses the SDL message loop passing some SDL_USEREVENT to fix this.
- * 
- * TODO: Do we need some synchronizing between the pressing of a key and 
- * the starting of the delay? In this case every key would need it's own 
- * repetition device.
- */
-
-class RepetitionDevice: public InputDevice
-{
-    //======================================================================
-    // Private Variables
-    //======================================================================
-    private:
-	long unsigned int myDelay; //delay in milliseconds
-	SDL_TimerID myTimerID;
-
-	//======================================================================
-    // Public methods
-    //======================================================================
-	public:
-	
-    //----------------------------------------------------------------------
-    // Constructors & Destructor
-
-    /** 
-	 * Creates a repetition device. Since this is no actual SDL input device
-	 * no index or subindex is needed.
-	 */
-
-	RepetitionDevice(long unsigned int delay);
-
-    /** 
-	 * Deletes a RepetitionDevice instance. 
-	 */
-    virtual ~RepetitionDevice();
-
-
-    //----------------------------------------------------------------------
-    // Public properties
-
-	long unsigned int getDelay();
-
-	//======================================================================
-    // Protected methods
-    //======================================================================
-    protected:
-
-	/**
-	 * Is called back by the SDL and pushes a TIMEREVENT into the message loop.
-	 */
-
-	static Uint32 TimerCallback(Uint32 interval, void *param);
-	virtual bool handleEvent(SDL_Event & event);
-};
-
-
-
 } // namespace dime
 
 #endif

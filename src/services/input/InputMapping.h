@@ -344,6 +344,11 @@ class InputMapping
 		return myMotionDevice;
 	}
 
+	InputSignal * getSignal()
+	{
+		return &mySignal;
+	}
+
     //======================================================================
     // Protected methods
     //======================================================================
