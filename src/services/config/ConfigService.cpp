@@ -27,14 +27,10 @@ using namespace std;
 namespace dime
 {
 
-    ConfigService* ConfigService::theInstance = NULL;
-
-    ConfigService::ConfigService()
+    ConfigService::ConfigService() : Service()
     {
 	setName("Configuration Service");
 	setDescription("Service for management of dime user-defined configuration");
-        setStatus(OK);
-    	setRunning(true);
     	setStatusText("Configuration Service status OK.");
     }
 
@@ -48,19 +44,6 @@ namespace dime
     void ConfigService::setValue(const std::string& section, const std::string& key, const varconf::Variable& value)
     {
 	varconf::Config::inst()->setItem(section, key, value);
-    }
-
-    ConfigService* ConfigService::getInstance(void)
-    {
-	if (theInstance == NULL)
-	{
-	    theInstance = new ConfigService;
-	    return theInstance;
-	}
-	else
-	{
-	    return theInstance;
-	}
     }
 
     Service::Status ConfigService::start()

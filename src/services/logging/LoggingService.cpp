@@ -198,7 +198,7 @@ void dime::LoggingService::operator<< (const EndMessageEnum endMessage)
     myImportance = INFO;
 }
 
-dime::LoggingService::LoggingService ()
+dime::LoggingService::LoggingService () : Service()
 {
     //set service properties
 

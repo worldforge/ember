@@ -1,4 +1,5 @@
-/*  Copyright (C) 2002  Alistair Davidson and the Worldforge Project
+/*
+    Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (xmp)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,9 +16,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "templategameview.h"
+#include "TemplateGameView.h"
 
-#include "main/DimeServices.h"
+#include "services/DimeServices.h"
 
 namespace dime {
 
@@ -25,45 +26,45 @@ TemplateGameView::TemplateGameView()
 {
 
     /* Find out where the Eris world instance resides... */
-    new Eris::World *w = DimeService.getInstance()->getServerService()->getWorld();
+    Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( this, &EntityCreate ) );
+    w->EntityCreate.connect( SigC::slot( *this, &TemplateGameView::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( this, &EntityDelete ) );
+    w->EntityDelete.connect( SigC::slot( *this, &TemplateGameView::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( this, &Entered ) );
+    w->Entered.connect( SigC::slot( *this, &TemplateGameView::entered ) );
 
-    w->Appearance.connect( SigC::slot( this, &Appearance ) );
+    w->Appearance.connect( SigC::slot( *this, &TemplateGameView::appearance ) );
 
-    w->Disappearance.connect( SigC::slot( this, &Disappearances) );
-
+    w->Disappearance.connect( SigC::slot( *this, &TemplateGameView::disappearance ) );
 }
 
-TemplateGameView::~DebugGameView()
+TemplateGameView::~TemplateGameView()
 {}
 
-void TemplateGameView::repaint()
+void TemplateGameView::repaint(DrawDevice* ddevice)
 {}
 
 /* Eris::World entity signals */
 
-void TemplateGameView::EntityCreate( Eris::Entity *e )
+void TemplateGameView::entityCreate( Eris::Entity *e )
 {
-
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
-    e->AddedMember.connect( SigC::slot( this, &AddedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( this, &RemovedMember ) );
+    // Xmp's Notes: hmm need to work out how to connect these
+    e->AddedMember.connect( SigC::slot( *this, &TemplateGameView::addedMember ) );
 
-    e->Recontainered.connect( SigC::slot( this, &Recontainered ) );
+    e->RemovedMember.connect( SigC::slot( *this, &TemplateGameView::removedMember ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( this, &Changed ), e ) );
+    e->Recontainered.connect( SigC::slot( *this, &TemplateGameView::recontainered ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( this, &Moved ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( *this, &TemplateGameView::changed ), e ) );
 
-    e->Say.connect( SigC::bind(SigC::slot( this, &Say ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( *this, &TemplateGameView::moved ), e ) );
+
+    e->Say.connect( SigC::bind( SigC::slot( *this, &TemplateGameView::say ), e ) );
 }
 
 
@@ -87,11 +88,22 @@ void TemplateGameView::recontainered( Eris::Entity *e, Eris::Entity *c )
 void TemplateGameView::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {}
 
-void TemplateGameView::moved( const Eris::Coord &c, Eris::Entity *e )
+void TemplateGameView::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
 {}
 
 void TemplateGameView::say( const std::string &s, Eris::Entity *e )
+{
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
+}
+
+void TemplateGameView::addedMember(Eris::Entity *e)
 {}
 
+void TemplateGameView::removedMember(Eris::Entity *e)
+{}
+
+void TemplateGameView::runCommand(const std::string &command, const std::string &args)
+{
+}
 
 }

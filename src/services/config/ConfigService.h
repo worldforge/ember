@@ -42,14 +42,9 @@ class ConfigService: public Service
     // Class Variables
     //----------------------------------------------------------------------
 
-    /**
-     * Reference to the ConfigService instance.
-     * 
-     */
-    static ConfigService* theInstance;
-
 
     protected:
+    public:
     //----------------------------------------------------------------------
     // Constructors & Destructor
     //----------------------------------------------------------------------
@@ -69,7 +64,6 @@ class ConfigService: public Service
     }
 
  
-    public:
     //----------------------------------------------------------------------
     // Getters & Setters
     //----------------------------------------------------------------------
@@ -94,12 +88,6 @@ class ConfigService: public Service
     //----------------------------------------------------------------------
     // Methods
     //----------------------------------------------------------------------
-
-    /**
-     * Returns reference to the singleton.
-     *
-     */
-    static ConfigService* getInstance(void);
 
     /**
      * Starts ConfigService.  Returns status.

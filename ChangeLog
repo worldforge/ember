@@ -1,3 +1,11 @@
+2002-12-10 M Pollard <circlemaster@blueyonder.co.uk>
+	* templategameview.cpp/h: Updated this.
+
+	* ConfigService.cpp/h: standardised the instancing mechanism.
+
+	* LoggingService.cpp/h ConfigService.cpp/h: made sure Service() was
+	  instanced.
+
 2002-12-10 Miguel Guzman (Aglanor) <aglanor@telefonica.net>
 
 	* terrain.cfg, moraf.png: added moraf map, quick & dirty version.

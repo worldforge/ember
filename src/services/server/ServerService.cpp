@@ -295,8 +295,7 @@ namespace dime
       if (myPlayer)
       {
         myAvatar = myPlayer->takeCharacter(args);
-		myWorld = myAvatar->getWorld();
-
+	myWorld = myAvatar->getWorld();
       }
     } else if (command==LISTCHARS) {
       if (myPlayer)
