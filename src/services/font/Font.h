@@ -122,7 +122,7 @@ public:
        using alpha blending to dither the font with the given color.
        This function returns the new surface, or NULL if there was an error.
     */
-    SDL_Surface *renderText_Blended(const char *text, SDL_Color fg);
+    SDL_Surface *renderTextBlended(const char *text, SDL_Color fg);
     //SDL_Surface *renderUTF8_Blended(const char *text, SDL_Color fg);
     //SDL_Surface *renderUNICODE_Blended(const Uint16 *text, SDL_Color fg);
     

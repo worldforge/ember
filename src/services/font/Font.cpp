@@ -236,7 +236,7 @@ bool dime::Font::sizeText(const char *text, int *w, int *h)
     
 }
 
-SDL_Surface *dime::Font::renderText_Blended(const char *text, SDL_Color fg)
+SDL_Surface *dime::Font::renderTextBlended(const char *text, SDL_Color fg)
 {
     int xstart;
     int width, height;
