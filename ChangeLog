@@ -1,5 +1,9 @@
 2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Fixed dev-model definition which by mistake made it into cvs.
+
+2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Install more data files in distribution.
 
 2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>

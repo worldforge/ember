@@ -1,50 +1,60 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <model name="settler" usescaleof="height" >
   <submodels>
-    <submodel mesh="Malebuilder/male.mesh" >
+    <submodel mesh="malebuilder.mesh" >
       <parts>
-        <part name="Body" show="true" />
+        <part name="Body" show="true" >
+          <subentities>
+            <subentity name="body" />
+	  </subentities>
+        </part>      
+        <part name="Eyes" show="true" >
+          <subentities>
+            <subentity name="eyes" />
+	  </subentities>
+        </part>      
+        <part name="Head" show="true" >
+          <subentities>
+            <subentity name="head" />
+          </subentities>
+        </part>
+        <part name="Head/Brutus" show="false" >
+          <subentities>
+            <subentity name="head/brutus" />
+         </subentities>
+        </part>
+        <part name="Boxers" show="false" >
+          <subentities>
+            <subentity name="boxers" />
+          </subentities>
+        </part>
+        <part name="Cloak" show="true" >
+          <subentities>
+            <subentity name="cloak" />
+          </subentities>
+        </part>
+	<part name="Pants" show="true" >
+          <subentities>
+            <subentity name="pants" />
+          </subentities>
+        </part>      
+        <part name="Shirt" show="false" >
+          <subentities>
+            <subentity name="shirt" />
+          </subentities>
+        </part>  
+        <part name="ShirtTuckedLongSleeve" show="true" >
+          <subentities>
+            <subentity name="shirt/tucked_long_sleeve" />
+          </subentities>
+        </part>      
       </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/head2.mesh" >
-      <parts>
-        <part name="Head" show="true" />
-      </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/pants.mesh" >
-      <parts>
-        <part name="Pants" show="true" />
-      </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/rangersTunic.mesh" >
-      <parts>
-        <part name="RangerShirt" show="true" />
-      </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/tunic.mesh" >
-      <parts>
-        <part name="Shirt" show="true" />
-      </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/briches.mesh" >
-      <parts>
-        <part name="Briches" show="true" />
-      </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/Cloak.mesh" >
-      <parts>
-        <part name="Briches" show="true" />
-      </parts>
-	 </submodel>
-    <submodel mesh="Malebuilder/gorget.mesh" >
-      <parts>
-        <part name="Briches" show="true" />
-      </parts>
-	 </submodel>
+    </submodel>
   </submodels>
   <Actions>
   	<Action name="walk">
 		<animationpart name="walk" weight="1" />
 	</Action>
   </Actions>
+  
 </model>
