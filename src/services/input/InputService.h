@@ -228,11 +228,11 @@ class InputService: public Service
 		InputDeviceIterator i = myInputDevices.begin();
 		InputDeviceIterator * pI = startSearch ? startSearch : &i;
 
-		for (; *pI != myInputDevices.end(); *pI++)
+		for (; *pI != myInputDevices.end(); (*pI)++)
 		{
 			if ((**pI)->getType() == type)
 			{
-				return **pI;
+				return *((*pI)++);
 			}
 		}
 

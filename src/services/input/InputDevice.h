@@ -195,11 +195,12 @@ class InputDevice
 	/**
 	 * Retrieves the axis(es)'s minima, maxima and current positions and saves
 	 * them for internal handling of the input device.
+     *
+	 * ATTENTION: Since this is a virtual function, it cannot be called by the ctor
+	 * of InputDevice (as it should). Thus every derived class has to call initAxis
+	 * in it's ctor itself, if needed.
 	 */	
-	virtual void initAxis()
-	{
-		//default implementation is a device with no axis	
-	}
+	virtual void initAxis();
 
 	/**
 	 * Called whenever an SDL event ocurres. Should return TRUE only if it's _absolutely sure_,

@@ -33,8 +33,6 @@ InputDevice::InputDevice(InputDevice::DeviceType type, int index, int subIndex)
 	
 	InputService * inputService = DimeServices::getInstance()->getInputService();
 	inputService->myInputDevices.push_back(this);
-
-	initAxis();
 }
 
 InputDevice::~InputDevice()
@@ -75,6 +73,12 @@ float InputDevice::getAxisScaledPosition(int axis)
 	return ((float)(myPhysicalPosition[axis]-myPhysicalMin[axis]) /
 			((float)(myPhysicalMax[axis]-myPhysicalMin[axis])));
 }
+
+void InputDevice::initAxis()
+{
+	//default implementation is a device with no axis	
+}
+
 
 InputDevice::KeyState InputDevice::getKeyState(SDLKey key)
 {
@@ -170,6 +174,8 @@ MouseDevice::MouseDevice():
 {
 	//TODO: Really test if the mouse has three buttons
 	myHasThreeButtons = true;
+	
+	initAxis();
 }
 
 MouseDevice::~MouseDevice()

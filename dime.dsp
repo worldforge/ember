@@ -133,6 +133,14 @@ SOURCE=.\src\main\Application.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Application.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Button.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\framework\Component.h
 # End Source File
 # Begin Source File
@@ -145,7 +153,15 @@ SOURCE=.\src\services\config\ConfigService.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Container.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\components\cs\CSComponent.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Dimension.h
 # End Source File
 # Begin Source File
 
@@ -169,11 +185,27 @@ SOURCE=.\src\services\input\InputService.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\Label.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\LineEdit.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\logging\LoggingService.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\services\metaserver\MetaserverService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\ParaGuiApplication.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\ParaGuiService.h
 # End Source File
 # Begin Source File
 
@@ -186,6 +218,18 @@ SOURCE=.\src\framework\Service.h
 # Begin Source File
 
 SOURCE=.\src\framework\ServiceManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\TextBox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Theme.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Widget.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"
