@@ -1,5 +1,9 @@
 2005-01-22  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* include forgotten help widget
+
+2005-01-22  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Rewrote the input system. I've completely removed Ogre's input system and replaced it.
 	Ember now only depends on SDL for input.
 	This fixes all of the mouse issues as well as the issues with international characters.
