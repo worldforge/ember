@@ -19,7 +19,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
+#include "Model.h"
 #include "services/server/ServerService.h"
 #include "services/DimeServices.h"
 
@@ -35,7 +35,7 @@
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
 #include "WorldDimeEntity.h"
-#include "Model.h"
+
 
 namespace DimeOgre {
 
