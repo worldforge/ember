@@ -24,7 +24,7 @@
 #include <string>
 
 namespace dime {
-namespace components {
+namespace framework {
 
 /**
  * Abstract parent class of all components.

@@ -24,13 +24,13 @@
 #include <string>
 
 namespace dime {
-namespace components {
+namespace framework {
 
 /**
  * Abstract class that defines the interface for all factory classes that are
  * used to cerate different component types.
  *
- * @see dime::components::Component
+ * @see dime::framework::Component
  *
  * @author Hans Häggström
  */
