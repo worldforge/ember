@@ -32,6 +32,7 @@
 using namespace Ogre;
 namespace DimeOgre {
 
+/*
 AvatarController* AvatarController::_instance = 0;
 
 AvatarController& AvatarController::getSingleton(void)
@@ -41,16 +42,40 @@ AvatarController& AvatarController::getSingleton(void)
 	return *_instance;
 }
 
-AvatarController::AvatarController() : mEntityUnderCursor(NULL) , mSelectedEntity(NULL)
+*/
+
+AvatarController::AvatarController(Avatar* avatar, InputManager* inputManager, Ogre::RenderWindow* window) 
+: mEntityUnderCursor(NULL) 
+, mSelectedEntity(NULL)
+, mInputManager(inputManager)
+, mWindow(window)
+, mAvatarCamera(NULL)
 {
+	setAvatar(avatar);
 	mUpdateInterval = 1.0;
 	mTimeToUpdate = mUpdateInterval;
 	mMouseButton0Pressed = false;
 	mMouseButton1Pressed = false;
 	mMouseButton2Pressed = false;
+	//AvatarController* avatarController = this;
+	//DimeOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
+	createAvatarCameras(avatar->getAvatarSceneNode());
+	mInputManager->addMouseListener(this);
+	mInputManager->setAvatarController(this);
+	mAvatar->setAvatarController(this);
+
 }
 AvatarController::~AvatarController()
 {}
+
+void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
+{
+	if (mAvatarCamera == NULL) {
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, DimeOgre::getSingletonPtr()->getSceneManager(), mWindow);
+	} else {
+		mAvatarCamera->setAvatarNode(avatarSceneNode);
+	}
+}
 
 void AvatarController::setAvatar(Avatar* avatar)
 {
@@ -64,7 +89,7 @@ void AvatarController::setAvatar(Avatar* avatar)
 void AvatarController::frameStarted(const FrameEvent & event, InputReader* inputReader) {
 		
 	//is this the correct order to check things?
-	if (InputManager::getSingleton().isMouseUsed()) {
+	if (mInputManager->isMouseUsed()) {
 		checkMouseClicks(event, inputReader);
 		checkMouseMovement(event, inputReader);
 		
@@ -102,12 +127,12 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
  */
 DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputReader* inputReader) 
 {
-	Real mouseX = InputManager::getSingleton().getMouseX();
-	Real mouseY = InputManager::getSingleton().getMouseY();
+	Real mouseX = mInputManager->getMouseX();
+	Real mouseY = mInputManager->getMouseY();
 	
 	// Start a new ray query 
-	Ray cameraRay = mAvatar->getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-	RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay ); 
+	Ray cameraRay = getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	RaySceneQuery *raySceneQuery = DimeOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay ); 
 	raySceneQuery->execute(); 
 	RaySceneQueryResult result = raySceneQuery->getLastResults(); 
 	   
@@ -195,8 +220,8 @@ void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader*
 	
 	//we must use this obscure method, else all other overlays would "obstruct"
 	//the mouse pointer, giving us no data
-	float mouseX = InputManager::getSingleton().getMouseX();
-	float mouseY = InputManager::getSingleton().getMouseY();
+	float mouseX = mInputManager->getMouseX();
+	float mouseY = mInputManager->getMouseY();
 	
 	float diffX = 0.0, diffY = 0.0;
 	
@@ -228,42 +253,42 @@ void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader*
 void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* inputReader)
 {
 		//Real timePassed = event.timeSinceLastFrame;
-		bool isRunning = InputManager::getSingleton().isKeyDown(KC_LSHIFT);
+		bool isRunning = mInputManager->isKeyDown(KC_LSHIFT);
 
 		Vector3 movement = Vector3::ZERO;
 		bool isMovement = false; 
 
 		// forwards / backwards
-		if(InputManager::getSingleton().isKeyDown(KC_UP))  // W also, and same for the rest
+		if(mInputManager->isKeyDown(KC_UP))  // W also, and same for the rest
 		{
 			movement.x = 1; 	//scale this
 			isMovement = true;
 		}
-		else if(InputManager::getSingleton().isKeyDown(KC_DOWN))
+		else if(mInputManager->isKeyDown(KC_DOWN))
 		{
 			movement.x = -1;		//scale
 			isMovement = true;
 		}
 
 		// strafe
-		if(InputManager::getSingleton().isKeyDown(KC_LEFT))
+		if(mInputManager->isKeyDown(KC_LEFT))
 		{
 			movement.z = -1;
 			isMovement = true;
 		}
-		else if(InputManager::getSingleton().isKeyDown(KC_RIGHT))
+		else if(mInputManager->isKeyDown(KC_RIGHT))
 		{
 			movement.z = 1;
 			isMovement = true;
 		}
 
 		// up down
-		if(InputManager::getSingleton().isKeyDown(KC_PGDOWN))
+		if(mInputManager->isKeyDown(KC_PGDOWN))
 		{
 			movement.y = -1;
 			isMovement = true;
 		}
-		else if(InputManager::getSingleton().isKeyDown(KC_PGUP))
+		else if(mInputManager->isKeyDown(KC_PGUP))
 		{
 			movement.y = 1;
 			isMovement = true;
@@ -314,6 +339,12 @@ void AvatarController::mouseReleased(unsigned char button)
 	}
 //	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
 }
+
+AvatarCamera* AvatarController::getAvatarCamera() const
+{
+	return mAvatarCamera;	
+}
+
 
 }
 

@@ -17,13 +17,14 @@
 */
 
 #include "TerrainGenerator.h"
-#include "DimeTerrainRenderable.h"
+//#include "DimeTerrainRenderable.h"
 #include "services/logging/LoggingService.h"
 #include "MathConverter.h"
 
 #include "DimeTerrainSceneManager.h"
 namespace DimeOgre {
 
+/*
 DimeTerrainSceneManager* DimeTerrainSceneManager::_instance = 0;
 
 
@@ -34,12 +35,133 @@ DimeTerrainSceneManager & DimeTerrainSceneManager::getSingleton(void)
 		_instance = new DimeTerrainSceneManager;
 	return *_instance;
 }
+*/
 
-DimeTerrainSceneManager::DimeTerrainSceneManager() : mGenerator(0)
-{}
+DimeTerrainSceneManager::DimeTerrainSceneManager() 
+//: mGenerator(0)
+{
+	mPagingEnabled = true;
+	mLivePageMargin = 1;
+	mBufferedPageMargin = 20;
+	mPageOffset = 1;
+
+}
 DimeTerrainSceneManager::~DimeTerrainSceneManager()
 {}
 
+
+void DimeTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page)
+{
+  //  assert(pageX == 0 && pageZ == 0 && "Multiple pages not yet supported");
+	Ogre::ushort adjustedX = pageX + mPageOffset;
+	Ogre::ushort adjustedZ = pageZ + mPageOffset;
+	
+
+    assert(mTerrainPages[adjustedX][adjustedZ] == 0 && "Page at that index not yet expired!");
+    // Insert page into list
+    mTerrainPages[adjustedX][adjustedZ] = page;
+    // Attach page to terrain root
+    page->pageSceneNode->translate(Ogre::Vector3(((short)(pageX)) * 64, 0, ((short)(pageZ)) * 64));
+    setupPageNeighbors(adjustedX, adjustedZ, page);
+    mTerrainRoot->addChild(page->pageSceneNode);
+
+}
+
+void DimeTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page) 
+{
+
+//begin with the northern end
+	if (pageZ - 1 >= 0) {
+		if (mTerrainPages[pageX][pageZ - 1]) {
+			Ogre::TerrainPage* northPage = mTerrainPages[pageX][pageZ - 1];
+			for ( size_t i = 0; i < page->tilesPerPage; i++ ) {
+           		page->tiles[i][0]->_setNeighbor( Ogre::TerrainRenderable::NORTH, northPage->tiles[ i ][ northPage->tilesPerPage - 1 ] );
+           		northPage->tiles[i][northPage->tilesPerPage - 1]->_setNeighbor( Ogre::TerrainRenderable::SOUTH, page->tiles[ i ][ 0 ] );
+			}
+           
+ 		}
+	}
+	
+//southern end
+	if (pageZ + 1 < mBufferedPageMargin) {
+		if (mTerrainPages[pageX][pageZ + 1]) {
+			Ogre::TerrainPage* northPage = mTerrainPages[pageX][pageZ + 1];
+			for ( size_t i = 0; i < page->tilesPerPage; i++ ) {
+           		northPage->tiles[i][0]->_setNeighbor( Ogre::TerrainRenderable::NORTH, page->tiles[ i ][ page->tilesPerPage - 1 ] );
+           		page->tiles[i][page->tilesPerPage - 1]->_setNeighbor( Ogre::TerrainRenderable::SOUTH, northPage->tiles[ i ][ 0 ] );
+			}
+           
+ 		}
+	}
+	
+	
+//west end
+	if (pageX - 1 >= 0) {
+		if (mTerrainPages[pageX - 1][pageZ]) {
+			Ogre::TerrainPage* northPage = mTerrainPages[pageX - 1][pageZ];
+			for ( size_t i = 0; i < page->tilesPerPage; i++ ) {
+           		page->tiles[0][i]->_setNeighbor( Ogre::TerrainRenderable::WEST, northPage->tiles[ northPage->tilesPerPage - 1 ][ i ] );
+           		northPage->tiles[northPage->tilesPerPage - 1][i]->_setNeighbor( Ogre::TerrainRenderable::EAST, page->tiles[ 0 ][ i ] );
+			}
+           
+ 		}
+	}
+		
+	
+//east end
+	if (pageX + 1 < mBufferedPageMargin) {
+		if (mTerrainPages[pageX + 1][pageZ]) {
+			Ogre::TerrainPage* northPage = mTerrainPages[pageX + 1][pageZ];
+			for ( size_t i = 0; i < page->tilesPerPage; i++ ) {
+           		northPage->tiles[0][i]->_setNeighbor( Ogre::TerrainRenderable::WEST, page->tiles[ page->tilesPerPage - 1 ][ i ] );
+           		page->tiles[page->tilesPerPage - 1][i]->_setNeighbor( Ogre::TerrainRenderable::EAST, northPage->tiles[ 0 ][ i ] );
+			}
+           
+ 		}
+	}
+	
+/*	
+	
+	    for ( size_t j = 0; j < tilesPerPage; j++ )
+        {
+            for ( size_t i = 0; i < tilesPerPage; i++ )
+            {
+                if ( j != tilesPerPage - 1 )
+                {
+                    tiles[ i ][ j ] -> _setNeighbor( TerrainRenderable::SOUTH, tiles[ i ][ j + 1 ] );
+                    tiles[ i ][ j + 1 ] -> _setNeighbor( TerrainRenderable::NORTH, tiles[ i ][ j ] );
+                }
+
+                if ( i != tilesPerPage - 1 )
+                {
+                    tiles[ i ][ j ] -> _setNeighbor( TerrainRenderable::EAST, tiles[ i + 1 ][ j ] );
+                    tiles[ i + 1 ][ j ] -> _setNeighbor( TerrainRenderable::WEST, tiles[ i ][ j ] );
+                }
+
+            }
+        }
+	*/
+	
+}
+
+
+
+Ogre::TerrainPage* DimeTerrainSceneManager::getTerrainPage( const Ogre::Vector3 & pt )
+{
+    if (mPagingEnabled)
+    {
+        int ix = (int)(floor(pt.x / mOptions.pageSize)) + mPageOffset;
+    	int iz = (int)(floor(pt.z / mOptions.pageSize)) + mPageOffset;    
+    	return mTerrainPages[ix][iz];
+    }
+    else
+    {
+        // Single page
+        return mTerrainPages[0][0];
+    }
+}
+
+/*
 void DimeTerrainSceneManager::buildTerrainAroundAvatar()
 {
 	//decide how many segments we need
@@ -221,7 +343,7 @@ void DimeTerrainSceneManager::buildTerrain(long segmentXStart, long segmentZStar
 
 
 }
-
+*/
 }
 
 

@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.42  2004-07-21 00:27:30  erik
+ *      Revision 1.43  2004-07-31 11:53:59  erik
+ *      2004-07-31 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *cleaned up the class layout and structured it, we're not using that many Singletons anymore
+ *      *moved to Ogre CVS in order to get a more decent terrainmanager
+ *      *added splatting and nice texturing to the terrain
+ *      *added classes TerrainShader and DimeTerrainPageSource which works with the new terrainmanager
+ *
+ *      Revision 1.42  2004/07/21 00:27:30  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre:
@@ -354,8 +363,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include OGRE dime client files
 // ------------------------------
-#include "OgreGameView.h"
+//#include "OgreGameView.h"
 //#include "MathConverter.h"
+//#include "DimeTerrainPageSource.h"
+#include "TerrainGenerator.h"
+
 #include "InputManager.h"
 #include "Console.h"
 #include "ConsoleObjectImpl.h"
@@ -366,9 +378,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DimeEntityFactory.h"
 #include "MotionManager.h"
 #include "AvatarCamera.h"
+#include "DebugListener.h"
 
 
-#include "TerrainGenerator.h"
 #include "DimeTerrainSceneManager.h"
 
 // ------------------------------
@@ -485,6 +497,23 @@ namespace DimeOgre {
 
     };
     
+template<> DimeOgre* dime::Singleton<DimeOgre>::ms_Singleton = 0;
+//DimeOgre* DimeOgre::_instance = 0;
+/*   
+DimeOgre & DimeOgre::getSingleton(void)
+{
+	//fprintf(stderr, "TRACE - ENTITY LISTENER - SINGLETON ENTERING\n");
+	if(_instance == 0)
+		_instance = new DimeOgre;
+	return *_instance;
+}
+  
+*/  
+DimeOgre::DimeOgre() :
+//mFrameListener(0),
+mRoot(0)
+{}
+
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
@@ -498,9 +527,20 @@ bool DimeOgre::setup(void)
     if (!carryOn) return false;
 
     chooseSceneManager();
-
     // Create the scene
     createScene();
+
+	mTerrainGenerator = new TerrainGenerator();
+	mMotionManager = new MotionManager();
+	mMotionManager->setTerrainGenerator(mTerrainGenerator);
+	mInputManager = new InputManager();
+
+	// Avatar
+	mAvatar = new Avatar(mSceneMgr);
+//	EntityListener::getSingleton().setDimeAvatar(mAvatar);
+	
+	AvatarController* avatarController = new AvatarController(mAvatar, mInputManager, mWindow);
+
 
     createViewports();
 
@@ -544,12 +584,30 @@ bool DimeOgre::configure(void)
 void DimeOgre::chooseSceneManager(void)
 {
     // We first register our own scenemanager
-    mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, &DimeTerrainSceneManager::getSingleton());
+    DimeTerrainSceneManager* sceneManager = new DimeTerrainSceneManager();
+    mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
     //And then request it
-    mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR);
+    mSceneMgr = static_cast<Ogre::TerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
+    
     DimeTerrainSceneManager* terr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
     assert(terr);
-    terr->setGenerator(&TerrainGenerator::getSingleton());
+ //   const Ogre::String terrainTexture = Ogre::String("terrain_texture.jpg");
+ //   const Ogre::String terrainDetail = Ogre::String("terrain_detail.jpg");
+    
+//    mSceneMgr->setDetailTexture(terrainDetail);
+//    mSceneMgr->setWorldTexture(terrainTexture);
+//    mSceneMgr->setTileSize(64);
+//    mSceneMgr->setPageSize(64 * 3);
+//    mSceneMgr->setScale(Ogre::Vector3(1,1,1));
+ //   mPageSource = new DimeTerrainPageSource(&TerrainGenerator::getSingleton());
+ //   mSceneMgr->registerPageSource("DimeTerrain", mPageSource);
+//    Ogre::TerrainPageSourceOptionList option;
+ //   mSceneMgr->selectPageSource("DimeSource", option);
+    
+//    const Ogre::String config = Ogre::String("terrain.cfg");
+//    mSceneMgr->setWorldGeometry(config);
+    
+//    setGenerator(&TerrainGenerator::getSingleton());
     //terr->setShowBoxes(true);
     //DimeOgre::sceneMgr = mSceneMgr;
 }
@@ -558,8 +616,8 @@ void DimeOgre::createViewports(void)
 {
 
     // Create 1st person viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getCamera());
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+//    Ogre::Viewport* vp = mWindow->addViewport(mAvatar->getCamera());
+//    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 //float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
 /*
@@ -607,38 +665,40 @@ void DimeOgre::createScene(void)
   Ogre::Light* l = mSceneMgr->createLight("MainLight");
   l->setPosition(WF2OGRE_VECTOR3(150,150,150));
 
+	//set fog, do this before calling TerrainSceneManager::setWorldGeometry 
+	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
+//	Ogre::ColourValue fadeColour(1,1,1);
+	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
+
   // create a Skydome
   mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
-        Entity *waterEntity;
-        Plane waterPlane;
+        Ogre::Entity *waterEntity;
+        Ogre::Plane waterPlane;
 
 
         // create a water plane/scene node
-        waterPlane.normal = Vector3::UNIT_Y; 
+        waterPlane.normal = Ogre::Vector3::UNIT_Y; 
         waterPlane.d = 0; 
-        MeshManager::getSingleton().createPlane(
+        Ogre::MeshManager::getSingleton().createPlane(
             "WaterPlane",
             waterPlane,
-            WF2OGRE(2800), WF2OGRE(2800),
+            WF2OGRE(1400), WF2OGRE(1400),
             20, 20,
             true, 1, 
-            10, 10,
-            Vector3::UNIT_Z
+            100, 100,
+            Ogre::Vector3::UNIT_Z
         );
 
         waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
         waterEntity->setMaterialName("Examples/TextureEffect4"); 
 		
 		
-        SceneNode *waterNode = 
+        Ogre::SceneNode *waterNode = 
             mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
         waterNode->attachObject(waterEntity); 
-        waterNode->translate(WF2OGRE(1000), 0, WF2OGRE(1000));
+        waterNode->translate(WF2OGRE(500), 0, WF2OGRE(500));
         
-	// Avatar
-	mAvatar = Avatar(mSceneMgr);
-	EntityListener::getSingleton().setDimeAvatar(&mAvatar);
 	 
 	
 }
@@ -652,8 +712,8 @@ void DimeOgre::connectWorldSignals(Eris::World* world)
 
 void DimeOgre::connectedToServer(Eris::Connection* connection) 
 {
-	mDimeEntityFactory = new DimeEntityFactory(mSceneMgr, connection->getTypeService());
-	mDimeEntityFactory->CreatedAvatarEntity.connect(SigC::slot(mAvatar, &Avatar::createdAvatarDimeEntity));
+	mDimeEntityFactory = new DimeEntityFactory(mSceneMgr,mTerrainGenerator, connection->getTypeService());
+	mDimeEntityFactory->CreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarDimeEntity));
 	
 }
 
@@ -665,27 +725,55 @@ void DimeOgre::createFrameListener(void)
 	//mRoot->addFrameListener(playerFrameListener);
 	fprintf(stderr, "TRACE - CREATING INPUT MANAGER\n");
 	
-	InputManager::getSingleton().addKeyListener(&(Console::getSingleton()));
+	mInputManager->addKeyListener(&(Console::getSingleton()));
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
 	mRoot->addFrameListener(&(Console::getSingleton()));
-	mRoot->addFrameListener(&(MotionManager::getSingleton()));
+	mRoot->addFrameListener(mMotionManager);
+	mRoot->addFrameListener(&(DebugListener::getSingleton()));
 	//AvatarCamera* camera = new AvatarCamera(mAvatar.getAvatar1pCamera(), &mAvatar, mSceneMgr);
 	//mRoot->addFrameListener(camera);
 	ConsoleObjectImpl::getSingleton();
 	
-	//Ogre::OverlayManager::getSingleton().addMouseMotionListener(&(DebugListener::getSingleton()));
+//	Ogre::OverlayManager::getSingleton().addMouseMotionListener(&(DebugListener::getSingleton()));
 	
-	InputManager::getSingleton().addMouseListener(&(AvatarController::getSingleton()));
+//	mInputManager->addMouseListener(&(AvatarController::getSingleton()));
 	//PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
 	//PlayerMouseListener::getSingleton().setAvatar(&mAvatar);
 	//EntityListener::getSingleton().setSceneManager(mSceneMgr);
-	AvatarController::getSingleton().setSceneManager(mSceneMgr);
-	AvatarController::getSingleton().setAvatar(&mAvatar);
+//	AvatarController::getSingleton().setSceneManager(mSceneMgr);
+//	AvatarController::getSingleton().setAvatar(mAvatar);
+	
+	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }
 
+Avatar* DimeOgre::getAvatar() {
+	return mAvatar;
+}
+
+
+Ogre::TerrainSceneManager* DimeOgre::getSceneManager()
+{
+	return mSceneMgr;
+}
+
+TerrainGenerator* DimeOgre::getTerrainGenerator()
+{
+	return mTerrainGenerator;
+}
+
+MotionManager* DimeOgre::getMotionManager()
+{
+	return mMotionManager;
+}
+
+Ogre::Root* DimeOgre::getOgreRoot()
+{
+	assert(mRoot);
+	return mRoot;
+}
 
 void DimeOgre::initializeDimeServices(void)
 {
@@ -751,13 +839,13 @@ int main(int argc, char **argv)
 #endif
 {
     // Create application object
-    DimeOgre::DimeOgre app;
+    DimeOgre::DimeOgre* app = new DimeOgre::DimeOgre();
 
 	// Initialize all dime services needed for this application
-	app.initializeDimeServices();
+	app->initializeDimeServices();
 
     try {
-        app.go();
+        app->go();
     } catch( Ogre::Exception& e ) {
 #if OGRE_PLATFORM == PLATFORM_WIN32
         MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);

@@ -24,7 +24,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.21  2004-07-21 00:27:29  erik
+ *      Revision 1.22  2004-07-31 11:53:59  erik
+ *      2004-07-31 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *cleaned up the class layout and structured it, we're not using that many Singletons anymore
+ *      *moved to Ogre CVS in order to get a more decent terrainmanager
+ *      *added splatting and nice texturing to the terrain
+ *      *added classes TerrainShader and DimeTerrainPageSource which works with the new terrainmanager
+ *
+ *      Revision 1.21  2004/07/21 00:27:29  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre:
@@ -219,7 +228,7 @@ Description: Base class for all the OGRE examples
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
-#include "OgreFrameListener.h"
+//#include <OgreFrameListener.h>
 #include <framework/ConsoleObject.h> //TODO: this will be included in a different class
 
 
@@ -252,10 +261,12 @@ Description: Base class for all the OGRE examples
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
+#include "framework/Singleton.h"
+#include <OgreTerrainSceneManager.h>
 
 namespace DimeOgre {
 
-class TerrainListener;
+//class TerrainListener;
 
 class CameraRotator;
 
@@ -265,26 +276,32 @@ class Avatar;
 
 class DimeEntityFactory;
 
+class TerrainGenerator;
+
+class MotionManager;
+
+class InputManager;
+
 
 
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre: virtual public SigC::Object //, public Ogre::ActionListener, public Ogre::MouseListener
+class DimeOgre : public dime::Singleton<DimeOgre>, virtual public SigC::Object //, public Ogre::ActionListener, public Ogre::MouseListener
 // TODO: the DimeOgre ConsoleObject will be included in a different class
 {
 public:
+ 
+ 	//static DimeOgre & getSingleton(void);
+ 
     /// Standard constructor
-    DimeOgre()
-    {
-        mFrameListener = 0;
-        mRoot = 0;
-    }
+    DimeOgre();
+ 
     /// Standard destructor
     virtual ~DimeOgre()
     {
-        if (mFrameListener)
-            delete mFrameListener;
+//        if (mFrameListener)
+//            delete mFrameListener;
         if (mRoot)
             delete mRoot;
     }
@@ -305,35 +322,35 @@ public:
 	void connectedToServer(Eris::Connection* connection);
 
 
-	// TODO: these are for tests. Remove them later
-	Ogre::Entity* mOgreHead;
-	Ogre::SceneNode* mOgreHeadNode;
-	Ogre::Camera* mOgreHeadCamera;
-
 	// TODO: possibly we'd like to do the following in a different way,
 	// perhaps refactoring stuff
-	Avatar* getAvatar() {
-		return &mAvatar;
-	}
+	Avatar* getAvatar();
 	
-	//should this be here really?
-//	static Ogre::SceneManager* getSceneManager()
+	Ogre::TerrainSceneManager* getSceneManager();
+	TerrainGenerator* getTerrainGenerator();
+	MotionManager* getMotionManager();
+	Ogre::Root* DimeOgre::getOgreRoot();
 	
 
-/*private:
-	static Ogre::SceneManager* sceneMgr;
-*/
+//private:
+//	static Ogre::SceneManager* sceneMgr;
+
 protected:
 
+	// Avatar setup
+	Avatar* mAvatar;
+
+	/** Instance of DimeOgre */
+	//static DimeOgre* _instance;
 
 	Ogre::Root *mRoot;
-    Ogre::SceneManager* mSceneMgr;
+    Ogre::TerrainSceneManager* mSceneMgr;
 	//Ogre::Camera* mCamera;
-	Ogre::FrameListener* mFrameListener;
+//	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;
+	
+//	TerrainGenerator* mTerrainGenerator;
 
-	// Avatar setup
-	Avatar mAvatar;
 	
 	DimeEntityFactory* mDimeEntityFactory;
 
@@ -355,6 +372,11 @@ protected:
 
     /// Method which will define the source of resources (other than current folder)
     virtual void setupResources(void);
+    
+//    DimeTerrainPageSource* mPageSource;
+    TerrainGenerator* mTerrainGenerator;
+    InputManager* mInputManager;
+    MotionManager* mMotionManager;
     
     
 

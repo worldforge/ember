@@ -26,7 +26,8 @@
 #include "framework/ConsoleBackend.h"
 //#include "MathConverter.h"
 #include "TerrainGenerator.h"
-#include "DimeTerrainSceneManager.h"
+//#include "DimeTerrainSceneManager.h"
+#include "DimeTerrainPageSource.h"
 
 #include "DimeEntity.h"
 #include "AvatarDimeEntity.h"
@@ -35,7 +36,8 @@
 namespace DimeOgre {
 
 
-DimeEntityFactory::DimeEntityFactory(Ogre::SceneManager* sceneManager, Eris::TypeService* typeService ) : mSceneManager(sceneManager), mTypeService(typeService)
+DimeEntityFactory::DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
+: mSceneManager(sceneManager), mTerrainGenerator(terrainGenerator), mTypeService(typeService)
 {
 	mTerrainType = typeService->getTypeByName("world");
 	dime::ServerService* serverService = dime::DimeServices::getInstance()->getServerService();
@@ -87,8 +89,10 @@ Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameE
     Eris::Entity *we = new Eris::Entity(ge, world);
       // Extract base points and send to terrain        
       //TerrainEntity * te = new TerrainEntity(ge,w);
-	TerrainGenerator::getSingleton().initTerrain(we, world);
-	DimeTerrainSceneManager::getSingleton().buildTerrainAroundAvatar();
+	mTerrainGenerator->initTerrain(we, world);
+	buildTerrainAroundAvatar();
+	//mTerrainSource->setHasTerrain(true);
+	//mSceneManager->setWorldGeometry("");
     return we;
 }
 
@@ -97,7 +101,15 @@ void DimeEntityFactory::setAvatar(Eris::Avatar* avatar)
 	mAvatar = avatar;	
 }
 
+void DimeEntityFactory::buildTerrainAroundAvatar()
+{
+	WFMath::Point<3> point = mAvatar->getEntity()->getPosition();
+	//decide how many segments we need
+    long lowXBound = lrintf(point.x() / TerrainGenerator::segSize) - 2,
+         lowYBound = lrintf(point.y() / TerrainGenerator::segSize) - 2;
+	mTerrainGenerator->prepareSegments(lowXBound, lowYBound, 5);
 
+}
 /* namespace Sear */
 
 

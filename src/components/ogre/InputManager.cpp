@@ -52,6 +52,7 @@
 using dime::LoggingService;
 namespace DimeOgre {
 
+/*
 InputManager* InputManager::_instance = 0;
 
 InputManager & InputManager::getSingleton(void)
@@ -60,6 +61,7 @@ InputManager & InputManager::getSingleton(void)
 		_instance = new InputManager;
 	return *_instance;
 }
+*/
 
 InputManager::InputManager(void)
 {
@@ -125,9 +127,13 @@ void InputManager::connectMouseListeners()
 {
 	if (mEventProcessor->isMouseUsed()) {
 		Ogre::OverlayManager::getSingleton().addMouseMotionListener(this);
+//this will only work with a patched ogre, if you don't have a patched
+//version you can remove the following line, although you won't be
+//able to use the mouse buttons then
 		Ogre::OverlayManager::getSingleton().addMouseListener(this);
 	} else {
 		Ogre::OverlayManager::getSingleton().removeMouseMotionListener(this);
+//same as above
 		Ogre::OverlayManager::getSingleton().removeMouseListener(this);
 	}
 	
@@ -245,11 +251,16 @@ bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 	// Eris poll. It might remain here or be moved to a better place. We'll see.
 	Eris::PollDefault::poll();
 
-	AvatarController::getSingleton().frameStarted(evt, mEventProcessor->getInputReader());
+	assert(mAvatarController);
+	mAvatarController->frameStarted(evt, mEventProcessor->getInputReader());
 
 	return true;
 }
 
+void InputManager::setAvatarController(AvatarController* avatarController)
+{
+	mAvatarController = avatarController;	
+}
 
 
 void InputManager::addKeyListener(Ogre::KeyListener *l)

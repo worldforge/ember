@@ -52,7 +52,7 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 				virtual void mousePressed(unsigned char button) = 0;
 				virtual void mouseReleased(unsigned char button) = 0;
 		};
-		static InputManager & getSingleton(void);
+		//static InputManager & getSingleton(void);
 
 		bool frameStarted(const Ogre::FrameEvent & evt);
 		bool frameEnded(const Ogre::FrameEvent & evt)
@@ -88,11 +88,15 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		void mouseDragged(Ogre::MouseEvent* e);
 		void mouseMovedOrDragged(Ogre::MouseEvent* e);
  		
+		void setAvatarController(AvatarController* avatarController);
 
 		
 		//toggle between making the application grab the mouse and not
 		void toggleMouse();
 		bool isMouseUsed();
+		
+		InputManager(void);
+		~InputManager();
 
 	protected:
 		virtual void connectMouseListeners() ;
@@ -105,6 +109,9 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		virtual void createMouseCursor();
 
 		DimeEventProcessor* mEventProcessor;
+
+		AvatarController* mAvatarController;
+		
 		
 	private:
 		static InputManager* _instance;
@@ -112,8 +119,6 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		
 
 
-		InputManager(void);
-		~InputManager();
 
 //		Ogre::InputReader* mInputReader;
 //		Ogre::EventQueue mEventQueue;

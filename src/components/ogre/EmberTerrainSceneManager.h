@@ -23,6 +23,7 @@
 #include <Ogre.h>
 #include <OgreTerrainSceneManager.h>
 #include <OgreTerrainRenderable.h>
+#include <OgreTerrainPage.h>
 #include <wfmath/point.h>
 
 class TerrainGenerator;
@@ -35,20 +36,28 @@ public:
 
 
 
-	static DimeTerrainSceneManager & getSingleton(void);
+//	static DimeTerrainSceneManager & getSingleton(void);
 
 
 	DimeTerrainSceneManager();
 	virtual ~DimeTerrainSceneManager();
-	void buildTerrain(long segmentXStart, long segmentZStart, long numberOfSegments);
-	void setGenerator(TerrainGenerator* generator) { mGenerator = generator;}
-	void setPositionOfAvatar(Ogre::Vector3 point) { mPositionOfAvatar = point; }
-	void buildTerrainAroundAvatar();
+
+void attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page);
+Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
+
+//	void buildTerrain(long segmentXStart, long segmentZStart, long numberOfSegments);
+//	void setGenerator(TerrainGenerator* generator) { mGenerator = generator;}
+//	void setPositionOfAvatar(Ogre::Vector3 point) { mPositionOfAvatar = point; }
+//	void buildTerrainAroundAvatar();
+protected:
+	Ogre::ushort mPageOffset;
+	void setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page); 
+
 private:
-	static DimeTerrainSceneManager* _instance;
+//	static DimeTerrainSceneManager* _instance;
 	
-	Ogre::Vector3 mPositionOfAvatar;
-	TerrainGenerator* mGenerator;
+//	Ogre::Vector3 mPositionOfAvatar;
+//	TerrainGenerator* mGenerator;
 };
 
 }

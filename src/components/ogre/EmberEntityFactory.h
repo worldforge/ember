@@ -26,7 +26,7 @@
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Factory.h>
-
+#include <wfmath/point.h>
 
 #include <Eris/Connection.h>
 
@@ -43,16 +43,18 @@
 #include <sigc++/object_slot.h>
 #endif
 
+#include <OgreTerrainSceneManager.h>
+
 namespace DimeOgre {
 
 class AvatarDimeEntity;
-
+class DimeTerrainPageSource;
 
 class DimeEntityFactory : public Eris::Factory, virtual public SigC::Object
 {
 public:
 
-	DimeEntityFactory(Ogre::SceneManager* sceneManager, Eris::TypeService* typeService);
+	DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
 	virtual ~DimeEntityFactory();
 /*
  * eris 1.3	
@@ -84,12 +86,18 @@ public:
     
 protected:
 
+	void buildTerrainAroundAvatar();
+
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world);
-	Ogre::SceneManager* mSceneManager;
+	Ogre::TerrainSceneManager* mSceneManager;
+	//DimeTerrainPageSource* mTerrainSource;
+	TerrainGenerator* mTerrainGenerator;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;
 	
 	Eris::Avatar* mAvatar;
+	
+	
 };
 
 }

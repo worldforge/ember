@@ -21,11 +21,13 @@
 
 namespace DimeOgre {
 
-AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager) :
+AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window) :
 	mAvatarNode(avatarNode),
 	mSceneManager(sceneManager),
+	mWindow(window),
 	degreePitch(0),
-	degreeYaw(0)
+	degreeYaw(0),
+	mViewPort(0)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesAndCamera();
@@ -75,6 +77,17 @@ void AvatarCamera::createNodesAndCamera()
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
 	mCamera->setNearClipDistance(WF2OGRE(0.01));
 	mCamera->setFarClipDistance( WF2OGRE(384) * 100);
+	
+	createViewPort();
+}
+
+void AvatarCamera::createViewPort()
+{
+	assert(mCamera);
+	assert(!mViewPort);
+    // Create 1st person viewport, entire window
+    mViewPort = mWindow->addViewport(mCamera);
+    mViewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	
 }
 

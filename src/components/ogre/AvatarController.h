@@ -21,18 +21,20 @@
 
 //include Ogre stuff
 #include <Ogre.h>
-#include <OgreFrameListener.h>
+//#include <OgreFrameListener.h>
 #include <OgreInput.h>
 #include <OgreStringConverter.h>
 
-class Avatar;
-class DebugListener;
-class DimeEntity;
 #include "InputManager.h"
 
 
 namespace DimeOgre {
-//class InputManager;
+class Avatar;
+class DebugListener;
+class DimeEntity;
+class AvatarCamera;
+
+class InputManager;
 //class InputManager::MouseListener;
 
 struct AvatarControllerMovement
@@ -49,11 +51,12 @@ struct AvatarControllerMovement
 class AvatarController : public InputManager::MouseListener
 {
 public:
-	static AvatarController & getSingleton(void);
+	//static AvatarController & getSingleton(void);
+    
+    AvatarController(Avatar* avatar, InputManager* inputManager, Ogre::RenderWindow* window);
 
 	virtual ~AvatarController();
 
-	void setAvatar(Avatar* avatar);
 
 	void frameStarted(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 //	bool frameEnded(const Ogre::FrameEvent & event);
@@ -65,10 +68,16 @@ public:
 	void mouseReleased(unsigned char button);
 	
 //TODO:this is temporary
-	void setSceneManager(Ogre::SceneManager* sceneManager) {mSceneManager = sceneManager;}
+//	void setSceneManager(Ogre::SceneManager* sceneManager) {mSceneManager = sceneManager;}
+
+	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
+	
+	AvatarCamera* getAvatarCamera() const;
 
 
 protected:
+
+	Ogre::RenderWindow* mWindow;
 
 	/*
 	 * Check what object is under the mouse and puts this in mEntityUnderCursor
@@ -78,11 +87,13 @@ protected:
 	virtual void checkMovementKeys(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 	virtual void checkMouseClicks(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 
+	AvatarCamera* mAvatarCamera;
+	void setAvatar(Avatar* avatar);
+
 	
-private:
 
 //TODO:this is temporary
-	Ogre::SceneManager* mSceneManager;
+	//Ogre::SceneManager* mSceneManager;
 
 	bool mMouseButton0Pressed;
 	bool mMouseButton1Pressed;
@@ -92,7 +103,7 @@ private:
 	/**
 	 * Instance variable for singleton avatar controller implementation.
 	 */
-    static AvatarController* _instance;
+    //static AvatarController* _instance;
     
     /**
      * determines how often we should update to the server
@@ -109,32 +120,30 @@ private:
 	 */
 	Avatar* mAvatar;
 	
+	InputManager* mInputManager;
+	
 	//======================================================================
     // Disabled constructors and operators
     //======================================================================
  
-    /**
-     * The constructor is private, and only used to create the singleton instance.
-     */
-    AvatarController();
 
 
     /**
      * Copy constructor not provided.
      */
-    AvatarController( const AvatarController &source )
+/*    AvatarController( const AvatarController &source )
     {
     }
-
+*/
 
     /**
      * Assignment operator not provided.
      */
-    AvatarController &operator= ( const AvatarController &source )
+/*    AvatarController &operator= ( const AvatarController &source )
     {
         return *this;
     }
-    
+  */  
     DimeEntity* mEntityUnderCursor;
     DimeEntity* mSelectedEntity;
     

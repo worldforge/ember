@@ -31,6 +31,7 @@ MotionManager::MotionManager()
 MotionManager::~MotionManager()
 {}
 
+/*
 MotionManager* MotionManager::_instance = 0;
 
 MotionManager & MotionManager::getSingleton(void)
@@ -39,6 +40,9 @@ MotionManager & MotionManager::getSingleton(void)
 		_instance = new MotionManager;
 	return *_instance;
 }
+*/
+template<> MotionManager* dime::Singleton<MotionManager>::ms_Singleton = 0;
+
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 {
@@ -62,7 +66,8 @@ void MotionManager::updateMotionForEntity(DimeEntity* entity, Ogre::Real timeSli
 void MotionManager::adjustHeightPositionForNode(Ogre::SceneNode* sceneNode) {
 	Ogre::Vector3 position = sceneNode->getPosition();
 	//get the height from Mercator through the TerrainGenerator
-	float height = TerrainGenerator::getSingleton().getHeight(OGRE2WF(position.x), OGRE2WF(position.z));
+	assert(mTerrainGenerator);
+	float height = mTerrainGenerator->getHeight(OGRE2WF(position.x), OGRE2WF(position.z));
 	sceneNode->setPosition(position.x, WF2OGRE(height),position.z);
 
 }
@@ -121,6 +126,10 @@ void MotionManager::unpauseAnimation(Ogre::AnimationState* animationState)
 {
 	animationControllerType* animationController = mAnimations[animationState];
 	animationController->setEnabled(true);
+}
+
+void MotionManager::setTerrainGenerator(TerrainGenerator* generator) {
+	mTerrainGenerator = generator;
 }
 
 }

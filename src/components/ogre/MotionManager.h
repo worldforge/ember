@@ -21,10 +21,12 @@
 
 #include <Ogre.h>
 #include <OgrePredefinedControllers.h> 
+#include "framework/Singleton.h"
 
 namespace DimeOgre {
 
 class DimeEntity;
+class TerrainGenerator;
 
 /*
  * This class will be responsible for making sure that entites moves
@@ -32,12 +34,12 @@ class DimeEntity;
  * will go into here.
  * The manager also takes care of keeping tabs on all animations.
  */
-class MotionManager : public Ogre::FrameListener {
+class MotionManager : public Ogre::FrameListener, public dime::Singleton<MotionManager> {
 public:
 
 	MotionManager();
 	virtual ~MotionManager();
-	static MotionManager & getSingleton(void);
+	//static MotionManager & getSingleton(void);
 	
 	/*
 	 * Adds a DimeEntity to the movement list.
@@ -77,6 +79,8 @@ public:
 	 * Adjusts the height of the supplied node
 	 */
 	void adjustHeightPositionForNode(Ogre::SceneNode* sceneNode);
+
+	void setTerrainGenerator(TerrainGenerator* generator);
 	
 	
 private:
@@ -94,7 +98,7 @@ private:
 	animationStateMap mAnimations;
 
 
-	static MotionManager* _instance;
+	//static MotionManager* _instance;
 
 	/* This method will iterate over all registered moving entities and update
 	 * their positions.
@@ -110,6 +114,9 @@ private:
 	 * This contains all of the entities that will be moved each frame
 	 */
 	std::set<DimeEntity*> mMotionSet;
+	
+	TerrainGenerator* mTerrainGenerator;
+	
 };
 }
 

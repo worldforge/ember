@@ -44,7 +44,6 @@
 #endif
 
 #include "MathConverter.h"
-using namespace Ogre;
 
 namespace DimeOgre {
 class DimeEntityFactory;
@@ -63,7 +62,7 @@ public:
 	/*
 	 * return the scenenode to which this entity belongs
 	 */
-	SceneNode* getSceneNode();
+	Ogre::SceneNode* getSceneNode();
 	
 	/*
 	 * return the Ogre::Entity of this object

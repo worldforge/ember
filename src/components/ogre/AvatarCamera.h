@@ -36,7 +36,7 @@ class AvatarCamera
 {
 public:
 
-	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager);
+	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window);
 	virtual ~AvatarCamera();
 
 	/*
@@ -103,6 +103,8 @@ protected:
 	 */
 	void createNodesAndCamera();
 	
+	void createViewPort();
+	
 	
 	Ogre::Camera* mCamera;
 	Ogre::SceneNode* mAvatarNode;
@@ -115,6 +117,8 @@ protected:
 
 	Ogre::Real degreePitch;	
 	Ogre::Real degreeYaw;	
+	Ogre::RenderWindow* mWindow;
+	Ogre::Viewport* mViewPort;
 };
 
 }

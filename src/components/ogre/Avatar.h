@@ -46,11 +46,11 @@
 
 #include "MathConverter.h"
 
-using namespace Ogre;
 
 namespace DimeOgre {
 class DimeEntity;
 class AvatarCamera;
+class AvatarController;
 class AvatarDimeEntity;
 struct AvatarControllerMovement;
 
@@ -58,8 +58,8 @@ struct AvatarMovementState
 {
 	bool isMoving;
 	bool isRunning;
-	Vector3 velocity;
-	Quaternion orientation;
+	Ogre::Vector3 velocity;
+	Ogre::Quaternion orientation;
 };
 	
 /*
@@ -78,19 +78,21 @@ class Avatar : virtual public SigC::Object
     public:
 
 	Avatar();
-	Avatar(SceneManager* sceneManager);
+	Avatar(Ogre::SceneManager* sceneManager);
 	~Avatar();
 
-	Camera* getAvatar1pCamera(void);
-	Camera* getAvatar3pCamera(void);
-	Camera* getAvatarTopCamera(void);
+	Ogre::Camera* getAvatar1pCamera(void);
+	Ogre::Camera* getAvatar3pCamera(void);
+	Ogre::Camera* getAvatarTopCamera(void);
 	
-	AvatarCamera* getAvatarCamera() const
+	AvatarCamera* getAvatarCamera() const;
+	
+	Ogre::SceneNode* getAvatarSceneNode() const
 	{
-		return mAvatarCamera;
+		return mAvatarNode;
 	}
 
-	Ogre::Camera* getCamera() const;
+	//Ogre::Camera* getCamera() const;
 	
 	
 	void createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity);
@@ -100,6 +102,8 @@ class Avatar : virtual public SigC::Object
 	void touch(DimeEntity* entity);
 	
 	void updateFrame(AvatarControllerMovement movement);
+	
+	void setAvatarController(AvatarController* avatarController);
 
 protected:
 	
@@ -193,20 +197,20 @@ protected:
 	 * some kind of AnimationController
 	 * TODO: Make an AnimationController
 	 */
-	AnimationState* mAnimStateWalk;
-	Controller<Real>* mAvatarAnimationController;
-	AnimationControllerFunction* mAvatarAnimationControllerFunction;
+	Ogre::AnimationState* mAnimStateWalk;
+	Ogre::Controller<Ogre::Real>* mAvatarAnimationController;
+	Ogre::AnimationControllerFunction* mAvatarAnimationControllerFunction;
 	
-	SceneManager* mSceneMgr;
+	Ogre::SceneManager* mSceneMgr;
 	/*
 	 * The main avatar entity
 	 */
-	Entity* mAvatarEntity;
+	Ogre::Entity* mAvatarEntity;
 	
 	/* 
 	 * The main avatar scenenode
 	 */
-	SceneNode* mAvatarNode;
+	Ogre::SceneNode* mAvatarNode;
 /*	SceneNode* mAvatar1pCameraNode;
 	SceneNode* mAvatar3pCameraNode;
 	SceneNode* mAvatarTopCameraNode;
@@ -215,12 +219,11 @@ protected:
 	Camera* mAvatarTopCamera;
 	*/
 
-	AvatarCamera* mAvatarCamera;
 
 	// node for rotating the model for the entity
 	// if it's not looking in the -Z direction (default)
 	// To be removed once we've standarized on models
-	SceneNode* mAvatarModelNode;
+	Ogre::SceneNode* mAvatarModelNode;
 
 	AvatarDimeEntity* mErisAvatarEntity;
 	//Eris::Avatar* mErisAvatar;
@@ -230,6 +233,7 @@ protected:
 	AvatarMovementState mMovementStateAtBeginningOfMovement; //this is perhaps not needed
 	AvatarMovementState mMovementStateAtLastServerMessage;
 
+	AvatarController* mAvatarController;
 
 }; //End of class declaration
 

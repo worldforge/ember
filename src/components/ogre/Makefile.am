@@ -24,9 +24,10 @@ DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
 			MediaDeployer.cpp DimeEventProcessor.cpp \
 			AvatarController.cpp DebugListener.cpp \
 			DimeEntity.cpp DimeEntityFactory.cpp \
+			DimeTerrainPageSource.cpp \
 			TerrainGenerator.cpp AvatarDimeEntity.cpp \
-			DimeTerrainRenderable.cpp DimeTerrainSceneManager.cpp \
-			MotionManager.cpp AvatarCamera.cpp
+			MotionManager.cpp AvatarCamera.cpp \
+			DimeTerrainSceneManager.cpp TerrainShader.cpp
 			
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
