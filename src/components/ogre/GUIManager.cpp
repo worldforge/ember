@@ -42,6 +42,8 @@
 #include "AvatarCamera.h"
 #include "EmberOgre.h"
 
+#include <SDL.h>
+
 namespace EmberOgre {
 
 
@@ -81,7 +83,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		fprintf(stderr, "CEGUI - MAIN SCHEME LOADED\n");
 		
 		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
+		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-14"); 
 		fprintf(stderr, "CEGUI - DEFAULTS SET\n");
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
@@ -398,6 +400,7 @@ void GUIManager::mousePressed (Ogre::MouseEvent *e)
 	mMousePressedOgreEvent = e;
 	//if the right mouse button is pressed, switch from gui mode
 	if (e->getButtonID() == Ogre::MouseEvent::BUTTON1_MASK) {
+		SDL_WM_GrabInput(SDL_GRAB_ON);
 		mInGUIMode = false;
 	}
 	if (mInGUIMode) {
@@ -417,6 +420,7 @@ void GUIManager::mouseReleased (Ogre::MouseEvent *e)
 	mMouseReleasedOgreEvent = e;
 	//if the right mouse button is released, switch to gui mode
 	if (e->getButtonID() == Ogre::MouseEvent::BUTTON1_MASK) {
+		SDL_WM_GrabInput(SDL_GRAB_OFF);
 		mInGUIMode = true;
 	}
 	if (mInGUIMode) {

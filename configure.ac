@@ -57,6 +57,14 @@ AC_MSG_RESULT([
 		**************************************
 
 	])
+	
+AM_PATH_SDL(1.2.0, [  
+  CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+  LDFLAGS="$LDFLAGS $SDL_LIBS"
+],
+[
+  AC_MSG_ERROR(Couldn't find SDL or insufficent version found. Please goto http://www.libsdl.org/ and get at least version $SDL_VERSION)
+])
 
 #WF_CHECK_SDL_IMAGE(1.2.0)
 #dnl don't add SDL flags yet, SDL_main confuses later checks
@@ -84,7 +92,7 @@ AC_LANG_POP(C)
 # Test for libxml2
 #PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
 #	[
-#		CXXFLAGS="$CPPFLAGS $XML_CFLAGS"
+#		CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
 #		LDFLAGS="$LDFLAGS $XML_LIBS"
 #	],
 # AC_MSG_ERROR(Couldn't find libxml)
@@ -160,20 +168,24 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 # Check for CEGUI
 PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
 	[
-		CPPFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
+		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
 	],
 	[
 		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
 
+#CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+
+#SDL_VERSION=1.2.0
+#AC_SUBST(SDL_VERSION)
 
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, eris-1.3 \
  varconf-1.0 mercator-0.2,
 	[
-		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"
+		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
 	],
  AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
@@ -263,9 +275,9 @@ dnl disabled cal3d, until needed
 
 #AC_LANG([C++])
 
-dnl add SDL flags here, now that we're done with the other tests
-CXXFLAGS="$CXXFLAGS $WF_SDL_IMAGE_CFLAGS"
-LIBS="$LIBS $WF_SDL_IMAGE_LIBS"
+#dnl add SDL flags here, now that we're done with the other tests
+#CXXFLAGS="$CXXFLAGS $WF_SDL_IMAGE_CFLAGS"
+#LIBS="$LIBS $WF_SDL_IMAGE_LIBS"
 
 AC_MSG_RESULT([
 

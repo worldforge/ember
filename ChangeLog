@@ -1,5 +1,11 @@
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Don't grab mouse. This is not a final solution, just a fix. 
+		The cursor in ember isn't synced with the cursor in X.
+		For now, ember does grab the mouse when in movement mode (i.e. right mouse button is pressed).
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* check for, and if not found, copy config files from share to user's home dir
 
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>

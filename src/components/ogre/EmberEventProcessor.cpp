@@ -18,6 +18,9 @@
 
 #include <time.h>
 
+#include <SDL.h>
+
+
 #include "EmberEventProcessor.h"
 namespace EmberOgre {
 
@@ -30,16 +33,16 @@ EmberEventProcessor::EmberEventProcessor() : Ogre::EventProcessor()
 
 void EmberEventProcessor::initialise(Ogre::RenderWindow* ren)
 {
-	return Ogre::EventProcessor::initialise(ren);
+	//return Ogre::EventProcessor::initialise(ren);
 	mWin = ren;
 	
 	cleanup();
 	 
  
 	mEventQueue = new Ogre::EventQueue();
- 
+ 	SDL_ShowCursor(0);
  	createInputReader(mUseMouse);
-	addMouseListener(this);
+	//addMouseListener(this);
  
 }
 
