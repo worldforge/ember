@@ -1,0 +1,8 @@
+sear_new/objects/pig/pig.crf
+{
+
+	//Texture layer #0
+	{
+		texture basic_pig_small.png
+	}
+}
