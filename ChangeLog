@@ -1,3 +1,6 @@
+2004-02-19 Ron Steinke <rsteinke@w-link.net>
+	* configure.ac: Cleaned up the OpenAL and libxml error messages.
+
 2004-02-15 Ron Steinke <rsteinke@w-link.net>
 	* configure.ac: GL test for mingw32, take 4.
 

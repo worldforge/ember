@@ -69,9 +69,7 @@ AC_LANG_PUSH(C)
 
 AC_CHECK_LIB(openal,
 	alutInit ,,
-	     AC_MSG_ERROR([
-	     Unable to find OpenAL (Open Audio Layer)
-	     ])
+	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
 	)
 
 AC_LANG_POP(C)
@@ -82,7 +80,7 @@ PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
 		CPPFLAGS="$CPPFLAGS $XML_CFLAGS"
 		LDFLAGS="$LDFLAGS $XML_LIBS"
 	],
- AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
+ AC_MSG_ERROR(Couldn't find libxml)
 )
 
 # Check for the FreeType 2 library
