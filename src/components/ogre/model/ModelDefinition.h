@@ -29,7 +29,13 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
+// indicate using Xerces-C++ namespace in general
+XERCES_CPP_NAMESPACE_USE
 
+// // need to properly scope any forward declarations
+// XERCES_CPP_NAMESPACE_BEGIN
+//   class AttributeList;
+// XERCES_CPP_NAMESPACE_END
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 

@@ -2,7 +2,7 @@
 <GUILayout> 
 
 	<Window Type="TaharezLook/FrameWindow" Name="Mainwindow">
-		<Property Name="Position" Value="x:0.6 y:0.1" /> 
+		<Property Name="Position" Value="x:0.8 y:0.025" /> 
 		<Property Name="Size" Value="w:0.2 h:0.2" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Inspect" />

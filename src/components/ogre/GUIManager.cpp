@@ -16,6 +16,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 #include "EmberOgrePrerequisites.h"
 #include "GUIManager.h"
 #include <CEGUISchemeManager.h>
@@ -33,9 +36,7 @@
 #include "widgets/GiveWidget.h"
 #include "MousePicker.h"
 
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
-
+#include "EmberEventProcessor.h"
 
 namespace EmberOgre {
 
@@ -49,7 +50,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 {
 
-	mEventProcessor = new Ogre::EventProcessor();
+	mEventProcessor = new EmberEventProcessor();
 	mEventProcessor->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow());
 	mEventProcessor->startProcessingEvents();
 

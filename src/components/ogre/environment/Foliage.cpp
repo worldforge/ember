@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include "services/EmberServices.h"
+#include "services/logging/LoggingService.h"
+#include "services/config/ConfigService.h"
+
 #include "Foliage.h"
 
 #include "GroundCover.h"
@@ -50,6 +54,11 @@ void Foliage::setVisible(bool visible)
 //This is all very quick and messy, to be replaced by something better in the future
 void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
 {
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	int submeshSize = (int)configSrv->getValue("foliage", "submeshsize");
+	double grassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
+	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
+	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
@@ -57,14 +66,14 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 	long xStart = segmentXStart * 64;
 	long zStart = segmentZStart * 64;
 	
-	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
+	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), submeshSize, Ogre::Vector3(0,0,0));
 	
-	long spaceBetween = 3;
+	double spaceBetween = grassSpacing;
 	
 	long i_end = xStart + numberOfSegments * 64;
 	long j_end = zStart + numberOfSegments * 64;
-	for (long i = xStart; i < i_end; i = i + spaceBetween) {
-		for (long j = zStart; j < j_end; j = j + spaceBetween) {
+	for (double i = xStart; i < i_end; i = i + spaceBetween) {
+		for (double j = zStart; j < j_end; j = j + spaceBetween) {
 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real random = Ogre::Math::UnitRandom();
@@ -74,9 +83,9 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 			} else if (random > 0.8) {
 				typeOfGrass = "teardrops";
 			} else if (random > 0.7) {
-				typeOfGrass = "bittergrass";
-			} else {
 				typeOfGrass = "thingrass";
+			} else {
+				typeOfGrass = "bittergrass";
 			}
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/small_plant/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/small_plant/") + typeOfGrass + "/low.mesh");
 			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(xPos,zPos), zPos);
@@ -89,11 +98,11 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 		}
 	}
 	
-	spaceBetween = 10;
+	spaceBetween = bushSpacing;
 	i_end = xStart + numberOfSegments * 64;
 	j_end = zStart + numberOfSegments * 64;
-	for (long i = xStart; i < i_end; i = i + spaceBetween) {
-		for (long j = zStart; j < j_end; j = j + spaceBetween) {
+	for (double i = xStart; i < i_end; i = i + spaceBetween) {
+		for (double j = zStart; j < j_end; j = j + spaceBetween) {
 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
 			Ogre::Real random = Ogre::Math::UnitRandom();
@@ -103,9 +112,9 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 			} else if (random > 0.8) {
 				typeOfGrass = "teardrops";
 			} else if (random > 0.5) {
-				typeOfGrass = "bittergrass";
-			} else {
 				typeOfGrass = "thingrass";
+			} else {
+				typeOfGrass = "bittergrass";
 			}
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
 			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(xPos,zPos), zPos);
@@ -117,9 +126,9 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 		}
 	}
 
-	mGround->setCullParameters(32, 32, 120);
+	mGround->setCullParameters(cullDistance, cullDistance, 120);
 	mGround->compile();
-		
+	mGround->update(mCamera);
 		
 }
 

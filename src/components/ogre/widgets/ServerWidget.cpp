@@ -21,11 +21,11 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#include "services/server/ServerService.h"
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
 #include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 
 #include "Widget.h"
 #include "GUIManager.h"

@@ -20,6 +20,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include "services/server/ServerService.h"
+#include "services/EmberServices.h"
+
 #include "Widget.h"
 
 #include "EmberEntity.h"
@@ -32,8 +35,6 @@
 #include "GiveWidget.h"
 #include "GUIManager.h"
 
-#include "services/server/ServerService.h"
-#include "services/EmberServices.h"
 
 #include <elements/CEGUIPushButton.h>
 namespace EmberOgre {

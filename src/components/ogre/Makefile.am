@@ -12,6 +12,7 @@ $(top_builddir)/src/services/server/libServerService.a \
 $(top_builddir)/src/services/sound/libSoundService.a \
 $(top_builddir)/src/services/logging/libLoggingService.a \
 $(top_builddir)/src/framework/libFramework.a \
+$(top_builddir)/src/extensions/libExtensions.a \
 $(top_builddir)/src/components/ogre/environment/libEnvironment.a \
 $(top_builddir)/src/components/ogre/model/libModel.a \
 $(top_builddir)/src/components/ogre/EmberSceneManager/src/libEmberSceneManager.a

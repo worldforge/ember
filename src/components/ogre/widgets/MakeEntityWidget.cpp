@@ -20,14 +20,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
 #include <wfmath/atlasconv.h>
 
 #include "Widget.h"
 #include "EmberOgre.h"
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include "services/logging/LoggingService.h"
 #include "Avatar.h"
 

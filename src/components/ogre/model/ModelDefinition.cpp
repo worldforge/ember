@@ -21,14 +21,14 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 #include "ModelDefinition.h"
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
 #include "components/ogre/EmberOgre.h"
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 namespace EmberOgre {

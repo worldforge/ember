@@ -1,1 +1,1 @@
-SUBDIRS =  services framework components # main
+SUBDIRS = services framework components extensions

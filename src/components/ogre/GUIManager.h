@@ -55,6 +55,7 @@ class CEGUI::Window;
 class Widget;
 class ConsoleWidget;
 class MousePicker;
+class EmberEventProcessor;
 
 /*
  * This class will be responsible for all the GUI related things
@@ -103,7 +104,7 @@ public:
 
 	CEGUI::Window* getMainSheet();
 	
-	Ogre::EventProcessor* getEventProcessor() { return mEventProcessor; }
+	EmberEventProcessor* getEventProcessor() { return mEventProcessor; }
 	
 	void initialize();
 	
@@ -128,7 +129,7 @@ protected:
 	
 	ConsoleWidget* mConsoleWidget;
 
-	Ogre::EventProcessor* mEventProcessor;
+	EmberEventProcessor* mEventProcessor;
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreRenderer* mGuiRenderer;

@@ -34,6 +34,8 @@
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
+#include "EmberEventProcessor.h"
+
 using namespace Ogre;
 namespace EmberOgre {
 

@@ -19,7 +19,6 @@
 #include <time.h>
 
 #include "EmberEventProcessor.h"
-
 namespace EmberOgre {
 
 
@@ -31,6 +30,7 @@ EmberEventProcessor::EmberEventProcessor() : Ogre::EventProcessor()
 
 void EmberEventProcessor::initialise(Ogre::RenderWindow* ren)
 {
+	return Ogre::EventProcessor::initialise(ren);
 	mWin = ren;
 	
 	cleanup();
@@ -39,6 +39,7 @@ void EmberEventProcessor::initialise(Ogre::RenderWindow* ren)
 	mEventQueue = new Ogre::EventQueue();
  
  	createInputReader(mUseMouse);
+	addMouseListener(this);
  
 }
 
@@ -51,53 +52,61 @@ void EmberEventProcessor::toggleMouse()
 
 }
 
-std::string EmberEventProcessor::takeScreenshot() 
+void EmberEventProcessor::mousePressed (Ogre::MouseEvent *e)
 {
-	// retrieve current time
-	time_t rawtime;
-	struct tm* timeinfo;
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	
-	// construct filename string
-	// padding with 0 for single-digit values
-	std::stringstream filename;
-	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
-	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
-	if(month <= 9) 
-	{
-		filename << "0";	
-	}
-	filename << month;
-	int day = (*timeinfo).tm_mday;
-	if(day <= 9) 
-	{
-		filename << "0";	
-	}
-	filename << day << "_";
-	int hour = (*timeinfo).tm_hour;
-	if(hour <= 9) 
-	{
-		filename << "0"; 
-	}
-	filename << hour;
-	int min = (*timeinfo).tm_min;
-	if(min <= 9) 
-	{
-		filename << "0";	 
-	}
-	filename << min;
-	int sec = (*timeinfo).tm_sec;
-	if(sec <= 9) 
-	{
-		filename << "0";
-	} 
-	filename << sec << ".png";
-	
-	// take screenshot
-	mWin->writeContentsToFile(filename.str());
-	mWin->setDebugText(std::string("Screenshot: ") + filename.str());
+	if (!mUseMouse)
+		toggleMouse();
+	//removeMouseListener(this);
 }
+
+
+// std::string EmberEventProcessor::takeScreenshot() 
+// {
+// 	// retrieve current time
+// 	time_t rawtime;
+// 	struct tm* timeinfo;
+// 	time(&rawtime);
+// 	timeinfo = localtime(&rawtime);
+// 	
+// 	// construct filename string
+// 	// padding with 0 for single-digit values
+// 	std::stringstream filename;
+// 	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
+// 	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
+// 	if(month <= 9) 
+// 	{
+// 		filename << "0";	
+// 	}
+// 	filename << month;
+// 	int day = (*timeinfo).tm_mday;
+// 	if(day <= 9) 
+// 	{
+// 		filename << "0";	
+// 	}
+// 	filename << day << "_";
+// 	int hour = (*timeinfo).tm_hour;
+// 	if(hour <= 9) 
+// 	{
+// 		filename << "0"; 
+// 	}
+// 	filename << hour;
+// 	int min = (*timeinfo).tm_min;
+// 	if(min <= 9) 
+// 	{
+// 		filename << "0";	 
+// 	}
+// 	filename << min;
+// 	int sec = (*timeinfo).tm_sec;
+// 	if(sec <= 9) 
+// 	{
+// 		filename << "0";
+// 	} 
+// 	filename << sec << ".png";
+// 	
+// 	// take screenshot
+// 	mWin->writeContentsToFile(filename.str());
+// 	mWin->setDebugText(std::string("Screenshot: ") + filename.str());
+// }
 
 bool EmberEventProcessor::isMouseUsed()
 {
@@ -107,7 +116,8 @@ bool EmberEventProcessor::isMouseUsed()
 void EmberEventProcessor::createInputReader(bool useMouse) 
 {
 		mInputDevice = Ogre::PlatformManager::getSingleton().createInputReader();
-		mInputDevice->useBufferedInput(mEventQueue, true, useMouse);
+
+		mInputDevice->useBufferedInput(mEventQueue, true, true);
 		mInputDevice->initialise(mWin, true, useMouse);
 }
 

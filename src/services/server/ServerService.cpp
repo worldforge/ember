@@ -16,10 +16,16 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Message/Element.h>
+#include "extensions/Atlas/Operations/Wield.h"
+#include "extensions/Atlas/Operations/Use.h"
 #include "ServerService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
+
 
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
@@ -28,10 +34,6 @@
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
 #include <Eris/Exceptions.h>
-
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Message/Element.h>
 
 
 #include <list>
@@ -70,7 +72,7 @@ namespace Ember
     // singleton instance up.  Do _not_ use Connection::Instance()
     // this does not create a new connection.
     // We are connected without debuging enabled thus the false
-    myConn = new Eris::Connection("dime",false);
+    myConn = new Eris::Connection("ember",false);
 
     // Bind signals
     myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
@@ -91,6 +93,11 @@ namespace Ember
 	ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
 	ConsoleBackend::getMainConsole()->registerCommand(SAY,this);
 	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this);
+
+	
+	//register extension operations of atlas
+	WieldData::WIELD_NO = Atlas::Objects::objectFactory.addFactory("wield", (Atlas::Objects::FactoryMethod)&Wield::factory);
+	UseData::USE_NO = Atlas::Objects::objectFactory.addFactory("use", (Atlas::Objects::FactoryMethod)&Use::factory);
 
   }
 
@@ -625,7 +632,14 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
  		try {
- 			//myAvatar->place(entity, target);
+			Wield wieldOp;
+			wieldOp->setFrom(myAvatar->getEntity()->getId());
+			Atlas::Objects::Entity::GameEntity what;
+			what->setLoc(myAvatar->getEntity()->getId());
+			what->setId(entity->getId());
+    		wieldOp->setArgs1(what);
+    		getConnection()->send(wieldOp);
+			
  		}
  		catch (Eris::BaseException except)
  		{
@@ -647,7 +661,14 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
  		try {
- 			//myAvatar->place(entity, target);
+ 			Use useOp;
+			useOp->setFrom(myAvatar->getEntity()->getId());
+			Atlas::Objects::Entity::GameEntity what;
+			what->setLoc(entity->getLocation()->getId());
+			what->setId(entity->getId());
+    		useOp->setArgs1(what);
+    		getConnection()->send(useOp);
+			//myAvatar->place(entity, target);
  		}
  		catch (Eris::BaseException except)
  		{

@@ -20,15 +20,17 @@
 #include "config.h"
 #endif
 
-#include <xercesc/util/XMemory.hpp>
-
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
-
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
+
+// #include <xercesc/util/XMemory.hpp>
+// 
+// #include <xercesc/dom/DOM.hpp>
+// #include <xercesc/util/XMLString.hpp>
+// #include <xercesc/util/PlatformUtils.hpp>
+// 
+
+
 
 
 #include "EmberEntity.h"

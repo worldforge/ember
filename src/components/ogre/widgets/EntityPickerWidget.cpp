@@ -20,6 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include "services/server/ServerService.h"
+#include "services/EmberServices.h"
 
 #include "Widget.h"
 
@@ -137,7 +139,18 @@ void EntityPickerWidget::buildWidget()
 	inspectButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(inspectButton);
 	mButtonSet.insert(inspectButton);	
-	
+
+	CEGUI::PushButton* useButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/UseButton"));
+	BIND_CEGUI_EVENT(useButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonUse_Click);
+/*	useButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
+		boost::bind(&EntityPickerWidget::buttonUse_Click, this, _1));*/
+	useButton->setText((CEGUI::utf8*)"Use");
+	useButton->setSize(CEGUI::Size(1.0f, 0.2f));
+	useButton->setPosition(CEGUI::Point(0.0f, 0.8f));
+	useButton->setInheritsAlpha(true);	
+	mMenuWindow->addChildWindow(useButton);
+	mButtonSet.insert(useButton);	
+		
 
 }
 
@@ -205,6 +218,15 @@ bool EntityPickerWidget::buttonInspect_Click(const CEGUI::EventArgs& args)
 bool EntityPickerWidget::buttonGive_Click(const CEGUI::EventArgs& args)
 {
 	mGuiManager->EventEntityAction("give", mPickedEntity);
+	removeMenu();
+	return true;
+}
+
+bool EntityPickerWidget::buttonUse_Click(const CEGUI::EventArgs& args)
+{
+	mGuiManager->setDebugText(std::string("Performin Use on  ") + mPickedEntity->getName() );
+	mGuiManager->EventEntityAction("use", mPickedEntity);
+	Ember::EmberServices::getInstance()->getServerService()->use(mPickedEntity);
 	removeMenu();
 	return true;
 }

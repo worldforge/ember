@@ -25,6 +25,7 @@
 #include <OgreEventProcessor.h>
 #include <OgreEventQueue.h>
 
+#include <OgreEventListeners.h> 
 /*
  *  @author Erik Hjortsberg
  * 
@@ -36,7 +37,7 @@
  */
 namespace EmberOgre {
 
-class EmberEventProcessor : public Ogre::EventProcessor {
+class EmberEventProcessor : public Ogre::EventProcessor, virtual Ogre::MouseListener {
 public:
 
 	EmberEventProcessor();
@@ -51,12 +52,20 @@ public:
 	 * takes a screenshot and writes it to a file
 	 * returns the name of the screenshot
 	 */
-	std::string takeScreenshot(); 
+/*	std::string takeScreenshot(); */
 	
 	/*
 	 * Returns true if the application has grabbed the mouse.
 	 */
 	bool isMouseUsed();
+	
+	virtual void mousePressed (Ogre::MouseEvent *e);
+	
+	virtual void 	mouseReleased (Ogre::MouseEvent *e) {}
+	virtual void 	mouseClicked (Ogre::MouseEvent *e) {}
+	virtual void 	mouseEntered (Ogre::MouseEvent *e) {}
+	virtual void 	mouseExited (Ogre::MouseEvent *e) {}
+	
 protected:
 
 	void createInputReader(bool useMouse);
