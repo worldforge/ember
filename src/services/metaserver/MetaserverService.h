@@ -21,9 +21,7 @@
 #define METASERVERSERVICE_H
 
 #include <framework/Service.h>
-#include <Eris/Metaserver.h>
-#include <Eris/Utils.h>
-// #include <stdint.h> Not needed handled by eris
+
 #include <sigc++/object.h>
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>

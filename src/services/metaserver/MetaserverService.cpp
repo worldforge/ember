@@ -26,6 +26,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <strstream>
 
 // Libraries we are using
 #include <sigc++/object_slot.h>
@@ -51,7 +52,7 @@ namespace dime
 		setDescription("Service for Metaserver session");
 		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
 		//        setStatus( Service::Status::OK );
-		cout << "TRACE: Metaserver Service created" << endl;
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
 		msrv = NULL;
 	}
 
@@ -73,17 +74,19 @@ namespace dime
     	listed = false;
 
     	// waiting for James to implement this
-		// cout << "Servers: " << msrv->getGameServerCount() << "endl";
+	//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << "endl";
 		//Eris::Serverlist whatever;
 		svrl l = msrv -> getGameServerList ();
 		
-		cout << "listing hostnames" << endl;
+		strstream out;
+		out << "listing hostnames" << endl;
 		
 		for(Iter i = l.begin(); i != l.end(); i++)
 		{	
 			//HINT: Always use .data() for compatibility to MSVC
-			cout << "Hostname: " << (i)->getHostname().data() << endl;
+			out << "Hostname: " << (i)->getHostname().data() << endl;
 	    }
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << out.str() << ENDM;
 		
 		return 0;
 	
