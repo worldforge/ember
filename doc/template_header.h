@@ -1,3 +1,4 @@
+
 // This is a template that describes a layout for header files.
 
 // Additional guidelines:
@@ -25,6 +26,22 @@
 //   (such as Protected Methods, Public Constants, etc) in place even if you don't
 //   use them initially.  This way there is a clear place where to put new methods,
 //   variables, and constants of different types, and the code stays clearer.
+//
+// - Always return a value at the end of non-void functions.
+//
+//---------------------------------------------------------------------------------------------------
+// MSVC coding needs
+//
+// - First always use the correct namespaces for items.  Such as SigC:: for libsigc++ items.
+//   Or std::string or std::list.
+//
+// - MSVC 6 and below don't handle partial instantiation of templates. So always do the full
+//   instanstiation.  such as: SigC::Signal1<void, int> mySignal; is not good enough because
+//   you need a marshal to have full instantiation.  Instead use:
+//   SIgC::Signal1<void, int, SigC::Marshal<void> > mySignal;  <- note: the space inbetween
+//   void> and > is VERY important...  otherwise the compiler interprets it as an operator.
+//
+//---------------------------------------------------------------------------------------------------
 //
 //
 //   TODO: What standard should be used for todo's, notes, and such?
