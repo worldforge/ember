@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Dime, 0.1.4, clients@worldforge.org)
+AC_INIT(Ember, 0.1.9, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE
-#(Dime, 0.1.4, clients@worldforge.org)
+#(Ember, 0.1.9, clients@worldforge.org)
 AM_CONFIG_HEADER(config.h)
 
 AC_PREREQ(2.50)
@@ -58,10 +58,10 @@ AC_MSG_RESULT([
 
 	])
 
-WF_CHECK_SDL_IMAGE(1.2.0)
-dnl don't add SDL flags yet, SDL_main confuses later checks
+#WF_CHECK_SDL_IMAGE(1.2.0)
+#dnl don't add SDL flags yet, SDL_main confuses later checks
 
-WF_CHECK_GL_SINGLE_LIB
+#WF_CHECK_GL_SINGLE_LIB
 
 # OpenAL check
 
@@ -72,50 +72,57 @@ AC_CHECK_LIB(openal,
 	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
 	)
 
+AC_CHECK_LIB([xerces-c],
+	[main],,
+		AC_MSG_ERROR([Cannot find xerces library. ]), 
+	-lpthread)
+
+	
+	
 AC_LANG_POP(C)
 
 # Test for libxml2
-PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
-	[
-		CXXFLAGS="$CPPFLAGS $XML_CFLAGS"
-		LDFLAGS="$LDFLAGS $XML_LIBS"
-	],
- AC_MSG_ERROR(Couldn't find libxml)
-)
+#PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
+#	[
+#		CXXFLAGS="$CPPFLAGS $XML_CFLAGS"
+#		LDFLAGS="$LDFLAGS $XML_LIBS"
+#	],
+# AC_MSG_ERROR(Couldn't find libxml)
+#)
 
 # Check for the FreeType 2 library
 #
 # Get the cflags and libraries from the freetype-config script
-AC_ARG_WITH(freetype-prefix,[  --with-freetype-prefix=PFX   Prefix where FREETYPE is 
-			       installed (optional)],
-			       freetype_prefix="$withval",
-			       freetype_prefix="")
-AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix
-				    where FREETYPE is installed (optional)],
-				    freetype_exec_prefix="$withval", freetype_exec_prefix="")
-
-if test x$freetype_exec_prefix != x ; then
-     freetype_args="$freetype_args --exec-prefix=$freetype_exec_prefix"
-     if test x${FREETYPE_CONFIG+set} != xset ; then
-        FREETYPE_CONFIG=$freetype_exec_prefix/bin/freetype-config
-     fi
-fi
-if test x$freetype_prefix != x ; then
-     freetype_args="$freetype_args --prefix=$freetype_prefix"
-     if test x${FREETYPE_CONFIG+set} != xset ; then
-        FREETYPE_CONFIG=$freetype_prefix/bin/freetype-config
-     fi
-fi
-AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
-no_freetype=""
-if test "$FREETYPE_CONFIG" = "no" ; then
-    AC_MSG_ERROR([
-*** Unable to find FreeType2 library (http://www.freetype.org/)
-])
-else
-    CXXFLAGS="$CXXFLAGS `$FREETYPE_CONFIG $freetypeconf_args --cflags`"
-    LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
-fi
+#AC_ARG_WITH(freetype-prefix,[  --with-freetype-prefix=PFX   Prefix where FREETYPE is 
+#			       installed (optional)],
+#			       freetype_prefix="$withval",
+#			       freetype_prefix="")
+#AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix
+#				    where FREETYPE is installed (optional)],
+#				    freetype_exec_prefix="$withval", freetype_exec_prefix="")
+#
+#if test x$freetype_exec_prefix != x ; then
+#     freetype_args="$freetype_args --exec-prefix=$freetype_exec_prefix"
+#     if test x${FREETYPE_CONFIG+set} != xset ; then
+#        FREETYPE_CONFIG=$freetype_exec_prefix/bin/freetype-config
+#     fi
+#fi
+#if test x$freetype_prefix != x ; then
+#     freetype_args="$freetype_args --prefix=$freetype_prefix"
+#     if test x${FREETYPE_CONFIG+set} != xset ; then
+#        FREETYPE_CONFIG=$freetype_prefix/bin/freetype-config
+#     fi
+#fi
+#AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+#no_freetype=""
+#if test "$FREETYPE_CONFIG" = "no" ; then
+#    AC_MSG_ERROR([
+#*** Unable to find FreeType2 library (http://www.freetype.org/)
+#])
+#else
+#    CXXFLAGS="$CXXFLAGS `$FREETYPE_CONFIG $freetypeconf_args --cflags`"
+#    LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
+#fi
 
 # Check for C++ libraries:
 AC_LANG_POP([C])
@@ -130,22 +137,28 @@ AC_MSG_RESULT([
 
 # Check for the Boost shared_ptr.hpp shared pointer header
 #AC_CHECK_HEADER(boost/shared_ptr.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
-#	AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
+#	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
+
+#Check for the Boost bind header
+AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
+	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
+
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
 # Check for OGRE
-OGRE_VERSION=0.14.0
-PKG_CHECK_MODULES(OGRE, OGRE >= 0.14.0,
+OGRE_VERSION=0.15.0
+PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS /opt/lib/OGRE/Plugin_OctreeSceneManager.so"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS  `pkg-config --variable=plugindir OGRE`/Plugin_OctreeSceneManager.so"
+#		LDFLAGS="$LDFLAGS $OGRE_LIBS /usr/local/lib/OGRE/Plugin_OctreeSceneManager.so"
 	],
 	[
-		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
+		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://www.ogre3d.org to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
 
-# Chech for CEGUI
+# Check for CEGUI
 PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
 	[
 		CPPFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
@@ -154,6 +167,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
 	[
 		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
+
 
 
 # Check for the WorldForge libs
@@ -265,36 +279,36 @@ AC_MSG_RESULT([
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 src/components/Makefile
-		 src/components/debug/Makefile
 		 src/framework/Makefile
 		 src/services/Makefile
 		 src/services/config/Makefile
 		 src/services/logging/Makefile
-		 src/services/test/Makefile
 		 src/services/metaserver/Makefile
-		 src/services/input/Makefile
-		 src/services/image/Makefile
-		 src/services/font/Makefile
-		 src/services/gui/Makefile
-		 src/services/gui/widget/Makefile
-		 src/services/platform/Makefile
 		 src/services/server/Makefile
 		 src/services/sound/Makefile
 		 test/Makefile
 		 src/main/Makefile
-		 dime.dox
-		 dime.spec
+		 ember.dox
+		 ember.spec
 		 src/components/ogre/Makefile
-		 src/components/text/Makefile
 ])
 
+#		 src/components/text/Makefile
+#		 src/services/input/Makefile
+#		 src/services/image/Makefile
+#		 src/services/font/Makefile
+#		 src/services/gui/Makefile
+#		 src/services/gui/widget/Makefile
+#		 src/services/platform/Makefile
+#		 src/components/debug/Makefile
+#		 src/services/test/Makefile
 
 AC_OUTPUT
 
 AC_MSG_RESULT([
 
 		**************************************
-		* Finished.  Run make to compile dime.
+		* Finished.  Run make to compile Ember.
 		**************************************
 
 	])

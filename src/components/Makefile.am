@@ -1,2 +1,2 @@
 SUBDIRS = ogre
-EXTRA_DIST = State.h WidgetInfo.h
+#EXTRA_DIST = State.h WidgetInfo.h
