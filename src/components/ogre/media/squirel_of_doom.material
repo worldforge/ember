@@ -1,0 +1,7 @@
+sqrl_skin
+{
+    diffuse 1.0 1.0 1.0
+    {
+	texture squirrel_skintest.jpg
+    }
+}
