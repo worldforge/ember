@@ -141,7 +141,6 @@ bool TextBox::keyPress( KeyPressEvent *event)
 // TODO: REVIEW THIS CODE AND CRITIC THE ALGO
 void TextBox::rebuildLeft()
 {
-  cout<<"RebuildLeft"<<endl;
   /* Start with zero chars and keep on expanding till we get too big.
      Then when we get too big go back to the one before that wasn't too
      big.  That's our target!
@@ -167,7 +166,6 @@ void TextBox::rebuildLeft()
 // TODO: REVIEW THIS CODE AND CRITIC THE ALGO
 void TextBox::rebuildRight()
 {
-  cout<<"Rebuildright"<<endl;
   /* Start with zero chars and keep on expanding till we get too big.
      Then when we get too big go back to the one before that wasn't too
      big.  That's our target!
