@@ -225,6 +225,27 @@ PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.3 \
 # AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
 
+
+AC_CHECK_LIB(IL, ilInit,
+	[
+		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
+		LDFLAGS="$LDFLAGS $IL_LIBS"
+	]
+,AC_MSG_ERROR([
+****************************************************************
+* You do not have DevIL installed.  This is required to build. *
+* You may find it at http://openil.sourceforge.net/.           *
+****************************************************************]))
+AC_CHECK_LIB(ILU, iluFlipImage,
+	[
+		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
+		LDFLAGS="$LDFLAGS $ILU_LIBS"
+	]
+
+)
+
+
+
 # Cppunit check
  
 AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],

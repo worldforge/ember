@@ -144,10 +144,6 @@ protected:
 	
 
 
-	/**
-	 * Prints the supplied image (as a dataChunk) to a image file.
-	 */
-	void printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat);
 	
 	/**
 	 * This holds a map of the TerrainShaders

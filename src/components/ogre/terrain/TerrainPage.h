@@ -109,7 +109,7 @@ public:
 	 *    The position of the page in ogre space
 	 * @return 
 	 */
-	const Ogre::Vector3& getOgrePosition() const;
+	const Ogre::Vector3 getOgrePosition() const;
 	
 	/**
 	 *    The material used for the page
@@ -184,6 +184,24 @@ private:
 	
 	inline const Ogre::TerrainOptions& getTerrainOptions() const;
 	
+	/**
+	 * Prints the supplied image (as a dataChunk) to a image file.
+	 */
+	void printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat, int width, int height);
+
+	/**
+	 *    The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
+	 * @return 
+	 */
+	inline int getAlphaTextureSize() const;
+	
+	const unsigned int mBytesPerPixel;
+	
+	/**
+	* How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied)
+	*/
+	const unsigned int mAlphaMapScale;
+
 };
 
 

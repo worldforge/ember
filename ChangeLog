@@ -1,3 +1,9 @@
+2005-02-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added ability to scale the alpha textures for the splatting terrain. This is done with blur filtering thtough the use of devIL. The result is better looking terrain.
+	* Added dependency to devIL. Ogre already uses this, so it should be no big change.
+	* Bugfixes for segment and pages.
+
 2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* added libWidgets.a

@@ -201,10 +201,10 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	}
 
 	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
-	int xNumberOfPages = (mXmax - mXmin) / mercatorSegmentsPerPage;
-	int yNumberOfPages = (mYmax - mYmin) / mercatorSegmentsPerPage;
-	int xStart = mXmin / xNumberOfPages;
-	int yStart = mYmin / yNumberOfPages;
+	int xNumberOfPages = ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
+	int yNumberOfPages = ceil((mYmax - mYmin) / (double)mercatorSegmentsPerPage);
+	int xStart = floor(mXmin / (double)xNumberOfPages);
+	int yStart = floor(mYmin / (double)yNumberOfPages);
 	for (i = 0; i < xNumberOfPages; ++i) {
 		for (j = 0; j < yNumberOfPages; ++j) {
 			TerrainPosition pos(xStart + i, yStart + j);
@@ -229,10 +229,9 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 
 bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
 {
-	return true;
 	int x = (int)position.x();
 	int y = (int)position.y();
-	Mercator::Segment* segment = mTerrain->getSegment(x,y);
+	Mercator::Segment* segment = mTerrain->getSegment(position.x(),position.y());
 	return (segment &&	segment->isValid());
 //	return (segment &&	segment->isValid() && getMaterialForSegment(position));
 }
@@ -243,28 +242,7 @@ bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
 
 
 
-void TerrainGenerator::printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat) {
-// DEBUG   
-//prints the bitmap to a png-image
-//TODO: remove when finished with debugging
-	
-	const Ogre::String extension = "png";
-	
-	Ogre::ImageCodec::ImageData imgData;
-	imgData.width = mOptions.pageSize;
-	imgData.height = mOptions.pageSize;
-	//imgData.depth =  1;
-	imgData.format = pixelFormat;	
-	     		
-	Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
-	
-	// Write out
-	
-	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
-	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
-	pCodec->codeToFile(*dataChunk, Ogre::String("img/") + name + "." + extension, &imgData);
-	
-}
+
 
 float TerrainGenerator::getHeight(TerrainPosition& point) const
 {
