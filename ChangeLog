@@ -1,5 +1,10 @@
 2005-03-23  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* added fence building blocks modelmappings
+	* added campfire and fire modeldefs
+
+2005-03-23  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Cleaned up the logging a little bit more.
 
 2005-03-23  Erik Hjortsberg  <erik@katastrof.nu>

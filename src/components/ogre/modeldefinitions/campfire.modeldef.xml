@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="campfire">
+  <submodels>
+    <submodel mesh="3d_objects/plants/tree/models/campfire/campfire.mesh">
+      <parts>
+        <part name="main" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

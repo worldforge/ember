@@ -9,4 +9,7 @@
   <modelmapping model="slopewall" blocktype="slopewall/24/timber" />
   <modelmapping model="slopewall" blocktype="slopewall/12/timber" />
   <modelmapping model="wall_with_door" blocktype="wall_with_door/3/timber" />
+  <modelmapping model="fencepole" blocktype="fence/pole/timber" />
+  <modelmapping model="fencesection" blocktype="fence/section/timber" />
+  <modelmapping model="fencegate" blocktype="fence/gate/timber" />
 </modelmappings>
