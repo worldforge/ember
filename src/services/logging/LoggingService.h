@@ -19,9 +19,9 @@
 #ifndef LOGGINGSERVICE_H
 #define LOGGINGSERVICE_H
 
-#ifdef _MSC_VER	
+//#ifdef _MSC_VER	
 	#pragma warning( disable : 4786 )
-#endif 
+//#endif 
 
 // Include other headers of the current program here
 #include "framework/Service.h"
