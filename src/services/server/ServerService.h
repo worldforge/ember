@@ -78,6 +78,11 @@ class ServerService: public Service, public SigC::Object
 	Service::Status start();
 
 	void stop(int code);
+
+    //----------------------------------------------------------------------
+    // Callbacks from Eris
+
+	// Connection Callbacks
 	
 	void gotFailure(const string& msg);
 
@@ -90,6 +95,14 @@ class ServerService: public Service, public SigC::Object
 	void statusChanged(Eris::BaseConnection::Status);
 
 	void timeout(Eris::BaseConnection::Status);
+
+	// Lobby Callbacks
+
+	void sightPerson(Eris::Person*);
+
+	void privateTalk(const std::string&, const std::string&); 
+
+	void loggedIn( const Atlas::Objects::Entity::Player& );
 }; //ServerService
 
 } // namespace dime

@@ -54,9 +54,11 @@ namespace dime
 		setStatus(Service::OK);
 		setRunning( true );
 
-		// Create new instance of myConn
+		// Create new instance of myConn the constructor sets the
+		// singleton instance up.  Do _not_ use Connection::Instance()
+		// this does not create a new connection.
 	  // We are connected without debuging enabled thus the false
-		myConn = Connection::Instance();
+		myConn = new Connection("dime",false);
 
 		// Bind failure signal
 		myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
@@ -96,33 +98,50 @@ namespace dime
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
 	}	
 	
-	void connected()
+	void ServerService::connected()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
     // Set up the lobby
+	  myLobby=Lobby::instance();
+	  myLobby->SightPerson.connect(SigC::slot(*this,&ServerService::sightPerson));
+	  myLobby->PrivateTalk.connect(SigC::slot(*this,&ServerService::privateTalk));
+	  myLobby->LoggedIn.connect(SigC::slot(*this,&ServerService::loggedIn));
 	}
 
-	bool disconnecting()
+	bool ServerService::disconnecting()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnecting"<< ENDM;
+	  // NULL out lobby so noone gets tempted to play with an unconnected lobby
+	  myLobby=NULL;
 	  return true;
 	}
 
-	void disconnected()
+	void ServerService::disconnected()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
 	}
 
-	void statusChanged(Eris::BaseConnection::Status status)
+	void ServerService::statusChanged(Eris::BaseConnection::Status status)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Status Changed to: "<<status<<ENDM;
 	}
 
-	void timeout(Eris::BaseConnection::Status status)
+	void ServerService::timeout(Eris::BaseConnection::Status status)
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Connection Timed Out"<< ENDM;
 	}
 
+	void ServerService::sightPerson(Eris::Person* person)
+	{
+	}
+
+	void ServerService::privateTalk(const std::string& str1, const std::string& str2)
+	{
+	}
+
+	void ServerService::loggedIn( const Atlas::Objects::Entity::Player& player )
+	{
+	}
 	
 } // namespace dime
 
