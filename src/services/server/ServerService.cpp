@@ -18,8 +18,8 @@
 
 #include "ServerService.h"
 #include "services/logging/LoggingService.h"
-#include "services/gui/Console.h"
-#include "services/gui/Tokeniser.h"
+#include "services/gui/widget/Console.h"
+#include "framework/Tokeniser.h"
 
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>

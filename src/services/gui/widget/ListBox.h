@@ -16,23 +16,20 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef WIDGETINFO_H
-#define WIDGETINFO_H
+#ifndef LISTBOX_H
+#define LISTBOX_H
 
 // Included headers from the current project
-#include "services/platform/Rectangle.h"
-#include "services/gui/widget/Widget.h"
+#include "TextBox.h"
 
 // Included custom library headers
 
 // Included system headers
-#include <string>
-#include <vector>
 
 namespace dime {
 
 /**
- * Container Class for Info on a Widget in a State.
+ * Short sentence with a general description of the class, ending in period.
  *
  * More detailed description of the class, it's purpose, what it does,
  * how to use it and so on.
@@ -42,17 +39,26 @@ namespace dime {
  *
  * @author Martin Pollard aka Xmp
  *
- * @see dime::State
+ * NOTE: You can also specify the author for individual methods
+ * if different persons have created them.
+ * It is also possible to have multiple @author tags for a method.
+ * Only add yourself as an @author if you have done serious work
+ * on a class/method, and can help fixing bugs in it, etc.
+ * If you just fixed a bug or added a short code snipplet you
+ * don't need to add yourself.
  *
+ * @see dime::TextBox
+ *
+ * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class WidgetInfo
+class ListBox : public TextBox
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
     //======================================================================
     public:
-    typedef std::vector<WidgetInfo*>::iterator widgetIter;
+
 
     //======================================================================
     // Public Constants
@@ -71,25 +77,6 @@ class WidgetInfo
     //======================================================================/
     private:
 
-        /*
-         * Unique Identifying name of Widget
-         */
-        std::string myName;
-	
-	/*
-	 * Rectangle of Widget
-	 */
-        dime::Rectangle myPos;
-
-	/*
-	 * Type of widget (IE the theme we are getting this widget from.
-	 */
-        std::string myType;
-
-	/*
-	 * Children of Widget
-	 */
-	std::vector<WidgetInfo*> myChildren;
 
     //======================================================================
     // Public Methods
@@ -100,17 +87,16 @@ class WidgetInfo
     // Constructors
 
     /**
-     * Creates a new WidgetInfo.
+     * Creates a new ListBox using default values.
      */
-    WidgetInfo(const std::string& name, const dime::Rectangle& pos, const std::string& type)
-      : myName(name), myPos(pos), myType(type)
+     ListBox()
      {
      }
 
     /**
      * Copy constructor.
      */
-    WidgetInfo( const WidgetInfo &source )
+    ListBox( const ListBox &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -121,12 +107,9 @@ class WidgetInfo
     /**
      * Assignment operator.
      */
-    WidgetInfo &operator= ( const WidgetInfo &source )
+    ListBox &operator= ( const ListBox &source )
     {
         // Copy fields from source class to this class here.
-        myName = source.myName;
-	myPos = source.myPos;
-	myType = source.myType;
 
         // Return this object with new value
         return *this;
@@ -137,9 +120,9 @@ class WidgetInfo
     // Destructor
 
     /**
-     * Deletes a WidgetInfo instance.
+     * Deletes a ListBox instance.
      */
-    virtual ~WidgetInfo ()
+    virtual ~ListBox ()
     {
         // TODO: Free any allocated resources here.
     }
@@ -150,73 +133,14 @@ class WidgetInfo
 
     // Example of a getter method:
 
-    /**
-     * Gets the value of myPos of this WidgetInfo
-     */
-    dime::Rectangle getPos() const
-    {
-        return myPos;
-    }
-
-    /**
-     * Gets the value of Type of this WidgetInfo
-     */
-    std::string getType() const
-    {
-        return myType;
-    }
-
-    /**
-     * Gets the value of Name of this WidgetInfo
-     */
-    std::string getName() const
-    {
-        return myName;
-    }
-
 
     //----------------------------------------------------------------------
     // Setters
 
-    /**
-     * Sets the value of Pos of this WidgetInfo
-     */
-    void setPos( dime::Rectangle Pos )
-    {
-        myPos = Pos;
-    }
-
-    /**
-     * Sets the value of Type of this WidgetInfo
-     */
-    void setType( std::string type )
-    {
-        myType = type;
-    }
-
-    /**
-     * Sets the value of Name of this WidgetInfo
-     */
-    void setName( std::string name )
-    {
-        myName = name;
-    }
-
 
     //----------------------------------------------------------------------
     // Other public methods
-    // NOTE: Group related public methods together and create a separator comment like above for them.
-
-    void addChild( WidgetInfo* p )
-      {
-	myChildren.push_back(p);
-      }
-
-    Widget* getWidget()
-      {
-	return NULL;
-      }
-
+    // NOTE: Group related public methods together and crate a separator comment like above for them.
     
     //======================================================================
     // Protected Methods
@@ -236,7 +160,7 @@ class WidgetInfo
     private:
 
 
-}; // End of WidgetInfo
+}; // End of ListBox
 
 } // End of dime namespace
 

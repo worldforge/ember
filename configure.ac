@@ -209,13 +209,13 @@ AC_OUTPUT([
   src/services/image/Makefile
   src/services/font/Makefile
   src/services/gui/Makefile
+  src/services/gui/widget/Makefile
   src/services/platform/Makefile
   src/services/server/Makefile
   src/services/sound/Makefile
   src/services/datamodel/Makefile
   test/Makefile
   src/main/Makefile
-  test/Makefile
   dime.dox
   dime.spec
 ])

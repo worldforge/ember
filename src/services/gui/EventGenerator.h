@@ -20,7 +20,7 @@
 #define EVENTGENERATOR_H
 
 // Include project specific headers here
-#include "Widget.h"
+#include "widget/Widget.h"
 #include "MouseMotionEvent.h"
 #include "MouseButtonEvent.h"
 #include "KeyPressEvent.h"

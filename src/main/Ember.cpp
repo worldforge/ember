@@ -20,11 +20,11 @@
 #include <test/TestServices.h>
 #include <main/DimeServices.h>
 #include <services/image/ImageService.h>
-#include <services/gui/Button.h>
-#include <services/gui/Panel.h>
-#include <services/gui/Label.h>
-#include <services/gui/TextBox.h>
-#include <services/gui/Console.h>
+#include <services/gui/widget/Button.h>
+#include <services/gui/widget/Panel.h>
+#include <services/gui/widget/Label.h>
+#include <services/gui/widget/TextBox.h>
+#include <services/gui/widget/Console.h>
 #include <framework/Exception.h>
 
 

@@ -20,10 +20,10 @@
 #define WIDGET_H
 
 // Included headers from the current project
-#include "EventGenerator.h"
-#include "KeyPressEvent.h"
-#include "MouseButtonEvent.h"
-#include "MouseMotionEvent.h"
+#include "../EventGenerator.h"
+#include "../KeyPressEvent.h"
+#include "../MouseButtonEvent.h"
+#include "../MouseMotionEvent.h"
 
 #include <services/platform/Dimension.h>
 #include <services/platform/Rectangle.h>

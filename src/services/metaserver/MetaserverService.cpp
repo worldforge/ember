@@ -20,12 +20,12 @@
 #include "MetaserverService.h"
 
 // Current project
-#include <services/logging/LoggingService.h>
-//#include <services/datamodel/DataModelService.h>
-#include <services/datamodel/IntProvider.h>
-#include <services/datamodel/DataObject.h>
-#include <services/datamodel/FloatProvider.h>
-#include <services/gui/Console.h>
+#include "services/logging/LoggingService.h"
+//#include "services/datamodel/DataModelService.h"
+#include "services/datamodel/IntProvider.h"
+#include "services/datamodel/DataObject.h"
+#include "services/datamodel/FloatProvider.h"
+#include "services/gui/widget/Console.h"
 
 // System headers
 #include <iostream>

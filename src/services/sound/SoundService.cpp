@@ -20,8 +20,8 @@
 
 #include "SoundService.h"
 #include "services/logging/LoggingService.h"
-#include "services/gui/Console.h"
-#include "services/gui/Tokeniser.h"
+#include "services/gui/widget/Console.h"
+#include "framework/Tokeniser.h"
 
 /*
 #include <list>
@@ -73,7 +73,7 @@ namespace dime
 
 		// Generate buffers
 		/*
-		alGenBuffers(1,&systemBuffer);
+		if (!alGenBuffers(1,&systemBuffer)) return Service::FAILURE;
 		if (!alIsBuffer(systemBuffer)
 		{
 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating system buffer" << ENDM;

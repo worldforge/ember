@@ -23,7 +23,7 @@
 #include <framework/Service.h>
 #include <services/input/InputService.h>
 #include "EventGenerator.h"
-#include "Widget.h"
+#include "widget/Widget.h"
 #include <services/platform/DrawDevice.h>
 
 // Included custom library headers

@@ -14,7 +14,7 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+*/
 
 // Rewritten for Dime by Martin Pollard (Xmp)
 
@@ -25,7 +25,9 @@
 
 namespace dime
 {
+
 const std::string Tokeniser::delimeters = " ";
+
 void Tokeniser::initTokens(const std::string &tokens) {
   token_string = tokens;
 //  try {

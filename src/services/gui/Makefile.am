@@ -1,5 +1,9 @@
 INCLUDES = -I$(top_srcdir)/src
+SUBDIRS = widget
 
 noinst_LIBRARIES = libGuiService.a
 
-libGuiService_a_SOURCES = GuiService.cpp EventGenerator.cpp Widget.cpp Button.cpp Panel.cpp Label.cpp TextBox.cpp Console.cpp Tokeniser.cpp
+libGuiService_a_SOURCES = GuiService.cpp EventGenerator.cpp
+
+noinst_HEADERS = EventGenerator.h  Event.h  GuiService.h  KeyPressEvent.h  LineEdit.h  MouseButtonEvent.h  MouseMotionEvent.h
+
