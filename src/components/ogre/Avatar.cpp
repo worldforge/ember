@@ -19,10 +19,11 @@
 
 //TODO: reorder headers, etc
 
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
+#include <Ogre.h>
 /*
 #include "services/server/ServerService.h"
 #include "services/DimeServices.h"
@@ -39,22 +40,38 @@
 
 #include "Avatar.h"
 
+
 Avatar::Avatar()
 {
 }
 
 Avatar::Avatar(Ogre::SceneManager* sceneManager)
 {
+	mWalkSpeed = WF2OGRE(2.0);
+	mRunSpeed = WF2OGRE(5.0);
+
 	mSceneMgr = sceneManager; // TODO: assert it's not null
 
 	// Create the Avatar tree of nodes, with a base entity
 	// and attach all the needed cameras
+	
+	createAvatar();
+	createAvatarCameras();
 
+
+}
+
+Avatar::~Avatar()
+{
+}
+
+void Avatar::createAvatar()
+{
 	// The avatar itself
 	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mAvatarNode->setPosition(0,0,0);
+	mAvatarNode->setPosition(WF2OGRE_VECTOR3(0,0,5));
 	//mAvatarNode->setOrientation(0,1,0,0);
-	mAvatarNode->setScale(0.01,0.01,0.01);
+	//mAvatarNode->setScale(OGRESCALER);
 	// TODO: very important! When the scale is set to default (1,1,1)
 	// and a mesh with normal scale is put here (like 2 meters high and things like that)
 	// we'll need to rescale the local space position for the nodes (shown below)
@@ -67,17 +84,26 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	mAvatarModelNode->attachObject(mAvatarEntity);
 	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
 
+	//let's set the current animation state to walking
+	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	
+	
+	Ogre::ControllerManager* controllerManager = &Ogre::ControllerManager::getSingleton();
+	mAvatarAnimationControllerFunction = new Ogre::AnimationControllerFunction(mAnimStateWalk->getLength());
+	mAvatarAnimationController = controllerManager->createController(controllerManager->getFrameTimeSource(), mAnimStateWalk, mAvatarAnimationControllerFunction);
+}
+
+void Avatar::createAvatarCameras()
+{
 	// 1st person, 3rd person and Top camera nodes
 	mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("Avatar1pCameraNode"));
-	mAvatar1pCameraNode->setPosition(0,8500,0);
+	mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
+	//mAvatar1pCameraNode->showBoundingBox(true);
 	mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
-	Ogre::Vector3 pos = Ogre::Vector3(0,2500,15000);
+	Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,5);
 	//mAvatar3pCameraNode->setPosition(15000,2500,0);
 	mAvatar3pCameraNode->setPosition(pos);
 	mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarTopCameraNode"));
-	mAvatarTopCameraNode->setPosition(2,100000,0);
-
-	// TODO: put all this code into "createAvatar" or something similar
+	mAvatarTopCameraNode->setPosition(WF2OGRE_VECTOR3(2,200,0));
 
 	// Create the camera
 	mAvatar1pCamera = mSceneMgr->createCamera("Avatar1pCam");
@@ -105,36 +131,46 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	mAvatarTopCamera->setAutoTracking(true, mAvatarNode);
 	mAvatarTopCamera->setNearClipDistance(1);
 	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
+	
 }
-
-Avatar::~Avatar()
+void Avatar::attemptMove(Ogre::Vector3 move, bool isRunning)
 {
+	if (!mIsMoving) {
+		fprintf(stderr, "TRACE - AVATAR START WALKING ANIMATION\n");
+		mIsMoving = true;
+		mAnimStateWalk->setEnabled(true);
+	}
+	mAvatarNode->translate(mAvatarNode->getOrientation()* (move* (isRunning ? mRunSpeed : mWalkSpeed)));
 }
 
-
-void Avatar::move(Ogre::Vector3 move)
+void Avatar::attemptStop()
 {
-	//fprintf(stderr, "TRACE - AVATAR MOVING\n");
-	mAvatarNode->translate(mAvatarNode->getOrientation()*move);
+	if (mIsMoving) {
+		fprintf(stderr, "TRACE - AVATAR STOP WALKING ANIMATION\n");
+		mIsMoving = false;
+		mAnimStateWalk->setEnabled(false);
+	}
 }
 
-void Avatar::rotate(float degHoriz, float degVert)
+void Avatar::attemptJump() {}
+
+
+void Avatar::attemptRotate(float degHoriz, float degVert, Ogre::Real timeSlice)
 {
 	// rotate the Avatar Node only in X position (no vertical rotation)
 	mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,degHoriz);
 
-	// rotate the 1p Camera
+	// pitch the 1p Camera
 	//mAvatar1pCameraNode->yaw(degHoriz);
 	mAvatar1pCameraNode->pitch(degVert);
-
 	// TODO: rotate 3p cam and rotate *back* top camera
 
 	// Rotate top camera *back*
 	// The mini-map will always be in the same position
 	// (Up is North)
 	// TODO: study why do I need twice the angle!
-	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
-	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
+	//mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
+	//mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
 }
 
 
@@ -151,5 +187,12 @@ Ogre::Camera* Avatar::getAvatar3pCamera()
 Ogre::Camera* Avatar::getAvatarTopCamera()
 {
 	return mAvatarTopCamera;
+}
+
+void Avatar::enteredWorld(Eris::Entity *e)
+{
+	
+	mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
+	mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
 }
 

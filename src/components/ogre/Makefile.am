@@ -19,9 +19,11 @@ $(top_builddir)/src/framework/libFramework.a
 
 
 DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
-			Avatar.cpp AvatarKeyboardListener.cpp PlayerMouseListener.cpp \
+			Avatar.cpp PlayerMouseListener.cpp \
 			EntityListener.cpp ConsoleObjectImpl.cpp \
-			MediaDeployer.cpp
+			MediaDeployer.cpp DimeEventProcessor.cpp \
+			AvatarController.cpp DebugListener.cpp \
+			DimeEntity.cpp DimeEntityFactory.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

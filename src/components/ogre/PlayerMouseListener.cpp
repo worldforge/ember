@@ -54,14 +54,17 @@ PlayerMouseListener::~PlayerMouseListener()
 
 void PlayerMouseListener::mouseMoved(short newX, short newY, short oldX, short oldY)
 {
-	// TODO: very important! Take into account here the screen width and height
+//	AvatarController::getSingleton().setMouseCoords(newX, newY);		
+	
+/*	// TODO: very important! Take into account here the screen width and height
 	// IF NOT, THE ROTATION WILL DEPEND ON SCREEN SIZE;
 	float diffX = -(newX - oldX) * 0.13;
 	float diffY = -(newY - oldY) * 0.13;
 	//std::cout << "MOVED MOUSE: " << diffX << " " << diffY << std::endl;
 	//mCamera->yaw(diffX);
 	//mCamera->pitch(diffY);
-	mAvatar->rotate(diffX,diffY);
+	 * */
+//	mAvatar->rotate(diffX,diffY);
 }
 
 void PlayerMouseListener::mousePressed(unsigned char button)

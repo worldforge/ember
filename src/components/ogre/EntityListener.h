@@ -23,8 +23,7 @@
 #ifndef ENTITY_LISTENER_H
 #define ENTITY_LISTENER_H
 
-#include <Eris/Entity.h>
-#include <Eris/World.h>
+
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -35,11 +34,18 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
-
-#include "services/platform/DrawDevice.h"
-#include "framework/ConsoleBackend.h"
-
 #include <Ogre.h>
+
+#include <Eris/Entity.h>
+#include <Eris/World.h>
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#include <Eris/TypeInfo.h>
+#include <Ogre.h>
+
+class DimeEntity;
+class Avatar;
+
 
 class EntityListener : virtual public SigC::Object //, public Component
 {
@@ -62,17 +68,39 @@ class EntityListener : virtual public SigC::Object //, public Component
 		static EntityListener* _instance;
 		Ogre::SceneManager* mSceneMgr;
 		std::string avatarID; // ID of the Avatar entity
+		DimeEntity* dimeEntity;
+		
+		//the main avatar, from the dime namespace
+		Avatar* mDimeAvatar;
+		
 
     //======================================================================
     //Public Methods
     //======================================================================
     public:
+    
+    	void setDimeAvatar(Avatar* dimeAvatar)
+    	{ 
+    		mDimeAvatar = dimeAvatar;
+    	}
+    	
+    	Avatar* getDimeAvatar() 
+    	{
+    		return mDimeAvatar;
+    	}
 
 		/** Retrieves the instance of EntityListener */
 		static EntityListener & getSingleton(void);
 
         /** Destructor, stick cleanup stuff here as per usual */
         ~EntityListener();
+
+        /**
+         * debug
+         * TODO:remove
+         */
+         Ogre::SceneManager* getSceneManager();
+
 
 		/** TODO: comment this properly */
 		void connectWorldSignals();
@@ -181,6 +209,8 @@ class EntityListener : virtual public SigC::Object //, public Component
          * Also sadly undocumented
          */
         void removedMember(Eris::Entity *e);
+        
+        
 
 
 }; //End of class declaration

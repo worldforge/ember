@@ -6,8 +6,25 @@
 #include <OgreTextAreaGuiElement.h>
 #include <OgreEventListeners.h>
 #include <OgreNoMemoryMacros.h>
+#include <OgreEventQueue.h>
+#include <OgreGuiElement.h>
+#include <OgreGuiContainer.h>
+#include <OgreGuiManager.h>
+#include <OgreInput.h>
+#include <OgreKeyEvent.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
+#include <OgrePanelGuiElement.h>
+#include <OgreTextAreaGuiElement.h>
+#include <OgreNoMemoryMacros.h>
+#include <OgreFrameListener.h>
+#include <OgreRoot.h>
+#include <OgreRenderWindow.h>
+#include <stdlib.h>
 
+//class dime::ConsoleBackend;
 #include "framework/ConsoleBackend.h"
+
 //#include "Prerequisites.h"
 //#include "PythonInterpreter.h"
 
@@ -51,7 +68,7 @@ class Console : public Ogre::KeyListener, public Ogre::FrameListener
 
         void scrollUp(void);
 
-        enum { TEXT_HEIGHT=20 };
+        enum { TEXT_HEIGHT=14 };
         enum { BORDER_PADDING=5 };
 
         enum { MAX_TEXT_LINES=50 };

@@ -26,14 +26,13 @@
 #include "services/server/ServerService.h"
 #include "services/DimeServices.h"
 
-#include "EntityListener.h"
-#include <Ogre.h>
-
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
+#include "framework/ConsoleBackend.h"
 
 #include "MathConverter.h"
+#include "DimeEntity.h"
+#include "Avatar.h"
+#include "EntityListener.h"
+
 
 EntityListener* EntityListener::_instance = 0;
 
@@ -72,11 +71,12 @@ void EntityListener::connectWorldSignals(void) {
     Eris::World *w = dime::DimeServices::getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
+    //w->EntityCreate.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
 
     w->EntityDelete.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( *this, &EntityListener::entered ) );
+//shouln't this be connected to the class Avatar?
+    w->Entered.connect( SigC::slot( *mDimeAvatar, &Avatar::enteredWorld ) );
 
     w->Appearance.connect( SigC::slot( *this, &EntityListener::appearance ) );
 
@@ -87,7 +87,7 @@ void EntityListener::connectWorldSignals(void) {
 }
 
 /* Eris::World entity signals */
-
+/*
 void EntityListener::entityCreate( Eris::Entity *e )
 {
 
@@ -103,27 +103,27 @@ void EntityListener::entityCreate( Eris::Entity *e )
 		dime::ConsoleBackend::getMainConsole()->pushMessage("Creating player entity");
 		fprintf(stderr, "TRACE - CREATING PLAYER ENTITY\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "dragon.mesh");
-		ogreNode->setScale(0.01,0.01,0.01);
+		//ogreNode->setScale(OGRESCALER);
 	}
 	else if(!strcmp(e->getType()->getName().c_str(),"settler"))	// 0 if strings are equal
 	{
 		fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.01,0.01,0.01);
+		//ogreNode->setScale(OGRESCALER);
 	}
 	else if(!strcmp(e->getType()->getName().c_str(),"merchant"))
 	{
 		fprintf(stderr, "TRACE - FOUND A MERCHANT - ROBOT MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.01,0.01,0.01);
+		//ogreNode->setScale(OGRESCALER);
 	}
 	else if(!strcmp(e->getType()->getName().c_str(),"pig"))
 	{
 		fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "ogrehead.mesh");
-		ogreNode->setScale(0.01,0.01,0.01);
+		//ogreNode->setScale(OGRESCALER);
 	}
 	else
 	{
@@ -131,11 +131,12 @@ void EntityListener::entityCreate( Eris::Entity *e )
 		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "razor.mesh");
 		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.001,0.001,0.001);
+		//ogreNode->setScale(0.001,0.001,0.001);
 	}
+	ogreEntity->setVisible(false);
 
 	// set the Ogre node position and orientation based on Atlas data
-	ogreNode->setPosition(Atlas2Ogre(e->getPosition()));
+	ogreNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
 	std::cout << "Entity placed at (" << e->getPosition().x() << "," << e->getPosition().y() << "," << e->getPosition().x() << ")" << std::endl;
 	//WFMath::Quaternion wq = e->getOrientation();
 	//WFMath::Vector<3> wv = wq.vector();
@@ -146,14 +147,17 @@ void EntityListener::entityCreate( Eris::Entity *e )
 	/** WFMath::Point<3> position = e->getPosition();
 	ogreNode->setPosition(position.x(),position.z(),-position.y());*/
 
-	// scale HACK. This is very hacky. Fix this.
+/*	// scale HACK. This is very hacky. Fix this.
         if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
 				// robots are bigger :P
 	}
 	else {
 
 	}
-
+*/
+/*
+	dimeEntity = new DimeEntity(ogreEntity, e);
+	ogreEntity->setUserObject(dimeEntity);
 	// attach the node to the entity
 	ogreNode->attachObject(ogreEntity);
 
@@ -162,18 +166,19 @@ void EntityListener::entityCreate( Eris::Entity *e )
     // Whenever a new entity is created, make sure to connect to those signals too
 
     // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( *this, &EntityListener::addedMember ) );
+    e->AddedMember.connect( SigC::slot( *dimeEntity, &DimeEntity::addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( *this, &EntityListener::removedMember ) );
+    e->RemovedMember.connect( SigC::slot( *dimeEntity, &DimeEntity::removedMember ) );
 
-    e->Recontainered.connect( SigC::slot( *this, &EntityListener::recontainered ) );
+    e->Recontainered.connect( SigC::slot( *dimeEntity, &DimeEntity::recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( *this, &EntityListener::changed ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( *dimeEntity, &DimeEntity::changed ), e ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( *this, &EntityListener::moved ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( *dimeEntity, &DimeEntity::moved ), e ) );
 
-    e->Say.connect( SigC::bind( SigC::slot( *this, &EntityListener::say ), e ) );
+    e->Say.connect( SigC::bind( SigC::slot( *dimeEntity, &DimeEntity::say ), e ) );
 }
+*/
 
 void EntityListener::entityDelete( Eris::Entity *e )
 {
@@ -209,7 +214,7 @@ void EntityListener::disappearance( Eris::Entity *e )
 }
 
 /* Eris::Entity signals */
-
+/*
 void EntityListener::recontainered( Eris::Entity *e, Eris::Entity *c )
 {
 	fprintf(stderr, "TRACE - ENTITY RECONTAINERED\n");
@@ -221,6 +226,7 @@ void EntityListener::changed( const Eris::StringSet &s, Eris::Entity *e  )
 	/*
         TODO: ENTITY CHANGES HERE
 	*/
+/*
 }
 
 void EntityListener::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
@@ -246,6 +252,7 @@ void EntityListener::say( const std::string &s, Eris::Entity *e )
 	/*
     dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
 	*/
+	/*
 }
 
 void EntityListener::addedMember(Eris::Entity *e)
@@ -253,6 +260,12 @@ void EntityListener::addedMember(Eris::Entity *e)
 
 void EntityListener::removedMember(Eris::Entity *e)
 {}
+*/
+Ogre::SceneManager* EntityListener::getSceneManager()
+{
+	return mSceneMgr;
+}
+
 
 
 

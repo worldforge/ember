@@ -23,12 +23,17 @@
 
 #include <OgreEventQueue.h>
 #include <OgreFrameListener.h>
+#include <OgreEventListeners.h>
 #include <OgreInput.h>
 #include <OgreNoMemoryMacros.h>
 
 #include <list>
 
-#include "AvatarKeyboardListener.h"  // TODO: should be "controller" instead of listener
+class DimeEventProcessor;
+class DebugListener;
+class AvatarController;
+
+
 
 
 
@@ -37,7 +42,7 @@
 //
 // For now we use a simple implementation that powers a
 // KeyboardCarController and a Console
-class InputManager : public Ogre::FrameListener
+class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, public Ogre::MouseListener, public Ogre::MouseMotionListener
 {
 	public:
 		class MouseListener
@@ -58,8 +63,8 @@ class InputManager : public Ogre::FrameListener
 
 		bool isKeyDown(Ogre::KeyCode kc) { return mKeyDown[kc]; };
 
-		unsigned short getMouseX(void) { return mMouseX; };
-		unsigned short getMouseY(void) { return mMouseY; };
+		Ogre::Real getMouseX(void) { return mMouseX; };
+		Ogre::Real getMouseY(void) { return mMouseY; };
 
 		void addKeyListener(Ogre::KeyListener *l);
 		void removeKeyListener(Ogre::KeyListener *l);
@@ -67,15 +72,53 @@ class InputManager : public Ogre::FrameListener
 		void addMouseListener(MouseListener *l);
 		void removeMouseListener(MouseListener *l);
 
+		//these are for Ogre::KeyListener
+		void keyClicked(Ogre::KeyEvent* e); 
+		void keyPressed(Ogre::KeyEvent* e); 
+		void keyReleased(Ogre::KeyEvent* e);
+		
+		//these are for Ogre::MouseListener
+		void mouseClicked(Ogre::MouseEvent* e);
+ 		void mouseEntered(Ogre::MouseEvent* e);
+ 		void mouseExited(Ogre::MouseEvent* e);
+  		void mousePressed(Ogre::MouseEvent* e);
+ 		void mouseReleased(Ogre::MouseEvent* e);
+ 		
+ 		//these are for Ogre::MouseMotionListener
+ 		void mouseMoved(Ogre::MouseEvent* e);
+		void mouseDragged(Ogre::MouseEvent* e);
+		void mouseMovedOrDragged(Ogre::MouseEvent* e);
+ 		
+
+		
+		//toggle between making the application grab the mouse and not
+		void toggleMouse();
+		bool isMouseUsed();
+
+	protected:
+		virtual void connectMouseListeners() ;
+		
+		//creates a new DimeEventProcessor which will take care of all input processing
+		//this (mEventProcessor) is hooked to methods such as keyPressed and so on
+		virtual void createEventProcessor();		
+		
+		//creates a mouse cursor which can be moved around the scene
+		virtual void createMouseCursor();
+
+		DimeEventProcessor* mEventProcessor;
+		
 	private:
 		static InputManager* _instance;
 		bool worldConnected; // UGLY HACK!!
+		
+
 
 		InputManager(void);
 		~InputManager();
 
-		Ogre::InputReader* mInputReader;
-		Ogre::EventQueue mEventQueue;
+//		Ogre::InputReader* mInputReader;
+//		Ogre::EventQueue mEventQueue;
+
 
 		enum { NUM_KEYS=256 };
 		bool mKeyDown[NUM_KEYS];
@@ -83,13 +126,16 @@ class InputManager : public Ogre::FrameListener
 		std::list<Ogre::KeyListener*> mKeyListenerList;
 		std::list<MouseListener*> mMouseListenerList;
 
-		unsigned short mMouseX;
-		unsigned short mMouseY;
+		Ogre::Real mMouseX;
+		Ogre::Real mMouseY;
 
 		unsigned short mScreenX;
 		unsigned short mScreenY;
 
 		int timer;
+		
+		
+		
 };
 
 

@@ -1,21 +1,7 @@
-#include <OgreEventQueue.h>
-#include <OgreGuiElement.h>
-#include <OgreGuiContainer.h>
-#include <OgreGuiManager.h>
-#include <OgreInput.h>
-#include <OgreKeyEvent.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
-#include <OgrePanelGuiElement.h>
-#include <OgreTextAreaGuiElement.h>
-#include <OgreNoMemoryMacros.h>
-#include <OgreFrameListener.h>
-#include <OgreRoot.h>
-#include <OgreRenderWindow.h>
-#include <stdlib.h>
 
-#include "Console.h"
+
 #include "services/logging/LoggingService.h"
+#include "Console.h"
 using dime::LoggingService;
 
 	Console* Console::_instance = 0;
@@ -151,6 +137,7 @@ using dime::LoggingService;
 			mShiftDown = true;
 		else if(e->getKey() == Ogre::KC_CAPITAL)
 			mCapsDown = true;
+
 		if(mState != CS_CLOSED)
 		{
 
@@ -276,7 +263,7 @@ using dime::LoggingService;
 				mCommandLine.insert(mCursorPos, c);
 				mCursorPos++;
 			}
-			else if(e->getKey() == Ogre::KC_SLASH || e->getKey() == Ogre::KC_F11) 
+			else if(e->getKey() == '/' || e->getKey() == Ogre::KC_SLASH || e->getKey() == Ogre::KC_F11) 
 			{
 				char c[2];
 				c[1] = 0;

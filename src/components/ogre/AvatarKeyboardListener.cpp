@@ -108,7 +108,7 @@ void AvatarKeyboardListener::act(Ogre::Real timePassed) // why was this const un
 		// or something!
 		timeToUpdate = timeToUpdate - timePassed;
 		if(timeToUpdate<=0) {
-			std::cout << "	UPDATINTG INTO SERVER" << std::endl;
+			std::cout << "	UPDATING INTO SERVER" << std::endl;
 			timeToUpdate = updateInterval;
 		}
 

@@ -1,6 +1,7 @@
 /*
 	Avatar.h by Miguel Guzman (Aglanor)
 	Copyright (C) 2002 Miguel Guzman & The Worldforge Project
+	Copyright (C) 2004 Erik Hjortsberg
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -22,42 +23,154 @@
 #ifndef AVATAR_H
 #define AVATAR_H
 
-#include <Ogre.h> // TODO: forward declarations instead
 
-class Avatar
+#include <Ogre.h>
+#include <OgrePredefinedControllers.h> 
+
+#include <Eris/Entity.h>
+#include <Eris/World.h>
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#include <Eris/TypeInfo.h>
+
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
+
+#include "MathConverter.h"
+
+using namespace Ogre;
+	
+/*
+ * This class holds the Avatar. In general it recieves instructions from mainly 
+ * AvatarController to attempt to move or rotate the avatar. After checking 
+ * with the world rules if such a thing is allowed, the world node is manipulated.
+ * If it's a movement it has to be animated.
+ * 
+ *  
+ * TODO: create facilities for animation of the avatar, walking, running, jumping etc.
+ */
+class Avatar : virtual public SigC::Object
 {
-
-    private:
-
+	/*private struct AvatarMovementState
+	{
+		public bool isMoving, isRunning;
+		Vector3 direction;
+	};
+*/
     public:
 
 	Avatar();
-	Avatar(Ogre::SceneManager* sceneManager);
+	Avatar(SceneManager* sceneManager);
 	~Avatar();
 
-	Ogre::Camera* getAvatar1pCamera(void);
-	Ogre::Camera* getAvatar3pCamera(void);
-	Ogre::Camera* getAvatarTopCamera(void);
+	Camera* getAvatar1pCamera(void);
+	Camera* getAvatar3pCamera(void);
+	Camera* getAvatarTopCamera(void);
 
-	void move(Ogre::Vector3 move);
-	void Avatar::rotate(float degHoriz, float degVert);
+	/**
+	 * Attempts to move the avatar in a certain direction
+	 * Note that depending on what the rules allows (i.e. collision detection,
+	 * character rules etc.) the outcome of the attempt is uncertain.
+	 * 
+	 * The parameter timeSlice denotes the slice of time under which the movement
+	 * shall take place.
+	 */
+	void attemptMove(Vector3 move, bool isRunning);
+	
+	/**
+	 * Attempts to rotate the avatar to a certain direction
+	 * Note that depending on what the rules allows (i.e. collision detection,
+	 * character rules etc.) the outcome of the attempt is uncertain.
+	 * 
+	 * Or is it? Shall we really restrict the rotation?
+	 * 
+	 */
+	void attemptRotate(float degHoriz, float degVert, Real timeSlice);
+	
+	
+	/**
+	 * Attempts to stop the avatar.
+	 * This should work in most cases.
+	 * 
+	 */
+	void attemptStop();
 
-	private:
+	/**
+	 * Attempt to jump.
+	 */
+	void attemptJump();
+	
+	
+	void enteredWorld(Eris::Entity *e);
 
-	Ogre::SceneManager* mSceneMgr;
-	Ogre::Entity* mAvatarEntity;
-	Ogre::SceneNode* mAvatarNode;
-	Ogre::SceneNode* mAvatar1pCameraNode;
-	Ogre::SceneNode* mAvatar3pCameraNode;
-	Ogre::SceneNode* mAvatarTopCameraNode;
-	Ogre::Camera* mAvatar1pCamera;
-	Ogre::Camera* mAvatar3pCamera;
-	Ogre::Camera* mAvatarTopCamera;
+private:
+	
+	/**
+	 * Creates the avatar. We'll have to extend this functionality later on to 
+	 * allow for different avatars.
+	 */
+	void createAvatar();
+	
+	/**
+	 * Creates and sets up the different cameras.
+	 */
+	void createAvatarCameras();
+
+	
+	/**
+	 * How many meters per second the avatar can walk.
+	 * This should be set through some kind of rule checking with the server
+	 * depending on the character. To be done later.
+	 */
+	float mWalkSpeed;
+
+	/**
+	 * How many meters per second the avatar can run.
+	 * This should be set through some kind of rule checking with the server
+	 * depending on the character. To be done later.
+	 */
+	float mRunSpeed;
+	
+	/*
+	 * This determines what state the avatar is in.
+	 * TODO: replace with some more states instead of just this boolean
+	 */
+	bool mIsMoving;
+	
+	
+	/**
+	 * Animation states of the avatar. This should really be taken care of by
+	 * some kind of AnimationController
+	 * TODO: Make an AnimationController
+	 */
+	AnimationState* mAnimStateWalk;
+	Controller<Real>* mAvatarAnimationController;
+	AnimationControllerFunction* mAvatarAnimationControllerFunction;
+	
+	SceneManager* mSceneMgr;
+	Entity* mAvatarEntity;
+	SceneNode* mAvatarNode;
+	SceneNode* mAvatar1pCameraNode;
+	SceneNode* mAvatar3pCameraNode;
+	SceneNode* mAvatarTopCameraNode;
+	Camera* mAvatar1pCamera;
+	Camera* mAvatar3pCamera;
+	Camera* mAvatarTopCamera;
 
 	// node for rotating the model for the entity
 	// if it's not looking in the -Z direction (default)
 	// To be removed once we've standarized on models
-	Ogre::SceneNode* mAvatarModelNode;
+	SceneNode* mAvatarModelNode;
+
+	Eris::Entity* mErisAvatarEntity;
+	//Eris::Avatar* mErisAvatar;
 
 
 }; //End of class declaration

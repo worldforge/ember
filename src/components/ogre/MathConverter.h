@@ -11,7 +11,21 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.2  2003-04-28 22:42:06  aglanor
+ *      Revision 1.3  2004-07-12 04:02:14  erik
+ *      * src/components/ogre:
+ *      Changed the way input is handled through the use of an Ogre::EventProcessor
+ *      By default mouse is not grabbed, press F9 to grab and ungrab it.
+ *      The mouse now shows a cursor, movement happens when the mouse goes near the edges of the screen.
+ *      Various code cleanups, forward declarations and movement of code from .h-files to .cpp-files.
+ *      Addition of preprocessor declarations in MathConverter.h to easily convert between WF and Ogre units.
+ *      Revamping of how entities are handled though the new class DimeEntity and changes to EntityListener.
+ *      Rudimentary animation of the avatar.
+ *      Addition of a debug layer to show triangles, fps etc. Taken from Ogre.
+ *      Usage of ogre.cfg for reading configuration values instead of using the console each time.
+ *      Some cleanup of the world. The only thing you see now is a ground plane. But it gets populated when connected to a server.
+ *      Had some problem with the top cam so I disabled it.
+ *
+ *      Revision 1.2  2003/04/28 22:42:06  aglanor
  *      Added new viewport for a mini-map and quaternion conversion.
  *      Eris entities are now displayed with orientation.
  *
@@ -113,6 +127,21 @@ inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3> p){
 inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 }
+
+//is this correct?
+inline Ogre::Quaternion Ogre2Atlas(WFMath::Quaternion aq){
+	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),-aq.vector().z(),aq.vector().y());
+}
+
+/*
+ * used when scaling Ogre models to the units used ny WF, i.e. 1 unit == 1 meter
+ * Ogre seems to use 1 unit == 1 centimeter
+ */
+#define OGRE2WF(x) (x * 0.01);
+#define WF2OGRE(x) (x * 100.0);
+#define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x * 0.01, y * 0.01, z * 0.01))
+#define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x * 100.0, y * 100.0, z * 100.0))
+#define OGRESCALER Ogre::Vector3(1,1,1)
 
 
 #endif
