@@ -32,6 +32,7 @@ int main(int argc, char **argv) {
   myDevice.init();
   myDevice.clearScreen();
   myDevice.drawPixel(100,100,dime::Color(100,100,100));
+  myDevice.drawLine(0, 0, 100, 00, dime::Color(0,0,255));
   myDevice.update();
   
   while(done == 0)
@@ -48,6 +49,10 @@ int main(int argc, char **argv) {
       }
     }
 
+    myDevice.clearScreen();
+    myDevice.drawPixel(100,100,dime::Color(100,100,100));
+    myDevice.drawLine(0, 0, 100, 100, dime::Color(0,0,255));
+    myDevice.update();
   }
 	SDL_Quit();
     return 0;
