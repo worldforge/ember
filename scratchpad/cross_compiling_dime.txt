@@ -1,0 +1,132 @@
+Cross-Compiling dime. For higher glory!
+
+
+In my machine, I download the needed software to:
+
+/data/code/oss/cross
+
+and will install the cross-compiling environment and all cross-compiled software under:
+
+/usr/local/cross
+
+you can substitute those paths with your own values
+
+Create a cross-compiling enviroment.
+
+1 Preparations
+
+1.1 Create installation directory
+
+	We will create a /usr/local/cross directory in which we'll install everything for the cross-compilation
+
+	cd /usr/local
+	mkdir cross
+	
+	we will create a /usr/local/cross directory in which we'll install everything for the cross-compilation
+
+1.2 Grab the software
+
+	Get the following software and place it in the directory where you want to expand and build the cross-compilation programs (/data/code/oss/cross for me):
+
+http://www.mingw.org/download.shtml
+
+	You should retreive the "current", "src" versions for the following packages:
+
+	binutils gcc
+
+	For this tutorial the versions used where:
+
+	binutils-2.13.90-20030111-1-src.tar.gz
+	gcc-3.2.3-20030504-1-src.tar.gz
+
+1.3 Configure options explained
+
+1.2.1 Set the PREFIX
+
+	We want to install everything under /usr/local/cross, so we need to pass a prefix to the configures so that it gets installed there.
+
+	export PREFIX=/usr/local/cross
+
+	We will later invoke all configures with the --prefix=$PREFIX options. 
+
+	If we do ./configure --help in any dir with a configure script we can see what is this option for:
+
+	--prefix=PREFIX         install architecture-independent files in PREFIX
+	                          [/usr/local]
+				 
+	This means that the files for this app will be installed under PREFIX, which by default is [/usr/local]. By setting our prefix
+
+// TODO: put all of the following into a single entry
+
+1.2.2 Host option
+
+	--host=HOST             configure for HOST [guessed]
+	
+1.2.3 Build option
+
+	We will pass the following option to the configure scripts:
+
+	--build=i686-pc-linux-gnu
+	
+	As we can see in the configure help:
+
+	--build=BUILD           configure for building on BUILD [BUILD=HOST]
+				
+1.2.4 Target option
+
+	We want to build apps for use on windows, so we will pass also the following option:
+
+	--target=i686-pc-mingw32
+
+	Help 
+
+	--target=TARGET         configure for TARGET [TARGET=HOST]
+
+
+2. Install the software
+
+2.1 Install binutils
+
+Unzip-untar:
+
+tar xvfz binutils-2.13.90-20030111-1-src.tar.gz 
+
+Build it (in a separate dir from the source):
+
+mkdir build-binutils
+cd build-binutils
+../binutils-2.13.90-20030111-1-src/configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --target=i686-pc-mingw32 --prefix=$PREFIX
+
+Note: if the version of binutils you're installing is different, replace the name of the directory. Same applies to the rest of the packages.
+
+Now you should have the Makefile in the current dir. Just build the software:
+
+make
+
+And after that you install it (usually as user root):
+
+make install
+
+Go back to your normal user. You'll have cross-compilation binutils installed:
+
+ls /usr/local/cross
+bin  i686-pc-mingw32  info  lib  man  share
+
+2.2 Set PATH to use the new tools
+
+	export PATH=$PREFIX/bin:$PATH
+
+	This way the cross tools will take precedence over the local tools.
+
+2.3 Mingw
+
+	Go back to your build dir and untar mingw:
+
+	cd ..
+	tar xvfz mingw-whatever.tar.gz
+
+	
+	
+
+
+
