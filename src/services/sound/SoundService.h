@@ -23,6 +23,10 @@
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>	// so this object is able to listen to console commands
 
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+
 /* here i should do the AL includes
 #include <Eris/Connection.h>
 #include <Eris/Player.h>
@@ -49,6 +53,7 @@ class SoundService: public Service, public ConsoleObject
     //======================================================================
     private:
 
+	ALCdevice *device;  // device for the Audio Layer Context
 
 
 
@@ -74,6 +79,7 @@ class SoundService: public Service, public ConsoleObject
 
     void stop(int code);
 
+    void runCommand(const std::string &command, const std::string &args);
 
 
 }; //SoundService

@@ -27,6 +27,14 @@
 #include <iostream>
 */
 
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+
+#define NUMM_BUFFERS 1
+#define NUM_FUENTES 1
+
+
 namespace dime
 {
 
@@ -34,7 +42,7 @@ namespace dime
   /* ctor */
   SoundService::SoundService()
   {
-
+		cout << "created sound service" << endl;
   }
 	
   /* dtor */
@@ -46,6 +54,12 @@ namespace dime
   /* Method for starting this service 	*/
   Service::Status SoundService::start()
   {
+
+	// as a test, it will loop and make a sound
+
+
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sound Service initialized" << ENDM;
+
     setStatus(Service::OK);
     setRunning( true );
 
@@ -58,6 +72,11 @@ namespace dime
   {
     setStatus(Service::OK);
     setRunning( false );
+  }
+
+  void SoundService::runCommand(const std::string &command, const std::string &args)
+  {
+
   }
 
 } // namespace dime
