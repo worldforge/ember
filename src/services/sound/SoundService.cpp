@@ -51,31 +51,31 @@ namespace dime
   SoundService::SoundService()
   {
   }
-	
+
   /* dtor */
   SoundService::~SoundService()
   {
 
   }
-	
+
 	/* Method for starting this service 	*/
 	Service::Status SoundService::start()
 	{
 
-	ALfloat listenerPos[3]={0.0,0.0,0.0};						// listener position
-	ALfloat listenerVel[3]={0.0,0.0,0.0};							// listener velocity
-	ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};		// listener orientation
+		ALfloat listenerPos[3]={0.0,0.0,0.0};						// listener position
+		ALfloat listenerVel[3]={0.0,0.0,0.0};							// listener velocity
+		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};		// listener orientation
 
-	ALfloat sourcePos[3]={ 0.0, 0.0, 1.0};						// source position
-	ALfloat sourceVel[3]={ 0.0, 0.0, 1.0};						// source velocity
+		ALfloat sourcePos[3]={ 0.0, 10.0, 0.0};						// source position
+		ALfloat sourceVel[3]={ 0.0, 0.0, 1.0};						// source velocity
 
-	data=NULL;
+		data=NULL;
 
 		// Initialize OpenAL
 		alutInit(NULL,0);
-		alGenBuffers(NUM_BUFFERS,myBuffers);
-		alGenSources(NUM_SOURCES,mySources);
 
+		// Generate buffers
+		alGenBuffers(NUM_BUFFERS,myBuffers);
 
 		for (int i=0;i<NUM_BUFFERS;i++)
 		{
@@ -86,9 +86,22 @@ namespace dime
 			}
 		}
 
-		TestPlatform();
+		// Generate sources
+		alGenSources(NUM_SOURCES,mySources);
 
-		alutLoadWAV("boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file
+		for (int i=0;i<NUM_SOURCES;i++)
+		{
+			if (!alIsSource(mySources[i]))
+			{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error creating sources" << ENDM;
+				return Service::FAILURE;
+			}
+		}
+
+
+		TestPlatform();  // a test
+
+		alutLoadWAV("boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
 		{
@@ -99,15 +112,15 @@ namespace dime
 		}
 
 
-					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Loaded WAV file? let's check"  << ENDM;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Loaded WAV file? let's check"  << ENDM;
 
-LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "format: " << format << ENDM;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "format: " << format << ENDM;
 
-LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "size: " << size << ENDM;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "size: " << size << ENDM;
 
-LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "bits: " << bits << ENDM;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "bits: " << bits << ENDM;
 
-LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "freq: " << freq << ENDM;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "freq: " << freq << ENDM;
 
 		alBufferData(myBuffers[0],format,data,size,freq);				// Connect WAV to buffer
 
@@ -120,7 +133,7 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 		}
 
 
-	free (data);  // should be UnloadWAV
+	free (data);  // should be UnloadWAV, platform independant
 
 	//	 UnloadWAV();
 
@@ -214,6 +227,7 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Press 1 to play sound, 2 to stop, 3 to go on with dime." << ENDM;
 
+		/*
 		char a; bool loop = true;
 	do {
 		cin >> a;
@@ -239,7 +253,7 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 			}
 
 	} while (loop);
-
+*/
 		error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
@@ -251,6 +265,8 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 	alSourceStop(mySources[0]);
 
 
+
+
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sound Service initialized" << ENDM;
 
 		setStatus(Service::OK);
@@ -260,12 +276,13 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 
   }
 
-  /* Interface method for stopping this service 	*/
-  void SoundService::stop(int code)
-  {
-    setStatus(Service::OK);
-    setRunning( false );
-  }
+	/* Interface method for stopping this service 	*/
+	void SoundService::stop(int code)
+	{
+		alutExit();		// Finalize OpenAL
+		setStatus(Service::OK);
+		setRunning( false );
+	}
 
   void SoundService::runCommand(const std::string &command, const std::string &args)
   {
