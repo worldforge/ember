@@ -19,7 +19,7 @@ $curMemName = <>;
 chomp $curMemName;
 while($curMemName ne "xxx")
 {
-    print "please Enter the Type for memeber: $curMemName: ";
+    print "please Enter the Type for member: $curMemName: ";
     $curMemType = <>;
     chomp $curMemType;
     
@@ -186,7 +186,7 @@ foreach $key (keys %myMembers)
     print HEADER "    /**\n";
     print HEADER "     * Gets the value of $key of this $className\n";
     print HEADER "     */\n";
-    print HEADER "    $myMembers{$key} get"."$key()\n    {\n        return my"."$key".";\n    }\n\n";
+    print HEADER "    $myMembers{$key} get"."$key() const\n    {\n        return my"."$key".";\n    }\n\n";
 }
 
 print HEADER <<EOF;
@@ -200,7 +200,7 @@ foreach $key (keys %myMembers)
     print HEADER "    /**\n";
     print HEADER "     * Sets the value of $key of this $className\n";
     print HEADER "     */\n";
-    print HEADER "    void set"."$key( $myMembers{$key} )\n    {\n        my"."$key"." = $key;\n    }\n\n";
+    print HEADER "    void set"."$key( $myMembers{$key} $key )\n    {\n        my"."$key"." = $key;\n    }\n\n";
 }
 print HEADER <<EOF;
 

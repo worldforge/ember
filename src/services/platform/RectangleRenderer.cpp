@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.8  2002-05-20 18:49:49  nikal
+ *      Revision 1.9  2002-05-20 22:10:27  nikal
+ *      quick fixes for the CodeGen.pl
+ *
+ *      Revision 1.8  2002/05/20 18:49:49  nikal
  *      Quick changes to RectangleRenderer, and some theme stuff
  *
  *      Revision 1.7  2002/04/15 02:00:20  nikal
@@ -177,13 +180,33 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
  */
 int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 {
-    SDL_Rect src, dest;
+    SDL_Rect src, dest, curDest;
     src.x = 0;
     src.y = 0;
     src.w = myRect.getWidth();
     src.h = myRect.getHeight();
     dest = myRect.getSDL_Rect();
-    device->blitSurface(&src, &dest, mySurface);
+    curDest.w = src.w;
+    curDest.h = src.h;
+    
+
+    switch(myStyle)
+        {
+        case TILE:
+            for( curDest.x = dest.x; curDest.x < dest.w; curDest.x += curDest.w)
+                {
+                    for ( curDest.y = dest.y; curDest.y < dest.h; curDest.y += curDest.h)
+                        {
+                            device->blitSurface(&src, &curDest, mySurface);
+                        }
+                }
+            break;
+        case STRETCH:
+            device->blitSurface(&src, &dest, mySurface );
+            break;
+        }
+    
+
 
     return (1);
 }
