@@ -765,10 +765,10 @@ bool JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 	
 	Carpenter::BuildingBlock* bblock = blueprint->createBuildingBlock(definition);
 	blueprint->setStartingBlock(definition.mName);
-	//blueprint->compile();
+	blueprint->compile();
 		
 	Construction* construction = createNewConstructionFromBlueprint(blueprint);
-	construction->createModelBlock(bblock, true);
+//	construction->createModelBlock(bblock, true);
 	removeBindings();
 	
 	

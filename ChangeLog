@@ -1,5 +1,9 @@
 2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Fixed a bug which resulted in the starting block not being added to the list of attached blocks, and thus not being saved.
+
+2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added columns from building_elements
 
 2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
