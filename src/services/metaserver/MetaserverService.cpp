@@ -73,7 +73,7 @@ namespace dime
 
 		std::string metaserver = "metaserver.worldforge.org";
 
-		msrv = new Eris::Meta("dime", metaserver, 1);
+		msrv = new Eris::Meta("dime", metaserver, 3);
 		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::gotServerCount));
 		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
 		msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
