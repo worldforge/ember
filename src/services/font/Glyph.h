@@ -37,23 +37,26 @@ class Glyph
     // Private Variables
     //======================================================================
 private:
-	int myStored;
-	FT_UInt myIndex;
-	FT_Bitmap myBitmap;
-	FT_Bitmap myPixmap;
-	int myMinX;
-	int myMaxX;
-	int myMinY;
-	int myMaxY;
-	int myYOffset;
-	int myYAdvance;
-	Uint16 myCached;
-
+    int myStored;
+    FT_UInt myIndex;
+    FT_Bitmap myBitmap;
+    FT_Bitmap myPixmap;
+    int myMinX;
+    int myMaxX;
+    int myMinY;
+    int myMaxY;
+    int myYOffset;
+    int myYAdvance;
+    Uint16 myCharacter;
+    bool myCached;
+    
+    
     //----------------------------------------------------------------------
     // Constructors & Destructor
     
 public:    
     Glyph()
+        : myCached(false)
     {
     }
     
@@ -124,10 +127,15 @@ public:
         return myYAdvance;
     }
     
-    Uint16 getCached()
+    Uint16 getCharacter()
+    {
+        return myCharacter;
+    }
+    bool getCached()
     {
         return myCached;
     }
+    
      //----------------------------------------------------------------------
     // Setters & Setters
     void  setStored(int stored)
@@ -180,10 +188,16 @@ public:
         myYAdvance = yAdvance;
     }
     
-    void setCached(Uint16  cached)
+    void setCharacter(Uint16 character)
+    {
+        myCharacter = character;
+    }
+    
+    void setCached(bool cached)
     {
         myCached = cached;
     }
+    
 }; //Font
 } // namespace dime
 

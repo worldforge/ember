@@ -58,7 +58,7 @@ dime::Glyph *dime::Font::findGlyph(Uint16 ch)
         {
             Glyph *newGlyph = new Glyph();
             bool retval = loadGlyph(ch, newGlyph);
-            if(retval)
+            if(!retval)
                 {
                     return NULL;
                 }
@@ -82,7 +82,7 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
     assert( myFace );
     face = myFace;
     /* Load the glyph */
-    if ( ! cached->getIndex() ) {
+    if ( ! cached->getCached() ) {
         cached->setIndex( FT_Get_Char_Index( face, ch ) );
     }
     error = FT_Load_Glyph( face, cached->getIndex(), FT_LOAD_DEFAULT );
@@ -128,7 +128,7 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
     
     error = FT_Render_Glyph( glyph, ft_render_mode_normal );
     if( error ) {
-            return false;
+        return false;
     }
     /* Copy over information to cache */
     src = &glyph->bitmap;
@@ -184,15 +184,16 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
         /* Mark that we rendered this format */
     }
     /* We're done, mark this glyph cached */
-    cached->setCached( ch );
-    return 0;
+    cached->setCached( true );
+    cached->setCharacter(ch);
+    
+    return true;
 }
 
-bool dime::Font::sizeText(const char *text, int *w, int *h)
+bool dime::Font::sizeText(std::string text, int *w, int *h)
 {
     int status;
-    const char *ch;
-    int x, z;
+    int x, z, index;
     int minx, maxx;
     int miny, maxy;
     Glyph *glyph;
@@ -203,12 +204,12 @@ bool dime::Font::sizeText(const char *text, int *w, int *h)
     miny = maxy = 0;
     /* Load each character and sum it's bounding box */
     x= 0;
-    for ( ch=text; *ch; ++ch ) {
-        glyph = findGlyph(*ch);
-        if(glyph)
-        {
-            return false;
-        }
+    for ( index = 0; index < text.length(); ++index ) {
+        glyph = findGlyph(text[index]);
+        if(glyph == NULL)
+            {
+                return false;
+            }
         
         z = x + glyph->getMinX();
         if ( minx > z ) {

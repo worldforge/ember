@@ -2,14 +2,13 @@
 
 void dime::FontRenderer::updateTextBlended()
 {
-    const char *text = myText.c_str();
+    
     int xstart;
     int width, height;
     SDL_Surface *textbuf;
     SDL_Color fg;
     Uint32 alpha;
     Uint32 pixel;
-    const char *ch;
     Uint8 *src;
     Uint32 *dst;
     int row, col;
@@ -22,7 +21,7 @@ void dime::FontRenderer::updateTextBlended()
     fg.b = (Uint8)myColor.getB();
     /* Get the dimensions of the text surface */
 
-    if ((myFont->sizeText(text, &width, NULL)) || !width ) {
+    if ((myFont->sizeText(myText, &width, NULL)) || !width ) {
         // Should throw an error
     }
     height = myFont->getHeight();
@@ -34,29 +33,30 @@ void dime::FontRenderer::updateTextBlended()
     /* Load and render each character */
     xstart = 0;
     pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
-    for ( ch=text; *ch; ++ch ) {
-        glyph = myFont->findGlyph(*ch);
-        if( !glyph ) {
-            SDL_FreeSurface( textbuf );
-            //should throw and error
-        }
-        width = glyph->getPixmap().width;
-        src = (Uint8 *)glyph->getPixmap().buffer;
-        assert(src);
-        for ( row = 0; row < glyph->getPixmap().rows; ++row ) {
-            dst = (Uint32*) textbuf->pixels +
-                (row+glyph->getYOffset()) * textbuf->pitch/4 +
-                xstart + glyph->getMinX();
-            for ( col=width; col>0; --col ) {
-                alpha = *src++;
-                *dst++ |= pixel | (alpha << 24);
+    for ( int i = 0; i < myText.length(); ++i ) 
+        {   
+            glyph = myFont->findGlyph(myText[i]);
+            assert(glyph);
+            if( !glyph ) {
+                SDL_FreeSurface( textbuf );
+                //should throw and error
+            }
+            width = glyph->getPixmap().width;
+            src = (Uint8 *)glyph->getPixmap().buffer;
+            for ( row = 0; row < glyph->getPixmap().rows; ++row ) {
+                dst = (Uint32*) textbuf->pixels +
+                    (row+glyph->getYOffset()) * textbuf->pitch/4 +
+                    xstart + glyph->getMinX();
+                for ( col=width; col>0; --col ) {
+                    alpha = *src++;
+                    *dst++ |= pixel | (alpha << 24);
+                }
+            }
+            xstart += glyph->getYAdvance();
+            if (myFont->getStyle() & dime::Font::STYLE_BOLD ) {
+                xstart += myFont->getGlyphOverhang();
             }
         }
-        xstart += glyph->getYAdvance();
-        if (myFont->getStyle() & dime::Font::STYLE_BOLD ) {
-            xstart += myFont->getGlyphOverhang();
-        }
-    }
     /* Handle the underline style */
     if( myFont->getStyle() & dime::Font::STYLE_UNDERLINE ) {
         row = myFont->getAscent() - myFont->getUnderlineOffset() - 1;

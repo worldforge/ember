@@ -95,7 +95,7 @@ class FontRenderer
     Color myColor;
     Rectangle myRectangle;
     bool myUpdate;
-
+    bool myIsReady;
 
 
 

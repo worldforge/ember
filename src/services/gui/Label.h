@@ -76,7 +76,7 @@ class Label : public Widget
      * NOTE: This is the text stored by the static widget
      */
     std::string  myText;
-    FontRenderer myFontRenderer;
+    FontRenderer *myFontRenderer;
     
 
     //======================================================================
@@ -91,9 +91,11 @@ class Label : public Widget
      * Creates a new Label using default values.
      */
     Label() 
-        : Widget(),
-          myFontRenderer(FontRenderer::BLENDED, "", dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf", 20), Color(255,255,255), Rectangle(0,0,0,0))
+        : Widget()
     {
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",20);
+      assert(font);
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(255,255,255), Rectangle(0,0,0,0));
     }
     
     /**
@@ -101,9 +103,11 @@ class Label : public Widget
      */
     Label(std::string text, Rectangle rect) 
         : Widget(rect), 
-          myText(text),
-          myFontRenderer(FontRenderer::BLENDED, text, dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf", 20), Color(255,255,255), rect)
+          myText(text)
     {
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",20);
+      assert(font);
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, text, font, Color(255,255,255), rect);
     }
 
     /**
@@ -176,7 +180,7 @@ class Label : public Widget
 	/**
 	 * Sets the font used to draw this Widget
 	 */
-	virtual void setFont( const FontRenderer &font ) {
+	virtual void setFont( FontRenderer *font ) {
 		myFontRenderer = font;
 	}
 
