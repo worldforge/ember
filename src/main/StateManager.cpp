@@ -117,8 +117,8 @@ bool StateManager::setState( const std::string& newState )
 
   // Load missing services mentioned in nstate
 
-  // Create new state's widgets
-  parseStateInfoWidgets(nstate);
+  // Build new states layout
+  parseStateLayout(nstate);
 
   // Load new state
 
@@ -155,7 +155,7 @@ bool StateManager::setState( const std::string& newState )
   return false;
 }
 
-void StateManager::parseStateInfoWidgets(xmlNodePtr widgetNode)
+void StateManager::parseStateLayout(xmlNodePtr widgetNode)
 {
   dime::GuiService* gs = dime::DimeServices::getInstance()->getGuiService();
   // Paranoid code
@@ -165,10 +165,22 @@ void StateManager::parseStateInfoWidgets(xmlNodePtr widgetNode)
   }
   xmlNodePtr cur = widgetNode->xmlChildrenNode;
 
+  // Search for Layout within StateInfo
   while (cur != NULL) {
-    if (!xmlStrcmp(cur->name, (const xmlChar *)"widget")){
-      gs->createWidget(cur,myStateDoc);
-   }
+    xmlNodePtr cur2 = cur->xmlChildrenNode;
+
+    // Parse a layout
+    if (!xmlStrcmp(cur->name, (const xmlChar *)"layout")){
+      while (cur2 != NULL) {
+	// For each widget in a layout create it
+	gs->createWidget(cur2,myStateDoc);
+	cur2 = cur2->next;
+      }
+
+      // Should only be one layout in a state so return
+      return;
+    }
+
     cur = cur->next;
   }
 

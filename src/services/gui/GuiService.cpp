@@ -68,39 +68,21 @@ dime::GuiService::GuiService()
     myInputService = dime::InputService::getInstance();  
 }
 
+// Returns Widget ID produced
 long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
 {
   // Parses the node with the widget info in it
 
-  // Be paranoid if we've not been given a widget node bail
-  if (xmlStrcmp(widgetNode->name, (const xmlChar *)"widget"))
-    return 0;
-
-  // Loop this time looking for type
-  xmlAttrPtr attr = widgetNode->properties;
-
-  while (attr != NULL) {
-    if ((!xmlStrcmp(attr->name, (const xmlChar *)"type"))){
-      // Check value
-      if (!xmlStrcmp(xmlNodeListGetString(doc, attr->xmlChildrenNode, 1),
-		     (const xmlChar *)"label"))
-      {
-	return parseLabel(widgetNode, doc);
-      } else if (!xmlStrcmp(xmlNodeListGetString(doc, attr->xmlChildrenNode, 1),
-		     (const xmlChar *)"panel"))
-      {
-	return parsePanel(widgetNode, doc);
-      }
-
-      // Even if we are not the correct name bail as
-      // there should only be one type per widget
-      // Shouldn't get here unless widget is unrecognised
-      break;
-    }
-	
-    attr = attr->next;
+  // Check value
+  if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"label")) {
+    return parseLabel(widgetNode, doc);
+  } else if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"panel")) {
+    return parsePanel(widgetNode, doc);
   }
 
+  // Even if we are not the correct name bail as
+  // there should only be one type per widget
+  // Shouldn't get here unless widget is unrecognised
   return 0;
 }
 
@@ -114,9 +96,9 @@ long dime::GuiService::parsePanel(xmlNodePtr widgetNode, xmlDocPtr doc)
   dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
 		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
 
-  // Bg Type
-  // Bg Bitmap
-  // Bg Align
+  // Ok missing bit here need to access the renderers from the state
+  // and ask them for our background renderer
+  xmlGetProp(widgetNode, (const xmlChar *)"bg");
 
   dime::Panel* newPanel = new dime::Panel(rect);
 

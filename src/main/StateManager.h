@@ -192,7 +192,7 @@ class StateManager
     /**
      * Takes a StateInfo and calls the parsers on it's Widgets.
      */
-    void parseStateInfoWidgets(xmlNodePtr widgetNode);
+    void parseStateLayout(xmlNodePtr widgetNode);
 
     //======================================================================
     // Private Methods

@@ -1,3 +1,12 @@
+2002-12-03 M Pollard <circlemaster@blueyonder.co.uk>
+	* OgreApp.cpp/h: Tidy up and the prefix "Example" of Application and
+	  FrameListener to "Base"
+
+	* states.xml: Changed syntax to be slightly clearer while adding
+	  <layout> & <renderers> tags.
+
+	* StateManager.cpp/h GuiService.cpp/h: Updated for new syntax.
+
 2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
 	* Various Makefile.am's: Altered for the new place where DimeServices.
 	  cpp/h have been put.  Added some stuff to EXTRA_DIST
