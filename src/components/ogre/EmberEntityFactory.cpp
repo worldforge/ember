@@ -25,17 +25,24 @@
 
 #include "framework/ConsoleBackend.h"
 //#include "MathConverter.h"
-
-#include "DimeEntity.h"
-#include "DimeEntityFactory.h"
-
 #include "TerrainGenerator.h"
 #include "DimeTerrainSceneManager.h"
+
+#include "DimeEntity.h"
+#include "AvatarDimeEntity.h"
+#include "DimeEntityFactory.h"
+
 
 DimeEntityFactory::DimeEntityFactory(Ogre::SceneManager* sceneManager, Eris::TypeService* typeService ) : mSceneManager(sceneManager), mTypeService(typeService)
 {
 	mTerrainType = typeService->getTypeByName("world");
+	dime::ServerService* serverService = dime::DimeServices::getInstance()->getServerService();
+
+	serverService->GotAvatar.connect(SigC::slot(*this, &DimeEntityFactory::setAvatar));
 }
+
+
+
 DimeEntityFactory::~DimeEntityFactory()
 {}
 
@@ -49,7 +56,11 @@ Eris::Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameE
 //	dime::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
 
     Eris::TypeInfoPtr type = world->getConnection()->getTypeService()->getTypeForAtlas(ge);
-    if (!type->safeIsA(mTerrainType)) {
+    if (ge.getId() == mAvatar->getID()) {
+    	AvatarDimeEntity* avatarEntity = new AvatarDimeEntity(ge, world,mSceneManager);
+    	CreatedAvatarEntity.emit(avatarEntity);
+    	return avatarEntity;
+    } else if (!type->safeIsA(mTerrainType)) {
 		//perhaps we should store this somewhere so we can do proper memory handling?
 		DimeEntity* dimeEntity = new DimeEntity(ge, world, mSceneManager);
 	
@@ -78,6 +89,12 @@ Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameE
 	DimeTerrainSceneManager::getSingleton().buildTerrainAroundAvatar();
     return we;
 }
+
+void DimeEntityFactory::setAvatar(Eris::Avatar* avatar)
+{
+	mAvatar = avatar;	
+}
+
 
 /* namespace Sear */
 

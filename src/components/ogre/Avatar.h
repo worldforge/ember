@@ -44,6 +44,8 @@
 #endif
 
 class DimeEntity;
+class AvatarCamera;
+class AvatarDimeEntity;
 struct AvatarControllerMovement;
 
 #include "MathConverter.h"
@@ -81,12 +83,18 @@ class Avatar : virtual public SigC::Object
 	Camera* getAvatar1pCamera(void);
 	Camera* getAvatar3pCamera(void);
 	Camera* getAvatarTopCamera(void);
+	
+	AvatarCamera* getAvatarCamera() const
+	{
+		return mAvatarCamera;
+	}
 
+	Ogre::Camera* getCamera() const;
 	
 	
-	void enteredWorld(Eris::Entity *e);
+	void createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity);
 	
-	void movedInWorld(const WFMath::Point< 3 > &p );
+	void movedInWorld();
 	
 	void touch(DimeEntity* entity);
 	
@@ -107,9 +115,10 @@ protected:
 	 * This method will determine if it's ok to send a small movement change, such as
 	 * a small deviation direction during an already begun movement to the server.
 	 */
-	bool Avatar::isOkayToSendTrivialMovementChangeToServer();
+	bool isOkayToSendRotationMovementChangeToServer();
 	Ogre::Real mTimeSinceLastServerMessage;
-	Ogre::Real mMinIntervalOfTrivialChanges;
+	Ogre::Real mMinIntervalOfRotationChanges;
+	Ogre::Real mThresholdDegreesOfYawForAvatarRotation;
 	float mAccumulatedHorizontalRotation;
 	
 	/**
@@ -153,6 +162,9 @@ protected:
 	 */
 	void createAvatar();
 	
+	void createAnimations();
+	
+	
 	/**
 	 * Creates and sets up the different cameras.
 	 */
@@ -194,19 +206,22 @@ protected:
 	 * The main avatar scenenode
 	 */
 	SceneNode* mAvatarNode;
-	SceneNode* mAvatar1pCameraNode;
+/*	SceneNode* mAvatar1pCameraNode;
 	SceneNode* mAvatar3pCameraNode;
 	SceneNode* mAvatarTopCameraNode;
 	Camera* mAvatar1pCamera;
 	Camera* mAvatar3pCamera;
 	Camera* mAvatarTopCamera;
+	*/
+
+	AvatarCamera* mAvatarCamera;
 
 	// node for rotating the model for the entity
 	// if it's not looking in the -Z direction (default)
 	// To be removed once we've standarized on models
 	SceneNode* mAvatarModelNode;
 
-	Eris::Entity* mErisAvatarEntity;
+	AvatarDimeEntity* mErisAvatarEntity;
 	//Eris::Avatar* mErisAvatar;
 
 	//this is used to make sure starts and stops of movement is only sent to the server once

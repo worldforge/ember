@@ -42,10 +42,13 @@
 
 #include "DimeEntity.h"
 #include "AvatarController.h"
+#include "AvatarCamera.h"
 //#include "TerrainGenerator.h"
 #include "MotionManager.h"
 
 #include "DimeTerrainSceneManager.h"
+
+#include "AvatarDimeEntity.h"
 
 #include "Avatar.h"
 
@@ -57,13 +60,14 @@ Avatar::Avatar()
 Avatar::Avatar(Ogre::SceneManager* sceneManager)  	
 {
 	mTimeSinceLastServerMessage = 0;
-	mMinIntervalOfTrivialChanges = 0.2; //seconds
+	mMinIntervalOfRotationChanges = 1; //seconds
 	mAccumulatedHorizontalRotation = 0;
+	mThresholdDegreesOfYawForAvatarRotation = 100;
 
-	mAvatar1pCameraNode = NULL;
+	mAvatarCamera = NULL;
 
 	mWalkSpeed = WF2OGRE(2.0);
-	mRunSpeed = WF2OGRE(5.0);
+	mRunSpeed = WF2OGRE(20.0);
 
 	mSceneMgr = sceneManager; // TODO: assert it's not null
 
@@ -86,6 +90,8 @@ void Avatar::createAvatar()
 	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mAvatarNode->setPosition(WF2OGRE_VECTOR3(0,0,5));
 	//mAvatarNode->setOrientation(0,1,0,0);
+	mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
+	
 	//mAvatarNode->setScale(OGRESCALER);
 	// TODO: very important! When the scale is set to default (1,1,1)
 	// and a mesh with normal scale is put here (like 2 meters high and things like that)
@@ -99,38 +105,57 @@ void Avatar::createAvatar()
 	mAvatarModelNode->attachObject(mAvatarEntity);
 //	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
 
+	createAnimations();
+}
+
+void Avatar::createAnimations() {
 	//let's set the current animation state to walking
 	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	
 	
-	Ogre::ControllerManager* controllerManager = &Ogre::ControllerManager::getSingleton();
+	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
+	
+/*	Ogre::ControllerManager* controllerManager = &Ogre::ControllerManager::getSingleton();
 	mAvatarAnimationControllerFunction = new Ogre::AnimationControllerFunction(mAnimStateWalk->getLength());
 	mAvatarAnimationController = controllerManager->createController(controllerManager->getFrameTimeSource(), mAnimStateWalk, mAvatarAnimationControllerFunction);
+*/
+	
+	
 }
 
 
 
 void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
-	if (mAvatar1pCameraNode != NULL) {
+	if (mAvatarCamera == NULL) {
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, mSceneMgr);
+	} else {
+		mAvatarCamera->setAvatarNode(avatarSceneNode);
+	}
+
+/*	if (mAvatar1pCameraNode != NULL) {
 		Ogre::String cameraNodeName = mAvatar1pCameraNode->getName();
 		mAvatar1pCameraNode->getParent()->removeChild(cameraNodeName);
 		avatarSceneNode->addChild(mAvatar1pCameraNode);
 	} else {
 			
 		
+		
+		
 		// 1st person, 3rd person and Top camera nodes
-		mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("Avatar1pCameraNode"));
+		mAvatar1pCameraNode = static_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("Avatar1pCameraNode"));
 		mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
+		mAvatar1pCameraNode->setFixedYawAxis(true);
 		
 		//rotate to sync with WF world
 	    mAvatar1pCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90);
 		//mAvatar1pCameraNode->showBoundingBox(true);
-		mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
-		Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,5);
+		mAvatar3pCameraNode = static_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
+		
+		Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,500);
 		//mAvatar3pCameraNode->setPosition(15000,2500,0);
 		mAvatar3pCameraNode->setPosition(pos);
 		
-		mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("AvatarTopCameraNode"));
+		mAvatarTopCameraNode = static_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("AvatarTopCameraNode"));
 		mAvatarTopCameraNode->setPosition(WF2OGRE_VECTOR3(2,200,0));
 	
 		// Create the camera
@@ -150,8 +175,8 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		mAvatar3pCameraNode->attachObject(mAvatar3pCamera);
 		// Look to the Avatar's head
 		//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
-		mAvatar3pCamera->setNearClipDistance(1);
-		mAvatar3pCamera->setFarClipDistance( WF2OGRE(384) );
+		mAvatar3pCamera->setNearClipDistance(WF2OGRE(0.01));
+		mAvatar3pCamera->setFarClipDistance( WF2OGRE(384) * 100);
 		//mAvatar3pCamera->setDetailLevel (Ogre::SDL_WIREFRAME);
 	
 		// Create the Top camera
@@ -163,6 +188,7 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
 		mAvatarTopCamera->setFarClipDistance( WF2OGRE(384) );
 	}	
+	*/
 }
 
 void Avatar::updateFrame(AvatarControllerMovement movement)
@@ -224,7 +250,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 			//we have rotated since last server update
 			//let's see if it's ok to send server message
 			//if not we have to wait some more frames until we'll send an update
-			if (isOkayToSendTrivialMovementChangeToServer()) {
+			if (isOkayToSendRotationMovementChangeToServer()) {
 				sendToServer = true;
 			}
 		}
@@ -284,21 +310,26 @@ void Avatar::attemptRotate(AvatarControllerMovement movement)
 	float degVert = movement.rotationDegVert;
 	Ogre::Real timeSlice = movement.timeSlice;
 	
-	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
+//	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
 
 	//if we're moving we must sync the rotation with messages sent to the server
-	if (!movement.isMoving) {
-		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
-		mAccumulatedHorizontalRotation = 0;
-	} else if (isOkayToSendTrivialMovementChangeToServer()) {
+	if (!movement.isMoving && fabs(mAvatarCamera->getYaw()) > mThresholdDegreesOfYawForAvatarRotation) {
+//		mAvatarNode->setOrientation(movement.cameraOrientation);
+		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAvatarCamera->getYaw());
+		mAvatarCamera->yaw(-mAvatarCamera->getYaw());
+//		mAccumulatedHorizontalRotation = 0;
+	} else if (isOkayToSendRotationMovementChangeToServer()) {
 		// rotate the Avatar Node only in X position (no vertical rotation)
-		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
-		mAccumulatedHorizontalRotation = 0;
+//		mAvatarNode->setOrientation(movement.cameraOrientation);
+		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAvatarCamera->getYaw());
+		mAvatarCamera->yaw(-mAvatarCamera->getYaw());
+
+//		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
+//		mAccumulatedHorizontalRotation = 0;
 	}
 
 	// pitch the 1p Camera
 	//mAvatar1pCameraNode->yaw(degHoriz);
-	mAvatar1pCameraNode->pitch(degVert * timeSlice);
 	// TODO: rotate 3p cam and rotate *back* top camera
 
 	// Rotate top camera *back*
@@ -309,12 +340,13 @@ void Avatar::attemptRotate(AvatarControllerMovement movement)
 	//mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
 }
 
-bool Avatar::isOkayToSendTrivialMovementChangeToServer()
+bool Avatar::isOkayToSendRotationMovementChangeToServer()
 {
-	return mTimeSinceLastServerMessage > mMinIntervalOfTrivialChanges;
+	return mTimeSinceLastServerMessage > mMinIntervalOfRotationChanges;
 	
 }
 
+/*
 Ogre::Camera* Avatar::getAvatar1pCamera()
 {
 	return mAvatar1pCamera;
@@ -330,51 +362,57 @@ Ogre::Camera* Avatar::getAvatarTopCamera()
 	return mAvatarTopCamera;
 }
 
-void Avatar::movedInWorld( const WFMath::Point< 3 > &p )
+*/
+
+void Avatar::movedInWorld()
 {
-	mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(mErisAvatarEntity->getPosition()));
-	mAvatarNode->setOrientation(Atlas2Ogre(mErisAvatarEntity->getOrientation()));
+	if (!mCurrentMovementState.isMoving) 
+	{
+		mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(mErisAvatarEntity->getPosition()));
+		mAvatarNode->setOrientation(Atlas2Ogre(mErisAvatarEntity->getOrientation()));
+	}
 	
 }
 
 
-void Avatar::enteredWorld(Eris::Entity *e)
+void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
 {
-	
-	
-	
-	/*
-	 * sometimes, for no apparent reason, the avatar get's created as a 
-	 * normal entity
-	 * And sometimes not.
-	 * Thus we need to check for this and act appropriatly
-	 */
-	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
-	if (dimeEntity != 0) {
-		//it got created as a DimeEntity, do some reshuffeling
-		//dimeEntity->markAsMainAvatar(mSceneMgr);
-		createAvatarCameras(dimeEntity->getSceneNode());
-		delete mAvatarNode;
-		mAvatarNode = dimeEntity->getSceneNode();
-		//here we should disconnect signals, if I only found out how...
-		//TODO: disconnect signals
-		//e->Moved.
-	} 
 
-	mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
-	mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
+	//it got created as a DimeEntity, do some reshuffeling
+	//dimeEntity->markAsMainAvatar(mSceneMgr);
+	MotionManager::getSingleton().removeAnimation(mAnimStateWalk);
+	//delete mAnimStateWalk;	
+	mSceneMgr->destroySceneNode(mAvatarNode->getName());
+	
+	createAvatarCameras(dimeEntity->getSceneNode());
+	mAvatarNode = dimeEntity->getSceneNode();
+	mAvatarEntity = dimeEntity->getOgreEntity();
+	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	
+	MotionManager::getSingleton().addAnimation(mAnimStateWalk);
+	
+	//here we should disconnect signals, if I only found out how...
+	//TODO: disconnect signals
+	//e->Moved.
 
-	mErisAvatarEntity = e;
-	DimeTerrainSceneManager::getSingleton().setPositionOfAvatar(Atlas2Ogre(e->getPosition()));
+	//mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
+	//mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
+
+	mErisAvatarEntity = dimeEntity;
+	DimeTerrainSceneManager::getSingleton().setPositionOfAvatar(Atlas2Ogre(dimeEntity->getPosition()));
 	//we debug so we'll remove this for now
 	//e->Moved.connect(SigC::slot( *this, &Avatar::movedInWorld ));
-
+	dimeEntity->setAvatar(this);
 	
 }
 
 void Avatar::touch(DimeEntity* entity)
 {
 	dime::DimeServices::getInstance()->getServerService()->touch(entity);
+}
+
+Ogre::Camera* Avatar::getCamera() const
+{
+	return mAvatarCamera->getCamera();
 }
 
 

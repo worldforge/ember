@@ -39,6 +39,7 @@ struct AvatarControllerMovement
 	Ogre::Vector3 movementDirection;
 	bool isRunning;
 	bool isMoving; 
+	Ogre::Quaternion cameraOrientation;
 };
 
 class AvatarController : public InputManager::MouseListener

@@ -76,6 +76,8 @@ protected:
 	WFMath::Point<3> mCurrentPosition;
 
 	const Mercator::Terrain::Segmentstore* mSegments;
+	
+	int mXmin, mXmax, mYmin, mYmax;
 
 };
 

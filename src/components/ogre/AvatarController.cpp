@@ -27,7 +27,7 @@
 #include "EntityListener.h"
 
 #include "DimeEntity.h"
-
+#include "AvatarCamera.h"
 #include "AvatarController.h"
 
 using namespace Ogre;
@@ -107,7 +107,7 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 	
 	SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
 	// Start a new ray query 
-	Ray cameraRay = mAvatar->getAvatar3pCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	Ray cameraRay = mAvatar->getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 	RaySceneQuery *raySceneQuery = sceneManager->createRayQuery( cameraRay ); 
 	raySceneQuery->execute(); 
 	RaySceneQueryResult result = raySceneQuery->getLastResults(); 
@@ -215,10 +215,15 @@ void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader*
 		diffY = (1.0 - mouseY <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseY - 1.0)) / sizeOfHotBorder) * maxMovement;
 	}	
 			
-	movementForFrame.rotationDegHoriz = diffX;
-	movementForFrame.rotationDegVert = diffY;
+//	movementForFrame.rotationDegHoriz = diffX;
+//	movementForFrame.rotationDegVert = diffY;
 //	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
-
+	
+	//we do the camera pitch instantly and correct the avatar to the new position 
+	//when it's suitable
+	mAvatar->getAvatarCamera()->yaw(diffX * event.timeSinceLastFrame);
+	mAvatar->getAvatarCamera()->pitch(diffY * event.timeSinceLastFrame);
+//	movementForFrame.cameraOrientation = mAvatar->getAvatarCamera()->getOrienation();
 }
 
 void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* inputReader)

@@ -11,7 +11,49 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.5  2004-07-18 23:26:24  erik
+ *      Revision 1.6  2004-07-20 22:52:16  erik
+ *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      in src/components/ogre:
+ *
+ *      MathConverter.h:
+ *      *changed scaling
+ *
+ *      DimeEntity.*:
+ *      *fixed problems with containers
+ *      *added more meshes (sty, oak)
+ *
+ *      Avatar.*:
+ *      *moved camera code to AvatarCamera
+ *      *better connection to Eris::Avatar and avatar creation
+ *
+ *      MotionManager.cpp:
+ *      *better clean up code
+ *
+ *      InputManager.cpp:
+ *      *removed buggy polling code and replaced it with signals in the ServerService class
+ *
+ *      DimeEntityFactory.*:
+ *      *added support for AvatarDimeEntity
+ *
+ *      AvatarDimeEntity.*:
+ *      New class for handling the Avatar entity
+ *
+ *      AvatarCamera.*:
+ *      New class for handling the Avatar camera
+ *
+ *      DimeOgre.*:
+ *      *cleaned up old code
+ *      *moved camera stuff into AvatarCamera
+ *      *better connection between Services signals and other objects
+ *
+ *      EntityListener.cpp:
+ *      *removed connection to Avatar, this class is obsolete anyway
+ *
+ *      AvatarController.*:
+ *      *added support for AvatarCamera
+ *
+ *      Revision 1.5  2004/07/18 23:26:24  erik
  *      2004-07-19 Erik Hjortsberg <erik@hysteriskt.nu>
  *      src/components/ogre:
  *
@@ -156,10 +198,10 @@ inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion aq){
  * used when scaling Ogre models to the units used ny WF, i.e. 1 unit == 1 meter
  * Ogre seems to use 1 unit == 1 centimeter
  */
-#define OGRE2WF(x) (x * 0.01)
-#define WF2OGRE(x) (x * 100.0)
-#define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x * 0.01, y * 0.01, z * 0.01))
-#define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x * 100.0, y * 100.0, z * 100.0))
+#define OGRE2WF(x) (x * 1)
+#define WF2OGRE(x) (x * 1)
+#define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x * 1, y * 1, z * 1))
+#define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x * 1, y * 1, z * 1))
 #define OGRESCALER Ogre::Vector3(1,1,1)
 
 

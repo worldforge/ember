@@ -146,6 +146,10 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::World *world)
         std::cerr << "Terrain is the wrong type" << std::endl << std::flush;
         return false;
     }
+    mXmin = xmin;
+    mXmax = xmax;
+    mYmin = ymin;
+    mYmax = ymax;
     mSegments = &mTerrain.getTerrain();
     return true;
 }

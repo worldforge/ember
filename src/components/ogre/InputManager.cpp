@@ -247,42 +247,12 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
 
 bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 {
-	
 
-	// hack: fallback in case there's no way to exit the app;
-	//in linux there's always a way /erik
-	/*timer--;
-	if(timer<=0)
-	{
-		return false;
-	}
-	*/
 	mMouseX = Ogre::OverlayManager::getSingleton().getMouseX();
 	mMouseY = Ogre::OverlayManager::getSingleton().getMouseY();
 	// Eris poll. It might remain here or be moved to a better place. We'll see.
 	Eris::PollDefault::poll();
 
-	// VERY UGLY HACK
-	// Grab world. If it's set, connect world signals on the entity thing...
-	if(!worldConnected) // to connect only once
-	{
-		// if world is initialized, connect the signals (once)
-		if((dime::DimeServices::getInstance()->getServerService()->getWorld())!=0) {
-		    
-		    //this should really not be here
-		    DimeEntityFactory* dimeEntityFactory = new DimeEntityFactory(EntityListener::getSingleton().getSceneManager(), dime::DimeServices::getInstance()->getServerService()->getConnection()->getTypeService());
-		    dime::DimeServices::getInstance()->getServerService()->getWorld()->registerFactory(dimeEntityFactory, 10);
-			
-			
-			
-			EntityListener::getSingleton().connectWorldSignals();
-		    
-			worldConnected = true;
-			
-		}
-	}
-
-	// Call to the AvatarListener methods for the unbuffered input
 	AvatarController::getSingleton().frameStarted(evt, mEventProcessor->getInputReader());
 
 	return true;

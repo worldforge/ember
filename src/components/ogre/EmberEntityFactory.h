@@ -32,7 +32,7 @@
 
 #include <Atlas/Objects/Entity/GameEntity.h>
 
-/*
+
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
 #else
@@ -42,10 +42,11 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
-*/
+
+class AvatarDimeEntity;
 
 
-class DimeEntityFactory : public Eris::Factory
+class DimeEntityFactory : public Eris::Factory, virtual public SigC::Object
 {
 public:
 
@@ -74,13 +75,19 @@ public:
 
 	/// create whatever entity the client desires
 	virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
+	void setAvatar(Eris::Avatar* avatar);
+
+	SigC::Signal1<void, AvatarDimeEntity*> CreatedAvatarEntity;
 
     
-private:
+protected:
+
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world);
 	Ogre::SceneManager* mSceneManager;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;
+	
+	Eris::Avatar* mAvatar;
 };
 
 #endif // DIMEENTITYFACTORY_H

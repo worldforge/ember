@@ -47,7 +47,7 @@ void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 
 void MotionManager::updateMotionForEntity(DimeEntity* entity, Ogre::Real timeSlice)
 {
-	//update the position of the avatar
+	//update the position of the entity
 	Ogre::Vector3 velocity = Atlas2Ogre(entity->getVelocity());
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	//sceneNode->setOrientation(Atlas2Ogre(entity->getOrientation()));
@@ -82,25 +82,29 @@ void MotionManager::addAnimation(AnimationState* animationState)
 		//how is the overhead on creating a ControllerFunction for each single AnimationState?
 		//perhaps we should keep ControllerFunction bound to Animation instead?
 		Ogre::AnimationControllerFunction* controllerFunction = new Ogre::AnimationControllerFunction(animationState->getLength());
-		animationControllerType* animationController = mControllerManager->createController(mControllerManager->getFrameTimeSource(), animationState, controllerFunction);
+		animationControllerType* animationController = Ogre::ControllerManager::getSingleton().createController(mControllerManager->getFrameTimeSource(), animationState, controllerFunction);
 		
 		
 		mAnimations.insert(animationStateMap::value_type(animationState, animationController));
 	}
-//	mAvatarAnimationControllerFunction = new Ogre::AnimationControllerFunction(mAnimStateWalk->getLength());
-//	mAvatarAnimationController = controllerManager->createController(controllerManager->getFrameTimeSource(), animationState, controllerFunction);
 	
 }
 
 void MotionManager::removeAnimation(AnimationState* animationState)
 {
-	animationControllerType* animationController = mAnimations[animationState];
-/* don't need to do this as SharePtr uses reference counting
-	Ogre::SharedPtr< ControllerFunction<Ogre::Real> > controllerFunctionPtr = (animationController->getFunction());
-	delete *controllerFunctionPtr;
-*/	
-	mAnimations.erase(animationState);
-	mControllerManager->destroyController(animationController);
+	animationStateMap::const_iterator I = mAnimations.find(animationState);
+	if (I != mAnimations.end()) {
+		//animationControllerType* animationController = mAnimations[animationState];
+	/* don't need to do this as SharePtr uses reference counting
+		Ogre::SharedPtr< ControllerFunction<Ogre::Real> > controllerFunctionPtr = (animationController->getFunction());
+		delete *controllerFunctionPtr;
+	*/	
+		mAnimations.erase(I->first);
+
+//		Ogre::ControllerManager::getSingleton().destroyController(I->second);
+
+	}
+	
 }
 
 void MotionManager::pauseAnimation(AnimationState* animationState)

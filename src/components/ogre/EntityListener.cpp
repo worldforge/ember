@@ -75,7 +75,7 @@ void EntityListener::connectWorldSignals(void) {
 
     w->EntityDelete.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( *mDimeAvatar, &Avatar::enteredWorld ) );
+    //w->Entered.connect( SigC::slot( *mDimeAvatar, &Avatar::enteredWorld ) );
 
     w->Appearance.connect( SigC::slot( *this, &EntityListener::appearance ) );
 

@@ -23,7 +23,49 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.40  2004-07-18 23:26:24  erik
+ *      Revision 1.41  2004-07-20 22:52:16  erik
+ *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      in src/components/ogre:
+ *
+ *      MathConverter.h:
+ *      *changed scaling
+ *
+ *      DimeEntity.*:
+ *      *fixed problems with containers
+ *      *added more meshes (sty, oak)
+ *
+ *      Avatar.*:
+ *      *moved camera code to AvatarCamera
+ *      *better connection to Eris::Avatar and avatar creation
+ *
+ *      MotionManager.cpp:
+ *      *better clean up code
+ *
+ *      InputManager.cpp:
+ *      *removed buggy polling code and replaced it with signals in the ServerService class
+ *
+ *      DimeEntityFactory.*:
+ *      *added support for AvatarDimeEntity
+ *
+ *      AvatarDimeEntity.*:
+ *      New class for handling the Avatar entity
+ *
+ *      AvatarCamera.*:
+ *      New class for handling the Avatar camera
+ *
+ *      DimeOgre.*:
+ *      *cleaned up old code
+ *      *moved camera stuff into AvatarCamera
+ *      *better connection between Services signals and other objects
+ *
+ *      EntityListener.cpp:
+ *      *removed connection to Avatar, this class is obsolete anyway
+ *
+ *      AvatarController.*:
+ *      *added support for AvatarCamera
+ *
+ *      Revision 1.40  2004/07/18 23:26:24  erik
  *      2004-07-19 Erik Hjortsberg <erik@hysteriskt.nu>
  *      src/components/ogre:
  *
@@ -315,6 +357,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EntityListener.h"
 #include "DimeEntityFactory.h"
 #include "MotionManager.h"
+#include "AvatarCamera.h"
+
 
 #include "TerrainGenerator.h"
 #include "DimeTerrainSceneManager.h"
@@ -448,7 +492,6 @@ bool DimeOgre::setup(void)
     // Create the scene
     createScene();
 
-    createCamera();
     createViewports();
 
     // Set default mipmap level (NB some APIs ignore this)
@@ -505,7 +548,7 @@ void DimeOgre::createViewports(void)
 {
 
     // Create 1st person viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getAvatar3pCamera());
+    Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getCamera());
     vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 //float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
@@ -548,33 +591,6 @@ void DimeOgre::setupResources(void)
 
 void DimeOgre::createScene(void)
 {
-	
-/*
-	//we can't scale because it screws up the bounding boxes and messes with 
-	//vertex shaders
-	//perhaps in a future release of Ogre
-	//mSceneMgr->getRootSceneNode()->setScale(OGRESCALER);
-	Ogre::Entity* 		mDebug_0_0_1_Enty;
-	Ogre::SceneNode* 	mDebug_0_0_1_Node;
-	Ogre::Entity* 		mDebug_1_0_0_Enty;
-	Ogre::SceneNode* 	mDebug_1_0_0_Node;
-
-
-	mDebug_0_0_1_Enty = mOgreHead = mSceneMgr->createEntity("Debug_0_0_1", "Oak.mesh");
-	mDebug_0_0_1_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChildSceneNode());
-//	mDebug_0_0_1_Node->setPosition(0,0,-5);
-	mDebug_0_0_1_Node->setPosition(WF2OGRE_VECTOR3(0,0,-5));
-	//mDebug_0_0_1_Node->showBoundingBox(true);
-	//mDebug_0_0_1_Node->setScale(0.1,0.1,0.1);
-	mDebug_0_0_1_Node->attachObject(mDebug_0_0_1_Enty);
-
-	mDebug_1_0_0_Enty = mOgreHead = mSceneMgr->createEntity("Debug_1_0_0", "robot.mesh");
-	mDebug_1_0_0_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChildSceneNode("Debug_1_0_0_Node"));
-	mDebug_1_0_0_Node->setPosition(WF2OGRE_VECTOR3(5,0,0));
-	//mDebug_1_0_0_Node->setScale(OGRESCALER);
-	mDebug_1_0_0_Node->attachObject(mDebug_1_0_0_Enty);
-	//mDebug_1_0_0_Node->showBoundingBox(true);
-*/	
 
   mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   // Create a light
@@ -584,31 +600,6 @@ void DimeOgre::createScene(void)
   // create a Skydome
   mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
-  // set the world geometry
-  //mSceneMgr->setWorldGeometry("terrain.cfg");
-
-//#if 0
-
-/*
-	// A little Ogre head to mark the center of the scene
-	// ----------------------------------------
-
-	//create the entity
-	mOgreHead = mSceneMgr->createEntity("test", "ogrehead.mesh");
-
-	// create the node
-	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChildSceneNode());
-	mOgreHeadNode->setPosition(0,0,0);
-	//mOgreHeadNode->setScale(OGRESCALER);
-	//mOgreHeadNode->showBoundingBox(true);
-
-	// attach the node to the entity
-	mOgreHeadNode->attachObject(mOgreHead);
-
-	// end little Ogre Head
-	// ----------------------------------------
-
-*/
         Entity *waterEntity;
         Plane waterPlane;
 
@@ -635,78 +626,24 @@ void DimeOgre::createScene(void)
         waterNode->attachObject(waterEntity); 
         waterNode->translate(WF2OGRE(1000), 0, WF2OGRE(1000));
         
-        mSceneMgr->setFog( FOG_EXP2, ColourValue::White, .008 / WF2OGRE(1), 0,  250 );
-
-	// A Ground Plane for the fancyness of it ;)
-	// ----------------------------------------
-/*
-		Ogre::Entity *groundEntity;
-        Ogre::Plane groundPlane;
-
-        // create a water plane/scene node
-        groundPlane.normal = Ogre::Vector3::UNIT_Y;	// normal points up
-        groundPlane.d = 0;
-        Ogre::MeshManager::getSingleton().createPlane(
-            "GroundPlane",
-            groundPlane,
-            2800, 2800,
-            20, 20,
-            true, 1,
-            10, 10,
-            Ogre::Vector3::UNIT_Z
-        );
-
-		groundEntity = mSceneMgr->createEntity("ground", "GroundPlane");
-		groundEntity->setMaterialName("Ground/MixedForestGround");
-
-		Ogre::SceneNode *groundNode = static_cast<Ogre::SceneNode*>(
-		mSceneMgr->getRootSceneNode()->createChild("GroundNode"));
-        groundNode->attachObject(groundEntity);
-        //groundNode->translate(1000, 0, 1000);
-        //groundNode->setScale(OGRESCALER);
-  */    
-
-/*	std::cout << "	CREATING SPY CAMERA" << std::endl;
-
-	//spycam
-	Ogre::SceneNode* spyCamNode = dynamic_cast<Ogre::SceneNode*>(mOgreHeadNode->createChild("SpyCamNode"));
-	spyCamNode->setPosition(0,100000,0);
-
- 	mOgreHeadCamera = mSceneMgr->createCamera("SpyCamera");
-	spyCamNode->attachObject(mOgreHeadCamera);
-*/	//mOgreHeadCamera->setAutoTracking(true, mAvatar.getAvatar1pCamera()->getNode());
-
 	// Avatar
 	mAvatar = Avatar(mSceneMgr);
 	EntityListener::getSingleton().setDimeAvatar(&mAvatar);
-
-	// a hack from the OGRE GUI sample
-	/*
-	Ogre::Overlay* o = (Ogre::Overlay*)Ogre::OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
-	Ogre::ActionTarget* at =
-		static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
-
-
-	at->addActionListener(this);
-	at = static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
-	at->addActionListener(this);
-
-
-	Ogre::ListChanger* list = static_cast<Ogre::ListGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/AvailableGamesList"));
-
-	list->addListItem(new Ogre::StringResource("test1"));
-	list->addListItem(new Ogre::StringResource("test2"));
-
-	(Ogre::GuiManager::getSingleton().getGuiElement("Core/CurrFps"))->addMouseListener(this);
-
-	Ogre::GuiContainer* pCursorGui = Ogre::OverlayManager::getSingleton().getCursorGui();
-	pCursorGui->setMaterialName("Cursor/default");
-	*/
-	
-	/*
-	 * this is just for testing
-	 */
 	 
+	
+}
+
+void DimeOgre::connectWorldSignals(Eris::World* world)
+{
+    world->registerFactory(mDimeEntityFactory, 10);
+	
+	EntityListener::getSingleton().connectWorldSignals();
+}
+
+void DimeOgre::connectedToServer(Eris::Connection* connection) 
+{
+	mDimeEntityFactory = new DimeEntityFactory(mSceneMgr, connection->getTypeService());
+	mDimeEntityFactory->CreatedAvatarEntity.connect(SigC::slot(mAvatar, &Avatar::createdAvatarDimeEntity));
 	
 }
 
@@ -722,6 +659,8 @@ void DimeOgre::createFrameListener(void)
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
 	mRoot->addFrameListener(&(Console::getSingleton()));
 	mRoot->addFrameListener(&(MotionManager::getSingleton()));
+	//AvatarCamera* camera = new AvatarCamera(mAvatar.getAvatar1pCamera(), &mAvatar, mSceneMgr);
+	//mRoot->addFrameListener(camera);
 	ConsoleObjectImpl::getSingleton();
 	
 	//Ogre::OverlayManager::getSingleton().addMouseMotionListener(&(DebugListener::getSingleton()));
@@ -736,11 +675,6 @@ void DimeOgre::createFrameListener(void)
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }
 
-void DimeOgre::createCamera(void)
-{
-	// TODO: Remove this method
-
-}
 
 void DimeOgre::initializeDimeServices(void)
 {
@@ -782,25 +716,13 @@ void DimeOgre::initializeDimeServices(void)
 	dime::DimeServices::getInstance()->getMetaserverService()->start();
 
 	// Initialize the Server Service
+	dime::DimeServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &DimeOgre::connectedToServer));
+	dime::DimeServices::getInstance()->getServerService()->GotWorld.connect(SigC::slot(*this, &DimeOgre::connectWorldSignals));
+	
 	dime::DimeServices::getInstance()->getServerService()->start();
 #endif
 
 }
-
-/*this can be done with Ogre::AnimationControllerFunction
- * but perhaps it's not optimal for large scenes
- * preferrably this should be handled by a different class, a AnimationManager of sorts
- */
-void DimeOgre::updateAnimations(Ogre::Real time)
-{
-
-	Ogre::AnimationState* animState;
-	animState=mOgreHead->getAnimationState("Walk");
-	animState->setEnabled(true);
-	animState->addTime(time);
-
-}
-
 
 
 // ----------------------------------------------------------------------------
