@@ -58,12 +58,12 @@ PDataObject DataObject::getLinkDest()
 {
 	if (getType() & IS_LINK)
 	{
-		return new DataObject(dynamic_cast<LinkProvider*>(myProvider)->getLinkDest());
+		return PDataObject(new DataObject(dynamic_cast<LinkProvider*>(myProvider)->getLinkDest()));
 	}		
 
 	THROW1("DataObject %s is not a link.", myPath.c_str());
 
-	return NULL;
+	return PDataObject(NULL);
 }
 
 /**
