@@ -369,7 +369,7 @@ class LoggingService: public Service
 	void log(const string & message, ...) 
 	{
 	    va_list vl;
-		va_start(vl, message);
+		va_start(vl, &message);
 		logVarParam("", -1, INFO, message, vl);
 		va_end(vl);
 	}
@@ -377,7 +377,7 @@ class LoggingService: public Service
 	void log(const string & file, const string & message, ...)
 	{
 		va_list vl;
-		va_start(vl, message);
+		va_start(vl, &message);
 		logVarParam(file, -1, INFO, message, vl);
 		va_end(vl);
 	}
@@ -385,7 +385,7 @@ class LoggingService: public Service
 	void log(const string & file, const int line, const string & message, ...)
 	{
 		va_list vl;
-		va_start(vl, message);
+		va_start(vl, &message);
 		logVarParam(file, line, INFO, message, vl);
 		va_end(vl);
 	}
@@ -393,7 +393,7 @@ class LoggingService: public Service
 	void log(const MessageImportance importance, const string & message, ...)
 	{
 		va_list vl;
-		va_start(vl, message);
+		va_start(vl, &message);
 		logVarParam("", -1, importance, message, vl);
 		va_end(vl);
 	}
@@ -402,7 +402,7 @@ class LoggingService: public Service
 					 const string & message, ...)
 	{
 		va_list vl;
-		va_start(vl, message);
+		va_start(vl, &message);
 		logVarParam(file, -1, importance, message, vl);
 		va_end(vl);
 	}
@@ -411,7 +411,7 @@ class LoggingService: public Service
 					const string & message, ...)
 	{
 		va_list vl;
-		va_start(vl, message);
+		va_start(vl, &message);
 		logVarParam(file, line, importance, message, vl);
 		va_end(vl);
 	}
