@@ -65,10 +65,11 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);
 	mTerrainGenerator->prepareAllSegments(false);
-	mFoliage = new Foliage(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
-	mFoliage->generateUnderVegetation(-2, -2, 4);
+	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage")) {
+		mFoliage = new Foliage(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 		bool vis = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
+		mFoliage->generateUnderVegetation(-2, -2, 4);
 		mFoliage->setVisible(vis);
 	}
 	

@@ -1,3 +1,25 @@
+2004-11-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Fix a bug where all foliage wasn't disabled if told so by the config file.
+
+2004-11-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* some better clean up when entities are removed
+
+2004-11-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* attach the camera to the main node instead of the scale node
+
+2004-11-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* added options for the terrain to ember.conf
+	* added debug option for showing the lod level of the terrain though different colors
+	* fixed lod levels on the terrain, started implementing more efficient terrain materials
+
+2004-11-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* make the grass a bit smaller
+
 2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* fixed Makefile order, thanks Demitar
