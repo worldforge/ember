@@ -142,6 +142,43 @@ namespace dime {
          */
         virtual ~Widget();
 
+
+        //---------------------------------------------------------------------------------------------------
+        // Event Slots
+        //---------------------------------------------------------------------------------------------------
+        /**
+         * Connect a slot here to observe when a mouse button is pressed.
+         */
+        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseDown;
+        
+        /**
+         * Connect a slot here to observe when a mouse button is released.
+         */
+        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseUp;
+        
+        /**
+         * Connect a slot here to observe MouseMotions
+         */
+        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseMove;
+        
+        /**
+         * Connect a slot here to observe when MouseMoves over this Widget
+         */
+        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseEnter;
+        
+        /**
+         * Connect a slot here to observe when a Mouse leaves this Widget
+         */
+        SigC::Signal1<void, Widget*, SigC::Marshal<void> > onMouseExit;
+        
+        /**
+         * Connect a slot here to observe when a key is pressed and this Widget has focus.
+         */
+        SigC::Signal2<void, Widget*, SDLKey, SigC::Marshal<void> > onKeyPress;
+        
+
+
+
 	
         //----------------------------------------------------------------------
         // Getters
@@ -259,7 +296,7 @@ namespace dime {
          * the topmost widget that contains these coordinates.  If no child widgets 
          * fall in this category then it returns this.
          */
-        virtual Widget *getWindowAt(int x, int y) { };
+        virtual Widget *getWidgetAt(int x, int y);
 
         //---------------------------------------------------------------------------------------------------
         //---------------------------------------------------------------------------------------------------
@@ -363,19 +400,25 @@ namespace dime {
          * Calls the objectDragDrop method of destination window,
          * and cancells the drag if destination->objectDragDrop returns false.
          */
-        virtual bool mouseDragEnd( int x, int y, int button, Widget *dest ) { };
+        virtual bool mouseDragEnd( int x, int y, int button, Widget *dest ) { }
 
         /**
          * The mouse has just entered win.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseEnter( int x, int y, Widget *win ) { };
+        virtual void mouseEnter( int x, int y, Widget *win ) 
+        {
+            onMouseEnter.emit(this);
+        }
 
         /**
          * The mouse has just left win.
          * win is the window at position x, y (normally 'this').
          */
-        virtual void mouseExit( int x, int y, Widget *win ) { };
+        virtual void mouseExit( int x, int y, Widget *win ) 
+        {
+            onMouseExit.emit(this);
+        }
 
         /**
          * Captures the mouse events, all mouse events are sent to this window
@@ -410,7 +453,10 @@ namespace dime {
          * win is the window at position x, y (normally 'this').
          * Check for dragging and calls mouseDragStart if neccesary.
          */
-        virtual void mouseMove( int x, int y, Widget *win ) { };
+        virtual void mouseMove( int x, int y, Widget *win ) 
+        {
+            
+        };
 
 
         //---------------------------------------------------------------------------------------------------

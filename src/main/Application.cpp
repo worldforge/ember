@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.11  2002-04-15 05:53:15  nikal
+ *      Revision 1.12  2002-04-17 04:02:09  nikal
+ *      Dime is now using the event generator, and events have been sped up.  (previously we were only processing one event per screen refresh.  now we process all events the do the screen refresh.)  The event system is very close to being in place, new widgets will come over the next few days.
+ *
+ *      Revision 1.11  2002/04/15 05:53:15  nikal
  *      *** empty log message ***
  *
  *      Revision 1.10  2002/04/07 05:38:25  adamgreg
@@ -181,8 +184,9 @@ namespace dime
 
     void Application::mainLoopStep() 
     {
+        
         SDL_Event nextEvent;
-        if(SDL_PollEvent(&nextEvent)) 
+        while(SDL_PollEvent(&nextEvent)) 
             {
                 switch(nextEvent.type) {
                 case SDL_ACTIVEEVENT:
@@ -233,9 +237,9 @@ namespace dime
                     break;
                 }
 
-				dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
+                dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
             }
-		myGuiService->refresh();
+        myGuiService->refresh();
     }
 
     void Application::mainLoop() 

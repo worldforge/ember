@@ -117,3 +117,26 @@ bool dime::Widget::checkMouseEvent(std::vector<int> coords)
 		}
 	}
 }
+
+
+
+dime::Widget *dime::Widget::getWidgetAt(int x, int y)
+{
+    dime::Widget *returnWidget = NULL;
+    if (myRectangle.contains(x, y))
+        {
+            std::vector<Widget*>::iterator end = myChildren.end();
+            for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end && returnWidget==NULL; i++)
+                {
+                    returnWidget = (*i)->getWidgetAt(x, y);
+                }
+            if(returnWidget==NULL)
+                {
+                    //points lie inside, but aren't our child widgets... must be us.
+                    returnWidget=this;
+                }
+            		
+        }
+    return returnWidget;
+	
+}

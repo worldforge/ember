@@ -37,9 +37,19 @@ namespace dime
         
     public:
         // Start all event handlers here.
-        EventGenerator() { };
+        EventGenerator(Widget *rootWidget) 
+            :  myRootWidget(rootWidget)
+        { 
+            myInputService = dime::InputService::getInstance();
+            dime::InputDevice *mouse = myInputService->getInputDevice(dime::InputDevice::MOUSE);
+            myInputService->addInputMapping(new dime::InputMapping(mouse, SigC::slot(*this,&dime::EventGenerator::MouseMotion)));
+            myInputService->addInputMapping(new dime::InputMapping(mouse, mouse, SDLK_LEFT_MB, SDLK_RIGHT_MB, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this,&dime::EventGenerator::MouseClick)));
+            
+            
+        };
         
     private:
+        
         //---------------------------------------------------------------------------------------------------
         //  The methods that we connect to the InputService to listen to events.
         //---------------------------------------------------------------------------------------------------
@@ -121,43 +131,44 @@ namespace dime
         //---------------------------------------------------------------------------------------------------
         virtual Widget *getMainWidget() 
         { 
-            return mainWidget; 
+            return myRootWidget; 
         }
         virtual Widget *getMouseCaptureWidget()    
         { 
-            return mouseCaptureWidget; 
+            return myMouseCaptureWidget; 
         }
         virtual Widget *getKeyboardCaptureWidget() 
         { 
-            return keyboardCaptureWidget; 
+            return myKeyboardCaptureWidget; 
         }
         virtual Widget *getPointedWidget()         
         { 
-            return pointedWidget;      
+            return myPointedWidget;      
         }
         virtual Widget *getFocusedWidget() 
         { 
-            return focusedWidget;      
+            return myFocusedWidget;      
         }
         virtual void setFocusedWidget(Widget *widget) 
         { 
-            focusedWidget = widget;  
+            myFocusedWidget = widget;  
         }
      
         
 
   protected:
-        Widget *mainWidget;       // Should contain all other widgets in the application.
-        Widget *mouseCaptureWidget;  // NULL if mouse not captured, else all mouse
+        
+        Widget *myRootWidget;
+        Widget *myMouseCaptureWidget;  // NULL if mouse not captured, else all mouse
         // events are sent to the specified widget.
-        Widget *keyboardCaptureWidget;  // NULL if keyboard not captured, else all
+        Widget *myKeyboardCaptureWidget;  // NULL if keyboard not captured, else all
         // keyboard events are sent to the specified widget.
         // (Usefull for example when configuring input keys
         //  in games, pressing TAB won't shift away from the
         //  input gizmo.)
-        Widget *pointedWidget;   // The widget the mouse pointer currently is in.
-        Widget *focusedWidget;   // The currently focused widget.
-        Widget *rootWidget;
+        Widget *myPointedWidget;   // The widget the mouse pointer currently is in.
+        Widget *myFocusedWidget;   // The currently focused widget.
+        InputService *myInputService;
         
         
     }; // end class EventGenerator

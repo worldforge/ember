@@ -6,14 +6,14 @@
 //#include <SDL/SDL_keysym.h>
 
 
-void mouseenterbutton(dime::Button* button)
+void mouseenterbutton(dime::Widget* button)
 {
-	button->highlight();
+	((dime::Button *)button)->highlight();
 }
 
-void mouseexitbutton(dime::Button* button)
+void mouseexitbutton(dime::Widget* button)
 {
-	button->lowlight();
+	((dime::Button *)button)->lowlight();
 }
 
 int main(int argc, char **argv)

@@ -259,6 +259,22 @@ class Rectangle
 		}
 		return false;
 	}
+    /**
+     * Test if these coordinates lie inside this rectangle
+     */
+    virtual bool contains(int x, int y)
+    {
+        if((x > getX()) && (x < (getX() + getWidth())) &&
+           (y > getY()) && (y < (getY() + getHeight())))
+            {
+                return true;
+            }
+        else
+            {
+                return false;
+            }
+    }
+    
 
 }; // End of class
 
