@@ -1,10 +1,13 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT
+AC_INIT(Dime, 0.1.4, clients@worldforge.org)
+
+AC_CONFIG_SRCDIR(src)
 
 # Detect the canonical host and target build environment.
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE([Dime], [0.1.4],[clients@worldforge.org])
+AM_INIT_AUTOMAKE
+#(Dime, 0.1.4, clients@worldforge.org)
 AM_CONFIG_HEADER(config.h)
 
 AC_PREREQ(2.50)
@@ -34,7 +37,7 @@ AC_LANG_PUSH([C])
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS(stdlib.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
