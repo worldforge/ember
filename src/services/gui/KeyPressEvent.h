@@ -1,8 +1,8 @@
 /*
- *  File:       MouseButtonevent.h
- *  Summary:    Defines the Base MouseButton Event.
- *  Written by:  Lakin Wecker (aka nikal).
- *               Copyright 2001.
+ *  File:       KeyPressEvent.h
+ *  Summary:    Defines the Base KeyPress Event.
+ *  Written by:  Martin Pollard (aka Xmp).
+ *               Copyright 2002.
  *
  *
  * This file is part of Dime.
@@ -26,8 +26,8 @@
  *
  *
  */
-#ifndef MOUSEBUTTONEVENT_H
-#define MOUSEBUTTONEVENT_H
+#ifndef KEYPRESSEVENT_H
+#define KEYPRESSEVENT_H
 
 #include "Event.h"
 #include <assert.h>
@@ -37,36 +37,24 @@ namespace dime {
   /**
    * Base class for all mouse button events.
    */
-  class MouseButtonEvent : public Event
+  class KeyPressEvent : public Event
   {
   public:
-         enum Button
-          {
-              LEFTBUTTON,
-              MIDDLEBUTTON,
-              RIGHTBUTTON
-          };
-      
+    
       enum State
           {
               PRESSED,
               RELEASED,
-              CLICKED,
-              MULTICLICKED
           };
       
     /**
      * Constructor
      *
      */
-    MouseButtonEvent(InputDevice *device, Widget *widget, Button button, State state)
-        : Event(device, widget)
+    KeyPressEvent(InputDevice *device, Widget *widget, char key, State state)
+        : Event(device, widget), myState(state), myKey(key)
       {
           assert(device);
-          myX = device->getAxisPosition(0);
-          myY = device->getAxisPosition(1);
-          myButton = button;
-          myState = state;
       }
       
       
@@ -75,20 +63,11 @@ namespace dime {
      * Virtual Destructor
      *
      */
-      virtual ~MouseButtonEvent()
+      virtual ~KeyPressEvent()
       {
           
       }
       
-      /**
-       * Returns the button for this event.
-       *
-       * @return Button for this event.
-       */
-      Button getButton()
-      {
-          return myButton;
-      }
       
               
     /** 
@@ -101,24 +80,11 @@ namespace dime {
           return myState;
       }
       
-
-    /**
-     * Returns the position of the mouse in screen coordinates.
-     *
-     * @param x the int to store the x pos in.
-     * @param y the int to store the y pos in.
-     */
-      void getPos(int &x, int &y)
-      {
-          x = myX;
-          y = myY;
-      }
-      
+    
 
 
   protected:
-      Button myButton;
-      int myX, myY;
+      char myKey;
       State myState;
   };
   

@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "EventGenerator.h"
+#include "KeyPressEvent.h"
 #include "MouseButtonEvent.h"
 #include "MouseMotionEvent.h"
 
@@ -365,10 +366,10 @@ namespace dime {
          * Override the event methods in derived classes when neccesary.
          */
         
-        //       virtual bool keyPress( KeyPressEvent *event)
-        //{ 
-            
-        //}
+       virtual bool keyPress( KeyPressEvent *event)
+        { 
+            return false;
+        }
         
 
         /**

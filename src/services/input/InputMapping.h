@@ -98,11 +98,11 @@ namespace dime {
  * 
  * //Single action on return
  * inputService.addMapping(new 
- *   InputMapping(keyboard, SDLK_RETURN, FALSE, slot(dialog,&dialog::onDefault)))
+ *   InputMapping(keyboard, SDLK_RETURN, false, slot(dialog,&dialog::onDefault)))
  *
  * //Observing a key being pressed and released
  * inputService.addMapping(new
- *   InputMapping(keyboard, SDLK_CAPS, TRUE, 
+ *   InputMapping(keyboard, SDLK_CAPS, true, 
  *
  * //Observing mouse movement only
  * inputService.addMapping(new 

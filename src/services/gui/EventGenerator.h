@@ -23,6 +23,7 @@
 #include "Widget.h"
 #include "MouseMotionEvent.h"
 #include "MouseButtonEvent.h"
+#include "KeyPressEvent.h"
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
 
@@ -43,9 +44,16 @@ namespace dime
             :  myRootWidget(rootWidget)
         { 
             myInputService = dime::InputService::getInstance();
+
             dime::InputDevice *mouse = myInputService->getInputDevice(dime::InputDevice::MOUSE);
+			dime::InputDevice *keyboard = myInputService->getInputDevice(dime::InputDevice::KEYBOARD);
+
             myInputService->addInputMapping(new dime::InputMapping(mouse, SigC::slot(*this,&dime::EventGenerator::MouseMotion)));
             myInputService->addInputMapping(new dime::InputMapping(mouse, mouse, SDLK_LEFT_MB, SDLK_RIGHT_MB, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this,&dime::EventGenerator::MouseClick)));
+
+			// Add a new input mapping for the keyboard for keys going from 0 to SDLK_PAGEDOWN numbered on the keyboard, fire the event on press and release, tie to EventGenerator::KeyboardPress
+			// repetition delay 500ms.
+			myInputService->addInputMapping(new dime::InputMapping(new RepetitionDevice(500), keyboard, SDLK_FIRST, SDLK_PAGEDOWN, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this, &dime::EventGenerator::KeyboardPress) ) );
 			// NULL out this lot
             myPointedWidget = NULL;
 			myMouseCaptureWidget = NULL;
@@ -69,7 +77,10 @@ namespace dime
 	 */
 	void MouseClick(InputDevice * otherDevice, InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
 
-
+	/**
+	 * Passes keyboard events down to widget tree
+	 */
+	void KeyboardPress(InputDevice * otherDevice, InputDevice *keyboard, const SDLKey &key, InputMapping::InputSignalType signaltype);
 
         //---------------------------------------------------------------------------------------------------
         // Keyboard events: 

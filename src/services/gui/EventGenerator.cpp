@@ -87,6 +87,42 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
         }
 }
 
+void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice *keyboard, const SDLKey &key, InputMapping::InputSignalType signaltype)
+{
+	assert( keyboard );
+
+	KeyPressEvent *event;
+   
+    // Select mouse event destination:
+    dime::Widget *eventDest  = NULL;
+    
+    // Get the widget the keyboard is captured by
+    
+    if (myKeyboardCaptureWidget)
+        {
+            eventDest = myKeyboardCaptureWidget;
+        }
+    else
+        {
+            eventDest = myRootWidget;
+        }
+
+   
+    if(keyboard->getKeyState(key) == dime::InputDevice::PRESSED)
+        {
+            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::PRESSED);
+            eventDest->keyPress( event );
+        }
+    else if (keyboard->getKeyState(key) == dime::InputDevice::RELEASED)
+        {
+            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::RELEASED);
+            eventDest->keyPress( event );
+        }
+
+	return;
+}
+
+
 
 void dime::EventGenerator::updatePointedWidget( int mx, int my, InputDevice *device) {
     // Checks which widget the mouse pointer currently is in and
