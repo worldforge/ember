@@ -38,6 +38,7 @@ DimeTerrainSceneManager & DimeTerrainSceneManager::getSingleton(void)
 */
 
 DimeTerrainSceneManager::DimeTerrainSceneManager() 
+: Ogre::TerrainSceneManager()
 //: mGenerator(0)
 {
 	mPagingEnabled = true;

@@ -100,7 +100,7 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 		}
 	}
 //	generateUnderVegetation(0, 0, 1);
-	//generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
+	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
 	//mTerrainPageSource->setHasTerrain(true);
 	if (alsoPushOntoTerrain) {
 		mTerrainPageSource->resizeTerrain();
@@ -120,7 +120,7 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 			}
 		}
 	}
-	//generateUnderVegetation(-2, -2, 4);
+	generateUnderVegetation(-2, -2, 4);
 	
 	mTerrainPageSource->setHasTerrain(true);
 	if (alsoPushOntoTerrain) {
@@ -129,7 +129,6 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	
 }
 
-/*
 void TerrainGenerator::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
 {
 	Ogre::Real xStart = segmentXStart * 64;
@@ -187,7 +186,7 @@ void TerrainGenerator::generateUnderVegetation(long segmentXStart, long segmentZ
 		
 		
 }
-*/
+
 
 
 bool TerrainGenerator::isValidTerrainAt(int x, int y)
@@ -258,6 +257,7 @@ void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long
 			pass->setLightingEnabled(false);
 			pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
 /*
+ * 	TODO: implement this in a more efficient manner
 			if (pass->getNumTextureUnitStates() < numberOfTextureUnitsOnCard - 1) {
 				//there's room for two more texture unit states
 				shader->addTextureUnitsToPass(pass, splatTextureName);
