@@ -22,7 +22,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.3  2003-05-05 01:41:06  aglanor
+ *      Revision 1.4  2003-05-06 22:16:48  aglanor
+ *      added directory and filenames management to the cal3d converter.
+ *
+ *      Revision 1.3  2003/05/05 01:41:06  aglanor
  *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
  *      	without material, textures or animations yet. Does the
@@ -71,6 +74,8 @@ public:
 	{
 		mOgreRoot = NULL;
 		m_scale = 1.0f;
+		m_directory = "";
+		m_file = "";
 	}
 
 	// Standard destructor
@@ -92,7 +97,8 @@ public:
 	bool parseModelConfiguration(const std::string& strFilename);
 	void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, int calCoreMeshId);
 	void createOgreMesh(const std::string& name);
-	void writeOgreMesh(const std::string& name);	
+	void writeOgreMesh(const std::string& name);
+	bool parsePath(const std::string& path);
 
 protected:
 	Ogre::Root* mOgreRoot;
@@ -100,5 +106,8 @@ protected:
 	CalCoreModel m_calCoreModel;
   	CalModel m_calModel;
   	float m_scale;
+	std::string m_directory;
+	std::string m_file;
+	std::string m_modelName;
 };
 #endif

@@ -18,7 +18,10 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.3  2003-05-05 01:41:06  aglanor
+ *      Revision 1.4  2003-05-06 22:16:48  aglanor
+ *      added directory and filenames management to the cal3d converter.
+ *
+ *      Revision 1.3  2003/05/05 01:41:06  aglanor
  *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
  *      	without material, textures or animations yet. Does the
@@ -136,6 +139,8 @@ bool Cal3DOgreConverter::parseModelConfiguration(const std::string& strFilename)
     // get the data
     std::string strData;
     strData = strBuffer.substr(pos, strBuffer.find_first_of("\n\r", pos) - pos);
+    // calculate the relative path appending the directory at the beginning
+    strData = m_directory + strData;
 
     // handle the model creation
     if(strKey == "scale")
@@ -165,6 +170,8 @@ bool Cal3DOgreConverter::parseModelConfiguration(const std::string& strFilename)
     }
     else if(strKey == "mesh")
     {
+      // calculate the relative path appending the directory at the beginning
+      //strData = m_directory.append(strData);
       // load core mesh
       std::cout << "Loading mesh '" << strData << "'..." << std::endl;
       int calCoreMeshId = m_calCoreModel.loadCoreMesh(strData);
@@ -281,13 +288,13 @@ void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, in
 				 << ") collapse: " << iVertex.collapseId << std::endl;*/
 
 			pOgreSubMesh->geometry.pVertices[index] = iPosition.x;
-			pOgreSubMesh->geometry.pNormals[index]  = iNormal.x;
+			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.x;
 			index++;
 			pOgreSubMesh->geometry.pVertices[index] = iPosition.z;
-			pOgreSubMesh->geometry.pNormals[index]  = iNormal.z;
+			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.z;
 			index++;
 			pOgreSubMesh->geometry.pVertices[index] = -iPosition.y;
-			pOgreSubMesh->geometry.pNormals[index]  = -iNormal.y;
+			pOgreSubMesh->geometry.pNormals[index]  = iNormal.y;
 			index++;
 		}
 
@@ -297,6 +304,43 @@ void Cal3DOgreConverter::convertCal3DOgreMesh(const std::string& strFilename, in
 
 }
 
+
+bool Cal3DOgreConverter::parsePath(const std::string& path)
+{
+	unsigned int lastSlash = path.rfind("/");
+	if(lastSlash!=std::string::npos)
+	{
+
+		m_directory = path.substr(0, lastSlash+1);	// 2nd index is exclusive (and we want the "/" in)
+		m_file = path.substr(lastSlash+1,std::string::npos);
+		std::cout << "Directory: " << m_directory << std::endl;
+		std::cout << "Model name: " << m_file << std::endl;
+	}
+	else
+	{
+		m_file = path;
+		std::cout << "File in this dir: " << m_file << std::endl;
+	}
+
+	unsigned int lastDot = m_file.rfind(".cal");
+	if(lastDot==std::string::npos)
+	{
+		std::cout << "Error: filename " << m_file << " is not a .cal file" << std::endl;
+		return false;
+	}
+	else
+	{
+		m_modelName = m_file.substr(0, lastDot);
+		std::cout << "Model: " << m_modelName << std::endl;
+	}
+
+	return true;
+
+	/*if(filename==NULL)
+	{
+		std::cout << "Usage foo" << std::endl;
+	}*/
+}
 
 
 void Cal3DOgreConverter::createOgreMesh(const std::string& name)
@@ -313,11 +357,16 @@ void Cal3DOgreConverter::writeOgreMesh(const std::string& name)
 	std::cout << "This mesh has " << m_ogreMesh->getNumSubMeshes() << " submeshes." << std::endl;
 
 	Ogre::MeshSerializer meshSerializer;
-	meshSerializer.exportMesh(m_ogreMesh, "test.mesh");
-	std::cout << "Mesh exported to " << name << ".mesh" << std::endl;
+	std::string ogreFile = m_directory;
+	ogreFile.append(m_modelName);
+	ogreFile.append(".mesh");
+	meshSerializer.exportMesh(m_ogreMesh, ogreFile);
+	std::cout << "Mesh exported to " << ogreFile << std::endl;
 
 
 }
+
+
 
 
 
@@ -339,7 +388,16 @@ int main(int argc, char **argv)
 
 	myConverter.setup();
 
-	// TODO: check argv[1] and store it into string meshname or smthg
+	if(!myConverter.parsePath(argv[1]))
+	{
+		std::cout << "Error: wrong parameters" << std::endl;
+		return 0;
+	}
+
+
+
+	//std::string directory = path.
+
 	myConverter.createOgreMesh(argv[1]);
 	// parse the model configuration file
       	if(!myConverter.parseModelConfiguration(argv[1])) {

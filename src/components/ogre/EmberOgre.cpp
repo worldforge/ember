@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.11  2003-05-05 01:41:06  aglanor
+ *      Revision 1.12  2003-05-06 22:16:48  aglanor
+ *      added directory and filenames management to the cal3d converter.
+ *
+ *      Revision 1.11  2003/05/05 01:41:06  aglanor
  *      2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * Cal3DConverter: converts cal3d meshes to ogre meshes,
  *      	without material, textures or animations yet. Does the
@@ -243,7 +246,7 @@ void DimeOgre::createScene(void)
   mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   // Create a light
   Ogre::Light* l = mSceneMgr->createLight("MainLight");
-  l->setPosition(20,80,50);
+  l->setPosition(150,150,150);
 
   // create a Skydome
   mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
