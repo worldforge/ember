@@ -1,5 +1,9 @@
 2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Install more data files in distribution.
+
+2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Changed modeldefintions. Use "Action" instead of "Animation" because an action can contain more than just animations, sounds for example.
 	* Fixed wrong references to Ogre::TerrainSceneManager
 	* Changed location of config and media files.

@@ -1,7 +1,7 @@
-SUBDIRS = environment model EmberSceneManager 
+SUBDIRS = environment model EmberSceneManager
 
 
-INCLUDES=-I$(top_srcdir)/src
+INCLUDES = -I$(top_srcdir)/src
 bin_PROGRAMS = EmberOgre
 
 EmberOgre_LDADD = \
@@ -26,10 +26,19 @@ dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg  terrain.cfg
 widgetdir = $(datadir)/ember/data/widgets/
 dist_widget_DATA = widgets/ChatWidget.xml widgets/ConsoleWidget.xml widgets/DebugWidget.xml widgets/GiveWidget.xml widgets/InspectWidget.xml widgets/InventoryWidget.xml widgets/MakeEntityWidget.xml widgets/ServerBrowserWidget.xml widgets/ServerWidget.xml widgets/GUILayout.xsd
 
-ceguidir = $(datadir)/ember/data/cegui/
-# dist_cegui_DATA = cegui/
+#ceguidir = $(datadir)/ember/data/cegui/
+#dist_cegui_DATA = cegui
 
 
 
 
 
+ceguifontsdir = $(datadir)/ember/data/cegui/datafiles/fonts
+ceguiimagesetsdir = $(datadir)/ember/data/cegui/datafiles/imagesets
+ceguilayoutsdir = $(datadir)/ember/data/cegui/datafiles/layouts
+ceguischemesdir = $(datadir)/ember/data/cegui/datafiles/schemes
+
+dist_ceguifonts_DATA = cegui/datafiles/fonts/Font.xsd cegui/datafiles/fonts/tahoma-14.xml cegui/datafiles/fonts/tahoma-8.xml cegui/datafiles/fonts/tahoma.ttf
+dist_ceguiimagesets_DATA = cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/imagesets/TaharezLook.imageset cegui/datafiles/imagesets/WindowsLook.imageset
+dist_ceguilayouts_DATA = cegui/datafiles/layouts/GUILayout.xsd
+dist_ceguischemes_DATA = cegui/datafiles/schemes/TaharezLook.scheme cegui/datafiles/schemes/TaharezLookWidgetAliases.scheme cegui/datafiles/schemes/TaharezLookWidgets.scheme cegui/datafiles/schemes/WindowsLook.scheme cegui/datafiles/schemes/WindowsLookWidgets.scheme
