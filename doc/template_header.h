@@ -35,11 +35,22 @@
 // - First always use the correct namespaces for items.  Such as SigC:: for libsigc++ items.
 //   Or std::string or std::list.
 //
-// - MSVC 6 and below don't handle partial instantiation of templates. So always do the full
+// - MSVC 6 and below doesn't handle partial instantiation of templates. So always do the full
 //   instanstiation.  such as: SigC::Signal1<void, int> mySignal; is not good enough because
 //   you need a marshal to have full instantiation.  Instead use:
 //   SIgC::Signal1<void, int, SigC::Marshal<void> > mySignal;  <- note: the space inbetween
 //   void> and > is VERY important...  otherwise the compiler interprets it as an operator.
+//
+// - Functions of non-void type should always return a value. So the following is illegal 
+//   (also for others than the above mentioned reason):
+//	 bool isCodeMSVCCompatible(char version, bool isGNUPropertyOfMicrosoft)
+//	 { }
+//
+// - Don't rely on an initial value of non-class types. Though it would be very useful,
+//   MSVC generated code is NOT INITIALISING int's to 0. Instead it is using 0xCDCDCDCD,
+//	 but not in every case. So always set your int's to zero in the ctor! (Otherwise
+//	 this can lead to bugs, since the compiler is not complaining about missing 
+//   initialization),
 //
 //---------------------------------------------------------------------------------------------------
 //
