@@ -117,6 +117,7 @@ protected:
 	 * @see Eris::Entity
 	 */
 	virtual void onMoved();
+	virtual void setMoving(bool moving);
 	virtual void onTalk(const Atlas::Objects::Root& obj);
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);

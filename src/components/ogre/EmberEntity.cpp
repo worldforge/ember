@@ -116,6 +116,25 @@ void EmberEntity::onMoved()
 	 */
 }
 
+void EmberEntity::setMoving(bool moving)
+{
+	// When a pig starts or stops moving, we'll emit a sound
+	// here will be the sound emission
+	std::string type = getType()->getName(); // Eris type as a string
+	if(type.compare("pig")==0) { 	// if it's a pig
+		if(moving) { 				// and the pig *starts* moving
+			std::cout << "THE PIG STARTS MOVING" << std::endl;
+			Ember::EmberServices::getInstance()->getSoundService()->playTestGrunt();
+		} else {					// the pig is stopping
+			std::cout << "THE PIG STOPS MOVING" << std::endl;
+		}
+	}
+	
+	// Call the overridden method 
+	Eris::Entity::setMoving(moving);
+
+}
+
 void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 {
 	

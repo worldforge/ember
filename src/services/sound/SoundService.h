@@ -106,6 +106,7 @@ class SoundService: public Service, public ConsoleObject
 	void TestPlatform(void);
 
 	void playTestGYPH(void);
+	void playTestGrunt(void);
 	
 	// List of SoundService's console commands
 	static const char * const PLAYSOUND;
