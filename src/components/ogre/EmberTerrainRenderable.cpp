@@ -23,6 +23,7 @@
 #include "DimeTerrainRenderable.h"
 
 using namespace Ogre;
+namespace DimeOgre {
 
 #define POSITION_BINDING 0
 #define NORMAL_BINDING 1
@@ -205,3 +206,5 @@ void DimeTerrainRenderable::init( TerrainOptions &options, TerrainGenerator* gen
     _calculateNormals();
 
 }
+}
+

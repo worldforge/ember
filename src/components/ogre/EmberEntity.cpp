@@ -20,6 +20,8 @@
 #include "DimeEntity.h"
 using namespace Ogre;
 
+namespace DimeOgre {
+
 /*eris 1.3
 DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, , Ogre::Entity* ogreEntity) : Eris::Entity(ge, ty, vw) 
 */
@@ -301,3 +303,5 @@ void DimeEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
 }
 
 */
+}
+

@@ -33,6 +33,8 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
+namespace DimeOgre {
+
 // List of Ogre's console commands
 const char * const ConsoleObjectImpl::QUIT 		= "quit";
 const char * const ConsoleObjectImpl::ADDMEDIA	= "addmedia";
@@ -86,3 +88,5 @@ void ConsoleObjectImpl::quit()
 /*
 
 */
+}
+

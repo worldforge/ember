@@ -19,6 +19,8 @@
 #include "Avatar.h"
 #include "AvatarCamera.h"
 
+namespace DimeOgre {
+
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager) :
 	mAvatarNode(avatarNode),
 	mSceneManager(sceneManager)
@@ -30,12 +32,12 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 AvatarCamera::~AvatarCamera()
 {}
 
-bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
+/*bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 {
-	/*
+	*
 	 * M.O. is to check if we're aligned behind the avatar.
 	 * If not, we'll try to ease ourself into the position.
-	 */
+	 *
 	SceneNode* sceneNode = static_cast<SceneNode*>(mCamera->getParentNode());
 	//mCameraNode->setOrientation(Ogre::Quaternion::Slerp(0.2, mCameraNode->getOrientation(), mLastOrientationOfTheCamera, false);
 	//mLastOrientationOfTheCamera = mCameraNode->getOrientation();
@@ -46,6 +48,7 @@ bool AvatarCamera::frameEnded(const Ogre::FrameEvent& event)
 {
 	return true;
 }
+*/
 
 
 void AvatarCamera::createNodesAndCamera()
@@ -90,6 +93,8 @@ void AvatarCamera::yaw(Ogre::Real degrees)
 	degreeYaw += degrees;
 	mAvatarCameraRootNode->yaw(degrees);
 	
+}
+
 }
 
 

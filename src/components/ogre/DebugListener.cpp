@@ -19,7 +19,7 @@
 
 #include "DebugListener.h"
 using namespace Ogre;
-
+namespace DimeOgre {
 
 DebugListener* DebugListener::_instance = 0;
 
@@ -89,5 +89,7 @@ void DebugListener::updateStats(void)
 
     GuiElement* guiDbg = GuiManager::getSingleton().getGuiElement("Core/DebugText");
     guiDbg->setCaption(Ogre::Root::getSingleton().getAutoCreatedWindow()->getDebugText());
+};
 }
+
 

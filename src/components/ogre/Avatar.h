@@ -43,15 +43,16 @@
 #include <sigc++/object_slot.h>
 #endif
 
-class DimeEntity;
-class AvatarCamera;
-class AvatarDimeEntity;
-struct AvatarControllerMovement;
 
 #include "MathConverter.h"
 
 using namespace Ogre;
 
+namespace DimeOgre {
+class DimeEntity;
+class AvatarCamera;
+class AvatarDimeEntity;
+struct AvatarControllerMovement;
 
 struct AvatarMovementState
 {
@@ -231,5 +232,7 @@ protected:
 
 
 }; //End of class declaration
+
+}
 
 #endif // ENTITY_LISTENER_H

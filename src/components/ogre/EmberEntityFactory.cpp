@@ -32,6 +32,8 @@
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
 
+namespace DimeOgre {
+
 
 DimeEntityFactory::DimeEntityFactory(Ogre::SceneManager* sceneManager, Eris::TypeService* typeService ) : mSceneManager(sceneManager), mTypeService(typeService)
 {
@@ -118,3 +120,5 @@ int DimeEntityFactory::DimeEntityFactory::priority() {
 	return 10;
 }
 */
+}
+

@@ -24,13 +24,13 @@
 #include "DebugListener.h"
 #include "InputManager.h"
 #include "DimeOgre.h"
-#include "EntityListener.h"
 
 #include "DimeEntity.h"
 #include "AvatarCamera.h"
 #include "AvatarController.h"
 
 using namespace Ogre;
+namespace DimeOgre {
 
 AvatarController* AvatarController::_instance = 0;
 
@@ -105,10 +105,9 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 	Real mouseX = InputManager::getSingleton().getMouseX();
 	Real mouseY = InputManager::getSingleton().getMouseY();
 	
-	SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
 	// Start a new ray query 
 	Ray cameraRay = mAvatar->getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-	RaySceneQuery *raySceneQuery = sceneManager->createRayQuery( cameraRay ); 
+	RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay ); 
 	raySceneQuery->execute(); 
 	RaySceneQueryResult result = raySceneQuery->getLastResults(); 
 	   
@@ -314,5 +313,7 @@ void AvatarController::mouseReleased(unsigned char button)
 		mMouseButton2Pressed = false;
 	}
 //	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
+}
+
 }
 

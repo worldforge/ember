@@ -35,22 +35,22 @@
 // Include dime header files
 // ------------------------------
 #include "services/DimeServices.h"
-#include "services/server/ServerService.h"
+//#include "services/server/ServerService.h"
 #include "services/logging/LoggingService.h"
 
-#include "EntityListener.h"
 #include "DimeEventProcessor.h"
-#include "DebugListener.h"
+//#include "DebugListener.h"
 #include "AvatarController.h" 
 
-#include "DimeEntityFactory.h"
-#include "EntityListener.h"
+//#include "DimeEntityFactory.h"
+//#include "EntityListener.h"
 
 #include "Console.h"
 
 #include "InputManager.h"
 
 using dime::LoggingService;
+namespace DimeOgre {
 
 InputManager* InputManager::_instance = 0;
 
@@ -74,7 +74,7 @@ InputManager::InputManager(void)
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
 	//DEBUG
-	Ogre::Root::getSingleton().addFrameListener(&(DebugListener::getSingleton()));
+	//Ogre::Root::getSingleton().addFrameListener(&(DebugListener::getSingleton()));
 
 	int i;
 	for(i=0; i<NUM_KEYS; i++)
@@ -186,11 +186,6 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
  
  void InputManager::mousePressed(Ogre::MouseEvent* e)
  {
- 	//debug stuff
-	//Ogre::SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
- 	//sceneManager->getSceneNode("Debug_1_0_0_Node")->setScale(1,1,1);
- 	
- 	
  	
 	std::list<MouseListener*>::iterator i;
 	for(i=mMouseListenerList.begin(); i!=mMouseListenerList.end(); i++)
@@ -205,9 +200,6 @@ void InputManager::keyReleased(Ogre::KeyEvent* e)
  }
  
  void InputManager::mouseReleased(Ogre::MouseEvent* e) {
-	//debug stuff
-	//Ogre::SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
- 	//sceneManager->getSceneNode("Debug_1_0_0_Node")->setScale(OGRESCALER);
 
 	std::list<MouseListener*>::iterator i;
 	for(i=mMouseListenerList.begin(); i!=mMouseListenerList.end(); i++)
@@ -278,6 +270,8 @@ void InputManager::addMouseListener(MouseListener *l)
 void InputManager::removeMouseListener(MouseListener *l)
 {
 	// TODO do this...i am lazy now
+}
+
 }
 
 

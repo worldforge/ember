@@ -27,7 +27,8 @@
 #include <OgreEventListeners.h>
 #include <OgreStringConverter.h>
 
-
+namespace DimeOgre {
+	
 class DebugListener : public Ogre::FrameListener {
 public:
 	static DebugListener & getSingleton(void);
@@ -47,5 +48,7 @@ private:
 	Ogre::String mString;
 	Ogre::GuiElement* mDebugElement;
 };
+
+}
 
 #endif // DEBUGLISTENER_H

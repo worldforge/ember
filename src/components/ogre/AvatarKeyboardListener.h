@@ -74,4 +74,6 @@ class AvatarKeyboardListener
 
 }; // End of class declaration
 
+}
+
 #endif

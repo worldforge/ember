@@ -24,7 +24,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.20  2004-07-20 22:52:16  erik
+ *      Revision 1.21  2004-07-21 00:27:29  erik
+ *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *removed references to EntityListener, we'll keep the class however as
+ *      we'll pobably use it in the future
+ *      *put everything under the namespace DimeOgre
+ *
+ *      Revision 1.20  2004/07/20 22:52:16  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      in src/components/ogre:
@@ -206,7 +214,7 @@ Description: Base class for all the OGRE examples
 #ifndef __DimeOgre_H__
 #define __DimeOgre_H__
 
-#include <Mercator/Terrain.h>
+//#include <Mercator/Terrain.h>
 
 
 #include <Ogre.h>
@@ -245,6 +253,7 @@ Description: Base class for all the OGRE examples
 #include <sigc++/object_slot.h>
 #endif
 
+namespace DimeOgre {
 
 class TerrainListener;
 
@@ -308,7 +317,7 @@ public:
 	}
 	
 	//should this be here really?
-	static Ogre::SceneManager* getSceneManager();
+//	static Ogre::SceneManager* getSceneManager()
 	
 
 /*private:
@@ -406,4 +415,8 @@ protected:
 
 };
 */
+
+}
+
+
 #endif

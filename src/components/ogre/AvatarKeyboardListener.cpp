@@ -114,5 +114,7 @@ void AvatarKeyboardListener::act(Ogre::Real timePassed) // why was this const un
 
 
 }
+}
+
 
 

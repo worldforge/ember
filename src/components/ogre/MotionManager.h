@@ -22,6 +22,8 @@
 #include <Ogre.h>
 #include <OgrePredefinedControllers.h> 
 
+namespace DimeOgre {
+
 class DimeEntity;
 
 /*
@@ -109,5 +111,7 @@ private:
 	 */
 	std::set<DimeEntity*> mMotionSet;
 };
+}
+
 
 #endif // MOTIONMANAGER_H

@@ -46,6 +46,7 @@
 
 #include <Atlas/Objects/Entity/GameEntity.h>
 */
+namespace DimeOgre {
 
 class TerrainGenerator
 {
@@ -80,5 +81,7 @@ protected:
 	int mXmin, mXmax, mYmin, mYmax;
 
 };
+}
+
 
 #endif // TERRAINGENERATOR_H

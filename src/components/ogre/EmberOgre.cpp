@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.41  2004-07-20 22:52:16  erik
+ *      Revision 1.42  2004-07-21 00:27:30  erik
+ *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *removed references to EntityListener, we'll keep the class however as
+ *      we'll pobably use it in the future
+ *      *put everything under the namespace DimeOgre
+ *
+ *      Revision 1.41  2004/07/20 22:52:16  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      in src/components/ogre:
@@ -417,6 +425,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
 
+namespace DimeOgre {
+
 
 
 // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
@@ -668,7 +678,8 @@ void DimeOgre::createFrameListener(void)
 	InputManager::getSingleton().addMouseListener(&(AvatarController::getSingleton()));
 	//PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
 	//PlayerMouseListener::getSingleton().setAvatar(&mAvatar);
-	EntityListener::getSingleton().setSceneManager(mSceneMgr);
+	//EntityListener::getSingleton().setSceneManager(mSceneMgr);
+	AvatarController::getSingleton().setSceneManager(mSceneMgr);
 	AvatarController::getSingleton().setAvatar(&mAvatar);
 
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
@@ -724,6 +735,7 @@ void DimeOgre::initializeDimeServices(void)
 
 }
 
+}
 
 // ----------------------------------------------------------------------------
 // Main function, just boots the application object
@@ -739,7 +751,7 @@ int main(int argc, char **argv)
 #endif
 {
     // Create application object
-    DimeOgre app;
+    DimeOgre::DimeOgre app;
 
 	// Initialize all dime services needed for this application
 	app.initializeDimeServices();
@@ -758,3 +770,5 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+

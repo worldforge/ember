@@ -23,7 +23,8 @@
 // Inherits from InputManager::MouseListener
 #include "InputManager.h"
 #include "Avatar.h"
-
+namespace DimeOgre {
+	
 class PlayerMouseListener : public InputManager::MouseListener
 {
 	public:
@@ -65,5 +66,7 @@ class PlayerMouseListener : public InputManager::MouseListener
 	Ogre::SceneManager* mSceneMgr;
 
 }; // End of class declaration
+}
+
 
 #endif

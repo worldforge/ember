@@ -22,6 +22,7 @@
 #include "MathConverter.h"
 
 #include "DimeTerrainSceneManager.h"
+namespace DimeOgre {
 
 DimeTerrainSceneManager* DimeTerrainSceneManager::_instance = 0;
 
@@ -218,6 +219,8 @@ void DimeTerrainSceneManager::buildTerrain(long segmentXStart, long segmentZStar
      
 
 
+
+}
 
 }
 

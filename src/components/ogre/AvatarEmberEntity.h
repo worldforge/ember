@@ -27,6 +27,8 @@
 
 #include <Eris/Entity.h>
 
+namespace DimeOgre {
+	
 class DimeEntity;
 class Avatar;
 
@@ -59,5 +61,7 @@ protected:
 	Avatar* mAvatar;
 	
 };
+
+}
 
 #endif // AVATARDIMEENTITY_H

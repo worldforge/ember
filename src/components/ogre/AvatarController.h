@@ -27,7 +27,11 @@
 
 class Avatar;
 class DebugListener;
+class DimeEntity;
 #include "InputManager.h"
+
+
+namespace DimeOgre {
 //class InputManager;
 //class InputManager::MouseListener;
 
@@ -59,6 +63,9 @@ public:
 	void mouseMoved(short newX, short newY, short oldX, short oldY);
 	void mousePressed(unsigned char button);
 	void mouseReleased(unsigned char button);
+	
+//TODO:this is temporary
+	void setSceneManager(Ogre::SceneManager* sceneManager) {mSceneManager = sceneManager;}
 
 
 protected:
@@ -74,6 +81,8 @@ protected:
 	
 private:
 
+//TODO:this is temporary
+	Ogre::SceneManager* mSceneManager;
 
 	bool mMouseButton0Pressed;
 	bool mMouseButton1Pressed;
@@ -133,5 +142,7 @@ private:
     
 		
 };
+
+}
 
 #endif // AvatarController_H

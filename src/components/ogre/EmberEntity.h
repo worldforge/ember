@@ -44,9 +44,11 @@
 #endif
 
 #include "MathConverter.h"
+using namespace Ogre;
+
+namespace DimeOgre {
 class DimeEntityFactory;
 
-using namespace Ogre;
 class DimeEntity : public Ogre::UserDefinedObject, public Eris::Entity {
 	friend class DimeEntityFactory;
 public:
@@ -104,5 +106,7 @@ protected:
 	 */
 	Ogre::AnimationState* mAnimationState_Walk;
 };
+
+}
 
 #endif // DIMEENTITY_H

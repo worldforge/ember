@@ -22,6 +22,9 @@
 
 #include <Ogre.h>
 #include <OgreTerrainRenderable.h>
+
+namespace DimeOgre {
+
 class TerrainGenerator;
 
 class DimeTerrainRenderable : public Ogre::TerrainRenderable {
@@ -31,5 +34,7 @@ public:
 	virtual ~DimeTerrainRenderable();
 	void DimeTerrainRenderable::init( Ogre::TerrainOptions &options, TerrainGenerator* generator );
 };
+
+}
 
 #endif // DIMETERRAINRENDERTILE_H

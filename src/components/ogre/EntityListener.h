@@ -43,6 +43,8 @@
 #include <Eris/TypeInfo.h>
 #include <Ogre.h>
 
+namespace DimeOgre {
+
 class DimeEntity;
 class Avatar;
 
@@ -214,5 +216,7 @@ class EntityListener : virtual public SigC::Object //, public Component
 
 
 }; //End of class declaration
+
+}
 
 #endif // ENTITY_LISTENER_H

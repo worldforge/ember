@@ -21,6 +21,8 @@
 #include "Avatar.h"
 #include "AvatarDimeEntity.h"
 
+namespace DimeOgre {
+
 
 AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager) : 
 mAvatar(NULL),
@@ -106,3 +108,5 @@ void AvatarDimeEntity::setContainer(Entity *pr)
 	}		
 	Entity::setContainer(pr);
 }
+}
+

@@ -33,6 +33,7 @@
 #include "Avatar.h"
 #include "EntityListener.h"
 
+namespace DimeOgre {
 
 EntityListener* EntityListener::_instance = 0;
 
@@ -265,6 +266,8 @@ Ogre::SceneManager* EntityListener::getSceneManager()
 	return mSceneMgr;
 }
 
+
+}
 
 
 

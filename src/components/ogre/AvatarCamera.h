@@ -27,9 +27,9 @@
 #define AVATARCAMERA_H
 
 #include <Ogre.h>
+namespace DimeOgre {
 
 class Avatar;
-
 
 class AvatarCamera 
 //: public Ogre::FrameListener 
@@ -116,5 +116,7 @@ protected:
 	Ogre::Real degreePitch;	
 	Ogre::Real degreeYaw;	
 };
+
+}
 
 #endif // AVATARCAMERA_H

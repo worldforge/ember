@@ -4,6 +4,8 @@
 #include "Console.h"
 using dime::LoggingService;
 
+namespace DimeOgre {
+
 	Console* Console::_instance = 0;
 
 	Console & Console::getSingleton(void)
@@ -382,5 +384,7 @@ using dime::LoggingService;
 		}
 		std::cout << output;
 	}
+
+}
 
 

@@ -28,8 +28,8 @@
 
 #include "services/server/ServerService.h"
 #include "services/DimeServices.h"
+
 /*
-#include "EntityListener.h"
 #include <Ogre.h>
 
 #include <Eris/PollDefault.h>
@@ -52,6 +52,7 @@
 
 #include "Avatar.h"
 
+namespace DimeOgre {
 
 Avatar::Avatar()
 {
@@ -66,7 +67,7 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 
 	mAvatarCamera = NULL;
 
-	mWalkSpeed = WF2OGRE(2.0);
+	mWalkSpeed = WF2OGRE(5.0);
 	mRunSpeed = WF2OGRE(20.0);
 
 	mSceneMgr = sceneManager; // TODO: assert it's not null
@@ -413,6 +414,8 @@ void Avatar::touch(DimeEntity* entity)
 Ogre::Camera* Avatar::getCamera() const
 {
 	return mAvatarCamera->getCamera();
+}
+
 }
 
 

@@ -20,6 +20,8 @@
 
 #include "DimeEventProcessor.h"
 
+namespace DimeOgre {
+
 
 DimeEventProcessor::DimeEventProcessor() : Ogre::EventProcessor()
 {
@@ -107,6 +109,8 @@ void DimeEventProcessor::createInputReader(bool useMouse)
 		mInputDevice = Ogre::PlatformManager::getSingleton().createInputReader();
 		mInputDevice->useBufferedInput(mEventQueue, true, useMouse);
 		mInputDevice->initialise(mWin, true, useMouse);
+}
+
 }
 
 

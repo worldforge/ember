@@ -6,7 +6,15 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.8  2003-09-28 15:16:06  aglanor
+ *      Revision 1.9  2004-07-21 00:27:29  erik
+ *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *removed references to EntityListener, we'll keep the class however as
+ *      we'll pobably use it in the future
+ *      *put everything under the namespace DimeOgre
+ *
+ *      Revision 1.8  2003/09/28 15:16:06  aglanor
  *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * /src/components/ogre/Makefile.am: removed the cal3d
  *              to Ogre converter, this app will no longer be here.
@@ -476,5 +484,7 @@ protected:
 
 
 };
+}
+
 
 #endif

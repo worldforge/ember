@@ -34,6 +34,7 @@
  * By default the mouse is not grabbed until toggleMouse() is called.
  * 
  */
+namespace DimeOgre {
 
 class DimeEventProcessor : public Ogre::EventProcessor {
 public:
@@ -64,5 +65,7 @@ private:
 	Ogre::RenderWindow* mWin;
 //	virtual ~DimeEventProcessor();
 };
+
+}
 
 #endif // DIMEEVENTPROCESSOR_H

@@ -27,6 +27,9 @@
 
 class TerrainGenerator;
 
+namespace DimeOgre {
+
+
 class DimeTerrainSceneManager  : public Ogre::TerrainSceneManager {
 public:
 
@@ -47,5 +50,7 @@ private:
 	Ogre::Vector3 mPositionOfAvatar;
 	TerrainGenerator* mGenerator;
 };
+
+}
 
 #endif // DIMETERRAINSCENEMANAGER_H

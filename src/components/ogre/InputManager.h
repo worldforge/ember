@@ -29,12 +29,11 @@
 
 #include <list>
 
+namespace DimeOgre {
+
 class DimeEventProcessor;
 class DebugListener;
 class AvatarController;
-
-
-
 
 
 // TODO this should probably be an abstract class and there
@@ -137,6 +136,8 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 		
 		
 };
+}
+
 
 
 #endif

@@ -28,6 +28,7 @@
 //#include "Prerequisites.h"
 //#include "PythonInterpreter.h"
 
+namespace DimeOgre {
 
 
 // The Console is the physical graphical thing that also deals with keyboard input.
@@ -83,6 +84,8 @@ class Console : public Ogre::KeyListener, public Ogre::FrameListener
         bool mPrompt;
 };
 
+
+}
 
 #endif
 

@@ -22,6 +22,9 @@
 #include "MotionManager.h"
 #include "TerrainGenerator.h"
 
+namespace DimeOgre {
+
+
 MotionManager::MotionManager() 
 : mControllerManager(&Ogre::ControllerManager::getSingleton())
 {}
@@ -117,4 +120,6 @@ void MotionManager::unpauseAnimation(AnimationState* animationState)
 {
 	animationControllerType* animationController = mAnimations[animationState];
 	animationController->setEnabled(true);
+}
+
 }

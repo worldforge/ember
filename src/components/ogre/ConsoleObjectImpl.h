@@ -22,6 +22,7 @@
 
 #include <framework/ConsoleObject.h>
 
+namespace DimeOgre {
 class ConsoleObjectImpl: public dime::ConsoleObject
 {
 	public:
@@ -53,5 +54,7 @@ class ConsoleObjectImpl: public dime::ConsoleObject
 	static const char * const MOVEMEDIA;
 
 }; // End of class declaration
+
+}
 
 #endif

@@ -20,6 +20,8 @@
 #ifndef __DimeOgre_MediaDeployer_H__
 #define __DimeOgre_MediaDeployer_H__
 
+namespace DimeOgre {
+
 class MediaDeployer
 {
 
@@ -50,5 +52,7 @@ class MediaDeployer
 	Ogre::SceneManager* mSceneMgr;
 
 }; // End of class declaration
+}
+
 
 #endif

@@ -33,6 +33,9 @@
 //TODO: add a sequence for mediadeployer ids
 //TODO: add several methods for adding media with different params
 
+namespace DimeOgre {
+
+
 PlayerMouseListener* PlayerMouseListener::_instance = 0;
 
 PlayerMouseListener & PlayerMouseListener::getSingleton(void)
@@ -88,3 +91,4 @@ void PlayerMouseListener::setCamera(Ogre::Camera* cam)
 	mCamera = cam;
 }
 
+}

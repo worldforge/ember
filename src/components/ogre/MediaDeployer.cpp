@@ -30,6 +30,8 @@
 // local headers
 #include "MediaDeployer.h"
 
+namespace DimeOgre {
+
 //TODO: add a sequence for mediadeployer ids
 //TODO: add several methods for adding media with different params
 
@@ -69,3 +71,6 @@ bool MediaDeployer::addMedia(std::string modelName, std::string id, Ogre::Vector
 
 	return true;
 }
+
+}
+

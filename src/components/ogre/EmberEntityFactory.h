@@ -43,6 +43,8 @@
 #include <sigc++/object_slot.h>
 #endif
 
+namespace DimeOgre {
+
 class AvatarDimeEntity;
 
 
@@ -89,5 +91,7 @@ protected:
 	
 	Eris::Avatar* mAvatar;
 };
+
+}
 
 #endif // DIMEENTITYFACTORY_H

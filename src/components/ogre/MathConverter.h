@@ -11,7 +11,15 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.6  2004-07-20 22:52:16  erik
+ *      Revision 1.7  2004-07-21 00:27:29  erik
+ *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre:
+ *      *removed references to EntityListener, we'll keep the class however as
+ *      we'll pobably use it in the future
+ *      *put everything under the namespace DimeOgre
+ *
+ *      Revision 1.6  2004/07/20 22:52:16  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      in src/components/ogre:
@@ -170,6 +178,9 @@ Description:	Point, Vector and Quaternion converter
 #include <wfmath/axisbox.h>
 #include <wfmath/quaternion.h>
 
+namespace DimeOgre {
+
+
 inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3 p) {
 	return WFMath::Point<3>(p.x,-p.z,p.y);
 }
@@ -203,6 +214,8 @@ inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion aq){
 #define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x * 1, y * 1, z * 1))
 #define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x * 1, y * 1, z * 1))
 #define OGRESCALER Ogre::Vector3(1,1,1)
+
+}
 
 
 #endif

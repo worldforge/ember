@@ -26,6 +26,7 @@
 
 
 using namespace Ogre;
+namespace DimeOgre {
 
 TerrainGenerator* TerrainGenerator::_instance = 0;
 
@@ -154,5 +155,5 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::World *world)
     return true;
 }
 
-
+}
 
