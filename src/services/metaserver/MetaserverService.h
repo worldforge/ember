@@ -73,7 +73,7 @@ class MetaserverService: public Service, public SigC::Object
 
    	void GotServerCount(int count);
 	
-	void GotFailure(const std::string msg);
+	void GotFailure(const std::string& msg);
 
 	void ReceivedServerInfo(Eris::ServerInfo sInfo);
 	
