@@ -10,7 +10,15 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.42  2002-12-02 20:08:03  xmp
+ *      Revision 1.43  2002-12-07 21:33:56  xmp
+ *      2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * ConfigService.cpp: Initialise static member theInstance to NULL.
+ *
+ *              * Application.cpp: Fixed it so that myStateManager is inited to NULL.
+ *
+ *              * InputDevice.cpp: Fixed a delete to a delete[].
+ *
+ *      Revision 1.42  2002/12/02 20:08:03  xmp
  *      2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
  *              * Various Makefile.am's: Altered for the new place where DimeServices.
  *                cpp/h have been put.  Added some stuff to EXTRA_DIST
@@ -204,7 +212,7 @@ namespace dime
      * timeStamp importance file "\t" line "\t" message
      */
 
-    Application * Application::theApplication = NULL;
+    Application* Application::theApplication = NULL;
 
     class CerrLogObserver: public dime::LoggingService::Observer
     {
@@ -280,7 +288,7 @@ namespace dime
 #endif
 
     Application::Application(int width, int height, std::string title) :
-      myWidth(width), myHeight(height), myShouldQuit(false) 
+      myWidth(width), myHeight(height), myShouldQuit(false), myStateManager(NULL)
     {
 
 

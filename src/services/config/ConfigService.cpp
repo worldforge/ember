@@ -27,7 +27,7 @@ using namespace std;
 namespace dime
 {
 
-    ConfigService* ConfigService::theInstance;
+    ConfigService* ConfigService::theInstance = NULL;
 
     ConfigService::ConfigService()
     {
@@ -52,7 +52,7 @@ namespace dime
 
     ConfigService* ConfigService::getInstance(void)
     {
-	if (theInstance == NULL) 
+	if (theInstance == NULL)
 	{
 	    theInstance = new ConfigService;
 	    return theInstance;

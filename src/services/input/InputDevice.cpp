@@ -145,7 +145,7 @@ KeyboardDevice::KeyboardDevice():
 
 KeyboardDevice::~KeyboardDevice()
 {
-	delete myKeys;
+	delete[] myKeys;
 }
 
 InputDevice::KeyState KeyboardDevice::getKeyState(SDLKey key)

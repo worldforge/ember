@@ -1,4 +1,11 @@
 2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
+	* ConfigService.cpp: Initialise static member theInstance to NULL.
+
+	* Application.cpp: Fixed it so that myStateManager is inited to NULL.
+
+	* InputDevice.cpp: Fixed a delete to a delete[].
+
+2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
 	* NEWS: update
 
 	* RendererFactory.cpp: Added TILE support.
