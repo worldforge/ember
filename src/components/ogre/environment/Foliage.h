@@ -23,7 +23,7 @@
 #ifndef DIMEOGREFOLIAGE_H
 #define DIMEOGREFOLIAGE_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

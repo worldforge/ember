@@ -30,6 +30,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreTerrainSceneManager.h"
 #include "OgreResourceManager.h"
 #include "OgreLogManager.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre {
 

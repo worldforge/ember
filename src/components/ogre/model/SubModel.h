@@ -18,7 +18,7 @@
 
 #ifndef SUBMODEL_H
 #define SUBMODEL_H
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreEntity.h>
 #include <OgreMovableObject.h>
 

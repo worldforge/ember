@@ -34,7 +34,7 @@
 #endif
 
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <CEGUISystem.h>
 #include <CEGUIInputEvent.h> 
 

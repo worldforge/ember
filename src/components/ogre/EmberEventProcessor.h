@@ -21,7 +21,7 @@
 #ifndef DIMEEVENTPROCESSOR_H
 #define DIMEEVENTPROCESSOR_H
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgreEventProcessor.h>
 #include <OgreEventQueue.h>
 

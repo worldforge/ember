@@ -11,7 +11,16 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.11  2004-11-04 21:40:26  erik
+ *      Revision 1.12  2004-11-13 21:08:01  erik
+ *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Removed some bugs which in various ways stopped the main loop.
+ *      	* Finalized on a resource structure.
+ *      	* Tried to arrange the inludes in a way that made it easy to compile Ember in debug mode without getting bit by the special debug Ogre memory manager. It's not 100% though. For now, change OgreConfig.h, set OGRE_DEBUG_MEMORY_MANAGER  to 0.
+ *      	* Fixed a bug which made Ember not release the mouse upon exit.
+ *      	* Changed the gui to use png images instead of tga, since apparently some machines can't load the tga in a correct way.
+ *
+ *      Revision 1.11  2004/11/04 21:40:26  erik
  *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -197,7 +206,7 @@ Description:	Point, Vector and Quaternion converter
 // ------------------------------
 // Include Ogre header files
 // ------------------------------
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 // ------------------------------
 // Include WFmath header files

@@ -19,7 +19,7 @@
 #ifndef DIMETERRAINPAGESOURCE_H
 #define DIMETERRAINPAGESOURCE_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include "OgreTerrainPageSource.h"
 #include "OgreTerrainSceneManager.h"
 

@@ -42,7 +42,7 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgrePredefinedControllers.h> 
 
 #include "MathConverter.h"

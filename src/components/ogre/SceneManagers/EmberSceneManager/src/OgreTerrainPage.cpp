@@ -24,6 +24,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 */
 #include "OgreTerrainPage.h"
 #include "OgreTerrainRenderable.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre {
 

@@ -33,6 +33,9 @@
 #include "widgets/GiveWidget.h"
 #include "MousePicker.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 
 namespace EmberOgre {
 
@@ -66,6 +69,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
+
+		Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+		chdir(configSrv->getEmberDataDirectory().c_str());
 		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 		fprintf(stderr, "CEGUI - MAIN SCHEME LOADED\n");
 		
@@ -102,11 +108,15 @@ GUIManager::~GUIManager()
 	delete mEventProcessor;
 	delete mGuiSystem;
 	delete mGuiRenderer;
+	delete mMousePicker;
 
 }
 
 void GUIManager::initialize()
 {
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	chdir(configSrv->getEmberDataDirectory().c_str());
+	
 	mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"DebugText");
 	mSheet->addChildWindow(mDebugText);
 	mDebugText->setMaximumSize(CEGUI::Size(1.0f, 0.1f));

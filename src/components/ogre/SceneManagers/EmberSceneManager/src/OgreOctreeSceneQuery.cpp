@@ -36,6 +36,7 @@ email                : janders@users.sf.net
 #include <OgreOctreeSceneQuery.h>
 #include <OgreOctreeSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {

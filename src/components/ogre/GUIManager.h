@@ -27,6 +27,7 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUIImageset.h>
 #include <elements/CEGUIStaticImage.h>*/
+#include "EmberOgrePrerequisites.h"
 #include <elements/CEGUIPushButton.h>
 #include <renderers/OgreGUIRenderer/ogrerenderer.h>
 // #include <boost/bind.hpp>
@@ -41,7 +42,7 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgreKeyEvent.h> 
 //#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"

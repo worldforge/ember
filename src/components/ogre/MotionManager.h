@@ -19,7 +19,7 @@
 #ifndef MOTIONMANAGER_H
 #define MOTIONMANAGER_H
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 

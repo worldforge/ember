@@ -31,7 +31,7 @@
 #include <xercesc/util/PlatformUtils.hpp>
 
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

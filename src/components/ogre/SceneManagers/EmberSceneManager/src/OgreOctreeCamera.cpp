@@ -37,6 +37,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include <OgreRoot.h>
 
 #include "OgreOctreeCamera.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {

@@ -22,7 +22,7 @@
 
 #include <Atlas/Objects/Entity.h>
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgreException.h>
 #include <Eris/Entity.h>
 #include <Eris/View.h>

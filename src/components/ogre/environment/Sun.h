@@ -23,7 +23,7 @@
 #ifndef DIMEOGRESUN_H
 #define DIMEOGRESUN_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

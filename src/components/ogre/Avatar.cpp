@@ -29,7 +29,7 @@
 #include "services/EmberServices.h"
 
 /*
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
@@ -53,7 +53,7 @@
 #include "model/Model.h"
 #include "model/SubModel.h"
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 #include "Avatar.h"
 
@@ -361,7 +361,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 	mErisAvatarEntity = EmberEntity;
 	EmberEntity->setAvatar(this);
 	
-	mSceneMgr->destroySceneNode(oldAvatar->getName());
+	//mSceneMgr->destroySceneNode(oldAvatar->getName());
 
 }
 

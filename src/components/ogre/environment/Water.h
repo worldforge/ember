@@ -23,7 +23,7 @@
 #ifndef DIMEOGREWATER_H
 #define DIMEOGREWATER_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

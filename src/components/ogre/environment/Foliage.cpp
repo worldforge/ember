@@ -73,7 +73,7 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 				typeOfGrass = "heartblood";
 			} else if (random > 0.8) {
 				typeOfGrass = "teardrops";
-			} else if (random > 0.5) {
+			} else if (random > 0.7) {
 				typeOfGrass = "bittergrass";
 			} else {
 				typeOfGrass = "thingrass";
@@ -128,6 +128,7 @@ bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 	if (mVisible) {
 		mGround->update(mCamera);
 	}
+	return true;
 
 
 }

@@ -25,7 +25,7 @@
 // system headers
 
 // library headers
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 // local headers
 #include "ConsoleObjectImpl.h"

@@ -35,6 +35,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 
 #include "OgreOctree.h"
 #include "OgreOctreeNode.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {

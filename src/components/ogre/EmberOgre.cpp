@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.62  2004-11-13 00:48:22  erik
+ *      Revision 1.63  2004-11-13 21:08:01  erik
+ *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Removed some bugs which in various ways stopped the main loop.
+ *      	* Finalized on a resource structure.
+ *      	* Tried to arrange the inludes in a way that made it easy to compile Ember in debug mode without getting bit by the special debug Ogre memory manager. It's not 100% though. For now, change OgreConfig.h, set OGRE_DEBUG_MEMORY_MANAGER  to 0.
+ *      	* Fixed a bug which made Ember not release the mouse upon exit.
+ *      	* Changed the gui to use png images instead of tga, since apparently some machines can't load the tga in a correct way.
+ *
+ *      Revision 1.62  2004/11/13 00:48:22  erik
  *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Changed modeldefintions. Use "Action" instead of "Animation" because an action can contain more than just animations, sounds for example.
@@ -497,7 +506,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 //#include "EmberTerrainPageSource.h"
 #include "TerrainGenerator.h"
 
-#include "InputManager.h"
 
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
@@ -557,7 +565,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #undef DEBUG
 #endif
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 // #include <OgreFontManager.h>
 // #include <OgreParticleSystemManager.h>
 
@@ -640,9 +648,36 @@ mRoot(0),
 mKeepOnRunning(true)
 {}
 
+EmberOgre::~EmberOgre()
+{
+	if (mGUIManager)
+		delete mGUIManager;
+	if (mTerrainGenerator)
+		delete mTerrainGenerator;
+	if (mMotionManager)
+		delete mMotionManager;
+	if (mAvatar)
+		delete mAvatar;
+	if (mAvatarController)
+		delete mAvatarController;
+	if (mModelDefinitionManager)
+		delete mModelDefinitionManager;
+	if (mEmberEntityFactory)
+		delete mEmberEntityFactory;
+	if (mRoot)
+		delete mRoot;
+		
+		
+		
+
+}
+
+
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	Eris::PollDefault::poll(1);
+	if (!mKeepOnRunning)
+		fprintf(stderr, "Shutting down EmberOgre.\n");
 	return mKeepOnRunning;
 }
 
@@ -693,15 +728,16 @@ bool EmberOgre::setup(void)
     
 	
 
- 	mTerrainGenerator = new TerrainGenerator();
+	chdir(configSrv->getHomeDirectory().c_str());
+	
+	mTerrainGenerator = new TerrainGenerator();
 	mMotionManager = new MotionManager();
 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
-	//mInputManager = new InputManager();
 	
 	// Avatar
 	mAvatar = new Avatar(mSceneMgr);
 	
-	AvatarController* avatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
+	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
 
 
 
@@ -750,6 +786,7 @@ bool EmberOgre::configure(void)
 
 void EmberOgre::chooseSceneManager(void)
 {
+	
     // We first register our own scenemanager
     EmberTerrainSceneManager* sceneManager = new EmberTerrainSceneManager();
     mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
@@ -1039,13 +1076,13 @@ int main(int argc, char **argv)
 #endif
 {
     // Create application object
-    EmberOgre::EmberOgre* app = new EmberOgre::EmberOgre();
+    EmberOgre::EmberOgre app;
 
 	// Initialize all Ember services needed for this application
-	app->initializeEmberServices();
+	app.initializeEmberServices();
 
     try {
-        app->go();
+        app.go();
     } catch( Ogre::Exception& e ) {
 #if OGRE_PLATFORM == PLATFORM_WIN32
         MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);

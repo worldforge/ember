@@ -24,7 +24,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.34  2004-11-13 00:48:22  erik
+ *      Revision 1.35  2004-11-13 21:08:01  erik
+ *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Removed some bugs which in various ways stopped the main loop.
+ *      	* Finalized on a resource structure.
+ *      	* Tried to arrange the inludes in a way that made it easy to compile Ember in debug mode without getting bit by the special debug Ogre memory manager. It's not 100% though. For now, change OgreConfig.h, set OGRE_DEBUG_MEMORY_MANAGER  to 0.
+ *      	* Fixed a bug which made Ember not release the mouse upon exit.
+ *      	* Changed the gui to use png images instead of tga, since apparently some machines can't load the tga in a correct way.
+ *
+ *      Revision 1.34  2004/11/13 00:48:22  erik
  *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Changed modeldefintions. Use "Action" instead of "Animation" because an action can contain more than just animations, sounds for example.
@@ -359,7 +368,7 @@ Description: Base class for all the OGRE examples
 #endif
 #include "framework/Singleton.h"
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgreConfigFile.h>
 
 namespace EmberOgre {
@@ -373,6 +382,8 @@ class CameraFrameListener;
 class Avatar;
 
 class AvatarCamera;
+
+class AvatarController;
 
 class AvatarEmberEntity;
 
@@ -409,13 +420,7 @@ public:
     EmberOgre();
  
     /// Standard destructor
-    virtual ~EmberOgre()
-    {
-//        if (mFrameListener)
-//            delete mFrameListener;
-        if (mRoot)
-            delete mRoot;
-    }
+    ~EmberOgre();
 
 	bool frameStarted(const Ogre::FrameEvent & evt);
 	bool frameEnded(const Ogre::FrameEvent & evt)
@@ -454,6 +459,9 @@ protected:
 
 	// Avatar setup
 	Avatar* mAvatar;
+	
+	//This class controls the avatar
+	AvatarController* mAvatarController;
 
 	/** Instance of EmberOgre */
 	//static EmberOgre* _instance;

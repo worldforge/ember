@@ -37,7 +37,7 @@ namespace Ogre
 //class Ogre::Real;
 
 // the above is broken so we directly include Ogre.h
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include "Avatar.h"
 
 class AvatarKeyboardListener

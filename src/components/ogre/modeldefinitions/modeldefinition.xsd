@@ -29,6 +29,18 @@
 															</xsd:sequence>
 														</xsd:complexType>
 													</xsd:element>
+													<xsd:element name="Lights">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Light">
+																	<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+																	<xsd:attribute name="Bone" type="xsd:string" use="required"/> 
+																	
+																	<xsd:attribute name="Material" type="xsd:string" use="optional"/> 
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
 												</xsd:complexType>
 											</xsd:element>
 										</xsd:sequence>

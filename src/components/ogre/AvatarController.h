@@ -20,12 +20,11 @@
 #define AVATARCONTROLLER_H
 
 //include Ogre stuff
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 //#include <OgreFrameListener.h>
 #include <OgreInput.h>
 #include <OgreStringConverter.h>
 
-#include "InputManager.h"
 
 
 

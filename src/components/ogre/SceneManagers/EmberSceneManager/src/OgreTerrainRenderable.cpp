@@ -44,6 +44,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreStringConverter.h"
 #include "OgreViewport.h"
 #include "OgreException.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {

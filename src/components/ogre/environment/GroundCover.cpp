@@ -1,4 +1,4 @@
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include "GroundCover.h"
 using namespace Ogre;
 namespace EmberOgre {

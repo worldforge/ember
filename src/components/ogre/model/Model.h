@@ -26,7 +26,7 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreEntity.h>
 #include <OgreMovableObject.h>
 

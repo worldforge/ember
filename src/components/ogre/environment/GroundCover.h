@@ -1,9 +1,10 @@
 #ifndef GROUNDCOVER_H
 #define GROUNDCOVER_H
 
+#include "components/ogre/EmberOgrePrerequisites.h"
+
 #include <vector>
 #include <map>
-#include <Ogre.h>
 
 namespace EmberOgre {
 

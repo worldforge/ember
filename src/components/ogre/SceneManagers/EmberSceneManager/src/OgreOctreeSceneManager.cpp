@@ -38,6 +38,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include <OgreOctreeNode.h>
 #include <OgreOctreeCamera.h>
 #include <OgreRenderSystem.h>
+#include <OgreNoMemoryMacros.h>
 
 
 extern "C"

@@ -123,9 +123,9 @@ bool ConsoleWidget::consoleTextBox_Character(const CEGUI::EventArgs& args)
 {
 
 	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
-	std::stringstream tempString;
+/*	std::stringstream tempString;
 	tempString << std::string("CEGUI - CHARACTER:") << keyargs.codepoint;
-	fprintf(stderr, tempString.str().c_str());
+	fprintf(stderr, tempString.str().c_str());*/
 	return true;
 }
 

@@ -22,7 +22,7 @@
 #ifndef DEBUGLISTENER_H
 #define DEBUGLISTENER_H
 
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 #include <OgreFrameListener.h>
 #include <OgreEventListeners.h>
 #include <OgreStringConverter.h>

@@ -18,7 +18,7 @@
 
 #ifndef PERSONDIMEENTITY_H
 #define PERSONDIMEENTITY_H
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

@@ -20,7 +20,7 @@
 #ifndef DIMETERRAINSCENEMANAGER_H
 #define DIMETERRAINSCENEMANAGER_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include "OgreTerrainSceneManager.h"
 #include "OgreTerrainRenderable.h"
 #include "OgreTerrainPage.h"

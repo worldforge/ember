@@ -18,7 +18,6 @@
 
 #include "AvatarCamera.h"
 #include "Avatar.h"
-#include "InputManager.h"
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "EmberEntity.h"

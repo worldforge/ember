@@ -34,14 +34,14 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
-#include <Ogre.h>
+#include "EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

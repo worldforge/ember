@@ -3,7 +3,7 @@
 
 #include "EmberOgrePrerequisites.h"
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 // #include <CEGUI.h>
 // #include <CEGUIEvent.h> 
 // #include <CEGUIBase.h>

@@ -27,6 +27,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <OgreTerrainSceneManager.h>
 #include <OgreRoot.h>
 #include "OgreHeightmapTerrainPageSource.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {

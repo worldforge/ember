@@ -48,6 +48,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreTerrainVertexProgram.h"
 #include "OgreTerrainPage.h"
 #include "OgreLogManager.h"
+#include <OgreNoMemoryMacros.h>
 
 #define TERRAIN_MATERIAL_NAME "TerrainSceneManager/Terrain"
 
