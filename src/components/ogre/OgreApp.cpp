@@ -276,19 +276,16 @@ class DimeFrameListener : public BaseFrameListener
 
 private:
 
-	dime::OgreGameView* mGameview;
+	OgreApplication* mOgreApplication;
 
 public:
 
-	DimeFrameListener(RenderWindow* win, Camera* cam) : BaseFrameListener(win, cam) {}
-	
-	~DimeFrameListener()
+	DimeFrameListener(RenderWindow* win, Camera* cam, OgreApplication* app) : BaseFrameListener(win, cam)
 	{
-		if(mGameview!=NULL)
-		{
-			delete mGameview;
-		}
+		mOgreApplication = app;
 	}
+	
+	~DimeFrameListener() {}
 
 	bool frameStarted(const FrameEvent& evt)
 	{
@@ -334,8 +331,8 @@ public:
 			// TODO: this is an ugly hack (Aglanor)
 			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","ogre_207");
 			timeUntilNextToggle = 1;
-			fprintf(stderr, "WOHOOOO - LOGED IN");
-			mGameview = new dime::OgreGameView();
+			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
+			mOgreApplication->connectWorldSignals();
 
 		}
 
@@ -469,7 +466,7 @@ void OgreApplication::createFrameListener(void)
   mRoot->addFrameListener(mFrameListener);
   CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
   mRoot->addFrameListener(cameraFrameListener);
-  DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera);
+  DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera, this);
   mRoot->addFrameListener(dimeFrameListener);
 #if 0
     CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
@@ -539,6 +536,95 @@ void OgreApplication::initializeDimeServices(void)
 }
 
 
+void OgreApplication::connectWorldSignals(void) {
+
+    /* Find out where the Eris world instance resides... */
+    Eris::World *w = dime::DimeServices::getInstance()->getServerService()->getWorld();
+
+    /* Connect to the relevant World signals */
+    w->EntityCreate.connect( SigC::slot( *this, &OgreApplication::entityCreate ) );
+
+    w->EntityDelete.connect( SigC::slot( *this, &OgreApplication::entityDelete ) );
+
+    w->Entered.connect( SigC::slot( *this, &OgreApplication::entered ) );
+
+    w->Appearance.connect( SigC::slot( *this, &OgreApplication::appearance ) );
+
+    w->Disappearance.connect( SigC::slot( *this, &OgreApplication::disappearance ) );
+
+}
+
+/* Eris::World entity signals */
+
+void OgreApplication::entityCreate( Eris::Entity *e )
+{
+
+	fprintf(stderr, "TRACE - ENTITY CREATED - EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+
+    /* Whenever a new entity is created, make sure to connect to those signals
+       too */
+
+    // Xmp's Notes: hmm need to work out how to connect these
+    e->AddedMember.connect( SigC::slot( *this, &OgreApplication::addedMember ) );
+
+    e->RemovedMember.connect( SigC::slot( *this, &OgreApplication::removedMember ) );
+
+    e->Recontainered.connect( SigC::slot( *this, &OgreApplication::recontainered ) );
+
+    e->Changed.connect( SigC::bind( SigC::slot( *this, &OgreApplication::changed ), e ) );
+
+    e->Moved.connect( SigC::bind( SigC::slot( *this, &OgreApplication::moved ), e ) );
+
+    e->Say.connect( SigC::bind( SigC::slot( *this, &OgreApplication::say ), e ) );
+}
+
+
+void OgreApplication::entityDelete( Eris::Entity *e )
+{}
+
+void OgreApplication::entered( Eris::Entity *e )
+{}
+
+void OgreApplication::appearance( Eris::Entity *e )
+{
+	fprintf(stderr, "TRACE - APPEARANCE - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+}
+
+void OgreApplication::disappearance( Eris::Entity *e )
+{}
+
+/* Eris::Entity signals */
+
+void OgreApplication::recontainered( Eris::Entity *e, Eris::Entity *c )
+{}
+
+void OgreApplication::changed( const Eris::StringSet &s, Eris::Entity *e  )
+{}
+
+void OgreApplication::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
+{}
+
+void OgreApplication::say( const std::string &s, Eris::Entity *e )
+{
+	// TODO: fix this one
+	/*
+    dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
+	*/
+}
+
+void OgreApplication::addedMember(Eris::Entity *e)
+{}
+
+void OgreApplication::removedMember(Eris::Entity *e)
+{}
+
+void OgreApplication::runCommand(const std::string &command, const std::string &args)
+{
+}
+
+
+
+
 // ----------------------------------------------------------------------------
 // Main function, just boots the application object
 // ----------------------------------------------------------------------------
@@ -554,7 +640,7 @@ int main(int argc, char **argv)
 {
     // Create application object
     OgreApplication app;
-	
+
 	// Initialize all dime services needed for this application
 	app.initializeDimeServices();
 

@@ -25,7 +25,7 @@ $(top_srcdir)/src/services/libServices.a
 LDFLAGS = @LDFLAGS@ -L$(OGRE_PATH)/OgreMain/src -lOgreMain
 CXXFLAGS = @CXXFLAGS@ -DEXT_HASH -DOGRE_LINUX -DGCC_3_1
 
-OgreApp_SOURCES = OgreApp.cpp OgreGameView.cpp
+OgreApp_SOURCES = OgreApp.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 
