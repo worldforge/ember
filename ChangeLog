@@ -1,7 +1,8 @@
 2003-10-19 Eric Sandall <eric [at] sandall [dot] us>
 	* src/main/states.xml:11-14: Too many levels of regression
 	even though I tested it...
-	* README: Moved the media to somewhere with more bandwidth ;)
+	* README: Moved the media to somewhere with more bandwidth ;),
+	fixed typo in the filenames.
 
 2003-10-18 Eric Sandall <eric [at] sandall [dot] us>
 	* src/services/gui/widget/Console.cpp:39,41: Fonts are located in dime/media/fonts
