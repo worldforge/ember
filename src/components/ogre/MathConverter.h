@@ -3,7 +3,7 @@
 MathConverter.h by Miguel Guzman Miranda (Aglanor)
 
 Copyright © 2003 The Worldforge Project (http://www.worldforge.org)
-This file is part of Dime client (http://www.worldforge.org/dev/eng/clients/dime)
+This file is part of Ember client (http://www.worldforge.org/dev/eng/clients/Ember)
 
 This code is distributed under the GNU GPL (General Public License).
 See file COPYING for details.
@@ -11,7 +11,14 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.10  2004-10-31 20:26:54  erik
+ *      Revision 1.11  2004-11-04 21:40:26  erik
+ *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Moved from dime to ember. Thus the big checkin.
+ *      * Added wield action to inventory
+ *
+ *      Revision 1.10  2004/10/31 20:26:54  erik
  *      2004-10-31 Erik Hjortsberg <erik@hysteriskt.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -39,7 +46,7 @@ See file COPYING for details.
  *      /src/components/ogre:
  *      *removed references to EntityListener, we'll keep the class however as
  *      we'll pobably use it in the future
- *      *put everything under the namespace DimeOgre
+ *      *put everything under the namespace EmberOgre
  *
  *      Revision 1.6  2004/07/20 22:52:16  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -49,7 +56,7 @@ See file COPYING for details.
  *      MathConverter.h:
  *      *changed scaling
  *
- *      DimeEntity.*:
+ *      EmberEntity.*:
  *      *fixed problems with containers
  *      *added more meshes (sty, oak)
  *
@@ -63,16 +70,16 @@ See file COPYING for details.
  *      InputManager.cpp:
  *      *removed buggy polling code and replaced it with signals in the ServerService class
  *
- *      DimeEntityFactory.*:
- *      *added support for AvatarDimeEntity
+ *      EmberEntityFactory.*:
+ *      *added support for AvatarEmberEntity
  *
- *      AvatarDimeEntity.*:
+ *      AvatarEmberEntity.*:
  *      New class for handling the Avatar entity
  *
  *      AvatarCamera.*:
  *      New class for handling the Avatar camera
  *
- *      DimeOgre.*:
+ *      EmberOgre.*:
  *      *cleaned up old code
  *      *moved camera stuff into AvatarCamera
  *      *better connection between Services signals and other objects
@@ -102,8 +109,8 @@ See file COPYING for details.
  *      The mouse now shows a cursor, movement happens when the mouse goes near the edges of the screen.
  *      Various code cleanups, forward declarations and movement of code from .h-files to .cpp-files.
  *      Addition of preprocessor declarations in MathConverter.h to easily convert between WF and Ogre units.
- *      Revamping of how entities are handled though the new class DimeEntity and changes to EntityListener.
- *      Rudimentary animation of the avatar.
+ *      Revamping of how entities are handled though the new class EmberEntity and changes to EntityListener.
+ *      RuEmberntary animation of the avatar.
  *      Addition of a debug layer to show triangles, fps etc. Taken from Ogre.
  *      Usage of ogre.cfg for reading configuration values instead of using the console each time.
  *      Some cleanup of the world. The only thing you see now is a ground plane. But it gets populated when connected to a server.
@@ -200,7 +207,7 @@ Description:	Point, Vector and Quaternion converter
 #include <wfmath/axisbox.h>
 #include <wfmath/quaternion.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
 inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3 p) {

@@ -16,7 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// Rewritten for Dime by Martin Pollard (Xmp)
+// Rewritten for Ember by Martin Pollard (Xmp)
 
 // Some code originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002
@@ -26,13 +26,13 @@
 
 #include <sstream>
 
-namespace dime {
+namespace Ember {
 
 // List of ConsoleBackend's console commands
 const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
 const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
-dime::ConsoleBackend *dime::ConsoleBackend::theMainConsole = NULL;
+Ember::ConsoleBackend *Ember::ConsoleBackend::theMainConsole = NULL;
 
 void ConsoleBackend::pushMessage(const std::string &message) {
   //only save message if onGotMessage returns true
@@ -122,4 +122,4 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
   pushMessage(temp.str());
 }
 
-} // namespace dime
+} // namespace Ember

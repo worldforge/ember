@@ -16,34 +16,34 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "DimeOgrePrerequisites.h"
+#include "EmberOgrePrerequisites.h"
 
 
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
-#include "DimeEntityFactory.h"
+#include "EmberEntityFactory.h"
 #include "Model.h"
 
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
 
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
-DimePhysicalEntity::DimePhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
+EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 mAnimationState_Walk(NULL),
 mScaleNode(nodeWithModel),
-DimeEntity(id, ty, vw, sceneManager)
+EmberEntity(id, ty, vw, sceneManager)
 {
 	mModel = static_cast<Model*>(getScaleNode()->getAttachedObject(0));
 	loadAnimationsFromModel();
 }
 
-DimePhysicalEntity::~DimePhysicalEntity()
+EmberPhysicalEntity::~EmberPhysicalEntity()
 {
 /*
   	if (mAnimationState_Walk) {
@@ -57,10 +57,10 @@ DimePhysicalEntity::~DimePhysicalEntity()
 	*/
 }
 
-void DimePhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
-	DimeEntity::init(ge);
-	getModel()->setQueryFlags(DimeEntity::CM_UNDEFINED);
+	EmberEntity::init(ge);
+	getModel()->setQueryFlags(EmberEntity::CM_UNDEFINED);
 
 /*	assert(mOgreNode);
 	assert(mScaleNode);*/
@@ -71,7 +71,7 @@ void DimePhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 }
 
 
-void DimePhysicalEntity::loadAnimationsFromModel()
+void EmberPhysicalEntity::loadAnimationsFromModel()
 {
 	if (getModel()->isAnimated()) {
 		//start with the idle animation
@@ -98,7 +98,7 @@ void DimePhysicalEntity::loadAnimationsFromModel()
 
 
 
-void DimePhysicalEntity::scaleNode() {
+void EmberPhysicalEntity::scaleNode() {
 	if (getModel()->getRotation()) {
 		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
 	}
@@ -165,7 +165,7 @@ void DimePhysicalEntity::scaleNode() {
 }
 
 
-void DimePhysicalEntity::onMoved()
+void EmberPhysicalEntity::onMoved()
 {
 	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
@@ -190,7 +190,7 @@ void DimePhysicalEntity::onMoved()
 }
 
 /*
-void DimePhysicalEntity::handleTalk(const std::string &msg)
+void EmberPhysicalEntity::handleTalk(const std::string &msg)
 {
 	
     std::string message = "<";
@@ -198,21 +198,21 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
     message.append("> ");
     message.append(msg);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
+	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
 */
 
 
 
 /*
-void DimePhysicalEntity::setContainer(Entity *pr)
+void EmberPhysicalEntity::setContainer(Entity *pr)
 {
 		
-	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(pr);
-	if (dimeEntity) {
+	EmberEntity* EmberEntity = dynamic_cast<EmberEntity*>(pr);
+	if (EmberEntity) {
 		//detach from our current object and add to the new entity
 		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
-		dimeEntity->getSceneNode()->addChild(getSceneNode());
+		EmberEntity->getSceneNode()->addChild(getSceneNode());
 				
 	} else {
 		//detach from our current object and add to the world
@@ -226,9 +226,9 @@ void DimePhysicalEntity::setContainer(Entity *pr)
 
 
 
-void DimePhysicalEntity::adjustHeightPosition()
+void EmberPhysicalEntity::adjustHeightPosition()
 {
-	DimeEntity* container = static_cast<DimeEntity*>(getLocation());
+	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container) {
 		container->adjustHeightPositionForContainedNode(this);
 	}

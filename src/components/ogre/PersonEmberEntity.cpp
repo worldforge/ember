@@ -23,29 +23,29 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
 #include "Model.h"
 
-#include "PersonDimeEntity.h"
-namespace DimeOgre {
+#include "PersonEmberEntity.h"
+namespace EmberOgre {
 
-PersonDimeEntity::PersonDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
-DimePhysicalEntity(id, ty, vw, sceneManager, nodeWithModel)
+PersonEmberEntity::PersonEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
+EmberPhysicalEntity(id, ty, vw, sceneManager, nodeWithModel)
 
 {
 }
 
-PersonDimeEntity::~PersonDimeEntity()
+PersonEmberEntity::~PersonEmberEntity()
 {}
 
-void PersonDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void PersonEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
-	DimePhysicalEntity::init(ge);
-	mModel->setQueryFlags(DimeEntity::CM_PERSONS);
+	EmberPhysicalEntity::init(ge);
+	mModel->setQueryFlags(EmberEntity::CM_PERSONS);
 }
 
-bool PersonDimeEntity::allowVisibilityOfMember(DimeEntity* entity)
+bool PersonEmberEntity::allowVisibilityOfMember(EmberEntity* entity)
 {
 	return false;
 }

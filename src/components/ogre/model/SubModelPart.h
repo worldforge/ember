@@ -5,7 +5,7 @@
 #include <OgreEntity.h>
 #include <OgreMovableObject.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class SubModel;
 class Model;

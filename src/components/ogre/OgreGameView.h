@@ -36,7 +36,7 @@
 #include "framework/ConsoleBackend.h"
 //#include "framework/Component.h"
 
-namespace dime {
+namespace Ember {
 
 /**
  * This is a debugging game view for use by DIME game view developers.
@@ -55,7 +55,7 @@ namespace dime {
  * read up on SigC++ ( http://libsigc.sourceforge.net ) if you're not familiar
  * with it.
  *
- * Component is a standard dime class that also has to be inherited from.
+ * Component is a standard Ember class that also has to be inherited from.
  */
 
 class OgreGameView : public ConsoleObject,
@@ -77,7 +77,7 @@ class OgreGameView : public ConsoleObject,
 
         /**
          * Constructor
-         * This grabs a pointer to the current Eris entity from DimeService and
+         * This grabs a pointer to the current Eris entity from EmberService and
          * connects ithe relevant signals to Game View methods. If you're not using
          * any of those methods (Entered is the most likely to be unused IMO) then you
          * should also remove the connection code.
@@ -208,7 +208,7 @@ class OgreGameView : public ConsoleObject,
 
         /**
          * You should have some form of world model here. For example, the
-         * one-dimensional DebugGameView uses a vector.
+         * one-Embernsional DebugGameView uses a vector.
          *
          * James has suggested a Quad Tree for 3D game views (that includes
          * layered 2D views)

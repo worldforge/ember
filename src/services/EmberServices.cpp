@@ -30,13 +30,13 @@
 #include "server/ServerService.h"
 
 
-#include "DimeServices.h"
+#include "EmberServices.h"
 
-namespace dime{
+namespace Ember{
 
-DimeServices* DimeServices::theInstance = NULL;
+EmberServices* EmberServices::theInstance = NULL;
 
-  DimeServices::~DimeServices()
+  EmberServices::~EmberServices()
   {
     // TODO: Free any allocated resources here.
     delete myConfigService;
@@ -45,74 +45,74 @@ DimeServices* DimeServices::theInstance = NULL;
     delete myServerService;
   }
 
-  DimeServices* DimeServices::getInstance()
+  EmberServices* EmberServices::getInstance()
   {
     if( !theInstance )
       {
-	theInstance = new DimeServices();
+	theInstance = new EmberServices();
       }
     
     return theInstance;
   }
 
-  TestService* DimeServices::getTestService()
+  TestService* EmberServices::getTestService()
   {
     // TODO
     return NULL;
   }
 
-  LoggingService* DimeServices::getLoggingService()
+  LoggingService* EmberServices::getLoggingService()
   {
-    return dime::LoggingService::getInstance();
+    return Ember::LoggingService::getInstance();
   }
   
-  ConfigService* DimeServices::getConfigService()
+  ConfigService* EmberServices::getConfigService()
   {
     if (myConfigService == NULL)
       {
-	myConfigService = new dime::ConfigService();
+	myConfigService = new Ember::ConfigService();
       }
     
     return myConfigService;
   }
 
-/*  InputService* DimeServices::getInputService()
+/*  InputService* EmberServices::getInputService()
   {
-    return dime::InputService::getInstance();
+    return Ember::InputService::getInstance();
   }
   */
 
 /*
-  GuiService* DimeServices::getGuiService()
+  GuiService* EmberServices::getGuiService()
   {
     if (myGuiService == NULL)
-      myGuiService = new dime::GuiService();
+      myGuiService = new Ember::GuiService();
     
     return myGuiService;
   }
 */
-  MetaserverService* DimeServices::getMetaserverService()
+  MetaserverService* EmberServices::getMetaserverService()
   {
     if (myMetaserverService == NULL)
-      myMetaserverService = new dime::MetaserverService();
+      myMetaserverService = new Ember::MetaserverService();
     return myMetaserverService;
   }
   
-  ServerService* DimeServices::getServerService()
+  ServerService* EmberServices::getServerService()
   {
     if (myServerService == NULL)
-      myServerService = new dime::ServerService();
+      myServerService = new Ember::ServerService();
     return myServerService;
   }
 
-  SoundService* DimeServices::getSoundService()
+  SoundService* EmberServices::getSoundService()
   {
     if (mySoundService == NULL)
-      mySoundService = new dime::SoundService();
+      mySoundService = new Ember::SoundService();
     return mySoundService;
   }
 
-  DimeServices::DimeServices()
+  EmberServices::EmberServices()
   {
     myConfigService = NULL;
     //myGuiService = NULL;

@@ -24,27 +24,27 @@
 #include <xercesc/util/PlatformUtils.hpp>
 
 
-#include "DimeEntity.h"
+#include "EmberEntity.h"
 #include "Model.h"
 #include "TerrainGenerator.h"
-#include "WorldDimeEntity.h"
+#include "WorldEmberEntity.h"
 
-namespace DimeOgre {
-WorldDimeEntity::WorldDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
+namespace EmberOgre {
+WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
 mTerrainGenerator(terrainGenerator),
-DimeEntity(id, ty, vw, sceneManager)
+EmberEntity(id, ty, vw, sceneManager)
 {
 	//getSceneNode()->setOrientation(Ogre::Quaternion::IDENTITY);
 	mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 	//mOgreNode = mSceneManager->getRootSceneNode();
 	//mSceneManager->getRootSceneNode()->addChild(mOgreNode);
-//	this->mModel->setQueryFlag(DimeEntity::CM_TERRAIN);
+//	this->mModel->setQueryFlag(EmberEntity::CM_TERRAIN);
 }
 
-WorldDimeEntity::~WorldDimeEntity()
+WorldEmberEntity::~WorldEmberEntity()
 {}
 
-void WorldDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	//mOgreNode = mSceneManager->getRootSceneNode();
 	Eris::Entity::init(ge);
@@ -53,7 +53,7 @@ void WorldDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	
 }
 
-void WorldDimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity)
+void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity)
 {
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	Ogre::Vector3 position = sceneNode->getPosition();
@@ -64,19 +64,19 @@ void WorldDimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const ent
 
 }
 
- void WorldDimeEntity::onMoved(){
+ void WorldEmberEntity::onMoved(){
  	Eris::Entity::onMoved();
  }
- void WorldDimeEntity::onTalk(const Atlas::Objects::Root& obj)
+ void WorldEmberEntity::onTalk(const Atlas::Objects::Root& obj)
  {
  	Eris::Entity::onTalk(obj);
  }
 //	virtual void setContainer(Entity *pr);
- void WorldDimeEntity::onVisibilityChanged(bool vis)
+ void WorldEmberEntity::onVisibilityChanged(bool vis)
  {
  	Eris::Entity::onVisibilityChanged(vis);
  }
- void WorldDimeEntity::onLocationChanged(Eris::Entity *oldLocation)
+ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
  {
  	Eris::Entity::onLocationChanged(oldLocation);
  }

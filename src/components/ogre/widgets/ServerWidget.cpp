@@ -24,7 +24,7 @@
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 
 #include "Widget.h"
@@ -38,7 +38,7 @@
 #include <elements/CEGUIStaticText.h> 
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class ServerWidgetListItem : public CEGUI::ListboxTextItem
 {
@@ -76,10 +76,10 @@ void ServerWidget::buildWidget()
 	BIND_CEGUI_EVENT(choose, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
 	
 		
-	dime::DimeServices::getInstance()->getServerService()->GotAccount.connect(SigC::slot(*this, &ServerWidget::createdAccount));
-	dime::DimeServices::getInstance()->getServerService()->LoginSuccess.connect(SigC::slot(*this, &ServerWidget::loginSuccess));
-	dime::DimeServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &ServerWidget::gotAvatar));
-	dime::DimeServices::getInstance()->getServerService()->GotAllCharacters.connect(SigC::slot(*this, &ServerWidget::gotAllCharacters));
+	Ember::EmberServices::getInstance()->getServerService()->GotAccount.connect(SigC::slot(*this, &ServerWidget::createdAccount));
+	Ember::EmberServices::getInstance()->getServerService()->LoginSuccess.connect(SigC::slot(*this, &ServerWidget::loginSuccess));
+	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &ServerWidget::gotAvatar));
+	Ember::EmberServices::getInstance()->getServerService()->GotAllCharacters.connect(SigC::slot(*this, &ServerWidget::gotAllCharacters));
 	
 	mMainWindow->setVisible(false);
 
@@ -127,7 +127,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 	
 		std::string* id = static_cast<std::string*>(item->getUserData());
 		
-		dime::DimeServices::getInstance()->getServerService()->takeCharacter(*id);
+		Ember::EmberServices::getInstance()->getServerService()->takeCharacter(*id);
 	}
 }
 

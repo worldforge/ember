@@ -23,14 +23,14 @@
 
 #include <string>
 
-namespace dime {
+namespace Ember {
 namespace framework {
 
 /**
  * Abstract class that defines the interface for all factory classes that are
  * used to cerate different component types.
  *
- * @see dime::framework::Component
+ * @see Ember::framework::Component
  *
  * @author Hans Häggström
  */

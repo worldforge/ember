@@ -23,30 +23,30 @@
 #include <Eris/Entity.h>
 #include <Eris/Avatar.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimePhysicalEntity;
-class DimeEntity;
+class EmberPhysicalEntity;
+class EmberEntity;
 class Avatar;
 class Model;
-class PersonDimeEntity;
+class PersonEmberEntity;
 
 /*
  * This is the main player avatar. We want this one to behave a little different
  * than the other game entities, thus it has it's own subclass.
  * 
  */
-class AvatarDimeEntity: public PersonDimeEntity {
+class AvatarEmberEntity: public PersonEmberEntity {
 public:
 
-	AvatarDimeEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);
-	virtual ~AvatarDimeEntity();
+	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);
+	virtual ~AvatarEmberEntity();
 	
 	
 	
 	
 	/* 
-	 * used by the main application to set the DimeOgre::Avatar connected to this instance 
+	 * used by the main application to set the EmberOgre::Avatar connected to this instance 
 	 */
 	void setAvatar(Avatar* avatar) {mAvatar = avatar;}
 	Avatar* getAvatar() {return mAvatar;}

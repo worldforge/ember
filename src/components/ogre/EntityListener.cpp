@@ -24,18 +24,18 @@
 #endif
 
 #include "services/server/ServerService.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 
 #include "framework/ConsoleBackend.h"
 
-#include "DimeEntity.h"
+#include "EmberEntity.h"
 #include "Avatar.h"
 
 #include "MathConverter.h"
 
 #include "EntityListener.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 EntityListener* EntityListener::_instance = 0;
 
@@ -47,7 +47,7 @@ EntityListener::EntityListener()
 EntityListener::~EntityListener()
 {
 #if 0
-    Eris::View *w = DimeServices::getInstance()->getServerService()->getView();
+    Eris::View *w = EmberServices::getInstance()->getServerService()->getView();
     w->EntityCreate.disconnect();
 #endif
 }
@@ -63,28 +63,28 @@ EntityListener & EntityListener::getSingleton(void)
 void EntityListener::setSceneManager(Ogre::SceneManager* sceneMgr)
 {
 	mSceneMgr=sceneMgr;
-	dime::ConsoleBackend::getMainConsole()->pushMessage("Scene Manager set on Entity Listener");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("Scene Manager set on Entity Listener");
 }
 
 void EntityListener::connectViewSignals(void) {
 
-	dime::ConsoleBackend::getMainConsole()->pushMessage("Connecting world signals");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("Connecting world signals");
 
     /* Find out where the Eris world instance resides... */
-    Eris::View *w = dime::DimeServices::getInstance()->getServerService()->getView();
+    Eris::View *w = Ember::EmberServices::getInstance()->getServerService()->getView();
 
     /* Connect to the relevant View signals */
     //w->EntityCreate.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
 
     w->EntityDeleted.connect( SigC::slot( *this, &EntityListener::entityDelete ) );
 
-    //w->Entered.connect( SigC::slot( *mDimeAvatar, &Avatar::enteredView ) );
+    //w->Entered.connect( SigC::slot( *mEmberAvatar, &Avatar::enteredView ) );
 
     w->Appearance.connect( SigC::slot( *this, &EntityListener::appearance ) );
 
     w->Disappearance.connect( SigC::slot( *this, &EntityListener::disappearance ) );
 
-	dime::ConsoleBackend::getMainConsole()->pushMessage("View signals connected");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("View signals connected");
 
 }
 
@@ -93,7 +93,7 @@ void EntityListener::connectViewSignals(void) {
 void EntityListener::entityCreate( Eris::Entity *e )
 {
 
-	dime::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
 
 	// create the ogre node and the
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
@@ -102,7 +102,7 @@ void EntityListener::entityCreate( Eris::Entity *e )
 
 	// create the ogre entity
 	if(!strcmp(e->getID().c_str(),avatarID.c_str())) { // if it's the player
-		dime::ConsoleBackend::getMainConsole()->pushMessage("Creating player entity");
+		Ember::ConsoleBackend::getMainConsole()->pushMessage("Creating player entity");
 		fprintf(stderr, "TRACE - CREATING PLAYER ENTITY\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "dragon.mesh");
 		//ogreNode->setScale(OGRESCALER);
@@ -158,8 +158,8 @@ void EntityListener::entityCreate( Eris::Entity *e )
 	}
 */
 /*
-	dimeEntity = new DimeEntity(ogreEntity, e);
-	ogreEntity->setUserObject(dimeEntity);
+	EmberEntity = new EmberEntity(ogreEntity, e);
+	ogreEntity->setUserObject(EmberEntity);
 	// attach the node to the entity
 	ogreNode->attachObject(ogreEntity);
 
@@ -168,17 +168,17 @@ void EntityListener::entityCreate( Eris::Entity *e )
     // Whenever a new entity is created, make sure to connect to those signals too
 
     // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( *dimeEntity, &DimeEntity::addedMember ) );
+    e->AddedMember.connect( SigC::slot( *EmberEntity, &EmberEntity::addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( *dimeEntity, &DimeEntity::removedMember ) );
+    e->RemovedMember.connect( SigC::slot( *EmberEntity, &EmberEntity::removedMember ) );
 
-    e->Recontainered.connect( SigC::slot( *dimeEntity, &DimeEntity::recontainered ) );
+    e->Recontainered.connect( SigC::slot( *EmberEntity, &EmberEntity::recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( *dimeEntity, &DimeEntity::changed ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( *EmberEntity, &EmberEntity::changed ), e ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( *dimeEntity, &DimeEntity::moved ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( *EmberEntity, &EmberEntity::moved ), e ) );
 
-    e->Say.connect( SigC::bind( SigC::slot( *dimeEntity, &DimeEntity::say ), e ) );
+    e->Say.connect( SigC::bind( SigC::slot( *EmberEntity, &EmberEntity::say ), e ) );
 }
 */
 
@@ -192,7 +192,7 @@ void EntityListener::entered( Eris::Entity *e )
 	fprintf(stderr, "TRACE - PLAYER ENTERED THE WORLD\n");
 	std::cout << "THE PLAYER IS ENTITY " <<  e->getId() << std::endl;
 	avatarID = e->getId();
-	dime::ConsoleBackend::getMainConsole()->pushMessage("Entering the world...");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("Entering the world...");
 	// Set the Player camera accordingly
 	// TODO: do this when the avatar moves too
 	/*mCamera->setPosition(Atlas2Ogre(e->getPosition()));
@@ -207,7 +207,7 @@ void EntityListener::entered( Eris::Entity *e )
 void EntityListener::appearance( Eris::Entity *e )
 {
 	fprintf(stderr, "TRACE - ENTITY APPEARS\n");
-	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY APPEARS");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY APPEARS");
 }
 
 void EntityListener::disappearance( Eris::Entity *e )
@@ -247,12 +247,12 @@ void EntityListener::say( const std::string &s, Eris::Entity *e )
         message.append("> ");
         message.append(s);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
         //mWindow->setDebugText(message);
 
 	// TODO: fix this one
 	/*
-    dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
+    Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
 	*/
 	/*
 }

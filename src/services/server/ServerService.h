@@ -38,16 +38,16 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 #endif
-namespace dime {
+namespace Ember {
 
 /**
- * Dime Server Service
+ * Ember Server Service
  *
  * @author Martin Pollard (Xmp)
  *
- * @see dime::Service
- * @see dime::MetaserverService
- * @see dime::ConsoleObject
+ * @see Ember::Service
+ * @see Ember::MetaserverService
+ * @see Ember::ConsoleObject
  */
 class ServerService : public Service, public ConsoleObject,
   virtual public SigC::Object
@@ -151,6 +151,8 @@ class ServerService : public Service, public ConsoleObject,
 	void touch(Eris::Entity* entity);
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
 	void place(Eris::Entity* entity, Eris::Entity* target);
+	void wield(Eris::Entity* entity);
+	void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
 	// Signals
@@ -209,6 +211,6 @@ class ServerService : public Service, public ConsoleObject,
 	static const char * const TOUCH;	
 }; //ServerService
 
-} // namespace dime
+} // namespace Ember
 
 #endif

@@ -29,10 +29,10 @@
 
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 class Avatar;
 class DebugListener;
-class DimeEntity;
+class EmberEntity;
 class AvatarCamera;
 
 class GUIManager;
@@ -100,8 +100,8 @@ protected:
 	 */
 	Avatar* mAvatar;
 	
-    DimeEntity* mEntityUnderCursor;
-    DimeEntity* mSelectedEntity;
+    EmberEntity* mEntityUnderCursor;
+    EmberEntity* mSelectedEntity;
     
     AvatarControllerMovement movementForFrame;
 	

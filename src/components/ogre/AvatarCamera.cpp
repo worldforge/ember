@@ -19,12 +19,12 @@
 #include "Avatar.h"
 #include "InputManager.h"
 #include "GUIManager.h"
-#include "DimeOgre.h"
-#include "DimeEntity.h"
+#include "EmberOgre.h"
+#include "EmberEntity.h"
 
 #include "AvatarCamera.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
 	mSceneManager(sceneManager),
@@ -152,7 +152,7 @@ void AvatarCamera::mouseMoved (Ogre::MouseEvent *e)
 	}
 }
 
-DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
+EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
 {
 	fprintf(stderr, "TRACE - TRYING TO PICK AN ENTITY\n");
 
@@ -160,14 +160,14 @@ DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
 	//don't know why
-	Ogre::RaySceneQuery *raySceneQuery = DimeOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ DimeEntity::CM_AVATAR); 
+	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ EmberEntity::CM_AVATAR); 
 /*
 	std::stringstream temp;
-	temp << "tjo1: " <<(DimeEntity::CM_PERSONS ||	DimeEntity::CM_CREATURES  || DimeEntity::CM_NATURE || DimeEntity::CM_UNDEFINED) << "\n";
-	temp << "tjo2: " <<(DimeEntity::CM_PERSONS |	DimeEntity::CM_CREATURES  | DimeEntity::CM_NATURE | DimeEntity::CM_UNDEFINED) << "\n";
+	temp << "tjo1: " <<(EmberEntity::CM_PERSONS ||	EmberEntity::CM_CREATURES  || EmberEntity::CM_NATURE || EmberEntity::CM_UNDEFINED) << "\n";
+	temp << "tjo2: " <<(EmberEntity::CM_PERSONS |	EmberEntity::CM_CREATURES  | EmberEntity::CM_NATURE | EmberEntity::CM_UNDEFINED) << "\n";
 	fprintf(stderr, temp.str().c_str() );
 */	
-//	raySceneQuery->setQueryMask(~ DimeEntity::CM_AVATAR);
+//	raySceneQuery->setQueryMask(~ EmberEntity::CM_AVATAR);
 
 	raySceneQuery->execute(); 
 	Ogre::RaySceneQueryResult result = raySceneQuery->getLastResults(); 
@@ -179,7 +179,7 @@ DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end; 
 /*
 	std::stringstream temp;
-	Ogre::SceneManager::EntityIterator iter = DimeOgre::getSingletonPtr()->getSceneManager()->getEntityIterator();
+	Ogre::SceneManager::EntityIterator iter = EmberOgre::getSingletonPtr()->getSceneManager()->getEntityIterator();
 	int count = 0;
 	while (iter.hasMoreElements()) {
 		count++;
@@ -204,7 +204,7 @@ DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 
 			Ogre::MovableObject* movable = ( *rayIterator ).movable;
 			
-			if (movable && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~DimeEntity::CM_AVATAR)) {
+			if (movable && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
 				if ( ( *rayIterator ).distance < closestDistance ) { 
 					closestObject = movable; 
 					closestDistance = ( *rayIterator ).distance ; 
@@ -222,7 +222,7 @@ DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 		//Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 	} else { 
 		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
-		return  dynamic_cast<DimeEntity*>(closestObject->getUserObject());
+		return  dynamic_cast<EmberEntity*>(closestObject->getUserObject());
 
 	} 		
 	

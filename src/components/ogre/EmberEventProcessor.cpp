@@ -18,18 +18,18 @@
 
 #include <time.h>
 
-#include "DimeEventProcessor.h"
+#include "EmberEventProcessor.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
-DimeEventProcessor::DimeEventProcessor() : Ogre::EventProcessor()
+EmberEventProcessor::EmberEventProcessor() : Ogre::EventProcessor()
 {
 	mUseMouse = false;
 }
 
 
-void DimeEventProcessor::initialise(Ogre::RenderWindow* ren)
+void EmberEventProcessor::initialise(Ogre::RenderWindow* ren)
 {
 	mWin = ren;
 	
@@ -42,7 +42,7 @@ void DimeEventProcessor::initialise(Ogre::RenderWindow* ren)
  
 }
 
-void DimeEventProcessor::toggleMouse()
+void EmberEventProcessor::toggleMouse()
 {
 	mUseMouse =! mUseMouse;
 	Ogre::PlatformManager::getSingleton().destroyInputReader(mInputDevice);
@@ -51,7 +51,7 @@ void DimeEventProcessor::toggleMouse()
 
 }
 
-std::string DimeEventProcessor::takeScreenshot() 
+std::string EmberEventProcessor::takeScreenshot() 
 {
 	// retrieve current time
 	time_t rawtime;
@@ -99,12 +99,12 @@ std::string DimeEventProcessor::takeScreenshot()
 	mWin->setDebugText(std::string("Screenshot: ") + filename.str());
 }
 
-bool DimeEventProcessor::isMouseUsed()
+bool EmberEventProcessor::isMouseUsed()
 {
 	return mUseMouse;
 }
 
-void DimeEventProcessor::createInputReader(bool useMouse) 
+void EmberEventProcessor::createInputReader(bool useMouse) 
 {
 		mInputDevice = Ogre::PlatformManager::getSingleton().createInputReader();
 		mInputDevice->useBufferedInput(mEventQueue, true, useMouse);
@@ -114,5 +114,5 @@ void DimeEventProcessor::createInputReader(bool useMouse)
 }
 
 
-//DimeEventProcessor::~DimeEventProcessor()
+//EmberEventProcessor::~EmberEventProcessor()
 //{}

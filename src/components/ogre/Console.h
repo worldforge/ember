@@ -22,13 +22,13 @@
 #include <OgreRenderWindow.h>
 #include <stdlib.h>
 
-//class dime::ConsoleBackend;
+//class Ember::ConsoleBackend;
 #include "framework/ConsoleBackend.h"
 
 //#include "Prerequisites.h"
 //#include "PythonInterpreter.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
 // The Console is the physical graphical thing that also deals with keyboard input.
@@ -79,7 +79,7 @@ class Console : public Ogre::KeyListener, public Ogre::FrameListener
         int mCursorPos;
         bool mShiftDown;
         bool mCapsDown;
-        dime::ConsoleBackend *myBackend;
+        Ember::ConsoleBackend *myBackend;
 
         bool mPrompt;
 };

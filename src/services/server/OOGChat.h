@@ -31,7 +31,7 @@
 
 // Included system headers
 
-namespace dime {
+namespace Ember {
 
 /**
  * Eris Lobby management object.
@@ -52,7 +52,7 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see dime::ServerService
+ * @see Ember::ServerService
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
@@ -218,6 +218,6 @@ class OOGChat : virtual public SigC::Object, public ConsoleObject
 
 }; // End of OOGChat
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

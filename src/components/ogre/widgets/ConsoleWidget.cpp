@@ -1,11 +1,11 @@
 #include "Widget.h"
 #include "ConsoleWidget.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 ConsoleWidget::ConsoleWidget(GUIManager* guiManager) : Widget::Widget(guiManager), mSpeedOfWindow(0.4)
 {
-	myBackend = dime::ConsoleBackend::getMainConsole();
+	myBackend = Ember::ConsoleBackend::getMainConsole();
 	myBackend->GotMessage.connect(SigC::slot(*this, &ConsoleWidget::pushMessage));
 	mState = CS_CLOSED;
 

@@ -3,7 +3,7 @@
 
 #include <CEGUIWindow.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 DebugWidget::DebugWidget(GUIManager* guiManager) 
 : Widget::Widget(guiManager)

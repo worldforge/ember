@@ -27,7 +27,7 @@
 // Included system headers
 #include <iostream>
 
-namespace dime {
+namespace Ember {
 
 /**
  * Log Observer which logs stuff to the stream provided on creation.
@@ -35,7 +35,7 @@ namespace dime {
  * This log observer takes an arbitrary ostream at it's creation
  * and logs all messages sent to it to this stream.
  * 
- * LoggingService *logging = DimeServices::getInstance()->getLoggingService();
+ * LoggingService *logging = EmberServices::getInstance()->getLoggingService();
  * //Create log observer that prints everything to cerr
  * StreamLogObserver* obs = new StreamLogObserver(std::cerr);
  * obs->setFilter(LoggingService::VERBOSE);
@@ -46,7 +46,7 @@ namespace dime {
  * @see LoggingService::Observer
  */
 
-class StreamLogObserver : public dime::LoggingService::Observer
+class StreamLogObserver : public Ember::LoggingService::Observer
 {
 
     //======================================================================
@@ -92,7 +92,7 @@ class StreamLogObserver : public dime::LoggingService::Observer
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                  const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp);
+                                  const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp);
 
     //----------------------------------------------------------------------
     // Disable Assignment operator
@@ -104,6 +104,6 @@ class StreamLogObserver : public dime::LoggingService::Observer
 
 }; // End of StreamLogObserver
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

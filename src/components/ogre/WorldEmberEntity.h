@@ -19,19 +19,19 @@
 #ifndef WORLDDIMEENTITY_H
 #define WORLDDIMEENTITY_H
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEntity;
+class EmberEntity;
 class TerrainGenerator;
 
-class WorldDimeEntity : public DimeEntity {
+class WorldEmberEntity : public EmberEntity {
 public:
 
 
-	WorldDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
-	virtual ~WorldDimeEntity();
+	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
+	virtual ~WorldEmberEntity();
 
-	virtual void WorldDimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity);
+	virtual void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity);
 
 protected:
 	TerrainGenerator* mTerrainGenerator;

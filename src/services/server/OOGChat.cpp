@@ -26,7 +26,7 @@
 
 #include <sstream>
 
-namespace dime {
+namespace Ember {
 
     // List of OOGChat's console commands
     const char * const OOGChat::CMD_TALK  = "talk";

@@ -27,7 +27,7 @@
 
 #include <elements/CEGUIMultiLineEditbox.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class Widget;
 

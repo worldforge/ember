@@ -42,7 +42,7 @@
 
 // HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
 
-namespace dime
+namespace Ember
 {
 
 	// List of ServerService's console commands
@@ -616,6 +616,50 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
    	}   		
+	
+	void ServerService::wield(Eris::Entity* entity)
+   	{
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			//myAvatar->place(entity, target);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on wielding: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on wielding: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   		
+
+	void ServerService::use(Eris::Entity* entity)
+   	{
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			//myAvatar->place(entity, target);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on using: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on using: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   		
 
    		
 	void ServerService::say(const std::string &message) {
@@ -645,4 +689,4 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  		}	
 	}
  
-} // namespace dime
+} // namespace Ember

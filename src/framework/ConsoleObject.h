@@ -16,7 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// Rewritten for Dime by Martin Pollard (Xmp)
+// Rewritten for Ember by Martin Pollard (Xmp)
 
 // Originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002 
@@ -31,7 +31,7 @@
 // Included system headers
 #include <string>
 
-namespace dime {
+namespace Ember {
 /**
  * ConsoleObject
  *
@@ -67,5 +67,5 @@ public:
   virtual void runCommand(const std::string &command, const std::string &args) = 0;
 };
 
-} /* namespace dime */
+} /* namespace Ember */
 #endif /* CONSOLEOBJECT_H */

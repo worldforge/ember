@@ -49,7 +49,7 @@
 
 using namespace std;
 
-namespace dime
+namespace Ember
 {
 
   typedef std::list<Eris::ServerInfo> svrl;
@@ -215,4 +215,4 @@ namespace dime
 
     return;
   }
-} // namespace dime
+} // namespace Ember

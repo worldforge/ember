@@ -29,16 +29,16 @@
 
 #include <string>
 
-namespace dime {
+namespace Ember {
 
 /**
- * Dime Metaserver Service
+ * Ember Metaserver Service
  *
  * @author Miguel Guzman Miranda [Aglanor]
  *
- * @see dime::Service
- * @see dime::ServerService
- * @see dime::ConsoleObject
+ * @see Ember::Service
+ * @see Ember::ServerService
+ * @see Ember::ConsoleObject
  */
 class MetaserverService: public Service,
   public ConsoleObject, virtual public SigC::Object
@@ -96,7 +96,7 @@ class MetaserverService: public Service,
 
 }; //MetaserverService
 
-} // namespace dime
+} // namespace Ember
 
 #endif
 

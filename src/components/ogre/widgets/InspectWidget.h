@@ -24,7 +24,7 @@
 #define DIMEOGREINSPECTWIDGET_H
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class GUIManager;
 class Widget;
@@ -42,9 +42,9 @@ public:
 protected:
 	CEGUI::Listbox* mChildList;
 	CEGUI::StaticText* mInfo;
-	void showEntityInfo(DimeEntity* entity);
+	void showEntityInfo(EmberEntity* entity);
 	
-	void handleAction(const std::string& action, DimeEntity* entity);
+	void handleAction(const std::string& action, EmberEntity* entity);
 
 
 };

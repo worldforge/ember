@@ -48,17 +48,17 @@
 
 #include "MathConverter.h"
 
-namespace DimeOgre {
-class DimeEntityFactory;
+namespace EmberOgre {
+class EmberEntityFactory;
 
 /*
  * A representation of an Eris::Entity, ie. a world entity.
- * Note that most entities in the game world will be of type DimePhysicalEntity
+ * Note that most entities in the game world will be of type EmberPhysicalEntity
  * as they will have some sort of physical representation.
  * For things such as boundaries and weather, this is a nice class.
  */
-class DimeEntity : public Ogre::UserDefinedObject, public Eris::Entity {
-	friend class DimeEntityFactory;
+class EmberEntity : public Ogre::UserDefinedObject, public Eris::Entity {
+	friend class EmberEntityFactory;
 public:
 
 	enum ClickMasks
@@ -71,8 +71,8 @@ public:
 		CM_TERRAIN = 1<<5
 	};
 
-	DimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
-	virtual ~DimeEntity();
+	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
+	virtual ~EmberEntity();
 	
 
 	/**
@@ -81,22 +81,22 @@ public:
 	 * This should of course be extended to a more dynamic physics simulation
 	 * in the future
 	 */
-	virtual void adjustHeightPositionForContainedNode(DimeEntity* const entity);
+	virtual void adjustHeightPositionForContainedNode(EmberEntity* const entity);
 
 	/*
 	 * return the scenenode to which this entity belongs
 	 */
 	inline Ogre::SceneNode* getSceneNode() const 
 	{
-		//return DimeOgre::getSingleton().getSceneManager()->getSceneNode(getId());
+		//return EmberOgre::getSingleton().getSceneManager()->getSceneNode(getId());
 		return mOgreNode;	
 	}
 	/*
 	 * Called by a contained member to see if the member is allowed to be shown.
-	 * This can be reimplemented in a subclass such as AvatarDimeEntity to 
+	 * This can be reimplemented in a subclass such as AvatarEmberEntity to 
 	 * disallow things that belongs to a characters inventory to be shown.
 	 */
-	virtual bool allowVisibilityOfMember(DimeEntity* entity);
+	virtual bool allowVisibilityOfMember(EmberEntity* entity);
 
 
 
@@ -117,7 +117,7 @@ protected:
 	/* 
 	 * Creates the main scene node which holds the entity.
 	 */
-	void DimeEntity::createSceneNode();
+	void EmberEntity::createSceneNode();
 	
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 

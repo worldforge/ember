@@ -30,7 +30,7 @@
 // local headers
 #include "MediaDeployer.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 //TODO: add a sequence for mediadeployer ids
 //TODO: add several methods for adding media with different params

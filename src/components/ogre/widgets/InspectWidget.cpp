@@ -23,7 +23,7 @@
 
 #include "Widget.h"
 #include "GUIManager.h"
-#include "DimeEntity.h"
+#include "EmberEntity.h"
 
 #include "InspectWidget.h"
 
@@ -31,7 +31,7 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 InspectWidget::InspectWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
 {
@@ -55,17 +55,17 @@ void InspectWidget::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &InspectWidget::handleAction));
-/*	DimeOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarDimeEntity));*/
+/*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
 }
 
-void InspectWidget::handleAction(const std::string& action, DimeEntity* entity) {
+void InspectWidget::handleAction(const std::string& action, EmberEntity* entity) {
 
 	if (action == "inspect") {
 		showEntityInfo(entity);
 	}
 }
 
-void InspectWidget::showEntityInfo(DimeEntity* entity)
+void InspectWidget::showEntityInfo(EmberEntity* entity)
 {
 	mMainWindow->setVisible(true);
 	

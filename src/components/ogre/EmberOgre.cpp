@@ -4,7 +4,7 @@ OgreApp.cpp by Miguel Guzman Miranda (Aglanor)
 Based on OGRE sample applications:
     OGRE (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://ogre.sourceforge.net
-Based on the dime main application by the dime team
+Based on the Ember main application by the Ember team
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.56  2004-11-03 19:38:02  erik
+ *      Revision 1.57  2004-11-04 21:40:26  erik
+ *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Moved from dime to ember. Thus the big checkin.
+ *      * Added wield action to inventory
+ *
+ *      Revision 1.56  2004/11/03 19:38:02  erik
  *      2004-11-03 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -69,7 +76,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      Revision 1.51  2004/10/14 00:13:14  erik
  *      2004-10-14 Erik Hjortsberg <erik@hysteriskt.nu>
  *
- *      * moved EventCreatedAvatarEntity to DimeOgre class and adjusted inventory
+ *      * moved EventCreatedAvatarEntity to EmberOgre class and adjusted inventory
  *
  *      Revision 1.50  2004/10/12 00:49:54  erik
  *      2004-10-12 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -102,9 +109,9 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      2004-08-23 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre/:
- *      *added PersonDimeEntity for taking care of person entities (which can hold stuff in their hands etc.)
+ *      *added PersonEmberEntity for taking care of person entities (which can hold stuff in their hands etc.)
  *      *small changes to scene layout, mostly for testing 3d performance
- *      *use better handling of bounding boxes in ogre, there's a call to MeshManager in DimeOgre.cpp which requires a patch to ogre. The call can be safely removed though.
+ *      *use better handling of bounding boxes in ogre, there's a call to MeshManager in EmberOgre.cpp which requires a patch to ogre. The call can be safely removed though.
  *
  *      Revision 1.46  2004/08/19 21:23:48  erik
  *      2004-08-19 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -130,7 +137,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      *cleaned up the class layout and structured it, we're not using that many Singletons anymore
  *      *moved to Ogre CVS in order to get a more decent terrainmanager
  *      *added splatting and nice texturing to the terrain
- *      *added classes TerrainShader and DimeTerrainPageSource which works with the new terrainmanager
+ *      *added classes TerrainShader and EmberTerrainPageSource which works with the new terrainmanager
  *
  *      Revision 1.42  2004/07/21 00:27:30  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -138,7 +145,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      /src/components/ogre:
  *      *removed references to EntityListener, we'll keep the class however as
  *      we'll pobably use it in the future
- *      *put everything under the namespace DimeOgre
+ *      *put everything under the namespace EmberOgre
  *
  *      Revision 1.41  2004/07/20 22:52:16  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -148,7 +155,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      MathConverter.h:
  *      *changed scaling
  *
- *      DimeEntity.*:
+ *      EmberEntity.*:
  *      *fixed problems with containers
  *      *added more meshes (sty, oak)
  *
@@ -162,16 +169,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      InputManager.cpp:
  *      *removed buggy polling code and replaced it with signals in the ServerService class
  *
- *      DimeEntityFactory.*:
- *      *added support for AvatarDimeEntity
+ *      EmberEntityFactory.*:
+ *      *added support for AvatarEmberEntity
  *
- *      AvatarDimeEntity.*:
+ *      AvatarEmberEntity.*:
  *      New class for handling the Avatar entity
  *
  *      AvatarCamera.*:
  *      New class for handling the Avatar camera
  *
- *      DimeOgre.*:
+ *      EmberOgre.*:
  *      *cleaned up old code
  *      *moved camera stuff into AvatarCamera
  *      *better connection between Services signals and other objects
@@ -193,7 +200,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      2004-07-16 Erik Hjortsberg <erik@hysteriskt.nu>
  *      /src/components/ogre:
  *      *added support for mercator terrain by using a subclass of Ogre's OctreeSceneManager, it includes some preparation in order to access the Ogre headers, I'll add instructions tomorrow
- *      *dime now depends on Mercator
+ *      *Ember now depends on Mercator
  *
  *      Revision 1.38  2004/07/13 22:02:24  erik
  *      Erik Hjortsberg  <erik@hysteriskt.nu>
@@ -210,8 +217,8 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      The mouse now shows a cursor, movement happens when the mouse goes near the edges of the screen.
  *      Various code cleanups, forward declarations and movement of code from .h-files to .cpp-files.
  *      Addition of preprocessor declarations in MathConverter.h to easily convert between WF and Ogre units.
- *      Revamping of how entities are handled though the new class DimeEntity and changes to EntityListener.
- *      Rudimentary animation of the avatar.
+ *      Revamping of how entities are handled though the new class EmberEntity and changes to EntityListener.
+ *      RuEmberntary animation of the avatar.
  *      Addition of a debug layer to show triangles, fps etc. Taken from Ogre.
  *      Usage of ogre.cfg for reading configuration values instead of using the console each time.
  *      Some cleanup of the world. The only thing you see now is a ground plane. But it gets populated when connected to a server.
@@ -251,31 +258,31 @@ http://www.gnu.org/copyleft/lesser.txt.
  *              * src/components/ogre: added PlayerMouseListener,
  *              which brings back mouselook.
  *              Makefile.am: modified to include PlayerMouseListener.
- *              DimeOgre.cpp: instantiates and configures
+ *              EmberOgre.cpp: instantiates and configures
  *              PlayerMouseListener.
  *
  *      Revision 1.29  2003/11/05 08:10:56  aglanor
  *      2003-11-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre:
  *              MediaDeployer.(h|cpp): added methods for adding media.
- *              DimeOgre.cpp: some cleanup.
+ *              EmberOgre.cpp: some cleanup.
  *
  *      Revision 1.28  2003/10/30 07:37:41  aglanor
  *      2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre:
- *              Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
+ *              Makefile.am, EmberOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
  *              Moved Ogre response to console commands from the app
  *              to its own class, ConsoleObjectImpl.
  *
  *      Revision 1.27  2003/10/29 18:25:25  aglanor
  *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *              * src/services/components/ogre/: DimeOgre.(h|cpp):
+ *              * src/services/components/ogre/: EmberOgre.(h|cpp):
  *              Added ConsoleObject inheritance, it runs the Quit command.
  *
  *      Revision 1.26  2003/10/25 21:07:40  aglanor
  *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre/: Makefile.am,
- *              Console.(h|cpp), InputManager.(h|cpp), DimeOgre.cpp:
+ *              Console.(h|cpp), InputManager.(h|cpp), EmberOgre.cpp:
  *              Added InputManager and Console from Die (thanks to
  *              wolfman8k).
  *              Press ~ or F12 to show the console. The console is not
@@ -287,15 +294,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *              if Ogre has a way to add Plugin so's with the autotools.
  *
  *      Revision 1.25  2003/10/23 09:54:45  lee
- *      Removed code and includes from DimeServices.h and put them in
- *      DimeServices.cpp
+ *      Removed code and includes from EmberServices.h and put them in
+ *      EmberServices.cpp
  *
  *      Fixed other classes and Makefile.am to work again
  *
  *      Make sure you autogen.sh and configure again...
  *
  *      Revision 1.24  2003/10/22 08:42:08  lee
- *      Added include of stdlib.h to DimeOgre to stop errors from not declaring
+ *      Added include of stdlib.h to EmberOgre to stop errors from not declaring
  *      malloc in OgreStdHeaders.h (why it needs it, i don't know)
  *
  *      Revision 1.23  2003/10/21 20:51:42  aglanor
@@ -305,7 +312,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      Restored SkyBox
  *
  *      Revision 1.21  2003/10/18 23:18:37  sandalle
- *      * src/components/ogre/DimeOgre.cpp:290: Actually comment it out...
+ *      * src/components/ogre/EmberOgre.cpp:290: Actually comment it out...
  *
  *      Revision 1.20  2003/09/29 06:28:15  aglanor
  *      changed the texture of the plane to look like ground
@@ -318,7 +325,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      2003-09-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * configure.ac: pumped up atlas version req to 0.5
  *      	* ServerService: added support for character creation
- *              * DimeOgre: bound key "5" to character creation
+ *              * EmberOgre: bound key "5" to character creation
  *
  *      Revision 1.17  2003/08/28 17:12:08  aglanor
  *      fixed typo
@@ -336,8 +343,8 @@ http://www.gnu.org/copyleft/lesser.txt.
  *              materials, and assigns material and texture mapping
  *              to the Ogre mesh accordingly.
  *
- *      	Check screenshot of fully textured pig within dime here:
- *      	http://purple.worldforge.org/~aglanor/screenshots/dime_20030623.png
+ *      	Check screenshot of fully textured pig within Ember here:
+ *      	http://purple.worldforge.org/~aglanor/screenshots/Ember_20030623.png
  *
  *      Revision 1.13  2003/05/07 23:28:43  aglanor
  *      Added a little more variety to the media. Now there's different media
@@ -360,7 +367,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *
  *      Revision 1.9  2003/04/28 00:55:06  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
+ *      	* EmberOgre.h/cpp: added a Water Plane at height 0.
  *      	There is also a little ogre head marking (0,0,0).
  *      	The more detailed the scene, the easiest it is
  *      	to spot strange behaviors.
@@ -389,7 +396,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      heh, we're short of OGRE models around here ;)
  *
  *      Revision 1.5  2003/04/24 23:21:09  aglanor
- *      DimeOgre app is again linked back from the FrameListener, so entities sighted
+ *      EmberOgre app is again linked back from the FrameListener, so entities sighted
  *      are created in the Ogre SceneManager (as squirrels, of course).
  *      I've also made the sample entity the ogrehead.mesh, you need to have it
  *      on your media dir too.
@@ -438,7 +445,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      	Currently they're all squirrels of doom.
  *
  *      	* OgreApp.cpp/h: removed "using namespace ogre". OGRE should not be
- *      	more relevant here than dime or eris. Now it uses the default namesp
+ *      	more relevant here than Ember or eris. Now it uses the default namesp
  *
 
 -----------------------------------------------------------------------------
@@ -451,8 +458,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 // Headers to stop compile problems from headers
 #include <stdlib.h>
 
-//Dime headers
-#include "services/DimeServices.h"
+//Ember headers
+#include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
@@ -461,11 +468,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 // ------------------------------
-// Include OGRE dime client files
+// Include OGRE Ember client files
 // ------------------------------
 //#include "OgreGameView.h"
 //#include "MathConverter.h"
-//#include "DimeTerrainPageSource.h"
+//#include "EmberTerrainPageSource.h"
 #include "TerrainGenerator.h"
 
 #include "InputManager.h"
@@ -474,7 +481,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "Avatar.h"
 #include "AvatarController.h"
 #include "EntityListener.h"
-#include "DimeEntityFactory.h"
+#include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "AvatarCamera.h"
 #include "DebugListener.h"
@@ -484,16 +491,16 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "GroundCover.h"
 
-#include "DimeTerrainSceneManager.h"
+#include "EmberTerrainSceneManager.h"
 
 // ------------------------------
-// Include dime header files
+// Include Ember header files
 // ------------------------------
 
 #include "framework/ConsoleBackend.h"
 
 
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
 // ------------------------------
 // Include Eris header files
@@ -541,12 +548,12 @@ http://www.gnu.org/copyleft/lesser.txt.
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
 
 // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
-  class CerrLogObserver: public dime::LoggingService::Observer
+  class CerrLogObserver: public Ember::LoggingService::Observer
     {
     public:
         CerrLogObserver()
@@ -554,7 +561,7 @@ namespace DimeOgre {
         }
 
         virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
-                                  const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+                                  const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
         {
             tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
 		
@@ -574,19 +581,19 @@ namespace DimeOgre {
 	    std::cerr << ctm->tm_sec << "] ";
 	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
 
-            if(importance == dime::LoggingService::CRITICAL)
+            if(importance == Ember::LoggingService::CRITICAL)
                 {
                     std::cerr << "CRITICAL";
                 }
-            else  if(importance == dime::LoggingService::FAILURE)
+            else  if(importance == Ember::LoggingService::FAILURE)
                 {
                     std::cerr << "FAILURE";
                 }
-            else if(importance == dime::LoggingService::WARNING)
+            else if(importance == Ember::LoggingService::WARNING)
                 {
                     std::cerr << "WARNING";
                 }
-            else if(importance == dime::LoggingService::INFO)
+            else if(importance == Ember::LoggingService::INFO)
                 {
                     std::cerr << "INFO";
                 }
@@ -601,22 +608,22 @@ namespace DimeOgre {
 
     };
     
-template<> DimeOgre* dime::Singleton<DimeOgre>::ms_Singleton = 0;
+template<> EmberOgre* Ember::Singleton<EmberOgre>::ms_Singleton = 0;
 
-DimeOgre::DimeOgre() :
+EmberOgre::EmberOgre() :
 //mFrameListener(0),
 mRoot(0),
 mKeepOnRunning(true)
 {}
 
-bool DimeOgre::frameStarted(const Ogre::FrameEvent & evt)
+bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	Eris::PollDefault::poll(1);
 	return mKeepOnRunning;
 }
 
 
-void DimeOgre::go(void)
+void EmberOgre::go(void)
 {
 	if (!setup())
 		return;
@@ -624,7 +631,7 @@ void DimeOgre::go(void)
 	mRoot->startRendering();
 }
 
-void DimeOgre::shutdown()
+void EmberOgre::shutdown()
 {
 	mKeepOnRunning = false;
 }
@@ -632,9 +639,9 @@ void DimeOgre::shutdown()
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
-bool DimeOgre::setup(void)
+bool EmberOgre::setup(void)
 {
-	dime::ConfigService* configSrv = dime::DimeServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
 		std::string pluginrc =  configSrv->getHomeDirectory() + std::string(configSrv->getValue("ogre", "pluginrc"));
 
@@ -688,15 +695,15 @@ bool DimeOgre::setup(void)
 
 	
 /*
-    dimeEntityFactory = new DimeEntityFactory(mSceneMgr);
+    EmberEntityFactory = new EmberEntityFactory(mSceneMgr);
     
-    dime::DimeServices::getInstance()->getServerService()->getView()->registerFactory(dimeEntityFactory);
+    Ember::EmberServices::getInstance()->getServerService()->getView()->registerFactory(EmberEntityFactory);
 */
     return true;
 
 }
 /** Configures the application - returns false if the user chooses to abandon configuration. */
-bool DimeOgre::configure(void)
+bool EmberOgre::configure(void)
 {
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
@@ -715,16 +722,16 @@ bool DimeOgre::configure(void)
     }
 }
 
-void DimeOgre::chooseSceneManager(void)
+void EmberOgre::chooseSceneManager(void)
 {
     // We first register our own scenemanager
-    DimeTerrainSceneManager* sceneManager = new DimeTerrainSceneManager();
+    EmberTerrainSceneManager* sceneManager = new EmberTerrainSceneManager();
     mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
     //And then request it
     mSceneMgr = static_cast<Ogre::TerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
     
-    DimeTerrainSceneManager* mDimeTerr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
-    assert(mDimeTerr);
+    EmberTerrainSceneManager* mEmberTerr = dynamic_cast<EmberTerrainSceneManager*>(mSceneMgr);
+    assert(mEmberTerr);
 
     
     
@@ -732,11 +739,11 @@ void DimeOgre::chooseSceneManager(void)
 
 
 /// Method which will define the source of resources (other than current folder)
-void DimeOgre::setupResources(void)
+void EmberOgre::setupResources(void)
 {
 	std::string resourcesrc = "resources.cfg";
-	if (dime::DimeServices::getInstance()->getConfigService()->itemExists("ogre", "resourcesrc")) {
-		resourcesrc =  dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(dime::DimeServices::getInstance()->getConfigService()->getValue("ogre", "resourcesrc"));
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("ogre", "resourcesrc")) {
+		resourcesrc =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue("ogre", "resourcesrc"));
 	} 
     
 	// Load resource paths from config file
@@ -746,7 +753,7 @@ void DimeOgre::setupResources(void)
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
-	std::string mediaHomePath = dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
+	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
 //	Ogre::ResourceManager::addCommonSearchPath(std::string();
     Ogre::String typeName, archName;
     while (i.hasMoreElements())
@@ -760,7 +767,7 @@ void DimeOgre::setupResources(void)
 
 
 
-void DimeOgre::createScene(void)
+void EmberOgre::createScene(void)
 {
 /*  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
  mSceneMgr->setAmbientLight(Ogre::ColourValue(0, 0, 0));
@@ -812,22 +819,22 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
 	
 }
 
-void DimeOgre::connectViewSignals(Eris::View* world)
+void EmberOgre::connectViewSignals(Eris::View* world)
 {
-    Eris::Factory::registerFactory(mDimeEntityFactory);
-	//world->registerFactory(mDimeEntityFactory, 10);
+    Eris::Factory::registerFactory(mEmberEntityFactory);
+	//world->registerFactory(mEmberEntityFactory, 10);
 	
 	EntityListener::getSingleton().connectViewSignals();
 }
 
-void DimeOgre::connectedToServer(Eris::Connection* connection) 
+void EmberOgre::connectedToServer(Eris::Connection* connection) 
 {
-	mDimeEntityFactory = new DimeEntityFactory(mSceneMgr,mTerrainGenerator, connection->getTypeService());
-	EventCreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarDimeEntity));
-	EventCreatedDimeEntityFactory.emit(mDimeEntityFactory);
+	mEmberEntityFactory = new EmberEntityFactory(mSceneMgr,mTerrainGenerator, connection->getTypeService());
+	EventCreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarEmberEntity));
+	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
 
-void DimeOgre::createFrameListener(void)
+void EmberOgre::createFrameListener(void)
 {
 
 	mRoot->addFrameListener(mMotionManager);
@@ -837,56 +844,56 @@ void DimeOgre::createFrameListener(void)
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }
 
-Avatar* DimeOgre::getAvatar() {
+Avatar* EmberOgre::getAvatar() {
 	return mAvatar;
 }
 
 
-Ogre::TerrainSceneManager* DimeOgre::getSceneManager()
+Ogre::TerrainSceneManager* EmberOgre::getSceneManager()
 {
 	return mSceneMgr;
 }
 
-TerrainGenerator* DimeOgre::getTerrainGenerator()
+TerrainGenerator* EmberOgre::getTerrainGenerator()
 {
 	return mTerrainGenerator;
 }
 
-MotionManager* DimeOgre::getMotionManager()
+MotionManager* EmberOgre::getMotionManager()
 {
 	return mMotionManager;
 }
 
-Ogre::Root* DimeOgre::getOgreRoot()
+Ogre::Root* EmberOgre::getOgreRoot()
 {
 	assert(mRoot);
 	return mRoot;
 }
 
-AvatarCamera* DimeOgre::getMainCamera()
+AvatarCamera* EmberOgre::getMainCamera()
 {
 	return mAvatar->getAvatarCamera();
 }
 
-DimeEntityFactory* DimeOgre::getEntityFactory()
+EmberEntityFactory* EmberOgre::getEntityFactory()
 {
-	return mDimeEntityFactory;
+	return mEmberEntityFactory;
 }
 
-void DimeOgre::initializeDimeServices(void)
+void EmberOgre::initializeEmberServices(void)
 {
-	// Initialize dime services
+	// Initialize Ember services
 
 	// Initialize the Logging service and an error observer
-	dime::LoggingService *logging = dime::DimeServices::getInstance()->getLoggingService();
+	Ember::LoggingService *logging = Ember::EmberServices::getInstance()->getLoggingService();
 	CerrLogObserver* obs = new CerrLogObserver();
-	obs->setFilter(dime::LoggingService::VERBOSE);
+	obs->setFilter(Ember::LoggingService::VERBOSE);
 	logging->addObserver(obs);
 
 
 	// Initialize the Configuration Service
-	dime::DimeServices::getInstance()->getConfigService()->start();
-	dime::DimeServices::getInstance()->getConfigService()->loadSavedConfig(dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + "ember.conf");
+	Ember::EmberServices::getInstance()->getConfigService()->start();
+	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "ember.conf");
 
 
 /*
@@ -898,7 +905,7 @@ void DimeOgre::initializeDimeServices(void)
 	  fclose(temp);
 #endif
 	// Initialize the SoundService
-	dime::DimeServices::getInstance()->getSoundService()->start();
+	Ember::EmberServices::getInstance()->getSoundService()->start();
 #ifndef WIN32
 	}
 #endif
@@ -911,13 +918,13 @@ void DimeOgre::initializeDimeServices(void)
 	// Set Eris Logging Level
 	Eris::setLogLevel(Eris::LOG_DEBUG);
 
-	dime::DimeServices::getInstance()->getMetaserverService()->start();
+	Ember::EmberServices::getInstance()->getMetaserverService()->start();
 
 	// Initialize the Server Service
-	dime::DimeServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &DimeOgre::connectedToServer));
-	dime::DimeServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &DimeOgre::connectViewSignals));
+	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &EmberOgre::connectedToServer));
+	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &EmberOgre::connectViewSignals));
 	
-	dime::DimeServices::getInstance()->getServerService()->start();
+	Ember::EmberServices::getInstance()->getServerService()->start();
 #endif
 
 }
@@ -938,10 +945,10 @@ int main(int argc, char **argv)
 #endif
 {
     // Create application object
-    DimeOgre::DimeOgre* app = new DimeOgre::DimeOgre();
+    EmberOgre::EmberOgre* app = new EmberOgre::EmberOgre();
 
-	// Initialize all dime services needed for this application
-	app->initializeDimeServices();
+	// Initialize all Ember services needed for this application
+	app->initializeEmberServices();
 
     try {
         app->go();

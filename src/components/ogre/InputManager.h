@@ -29,9 +29,9 @@
 
 #include <list>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEventProcessor;
+class EmberEventProcessor;
 class DebugListener;
 class AvatarController;
 
@@ -104,7 +104,7 @@ class InputManager : public Ogre::FrameListener, public Ogre::KeyListener, publi
 	protected:
 //		virtual void connectMouseListeners() ;
 		
-		//creates a new DimeEventProcessor which will take care of all input processing
+		//creates a new EmberEventProcessor which will take care of all input processing
 		//this (mEventProcessor) is hooked to methods such as keyPressed and so on
 		virtual void createEventProcessor();		
 		

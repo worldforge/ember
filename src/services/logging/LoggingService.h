@@ -36,7 +36,7 @@
 //#include <varargs.h> //TODO: Needed by unix?
 
 
-namespace dime
+namespace Ember
 {
 
 //General TODOs:
@@ -56,11 +56,11 @@ namespace dime
 	
 //Added by nikal 2002/10/22 For convenience. 
 //%TASK nikal,1: Perhaps a script to switch the macros to the actual function call would make code more readable?
-#define S_LOG_VERBOSE() dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)
-#define S_LOG_INFO() dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-#define S_LOG_WARNING() dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)
-#define S_LOG_FAILURE()dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-#define S_LOG_CRITICAL() dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService:CRITICAL)
+#define S_LOG_VERBOSE() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)
+#define S_LOG_INFO() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
+#define S_LOG_WARNING() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)
+#define S_LOG_FAILURE()Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
+#define S_LOG_CRITICAL() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService:CRITICAL)
 	
 //TODO: Sorry, but innerclass didn't work properly
     const int NUMBER_BUFFER_SIZE = 24;
@@ -102,7 +102,7 @@ namespace dime
  * frequently.
  *
  * SAMPLE:
- * using namespace dime::services;
+ * using namespace Ember::services;
  * LoggingService * logger;
  * //service is assumed to be started; observers are added
  *
@@ -129,7 +129,7 @@ namespace dime
 
         /**
 	 * This enum contains all levels of message importance.
-	 * -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of dime's internal state.
+	 * -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of Ember's internal state.
 	 * -INFO messages are intended to be read only to look for reasons of errors.
 	 * -WARNING messages appear whenever something could get critical in some case.
 	 * -CRITICAL messages should be read always and contain fatal errors.
@@ -515,6 +515,6 @@ namespace dime
 
     };                          // LoggingService
 
-}                               // namespace dime
+}                               // namespace Ember
 
 #endif

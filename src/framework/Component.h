@@ -23,7 +23,7 @@
 
 #include <string>
 
-namespace dime {
+namespace Ember {
 namespace framework {
 
 /**

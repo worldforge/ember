@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.31  2004-11-03 02:01:14  erik
+ *      Revision 1.32  2004-11-04 21:40:26  erik
+ *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Moved from dime to ember. Thus the big checkin.
+ *      * Added wield action to inventory
+ *
+ *      Revision 1.31  2004/11/03 02:01:14  erik
  *      2004-11-03 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -63,7 +70,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      Revision 1.27  2004/10/14 00:13:14  erik
  *      2004-10-14 Erik Hjortsberg <erik@hysteriskt.nu>
  *
- *      * moved EventCreatedAvatarEntity to DimeOgre class and adjusted inventory
+ *      * moved EventCreatedAvatarEntity to EmberOgre class and adjusted inventory
  *
  *      Revision 1.26  2004/10/12 23:03:01  erik
  *      2004-10-12 Erik Hjortsberg <erik@katastrof.nu>
@@ -103,7 +110,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      *cleaned up the class layout and structured it, we're not using that many Singletons anymore
  *      *moved to Ogre CVS in order to get a more decent terrainmanager
  *      *added splatting and nice texturing to the terrain
- *      *added classes TerrainShader and DimeTerrainPageSource which works with the new terrainmanager
+ *      *added classes TerrainShader and EmberTerrainPageSource which works with the new terrainmanager
  *
  *      Revision 1.21  2004/07/21 00:27:29  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -111,7 +118,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      /src/components/ogre:
  *      *removed references to EntityListener, we'll keep the class however as
  *      we'll pobably use it in the future
- *      *put everything under the namespace DimeOgre
+ *      *put everything under the namespace EmberOgre
  *
  *      Revision 1.20  2004/07/20 22:52:16  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
@@ -121,7 +128,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      MathConverter.h:
  *      *changed scaling
  *
- *      DimeEntity.*:
+ *      EmberEntity.*:
  *      *fixed problems with containers
  *      *added more meshes (sty, oak)
  *
@@ -135,16 +142,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      InputManager.cpp:
  *      *removed buggy polling code and replaced it with signals in the ServerService class
  *
- *      DimeEntityFactory.*:
- *      *added support for AvatarDimeEntity
+ *      EmberEntityFactory.*:
+ *      *added support for AvatarEmberEntity
  *
- *      AvatarDimeEntity.*:
+ *      AvatarEmberEntity.*:
  *      New class for handling the Avatar entity
  *
  *      AvatarCamera.*:
  *      New class for handling the Avatar camera
  *
- *      DimeOgre.*:
+ *      EmberOgre.*:
  *      *cleaned up old code
  *      *moved camera stuff into AvatarCamera
  *      *better connection between Services signals and other objects
@@ -159,7 +166,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      2004-07-16 Erik Hjortsberg <erik@hysteriskt.nu>
  *      /src/components/ogre:
  *      *added support for mercator terrain by using a subclass of Ogre's OctreeSceneManager, it includes some preparation in order to access the Ogre headers, I'll add instructions tomorrow
- *      *dime now depends on Mercator
+ *      *Ember now depends on Mercator
  *
  *      Revision 1.18  2004/07/12 04:05:48  erik
  *      2004-07-12 Erik Hjortsberg erik by hysteriskt speck org
@@ -169,8 +176,8 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      The mouse now shows a cursor, movement happens when the mouse goes near the edges of the screen.
  *      Various code cleanups, forward declarations and movement of code from .h-files to .cpp-files.
  *      Addition of preprocessor declarations in MathConverter.h to easily convert between WF and Ogre units.
- *      Revamping of how entities are handled though the new class DimeEntity and changes to EntityListener.
- *      Rudimentary animation of the avatar.
+ *      Revamping of how entities are handled though the new class EmberEntity and changes to EntityListener.
+ *      RuEmberntary animation of the avatar.
  *      Addition of a debug layer to show triangles, fps etc. Taken from Ogre.
  *      Usage of ogre.cfg for reading configuration values instead of using the console each time.
  *      Some cleanup of the world. The only thing you see now is a ground plane. But it gets populated when connected to a server.
@@ -200,13 +207,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      Revision 1.13  2003/10/30 07:37:41  aglanor
  *      2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre:
- *              Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
+ *              Makefile.am, EmberOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
  *              Moved Ogre response to console commands from the app
  *              to its own class, ConsoleObjectImpl.
  *
  *      Revision 1.12  2003/10/29 18:25:25  aglanor
  *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *              * src/services/components/ogre/: DimeOgre.(h|cpp):
+ *              * src/services/components/ogre/: EmberOgre.(h|cpp):
  *              Added ConsoleObject inheritance, it runs the Quit command.
  *
  *      Revision 1.11  2003/10/21 20:48:37  aglanor
@@ -217,7 +224,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *              * /src/components/ogre/Makefile.am: removed the cal3d
  *              to Ogre converter, this app will no longer be here.
  *              All models will be converted from Cal3d to Open Model
- *              Format and then to Ogre, all of this outside Dime.
+ *              Format and then to Ogre, all of this outside Ember.
  *              (also, we don't need the cal3d library anymore,
  *              until we add a component that uses it, like Crystalspace).
  *
@@ -230,8 +237,8 @@ http://www.gnu.org/copyleft/lesser.txt.
  *              materials, and assigns material and texture mapping
  *              to the Ogre mesh accordingly.
  *
- *      	Check screenshot of fully textured pig within dime here:
- *      	http://purple.worldforge.org/~aglanor/screenshots/dime_20030623.png
+ *      	Check screenshot of fully textured pig within Ember here:
+ *      	http://purple.worldforge.org/~aglanor/screenshots/Ember_20030623.png
  *
  *      Revision 1.7  2003/05/07 23:28:43  aglanor
  *      Added a little more variety to the media. Now there's different media
@@ -248,7 +255,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *
  *      Revision 1.4  2003/04/28 00:55:06  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
- *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
+ *      	* EmberOgre.h/cpp: added a Water Plane at height 0.
  *      		There is also a little ogre head marking (0,0,0).
  *      			The more detailed the scene, the easiest it is
  *      				to spot strange behaviors.
@@ -280,7 +287,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      	Currently they're all squirrels of doom.
  *
  *      	* OgreApp.cpp/h: removed "using namespace ogre". OGRE should not be
- *      	more relevant here than dime or eris. Now it uses the default namesp
+ *      	more relevant here than Ember or eris. Now it uses the default namesp
  *
 
 -----------------------------------------------------------------------------
@@ -292,8 +299,8 @@ Description: Base class for all the OGRE examples
 -----------------------------------------------------------------------------
 */
 
-#ifndef __DimeOgre_H__
-#define __DimeOgre_H__
+#ifndef __EmberOgre_H__
+#define __EmberOgre_H__
 
 #include <OgreNoMemoryMacros.h>
 
@@ -339,7 +346,7 @@ Description: Base class for all the OGRE examples
 #include <OgreConfigFile.h>
 #include <OgreTerrainSceneManager.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 //class TerrainListener;
 
@@ -351,9 +358,9 @@ class Avatar;
 
 class AvatarCamera;
 
-class AvatarDimeEntity;
+class AvatarEmberEntity;
 
-class DimeEntityFactory;
+class EmberEntityFactory;
 
 class TerrainGenerator;
 
@@ -370,18 +377,18 @@ class Water;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre : public dime::Singleton<DimeOgre>, virtual public SigC::Object, public Ogre::FrameListener //, public Ogre::ActionListener, public Ogre::MouseListener
-// TODO: the DimeOgre ConsoleObject will be included in a different class
+class EmberOgre : public Ember::Singleton<EmberOgre>, virtual public SigC::Object, public Ogre::FrameListener //, public Ogre::ActionListener, public Ogre::MouseListener
+// TODO: the EmberOgre ConsoleObject will be included in a different class
 {
 public:
  
- 	//static DimeOgre & getSingleton(void);
+ 	//static EmberOgre & getSingleton(void);
  
     /// Standard constructor
-    DimeOgre();
+    EmberOgre();
  
     /// Standard destructor
-    virtual ~DimeOgre()
+    virtual ~EmberOgre()
     {
 //        if (mFrameListener)
 //            delete mFrameListener;
@@ -398,8 +405,8 @@ public:
     virtual void go(void);
 	void shutdown();
 
-	// Initialize all dime services needed for this application
-	void initializeDimeServices(void);
+	// Initialize all Ember services needed for this application
+	void initializeEmberServices(void);
 
 	void connectViewSignals(Eris::View* world);
 	void connectedToServer(Eris::Connection* connection);
@@ -411,12 +418,12 @@ public:
 	Ogre::TerrainSceneManager* getSceneManager();
 	TerrainGenerator* getTerrainGenerator();
 	MotionManager* getMotionManager();
-	Ogre::Root* DimeOgre::getOgreRoot();
-	DimeEntityFactory* getEntityFactory();
+	Ogre::Root* EmberOgre::getOgreRoot();
+	EmberEntityFactory* getEntityFactory();
 	AvatarCamera* getMainCamera();
 	
-	SigC::Signal1<void, DimeEntityFactory*> EventCreatedDimeEntityFactory;
-	SigC::Signal1<void, AvatarDimeEntity*> EventCreatedAvatarEntity;
+	SigC::Signal1<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
+	SigC::Signal1<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
 	
 
 //private:
@@ -427,8 +434,8 @@ protected:
 	// Avatar setup
 	Avatar* mAvatar;
 
-	/** Instance of DimeOgre */
-	//static DimeOgre* _instance;
+	/** Instance of EmberOgre */
+	//static EmberOgre* _instance;
 
 	Ogre::Root *mRoot;
     Ogre::TerrainSceneManager* mSceneMgr;
@@ -442,7 +449,7 @@ protected:
 //	TerrainGenerator* mTerrainGenerator;
 
 	
-	DimeEntityFactory* mDimeEntityFactory;
+	EmberEntityFactory* mEmberEntityFactory;
 
     // These internal methods package up the stages in the startup process
     /** Sets up the application - returns false if the user chooses to abandon configuration. */
@@ -461,7 +468,7 @@ protected:
     /// Method which will define the source of resources (other than current folder)
     virtual void setupResources(void);
     
-//    DimeTerrainPageSource* mPageSource;
+//    EmberTerrainPageSource* mPageSource;
 	TerrainGenerator* mTerrainGenerator;
 	//InputManager* mInputManager;
 	MotionManager* mMotionManager;
@@ -504,7 +511,7 @@ class OgreApp : public BaseApplication
 public:
     // Basic constructor
     OgreApp() {}
-	dime::OgreGameView* mGameview;
+	Ember::OgreGameView* mGameview;
 
 
 protected:

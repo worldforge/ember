@@ -46,9 +46,9 @@
 //#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEntity;
+class EmberEntity;
 class TerrainGenerator;
 class CEGUI::Window;
 class Widget;
@@ -59,7 +59,7 @@ class MousePicker;
  * This class will be responsible for all the GUI related things
  */
 class GUIManager : 
-public dime::Singleton<GUIManager>, 
+public Ember::Singleton<GUIManager>, 
 Ogre::MouseMotionListener, 
 Ogre::MouseListener,
 Ogre::KeyListener,
@@ -75,7 +75,7 @@ public:
 	SigC::Signal1<void, const std::string& > AppendIGChatLine;
 	SigC::Signal1<void, const std::string& > AppendOOGChatLine;
 	
-	SigC::Signal2<void, const std::string&, DimeEntity*> EventEntityAction;
+	SigC::Signal2<void, const std::string&, EmberEntity*> EventEntityAction;
 	
 	void testClick(const CEGUI::EventArgs& args);
 	

@@ -29,15 +29,15 @@
 #include <string>
 #include <list>
 
-namespace dime {
+namespace Ember {
 
 /**
- * General State Manager for Dime.
+ * General State Manager for Ember.
  *
- * Provides a system whereby dime can have states.  Whenever a state change is
+ * Provides a system whereby Ember can have states.  Whenever a state change is
  * requested this class will automatically unload certain things and load
  * others.  This shall include but not be limited to: the gui; the layout;
- * and Dime's services.
+ * and Ember's services.
  *
  * A short piece of example code demonstarting how this class it is used,
  * and in what context, is encouraged.
@@ -208,6 +208,6 @@ class StateManager
 
 }; // End of StateManager
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

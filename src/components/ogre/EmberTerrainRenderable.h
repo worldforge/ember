@@ -23,16 +23,16 @@
 #include <Ogre.h>
 #include <OgreTerrainRenderable.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class TerrainGenerator;
 
-class DimeTerrainRenderable : public Ogre::TerrainRenderable {
+class EmberTerrainRenderable : public Ogre::TerrainRenderable {
 public:
 
-	DimeTerrainRenderable();
-	virtual ~DimeTerrainRenderable();
-	//void DimeTerrainRenderable::init( Ogre::TerrainOptions &options, TerrainGenerator* generator );
+	EmberTerrainRenderable();
+	virtual ~EmberTerrainRenderable();
+	//void EmberTerrainRenderable::init( Ogre::TerrainOptions &options, TerrainGenerator* generator );
     
     /** Initializes the TerrainRenderable.
     @param startx, startz 

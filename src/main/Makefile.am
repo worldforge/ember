@@ -18,6 +18,6 @@ $(top_builddir)/test/libTestServices.a \
 $(top_builddir)/src/services/logging/libLoggingService.a \
 $(top_builddir)/src/framework/libFramework.a 
 
-dime_SOURCES = Application.cpp Dime.cpp StateManager.cpp Application.h StateManager.h
+dime_SOURCES = Application.cpp StateManager.cpp Application.h StateManager.h Ember.cpp
 
 EXTRA_DIST = states.xml

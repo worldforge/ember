@@ -25,18 +25,18 @@
 #include <wfmath/atlasconv.h>
 
 #include "Widget.h"
-#include "DimeOgre.h"
-#include "services/DimeServices.h"
+#include "EmberOgre.h"
+#include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/logging/LoggingService.h"
 #include "Avatar.h"
 
 
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
-#include "AvatarDimeEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
+#include "AvatarEmberEntity.h"
 
 #include "MakeEntityWidget.h"
 
@@ -47,7 +47,7 @@
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIPushButton.h> 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 MakeEntityWidget::MakeEntityWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
 {
@@ -76,8 +76,8 @@ void MakeEntityWidget::buildWidget()
 	
 	
 
-	dime::DimeServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &MakeEntityWidget::connectedToServer));
-	dime::DimeServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &MakeEntityWidget::gotAvatar));
+	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &MakeEntityWidget::connectedToServer));
+	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &MakeEntityWidget::gotAvatar));
 
 
 	getMainSheet()->addChildWindow(mMainWindow); 
@@ -116,7 +116,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
 	
 	Atlas::Objects::Operation::Create c;
-	AvatarDimeEntity* avatar = DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity();
+	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
 	c->setFrom(avatar->getId());
 	
 	Atlas::Message::MapType msg;
@@ -136,7 +136,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	mConn->send(c);
 	std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
 	
-//	dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
+//	Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }
 
 

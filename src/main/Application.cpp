@@ -10,7 +10,14 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.50  2003-11-20 06:00:48  nikal
+ *      Revision 1.51  2004-11-04 21:40:26  erik
+ *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Moved from dime to ember. Thus the big checkin.
+ *      * Added wield action to inventory
+ *
+ *      Revision 1.50  2003/11/20 06:00:48  nikal
  *      Ripped out the CerrLogObserver, and turned it into StreamLogObserver in the framework.  Then created an instance of StreamLogObserver in Application.cpp and passed it std::cerr as it's being created.  This should effectively work the same, and preliminary test show that it does.  Hopefully this will encourage people to use StreamLogObserver.
  *
  *      Revision 1.49  2003/10/29 19:05:22  aglanor
@@ -21,8 +28,8 @@
  *              at this time. One less dependancy!
  *
  *      Revision 1.48  2003/10/23 09:54:46  lee
- *      Removed code and includes from DimeServices.h and put them in
- *      DimeServices.cpp
+ *      Removed code and includes from EmberServices.h and put them in
+ *      EmberServices.cpp
  *
  *      Fixed other classes and Makefile.am to work again
  *
@@ -63,13 +70,13 @@
  *
  *      Revision 1.42  2002/12/02 20:08:03  xmp
  *      2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
- *              * Various Makefile.am's: Altered for the new place where DimeServices.
+ *              * Various Makefile.am's: Altered for the new place where EmberServices.
  *                cpp/h have been put.  Added some stuff to EXTRA_DIST
  *
  *              * OgreApp.cpp: Fixed this up with several workarounds.
  *
- *              * Application.cpp/h Dime.cpp OgreApp.cpp DebugGameview.cpp: Altered
- *                this for new location of DimeServices.
+ *              * Application.cpp/h Ember.cpp OgreApp.cpp DebugGameview.cpp: Altered
+ *                this for new location of EmberServices.
  *
  *              * configure.ac/in: moved ogre down in the build till it's fixed.
  *
@@ -83,7 +90,7 @@
  *              * MetaserverService.cpp/h, Application.cpp/h: Removed DataModel, it's
  *                buggy.
  *
- *              * Dime.cpp Applicatition.cpp/h StateManager.cpp:
+ *              * Ember.cpp Applicatition.cpp/h StateManager.cpp:
  *                Moved Widget loading into StateManager.  Fixed a circular calling bug.
  *
  *      Known bug in that the widgets still aren't quite loading yet.  I'll have this fixed soon.  Escape key to quit still works however.
@@ -97,7 +104,7 @@
  *      -Added quit command
  *
  *      Revision 1.38  2002/10/04 14:44:32  xmp
- *      Major code cleanup of Application Class.  Removed variables that were duplicated in DimeServices
+ *      Major code cleanup of Application Class.  Removed variables that were duplicated in EmberServices
  *
  *      Revision 1.37  2002/09/07 13:38:10  aglanor
  *      Configuration service is now started with the application. I've also break the log line in the src/main Makefile.am which loads the serrvice static libs, now it's more readable.
@@ -118,7 +125,7 @@
  *      *** empty log message ***
  *
  *      Revision 1.31  2002/07/03 11:38:48  xmp
- *      Hook eris's logging service into Dime's
+ *      Hook eris's logging service into Ember's
  *
  *      Revision 1.30  2002/07/02 22:00:13  tim
  *      Dump level added
@@ -172,13 +179,13 @@
  *      -Added a few items to the MSVC project file
  *
  *      Revision 1.14  2002/04/24 22:38:00  aglanor
- *      modified dimeservices and main app so MetaserverService is included, can be instantiated and is polled each step of the main loop
+ *      modified Emberservices and main app so MetaserverService is included, can be instantiated and is polled each step of the main loop
  *
  *      Revision 1.13  2002/04/20 17:19:24  nikal
  *      Events now have their own classes which are passed to the listeners.  and buttonup, buttondown, mousexit, and mouseenter all work properly.
  *
  *      Revision 1.12  2002/04/17 04:02:09  nikal
- *      Dime is now using the event generator, and events have been sped up.  (previously we were only processing one event per screen refresh.  now we process all events the do the screen refresh.)  The event system is very close to being in place, new widgets will come over the next few days.
+ *      Ember is now using the event generator, and events have been sped up.  (previously we were only processing one event per screen refresh.  now we process all events the do the screen refresh.)  The event system is very close to being in place, new widgets will come over the next few days.
  *
  *      Revision 1.11  2002/04/15 05:53:15  nikal
  *      *** empty log message ***
@@ -202,20 +209,20 @@
  *      Added CppUnit stuff.
  *
  *      Revision 1.5  2002/01/27 23:20:53  nikal
- *      Some minor changes reflecting Dime's decision to use only dime:: as a namespace
+ *      Some minor changes reflecting Ember's decision to use only Ember:: as a namespace
  *
  *      Revision 1.4  2002/01/27 17:57:52  nikal
  *      Created and added a LogObserver which prints messages out to std::cerr.  Ther is a small bug. not sure where.
  *
  *      Revision 1.3  2002/01/27 00:26:37  nikal
- *      Hacking logging into Dime.
+ *      Hacking logging into Ember.
  *
  *      Revision 1.2  2002/01/24 10:58:14  tim
  *      Changed observer handling of the LoggingService to a more C++-convenient way (thanks goes to Nikal)
  *      Added the Visual C++ 6.0 workspace and a small readme to the CVS
  *
  *      Revision 1.1  2002/01/20 16:20:39  nikal
- *      Cleaning up the style of Application.h/cpp and Dime
+ *      Cleaning up the style of Application.h/cpp and Ember
  *
  *      Revision 1.1  2002/01/12 23:43:26  nikal
  *      adding the skeleton Application and a basic int main()
@@ -229,7 +236,7 @@
 #include "config.h"
 #endif
 
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 //#include "services/datamodel/DataObject.h"
 //#include "services/datamodel/DataModelService.h"
 #include "services/config/ConfigService.h"
@@ -259,7 +266,7 @@
 
 #include "Application.h"
 
-namespace dime
+namespace Ember
 {
 
     Application* Application::theApplication = NULL;
@@ -291,7 +298,7 @@ namespace dime
     {
 
 
-        LoggingService *logging = DimeServices::getInstance()->getLoggingService();
+        LoggingService *logging = EmberServices::getInstance()->getLoggingService();
 	StreamLogObserver* obs = new StreamLogObserver(std::cerr);
 	obs->setFilter(LoggingService::VERBOSE);
 	logging->addObserver(obs);
@@ -308,7 +315,7 @@ namespace dime
 
         if((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER)==-1)) 
             {
-                logging->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, 
+                logging->log(__FILE__, __LINE__, Ember::LoggingService::FAILURE, 
                                       "Couldn't init SDL");
                 return;
             } 
@@ -331,12 +338,12 @@ namespace dime
 	myKeyboardDev = new KeyboardDevice;
 
 	// Initialize the ConfigService
-	DimeServices::getInstance()->getConfigService()->start();
+	EmberServices::getInstance()->getConfigService()->start();
 
 	// Initialize the GuiService.
 	// Initialize the DrawDevice
 	// Set the DrawDevice target for GuiService
-	DimeServices::getInstance()->getGuiService()->setDrawTarget(new SDLDrawDevice(myScreen));
+	EmberServices::getInstance()->getGuiService()->setDrawTarget(new SDLDrawDevice(myScreen));
 
 #ifndef WIN32
 	// Test that /dev/dsp is availible
@@ -345,7 +352,7 @@ namespace dime
 	  fclose(temp);
 #endif
 	// Initialize the SoundService
-	DimeServices::getInstance()->getSoundService()->start();
+	EmberServices::getInstance()->getSoundService()->start();
 #ifndef WIN32
 	}
 #endif
@@ -357,7 +364,7 @@ namespace dime
 	// Set Eris Logging Level
 	Eris::setLogLevel(Eris::LOG_DEBUG);
 
-	DimeServices::getInstance()->getMetaserverService()->start();
+	EmberServices::getInstance()->getMetaserverService()->start();
 
 #if 0		
 	//just for test:
@@ -367,7 +374,7 @@ namespace dime
 	onMetaserverService(metaState, POST_VALUE_CHANGE);
 #endif
 	// Create and start ServerService
-	DimeServices::getInstance()->getServerService()->start();
+	EmberServices::getInstance()->getServerService()->start();
 #endif
 
 	ConsoleBackend::getMainConsole()->registerCommand(CMD_QUIT,this);
@@ -394,9 +401,9 @@ namespace dime
         SDL_Event nextEvent;
         while(SDL_PollEvent(&nextEvent)) 
             {
-                dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
+                Ember::EmberServices::getInstance()->getInputService()->handleEvent(nextEvent);
             }
-        dime::DimeServices::getInstance()->getGuiService()->refresh();
+        Ember::EmberServices::getInstance()->getGuiService()->refresh();
 
 	// Eris polling
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )

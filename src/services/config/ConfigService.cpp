@@ -24,13 +24,13 @@
 
 using namespace std;
 
-namespace dime
+namespace Ember
 {
 
     ConfigService::ConfigService() : Service()
     {
 	setName("Configuration Service");
-	setDescription("Service for management of dime user-defined configuration");
+	setDescription("Service for management of Ember user-defined configuration");
     	setStatusText("Configuration Service status OK.");
     }
 
@@ -86,4 +86,4 @@ namespace dime
 	}
 
 
-} // namespace dime
+} // namespace Ember

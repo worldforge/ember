@@ -3,7 +3,7 @@
 
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class Widget;
 class GUIManager;

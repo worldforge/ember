@@ -23,7 +23,7 @@
 #include "StreamLogObserver.h"
 #include <ctime>
 
-namespace dime {
+namespace Ember {
     /**
      * Creates a new StreamLogObserver using default values.
      */
@@ -55,7 +55,7 @@ namespace dime {
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     void StreamLogObserver::onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                                 const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+                                                 const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
     {
         tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
             
@@ -75,19 +75,19 @@ namespace dime {
         myOut << ctm->tm_sec << "] ";			
         myOut  << "[File: " << file << ", Line #:" <<  line << "] (";
 
-        if(importance == dime::LoggingService::CRITICAL)
+        if(importance == Ember::LoggingService::CRITICAL)
             {
                 myOut << "CRITICAL";
             }
-        else  if(importance == dime::LoggingService::FAILURE)
+        else  if(importance == Ember::LoggingService::FAILURE)
             {
                 myOut << "FAILURE";
             } 
-        else if(importance == dime::LoggingService::WARNING)
+        else if(importance == Ember::LoggingService::WARNING)
             {
                 myOut << "WARNING";
             }
-        else if(importance == dime::LoggingService::INFO)
+        else if(importance == Ember::LoggingService::INFO)
             {
                 myOut << "INFO";
             }
@@ -98,4 +98,4 @@ namespace dime {
         myOut << ") " <<message << std::endl;
 
     }
-}; //end namespace dime
+}; //end namespace Ember

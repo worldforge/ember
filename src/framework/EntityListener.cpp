@@ -21,18 +21,18 @@
 #endif
 
 #include "services/server/ServerService.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 
 #include "EntityListener.h"
 
 
-namespace dime {
+namespace Ember {
 
 EntityListener::EntityListener()
 {
 
     /* Find out where the Eris world instance resides... */
-    Eris::View *w = DimeServices::getInstance()->getServerService()->getView();
+    Eris::View *w = EmberServices::getInstance()->getServerService()->getView();
 
     /* Connect to the relevant View signals */
     w->EntityCreated.connect( SigC::slot( *this, &EntityListener::entityCreate ) );
@@ -49,7 +49,7 @@ EntityListener::EntityListener()
 EntityListener::~EntityListener()
 {
 #if 0
-    Eris::View *w = DimeServices::getInstance()->getServerService()->getView();
+    Eris::View *w = EmberServices::getInstance()->getServerService()->getView();
     w->EntityCreate.disconnect();
 #endif
 }

@@ -30,24 +30,24 @@
 #include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEntity;
+class EmberEntity;
 class Model;
 	
 /*
- * Represents a dime entity with a physical representation in the world.
+ * Represents a Ember entity with a physical representation in the world.
  * This is represented by a an Ogre::Entity.
  */
-class DimePhysicalEntity : public DimeEntity{
+class EmberPhysicalEntity : public EmberEntity{
 public:
 
 /*eris 1.3
-	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, Ogre::Entity* ogreEntity); 
+	EmberEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, Ogre::Entity* ogreEntity); 
 */
-	DimePhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
+	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
 //	, Ogre::Entity* ogreEntity); 
-	virtual ~DimePhysicalEntity();
+	virtual ~EmberPhysicalEntity();
 	
 	
 	/*
@@ -58,14 +58,14 @@ public:
 	/*
 	 * return the Model of this object
 	 */
-	inline Model* DimePhysicalEntity::getModel() const
+	inline Model* EmberPhysicalEntity::getModel() const
 	{
 		return mModel;	
 	}
 
-	inline Ogre::SceneNode* DimePhysicalEntity::getScaleNode() const
+	inline Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
 	{
-		//return DimeOgre::getSingleton().getSceneManager()->getSceneNode(getId() + "_scaleNode");
+		//return EmberOgre::getSingleton().getSceneManager()->getSceneNode(getId() + "_scaleNode");
 	
 		return mScaleNode;
 	}	

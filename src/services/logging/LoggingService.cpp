@@ -1,9 +1,9 @@
 #include "LoggingService.h"
 #include <framework/Service.h>
 
-dime::LoggingService* dime::LoggingService::theInstance = NULL;
+Ember::LoggingService* Ember::LoggingService::theInstance = NULL;
 
-dime::Service::Status dime::LoggingService::start ()
+Ember::Service::Status Ember::LoggingService::start ()
 {
     setRunning (true);
     setStatus (Service::OK);
@@ -11,7 +11,7 @@ dime::Service::Status dime::LoggingService::start ()
 }
 
 
-void dime::LoggingService::log (const char *message, ...)
+void Ember::LoggingService::log (const char *message, ...)
 {
     va_list vl;
     va_start (vl, message);
@@ -20,7 +20,7 @@ void dime::LoggingService::log (const char *message, ...)
 }
 
 
-void dime::LoggingService::log (const char *file, const char *message, ...)
+void Ember::LoggingService::log (const char *file, const char *message, ...)
 {
     va_list vl;
     va_start (vl, message);
@@ -30,7 +30,7 @@ void dime::LoggingService::log (const char *file, const char *message, ...)
 
 
 
-void dime::LoggingService::log (const char *file, const int line,
+void Ember::LoggingService::log (const char *file, const int line,
                                 const char *message, ...)
 {
     va_list vl;
@@ -40,7 +40,7 @@ void dime::LoggingService::log (const char *file, const int line,
 }
 
 
-void dime::LoggingService::log (const MessageImportance importance,
+void Ember::LoggingService::log (const MessageImportance importance,
                                 const char *message, ...)
 {
     va_list vl;
@@ -49,7 +49,7 @@ void dime::LoggingService::log (const MessageImportance importance,
     va_end (vl);
 }
 
-void dime::LoggingService::log (const char *file,
+void Ember::LoggingService::log (const char *file,
                                 const MessageImportance importance,
                                 const char *message, ...)
 {
@@ -59,7 +59,7 @@ void dime::LoggingService::log (const char *file,
     va_end (vl);
 }
 
-void dime::LoggingService::log (const char *file, const int line,
+void Ember::LoggingService::log (const char *file, const int line,
                                 const MessageImportance importance,
                                 const char *message, ...)
 {
@@ -69,7 +69,7 @@ void dime::LoggingService::log (const char *file, const int line,
     va_end (vl);
 }
 
-void dime::LoggingService::logVarParam (const char *file, const int line,
+void Ember::LoggingService::logVarParam (const char *file, const int line,
                                         const MessageImportance importance,
                                         const char *message, va_list argptr)
 {
@@ -79,7 +79,7 @@ void dime::LoggingService::logVarParam (const char *file, const int line,
 }
 
 
-dime::LoggingService & dime::LoggingService::slog (const std::string & file,
+Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
                                                    const int line,
                                                    const MessageImportance
                                                    importance)
@@ -90,14 +90,14 @@ dime::LoggingService & dime::LoggingService::slog (const std::string & file,
     return *this;
 }
 
-dime::LoggingService & dime::LoggingService::
+Ember::LoggingService & Ember::LoggingService::
 slog (const MessageImportance importance)
 {
     myImportance = importance;
     return *this;
 }
 
-dime::LoggingService & dime::LoggingService::slog (const std::string & file,
+Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
                                                    const MessageImportance
                                                    importance)
 {
@@ -106,7 +106,7 @@ dime::LoggingService & dime::LoggingService::slog (const std::string & file,
     return *this;
 }
 
-dime::LoggingService & dime::LoggingService::slog (const std::string & file,
+Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
                                                    const int line)
 {
     myFile = file;
@@ -114,7 +114,7 @@ dime::LoggingService & dime::LoggingService::slog (const std::string & file,
     return *this;
 }
 
-dime::LoggingService & dime::LoggingService::slog (const std::string & file)
+Ember::LoggingService & Ember::LoggingService::slog (const std::string & file)
 {
     myFile = file;
     return *this;
@@ -123,7 +123,7 @@ dime::LoggingService & dime::LoggingService::slog (const std::string & file)
 
 
 
-void dime::LoggingService::addObserver (Observer * observer)
+void Ember::LoggingService::addObserver (Observer * observer)
 {
     //test on already existing observer
     for (ObserverList::iterator i = myObserverList.begin ();
@@ -139,7 +139,7 @@ void dime::LoggingService::addObserver (Observer * observer)
     myObserverList.push_back (observer);
 }
 
-int dime::LoggingService::removeObserver (Observer * observer)
+int Ember::LoggingService::removeObserver (Observer * observer)
 {
     for (ObserverList::iterator i = myObserverList.begin ();
          i != myObserverList.end (); i++)
@@ -154,7 +154,7 @@ int dime::LoggingService::removeObserver (Observer * observer)
     return -1;
 }
 
-dime::LoggingService::HexNumber dime::LoggingService::
+Ember::LoggingService::HexNumber Ember::LoggingService::
 hexNumber (const int intDecimal)
 {
     HexNumber intHex;
@@ -162,14 +162,14 @@ hexNumber (const int intDecimal)
     return intHex;
 }
 
-dime::LoggingService & dime::LoggingService::operator<< (const std::
+Ember::LoggingService & Ember::LoggingService::operator<< (const std::
                                                          string & stringToAdd)
 {
     myMessage += stringToAdd;
     return *this;
 }
 
-dime::LoggingService & dime::LoggingService::operator<< (const int intToAdd)
+Ember::LoggingService & Ember::LoggingService::operator<< (const int intToAdd)
 {
     char buffer[NUMBER_BUFFER_SIZE];
     sprintf (buffer, "%d", intToAdd);
@@ -177,7 +177,7 @@ dime::LoggingService & dime::LoggingService::operator<< (const int intToAdd)
     return *this;
 }
 
-dime::LoggingService & dime::LoggingService::
+Ember::LoggingService & Ember::LoggingService::
 operator<< (const HexNumber & intHexToAdd)
 {
     char buffer[NUMBER_BUFFER_SIZE];
@@ -188,7 +188,7 @@ operator<< (const HexNumber & intHexToAdd)
 
 
 
-void dime::LoggingService::operator<< (const EndMessageEnum endMessage)
+void Ember::LoggingService::operator<< (const EndMessageEnum endMessage)
 {
     sendMessage (myMessage, myFile, myLine, myImportance);
 
@@ -198,7 +198,7 @@ void dime::LoggingService::operator<< (const EndMessageEnum endMessage)
     myImportance = INFO;
 }
 
-dime::LoggingService::LoggingService () : Service()
+Ember::LoggingService::LoggingService () : Service()
 {
     //set service properties
 
@@ -217,7 +217,7 @@ dime::LoggingService::LoggingService () : Service()
         connect (SigC::slot (*this, &LoggingService::erisLogReceiver));
 }
 
-void dime::LoggingService::erisLogReceiver (Eris::LogLevel level,
+void Ember::LoggingService::erisLogReceiver (Eris::LogLevel level,
                                             const std::string & msg)
 {
     MessageImportance importance;
@@ -245,7 +245,7 @@ void dime::LoggingService::erisLogReceiver (Eris::LogLevel level,
 }
 
 
-void dime::LoggingService::sendMessage (const std::string & message,
+void Ember::LoggingService::sendMessage (const std::string & message,
                                         const std::string & file,
                                         const int line,
                                         const MessageImportance importance)

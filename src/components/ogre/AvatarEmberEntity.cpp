@@ -24,35 +24,35 @@
 #include <xercesc/util/PlatformUtils.hpp>
 
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
 #include "framework/ConsoleBackend.h"
 #include "Avatar.h"
 #include "GUIManager.h"
 #include "Model.h"
-#include "AvatarDimeEntity.h"
-#include "DimeOgre.h"
+#include "AvatarEmberEntity.h"
+#include "EmberOgre.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
-AvatarDimeEntity::AvatarDimeEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
+AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
 mAvatar(NULL), mErisAvatar(erisAvatar)
-,PersonDimeEntity(id, type, vw, sceneManager, nodeWithModel)
+,PersonEmberEntity(id, type, vw, sceneManager, nodeWithModel)
 {
 }
 
-AvatarDimeEntity::~AvatarDimeEntity()
+AvatarEmberEntity::~AvatarEmberEntity()
 {}
 
-void AvatarDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void AvatarEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
-	PersonDimeEntity::init(ge);
-	mModel->setQueryFlags(DimeEntity::CM_AVATAR);
+	PersonEmberEntity::init(ge);
+	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
 }
 
-void AvatarDimeEntity::onMoved()
+void AvatarEmberEntity::onMoved()
 {
 	if (getAvatar()) {
 		getAvatar()->movedInWorld();
@@ -63,7 +63,7 @@ void AvatarDimeEntity::onMoved()
 }
 
 /*
-void AvatarDimeEntity::handleTalk(const std::string &msg)
+void AvatarEmberEntity::handleTalk(const std::string &msg)
 {
 	std::string message = "<";
 	message.append(getName());
@@ -71,50 +71,50 @@ void AvatarDimeEntity::handleTalk(const std::string &msg)
 	message.append(msg);
 	GUIManager::getSingleton().AppendIGChatLine.emit(message);
 	std::cout << "TRACE - AVATAR SAYS: [" << message << "]\n" << std::endl;
-	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
+	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
 */
 /*
-void AvatarDimeEntity::setVisible(bool vis)
+void AvatarEmberEntity::setVisible(bool vis)
 {
 	//TODO
 	//mOgreEntity->setVisible(true);	
 }
 */
 
-//void AvatarDimeEntity::addMember(Entity *e) 
-void AvatarDimeEntity::onChildAdded(Entity *e) 
+//void AvatarEmberEntity::addMember(Entity *e) 
+void AvatarEmberEntity::onChildAdded(Entity *e) 
 {
 	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
-	//PersonDimeEntity::addMember(e);
+	//PersonEmberEntity::addMember(e);
 	
 }
 
 
-/*void AvatarDimeEntity::rmvMember(Entity *e)*/
-void AvatarDimeEntity::onChildRemoved(Entity *e)
+/*void AvatarEmberEntity::rmvMember(Entity *e)*/
+void AvatarEmberEntity::onChildRemoved(Entity *e)
 {
 	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
-//	PersonDimeEntity::rmvMember(e);	
+//	PersonEmberEntity::rmvMember(e);	
 }
 
 
 
-// void AvatarDimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation)
+// void AvatarEmberEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation)
 // {
-// 	return DimeEntity::onLocationChanged(oldLocation, newLocation);
+// 	return EmberEntity::onLocationChanged(oldLocation, newLocation);
 // 	
 // 	
 // 	
 // 	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
-// 	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(newLocation);
-// 	Ogre::SceneNode* newOgreParentNode = dimeEntity->getSceneNode();
+// 	EmberEntity* EmberEntity = dynamic_cast<EmberEntity*>(newLocation);
+// 	Ogre::SceneNode* newOgreParentNode = EmberEntity->getSceneNode();
 // 	
-// /*	if (dimeEntity)
+// /*	if (EmberEntity)
 // 	{
-// 		newOgreParentNode = dimeEntity->getSceneNode();
+// 		newOgreParentNode = EmberEntity->getSceneNode();
 // 	} else {
-// 		newOgreParentNode = DimeOgre::getSingleton().getSceneManager()->getSceneNode(newLocation->getId());
+// 		newOgreParentNode = EmberOgre::getSingleton().getSceneManager()->getSceneNode(newLocation->getId());
 // 	}*/
 // 		
 // 	if (getSceneNode()->getParent()) {
@@ -132,7 +132,7 @@ void AvatarDimeEntity::onChildRemoved(Entity *e)
 // 	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 // }
 
-Ogre::SceneNode* AvatarDimeEntity::getAvatarSceneNode()
+Ogre::SceneNode* AvatarEmberEntity::getAvatarSceneNode()
 {
 	return getScaleNode();	
 }

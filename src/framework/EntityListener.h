@@ -36,7 +36,7 @@
 #include "framework/ConsoleBackend.h"
 //#include "framework/Component.h"
 
-namespace dime {
+namespace Ember {
 
 /**
  * This is the base class for all EntityListeners.
@@ -55,7 +55,7 @@ namespace dime {
  * read up on SigC++ ( http://libsigc.sourceforge.net ) if you're not familiar
  * with it.
  *
- * Component is a standard dime class that also has to be inherited from.
+ * Component is a standard Ember class that also has to be inherited from.
  */
 
 class EntityListener : virtual public SigC::Object //, public Component
@@ -74,7 +74,7 @@ class EntityListener : virtual public SigC::Object //, public Component
 
         /**
          * Constructor
-         * This grabs a pointer to the current Eris entity from DimeServices and
+         * This grabs a pointer to the current Eris entity from EmberServices and
          * connects the relevant signals to listening methods. If you're not using
          * any of those methods (Entered is the most likely to be unused IMO) then you
          * should also remove the connection code.

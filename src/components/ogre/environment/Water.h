@@ -25,7 +25,7 @@
 
 #include <Ogre.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class RefractionTextureListener;
 class ReflectionTextureListener;

@@ -1,6 +1,6 @@
 #include "Widget.h"
 #include "IngameEventsWidget.h"
-namespace DimeOgre {
+namespace EmberOgre {
 
 IngameEventsWidget::IngameEventsWidget(GUIManager* guiManager) 
 : Widget::Widget(guiManager)

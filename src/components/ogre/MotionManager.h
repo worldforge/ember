@@ -23,10 +23,10 @@
 #include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEntity;
-class DimePhysicalEntity;
+class EmberEntity;
+class EmberPhysicalEntity;
 class TerrainGenerator;
 
 /*
@@ -35,7 +35,7 @@ class TerrainGenerator;
  * will go into here.
  * The manager also takes care of keeping tabs on all animations.
  */
-class MotionManager : public Ogre::FrameListener, public dime::Singleton<MotionManager> {
+class MotionManager : public Ogre::FrameListener, public Ember::Singleton<MotionManager> {
 public:
 
 	MotionManager();
@@ -43,12 +43,12 @@ public:
 	//static MotionManager & getSingleton(void);
 	
 	/*
-	 * Adds a DimeEntity to the movement list.
+	 * Adds a EmberEntity to the movement list.
 	 * That means that until removeEntity is called for the specific entity
 	 * new positions for the entity will be calculated for each frame.
 	 */
-	void addEntity(DimePhysicalEntity* entity) {mMotionSet.insert(entity);}
-	void removeEntity(DimePhysicalEntity* entity) {mMotionSet.erase(entity);}
+	void addEntity(EmberPhysicalEntity* entity) {mMotionSet.insert(entity);}
+	void removeEntity(EmberPhysicalEntity* entity) {mMotionSet.erase(entity);}
 	
 	/*
 	 * Registers an animationState. After registration it will be enough to use
@@ -114,14 +114,14 @@ private:
 
 
 	/* 
-	 * Update the motion for a single DimeEntity
+	 * Update the motion for a single EmberEntity
 	 */
-	void updateMotionForEntity(DimePhysicalEntity* entity, Ogre::Real timeSlice);
+	void updateMotionForEntity(EmberPhysicalEntity* entity, Ogre::Real timeSlice);
 
 	/*
 	 * This contains all of the entities that will be moved each frame
 	 */
-	std::set<DimePhysicalEntity*> mMotionSet;
+	std::set<EmberPhysicalEntity*> mMotionSet;
 	
 	TerrainGenerator* mTerrainGenerator;
 	

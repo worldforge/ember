@@ -48,11 +48,11 @@
 #include "MathConverter.h"
 
 
-namespace DimeOgre {
-class DimeEntity;
+namespace EmberOgre {
+class EmberEntity;
 class AvatarCamera;
 class AvatarController;
-class AvatarDimeEntity;
+class AvatarEmberEntity;
 struct AvatarControllerMovement;
 class Model;
 
@@ -76,7 +76,7 @@ struct AvatarMovementState
 class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 {
 	friend class AvatarController;
-	friend class AvatarDimeEntity;
+	friend class AvatarEmberEntity;
 
     public:
 
@@ -101,20 +101,20 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 
 	
 	
-	void createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity);
+	void createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity);
 	
 	void movedInWorld();
 	
-	//void touch(DimeEntity* entity);
+	//void touch(EmberEntity* entity);
 	
 	void updateFrame(AvatarControllerMovement movement);
 	
 	void setAvatarController(AvatarController* avatarController);
 	
-	AvatarDimeEntity* getAvatarDimeEntity();
+	AvatarEmberEntity* getAvatarEmberEntity();
 
-	SigC::Signal1<void, DimeEntity* > EventAddedEntityToInventory;
-	SigC::Signal1<void, DimeEntity* > EventRemovedEntityFromInventory;
+	SigC::Signal1<void, EmberEntity* > EventAddedEntityToInventory;
+	SigC::Signal1<void, EmberEntity* > EventRemovedEntityFromInventory;
 // 	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
 // 	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 
@@ -220,7 +220,7 @@ protected:
 	// To be removed once we've standarized on models
 	Ogre::SceneNode* mAvatarModelNode;
 
-	AvatarDimeEntity* mErisAvatarEntity;
+	AvatarEmberEntity* mErisAvatarEntity;
 	//Eris::Avatar* mErisAvatar;
 
 	//this is used to make sure starts and stops of movement is only sent to the server once

@@ -22,7 +22,7 @@
 //
 #include "Sky.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 Sky::Sky()
 {

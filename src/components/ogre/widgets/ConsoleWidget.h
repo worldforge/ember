@@ -5,7 +5,7 @@
 #include <elements/CEGUIMultiLineEditbox.h>
 #include <elements/CEGUIEditbox.h>
 #include <boost/bind.hpp>
-namespace DimeOgre {
+namespace EmberOgre {
 	
 class Widget;
 	
@@ -44,7 +44,7 @@ protected:
 	CEGUI::MultiLineEditbox* mConsoleTextBox;
 	CEGUI::Editbox* mInputBox;
 	
-        dime::ConsoleBackend *myBackend;
+        Ember::ConsoleBackend *myBackend;
         enum State { CS_OPEN, CS_CLOSED, CS_OPENING, CS_CLOSING };
         State mState;
 	

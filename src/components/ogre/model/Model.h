@@ -30,13 +30,13 @@
 #include <OgreEntity.h>
 #include <OgreMovableObject.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class SubModel;
 class SubModelPart;
 
 /*
- * This is the standard model used in dime.
+ * This is the standard model used in Ember.
  * A model can be made out of different entities, just as long as they share a skeleton.
  * The model consists of different parts, represented by instances of SubModelPart. 
  * Typical parts would be a body or a shirt. These parts can be turned on or off.

@@ -1,7 +1,7 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "DimeOgrePrerequisites.h"
+#include "EmberOgrePrerequisites.h"
 
 #include <Ogre.h>
 // #include <CEGUI.h>
@@ -31,7 +31,7 @@
 #endif
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 #define BIND_CEGUI_EVENT(window, event, method) window->subscribeEvent(event, boost::bind(&method, this, _1)); 
 	

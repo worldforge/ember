@@ -17,13 +17,13 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __DimeOgre_ConsoleObjectImpl_H__
-#define __DimeOgre_ConsoleObjectImpl_H__
+#ifndef __EmberOgre_ConsoleObjectImpl_H__
+#define __EmberOgre_ConsoleObjectImpl_H__
 
 #include <framework/ConsoleObject.h>
 
-namespace DimeOgre {
-class ConsoleObjectImpl: public dime::ConsoleObject
+namespace EmberOgre {
+class ConsoleObjectImpl: public Ember::ConsoleObject
 {
 	public:
 

@@ -16,16 +16,16 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
 
-#include "DimeOgre.h"
-#include "GroundCover.h"
+#include "EmberOgre.h"
+#include "environment/GroundCover.h"
 #include "MathConverter.h"
 #include "MotionManager.h"
 #include "TerrainGenerator.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
 MotionManager::MotionManager() 
@@ -44,12 +44,12 @@ MotionManager & MotionManager::getSingleton(void)
 	return *_instance;
 }
 */
-template<> MotionManager* dime::Singleton<MotionManager>::ms_Singleton = 0;
+template<> MotionManager* Ember::Singleton<MotionManager>::ms_Singleton = 0;
 
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 {
-	std::set<DimePhysicalEntity*>::iterator I;
+	std::set<EmberPhysicalEntity*>::iterator I;
 	for (I = mMotionSet.begin();I != mMotionSet.end(); ++I) {
 		updateMotionForEntity(*I, timeSlice);
 	}
@@ -66,7 +66,7 @@ void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 	}
 }
 
-void MotionManager::updateMotionForEntity(DimePhysicalEntity* entity, Ogre::Real timeSlice)
+void MotionManager::updateMotionForEntity(EmberPhysicalEntity* entity, Ogre::Real timeSlice)
 {
 	//update the position of the entity
 	Ogre::Vector3 velocity = Atlas2Ogre(entity->getVelocity());
@@ -91,9 +91,6 @@ bool MotionManager::frameStarted(const Ogre::FrameEvent& event)
 {
 	doMotionUpdate(event.timeSinceLastFrame);
 	doAnimationUpdate(event.timeSinceLastFrame);
-	if (mTerrainGenerator->mGround) {
-		mTerrainGenerator->mGround->update(DimeOgre::getSingleton().getSceneManager()->getCamera("AvatarCamera"));
-	}
 	return true;
 }
 

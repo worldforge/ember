@@ -23,7 +23,7 @@
 #include <Eris/Exceptions.h>
 
 #include "test/TestServices.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 #include "services/image/ImageService.h"
 #include "framework/Exception.h"
 #include "services/gui/widget/Button.h"
@@ -31,9 +31,9 @@
 #include "services/config/ConfigService.h"
 #include "Application.h"
 
-void quitButton(dime::Button* button)
+void quitButton(Ember::Button* button)
 {
-  dime::Application::getInstance()->quit();    
+  Ember::Application::getInstance()->quit();    
 }
 
 
@@ -48,22 +48,22 @@ int main(int argc, char **argv)
     
   try
     {
-      dime::ImageService::getInstance()->addPath("./bin/");
-      dime::ImageService::getInstance()->addPath("../../bin/");
+      Ember::ImageService::getInstance()->addPath("./bin/");
+      Ember::ImageService::getInstance()->addPath("../../bin/");
 
       // Bind Escape to quit
-      dime::InputService* pIS = dime::InputService::getInstance();
-      pIS->addInputMapping( new dime::InputMapping( pIS->getInputDevice(dime::InputDevice::KEYBOARD),
+      Ember::InputService* pIS = Ember::InputService::getInstance();
+      pIS->addInputMapping( new Ember::InputMapping( pIS->getInputDevice(Ember::InputDevice::KEYBOARD),
 						    SDLK_ESCAPE, false,
-						    SigC::slot(*dime::Application::getInstance(),
-							       &dime::Application::escPressed)));
+						    SigC::slot(*Ember::Application::getInstance(),
+							       &Ember::Application::escPressed)));
 
-      dime::Application::getInstance()->getStateMgr()->setState("initial state");
-      dime::Application::getInstance()->mainLoop();
+      Ember::Application::getInstance()->getStateMgr()->setState("initial state");
+      Ember::Application::getInstance()->mainLoop();
     }
-  catch ( dime::Exception e )
+  catch ( Ember::Exception e )
     {
-      std::cerr << "Uncaught Dime exception: "<< e.getError() << std::endl;
+      std::cerr << "Uncaught Ember exception: "<< e.getError() << std::endl;
     }
   catch ( Eris::BaseException e )
     {

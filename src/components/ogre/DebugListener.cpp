@@ -19,7 +19,7 @@
 
 #include "DebugListener.h"
 using namespace Ogre;
-namespace DimeOgre {
+namespace EmberOgre {
 
 DebugListener* DebugListener::_instance = 0;
 

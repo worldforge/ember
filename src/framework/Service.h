@@ -26,7 +26,7 @@
 // Include system headers here
 #include <string>
 
-namespace dime {
+namespace Ember {
 
 /**
  * Abstract class for interface common denominator of services.
@@ -277,7 +277,7 @@ class Service
 
 }; // Service
 
-} // namespace dime
+} // namespace Ember
 
 #endif
 

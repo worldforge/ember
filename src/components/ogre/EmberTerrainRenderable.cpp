@@ -20,22 +20,22 @@
 #include "TerrainGenerator.h"
 #include "MathConverter.h"
 
-#include "DimeTerrainRenderable.h"
+#include "EmberTerrainRenderable.h"
 
 using namespace Ogre;
-namespace DimeOgre {
+namespace EmberOgre {
 
 #define POSITION_BINDING 0
 #define NORMAL_BINDING 1
 #define TEXCOORD_BINDING 2
 #define COLOUR_BINDING 3
 
-DimeTerrainRenderable::DimeTerrainRenderable() : TerrainRenderable::TerrainRenderable()
+EmberTerrainRenderable::EmberTerrainRenderable() : TerrainRenderable::TerrainRenderable()
 {}
-DimeTerrainRenderable::~DimeTerrainRenderable() {}
+EmberTerrainRenderable::~EmberTerrainRenderable() {}
 
 /*
-void DimeTerrainRenderable::initialise(int startx, int startz, Real* pageHeightData, Vector3 center)
+void EmberTerrainRenderable::initialise(int startx, int startz, Real* pageHeightData, Vector3 center)
 {
 	Ogre::TerrainRenderable::initialise(startx, startz, pageHeightData);
 	

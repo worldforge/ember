@@ -15,27 +15,27 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
 #include "MathConverter.h"
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
-//#include "DimeTerrainRenderable.h"
+//#include "EmberTerrainRenderable.h"
 #include "TerrainShader.h"
-#include "DimeTerrainPageSource.h"
+#include "EmberTerrainPageSource.h"
 
-#include "GroundCover.h"
+#include "environment/GroundCover.h"
 
 #include "TerrainGenerator.h"
 
 
 
 using namespace Ogre;
-namespace DimeOgre {
+namespace EmberOgre {
 
 /*
 TerrainGenerator* TerrainGenerator::_instance = 0;
@@ -66,23 +66,23 @@ TerrainGenerator::TerrainGenerator()
 //    this->addShader(new TerrainShader("granite.png", new Mercator::FillShader()));
 
 //    this->addShader(new TerrainShader("terr_rock6.jpg", new Mercator::FillShader()));
-	dime::ConfigService* configSrv = dime::DimeServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
 //    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-/*    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
-    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
-  */  
-    mTerrainPageSource = new DimeTerrainPageSource(this);
-    DimeOgre::getSingleton().getSceneManager()->registerPageSource("EmberTerrain", mTerrainPageSource);
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
+   
+    mTerrainPageSource = new EmberTerrainPageSource(this);
+    EmberOgre::getSingleton().getSceneManager()->registerPageSource("EmberTerrain", mTerrainPageSource);
 
 	std::string terrainrc = "terrain.cfg";
-	terrainrc = dime::DimeServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(dime::DimeServices::getInstance()->getConfigService()->getValue("ogre", "terrainrc"));
+	terrainrc = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue("ogre", "terrainrc"));
 
 
-    DimeOgre::getSingleton().getSceneManager()->setWorldGeometry(terrainrc);
+    EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(terrainrc);
 
 }
 
@@ -145,7 +145,7 @@ void TerrainGenerator::generateUnderVegetation(long segmentXStart, long segmentZ
 	Ogre::Real xStart = segmentXStart * 64;
 	Ogre::Real zStart = segmentZStart * 64;
 	
-	mGround = new GroundCover(DimeOgre::getSingleton().getSceneManager(), Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
+	mGround = new GroundCover(EmberOgre::getSingleton().getSceneManager(), Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
 	
 	long spaceBetween = 3;
 	
@@ -217,7 +217,7 @@ void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long
 	segment->populateNormals();
 	segment->populateSurfaces();
 	
-	Ogre::TerrainSceneManager* sceneManager = DimeOgre::getSingleton().getSceneManager();
+	Ogre::TerrainSceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
 	materialNameSS << "_" << segmentX << "_" << segmentY;

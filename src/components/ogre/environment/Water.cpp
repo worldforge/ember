@@ -21,13 +21,13 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Water.h"
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
 
 
 using namespace Ogre;
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class RefractionTextureListener : public RenderTargetListener
 {
@@ -183,7 +183,7 @@ public:
 	
 	void Water::createFresnelWater(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr)
 	{
-		RenderTexture* rttTex = DimeOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );
+		RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );
 			
 			{
 				Viewport *v = rttTex->addViewport( mCamera );
@@ -194,7 +194,7 @@ public:
 			}
 			
 			
-			rttTex = DimeOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Reflection", 512, 512 );
+			rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Reflection", 512, 512 );
 			{
 				Viewport *v = rttTex->addViewport( mCamera );
 				Material* mat = (Material*)MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");

@@ -30,12 +30,12 @@
 
 
 
-namespace DimeOgre {
-class DimeEntity;
-class AvatarDimeEntity;
+namespace EmberOgre {
+class EmberEntity;
+class AvatarEmberEntity;
 class Widget;
 class GUIManager;
-class DimeEntityFactory;
+class EmberEntityFactory;
 
 /**
 @author Erik Hjortsberg
@@ -51,14 +51,15 @@ public:
 
 protected:
 	CEGUI::Listbox* mListBox;
-	std::map<DimeEntity*, CEGUI::ListboxItem*> mListBoxMap;
+	std::map<EmberEntity*, CEGUI::ListboxItem*> mListBoxMap;
 
-/*	void removedEntity(DimeEntity* dimeEntity);
-	void addedEntity(DimeEntity* dimeEntity);*/
-	void removedEntity(DimeEntity* dimeEntity);
-	void addedEntity(DimeEntity* dimeEntity);
-	void createdAvatarDimeEntity(AvatarDimeEntity* entity);
+/*	void removedEntity(EmberEntity* dimeEntity);
+	void addedEntity(EmberEntity* dimeEntity);*/
+	void removedEntity(EmberEntity* dimeEntity);
+	void addedEntity(EmberEntity* dimeEntity);
+	void createdAvatarEmberEntity(AvatarEmberEntity* entity);
 	bool Drop_Click(const CEGUI::EventArgs& args);
+	bool Wield_Click(const CEGUI::EventArgs& args);
 
 
 

@@ -33,9 +33,9 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 // List of Ogre's console commands
 const char * const ConsoleObjectImpl::QUIT 		= "quit";
@@ -53,9 +53,9 @@ ConsoleObjectImpl & ConsoleObjectImpl::getSingleton(void)
 
 ConsoleObjectImpl::ConsoleObjectImpl(void)
 {
-	dime::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
-	dime::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
-	dime::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
 }
 ConsoleObjectImpl::~ConsoleObjectImpl()
 {
@@ -66,11 +66,11 @@ ConsoleObjectImpl::~ConsoleObjectImpl()
 void ConsoleObjectImpl::runCommand(const std::string &command, const std::string &args)
 {
 	if(command == QUIT) {
-		dime::ConsoleBackend::getMainConsole()->pushMessage("Bye");
+		Ember::ConsoleBackend::getMainConsole()->pushMessage("Bye");
 		quit();
 	} else if(command == ADDMEDIA) {
 	    // Split string
-        dime::Tokeniser tokeniser = dime::Tokeniser();
+        Ember::Tokeniser tokeniser = Ember::Tokeniser();
         tokeniser.initTokens(args);
         std::string modelName = tokeniser.nextToken();
         std::string id = tokeniser.nextToken();
@@ -78,13 +78,13 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
         MediaDeployer::getSingleton().addMedia(modelName,id,position);
 
 	} else {
-		dime::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
+		Ember::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
 	}
 }
 
 void ConsoleObjectImpl::quit()
 {
-	DimeOgre::getSingleton().shutdown();
+	EmberOgre::getSingleton().shutdown();
 }
 
 /*

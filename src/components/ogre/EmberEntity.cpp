@@ -16,21 +16,21 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "framework/ConsoleBackend.h"
-#include "DimeEntityFactory.h"
+#include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
-#include "DimeEntity.h"
+#include "EmberEntity.h"
 
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
 using namespace Ogre;
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 /*eris 1.3
-DimeEntity::DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, , Ogre::Entity* ogreEntity) : Eris::Entity(ge, ty, vw) 
+EmberEntity::EmberEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, , Ogre::Entity* ogreEntity) : Eris::Entity(ge, ty, vw) 
 */
-DimeEntity::DimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
+EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
 mSceneManager(sceneManager)
 , mView(vw)
@@ -39,11 +39,11 @@ mSceneManager(sceneManager)
 	createSceneNode();
 }
 
-DimeEntity::~DimeEntity()
+EmberEntity::~EmberEntity()
 {
 }
 
-void DimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	Eris::Entity::init(ge);
 	
@@ -56,9 +56,9 @@ void DimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 }
 
 
-void DimeEntity::createSceneNode()
+void EmberEntity::createSceneNode()
 {
-	DimeEntity* container = dynamic_cast<DimeEntity*>(getLocation());
+	EmberEntity* container = dynamic_cast<EmberEntity*>(getLocation());
 	if (container == NULL) {
 		std::cout << "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" << std::endl;
 
@@ -81,7 +81,7 @@ void DimeEntity::createSceneNode()
 
 
 
-void DimeEntity::onMoved()
+void EmberEntity::onMoved()
 {
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getViewOrientation()));
@@ -107,7 +107,7 @@ void DimeEntity::onMoved()
 	 */
 }
 
-void DimeEntity::onTalk(const Atlas::Objects::Root& talkArgs)
+void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 {
 	
     if (!talkArgs->hasAttr("say")) {
@@ -124,21 +124,21 @@ void DimeEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	message.append(msg);
 	GUIManager::getSingleton().AppendIGChatLine.emit(message);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 	Eris::Entity::onTalk(talkArgs);
 }
 
 
-void DimeEntity::onVisibilityChanged(bool vis)
+void EmberEntity::onVisibilityChanged(bool vis)
 {
 	checkVisibility(vis);
 	Eris::Entity::onVisibilityChanged(vis);
 //	mOgreEntity->setVisible(vis);	
 }
 
-void DimeEntity::checkVisibility(bool vis)
+void EmberEntity::checkVisibility(bool vis)
 {
-	DimeEntity* container = dynamic_cast<DimeEntity*>(getLocation());
+	EmberEntity* container = dynamic_cast<EmberEntity*>(getLocation());
 	if (container) {
 		//check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {
@@ -152,7 +152,7 @@ void DimeEntity::checkVisibility(bool vis)
 	}
 }
 
-void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity) 
+void EmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity) 
 {
 	//for generic entities we set the height to 0
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
@@ -160,7 +160,7 @@ void DimeEntity::adjustHeightPositionForContainedNode(DimeEntity* const entity)
 	sceneNode->setPosition(position.x, 0,position.z);
 }
 
-void DimeEntity::onLocationChanged(Eris::Entity *oldLocation)
+void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
 //	return Eris::Entity::onLocationChanged(oldLocation, newLocation);
 	
@@ -171,7 +171,7 @@ void DimeEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	}
 
-	DimeEntity* newLocationEntity = dynamic_cast<DimeEntity*>(getLocation());
+	EmberEntity* newLocationEntity = dynamic_cast<EmberEntity*>(getLocation());
 	
 	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
 	
@@ -205,24 +205,24 @@ void DimeEntity::onLocationChanged(Eris::Entity *oldLocation)
 	Eris::Entity::onLocationChanged(oldLocation);
 }
 
-void DimeEntity::onAction(const Atlas::Objects::Root& act)
+void EmberEntity::onAction(const Atlas::Objects::Root& act)
 {
 	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString());
 	std::cout << std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString() << "\n";
 }
 
-void DimeEntity::onImaginary(const Atlas::Objects::Root& act)
+void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 {
 	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") imaginary: "+act->getName());
 }
 
 
-bool DimeEntity::allowVisibilityOfMember(DimeEntity* entity) {
+bool EmberEntity::allowVisibilityOfMember(EmberEntity* entity) {
 	return true;
 }
 
 /*
-void DimeEntity::addMember(Entity *e) 
+void EmberEntity::addMember(Entity *e) 
 {
 	try{
 		SceneNode* sceneNode = mSceneManager->getSceneNode(e->getID());
@@ -241,7 +241,7 @@ void DimeEntity::addMember(Entity *e)
 	
 }
 
-void DimeEntity::rmvMember(Entity *e)
+void EmberEntity::rmvMember(Entity *e)
 {
 	try{
 		getSceneNode()->removeChild(e->getID());
@@ -255,7 +255,7 @@ void DimeEntity::rmvMember(Entity *e)
 }
 */
 /*
-void DimeEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
+void EmberEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
 {
 	mIsMainAvatar = true;
 	if (mOgreEntity != NULL) {

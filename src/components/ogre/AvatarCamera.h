@@ -38,7 +38,7 @@
 #include <sigc++/object_slot.h>
 #endif
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class Avatar;
 class InputManager;
@@ -117,7 +117,7 @@ public:
 	void mouseMoved (Ogre::MouseEvent *e);
 	void mouseDragged (Ogre::MouseEvent *e) {};
 
-	DimeEntity* pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
+	EmberEntity* pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
 
 	inline void setClosestPickingDistance(Ogre::Real distance) { mClosestPickingDistance = distance; }
 	inline Ogre::Real getClosestPickingDistance() { return mClosestPickingDistance; }

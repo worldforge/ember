@@ -24,15 +24,15 @@
 #include <string>
 #include <varconf/varconf.h>
 
-namespace dime {
+namespace Ember {
 
     /**
-     * Dime Configuration Service
+     * Ember Configuration Service
      *
      * @author Miguel Guzman Miranda [Aglanor]
      * @author Joel Schander         [nullstar]
      *
-     * @see dime::Service
+     * @see Ember::Service
      * @see varconf
      */
 class ConfigService: public Service
@@ -50,13 +50,13 @@ class ConfigService: public Service
     //----------------------------------------------------------------------
 
     /**
-     * Ctor for dime::service::ConfigService.
+     * Ctor for Ember::service::ConfigService.
      *
      */
     ConfigService();
 
     /**
-     * Dtor for dime::service::ConfigService.
+     * Dtor for Ember::service::ConfigService.
      *
      */
     ~ConfigService()
@@ -143,6 +143,6 @@ class ConfigService: public Service
 
 }; //ConfigService
 
-} // namespace dime
+} // namespace Ember
 
 #endif

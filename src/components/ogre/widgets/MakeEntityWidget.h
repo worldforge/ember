@@ -30,7 +30,7 @@
 #include <Eris/Avatar.h>
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 /**
 @author Erik Hjortsberg

@@ -32,23 +32,23 @@
 #include <Eris/View.h>
 
 // ------------------------------
-// Include dime header files
+// Include Ember header files
 // ------------------------------
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 //#include "services/server/ServerService.h"
 #include "services/logging/LoggingService.h"
 
-#include "DimeEventProcessor.h"
+#include "EmberEventProcessor.h"
 //#include "DebugListener.h"
 #include "AvatarController.h" 
 
-//#include "DimeEntityFactory.h"
+//#include "EmberEntityFactory.h"
 //#include "EntityListener.h"
 
 #include "InputManager.h"
 
-using dime::LoggingService;
-namespace DimeOgre {
+using Ember::LoggingService;
+namespace EmberOgre {
 
 /*
 InputManager* InputManager::_instance = 0;
@@ -114,7 +114,7 @@ void InputManager::createMouseCursor()
     Ogre::OverlayManager::getSingleton().createCursorOverlay();
 	Ogre::GuiContainer* pCursorGui = Ogre::OverlayManager::getSingleton().getCursorGui();
 	pCursorGui->setMaterialName("Cursor/default");
-	pCursorGui->setDimensions(32.0/640.0, 32.0/480.0);	
+	pCursorGui->setEmbernsions(32.0/640.0, 32.0/480.0);	
 	pCursorGui->setPosition (0.5, 0.5);
 }
 */

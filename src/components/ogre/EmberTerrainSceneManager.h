@@ -28,7 +28,7 @@
 
 class TerrainGenerator;
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
 /*
@@ -39,15 +39,15 @@ namespace DimeOgre {
  * 
  * @see Ogre::TerrainSceneManager
  */
-class DimeTerrainSceneManager  : public Ogre::TerrainSceneManager {
+class EmberTerrainSceneManager  : public Ogre::TerrainSceneManager {
 public:
 
 
 
 
 
-	DimeTerrainSceneManager();
-	virtual ~DimeTerrainSceneManager();
+	EmberTerrainSceneManager();
+	virtual ~EmberTerrainSceneManager();
 
 	void attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page,float maxY, float minY);
 	Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
@@ -68,7 +68,7 @@ public:
 protected:
 
 	/* 
-	 * @see DimeOgre::DimeTerrainSceneManager::getPageOffset()
+	 * @see EmberOgre::EmberTerrainSceneManager::getPageOffset()
 	 */
 	Ogre::ushort mPageOffset;
 	

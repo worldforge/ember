@@ -38,9 +38,9 @@
 #include <CEGUISystem.h>
 #include <CEGUIInputEvent.h> 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEntity;
+class EmberEntity;
 
 /**
 @author Erik Hjortsberg
@@ -55,25 +55,25 @@ public:
 
 
 
-	SigC::Signal2<void, DimeEntity*, const CEGUI::MouseEventArgs&> EventPickedEntity;
+	SigC::Signal2<void, EmberEntity*, const CEGUI::MouseEventArgs&> EventPickedEntity;
 	SigC::Signal1<void, const CEGUI::MouseEventArgs&> EventPickedNothing;
 	
-	inline DimeEntity* getLastPickedEntity() { return mLastPickedEntity; }
+	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntity; }
 
 	
 protected:
 
-	virtual void onEventPickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args);
+	virtual void onEventPickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args);
 	virtual void onEventPickedNothing(const CEGUI::MouseEventArgs& args);
 
 	
 
 
 	//the currently selected entity
-    DimeEntity* mEntityUnderCursor;
+    EmberEntity* mEntityUnderCursor;
 	
 	//the last clicked entity
-    DimeEntity* mLastPickedEntity;
+    EmberEntity* mLastPickedEntity;
 
 };
 

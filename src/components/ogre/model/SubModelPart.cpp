@@ -2,7 +2,7 @@
 #include "SubModelPart.h"
 #include "SubModel.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 SubModelPart::SubModelPart(std::string name)
 : mName(name)

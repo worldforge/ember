@@ -34,7 +34,7 @@
 #include "Widget.h"
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class GUIManager;
 class Widget;

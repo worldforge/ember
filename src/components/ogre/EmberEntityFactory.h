@@ -46,23 +46,23 @@
 
 #include <OgreTerrainSceneManager.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class AvatarDimeEntity;
-class DimeTerrainPageSource;
-class DimePhysicalEntity;
-class DimeEntity;
-class ViewDimeEntity;
+class AvatarEmberEntity;
+class EmberTerrainPageSource;
+class EmberPhysicalEntity;
+class EmberEntity;
+class ViewEmberEntity;
 class TerrainGenerator;
-class WorldDimeEntity;
+class WorldEmberEntity;
 
 /*
- * Creates the DimeEntities required.
+ * Creates the EmberEntities required.
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
  * 
  */
-class DimeEntityFactory : public Eris::Factory, virtual public SigC::Object
+class EmberEntityFactory : public Eris::Factory, virtual public SigC::Object
 {
 public:
 	
@@ -70,8 +70,8 @@ public:
 	typedef std::set<Ogre::String> StringSet;
 	
 
-	DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
-	virtual ~DimeEntityFactory();
+	EmberEntityFactory(Ogre::TerrainSceneManager* sceneManager, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
+	virtual ~EmberEntityFactory();
 /*
  * eris 1.3	
 	/// Accept is called by the world to test if this factory can instantiate the specified object
@@ -104,8 +104,8 @@ protected:
 	void buildTerrainAroundAvatar();
 
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge,Eris::TypeInfo* type, Eris::View *world);
-	DimePhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
-	AvatarDimeEntity* createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
+	EmberPhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
+	AvatarEmberEntity* createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 
 	/*
 	 * loads data about the different entity types, such as which ones are persons
@@ -118,7 +118,7 @@ protected:
 
 
 	Ogre::TerrainSceneManager* mSceneManager;
-	//DimeTerrainPageSource* mTerrainSource;
+	//EmberTerrainPageSource* mTerrainSource;
 	TerrainGenerator* mTerrainGenerator;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;
@@ -127,7 +127,7 @@ protected:
 	
 	StringSet mPersonSet;
 	
-	WorldDimeEntity *mWorldEntity;
+	WorldEmberEntity *mWorldEntity;
 
 	
 };

@@ -21,7 +21,7 @@
 
 
 
-namespace dime {
+namespace Ember {
 
   // some forward declarations before we start
   class LoggingService;
@@ -35,7 +35,7 @@ namespace dime {
 
 /**
  * This is a singleton class that is used to access instances of all the
- * different Dime services.
+ * different Ember services.
  *
  * There's a getServiceName() method for each service. <p>
  *
@@ -45,14 +45,14 @@ namespace dime {
  * Example: <p>
  * <code>
  *
- *   DimeServices.getInstance()->getLoggingService()->log( ... );  <br/>
- *   ... = DimeServices.getInstance()->getMetaServerService()->getMetaServerList();
+ *   EmberServices.getInstance()->getLoggingService()->log( ... );  <br/>
+ *   ... = EmberServices.getInstance()->getMetaServerService()->getMetaServerList();
  *
  * </code>
  *
  * @author Hans Häggström
  */
-class DimeServices
+class EmberServices
 
 {
     //======================================================================
@@ -81,42 +81,42 @@ class DimeServices
     /**
      * The instance of the LoggingService
      */
-    dime::LoggingService *myLoggingService;
+    Ember::LoggingService *myLoggingService;
 
     /**
      * The instance of the ConfigService
      */
-    dime::ConfigService *myConfigService;
+    Ember::ConfigService *myConfigService;
 
     /**
      * The instance of the InputService
      */
-    dime::InputService *myInputService;
+    Ember::InputService *myInputService;
 	
     /**
      * The instance of the GuiService
      */
-    //dime::GuiService *myGuiService;
+    //Ember::GuiService *myGuiService;
 
     /**
      * The instance of the MetaserverService
      */
-    dime::MetaserverService *myMetaserverService;
+    Ember::MetaserverService *myMetaserverService;
 
     /**
      * The instance of the ServerService
      */
-    dime::ServerService *myServerService;
+    Ember::ServerService *myServerService;
 
     /**
      * The instance of the SoundService
      */
-    dime::SoundService *mySoundService;
+    Ember::SoundService *mySoundService;
 
     /**
-     * The DimeServices singleton instance.
+     * The EmberServices singleton instance.
      */
-    static DimeServices *theInstance;
+    static EmberServices *theInstance;
 
     //======================================================================
     // Public Methods
@@ -128,9 +128,9 @@ class DimeServices
     // Destructor
 
     /**
-     * Deletes a DimeServices instance.
+     * Deletes a EmberServices instance.
      */
-    virtual ~DimeServices();
+    virtual ~EmberServices();
     
 
 
@@ -138,9 +138,9 @@ class DimeServices
     // Singleton
 
     /**
-     * Returns the DimeServices instance.
+     * Returns the EmberServices instance.
      */
-    static DimeServices *getInstance();
+    static EmberServices *getInstance();
     
 
 
@@ -150,43 +150,43 @@ class DimeServices
     /**
      * Returns an instance of the TestService.
      */
-    dime::TestService *getTestService();
+    Ember::TestService *getTestService();
     
 
     /**
      * Returns an instance of the LoggingService
      */
-    dime::LoggingService *getLoggingService();
+    Ember::LoggingService *getLoggingService();
 
     /**
      * Returns an instance of the ConfigService
      */
-    dime::ConfigService *getConfigService();
+    Ember::ConfigService *getConfigService();
 
     /**
      * Returns an instance of the InputService
      */
-    dime::InputService *getInputService();
+    Ember::InputService *getInputService();
 	
     /**
      * Returns an instance of the GuiService
      */
-    //dime::GuiService *getGuiService();
+    //Ember::GuiService *getGuiService();
 
     /**
      * Returns an instance of the MetaserverService
      */
-    dime::MetaserverService *getMetaserverService();
+    Ember::MetaserverService *getMetaserverService();
 
     /**
      * Returns an instance of the ServerService
      */
-    dime::ServerService *getServerService();
+    Ember::ServerService *getServerService();
 
     /**
      * Returns an instance of the SoundService
      */
-    dime::SoundService *getSoundService();
+    Ember::SoundService *getSoundService();
 
     //----------------------------------------------------------------------
     // Setters
@@ -215,13 +215,13 @@ class DimeServices
     /**
      * The constructor is private, and only used to create the singleton instance.
      */
-    DimeServices();
+    EmberServices();
 
 
     /**
      * Copy constructor not provided.
      */
-    DimeServices( const DimeServices &source )
+    EmberServices( const EmberServices &source )
     {
     }
 
@@ -229,7 +229,7 @@ class DimeServices
     /**
      * Assignment operator not provided.
      */
-    DimeServices &operator= ( const DimeServices &source )
+    EmberServices &operator= ( const EmberServices &source )
     {
         return *this;
     }

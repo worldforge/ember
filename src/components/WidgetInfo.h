@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-namespace dime {
+namespace Ember {
 
 /**
  * Container Class for Info on a Widget in a State.
@@ -42,7 +42,7 @@ namespace dime {
  *
  * @author Martin Pollard aka Xmp
  *
- * @see dime::State
+ * @see Ember::State
  *
  */
 
@@ -79,7 +79,7 @@ class WidgetInfo
 	/*
 	 * Rectangle of Widget
 	 */
-        dime::Rectangle myPos;
+        Ember::Rectangle myPos;
 
 	/*
 	 * Type of widget (IE the theme we are getting this widget from.
@@ -102,7 +102,7 @@ class WidgetInfo
     /**
      * Creates a new WidgetInfo.
      */
-    WidgetInfo(const std::string& name, const dime::Rectangle& pos, const std::string& type)
+    WidgetInfo(const std::string& name, const Ember::Rectangle& pos, const std::string& type)
       : myName(name), myPos(pos), myType(type)
      {
      }
@@ -153,7 +153,7 @@ class WidgetInfo
     /**
      * Gets the value of myPos of this WidgetInfo
      */
-    dime::Rectangle getPos() const
+    Ember::Rectangle getPos() const
     {
         return myPos;
     }
@@ -181,7 +181,7 @@ class WidgetInfo
     /**
      * Sets the value of Pos of this WidgetInfo
      */
-    void setPos( dime::Rectangle Pos )
+    void setPos( Ember::Rectangle Pos )
     {
         myPos = Pos;
     }
@@ -238,6 +238,6 @@ class WidgetInfo
 
 }; // End of WidgetInfo
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

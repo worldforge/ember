@@ -21,7 +21,7 @@
 #include "SubModel.h"
 #include "SubModelPart.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 SubModel::SubModel(Ogre::Entity* entity) :
 mEntity(entity)

@@ -16,14 +16,14 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// Rewritten for Dime by Martin Pollard (Xmp)
+// Rewritten for Ember by Martin Pollard (Xmp)
 
 // Originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002 
 
 #include "Tokeniser.h"
 
-namespace dime
+namespace Ember
 {
 
 const std::string Tokeniser::delimeters = " ";
@@ -60,4 +60,4 @@ std::string Tokeniser::remainingTokens() {
 //  }
 }                                
 
-}// end of namespace dime
+}// end of namespace Ember

@@ -22,7 +22,7 @@
 #include "SubModelPart.h"
 #include "MotionManager.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 Ogre::String Model::msMovableType = "Model";
 

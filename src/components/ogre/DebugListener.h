@@ -27,7 +27,7 @@
 #include <OgreEventListeners.h>
 #include <OgreStringConverter.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 	
 class DebugListener : public Ogre::FrameListener {
 public:

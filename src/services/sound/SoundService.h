@@ -28,15 +28,15 @@ class Service;
 //I only break my own rules for very good reasons
 #include "framework/ConsoleObject.h"
 
-namespace dime {
+namespace Ember {
 
 /**
- * Dime Sound Service
+ * Ember Sound Service
  *
  * @author Miguel Guzman Miranda (Aglanor)
  *
- * @see dime::Service
- * @see dime::ConsoleObject
+ * @see Ember::Service
+ * @see Ember::ConsoleObject
  */
 class SoundService: public Service, public ConsoleObject
 {
@@ -105,6 +105,6 @@ class SoundService: public Service, public ConsoleObject
 
 }; //SoundService
 
-} // namespace dime
+} // namespace Ember
 
 #endif

@@ -18,26 +18,26 @@
 #include "services/logging/LoggingService.h"
 
 #include "TerrainGenerator.h"
-//#include "DimeTerrainRenderable.h"
+//#include "EmberTerrainRenderable.h"
 #include "MathConverter.h"
 
-#include "DimeTerrainSceneManager.h"
-namespace DimeOgre {
+#include "EmberTerrainSceneManager.h"
+namespace EmberOgre {
 
 /*
-DimeTerrainSceneManager* DimeTerrainSceneManager::_instance = 0;
+EmberTerrainSceneManager* EmberTerrainSceneManager::_instance = 0;
 
 
-DimeTerrainSceneManager & DimeTerrainSceneManager::getSingleton(void)
+EmberTerrainSceneManager & EmberTerrainSceneManager::getSingleton(void)
 {
 	//fprintf(stderr, "TRACE - ENTITY LISTENER - SINGLETON ENTERING\n");
 	if(_instance == 0)
-		_instance = new DimeTerrainSceneManager;
+		_instance = new EmberTerrainSceneManager;
 	return *_instance;
 }
 */
 
-DimeTerrainSceneManager::DimeTerrainSceneManager() 
+EmberTerrainSceneManager::EmberTerrainSceneManager() 
 : Ogre::TerrainSceneManager()
 //: mGenerator(0)
 {
@@ -47,15 +47,15 @@ DimeTerrainSceneManager::DimeTerrainSceneManager()
 	mPageOffset = 10;
 
 }
-DimeTerrainSceneManager::~DimeTerrainSceneManager()
+EmberTerrainSceneManager::~EmberTerrainSceneManager()
 {}
 
-int DimeTerrainSceneManager::getPageOffset()
+int EmberTerrainSceneManager::getPageOffset()
 {
 	return mPageOffset;	
 }
 
-void DimeTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page, float maxY, float minY)
+void EmberTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page, float maxY, float minY)
 {
   //  assert(pageX == 0 && pageZ == 0 && "Multiple pages not yet supported");
 	Ogre::ushort adjustedX = pageX + mPageOffset;
@@ -80,7 +80,7 @@ void DimeTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ,
 	mMaxZ = std::max(mMaxZ, (ogreZ * 64) + 64.0f);
 }
 
-void DimeTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page) 
+void EmberTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page) 
 {
 
 //begin with the northern end
@@ -137,7 +137,7 @@ void DimeTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushor
 
 
 
-Ogre::TerrainPage* DimeTerrainSceneManager::getTerrainPage( const Ogre::Vector3 & pt )
+Ogre::TerrainPage* EmberTerrainSceneManager::getTerrainPage( const Ogre::Vector3 & pt )
 {
     if (mPagingEnabled)
     {
@@ -152,7 +152,7 @@ Ogre::TerrainPage* DimeTerrainSceneManager::getTerrainPage( const Ogre::Vector3 
     }
 }
 
-void DimeTerrainSceneManager::doResize()
+void EmberTerrainSceneManager::doResize()
 {
 	resize( Ogre::AxisAlignedBox( mMinX, mMinY, mMinZ, mMaxX, mMaxY, mMaxZ ) );
 	

@@ -23,11 +23,11 @@
 #include <OgreTerrainPageSource.h>
 #include <OgreTerrainSceneManager.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class TerrainGenerator;
-class DimeTerrainSceneManager;
-class DimeTerrainPageSource : public Ogre::TerrainPageSource {
+class EmberTerrainSceneManager;
+class EmberTerrainPageSource : public Ogre::TerrainPageSource {
 	
 	
 	
@@ -47,14 +47,14 @@ protected:
 	Ogre::ushort mZ;
 	bool mHasTerrain;
 	void generatePage(int x, int y);
-	DimeTerrainSceneManager* getDimeTerrainSceneManager() const;
+	EmberTerrainSceneManager* getEmberTerrainSceneManager() const;
 
 public:
     virtual void requestPage (Ogre::ushort x, Ogre::ushort z);
     virtual void expirePage (Ogre::ushort x, Ogre::ushort z);	
  
-	DimeTerrainPageSource(TerrainGenerator* const generator);
-	virtual ~DimeTerrainPageSource();
+	EmberTerrainPageSource(TerrainGenerator* const generator);
+	virtual ~EmberTerrainPageSource();
 	void setHasTerrain(bool hasTerrain);
 	
 	/*

@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// Rewritten for Dime by Martin Pollard (Xmp)
+// Rewritten for Ember by Martin Pollard (Xmp)
 
 // Originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002 
@@ -31,7 +31,7 @@
 // Included system headers
 #include <string>
 
-namespace dime {
+namespace Ember {
 
 /**
  * Short sentence with a general description of the class, ending in period.
@@ -175,6 +175,6 @@ class Tokeniser
 
 }; // End of Tokeniser
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

@@ -43,9 +43,9 @@
 #include <Eris/TypeInfo.h>
 #include <Ogre.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEntity;
+class EmberEntity;
 class Avatar;
 
 
@@ -59,7 +59,7 @@ class EntityListener : virtual public SigC::Object //, public Component
 
 		/**
          * Constructor
-         * This grabs a pointer to the current Eris entity from DimeServices and
+         * This grabs a pointer to the current Eris entity from EmberServices and
          * connects the relevant signals to listening methods. If you're not using
          * any of those methods (Entered is the most likely to be unused IMO) then you
          * should also remove the connection code.
@@ -70,10 +70,10 @@ class EntityListener : virtual public SigC::Object //, public Component
 		static EntityListener* _instance;
 		Ogre::SceneManager* mSceneMgr;
 		std::string avatarID; // ID of the Avatar entity
-		DimeEntity* dimeEntity;
+		EmberEntity* emberEntity;
 		
-		//the main avatar, from the dime namespace
-		Avatar* mDimeAvatar;
+		//the main avatar, from the Ember namespace
+		Avatar* mEmberAvatar;
 		
 
     //======================================================================
@@ -81,14 +81,14 @@ class EntityListener : virtual public SigC::Object //, public Component
     //======================================================================
     public:
     
-    	void setDimeAvatar(Avatar* dimeAvatar)
+    	void setEmberAvatar(Avatar* EmberAvatar)
     	{ 
-    		mDimeAvatar = dimeAvatar;
+    		mEmberAvatar = EmberAvatar;
     	}
     	
-    	Avatar* getDimeAvatar() 
+    	Avatar* getEmberAvatar() 
     	{
-    		return mDimeAvatar;
+    		return mEmberAvatar;
     	}
 
 		/** Retrieves the instance of EntityListener */

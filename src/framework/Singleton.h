@@ -22,7 +22,7 @@
 #ifndef _DIME_SINGLETON_H__
 #define _DIME_SINGLETON_H__
 
-namespace dime {
+namespace Ember {
 
     /** Template class for creating single-instance global classes.
     */

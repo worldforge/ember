@@ -20,21 +20,21 @@
 
 
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
-#include "AvatarDimeEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
+#include "AvatarEmberEntity.h"
 #include "AvatarCamera.h"
 #include "GUIManager.h"
 #include "OgreStringConverter.h"
 #include "Avatar.h"
 #include "DebugListener.h"
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 
 #include "AvatarController.h"
 
 using namespace Ogre;
-namespace DimeOgre {
+namespace EmberOgre {
 
 /*
 AvatarController* AvatarController::_instance = 0;
@@ -58,7 +58,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	setAvatar(avatar);
 	
 	//AvatarController* avatarController = this;
-	//DimeOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
+	//EmberOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
 	createAvatarCameras(avatar->getAvatarSceneNode());
 	mAvatar->setAvatarController(this);
 	
@@ -77,7 +77,7 @@ AvatarController::~AvatarController()
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
 	if (mAvatarCamera == NULL) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, DimeOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager);
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, EmberOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager);
 	} else {
 		mAvatarCamera->setAvatarNode(avatarSceneNode);
 	}
@@ -96,15 +96,15 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 		
 /*
  * 	if (inputReader->isKeyDown(KC_F7)) {
-		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
-		if ( dimeEntity == NULL ) {    
+		EmberEntity* EmberEntity = doMousePicking(event, inputReader);
+		if ( EmberEntity == NULL ) {    
 	     	// Nada! 
 			Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 		} else { 
 			std::string aString;
-			aString = "OgreID: " + dimeEntity->getSceneNode()->getName();
-			aString += " ErisID: " + dimeEntity->getID();
-			aString += " ErisName: " + dimeEntity->getName();
+			aString = "OgreID: " + EmberEntity->getSceneNode()->getName();
+			aString += " ErisID: " + EmberEntity->getID();
+			aString += " ErisName: " + EmberEntity->getName();
 			Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
 		} 	
 	}

@@ -23,7 +23,7 @@
 #include <Mercator/Shader.h>
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 	
 class TerrainShader{
 public:

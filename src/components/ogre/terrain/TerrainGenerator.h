@@ -52,10 +52,10 @@
 */
 class GroundCover;
 
-namespace DimeOgre {
+namespace EmberOgre {
 	
 class TerrainShader;
-class DimeTerrainPageSource;
+class EmberTerrainPageSource;
 
 
 /*
@@ -63,7 +63,7 @@ class DimeTerrainPageSource;
  * This involves getting terraing from Mercator, converting this to ogre
  * format and creating materials to make it look good.
  * 
- * It works closely with DimeTerrainPageSource.
+ * It works closely with EmberTerrainPageSource.
  * 
  */
 class TerrainGenerator
@@ -164,7 +164,7 @@ protected:
 	 */
 	void addShader(TerrainShader* shader);
 	
-	DimeTerrainPageSource* mTerrainPageSource;
+	EmberTerrainPageSource* mTerrainPageSource;
 };
 }
 

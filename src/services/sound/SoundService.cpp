@@ -42,7 +42,7 @@
 #include "SoundService.h"
 
 
-namespace dime
+namespace Ember
 {
     // List of SoundService's console commands
 	const char * const SoundService::PLAYSOUND = "playsound";
@@ -255,7 +255,7 @@ namespace dime
 			}
 
 
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Press 1 to play sound, 2 to stop, 3 to go on with dime." << ENDM;
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Press 1 to play sound, 2 to stop, 3 to go on with Ember." << ENDM;
 
 
 // This code is not useful anymore. Kept in order to use it as base for other methods, but will be removed. Do not uncomment, it does not work anymore. Use /playsound console command instead.
@@ -400,4 +400,4 @@ namespace dime
 
 
 
-} // namespace dime
+} // namespace Ember

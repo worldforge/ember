@@ -13,7 +13,7 @@
 #endif
 
 
-namespace DimeOgre
+namespace EmberOgre
 {
 	
 	Widget::Widget(GUIManager* guiManager)

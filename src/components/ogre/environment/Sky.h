@@ -23,7 +23,7 @@
 #ifndef DIMEOGRESKY_H
 #define DIMEOGRESKY_H
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 /**
 @author Erik Hjortsberg

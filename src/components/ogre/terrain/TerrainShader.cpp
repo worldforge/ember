@@ -1,5 +1,5 @@
 #include "TerrainShader.h"
-namespace DimeOgre {
+namespace EmberOgre {
 
 TerrainShader::TerrainShader(const Ogre::String textureName, Mercator::Shader* shader)
 : mTextureName(textureName)

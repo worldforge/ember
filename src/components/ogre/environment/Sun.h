@@ -23,7 +23,7 @@
 #ifndef DIMEOGRESUN_H
 #define DIMEOGRESUN_H
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 /**
 @author Erik Hjortsberg

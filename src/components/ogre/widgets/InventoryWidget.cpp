@@ -22,22 +22,22 @@
 //
 #include "Widget.h"
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
-#include "AvatarDimeEntity.h"
-#include "DimeEntityFactory.h"
-#include "DimeOgre.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
+#include "AvatarEmberEntity.h"
+#include "EmberEntityFactory.h"
+#include "EmberOgre.h"
 #include "Avatar.h"
 #include "InventoryWidget.h"
 
 #include "services/server/ServerService.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 
 #include <elements/CEGUIPushButton.h>
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class InventoryWidgetListItem : public CEGUI::ListboxTextItem
 {
@@ -68,32 +68,35 @@ void InventoryWidget::buildWidget()
 	mListBox = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/ListBox"));
 	getMainSheet()->addChildWindow(mMainWindow); 
 	
-	DimeOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarDimeEntity));
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));
 	
 	CEGUI::PushButton* dropButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/Drop"));
 	BIND_CEGUI_EVENT(dropButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Drop_Click)
+	
+	CEGUI::PushButton* wieldButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/Wield"));
+	BIND_CEGUI_EVENT(dropButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Wield_Click)
 
 	
 	
 	
 }
 
-void InventoryWidget::createdAvatarDimeEntity(AvatarDimeEntity* entity)
+void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 {
 	mMainWindow->setVisible(true);
-	DimeOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
-	DimeOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
+	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
+	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
 
 }
-void InventoryWidget::addedEntity(DimeEntity* dimeEntity) {
+void InventoryWidget::addedEntity(EmberEntity* dimeEntity) {
 	
 	CEGUI::String name(dimeEntity->getType()->getName() + " ("+ dimeEntity->getId() +" : "+dimeEntity->getName()+")");
 	CEGUI::ListboxItem* item = new InventoryWidgetListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
-	mListBoxMap.insert(std::map<DimeEntity*, CEGUI::ListboxItem*>::value_type(dimeEntity, item));
+	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(dimeEntity, item));
 	mListBox->addItem(item);
 
 }
-void InventoryWidget::removedEntity(DimeEntity* dimeEntity) {
+void InventoryWidget::removedEntity(EmberEntity* dimeEntity) {
 //	CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi(dimeEntity->getId().c_str()));
 	CEGUI::ListboxItem* item = mListBoxMap[dimeEntity];
 	if (item) {
@@ -106,8 +109,17 @@ bool InventoryWidget::Drop_Click(const CEGUI::EventArgs& args)
 {
 	CEGUI::ListboxItem* item = mListBox->getFirstSelectedItem();
 	if (item) {
-		DimeEntity* entity = static_cast<DimeEntity*>(item->getUserData());
-		dime::DimeServices::getInstance()->getServerService()->drop(entity, WFMath::Vector<3>(0,1,0));
+		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
+		Ember::EmberServices::getInstance()->getServerService()->drop(entity, WFMath::Vector<3>(0,1,0));
+	}
+}
+
+bool InventoryWidget::Wield_Click(const CEGUI::EventArgs& args)
+{
+	CEGUI::ListboxItem* item = mListBox->getFirstSelectedItem();
+	if (item) {
+		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
+		Ember::EmberServices::getInstance()->getServerService()->wield(entity);
 	}
 }
 

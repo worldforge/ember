@@ -17,10 +17,10 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __DimeOgre_MediaDeployer_H__
-#define __DimeOgre_MediaDeployer_H__
+#ifndef __EmberOgre_MediaDeployer_H__
+#define __EmberOgre_MediaDeployer_H__
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class MediaDeployer
 {

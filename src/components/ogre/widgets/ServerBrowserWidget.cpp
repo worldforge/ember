@@ -27,12 +27,12 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIMultiColumnList.h> 
 
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "GUIManager.h"
 #include "ServerBrowserWidget.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class ServerBrowserWidgetListItem : public CEGUI::ListboxTextItem
 {
@@ -79,7 +79,7 @@ void ServerBrowserWidget::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow); 
 
 	
-	dime::DimeServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
+	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
 
 		
 	connectToServer();
@@ -123,7 +123,7 @@ bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 	}
 		
 	if (serverName != "") {
-		dime::DimeServices::getInstance()->getServerService()->connect(serverName);
+		Ember::EmberServices::getInstance()->getServerService()->connect(serverName);
 	}
 	return true;
 

@@ -1,7 +1,7 @@
 #ifndef INGAMEEVENTSWIDGET_H
 #define INGAMEEVENTSWIDGET_H
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class IngameEventsWidget
 : public Widget

@@ -1,11 +1,13 @@
-#include "Ogre.h"
+#include <Ogre.h>
 #include "GroundCover.h"
+using namespace Ogre;
+namespace EmberOgre {
 
 String GroundCover::MESH_NAME = "big_foliage_mesh";
 String GroundCover::NODE_NAME = "big_foliage_node";
 String GroundCover::ENTITY_NAME = "big_foliage_entity";
 
-GroundCover::GroundCover(SceneManager* manager,const Vector3& size,int sizeOfABlock, const Vector3 center)
+GroundCover::GroundCover(SceneManager* manager, const Vector3& size, int sizeOfABlock, const Vector3 center)
 {
 	_manager = manager;
 	_big_entity = NULL;
@@ -25,8 +27,20 @@ GroundCover::GroundCover(SceneManager* manager,const Vector3& size,int sizeOfABl
 	setCullParameters(std::max(x_size,z_size) * 2.0,std::max(_size.x,_size.z) * 0.5,120.0);
 }
 
+SceneNode* GroundCover::getSceneNode()
+{
+	return _big_node;
+}
+
 // Add a mesh at the given position, with high and low LODs
-void GroundCover::add(const Vector3& position,const String& high_mesh,const String& low_mesh)
+void GroundCover::add(const Vector3& position, const String& high_mesh, const String& low_mesh)
+{		
+	InstanceData* pInst = add(high_mesh, low_mesh);	
+	pInst->vPos = position;
+}
+
+
+GroundCover::InstanceData* GroundCover::add (const String& high_mesh, const String& low_mesh)
 {
 	// See if we've already loaded the mesh
 	Mesh* mesh = (Mesh*)MeshManager::getSingleton().getByName(high_mesh);
@@ -37,9 +51,17 @@ void GroundCover::add(const Vector3& position,const String& high_mesh,const Stri
         mesh->createManualLodLevel(_max_dist,low_mesh); 
 	}
 	
+	InstanceData* pInst = new InstanceData();	
+	pInst->pMesh = mesh;	
+	pInst->vScale = Vector3(1, 1, 1);
+	pInst->qOrient = Quaternion::IDENTITY;
+	
 	// Remember these nodes so we can compile them later
-	_items.push_back(std::pair<Vector3,Mesh*>(position,mesh));
+	_items.push_back(pInst);
+	
+	return pInst;
 }
+
 
 // Cull and apply LODs depending on where the camera is
 void GroundCover::update(Camera* camera)
@@ -99,17 +121,18 @@ void GroundCover::compile()
 	{
 		for(unsigned int x = 0;x < _x_blocks;x++)
 		{
-			
 			// Work out the position of the block
 			Real x_position = (x_size * x) - (_size.x / 2) + (_center.x);
 			Real z_position = (z_size * z) - (_size.x / 2) + (_center.z);
 			Vector3 block_pos(x_position ,0.0,z_position);
 
 			// Check all the added items
-			for(std::vector<std::pair<Vector3,Mesh*> >::iterator i = _items.begin();i != _items.end();i++)
+			//for(std::vector<std::pair<Vector3,Mesh*> >::iterator i = _items.begin();i != _items.end();i++)
+			for(std::vector<InstanceData*>::iterator i = _items.begin();i != _items.end();i++)
 			{
 				// If it's within this block
-				Vector3 node_pos = i->first;
+				//Vector3 node_pos = i->first;
+				Vector3 node_pos = (*i)->vPos;
 				if((node_pos.x >= block_pos.x) &&
 				   (node_pos.x < block_pos.x + x_size) &&
 				   (node_pos.z >= block_pos.z) &&
@@ -124,7 +147,8 @@ void GroundCover::compile()
 						_blocks[key] = new GroundCover::Block(key,Vector3(block_pos.x + (x_size * 0.5),block_pos.y,block_pos.z + (z_size * 0.5)));
 					}
 					// Add the item to the existing block
-					_blocks[key]->add(i->first,i->second);
+					//_blocks[key]->add(i->first,i->second);
+					_blocks[key]->add(*i);
 				}
 			}
 		}
@@ -133,18 +157,26 @@ void GroundCover::compile()
 	LogManager::getSingleton().logMessage(LML_NORMAL,"Total blocks = %u",_blocks.size());
 
 	// Bin the big stuff if it already exists
-	if(_big_node) _manager->getRootSceneNode()->removeAndDestroyChild(_big_node->getName());
-	if(_big_entity) _manager->removeEntity(_big_entity->getName());
-	if(_big_mesh) MeshManager::getSingleton().unload(_big_mesh);
+	if(_big_node)
+		_manager->getRootSceneNode()->removeAndDestroyChild(_big_node->getName());
+	
+	if(_big_entity)
+		_manager->removeEntity(_big_entity->getName());
+	
+	if(_big_mesh)
+		MeshManager::getSingleton().unload(_big_mesh);
 		
-	// Build the low LOD versions of all the blocks into the giant foliage mesh
+	// Build the low LOD versions of all the blocks into the giant foliage mesh	
 	_big_mesh = MeshManager::getSingleton().createManual(GroundCover::MESH_NAME);
+
 	for(std::map<unsigned int,GroundCover::Block*>::iterator b = _blocks.begin();b != _blocks.end();b++)
-	{
+	{		
 		b->second->build(_big_mesh);
 	}
+	
 	_big_mesh->_setBounds(AxisAlignedBox(Vector3::ZERO,_size));
-	_big_mesh->load();
+	//_big_mesh->setCastsStencilShadows(false);
+	_big_mesh->load();	
 	_big_mesh->touch();
 
 	_big_entity = _manager->createEntity(GroundCover::ENTITY_NAME,GroundCover::MESH_NAME);
@@ -153,16 +185,17 @@ void GroundCover::compile()
 
 	_big_node = _manager->getRootSceneNode()->createChildSceneNode(GroundCover::NODE_NAME);
 	_big_node->attachObject(_big_entity);
-
-	// Set the blocks sub-entities from the sub-meshes, so we can switch them on and off
+	
+	// Set the blocks sub-entities from the sub-meshes, so we can switch them on and off	
 	for(std::map<unsigned int,GroundCover::Block*>::iterator b = _blocks.begin();b != _blocks.end();b++)
-	{
+	{		
 		b->second->setSubEntities(_big_entity);
 	}
 
 	// Clear the list of items added
 	_items.clear();
 }
+
 
 GroundCover::~GroundCover()
 {
@@ -176,6 +209,12 @@ GroundCover::~GroundCover()
 	for(std::vector<GroundCover::Detail*>::iterator d = _details.begin();d != _details.end();d++)
 	{
 		delete (*d);
+	}
+	
+	
+	for(std::vector<InstanceData*>::iterator i = _items.begin(); i != _items.end(); i++)
+	{
+		delete (*i);
 	}
 
 	// Bin the big stuff if it exists
@@ -196,13 +235,15 @@ GroundCover::Block::Block(unsigned int key,const Vector3& center)
 	_detail = NULL;
 }
 
-void GroundCover::Block::add(const Vector3& position,Mesh* mesh)
+//void GroundCover::Block::add(const Vector3& position,Mesh* mesh)
+void GroundCover::Block::add(InstanceData* pInstance)
 {
 	// String mesh_name = mesh->getName();
 	// LogManager::getSingleton().logMessage(LML_NORMAL,"Adding item %s to block at (%f,%f,%f), using mesh %s",node->getName().c_str(),_center.x,_center.y,_center.z,mesh_name.c_str());
 
 	// Stick the mesh into this block
-	_meshes.push_back(std::pair<Vector3,Mesh*>(position,mesh));
+	//_meshes.push_back(std::pair<Vector3,Mesh*>(position,mesh));
+	_meshes.push_back(pInstance);
 }
 
 bool GroundCover::Block::cull(Camera* camera,Real max_dist,Real min_dist,Real cos_view_angle,GroundCover::DetailListener* listener)
@@ -214,8 +255,9 @@ bool GroundCover::Block::cull(Camera* camera,Real max_dist,Real min_dist,Real co
 	Vector3 camPos = camera->getDerivedPosition();
 	Vector3 toCamera(_center.x - camPos.x,0,_center.z - camPos.z);
 	Real sqrlen = toCamera.squaredLength();
-	Real sqrmin;
-	if(sqrlen > (max_dist * max_dist)) goto jump_hide;
+	Real sqrmin = 0;
+	if (sqrlen > (max_dist * max_dist)) 
+		goto jump_hide;
 
 	// Switch the block off if it's behind the camera and further away than the minimum distance
 	sqrmin = min_dist * min_dist;
@@ -223,11 +265,12 @@ bool GroundCover::Block::cull(Camera* camera,Real max_dist,Real min_dist,Real co
 	{
 		toCamera.normalise();
 		Real dot = toCamera.dotProduct(camera->getDirection());
-		if(dot < cos_view_angle) goto jump_hide;
+		if(dot < cos_view_angle) 
+			goto jump_hide;
 	}
 
 	// Hide it and return true if it's too close, so the caller will build a high-detail version
-	if(sqrlen < sqrmin)
+	if (sqrlen < sqrmin)
 	{
 		rc = true;
 		goto jump_hide;
@@ -274,6 +317,7 @@ void GroundCover::Block::setSubEntities(Entity* entity)
 	}
 }
 
+
 void GroundCover::Block::build(Mesh* mesh)
 {
 	// Clear the list of sub-entities and sub-meshes
@@ -284,19 +328,23 @@ void GroundCover::Block::build(Mesh* mesh)
 	// thereof, building a list of all the different materials. We'll need
 	// to create one sub-mesh for each material
 	std::map<String,int> materialList;
-	for(std::vector<std::pair<Vector3,Mesh*> >::iterator i = _meshes.begin();i != _meshes.end();i++)
-	{
-		if(i->second->getNumLodLevels() > 1)
+
+	for (std::vector<InstanceData*>::iterator i = _meshes.begin();i != _meshes.end();i++)
+	{		
+		if ((*i)->pMesh->getNumLodLevels() > 1)
 		{
-			Mesh* lod = i->second->getLodLevel(1).manualMesh;
-			if(lod)
+			Mesh* lod = (*i)->pMesh->getLodLevel(1).manualMesh;
+			if (lod)
 			{
 				unsigned short subs = lod->getNumSubMeshes();
 				for(unsigned short s = 0;s < subs;s++)
 				{
 					String mat = lod->getSubMesh(s)->getMaterialName();
+					
 					int cnt = 0;
-					if(materialList.find(mat) != materialList.end()) cnt = materialList[mat];
+					if(materialList.find(mat) != materialList.end())
+						cnt = materialList[mat];
+					
 					materialList[mat] = cnt + 1;
 				}
 			}
@@ -304,29 +352,27 @@ void GroundCover::Block::build(Mesh* mesh)
 	}
 
 	// Loop through all the materials we found...
-	for(std::map<String,int>::iterator j = materialList.begin();j != materialList.end();j++)
+	for (std::map<String,int>::iterator j = materialList.begin();j != materialList.end();j++)
 	{
-		// LogManager::getSingleton().logMessage(LML_NORMAL,"Block %u uses material %s %i times",_key,j->first.c_str(),j->second);
-
 		size_t vrt_count = 0;
 		size_t idx_count = 0;
 
 		// First pass, add up all the vertices and all the indices in all the submeshes using this material
-		for(std::vector<std::pair<Vector3,Mesh*> >::iterator i = _meshes.begin();i != _meshes.end();i++)
+		for (std::vector< InstanceData* >::iterator i = _meshes.begin();i != _meshes.end();i++)
 		{
-			if(i->second->getNumLodLevels() > 1)
+			if ((*i)->pMesh->getNumLodLevels() > 1)
 			{
-				Mesh* lod = i->second->getLodLevel(1).manualMesh;
-				if(lod)
+				Mesh* lod = (*i)->pMesh->getLodLevel(1).manualMesh;
+				if (lod)
 				{
 					unsigned short subs = lod->getNumSubMeshes();
-					for(unsigned short s = 0;s < subs;s++)
+					for (unsigned short s = 0;s < subs;s++)
 					{
 						SubMesh* sm = lod->getSubMesh(s);
-						if(sm->getMaterialName() == j->first)
+						if (sm->getMaterialName() == j->first)
 						{
-							idx_count += (sm->indexData)?sm->indexData->indexCount:0;
-							vrt_count += (sm->useSharedVertices)?lod->sharedVertexData->vertexCount:(sm->vertexData)?sm->vertexData->vertexCount:0;
+							idx_count += (sm->indexData) ? sm->indexData->indexCount : 0;
+							vrt_count += (sm->useSharedVertices) ? lod->sharedVertexData->vertexCount : (sm->vertexData) ? sm->vertexData->vertexCount : 0;
 						}
 					}
 				}
@@ -355,8 +401,8 @@ void GroundCover::Block::build(Mesh* mesh)
 		currOffset += VertexElement::getTypeSize(VET_FLOAT3);
        
 		// Normals
-//		vertexDecl->addElement(0, currOffset, VET_FLOAT3, VES_NORMAL);
-//		currOffset += VertexElement::getTypeSize(VET_FLOAT3);
+		vertexDecl->addElement(0, currOffset, VET_FLOAT3, VES_NORMAL);
+		currOffset += VertexElement::getTypeSize(VET_FLOAT3);
 
 		// 2D texture coords
 		vertexDecl->addElement(0, currOffset, VET_FLOAT2, VES_TEXTURE_COORDINATES, 0);
@@ -366,10 +412,7 @@ void GroundCover::Block::build(Mesh* mesh)
 		submesh->vertexData->vertexCount = vrt_count;
 
 		// Allocate vertex buffer
-		HardwareVertexBufferSharedPtr vrtBuf = 
-			HardwareBufferManager::getSingleton().
-				createVertexBuffer(vertexDecl->getVertexSize(0), submesh->vertexData->vertexCount,
-					HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+		HardwareVertexBufferSharedPtr vrtBuf = HardwareBufferManager::getSingleton().createVertexBuffer(vertexDecl->getVertexSize(0), submesh->vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
  
 		// Set up the binding (one source only)
 		VertexBufferBinding* binding = submesh->vertexData->vertexBufferBinding;
@@ -380,30 +423,28 @@ void GroundCover::Block::build(Mesh* mesh)
 
 		// Create the index data
 		submesh->indexData->indexCount = idx_count;
-		submesh->indexData->indexBuffer = HardwareBufferManager::getSingleton().
-			createIndexBuffer(HardwareIndexBuffer::IT_16BIT,
-				submesh->indexData->indexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+		submesh->indexData->indexBuffer = HardwareBufferManager::getSingleton(). createIndexBuffer(HardwareIndexBuffer::IT_16BIT, submesh->indexData->indexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
 
 		// Get the index buffer and lock it
 		HardwareIndexBufferSharedPtr idxBuf = submesh->indexData->indexBuffer;
 		unsigned short* idxPtr = static_cast<unsigned short*>(idxBuf->lock(HardwareBuffer::HBL_DISCARD) );
 
 		// Loop through the meshes again, copying the data across
-		for(std::vector<std::pair<Vector3,Mesh*> >::iterator i = _meshes.begin();i != _meshes.end();i++)
+		for (std::vector<InstanceData*>::iterator i = _meshes.begin();i != _meshes.end();i++)
 		{
-			if(i->second->getNumLodLevels() > 1)
+			if ((*i)->pMesh->getNumLodLevels() > 1)
 			{
-				Mesh* lod = i->second->getLodLevel(1).manualMesh;
-				if(lod)
+				Mesh* lod = (*i)->pMesh->getLodLevel(1).manualMesh;
+				if (lod)
 				{
 					unsigned short subs = lod->getNumSubMeshes();
-					for(unsigned short s = 0;s < subs;s++)
+					for (unsigned short s = 0; s < subs; s++)
 					{
 						SubMesh* sm = lod->getSubMesh(s);
 						if(sm->getMaterialName() == j->first)
 						{
 							copyIndexData(sm->indexData,submesh->indexData,idxPtr,&idxOffs,vrtOffs);
-							copyVertexData(i->first,(sm->useSharedVertices)?lod->sharedVertexData:sm->vertexData,submesh->vertexData,vrtPtr,&vrtOffs);
+							copyVertexData((*i), (sm->useSharedVertices) ? lod->sharedVertexData : sm->vertexData, submesh->vertexData, vrtPtr, &vrtOffs);
 
 							// LogManager::getSingleton().logMessage(LML_NORMAL,"Vert offset = %u, Idx offset = %u",vrtOffs,idxOffs);
 						}
@@ -420,7 +461,8 @@ void GroundCover::Block::build(Mesh* mesh)
 	}
 }
 
-void GroundCover::Block::copyVertexData(const Vector3& pos,VertexData* src,VertexData* dst,unsigned char* dstPtr,unsigned int* dstOffset)
+
+void GroundCover::Block::copyVertexData (const InstanceData* pInst, VertexData* src, VertexData* dst, unsigned char* dstPtr, unsigned int* dstOffset)
 {
 	unsigned int offset = *dstOffset;
 
@@ -444,27 +486,39 @@ void GroundCover::Block::copyVertexData(const Vector3& pos,VertexData* src,Verte
 	Real* pSrcVert;
 	Real* pDstVert;
 	
-	for(size_t i = 0; i < src->vertexCount; ++i, srcPtr += srcPosBuf->getVertexSize())
+	for (size_t i = 0; i < src->vertexCount; ++i, srcPtr += srcPosBuf->getVertexSize())
 	{
 		srcPosElem->baseVertexPointerToElement(srcPtr,&pSrcVert);
 		dstPosElem->baseVertexPointerToElement(ptr,&pDstVert);
+		
+		Vector3 vPos;
+		vPos.x = (*pSrcVert++);
+		vPos.y = (*pSrcVert++);
+		vPos.z = (*pSrcVert++);
+		
+		vPos = pInst->qOrient*vPos*pInst->vScale + pInst->vPos; 
+		
+		*pDstVert++ = vPos.x;
+		*pDstVert++ = vPos.y;
+		*pDstVert++ = vPos.z;
 
-		Real x = (*pSrcVert++) + pos.x;
-		Real y = (*pSrcVert++) + pos.y;
-		Real z = (*pSrcVert++) + pos.z;
+/*		Real x = (*pSrcVert++) + pInst->vPos.x;
+		Real y = (*pSrcVert++) + pInst->vPos.y;
+		Real z = (*pSrcVert++) + pInst->vPos.z;
 
 		// LogManager::getSingleton().logMessage(LML_NORMAL,"Added vertex (%f,%f,%f)",x,y,z);
 
 		*pDstVert++ = x;
 		*pDstVert++ = y;
 		*pDstVert++ = z;
+		*/
 
 		ptr += dstPosBuf->getVertexSize();
     }
 	srcPosBuf->unlock();
 
 	/* NORMALS */
-/*
+
 	// Find the normal element in both buffers
 	const VertexElement* srcNrmElem = src->vertexDeclaration->findElementBySemantic(VES_NORMAL);
 	const VertexElement* dstNrmElem = dst->vertexDeclaration->findElementBySemantic(VES_NORMAL);
@@ -480,7 +534,7 @@ void GroundCover::Block::copyVertexData(const Vector3& pos,VertexData* src,Verte
 	ptr = dstPtr + (dstNrmBuf->getVertexSize() * offset);
 
 	// Copy the vertices
-	for(size_t i = 0; i < src->vertexCount; ++i, srcPtr += srcNrmBuf->getVertexSize())
+	for (size_t i = 0; i < src->vertexCount; ++i, srcPtr += srcNrmBuf->getVertexSize())
 	{
 		srcNrmElem->baseVertexPointerToElement(srcPtr,&pSrcVert);
 		dstNrmElem->baseVertexPointerToElement(ptr,&pDstVert);
@@ -492,7 +546,7 @@ void GroundCover::Block::copyVertexData(const Vector3& pos,VertexData* src,Verte
 		ptr += dstNrmBuf->getVertexSize();
     }
 	srcNrmBuf->unlock();
-*/
+
 	/* TEXTURE COORDINATES */
 
 	// Find the texture element in both buffers
@@ -510,7 +564,7 @@ void GroundCover::Block::copyVertexData(const Vector3& pos,VertexData* src,Verte
 	ptr = dstPtr + (dstTexBuf->getVertexSize() * offset);
 
 	// Copy the vertices
-	for(size_t i = 0; i < src->vertexCount; ++i, srcPtr += srcTexBuf->getVertexSize())
+	for (size_t i = 0; i < src->vertexCount; ++i, srcPtr += srcTexBuf->getVertexSize())
 	{
 		srcTexElem->baseVertexPointerToElement(srcPtr,&pSrcVert);
 		dstTexElem->baseVertexPointerToElement(ptr,&pDstVert);
@@ -526,7 +580,8 @@ void GroundCover::Block::copyVertexData(const Vector3& pos,VertexData* src,Verte
 	*dstOffset = offset + src->vertexCount;
 }
 
-void GroundCover::Block::copyIndexData(IndexData* src,IndexData* dst,unsigned short* dstPtr,unsigned int* dstOffset,unsigned int vrtOffset)
+
+void GroundCover::Block::copyIndexData (IndexData* src, IndexData* dst, unsigned short* dstPtr, unsigned int* dstOffset, unsigned int vrtOffset)
 {
 	unsigned int offset = *dstOffset;
 	unsigned short* pDst = dstPtr + offset;
@@ -536,14 +591,11 @@ void GroundCover::Block::copyIndexData(IndexData* src,IndexData* dst,unsigned sh
 	unsigned int* pInt;
 	Ogre::HardwareIndexBufferSharedPtr ibuf = src->indexBuffer;
 	bool use32bitindexes = (ibuf->getType() == HardwareIndexBuffer::IT_32BIT);
+	
 	if (use32bitindexes)
-	{
 		pInt = static_cast<unsigned int*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
-	}
 	else
-	{
 		pShort = static_cast<unsigned short*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
-	}
 
 	for(size_t i = 0; i < numTris; ++i)
 	{
@@ -557,13 +609,15 @@ void GroundCover::Block::copyIndexData(IndexData* src,IndexData* dst,unsigned sh
 		*pDst++ = i1;
 		*pDst++ = i2;
 	}
+	
 	ibuf->unlock();
 
 	// Increase the offset (measured in indices)
 	*dstOffset = offset + src->indexCount;
 }
 
-void GroundCover::Block::reconfigureDetail(GroundCover::Detail* detail,GroundCover::DetailListener* listener)
+
+void GroundCover::Block::reconfigureDetail (GroundCover::Detail* detail, GroundCover::DetailListener* listener)
 {
 	if(_detail != detail)
 	{
@@ -571,18 +625,20 @@ void GroundCover::Block::reconfigureDetail(GroundCover::Detail* detail,GroundCov
 		_detail->setInUse(true,listener);
 		_detail->setCenter(_center);
 
-		for(std::vector<std::pair<Vector3,Mesh*> >::iterator i = _meshes.begin();i != _meshes.end();i++)
+		for(std::vector<InstanceData*>::iterator i = _meshes.begin();i != _meshes.end();i++)
 		{
-			_detail->addMesh(i->first,i->second,listener);
+			_detail->addMesh((*i), listener);
 		}
 	}
 }
 
-GroundCover::Block::~Block()
+
+GroundCover::Block::~Block (void)
 {
 }
 
-GroundCover::Detail::Detail(SceneManager* manager,int id)
+
+GroundCover::Detail::Detail (SceneManager* manager, int id)
 {
 	_manager = manager;
 	_in_use = false;
@@ -590,52 +646,64 @@ GroundCover::Detail::Detail(SceneManager* manager,int id)
 	_node = _manager->getRootSceneNode()->createChildSceneNode("gcd_"+StringConverter::toString(id));
 }
 
-void GroundCover::Detail::addMesh(const Vector3& position,Mesh* mesh,GroundCover::DetailListener* listener)
+
+void GroundCover::Detail::addMesh(const InstanceData* pInst, GroundCover::DetailListener* listener)
 {
-	std::map<String,std::vector<std::pair<bool,SceneNode*> >* >::iterator i = _children.find(mesh->getName());
+	std::map<String,std::vector<std::pair<bool,SceneNode*> >* >::iterator i = _children.find(pInst->pMesh->getName());
 	std::vector<std::pair<bool,SceneNode*> >* nodes = NULL;
-	if(i == _children.end())
+	
+	if (i == _children.end())
 	{
-		nodes = new std::vector<std::pair<bool,SceneNode*> >;
-		_children[mesh->getName()] = nodes;
+		nodes = new std::vector<std::pair<bool, SceneNode*> >;
+		_children[pInst->pMesh->getName()] = nodes;
 	}
-	else nodes = i->second;
+	else 
+	{
+		nodes = i->second;
+	}
 
 	SceneNode* node = NULL;
-	for(std::vector<std::pair<bool,SceneNode*> >::iterator j = nodes->begin();j != nodes->end();j++)
+	for (std::vector<std::pair<bool,SceneNode*> >::iterator j = nodes->begin(); j != nodes->end(); j++)
 	{
-		if(!(j->first))
+		if (!(j->first))
 		{
 			j->first = true;
 			j->second->setVisible(true);
-			if(listener) listener->nodeShown(j->second,true);
+			if (listener)
+				listener->nodeShown(j->second, true);
+			
 			node = j->second;
 			break;
 		}
 	}
 
-	if(!node)
+	if (!node)
 	{
 		node = _node->createChildSceneNode();
 		nodes->push_back(std::pair<bool,SceneNode*>(true,node));
 
-		Entity* ent = _manager->createEntity(_node->getName() + "_" + mesh->getName() + "_" + StringConverter::toString((unsigned int)nodes->size()),mesh->getName());
+		Entity* ent = _manager->createEntity(_node->getName() + "_" + pInst->pMesh->getName() + "_" + StringConverter::toString((unsigned int)nodes->size()), pInst->pMesh->getName());
 		ent->setCastShadows(false);
 		ent->setRenderQueueGroup(RENDER_QUEUE_8);
 		node->attachObject(ent);
-		node->setPosition(position - _center);
+		node->setScale(pInst->vScale);
+		node->setOrientation(pInst->qOrient);
+		node->setPosition(pInst->vPos - _center);
 
-		if(listener) listener->nodeCreated(node,position);
+		if (listener)
+			listener->nodeCreated(node, pInst->vPos);
 	}
 	else
 	{
-		node->setPosition(position - _center);
+		node->setPosition(pInst->vPos - _center);
 
-		if(listener) listener->nodeMoved(node,position);
+		if (listener)
+			listener->nodeMoved(node, pInst->vPos);
 	}
 }
 
-void GroundCover::Detail::setInUse(bool in_use,GroundCover::DetailListener* listener)
+
+void GroundCover::Detail::setInUse (bool in_use,GroundCover::DetailListener* listener)
 {
 	_in_use = in_use; 
 	_node->setVisible(_in_use,!_in_use);
@@ -650,17 +718,20 @@ void GroundCover::Detail::setInUse(bool in_use,GroundCover::DetailListener* list
 			{
 				j->first = false;
 				j->second->setVisible(false);
-				if(listener) listener->nodeShown(j->second,false);
+				if (listener)
+					listener->nodeShown(j->second,false);
 			}
 		}
 	}
 }
 
-void GroundCover::Detail::setCenter(const Vector3& center)
+
+void GroundCover::Detail::setCenter (const Vector3& center)
 {
 	_center = center;
 	_node->setPosition(_center);
 }
+
 
 GroundCover::Detail::~Detail()
 {
@@ -671,4 +742,5 @@ GroundCover::Detail::~Detail()
 		LogManager::getSingleton().logMessage(LML_NORMAL,"Items in node list %s: %u",i->first.c_str(),i->second->size());
 		delete i->second;
 	}
+}
 }

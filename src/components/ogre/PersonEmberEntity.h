@@ -20,16 +20,16 @@
 #define PERSONDIMEENTITY_H
 #include <Ogre.h>
 
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimePhysicalEntity;
-class PersonDimeEntity : public DimePhysicalEntity {
+class EmberPhysicalEntity;
+class PersonEmberEntity : public EmberPhysicalEntity {
 public:
 
-	PersonDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
-	virtual ~PersonDimeEntity();
+	PersonEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
+	virtual ~PersonEmberEntity();
 
-	virtual bool allowVisibilityOfMember(DimeEntity* entity);
+	virtual bool allowVisibilityOfMember(EmberEntity* entity);
 	
 protected:
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);

@@ -23,15 +23,15 @@
 
 #include "Widget.h"
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
-#include "AvatarDimeEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
+#include "AvatarEmberEntity.h"
 
 
-#include "DimeOgre.h"
+#include "EmberOgre.h"
 #include "Avatar.h"
-#include "DimeEntity.h"
+#include "EmberEntity.h"
 #include "MousePicker.h"
 #include "GUIManager.h"
 
@@ -43,7 +43,7 @@
 
 //#include <CEGUIWindowProperties.h> 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 EntityPickerWidget::EntityPickerWidget(GUIManager* guiManager) : Widget::Widget(guiManager)
 {
@@ -153,7 +153,7 @@ void EntityPickerWidget::showMenu(CEGUI::Point position)
 
 }
 
-void EntityPickerWidget::pickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args)
+void EntityPickerWidget::pickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args)
 {
 	showMenu(args.position);
 	CEGUI::String name(entity->getType()->getName() + " ("+ entity->getName() +")");
@@ -179,7 +179,7 @@ void EntityPickerWidget::pickedNothing(const CEGUI::MouseEventArgs& args)
 
 bool EntityPickerWidget::buttonTouch_Click(const CEGUI::EventArgs& args)
 {
-	DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity()->getErisAvatar()->touch(mPickedEntity);
+	EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->touch(mPickedEntity);
 	mGuiManager->EventEntityAction("touch", mPickedEntity);
 	mGuiManager->setDebugText(std::string("Touched ") + mPickedEntity->getName() );
 	removeMenu();
@@ -188,7 +188,7 @@ bool EntityPickerWidget::buttonTouch_Click(const CEGUI::EventArgs& args)
 
 bool EntityPickerWidget::buttonTake_Click(const CEGUI::EventArgs& args)
 {
-	DimeOgre::getSingleton().getAvatar()->getAvatarDimeEntity()->getErisAvatar()->take(mPickedEntity);
+	EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->take(mPickedEntity);
 	mGuiManager->EventEntityAction("take", mPickedEntity);
 	mGuiManager->setDebugText(std::string("Took ") + mPickedEntity->getName());
 	removeMenu();

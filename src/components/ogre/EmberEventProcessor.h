@@ -34,12 +34,12 @@
  * By default the mouse is not grabbed until toggleMouse() is called.
  * 
  */
-namespace DimeOgre {
+namespace EmberOgre {
 
-class DimeEventProcessor : public Ogre::EventProcessor {
+class EmberEventProcessor : public Ogre::EventProcessor {
 public:
 
-	DimeEventProcessor();
+	EmberEventProcessor();
 	void initialise(Ogre::RenderWindow* ren);
 
 	/*
@@ -63,7 +63,7 @@ protected:
 private:
 	bool mUseMouse;
 	Ogre::RenderWindow* mWin;
-//	virtual ~DimeEventProcessor();
+//	virtual ~EmberEventProcessor();
 };
 
 }

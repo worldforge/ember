@@ -21,7 +21,7 @@
 
 // Included headers from the current project
 #include "WidgetInfo.h"
-#include "main/DimeServices.h"
+#include "main/EmberServices.h"
 
 // Included custom library headers
 
@@ -29,7 +29,7 @@
 #include <list>
 #include <string>
 
-namespace dime {
+namespace Ember {
 
 /**
  * Contains the information to draw a given state.
@@ -42,8 +42,8 @@ namespace dime {
  *
  * @author Martin Pollard aka Xmp
  *
- * @see dime::StateManager
- * @see dime::WidgetInfo
+ * @see Ember::StateManager
+ * @see Ember::WidgetInfo
  *
  */
 
@@ -172,7 +172,7 @@ class State
     /**
      * Creates and adds a WidgetInfo to this State
      */
-    void addWidget(const std::string& name, const dime::Rectangle& pos, const std::string& type)
+    void addWidget(const std::string& name, const Ember::Rectangle& pos, const std::string& type)
       {
         myWidgets.push_back( new WidgetInfo( name, pos,type ) );
       }
@@ -184,7 +184,7 @@ class State
 
     void load()
       {
-	Widget& root = DimeServices::getInstance()->getGuiService()->getRootWidget();
+	Widget& root = EmberServices::getInstance()->getGuiService()->getRootWidget();
 
 	// For each widget in myWidgets ask it to make itself and
 	// children. Then return a pointer to the made Widget for
@@ -197,7 +197,7 @@ class State
 
     void unload()
       {
-	DimeServices::getInstance()->getGuiService()->getRootWidget().removeAllWidgets();
+	EmberServices::getInstance()->getGuiService()->getRootWidget().removeAllWidgets();
       }
     
     //======================================================================
@@ -220,6 +220,6 @@ class State
 
 }; // End of State
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

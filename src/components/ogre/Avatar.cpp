@@ -26,7 +26,7 @@
 #include <typeinfo>
 
 #include "services/server/ServerService.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 
 /*
 #include <Ogre.h>
@@ -39,17 +39,17 @@
 */
 
 
-#include "DimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
 //#include "TerrainGenerator.h"
 #include "MotionManager.h"
 
-//#include "DimeTerrainSceneManager.h"
+//#include "EmberTerrainSceneManager.h"
 
-#include "AvatarDimeEntity.h"
+#include "AvatarEmberEntity.h"
 #include "Model.h"
 #include "SubModel.h"
 
@@ -57,7 +57,7 @@
 
 #include "Avatar.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 Avatar::Avatar()
 {
@@ -128,9 +128,9 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
 		
 		for (; I != I_end; ++I) {
-			DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(*I);
-			if (dimeEntity)
-				EventAddedEntityToInventory.emit(dimeEntity);
+			EmberEntity* emberEntity = dynamic_cast<EmberEntity*>(*I);
+			if (emberEntity)
+				EventAddedEntityToInventory.emit(emberEntity);
 		}
 		
 		mEntitiesToBeAddedToInventory.clear();
@@ -142,9 +142,9 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 		std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemovedFromInventory.end();
 		
 		for (; J != J_end; ++J) {
-			DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(*J);
-			if (dimeEntity)
-				EventRemovedEntityFromInventory.emit(dimeEntity);
+			EmberEntity* emberEntity = dynamic_cast<EmberEntity*>(*J);
+			if (emberEntity)
+				EventRemovedEntityFromInventory.emit(emberEntity);
 		}
 		
 		mEntitiesToBeRemovedFromInventory.clear();
@@ -240,9 +240,9 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 		
 
 		//for now we'll only send velocity
-		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(OGRE2WF(newMovementState.orientation * newMovementState.velocity)), Ogre2Atlas(newMovementState.orientation));
+		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(OGRE2WF(newMovementState.orientation * newMovementState.velocity)), Ogre2Atlas(newMovementState.orientation));
 
-//		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
+//		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
 
 	} else {
 		mTimeSinceLastServerMessage += timeSlice;
@@ -319,7 +319,7 @@ AvatarCamera* Avatar::getAvatarCamera() const
 	return mAvatarController->getAvatarCamera();
 }
 
-AvatarDimeEntity* Avatar::getAvatarDimeEntity()
+AvatarEmberEntity* Avatar::getAvatarEmberEntity()
 {
 	return mErisAvatarEntity;
 }
@@ -341,32 +341,32 @@ void Avatar::movedInWorld()
 }
 
 
-void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
+void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 {
 	Ogre::SceneNode* oldAvatar = mAvatarNode;
 	
-	mAvatarController->createAvatarCameras(dimeEntity->getAvatarSceneNode());
+	mAvatarController->createAvatarCameras(EmberEntity->getAvatarSceneNode());
 	
 	
 	//HACK!!! DEBUG!!
 	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
-	//dimeEntity->getSceneNode()->addChild(mAvatarNode);
+	//EmberEntity->getSceneNode()->addChild(mAvatarNode);
 //	mSceneMgr->getRootSceneNode()->addChild(mAvatarNode);
 	//HACK!!! DEBUG!!
 	
-	mAvatarNode = dimeEntity->getSceneNode();
-	mAvatarModel = dimeEntity->getModel();
+	mAvatarNode = EmberEntity->getSceneNode();
+	mAvatarModel = EmberEntity->getModel();
 
-	mErisAvatarEntity = dimeEntity;
-	dimeEntity->setAvatar(this);
+	mErisAvatarEntity = EmberEntity;
+	EmberEntity->setAvatar(this);
 	
 	mSceneMgr->destroySceneNode(oldAvatar->getName());
 
 }
 
-// void Avatar::touch(DimeEntity* entity)
+// void Avatar::touch(EmberEntity* entity)
 // {
-// 	dime::DimeServices::getInstance()->getServerService()->touch(entity);
+// 	Ember::EmberServices::getInstance()->getServerService()->touch(entity);
 // }
 
 /*

@@ -28,16 +28,16 @@
 #include <boost/bind.hpp>
 #include <CEGUIEvent.h> 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 class Widget;
-class DimeEntity;
+class EmberEntity;
 class MousePicker;
 
 /**
 @author Erik Hjortsberg
 
-This widget will pop up when a DimeEntity is picked
+This widget will pop up when a EmberEntity is picked
 */
 class EntityPickerWidget : public Widget {
 public:
@@ -54,11 +54,11 @@ protected:
 	
 	CEGUI::StaticText* mEntityName;
 	
-	DimeEntity* mPickedEntity;
+	EmberEntity* mPickedEntity;
 	
 	std::set<CEGUI::PushButton*> mButtonSet;
 	
-	void pickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args);
+	void pickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args);
 	void pickedNothing(const CEGUI::MouseEventArgs& args);
 	
 	bool buttonTouch_Click(const CEGUI::EventArgs& args);

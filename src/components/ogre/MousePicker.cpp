@@ -21,18 +21,18 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#include "DimeEntity.h"
-#include "DimeOgre.h"
-//#include "DimePhysicalEntity.h"
-//#include "PersonDimeEntity.h"
-//#include "AvatarDimeEntity.h"
+#include "EmberEntity.h"
+#include "EmberOgre.h"
+//#include "EmberPhysicalEntity.h"
+//#include "PersonEmberEntity.h"
+//#include "AvatarEmberEntity.h"
 #include "AvatarCamera.h"
 #include "GUIManager.h"
 //#include "AvatarController.h"
 
 #include "MousePicker.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 MousePicker::MousePicker()
 {
@@ -45,10 +45,10 @@ MousePicker::~MousePicker()
 
 void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const CEGUI::MouseEventArgs& args)
 {
-	AvatarCamera* camera = DimeOgre::getSingleton().getMainCamera();
+	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
 	
-	DimeEntity* pickedEntity = camera->pickAnEntity(x, y);
+	EmberEntity* pickedEntity = camera->pickAnEntity(x, y);
 	if (pickedEntity) {
 		mLastPickedEntity = pickedEntity;
 		onEventPickedEntity(pickedEntity, args);
@@ -60,7 +60,7 @@ void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const CE
 
 
 
-void MousePicker::onEventPickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args)
+void MousePicker::onEventPickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args)
 {
 	EventPickedEntity.emit(entity, args);
 }

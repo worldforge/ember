@@ -41,7 +41,7 @@
 
 
 
-namespace dime {
+namespace Ember {
 
 /**
  * Backend storage class for Console's.
@@ -62,8 +62,8 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see dime::Console
- * @see dime::ConsoleObject
+ * @see Ember::Console
+ * @see Ember::ConsoleObject
  *
  */
 
@@ -97,7 +97,7 @@ class ConsoleBackend : public ConsoleObject
     private:
 
     /**
-     * Instance variable for singleton main dime console.
+     * Instance variable for singleton main Ember console.
      */
     static ConsoleBackend* theMainConsole;
 
@@ -169,7 +169,7 @@ class ConsoleBackend : public ConsoleObject
     // Getters
 
     /**
-     * Gets an instance of the main dime console
+     * Gets an instance of the main Ember console
      */
     static ConsoleBackend* getMainConsole()
     {
@@ -256,6 +256,6 @@ class ConsoleBackend : public ConsoleObject
 
 }; // End of ConsoleBackend
 
-} // End of dime namespace
+} // End of Ember namespace
 
 #endif

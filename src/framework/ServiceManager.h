@@ -24,10 +24,10 @@
 #include <string>
 #include <vector>
 
-namespace dime {
+namespace Ember {
 
 /**
- * Service Manager: keeps track and controls the dime services.
+ * Service Manager: keeps track and controls the Ember services.
  *
  * Maintains a list of services and performs operations on them.
  *
@@ -41,7 +41,7 @@ class ServiceManager
     // Private Variables
     //======================================================================
     private:
-        /** Dime Service Vector */
+        /** Ember Service Vector */
 		std::vector < Service* > myServiceVector;
 
     //----------------------------------------------------------------------
@@ -127,7 +127,7 @@ class ServiceManager
    
 }; // Service
 
-} // namespace dime
+} // namespace Ember
 
 #endif
 

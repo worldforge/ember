@@ -28,16 +28,16 @@
 
 
 #include "services/server/ServerService.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 
 
-#include "DimeEntity.h"
-#include "WorldDimeEntity.h"
-#include "DimePhysicalEntity.h"
-#include "PersonDimeEntity.h"
-#include "AvatarDimeEntity.h"
-#include "DimeEntityFactory.h"
-#include "DimeOgre.h"
+#include "EmberEntity.h"
+#include "WorldEmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
+#include "AvatarEmberEntity.h"
+#include "EmberEntityFactory.h"
+#include "EmberOgre.h"
 
 
 #include "Model.h"
@@ -46,66 +46,66 @@
 #include "framework/ConsoleBackend.h"
 //#include "MathConverter.h"
 #include "TerrainGenerator.h"
-//#include "DimeTerrainSceneManager.h"
-#include "DimeTerrainPageSource.h"
+//#include "EmberTerrainSceneManager.h"
+#include "EmberTerrainPageSource.h"
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
-DimeEntityFactory::DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
+EmberEntityFactory::EmberEntityFactory(Ogre::TerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
 : mSceneManager(sceneManager)
 , mTerrainGenerator(terrainGenerator)
 , mTypeService(typeService)
 , mWorldEntity(0)
 {
 	mTerrainType = mTypeService->getTypeByName("world");
-	dime::ServerService* serverService = dime::DimeServices::getInstance()->getServerService();
+	Ember::ServerService* serverService = Ember::EmberServices::getInstance()->getServerService();
 	loadTypeInfo();
 	
-	serverService->GotAvatar.connect(SigC::slot(*this, &DimeEntityFactory::setAvatar));
+	serverService->GotAvatar.connect(SigC::slot(*this, &EmberEntityFactory::setAvatar));
 	
 }
 
 
 
-DimeEntityFactory::~DimeEntityFactory()
+EmberEntityFactory::~EmberEntityFactory()
 {}
 
 /// create whatever entity the client desires
-Eris::Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View* w)
+Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 	
-//	dime::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
-	Eris::Entity* dimeEntity;
+//	Ember::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
+	Eris::Entity* emberEntity;
 /*    Eris::TypeInfoPtr type = mTypeService->getTypeForAtlas(ge);*/
     if (ge->getId() == mAvatar->getId()) {
    	
-    	AvatarDimeEntity* avatarEntity = createAvatarEntity(ge, type,  w);
-    	dimeEntity = avatarEntity;
+    	AvatarEmberEntity* avatarEntity = createAvatarEntity(ge, type,  w);
+    	emberEntity = avatarEntity;
  
     } else if (type->isA(mTypeService->getTypeByName("boundary")) 
     || type->isA(mTypeService->getTypeByName("weather"))) {
 		fprintf(stderr, "TRACE - CREATE IMMATERIAL ENTITY\n");
 
     	//we don't want this to have any Ogre::Entity
-		dimeEntity = new DimeEntity(ge->getId(), type, w, mSceneManager);
+		emberEntity = new EmberEntity(ge->getId(), type, w, mSceneManager);
 
     } else if (type->isA(mTerrainType)) {
 
-    	dimeEntity = createWorld(ge, type, w);
+    	emberEntity = createWorld(ge, type, w);
 
     } else {
 
-    	dimeEntity = createPhysicalEntity(ge, type, w);
+    	emberEntity = createPhysicalEntity(ge, type, w);
  
     }
 
 	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
-	return dimeEntity;
+	return emberEntity;
 }
 
-AvatarDimeEntity* DimeEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world)
+AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world)
 {
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
@@ -125,22 +125,22 @@ AvatarDimeEntity* DimeEntityFactory::createAvatarEntity(const Atlas::Objects::En
 	// attach the node to the entity
 	scaleNode->attachObject(model);
     	
-    return new AvatarDimeEntity(ge->getId(), type, world,mSceneManager, scaleNode, mAvatar);
+    return new AvatarEmberEntity(ge->getId(), type, world,mSceneManager, scaleNode, mAvatar);
 	
 }
 
 /// Accept is called by the world to test if this factory can instantiate the specified object
 /** Accept is called when an entity must be constructed; this will be called every time
 an object is created, so avoid lengthy processing if possible. */
-bool DimeEntityFactory::accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type)
+bool EmberEntityFactory::accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type)
 {
 	return true;
 }
 
 
-Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
+Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
 	assert(!mWorldEntity);
-	mWorldEntity = new WorldDimeEntity(ge->getId(), type, world, mSceneManager, mTerrainGenerator);
+	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mSceneManager, mTerrainGenerator);
       // Extract base points and send to terrain        
       //TerrainEntity * te = new TerrainEntity(ge,w);
 //	mTerrainGenerator->prepareSegments(-1, -1, 3, true)
@@ -150,20 +150,20 @@ Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameE
     return mWorldEntity;
 }
 
-void DimeEntityFactory::setAvatar(Eris::Avatar* avatar)
+void EmberEntityFactory::setAvatar(Eris::Avatar* avatar)
 {
 	mAvatar = avatar;	
-	mAvatar->GotCharacterEntity.connect(SigC::slot(*this, &DimeEntityFactory::gotAvatarCharacter));
+	mAvatar->GotCharacterEntity.connect(SigC::slot(*this, &EmberEntityFactory::gotAvatarCharacter));
 }
 
-void DimeEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
+void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 {
-	AvatarDimeEntity* avatarEntity = dynamic_cast<AvatarDimeEntity*>(entity);
-   	DimeOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
+	AvatarEmberEntity* avatarEntity = dynamic_cast<AvatarEmberEntity*>(entity);
+   	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
 }
 	
 
-void DimeEntityFactory::buildTerrainAroundAvatar()
+void EmberEntityFactory::buildTerrainAroundAvatar()
 {
 	int size = 4;
 	//for now we'll only build terrain around position 0:0
@@ -180,7 +180,7 @@ void DimeEntityFactory::buildTerrainAroundAvatar()
 
 
 
-DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
+EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
 	
 	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
 	Ogre::String id = ge->getId();
@@ -208,15 +208,15 @@ DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects
 	scaleNode->attachObject(model);
 
 	if (mPersonSet.find(typeName) != mPersonSet.end()) {
-		return new PersonDimeEntity(ge->getId(), type,  world, mSceneManager, scaleNode);
+		return new PersonEmberEntity(ge->getId(), type,  world, mSceneManager, scaleNode);
 	} else {
-		return new DimePhysicalEntity(ge->getId(), type, world, mSceneManager, scaleNode);
+		return new EmberPhysicalEntity(ge->getId(), type, world, mSceneManager, scaleNode);
 	}
 	
 }
 
 
-void DimeEntityFactory::loadTypeInfo()
+void EmberEntityFactory::loadTypeInfo()
 {
 	mPersonSet.insert("settler");
 	mPersonSet.insert("merchant");
@@ -237,7 +237,7 @@ void DimeEntityFactory::loadTypeInfo()
 /** retrieve this factory's priority level; higher priority factories
 get first chance to process a recieved Atlas entity. The default implementation
 returns one. */
-int DimeEntityFactory::DimeEntityFactory::priority() {
+int EmberEntityFactory::EmberEntityFactory::priority() {
 	return 10;
 }
 

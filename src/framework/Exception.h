@@ -41,7 +41,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-namespace dime 
+namespace Ember 
 {
 
 /**
@@ -54,7 +54,7 @@ namespace dime
 #define THROW3(message, p1, p2, p3) throw Exception(message, __FILE__, __LINE__, p1, p2, p3);
 
 /**
- * The base class for all exceptions that are thrown within Dime.
+ * The base class for all exceptions that are thrown within Ember.
  *
  * More detailed description of the class, it's purpose, what it does,
  * how to use it and so on.

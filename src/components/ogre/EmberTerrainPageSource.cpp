@@ -16,41 +16,41 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "TerrainGenerator.h"
-#include "DimeTerrainSceneManager.h"
+#include "EmberTerrainSceneManager.h"
 
-#include "DimeTerrainPageSource.h"
+#include "EmberTerrainPageSource.h"
 
 using namespace Ogre;
-namespace DimeOgre {
+namespace EmberOgre {
 	
-DimeTerrainPageSource::DimeTerrainPageSource(TerrainGenerator* const generator ) : 
+EmberTerrainPageSource::EmberTerrainPageSource(TerrainGenerator* const generator ) : 
 mGenerator(generator)
 , mHasTerrain(false)
 , mX(0)
 , mZ(0)
 {}
-DimeTerrainPageSource::~DimeTerrainPageSource()
+EmberTerrainPageSource::~EmberTerrainPageSource()
 {}
 
 
-void DimeTerrainPageSource::requestPage(Ogre::ushort x, Ogre::ushort z) 
+void EmberTerrainPageSource::requestPage(Ogre::ushort x, Ogre::ushort z) 
 {
 	if (mHasTerrain) {
 		//TODO: implement paging
 	}
 }
 
-DimeTerrainSceneManager* DimeTerrainPageSource::getDimeTerrainSceneManager() const
+EmberTerrainSceneManager* EmberTerrainPageSource::getEmberTerrainSceneManager() const
 {
-	return static_cast<DimeTerrainSceneManager*>(mSceneManager);
+	return static_cast<EmberTerrainSceneManager*>(mSceneManager);
 }
 
 
-void DimeTerrainPageSource::expirePage(Ogre::ushort x, Ogre::ushort z)
+void EmberTerrainPageSource::expirePage(Ogre::ushort x, Ogre::ushort z)
 {
 }
 
-void DimeTerrainPageSource::generatePage(int x, int y)
+void EmberTerrainPageSource::generatePage(int x, int y)
 {
 	int arraySize = (mPageSize) *(mPageSize);
 	Ogre::Real heightData[arraySize] ;
@@ -73,12 +73,12 @@ void DimeTerrainPageSource::generatePage(int x, int y)
 	page->tiles[1][0]->setCastShadows(false);
 	page->tiles[1][1]->setCastShadows(false);
 	
-	getDimeTerrainSceneManager()->attachPage(x, y, page, mGenerator->getMaxHeightForSegment(x,y), mGenerator->getMinHeightForSegment(x,y));
+	getEmberTerrainSceneManager()->attachPage(x, y, page, mGenerator->getMaxHeightForSegment(x,y), mGenerator->getMinHeightForSegment(x,y));
 
 	
 }
 
-void DimeTerrainPageSource::setHasTerrain(bool hasTerrain)
+void EmberTerrainPageSource::setHasTerrain(bool hasTerrain)
 {
 	mHasTerrain = hasTerrain;	
 
@@ -96,7 +96,7 @@ void DimeTerrainPageSource::setHasTerrain(bool hasTerrain)
 	
 }
 
-bool DimeTerrainPageSource::pushPage(int x, int y)
+bool EmberTerrainPageSource::pushPage(int x, int y)
 {
 	if (mGenerator->isValidTerrainAt(x, y)) {
 		generatePage(x, y);
@@ -106,9 +106,9 @@ bool DimeTerrainPageSource::pushPage(int x, int y)
 	return true;
 }
 
-void DimeTerrainPageSource::resizeTerrain()
+void EmberTerrainPageSource::resizeTerrain()
 {
-	getDimeTerrainSceneManager()->doResize();
+	getEmberTerrainSceneManager()->doResize();
 }
 
 

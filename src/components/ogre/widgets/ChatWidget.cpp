@@ -26,7 +26,7 @@
 #include "../GUIManager.h"
 #include "ChatWidget.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 ChatWidget::ChatWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
 {

@@ -16,7 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "DimeOgrePrerequisites.h"
+#include "EmberOgrePrerequisites.h"
 #include "GUIManager.h"
 #include <CEGUISchemeManager.h>
 #include <elements/CEGUIStaticText.h>
@@ -34,7 +34,7 @@
 #include "MousePicker.h"
 
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
@@ -421,6 +421,6 @@ CEGUI::MouseButton GUIManager::convertOgreButtonToCegui(int ogre_button_id)
 
 
 
-template<> GUIManager* dime::Singleton<GUIManager>::ms_Singleton = 0;
+template<> GUIManager* Ember::Singleton<GUIManager>::ms_Singleton = 0;
 
 }

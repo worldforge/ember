@@ -22,7 +22,7 @@
 //
 #include "Sun.h"
 
-namespace DimeOgre {
+namespace EmberOgre {
 
 Sun::Sun()
 {

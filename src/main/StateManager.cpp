@@ -21,7 +21,7 @@
 #endif
 
 #include "StateManager.h"
-#include "services/DimeServices.h"
+#include "services/EmberServices.h"
 #include "services/gui/GuiService.h"
 #include "framework/Exception.h"
 
@@ -29,7 +29,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
-using namespace dime;
+using namespace Ember;
 
 StateManager::StateManager(const std::string& stateFile)
   : myStateFile(stateFile), myStateDoc(NULL)
@@ -108,7 +108,7 @@ bool StateManager::setState( const std::string& newState )
   xmlNodePtr cstate = findState(myCurrentState);
 
   // Erase Widgets
-  dime::DimeServices::getInstance()->getGuiService()->nukeAllWidgets();
+  Ember::EmberServices::getInstance()->getGuiService()->nukeAllWidgets();
 
   // Unload current services not mentioned in nstate
 
@@ -124,7 +124,7 @@ bool StateManager::setState( const std::string& newState )
 
 void StateManager::parseStateLayout(xmlNodePtr stateNode)
 {
-  dime::GuiService* gs = dime::DimeServices::getInstance()->getGuiService();
+  Ember::GuiService* gs = Ember::EmberServices::getInstance()->getGuiService();
   // Paranoid code
   if ((xmlStrcmp(stateNode->name, (const xmlChar *)"stateinfo"))){
     // Perhaps throw exception here
