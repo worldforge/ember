@@ -24,10 +24,15 @@
 
 // Include library headers here
 #include <sigc++/signal_system.h>
+#include <sigc++/generator.h>
+#include <sigc++/rettype.h>
+#include <sigc++/bind.h>
+#include <sigc++/convert.h>
 
 
 // Include system headers here
 #include <string>
+#include <set>
 
 //General TODOs:
 // - test if it compiles under Unix especially
@@ -109,30 +114,13 @@ namespace dime {
  * @author Tim Enderling
  */
 
-class InputMapping
+using namespace SigC;
 
+class InputMapping
 {
 	friend class InputDevice;
 
-    //======================================================================
-    // Inner classes and typedefs
-    //======================================================================
-    public:
-
-	/**
-	 * A signal takes the following params:
-	 * - InputDevice * motionDevice 
-	 * - const SDLKey & key (pressed)
-	 * - InputSignalType type 
-	 *
-	 * HINT: With the help of sigc++ extenders you can pass further constant
-	 * params to your handling function (usually called 'cockie').
-	 */
-
-	typedef Signal2<void, InputDevice *, const SDLKey & key, InputSignalType> InputSignal;
-	typedef Slot2<void, InputDevice *, const SDLKey & key, InputSignalType>   InputSlot;
-
-    //======================================================================
+ //======================================================================
     // Public Constants
     //======================================================================
     public:
@@ -146,8 +134,29 @@ class InputMapping
 		KEY_PRESSED  = 0x1,
 		KEY_RELEASED = 0x2,
 		EVENT_OCCURED = 0x4
-	};	
+	};
+	
+    //======================================================================
+    // Inner classes and typedefs
+    //======================================================================
+    public:
 
+	/**
+	 * A signal takes the following params:
+	 * - InputDevice * motionDevice 
+	 * - const SDLKey & key (pressed)
+	 * - InputSignalType type 
+	 *
+	 * HINT: With the help of sigc++'s 'bind' you can pass further constant
+	 * params to your handling function (usually called 'cockie').
+	 */
+
+	typedef SigC::Signal3<void, InputDevice *, const SDLKey & , InputSignalType, Marshal<void> 
+		> InputSignal;
+
+	typedef SigC::Slot3<void, InputDevice *, const SDLKey &, InputSignalType> InputSlot;
+
+   
     //======================================================================
     // Private Variables
     //======================================================================
@@ -161,7 +170,7 @@ class InputMapping
 	InputSignal		mySignal;
 	InputSignalType myTypes;
 
-	set<SDLKey>     myKeysPressed;
+	std::set<SDLKey>myKeysPressed;
 
 	
 
@@ -199,7 +208,7 @@ class InputMapping
 		myKeyDevice			= NULL;
 		myTypes				= EVENT_OCCURED;
 		
-		myKeysPressed.push_back(SDKL_UNKNOWN); //adds a pseudo key, that is always 'pressed'
+		myKeysPressed.insert(SDLK_UNKNOWN); //adds a pseudo key, that is always 'pressed'
 
 		mySignal.connect(slot);		
 	}
@@ -215,7 +224,8 @@ class InputMapping
 		myKeyRangeStart		= baseKey;
 		myKeyRangeEnd		= baseKey;
 		myModifiers			= KMOD_NONE;
-		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		myTypes				= static_cast<InputSignalType>
+									(KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0));
 
 		mySignal.connect(slot);	
 	}
@@ -231,7 +241,8 @@ class InputMapping
 		myKeyRangeStart		= baseKey;
 		myKeyRangeEnd		= baseKey;
 		myModifiers			= modifiers;
-		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		myTypes				= static_cast<InputSignalType>(
+			KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0));
 		
 		mySignal.connect(slot);
 	}
@@ -248,7 +259,8 @@ class InputMapping
 		myKeyRangeStart		= keyRangeStart;
 		myKeyRangeEnd		= keyRangeEnd;
 		myModifiers			= KMOD_NONE;
-		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		myTypes				= static_cast<InputSignalType>
+			(KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0));
 		
 		mySignal.connect(slot);		
 	}
@@ -264,7 +276,8 @@ class InputMapping
 		myKeyRangeStart		= keyRangeStart;
 		myKeyRangeEnd		= keyRangeEnd;
 		myModifiers			= modifiers;
-		myTypes				= KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0);
+		myTypes				= static_cast<InputSignalType>
+			(KEY_PRESSED | (fireOnRelease ? KEY_RELEASED : 0));
 		
 		mySignal.connect(slot);
 	}
@@ -340,27 +353,27 @@ class InputMapping
 	{
 		if (key >= myKeyRangeStart && key <= myKeyRangeEnd)
 		{
-			if ((KMOD_CTRL & myModifiers == KMOD_CTRL) && (modifier & KMOD_CTRL))
+			if (((KMOD_CTRL & myModifiers) == KMOD_CTRL) && (modifier & KMOD_CTRL))
 			{
-				modifier |= KMOD_CTRL;
+				((int&)modifier) |= KMOD_CTRL;
 			}
 
-			if ((KMOD_SHIFT & myModifiers == KMOD_SHIFT) && (modifier & KMOD_SHIFT))
+			if (((KMOD_SHIFT & myModifiers) == KMOD_SHIFT) && (modifier & KMOD_SHIFT))
 			{
-				modifier |= KMOD_SHIFT;
+				((int&)modifier) |= KMOD_SHIFT;
 			}
 
-			if ((KMOD_ALT & myModifiers == KMOD_ALT) && (modifier & KMOD_ALT))
+			if (((KMOD_ALT & myModifiers) == KMOD_ALT) && (modifier & KMOD_ALT))
 			{
-				modifier |= KMOD_ALT;
+				((int&)modifier) |= KMOD_ALT;
 			}
 
-			if ((KMOD_META & myModifiers == KMOD_META) && (modifier & KMOD_META))
+			if (((KMOD_META & myModifiers) == KMOD_META) && (modifier & KMOD_META))
 			{
-				modifier |= KMOD_META;
+				((int&)modifier) |= KMOD_META;
 			}
 			
-			if (modifier & myModifiers == myModifiers)
+			if ((modifier & myModifiers) == myModifiers)
 			{
 				myKeysPressed.insert(key);			
 
@@ -405,7 +418,7 @@ class InputMapping
 	{
 		if (myTypes & EVENT_OCCURED)
 		{
-			for (set<SDLKey>::iterator i = myKeysPressed.begin(); i != myKeysPressed.end(); i++)
+			for (std::set<SDLKey>::iterator i = myKeysPressed.begin(); i != myKeysPressed.end(); i++)
 			{		
 				mySignal(myMotionDevice, *i, EVENT_OCCURED);
 			}

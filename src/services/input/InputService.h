@@ -58,6 +58,8 @@ namespace dime {
 
 class InputService: public Service
 {
+	friend class InputDevice;
+
     //======================================================================
     // Inner classes and typedefs
     //======================================================================
@@ -92,6 +94,9 @@ class InputService: public Service
      * one that handles a certain input event.
      */
     vector<InputMapping *> myInputMappings;
+
+	protected:
+
 	vector<InputDevice  *> myInputDevices;
 
     //======================================================================
@@ -172,9 +177,9 @@ class InputService: public Service
 				if (device != NULL)
 				{
 					for (i = device->myMotionMappings.begin(); 
-								i != myMotionMappings.end(); i++)
+								i != device->myMotionMappings.end(); i++)
 					{
-						if (i * == inputMapping)
+						if (*i == inputMapping)
 						{
 							device->myMotionMappings.erase(i);
 							break;
@@ -187,9 +192,9 @@ class InputService: public Service
 				if (device != NULL)
 				{
 					for (i = device->myKeyMappings.begin(); 
-								i != myKeyMappings.end(); i++)
+								i != device->myKeyMappings.end(); i++)
 					{
-						if (i * == inputMapping)
+						if (*i == inputMapping)
 						{
 							device->myKeyMappings.erase(i);
 							break;
@@ -201,7 +206,38 @@ class InputService: public Service
 			}
 		}		
     }
-    
+
+	/**
+     * Returns an iterator that can be used to iterate through the input devices
+     */
+    virtual InputDeviceIterator getDevices()
+    {
+        return myInputDevices.begin();
+    }
+
+	/**
+     * Searches for the first input device of specified type staring a specified iterator. 
+	 * 
+	 * @param startSearch Iterator at which the search should start. startSearch should be
+	 *					  set to getDevices() to start at the beginning.
+     */
+
+    InputDevice * getInputDevice(InputDevice::DeviceType type, InputDeviceIterator * startSearch
+									= NULL)
+	{
+		InputDeviceIterator i = myInputDevices.begin();
+		InputDeviceIterator * pI = startSearch ? startSearch : &i;
+
+		for (; *pI != myInputDevices.end(); *pI++)
+		{
+			if ((**pI)->getType() == type)
+			{
+				return **pI;
+			}
+		}
+
+		return NULL;
+	}
 
     //----------------------------------------------------------------------
     // Methods inherited from Service
@@ -263,14 +299,14 @@ class InputService: public Service
 	 * this event. Thus returning TRUE means that the event has been 'eaten up' by handleEvent.
 	 */
 
-    virtual bool handleEvent(SDLEvent & event)
+    virtual bool handleEvent(SDL_Event & event)
     {
         for (InputDeviceIterator i = myInputDevices.begin(); i != myInputDevices.end(); i++)
 		{
-			if ((*i)->handleEvent(event)) return TRUE;
+			if ((*i)->handleEvent(event)) return true;
 		}
 
-		return FALSE;
+		return false;
     }
 
 }; // InputService

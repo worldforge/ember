@@ -26,11 +26,12 @@
 #include <sdl/SDL_events.h>
 #include <sdl/SDL_mouse.h>
 #include <sigc++/signal_system.h>
-
+#include <sdl/SDL_timer.h>
 
 
 // Include system headers here
 #include <string>
+#include <vector>
 
 //General TODOs
 // - Add JoystickDevice, JoystickHatDevice and JoystickBallDevice
@@ -99,7 +100,7 @@ class InputDevice
     //======================================================================
     public:
 
-	typedef vector<InputMapping*>	MappingVector;
+	typedef std::vector<InputMapping*>	MappingVector;
 	typedef MappingVector::iterator MappingIterator;
 
     //======================================================================
@@ -133,21 +134,23 @@ class InputDevice
     //======================================================================
     private:
 
-	DeviceType		myType;
-	int				myIndex;
-	int				mySubIndex;
-	vector<int>		myPhysicalPosition;
-	vector<int>		myPhysicalMin;
-	vector<int>		myPhysicalMax;
+	DeviceType			myType;
+	int					myIndex;
+	int					mySubIndex;
+
 
     //======================================================================
     // Protected Variables
     //======================================================================
-
+	
 	protected:
 
-	MappingVector   myKeyMappings;
-	MappingVector   myMotionMappings;
+	std::vector<int>	myPhysicalPosition;
+	std::vector<int>	myPhysicalMin;
+	std::vector<int>	myPhysicalMax;
+
+	MappingVector		myKeyMappings;
+	MappingVector		myMotionMappings;
 
 
 	//======================================================================
@@ -206,7 +209,7 @@ class InputDevice
 	virtual bool handleEvent(SDL_Event & event)
 	{
 		//default implementation handles no events
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -230,8 +233,8 @@ class KeyboardDevice: public InputDevice
     //======================================================================
     private:
 
-	int myKeyCount; //count of keys
-	KeyState myKeys;   //array of key states
+	int myKeyCount;			//count of keys
+	KeyState * myKeys;		//array of key states
 
 	//======================================================================
     // Public methods
@@ -257,6 +260,13 @@ class KeyboardDevice: public InputDevice
     // Public properties
 
 	virtual KeyState getKeyState(SDLKey key);
+
+   //======================================================================
+    // Protected methods
+    //======================================================================
+    protected:
+ 
+	bool KeyboardDevice::handleEvent(SDL_Event & event);
 };
 
 /**

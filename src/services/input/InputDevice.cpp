@@ -18,49 +18,64 @@
 
 #include "InputDevice.h"
 #include "InputMapping.h"
+#include <main/DimeServices.h>
 
 namespace dime
 {
  
-InputDevice::InputDevice(DeviceType type, int index, int subIndex)
+InputDevice::InputDevice(InputDevice::DeviceType type, int index, int subIndex)
 {
 	myType		= type;
-	myIndex		= sdlIndex;
-	mySubIndex	= sdlSubIndex;
+	myIndex		= index;
+	mySubIndex	= subIndex;
 
-	//How to retrieve the singleton of InputService?
-	//TODO:  - registration
+	//automatic registration
+	
+	InputService * inputService = DimeServices::getInstance()->getInputService();
+	inputService->myInputDevices.push_back(this);
 
 	initAxis();
 }
 
 InputDevice::~InputDevice()
 {
-	//TODO
+	InputService * inputService = DimeServices::getInstance()->getInputService();
+
+	//all mappings have to be removed prior to deleting this input device
+	for (InputService::InputMappingIterator i = myMotionMappings.begin(); 
+			i != myMotionMappings.end(); i++)
+	{
+		inputService->removeInputMapping(*i);		
+	}
+
+	for (i = myKeyMappings.begin(); i != myKeyMappings.end(); i++)
+	{
+		inputService->removeInputMapping(*i);		
+	}
 }
 
-DeviceType InputDevice::getType()
+InputDevice::DeviceType InputDevice::getType()
 {
 	return myType;
 }
 
 int InputDevice::getAxisCount()
 {
-	return myPosition.size();
+	return myPhysicalPosition.size();
 }
 
 int InputDevice::getAxisPosition(int axis)
 {
-	return myPosition[axis];
+	return myPhysicalPosition[axis];
 }
 
 float InputDevice::getAxisScaledPosition(int axis)
 {
-	return ((float)(myPosition[axis]-myPhysicalMin[axis]) /
+	return ((float)(myPhysicalPosition[axis]-myPhysicalMin[axis]) /
 			((float)(myPhysicalMax[axis]-myPhysicalMin[axis])));
 }
 
-KeyState InputDevice::getKeyState(SDLKey key)
+InputDevice::KeyState InputDevice::getKeyState(SDLKey key)
 {
 	//default implementation is a device with no keys
 	return UNSUPPORTED_KEY;
@@ -88,7 +103,7 @@ void InputDevice::motion()
 {
 	for (MappingIterator i = myMotionMappings.begin(); i != myMotionMappings.end(); i++)
 	{
-		(*i)->motion(key);
+		(*i)->motion();
 	}
 }
 
@@ -121,10 +136,10 @@ KeyboardDevice::~KeyboardDevice()
 	delete myKeys;
 }
 
-KeyboardDevice::getKeyState(SDLKey key)
+InputDevice::KeyState KeyboardDevice::getKeyState(SDLKey key)
 {
-	if (static_cast<int>(SDLKey) < myKeyCount &&
-		static_cast<int>(SDLKey) > 0)
+	if (static_cast<int>(key) < myKeyCount &&
+		static_cast<int>(key) > 0)
 	{
 		return myKeys[static_cast<int>(key)];
 	}
@@ -132,22 +147,22 @@ KeyboardDevice::getKeyState(SDLKey key)
 	return UNSUPPORTED_KEY;
 }
 
-BOOL KeyboardDevice::handleEvent(SDL_Event & event)
+bool KeyboardDevice::handleEvent(SDL_Event & event)
 {
 	switch(event.type)
 	{
-	SDL_KEYDOWN:
-		myKeys[static_cast<int>(event.key.keysim.sim)] = PRESSED;
-		keyPressed(event.key.keysim.sim);
-		return TRUE;
+	case SDL_KEYDOWN:
+		myKeys[static_cast<int>(event.key.keysym.sym)] = PRESSED;
+		keyPressed(event.key.keysym.sym);
+		return true;
 	
-	SDL_KEYUP:
-		myKeys[static_cast<int>(event.key.keysim.sim)] = RELEASED;
-		keyReleased(event.key.keysim.sim);
-		return TRUE;
+	case SDL_KEYUP:
+		myKeys[static_cast<int>(event.key.keysym.sym)] = RELEASED;
+		keyReleased(event.key.keysym.sym);
+		return true;
 
 	default:
-		return FALSE;
+		return false;
 	}
 }
 
@@ -155,14 +170,14 @@ MouseDevice::MouseDevice():
 		  InputDevice(MOUSE, 0, 0)
 {
 	//TODO: Really test if the mouse has three buttons
-	myHasThreeButtons = TRUE;
+	myHasThreeButtons = true;
 }
 
 MouseDevice::~MouseDevice()
 {
 }
 
-KeyState MouseDevice::getKeyState(SDLKey key)
+InputDevice::KeyState MouseDevice::getKeyState(SDLKey key)
 {
 	Uint8 state = SDL_GetMouseState(NULL, NULL);
 
@@ -208,8 +223,8 @@ void MouseDevice::initAxis()
 
 	SDL_GetMouseState(&x, &y);
 
-	setPhysicalPosition[0] = x;
-	setPhysicalPosition[1] = y;
+	myPhysicalPosition[0] = x;
+	myPhysicalPosition[1] = y;
 }
 	
 bool MouseDevice::handleEvent(SDL_Event & event)
@@ -220,28 +235,28 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 		//TODO: Test if this works properly also, if the cursor is hidden
 		//esp. concerning if the mouse movements are cut at the screen borders
 
-		setPhysicalPosition[0] = event.motion.x;
-		setPhysicalPosition[1] = event.motion.y;
+		myPhysicalPosition[0] = event.motion.x;
+		myPhysicalPosition[1] = event.motion.y;
 		
 		motion();
 
-		return TRUE;
+		return true;
 
 	case SDL_MOUSEBUTTONDOWN:
-		keyPressed(static_cast<SDLKey>(event.button.button));
-		return TRUE;
+		keyPressed((SDLKey&)(event.button.button));
+		return true;
 	
 
 	case SDL_MOUSEBUTTONUP:
-		keyReleased(static_cast<SDLKey>(event.button.button));
-		return TRUE;
+		keyReleased((SDLKey&)(event.button.button));
+		return true;
 	
 	case SDL_VIDEORESIZE:
 		initAxis();
-		return FALSE;
+		return false;
 	
 	default:
-		return FALSE;
+		return false;
 	}
 }
 
@@ -255,11 +270,11 @@ RepetitionDevice::RepetitionDevice(long unsigned int delay):
 
 RepetitionDevice::~RepetitionDevice()
 {
-	SDL_RemoveTimer(myTimerID)	
+	SDL_RemoveTimer(myTimerID);	
 	return;
 }
 
-static Uint32 RepetitionDevice::TimerCallback(Uint32 interval, void *param)
+Uint32 RepetitionDevice::TimerCallback(Uint32 interval, void *param)
 {
 	SDL_Event event;
 
@@ -288,13 +303,13 @@ bool RepetitionDevice::handleEvent(SDL_Event & event)
 		if (event.user.data1 == (void*)this) 
 		{
 			motion();
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 
 	default:
-		return FALSE;
+		return false;
 	}
 }
 
