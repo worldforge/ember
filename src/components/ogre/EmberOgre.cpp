@@ -23,10 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.58  2004-11-08 19:16:21  erik
+ *      Revision 1.59  2004-11-08 19:41:58  erik
  *      2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
  *
- *      	* remove reference to unused GroundCover
+ *      	* Fixed stupid compile bug.
  *
  *      Revision 1.57  2004/11/04 21:40:26  erik
  *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
@@ -757,7 +757,7 @@ void EmberOgre::setupResources(void)
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
 //	std::string mediaHomePath = "/home/erik/code/worldforge/forge_cvs/clients/ember/Media/";
- 	Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
+ 	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
 
 //	Ogre::ResourceManager::addCommonSearchPath(std::string();
     Ogre::String typeName, archName;

@@ -1,5 +1,17 @@
 2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Fixed stupid compile bug.
+
+2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* remove reference to unused GroundCover
+
+2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added givewidget.
+
+2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added include file to solve problem with Ogre's memory manager messing with atlas.
 
 2004-11-04  Erik Hjortsberg  <erik@katastrof.nu>
