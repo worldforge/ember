@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.3  2002-01-27 00:26:37  nikal
+ *      Revision 1.4  2002-01-27 17:57:52  nikal
+ *      Created and added a LogObserver which prints messages out to std::cerr.  Ther is a small bug. not sure where.
+ *
+ *      Revision 1.3  2002/01/27 00:26:37  nikal
  *      Hacking logging into Dime.
  *
  *      Revision 1.2  2002/01/24 10:58:14  tim
@@ -29,18 +32,64 @@
  */
 
 #include "Application.h"
-#include <iostream>
 #include "DimeServices.h"
+#include <iostream>
+#include <iomanip>
 
 namespace dime
 {
     namespace main
     {
+        /**
+         * Predefined implementation of Observer-class for std::cerr 
+         * The format of messages written to std::cerr is the following:
+         *
+         * timeStamp importance file "\t" line "\t" message
+         */
+
+        class CerrLogObserver: public dime::services::LoggingService::Observer
+        {
+        public:
+            CerrLogObserver()
+            {
+            }
+
+            virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
+                                      const dime::services::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+            {
+                tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+
+                std::cerr << "[" << ctm->tm_year+1900 << "-" << ctm->tm_mon+1 << "-" << ctm->tm_mday 
+                           << " " << ctm->tm_hour << ":" <<  ctm->tm_min << ":" << ctm->tm_sec << "] "
+                           << "[File: " << file << ", Line #:" <<  line << "] (";
+                if(importance == dime::services::LoggingService::CRITICAL) 
+                    {
+                        std::cerr << "CRITICAL";
+                    }
+                else  if(importance == dime::services::LoggingService::ERROR)
+                    {
+                        std::cerr << "ERROR";
+                    } 
+                else if(importance == dime::services::LoggingService::WARNING)
+                    {
+                        std::cerr << "WARNING";
+                    }
+                else
+                    {
+                        std::cerr << "INFO";
+                    }
+                std::cerr << ") " <<message << std::endl;
+            }
+
+        private: 
+
+        };
 
         Application::Application(int width, int height, std::string title)
             : myShouldQuit(false) 
         {
             myLoggingService = DimeServices::getInstance()->getLoggingService();
+            myLoggingService->addObserver(new CerrLogObserver());
             if(width >=0)
                 {
                     myWidth=width;
@@ -82,40 +131,45 @@ namespace dime
                     case SDL_ACTIVEEVENT:
                         myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
                                               "SDL_ACTIVEEVENT");
-                            //std::cout << " SDL_ACTIVEEVENT\n";
                         break;
                     case SDL_KEYDOWN:
                         myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
                                               "SDL_KEYDOWN");
-                            //std::cout << " SDL_KEYDOWN\n";
                         break;
                     case SDL_KEYUP:
                         // Looking for the ESC key.
                         if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
                             {
                                 myShouldQuit = true;
-								std::cout << "Caught escape. Quitting...\n";
+                                myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                                      "Caught escape. Quitting...");
                             }
-                        std::cout << " SDL_KEYUP\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_KEYUP");
                         break;
                     case SDL_MOUSEMOTION:
                         //generates too much noise -nikal
                         //std::cout << " SDL_MOUSEMOTION\n";
                         break;
                     case SDL_MOUSEBUTTONDOWN:
-                        std::cout << " SDL_MOUSEBUTTONDOWN\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_MOUSEBUTTONDOW");
                         break;
                     case SDL_MOUSEBUTTONUP:
-                        std::cout << " SDL_MOUSEBUTTONUP\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_MOUSEBUTTONUP");
                         break;
                     case SDL_SYSWMEVENT:
-                        std::cout << "SDL_SYSWMEVENT\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_SYSWMEVENT");
                         break;
                     case SDL_VIDEORESIZE:
-                        std::cout << "SDL_VIDEORESIZE\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                               "SDL_VIDEORESIZE");
                         break;
                     case SDL_VIDEOEXPOSE:
-                        std::cout << "SDL_VIDEOEXPOSE\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_VIDEOEXPOSE");
                         break;
                     case SDL_QUIT:
                         myShouldQuit = true;

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.2  2002-01-27 00:26:37  nikal
+ *      Revision 1.3  2002-01-27 17:57:52  nikal
+ *      Created and added a LogObserver which prints messages out to std::cerr.  Ther is a small bug. not sure where.
+ *
+ *      Revision 1.2  2002/01/27 00:26:37  nikal
  *      Hacking logging into Dime.
  *
  *      Revision 1.1  2002/01/20 16:20:39  nikal
@@ -41,7 +44,16 @@ namespace dime
     {
         class Application 
         {
+
+        
+            //======================================================================
+            // Inner Classes, Typedefs, and Enums
+            //======================================================================
         public:
+            //======================================================================
+            // Public Methods
+            //======================================================================
+        public:    
             /**
              * Ctor for dime::main::Application.  Allcoates and pops up an SDL window 
              * of width, and height with title.
