@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="placeholder"  scale="0.01" >
+<model name="placeholder" scale="0.5" >
   <submodels>
-    <submodel mesh="razor.mesh" >
+    <submodel mesh="Placeholder.mesh" >
       <parts>
         <part name="PlaceHolder" show="true" >
       </parts>

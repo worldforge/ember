@@ -33,6 +33,8 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
+#include "DimeOgre.h"
+
 namespace DimeOgre {
 
 // List of Ogre's console commands
@@ -82,7 +84,7 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
 
 void ConsoleObjectImpl::quit()
 {
-	Ogre::Root::getSingleton().shutdown();
+	DimeOgre::getSingleton().shutdown();
 }
 
 /*

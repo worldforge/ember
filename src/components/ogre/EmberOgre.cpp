@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.53  2004-10-30 17:32:38  erik
+ *      Revision 1.54  2004-11-02 01:19:55  erik
+ *      2004-11-02 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Added a better placeholder model than the ogre space ship. Ember now no longer use any media linked to the ogre sample media. In preparation for a release all media will reside under ~/.ember/Media . In the future we'll probably use a shared location, but this is only when we do a real release. For the upcoming release, which is more of a development release, ~/.ember/Media will be best. Media can be found at http://purple.worldforge.org/~erik/ember/media/Media.tar.gz
+ *      * Removed a silly bug which made Ember segfault on exit.
+ *
+ *      Revision 1.53  2004/10/30 17:32:38  erik
  *      2004-10-30 Erik Hjortsberg <erik@hysteriskt.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -580,13 +587,14 @@ template<> DimeOgre* dime::Singleton<DimeOgre>::ms_Singleton = 0;
 
 DimeOgre::DimeOgre() :
 //mFrameListener(0),
-mRoot(0)
+mRoot(0),
+mKeepOnRunning(true)
 {}
 
 bool DimeOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	Eris::PollDefault::poll(1);
-	return true;
+	return mKeepOnRunning;
 }
 
 
@@ -596,6 +604,11 @@ void DimeOgre::go(void)
 		return;
 
 	mRoot->startRendering();
+}
+
+void DimeOgre::shutdown()
+{
+	mKeepOnRunning = false;
 }
 
     
@@ -702,12 +715,15 @@ void DimeOgre::setupResources(void)
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
+	std::string mediaHomePath = std::string(getenv("HOME")) + "/.ember/Media/";
+//	Ogre::ResourceManager::addCommonSearchPath(std::string();
     Ogre::String typeName, archName;
     while (i.hasMoreElements())
     {
         typeName = i.peekNextKey();
         archName = i.getNext();
-        Ogre::ResourceManager::addCommonArchiveEx( archName, typeName );
+		std::cout << "Adding archive/filesystem: " << mediaHomePath + archName << "\n";
+        Ogre::ResourceManager::addCommonArchiveEx( mediaHomePath + archName, typeName );
     }
 }
 

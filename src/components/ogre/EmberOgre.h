@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.29  2004-10-30 17:32:38  erik
+ *      Revision 1.30  2004-11-02 01:19:55  erik
+ *      2004-11-02 Erik Hjortsberg <erik@katastrof.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Added a better placeholder model than the ogre space ship. Ember now no longer use any media linked to the ogre sample media. In preparation for a release all media will reside under ~/.ember/Media . In the future we'll probably use a shared location, but this is only when we do a real release. For the upcoming release, which is more of a development release, ~/.ember/Media will be best. Media can be found at http://purple.worldforge.org/~erik/ember/media/Media.tar.gz
+ *      * Removed a silly bug which made Ember segfault on exit.
+ *
+ *      Revision 1.29  2004/10/30 17:32:38  erik
  *      2004-10-30 Erik Hjortsberg <erik@hysteriskt.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -378,6 +385,7 @@ public:
 	}
 	
     virtual void go(void);
+	void shutdown();
 
 	// Initialize all dime services needed for this application
 	void initializeDimeServices(void);
@@ -444,6 +452,8 @@ protected:
 	//InputManager* mInputManager;
 	MotionManager* mMotionManager;
 	GUIManager* mGUIManager;  
+	
+	bool mKeepOnRunning;
 
         /*
 	void mouseClicked(Ogre::MouseEvent* e) {}
