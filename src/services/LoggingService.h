@@ -442,6 +442,9 @@ class LoggingService: public Service
 		
 		//TODO: Should we test on already existing observers?
 
+        //NOTE(zzorn, 2002-01-21): Perhaps we could do that, and just change the message 
+        //                         importance filter setting if the listener already exists?
+
 		myFileObserverList.push_back(fileObserver);
 	}
 
@@ -455,6 +458,9 @@ class LoggingService: public Service
 		callbackObserver.myFilter			= filter;
 
 		//TODO: Should we test on already existing observers?
+
+        //NOTE(zzorn, 2002-01-21): Perhaps we could do that, and just change the message 
+        //                         importance filter setting if the listener already exists?
 
 		myCallbackObserverList.push_back(callbackObserver);
 	}
@@ -577,8 +583,10 @@ class LoggingService: public Service
 		//Order: currentTime importance file line message
 
 		char buffer[MESSAGE_BUFFER_SIZE];
-		
-		int bufferLength = sprintf((char*)buffer, 
+
+        // NOTE(zzorn, 2002-01-21): Changed to snprintf to avoid buffer overruns.
+        //                          The additional - 1 in the buffer size is just some paranoia of mine.
+		int bufferLength = snprintf((char*)buffer, MESSAGE_BUFFER_SIZE - 1,
 			"[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
 			ctm->tm_year, ctm->tm_mon, ctm->tm_mday, ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
 			(importance == CRITICAL) ?  "CRITICAL" : 
