@@ -21,6 +21,7 @@
 #define AVATARDIMEENTITY_H
 
 #include <Eris/Entity.h>
+#include <Eris/Avatar.h>
 
 namespace DimeOgre {
 
@@ -38,7 +39,7 @@ class PersonDimeEntity;
 class AvatarDimeEntity: public PersonDimeEntity {
 public:
 
-	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
+	AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);
 	virtual ~AvatarDimeEntity();
 	
 	
@@ -46,8 +47,8 @@ public:
 	/*Eris methods, see Eris::Entity.h for documentation */
 	virtual void handleTalk(const std::string &msg);
 	virtual void handleMove();
-	//virtual void addMember(Entity *e);
-	//virtual void rmvMember(Entity *e);
+	virtual void addMember(Entity *e);
+	virtual void rmvMember(Entity *e);
 	//virtual void setVisible(bool vis);	
 	virtual void setContainer(Eris::Entity *pr);
 	
@@ -61,12 +62,20 @@ public:
 	 * returns the Ogre::SceneNode which represents the avatar
 	 */
 	Ogre::SceneNode* getAvatarSceneNode();
+	
+	inline Eris::Avatar* getErisAvatar() { return mErisAvatar;	}
+
+/*	SigC::Signal1<void, DimeEntity* > EventAddedEntityToInventory;
+	SigC::Signal1<void, DimeEntity* > EventRemovedEntityFromInventory;*/
+	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
+	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 
 
 	
 protected: 
 
 	Avatar* mAvatar;
+	Eris::Avatar* mErisAvatar;
 	
 };
 

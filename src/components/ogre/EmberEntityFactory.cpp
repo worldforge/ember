@@ -114,7 +114,7 @@ AvatarDimeEntity* DimeEntityFactory::createAvatarEntity(const Atlas::Objects::En
 	// attach the node to the entity
 	scaleNode->attachObject(model);
     	
-    return new AvatarDimeEntity(ge, world,mSceneManager, scaleNode);
+    return new AvatarDimeEntity(ge, world,mSceneManager, scaleNode, mAvatar);
 	
 }
 

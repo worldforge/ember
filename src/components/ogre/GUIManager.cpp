@@ -19,6 +19,8 @@
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
 #include "widgets/ChatWidget.h"
+#include "widgets/EntityPickerWidget.h"
+#include "widgets/InventoryWidget.h"
 #include "MousePicker.h"
 #include "GUIManager.h"
 
@@ -53,6 +55,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		fprintf(stderr, "CEGUI - SYSTEM CREATED\n");
+		
+		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 		fprintf(stderr, "CEGUI - TEST SCHEME LOADED\n");
@@ -61,7 +65,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-14"); 
 		fprintf(stderr, "CEGUI - DEFAULTS SET\n");
 		
-		mSheet = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
+		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
 		mSheet->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonDown, 
 			boost::bind(&GUIManager::mSheet_MouseButtonDown, this, _1));
@@ -76,6 +80,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 	mEventProcessor->addMouseMotionListener(this);
 	mEventProcessor->addMouseListener(this);
 	Ogre::Root::getSingleton().addFrameListener(this);
+	
+	mMousePicker = new MousePicker();
 
 }
 
@@ -93,18 +99,45 @@ GUIManager::~GUIManager()
 
 void GUIManager::initialize()
 {
-		fprintf(stderr, "CEGUI - CREATING CONSOLE\n");
+	mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"DebugText");
+	mSheet->addChildWindow(mDebugText);
+	mDebugText->setMaximumSize(CEGUI::Size(1.0f, 0.1f));
+	mDebugText->setPosition(CEGUI::Point(0.0f, 0.9f));
+	mDebugText->setSize(CEGUI::Size(1.0f, 0.1f));
+	//stxt->setText((utf8*)"This is a static text widget.  More examples of this, and the static image, can be seen in the frame-rate / debug overlay.");
+	mDebugText->setFrameEnabled(false);
+	mDebugText->setBackgroundEnabled(false);
+	//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
+
+	fprintf(stderr, "CEGUI - CREATING CONSOLE\n");
+
+	mConsoleWidget = new ConsoleWidget(this);
+	mConsoleWidget->buildWidget();
+	addWidget(mConsoleWidget);
+	fprintf(stderr, "CEGUI - CREATED CONSOLE\n");
 	
-		mConsoleWidget = new ConsoleWidget(this);
-		mConsoleWidget->buildWidget();
-		addWidget(mConsoleWidget);
-		fprintf(stderr, "CEGUI - CREATED CONSOLE\n");
-		
-		ChatWidget* chatWidget = new ChatWidget(this);
-		chatWidget->buildWidget();
-		addWidget(chatWidget);		
+	ChatWidget* chatWidget = new ChatWidget(this);
+	chatWidget->buildWidget();
+	addWidget(chatWidget);		
+	
+	EntityPickerWidget* entityPicker = new EntityPickerWidget(this, mMousePicker);
+	entityPicker->buildWidget();
+	addWidget(entityPicker);		
+	
+	InventoryWidget* inventory = new InventoryWidget(this);
+	inventory->buildWidget();
+	addWidget(inventory);			
 	
 }
+
+void GUIManager::setDebugText(std::string text)
+{
+	if (mDebugText)
+	{
+		mDebugText->setText(text);
+	}
+}
+
 
 CEGUI::Window* GUIManager::getMainSheet() 
 { 
@@ -120,6 +153,56 @@ void GUIManager::addWidget(Widget* widget)
 {
 	mWidgets.insert(widget);
 }
+
+
+const std::string GUIManager::takeScreenshot() 
+{
+	// retrieve current time
+	time_t rawtime;
+	struct tm* timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	
+	// construct filename string
+	// padding with 0 for single-digit values
+	std::stringstream filename;
+	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
+	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
+	if(month <= 9) 
+	{
+		filename << "0";	
+	}
+	filename << month;
+	int day = (*timeinfo).tm_mday;
+	if(day <= 9) 
+	{
+		filename << "0";	
+	}
+	filename << day << "_";
+	int hour = (*timeinfo).tm_hour;
+	if(hour <= 9) 
+	{
+		filename << "0"; 
+	}
+	filename << hour;
+	int min = (*timeinfo).tm_min;
+	if(min <= 9) 
+	{
+		filename << "0";	 
+	}
+	filename << min;
+	int sec = (*timeinfo).tm_sec;
+	if(sec <= 9) 
+	{
+		filename << "0";
+	} 
+	filename << sec << ".png";
+	
+	// take screenshot
+	mWindow->writeContentsToFile(filename.str());
+	return filename.str();
+}
+
 
 
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
@@ -149,6 +232,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
+	const CEGUI::MouseEventArgs& mouseArgs = dynamic_cast<const CEGUI::MouseEventArgs&>(args);
 	fprintf(stderr, "CEGUI - MAIN SHEET CAPTURING INPUT\n");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 	if (aWindow) {
@@ -159,11 +243,11 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 	mSheet->captureInput();
 
 //TODO: implement this
-/*
+
 	if (mMousePicker) {
-		mMousePicker->performMousePicking(mMousePressedOgreEvent, args);
+		mMousePicker->doMousePicking(mMousePressedOgreEvent, mouseArgs);
 	}
-*/
+
 
 	return true;
 }
@@ -229,6 +313,13 @@ void GUIManager::keyReleased (Ogre::KeyEvent *e)
 		{
 			mConsoleWidget->toggleActive();
 		}
+
+		//take screenshot		
+		if(e->getKey() == Ogre::KC_F8)
+		{
+			setDebugText("Wrote image: " +takeScreenshot());
+		}
+		
 			
 		mGuiSystem->injectKeyUp(e->getKey());
 		e->consume();

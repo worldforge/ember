@@ -52,6 +52,7 @@ class DimeTerrainPageSource;
 class DimePhysicalEntity;
 class DimeEntity;
 class WorldDimeEntity;
+class TerrainGenerator;
 
 /*
  * Creates the DimeEntities required.

@@ -1,0 +1,27 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+
+	<Window Type="TaharezLook/FrameWindow" Name="Inventory/MainWindow">
+		<Property Name="Position" Value="x:0.7 y:0.7" /> 
+		<Property Name="Size" Value="w:0.3 h:0.3" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Text" Value="Inventory" />
+		
+		<Window Type="TaharezLook/Listbox" Name="Inventory/ListBox">
+			<Property Name="Position" Value="x:0 y:0" /> 
+			<Property Name="Size" Value="w:1 h:0.8" /> 
+			<Property Name="InheritsAlpha" Value="false" /> 
+		</Window>
+		<Window Type="TaharezLook/Button" Name="Inventory/Drop">
+			<Property Name="Position" Value="x:0.5 y:0.8" /> 
+			<Property Name="Size" Value="w:0.5 h:0.2" /> 
+			<Property Name="Text" Value="Drop" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+		</Window>
+		
+
+		
+	</Window>
+ 
+
+ </GUILayout> 

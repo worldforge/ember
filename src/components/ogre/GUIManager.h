@@ -108,16 +108,20 @@ public:
 	void setMouseListener(Ogre::MouseListener* listener) {mMouseListener = listener; }
 	void setMouseMotionListener(Ogre::MouseMotionListener* listener) {mMouseMotionListener = listener;}
 	
+	void setDebugText(std::string text);
 
 	bool isInGUIMode() { return mInGUIMode; }
 	bool isInMovementKeysMode();
 	
+	inline MousePicker* getMousePicker() { return mMousePicker; }
 protected:
 
 
 	CEGUI::Window* mChat;
 	
 	CEGUI::Window* mSheet;
+	CEGUI::WindowManager* mWindowManager;
+	CEGUI::StaticText* mDebugText;
 	
 	ConsoleWidget* mConsoleWidget;
 
@@ -155,6 +159,9 @@ protected:
 	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 	
+	//takes a screen shot and writes it to disk
+	const std::string takeScreenshot();
+
 	
 	
 

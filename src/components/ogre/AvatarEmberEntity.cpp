@@ -27,8 +27,8 @@
 namespace DimeOgre {
 
 
-AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
-mAvatar(NULL)
+AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
+mAvatar(NULL), mErisAvatar(erisAvatar)
 ,PersonDimeEntity(ge, vw, sceneManager, nodeWithModel)
 {
 	this->mModel->setQueryFlags(DimeEntity::CM_AVATAR);
@@ -75,31 +75,30 @@ void AvatarDimeEntity::setVisible(bool vis)
 	//mOgreEntity->setVisible(true);	
 }
 */
-/*
+
 void AvatarDimeEntity::addMember(Entity *e) 
 {
-	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
-	if (dimeEntity) {
-		dimeEntity->setVisible(false);
-	}
+	EventAddedEntityToInventory.emit(e);
 
-	DimePhysicalEntity::addMember(e);
+/*	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
+	if (dimeEntity) {
+		EventAddedEntityToInventory.emit(dimeEntity);
+	}*/
+	PersonDimeEntity::addMember(e);
 	
 }
-*/
-/*
+
+
 void AvatarDimeEntity::rmvMember(Entity *e)
 {
-	try{
-		getSceneNode()->removeChild(e->getID());
-	} catch(Ogre::Exception ex) {
-		//the contained item haven't been initialised yet
-		//this is no problem though because when it do get initialized
-		//it's container will be set
-	}
-	Entity::rmvMember(e);	
+	EventRemovedEntityFromInventory.emit(e);
+/*	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
+	if (dimeEntity) {
+		EventRemovedEntityFromInventory.emit(dimeEntity);
+	}*/
+	PersonDimeEntity::rmvMember(e);	
 }
-*/
+
 
 void AvatarDimeEntity::setContainer(Entity *pr)
 {

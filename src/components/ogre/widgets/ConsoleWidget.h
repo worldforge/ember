@@ -49,9 +49,9 @@ protected:
         State mState;
 	
 	
-	void consoleTextBox_Character(const CEGUI::EventArgs& args);
-	void consoleTextBox_KeyUp(const CEGUI::EventArgs& args);
-	void consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& args);
+	bool consoleTextBox_Character(const CEGUI::EventArgs& args);
+	bool consoleTextBox_KeyUp(const CEGUI::EventArgs& args);
+	bool consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& args);
 	
 	//the speed of the window when swithing between open and closed, 0.25 by default
 	Ogre::Real mSpeedOfWindow;

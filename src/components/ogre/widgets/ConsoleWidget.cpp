@@ -22,12 +22,12 @@ void ConsoleWidget::buildWidget()
 	
 	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleInputBox"));
 	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleTextBox"));
-	mInputBox->subscribeEvent(CEGUI::Editbox::CharacterEvent, 
+	mInputBox->subscribeEvent(CEGUI::Editbox::EventCharacterKey, 
 		boost::bind(&ConsoleWidget::consoleTextBox_Character, this, _1));
-	mInputBox->subscribeEvent(CEGUI::Editbox::KeyUpEvent, 
+	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyUp, 
 		boost::bind(&ConsoleWidget::consoleTextBox_KeyUp, this, _1));
 	
-	mInputBox->subscribeEvent(CEGUI::Editbox::TextAcceptedEvent, 
+	mInputBox->subscribeEvent(CEGUI::Editbox::EventTextAccepted, 
 		boost::bind(&ConsoleWidget::consoleInputBox_TextAcceptedEvent, this, _1));
 	
 /*	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleTextBox"));
@@ -91,7 +91,7 @@ bool ConsoleWidget::pushMessage(const std::string& message)
 
 }
 
-void ConsoleWidget::consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& args)
+bool ConsoleWidget::consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& args)
 {
 	const CEGUI::String consoleText = mInputBox->getText();
 	mInputBox->setText(CEGUI::String(""));
@@ -99,10 +99,12 @@ void ConsoleWidget::consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& ar
 	pushMessage(("> " + consoleText).c_str());
 	// run the command
 	myBackend->runCommand(consoleText.c_str());
+	
+	return true;
 
 }
 
-void ConsoleWidget::consoleTextBox_KeyUp(const CEGUI::EventArgs& args)
+bool ConsoleWidget::consoleTextBox_KeyUp(const CEGUI::EventArgs& args)
 {
 	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
 	fprintf(stderr, (std::string("CEGUI - KEY UP:") + keyargs.scancode + "\n").c_str());
@@ -113,16 +115,18 @@ void ConsoleWidget::consoleTextBox_KeyUp(const CEGUI::EventArgs& args)
 	{
 	}
  */
+	return true;
 }
 
 
-void ConsoleWidget::consoleTextBox_Character(const CEGUI::EventArgs& args)
+bool ConsoleWidget::consoleTextBox_Character(const CEGUI::EventArgs& args)
 {
 
 	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
 	std::stringstream tempString;
 	tempString << std::string("CEGUI - CHARACTER:") << keyargs.codepoint;
 	fprintf(stderr, tempString.str().c_str());
+	return true;
 }
 
 }

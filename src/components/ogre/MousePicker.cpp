@@ -20,6 +20,16 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+
+#include "DimeEntity.h"
+#include "DimeOgre.h"
+//#include "DimePhysicalEntity.h"
+//#include "PersonDimeEntity.h"
+//#include "AvatarDimeEntity.h"
+#include "AvatarCamera.h"
+#include "GUIManager.h"
+//#include "AvatarController.h"
+
 #include "MousePicker.h"
 
 namespace DimeOgre {
@@ -33,9 +43,42 @@ MousePicker::~MousePicker()
 {
 }
 
-void MousePicker::performMousePicking(Ogre::MouseEvent* ogreMouseEvent, const CEGUI::EventArgs& args)
+void MousePicker::doMousePicking(Ogre::MouseEvent* ogreMouseEvent, const CEGUI::MouseEventArgs& args)
 {
+	AvatarCamera* camera = DimeOgre::getSingleton().getMainCamera();
+/*	Ogre::Real x = GUIManager::getSingleton().getEventProcessor()->getInputReader()->getMouseAbsX();
+	Ogre::Real y = GUIManager::getSingleton().getEventProcessor()->getInputReader()->getMouseAbsY();*/
+	Ogre::Real x = ogreMouseEvent->getX();	
+	Ogre::Real y = ogreMouseEvent->getY();	
+/*	Ogre::Real x__ = ogreMouseEvent->getRelX();	
+	Ogre::Real y__ = ogreMouseEvent->getRelY();	*/
+	
+	std::stringstream ss;
+	ss << x << " : " << y;
+	GUIManager::getSingleton().setDebugText(ss.str());
+	
+	DimeEntity* pickedEntity = camera->pickAnEntity(x, y);
+	if (pickedEntity) {
+		mLastPickedEntity = pickedEntity;
+		onEventPickedEntity(pickedEntity, args);
+	} else {
+		onEventPickedNothing(args);
+	}
+	
 }
+
+
+
+void MousePicker::onEventPickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args)
+{
+	EventPickedEntity.emit(entity, args);
+}
+
+void MousePicker::onEventPickedNothing(const CEGUI::MouseEventArgs& args)
+{
+	EventPickedNothing.emit(args);
+}
+
 
 
 };

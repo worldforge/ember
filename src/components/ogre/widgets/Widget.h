@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <Ogre.h>
+#include <CEGUI.h>
 #include <CEGUIBase.h>
 #include <CEGUIExceptions.h>
 #include <CEGUISystem.h>
@@ -43,6 +44,8 @@ protected:
 	GUIManager* mGuiManager;
 	
 	CEGUI::Window* getMainSheet();
+	
+	CEGUI::WindowManager* mWindowManager;
 	
 };
 

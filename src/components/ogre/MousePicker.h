@@ -23,24 +23,60 @@
 #ifndef DIMEOGREMOUSEPICKER_H
 #define DIMEOGREMOUSEPICKER_H
 
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
+
+
 #include <Ogre.h>
 #include <CEGUISystem.h>
+#include <CEGUIInputEvent.h> 
 
 namespace DimeOgre {
+
+class DimeEntity;
 
 /**
 @author Erik Hjortsberg
 */
-class MousePicker{
+class MousePicker : virtual public SigC::Object{
 public:
     MousePicker();
 
     ~MousePicker();
+
+	void doMousePicking(Ogre::MouseEvent* ogreMouseEvent, const CEGUI::MouseEventArgs& args);
+
+
+
+	SigC::Signal2<void, DimeEntity*, const CEGUI::MouseEventArgs&> EventPickedEntity;
+	SigC::Signal1<void, const CEGUI::MouseEventArgs&> EventPickedNothing;
 	
-	void performMousePicking(Ogre::MouseEvent* ogreMouseEvent, const CEGUI::EventArgs& args);
+	inline DimeEntity* getLastPickedEntity() { return mLastPickedEntity; }
+
+	
+protected:
+
+	virtual void onEventPickedEntity(DimeEntity* entity, const CEGUI::MouseEventArgs& args);
+	virtual void onEventPickedNothing(const CEGUI::MouseEventArgs& args);
+
+	
+
+
+	//the currently selected entity
+    DimeEntity* mEntityUnderCursor;
+	
+	//the last clicked entity
+    DimeEntity* mLastPickedEntity;
 
 };
 
-};
+}
 
 #endif

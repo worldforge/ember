@@ -29,7 +29,8 @@ DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
 			SubModel.cpp SubModelPart.cpp \
 			PersonDimeEntity.cpp GroundCover.cpp \
 			widgets/Widget.cpp widgets/ConsoleWidget.cpp \
-			widgets/DebugWidget.cpp widgets/IngameEventsWidget.cpp widgets/ChatWidget.cpp 
+			widgets/DebugWidget.cpp widgets/IngameEventsWidget.cpp widgets/ChatWidget.cpp \
+			widgets/EntityPickerWidget.cpp widgets/InventoryWidget.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

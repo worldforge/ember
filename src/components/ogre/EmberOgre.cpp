@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.49  2004-10-06 22:32:48  erik
+ *      Revision 1.50  2004-10-12 00:49:54  erik
+ *      2004-10-12 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      * added mouse picker menu for touching and taking entities. Right now it's just a placeholder, but it works, can be seen here: http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023002.png
+ *      * added a simple inventory. It's just a listbox right now, but it works. The drop button won't do anything yet though. It can be seen here too: http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023044.png
+ *      http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023052.png
+ *
+ *      Revision 1.49  2004/10/06 22:32:48  erik
  *      2004-10-07 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      *Moved completely to CEGUI. We now use no overlays.
@@ -591,9 +598,9 @@ bool DimeOgre::setup(void)
 
 	//add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
-    
+
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
-	mGUIManager->initialize();
+    
 	
 	// Create the scene
     createScene();
@@ -601,7 +608,7 @@ bool DimeOgre::setup(void)
  	mTerrainGenerator = new TerrainGenerator();
 	mMotionManager = new MotionManager();
 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
-	mInputManager = new InputManager();
+	//mInputManager = new InputManager();
 	
 	// Avatar
 	mAvatar = new Avatar(mSceneMgr);
@@ -624,6 +631,9 @@ bool DimeOgre::setup(void)
 
     createFrameListener();
 
+	mGUIManager->initialize();
+
+	
 /*
     dimeEntityFactory = new DimeEntityFactory(mSceneMgr);
     
@@ -761,7 +771,7 @@ void DimeOgre::createScene(void)
 		waterEntity->setCastShadows(false);
 		
         Ogre::SceneNode *waterNode = 
-            mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
+        mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
         waterNode->attachObject(waterEntity); 
         waterNode->translate(WF2OGRE(500), 0, WF2OGRE(500));
         
@@ -780,50 +790,16 @@ void DimeOgre::connectedToServer(Eris::Connection* connection)
 {
 	mDimeEntityFactory = new DimeEntityFactory(mSceneMgr,mTerrainGenerator, connection->getTypeService());
 	mDimeEntityFactory->CreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarDimeEntity));
-	
+	EventCreatedDimeEntityFactory.emit(mDimeEntityFactory);
 }
 
 void DimeOgre::createFrameListener(void)
 {
 
-	fprintf(stderr, "TRACE - CREATING FRAME LISTENERS\n");
-	//PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, this, false, false);
-	//mRoot->addFrameListener(playerFrameListener);
-	fprintf(stderr, "TRACE - CREATING INPUT MANAGER\n");
-	
-	//mInputManager->addKeyListener(&(Console::getSingleton()));
-	//fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
-	//mRoot->addFrameListener(&(Console::getSingleton()));
 	mRoot->addFrameListener(mMotionManager);
-	//mRoot->addFrameListener(&(DebugListener::getSingleton()));
-	//AvatarCamera* camera = new AvatarCamera(mAvatar.getAvatar1pCamera(), &mAvatar, mSceneMgr);
-	//mRoot->addFrameListener(camera);
 	ConsoleObjectImpl::getSingleton();
-	
-//	Ogre::OverlayManager::getSingleton().addMouseMotionListener(&(DebugListener::getSingleton()));
-	
-//	mInputManager->addMouseListener(&(AvatarController::getSingleton()));
-	//PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
-	//PlayerMouseListener::getSingleton().setAvatar(&mAvatar);
-	//EntityListener::getSingleton().setSceneManager(mSceneMgr);
-//	AvatarController::getSingleton().setSceneManager(mSceneMgr);
-//	AvatarController::getSingleton().setAvatar(mAvatar);
-	
 	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
-/*  GroundCover* ground = new GroundCover(mSceneMgr, Ogre::Vector3(128,128,128), 2,2);
-  ground->add(Ogre::Vector3(0,0,1), "field.mesh", "pig.mesh");
-  ground->add(Ogre::Vector3(4,0,1), "field.mesh", "pig.mesh");
-  ground->add(Ogre::Vector3(4,0,1), "field.mesh", "pig.mesh");
-  ground->add(Ogre::Vector3(6,0,1), "field.mesh", "pig.mesh");
-  ground->add(Ogre::Vector3(8,0,1), "field.mesh", "pig.mesh");
-  ground->add(Ogre::Vector3(10,0,1), "field.mesh", "pig.mesh");
-  ground->add(Ogre::Vector3(12,0,1), "field.mesh", "pig.mesh");
-  
-  ground->compile();
-  ground->update(mAvatar->getAvatarCamera()->getCamera());
-*/
-	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }
 
@@ -851,6 +827,16 @@ Ogre::Root* DimeOgre::getOgreRoot()
 {
 	assert(mRoot);
 	return mRoot;
+}
+
+AvatarCamera* DimeOgre::getMainCamera()
+{
+	return mAvatar->getAvatarCamera();
+}
+
+DimeEntityFactory* DimeOgre::getEntityFactory()
+{
+	return mDimeEntityFactory;
 }
 
 void DimeOgre::initializeDimeServices(void)

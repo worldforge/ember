@@ -87,10 +87,6 @@ protected:
 	
 	GUIManager* mGUIManager;
 
-	/*
-	 * Check what object is under the mouse and puts this in mEntityUnderCursor
-	 */
-	virtual DimeEntity* doMousePicking(const Ogre::MouseEvent* event);
 
 	void checkMovementKeys(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
 

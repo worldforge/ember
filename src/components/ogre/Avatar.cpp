@@ -307,24 +307,11 @@ AvatarCamera* Avatar::getAvatarCamera() const
 	return mAvatarController->getAvatarCamera();
 }
 
-
-/*
-Ogre::Camera* Avatar::getAvatar1pCamera()
+AvatarDimeEntity* Avatar::getAvatarDimeEntity()
 {
-	return mAvatar1pCamera;
+	return mErisAvatarEntity;
 }
 
-Ogre::Camera* Avatar::getAvatar3pCamera()
-{
-	return mAvatar3pCamera;
-}
-
-Ogre::Camera* Avatar::getAvatarTopCamera()
-{
-	return mAvatarTopCamera;
-}
-
-*/
 
 void Avatar::setAvatarController(AvatarController* avatarController)
 {
@@ -374,10 +361,10 @@ void Avatar::createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity)
 	
 }
 
-void Avatar::touch(DimeEntity* entity)
-{
-	dime::DimeServices::getInstance()->getServerService()->touch(entity);
-}
+// void Avatar::touch(DimeEntity* entity)
+// {
+// 	dime::DimeServices::getInstance()->getServerService()->touch(entity);
+// }
 
 /*
 Ogre::Camera* Avatar::getCamera() const

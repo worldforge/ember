@@ -18,6 +18,7 @@ namespace DimeOgre
 	Widget::Widget(GUIManager* guiManager)
 	: mGuiManager(guiManager)
 	{
+		mWindowManager = &CEGUI::WindowManager::getSingleton();
 	}
 	
 	Widget::~Widget()

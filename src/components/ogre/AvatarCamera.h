@@ -117,6 +117,10 @@ public:
 	void mouseMoved (Ogre::MouseEvent *e);
 	void mouseDragged (Ogre::MouseEvent *e) {};
 
+	DimeEntity* pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
+
+	inline void setClosestPickingDistance(Ogre::Real distance) { mClosestPickingDistance = distance; }
+	inline Ogre::Real getClosestPickingDistance() { return mClosestPickingDistance; }
 
 	
 protected:
@@ -146,6 +150,10 @@ protected:
 	Ogre::Degree degreeYaw;	
 	Ogre::RenderWindow* mWindow;
 	Ogre::Viewport* mViewPort;
+	
+	//in meters how far we can pick objects
+	Ogre::Real mClosestPickingDistance;
+
 };
 
 }

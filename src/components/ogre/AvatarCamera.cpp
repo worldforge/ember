@@ -19,6 +19,8 @@
 #include "Avatar.h"
 #include "InputManager.h"
 #include "GUIManager.h"
+#include "DimeOgre.h"
+#include "DimeEntity.h"
 
 #include "AvatarCamera.h"
 
@@ -33,7 +35,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	degreeYaw(0),
 	mViewPort(0),
 	mDegreeOfPitchPerSecond(50),
-	mDegreeOfYawPerSecond(50)
+	mDegreeOfYawPerSecond(50),
+	mClosestPickingDistance(10000)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesAndCamera();
@@ -137,6 +140,76 @@ void AvatarCamera::mouseMoved (Ogre::MouseEvent *e)
 	if (diffY.valueDegrees() || diffX.valueDegrees()) {
 		MovedCamera.emit(mCamera);
 	}
+}
+
+DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
+{
+	
+	// Start a new ray query 
+	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
+	//don't know why
+	Ogre::RaySceneQuery *raySceneQuery = DimeOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ DimeEntity::CM_AVATAR); 
+/*
+	std::stringstream temp;
+	temp << "tjo1: " <<(DimeEntity::CM_PERSONS ||	DimeEntity::CM_CREATURES  || DimeEntity::CM_NATURE || DimeEntity::CM_UNDEFINED) << "\n";
+	temp << "tjo2: " <<(DimeEntity::CM_PERSONS |	DimeEntity::CM_CREATURES  | DimeEntity::CM_NATURE | DimeEntity::CM_UNDEFINED) << "\n";
+	fprintf(stderr, temp.str().c_str() );
+*/	
+//	raySceneQuery->setQueryMask(~ DimeEntity::CM_AVATAR);
+
+	raySceneQuery->execute(); 
+	Ogre::RaySceneQueryResult result = raySceneQuery->getLastResults(); 
+	   
+	Ogre::MovableObject *closestObject = NULL; 
+	Ogre::Real closestDistance = mClosestPickingDistance;
+	 
+	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator; 
+	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end; 
+/*
+	std::stringstream temp;
+	Ogre::SceneManager::EntityIterator iter = DimeOgre::getSingletonPtr()->getSceneManager()->getEntityIterator();
+	int count = 0;
+	while (iter.hasMoreElements()) {
+		count++;
+		Ogre::Entity* ent = iter.getNext();
+		temp << ent->getName() << ": " << Ogre::StringConverter::toString(ent->getBoundingBox().getMinimum());
+		temp << "/" << Ogre::StringConverter::toString(ent->getWorldBoundingBox().getMinimum());
+		temp << " ::: ";
+		temp << Ogre::StringConverter::toString(ent->getBoundingBox().getMaximum());
+		temp << "/" << Ogre::StringConverter::toString(ent->getWorldBoundingBox().getMaximum());
+		temp << "\n";
+	}
+	fprintf(stderr, temp.str().c_str() );
+*/
+	//Ogre::UserDefinedObject* avatarObject = dynamic_cast<Ogre::UserDefinedObject*>(mAvatar->mErisAvatarEntity);
+	rayIterator = result.begin( );
+	rayIterator_end = result.end( );
+	if (rayIterator != rayIterator_end) {
+		for ( ; 
+			rayIterator != rayIterator_end; 
+			rayIterator++ ) {
+			//only pick entities that have a userobject attached
+			if (( *rayIterator ).movable && ( *rayIterator ).movable->getUserObject() != NULL && (( *rayIterator ).movable->getQueryFlags() & ~DimeEntity::CM_AVATAR)) {
+				if ( ( *rayIterator ).distance < closestDistance ) { 
+					closestObject = ( *rayIterator ).movable; 
+					closestDistance = ( *rayIterator ).distance; 
+				}
+			}
+		} 
+	}
+
+ 
+   // No movable clicked 
+	if ( closestObject == NULL ) {    
+
+	     return NULL;
+		//Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
+	} else { 
+		return  dynamic_cast<DimeEntity*>(closestObject->getUserObject());
+
+	} 		
+	
 }
 
 void AvatarCamera::updateFromMouseMovement(const Ogre::FrameEvent & event, InputManager* inputManager) {

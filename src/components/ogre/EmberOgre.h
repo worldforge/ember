@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.24  2004-10-06 22:32:48  erik
+ *      Revision 1.25  2004-10-12 00:49:55  erik
+ *      2004-10-12 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      * added mouse picker menu for touching and taking entities. Right now it's just a placeholder, but it works, can be seen here: http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023002.png
+ *      * added a simple inventory. It's just a listbox right now, but it works. The drop button won't do anything yet though. It can be seen here too: http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023044.png
+ *      http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023052.png
+ *
+ *      Revision 1.24  2004/10/06 22:32:48  erik
  *      2004-10-07 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      *Moved completely to CEGUI. We now use no overlays.
@@ -292,6 +299,8 @@ class CameraFrameListener;
 
 class Avatar;
 
+class AvatarCamera;
+
 class DimeEntityFactory;
 
 class TerrainGenerator;
@@ -349,6 +358,11 @@ public:
 	TerrainGenerator* getTerrainGenerator();
 	MotionManager* getMotionManager();
 	Ogre::Root* DimeOgre::getOgreRoot();
+	DimeEntityFactory* getEntityFactory();
+	AvatarCamera* getMainCamera();
+	
+	SigC::Signal1<void, DimeEntityFactory*> EventCreatedDimeEntityFactory;
+
 	
 
 //private:
@@ -394,7 +408,7 @@ protected:
     
 //    DimeTerrainPageSource* mPageSource;
 	TerrainGenerator* mTerrainGenerator;
-	InputManager* mInputManager;
+	//InputManager* mInputManager;
 	MotionManager* mMotionManager;
 	GUIManager* mGUIManager;  
 

@@ -100,11 +100,13 @@ class Avatar : virtual public SigC::Object
 	
 	void movedInWorld();
 	
-	void touch(DimeEntity* entity);
+	//void touch(DimeEntity* entity);
 	
 	void updateFrame(AvatarControllerMovement movement);
 	
 	void setAvatarController(AvatarController* avatarController);
+	
+	AvatarDimeEntity* getAvatarDimeEntity();
 
 protected:
 	
