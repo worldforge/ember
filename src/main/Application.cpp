@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.17  2002-04-29 19:23:48  xmp
+ *      Revision 1.18  2002-04-30 09:17:51  nikal
+ *      Remember to use proper capitalization in directory and file names.
+ *
+ *      Revision 1.17  2002/04/29 19:23:48  xmp
  *      Moved to new eris polling method
  *
  *      Revision 1.16  2002/04/26 12:16:50  xmp
@@ -84,7 +87,7 @@
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-#include <eris/PollDefault.h>
+#include <Eris/PollDefault.h>
 #endif
 
 //Needed for CppUnit
