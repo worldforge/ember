@@ -28,7 +28,8 @@
 #include <list>
 #include <stdio.h> 
 #include <stdarg.h>
-#include <varargs.h> //Needed by unix?
+#include <ctime>
+//#include <varargs.h> //Needed by unix?
 
 using namespace std;
 
@@ -39,7 +40,6 @@ namespace services {
 
 //General TODOs:
 // - resolve minor TODOs
-// - test if it compiles
 // - test if it compiles under Unix especially
 // - test if it works
 // - make LoggingService threadsafe!
@@ -48,7 +48,6 @@ namespace services {
 
 
 /**
- * [General documenting TODO: How to specify formatting in doxygen?]
  * Easy-to-deal-with logging class.
  *
  * This service class should make adding and observing logging messages more easy. This
@@ -66,17 +65,19 @@ namespace services {
  *
  * There are some log variants for which you can specify some options:
  * - source file (use __FILE__) 
- * - source line (use __LINE__) [TODO: Can this be done in a macro also?]
- * - level of importance (see enum called MessageImportance), alsways INFO if not specified
-  * [TODO: Should there be an error number?]
+ * - source line (use __LINE__)
+ * - level of importance (see enum called MessageImportance), always INFO if not specified
  *
  * As a special feature you can use a function called slog * (stands for stream log) that can
  * be used for setting the options before using streaming. (See example.)  
  *
  * Callback observers of logging process can easily be managed 
  * using addObserver and removeObserver. FILE * can be used as a special kind
- * of observer that needs a format ID (see addObserver). 
- * [TODO: Should there be some filters concerning the options?] 
+ * of observer where all messages are written in including optional fields separated by "\t".
+ * To less the amount of messages passed through to the observers, you can specify a filter by
+ * levels of importance. Thus all messages above or equal a filter level of importance are
+ * written/passed by the callback to an observer.
+ * 
  * 
  * HINT: Names marked with * were chosen this short, because they are intentended to be used very 
  * frequently.
@@ -86,12 +87,12 @@ namespace services {
  * LoggingService * logger;
  * //service is assumed to be started
  * //do you prefer this way?
- * logger->log(__FILE__, __LINE__, LoggingService::CRITICAL,
+ * logger->log(__FILE__, __LINE__, LoggingService::WARNING,
  *      "Player %s (ID: %x) is already dead (but used in %d new messages).", 
  *		player->getName(), player->getID(), player->getMessages()->getCount());
  *
  * //or this?
- * logger->slog(__FILE__, __LINE__, LoggingService::CRITICAL) << "Player: " << player->getName() 
+ * logger->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Player: " << player->getName() 
  *		<<"(ID: " << HEX_NUM(player->getID()) << "is already dead (but used in " << 
  *      player->getMessages()->getCount() << " new messages)." << ENDM;
  *
@@ -100,7 +101,7 @@ namespace services {
  */
 
 //======================================================================
-// Short type macros  [TODO: recognized by doxygen?]
+// Short type macros
 //======================================================================
 
 #define ENDM LoggingService::END_MESSAGE;
@@ -122,10 +123,12 @@ class LoggingService: public Service
 	 */
 	enum MessageImportance
 	{
-		INFO = 0,
-		WARNING = 1,
-		CRITICAL = 2
+		INFO		= 0,
+		WARNING		= 1,
+		ERROR		= 2,
+		CRITICAL	= 3
 	};
+
 
 	/**
 	 * Pseudo-enum necessary to make the END_MESSAGE constant not be mixed with ints
@@ -143,7 +146,6 @@ class LoggingService: public Service
 	/**
 	 * Defines the look of a callback function used by an observer. 
 	 *
-	 * [TODO: Is the following supported by doxygen?]
 	 * @param cockie The cockie given to addObserver (e.g. a this pointer)
 	 * @param message The message string to send.
      * @param file The source code file the message was initiated or empty if not specified.
@@ -159,14 +161,15 @@ class LoggingService: public Service
 	
 	struct FileObserver
 	{
-		FILE * myFile;
-		int    myFormatID; //TODO: Think of format IDs needed
+		FILE *			  myFile;
+		MessageImportance myFilter;
 	};
 
 	struct CallbackObserver
 	{
 		OBSERVER_CALLBACK myCallbackFunction;
 		void *			  myCockie;
+		MessageImportance myFilter;
 	};
 
 	typedef std::list<CallbackObserver>  CallbackObserverList;
@@ -185,8 +188,8 @@ class LoggingService: public Service
     // Private Constants
     //======================================================================
     private:
-	const int NUMBER_BUFFER_SIZE = 20;
-	const int MESSAGE_BUFFER_SIZE = 1024;
+	static const int NUMBER_BUFFER_SIZE = 20;
+	static const int MESSAGE_BUFFER_SIZE = 1024;
 
     //======================================================================
     // Private Variables
@@ -240,6 +243,11 @@ class LoggingService: public Service
      */
     LoggingService()
     {
+		//set service properties
+		setName("Logging");
+		setDescription("Helps to ease message writing and distribution.");
+		
+
 		//set all option values to not specified
 		myMessage			= "";
 		myFile				= "";
@@ -285,6 +293,12 @@ class LoggingService: public Service
     //----------------------------------------------------------------------
     // Other public methods
 
+	 virtual int start()
+	 {
+		 setRunning(true);
+		 return 0;
+	 }
+
     /**
      * [General documenting TODO: How does doxygen handle function overriding?]
 	 *
@@ -298,8 +312,7 @@ class LoggingService: public Service
      *
 	 */
 
-	//TODO: Does the following work on UNIX machines?
-    void log(const string & message, ...) 
+	void log(const string & message, ...) 
 	{
 	    va_list vl;
 		va_start(vl, message);
@@ -358,7 +371,7 @@ class LoggingService: public Service
 								const string & message, va_list argptr)
 	{
 		char Buffer[MESSAGE_BUFFER_SIZE];
-		vsprintf((char*)Buffer, message.data(), va_list);
+		vsprintf((char*)Buffer, message.data(), argptr);
 		
 		sendMessage(string((char*)Buffer), file, line, importance);
 	}
@@ -415,28 +428,31 @@ class LoggingService: public Service
 	 * @param callback The function to be called back when a new message arrived.
 	 * @param file The file to write in when a new message arrived.
 	 * @param cockie A pointer to anything useful for the callback function.
-	 * @param formatID The format ID used to preformat the input to the file. 
+	 * @param filter The minimum level of importance needed for messages that should be passed through
+	 *               to the observer.
 	 *
 	 */
 
-	void addObserver(FILE * file, int formatID)
+	void addObserver(FILE * file, MessageImportance filter)
 	{
 		FileObserver fileObserver;
 		
-		fileObserver.myFile = file;
-		fileObserver.myFormatID = formatID;
-
+		fileObserver.myFile		= file;
+		fileObserver.myFilter	= filter;
+		
 		//TODO: Should we test on already existing observers?
 
 		myFileObserverList.push_back(fileObserver);
 	}
 
-	void addObserver(OBSERVER_CALLBACK callback, void * cockie)
+	void addObserver(OBSERVER_CALLBACK callback, void * cockie,
+                      MessageImportance filter)
 	{
 		CallbackObserver callbackObserver;
 		
 		callbackObserver.myCallbackFunction = callback;
 		callbackObserver.myCockie			= cockie;
+		callbackObserver.myFilter			= filter;
 
 		//TODO: Should we test on already existing observers?
 
@@ -475,7 +491,7 @@ class LoggingService: public Service
 		{
 			if (i->myCallbackFunction == callback)
 			{
-				myCallBackObserverList.erase(i);
+				myCallbackObserverList.erase(i);
 				return 0;
 			}
 		}
@@ -514,7 +530,7 @@ class LoggingService: public Service
 	LoggingService & operator<< (const HexNumber & intHexToAdd)
 	{
 		char buffer[NUMBER_BUFFER_SIZE];
-		myMessage += itoa(intHexToAdd, (char*)buffer, 16);
+		myMessage += itoa(intHexToAdd.myNumber, (char*)buffer, 16);
 		return *this;
 	}
 
@@ -554,18 +570,40 @@ class LoggingService: public Service
 		time_t currentTime;
 		time(&currentTime);
 
+		tm * ctm = localtime(&currentTime); //currentLocalTime was too long, sorry
+
+		//Separate them by "\t"
+
+		//Order: currentTime importance file line message
+
+		char buffer[MESSAGE_BUFFER_SIZE];
+		
+		int bufferLength = sprintf((char*)buffer, 
+			"[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
+			ctm->tm_year, ctm->tm_mon, ctm->tm_mday, ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
+			(importance == CRITICAL) ?  "CRITICAL" : 
+				((importance == ERROR) ?  "ERROR" : 
+					((importance == WARNING) ? "WARNING" : "INFO")),
+			file, line, message);
+
+
 		for (CallbackObserverList::iterator i = myCallbackObserverList.begin(); 
 			i != myCallbackObserverList.end(); i++)
 		{
-			i->myCallbackFunction(myCockie, message, file, line, importance, currentTime);
+			if ((int)importance >= (int)i->myFilter)
+			{
+				i->myCallbackFunction(i->myCockie, message, file, line, importance, currentTime);
+			}
 		}
 
 		for (FileObserverList::iterator j = myFileObserverList.begin();
 			j != myFileObserverList.end(); j++)
 		{
-			//TODO: Add preformating according to j->myFormatID
-
-			fwrite((void*)message.data(), sizeof(char), message.size(), j->myFile);
+			
+			if ((int)importance >= (int)j->myFilter)
+			{
+				fwrite((char*)buffer, sizeof(char), bufferLength, j->myFile);
+			}
 		}
 	}
 							
