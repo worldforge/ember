@@ -1,6 +1,5 @@
 /*
-    Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
-    Based on Silence-c++ by James and YUP code by Adam Wendt
+    Copyright (C) 2002 Martin Pollard (Xmp)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
