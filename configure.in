@@ -11,6 +11,7 @@ AC_PROG_CPP
 AC_PROG_CXX
 dnl AM_PROG_LEX
 
+dnl Check for SDL and SDL_image
 AM_PATH_SDL(1.2.0, , 
 	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
 )
@@ -23,14 +24,7 @@ CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
 
-dnl the next are just in for show right now.
-dnl they don't die yet as we don't need them yet.
-dnl they will be moved up above once they become necessary.
-
-AC_CHECK_LIB(SDL_image, IMG_Load, , [
-    AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
-])
-
+dnl Check for SigC++
 AM_PATH_SIGC(1.0.3,[
        CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
        LDFLAGS="$LDFLAGS $SIGC_LIBS"
@@ -38,6 +32,7 @@ AM_PATH_SIGC(1.0.3,[
 AC_MSG_ERROR(Couldn't find libsigc++ config [or config failed])
 )
 
+dnl Check for Atlas
 AM_PATH_ATLAS(0.4.4 ,[
     CXXFLAGS="$CXXFLAGS $ATLAS_CFLAGS"
     LDFLAGS="$LDFLAGS $ATLAS_LIBS"
@@ -45,6 +40,7 @@ AM_PATH_ATLAS(0.4.4 ,[
 AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
 
+dnl Check for Eris
 AM_PATH_ERIS(0.9.5 ,[
     CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
     LDFLAGS="$LDFLAGS $ERIS_LIBS"
@@ -52,6 +48,7 @@ AM_PATH_ERIS(0.9.5 ,[
 AC_MSG_ERROR(Couldn't find Eris [or tests failed])
 )
 
+dnl Check for Varconf
 AM_PATH_VARCONF(0.5.2 ,[
     CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
     LDFLAGS="$LDFLAGS $VARCONF_LIBS"
@@ -130,9 +127,6 @@ AC_CHECK_LIB(GLU,
 	     Unable to find the GLU library
 	     ])
 )
-
-dnl AC_CHECK_LIB(eris,main)
-dnl AC_CHECK_LIB(skstream,main)
 
 
 AC_LANG_CPLUSPLUS
