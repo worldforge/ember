@@ -207,6 +207,8 @@ namespace dime
 
     // Init OOGChat controller
     myOOGChat = new OOGChat;
+    
+    GotConnection.emit(myConn);
 
     ConsoleBackend::getMainConsole()->pushMessage("Connected to Server");
   }
@@ -399,14 +401,27 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 			return;
 		}
 		fprintf(stderr, "TRACE - DONE\n");
+		if (myAvatar) {
+			GotAvatar.emit(myAvatar);
+			myWorld = myAvatar->getWorld();
+			if (myWorld) {
+				GotWorld.emit(myWorld);
+			}
+		}
       } else {
 		ConsoleBackend::getMainConsole()->pushMessage("Not logged in. Can't create char...");
 	  }
     } else if (command==TAKECHAR) {
       if (myPlayer)
       {
-	myAvatar = myPlayer->takeCharacter(args);
-	myWorld = myAvatar->getWorld();
+		myAvatar = myPlayer->takeCharacter(args);
+		if (myAvatar) {
+			GotAvatar.emit(myAvatar);
+			myWorld = myAvatar->getWorld();
+			if (myWorld) {
+				GotWorld.emit(myWorld);
+			}
+		}
       }
     } else if (command==LISTCHARS) {
       if (myPlayer)

@@ -29,8 +29,15 @@
 #include <Eris/World.h>
 #include <Eris/Avatar.h>
 
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
 #include <sigc++/object.h>
-
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
 namespace dime {
 
 /**
@@ -138,6 +145,12 @@ class ServerService : public Service, public ConsoleObject,
     void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
     void moveInDirection(const WFMath::Vector<3>& velocity);
    	void touch(Eris::Entity* entity);
+   	
+    //----------------------------------------------------------------------
+   	// Signals
+   	SigC::Signal1<void, Eris::Avatar*> GotAvatar;
+   	SigC::Signal1<void, Eris::World*> GotWorld;
+   	SigC::Signal1<void, Eris::Connection*> GotConnection;
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
