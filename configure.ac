@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Dime, 0.1.4, clients@worldforge.org)
+AC_INIT([Dime],[0.1.4],[clients@worldforge.org])
 AC_CONFIG_SRCDIR([config.h.in])
 AM_INIT_AUTOMAKE
-AC_PREREQ(2.53)
+AC_PREREQ(2.54)
 AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
 AM_CONFIG_HEADER(config.h)
 
@@ -26,13 +26,13 @@ dnl AM_PROG_LEX
 AM_MAINTAINER_MODE
 
 # Check for C++ libraries:
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 # Check for the Boost shared_ptr.hpp shared pointer header
 AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
 
 # Check for C libraries:
-AC_LANG_C
+AC_LANG([C])
 
 # Check for SDL and SDL_image
 AM_PATH_SDL(1.2.0, , 
@@ -237,7 +237,7 @@ AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memset select])
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_REQUIRE_CPP
 
 
