@@ -16,8 +16,8 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef TEMPLATE_GAME_VIEW_H
-#define TEMPLATE_GAME_VIEW_H
+#ifndef ENTITY_LISTENER_H
+#define ENTITY_LISTENER_H
 
 #include <Eris/Entity.h>
 #include <Eris/World.h>
@@ -39,11 +39,11 @@
 namespace dime {
 
 /**
- * This is a debugging game view for use by DIME game view developers.
+ * This is the base class for all EntityListeners.
  *
  * It contains all the essential methods and code, with plenty of comments to
  * show you how to use it. Essentially, it should be possible to "fill in the
- * blanks" to create a working game view. That's not to say that doing so will
+ * blanks" to create a working listener. That's not to say that doing so will
  * be easy though ;)
  *
  * @author: AlistairD
@@ -58,16 +58,13 @@ namespace dime {
  * Component is a standard dime class that also has to be inherited from.
  */
 
-class TemplateGameView : public ConsoleObject,
-  virtual public SigC::Object //, public Component
+class EntityListener : virtual public SigC::Object //, public Component
 {
 
     //======================================================================
     // Private Constants
     //======================================================================
     private:
-    
-    // List of TemplateGameView's console commands
 
     //======================================================================
     //Public Methods
@@ -77,24 +74,15 @@ class TemplateGameView : public ConsoleObject,
 
         /**
          * Constructor
-         * This grabs a pointer to the current Eris entity from DimeService and
-         * connects ithe relevant signals to Game View methods. If you're not using
+         * This grabs a pointer to the current Eris entity from DimeServices and
+         * connects the relevant signals to listening methods. If you're not using
          * any of those methods (Entered is the most likely to be unused IMO) then you
          * should also remove the connection code.
          */
-        TemplateGameView();
+        EntityListener();
 
-        /** Destructor, stick cleanup stuff her as per usual */
-        ~TemplateGameView();
-
-        /**
-         * For the time being at least (the API isn't even vaguely stable yet),
-         * every GameView needs a "repaint()" function. This is where you put
-         * your drawing code.
-         *
-         * Iterate through your world model and blit to your heart's content :)
-         */
-        void repaint(DrawDevice *ddevice);
+        /** Destructor, stick cleanup stuff here as per usual */
+        ~EntityListener();
 
         /* Eris::World entity signals (see eris\src\world.h for more info) */
 
@@ -109,7 +97,7 @@ class TemplateGameView : public ConsoleObject,
          *
          * @param e A pointer to the Eris entity that has been created.
          */
-        void entityCreate( Eris::Entity *e );
+        virtual void entityCreate( Eris::Entity *e );
 
         /**
          * Called on entity deletion. You should remove all information you
@@ -118,7 +106,7 @@ class TemplateGameView : public ConsoleObject,
          * @param e A pointer to the Eris entity that has been deleted.
          *
          */
-        void entityDelete( Eris::Entity *e );
+        virtual void entityDelete( Eris::Entity *e ) = 0;
 
         /**
          * Called only once, when the player enters the game world. It's
@@ -127,7 +115,7 @@ class TemplateGameView : public ConsoleObject,
          * @param e A pointer to the Eris entity
          *
          */
-        void entered( Eris::Entity *e );
+        virtual void entered( Eris::Entity *e ) = 0;
 
         /** Called when an entity become visible. You'll probably want to add
          * a media pointer to your world model at this point.
@@ -135,7 +123,7 @@ class TemplateGameView : public ConsoleObject,
          * @param e A pointer to the Eris entity
          *
          */
-        void appearance( Eris::Entity *e );
+        virtual void appearance( Eris::Entity *e ) = 0;
 
         /**
          * Called when an entity becomes invisible. You should remove the media
@@ -145,7 +133,7 @@ class TemplateGameView : public ConsoleObject,
          * @param e A pointer to the Eris entity
          *
          */
-        void disappearance( Eris::Entity *e );
+        virtual void disappearance( Eris::Entity *e ) = 0;
 
 
         /* Eris::Entity signals  (see eris\src\entity.h for more info)*/
@@ -158,14 +146,14 @@ class TemplateGameView : public ConsoleObject,
          * @param e A pointer to the Eris entity that has been recontainered
          * @param c A pointer to the Eris entity that is the new container for e
          */
-        void recontainered( Eris::Entity *e, Eris::Entity *c );
+        virtual void recontainered( Eris::Entity *e, Eris::Entity *c ) = 0;
 
         /**
          * I'm not sure what this does. Let's ignore it until I can track down
          * James and bop him on the head for writing unhelpful comments ;)
          * NOTES: I suspect this is when an attribute of the object is changed.
          */
-        void changed( const Eris::StringSet &s, Eris::Entity *e );
+        virtual void changed( const Eris::StringSet &s, Eris::Entity *e ) = 0;
 
         /**
          * Called when the entity moves. Here you should alter the position
@@ -178,7 +166,7 @@ class TemplateGameView : public ConsoleObject,
          * @param c The new coordinates of the entity
          * @param e A pointer to the Eris entity that has moved
          */
-        void moved( const WFMath::Point< 3 > &, Eris::Entity *e );
+        virtual void moved( const WFMath::Point< 3 > &, Eris::Entity *e ) = 0;
 
         /**
          * Called when the entity speaks. You'll probably want to display the
@@ -187,35 +175,23 @@ class TemplateGameView : public ConsoleObject,
          * @param s A string containing the speech
          * @param e A pointer to the Eris entity
          */
-        void say( const std::string &s, Eris::Entity *e );
+        virtual void say( const std::string &s, Eris::Entity *e ) = 0;
 
         /**
          * Sadly undocumented
          */
-        void addedMember(Eris::Entity *e);
+        virtual void addedMember(Eris::Entity *e) = 0;
 
         /**
          * Also sadly undocumented
          */
-        void removedMember(Eris::Entity *e);
-
-	/**
-	 * Receive commands from console
-	 */
-	void runCommand(const std::string &command, const std::string &args);
+        virtual void removedMember(Eris::Entity *e) = 0;
 
     private:
 
-        /**
-         * You should have some form of world model here. For example, the
-         * one-dimensional DebugGameView uses a vector.
-         *
-         * James has suggested a Quad Tree for 3D game views (that includes
-         * layered 2D views)
-         */
 
 }; //End of class declaration
 
 } // End of application namespace
 
-#endif // DEBUG_GAME_VIEW_H
+#endif // ENTITY_LISTENER_H
