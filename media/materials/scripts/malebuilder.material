@@ -1,0 +1,163 @@
+material /global/body_parts/eyes/blue_eye_01
+{
+   technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/eyes/textures/blue_eye_01/eye_128.png
+            }
+        }
+    }
+}
+
+material /global/body_parts/hair/plain
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/hair/textures/plain/hair_128.png
+            }
+        }
+    }
+}
+
+material /global/body_parts/humanoid_head/young_one
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/humanoid_head/textures/young_one/head_128.png
+            }
+        }
+    }
+}
+
+material /global/body_parts/humanoid_head/worksman
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/humanoid_head/textures/worksman/head_128.png
+            }
+        }
+    }
+}
+
+material /global/body_parts/humanoid_body/male_pink
+{
+    technique
+    {
+        pass
+        {
+	
+           texture_unit
+            {
+                texture 3d_objects/body_parts/humanoid_body/textures/male_pink/humanoid_body_128.png
+            }
+        }
+    }
+}
+
+material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides
+{
+    technique
+    {footwear
+      pass
+        {
+          scene_blend alpha_blend 
+         //cull_hardware none 
+         //cull_software none
+ 		alpha_rejection greater_equal 128
+          texture_unit
+            {
+                texture 3d_objects/clothes/footwear/textures/leather_shoes_wrapped_cotton_sides/footwear_128.png 
+            }
+        }
+    }
+}
+
+
+
+material /global/clothes/dress/ragged
+{
+    technique
+    {
+        pass
+        {
+           cull_hardware none 
+           cull_software none
+          scene_blend alpha_blend 
+		alpha_rejection greater_equal 128            
+           texture_unit
+            {
+                texture 3d_objects/clothes/dress/textures/ragged/dress_128.png
+	    }
+        }
+    }
+}
+
+material /global/clothes/dress/sun
+{
+    technique
+    {
+        pass
+        {
+           cull_hardware none 
+           cull_software none
+          scene_blend alpha_blend 
+ 		alpha_rejection greater_equal 128            
+          texture_unit
+            {
+                texture 3d_objects/clothes/dress/textures/sun/dress_128.png
+	    }
+        }
+    }
+}
+
+material /global/clothes/dress/dark_rags
+{
+    technique
+    {
+        pass
+        {
+           cull_hardware none 
+           cull_software none
+          scene_blend alpha_blend 
+		alpha_rejection greater_equal 128            
+           texture_unit
+            {
+                texture 3d_objects/clothes/dress/textures/dark_rags/dress_128.png
+	    }
+        }
+    }
+}
+
+material /global/clothes/dress/fine
+{
+    technique
+    {
+        pass
+        {
+           cull_hardware none 
+           cull_software none
+          scene_blend alpha_blend 
+		alpha_rejection greater_equal 128            
+           texture_unit
+            {
+                texture 3d_objects/clothes/dress/textures/fine/dress_128.png
+	    }
+        }
+    }
+}
+

@@ -1,0 +1,62 @@
+material /global/creature/pig/skin
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+        texture_unit
+	{
+		texture 3d_objects/creatures/quadruped_v2/textures/pink_pig/quadruped_v2_128.png
+	}
+
+    }
+  }
+}
+
+material /global/creature/squirrel/skin
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+        texture_unit
+	{
+		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
+	}
+
+    }
+  }
+}
+
+
+
+material /global/creature/chicken
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/creatures/avian/textures/redchicken/chickentex_256.png
+      }
+    }
+  }
+}
+
+material /global/creature/deer
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/creatures/quadruped_v2/textures/deer/quadruped_v2_128.png
+      }
+    }
+  }
+}
+

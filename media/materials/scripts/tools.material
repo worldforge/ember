@@ -1,0 +1,35 @@
+material Items/Tool/Head
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      diffuse 0.427451 0.290196 0.000000
+      specular 0.449020 0.449020 0.449020 50.000000
+      emissive 0.000000 0.000000 0.000000
+      texture_unit
+      {
+        texture 3d_objects/items/tool/textures/settler_tools/tool_head.png
+      }
+    }
+  }
+}
+
+material Items/Tool/Handle
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      diffuse 0.427451 0.290196 0.000000
+      specular 0.449020 0.449020 0.449020 50.000000
+      emissive 0.000000 0.000000 0.000000
+      texture_unit
+      {
+        texture 3d_objects/items/tool/textures/settler_tools/tool_handle.png
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+material Goblin/Head
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/humanoid_head/textures/worksman/head.jpg 
+            }
+        }
+    }
+}
+ 
+material Goblin/Skin
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/humanoid_body/textures/male_pink/humanoid_body.png 
+            }
+        }
+    }
+}
+
+material Goblin/Mouth
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture 3d_objects/body_parts/humanoid_head/textures/worksman/head.jpg 
+            }
+        }
+    }
+}
+
+material Goblin/Eyes
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture 3d_objects/body_parts/humanoid_head/textures/worksman/head.jpg
+			}
+		}
+	}
+}

@@ -1,0 +1,95 @@
+/* Bump mapping with Parallax offset vertex program 
+   In this program, we want to calculate the tangent space light end eye vectors 
+   which will get passed to the fragment program to produce the per-pixel bump map 
+   with parallax offset effect. 
+*/ 
+
+/* Vertex program that moves light and eye vectors into texture tangent space at vertex */ 
+
+void main_vp(float4 position   : POSITION, 
+              float3 normal      : NORMAL, 
+              float2 uv         : TEXCOORD0, 
+              float3 tangent     : TEXCOORD1, 
+              // outputs 
+              out float4 oPosition    : POSITION, 
+              out float2 oUv          : TEXCOORD0, 
+              out float3 oLightDir    : TEXCOORD1, // tangent space 
+             out float3 oEyeDir       : TEXCOORD2, // tangent space 
+             out float3 oHalfAngle    : TEXCOORD3, // 
+              // parameters 
+              uniform float3 lightPosition, // object space 
+              uniform float3 eyePosition,   // object space 
+              uniform float4x4 worldViewProj) 
+{  
+   // calculate output position 
+   oPosition = mul(worldViewProj, position); 
+
+   // pass the main uvs straight through unchanged 
+   oUv = uv; 
+
+   // calculate tangent space light vector 
+   // Get object space light direction 
+   float3 lightDir = lightPosition - position.xyz; 
+   float3 eyeDir = eyePosition - position.xyz; 
+    
+   // Calculate the binormal (NB we assume both normal and tangent are 
+   // already normalised) 
+   // NB looks like nvidia cross params are BACKWARDS to what you'd expect 
+   // this equates to NxT, not TxN 
+   float3 binormal = cross(tangent, normal); 
+    
+   // Form a rotation matrix out of the vectors 
+   float3x3 rotation = float3x3(tangent, binormal, normal); 
+    
+   // Transform the light vector according to this matrix 
+   lightDir = normalize(mul(rotation, lightDir)); 
+   eyeDir = normalize(mul(rotation, eyeDir)); 
+
+   oLightDir = lightDir; 
+   oEyeDir = eyeDir; 
+   oHalfAngle = normalize(eyeDir + lightDir); 
+}
+
+// General functions
+
+// Expand a range-compressed vector
+float3 expand(float3 v)
+{
+	return (v - 0.5) * 2;
+}
+
+void main_fp(float2 uv : TEXCOORD0,
+	float3 lightDir : TEXCOORD1,
+	float3 eyeDir : TEXCOORD2,
+	float3 halfAngle : TEXCOORD3,
+	uniform float3 lightDiffuse,
+	uniform float3 lightSpecular,
+	uniform float4 scaleBias,
+	uniform sampler2D normalHeightMap,
+	uniform sampler2D diffuseMap,
+	out float4 oColor : COLOR)
+{
+	// get the height using the tex coords
+	float height = tex2D(normalHeightMap, uv).a;
+
+	// scale and bias factors	
+	float scale = scaleBias.x;
+	float bias = scaleBias.y;
+
+	// calculate displacement	
+	float displacement = (height * scale) + bias;
+	
+	float3 uv2 = float3(uv, 1);
+	
+	// calculate the new tex coord to use for normal and diffuse
+	float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+	
+	// get the new normal and diffuse values
+	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
+	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+	
+	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular;
+	float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular;
+		
+	oColor = float4(col, 1);
+}

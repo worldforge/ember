@@ -1,0 +1,17 @@
+material /global/items/furniture/avalon
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      diffuse 0.800000 0.800000 0.800000
+      specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.000000 0.000000 0.000000
+      texture_unit
+      {
+        texture 3d_objects/items/furniture/textures/avalon/avalon.png
+      }
+    }
+  }
+}

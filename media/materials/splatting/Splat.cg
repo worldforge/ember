@@ -1,0 +1,90 @@
+
+// Vertex program for automatic terrain texture generation
+void main_vp
+(
+    float4             iPosition           : POSITION,
+	float4             iNormal             : NORMAL,
+	float2             iTexcoord           : TEXCOORD0,
+
+	out float4         oPosition           : POSITION,
+	out float4         oTexcoord           : TEXCOORD0,
+	out float4         oCoverage           : TEXCOORD1,
+	out float4         oScaled             : TEXCOORD2,
+	//out float4         oFog              : TEXCOORD3,
+
+	uniform float4x4   worldViewProj,
+
+	uniform float4     splatSettings,
+	uniform float4     fogSettings,
+	uniform float4     fogColour
+)
+{
+
+    float no_rock_factor = clamp (iNormal.y, 0.0, 1.0);
+
+    // SAND  < splatSettings[0]
+	oCoverage.x = (iPosition.y < splatSettings[0])?
+                    clamp ((1.0 - (iPosition.y / splatSettings[0])) * no_rock_factor, 0.0, 1.0)
+                :
+                    0.0;
+
+    //  splatSettings[0] < GRASS < splatSettings[0]
+	oCoverage.y = (iPosition.y < splatSettings[0])?
+                        clamp ((iPosition.y / splatSettings[0])  * no_rock_factor, 0.0, 1.0)
+                    :
+                       ((iPosition.y < splatSettings[1])?
+                            clamp ((1.0 - (iPosition.y - splatSettings[0]) / (splatSettings[1] - splatSettings[0])) * no_rock_factor, 0.0, 1.0)
+                        :
+                            0.0);
+
+
+    //  splatSettings[0] < ROCK < splatSettings[0]
+	oCoverage.z = (iPosition.y > splatSettings[0])?
+                        ((iPosition.y < splatSettings[1])?
+                            clamp (((iPosition.y - splatSettings[0]) / (splatSettings[1] - splatSettings[0])) * no_rock_factor, 0.0, 1.0)
+                        :
+                            clamp ((1.0 - (iPosition.y - splatSettings[1]) / (splatSettings[2] - splatSettings[1])) * no_rock_factor, 0.0, 1.0))
+                    :
+                        0.0;
+
+
+    //  splatSettings[1] < SNOW <
+	oCoverage.w = (iPosition.y > splatSettings[1])?
+                        clamp (((iPosition.y - splatSettings[1]) / (splatSettings[2] - splatSettings[1])) * no_rock_factor, 0.0, 1.0)
+                    :
+                        0.0;
+
+    float rock_factor = 1.0 - no_rock_factor;
+    oCoverage.z = clamp (oCoverage.z + rock_factor, 0.0, 1.0);
+
+    //float fog = clamp(( oPosition.z - fogSettings[0] ) / (fogSettings[1] - fogSettings[0]),0.0,1.0) * fogSettings[2];
+    //oColor0 = (1.0 - fog) * (color * (1.0 - rock_factor));
+    //oColor1 = (1.0 - fog) * (color * rock_factor);
+    //oFog = fogColour * fog;
+
+
+    // Calculate the output position and texture coordinates
+	oPosition  = mul(worldViewProj,iPosition);
+	oTexcoord = float4(iTexcoord.x, iTexcoord.y, 0.0, 0.0);
+    oScaled = oTexcoord * 20.0f;
+}
+
+// Fragment program for automatic terrain texture generation
+void main_fp
+(
+    float4              iTexcoord	: TEXCOORD0,
+    float4              iCoverage	: TEXCOORD1,
+    float4              iScaled	    : TEXCOORD2,
+
+	out float4          oColor		: COLOR,
+
+    uniform sampler2D   textureUnit0,
+    uniform sampler2D   textureUnit1,
+    uniform sampler2D   textureUnit2,
+    uniform sampler2D   textureUnit3
+)
+{
+	oColor = (tex2D(textureUnit0, iScaled.xy) * iCoverage.x) + (tex2D(textureUnit1, iScaled.xy) * iCoverage.y) + (tex2D(textureUnit2, iScaled.xy) *  iCoverage.z) + (tex2D(textureUnit3, iScaled.xy) *  iCoverage.w);
+
+}
+

@@ -1,0 +1,325 @@
+
+material /global/plants/tree/fir/branch
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+          scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 64
+        texture_unit
+	{
+	
+		texture 3d_objects/plants/fir/textures/common_fir/fir_branch_normal_01_hh_128.png
+	}
+
+    }
+  }
+}
+
+
+material /global/plants/tree/fir/bark
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+         texture_unit
+	{
+		texture 3d_objects/plants/fir/textures/common_fir/bark_small_128.png
+	}
+    }
+  }
+}
+
+material /global/plants/tree/oak
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+        // scene_blend alpha_blend 
+		alpha_rejection greater_equal 64
+         cull_hardware none 
+         cull_software none
+         texture_unit
+	{
+		texture 3d_objects/plants/tree/textures/gnarly/tree_128.png
+//		texture 3d_objects/plants/tree/textures/gnarly/tree.png
+	}
+      diffuse 1.000000 1.000000 1.000000
+    }
+  }
+}
+
+
+material /global/plants/fruitable/acorn/shiny
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+         texture_unit
+	{
+		texture 3d_objects/plants/fruitable/textures/acorn/fruitable_128.png
+	}
+     specular 0.898039 0.898039 0.898039 10.0
+
+    }
+  }
+
+
+}
+
+material /global/plants/fruitable/acorn/matte
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+         texture_unit
+	{
+		texture 3d_objects/plants/fruitable/textures/acorn/fruitable_128.png
+	}
+    }
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+material Field/Heartblood
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+ 		alpha_rejection greater_equal 128
+       texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/heartblood/field.png
+	}
+
+	ambient 1 1 1
+      diffuse 1.000000 1.000000 1.000000
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.000000 0.000000 0.000000
+    }
+  }
+
+}
+
+
+material Field/Heartblood/Low
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          //scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+ 		alpha_rejection greater_equal 128
+       texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/heartblood/field.png
+	}
+
+	ambient 1 1 1
+      diffuse 1.000000 1.000000 1.000000
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.000000 0.000000 0.000000
+    }
+  }
+
+}
+
+
+material Field/Bittergrass
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          //scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+ 		alpha_rejection greater_equal 128
+       texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/bittergrass/field.png
+	}
+
+	diffuse 1.000000 1.000000 1.000000
+      ambient 1 1 1
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.500000 0.500000 0.500000
+    }
+  }
+
+}
+
+material Field/Bittergrass/Low
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 128
+        texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/bittergrass/field.png
+	}
+
+      diffuse 1.000000 1.000000 1.000000
+      ambient 1 1 1
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.500000 0.500000 0.500000
+    }
+  }
+
+}
+
+
+material Field/Thingrass
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          //scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+ 		alpha_rejection greater_equal 32
+       texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/thingrass/field.png
+	}
+
+	diffuse 1.000000 1.000000 1.000000
+      ambient 1 1 1
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.500000 0.500000 0.500000
+    }
+  }
+
+}
+
+material Field/Thingrass/Low
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 32
+        texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/thingrass/field.png
+	}
+
+      diffuse 1.000000 1.000000 1.000000
+      ambient 1 1 1
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.500000 0.500000 0.500000
+    }
+  }
+
+}
+
+material Field/Teardrops
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          //scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 128
+        texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/teardrops/field.png
+	}
+
+	diffuse 1.000000 1.000000 1.000000
+      ambient 1 1 1
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.500000 0.500000 0.500000
+    }
+  }
+
+}
+
+material Field/Teardrops/Low
+{
+  //receive_shadows off
+  technique
+  {
+    pass
+    {
+          scene_blend alpha_blend 
+         cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 128
+        texture_unit
+	{
+	
+		texture 3d_objects/environment/field/textures/teardrops/field.png
+	}
+
+      diffuse 1.000000 1.000000 1.000000
+      ambient 1 1 1
+      //specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.500000 0.500000 0.500000
+    }
+  }
+
+}
+
+
+
+
+

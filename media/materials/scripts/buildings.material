@@ -1,0 +1,347 @@
+
+
+
+
+
+
+
+
+
+
+material /global/building_primitives/rough_timber/beam
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.449020 0.449020 0.449020 1
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_beam.png
+      }
+    }
+  }
+}
+material /global/building_primitives/rough_timber/beam_end
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_beam_end.png
+      }
+    }
+  }
+}
+
+material /global/building_primitives/rough_timber/wall
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.449020 0.449020 0.449020 1
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_wall.png
+      }
+    }
+  }
+}
+
+
+material /global/building_primitives/rough_stone/wall
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_stone/stone.png
+      }
+    }
+  }
+}
+
+material /global/building_primitives/rough_timber/roof_top
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_roof_top.png
+      }
+    }
+  }
+}
+
+material /global/building_primitives/rough_timber/roof_bottom
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_roof_bottom.png
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+material /global/building_element/rough_stone/wall/top
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/wall_top.png
+      }
+    }
+  }
+}
+
+material /global/building_element/rough_stone/wall/bottom
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/wall_bottom.png
+      }
+    }
+  }
+}
+
+material /global/building_element/rough_stone/wall/side
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/wall_side.png
+      }
+    }
+  }
+}
+
+material /global/building_element/rough_stone/wall/normal
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/wall_texture_small.png
+      }
+    }
+  }
+}
+
+
+material /global/building_element/timber_rough/roof
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_rough/roof.png
+      }
+    }
+  }
+}
+
+material /global/building_element/timber_rough/normal_slope_wall
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_rough/normal_slope_wall.png
+      }
+    }
+  }
+}
+
+material /global/building_element/timber_rough/door_element
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_rough/door_element.png
+      }
+    }
+  }
+}
+
+material /global/building_element/timber_frame/beam_end
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.449020 0.449020 0.449020 5.000000
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_frame/beam_end.png
+      }
+    }
+  }
+}
+
+material /global/building_element/timber_frame/beam
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.449020 0.449020 0.449020 5.000000
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_frame/beam.png
+      }
+    }
+  }
+}
+
+
+
+
+
+material /global/building_element/rough_stone/floor
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/floor.png
+      }
+    }
+  }
+}
+
+material /global/building_element/rough_stone/ceiling
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/ceiling.png
+      }
+    }
+  }
+}
+
+material /global/building_element/rough_stone/floor/east_west
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/floor_east_west_side.png
+      }
+    }
+  }
+}
+
+material /global/building_element/rough_stone/floor/north_south
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/rough_stone/floor_north_south_side.png
+      }
+    }
+  }
+}
+
+
+material carpenter/flare
+{
+        technique
+        {
+                pass
+                {
+                        lighting off
+                        scene_blend add
+                        depth_write off
+						depth_check off
+						
+                        texture_unit
+                        {
+                                texture flare.png
+                        }
+                }
+        }
+}
+
+
+
+

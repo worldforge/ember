@@ -1,0 +1,16 @@
+material Material/SOLID/placeholder.png
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.500000 0.500000 0.500000 10
+      texture_unit
+      {
+        texture placeholder.png
+      }
+    }
+  }
+}
+
