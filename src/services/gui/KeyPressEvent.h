@@ -61,7 +61,7 @@ namespace dime {
       
       
     KeyPressEvent(InputDevice *device, Widget *widget, State state, const DimeKey &key)
-        : Event(device, widget), myState(state), myKey(key)
+      : Event(device, widget), myKey(key), myState(state)
       {
           assert(device);
       }

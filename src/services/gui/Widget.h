@@ -125,7 +125,7 @@ namespace dime {
         /**
          * Creates a new Widget using rect.
          */
-        Widget(const Rectangle& rect): myParent(NULL), myRectangle(rect)
+        Widget(const Rectangle& rect): myRectangle(rect), myParent(NULL)
         {
 
         }

@@ -116,17 +116,19 @@ private:
 	 * Draws the GUI
 	 */
 	void refresh();
-    /*	
+
+// Commented out for some reason, probably used
+#if 0    	
       /**
       * Passes mouse motion events down to widget tree
-      *
+      */
       void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
       
       /**
       * Passes mouse motion events down to widget tree
-      *
+      */
       void MouseClick(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
-    */
+#endif
     
     //----------------------------------------------------------------------
     // Methods inherited from Service

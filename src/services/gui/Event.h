@@ -48,7 +48,7 @@ namespace dime {
      *
      */
     Event(InputDevice *inputDevice, Widget *widget)
-        : myInputDevice(inputDevice), myWidget(widget)
+        : myWidget(widget), myInputDevice(inputDevice)
     {
       myTimeOfEvent = SDL_GetTicks();
     }
