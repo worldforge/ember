@@ -26,10 +26,10 @@ LDFLAGS="$LDFLAGS $SDL_LIBS"
 dnl the next are just in for show right now.
 dnl they don't die yet as we don't need them yet.
 dnl they will be moved up above once they become necessary.
-AC_CHECK_LIB(SDL_mixer, Mix_PlayingMusic, , [
-dnl AC_MSG_ERROR(libSDL_mixer not found, please install it.  It can be found at www.libsdl.org under "libraries")
-])
 
+AC_CHECK_LIB(SDL_image, IMG_Load, , [
+    AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
+])
 
 AM_PATH_SIGC(1.0.3,[
        CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
@@ -62,9 +62,7 @@ AC_MSG_ERROR(Couldn't find Varconf [or tests failed])
 
 found_cppunit=no
 
-# Don't necessarily need 1.6.2; let me know if an older
-## version works.   --nikal
-AM_PATH_CPPUNIT(1.6.2, [
+AM_PATH_CPPUNIT(1.8.0, [
   AC_MSG_RESULT(
 *** Found CppUnit
 *** Setting up make check to run tests...)
@@ -144,8 +142,7 @@ AC_OUTPUT([
   src/services/datamodel/Makefile
   test/Makefile
   src/main/Makefile
- 
-  dnl dime.dox
+  test/Makefile
 ])
 
 
