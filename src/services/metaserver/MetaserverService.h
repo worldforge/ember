@@ -67,7 +67,7 @@ class MetaserverService: public Service, public SigC::Object
     //----------------------------------------------------------------------
     // Methods
 	
-	int start();
+	Service::Status start();
 
 	void stop(int code) ;
 

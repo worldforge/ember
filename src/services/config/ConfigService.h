@@ -105,7 +105,7 @@ class ConfigService: public Service
      * Starts ConfigService.  Returns status.
      *
      */
-    int start(void);
+    Service::Status start(void);
 
     /**
      * Stops ConfigService.

@@ -11,30 +11,30 @@ namespace dime
 		  myTestMessage = "Hello WorldForge !!!";
 		  //setDescription("I am a simple test service");
 		  // setActive = 0;	// inactive
-		  setStatus(0);	// stopped
+		  //setStatus(Service::OK);	// stopped
 
         setName("Test Service");
         setDescription("Basic test service for testing and debugging.");
 // TODO(zzorn, 2002-01-19): Set the status of the service to OK.
-//        setStatus( Service::Status::OK );
+//        setStatus( Service::OK );
 
 
 	       }
 
 	/* Method for starting the test service 	*/
-	     int TestService::start()
+	    Service::Status TestService::start()
 	       {
 		  cout << "I'm the Test Service Starting" << endl;
-		  setStatus(1);
+		  setStatus(Service::OK);
           setRunning( true );
-		  return 0;
+		  return Service::OK;
 	       }
 
 	/* Interface method for stopping the test service 	*/
 	     void TestService::stop(int code)
 	       {
 		  cout << "I'm the Test Service Stopping" << endl;
-		  setStatus(code);
+		  //setStatus(code);
 		  //setActive(0);
           setRunning( false );
 	       }

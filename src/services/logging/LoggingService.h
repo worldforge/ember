@@ -316,7 +316,7 @@ class LoggingService: public Service
         // Copy fields from source class to this class here.
 
         // Return this object with new value
-        return &this;
+        return *this;
     }*/
 
 
@@ -341,10 +341,11 @@ class LoggingService: public Service
     //----------------------------------------------------------------------
     // Other public methods
 
-	 virtual int start()
+	 virtual Service::Status start()
 	 {
 		 setRunning(true);
-		 return 0;
+     setStatus(Service::OK);
+		 return Service::OK;
 	 }
 
     /**

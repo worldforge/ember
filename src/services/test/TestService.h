@@ -63,7 +63,7 @@ class TestService : public Service
     //----------------------------------------------------------------------
     // Methods
 	
-   int start();
+   Service::Status start();
 
    void stop(int code) ;
 

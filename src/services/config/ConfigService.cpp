@@ -62,10 +62,10 @@ namespace dime
 	}
     }
 
-    int ConfigService::start()
+    Service::Status ConfigService::start()
     {
 	setRunning(true);
-	return 0;
+	return Service::OK;
     }
 
     void ConfigService::stop(int code)

@@ -38,7 +38,7 @@ void dime::FontRenderer::updateTextBlended()
     /* Load and render each character */
     xstart = 0;
     pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
-    for ( int i = 0; i < myText.length(); ++i ) 
+    for ( unsigned int i = 0; i < myText.length(); ++i )
         {   
             glyph = myFont->findGlyph(myText[i]);
             assert(glyph);

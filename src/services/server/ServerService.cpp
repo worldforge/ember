@@ -50,13 +50,13 @@ namespace dime
 	}
 	
 	/* Method for starting this service 	*/
-	int ServerService::start()
+	Service::Status ServerService::start()
 	{
-		setStatus(1);
+		setStatus(Service::OK);
 		setRunning( true );
 
 		// Create new instance of myConn
-	        // We are connected without debuging enabled thus the false
+	  // We are connected without debuging enabled thus the false
 		myConn = new Connection("dime", false);
 
 		// Bind failure signal
@@ -68,24 +68,24 @@ namespace dime
 		myConn->Timeout.connect(SigC::slot(*this, &ServerService::Timeout));
 
 		try {
-		  myConn->connect( myHost, myPort );
+		    // If the connection fails here an exception is thrown
+		    myConn->connect( myHost, myPort );
 		}
 		catch (...)
 		  {
-		    // If the connection fails here an exception is thrown
 		    delete myConn;
 		    myConn = NULL;
-		    return -1;
+		    return Service::FAILURE;
 		  }
 
-		return 0;
+		return Service::OK;
 	
 	}
 
 	/* Interface method for stopping this service 	*/
 	void ServerService::stop(int code)
 	{
-		setStatus(0);
+		setStatus(Service::OK);
 		setRunning( false );
 		myConn->disconnect();
 		delete myConn;

@@ -52,7 +52,7 @@ class Service
      * <li> OK          - Service working normally.  </li>
      * <li> NOTE        - Service working, but there is something that may need user attention.  </li>
      * <li> WARNING     - Service is working to some degree, but there was some problems encountered, or non-critical parts that are not working.  </li>
-     * <li> ERROR       - Service is not working.  A resource it depends on is not present, or the service is unimplemented.  </li>
+     * <li> FAILURE     - Service is not working.  A resource it depends on is not present, or the service is unimplemented.  </li>
      * <li> CRITICAL    - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.  </li>
      * </ul>
      *
@@ -84,9 +84,8 @@ class Service
 		/** Tells if the service is running or not */
 		bool myRunning;
 
-        // TODO(zzorn): Change this into an enum type variable (Service::Status)
 		/** Current status code */
-		int myStatus;
+		Status myStatus;
 
 		/** Textual description of the current status, especially if it is some problem. */
 		std::string myStatusText;
@@ -106,7 +105,7 @@ class Service
         setName( "" );
         setDescription( "" );
 		setStatusText( "" );
-		myStatus       = 0;       // TODO: Change to OK
+		myStatus       = OK;
 		myRunning      = false;
     }
 
@@ -126,7 +125,7 @@ class Service
 		myDescription  = source.myDescription;
 
 		myRunning      = false;    // The new service has not been initialized...
-		myStatus       = 0;        // TODO: Change to OK
+		myStatus       = OK;
 		myStatusText   = "";       // Initial value
 
         // Return reference to this instance.
@@ -157,7 +156,7 @@ class Service
 
 
     /** Returns the status of this Service. */
-    virtual int getStatus() const
+    virtual Service::Status getStatus() const
     {
         return myStatus;
     }
@@ -204,7 +203,7 @@ class Service
      *
 	 * @returns success or error code
 	 */
-    virtual int start() = 0;
+    virtual Status start() = 0;
 
 
 	/**
@@ -248,25 +247,13 @@ class Service
     }
 
 
-    /**
-     * Sets the description of this Service.
-     * @deprecated.  Replaced by setStatus( Service::Status )
-     */
-    virtual void setStatus( int status )
-    {
-    	myStatus = status;
-    }
-
     /* *
      * Sets the description of this Service.
      */
-    /* TODO: Check that this compiles..
     virtual void setStatus( Service::Status status )
     {
-        // TODO
-    	// myStatus = status;
+        myStatus = status;
     }
-    */
 
 
     /** Specifies wether this service is currently running or not. */

@@ -63,9 +63,9 @@ namespace dime
 	}
 	
 	/* Method for starting this service 	*/
-	int MetaserverService::start()
+	Service::Status MetaserverService::start()
 	{
-		setStatus(1);
+		setStatus(Service::OK);
 		setRunning( true );
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
@@ -75,13 +75,13 @@ namespace dime
 		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::CompletedServerList));
 		listed = false;
 
-		return 0;
+		return Service::OK;
 	}
 
 	/* Interface method for stopping this service 	*/
 	void MetaserverService::stop(int code)
 	{
-		setStatus(0);
+		setStatus(Service::OK);
 		setRunning( false );
 	}
 

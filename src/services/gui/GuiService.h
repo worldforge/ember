@@ -143,11 +143,12 @@ private:
     *
     * @returns success or error code
     */
-    virtual int start()
+    virtual Service::Status start()
     {
         setRunning( true );
+        setStatus(Service::OK);
 
-        return 0;
+        return Service::OK;
     }
 
 

@@ -145,7 +145,7 @@ class Label : public Widget
 #endif 
       assert(font);
       Font::FontString fontString;
-      for(int i = 0; i < text.length(); ++i)
+      for(unsigned int i = 0; i < text.length(); ++i)
           {
               fontString+=text[i];
           }

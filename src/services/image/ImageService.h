@@ -85,10 +85,10 @@ public:
         return theInstance;
     }
     
-    int start()
+    Service::Status start()
     {
-		//TODO: What should be returned here?
-        return 0;
+        setStatus(Service::OK);
+        return Service::OK;
     }
     
     //----------------------------------------------------------------------

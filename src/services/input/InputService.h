@@ -266,14 +266,15 @@ class InputService: public Service
      *
 	 * @returns success or error code
 	 */
-    virtual int start()
+    virtual Service::Status start()
     {
         setRunning( true );
+        setStatus(Service::OK);
 
         // Start listening to SDL events.
         // TODO
 
-        return 0;
+        return Service::OK;
     }
 
 
