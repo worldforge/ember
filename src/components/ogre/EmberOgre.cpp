@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.20  2003-09-29 06:28:15  aglanor
+ *      Revision 1.21  2003-10-18 23:18:37  sandalle
+ *      * src/components/ogre/DimeOgre.cpp:290: Actually comment it out...
+ *
+ *      Revision 1.20  2003/09/29 06:28:15  aglanor
  *      changed the texture of the plane to look like ground
  *
  *      Revision 1.19  2003/09/07 12:38:51  aglanor
@@ -287,7 +290,7 @@ void DimeOgre::createScene(void)
   l->setPosition(150,150,150);
 
   // create a Skydome
-  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+  //mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
   // set the world geometry
   mSceneMgr->setWorldGeometry("terrain.cfg");
