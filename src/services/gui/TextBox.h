@@ -181,7 +181,7 @@ class TextBox : public Label
     /*
      * Calculates where the caret should be for us and draws it
      */
-    void TextBox::drawCaret();
+    void TextBox::drawCaret(DrawDevice* target);
 
 
     //======================================================================

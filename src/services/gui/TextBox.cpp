@@ -11,7 +11,7 @@ int TextBox::draw(DrawDevice *target)
 	Label::draw(target);
 
 	// Now draw the caret
-	drawCaret();
+	drawCaret(target);
 
 	//TODO: what should be returned here?
 	return 0;
@@ -109,17 +109,22 @@ bool TextBox::keyPress( KeyPressEvent *event)
     return true;        
 }
 
-void TextBox::drawCaret()
+void TextBox::drawCaret(DrawDevice* target)
 {
-  // --- Calculate the location where to draw the caret  ---
+  int height = 0, width = 0;
+  // --- Calculate the location where to draw the caret  ---  
 
   // The fun bit is we're probably using a variable width font
-  // maybe ask nikal to provide us with an auto calc for given
-  // text in fontrenderer.
+  // so we ask for the size of the text from that font
+  // TODO: the substr bit
+  myFontRenderer->getFont()->sizeText(myFontRenderer->getText(), &width, &height);
 
   // Work out where on screen our text is starting
-
-  // Add values together
+  // TODO: replace the +1 with + half the width of a space
+  int x = Label::getRectangle().getX()+1+width;
+  int y = Label::getRectangle().getY();
 
   // --- Draw it at calculated spot ---
+  RectangleRenderer cursor(Rectangle(x,y,1,height),dime::Color(255,0,0));
+  cursor.render(target);
 }
