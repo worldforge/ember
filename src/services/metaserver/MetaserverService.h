@@ -39,7 +39,7 @@ namespace dime {
  * @see dime::Service
  * @see dime::ServerService
  */
-class MetaserverService: public Service
+class MetaserverService: public Service, public SigC::Object
 {
     //======================================================================
     // Private Variables

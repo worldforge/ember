@@ -52,6 +52,7 @@ int main()
 	cout << "My name is: " << myMsService.getName() << endl;
 	cout << myMsService.getDescription() << endl;
 	myMsService.stop(0);
+	//delete myMsService;
 	cout << "***END TEST OF METASERVER SERVICE***" << endl;		
 	
 	//cout << "***TESTING SERVICE MANAGER***" << endl;

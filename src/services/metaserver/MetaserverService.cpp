@@ -60,6 +60,8 @@ namespace dime
         setRunning( true );
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
+		msrv->GotServerCount.connect(SigC::slot(this, &MetaserverService::GotServerCount));
+		msrv->Failure.connect(SigC::slot(this, &MetaserverService::GotFailure));
     	listed = false;
 
     	// waiting for James to implement this
