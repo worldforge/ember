@@ -1,3 +1,16 @@
+2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* resources.cfg: added file: OgreCore.zip
+	* Serverservice.h: added declaration for TOUCH command
+	* ogre/media: media cleanup. No ogre media will be here
+	from now on: resources.cfg will reference the Ogre media
+	in the Ogre install directory.
+	* /src/components/ogre/Makefile.am: removed the cal3d
+	to Ogre converter, this app will no longer be here. 
+	All models will be converted from Cal3d to Open Model
+	Format and then to Ogre, all of this outside Dime.
+	(also, we don't need the cal3d library anymore,
+	until we add a component that uses it, like Crystalspace).
+	
 2003-09-15 Damien McGinnes
 	* configure.ac: fixed libxml config check
 
@@ -5,6 +18,7 @@
 	* configure.ac: changed libxml to pkg-config check - untested so if
 	it breaks, please fix.
 
+>>>>>>> 1.51
 2003-09-07 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* ServerService: added touch operation
 

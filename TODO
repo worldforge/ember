@@ -16,7 +16,7 @@ Later versions
 [ ]	Ogre - Basic  GUI - Chat window
 [ ]	TerrainService - to talk to Mercator
 [ ]	Ogre - add Landscape Scene Manager plugin, integrate mercator data
-[ ]	ServerService - send touch operation
+[x]	ServerService - send touch operation
 [ ]	ServerService - send pick up operation
 [ ]	ServerService - send give operation
 [ ]	ServerService - send drop operation
