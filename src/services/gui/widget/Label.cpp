@@ -18,8 +18,16 @@
 
 #include "Label.h"
 
+#ifdef _MSC_VER
+  const char* const dime::Label::FONT_FILE = "..\\bin\\wf_opal.ttf";
+#else
+  const char* const dime::Label::FONT_FILE = "../../bin/wf_opal.ttf";
+#endif
+
 int dime::Label::draw(DrawDevice *target)
 {
+
+
 	// Use fontservice to draw
 	myFontRenderer->render(target);
 	//%TODO Xmp,2: what should be returned here?

@@ -28,6 +28,10 @@
 
 namespace dime {
 
+// List of ConsoleBackend's console commands
+ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
+
+
 dime::ConsoleBackend *dime::ConsoleBackend::theMainConsole = NULL;
 
 void ConsoleBackend::pushMessage(const std::string &message) {

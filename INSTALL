@@ -109,3 +109,11 @@ other distros, but not Red Hat.  Source RPMs exist, but don't include the -devel
 files -- not helpful if you're wanting to compile Dime but not willing to trust
 a Mandrake RPM to play nice on RH. I used source/stow. (Of course, you might not
 want to trust stow.)
+
+*******************************************
+* How to properly install boost libraries *
+*******************************************
+
+<Aglanor> The boost page is not quite verbose on how to install the lib.
+I've found the easiest way to copy the /boost dir where the hpp files are
+to /usr/local/include.

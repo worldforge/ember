@@ -56,6 +56,10 @@ namespace dime
   typedef std::list<Eris::ServerInfo> svrl;
   typedef svrl::iterator Iter;
 
+  // List of MetaserverService's console commands
+  const char * const MetaserverService::META_REFRESH = "meta_refresh";
+  const char * const MetaserverService::META_ABORT = "meta_abort";
+  const char * const MetaserverService::META_LIST = "meta_list";
 
   /* ctor */
   MetaserverService::MetaserverService()

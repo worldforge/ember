@@ -53,6 +53,10 @@ class MetaserverService: public Service,
     Eris::ServerList serverlist;
     bool listed;
     //StringProvider * myStateDMP;
+    static const char * const META_REFRESH;
+    static const char * const META_ABORT;
+    static const char * const META_LIST;
+
 
 		
     //----------------------------------------------------------------------
@@ -92,10 +96,6 @@ class MetaserverService: public Service,
      */ 
     virtual void runCommand(const std::string &command, const std::string &args);
 
-    // List of MetaserverService's console commands
-    static const char * const META_REFRESH = "meta_refresh";
-    static const char * const META_ABORT = "meta_abort";
-    static const char * const META_LIST = "meta_list";
 }; //MetaserverService
 
 } // namespace dime

@@ -72,6 +72,22 @@ AM_PATH_ATLAS(0.4.5 ,[
 AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
 
+# Check for wfmath
+WFMATH_VERSION=0.2.10
+PKG_CHECK_MODULES(WFMATH, wfmath-0.2 >= 0.2.10,
+	[
+		CXXFLAGS="$CXXFLAGS $WFMATH_CFLAGS"
+		LDFLAGS="$LDFLAGS $WFMATH_LIBS"
+	],
+	[
+		AM_PATH_WFMATH(0.2.10 ,[
+			CXXFLAGS="$CXXFLAGS $WFMATH_CFLAGS"
+			LDFLAGS="$LDFLAGS $WFMATH_LIBS"
+		],
+		AC_MSG_ERROR(Couldn't find WFmath [or tests failed]. Please goto ftp://ftp.worldforge.org or cvs for latest wfmath))
+	])
+
+
 # Check for Eris
 AM_PATH_ERIS(0.9.7 ,[
     CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
@@ -81,13 +97,19 @@ AC_MSG_ERROR(Couldn't find Eris [or tests failed])
 )
 
 # Check for Varconf
-AM_PATH_VARCONF(0.5.2 ,[
-    CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
-    LDFLAGS="$LDFLAGS $VARCONF_LIBS"
-    ],
-AC_MSG_ERROR(Couldn't find Varconf [or tests failed])
-)
-
+VARCONF_VERSION=0.5.2
+PKG_CHECK_MODULES(VARCONF, varconf-0.5 >= 0.5.2,
+	[
+		CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
+		LDFLAGS="$LDFLAGS $VARCONF_LIBS"
+	],
+	[
+		AM_PATH_VARCONF(0.5.2 ,[
+			CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
+			LDFLAGS="$LDFLAGS $VARCONF_LIBS"
+		],
+		AC_MSG_ERROR(Couldn't find Varconf [or tests failed]. Please goto ftp://ftp.worldforge.org or cvs for latest varconf))
+	])
 
 # Check for the FreeType 2 library
 #
@@ -96,7 +118,7 @@ AC_ARG_WITH(freetype-prefix,[  --with-freetype-prefix=PFX   Prefix where FREETYP
 			       installed (optional)],
 			       freetype_prefix="$withval",
 			       freetype_prefix="")
-AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix 
+AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix
 				    where FREETYPE is installed (optional)],
 				    freetype_exec_prefix="$withval", freetype_exec_prefix="")
 

@@ -1,3 +1,8 @@
+2003-04-13 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* Configure.ac: created check for wfmath. Moved to PKG_CONFIG checking
+	the checks for some libraries.
+	* INSTALL: added a quick hack for installing boot under "troubleshooting".
+	* src files: fixed some constant string declarations on headers.
 2003-01-06 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* OgreApp.cpp/h: dual mode for the GUI: press 'H' to display 
 	the GUI and use the mouse to click on it.

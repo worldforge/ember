@@ -69,11 +69,7 @@ class Label : public Widget
     // Private Constants
     //======================================================================
     private:
-#ifdef _MSC_VER
-  static const char* const FONT_FILE = "..\\bin\\wf_opal.ttf";
-#else
-  static const char* const FONT_FILE = "../../bin/wf_opal.ttf";
-#endif 
+        static const char* const dime::Label::FONT_FILE;
 
 
     //======================================================================
@@ -82,7 +78,7 @@ class Label : public Widget
     protected:
 
 	FontRenderer *myFontRenderer;
-    
+
     //======================================================================
     // Private Variables
     //======================================================================
