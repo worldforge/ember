@@ -19,7 +19,7 @@
 #ifndef TESTSERVICE_H
 #define TESTSERVICE_H
 
-#include "../AbstractService.h"
+#include <framework/Service.h>
 #include <string>
 
 namespace dime {
