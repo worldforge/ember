@@ -85,12 +85,14 @@ public:
 class JesusEditPreview
 {
 public:
-	JesusEditPreview(GUIManager* guiManager);
+	JesusEditPreview(GUIManager* guiManager, Jesus* jesus);
 
-	void setModel(Model *);
+/*	void setModel(Model *);*/
 	void clearAndDestroyModel();
+	void showBuildingBlock(const std::string & spec);
 
 protected:
+	Construction* mConstruction;
 	GUIManager* mGuiManager;
 	void createPreviewTexture();
 	void createCamera();
@@ -99,6 +101,7 @@ protected:
 	Ogre::Camera* mCamera;
 	Model* mModel;
 	JesusEditPreviewRenderListener* mListener;
+	Carpenter::BluePrint* mBlueprint;
 };
 
 

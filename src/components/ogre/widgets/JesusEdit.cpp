@@ -110,7 +110,6 @@ void JesusEdit::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow); 
 	getMainSheet()->addChildWindow(mPreviewWindow); 
 
-	mPreview = new JesusEditPreview(mGuiManager);
 	
 }
 
@@ -159,6 +158,8 @@ void JesusEdit::createdJesus(Jesus* jesus)
 {
 	mMainWindow->setVisible(true);
 	loadFromJesus(jesus);
+	mPreview = new JesusEditPreview(mGuiManager, jesus);
+
 }
 
 void JesusEdit::loadFromJesus(Jesus* jesus)
@@ -265,11 +266,15 @@ bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & a
 	const Carpenter::BuildingBlockSpec* bblockSpec = getNewBuildingBlockSpec( );
 	if (bblockSpec) {
 		fillNewAttachPointList(bblockSpec->getBlockSpec());
-		mPreview->clearAndDestroyModel();
+		
+		
+		mPreview->showBuildingBlock(bblockSpec->getName());
+		
+/*		mPreview->clearAndDestroyModel();
 		Model* model = EmberOgre::getSingleton().getJesus()->createModelForBlockType(bblockSpec->getName(),"JesusEditPreviewModel");
 		if (model) {
 			mPreview->setModel(model);
-		}
+		}*/
 	} else {
 		mNewPointsList->resetList();
 		mNewPointsList->clearAllSelections();
@@ -352,6 +357,11 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 {
 	Carpenter::BuildingBlockDefinition definition;
 	definition.mName = mNewName->getText().c_str();
+	if (definition.mName == "") {
+		std::stringstream ss;
+		ss << mCurrentConstruction->getModelBlocks().size();
+		definition.mName = std::string("_buildingBlock") + ss.str();
+	}	
 	definition.mBuildingBlockSpec = getNewBuildingBlockSpec()->getName();
 	
 	Carpenter::BuildingBlock* bblock = mCurrentConstruction->getBluePrint()->createBuildingBlock(definition);
@@ -359,7 +369,7 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 	//std::vector<Carpenter::BuildingBlockBinding*> bindings = createBindingsForNewBlock(bblock);
 	mCurrentConstruction->getBluePrint()->placeBindings(bblock, createBindingsForNewBlock(bblock));
 	if (bblock->isAttached()) {
-		mCurrentConstruction->createModelBlock(bblock);
+		mCurrentConstruction->createModelBlock(bblock, true);
 	}
 	mBindings.clear();
 	loadConstruction(mCurrentConstruction);
@@ -402,26 +412,46 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 	updateCreateButton();
 }
 
-JesusEditPreview::JesusEditPreview(GUIManager* guiManager)
+JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 : mGuiManager(guiManager), mModel(0)
 {
+	
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	mEntityNode->setPosition(Ogre::Vector3(10000,10000,10000));
+	
+	mBlueprint = new Carpenter::BluePrint("preview", jesus->getCarpenter());
+	Construction* construction = new Construction(mBlueprint, jesus, mEntityNode->createChildSceneNode());
+	mConstruction = construction;
+
 	mCameraNode = mEntityNode->createChildSceneNode();
 	mCameraNode->setPosition(Ogre::Vector3(0,0,-5));
 	createCamera();
 	createPreviewTexture();
 }
 
-void JesusEditPreview::setModel(Model * model)
-{
-	if (mModel) {
-		clearAndDestroyModel();
-	}
-	mEntityNode->attachObject(model);
-	mModel = model;
-}
+// void JesusEditPreview::setModel(Model * model)
+// {
+// 	if (mModel) {
+// 		clearAndDestroyModel();
+// 	}
+// 	mEntityNode->attachObject(model);
+// 	mModel = model;
+// }
 
+void JesusEditPreview::showBuildingBlock(const std::string & spec)
+{
+	
+	Carpenter::BuildingBlockDefinition def;
+	def.mName = "preview";
+	def.mBuildingBlockSpec = spec;
+	Carpenter::BuildingBlock* block = mBlueprint->createBuildingBlock(def);
+	
+	ModelBlock* modelBlock = mConstruction->createModelBlock(block, true);
+	
+	
+	
+
+}
 
 void JesusEditPreview::createCamera()
 {	

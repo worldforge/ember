@@ -11,7 +11,7 @@
 			<Property Name="InheritsAlpha" Value="True" /> 
 			<Window Type="TaharezLook/StaticImage" Name="Image">
 				<Property Name="Position" Value="x:0.0 y:0.0" /> 
-				<Property Name="AbsoluteSize" Value="w:256 h:256" /> 
+				<Property Name="Size" Value="w:1 h:1" /> 
 			</Window>
 		</Window>	
 	</Window>
