@@ -54,7 +54,6 @@ TerrainGenerator & TerrainGenerator::getSingleton(void)
 TerrainGenerator::TerrainGenerator()
 : mTerrain(Mercator::Terrain::SHADED)
 , mNumberOfTilesInATerrainPage(65)
-, mGround(0)
 {
 /*    mTerrain.addShader(new Mercator::FillShader());
     mTerrain.addShader(new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
@@ -111,7 +110,7 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 		}
 	}
 //	generateUnderVegetation(0, 0, 1);
-	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
+//	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
 	//mTerrainPageSource->setHasTerrain(true);
 	if (alsoPushOntoTerrain) {
 		mTerrainPageSource->resizeTerrain();
@@ -131,7 +130,7 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 			}
 		}
 	}
-	generateUnderVegetation(-2, -2, 4);
+//	generateUnderVegetation(-2, -2, 4);
 	
 	mTerrainPageSource->setHasTerrain(true);
 	if (alsoPushOntoTerrain) {
@@ -140,63 +139,63 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	
 }
 
-void TerrainGenerator::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
-{
-	Ogre::Real xStart = segmentXStart * 64;
-	Ogre::Real zStart = segmentZStart * 64;
-	
-	mGround = new GroundCover(EmberOgre::getSingleton().getSceneManager(), Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
-	
-	long spaceBetween = 3;
-	
-	long i_end = xStart + numberOfSegments * 64;
-	long j_end = zStart + numberOfSegments * 64;
-	for (long i = xStart; i < i_end; i = i + spaceBetween) {
-		for (long j = zStart; j < j_end; j = j + spaceBetween) {
-			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-			Ogre::Real random = Ogre::Math::UnitRandom();
-			Ogre::String typeOfGrass;
-			if (random > 0.9) {
-				typeOfGrass = "heartblood";
-			} else if (random > 0.8) {
-				typeOfGrass = "teardrops";
-			} else if (random > 0.5) {
-				typeOfGrass = "bittergrass";
-			} else {
-				typeOfGrass = "thingrass";
-			}
-			mGround->add(Ogre::Vector3(xPos, getHeight(xPos,zPos), zPos), std::string("environment/field/small_plant/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/small_plant/") + typeOfGrass + "/low.mesh");
-		}
-	}
-	
-	spaceBetween = 10;
-	i_end = xStart + numberOfSegments * 64;
-	j_end = zStart + numberOfSegments * 64;
-	for (long i = xStart; i < i_end; i = i + spaceBetween) {
-		for (long j = zStart; j < j_end; j = j + spaceBetween) {
-			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-			Ogre::Real random = Ogre::Math::UnitRandom();
-			Ogre::String typeOfGrass;
-			if (random > 0.9) {
-				typeOfGrass = "heartblood";
-			} else if (random > 0.8) {
-				typeOfGrass = "teardrops";
-			} else if (random > 0.5) {
-				typeOfGrass = "bittergrass";
-			} else {
-				typeOfGrass = "thingrass";
-			}
-			mGround->add(Ogre::Vector3(xPos, getHeight(xPos,zPos), zPos), std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
-		}
-	}
-
-	mGround->setCullParameters(32, 32, 120);
-	mGround->compile();
-		
-		
-}
+// void TerrainGenerator::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
+// {
+// 	Ogre::Real xStart = segmentXStart * 64;
+// 	Ogre::Real zStart = segmentZStart * 64;
+// 	
+// 	mGround = new GroundCover(EmberOgre::getSingleton().getSceneManager(), Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
+// 	
+// 	long spaceBetween = 3;
+// 	
+// 	long i_end = xStart + numberOfSegments * 64;
+// 	long j_end = zStart + numberOfSegments * 64;
+// 	for (long i = xStart; i < i_end; i = i + spaceBetween) {
+// 		for (long j = zStart; j < j_end; j = j + spaceBetween) {
+// 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
+// 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
+// 			Ogre::Real random = Ogre::Math::UnitRandom();
+// 			Ogre::String typeOfGrass;
+// 			if (random > 0.9) {
+// 				typeOfGrass = "heartblood";
+// 			} else if (random > 0.8) {
+// 				typeOfGrass = "teardrops";
+// 			} else if (random > 0.5) {
+// 				typeOfGrass = "bittergrass";
+// 			} else {
+// 				typeOfGrass = "thingrass";
+// 			}
+// 			mGround->add(Ogre::Vector3(xPos, getHeight(xPos,zPos), zPos), std::string("environment/field/small_plant/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/small_plant/") + typeOfGrass + "/low.mesh");
+// 		}
+// 	}
+// 	
+// 	spaceBetween = 10;
+// 	i_end = xStart + numberOfSegments * 64;
+// 	j_end = zStart + numberOfSegments * 64;
+// 	for (long i = xStart; i < i_end; i = i + spaceBetween) {
+// 		for (long j = zStart; j < j_end; j = j + spaceBetween) {
+// 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
+// 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
+// 			Ogre::Real random = Ogre::Math::UnitRandom();
+// 			Ogre::String typeOfGrass;
+// 			if (random > 0.9) {
+// 				typeOfGrass = "heartblood";
+// 			} else if (random > 0.8) {
+// 				typeOfGrass = "teardrops";
+// 			} else if (random > 0.5) {
+// 				typeOfGrass = "bittergrass";
+// 			} else {
+// 				typeOfGrass = "thingrass";
+// 			}
+// 			mGround->add(Ogre::Vector3(xPos, getHeight(xPos,zPos), zPos), std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
+// 		}
+// 	}
+// 
+// 	mGround->setCullParameters(32, 32, 120);
+// 	mGround->compile();
+// 		
+// 		
+// }
 
 
 

@@ -50,7 +50,7 @@
 
 #include <Atlas/Objects/Entity/GameEntity.h>
 */
-class GroundCover;
+// class GroundCover;
 
 namespace EmberOgre {
 	
@@ -102,8 +102,8 @@ public:
 	bool isValidTerrainAt(int x, int y);
 
 
-	GroundCover* mGround;
-	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
+// 	GroundCover* mGround;
+// 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
 
 protected:
 

@@ -1,3 +1,16 @@
+2004-11-04  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Moved foliage to class Foliage. The grass is now randomly rotated and scaled.
+
+2004-11-04  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Fixes for compilation
+
+2004-11-04  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Moved from dime to ember. Thus the big checkin.
+	* Added wield action to inventory
+
 2004-10-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* Fixed many small details that prevented Ember
 	to build and run flawlessly.

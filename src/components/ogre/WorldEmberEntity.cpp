@@ -28,10 +28,12 @@
 #include "Model.h"
 #include "TerrainGenerator.h"
 #include "WorldEmberEntity.h"
+#include "environment/Foliage.h"
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
 mTerrainGenerator(terrainGenerator),
+mFoliage(NULL),
 EmberEntity(id, ty, vw, sceneManager)
 {
 	//getSceneNode()->setOrientation(Ogre::Quaternion::IDENTITY);
@@ -50,6 +52,9 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);
 	mTerrainGenerator->prepareAllSegments(false);
+	mFoliage = new Foliage();
+	mFoliage->generateUnderVegetation(-2, -2, 4);
+
 	
 }
 

@@ -23,6 +23,7 @@ namespace EmberOgre {
 
 class EmberEntity;
 class TerrainGenerator;
+class Foliage;
 
 class WorldEmberEntity : public EmberEntity {
 public:
@@ -43,6 +44,8 @@ protected:
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
+	
+	Foliage* mFoliage;
 
 };
 
