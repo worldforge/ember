@@ -63,12 +63,12 @@ class ComponentFactory
      * Name for the types of components that this component factory produces.
      * Should only contain alphanumerical characters and underscores.
      */
-    std::String myName;
+    std::string myName;
 
     /**
      * Description of the types of components that this component factory produces.
      */
-    std::String myDescription;
+    std::string myDescription;
 
     //%TODO zzorn,2: Reference to UI data?
     //%TODO zzorn,2: List of connection slot descriptions
@@ -132,7 +132,7 @@ class ComponentFactory
     /**
      * Returns the name of this ComponentFactory.
      */
-    virtual std::String getName() const
+    virtual std::string getName() const
     {
         return myName;
     }
@@ -146,7 +146,7 @@ class ComponentFactory
      *
      * @param name The new name of the ComponentFactory.
      */
-    virtual void setName( std::String name )
+    virtual void setName( std::string name )
     {
         myName = name;
     }

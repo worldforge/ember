@@ -69,7 +69,7 @@ class Component
     /**
      * Free form name of this component instance.
      */
-    std::String myName;
+    std::string myName;
 
     /**
      * Unique ID within the current component group?
@@ -144,7 +144,7 @@ class Component
     /**
      * Returns the name of this component.
      */
-    virtual std::String getName() const
+    virtual std::string getName() const
     {
         return myName;
     }
@@ -158,7 +158,7 @@ class Component
      *
      * @param name The new name of the component.
      */
-    virtual void setName( std::String name )
+    virtual void setName( std::string name )
     {
         myName = name;
     }

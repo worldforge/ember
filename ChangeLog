@@ -1,3 +1,7 @@
+2003-10-16 Eric Sandall <eric [at] sandall [dot] us>
+	* src/framework/ComponentFactory.h: std::String -> std::string
+	* src/framework/Component.h: std::String -> std::string
+
 2003-10-15 Eric Sandall <eric [at] sandall [dot] us>
 	* src/services/config/ConfigService.cpp: Fix an ambiguous overload
 	(needing typecasting to std::string)
