@@ -22,6 +22,7 @@
 
 #ifndef AVATAR_H
 #define AVATAR_H
+#include <OgreNoMemoryMacros.h>
 
 
 

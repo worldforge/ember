@@ -64,6 +64,7 @@ protected:
 	bool buttonTouch_Click(const CEGUI::EventArgs& args);
 	bool buttonTake_Click(const CEGUI::EventArgs& args);
 	bool buttonInspect_Click(const CEGUI::EventArgs& args);
+	bool buttonGive_Click(const CEGUI::EventArgs& args);
 	
 	bool mainWindow_MouseOut(const CEGUI::EventArgs& args);
 	

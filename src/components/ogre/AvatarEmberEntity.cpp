@@ -134,7 +134,7 @@ void AvatarDimeEntity::childRemoved(Entity *e, Entity *e_)
 
 Ogre::SceneNode* AvatarDimeEntity::getAvatarSceneNode()
 {
-	return mScaleNode;	
+	return getScaleNode();	
 }
 
 

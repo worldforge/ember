@@ -114,7 +114,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	
 	Atlas::Message::MapType msg;
 	msg["loc"] = avatar->getLocation()->getId();
-	Ogre::SceneNode* node = avatar->getAvatarSceneNode();
+	Ogre::SceneNode* node = avatar->getSceneNode();
 //	Ogre::Vector3 newPos = node->getPosition() + (node->getOrientation() * Ogre::Vector3(0,0,-2));
 	Ogre::Vector3 newPos = node->getPosition() + ( Ogre::Vector3(0,0,-2));
 	WFMath::Point<3> pos = Ogre2Atlas(newPos);
@@ -124,6 +124,8 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
 	c->setArgsAsList(Atlas::Message::ListType(1, msg));
 	mConn->send(c);
+	std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
+	
 //	dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }
 

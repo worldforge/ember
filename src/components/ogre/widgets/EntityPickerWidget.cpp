@@ -98,7 +98,7 @@ void EntityPickerWidget::buildWidget()
 	touchButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
 		boost::bind(&EntityPickerWidget::buttonTouch_Click, this, _1));
 	touchButton->setText((CEGUI::utf8*)"Touch");
-	touchButton->setSize(CEGUI::Size(1.0f, 0.33f));
+	touchButton->setSize(CEGUI::Size(1.0f, 0.2f));
 	touchButton->setPosition(CEGUI::Point(0.0f, 0.0f));
 	touchButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(touchButton);
@@ -109,18 +109,29 @@ void EntityPickerWidget::buildWidget()
 	takeButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
 		boost::bind(&EntityPickerWidget::buttonTake_Click, this, _1));
 	takeButton->setText((CEGUI::utf8*)"Take");
-	takeButton->setSize(CEGUI::Size(1.0f, 0.33f));
-	takeButton->setPosition(CEGUI::Point(0.0f, 0.33f));
+	takeButton->setSize(CEGUI::Size(1.0f, 0.2f));
+	takeButton->setPosition(CEGUI::Point(0.0f, 0.2f));
 	takeButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(takeButton);
 	mButtonSet.insert(takeButton);	
+	
+	
+	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/GiveButton"));
+	giveButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
+		boost::bind(&EntityPickerWidget::buttonGive_Click, this, _1));
+	giveButton->setText((CEGUI::utf8*)"Give");
+	giveButton->setSize(CEGUI::Size(1.0f, 0.2f));
+	giveButton->setPosition(CEGUI::Point(0.0f, 0.4f));
+	giveButton->setInheritsAlpha(true);	
+	mMenuWindow->addChildWindow(giveButton);
+	mButtonSet.insert(giveButton);	
 	
 	CEGUI::PushButton* inspectButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/InspectButton"));
 	inspectButton->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonUp, 
 		boost::bind(&EntityPickerWidget::buttonInspect_Click, this, _1));
 	inspectButton->setText((CEGUI::utf8*)"Inspect");
-	inspectButton->setSize(CEGUI::Size(1.0f, 0.33f));
-	inspectButton->setPosition(CEGUI::Point(0.0f, 0.66f));
+	inspectButton->setSize(CEGUI::Size(1.0f, 0.2f));
+	inspectButton->setPosition(CEGUI::Point(0.0f, 0.6f));
 	inspectButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(inspectButton);
 	mButtonSet.insert(inspectButton);	
@@ -187,6 +198,14 @@ bool EntityPickerWidget::buttonInspect_Click(const CEGUI::EventArgs& args)
 	removeMenu();
 	return true;
 }
+
+bool EntityPickerWidget::buttonGive_Click(const CEGUI::EventArgs& args)
+{
+	mGuiManager->EventEntityAction("give", mPickedEntity);
+	removeMenu();
+	return true;
+}
+
 
 bool EntityPickerWidget::mainWindow_MouseOut(const CEGUI::EventArgs& args)
 {

@@ -19,6 +19,8 @@
 #ifndef DIMEENTITY_H
 #define DIMEENTITY_H
 
+#include <OgreNoMemoryMacros.h>
+
 #include <Atlas/Objects/Entity.h>
 
 #include <Eris/Entity.h>
@@ -84,8 +86,11 @@ public:
 	/*
 	 * return the scenenode to which this entity belongs
 	 */
-	Ogre::SceneNode* getSceneNode();
-
+	inline Ogre::SceneNode* getSceneNode() const 
+	{
+		//return DimeOgre::getSingleton().getSceneManager()->getSceneNode(getId());
+		return mOgreNode;	
+	}
 	/*
 	 * Called by a contained member to see if the member is allowed to be shown.
 	 * This can be reimplemented in a subclass such as AvatarDimeEntity to 
@@ -106,7 +111,9 @@ protected:
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *newLocation, Eris::Entity *oldLocation);
-	
+    virtual void onAction(const Atlas::Objects::Root& act);
+    virtual void onImaginary(const Atlas::Objects::Root& act);
+		
 	/* 
 	 * Creates the main scene node which holds the entity.
 	 */

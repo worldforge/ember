@@ -29,6 +29,8 @@
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
 
+#include "DimeOgre.h"
+
 namespace DimeOgre {
 
 
@@ -37,7 +39,7 @@ mAnimationState_Walk(NULL),
 mScaleNode(nodeWithModel),
 DimeEntity(id, ty, vw, sceneManager)
 {
-	mModel = static_cast<Model*>(mScaleNode->getAttachedObject(0));
+	mModel = static_cast<Model*>(getScaleNode()->getAttachedObject(0));
 	loadAnimationsFromModel();
 }
 
@@ -58,22 +60,22 @@ DimePhysicalEntity::~DimePhysicalEntity()
 void DimePhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	DimeEntity::init(ge);
-	mModel->setQueryFlags(DimeEntity::CM_UNDEFINED);
+	getModel()->setQueryFlags(DimeEntity::CM_UNDEFINED);
 
-	assert(mOgreNode);
-	assert(mScaleNode);
+/*	assert(mOgreNode);
+	assert(mScaleNode);*/
 	scaleNode();
-	mOgreNode->addChild(mScaleNode);
+	getSceneNode()->addChild(getScaleNode());
 
-	mModel->setUserObject(this);
+	getModel()->setUserObject(this);
 }
 
 
 void DimePhysicalEntity::loadAnimationsFromModel()
 {
-	if (mModel->isAnimated()) {
+	if (getModel()->isAnimated()) {
 		//start with the idle animation
-		mModel->startAnimation("idle");
+		getModel()->startAnimation("idle");
 	}
 /*
  * 	Ogre::AnimationStateSet* states = mModel->getAllAnimationStates();
@@ -93,23 +95,20 @@ void DimePhysicalEntity::loadAnimationsFromModel()
 	*/
 }
 
-Model* DimePhysicalEntity::getModel() const
-{
-	return mModel;	
-}
+
 
 
 void DimePhysicalEntity::scaleNode() {
-	if (mModel->getRotation()) {
-		mScaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)mModel->getRotation());
+	if (getModel()->getRotation()) {
+		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
 	}
-	if (mModel->getScale()) {
-		if (mModel->getScale() != 1) {
+	if (getModel()->getScale()) {
+		if (getModel()->getScale() != 1) {
 			//only scale if it's not 1
-			mScaleNode->setScale(mModel->getScale(), mModel->getScale(), mModel->getScale());
+			getScaleNode()->setScale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
 		}
 	} else {
-		const Ogre::AxisAlignedBox ogreBoundingBox = mModel->getWorldBoundingBox(true);
+		const Ogre::AxisAlignedBox ogreBoundingBox = getModel()->getWorldBoundingBox(true);
 		const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
 		const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
 	
@@ -124,13 +123,13 @@ void DimePhysicalEntity::scaleNode() {
 			Ogre::Real scaleZ;		
 
 			
-			if ((wfMax.x() - wfMin.x()) > 100 || (wfMax.y() - wfMin.y()) > 100 || (wfMax.z() - wfMin.z()) > 100) 
-			{
-				//big!!!
-				int i = 0;
-			}
+// 			if ((wfMax.x() - wfMin.x()) > 100 || (wfMax.y() - wfMin.y()) > 100 || (wfMax.z() - wfMin.z()) > 100) 
+// 			{
+// 				//big!!!
+// 				int i = 0;
+// 			}
 			
-			switch (mModel->getUseScaleOf()) {
+			switch (getModel()->getUseScaleOf()) {
 				case Model::MODEL_HEIGHT:
 					scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
 					break;
@@ -150,7 +149,7 @@ void DimePhysicalEntity::scaleNode() {
 			
 			//Ogre::Real finalScale = std::max(scaleX, scaleY);
 			//finalScale = std::max(finalScale, scaleZ);
-			mScaleNode->setScale(scaleX, scaleY, scaleZ);
+			getScaleNode()->setScale(scaleX, scaleY, scaleZ);
 			
 		} else {
 			//set to small size
@@ -158,7 +157,7 @@ void DimePhysicalEntity::scaleNode() {
 			Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
 			Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
 			Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
-			mScaleNode->setScale(scaleX, scaleY, scaleZ);
+			getScaleNode()->setScale(scaleX, scaleY, scaleZ);
 		}		
 
 	}	
@@ -174,16 +173,16 @@ void DimePhysicalEntity::onMoved()
 	if (getVelocity() != WFMath::Vector<3>().zero()) {
 		//the entity is moving
 		motionManager->addEntity(this);
-		if (mModel->isAnimated()) {
-			mModel->stopAnimation("idle");
-			mModel->startAnimation("walk");
+		if (getModel()->isAnimated()) {
+			getModel()->stopAnimation("idle");
+			getModel()->startAnimation("walk");
 		}
 	} else {
 		//the entity has stopped moving
 		motionManager->removeEntity(this);
-		if (mModel->isAnimated()) {
-			mModel->stopAnimation("walk");
-			mModel->startAnimation("idle");
+		if (getModel()->isAnimated()) {
+			getModel()->stopAnimation("walk");
+			getModel()->startAnimation("idle");
 		}
 	}
 	Eris::Entity::onMoved();
@@ -210,13 +209,13 @@ void DimePhysicalEntity::onVisibilityChanged(bool vis)
 	if (container) {
 		//check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {
-			mModel->setVisible(true);	
+			getModel()->setVisible(true);	
 		} else {
-			mModel->setVisible(false);	
+			getModel()->setVisible(false);	
 		}
 		
 	} else {
-		mModel->setVisible(vis);
+		getModel()->setVisible(vis);
 	}
 	Eris::Entity::onVisibilityChanged(vis);
 }

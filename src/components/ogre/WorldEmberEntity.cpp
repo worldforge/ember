@@ -34,8 +34,9 @@ WorldDimeEntity::WorldDimeEntity(const std::string& id, Eris::TypeInfo* ty, Eris
 mTerrainGenerator(terrainGenerator),
 DimeEntity(id, ty, vw, sceneManager)
 {
-	mSceneManager->getRootSceneNode()->addChild(mOgreNode);
-	
+	//getSceneNode()->setOrientation(Ogre::Quaternion::IDENTITY);
+	mSceneManager->getRootSceneNode()->addChild(getSceneNode());
+	//mOgreNode = mSceneManager->getRootSceneNode();
 	//mSceneManager->getRootSceneNode()->addChild(mOgreNode);
 //	this->mModel->setQueryFlag(DimeEntity::CM_TERRAIN);
 }
@@ -46,7 +47,7 @@ WorldDimeEntity::~WorldDimeEntity()
 void WorldDimeEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	//mOgreNode = mSceneManager->getRootSceneNode();
-	DimeEntity::init(ge);
+	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);
 	mTerrainGenerator->prepareAllSegments(false);
 	

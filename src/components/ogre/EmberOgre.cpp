@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.52  2004-10-27 23:45:21  erik
+ *      Revision 1.53  2004-10-30 17:32:38  erik
+ *      2004-10-30 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Fixed the issue with entities not getting correct orientation.
+ *      * Added a give action to the EntityPickerWidget
+ *      * Fixed creation of entities through MakeEntityWidget
+ *
+ *      Revision 1.52  2004/10/27 23:45:21  erik
  *      2004-10-28 Erik Hjortsberg <erik@hysteriskt.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -712,9 +720,9 @@ void DimeOgre::createScene(void)
   mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
   mSceneMgr->setShowDebugShadows(true);
 //  mSceneMgr->setShadowFarDistance(2000);
-	mSceneMgr->showBoundingBoxes(true);
+ 	mSceneMgr->showBoundingBoxes(true);
  */
- mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
+mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
   // Create a light
   Ogre::Light* l = mSceneMgr->createLight("SunLight");
   l->setType(Ogre::Light::LT_DIRECTIONAL);

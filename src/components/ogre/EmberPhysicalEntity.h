@@ -58,8 +58,17 @@ public:
 	/*
 	 * return the Model of this object
 	 */
-	Model* getModel() const;
+	inline Model* DimePhysicalEntity::getModel() const
+	{
+		return mModel;	
+	}
+
+	inline Ogre::SceneNode* DimePhysicalEntity::getScaleNode() const
+	{
+		//return DimeOgre::getSingleton().getSceneManager()->getSceneNode(getId() + "_scaleNode");
 	
+		return mScaleNode;
+	}	
 	
 
 
@@ -69,6 +78,7 @@ public:
 	 * adjustHeightPositionForContainedNode method.
 	 */
 	virtual void adjustHeightPosition(); 
+	
 	
 
 protected: 

@@ -427,11 +427,14 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 
 void Model::setUserObject (Ogre::UserDefinedObject *obj)
 {
+	Ogre::MovableObject::setUserObject(obj);
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
  		SubModel* submodel = *I;
-		submodel->getEntity()->setUserObject(obj);		
+		Ogre::Entity* entity = submodel->getEntity();
+		entity->setUserObject(obj);
+		int i = 0;
 	}
 }
 

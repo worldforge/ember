@@ -18,6 +18,7 @@
 
 #ifndef DIMEENTITYFACTORY_H
 #define DIMEENTITYFACTORY_H
+#include <OgreNoMemoryMacros.h>
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>

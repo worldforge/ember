@@ -7,7 +7,7 @@
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Inspect" />
 		<Window Type="DefaultGUISheet" Name="InspectWidget/MainInnerWindow">
-			<Property Name="Position" Value="x:0.02 y:0.02" /> 
+			<Property Name="Position" Value="x:0.02 y:0.05" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 			

@@ -11,7 +11,15 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.8  2004-10-12 23:03:01  erik
+ *      Revision 1.9  2004-10-30 17:32:38  erik
+ *      2004-10-30 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Fixed the issue with entities not getting correct orientation.
+ *      * Added a give action to the EntityPickerWidget
+ *      * Fixed creation of entities through MakeEntityWidget
+ *
+ *      Revision 1.8  2004/10/12 23:03:01  erik
  *      2004-10-12 Erik Hjortsberg <erik@katastrof.nu>
  *
  *      * fixed mouse picking
@@ -203,6 +211,9 @@ inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3> v){
 }
 
 inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
+/*	if (!aq.isValid()) {
+		return Ogre::Quaternion::IDENTITY;
+	}*/
 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 }
 

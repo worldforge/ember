@@ -24,7 +24,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.28  2004-10-27 23:45:21  erik
+ *      Revision 1.29  2004-10-30 17:32:38  erik
+ *      2004-10-30 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      http://erikhjortsberg.blogspot.com/
+ *
+ *      * Fixed the issue with entities not getting correct orientation.
+ *      * Added a give action to the EntityPickerWidget
+ *      * Fixed creation of entities through MakeEntityWidget
+ *
+ *      Revision 1.28  2004/10/27 23:45:21  erik
  *      2004-10-28 Erik Hjortsberg <erik@hysteriskt.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -270,6 +278,8 @@ Description: Base class for all the OGRE examples
 
 #ifndef __DimeOgre_H__
 #define __DimeOgre_H__
+
+#include <OgreNoMemoryMacros.h>
 
 //#include <Mercator/Terrain.h>
 

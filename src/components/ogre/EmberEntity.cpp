@@ -20,6 +20,9 @@
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "DimeEntity.h"
+
+#include "DimeOgre.h"
+
 using namespace Ogre;
 
 namespace DimeOgre {
@@ -59,11 +62,13 @@ void DimeEntity::createSceneNode()
 	if (container == NULL) {
 		std::cout << "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" << std::endl;
 
+		//mSceneManager->createSceneNode(getId());
 		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode(getId()));
 //		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getId()));
 		
 	} else {
 		Ogre::SceneNode * node = container->getSceneNode();
+		//node->createChild(getId());
 		mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getId()));
 /*		if (node) {
 			mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getId()));
@@ -73,13 +78,7 @@ void DimeEntity::createSceneNode()
 	}		
 }
 
-/*
- * return the scenenode to which this entity belongs
- */
-SceneNode* DimeEntity::getSceneNode() {
 
-	return mOgreNode;	
-}
 
 
 void DimeEntity::onMoved()
@@ -158,17 +157,15 @@ void DimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newL
 
 	DimeEntity* newLocationEntity = dynamic_cast<DimeEntity*>(newLocation);
 	DimeEntity* oldLocationEntity = dynamic_cast<DimeEntity*>(oldLocation);
+	
+	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+	
 	if (getSceneNode()->getParentSceneNode()) {
 		//detach from our current object
 		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
 	}
 	if (newLocationEntity) {
-		if (newLocationEntity->getId() == "0") {
-			//we have to do this because there's some bug
-			//somewhere that will mess up our camera if we let the world node be the parent 
-			//don't know why, it's driving me nuts!!!!
-			mSceneManager->getRootSceneNode()->addChild(getSceneNode());//DEBUG!!!!
-		} else {
+
 		
 			// add to the new entity
 			newLocationEntity->getSceneNode()->addChild(getSceneNode());
@@ -176,7 +173,6 @@ void DimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newL
 			
 			getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-		}
 	} else {
 		//add to the world
 		std::cout << "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" << std::endl;
@@ -185,8 +181,23 @@ void DimeEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newL
 	
 	std::cout << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " << getOrientation() << std::endl;
 
+	//we adjust the entity so it retains it's former position in the world
+	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
+	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+	
 	Eris::Entity::onLocationChanged(oldLocation, newLocation);
 }
+
+void DimeEntity::onAction(const Atlas::Objects::Root& act)
+{
+	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: "+act->getName());
+}
+
+void DimeEntity::onImaginary(const Atlas::Objects::Root& act)
+{
+	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") imaginary: "+act->getName());
+}
+
 
 bool DimeEntity::allowVisibilityOfMember(DimeEntity* entity) {
 	return true;

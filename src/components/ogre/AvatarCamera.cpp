@@ -122,6 +122,11 @@ void AvatarCamera::yaw(Ogre::Degree degrees)
 	degreeYaw += degrees;
 	mAvatarCameraRootNode->yaw(degrees);
 	
+	std::stringstream ss;
+	mAvatarCameraRootNode->needUpdate();
+	Ogre::Quaternion q = mAvatarCameraRootNode->_getDerivedOrientation();
+	
+	
 }
 
 void AvatarCamera::mouseMoved (Ogre::MouseEvent *e)
@@ -196,10 +201,13 @@ DimeEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 			rayIterator != rayIterator_end; 
 			rayIterator++ ) {
 			//only pick entities that have a userobject attached
-			if (( *rayIterator ).movable && ( *rayIterator ).movable->getUserObject() != NULL && (( *rayIterator ).movable->getQueryFlags() & ~DimeEntity::CM_AVATAR)) {
+
+			Ogre::MovableObject* movable = ( *rayIterator ).movable;
+			
+			if (movable && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~DimeEntity::CM_AVATAR)) {
 				if ( ( *rayIterator ).distance < closestDistance ) { 
-					closestObject = ( *rayIterator ).movable; 
-					closestDistance = ( *rayIterator ).distance; 
+					closestObject = movable; 
+					closestDistance = ( *rayIterator ).distance ; 
 				}
 			}
 		} 

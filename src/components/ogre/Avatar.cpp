@@ -254,6 +254,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
 	}
 	mCurrentMovementState = newMovementState;
+	
 }
 
 void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
