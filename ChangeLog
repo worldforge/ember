@@ -1,5 +1,9 @@
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Added missing files for tree generation.
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Don't grab mouse. This is not a final solution, just a fix. 
 		The cursor in ember isn't synced with the cursor in X.
 		For now, ember does grab the mouse when in movement mode (i.e. right mouse button is pressed).
