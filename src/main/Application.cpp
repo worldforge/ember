@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.19  2002-05-10 22:35:49  tim
+ *      Revision 1.20  2002-05-10 23:56:41  tim
+ *      *** empty log message ***
+ *
+ *      Revision 1.19  2002/05/10 22:35:49  tim
  *      Fixed RepititionDevice (by adding something to SDL_INIT)
  *
  *      Revision 1.18  2002/04/30 09:17:51  nikal
@@ -108,6 +111,8 @@ namespace dime
      *
      * timeStamp importance file "\t" line "\t" message
      */
+
+	Application * Application::theApplication;
 
     class CerrLogObserver: public dime::LoggingService::Observer
     {
