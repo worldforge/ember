@@ -123,26 +123,23 @@ class Label : public Widget
 	/**
      * Creates a new Label using rect and text.
      */
-    Label(const Font::FontString text, const Rectangle& rect) 
+    Label(const Rectangle& rect, const Font::FontString text) 
         : Widget(rect)
     {
       dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
       assert(font);
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, text, font, Color(0,0,255), rect);
     }
-	/**
+    /**
      * Creates a new Label using rect and text.
      */
-    Label(const std::string text, const Rectangle& rect) 
-        : Widget(rect)
+    Label(const Rectangle& rect, const std::string text) 
+      : Widget(rect)
     {
       dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
       assert(font);
-      Font::FontString fontString;
-      for(unsigned int i = 0; i < text.length(); ++i)
-          {
-              fontString+=text[i];
-          }
+
+      Font::FontString fontString(text.begin(), text.end());
       
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, fontString, font, Color(0,0,255), rect);
     }

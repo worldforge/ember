@@ -20,12 +20,12 @@
 #define GUISERVICE_H
 
 // Included headers from the current project
-#include <framework/Service.h>
-#include <services/input/InputService.h>
+#include "framework/Service.h"
+#include "services/input/InputService.h"
 #include "EventGenerator.h"
 #include "widget/Widget.h"
-#include <services/platform/DrawDevice.h>
-#include <services/platform/Rectangle.h>
+#include "services/platform/DrawDevice.h"
+#include "services/platform/Rectangle.h"
 
 // Included custom library headers
 // LibXML2
@@ -200,6 +200,21 @@ class GuiService : public Service, public SigC::Object
    * Parse a widget containing a panel
    */
   long parsePanel(xmlNodePtr stateNode, xmlNodePtr widgetNode, xmlDocPtr doc);
+
+  /**
+   * Parse a widget containing a console
+   */
+  long parseConsole(xmlNodePtr widgetNode, xmlDocPtr doc);
+
+  /**
+   * Parse a widget containing a button
+   */
+  long parseButton(xmlNodePtr stateNode, xmlNodePtr widgetNode, xmlDocPtr doc);
+
+  /**
+   * Parse a widget containing a text box
+   */
+  long parseTextBox(xmlNodePtr widgetNode, xmlDocPtr doc);
 
   //======================================================================
   // Private Methods

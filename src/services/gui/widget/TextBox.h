@@ -131,7 +131,7 @@ class TextBox : public Label
     {
     }
 
-	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
+	TextBox(const Rectangle& rect, const Font::FontString& text) : Label(Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11),text),
 	  myCaretPos(text.length()),
 	  myText(text),
 	  myRight(text.length()-1)
@@ -141,16 +141,17 @@ class TextBox : public Label
       rebuildRight();
     }
 
-    TextBox(std::string text, const Rectangle& rect) :
-        Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
+    TextBox(const Rectangle& rect, const std::string& text) :
+        Label(Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11), text),
       myCaretPos(text.length()),
       myText(text.begin(), text.end()),
       myRight(text.length()-1)
     {
 	  myBackRect = new ColorRenderer(rect,255,255,255);
 	  myBorder = new BorderRenderer(rect, 2, new ColorRenderer(rect, 125, 125, 255));
+#if 0
       Font::FontString temp;
-/*	
+	
       for(const char* c = text.c_str();*c != '\0';c++)
 	{
 	  temp+=(Uint16)c;
@@ -158,7 +159,7 @@ class TextBox : public Label
       assert(text.length()==temp.length());
 
       myText = temp;
-      */
+#endif
       rebuildRight();
     }
 

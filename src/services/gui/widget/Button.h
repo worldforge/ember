@@ -85,10 +85,10 @@ class Button : public Widget
     // Private Variables
     //======================================================================
     private:
-    Renderer *myPressedBackground;
-    Renderer *myHighlightBackground;
-    Renderer *myStandardBackground;
-    Renderer **myCurrentBackground;
+    Renderer*  myStandardBackground;
+    Renderer*  myPressedBackground;
+    Renderer*  myHighlightBackground;
+    Renderer** myCurrentBackground;
     bool myPressed;
 
     //======================================================================
@@ -102,25 +102,38 @@ class Button : public Widget
     /**
     * Creates a new Button using default values.
     */
-    Button() : Widget(), myPressedBackground(NULL),
+    Button() : Widget(), myStandardBackground(NULL),
+      myPressedBackground(NULL),
       myHighlightBackground(NULL),
-      myStandardBackground(NULL),
       myPressed(false)
     {
-		myCurrentBackground = &myStandardBackground;
+      myCurrentBackground = &myStandardBackground;
     }
 
     /**
     * Creates a new Button using rect.
     */
-    Button(Rectangle rect) : Widget(rect), myPressedBackground(NULL),
+    Button(Rectangle rect) : Widget(rect), myStandardBackground(NULL),
+      myPressedBackground(NULL),
       myHighlightBackground(NULL),
-      myStandardBackground(NULL),
       myPressed(false)
     {
-		myCurrentBackground = &myStandardBackground;
+      myCurrentBackground = &myStandardBackground;
     }
 
+    /**
+    * Creates a new Button using rect.
+    */
+    Button(Rectangle rect, Renderer* standard,
+	   Renderer* pressed, Renderer* highlight) : Widget(rect),
+      myStandardBackground(standard),
+      myPressedBackground(pressed),
+      myHighlightBackground(highlight),
+      
+      myPressed(false)
+    {
+      myCurrentBackground = &myStandardBackground;
+    }
 
     /**
     * Copy constructor.
@@ -139,8 +152,8 @@ class Button : public Widget
     Button &operator= ( const Button &source )
     {
       // Copy fields from source class to this class here.
-      myPressedBackground = source.myPressedBackground;
       myStandardBackground = source.myStandardBackground;
+      myPressedBackground = source.myPressedBackground;
       myHighlightBackground = source.myHighlightBackground;
       myCurrentBackground = source.myCurrentBackground;
 

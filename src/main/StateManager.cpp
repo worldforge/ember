@@ -17,6 +17,7 @@
 */
 
 #include "StateManager.h"
+#include "services/DimeServices.h"
 #include "framework/Exception.h"
 
 // Get in LibXML2
@@ -89,15 +90,6 @@ xmlNodePtr StateManager::findState(const std::string& state)
   return NULL;
 }
 
-#if 1
-#include "Application.h"
-#include <services/gui/widget/Button.h>
-#include <services/gui/widget/Panel.h>
-#include <services/gui/widget/TextBox.h>
-#include <services/gui/widget/Console.h>
-void quitButton(dime::Button* button);
-#endif
-
 bool StateManager::setState( const std::string& newState )
 {
   // Find the new state in statefile
@@ -122,37 +114,7 @@ bool StateManager::setState( const std::string& newState )
 
   // Load new state
 
-#if 0
   return true;
-#endif
-  if (newState == "initial state")
-    {
-      // Create the Widgets
-      dime::Console* myTestConsole = new dime::Console(dime::Rectangle(10,300,620,120));
-      dime::TextBox* myTestTextBox = new dime::TextBox("TextBox!", dime::Rectangle(13,43,97,32));
-      dime::Button* myTestButton = new dime::Button(dime::Rectangle(535,450,100,25));
-      dime::Panel* myTestPanel = new dime::Panel(dime::Rectangle(550,0,90,90));
-            
-      // Set Additional options for myTestButton
-      myTestButton->setBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
-      myTestButton->setHighlightBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
-      myTestButton->setPressedBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
-      // Set Additional options for my TestPanel
-      myTestPanel->setBackground(new dime::BitmapRenderer(myTestPanel->getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
-      // Bind myButton onClicked method
-      myTestButton->onClicked.connect(SigC::slot(quitButton));
-
-      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestPanel);
-      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestTextBox);
-      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestConsole);
-      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestButton);
-      return true;
-    } else if ( newState == "OOG View" ) {
-      return true;
-    }else if ( newState == "OGRE View" ) {
-      return true;
-    }
-  return false;
 }
 
 void StateManager::parseStateLayout(xmlNodePtr stateNode)

@@ -19,6 +19,9 @@
 #include "GuiService.h"
 #include "widget/Label.h"
 #include "widget/Panel.h"
+#include "widget/Console.h"
+#include "widget/Button.h"
+#include "widget/TextBox.h"
 #include "services/logging/LoggingService.h"
 #include "services/platform/RendererFactory.h"
 
@@ -80,6 +83,12 @@ long dime::GuiService::createWidget(xmlNodePtr stateNode, xmlNodePtr widgetNode,
     return parseLabel(widgetNode, doc);
   } else if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"panel")) {
     return parsePanel(stateNode, widgetNode, doc);
+  } else if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"console")) {
+    return parseConsole(widgetNode, doc);
+  } else if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"button")) {
+    return parseButton(stateNode, widgetNode, doc);
+  } else if (!xmlStrcmp(widgetNode->name, (const xmlChar *)"textbox")) {
+    return parseTextBox(widgetNode, doc);
   }
 
   // Even if we are not the correct name bail as
@@ -99,8 +108,7 @@ long dime::GuiService::parsePanel(xmlNodePtr stateNode, xmlNodePtr widgetNode,
   dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
 		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
 
-  // Ok missing bit here need to access the renderers from the state
-  // and ask them for our background renderer
+  // Load Renderers
   Renderer* renderer = RendererFactory::getInstance()->getRenderer((const char*)xmlGetProp(widgetNode, (const xmlChar *)"bg"),rect,stateNode,doc);
   dime::Panel* newPanel = new dime::Panel(rect,renderer);
 
@@ -122,9 +130,67 @@ long dime::GuiService::parseLabel(xmlNodePtr widgetNode, xmlDocPtr doc)
   dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
 		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
 
-  dime::Label* newLabel = new dime::Label(data, rect);
+  dime::Label* newLabel = new dime::Label(rect, data);
 
   myRootWidget->addWidget(newLabel);
+
+  return 0; // Change this to proper return
+}
+
+long dime::GuiService::parseConsole(xmlNodePtr widgetNode, xmlDocPtr doc)
+{
+  // Get name
+  xmlGetProp(widgetNode, (const xmlChar *)"name");
+
+  // Get rectangle
+  // FIXME: there has to be a better way to do this
+  dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
+		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
+
+  dime::Console* newConsole = new dime::Console(rect);
+
+  myRootWidget->addWidget(newConsole);
+
+  return 0; // Change this to proper return
+}
+long dime::GuiService::parseButton(xmlNodePtr stateNode, xmlNodePtr widgetNode,
+				   xmlDocPtr doc)
+{
+  // Get name
+  xmlGetProp(widgetNode, (const xmlChar *)"name");
+
+  // Get rectangle
+  // FIXME: there has to be a better way to do this
+  dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
+		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
+
+  // Load renderers
+  Renderer* standard = RendererFactory::getInstance()->getRenderer((const char*)xmlGetProp(widgetNode, (const xmlChar *)"standard"),rect,stateNode,doc);
+  Renderer* pressed = RendererFactory::getInstance()->getRenderer((const char*)xmlGetProp(widgetNode, (const xmlChar *)"pressed"),rect,stateNode,doc);
+  Renderer* hilight = RendererFactory::getInstance()->getRenderer((const char*)xmlGetProp(widgetNode, (const xmlChar *)"hilight"),rect,stateNode,doc);
+  dime::Button* newButton = new dime::Button(rect, standard, pressed, hilight);
+
+  myRootWidget->addWidget(newButton);
+
+  return 0; // Alter this to return proper value
+}
+
+long dime::GuiService::parseTextBox(xmlNodePtr widgetNode, xmlDocPtr doc)
+{
+  // Get name
+  xmlGetProp(widgetNode, (const xmlChar *)"name");
+
+  // Get data
+  std::string data = (const char*)xmlGetProp(widgetNode, (const xmlChar *)"data");
+
+  // Get rectangle
+  // FIXME: there has to be a better way to do this
+  dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
+		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
+
+  dime::Label* newTextBox = new dime::TextBox(rect, data);
+
+  myRootWidget->addWidget(newTextBox);
 
   return 0; // Change this to proper return
 }

@@ -1,3 +1,21 @@
+2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
+	* NEWS: update
+
+	* RendererFactory.cpp: Added TILE support.
+
+	* TextBox.h Label.h: Sorted out argument ordering.
+
+	* Button.h: Tidy up and added another constructor.
+
+	* GuiService.cpp/h: Added Console, TextBox, Button and reordered args 
+	  for Label changes.
+
+	* TestServices.cpp: Cut datamodel test.
+
+	* StateManager.cpp: Delete old code.
+
+	* states.xml: Added remaining widgets.
+
 2002-12-04 M Pollard <circlemaster@blueyonder.co.uk>
 	* RectangleRenderer.cpp/h Renderer.cpp/h: Renamed the file and the
 	  class RectangleRenderer to Renderer for better clarity of naming.

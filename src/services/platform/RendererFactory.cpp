@@ -69,8 +69,11 @@ Renderer* RendererFactory::parseRenderer( const Rectangle& rect,
     BitmapRenderer::BitmapStyle style = BitmapRenderer::CENTER;
 
     xmlChar* align = xmlGetProp(rendererNode, (const xmlChar *)"align");
-    if (!xmlStrcmp(align, (const xmlChar *)"CENTER"))
+    if (!xmlStrcmp(align, (const xmlChar *)"CENTER")) {
       style = BitmapRenderer::CENTER;
+    } else if (!xmlStrcmp(align, (const xmlChar *)"TILE")) {
+      style = BitmapRenderer::TILE;
+    }
 
     // Do we need to delete align?
     // note the const char* is unsafe
