@@ -24,6 +24,8 @@
 #include "ConsoleBackend.h"
 #include "services/logging/LoggingService.h"
 
+#include <strstream>
+
 namespace dime {
 
 dime::ConsoleBackend *dime::ConsoleBackend::theMainConsole = NULL;
@@ -79,7 +81,7 @@ void ConsoleBackend::runCommand(const std::string &command)
   ConsoleObject* con_obj = myRegisteredCommands[cmd];
 
   // Print all commands to the console
-  pushMessage(command_string);
+  // pushMessage(command_string);
 
   // If object exists, run the command
   if (con_obj) con_obj->runCommand(cmd, args);
@@ -91,13 +93,20 @@ void ConsoleBackend::runCommand(const std::string &command)
 
 void ConsoleBackend::runCommand(const std::string &command, const std::string &args)
 {
+  std::ostrstream temp;
+
   // This commands prints all currently registers commands to the Log File
   if (command == LIST_CONSOLE_COMMANDS) {
     for (std::map<std::string, ConsoleObject*>::const_iterator I = myRegisteredCommands.begin(); I != myRegisteredCommands.end(); I++) {
       // TODO - should we check to see if I->second is valid?
-      LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << I->first<< ENDM;
+      temp << I->first<< " ";
     }
   }
+
+  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+  temp<< std::ends;
+
+  pushMessage(temp.str());
 }
 
 } // namespace dime

@@ -29,6 +29,7 @@
 #include <list>
 #include <algorithm>
 #include <iostream>
+#include <strstream>
 
 // HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
 
@@ -158,8 +159,14 @@ namespace dime
 	
   void ServerService::gotFailure(const std::string & msg)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
-  }	
+    std::ostrstream temp;
+
+    temp << "Got Server error: " << msg;
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)  << temp.str()<< ENDM;
+
+    temp<<std::ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+  }
 	
   void ServerService::connected()
   {
@@ -207,6 +214,7 @@ namespace dime
   void ServerService::timeout(Eris::BaseConnection::Status status)
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Connection Timed Out"<< ENDM;
+    ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
   }
 
   void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &) {}
@@ -215,20 +223,27 @@ namespace dime
 
   void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Login Failure:"<<msg<< ENDM;    
+    std::ostrstream temp;
+
+    temp<< "Login Failure:"<<msg;
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
+    temp<<std::ends;    
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void ServerService::loginSuccess(){
     myWorld = new Eris::World(myPlayer, myConn);
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;    
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
+    ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
   }
 
   void ServerService::logoutComplete(bool clean) {
     delete myWorld;
     myWorld = NULL;
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;    
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
+    ConsoleBackend::getMainConsole()->pushMessage("Logged out from server");
   }
 
   void ServerService::runCommand(const std::string &command, const std::string &args)
