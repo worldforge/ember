@@ -1,4 +1,16 @@
 2002-10-10 M Pollard <circlemaster@blueyonder.co.uk>
+        * test/Makefile.am, StateManagerTest.cpp, TestServices.cpp: cut
+	  out StateManager from the tests till I've finished redoing it.
+
+	* StateManager.cpp, StateManager.h: stripping this down, need to
+	  do things another way.
+
+	* Label.h, Console.cpp, Console.h: Changed FONT_FILE to a static
+	  const char* const, changed to wf_opal.ttf.
+
+	* configure.ac: bumped required sigc++-1.2 version to 1.2.1 .
+	
+2002-10-10 M Pollard <circlemaster@blueyonder.co.uk>
 	* autogen.sh, NEWS: Made automake do automake --gnu and added needed
 	  files.
 	

@@ -35,12 +35,6 @@
 
 // Included system headers
 
-#ifdef _MSC_VER
-#define FONT_FILE "..\\bin\\nasal.ttf"
-#else
-#define FONT_FILE "../../bin/nasal.ttf"
-#endif 
-
 namespace dime {
 
 /**
@@ -75,6 +69,12 @@ class Label : public Widget
     // Private Constants
     //======================================================================
     private:
+#ifdef _MSC_VER
+  static const char* const FONT_FILE = "..\\bin\\wf_opal.ttf";
+#else
+  static const char* const FONT_FILE = "../../bin/wf_opal.ttf";
+#endif 
+
 
     //======================================================================
     // Protected Variables

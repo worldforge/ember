@@ -48,7 +48,7 @@ void StateManagerTestCase::testFindStateLegal()
 
 void StateManagerTestCase::setUp ()
 {
-  mySM = new StateManager();
+  mySM = new StateManager("");
 
   CPPUNIT_ASSERT (mySM != NULL);
 }

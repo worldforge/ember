@@ -66,8 +66,14 @@ class Console : public Widget {
 
   static const int CONSOLE_SPEED = 10;
 
-  static const char* CONSOLE_PROMPT_STRING;
-  static const char* CONSOLE_CURSOR_STRING;
+  static const char* const CONSOLE_PROMPT_STRING = "> ";
+  static const char* const CONSOLE_CURSOR_STRING = "_";
+
+#ifdef _MSC_VER
+  static const char* const FONT_FILE = "..\\bin\\wf_opal.ttf";
+#else
+  static const char* const FONT_FILE = "../../bin/wf_opal.ttf";
+#endif 
 
   //======================================================================
   // Public Methods

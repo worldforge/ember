@@ -21,11 +21,12 @@
 
 using namespace dime;
 
-typedef std::list<State>::iterator stateIter;
-
+//typedef std::list<State>::iterator stateIter;
+#if 0
 State& StateManager::findState(const std::string& state)
 {
-  for(stateIter i = myStates.begin();i != myStates.end();i++)
+
+   for(stateIter i = myStates.begin();i != myStates.end();i++)
     {
       if ((*i).getName() == state)
 	return *i;
@@ -35,3 +36,4 @@ State& StateManager::findState(const std::string& state)
   // If not found then throw.
   THROW("State not found");
 }
+#endif

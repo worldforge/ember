@@ -30,15 +30,7 @@
 #include "services/logging/LoggingService.h"
 #include "services/platform/ColorRenderer.h"
 
-#ifdef _MSC_VER
-#define FONT_FILE "..\\bin\\nasal.ttf"
-#else
-#define FONT_FILE "../../bin/nasal.ttf"
-#endif 
-
 namespace dime {
-const char* Console::CONSOLE_PROMPT_STRING = "> ";
-const char* Console::CONSOLE_CURSOR_STRING = "_";
 
 //%TODO Xmp,3: abstract SDL_GetTicks()
 Console::Console(const Rectangle& rect) :

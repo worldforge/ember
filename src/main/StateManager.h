@@ -32,10 +32,12 @@
 namespace dime {
 
 /**
- * Short sentence with a general description of the class, ending in period.
+ * General State Manager for Dime.
  *
- * More detailed description of the class, it's purpose, what it does,
- * how to use it and so on.
+ * Provides a system whereby dime can have states.  Whenever a state change is
+ * requested this class will automatically unload certain things and load
+ * others.  This shall include but not be limited to: the gui; the layout;
+ * and Dime's services.
  *
  * A short piece of example code demonstarting how this class it is used,
  * and in what context, is encouraged.
@@ -50,7 +52,7 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see OtherSubsystem::AnOtherRelatedClass
+ * @see dime::State
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
@@ -80,8 +82,15 @@ class StateManager
     //======================================================================/
     private:
 
-    State myCurrentState;
-    std::list<State> myStates;
+    /**
+     * Holds the name of the file we are loading the states from
+     */
+    std::string myStateFile;
+
+    /**
+     * Holds the name of the state we are currently in
+     */
+    std::string myCurrentState;
 
     //======================================================================
     // Public Methods
@@ -94,9 +103,10 @@ class StateManager
     /**
      * Creates a new StateManager using default values.
      */
-     StateManager()
-     {
-     }
+    StateManager(const std::string& statefile) : myStateFile(statefile)
+      {
+	//setState(initialState);
+      }
 
     /**
      * Copy constructor.
@@ -145,7 +155,7 @@ class StateManager
      */
     std::string getStateName() const
     {
-        return myCurrentState.getName();
+        return myCurrentState;
     }
 
 
@@ -153,20 +163,26 @@ class StateManager
     // Setters
 
     /**
-     * Sets the value of State of this StateManager
+     * Sets the value of State of this StateManager.
+     * returns true if successful
      */
-    void setState( const std::string& newState )
+    bool setState( const std::string& newState )
       {
-	myCurrentState.unload();
-	myCurrentState = findState(newState);
-	myCurrentState.load();
+	// Find the new state in statefile
+	//if (!findState(newState))
+	//  return false;
+	// Unload myCurrentState
+	// Load new state
+	//;
+
+	return true;
       }
 
 
     //----------------------------------------------------------------------
     // Other public methods
     // NOTE: Group related public methods together and crate a separator comment like above for them.
-    State& findState(const std::string& state);
+    bool findState(const std::string& state);
 
 
     //======================================================================
