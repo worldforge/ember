@@ -128,7 +128,35 @@ void dime::OGLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL
 
 void dime::OGLDrawDevice::update()
 {
-  //probably should assume double-buffering
+  // TODO: please verify the correctness of this for me please thanks
+  // Xmp
+
+  // Height / width ration
+  GLfloat ratio;
+ 
+  // Protect against a divide by zero
+  if ( myScreenHeight == 0 )
+    myScreenHeight = 1;
+
+  ratio = ( GLfloat )myScreenWidth / ( GLfloat )myScreenHeight;
+
+  // Setup our viewport
+  glViewport( 100, 100, ( GLsizei )myScreenWidth-100, ( GLsizei )myScreenHeight-100 );
+
+  // change to the projection matrix and set our viewing volume.
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity( );
+    
+  // Set our perspective
+  gluPerspective( 45.0f, ratio, 0.1f, 100.0f );
+
+  // Make sure we're chaning the model view and not the projection
+  glMatrixMode( GL_MODELVIEW );
+
+  // Reset The View
+  glLoadIdentity( );
+
+  // Probably should assume double-buffering
   SDL_GL_SwapBuffers( );
 }
 
