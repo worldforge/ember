@@ -79,10 +79,7 @@ static const char* CONSOLE_CURSOR_STRING;
 public:
   Console(const Rectangle& rect);
   ~Console();
-  
-  bool init();
-  void shutdown();
- 
+   
   /**
    * Add a message to the console and/or screen message queue
    * message is the message string

@@ -47,18 +47,13 @@ Console::Console(const Rectangle& rect) :
   consoleHeight(CONSOLE_HEIGHT),
   console_messages(std::list<std::string>()),
   screen_messages(std::list<screenMessage>())
-{ }
-
-Console::~Console() {}
-
-bool Console::init() {
+{
   // Register console commands
   registerCommand(TOGGLE_CONSOLE, this);
   registerCommand(LIST_CONSOLE_COMMANDS, this);
-  return true;
 }
 
-void Console::shutdown() {
+Console::~Console() {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Shutting down console."<< ENDM;  
 }
 
