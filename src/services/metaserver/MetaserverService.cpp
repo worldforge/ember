@@ -33,7 +33,12 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#if 0
 #include <strstream>
+#define strstream stringstream
+#else
+#include <sstream>
+#endif
 
 // Libraries we are using
 #include <sigc++/object.h>
@@ -189,7 +194,7 @@ namespace dime
     //Eris::Serverlist whatever;
     svrl l = msrv -> getGameServerList ();
 	
-    strstream out;
+    stringstream out;
     out << "Listing hostnames..." << endl;
 		
     for(Iter i = l.begin(); i != l.end(); i++)
@@ -200,7 +205,9 @@ namespace dime
 	out << "Hostname: " << (i)->getHostname().c_str() << endl;
       }
 
+#if 0 // not new sstream
     out << ends;
+#endif
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << out.str() << ENDM;
 
