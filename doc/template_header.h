@@ -143,12 +143,12 @@ class NameOfClass
      *       purpose of the varible, or wether certain invariants
      *       should be enforced for it (parentConatiner* should newer be null, etc).
      */
-    std::String  myExampleVariable;
+    std::string  myExampleVariable;
 
     /**
      * Stores an unique name of this gizmo.
      */
-    std::String myName;
+    std::string myName;
 
     /**
      * This variable is used to keep track of the next free ID number for a new gizmo.
@@ -216,7 +216,7 @@ class NameOfClass
      * Returns the name of this gizmo.
      * The name is guaranteed to be unique among all gizmos.
      */
-    virtual std::String getName() const
+    virtual std::string getName() const
     {
         return myName;
         // NOTE: If we just read or set a local variable, the
@@ -238,7 +238,7 @@ class NameOfClass
      *
      * @param name The new name of the gizmo.
      */
-    virtual void setName( std::String name );
+    virtual void setName( std::string name );
 
 
     //----------------------------------------------------------------------
@@ -264,7 +264,7 @@ class NameOfClass
      *
      * @author Anonymous Coward
      */
-    virtual std::String createRepeatingString( std::String message, int repeatCount ) const;
+    virtual std::string createRepeatingString( std::string message, int repeatCount ) const;
 
 
     //======================================================================
