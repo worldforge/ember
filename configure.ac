@@ -61,7 +61,7 @@ AC_MSG_RESULT([
 WF_CHECK_SDL_IMAGE(1.2.0)
 dnl don't add SDL flags yet, SDL_main confuses later checks
 
-WF_CHECK_SINGLE_GL_LIB
+WF_CHECK_GL_SINGLE_LIB
 
 # OpenAL check
 
