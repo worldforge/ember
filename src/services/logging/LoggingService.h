@@ -53,8 +53,15 @@ namespace dime
 
 #define ENDM LoggingService::END_MESSAGE;
 #define HEX_NUM(number) LoggingService::hexNumber(number)
-
-
+	
+//Added by nikal 2002/10/22 For convenience. 
+//%TASK nikal,1: Perhaps a script to switch the macros to the actual function call would make code more readable?
+#define S_LOG_VERBOSE() LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)
+#define S_LOG_INFO() LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
+#define S_LOG_WARNING() LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)
+#define S_LOG_FAILURE()LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
+#define S_LOG_CRITICAL() LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService:CRITICAL)
+	
 //TODO: Sorry, but innerclass didn't work properly
     const int NUMBER_BUFFER_SIZE = 24;
     const int MESSAGE_BUFFER_SIZE = 1024;
