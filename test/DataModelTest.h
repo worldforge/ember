@@ -30,6 +30,7 @@
 #include <sigc++/object.h>
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
+#include <sigc++/object_slot.h>
 #endif
 
 namespace dime
