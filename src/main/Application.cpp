@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.15  2002-04-25 22:35:32  xmp
+ *      Revision 1.16  2002-04-26 12:16:50  xmp
+ *      Replaced my previous hacky style #ifdefs with one #if per metaserver location.
+ *
+ *      Revision 1.15  2002/04/25 22:35:32  xmp
  *      Three changes rating: minor/bugfix
  *      -Ok MSVC #ifdef's in to avoid use of ERIS.
  *      -Made a few variables initialise to NULL in eventgenerator to fix segfaults
@@ -186,11 +189,8 @@ namespace dime
 		myGuiService->setDrawTarget(myDrawDevice);
 
 		// Initialize and start the MetaserverService.
-#ifdef _MSC_VER
-#if _MSC_VER > 1200
-		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
-		myMetaserverService->start();
-#endif
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
 #else
 		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
 		myMetaserverService->start();
@@ -218,10 +218,8 @@ namespace dime
 
 	// Metaserver polling
 	// TODO: this shall later be a DefaultPoll::Poll to poll all eris connections
-#ifdef _MSC_VER
-#if _MSC_VER > 1200
-	myMetaserverService->poll();
-#endif
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
 #else
 	myMetaserverService->poll();
 #endif

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.12  2002-04-25 22:35:32  xmp
+ *      Revision 1.13  2002-04-26 12:16:51  xmp
+ *      Replaced my previous hacky style #ifdefs with one #if per metaserver location.
+ *
+ *      Revision 1.12  2002/04/25 22:35:32  xmp
  *      Three changes rating: minor/bugfix
  *      -Ok MSVC #ifdef's in to avoid use of ERIS.
  *      -Made a few variables initialise to NULL in eventgenerator to fix segfaults
@@ -165,10 +168,8 @@ namespace dime
         /**
          * Our pointer to the MetaserverService
          */
-#ifdef _MSC_VER
-#if _MSC_VER > 1200
-        dime::MetaserverService *myMetaserverService;
-#endif
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
 #else
         dime::MetaserverService *myMetaserverService;
 #endif

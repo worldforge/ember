@@ -24,10 +24,8 @@
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
 #include <services/gui/GuiService.h>
-#ifdef _MSC_VER
-#if _MSC_VER > 1200
-#include <services/metaserver/MetaserverService.h>
-#endif
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
 #else
 #include <services/metaserver/MetaserverService.h>
 #endif
@@ -101,10 +99,8 @@ class DimeServices
     /**
 	* The instance of the MetaserverService
      */
-#ifdef _MSC_VER
-#if _MSC_VER > 1200
-    dime::MetaserverService *myMetaserverService;
-#endif
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
 #else
     dime::MetaserverService *myMetaserverService;
 #endif
@@ -192,14 +188,8 @@ class DimeServices
     /**
      * Returns an instance of the MetaserverService
      */
-#ifdef _MSC_VER
-#if _MSC_VER > 1200
-    dime::MetaserverService *getMetaserverService()
-    {
-        if (myMetaserverService == NULL) myMetaserverService = new dime::MetaserverService();
-		return myMetaserverService;
-    }
-#endif
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
 #else
     dime::MetaserverService *getMetaserverService()
     {
