@@ -32,7 +32,7 @@ make -j 4
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall prefix=$RPM_BUILD_ROOT/%{prefix}
+%makeinstall
 
 %clean
 rm -rf $RPM_BUILD_ROOT

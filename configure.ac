@@ -178,8 +178,8 @@ PKG_CHECK_MODULES(WF, eris-1.3 \
 	],
  AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
 )
-AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
-
+# AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
+CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
 
 # Cppunit check
  
