@@ -63,24 +63,8 @@ class DimeEntityFactory : public Eris::Factory, virtual public SigC::Object
 {
 public:
 	
-	/*
-	 * Used for mapping ogre .mesh to eris/atlas entities.
-	 */
-	struct MeshDefinition
-	{
-		/* 
-		 * full name of the mesh
-		 */
-		Ogre::String modelName;
-		
-		/* 
-		 * A scaler to be applied to the mesh. Most often not needed as 
-		 * DimeEntity::setScale() will do most work
-		 */
-		Ogre::Vector3 scaler;
-	};
 
-	typedef std::map<Ogre::String, MeshDefinition> MeshDefinitionMap;
+	typedef std::set<Ogre::String> StringSet;
 	
 
 	DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
@@ -115,12 +99,17 @@ public:
     
 protected:
 
-	void loadMeshDefinitions();
 	void buildTerrainAroundAvatar();
 
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world);
 	DimePhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
 	AvatarDimeEntity* createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
+
+	/*
+	 * loads data about the different entity types, such as which ones are persons
+	 */
+	void loadTypeInfo();
+
 
 	Ogre::TerrainSceneManager* mSceneManager;
 	//DimeTerrainPageSource* mTerrainSource;
@@ -130,7 +119,7 @@ protected:
 	
 	Eris::Avatar* mAvatar;
 	
-	MeshDefinitionMap meshDefinitions;
+	StringSet mPersonSet;
 	
 };
 

@@ -31,6 +31,7 @@
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
+#include "PersonDimeEntity.h"
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
 #include "WorldDimeEntity.h"
@@ -46,9 +47,10 @@ DimeEntityFactory::DimeEntityFactory(Ogre::TerrainSceneManager* sceneManager,Ter
 {
 	mTerrainType = mTypeService->getTypeByName("world");
 	dime::ServerService* serverService = dime::DimeServices::getInstance()->getServerService();
-	loadMeshDefinitions();
+	loadTypeInfo();
 	
 	serverService->GotAvatar.connect(SigC::slot(*this, &DimeEntityFactory::setAvatar));
+	
 }
 
 
@@ -131,6 +133,7 @@ Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameE
       //TerrainEntity * te = new TerrainEntity(ge,w);
 	mTerrainGenerator->initTerrain(we, world);
 	mTerrainGenerator->prepareAllSegments(false);
+//	mTerrainGenerator->prepareSegments(-1, -1, 3, true)
 	//buildTerrainAroundAvatar();
 	//mTerrainSource->setHasTerrain(true);
 	//mSceneManager->setWorldGeometry("");
@@ -185,105 +188,25 @@ DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects
 	scaleNode->rotate(Ogre::Vector3::UNIT_Y,90);
 
 	scaleNode->attachObject(model);
-	return new DimePhysicalEntity(ge, world, mSceneManager, scaleNode);
+
+	if (mPersonSet.find(typeName) != mPersonSet.end()) {
+		return new PersonDimeEntity(ge, world, mSceneManager, scaleNode);
+	} else {
+		return new DimePhysicalEntity(ge, world, mSceneManager, scaleNode);
+	}
 	
-	
-/*		
-	MeshDefiniton def
-
-	if(!strcmp(getType()->getName().c_str(),"settler"))	// 0 if strings are equal
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
-		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-//		mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
-	}
-	else if(!strcmp(getType()->getName().c_str(),"merchant"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
-		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-		//mScaleNode->setScale(Ogre::Vector3(0.02,0.02,0.02));
-	}
-	else if(!strcmp(getType()->getName().c_str(),"pig"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "pig.mesh");
-//		mScaleNode->setScale(0.4,0.4,0.4);
-		mAnimationState_Walk = mOgreEntity->getAnimationState("Walk");	
-	}
-	else if(!strcmp(getType()->getName().c_str(),"sty"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "Sty.mesh");
-//		mScaleNode->setScale(1,1,1);
-	}
-	else if(!strcmp(getType()->getName().c_str(),"squirrel"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "squirrel.mesh");
-	}
-	else if(!strcmp(getType()->getName().c_str(),"fir"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
-//		mScaleNode->setScale(0.02,0.02,0.02);
-	}
-	else if(!strcmp(getType()->getName().c_str(),"oak"))
-	{
-		mOgreEntity = sceneManager->createEntity(getID(), "Oak.mesh");
-//		mScaleNode->setScale(0.04,0.04,0.04);
-	}
-	else
-	{
-		// TODO: razor should be a coin
-		//fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH: ");
-		fprintf(stderr, getType()->getName().c_str());
-		fprintf(stderr, "\n");
-
-		mOgreEntity = sceneManager->createEntity(getID(), "razor.mesh");
-		//ogreNode->setScale(1,1,1);
-		//mOgreNode->setScale(0.1,0.1,0.1);
-	}
-
-*/	
-	
-
-
-	// attach the node to the entity
-//	mScaleNode->attachObject(mOgreEntity);
-//	scaleNode(0.01);
-
 }
 
 
-void DimeEntityFactory::loadMeshDefinitions()
+void DimeEntityFactory::loadTypeInfo()
 {
-	MeshDefinition def;
-	def.scaler = Ogre::Vector3::UNIT_SCALE;
-	
-	def.modelName = "Face.mesh";
-	meshDefinitions["settler"] = def;
-	
-	def.modelName = "Face.mesh";
-	meshDefinitions["merchant"] = def;
-
-	def.modelName = "pig.mesh";
-	def.scaler = Ogre::Vector3(5,5,5);
-	meshDefinitions["pig"] = def;
-
-	def.modelName = "Sty.mesh";
-	def.scaler = Ogre::Vector3::UNIT_SCALE;
-	meshDefinitions["sty"] = def;
-
-	def.modelName = "squirrel.mesh";
-	meshDefinitions["squirrel"] = def;
-	
-	def.modelName = "Fir.mesh";
-	meshDefinitions["fir"] = def;
-	
-	def.modelName = "Oak.mesh";
-	meshDefinitions["oak"] = def;
-
-	
+	mPersonSet.insert("settler");
+	mPersonSet.insert("merchant");
+	mPersonSet.insert("mercenary");
+	mPersonSet.insert("butcher");
+		
 }
 
-
-/* namespace Sear */
 
 
 /* eris 1.3

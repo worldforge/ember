@@ -27,6 +27,7 @@
 
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
+#include "PersonDimeEntity.h"
 #include "AvatarDimeEntity.h"
 #include "AvatarCamera.h"
 #include "AvatarController.h"
@@ -90,6 +91,22 @@ void AvatarController::setAvatar(Avatar* avatar)
 
 void AvatarController::frameStarted(const FrameEvent & event, InputReader* inputReader) {
 		
+/*
+ * 	if (inputReader->isKeyDown(KC_F7)) {
+		DimeEntity* dimeEntity = doMousePicking(event, inputReader);
+		if ( dimeEntity == NULL ) {    
+	     	// Nada! 
+			Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
+		} else { 
+			std::string aString;
+			aString = "OgreID: " + dimeEntity->getSceneNode()->getName();
+			aString += " ErisID: " + dimeEntity->getID();
+			aString += " ErisName: " + dimeEntity->getName();
+			Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
+		} 	
+	}
+	
+	*/
 	//is this the correct order to check things?
 	if (mInputManager->isMouseUsed()) {
 		checkMouseClicks(event, inputReader);
@@ -134,42 +151,71 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 	
 	// Start a new ray query 
 	Ray cameraRay = getAvatarCamera()->getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-	RaySceneQuery *raySceneQuery = DimeOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay ); 
+	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
+	//don't know why
+	RaySceneQuery *raySceneQuery = DimeOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ DimeEntity::CM_AVATAR); 
+/*
+	std::stringstream temp;
+	temp << "tjo1: " <<(DimeEntity::CM_PERSONS ||	DimeEntity::CM_CREATURES  || DimeEntity::CM_NATURE || DimeEntity::CM_UNDEFINED) << "\n";
+	temp << "tjo2: " <<(DimeEntity::CM_PERSONS |	DimeEntity::CM_CREATURES  | DimeEntity::CM_NATURE | DimeEntity::CM_UNDEFINED) << "\n";
+	fprintf(stderr, temp.str().c_str() );
+*/	
+//	raySceneQuery->setQueryMask(~ DimeEntity::CM_AVATAR);
+
 	raySceneQuery->execute(); 
 	RaySceneQueryResult result = raySceneQuery->getLastResults(); 
 	   
 	MovableObject *closestObject = NULL; 
 	//in meters how far we can pick objects
-	Real closestDistance = WF2OGRE(10000.0); //TODO:set this to something closer, 10000m is for debugging
+	Real closestDistance = 10000; //TODO:set this to something closer, 10000m is for debugging
 	 
 	std::list< RaySceneQueryResultEntry >::iterator rayIterator; 
-	   
-	Ogre::UserDefinedObject* avatarObject = dynamic_cast<Ogre::UserDefinedObject*>(mAvatar->mErisAvatarEntity);
-	for ( rayIterator = result.begin( ); 
-		rayIterator != result.end( ); 
-		rayIterator++ ) {
-		//only pick entities that have a userobject attached
-		if (( *rayIterator ).movable->getUserObject() != NULL) {
-			//we don't want to pick ourselves
-			if ( ( *rayIterator ).movable->getUserObject() != avatarObject) { 
+	std::list< RaySceneQueryResultEntry >::iterator rayIterator_end; 
+/*
+	std::stringstream temp;
+	Ogre::SceneManager::EntityIterator iter = DimeOgre::getSingletonPtr()->getSceneManager()->getEntityIterator();
+	int count = 0;
+	while (iter.hasMoreElements()) {
+		count++;
+		Ogre::Entity* ent = iter.getNext();
+		temp << ent->getName() << ": " << Ogre::StringConverter::toString(ent->getBoundingBox().getMinimum());
+		temp << "/" << Ogre::StringConverter::toString(ent->getWorldBoundingBox().getMinimum());
+		temp << " ::: ";
+		temp << Ogre::StringConverter::toString(ent->getBoundingBox().getMaximum());
+		temp << "/" << Ogre::StringConverter::toString(ent->getWorldBoundingBox().getMaximum());
+		temp << "\n";
+	}
+	fprintf(stderr, temp.str().c_str() );
+*/
+	//Ogre::UserDefinedObject* avatarObject = dynamic_cast<Ogre::UserDefinedObject*>(mAvatar->mErisAvatarEntity);
+	rayIterator = result.begin( );
+	rayIterator_end = result.end( );
+	if (rayIterator != rayIterator_end) {
+		for ( ; 
+			rayIterator != rayIterator_end; 
+			rayIterator++ ) {
+			//only pick entities that have a userobject attached
+			if (( *rayIterator ).movable && ( *rayIterator ).movable->getUserObject() != NULL && (( *rayIterator ).movable->getQueryFlags() & ~DimeEntity::CM_AVATAR)) {
 				if ( ( *rayIterator ).distance < closestDistance ) { 
 					closestObject = ( *rayIterator ).movable; 
 					closestDistance = ( *rayIterator ).distance; 
 				}
-			} 
-		}
-	} 
+			}
+		} 
+	}
+
  
    // No movable clicked 
 	if ( closestObject == NULL ) {    
-     // Nada! 
+
 	     mEntityUnderCursor == NULL;
 	     return NULL;
 		Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 	} else { 
 		mEntityUnderCursor = dynamic_cast<DimeEntity*>(closestObject->getUserObject());
+
 		return  mEntityUnderCursor;
-     // Yippee! 
+
 	} 		
 	
 }

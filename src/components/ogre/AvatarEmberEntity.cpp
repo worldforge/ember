@@ -17,8 +17,10 @@
 */
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
+#include "PersonDimeEntity.h"
 #include "framework/ConsoleBackend.h"
 #include "Avatar.h"
+#include "Model.h"
 #include "GUIManager.h"
 #include "AvatarDimeEntity.h"
 
@@ -27,8 +29,9 @@ namespace DimeOgre {
 
 AvatarDimeEntity::AvatarDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 mAvatar(NULL)
-,DimePhysicalEntity(ge, vw, sceneManager, nodeWithModel)
+,PersonDimeEntity(ge, vw, sceneManager, nodeWithModel)
 {
+	this->mModel->setQueryFlags(DimeEntity::CM_AVATAR);
 }
 
 AvatarDimeEntity::~AvatarDimeEntity()
@@ -72,7 +75,7 @@ void AvatarDimeEntity::setVisible(bool vis)
 	//mOgreEntity->setVisible(true);	
 }
 */
-
+/*
 void AvatarDimeEntity::addMember(Entity *e) 
 {
 	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
@@ -83,6 +86,7 @@ void AvatarDimeEntity::addMember(Entity *e)
 	DimePhysicalEntity::addMember(e);
 	
 }
+*/
 /*
 void AvatarDimeEntity::rmvMember(Entity *e)
 {
@@ -121,6 +125,7 @@ Ogre::SceneNode* AvatarDimeEntity::getAvatarSceneNode()
 {
 	return mScaleNode;	
 }
+
 
 
 

@@ -30,7 +30,8 @@ DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
 			DimeTerrainSceneManager.cpp TerrainShader.cpp \
 			GUIManager.cpp WorldDimeEntity.cpp \
 			DimePhysicalEntity.cpp Model.cpp \
-			SubModel.cpp SubModelPart.cpp
+			SubModel.cpp SubModelPart.cpp \
+			PersonDimeEntity.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

@@ -16,6 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
@@ -28,7 +29,6 @@ Model::Model(Ogre::SceneManager* sceneManager, std::string name)
 , mName(name)
 , mSceneManager(sceneManager)
 , mScale(0)
-, mDimensions(Ogre::Vector3::UNIT_SCALE)
 , mRotation(0)
 , mVisible(true)
 {}
@@ -71,10 +71,6 @@ void Model::setVisible(bool visible)
 }
 
 
-const Ogre::Vector3 Model::getDimensions() const
-{
-	return mDimensions;
-}
 
 const Ogre::Real Model::getScale() const
 {
@@ -84,6 +80,11 @@ const Ogre::Real Model::getScale() const
 const Ogre::Real Model::getRotation() const
 {
 	return mRotation;
+}
+
+const unsigned short Model::getUseScaleOf() const
+{
+	return mUseScaleOf;
 }
 
 
@@ -127,12 +128,6 @@ bool Model::createFromXML(std::string path)
 	
 	xercesc::DOMElement* root = doc->getDocumentElement();
 	
-	xercesc::XMLString::transcode("width", tempStr, 99);
-	mDimensions.x = atof(xercesc::XMLString::transcode(root->getAttribute(tempStr)));
-	xercesc::XMLString::transcode("height", tempStr, 99);
-	mDimensions.y = atof(xercesc::XMLString::transcode(root->getAttribute(tempStr)));
-	xercesc::XMLString::transcode("depth", tempStr, 99);
-	mDimensions.z = atof(xercesc::XMLString::transcode(root->getAttribute(tempStr)));
 	xercesc::XMLString::transcode("scale", tempStr, 99);
 	if (root->hasAttribute(tempStr)) {
 		mScale = atof(xercesc::XMLString::transcode(root->getAttribute(tempStr)));
@@ -141,7 +136,23 @@ bool Model::createFromXML(std::string path)
 	if (root->hasAttribute(tempStr)) {
 		mRotation = atof(xercesc::XMLString::transcode(root->getAttribute(tempStr)));
 	}
+	xercesc::XMLString::transcode("usescaleof", tempStr, 99);
+	if (root->hasAttribute(tempStr)) {
+		std::string useScaleOf = xercesc::XMLString::transcode(root->getAttribute(tempStr));
+		if (useScaleOf == "height") {
+			mUseScaleOf = MODEL_HEIGHT;
+		} else if (useScaleOf == "width") {
+			mUseScaleOf = MODEL_WIDTH;
+		} else {
+			mUseScaleOf = MODEL_DEPTH;
+		}
+	}
 	 
+	xercesc::XMLString::transcode("animations", tempStr, 99);
+	xercesc::DOMNodeList* animationNodes = doc->getElementsByTagName(tempStr);
+	if (animationNodes->getLength()) {
+		readAnimations(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(0)));
+	}	 
 
 	xercesc::XMLString::transcode("submodel", tempStr, 99);
 	xercesc::DOMNodeList* submodelsNodes = doc->getElementsByTagName(tempStr);
@@ -205,6 +216,35 @@ bool Model::createFromXML(std::string path)
 	
 }
 
+void Model::readAnimations(xercesc::DOMElement* animationsNode)
+{
+	XMLCh tempStr[100];
+	
+	xercesc::XMLString::transcode("animation", tempStr, 99);
+	xercesc::DOMNodeList* animationNodes = animationsNode->getElementsByTagName(tempStr);
+	for (unsigned int i = 0; i < animationNodes->getLength(); ++i) {
+		std::multiset< AnimationPart* >* animationPartSet = new std::multiset< AnimationPart* >();
+		xercesc::XMLString::transcode("animationpart", tempStr, 99);
+		xercesc::DOMNodeList* animationPartNodes = dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getElementsByTagName(tempStr);
+		for (unsigned int j = 0; j< animationPartNodes->getLength(); ++j) {
+			AnimationPart* animPart = new AnimationPart();
+			xercesc::XMLString::transcode("name", tempStr, 99);
+			std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationPartNodes->item(j))->getAttribute(tempStr));
+			xercesc::XMLString::transcode("weight", tempStr, 99);
+			Ogre::Real weight = atof(xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationPartNodes->item(j))->getAttribute(tempStr)));
+			animPart->name = name;
+			animPart->weight = weight;
+			animationPartSet->insert(animPart);
+		}
+		xercesc::XMLString::transcode("name", tempStr, 99);
+		std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getAttribute(tempStr));
+		mAnimationPartMap.insert(AnimationPartMap::value_type(name, animationPartSet));
+
+	}
+	
+}
+
+
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 {
 	if (mSubmodels.size()) {
@@ -258,8 +298,10 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 */
 void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 {
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
 	if (mVisible) {
-	 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != mSubmodels.end(); ++I) {
+	 	for (; I != I_end; ++I) {
 			SubModel* submodel = *I;
 			submodel->getEntity()->_notifyCurrentCamera(cam);		
 		}
@@ -269,8 +311,10 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 
 void Model::setUserObject (Ogre::UserDefinedObject *obj)
 {
- 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != mSubmodels.end(); ++I) {
-		SubModel* submodel = *I;
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+ 		SubModel* submodel = *I;
 		submodel->getEntity()->setUserObject(obj);		
 	}
 }
@@ -279,7 +323,9 @@ void Model::setUserObject (Ogre::UserDefinedObject *obj)
 /// Overridden - see MovableObject.
 void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 {
-  	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != mSubmodels.end(); ++I) {
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
 		SubModel* submodel = *I;
 		submodel->getEntity()->setRenderQueueGroup(queueID);
 	}
@@ -306,6 +352,32 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 	 
 //	 std::cout << "Boundingbox: " << full_aa_box->getMaximum().x << " : " << full_aa_box->getMaximum().y << " : " << full_aa_box->getMaximum().z;
 	 
+	 //full_aa_box->scale(mParentNode->_getDerivedScale());
+	return *full_aa_box;
+}
+
+/** Overridden - see MovableObject.
+*/
+const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
+{
+	Ogre::AxisAlignedBox aa_box;
+	Ogre::AxisAlignedBox* full_aa_box = new Ogre::AxisAlignedBox();
+	full_aa_box->setNull();
+	 
+	SubModelSet::const_iterator child_itr = mSubmodels.begin();
+	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
+
+	for( ; child_itr != child_itr_end; child_itr++)
+	{
+		SubModel* submodel = *child_itr;
+		aa_box = submodel->getEntity()->getWorldBoundingBox(derive);
+ 
+ 		full_aa_box->merge(aa_box);
+	}
+	 
+//	 std::cout << "Boundingbox: " << full_aa_box->getMaximum().x << " : " << full_aa_box->getMaximum().y << " : " << full_aa_box->getMaximum().z;
+	 
+	 //full_aa_box->scale(mParentNode->_getDerivedScale());
 	return *full_aa_box;
 }
 
@@ -332,7 +404,9 @@ Ogre::Real Model::getBoundingRadius() const
 void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
 	if (mVisible) {
-		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != mSubmodels.end(); ++I) {
+		SubModelSet::const_iterator I = mSubmodels.begin();
+		SubModelSet::const_iterator I_end = mSubmodels.end();
+		for (; I != I_end; ++I) {
 			SubModel* submodel = *I;
 			submodel->getEntity()->_updateRenderQueue(queue);
 		}
@@ -352,11 +426,50 @@ const Ogre::String& Model::getMovableType(void) const
 	return msMovableType;
 }
 
+void Model::setQueryFlags(unsigned long flags) 
+{
+	MovableObject::setQueryFlags(flags);
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+		SubModel* submodel = *I;
+		submodel->getEntity()->setQueryFlags(flags);
+	}
+}
+
+void Model::addQueryFlags(unsigned long flags)
+{
+	MovableObject::addQueryFlags(flags);
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+		SubModel* submodel = *I;
+		submodel->getEntity()->addQueryFlags(flags);
+	}
+	
+}
+		
+
+void Model::removeQueryFlags(unsigned long flags)
+{
+	MovableObject::removeQueryFlags(flags);
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+		SubModel* submodel = *I;
+		submodel->getEntity()->removeQueryFlags(flags);
+	}
+	
+}
+
+
 /** Overridden from MovableObject */
 void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 {
 	MovableObject::_notifyAttached(parent, isTagPoint);
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != mSubmodels.end(); ++I) {
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
 		SubModel* submodel = *I;
 		submodel->getEntity()->_notifyAttached(parent, isTagPoint);
 	}

@@ -59,11 +59,11 @@ TerrainGenerator::TerrainGenerator()
   
 //    this->addShader(new TerrainShader("granite.png", new Mercator::FillShader()));
     this->addShader(new TerrainShader("terr_rock6.jpg", new Mercator::FillShader()));
-    this->addShader(new TerrainShader("sand.png", new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
+/*    this->addShader(new TerrainShader("sand.png", new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
     this->addShader(new TerrainShader("rabbithill_grass_hh.png", new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
     this->addShader(new TerrainShader("dark.png", new Mercator::DepthShader(0.f, -10.f))); // Underwater
     this->addShader(new TerrainShader("snow.png", new Mercator::HighShader(110.f))); // Snow
-    
+  */  
     mTerrainPageSource = new DimeTerrainPageSource(this);
     DimeOgre::getSingleton().getSceneManager()->registerPageSource("DimeTerrain", mTerrainPageSource);
     

@@ -18,13 +18,16 @@
 
 #include "DimeEntity.h"
 #include "TerrainGenerator.h"
+#include "Model.h"
 #include "WorldDimeEntity.h"
 
 namespace DimeOgre {
 WorldDimeEntity::WorldDimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
 mTerrainGenerator(terrainGenerator),
 DimeEntity(ge, vw, sceneManager)
-{}
+{
+//	this->mModel->setQueryFlag(DimeEntity::CM_TERRAIN);
+}
 
 WorldDimeEntity::~WorldDimeEntity()
 {}

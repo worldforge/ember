@@ -32,9 +32,34 @@ namespace DimeOgre {
 class SubModel;
 class SubModelPart;
 
+/*
+ * This is the standard model used in dime.
+ * A model can be made out of different entities, just as long as they share a skeleton.
+ * The model consists of different parts, represented by instances of SubModelPart. 
+ * Typical parts would be a body or a shirt. These parts can be turned on or off.
+ * That allows for the use of a single mesh with many different submeshes.
+ * 
+ * A model is typically instanciated from a modeldef.xml file through the use
+ * of createFromXML(...)
+ */
+
 class Model : public Ogre::MovableObject
 {
 public:
+	enum UseScaleOf {
+		MODEL_HEIGHT = 1,
+		MODEL_WIDTH = 2,
+		MODEL_DEPTH = 3
+	};
+	
+	struct AnimationPart
+	{
+		std::string name;
+		Ogre::Real weight;
+	};
+	
+	typedef std::map<std::string, std::multiset< AnimationPart* >* > AnimationPartMap;
+
 	typedef std::set<SubModel*> SubModelSet;
 	typedef std::set<std::string> StringSet;
 	typedef std::map<std::string, StringSet > SubModelPartMapping;
@@ -50,9 +75,9 @@ public:
 	void hidePart(std::string partName);
 	void setVisible(bool visible);
 	
-	const Ogre::Vector3 getDimensions() const;
 	const Ogre::Real getScale() const;
 	const Ogre::Real getRotation() const;
+	const unsigned short getUseScaleOf() const;
 	
 	bool createFromXML(std::string path);
 
@@ -61,6 +86,7 @@ public:
 	Ogre::SkeletonInstance * getSkeleton ();
 	void attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	Ogre::MovableObject * detachObjectFromBone (const Ogre::String &movableName);
+
 
         /** Overridden - see MovableObject.
         */
@@ -77,6 +103,10 @@ public:
         */
         virtual const Ogre::AxisAlignedBox& getBoundingBox(void) const;
 
+        /** Overridden - see MovableObject.
+        */
+		virtual const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const;
+		
 		virtual Ogre::Real getBoundingRadius() const;
 
         /** Overridden - see MovableObject.
@@ -90,10 +120,28 @@ public:
         virtual const Ogre::String& getMovableType(void) const;
 
         /** Overridden from MovableObject */
+		virtual void setQueryFlags(unsigned long flags);
+		
+        /** Overridden from MovableObject */
+		virtual void addQueryFlags(unsigned long flags);
+		
+        /** Overridden from MovableObject */
+		virtual void removeQueryFlags(unsigned long flags);
+
+        /** Overridden from MovableObject */
         virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);	
 protected:
 	static Ogre::String msMovableType;
 	
+	/*
+	 * a map of all the Ogre::Animations that make up a certain animation
+	 */
+	AnimationPartMap mAnimationPartMap;
+	
+	/*
+	 * read info about the animations from the an animation node
+	 */
+	void readAnimations(xercesc::DOMElement* animationsNode);
 	
 	std::string mName;
 	
@@ -104,8 +152,9 @@ protected:
 	Ogre::SkeletonInstance* mSkeletonInstance;
 	
 	Ogre::Real mScale;
-	Ogre::Vector3 mDimensions;
 	Ogre::Real mRotation;
+	
+	unsigned short mUseScaleOf;
 	
 	bool mVisible;
 	

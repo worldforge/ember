@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.46  2004-08-19 21:23:48  erik
+ *      Revision 1.47  2004-08-22 22:20:01  erik
+ *      2004-08-23 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      /src/components/ogre/:
+ *      *added PersonDimeEntity for taking care of person entities (which can hold stuff in their hands etc.)
+ *      *small changes to scene layout, mostly for testing 3d performance
+ *      *use better handling of bounding boxes in ogre, there's a call to MeshManager in DimeOgre.cpp which requires a patch to ogre. The call can be safely removed though.
+ *
+ *      Revision 1.46  2004/08/19 21:23:48  erik
  *      2004-08-19 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre/:
@@ -569,6 +577,9 @@ bool DimeOgre::setup(void)
     // Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
+	//remove padding for bounding boxes
+    Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);    
+
 
     createFrameListener();
 
@@ -610,26 +621,9 @@ void DimeOgre::chooseSceneManager(void)
     
     DimeTerrainSceneManager* mDimeTerr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
     assert(mDimeTerr);
+
     
- //   const Ogre::String terrainTexture = Ogre::String("terrain_texture.jpg");
- //   const Ogre::String terrainDetail = Ogre::String("terrain_detail.jpg");
     
-//    mSceneMgr->setDetailTexture(terrainDetail);
-//    mSceneMgr->setWorldTexture(terrainTexture);
-//    mSceneMgr->setTileSize(64);
-//    mSceneMgr->setPageSize(64 * 3);
-//    mSceneMgr->setScale(Ogre::Vector3(1,1,1));
- //   mPageSource = new DimeTerrainPageSource(&TerrainGenerator::getSingleton());
- //   mSceneMgr->registerPageSource("DimeTerrain", mPageSource);
-//    Ogre::TerrainPageSourceOptionList option;
- //   mSceneMgr->selectPageSource("DimeSource", option);
-    
-//    const Ogre::String config = Ogre::String("terrain.cfg");
-//    mSceneMgr->setWorldGeometry(config);
-    
-//    setGenerator(&TerrainGenerator::getSingleton());
-    //terr->setShowBoxes(true);
-    //DimeOgre::sceneMgr = mSceneMgr;
 }
 
 void DimeOgre::createViewports(void)
@@ -679,8 +673,8 @@ void DimeOgre::setupResources(void)
 
 void DimeOgre::createScene(void)
 {
-
-  mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	//mSceneMgr->showBoundingBoxes(true);
+  mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
   // Create a light
   Ogre::Light* l = mSceneMgr->createLight("MainLight");
   l->setPosition(WF2OGRE_VECTOR3(150,150,150));
@@ -712,7 +706,8 @@ void DimeOgre::createScene(void)
         );
 
         waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
-        waterEntity->setMaterialName("Examples/TextureEffect4"); 
+        waterEntity->setMaterialName("Water"); 
+        waterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
 		
 		
         Ogre::SceneNode *waterNode = 

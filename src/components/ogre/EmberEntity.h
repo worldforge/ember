@@ -58,6 +58,16 @@ class DimeEntity : public Ogre::UserDefinedObject, public Eris::Entity {
 	friend class DimeEntityFactory;
 public:
 
+	enum ClickMasks
+	{
+		CM_AVATAR = 1<<0,
+		CM_PERSONS = 1<<1,
+		CM_CREATURES = 1<<2,
+		CM_NATURE = 1<<3,
+		CM_UNDEFINED = 1<<4,
+		CM_TERRAIN = 1<<5
+	};
+
 	DimeEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::World* vw, Ogre::SceneManager* sceneManager);
 	virtual ~DimeEntity();
 	
@@ -82,6 +92,13 @@ public:
 	 * return the scenenode to which this entity belongs
 	 */
 	Ogre::SceneNode* getSceneNode();
+
+	/*
+	 * Called by a contained member to see if the member is allowed to be shown.
+	 * This can be reimplemented in a subclass such as AvatarDimeEntity to 
+	 * disallow things that belongs to a characters inventory to be shown.
+	 */
+	virtual bool allowVisibilityOfMember(DimeEntity* entity);
 
 
 

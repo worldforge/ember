@@ -79,7 +79,7 @@ void DimeTerrainPageSource::setHasTerrain(bool hasTerrain)
 {
 	mHasTerrain = hasTerrain;	
 
-	int size = 4;
+	int size = 2;
 	//this is temporary until we've got paging working
 	for (int i = 0 - size; i <= 0 + size; ++i) {
 		for (int j = 0 - size; j <= 0 + size; ++j) {

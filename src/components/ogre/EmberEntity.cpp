@@ -142,6 +142,9 @@ void DimeEntity::setContainer(Entity *pr)
 	Eris::Entity::setContainer(pr);
 }
 
+bool DimeEntity::allowVisibilityOfMember(DimeEntity* entity) {
+	return true;
+}
 
 /*
 void DimeEntity::addMember(Entity *e) 

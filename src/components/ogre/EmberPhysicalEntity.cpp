@@ -35,6 +35,7 @@ mScaleNode(nodeWithModel)
 {
 //	mOgreEntity = static_cast<Ogre::Entity*>(nodeWithEntity->getAttachedObject(0));
 	mModel = static_cast<Model*>(nodeWithModel->getAttachedObject(0));
+	mModel->setQueryFlags(DimeEntity::CM_UNDEFINED);
 
 	assert(mOgreNode);
 	assert(mScaleNode);
@@ -95,35 +96,51 @@ void DimePhysicalEntity::scaleNode() {
 			mScaleNode->setScale(mModel->getScale(), mModel->getScale(), mModel->getScale());
 		}
 	} else {
-		
-/*		const Ogre::AxisAlignedBox ogreBoundingBox = mOgreEntity->getBoundingBox();
+		const Ogre::AxisAlignedBox ogreBoundingBox = mModel->getWorldBoundingBox(true);
 		const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
 		const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
 	
 		if (hasBBox()) {
-*/
+
 			const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
 			const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
 			const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
-			Ogre::Vector3 dimensions = mModel->getDimensions();
 			
-			Ogre::Real scaleX = ((wfMax.x() - wfMin.x()) / dimensions.x);		
-			Ogre::Real scaleY = ((wfMax.z() - wfMin.z()) / dimensions.y);		
-			Ogre::Real scaleZ = ((wfMax.y() - wfMin.y()) / dimensions.z);		
+			Ogre::Real scaleX;		
+			Ogre::Real scaleY;		
+			Ogre::Real scaleZ;		
+
+			switch (mModel->getUseScaleOf()) {
+				case Model::MODEL_HEIGHT:
+					scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+					break;
+				case Model::MODEL_WIDTH:
+					scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+					break;
+				case Model::MODEL_DEPTH:
+					scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+					break;
+					
+				default:				
+					scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+					scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+					scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+			}
+				
 			
-			Ogre::Real finalScale = std::max(scaleX, scaleY);
-			finalScale = std::max(finalScale, scaleZ);
-			mScaleNode->setScale(finalScale, finalScale, finalScale);
+			//Ogre::Real finalScale = std::max(scaleX, scaleY);
+			//finalScale = std::max(finalScale, scaleZ);
+			mScaleNode->setScale(scaleX, scaleY, scaleZ);
 			
-/*		} else {
+		} else {
 			//set to small size
 			
-			Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x)) * scaler.x;		
-			Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y)) * scaler.y;		
-			Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z)) * scaler.z;		
+			Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
+			Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
+			Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
 			mScaleNode->setScale(scaleX, scaleY, scaleZ);
 		}		
-*/
+
 	}	
 	
 }
@@ -163,8 +180,18 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
 
 void DimePhysicalEntity::setVisible(bool vis)
 {
-	//TODO
-	mModel->setVisible(vis);	
+	DimeEntity* container = dynamic_cast<DimeEntity*>(getContainer());
+	if (container) {
+		//check with the parent first if we should show ourselves
+		if (vis && container->allowVisibilityOfMember(this)) {
+			mModel->setVisible(true);	
+		} else {
+			mModel->setVisible(false);	
+		}
+		
+	} else {
+		mModel->setVisible(vis);
+	}
 }
 
 /*
@@ -191,7 +218,7 @@ void DimePhysicalEntity::setContainer(Entity *pr)
 
 void DimePhysicalEntity::adjustHeightPosition()
 {
-	DimePhysicalEntity* container = (DimePhysicalEntity*)getContainer();
+	DimePhysicalEntity* container = static_cast<DimePhysicalEntity*>(getContainer());
 	if (container) {
 		container->adjustHeightPositionForContainedNode(this);
 	}
