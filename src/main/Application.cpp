@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.13  2002-04-20 17:19:24  nikal
+ *      Revision 1.14  2002-04-24 22:38:00  aglanor
+ *      modified dimeservices and main app so MetaserverService is included, can be instantiated and is polled each step of the main loop
+ *
+ *      Revision 1.13  2002/04/20 17:19:24  nikal
  *      Events now have their own classes which are passed to the listeners.  and buttonup, buttondown, mousexit, and mouseenter all work properly.
  *
  *      Revision 1.12  2002/04/17 04:02:09  nikal
@@ -127,7 +130,7 @@ namespace dime
 
         myLoggingService = DimeServices::getInstance()->getLoggingService();
         myLoggingService->addObserver(new CerrLogObserver());
-		
+
         if(width >=0)
             {
                 myWidth=width;
@@ -172,13 +175,18 @@ namespace dime
 
 		// Initialize the GuiService.
 		myGuiService = DimeServices::getInstance()->getGuiService();
-		
+
 		// Set the DrawDevice target for GuiService
 		myGuiService->setDrawTarget(myDrawDevice);
+
+		// Initialize and start the MetaserverService.
+		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
+		myMetaserverService->start();
+
     }
 
     Application::~Application() {
-        if(myScreen != NULL) 
+        if(myScreen != NULL)
             {
                 SDL_FreeSurface(myScreen);
             }
@@ -187,13 +195,18 @@ namespace dime
 
     void Application::mainLoopStep() 
     {
-        
+
+	// SDL event polling
         SDL_Event nextEvent;
         while(SDL_PollEvent(&nextEvent)) 
             {
                 dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
             }
         myGuiService->refresh();
+
+	// Metaserver polling
+	// TODO: this shall later be a DefaultPoll::Poll to poll all eris connections
+	myMetaserverService->poll();
     }
 
     void Application::mainLoop() 

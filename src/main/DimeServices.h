@@ -24,6 +24,7 @@
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
 #include <services/gui/GuiService.h>
+#include <services/metaserver/MetaserverService.h>
 
 // Include custom library headers here
 
@@ -90,6 +91,11 @@ class DimeServices
 	 * The instance of the GuiService
      */
     dime::GuiService *myGuiService;
+
+    /**
+	* The instance of the MetaserverService
+     */
+    dime::MetaserverService *myMetaserverService;
 
     /**
      * The DimeServices singleton instance.
@@ -169,6 +175,15 @@ class DimeServices
     {
         if (myGuiService == NULL) myGuiService = new dime::GuiService();
 		return myGuiService;
+    }
+
+    /**
+     * Returns an instance of the MetaserverService
+     */
+    dime::MetaserverService *getMetaserverService()
+    {
+        if (myMetaserverService == NULL) myMetaserverService = new dime::MetaserverService();
+		return myMetaserverService;
     }
 
     //----------------------------------------------------------------------

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.10  2002-04-20 20:37:04  tim
+ *      Revision 1.11  2002-04-24 22:38:00  aglanor
+ *      modified dimeservices and main app so MetaserverService is included, can be instantiated and is polled each step of the main loop
+ *
+ *      Revision 1.10  2002/04/20 20:37:04  tim
  *      Compatibility and bug fixes
  *
  *      Revision 1.9  2002/04/15 05:53:15  nikal
@@ -153,6 +156,10 @@ namespace dime
          */
         dime::InputService *myInputService;
 
+        /**
+         * Our pointer to the MetaserverService
+         */
+        dime::MetaserverService *myMetaserverService;
 
         /**
          * Our pointer to the SDL_surface we use as the screen
