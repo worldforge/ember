@@ -183,7 +183,7 @@ class State
 
     void load()
       {
-	Widget* root = DimeServices::getInstance()->getGuiService()->getRootWidget();
+	Widget& root = DimeServices::getInstance()->getGuiService()->getRootWidget();
 
 	// For each widget in myWidgets ask it to make itself and
 	// children. Then return a pointer to the made Widget for
@@ -192,7 +192,7 @@ class State
 
     void unload()
       {
-	DimeServices::getInstance()->getGuiService()->getRootWidget()->removeAllWidgets();
+	DimeServices::getInstance()->getGuiService()->getRootWidget().removeAllWidgets();
       }
     
     //======================================================================
