@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.15  2003-04-23 21:47:33  aglanor
+ *      Revision 1.16  2003-04-24 19:20:41  aglanor
+ *      Cleanup. All FrameListeners are gone.
+ *
+ *      Revision 1.15  2003/04/23 21:47:33  aglanor
  *      Added a new FrameListener capable of switching between modes.
  *
  *      Revision 1.14  2003/04/22 22:35:33  nikal
@@ -173,390 +176,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 
     };
 
-
-class TerrainListener : public BaseFrameListener
-{
-
-	public:
-		TerrainListener(RenderWindow* win, Camera* cam) :BaseFrameListener(win, cam) { };
-
- // Override frameStarted event to process that (don't care about frameEnded)
-    bool frameStarted(const FrameEvent& evt)
-    {
-        float moveScale;
-        float rotScale;
-        // local just to stop toggles flipping too fast
-        static Real timeUntilNextToggle = 0;
-        if (timeUntilNextToggle >= 0)
-            timeUntilNextToggle -= evt.timeSinceLastFrame;
-
-        // If this is the first frame, pick a speed
-        if (evt.timeSinceLastFrame == 0)
-        {
-            moveScale = 1;
-            rotScale = 0.1;
-        }
-        // Otherwise scale movement units by time passed since last frame
-        else
-        {
-            // Move about 100 units per second,
-            moveScale = 10.0 * evt.timeSinceLastFrame;
-            // Take about 10 seconds for full rotation
-            rotScale = 36 * evt.timeSinceLastFrame;
-        }
-
-        // Grab input device state
-        mInputDevice->capture();
-
-        static Vector3 vec;
-
-        vec = Vector3::ZERO;
-
-        if (mInputDevice->isKeyDown(KC_A))
-        {
-            // Move camera left
-            vec.x = -moveScale;
-        }
-
-        if (mInputDevice->isKeyDown(KC_D))
-        {
-            // Move camera RIGHT
-            vec.x = moveScale;
-        }
-
-        if (mInputDevice->isKeyDown(KC_UP) || mInputDevice->isKeyDown(KC_W))
-        {
-            // Move camera forward
-            vec.z = -moveScale;
-        }
-
-        if (mInputDevice->isKeyDown(KC_DOWN) || mInputDevice->isKeyDown(KC_S))
-        {
-            // Move camera backward
-            vec.z = moveScale;
-        }
-
-        if (mInputDevice->isKeyDown(KC_PGUP))
-        {
-            // Move camera up
-            vec.y = moveScale;
-        }
-
-        if (mInputDevice->isKeyDown(KC_PGDOWN))
-        {
-            // Move camera down
-            vec.y = -moveScale;
-        }
-
-        if (mInputDevice->isKeyDown(KC_RIGHT))
-        {
-            mCamera->yaw(-rotScale);
-        }
-        if (mInputDevice->isKeyDown(KC_LEFT))
-        {
-            mCamera->yaw(rotScale);
-        }
-
-        if( mInputDevice->isKeyDown( KC_ESCAPE) )
-        {
-            return false;
-        }
-
-
-
-        // Make position changes to the camera
-        mCamera->moveRelative(vec);
-
-        // Rotate scene node if required
-        SceneNode* node = mCamera->getSceneManager()->getRootSceneNode();
-        if (mInputDevice->isKeyDown(KC_O))
-        {
-            node->yaw(rotScale);
-        }
-        if (mInputDevice->isKeyDown(KC_P))
-        {
-            node->yaw(-rotScale);
-        }
-        if (mInputDevice->isKeyDown(KC_I))
-        {
-            node->pitch(rotScale);
-        }
-        if (mInputDevice->isKeyDown(KC_K))
-        {
-            node->pitch(-rotScale);
-        }
-
-        if (mInputDevice->isKeyDown(KC_F) && timeUntilNextToggle <= 0)
-        {
-            mStatsOn = !mStatsOn;
-            Root::getSingleton().showDebugOverlay(mStatsOn);
-
-            timeUntilNextToggle = 1;
-        }
-
-
-        // Return true to continue rendering
-        return true;
-    }
-
-};
-
-// Listens to the mouse - can switch between buffered and unbuffered mode
-class MouseFrameListener : public BaseFrameListener
-{
-private:
-	bool mBuffered;
-
-	EventProcessor* mEventProcessor;
-
-public:
-
-	MouseFrameListener(RenderWindow* win, Camera* cam, bool buffered = false) : BaseFrameListener(win, cam)
-	{
-		mBuffered = buffered;
-	}
-
-	~MouseFrameListener()
-	{
-		if(mEventProcessor!=NULL)
-			delete mEventProcessor;
-	}
-
-	bool frameStarted(const FrameEvent& evt)
-	{
-		// local just to stop toggles flipping too fast
-        static Real timeUntilNextToggle = 0;
-        if (timeUntilNextToggle >= 0)
-            timeUntilNextToggle -= evt.timeSinceLastFrame;
-
-
-			// Copy the current state of the input devices
-			mInputDevice->capture();
-
-/*
-			if(mInputDevice->isKeyDown(Ogre::KC_H) && timeUntilNextToggle <= 0) {
-				if(mBuffered) {
-					mBuffered = false;
-					fprintf(stderr, "TRACE - BUFFERED MODE ON\n");
-					timeUntilNextToggle = 1;
-				} else {
-					mBuffered = true;
-
-					fprintf(stderr, "TRACE - BUFFERED MODE OFF\n");
-					timeUntilNextToggle = 1;
-				}
-			}
-*/
-
-		if(mBuffered) {
-
-			if(mInputDevice->isKeyDown(Ogre::KC_H) && timeUntilNextToggle <= 0) {
-				Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
-				o->hide();
-				//delete mEventProcessor;
-				mBuffered = false;
-				fprintf(stderr, "TRACE - BUFFERED MODE OFF\n");
-				timeUntilNextToggle = 1;
-			}
-
-		} else { // not buffered: we can mouselook
-
-			if(mInputDevice->isKeyDown(Ogre::KC_H) && timeUntilNextToggle <= 0) {
-				Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
-				o->show();
-				//OverlayManager::getSingleton().createCursorOverlay();
-
-//            	OverlayManager::getSingleton().createCursorOverlay();
-
-		mEventProcessor = new EventProcessor();
-		mEventProcessor->initialise(mWindow);
-		OverlayManager::getSingleton().createCursorOverlay();
-		mEventProcessor->startProcessingEvents();
-
-				mBuffered = true;
-				fprintf(stderr, "TRACE - BUFFERED MODE ON\n");
-				timeUntilNextToggle = 1;
-			}
-
-			// Rotate view by mouse relative position
-        	float rotX, rotY;
-        	rotX = -mInputDevice->getMouseRelativeX() * 0.13;
-        	rotY = -mInputDevice->getMouseRelativeY() * 0.13;
-			mCamera->yaw(rotX);
-			mCamera->pitch(rotY);
-
-		}
-
-
-
-			return true;
-	}
-
-};
-
-// TODO: find a proper way to do all this stuff (Aglanor)
-class DimeFrameListener : public BaseFrameListener
-{
-
-private:
-
-	OgreApplication* mOgreApplication;
-
-
-public:
-
-	DimeFrameListener(RenderWindow* win, Camera* cam, OgreApplication* app) : BaseFrameListener(win, cam)
-	{
-		mOgreApplication = app;
-	}
-
-	~DimeFrameListener() {}
-
-	bool frameStarted(const FrameEvent& evt)
-	{
-
-		// local just to stop toggles flipping too fast
-        static Real timeUntilNextToggle = 0;
-        if (timeUntilNextToggle >= 0)
-            timeUntilNextToggle -= evt.timeSinceLastFrame;
-
-
-// Eris polling
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
-		Eris::PollDefault::poll();
-#endif
-
-		// Copy the current state of the input devices
-		mInputDevice->capture();
-		
-		// Pressing 1 queries the metaserver
-		if(mInputDevice->isKeyDown(Ogre::KC_1)) {
-			// TODO: use META_REFRESH here, passing a string like this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getMetaserverService()->runCommand("meta_refresh","");
-		}
-		
-		// Pressing 2 connects to red.worldforge.org
-		if(mInputDevice->isKeyDown(Ogre::KC_2) && timeUntilNextToggle <= 0) {
-			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","65.100.132.92");
-			timeUntilNextToggle = 1;
-		}
-
-		// Pressing 3 logs in with the account 'ogretest'
-		if(mInputDevice->isKeyDown(Ogre::KC_3) && timeUntilNextToggle <= 0) {
-			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("login","ogretest ogretest");
-			timeUntilNextToggle = 1;
-		}
-
-		// Pressing 4 takes the character ''
-		if(mInputDevice->isKeyDown(Ogre::KC_4) && timeUntilNextToggle <= 0) {
-			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","ogre_207");
-			timeUntilNextToggle = 1;
-			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
-			mOgreApplication->connectWorldSignals();
-			timeUntilNextToggle = 1;
-		}
-
-
-		return true;
-	}
-};
-
-class CameraFrameListener : public BaseFrameListener
-{
-protected:
-	Camera* mCamera;
-	SceneDetailLevel normal;
-	SceneDetailLevel wireframe;
-	SceneDetailLevel sdl;
-
-public:
-
-	CameraFrameListener(RenderWindow* win, Camera* cam) : BaseFrameListener(win, cam)
-	{
-	                mCamera = cam;
-					normal = SDL_WIREFRAME;
-					wireframe = SDL_WIREFRAME;
-	}
-
-	bool frameStarted(const FrameEvent& evt)
-	{
-        // local just to stop toggles flipping too fast
-        static Real timeUntilNextToggle = 0;
-        if (timeUntilNextToggle >= 0)
-            timeUntilNextToggle -= evt.timeSinceLastFrame;
-
-		// Copy the current state of the input devices
-		mInputDevice->capture();
-
-		if(mInputDevice->isKeyDown(Ogre::KC_Y) && timeUntilNextToggle <= 0) {
-
-			// TODO: this is hackish. Fix it. (Aglanor)
-			SceneDetailLevel sdl = mCamera->getDetailLevel();
-			if(sdl!=wireframe) {
-				normal = sdl;
-				mCamera->setDetailLevel(SDL_WIREFRAME);
-
-			} else {
-				mCamera->setDetailLevel(normal);
-			}
-
-			timeUntilNextToggle = 1;
-		}
-
-		return true;
-  }
-
-};
-
-class CameraRotator : public BaseFrameListener
-{
-
-protected:
-        Camera* mCamera;
-        SceneNode* mCentralNode;
-        SceneNode* mRotatingNode;
-        Vector3 mRotationAxis;
-        Real mRotationSpeed;
-
-public:
-        CameraRotator(RenderWindow* win, Camera* cam, SceneNode* centralNode, Vector3 initialPosition) : BaseFrameListener(win, cam)
-        {
-                mCamera = cam;
-                mCentralNode = centralNode;
-                mRotationAxis = Vector3::UNIT_Y;
-                mRotationSpeed = 60.0;
-
-                // Create a node to act as the central rotation point
-                mRotatingNode = dynamic_cast<SceneNode*>(mCentralNode->createChild());
-
-                mRotatingNode->attachCamera(mCamera);
-                mCamera->moveRelative(initialPosition);
-                mCamera->lookAt(0, 0, 0);
-        }
-
-        ~CameraRotator()
-        {
-                delete mRotatingNode;
-        }
-
-		bool frameStarted(const FrameEvent& evt)
-		{
-			// Copy the current state of the input devices
-			mInputDevice->capture();
-
-			if(mInputDevice->isKeyDown(Ogre::KC_SPACE))
-			mRotatingNode->rotate(mRotationAxis, mRotationSpeed * evt.timeSinceLastFrame);
-
-			return true;
-        }
-
-};
-
 void OgreApplication::createScene(void)
 {
   mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
@@ -608,18 +227,25 @@ void OgreApplication::createScene(void)
 void OgreApplication::createFrameListener(void)
 {
 
+	fprintf(stderr, "TRACE - CREATING FRAME LISTENER\n");
 	DimeOgreFrameListener* dimeOgreFrameListener = new DimeOgreFrameListener(mWindow, mCamera, false, false);
 	mRoot->addFrameListener(dimeOgreFrameListener);
+	fprintf(stderr, "TRACE - CREATED FRAME LISTENER\n");
+
 
 	/*
 	MouseFrameListener* mouseFrameListener = new MouseFrameListener(mWindow, mCamera, false);
 	mRoot->addFrameListener(mouseFrameListener);
+	*/
+
+	/*
 	mFrameListener= new TerrainListener(mWindow, mCamera);
 	mRoot->addFrameListener(mFrameListener);
 	CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
 	mRoot->addFrameListener(cameraFrameListener);
 	DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera, this);
-	mRoot->addFrameListener(dimeFrameListener);*/
+	mRoot->addFrameListener(dimeFrameListener);
+	*/
 
 #if 0
     CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
