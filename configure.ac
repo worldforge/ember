@@ -310,6 +310,7 @@ AC_CONFIG_FILES([Makefile
 ])
 
 
+AC_OUTPUT
 
 AC_MSG_RESULT([
 
@@ -319,4 +320,3 @@ AC_MSG_RESULT([
 
 	])
 
-AC_OUTPUT
