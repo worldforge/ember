@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.18  2002-04-30 09:17:51  nikal
+ *      Revision 1.19  2002-05-10 22:35:49  tim
+ *      Fixed RepititionDevice (by adding something to SDL_INIT)
+ *
+ *      Revision 1.18  2002/04/30 09:17:51  nikal
  *      Remember to use proper capitalization in directory and file names.
  *
  *      Revision 1.17  2002/04/29 19:23:48  xmp
@@ -160,7 +163,7 @@ namespace dime
             {
                 myHeight=height;
             }
-        if((SDL_Init(SDL_INIT_VIDEO)==-1)) 
+        if((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER)==-1)) 
             {
                 myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, 
                                       "Couldn't init SDL");
