@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="Ember">
+	<Imageset Name="TaharezImagery" Filename="cegui/TaharezImageset.xml" />
+	<Font Name="Tahoma-14" Filename="cegui/tahoma-14.xml" />
+	<Font Name="Tahoma-8" Filename="cegui/tahoma-8.xml" />
+	<WindowSet Filename="libCEGUITaharezLook.so">
+		<WindowFactory Name="Taharez Frame Window" />
+		<WindowFactory Name="Taharez Titlebar" />
+		<WindowFactory Name="Taharez Button" />
+		<WindowFactory Name="Taharez Close Button" />
+		<WindowFactory Name="Taharez Checkbox" />
+		<WindowFactory Name="Taharez RadioButton" />
+		<WindowFactory Name="Taharez Slider" />
+		<WindowFactory Name="Taharez Slider Thumb" />
+		<WindowFactory Name="Taharez ProgressBar" />
+		<WindowFactory Name="Taharez AltProgressBar" />
+		<WindowFactory Name="Taharez Editbox" />
+		<WindowFactory Name="Taharez VertScrollbar" />
+		<WindowFactory Name="Taharez VertScrollbarThumb" />
+		<WindowFactory Name="Taharez MiniVertScrollbar" />
+		<WindowFactory Name="Taharez MiniVertScrollbarThumb" />
+		<WindowFactory Name="Taharez MiniHorzScrollbar" />
+		<WindowFactory Name="Taharez MiniHorzScrollbarThumb" />
+		<WindowFactory Name="Taharez StaticImage" />
+		<WindowFactory Name="Taharez StaticText" />
+		<WindowFactory Name="Taharez Listbox" />
+		<WindowFactory Name="Taharez Combobox" />
+		<WindowFactory Name="Taharez ComboEditbox" />
+		<WindowFactory Name="Taharez ComboDropList" />
+		<WindowFactory Name="Taharez ListHeaderSegment" />
+		<WindowFactory Name="Taharez ListHeader" />
+		<WindowFactory Name="Taharez MultiColumnList" />
+		<WindowFactory Name="Taharez MultiLineEditbox" />
+	</WindowSet>
+</GUIScheme>

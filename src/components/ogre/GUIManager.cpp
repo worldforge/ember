@@ -53,7 +53,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		fprintf(stderr, "CEGUI - SYSTEM CREATED\n");
 
-		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"guischeme.xml");
+		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/guischeme.xml");
 		fprintf(stderr, "CEGUI - TEST SCHEME LOADED\n");
 		
 		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezImagery", (CEGUI::utf8*)"MouseArrow");
