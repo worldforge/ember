@@ -362,7 +362,7 @@ class LoggingService: public Service
 
 	 //ATTENTION (by tim): I've changed this back to my initial version, because the presented
 	 // ones didn't compile using MSVC. Is there any problem with this on
-    void log(const string message, ...)
+    void log(const char *message, ...)
     {
         va_list vl;
         va_start(vl, message);
@@ -370,7 +370,7 @@ class LoggingService: public Service
         va_end(vl);  
     }
     
-        void log(const string & file, const string message, ...)
+        void log(const char *file, const char *message, ...)
             {
 		va_list vl;
 		va_start(vl, message);
@@ -378,7 +378,7 @@ class LoggingService: public Service
 		va_end(vl);
 	}
 
-	void log(const string & file, const int line, const string  message, ...)
+	void log(const char *file, const int line, const char *message, ...)
 	{
 		va_list vl;
 		va_start(vl, message);
@@ -386,7 +386,7 @@ class LoggingService: public Service
 		va_end(vl);
 	}
 
-	void log(const MessageImportance importance, const string message, ...)
+	void log(const MessageImportance importance, const char *message, ...)
 	{
 		va_list vl;
 		va_start(vl, message);
@@ -394,8 +394,8 @@ class LoggingService: public Service
 		va_end(vl);
 	}
 
-	void log(const string & file, const MessageImportance importance, 
-					 const string message, ...)
+	void log(const char *file, const MessageImportance importance, 
+					 const char *message, ...)
 	{
 		va_list vl;
 		va_start(vl, message);
@@ -403,8 +403,8 @@ class LoggingService: public Service
 		va_end(vl);
 	}
 
-	void log(const string & file, const int line, const MessageImportance importance, 
-					const string message, ...)
+	void log(const char *file, const int line, const MessageImportance importance, 
+					const char *message, ...)
 	{
 		va_list vl;
 		va_start(vl, message);
@@ -417,11 +417,11 @@ class LoggingService: public Service
 	 * @see log
 	 */
 
-	void logVarParam(const string & file, const int line, const MessageImportance importance, 
-								const string & message, va_list argptr)
+	void logVarParam(const char *file, const int line, const MessageImportance importance, 
+								const char *message, va_list argptr)
 	{
 		char Buffer[MESSAGE_BUFFER_SIZE];
-		vsprintf((char*)Buffer, message.c_str(), argptr);
+		vsprintf((char*)Buffer, message, argptr);
 		
 		sendMessage(string((char*)Buffer), file, line, importance);
 	}

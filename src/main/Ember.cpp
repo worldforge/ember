@@ -18,12 +18,10 @@ void mouseexitbutton(dime::MouseMotionEvent* event)
 
 void onMouseButtonDown(dime::MouseButtonEvent *event)
 {
-	std::cout << "DORK!\n" << std::flush;
 }
 
 void onMouseButtonUp(dime::MouseButtonEvent *event)
 {
-	std::cout << "Mouse UP!\n" << std::flush;
 }
 
 
