@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.12  2003-01-06 03:48:20  aglanor
+ *      Revision 1.13  2003-04-19 21:26:14  nikal
+ *      Some changes to get Ogre app to compile with the latest version of OGRE
+ *
+ *      Revision 1.12  2003/01/06 03:48:20  aglanor
  *      2003-01-06 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* OgreApp.cpp/h: dual mode for the GUI: press 'H' to display
  *      	the GUI and use the mouse to click on it.
@@ -521,7 +524,7 @@ public:
                 mRotationSpeed = 60.0;
 
                 // Create a node to act as the central rotation point
-                mRotatingNode = mCentralNode->createChild();
+                mRotatingNode = dynamic_cast<SceneNode*>(mCentralNode->createChild());
 
                 mRotatingNode->attachCamera(mCamera);
                 mCamera->moveRelative(initialPosition);
@@ -565,7 +568,7 @@ void OgreApplication::createScene(void)
   mShip = mSceneMgr->createEntity("blackdog", "squirel_of_doom.mesh");
 
   // create the node
-  mShipNode = mSceneMgr->getRootSceneNode()->createChild();
+  mShipNode = dynamic_cast<SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
   mShipNode->setPosition(10,25,128);
   mShipNode->setScale(0.01,0.01,0.01);
 
@@ -575,10 +578,11 @@ void OgreApplication::createScene(void)
 
 	// a hack from the OGRE GUI sample
 	Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
-	ActionTarget* at = static_cast<ButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
+	ActionTarget* at = static_cast<BorderButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
+
 
 	at->addActionListener(this);
-	at = static_cast<ButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
+	at = static_cast<BorderButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
 	at->addActionListener(this);
 
 
@@ -700,7 +704,7 @@ void OgreApplication::entityCreate( Eris::Entity *e )
 
 	// create the ogre node
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
-	SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChild();
+	SceneNode* ogreNode = dynamic_cast<SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 
 	// set the node position based on eris entity position
 	WFMath::Point<3> position = e->getPosition();

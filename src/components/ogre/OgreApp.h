@@ -24,7 +24,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.7  2003-01-05 22:13:46  aglanor
+ *      Revision 1.8  2003-04-19 21:26:14  nikal
+ *      Some changes to get Ogre app to compile with the latest version of OGRE
+ *
+ *      Revision 1.7  2003/01/05 22:13:46  aglanor
  *      2003-01-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* OgreApp.cpp/h: added basic GUI elements.
  *      	Now OgreApp inherits from ogre::ActionListener
@@ -59,7 +62,7 @@ Description: Base class for all the OGRE examples
 // Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
 #include "OgreOverlayManager.h"
 #include "OgreCursorGuiElement.h"
-#include "OgreButtonGuiElement.h"
+#include "OgreBorderButtonGuiElement.h"
 #include "OgreListGuiElement.h"
 #include "OgreListChanger.h"
 #include "OgreEventProcessor.h"

@@ -110,11 +110,15 @@ PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2.1,
      AC_MSG_WARN(Please note the we will drop support for this version of SigC++ eventually)
      ])
 
+
+AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
+
 OGRE_VERSION=0.10.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
+		AC_DEFINE(GCC_3_1, 1, "using gcc 3.x")
 	],
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
