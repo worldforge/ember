@@ -117,10 +117,21 @@ Jesus::~Jesus()
 AttachPointNode::AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour,Ogre::BillboardSet* billboardSet )
 : mModelBlock(modelBlock), mModelNode(modelNode), mAttachPoint(attachPoint), mColour(colour), mController(0)
 {
-	
-	std::string name = modelBlock->getBuildingBlock()->getName() + "_" + attachPoint->getAttachPair()->getName() + "_" + attachPoint->getName();
-	
 	Ogre::Vector3 position = Atlas2Ogre(attachPoint->getPosition());
+	std::string name = modelNode->getName() + "_" + attachPoint->getAttachPair()->getName() + "_" + attachPoint->getName();
+
+/*	mPointerNode = mModelNode->createChildSceneNode ();
+	
+	mPointerEntity = EmberOgre::getSingleton().getSceneManager()->createEntity(name + "entity", "arrow.mesh");
+	
+	mPointerNode->attachObject(mPointerEntity);
+	mPointerNode->setPosition(position);
+	WFMath::Quaternion quat;
+	quat.rotation(WFMath::Vector<3>(1,-1,1), attachPoint->getNormal());
+	
+	//Ogre::Vector3 normal = Atlas2Ogre(attachPoint->getNormal());
+	mPointerNode->setOrientation(Atlas2Ogre(quat));*/
+	
 // 	mFlare = billboardSet->createBillboard(modelBlock->getBuildingBlock()->getWorldPositionForPoint(attachPoint) , colour);
 	mFlare = billboardSet->createBillboard(position , colour);
 //	mFlare = billboardSet->createBillboard(0,0,0 , colour);
@@ -144,8 +155,7 @@ bool Jesus::loadModelBlockMapping(const std::string& filename)
 	}
 	catch (const xercesc::XMLException& toCatch) {
 	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	        std::cout << "Error during initialization! :\n"
-	         << message << "\n";
+	        S_LOG_FAILURE( "Error during initialization! :" << message )
 	    xercesc::XMLString::release(&message);
 	    return false;
 	}
@@ -216,8 +226,7 @@ bool Jesus::loadBlockSpec(const std::string& filename)
 	}
 	catch (const xercesc::XMLException& toCatch) {
 	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	        std::cout << "Error during initialization! :\n"
-	         << message << "\n";
+	        S_LOG_FAILURE( "Error during initialization! :" << message )
 	    xercesc::XMLString::release(&message);
 	    return false;
 	}
@@ -383,8 +392,7 @@ bool Jesus::loadBuildingBlockSpecDefinition(const std::string& filename)
 	}
 	catch (const xercesc::XMLException& toCatch) {
 	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	        std::cout << "Error during initialization! :\n"
-	         << message << "\n";
+	        S_LOG_FAILURE( "Error during initialization! :"   << message )
 	    xercesc::XMLString::release(&message);
 	    return false;
 	}
@@ -515,8 +523,7 @@ void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::stri
 	}
 	catch (const xercesc::XMLException& toCatch) {
 	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	        std::cout << "Error during initialization! :\n"
-	         << message << "\n";
+	        S_LOG_FAILURE(  "Error during initialization! :" << message )
 	    xercesc::XMLString::release(&message);
 	    return;
 	}
@@ -536,7 +543,6 @@ void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::stri
 	
 	
 	try {
-		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(X((dir + "/" + filename).c_str()));
 		DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("LS"));
 		DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
@@ -602,6 +608,7 @@ void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::stri
 					theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 							
 				
+				XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(X((dir + "/" + filename).c_str()));
 				theSerializer->writeNode(myFormTarget, *doc);
 				delete theSerializer;
 				delete myFormTarget;
@@ -649,8 +656,7 @@ Carpenter::BluePrint* Jesus::loadBlueprint(std::string filename)
 	}
 	catch (const xercesc::XMLException& toCatch) {
 	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	        std::cout << "Error during initialization! :\n"
-	         << message << "\n";
+	        S_LOG_FAILURE( "Error during initialization! :"         << message)
 	    xercesc::XMLString::release(&message);
 	    return 0;
 	}
@@ -815,6 +821,27 @@ ModelBlock* Construction::createModelBlock(const Carpenter::BuildingBlock* build
 	mModelBlocks.push_back(modelBlock);
 	return modelBlock;	
 }
+
+bool Construction::remove(ModelBlock* modelBlock)
+{
+	bool result = mBlueprint->remove(modelBlock->getBuildingBlock());
+	if (result) {
+		std::vector<ModelBlock*>::iterator pos = mModelBlocks.end();
+		for (std::vector<ModelBlock*>::iterator I = mModelBlocks.begin(); I != mModelBlocks.end(); ++I) {
+			if (modelBlock == *I) {
+				pos = I;
+				break;
+			}
+		}
+		if (pos != mModelBlocks.end()) {
+			mModelBlocks.erase(pos);
+		}
+		delete modelBlock;
+			
+	}
+	return result;
+}
+
 
 std::vector<ModelBlock*> Construction::getModelBlocks() const
 {

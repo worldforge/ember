@@ -44,7 +44,7 @@
 namespace EmberOgre {
 
 JesusEdit::JesusEdit()
- : Widget(), mInJesusMode(false), mCurrentConstruction(0), mCurrentlySelectedBlock(0), mCurrentlySelectedAttachPointNode(0)
+ : Widget(), mInJesusMode(false), mCurrentConstruction(0), mCurrentlySelectedBlock(0), mCurrentlySelectedAttachPointNode(0), mJesus(0)
 {
 }
 
@@ -78,6 +78,9 @@ void JesusEdit::buildWidget()
 	
 	mBind = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/Bind"));
 	BIND_CEGUI_EVENT(mBind, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Bind_Click)
+	
+	mRemove = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/Remove"));
+	BIND_CEGUI_EVENT(mRemove, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Remove_Click)
 	
 	
 	
@@ -179,6 +182,7 @@ void JesusEdit::createdJesus(Jesus* jesus)
 
 void JesusEdit::loadFromJesus(Jesus* jesus)
 {
+	mJesus = jesus;
 	mAvailableBlocksList->resetList();
 	mAvailableBlocksList->clearAllSelections();
 	const std::map<const std::string , Carpenter::BuildingBlockSpec >* bblockSpecs = jesus->getCarpenter()->getBuildingBlockSpecs();
@@ -217,7 +221,8 @@ bool JesusEdit::CurrentBlocksList_SelectionChanged( const CEGUI::EventArgs & arg
 		mCurrentPointsList->resetList();
 		mCurrentPointsList->clearAllSelections();
 	}
-
+	updateRemoveButton();
+	
 	return true;
 	
 }
@@ -343,6 +348,13 @@ void JesusEdit::updateCreateButton( )
 	}
 }
 
+void JesusEdit::updateRemoveButton( )
+{
+	bool enable =  getSelectedBlock() != 0 && mCurrentConstruction->getBluePrint()->isRemovable(getSelectedBlock()->getBuildingBlock());
+	mRemove->setEnabled(enable);
+}
+
+
 void JesusEdit::updateBindingButton( )
 {
 	const Carpenter::AttachPoint * currentPoint = getSelectedPointForCurrentBlock();
@@ -407,6 +419,16 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 	loadConstruction(mCurrentConstruction);
 }
 
+bool JesusEdit::Remove_Click( const CEGUI::EventArgs & args )
+{
+	if (mCurrentlySelectedBlock != 0) {
+		mCurrentConstruction->remove(getSelectedBlock());
+		mCurrentlySelectedBlock = 0;
+		removeBindings();
+		loadConstruction(mCurrentConstruction);
+	}
+}
+
 const Carpenter::BuildingBlockSpec * JesusEdit::getNewBuildingBlockSpec( ) const
 {
 	CEGUI::ListboxItem* item = mAvailableBlocksList->getFirstSelectedItem();
@@ -450,6 +472,25 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 	item->setText(item->getText() + " (" + ss.str() + ")");
 
 	updateCreateButton();
+}
+
+Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint* blueprint)
+{
+	Ogre::SceneNode*  avatarNode = EmberOgre::getSingleton().getAvatar()->getAvatarSceneNode();
+
+	//create a new node on the same "level" as the avatar
+	Ogre::SceneNode* node = avatarNode->getParentSceneNode()->createChildSceneNode();
+	
+	Construction* construction = new Construction(blueprint, mJesus, node);
+	construction->buildFromBluePrint(blueprint);
+	
+	//place the node in front of the avatar
+	Ogre::Vector3 o_vector(5,0,0);
+	Ogre::Vector3 o_pos = avatarNode->getPosition() + (avatarNode->getOrientation() * o_vector);
+	node->setPosition(o_pos);
+
+	return construction;
+
 }
 
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
@@ -651,30 +692,17 @@ bool JesusEditFile::Load_Click( const CEGUI::EventArgs & args )
 	
 		Carpenter::BluePrint* blueprint = mJesus->getBluePrint(name);
 		if (blueprint) {
-			Ogre::SceneNode*  avatarNode = EmberOgre::getSingleton().getAvatar()->getAvatarSceneNode();
-			
-
-			//create a new node on the same "level" as the avatar
-			Ogre::SceneNode* node = avatarNode->getParentSceneNode()->createChildSceneNode();
-			
-			Construction* construction = new Construction(blueprint, mJesus, node);
-			construction->buildFromBluePrint(blueprint);
-			
-			//place the node in front of the avatar
-			
-			
-			Ogre::Vector3 o_vector(0,0,-5);
-			Ogre::Vector3 o_pos = avatarNode->getPosition() + (avatarNode->getOrientation() * o_vector);
-			node->setPosition(o_pos);
-			
+			Construction* construction = mJesusEdit->createNewConstructionFromBlueprint(blueprint);
+			//load the construction in jesusEdit
 			mJesusEdit->loadConstruction(construction);
 		
 		}
 	}
 
-
 	return true;
 }
+
+
 bool JesusEditFile::Save_Click( const CEGUI::EventArgs & args )
 {
 
@@ -725,7 +753,29 @@ void JesusEditFile::switchVisibility()
 bool JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 {
 
-	mCurrentConstruction->getJesus()->saveBlueprintToFile(mCurrentConstruction->getBluePrint() , "/tmp/test.blueprint.xml");
+	Carpenter::BluePrint* blueprint = new Carpenter::BluePrint("blueprint", mJesus->getCarpenter());
+	
+	Carpenter::BuildingBlockDefinition definition;
+	definition.mName = mNewName->getText().c_str();
+	if (definition.mName == "") {
+		definition.mName = "startingblock";
+	}	
+	definition.mBuildingBlockSpec = getNewBuildingBlockSpec()->getName();
+	
+	
+	Carpenter::BuildingBlock* bblock = blueprint->createBuildingBlock(definition);
+	blueprint->setStartingBlock(definition.mName);
+	//blueprint->compile();
+		
+	Construction* construction = createNewConstructionFromBlueprint(blueprint);
+	construction->createModelBlock(bblock, true);
+	removeBindings();
+	
+	
+	//load the construction in jesusEdit
+	loadConstruction(construction);
+	
+
 	return true;
 }
 
@@ -735,6 +785,7 @@ bool JesusEdit::File_Click(const CEGUI::EventArgs& args)
 	{
 		mFile->switchVisibility();
 	}
+	return true;
 }
 	
 

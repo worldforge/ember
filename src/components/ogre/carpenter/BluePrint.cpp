@@ -35,12 +35,30 @@ BluePrint::BluePrint(const std::string & name, Carpenter* carpenter)
 // }
 
 BuildingBlock::BuildingBlock() 
-: mAttached(false), mPosition(0,0,0)
+: mAttached(false), mPosition(0,0,0), mChildBindings(0)
 
 {
 mOrientation.identity();
 
 }
+
+void BuildingBlock::removeBoundPoint(const AttachPoint* point )
+{
+	std::vector<const AttachPoint*>::iterator pos = mBoundPoints.end();
+	std::vector<const AttachPoint*>::iterator I = mBoundPoints.begin();
+	std::vector<const AttachPoint*>::iterator I_end = mBoundPoints.end();
+	for (; I!=I_end; ++I) {
+		if ((*I) == point) {
+			pos = I;
+			break;
+		}
+	}
+	if (pos != mBoundPoints.end()) {
+		mBoundPoints.erase(pos);
+	}
+	
+}
+
 
 
 void BluePrint::doBindingsForBlock(BuildingBlock *block)
@@ -72,6 +90,81 @@ void BluePrint::doBindingsForBlock(BuildingBlock *block)
 		}
 	}
 }
+
+bool BluePrint::isRemovable(const BuildingBlock* bblock) const
+{
+	//cannot remove the starting block
+	if (bblock == mStartingBlock) {
+		return false;
+	}
+	
+	//make sure the block exists in the blueprint
+	if (mBuildingBlocks.find(bblock->getName()) == mBuildingBlocks.end()) {
+		return false;
+	}
+	
+	return bblock->mChildBindings == 0;
+/*	//if the bblock has max two points attached to it it can be removed
+	//HACK: here should be a better check, some kind of graph walking
+	size_t size = bblock->mBoundPoints.size();
+	return size < 3;*/
+}
+
+bool BluePrint::remove(const BuildingBlock* _bblock)
+{
+	if (!isRemovable(_bblock)) {
+		return false;
+	}
+	BuildingBlock* bblock = &mBuildingBlocks.find(_bblock->getName())->second;
+	
+	std::list< BuildingBlockBinding>::iterator I = mBindings.begin();
+	std::list< BuildingBlockBinding>::iterator I_end = mBindings.end();
+	std::list< BuildingBlockBinding>::iterator I_remove = mBindings.end();
+	
+	for (; I != I_end; ++I) {
+		if (I_remove != mBindings.end()) {
+			mBindings.erase(I_remove);
+			I_remove = mBindings.end();
+		}
+		
+		if ((*I).getBlock1() == bblock) {
+			BuildingBlock* boundBlock = &mBuildingBlocks.find((*I).mBlock2->getName())->second;
+			boundBlock->removeBoundPoint((*I).getAttachPoint2());
+			//decrease the number of child bindings for the parent block
+			--(boundBlock->mChildBindings);
+			I_remove = I;
+		} else if ((*I).getBlock2() == bblock) {
+			BuildingBlock* boundBlock = &mBuildingBlocks.find((*I).mBlock1->getName())->second;
+			boundBlock->removeBoundPoint((*I).getAttachPoint1());
+			--(boundBlock->mChildBindings);
+			I_remove = I;
+		}
+	}
+	if (I_remove != mBindings.end()) {
+		mBindings.erase(I_remove);
+		I_remove = mBindings.end();
+	}
+	
+	//check if it's in the attached blocks vector and remove it
+	std::vector<BuildingBlock*>::iterator pos = mAttachedBlocks.end();
+	std::vector<BuildingBlock*>::iterator J = mAttachedBlocks.begin();
+	std::vector<BuildingBlock*>::iterator J_end = mAttachedBlocks.end();
+	for (; J!=J_end; ++J) {
+		if ((*J) == bblock) {
+			pos = J;
+			break;
+		}
+	}
+	if (pos != mAttachedBlocks.end()) {
+		mAttachedBlocks.erase(pos);
+	}
+	
+	
+	mBuildingBlocks.erase(bblock->getName());
+	return true;
+
+}
+
 
 const std::string& BuildingBlockBinding::getType() const
 {
@@ -163,6 +256,7 @@ BuildingBlock* BluePrint::createBuildingBlock(BuildingBlockDefinition definition
 void BluePrint::setStartingBlock(const std::string& name)
 {
 	mStartingBlock = &mBuildingBlocks.find(name)->second;
+	mStartingBlock->mAttached = true;
 }
 
 WFMath::Point<3> BuildingBlock::getWorldPositionForPoint(const AttachPoint* point)
@@ -201,6 +295,7 @@ BuildingBlockBinding* BluePrint::addBinding(const BuildingBlock* block1, const A
 
 void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings)
 {
+
 	//we place each unvound block through
 	//1) first rotate it so the vector of the two unbound points matches that of the vector of the two bound points
 	//2) then we rotate the unbound block along this vector so the normals of the attach points of the unbound block matches the inverse of the normals of the attach points of the bound block
@@ -210,7 +305,7 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	BuildingBlockBinding* binding1 = *I;
 	BuildingBlockBinding* binding2 = *(++I);
 	
-	BuildingBlock * boundBlock;
+	BuildingBlock * boundBlock, *boundBlock_2;
 	
 	const AttachPoint* boundPoint1;
 	const AttachPoint* boundPoint2;
@@ -228,11 +323,13 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 		unboundPoint1 = binding1->mPoint1;
 	}
 
-	//find out which point is unbound	
+	//find out which block is unbound	
 	if (binding2->mBlock1->isAttached()) {
+		boundBlock_2 = &mBuildingBlocks.find(binding2->mBlock1->getName())->second;
 		boundPoint2 = binding2->mPoint1;
 		unboundPoint2 = binding2->mPoint2;
 	} else {
+		boundBlock_2 = &mBuildingBlocks.find(binding2->mBlock2->getName())->second;
 		boundPoint2 = binding2->mPoint2;
 		unboundPoint2 = binding2->mPoint1;
 	}
@@ -297,7 +394,12 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	unboundBlock->mBoundPoints.push_back(unboundPoint1);
 	unboundBlock->mBoundPoints.push_back(unboundPoint2);
 	boundBlock->mBoundPoints.push_back(boundPoint1);
-	boundBlock->mBoundPoints.push_back(boundPoint2);
+	boundBlock_2->mBoundPoints.push_back(boundPoint2);
+	
+	//increase the number of child bindings for the bound blocks (which should be the same block in most cases)
+	++(boundBlock->mChildBindings);
+	++(boundBlock_2->mChildBindings);
+	
 
 
 

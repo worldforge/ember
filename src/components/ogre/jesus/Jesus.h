@@ -234,6 +234,8 @@ protected:
 	Ogre::Billboard* mFlare;
 	Ogre::ColourValue mColour;
 	Ogre::Controller<Ogre::Real>* mController;
+	Ogre::SceneNode* mPointerNode;
+	Ogre::Entity* mPointerEntity;
 };
 
 
@@ -306,6 +308,9 @@ public:
 	ModelBlock* createModelBlock(const Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes);
 	
 	std::vector<ModelBlock*> getModelBlocks() const;
+	
+	bool remove(ModelBlock* modelBlock);
+	
 protected:
  	Carpenter::BluePrint* mBlueprint;
 	Ogre::SceneNode* mBaseNode;

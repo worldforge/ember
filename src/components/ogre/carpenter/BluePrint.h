@@ -125,6 +125,13 @@ public:
 	
 	const std::vector<const AttachPoint*> getAllPoints() const;
 	
+	/**
+	 *    the number of bindings that are dependant on this block
+			as long as it's more than zero, the block cannot be deleted
+	 * @return 
+	 */
+	inline int getNumberOfChildBindings() const { return mChildBindings; }
+	
 protected: 	
 	//ModelBlock mModelBlock;
 	BuildingBlockSpec* mBuildingBlockSpec;
@@ -136,6 +143,18 @@ protected:
 		A vector of all points that are already bound
 	*/
 	std::vector<const AttachPoint*> mBoundPoints;
+	
+	/**
+	 *    removes a point from the list of bound points
+	 * @param point 
+	 */
+	void removeBoundPoint(const AttachPoint* point);
+	
+	/**
+	the number of bindings that are dependant on this block
+	as long as it's more than zero, the block cannot be deleted
+	*/
+	int mChildBindings;
 
 };
 
@@ -184,6 +203,21 @@ public:
 	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings);
 	
 	inline Carpenter* const getCarpenter() { return mCarpenter;}
+	
+	
+	/**
+	 *    true if the building block can be removed from the blueprint
+	 * @param  
+	 * @return 
+	 */
+	bool isRemovable(const BuildingBlock* bblock) const;
+	
+	/**
+	 *    removes the building block from the blueprint, if it can be removed
+	 * @param bblock 
+	 * @return 
+	 */
+	bool remove(const BuildingBlock* bblock);
 
 protected:
 	std::map<const std::string,  BuildingBlock> mBuildingBlocks;

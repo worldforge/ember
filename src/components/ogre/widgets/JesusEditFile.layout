@@ -2,7 +2,7 @@
 <GUILayout> 
 	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.55 y:0.025" /> 
-		<Property Name="Size" Value="w:0.45 h:0.5" /> 
+		<Property Name="Size" Value="w:0.3 h:0.5" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="JesusEdit" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
@@ -11,7 +11,7 @@
 			<Property Name="InheritsAlpha" Value="True" /> 
 			<Window Type="TaharezLook/Listbox" Name="Blueprints">
 				<Property Name="Position" Value="x:0 y:0.05" /> 
-				<Property Name="Size" Value="w:0.45 h:0.6" /> 
+				<Property Name="Size" Value="w:0.8 h:0.5" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
 			</Window>

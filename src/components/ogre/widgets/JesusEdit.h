@@ -183,6 +183,8 @@ public:
 
     ~JesusEdit();
 	
+	Jesus* mJesus;
+	
 	virtual void buildWidget();
 
 	
@@ -193,6 +195,14 @@ public:
 	 * @param construction 
 	 */
 	void loadConstruction(Construction* construction);
+
+	
+	/**
+	 *    creates a new construction from the blueprint and adds it to the world
+	 * @param blueprint 
+	 * @return 
+	 */
+	Construction* createNewConstructionFromBlueprint(Carpenter::BluePrint* blueprint);
 
 protected:
 
@@ -255,6 +265,15 @@ protected:
 	 * @return 
 	 */
 	bool CreateNew_Click(const CEGUI::EventArgs& args);
+	
+	/**
+	 *    removes a BuildingBlock
+	 * @param args 
+	 * @return 
+	 */
+	bool Remove_Click(const CEGUI::EventArgs& args);
+	
+	
 
 	bool File_Click(const CEGUI::EventArgs& args);
 	
@@ -276,6 +295,11 @@ protected:
 	 */
 	void updateCreateButton();
 	
+	/**
+	 *    checks whether the Remove button should be enabled
+	 */
+	void updateRemoveButton( );
+
 	/**
 	 *    gets the selected AttachPoint for the current block
 	 * @return null if no block selected
@@ -323,6 +347,7 @@ protected:
 	CEGUI::PushButton* mBind;
 	CEGUI::PushButton* mCreate;
 	CEGUI::PushButton* mCreateNew;
+	CEGUI::PushButton* mRemove;
 	
 	CEGUI::Editbox* mNewName;
 		
