@@ -1,5 +1,5 @@
 INCLUDES = -I$(top_srcdir)/src
-SUBDIRS = test config metaserver input
+SUBDIRS = test config metaserver input platform
 
 check_PROGRAMS = servicetest
 
