@@ -37,7 +37,7 @@ namespace dime
     varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key)
     {
 	string value;
-	value = varconf::Config::inst()->getItem(section, key);
+	value = std::string(varconf::Config::inst()->getItem(section, key));
 	return value;
     }
 
