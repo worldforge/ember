@@ -34,12 +34,20 @@ CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
 
 dnl Check for SigC++
-AM_PATH_SIGC(1.0.3,[
-       CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
-       LDFLAGS="$LDFLAGS $SIGC_LIBS"
-       ],
-AC_MSG_ERROR(Couldn't find libsigc++ config [or config failed])
-)
+SIGC_VERSION=1.0.3
+dnl PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
+dnl     [
+dnl         CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
+dnl         LDFLAGS="$LDFLAGS $SIGC_LIBS"
+dnl     ],
+dnl     [
+        AM_PATH_SIGC($SIGC_VERSION,[
+                CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
+                LDFLAGS="$LDFLAGS $SIGC_LIBS"
+                ],
+                AC_MSG_ERROR(Couldn't find sigc++ or insufficient version found. Please goto http://sourceforge.net/projects/libsigc/ and get at least version $SIGC_VERSION)
+        )
+dnl     ])
 
 dnl Check for Atlas
 AM_PATH_ATLAS(0.4.4 ,[
@@ -136,6 +144,39 @@ AC_CHECK_LIB(GLU,
 	     Unable to find the GLU library
 	     ])
 )
+
+dnl debugging option
+AC_ARG_ENABLE(debug,[  --enable-debug     creates debugging code [default=no]],
+[ 
+   if test x$enableval = xno; then 
+		ac_use_debug_code="no"	
+   else 
+		ac_use_debug_code="yes"
+   fi
+], [ac_use_debug_code="no"])
+
+if test "$ac_use_debug_code" = "yes"; then
+      CFLAGS="$CFLAGS -DDEBUG"
+      CXXFLAGS="$CXXFLAGS -DDEBUG"
+else
+      CFLAGS="$CFLAGS -DNDEBUG"
+      CXXFLAGS="$CXXFLAGS -DNDEBUG"
+fi
+
+dnl gprof debugging option
+AC_ARG_ENABLE(gprof,[  --enable-gprof     Add flags for gprof [default=no]],
+[
+   if test x$enableval = xno; then 
+		ac_use_gprof_code="no"	
+   else 
+		ac_use_gprof_code="yes"
+   fi
+], [ac_use_gprof_code="no"])
+
+if test "x$ac_use_gprof_code" = "xyes"; then
+      CFLAGS="$CFLAGS -pg -g -a"
+      CXXFLAGS="$CXXFLAGS -pg -g -a"
+fi
 
 
 AC_LANG_CPLUSPLUS
