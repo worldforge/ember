@@ -27,6 +27,8 @@
 //#include "EmberTerrainRenderable.h"
 #include "TerrainShader.h"
 #include "EmberSceneManager/include/EmberTerrainPageSource.h"
+#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+
 
 //#include "environment/GroundCover.h"
 
@@ -220,7 +222,7 @@ void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long
 	segment->populateNormals();
 	segment->populateSurfaces();
 	
-	Ogre::TerrainSceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
+	EmberTerrainSceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
 	materialNameSS << "_" << segmentX << "_" << segmentY;

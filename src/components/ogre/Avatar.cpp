@@ -47,7 +47,7 @@
 //#include "TerrainGenerator.h"
 #include "MotionManager.h"
 
-//#include "EmberTerrainSceneManager.h"
+//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include "AvatarEmberEntity.h"
 #include "model/Model.h"

@@ -7,14 +7,14 @@
       </parts>
     </submodel>
   </submodels>
-  <animations>
-  	<animation name="idle">
+  <Actions>
+  	<Action name="idle">
 		<animationpart name="WingFold" weight="0.5" />
 		<animationpart name="Peck1" weight="0.5" />
-	</animation>
-  	<animation name="walk">
+	</Action>
+  	<Action name="walk">
 		<animationpart name="WingFold" weight="0.5" />
 		<animationpart name="Walk" weight="0.5" />
-	</animation>
-  </animations>
+	</Action>
+  </Actions>
 </model>

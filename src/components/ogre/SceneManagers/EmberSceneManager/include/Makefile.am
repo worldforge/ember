@@ -1,4 +1,4 @@
-pkginclude_HEADERS = \
+noinst_HEADERS = \
 		OgreHeightmapTerrainPageSource.h \
 		OgreOctreeCamera.h \
         OgreOctreeNode.h \
@@ -10,6 +10,6 @@ pkginclude_HEADERS = \
 		OgreTerrainPrerequisites.h \
 		OgreTerrainRenderable.h \
 		OgreTerrainSceneManager.h \
-		OgreTerrainVertexProgram.h 
+		OgreTerrainVertexProgram.h \
 		EmberTerrainPageSource.h \
 		EmberTerrainSceneManager.h

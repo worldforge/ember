@@ -29,6 +29,7 @@
 #include "components/ogre/EmberOgre.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 namespace EmberOgre {
 
@@ -265,7 +266,7 @@ bool ModelDefinition::createFromXML(std::string path)
 		mSubModels.push_back(subModelDef);
 	}
 
-	xercesc::XMLString::transcode("animations", tempStr, 99);
+	xercesc::XMLString::transcode("Actions", tempStr, 99);
 	xercesc::DOMNodeList* animationNodes = doc->getElementsByTagName(tempStr);
 	if (animationNodes->getLength()) {
 		readAnimations(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(0)));
@@ -283,7 +284,7 @@ void ModelDefinition::readAnimations(xercesc::DOMElement* animationsNode)
 {
 	XMLCh tempStr[100];
 	
-	xercesc::XMLString::transcode("animation", tempStr, 99);
+	xercesc::XMLString::transcode("Action", tempStr, 99);
 	xercesc::DOMNodeList* animationNodes = animationsNode->getElementsByTagName(tempStr);
 	for (unsigned int i = 0; i < animationNodes->getLength(); ++i) {
 		ActionDefinition actionDef;
@@ -302,7 +303,7 @@ void ModelDefinition::readAnimations(xercesc::DOMElement* animationsNode)
 		}
 		xercesc::XMLString::transcode("name", tempStr, 99);
 		std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getAttribute(tempStr));
-		std::cout << "Added animation: " << name << "\n";
+		std::cout << "Added action: " << name << "\n";
 		actionDef.Name = name;
 		mActions.push_back(actionDef);		
 

@@ -55,7 +55,7 @@
 namespace EmberOgre {
 
 
-EmberEntityFactory::EmberEntityFactory(Ogre::TerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
+EmberEntityFactory::EmberEntityFactory(EmberTerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
 : mSceneManager(sceneManager)
 , mTerrainGenerator(terrainGenerator)
 , mTypeService(typeService)

@@ -43,6 +43,7 @@ namespace EmberOgre {
 class Avatar;
 class InputManager;
 class GUIManager;
+class EmberEntity;
 
 class AvatarCamera 
 :virtual public SigC::Object , Ogre::MouseMotionListener

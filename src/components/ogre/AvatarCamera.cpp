@@ -16,13 +16,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "AvatarCamera.h"
 #include "Avatar.h"
 #include "InputManager.h"
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "EmberEntity.h"
 
-#include "AvatarCamera.h"
+
+#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 namespace EmberOgre {
 

@@ -39,6 +39,8 @@
 #include "Avatar.h"
 #include "AvatarCamera.h"
 
+#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
+
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 

@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.33  2004-11-11 23:57:26  erik
+ *      Revision 1.34  2004-11-13 00:48:22  erik
+ *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Changed modeldefintions. Use "Action" instead of "Animation" because an action can contain more than just animations, sounds for example.
+ *      	* Fixed wrong references to Ogre::TerrainSceneManager
+ *      	* Changed location of config and media files.
+ *
+ *      Revision 1.33  2004/11/11 23:57:26  erik
  *      2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*  Added environment classes: Sun, Sky, Water, Foliage
@@ -354,7 +361,6 @@ Description: Base class for all the OGRE examples
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
-#include <OgreTerrainSceneManager.h>
 
 namespace EmberOgre {
 
@@ -372,6 +378,8 @@ class AvatarEmberEntity;
 
 class EmberEntityFactory;
 
+class EmberTerrainSceneManager;
+
 class TerrainGenerator;
 
 class MotionManager;
@@ -381,6 +389,8 @@ class InputManager;
 class GUIManager;
 
 class ModelDefinitionManager;
+
+
 
 
 
@@ -426,7 +436,7 @@ public:
 	// TODO: possibly we'd like to do the following in a different way,
 	// perhaps refactoring stuff
 	Avatar* getAvatar();
-	Ogre::TerrainSceneManager* getSceneManager();
+	EmberTerrainSceneManager* getSceneManager();
 	TerrainGenerator* getTerrainGenerator();
 	MotionManager* getMotionManager();
 	Ogre::Root* EmberOgre::getOgreRoot();
@@ -449,7 +459,7 @@ protected:
 	//static EmberOgre* _instance;
 
 	Ogre::Root *mRoot;
-    Ogre::TerrainSceneManager* mSceneMgr;
+    EmberTerrainSceneManager* mSceneMgr;
 	//Ogre::Camera* mCamera;
 //	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;

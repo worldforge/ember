@@ -36,7 +36,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include <OgreAxisAlignedBox.h>
 #include <OgreRoot.h>
 
-#include <OgreOctreeCamera.h>
+#include "OgreOctreeCamera.h"
 
 namespace Ogre
 {

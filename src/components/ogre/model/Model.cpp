@@ -26,6 +26,9 @@
 #include "components/ogre/EmberOgre.h"
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
+
+#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
+
 namespace EmberOgre {
 
 Ogre::String Model::msMovableType = "Model";

@@ -19,6 +19,7 @@
 
 
 
+#include "AvatarController.h"
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
@@ -31,7 +32,7 @@
 #include "DebugListener.h"
 #include "EmberOgre.h"
 
-#include "AvatarController.h"
+#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 using namespace Ogre;
 namespace EmberOgre {

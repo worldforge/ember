@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.61  2004-11-12 01:15:23  erik
+ *      Revision 1.62  2004-11-13 00:48:22  erik
+ *      2004-11-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Changed modeldefintions. Use "Action" instead of "Animation" because an action can contain more than just animations, sounds for example.
+ *      	* Fixed wrong references to Ogre::TerrainSceneManager
+ *      	* Changed location of config and media files.
+ *
+ *      Revision 1.61  2004/11/12 01:15:23  erik
  *      2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Added EmberTerrainSceneManager, which removes the need to link to Ogre's TerrainSceneManager.
@@ -747,7 +754,7 @@ void EmberOgre::chooseSceneManager(void)
     EmberTerrainSceneManager* sceneManager = new EmberTerrainSceneManager();
     mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
     //And then request it
-    mSceneMgr = static_cast<Ogre::TerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
+    mSceneMgr = static_cast<EmberTerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
     
     EmberTerrainSceneManager* mEmberTerr = dynamic_cast<EmberTerrainSceneManager*>(mSceneMgr);
     assert(mEmberTerr);
@@ -934,7 +941,7 @@ Avatar* EmberOgre::getAvatar() {
 }
 
 
-Ogre::TerrainSceneManager* EmberOgre::getSceneManager()
+EmberTerrainSceneManager* EmberOgre::getSceneManager()
 {
 	return mSceneMgr;
 }

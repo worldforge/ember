@@ -5,6 +5,7 @@
 	    <xsd:complexType>
 			<xsd:attribute name="Rotation" type="xsd:string" use="optional"/> 
 			<xsd:attribute name="UseScaleOf" type="xsd:string" use="optional"/> 
+			<xsd:attribute name="Scale" type="xsd:string" use="optional"/> 
 			<xsd:element name="SubModels">
 				<xsd:complexType>
 					<xsd:sequence>
@@ -23,6 +24,7 @@
 															<xsd:sequence>
 																<xsd:element name="SubEntity">
 																	<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+																	<xsd:attribute name="Material" type="xsd:string" use="optional"/> 
 																</xsd:element>
 															</xsd:sequence>
 														</xsd:complexType>
@@ -37,14 +39,14 @@
 					</xsd:sequence>					
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="Animations">
+			<xsd:element name="Actions">
 				<xsd:complexType>
 					<xsd:sequence>					
-						<xsd:element name="Animation">
+						<xsd:element name="Action">
 							<xsd:complexType>
 								<xsd:attribute name="Name" type="xsd:string" use="required"/> 
 								<xsd:sequence>					
-									<xsd:element name="Animation">
+									<xsd:element name="AnimationPart">
 										<xsd:attribute name="Name" type="xsd:string" use="required"/> 
 										<xsd:attribute name="Weight" type="xsd:string" use="required"/> 
 									</xsd:element>

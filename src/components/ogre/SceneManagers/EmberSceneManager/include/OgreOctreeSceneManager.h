@@ -41,7 +41,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <list>
 #include <algorithm>
 
-#include <OgreOctree.h>
+#include "OgreOctree.h"
 
 
 namespace Ogre
