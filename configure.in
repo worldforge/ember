@@ -1,4 +1,5 @@
 AC_INIT(src/main/Dime.cpp)
+AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(Dime, 0.0.1)
 
 dnl Detect the canonical host and target build environment.
@@ -63,7 +64,7 @@ AM_PATH_CPPUNIT(1.6.2 , [
     CXXFLAGS="$CXXFLAGS $CPPUNIT_CFLAGS"
     LDFLAGS="$LDFLAGS $CPPUNIT_LIBS"
     ],
-AC_MSG_ERROR(Coundn't find CPPUnit [to tests failed])
+AC_MSG_RESULT(Coundn't find CPPUnit [or tests failed])
 )
 
 dnl AC_CHECK_LIB(eris,main)
