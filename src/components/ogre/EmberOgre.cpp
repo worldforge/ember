@@ -23,7 +23,18 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.66  2005-01-04 23:02:36  erik
+ *      Revision 1.67  2005-01-07 01:07:17  erik
+ *      2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* improves resource handling for modeldefinitions
+ *      	* added dynamic tree generation
+ *      		this is preliminary, to be replaced with a better solution in the future
+ *      		it will really bring your GPU to its knees
+ *      		it can be turned on and off in the config file
+ *      	* added better Makefile handling of modeldefinition files (thanks Al Riddoch)
+ *      	* use preloading of resources to prevent stuttering in the gameplay
+ *
+ *      Revision 1.66  2005/01/04 23:02:36  erik
  *      2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* moved all use of terrain coordinates, both in ogre and in atlas, to the common class TerrainPosition
@@ -553,6 +564,10 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
 
+#include "environment/meshtree/TParameters.h"
+#include "environment/Tree.h"
+
+
 
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
@@ -778,9 +793,9 @@ bool EmberOgre::setup(void)
 
 
 
-// 	fprintf(stderr, "TRACE - BEGIN PRELOAD\n");
-// 	preloadMedia();
-// 	fprintf(stderr, "TRACE - END PRELOAD\n");
+ 	fprintf(stderr, "TRACE - BEGIN PRELOAD\n");
+ 	preloadMedia();
+ 	fprintf(stderr, "TRACE - END PRELOAD\n");
 
 
     createFrameListener();
@@ -851,10 +866,17 @@ void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, st
 /// Method which will define the source of resources (other than current folder)
 void EmberOgre::setupResources(void)
 {
- 	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/";
+ 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/";
 	
 	mModelDefinitionManager = new ModelDefinitionManager();
 	mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions", "FileSystem");
+ 	
+	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
+		mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem");
+ 	} else {
+		mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem");
+	}
 	
 // /*	std::string modeldefspath = "modeldefinitions/";
 // 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("ogre", "modeldefinitionpath")) {
@@ -915,16 +937,16 @@ void EmberOgre::preloadMedia(void)
 	dp = opendir (modeldefDir.c_str());
 	if (dp != NULL)
 	{
+		//Ogre::SceneNode* mNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 		while (ep = readdir (dp)) {
 			if (ep->d_name != "." && ep->d_name != "..") {
 				try {
 					fprintf(stderr, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
 					ModelDefinition* modeldef = mModelDefinitionManager->load(ep->d_name);
-					if (modeldef->isValid()) {
-						Ogre::SceneNode* mNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+/*					if (modeldef->isValid()) {
 						Model* model = Model::Create(ep->d_name, ep->d_name);
 						mNode->attachObject(model);
-					}
+					}*/
 				} catch (Ogre::Exception ex)
 				{
 					fprintf(stderr, (std::string("TRACE - ERROR PRELOADING: ") + ep->d_name + "\n").c_str());
@@ -932,7 +954,15 @@ void EmberOgre::preloadMedia(void)
 			}
 		}
 		(void) closedir (dp);
+/*		mSceneMgr->destroySceneNode(mNode->getName());*/
 	}
+	
+	//only autogenerate trees if we're not using the pregenerated ones
+ 	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
+		Tree tree;
+		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
+		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
+ 	}	
 
 	
 	
@@ -974,6 +1004,9 @@ void EmberOgre::createScene(void)
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	Ogre::ColourValue fadeColour(1,1,1);
 	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
+	
+	
+	
 
   // create a Skydome
 //  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);

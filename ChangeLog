@@ -1,3 +1,13 @@
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* improves resource handling for modeldefinitions
+	* added dynamic tree generation
+		this is preliminary, to be replaced with a better solution in the future
+		it will really bring your GPU to its knees
+		it can be turned on and off in the config file
+	* added better Makefile handling of modeldefinition files (thanks Al Riddoch)
+	* use preloading of resources to prevent stuttering in the gameplay
+
 2005-01-06  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* make water a child of the world

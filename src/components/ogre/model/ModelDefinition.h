@@ -49,7 +49,7 @@ class Model;
 class ModelDefinition : public Ogre::Resource {
 	
 public:
-    ModelDefinition(const Ogre::String& name);
+    ModelDefinition(const Ogre::String& name, const Ogre::String& path);
 
     ~ModelDefinition();
 	
@@ -108,6 +108,7 @@ protected:
 	unsigned short mUseScaleOf;
 	Ogre::Real mScale;
 	Ogre::Real mRotation;
+	const Ogre::String mPath;
 	
 	bool mIsValid;
 	

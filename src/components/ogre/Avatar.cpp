@@ -111,7 +111,7 @@ void Avatar::createAvatar()
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
 	
-	Model* model = Model::Create("malebuilder.modeldef.xml", "AvatarEntity");
+	Model* model = Model::Create("settler.modeldef.xml", "AvatarEntity");
 	//Model::Create("malebuilder.modeldef.xml", "AvatarEntity1");
 
 

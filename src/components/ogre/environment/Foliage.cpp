@@ -71,6 +71,7 @@ void Foliage::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition
 
 	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 
+	//we need to calculate the center of the foliage patch
 	Ogre::Vector3 center((endPosition.x + startPosition.x) * 0.5,0,(startPosition.z + endPosition.z) * 0.5);
 	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(endPosition.x - startPosition.x,0, startPosition.z - endPosition.z ), submeshSize, center);
 	

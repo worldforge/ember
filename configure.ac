@@ -289,6 +289,8 @@ AC_CONFIG_FILES([Makefile
 		 ember.spec
 		 src/extensions/Makefile
 		 src/components/ogre/Makefile
+		 src/components/ogre/modeldefinitions/Makefile
+		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
 		 src/components/ogre/EmberSceneManager/Makefile

@@ -27,6 +27,7 @@
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
 
+
 namespace EmberOgre
 {
     //-----------------------------------------------------------------------
@@ -48,7 +49,14 @@ namespace EmberOgre
     //-----------------------------------------------------------------------
     Ogre::Resource* ModelDefinitionManager::create( const Ogre::String& name)
     {
-        return new ModelDefinition(name);
+		std::string path;
+		Ogre::ResourceManager::FileMap::const_iterator it;
+		if( ( it = mArchiveFiles.find( name ) ) != mArchiveFiles.end() )
+		{
+			path = std::string(it->second->getName() + "/" + name);
+		} 
+		
+		return new ModelDefinition(name, path);
     }
 	
     //-----------------------------------------------------------------------

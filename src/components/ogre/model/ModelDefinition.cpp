@@ -33,10 +33,11 @@
 
 namespace EmberOgre {
 
-ModelDefinition::ModelDefinition(const Ogre::String& name)
+ModelDefinition::ModelDefinition(const Ogre::String& name, const Ogre::String& path)
 : mScale(0)
 , mRotation(0)
 , mUseScaleOf(0)
+, mPath(path)
 {
 	mName = name;
 	mIsValid = false;
@@ -58,7 +59,7 @@ ModelDefinition::~ModelDefinition()
 	
     void ModelDefinition::load(void)
 	{
-		mIsValid = createFromXML(mName);
+		mIsValid = createFromXML(mPath);
 		mIsLoaded = true;
 	}	
     
@@ -152,7 +153,16 @@ ModelDefinition::~ModelDefinition()
 	
 bool ModelDefinition::createFromXML(std::string path)
 {
-	std::string realPath(Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/media/modeldefinitions/"+ path);
+/*	Ogre::Datachunk chunk;
+	if (!_findResourceData(path, chunk)) {
+		return false;
+	}*/
+	
+	//std::string realPath(Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/media/modeldefinitions/"+ path);
+	if (path == "") {
+		return false;
+	}
+	
 	try {
 	        xercesc::XMLPlatformUtils::Initialize();
 	}
@@ -174,7 +184,7 @@ bool ModelDefinition::createFromXML(std::string path)
 
 	
 	try {
-	    doc = parser->parseURI(realPath.c_str());  
+	    doc = parser->parseURI(path.c_str());  
 	}
 	catch (const xercesc::XMLException& toCatch) {
 		parser->release();
