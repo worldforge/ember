@@ -1,0 +1,33 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+
+	<Window Type="TaharezLook/FrameWindow" Name="ServerBrowser/MainWindow">
+		<Property Name="Position" Value="x:0.2 y:0.2" /> 
+		<Property Name="Size" Value="w:0.7 h:0.7" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Text" Value="Server browser" />
+		
+		<Window Type="TaharezLook/MultiColumnList" Name="ServerBrowser/ServerList">
+			<Property Name="Position" Value="x:0 y:0" /> 
+			<Property Name="Size" Value="w:1 h:0.9" /> 
+			<Property Name="InheritsAlpha" Value="false" /> 
+		</Window>
+		<Window Type="TaharezLook/Button" Name="ServerBrowser/Connect">
+			<Property Name="Position" Value="x:0.8 y:0.9" /> 
+			<Property Name="Size" Value="w:0.2 h:0.1" /> 
+			<Property Name="Text" Value="Connect" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+		</Window>
+		<Window Type="TaharezLook/Button" Name="ServerBrowser/Refresh">
+			<Property Name="Position" Value="x:0.6 y:0.9" /> 
+			<Property Name="Size" Value="w:0.2 h:0.1" /> 
+			<Property Name="Text" Value="Refresh" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+		</Window>
+		
+
+		
+	</Window>
+ 
+
+ </GUILayout> 
