@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.16  2003-04-24 19:20:41  aglanor
+ *      Revision 1.1  2003-04-24 19:42:09  aglanor
+ *      2003-04-24 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * components/ogre: big cleanup. Files renamed.
+ *
+ *      Revision 1.16  2003/04/24 19:20:41  aglanor
  *      Cleanup. All FrameListeners are gone.
  *
  *      Revision 1.15  2003/04/23 21:47:33  aglanor

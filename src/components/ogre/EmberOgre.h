@@ -24,7 +24,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.8  2003-04-19 21:26:14  nikal
+ *      Revision 1.1  2003-04-24 19:42:09  aglanor
+ *      2003-04-24 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * components/ogre: big cleanup. Files renamed.
+ *
+ *      Revision 1.8  2003/04/19 21:26:14  nikal
  *      Some changes to get Ogre app to compile with the latest version of OGRE
  *
  *      Revision 1.7  2003/01/05 22:13:46  aglanor
