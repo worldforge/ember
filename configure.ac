@@ -192,7 +192,9 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.0,
 	])
 
 # Check for CEGUI
-PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
+#uncomment this when Ogre includes the CEGUI-OGRE.pc file again (should be the next release after 1.0.0)
+#PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
+PKG_CHECK_MODULES(CEGUI,,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
@@ -201,6 +203,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
 		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
 
+#remove this when Ogre includes the CEGUI-OGRE.pc file again
 LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 #CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
