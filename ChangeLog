@@ -1,5 +1,9 @@
 2005-03-22  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* modified the S_LOG* macros and included the LogginService.h file in EmberOgrePrerequisites.h. The idea is to use the macros for all logging actions.
+
+2005-03-22  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* removed pig and squirrel pack
 	* added fence bblocks and a sty blueprint
 	* fixed the way the BluePrint calculates the orientations of buildin blocks

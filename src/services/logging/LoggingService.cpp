@@ -1,5 +1,4 @@
 #include "LoggingService.h"
-#include <framework/Service.h>
 
 Ember::LoggingService* Ember::LoggingService::theInstance = NULL;
 

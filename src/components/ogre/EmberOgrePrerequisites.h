@@ -23,27 +23,22 @@
 #include <Ogre.h>
 #include <OgreNoMemoryMacros.h>
 #include "MathConverter.h"
-// //we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-// //this seems to be because both uses their own internal memory handlers
-// #include <xercesc/util/XMemory.hpp>
-// #include <xercesc/dom/DOM.hpp>
-// #include <xercesc/util/XMLString.hpp>
-// #include <xercesc/util/PlatformUtils.hpp>
-// 
-// // ------------------------------
-// // Include Eris header files
-// // ------------------------------
-// #include <Eris/Entity.h>
-// #include <Eris/View.h>
-// #include <Eris/PollDefault.h>
-// #include <Eris/Log.h>
-// #include <Eris/TypeInfo.h>
-// #include <Eris/Factory.h>
-// #include <wfmath/point.h>
-// 
-// #include <Eris/Connection.h>
-// 
-// #include <Atlas/Objects/Entity.h>
+
+///include the Logging service, since we want logging available from most classes
+///in most cases, use the S_LOG* defines
+///such as:
+///S_LOG_INFO("some info")
+#include "services/logging/LoggingService.h"
+
+
+
+
+
+///utility defines for stl containers
+///for example:
+///TYPEDEF_STL_VECTOR(std::string, StringVector)
+///defines a new type called StringVector
+///you can then use StringVector::iterator etc..
 
 #define TYPEDEF_STL_MKITERATORS(name) \
 	   typedef name::iterator               name##Iter; \

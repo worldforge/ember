@@ -56,11 +56,14 @@ namespace Ember
 	
 //Added by nikal 2002/10/22 For convenience. 
 //%TASK nikal,1: Perhaps a script to switch the macros to the actual function call would make code more readable?
-#define S_LOG_VERBOSE() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)
-#define S_LOG_INFO() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-#define S_LOG_WARNING() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)
-#define S_LOG_FAILURE()Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE)
-#define S_LOG_CRITICAL() Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService:CRITICAL)
+#define S_LOG_VERBOSE(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << message << ENDM;
+#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;
+#define S_LOG_WARNING(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << message << ENDM;
+#define S_LOG_FAILURE(message)Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << message << ENDM;
+#define S_LOG_CRITICAL(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService:CRITICAL) << message << ENDM;
+
+
+//#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;
 	
 //TODO: Sorry, but innerclass didn't work properly
     const int NUMBER_BUFFER_SIZE = 24;
