@@ -1,3 +1,16 @@
+2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
+	* configure.ac/in: resync'd .in bumped required eris version to 0.9.7
+	  due to API changes.
+
+	* states.xml: Updated this
+
+	* GuiService.cpp/h: More work on panels.
+
+2002-12-01 Aglanor
+	* configure.ac: added ogre components dir
+
+	* src/components/orge: initial commit of ORGE stuff
+	
 2002-11-27 M Pollard <circlemaster@blueyonder.co.uk>
 	* Dime.cpp: Reintroduce the hitting of escape.
 

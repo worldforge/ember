@@ -101,10 +101,10 @@ class Panel : public Widget
     //======================================================================
     private:
 	
-	/**
-	 * RectangleRenderer to display background of Panel.
-	 */
-	RectangleRenderer *myBackground;
+    /**
+     * RectangleRenderer to display background of Panel.
+     */
+    RectangleRenderer *myBackground;
 
     //======================================================================
     // Public Methods
@@ -117,14 +117,22 @@ class Panel : public Widget
     /**
     * Creates a new Panel using default values.
     */
-    Panel() : Widget()
+    Panel() : Widget(), myBackground(NULL)
     {
     }
 
     /**
     * Creates a new Panel using rect
     */
-    Panel(Rectangle rect) : Widget(rect)
+    Panel(Rectangle rect) : Widget(rect), myBackground(NULL)
+    {
+    }
+
+    /**
+    * Creates a new Panel using rect and renderer
+    */
+    Panel(Rectangle rect, RectangleRenderer* rr) : Widget(rect),
+      myBackground(rr)
     {
     }
 

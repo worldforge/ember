@@ -18,6 +18,7 @@
 
 #include "GuiService.h"
 #include "widget/Label.h"
+#include "widget/Panel.h"
 #include <services/logging/LoggingService.h>
 
 void dime::GuiService::refresh()
@@ -33,7 +34,7 @@ void dime::GuiService::refresh()
     }    
 }
 
-/*
+#if 0
   void dime::GuiService::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
   {
   std::vector<int> coords(2);
@@ -50,7 +51,7 @@ void dime::GuiService::refresh()
   dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::INFO) << "Mouse click of button " << key << " at (" << coords[0] << ", " << coords[1] << ") received" << ENDM;
   myRootWidget.checkMouseEvent(coords);
   }
-*/
+#endif
 
 dime::GuiService::GuiService()
 {
@@ -85,6 +86,10 @@ long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
 		     (const xmlChar *)"label"))
       {
 	return parseLabel(widgetNode, doc);
+      } else if (!xmlStrcmp(xmlNodeListGetString(doc, attr->xmlChildrenNode, 1),
+		     (const xmlChar *)"panel"))
+      {
+	return parsePanel(widgetNode, doc);
       }
 
       // Even if we are not the correct name bail as
@@ -101,6 +106,22 @@ long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
 
 long dime::GuiService::parsePanel(xmlNodePtr widgetNode, xmlDocPtr doc)
 {
+  // Get name
+  xmlGetProp(widgetNode, (const xmlChar *)"name");
+
+  // Get rectangle
+  // FIXME: there has to be a better way to do this
+  dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
+		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
+
+  // Bg Type
+  // Bg Bitmap
+  // Bg Align
+
+  dime::Panel* newPanel = new dime::Panel(rect);
+
+  myRootWidget->addWidget(newPanel);
+
   return 0; // Alter this to return proper value
 }
 

@@ -73,7 +73,7 @@ AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
 
 # Check for Eris
-AM_PATH_ERIS(0.9.6 ,[
+AM_PATH_ERIS(0.9.7 ,[
     CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
     LDFLAGS="$LDFLAGS $ERIS_LIBS"
     ],
