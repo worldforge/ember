@@ -22,6 +22,7 @@
 // Included headers from the current project
 #include <framework/Service.h>
 #include <services/input/InputService.h>
+#include "EventGenerator.h"
 #include "Widget.h"
 #include <services/platform/DrawDevice.h>
 
@@ -50,13 +51,15 @@ class GuiService : public Service, public SigC::Object
 	//======================================================================
 	// Private Variables
 	//======================================================================
-    private:
-
+private:
+    
     Widget myRootWidget;
-
-	InputService *myInputService;
+    
+    InputService *myInputService;
 	
-	DrawDevice *myDrawTarget;
+    DrawDevice *myDrawTarget;
+    
+    EventGenerator *myEventGenerator;
 
     //======================================================================
     // Public Methods
@@ -65,7 +68,7 @@ class GuiService : public Service, public SigC::Object
 
     //----------------------------------------------------------------------
     // Constructors
-
+    
     /**
     * Creates a new GuiService using default values.
     */
@@ -151,7 +154,7 @@ class GuiService : public Service, public SigC::Object
 	 *
 	 * @ param code code which represents the cause of the service halt
 	 */
-	virtual void stop( int code )
+    virtual void stop( int code )
     {
         setRunning( false );
     }

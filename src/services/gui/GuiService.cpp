@@ -3,16 +3,19 @@
 
 void dime::GuiService::refresh()
 {
+    myEventGenerator = new dime::EventGenerator();
     if (myDrawTarget != NULL)
         {
             myRootWidget.draw(myDrawTarget);
+            myRootWidget.setEventGenerator(myEventGenerator);
             myDrawTarget->update();
-            
         }
 	else
-	{
-		dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::ERROR, "Unable to refresh Gui as no draw target has been specified");
+        {
+            dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::ERROR, "Unable to refresh Gui as no draw target has been specified");
 	}
+
+    
 }
 
 void dime::GuiService::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)

@@ -9,6 +9,22 @@ void dime::Widget::setParent(Widget* parent)
 	myParent = parent;
 }
 
+void dime::Widget::setEventGenerator(EventGenerator *generator)
+{
+    assert(generator);
+    myEventGenerator = generator;
+    
+    std::vector<Widget*>::iterator end = myChildren.end();
+    for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; ++i)
+        {
+            (*I)->setEventGenerator(generator);
+        }
+	return 0; 
+    
+}
+
+
+
 dime::Widget &dime::Widget::operator= ( const dime::Widget &source )
 {
     // Copy fields from source class to this class here.
@@ -27,9 +43,10 @@ dime::Widget::~Widget()
 
 void dime::Widget::addWidget(Widget *source)
 {
-	assert(source);
-	myChildren.push_back(source);
-	source->setParent(this);
+    assert(source);
+    myChildren.push_back(source);
+    source->setEventGenerator(myEventGenerator);
+    source->setParent(this);
 }
 
 int dime::Widget::removeWidget(Widget* target)
