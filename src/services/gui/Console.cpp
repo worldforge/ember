@@ -36,6 +36,10 @@
 #endif 
 
 namespace dime {
+const char* Console::CONSOLE_PROMPT_STRING = "> ";
+const char* Console::CONSOLE_CURSOR_STRING = "_";
+
+
 // TODO: abstract SDL_GetTicks()
 Console::Console(const Rectangle& rect) :
   Widget(rect),

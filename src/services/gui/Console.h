@@ -39,17 +39,6 @@
 
 
 namespace dime {
-const unsigned int MAX_MESSAGES = 5;
-const int FONT_HEIGHT = 15;
-const int LINE_SPACING = 5;
-const int CONSOLE_TEXT_OFFSET_X = 5;
-const int CONSOLE_TEXT_OFFSET_Y = 5;
-
-const int CONSOLE_SPEED = 10;
-const int CONSOLE_HEIGHT = 100;
-
-const char* CONSOLE_PROMPT_STRING = "> ";
-const char* CONSOLE_CURSOR_STRING = "_";
 
 #define CONSOLE_MESSAGE 0x1
 #define SCREEN_MESSAGE  0x2
@@ -73,6 +62,20 @@ class Render;
  *
  */
 class Console : public ConsoleObject, public Widget {
+  // Constants
+static const unsigned int MAX_MESSAGES = 5;
+static const int FONT_HEIGHT = 15;
+static const int LINE_SPACING = 5;
+static const int CONSOLE_TEXT_OFFSET_X = 5;
+static const int CONSOLE_TEXT_OFFSET_Y = 5;
+
+static const int CONSOLE_SPEED = 10;
+static const int CONSOLE_HEIGHT = 100;
+
+static const char* CONSOLE_PROMPT_STRING;
+static const char* CONSOLE_CURSOR_STRING;
+
+
 public:
   Console(const Rectangle& rect);
   ~Console();
