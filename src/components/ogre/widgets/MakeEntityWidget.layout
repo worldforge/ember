@@ -1,0 +1,29 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+
+	<Window Type="TaharezLook/FrameWindow" Name="MakeEntity/MainWindow">
+		<Property Name="Position" Value="x:0.3 y:0.4" /> 
+		<Property Name="Size" Value="w:0.4 h:0.7" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Text" Value="Entity creator" />
+		
+		<Window Type="TaharezLook/Listbox" Name="MakeEntity/TypeList">
+			<Property Name="Position" Value="x:0 y:0" /> 
+			<Property Name="Size" Value="w:0.9 h:0.8" /> 
+			<Property Name="InheritsAlpha" Value="false" /> 
+		</Window>
+		<Window Type="TaharezLook/Editbox" Name="MakeEntity/Name">
+			<Property Name="Position" Value="x:0.0 y:0.8" /> 
+			<Property Name="Size" Value="w:0.9 h:0.1" /> 
+			<Property Name="Text" Value="Name" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+		</Window>
+		<Window Type="TaharezLook/Button" Name="MakeEntity/CreateButton">
+			<Property Name="Position" Value="x:0.0 y:0.9" /> 
+			<Property Name="Size" Value="w:0.9 h:0.1" /> 
+			<Property Name="Text" Value="Create" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+		</Window>
+	</Window>
+ 
+</GUILayout> 

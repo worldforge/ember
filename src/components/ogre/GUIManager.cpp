@@ -23,6 +23,7 @@
 #include "widgets/InventoryWidget.h"
 #include "widgets/ServerBrowserWidget.h"
 #include "widgets/InspectWidget.h"
+#include "widgets/MakeEntityWidget.h"
 #include "MousePicker.h"
 #include "GUIManager.h"
 
@@ -64,7 +65,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		fprintf(stderr, "CEGUI - TEST SCHEME LOADED\n");
 		
 		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-14"); 
+		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
 		fprintf(stderr, "CEGUI - DEFAULTS SET\n");
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
@@ -137,6 +138,10 @@ void GUIManager::initialize()
 	InspectWidget* inspectBrowser = new InspectWidget(this);
 	inspectBrowser->buildWidget();
 	addWidget(inspectBrowser);
+	
+	MakeEntityWidget* makeEntity = new MakeEntityWidget(this);
+	makeEntity->buildWidget();
+	addWidget(makeEntity);
 	
 }
 
