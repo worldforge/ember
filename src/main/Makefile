@@ -1,10 +1,10 @@
 FLAGS = -g
 CC = g++
 
-all: dime application.o 
+all: Dime Application.o 
 
-dime: dime.cpp application.o
-	$(CC) -o dime dime.cpp application.o `sdl-config --cflags --libs` $(FLAGS) 
+Dime: Dime.cpp Application.o
+	$(CC) -o Dime Dime.cpp Application.o `sdl-config --cflags --libs` $(FLAGS) 
 
-application.o: application.cpp application.h
-	$(CC) -c application.cpp `sdl-config --cflags` $(FLAGS)
+Application.o: Application.cpp Application.h
+	$(CC) -c Application.cpp `sdl-config --cflags` $(FLAGS)
