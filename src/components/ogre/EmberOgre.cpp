@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.9  2003-04-28 00:55:06  aglanor
+ *      Revision 1.10  2003-04-28 22:42:06  aglanor
+ *      Added new viewport for a mini-map and quaternion conversion.
+ *      Eris entities are now displayed with orientation.
+ *
+ *      Revision 1.9  2003/04/28 00:55:06  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
  *      		There is also a little ogre head marking (0,0,0).
@@ -298,7 +302,8 @@ void DimeOgre::createScene(void)
 
 	// a hack from the OGRE GUI sample
 	Ogre::Overlay* o = (Ogre::Overlay*)Ogre::OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
-	Ogre::ActionTarget* at = static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
+	Ogre::ActionTarget* at =
+		static_cast<Ogre::BorderButtonGuiElement*>(Ogre::GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
 
 
 	at->addActionListener(this);
@@ -336,11 +341,22 @@ void DimeOgre::createCamera(void)
   mCamera->setPosition(Ogre::Vector3(10,10,10));
 
   // Look back along -Z
-  mCamera->lookAt(Ogre::Vector3(-300,0,-300));
-  mCamera->setNearClipDistance( 1 );
+  mCamera->lookAt(Ogre::Vector3(0,10,0));
+  mCamera->setNearClipDistance(1);
   // do not clip at far distance
   // so we can see the skydome
   //mCamera->setFarClipDistance( 384 );
+
+  // Create the camera
+  mPlayerMapCamera = mSceneMgr->createCamera("PlayerMapCamera");
+
+  // Position it at 500 in Z direction
+  mPlayerMapCamera->setPosition(Ogre::Vector3(0,50,0));
+  // Look back along -Z
+  mPlayerMapCamera->lookAt(Ogre::Vector3(0,0,0));
+  //mPlayerMapCamera->setDirection(Ogre::Vector3(0,-1,0));
+  mPlayerMapCamera->setNearClipDistance(1);
+
 
 }
 
@@ -428,9 +444,13 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
 	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 
-	// set the Ogre node position based on Atlas entity position
+	// set the Ogre node position and orientation based on Atlas data
 	ogreNode->setPosition(Atlas2Ogre(e->getPosition()));
 	std::cout << "Entity placed at (" << e->getPosition().x() << "," << e->getPosition().y() << "," << e->getPosition().x() << ")" << std::endl;
+	//WFMath::Quaternion wq = e->getOrientation();
+	//WFMath::Vector<3> wv = wq.vector();
+	//Ogre::Quaternion oq = Ogre::Quaternion(Atlas2Ogre(e-getOrientation()));
+	ogreNode->setOrientation(Atlas2Ogre(e->getOrientation()));
 
 	// old code, just for the record
 	/** WFMath::Point<3> position = e->getPosition();

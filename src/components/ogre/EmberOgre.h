@@ -24,7 +24,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.4  2003-04-28 00:55:06  aglanor
+ *      Revision 1.5  2003-04-28 22:42:06  aglanor
+ *      Added new viewport for a mini-map and quaternion conversion.
+ *      Eris entities are now displayed with orientation.
+ *
+ *      Revision 1.4  2003/04/28 00:55:06  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
  *      		There is also a little ogre head marking (0,0,0).
@@ -264,6 +268,9 @@ public:
 protected:
 	Ogre::Root *mRoot;
 	Ogre::Camera* mCamera;
+	Ogre::Camera* mPlayer1pCamera;
+	Ogre::Camera* mPlayer3pCamera;
+	Ogre::Camera* mPlayerMapCamera;
 	Ogre::SceneManager* mSceneMgr;
 	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;
@@ -320,17 +327,21 @@ protected:
         mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
     }
 
-    void createCamera(void);
+	void createCamera(void);
 
 	void createFrameListener(void);
 
-    void createScene(void);
+	void createScene(void);
 
     virtual void createViewports(void)
     {
         // Create one viewport, entire window
         Ogre::Viewport* vp = mWindow->addViewport(mCamera);
         vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
+	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
+	Ogre::Viewport* mapvp = mWindow->addViewport(mPlayerMapCamera,1,0.70,0.05,0.25,0.25);
+	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
     }
 
     /// Method which will define the source of resources (other than current folder)

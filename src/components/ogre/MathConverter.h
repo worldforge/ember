@@ -11,7 +11,11 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.1  2003-04-27 23:53:06  aglanor
+ *      Revision 1.2  2003-04-28 22:42:06  aglanor
+ *      Added new viewport for a mini-map and quaternion conversion.
+ *      Eris entities are now displayed with orientation.
+ *
+ *      Revision 1.1  2003/04/27 23:53:06  aglanor
  *      skipped this file in the cvs adds
  *
 
@@ -104,6 +108,10 @@ inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3 p) {
 
 inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3> p){
 	return Ogre::Vector3(p.x(),p.z(),-p.y());
+}
+
+inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
+	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 }
 
 
