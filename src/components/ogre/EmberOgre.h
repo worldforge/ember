@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.25  2004-10-12 00:49:55  erik
+ *      Revision 1.26  2004-10-12 23:03:01  erik
+ *      2004-10-12 Erik Hjortsberg <erik@katastrof.nu>
+ *
+ *      * fixed mouse picking
+ *      * streamlined inventory a bit more
+ *
+ *      Revision 1.25  2004/10/12 00:49:55  erik
  *      2004-10-12 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      * added mouse picker menu for touching and taking entities. Right now it's just a placeholder, but it works, can be seen here: http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023002.png
@@ -353,7 +359,6 @@ public:
 	// TODO: possibly we'd like to do the following in a different way,
 	// perhaps refactoring stuff
 	Avatar* getAvatar();
-	
 	Ogre::TerrainSceneManager* getSceneManager();
 	TerrainGenerator* getTerrainGenerator();
 	MotionManager* getMotionManager();

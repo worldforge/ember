@@ -60,19 +60,22 @@ void EntityPickerWidget::buildWidget()
 	mMainWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));
 	mMainWindow->setSize(CEGUI::Size(0.2f, 0.2f));
+	mMainWindow->setAlpha(0.5f);
+	mMainWindow->setVisible(false);
+	mMainWindow->setEnabled(false);
+	mMainWindow->setAlwaysOnTop(true);
 	
 	mMenuWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/Menu");
 	mMenuWindow->setPosition(CEGUI::Point(0.1, 0.3f));
-	mMenuWindow->setSize(CEGUI::Size(0.8f, 0.6f));
-	mMainWindow->setVisible(false);
-	mMainWindow->setEnabled(false);
+	mMenuWindow->setSize(CEGUI::Size(1.0f, 0.7f));
+	mMenuWindow->setInheritsAlpha(true);	
 	mMainWindow->addChildWindow(mMenuWindow);
-	mMainWindow->setAlwaysOnTop(true);
 	
 	
 	mEntityName = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"EntityPickerWidget/EntityName"));
 	mEntityName->setSize(CEGUI::Size(1.0f, 0.3f));
 	mEntityName->setPosition(CEGUI::Point(0.0f, 0.0f));
+	mEntityName->setInheritsAlpha(true);	
 	mMainWindow->addChildWindow(mEntityName);
 
 
@@ -92,6 +95,7 @@ void EntityPickerWidget::buildWidget()
 	touchButton->setText((CEGUI::utf8*)"Touch");
 	touchButton->setSize(CEGUI::Size(1.0f, 0.5f));
 	touchButton->setPosition(CEGUI::Point(0.0f, 0.0f));
+	touchButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(touchButton);
 	mButtonSet.insert(touchButton);
 	
@@ -102,6 +106,7 @@ void EntityPickerWidget::buildWidget()
 	takeButton->setText((CEGUI::utf8*)"Take");
 	takeButton->setSize(CEGUI::Size(1.0f, 0.5f));
 	takeButton->setPosition(CEGUI::Point(0.0f, 0.5f));
+	takeButton->setInheritsAlpha(true);	
 	mMenuWindow->addChildWindow(takeButton);
 	mButtonSet.insert(takeButton);	
 	

@@ -65,10 +65,6 @@ public:
 	
 	inline Eris::Avatar* getErisAvatar() { return mErisAvatar;	}
 
-/*	SigC::Signal1<void, DimeEntity* > EventAddedEntityToInventory;
-	SigC::Signal1<void, DimeEntity* > EventRemovedEntityFromInventory;*/
-	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
-	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 
 
 	
@@ -76,7 +72,6 @@ protected:
 
 	Avatar* mAvatar;
 	Eris::Avatar* mErisAvatar;
-	
 };
 
 }

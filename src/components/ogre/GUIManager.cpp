@@ -242,10 +242,12 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 	mSheet->activate();
 	mSheet->captureInput();
 
-//TODO: implement this
-
 	if (mMousePicker) {
-		mMousePicker->doMousePicking(mMousePressedOgreEvent, mouseArgs);
+		CEGUI::Point position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
+		Ogre::Real x = position.d_x;
+		Ogre::Real y = position.d_y;
+
+		mMousePicker->doMousePicking(x, y, mouseArgs);
 	}
 
 

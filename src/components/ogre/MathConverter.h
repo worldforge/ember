@@ -11,7 +11,13 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.7  2004-07-21 00:27:29  erik
+ *      Revision 1.8  2004-10-12 23:03:01  erik
+ *      2004-10-12 Erik Hjortsberg <erik@katastrof.nu>
+ *
+ *      * fixed mouse picking
+ *      * streamlined inventory a bit more
+ *
+ *      Revision 1.7  2004/07/21 00:27:29  erik
  *      2004-07-21 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre:
@@ -205,17 +211,28 @@ inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion aq){
 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
 }
 
+
 /*
  * used when scaling Ogre models to the units used ny WF, i.e. 1 unit == 1 meter
  * Ogre seems to use 1 unit == 1 centimeter
  */
-#define OGRE2WF(x) (x * 1)
-#define WF2OGRE(x) (x * 1)
-#define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x * 1, y * 1, z * 1))
-#define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x * 1, y * 1, z * 1))
+#define OGRE2WF(x) x 
+#define WF2OGRE(x) x
+#define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
+#define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
 #define OGRESCALER Ogre::Vector3(1,1,1)
 
 }
 
+/*
+Ogre::Vector3 Ogre::Vector3(WFMath::Vector<3> v) {
+	return Ogre::Vector3(v.x(),v.z(),-v.y());
+}
+
+
+WFMath::Point<3>::operator Ogre::Vector3() const{
+	return Ogre::Vector3(this.x(),this.z(),-this.y());
+}
+*/
 
 #endif

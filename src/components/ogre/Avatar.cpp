@@ -83,6 +83,7 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	createAvatar();
 //	createAvatarCameras(mAvatarNode);
 
+	Ogre::Root::getSingleton().addFrameListener(this);
 
 }
 
@@ -107,9 +108,6 @@ void Avatar::createAvatar()
 	// Model Node and Entity for display
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
-/*	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "fish.mesh");
-	Ogre::Entity* robot = mSceneMgr->createEntity("AvatarEntity_robot", "robot.mesh");
-*/	
 	Model* model = new Model(mSceneMgr, "AvatarEntity");
 	//TODO add better resource handling
 	model->createFromXML("modeldefinitions/malebuilder.modeldef.xml");
@@ -137,6 +135,37 @@ void Avatar::createAnimations() {
 */
 	
 	
+}
+
+bool Avatar::frameStarted(const Ogre::FrameEvent & event)
+{
+	if (mEntitiesToBeAddedToInventory.size() > 0) {
+		std::set<Eris::Entity*>::iterator I = mEntitiesToBeAddedToInventory.begin();
+		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
+		
+		for (; I != I_end; ++I) {
+			DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(*I);
+			if (dimeEntity)
+				EventAddedEntityToInventory.emit(dimeEntity);
+		}
+		
+		mEntitiesToBeAddedToInventory.clear();
+	}	
+
+	
+	if (mEntitiesToBeRemvedFromInventory.size() > 0) {
+		std::set<Eris::Entity*>::iterator J = mEntitiesToBeRemvedFromInventory.begin();
+		std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemvedFromInventory.end();
+		
+		for (; J != J_end; ++J) {
+			DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(*J);
+			if (dimeEntity)
+				EventRemovedEntityFromInventory.emit(dimeEntity);
+		}
+		
+		mEntitiesToBeRemvedFromInventory.clear();
+	}
+	return true;
 }
 
 

@@ -29,6 +29,7 @@
 #include "DimeEntityFactory.h"
 #include "DimeOgre.h"
 #include "InventoryWidget.h"
+#include "Avatar.h"
 
 namespace DimeOgre {
 
@@ -51,66 +52,23 @@ void InventoryWidget::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 
-	DimeOgre::getSingleton().EventCreatedDimeEntityFactory.connect(SigC::slot(*this, &InventoryWidget::createdDimeEntityFactory));
+	DimeOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
+	DimeOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
+
+	
 
 }
-
-
-void InventoryWidget::createdDimeEntityFactory(DimeEntityFactory* factory) {
-	factory->CreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatar));
-}
-
-
-void InventoryWidget::createdAvatar(AvatarDimeEntity* avatarDimeEntity) {
-	avatarDimeEntity->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
-	avatarDimeEntity->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
-}
-
-
-void InventoryWidget::frameStarted(const Ogre::FrameEvent & event)
-{
-	std::set<Eris::Entity*>::iterator I = addEntities.begin();
-	std::set<Eris::Entity*>::iterator I_end = addEntities.end();
+void InventoryWidget::addedEntity(DimeEntity* dimeEntity) {
 	
-	for (; I != I_end; ++I) {
-		CEGUI::ListboxItem* item = new CEGUI::ListboxTextItem(CEGUI::String((*I)->getName()), atoi((*I)->getID().c_str()), *I);
-		mListBox->addItem(item);
-	}
-	
-	addEntities.clear();
-	
-
-	
-	std::set<Eris::Entity*>::iterator J = removeEntities.begin();
-	std::set<Eris::Entity*>::iterator J_end = removeEntities.end();
-	
-	for (; I != I_end; ++I) {
-		CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi((*I)->getID().c_str()));
-		if (item) {
-			mListBox->removeItem(item);
-		}
-	}
-	
-	removeEntities.clear();
-		
+	CEGUI::ListboxItem* item = new CEGUI::ListboxTextItem(CEGUI::String(dimeEntity->getName()), atoi(dimeEntity->getID().c_str()), dimeEntity);
+	mListBox->addItem(item);
 
 }
-void InventoryWidget::addedEntity(Eris::Entity* dimeEntity) {
-	
-	addEntities.insert(dimeEntity);
-	
-/*	//HACK: the name get's instansiated after the container is set
-	//const std::string& name = std::string("inv: ") + dimeEntity->getProperty("name").asString();
-
-	CEGUI::ListboxItem* item = new CEGUI::ListboxTextItem(CEGUI::String("fsdfd"), atoi(dimeEntity->getID().c_str()), dimeEntity);
-	mListBox->addItem(item);*/
-}
-void InventoryWidget::removedEntity(Eris::Entity* dimeEntity) {
-	removeEntities.insert(dimeEntity);
-/*	CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi(dimeEntity->getID().c_str()));
+void InventoryWidget::removedEntity(DimeEntity* dimeEntity) {
+	CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi(dimeEntity->getID().c_str()));
 	if (item) {
 		mListBox->removeItem(item);
-	}*/
+	}
 }
 
 

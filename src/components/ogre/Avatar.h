@@ -72,9 +72,10 @@ struct AvatarMovementState
  *  
  * TODO: create facilities for animation of the avatar, walking, running, jumping etc.
  */
-class Avatar : virtual public SigC::Object
+class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 {
 	friend class AvatarController;
+	friend class AvatarDimeEntity;
 
     public:
 
@@ -95,6 +96,9 @@ class Avatar : virtual public SigC::Object
 
 	//Ogre::Camera* getCamera() const;
 	
+	virtual bool frameStarted(const Ogre::FrameEvent & event);
+
+	
 	
 	void createdAvatarDimeEntity(AvatarDimeEntity *dimeEntity);
 	
@@ -107,6 +111,11 @@ class Avatar : virtual public SigC::Object
 	void setAvatarController(AvatarController* avatarController);
 	
 	AvatarDimeEntity* getAvatarDimeEntity();
+
+	SigC::Signal1<void, DimeEntity* > EventAddedEntityToInventory;
+	SigC::Signal1<void, DimeEntity* > EventRemovedEntityFromInventory;
+// 	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
+// 	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 
 protected:
 	
@@ -214,13 +223,7 @@ protected:
 	 * The main avatar scenenode
 	 */
 	Ogre::SceneNode* mAvatarNode;
-/*	SceneNode* mAvatar1pCameraNode;
-	SceneNode* mAvatar3pCameraNode;
-	SceneNode* mAvatarTopCameraNode;
-	Camera* mAvatar1pCamera;
-	Camera* mAvatar3pCamera;
-	Camera* mAvatarTopCamera;
-	*/
+
 
 
 	// node for rotating the model for the entity
@@ -238,6 +241,10 @@ protected:
 
 	AvatarController* mAvatarController;
 
+	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
+	std::set<Eris::Entity*> mEntitiesToBeRemvedFromInventory;
+
+	
 }; //End of class declaration
 
 }

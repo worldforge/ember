@@ -43,13 +43,15 @@ MousePicker::~MousePicker()
 {
 }
 
-void MousePicker::doMousePicking(Ogre::MouseEvent* ogreMouseEvent, const CEGUI::MouseEventArgs& args)
+void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const CEGUI::MouseEventArgs& args)
 {
 	AvatarCamera* camera = DimeOgre::getSingleton().getMainCamera();
 /*	Ogre::Real x = GUIManager::getSingleton().getEventProcessor()->getInputReader()->getMouseAbsX();
 	Ogre::Real y = GUIManager::getSingleton().getEventProcessor()->getInputReader()->getMouseAbsY();*/
-	Ogre::Real x = ogreMouseEvent->getX();	
-	Ogre::Real y = ogreMouseEvent->getY();	
+/*	Ogre::Real x = ogreMouseEvent->getX();	
+	Ogre::Real y = ogreMouseEvent->getY();	*/
+/*	Ogre::Real x = args.position.d_x;
+	Ogre::Real y = args.position.d_y;*/
 /*	Ogre::Real x__ = ogreMouseEvent->getRelX();	
 	Ogre::Real y__ = ogreMouseEvent->getRelY();	*/
 	

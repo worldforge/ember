@@ -46,20 +46,16 @@ public:
     ~InventoryWidget();
 	void buildWidget();
 
-	virtual void frameStarted(const Ogre::FrameEvent & event);
 
 protected:
 	CEGUI::Listbox* mListBox;
 
 /*	void removedEntity(DimeEntity* dimeEntity);
 	void addedEntity(DimeEntity* dimeEntity);*/
-	void removedEntity(Eris::Entity* dimeEntity);
-	void addedEntity(Eris::Entity* dimeEntity);
-	void createdAvatar(AvatarDimeEntity* avatarDimeEntity);
-	void createdDimeEntityFactory(DimeEntityFactory* factory);
+	void removedEntity(DimeEntity* dimeEntity);
+	void addedEntity(DimeEntity* dimeEntity);
 	
-	std::set<Eris::Entity*> addEntities;
-	std::set<Eris::Entity*> removeEntities;
+
 
 	
 	

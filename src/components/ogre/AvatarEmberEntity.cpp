@@ -78,12 +78,7 @@ void AvatarDimeEntity::setVisible(bool vis)
 
 void AvatarDimeEntity::addMember(Entity *e) 
 {
-	EventAddedEntityToInventory.emit(e);
-
-/*	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
-	if (dimeEntity) {
-		EventAddedEntityToInventory.emit(dimeEntity);
-	}*/
+	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
 	PersonDimeEntity::addMember(e);
 	
 }
@@ -91,11 +86,7 @@ void AvatarDimeEntity::addMember(Entity *e)
 
 void AvatarDimeEntity::rmvMember(Entity *e)
 {
-	EventRemovedEntityFromInventory.emit(e);
-/*	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
-	if (dimeEntity) {
-		EventRemovedEntityFromInventory.emit(dimeEntity);
-	}*/
+	mAvatar->mEntitiesToBeRemvedFromInventory.insert(e);
 	PersonDimeEntity::rmvMember(e);	
 }
 
