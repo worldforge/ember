@@ -31,8 +31,6 @@
 #include <ctime>
 //#include <varargs.h> //TODO: Needed by unix?
 
-using namespace std;
-
 // Include system headers here
 
 namespace dime {
