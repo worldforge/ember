@@ -226,7 +226,6 @@ AC_OUTPUT([
   src/Makefile
   src/components/Makefile
   src/components/debug/Makefile
-  src/components/ogre/Makefile
   src/framework/Makefile
   src/services/Makefile
   src/services/config/Makefile
@@ -246,4 +245,5 @@ AC_OUTPUT([
   src/main/Makefile
   dime.dox
   dime.spec
+  src/components/ogre/Makefile
 ])

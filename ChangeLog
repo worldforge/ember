@@ -1,4 +1,15 @@
 2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
+	* Various Makefile.am's: Altered for the new place where DimeServices.
+	  cpp/h have been put.  Added some stuff to EXTRA_DIST
+
+	* OgreApp.cpp: Fixed this up with several workarounds.
+
+	* Application.cpp/h Dime.cpp OgreApp.cpp DebugGameview.cpp: Altered
+	  this for new location of DimeServices.
+
+	* configure.ac/in: moved ogre down in the build till it's fixed.
+
+2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
 	* configure.ac/in: resync'd .in bumped required eris version to 0.9.7
 	  due to API changes.
 

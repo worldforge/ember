@@ -1,4 +1,10 @@
+INCLUDES = -I$(top_srcdir)/src
+
 SUBDIRS = config logging metaserver input gui platform image font server sound datamodel test
+
+noinst_LIBRARIES = libServices.a
+
+libServices_a_SOURCES = DimeServices.cpp DimeServices.h
 
 check_PROGRAMS = servicetest
 servicetest_SOURCES = ServiceTest.cpp

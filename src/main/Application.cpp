@@ -10,7 +10,19 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.41  2002-11-12 18:52:24  xmp
+ *      Revision 1.42  2002-12-02 20:08:03  xmp
+ *      2002-12-02 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * Various Makefile.am's: Altered for the new place where DimeServices.
+ *                cpp/h have been put.  Added some stuff to EXTRA_DIST
+ *
+ *              * OgreApp.cpp: Fixed this up with several workarounds.
+ *
+ *              * Application.cpp/h Dime.cpp OgreApp.cpp DebugGameview.cpp: Altered
+ *                this for new location of DimeServices.
+ *
+ *              * configure.ac/in: moved ogre down in the build till it's fixed.
+ *
+ *      Revision 1.41  2002/11/12 18:52:24  xmp
  *      2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
  *              * configure.in: added to allow older distros to build
  *
@@ -163,7 +175,7 @@
  */
 
 #include "Application.h"
-#include "DimeServices.h"
+#include "services/DimeServices.h"
 #include "services/datamodel/DataObject.h"
 #include "services/datamodel/DataModelService.h"
 #include "framework/ConsoleBackend.h"

@@ -1,5 +1,9 @@
-INCLUDES = -I$(top_srcdir)/src
+# TODO: add a configure check to replace hack here.
+#OGRE_PATH=/home/xmp/ogrenew
 OGRE_PATH=/home/aglanor/code/ogrenew
+INCLUDES = -I/usr/include/stlport -I$(top_srcdir)/src \
+	-I$(OGRE_PATH)/OgreMain/include \
+	-I$(OGRE_PATH)/Samples/Common/include
 
 bin_PROGRAMS = OgreApp
 
@@ -16,15 +20,18 @@ $(top_srcdir)/src/services/sound/libSoundService.a \
 $(top_srcdir)/test/libTestServices.a \
 $(top_srcdir)/src/services/datamodel/libDataModelService.a \
 $(top_srcdir)/src/services/logging/libLoggingService.a \
-$(top_srcdir)/src/framework/libFramework.a
+$(top_srcdir)/src/framework/libFramework.a \
+$(top_srcdir)/src/services/libServices.a
 
-OgreApp_SOURCES = Application.cpp Dime.cpp DimeServices.cpp StateManager.cpp Application.h DimeServices.h StateManager.h
+OgreApp_SOURCES = OgreApp.cpp
 
-#	g++ -DHAVE_CONFIG_H -I. -I. -I$(OGRE_PATH)/OgreMain/include -I$(OGRE_PATH)/OgreMain/include \
+EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
+
+LDFLAGS += -L$(OGRE_PATH)/OgreMain/src -lOgreMain
+
+#	g++ -DHAVE_CONFIG_H -I. -I.  -I$(OGRE_PATH)/OgreMain/include \
 #	-g -O2 -I/usr/include/SDL -I$(OGRE_PATH)/Samples/Common/include -D_REENTRANT -c OgreApp.cpp \
 
 #	/bin/sh $(OGRE_PATH)/libtool --mode=link g++  -g -O2 -I/usr/include/SDL -D_REENTRANT  -o OgreApp \
 #	 -L$(OGRE_PATH)/OgreMain/src OgreApp.o -lOgreMain -lpthread -lpng -lz -lm -ldl -ljpeg \
 #	 -L/usr/lib -lSDL -lpthread
-
-

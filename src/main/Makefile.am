@@ -15,6 +15,9 @@ $(top_srcdir)/src/services/sound/libSoundService.a \
 $(top_srcdir)/test/libTestServices.a \
 $(top_srcdir)/src/services/datamodel/libDataModelService.a \
 $(top_srcdir)/src/services/logging/libLoggingService.a \
-$(top_srcdir)/src/framework/libFramework.a
+$(top_srcdir)/src/framework/libFramework.a \
+$(top_srcdir)/src/services/libServices.a
 
-dime_SOURCES = Application.cpp Dime.cpp DimeServices.cpp StateManager.cpp Application.h DimeServices.h StateManager.h
+dime_SOURCES = Application.cpp Dime.cpp StateManager.cpp Application.h StateManager.h
+
+EXTRA_DIST = states.xml

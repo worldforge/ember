@@ -17,11 +17,11 @@
 */
 
 #include "Application.h"
-#include <test/TestServices.h>
-#include <main/DimeServices.h>
-#include <services/image/ImageService.h>
-#include <framework/Exception.h>
-#include <services/gui/widget/Button.h>
+#include "test/TestServices.h"
+#include "services/DimeServices.h"
+#include "services/image/ImageService.h"
+#include "framework/Exception.h"
+#include "services/gui/widget/Button.h"
 
 
 void quitButton(dime::Button* button)

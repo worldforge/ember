@@ -31,11 +31,26 @@ http://www.gnu.org/copyleft/lesser.txt.
         .h and .cpp files for tidiness, but this is just a jump-start.
 */
 
+#include "services/DimeServices.h"
+
+
 // ----------------------------------------------------------------------------
 // Include the main OGRE header files
 // Ogre.h just expands to including lots of individual OGRE header files
 // ----------------------------------------------------------------------------
-#include "Ogre.h"
+
+// The DEBUG stuff is a workaround for compile errors this causes in OGRE
+#ifdef DEBUG
+#define DEBUGTEMP
+#undef DEBUG
+#endif
+
+#include <Ogre.h>
+
+#ifdef DEBUGTEMP
+#undef DEBUGTEMP
+#define DEBUG
+#endif
 // ----------------------------------------------------------------------------
 // Include the OGRE example framework
 // This includes the classes defined to make getting an OGRE application running
@@ -45,7 +60,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "ExampleApplication.h"
 
 
-#include "DimeServices.h"
 
 class TerrainListener : public ExampleFrameListener
 {
@@ -335,7 +349,7 @@ int main(int argc, char **argv)
     OgreApp app;
 	
 	// Initialize dime stuff
-	LoggingService *logging = DimeServices::getInstance()->getLoggingService();
+	dime::LoggingService *logging = dime::DimeServices::getInstance()->getLoggingService();
 	
 
 

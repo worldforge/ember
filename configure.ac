@@ -249,7 +249,6 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 src/components/Makefile
 		 src/components/debug/Makefile
-		 src/components/ogre/Makefile
 		 src/framework/Makefile
 		 src/services/Makefile
 		 src/services/config/Makefile
@@ -269,6 +268,7 @@ AC_CONFIG_FILES([Makefile
 		 src/main/Makefile
 		 dime.dox
 		 dime.spec
+		 src/components/ogre/Makefile
 ])
 
 AC_OUTPUT

@@ -1,4 +1,5 @@
-/*  Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (xmp)
+/*
+    Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (xmp)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
 
 #include "DebugGameView.h"
 
-#include "main/DimeServices.h"
+#include "services/DimeServices.h"
 
 namespace dime {
 
