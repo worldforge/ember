@@ -12,7 +12,7 @@ dime-media.tar.bz2      : For common media (sounds, fonts, music,
 dime-meida-ogre.tar.bz2 : For OGRE Engine-specific media
 dime-media-sdl.tar.bz2  : For SDL Engine-specific media
 
-The media can be retrieved from ftp://<enter media FTP URL here>/<media file> .
+The media can be retrieved from ftp://<enter media FTP URL here>/<media file>[0] .
 To install the media, uncompress the above tarballs to /usr/share/games/dime .
 They will create their own directories under media, so you should have something
 that looks like the following (if you install all of the media):
@@ -24,3 +24,4 @@ that looks like the following (if you install all of the media):
 /usr/share/games/dime/media/sdl
 /usr/share/games/dime/media/sounds
 
+[0] Temporary storage is at: http://wf.sandall.us:8880/<filename>
