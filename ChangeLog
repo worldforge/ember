@@ -1,7 +1,9 @@
 2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
-	* ServerService.cpp, OOGChat.cpp, MetaserverService.cpp
+	* ServerService.cpp, OOGChat.cpp, MetaserverService.cpp,
 	  Application.cpp:
 	    Update obsolete <strstream> to <sstream>.
+	* Application.cpp, Application.h:
+	  Sort out init's in headers that don't work anymore.
 
 2003-04-13 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* Configure.ac: created check for wfmath. Moved to PKG_CONFIG checking

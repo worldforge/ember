@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.24  2002-12-07 23:57:36  xmp
+ *      Revision 1.25  2003-04-19 23:12:25  xmp
+ *      2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
+ *      * Application.cpp, Application.h:
+ *        Sort out init's in headers that don't work anymore.
+ *
+ *      Revision 1.24  2002/12/07 23:57:36  xmp
  *      2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
  *              * ConfigService.cpp: Initialise static member theInstance to NULL.
  *
@@ -291,7 +296,7 @@ namespace dime
 	/**
 	 * Commands for the console
 	 */
-	static const char* const CMD_QUIT = "quit";
+	static const char* const CMD_QUIT;
     };//class Application
 }//namespace dime
 

@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.45  2003-04-19 23:04:05  xmp
+ *      Revision 1.46  2003-04-19 23:12:25  xmp
+ *      2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
+ *      * Application.cpp, Application.h:
+ *        Sort out init's in headers that don't work anymore.
+ *
+ *      Revision 1.45  2003/04/19 23:04:05  xmp
  *      2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
  *              * ServerService.cpp, OOGChat.cpp, MetaserverService.cpp
  *                Application.cpp:
@@ -235,6 +240,7 @@ namespace dime
      */
 
     Application* Application::theApplication = NULL;
+    const char* const Application::CMD_QUIT = "quit";
 
     class CerrLogObserver: public dime::LoggingService::Observer
     {
