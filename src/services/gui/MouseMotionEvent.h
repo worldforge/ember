@@ -30,7 +30,7 @@
 #define MOUSEMOTIONEVENT_H
 
 #include "Event.h"
-
+#include <assert.h>
 namespace dime {
 
   /**
@@ -86,3 +86,4 @@ namespace dime {
 
 
 #endif
+

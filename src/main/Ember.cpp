@@ -4,7 +4,7 @@
 #include <services/gui/Button.h>
 #include <services/gui/Panel.h>
 //#include <SDL/SDL_keysym.h>
-
+#include <iostream>
 
 void mouseenterbutton(dime::MouseMotionEvent* event)
 {
@@ -18,12 +18,12 @@ void mouseexitbutton(dime::MouseMotionEvent* event)
 
 void onMouseButtonDown(dime::MouseButtonEvent *event)
 {
-    std::cout << "DORK!\n" << std::flush;
+	std::cout << "DORK!\n" << std::flush;
 }
 
 void onMouseButtonUp(dime::MouseButtonEvent *event)
 {
-    std::cout << "Mouse UP!\n" << std::flush;
+	std::cout << "Mouse UP!\n" << std::flush;
 }
 
 

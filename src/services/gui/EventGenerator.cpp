@@ -4,7 +4,7 @@
 //---------------------------------------------------------------------------------------------------
 // Event slots.
 //---------------------------------------------------------------------------------------------------
-void dime::EventGenerator::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
+void dime::EventGenerator::MouseMotion(InputDevice *mouse, InputDevice * otherDevice, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
 {
     assert(mouse);
     
@@ -37,7 +37,7 @@ void dime::EventGenerator::MouseMotion(InputDevice *mouse, const SDLKey &key, di
         }
 }
 
-void dime::EventGenerator::MouseClick(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
+void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
 {
     assert(mouse);
     

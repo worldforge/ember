@@ -33,6 +33,7 @@
 // Include system headers here
 #include <string>
 #include <set>
+#include <assert.h>
 
 //General TODOs:
 // - test if it compiles under Unix especially
@@ -142,6 +143,7 @@ class InputMapping
 	/**
 	 * A signal takes the following params:
 	 * - InputDevice * motionDevice 
+	 * - InputDevice * keyDevice 
 	 * - const SDLKey & key (pressed)
 	 * - InputSignalType type 
 	 *
@@ -149,10 +151,10 @@ class InputMapping
 	 * params to your handling function (usually called 'cockie').
 	 */
 
-	typedef SigC::Signal3<void, InputDevice *, const SDLKey & , InputSignalType, SigC::Marshal<void> 
-		> InputSignal;
+	typedef SigC::Signal4<void, InputDevice *, InputDevice *, const SDLKey & , 
+		InputSignalType, SigC::Marshal<void> > InputSignal;
 
-	typedef SigC::Slot3<void, InputDevice *, const SDLKey &, InputSignalType> InputSlot;
+	typedef SigC::Slot4<void, InputDevice *, InputDevice *, const SDLKey &, InputSignalType> InputSlot;
 
    
     //======================================================================
@@ -384,7 +386,7 @@ class InputMapping
 
 				if (myTypes & KEY_PRESSED)
 				{
-					mySignal(myMotionDevice, key, KEY_PRESSED);
+					mySignal(myMotionDevice, myKeyDevice, key, KEY_PRESSED);
 				}
 			}
 		}
@@ -406,7 +408,7 @@ class InputMapping
 			{
 				if (myTypes & KEY_RELEASED)
 				{
-					mySignal(myMotionDevice, key, KEY_RELEASED);
+					mySignal(myMotionDevice, myKeyDevice, key, KEY_RELEASED);
 				}
 			}
 		}
@@ -425,7 +427,7 @@ class InputMapping
 		{
 			for (std::set<SDLKey>::iterator i = myKeysPressed.begin(); i != myKeysPressed.end(); i++)
 			{		
-				mySignal(myMotionDevice, *i, EVENT_OCCURED);
+				mySignal(myMotionDevice, myKeyDevice, *i, EVENT_OCCURED);
 			}
 		}
 	}

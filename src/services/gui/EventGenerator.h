@@ -59,12 +59,12 @@ namespace dime
 	/**
 	 * Passes mouse motion events down to widget tree
 	 */
-	void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+	void MouseMotion(InputDevice *mouse, InputDevice * otherDevice, const SDLKey &key, InputMapping::InputSignalType signaltype);
 	
 	/**
 	 * Passes mouse motion events down to widget tree
 	 */
-	void MouseClick(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+	void MouseClick(InputDevice * otherDevice, InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
 
 
 

@@ -168,15 +168,15 @@ SOURCE=.\src\services\config\ConfigService.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\Container.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\main\Dime.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\main\DimeServices.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\EventGenerator.cpp
 # End Source File
 # Begin Source File
 
@@ -256,10 +256,6 @@ SOURCE=.\src\services\config\ConfigService.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\Container.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\components\cs\CSComponent.h
 # End Source File
 # Begin Source File
@@ -268,11 +264,19 @@ SOURCE=.\src\services\gui\Dimension.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\platform\Dimension.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\main\DimeServices.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\services\platform\DrawDevice.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\EventGenerator.h
 # End Source File
 # Begin Source File
 
@@ -329,6 +333,10 @@ SOURCE=.\src\services\platform\PlatformService.h
 # Begin Source File
 
 SOURCE=.\src\services\gui\Rectangle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\Rectangle.h
 # End Source File
 # Begin Source File
 

@@ -243,6 +243,8 @@ void MouseDevice::initAxis()
 	
 bool MouseDevice::handleEvent(SDL_Event & event)
 {
+	SDLKey key;
+
 	switch (event.type)
 	{
 	case SDL_MOUSEMOTION:
@@ -257,12 +259,14 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 		return true;
 
 	case SDL_MOUSEBUTTONDOWN:
-		keyPressed(static_cast<SDLKey>(event.button.button));
+		key = static_cast<SDLKey>(event.button.button);
+		keyPressed(key);
 		return true;
 	
 
-	case SDL_MOUSEBUTTONUP:
-		keyReleased(static_cast<SDLKey>(event.button.button));
+	case SDL_MOUSEBUTTONUP:	
+		key = static_cast<SDLKey>(event.button.button);
+		keyReleased(key);
 		return true;
 	
 	case SDL_VIDEORESIZE:

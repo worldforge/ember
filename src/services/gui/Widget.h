@@ -289,7 +289,9 @@ namespace dime {
          *
          *@return bool whether something was updated or not.
          */
-        virtual bool update(DrawDevice *target) { };
+        virtual bool update(DrawDevice *target) { 
+			//TODO: What should be returned here
+			return false; };
         
         
         /**
@@ -367,7 +369,9 @@ namespace dime {
         * until releaseKeyboard is called.  Returns true if keyboard was successfully
         * captured (if some other window already had it captureKeyboard fails).
         */
-        virtual bool captureKeyboard() { }
+        virtual bool captureKeyboard() {
+			//TODO: What should be returned here
+			return false;  }
         
         /**
          * Releases the keyboard if it was captured by captureKeyboard().
@@ -442,7 +446,9 @@ namespace dime {
          * until releaseMouse is called.  Returns true if mouse was successfully
          * captured (if some other window already had it captureMouse fails).
          */
-        virtual bool captureMouse() { };
+        virtual bool captureMouse() { 
+			//TODO: What should be returned here
+			return false;};
 
         /**
          * Releases the mouse if it was captured by captureMouse().

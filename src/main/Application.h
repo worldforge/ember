@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.9  2002-04-15 05:53:15  nikal
+ *      Revision 1.10  2002-04-20 20:37:04  tim
+ *      Compatibility and bug fixes
+ *
+ *      Revision 1.9  2002/04/15 05:53:15  nikal
  *      *** empty log message ***
  *
  *      Revision 1.8  2002/04/08 07:51:28  adamgreg
@@ -114,7 +117,7 @@ namespace dime
 		 */
 		void quit();
 	   
-		void escPressed(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype)
+		void escPressed(InputDevice * , InputDevice * keyDevice, const SDLKey &key, InputMapping::InputSignalType signaltype)
 		{
 			quit();
 		}
