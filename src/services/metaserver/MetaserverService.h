@@ -52,7 +52,7 @@ class MetaserverService: public Service,
     Eris::Meta * msrv;
     Eris::ServerList serverlist;
     bool listed;
-    StringProvider * myStateDMP;
+    //StringProvider * myStateDMP;
 
 		
     //----------------------------------------------------------------------
