@@ -16,9 +16,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "Model.h"
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
-#include "Model.h"
 #include "PersonDimeEntity.h"
 namespace DimeOgre {
 

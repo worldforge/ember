@@ -15,12 +15,12 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+#include "Model.h"
 #include "DimeEntity.h"
 #include "DimePhysicalEntity.h"
 #include "PersonDimeEntity.h"
 #include "framework/ConsoleBackend.h"
 #include "Avatar.h"
-#include "Model.h"
 #include "GUIManager.h"
 #include "AvatarDimeEntity.h"
 
@@ -63,7 +63,7 @@ void AvatarDimeEntity::handleTalk(const std::string &msg)
 	message.append(getName());
 	message.append("> ");
 	message.append(msg);
-	GUIManager::getSingleton().appendIGChatLine(message);
+	GUIManager::getSingleton().AppendIGChatLine.emit(message);
 	std::cout << "TRACE - AVATAR SAYS: [" << message << "]\n" << std::endl;
 	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
