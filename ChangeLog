@@ -2,6 +2,8 @@
 	* configure.ac: pumped up atlas version req to 0.5
 	* ServerService: added support for character creation
 	* DimeOgre: bound key "5" to character creation
+	* plugins.cfg: re-added this file
+	* TODO: added todo list
 
 2003-08-26 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* configure.ac: pumped up eris version to eris-1.2 

@@ -1,0 +1,24 @@
+TODO LIST
+---------
+
+Version 0.1.3
+
+[ ]	Ogre - Console for Ogre game view
+[ ]	Ogre - 3D pickup code (for touch, pick up operations)
+[ ]	ServerService - Send move operations
+[ ]	Ogre - Animate walking entities when received move operations on them
+
+Later versions
+[ ]	Ogre - Basic GUI - Login
+[ ]	Ogre - Basic GUI - Character selection
+[ ]	Ogre - Basic GUI - Inventory
+[ ]	Ogre - Basic GUI - Health bar
+[ ]	Ogre - Basic  GUI - Chat window
+[ ]	TerrainService - to talk to Mercator
+[ ]	Ogre - add Landscape Scene Manager plugin, integrate mercator data
+[ ]	ServerService - send touch operation
+[ ]	ServerService - send pick up operation
+[ ]	ServerService - send give operation
+[ ]	ServerService - send drop operation
+
+
