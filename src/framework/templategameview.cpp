@@ -17,24 +17,26 @@
 
 #include "templategameview.h"
 
+#include "main/DimeServices.h"
+
 namespace dime {
 
 TemplateGameView::TemplateGameView()
 {
 
     /* Find out where the Eris world instance resides... */
-    new Eris::World *w = DimeService.getInstance()->getEntityService()->getErisInstance();
+    new Eris::World *w = DimeService.getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( this, &EntityCreate() ) );
+    w->EntityCreate.connect( SigC::slot( this, &EntityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( this, &EntityDelete() ) );
+    w->EntityDelete.connect( SigC::slot( this, &EntityDelete ) );
 
-    w->Entered.connect( SigC::slot( this, &Entered() ) );
+    w->Entered.connect( SigC::slot( this, &Entered ) );
 
-    w->Appearance.connect( SigC::slot( this, &Appearance() ) );
+    w->Appearance.connect( SigC::slot( this, &Appearance ) );
 
-    w->Disappearance.connect( SigC::slot( this, &Disappearance() ) );
+    w->Disappearance.connect( SigC::slot( this, &Disappearances) );
 
 }
 
@@ -51,44 +53,44 @@ void TemplateGameView::EntityCreate( Eris::Entity *e )
 
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
-    e->AddedMember.connect( SigC::slot( this, &AddedMember() ) );
+    e->AddedMember.connect( SigC::slot( this, &AddedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( this, &RemovedMember() ) );
+    e->RemovedMember.connect( SigC::slot( this, &RemovedMember ) );
 
-    e->Recontainered.connect( SigC::slot( this, &Recontainered() ) );
+    e->Recontainered.connect( SigC::slot( this, &Recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( this, &Changed() ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( this, &Changed ), e ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( this, &Moved() ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( this, &Moved ), e ) );
 
-    e->Say.connect( SigC::slot( SigC::slot( this, &Say() ), e ) );
+    e->Say.connect( SigC::bind(SigC::slot( this, &Say ), e ) );
 }
 
 
-void TemplateGameView::EntityDelete( Eris::Entity *e )
+void TemplateGameView::entityDelete( Eris::Entity *e )
 {}
 
-void TemplateGameView::Entered( Eris::Entity *e )
+void TemplateGameView::entered( Eris::Entity *e )
 {}
 
-void TemplateGameView::Appearance( Eris::Entity *e )
+void TemplateGameView::appearance( Eris::Entity *e )
 {}
 
-void TemplateGameView::Disappearance( Eris::Entity *e )
+void TemplateGameView::disappearance( Eris::Entity *e )
 {}
 
 /* Eris::Entity signals */
 
-void TemplateGameView::Recontainered( Eris::Entity *e, Eris::Entity *c )
+void TemplateGameView::recontainered( Eris::Entity *e, Eris::Entity *c )
 {}
 
-void TemplateGameView::Changed( const Eris::StringSet &s, Eris::Entity *e  )
+void TemplateGameView::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {}
 
-void TemplateGameView::Moved( const Eris::Coord &c, Eris::Entity *e )
+void TemplateGameView::moved( const Eris::Coord &c, Eris::Entity *e )
 {}
 
-void TemplateGameView::Say( const std::string &s, Eris::Entity *e )
+void TemplateGameView::say( const std::string &s, Eris::Entity *e )
 {}
 
 

@@ -192,7 +192,7 @@ class DebugGameView : public SigC::Object //: public Component
          * layered 2D views)
          */
 
-}; //End of class decleration
+}; //End of class declaration
 
 } // End of application namespace
 

@@ -1,4 +1,4 @@
-/*  Copyright (C) 2002  Alistair Davidson and the Worldforge Project
+/*  Copyright (C) 2002  Alistair Davidson and the Worldforge Project and Martin Pollard (Xmp)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 #ifndef TEMPLATE_GAME_VIEW_H
 #define TEMPLATE_GAME_VIEW_H
+
+#include <Eris/World.h>
 
 namespace dime {
 
@@ -83,7 +85,7 @@ class TemplateGameView : public SigC::Object : public Component
          *
          * @param e A pointer to the Eris entity that has been created.
          */
-        void EntityCreate( Eris::Entity *e );
+        void entityCreate( Eris::Entity *e );
 
         /**
          * Called on entity deletion. You should remove all information you
@@ -92,7 +94,7 @@ class TemplateGameView : public SigC::Object : public Component
          * @param e A pointer to the Eris entity that has been deleted.
          *
          */
-        void EntityDelete( Eris::Entity *e );
+        void entityDelete( Eris::Entity *e );
 
         /**
          * Called only once, when the player enters the game world. It's
@@ -101,7 +103,7 @@ class TemplateGameView : public SigC::Object : public Component
          * @param e A pointer to the Eris entity
          *
          */
-        void Entered( Eris::Entity *e );
+        void entered( Eris::Entity *e );
 
         /** Called when an entity become visible. You'll probably want to add
          * a media pointer to your world model at this point.
@@ -109,7 +111,7 @@ class TemplateGameView : public SigC::Object : public Component
          * @param e A pointer to the Eris entity
          *
          */
-        void Appearance( Eris::Entity *e );
+        void appearance( Eris::Entity *e );
 
         /**
          * Called when an entity becomes invisible. You should remove the media
@@ -119,7 +121,7 @@ class TemplateGameView : public SigC::Object : public Component
          * @param e A pointer to the Eris entity
          *
          */
-        void Disappearance( Eris::Entity *e );
+        void disappearance( Eris::Entity *e );
 
 
         /* Eris::Entity signals  (see eris\src\entity.h for more info)*/
@@ -132,13 +134,13 @@ class TemplateGameView : public SigC::Object : public Component
          * @param e A pointer to the Eris entity that has been recontainered
          * @param c A pointer to the Eris entity that is the new container for e
          */
-        void Recontainered( Eris::Entity *e, Eris::Entity *c );
+        void recontainered( Eris::Entity *e, Eris::Entity *c );
 
         /**
          * I'm not sure what this does. Let's ignore it until I can track down
          * James and bop him on the head for writing unhelpful comments ;)
          */
-        void Changed( const Eris::StringSet &s, Eris::Entity *e );
+        void changed( const Eris::StringSet &s, Eris::Entity *e );
 
         /**
          * Called when the entity moves. Here you should alter the position
@@ -151,7 +153,7 @@ class TemplateGameView : public SigC::Object : public Component
          * @param c The new coordinates of the entity
          * @param e A pointer to the Eris entity that has moved
          */
-        void Moved( const Eris::Coord &c, Eris::Entity *e );
+        void moved( const Eris::Coord &c, Eris::Entity *e );
 
         /**
          * Called when the entity speaks. You'll probably want to display the
@@ -160,7 +162,7 @@ class TemplateGameView : public SigC::Object : public Component
          * @param s A string containing the speech
          * @param e A pointer to the Eris entity
          */
-        void Say( const std::string &s, Eris::Entity *e );
+        void say( const std::string &s, Eris::Entity *e );
 
     private:
 
@@ -172,6 +174,6 @@ class TemplateGameView : public SigC::Object : public Component
          * layered 2D views)
          */
 
-}; //End of class decleration
+}; //End of class declaration
 
 } // End of application namespace
