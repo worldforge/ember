@@ -23,31 +23,31 @@
 #include "Eris/PollDefault.h"
 //#include "LoggingService.h"
 
-#include <iostream.h>
+#include <iostream>
 
 
 int main()
 {
 
-	cout << "Dime Service Test running" << endl;
+	std::cout << "Dime Service Test running" << std::endl;
 
-	cout << "***TESTING TEST SERVICE***" << endl;
+	std::cout << "***TESTING TEST SERVICE***" << std::endl;
 	dime::TestService myTestService;
 	myTestService.start();
-	cout << "My name is: " << myTestService.getName() << endl;
-	cout << myTestService.getDescription() << endl;
+	std::cout << "My name is: " << myTestService.getName() << std::endl;
+	std::cout << myTestService.getDescription() << std::endl;
 	myTestService.stop(0);
-	cout << "***END TEST OF TEST SERVICE***" << endl;
+	std::cout << "***END TEST OF TEST SERVICE***" << std::endl;
 	
-	cout << "***TESTING CONFIG SERVICE***" << endl;
+	std::cout << "***TESTING CONFIG SERVICE***" << std::endl;
 	dime::ConfigService myConfigService;
 	myConfigService.start();
-	cout << "My name is: " << myConfigService.getName() << endl;
-	cout << myTestService.getDescription() << endl;
+	std::cout << "My name is: " << myConfigService.getName() << std::endl;
+	std::cout << myTestService.getDescription() << std::endl;
 	myConfigService.stop(0);
-	cout << "***END TEST OF CONFIG SERVICE***" << endl;	
+	std::cout << "***END TEST OF CONFIG SERVICE***" << std::endl;	
 	
-	cout << "***TESTING METASERVER SERVICE***" << endl;
+	std::cout << "***TESTING METASERVER SERVICE***" << std::endl;
 	dime::MetaserverService myMsService;
 	myMsService.start();
 	Eris::PollDefault::poll();
@@ -55,26 +55,26 @@ int main()
 	{
 //		myMsService.poll();
 	}
-	cout << "My name is: " << myMsService.getName() << endl;
-	cout << myMsService.getDescription() << endl;
+	std::cout << "My name is: " << myMsService.getName() << std::endl;
+	std::cout << myMsService.getDescription() << std::endl;
 	myMsService.stop(0);
 	//delete myMsService;
-	cout << "***END TEST OF METASERVER SERVICE***" << endl;		
+	std::cout << "***END TEST OF METASERVER SERVICE***" << std::endl;		
 	
-	//cout << "***TESTING SERVICE MANAGER***" << endl;
-	//cout << "***adding and listing one service***" << endl;
+	//std::cout << "***TESTING SERVICE MANAGER***" << std::endl;
+	//std::cout << "***adding and listing one service***" << std::endl;
 	//dime::services::ServiceManager myServiceManager;
 	//myServiceManager.addService(&myTestService);
 	//myServiceManager.listAll();
-	//cout << "***adding and listing the second service***" << endl;
+	//std::cout << "***adding and listing the second service***" << std::endl;
 	//dime::services::test::TestService myTestService2;
 	//myServiceManager.addService(&myTestService2);
 	//myServiceManager.listAll();
-	//cout << "***removing the first service, listing again***" << endl;
+	//std::cout << "***removing the first service, listing again***" << std::endl;
 	//myServiceManager.removeService(&myTestService);
 	//myServiceManager.listAll();
-	//cout << "***END OF TESTING SERVICE MANAGER***" << endl;
-	cout << "Dime Service Test ends" << endl;
+	//std::cout << "***END OF TESTING SERVICE MANAGER***" << std::endl;
+	std::cout << "Dime Service Test ends" << std::endl;
 	//dime::services::LoggingService ls;
    
 	return 0;

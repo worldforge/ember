@@ -1,3 +1,7 @@
+2003-12-08 Al Riddoch <alriddoch@zepler.org>
+	* src/services/ServiceTest.cpp: Use <iostream> instead of <iostream.h>
+	  and fix std:: namespace usage.
+
 2003-12-07 Al Riddoch <alriddoch@zepler.org>
 	* src/services/ServiceTest.cpp: Fix conversion glitch so that
 	  this test compiles.
