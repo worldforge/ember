@@ -106,7 +106,7 @@ namespace dime
 	
 	void MetaserverService::poll()
 	{
-		msrv->poll();
+	  //msrv->poll(); Non existant
 	}
 	
 } // namespace dime
