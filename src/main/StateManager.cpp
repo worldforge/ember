@@ -62,12 +62,12 @@ xmlNodePtr StateManager::findState(const std::string& state)
   while (cur != NULL) {
     if ((!xmlStrcmp(cur->name, (const xmlChar *)"stateinfo"))){
       // Second phase parse this time looking for name
-      cur = cur->xmlChildrenNode;
+      xmlAttrPtr attr = cur->properties;
 
-      while (cur != NULL) {
-	if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))){
+      while (attr != NULL) {
+	if ((!xmlStrcmp(attr->name, (const xmlChar *)"name"))){
 	  // Check value
-	  if ((!xmlStrcmp(xmlNodeListGetString(myStateDoc, cur->xmlChildrenNode, 1),
+	  if ((!xmlStrcmp(xmlNodeListGetString(myStateDoc, attr->xmlChildrenNode, 1),
 			  (const xmlChar *)state.c_str()))){
 	    return cur;
 	  }
@@ -77,7 +77,7 @@ xmlNodePtr StateManager::findState(const std::string& state)
 	  break;
 	}
 	
-	cur = cur->next;
+	attr = attr->next;
       }
 
     }
@@ -86,7 +86,7 @@ xmlNodePtr StateManager::findState(const std::string& state)
   }
 
   // If we've to here then we probably don't have that state
-  THROW("State not found");
+  return NULL;
 }
 
 #if 1
@@ -101,7 +101,6 @@ void quitButton(dime::Button* button);
 
 bool StateManager::setState( const std::string& newState )
 {
-#if 0
   // Find the new state in statefile
   xmlNodePtr nstate = findState(newState);
 
@@ -109,39 +108,46 @@ bool StateManager::setState( const std::string& newState )
   if (!nstate)
     return false;
 
+#if 0
   // Unload myCurrentState
+  xmlNodePtr cstate = findState(myCurrentState);
+
+  // Unload current services not mentioned in nstate
+
+  // Load missing services mentioned in nstate
 
   // Load new state
 
   return true;
 #else
-  dime::Console myTestConsole(dime::Rectangle(10,300,620,120));
-
-  dime::Label myTestLabel("Dime test!", dime::Rectangle(10,10,200,30));
-  dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(13,43,97,32));
-
-  dime::Button myTestButton(dime::Rectangle(535,450,100,25));
+  // Create the Widgets
+  dime::Console* myTestConsole = new dime::Console(dime::Rectangle(10,300,620,120));
+  dime::Label* myTestLabel = new dime::Label("Dime test!", dime::Rectangle(10,10,200,30));
+  dime::TextBox* myTestTextBox = new dime::TextBox("TextBox!", dime::Rectangle(13,43,97,32));
+  dime::Button* myTestButton = new dime::Button(dime::Rectangle(535,450,100,25));
+  dime::Panel* myTestPanel = new dime::Panel(dime::Rectangle(550,0,90,90));
             
-  myTestButton.setBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
-  myTestButton.setHighlightBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
-  myTestButton.setPressedBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
+  // Set Additional options for myTestButton
+  myTestButton->setBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
+  myTestButton->setHighlightBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
+  myTestButton->setPressedBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
+  // Set Additional options for my TestPanel
+  myTestPanel->setBackground(new dime::BitmapRenderer(myTestPanel->getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
+  myTestButton->onClicked.connect(SigC::slot(quitButton));
 
-  dime::Panel myTestPanel(dime::Rectangle(550,0,90,90));
-  myTestPanel.setBackground(new dime::BitmapRenderer(myTestPanel.getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
-  myTestButton.onClicked.connect(SigC::slot(quitButton));
-            
-  dime::InputService * pIS = dime::InputService::getInstance();
+  // Bind Escape to quit
+  dime::InputService* pIS = dime::InputService::getInstance();
   pIS->addInputMapping( new dime::InputMapping(
 			    pIS->getInputDevice(dime::InputDevice::KEYBOARD),
 			    SDLK_ESCAPE, false,
 			    SigC::slot(*dime::Application::getInstance(),
 				       &dime::Application::escPressed)));
             
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestPanel);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestConsole);
-  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestButton);
+  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestPanel);
+  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestLabel);
+  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestTextBox);
+  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestConsole);
+  dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestButton);
   return true;
 #endif
 }

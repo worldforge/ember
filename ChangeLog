@@ -1,3 +1,11 @@
+2002-11-13 M Pollard <circlemaster@blueyonder.co.uk>
+	* StateManager.cpp: Fixed the bug where widgets were going out of
+	  scope, thus causing them not to be drawn.
+
+	* StateManager.cpp: Fixed up findState so that it works
+
+	* states.xml: added stateinfo for findState to find.
+
 2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
 	* configure.in: added to allow older distros to build
 
