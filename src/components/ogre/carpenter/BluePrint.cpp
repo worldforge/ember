@@ -46,8 +46,8 @@ void BluePrint::doBindingsForBlock(BuildingBlock *block)
 {
 	std::map<BuildingBlock* , std::vector<BuildingBlockBinding*> > relatedBindings;
 
-	std::vector< BuildingBlockBinding>::iterator I = mBindings.begin();
-	std::vector< BuildingBlockBinding>::iterator I_end = mBindings.end();
+	std::list< BuildingBlockBinding>::iterator I = mBindings.begin();
+	std::list< BuildingBlockBinding>::iterator I_end = mBindings.end();
 		
 	for (;I != I_end; ++I) {
 		BuildingBlock* unboundBlock = 0;
@@ -185,7 +185,7 @@ BuildingBlockBinding* BluePrint::addBinding(BuildingBlock* block1, const AttachP
 	BuildingBlockBinding binding(block1, point1, block2, point2);
 	
 	mBindings.push_back(binding);
-	return &(*(--mBindings.end()));
+	return &mBindings.back();
 	
 }
 

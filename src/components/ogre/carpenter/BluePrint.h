@@ -77,7 +77,6 @@ public:
 
 
 protected:
-	int wtf;
 	const AttachPoint* mPoint1;
 	BuildingBlock* mBlock2;
 	const AttachPoint* mPoint2;
@@ -171,7 +170,7 @@ public:
 
 protected:
 	std::map<const std::string,  BuildingBlock> mBuildingBlocks;
-	std::vector< BuildingBlockBinding> mBindings;
+	std::list< BuildingBlockBinding> mBindings;
 	
 	std::vector< BuildingBlock*> mAttachedBlocks;
 	BuildingBlock* mStartingBlock;

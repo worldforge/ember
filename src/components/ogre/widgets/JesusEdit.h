@@ -30,6 +30,10 @@
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIEditbox.h>
+#include <CEGUIMouseCursor.h>
+
+#include "../GUIManager.h"
+
 
 namespace Carpenter
 {
@@ -54,9 +58,51 @@ class ModelBlock;
 class AttachPointNode;
 class Construction;
 class Jesus;
+class Model;
+
+
+
 /**
 @author Erik Hjortsberg
 */
+
+class JesusEditPreviewRenderListener : public Ogre::RenderTargetListener
+{
+protected:
+	GUIManager* mGuiManager;
+
+public:
+
+	JesusEditPreviewRenderListener(GUIManager* guiManager) : mGuiManager(guiManager) {}
+
+    void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
+
+    void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
+	
+
+};
+
+class JesusEditPreview
+{
+public:
+	JesusEditPreview(GUIManager* guiManager);
+
+	void setModel(Model *);
+	void clearAndDestroyModel();
+
+protected:
+	GUIManager* mGuiManager;
+	void createPreviewTexture();
+	void createCamera();
+	Ogre::SceneNode* mCameraNode;
+	Ogre::SceneNode* mEntityNode;
+	Ogre::Camera* mCamera;
+	Model* mModel;
+	JesusEditPreviewRenderListener* mListener;
+};
+
+
+
 class JesusEdit : public Widget
 {
 public:
@@ -67,6 +113,9 @@ public:
 	virtual void buildWidget();
 	
 protected:
+
+	CEGUI::Window* mPreviewWindow;
+	
 	bool mInJesusMode;
 	JesusMousePicker mMousePicker; 
 	
@@ -130,7 +179,8 @@ protected:
 	
 	std::map<AttachPointNode*, const Carpenter::AttachPoint*> mBindings;
 	
-	
+//	void createPreviewTexture();
+	JesusEditPreview* mPreview;
 };
 
 

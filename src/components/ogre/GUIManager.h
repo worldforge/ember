@@ -122,6 +122,8 @@ public:
 	 * @return 
 	 */
 	MousePicker* popMousePicker();
+	
+	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
 protected:
 
 
@@ -146,7 +148,7 @@ protected:
 	void updateStats(void);
 
 
-	Ogre::KeyListener* mKeyListener;
+	//Ogre::KeyListener* mKeyListener;
 	
 
 	/**

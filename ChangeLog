@@ -1,3 +1,12 @@
+2005-03-06  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Use std::list instead of std::vector to avoid scary, scary bug. Thanks rakshasa and AlRiddoch.
+	* Added a preview window for JesusEdit.
+
+2005-03-04  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* compile fix
+
 2005-03-04  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Added more functionality and bug fixes to JesusEdit.

@@ -1,0 +1,18 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+		<Property Name="Position" Value="x:0.7 y:0.5" /> 
+		<Property Name="Size" Value="w:0.3 h:0.2" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Text" Value="JesusEdit Preview" />
+		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
+			<Property Name="AbsolutePosition" Value="x:5 y:5" /> 
+			<Property Name="Size" Value="w:0.95 h:0.9" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type="TaharezLook/StaticImage" Name="Image">
+				<Property Name="Position" Value="x:0.0 y:0.0" /> 
+				<Property Name="AbsoluteSize" Value="w:256 h:256" /> 
+			</Window>
+		</Window>	
+	</Window>
+ </GUILayout> 

@@ -24,10 +24,22 @@
 
 #include "../jesus/Jesus.h"
 #include <elements/CEGUIPushButton.h>
+#include <elements/CEGUIStaticImage.h>
 #include "../GUIManager.h"
 #include "../carpenter/Carpenter.h"
 #include "../carpenter/BluePrint.h"
+#include <CEGUIImagesetManager.h> 
+#include <CEGUIImageset.h> 
+#include "../EmberOgre.h"
+#include "../AvatarCamera.h"
+#include "../Avatar.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../PersonEmberEntity.h"
+#include "../AvatarEmberEntity.h"
+#include "../model/Model.h"
 
+#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 namespace EmberOgre {
 
 JesusEdit::JesusEdit()
@@ -47,6 +59,9 @@ void JesusEdit::buildWidget()
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEdit.widget", "JesusEdit/");
 	mMainWindow->setVisible(true);
 	
+	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
+	
+
 	
 	//bind buttons
 	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/SwitchMode"));
@@ -93,7 +108,9 @@ void JesusEdit::buildWidget()
 	EmberOgre::getSingleton().EventCreatedJesus.connect(SigC::slot(*this, &JesusEdit::createdJesus));
 	
 	getMainSheet()->addChildWindow(mMainWindow); 
+	getMainSheet()->addChildWindow(mPreviewWindow); 
 
+	mPreview = new JesusEditPreview(mGuiManager);
 	
 }
 
@@ -248,6 +265,11 @@ bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & a
 	const Carpenter::BuildingBlockSpec* bblockSpec = getNewBuildingBlockSpec( );
 	if (bblockSpec) {
 		fillNewAttachPointList(bblockSpec->getBlockSpec());
+		mPreview->clearAndDestroyModel();
+		Model* model = EmberOgre::getSingleton().getJesus()->createModelForBlockType(bblockSpec->getName(),"JesusEditPreviewModel");
+		if (model) {
+			mPreview->setModel(model);
+		}
 	} else {
 		mNewPointsList->resetList();
 		mNewPointsList->clearAllSelections();
@@ -380,11 +402,108 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 	updateCreateButton();
 }
 
+JesusEditPreview::JesusEditPreview(GUIManager* guiManager)
+: mGuiManager(guiManager), mModel(0)
+{
+	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	mEntityNode->setPosition(Ogre::Vector3(10000,10000,10000));
+	mCameraNode = mEntityNode->createChildSceneNode();
+	mCameraNode->setPosition(Ogre::Vector3(0,0,-5));
+	createCamera();
+	createPreviewTexture();
+}
+
+void JesusEditPreview::setModel(Model * model)
+{
+	if (mModel) {
+		clearAndDestroyModel();
+	}
+	mEntityNode->attachObject(model);
+	mModel = model;
+}
+
+
+void JesusEditPreview::createCamera()
+{	
+	mCamera = EmberOgre::getSingleton().getSceneManager()->createCamera("JesusPreviewCamera");
+	//EmberOgre::getSingleton().getMainCamera()->getCamera()->getParentSceneNode()->attachObject(camera);
+	// Look to the Avatar's head
+	mCamera->setAutoTracking(true, mEntityNode);
+	mCamera->setNearClipDistance(0.01);
+	mCamera->setFarClipDistance(100);
+	mCameraNode->attachObject(mCamera);
+}
+
+
+void JesusEditPreview::createPreviewTexture()
+{
+
+
+
+	Ogre::RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "JesusEditPreview", 256, 256 );
+	rttTex->removeAllViewports();
+	mListener = new JesusEditPreviewRenderListener(mGuiManager);
+	rttTex->addListener(mListener);
+	Ogre::Viewport *v = rttTex->addViewport(mCamera );
+
+	
+	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(rttTex->getName());
+	CEGUI::Texture* ceguiTexture = mGuiManager->getGuiRenderer()->createTexture(texPtr);
+	
+	CEGUI::Imageset* imageSet = CEGUI::ImagesetManager::getSingleton().createImageset("JesusEditPreview", ceguiTexture);
+	imageSet->defineImage("full", CEGUI::Rect(0,0,256,256), CEGUI::Point(0,0));
+	
+	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Image"));
+	
+	imageWidget->setImage(&imageSet->getImage("full"));
+
+}
+
+    void JesusEditPreviewRenderListener::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+    {
+		mGuiManager->getMainSheet()->setVisible(false);
+		CEGUI::MouseCursor::getSingleton().hide();
+//         // Hide plane and objects above the water
+//         pPlaneEnt->setVisible(false);
+//         std::vector<Entity*>::iterator i, iend;
+//         iend = aboveWaterEnts.end();
+//         for (i = aboveWaterEnts.begin(); i != iend; ++i)
+//         {
+//             (*i)->setVisible(false);
+//         }
+
+    }
+    void JesusEditPreviewRenderListener::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+    {
+		mGuiManager->getMainSheet()->setVisible(true);
+		CEGUI::MouseCursor::getSingleton().show();
+/*        // Show plane and objects above the water
+        pPlaneEnt->setVisible(true);
+        std::vector<Entity*>::iterator i, iend;
+        iend = aboveWaterEnts.end();
+        for (i = aboveWaterEnts.begin(); i != iend; ++i)
+        {
+            (*i)->setVisible(true);
+        }*/
+    }
+
+void JesusEditPreview::clearAndDestroyModel( )
+{
+	if (mModel) {
+		mEntityNode->detachObject(mModel);
+	}
+	//EmberOgre::getSingleton().getSceneManager()->removeEntity(mModel);
+	delete mModel;
+	mModel = 0;
+}
+
 }
 
 bool EmberOgre::JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 {
 }
+
+
 
 
 
