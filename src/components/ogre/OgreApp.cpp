@@ -1,8 +1,10 @@
 /*
 -----------------------------------------------------------------------------
-This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
+OgreApp.cpp by Miguel Guzman Miranda (Aglanor)
+Based on OGRE sample applications:
+    OGRE (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://ogre.sourceforge.net
+Based on the dime main application by the dime team
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,8 +23,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 */
 
 /**
-    \file 
-        SampleApp.cpp
     \brief
         This file can be used as a starting point for building an OGRE application.
         I have deliberately compressed both declarations and definitions into 1 file
@@ -43,6 +43,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
 #include "ExampleApplication.h"
+
+
+#include "DimeServices.h"
 
 class TerrainListener : public ExampleFrameListener
 {
@@ -330,6 +333,9 @@ int main(int argc, char **argv)
 {
     // Create application object
     OgreApp app;
+	
+	// Initialize dime stuff
+	LoggingService *logging = DimeServices::getInstance()->getLoggingService();
 	
 
 
