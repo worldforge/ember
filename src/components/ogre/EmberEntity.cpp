@@ -136,13 +136,16 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
     
 
 
-	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
+	
 	std::string message = "<";
 	message.append(getName());
 	message.append("> ");
 	message.append(msg);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	// Make the message appear in the chat box
+	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
+	//TODO: (Aglanor) I don't know what is this for
 	Eris::Entity::onTalk(talkArgs);
 }
 

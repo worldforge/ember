@@ -53,16 +53,30 @@ void ChatWidget::buildWidget()
 
 void ChatWidget::appendOOGChatLine(const std::string& line, EmberEntity* entity) 
 {
+	// Add the name of the entity to the appended line
+	std::string message = "{";
+	message.append(entity->getName());
+	message.append("} ");
+	message.append(line);
+	
+	// Add the message to the chat box
 	CEGUI::String current = mChatTextBox->getText();
-	current.append(line);
+	current.append(message);
 	current.append((CEGUI::utf8*)"\n");
 	mChatTextBox->setText(current);
 }
 
 void ChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
 {
+	// Add the name of the entity to the appended line
+	std::string message = "<";
+	message.append(entity->getName());
+	message.append("> ");
+	message.append(line);
+
+	// Add the message to the chat box
 	CEGUI::String current = mChatTextBox->getText();
-	current.append(line);
+	current.append(message);
 	current.append((CEGUI::utf8*)"\n");
 	mChatTextBox->setText(current);
 }
