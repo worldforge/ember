@@ -10,7 +10,13 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.14  2002-04-24 22:38:00  aglanor
+ *      Revision 1.15  2002-04-25 22:35:32  xmp
+ *      Three changes rating: minor/bugfix
+ *      -Ok MSVC #ifdef's in to avoid use of ERIS.
+ *      -Made a few variables initialise to NULL in eventgenerator to fix segfaults
+ *      -Added a few items to the MSVC project file
+ *
+ *      Revision 1.14  2002/04/24 22:38:00  aglanor
  *      modified dimeservices and main app so MetaserverService is included, can be instantiated and is polled each step of the main loop
  *
  *      Revision 1.13  2002/04/20 17:19:24  nikal
@@ -180,9 +186,15 @@ namespace dime
 		myGuiService->setDrawTarget(myDrawDevice);
 
 		// Initialize and start the MetaserverService.
+#ifdef _MSC_VER
+#if _MSC_VER > 1200
 		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
 		myMetaserverService->start();
-
+#endif
+#else
+		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
+		myMetaserverService->start();
+#endif
     }
 
     Application::~Application() {
@@ -206,7 +218,13 @@ namespace dime
 
 	// Metaserver polling
 	// TODO: this shall later be a DefaultPoll::Poll to poll all eris connections
+#ifdef _MSC_VER
+#if _MSC_VER > 1200
 	myMetaserverService->poll();
+#endif
+#else
+	myMetaserverService->poll();
+#endif
     }
 
     void Application::mainLoop() 

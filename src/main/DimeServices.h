@@ -24,7 +24,13 @@
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
 #include <services/gui/GuiService.h>
+#ifdef _MSC_VER
+#if _MSC_VER > 1200
 #include <services/metaserver/MetaserverService.h>
+#endif
+#else
+#include <services/metaserver/MetaserverService.h>
+#endif
 
 // Include custom library headers here
 
@@ -95,7 +101,13 @@ class DimeServices
     /**
 	* The instance of the MetaserverService
      */
+#ifdef _MSC_VER
+#if _MSC_VER > 1200
     dime::MetaserverService *myMetaserverService;
+#endif
+#else
+    dime::MetaserverService *myMetaserverService;
+#endif
 
     /**
      * The DimeServices singleton instance.
@@ -180,12 +192,21 @@ class DimeServices
     /**
      * Returns an instance of the MetaserverService
      */
+#ifdef _MSC_VER
+#if _MSC_VER > 1200
     dime::MetaserverService *getMetaserverService()
     {
         if (myMetaserverService == NULL) myMetaserverService = new dime::MetaserverService();
 		return myMetaserverService;
     }
-
+#endif
+#else
+    dime::MetaserverService *getMetaserverService()
+    {
+        if (myMetaserverService == NULL) myMetaserverService = new dime::MetaserverService();
+		return myMetaserverService;
+    }
+#endif
     //----------------------------------------------------------------------
     // Setters
 

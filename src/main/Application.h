@@ -10,7 +10,13 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.11  2002-04-24 22:38:00  aglanor
+ *      Revision 1.12  2002-04-25 22:35:32  xmp
+ *      Three changes rating: minor/bugfix
+ *      -Ok MSVC #ifdef's in to avoid use of ERIS.
+ *      -Made a few variables initialise to NULL in eventgenerator to fix segfaults
+ *      -Added a few items to the MSVC project file
+ *
+ *      Revision 1.11  2002/04/24 22:38:00  aglanor
  *      modified dimeservices and main app so MetaserverService is included, can be instantiated and is polled each step of the main loop
  *
  *      Revision 1.10  2002/04/20 20:37:04  tim
@@ -159,8 +165,13 @@ namespace dime
         /**
          * Our pointer to the MetaserverService
          */
+#ifdef _MSC_VER
+#if _MSC_VER > 1200
         dime::MetaserverService *myMetaserverService;
-
+#endif
+#else
+        dime::MetaserverService *myMetaserverService;
+#endif
         /**
          * Our pointer to the SDL_surface we use as the screen
          */

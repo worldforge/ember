@@ -1,26 +1,26 @@
 # Microsoft Developer Studio Project File - Name="dime" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
 CFG=dime - Win32 Debug CppUnit
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "dime.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "dime.mak" CFG="dime - Win32 Debug CppUnit"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "dime - Win32 Release" (basierend auf  "Win32 (x86) Application")
-!MESSAGE "dime - Win32 Debug" (basierend auf  "Win32 (x86) Application")
-!MESSAGE "dime - Win32 Debug CppUnit" (basierend auf  "Win32 (x86) Application")
-!MESSAGE "dime - Win32 Release CppUnit" (basierend auf  "Win32 (x86) Application")
+!MESSAGE "dime - Win32 Release" (based on "Win32 (x86) Application")
+!MESSAGE "dime - Win32 Debug" (based on "Win32 (x86) Application")
+!MESSAGE "dime - Win32 Debug CppUnit" (based on "Win32 (x86) Application")
+!MESSAGE "dime - Win32 Release CppUnit" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -316,6 +316,18 @@ SOURCE=.\src\services\metaserver\MetaserverService.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\gui\MouseButtonEvent.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\MouseMotionEvent.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\mscprag.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\gui\Panel.h
 # End Source File
 # Begin Source File
@@ -357,6 +369,10 @@ SOURCE=.\src\framework\Service.h
 # Begin Source File
 
 SOURCE=.\src\framework\ServiceManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\test\TestService.h
 # End Source File
 # Begin Source File
 

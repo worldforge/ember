@@ -46,7 +46,10 @@ namespace dime
             dime::InputDevice *mouse = myInputService->getInputDevice(dime::InputDevice::MOUSE);
             myInputService->addInputMapping(new dime::InputMapping(mouse, SigC::slot(*this,&dime::EventGenerator::MouseMotion)));
             myInputService->addInputMapping(new dime::InputMapping(mouse, mouse, SDLK_LEFT_MB, SDLK_RIGHT_MB, KMOD_NONE, dime::InputMapping::InputSignalType(InputMapping::KEY_PRESSED | InputMapping::KEY_RELEASED | InputMapping::EVENT_OCCURED), SigC::slot(*this,&dime::EventGenerator::MouseClick)));
-            
+			// NULL out this lot
+            myPointedWidget = NULL;
+			myMouseCaptureWidget = NULL;
+			myKeyboardCaptureWidget= NULL;
             
         };
         
