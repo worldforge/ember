@@ -18,7 +18,7 @@
 */
 
 #include "ServerService.h"
-#include "logging/LoggingService.h"
+#include "services/logging/LoggingService.h"
 
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
