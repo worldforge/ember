@@ -453,7 +453,7 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 }
 
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
-: mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(1), mMaxCameraDistance(40)
+: mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(0.5), mMaxCameraDistance(40)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
 	
