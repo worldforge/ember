@@ -1,3 +1,23 @@
+2005-03-20  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* autopackage, hmm... let's see where this leads
+	* added ember icon and desktop file
+	* bumped version to 0.3.0
+	* added make_dist_media.sh, for autogenerating the media dir. run it in the root dir. It requires a "media" dir directly under the root dir.
+
+2005-03-20  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* EmberOgre.h: added convenience getRootSceneNode
+	* EmberOgre.h: added and cleaned up comments
+	* EmberOgre.cpp: setupJesus now loads all blockspecs, building blocks, modeldefinitions and blueprints (both global and user)
+	* Jesus added methods for saving blueprints, these will be saved to ~/.ember/carpenter/blueprints/
+	* Jesus now loads and holds all blueprints
+	* BluePrint.cpp, BluePrint.h: make BuildingBlockBinding all const
+	* made sure all blueprints have names
+	* JesusEdit: added ability to save and load blueprints. This is very temporary and should use a better method and GUI.
+	* MakeEntityWidget: added null checks
+	* Widget.h: added comment
+
 2005-03-20 Miguel Guzman (Aglanor)
 
 	* added back Sound Service and reenabled the playsound command

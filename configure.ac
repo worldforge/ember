@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.2.1, clients@worldforge.org)
+AC_INIT(Ember, 0.3.0, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -357,6 +357,8 @@ AC_CONFIG_FILES([Makefile
 		 ember.dox
 		 ember.spec
 		 ember-media.spec
+		 autopackage/default.apspec
+		 make_dist_media.sh
 		 src/extensions/Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/widgets/Makefile
