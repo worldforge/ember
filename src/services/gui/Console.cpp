@@ -25,8 +25,15 @@
 #include "Console.h"
 #include "framework/ConsoleObject.h"
 #include "services/platform/RectangleRenderer.h"
+#include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
 #include "services/logging/LoggingService.h"
+
+#ifdef _MSC_VER
+#define FONT_FILE "..\\bin\\nasal.ttf"
+#else
+#define FONT_FILE "../../bin/nasal.ttf"
+#endif 
 
 namespace dime {
 // TODO: abstract SDL_GetTicks()
@@ -34,8 +41,8 @@ Console::Console(const Rectangle& rect) :
   Widget(rect),
   animateConsole(0),
   consoleHeight(0),
-  console_messages(std::list<std::string>()), // (TO STAY)
-  screen_messages(std::list<screenMessage>()), // (TO STAY)
+  console_messages(std::list<std::string>()),
+  screen_messages(std::list<screenMessage>())
 { }
 
 Console::~Console() {}
@@ -69,7 +76,7 @@ void Console::pushMessage(const std::string &message, int type, int duration) {
 void Console::draw(const std::string &command) {
   // If we are animating and putting console into visible state,
   //  the raise height a tad
-  if (animateConsole && showConsole) {
+  if (animateConsole && myVisible) {
     consoleHeight += CONSOLE_SPEED;
     // Have we reached full height?
     if (consoleHeight >= CONSOLE_HEIGHT) {
@@ -80,7 +87,7 @@ void Console::draw(const std::string &command) {
     renderConsoleMessages(command);
   // If we are animating and putting console into hidden state,
   //  the lower height a tad
-  } else if (animateConsole && !showConsole) {
+  } else if (animateConsole && !myVisible) {
     consoleHeight -= CONSOLE_SPEED;
     // Have we become visible?
     if (consoleHeight <= 0) {
@@ -90,13 +97,15 @@ void Console::draw(const std::string &command) {
     }
     renderConsoleMessages(command);
   // Else are we just plain visible?    
-  } else if (showConsole) {
+  } else if (myVisible) {
     renderConsoleMessages(command);
   }
   //Screen messages are always visible
   renderScreenMessages();
 }
 
+// TODO: refactor this to do the majority of the renderer creation in 
+//       the constructor
 void Console::renderConsoleMessages(const std::string &command) {
   std::list<std::string>::const_iterator I;
   int i;
@@ -107,13 +116,14 @@ void Console::renderConsoleMessages(const std::string &command) {
   RectangleRenderer rrenderer(myRectangle,Color(0.0f,0.0f,1.0f,0.85f));
   rrenderer.render(ddevice);
 
-  // TODO: sort out params for this constructor
+  dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
+  assert(font);
+  FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(100,100,0), Rectangle(0,0,0,0));
   FontRenderer frenderer();
   frenderer->setColour(1.0f, 1.0f, 0.0f, 1.0f);
 
   // Render console messages
-  // TODO: Change this to the real font height
-  int font_height = FONT_HEIGHT;
+  int font_height = font->getHeight();
   for (I = console_messages.begin(), i = 0; I != console_messages.end(); I++, i++) {
     int j = console_messages.size() - i;
     frenderer.setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,

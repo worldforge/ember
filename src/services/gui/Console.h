@@ -26,6 +26,7 @@
 
 // Included headers from the current project
 #include "framework/ConsoleObject.h"
+#include "services/gui/Widget.h"
 
 // Included custom library headers
 
@@ -72,7 +73,7 @@ class Render;
  */
 class Console : public ConsoleObject, public Widget {
 public:
-  Console();
+  Console(const Rectangle& rect);
   ~Console();
   
   bool init();
