@@ -21,6 +21,10 @@
 #include "DataObject.h"
 
 // Include library headers here
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#else
+#include <sigc++/object_slot.h>
+#endif
 
 // Include system headers here
 

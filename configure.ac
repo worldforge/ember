@@ -6,7 +6,7 @@ dnl Detect the canonical host and target build environment.
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AC_CANONICAL_BUILD
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 AC_PROG_CPP
 AC_PROG_CXX
 dnl AM_PROG_LEX
@@ -35,19 +35,19 @@ LDFLAGS="$LDFLAGS $SDL_LIBS"
 
 dnl Check for SigC++
 SIGC_VERSION=1.0.3
-dnl PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
-dnl     [
-dnl         CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
-dnl         LDFLAGS="$LDFLAGS $SIGC_LIBS"
-dnl     ],
-dnl     [
+PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
+     [
+         CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
+         LDFLAGS="$LDFLAGS $SIGC_LIBS"
+     ],
+     [
         AM_PATH_SIGC($SIGC_VERSION,[
                 CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
                 LDFLAGS="$LDFLAGS $SIGC_LIBS"
                 ],
                 AC_MSG_ERROR(Couldn't find sigc++ or insufficient version found. Please goto http://sourceforge.net/projects/libsigc/ and get at least version $SIGC_VERSION)
         )
-dnl     ])
+     ])
 
 dnl Check for Atlas
 AM_PATH_ATLAS(0.4.4 ,[
@@ -58,7 +58,7 @@ AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
 
 dnl Check for Eris
-AM_PATH_ERIS(0.9.5 ,[
+AM_PATH_ERIS(0.9.6 ,[
     CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
     LDFLAGS="$LDFLAGS $ERIS_LIBS"
     ],

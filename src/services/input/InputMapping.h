@@ -23,11 +23,12 @@
 #include "InputDevice.h"
 
 // Include library headers here
-
-#include <sigc++/generator.h>
-#include <sigc++/rettype.h>
-#include <sigc++/bind.h>
-#include <sigc++/convert.h>
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/handle_system.h>
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/signal.h>
+#endif
 
 
 // Include system headers here

@@ -26,8 +26,14 @@
 #include <SDL/SDL_keysym.h>
 #include <SDL/SDL_events.h>
 #include <SDL/SDL_mouse.h>
-#include <sigc++/signal_system.h>
 #include <SDL/SDL_timer.h>
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/handle_system.h>
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/signal.h>
+#include <sigc++/object.h>
+#endif
 
 
 // Include system headers here

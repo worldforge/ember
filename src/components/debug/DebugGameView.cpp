@@ -28,15 +28,15 @@ DebugGameView::DebugGameView()
     Eris::World *w = DimeServices::getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( this, &DebugGameView::entityCreate ) );
+    w->EntityCreate.connect( SigC::slot( *this, &DebugGameView::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( this, &DebugGameView::entityDelete ) );
+    w->EntityDelete.connect( SigC::slot( *this, &DebugGameView::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( this, &DebugGameView::entered ) );
+    w->Entered.connect( SigC::slot( *this, &DebugGameView::entered ) );
 
-    w->Appearance.connect( SigC::slot( this, &DebugGameView::appearance ) );
+    w->Appearance.connect( SigC::slot( *this, &DebugGameView::appearance ) );
 
-    w->Disappearance.connect( SigC::slot( this, &DebugGameView::disappearance ) );
+    w->Disappearance.connect( SigC::slot( *this, &DebugGameView::disappearance ) );
 
 }
 
@@ -54,17 +54,17 @@ void DebugGameView::entityCreate( Eris::Entity *e )
        too */
 
     // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( this, &DebugGameView::addedMember ) );
+    e->AddedMember.connect( SigC::slot( *this, &DebugGameView::addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( this, &DebugGameView::removedMember ) );
+    e->RemovedMember.connect( SigC::slot( *this, &DebugGameView::removedMember ) );
 
-    e->Recontainered.connect( SigC::slot( this, &DebugGameView::recontainered ) );
+    e->Recontainered.connect( SigC::slot( *this, &DebugGameView::recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( this, &DebugGameView::changed ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( *this, &DebugGameView::changed ), e ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( this, &DebugGameView::moved ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( *this, &DebugGameView::moved ), e ) );
 
-    e->Say.connect( SigC::bind( SigC::slot( this, &DebugGameView::say ), e ) );
+    e->Say.connect( SigC::bind( SigC::slot( *this, &DebugGameView::say ), e ) );
 }
 
 

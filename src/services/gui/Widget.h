@@ -30,12 +30,17 @@
 #include <services/platform/DrawDevice.h>
 
 // Included custom library headers
+// Include the signal system in headers file.
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/signal.h>
+#include <sigc++/object.h>
+#endif
+#include <SDL/SDL.h>
 
 // Included system headers
 #include <vector>
-#include <SDL/SDL.h>
-// Include the signal system in headers file.
-#include <sigc++/signal_system.h>
 
 namespace dime {
     
