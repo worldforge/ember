@@ -319,6 +319,7 @@ namespace dime {
 	virtual bool toggleVisible()
 	{
 	  myVisible = !myVisible;
+	  //%TASK UpdateRect,3: add function to GuiService to call SDL_UpdateRect.  This should be abstracted through platformservice
 	  return myVisible;
 	}
 
