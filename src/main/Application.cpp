@@ -10,7 +10,13 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.44  2002-12-07 23:57:36  xmp
+ *      Revision 1.45  2003-04-19 23:04:05  xmp
+ *      2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * ServerService.cpp, OOGChat.cpp, MetaserverService.cpp
+ *                Application.cpp:
+ *                  Update obsolete <strstream> to <sstream>.
+ *
+ *      Revision 1.44  2002/12/07 23:57:36  xmp
  *      2002-12-07 M Pollard <circlemaster@blueyonder.co.uk>
  *              * ConfigService.cpp: Initialise static member theInstance to NULL.
  *
@@ -201,7 +207,12 @@
 
 #include <iostream>
 #include <iomanip>
+#if 0
 #include <strstream>
+#define strstream stringstream
+#else
+#include <sstream>
+#endif
 #include <iterator>
 #ifndef WIN32
 #include <stdio.h>
@@ -284,14 +295,16 @@ namespace dime
   void onMetaserverService(PDataObject p, DataType t)
   {
     //fired whenever the state changed
-    std::strstream dump;
+    std::stringstream dump;
     dump << "onMetaserverService called." << std::endl;
     dump << "dumping /servers {" << std::endl;
     
     DataModelService::dump(DataObject::getRoot("/"), dump, true, 0);
     
     dump << "}";
-    dump.put(0);
+#if 0 // old sstream
+    dump << std::ends;
+#endif
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
       << dump.str() << ENDM;

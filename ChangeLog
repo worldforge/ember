@@ -1,5 +1,6 @@
 2003-04-19 M Pollard <circlemaster@blueyonder.co.uk>
-	* ServerService.cpp, OOGChat.cpp, MetaserverService.cpp:
+	* ServerService.cpp, OOGChat.cpp, MetaserverService.cpp
+	  Application.cpp:
 	    Update obsolete <strstream> to <sstream>.
 
 2003-04-13 Miguel Guzman <aglanor [at] telefonica [dot] net>
