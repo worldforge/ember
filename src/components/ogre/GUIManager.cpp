@@ -22,6 +22,7 @@
 #include "widgets/EntityPickerWidget.h"
 #include "widgets/InventoryWidget.h"
 #include "widgets/ServerBrowserWidget.h"
+#include "widgets/ServerWidget.h"
 #include "widgets/InspectWidget.h"
 #include "widgets/MakeEntityWidget.h"
 #include "MousePicker.h"
@@ -33,7 +34,6 @@ namespace DimeOgre {
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window)
-, mQuit(false)
 , mMouseMotionListener(0)
 , mMouseListener(0)
 , mKeyListener(0)
@@ -62,7 +62,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
-		fprintf(stderr, "CEGUI - TEST SCHEME LOADED\n");
+		fprintf(stderr, "CEGUI - MAIN SCHEME LOADED\n");
 		
 		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
 		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
@@ -107,7 +107,7 @@ void GUIManager::initialize()
 	mDebugText->setMaximumSize(CEGUI::Size(1.0f, 0.1f));
 	mDebugText->setPosition(CEGUI::Point(0.0f, 0.9f));
 	mDebugText->setSize(CEGUI::Size(1.0f, 0.1f));
-	//stxt->setText((utf8*)"This is a static text widget.  More examples of this, and the static image, can be seen in the frame-rate / debug overlay.");
+	
 	mDebugText->setFrameEnabled(false);
 	mDebugText->setBackgroundEnabled(false);
 	//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
@@ -123,7 +123,7 @@ void GUIManager::initialize()
 	chatWidget->buildWidget();
 	addWidget(chatWidget);		
 	
-	EntityPickerWidget* entityPicker = new EntityPickerWidget(this, mMousePicker);
+	EntityPickerWidget* entityPicker = new EntityPickerWidget(this);
 	entityPicker->buildWidget();
 	addWidget(entityPicker);		
 	
@@ -142,6 +142,10 @@ void GUIManager::initialize()
 	MakeEntityWidget* makeEntity = new MakeEntityWidget(this);
 	makeEntity->buildWidget();
 	addWidget(makeEntity);
+	
+	ServerWidget* serverWidget = new ServerWidget(this);
+	serverWidget->buildWidget();
+	addWidget(serverWidget);
 	
 }
 
@@ -231,17 +235,8 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 		aWidget->frameStarted(evt);
 	}
 	
-	if (mQuit) {
-		mEventProcessor->removeKeyListener(this);
-		mEventProcessor->removeMouseMotionListener(this);
-		mEventProcessor->removeMouseListener(this);
-		delete mEventProcessor;
-	
-		return false;
-	} else {
-//		updateStats();
-		return true;
-	}
+	return true;
+
 
 }
 

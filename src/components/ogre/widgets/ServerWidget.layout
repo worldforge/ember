@@ -1,0 +1,97 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+
+	<Window Type="TaharezLook/FrameWindow" Name="Server/MainWindow">
+		<Property Name="Position" Value="x:0.2 y:0.2" /> 
+		<Property Name="Size" Value="w:0.5 h:0.5" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Text" Value="Server" />
+		<Window Type="DefaultGUISheet" Name="Server/MainInnerWindow">
+			<Property Name="Position" Value="x:0.02 y:0.02" /> 
+			<Property Name="Size" Value="w:0.96 h:0.96" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type="TaharezLook/StaticText" Name="Server/Info">
+				<Property Name="Position" Value="x:0.02 y:0.02" /> 
+				<Property Name="Size" Value="w:.96 h:0.4" /> 
+				<Property Name="InheritsAlpha" Value="true" /> 
+				<Property Name="ReadOnly" Value="true" /> 
+				<Property Name="VertFormatting" Value="TopAligned" /> 
+				<Property Name="Text" Value="Server info" /> 
+			</Window>
+			<Window Type="TaharezLook/StaticText" Name="Server/LoginPanel">
+				<Property Name="Position" Value="x:0.02 y:0.45" /> 
+				<Property Name="Size" Value="w:.96 h:0.4" /> 
+				<Property Name="Text" Value="Login" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="ReadOnly" Value="true" /> 
+				<Property Name="VertFormatting" Value="TopAligned" /> 
+				<Window Type="TaharezLook/StaticText" Name="Server/LoginPanel/NameText">
+					<Property Name="Position" Value="x:0 y:0.2" /> 
+					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="Text" Value="Name:" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+					<Property Name="FrameEnabled" Value="False" /> 
+					<Property Name="BackgroundEnabled" Value="False" /> 
+				</Window>
+				<Window Type="TaharezLook/Editbox" Name="Server/LoginPanel/NameEdit">
+					<Property Name="Position" Value="x:0 y:0.3" /> 
+					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="Text" Value="" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+				</Window>
+
+				<Window Type="TaharezLook/StaticText" Name="Server/LoginPanel/PasswordText">
+					<Property Name="Position" Value="x:0 y:0.4" /> 
+					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="Text" Value="Password:" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+					<Property Name="FrameEnabled" Value="False" /> 
+					<Property Name="BackgroundEnabled" Value="False" /> 
+				</Window>
+				<Window Type="TaharezLook/Editbox" Name="Server/LoginPanel/PasswordEdit">
+					<Property Name="Position" Value="x:0.0 y:0.5" /> 
+					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="Text" Value="" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+				</Window>
+								
+				
+				<Window Type="TaharezLook/Button" Name="Server/LoginPanel/Login">
+					<Property Name="Position" Value="x:0.4 y:0.8" /> 
+					<Property Name="Size" Value="w:0.3 h:0.2" /> 
+					<Property Name="MaximumSize" Value="w:1 h:1" /> 
+					<Property Name="Text" Value="Login" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+				</Window>
+			</Window>
+			
+			
+			
+			
+			
+			<Window Type="TaharezLook/StaticText" Name="Server/ChooseCharacterPanel">
+				<Property Name="Position" Value="x:0.02 y:0.45" /> 
+				<Property Name="Size" Value="w:.96 h:0.4" /> 
+				<Property Name="Text" Value="Characters" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="ReadOnly" Value="true" /> 
+				<Property Name="VertFormatting" Value="TopAligned" /> 
+				<Property Name="Visible" Value="False" /> 
+				<Window Type="TaharezLook/Listbox" Name="Server/ChooseCharacterPanel/CharacterList">
+					<Property Name="Position" Value="x:0 y:0.05" /> 
+					<Property Name="Size" Value="w:0.5 h:0.7" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+				</Window>
+				<Window Type="TaharezLook/Button" Name="Server/ChooseCharacterPanel/Choose">
+					<Property Name="Position" Value="x:0.4 y:0.8" /> 
+					<Property Name="Size" Value="w:0.3 h:0.15" /> 
+					<Property Name="MaximumSize" Value="w:1 h:1" /> 
+					<Property Name="Text" Value="Choose" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+				</Window>
+			</Window>
+			
+			
+		</Window>
+	</Window>
+ </GUILayout> 

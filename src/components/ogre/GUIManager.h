@@ -140,10 +140,9 @@ protected:
 	void updateStats(void);
 
 
-	float	mSkipCount;
-	float	mUpdateFreq;
+//	float	mSkipCount;
+//	float	mUpdateFreq;
 
-	bool mQuit;
 		
 	bool mInGUIMode;
 	
