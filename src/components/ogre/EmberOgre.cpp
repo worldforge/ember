@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.57  2004-11-04 21:40:26  erik
+ *      Revision 1.58  2004-11-08 19:16:21  erik
+ *      2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* remove reference to unused GroundCover
+ *
+ *      Revision 1.57  2004/11/04 21:40:26  erik
  *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -489,8 +494,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "environment/Water.h"
 
-#include "GroundCover.h"
-
 #include "EmberTerrainSceneManager.h"
 
 // ------------------------------
@@ -753,7 +756,9 @@ void EmberOgre::setupResources(void)
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
-	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
+//	std::string mediaHomePath = "/home/erik/code/worldforge/forge_cvs/clients/ember/Media/";
+ 	Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
+
 //	Ogre::ResourceManager::addCommonSearchPath(std::string();
     Ogre::String typeName, archName;
     while (i.hasMoreElements())
