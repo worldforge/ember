@@ -1,3 +1,13 @@
+2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* MathConverter.h: Point, Vector and Quaternion converter
+	for world-centric coordinates (Atlas-wfmath like)
+	to/from screen-centric coordinates (Ogre like).
+	See file for more info. 
+	Only point conversion currently, more will come later.
+	* Cal3DOgreConverter.h/cpp: model converter.
+	Just added files, it is not coded yet.
+	* Makefile.am: added Cal3D2Ogre binary file.
+
 2003-04-24 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* components/ogre: big cleanup. Files renamed.
 	

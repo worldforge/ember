@@ -23,7 +23,18 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.7  2003-04-26 14:57:26  aglanor
+ *      Revision 1.8  2003-04-27 23:46:30  aglanor
+ *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* MathConverter.h: Point, Vector and Quaternion converter
+ *      		for world-centric coordinates (Atlas-wfmath like)
+ *      			to/from screen-centric coordinates (Ogre like).
+ *      				See file for more info.
+ *      					Only point conversion currently, more will come later.
+ *      						* Cal3DOgreConverter.h/cpp: model converter.
+ *      							Just added files, it is not coded yet.
+ *      								* Makefile.am: added Cal3D2Ogre binary file.
+ *
+ *      Revision 1.7  2003/04/26 14:57:26  aglanor
  *      quick coordinates hack to fix position of entities when entering the world.
  *      I'm in the process of writing a proper Atlas<-->Ogre MathConverter.
  *
@@ -97,6 +108,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DimeOgre.h"
 #include "PlayerFrameListener.h"
 #include "OgreGameView.h"
+#include "MathConverter.h"
 
 
 // ------------------------------
@@ -367,10 +379,12 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
 	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 
-	// set the node position based on eris entity position
-	WFMath::Point<3> position = e->getPosition();
-	// position coversion... from Ogre to Eris
-	ogreNode->setPosition(position.x(),position.z(),-position.y());
+	// set the Ogre node position based on Atlas entity position
+	ogreNode->setPosition(Atlas2Ogre(e->getPosition()));
+
+	// old code, just for the record
+	/** WFMath::Point<3> position = e->getPosition();
+	ogreNode->setPosition(position.x(),position.z(),-position.y());*/
 
 	// scale HACK. This is very hacky. Fix this.
         if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
