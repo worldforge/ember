@@ -137,17 +137,17 @@ class ConfigService: public Service
 	/**
 	* returns the path to the home directory, where all configuration is stored
 	*/
-	std::string getHomeDirectory() const;
+	const std::string getHomeDirectory() const;
 	
 	/**
 	* returns the path to the shared data directory, where common media is
 	*/
-	std::string getSharedDataDirectory() const;
+	const std::string getSharedDataDirectory() const;
 	
 	/**
 	* returns the path to the ember data directory, where ember media is
 	*/
-	std::string getEmberDataDirectory() const;
+	const std::string getEmberDataDirectory() const;
 	
 
 }; //ConfigService

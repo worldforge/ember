@@ -79,13 +79,13 @@ namespace Ember
 	return varconf::Config::inst()->writeToFile(filename);
     }
 	
-	std::string ConfigService::getHomeDirectory() const
+	const std::string ConfigService::getHomeDirectory() const
 	{
 		return std::string(getenv("HOME")) + "/.ember/";
 
 	}
 
-	std::string ConfigService::getSharedDataDirectory() const
+	const std::string ConfigService::getSharedDataDirectory() const
 	{
 		if (itemExists("paths", "sharedir")) {
 			return std::string(getValue("paths", "sharedir")) + "/";
@@ -95,7 +95,7 @@ namespace Ember
 
 	}
 	
-	std::string ConfigService::getEmberDataDirectory() const
+	const std::string ConfigService::getEmberDataDirectory() const
 	{
 		if (itemExists("paths", "datadir")) {
 			return std::string(getValue("paths", "datadir")) + "/";
