@@ -149,7 +149,7 @@ dnl OpenAL check
 
 AC_CHECK_LIB(openal,
 	alutInit ,
-	     LIBS="$LIBS -lAL",
+	     LIBS="$LIBS -lopenal",
 	     AC_MSG_ERROR([
 	     Unable to find OpenAL (Open Audio Layer)
 	     ])
