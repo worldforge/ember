@@ -164,14 +164,16 @@ int n=10;
 std::string command;
 while(n>=0)
 {
+	command = "";
 	std::cout << ">>> ";
 	std::getline(std::cin,command);
-	std::cout << command << std::endl;
+	std::cout << "-> [" << command << "]" << std::endl;
 
 	// run the command
 	myBackend->runCommand(command);
 
 	// Display all console queued messages
+	std::cout << "Queued msgs: " << std::endl;
 	const std::list<std::string> msgs = myBackend->getConsoleMessages();
 	std::list<std::string>::const_iterator index = msgs.begin();
 	std::list<std::string>::const_iterator end = msgs.end();
@@ -180,6 +182,7 @@ while(n>=0)
 		std::cout << "... " << *index << std::endl;
 		++index;
 	}
+	std::cout << "End queue." << std::endl;
 
 	n--;
 }

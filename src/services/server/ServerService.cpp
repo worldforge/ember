@@ -281,6 +281,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
   void ServerService::runCommand(const std::string &command, const std::string &args)
   {
     if(command == CONNECT){
+	ConsoleBackend::getMainConsole()->pushMessage("Connecting...");
       // Split string into server / port pair
       Tokeniser tokeniser = Tokeniser();
       tokeniser.initTokens(args);
@@ -291,6 +292,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
       else
         connect(server, (short)atoi(port.c_str()));
     } else if(command == RECONNECT) {
+	ConsoleBackend::getMainConsole()->pushMessage("Reconnecting...");
       reconnect();
     } else if (command==DISCONNECT){
       disconnect();
@@ -303,6 +305,8 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
       std::string realname = tokeniser.remainingTokens();
       myPlayer->createAccount(uname,realname,password);
     } else if (command==LOGIN) {
+	ConsoleBackend::getMainConsole()->pushMessage("Loggin in...");
+	// TODO: put this in a separate method
       if (myPlayer)
       {
         // Split string into userid / password pair
