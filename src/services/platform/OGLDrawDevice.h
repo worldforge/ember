@@ -20,7 +20,8 @@
 #define OGLDRAWDEVICE_H
 
 #include "DrawDevice.h"
-
+#include "services/logging/LoggingService.h"
+#include <framework/Exception.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <assert.h>
@@ -35,7 +36,7 @@ namespace dime {
  * It doesn't update the surface unless told to do so. 
  *
  *
- * dime::OGLDrawDevice *myDevice = new OGLDrawDevice(mySurface);
+ * dime::OGLDrawDevice *myDevice = new OGLDrawDevice(mySurface->w, mySurface->h);
  * dime::Color myColor(0, 0, 255); // for blue
  * myDevice->drawLine(0, 0, 20, 20, myColor); //draws a small blue line.
  *
@@ -71,7 +72,9 @@ namespace dime {
         OGLDrawDevice(int width, int height) 
             : DrawDevice(width, height), myScreenWidth(width), myScreenHeight(height)// : myDimensions(surface->w,surface->h) Why doesn't this work?
         {
-           
+	  init();
+	  clearScreen();
+	  update();
         }
 
         //----------------------------------------------------------------------
@@ -133,7 +136,6 @@ namespace dime {
         // Private Methods
         //---------------------------------------------------------------------------
     private:
-        
         void saveMatrices();
         void restoreMatrices();
     };

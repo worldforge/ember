@@ -25,10 +25,10 @@ void dime::OGLDrawDevice::drawPixel(int x, int y, dime::Color color)
 {
     saveMatrices();
     glBegin(GL_POINTS);
-    glColor3f(color.getR()/255.0,
-              color.getG()/255.0,
-              color.getB()/255.0);
-    glVertex3f(x, y, -1.0f);
+    glColor3f(color.getR()/255.0f,
+              color.getG()/255.0f,
+              color.getB()/255.0f);
+    glVertex3f(x, y, -0.9f);
     glEnd();
     restoreMatrices();
 }
@@ -38,92 +38,123 @@ void dime::OGLDrawDevice::drawLine(int x1, int y1, int x2, int y2, dime::Color c
 {
     saveMatrices();
     glBegin(GL_LINES);
-    glColor3f(color.getR()/255.0,
-              color.getG()/255.0,
-              color.getB()/255.0);
-    glVertex3f(x1,y1, -1.0f);
-    glVertex3f(x2,y2, -1.0f);
+    glColor3f(color.getR()/255.0f,
+              color.getG()/255.0f,
+              color.getB()/255.0f);
+    glVertex3f(x1,y1, -0.9f);
+    glVertex3f(x2,y2, -0.9f);
     glEnd();
     restoreMatrices();
 }
 
 void dime::OGLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL_Surface *src)
 {
-  //Ok, this function was annoying for me to write.  Not only is it not effecient,
-  //it's hard to understand. I'm going to rewrite it tomorrow morning. -nikal 2002-07-10 12:30AM
-  GLuint texture[1];
-  //If our src bitmap is null, return.
-  if(!src)
-    {
-      return;
-    }
-  //Avoid division by 0
-  if(src->w <= 0 || src->h <= 0)
-    {
-      return;
-    }
-  GLfloat srcX, srcY, srcW, srcH;
-  GLfloat destX, destY, destW, destH;
-  if(!srcRect)
-    {
-      srcX = 0;
-      srcY = 0;
-      srcW = src->w;
-      srcH = src->h;
-    }
-  else 
-    {
-      srcX = srcRect->x;
-      srcY = srcRect->y;
-      srcW = srcRect->w;
-      srcH = srcRect->h;
-    }
-  //If the destination is null, then do we return? or continue?
-  if(!destRect)
-    {
-      destX=0;
-      destY=0;
-    }
-  else
-    {
-      destX = destRect->x;
-      destY = destRect->y;
-    }
-  destW = srcW;
-  destH = srcH;
-  // we really need a way to cache GL textures. :)
-  // Create The Texture 
-  glGenTextures( 1, &texture[0] );
-  
-  // Typical Texture Generation Using Data From The Bitmap
-  glBindTexture( GL_TEXTURE_2D, texture[0] );
-  
-  // Generate The Texture 
-  glTexImage2D( GL_TEXTURE_2D, 0, 3, src->w,
-		src->h, 0, GL_RGB,
-		GL_UNSIGNED_BYTE, src->pixels );
-  
-  // Linear Filtering 
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-  saveMatrices();
-  glBindTexture( GL_TEXTURE_2D, texture[0] );
-  glBegin(GL_QUADS);
-  
-  // Top Left Of The Texture and Quad 
-  glTexCoord2f( srcX/src->w, srcY/src->h ); 
-  glVertex3f( destX, destY, -1.0f );
-  // Top Right Of The Texture and Quad 
-  glTexCoord2f( srcW/src->w, srcY/src->h ); 
-  glVertex3f(  destX+destW, destY, -1.0f );
-  // Bottom Right Of The Texture and Quad 
-  glTexCoord2f( srcW/src->w, srcH/src->h ); 
-  glVertex3f(  destX+destW, destY+destW, -1.0f );
-  // Top Left Of The Texture and Quad 
-  glTexCoord2f( srcX/src->w, srcH/src->h ); 
-  glVertex3f( destX,  destY+destW , -1.0f);
+  int destX = 0;
+  int destY = 0;
+  float destZ = -.9f;
 
-  glEnd();
+  int srcX = 0;
+  int srcY = 0;
+  int srcW = 0;
+  int srcH = 0;
+  
+  if(!srcRect)
+  {
+	  THROW("Must supply a non-null surface.");
+  }
+  if(!destRect)
+  {
+	  THROW("the destination Rect must not be null.");
+  }
+  if(!src)
+  {
+	  THROW("the srcRect must not be null.");
+  }
+  destX = destRect->x;
+  destY = destRect->y;
+ 
+ 
+  srcX =  srcRect->x;
+  // Some error checking to make sure we don't run off the surface in any sort of direction.
+  if(srcX < 0)
+  {
+	  THROW("the source Rectangles x coord cannot be less than 0.");
+	  // Throw Exception
+  }
+  srcY = srcRect->y;
+  if(srcY < 0)
+  {
+	  THROW("the source Rectnagle's y coord cannot be less than 0.");
+	  // Throw Exception
+  }
+  srcW = srcRect->w;
+  if(srcW < 0)
+  {
+	  THROW("The source Rectangle's width cannot be less than 0.");
+  }
+  if(srcW > src->w)
+  {
+	  // Throw Exception
+	  THROW("The source Rectangle's width cannot go over the actual width of the surface.");
+	  
+  }
+  srcH = srcRect->h;
+  if(srcH < 0)
+  {
+	  THROW("The source Rectangle's height cannot be less than zero!");
+  }
+  if(srcH > src->h)
+  {
+	// Throw Exception
+	THROW("The Source Rectangle's height cannot be greater than the surface's actual height");
+  }
+  
+  GLenum theType = GL_UNSIGNED_BYTE;
+  GLenum theFormat = GL_BGR;
+  src = SDL_DisplayFormat(src);
+  if(src->format->BitsPerPixel == 8)
+  {
+	THROW("TODO: The GL renderer doesn't handle 8 bit picture for right now");
+  }
+  else if(src->format->BitsPerPixel == 16)
+  {
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << "16 bits"<< ENDM;
+	theType = GL_UNSIGNED_SHORT_4_4_4_4;
+	theFormat = GL_RGBA;
+  }
+  else if(src->format->BitsPerPixel == 24)
+  {
+	theType = GL_UNSIGNED_BYTE;
+	theFormat = GL_RGB;
+  }
+  else if(src->format->BitsPerPixel == 32)
+  {
+	 
+    	S_LOG_VERBOSE() << src->format->Rmask << " " << src->format->Gmask << " " << src->format->Bmask << " " << src->format->Amask << " bpp " << src->format->BitsPerPixel << " Bpp " << src->format->BytesPerPixel << ENDM;
+	  theFormat = GL_BGRA;
+	  theType = GL_UNSIGNED_INT_8_8_8_8_REV;
+  }
+  saveMatrices();
+  GLint viewport[4];
+
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  
+  //Set the position where we start the drawing.
+  glRasterPos3f(destX, viewport[3]-destY, destZ);
+  
+  //SDL_surface's start form the top left, while OpenGL does it from the bottom left.
+  //This zoom flips them.
+  glPixelZoom(1.0,-1.0);
+  
+  //Lock the surface because we are directly accessing the pixels.
+  SDL_LockSurface(src);
+  
+  //Draw the appropriate amount of the pixels.
+  glDrawPixels(srcW, srcH, theFormat, theType, src->pixels);
+  
+  //Unlock the surface.
+  SDL_UnlockSurface(src);
+  
   restoreMatrices();
 }
 
@@ -140,10 +171,10 @@ void dime::OGLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
     glColor3f(color.getR()/255.0,
               color.getG()/255.0,
               color.getB()/255.0);
-    glVertex3f(destRect->x, destRect->y, -1.0f);
-    glVertex3f(destRect->w, destRect->y, -1.0f);
-    glVertex3f(destRect->w, destRect->h, -1.0f);
-    glVertex3f(destRect->x, destRect->h, -1.0f);
+    glVertex3f(destRect->x, destRect->y, -0.9f);
+    glVertex3f(destRect->w+destRect->x, destRect->y, -0.9f);
+    glVertex3f(destRect->w+destRect->x, destRect->h+destRect->y, -0.9f);
+    glVertex3f(destRect->x, destRect->h+destRect->y, -0.9f);
     glEnd();
     restoreMatrices();
 }
@@ -159,19 +190,20 @@ void dime::OGLDrawDevice::drawGradient(SDL_Rect *destRect,
     glColor3f(leftTop.getR()/255.0,
               leftTop.getG()/255.0,
               leftTop.getB()/255.0);
-    glVertex3f(destRect->x, destRect->y, -1.0f);
+    glVertex3f(destRect->x, destRect->y, -0.9f);
     glColor3f(rightTop.getR()/255.0,
               rightTop.getG()/255.0,
               rightTop.getB()/255.0);
-    glVertex3f(destRect->w, destRect->y, -1.0f);
+    glVertex3f(destRect->w+destRect->x, destRect->y, -0.9f);
     glColor3f(rightBottom.getR()/255.0,
               rightBottom.getG()/255.0,
               rightBottom.getB()/255.0);
-    glVertex3f(destRect->w, destRect->h, -1.0f);
+    glVertex3f(destRect->w+destRect->x, destRect->h+destRect->y, -0.9f);
     glColor3f(leftBottom.getR()/255.0,
               leftBottom.getG()/255.0,
               leftBottom.getB()/255.0);
-    glVertex3f(destRect->x, destRect->h, -1.0f);
+    glVertex3f(destRect->x, destRect->h+destRect->y, -0.9f);
+    
     glEnd();
     restoreMatrices();
 }
@@ -182,7 +214,7 @@ void dime::OGLDrawDevice::saveMatrices()
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(0.0f, myScreenWidth, myScreenHeight, 0.0f, -1.0f, 1.0f);
+    glOrtho(0.0f, myScreenWidth, 0.0f, myScreenHeight,  -0.9f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
