@@ -71,6 +71,17 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 	}
 	checkMovementKeys(event, inputReader);
 	movementForFrame.timeSlice = event.timeSinceLastFrame;
+
+	if (movementForFrame.isMoving) {
+		std::string aString;
+		Vector3 pos = mAvatar->mAvatarNode->getPosition();
+		aString += "X: " + StringConverter::toString((long)OGRE2WF(pos.x));
+		aString += " Y: " + StringConverter::toString((long)OGRE2WF(pos.y));
+		aString += " Z: " + StringConverter::toString((long)OGRE2WF(pos.z));
+	
+		Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
+	}
+
 	
 	mAvatar->updateFrame(movementForFrame);
 	
@@ -81,6 +92,8 @@ void AvatarController::frameStarted(const FrameEvent & event, InputReader* input
 		//std::cout << "	UPDATING INTO SERVER" << std::endl;
 		mTimeToUpdate = mUpdateInterval;
 	}
+
+
 	
 }
 

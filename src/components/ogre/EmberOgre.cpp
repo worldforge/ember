@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.38  2004-07-13 22:02:24  erik
+ *      Revision 1.39  2004-07-16 21:21:56  erik
+ *      2004-07-16 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      /src/components/ogre:
+ *      *added support for mercator terrain by using a subclass of Ogre's OctreeSceneManager, it includes some preparation in order to access the Ogre headers, I'll add instructions tomorrow
+ *      *dime now depends on Mercator
+ *
+ *      Revision 1.38  2004/07/13 22:02:24  erik
  *      Erik Hjortsberg  <erik@hysteriskt.nu>
  *      src/components/ogre:
  *      *fixed bug with eris sometimes letting the avatar be a regular Entity
@@ -302,6 +308,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EntityListener.h"
 #include "DimeEntityFactory.h"
 
+#include "TerrainGenerator.h"
+#include "DimeTerrainSceneManager.h"
+
 // ------------------------------
 // Include dime header files
 // ------------------------------
@@ -473,8 +482,14 @@ bool DimeOgre::configure(void)
 
 void DimeOgre::chooseSceneManager(void)
 {
-    // Get the SceneManager, in this case a generic one
-    mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_CLOSE);
+    // We first register our own scenemanager
+    mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, &DimeTerrainSceneManager::getSingleton());
+    //And then request it
+    mSceneMgr = mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR);
+    DimeTerrainSceneManager* terr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
+    assert(terr);
+    terr->setGenerator(&TerrainGenerator::getSingleton());
+    //terr->setShowBoxes(true);
     //DimeOgre::sceneMgr = mSceneMgr;
 }
 
@@ -491,9 +506,9 @@ void DimeOgre::createViewports(void)
 		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 		rightvp->setOverlaysEnabled(false);
 */
-	Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar1pCamera(),9,0.05,0.05,0.25,0.25);
-	leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	leftvp->setOverlaysEnabled(false);
+	//Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar1pCamera(),9,0.05,0.05,0.25,0.25);
+	//leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	//leftvp->setOverlaysEnabled(false);
 
 	/*
 	Ogre::Viewport* spyvp = mWindow->addViewport(mOgreHeadCamera,10,0.05,0.70,0.25,0.25);
@@ -586,10 +601,37 @@ void DimeOgre::createScene(void)
 	// ----------------------------------------
 
 */
+        Entity *waterEntity;
+        Plane waterPlane;
+
+
+        // create a water plane/scene node
+        waterPlane.normal = Vector3::UNIT_Y; 
+        waterPlane.d = 0; 
+        MeshManager::getSingleton().createPlane(
+            "WaterPlane",
+            waterPlane,
+            WF2OGRE(2800), WF2OGRE(2800),
+            20, 20,
+            true, 1, 
+            10, 10,
+            Vector3::UNIT_Z
+        );
+
+        waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
+        waterEntity->setMaterialName("Examples/TextureEffect4"); 
+		
+		
+        SceneNode *waterNode = 
+            mSceneMgr->getRootSceneNode()->createChildSceneNode("WaterNode"); 
+        waterNode->attachObject(waterEntity); 
+        waterNode->translate(WF2OGRE(1000), 0, WF2OGRE(1000));
+        
+        mSceneMgr->setFog( FOG_EXP2, ColourValue::White, .008 / WF2OGRE(1), 0,  250 );
 
 	// A Ground Plane for the fancyness of it ;)
 	// ----------------------------------------
-
+/*
 		Ogre::Entity *groundEntity;
         Ogre::Plane groundPlane;
 
@@ -614,7 +656,7 @@ void DimeOgre::createScene(void)
         groundNode->attachObject(groundEntity);
         //groundNode->translate(1000, 0, 1000);
         //groundNode->setScale(OGRESCALER);
-      
+  */    
 
 /*	std::cout << "	CREATING SPY CAMERA" << std::endl;
 
@@ -652,6 +694,12 @@ void DimeOgre::createScene(void)
 	Ogre::GuiContainer* pCursorGui = Ogre::OverlayManager::getSingleton().getCursorGui();
 	pCursorGui->setMaterialName("Cursor/default");
 	*/
+	
+	/*
+	 * this is just for testing
+	 */
+	 
+	
 }
 
 void DimeOgre::createFrameListener(void)

@@ -42,6 +42,9 @@
 
 #include "DimeEntity.h"
 #include "AvatarController.h"
+
+#include "DimeTerrainSceneManager.h"
+
 #include "Avatar.h"
 
 
@@ -116,6 +119,7 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		// 1st person, 3rd person and Top camera nodes
 		mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("Avatar1pCameraNode"));
 		mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
+		
 		//rotate to sync with WF world
 	    mAvatar1pCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90);
 		//mAvatar1pCameraNode->showBoundingBox(true);
@@ -123,6 +127,7 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,5);
 		//mAvatar3pCameraNode->setPosition(15000,2500,0);
 		mAvatar3pCameraNode->setPosition(pos);
+		
 		mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("AvatarTopCameraNode"));
 		mAvatarTopCameraNode->setPosition(WF2OGRE_VECTOR3(2,200,0));
 	
@@ -136,7 +141,7 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 	
 		// do not clip at far distance
 		// so we can see the skydome
-		//mCamera->setFarClipDistance( 384 );
+		mAvatar1pCamera->setFarClipDistance( WF2OGRE(384) );
 	
 		//3rd person camera
 		mAvatar3pCamera = mSceneMgr->createCamera("Avatar3pCamera");
@@ -144,6 +149,8 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		// Look to the Avatar's head
 		//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
 		mAvatar3pCamera->setNearClipDistance(1);
+		mAvatar3pCamera->setFarClipDistance( WF2OGRE(384) );
+		//mAvatar3pCamera->setDetailLevel (Ogre::SDL_WIREFRAME);
 	
 		// Create the Top camera
 		mAvatarTopCamera = mSceneMgr->createCamera("AvatarTopCamera");
@@ -152,6 +159,7 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		mAvatarTopCamera->setAutoTracking(true, avatarSceneNode);
 		mAvatarTopCamera->setNearClipDistance(1);
 		mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
+		mAvatarTopCamera->setFarClipDistance( WF2OGRE(384) );
 	}	
 }
 
@@ -319,6 +327,8 @@ void Avatar::movedInWorld( const WFMath::Point< 3 > &p )
 void Avatar::enteredWorld(Eris::Entity *e)
 {
 	
+	
+	
 	/*
 	 * sometimes, for no apparent reason, the avatar get's created as a 
 	 * normal entity
@@ -341,6 +351,8 @@ void Avatar::enteredWorld(Eris::Entity *e)
 	mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
 
 	mErisAvatarEntity = e;
+	DimeTerrainSceneManager::getSingleton().setPositionOfAvatar(Atlas2Ogre(e->getPosition()));
+	//we debug so we'll remove this for now
 	e->Moved.connect(SigC::slot( *this, &Avatar::movedInWorld ));
 
 	

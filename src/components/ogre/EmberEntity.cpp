@@ -74,7 +74,18 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	else if(!strcmp(getType()->getName().c_str(),"pig"))
 	{
 		//fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
-		mOgreEntity = sceneManager->createEntity(getID(), "ogrehead.mesh");
+		mOgreEntity = sceneManager->createEntity(getID(), "Pig.mesh");
+		mOgreNode->setScale(WF2OGRE_VECTOR3(0.2,0.2,0.2));
+	}
+	else if(!strcmp(getType()->getName().c_str(),"fir"))
+	{
+		//fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
+		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
+	}
+	else if(!strcmp(getType()->getName().c_str(),"oak"))
+	{
+		//fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
+		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
 	}
 	else
 	{
@@ -113,7 +124,7 @@ void DimeEntity::handleMove()
 {
 	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
 	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
+	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
 }
 
 void DimeEntity::handleTalk(const std::string &msg)
@@ -131,6 +142,56 @@ void DimeEntity::setVisible(bool vis)
 {
 	mOgreEntity->setVisible(vis);	
 }
+
+/*
+void DimeEntity::setContainer(Entity *pr)
+{
+		
+	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(pr);
+	if (dimeEntity) {
+		//detach from our current object and add to the new entity
+		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
+		dimeEntity->getSceneNode()->addChild(getSceneNode());
+				
+	} else {
+		//detach from our current object and add to the world
+		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
+		getSceneNode()->getCreator()->getRootSceneNode()->addChild(getSceneNode());
+	}		
+	
+}
+*/
+/*
+void DimeEntity::addMember(Entity *e) 
+{
+/*	
+ * this won't work, I need to practice my C++ skills some more...
+ * DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
+	if (dimeEntity) {
+	*/
+/*//	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
+	DimeEntity* dimeEntity = (DimeEntity*)e;
+	
+	dimeEntity->getSceneNode()->getParent()->removeChild(dimeEntity->getSceneNode()->getName());	
+	getSceneNode()->addChild(dimeEntity->getSceneNode());
+	
+	Entity::addMember(e);
+	
+}
+	
+void DimeEntity::rmvMember(Entity *e)
+{
+//	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
+//	if (dimeEntity) {
+	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
+	dimeEntity->getSceneNode()->removeChild(dimeEntity->getSceneNode()->getName());	
+	getSceneNode()->getParent()->addChild(dimeEntity->getSceneNode());
+//	}
+	Entity::rmvMember(e);	
+
+	
+}
+*/
 /*
 void DimeEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
 {

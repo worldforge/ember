@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.18  2004-07-12 04:05:48  erik
+ *      Revision 1.19  2004-07-16 21:21:57  erik
+ *      2004-07-16 Erik Hjortsberg <erik@hysteriskt.nu>
+ *      /src/components/ogre:
+ *      *added support for mercator terrain by using a subclass of Ogre's OctreeSceneManager, it includes some preparation in order to access the Ogre headers, I'll add instructions tomorrow
+ *      *dime now depends on Mercator
+ *
+ *      Revision 1.18  2004/07/12 04:05:48  erik
  *      2004-07-12 Erik Hjortsberg erik by hysteriskt speck org
  *      * src/components/ogre:
  *      Changed the way input is handled through the use of an Ogre::EventProcessor
@@ -158,6 +164,8 @@ Description: Base class for all the OGRE examples
 #ifndef __DimeOgre_H__
 #define __DimeOgre_H__
 
+#include <Mercator/Terrain.h>
+
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
@@ -205,6 +213,8 @@ class CameraFrameListener;
 class Avatar;
 
 class DimeEntityFactory;
+
+
 
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
@@ -368,6 +378,8 @@ public:
 	static Ogre::SceneManager* sceneMgr;
 */
 protected:
+
+
 	Ogre::Root *mRoot;
     Ogre::SceneManager* mSceneMgr;
 	//Ogre::Camera* mCamera;

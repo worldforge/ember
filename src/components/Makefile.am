@@ -1,3 +1,2 @@
-SUBDIRS = debug ogre text
-
+SUBDIRS = ogre
 EXTRA_DIST = State.h WidgetInfo.h

@@ -61,27 +61,22 @@ public:
 	 */
 	Ogre::Entity* DimeEntity::getOgreEntity();
 	
-	/*
-	 * this is temporary until we can better subclass Eris::Entity
-	 */
-	//void DimeEntity::connectSignals();
-	
 	/* from eris 1.2 */
 	virtual void handleMove();
 	virtual void handleTalk(const std::string &msg);
 // not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
 	/// update the container of this entity (may be NULL)
-//	virtual void setContainer(Entity *pr);
+	//virtual void setContainer(Entity *pr);
 	
 //	virtual void setContents(const Atlas::Message::Element::ListType &contents);
 	
 	/// add a contained entity to this object (sets container)
-//	virtual void addMember(Entity *e);
+	//virtual void addMember(Entity *e);
 	
 	/// remove an contained entity
 	/** remove a contained entity; throws InvalidOperation if not found. Note
 	that the container of e is <i>not<i/> reset */
-//	virtual void rmvMember(Entity *e);
+	//virtual void rmvMember(Entity *e);
 	
 	/** called by World in response to Appearance/Disappearance messages : note that
 	after a disappearance (vis = false), the server will not send any futher messages to the

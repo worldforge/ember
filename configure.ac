@@ -134,11 +134,11 @@ AC_MSG_RESULT([
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
-OGRE_VERSION=0.10.0
-PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
+OGRE_VERSION=0.14.0
+PKG_CHECK_MODULES(OGRE, OGRE >= 0.14.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS /usr/local/lib/OGRE/Plugin_GuiElements.so"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS /usr/local/lib/OGRE/Plugin_GuiElements.so /usr/local/lib/OGRE/Plugin_OctreeSceneManager.so"
 	],
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
@@ -146,7 +146,7 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, eris-1.2 \
- varconf-1.0,
+ varconf-1.0 mercator-0.2,
 	[
 		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"

@@ -29,8 +29,13 @@
 #include "DimeEntity.h"
 #include "DimeEntityFactory.h"
 
-DimeEntityFactory::DimeEntityFactory(Ogre::SceneManager* sceneManager) : mSceneManager(sceneManager)
-{}
+#include "TerrainGenerator.h"
+#include "DimeTerrainSceneManager.h"
+
+DimeEntityFactory::DimeEntityFactory(Ogre::SceneManager* sceneManager, Eris::TypeService* typeService ) : mSceneManager(sceneManager), mTypeService(typeService)
+{
+	mTerrainType = typeService->getTypeByName("world");
+}
 DimeEntityFactory::~DimeEntityFactory()
 {}
 
@@ -41,13 +46,18 @@ Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameEntity 
 Eris::Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world)
 {
 	
-	dime::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
+//	dime::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
 
-//perhaps we should store this somewhere so we can do proper memory handling?
-	DimeEntity* dimeEntity = new DimeEntity(ge, world, mSceneManager);
-
-	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
-	return dimeEntity;
+    Eris::TypeInfoPtr type = world->getConnection()->getTypeService()->getTypeForAtlas(ge);
+    if (!type->safeIsA(mTerrainType)) {
+		//perhaps we should store this somewhere so we can do proper memory handling?
+		DimeEntity* dimeEntity = new DimeEntity(ge, world, mSceneManager);
+	
+		fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
+		return dimeEntity;
+    } else {
+    	return createWorld(ge, world);
+    }
 	
 }
 
@@ -58,6 +68,18 @@ bool DimeEntityFactory::accept(const Atlas::Objects::Entity::GameEntity &ge, Eri
 {
 	return true;
 }
+
+
+Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world) {
+    Eris::Entity *we = new Eris::Entity(ge, world);
+      // Extract base points and send to terrain        
+      //TerrainEntity * te = new TerrainEntity(ge,w);
+	TerrainGenerator::getSingleton().initTerrain(we, world);
+	DimeTerrainSceneManager::getSingleton().buildTerrainAroundAvatar();
+    return we;
+}
+
+/* namespace Sear */
 
 
 /* eris 1.3

@@ -261,8 +261,13 @@ bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 	{
 		// if world is initialized, connect the signals (once)
 		if((dime::DimeServices::getInstance()->getServerService()->getWorld())!=0) {
-		    DimeEntityFactory* dimeEntityFactory = new DimeEntityFactory(EntityListener::getSingleton().getSceneManager());
+		    
+		    //this should really not be here
+		    DimeEntityFactory* dimeEntityFactory = new DimeEntityFactory(EntityListener::getSingleton().getSceneManager(), dime::DimeServices::getInstance()->getServerService()->getConnection()->getTypeService());
 		    dime::DimeServices::getInstance()->getServerService()->getWorld()->registerFactory(dimeEntityFactory, 10);
+			
+			
+			
 			EntityListener::getSingleton().connectWorldSignals();
 		    
 			worldConnected = true;

@@ -28,6 +28,10 @@
 #include <Eris/Factory.h>
 
 
+#include <Eris/Connection.h>
+
+#include <Atlas/Objects/Entity/GameEntity.h>
+
 /*
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -45,7 +49,7 @@ class DimeEntityFactory : public Eris::Factory
 {
 public:
 
-	DimeEntityFactory(Ogre::SceneManager* sceneManager);
+	DimeEntityFactory(Ogre::SceneManager* sceneManager, Eris::TypeService* typeService);
 	virtual ~DimeEntityFactory();
 /*
  * eris 1.3	
@@ -73,7 +77,10 @@ public:
 
     
 private:
+	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::World *world);
 	Ogre::SceneManager* mSceneManager;
+	Eris::TypeService* mTypeService;
+	Eris::TypeInfo* mTerrainType;
 };
 
 #endif // DIMEENTITYFACTORY_H

@@ -95,6 +95,10 @@ class ServerService : public Service, public ConsoleObject,
     // Constructors & Destructor
 
   public:
+  
+  //HACK!!!
+  //this is only for testing purposes
+  Eris::Connection* getConnection() { return myConn; }
 
     /** Creates a new ServerService using default values. */
     ServerService();
