@@ -144,7 +144,7 @@ public:
 			Ogre::Vector3::UNIT_Z
 		);
 		
-		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode();
+		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
 		//mWaterNode->translate(500, 0, 500);
 
 			

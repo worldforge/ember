@@ -71,7 +71,8 @@ void Foliage::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition
 
 	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 
-	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(endPosition.x - startPosition.x,0, startPosition.z - endPosition.z ), submeshSize, Ogre::Vector3(0,0,0));
+	Ogre::Vector3 center((endPosition.x + startPosition.x) * 0.5,0,(startPosition.z + endPosition.z) * 0.5);
+	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(endPosition.x - startPosition.x,0, startPosition.z - endPosition.z ), submeshSize, center);
 	
 	double spaceBetween = grassSpacing;
 	
@@ -91,7 +92,7 @@ void Foliage::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition
 				typeOfGrass = "bittergrass";
 			}
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/small_plant/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/small_plant/") + typeOfGrass + "/low.mesh");
-			TerrainPosition pos(xPos,zPos);
+			TerrainPosition pos = Ogre2Atlas_TerrainPosition(Ogre::Vector3(xPos,0, zPos));
 			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(pos), zPos);
 			Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE * Ogre::Math::RangeRandom(0.8f, 1.0f);
 			instance->vScale = scale;
@@ -119,7 +120,7 @@ void Foliage::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition
 				typeOfGrass = "bittergrass";
 			}
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
-			TerrainPosition pos(xPos,zPos);
+			TerrainPosition pos = Ogre2Atlas_TerrainPosition(Ogre::Vector3(xPos,0, zPos));
 			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(pos), zPos);
 			Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE * Ogre::Math::RangeRandom(0.8f, 1.0f);
 			//make the patches a bit smaller
@@ -133,6 +134,13 @@ void Foliage::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition
 	mGround->setCullParameters(cullDistance, cullDistance, 120);
 	mGround->compile();
 	mGround->update(mCamera);
+	
+	
+	Ogre::SceneNode* groundNode = mGround->getSceneNode();
+	
+	EmberOgre::getSingleton().getWorldSceneNode()->addChild(groundNode);
+	
+	
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 		
