@@ -28,11 +28,7 @@
 #include <framework/Exception.h>
 
 
-void onMouseButtonDown(dime::MouseButtonEvent *event)
-{
-}
-
-void onMouseButtonUp(dime::MouseButtonEvent *event)
+void quitButton(dime::Button* button)
 {
     dime::Application *myApp = dime::Application::getInstance();
     myApp->quit();    
@@ -64,12 +60,11 @@ int main(int argc, char **argv)
             
             myTestButton.setBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton2.png", dime::BitmapRenderer::TILE));
             myTestButton.setHighlightBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton.png", dime::BitmapRenderer::TILE));
+            myTestButton.setPressedBackground(new dime::BitmapRenderer(myTestButton.getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
             
             dime::Panel myTestPanel(dime::Rectangle(550,0,90,90));
             myTestPanel.setBackground(new dime::BitmapRenderer(myTestPanel.getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
-
-            myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
-            myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));
+            myTestButton.onClicked.connect(SigC::slot(quitButton));
             
             dime::InputService * pIS = dime::InputService::getInstance();
             pIS->addInputMapping(new dime::InputMapping(pIS->getInputDevice(dime::InputDevice::KEYBOARD), SDLK_ESCAPE, false,
