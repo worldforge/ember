@@ -28,6 +28,8 @@
 #include <sigc++/signal_system.h>
 #else
 #include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
 #endif
 
 namespace dime
