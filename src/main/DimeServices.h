@@ -28,6 +28,7 @@
 // GNDN: MSVC < version 7 is broken
 #else
 #include <services/metaserver/MetaserverService.h>
+#include <services/server/ServerService.h>
 #endif
 
 // Include custom library headers here
@@ -97,12 +98,21 @@ class DimeServices
     dime::GuiService *myGuiService;
 
     /**
-	* The instance of the MetaserverService
+     * The instance of the MetaserverService
      */
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
     dime::MetaserverService *myMetaserverService;
+#endif
+
+    /**
+     * The instance of the ServerService
+     */
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+    dime::ServerService *myServerService;
 #endif
 
     /**
@@ -124,7 +134,14 @@ class DimeServices
      */
     virtual ~DimeServices()
     {
-        // TODO: Free any allocated resources here.
+      // TODO: Free any allocated resources here.
+      delete myGuiService;
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+		delete myMetaserverService;
+		delete myServerService;
+#endif
     }
 
 
@@ -176,7 +193,7 @@ class DimeServices
         return dime::InputService::getInstance();
     }
 	
-	/**
+    /**
      * Returns an instance of the GuiService
      */
     dime::GuiService *getGuiService()
@@ -197,6 +214,22 @@ class DimeServices
 		return myMetaserverService;
     }
 #endif
+
+    /**
+     * Returns an instance of the ServerService
+     */
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+    dime::ServerService *getServerService()
+    {
+        if (myServerService == NULL) myServerService = new dime::ServerService();
+		return myServerService;
+    }
+#endif
+
+
+
     //----------------------------------------------------------------------
     // Setters
 
@@ -231,6 +264,7 @@ class DimeServices
 // GNDN: MSVC < version 7 is broken
 #else
 		myMetaserverService = NULL;
+		myServerService = NULL;
 #endif
 	}
 

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.25  2002-05-16 04:26:57  nikal
+ *      Revision 1.26  2002-05-25 22:17:54  xmp
+ *      Add serverservice to the main build.
+ *
+ *      Revision 1.25  2002/05/16 04:26:57  nikal
  *       I believe this enable testing with CPPUNIT to be done on a MakeCheck
  *
  *      Revision 1.24  2002/05/15 20:15:57  tim
@@ -233,6 +236,9 @@ namespace dime
 #else
 		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
 		myMetaserverService->start();
+
+		// Create and start ServerService
+		DimeServices::getInstance()->getServerService()->start();
 #endif
     }
 
