@@ -187,6 +187,10 @@ class TextBox : public Label
     virtual void mouseUp( MouseButtonEvent* event) {
         Widget::onMouseUp(event);
     }
+    /**
+     * Connect a slot here to observe when enter is pressed.
+     */
+    SigC::Signal1<void, const Font::FontString&, SigC::Marshal<void> > onEnter;
  
 
     //======================================================================

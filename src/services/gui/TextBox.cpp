@@ -53,6 +53,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      {
 		// TODO: Accept input and either call default widget pressed
 		//       or jump to next textbox in sequence
+            onEnter.emit(myText);
 	      }
 	      break;
 	      case SDLK_TAB:
