@@ -194,7 +194,7 @@ class NameOfClass
         // Copy fields from source class to this class here.
 
         // Return this object with new value
-        return &this;
+        return *this;
     }
 
 
@@ -313,7 +313,7 @@ class NameOfClass
      */
     NameOfClass &operator= ( const NameOfClass &source )
     {
-        return &this;
+        return *this;
     }
 
 
