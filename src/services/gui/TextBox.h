@@ -121,7 +121,14 @@ class TextBox : public Label
       myCaretPos(text.length())
       /*, myText(text)*/ // Will this cause issues?
     {
+      Font::FontString temp;
+      for(const char* c = text.c_str();*c != '\0';c++)
+	{
+	  temp+=(Uint16)c;
+	}
+      myText = temp;
     }
+
     /**
      * Copy constructor.
      */
