@@ -104,14 +104,14 @@ class TextBox : public Label
     }
 
 	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
-	  myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH),
+	  myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
 	  myCaretPos(text.length())
     {
     }
 
     TextBox(std::string text, const Rectangle& rect) :
         Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
-      myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH),
+      myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
       myCaretPos(text.length())
     {
     }
