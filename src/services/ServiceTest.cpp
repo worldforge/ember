@@ -50,7 +50,7 @@ int main()
 	cout << "***TESTING METASERVER SERVICE***" << endl;
 	dime::MetaserverService myMsService;
 	myMsService.start();
-	Eris::PollDefault::Poll()
+	Eris::PollDefault::poll();
 	while(true)
 	{
 //		myMsService.poll();

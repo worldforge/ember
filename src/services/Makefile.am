@@ -9,4 +9,4 @@ libServices_a_SOURCES = DimeServices.cpp DimeServices.h
 check_PROGRAMS = servicetest
 servicetest_SOURCES = ServiceTest.cpp
 servicetest_CXXFLAGS = -I$(srcdir)/..
-servicetest_LDFLAGS = -ltest/libTestService.a -lconfig/libConfigService.a -lmetaserver/libMetaserverService.a -lgui/libGuiService.a -limage/libImageService.a -leris -lsigc
+servicetest_LDFLAGS = test/libTestService.a config/libConfigService.a metaserver/libMetaserverService.a gui/libGuiService.a image/libImageService.a logging/libLoggingService.a ../framework/libFramework.a

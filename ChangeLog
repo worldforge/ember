@@ -1,3 +1,7 @@
+2003-12-07 Al Riddoch <alriddoch@zepler.org>
+	* src/services/ServiceTest.cpp: Fix conversion glitch so that
+	  this test compiles.
+
 2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/components/ogre: added AvatarKeyboardListener.(h|cpp)
 	and restored local avatar movement.
