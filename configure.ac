@@ -1,15 +1,15 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([Dime],[0.1.4],[clients@worldforge.org])
-AC_CONFIG_SRCDIR([config.h.in])
-AM_INIT_AUTOMAKE
-AC_PREREQ(2.50)
-AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
-AM_CONFIG_HEADER(config.h)
+AC_INIT
 
 # Detect the canonical host and target build environment.
-AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
-AC_CANONICAL_BUILD
+AC_CANONICAL_SYSTEM
+
+AM_INIT_AUTOMAKE([Dime], [0.1.4],[clients@worldforge.org])
+AM_CONFIG_HEADER(config.h)
+
+AC_PREREQ(2.50)
+AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
+
 
 # Checks for Programs
 AC_PROG_CXX
@@ -20,7 +20,6 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
-AC_PROG_RANLIB
 dnl AM_PROG_LEX
 
 # Allow maintainer mode
