@@ -115,7 +115,7 @@ namespace dime
 	  listed = true;
 
 		// waiting for James to implement this
-		//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << "endl";
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << ENDM;
 		//Eris::Serverlist whatever;
 		svrl l = msrv -> getGameServerList ();
 		
