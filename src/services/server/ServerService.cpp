@@ -232,7 +232,7 @@ namespace dime
     myWorld = NULL;
   }
 
-  void ServerService::runCommand(const string &command, const string &args)
+  void ServerService::runCommand(const std::string &command, const std::string &args)
   {
     if(command == CONNECT){
       // Split string into server / port pair

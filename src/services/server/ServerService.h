@@ -109,7 +109,7 @@ class ServerService: public Service, public ConsoleObject, public SigC::Object
 
     void disconnect();
 
-    void runCommand(const string &, const string &);
+    void runCommand(const std::string &, const std::string &);
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
