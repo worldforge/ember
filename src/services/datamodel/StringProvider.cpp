@@ -46,7 +46,7 @@ void StringProvider::setValue(std::string newValue)
 
 PDataKey StringProvider::getChild(PDataKey parent, std::string ID, DataProvider *& provider)
 {
-	return PDataKey(NULL); //No childs available
+	return PDataKey(); //No childs available
 }
 
 std::string StringProvider::getSubpath(PDataKey key)

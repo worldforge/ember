@@ -1,7 +1,7 @@
 /*
     Copyright (C) 2002  Tim Enderling
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software; you can redistrbute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -46,7 +46,7 @@ void FloatProvider::setValue(float newValue)
 
 PDataKey FloatProvider::getChild(PDataKey parent, std::string ID, DataProvider *& provider)
 {
-	return PDataKey(NULL); //No childs available
+	return PDataKey(); //No childs available
 }
 
 std::string FloatProvider::getSubpath(PDataKey key)

@@ -46,7 +46,7 @@ void BoolProvider::setValue(bool newValue)
 
 PDataKey BoolProvider::getChild(PDataKey parent, std::string ID, DataProvider *& provider)
 {
-	return PDataKey(NULL); //No childs available
+	return PDataKey(); //No childs available
 }
 
 std::string BoolProvider::getSubpath(PDataKey key)
