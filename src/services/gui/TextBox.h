@@ -93,6 +93,16 @@ class TextBox : public Label
      */
     Font::FontString myText;
 
+    /*
+     * Position of left hand char
+     */
+    unsigned int myLeft;
+
+    /*
+     * Position of right hand char
+     */
+    unsigned int myRight;
+
     //======================================================================
     // Public Methods
     //======================================================================
@@ -104,21 +114,24 @@ class TextBox : public Label
     /**
      * Creates a new TextBox using default values.
      */
-    TextBox() : Label(), myCaretPos(0)
+    TextBox() : Label(), myCaretPos(0), myLeft(0), myRight(0)
     {
     }
 
 	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
 	  myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
 	  myCaretPos(text.length()),
-	  myText(text)
+	  myText(text),
+	  myRight(text.length()-1)
     {
+      rebuildRight();
     }
 
     TextBox(std::string text, const Rectangle& rect) :
         Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
       myBackRect(rect,"textboxback.png", RectangleRenderer::TILE),
-      myCaretPos(text.length())
+      myCaretPos(text.length()),
+      myRight(text.length()-1)
     {
       Font::FontString temp;
 
@@ -129,6 +142,7 @@ class TextBox : public Label
       assert(text.length()==temp.length());
 
       myText = temp;
+      rebuildRight();
     }
 
     /**
@@ -149,6 +163,8 @@ class TextBox : public Label
     {
         // Copy fields from source class to this class here.
 
+        // Update text displayed in box 
+	rebuildRight();
         // Return this object with new value
         return *this;
     }
@@ -201,8 +217,17 @@ class TextBox : public Label
     /*
      * Calculates where the caret should be for us and draws it
      */
-    void TextBox::drawCaret(DrawDevice* target);
+    void drawCaret(DrawDevice* target);
 
+    /*
+     * Rebuild chars in textbox from left hand direction
+     */
+    void rebuildLeft();
+
+    /*
+     * Rebuild chars in textbox from right hand direction
+     */
+    void rebuildRight();
 
     //======================================================================
     // Private Methods
