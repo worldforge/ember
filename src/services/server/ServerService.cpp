@@ -80,7 +80,7 @@ namespace Ember
     myConn->Disconnected.connect(SigC::slot(*this, &ServerService::disconnected));
     myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::disconnecting));
     myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
-    myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
+    //myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
 	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
 	ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);
