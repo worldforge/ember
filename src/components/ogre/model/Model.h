@@ -173,7 +173,9 @@ public:
         virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);	
 protected:
 
+	//set of all animations currently running
 	std::set< std::string > mRunningAnimations;
+	//set of all animation currently paused
 	std::set< std::string > mPausedAnimations;
 
 	static Ogre::String msMovableType;
@@ -188,21 +190,30 @@ protected:
 	 */
 /*	void readAnimations(xercesc::DOMElement* animationsNode);*/
 	
+	// the name of the model
 	std::string mName;
 	
+	//a set of all submodels belonging to the model
 	SubModelSet mSubmodels;
+	//a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	SubModelPartMap mSubModelPartMap;
 	Ogre::SceneManager* mSceneManager;
 	
 	Ogre::SkeletonInstance* mSkeletonInstance;
 	
+	//how much to scale the model from it's initial size
 	Ogre::Real mScale;
+	//how much the model should be rotated around the Y-axis from it's initial position
 	Ogre::Real mRotation;
 	
+	//whether to use a certain axis for scaling
+	//for example, if you use a model of a human you probably want to scale according to the height
+	//this might mean that width and depths aren't correct though
 	unsigned short mUseScaleOf;
 	
 	bool mVisible;
 	
+	//set of all animation states
 	Ogre::AnimationStateSet* mAnimationStateSet;
 	
 };

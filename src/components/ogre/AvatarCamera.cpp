@@ -25,6 +25,9 @@
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 namespace EmberOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
@@ -44,6 +47,11 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	setAvatarNode(avatarNode);
 	
 	mGUIManager->getInput()->MouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
+
+	
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "cameradegreepersecond")) {
+		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "cameradegreepersecond");
+	}
 	 
 }
 

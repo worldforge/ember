@@ -134,11 +134,14 @@ void Model::startAnimation(std::string nameOfAnimation)
 			for (; I != I_end; ++I) {
 				std::cout << "Starting subanimation: " << (*I)->name << "\n";
 				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				
-				//also set the weight of the animations part
-				J->second.setWeight((*I)->weight);
-				
-				MotionManager::getSingleton().addAnimation(&J->second);
+				if (J != mAnimationStateSet->end()) {
+					//also set the weight of the animations part
+					J->second.setWeight((*I)->weight);
+					
+					MotionManager::getSingleton().addAnimation(&J->second);
+				} else {
+					std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+				}
 			}
 		}
 	} else if (mPausedAnimations.find(nameOfAnimation) != mPausedAnimations.end()) {
@@ -151,7 +154,11 @@ void Model::startAnimation(std::string nameOfAnimation)
 			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
 			for (; I != I_end; ++I) {
 				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				MotionManager::getSingleton().unpauseAnimation(&J->second);
+				if (J != mAnimationStateSet->end()) {
+					MotionManager::getSingleton().unpauseAnimation(&J->second);
+				} else {
+					std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+				}
 			}
 		}
 	}
@@ -235,7 +242,7 @@ Ogre::AnimationStateSet* Model::getAllAnimationStates()
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getAllAnimationStates();
 	}
-	Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
+	Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
 	
 }
 

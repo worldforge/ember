@@ -1,0 +1,167 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass docbook
+\language swedish
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage a4
+\use_geometry 0
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+
+Ember Installation Instructions 
+\layout Standard
+
+(Last Updated: 2005-01-22)
+\layout Section
+
+Dependencies
+\layout Standard
+
+Ember currently depends on the following libraries:
+\layout Itemize
+
+Ogre 3d library
+\newline 
+Version: 0.15.2
+\newline 
+http://www.ogre3d.org
+\layout Itemize
+
+CEGUI gui system
+\newline 
+Version: 0.1.0
+\newline 
+http://www.cegui.org.uk
+\layout Itemize
+
+SDL Simple DirectMedia Layer 
+\newline 
+Version: 1.2.0+ 
+\newline 
+http://www.libsdl.org
+\layout Itemize
+
+libsigc++ 
+\newline 
+Version: 2.0 or 1.2.0 
+\newline 
+http://libsigc.sourceforge.net/
+\layout Itemize
+
+Eris client side session layer 
+\newline 
+Version: 1.3
+\newline 
+http://www.worldforge.org/dev/eng/libraries/eris
+\layout Itemize
+
+Varconf config files handling 
+\newline 
+Version: 0.6.2
+\newline 
+http://www.worldforge.org/dev/eng/libraries/varconf
+\layout Itemize
+
+Xerces-C++ xml handling library
+\newline 
+Version: 2.5.0
+\newline 
+http://xml.apache.org/xerces-c/
+\layout Itemize
+
+OpenAL sound library
+\newline 
+Version: 0.0.7 (?)
+\newline 
+http://www.openal.org/
+\layout Standard
+
+Optional libraries:
+\layout Itemize
+
+CPPUnit C++ unit testing Library 
+\newline 
+Version: >= 1.8.0 
+\newline 
+http://sf.net/projects/cppunit
+\layout Section
+
+Installation (for Linux/Unix)
+\layout Standard
+
+execute the following (usual) commands:
+\layout Standard
+
+./autogen.sh 
+\layout Standard
+
+./configure 
+\layout Standard
+
+make
+\layout Standard
+
+make install
+\layout Standard
+
+In order for Ember to run you also need media files.
+ These can (as of now, 2005-01-22) be downloaded from http://purple.worldforge.org
+/~erik/ember/media/.
+ Unpack the archive to $prefix/share/ember/data.
+ In the future we plan to use WFUT for the Ember media, or perhaps a media
+ server.
+\layout Section
+
+Troubleshooting
+\layout Standard
+
+Here we'll address typical problems with the installation, and how to fix
+ them
+\layout Subsection
+
+I get link errors with 
+\begin_inset Quotes eld
+\end_inset 
+
+Ogre::MemoryManager...
+\begin_inset Quotes erd
+\end_inset 
+
+
+\layout Standard
+
+If you build ogre om debug mode it will use an internal memory manager,
+ which can mess with the linking.
+ A simple solution is to edit the file OgreMain/include/OgreConfig.h and
+ change 
+\layout Code
+
+#define OGRE_DEBUG_MEMORY_MANAGER 1 
+\layout Standard
+
+to 
+\layout Code
+
+#define OGRE_DEBUG_MEMORY_MANAGER 0 
+\layout Standard
+
+This will remove the use of the memory manager even from debug builds.
+\the_end

@@ -1,0 +1,273 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass docbook
+\language swedish
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage a4
+\use_geometry 0
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+
+Ember
+\layout Section
+
+Introduction
+\layout Standard
+
+This is the Ember client for the Worldforge project.
+\layout Standard
+
+Ember is a fully functional 3d client for both Cyphesis and Indri servers.
+ It's goal is to be used with all worlds created withing the Worldforge
+ project.
+\layout Section
+
+Quickstart
+\layout Standard
+
+In the upper part of the window is the console.
+ It has two modes, full or small.
+ In small mode, which is the default, only the input strip is shown.
+ I full mode the console occupies half of the screen.
+ Use F12 to switch console modes.
+ Some commands which can be entered in the console:
+\layout Itemize
+
+/connect <server>
+\newline 
+Tries to connect to the server.
+\layout Itemize
+
+/login <name> <password>
+\newline 
+Tries to log in with the name and password.
+\layout Itemize
+
+/create <name> <password>
+\newline 
+Creates a new account on the server.
+\layout Itemize
+
+/add <name> <gender> <type> <description>
+\newline 
+Adds a new Avatar to the server.
+ As of now (2005-01-27) cyphesis doesn't support that many different types
+ of Avatars, go with 
+\begin_inset Quotes eld
+\end_inset 
+
+settler
+\begin_inset Quotes erd
+\end_inset 
+
+.
+\newline 
+Some examples:
+\newline 
+/add Erik male settler Soon on top of the world.
+\newline 
+/add Eeva female settler Likes swines.
+\layout Itemize
+
+/quit
+\layout Standard
+
+The first view you'll get is the server browser.
+ Press "refresh" to get it all the registered servers from the meta server.
+ Select a server and click on 
+\begin_inset Quotes eld
+\end_inset 
+
+connect
+\begin_inset Quotes erd
+\end_inset 
+
+ to connect to it.
+ You can also enter an address in the text box if you don't find your server
+ in the server list.
+\layout Standard
+
+Once connected you'll have to either log in using an existing account or
+ create a new.
+ For now there's no GUI for account creation, you'll have to use the console.
+\layout Standard
+
+After successful account creation or log in, you will have to either choose
+ an existing avatar or create a new.
+ As with the account creation you'll have to use the console for avatar
+ creation.
+\layout Subsection
+
+Moving around in the world
+\layout Standard
+
+Once in the world you'll be presented to a third person view of your avatar.
+ The default mode is GUI mode.
+ Press the right mouse button to switch to movement mode.
+ When in movement mode, the mouse is used to pan around the world.
+ The avatar will change direction to face the camera.
+ Use the keys w,a,s,d to move around the world.
+ Pressing shift will make the avatar run.
+\layout Standard
+
+When in gui mode, the gui behaves pretty much like a standard gui.
+ Double click on window headers to make them roll up and down.
+ As of now (2005-01-22) there's no mechanism to hide windows, though this
+ will probably make it into a future version.
+\layout Standard
+
+Click on an entity in the world (a tree, a NPC) to show the mouse picker
+ menu.
+ Most options here are pretty self explanatory.
+ Some things needs to be said about 
+\begin_inset Quotes eld
+\end_inset 
+
+use
+\begin_inset Quotes erd
+\end_inset 
+
+ though.
+\layout Subsubsection
+
+Wielding and using stuff
+\layout Standard
+
+The support for wielding and using stuff is supported by cyphesis but is
+ not finalized.
+ Thus, this will change in the future.
+ However, this is how it works right now.
+ You can wield something which is your inventory.
+ This can be used on entities in the world by clicking on them and choosing
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+use
+\begin_inset Quotes erd
+\end_inset 
+
+ from the menu.
+\layout Standard
+
+One thing that can be done is wielding an axe and use it to chop down trees.
+ There are not that many axes in the world, but you can use the entity creator
+ to create some.
+ 
+\layout Standard
+
+You can also use a cleaver to chop meat from pigs.
+\layout Subsubsection
+
+Talking to people
+\layout Standard
+
+Use the console to talk to people in the world, just enter some text and
+ press enter.
+ (Note that all console commands are prefixed by 
+\begin_inset Quotes eld
+\end_inset 
+
+/
+\begin_inset Quotes erd
+\end_inset 
+
+, such as 
+\begin_inset Quotes eld
+\end_inset 
+
+/quit
+\begin_inset Quotes erd
+\end_inset 
+
+.) When someone else in the world says something, it will be shown through
+ the use of a 
+\begin_inset Quotes eld
+\end_inset 
+
+talk bubble
+\begin_inset Quotes erd
+\end_inset 
+
+ to the left of the person.
+ Some NPC have a series of suggested responses.
+ These will be shown to the left of the NPC.
+ You can let your avatar say one of these by clicking on them.
+\layout Section
+
+Developing
+\layout Standard
+
+The main design philosophy behind Ember is to as much as possible use 3d
+ party libraries.
+ We strive to remove as much uneccessary code from Ember as possible, if
+ there's equivalent functionality to be found in an existing library.
+ This prevents us from a Not-Invented-Here mindset and makes it easier to
+ kill our darlings.
+\layout Itemize
+
+It uses Ogre (http://www.ogre3d.org) to present the world in full 3d.
+ Ogre is very much hardwired into the core of Ember.
+ 
+\layout Itemize
+
+SDL is used for input handling.
+ This is not that hard wired as Ogre, but since the goal of SDL is to provide
+ a platform agnostic library there's perhaps no big reason to provide support
+ for a different input library.
+ We will hade to do some research into DirectInput though.
+ 
+\layout Itemize
+
+SigC++ is used for signals and events.
+ This is also very much hardwired into Ember.
+\layout Standard
+
+Other notable libraries used: 
+\layout Itemize
+
+CEGUI (http://www.cegui.org.uk) is used for the gui.
+ This can be removed from Ember, and another library can be used.
+ Note however that all current widgets are made for CEGUI only, ie.
+ we don't try to provide a generic widget abstraction.
+ It seems unlikely that such a construct would work.
+ For reference, see any discussion on Java's AWT, Swing and SWT.
+ 
+\layout Itemize
+
+OpenAL (http://www.openal.org/) is used for the sound.
+ This should be loosely decoupled from Ember, but much like SDL OpenAL is
+ geared towards providing platform agnostic sound support.
+ Then again, FMOD might be interesting.
+ 
+\layout Itemize
+
+XercesC (http://xml.apache.org/xerces-c/) is used for xml handling.
+ This i a rather cumberstone library, but since CEGUI already uses it there's
+ no problem including it.
+ Should CEGUI move to another lib there should however be no big problems
+ with moving to another lib.
+ Requires some recoding though.
+\layout Standard
+
+See the doc directory and http://www.worldforge.org/dev/eng/clients/ember/
+ for more information.
+\the_end

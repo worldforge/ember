@@ -84,35 +84,40 @@ ModelDefinition::~ModelDefinition()
 		
 		for (; I_subModels != I_subModels_end; ++I_subModels) {
 			std::string entityName = name + "/" + (*I_subModels).Mesh;
-			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels).Mesh);
-			SubModel* submodel = new SubModel(entity);
-
-			Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
-						
-			
-			std::vector<PartDefinition>::iterator I_parts = (*I_subModels).Parts.begin();
-			std::vector<PartDefinition>::iterator I_parts_end = (*I_subModels).Parts.end();
-			for (; I_parts != I_parts_end; ++I_parts) {
-				Model::StringSet parts;
-				if ((*I_parts).SubEntities.size() > 0)
-				{
-					std::vector<SubEntityDefinition>::iterator I_subEntities = (*I_parts).SubEntities.begin();
-					std::vector<SubEntityDefinition>::iterator I_subEntities_end = (*I_parts).SubEntities.end();
-					for (; I_subEntities != I_subEntities_end; ++I_subEntities) {
-						parts.insert((*I_subEntities).SubEntity);
-						if ((*I_subEntities).Material != "") {
-							entity->getSubEntity((*I_subEntities).SubEntity)->setMaterialName((*I_subEntities).Material);
-						}
-					}		
-				} 
-				Model::SubModelPartMapping::value_type part((*I_parts).Name, parts);
-				submodelPartMapping->insert(part);
-				if ((*I_parts).Show) {
-					showPartVector.push_back((*I_parts).Name);
+			try {
+				Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels).Mesh);
+				SubModel* submodel = new SubModel(entity);
+	
+				Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
+							
+				
+				std::vector<PartDefinition>::iterator I_parts = (*I_subModels).Parts.begin();
+				std::vector<PartDefinition>::iterator I_parts_end = (*I_subModels).Parts.end();
+				for (; I_parts != I_parts_end; ++I_parts) {
+					Model::StringSet parts;
+					if ((*I_parts).SubEntities.size() > 0)
+					{
+						std::vector<SubEntityDefinition>::iterator I_subEntities = (*I_parts).SubEntities.begin();
+						std::vector<SubEntityDefinition>::iterator I_subEntities_end = (*I_parts).SubEntities.end();
+						for (; I_subEntities != I_subEntities_end; ++I_subEntities) {
+							parts.insert((*I_subEntities).SubEntity);
+							if ((*I_subEntities).Material != "") {
+								entity->getSubEntity((*I_subEntities).SubEntity)->setMaterialName((*I_subEntities).Material);
+							}
+						}		
+					} 
+					Model::SubModelPartMapping::value_type part((*I_parts).Name, parts);
+					submodelPartMapping->insert(part);
+					if ((*I_parts).Show) {
+						showPartVector.push_back((*I_parts).Name);
+					}
 				}
+				submodel->createSubModelParts(submodelPartMapping);
+				aModel->addSubmodel(submodel);
+			} catch (Ogre::Exception e) {
+				std::cerr << "Error when loading the submodel " << entityName << ".\n";
 			}
-			submodel->createSubModelParts(submodelPartMapping);
-			aModel->addSubmodel(submodel);
+				
 			
 		}
 		
@@ -230,50 +235,55 @@ bool ModelDefinition::createFromXML(std::string path)
 		SubModelDefinition subModelDef;
 		xercesc::XMLString::transcode("mesh", tempStr, 99);
 		subModelDef.Mesh = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(submodelsNodes->item(i))->getAttribute(tempStr));
-		//preload
-		Ogre::MeshManager::getSingleton().load(subModelDef.Mesh);
-		
-		
-		
-		xercesc::XMLString::transcode("part", tempStr, 99);
-		xercesc::DOMNodeList* partsNodes = dynamic_cast<xercesc::DOMElement*>(submodelsNodes->item(i))->getElementsByTagName(tempStr);
-		for (unsigned int j = 0; j < partsNodes->getLength(); ++j) {
-			PartDefinition partDef;
+		try {
+			//preload
+			Ogre::MeshManager::getSingleton().load(subModelDef.Mesh);
 			
 			
-// StringSet parts;
-
-			//check if there's a "subentities" element
-			xercesc::XMLString::transcode("subentities", tempStr, 99);
-			if (dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getElementsByTagName(tempStr)->getLength()) {
-				xercesc::XMLString::transcode("subentity", tempStr, 99);
-				xercesc::DOMNodeList* subentitiesNodes = dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getElementsByTagName(tempStr);
-				for (unsigned int k = 0; k < subentitiesNodes->getLength(); ++k) {
-					SubEntityDefinition subEntityDef;
-					xercesc::DOMElement* subentity = dynamic_cast<xercesc::DOMElement*>(subentitiesNodes->item(k));
-					xercesc::XMLString::transcode("name", tempStr, 99);
-					subEntityDef.SubEntity = xercesc::XMLString::transcode(subentity->getAttribute(tempStr));
-					xercesc::XMLString::transcode("material", tempStr, 99);
-					if (subentity->hasAttribute(tempStr)) {
-						subEntityDef.Material = xercesc::XMLString::transcode(subentity->getAttribute(tempStr));
-						//preload
-						EmberOgre::getSingleton().getSceneManager()->getMaterial(subEntityDef.Material);
-						
+			
+			xercesc::XMLString::transcode("part", tempStr, 99);
+			xercesc::DOMNodeList* partsNodes = dynamic_cast<xercesc::DOMElement*>(submodelsNodes->item(i))->getElementsByTagName(tempStr);
+			for (unsigned int j = 0; j < partsNodes->getLength(); ++j) {
+				PartDefinition partDef;
+				
+				
+	// StringSet parts;
+	
+				//check if there's a "subentities" element
+				xercesc::XMLString::transcode("subentities", tempStr, 99);
+				if (dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getElementsByTagName(tempStr)->getLength()) {
+					xercesc::XMLString::transcode("subentity", tempStr, 99);
+					xercesc::DOMNodeList* subentitiesNodes = dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getElementsByTagName(tempStr);
+					for (unsigned int k = 0; k < subentitiesNodes->getLength(); ++k) {
+						SubEntityDefinition subEntityDef;
+						xercesc::DOMElement* subentity = dynamic_cast<xercesc::DOMElement*>(subentitiesNodes->item(k));
+						xercesc::XMLString::transcode("name", tempStr, 99);
+						subEntityDef.SubEntity = xercesc::XMLString::transcode(subentity->getAttribute(tempStr));
+						xercesc::XMLString::transcode("material", tempStr, 99);
+						if (subentity->hasAttribute(tempStr)) {
+							subEntityDef.Material = xercesc::XMLString::transcode(subentity->getAttribute(tempStr));
+							//preload
+							EmberOgre::getSingleton().getSceneManager()->getMaterial(subEntityDef.Material);
+							
+							
+						}
+						partDef.SubEntities.push_back(subEntityDef);
 						
 					}
-					partDef.SubEntities.push_back(subEntityDef);
-					
 				}
+				xercesc::XMLString::transcode("name", tempStr, 99);
+				std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getAttribute(tempStr));
+				partDef.Name = name;
+				xercesc::XMLString::transcode("show", tempStr, 99);
+				std::string show = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getAttribute(tempStr));
+				partDef.Show = (show == "true");
+				subModelDef.Parts.push_back(partDef);
 			}
-			xercesc::XMLString::transcode("name", tempStr, 99);
-			std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getAttribute(tempStr));
-			partDef.Name = name;
-			xercesc::XMLString::transcode("show", tempStr, 99);
-			std::string show = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(partsNodes->item(j))->getAttribute(tempStr));
-			partDef.Show = (show == "true");
-			subModelDef.Parts.push_back(partDef);
+			mSubModels.push_back(subModelDef);
+		} catch (Ogre::Exception e) {
+			std::cerr << "Error when loading the mesh " << subModelDef.Mesh << ".\n";
 		}
-		mSubModels.push_back(subModelDef);
+		
 	}
 
 	xercesc::XMLString::transcode("Actions", tempStr, 99);

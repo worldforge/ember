@@ -1,135 +1,85 @@
-Dime Installation Instructions
-(Last Updated: 2004.07.19)
+Ember Installation Instructions 
 
-****************
-* dependencies *
-****************
+(Last Updated: 2005-01-22)
 
-Dime currently depends on the following libraries:
+ Dependencies
 
-SDL
-Simple DirectMedia Layer
-Version: 1.2.3 or 1.2.4 (depending on version of SDL_image you install, below)
-http://www.libsdl.org
+Ember currently depends on the following libraries:
 
-SDL_image
-SDL image library
-Version: Any? (SDL_image 1.2.2 is tested, but requires SDL 1.2.4)
-http://www.libsdl.org/projects/SDL_image/index.html
+* Ogre 3d library
+  Version: 0.15.2
+  http://www.ogre3d.org
 
-SDL_mixer
-SDL mixer library
-Version Any? (SDL_mixer 1.2.3 is tested)
-http://www.libsdl.org/projects/SDL_mixer/index.html
+* CEGUI gui system
+  Version: 0.1.0
+  http://www.cegui.org.uk
 
-libsigc++
-install this library from your distro CDs
-Version: 1.0.4 or 1.2.0 (support for sigc++-1.0 will be dropped soon)
-(needed for Eris, see below)
+* SDL Simple DirectMedia Layer 
+  Version: 1.2.0+ 
+  http://www.libsdl.org
 
-skstream2
-socket stream
-Version: CVS 
-ftp://victor.worldforge.org/pub/worldforge/libs/skstream
-(needed for Eris, see below)
+* libsigc++ 
+  Version: 2.0 or 1.2.0 
+  http://libsigc.sourceforge.net/
 
-Atlas-C++
-C++ implementation of Worldforge Protocol ("Atlas")
-Version: 0.5
-ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
-(needed for Eris, see below)
+* Eris client side session layer 
+  Version: 1.3
+  http://www.worldforge.org/dev/eng/libraries/eris
 
-wfmath
-Worldforge math library
-Version: CVS
-(needed for Eris, see below)
+* Varconf config files handling 
+  Version: 0.6.2
+  http://www.worldforge.org/dev/eng/libraries/varconf
 
-Eris
-client side session layer
-Version: 1.2
+* Xerces-C++ xml handling library
+  Version: 2.5.0
+  http://xml.apache.org/xerces-c/
 
-Varconf
-config files stuff
-Version: 0.5.2 works dunno about earlier ones
+* OpenAL sound library
+  Version: 0.0.7 (?)
+  http://www.openal.org/
 
-CPPUnit
-C++ unit testing Library
-Version: >= 1.8.0
-http://sf.net/projects/cppunit
+Optional libraries:
 
-Boost
-Portable C++ Source Libraries
-Version: Any? (Tested with 1.27.0)
-http://www.boost.org
+* CPPUnit C++ unit testing Library 
+  Version: >= 1.8.0 
+  http://sf.net/projects/cppunit
 
-Freetype2
-A portable font library which includes antialiased fonts.
-Version: At least 2.* but the latest would be nice.
-http://www.freetype.org
-It seems that if you have Freetype1 installed along 
-with Freetype2 then we have compile problems. 
-We're working on a solution for that.
-
-Ogre
-Object-Oriented Graphics Rendering Engine
-A very flexible, cross platform rendering engine.
-Version 0.14 or higher is required.
-http://www.ogre3d.org
-For the moment we are using a subclass TerrainSceneManager, which is
-one of Ogre's many scenemanagers. This will in most cases be installed by default.
-The header will not however. You thus have to make this yourself.
-You can either copy all of the .h files in ogrenew/PlugIns/OctreeSceneManager/include to
-the same place where the other ogre headers reside.
-The other option is to change the file ogrenew/PlugIns/OctreeSceneManager/include/Makefile.am.
-Change the first line so it reads:
-pkginclude_HEADERS = OgreOctreeCamera.h ...
-That way, after you've run automake and friends, "make install" will install the headers in the
-correct locations.
-
-
-****************
-* installation *
-****************
-(for Linux/Unix)
+ Installation (for Linux/Unix)
 
 execute the following (usual) commands:
 
-./autogen.sh
-./configure
+./autogen.sh 
+
+./configure 
+
 make
 
-You'll need to add a TrueType font (.ttf) to dime/bin, in order for Dime to run
-(otherwise, it will fail with an assertion immediately). The font must
-be named 'nasal.ttf'. Note that at present it is assumed you run dime
-by cd-ing to dime/src/main and running ./dime
+make install
 
-*******************
-* troubleshooting *
-*******************
+In order for Ember to run you also need media files. 
+These can (as of now, 2005-01-22) be downloaded from 
+http://purple.worldforge.org/~erik/ember/media/. Unpack 
+the archive to $prefix/share/ember/data. In the future 
+we plan to use WFUT for the Ember media, or perhaps a 
+media server.
 
-here we'll address typical problems with the installation, and how to fix them
+ Troubleshooting
 
-****************************************
-* Mandrake 8.1 (and other RPM systems) *
-****************************************
+Here we'll address typical problems with the 
+installation, and how to fix them
 
-When installing SDL (and SDL_image and SDL_mixer) using packages made for your
-system, please be aware that you will need *ALL* the libraries and devel
-packages it was built against.  These are often not installed by default.  The 
-total number for MDK8.1 was about 15 packages.  (Data from Lee's fresh install 
-of MDK8.1)
+ I get link errors with "Ogre::MemoryManager..."
 
-nullstar's addendum: 
-Binary and -devel RPMs of the SDL libraries are released for Mandrake and some
-other distros, but not Red Hat.  Source RPMs exist, but don't include the -devel
-files -- not helpful if you're wanting to compile Dime but not willing to trust
-a Mandrake RPM to play nice on RH. I used source/stow. (Of course, you might not
-want to trust stow.)
+If you build ogre om debug mode it will use an internal 
+memory manager, which can mess with the linking. A 
+simple solution is to edit the file 
+OgreMain/include/OgreConfig.h and change 
 
-*******************************************
-* How to properly install boost libraries *
-*******************************************
+#define OGRE_DEBUG_MEMORY_MANAGER 1 
 
-<Aglanor> The boost page is not quite verbose on how to install the lib.
-I've found the easiest way to copy the /boost dir where the hpp files are
-to /usr/local/include.
+to 
+
+#define OGRE_DEBUG_MEMORY_MANAGER 0 
+
+This will remove the use of the memory manager even 
+from debug builds.

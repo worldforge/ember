@@ -184,7 +184,7 @@ AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost),
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
 # Check for OGRE
-#should be 0.15.0, but there's a bug in the 0.15.1 release, the OGRE.pc file states that it's 0.15.0
+#should be 0.15.2, but there's a bug in the 0.15.2 release, the OGRE.pc file states that it's 0.15.0
 OGRE_VERSION=0.15.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 	[
@@ -213,7 +213,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.1,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.2 \
- varconf-1.0 = 0.6.1 mercator-0.2,
+ varconf-1.0 >= 0.6.1 mercator-0.2,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"

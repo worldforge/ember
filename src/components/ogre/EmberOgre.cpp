@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.69  2005-01-22 02:01:26  erik
+ *      Revision 1.70  2005-01-22 22:54:29  erik
+ *      2005-01-22 Erik Hjortsberg <erik@katastrof.nu>
+ *
+ *      	* updated INSTALL, TODO and README texts
+ *      	* added support to the config file for fog distance and camera movement
+ *      	* added some more error checking code. If some media is missing it should only report the error and continue.
+ *
+ *      Revision 1.69  2005/01/22 02:01:26  erik
  *      2005-01-22  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Rewrote the input system. I've completely removed Ogre's input system and replaced it.
@@ -982,11 +989,23 @@ void EmberOgre::preloadMedia(void)
 {
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 	
+
+	std::vector<std::string> shaderTextures;
 	
-	Ogre::TextureManager::getSingleton().load(std::string(configSrv->getValue("shadertextures", "rock")));
-	Ogre::TextureManager::getSingleton().load(std::string(configSrv->getValue("shadertextures", "sand")));
-	Ogre::TextureManager::getSingleton().load(std::string(configSrv->getValue("shadertextures", "grass")));
+	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "rock")));
+	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "sand")));
+	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "grass")));
+	
+	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
+		try {
+			Ogre::TextureManager::getSingleton().load(*I);
+		} catch (Ogre::Exception e) {
+			std::cerr << "Error when loading texture " << *I << ".\n";
+		}
+	}	
 	  
+	
+	//TODO: use C++ io methods
 	DIR *dp;
 	struct dirent *ep;
 	
@@ -1060,7 +1079,11 @@ void EmberOgre::createScene(void)
 	//set fog, do this before calling TerrainSceneManager::setViewGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	Ogre::ColourValue fadeColour(1,1,1);
-	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 192, 256);
+	double fogstartDistance = 192; //default for fog
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
+		fogstartDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart");
+	}
+	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, 256);
 	
 	
 	

@@ -1,45 +1,151 @@
-This is the Dime Client.
+Ember
 
-See the doc directory and http://www.worldforge.org/dev/eng/clients/dime/
-for more information.
+ Introduction
 
-MEDIA:
+This is the Ember client for the Worldforge project.
 
-All media has been removed from Dime CVS.  You now need to download the
-following tarballs:
-dime-media-0.1.tar.bz2         : For common media (sounds, fonts, music,
-                                 common graphics, etc.)
-dime-media-sdl-0.1.tar.bz2     : For SDL Engine-specific media
-dime-media-ogre-0.2.tar.bz2    : For OGRE Engine-specific media which comes
-				 with OGRE release
-dime-media-ogre-wf-0.2.tar.bz2 : For OGRE Engine-specific media
-				 done by worldforge
+Ember is a fully functional 3d client for both Cyphesis 
+and Indri servers. It's goal is to be used with all 
+worlds created withing the Worldforge project.
 
-The media can be retrieved from ftp://<enter media FTP URL here>/<media file>[0] .
-To install the media, uncompress the above tarballs to /usr/share/games/dime .
-They will create their own directories under media, so you should have something
-that looks like the following (if you install all of the media):
+ Quickstart
 
-/usr/share/games/dime/media/common
-/usr/share/games/dime/media/fonts
-/usr/share/games/dime/media/music
-/usr/share/games/dime/media/ogre
-/usr/share/games/dime/media/sdl
-/usr/share/games/dime/media/sounds
+In the upper part of the window is the console. It has 
+two modes, full or small. In small mode, which is the 
+default, only the input strip is shown. I full mode the 
+console occupies half of the screen. Use F12 to switch 
+console modes. Some commands which can be entered in 
+the console:
 
-[0] Temporary storage is at: http://purple.worldforge.org/~erik/dime/media/<filename>
+* /connect <server>
+  Tries to connect to the server.
 
-NOTE FOR DIMEOGRE:
+* /login <name> <password>
+  Tries to log in with the name and password.
 
-At the moment development for DimeOgre is very experimental. Installation of the ogremedia 
-should therefore be in the root of the source directory. When DimeOgre becomes more stable
-we'll move it to system path, but for now we'll keep it in the source dir.
+* /create <name> <password>
+  Creates a new account on the server.
 
-Note that the file dime-media-ogre-<version> does not need to be downloaded, you already
-have it in the OGRE release. You can simply copy or symlink the media from
-<ogre_dir>/ogrenew/Samples/Media
-to
-<dime_dir>/media/ogre
+* /add <name> <gender> <type> <description>
+  Adds a new Avatar to the server. As of now 
+  (2005-01-27) cyphesis doesn't support that many 
+  different types of Avatars, go with "settler".
+  Some examples:
+  /add Erik male settler Soon on top of the world.
+  /add Eeva female settler Likes swines.
 
-You still need to retrieve dime-media-ogre-wf-<version>, which is worldforge specific
-media for the OGRE engine which does not come with the OGRE release.
+* /quit
+
+The first view you'll get is the server browser. Press 
+"refresh" to get it all the registered servers from the 
+meta server. Select a server and click on "connect" to 
+connect to it. You can also enter an address in the 
+text box if you don't find your server in the server list.
+
+Once connected you'll have to either log in using an 
+existing account or create a new. For now there's no 
+GUI for account creation, you'll have to use the console.
+
+After successful account creation or log in, you will 
+have to either choose an existing avatar or create a 
+new. As with the account creation you'll have to use 
+the console for avatar creation.
+
+ Moving around in the world
+
+Once in the world you'll be presented to a third person 
+view of your avatar. The default mode is GUI mode. 
+Press the right mouse button to switch to movement 
+mode. When in movement mode, the mouse is used to pan 
+around the world. The avatar will change direction to 
+face the camera. Use the keys w,a,s,d to move around 
+the world. Pressing shift will make the avatar run.
+
+When in gui mode, the gui behaves pretty much like a 
+standard gui. Double click on window headers to make 
+them roll up and down. As of now (2005-01-22) there's 
+no mechanism to hide windows, though this will probably 
+make it into a future version.
+
+Click on an entity in the world (a tree, a NPC) to show 
+the mouse picker menu. Most options here are pretty 
+self explanatory. Some things needs to be said about "use"
+ though.
+
+ Wielding and using stuff
+
+The support for wielding and using stuff is supported 
+by cyphesis but is not finalized. Thus, this will 
+change in the future. However, this is how it works 
+right now. You can wield something which is your 
+inventory. This can be used on entities in the world by 
+clicking on them and choosing "use" from the menu.
+
+One thing that can be done is wielding an axe and use 
+it to chop down trees. There are not that many axes in 
+the world, but you can use the entity creator to create 
+some. 
+
+You can also use a cleaver to chop meat from pigs.
+
+ Talking to people
+
+Use the console to talk to people in the world, just 
+enter some text and press enter. (Note that all console 
+commands are prefixed by "/", such as "/quit".) When 
+someone else in the world says something, it will be 
+shown through the use of a "talk bubble" to the left of 
+the person. Some NPC have a series of suggested 
+responses. These will be shown to the left of the NPC. 
+You can let your avatar say one of these by clicking on them.
+
+ Developing
+
+The main design philosophy behind Ember is to as much 
+as possible use 3d party libraries. We strive to remove 
+as much uneccessary code from Ember as possible, if 
+there's equivalent functionality to be found in an 
+existing library. This prevents us from a 
+Not-Invented-Here mindset and makes it easier to kill 
+our darlings.
+
+* It uses Ogre (http://www.ogre3d.org) to present the 
+  world in full 3d. Ogre is very much hardwired into 
+  the core of Ember. 
+
+* SDL is used for input handling. This is not that hard 
+  wired as Ogre, but since the goal of SDL is to 
+  provide a platform agnostic library there's perhaps 
+  no big reason to provide support for a different 
+  input library. We will hade to do some research into 
+  DirectInput though. 
+
+* SigC++ is used for signals and events. This is also 
+  very much hardwired into Ember.
+
+Other notable libraries used: 
+
+* CEGUI (http://www.cegui.org.uk) is used for the gui. 
+  This can be removed from Ember, and another library 
+  can be used. Note however that all current widgets 
+  are made for CEGUI only, ie. we don't try to provide 
+  a generic widget abstraction. It seems unlikely that 
+  such a construct would work. For reference, see any 
+  discussion on Java's AWT, Swing and SWT. 
+
+* OpenAL (http://www.openal.org/) is used for the 
+  sound. This should be loosely decoupled from Ember, 
+  but much like SDL OpenAL is geared towards providing 
+  platform agnostic sound support. Then again, FMOD 
+  might be interesting. 
+
+* XercesC (http://xml.apache.org/xerces-c/) is used for 
+  xml handling. This i a rather cumberstone library, 
+  but since CEGUI already uses it there's no problem 
+  including it. Should CEGUI move to another lib there 
+  should however be no big problems with moving to 
+  another lib. Requires some recoding though.
+
+See the doc directory and 
+http://www.worldforge.org/dev/eng/clients/ember/ for 
+more information.
