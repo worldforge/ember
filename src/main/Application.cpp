@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.34  2002-08-27 17:47:05  xmp
+ *      Revision 1.35  2002-08-28 21:46:35  xmp
+ *      Support for new verbose logging mode
+ *
+ *      Revision 1.34  2002/08/27 17:47:05  xmp
  *      Turn this on and bingo
  *
  *      Revision 1.33  2002/07/15 22:51:33  nikal
@@ -194,9 +197,13 @@ namespace dime
                 {
                     std::cerr << "WARNING";
                 }
-            else
+            else if(importance == dime::LoggingService::INFO)
                 {
                     std::cerr << "INFO";
+                }
+	    else
+                {
+                    std::cerr << "VERBOSE";
                 }
             std::cerr << ") " <<message << std::endl;
         }
