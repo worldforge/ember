@@ -1,0 +1,77 @@
+AC_INIT(src/main/Dime.cpp)
+AM_INIT_AUTOMAKE(Dime, 0.0.1)
+
+dnl Detect the canonical host and target build environment.
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+AC_CANONICAL_BUILD
+AM_PROG_LIBTOOL
+AC_PROG_CPP
+AC_PROG_CXX
+dnl AM_PROG_LEX
+
+AM_PATH_SDL(1.2.0, , 
+	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
+)
+
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+LDFLAGS="$LDFLAGS $SDL_LIBS"
+
+dnl the next are just in for show right now.
+dnl they don't die yet as we don't need them yet.
+dnl they will be moved up above once they become necessary.
+AC_CHECK_LIB(SDL_image, IMG_Load, , [
+dnl AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
+])
+AC_CHECK_LIB(SDL_mixer, Mix_PlayingMusic, , [
+dnl AC_MSG_ERROR(libSDL_mixer not found, please install it.  It can be found at www.libsdl.org under "libraries")
+])
+AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, , [
+dnl AC_MSG_ERROR(libSDL_ttf not found, please install it.  It can be found at www.libsdl.org under "libraries")
+])
+
+AC_CHECK_LIB(cssys,main)
+
+AC_CHECK_LIB(csgfx,main)
+
+AC_CHECK_LIB(csutil,main)
+
+AC_CHECK_LIB(csgeom,main)
+
+AC_CHECK_LIB(cstool,main)
+
+AC_CHECK_LIB(csutil,main)
+
+AC_CHECK_LIB(csws,main)
+
+dnl AM_PATH_SIGC(1.0.1,[
+dnl        CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
+dnl        LIBS="$LIBS $SIGC_LIBS"
+dnl        ],
+dnl AC_MSG_ERROR(Couldn't find libsigc++ config [or config failed])
+dnl )
+
+dnl AM_PATH_ATLAS(0.4.3 ,[
+dnl     CXXFLAGS="$CXXFLAGS $ATLAS_CFLAGS"
+dnl     LIBS="$LIBS $ATLAS_LIBS"
+dnl        ],
+dnl AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
+dnl )
+
+dnl AC_CHECK_LIB(eris,main)
+dnl AC_CHECK_LIB(skstream,main)
+
+
+
+
+AC_LANG_CPLUSPLUS
+AC_REQUIRE_CPP
+
+AC_OUTPUT([
+  Makefile
+  src/Makefile
+  src/main/Makefile
+  dnl dime.dox
+])
+
