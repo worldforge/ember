@@ -85,7 +85,7 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
     if ( ! cached->getCached() ) {
         cached->setIndex( FT_Get_Char_Index( face, ch ) );
     }
-    error = FT_Load_Glyph( face, cached->getIndex(), FT_LOAD_DEFAULT );
+    error = FT_Load_Glyph( face, cached->getIndex(), FT_LOAD_NO_BITMAP );
     if( error ) {
         return false;
     }
