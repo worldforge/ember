@@ -33,9 +33,9 @@ bool TextBox::keyPress( KeyPressEvent *event)
                     // rather than all that stupid substringing.
 		  unsigned int len = myText.length();
 
-                    if(len > 0)
+                    if((len > 0)&&(myCaretPos>0))
                         {
-                            myText.erase(myCaretPos,1);
+                            myText.erase(myCaretPos-1,1);
                             myCaretPos--;
                         }
                     
