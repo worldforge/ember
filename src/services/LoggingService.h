@@ -19,6 +19,10 @@
 #ifndef LOGGINGSERVICE_H
 #define LOGGINGSERVICE_H
 
+//#ifdef _MSC_VER	
+	#pragma warning( disable : 4786 )
+//#endif 
+
 // Include other headers of the current program here
 #include "Service.h"
 
@@ -68,12 +72,12 @@ namespace services {
  * - source line (use __LINE__)
  * - level of importance (see enum called MessageImportance), always INFO if not specified
  *
- * As a special feature you can use a function called slog * (stands for stream log) that can
+ * As a special feature you can use a function called slog* (abbr. for stream log) that can
  * be used for setting the options before using streaming. (See example.)  
  *
- * Callback observers of logging process can easily be managed 
- * using addObserver and removeObserver. FILE * can be used as a special kind
- * of observer where all messages are written in including optional fields separated by "\t".
+ * Observers of logging process can easily be managed 
+ * using addObserver and removeObserver. An observer class handling FILE * is predefined already.
+ *
  * To less the amount of messages passed through to the observers, you can specify a filter by
  * levels of importance. Thus all messages above or equal a filter level of importance are
  * written/passed by the callback to an observer.
@@ -85,7 +89,8 @@ namespace services {
  * SAMPLE:
  * using namespace dime::services;
  * LoggingService * logger;
- * //service is assumed to be started
+ * //service is assumed to be started; observers are added
+ *
  * //do you prefer this way?
  * logger->log(__FILE__, __LINE__, LoggingService::WARNING,
  *      "Player %s (ID: %x) is already dead (but used in %d new messages).", 
@@ -106,7 +111,11 @@ namespace services {
 
 #define ENDM LoggingService::END_MESSAGE;
 #define HEX_NUM(number) LoggingService::hexNumber(number)
-	
+
+
+//TODO: Sorry, but innerclass didn't work properly
+const int NUMBER_BUFFER_SIZE  = 24;
+const int MESSAGE_BUFFER_SIZE = 1024;
 
 class LoggingService: public Service
 {
@@ -143,37 +152,96 @@ class LoggingService: public Service
     //======================================================================
 	 
 	public:
+
+
 	/**
-	 * Defines the look of a callback function used by an observer. 
+	 * Abstract base class (=interface) for all observers
+	 */
+	class Observer 
+	{
+		public:	
+		
+		Observer::Observer()
+		{
+			myFilter = INFO; //No filtering assumed
+		}
+
+		/**
+		 * Called every time a new message arrived at the LoggingService
+		 *
+		 * @param message The message string to send.
+		 * @param file The source code file the message was initiated or empty if not specified.
+		 * @param line The source code line the message was initiated or -1 if not specified.
+		 * @param importance The level of importance (see MessageImportance enum)
+		 * @param time_t The time the message was initiated.
+		 */
+
+		virtual void onNewMessage(const string & message, const string & file, const int & line,
+			const MessageImportance & importance, const time_t & timeStamp) = 0;
+
+		MessageImportance getFilter() 
+		{
+			return myFilter;
+		}
+	
+		void setFilter(MessageImportance filter)
+		{
+			myFilter = filter;
+		}
+
+		private:
+
+		/**
+		 * A filter used by the LoggingService to determine wether the message should be send
+		 * to onNewMessage. This happens only if the message is at least as important as
+		 * the filter value.
+		 */
+
+		MessageImportance myFilter;
+	};
+
+	/**
+	 * Predefined implementation of Observer-class handling FILE * 
 	 *
-	 * @param cockie The cockie given to addObserver (e.g. a this pointer)
-	 * @param message The message string to send.
-     * @param file The source code file the message was initiated or empty if not specified.
-	 * @param line The source code line the message was initiated or -1 if not specified.
-	 * @param importance The level of importance (see MessageImportance enum)
-	 * @param time_t The time the message was initiated.
+	 * The format of messages written into a FILE * is the following:
+	 * 
+	 * timeStamp "\t" importance "\t" file "\t" line "\t" message
 	 */
 
-	typedef void (* OBSERVER_CALLBACK) ( void * cockie, const string & message, const string & file,
-			const int & line, const MessageImportance & importance, const time_t & timeStamp);
-	
+	class FileObserver: public Observer
+	{
+		public:
+		FileObserver(FILE * file, MessageImportance filter)
+		{
+			setFilter(filter);
+			myFile = file;
+		}
+
+		virtual void onNewMessage(const string & message, const string & file, const int & line, 
+			const MessageImportance & importance, const time_t & timeStamp)
+		{
+			tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+
+			fprintf(myFile, "[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
+				ctm->tm_year, ctm->tm_mon, ctm->tm_mday, ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
+				(importance == CRITICAL) ?  "CRITICAL" : 
+					((importance == ERROR) ?  "ERROR" : 
+						((importance == WARNING) ? "WARNING" : "INFO")),
+				file, line, message);
+		}
+
+		FILE * getFile()
+		{
+			return myFile;
+		}
+
+		private: 
+		FILE * myFile;
+	};
+
 	private:
-	
-	struct FileObserver
-	{
-		FILE *			  myFile;
-		MessageImportance myFilter;
-	};
 
-	struct CallbackObserver
-	{
-		OBSERVER_CALLBACK myCallbackFunction;
-		void *			  myCockie;
-		MessageImportance myFilter;
-	};
-
-	typedef std::list<CallbackObserver>  CallbackObserverList;
-	typedef std::list<FileObserver>		 FileObserverList;
+	typedef std::list<Observer *> ObserverList;
 	
 	/**
 	* pseudo-type used for multiple overriding with the same type of the operator<<
@@ -188,8 +256,6 @@ class LoggingService: public Service
     // Private Constants
     //======================================================================
     private:
-	static const int NUMBER_BUFFER_SIZE = 20;
-	static const int MESSAGE_BUFFER_SIZE = 1024;
 
     //======================================================================
     // Private Variables
@@ -197,14 +263,9 @@ class LoggingService: public Service
     private:
 
     /**
-	 list of Callback observers (via OBSERVER_CALLBACK)
+	 list of observers
      */
-    CallbackObserverList myCallbackObserverList;
-
-	/**
-	 list of FILE * observers
-     */
-	FileObserverList myFileObserverList;
+    ObserverList myObserverList;
 
 	/**
 	 currently given part of the message string (used by << streaming only)
@@ -243,9 +304,10 @@ class LoggingService: public Service
      */
     LoggingService()
     {
+
 		//set service properties
 		setName("Logging");
-		setDescription("Helps to ease message writing and distribution.");
+		setDescription("Eases message writing and distribution.");
 		
 
 		//set all option values to not specified
@@ -422,67 +484,46 @@ class LoggingService: public Service
 	}
 
 	/**
-	 * Adds an observer to the list. This can be a Callback observer (in case an OBSERVER_CALLBACK
-	 * parameter is given) or a FILE * callback (in case a FILE * parameter is given).
+	 * Adds an observer to the list. 
 	 *
-	 * @param callback The function to be called back when a new message arrived.
-	 * @param file The file to write in when a new message arrived.
-	 * @param cockie A pointer to anything useful for the callback function.
-	 * @param filter The minimum level of importance needed for messages that should be passed through
-	 *               to the observer.
-	 *
+	 * @param observer Pointer to an object with an Observer interface to be added to the list.
 	 */
 
-	void addObserver(FILE * file, MessageImportance filter)
+	void addObserver(Observer * observer)
 	{
-		FileObserver fileObserver;
 		
-		fileObserver.myFile		= file;
-		fileObserver.myFilter	= filter;
+		//test on already existing observer
+
+		for (ObserverList::iterator i = myObserverList.begin(); 
+			i != myObserverList.end(); i++)
+		{
+			if (*i == observer)
+			{
+				return;
+			}
+		}
 		
-		//TODO: Should we test on already existing observers?
+		//no existing observer, add a new
 
-        //NOTE(zzorn, 2002-01-21): Perhaps we could do that, and just change the message 
-        //                         importance filter setting if the listener already exists?
-
-		myFileObserverList.push_back(fileObserver);
-	}
-
-	void addObserver(OBSERVER_CALLBACK callback, void * cockie,
-                      MessageImportance filter)
-	{
-		CallbackObserver callbackObserver;
-		
-		callbackObserver.myCallbackFunction = callback;
-		callbackObserver.myCockie			= cockie;
-		callbackObserver.myFilter			= filter;
-
-		//TODO: Should we test on already existing observers?
-
-        //NOTE(zzorn, 2002-01-21): Perhaps we could do that, and just change the message 
-        //                         importance filter setting if the listener already exists?
-
-		myCallbackObserverList.push_back(callbackObserver);
+		myObserverList.push_back(observer);
 	}
 	
 	/**
-	 * Removes an observer to the list. This can be a Callback observer (in case an OBSERVER_CALLBACK
-	 * parameter is given) or a FILE * callback (in case a FILE * parameter is given).
+	 * Removes an observer from the list. 
 	 *
-	 * @param callback The function previously registered to be called back when a new message arrived.
-	 * @param file The file previously registered to write in when a new message arrived.
+	 * @param observer The pointer previously added the the observer list via addObserver.
      *
 	 * @return 0 if the observer was found and removed, <> 0 otherwise
 	 */
 	
-	int removeObserver(FILE * file)
+	int removeObserver(Observer * observer)
 	{
-		for (FileObserverList::iterator i = myFileObserverList.begin(); 
-			i != myFileObserverList.end(); i++)
+		for (ObserverList::iterator i = myObserverList.begin(); 
+			i != myObserverList.end(); i++)
 		{
-			if (i->myFile == file)
+			if (*i == observer)
 			{
-				myFileObserverList.erase(i);
+				myObserverList.erase(i);
 				return 0;
 			}
 		}
@@ -490,21 +531,6 @@ class LoggingService: public Service
 		return -1;
 	}
 
-	int removeObserver(OBSERVER_CALLBACK callback)
-	{
-		for (CallbackObserverList::iterator i = myCallbackObserverList.begin(); 
-			i != myCallbackObserverList.end(); i++)
-		{
-			if (i->myCallbackFunction == callback)
-			{
-				myCallbackObserverList.erase(i);
-				return 0;
-			}
-		}
-
-		return -1;
-	}
-	
 	//----------------------------------------------------------------------
 	// shifting operator and helper functions
 
@@ -576,41 +602,12 @@ class LoggingService: public Service
 		time_t currentTime;
 		time(&currentTime);
 
-		tm * ctm = localtime(&currentTime); //currentLocalTime was too long, sorry
-
-		//Separate them by "\t"
-
-		//Order: currentTime importance file line message
-
-		char buffer[MESSAGE_BUFFER_SIZE];
-
-        // NOTE(zzorn, 2002-01-21): Changed to snprintf to avoid buffer overruns.
-        //                          The additional - 1 in the buffer size is just some paranoia of mine.
-		int bufferLength = snprintf((char*)buffer, MESSAGE_BUFFER_SIZE - 1,
-			"[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
-			ctm->tm_year, ctm->tm_mon, ctm->tm_mday, ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
-			(importance == CRITICAL) ?  "CRITICAL" : 
-				((importance == ERROR) ?  "ERROR" : 
-					((importance == WARNING) ? "WARNING" : "INFO")),
-			file, line, message);
-
-
-		for (CallbackObserverList::iterator i = myCallbackObserverList.begin(); 
-			i != myCallbackObserverList.end(); i++)
+		for (ObserverList::iterator i = myObserverList.begin(); 
+			i != myObserverList.end(); i++)
 		{
-			if ((int)importance >= (int)i->myFilter)
+			if ((int)importance >= (int)(*i)->getFilter())
 			{
-				i->myCallbackFunction(i->myCockie, message, file, line, importance, currentTime);
-			}
-		}
-
-		for (FileObserverList::iterator j = myFileObserverList.begin();
-			j != myFileObserverList.end(); j++)
-		{
-			
-			if ((int)importance >= (int)j->myFilter)
-			{
-				fwrite((char*)buffer, sizeof(char), bufferLength, j->myFile);
+				(*i)->onNewMessage(message, file, line, importance, currentTime);
 			}
 		}
 	}

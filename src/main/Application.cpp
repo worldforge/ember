@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.1  2002-01-20 16:20:39  nikal
+ *      Revision 1.2  2002-01-24 10:58:14  tim
+ *      Changed observer handling of the LoggingService to a more C++-convenient way (thanks goes to Nikal)
+ *      Added the Visual C++ 6.0 workspace and a small readme to the CVS
+ *
+ *      Revision 1.1  2002/01/20 16:20:39  nikal
  *      Cleaning up the style of Application.h/cpp and Dime
  *
  *      Revision 1.1  2002/01/12 23:43:26  nikal
@@ -22,6 +26,7 @@
  */
 
 #include "Application.h"
+#include <iostream>
 
 namespace dime
 {
@@ -41,7 +46,7 @@ namespace dime
                 }
             if((SDL_Init(SDL_INIT_VIDEO)==-1)) 
                 {
-                    cerr << "Couldn't init SDL";
+					std::cerr << "Couldn't init SDL";
                     return;
                 } 
             else 
@@ -78,7 +83,7 @@ namespace dime
                         if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
                             {
                                 myShouldQuit = true;
-                                cout << "Caught escape. Quitting...\n";
+								std::cout << "Caught escape. Quitting...\n";
                             }
                         std::cout << " SDL_KEYUP\n";
                         break;

@@ -1,0 +1,8 @@
+Using the dime.dsw workspace you may compile dime with Visual C++ 6.0. 
+
+Therefore you should do (or have done already):
+- Install the SDL.
+- Add the lib-/and include path to your Visual C++ 6.0 options.
+- Copy SDL.dll in the dime/bin and/or dime/bin_release subdirectories (to run Dime properly).
+
+If you have any suggestions concerning the workspace/the project file, contact T.Enderling@web.de.

@@ -44,7 +44,9 @@ namespace dime
 		cout << "this should list them all" << endl;
 		for(Iter i = myServiceVector.begin(); i != myServiceVector.end(); i++)
 		{	
-			cout << (*i)->getName() << endl;
+			//HINT: Always use .data() for compatibility to MSVC
+			cout << (*i)->getName().data() << endl;
+			cout << "TODO!" << endl;
 	    }
 	}
 	

@@ -43,7 +43,7 @@ class ServiceManager
     //======================================================================
     private:
         /** Dime Service Vector */
-        vector < Service* > myServiceVector;
+		std::vector < Service* > myServiceVector;
 
     //----------------------------------------------------------------------
     // Constructors & Destructor
