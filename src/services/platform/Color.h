@@ -18,6 +18,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <assert.h>
+
 namespace dime 
 {
 /**
@@ -133,14 +135,13 @@ namespace dime
          */
         Color operator/(const float & rhs)
         {
-            if(rhs != 0)
-                {
-                    float r, g, b;
-                    r = myR/rhs;
-                    g = myG/rhs;
-                    b = myB/rhs;
-                    return Color(r,g,b);
-                }
+            assert(rhs != 0);
+
+            float r, g, b;
+            r = myR/rhs;
+            g = myG/rhs;
+            b = myB/rhs;
+            return Color(r,g,b);
         }
 	
         /*

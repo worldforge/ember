@@ -186,7 +186,7 @@ class FontRenderer
     // Setters
     void setType(const Type &type)
     {
-        myType;
+        myType = type;
         myUpdate = true;
     }
     

@@ -65,52 +65,67 @@ namespace dime {
         // Public Constants
         //======================================================================
     public:
-		/**
-		 * Flags to specify which type of rendering should be used
-		 */
-		enum RenderType
-		{
-			FLAT_COLOR,
-			GRADIENT,
-			BITMAP,
-			GRID
-		};
-
+        /**
+         * bitmap rendering flags
+         */
+        enum BitmapStyle
+            {
+                STRETCH,
+                TILE,
+                CENTER
+            };
+        
 
         //======================================================================
         // Private Constants
         //======================================================================
     private:
+        /**
+         * Flags to specify which type of rendering should be used
+         */
+        enum RenderType
+            {
+                FLAT_COLOR,
+                GRADIENT,
+                BITMAP,
+                GRID
+            };
 
+        
         //======================================================================
         // Private Variables
         //======================================================================
     private:
-
-		/**
-		 * The fill type of the rectangle
-		 */
-        int myType;
-
-      /**
-       * The surface that this RectangleRenderer acts upon
-       */
+        
+        /**
+         * The fill type of the rectangle
+         */
+        RenderType  myType;
+        
+        /**
+         * The surface that this RectangleRenderer acts upon
+         */
         SDL_Surface *mySurface;
-
-      /**
-       * Coordinates/size of the rectangle
-       */
+        
+        /**
+         * The bitmap style
+         */
+        BitmapStyle myStyle;
+        
+        /**
+         * Coordinates/size of the rectangle
+         */
         Rectangle myRect;
         
-      /*
-       * The colors
-       */
+        /*
+         * The colors
+         */
         Color myColor;
         Color myColor2;
         Color myColor3;
         Color myColor4;  
-
-
+        
+        
         int myColor1X;
         int myColor1Y;
         int myColor2X;
@@ -130,44 +145,34 @@ namespace dime {
         RectangleRenderer()
 		{
 		}
-
-		/**
-		 * Creates a new RectangleRenderer from a ThemeScheme obtained from ThemeService.
-		 * @param themeid string identifier specifying appropriate themescheme for this RR. Passed to InputService.
-		 */
-        RectangleRenderer(std::string themeid);
-
-		/**
-		 * Creates a new RectangleRenderer using supplied values..
-		 */
-        RectangleRenderer(int renderFlag, const Rectangle &rect,
+        /**
+         * Creates a new RectangleRenderer for a solid color based on red, green and blue.
+         */
+        RectangleRenderer(const Rectangle &rect,
                           Uint8 red, Uint8 green, Uint8 blue);
-
-		/**
-		 * Creates a new RectangleRenderer using supplied values..
-		 */
-        RectangleRenderer(int renderFlag, const Rectangle &rect,
-                          Color color);
-
-		/**
-		 * Creates a new RectangleRenderer using supplied values..
-		 */
-        RectangleRenderer(int renderFlag, const Rectangle &rect, const std::string bitmapString);
+        /**
+         * Creates a new RectangleRenderer with a solid color.
+         */
+        RectangleRenderer(const Rectangle &rect, Color color);
+        
+        /**
+         * Creates a new RectangleRenderer with a bitmap background
+         */
+        RectangleRenderer(const Rectangle &rect, const std::string bitmapString, BitmapStyle syle);
 
         /**
-		 * Creates a new RectangleRenderer using supplied values..
-		 */
-        RectangleRenderer(int renderFlag, const Rectangle &rect,
+         * Creates a new RectangleRenderer as a gradient
+         */
+        RectangleRenderer(const Rectangle &rect,
                           Color color1, Color color2, Color color3, Color color4);
 
-
-
+        
+        
         //----------------------------------------------------------------------
         // Destructor
-    
-		/**
-		 * Deletes a RectangleRenderer instance.
-		 */
+        /**
+         * Deletes a RectangleRenderer instance.
+         */
         virtual ~RectangleRenderer();
 
         //----------------------------------------------------------------------

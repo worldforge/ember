@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.7  2002-04-15 02:00:20  nikal
+ *      Revision 1.8  2002-05-20 18:49:49  nikal
+ *      Quick changes to RectangleRenderer, and some theme stuff
+ *
+ *      Revision 1.7  2002/04/15 02:00:20  nikal
  *      Stopped RRs from updating each time they drew something.  I added the update into the GuiService.cpps draw method, which updates once after drawing everything.  This removes the flicker, but doesn't speed it up much as blits are still being done each redraw. :
  *
  *      Revision 1.6  2002/04/01 07:18:46  adamgreg
@@ -54,14 +57,10 @@
 #include "RectangleRenderer.h"
 
 /**
- * For now, the constructor doesn't really do anything.
- */
-
-/**
  * Constructor for a flat solid color RectangleRenderer.
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect,
-        Uint8 red, Uint8 green, Uint8 blue)
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
+                                           Uint8 red, Uint8 green, Uint8 blue)
 {
 	solidColor(red, green, blue);
 	myRect = rect;
@@ -71,8 +70,7 @@ dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect
 /**
  * Constructor for a flat solid color RectangleRenderer.
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect,
-        dime::Color color )
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, dime::Color color )
 {
 	solidColor(color);
 	myRect = rect;
@@ -81,18 +79,20 @@ dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect
 /**
  * Constructor for a bitmap filled RectangleRenderer
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, const Rectangle &rect, const std::string bitmapString)
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, 
+                                           const std::string bitmapString, BitmapStyle style)
 {
-	bitmap(bitmapString);
-	myRect = rect;
+    bitmap(bitmapString);
+    myRect = rect;
+    myStyle = style;   
 }
 
 
 /**
  * Constructor for a gradient filled RectangleRenderer
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, 
-                                           const Rectangle &rect, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
+dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect, 
+                                           dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
 {
 	gradient(color1, color2, color3, color4);
 	myRect = rect;
@@ -153,7 +153,7 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
         }
         case GRADIENT:
         {
-			renderGradient(device);
+            renderGradient(device);
             break;
         }
         case BITMAP:
@@ -178,11 +178,11 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
 int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 {
     SDL_Rect src, dest;
-	src.x = 0;
-	src.y = 0;
-	src.w = myRect.getWidth();
-	src.h = myRect.getHeight();
-	dest = myRect.getSDL_Rect();
+    src.x = 0;
+    src.y = 0;
+    src.w = myRect.getWidth();
+    src.h = myRect.getHeight();
+    dest = myRect.getSDL_Rect();
     device->blitSurface(&src, &dest, mySurface);
 
     return (1);
