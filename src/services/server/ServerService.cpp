@@ -35,7 +35,7 @@ namespace dime
 
 
 	/* ctor */
-  ServerService::ServerService(const std::string& host, short port ) : myHost(host), myPort(port)
+  ServerService::ServerService(const std::string& host, short port ) : myPort(port), myHost(host)
 	{
 	    setName("Server Service");
 		setDescription("Service for Server session");

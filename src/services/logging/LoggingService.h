@@ -547,7 +547,7 @@ class LoggingService: public Service
 	LoggingService & operator<< (const HexNumber & intHexToAdd)
 	{
 		char buffer[NUMBER_BUFFER_SIZE];
-		sprintf(buffer, "%x", intHexToAdd);
+		sprintf(buffer, "%x", intHexToAdd.myNumber);
 		myMessage += buffer;
 		return *this;
 	}
