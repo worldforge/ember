@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="column_segmented_3">
+  <submodels>
+	  <submodel mesh="3d_objects/items/building_element/models/blocky_corner_pillar/pillar_segmented.mesh">
+      <parts>
+        <part name="main" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

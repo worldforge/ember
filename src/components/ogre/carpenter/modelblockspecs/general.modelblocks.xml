@@ -17,4 +17,6 @@
   <buildingblockspec blockspec="fence/gate" name="fence/gate/timber" />
   <buildingblockspec blockspec="wall/3" name="wall/3/timber_" />
   <buildingblockspec blockspec="column/3" name="column/3/timber" />
+  <buildingblockspec blockspec="column/3" name="column/fractured/3/stone" />
+  <buildingblockspec blockspec="column/3" name="column/segmented/3/stone" />
 </buildingblockspecs>
