@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<blueprint strartingblock="mainfloor">
+  <buildingblocks>
+    <buildingblock modelblock="floor24" name="mainfloor" />
+    <buildingblock modelblock="wall24" name="westwall" />
+    <buildingblock modelblock="wall24" name="eastwall" />
+    <buildingblock modelblock="wall24" name="northwall" />
+    <buildingblock modelblock="wall24" name="southwall" />
+  </buildingblocks>
+  <bindings>
+    <binding point1="upwest/north" point2="down/left" block1="mainfloor" block2="westwall" />
+    <binding point1="upwest/south" point2="down/right" block1="mainfloor" block2="westwall" />
+  
+    <binding point1="upeast/north" point2="down/right" block1="mainfloor" block2="eastwall" />
+    <binding point1="upeast/south" point2="down/left" block1="mainfloor" block2="eastwall" />
+    
+    <binding point1="upnorth/east" point2="down/right" block1="mainfloor" block2="northwall" />
+    <binding point1="upnorth/west" point2="down/left" block1="mainfloor" block2="northwall" />
+    
+    <binding point1="upsouth/east" point2="down/left" block1="mainfloor" block2="southwall" />
+    <binding point1="upsouth/west" point2="down/right" block1="mainfloor" block2="southwall" />
+  
+  </bindings>
+</blueprint>

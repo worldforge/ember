@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.39  2005-02-10 00:54:03  erik
+ *      Revision 1.40  2005-02-22 23:51:32  erik
+ *      2005-02-23  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Change name of main exec to "ember"
+ *      	* Initial checking of Carpenter library which would allow dynamic constructions of buildings. This is very much in a protoyping stage right now. Later on the library will be separated from Ember.
+ *
+ *      Revision 1.39  2005/02/10 00:54:03  erik
  *      2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* send event on eris polling start and stop
@@ -394,12 +400,20 @@ Description: Base class for all the OGRE examples
 
 #include "framework/Singleton.h"
 
+#include "carpenter/Carpenter.h"
+
 // #include <OgreConfigFile.h>
 
 namespace Eris {
 class View;
 class Connection;
 }
+
+// namespace Carpenter
+// {
+// class Carpenter;
+// class BluePrint;
+// }
 
 
 namespace EmberOgre {
@@ -581,6 +595,8 @@ protected:
             Ogre::Root::getSingleton().getRenderSystem()->shutdown();
 	}
 	*/
+	Carpenter::Carpenter mCarpenter;
+
 
 };
 

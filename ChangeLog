@@ -1,3 +1,10 @@
+2005-02-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Change name of main exec to "ember"
+	* Initial checking of Carpenter library which would allow dynamic constructions of buildings. This is very much in a protoyping stage right now. Later on the library will be separated from Ember.
+	* Changes to adapt to the fact that OgreCEGUIRenderer now resides in the Ogre lib.
+	* Better handling of terrain pages, to avoid getting segfault with empty mercator segments
+
 2005-02-15  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Added fragment shader for terrain. I temporarely removed the old splatting method (using many passes), but I have to add that back in in order to provide a fallback for people without shader support.

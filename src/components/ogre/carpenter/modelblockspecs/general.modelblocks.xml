@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<modelblocks>
+  <modelblock model="wall" blockspec="wall24" name="wall24" />
+  <modelblock model="floor" blockspec="floor24" name="floor24" />
+</modelblocks>

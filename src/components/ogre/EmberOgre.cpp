@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.72  2005-02-13 15:42:49  erik
+ *      Revision 1.73  2005-02-22 23:51:32  erik
+ *      2005-02-23  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Change name of main exec to "ember"
+ *      	* Initial checking of Carpenter library which would allow dynamic constructions of buildings. This is very much in a protoyping stage right now. Later on the library will be separated from Ember.
+ *
+ *      Revision 1.72  2005/02/13 15:42:49  erik
  *      2005-02-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Moved to OGRE 1.0 and CEGUI 0.2.
@@ -590,6 +596,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "AvatarCamera.h"
 #include "GUIManager.h"
 
+
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
 
@@ -1109,7 +1116,15 @@ void EmberOgre::createScene(void)
 	}
 	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, 256);
 	
+	mCarpenter.loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/floors.blockspec.xml");
+	mCarpenter.loadBlockSpec("/home/erik/ember/src/components/ogre/carpenter/blockspec/walls.blockspec.xml");
+	mCarpenter.loadModelBlockDefinition("/home/erik/ember/src/components/ogre/carpenter/modelblockspecs/general.modelblocks.xml");
 	
+	Carpenter::BluePrint* housePrint = mCarpenter.loadBlueprint("/home/erik/ember/src/components/ogre/carpenter/blueprints/house.blueprint.xml");
+	
+        Ogre::SceneNode* node;
+        node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	housePrint->compile(node);	
 	
 
   // create a Skydome

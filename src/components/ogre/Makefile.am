@@ -1,10 +1,10 @@
-SUBDIRS = environment model EmberSceneManager modeldefinitions input widgets
+SUBDIRS = environment model EmberSceneManager modeldefinitions input widgets \
+	carpenter
 
 
-bin_PROGRAMS = EmberOgre
+bin_PROGRAMS = ember
 
 if BUILD_STATIC
-
 
 EMBER_EXT_LIBS = \
 	/usr/lib/libSDL.a \
@@ -44,17 +44,17 @@ EMBER_EXT_LIBS = $(EMBER_LIBS)
 endif
 
 
-EmberOgre_LDADD = $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
+ember_LDADD = $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 	$(top_builddir)/src/services/libServices.a $(top_builddir)/src/services/config/libConfigService.a \
 	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/server/libServerService.a \
 	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/EmberSceneManager/src/libEmberSceneManager.a $(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
-	$(top_builddir)/src/components/ogre/input/libInput.a $(EMBER_EXT_LIBS)
+	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a $(EMBER_EXT_LIBS)
 
 
-EmberOgre_SOURCES = Avatar.cpp EntityListener.cpp ConsoleObjectImpl.cpp \
+ember_SOURCES = Avatar.cpp EntityListener.cpp ConsoleObjectImpl.cpp \
 		MediaDeployer.cpp AvatarController.cpp environment/Water.cpp \
 		TerrainGenerator.cpp MotionManager.cpp AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp \
 		MousePicker.cpp Avatar.h MathConverter.h EntityListener.h ConsoleObjectImpl.h \
