@@ -23,7 +23,9 @@ namespace DimeOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager) :
 	mAvatarNode(avatarNode),
-	mSceneManager(sceneManager)
+	mSceneManager(sceneManager),
+	degreePitch(0),
+	degreeYaw(0)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesAndCamera();
