@@ -13,6 +13,7 @@ http://www.libsdl.org
 
 libsigc++
 install this library from your distro CDs
+Version: 1.0.3
 (needed for Eris, see below)
 
 skstream2
@@ -23,7 +24,7 @@ ftp://victor.worldforge.org/pub/worldforge/libs/skstream
 
 Atlas-C++
 C++ implementation of Worldforge Protocol ("Atlas")
-Version: 0.0.4
+Version: 0.4.4
 ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
 (needed for Eris, see below)
 
@@ -55,4 +56,13 @@ make
 
 here we'll address typical problems with the installation, and how to fix them
 
+****************************************
+* Mandrake 8.1 (and other RPM systems) *
+****************************************
+
+When installing SDL (and SDL_ttf, SDL_image and SDL_mixer) using packages
+made for you system, please be aware that you will need *ALL* the libraries
+and devel packages it was built against.  These are often not installed by 
+default.  The total number for MDK8.1 was about 15 packages.
+(Data from Lee's fresh install of MDK8.1)
 
