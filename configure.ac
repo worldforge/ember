@@ -68,7 +68,7 @@ AC_CHECK_LIB(openal,
 	     ])
 	)
 
- Test for libxml2
+# Test for libxml2
 AM_PATH_XML2(2.4.23,[
     CFLAGS="$CFLAGS $XML_CFLAGS"
     CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
