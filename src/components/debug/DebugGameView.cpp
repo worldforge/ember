@@ -37,7 +37,7 @@ void DebugGameView::repaint(DrawDevice* ddevice)
 void DebugGameView::entityCreate( Eris::Entity *e )
 {
     // Call base class to connect signals
-    EntityListener::entityCreate( Eris::Entity *e )
+    EntityListener::entityCreate( e );
 }
 
 
