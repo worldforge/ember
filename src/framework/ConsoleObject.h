@@ -35,7 +35,7 @@ namespace dime {
 /**
  * ConsoleObject
  *
- * The ConsoleObject is a interface used to allow objects to register commands
+ * The ConsoleObject is an interface used to allow objects to register commands
  * with the console. Any object wishing to register a command, must implement 
  * this interface.
  *
@@ -61,8 +61,8 @@ public:
 
   /**
    * This is the function that needs to be extended to use the console.
-   * command is a command that has been previously registered with the console
-   * args is the argument string that has been provided for the command
+   * "command" is a command that has been previously registered with the console
+   * "args" is the argument string that has been provided for the command
    */ 
   virtual void runCommand(const std::string &command, const std::string &args) = 0;
 };

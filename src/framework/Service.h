@@ -56,9 +56,9 @@ class Service
      * <li> CRITICAL    - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.  </li>
      * </ul>
      *
-     * (The difference between FAILURE and CRITICAL is basically that Errors
-     * mean that the rest of the systm may still work fine, while critical means
-     * that the whole program is likely to be unstable.)
+     * (The difference between FAILURE and CRITICAL is basically that FAILURE
+     * means that the rest of the system may still work fine, while CRITICAL means
+     * that the whole system is likely to be unstable.)
      */
 	enum Status
 	{

@@ -150,7 +150,7 @@ class Tokeniser
 
     //----------------------------------------------------------------------
     // Other public methods
-    // NOTE: Group related public methods together and crate a separator comment like above for them.
+    // NOTE: Group related public methods together and create a separator comment like above for them.
     void initTokens(const std::string &tokens);
     std::string Tokeniser::nextToken();
     std::string Tokeniser::remainingTokens();

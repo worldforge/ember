@@ -1,6 +1,12 @@
 2003-10-16 Eric Sandall <eric [at] sandall [dot] us>
 	* src/framework/ComponentFactory.h: std::String -> std::string
 	* src/framework/Component.h: std::String -> std::string
+	* src/framework/ConsoleObject.h:38,64: Comment cleanup
+	* src/framework/Service.h:59-62: Comment cleanup
+	* src/framework/ServiceManager.cpp:6: Remove 'using namespace std;'
+	not only is it incorrect, but unneeded as it's followed immediately
+	by a 'namepsace dime' and all std calls are prepended with std::
+	* src/framework/Tokeniser.h:153: Comment cleanup
 
 2003-10-15 Eric Sandall <eric [at] sandall [dot] us>
 	* src/services/config/ConfigService.cpp: Fix an ambiguous overload
