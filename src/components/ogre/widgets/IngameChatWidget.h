@@ -30,26 +30,64 @@ class Widget;
 class EmberPhysicalEntity;
 
 /**
+
+Shows chat bubbles over npc's heads when they say something.
+The bubbles will disappear after a while (actually fade out) or when the player moves away. This can be set in the config file.
+
+If the npc has a list of suggested responses these will be shown in a list of clickable buttons to the right.
+
 @author Erik Hjortsberg
 */
 class IngameChatWidget : public Widget {
 
 
+	/**
+	Holds the actual chat window and keeps track of fading, catching clicks etc.
+	*/
 	class ActiveChatWindow
 	{
 		public:
-			CEGUI::Window* window;
-			float elapsedTimeSinceLastUpdate;
-			EmberPhysicalEntity* entity;
-			std::vector<CEGUI::Window*> responseTextWidgets;
+			/**
 			
-			void appendIGChatLine(const std::string& line);
-			CEGUI::WindowManager* windowManager;
+			*/
+			ActiveChatWindow(CEGUI::Window* window, EmberPhysicalEntity* entity, CEGUI::WindowManager* windowManager);
+			
+			~ActiveChatWindow();
+
+			/**
+			
+			*/
+			void updateText(const std::string& line);
+		
+			inline float getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
+			
+			void increaseElapsedTime(float timeSlice);
+			
+			EmberPhysicalEntity* getEntity();
+			
+			CEGUI::Window* getWindow();
+			
+			void frameStarted( const Ogre::FrameEvent & event );
+
+			
+		protected:
+			/**
+			positions the window on top of the entity
+			*/
+			void placeWindowOnEntity();
+			
+			CEGUI::Window* mWindow;
+			float mElapsedTimeSinceLastUpdate;
+			EmberPhysicalEntity* mEntity;
+			std::vector<CEGUI::Window*> mResponseTextWidgets;
+			CEGUI::WindowManager* mWindowManager;
+			
+			
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 		
 	};
 
-typedef std::map<std::string, ActiveChatWindow> ActiveChatWindowMap;
+typedef std::map<std::string, ActiveChatWindow*> ActiveChatWindowMap;
 public:
     IngameChatWidget(GUIManager* guiManager);
 
@@ -59,7 +97,7 @@ public:
 	
 protected:
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
-	void placeWindowOnEntity( CEGUI::Window* window, EmberPhysicalEntity* entity);
+	//void placeWindowOnEntity( CEGUI::Window* window, EmberPhysicalEntity* entity);
 
 		
 	

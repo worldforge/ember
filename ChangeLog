@@ -1,5 +1,13 @@
 2005-01-05  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* clean up the code
+
+2005-01-05  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Fixed wrong path for CEGUI's schemafiles
+
+2005-01-05  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* chat windows now fade out over time, and are removed when the player moves away from the npc. This can be set in the config file.
 
 2005-01-05  Erik Hjortsberg  <erik@katastrof.nu>
