@@ -2,6 +2,9 @@
 	* README: cleanup of media files, moved to purple.
 	* src/components/ogre/MediaDeployer.(h|cpp):
 	added class to deploy media on demand.
+	* src/components/text: Makefile.am, EmberText.(h|cpp):
+	added text component, MUD-like, for the sake of having
+	another working application using the framework.
 
 2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/services/components/ogre:

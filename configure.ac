@@ -285,6 +285,7 @@ AC_CONFIG_FILES([Makefile
 		 dime.dox
 		 dime.spec
 		 src/components/ogre/Makefile
+		 src/components/text/Makefile
 ])
 
 
