@@ -23,8 +23,6 @@
 namespace dime
 {
 
-CPPUNIT_TEST_SUITE_REGISTRATION( DataModelTestCase );
-
 void DataModelTestCase::setUp ()
 {
 	myDMS = DataModelService::getInstance();

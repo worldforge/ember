@@ -3,11 +3,14 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 #include "DataModelTest.h"
+#include "InputServiceTest.h"
+
+CPPUNIT_TEST_SUITE_REGISTRATION( dime::DataModelTestCase );
+CPPUNIT_TEST_SUITE_REGISTRATION( dime::InputServiceTestCase );
 
 
 bool runTests() 
 {
-    dime::DataModelTestCase myTest;
     CppUnit::TextUi::TestRunner runner;
     CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();
     runner.addTest( registry.makeTest() );
