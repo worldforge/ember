@@ -70,6 +70,7 @@ struct AvatarMovementState
  */
 class Avatar : virtual public SigC::Object
 {
+	friend class AvatarController;
 
     public:
 
@@ -144,7 +145,7 @@ private:
 	/**
 	 * Creates and sets up the different cameras.
 	 */
-	void createAvatarCameras();
+	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
 
 	
 	/**

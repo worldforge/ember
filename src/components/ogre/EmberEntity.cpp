@@ -48,7 +48,7 @@ DimeEntity::~DimeEntity()
 void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 	// create the ogre node and the
 	// TODO: use Eris entity hierarchy for the node hierarchy !!
-	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild());
+	mOgreNode = dynamic_cast<Ogre::SceneNode*>(sceneManager->getRootSceneNode()->createChild());
 
 
 /*
@@ -85,13 +85,13 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 
 		mOgreEntity = sceneManager->createEntity(getID(), "razor.mesh");
 		//ogreNode->setScale(1,1,1);
-		ogreNode->setScale(0.1,0.1,0.1);
+		mOgreNode->setScale(0.1,0.1,0.1);
 	}
 	//mOgreEntity->setVisible(false);
 
 
 	// attach the node to the entity
-	ogreNode->attachObject(mOgreEntity);
+	mOgreNode->attachObject(mOgreEntity);
 }
 
 
@@ -131,24 +131,42 @@ Ogre::Entity* DimeEntity::getOgreEntity() {
  */
 void DimeEntity::handleMove()
 {
-	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
+	if (!mIsMainAvatar) { //HACK!!!
+		getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
+		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+		Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
+	}
 }
 
 void DimeEntity::handleTalk(const std::string &msg)
 {
-    std::string message = "<";
-    message.append(getName());
-    message.append("> ");
-    message.append(msg);
-	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	
+	if (!mIsMainAvatar) { //HACK!!!
+	    std::string message = "<";
+	    message.append(getName());
+	    message.append("> ");
+	    message.append(msg);
+		std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
+		dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
+	}
 }
 
 void DimeEntity::setVisible(bool vis)
 {
-	mOgreEntity->setVisible(vis);	
+	if (!mIsMainAvatar) { //HACK!!!
+		mOgreEntity->setVisible(vis);	
+	}
+}
+
+void DimeEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
+{
+	mIsMainAvatar = true;
+	if (mOgreEntity != NULL) {
+		delete mOgreEntity;
+	}
+	mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
+	mOgreNode->attachObject(mOgreEntity);
+	
 }
 
 

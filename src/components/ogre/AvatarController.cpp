@@ -17,6 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "OgreStringConverter.h"
+
+
 #include "Avatar.h"
 #include "DebugListener.h"
 #include "InputManager.h"
@@ -108,7 +111,7 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 		//only pick entities that have a userobject attached
 		if (( *rayIterator ).movable->getUserObject() != NULL) {
 			//we don't want to pick ourselves
-			if ( ( *rayIterator ).movable->getName() != "AvatarEntity" ) { 
+			if ( ( *rayIterator ).movable != mAvatar->mAvatarEntity) { 
 				if ( ( *rayIterator ).distance < closestDistance ) { 
 					closestObject = ( *rayIterator ).movable; 
 					closestDistance = ( *rayIterator ).distance; 

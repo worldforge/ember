@@ -89,11 +89,14 @@ public:
 	virtual void setVisible(bool vis);
 	
 
-	
+//HACK!!!
+	virtual void markAsMainAvatar(Ogre::SceneManager* sceneManager); 
 protected: 
 
-	void createOgreEntity(Ogre::SceneManager* sceneManager);
+	bool mIsMainAvatar;
+	virtual void createOgreEntity(Ogre::SceneManager* sceneManager);
 	Ogre::Entity* mOgreEntity;
+	Ogre::SceneNode* mOgreNode;
 	//Eris::Entity* mErisEntity;
 };
 

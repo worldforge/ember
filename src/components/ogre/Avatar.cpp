@@ -53,7 +53,9 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	mTimeSinceLastServerMessage = 0;
 	mMinIntervalOfTrivialChanges = 0.2; //seconds
 	mAccumulatedHorizontalRotation = 0;
-	
+
+	mAvatar1pCameraNode = NULL;
+
 	mWalkSpeed = WF2OGRE(2.0);
 	mRunSpeed = WF2OGRE(5.0);
 
@@ -63,7 +65,7 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	// and attach all the needed cameras
 	
 	createAvatar();
-	createAvatarCameras();
+	createAvatarCameras(mAvatarNode);
 
 
 }
@@ -99,46 +101,55 @@ void Avatar::createAvatar()
 	mAvatarAnimationController = controllerManager->createController(controllerManager->getFrameTimeSource(), mAnimStateWalk, mAvatarAnimationControllerFunction);
 }
 
-void Avatar::createAvatarCameras()
+
+
+void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
-	// 1st person, 3rd person and Top camera nodes
-	mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("Avatar1pCameraNode"));
-	mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
-	//mAvatar1pCameraNode->showBoundingBox(true);
-	mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
-	Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,5);
-	//mAvatar3pCameraNode->setPosition(15000,2500,0);
-	mAvatar3pCameraNode->setPosition(pos);
-	mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarTopCameraNode"));
-	mAvatarTopCameraNode->setPosition(WF2OGRE_VECTOR3(2,200,0));
-
-	// Create the camera
-	mAvatar1pCamera = mSceneMgr->createCamera("Avatar1pCam");
-	mAvatar1pCameraNode->attachObject(mAvatar1pCamera);
-
-	// Look back along x axis
-	//mAvatar1pCamera->lookAt(mOgreHeadNode->getPosition());
-	mAvatar1pCamera->setNearClipDistance(1);
-
-	// do not clip at far distance
-	// so we can see the skydome
-	//mCamera->setFarClipDistance( 384 );
-
-	//3rd person camera
-	mAvatar3pCamera = mSceneMgr->createCamera("Avatar3pCamera");
-	mAvatar3pCameraNode->attachObject(mAvatar3pCamera);
-	// Look to the Avatar's head
-	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
-	mAvatar3pCamera->setNearClipDistance(1);
-
-	// Create the Top camera
-	mAvatarTopCamera = mSceneMgr->createCamera("AvatarTopCamera");
-	mAvatarTopCameraNode->attachObject(mAvatarTopCamera);
-	// Look to the Avatar's head
-	mAvatarTopCamera->setAutoTracking(true, mAvatarNode);
-	mAvatarTopCamera->setNearClipDistance(1);
-	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
+	if (mAvatar1pCameraNode != NULL) {
+		Ogre::String cameraNodeName = mAvatar1pCameraNode->getName();
+		mAvatar1pCameraNode->getParent()->removeChild(cameraNodeName);
+		avatarSceneNode->addChild(mAvatar1pCameraNode);
+	} else {
+			
+		
+		// 1st person, 3rd person and Top camera nodes
+		mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("Avatar1pCameraNode"));
+		mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
+		//mAvatar1pCameraNode->showBoundingBox(true);
+		mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
+		Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,5);
+		//mAvatar3pCameraNode->setPosition(15000,2500,0);
+		mAvatar3pCameraNode->setPosition(pos);
+		mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("AvatarTopCameraNode"));
+		mAvatarTopCameraNode->setPosition(WF2OGRE_VECTOR3(2,200,0));
 	
+		// Create the camera
+		mAvatar1pCamera = mSceneMgr->createCamera("Avatar1pCam");
+		mAvatar1pCameraNode->attachObject(mAvatar1pCamera);
+	
+		// Look back along x axis
+		//mAvatar1pCamera->lookAt(mOgreHeadNode->getPosition());
+		mAvatar1pCamera->setNearClipDistance(1);
+	
+		// do not clip at far distance
+		// so we can see the skydome
+		//mCamera->setFarClipDistance( 384 );
+	
+		//3rd person camera
+		mAvatar3pCamera = mSceneMgr->createCamera("Avatar3pCamera");
+		mAvatar3pCameraNode->attachObject(mAvatar3pCamera);
+		// Look to the Avatar's head
+		//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
+		mAvatar3pCamera->setNearClipDistance(1);
+	
+		// Create the Top camera
+		mAvatarTopCamera = mSceneMgr->createCamera("AvatarTopCamera");
+		mAvatarTopCameraNode->attachObject(mAvatarTopCamera);
+		// Look to the Avatar's head
+		mAvatarTopCamera->setAutoTracking(true, avatarSceneNode);
+		mAvatarTopCamera->setNearClipDistance(1);
+		mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
+	}	
 }
 
 void Avatar::updateFrame(AvatarControllerMovement movement)
@@ -162,13 +173,16 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 	Ogre::Vector3 move = movement.movementDirection;
 	bool isRunning = movement.isRunning;
 	Ogre::Real timeSlice = movement.timeSlice;
+	float speed = isRunning ? mRunSpeed : mWalkSpeed;
+	Vector3 rawVelocity = move * speed;
 	
 	
 	//first we'll register the current state in newMovementState and compare to mCurrentMovementState
 	//that way we'll only send stuff to the server if our movement changes
 	AvatarMovementState newMovementState;
-	newMovementState.velocity = move * (isRunning ? mRunSpeed : mWalkSpeed);
 	newMovementState.orientation = mAvatarNode->getOrientation();
+	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
+	
 	if (move != Vector3::ZERO) {
 		newMovementState.isMoving = true;
 		newMovementState.isRunning = isRunning;
@@ -220,7 +234,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 		
 
 		//for now we'll only send velocity
-		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(OGRE2WF(newMovementState.velocity)), Ogre2Atlas(newMovementState.orientation));
+		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(OGRE2WF(newMovementState.orientation * newMovementState.velocity)), Ogre2Atlas(newMovementState.orientation));
 
 //		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
 
@@ -231,7 +245,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 
 	if (newMovementState.isMoving) {
 		//do the actual movement of the avatar node
-		mAvatarNode->translate(mAvatarNode->getOrientation() * (newMovementState.velocity * timeSlice));
+		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
 	}
 	mCurrentMovementState = newMovementState;
 }
@@ -288,9 +302,19 @@ Ogre::Camera* Avatar::getAvatarTopCamera()
 
 void Avatar::enteredWorld(Eris::Entity *e)
 {
+/*	if (e == NULL) {
+		int i = 1;
+	}
+		
+	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
+	dimeEntity->markAsMainAvatar(mSceneMgr);
+	createAvatarCameras(dimeEntity->getSceneNode());
+	delete mAvatarNode;
 	
+	mAvatarNode = dimeEntity->getSceneNode();*/
 	mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
 	mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
+	
 }
 
 void Avatar::touch(DimeEntity* entity)
