@@ -3,14 +3,17 @@
  *  Summary:    The class which initializes the GUI.
  *  Written by: nikal
  *
- *  Copyright  2001 nikal. 
+ *  Copyright (C) 2001, 2002 nikal. 
  *  This code is distributed under the LGPL.
  *  See file COPYING for details. 
  *
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.2  2002-01-24 10:58:14  tim
+ *      Revision 1.3  2002-01-27 00:26:37  nikal
+ *      Hacking logging into Dime.
+ *
+ *      Revision 1.2  2002/01/24 10:58:14  tim
  *      Changed observer handling of the LoggingService to a more C++-convenient way (thanks goes to Nikal)
  *      Added the Visual C++ 6.0 workspace and a small readme to the CVS
  *
@@ -27,6 +30,7 @@
 
 #include "Application.h"
 #include <iostream>
+#include "DimeServices.h"
 
 namespace dime
 {
@@ -36,6 +40,7 @@ namespace dime
         Application::Application(int width, int height, std::string title)
             : myShouldQuit(false) 
         {
+            myLoggingService = DimeServices::getInstance()->getLoggingService();
             if(width >=0)
                 {
                     myWidth=width;
@@ -46,7 +51,9 @@ namespace dime
                 }
             if((SDL_Init(SDL_INIT_VIDEO)==-1)) 
                 {
-					std::cerr << "Couldn't init SDL";
+                    myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::ERROR, 
+                                          "Couldn't init SDL");
+                        //std::cerr << "Couldn't init SDL";
                     return;
                 } 
             else 
@@ -73,10 +80,14 @@ namespace dime
                 {
                     switch(nextEvent.type) {
                     case SDL_ACTIVEEVENT:
-                        std::cout << " SDL_ACTIVEEVENT\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_ACTIVEEVENT");
+                            //std::cout << " SDL_ACTIVEEVENT\n";
                         break;
                     case SDL_KEYDOWN:
-                        std::cout << " SDL_KEYDOWN\n";
+                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
+                                              "SDL_KEYDOWN");
+                            //std::cout << " SDL_KEYDOWN\n";
                         break;
                     case SDL_KEYUP:
                         // Looking for the ESC key.

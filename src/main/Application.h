@@ -3,14 +3,17 @@
  *  Summary:    The class which initializes the GUI.
  *  Written by: nikal
  *
- *  Copyright  2001 nikal. 
+ *  Copyright (C) 2001, 2002 nikal. 
  *  This code is distributed under the LGPL.
  *  See file COPYING for details. 
  *
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.1  2002-01-20 16:20:39  nikal
+ *      Revision 1.2  2002-01-27 00:26:37  nikal
+ *      Hacking logging into Dime.
+ *
+ *      Revision 1.1  2002/01/20 16:20:39  nikal
  *      Cleaning up the style of Application.h/cpp and Dime
  *
  *      Revision 1.2  2002/01/13 01:50:09  zzorn
@@ -30,7 +33,7 @@
 #include <list>
 #include <string>
 #include <SDL/SDL.h>
-
+#include <main/DimeServices.h>
 
 namespace dime 
 {
@@ -77,10 +80,29 @@ namespace dime
 	   
 	 
         private:
+            /**
+             * The width of the screen
+             */
             int myWidth;
+
+            /**
+             * The height of the screen
+             */
             int myHeight;
+
+            /**
+             * An internal flag used to signal when to quite.
+             */
             bool myShouldQuit;
        
+            /**
+             * Our pointer to the LoggingService
+             */
+            dime::services::LoggingService *myLoggingService;
+
+            /**
+             * Our pointer to the SDL_surface we use as the screen
+             */
             SDL_Surface *myScreen;
        
         };//class Application

@@ -20,8 +20,8 @@
 #define DIME_SERVICES_H
 
 // Include headers from the current project here
-#include "TestService.h"
-
+#include <services/test/TestService.h>
+#include <services/LoggingService.h>
 // Include custom library headers here
 
 // Include system headers here
@@ -73,12 +73,18 @@ class DimeServices
     //======================================================================
     private:
 
+    
+    /**
+     * The instance of the LoggingService
+     */
+    dime::services::LoggingService *myLoggingService;
 
     /**
      * This variable is used to keep track of the next free ID number for a new gizmo.
      */
-    static DimeServices theInstance;
+    static DimeServices *theInstance;
 
+    
 
     //======================================================================
     // Public Methods
@@ -104,9 +110,18 @@ class DimeServices
     /**
      * Returns the DimeServices instance.
      */
-    static DimeServices *getInstance() const
+    static DimeServices *getInstance()
     {
-        return &theInstance;
+        if(theInstance) 
+            {
+                return theInstance;
+            }
+        
+        else
+            {
+                theInstance = new DimeServices();
+                return theInstance;
+            }
     }
 
 
@@ -119,9 +134,16 @@ class DimeServices
     dime::services::test::TestService *getTestService()
     {
         // TODO
-        return null;
+        return NULL;
     }
 
+    /**
+     * returns an instance of the LoggingService
+     */
+    dime::services::LoggingService *getLoggingService()
+    {
+        return myLoggingService;
+    }
 
     //----------------------------------------------------------------------
     // Setters
@@ -152,6 +174,7 @@ class DimeServices
      */
     DimeServices()
     {
+        myLoggingService = new dime::services::LoggingService();
     }
 
 
@@ -168,11 +191,12 @@ class DimeServices
      */
     DimeServices &operator= ( const DimeServices &source )
     {
-        return &this;
+        return *this;
     }
 
 
 }; // End of class
+    
 
 } // End of subsystem namespace
 } // End of application namespace
