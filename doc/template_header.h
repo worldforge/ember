@@ -35,14 +35,20 @@
 // - First always use the correct namespaces for items.  Such as SigC:: for libsigc++ items.
 //   Or std::string or std::list.
 //
-// - MSVC 6 and below doesn't handle partial instantiation of templates. So always do the full
-//   instanstiation.  such as: SigC::Signal1<void, int> mySignal; is not good enough because
-//   you need a marshal to have full instantiation.  Instead use:
-//   SIgC::Signal1<void, int, SigC::Marshal<void> > mySignal;  <- note: the space inbetween
-//   void> and > is VERY important...  otherwise the compiler interprets it as an operator.
+// - SINCE MSVC 6 is not supported anymore, the following is obsolete:
+//	 MSVC 6 and below doesn't handle partial instantiation of templates. So always do the full
+//   instanstiation.  such as: 
+//	
+//		SigC::Signal1<void, int> mySignal; is not good enough because
+//   
+//	 you need a marshal to have full instantiation.  Instead use:
+//
+//		SigC::Signal1<void, int, SigC::Marshal<void> > mySignal;  <- note: the space inbetween
+//		void> and > is VERY important...  otherwise the compiler interprets it as an operator.
 //
 // - Functions of non-void type should always return a value. So the following is illegal 
 //   (also for others than the above mentioned reason):
+//
 //	 bool isCodeMSVCCompatible(char version, bool isGNUPropertyOfMicrosoft)
 //	 { }
 //
@@ -52,6 +58,15 @@
 //	 this can lead to bugs, since the compiler is not complaining about missing 
 //   initialization),
 //
+// - Stay away from omitting parameters with default values, when calling a function that
+//   is part of a statically linked library. The linker of MSVC has some problems finding the
+//	 correct symbol. The same on the code in the libraries itself. So write:
+//	
+//		 socket->is_ready(0);
+//
+//   instead of just:
+//
+//		 socket->is_ready();
 //---------------------------------------------------------------------------------------------------
 //
 //

@@ -280,6 +280,9 @@
 			<File
 				RelativePath=".\src\services\input\InputDevice.cpp">
 			</File>
+			<File
+				RelativePath="src\main\StateManager.cpp">
+			</File>
 			<Filter
 				Name="Widgets"
 				Filter="">
@@ -364,12 +367,21 @@
 				<File
 					RelativePath="src\services\datamodel\LinkProvider.cpp">
 				</File>
+				<File
+					RelativePath="src\services\datamodel\StringProvider.cpp">
+				</File>
 			</Filter>
 			<Filter
 				Name="UnitTests"
 				Filter="">
 				<File
 					RelativePath=".\test\DataModelTest.cpp">
+				</File>
+				<File
+					RelativePath="test\InputServiceTest.cpp">
+				</File>
+				<File
+					RelativePath="test\StateManagerTest.cpp">
 				</File>
 				<File
 					RelativePath="test\TestServices.cpp">
@@ -507,6 +519,9 @@
 			</File>
 			<File
 				RelativePath=".\src\framework\ServiceManager.h">
+			</File>
+			<File
+				RelativePath="src\services\datamodel\StringProvider.h">
 			</File>
 			<File
 				RelativePath=".\src\services\test\TestService.h">

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.28  2002-07-02 03:35:18  nikal
+ *      Revision 1.29  2002-07-02 19:13:49  tim
+ *      Test usage of DDM in MetaserverService
+ *
+ *      Revision 1.28  2002/07/02 03:35:18  nikal
  *      Added OpenGL DrawDevice.  It's not complete.  It needs a blitSurface function implemenation. It compiles, and hasn't been tested, but I don't have the time.  Anyone can feel free to implement it, or test it.  I will as soon as I have time if I can.
  *
  *      Revision 1.27  2002/05/27 00:25:56  nikal
@@ -113,6 +116,9 @@
 #include "DimeServices.h"
 #include <iostream>
 #include <iomanip>
+#include <strstream>
+#include <services/datamodel/DataObject.h>
+#include <services/datamodel/DataModelService.h>
 
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
@@ -168,6 +174,23 @@ namespace dime
     private: 
 
     };
+
+	
+	void onMetaserverService(PDataObject p, DataType t)
+	{
+		//fired whenever the state changed
+		std::strstream dump;
+		dump << "onMetaserverService called." << std::endl;
+		dump << "dumping /servers {" << std::endl;
+
+		DataModelService::dump(DataObject::getRoot("/servers"), dump);
+
+		dump << "}";
+		dump.put(0);
+
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
+			<< dump.str() << ENDM;
+	}
 
     Application::Application(int width, int height, std::string title)
         : myShouldQuit(false) 
@@ -229,9 +252,15 @@ namespace dime
 #else
 		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
 		myMetaserverService->start();
+		
+		//just for test:
+		PDataObject metaState = DataObject::getRoot("/servers/state"); 
+		metaState->addConnection(SigC::slot(onMetaserverService), POST_VALUE_CHANGE);
+
+		onMetaserverService(metaState, POST_VALUE_CHANGE);
 
 		// Create and start ServerService
-		DimeServices::getInstance()->getServerService()->start();
+		//DimeServices::getInstance()->getServerService()->start();
 #endif
     }
 
@@ -258,7 +287,7 @@ namespace dime
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-	Eris::PollDefault::poll();
+		Eris::PollDefault::poll();
 #endif
     }
 

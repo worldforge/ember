@@ -21,6 +21,7 @@
 #define METASERVERSERVICE_H
 
 #include <framework/Service.h>
+#include <services/datamodel/StringProvider.h>
 
 #include <sigc++/object.h>
 #include <Eris/Metaserver.h>
@@ -47,6 +48,7 @@ class MetaserverService: public Service, public SigC::Object
     Eris::Meta * msrv;
     Eris::ServerList serverlist;
     bool listed;
+	StringProvider * myStateDMP;
 
 		
     //----------------------------------------------------------------------

@@ -16,51 +16,37 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef DATAMODELSERVICE_H
-#define DATAMODELSERVICE_H
+#ifndef STRINGPROVIDER_H
+#define STRINGPROVIDER_H
 
 // Include other headers of the current program here
-#include "FolderProvider.h"
-#include <framework/Service.h>
+#include "DataProvider.h"
 
 // Include library headers here
-
-#include <string>
-#include <list>
-#include <strstream>
-#include <stdio.h> 
 
 // Include system headers here
 
 namespace dime {
 
-//======================================================================
-// Short type macros
-//======================================================================
-
 /**
- * Service managing the data model. Retrieves DataObjects by their paths.
- *
- * See http://www.worldforge.org/dev/eng/clients/dime/developer_doc/DataModelFW
- * for more info on the data model.
+ * Provider for a holding a single int.
  * 
  * @author Tim Enderling
  */
 
-class DataModelService //: public Service
+class StringProvider: public DataProvider, public SigC::Object
 {
     //======================================================================
     // Public Constants and enums
     //======================================================================
     public:	
-	
-
+  
 	
 	//======================================================================
     // Inner Classes and typedefs
     //======================================================================	 
 	public:
-
+	
     //======================================================================
     // Private Constants
     //======================================================================
@@ -69,53 +55,58 @@ class DataModelService //: public Service
     //======================================================================
     // Private Variables
     //======================================================================
-    private:
-	FolderProvider myRootProvider;
+	std::string  myValue;
+	DataType myPermissions; //determines whether the data model users
+						    //can change the value or not/remove it our not, etc.
+	std::string myDescription;
 
     //======================================================================
     // Public Methods
     //======================================================================
     public:
 
-    /**
-     * Functions for Data Model Providers
-     */
-    FolderProvider * getRootProvider()
-	{
-		return &myRootProvider;
-	}
-
 	/**
-	 * Helper functions
+	 * All documentation from the functions removed here to remove redundancy. 
+	 * Look into DataProvider class instead.
 	 */
 
-	static void dump(PDataObject toDump, std::strstream & dumpDest, bool recursive = true);
+	virtual PDataKey getChild(PDataKey parent, std::string ID, DataProvider *& provider);
+	virtual std::string getSubpath(PDataKey key);
+	virtual DataType getType(PDataKey key);
+	virtual std::string getDescription(PDataKey key);
+	virtual void setDescription(PDataKey key, std::string description);
+	
+	virtual bool getBoolVal(PDataKey key);
+	virtual void setBoolVal(PDataKey key, bool newValue);
+	virtual int  getIntVal(PDataKey key);
+	virtual void setIntVal(PDataKey key, int newValue);
+	virtual float getFloatVal(PDataKey key);
+	virtual void  setFloatVal(PDataKey key, float newValue);
+	virtual std::string getStringVal(PDataKey key);
+	virtual void        setStringVal(PDataKey key, const std::string & newValue);
 
-	//----------------------------------------------------------------------
-    // Singleton
+	virtual void addChild(PDataKey parent, std::string & suggestedID, 
+					DataProvider * provider = NULL);
+	virtual void remove(PDataKey child);
+	virtual void removeAdopted(PDataKey adopted);
+	virtual void getChilds(PDataKey parent, std::vector<std::string> & listOfChilds);
 
-    /**
-     * Returns the DataModelService instance.
-     */
-    static DataModelService *getInstance()
-    {
-		static DataModelService singleinstance;
-		return &singleinstance;
-    }
+	std::string getValue();
+	void setValue(std::string newValue);
+	void setPermissions(DataType permissions);
 
 	//----------------------------------------------------------------------
     // Constructors
 
-	DataModelService()
-	{
-		myRootProvider.myPath = "/";
-		myRootProvider.mySubpath = "";
-	}
+	StringProvider(std::string initialValue, std::string description,
+		DataType permissions = static_cast<DataType>(0));
 
     //----------------------------------------------------------------------
     // Destructor
 
-    //----------------------------------------------------------------------
+	virtual ~StringProvider();
+    
+	//----------------------------------------------------------------------
     // Getters
 
     //----------------------------------------------------------------------
@@ -124,13 +115,10 @@ class DataModelService //: public Service
     //----------------------------------------------------------------------
     // Other public methods
 
-
-
     //======================================================================
     // Protected Methods
     //======================================================================
     protected:
-
 
     //======================================================================
     // Private Methods
@@ -138,7 +126,8 @@ class DataModelService //: public Service
     private:
 							
 
-}; // DataModelService
+}; // StringProvider
+
 
 } // namespace dime
 

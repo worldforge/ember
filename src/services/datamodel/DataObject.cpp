@@ -292,6 +292,8 @@ std::string DataObject::getStringVal()
 	if (DataType & FOLDER)
 	{
 		//@todo: Should we rather return "" here?
+		return "";
+		/*
 		std::vector<std::string> listOfChilds;
 		myProvider->getChilds(myKey, listOfChilds);
 		
@@ -309,7 +311,7 @@ std::string DataObject::getStringVal()
 
 		buffer += " }";
 		
-		return buffer;
+		return buffer;*/
 	}
 
 	{
@@ -493,7 +495,8 @@ void DataObject::getChildList(ChildList & childList)
 
 	if (!(getType() & HAS_CHILDS))
 	{
-		THROW1("DataObject %s cannot have childs.", myPath.c_str());
+		// THROW1("DataObject %s cannot have childs.", myPath.c_str());
+		return;
 	}
 
 

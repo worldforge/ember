@@ -17,7 +17,7 @@
 */
 
 // Include other headers of the current program here
-#include "IntProvider.h"
+#include "StringProvider.h"
 
 // Include library headers here
 
@@ -25,17 +25,17 @@
 
 namespace dime {
 
-int IntProvider::getValue()
+std::string StringProvider::getValue()
 {
 	return myValue;
 }
 
-void IntProvider::setPermissions(DataType permissions)
+void StringProvider::setPermissions(DataType permissions)
 {
 	myPermissions = permissions;
 }
 
-void IntProvider::setValue(int newValue)
+void StringProvider::setValue(std::string newValue)
 {
 	fireSignal("", PRE_VALUE_CHANGE);
 
@@ -44,48 +44,67 @@ void IntProvider::setValue(int newValue)
 	fireSignal("", POST_VALUE_CHANGE);
 }
 
-PDataKey IntProvider::getChild(PDataKey parent, std::string ID, DataProvider *& provider)
+PDataKey StringProvider::getChild(PDataKey parent, std::string ID, DataProvider *& provider)
 {
 	return PDataKey(NULL); //No childs available
 }
 
-std::string IntProvider::getSubpath(PDataKey key)
+std::string StringProvider::getSubpath(PDataKey key)
 {
 	return ""; //No childs so the path is always ""
 }
 
-DataType IntProvider::getType(PDataKey key)
+DataType StringProvider::getType(PDataKey key)
 {	
-	return static_cast<DataType>(INTEGER | 
+	return static_cast<DataType>(STRING | 
 		myPermissions | PRE_VALUE_CHANGE | POST_VALUE_CHANGE | PRE_DELETION);
 }
 
-std::string IntProvider::getDescription(PDataKey key)
+std::string StringProvider::getDescription(PDataKey key)
 {
 	return myDescription;
 }
 
-void IntProvider::setDescription(PDataKey key, std::string description)
+void StringProvider::setDescription(PDataKey key, std::string description)
 {
 	myDescription = description;
 }
 
-bool IntProvider::getBoolVal(PDataKey key)
+bool StringProvider::getBoolVal(PDataKey key)
 {
 	return false;
 }
 
-void IntProvider::setBoolVal(PDataKey key, bool newValue)
+void StringProvider::setBoolVal(PDataKey key, bool newValue)
 {
 	
 }
 
-int  IntProvider::getIntVal(PDataKey key)
+int  StringProvider::getIntVal(PDataKey key)
+{
+	return 0;
+}
+
+void StringProvider::setIntVal(PDataKey key, int newValue)
+{
+}
+
+float StringProvider::getFloatVal(PDataKey key)
+{
+	return 0.0;
+}
+
+void  StringProvider::setFloatVal(PDataKey key, float newValue)
+{
+	
+}
+
+std::string StringProvider::getStringVal(PDataKey key)
 {
 	return myValue;
 }
 
-void IntProvider::setIntVal(PDataKey key, int newValue)
+void StringProvider::setStringVal(PDataKey key, const std::string & newValue)
 {
 	//HINT: Doesn't have to test on if the user has the permission to set
 	//this since this is done by the DataObject already.
@@ -93,50 +112,30 @@ void IntProvider::setIntVal(PDataKey key, int newValue)
 	setValue(newValue);
 }
 
-float IntProvider::getFloatVal(PDataKey key)
-{
-	return 0.0;
-}
-
-void  IntProvider::setFloatVal(PDataKey key, float newValue)
-{
-	
-}
-
-std::string IntProvider::getStringVal(PDataKey key)
-{
-	return "";
-}
-
-void IntProvider::setStringVal(PDataKey key, const std::string & newValue)
-{
-	
-}
-
-void IntProvider::addChild(PDataKey parent, std::string & suggestedID, 
+void StringProvider::addChild(PDataKey parent, std::string & suggestedID, 
 				DataProvider * provider)
 {
 
 	//No childs to add
 }
 
-void IntProvider::remove(PDataKey child)
+void StringProvider::remove(PDataKey child)
 {
 	//only me to remove
 	delete this;
 }
 
-void IntProvider::removeAdopted(PDataKey adopted)
+void StringProvider::removeAdopted(PDataKey adopted)
 {
 	//is not adopting
 }
 
-void IntProvider::getChilds(PDataKey parent, std::vector<std::string> & listOfChilds)
+void StringProvider::getChilds(PDataKey parent, std::vector<std::string> & listOfChilds)
 {
 	//again: No childs!
 }
 
-IntProvider::IntProvider(int initialValue, std::string description,
+StringProvider::StringProvider(std::string initialValue, std::string description,
 						DataType permissions)
 {
 	myValue = initialValue;
@@ -144,7 +143,7 @@ IntProvider::IntProvider(int initialValue, std::string description,
 	myPermissions = permissions;
 }
 
-IntProvider::~IntProvider()
+StringProvider::~StringProvider()
 {
 	// Fire a removal event to all observers listening to removal events		
 	fireSignal("", PRE_DELETION);

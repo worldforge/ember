@@ -21,6 +21,9 @@
 
 // Current project
 #include <services/logging/LoggingService.h>
+//#include <services/datamodel/DataModelService.h>
+#include <services/datamodel/IntProvider.h>
+#include <services/datamodel/DataObject.h>
 
 // System headers
 #include <iostream>
@@ -68,12 +71,28 @@ namespace dime
 		setStatus(Service::OK);
 		setRunning( true );
 
-		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
+		std::string metaserver = "metaserver.worldforge.org";
+
+		msrv = new Eris::Meta("dime", metaserver, 1);
 		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::gotServerCount));
 		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
 		msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
 		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
 		listed = false;
+
+		PDataObject root = DataObject::getRoot();
+		PDataObject servers = root->addChild("servers");        
+		servers->addChild("metaserver", 
+			new StringProvider(metaserver, "Metaserver used to retrieve server infos."));	
+		
+		// @todo: Add time stamp servers->addChild("Update",
+		// new TimeProvider(
+
+		PDataObject list = servers->addChild("list"); 
+		list->setDescription("List of all servers found.");
+
+		myStateDMP = new StringProvider("Listing servers.", "State of MetaserverService");
+		servers->addChild("state", myStateDMP);
 
 		return Service::OK;
 	}
@@ -83,6 +102,8 @@ namespace dime
 	{
 		setStatus(Service::OK);
 		setRunning( false );
+		PDataObject servers = DataObject::getRoot("/servers");
+		servers->remove(); //HINT: This also frees myStateDMP
 	}
 
 	void MetaserverService::gotServerCount(int count)
@@ -93,11 +114,31 @@ namespace dime
     void MetaserverService::gotFailure(const string& msg)
     {
         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
+		myStateDMP->setValue("Failure: " + msg);
     }
     
     void MetaserverService::receivedServerInfo(Eris::ServerInfo sInfo)
     {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
+		PDataObject list = DataObject::getRoot("/servers/list");
+
+		PDataObject entry = list->addChild();
+
+		entry->addChild("host", new StringProvider(sInfo.getHostname(), 
+			"Hostname or dotted-decimal IP of the server"));
+		entry->addChild("name", new StringProvider(sInfo.getServername(), 
+			"Human readable name of the server (set by the operator)"));
+		entry->addChild("ruleset", new StringProvider(sInfo.getRuleset(), 
+			"The game system this server is running (e.g. 'Acorn')"));
+		entry->addChild("server", new StringProvider(sInfo.getRuleset(), 
+			"Server program (e.g. 'Cyphesis' or 'Stage')"));
+		entry->addChild("clients", new IntProvider(sInfo.getNumClients(), 
+			"Number of clients connected to the server"));
+		entry->addChild("ping", new IntProvider(sInfo.getPing(),
+			"Estimated round-trip-time (ping) in milliseconds"));
+		entry->addChild("uptime", new IntProvider(sInfo.getUptime(),
+			"Server uptime in seconds"));
+
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
 										  << "Hostname: " <<sInfo.getHostname()
 										  << "\n\rServerName: "<<sInfo.getServername()
 										  << "\n\rRuleset: "<<sInfo.getRuleset()
@@ -106,12 +147,15 @@ namespace dime
 										  << " Ping: "<< sInfo.getPing()
 										  << " Uptime: "<< sInfo.getUptime()
 										  << ENDM;
+
     return;
   }
   void MetaserverService::completedServerList()
 	{
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Server List completed." << ENDM;
 	  listed = true;
+
+	  myStateDMP->setValue("Server list completed.");
 
 		// waiting for James to implement this
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << ENDM;
@@ -126,6 +170,9 @@ namespace dime
 			//HINT: Always use .data() for compatibility to MSVC
 			out << "Hostname: " << (i)->getHostname().data() << endl;
 		}
+
+		out.put(0);
+
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << out.str() << ENDM;
 
 		return;
