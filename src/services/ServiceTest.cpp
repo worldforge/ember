@@ -20,6 +20,7 @@
 #include "test/TestService.h"
 #include "config/ConfigService.h"
 #include "metaserver/MetaserverService.h"
+#include "Eris/PollDefault.h"
 //#include "LoggingService.h"
 
 #include <iostream.h>
@@ -49,10 +50,10 @@ int main()
 	cout << "***TESTING METASERVER SERVICE***" << endl;
 	dime::MetaserverService myMsService;
 	myMsService.start();
-	myMsService.poll();
+	Eris::PollDefault::Poll()
 	while(true)
 	{
-		myMsService.poll();
+//		myMsService.poll();
 	}
 	cout << "My name is: " << myMsService.getName() << endl;
 	cout << myMsService.getDescription() << endl;

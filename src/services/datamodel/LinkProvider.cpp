@@ -47,7 +47,7 @@ PDataKey LinkProvider::getChild(PDataKey parent, std::string ID, DataProvider *&
 	}
 	else
 	{
-		return NULL;
+		return PDataKey(NULL);
 	}
 }
 

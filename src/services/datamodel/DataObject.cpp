@@ -347,7 +347,7 @@ void DataObject::setBoolVal(bool newValue)
 
 	if (DataType & INTEGER)
 	{
-		myProvider->setIntVal(myKey, newValue ? 1.0 : 0.0);
+		myProvider->setIntVal(myKey, newValue ? 1 : 0);
 		return;
 	}
 
@@ -480,8 +480,8 @@ void DataObject::setStringVal(std::string newValue)
  */
 PDataObject DataObject::getChild(std::string subpath)
 {
-	return new DataObject(myProvider, myKey, subpath, 
-		DataProvider::makePath(myPath, subpath));
+	return PDataObject(new DataObject(myProvider, myKey, subpath, 
+		DataProvider::makePath(myPath, subpath)));
 }
 
 /**
@@ -544,13 +544,13 @@ PDataObject DataObject::addChild(std::string suggestedID, DataProvider * provide
 
 	if (provider)
 	{
-		return new DataObject(provider, PDataKey(NULL), "", 
-			DataProvider::makePath(myPath, suggestedID));
+		return PDataObject(new DataObject(provider, PDataKey(NULL), "", 
+			DataProvider::makePath(myPath, suggestedID)));
 	}
 	else
 	{
-		return new DataObject(myProvider, myKey, suggestedID, 
-				DataProvider::makePath(myPath, suggestedID));
+		return PDataObject(new DataObject(myProvider, myKey, suggestedID, 
+				DataProvider::makePath(myPath, suggestedID)));
 	}
 }
 
@@ -631,7 +631,7 @@ DataConnection DataObject::addConnection(DataSlot & slot, DataType types)
  */
 PDataObject DataObject::getByPath(std::string path)
 {
-	return new DataObject(path);	
+	return PDataObject(new DataObject(path));	
 }
 
 /**
@@ -639,7 +639,7 @@ PDataObject DataObject::getByPath(std::string path)
  */
 PDataObject DataObject::getRoot()
 {
-	return new DataObject("/");
+	return PDataObject(new DataObject("/"));
 }
 
 //----------------------------------------------------------------------

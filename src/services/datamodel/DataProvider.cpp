@@ -81,7 +81,6 @@ void DataConnection::disconnect()
 DataProvider::DataProvider()
 {
 	myParent	= NULL;
-	myKey		= NULL;
 }
 
 
@@ -115,7 +114,7 @@ DataProvider::~DataProvider()
 
 //----------------------------------------------------------------------
 // Other public methods
-DataConnection DataProvider::addConnection(std::string subpath, DataSlot & slot, 
+DataConnection DataProvider::addConnection(std::string subpath, const DataSlot & slot, 
 					DataType event)
 {
 	DataConnectionList * list = myConns[subpath];

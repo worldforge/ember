@@ -69,7 +69,7 @@ public:
 	
 	static boost::shared_ptr<DataKey> gen/*aralize*/(const T & t)
 	{
-		return static_cast<DataKey*>(new DataKeyImpl<T>(t)); 
+		return boost::shared_ptr<DataKey>(static_cast<DataKey*>(new DataKeyImpl<T>(t))); 
 	}
 };
 
@@ -243,7 +243,7 @@ class DataProvider
     // Other public methods
 	void removeAllConnections(std::string subpath);
 	void fireGeneralSignal(DataType event);
-	DataConnection addConnection(std::string subpath, DataSlot & slot, 
+	DataConnection addConnection(std::string subpath, const DataSlot & slot, 
 						DataType event);
 	void removeConnection(std::string subpath, DataConnectionList::iterator & i);
 	void fireSignal(std::string subpath, DataType event);

@@ -19,7 +19,7 @@
 // Include other headers of the current program here
 #include "FolderProvider.h"
 #include "DataObject.h"
-#include <framework/exception.h>
+#include <framework/Exception.h>
 
 // Include library headers here
 
@@ -35,7 +35,7 @@ PDataKey FolderProvider::getChild(PDataKey parent, std::string ID, DataProvider 
 	
 	ItemMap::iterator i = parentItem->myMap.find(ID);
 
-	if (i == parentItem->myMap.end()) return NULL;
+	if (i == parentItem->myMap.end()) return PDataKey(NULL);
 
 	if (i->second->myDest)
 	{
