@@ -103,7 +103,7 @@ AM_PATH_CPPUNIT(1.8.0, [
 *** Found CppUnit
 *** Setting up make check to run tests...)
 	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
-	LDFLAGS="$LDFLAGS $CPPUNIT_LIBS"
+	LIBS="$LIBS $CPPUNIT_LIBS"
 ], 
   AC_MSG_RESULT([
 
