@@ -31,7 +31,21 @@ http://www.gnu.org/copyleft/lesser.txt.
         .h and .cpp files for tidiness, but this is just a jump-start.
 */
 
+// ------------------------------
+// Include dime header files
+// ------------------------------
 #include "services/DimeServices.h"
+#include "framework/ConsoleBackend.h"
+
+// ------------------------------
+// Include Eris header files
+// ------------------------------
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#endif
 
 
 // ----------------------------------------------------------------------------
@@ -59,6 +73,62 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ----------------------------------------------------------------------------
 #include "OgreApp.h"
 
+
+// TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
+  class CerrLogObserver: public dime::LoggingService::Observer
+    {
+    public:
+        CerrLogObserver()
+        {
+        }
+
+        virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
+                                  const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+        {
+            tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+		
+	    std::cerr.fill('0');
+            std::cerr << "[";
+	    std::cerr.width(2);
+	    std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
+	    std::cerr.width(2);
+	    std::cerr << ctm->tm_mon+1 << "-";
+	    std::cerr.width(2);
+	    std::cerr << ctm->tm_mday << " ";
+	    std::cerr.width(2);
+	    std::cerr << ctm->tm_hour << ":";
+	    std::cerr.width(2);
+	    std::cerr <<  ctm->tm_min << ":";
+	    std::cerr.width(2);			
+	    std::cerr << ctm->tm_sec << "] ";			
+	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
+
+            if(importance == dime::LoggingService::CRITICAL)
+                {
+                    std::cerr << "CRITICAL";
+                }
+            else  if(importance == dime::LoggingService::FAILURE)
+                {
+                    std::cerr << "FAILURE";
+                }
+            else if(importance == dime::LoggingService::WARNING)
+                {
+                    std::cerr << "WARNING";
+                }
+            else if(importance == dime::LoggingService::INFO)
+                {
+                    std::cerr << "INFO";
+                }
+	    else
+                {
+                    std::cerr << "VERBOSE";
+                }
+            std::cerr << ") " <<message << std::endl;
+        }
+
+    private:
+
+    };
 
 
 class TerrainListener : public BaseFrameListener
@@ -195,6 +265,115 @@ class TerrainListener : public BaseFrameListener
 
 };
 
+// TODO: find a proper way to do all this stuff (Aglanor)
+class DimeFrameListener : public BaseFrameListener
+{
+
+public:
+
+	DimeFrameListener(RenderWindow* win, Camera* cam) : BaseFrameListener(win, cam) {}
+
+	bool frameStarted(const FrameEvent& evt)
+	{
+	
+		// local just to stop toggles flipping too fast
+        static Real timeUntilNextToggle = 0;
+        if (timeUntilNextToggle >= 0)
+            timeUntilNextToggle -= evt.timeSinceLastFrame;
+
+
+			// Eris polling
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+// GNDN: MSVC < version 7 is broken
+#else
+			Eris::PollDefault::poll();
+#endif
+
+		// Copy the current state of the input devices
+		mInputDevice->capture();
+		
+		// Pressing 1 queries the metaserver
+		if(mInputDevice->isKeyDown(Ogre::KC_1)) {
+			// TODO: use META_REFRESH here, passing a string like this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getMetaserverService()->runCommand("meta_refresh","");
+		}
+		
+		// Pressing 2 connects to red.worldforge.org
+		if(mInputDevice->isKeyDown(Ogre::KC_2) && timeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","18.224.0.35");
+			timeUntilNextToggle = 1;
+		}
+
+		// Pressing 3 logs in with the account 'ogretest'
+		if(mInputDevice->isKeyDown(Ogre::KC_3) && timeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getServerService()->runCommand("login","ogretest ogretest");
+			timeUntilNextToggle = 1;
+		}
+
+		// Pressing 4 takes the character ''
+		if(mInputDevice->isKeyDown(Ogre::KC_4) && timeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","ogre_207");
+			timeUntilNextToggle = 1;
+		}
+
+		// login ogretest ogretest
+		
+
+
+		return true;
+	}
+};
+
+class CameraFrameListener : public BaseFrameListener
+{
+protected:
+	Camera* mCamera;
+	SceneDetailLevel normal;
+		SceneDetailLevel wireframe;
+	SceneDetailLevel sdl;
+
+public:
+
+	CameraFrameListener(RenderWindow* win, Camera* cam) : BaseFrameListener(win, cam)
+	{
+	                mCamera = cam;
+					normal = SDL_WIREFRAME;
+					wireframe = SDL_WIREFRAME;
+	}
+
+	bool frameStarted(const FrameEvent& evt)
+	{
+        // local just to stop toggles flipping too fast
+        static Real timeUntilNextToggle = 0;
+        if (timeUntilNextToggle >= 0)
+            timeUntilNextToggle -= evt.timeSinceLastFrame;
+
+		// Copy the current state of the input devices
+		mInputDevice->capture();
+
+		if(mInputDevice->isKeyDown(Ogre::KC_Y) && timeUntilNextToggle <= 0) {
+
+			// TODO: this is hackish. Fix it. (Aglanor)
+			SceneDetailLevel sdl = mCamera->getDetailLevel();
+			if(sdl!=wireframe) {
+				normal = sdl;
+				mCamera->setDetailLevel(SDL_WIREFRAME);
+
+			} else {
+				mCamera->setDetailLevel(normal);
+			}
+
+			timeUntilNextToggle = 1;
+		}
+
+		return true;
+  }
+
+};
+
 class CameraRotator : public BaseFrameListener
 {
 
@@ -268,6 +447,10 @@ void OgreApp::createFrameListener(void)
 {
   mFrameListener= new TerrainListener(mWindow, mCamera);
   mRoot->addFrameListener(mFrameListener);
+  CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
+  mRoot->addFrameListener(cameraFrameListener);
+  DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera);
+  mRoot->addFrameListener(dimeFrameListener);
 #if 0
     CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
     mRoot->addFrameListener(cameraRotator);
@@ -308,10 +491,43 @@ int main(int argc, char **argv)
     // Create application object
     OgreApp app;
 	
-	// Initialize dime stuff
+	// Initialize dime services
+	
+	// Initialize the Logging service and an error observer
 	dime::LoggingService *logging = dime::DimeServices::getInstance()->getLoggingService();
+	CerrLogObserver* obs = new CerrLogObserver();
+	obs->setFilter(dime::LoggingService::VERBOSE);
+	logging->addObserver(obs);
 	
 
+	// Initialize the Configuration Service
+	dime::DimeServices::getInstance()->getConfigService()->start();
+
+	// Initialize the Sound Service
+#ifndef WIN32
+	// Test that /dev/dsp is availible
+	FILE *temp = fopen("/dev/dsp","w");
+	if (temp) {
+	  fclose(temp);
+#endif
+	// Initialize the SoundService
+	dime::DimeServices::getInstance()->getSoundService()->start();
+#ifndef WIN32
+	}
+#endif
+
+	// Initialize and start the Metaserver Service.
+#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
+	// GNDN: MSVC < version 7 is broken
+#else
+	// Set Eris Logging Level
+	Eris::setLogLevel(Eris::LOG_DEBUG);
+
+	dime::DimeServices::getInstance()->getMetaserverService()->start();
+
+	// Initialize the Server Service
+	dime::DimeServices::getInstance()->getServerService()->start();
+#endif
 
     try {
         app.go();

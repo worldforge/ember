@@ -24,7 +24,7 @@ $(top_srcdir)/src/framework/libFramework.a \
 $(top_srcdir)/src/services/libServices.a
 
 LDFLAGS = @LDFLAGS@ -L$(OGRE_PATH)/OgreMain/src -lOgreMain
-CXXFLAGS = @CXXFLAGS@ -DEXT_HASH
+CXXFLAGS = @CXXFLAGS@ -DEXT_HASH -DOGRE_LINUX -DGCC_3_1
 
 OgreApp_SOURCES = OgreApp.cpp
 

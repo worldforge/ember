@@ -42,6 +42,8 @@ class TerrainListener;
 
 class CameraRotator;
 
+class CameraFrameListener;
+
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
