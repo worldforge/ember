@@ -18,6 +18,8 @@
 
 #include "ServerService.h"
 #include "services/logging/LoggingService.h"
+#include "services/gui/Console.h"
+#include "services/gui/Tokeniser.h"
 
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
@@ -43,7 +45,7 @@ namespace dime
     // singleton instance up.  Do _not_ use Connection::Instance()
     // this does not create a new connection.
     // We are connected without debuging enabled thus the false
-	myConn = new Eris::Connection("dime",false);
+    myConn = new Eris::Connection("dime",false);
 
     // Bind signals
     myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
@@ -52,6 +54,10 @@ namespace dime
     myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::disconnecting));
     myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
     myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
+
+    Console::registerCommand(SERV_CONNECT,this);
+    Console::registerCommand(SERV_RECONNECT,this);
+    Console::registerCommand(SERV_DISCONNECT,this);
   }
 	
   /* dtor */
@@ -96,6 +102,18 @@ namespace dime
       }
     myConnected = true;
     return true;
+  }
+
+  void ServerService::reconnect()
+  {
+    if (!myConn) return;
+    myConn->reconnect();
+  }
+
+  void ServerService::disconnect()
+  {
+    if (!myConn) return;
+    myConn->disconnect();
   }
 	
   void ServerService::gotFailure(const std::string & msg)
@@ -151,6 +169,24 @@ namespace dime
   void ServerService::loggedIn( const Atlas::Objects::Entity::Player& player )
   {
   }
-	
+
+  void ServerService::runCommand(const string &command, const string &args)
+  {
+    if(command == SERV_CONNECT){
+      // Split string into command / arguments pair
+      Tokeniser tokeniser = Tokeniser();
+      tokeniser.initTokens(args);
+      std::string server = tokeniser.nextToken();
+      std::string port = tokeniser.remainingTokens();
+      if (port=="")
+        connect(server);
+      else
+        connect(server, (short)atoi(port.c_str()));
+    } else if(command == SERV_RECONNECT) {
+      reconnect();
+    } else if (command==SERV_CONNECT){
+      disconnect();
+    }
+  }
 } // namespace dime
 

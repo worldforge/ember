@@ -20,6 +20,7 @@
 #define SERVERSERVICE_H
 
 #include <framework/Service.h>
+#include <framework/ConsoleObject.h>
 
 #include <Eris/Connection.h>
 #include <Eris/Lobby.h>
@@ -35,8 +36,9 @@ namespace dime {
  *
  * @see dime::Service
  * @see dime::MetaserverService
+ * @see dime::ConsoleObject
  */
-class ServerService: public Service, public SigC::Object
+class ServerService: public Service, public ConsoleObject, public SigC::Object
 {
     //======================================================================
     // Private Variables
@@ -86,9 +88,15 @@ class ServerService: public Service, public SigC::Object
 	
 	Service::Status start();
 
+  void stop(int code);
+
 	bool connect(const std::string& host, short port = 6767);
 
-	void stop(int code);
+  void reconnect();
+
+	void disconnect();
+
+  void runCommand(const string &, const string &);
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
@@ -115,6 +123,11 @@ class ServerService: public Service, public SigC::Object
 	void privateTalk(const std::string&, const std::string&); 
 
 	void loggedIn( const Atlas::Objects::Entity::Player& );
+
+  // List of ServerService's console commands
+  static const char * const SERV_CONNECT = "connect";
+  static const char * const SERV_RECONNECT = "reconnect";
+  static const char * const SERV_DISCONNECT = "disconnect";
 }; //ServerService
 
 } // namespace dime
