@@ -48,7 +48,7 @@ public:
     
     static const int NUM_GRAYS;
 
-    typedef std::basic_string<Uint16> FontString;
+    typedef std::wstring FontString;
     
     //======================================================================
     // Private Variables

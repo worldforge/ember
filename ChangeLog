@@ -1,3 +1,6 @@
+2002-10-09 Al Riddoch <alriddoch@zepler.org>
+	* src/services/font/Font.h: Use standard std::wstring for font strings.
+
 2002-10-07 Al Riddoch <alriddoch@zepler.org>
 	* src/services/server/OOGChat.cpp: std:: namespace fixes.
 
