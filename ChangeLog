@@ -1,3 +1,12 @@
+2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* moved widgets to a separate object archive
+	* added double click actions to server browser and server widget
+	* mask password
+	* began work on create avatar widget
+	* added Performance, a widget to show fps and other related info
+	This widget uses the new scheme where the definition is in a file suffixed with .widget
+
 2005-02-04  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* don't make ember a requirement for the media rpm; people might want to compile ember by their own and use the media rpm as a convenience

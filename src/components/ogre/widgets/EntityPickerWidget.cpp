@@ -25,17 +25,17 @@
 
 #include "Widget.h"
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
-#include "AvatarEmberEntity.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../PersonEmberEntity.h"
+#include "../AvatarEmberEntity.h"
 
 
-#include "EmberOgre.h"
-#include "Avatar.h"
-#include "EmberEntity.h"
-#include "MousePicker.h"
-#include "GUIManager.h"
+#include "../EmberOgre.h"
+#include "../Avatar.h"
+#include "../EmberEntity.h"
+#include "../MousePicker.h"
+#include "../GUIManager.h"
 
 
 
@@ -47,7 +47,7 @@
 
 namespace EmberOgre {
 
-template<> WidgetLoader WidgetLoaderHolder<EntityPickerWidget>::loader("EntityPickerWidget", &createWidgetInstance);
+/*template<> WidgetLoader WidgetLoaderHolder<EntityPickerWidget>::loader("EntityPickerWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("EntityPickerWidget", &createWidgetInstance<EntityPickerWidget>);
 
 

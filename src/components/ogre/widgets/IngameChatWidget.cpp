@@ -24,10 +24,10 @@
 
 
 #include "Widget.h"
-#include "GUIManager.h"
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "model/Model.h"
+#include "../GUIManager.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../model/Model.h"
 
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
@@ -35,14 +35,14 @@
 #include <Eris/Entity.h>
 #include "IngameChatWidget.h"
 
-#include "EmberOgre.h"
-#include "AvatarCamera.h"
-#include "Avatar.h"
+#include "../EmberOgre.h"
+#include "../AvatarCamera.h"
+#include "../Avatar.h"
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
-#include "AvatarEmberEntity.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../PersonEmberEntity.h"
+#include "../AvatarEmberEntity.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -51,7 +51,7 @@
 
 namespace EmberOgre {
 
-template<> WidgetLoader WidgetLoaderHolder<IngameChatWidget>::loader("IngameChatWidget", &createWidgetInstance);
+// template<> WidgetLoader WidgetLoaderHolder<IngameChatWidget>::loader("IngameChatWidget", &createWidgetInstance);
 
 //WidgetLoader Widget::loader("IngameChatWidget", &createWidgetInstance<IngameChatWidget>);
 

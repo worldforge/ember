@@ -1,7 +1,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "EmberOgrePrerequisites.h"
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 // #include <CEGUI.h>
@@ -11,6 +10,9 @@
 // #include <CEGUISystem.h>
 // #include <CEGUISchemeManager.h>
 // #include <CEGUIWindow.h>
+//#include <elements/CEGUIListboxItem.h> 
+#include <elements/CEGUIListboxTextItem.h> 
+
 #include <CEGUIWindowManager.h>
 // #include <CEGUIImageset.h>
 #include <boost/bind.hpp>
@@ -44,13 +46,13 @@ class Widget;
 This is done by:
 template<> WidgetLoader WidgetLoaderHolder<ASubClassOfWidget>::loader("associatedName", &createWidgetInstance);
 */
-template <typename T> class WidgetLoaderHolder
-{
-protected:
-
-	static WidgetLoader loader;
-	static Widget* createWidgetInstance() { return new T; }
-};
+// template <typename T> class WidgetLoaderHolder
+// {
+// protected:
+// 
+// 	static WidgetLoader loader;
+// 	static Widget* createWidgetInstance() { return new T; }
+// };
 
 
 /** Base class for all widgets
@@ -78,8 +80,23 @@ protected:
 
 	CEGUI::WindowManager* mWindowManager;
 	
-	//static WidgetLoader loader;
 	
+	/**
+	 *    Loads a widget definition from a file and sets the main sheet
+	 * @param filename The name of the file to load
+	 * @param prefix The prefix to use
+	 * @return 
+	 */
+	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix);
+	
+	/**
+	 *    Gets the prefix used in the widget definition
+	 * @return 
+	 */
+	inline const std::string& getPrefix() const { return mPrefix;}
+	
+private:
+	std::string mPrefix;
 	
 };
 
@@ -112,9 +129,28 @@ public:
 	if no widget can be found, a null pointer is returned
 	*/
 	static Widget* createWidget(const std::string& name);
+	
+	static void registerWidget(const std::string& name, FactoryFunc functor );
+
+	
+	template <typename T> static Widget* createWidgetInstance() { return new T; }
 
 };
 
+
+/**
+	A standard ListboxTextItem, with the exeption that the selection will be colored.
+*/
+class ColoredListItem : public CEGUI::ListboxTextItem
+{
+public:
+	ColoredListItem(const CEGUI::String& text); 
+	ColoredListItem(const CEGUI::String& text, uint item_id, void *item_data);
+};
+
+
 }
+
+
 
 #endif // WIDGET_H

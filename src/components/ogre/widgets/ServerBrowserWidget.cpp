@@ -20,31 +20,23 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include <elements/CEGUIMultiColumnList.h> 
 
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
 #include "Widget.h"
 
-#include <elements/CEGUIListboxItem.h> 
-#include <elements/CEGUIListboxTextItem.h> 
-#include <elements/CEGUIMultiColumnList.h> 
 
-#include "GUIManager.h"
+#include "../GUIManager.h"
 #include "ServerBrowserWidget.h"
 
 namespace EmberOgre {
 
-class ServerBrowserWidgetListItem : public CEGUI::ListboxTextItem
-{
-public:
-	ServerBrowserWidgetListItem(const CEGUI::String& text) : ListboxTextItem(text)
-	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
-	}
-};
+// static  WidgetLoader loader("ServerBrowserWidget", &WidgetLoader::createWidgetInstance<ServerBrowserWidget>);
 
-template<> WidgetLoader WidgetLoaderHolder<ServerBrowserWidget>::loader("ServerBrowserWidget", &createWidgetInstance);
-//WidgetLoader Widget::loader("ServerBrowserWidget", &createWidgetInstance<ServerBrowserWidget>);
+//template<> WidgetLoader WidgetLoaderHolder<ServerBrowserWidget>::loader("ServerBrowserWidget", &createWidgetInstance);
+//WidgetLoader loader("ServerBrowserWidget", &WidgetLoader::createWidgetInstance<ServerBrowserWidget>);
+// 	ServerBrowserWidget::ServerBrowserWidget s = ServerBrowserWidget();
 
 
 ServerBrowserWidget::~ServerBrowserWidget()
@@ -56,7 +48,7 @@ void ServerBrowserWidget::buildWidget()
 {
 
 
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/ServerBrowserWidget.xml", "ServerBrowser/");
+	loadMainSheet("ServerBrowserWidget.xml", "ServerBrowser/");
 
 	mServerList = static_cast<CEGUI::MultiColumnList*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ServerList"));
 
@@ -67,22 +59,26 @@ void ServerBrowserWidget::buildWidget()
 	mServerList->addColumn((CEGUI::utf8*)"Ruleset", 4, 0.2f);
 	mServerList->addColumn((CEGUI::utf8*)"Server type", 5, 0.2f);
 	mServerList->setSelectionMode(CEGUI::MultiColumnList::RowSingle);
+	
+	BIND_CEGUI_EVENT(mServerList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerBrowserWidget::ServerList_DoubleClick);
 
 	CEGUI::PushButton* refresh = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/Refresh"));
-	refresh->subscribeEvent(CEGUI::ButtonBase::EventMouseClick, 
-		boost::bind(&ServerBrowserWidget::Refresh_Click, this, _1));
+	BIND_CEGUI_EVENT(refresh, CEGUI::ButtonBase::EventMouseClick, ServerBrowserWidget::Refresh_Click);
+
 	
 	CEGUI::PushButton* connectButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/Connect"));
 	BIND_CEGUI_EVENT(connectButton, CEGUI::ButtonBase::EventMouseClick, ServerBrowserWidget::Connect_Click)
 	
-	getMainSheet()->addChildWindow(mMainWindow); 
 
 	
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
 
-		
+	//set up the connection	
 	connectToServer();
-	//metaServer->refresh();
+	
+	//do an initial refresh
+	//note that this will crash with eris < 1.3.3
+	metaServer->refresh();
 
 
 }
@@ -107,25 +103,46 @@ bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 {
 	std::string serverName;	
 
+	//first we check if there is text in the ManualServerName textbox
+	//if so, we try to connect to the server specified there
+	
+	
 	CEGUI::Window* manualNameWindow = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ManualServerName");
 	
 	if (manualNameWindow->getText() != "") {
 		serverName = std::string(manualNameWindow->getText().c_str());
-	} else if (mServerList->getFirstSelectedItem()){
-		uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
-	
-	/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
-		if (selectedRowIndex != -1) {
-			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
-			serverName = std::string(selectedItem->getText().c_str());
+		if (serverName != "") {
+			Ember::EmberServices::getInstance()->getServerService()->connect(serverName);
 		}
+	} else if (mServerList->getFirstSelectedItem()){
+	//if ManualServerName is empty we try to connect to the server selected from the list 
+		connectWithColumnList();
 	}
 		
+	return true;
+
+}
+
+bool ServerBrowserWidget::ServerList_DoubleClick(const CEGUI::EventArgs& args)
+{
+	connectWithColumnList();
+	return true;
+}
+
+void ServerBrowserWidget::connectWithColumnList()
+{
+	
+	std::string serverName;	
+	uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
+
+/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
+	if (selectedRowIndex != -1) {
+		CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
+		serverName = std::string(selectedItem->getText().c_str());
+	}
 	if (serverName != "") {
 		Ember::EmberServices::getInstance()->getServerService()->connect(serverName);
 	}
-	return true;
-
 }
 
 void ServerBrowserWidget::connectToServer()
@@ -147,25 +164,27 @@ void ServerBrowserWidget::gotFailure(const std::string& msg)
 
 void ServerBrowserWidget::receivedServerInfo(const Eris::ServerInfo& sInfo)
 {
-	mGuiManager->setDebugText("Got server info.");
+	//we got some server info, add it to the server list
+
+	//mGuiManager->setDebugText("Got server info.");
 	
 	int rowNumber = mServerList->getRowCount();
 	mServerList->addRow();
 	
-	ServerBrowserWidgetListItem* item = new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getServername()));
+	ColoredListItem* item = new ColoredListItem(CEGUI::String(sInfo.getServername()));
 //	item->setUserData(&sInfo);
 	
 	
 	mServerList->setItem(item, 0, rowNumber);
-	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getHostname())), 1, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getHostname())), 1, rowNumber);
 	std::stringstream ss_ping;
 	ss_ping << sInfo.getPing();
-	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(ss_ping.str())), 2, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(ss_ping.str())), 2, rowNumber);
 	std::stringstream ss_clientNum;
 	ss_clientNum << sInfo.getNumClients();
-	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(ss_clientNum.str())), 3 ,rowNumber);
-	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getRuleset())), 4, rowNumber);
-	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getServer())), 5, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(ss_clientNum.str())), 3 ,rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getRuleset())), 4, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getServer())), 5, rowNumber);
 	
 	
 	
@@ -176,7 +195,7 @@ void ServerBrowserWidget::receivedServerInfo(const Eris::ServerInfo& sInfo)
 
 void ServerBrowserWidget::completedServerList(int count)
 {
-	mGuiManager->setDebugText("Completet server list.");
+	//mGuiManager->setDebugText("Completed server list.");
 }
 
 

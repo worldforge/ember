@@ -10,23 +10,15 @@
 #include <elements/CEGUIListboxTextItem.h> 
 
 namespace EmberOgre {
-class DebugWidgetListItem : public CEGUI::ListboxTextItem
-{
-public:
-	DebugWidgetListItem(const CEGUI::String& text, uint item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
-	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
-	}
-};
 
-template<> WidgetLoader WidgetLoaderHolder<DebugWidget>::loader("DebugWidget", &createWidgetInstance);
+/*template<> WidgetLoader WidgetLoaderHolder<DebugWidget>::loader("DebugWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("DebugWidget", &createWidgetInstance<DebugWidget>);
 
 
 DebugWidget::~DebugWidget()
 {}
 
-void DebugWidget::buildWidget()
+void DebugWidget::buildWidget() 
 {
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/DebugWidget.xml", "Debug/");
 //	mMainWindow->setAlwaysOnTop(true);
@@ -51,15 +43,15 @@ void DebugWidget::recieveLog(Eris::LogLevel level, const std::string& line)
 void DebugWidget::fillListWithLogLevels(CEGUI::Combobox* list) 
 {
 
-	CEGUI::ListboxItem* item = new DebugWidgetListItem("error", (uint)Eris::LOG_ERROR, 0);
+	CEGUI::ListboxItem* item = new ColoredListItem("error", (uint)Eris::LOG_ERROR, 0);
 	list->addItem(item);
-	item = new DebugWidgetListItem("warning", Eris::LOG_WARNING, 0);
+	item = new ColoredListItem("warning", Eris::LOG_WARNING, 0);
 	list->addItem(item);
-	item = new DebugWidgetListItem("notice", Eris::LOG_NOTICE, 0);
+	item = new ColoredListItem("notice", Eris::LOG_NOTICE, 0);
 	list->addItem(item);
-	item = new DebugWidgetListItem("verbose", Eris::LOG_VERBOSE, 0);
+	item = new ColoredListItem("verbose", Eris::LOG_VERBOSE, 0);
 	list->addItem(item);
-	item = new DebugWidgetListItem("debug", Eris::LOG_DEBUG, 0);
+	item = new ColoredListItem("debug", Eris::LOG_DEBUG, 0);
 	list->addItem(item);
 	
 }

@@ -27,16 +27,16 @@
 #include <wfmath/atlasconv.h>
 
 #include "Widget.h"
-#include "EmberOgre.h"
+#include "../EmberOgre.h"
 #include "services/logging/LoggingService.h"
-#include "Avatar.h"
+#include "../Avatar.h"
 
 
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
-#include "AvatarEmberEntity.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../PersonEmberEntity.h"
+#include "../AvatarEmberEntity.h"
 
 #include "MakeEntityWidget.h"
 
@@ -49,7 +49,7 @@
 
 namespace EmberOgre {
 
-template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);
+/*template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
 

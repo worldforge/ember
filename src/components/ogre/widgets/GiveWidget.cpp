@@ -25,31 +25,24 @@
 
 #include "Widget.h"
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
-#include "AvatarEmberEntity.h"
-#include "EmberEntityFactory.h"
-#include "EmberOgre.h"
-#include "Avatar.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../PersonEmberEntity.h"
+#include "../AvatarEmberEntity.h"
+#include "../EmberEntityFactory.h"
+#include "../EmberOgre.h"
+#include "../Avatar.h"
 #include "GiveWidget.h"
-#include "GUIManager.h"
+#include "../GUIManager.h"
 
 
 #include <elements/CEGUIPushButton.h>
 namespace EmberOgre {
 
-class GiveWidgetListItem : public CEGUI::ListboxTextItem
-{
-public:
-	GiveWidgetListItem(const CEGUI::String& text, uint item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
-	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
-	}
-};
 
 
-template<> WidgetLoader WidgetLoaderHolder<GiveWidget>::loader("GiveWidget", &createWidgetInstance);
+
+/*template<> WidgetLoader WidgetLoaderHolder<GiveWidget>::loader("GiveWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("GiveWidget", &createWidgetInstance<GiveWidget>);
 
 
@@ -91,7 +84,7 @@ void GiveWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 void GiveWidget::addedEntity(EmberEntity* dimeEntity) {
 	
 	CEGUI::String name(dimeEntity->getType()->getName() + " ("+ dimeEntity->getId() +" : "+dimeEntity->getName()+")");
-	CEGUI::ListboxItem* item = new GiveWidgetListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
+	CEGUI::ListboxItem* item = new ColoredListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
 	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(dimeEntity, item));
 	mListBox->addItem(item);
 

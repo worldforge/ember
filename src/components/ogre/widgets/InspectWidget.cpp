@@ -22,8 +22,8 @@
 //
 
 #include "Widget.h"
-#include "GUIManager.h"
-#include "EmberEntity.h"
+#include "../GUIManager.h"
+#include "../EmberEntity.h"
 
 #include "InspectWidget.h"
 
@@ -33,7 +33,7 @@
 
 namespace EmberOgre {
 
-template<> WidgetLoader WidgetLoaderHolder<InspectWidget>::loader("InspectWidget", &createWidgetInstance);
+/*template<> WidgetLoader WidgetLoaderHolder<InspectWidget>::loader("InspectWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("InspectWidget", &createWidgetInstance<InspectWidget>);
 
 

@@ -28,7 +28,7 @@
 #include "services/EmberServices.h"
 
 #include "Widget.h"
-#include "GUIManager.h"
+#include "../GUIManager.h"
 
 #include "ServerWidget.h"
 
@@ -40,17 +40,9 @@
 
 namespace EmberOgre {
 
-class ServerWidgetListItem : public CEGUI::ListboxTextItem
-{
-public:
-	ServerWidgetListItem(const CEGUI::String& text) : ListboxTextItem(text)
-	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
-	}
-};
 
 
-template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);
+/*template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
 
 
@@ -75,6 +67,7 @@ void ServerWidget::buildWidget()
 	CEGUI::PushButton* choose = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/Choose"));
 	
 	BIND_CEGUI_EVENT(choose, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
+	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
 	
 		
 	Ember::EmberServices::getInstance()->getServerService()->GotAccount.connect(SigC::slot(*this, &ServerWidget::createdAccount));
@@ -112,7 +105,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	for(;I != I_end; ++I) {
 		const Atlas::Objects::Entity::GameEntity entity = (*I).second;
 		const Atlas::Message::Element nameElement = entity->getAttr("name");
-		ServerWidgetListItem* item = new ServerWidgetListItem(nameElement.asString());
+		ColoredListItem* item = new ColoredListItem(nameElement.asString());
 		std::string* id = new std::string(entity->getId());
 		item->setUserData(id);
 		mCharacterList->addItem(item);

@@ -25,11 +25,11 @@
 #include "Widget.h"
 #include "../GUIManager.h"
 #include "ChatWidget.h"
-#include "EmberEntity.h"
+#include "../EmberEntity.h"
 
 namespace EmberOgre {
 
-template<> WidgetLoader WidgetLoaderHolder<ChatWidget>::loader("ChatWidget", &createWidgetInstance);
+//template<>  WidgetLoader WidgetLoaderHolder<ChatWidget>::loader("ChatWidget", &createWidgetInstance);
 
 
 

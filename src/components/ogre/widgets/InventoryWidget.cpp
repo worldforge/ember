@@ -25,13 +25,13 @@
 
 #include "Widget.h"
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
-#include "AvatarEmberEntity.h"
-#include "EmberEntityFactory.h"
-#include "EmberOgre.h"
-#include "Avatar.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../PersonEmberEntity.h"
+#include "../AvatarEmberEntity.h"
+#include "../EmberEntityFactory.h"
+#include "../EmberOgre.h"
+#include "../Avatar.h"
 #include "InventoryWidget.h"
 
 
@@ -40,19 +40,9 @@
 
 namespace EmberOgre {
 
-class InventoryWidgetListItem : public CEGUI::ListboxTextItem
-{
-public:
-	InventoryWidgetListItem(const CEGUI::String& text, uint item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
-	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
-	}
-};
 
-template<> WidgetLoader WidgetLoaderHolder<InventoryWidget>::loader("InventoryWidget", &createWidgetInstance);
 
-//WidgetLoader Widget::loader("InventoryWidget", &createWidgetInstance<InventoryWidget>);
-
+// template<> WidgetLoader WidgetLoaderHolder<InventoryWidget>::loader("InventoryWidget", &createWidgetInstance);
 
 
 InventoryWidget::~InventoryWidget()
@@ -92,7 +82,7 @@ void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 void InventoryWidget::addedEntity(EmberEntity* dimeEntity) {
 	
 	CEGUI::String name(dimeEntity->getType()->getName() + " ("+ dimeEntity->getId() +" : "+dimeEntity->getName()+")");
-	CEGUI::ListboxItem* item = new InventoryWidgetListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
+	CEGUI::ListboxItem* item = new ColoredListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
 	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(dimeEntity, item));
 	mListBox->addItem(item);
 

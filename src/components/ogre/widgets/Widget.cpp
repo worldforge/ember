@@ -1,6 +1,6 @@
 #include "Widget.h"
 
-#include "GUIManager.h"
+#include "../GUIManager.h"
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -12,9 +12,23 @@
 #include <sigc++/object_slot.h>
 #endif
 
+//#include "ServerBrowserWidget.h"
 
 namespace EmberOgre
 {
+// 	class ServerBrowserWidget;
+// 	WidgetLoader loader("ServerBrowserWidget", &WidgetLoader::createWidgetInstance<ServerBrowserWidget>);
+
+	ColoredListItem::ColoredListItem(const CEGUI::String& text) : ListboxTextItem(text)
+	{
+		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	}
+	
+	ColoredListItem::ColoredListItem(const CEGUI::String& text, uint item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
+	{
+		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	}
+
 	
 	Widget::Widget()
 	{
@@ -42,6 +56,17 @@ namespace EmberOgre
 	CEGUI::Window* Widget::getMainSheet() { 
 		return mGuiManager->getMainSheet(); 
 	}
+
+		
+	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) { 
+		mPrefix = prefix;
+		mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(std::string("cegui/widgets/") + filename, prefix);
+		if (mMainWindow) {
+			getMainSheet()->addChildWindow(mMainWindow); 
+		}
+		return mMainWindow;
+	}
+
 	
 //	WidgetLoader::WidgetLoaderMap WidgetLoader::sWidgetLoaders;
 //	WidgetFactoryMap sFactories;
@@ -69,6 +94,12 @@ namespace EmberOgre
 	{
 		static WidgetFactoryMap* factoryMap = new WidgetFactoryMap();
 		return *factoryMap;
+	}
+	
+	void WidgetLoader::registerWidget(const std::string& name, FactoryFunc functor)
+	{
+		GetFactories().insert(WidgetFactoryMap::value_type(name, functor));
+	
 	}
 	
 	

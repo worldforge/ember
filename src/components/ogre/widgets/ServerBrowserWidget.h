@@ -31,6 +31,9 @@
 
 namespace EmberOgre {
 
+
+//static WidgetLoader loader;
+
 class GUIManager;
 /**
 @author Erik Hjortsberg
@@ -42,8 +45,8 @@ public:
     ~ServerBrowserWidget();
 	void buildWidget();
 
+/*	static ServerBrowserWidget s;*/
 protected:
-
 	CEGUI::MultiColumnList* mServerList;
 
 	
@@ -61,6 +64,14 @@ protected:
 
 		
 	void connectedToServer(Eris::Connection* connection);
+
+	bool ServerList_DoubleClick(const CEGUI::EventArgs& args);
+
+	
+	/**
+	 *    try to connect using the selection in the server list
+	 */
+	void connectWithColumnList();
 
 
 };
