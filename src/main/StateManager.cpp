@@ -60,7 +60,7 @@ xmlNodePtr StateManager::findState(const std::string& state)
   xmlNodePtr cur = xmlDocGetRootElement(myStateDoc)->xmlChildrenNode;
 
   while (cur != NULL) {
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"stateinfo"))){
+    if (!xmlStrcmp(cur->name, (const xmlChar *)"stateinfo")){
       // Second phase parse this time looking for name
       xmlAttrPtr attr = cur->properties;
 
@@ -93,7 +93,6 @@ xmlNodePtr StateManager::findState(const std::string& state)
 #include "Application.h"
 #include <services/gui/widget/Button.h>
 #include <services/gui/widget/Panel.h>
-#include <services/gui/widget/Label.h>
 #include <services/gui/widget/TextBox.h>
 #include <services/gui/widget/Console.h>
 void quitButton(dime::Button* button);
@@ -108,23 +107,28 @@ bool StateManager::setState( const std::string& newState )
   if (!nstate)
     return false;
 
-#if 0
   // Unload myCurrentState
   xmlNodePtr cstate = findState(myCurrentState);
+
+  // Erase Widgets
+  dime::DimeServices::getInstance()->getGuiService()->nukeAllWidgets();
 
   // Unload current services not mentioned in nstate
 
   // Load missing services mentioned in nstate
 
+  // Create new state's widgets
+  parseStateInfoWidgets(nstate);
+
   // Load new state
 
+#if 0
   return true;
 #endif
   if (newState == "initial state")
     {
       // Create the Widgets
       dime::Console* myTestConsole = new dime::Console(dime::Rectangle(10,300,620,120));
-      dime::Label* myTestLabel = new dime::Label("Dime test!", dime::Rectangle(10,10,200,30));
       dime::TextBox* myTestTextBox = new dime::TextBox("TextBox!", dime::Rectangle(13,43,97,32));
       dime::Button* myTestButton = new dime::Button(dime::Rectangle(535,450,100,25));
       dime::Panel* myTestPanel = new dime::Panel(dime::Rectangle(550,0,90,90));
@@ -135,20 +139,38 @@ bool StateManager::setState( const std::string& newState )
       myTestButton->setPressedBackground(new dime::BitmapRenderer(myTestButton->getRectangle(),"quitbutton3.png", dime::BitmapRenderer::TILE));
       // Set Additional options for my TestPanel
       myTestPanel->setBackground(new dime::BitmapRenderer(myTestPanel->getRectangle(),"dimelogo_small2.png", dime::BitmapRenderer::CENTER));
+      // Bind myButton onClicked method
       myTestButton->onClicked.connect(SigC::slot(quitButton));
 
-      // Bind Escape to quit
-      dime::InputService* pIS = dime::InputService::getInstance();
-      pIS->addInputMapping( new dime::InputMapping( pIS->getInputDevice(dime::InputDevice::KEYBOARD),
-						    SDLK_ESCAPE, false,
-						    SigC::slot(*dime::Application::getInstance(),
-							       &dime::Application::escPressed)));
-
       dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestPanel);
-      dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestLabel);
       dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestTextBox);
       dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestConsole);
       dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(myTestButton);
       return true;
+    } else if ( newState == "OOG View" ) {
+      return true;
+    }else if ( newState == "OGRE View" ) {
+      return true;
     }
+  return false;
+}
+
+void StateManager::parseStateInfoWidgets(xmlNodePtr widgetNode)
+{
+  dime::GuiService* gs = dime::DimeServices::getInstance()->getGuiService();
+  // Paranoid code
+  if ((xmlStrcmp(widgetNode->name, (const xmlChar *)"stateinfo"))){
+    // Perhaps throw exception here
+    return;
+  }
+  xmlNodePtr cur = widgetNode->xmlChildrenNode;
+
+  while (cur != NULL) {
+    if (!xmlStrcmp(cur->name, (const xmlChar *)"widget")){
+      gs->createWidget(cur,myStateDoc);
+   }
+    cur = cur->next;
+  }
+
+  return;
 }

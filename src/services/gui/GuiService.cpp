@@ -17,6 +17,7 @@
 */
 
 #include "GuiService.h"
+#include "widget/Label.h"
 #include <services/logging/LoggingService.h>
 
 void dime::GuiService::refresh()
@@ -70,7 +71,57 @@ long dime::GuiService::createWidget(xmlNodePtr widgetNode, xmlDocPtr doc)
 {
   // Parses the node with the widget info in it
 
+  // Be paranoid if we've not been given a widget node bail
+  if (xmlStrcmp(widgetNode->name, (const xmlChar *)"widget"))
+    return 0;
+
+  // Loop this time looking for type
+  xmlAttrPtr attr = widgetNode->properties;
+
+  while (attr != NULL) {
+    if ((!xmlStrcmp(attr->name, (const xmlChar *)"type"))){
+      // Check value
+      if (!xmlStrcmp(xmlNodeListGetString(doc, attr->xmlChildrenNode, 1),
+		     (const xmlChar *)"label"))
+      {
+	return parseLabel(widgetNode, doc);
+      }
+
+      // Even if we are not the correct name bail as
+      // there should only be one type per widget
+      // Shouldn't get here unless widget is unrecognised
+      break;
+    }
+	
+    attr = attr->next;
+  }
+
   return 0;
+}
+
+long dime::GuiService::parsePanel(xmlNodePtr widgetNode, xmlDocPtr doc)
+{
+  return 0; // Alter this to return proper value
+}
+
+long dime::GuiService::parseLabel(xmlNodePtr widgetNode, xmlDocPtr doc)
+{
+  // Get name
+  xmlGetProp(widgetNode, (const xmlChar *)"name");
+
+  // Get data
+  string data = (const char*)xmlGetProp(widgetNode, (const xmlChar *)"data");
+
+  // Get rectangle
+  // FIXME: there has to be a better way to do this
+  dime::Rectangle rect( atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"x")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"y")),
+		   atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"w")), atoi((const char*)xmlGetProp(widgetNode, (const xmlChar *)"h")));
+
+  dime::Label* newLabel = new dime::Label(data, rect);
+
+  myRootWidget->addWidget(newLabel);
+
+  return 0; // Change this to proper return
 }
 
 void dime::GuiService::nukeWidget( long id )
@@ -79,5 +130,5 @@ void dime::GuiService::nukeWidget( long id )
 
 void dime::GuiService::nukeAllWidgets()
 {
-  delete myRootWidget;
+  myRootWidget->removeAllWidgets();
 }

@@ -43,6 +43,14 @@ int main(int argc, char **argv)
     {
       dime::ImageService::getInstance()->addPath("./bin/");
       dime::ImageService::getInstance()->addPath("../../bin/");
+
+      // Bind Escape to quit
+      dime::InputService* pIS = dime::InputService::getInstance();
+      pIS->addInputMapping( new dime::InputMapping( pIS->getInputDevice(dime::InputDevice::KEYBOARD),
+						    SDLK_ESCAPE, false,
+						    SigC::slot(*dime::Application::getInstance(),
+							       &dime::Application::escPressed)));
+
       dime::Application::getInstance()->getStateMgr()->setState("initial state");
       dime::Application::getInstance()->mainLoop();
     }
@@ -53,6 +61,10 @@ int main(int argc, char **argv)
   catch ( Eris::BaseException e )
     {
       std::cerr << "Uncaught Eris exception: "<< e._msg << std::endl;
+    }
+  catch ( char* e )
+    {
+      std::cerr << "Uncaught exception: "<< e << std::endl;
     }
   catch ( ... )
     {

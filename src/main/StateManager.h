@@ -189,6 +189,11 @@ class StateManager
      */
     xmlNodePtr findState(const std::string& state);
 
+    /**
+     * Takes a StateInfo and calls the parsers on it's Widgets.
+     */
+    void parseStateInfoWidgets(xmlNodePtr widgetNode);
+
     //======================================================================
     // Private Methods
     //======================================================================

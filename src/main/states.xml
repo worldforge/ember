@@ -1,4 +1,11 @@
 <states>
   <stateinfo name="initial state">
+    <widget type="label" x="10" y="10" w="200" h="30" data="Initial State" />
+  </stateinfo>
+  <stateinfo name="OOG View">
+    <widget type="label" x="10" y="10" w="200" h="30" data="OOG View" />
+  </stateinfo>
+  <stateinfo name="OGRE View">
+    <widget type="label" x="10" y="10" w="200" h="30" data="OGRE View" />
   </stateinfo>
 </states>

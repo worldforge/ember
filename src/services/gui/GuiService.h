@@ -28,6 +28,9 @@
 #include <services/platform/Rectangle.h>
 
 // Included custom library headers
+// LibXML2
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 
 // Included system headers
 #include <string>
@@ -187,6 +190,15 @@ class GuiService : public Service, public SigC::Object
   //======================================================================
  protected:
 
+  /**
+   * Parse a widget containing a label
+   */
+  long parseLabel(xmlNodePtr widgetNode, xmlDocPtr doc);
+
+  /**
+   * Parse a widget containing a panel
+   */
+  long parsePanel(xmlNodePtr widgetNode, xmlDocPtr doc);
 
   //======================================================================
   // Private Methods

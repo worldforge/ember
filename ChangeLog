@@ -1,3 +1,14 @@
+2002-11-27 M Pollard <circlemaster@blueyonder.co.uk>
+	* Dime.cpp: Reintroduce the hitting of escape.
+
+	* StateManager.cpp/h: Got this going so that our label widgets are
+	  now XML based.
+
+	* states.xml: Added the Label Widget and several states.
+
+	* GuiService.cpp/h: Added beginnings of Panel support, complete Label
+	  support in.
+
 2002-11-17 M Pollard <circlemaster@blueyonder.co.uk>
 	* MetaserverService.cpp: Reformated, adapted for Ron's change to the
 	  signal
