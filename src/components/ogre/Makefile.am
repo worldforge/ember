@@ -6,23 +6,23 @@ bin_PROGRAMS = ember
 
 if BUILD_STATIC
 
+ember_LDFLAGS = -nodefaultlibs
+
 EMBER_EXT_LIBS = \
 	/usr/lib/libSDL.a \
 	/usr/lib/libtiff.a \
 	/usr/lib/libjpeg.a \
 	/usr/lib/libpng12.a \
+	/usr/lib/libzzip.a \
 	/usr/lib/libz.a \
 	/usr/lib/libSDL.a \
 	/usr/lib/libfreetype.a \
-	/usr/lib/libboost_signals.a \
-	/usr/lib/libboost_regex.a \
 	/usr/local/lib/libIL.a \
 	/usr/X11R6/lib/libX11.a \
 	/usr/X11R6/lib/libXext.a \
 	/usr/local/lib/libmercator-0.2.a \
-	/usr/local/lib/libvarconf-1.0.a \
+	/usr/lib/libvarconf-1.0.a \
 	/usr/local/lib/liberis-1.3.a \
-	/usr/lib/libsigc-1.2.a \
 	/usr/lib/libsigc-2.0.a \
 	/usr/local/lib/libskstream-0.3.a \
 	/usr/local/lib/libAtlasObjects-0.6.a \
@@ -35,6 +35,7 @@ EMBER_EXT_LIBS = \
 	/usr/local/lib/libCEGUIOgreRenderer.a \
 	/usr/local/lib/libCEGUITaharezLook.a \
 	/usr/local/lib/libOgreMain.a \
+	/usr/local/lib/libOgrePlatform.a \
 	$(STATIC_LIBSTDCPP) \
 	$(STATIC_LIBGCC) \
 	/usr/lib/libGL.so \
