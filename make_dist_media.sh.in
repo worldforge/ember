@@ -11,6 +11,7 @@ cd ${current}/media/common ; tar cf - `cat ${current}/${media_dir}/common_textur
 
 #copy all meshes
 cd ${current}/media/common ; tar cf - `find . -name \*.mesh` | ( cd ${current}/${media_dir}/media/common; tar xf -)
+cd ${current}/media/common ; tar cf - `find . -name \*.skeleton` | ( cd ${current}/${media_dir}/media/common; tar xf -)
 
 cd ${current}/${media_dir}
 cp -a ../media/README ../media/fonts ../media/materials ../media/models ../media/packs ../media/particle media
