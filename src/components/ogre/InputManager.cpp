@@ -130,11 +130,11 @@ void InputManager::connectMouseListeners()
 //this will only work with a patched ogre, if you don't have a patched
 //version you can remove the following line, although you won't be
 //able to use the mouse buttons then
-		Ogre::OverlayManager::getSingleton().addMouseListener(this);
+		//Ogre::OverlayManager::getSingleton().addMouseListener(this);
 	} else {
 		Ogre::OverlayManager::getSingleton().removeMouseMotionListener(this);
 //same as above
-		Ogre::OverlayManager::getSingleton().removeMouseListener(this);
+		//Ogre::OverlayManager::getSingleton().removeMouseListener(this);
 	}
 	
 }

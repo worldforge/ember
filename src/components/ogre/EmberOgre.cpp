@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.44  2004-07-31 23:42:15  erik
+ *      Revision 1.45  2004-08-04 23:39:43  aglanor
+ *      2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* /src/components/ogre/GUIManager.(h|cpp) and others related:
+ *      	Added basic GUI support, including display of In-Game chat.
+ *
+ *      Revision 1.44  2004/07/31 23:42:15  erik
  *      2004-08-01 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre:
@@ -385,6 +390,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "MotionManager.h"
 #include "AvatarCamera.h"
 #include "DebugListener.h"
+#include "GUIManager.h"
 
 
 #include "DimeTerrainSceneManager.h"
@@ -595,8 +601,10 @@ void DimeOgre::chooseSceneManager(void)
     //And then request it
     mSceneMgr = static_cast<Ogre::TerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
     
-    DimeTerrainSceneManager* terr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
-    assert(terr);
+    DimeTerrainSceneManager* mDimeTerr = dynamic_cast<DimeTerrainSceneManager*>(mSceneMgr);
+    assert(mDimeTerr);
+    
+    mGUIManager = new GUIManager(mWindow, mSceneMgr);
  //   const Ogre::String terrainTexture = Ogre::String("terrain_texture.jpg");
  //   const Ogre::String terrainDetail = Ogre::String("terrain_detail.jpg");
     

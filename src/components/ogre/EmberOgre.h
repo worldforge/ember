@@ -24,7 +24,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.22  2004-07-31 11:53:59  erik
+ *      Revision 1.23  2004-08-04 23:39:43  aglanor
+ *      2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* /src/components/ogre/GUIManager.(h|cpp) and others related:
+ *      	Added basic GUI support, including display of In-Game chat.
+ *
+ *      Revision 1.22  2004/07/31 11:53:59  erik
  *      2004-07-31 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      /src/components/ogre:
@@ -282,6 +287,8 @@ class MotionManager;
 
 class InputManager;
 
+class GUIManager;
+
 
 
 /** Base class which manages the standard startup of an Ogre application.
@@ -374,11 +381,10 @@ protected:
     virtual void setupResources(void);
     
 //    DimeTerrainPageSource* mPageSource;
-    TerrainGenerator* mTerrainGenerator;
-    InputManager* mInputManager;
-    MotionManager* mMotionManager;
-    
-    
+	TerrainGenerator* mTerrainGenerator;
+	InputManager* mInputManager;
+	MotionManager* mMotionManager;
+	GUIManager* mGUIManager;  
 
         /*
 	void mouseClicked(Ogre::MouseEvent* e) {}

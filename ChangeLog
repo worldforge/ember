@@ -1,3 +1,7 @@
+2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* /src/components/ogre/GUIManager.(h|cpp) and others related:
+	Added basic GUI support, including display of In-Game chat.
+
 2004-07-08 Miguel Guzman <aglanor [at] telefonica [dot] net>
 
 	* DimeEventProcessor, InputManager: added screenshot support.

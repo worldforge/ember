@@ -134,6 +134,7 @@ AC_MSG_RESULT([
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
+# Check for OGRE
 OGRE_VERSION=0.14.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.14.0,
 	[
@@ -143,6 +144,17 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.14.0,
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
+
+# Chech for CEGUI
+PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
+	[
+		CPPFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
+		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
+	],
+	[
+		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
+	])
+
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, eris-1.2 \

@@ -17,7 +17,7 @@
 */
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
-
+#include "GUIManager.h"
 #include "DimeEntityFactory.h"
 #include "DimeEntity.h"
 using namespace Ogre;
@@ -98,10 +98,11 @@ void DimeEntity::handleMove()
 void DimeEntity::handleTalk(const std::string &msg)
 {
 	
-    std::string message = "<";
-    message.append(getName());
-    message.append("> ");
-    message.append(msg);
+	std::string message = "<";
+	message.append(getName());
+	message.append("> ");
+	message.append(msg);
+	GUIManager::getSingleton().appendOOGChatLine(message);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	dime::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 }
