@@ -335,6 +335,7 @@ AC_CONFIG_FILES([Makefile
 		 src/services/sound/Makefile
 		 ember.dox
 		 ember.spec
+		 ember-media.spec
 		 src/extensions/Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/modeldefinitions/Makefile

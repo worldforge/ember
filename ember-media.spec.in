@@ -1,0 +1,43 @@
+%define name @PACKAGE@-media
+%define version @VERSION@
+%define release 1.mdk.wf
+
+Summary: Media files needed for the Ember client
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Source0: %{name}-%{version}.tar.bz2
+URL: http://www.worldforge.org/dev/eng/clients/ember
+Copyright: GPL
+Group: Amusements/Games
+BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+Prefix: %{_prefix}
+BuildArchitectures: noarch
+Requires: ember >= @VERSION@
+
+%description
+Ember is a client for MMORPGs using the Worldforge system.
+It uses the Ogre 3d engine with CEGUI.
+Right now Ember is not fully functional, but it's getting there.
+This is the media for use with Ember.
+
+%prep
+rm -rf ${RPM_BUILD_ROOT}
+
+%build
+# Requires java in path and WFUT.jar in the BUILD dir
+# There is problably a much better way of doing this
+# uing the Requires: tag
+tar -jxf %{name}-%{version}.tar.bz2
+
+%install
+echo $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/ember/data/
+cp -r sear-media $RPM_BUILD_ROOT/%{_datadir}/ember/data/
+
+%clean
+rm -rf ${RPM_BUILD_ROOT}
+
+%files
+%defattr(-,root,root)
+%{_datadir}/ember/data/*
