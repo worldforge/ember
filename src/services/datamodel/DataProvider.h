@@ -94,14 +94,14 @@ class DataConnection
 {
 private:
 	std::string myPath;
-	DataConnectionList::iterator myI;
+	InternDataConnection * myConn;
 	bool		myConnected;
 
 public:
 	
 	DataConnection();
 	DataConnection(std::string path,
-				   DataConnectionList::iterator & i);
+				   InternDataConnection * conn);
 
 	DataConnection & operator=(const DataConnection & source);
 	void disconnect();
@@ -214,7 +214,7 @@ class DataProvider
 	/**
 	 * Removes a Data Object given by it's DataKey.
 	 */ 
-	virtual void remove(PDataKey parent) = 0;
+	virtual void remove(PDataKey key) = 0;
 
 	/**
 	 * Removes an adopted Data Provider (given by it's Adoption Key)
@@ -245,7 +245,7 @@ class DataProvider
 	void fireGeneralSignal(DataType event);
 	DataConnection addConnection(std::string subpath, const DataSlot & slot, 
 						DataType event);
-	void removeConnection(std::string subpath, DataConnectionList::iterator & i);
+	void removeConnection(std::string subpath, InternDataConnection * conn);
 	void fireSignal(std::string subpath, DataType event);
 
 	static std::string makeSubpath(std::string parentSubpath, std::string ID);

@@ -40,17 +40,17 @@ DataConnection::DataConnection()
 }
 
 DataConnection::DataConnection(std::string path,
-			   DataConnectionList::iterator & i)
+			   InternDataConnection * conn)
 {
 	myPath = path;
-	myI = i;
+	myConn = conn;
 	myConnected = true;
 }
 
 DataConnection & DataConnection::operator=(const DataConnection & source)
 {
 	myPath		= source.myPath;
-	myI			= source.myI;
+	myConn		= source.myConn;
 	myConnected = source.myConnected;
 	return *this;
 }
@@ -68,9 +68,7 @@ void DataConnection::disconnect()
 		
 		DataObject::findObject(path, provider, key);
 
-
-//FIXME: How to assure that myI is valid?
-		provider->removeConnection(path, myI);						
+		provider->removeConnection(path, myConn);						
 	}
 	catch(...)
 	{
@@ -132,36 +130,41 @@ DataConnection DataProvider::addConnection(std::string subpath, const DataSlot &
 	conn->mySignal.connect(slot);
 	conn->myTypes  = event;
 
-	DataConnectionList::iterator i;
-
 	if (event & FIRE_ON_CHILD_EVENT)
 	{
 		// Child-forward events always go in front
 		list->push_front(conn);
-		i = list->begin();
 	}
 	else
 	{
 		// Non-child-forward events always go back
 		list->push_back(conn);
-		i = list->end();
-		i--;
 	}
 
-	return DataConnection(makePath(myPath, subpath), i);
+	DataConnection conn2 = DataConnection(makePath(myPath, subpath), conn);
+	std::string last = "";
+	return conn2;
 }
 
 void DataProvider::removeConnection(std::string subpath, 
-										DataConnectionList::iterator & i)
+										InternDataConnection * conn)
 {
 	DataConnectionList * list = myConns[subpath];
 
 	// Only if the list's not already removed.
 	if (list)
 	{
-		// ATTENTION: Cannot test if it is really here, but hope so.
-		delete *i;
-		list->erase(i);
+		DataConnectionList::iterator i = list->begin();
+
+		for(;i != list->end(); i++)
+		{
+			if (*i == conn)
+			{
+				delete *i;
+				list->erase(i);
+				break;
+			}
+		}
 	}
 }
 
