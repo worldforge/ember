@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.33  2002-07-15 22:51:33  nikal
+ *      Revision 1.34  2002-08-27 17:47:05  xmp
+ *      Turn this on and bingo
+ *
+ *      Revision 1.33  2002/07/15 22:51:33  nikal
  *      Moved the errant #include to the top of the file.
  *
  *      Revision 1.32  2002/07/14 16:34:43  tim
@@ -290,7 +293,7 @@ namespace dime
 		onMetaserverService(metaState, POST_VALUE_CHANGE);
 
 		// Create and start ServerService
-		//DimeServices::getInstance()->getServerService()->start();
+		DimeServices::getInstance()->getServerService()->start();
 #endif
     }
 
