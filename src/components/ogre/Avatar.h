@@ -44,10 +44,20 @@
 #endif
 
 class DimeEntity;
+struct AvatarControllerMovement;
 
 #include "MathConverter.h"
 
 using namespace Ogre;
+
+
+struct AvatarMovementState
+{
+	bool isMoving;
+	bool isRunning;
+	Vector3 velocity;
+	Quaternion orientation;
+};
 	
 /*
  * This class holds the Avatar. In general it recieves instructions from mainly 
@@ -60,12 +70,7 @@ using namespace Ogre;
  */
 class Avatar : virtual public SigC::Object
 {
-	/*private struct AvatarMovementState
-	{
-		public bool isMoving, isRunning;
-		Vector3 direction;
-	};
-*/
+
     public:
 
 	Avatar();
@@ -76,6 +81,25 @@ class Avatar : virtual public SigC::Object
 	Camera* getAvatar3pCamera(void);
 	Camera* getAvatarTopCamera(void);
 
+	
+	
+	void enteredWorld(Eris::Entity *e);
+	
+	void touch(DimeEntity* entity);
+	
+	void updateFrame(AvatarControllerMovement movement);
+
+private:
+	
+	/*
+	 * This method will determine if it's ok to send a small movement change, such as
+	 * a small deviation direction during an already begun movement to the server.
+	 */
+	bool Avatar::isOkayToSendTrivialMovementChangeToServer();
+	Ogre::Real mTimeSinceLastServerMessage;
+	Ogre::Real mMinIntervalOfTrivialChanges;
+	float mAccumulatedHorizontalRotation;
+	
 	/**
 	 * Attempts to move the avatar in a certain direction
 	 * Note that depending on what the rules allows (i.e. collision detection,
@@ -84,17 +108,18 @@ class Avatar : virtual public SigC::Object
 	 * The parameter timeSlice denotes the slice of time under which the movement
 	 * shall take place.
 	 */
-	void attemptMove(Vector3 move, bool isRunning);
+	void attemptMove(AvatarControllerMovement movement);
 	
 	/**
 	 * Attempts to rotate the avatar to a certain direction
 	 * Note that depending on what the rules allows (i.e. collision detection,
 	 * character rules etc.) the outcome of the attempt is uncertain.
 	 * 
-	 * Or is it? Shall we really restrict the rotation?
+	 * When standing still one can rotate how much one want.
+	 * But when moving, rotation happens in interval
 	 * 
 	 */
-	void attemptRotate(float degHoriz, float degVert, Real timeSlice);
+	void attemptRotate(AvatarControllerMovement movement);
 	
 	
 	/**
@@ -108,13 +133,7 @@ class Avatar : virtual public SigC::Object
 	 * Attempt to jump.
 	 */
 	void attemptJump();
-	
-	
-	void enteredWorld(Eris::Entity *e);
-	
-	void touch(DimeEntity* entity);
 
-private:
 	
 	/**
 	 * Creates the avatar. We'll have to extend this functionality later on to 
@@ -142,11 +161,6 @@ private:
 	 */
 	float mRunSpeed;
 	
-	/*
-	 * This determines what state the avatar is in.
-	 * TODO: replace with some more states instead of just this boolean
-	 */
-	bool mIsMoving;
 	
 	
 	/**
@@ -159,7 +173,14 @@ private:
 	AnimationControllerFunction* mAvatarAnimationControllerFunction;
 	
 	SceneManager* mSceneMgr;
+	/*
+	 * The main avatar entity
+	 */
 	Entity* mAvatarEntity;
+	
+	/* 
+	 * The main avatar scenenode
+	 */
 	SceneNode* mAvatarNode;
 	SceneNode* mAvatar1pCameraNode;
 	SceneNode* mAvatar3pCameraNode;
@@ -175,6 +196,11 @@ private:
 
 	Eris::Entity* mErisAvatarEntity;
 	//Eris::Avatar* mErisAvatar;
+
+	//this is used to make sure starts and stops of movement is only sent to the server once
+	AvatarMovementState mCurrentMovementState;
+	AvatarMovementState mMovementStateAtBeginningOfMovement; //this is perhaps not needed
+	AvatarMovementState mMovementStateAtLastServerMessage;
 
 
 }; //End of class declaration

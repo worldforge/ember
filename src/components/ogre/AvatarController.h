@@ -31,6 +31,16 @@ class DebugListener;
 //class InputManager;
 //class InputManager::MouseListener;
 
+struct AvatarControllerMovement
+{
+	float rotationDegHoriz;
+	float rotationDegVert;
+	Ogre::Real timeSlice;
+	Ogre::Vector3 movementDirection;
+	bool isRunning;
+	bool isMoving; 
+};
+
 class AvatarController : public InputManager::MouseListener
 {
 public:
@@ -117,6 +127,8 @@ private:
     
     DimeEntity* mEntityUnderCursor;
     DimeEntity* mSelectedEntity;
+    
+    AvatarControllerMovement movementForFrame;
     
 		
 };

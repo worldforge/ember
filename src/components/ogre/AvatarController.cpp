@@ -60,21 +60,24 @@ void AvatarController::setAvatar(Avatar* avatar)
 
 void AvatarController::frameStarted(const FrameEvent & event, InputReader* inputReader) {
 		
-		//is this the correct order to check things?
-		if (InputManager::getSingleton().isMouseUsed()) {
-			checkMouseClicks(event, inputReader);
-			checkMouseMovement(event, inputReader);
-			
-		}
-		checkMovementKeys(event, inputReader);
+	//is this the correct order to check things?
+	if (InputManager::getSingleton().isMouseUsed()) {
+		checkMouseClicks(event, inputReader);
+		checkMouseMovement(event, inputReader);
 		
-		// check if a second has passed, then check for entity equailty, then make Avatar update the server
-		// or something!
-		mTimeToUpdate = mTimeToUpdate - event.timeSinceLastFrame;
-		if(mTimeToUpdate<=0) {
-			std::cout << "	UPDATING INTO SERVER" << std::endl;
-			mTimeToUpdate = mUpdateInterval;
-		}
+	}
+	checkMovementKeys(event, inputReader);
+	movementForFrame.timeSlice = event.timeSinceLastFrame;
+	
+	mAvatar->updateFrame(movementForFrame);
+	
+	// check if a second has passed, then check for entity equailty, then make Avatar update the server
+	// or something!
+	mTimeToUpdate = mTimeToUpdate - event.timeSinceLastFrame;
+	if(mTimeToUpdate<=0) {
+		//std::cout << "	UPDATING INTO SERVER" << std::endl;
+		mTimeToUpdate = mUpdateInterval;
+	}
 	
 }
 
@@ -154,7 +157,7 @@ void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* i
 	
 }
 
- void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader* inputReader) {
+void AvatarController::checkMouseMovement(const FrameEvent & event, InputReader* inputReader) {
  	//TODO refactor into a 3d person view class thing
  	
  	/*this is in percent how much of the border areas that are "hot", i.e. makes the 
@@ -195,14 +198,16 @@ void AvatarController::checkMouseClicks(const FrameEvent & event, InputReader* i
 	} else if (mouseY >= 1 - sizeOfHotBorder) {
 		diffY = (1.0 - mouseY <= sizeOfMaxHotBorder) ? (-maxMovement) : -((sizeOfHotBorder + (mouseY - 1.0)) / sizeOfHotBorder) * maxMovement;
 	}	
-
-	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
+			
+	movementForFrame.rotationDegHoriz = diffX;
+	movementForFrame.rotationDegVert = diffY;
+//	mAvatar->attemptRotate(diffX * event.timeSinceLastFrame ,diffY * event.timeSinceLastFrame, event.timeSinceLastFrame);
 
 }
 
 void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* inputReader)
 {
-		Real timePassed = event.timeSinceLastFrame;
+		//Real timePassed = event.timeSinceLastFrame;
 		bool isRunning = InputManager::getSingleton().isKeyDown(KC_LSHIFT);
 
 		Vector3 movement = Vector3::ZERO;
@@ -211,43 +216,51 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* 
 		// forwards / backwards
 		if(InputManager::getSingleton().isKeyDown(KC_UP))  // W also, and same for the rest
 		{
-			movement.z = -(timePassed); 	//scale this
+			movement.z = -1; 	//scale this
 			isMovement = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(KC_DOWN))
 		{
-			movement.z = (timePassed);		//scale
+			movement.z = 1;		//scale
 			isMovement = true;
 		}
 
 		// strafe
 		if(InputManager::getSingleton().isKeyDown(KC_LEFT))
 		{
-			movement.x = -(timePassed);
+			movement.x = -1;
 			isMovement = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(KC_RIGHT))
 		{
-			movement.x = (timePassed);
+			movement.x = 1;
 			isMovement = true;
 		}
 
 		// up down
 		if(InputManager::getSingleton().isKeyDown(KC_PGDOWN))
 		{
-			movement.y = -(timePassed);
+			movement.y = -1;
 			isMovement = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(KC_PGUP))
 		{
-			movement.y = (timePassed);
+			movement.y = 1;
 			isMovement = true;
 		}
 		if(isMovement)
 		{
-			mAvatar->attemptMove(movement, isRunning);
+			movementForFrame.movementDirection = movement;
+			movementForFrame.isRunning = isRunning;
+			movementForFrame.isMoving = true;
+			
+//			mAvatar->attemptMove(movement, isRunning);
 		} else {
-			mAvatar->attemptStop();
+			movementForFrame.movementDirection = Vector3::ZERO;
+			movementForFrame.isRunning = false;
+			movementForFrame.isMoving = false;
+
+//			mAvatar->attemptStop();
 		}
 }
 

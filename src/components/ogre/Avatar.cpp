@@ -40,6 +40,7 @@
 
 
 #include "DimeEntity.h"
+#include "AvatarController.h"
 #include "Avatar.h"
 
 
@@ -47,8 +48,12 @@ Avatar::Avatar()
 {
 }
 
-Avatar::Avatar(Ogre::SceneManager* sceneManager)
+Avatar::Avatar(Ogre::SceneManager* sceneManager)  	
 {
+	mTimeSinceLastServerMessage = 0;
+	mMinIntervalOfTrivialChanges = 0.2; //seconds
+	mAccumulatedHorizontalRotation = 0;
+	
 	mWalkSpeed = WF2OGRE(2.0);
 	mRunSpeed = WF2OGRE(5.0);
 
@@ -135,36 +140,126 @@ void Avatar::createAvatarCameras()
 	mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90.0);
 	
 }
-void Avatar::attemptMove(Ogre::Vector3 move, bool isRunning)
+
+void Avatar::updateFrame(AvatarControllerMovement movement)
 {
-	if (!mIsMoving) {
-		fprintf(stderr, "TRACE - AVATAR START WALKING ANIMATION\n");
-		mIsMoving = true;
-		mAnimStateWalk->setEnabled(true);
-	}
-	mAvatarNode->translate(mAvatarNode->getOrientation()* (move* (isRunning ? mRunSpeed : mWalkSpeed)));
+	
+	//for now we'll just rotate without notifying the server
+	//except when moving!
+	attemptRotate(movement);
+	//this next method will however send send stuff to the server
+	attemptMove(movement);
+	/*
+	//for now we'll just rotate without notifying the server
+	attemptRotate(movement.rotationDegHoriz, movement.rotationDegVert, movement.timeSlice);
+	//this next method will however send send stuff to the server
+	attemptMove(movement.movementDirection, movement.isRunning, movement.timeSlice);
+	*/
 }
 
-void Avatar::attemptStop()
+void Avatar::attemptMove(AvatarControllerMovement movement)
 {
-	if (mIsMoving) {
-		fprintf(stderr, "TRACE - AVATAR STOP WALKING ANIMATION\n");
-		mIsMoving = false;
-		mAnimStateWalk->setEnabled(false);
+	Ogre::Vector3 move = movement.movementDirection;
+	bool isRunning = movement.isRunning;
+	Ogre::Real timeSlice = movement.timeSlice;
+	
+	
+	//first we'll register the current state in newMovementState and compare to mCurrentMovementState
+	//that way we'll only send stuff to the server if our movement changes
+	AvatarMovementState newMovementState;
+	newMovementState.velocity = move * (isRunning ? mRunSpeed : mWalkSpeed);
+	newMovementState.orientation = mAvatarNode->getOrientation();
+	if (move != Vector3::ZERO) {
+		newMovementState.isMoving = true;
+		newMovementState.isRunning = isRunning;
+	} else {
+		newMovementState.isMoving = false;
+		newMovementState.isRunning = false;
+	}		
+	bool sendToServer = false;
+	
+	//first we check if we are already moving 
+	if (!mCurrentMovementState.isMoving) {
+		//we are not moving. Should we start to move?
+		if (newMovementState.isMoving) {
+			//we'll start moving
+			//let's send the movement command to the server
+			sendToServer = true;		
+
+			//we'll also start the animation of the avatar's movement animation
+			mAnimStateWalk->setEnabled(true);
+			//fprintf(stderr, "TRACE - AVATAR START WALKING ANIMATION\n");
+		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
+			//we have rotated since last server update
+			//let's see if it's ok to send server message
+			//if not we have to wait some more frames until we'll send an update
+			if (isOkayToSendTrivialMovementChangeToServer()) {
+				sendToServer = true;
+			}
+		}
+	} else {
+		//we are already moving
+		//let's see if we've changed speed or direction or even stopped
+		if (!newMovementState.isMoving) {
+			fprintf(stderr, "TRACE - STOPPED\n");
+			//we have stopped; we must alert the server
+			sendToServer = true;
+			//plus stop the animation of the avatar
+			mAnimStateWalk->setEnabled(false);
+		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
+			//either the speed or the direction has changed
+			sendToServer = true;
+		}
 	}
+		
+	if (sendToServer) {
+		fprintf(stderr, "TRACE - SEND MOVE OPS TO SERVER\n");
+		mMovementStateAtBeginningOfMovement = newMovementState;
+		mMovementStateAtLastServerMessage = newMovementState;
+		mTimeSinceLastServerMessage = 0;
+		
+
+		//for now we'll only send velocity
+		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(OGRE2WF(newMovementState.velocity)), Ogre2Atlas(newMovementState.orientation));
+
+//		dime::DimeServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
+
+	} else {
+		mTimeSinceLastServerMessage += timeSlice;
+		//fprintf(stderr, "TRACE - DONT SEND MOVE OPS TO SERVER\n");
+	}
+
+	if (newMovementState.isMoving) {
+		//do the actual movement of the avatar node
+		mAvatarNode->translate(mAvatarNode->getOrientation() * (newMovementState.velocity * timeSlice));
+	}
+	mCurrentMovementState = newMovementState;
 }
 
 void Avatar::attemptJump() {}
 
 
-void Avatar::attemptRotate(float degHoriz, float degVert, Ogre::Real timeSlice)
+void Avatar::attemptRotate(AvatarControllerMovement movement)
 {
-	// rotate the Avatar Node only in X position (no vertical rotation)
-	mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,degHoriz);
+	float degHoriz = movement.rotationDegHoriz;
+	float degVert = movement.rotationDegVert;
+	Ogre::Real timeSlice = movement.timeSlice;
+	
+	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
+
+	//if we're moving we must sync the rotation with messages sent to the server
+	if (!movement.isMoving) {
+		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
+		mAccumulatedHorizontalRotation = 0;
+	} else if (isOkayToSendTrivialMovementChangeToServer()) {
+		// rotate the Avatar Node only in X position (no vertical rotation)
+		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
+		mAccumulatedHorizontalRotation = 0;
+	}
 
 	// pitch the 1p Camera
 	//mAvatar1pCameraNode->yaw(degHoriz);
-	mAvatar1pCameraNode->pitch(degVert);
+	mAvatar1pCameraNode->pitch(degVert * timeSlice);
 	// TODO: rotate 3p cam and rotate *back* top camera
 
 	// Rotate top camera *back*
@@ -201,4 +296,10 @@ void Avatar::enteredWorld(Eris::Entity *e)
 void Avatar::touch(DimeEntity* entity)
 {
 	dime::DimeServices::getInstance()->getServerService()->touch(entity);
+}
+
+bool Avatar::isOkayToSendTrivialMovementChangeToServer()
+{
+	return mTimeSinceLastServerMessage > mMinIntervalOfTrivialChanges;
+	
 }
