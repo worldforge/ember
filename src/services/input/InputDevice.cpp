@@ -72,7 +72,7 @@ int InputDevice::getAxisCount()
 	return myPhysicalPosition.size();
 }
 
-int InputDevice::getAxis(int axis)
+int InputDevice::getAxisPosition(int axis)
 {
 	return myPhysicalPosition[axis];
 }

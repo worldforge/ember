@@ -71,6 +71,9 @@ CPPUNIT_LIBS = -L/usr/local/lib -lcppunit
 CXX = c++
 DLLTOOL = @DLLTOOL@
 ECHO = echo
+ERIS_CFLAGS = -I/usr/local/include
+ERIS_CONFIG = /usr/local/bin/eris-config
+ERIS_LIBS = -L/usr/local/lib -leris -lwfmath
 EXEEXT = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
@@ -102,13 +105,13 @@ LIBRARIES =  $(noinst_LIBRARIES)
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../../..
 CPPFLAGS = 
-LDFLAGS =  -L/usr/lib -lSDL -lpthread -lsigc -lpthread -L/usr/local/lib -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -L/usr/local/lib -lcppunit
+LDFLAGS =  -L/usr/lib -lSDL -lpthread -lsigc -lpthread -L/usr/local/lib -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -L/usr/local/lib -leris -lwfmath -L/usr/local/lib -lcppunit
 LIBS = -lSDL_ttf -lSDL_mixer -lSDL_image 
 libGuiService_a_LIBADD = 
 libGuiService_a_OBJECTS =  GuiService.$(OBJEXT) Widget.$(OBJEXT) \
 Container.$(OBJEXT)
 AR = ar
-CXXFLAGS = -g -O2 -I/usr/include/SDL -D_REENTRANT -I/usr/lib/sigc++-1.0/include -I/usr/include/sigc++-1.0 -I/usr/local/include -I/usr/local/include -I/usr/local/include
+CXXFLAGS = -g -O2 -I/usr/include/SDL -D_REENTRANT -I/usr/lib/sigc++-1.0/include -I/usr/include/sigc++-1.0 -I/usr/local/include -I/usr/local/include -I/usr/local/include -I/usr/local/include
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
