@@ -78,9 +78,46 @@ class NameOfClass
 
 {
     //======================================================================
+    // Inner Classes
+    //======================================================================
+
+
+    //======================================================================
     // Public Constants
     //======================================================================
     public:
+
+
+    //======================================================================
+    // Private Constants
+    //======================================================================
+    private:
+
+
+    //======================================================================
+    // Private Variables
+    //======================================================================
+    private:
+
+    // NOTE: Class variables are prefixed with "my", static variables are
+    //       prefixed with "the".
+
+    /**
+     * NOTE: Variables can have a comment too.  You can use it to describe the
+     *       purpose of the varible, or wether certain invariants
+     *       should be enforced for it (parentConatiner* should newer be null, etc).
+     */
+    std::String  myExampleVariable;
+
+    /**
+     * Stores an unique name of this gizmo.
+     */
+    std::String myName;
+
+    /**
+     * This variable is used to keep track of the next free ID number for a new gizmo.
+     */
+    static int theNextId;
 
 
     //======================================================================
@@ -201,43 +238,6 @@ class NameOfClass
     // Private Methods
     //======================================================================
     private:
-
-
-    //======================================================================
-    // Private Constants
-    //======================================================================
-    private:
-
-
-    //======================================================================
-    // Private Variables
-    //======================================================================
-    private:
-
-    // NOTE: Class variables are prefixed with "my", static variables are
-    //       prefixed with "the".
-
-    /**
-     * NOTE: Variables can have a comment too.  You can use it to describe the
-     *       purpose of the varible, or wether certain invariants
-     *       should be enforced for it (parentConatiner* should newer be null, etc).
-     */
-    std::String  myExampleVariable;
-
-    /**
-     * Stores an unique name of this gizmo.
-     */
-    std::String myName;
-
-    /**
-     * This variable is used to keep track of the next free ID number for a new gizmo.
-     */
-    static int theNextId;
-
-
-    //======================================================================
-    // Inner Classes
-    //======================================================================
 
 
 }; // End of class
