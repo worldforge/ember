@@ -51,4 +51,10 @@
       </parts>
     </submodel>
   </submodels>
+  <animations>
+  	<animation name="walk">
+		<animationpart name="walk" weight="1" />
+	</animation>
+  <animations>
+  
 </model>

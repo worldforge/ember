@@ -11,10 +11,10 @@
   	<animation name="idle">
 		<animationpart name="WingFold" weight="0.5" />
 		<animationpart name="Peck1" weight="0.5" />
-	<animation>
+	</animation>
   	<animation name="walk">
 		<animationpart name="WingFold" weight="0.5" />
 		<animationpart name="Walk" weight="0.5" />
-	<animation>
+	</animation>
   <animations>
 </model>
