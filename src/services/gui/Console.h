@@ -28,6 +28,8 @@
 #include "framework/ConsoleObject.h"
 #include "services/gui/Widget.h"
 #include "Tokeniser.h"
+#include "services/platform/RectangleRenderer.h"
+#include "services/font/FontRenderer.h"
 
 // Included custom library headers
 
@@ -141,6 +143,16 @@ protected:
    * Flag determining whether console is moving
    */
   bool animateConsole;
+
+  /**
+   * Cached FontRenderer
+   */
+  FontRenderer* myFontRenderer;
+
+  /**
+   * Cached RectangleRenderer
+   */
+  RectangleRenderer* myRectangleRenderer;
 
   /**
    * Current command string

@@ -50,6 +50,13 @@ Console::Console(const Rectangle& rect) :
   consoleHeight(rect.getHeight()),
   animateConsole(0)
 {
+  // Precache our renderers
+  // Make panel slightly transparent
+  myRectangleRenderer = new RectangleRenderer(rect,Color(0.0f,0.0f,100.0f,8.5f));
+  dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,FONT_HEIGHT);
+  assert(font);
+  myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(255.0f,255.0f,0,255.0f), rect);
+
   // Register console commands
   registerCommand(TOGGLE_CONSOLE, this);
   registerCommand(LIST_CONSOLE_COMMANDS, this);
@@ -108,39 +115,31 @@ int Console::draw(DrawDevice* target){
   return 0;
 }
 
-//%TODO Xmp,4: refactor this to do the majority of the renderer creation in 
-//       the constructor
 void Console::renderConsoleMessages(DrawDevice *ddevice) {
   std::list<std::string>::const_iterator I;
   int i;
 
   // Render console panel
   int consoleOffset = fullHeight - consoleHeight;
-  // Make panel slightly transparent
-  RectangleRenderer rrenderer(myRectangle,Color(0.0f,0.0f,100.0f,8.5f));
-  rrenderer.render(ddevice);
-
-  dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,FONT_HEIGHT);
-  assert(font);
-  FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(255.0f,255.0f,0,255.0f), myRectangle);
+  myRectangleRenderer->render(ddevice);
 
   // Render console messages
-  int font_height = font->getHeight();
+  int font_height = myFontRenderer->getFont()->getHeight();
   for (I = console_messages.begin(), i = 0; I != console_messages.end(); I++, i++) {
     int j = console_messages.size() - i;
-    frenderer.setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,
+    myFontRenderer->setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,
 				     myRectangle.getY()+CONSOLE_TEXT_OFFSET_Y + j * font_height - consoleOffset,
 				     myRectangle.getWidth(),font_height));
-    frenderer.setText(*I);
-    frenderer.render(ddevice);
+    myFontRenderer->setText(*I);
+    myFontRenderer->render(ddevice);
   }
 
   // Render current command string
   std::string str = CONSOLE_PROMPT_STRING + myCommand + CONSOLE_CURSOR_STRING;
-  frenderer.setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,
+  myFontRenderer->setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,
 				   myRectangle.getY()+CONSOLE_TEXT_OFFSET_Y - consoleOffset,myRectangle.getWidth(),font_height));
-  frenderer.setText(str);
-  frenderer.render(ddevice);
+  myFontRenderer->setText(str);
+  myFontRenderer->render(ddevice);
 }
 
 void Console::renderScreenMessages(DrawDevice *ddevice) {/*
