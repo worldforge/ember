@@ -75,9 +75,10 @@ bool MotionManager::frameStarted(const Ogre::FrameEvent& event)
 
 bool MotionManager::frameEnded(const Ogre::FrameEvent& event)
 {
+	return true;
 }
 
-void MotionManager::addAnimation(AnimationState* animationState)
+void MotionManager::addAnimation(Ogre::AnimationState* animationState)
 {
 	//check if it's not already added
 	animationStateMap::const_iterator I = mAnimations.find(animationState);
@@ -93,7 +94,7 @@ void MotionManager::addAnimation(AnimationState* animationState)
 	
 }
 
-void MotionManager::removeAnimation(AnimationState* animationState)
+void MotionManager::removeAnimation(Ogre::AnimationState* animationState)
 {
 	animationStateMap::const_iterator I = mAnimations.find(animationState);
 	if (I != mAnimations.end()) {
@@ -110,13 +111,13 @@ void MotionManager::removeAnimation(AnimationState* animationState)
 	
 }
 
-void MotionManager::pauseAnimation(AnimationState* animationState)
+void MotionManager::pauseAnimation(Ogre::AnimationState* animationState)
 {
 	animationControllerType* animationController = mAnimations[animationState];
 	animationController->setEnabled(false);
 }
 
-void MotionManager::unpauseAnimation(AnimationState* animationState)
+void MotionManager::unpauseAnimation(Ogre::AnimationState* animationState)
 {
 	animationControllerType* animationController = mAnimations[animationState];
 	animationController->setEnabled(true);
