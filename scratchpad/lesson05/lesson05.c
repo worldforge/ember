@@ -56,15 +56,17 @@ int resizeWindow( int width, int height )
     /* change to the projection matrix and set our viewing volume. */
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity( );
-
+    
     /* Set our perspective */
     gluPerspective( 45.0f, ratio, 0.1f, 100.0f );
 
+    /*glOrtho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f,  -1.0f, 1.0f);*/
     /* Make sure we're chaning the model view and not the projection */
     glMatrixMode( GL_MODELVIEW );
 
     /* Reset The View */
     glLoadIdentity( );
+
 
     return( TRUE );
 }
@@ -125,27 +127,33 @@ int drawGLScene( GLvoid )
     static GLint T0     = 0;
     static GLint Frames = 0;
 
-
     /* Clear The Screen And The Depth Buffer */
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -100.0f, 100.0f);
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
     
-    glLoadIdentity();
+    glOrtho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f,  -1.0f, 1.0f);
+
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity ();
+    
     glBegin( GL_QUADS);
     glColor3f(1.0f, 1.0f, 1.0f);
-    glVertex2i(0,0);
-    glVertex2i(40, 0);
-    glVertex2i(40, 40);
-    glVertex2i(0, 40);
-    
+    glVertex3f(0.0f,0.0f, -1.0f);
+    glVertex3f(40.0f, 0.0f, -1.0f);
+    glVertex3f(40.0f, 40.0f, -1.0f);
+    glVertex3f(0.0f, 40.0f, -1.0f);
     glEnd();
-    glPopMatrix();
     
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity( );
     
-    glMatrixMode(GL_MODELVIEW);
+    /* Set our perspective */
+    gluPerspective( 45.0f, (GLfloat)SCREEN_WIDTH/(GLfloat)SCREEN_HEIGHT,  0.1f, 100.0f );
+
+
+    glMatrixMode( GL_MODELVIEW ); 
+   
     /* Move Left 1.5 Units And Into The Screen 6.0 */
     glLoadIdentity();
     glTranslatef( -1.5f, 0.0f, -6.0f );
