@@ -21,6 +21,7 @@
 
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
+#include "OOGChat.h"
 
 #include <Eris/Connection.h>
 #include <Eris/Player.h>
@@ -40,7 +41,8 @@ namespace dime {
  * @see dime::MetaserverService
  * @see dime::ConsoleObject
  */
-class ServerService: public Service, public ConsoleObject, virtual public SigC::Object
+class ServerService : public Service, public ConsoleObject,
+  virtual public SigC::Object
 {
     //======================================================================
     // Private Variables
@@ -58,17 +60,23 @@ class ServerService: public Service, public ConsoleObject, virtual public SigC::
     Eris::Player *myPlayer;
 
     /**
-     * Holds the lobby of this server
-     */
-    Eris::Lobby *myLobby;
-
-    /**
      * Holds the world object of this server
      */
     Eris::World *myWorld;
 
+    /**
+     * Contains the class that controls Out of Game Chat
+     */
+    OOGChat *myOOGChat;
+
+    /**
+     * The host we are connected/ing to at present
+     */
     std::string myHost;
 
+    /**
+     * The port we are using to connect
+     */
     short myPort;
 
     /**
@@ -145,14 +153,6 @@ class ServerService: public Service, public ConsoleObject, virtual public SigC::
     void loginSuccess();
 
     void logoutComplete(bool);
-
-    // Lobby Callbacks
-
-    void sightPerson(Eris::Person*);
-
-    void privateTalk(const std::string&, const std::string&); 
-
-    void loggedIn( const Atlas::Objects::Entity::Player& );
 
     // List of ServerService's console commands
     static const char * const CONNECT = "connect";

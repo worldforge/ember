@@ -37,7 +37,6 @@ DebugGameView::DebugGameView()
     w->Appearance.connect( SigC::slot( *this, &DebugGameView::appearance ) );
 
     w->Disappearance.connect( SigC::slot( *this, &DebugGameView::disappearance ) );
-
 }
 
 DebugGameView::~DebugGameView()
@@ -101,5 +100,9 @@ void DebugGameView::addedMember(Eris::Entity *e)
 
 void DebugGameView::removedMember(Eris::Entity *e)
 {}
+
+void DebugGameView::runCommand(const std::string &command, const std::string &args)
+{
+}
 
 }

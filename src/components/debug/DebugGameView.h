@@ -1,18 +1,19 @@
-/*  Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (Xmp)
+/*
+  Copyright (C) 2002  Alistair Davidson, the Worldforge Project, Martin Pollard (Xmp)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifndef DEBUG_GAME_VIEW_H
@@ -32,6 +33,7 @@
 #endif
 
 #include "services/platform/DrawDevice.h"
+#include "framework/ConsoleBackend.h"
 //#include "framework/Component.h"
 
 namespace dime {
@@ -56,9 +58,16 @@ namespace dime {
  * Component is a standard dime class that also has to be inherited from.
  */
 
-class DebugGameView : public SigC::Object //: public Component
+class DebugGameView : public ConsoleObject,
+  virtual public SigC::Object //, public Component
 {
 
+    //======================================================================
+    // Private Constants
+    //======================================================================
+    private:
+    
+    // List of DebugGameView's console commands
 
     //======================================================================
     //Public Methods
@@ -189,6 +198,11 @@ class DebugGameView : public SigC::Object //: public Component
          * Also sadly undocumented
          */
         void removedMember(Eris::Entity *e);
+
+	/**
+	 * Receive commands from console
+	 */
+	void runCommand(const std::string &command, const std::string &args);
 
     private:
 

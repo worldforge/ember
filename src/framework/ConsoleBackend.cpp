@@ -43,6 +43,14 @@ void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *
   myRegisteredCommands[command] = object;
 }
 
+void ConsoleBackend::deregisterCommand(const std::string &command)
+{
+  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Deregistering: " << command << ENDM;
+
+  // Delete from the map
+  myRegisteredCommands.erase(myRegisteredCommands.find(command));
+}
+
 void ConsoleBackend::runCommand(const std::string &command)
 {
   if (command.empty()) return; // Ignore empty string

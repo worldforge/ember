@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2002  Martin Pollard, Simon
+ Copyright (C) 2002  Martin Pollard
 	
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,27 +16,27 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CONSOLEBACKEND_H
-#define CONSOLEBACKEND_H
+#ifndef OOGCHAT_H
+#define OOGCHAT_H
 
 // Included headers from the current project
-#include "ConsoleObject.h"
-#include "Tokeniser.h"
+#include "framework/ConsoleObject.h"
 
 // Included custom library headers
+#include <Eris/Lobby.h>
+#include <Eris/Room.h>
+#include <sigc++/object.h>
+#include <sigc++/bind.h>
 
 // Included system headers
-#include <string>
-#include <list>
-#include <map>
 
 namespace dime {
 
 /**
- * Backend storage class for Console's.
+ * Eris Lobby management object.
  *
- * More detailed description of the class, it's purpose, what it does,
- * how to use it and so on.
+ * This class holds the Eris::Lobby object for the current session
+ * and handles it's callback, etc.
  *
  * A short piece of example code demonstarting how this class it is used,
  * and in what context, is encouraged.
@@ -51,12 +51,12 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see dime::Console
- * @see dime::ConsoleObject
+ * @see dime::ServerService
  *
+ * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class ConsoleBackend : public ConsoleObject
+class OOGChat : virtual public SigC::Object, public ConsoleObject
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -69,15 +69,18 @@ class ConsoleBackend : public ConsoleObject
     //======================================================================
     public:
 
+
     //======================================================================
     // Private Constants
     //======================================================================
     private:
-    
-    static const unsigned int MAX_MESSAGES = 7;
 
-    // List of ConsoleBackend's console commands
-    static const char * const LIST_CONSOLE_COMMANDS = "list_commands";
+    // List of OOGChat's console commands
+    static const char * const CMD_SAY = "say";
+    static const char * const CMD_EMOTE = "emote";
+    static const char * const CMD_ME = "me";
+    static const char * const CMD_JOIN = "join";
+    static const char * const CMD_PART = "part";
 
     //======================================================================
     // Private Variables
@@ -85,20 +88,10 @@ class ConsoleBackend : public ConsoleObject
     private:
 
     /**
-     * Instance variable for singleton main dime console.
+     * Holds the lobby of this server
      */
-    static ConsoleBackend* theMainConsole;
+    Eris::Lobby* myLobby;
 
-    /**
-     * Mapping of registered commands to associated object.
-     */
-    std::map<std::string, ConsoleObject*> myRegisteredCommands;
-
-    /**
-     * Current console messages
-     */
-    std::list<std::string> myConsoleMessages;
-  
     //======================================================================
     // Public Methods
     //======================================================================
@@ -108,20 +101,14 @@ class ConsoleBackend : public ConsoleObject
     // Constructors
 
     /**
-     * Creates a new ConsoleBackend using default values.
+     * Creates a new OOGChat using default values.
      */
-     ConsoleBackend() :
-       myRegisteredCommands(std::map<std::string, ConsoleObject*>()),
-       myConsoleMessages(std::list<std::string>())
-     {
-       // Register console commands
-       registerCommand(LIST_CONSOLE_COMMANDS, this);
-     }
+    OOGChat();
 
     /**
      * Copy constructor.
      */
-    ConsoleBackend( const ConsoleBackend &source )
+    OOGChat( const OOGChat &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -132,9 +119,10 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Assignment operator.
      */
-    ConsoleBackend &operator= ( const ConsoleBackend &source )
+    OOGChat &operator= ( const OOGChat &source )
     {
         // Copy fields from source class to this class here.
+        myLobby = source.myLobby;
 
         // Return this object with new value
         return *this;
@@ -145,76 +133,73 @@ class ConsoleBackend : public ConsoleObject
     // Destructor
 
     /**
-     * Deletes a ConsoleBackend instance.
+     * Deletes a OOGChat instance.
      */
-    virtual ~ConsoleBackend ()
-    {
-        // TODO: Free any allocated resources here.
-    }
+    virtual ~OOGChat ();
 
 
     //----------------------------------------------------------------------
     // Getters
 
-    /**
-     * Gets an instance of the main dime console
-     */
-    static ConsoleBackend* getMainConsole()
-    {
-      if ( !theMainConsole )
-        theMainConsole = new ConsoleBackend();
-      return theMainConsole;
-    }
+    // Example of a getter method:
 
-    const std::list<std::string>& getConsoleMessages() const
-      {
-	return myConsoleMessages;
-      }
+    /**
+     * Gets the value of Lobby of this OOGChat
+     */
+    Eris::Lobby* getLobby() const
+    {
+        return myLobby;
+    }
 
 
     //----------------------------------------------------------------------
     // Setters
 
+    /**
+     * Sets the value of Lobby of this OOGChat
+     */
+    void setLobby( Eris::Lobby* lobby )
+    {
+        myLobby = lobby;
+    }
+
 
     //----------------------------------------------------------------------
     // Other public methods
-
-    /**
-     * Registers a command with the console
-     * command is the command to register
-     * object is the originating object
-     */ 
-    void registerCommand(const std::string &command, ConsoleObject *object);
-
-    /**
-     * Deregisters a command with the console
-     * command is the command to deregister
-     */ 
-    void deregisterCommand(const std::string &command);
-
-    /**
-     * This is the method the determines what object the pass the command onto
-     * command is the command string to process
-     */ 
-    void runCommand(const std::string &command);
+    // NOTE: Group related public methods together and crate a separator comment like above for them.
     
-    /**
-     * Add a message to the console message queue.
-     * message is the message string
-     */ 
-    void pushMessage(const std::string &message);
-
-    /**
-     * This is the ConsoleObject method.
-     * command is the command to run
-     * args is the commands arguments
-     */ 
-    void runCommand(const std::string &command, const std::string &args);
-
     //======================================================================
     // Protected Methods
     //======================================================================
     protected:
+
+    /**
+     * Command handler for console backend.
+     */
+    void runCommand(const std::string &command, const std::string &args);
+
+    //----------------------------------------------------------------------
+    // Callbacks from Eris
+
+    // Lobby Callbacks
+
+    void sightPerson(Eris::Person*);
+
+    void privateTalk(const std::string&, const std::string&); 
+
+    void loggedIn( const Atlas::Objects::Entity::Player& );
+
+    void entered(Eris::Room *room);
+
+    void talk(Eris::Room *room, const std::string& name, const std::string& msg);
+
+    void emote(Eris::Room *room, const std::string& name, const std::string& msg);
+
+    void appearance(Eris::Room *room, const std::string& account);
+
+    void disappearance(Eris::Room *room, const std::string& account);
+
+    void changed(const Eris::StringSet& sset, Eris::Room *room);
 
 
     //======================================================================
@@ -229,7 +214,7 @@ class ConsoleBackend : public ConsoleObject
     private:
 
 
-}; // End of ConsoleBackend
+}; // End of OOGChat
 
 } // End of dime namespace
 

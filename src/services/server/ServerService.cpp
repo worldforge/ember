@@ -37,7 +37,9 @@ namespace dime
 
 
   /* ctor */
-  ServerService::ServerService() : myConn(NULL), myPlayer(NULL), myLobby(NULL), myWorld(NULL), myConnected(false)
+  ServerService::ServerService() : myConn(NULL), myPlayer(NULL),
+				   myWorld(NULL), myOOGChat(NULL),
+				   myConnected(false)
   {
     setName("Server Service");
     setDescription("Service for Server session");
@@ -72,7 +74,6 @@ namespace dime
   {
     if (myConn) delete myConn;
     if (myPlayer) delete myPlayer;
-    if (myLobby) delete myLobby;
     if (myWorld) delete myWorld;
   }
 	
@@ -115,7 +116,7 @@ namespace dime
         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on connect" << ENDM;
         return false;
       }
-    myConnected = true;
+
     return true;
   }
 
@@ -173,11 +174,10 @@ namespace dime
     myPlayer->LoginSuccess.connect(SigC::slot(*this,&ServerService::loginSuccess));
     myPlayer->LogoutComplete.connect(SigC::slot(*this,&ServerService::logoutComplete));
 
-    // Set up the lobby object
-    myLobby=Eris::Lobby::instance();
-    myLobby->SightPerson.connect(SigC::slot(*this,&ServerService::sightPerson));
-    myLobby->PrivateTalk.connect(SigC::slot(*this,&ServerService::privateTalk));
-    myLobby->LoggedIn.connect(SigC::slot(*this,&ServerService::loggedIn));
+    // Init OOGChat controller
+    myOOGChat = new OOGChat;
+
+    ConsoleBackend::getMainConsole()->pushMessage("Connected to Server");
   }
 
   bool ServerService::disconnecting()
@@ -190,11 +190,13 @@ namespace dime
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
 
-    // NULL out lobby & player so noone gets tempted to play with an unconnected lobby/player
-    // Should we disconnect the callback events?
+    // NULL out OOGChat & player so noone gets tempted to play with an unconnected lobby/player
     delete myPlayer;
     myPlayer=NULL;
-    myLobby=NULL;
+    delete myOOGChat;
+    myOOGChat = NULL;
+
+    ConsoleBackend::getMainConsole()->pushMessage("Disconnected from server.");
   }
 
   void ServerService::statusChanged(Eris::BaseConnection::Status status)
@@ -205,22 +207,6 @@ namespace dime
   void ServerService::timeout(Eris::BaseConnection::Status status)
   {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Connection Timed Out"<< ENDM;
-  }
-
-  void ServerService::sightPerson(Eris::Person* person)
-  {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sighted Person name:\""<< person->getName()<<"\" id:"<<person->getAccount()<< ENDM;    
-  }
-
-  void ServerService::privateTalk(const std::string& name, const std::string& msg)
-  {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "PRIVMSG("<<name<<") says:"<<msg<< ENDM;
-  }
-
-  void ServerService::loggedIn( const Atlas::Objects::Entity::Player& player )
-  {
-    // Xmp's Notes
-    // Erm dunno what this function is for eris's doxygen doesn't explain
   }
 
   void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &) {}
@@ -242,7 +228,7 @@ namespace dime
     delete myWorld;
     myWorld = NULL;
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleaness="<<clean<< ENDM;    
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;    
   }
 
   void ServerService::runCommand(const std::string &command, const std::string &args)
