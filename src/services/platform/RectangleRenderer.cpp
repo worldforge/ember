@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.6  2002-04-01 07:18:46  adamgreg
+ *      Revision 1.7  2002-04-15 02:00:20  nikal
+ *      Stopped RRs from updating each time they drew something.  I added the update into the GuiService.cpps draw method, which updates once after drawing everything.  This removes the flicker, but doesn't speed it up much as blits are still being done each redraw. :
+ *
+ *      Revision 1.6  2002/04/01 07:18:46  adamgreg
  *
  *      Fixed segfault when destroying some widgets. Added standard and highlight RectangleRenderers to Button. Made RectangleRenderers use the new Rectangle class. Added another (blank for now) constructor to RectangleRenderer to make it fetch themescheme info to initialize itself with.
  *
@@ -181,7 +184,6 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 	src.h = myRect.getHeight();
 	dest = myRect.getSDL_Rect();
     device->blitSurface(&src, &dest, mySurface);
-    device->update();
 
     return (1);
 }
@@ -192,7 +194,6 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
 int dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
 {
     device->fillRect(&myRect.getSDL_Rect(), myColor);
-    device->update();
 	
 	//TODO: What should be returned here?
 	return 0;
@@ -204,7 +205,6 @@ int dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
 int dime::RectangleRenderer::renderGradient(dime::DrawDevice *device)
 {
     device->drawGradient(&myRect.getSDL_Rect(), myColor, myColor2, myColor3, myColor4);
-	device->update();
 
 	//TODO: What should be returned here?
 	return 0;
@@ -250,8 +250,6 @@ int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,
     //this for loop purposely leaves off the last two lines to draw
     device->drawLine(rightX, topY, rightX, bottomY, myColor);
     device->drawLine(rightX, bottomY, leftX, bottomY, myColor);
-    
-    device->update();
 
 	//TODO: What should be returned here?
 	return 0;
