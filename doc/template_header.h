@@ -79,11 +79,12 @@
 #ifndef <FILENAME>_H
 #define <FILENAME>_H
 
-// Include headers from the current project here
+// Included headers from the current project
 
-// Include custom library headers here
+// Included custom library headers
 
-// Include system headers here
+// Included system headers
+
 
 namespace applicationNamespace {
 namespace subsystemNamespace {
@@ -97,7 +98,8 @@ namespace subsystemNamespace {
  * A short piece of example code demonstarting how this class it is used,
  * and in what context, is encouraged.
  *
- * @author Anonymous Coward
+ * @author <name of author>
+ *
  * NOTE: You can also specify the author for individual methods
  * if different persons have created them.
  * It is also possible to have multiple @author tags for a method.
@@ -107,6 +109,7 @@ namespace subsystemNamespace {
  * don't need to add yourself.
  *
  * @see OtherSubsystem::AnOtherRelatedClass
+ *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 class NameOfClass
