@@ -153,6 +153,7 @@ class ServerService: public Service, public ConsoleObject, public SigC::Object
     static const char * const CONNECT = "connect";
     static const char * const RECONNECT = "reconnect";
     static const char * const DISCONNECT = "disconnect";
+    static const char * const CREATEACC = "createacc";
     static const char * const LOGIN = "login";
     static const char * const LOGOUT = "logout";
     static const char * const CREATECHAR = "createchar";

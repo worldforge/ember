@@ -59,6 +59,7 @@ namespace dime
     Console::registerCommand(CONNECT,this);
     Console::registerCommand(RECONNECT,this);
     Console::registerCommand(DISCONNECT,this);
+    Console::registerCommand(CREATEACC,this);
     Console::registerCommand(LOGIN,this);
     Console::registerCommand(LOGOUT,this);
     Console::registerCommand(CREATECHAR,this);
@@ -260,6 +261,14 @@ namespace dime
       reconnect();
     } else if (command==CONNECT){
       disconnect();
+    } else if (command == CREATEACC) {
+      if (!myPlayer) return;
+      Tokeniser tokeniser = Tokeniser();
+      tokeniser.initTokens(args);
+      std::string uname = tokeniser.nextToken();
+      std::string password = tokeniser.nextToken();
+      std::string realname = tokeniser.remainingTokens();
+      myPlayer->createAccount(uname,realname,password);
     } else if (command==LOGIN) {
       if (myPlayer)
       {
