@@ -114,7 +114,7 @@ namespace dime {
 
     temp << "["<< room->getName()<<"] "<<name<<" says: "<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
-    temp<<ends;
+    temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
@@ -124,7 +124,7 @@ namespace dime {
 
     temp << "["<< room->getName()<<"] "<<name<<" "<<msg<< ENDM;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
-    temp<<ends;
+    temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
@@ -134,7 +134,7 @@ namespace dime {
 
     temp << account << " appears in "<< room->getName();
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() <<ENDM;
-    temp<<ends;
+    temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
@@ -144,7 +144,7 @@ namespace dime {
 
     temp << account << " disappears from "<< room->getName()<<ENDM;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)<<temp.str()<<ENDM;
-    temp<<ends;
+    temp<<std::ends;
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 

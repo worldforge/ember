@@ -26,6 +26,7 @@
 #include <SDL/SDL_keysym.h>
 #include <SDL/SDL_events.h>
 #include <SDL/SDL_mouse.h>
+#include <sigc++/object.h>
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
 #else

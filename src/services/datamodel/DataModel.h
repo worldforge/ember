@@ -24,11 +24,11 @@
 // Include library headers here
 
 #include <boost/shared_ptr.hpp>
+#include <sigc++/object.h>
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/handle_system.h>
 #include <sigc++/signal_system.h>
 #else
-#include <sigc++/object.h>
 #include <sigc++/signal.h>
 #endif
 

@@ -1,3 +1,12 @@
+2002-10-07 Al Riddoch <alriddoch@zepler.org>
+	* src/services/server/OOGChat.cpp: std:: namespace fixes.
+
+	* src/services/input/InputDevice.h, src/services/datamodel/DataModel.h:
+	  Fix legaxy sigc++ includes.
+
+	* src/services/gui/EventGenerator.h: ISO C++ require
+	  "friend class foo" rather than just "friend foo".
+
 2002-07-20 16:47  nikal
 
 	* text/public/: dimestyle.css, index.txt:  removing the
