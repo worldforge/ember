@@ -38,19 +38,18 @@ int main(int argc, char **argv)
             dime::ImageService::getInstance()->addPath("./bin/");
             dime::ImageService::getInstance()->addPath("../../bin/");
 
-	    dime::Console myTestConsole(dime::Rectangle(300,120,300,120));
+	    dime::Console myTestConsole(dime::Rectangle(10,300,620,120));
 
 	    dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 	    dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(10,40,100,35));
 
-            dime::Button myTestButton(dime::Rectangle(300,300,100,25));
+            dime::Button myTestButton(dime::Rectangle(535,450,100,25));
             
             myTestButton.setBackground(dime::RectangleRenderer(myTestButton.getRectangle(),"quitbutton2.png", dime::RectangleRenderer::TILE));
             myTestButton.setHighlightBackground(dime::RectangleRenderer(myTestButton.getRectangle(),"quitbutton.png", dime::RectangleRenderer::TILE));
             
-            dime::Panel myTestPanel(dime::Rectangle(200,200,300,200));
-            myTestPanel.setBackground(dime::RectangleRenderer(myTestPanel.getRectangle(),"masonwindowback2.jpg", dime::RectangleRenderer::STRETCH));
-            myTestPanel.addWidget(&myTestButton);
+            dime::Panel myTestPanel(dime::Rectangle(558,10,72,90));
+            myTestPanel.setBackground(dime::RectangleRenderer(myTestPanel.getRectangle(),"masonlogo.png", dime::RectangleRenderer::TILE));
             
             myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
             myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));
@@ -63,7 +62,7 @@ int main(int argc, char **argv)
 	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
 	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
 	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestConsole);
-          
+	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestButton);          
             myApp->mainLoop();
         }
     catch ( dime::Exception e )
