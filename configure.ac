@@ -80,10 +80,12 @@ AC_MSG_RESULT([
 
 	])
 	
-AM_PATH_SDL(1.2.0, [  
-  CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-  LDFLAGS="$LDFLAGS $SDL_LIBS"
-],
+AM_PATH_SDL(1.2.0, 
+#	    [  
+#  CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+#  LDFLAGS="$LDFLAGS $SDL_LIBS"
+#]
+	    ,
 [
   AC_MSG_ERROR(Couldn't find SDL or insufficent version found. Please goto http://www.libsdl.org/ and get at least version $SDL_VERSION)
 ])
@@ -213,7 +215,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.1,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.2 \
- varconf-1.0 >= 0.6.1 mercator-0.2,
+ varconf-1.0 >= 0.6.1 mercator-0.2 atlascpp-0.6 >= 0.5.92,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
@@ -308,6 +310,10 @@ dnl disabled cal3d, until needed
 #dnl add SDL flags here, now that we're done with the other tests
 #CXXFLAGS="$CXXFLAGS $WF_SDL_IMAGE_CFLAGS"
 #LIBS="$LIBS $WF_SDL_IMAGE_LIBS"
+
+CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+LDFLAGS="$LDFLAGS $SDL_LIBS"
+    
 
 AC_MSG_RESULT([
 
