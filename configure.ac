@@ -338,6 +338,7 @@ AC_CONFIG_FILES([Makefile
 		 ember-media.spec
 		 src/extensions/Makefile
 		 src/components/ogre/Makefile
+		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/Makefile

@@ -1,5 +1,9 @@
 2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* added libWidgets.a
+
+2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* use the new WidgetDefinitions class
 	* fix bug with the console crashing when trying to expose it
 
