@@ -54,6 +54,7 @@ protected:
 	void addedEntity(DimeEntity* dimeEntity);*/
 	void removedEntity(DimeEntity* dimeEntity);
 	void addedEntity(DimeEntity* dimeEntity);
+	void createdAvatarDimeEntity(AvatarDimeEntity* entity);
 	
 
 

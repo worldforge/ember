@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.50  2004-10-12 00:49:54  erik
+ *      Revision 1.51  2004-10-14 00:13:14  erik
+ *      2004-10-14 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      * moved EventCreatedAvatarEntity to DimeOgre class and adjusted inventory
+ *
+ *      Revision 1.50  2004/10/12 00:49:54  erik
  *      2004-10-12 Erik Hjortsberg <erik@hysteriskt.nu>
  *
  *      * added mouse picker menu for touching and taking entities. Right now it's just a placeholder, but it works, can be seen here: http://purple.worldforge.org/~erik/ember/screens/screenshot_20041012_023002.png
@@ -789,7 +794,7 @@ void DimeOgre::connectWorldSignals(Eris::World* world)
 void DimeOgre::connectedToServer(Eris::Connection* connection) 
 {
 	mDimeEntityFactory = new DimeEntityFactory(mSceneMgr,mTerrainGenerator, connection->getTypeService());
-	mDimeEntityFactory->CreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarDimeEntity));
+	EventCreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarDimeEntity));
 	EventCreatedDimeEntityFactory.emit(mDimeEntityFactory);
 }
 

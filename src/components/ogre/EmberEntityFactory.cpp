@@ -34,6 +34,7 @@
 #include "PersonDimeEntity.h"
 #include "AvatarDimeEntity.h"
 #include "DimeEntityFactory.h"
+#include "DimeOgre.h"
 #include "WorldDimeEntity.h"
 
 
@@ -71,7 +72,7 @@ Eris::Entity* DimeEntityFactory::instantiate(const Atlas::Objects::Entity::GameE
     if (ge.getId() == mAvatar->getID()) {
    	
     	AvatarDimeEntity* avatarEntity = createAvatarEntity(ge, world);
-    	CreatedAvatarEntity.emit(avatarEntity);
+    	DimeOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
     	dimeEntity = avatarEntity;
  
     } else if (type->safeIsA(mTypeService->getTypeByName("boundary")) 

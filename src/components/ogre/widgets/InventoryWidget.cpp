@@ -46,16 +46,19 @@ void InventoryWidget::buildWidget()
 {
 	
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/InventoryWidget.xml");
+	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
 	mListBox = static_cast<CEGUI::Listbox*>(mMainWindow->getChild((CEGUI::utf8*)"Inventory/ListBox"));
 	getMainSheet()->addChildWindow(mMainWindow); 
-	
+	DimeOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarDimeEntity));
+}
 
+void InventoryWidget::createdAvatarDimeEntity(AvatarDimeEntity* entity)
+{
+	mMainWindow->setVisible(true);
 	DimeOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
 	DimeOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
-
-	
 
 }
 void InventoryWidget::addedEntity(DimeEntity* dimeEntity) {

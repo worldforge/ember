@@ -95,7 +95,7 @@ public:
 	virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::World *world);
 	void setAvatar(Eris::Avatar* avatar);
 
-	SigC::Signal1<void, AvatarDimeEntity*> CreatedAvatarEntity;
+
 
     
 protected:

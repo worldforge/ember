@@ -24,7 +24,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.26  2004-10-12 23:03:01  erik
+ *      Revision 1.27  2004-10-14 00:13:14  erik
+ *      2004-10-14 Erik Hjortsberg <erik@hysteriskt.nu>
+ *
+ *      * moved EventCreatedAvatarEntity to DimeOgre class and adjusted inventory
+ *
+ *      Revision 1.26  2004/10/12 23:03:01  erik
  *      2004-10-12 Erik Hjortsberg <erik@katastrof.nu>
  *
  *      * fixed mouse picking
@@ -307,6 +312,8 @@ class Avatar;
 
 class AvatarCamera;
 
+class AvatarDimeEntity;
+
 class DimeEntityFactory;
 
 class TerrainGenerator;
@@ -367,7 +374,7 @@ public:
 	AvatarCamera* getMainCamera();
 	
 	SigC::Signal1<void, DimeEntityFactory*> EventCreatedDimeEntityFactory;
-
+	SigC::Signal1<void, AvatarDimeEntity*> EventCreatedAvatarEntity;
 	
 
 //private:

@@ -21,6 +21,7 @@
 #include "widgets/ChatWidget.h"
 #include "widgets/EntityPickerWidget.h"
 #include "widgets/InventoryWidget.h"
+#include "widgets/ServerBrowserWidget.h"
 #include "MousePicker.h"
 #include "GUIManager.h"
 
@@ -127,6 +128,10 @@ void GUIManager::initialize()
 	InventoryWidget* inventory = new InventoryWidget(this);
 	inventory->buildWidget();
 	addWidget(inventory);			
+	
+	ServerBrowserWidget* serverBrowser = new ServerBrowserWidget(this);
+	serverBrowser->buildWidget();
+	addWidget(serverBrowser);
 	
 }
 
