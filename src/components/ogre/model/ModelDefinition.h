@@ -41,6 +41,7 @@ XERCES_CPP_NAMESPACE_USE
 
 namespace EmberOgre {
 
+
 class ModelDefinition;
 class Model;
 
@@ -62,7 +63,43 @@ class Model;
 class ModelDefinition : public Ogre::Resource {
 	
 public:
-
+	struct AnimationDefinition
+	{
+		std::string Name;
+		Ogre::Real Weight;
+	};
+	
+	struct SoundDefinition
+	{
+		std::string Name;
+		bool Repeat;
+	};
+	
+	struct ActionDefinition
+	{
+		std::string Name;
+		std::list<AnimationDefinition> Animations;
+		std::list<SoundDefinition> Sounds;
+	};
+	
+	
+	struct SubEntityDefinition
+	{
+		std::string SubEntity;
+		std::string Material;
+		
+	};	
+	struct PartDefinition
+	{
+		std::string Name;
+		bool Show;
+		std::list<SubEntityDefinition> SubEntities;
+	};
+	struct SubModelDefinition
+	{
+		std::string Mesh;
+		std::list<PartDefinition> Parts;
+	};
  
 	ModelDefinition (const Ogre::String& path, Ogre::ResourceManager *creator, const Ogre::String &name, Ogre::ResourceHandle handle, const Ogre::String &group, bool isManual=false, Ogre::ManualResourceLoader *loader=0);
 
@@ -79,49 +116,23 @@ public:
 		virtual size_t calculateSize (void) const; 
 
 		
-	Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
+	Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager, ModelDefinitionPtr pointerToSelf);
     bool isValid(void);
+	
+	const ActionDefinition* getDefinitionForAction(const std::string& name) const;
 		
 		
 protected:
-	struct AnimationDefinition
-	{
-		std::string Name;
-		Ogre::Real Weight;
-	};
-	
-	struct ActionDefinition
-	{
-		std::string Name;
-		std::vector<AnimationDefinition> Animations;
-	};
-	
-	
-	struct SubEntityDefinition
-	{
-		std::string SubEntity;
-		std::string Material;
-		
-	};	
-	struct PartDefinition
-	{
-		std::string Name;
-		bool Show;
-		std::vector<SubEntityDefinition> SubEntities;
-	};
-	struct SubModelDefinition
-	{
-		std::string Mesh;
-		std::vector<PartDefinition> Parts;
-	};
+
 	
 	void readAnimations(xercesc::DOMElement* animationsNode);
 	bool createFromXML(std::string path);
 
 	
+TYPEDEF_STL_MAP(std::string, ActionDefinition, ActionDefinitionsType);
 	
-	std::vector<SubModelDefinition> mSubModels;
-	std::vector<ActionDefinition> mActions;
+	std::list<SubModelDefinition> mSubModels;
+	ActionDefinitionsType mActions;
 	
 	unsigned short mUseScaleOf;
 	Ogre::Real mScale;

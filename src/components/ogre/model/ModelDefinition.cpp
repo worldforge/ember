@@ -119,9 +119,9 @@ ModelDefinition::~ModelDefinition()
 		return sizeof(mSubModels) + sizeof(mActions);
 	}
 	
-	Model* ModelDefinition::createModel(Ogre::String name, Ogre::SceneManager* sceneManager)
+	Model* ModelDefinition::createModel(Ogre::String name, Ogre::SceneManager* sceneManager, ModelDefinitionPtr pointerToSelf)
 	{
-		Model* aModel = new Model(sceneManager, name);
+		Model* aModel = new Model(sceneManager, name, pointerToSelf);
 		aModel->mScale = mScale;
 		aModel->mUseScaleOf = mUseScaleOf;
 		aModel->mRotation = mRotation;
@@ -129,8 +129,8 @@ ModelDefinition::~ModelDefinition()
 		std::vector<std::string> showPartVector;
 		
 			
-		std::vector<SubModelDefinition>::iterator I_subModels = mSubModels.begin();
-		std::vector<SubModelDefinition>::iterator I_subModels_end = mSubModels.end();
+		std::list<SubModelDefinition>::iterator I_subModels = mSubModels.begin();
+		std::list<SubModelDefinition>::iterator I_subModels_end = mSubModels.end();
 		std::cout << "Number of submodels: " << mSubModels.size() << "\n";
 		
 		for (; I_subModels != I_subModels_end; ++I_subModels) {
@@ -142,14 +142,14 @@ ModelDefinition::~ModelDefinition()
 				Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 							
 				
-				std::vector<PartDefinition>::iterator I_parts = (*I_subModels).Parts.begin();
-				std::vector<PartDefinition>::iterator I_parts_end = (*I_subModels).Parts.end();
+				std::list<PartDefinition>::iterator I_parts = (*I_subModels).Parts.begin();
+				std::list<PartDefinition>::iterator I_parts_end = (*I_subModels).Parts.end();
 				for (; I_parts != I_parts_end; ++I_parts) {
 					Model::StringSet parts;
 					if ((*I_parts).SubEntities.size() > 0)
 					{
-						std::vector<SubEntityDefinition>::iterator I_subEntities = (*I_parts).SubEntities.begin();
-						std::vector<SubEntityDefinition>::iterator I_subEntities_end = (*I_parts).SubEntities.end();
+						std::list<SubEntityDefinition>::iterator I_subEntities = (*I_parts).SubEntities.begin();
+						std::list<SubEntityDefinition>::iterator I_subEntities_end = (*I_parts).SubEntities.end();
 						for (; I_subEntities != I_subEntities_end; ++I_subEntities) {
 							parts.insert((*I_subEntities).SubEntity);
 							if ((*I_subEntities).Material != "") {
@@ -166,28 +166,28 @@ ModelDefinition::~ModelDefinition()
 				submodel->createSubModelParts(submodelPartMapping);
 				aModel->addSubmodel(submodel);
 			} catch (Ogre::Exception e) {
-				std::cerr << "Error when loading the submodel " << entityName << ".\n";
+				S_LOG_FAILURE( "Error when loading the submodel " << entityName << ".")
 			}
 				
 			
 		}
 		
 		
-		std::vector<ActionDefinition>::const_iterator I_actions = mActions.begin();
-		std::vector<ActionDefinition>::const_iterator I_actions_end = mActions.end();
+		ActionDefinitionsType::const_iterator I_actions = mActions.begin();
+		ActionDefinitionsType::const_iterator I_actions_end = mActions.end();
 		for (;I_actions != I_actions_end; ++I_actions) {
 			std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
 			
 			
-			std::vector<AnimationDefinition>::const_iterator I_anims = (*I_actions).Animations.begin();
-			std::vector<AnimationDefinition>::const_iterator I_anims_end = (*I_actions).Animations.end();
+			std::list<AnimationDefinition>::const_iterator I_anims = I_actions->second.Animations.begin();
+			std::list<AnimationDefinition>::const_iterator I_anims_end = I_actions->second.Animations.end();
 			for (;I_anims != I_anims_end; ++I_anims) {
 				Model::AnimationPart* animPart = new Model::AnimationPart();
 				animPart->name = (*I_anims).Name;
 				animPart->weight = (*I_anims).Weight;
 				animationPartSet->insert(animPart);
 			}
-			aModel->mAnimationPartMap.insert(Model::AnimationPartMap::value_type((*I_actions).Name, animationPartSet));
+			aModel->mAnimationPartMap.insert(Model::AnimationPartMap::value_type(I_actions->first, animationPartSet));
 		}
 		
 		
@@ -333,7 +333,7 @@ bool ModelDefinition::createFromXML(std::string path)
 			}
 			mSubModels.push_back(subModelDef);
 		} catch (Ogre::Exception e) {
-			std::cerr << "Error when loading the mesh " << subModelDef.Mesh << ".\n";
+			S_LOG_FAILURE( "Error when loading the mesh " << subModelDef.Mesh << ".")
 		}
 		
 	}
@@ -361,6 +361,7 @@ void ModelDefinition::readAnimations(xercesc::DOMElement* animationsNode)
 	for (unsigned int i = 0; i < animationNodes->getLength(); ++i) {
 		ActionDefinition actionDef;
 		
+		//get all animation parts
 		xercesc::XMLString::transcode("animationpart", tempStr, 99);
 		xercesc::DOMNodeList* animationPartNodes = dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getElementsByTagName(tempStr);
 		for (unsigned int j = 0; j< animationPartNodes->getLength(); ++j) {
@@ -373,11 +374,31 @@ void ModelDefinition::readAnimations(xercesc::DOMElement* animationsNode)
 			animDef.Weight = weight;
 			actionDef.Animations.push_back(animDef);
 		}
+		
+		//get all sounds
+		xercesc::XMLString::transcode("sound", tempStr, 99);
+		xercesc::DOMNodeList* soundNodes = dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getElementsByTagName(tempStr);
+		for (unsigned int j = 0; j< soundNodes->getLength(); ++j) {
+			SoundDefinition soundDef;
+			xercesc::XMLString::transcode("name", tempStr, 99);
+			soundDef.Name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationPartNodes->item(j))->getAttribute(tempStr));
+			
+			
+			//should it get repeated?
+			xercesc::XMLString::transcode("repeat", tempStr, 99);
+			std::string repeat = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationPartNodes->item(j))->getAttribute(tempStr));
+			
+			soundDef.Repeat = (repeat == "true" || repeat == "True");
+			
+			actionDef.Sounds.push_back(soundDef);
+		}
+		
+		
 		xercesc::XMLString::transcode("name", tempStr, 99);
 		std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getAttribute(tempStr));
 		std::cout << "Added action: " << name << "\n";
 		actionDef.Name = name;
-		mActions.push_back(actionDef);		
+		mActions.insert(ActionDefinitionsType::value_type(name, actionDef));
 
 	}
 	

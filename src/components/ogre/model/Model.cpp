@@ -33,7 +33,7 @@ namespace EmberOgre {
 
 Ogre::String Model::msMovableType = "Model";
 
-Model::Model(Ogre::SceneManager* sceneManager, std::string name)
+Model::Model(Ogre::SceneManager* sceneManager, std::string name, ModelDefinitionPtr modelDefPointer)
 : MovableObject::MovableObject()
 , mName(name)
 , mSceneManager(sceneManager)
@@ -42,6 +42,7 @@ Model::Model(Ogre::SceneManager* sceneManager, std::string name)
 , mVisible(true)
 , mSkeletonInstance(0)
 , mAnimationStateSet(0)
+, mDefinition(modelDefPointer)
 {}
 Model::~Model()
 {
@@ -56,12 +57,13 @@ Model::~Model()
 }
 
 Model* Model::Create(std::string type, std::string name)
+
 {
 	ModelDefinitionPtr def = ModelDefinitionManager::getSingleton().load(type, "modeldefinitions");
 	if (!def->isValid()) {
 		return NULL;
 	}
-	return def->createModel(name, EmberOgre::getSingleton().getSceneManager());
+	return def->createModel(name, EmberOgre::getSingleton().getSceneManager(), def);
 }
 
 
@@ -119,6 +121,8 @@ const unsigned short Model::getUseScaleOf() const
 	return mUseScaleOf;
 }
 
+//const std::vector<
+
 void Model::startAnimation(std::string nameOfAnimation)
 {
 	if (mAnimationStateSet) {
@@ -141,7 +145,7 @@ void Model::startAnimation(std::string nameOfAnimation)
 						
 						MotionManager::getSingleton().addAnimation(&J->second);
 					} else {
-						std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+						S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.")
 					}
 				}
 			}
@@ -158,7 +162,7 @@ void Model::startAnimation(std::string nameOfAnimation)
 					if (J != mAnimationStateSet->end()) {
 						MotionManager::getSingleton().unpauseAnimation(&J->second);
 					} else {
-						std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+						S_LOG_FAILURE( "Error: the subanimation " << (*I)->name << " does not exist.")
 					}
 				}
 			}

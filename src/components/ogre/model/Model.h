@@ -29,14 +29,14 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreEntity.h>
 #include <OgreMovableObject.h>
+#include "ModelDefinition.h"
 
 namespace EmberOgre {
 
 class SubModel;
 class SubModelPart;
 class ModelDefinition;
-
-/*
+/**
  * This is the standard model used in Ember.
  * A model can be made out of different entities, just as long as they share a skeleton.
  * The model consists of different parts, represented by instances of SubModelPart. 
@@ -75,7 +75,7 @@ public:
 	typedef std::map<std::string, StringSet > SubModelPartMapping;
 	typedef std::map<std::string, SubModelPart*> SubModelPartMap;
 
-	Model(Ogre::SceneManager* sceneManager, std::string name);
+	Model(Ogre::SceneManager* sceneManager, std::string name, ModelDefinitionPtr modelDefPtr);
 	virtual ~Model();
 
 	bool addSubmodel(SubModel* submodel);
@@ -172,6 +172,8 @@ public:
         /** Overridden from MovableObject */
         virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);	
 protected:
+
+	ModelDefinitionPtr mDefinition;
 
 	//set of all animations currently running
 	std::set< std::string > mRunningAnimations;
