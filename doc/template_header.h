@@ -55,20 +55,12 @@
 //---------------------------------------------------------------------------------------------------
 //
 //
-//   TODO: What standard should be used for todo's, notes, and such?
-//   One possibility would be TODO( user, date, importance ): <message>
-//   Here different arguments can be left out, and if there's no arguments
-//   the parenthesis can also be left out.  Examples:
-//
-//     TODO: Fix the water boiler!
-//     TODO( zzorn ): Shouldn't we put tea in this container?
-//     TODO( brenda, 2002-01-20 ): Added a temporary kludge to start the coffee machine.
-//     TODO( zzorn, 2002-01-20, optional ): It would be nice to support coffee at some time too.
-//     TODO( brenda, required ): We absolutely need to add support for coffee here!
-//
-//   Are user, date, and importance parameters enough?  Are there other important things,
-//   that might be useful to be able to automatically process in some way?
-//
+//   Doxygen supports todos
+//   EXAMPLE:
+//   /*
+//    * @todo I need to really learn to code at some point in time
+//    */
+//  
 //   "NOTE:" -is used similarily to TODO's, but is used to bring some detail
 //   to programmers attention that may be unintuitive or easy to miss otherwise,
 //   or some other meta-comment about the program (?).
