@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef FONTSTYLE_H
-#define FONTSTYLE_H
+#ifndef STYLE_H
+#define STYLE_H
 
 // Included headers from the current project
 
@@ -26,29 +26,25 @@
 // Included system headers
 
 namespace dime {
-
+namespace theme {
+	
 /**
- * Defines a Fontstyle, apply this fontstyle to a font to get the desired effects.
- *
- * Defines a Fontstyle which holds information about bold, italic, font size,
- * xoffsets, yoffsets, font path, etc.  Mainly for use with a theme, but can be
- * used to acheive different font effects by applying this to a font.
+ * Holds the information about a theme style.
  * 
+ * This is an internally used class and shouldn't 
+ * be used outside of the ThemeingService, instead
+ * use a WidgetStyle which will provide you with Renderers.
  *
- * A short piece of example code demonstarting how this class it is used,
- * and in what context, is encouraged.
+ * @author Lakin Wecker
  *
- * @author Lakin Wecker aka nikal
- *
- * 
- * @see dime::Font
- * @see dime::FontRenderer
- * @see 
+ * @see dime::Widgetstyle
+ * @see dime::ThemeService
+ * @see dime::Renderer
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class FontStyle
+class Style
 {
 
 
@@ -57,13 +53,12 @@ class FontStyle
     //======================================================================/
     private:
 
-        int myYOffset;
-        int myXOffset;
-        int myPointSize;
-        bool myIsItalic;
-        std::string myFontPath;
-        dime::Color myColor;
-        bool myIsBold;
+        dime::BackgroundStyle myBackgroundStyle;
+        dime::TextStyle myTextStyle;
+        dime::Theme::Style myParentStyle;
+        dime::IconStyle myIconStyle;
+        std::string myStyleID;
+        dime::Color myForeColor;
 
     //======================================================================
     // Public Methods
@@ -74,16 +69,16 @@ class FontStyle
     // Constructors
 
     /**
-     * Creates a new FontStyle using default values.
+     * Creates a new Style using default values.
      */
-     FontStyle()
+     Style()
      {
      }
 
     /**
      * Copy constructor.
      */
-    FontStyle( const FontStyle &source )
+    Style( const Style &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -94,10 +89,15 @@ class FontStyle
     /**
      * Assignment operator.
      */
-    FontStyle &operator= ( const FontStyle &source )
+    Style &operator= ( const Style &source )
     {
         // Copy fields from source class to this class here.
-
+	myBackgroundStyle = source.getBackgroundStyle();
+	myTextStyle = source.getTextStyle();
+	myParentStyle = source.getParentStyle();
+	myIconStyle = source.getIconStyle();
+	myStyleID = source.getStyleID();
+	myForeColor = source.getForeColor();
         // Return this object with new value
         return *this;
     }
@@ -107,9 +107,9 @@ class FontStyle
     // Destructor
 
     /**
-     * Deletes a FontStyle instance.
+     * Deletes a Style instance.
      */
-    virtual ~FontStyle ()
+    virtual ~Style ()
     {
         // TODO: Free any allocated resources here.
     }
@@ -121,59 +121,51 @@ class FontStyle
     // Example of a getter method:
 
     /**
-     * Gets the value of YOffset of this FontStyle
+     * Gets the value of BackgroundStyle of this Style
      */
-    int getYOffset() const
+    dime::BackgroundStyle getBackgroundStyle() const
     {
-        return myYOffset;
+        return myBackgroundStyle;
     }
 
     /**
-     * Gets the value of XOffset of this FontStyle
+     * Gets the value of TextStyle of this Style
      */
-    int getXOffset() const
+    dime::TextStyle getTextStyle() const
     {
-        return myXOffset;
+        return myTextStyle;
     }
 
     /**
-     * Gets the value of PointSize of this FontStyle
+     * Gets the value of ParentStyle of this Style
      */
-    int getPointSize() const
+    dime::Theme::Style getParentStyle() const
     {
-        return myPointSize;
+        return myParentStyle;
     }
 
     /**
-     * Gets the value of IsItalic of this FontStyle
+     * Gets the value of IconStyle of this Style
      */
-    bool getIsItalic() const
+    dime::IconStyle getIconStyle() const
     {
-        return myIsItalic;
+        return myIconStyle;
     }
 
     /**
-     * Gets the value of FontPath of this FontStyle
+     * Gets the value of StyleID of this Style
      */
-    std::string getFontPath() const
+    std::string getStyleID() const
     {
-        return myFontPath;
+        return myStyleID;
     }
 
     /**
-     * Gets the value of Color of this FontStyle
+     * Gets the value of ForeColor of this Style
      */
-    dime::Color getColor() const
+    dime::Color getForeColor() const
     {
-        return myColor;
-    }
-
-    /**
-     * Gets the value of IsBold of this FontStyle
-     */
-    bool getIsBold() const
-    {
-        return myIsBold;
+        return myForeColor;
     }
 
 
@@ -181,65 +173,59 @@ class FontStyle
     // Setters
 
     /**
-     * Sets the value of YOffset of this FontStyle
+     * Sets the value of BackgroundStyle of this Style
      */
-    void setYOffset( int yOffset )
+    void setBackgroundStyle( dime::BackgroundStyle backgroundStyle )
     {
-        myYOffset = yOffset ;
+        myBackgroundStyle = backgroundStyle ;
     }
 
     /**
-     * Sets the value of XOffset of this FontStyle
+     * Sets the value of TextStyle of this Style
      */
-    void setXOffset( int xOffset )
+    void setTextStyle( dime::TextStyle textStyle )
     {
-        myXOffset = xOffset ;
+        myTextStyle = textStyle ;
     }
 
     /**
-     * Sets the value of PointSize of this FontStyle
+     * Sets the value of ParentStyle of this Style
      */
-    void setPointSize( int pointSize )
+    void setParentStyle( dime::Theme::Style parentStyle )
     {
-        myPointSize = pointSize ;
+        myParentStyle = parentStyle ;
     }
 
     /**
-     * Sets the value of IsItalic of this FontStyle
+     * Sets the value of IconStyle of this Style
      */
-    void setIsItalic( bool isItalic )
+    void setIconStyle( dime::IconStyle iconStyle )
     {
-        myIsItalic = isItalic ;
+        myIconStyle = iconStyle ;
     }
 
     /**
-     * Sets the value of FontPath of this FontStyle
+     * Sets the value of StyleID of this Style
      */
-    void setFontPath( std::string fontPath )
+    void setStyleID( std::string styleID )
     {
-        myFontPath = fontPath ;
+        myStyleID = styleID ;
     }
 
     /**
-     * Sets the value of Color of this FontStyle
+     * Sets the value of ForeColor of this Style
      */
-    void setColor( dime::Color color )
+    void setForeColor( dime::Color foreColor )
     {
-        myColor = color ;
-    }
-
-    /**
-     * Sets the value of IsBold of this FontStyle
-     */
-    void setIsBold( bool isBold )
-    {
-        myIsBold = isBold ;
+        myForeColor = foreColor ;
     }
 
 
 
-}; // End of FontStyle
 
+}; // End of Style
+
+} // End of theme namespace
 } // End of dime namespace
 
 #endif
