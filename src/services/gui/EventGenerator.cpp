@@ -110,12 +110,12 @@ void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice 
    
     if(keyboard->getKeyState(key) == dime::InputDevice::PRESSED)
         {
-            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::PRESSED);
+            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::PRESSED, key);
             eventDest->keyPress( event );
         }
     else if (keyboard->getKeyState(key) == dime::InputDevice::RELEASED)
         {
-            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::RELEASED);
+            event = new KeyPressEvent(keyboard, eventDest, key, KeyPressEvent::RELEASED, key);
             eventDest->keyPress( event );
         }
 

@@ -79,7 +79,7 @@ class TextBox : public Label
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
 	RectangleRenderer myBackRect;
-
+    
 	//======================================================================
     // Public Methods
     //======================================================================
@@ -95,7 +95,7 @@ class TextBox : public Label
     {
     }
 
-	TextBox(const Rectangle& rect) : Label("Test",rect),
+	TextBox(std::string text, const Rectangle& rect) : Label(text ,rect),
 		myBackRect(RectangleRenderer::FLAT_COLOR, rect, Color(255,0,0))
     {
     }
@@ -142,34 +142,54 @@ class TextBox : public Label
     //----------------------------------------------------------------------
     // Setters
 
-
     //----------------------------------------------------------------------
     // Other public methods
-
-	/**
-	 * Draws the widget, and/or its children.
-	 */
+    /**
+     * Draws the widget, and/or its children.
+     */
     virtual int draw(DrawDevice *target);
+    /**
+     * Takes keyPresses and feeds them into the textbuffer.
+     */
+    virtual bool keyPress( KeyPressEvent *event)
+    { 
+        if (event->getState() == KeyPressEvent::PRESSED)
+            {
+                std::string myText = dime::Label::getText();
+                int i = 0;
+                int w;
+                std::string fittedText;
 
-	/**
-	 * Takes keyPresses and feeds them into the textbuffer.
-	 */
-	virtual bool keyPress( KeyPressEvent *event)
-	{ 
-		if (event->getState() == KeyPressEvent::PRESSED)
-		{
-			std::string &myText=myFontRenderer->getText();
-			myText += event->getKey();
-			myFontRenderer->setText(myText);
-			
-		}
-		return true;        
-	}
-
-	virtual void mouseUp( MouseButtonEvent* event) {
-		Widget::onMouseUp(event);
-	}
-
+                if(event->getSDLKey() == SDLK_BACKSPACE)
+                    {
+                        if(myText.length() > 0)
+                            {
+                                myText = myText.substr(0, myText.length()-1);
+                            }
+                    }
+                else
+                    {
+                        myText += event->getKey();
+                    }
+                dime::Label::setText(myText);
+                dime::Font *font = myFontRenderer->getFont();
+                font->sizeText(myText.substr(i, myText.length()-i), &w, NULL);
+                
+                while(w > dime::Widget::getRectangle().getWidth())
+                    {
+                        ++i;
+                        font->sizeText(myText.substr(i, myText.length()-i), &w, NULL);
+                    }
+                fittedText = myText.substr(i, myText.length()-i);
+                
+                myFontRenderer->setText(fittedText);
+            }
+        return true;        
+    }
+    virtual void mouseUp( MouseButtonEvent* event) {
+        Widget::onMouseUp(event);
+    }
+ 
 
     //======================================================================
     // Protected Methods

@@ -94,9 +94,9 @@ class Label : public Widget
         : Widget()
     {
 #ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",20);
+      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
 #else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",20);
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
 #endif 
       assert(font);
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(255,255,255), Rectangle(0,0,0,0));
@@ -109,12 +109,12 @@ class Label : public Widget
         : Widget(rect)
     {
 #ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",20);
+      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
 #else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",20);
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
 #endif 
       assert(font);
-      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(255,255,255), Rectangle(0,0,0,0));
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(255,255,255), rect);
     }
 
     
@@ -125,9 +125,9 @@ class Label : public Widget
         : Widget(rect)
     {
 #ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",20);
+      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
 #else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",20);
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
 #endif 
       assert(font);
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, text, font, Color(255,255,255), rect);

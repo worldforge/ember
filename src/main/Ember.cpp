@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
 	dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 
-	dime::TextBox myTestTextBox(dime::Rectangle(10,40,200,60));
+	dime::TextBox myTestTextBox("Test TextBox!", dime::Rectangle(10,40,200,60));
 
 	dime::Button myTestButton(dime::Rectangle(300,300,100,75));
 	myTestButton.setBackground(dime::RectangleRenderer(dime::RectangleRenderer::BITMAP,myTestButton.getRectangle(),"quitbutton2.png"));

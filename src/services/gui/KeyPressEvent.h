@@ -58,6 +58,11 @@ namespace dime {
       }
       
       
+    KeyPressEvent(InputDevice *device, Widget *widget, char key, State state, const SDLKey &SDLKey)
+        : Event(device, widget), myState(state), myKey(key), mySDLKey(SDLKey)
+      {
+          assert(device);
+      }
 
     /**
      * Virtual Destructor
@@ -91,9 +96,15 @@ namespace dime {
       }
     
 
-
+      SDLKey getSDLKey()
+      {
+          return mySDLKey;
+      }
+      
+          
   protected:
       char myKey;
+      const SDLKey mySDLKey;
       State myState;
   };
   
