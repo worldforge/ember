@@ -89,19 +89,19 @@ class DimeServices
      */
     dime::LoggingService *myLoggingService;
 
-	/*
-	* The instance of the ConfigService
-	*/
-	dime::ConfigService *myConfigService;
+    /**
+     * The instance of the ConfigService
+     */
+    dime::ConfigService *myConfigService;
 
-	/*
-	* The instance of the InputService
-	*/
-	dime::InputService *myInputService;
+    /**
+     * The instance of the InputService
+     */
+    dime::InputService *myInputService;
 	
-	/*
-	 * The instance of the GuiService
-	*/
+    /**
+     * The instance of the GuiService
+     */
     dime::GuiService *myGuiService;
 
     /**
@@ -122,10 +122,10 @@ class DimeServices
     dime::ServerService *myServerService;
 #endif
 
-	/**
-	 * The instance of the SoundService
-	 */
-	dime::SoundService *mySoundService;
+    /**
+     * The instance of the SoundService
+     */
+    dime::SoundService *mySoundService;
 
     /**
      * The DimeServices singleton instance.
@@ -165,15 +165,12 @@ class DimeServices
      */
     static DimeServices *getInstance()
     {
-        if( theInstance )
-        {
-            return theInstance;
-        }
-        else
+        if( !theInstance )
         {
             theInstance = new DimeServices();
-            return theInstance;
         }
+
+	return theInstance;
     }
 
 
@@ -200,15 +197,15 @@ class DimeServices
         return dime::LoggingService::getInstance();
     }
 
-	/**
-	 * Returns an instance of the ConfigService
-	 */
-	dime::ConfigService *getConfigService()
-	{
-		return dime::ConfigService::getInstance();
-	}
+    /**
+     * Returns an instance of the ConfigService
+     */
+    dime::ConfigService *getConfigService()
+      {
+	return dime::ConfigService::getInstance();
+      }
 
-	/**
+    /**
      * Returns an instance of the InputService
      */
     dime::InputService *getInputService()
@@ -221,8 +218,10 @@ class DimeServices
      */
     dime::GuiService *getGuiService()
     {
-        if (myGuiService == NULL) myGuiService = new dime::GuiService();
-		return myGuiService;
+        if (myGuiService == NULL)
+	  myGuiService = new dime::GuiService();
+
+	return myGuiService;
     }
 
     /**
@@ -233,8 +232,9 @@ class DimeServices
 #else
     dime::MetaserverService *getMetaserverService()
     {
-        if (myMetaserverService == NULL) myMetaserverService = new dime::MetaserverService();
-		return myMetaserverService;
+        if (myMetaserverService == NULL)
+	  myMetaserverService = new dime::MetaserverService();
+	return myMetaserverService;
     }
 #endif
 
@@ -246,8 +246,9 @@ class DimeServices
 #else
     dime::ServerService *getServerService()
     {
-        if (myServerService == NULL) myServerService = new dime::ServerService();
-		return myServerService;
+        if (myServerService == NULL)
+	  myServerService = new dime::ServerService();
+	return myServerService;
     }
 #endif
 
@@ -256,8 +257,9 @@ class DimeServices
      */
     dime::SoundService *getSoundService()
     {
-        if (mySoundService == NULL) mySoundService = new dime::SoundService();
-		return mySoundService;
+        if (mySoundService == NULL)
+	  mySoundService = new dime::SoundService();
+	return mySoundService;
     }
 
     //----------------------------------------------------------------------

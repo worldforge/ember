@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.37  2002-09-07 13:38:10  aglanor
+ *      Revision 1.38  2002-10-04 14:44:32  xmp
+ *      Major code cleanup of Application Class.  Removed variables that were duplicated in DimeServices
+ *
+ *      Revision 1.37  2002/09/07 13:38:10  aglanor
  *      Configuration service is now started with the application. I've also break the log line in the src/main Makefile.am which loads the serrvice static libs, now it's more readable.
  *
  *      Revision 1.36  2002/08/30 19:31:33  aglanor
@@ -138,12 +141,16 @@
 
 #include "Application.h"
 #include "DimeServices.h"
+#include "services/datamodel/DataObject.h"
+#include "services/datamodel/DataModelService.h"
+
 #include <iostream>
 #include <iomanip>
 #include <strstream>
-#include <services/datamodel/DataObject.h>
-#include <services/datamodel/DataModelService.h>
 #include <iterator>
+#ifndef WIN32
+#include <stdio.h>
+#endif
 
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
@@ -161,7 +168,7 @@ namespace dime
      * timeStamp importance file "\t" line "\t" message
      */
 
-	Application * Application::theApplication = NULL;
+    Application * Application::theApplication = NULL;
 
     class CerrLogObserver: public dime::LoggingService::Observer
     {
@@ -175,21 +182,21 @@ namespace dime
         {
             tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
 		
-			std::cerr.fill('0');			
+	    std::cerr.fill('0');
             std::cerr << "[";
-			std::cerr.width(2);		
-			std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
-			std::cerr.width(2);					
-			std::cerr << ctm->tm_mon+1 << "-";
-			std::cerr.width(2);			
-			std::cerr << ctm->tm_mday << " ";
-			std::cerr.width(2);
-			std::cerr << ctm->tm_hour << ":";
-			std::cerr.width(2);
-			std::cerr <<  ctm->tm_min << ":";
-			std::cerr.width(2);			
-			std::cerr << ctm->tm_sec << "] ";			
-			std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
+	    std::cerr.width(2);		
+	    std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
+	    std::cerr.width(2);					
+	    std::cerr << ctm->tm_mon+1 << "-";
+	    std::cerr.width(2);			
+	    std::cerr << ctm->tm_mday << " ";
+	    std::cerr.width(2);
+	    std::cerr << ctm->tm_hour << ":";
+	    std::cerr.width(2);
+	    std::cerr <<  ctm->tm_min << ":";
+	    std::cerr.width(2);			
+	    std::cerr << ctm->tm_sec << "] ";			
+	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
 
             if(importance == dime::LoggingService::CRITICAL)
                 {
@@ -219,45 +226,44 @@ namespace dime
     };
 
 
-	void onMetaserverService(PDataObject p, DataType t)
-	{
-		//fired whenever the state changed
-		std::strstream dump;
-		dump << "onMetaserverService called." << std::endl;
-		dump << "dumping /servers {" << std::endl;
+  void onMetaserverService(PDataObject p, DataType t)
+  {
+    //fired whenever the state changed
+    std::strstream dump;
+    dump << "onMetaserverService called." << std::endl;
+    dump << "dumping /servers {" << std::endl;
+    
+    DataModelService::dump(DataObject::getRoot("/"), dump, true, 0);
+    
+    dump << "}";
+    dump.put(0);
 
-		DataModelService::dump(DataObject::getRoot("/"), dump, true, 0);
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
+      << dump.str() << ENDM;
+  }
 
-		dump << "}";
-		dump.put(0);
-
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
-			<< dump.str() << ENDM;
-	}
-
-    Application::Application(int width, int height, std::string title)
-        : myShouldQuit(false) 
+    Application::Application(int width, int height, std::string title) :
+      myWidth(width), myHeight(height), myShouldQuit(false) 
     {
 
 
-        myLoggingService = DimeServices::getInstance()->getLoggingService();
-        myLoggingService->addObserver(new CerrLogObserver());
+        LoggingService *logging = DimeServices::getInstance()->getLoggingService();
+	logging->addObserver(new CerrLogObserver());
 
-        if(width >=0)
-            {
-                myWidth=width;
-            }
-        if(height >=0)
-            {
-                myHeight=height;
-            }
+        if(myWidth < 0)
+	  {
+	    myWidth=0;
+	  }
+        if(myHeight < 0)
+	  {
+	    myHeight = 0;
+	  }
 
 
         if((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER)==-1)) 
             {
-                myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, 
+                logging->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, 
                                       "Couldn't init SDL");
-                //std::cerr << "Couldn't init SDL";
                 return;
             } 
         else 
@@ -266,56 +272,57 @@ namespace dime
                 myScreen = SDL_SetVideoMode(myWidth, myHeight, 16, SDL_SWSURFACE);
             }
 
-		SDL_EnableUNICODE(1);
+	SDL_EnableUNICODE(1);
 
         // Setting title.  The second argument is for an Icon. 
         // Remember if passing a std::string to a char * function, you must use .c_str()
         SDL_WM_SetCaption(title.c_str(), NULL);
 
-		// Initialize the InputService
-		myInputService = InputService::getInstance();
+	// Initialize the InputService
+	myInputService = InputService::getInstance();
 
-		// Initialize the ConfigService
-		myConfigService = DimeServices::getInstance()->getConfigService();
-		myConfigService->start();
+	// Initialize the ConfigService
+	DimeServices::getInstance()->getConfigService()->start();
 
+	// Mouse and Keyboard are needed, so create them
+	// %TODO xmp,5: WHAT THE...? I suspect that these are in error
+	new MouseDevice;
+	new KeyboardDevice;
 
-		// Mouse and Keyboard are needed, so create them
+	// Initialize the GuiService.
+	// Initialize the DrawDevice
+	// Set the DrawDevice target for GuiService
+	DimeServices::getInstance()->getGuiService()->setDrawTarget(new SDLDrawDevice(myScreen));
 
-		new MouseDevice;
-		new KeyboardDevice;
+#ifndef WIN32
+	// Test that /dev/dsp is availible
+	FILE *temp = fopen("/dev/dsp","w");
+	if (temp) {
+	  fclose(temp);
+#endif
+	// Initialize the SoundService
+	DimeServices::getInstance()->getSoundService()->start();
+#ifndef WIN32
+	}
+#endif
 
-		// Initialize the DrawDevice
-		myDrawDevice = new SDLDrawDevice(myScreen);
-
-		// Initialize the GuiService.
-		myGuiService = DimeServices::getInstance()->getGuiService();
-
-		// Set the DrawDevice target for GuiService
-		myGuiService->setDrawTarget(myDrawDevice);
-
-		// Initialize the SoundService
-		mySoundService = DimeServices::getInstance()->getSoundService();
-		mySoundService->start();
-
-		// Initialize and start the MetaserverService.
+	// Initialize and start the MetaserverService.
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-		// Set Eris Logging Level
-		Eris::setLogLevel(Eris::LOG_DEBUG);
+	// Set Eris Logging Level
+	Eris::setLogLevel(Eris::LOG_DEBUG);
 
-		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
-		myMetaserverService->start();
+	DimeServices::getInstance()->getMetaserverService()->start();
 		
-		//just for test:
-		PDataObject metaState = DataObject::getRoot("/servers/state"); 
-		metaState->addConnection(SigC::slot(onMetaserverService), POST_VALUE_CHANGE);
+	//just for test:
+	PDataObject metaState = DataObject::getRoot("/servers/state"); 
+	metaState->addConnection(SigC::slot(onMetaserverService), POST_VALUE_CHANGE);
 
-		onMetaserverService(metaState, POST_VALUE_CHANGE);
+	onMetaserverService(metaState, POST_VALUE_CHANGE);
 
-		// Create and start ServerService
-		DimeServices::getInstance()->getServerService()->start();
+	// Create and start ServerService
+	DimeServices::getInstance()->getServerService()->start();
 #endif
     }
 
@@ -336,13 +343,13 @@ namespace dime
             {
                 dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
             }
-        myGuiService->refresh();
+        dime::DimeServices::getInstance()->getGuiService()->refresh();
 
 	// Eris polling
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-		Eris::PollDefault::poll();
+	Eris::PollDefault::poll();
 #endif
     }
 
@@ -358,9 +365,9 @@ namespace dime
         return myShouldQuit;
     }
 
-	void Application::quit()
-	{
-		myShouldQuit = true;
-	}
+    void Application::quit()
+      {
+	myShouldQuit = true;
+      }
 
 }

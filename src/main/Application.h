@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.18  2002-09-07 13:38:10  aglanor
+ *      Revision 1.19  2002-10-04 14:44:32  xmp
+ *      Major code cleanup of Application Class.  Removed variables that were duplicated in DimeServices
+ *
+ *      Revision 1.18  2002/09/07 13:38:10  aglanor
  *      Configuration service is now started with the application. I've also break the log line in the src/main Makefile.am which loads the serrvice static libs, now it's more readable.
  *
  *      Revision 1.17  2002/08/30 19:31:33  aglanor
@@ -104,7 +107,7 @@ namespace dime
         //======================================================================
     public:    
         /**
-         * Ctor for dime::::Application.  Allcoates and pops up an SDL window 
+         * Ctor for dime::Application.  Allcoates and pops up an SDL window 
          * of width, and height with title.
          *
          * @param width The width of the Application window(default=640)
@@ -114,7 +117,7 @@ namespace dime
         Application(int width=640, int height=480, std::string title="Dime Application");
 
         /**
-         * Dtor for dime::::Application.  Free the current surface.
+         * Dtor for dime::Application.  Free the current surface.
          *
          */
         ~Application();
@@ -139,34 +142,31 @@ namespace dime
          */
         bool shouldQuit();
 
-		/**
-		 * Causes the application to quit.
-		 */
-		void quit();
+	/**
+	 * Causes the application to quit.
+	 */
+	void quit();
 	   
-		void escPressed(InputDevice * , InputDevice * keyDevice, const DimeKey &key, InputMapping::InputSignalType signaltype)
-		{
-			quit();
-		}
+	void escPressed(InputDevice * , InputDevice * keyDevice, const DimeKey &key, InputMapping::InputSignalType signaltype)
+	  {
+	    quit();
+	  }
 		
-		//----------------------------------------------------------------------
-		// Singleton
+	//----------------------------------------------------------------------
+	// Singleton
 
-		/**
-		 * Returns the Application instance.
-		 */
-		static Application *getInstance()
-		{
-			if( theApplication )
-			{
-				return theApplication;
-			}
-			else
-			{
-				theApplication = new Application();
-				return theApplication;
-			}
-		}
+	/**
+	 * Returns the Application instance.
+	 */
+	static Application *getInstance()
+	  {
+	    if( !theApplication )
+	      {
+		theApplication = new Application();
+	      }
+
+	    return theApplication;
+	  }
 
     private:
         /**
@@ -180,57 +180,24 @@ namespace dime
         int myHeight;
 
         /**
-         * An internal flag used to signal when to quite.
+         * An internal flag used to signal when to quit.
          */
         bool myShouldQuit;
        
-        /**
-         * Our pointer to the LoggingService
-         */
-        dime::LoggingService *myLoggingService;
-
-		/**
-		* Our pointer to the ConfigService
-		 */
-		dime::ConfigService *myConfigService;
-
-        /**
-         * Our pointer to the GuiService
-         */
-        dime::GuiService *myGuiService;
-
         /**
          * Our pointer to the InputService
          */
         dime::InputService *myInputService;
 
         /**
-         * Our pointer to the MetaserverService
-         */
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
-        dime::MetaserverService *myMetaserverService;
-#endif
-        /**
          * Our pointer to the SDL_surface we use as the screen
          */
         SDL_Surface *myScreen;
 
-		/**
-		 * Our pointer to a DrawDevice wrapped around the SDL_surface we use as the screen
-		 */
-		SDLDrawDevice *myDrawDevice;
-
-		/**
-		* Our pointer to the SoundService
-		 */
-		dime::SoundService *mySoundService;
-
-		/**
-		 * Pointer to ourselves
-		 */
-		static Application *theApplication;
+	/**
+	 * Pointer to ourselves
+	 */
+	static Application *theApplication;
        
     };//class Application
 }//namespace dime
