@@ -38,7 +38,7 @@ dime::Font *dime::FontService::loadFontIndex(const std::string& fontName, int po
     error = FT_New_Face( library, fontName.c_str(), 0, &face );
     if( error ) {
         myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
-            << "Couldn't load font File: [" << fontName << "], PointSize: [" << pointSize << "], Index: [" << index << "]\n";
+	  << "Couldn't load font File: [" << fontName << "], PointSize: [" << pointSize << "], Index: [" << index << "]"<<ENDM;
         delete font;
 	THROW("Can't load font file")
 	  //return NULL;
@@ -49,14 +49,14 @@ dime::Font *dime::FontService::loadFontIndex(const std::string& fontName, int po
             error = FT_New_Face( library, fontName.c_str(), index, &face );
             if( error ) {
                 myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
-                    << "Couldn't get font face.\n";
+		  << "Couldn't get font face."<<ENDM;
                 delete font;
 		THROW("Can't get font face")
 		  //return NULL;
             }
         } else {
             myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
-                << "No Such font face.\n";
+	      << "No Such font face."<<ENDM;
             delete font;
 	    THROW("No such font face")
 	      //return NULL;
@@ -66,7 +66,7 @@ dime::Font *dime::FontService::loadFontIndex(const std::string& fontName, int po
     /* Make sure that our font face is scalable (global metrics) */
     if ( ! FT_IS_SCALABLE(face) ) {
         myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
-            << "Font face is not scalable";
+	  << "Font face is not scalable"<<ENDM;
         closeFont( font );
 	THROW("Font face is not scalable")
 	  //return NULL;
@@ -75,7 +75,7 @@ dime::Font *dime::FontService::loadFontIndex(const std::string& fontName, int po
     error = FT_Set_Char_Size( face, 0, pointSize * 64, 0, 0 );
     if( error ) {
         myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
-            << "Couldn't set font size";
+	  << "Couldn't set font size"<<ENDM;
         closeFont( font );
         THROW("Couldn't set font size")
 	//return NULL;

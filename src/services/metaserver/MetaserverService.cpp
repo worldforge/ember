@@ -66,30 +66,16 @@ namespace dime
 	int MetaserverService::start()
 	{
 		setStatus(1);
-        setRunning( true );
+		setRunning( true );
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
 		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::GotServerCount));
 		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::GotFailure));
-    	listed = false;
+		msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::ReceivedServerInfo));
+		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::CompletedServerList));
+		listed = false;
 
-    	// waiting for James to implement this
-	//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << "endl";
-		//Eris::Serverlist whatever;
-		svrl l = msrv -> getGameServerList ();
-		
-		strstream out;
-		out << "listing hostnames" << endl;
-		
-		for(Iter i = l.begin(); i != l.end(); i++)
-		{	
-			//HINT: Always use .data() for compatibility to MSVC
-			out << "Hostname: " << (i)->getHostname().data() << endl;
-	    }
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << out.str() << ENDM;
-		
 		return 0;
-	
 	}
 
 	/* Interface method for stopping this service 	*/
@@ -102,13 +88,49 @@ namespace dime
 	void MetaserverService::GotServerCount(int count)
 	{
 	  char str[1024];
-	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got" << count << "game servers." << ENDM;
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got " << count << " game servers." << ENDM;
 	}	
 	
 	void MetaserverService::GotFailure(string msg)
 	{
 	 LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
-	}	
+	}
+  
+  void MetaserverService::ReceivedServerInfo(Eris::ServerInfo sInfo)
+  {
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
+										  << "Hostname: " <<sInfo.getHostname()
+										  << "\n\rServerName: "<<sInfo.getServername()
+										  << "\n\rRuleset: "<<sInfo.getRuleset()
+										  << "\n\rServer Type: "<<sInfo.getServer()
+										  << "\n\rClients: "<<sInfo.getNumClients()
+										  << " Ping: "<< sInfo.getPing()
+										  << " Uptime: "<< sInfo.getUptime()
+										  << ENDM;
+    return;
+  }
+  void MetaserverService::CompletedServerList()
+	{
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Server List completed." << ENDM;
+	  listed = true;
+
+		// waiting for James to implement this
+		//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << msrv->getGameServerCount() << "endl";
+		//Eris::Serverlist whatever;
+		svrl l = msrv -> getGameServerList ();
+		
+		strstream out;
+		out << "Listing hostnames..." << endl;
+		
+		for(Iter i = l.begin(); i != l.end(); i++)
+		{	
+			//HINT: Always use .data() for compatibility to MSVC
+			out << "Hostname: " << (i)->getHostname().data() << endl;
+		}
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << out.str() << ENDM;
+
+		return;
+	}
 	
 #if 0
   	void MetaserverService::poll()
