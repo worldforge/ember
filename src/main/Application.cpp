@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.6  2002-02-18 21:51:06  tim
+ *      Revision 1.7  2002-03-30 09:33:06  adamgreg
+ *
+ *      Input now successfully obtained by GuiService from InputService. Button Widget added. Widget events work. Proper use of RectangleRenderers.
+ *      The upshot is : pretty thing on screen that does stuff. Check it out!
+ *
+ *      Revision 1.6  2002/02/18 21:51:06  tim
  *      Added CppUnit stuff.
  *
  *      Revision 1.5  2002/01/27 23:20:53  nikal
@@ -104,6 +109,7 @@ namespace dime
     {
         myLoggingService = DimeServices::getInstance()->getLoggingService();
         myLoggingService->addObserver(new CerrLogObserver());
+		
         if(width >=0)
             {
                 myWidth=width;
@@ -121,11 +127,14 @@ namespace dime
             } 
         else 
             {
-                myScreen = SDL_SetVideoMode(myWidth, myHeight, 8, SDL_SWSURFACE);
+                myScreen = SDL_SetVideoMode(myWidth, myHeight, 16, SDL_SWSURFACE);
             }
         // Setting title.  The second argument is for an Icon. 
         // Remember if passing a std::string to a char * function, you must use .c_str()
         SDL_WM_SetCaption(title.c_str(), NULL);
+			
+		// Initialize the GuiService.
+		myGuiService = DimeServices::getInstance()->getGuiService();
     }
 
     Application::~Application() {
@@ -189,9 +198,10 @@ namespace dime
                     myShouldQuit = true;
                     break;
                 }
-     
+
+				dime::DimeServices::getInstance()->getInputService()->handleEvent(nextEvent);
             }
-        //return nextEvent;
+		myGuiService->refresh();
     }
 
     void Application::mainLoop() 

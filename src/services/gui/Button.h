@@ -21,6 +21,8 @@
 
 // Included headers from the current project
 #include "Widget.h"
+#include <services/platform/RectangleRenderer.h>
+#include <services/platform/SDLDrawDevice.h>
 
 // Included custom library headers
 // (1) Include the signal system in headers file.
@@ -28,7 +30,7 @@
 
 // Included system headers
 
-namespace Dime {
+namespace dime {
 
 /**
  * The Button interface.
@@ -40,13 +42,48 @@ namespace Dime {
  * 
  *
  * @author Lakin Wecker
+ * @author Adam Gregory
  *
- * @see Dime::ParaGuiButton
  *
  */
-class Button : Dime::Widget
+class Button : public Widget, public SigC::Object
 
 {
+	//======================================================================
+    // Public Signals
+    //======================================================================
+    public:
+    
+    /**
+     * Connect a slot here to observe when a mouse button is pressed.
+     */
+    SigC::Signal1<void, Button*> onMouseDown;
+	
+    /**
+     * Connect a slot here to observe when a mouse button is released.
+     */
+    SigC::Signal1<void, Button*> onMouseUp;
+    
+    /**
+     * Connect a slot here to observe MouseMotions
+     */
+    SigC::Signal1<void, Button*> onMouseMove;
+    
+    /**
+     * Connect a slot here to observe when MouseMoves over this Widget
+     */
+    SigC::Signal1<void, Button*> onMouseEnter;
+    
+    /**
+     * Connect a slot here to observe when a Mouse leaves this Widget
+     */
+    SigC::Signal1<void, Button*> onMouseExit;
+    
+    /**
+     * Connect a slot here to observe when a key is pressed and this Widget has focus.
+     */
+    SigC::Signal2<void, Button*, SDLKey> onKeyPress;
+
     //======================================================================
     // Inner Classes, Typedefs, and Enums
     //======================================================================
@@ -70,15 +107,7 @@ class Button : Dime::Widget
     //======================================================================
     private:
 
-    /**
-     * Stores the 
-     */
-
-    /**
-     * This variable is used to keep track of the next free ID number for a new gizmo.
-     */
-    static int theNextId;
-
+		RectangleRenderer *myBackground;
 
     //======================================================================
     // Public Methods
@@ -89,9 +118,9 @@ class Button : Dime::Widget
     // Constructors
 
     /**
-     * Cretaes a new Button using default values.
+     * Creates a new Button using default values.
      */
-    Button()
+    Button() : Widget()
     {
     }
 
@@ -115,7 +144,7 @@ class Button : Dime::Widget
         // Copy fields from source class to this class here.
 
         // Return this object with new value
-        return &this;
+        return *this;
     }
 
 
@@ -134,63 +163,36 @@ class Button : Dime::Widget
     //----------------------------------------------------------------------
     // Getters
 
-    // Example of a getter method:
-
-    /**
-     * Returns the name of this gizmo.
-     * The name is guaranteed to be unique among all gizmos.
-     */
-    virtual std::string getName() const
-    {
-        return myName;
-        // NOTE: If we just read or set a local variable, the
-        //       getter/setter can be inline.  If more complex logic
-        //       is needed, it may be better to have the implementation in
-        //       the cpp file.
-    }
-
 
     //----------------------------------------------------------------------
     // Setters
 
-    // Example of a setter method:
-
     /**
-     * Sets the name of this gizmo.
-     * If there already is a gizmo with this name, a number will be
-     * appended to the name, and the naming will be attempted again.
-     *
-     * @param name The new name of the gizmo.
-     */
-    virtual void setName( std::string name );
-
+     * Sets the background RectangleRenderer of this Widget
+     */	
+	virtual void setBackground(RectangleRenderer *background)
+	{
+		myBackground = background;
+	}
 
     //----------------------------------------------------------------------
     // Other public methods
-    // NOTE: Group related public methods together and crate a separator comment like above for them.
 
-    /**
-     * NOTE: This is an example method declaration.
-     *
-     * Creates a new string that repeats a given string some number of times.
-     * There's no extra space added between the strings in the produced string.
-     * Null characters are handled correctly too.
-     *
-     * @param message The message string to repeat.
-     * @param repeatCount How many times to repeot the message in the produced String.
-     *                    Must be >= 0, an less than 2000.  If it is 0 then the produced string is empty.
-     *
-     * @return A string consisting of the specified number of the input strings,
-     *         or null if the character copier suffered a fatal error.
-     *
-     * @see OtherSubsystem::SomeOtherRelatedClass
-     * NOTE: Add other related classes here, doxygen will create links to them.
-     *
-     * @author Anonymous Coward
-     */
-    virtual std::string createRepeatingString( std::string message, int repeatCount ) const;
+	/**
+	 * Draws the widget, and/or its children.
+	 */
+    virtual int draw();
 
+	/**
+	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
+	 */
+	virtual bool checkMouseEvent(std::vector<int> coords);
+	
+	virtual void highlight();
+	
+	virtual void lowlight();
 
+	
     //======================================================================
     // Protected Methods
     //======================================================================

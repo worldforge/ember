@@ -86,7 +86,7 @@ class GuiService : public Service, public SigC::Object
 	/**
 	 * Returns the root widget
 	 */
-	Container& GetRootWidget()
+	Container& getRootWidget()
 	{
 		return myRootWidget;
 	}
@@ -100,14 +100,19 @@ class GuiService : public Service, public SigC::Object
 	/**
 	 * Draws the GUI
 	 */
-	int refresh();
+	void refresh();
 	
 	/**
-	 * Passes mouse input events down to widget tree
+	 * Passes mouse motion events down to widget tree
 	 */
-
 	void MouseMotion(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
 	
+	/**
+	 * Passes mouse motion events down to widget tree
+	 */
+	void MouseClick(InputDevice *mouse, const SDLKey &key, InputMapping::InputSignalType signaltype);
+
+
     //----------------------------------------------------------------------
     // Methods inherited from Service
     /**

@@ -29,7 +29,7 @@ namespace dime {
 
 
 /**
- * The SDLDrawDevice which uses SDL to do it's drawing/blitting.
+ * The SDLDrawDevice which uses SDL to do its drawing/blitting.
  *
  * The SDLDrawDevice uses SDL to draw lines, gradients, rects and blit surfaces
  * It requires and SDL_Surface pointer to the surface on which it will be operating.

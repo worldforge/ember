@@ -151,7 +151,7 @@ class DimeServices
      */
     dime::LoggingService *getLoggingService()
     {
-        return myLoggingService;
+        return dime::LoggingService::getInstance();
     }
 
 	/**
@@ -159,7 +159,7 @@ class DimeServices
      */
     dime::InputService *getInputService()
     {
-        return myInputService;
+        return dime::InputService::getInstance();
     }
 	
 	/**
@@ -167,7 +167,8 @@ class DimeServices
      */
     dime::GuiService *getGuiService()
     {
-        return myGuiService;
+        if (myGuiService == NULL) myGuiService = new dime::GuiService();
+		return myGuiService;
     }
 
     //----------------------------------------------------------------------
@@ -199,9 +200,7 @@ class DimeServices
      */
     DimeServices()
     {
-        myLoggingService = new dime::LoggingService();
-		myInputService	 = new dime::InputService();
-		myGuiService	 = new dime::GuiService();
+		myGuiService = NULL;
     }
 
 

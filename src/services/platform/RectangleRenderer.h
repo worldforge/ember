@@ -35,14 +35,6 @@
 #define BITMAP          3
 #define GRID            4
 
-/**
- * Gradient types
- */
-#define HORIZONTAL      1
-#define VERTICAL        2
-#define DIAGONAL        3
-
-
 namespace dime {
 
     /**
@@ -105,11 +97,7 @@ namespace dime {
         Color myColor;
         Color myColor2;
         Color myColor3;
-        Color myColor4;
-
-        int myGradientType;
-
-       
+        Color myColor4;  
 
 
         int myColor1X;
@@ -146,7 +134,7 @@ namespace dime {
         /**
          * Creates a new RectangleRenderer using supplied values..
          */
-        RectangleRenderer(int renderFlag, int gradientFlag, SDL_Rect *rect,
+        RectangleRenderer(int renderFlag, SDL_Rect *rect,
                           Color color1, Color color2, Color color3, Color color4);
 
 
@@ -167,7 +155,22 @@ namespace dime {
 
         //----------------------------------------------------------------------
         // Other public methods	
-	
+
+       /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        void SolidColor(int renderFlag, Uint8 red, Uint8 green, Uint8 blue);
+
+        /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        void SolidColor(int renderFlag, Color color);
+
+        /**
+         * Creates a new RectangleRenderer using supplied values..
+         */
+        void Gradient(int renderFlag, Color color1, Color color2, Color color3, Color color4);
+
         /**
          * Calls appropriate private function to render 
          */

@@ -26,6 +26,7 @@
 
 // Included system headers
 #include <vector>
+#include <SDL/SDL.h>
 // Include the signal system in headers file.
 #include <sigc++/signal_system.h>
 
@@ -48,7 +49,7 @@ class Container;
  *
  */
 
-class Widget
+class Widget : public SigC::Object
 
 {
 
@@ -56,34 +57,36 @@ class Widget
     // Public Signals
     //======================================================================
     public:
-    class MouseClick { };
-    class MouseMotion { };
-    class KeyPress { };
     
     /**
-     * Connect a slot here to Observe MouseClicks.
+     * Connect a slot here to observe when a mouse button is pressed.
      */
-    SigC::Signal1<void, MouseClick> onMouseClick;
+    SigC::Signal1<void, Widget*> onMouseDown;
+	
+    /**
+     * Connect a slot here to observe when a mouse button is released.
+     */
+    SigC::Signal1<void, Widget*> onMouseUp;
     
     /**
      * Connect a slot here to observe MouseMotions
      */
-    SigC::Signal1<void, MouseMotion> onMouseMove;
+    SigC::Signal1<void, Widget*> onMouseMove;
     
     /**
      * Connect a slot here to observe when MouseMoves over this Widget
      */
-    SigC::Signal1<void, MouseMotion> onMouseEnter;
+    SigC::Signal1<void, Widget*> onMouseEnter;
     
     /**
      * Connect a slot here to observe when a Mouse leaves this Widget
      */
-    SigC::Signal1<void, MouseMotion> onMouseExit;
+    SigC::Signal1<void, Widget*> onMouseExit;
     
     /**
      * Connect a slot here to observe when a key is pressed and this Widget has focus.
      */
-    SigC::Signal1<void, KeyPress> onKeyPress;
+    SigC::Signal2<void, Widget*, SDLKey> onKeyPress;
 
 
     //======================================================================
@@ -147,7 +150,7 @@ class Widget
     // Constructors
 
     /**
-     * Cretaes a new NameOfClass using default values.
+     * Cretaes a new Widget using default values.
      */
     Widget()
     {
@@ -306,7 +309,7 @@ class Widget
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
 	 */
-	virtual bool checkMouseEvent(std::vector<int> coords) = 0;
+	virtual bool checkMouseEvent(std::vector<int> coords);
 
 
 }; // End of class

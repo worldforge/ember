@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.4  2002-01-27 23:20:53  nikal
+ *      Revision 1.5  2002-03-30 09:33:06  adamgreg
+ *
+ *      Input now successfully obtained by GuiService from InputService. Button Widget added. Widget events work. Proper use of RectangleRenderers.
+ *      The upshot is : pretty thing on screen that does stuff. Check it out!
+ *
+ *      Revision 1.4  2002/01/27 23:20:53  nikal
  *      Some minor changes reflecting Dime's decision to use only dime:: as a namespace
  *
  *      Revision 1.3  2002/01/27 17:57:52  nikal
@@ -112,6 +117,11 @@ namespace dime
          * Our pointer to the LoggingService
          */
         dime::LoggingService *myLoggingService;
+		
+        /**
+         * Our pointer to the GuiService
+         */
+        dime::GuiService *myGuiService;
 
         /**
          * Our pointer to the SDL_surface we use as the screen

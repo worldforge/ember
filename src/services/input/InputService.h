@@ -106,14 +106,19 @@ class InputService: public Service
 	public:
 	
     //----------------------------------------------------------------------
-    // Constructors & Destructor
+    // Singleton
 
-    /** Creates a new InputService using default values. */
-    InputService()
+    /**
+     * Returns the LoggingService instance.
+     */
+    static InputService *getInstance()
     {
-		setName( "InputService" );
-		setDescription( "Maps user input to different actions." );
+		static InputService singleinstance;
+		return &singleinstance;
     }
+	
+    //----------------------------------------------------------------------
+    // Destructor
 
 
     /** Deletes a InputService instance. */
@@ -237,6 +242,10 @@ class InputService: public Service
 			}
 		}
 
+		if (type == InputDevice::MOUSE)
+		{
+			return new MouseDevice();
+		}
 		return NULL;
 	}
 
@@ -302,6 +311,21 @@ class InputService: public Service
 		}
 
 		return false;
+    }
+	
+    //======================================================================
+    // Private methods
+    //======================================================================
+	private:
+	
+	//----------------------------------------------------------------------
+    // Constructor
+	
+	/** Creates a new InputService using default values. */
+    InputService()
+    {
+		setName( "InputService" );
+		setDescription( "Maps user input to different actions." );
     }
 
 }; // InputService

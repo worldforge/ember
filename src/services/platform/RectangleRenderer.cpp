@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.2  2002-03-30 05:17:34  nikal
+ *      Revision 1.3  2002-03-30 09:33:06  adamgreg
+ *
+ *      Input now successfully obtained by GuiService from InputService. Button Widget added. Widget events work. Proper use of RectangleRenderers.
+ *      The upshot is : pretty thing on screen that does stuff. Check it out!
+ *
+ *      Revision 1.2  2002/03/30 05:17:34  nikal
  *      commiting fixed RectangleRenderers, which compile and use DrawDevice's to do their rendering.  Makefiles should now also try and compile the platform stuff via automake etc.
  *
  *      Revision 1.1  2002/03/22 01:33:00  winand
@@ -37,8 +42,9 @@
  */
 dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
         Uint8 red, Uint8 green, Uint8 blue)
-    : myType(renderFlag), myRect(*rect), myColor(red, green, blue)
 {
+	SolidColor(renderFlag, red, green, blue);
+	myRect = *rect;
 }
 
 
@@ -47,8 +53,9 @@ dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
  */
 dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
         dime::Color color )
-    : myType(renderFlag), myRect(*rect), myColor(color)
 {
+	SolidColor(renderFlag, color);
+	myRect = *rect;
 }
 
 /**
@@ -75,10 +82,42 @@ dime::RectangleRenderer::RectangleRenderer(int renderFlag, SDL_Rect *rect,
 /**
  * Sets up a gradient instance
  */
-dime::RectangleRenderer::RectangleRenderer(int renderFlag, int gradientFlag, 
+dime::RectangleRenderer::RectangleRenderer(int renderFlag, 
                                            SDL_Rect *rect, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
-    : myType(renderFlag), myRect(*rect), myColor(color1), myColor2(color2), myColor3(color3), myColor4(color4), myGradientType(gradientFlag)
 {
+	Gradient(renderFlag, color1, color2, color3, color4);
+	myRect = *rect;
+}
+
+/**
+ * Constructor for a flat solid color rectangle.
+ */
+void dime::RectangleRenderer::SolidColor(int renderFlag, Uint8 red, Uint8 green, Uint8 blue)
+{
+	myType = renderFlag;
+	myColor = Color(red,green,blue);
+}
+
+
+/**
+ * Constructor for a flat solid color rectangle.
+ */
+void dime::RectangleRenderer::SolidColor(int renderFlag, dime::Color color )
+{
+	myType = renderFlag;
+	myColor = color;
+}
+
+/**
+ * Sets up a gradient
+ */
+void dime::RectangleRenderer::Gradient(int renderFlag, dime::Color color1, dime::Color color2, dime::Color color3, dime::Color color4)
+{
+	myType = renderFlag;
+	myColor = color1;
+	myColor2 = color2;
+	myColor3 = color3;
+	myColor4 = color4;
 }
 
 
@@ -96,14 +135,7 @@ int dime::RectangleRenderer::render(dime::DrawDevice *device)
         }
         case GRADIENT:
         {
-            if (myGradientType != DIAGONAL)
-            {
-                renderGradient(device);
-            }
-            else
-            {
-                renderDiagonalGradient(device);
-            }
+			renderGradient(device);
             break;
         }
         case BITMAP:
@@ -158,11 +190,7 @@ int dime::RectangleRenderer::renderFlat(dime::DrawDevice *device)
 int dime::RectangleRenderer::renderGradient(dime::DrawDevice *device)
 {
     device->drawGradient(&myRect, myColor, myColor2, myColor3, myColor4);
-}
-
-int dime::RectangleRenderer::renderDiagonalGradient(dime::DrawDevice *device)
-{
-    device->drawGradient(&myRect, myColor, myColor2, myColor3, myColor4);
+	device->update();
 }
 
 int dime::RectangleRenderer::renderGrid(dime::DrawDevice *device,

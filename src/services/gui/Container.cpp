@@ -29,7 +29,7 @@ bool dime::Container::checkMouseEvent(std::vector<int> coords)
 			{
 				// Mouse has just entered widget.
 				myMouseIsInside = true;
-				onMouseEnter.emit(MouseMotion()); //TODO: MouseMotion?
+				onMouseEnter.emit(this);
 			}
 			std::vector<Widget*>::iterator end = myChildren.end();
 			for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
@@ -50,7 +50,7 @@ bool dime::Container::checkMouseEvent(std::vector<int> coords)
 			{
 				// Mouse just exited this widget.
 				myMouseIsInside = false;
-				onMouseExit.emit(MouseMotion());
+				onMouseExit.emit(this);
 			}
 			return false;
 		}

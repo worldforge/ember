@@ -21,7 +21,7 @@
 
 // Included headers from the current project
 #include "Container.h"
-#include "../platform/RectangleRenderer.h"
+#include <platform/RectangleRenderer.h>
 
 // Included custom library headers
 

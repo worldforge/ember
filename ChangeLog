@@ -2,3 +2,6 @@
     * Added eris into configure.in and added the m4 macro for eris into 
       acinclude.m4 so that configure reports nicely that you don't have it
       instead of crazy automake errors.
+
+2002-03-27 Adam Gregory <Adammgregory@yahoo.com>
+    * Added GuiService to the main build process, with suitably disastrous results :D

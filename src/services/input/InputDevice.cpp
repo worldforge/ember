@@ -18,7 +18,7 @@
 
 #include "InputDevice.h"
 #include "InputMapping.h"
-#include <main/DimeServices.h>
+#include "InputService.h"
 
 namespace dime
 {
@@ -31,13 +31,13 @@ InputDevice::InputDevice(InputDevice::DeviceType type, int index, int subIndex)
 
 	//automatic registration
 	
-	InputService * inputService = DimeServices::getInstance()->getInputService();
+	InputService * inputService = InputService::getInstance();
 	inputService->myInputDevices.push_back(this);
 }
 
 InputDevice::~InputDevice()
 {
-	InputService * inputService = DimeServices::getInstance()->getInputService();
+	InputService * inputService = InputService::getInstance();
 
 	//all mappings have to be removed prior to deleting this input device
 	while (!myMotionMappings.empty())
@@ -257,12 +257,12 @@ bool MouseDevice::handleEvent(SDL_Event & event)
 		return true;
 
 	case SDL_MOUSEBUTTONDOWN:
-		keyPressed((SDLKey&)(event.button.button));
+		keyPressed((SDLKey)(event.button.button));
 		return true;
 	
 
 	case SDL_MOUSEBUTTONUP:
-		keyReleased((SDLKey&)(event.button.button));
+		keyReleased((SDLKey)(event.button.button));
 		return true;
 	
 	case SDL_VIDEORESIZE:

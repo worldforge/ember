@@ -282,7 +282,7 @@ class LoggingService: public Service
 	 * currently set importance (option; used by << streaming only)
 	 * The default value is INFO.
 	 */
-	MessageImportance myImportance;
+	MessageImportance myImportance;	
 
 
     //======================================================================
@@ -291,25 +291,19 @@ class LoggingService: public Service
     public:
 
     //----------------------------------------------------------------------
-    // Constructors
+    // Singleton
 
     /**
-     * Creates a new LoggingService using default values.
+     * Returns the LoggingService instance.
      */
-    LoggingService()
+    static LoggingService *getInstance()
     {
-
-		//set service properties
-		setName("Logging");
-		setDescription("Eases message writing and distribution.");
-		
-
-		//set all option values to not specified
-		myMessage			= "";
-		myFile				= "";
-		myLine				= -1;
-		myImportance		= INFO;
+		static LoggingService singleinstance;
+		return &singleinstance;
     }
+
+    //----------------------------------------------------------------------
+    // Constructors
    
 	/* NOTE: No copy constructor available (needed anywhere?)
 	LoggingService( const LoggingService &source )
@@ -588,6 +582,31 @@ class LoggingService: public Service
     // Private Methods
     //======================================================================
     private:
+
+	//----------------------------------------------------------------------
+    // Constructors
+	
+	/**
+     * Creates a new LoggingService using default values.
+	 * Private so LoggingService can only be initialized through getInstance.
+     */
+    LoggingService()
+    {
+
+		//set service properties
+		setName("Logging");
+		setDescription("Eases message writing and distribution.");
+		
+
+		//set all option values to not specified
+		myMessage			= "";
+		myFile				= "";
+		myLine				= -1;
+		myImportance		= INFO;
+    }
+	
+	//----------------------------------------------------------------------
+    // Other private methods
 
 	/**
 	 * Unifies the sending mechanism for streaming- and formatting-input
