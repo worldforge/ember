@@ -24,7 +24,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.9  2003-07-03 20:12:25  aglanor
+ *      Revision 1.10  2003-09-28 15:16:06  aglanor
+ *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * /src/components/ogre/Makefile.am: removed the cal3d
+ *              to Ogre converter, this app will no longer be here.
+ *              All models will be converted from Cal3d to Open Model
+ *              Format and then to Ogre, all of this outside Dime.
+ *              (also, we don't need the cal3d library anymore,
+ *              until we add a component that uses it, like Crystalspace).
+ *
+ *      Revision 1.9  2003/07/03 20:12:25  aglanor
  *      added sample animation to demo mesh
  *
  *      Revision 1.8  2003/06/23 01:20:34  aglanor
@@ -338,7 +347,7 @@ protected:
             // If returned true, user clicked OK so initialise
             // Here we choose to let the system create a default rendering window by passing 'true'
             mWindow = mRoot->initialise(true);
-            mRoot->showDebugOverlay(true);
+            //mRoot->showDebugOverlay(true);
             return true;
         }
         else

@@ -1,5 +1,5 @@
 INCLUDES=-I$(top_srcdir)/src
-bin_PROGRAMS = DimeOgre Cal3D2Ogre
+bin_PROGRAMS = DimeOgre
 
 DimeOgre_LDADD = $(top_srcdir)/src/services/gui/libGuiService.a \
 $(top_srcdir)/src/services/gui/widget/libGuiServiceWidget.a \
@@ -19,9 +19,6 @@ $(top_srcdir)/src/services/libServices.a
 
 
 DimeOgre_SOURCES = DimeOgre.cpp
-Cal3D2Ogre_SOURCES = Cal3DOgreConverter.cpp
-
-Cal3D2Ogre_LDADD = -lcal3d
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

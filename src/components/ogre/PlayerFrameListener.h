@@ -6,7 +6,16 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.7  2003-07-03 20:12:25  aglanor
+ *      Revision 1.8  2003-09-28 15:16:06  aglanor
+ *      2003-09-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * /src/components/ogre/Makefile.am: removed the cal3d
+ *              to Ogre converter, this app will no longer be here.
+ *              All models will be converted from Cal3d to Open Model
+ *              Format and then to Ogre, all of this outside Dime.
+ *              (also, we don't need the cal3d library anymore,
+ *              until we add a component that uses it, like Crystalspace).
+ *
+ *      Revision 1.7  2003/07/03 20:12:25  aglanor
  *      added sample animation to demo mesh
  *
  *      Revision 1.6  2003/05/07 23:28:43  aglanor
@@ -243,7 +252,7 @@ public:
 		if (mInputDevice->isKeyDown(Ogre::KC_F) && mTimeUntilNextToggle <= 0)
 		{
 			mStatsOn = !mStatsOn;
-			Ogre::Root::getSingleton().showDebugOverlay(mStatsOn);
+			//Ogre::Root::getSingleton().showDebugOverlay(mStatsOn);
 			mTimeUntilNextToggle = 1;
 		}
 
@@ -275,22 +284,43 @@ public:
 		// Pressing 2 connects to red.worldforge.org
 		if(mInputDevice->isKeyDown(Ogre::KC_2) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","65.200.24.220");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","127.0.0.1");
+			std::cout << "Logged to indri" << std::endl;
 			mTimeUntilNextToggle = 1;
 		}
 
 		// Pressing 3 logs in with the account 'ogretest'
 		if(mInputDevice->isKeyDown(Ogre::KC_3) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("login","ogretest ogretest");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("login","aglanor aglanor");
 			mTimeUntilNextToggle = 1;
 		}
 
 		// Pressing 4 takes the character ''
 		if(mInputDevice->isKeyDown(Ogre::KC_4) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","bob_122");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","3");
 			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
+			mDimeOgre->connectWorldSignals();	// connect Eris signals
+			mTimeUntilNextToggle = 1;
+		}
+
+		// Pressing 5 creates an idiotic character
+		if(mInputDevice->isKeyDown(Ogre::KC_5) && mTimeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			fprintf(stderr, "TRACE - CREATING CHARACTER");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("createchar","nada");
+			fprintf(stderr, "TRACE - CHARACTER CREATION");
+			mDimeOgre->connectWorldSignals();	// connect Eris signals
+			mTimeUntilNextToggle = 1;
+		}
+
+		// Pressing 5 creates an idiotic character
+		if(mInputDevice->isKeyDown(Ogre::KC_6) && mTimeUntilNextToggle <= 0) {
+			// TODO: this is an ugly hack (Aglanor)
+			fprintf(stderr, "TRACE - TOUCHING");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("touch","nada");
+			fprintf(stderr, "TRACE - TOUCHED");
 			mDimeOgre->connectWorldSignals();	// connect Eris signals
 			mTimeUntilNextToggle = 1;
 		}
@@ -354,7 +384,7 @@ public:
 			else
 			{
 				// Move about 100 units per second,
-				mMoveScale = 100.0 * evt.timeSinceLastFrame;
+				mMoveScale = 1.0 * evt.timeSinceLastFrame;
 				// Take about 10 seconds for full rotation
 				mRotScale = 36 * evt.timeSinceLastFrame;
 			}
