@@ -88,8 +88,9 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      break;
 	      default:
 		{
+		  Uint16 keyIn = event->getKey().getUnicode();
 		  // TODO: make this insert at Caret position
-		  myText += event->getKey().getUnicode();
+		  myText.insert( myCaretPos, &keyIn );
 		  myCaretPos++;
 		}
 	      }
