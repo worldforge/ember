@@ -76,8 +76,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef <FILENAME>_H
-#define <FILENAME>_H
+#ifndef THEME_H
+#define THEME_H
 
 // Included headers from the current project
 
@@ -86,8 +86,7 @@
 // Included system headers
 
 
-namespace applicationNamespace {
-namespace subsystemNamespace {
+namespace dime {
 
 /**
  * Short sentence with a general description of the class, ending in period.
@@ -112,7 +111,7 @@ namespace subsystemNamespace {
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
-class NameOfClass
+class Theme
 
 {
     //======================================================================
@@ -168,9 +167,9 @@ class NameOfClass
     // Constructors
 
     /**
-     * Cretaes a new NameOfClass using default values.
+     * Cretaes a new Theme using default values.
      */
-    NameOfClass()
+    Theme()
     {
     }
 
@@ -178,7 +177,7 @@ class NameOfClass
     /**
      * Copy constructor.
      */
-    NameOfClass( const NameOfClass &source )
+    Theme( const Theme &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -189,12 +188,12 @@ class NameOfClass
     /**
      * Assignment operator.
      */
-    NameOfClass &operator= ( const NameOfClass &source )
+    Theme &operator= ( const Theme &source )
     {
         // Copy fields from source class to this class here.
 
         // Return this object with new value
-        return &this;
+        return *this;
     }
 
 
@@ -202,9 +201,9 @@ class NameOfClass
     // Destructor
 
     /**
-     * Deletes a NameOfClass instance.
+     * Deletes a Theme instance.
      */
-    virtual ~NameOfClass()
+    virtual ~Theme()
     {
         // TODO: Free any allocated resources here.
     }
@@ -287,39 +286,9 @@ class NameOfClass
     //======================================================================
     private:
 
-    // TODO: If you don't want to provide a copy constructor or some other
-    //       of the standard constructors/operators, then delete the one in
-    //       the public section at the start of the header.  Otherwise delete
-    //       the one in this section.
-
-    /**
-     * Constructor not provided.
-     */
-    NameOfClass()
-    {
-    }
-
-
-    /**
-     * Copy constructor not provided.
-     */
-    NameOfClass( const NameOfClass &source )
-    {
-    }
-
-
-    /**
-     * Assignment operator not provided.
-     */
-    NameOfClass &operator= ( const NameOfClass &source )
-    {
-        return &this;
-    }
-
 
 }; // End of class
 
-} // End of subsystem namespace
 } // End of application namespace
 
 #endif
