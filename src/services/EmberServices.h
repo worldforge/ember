@@ -19,21 +19,19 @@
 #ifndef DIME_SERVICES_H
 #define DIME_SERVICES_H
 
-// Include headers from the current project here
-#include "services/test/TestService.h"
-#include "services/logging/LoggingService.h"
-#include "services/config/ConfigService.h"
-#include "services/input/InputService.h"
-#include "services/gui/GuiService.h"
-#include "services/sound/SoundService.h"
-#include "services/metaserver/MetaserverService.h"
-#include "services/server/ServerService.h"
 
-// Include custom library headers here
-
-// Include system headers here
 
 namespace dime {
+
+  // some forward declarations before we start
+  class LoggingService;
+  class ConfigService;
+  class InputService;
+  class GuiService;
+  class MetaserverService;
+  class ServerService;
+  class SoundService;
+  class TestService;
 
 /**
  * This is a singleton class that is used to access instances of all the
@@ -132,14 +130,8 @@ class DimeServices
     /**
      * Deletes a DimeServices instance.
      */
-    virtual ~DimeServices()
-    {
-      // TODO: Free any allocated resources here.
-      delete myConfigService;
-      delete myGuiService;
-      delete myMetaserverService;
-      delete myServerService;
-    }
+    virtual ~DimeServices();
+    
 
 
     //----------------------------------------------------------------------
@@ -148,15 +140,8 @@ class DimeServices
     /**
      * Returns the DimeServices instance.
      */
-    static DimeServices *getInstance()
-    {
-        if( !theInstance )
-        {
-            theInstance = new DimeServices();
-        }
-
-	return theInstance;
-    }
+    static DimeServices *getInstance();
+    
 
 
     //----------------------------------------------------------------------
@@ -165,84 +150,43 @@ class DimeServices
     /**
      * Returns an instance of the TestService.
      */
-    dime::TestService *getTestService()
-    {
-        // TODO
-        return NULL;
-    }
-
-
-
+    dime::TestService *getTestService();
+    
 
     /**
      * Returns an instance of the LoggingService
      */
-    dime::LoggingService *getLoggingService()
-    {
-        return dime::LoggingService::getInstance();
-    }
+    dime::LoggingService *getLoggingService();
 
     /**
      * Returns an instance of the ConfigService
      */
-    dime::ConfigService *getConfigService()
-      {
-	if (myConfigService == NULL)
-	  {
-	    myConfigService = new dime::ConfigService();
-	  }
-
-	return myConfigService;
-      }
+    dime::ConfigService *getConfigService();
 
     /**
      * Returns an instance of the InputService
      */
-    dime::InputService *getInputService()
-    {
-        return dime::InputService::getInstance();
-    }
+    dime::InputService *getInputService();
 	
     /**
      * Returns an instance of the GuiService
      */
-    dime::GuiService *getGuiService()
-    {
-        if (myGuiService == NULL)
-	  myGuiService = new dime::GuiService();
-
-	return myGuiService;
-    }
+    dime::GuiService *getGuiService();
 
     /**
      * Returns an instance of the MetaserverService
      */
-    dime::MetaserverService *getMetaserverService()
-    {
-        if (myMetaserverService == NULL)
-	  myMetaserverService = new dime::MetaserverService();
-	return myMetaserverService;
-    }
+    dime::MetaserverService *getMetaserverService();
 
     /**
      * Returns an instance of the ServerService
      */
-    dime::ServerService *getServerService()
-    {
-        if (myServerService == NULL)
-	  myServerService = new dime::ServerService();
-	return myServerService;
-    }
+    dime::ServerService *getServerService();
 
     /**
      * Returns an instance of the SoundService
      */
-    dime::SoundService *getSoundService()
-    {
-        if (mySoundService == NULL)
-	  mySoundService = new dime::SoundService();
-	return mySoundService;
-    }
+    dime::SoundService *getSoundService();
 
     //----------------------------------------------------------------------
     // Setters
@@ -271,10 +215,7 @@ class DimeServices
     /**
      * The constructor is private, and only used to create the singleton instance.
      */
-    DimeServices() : myConfigService(NULL), myGuiService(NULL),
-      myMetaserverService(NULL), myServerService(NULL), mySoundService(NULL)
-    {
-    }
+    DimeServices();
 
 
     /**

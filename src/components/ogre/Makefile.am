@@ -1,7 +1,9 @@
 INCLUDES=-I$(top_srcdir)/src
 bin_PROGRAMS = DimeOgre
 
-DimeOgre_LDADD = $(top_srcdir)/src/services/gui/libGuiService.a \
+DimeOgre_LDADD = \
+$(top_srcdir)/src/services/libServices.a \
+$(top_srcdir)/src/services/gui/libGuiService.a \
 $(top_srcdir)/src/services/gui/widget/libGuiServiceWidget.a \
 $(top_srcdir)/src/services/config/libConfigService.a \
 $(top_srcdir)/src/services/input/libInputService.a \
@@ -14,8 +16,7 @@ $(top_srcdir)/src/services/sound/libSoundService.a \
 $(top_srcdir)/test/libTestServices.a \
 $(top_srcdir)/src/services/datamodel/libDataModelService.a \
 $(top_srcdir)/src/services/logging/libLoggingService.a \
-$(top_srcdir)/src/framework/libFramework.a \
-$(top_srcdir)/src/services/libServices.a
+$(top_srcdir)/src/framework/libFramework.a 
 
 
 DimeOgre_SOURCES = DimeOgre.cpp

@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.24  2003-10-22 08:42:08  lee
+ *      Revision 1.25  2003-10-23 09:54:45  lee
+ *      Removed code and includes from DimeServices.h and put them in
+ *      DimeServices.cpp
+ *
+ *      Fixed other classes and Makefile.am to work again
+ *
+ *      Make sure you autogen.sh and configure again...
+ *
+ *      Revision 1.24  2003/10/22 08:42:08  lee
  *      Added include of stdlib.h to DimeOgre to stop errors from not declaring
  *      malloc in OgreStdHeaders.h (why it needs it, i don't know)
  *
@@ -173,8 +181,20 @@ http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 // Headers to stop compile problems from headers
 #include <stdlib.h>
+
+//Dime headers
+#include "services/DimeServices.h"
+#include "services/logging/LoggingService.h"
+#include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
+#include "services/metaserver/MetaserverService.h"
+
 
 // ------------------------------
 // Include OGRE dime client files
@@ -188,7 +208,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include dime header files
 // ------------------------------
-#include "services/DimeServices.h"
+
 #include "framework/ConsoleBackend.h"
 
 // ------------------------------

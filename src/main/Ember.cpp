@@ -16,13 +16,20 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "Application.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <Eris/Types.h>
+
 #include "test/TestServices.h"
 #include "services/DimeServices.h"
 #include "services/image/ImageService.h"
 #include "framework/Exception.h"
 #include "services/gui/widget/Button.h"
-
+#include "services/logging/LoggingService.h"
+#include "services/config/ConfigService.h"
+#include "Application.h"
 
 void quitButton(dime::Button* button)
 {

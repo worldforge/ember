@@ -1,6 +1,8 @@
 2003-10-32 Lee Begg <llnz@paradise.net.nz>
 	* configure.ac: moved some of the tests around, made it a bit nicer
 	Now defines HAVE_LIBOPENAL when it finds openAL
+	* src/services/DimeServices.(h|cpp): moved code the cpp, removed
+	includes from h.  Updated other files as necessary
 
 2003-10-20 Eric Sandall <eric [at] sandall [dot] us>
 	* README: Typo in media filenames

@@ -10,7 +10,15 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.47  2003-04-20 01:01:30  nikal
+ *      Revision 1.48  2003-10-23 09:54:46  lee
+ *      Removed code and includes from DimeServices.h and put them in
+ *      DimeServices.cpp
+ *
+ *      Fixed other classes and Makefile.am to work again
+ *
+ *      Make sure you autogen.sh and configure again...
+ *
+ *      Revision 1.47  2003/04/20 01:01:30  nikal
  *      Changing strstream includes to sstream.  and strstream instances to stringstream.
  *
  *      Revision 1.46  2003/04/19 23:12:25  xmp
@@ -207,10 +215,19 @@
  *
  */
 
-#include "Application.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "services/DimeServices.h"
 #include "services/datamodel/DataObject.h"
 #include "services/datamodel/DataModelService.h"
+#include "services/config/ConfigService.h"
+#include "services/metaserver/MetaserverService.h"
+#include "services/server/ServerService.h"
+#include "services/gui/GuiService.h"
+#include "services/logging/LoggingService.h"
+#include "services/sound/SoundService.h"
 #include "framework/ConsoleBackend.h"
 
 #include <iostream>
@@ -227,6 +244,9 @@
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
 #endif
+
+
+#include "Application.h"
 
 namespace dime
 {

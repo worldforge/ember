@@ -16,9 +16,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "DebugGameView.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "services/DimeServices.h"
+#include "services/server/ServerService.h"
+#include "services/logging/LoggingService.h"
+
+#include "DebugGameView.h"
 
 namespace dime {
 
