@@ -131,6 +131,8 @@ class ServerService : public Service, public ConsoleObject,
       }
       
     void moveToPoint(const WFMath::Point<3>& dest); 
+    void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
+    void moveInDirection(const WFMath::Vector<3>& velocity);
    	void touch(Eris::Entity* entity);
 
     //----------------------------------------------------------------------

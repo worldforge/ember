@@ -476,6 +476,51 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 
  	}
 
+
+   	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->moveInDirection(velocity, orientation);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
+ 			return;
+ 		}
+ 	}
+
+
+   	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity) {
+ 		if(!myAvatar) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->moveInDirection(velocity);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
+ 			return;
+ 		}
+ 	}
+
+
    	void ServerService::touch(Eris::Entity* entity) 
    	{
  		if(!myAvatar) {
