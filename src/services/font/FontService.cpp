@@ -27,6 +27,9 @@
 
 dime::Font *dime::FontService::loadFontIndex(const std::string& fontName, int pointSize, int index)
 {
+    //%TASK nikal,4: Font's should be cached, so that we don't actually
+    // load them from a file 500 times even if we are asked to do so by 
+    // console widget.
     dime::Font* font;
     FT_Error error;
     FT_Face face;
