@@ -1,17 +1,17 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="InspectWidget/Mainwindow">
+	<Window Type="TaharezLook/FrameWindow" Name="Mainwindow">
 		<Property Name="Position" Value="x:0.6 y:0.1" /> 
 		<Property Name="Size" Value="w:0.2 h:0.2" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Inspect" />
-		<Window Type="DefaultGUISheet" Name="InspectWidget/MainInnerWindow">
+		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.02 y:0.05" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 			
-			<Window Type="TaharezLook/StaticText" Name="InspectWidget/EntityInfo">
+			<Window Type="TaharezLook/StaticText" Name="EntityInfo">
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:0.95 h:0.6" /> 
 				<Property Name="Text" Value="" /> 
@@ -19,7 +19,7 @@
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 			</Window>
-			<Window Type="TaharezLook/Listbox" Name="InspectWidget/ChildList">
+			<Window Type="TaharezLook/Listbox" Name="ChildList">
 				<Property Name="Position" Value="x:0 y:0.6" /> 
 				<Property Name="Size" Value="w:0.95 h:0.4" /> 
 				<Property Name="Text" Value="Contains" /> 

@@ -45,7 +45,7 @@ InspectWidget::~InspectWidget()
 void InspectWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/InspectWidget.xml");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/InspectWidget.xml", "InspectWidget/");
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	

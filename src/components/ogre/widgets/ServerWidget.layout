@@ -1,16 +1,16 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="Server/MainWindow">
+	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.2 y:0.2" /> 
 		<Property Name="Size" Value="w:0.5 h:0.5" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Server" />
-		<Window Type="DefaultGUISheet" Name="Server/MainInnerWindow">
+		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.02 y:0.02" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/StaticText" Name="Server/Info">
+			<Window Type="TaharezLook/StaticText" Name="Info">
 				<Property Name="Position" Value="x:0.02 y:0.02" /> 
 				<Property Name="Size" Value="w:.96 h:0.4" /> 
 				<Property Name="InheritsAlpha" Value="true" /> 
@@ -18,14 +18,14 @@
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 				<Property Name="Text" Value="Server info" /> 
 			</Window>
-			<Window Type="TaharezLook/StaticText" Name="Server/LoginPanel">
+			<Window Type="TaharezLook/StaticText" Name="LoginPanel">
 				<Property Name="Position" Value="x:0.02 y:0.45" /> 
 				<Property Name="Size" Value="w:.96 h:0.4" /> 
 				<Property Name="Text" Value="Login" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
-				<Window Type="TaharezLook/StaticText" Name="Server/LoginPanel/NameText">
+				<Window Type="TaharezLook/StaticText" Name="LoginPanel/NameText">
 					<Property Name="Position" Value="x:0 y:0.2" /> 
 					<Property Name="Size" Value="w:0.5 h:0.1" /> 
 					<Property Name="Text" Value="Name:" /> 
@@ -33,14 +33,14 @@
 					<Property Name="FrameEnabled" Value="False" /> 
 					<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
-				<Window Type="TaharezLook/Editbox" Name="Server/LoginPanel/NameEdit">
+				<Window Type="TaharezLook/Editbox" Name="LoginPanel/NameEdit">
 					<Property Name="Position" Value="x:0 y:0.3" /> 
 					<Property Name="Size" Value="w:0.5 h:0.1" /> 
 					<Property Name="Text" Value="" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
 
-				<Window Type="TaharezLook/StaticText" Name="Server/LoginPanel/PasswordText">
+				<Window Type="TaharezLook/StaticText" Name="LoginPanel/PasswordText">
 					<Property Name="Position" Value="x:0 y:0.4" /> 
 					<Property Name="Size" Value="w:0.5 h:0.1" /> 
 					<Property Name="Text" Value="Password:" /> 
@@ -48,7 +48,7 @@
 					<Property Name="FrameEnabled" Value="False" /> 
 					<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
-				<Window Type="TaharezLook/Editbox" Name="Server/LoginPanel/PasswordEdit">
+				<Window Type="TaharezLook/Editbox" Name="LoginPanel/PasswordEdit">
 					<Property Name="Position" Value="x:0.0 y:0.5" /> 
 					<Property Name="Size" Value="w:0.5 h:0.1" /> 
 					<Property Name="Text" Value="" /> 
@@ -56,7 +56,7 @@
 				</Window>
 								
 				
-				<Window Type="TaharezLook/Button" Name="Server/LoginPanel/Login">
+				<Window Type="TaharezLook/Button" Name="LoginPanel/Login">
 					<Property Name="Position" Value="x:0.4 y:0.8" /> 
 					<Property Name="Size" Value="w:0.3 h:0.2" /> 
 					<Property Name="MaximumSize" Value="w:1 h:1" /> 
@@ -69,7 +69,7 @@
 			
 			
 			
-			<Window Type="TaharezLook/StaticText" Name="Server/ChooseCharacterPanel">
+			<Window Type="TaharezLook/StaticText" Name="ChooseCharacterPanel">
 				<Property Name="Position" Value="x:0.02 y:0.45" /> 
 				<Property Name="Size" Value="w:.96 h:0.4" /> 
 				<Property Name="Text" Value="Characters" /> 
@@ -77,12 +77,12 @@
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 				<Property Name="Visible" Value="False" /> 
-				<Window Type="TaharezLook/Listbox" Name="Server/ChooseCharacterPanel/CharacterList">
+				<Window Type="TaharezLook/Listbox" Name="ChooseCharacterPanel/CharacterList">
 					<Property Name="Position" Value="x:0 y:0.05" /> 
 					<Property Name="Size" Value="w:0.5 h:0.7" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
-				<Window Type="TaharezLook/Button" Name="Server/ChooseCharacterPanel/Choose">
+				<Window Type="TaharezLook/Button" Name="ChooseCharacterPanel/Choose">
 					<Property Name="Position" Value="x:0.4 y:0.8" /> 
 					<Property Name="Size" Value="w:0.3 h:0.15" /> 
 					<Property Name="MaximumSize" Value="w:1 h:1" /> 

@@ -17,11 +17,11 @@ ConsoleWidget::~ConsoleWidget()
 void ConsoleWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/ConsoleWidget.xml");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("widgets/ConsoleWidget.xml", "Console/");
 	mMainWindow->setAlwaysOnTop(true);
 	
-	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleInputBox"));
-	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleTextBox"));
+	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild("Console/InputBox"));
+	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild("Console/TextBox"));
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventCharacterKey, 
 		boost::bind(&ConsoleWidget::consoleTextBox_Character, this, _1));
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyUp, 

@@ -1,27 +1,32 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="MakeEntity/MainWindow">
+	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.3 y:0.4" /> 
-		<Property Name="Size" Value="w:0.4 h:0.7" /> 
+		<Property Name="Size" Value="w:0.2 h:0.5" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Entity creator" />
-		<Window Type="DefaultGUISheet" Name="MakeEntity/MainInnerWindow">
-			<Property Name="Position" Value="x:0.02 y:0.02" /> 
-			<Property Name="Size" Value="w:0.96 h:0.96" /> 
+		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
+			<Property Name="Position" Value="x:0.02 y:0.05" /> 
+			<Property Name="Size" Value="w:0.96 h:0.90" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/Listbox" Name="MakeEntity/TypeList">
+			<Window Type="TaharezLook/Listbox" Name="TypeList">
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:0.9 h:0.8" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 			</Window>
-			<Window Type="TaharezLook/Editbox" Name="MakeEntity/Name">
+			<Window Type="DefaultGUISheet" Name="NameText">
 				<Property Name="Position" Value="x:0.0 y:0.8" /> 
-				<Property Name="Size" Value="w:0.9 h:0.05" /> 
-				<Property Name="Text" Value="Name" /> 
+				<Property Name="Size" Value="w:0.4 h:0.05" /> 
+				<Property Name="Text" Value="Name:" /> 
+				<Property Name="InheritsAlpha" Value="False" /> 
+			</Window>
+			<Window Type="TaharezLook/Editbox" Name="Name">
+				<Property Name="Position" Value="x:0.5 y:0.8" /> 
+				<Property Name="Size" Value="w:0.5 h:0.05" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="MakeEntity/CreateButton">
+			<Window Type="TaharezLook/Button" Name="CreateButton">
 				<Property Name="Position" Value="x:0.0 y:0.9" /> 
 				<Property Name="Size" Value="w:0.9 h:0.05" /> 
 				<Property Name="Text" Value="Create" /> 

@@ -62,7 +62,7 @@ MakeEntityWidget::~MakeEntityWidget()
 void MakeEntityWidget::buildWidget()
 {
 
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/MakeEntityWidget.xml");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/MakeEntityWidget.xml", "MakeEntity/");
 	mMainWindow->setVisible(false);
 	
 	mTypeList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/TypeList"));
@@ -121,8 +121,14 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	
 	Atlas::Message::MapType msg;
 	msg["loc"] = avatar->getLocation()->getId();
-	WFMath::Point<3> pos = avatar->getPosition() + WFMath::Vector<3>(0,2,0);
-
+	
+	Ogre::Vector3 o_vector(2,0,0);
+	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
+	
+// 	WFMath::Vector<3> vector(0,2,0);
+// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
+	WFMath::Point<3> pos = Ogre2Atlas(o_pos);
+	
 	msg["pos"] = pos.toAtlas();
 	msg["name"] = mName->getText().c_str();
 	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());

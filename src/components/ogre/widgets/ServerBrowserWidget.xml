@@ -1,34 +1,34 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="ServerBrowser/MainWindow">
+	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.2 y:0.2" /> 
 		<Property Name="Size" Value="w:0.5 h:0.5" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Server browser" />
-		<Window Type="DefaultGUISheet" Name="ServerBrowser/MainInnerWindow">
+		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.02 y:0.02" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/MultiColumnList" Name="ServerBrowser/ServerList">
+			<Window Type="TaharezLook/MultiColumnList" Name="ServerList">
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:1 h:0.9" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="ServerBrowser/Connect">
+			<Window Type="TaharezLook/Button" Name="Connect">
 				<Property Name="Position" Value="x:0.8 y:0.95" /> 
 				<Property Name="Size" Value="w:0.2 h:0.05" /> 
 				<Property Name="Text" Value="Connect" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="ServerBrowser/Refresh">
+			<Window Type="TaharezLook/Button" Name="Refresh">
 				<Property Name="Position" Value="x:0.6 y:0.95" /> 
 				<Property Name="Size" Value="w:0.2 h:0.05" /> 
 				<Property Name="Text" Value="Refresh" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Editbox" Name="ServerBrowser/ManualServerName">
+			<Window Type="TaharezLook/Editbox" Name="ManualServerName">
 				<Property Name="Text" Value="" /> 
 				<Property Name="Position" Value="x:0 y:0.95" /> 
 				<Property Name="Size" Value="w:0.3 h:0.05" /> 

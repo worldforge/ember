@@ -57,7 +57,7 @@ void ServerBrowserWidget::buildWidget()
 {
 
 
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/ServerBrowserWidget.xml");
+	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/ServerBrowserWidget.xml", "ServerBrowser/");
 
 	mServerList = static_cast<CEGUI::MultiColumnList*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ServerList"));
 
