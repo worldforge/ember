@@ -19,6 +19,8 @@
 #ifndef SOUNDSERVICE_H
 #define SOUNDSERVICE_H
 
+#define NUM_BUFFERS 1
+#define NUM_SOURCES 1
 
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>	// so this object is able to listen to console commands
@@ -57,6 +59,15 @@ class SoundService: public Service, public ConsoleObject
 
 
 
+
+	ALuint myBuffers[NUM_BUFFERS];
+	ALuint mySources[NUM_SOURCES];
+
+	ALsizei size,freq,bits,format;
+	void *data;
+
+	ALfloat listenerPos[3];
+
     //----------------------------------------------------------------------
     // Constructors & Destructor
 
@@ -80,6 +91,14 @@ class SoundService: public Service, public ConsoleObject
     void stop(int code);
 
     void runCommand(const std::string &command, const std::string &args);
+
+	ALboolean LoadWAV(const char *fname,int buffer);
+
+	ALboolean UnloadWAV(void);
+
+	void TestPlatform(void);
+
+
 
 
 }; //SoundService
