@@ -19,9 +19,9 @@
 #ifndef LOGGINGSERVICE_H
 #define LOGGINGSERVICE_H
 
-//#ifdef _MSC_VER	
+#ifdef _MSC_VER	
 	#pragma warning( disable : 4786 )
-//#endif 
+#endif 
 
 // Include other headers of the current program here
 #include "Service.h"
@@ -50,6 +50,20 @@ namespace services {
 // - Is it necessary to support UNICODE/wide characters?
 // - Add debug assertions. (How are the platform independent macros called?)
 
+
+
+
+//======================================================================
+// Short type macros
+//======================================================================
+
+#define ENDM LoggingService::END_MESSAGE;
+#define HEX_NUM(number) LoggingService::hexNumber(number)
+
+
+//TODO: Sorry, but innerclass didn't work properly
+const int NUMBER_BUFFER_SIZE  = 24;
+const int MESSAGE_BUFFER_SIZE = 1024;
 
 /**
  * Easy-to-deal-with logging class.
@@ -104,18 +118,6 @@ namespace services {
  *
  * @author Tim Enderling
  */
-
-//======================================================================
-// Short type macros
-//======================================================================
-
-#define ENDM LoggingService::END_MESSAGE;
-#define HEX_NUM(number) LoggingService::hexNumber(number)
-
-
-//TODO: Sorry, but innerclass didn't work properly
-const int NUMBER_BUFFER_SIZE  = 24;
-const int MESSAGE_BUFFER_SIZE = 1024;
 
 class LoggingService: public Service
 {
@@ -227,7 +229,7 @@ class LoggingService: public Service
 				(importance == CRITICAL) ?  "CRITICAL" : 
 					((importance == ERROR) ?  "ERROR" : 
 						((importance == WARNING) ? "WARNING" : "INFO")),
-				file, line, message);
+				file.data(), line, message.data());
 		}
 
 		FILE * getFile()
@@ -362,9 +364,7 @@ class LoggingService: public Service
 	 }
 
     /**
-     * [General documenting TODO: How does doxygen handle function overriding?]
-	 *
-	 * Adds a message presented by various options, a format string and variable params like
+     * Adds a message presented by various options, a format string and variable params like
 	 * in printf using also the same format specifications.
      *
      * @param file The source code file the message was initiated.
@@ -555,14 +555,16 @@ class LoggingService: public Service
 	LoggingService & operator<< (const int intToAdd)
 	{
 		char buffer[NUMBER_BUFFER_SIZE];
-		myMessage += _itoa(intToAdd, (char*)buffer, 10);
+		sprintf(buffer, "%d", intToAdd);
+		myMessage += buffer;
 		return *this;
 	}
 
 	LoggingService & operator<< (const HexNumber & intHexToAdd)
 	{
 		char buffer[NUMBER_BUFFER_SIZE];
-		myMessage += _itoa(intHexToAdd.myNumber, (char*)buffer, 16);
+		sprintf(buffer, "%x", intHexToAdd);
+		myMessage += buffer;
 		return *this;
 	}
 
