@@ -15,7 +15,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#include "framework/Service.h"
 #include "framework/ConsoleBackend.h"
+#include "services/EmberServices.h"
+#include "services/sound/SoundService.h"
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
@@ -139,12 +143,20 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	
 	std::string message = "<";
 	message.append(getName());
+	message.append(",");
+	std::string type = getType()->getName(); // Eris type as a string
+	message.append(type);
 	message.append("> ");
 	message.append(msg);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
+	// Make a sound if it's the merchant speaking
+	if(type.compare("merchant")==0) {
+		std::cout << "THE MERCHANT IS SPEAKING" << std::endl;
+		Ember::EmberServices::getInstance()->getSoundService()->playTestGYPH();
+	}
 	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
 }

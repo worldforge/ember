@@ -29,6 +29,8 @@
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
@@ -138,8 +140,18 @@ namespace Ember
 
 
 		TestPlatform();  // a test
+		
+		soundsDirPath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() 
+				+ "media/sounds/";
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << 
+			"Sound Media Path: [" << soundsDirPath << "]" << ENDM;
 
-		alutLoadWAV("/usr/local/share/ember/data/media/sounds/boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file  // Should be LoadWAV, platform independant
+		std::stringstream gyphPath;
+		gyphPath << soundsDirPath << "gyph.wav";
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << 
+			"Loading sound: [" << gyphPath.str() << "]" << ENDM;
+		alutLoadWAV(gyphPath.str().c_str(),&data,&format,&size,&bits,&freq);
+		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
 		{
@@ -398,6 +410,15 @@ namespace Ember
 
 	}
 
+	void SoundService::playTestGYPH(void) {
+		alSourcePlay(worldSources[0]);
+		int error = alGetError();
+		if(error != AL_NO_ERROR)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) 
+				<< "Error playing sound: " << error << ENDM;
+		}
+	}
 
 
 } // namespace Ember

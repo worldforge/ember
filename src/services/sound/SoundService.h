@@ -50,20 +50,27 @@ class SoundService: public Service, public ConsoleObject
 
 
 
-	/** System source - this source will play system sounds, like user input request or program error. Will always remain in the same relative position to the listener. */
+	/** System source - this source will play system sounds, 
+	like user input request or program error. 
+	Will always remain in the same relative position to the listener. */
 	static unsigned int systemSource;
 	/** System buffer - buffer used to load system sounds files */
 	static unsigned int systemBuffer;
-	/** Music source - this source will play background music. Will always remain in the same relative position to the listener. */
+	/** Music source - this source will play background music. 
+	Will always remain in the same relative position to the listener. */
 	static unsigned int musicSource;
 	/** Music buffer - buffer used to load background music files */
 	static unsigned int musicBuffer;
-	/** World sources - array of sources to play world sounds. They will be placed in 3D space. This field may change depending on the data model */
+	/** World sources - array of sources to play world sounds. 
+	They will be placed in 3D space. 
+	This field may change depending on the data model */
 	unsigned int worldSources[NUM_WORLD_SOURCES];
 	/** Wold buffers - array of buffers for loading world sounds */
 	unsigned int worldBuffers[NUM_WORLD_BUFFERS];
 
 
+	std::string soundsDirPath;
+	
 	int size,freq,bits,format;
 	void *data;
 
@@ -98,6 +105,8 @@ class SoundService: public Service, public ConsoleObject
 
 	void TestPlatform(void);
 
+	void playTestGYPH(void);
+	
 	// List of SoundService's console commands
 	static const char * const PLAYSOUND;
 	static const char * const PLAYMUSIC;
