@@ -108,6 +108,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mMousePicker = new MousePicker();
 		
 		mInput = new Input(mGuiSystem, mGuiRenderer);
+//	mGUIManager->getInput()->MouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
+		
+		mInput->KeyPressed.connect(SigC::slot(*this, &GUIManager::pressedKey));
 /*		mEventProcessor->addKeyListener(this);
 		mEventProcessor->addMouseMotionListener(this);
 		mEventProcessor->addMouseListener(this);*/
@@ -441,6 +444,41 @@ const bool GUIManager::isInGUIMode() const {
 	return mInput->isInGUIMode(); 
 }
 
+
+void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
+{
+ 		//toggle the console
+ 		//we've put it here because we wan't the console to always be available
+ 		if(key.sym == SDLK_F12)
+		{
+			mConsoleWidget->toggleActive();
+		}
+
+		//take screenshot		
+		if(key.sym == SDLK_F8)
+		{
+			setDebugText("Wrote image: " +takeScreenshot());
+		}
+		
+		//switch render mode
+		if(key.sym == SDLK_F7)
+		{
+			setDebugText("Switching rendermode.");
+			Ogre::Camera* ogreCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+			if (ogreCamera->getDetailLevel() == Ogre::SDL_SOLID) {
+				ogreCamera->setDetailLevel(Ogre::SDL_WIREFRAME);
+			} else {
+				ogreCamera->setDetailLevel(Ogre::SDL_SOLID);
+			}
+		}
+		
+		//switch between full screen
+/*		if(e->getKey() == Ogre::KC_F6)
+		{
+			mWindow->
+		}*/
+
+}
 
 
 // void GUIManager::keyPressed (Ogre::KeyEvent *e)

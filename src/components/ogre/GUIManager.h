@@ -47,6 +47,8 @@
 //#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 
+#include <SDL.h>
+
 namespace EmberOgre {
 
 class EmberEntity;
@@ -106,6 +108,7 @@ public:
 
 	CEGUI::Window* getMainSheet();
 	
+	void pressedKey(const SDL_keysym& key, bool isInGuimode);
 	//EmberEventProcessor* getEventProcessor() { return mEventProcessor; }
 	
 	void initialize();

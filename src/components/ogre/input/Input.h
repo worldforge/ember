@@ -53,12 +53,15 @@ TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
 
 TYPEDEF_STL_SET(SDLKey, KeysSet);
 
+//struct for a mouse movement
 struct MouseMotion
 {
-	int xPosition;
+	int xPosition; //the position of the mouse
 	int yPosition;
-	Ogre::Real xRelativeMovement;
+	Ogre::Real xRelativeMovement; //the relative movement measures as percentage of the totoal with of the window
 	Ogre::Real yRelativeMovement;
+	int xRelativeMovementInPixels; //the relative movement in pixels
+	int yRelativeMovementInPixels;
 	Ogre::Real timeSinceLastMovement;
 };
 
@@ -85,12 +88,21 @@ public:
 	void processInput(const Ogre::FrameEvent& evt);
 	
 	//emitted when a key has been pressed in movement mode
- 	SigC::Signal1<void, const SDLKey&> KeyPressed;
+	//@parameter the key event
+	//@parameter true if ember is in gui mode
+ 	SigC::Signal2<void, const SDL_keysym&, bool> KeyPressed;
+	
 	//emitted when a key has been released in movement mode
- 	SigC::Signal1<void, const SDLKey&> KeyReleased;
+	//@parameter the key event
+	//@parameter true if ember is in gui mode
+ 	SigC::Signal2<void, const SDL_keysym&, bool> KeyReleased;
 	
 	//emitted when the mouse has moved
-	SigC::Signal1<void, const MouseMotion&> MouseMoved;
+	//note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
+	//although the relative position will have changed
+	//@parameter the mouse motion
+	//@parameter true if ember is in gui mode
+	SigC::Signal2<void, const MouseMotion&, bool> MouseMoved;
 	
 	//returns true if the supplied key is down
 	const bool isKeyDown(const SDLKey&) const;

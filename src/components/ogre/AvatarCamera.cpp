@@ -142,28 +142,29 @@ void AvatarCamera::yaw(Ogre::Degree degrees)
 	
 }
 
-void AvatarCamera::mouseMoved(const MouseMotion& motion)
+void AvatarCamera::mouseMoved(const MouseMotion& motion, bool isInGuimode)
 /*(int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement)*/
 {
+	if (!isInGuimode) {
+		Ogre::Degree diffX(50 * motion.xRelativeMovement);
+		Ogre::Degree diffY(50 * motion.yRelativeMovement);
+	//	Ogre::Degree diffX = mDegreeOfYawPerSecond * e->getRelX();
+	//	Ogre::Degree diffY = mDegreeOfPitchPerSecond * e->getRelY();
 	
-	Ogre::Degree diffX(50 * motion.xRelativeMovement);
-	Ogre::Degree diffY(50 * motion.yRelativeMovement);
-//	Ogre::Degree diffX = mDegreeOfYawPerSecond * e->getRelX();
-//	Ogre::Degree diffY = mDegreeOfPitchPerSecond * e->getRelY();
-
-	//fprintf(stderr, (std::string("X: ") << diffX.valueDegrees << "\n").c_str() );
-
-	if (diffX.valueDegrees()) {
-		this->yaw(-diffX);
-//		this->yaw(diffX * e->timeSinceLastFrame);
-	}
-	if (diffY.valueDegrees()) {
-		this->pitch(-diffY);
-//		this->pitch(diffY * e->timeSinceLastFrame);
-	}
+		//fprintf(stderr, (std::string("X: ") << diffX.valueDegrees << "\n").c_str() );
 	
-	if (diffY.valueDegrees() || diffX.valueDegrees()) {
-		MovedCamera.emit(mCamera);
+		if (diffX.valueDegrees()) {
+			this->yaw(-diffX);
+	//		this->yaw(diffX * e->timeSinceLastFrame);
+		}
+		if (diffY.valueDegrees()) {
+			this->pitch(-diffY);
+	//		this->pitch(diffY * e->timeSinceLastFrame);
+		}
+		
+		if (diffY.valueDegrees() || diffX.valueDegrees()) {
+			MovedCamera.emit(mCamera);
+		}
 	}
 }
 

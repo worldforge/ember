@@ -116,7 +116,7 @@ public:
 	
 	SigC::Signal1<void, Ogre::Camera*> MovedCamera;
 	
-	void mouseMoved(const MouseMotion& motion);
+	void mouseMoved(const MouseMotion& motion, bool isInGuimode);
 // 	int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement);
 
 // 	void mouseMoved (Ogre::MouseEvent *e);

@@ -224,6 +224,25 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	if (mMouseX != mouseX || mMouseY != mouseY)
 	{
 
+		//we'll calculate the mouse movement difference and send the values to those
+		//listening to the MouseMoved event
+		Ogre::Real diffX, diffY;
+		Ogre::Real width = mGuiRenderer->getWidth();
+		Ogre::Real height = mGuiRenderer->getHeight();
+		diffX = ( width / mMouseX) - (width / mouseX);
+		diffY = ( height / mMouseY) - (height / mouseY);
+		MouseMotion motion;
+		motion.xPosition = mouseX;
+		motion.yPosition = mouseY;
+		motion.xRelativeMovement = diffX;
+		motion.yRelativeMovement = diffY;
+		motion.xRelativeMovementInPixels = mMouseX - mouseX;
+		motion.yRelativeMovementInPixels = mMouseY - mouseY;
+		motion.timeSinceLastMovement = evt.timeSinceLastFrame;
+		
+		MouseMoved.emit(motion, mInGUIMode);
+		
+		
 		//if we're in gui mode, we'll just send the mouse movement on to CEGUI
 		if (mInGUIMode) {
 			
@@ -231,22 +250,6 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 			mGuiSystem->injectMouseMove(0.0f, 0.0f);
 			
 		} else {
-		//if we're not in gui mode, we'll calculate the mouse movement difference and send the values to those
-		//listening to the MouseMoved event
-			Ogre::Real diffX, diffY;
-			Ogre::Real width = mGuiRenderer->getWidth();
-			Ogre::Real height = mGuiRenderer->getHeight();
-			diffX = ( width / mMouseX) - (width / mouseX);
-			diffY = ( height / mMouseY) - (height / mouseY);
-			MouseMotion motion;
-			motion.xPosition = mouseX;
-			motion.yPosition = mouseY;
-			motion.xRelativeMovement = diffX;
-			motion.yRelativeMovement = diffY;
-			motion.timeSinceLastMovement = evt.timeSinceLastFrame;
-			
-			MouseMoved.emit(motion);
-			
 			//keep the cursor in place while in non-gui mode
 			mouseX = mMouseX;
 			mouseY = mMouseY;
@@ -314,10 +317,8 @@ void Input::keyPressed (const SDL_KeyboardEvent &keyEvent)
 			mGuiSystem->injectChar(keyEvent.keysym.unicode);
 		}
 	
-	} else {
-	//just emit the event
-		KeyPressed(keyEvent.keysym.sym);
 	}
+	KeyPressed(keyEvent.keysym, mInGUIMode);
 	
 }
 
@@ -363,9 +364,8 @@ void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 		
 		
 		mGuiSystem->injectKeyUp(mKeyMap[keyEvent.keysym.sym]);
-	} else {
-		KeyReleased(keyEvent.keysym.sym);
-	}
+	} 
+	KeyReleased(keyEvent.keysym, mInGUIMode);
 
 
 }
