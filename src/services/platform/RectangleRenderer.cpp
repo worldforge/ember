@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.10  2002-05-20 22:30:28  nikal
+ *      Revision 1.11  2002-06-08 19:01:07  nikal
+ *      quick fix for the Tiling problem
+ *
+ *      Revision 1.10  2002/05/20 22:30:28  nikal
  *      Tiling works with RectangleRenderers
  *
  *      Revision 1.8  2002/05/20 18:49:49  nikal
@@ -192,9 +195,9 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
     switch(myStyle)
         {
         case TILE:
-            for( curDest.x = dest.x; curDest.x < dest.w; curDest.x += curDest.w)
+            for( curDest.x = dest.x; curDest.x < dest.x + dest.w; curDest.x += curDest.w)
                 {
-                    for ( curDest.y = dest.y; curDest.y < dest.h; curDest.y += curDest.h)
+                    for ( curDest.y = dest.y; curDest.y < dest.y + dest.h; curDest.y += curDest.h)
                         {
                             device->blitSurface(&src, &curDest, mySurface);
                         }

@@ -27,7 +27,6 @@
 
 namespace dime {
 
-
 /**
  * The SDLDrawDevice which uses SDL to do its drawing/blitting.
  *
@@ -80,9 +79,8 @@ namespace dime {
 		 */
         virtual ~SDLDrawDevice()
         {
-        }
-
-		//----------------------------------------------------------------------
+		}        
+		//---------------------------------------------------------------------
 		// Other public methods
         /*
 		 * Draw a pixel of Color "color" at (x.y)
