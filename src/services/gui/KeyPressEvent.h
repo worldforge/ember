@@ -51,11 +51,12 @@ namespace dime {
      * Constructor
      *
      */
-    KeyPressEvent(InputDevice *device, Widget *widget, char key, State state)
+	  // Probably unneeded
+/*    KeyPressEvent(InputDevice *device, Widget *widget, char key, State state)
         : Event(device, widget), myState(state), myKey(key)
       {
           assert(device);
-      }
+      }*/
       
       
     KeyPressEvent(InputDevice *device, Widget *widget, char key, State state, const SDLKey &SDLKey)

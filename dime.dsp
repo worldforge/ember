@@ -154,30 +154,33 @@ LINK32=link.exe
 # Begin Group "Quellcodedateien"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
-# Begin Source File
+# Begin Group "Widgets"
 
-SOURCE=.\src\main\Application.cpp
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\src\services\gui\Button.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\config\ConfigService.cpp
+SOURCE=.\src\services\gui\Label.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\main\Dime.cpp
+SOURCE=.\src\services\gui\Panel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\main\DimeServices.cpp
+SOURCE=.\src\services\gui\TextBox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\EventGenerator.cpp
+SOURCE=.\src\services\gui\Widget.cpp
 # End Source File
+# End Group
+# Begin Group "Renderers"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\src\services\font\Font.cpp
@@ -185,6 +188,26 @@ SOURCE=.\src\services\font\Font.cpp
 # Begin Source File
 
 SOURCE=.\src\services\font\FontRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\RectangleRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\platform\SDLDrawDevice.cpp
+# End Source File
+# End Group
+# Begin Group "Services"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\src\services\config\ConfigService.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\main\DimeServices.cpp
 # End Source File
 # Begin Source File
 
@@ -200,23 +223,7 @@ SOURCE=.\src\services\image\ImageService.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\input\InputDevice.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\input\InputServiceTest.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\Label.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\services\logging\LoggingService.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\Panel.cpp
 # End Source File
 # Begin Source File
 
@@ -224,31 +231,60 @@ SOURCE=.\src\services\platform\PlatformService.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\platform\RectangleRenderer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\platform\SDLDrawDevice.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\framework\ServiceManager.cpp
 # End Source File
+# End Group
 # Begin Source File
 
-SOURCE=.\src\services\gui\Widget.cpp
+SOURCE=.\src\main\Application.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\main\Dime.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\EventGenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\input\InputDevice.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\input\InputServiceTest.cpp
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
+# Begin Group "Widgets Headers"
 
-SOURCE=.\src\main\Application.h
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\src\services\gui\Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Label.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Panel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\TextBox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\gui\Widget.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\src\main\Application.h
 # End Source File
 # Begin Source File
 
@@ -324,7 +360,7 @@ SOURCE=.\src\services\input\InputService.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\Label.h
+SOURCE=.\src\services\gui\KeyPressEvent.h
 # End Source File
 # Begin Source File
 
@@ -349,10 +385,6 @@ SOURCE=.\src\services\gui\MouseMotionEvent.h
 # Begin Source File
 
 SOURCE=.\src\mscprag.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\Panel.h
 # End Source File
 # Begin Source File
 
@@ -388,15 +420,7 @@ SOURCE=.\src\services\test\TestService.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\services\gui\TextBox.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\services\gui\Theme.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\gui\Widget.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"

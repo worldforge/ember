@@ -155,7 +155,7 @@ class TextBox : public Label
     { 
         if (event->getState() == KeyPressEvent::PRESSED)
             {
-                std::string myText = dime::Label::getText();
+			std::string myText = Label::getText();
                 int i = 0;
                 int w;
                 std::string fittedText;
@@ -171,11 +171,11 @@ class TextBox : public Label
                     {
                         myText += event->getKey();
                     }
-                dime::Label::setText(myText);
-                dime::Font *font = myFontRenderer->getFont();
+                Label::setText(myText);
+                Font *font = myFontRenderer->getFont();
                 font->sizeText(myText.substr(i, myText.length()-i), &w, NULL);
                 
-                while(w > dime::Widget::getRectangle().getWidth())
+                while(w > Widget::getRectangle().getWidth())
                     {
                         ++i;
                         font->sizeText(myText.substr(i, myText.length()-i), &w, NULL);
