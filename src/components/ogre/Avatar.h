@@ -86,6 +86,8 @@ class Avatar : virtual public SigC::Object
 	
 	void enteredWorld(Eris::Entity *e);
 	
+	void movedInWorld(const WFMath::Point< 3 > &p );
+	
 	void touch(DimeEntity* entity);
 	
 	void updateFrame(AvatarControllerMovement movement);

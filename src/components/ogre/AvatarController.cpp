@@ -94,7 +94,7 @@ DimeEntity* AvatarController::doMousePicking(const FrameEvent & event, InputRead
 	
 	SceneManager* sceneManager = EntityListener::getSingleton().getSceneManager();
 	// Start a new ray query 
-	Ray cameraRay = mAvatar->getAvatar1pCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	Ray cameraRay = mAvatar->getAvatar3pCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 	RaySceneQuery *raySceneQuery = sceneManager->createRayQuery( cameraRay ); 
 	raySceneQuery->execute(); 
 	RaySceneQueryResult result = raySceneQuery->getLastResults(); 
@@ -219,24 +219,24 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* 
 		// forwards / backwards
 		if(InputManager::getSingleton().isKeyDown(KC_UP))  // W also, and same for the rest
 		{
-			movement.z = -1; 	//scale this
+			movement.x = 1; 	//scale this
 			isMovement = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(KC_DOWN))
 		{
-			movement.z = 1;		//scale
+			movement.x = -1;		//scale
 			isMovement = true;
 		}
 
 		// strafe
 		if(InputManager::getSingleton().isKeyDown(KC_LEFT))
 		{
-			movement.x = -1;
+			movement.z = -1;
 			isMovement = true;
 		}
 		else if(InputManager::getSingleton().isKeyDown(KC_RIGHT))
 		{
-			movement.x = 1;
+			movement.z = 1;
 			isMovement = true;
 		}
 
@@ -283,7 +283,7 @@ void AvatarController::mousePressed(unsigned char button)
 		mMouseButton2Pressed = true;
 	}
 		
-	fprintf(stderr, "PRESSED A MOUSE BUTTOn\n");
+//	fprintf(stderr, "PRESSED A MOUSE BUTTOn\n");
 }
 
 void AvatarController::mouseReleased(unsigned char button)
@@ -295,6 +295,6 @@ void AvatarController::mouseReleased(unsigned char button)
 	} else {
 		mMouseButton2Pressed = false;
 	}
-	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
+//	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
 }
 

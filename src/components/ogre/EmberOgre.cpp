@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.37  2004-07-12 04:05:48  erik
+ *      Revision 1.38  2004-07-13 22:02:24  erik
+ *      Erik Hjortsberg  <erik@hysteriskt.nu>
+ *      src/components/ogre:
+ *      *fixed bug with eris sometimes letting the avatar be a regular Entity
+ *      *changed to 3d person view, need to apply spinginess to the camera though
+ *      *fixed avatar movement, he/she now moves in the right direction, plus snaps to correct positions
+ *
+ *      Revision 1.37  2004/07/12 04:05:48  erik
  *      2004-07-12 Erik Hjortsberg erik by hysteriskt speck org
  *      * src/components/ogre:
  *      Changed the way input is handled through the use of an Ogre::EventProcessor
@@ -475,7 +482,7 @@ void DimeOgre::createViewports(void)
 {
 
     // Create 1st person viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getAvatar1pCamera());
+    Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getAvatar3pCamera());
     vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 //float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
@@ -484,7 +491,7 @@ void DimeOgre::createViewports(void)
 		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 		rightvp->setOverlaysEnabled(false);
 */
-	Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar3pCamera(),9,0.05,0.05,0.25,0.25);
+	Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar1pCamera(),9,0.05,0.05,0.25,0.25);
 	leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	leftvp->setOverlaysEnabled(false);
 

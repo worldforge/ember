@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 #include <Ogre.h>
+#include <typeinfo>
 
 #include "services/server/ServerService.h"
 #include "services/DimeServices.h"
@@ -91,7 +92,7 @@ void Avatar::createAvatar()
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
 	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "robot.mesh");
 	mAvatarModelNode->attachObject(mAvatarEntity);
-	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
+//	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
 
 	//let's set the current animation state to walking
 	mAnimStateWalk = mAvatarEntity->getAnimationState("Walk");	
@@ -115,6 +116,8 @@ void Avatar::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 		// 1st person, 3rd person and Top camera nodes
 		mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(avatarSceneNode->createChild("Avatar1pCameraNode"));
 		mAvatar1pCameraNode->setPosition(WF2OGRE_VECTOR3(0,0.8,-0.1));
+		//rotate to sync with WF world
+	    mAvatar1pCameraNode->rotate(Ogre::Vector3::UNIT_Y,-90);
 		//mAvatar1pCameraNode->showBoundingBox(true);
 		mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
 		Ogre::Vector3 pos = WF2OGRE_VECTOR3(0,0,5);
@@ -284,6 +287,11 @@ void Avatar::attemptRotate(AvatarControllerMovement movement)
 	//mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
 }
 
+bool Avatar::isOkayToSendTrivialMovementChangeToServer()
+{
+	return mTimeSinceLastServerMessage > mMinIntervalOfTrivialChanges;
+	
+}
 
 Ogre::Camera* Avatar::getAvatar1pCamera()
 {
@@ -300,20 +308,41 @@ Ogre::Camera* Avatar::getAvatarTopCamera()
 	return mAvatarTopCamera;
 }
 
+void Avatar::movedInWorld( const WFMath::Point< 3 > &p )
+{
+	mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(mErisAvatarEntity->getPosition()));
+	mAvatarNode->setOrientation(Atlas2Ogre(mErisAvatarEntity->getOrientation()));
+	
+}
+
+
 void Avatar::enteredWorld(Eris::Entity *e)
 {
-/*	if (e == NULL) {
-		int i = 1;
-	}
-		
-	DimeEntity* dimeEntity = static_cast<DimeEntity*>(e);
-	dimeEntity->markAsMainAvatar(mSceneMgr);
-	createAvatarCameras(dimeEntity->getSceneNode());
-	delete mAvatarNode;
 	
-	mAvatarNode = dimeEntity->getSceneNode();*/
+	/*
+	 * sometimes, for no apparent reason, the avatar get's created as a 
+	 * normal entity
+	 * And sometimes not.
+	 * Thus we need to check for this and act appropriatly
+	 */
+	DimeEntity* dimeEntity = dynamic_cast<DimeEntity*>(e);
+	if (dimeEntity != 0) {
+		//it got created as a DimeEntity, do some reshuffeling
+		//dimeEntity->markAsMainAvatar(mSceneMgr);
+		createAvatarCameras(dimeEntity->getSceneNode());
+		delete mAvatarNode;
+		mAvatarNode = dimeEntity->getSceneNode();
+		//here we should disconnect signals, if I only found out how...
+		//TODO: disconnect signals
+		//e->Moved.
+	} 
+
 	mAvatarNode->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(e->getPosition()));
 	mAvatarNode->setOrientation(Atlas2Ogre(e->getOrientation()));
+
+	mErisAvatarEntity = e;
+	e->Moved.connect(SigC::slot( *this, &Avatar::movedInWorld ));
+
 	
 }
 
@@ -322,8 +351,4 @@ void Avatar::touch(DimeEntity* entity)
 	dime::DimeServices::getInstance()->getServerService()->touch(entity);
 }
 
-bool Avatar::isOkayToSendTrivialMovementChangeToServer()
-{
-	return mTimeSinceLastServerMessage > mMinIntervalOfTrivialChanges;
-	
-}
+
