@@ -63,6 +63,13 @@ namespace dime
 
 		// Initialize OpenAL
 		alutInit(NULL,0);
+		if(alGetError() != AL_NO_ERROR)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error initiatin AL" << ENDM;
+			return Service::FAILURE;
+		} else {
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "AL initiated"  << ENDM;
+		}
 
 		// Generate buffers
 		/*
