@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.78  2005-03-20 20:21:26  aglanor
+ *      Revision 1.79  2005-03-31 21:17:35  erik
+ *      2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Use the S_LOG* macros.
+ *      	* Name the window "Ember"
+ *      	* Commented out the sound test where it tries to open /dev/dsp since that made Ember lock up completely on my box when something else was accessing the sound device.
+ *
+ *      Revision 1.78  2005/03/20 20:21:26  aglanor
  *      2005-03-20 Miguel Guzman (Aglanor)
  *
  *              * added back Sound Service and reenabled the playsound command
@@ -825,7 +832,12 @@ void EmberOgre::go(void)
 	if (!setup())
 		return;
 
-	mRoot->startRendering();
+// 	try {
+		mRoot->startRendering();
+// 	} catch (Ogre::Exception e) {
+// 		std::cerr << "Error in Ogre: !\n";
+// 	}
+
 }
 
 void EmberOgre::shutdown()
@@ -918,7 +930,7 @@ bool EmberOgre::configure(void)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true);
+        mWindow = mRoot->initialise(true, "Ember");
         //mRoot->showDebugOverlay(true);
         return true;
     }
@@ -1080,7 +1092,7 @@ void EmberOgre::preloadMedia(void)
 		try {
 			Ogre::TextureManager::getSingleton().load(*I, "General");
 		} catch (Ogre::Exception e) {
-			std::cerr << "Error when loading texture " << *I << ".\n";
+			S_LOG_FAILURE( "Error when loading texture " << *I )
 		}
 	}	
 	  
@@ -1199,7 +1211,7 @@ void EmberOgre::setupJesus()
 					bool result = mJesus->addBluePrint(blueprint);
 					if (!result)
 					{
-						std::cerr << "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name << "\n";
+						S_LOG_FAILURE( "COULD NOT ADD BLUEPRINT: " << ep->d_name)
 					}
 				}
 			}
@@ -1221,7 +1233,7 @@ void EmberOgre::setupJesus()
 					bool result = mJesus->addBluePrint(blueprint);
 					if (!result)
 					{
-						std::cerr << "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name << "\n";
+						S_LOG_FAILURE(  "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name )
 					}
 				}
 			}
@@ -1229,30 +1241,8 @@ void EmberOgre::setupJesus()
 		(void) closedir (dp);
 	}
 	
-	
-/*	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/floors.blockspec.xml");
-	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/walls.blockspec.xml");
-	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/roofs.blockspec.xml");
-	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/slopewalls.blockspec.xml");
-	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/adapters.blockspec.xml");*/
-/*	mJesus->loadBuildingBlockSpecDefinition(datadir + "/carpenter/modelblockspecs/general.modelblocks.xml");*/
-	
-// 	mJesus->loadModelBlockMapping(datadir + "/jesus/modelmappings/general.modelmapping.xml");
-	
-	
-//	Carpenter::BluePrint* housePrint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/house.blueprint.xml");
-//	Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/empty.blueprint.xml");
-	
-/*	Carpenter::BluePrint* blueprint = mJesus->getBluePrint("empty");
-	if (blueprint) {
-		Ogre::SceneNode* node;
-		node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-		blueprint->compile();
-		Construction* construction = new Construction(blueprint, mJesus, node);
-		construction->buildFromBluePrint(blueprint);
-	
-	}*/
-	
+
+
 	EventCreatedJesus.emit(mJesus);
 
 }
@@ -1411,17 +1401,18 @@ void EmberOgre::initializeEmberServices(void)
 
 
 	// Initialize the Sound Service
-#ifndef WIN32
+//#ifndef WIN32
 	// Test that /dev/dsp is availible
-	FILE *temp = fopen("/dev/dsp","w");
-	if (temp) {
-	  fclose(temp);
-#endif
+//	FILE *temp = fopen("/dev/dsp","w");
+//	if (temp) {
+//	  fclose(temp);
+//#endif
 	// Initialize the SoundService
 	Ember::EmberServices::getInstance()->getSoundService()->start();
-#ifndef WIN32
-	}
-#endif
+//#ifndef WIN32
+//	}
+//#endif
+
 
 	// Initialize and start the Metaserver Service.
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )

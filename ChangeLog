@@ -1,5 +1,11 @@
 2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Use the S_LOG* macros.
+	* Name the window "Ember"
+	* Commented out the sound test where it tries to open /dev/dsp since that made Ember lock up completely on my box when something else was accessing the sound device.
+
+2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Fixes to static build. (though I can't really get it to work)
 
 2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>

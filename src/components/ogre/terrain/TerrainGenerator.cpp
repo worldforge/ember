@@ -266,20 +266,19 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 {
 
    if (!we->hasAttr("terrain")) {
-        std::cerr << "View entity has no terrain" << std::endl << std::flush;
-        std::cerr << "View entity id " << we->getId() << std::endl
-                  << std::flush;
+        S_LOG_FAILURE( "View entity has no terrain" )
+        S_LOG_FAILURE( "View entity id " << we->getId() )
         return false;
     }
     const Atlas::Message::Element &terrain = we->valueOfAttr("terrain");
     if (!terrain.isMap()) {
-        std::cerr << "Terrain is not a map" << std::endl << std::flush;
+        S_LOG_FAILURE( "Terrain is not a map" )
     }
     const Atlas::Message::MapType & tmap = terrain.asMap();
     Atlas::Message::MapType::const_iterator I = tmap.find("points");
     int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
     if (I == tmap.end()) {
-        std::cerr << "No terrain points" << std::endl << std::flush;
+        S_LOG_FAILURE( "No terrain points" )
     }
 	if (I->second.isList()) {
         // Legacy support for old list format.
@@ -287,12 +286,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
         Atlas::Message::ListType::const_iterator J = plist.begin();
         for(; J != plist.end(); ++J) {
             if (!J->isList()) {
-                std::cout << "Non list in points" << std::endl << std::flush;
+                S_LOG_INFO( "Non list in points" )
                 continue;
             }
             const Atlas::Message::ListType & point = J->asList();
             if (point.size() != 3) {
-                std::cout << "point without 3 nums" << std::endl << std::flush;
+                S_LOG_INFO( "point without 3 nums" )
                 continue;
             }
             int x = (int)point[0].asNum();
@@ -310,12 +309,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
         Atlas::Message::MapType::const_iterator J = plist.begin();
         for(; J != plist.end(); ++J) {
             if (!J->second.isList()) {
-                std::cout << "Non list in points" << std::endl << std::flush;
+                S_LOG_INFO( "Non list in points" )
                 continue;
             }
             const Atlas::Message::ListType & point = J->second.asList();
             if (point.size() != 3) {
-                std::cout << "point without 3 nums" << std::endl << std::flush;
+                S_LOG_INFO( "point without 3 nums" )
                 continue;
             }
             int x = (int)point[0].asNum();
@@ -323,8 +322,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
             float z = point[2].asNum();
             Mercator::BasePoint bp;
             if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
-                std::cout << "Point [" << x << "," << y << " unchanged"
-                          << std::endl << std::flush;
+                S_LOG_INFO( "Point [" << x << "," << y << " unchanged")
                 continue;
             }
             xmin = std::min(xmin, x);
@@ -365,7 +363,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
       
 
     } else {
-        std::cerr << "Terrain is the wrong type" << std::endl << std::flush;
+        S_LOG_FAILURE( "Terrain is the wrong type" )
         return false;
     }
     mXmin = xmin;
