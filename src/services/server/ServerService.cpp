@@ -18,8 +18,8 @@
 */
 
 #include "ServerService.h"
+#include "logging/LoggingService.h"
 
-#include <iostream>
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
 // #include <Eris/>
@@ -28,6 +28,7 @@
 
 #include <list>
 #include <algorithm>
+#include <iostream>
 
 namespace dime
 {
@@ -95,7 +96,7 @@ namespace dime
 	
 	void ServerService::GotFailure(string msg)
 	{
-    	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
 	}	
 	
 /*	void ServerService::poll() // Out of use
