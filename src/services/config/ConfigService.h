@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
+                        Joel Schander         [nullstar]
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,72 +22,131 @@
 
 #include <framework/Service.h>
 #include <string>
-#include <map>
+#include <varconf/varconf.h>
 
 namespace dime {
 
-/**
- * Dime Configuration Service
- *
- * @author Miguel Guzman Miranda [Aglanor]
- *
- * @see dime::Service
- */
+    /**
+     * Dime Configuration Service
+     *
+     * @author Miguel Guzman Miranda [Aglanor]
+     * @author Joel Schander         [nullstar]
+     *
+     * @see dime::Service
+     * @see varconf
+     */
 class ConfigService: public Service
 {
-    //======================================================================
-    // Private Variables
-    //======================================================================
     private:
+    //----------------------------------------------------------------------
+    // Class Variables
+    //----------------------------------------------------------------------
 
-		/** struct for comparation of two strings */
-		struct eqstr
-		{
-  			bool operator()(const char* s1, const char* s2) const
-  			{
-    			return strcmp(s1, s2) == 0;
-  			}
-		};
+    /**
+     * Reference to the ConfigService instance.
+     * 
+     */
+    static ConfigService* theInstance;
 
-		std::map<const char*, const char*, eqstr> inputMap;
 
-		
+    protected:
     //----------------------------------------------------------------------
     // Constructors & Destructor
+    //----------------------------------------------------------------------
 
-	public:
-	
-    /** Creates a new ConfigService using default values. */
+    /**
+     * Ctor for dime::service::ConfigService.
+     *
+     */
     ConfigService();
 
-
-    /** Deletes a ConfigService instance. */
+    /**
+     * Dtor for dime::service::ConfigService.
+     *
+     */
     ~ConfigService()
     {
     }
 
-
+ 
+    public:
     //----------------------------------------------------------------------
     // Getters & Setters
+    //----------------------------------------------------------------------
+
+    /**
+     * Returns value stored in key in appropriate section.
+     *
+     * @param Section of config space to look in.
+     * @param Key to return value of.
+     */
+    varconf::Variable getValue(const std::string& section, const std::string& key);
+
+    /**
+     * Sets value of key in appropriate section.
+     *
+     * @param Section of config space to look in.
+     * @param Key to store value in.
+     * @param Value to store.
+     */
+    void setValue(const std::string& section, const std::string& key, const varconf::Variable& value);
 
     //----------------------------------------------------------------------
     // Methods
-	
-   int start();
+    //----------------------------------------------------------------------
 
-   void stop(int code) ;
-	
-	const char* getParam( const char* );
+    /**
+     * Returns reference to the singleton.
+     *
+     */
+    ConfigService* getInstance(void);
 
-	/**
-	 * Saves the configuration parameters to a file
-	 */
-   	bool saveConfig();
+    /**
+     * Starts ConfigService.  Returns status.
+     *
+     */
+    int start(void);
+
+    /**
+     * Stops ConfigService.
+     *
+     * @param stop code.
+     */
+    void stop(int code);
+
+    /**
+     * Returns true if the key exists in the section given.
+     *
+     * @param Section of config space to look in.
+     * @param Key to look for.
+     */
+    bool itemExists(const std::string& section, const std::string& key);
+
+    /**
+     * Returns true if the key exists in the section give but is successfully
+     * removed.
+     * 
+     * @param Section of config space to look in.
+     * @param Key to remove.
+     */
+    bool deleteItem(const std::string& section, const std::string& key);
+
+    /**
+     * Loads config space from given file.
+     *
+     * @param Name of file to read from.
+     */
+    bool loadSavedConfig(const std::string& filename);
+
+    /**
+     * Saves config space to given file.
+     *
+     * @param Name of file to save to.
+     */
+    bool saveConfig(const std::string& filename);
 
 }; //ConfigService
 
 } // namespace dime
 
 #endif
-
-
