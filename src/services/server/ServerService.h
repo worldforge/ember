@@ -111,6 +111,11 @@ class ServerService: public Service, public ConsoleObject, public SigC::Object
 
     void runCommand(const std::string &, const std::string &);
 
+    Eris::World* getWorld()
+      {
+	return myWorld;
+      }
+
     //----------------------------------------------------------------------
     // Callbacks from Eris
   private:
