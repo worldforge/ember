@@ -6,7 +6,15 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.4  2003-04-24 23:21:09  aglanor
+ *      Revision 1.5  2003-04-28 00:55:06  aglanor
+ *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
+ *      		There is also a little ogre head marking (0,0,0).
+ *      			The more detailed the scene, the easiest it is
+ *      				to spot strange behaviors.
+ *      					And it looks cool :)
+ *
+ *      Revision 1.4  2003/04/24 23:21:09  aglanor
  *      DimeOgre app is again linked back from the FrameListener, so entities sighted
  *      are created in the Ogre SceneManager (as squirrels, of course).
  *      I've also made the sample entity the ogrehead.mesh, you need to have it
@@ -239,19 +247,19 @@ public:
 			mWindow->setDebugText(Ogre::String("Wrote ") + tmp);
 		}
 
+		/*****************************************
+		Eris debug part
+		******************************************/
 
-// Eris polling
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
+		// Eris polling
 		Eris::PollDefault::poll();
-#endif
+
 		// Pressing 1 queries the metaserver
 		if(mInputDevice->isKeyDown(Ogre::KC_1)) {
 			// TODO: use META_REFRESH here, passing a string like this is an ugly hack (Aglanor)
 			dime::DimeServices::getInstance()->getMetaserverService()->runCommand("meta_refresh","");
 		}
-		
+
 		// Pressing 2 connects to red.worldforge.org
 		if(mInputDevice->isKeyDown(Ogre::KC_2) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)

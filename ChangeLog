@@ -1,8 +1,15 @@
 2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* DimeOgre.h/cpp: added a Water Plane at height 0.
+	There is also a little ogre head marking (0,0,0).
+	The more detailed the scene, the easiest it is
+	to spot strange behaviors.
+	And it looks cool :)
+
+2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* MathConverter.h: Point, Vector and Quaternion converter
 	for world-centric coordinates (Atlas-wfmath like)
 	to/from screen-centric coordinates (Ogre like).
-	See file for more info. 
+	See file for more info.
 	Only point conversion currently, more will come later.
 	* Cal3DOgreConverter.h/cpp: model converter.
 	Just added files, it is not coded yet.

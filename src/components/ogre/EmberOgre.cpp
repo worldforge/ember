@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.8  2003-04-27 23:46:30  aglanor
+ *      Revision 1.9  2003-04-28 00:55:06  aglanor
+ *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
+ *      		There is also a little ogre head marking (0,0,0).
+ *      			The more detailed the scene, the easiest it is
+ *      				to spot strange behaviors.
+ *      					And it looks cool :)
+ *
+ *      Revision 1.8  2003/04/27 23:46:30  aglanor
  *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* MathConverter.h: Point, Vector and Quaternion converter
  *      		for world-centric coordinates (Atlas-wfmath like)
@@ -235,17 +243,58 @@ void DimeOgre::createScene(void)
 
 //#if 0
 
-  //create the entity
-  mShip = mSceneMgr->createEntity("ogre", "ogrehead.mesh");
 
-  // create the node
-  mShipNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-  mShipNode->setPosition(10,25,128);
-  mShipNode->setScale(1,1,1);
+	// A little Ogre head to mark the center of the scene
+	// ----------------------------------------
 
-  // attach the node to the entity
-  mShipNode->attachObject(mShip);
-//#endif
+	//create the entity
+	mOgreHead = mSceneMgr->createEntity("ogre", "ogrehead.mesh");
+
+	// create the node
+	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mOgreHeadNode->setPosition(0,0,0);
+	mOgreHeadNode->setScale(0.02,0.02,0.02);
+
+	// attach the node to the entity
+	mOgreHeadNode->attachObject(mOgreHead);
+
+	// end little Ogre Head
+	// ----------------------------------------
+
+
+
+	// A Water Plane for the fancyness of it ;)
+	// ----------------------------------------
+        Ogre::Entity *waterEntity;
+        Ogre::Plane waterPlane;
+
+        // create a water plane/scene node
+        waterPlane.normal = Ogre::Vector3::UNIT_Y;	// normal points up
+        waterPlane.d = 0;				// sea level is at 0 ;)
+        Ogre::MeshManager::getSingleton().createPlane(
+            "WaterPlane",
+            waterPlane,
+            2800, 2800,
+            20, 20,
+            true, 1,
+            10, 10,
+            Ogre::Vector3::UNIT_Z
+        );
+
+        waterEntity = mSceneMgr->createEntity("water", "WaterPlane");
+        waterEntity->setMaterialName("Examples/TextureEffect4");
+
+        Ogre::SceneNode *waterNode = static_cast<Ogre::SceneNode*>(
+            mSceneMgr->getRootSceneNode()->createChild("WaterNode"));
+        waterNode->attachObject(waterEntity);
+        waterNode->translate(1000, 0, 1000);
+
+	// end Water Plane
+	// ----------------------------------------
+
+
+
+
 
 	// a hack from the OGRE GUI sample
 	Ogre::Overlay* o = (Ogre::Overlay*)Ogre::OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
@@ -284,10 +333,10 @@ void DimeOgre::createCamera(void)
   mCamera = mSceneMgr->createCamera("PlayerCam");
 
   // Position it at 500 in Z direction
-  mCamera->setPosition(Ogre::Vector3(128,25,75));
+  mCamera->setPosition(Ogre::Vector3(10,10,10));
 
   // Look back along -Z
-  mCamera->lookAt(Ogre::Vector3(0,0,-300));
+  mCamera->lookAt(Ogre::Vector3(-300,0,-300));
   mCamera->setNearClipDistance( 1 );
   // do not clip at far distance
   // so we can see the skydome
@@ -381,6 +430,7 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 
 	// set the Ogre node position based on Atlas entity position
 	ogreNode->setPosition(Atlas2Ogre(e->getPosition()));
+	std::cout << "Entity placed at (" << e->getPosition().x() << "," << e->getPosition().y() << "," << e->getPosition().x() << ")" << std::endl;
 
 	// old code, just for the record
 	/** WFMath::Point<3> position = e->getPosition();

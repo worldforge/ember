@@ -24,7 +24,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.3  2003-04-24 20:27:28  nikal
+ *      Revision 1.4  2003-04-28 00:55:06  aglanor
+ *      2003-04-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* DimeOgre.h/cpp: added a Water Plane at height 0.
+ *      		There is also a little ogre head marking (0,0,0).
+ *      			The more detailed the scene, the easiest it is
+ *      				to spot strange behaviors.
+ *      					And it looks cool :)
+ *
+ *      Revision 1.3  2003/04/24 20:27:28  nikal
  *      Adding Ogre:: to all the variables which are in the Ogre namespace
  *
  *      Revision 1.2  2003/04/24 20:02:08  aglanor
@@ -250,8 +258,8 @@ public:
 
 
 	// TODO: these are for tests. Remove them later
-	Ogre::Entity* mShip;
-	Ogre::SceneNode* mShipNode;
+	Ogre::Entity* mOgreHead;
+	Ogre::SceneNode* mOgreHeadNode;
 
 protected:
 	Ogre::Root *mRoot;
