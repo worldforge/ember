@@ -218,7 +218,7 @@ class Button : public Widget
     virtual void mouseEnter( MouseMotionEvent *event )
     {
 		// Change how we look
-		lowlight();
+		highlight();
 
 		Widget::mouseEnter( event );
     }
@@ -230,7 +230,7 @@ class Button : public Widget
     virtual void mouseExit( MouseMotionEvent *event ) 
     {
 		// Change how we look
-		highlight();
+		lowlight();
 
 		Widget::mouseExit( event );
     }
