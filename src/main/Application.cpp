@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.4  2002-01-27 17:57:52  nikal
+ *      Revision 1.5  2002-01-27 23:20:53  nikal
+ *      Some minor changes reflecting Dime's decision to use only dime:: as a namespace
+ *
+ *      Revision 1.4  2002/01/27 17:57:52  nikal
  *      Created and added a LogObserver which prints messages out to std::cerr.  Ther is a small bug. not sure where.
  *
  *      Revision 1.3  2002/01/27 00:26:37  nikal
@@ -38,159 +41,157 @@
 
 namespace dime
 {
-    namespace main
+    /**
+     * Predefined implementation of Observer-class for std::cerr 
+     * The format of messages written to std::cerr is the following:
+     *
+     * timeStamp importance file "\t" line "\t" message
+     */
+
+    class CerrLogObserver: public dime::LoggingService::Observer
     {
-        /**
-         * Predefined implementation of Observer-class for std::cerr 
-         * The format of messages written to std::cerr is the following:
-         *
-         * timeStamp importance file "\t" line "\t" message
-         */
-
-        class CerrLogObserver: public dime::services::LoggingService::Observer
+    public:
+        CerrLogObserver()
         {
-        public:
-            CerrLogObserver()
-            {
-            }
+        }
 
-            virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                      const dime::services::LoggingService::MessageImportance & importance, const time_t & timeStamp)
-            {
-                tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
-
-                std::cerr << "[" << ctm->tm_year+1900 << "-" << ctm->tm_mon+1 << "-" << ctm->tm_mday 
-                           << " " << ctm->tm_hour << ":" <<  ctm->tm_min << ":" << ctm->tm_sec << "] "
-                           << "[File: " << file << ", Line #:" <<  line << "] (";
-                if(importance == dime::services::LoggingService::CRITICAL) 
-                    {
-                        std::cerr << "CRITICAL";
-                    }
-                else  if(importance == dime::services::LoggingService::ERROR)
-                    {
-                        std::cerr << "ERROR";
-                    } 
-                else if(importance == dime::services::LoggingService::WARNING)
-                    {
-                        std::cerr << "WARNING";
-                    }
-                else
-                    {
-                        std::cerr << "INFO";
-                    }
-                std::cerr << ") " <<message << std::endl;
-            }
-
-        private: 
-
-        };
-
-        Application::Application(int width, int height, std::string title)
-            : myShouldQuit(false) 
+        virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
+                                  const dime::LoggingService::MessageImportance & importance, const time_t & timeStamp)
         {
-            myLoggingService = DimeServices::getInstance()->getLoggingService();
-            myLoggingService->addObserver(new CerrLogObserver());
-            if(width >=0)
+            tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+
+            std::cerr << "[" << ctm->tm_year+1900 << "-" << ctm->tm_mon+1 << "-" << ctm->tm_mday 
+                      << " " << ctm->tm_hour << ":" <<  ctm->tm_min << ":" << ctm->tm_sec << "] "
+                      << "[File: " << file << ", Line #:" <<  line << "] (";
+            if(importance == dime::LoggingService::CRITICAL) 
                 {
-                    myWidth=width;
+                    std::cerr << "CRITICAL";
                 }
-            if(height >=0)
+            else  if(importance == dime::LoggingService::ERROR)
                 {
-                    myHeight=height;
-                }
-            if((SDL_Init(SDL_INIT_VIDEO)==-1)) 
-                {
-                    myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::ERROR, 
-                                          "Couldn't init SDL");
-                        //std::cerr << "Couldn't init SDL";
-                    return;
+                    std::cerr << "ERROR";
                 } 
-            else 
+            else if(importance == dime::LoggingService::WARNING)
                 {
-                    myScreen = SDL_SetVideoMode(myWidth, myHeight, 8, SDL_SWSURFACE);
+                    std::cerr << "WARNING";
                 }
-            // Setting title.  The second argument is for an Icon. 
-            // Remember if passing a std::string to a char * function, you must use .c_str()
-            SDL_WM_SetCaption(title.c_str(), NULL);
+            else
+                {
+                    std::cerr << "INFO";
+                }
+            std::cerr << ") " <<message << std::endl;
         }
 
-        Application::~Application() {
-            if(myScreen != NULL) 
-                {
-                    SDL_FreeSurface(myScreen);
-                }
-            SDL_Quit();
-        }
+    private: 
 
-        void Application::mainLoopStep() 
-        {
-            SDL_Event nextEvent;
-            if(SDL_PollEvent(&nextEvent)) 
-                {
-                    switch(nextEvent.type) {
-                    case SDL_ACTIVEEVENT:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_ACTIVEEVENT");
-                        break;
-                    case SDL_KEYDOWN:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_KEYDOWN");
-                        break;
-                    case SDL_KEYUP:
-                        // Looking for the ESC key.
-                        if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
-                            {
-                                myShouldQuit = true;
-                                myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                                      "Caught escape. Quitting...");
-                            }
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_KEYUP");
-                        break;
-                    case SDL_MOUSEMOTION:
-                        //generates too much noise -nikal
-                        //std::cout << " SDL_MOUSEMOTION\n";
-                        break;
-                    case SDL_MOUSEBUTTONDOWN:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_MOUSEBUTTONDOW");
-                        break;
-                    case SDL_MOUSEBUTTONUP:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_MOUSEBUTTONUP");
-                        break;
-                    case SDL_SYSWMEVENT:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_SYSWMEVENT");
-                        break;
-                    case SDL_VIDEORESIZE:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                               "SDL_VIDEORESIZE");
-                        break;
-                    case SDL_VIDEOEXPOSE:
-                        myLoggingService->log(__FILE__, __LINE__, dime::services::LoggingService::INFO, 
-                                              "SDL_VIDEOEXPOSE");
-                        break;
-                    case SDL_QUIT:
-                        myShouldQuit = true;
-                        break;
-                    }
-     
-                }
-            //return nextEvent;
-        }
+    };
 
-        void Application::mainLoop() 
-        {
-            while(myShouldQuit == false) 
-                {
-                    mainLoopStep();
-                }
-        }
-        bool Application::shouldQuit() 
-        {
-            return myShouldQuit;
-        }
-
+    Application::Application(int width, int height, std::string title)
+        : myShouldQuit(false) 
+    {
+        myLoggingService = DimeServices::getInstance()->getLoggingService();
+        myLoggingService->addObserver(new CerrLogObserver());
+        if(width >=0)
+            {
+                myWidth=width;
+            }
+        if(height >=0)
+            {
+                myHeight=height;
+            }
+        if((SDL_Init(SDL_INIT_VIDEO)==-1)) 
+            {
+                myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::ERROR, 
+                                      "Couldn't init SDL");
+                //std::cerr << "Couldn't init SDL";
+                return;
+            } 
+        else 
+            {
+                myScreen = SDL_SetVideoMode(myWidth, myHeight, 8, SDL_SWSURFACE);
+            }
+        // Setting title.  The second argument is for an Icon. 
+        // Remember if passing a std::string to a char * function, you must use .c_str()
+        SDL_WM_SetCaption(title.c_str(), NULL);
     }
+
+    Application::~Application() {
+        if(myScreen != NULL) 
+            {
+                SDL_FreeSurface(myScreen);
+            }
+        SDL_Quit();
+    }
+
+    void Application::mainLoopStep() 
+    {
+        SDL_Event nextEvent;
+        if(SDL_PollEvent(&nextEvent)) 
+            {
+                switch(nextEvent.type) {
+                case SDL_ACTIVEEVENT:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_ACTIVEEVENT");
+                    break;
+                case SDL_KEYDOWN:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_KEYDOWN");
+                    break;
+                case SDL_KEYUP:
+                    // Looking for the ESC key.
+                    if(nextEvent.key.keysym.sym==SDLK_ESCAPE)
+                        {
+                            myShouldQuit = true;
+                            myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                                  "Caught escape. Quitting...");
+                        }
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_KEYUP");
+                    break;
+                case SDL_MOUSEMOTION:
+                    //generates too much noise -nikal
+                    //std::cout << " SDL_MOUSEMOTION\n";
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_MOUSEBUTTONDOWN");
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_MOUSEBUTTONUP");
+                    break;
+                case SDL_SYSWMEVENT:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_SYSWMEVENT");
+                    break;
+                case SDL_VIDEORESIZE:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_VIDEORESIZE");
+                    break;
+                case SDL_VIDEOEXPOSE:
+                    myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::INFO, 
+                                          "SDL_VIDEOEXPOSE");
+                    break;
+                case SDL_QUIT:
+                    myShouldQuit = true;
+                    break;
+                }
+     
+            }
+        //return nextEvent;
+    }
+
+    void Application::mainLoop() 
+    {
+        while(myShouldQuit == false) 
+            {
+                mainLoopStep();
+            }
+    }
+    bool Application::shouldQuit() 
+    {
+        return myShouldQuit;
+    }
+
+
 }

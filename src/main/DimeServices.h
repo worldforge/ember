@@ -28,7 +28,6 @@
 // Include system headers here
 
 namespace dime {
-namespace main {
 
 /**
  * This is a singleton class that is used to access instances of all the
@@ -78,7 +77,7 @@ class DimeServices
     /**
      * The instance of the LoggingService
      */
-    dime::services::LoggingService *myLoggingService;
+    dime::LoggingService *myLoggingService;
 
     /**
      * The DimeServices singleton instance.
@@ -131,7 +130,7 @@ class DimeServices
     /**
      * Returns an instance of the TestService.
      */
-    dime::services::test::TestService *getTestService()
+    dime::TestService *getTestService()
     {
         // TODO
         return NULL;
@@ -140,7 +139,7 @@ class DimeServices
     /**
      * Returns an instance of the LoggingService
      */
-    dime::services::LoggingService *getLoggingService()
+    dime::LoggingService *getLoggingService()
     {
         return myLoggingService;
     }
@@ -174,7 +173,7 @@ class DimeServices
      */
     DimeServices()
     {
-        myLoggingService = new dime::services::LoggingService();
+        myLoggingService = new dime::LoggingService();
     }
 
 
@@ -196,9 +195,6 @@ class DimeServices
 
 
 }; // End of class
-    
-
-} // End of subsystem namespace
 } // End of application namespace
 
 #endif

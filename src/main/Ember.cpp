@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-    dime::main::Application myApp;
+    dime::Application myApp;
     myApp.mainLoop();
     return 0;
 }

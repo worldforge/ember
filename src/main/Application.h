@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.3  2002-01-27 17:57:52  nikal
+ *      Revision 1.4  2002-01-27 23:20:53  nikal
+ *      Some minor changes reflecting Dime's decision to use only dime:: as a namespace
+ *
+ *      Revision 1.3  2002/01/27 17:57:52  nikal
  *      Created and added a LogObserver which prints messages out to std::cerr.  Ther is a small bug. not sure where.
  *
  *      Revision 1.2  2002/01/27 00:26:37  nikal
@@ -40,85 +43,82 @@
 
 namespace dime 
 {
-    namespace main 
+    class Application 
     {
-        class Application 
-        {
 
         
-            //======================================================================
-            // Inner Classes, Typedefs, and Enums
-            //======================================================================
-        public:
-            //======================================================================
-            // Public Methods
-            //======================================================================
-        public:    
-            /**
-             * Ctor for dime::main::Application.  Allcoates and pops up an SDL window 
-             * of width, and height with title.
-             *
-             * @param width The width of the Application window(default=640)
-             * @param height The height of the Application window(default=480)
-             * @param title The title of the Application window(default="Dime Application")
-             */      
-            Application(int width=640, int height=480, std::string title="Dime Application");
+        //======================================================================
+        // Inner Classes, Typedefs, and Enums
+        //======================================================================
+    public:
+        //======================================================================
+        // Public Methods
+        //======================================================================
+    public:    
+        /**
+         * Ctor for dime::::Application.  Allcoates and pops up an SDL window 
+         * of width, and height with title.
+         *
+         * @param width The width of the Application window(default=640)
+         * @param height The height of the Application window(default=480)
+         * @param title The title of the Application window(default="Dime Application")
+         */      
+        Application(int width=640, int height=480, std::string title="Dime Application");
 
-            /**
-             * Dtor for dime::main::Application.  Free the current surface.
-             *
-             */
-            ~Application();
+        /**
+         * Dtor for dime::::Application.  Free the current surface.
+         *
+         */
+        ~Application();
        
-            /**
-             * Main loop step.   Does one iteration of the mainloop. 
-             *
-             *
-             */
-            void mainLoopStep();
+        /**
+         * Main loop step.   Does one iteration of the mainloop. 
+         *
+         *
+         */
+        void mainLoopStep();
 
-            /**
-             * the Main loop.  Returns when application has received an "exit" command
-             *
-             */
-            void mainLoop();
+        /**
+         * the Main loop.  Returns when application has received an "exit" command
+         *
+         */
+        void mainLoop();
        
-            /**
-             * return true if application has received an "exit" command else false.
-             *
-             * @return true if "shouldquit" else false
-             */
-            bool shouldQuit();
+        /**
+         * return true if application has received an "exit" command else false.
+         *
+         * @return true if "shouldquit" else false
+         */
+        bool shouldQuit();
 	   
 	 
-        private:
-            /**
-             * The width of the screen
-             */
-            int myWidth;
+    private:
+        /**
+         * The width of the screen
+         */
+        int myWidth;
 
-            /**
-             * The height of the screen
-             */
-            int myHeight;
+        /**
+         * The height of the screen
+         */
+        int myHeight;
 
-            /**
-             * An internal flag used to signal when to quite.
-             */
-            bool myShouldQuit;
+        /**
+         * An internal flag used to signal when to quite.
+         */
+        bool myShouldQuit;
        
-            /**
-             * Our pointer to the LoggingService
-             */
-            dime::services::LoggingService *myLoggingService;
+        /**
+         * Our pointer to the LoggingService
+         */
+        dime::LoggingService *myLoggingService;
 
-            /**
-             * Our pointer to the SDL_surface we use as the screen
-             */
-            SDL_Surface *myScreen;
+        /**
+         * Our pointer to the SDL_surface we use as the screen
+         */
+        SDL_Surface *myScreen;
        
-        };//class Application
-    }//namespace main
+    };//class Application
 }//namespace dime
 
 #endif
