@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
+    Copyright (C) 2002  Miguel Guzman Miranda [Aglanor], Martin Pollard (Xmp)
     Based on YUP::Metacmd code by Adam Wendt
 
     This program is free software; you can redistribute it and/or modify
@@ -21,12 +21,15 @@
 #define METASERVERSERVICE_H
 
 #include <framework/Service.h>
+#include <framework/ConsoleObject.h>
 #include <services/datamodel/StringProvider.h>
 
 #include <sigc++/object.h>
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Utils.h>
+
+#include <string>
 
 namespace dime {
 
@@ -37,8 +40,10 @@ namespace dime {
  *
  * @see dime::Service
  * @see dime::ServerService
+ * @see dime::ConsoleObject
  */
-class MetaserverService: public Service, public SigC::Object
+class MetaserverService: public Service,
+  public ConsoleObject, public SigC::Object
 {
     //======================================================================
     // Private Variables
@@ -69,20 +74,29 @@ class MetaserverService: public Service, public SigC::Object
     //----------------------------------------------------------------------
     // Methods
 	
-	Service::Status start();
+    Service::Status start();
 
-	void stop(int code) ;
-
-   	void gotServerCount(int count);
+    void stop(int code) ;
 	
-	void gotFailure(const std::string& msg);
-
-	void receivedServerInfo(Eris::ServerInfo sInfo);
+    void gotServerCount(int count);
 	
-	void completedServerList();
+    void gotFailure(const std::string& msg);
 
-	  //	void poll();
+    void receivedServerInfo(Eris::ServerInfo sInfo);
+	
+    void completedServerList();
 
+    /**
+     * This is the function that needs to be extended to use the console.
+     * command is a command that has been previously registered with the console
+     * args is the argument string that has been provided for the command
+     */ 
+    virtual void runCommand(const std::string &command, const std::string &args);
+
+  // List of MetaserverService's console commands
+  static const char * const META_REFRESH = "meta_refresh";
+  static const char * const META_ABORT = "meta_abort";
+  static const char * const META_LIST = "meta_list";
 }; //MetaserverService
 
 } // namespace dime

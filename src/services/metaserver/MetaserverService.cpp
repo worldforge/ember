@@ -181,5 +181,14 @@ namespace dime
 		return;
 	}
 
+  void MetaserverService::runCommand(const std::string &command, const std::string &args)
+  {
+    if (command == META_LIST){
+    } else if (command == META_ABORT) {
+    } else if (command == META_REFRESH) {
+    }
+
+    return;
+  }
 } // namespace dime
 
