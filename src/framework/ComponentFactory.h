@@ -110,7 +110,7 @@ class ComponentFactory
         // TODO: Copy fields from source class to this class here.
 
         // Return result
-        return &this;
+        return *this;
     }
 
 

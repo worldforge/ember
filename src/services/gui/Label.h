@@ -134,6 +134,7 @@ class Label : public Widget
      * NOTE: This is the text stored by the static widget
      */
     std::string  myText;
+	//FontRenderer myFont;
 
 
     //======================================================================
@@ -176,6 +177,7 @@ class Label : public Widget
     Label &operator= ( const Label &source )
     {
         // Copy fields from source class to this class here.
+		myText = source.myText;
 
         // Return this object with new value
         return *this;
@@ -221,7 +223,16 @@ class Label : public Widget
      * @param name The new name of the gizmo.
      */
     virtual void setText( std::string text ) {
-		myText=text;		
+		myText = text;		
+	}
+
+	/**
+	 * Sets the font used to draw this Widget
+	 */
+	virtual void setFont( /*const FontRenderer &font*/ ) {
+		/*
+		myFont = font;
+		*/
 	}
 
 

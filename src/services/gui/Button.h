@@ -152,6 +152,9 @@ class Button : public Widget
     Button &operator= ( const Button &source )
     {
         // Copy fields from source class to this class here.
+		myStandardBackground = source.myStandardBackground;
+		myHighlightBackground = source.myHighlightBackground;
+		myCurrentBackground = &myStandardBackground;
 
         // Return this object with new value
         return *this;

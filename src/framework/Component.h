@@ -96,7 +96,7 @@ class Component
     // Constructors
 
     /**
-     * Cretaes a new Component using default values.
+     * Creates a new Component using default values.
      */
     Component()
     {
@@ -122,7 +122,7 @@ class Component
         // TODO: Copy fields from source class to this class here.
 
         // Return result
-        return &this;
+        return *this;
     }
 
 
