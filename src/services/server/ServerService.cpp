@@ -86,8 +86,9 @@ namespace dime
     ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this);
     ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this);
     ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
+	ConsoleBackend::getMainConsole()->registerCommand("movetest",this);
   }
-	
+
   /* dtor */
   ServerService::~ServerService()
   {
@@ -372,7 +373,15 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		touch.setArgs(Atlas::Message::Element::ListType(1, args));
 
 		Eris::Connection::Instance()->send(touch);
+	} else if (command=="movetest") { // TODO: hack! this shall be properly done
+		// TODO: polish this rough check
+		ConsoleBackend::getMainConsole()->pushMessage("TRACE - MOVETEST");
+		if(!myAvatar) {
+			ConsoleBackend::getMainConsole()->pushMessage("TRACE - NO AVATAR");
+			return;
+		}
 
+		Atlas::Objects::Operation::Move move;
 
 	}
   }
