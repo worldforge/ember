@@ -25,18 +25,18 @@
 #include <CEGUIExceptions.h>
 #include <elements/CEGUIStaticText.h>
 
-#include "widgets/ServerWidget.h"
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
-#include "widgets/ChatWidget.h"
-#include "widgets/EntityPickerWidget.h"
-#include "widgets/InventoryWidget.h"
-#include "widgets/ServerBrowserWidget.h"
-#include "widgets/InspectWidget.h"
-#include "widgets/MakeEntityWidget.h"
-#include "widgets/GiveWidget.h"
-#include "widgets/DebugWidget.h"
-#include "widgets/IngameChatWidget.h"
+// #include "widgets/ServerBrowserWidget.h"
+// #include "widgets/ServerWidget.h"
+// #include "widgets/ChatWidget.h"
+// #include "widgets/EntityPickerWidget.h"
+// #include "widgets/InventoryWidget.h"
+// #include "widgets/InspectWidget.h"
+// #include "widgets/MakeEntityWidget.h"
+// #include "widgets/GiveWidget.h"
+// #include "widgets/DebugWidget.h"
+// #include "widgets/IngameChatWidget.h"
 #include "MousePicker.h"
 
 #include "EmberEventProcessor.h"
@@ -44,9 +44,14 @@
 #include "EmberOgre.h"
 #include "input/Input.h"
 
+#include "widgets/WidgetDefinitions.h"
+
 #include <SDL.h>
 
 namespace EmberOgre {
+
+class ServerBrowserWidget;
+
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
@@ -58,7 +63,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 // 	mEventProcessor = new EmberEventProcessor();
 // 	mEventProcessor->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow());
 // 	mEventProcessor->startProcessingEvents();
-
+	
+	WidgetDefinitions w;
 	
 	try {
 	
@@ -82,7 +88,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			} catch (CEGUI::Exception e) {
 				fprintf(stderr, "CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.\n");
 			}
-
 			try {
 				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
 			} catch (CEGUI::Exception e) {
@@ -155,9 +160,10 @@ void GUIManager::initialize()
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
 	
 
-		createWidget("ConsoleWidget");
+		mConsoleWidget = dynamic_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
 		createWidget("IngameChatWidget");
 		createWidget("DebugWidget");
+		createWidget("Performance");
 		createWidget("ChatWidget");
 		createWidget("InventoryWidget");
 		createWidget("ServerBrowserWidget");
@@ -178,14 +184,15 @@ void GUIManager::initialize()
 	
 }
 
-bool GUIManager::createWidget(const std::string& name)
+Widget* GUIManager::createWidget(const std::string& name)
 {
+	Widget* widget;
 	try {
 	
-		Widget* widget = WidgetLoader::createWidget(name);
+		widget = WidgetLoader::createWidget(name);
 		if (widget == 0) {
 			std::cerr << "Could not find widget with name " << name <<".\n";
-			return false;
+			return 0;
 		}
 		widget->init(this);
 		widget->buildWidget();
@@ -193,9 +200,9 @@ bool GUIManager::createWidget(const std::string& name)
 		std::cout << "Successfully loaded widget " << name << "\n";
 	} catch (std::exception e) {
 		std::cerr << "Error when loading widget " << name <<".\n";
-		return false;
+		return 0;
 	}
-	return true;
+	return widget;
 }
 
 
@@ -342,9 +349,10 @@ void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 {
  		//toggle the console
  		//we've put it here because we wan't the console to always be available
- 		if(key.sym == SDLK_F12)
+ 		if(key.sym == SDLK_F12 && mConsoleWidget)
 		{
 			mConsoleWidget->toggleActive();
+/*			t->buildWidget();*/
 		}
 
 		//take screenshot		

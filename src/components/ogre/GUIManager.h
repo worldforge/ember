@@ -55,6 +55,7 @@ class EmberEntity;
 class TerrainGenerator;
 class CEGUI::Window;
 class Widget;
+/*class ServerBrowserWidget;*/
 class ConsoleWidget;
 class MousePicker;
 class EmberEventProcessor;
@@ -132,8 +133,8 @@ protected:
 	CEGUI::WindowManager* mWindowManager;
 	CEGUI::StaticText* mDebugText;
 	
+/*ServerBrowserWidget* t;*/
 	ConsoleWidget* mConsoleWidget;
-
 	//EmberEventProcessor* mEventProcessor;
 	Input *mInput;
 	Ogre::RenderWindow* mWindow;
@@ -142,7 +143,7 @@ protected:
 
 	std::set<Widget*> mWidgets;
 	
-	bool createWidget(const std::string& name);
+	Widget* createWidget(const std::string& name);
 
 // 	//polls the mouse for new events and movements
 // 	void pollMouse(const Ogre::FrameEvent& evt);

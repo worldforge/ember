@@ -1,5 +1,10 @@
 2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* use the new WidgetDefinitions class
+	* fix bug with the console crashing when trying to expose it
+
+2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* added TerrainPage to act as a bridge between ogre terrain pages and mercator segments, allowing for larger terrain pages, which gives better performance (this does not work with the material yet though)
 	* with Renderables, change material lod when geometry lod changes
 
