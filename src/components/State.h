@@ -41,14 +41,6 @@ namespace dime {
  *
  * @author Martin Pollard aka Xmp
  *
- * NOTE: You can also specify the author for individual methods
- * if different persons have created them.
- * It is also possible to have multiple @author tags for a method.
- * Only add yourself as an @author if you have done serious work
- * on a class/method, and can help fixing bugs in it, etc.
- * If you just fixed a bug or added a short code snipplet you
- * don't need to add yourself.
- *
  * @see dime::StateManager
  * @see dime::WidgetInfo
  *
@@ -168,12 +160,20 @@ class State
     }
 
     /**
-     * Sets the value of Widgets of this State
+     * Adds a WidgetInfo to this State
      */
-    void setWidgets( std::list<WidgetInfo> widgets )
+    void addWidget( const WidgetInfo& widget )
     {
-        myWidgets = widgets;
+        myWidgets.insert(myWidgets.end(),WidgetInfo(widget));
     }
+
+    /**
+     * Creates and adds a WidgetInfo to this State
+     */
+    void addWidget(const std::string& name, const dime::Rectangle& pos, const std::string& type)
+      {
+        myWidgets.insert( myWidgets.end(), WidgetInfo( name, pos,type ) );
+      }
 
 
     //----------------------------------------------------------------------

@@ -199,7 +199,6 @@ class Service
      *
      * This method must be implemented by all inheriting classes.  <p>
 	 *
-     * TODO(zzorn): Change return type to the status enum type.
      *
 	 * @returns success or error code
 	 */

@@ -30,7 +30,7 @@
 namespace dime {
 
 /**
- * Short sentence with a general description of the class, ending in period.
+ * Container Class for Info on a Widget in a State.
  *
  * More detailed description of the class, it's purpose, what it does,
  * how to use it and so on.
@@ -40,17 +40,8 @@ namespace dime {
  *
  * @author Martin Pollard aka Xmp
  *
- * NOTE: You can also specify the author for individual methods
- * if different persons have created them.
- * It is also possible to have multiple @author tags for a method.
- * Only add yourself as an @author if you have done serious work
- * on a class/method, and can help fixing bugs in it, etc.
- * If you just fixed a bug or added a short code snipplet you
- * don't need to add yourself.
+ * @see dime::State
  *
- * @see OtherSubsystem::AnOtherRelatedClass
- *
- * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
 class WidgetInfo
@@ -102,9 +93,10 @@ class WidgetInfo
     // Constructors
 
     /**
-     * Creates a new WidgetInfo using default values.
+     * Creates a new WidgetInfo.
      */
-     WidgetInfo()
+    WidgetInfo(const std::string& name, const dime::Rectangle& pos, const std::string& type)
+      : myName(name), myPos(pos), myType(type)
      {
      }
 
@@ -125,6 +117,9 @@ class WidgetInfo
     WidgetInfo &operator= ( const WidgetInfo &source )
     {
         // Copy fields from source class to this class here.
+        myName = source.myName;
+	myPos = source.myPos;
+	myType = source.myType;
 
         // Return this object with new value
         return *this;
@@ -189,7 +184,7 @@ class WidgetInfo
      */
     void setType( std::string type )
     {
-        myType = type ;
+        myType = type;
     }
 
     /**
@@ -197,7 +192,7 @@ class WidgetInfo
      */
     void setName( std::string name )
     {
-        myName = name ;
+        myName = name;
     }
 
 
