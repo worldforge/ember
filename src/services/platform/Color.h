@@ -51,6 +51,10 @@ namespace dime
          * Stores the B (blue) value of the color
          */
         float myB;
+	/**
+	 * Stores the A (alpha) value of the color
+	 */
+	float myA;
          
 
         //======================================================================
@@ -72,8 +76,8 @@ namespace dime
         /**
          * Creates a new instance of the class with r,g,b values
          */
-        Color(float r, float g, float b)
-            : myR(r), myG(g), myB(b)
+        Color(float r, float g, float b, float a = 1.0f)
+	  : myR(r), myG(g), myB(b), myA(a)
         {
         }
         
@@ -88,9 +92,11 @@ namespace dime
         Color &operator= ( const Color &source )
         {
             // Copy fields from source class to this class here.
-            myR = source.getR();
-            myG = source.getG();
-            myB = source.getB();
+            myR = source.myR;
+            myG = source.myG;
+            myB = source.myB;
+	    myA = source.myA;
+
             // Return this object with new value
             return *this;
         }
@@ -109,11 +115,12 @@ namespace dime
         
         Color operator +(const Color & rhs)
         {
-            float r, g, b;
-            r = rhs.getR()+myR;
-            g = rhs.getG()+myG;
-            b = rhs.getB()+myB;
-            return Color(r,g,b);
+            float r, g, b, a;
+            r = rhs.myR+myR;
+            g = rhs.myG+myG;
+            b = rhs.myB+myB;
+	    a = rhs.myA+myA;
+            return Color(r,g,b,a);
         }
 
         /*
@@ -122,11 +129,12 @@ namespace dime
          */
         Color operator -(const Color & rhs)
         {
-            float r, g, b;
-            r = myR-rhs.getR();
-            g = myG-rhs.getG();
-            b = myB-rhs.getB();
-            return Color(r,g,b);
+            float r, g, b, a;
+            r = myR-rhs.myR;
+            g = myG-rhs.myG;
+            b = myB-rhs.myB;
+	    a = myA-rhs.myA;
+            return Color(r,g,b,a);
         }
 		
         /*
@@ -137,11 +145,12 @@ namespace dime
         {
             assert(rhs != 0);
 
-            float r, g, b;
+            float r, g, b, a;
             r = myR/rhs;
             g = myG/rhs;
             b = myB/rhs;
-            return Color(r,g,b);
+	    a = myA/rhs;
+            return Color(r,g,b,a);
         }
 	
         /*
@@ -149,11 +158,12 @@ namespace dime
          */
         Color operator*(const float & rhs)
         {
-            float r, g, b;
+            float r, g, b, a;
             r = myR*rhs;
             g = myG*rhs;
             b = myB*rhs;
-            return Color(r,g,b);
+	    a = myA*rhs;
+            return Color(r,g,b,a);
         }
 
         //----------------------------------------------------------------------
@@ -183,6 +193,14 @@ namespace dime
             return myB;	
         }
 		
+        /*
+         * returns the A(alpha) value of the Color
+         */
+        float getA() const
+        {
+            return myA;
+        }
+
 
         //----------------------------------------------------------------------
         // Setters
@@ -209,7 +227,15 @@ namespace dime
         void setB(float b)
         {
             myB = b;	
-        }	
+        }
+		
+        /*
+         * Sets the A(alpha) value of the color
+         */
+        void setA(float a)
+        {
+            myA = a;	
+        }
     };
 }
 
