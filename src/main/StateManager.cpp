@@ -19,21 +19,58 @@
 #include "StateManager.h"
 #include "framework/Exception.h"
 
+// Get in LibXML2
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+
 using namespace dime;
 
-//typedef std::list<State>::iterator stateIter;
-#if 0
-State& StateManager::findState(const std::string& state)
+xmlNodePtr StateManager::findState(const std::string& state)
 {
+  xmlNodePtr cur = xmlDocGetRootElement(myStateDoc)->xmlChildrenNode;
 
-   for(stateIter i = myStates.begin();i != myStates.end();i++)
-    {
-      if ((*i).getName() == state)
-	return *i;
+  while (cur != NULL) {
+    if ((!xmlStrcmp(cur->name, (const xmlChar *)"stateinfo"))){
+      // Second phase parse this time looking for name
+      cur = cur->xmlChildrenNode;
+
+      while (cur != NULL) {
+	if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))){
+	  // Check value
+	  if ((!xmlStrcmp(xmlNodeListGetString(myStateDoc, cur->xmlChildrenNode, 1),
+			  (const xmlChar *)state.c_str()))){
+	    return cur;
+	  }
+
+	  // Even if we are not the correct name bail as
+	  // there should only be one name per stateinfo
+	  break;
+	}
+	
+	cur = cur->next;
+      }
+
     }
 
-  // Maybe search for the default version of the state in future?
-  // If not found then throw.
+    cur = cur->next;
+  }
+
+  // If we've to here then we probably don't have that state
   THROW("State not found");
 }
-#endif
+
+bool StateManager::setState( const std::string& newState )
+{
+  // Find the new state in statefile
+  xmlNodePtr nstate = findState(newState);
+
+  // If state not found bail
+  if (!nstate)
+    return false;
+
+  // Unload myCurrentState
+
+  // Load new state
+
+  return true;
+}

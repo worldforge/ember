@@ -17,13 +17,13 @@
  */
 
 #ifndef STATEMANAGER_H
-
 #define STATEMANAGER_H
 
 // Included headers from the current project
-#include "components/State.h"
 
 // Included custom library headers
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 
 // Included system headers
 #include <string>
@@ -51,8 +51,6 @@ namespace dime {
  * on a class/method, and can help fixing bugs in it, etc.
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
- *
- * @see dime::State
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
@@ -92,6 +90,11 @@ class StateManager
      */
     std::string myCurrentState;
 
+    /**
+     * Holds the XML tree of our open states doc
+     */
+    xmlDocPtr myStateDoc;
+
     //======================================================================
     // Public Methods
     //======================================================================
@@ -103,10 +106,36 @@ class StateManager
     /**
      * Creates a new StateManager using default values.
      */
-    StateManager(const std::string& statefile) : myStateFile(statefile)
-      {
-	//setState(initialState);
-      }
+    StateManager(const std::string& stateFile, const std::string& initialState)
+      : myStateFile(stateFile), myStateDoc(NULL)
+    {
+      // Load the XML Document containing the States
+      xmlNodePtr cur;
+
+      myStateDoc = xmlParseFile(myStateFile.c_str());
+      if (!myStateDoc)
+	{
+	  xmlFreeDoc(myStateDoc);
+	  throw "Missing State Doc";
+	}
+
+      cur = xmlDocGetRootElement(myStateDoc);
+
+      if (!cur)
+	{
+	  xmlFreeDoc(myStateDoc);
+	  throw "Empty State Doc";
+	}
+
+      if (xmlStrcmp(cur->name, (const xmlChar *) "states"))
+	{
+	  xmlFreeDoc(myStateDoc);
+	  throw "document of the wrong type, root node != states";
+	}
+      // OK if we're here then we've loaded the doc
+
+      setState(initialState);
+    }
 
     /**
      * Copy constructor.
@@ -139,9 +168,8 @@ class StateManager
      */
     virtual ~StateManager ()
     {
-        // TODO: Free any allocated resources here.
-        // If my understanding of STL is correct then all elements in
-        // myStates are deleted by their container.
+      // TODO: Free any allocated resources here.
+      xmlFreeDoc(myStateDoc);
     }
 
 
@@ -166,30 +194,29 @@ class StateManager
      * Sets the value of State of this StateManager.
      * returns true if successful
      */
-    bool setState( const std::string& newState )
-      {
-	// Find the new state in statefile
-	//if (!findState(newState))
-	//  return false;
-	// Unload myCurrentState
-	// Load new state
-	//;
-
-	return true;
-      }
-
+    bool setState( const std::string& newState );
 
     //----------------------------------------------------------------------
     // Other public methods
-    // NOTE: Group related public methods together and crate a separator comment like above for them.
-    bool findState(const std::string& state);
-
+    // NOTE: Group related public methods together and create a separator comment like above for them.
+    /**
+     * Check if a state exists
+     */
+    bool existsState( const std::string& state )
+      {
+	xmlNodePtr cur = findState(state);
+	return (bool)cur;
+      }
 
     //======================================================================
     // Protected Methods
     //======================================================================
     protected:
-
+    /**
+     * Locates a state in the StateFile and returns a pointer to the node
+     * it's on.
+     */
+    xmlNodePtr findState(const std::string& state);
 
     //======================================================================
     // Private Methods

@@ -1,3 +1,8 @@
+Xmp - 11/11/2002
+
+The statemanager work is now in progess.  The states will be specified in XML &
+parsed by libxml2.
+
 Xmp - 10/10/2002
 
 Dime has now reached basic IRC like functionality.

@@ -1,3 +1,15 @@
+2002-11-11 M Pollard <circlemaster@blueyonder.co.uk>
+	* StateManager.cpp, StateManager.h: Begun work on new format here.
+
+	* StateManagerTest.cpp: Fixed this up so that it should work now,
+	  however I haven't readded it to the build as I want to complete
+	  StateManager first.
+	
+	* configure.ac: made cppunit default on but given ability to turn off;
+	                added libxml2.
+
+	* NEWS: added mention of statemanager work.
+
 2002-10-10 M Pollard <circlemaster@blueyonder.co.uk>
         * test/Makefile.am, StateManagerTest.cpp, TestServices.cpp: cut
 	  out StateManager from the tests till I've finished redoing it.

@@ -50,7 +50,7 @@ PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2.1,
                 ],
                 AC_MSG_ERROR(Couldn't find sigc++ or insufficient version found. Please goto http://sourceforge.net/projects/libsigc/ and get at least version $SIGC_VERSION)
         )
-     AC_MSG_WARN(Please note the we will drop support for this version of SigC++ soon)
+     AC_MSG_WARN(Please note the we will drop support for this version of SigC++ eventually)
      ])
 
 dnl Check for Atlas
@@ -113,9 +113,19 @@ else
 fi
 
 dnl Cppunit check
+dnl 
+AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],
+[ 
+   if test x$enableval = xno; then 
+		ac_use_cppunit="no"	
+   else 
+		ac_use_cppunit="yes"
+   fi
+], [ac_use_cppunit="yes"])
 
 found_cppunit=no
 
+if test "$ac_use_cppunit" = "yes"; then
 AM_PATH_CPPUNIT(1.8.0, [
   AC_MSG_RESULT([
 *** Found CppUnit
@@ -130,6 +140,7 @@ AM_PATH_CPPUNIT(1.8.0, [
 *** 
 *** To get CppUnit see http://cppunit.sourceforge.net
 ]))
+fi
 
 dnl OpenGL and GLU check
 
@@ -192,6 +203,14 @@ if test "$ac_use_gprof_code" = "yes"; then
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
 
+dnl Test for libxml2
+AM_PATH_XML2(2.4.24,[
+    CFLAGS="$CFLAGS $XML_CFLAGS"
+    CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
+    LDFLAGS="$LDFLAGS $XML_LIBS"
+    ],
+AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
+)
 
 AC_LANG_CPLUSPLUS
 AC_REQUIRE_CPP
@@ -224,6 +243,3 @@ AC_OUTPUT([
   dime.dox
   dime.spec
 ])
-
-
-

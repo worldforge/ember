@@ -32,7 +32,7 @@ void StateManagerTestCase::testFindStateNonExistant()
   //try to find a nonexistant state
   try
     {
-      mySM->findState("testdontmakestatecalledthis");
+      mySM->existsState("testdontmakestatecalledthis");
     }
   catch(Exception &)
     {
@@ -48,7 +48,7 @@ void StateManagerTestCase::testFindStateLegal()
 
 void StateManagerTestCase::setUp ()
 {
-  mySM = new StateManager("");
+  mySM = new StateManager("states.xml");
 
   CPPUNIT_ASSERT (mySM != NULL);
 }
