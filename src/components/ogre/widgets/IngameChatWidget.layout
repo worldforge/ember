@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 	<Window Type="DefaultGUISheet" Name="MainWindow">
-		<Property Name="Size" Value="w:0.3 h:0.3" /> 
+		<Property Name="Size" Value="w:0.3 h:0.15" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		
 		<Window Type="TaharezLook/StaticText" Name="Text">

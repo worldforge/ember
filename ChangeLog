@@ -1,5 +1,9 @@
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* made chat bubbles a bit smaller and added comments
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* better handling of types, get all in a hierarcy after they've all been loaded
 
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>

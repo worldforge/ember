@@ -61,12 +61,22 @@ class IngameChatWidget : public Widget {
 		
 			inline float getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
 			
+			/**
+			increases the elapsed time with the supplied amount
+			*/
 			void increaseElapsedTime(float timeSlice);
 			
+			/**
+			
+			gets the entity the window belongs to
+			*/
 			EmberPhysicalEntity* getEntity();
 			
 			CEGUI::Window* getWindow();
 			
+			/**
+			call this each frame to update the window
+			*/
 			void frameStarted( const Ogre::FrameEvent & event );
 
 			
@@ -101,6 +111,9 @@ protected:
 
 		
 	
+	/**
+	a map of all the active windows
+	*/
 	ActiveChatWindowMap mActiveChatWindows;
 	
 	//the length in seconds a window should be shown after it has been activated
