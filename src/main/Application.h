@@ -4,13 +4,16 @@
  *  Written by: nikal
  *
  *  Copyright (C) 2001, 2002 nikal. 
- *  This code is distributed under the LGPL.
+ *  This code is distributed under the GPL.
  *  See file COPYING for details. 
  *
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.8  2002-04-08 07:51:28  adamgreg
+ *      Revision 1.9  2002-04-15 05:53:15  nikal
+ *      *** empty log message ***
+ *
+ *      Revision 1.8  2002/04/08 07:51:28  adamgreg
  *
  *      Added simple panels. Cleaned up the way my Gui code was using SDLDrawDevices instead of the DrawDevice base class. Made GuiService get the root widget dimensions properly. Moved Rectangle.h and Dimension.h to services/platform/ because they're used there and not just in the gui, and are pretty useful for other things. Probably did some other things I've forgotten about :). Mostly just cleaning it up.
  *

@@ -4,13 +4,16 @@
  *  Written by: nikal
  *
  *  Copyright (C) 2001, 2002 nikal. 
- *  This code is distributed under the LGPL.
+ *  This code is distributed under the GPL.
  *  See file COPYING for details. 
  *
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.10  2002-04-07 05:38:25  adamgreg
+ *      Revision 1.11  2002-04-15 05:53:15  nikal
+ *      *** empty log message ***
+ *
+ *      Revision 1.10  2002/04/07 05:38:25  adamgreg
  *
  *      Made GuiService draw widgets to a DrawDevice associated with it. So that the Gui can now be drawn to areas other than the main screen if desired. Also more general for when an OpenGL version turns up.
  *
