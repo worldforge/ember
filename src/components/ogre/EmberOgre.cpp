@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.18  2003-09-05 15:01:18  aglanor
+ *      Revision 1.19  2003-09-07 12:38:51  aglanor
+ *      2003-09-07 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * ServerService: added touch operation
+ *
+ *      Revision 1.18  2003/09/05 15:01:18  aglanor
  *      2003-09-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * configure.ac: pumped up atlas version req to 0.5
  *      	* ServerService: added support for character creation
@@ -495,7 +499,7 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	{
 		fprintf(stderr, "TRACE - FOUND A PIG - PIG MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "pig.mesh");
-		ogreNode->setScale(1,1,1);
+		ogreNode->setScale(0.5,0.5,0.5);
 	}
 	else
 	{

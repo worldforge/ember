@@ -1,3 +1,6 @@
+2003-09-07 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* ServerService: added touch operation
+
 2003-09-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* configure.ac: pumped up atlas version req to 0.5
 	* ServerService: added support for character creation

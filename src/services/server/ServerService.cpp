@@ -27,6 +27,10 @@
 #include <Eris/Person.h>
 #include <Eris/Avatar.h>
 
+#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Message/Element.h>
 
 #include <list>
 #include <algorithm>
@@ -49,7 +53,7 @@ namespace dime
     const char * const ServerService::CREATECHAR = "createchar";
     const char * const ServerService::TAKECHAR = "takechar";
     const char * const ServerService::LISTCHARS = "listchars";
-
+    const char * const ServerService::TOUCH = "touch";
 
   /* ctor */
   ServerService::ServerService() : myConn(NULL), myPlayer(NULL),
@@ -317,13 +321,14 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
       if (myPlayer)
       {
 		fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
-		Atlas::Objects::Entity::GameEntity chrcter(Atlas::Objects::Entity::GameEntity::Instantiate());
-		chrcter.setParents(Atlas::Message::Element::ListType(1,"settler"));	//TODO: settler shouldn't be fixed
-		chrcter.setName("foobarito");
-		chrcter.setAttr("description", "a person");
-		chrcter.setAttr("sex", "female");
+		Atlas::Objects::Entity::GameEntity character(Atlas::Objects::Entity::GameEntity::Instantiate());
+		character.setParents(Atlas::Message::Element::ListType(1,"settler"));	//TODO: settler shouldn't be fixed
+		character.setName("foobarito");
+		character.setAttr("description", "a person");
+		character.setAttr("sex", "female");
 		fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
-		myWorld = myPlayer->createCharacter(chrcter)->getWorld(); // TODO: grab the world here
+		myAvatar = myPlayer->createCharacter(character);
+		myWorld = myAvatar->getWorld();
 		fprintf(stderr, "TRACE - DONE\n");
       }
     } else if (command==TAKECHAR) {
@@ -337,6 +342,26 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
       {
         myPlayer->refreshCharacterInfo();
       }
-    }
+    } else if (command==TOUCH) {
+
+		// TODO: polish this rough check
+		fprintf(stderr, "TRACE - TOUCHING\n");
+		if(!myAvatar) {
+			fprintf(stderr, "TRACE - NO AVATAR\n");
+			return;
+		}
+
+		Atlas::Objects::Operation::Touch touch;
+		Atlas::Message::Element::MapType args;
+
+		touch = Atlas::Objects::Operation::Touch::Instantiate();
+		args["id"] = 1;
+		touch.setFrom(myAvatar->getID());
+		touch.setArgs(Atlas::Message::Element::ListType(1, args));
+
+		Eris::Connection::Instance()->send(touch);
+
+
+	}
   }
 } // namespace dime
