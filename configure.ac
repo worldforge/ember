@@ -214,7 +214,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.1,
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.2 \
+PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.3 \
  varconf-1.0 >= 0.6.1 mercator-0.2 atlascpp-0.6 >= 0.5.92,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
