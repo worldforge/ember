@@ -1,13 +1,13 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="Taharez Frame Window" Name="ChatMainWindow">
+	<Window Type="TaharezLook/FrameWindow" Name="ChatMainWindow">
 		<Property Name="Position" Value="x:0 y:0.3" /> 
 		<Property Name="Size" Value="w:0.4 h:0.4" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Chat" />
 		
-		<Window Type="Taharez MultiLineEditbox" Name="ChatTextBox">
+		<Window Type="TaharezLook/MultiLineEditbox" Name="ChatTextBox">
 			<Property Name="Position" Value="x:0 y:0" /> 
 			<Property Name="Size" Value="w:1 h:1" /> 
 			<Property Name="Text" Value="" /> 

@@ -152,8 +152,8 @@ protected:
 	MousePicker* mMousePicker;
 
 	//events
-	void mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
-	void mSheet_CaptureLost(const CEGUI::EventArgs& args);
+	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
+	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 	
 	
 	

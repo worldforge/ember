@@ -1,11 +1,11 @@
 <?xml version="1.0" ?> 
  <GUILayout> 
-    <Window Type="Taharez Frame Window" Name="DebugMainWindow"> 
+    <Window Type="TaharezLook/FrameWindow" Name="DebugMainWindow"> 
        <Property Name="Position" Value="x:0.25 y:0.25" /> 
        <Property Name="Size" Value="w:0.5 h:0.5" /> 
        <Property Name="Text" Value="Debug window" /> 
  
- 			<Window Type="Taharez StaticText" Name="statxtCurrentFPS">
+ 			<Window Type="TaharezLook/StaticText" Name="statxtCurrentFPS">
 				<Property Name="Text" Value="CurrentFps: " /> 
 		       <Property Name="Position" Value="x:0.25 y:0.25" /> 
 		       <Property Name="Size" Value="w:0.5 h:0.5" /> 
@@ -14,7 +14,7 @@
 
  			
  			
-          <Window Type="Taharez Button" Name="QuitButton"> 
+          <Window Type="TaharezLook/Button" Name="QuitButton"> 
              <Property Name="Position" Value="x:0.075 y:0.1" /> 
              <Property Name="Size" Value="w:0.15 h:0.75" /> 
              <Property Name="Text" Value="Quit!" /> 

@@ -54,18 +54,18 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		fprintf(stderr, "CEGUI - SYSTEM CREATED\n");
 
-		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/guischeme.xml");
+		CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 		fprintf(stderr, "CEGUI - TEST SCHEME LOADED\n");
 		
-		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezImagery", (CEGUI::utf8*)"MouseArrow");
+		mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
 		mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-14"); 
 		fprintf(stderr, "CEGUI - DEFAULTS SET\n");
 		
 		mSheet = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
-		mSheet->subscribeEvent(CEGUI::ButtonBase::MouseButtonDownEvent, 
+		mSheet->subscribeEvent(CEGUI::ButtonBase::EventMouseButtonDown, 
 			boost::bind(&GUIManager::mSheet_MouseButtonDown, this, _1));
-		mSheet->subscribeEvent(CEGUI::Window::CaptureLostEvent, 
+		mSheet->subscribeEvent(CEGUI::Window::EventInputCaptureLost, 
 			boost::bind(&GUIManager::mSheet_CaptureLost, this, _1));
 			
 
@@ -147,7 +147,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 }
 
-void GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
+bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	fprintf(stderr, "CEGUI - MAIN SHEET CAPTURING INPUT\n");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
@@ -164,11 +164,14 @@ void GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 		mMousePicker->performMousePicking(mMousePressedOgreEvent, args);
 	}
 */
+
+	return true;
 }
 
-void GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
+bool GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
 {
 	fprintf(stderr, "CEGUI - MAIN SHEET RELEASE INPUT\n");
+	return true;
 }
 
 bool GUIManager::isInMovementKeysMode() {

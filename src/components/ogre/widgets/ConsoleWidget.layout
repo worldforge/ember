@@ -1,19 +1,19 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="Taharez Frame Window" Name="ConsoleMainWindow">
+	<Window Type="TaharezLook/FrameWindow" Name="ConsoleMainWindow">
 		<Property Name="Position" Value="x:0 y:-0.45" /> 
 		<Property Name="Size" Value="w:1 h:0.5" /> 
 		<Property Name="FrameEnabled" Value="False" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		
-		<Window Type="Taharez MultiLineEditbox" Name="ConsoleTextBox">
+		<Window Type="TaharezLook/MultiLineEditbox" Name="ConsoleTextBox">
 			<Property Name="Text" Value="" /> 
 			<Property Name="ReadOnly" Value="true" /> 
 			<Property Name="Position" Value="x:0 y:0" /> 
 			<Property Name="Size" Value="w:1 h:0.9" /> 
 		</Window>
-		<Window Type="Taharez Editbox" Name="ConsoleInputBox">
+		<Window Type="TaharezLook/Editbox" Name="ConsoleInputBox">
 			<Property Name="Text" Value="" /> 
 			<Property Name="Position" Value="x:0 y:0.9" /> 
 			<Property Name="Size" Value="w:1 h:0.1" /> 
