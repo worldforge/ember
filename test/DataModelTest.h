@@ -27,7 +27,7 @@
 namespace dime
 {
 
-class DataModelTestCase : public CppUnit::TestCase, public SigC::Object 
+class DataModelTestCase : public CppUnit::TestFixture, public SigC::Object 
 {
   CPPUNIT_TEST_SUITE( DataModelTestCase );
   CPPUNIT_TEST( testRoot );
@@ -35,7 +35,7 @@ class DataModelTestCase : public CppUnit::TestCase, public SigC::Object
   CPPUNIT_TEST( testRemove );
   CPPUNIT_TEST( testLink );
   CPPUNIT_TEST_SUITE_END();
-  CPPUNIT_TEST_SUITE_REGISTRATION( DataModelTestCase);
+
 protected:
 	DataModelService * myDMS;
 	int				   myDeleted;

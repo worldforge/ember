@@ -7,6 +7,7 @@
 
 bool runTests() 
 {
+    dime::DataModelTestCase myTest;
     CppUnit::TextUi::TestRunner runner;
     CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();
     runner.addTest( registry.makeTest() );

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.26  2002-05-25 22:17:54  xmp
+ *      Revision 1.27  2002-05-27 00:25:56  nikal
+ *      Tests are now being run
+ *
+ *      Revision 1.26  2002/05/25 22:17:54  xmp
  *      Add serverservice to the main build.
  *
  *      Revision 1.25  2002/05/16 04:26:57  nikal
@@ -114,13 +117,6 @@
 #include <Eris/PollDefault.h>
 #endif
 
-//Needed for CppUnit
-#ifdef USE_CPP_UNIT
-	#include <cppunit/TextTestResult.h> 
-	#include <cppunit/TestSuite.h> 
-	#include <cppunit/extensions/TestFactoryRegistry.h> 
-#endif
-
 namespace dime
 {
     /**
@@ -205,13 +201,6 @@ namespace dime
         // Setting title.  The second argument is for an Icon. 
         // Remember if passing a std::string to a char * function, you must use .c_str()
         SDL_WM_SetCaption(title.c_str(), NULL);
-#ifdef USE_CPP_UNIT
-		CppUnit::TextTestResult result;
-		CppUnit::TestFactoryRegistry::getRegistry().makeTest()->run(&result);
-		result.print(std::cerr);
-
-		//See <services/input/InputServiceTest.cpp> for how to write your own tests.
-#endif 
 
 		// Initialize the InputService
 		myInputService = InputService::getInstance();

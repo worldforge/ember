@@ -86,14 +86,14 @@ void DataModelTestCase::testAdd()
 void DataModelTestCase::testRemove()
 {
 	//Tests also event handling on the sample of PRE_DELETION
-
+    
 	PDataObject p = DataObject::getRoot();
 	
 	//add something, register as observer and remove it
-	PDataObject q = p->addChild("Child2");
-	q->addConnection(SigC::slot(*this, &DataModelTestCase::onDelete), 
-			PRE_DELETION);
-
+    PDataObject q = p->addChild("Child2");
+    q->addConnection(SigC::slot(*this, &DataModelTestCase::onDelete), 
+                     PRE_DELETION);
+    
 	myDeleted = 0;
 
 	q->remove();
