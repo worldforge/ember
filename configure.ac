@@ -1,29 +1,40 @@
-AC_INIT(src/main/Dime.cpp)
+# Process this file with autoconf to produce a configure script.
+AC_INIT(Dime, 0.1.4, clients@worldforge.org)
+AC_CONFIG_SRCDIR([config.h.in])
+AM_INIT_AUTOMAKE
+AC_PREREQ(2.53)
+AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(Dime, 0.1.3)
 
-dnl Detect the canonical host and target build environment.
+# Detect the canonical host and target build environment.
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AC_CANONICAL_BUILD
-AC_PROG_LIBTOOL
-AC_PROG_CPP
+
+# Checks for Programs
 AC_PROG_CXX
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_LIBTOOL
 dnl AM_PROG_LEX
 
-dnl Allow maintainer mode
+# Allow maintainer mode
 AM_MAINTAINER_MODE
 
-dnl Check for C++ libraries:
+# Check for C++ libraries:
 AC_LANG_CPLUSPLUS
 
-dnl Check for the Boost shared_ptr.hpp shared pointer header
+# Check for the Boost shared_ptr.hpp shared pointer header
 AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
 
-dnl Check for C libraries:
+# Check for C libraries:
 AC_LANG_C
 
-dnl Check for SDL and SDL_image
+# Check for SDL and SDL_image
 AM_PATH_SDL(1.2.0, , 
 	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
 )
@@ -36,7 +47,7 @@ CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
 
-dnl Check for SigC++
+# Check for SigC++
 SIGC_VERSION=1.0.4
 PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2.1,
      [
@@ -53,7 +64,7 @@ PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2.1,
      AC_MSG_WARN(Please note the we will drop support for this version of SigC++ eventually)
      ])
 
-dnl Check for Atlas
+# Check for Atlas
 AM_PATH_ATLAS(0.4.5 ,[
     CXXFLAGS="$CXXFLAGS $ATLAS_CFLAGS"
     LDFLAGS="$LDFLAGS $ATLAS_LIBS"
@@ -61,7 +72,7 @@ AM_PATH_ATLAS(0.4.5 ,[
 AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
 
-dnl Check for Eris
+# Check for Eris
 AM_PATH_ERIS(0.9.6 ,[
     CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
     LDFLAGS="$LDFLAGS $ERIS_LIBS"
@@ -69,7 +80,7 @@ AM_PATH_ERIS(0.9.6 ,[
 AC_MSG_ERROR(Couldn't find Eris [or tests failed])
 )
 
-dnl Check for Varconf
+# Check for Varconf
 AM_PATH_VARCONF(0.5.2 ,[
     CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
     LDFLAGS="$LDFLAGS $VARCONF_LIBS"
@@ -78,16 +89,16 @@ AC_MSG_ERROR(Couldn't find Varconf [or tests failed])
 )
 
 
-dnl Check for the FreeType 2 library
-dnl
-dnl Get the cflags and libraries from the freetype-config script
-dnl
+# Check for the FreeType 2 library
+#
+# Get the cflags and libraries from the freetype-config script
 AC_ARG_WITH(freetype-prefix,[  --with-freetype-prefix=PFX   Prefix where FREETYPE is 
-installed (optional)],
-            freetype_prefix="$withval", freetype_prefix="")
+			       installed (optional)],
+			       freetype_prefix="$withval",
+			       freetype_prefix="")
 AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix 
-where FREETYPE is installed (optional)],
-            freetype_exec_prefix="$withval", freetype_exec_prefix="")
+				    where FREETYPE is installed (optional)],
+				    freetype_exec_prefix="$withval", freetype_exec_prefix="")
 
 if test x$freetype_exec_prefix != x ; then
      freetype_args="$freetype_args --exec-prefix=$freetype_exec_prefix"
@@ -112,8 +123,8 @@ else
     LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
 fi
 
-dnl Cppunit check
-dnl 
+# Cppunit check
+ 
 AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],
 [ 
    if test x$enableval = xno; then 
@@ -142,8 +153,7 @@ AM_PATH_CPPUNIT(1.8.0, [
 ]))
 fi
 
-dnl OpenGL and GLU check
-
+# OpenGL and GLU check
 
 AC_CHECK_LIB(GL,
 	     glViewport,
@@ -160,7 +170,7 @@ AC_CHECK_LIB(GLU,
 	     ])
 )
 
-dnl OpenAL check
+# OpenAL check
 
 AC_CHECK_LIB(openal,
 	alutInit ,
@@ -170,7 +180,7 @@ AC_CHECK_LIB(openal,
 	     ])
 	)
 
-dnl debugging option
+# debugging option
 AC_ARG_ENABLE(debug,[  --enable-debug     creates debugging code [default=no]],
 [ 
    if test x$enableval = xno; then 
@@ -188,7 +198,7 @@ else
       CXXFLAGS="$CXXFLAGS -DNDEBUG"
 fi
 
-dnl gprof debugging option
+# gprof debugging option
 AC_ARG_ENABLE(gprof,[  --enable-gprof     Add flags for gprof [default=no]],
 [
    if test x$enableval = xno; then 
@@ -203,7 +213,7 @@ if test "$ac_use_gprof_code" = "yes"; then
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
 
-dnl Test for libxml2
+# Test for libxml2
 AM_PATH_XML2(2.4.24,[
     CFLAGS="$CFLAGS $XML_CFLAGS"
     CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
@@ -212,34 +222,49 @@ AM_PATH_XML2(2.4.24,[
 AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
 )
 
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([stdlib.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_STRUCT_TM
+
+# Checks for library functions.
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([memset select])
+
 AC_LANG_CPLUSPLUS
 AC_REQUIRE_CPP
 
 
-
-AC_OUTPUT([
-  Makefile
-  bin/Makefile
-  src/Makefile
-  src/components/Makefile
-  src/components/debug/Makefile
-  src/framework/Makefile
-  src/services/Makefile
-  src/services/config/Makefile
-  src/services/logging/Makefile
-  src/services/test/Makefile
-  src/services/metaserver/Makefile
-  src/services/input/Makefile
-  src/services/image/Makefile
-  src/services/font/Makefile
-  src/services/gui/Makefile
-  src/services/gui/widget/Makefile
-  src/services/platform/Makefile
-  src/services/server/Makefile
-  src/services/sound/Makefile
-  src/services/datamodel/Makefile
-  test/Makefile
-  src/main/Makefile
-  dime.dox
-  dime.spec
+AC_CONFIG_FILES([Makefile
+		 bin/Makefile
+		 src/Makefile
+		 src/components/Makefile
+		 src/components/debug/Makefile
+		 src/framework/Makefile
+		 src/services/Makefile
+		 src/services/config/Makefile
+		 src/services/logging/Makefile
+		 src/services/test/Makefile
+		 src/services/metaserver/Makefile
+		 src/services/input/Makefile
+		 src/services/image/Makefile
+		 src/services/font/Makefile
+		 src/services/gui/Makefile
+		 src/services/gui/widget/Makefile
+		 src/services/platform/Makefile
+		 src/services/server/Makefile
+		 src/services/sound/Makefile
+		 src/services/datamodel/Makefile
+		 test/Makefile
+		 src/main/Makefile
+		 dime.dox
+		 dime.spec
 ])
+
+AC_OUTPUT
