@@ -43,17 +43,8 @@ namespace dime {
  * @author Nikal
  * @author Xmp (Martin Pollard)
  *
- * NOTE: You can also specify the author for individual methods
- * if different persons have created them.
- * It is also possible to have multiple @author tags for a method.
- * Only add yourself as an @author if you have done serious work
- * on a class/method, and can help fixing bugs in it, etc.
- * If you just fixed a bug or added a short code snipplet you
- * don't need to add yourself.
+ * @see Font
  *
- * @see OtherSubsystem::AnOtherRelatedClass
- *
- * NOTE: Add other related classes here, doxygen will create links to them.
  */
 class FontRenderer
 

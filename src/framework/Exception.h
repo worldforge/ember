@@ -1,6 +1,6 @@
 /*
- *  File:       Application.h
- *  Summary:    The class which initializes the GUI.
+ *  File:       Exception.h
+ *  Summary:    The class which defines the base class for exceptions.
  *  Written by: nikal and xmp
  *
  *  Copyright (C) 2002 nikal, xmp. 
@@ -38,7 +38,8 @@
 
 // Included system headers
 #include <string>
-
+#include <stdarg.h>
+#include <stdio.h>
 
 namespace dime 
 {
@@ -109,15 +110,14 @@ public:
     * Creates a new generic Exception using the specified error string, file and line
 	* occurence.
     */
-    Exception(const std::string& error, std::string & file, int line, ...)
-		: myFile(file)
+    Exception(const std::string& error, const std::string & file, int line, ...)
+		: myFile(file), myLine(line)
     {
-		myLine = line;
 		char buffer[EXCEPTION_TEXT_SIZE];
 		va_list va;
 		va_start (va, line);
 		vsprintf(buffer, error.c_str(), va);
-		error = buffer;
+		myError = buffer;
     }
 
 

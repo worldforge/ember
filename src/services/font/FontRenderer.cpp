@@ -1,4 +1,5 @@
 #include "FontRenderer.h"
+#include "framework/Exception.h"
 
 void dime::FontRenderer::updateTextBlended()
 {
@@ -19,9 +20,12 @@ void dime::FontRenderer::updateTextBlended()
     fg.r = (Uint8)myColor.getR();
     fg.g = (Uint8)myColor.getG();
     fg.b = (Uint8)myColor.getB();
-    /* Get the dimensions of the text surface */
 
+	assert(myFont);
+
+    /* Get the dimensions of the text surface */
     if ((myFont->sizeText(myText, &width, NULL)) || !width ) {
+		THROW("Font width zero or sizeText error.")
         // Should throw an error
     }
     height = myFont->getHeight();
@@ -29,7 +33,9 @@ void dime::FontRenderer::updateTextBlended()
                                0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
     if ( textbuf == NULL ) {
         //Should throw an error
+		THROW("Unable to allocate an SDL surface for textbuf drawing.")
     }
+
     /* Load and render each character */
     xstart = 0;
     pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
@@ -39,6 +45,7 @@ void dime::FontRenderer::updateTextBlended()
             assert(glyph);
             if( !glyph ) {
                 SDL_FreeSurface( textbuf );
+				THROW("Glyph undefined in font unable to render.")
                 //should throw and error
             }
             width = glyph->getPixmap().width;
@@ -78,7 +85,6 @@ void dime::FontRenderer::updateTextBlended()
             SDL_FreeSurface(myTextSurface);
         }
     myTextSurface = textbuf;
-    
 }
 
 
