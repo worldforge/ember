@@ -98,7 +98,6 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
-		AC_DEFINE(GCC_3_1, 1, "using gcc 3.x")
 	],
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
@@ -107,7 +106,7 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, wfmath-0.2 >= 0.2.10 \
  eris-1.2 \
- atlascpp-0.4 \
+ atlascpp-0.5 \
  varconf-1.0,
 	[
 		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"

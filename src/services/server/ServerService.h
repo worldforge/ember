@@ -29,6 +29,10 @@
 #include <Eris/World.h>
 #include <Eris/Avatar.h>
 
+#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Message/Element.h>
+
 #include <sigc++/object.h>
 
 namespace dime {

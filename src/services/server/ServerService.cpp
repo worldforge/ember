@@ -27,10 +27,12 @@
 #include <Eris/Person.h>
 #include <Eris/Avatar.h>
 
+
 #include <list>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+
 
 // HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
 
@@ -231,9 +233,18 @@ namespace dime
     ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
   }
 
-  void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &) {}
+void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
+{
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Character Info"<< ENDM;
+	ConsoleBackend::getMainConsole()->pushMessage("Got character info");
+}
 
-  void ServerService::gotAllCharacters() {}
+  void ServerService::gotAllCharacters()
+  {
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got All Characters"<< ENDM;
+	ConsoleBackend::getMainConsole()->pushMessage("Got all characters");
+
+  }
 
   void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
   {
@@ -252,6 +263,7 @@ namespace dime
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
     ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
+	fprintf(stderr, "TRACE - LOGGED IN\n\n\n");
   }
 
   void ServerService::logoutComplete(bool clean) {
@@ -304,12 +316,20 @@ namespace dime
     } else if (command==CREATECHAR) {
       if (myPlayer)
       {
-        //myPlayer->createCharacter();
+		fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
+		Atlas::Objects::Entity::GameEntity chrcter(Atlas::Objects::Entity::GameEntity::Instantiate());
+		chrcter.setParents(Atlas::Message::Element::ListType(1,"settler"));	//TODO: settler shouldn't be fixed
+		chrcter.setName("foobarito");
+		chrcter.setAttr("description", "a person");
+		chrcter.setAttr("sex", "female");
+		fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
+		myWorld = myPlayer->createCharacter(chrcter)->getWorld(); // TODO: grab the world here
+		fprintf(stderr, "TRACE - DONE\n");
       }
     } else if (command==TAKECHAR) {
       if (myPlayer)
       {
-        myAvatar = myPlayer->takeCharacter(args);
+	myAvatar = myPlayer->takeCharacter(args);
 	myWorld = myAvatar->getWorld();
       }
     } else if (command==LISTCHARS) {

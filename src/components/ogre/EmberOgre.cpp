@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.17  2003-08-28 17:12:08  aglanor
+ *      Revision 1.18  2003-09-05 15:01:18  aglanor
+ *      2003-09-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * configure.ac: pumped up atlas version req to 0.5
+ *      	* ServerService: added support for character creation
+ *              * DimeOgre: bound key "5" to character creation
+ *
+ *      Revision 1.17  2003/08/28 17:12:08  aglanor
  *      fixed typo
  *
  *      Revision 1.16  2003/07/12 11:39:59  alriddoch
@@ -554,6 +560,8 @@ void DimeOgre::entered( Eris::Entity *e )
 	// Set the Player camera accordingly
 	// TODO: do this when the avatar moves too
 	mCamera->setPosition(Atlas2Ogre(e->getPosition()));
+	Ogre::Vector3 height(0,1.75,0);
+	mCamera->move(height);
 	mCamera->setOrientation(Atlas2Ogre(e->getOrientation()));
         mWindow->setDebugText("Avatar entered the world");
 
