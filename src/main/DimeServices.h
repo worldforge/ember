@@ -89,13 +89,13 @@ class DimeServices
     dime::LoggingService *myLoggingService;
 
 	/*
-	 * The instance of the InputService
-     */
-    dime::InputService *myInputService;
+	* The instance of the InputService
+	*/
+	dime::InputService *myInputService;
 	
 	/*
 	 * The instance of the GuiService
-     */
+	*/
     dime::GuiService *myGuiService;
 
     /**
@@ -115,6 +115,11 @@ class DimeServices
 #else
     dime::ServerService *myServerService;
 #endif
+
+	/**
+	 * The instance of the SoundService
+	 */
+	dime::SoundService *mySoundService;
 
     /**
      * The DimeServices singleton instance.
@@ -229,7 +234,14 @@ class DimeServices
     }
 #endif
 
-
+    /**
+     * Returns an instance of the SoundService
+     */
+    dime::SoundService *getSoundService()
+    {
+        if (mySoundService == NULL) mySoundService = new dime::SoundService();
+		return mySoundService;
+    }
 
     //----------------------------------------------------------------------
     // Setters
@@ -267,6 +279,7 @@ class DimeServices
 		myMetaserverService = NULL;
 		myServerService = NULL;
 #endif
+		mySoundService = NULL;
 	}
 
 

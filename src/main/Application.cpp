@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.35  2002-08-28 21:46:35  xmp
+ *      Revision 1.36  2002-08-30 19:31:33  aglanor
+ *      sound service is now created and started in the application
+ *
+ *      Revision 1.35  2002/08/28 21:46:35  xmp
  *      Support for new verbose logging mode
  *
  *      Revision 1.34  2002/08/27 17:47:05  xmp
@@ -268,7 +271,9 @@ namespace dime
 
 		// Initialize the InputService
 		myInputService = InputService::getInstance();
-	
+
+
+
 		// Mouse and Keyboard are needed, so create them
 
 		new MouseDevice;
@@ -282,6 +287,10 @@ namespace dime
 
 		// Set the DrawDevice target for GuiService
 		myGuiService->setDrawTarget(myDrawDevice);
+
+		// Initialize the SoundService
+		mySoundService = DimeServices::getInstance()->getSoundService();
+		mySoundService->start();
 
 		// Initialize and start the MetaserverService.
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )

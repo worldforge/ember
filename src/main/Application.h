@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.16  2002-05-13 19:37:53  nikal
+ *      Revision 1.17  2002-08-30 19:31:33  aglanor
+ *      sound service is now created and started in the application
+ *
+ *      Revision 1.16  2002/05/13 19:37:53  nikal
  *      Preliminary Unicode support.  I think this breaks TextBox, but I'm not sure. :)
  *
  *      Revision 1.15  2002/05/11 00:02:43  xmp
@@ -205,11 +208,16 @@ namespace dime
          * Our pointer to the SDL_surface we use as the screen
          */
         SDL_Surface *myScreen;
-		
+
 		/**
 		 * Our pointer to a DrawDevice wrapped around the SDL_surface we use as the screen
 		 */
 		SDLDrawDevice *myDrawDevice;
+
+        /**
+         * Our pointer to the SoundService
+         */
+	dime::SoundService *mySoundService;
 
 		/**
 		 * Pointer to ourselves

@@ -66,7 +66,7 @@ int main(int argc, char **argv)
             myTestButton.setHighlightBackground(dime::RectangleRenderer(myTestButton.getRectangle(),"quitbutton.png", dime::RectangleRenderer::TILE));
             
             dime::Panel myTestPanel(dime::Rectangle(558,10,72,90));
-            myTestPanel.setBackground(dime::RectangleRenderer(myTestPanel.getRectangle(),"masonlogo.png", dime::RectangleRenderer::TILE));
+            myTestPanel.setBackground(dime::RectangleRenderer(myTestPanel.getRectangle(),"dimelogo_small.png", dime::RectangleRenderer::TILE));
             
             myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
             myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));
