@@ -63,7 +63,7 @@ Console::Console(const Rectangle& rect) :
 }
 
 Console::~Console() {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Shutting down console."<< ENDM;  
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << "Shutting down console."<< ENDM;  
 }
 
 void Console::pushMessage(const std::string &message, int type, int duration) {
@@ -147,6 +147,7 @@ void Console::renderScreenMessages(DrawDevice *ddevice) {/*
   std::list<screenMessage>::const_iterator I;
   int i;
   _renderer->stateChange("font");
+
   _renderer->setColour(1.0f, 1.0f, 0.0f, 1.0f);
   // Get screen height so we can calculate offset correctly
   int height = _renderer->getWindowHeight();

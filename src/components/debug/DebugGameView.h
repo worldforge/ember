@@ -76,7 +76,7 @@ class DebugGameView : public SigC::Object //: public Component
          *
          * Iterate through your world model and blit to your heart's content :)
          */
-        void repaint();
+        void repaint(DrawDevice *ddevice);
 
         /* Eris::World entity signals (see eris\src\world.h for more info) */
 
@@ -145,6 +145,7 @@ class DebugGameView : public SigC::Object //: public Component
         /**
          * I'm not sure what this does. Let's ignore it until I can track down
          * James and bop him on the head for writing unhelpful comments ;)
+         * NOTES: I suspect this is when an attribute of the object is changed.
          */
         void changed( const Eris::StringSet &s, Eris::Entity *e );
 
@@ -170,15 +171,15 @@ class DebugGameView : public SigC::Object //: public Component
          */
         void say( const std::string &s, Eris::Entity *e );
 
-	/**
-	 * Sadly undocumented
-	 */
-	void addedMember(Eris::Entity *e);
+        /**
+         * Sadly undocumented
+         */
+        void addedMember(Eris::Entity *e);
 
-	/**
-	 * Also sadly undocumented
-	 */
-	void removedMember(Eris::Entity *e);
+        /**
+         * Also sadly undocumented
+         */
+        void removedMember(Eris::Entity *e);
 
     private:
 

@@ -113,9 +113,9 @@ dnl Cppunit check
 found_cppunit=no
 
 AM_PATH_CPPUNIT(1.8.0, [
-  AC_MSG_RESULT(
+  AC_MSG_RESULT([
 *** Found CppUnit
-*** Setting up make check to run tests...)
+*** Setting up make check to run tests...])
 	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
 	LIBS="$LIBS $CPPUNIT_LIBS"
 ], 

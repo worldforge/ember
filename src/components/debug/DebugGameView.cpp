@@ -43,14 +43,13 @@ DebugGameView::DebugGameView()
 DebugGameView::~DebugGameView()
 {}
 
-void DebugGameView::repaint()
+void DebugGameView::repaint(DrawDevice* ddevice)
 {}
 
 /* Eris::World entity signals */
 
 void DebugGameView::entityCreate( Eris::Entity *e )
 {
-
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
 
@@ -93,7 +92,9 @@ void DebugGameView::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
 {}
 
 void DebugGameView::say( const std::string &s, Eris::Entity *e )
-{}
+{
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
+}
 
 void DebugGameView::addedMember(Eris::Entity *e)
 {}
