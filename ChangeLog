@@ -1,5 +1,10 @@
 2005-01-30  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Fix depends
+	* Fix for config files
+
+2005-01-30  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* delay inclusion of SDL headers in order not to confuse autoconf
 
 2005-01-23  Erik Hjortsberg  <erik@katastrof.nu>

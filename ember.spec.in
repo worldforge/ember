@@ -1,6 +1,6 @@
 %define name @PACKAGE@
 %define version @VERSION@
-%define release 0.1
+%define release 1.mdk.wf
 
 Summary: Ember - a client for Worldforge
 Name: %{name}
@@ -12,8 +12,8 @@ Copyright: GPL
 Group: Amusements/Games
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Prefix: %{_prefix}
-Requires: eris >= 1.3 mercator varconf ogre >= 0.15.0 boost CEGUI xerces-c
-#BuildRequires: eris-devel mercator-devel varconf-devel ogre-devel boost-devel CEGUI-devel xerces-c-devel
+Requires: eris >= 1.3 mercator varconf OGRE >= 0.15.0 boost CEGUI >= 0.1.0 libxerces-c25 SDL >= 1.2  Atlas-C++ >= 0.5.91
+#BuildRequires: Atlas-C++-devel >= 0.5.91 eris-devel mercator-devel varconf-devel OGRE-devel boost-devel CEGUI-devel libxerces-c25-devel
 
 %description
 Ember is a client for MMORPGs using the Worldforge system.
@@ -44,6 +44,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{prefix}/lib/*
 %{_bindir}/*
 %{_datadir}/*
+%config %{_sysconfdir}/ember/*
+
 
 
 # end of file
