@@ -15,9 +15,9 @@ libsigc++
 install this library from your distro CDs
 (needed for Eris, see below)
 
-skstream
+skstream2
 socket stream
-Version: 0.2.1 
+Version: CVS 
 ftp://victor.worldforge.org/pub/worldforge/libs/skstream
 (needed for Eris, see below)
 
@@ -29,7 +29,7 @@ ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
 
 Eris
 client side session layer
-CVS version
+Version: CVS
 
 If you want a 3D gameview (which is not mandatory, and currently not even
 supported <grin>) you'll need:

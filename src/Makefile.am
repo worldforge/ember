@@ -1,1 +1,1 @@
-SUBDIRS = framework services main
+SUBDIRS = main

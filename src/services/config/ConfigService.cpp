@@ -4,8 +4,6 @@
 
 namespace dime
 {
-	namespace services
-	{
 
 	/* ctor */
 	ConfigService::ConfigService()
@@ -48,6 +46,5 @@ namespace dime
 		return true;  // or false, if couldn't write to disk
 	}
 	
-	} // namespace services
 } // namespace dime
 
