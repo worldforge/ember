@@ -1,13 +1,10 @@
 FLAGS = -g
 CC = g++
 
-all: TestService
-
-TestService: TestService.o
-	g++ TestService.o -o TestService
+all: TestService.o
 
 TestService.o: TestService.cpp
-	g++ -c TestService.cpp 
+	g++ -c TestService.cpp -I../../
 
 clean:
 	rm -R *.o

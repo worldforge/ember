@@ -10,16 +10,10 @@ namespace dime
 	/* ctor */
 	ConfigService::ConfigService()
 	{
-		//myTestMessage = "Hello WorldForge !!!";
-		  //setDescription("I am a simple test service");
-		  // setActive = 0;	// inactive
-		  //setStatus(0);	// stopped
-
-        //setName("Test Service");
-        //setDescription("Basic test service for testing and debugging.");
+	    setName("Configuration Service");
+		setDescription("Service for management of dime user-defined configuration");
 		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
 		//        setStatus( Service::Status::OK );
-
 	}
 
 	/* Method for starting the test service 	*/

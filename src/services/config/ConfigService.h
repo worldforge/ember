@@ -19,10 +19,9 @@
 #ifndef CONFIGSERVICE_H
 #define CONFIGSERVICE_H
 
-#include "../Service.h"
+#include <framework/Service.h>
 #include <string>
 #include <hash_map>
-#include <algorithm>
 
 namespace dime {
 	namespace services {
@@ -34,7 +33,7 @@ namespace dime {
  *
  * @see dime::Service
  */
-class ConfigService: public Service
+class ConfigService: public framework::Service
 {
     //======================================================================
     // Private Variables
@@ -50,7 +49,6 @@ class ConfigService: public Service
   			}
 		};
 
-  		std::hash<const char*> H;
 		std::hash_map<const char*, const char*, hash<const char*>, eqstr> inputMap;
 
 		
