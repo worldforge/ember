@@ -1,6 +1,8 @@
 #include "ConfigService.h"
 
-#include <iostream.h>
+#include <iostream>
+
+using namespace std;
 
 namespace dime
 {
