@@ -215,7 +215,7 @@ class DataObject: public SigC::Object
 	 * type concerning direct OR indirect child nodes of the node are forwarded to this
 	 * connection, too.
 	 */
-	DataConnection addConnection(DataSlot & slot, DataType types);
+	DataConnection addConnection(const DataSlot & slot, DataType types);
 
 	/**
 	 * Returns a new data object for the specified path. 

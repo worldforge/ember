@@ -613,7 +613,7 @@ void DataObject::remove()
  * DataType concerning direct OR indirect child nodes of the node are forwarded to this
  * connection, too.
  */
-DataConnection DataObject::addConnection(DataSlot & slot, DataType types)
+DataConnection DataObject::addConnection(const DataSlot & slot, DataType types)
 {
 	if (myProvider)
 	{
