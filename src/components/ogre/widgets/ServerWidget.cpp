@@ -50,9 +50,8 @@ public:
 };
 
 
-ServerWidget::ServerWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-}
+template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
 
 
 
@@ -69,6 +68,8 @@ void ServerWidget::buildWidget()
 
 	CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/Login"));
 	BIND_CEGUI_EVENT(login, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Login_Click);
+	CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/CreateAcc"));
+	BIND_CEGUI_EVENT(createAcc, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateAcc_Click);
 
 	mCharacterList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/CharacterList"));
 	CEGUI::PushButton* choose = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/Choose"));
@@ -142,6 +143,17 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 	
 	mAccount->login(std::string(name.c_str()), std::string(password.c_str()));
 
+}
+
+bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
+{
+	CEGUI::Window* nameBox = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/PasswordEdit");
+	
+	CEGUI::String name = nameBox->getText();
+	CEGUI::String password = passwordBox->getText();
+	
+	mAccount->createAccount(std::string(name.c_str()),std::string(name.c_str()),std::string(password.c_str()));
 }
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) 

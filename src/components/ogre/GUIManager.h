@@ -142,6 +142,7 @@ protected:
 
 	std::set<Widget*> mWidgets;
 	
+	bool createWidget(const std::string& name);
 
 // 	//polls the mouse for new events and movements
 // 	void pollMouse(const Ogre::FrameEvent& evt);

@@ -37,16 +37,24 @@ class EmberEntity;
 */
 class ChatWidget : public Widget {
 public:
-    ChatWidget(GUIManager* guiManager);
 
     ~ChatWidget();
 	void buildWidget();
 
 	void appendOOGChatLine(const std::string& line, EmberEntity* entity);
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
+	
 protected:
 	CEGUI::MultiLineEditbox* mChatTextBox;
+	//static WidgetLoader loader;
+	
+};
 
+class ChatWidgetLoader : WidgetLoader
+{
+public:
+	ChatWidgetLoader();
+	virtual Widget* createWidget(GUIManager* guiManager);
 	
 };
 

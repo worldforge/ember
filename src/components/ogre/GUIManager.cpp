@@ -129,8 +129,9 @@ GUIManager::~GUIManager()
 	delete mInput;
 	mInput = 0;
 	
-	delete mGuiSystem;
-	mGuiSystem = 0;
+	//can't delete this one since cegui will then throw a segfault
+/*	delete mGuiSystem;
+	mGuiSystem = 0;*/
 	delete mGuiRenderer;
 	mGuiRenderer = 0;
 	delete mMousePicker;
@@ -153,58 +154,21 @@ void GUIManager::initialize()
 		mDebugText->setBackgroundEnabled(false);
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
 	
-		fprintf(stdout, "CEGUI - CREATING CONSOLE\n");
-	
-		mConsoleWidget = new ConsoleWidget(this);
-		mConsoleWidget->buildWidget();
-		addWidget(mConsoleWidget);
-		fprintf(stdout, "CEGUI - CREATED CONSOLE\n");
-	
-		IngameChatWidget* ingamechatWidget = new IngameChatWidget(this);
-		ingamechatWidget->buildWidget();
-		addWidget(ingamechatWidget);		
-		
-		
-		DebugWidget* debugWidget = new DebugWidget(this);
-		debugWidget->buildWidget();
-		addWidget(debugWidget);
-		
-		
-		ChatWidget* chatWidget = new ChatWidget(this);
-		chatWidget->buildWidget();
-		addWidget(chatWidget);		
-		
-		
-		InventoryWidget* inventory = new InventoryWidget(this);
-		inventory->buildWidget();
-		addWidget(inventory);			
-		
-		ServerBrowserWidget* serverBrowser = new ServerBrowserWidget(this);
-		serverBrowser->buildWidget();
-		addWidget(serverBrowser);
-		
-		InspectWidget* inspectBrowser = new InspectWidget(this);
-		inspectBrowser->buildWidget();
-		addWidget(inspectBrowser);
-		
-		MakeEntityWidget* makeEntity = new MakeEntityWidget(this);
-		makeEntity->buildWidget();
-		addWidget(makeEntity);
-		
-		ServerWidget* serverWidget = new ServerWidget(this);
-		serverWidget->buildWidget();
-		addWidget(serverWidget);
-		
-		GiveWidget* giveWidget = new GiveWidget(this);
-		giveWidget->buildWidget();
-		addWidget(giveWidget);
-		
-		EntityPickerWidget* entityPicker = new EntityPickerWidget(this);
-		entityPicker->buildWidget();
-		addWidget(entityPicker);		
-		
-		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
-		mSheet->addChildWindow(helpWindow );
+
+		createWidget("ConsoleWidget");
+		createWidget("IngameChatWidget");
+		createWidget("DebugWidget");
+		createWidget("ChatWidget");
+		createWidget("InventoryWidget");
+		createWidget("ServerBrowserWidget");
+		createWidget("InspectWidget");
+		createWidget("MakeEntityWidget");
+		createWidget("ServerWidget");
+		createWidget("GiveWidget");
+		createWidget("EntityPickerWidget");
+
+/*		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
+		mSheet->addChildWindow(helpWindow );*/
 	} catch (std::exception e) {
 		fprintf(stderr, "GUIManager - error when initializing widgets.\n");
 
@@ -213,6 +177,27 @@ void GUIManager::initialize()
 	}
 	
 }
+
+bool GUIManager::createWidget(const std::string& name)
+{
+	try {
+	
+		Widget* widget = WidgetLoader::createWidget(name);
+		if (widget == 0) {
+			std::cerr << "Could not find widget with name " << name <<".\n";
+			return false;
+		}
+		widget->init(this);
+		widget->buildWidget();
+		addWidget(widget);
+		std::cout << "Successfully loaded widget " << name << "\n";
+	} catch (std::exception e) {
+		std::cerr << "Error when loading widget " << name <<".\n";
+		return false;
+	}
+	return true;
+}
+
 
 void GUIManager::setDebugText(std::string text)
 {
@@ -293,102 +278,10 @@ const std::string GUIManager::takeScreenshot()
 }
 
 
-// void GUIManager::pollMouse(const Ogre::FrameEvent& evt)
-// {
-// 	int mouseX, mouseY;
-// 	unsigned int mouseState;
-// 	
-// 	mouseState = SDL_GetMouseState( &mouseX, &mouseY );
-// 	
-// 	if (mouseState & SDL_BUTTON(SDL_BUTTON_LMASK)) {
-// 		if (mMouseState & !SDL_BUTTON(SDL_BUTTON_LMASK)) {
-// 			//left mouse button pressed
-// 			mGuiSystem->injectMouseButtonDown(CEGUI::LeftButton);
-// 		}
-// 	} else if (mMouseState & SDL_BUTTON(SDL_BUTTON_LMASK)) {
-// 		//left mouse button released
-// 		mGuiSystem->injectMouseButtonUp(CEGUI::LeftButton);
-// 
-// 	}
-// 	
-// 	if (mouseState & SDL_BUTTON(SDL_BUTTON_RMASK)) {
-// 		if (mMouseState & !SDL_BUTTON(SDL_BUTTON_RMASK)) {
-// 			//right mouse button pressed
-// 			
-// 			//if the right mouse button is pressed, switch from gui mode
-// 			
-// 			//SDL_WM_GrabInput(SDL_GRAB_ON);
-// 			mInGUIMode = false;
-// 			
-// 		}
-// 	} else if (mMouseState & SDL_BUTTON(SDL_BUTTON_RMASK)) {
-// 		//right mouse button released
-// 		//SDL_WM_GrabInput(SDL_GRAB_ON);
-// 		mInGUIMode = true;
-// 	}
-// 	
-// 	if (mouseState & SDL_BUTTON(SDL_BUTTON_MMASK)) {
-// 		if (mMouseState & !SDL_BUTTON(SDL_BUTTON_MMASK)) {
-// 			//middle mouse button pressed
-// 			mGuiSystem->injectMouseButtonDown(CEGUI::MiddleButton);
-// 			
-// 		}
-// 	} else if (mMouseState & SDL_BUTTON(SDL_BUTTON_MMASK)) {
-// 		//middle mouse button released
-// 		mGuiSystem->injectMouseButtonUp(CEGUI::MiddleButton);
-// 	}
-// 	
-// 	mMouseState = mouseState;
-// 	
-// 	
-// 	
-// 	//has the mouse moved?
-// 	if (mMouseX != mouseX || mMouseY != mouseY)
-// 	{
-// 
-// 		if (mInGUIMode) {
-// 			
-// 			CEGUI::MouseCursor::getSingleton().setPosition(CEGUI::Point((mouseX), (mouseY))); 
-// 			mGuiSystem->injectMouseMove(0.0f, 0.0f);
-// 			
-// 			
-// /*			std::stringstream ss;
-// 	//		ss << (e->getX() * mGuiRenderer->getWidth()) << ":" << e->getY() * mGuiRenderer->getHeight();
-// 			ss << (e->getX() * mGuiRenderer->getWidth()) << " ( " << e->getX() << " ) :" << (e->getY() * mGuiRenderer->getHeight()) << " ( " << e->getY() << " )";
-// 			setDebugText(ss.str());*/
-// 			
-// 			//mGuiSystem->injectMouseMove(e->getRelX() * mGuiRenderer->getWidth(), e->getRelY() * mGuiRenderer->getHeight());
-// 		} else {
-// 			Ogre::Real diffX, diffY;
-// 			int width = mGuiRenderer->getWidth();
-// 			int height = mGuiRenderer->getHeight();
-// 			diffX = ( width / mMouseX) - (width / mouseX);
-// 			diffY = ( height / mMouseY) - (height / mouseY);
-// 			if (mMouseMotionListener) {
-// 				mMouseMotionListener->mouseMoved(mouseX, mouseY, diffX, diffX, evt.timeSinceLastFrame):
-// //				mMouseMotionListener->mouseMoved(e);
-// 			}
-// 			
-// 			//keep the cursor in place while in non-gui mode
-// 			mouseX = mMouseX;
-// 			mouseY = mMouseY;
-// 			SDL_WarpMouse(mMouseX, mMouseY);
-// 		}
-// 	
-// 	}
-// 	mMouseX = mouseX;
-// 	mMouseY = mouseY;
-// 
-// }
 
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 {
 		
-		
-		//std::stringstream ss;
-//		ss << (e->getX() * mGuiRenderer->getWidth()) << ":" << e->getY() * mGuiRenderer->getHeight();
-		//ss << (e->getX() * mGuiRenderer->getWidth()) << " ( " << e->getX() << " ) :" << (e->getY() * mGuiRenderer->getHeight()) << " ( " << e->getY() << " )";
-		//setDebugText(ss.str());
 
 	mInput->processInput(evt);
 
@@ -481,141 +374,6 @@ void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 }
 
 
-// void GUIManager::keyPressed (Ogre::KeyEvent *e)
-// {
-// 	if (mInGUIMode) {
-// 		// do event injection
-// 		// key down
-// 		mGuiSystem->injectKeyDown(e->getKey());
-// 	
-// 		// now character
-// 		mGuiSystem->injectChar(e->getKeyChar());
-// 	
-// 		e->consume();
-// 	} else {
-// 		if (mKeyListener) {
-// 			mKeyListener->keyPressed(e);
-// 		}
-// 	}
-// 	
-// }
-// 
-// 
-// void GUIManager::keyReleased (Ogre::KeyEvent *e)
-// {
-// 
-// 	if (mInGUIMode) {
-// 		//toggle the console
-// 		//we've put it here because we wan't the console to always be available
-// 		if(e->getKey() == Ogre::KC_GRAVE || e->getKey() == Ogre::KC_F12)
-// 		{
-// 			mConsoleWidget->toggleActive();
-// 		}
-// 
-// 		//take screenshot		
-// 		if(e->getKey() == Ogre::KC_F8)
-// 		{
-// 			setDebugText("Wrote image: " +takeScreenshot());
-// 		}
-// 		
-// 		//switch render mode
-// 		if(e->getKey() == Ogre::KC_F7)
-// 		{
-// 			setDebugText("Switching rendemode.");
-// 			Ogre::Camera* ogreCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-// 			if (ogreCamera->getDetailLevel() == Ogre::SDL_SOLID) {
-// 				ogreCamera->setDetailLevel(Ogre::SDL_WIREFRAME);
-// 			} else {
-// 				ogreCamera->setDetailLevel(Ogre::SDL_SOLID);
-// 			}
-// 		}
-// 		
-// 		//switch between full screen
-// /*		if(e->getKey() == Ogre::KC_F6)
-// 		{
-// 			mWindow->
-// 		}*/
-// 		
-// 		
-// 		mGuiSystem->injectKeyUp(e->getKey());
-// 		e->consume();
-// 	} else {
-// 		if (mKeyListener) {
-// 			mKeyListener->keyReleased(e);
-// 		}
-// 	}
-// 
-// 
-// }
-
-
-
-// void GUIManager::mousePressed (Ogre::MouseEvent *e)
-// {
-// 	mMousePressedOgreEvent = e;
-// 	//if the right mouse button is pressed, switch from gui mode
-// 	if (e->getButtonID() == Ogre::MouseEvent::BUTTON1_MASK) {
-// 	
-// 		SDL_WM_GrabInput(SDL_GRAB_ON);
-// 		mInGUIMode = false;
-// 	}
-// 	if (mInGUIMode) {
-// 		mGuiSystem->injectMouseButtonDown(convertOgreButtonToCegui(e->getButtonID()));
-// 		e->consume();
-// 	} else {
-// 		if (mMouseListener) {
-// 			mMouseListener->mousePressed(e);
-// 		}
-// 	}
-// 
-// }
-// 
-// 
-// void GUIManager::mouseReleased (Ogre::MouseEvent *e)
-// {
-// 	mMouseReleasedOgreEvent = e;
-// 	//if the right mouse button is released, switch to gui mode
-// 	if (e->getButtonID() == Ogre::MouseEvent::BUTTON1_MASK) {
-// 		SDL_WM_GrabInput(SDL_GRAB_OFF);
-// 		mInGUIMode = true;
-// 	}
-// 	if (mInGUIMode) {
-// 		mGuiSystem->injectMouseButtonUp(convertOgreButtonToCegui(e->getButtonID()));
-// 		e->consume();
-// 	} else {
-// 		if (mMouseListener) {
-// 			mMouseListener->mouseReleased(e);
-// 		}
-// 	}
-// 
-// }
-
-// CEGUI::MouseButton GUIManager::convertOgreButtonToCegui(int ogre_button_id)
-// {
-// 	switch (ogre_button_id)
-// 	{
-// 	case Ogre::MouseEvent::BUTTON0_MASK:
-// 		return CEGUI::LeftButton;
-// 		break;
-// 
-// 	case Ogre::MouseEvent::BUTTON1_MASK:
-// 		return CEGUI::RightButton;
-// 		break;
-// 
-// 	case Ogre::MouseEvent::BUTTON2_MASK:
-// 		return CEGUI::MiddleButton;
-// 		break;
-// 
-// 	case Ogre::MouseEvent::BUTTON3_MASK:
-// 		return CEGUI::X1Button;
-// 		break;
-// 
-// 	default:
-// 		return CEGUI::LeftButton;
-// 		break;
-// 	}
-// 
-// }
 
 
 

@@ -229,8 +229,8 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		Ogre::Real diffX, diffY;
 		Ogre::Real width = mGuiRenderer->getWidth();
 		Ogre::Real height = mGuiRenderer->getHeight();
-		diffX = ( width / mMouseX) - (width / mouseX);
-		diffY = ( height / mMouseY) - (height / mouseY);
+		diffX =  (mMouseX - mouseX) / width;
+		diffY = (mMouseY - mouseY) / height;
 		MouseMotion motion;
 		motion.xPosition = mouseX;
 		motion.yPosition = mouseY;

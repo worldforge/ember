@@ -40,7 +40,6 @@ class AvatarEmberEntity;
 class MakeEntityWidget : public Widget
 {
 public:
-    MakeEntityWidget(GUIManager* guiManager);
 
     ~MakeEntityWidget();
 	void buildWidget();

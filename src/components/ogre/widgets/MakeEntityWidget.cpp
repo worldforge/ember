@@ -49,10 +49,8 @@
 
 namespace EmberOgre {
 
-MakeEntityWidget::MakeEntityWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-
-}
+template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
 
 MakeEntityWidget::~MakeEntityWidget()

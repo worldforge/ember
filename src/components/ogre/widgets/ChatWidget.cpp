@@ -29,9 +29,8 @@
 
 namespace EmberOgre {
 
-ChatWidget::ChatWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-}
+template<> WidgetLoader WidgetLoaderHolder<ChatWidget>::loader("ChatWidget", &createWidgetInstance);
+
 
 
 ChatWidget::~ChatWidget()

@@ -34,7 +34,6 @@ class Widget;
 class InspectWidget : public Widget
 {
 public:
-    InspectWidget(GUIManager* guiManager);
 
     ~InspectWidget();
 	void buildWidget();

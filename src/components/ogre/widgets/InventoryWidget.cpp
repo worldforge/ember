@@ -49,10 +49,10 @@ public:
 	}
 };
 
+template<> WidgetLoader WidgetLoaderHolder<InventoryWidget>::loader("InventoryWidget", &createWidgetInstance);
 
-InventoryWidget::InventoryWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-}
+//WidgetLoader Widget::loader("InventoryWidget", &createWidgetInstance<InventoryWidget>);
+
 
 
 InventoryWidget::~InventoryWidget()

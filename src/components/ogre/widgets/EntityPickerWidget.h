@@ -41,8 +41,7 @@ This widget will pop up when a EmberEntity is picked
 */
 class EntityPickerWidget : public Widget {
 public:
-    EntityPickerWidget(GUIManager* guiManager);
-
+ 
     ~EntityPickerWidget();
 	
 	//virtual void frameStarted(const Ogre::FrameEvent& evt);

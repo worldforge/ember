@@ -49,8 +49,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mGUIManager->getInput()->MouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
 
 	
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "cameradegreepersecond")) {
-		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "cameradegreepersecond");
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
+		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "cameradegreespersecond");
 	}
 	 
 }
@@ -154,19 +154,15 @@ void AvatarCamera::mouseMoved(const MouseMotion& motion, bool isInGuimode)
 /*(int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement)*/
 {
 	if (!isInGuimode) {
-		Ogre::Degree diffX(50 * motion.xRelativeMovement);
-		Ogre::Degree diffY(50 * motion.yRelativeMovement);
-	//	Ogre::Degree diffX = mDegreeOfYawPerSecond * e->getRelX();
-	//	Ogre::Degree diffY = mDegreeOfPitchPerSecond * e->getRelY();
-	
-		//fprintf(stderr, (std::string("X: ") << diffX.valueDegrees << "\n").c_str() );
+		Ogre::Degree diffX(mDegreeOfYawPerSecond * motion.xRelativeMovement);
+		Ogre::Degree diffY(mDegreeOfPitchPerSecond * motion.yRelativeMovement);
 	
 		if (diffX.valueDegrees()) {
-			this->yaw(-diffX);
+			this->yaw(diffX);
 	//		this->yaw(diffX * e->timeSinceLastFrame);
 		}
 		if (diffY.valueDegrees()) {
-			this->pitch(-diffY);
+			this->pitch(diffY);
 	//		this->pitch(diffY * e->timeSinceLastFrame);
 		}
 		

@@ -43,7 +43,6 @@ class GiveWidget : public Widget
 
 
 public:
-    GiveWidget(GUIManager* guiManager);
 
     ~GiveWidget();
 	void buildWidget();

@@ -57,10 +57,17 @@
 								
 				
 				<Window Type="TaharezLook/Button" Name="LoginPanel/Login">
-					<Property Name="Position" Value="x:0.4 y:0.8" /> 
+					<Property Name="Position" Value="x:0.3 y:0.8" /> 
 					<Property Name="Size" Value="w:0.3 h:0.2" /> 
 					<Property Name="MaximumSize" Value="w:1 h:1" /> 
 					<Property Name="Text" Value="Login" /> 
+					<Property Name="InheritsAlpha" Value="True" /> 
+				</Window>
+				<Window Type="TaharezLook/Button" Name="LoginPanel/CreateAcc">
+					<Property Name="Position" Value="x:0.7 y:0.8" /> 
+					<Property Name="Size" Value="w:0.3 h:0.2" /> 
+					<Property Name="MaximumSize" Value="w:1 h:1" /> 
+					<Property Name="Text" Value="Create" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
 			</Window>

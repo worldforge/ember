@@ -49,9 +49,8 @@ public:
 };
 
 
-GiveWidget::GiveWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-}
+template<> WidgetLoader WidgetLoaderHolder<GiveWidget>::loader("GiveWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("GiveWidget", &createWidgetInstance<GiveWidget>);
 
 
 GiveWidget::~GiveWidget()

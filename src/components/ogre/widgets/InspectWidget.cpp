@@ -33,9 +33,8 @@
 
 namespace EmberOgre {
 
-InspectWidget::InspectWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-}
+template<> WidgetLoader WidgetLoaderHolder<InspectWidget>::loader("InspectWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("InspectWidget", &createWidgetInstance<InspectWidget>);
 
 
 InspectWidget::~InspectWidget()

@@ -19,11 +19,9 @@ public:
 	}
 };
 
-DebugWidget::DebugWidget(GUIManager* guiManager) 
-: Widget::Widget(guiManager)
-{
-	
-}
+template<> WidgetLoader WidgetLoaderHolder<DebugWidget>::loader("DebugWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("DebugWidget", &createWidgetInstance<DebugWidget>);
+
 
 DebugWidget::~DebugWidget()
 {}

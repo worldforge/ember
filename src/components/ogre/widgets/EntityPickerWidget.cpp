@@ -47,13 +47,8 @@
 
 namespace EmberOgre {
 
-EntityPickerWidget::EntityPickerWidget(GUIManager* guiManager) : Widget::Widget(guiManager)
-{
-	mMousePicker = mGuiManager->getMousePicker();
-	mMousePicker->EventPickedEntity.connect(SigC::slot(*this, &EntityPickerWidget::pickedEntity));
-	mMousePicker->EventPickedNothing.connect(SigC::slot(*this, &EntityPickerWidget::pickedNothing));
-
-}
+template<> WidgetLoader WidgetLoaderHolder<EntityPickerWidget>::loader("EntityPickerWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("EntityPickerWidget", &createWidgetInstance<EntityPickerWidget>);
 
 
 EntityPickerWidget::~EntityPickerWidget()
@@ -62,6 +57,9 @@ EntityPickerWidget::~EntityPickerWidget()
 
 void EntityPickerWidget::buildWidget()
 {
+	mMousePicker = mGuiManager->getMousePicker();
+	mMousePicker->EventPickedEntity.connect(SigC::slot(*this, &EntityPickerWidget::pickedEntity));
+	mMousePicker->EventPickedNothing.connect(SigC::slot(*this, &EntityPickerWidget::pickedNothing));
 
 	mMainWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));

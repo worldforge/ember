@@ -38,7 +38,6 @@ class GUIManager;
 class ServerBrowserWidget : public Widget
 {
 public:
-    ServerBrowserWidget(GUIManager* guiManager);
 
     ~ServerBrowserWidget();
 	void buildWidget();

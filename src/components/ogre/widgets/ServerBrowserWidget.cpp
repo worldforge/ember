@@ -43,9 +43,8 @@ public:
 	}
 };
 
-ServerBrowserWidget::ServerBrowserWidget(GUIManager* guiManager) :  Widget::Widget(guiManager)
-{
-}
+template<> WidgetLoader WidgetLoaderHolder<ServerBrowserWidget>::loader("ServerBrowserWidget", &createWidgetInstance);
+//WidgetLoader Widget::loader("ServerBrowserWidget", &createWidgetInstance<ServerBrowserWidget>);
 
 
 ServerBrowserWidget::~ServerBrowserWidget()
@@ -117,7 +116,7 @@ bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 	
 	/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
 		if (selectedRowIndex != -1) {
-			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 0));
+			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
 			serverName = std::string(selectedItem->getText().c_str());
 		}
 	}

@@ -8,7 +8,6 @@ class IngameEventsWidget
 {
 public:
 
-	IngameEventsWidget(GUIManager* guiManager);
 	virtual ~IngameEventsWidget();
 };
 

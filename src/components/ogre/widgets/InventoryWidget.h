@@ -43,7 +43,6 @@ class EmberEntityFactory;
 class InventoryWidget : public Widget
 {
 public:
-    InventoryWidget(GUIManager* guiManager);
 
     ~InventoryWidget();
 	void buildWidget();

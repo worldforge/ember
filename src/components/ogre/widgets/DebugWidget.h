@@ -21,7 +21,6 @@ class DebugWidget
 {
 public:
 
-	DebugWidget(GUIManager* guiManager);
 	virtual ~DebugWidget();
 	
 /*	void frameStarted(const Ogre::FrameEvent & evt);*/

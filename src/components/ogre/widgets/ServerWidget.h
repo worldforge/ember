@@ -44,7 +44,6 @@ class Widget;
 class ServerWidget : public Widget
 {
 public:
-    ServerWidget(GUIManager* guiManager);
 
     ~ServerWidget();
 	void buildWidget();
@@ -59,6 +58,7 @@ protected:
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool Choose_Click(const CEGUI::EventArgs& args);
+	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	
 	void loginSuccess(Eris::Account* account);
 	void gotAllCharacters(Eris::Account* account);

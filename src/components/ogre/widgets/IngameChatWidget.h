@@ -99,7 +99,6 @@ class IngameChatWidget : public Widget {
 
 typedef std::map<std::string, ActiveChatWindow*> ActiveChatWindowMap;
 public:
-    IngameChatWidget(GUIManager* guiManager);
 
     ~IngameChatWidget();
 	void buildWidget();

@@ -1,3 +1,15 @@
+2005-01-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Make default mouse movement factor greater
+	* Reworked the way widgets are loaded. Now each widget is associated to a string (a name). This allows us to use text files for defining which widgets should be loaded for which game type etc.
+	* Added more error checks to Model.
+
+2005-01-22  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* updated INSTALL, TODO and README texts
+	* added support to the config file for fog distance and camera movement
+	* added some more error checking code. If some media is missing it should only report the error and continue.
+
 2005-01-22  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* fixes to the input system

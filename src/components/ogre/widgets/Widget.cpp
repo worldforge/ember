@@ -16,11 +16,16 @@
 namespace EmberOgre
 {
 	
-	Widget::Widget(GUIManager* guiManager)
-	: mGuiManager(guiManager)
+	Widget::Widget()
 	{
+	}
+	
+	void Widget::init(GUIManager* guiManager)
+	{
+		mGuiManager = guiManager;
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 	}
+	
 	
 	Widget::~Widget()
 	{
@@ -37,5 +42,35 @@ namespace EmberOgre
 	CEGUI::Window* Widget::getMainSheet() { 
 		return mGuiManager->getMainSheet(); 
 	}
+	
+//	WidgetLoader::WidgetLoaderMap WidgetLoader::sWidgetLoaders;
+//	WidgetFactoryMap sFactories;
+	
+/*	void WidgetLoader::addWidgetDef(std::string name, Widget* (*)() ptr) {
+		sWidgetDefs[name] =ptr;
+	}*/
+	
+	Widget* WidgetLoader::createWidget(const std::string& name) {
+
+		if (GetFactories().find(name) == GetFactories().end()) {
+			return 0;
+		}
+		Widget* widget = GetFactories()[name]();
+		return widget;
+	}
+	
+	WidgetLoader::WidgetLoader(const std::string& name, FactoryFunc functor)
+	{
+		GetFactories().insert(WidgetFactoryMap::value_type(name, functor));
+		
+	}
+
+	WidgetFactoryMap& WidgetLoader::GetFactories()
+	{
+		static WidgetFactoryMap* factoryMap = new WidgetFactoryMap();
+		return *factoryMap;
+	}
+	
+	
 	
 }

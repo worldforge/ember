@@ -17,7 +17,7 @@ class ConsoleWidget : public Widget, virtual public SigC::Object
 {
 public:
 
-	ConsoleWidget(GUIManager* guiManager);
+	ConsoleWidget();
 	virtual ~ConsoleWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & event);

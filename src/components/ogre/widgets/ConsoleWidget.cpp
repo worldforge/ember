@@ -3,11 +3,10 @@
 
 namespace EmberOgre {
 
-ConsoleWidget::ConsoleWidget(GUIManager* guiManager) : Widget::Widget(guiManager), mSpeedOfWindow(0.4)
+template<> WidgetLoader WidgetLoaderHolder<ConsoleWidget>::loader("ConsoleWidget", &createWidgetInstance);
+
+ConsoleWidget::ConsoleWidget() : Widget::Widget(), mSpeedOfWindow(0.4)
 {
-	myBackend = Ember::ConsoleBackend::getMainConsole();
-	myBackend->GotMessage.connect(SigC::slot(*this, &ConsoleWidget::pushMessage));
-	mState = CS_CLOSED;
 
 }
 ConsoleWidget::~ConsoleWidget()
@@ -16,6 +15,9 @@ ConsoleWidget::~ConsoleWidget()
 
 void ConsoleWidget::buildWidget()
 {
+	myBackend = Ember::ConsoleBackend::getMainConsole();
+	myBackend->GotMessage.connect(SigC::slot(*this, &ConsoleWidget::pushMessage));
+	mState = CS_CLOSED;
 	
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/widgets/ConsoleWidget.xml", "Console/");
 	mMainWindow->setAlwaysOnTop(true);

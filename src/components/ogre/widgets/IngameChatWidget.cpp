@@ -51,8 +51,16 @@
 
 namespace EmberOgre {
 
-IngameChatWidget::IngameChatWidget(GUIManager* guiManager)
-: Widget::Widget(guiManager)
+template<> WidgetLoader WidgetLoaderHolder<IngameChatWidget>::loader("IngameChatWidget", &createWidgetInstance);
+
+//WidgetLoader Widget::loader("IngameChatWidget", &createWidgetInstance<IngameChatWidget>);
+
+
+IngameChatWidget::~IngameChatWidget()
+{
+}
+
+void IngameChatWidget::buildWidget()
 {
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 	if (configSrv->itemExists("ingamechatwidget", "timeshown")) {
@@ -66,16 +74,6 @@ IngameChatWidget::IngameChatWidget(GUIManager* guiManager)
 	} else {
 		distanceShown = 100;
 	}
-
-}
-
-
-IngameChatWidget::~IngameChatWidget()
-{
-}
-
-void IngameChatWidget::buildWidget()
-{
 	
 	//mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/ChatWidget.xml", "Chat/");
 //	mMainWindow->setAlwaysOnTop(true);

@@ -41,6 +41,7 @@ Model::Model(Ogre::SceneManager* sceneManager, std::string name)
 , mRotation(0)
 , mVisible(true)
 , mSkeletonInstance(0)
+, mAnimationStateSet(0)
 {}
 Model::~Model()
 {
@@ -120,44 +121,45 @@ const unsigned short Model::getUseScaleOf() const
 
 void Model::startAnimation(std::string nameOfAnimation)
 {
-
-	if (mRunningAnimations.find(nameOfAnimation) == mRunningAnimations.end()) 
-	{
-		//The animations is not started, start a new
-		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-		if (partmap_iter != mAnimationPartMap.end()) {
-			std::cout << "Starting animation: " << nameOfAnimation << "\n";
-			mRunningAnimations.insert(nameOfAnimation);
-			std::multiset< AnimationPart* >* part = partmap_iter->second;
-			std::multiset< AnimationPart* >::const_iterator I = part->begin();
-			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) {
-				std::cout << "Starting subanimation: " << (*I)->name << "\n";
-				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				if (J != mAnimationStateSet->end()) {
-					//also set the weight of the animations part
-					J->second.setWeight((*I)->weight);
-					
-					MotionManager::getSingleton().addAnimation(&J->second);
-				} else {
-					std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+	if (mAnimationStateSet) {
+		if (mRunningAnimations.find(nameOfAnimation) == mRunningAnimations.end()) 
+		{
+			//The animations is not started, start a new
+			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+			if (partmap_iter != mAnimationPartMap.end()) {
+				std::cout << "Starting animation: " << nameOfAnimation << "\n";
+				mRunningAnimations.insert(nameOfAnimation);
+				std::multiset< AnimationPart* >* part = partmap_iter->second;
+				std::multiset< AnimationPart* >::const_iterator I = part->begin();
+				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+				for (; I != I_end; ++I) {
+					std::cout << "Starting subanimation: " << (*I)->name << "\n";
+					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+					if (J != mAnimationStateSet->end()) {
+						//also set the weight of the animations part
+						J->second.setWeight((*I)->weight);
+						
+						MotionManager::getSingleton().addAnimation(&J->second);
+					} else {
+						std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+					}
 				}
 			}
-		}
-	} else if (mPausedAnimations.find(nameOfAnimation) != mPausedAnimations.end()) {
-		//The animation is started but is paused, unpause it
-		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-		if (partmap_iter != mAnimationPartMap.end()) {
-			mPausedAnimations.erase(nameOfAnimation);
-			std::multiset< AnimationPart* >* part = partmap_iter->second;
-			std::multiset< AnimationPart* >::const_iterator I = part->begin();
-			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) {
-				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				if (J != mAnimationStateSet->end()) {
-					MotionManager::getSingleton().unpauseAnimation(&J->second);
-				} else {
-					std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+		} else if (mPausedAnimations.find(nameOfAnimation) != mPausedAnimations.end()) {
+			//The animation is started but is paused, unpause it
+			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+			if (partmap_iter != mAnimationPartMap.end()) {
+				mPausedAnimations.erase(nameOfAnimation);
+				std::multiset< AnimationPart* >* part = partmap_iter->second;
+				std::multiset< AnimationPart* >::const_iterator I = part->begin();
+				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+				for (; I != I_end; ++I) {
+					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+					if (J != mAnimationStateSet->end()) {
+						MotionManager::getSingleton().unpauseAnimation(&J->second);
+					} else {
+						std::cerr << "Error: the subanimation " << (*I)->name << " does not exist.\n";
+					}
 				}
 			}
 		}
@@ -168,17 +170,19 @@ void Model::startAnimation(std::string nameOfAnimation)
 }
 void Model::pauseAnimation(std::string nameOfAnimation)
 {
-	if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
-	{
-		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-		if (partmap_iter != mAnimationPartMap.end()) {
-			mPausedAnimations.insert(nameOfAnimation);
-			std::multiset< AnimationPart* >* part = partmap_iter->second;
-			std::multiset< AnimationPart* >::const_iterator I = part->begin();
-			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) {
-				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				MotionManager::getSingleton().pauseAnimation(&J->second);
+	if (mAnimationStateSet) {
+		if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
+		{
+			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+			if (partmap_iter != mAnimationPartMap.end()) {
+				mPausedAnimations.insert(nameOfAnimation);
+				std::multiset< AnimationPart* >* part = partmap_iter->second;
+				std::multiset< AnimationPart* >::const_iterator I = part->begin();
+				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+				for (; I != I_end; ++I) {
+					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+					MotionManager::getSingleton().pauseAnimation(&J->second);
+				}
 			}
 		}
 	}	
@@ -186,17 +190,19 @@ void Model::pauseAnimation(std::string nameOfAnimation)
 
 void Model::stopAnimation(std::string nameOfAnimation)
 {
-	if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
-	{
-		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-		if (partmap_iter != mAnimationPartMap.end()) {
-			mRunningAnimations.erase(nameOfAnimation);
-			std::multiset< AnimationPart* >* part = partmap_iter->second;
-			std::multiset< AnimationPart* >::const_iterator I = part->begin();
-			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) {
-				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				MotionManager::getSingleton().removeAnimation(&J->second);
+	if (mAnimationStateSet) {
+		if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
+		{
+			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+			if (partmap_iter != mAnimationPartMap.end()) {
+				mRunningAnimations.erase(nameOfAnimation);
+				std::multiset< AnimationPart* >* part = partmap_iter->second;
+				std::multiset< AnimationPart* >::const_iterator I = part->begin();
+				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+				for (; I != I_end; ++I) {
+					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+					MotionManager::getSingleton().removeAnimation(&J->second);
+				}
 			}
 		}
 	}	
@@ -205,19 +211,20 @@ void Model::stopAnimation(std::string nameOfAnimation)
 
 void Model::resetAnimations()
 {
-	std::set< std::string >::const_iterator iter_running = mRunningAnimations.begin();
-	std::set< std::string >::const_iterator iter_running_end = mRunningAnimations.begin();
-	
-	for (; iter_running != iter_running_end; ++iter_running) {
-		std::multiset< AnimationPart* >* part = mAnimationPartMap[*iter_running];
-		std::multiset< AnimationPart* >::const_iterator I = part->begin();
-		std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-		for (; I != I_end; ++I) {
-			Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-			MotionManager::getSingleton().removeAnimation(&J->second);
-		}
+	if (mAnimationStateSet) {
+		std::set< std::string >::const_iterator iter_running = mRunningAnimations.begin();
+		std::set< std::string >::const_iterator iter_running_end = mRunningAnimations.begin();
+		
+		for (; iter_running != iter_running_end; ++iter_running) {
+			std::multiset< AnimationPart* >* part = mAnimationPartMap[*iter_running];
+			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+			for (; I != I_end; ++I) {
+				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+				MotionManager::getSingleton().removeAnimation(&J->second);
+			}
+		}	
 	}	
-	
 	mRunningAnimations.clear();	
 	mPausedAnimations.clear();	
 
