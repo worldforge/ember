@@ -8,8 +8,10 @@ int dime::GuiService::refresh()
 
 void dime::GuiService::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
 {
-	int x = mouse->getAxisPosition(0);
-	int y = mouse->getAxisPosition(1);
+	vector<int> coords;
+	coords[0] = mouse->getAxisPosition(0);
+	coords[1] = mouse->getAxisPosition(1);
+	myRootWidget.checkMouseEvent(coords);
 }
 
 dime::GuiService::GuiService()

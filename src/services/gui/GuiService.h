@@ -28,6 +28,7 @@
 
 // Included system headers
 #include <string>
+#include <vector>
 
 
 namespace dime {

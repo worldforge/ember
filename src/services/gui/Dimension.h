@@ -25,7 +25,6 @@
 
 // Included system headers
 
-
 namespace dime{
 
 /**
@@ -158,7 +157,7 @@ class Dimension
                 myHeight = height;
             }
     }
-
+	
 }; // End of class
 
 

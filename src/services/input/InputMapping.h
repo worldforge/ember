@@ -23,7 +23,7 @@
 #include "InputDevice.h"
 
 // Include library headers here
-#include <sigc++/signal_system.h>
+
 #include <sigc++/generator.h>
 #include <sigc++/rettype.h>
 #include <sigc++/bind.h>

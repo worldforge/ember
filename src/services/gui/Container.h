@@ -39,7 +39,7 @@ namespace dime {
  * @author Adam Gregory
  *
  */
-class Container : Widget
+class Container : public Widget
 {
     //======================================================================
     // Private Variables
@@ -62,7 +62,7 @@ class Container : Widget
     /**
      * Creates a new Container using default values.
      */
-    Container()
+    Container() : Widget()
     {
     }
 
@@ -117,6 +117,11 @@ class Container : Widget
 	 */
 	virtual int draw();
 
+	/**
+	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
+	 */
+	virtual bool checkMouseEvent(std::vector<int> coords);
+	
 	/**
 	 * Adds a new child widget to myChildren.
 	 */

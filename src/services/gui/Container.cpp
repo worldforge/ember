@@ -1,6 +1,6 @@
 #include "Container.h"
 
-virtual int dime::Container::draw()
+int dime::Container::draw()
 {
 	//iterate through children Widgets, telling them all to draw.
 	int retval; //return value
@@ -12,6 +12,49 @@ virtual int dime::Container::draw()
 		if (retval != 0) return retval;
 	}
 	return 0;
+}
+
+bool dime::Container::checkMouseEvent(std::vector<int> coords)
+{
+	if (coords.size() != 2)
+	{
+		return false; // Invalid coordinates vector.
+	}
+	else
+	{
+		if ((coords[0] > getX()) && (coords[0] < getX() + getDimension().getWidth()) && (coords[1] > getY()) && (coords[1] < getY() + getDimension().getHeight()))
+		{
+			// Coordinates lie inside this widget.
+			if (!myMouseIsInside)
+			{
+				// Mouse has just entered widget.
+				myMouseIsInside = true;
+				onMouseEnter.emit(MouseMotion()); //TODO: MouseMotion?
+			}
+			std::vector<Widget*>::iterator end = myChildren.end();
+			for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
+			{
+				if ((*i)->checkMouseEvent(coords))
+				{
+					return true; // Coordinates also inside a child of this widget.
+				}
+			}
+			// Coordinates lie inside this widget and none of its children.
+			// TODO: If a mouse click then give focus to THIS widget, since no children qualify.
+			return true;
+		}
+		else
+		{
+			// Coordinates are outside of this widget.
+			if (myMouseIsInside)
+			{
+				// Mouse just exited this widget.
+				myMouseIsInside = false;
+				onMouseExit.emit(MouseMotion());
+			}
+			return false;
+		}
+	}
 }
 
 void dime::Container::addWidget(Widget *source)

@@ -23,10 +23,11 @@
 #include "Dimension.h"
 
 // Included custom library headers
-// (1) Include the signal system in headers file.
-#include <sigc++/signal_system.h>
 
 // Included system headers
+#include <vector>
+// Include the signal system in headers file.
+#include <sigc++/signal_system.h>
 
 namespace dime {
 
@@ -84,7 +85,16 @@ class Widget
      */
     SigC::Signal1<void, KeyPress> onKeyPress;
 
-    
+
+    //======================================================================
+    // Protected Variables
+    //======================================================================
+	protected:
+	
+    /**
+	 * Whether the mouse cursor is inside this widget or not
+	 */
+	bool myMouseIsInside;
 
     //======================================================================
     // Private Variables
@@ -126,8 +136,7 @@ class Widget
      * The prefered Dimension of this widget
      */
     Dimension myPrefDimension;
-    
-    
+
 
     //======================================================================
     // Public Methods
@@ -222,13 +231,12 @@ class Widget
     }    
     
     /**
-     * returns the prefered Dimension for this Widget
+     * Returns the prefered Dimension for this Widget
      */
     virtual Dimension getPrefDimension() const
     {
         return myPrefDimension;
     }
-    
 
     //----------------------------------------------------------------------
     // Setters
@@ -290,9 +298,15 @@ class Widget
     // Other public methods	
 	
 	/**
-	* Draws the widget, and/or its children.
-	*/
+	 * Draws the widget, and/or its children.
+	 */
     virtual int draw() = 0;
+
+	
+	/**
+	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals
+	 */
+	virtual bool checkMouseEvent(std::vector<int> coords) = 0;
 
 
 }; // End of class
