@@ -20,7 +20,7 @@
 #define LISTBOX_H
 
 // Included headers from the current project
-#include "TextBox.h"
+#include "Widget.h"
 
 // Included custom library headers
 
@@ -47,12 +47,12 @@ namespace dime {
  * If you just fixed a bug or added a short code snipplet you
  * don't need to add yourself.
  *
- * @see dime::TextBox
+ * @see dime::Widget
  *
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class ListBox : public TextBox
+class ListBox : public Widget
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -89,7 +89,7 @@ class ListBox : public TextBox
     /**
      * Creates a new ListBox using default values.
      */
-     ListBox()
+  ListBox() : Widget()
      {
      }
 
@@ -141,6 +141,11 @@ class ListBox : public TextBox
     //----------------------------------------------------------------------
     // Other public methods
     // NOTE: Group related public methods together and crate a separator comment like above for them.
+
+    /*
+     * Handles redraw
+     */
+    virtual int draw(DrawDevice* target);
     
     //======================================================================
     // Protected Methods
