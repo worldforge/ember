@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <main/DimeServices.h>
+#include <services/image/ImageService.h>
 #include <services/gui/Button.h>
 //#include <SDL/SDL_keysym.h>
 
@@ -17,6 +18,9 @@ void mouseexitbutton(dime::Button* button)
 int main(int argc, char **argv)
 {
     dime::Application myApp;
+	
+	dime::ImageService::getInstance()->addPath("./bin/");
+	dime::ImageService::getInstance()->addPath("../../bin/");
 	
 	dime::Button myButton;
 	myButton.setRectangle(dime::Rectangle(300,200,150,120));

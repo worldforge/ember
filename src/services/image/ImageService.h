@@ -107,7 +107,6 @@ private:
         addPath("./");
         addPath("../");
         addPath("./data/");
-        addPath("./src/main/data/");
     }
 
 }; //ImageService
