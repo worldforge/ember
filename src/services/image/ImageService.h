@@ -20,11 +20,12 @@
 #define IMAGESERVICE_H
 
 #include <framework/Service.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <list>
 #include <map>
 #include <string>
+
+/* Forward Declarations */
+struct SDL_Surface;
 
 namespace dime {
 

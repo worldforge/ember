@@ -18,6 +18,8 @@
 
 #include "ImageService.h"
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 
 namespace dime
 {
