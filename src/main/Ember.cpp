@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         }
     catch ( dime::Exception e )
         {
-            std::cout << e.getError() << endl;
+			std::cout << e.getError() << std::endl;
         }
     
     return 0;

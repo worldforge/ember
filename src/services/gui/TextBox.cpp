@@ -38,6 +38,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
                 {
                     myText += event->getKey().getUnicode();
                 }
+			
             Label::setText(myText);
             Font *font = myFontRenderer->getFont();
             font->sizeText(myText.substr(i, myText.length()-i), &w, NULL);

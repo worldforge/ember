@@ -168,7 +168,7 @@ class LoggingService: public Service
 		 * @param time_t The time the message was initiated.
 		 */
 
-		virtual void onNewMessage(const string & message, const string & file, const int & line,
+		virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
 			const MessageImportance & importance, const time_t & timeStamp) = 0;
 
 		MessageImportance getFilter() 
@@ -209,7 +209,7 @@ class LoggingService: public Service
 			myFile = file;
 		}
 
-		virtual void onNewMessage(const string & message, const string & file, const int & line, 
+		virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
 			const MessageImportance & importance, const time_t & timeStamp)
 		{
 			tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
@@ -262,13 +262,13 @@ class LoggingService: public Service
 	/**
 	 currently given part of the message string (used by << streaming only)
 	 */
-	string myMessage;
+	std::string myMessage;
 	
 	/**
 	 * currently set source file (option; used by << streaming only)
 	 * An empty string indicates that no file option was set.
 	 */
-	string myFile;
+	std::string myFile;
 
 	/**
 	 * currently set source code line (option; used by << streaming only)
@@ -419,7 +419,7 @@ class LoggingService: public Service
 		char Buffer[MESSAGE_BUFFER_SIZE];
 		vsprintf((char*)Buffer, message, argptr);
 		
-		sendMessage(string((char*)Buffer), file, line, importance);
+		sendMessage(std::string((char*)Buffer), file, line, importance);
 	}
 
 	/**
@@ -433,7 +433,7 @@ class LoggingService: public Service
 	 * can thus easily apply the shifting operator to it.
 	 */
 
-	LoggingService & slog(const string & file, const int line, const MessageImportance importance)
+	LoggingService & slog(const std::string & file, const int line, const MessageImportance importance)
 	{
 		myFile = file;
 		myLine = line;
@@ -447,21 +447,21 @@ class LoggingService: public Service
 		return *this;
 	}
 
-	LoggingService & slog(const string & file, const MessageImportance importance)
+	LoggingService & slog(const std::string & file, const MessageImportance importance)
 	{
 		myFile = file;
 		myImportance = importance;
 		return *this;
 	}
 
-	LoggingService & slog(const string & file, const int line)
+	LoggingService & slog(const std::string & file, const int line)
 	{
 		myFile = file;
 		myLine = line;
 		return *this;
 	}
 
-	LoggingService & slog(const string & file)
+	LoggingService & slog(const std::string & file)
 	{
 		myFile = file;		
 		return *this;
@@ -530,7 +530,7 @@ class LoggingService: public Service
 		return intHex;
 	}
 
-	LoggingService & operator<< (const string & stringToAdd)
+	LoggingService & operator<< (const std::string & stringToAdd)
 	{
 		myMessage += stringToAdd;
 		return *this;
@@ -607,8 +607,8 @@ class LoggingService: public Service
 	 * Unifies the sending mechanism for streaming- and formatting-input
 	 */
 
-	virtual void sendMessage(const string & message, 
-		const string & file, const int line, const MessageImportance importance)
+	virtual void sendMessage(const std::string & message, 
+		const std::string & file, const int line, const MessageImportance importance)
 	{
 		time_t currentTime;
 		time(&currentTime);
