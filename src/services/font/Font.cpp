@@ -197,7 +197,7 @@ bool dime::Font::sizeText(std::string text, int *w, int *h)
     int minx, maxx;
     int miny, maxy;
     Glyph *glyph;
-    FT_Error error;
+//    FT_Error error; unused
     
     status = 0;
     minx = maxx = 0;

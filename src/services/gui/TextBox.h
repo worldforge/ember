@@ -20,7 +20,7 @@
 #define TEXTBOX_H
 
 // Included headers from the current project
-#include "Widget.h"
+#include "Label.h"
 #include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
 
@@ -48,7 +48,7 @@ namespace dime {
  * @see Widget
  *
  */
-class TextBox : public Widget
+class TextBox : public Label
 
 {
     //======================================================================
@@ -77,13 +77,8 @@ class TextBox : public Widget
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
 
-    /**
-     * NOTE: This is the text stored by the static widget
-     */
-    std::string  myText;
-    FontRenderer *myFontRenderer;
 
-    //======================================================================
+	//======================================================================
     // Public Methods
     //======================================================================
     public:
@@ -94,7 +89,7 @@ class TextBox : public Widget
     /**
      * Cretaes a new TextBox using default values.
      */
-	TextBox() : Widget()
+	TextBox() : Label()
     {
     }
 
@@ -102,7 +97,7 @@ class TextBox : public Widget
     /**
      * Copy constructor.
      */
-    TextBox( const TextBox &source ) : myFontRenderer(source.myFontRenderer)
+    TextBox( const TextBox &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -132,7 +127,6 @@ class TextBox : public Widget
     {
 		if (myParent != NULL) myParent->removeWidget(this);
 
-		delete myFontRenderer;
         // TODO: Free any allocated resources here.
     }
 
@@ -140,35 +134,9 @@ class TextBox : public Widget
     //----------------------------------------------------------------------
     // Getters
 
-    /**
-     * Returns the text of the Label
-     */
-    virtual std::string getText() const
-    {
-        return myText;
-    }
-
 
     //----------------------------------------------------------------------
     // Setters
-
-    /**
-     * Sets the text of this label widget
-	 *
-	 * @param text The new text to go in label
-     */
-    virtual void setText( std::string text ) {
-		myText = text;		
-	}
-
-	/**
-	 * Sets the FontRenderer used to draw this Widget
-	 *
-	 * @param font The new font renderer
-	 */
-	virtual void setFont( FontRenderer *font ) {
-		myFontRenderer = font;
-	}
 
 
     //----------------------------------------------------------------------
@@ -179,6 +147,17 @@ class TextBox : public Widget
 	 */
     virtual int draw(DrawDevice *target);
 
+#if 0
+	/**
+	 * Takes keyPresses and feeds them into the textbuffer.
+	 */
+	virtual bool keyPress( KeyPressEvent *event)
+	{ 
+		
+		return true;        
+	}
+#endif
+ 
 
     //======================================================================
     // Protected Methods
