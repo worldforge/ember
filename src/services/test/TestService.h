@@ -22,7 +22,6 @@
 #include "../AbstractService.h"
 #include <string>
 
-
 namespace dime {
 	namespace services {
 		namespace test {
