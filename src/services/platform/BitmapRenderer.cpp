@@ -1,7 +1,7 @@
 #include "BitmapRenderer.h"
 
-inline int dimeroundf(float x) {return x + ((int (x > 0) ? 0.5 : -0.5;}
-	
+inline int dimeroundf(float x) {return x + (x > 0) ? 0.5 : -0.5;}
+
 /**
  * Constructor for a bitmap filled RectangleRenderer
  */
