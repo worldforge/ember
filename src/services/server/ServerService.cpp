@@ -26,6 +26,7 @@
 #include <Eris/Connection.h>
 #include <Eris/Person.h>
 #include <Eris/Avatar.h>
+#include <Eris/Entity.h>
 
 #include <Atlas/Objects/Entity/GameEntity.h>
 #include <Atlas/Objects/Operation/Move.h>
@@ -383,8 +384,18 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		}
 
 		Atlas::Objects::Operation::Move move;
-		
+		Atlas::Message::Element::MapType opargs;
+		Atlas::Message::Element::ListType pos;
 
+		move = Atlas::Objects::Operation::Move::Instantiate();
+
+		opargs["pos"] = pos;
+		opargs["loc"] = myAvatar->getEntity()->getContainer()->getID();
+		opargs["id"] = myAvatar->getID();
+		move.setFrom(myAvatar->getID());
+		move.setArgs(Atlas::Message::Element::ListType(1, opargs));
+		ConsoleBackend::getMainConsole()->pushMessage("Sending move op...");
+		Eris::Connection::Instance()->send(move);
 	}
   }
 } // namespace dime

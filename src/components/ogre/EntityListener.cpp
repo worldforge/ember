@@ -99,7 +99,14 @@ void EntityListener::entityCreate( Eris::Entity *e )
 	Ogre::Entity* ogreEntity;
 
 	// create the ogre entity
-        if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
+	if(!strcmp(e->getID().c_str(),avatarID.c_str())) { // if it's the player
+		dime::ConsoleBackend::getMainConsole()->pushMessage("Creating player entity");
+		fprintf(stderr, "TRACE - CREATING PLAYER ENTITY\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "dragon.mesh");
+		ogreNode->setScale(0.01,0.01,0.01);
+	}
+	else if(!strcmp(e->getType()->getName().c_str(),"settler"))	// 0 if strings are equal
+	{
 		fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 		//ogreNode->setScale(1,1,1);
@@ -108,7 +115,7 @@ void EntityListener::entityCreate( Eris::Entity *e )
 	else if(!strcmp(e->getType()->getName().c_str(),"merchant"))
 	{
 		fprintf(stderr, "TRACE - FOUND A MERCHANT - ROBOT MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "dragon.mesh");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 		//ogreNode->setScale(1,1,1);
 		ogreNode->setScale(0.01,0.01,0.01);
 	}
@@ -177,6 +184,7 @@ void EntityListener::entered( Eris::Entity *e )
 {
 	fprintf(stderr, "TRACE - PLAYER ENTERED THE WORLD\n");
 	std::cout << "THE PLAYER IS ENTITY " <<  e->getID() << std::endl;
+	avatarID = e->getID();
 	dime::ConsoleBackend::getMainConsole()->pushMessage("Entering the world...");
 	// Set the Player camera accordingly
 	// TODO: do this when the avatar moves too

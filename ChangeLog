@@ -1,3 +1,8 @@
+2003-11-25 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/components/ogre: added 3rd person camera and
+	(now working) top view camera. Added another camera
+	("spycam") for debugging purposes.
+
 2003-11-18 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/services/server/ServerService.cpp: myWorld is
 	not created by this service anymore, instead is 

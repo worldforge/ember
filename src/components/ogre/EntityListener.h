@@ -61,6 +61,7 @@ class EntityListener : virtual public SigC::Object //, public Component
 		/** Instance of EntityListener */
 		static EntityListener* _instance;
 		Ogre::SceneManager* mSceneMgr;
+		std::string avatarID; // ID of the Avatar entity
 
     //======================================================================
     //Public Methods

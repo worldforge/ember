@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.13  2003-10-30 07:37:41  aglanor
+ *      Revision 1.14  2003-11-25 08:03:05  aglanor
+ *      2003-11-25 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: added 3rd person camera and
+ *      	        (now working) top view camera. Added another camera
+ *      		        ("spycam") for debugging purposes.
+ *
+ *      Revision 1.13  2003/10/30 07:37:41  aglanor
  *      2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre:
  *              Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
@@ -311,16 +317,25 @@ public:
 	// TODO: these are for tests. Remove them later
 	Ogre::Entity* mOgreHead;
 	Ogre::SceneNode* mOgreHeadNode;
+	Ogre::Camera* mOgreHeadCamera;
 
 protected:
 	Ogre::Root *mRoot;
-	Ogre::Camera* mCamera;
-	Ogre::Camera* mPlayer1pCamera;
-	Ogre::Camera* mPlayer3pCamera;
-	Ogre::Camera* mPlayerMapCamera;
+	//Ogre::Camera* mCamera;
 	Ogre::SceneManager* mSceneMgr;
 	Ogre::FrameListener* mFrameListener;
 	Ogre::RenderWindow* mWindow;
+
+	// Avatar setup
+	Ogre::Entity* mAvatarEntity;
+	Ogre::SceneNode* mAvatarNode;
+	Ogre::SceneNode* mAvatar1pCameraNode;
+	Ogre::SceneNode* mAvatar3pCameraNode;
+	Ogre::SceneNode* mAvatarTopCameraNode;
+	Ogre::Camera* mAvatar1pCamera;
+	Ogre::Camera* mAvatar3pCamera;
+	Ogre::Camera* mAvatarTopCamera;
+
 
     // These internal methods package up the stages in the startup process
     /** Sets up the application - returns false if the user chooses to abandon configuration. */
@@ -334,14 +349,17 @@ protected:
         if (!carryOn) return false;
 
         chooseSceneManager();
+
+        // Create the scene
+        createScene();
+
         createCamera();
         createViewports();
 
         // Set default mipmap level (NB some APIs ignore this)
         Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
 
-        // Create the scene
-        createScene();
+
 
         createFrameListener();
 
@@ -382,16 +400,25 @@ protected:
 
     virtual void createViewports(void)
     {
-        // Create one viewport, entire window
-        Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+
+        // Create 1st person viewport, entire window
+        Ogre::Viewport* vp = mWindow->addViewport(mAvatar1pCamera);
         vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
 
-	Ogre::Viewport* mapvp = mWindow->addViewport(mPlayerMapCamera,1,0.70,0.05,0.25,0.25);
-	mapvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	mapvp->setOverlaysEnabled(false);
-	
+		Ogre::Viewport* rightvp = mWindow->addViewport(mAvatarTopCamera,1,0.70,0.05,0.25,0.25);
+		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+		rightvp->setOverlaysEnabled(false);
+
+		Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar3pCamera,9,0.05,0.05,0.25,0.25);
+		leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+		leftvp->setOverlaysEnabled(false);
+
+		Ogre::Viewport* spyvp = mWindow->addViewport(mOgreHeadCamera,10,0.05,0.70,0.25,0.25);
+		spyvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+		spyvp->setOverlaysEnabled(false);
+
     }
 
     /// Method which will define the source of resources (other than current folder)

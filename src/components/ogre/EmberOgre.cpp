@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.31  2003-11-18 19:26:27  aglanor
+ *      Revision 1.32  2003-11-25 08:03:05  aglanor
+ *      2003-11-25 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: added 3rd person camera and
+ *      	        (now working) top view camera. Added another camera
+ *      		        ("spycam") for debugging purposes.
+ *
+ *      Revision 1.31  2003/11/18 19:26:27  aglanor
  *      2003-11-18 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/server/ServerService.cpp: myWorld is
  *              not created by this service anymore, instead is
@@ -393,8 +399,8 @@ void DimeOgre::createScene(void)
 
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(0.01,0.01,0.01);
+	mOgreHeadNode->setPosition(10,0,0);
+	mOgreHeadNode->setScale(0.01,0.01,.01);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -406,7 +412,8 @@ void DimeOgre::createScene(void)
 
 	// A Ground Plane for the fancyness of it ;)
 	// ----------------------------------------
-        Ogre::Entity *groundEntity;
+
+		Ogre::Entity *groundEntity;
         Ogre::Plane groundPlane;
 
         // create a water plane/scene node
@@ -430,12 +437,68 @@ void DimeOgre::createScene(void)
         groundNode->attachObject(groundEntity);
         groundNode->translate(1000, 0, 1000);
 
-	// end Water Plane
-	// ----------------------------------------
+	// Create the Avatar tree of nodes, with a base entity
+	// and attach all the needed cameras
 
+	// The avatar itself
+	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mAvatarNode->setPosition(0,0,0);
+	//mAvatarNode->setOrientation(0,0,0,1);
+	mAvatarNode->setScale(0.01,0.01,0.01);
+	// TODO: very important! When the scale is set to default (1,1,1)
+	// and a mesh with normal scale is put here (like 2 meters high and things like that)
+	// we'll need to rescale the local space position for the nodes (shown below)
+	// - will be like dividing by 100 or something
+	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "robot.mesh");
+	mAvatarNode->attachObject(mAvatarEntity);
 
+	// 1st person, 3rd person and Top camera nodes
+	mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("Avatar1pCameraNode"));
+	mAvatar1pCameraNode->setPosition(0,8500,0);
+	mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
+	Ogre::Vector3 pos = Ogre::Vector3(-15000,2500,0);
+	//mAvatar3pCameraNode->setPosition(15000,2500,0);
+	mAvatar3pCameraNode->setPosition(pos);
+	mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarTopCameraNode"));
+	mAvatarTopCameraNode->setPosition(2,100000,0);
 
+	// TODO: put all this code into "createAvatar" or something similar
 
+	// Create the camera
+	mAvatar1pCamera = mSceneMgr->createCamera("Avatar1pCam");
+	mAvatar1pCameraNode->attachObject(mAvatar1pCamera);
+
+	// Look back along x axis
+	//mAvatar1pCamera->lookAt(mOgreHeadNode->getPosition());
+	mAvatar1pCamera->setNearClipDistance(1);
+
+	// do not clip at far distance
+	// so we can see the skydome
+	//mCamera->setFarClipDistance( 384 );
+
+	//3rd person camera
+	mAvatar3pCamera = mSceneMgr->createCamera("Avatar3pCamera");
+	mAvatar3pCameraNode->attachObject(mAvatar3pCamera);
+	// Look to the Avatar's head
+	mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
+	mAvatar3pCamera->setNearClipDistance(1);
+
+	// Create the Top camera
+	mAvatarTopCamera = mSceneMgr->createCamera("AvatarTopCamera");
+	mAvatarTopCameraNode->attachObject(mAvatarTopCamera);
+	// Look to the Avatar's head
+	mAvatarTopCamera->setAutoTracking(true, mAvatarNode);   // TODO: make this (And the others) a "following" camera
+	mAvatarTopCamera->setNearClipDistance(1);
+
+	std::cout << "	CREATING SPY CAMERA" << std::endl;
+
+	//spycam
+	Ogre::SceneNode* spyCamNode = dynamic_cast<Ogre::SceneNode*>(mOgreHeadNode->createChild("SpyCamNode"));
+	spyCamNode->setPosition(0,100000,0);
+
+ 	mOgreHeadCamera = mSceneMgr->createCamera("SpyCamera");
+	spyCamNode->attachObject(mOgreHeadCamera);
+	mOgreHeadCamera->setAutoTracking(true, mAvatar1pCameraNode);
 
 	// a hack from the OGRE GUI sample
 	/*
@@ -474,7 +537,7 @@ void DimeOgre::createFrameListener(void)
 	mRoot->addFrameListener(&(Console::getSingleton()));
 	ConsoleObjectImpl::getSingleton();
 	InputManager::getSingleton().addMouseListener(&(PlayerMouseListener::getSingleton()));
-	PlayerMouseListener::getSingleton().setCamera(mCamera);
+	PlayerMouseListener::getSingleton().setCamera(mAvatar1pCamera);
 	EntityListener::getSingleton().setSceneManager(mSceneMgr);
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
@@ -482,29 +545,7 @@ void DimeOgre::createFrameListener(void)
 
 void DimeOgre::createCamera(void)
 {
-  // Create the camera
-  mCamera = mSceneMgr->createCamera("PlayerCam");
-
-  // Position it at 500 in Z direction
-  mCamera->setPosition(Ogre::Vector3(10,10,10));
-
-  // Look back along -Z
-  mCamera->lookAt(Ogre::Vector3(0,10,0));
-  mCamera->setNearClipDistance(1);
-  // do not clip at far distance
-  // so we can see the skydome
-  //mCamera->setFarClipDistance( 384 );
-
-  // Create the camera
-  mPlayerMapCamera = mSceneMgr->createCamera("PlayerMapCamera");
-
-  // Position it at 500 in Z direction
-  mPlayerMapCamera->setPosition(Ogre::Vector3(0,50,0));
-  // Look back along -Z
-  mPlayerMapCamera->lookAt(Ogre::Vector3(0,0,0));
-  //mPlayerMapCamera->setDirection(Ogre::Vector3(0,-1,0));
-  mPlayerMapCamera->setNearClipDistance(1);
-
+	// TODO: Remove this method
 
 }
 
