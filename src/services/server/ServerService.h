@@ -161,15 +161,15 @@ class ServerService : public Service, public ConsoleObject,
     void logoutComplete(bool);
 
     // List of ServerService's console commands
-    static const char * const CONNECT = "connect";
-    static const char * const RECONNECT = "reconnect";
-    static const char * const DISCONNECT = "disconnect";
-    static const char * const CREATEACC = "createacc";
-    static const char * const LOGIN = "login";
-    static const char * const LOGOUT = "logout";
-    static const char * const CREATECHAR = "createchar";
-    static const char * const TAKECHAR = "takechar";
-    static const char * const LISTCHARS = "listchars";
+    static const char * const CONNECT;
+    static const char * const RECONNECT;
+    static const char * const DISCONNECT;
+    static const char * const CREATEACC;
+    static const char * const LOGIN;
+    static const char * const LOGOUT;
+    static const char * const CREATECHAR;
+    static const char * const TAKECHAR;
+    static const char * const LISTCHARS;
 }; //ServerService
 
 } // namespace dime

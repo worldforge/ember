@@ -26,6 +26,14 @@
 
 namespace dime {
 
+ // List of OOGChat's console commands
+    static const char * const OOGChat::CMD_SAY = "say";
+    static const char * const OOGChat::CMD_EMOTE = "emote";
+    static const char * const OOGChat::CMD_ME = "me";
+    static const char * const OOGChat::CMD_JOIN = "join";
+    static const char * const OOGChat::CMD_PART = "part";
+    static const char * const OOGChat::CMD_MSG = "msg";
+
     OOGChat::OOGChat() : myLobby(NULL)
     {
       // Set up the lobby object

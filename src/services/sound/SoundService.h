@@ -113,8 +113,8 @@ class SoundService: public Service, public ConsoleObject
 	void TestPlatform(void);
 
 	// List of SoundService's console commands
-	static const char * const PLAYSOUND = "playsound";
-	static const char * const PLAYMUSIC = "playmusic";
+	static const char * const PLAYSOUND;
+	static const char * const PLAYMUSIC;
 
 
 }; //SoundService

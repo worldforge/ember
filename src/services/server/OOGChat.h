@@ -76,12 +76,12 @@ class OOGChat : virtual public SigC::Object, public ConsoleObject
     private:
 
     // List of OOGChat's console commands
-    static const char * const CMD_SAY = "say";
-    static const char * const CMD_EMOTE = "emote";
-    static const char * const CMD_ME = "me";
-    static const char * const CMD_JOIN = "join";
-    static const char * const CMD_PART = "part";
-    static const char * const CMD_MSG = "msg";
+    static const char * const CMD_SAY;
+    static const char * const CMD_EMOTE;
+    static const char * const CMD_ME;
+    static const char * const CMD_JOIN;
+    static const char * const CMD_PART;
+    static const char * const CMD_MSG;
 
     //======================================================================
     // Private Variables
