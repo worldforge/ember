@@ -25,6 +25,7 @@
 #include <sigc++/object.h>
 #include <Eris/Connection.h>
 #include <Eris/Person.h>
+#include <Eris/Avatar.h>
 
 #include <list>
 #include <algorithm>
@@ -293,7 +294,9 @@ namespace dime
     } else if (command==TAKECHAR) {
       if (myPlayer)
       {
-        myPlayer->takeCharacter(args);
+        myAvatar = myPlayer->takeCharacter(args);
+		myWorld = myAvatar->getWorld();
+
       }
     } else if (command==LISTCHARS) {
       if (myPlayer)

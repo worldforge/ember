@@ -27,6 +27,7 @@
 #include <Eris/Player.h>
 #include <Eris/Lobby.h>
 #include <Eris/World.h>
+#include <Eris/Avatar.h>
 
 #include <sigc++/object.h>
 
@@ -63,6 +64,11 @@ class ServerService : public Service, public ConsoleObject,
      * Holds the world object of this server
      */
     Eris::World *myWorld;
+
+	/**
+     * Holds the current avatar
+     */
+	Eris::Avatar *myAvatar;
 
     /**
      * Contains the class that controls Out of Game Chat
