@@ -12,13 +12,14 @@
 #include <stdlib.h>
 
 #include "Console.h"
-
+#include "services/logging/LoggingService.h"
+using dime::LoggingService;
 
 	Console* Console::_instance = 0;
 
 	Console & Console::getSingleton(void)
 	{
-	fprintf(stderr, "TRACE - GET SINGLETON - ENTERING\n");
+            S_LOG_VERBOSE() << "TRACE - GET SINGLETON - ENTERING\n";
 		if(_instance == 0)
 			_instance = new Console;
 		return *_instance;
@@ -27,13 +28,13 @@
 
 	Console::Console(void)
 	{
-		fprintf(stderr, "TRACE - CONTRUCTOR - ENTERING\n");
+		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - ENTERING\n";
 		mState = CS_CLOSED;
-		fprintf(stderr, "TRACE - CONTRUCTOR - STATE SET\n");
+		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - STATE SET\n";
 		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->setScroll(0, 1);
-		fprintf(stderr, "TRACE - CONTRUCTOR - SCROLL SET\n");
+		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - SCROLL SET\n";
 		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->show();
-		fprintf(stderr, "TRACE - CONSTRUCTOR - SHOWN\n");
+		S_LOG_VERBOSE() << "TRACE - CONSTRUCTOR - SHOWN\n";
 		int i;
 		for(i=0; i<getNumLines(); i++)
 		{
@@ -54,7 +55,7 @@
 		}
 
 
-		fprintf(stderr, "TRACE - CONSTRUCTOR - LINES SET\n");
+		S_LOG_VERBOSE() << "TRACE - CONSTRUCTOR - LINES SET\n";
 
 		mTextLine[0]->setColour(Ogre::ColourValue(0.5, 1, 0.3));
 
@@ -64,8 +65,7 @@
 
 		setLineText(0, ">>> ");
 
-		//mPythonInterpreter = NULL;
-
+                myBackend = dime::ConsoleBackend::getMainConsole();
 		mPrompt = false;
 	}
 
@@ -104,14 +104,14 @@
 
 	void Console::open(void)
 	{
-		fprintf(stderr, "TRACE - CONSOLE - CALL TO OPEN METHOD\n");
+		S_LOG_VERBOSE() << "TRACE - CONSOLE - CALL TO OPEN METHOD\n";
 		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->show();
 		mState = CS_OPENING;
 	}
 
 	void Console::close(void)
 	{
-		fprintf(stderr, "TRACE - CONSOLE - CALL TO CLOSE METHOD\n");
+		S_LOG_VERBOSE() << "TRACE - CONSOLE - CALL TO CLOSE METHOD\n";
 		mState = CS_CLOSING;
 	}
 
@@ -119,15 +119,15 @@
 	{
 		if(mState == CS_OPENING)
 		{
-			fprintf(stderr, "TRACE - CONSOLE - OPENING\n");
+			S_LOG_VERBOSE() << "TRACE - CONSOLE - OPENING\n";
 			static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->scroll(0, -2*event.timeSinceLastFrame);
 			if(static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->getScrollY() <= 0)
 			{
-				fprintf(stderr, "TRACE - CONSOLE - OPENING - FULLY OPEN\n");
+				S_LOG_VERBOSE() << "TRACE - CONSOLE - OPENING - FULLY OPEN\n";
 				static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->setScroll(0, 0);
 				mState = CS_OPEN;
 			} else {
-				fprintf(stderr, "TRACE - CONSOLE - OPENING - NOT YET OPEN\n");
+				S_LOG_VERBOSE() << "TRACE - CONSOLE - OPENING - NOT YET OPEN\n";
 			}
 		}
 		else if(mState == CS_CLOSING)
@@ -152,7 +152,7 @@
 	void Console::keyPressed(Ogre::KeyEvent* e)
 	{
 
-		fprintf(stderr, "TRACE - CONSOLE - KEY PRESSED\n");
+		S_LOG_VERBOSE() << "TRACE - CONSOLE - KEY PRESSED\n";
 
 		// TODO This is all a big mess :(
 		if(e->getKey() == Ogre::KC_LSHIFT || e->getKey() == Ogre::KC_RSHIFT)
@@ -250,7 +250,9 @@
 				if(mShiftDown)
 					c[0] = ':';
 				mCommandLine.insert(mCursorPos, c);
-				mCursorPos++;
+				mCursorPos++; 
+                                S_LOG_VERBOSE() << "Got a ; key\n";
+
 			}
 			else if(e->getKeyChar() == '\'' || e->getKey() == Ogre::KC_F2)
 			{
@@ -291,6 +293,7 @@
 					c[0] = '?';
 				mCommandLine.insert(mCursorPos, c);
 				mCursorPos++;
+                                S_LOG_VERBOSE() << "Got a slash key\n";
 			}
 			else if(e->getKey() == Ogre::KC_TAB)
 			{
@@ -321,11 +324,16 @@
 					write(">>> " + mCommandLine + "\n");
 				else
 					write("... " + mCommandLine + "\n");
-				//mPrompt = mPythonInterpreter->runsource(mCommandLine);
-				if(!mPrompt)
-					setLineText(0, ">>> _");
-				else
-					setLineText(0, "... _");
+			        myBackend->runCommand("/" + mCommandLine);
+                                // Write all commands to the console
+                                const std::list<std::string> msgs = myBackend->getConsoleMessages();
+                                std::list<std::string>::const_iterator index = msgs.begin();
+                                std::list<std::string>::const_iterator end = msgs.end();
+                                while( index != end ) {
+                                    write("... " + *index + "\n");
+                                    ++index;
+                                }
+                                setLineText(0, ">>> _");
 				mCommandLine = "";
 				mCursorPos = 0;
 			}
@@ -348,7 +356,7 @@
 
 		if(e->getKey() == Ogre::KC_GRAVE || e->getKey() == Ogre::KC_F12)
 		{
-			fprintf(stderr, "TRACE - F12 KEY RELEASED\n");
+			S_LOG_VERBOSE() << "TRACE - F12 KEY RELEASED\n";
 			if(mState == CS_OPEN || mState == CS_OPENING)
 				close();
 			else
@@ -383,7 +391,6 @@
 				lineStart=false;
 			}
 		}
-
 		std::cout << output;
 	}
 
