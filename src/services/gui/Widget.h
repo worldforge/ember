@@ -35,7 +35,8 @@
 
 namespace dime {
 
-	
+	class EventGenerator;
+    
     /**
      * The basic Widget for the Dime Gui
      *
@@ -238,7 +239,7 @@ namespace dime {
          *
          *@return bool whether something was updated or not.
          */
-        virtual bool update(DrawDevice *target);
+        virtual bool update(DrawDevice *target) { };
         
         
         /**
@@ -258,7 +259,7 @@ namespace dime {
          * the topmost widget that contains these coordinates.  If no child widgets 
          * fall in this category then it returns this.
          */
-        virtual Widget *getWindowAt(int x, int y);
+        virtual Widget *getWindowAt(int x, int y) { };
 
         //---------------------------------------------------------------------------------------------------
         //---------------------------------------------------------------------------------------------------
@@ -353,7 +354,7 @@ namespace dime {
          * Button is the button pressed to cancel the drag.
          */
         virtual void mouseDragCancel( int x, int y, int button, Widget *win ) { };
-        *
+        
         /*
          * The mouse button used to drag the window object was released.
          * 'dest' is the window object under the mouse (and the dragged window).

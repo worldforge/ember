@@ -17,9 +17,8 @@ void dime::Widget::setEventGenerator(EventGenerator *generator)
     std::vector<Widget*>::iterator end = myChildren.end();
     for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; ++i)
         {
-            (*I)->setEventGenerator(generator);
+            (*i)->setEventGenerator(generator);
         }
-	return 0; 
     
 }
 

@@ -9,11 +9,11 @@
 void dime::EventGenerator::handleKeyboardEvent() {
 // Checks the keyboard input and redirects keyboard events to the main
 // widget or the widget that has captured the keyboard.
-  if (keypressed()) {
-    int k = readkey();
-    if (keyboardCaptureWidget) keyboardCaptureWidget->keyPress(k);
-    else if (mainWidget) mainWidget->keyPress(k);  // or keyPressed(k) ?
-  }
+    /*if (keypressed()) {
+      int k = readkey();
+      if (keyboardCaptureWidget) keyboardCaptureWidget->keyPress(k);
+      else if (mainWidget) mainWidget->keyPress(k);  // or keyPressed(k) ?
+      }*/
 } // checkKeyboard
 
 /*--------------------------------------------------------------------------*/
@@ -55,12 +55,12 @@ void dime::EventGenerator::handleMouseEvent() {
     dime::Widget *eventDest  = NULL;
     
     // Get the widget the mouse is over:
-    updatePointedWidget( x, y );
+    //updatePointedWidget( x, y );
     
     if (mouseCaptureWidget) eventDest = mouseCaptureWidget;
     else                 eventDest = pointedWidget;
     
-    if (!eventDest) continue; // Read away the rest of the mouse events. (?)
+    //if (!eventDest) continue; // Read away the rest of the mouse events. (?)
     
     
     // Determine event type and redirect it:
@@ -142,30 +142,30 @@ void dime::EventGenerator::updatePointedWidget( int mx, int my ) {
     }
     
     // Check if pointedWidget changed:
-    dime::Widget *p = mainWidget->getWidgetAt( mx, my );
-    if (p != pointedWidget) {
-        
-        // Exit old widget object:
-        if (pointedWidget) pointedWidget->mouseExit( mx, my, p );
-        
-        // Set default (desktop(?)) cursor if the mouse isn't captured
-        // and no new widget is pointed at:
-        if (!mouseCaptureWidget && !p) {
-            if (style) set_mouse_sprite( style->mouseCursorPic );
-            else set_mouse_sprite( NULL );
-        }
-        
-        if (p) {
-            // Enter new widgets object:
-            p->mouseEnter( mx, my, p );
-            
-            // Set mouse cursor to that of the new pointed widget
-            // (if it has one and the mouse isn't captured):
-            /*if (!mouseCaptureWidget && p->getGuiStyle())
-              set_mouse_sprite( p->getGuiStyle()->mouseCursorPic );*/
-        }
-        
-        pointedWidget = p;
+    //dime::Widget *p = mainWidget->getWidgetAt( mx, my );
+    /*if (p != pointedWidget) {
+      
+    // Exit old widget object:
+    if (pointedWidget) pointedWidget->mouseExit( mx, my, p );
+    
+    // Set default (desktop(?)) cursor if the mouse isn't captured
+    // and no new widget is pointed at:
+    if (!mouseCaptureWidget && !p) {
+    //      if (style) set_mouse_sprite( style->mouseCursorPic );
+    else set_mouse_sprite( NULL );
     }
+    
+    if (p) {
+    // Enter new widgets object:
+    p->mouseEnter( mx, my, p );
+    
+    // Set mouse cursor to that of the new pointed widget
+    // (if it has one and the mouse isn't captured):
+    if (!mouseCaptureWidget && p->getGuiStyle())
+    set_mouse_sprite( p->getGuiStyle()->mouseCursorPic );
+    }
+    
+    pointedWidget = p;
+    }*/
     
 } // updatePointedWidget

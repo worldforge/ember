@@ -96,7 +96,7 @@ INCLUDES = -I$(top_srcdir)/src
 
 noinst_LIBRARIES = libGuiService.a
 
-libGuiService_a_SOURCES = GuiService.cpp Widget.cpp Button.cpp Panel.cpp
+libGuiService_a_SOURCES = GuiService.cpp EventGenerator.cpp Widget.cpp Button.cpp Panel.cpp 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -108,8 +108,8 @@ CPPFLAGS =
 LDFLAGS =  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL -lpthread -L/usr/local/lib -lsigc -lpthread -L/usr/local/lib -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -L/usr/local/lib -leris -L/usr/local/lib -lcppunit
 LIBS = -lSDL_ttf -lSDL_mixer -lSDL_image 
 libGuiService_a_LIBADD = 
-libGuiService_a_OBJECTS =  GuiService.$(OBJEXT) Widget.$(OBJEXT) \
-Button.$(OBJEXT) Panel.$(OBJEXT)
+libGuiService_a_OBJECTS =  GuiService.$(OBJEXT) EventGenerator.$(OBJEXT) \
+Widget.$(OBJEXT) Button.$(OBJEXT) Panel.$(OBJEXT)
 AR = ar
 CXXFLAGS = -g -O2 -I/usr/local/include -I/usr/local/include/SDL -D_REENTRANT -I/usr/local/lib/sigc++-1.0/include -I/usr/local/include/sigc++-1.0 -I/usr/local/include -I/usr/local/include -I/usr/local/include -I/usr/local/include
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -123,8 +123,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/Button.P .deps/GuiService.P .deps/Panel.P \
-.deps/Widget.P
+DEP_FILES =  .deps/Button.P .deps/EventGenerator.P .deps/GuiService.P \
+.deps/Panel.P .deps/Widget.P
 SOURCES = $(libGuiService_a_SOURCES)
 OBJECTS = $(libGuiService_a_OBJECTS)
 

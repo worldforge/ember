@@ -30,13 +30,14 @@
 
 namespace dime 
 {
+    class Widget;
     
     class EventGenerator : public SigC::Object
     {
         
     public:
         // Start all event handlers here.
-        EventGenerator();
+        EventGenerator() { };
         
     private:
         
