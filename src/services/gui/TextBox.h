@@ -95,13 +95,13 @@ class TextBox : public Label
     {
     }
 
-	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+5, rect.getY()+15, rect.getWidth()-10,rect.getHeight()-10)),
+	TextBox(Font::FontString text, const Rectangle& rect) : Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
                                                             myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH)
     {
     }
 
     TextBox(std::string text, const Rectangle& rect) :
-        Label(text, Rectangle(rect.getX()+5, rect.getY()+15, rect.getWidth()-10,rect.getHeight()-10)),
+        Label(text, Rectangle(rect.getX()+11, rect.getY()+11, rect.getWidth()-11,rect.getHeight()-11)),
         myBackRect(rect,"textboxback.png", RectangleRenderer::STRETCH)
         
     {
