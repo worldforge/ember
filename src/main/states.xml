@@ -8,10 +8,10 @@
       <textbox x="13" y="43" w="97" h="32" data="Text Box!" />
     </layout>
     <renderers>
-      <bitmap name="logo" src="../../../media/common/dimelogo_small2.png" align="CENTER" />
-      <bitmap name="qstandard" src="../../../media/sdl/quitbutton2.png" align="TILE" />
-      <bitmap name="qpressed" src="../../../media/sdl/quitbutton3.png" align="TILE" />
-      <bitmap name="qhilight" src="../../../media/sdl/quitbutton.png" align="TILE" />
+      <bitmap name="logo" src="../../media/common/dimelogo_small2.png" align="CENTER" />
+      <bitmap name="qstandard" src="../../media/sdl/quitbutton2.png" align="TILE" />
+      <bitmap name="qpressed" src="../../media/sdl/quitbutton3.png" align="TILE" />
+      <bitmap name="qhilight" src="../../media/sdl/quitbutton.png" align="TILE" />
     </renderers>
   </stateinfo>
   <stateinfo name="OOG View">
