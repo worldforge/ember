@@ -30,6 +30,11 @@
 
 // Included system headers
 
+#ifdef _MSC_VER
+#define FONT_FILE "..\\bin\\nasal.ttf"
+#else
+#define FONT_FILE "../../bin/nasal.ttf"
+#endif 
 
 namespace dime {
 
@@ -93,11 +98,7 @@ class Label : public Widget
     Label() 
         : Widget()
     {
-#ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
-#else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
-#endif 
+      dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
       assert(font);
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(100,100,0), Rectangle(0,0,0,0));
     }
@@ -108,11 +109,7 @@ class Label : public Widget
     Label(const Rectangle& rect) 
         : Widget(rect)
     {
-#ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
-#else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
-#endif 
+      dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
       assert(font);
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(0,0,255), rect);
     }
@@ -124,11 +121,7 @@ class Label : public Widget
     Label(const Font::FontString text, const Rectangle& rect) 
         : Widget(rect)
     {
-#ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
-#else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
-#endif 
+      dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
       assert(font);
       myFontRenderer = new FontRenderer(FontRenderer::BLENDED, text, font, Color(0,0,255), rect);
     }
@@ -138,11 +131,7 @@ class Label : public Widget
     Label(const std::string text, const Rectangle& rect) 
         : Widget(rect)
     {
-#ifdef _MSC_VER
-      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",16);
-#else
-      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",16);
-#endif 
+      dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
       assert(font);
       Font::FontString fontString;
       for(unsigned int i = 0; i < text.length(); ++i)
