@@ -21,14 +21,14 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Input.h"
-#include <renderers/OgreGUIRenderer/ogrerenderer.h>
+#include <OgreCEGUIRenderer.h>
 
 namespace EmberOgre {
 
 
 
 
-Input::Input(CEGUI::System *system, CEGUI::OgreRenderer *renderer)
+Input::Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer)
 : mGuiSystem(system)
 , mGuiRenderer(renderer)
 /*, mMouseMotionListener(0)*/

@@ -70,7 +70,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 	
 		fprintf(stdout, "STARTING CEGUI\n");
 		
-		mGuiRenderer = new CEGUI::OgreRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, sceneMgr);
+		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, sceneMgr);
 		mGuiRenderer->setTargetSceneManager(sceneMgr);
 		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		

@@ -29,7 +29,7 @@
 #include <elements/CEGUIStaticImage.h>*/
 #include "EmberOgrePrerequisites.h"
 #include <elements/CEGUIPushButton.h>
-#include <renderers/OgreGUIRenderer/ogrerenderer.h>
+#include <OgreCEGUIRenderer.h>
 // #include <boost/bind.hpp>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -139,7 +139,7 @@ protected:
 	Input *mInput;
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
-	CEGUI::OgreRenderer* mGuiRenderer;
+	CEGUI::OgreCEGUIRenderer* mGuiRenderer;
 
 	std::set<Widget*> mWidgets;
 	

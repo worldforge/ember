@@ -43,7 +43,7 @@
 
 namespace CEGUI {
 class System;
-class OgreRenderer;
+class OgreCEGUIRenderer;
 
 }
 
@@ -80,7 +80,7 @@ class Input
 : virtual public SigC::Object
 {
 public:
-    Input(CEGUI::System *system, CEGUI::OgreRenderer *renderer);
+    Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer);
 
     ~Input();
 	
@@ -114,7 +114,7 @@ public:
 	
 protected:
 	CEGUI::System *mGuiSystem;
-	CEGUI::OgreRenderer *mGuiRenderer;
+	CEGUI::OgreCEGUIRenderer *mGuiRenderer;
 	
 	//polls all input for the mouse
 	void pollMouse(const Ogre::FrameEvent& evt);
