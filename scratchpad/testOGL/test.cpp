@@ -10,8 +10,10 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+    /* Sets up OpenGL double buffering */
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   SDL_Surface *screen;
-  screen=SDL_SetVideoMode(640,480,32,SDL_HWSURFACE|SDL_OPENGL|SDL_GL_DOUBLEBUFFER);
+  screen=SDL_SetVideoMode(640,480,32,SDL_HWSURFACE|SDL_OPENGL);
 
   if ( screen == NULL )
   {
@@ -27,6 +29,7 @@ int main(int argc, char **argv) {
   //dime::RectangleRenderer myRR(myR, "test.png", dime::RectangleRenderer::TILE);
 
   //myRR.render(&myDevice);
+  myDevice.init();
   myDevice.clearScreen();
   myDevice.drawPixel(100,100,dime::Color(100,100,100));
   myDevice.update();
