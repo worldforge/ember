@@ -1,3 +1,13 @@
+2005-03-16  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added kdevelop project file.
+
+2005-03-16  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Jesus.h, Jesus.cpp: added constructors for clean deletion of Jesus objects
+	* JesusEdit: added slider to the preview window for zooming in and out on the building block
+		added ability to see selected AttachPoints in the preview window
+
 2005-03-15  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* fix for check for CEGUI
