@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.2  2003-04-24 20:02:08  aglanor
+ *      Revision 1.3  2003-04-24 20:27:26  aglanor
+ *      bughunting
+ *
+ *      Revision 1.2  2003/04/24 20:02:08  aglanor
  *      Makefile and include changes after the renaming
  *
  *      Revision 1.1  2003/04/24 19:42:09  aglanor
@@ -184,7 +187,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
     };
 
-void OgreApplication::createScene(void)
+void DimeOgre::createScene(void)
 {
   mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
   // Create a light
@@ -236,8 +239,8 @@ void DimeOgre::createFrameListener(void)
 {
 
 	fprintf(stderr, "TRACE - CREATING FRAME LISTENER\n");
-	DimeOgreFrameListener* dimeOgreFrameListener = new DimeOgreFrameListener(mWindow, mCamera, false, false);
-	mRoot->addFrameListener(dimeOgreFrameListener);
+	PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, false, false);
+	mRoot->addFrameListener(playerFrameListener);
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENER\n");
 
 
@@ -329,15 +332,15 @@ void DimeOgre::connectWorldSignals(void) {
     Eris::World *w = dime::DimeServices::getInstance()->getServerService()->getWorld();
 
     /* Connect to the relevant World signals */
-    w->EntityCreate.connect( SigC::slot( *this, &OgreApplication::entityCreate ) );
+    w->EntityCreate.connect( SigC::slot( *this, &DimeOgre::entityCreate ) );
 
-    w->EntityDelete.connect( SigC::slot( *this, &OgreApplication::entityDelete ) );
+    w->EntityDelete.connect( SigC::slot( *this, &DimeOgre::entityDelete ) );
 
-    w->Entered.connect( SigC::slot( *this, &OgreApplication::entered ) );
+    w->Entered.connect( SigC::slot( *this, &DimeOgre::entered ) );
 
-    w->Appearance.connect( SigC::slot( *this, &OgreApplication::appearance ) );
+    w->Appearance.connect( SigC::slot( *this, &DimeOgre::appearance ) );
 
-    w->Disappearance.connect( SigC::slot( *this, &OgreApplication::disappearance ) );
+    w->Disappearance.connect( SigC::slot( *this, &DimeOgre::disappearance ) );
 
 }
 
@@ -367,17 +370,17 @@ void DimeOgre::entityCreate( Eris::Entity *e )
        too */
 
     // Xmp's Notes: hmm need to work out how to connect these
-    e->AddedMember.connect( SigC::slot( *this, &OgreApplication::addedMember ) );
+    e->AddedMember.connect( SigC::slot( *this, &DimeOgre::addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( *this, &OgreApplication::removedMember ) );
+    e->RemovedMember.connect( SigC::slot( *this, &DimeOgre::removedMember ) );
 
-    e->Recontainered.connect( SigC::slot( *this, &OgreApplication::recontainered ) );
+    e->Recontainered.connect( SigC::slot( *this, &DimeOgre::recontainered ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( *this, &OgreApplication::changed ), e ) );
+    e->Changed.connect( SigC::bind( SigC::slot( *this, &DimeOgre::changed ), e ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( *this, &OgreApplication::moved ), e ) );
+    e->Moved.connect( SigC::bind( SigC::slot( *this, &DimeOgre::moved ), e ) );
 
-    e->Say.connect( SigC::bind( SigC::slot( *this, &OgreApplication::say ), e ) );
+    e->Say.connect( SigC::bind( SigC::slot( *this, &DimeOgre::say ), e ) );
 }
 
 
@@ -389,7 +392,7 @@ void DimeOgre::entered( Eris::Entity *e )
 
 void DimeOgre::appearance( Eris::Entity *e )
 {
-	fprintf(stderr, "TRACE - APPEARANCE - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+	fprintf(stderr, "TRACE - APPEARANCE\n");
 }
 
 void DimeOgre::disappearance( Eris::Entity *e )
