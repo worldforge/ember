@@ -25,7 +25,6 @@
 #include <list>
 #include <map>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 namespace dime {
 
@@ -38,12 +37,6 @@ namespace dime {
  */
 class ImageService : public Service
 {
-  //======================================================================
-  // Inner Classes, Typedefs, and Enums
-  //======================================================================
-public:
-
-  typedef boost::shared_ptr<SDL_Surface> SDL_SurfacePtr;
 
   //======================================================================
   // Private Variables
@@ -51,7 +44,7 @@ public:
 private:
 
     std::list<std::string> mySearchPaths;
-    std::map<std::string, SDL_SurfacePtr> myImages;
+    std::map<std::string, SDL_Surface *> myImages;
     static ImageService* theInstance;
 
     //----------------------------------------------------------------------
@@ -60,36 +53,19 @@ private:
 public:    
     
     /** Deletes a ConfigService instance. */
-    ~ImageService()
-    {
-    }
+    ~ImageService();
     
     //----------------------------------------------------------------------
     // Getters & Setters
     
-    void addPath(const std::string& newPath)
-    {
-      mySearchPaths.push_back(newPath);
-    }
+    void addPath(const std::string& newPath);
     
     /**
     * because this class is a singleton you must use this method to obtain a copy.
     */
-    static ImageService *getInstance()
-    {
-      if(theInstance == NULL)
-	{
-	  theInstance = new ImageService();
-	}
-        
-      return theInstance;
-    }
+    static ImageService *getInstance();
     
-    Service::Status start()
-    {
-        setStatus(Service::OK);
-        return Service::OK;
-    }
+    Service::Status start();
     
     //----------------------------------------------------------------------
     // Other public methods
@@ -100,24 +76,15 @@ public:
 private:
     
     /** Creates a new ImageService using default values. */
-    ImageService() 
-    {
-        setName("Image Service");
-        setDescription("Service for loading and caching images");
-        addPath("./");
-        addPath("../");
-        addPath("./data/");
-    }
+    ImageService();
 
 
-	/**
-	 * Copy Constructor not provided
-	 */
-	ImageService(const ImageService &source) 
-	{
-	}
+    /**
+     * Copy Constructor not provided
+     */
+    ImageService(const ImageService &source);
 
-	
+    
 }; //ImageService
 
 } // namespace dime

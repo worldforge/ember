@@ -21,32 +21,69 @@
 
 namespace dime
 {
+    
 
-  ImageService *ImageService::theInstance = NULL;
+    ImageService::~ImageService()
+    {
+    }
 
-  SDL_Surface *ImageService::loadImage(const std::string& imageName)
-  {
-    SDL_SurfacePtr image;
-    std::string newName;
+    void ImageService::addPath(const std::string& newPath) 
+    {
+        mySearchPaths.push_back(newPath);    
+    }
+
+    ImageService *ImageService::getInstance()
+    {
+      if(theInstance == NULL)
+	{
+	  theInstance = new ImageService();
+	}
         
-    image = myImages[imageName];
-		
-    if (image.get() == NULL)
-      {
-	image.reset(IMG_Load(imageName.c_str()));
+      return theInstance;
+    }
+     
+    Service::Status ImageService::start()
+    {
+        setStatus(Service::OK);
+        return Service::OK;
+    }
 
-	std::list<std::string>::iterator cur = mySearchPaths.begin();
-	std::list<std::string>::iterator last = mySearchPaths.end();
-        
-	while(image.get() == NULL && cur != last)
-	  {
-	    newName = (*cur) + imageName;
-	    image.reset(IMG_Load(newName.c_str()));
-	    ++cur;
-	  }
-	if (image.get() != NULL) myImages[imageName] = image;
-      }
-    return image.get();
-  }
+
+    ImageService *ImageService::theInstance = NULL;
+
+    SDL_Surface *ImageService::loadImage(const std::string& imageName)
+    {
+        SDL_Surface *image;
+        std::string newName;
+
+        image = myImages[imageName];
+
+        if (!image)
+        {
+            image = IMG_Load( imageName.c_str() );
+
+            std::list<std::string>::iterator cur = mySearchPaths.begin();
+            std::list<std::string>::iterator last = mySearchPaths.end();
+
+            while( !image && cur != last )
+            {
+                newName = (*cur) + imageName;
+                image = IMG_Load(newName.c_str());
+                ++cur;
+            }
+            if ( image ) myImages[imageName] = image;
+        }
+        return image;
+    }
+
+    //Private methods
+    ImageService::ImageService()
+    {
+        setName("Image Service");
+        setDescription("Service for loading and caching images");
+        addPath("./");
+        addPath("../");
+        addPath("./data/");
+    }
 
 } // namespace dime
