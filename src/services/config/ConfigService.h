@@ -19,7 +19,7 @@
 #ifndef CONFIGSERVICE_H
 #define CONFIGSERVICE_H
 
-#include "../AbstractService.h"
+#include "framework/Service.h"
 #include <string>
 
 namespace dime {

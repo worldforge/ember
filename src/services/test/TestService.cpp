@@ -2,6 +2,8 @@
 
 #include <iostream.h>
 
+using namespace dime::framework;
+
 namespace dime
 {
    namespace services

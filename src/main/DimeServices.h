@@ -21,7 +21,7 @@
 
 // Include headers from the current project here
 #include <services/test/TestService.h>
-#include <services/LoggingService.h>
+#include <services/logging/LoggingService.h>
 
 // Include custom library headers here
 

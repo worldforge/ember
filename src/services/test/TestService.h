@@ -31,10 +31,10 @@ namespace dime {
  *
  * @author Miguel Guzman Miranda [Aglanor]
  *
- * @see dime::Service
- * @see dime::AbstractService
+ * @see dime::framework::Service
+ * @see dime::framework::AbstractService
  */
-class TestService: public AbstractService
+class TestService : public framework::Service
 {
     //======================================================================
     // Private Variables
