@@ -10,8 +10,8 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.9  2002-05-20 22:10:27  nikal
- *      quick fixes for the CodeGen.pl
+ *      Revision 1.10  2002-05-20 22:30:28  nikal
+ *      Tiling works with RectangleRenderers
  *
  *      Revision 1.8  2002/05/20 18:49:49  nikal
  *      Quick changes to RectangleRenderer, and some theme stuff
@@ -183,12 +183,11 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
     SDL_Rect src, dest, curDest;
     src.x = 0;
     src.y = 0;
-    src.w = myRect.getWidth();
-    src.h = myRect.getHeight();
+    src.w = mySurface->w;
+    src.h = mySurface->h;
     dest = myRect.getSDL_Rect();
     curDest.w = src.w;
     curDest.h = src.h;
-    
 
     switch(myStyle)
         {
@@ -202,12 +201,11 @@ int dime::RectangleRenderer::renderBitmap(dime::DrawDevice *device)
                 }
             break;
         case STRETCH:
+            
             device->blitSurface(&src, &dest, mySurface );
             break;
         }
     
-
-
     return (1);
 }
 
