@@ -1,10 +1,53 @@
 Dime Installation Instructions
 
+****************
 * dependencies *
+****************
 
-currently dime only depends on SDL:
+currently dime depends on the following libraries:
 
-SDL: Simple DirectMedia Layer
+SDL
+Simple DirectMedia Layer
+Version: 1.2.3
 http://www.libsdl.org
+
+skstream2
+socket stream v2
+CVS version
+(needed for Eris, see below)
+
+Atlas-C++
+C++ implementation of Worldforge Protocol ("Atlas")
+Version: 0.0.4
+ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
+(needed for Eris, see below)
+
+Eris
+client side session layer
+CVS version
+
+If you want a 3D gameview (which is not mandatory, and currently not even
+supported <grin>) you'll need:
+
+Crystalspace
+3D engine
+Version: 0.92
+http://crystal.sourceforge.net
+
+****************
+* installation *
+****************
+
+execute the following (usual) commands:
+
+./autogen.sh
+./configure
+make
+
+*******************
+* troubleshooting *
+*******************
+
+here we'll address typical problems with the installation, and how to fix them
 
 
