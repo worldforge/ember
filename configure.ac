@@ -214,6 +214,17 @@ if test "$ac_use_gprof_code" = "yes"; then
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
 
+AC_ARG_WITH(cal3d, [--with-cal3d=prefix 	Specify where Cal3d is installed too], [
+	CPPFLAGS="$CPPFLAGS -I$withval/include"
+	LIBS="$LIBS -L$withval/lib"
+])
+
+AC_CHECK_HEADER(cal3d/cal3d.h,,AC_MSG_ERROR(Couldn't find the Cal3d headers))
+
+# verify that we can link against Cal3d, but don't add it to LIBS
+saved_LIBS=$LIBS
+AC_CHECK_LIB(cal3d, main, , AC_MSG_ERROR(Couldn't find the Cal3d library))
+LIBS=$saved_LIBS
 
 # Checks for header files.
 AC_HEADER_STDC
