@@ -1,3 +1,6 @@
+2004-02-15 Ron Steinke <rsteinke@w-link.net>
+	* configure.ac: GL test for mingw32, take 4.
+
 2004-02-14 Ron Steinke <rsteinke@w-link.net>
 	* configure.ac: GL test for mingw32, take 3.
 

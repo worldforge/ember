@@ -61,15 +61,11 @@ AC_MSG_RESULT([
 WF_CHECK_SDL_IMAGE(1.2.0)
 dnl don't add SDL flags yet, SDL_main confuses later checks
 
-AC_LANG_PUSH(C)
-
-AC_CHECK_LIB(GL,glViewport,,
-    AC_CHECK_LIB(opengl32,glViewport,,
-      AC_MSG_ERROR(Could not find OpenGL library)
-    )
-)
+WF_CHECK_SINGLE_GL_LIB
 
 # OpenAL check
+
+AC_LANG_PUSH(C)
 
 AC_CHECK_LIB(openal,
 	alutInit ,,

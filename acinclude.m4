@@ -194,3 +194,29 @@ LDFLAGS="$WF_SDL_IMAGE_TMP_LDFLAGS"
 AC_LANG_POP([C])
 
 ])dnl end of WF_CHECK_SDL_IMAGE
+
+dnl worldforge check for the GL library,
+dnl the -l flag is added directly to LIBS
+
+AC_DEFUN(WF_CHECK_GL_SINGLE_LIB,[dnl
+
+AC_LANG_PUSH(C)
+
+AC_CHECK_LIB(GL,glViewport, ,
+    AC_MSG_CHECKING(for glViewport in opengl32)
+    LIBS="$LIBS -lopengl32"
+    AC_TRY_LINK([
+	#include <GL/gl.h>
+    ],[
+	glViewport(0, 0, 0, 0);
+    ],[
+	AC_MSG_RESULT(yes)
+    ],[
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(Could not find OpenGL library)
+    ])
+)
+
+AC_LANG_POP(C)
+
+])dnl end of WF_CHECK_GL_LIBS
