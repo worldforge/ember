@@ -44,7 +44,7 @@ const char* Console::CONSOLE_CURSOR_STRING = "_";
 Console::Console(const Rectangle& rect) :
   Widget(rect),
   animateConsole(0),
-  consoleHeight(0),
+  consoleHeight(CONSOLE_HEIGHT),
   console_messages(std::list<std::string>()),
   screen_messages(std::list<screenMessage>())
 { }
@@ -118,12 +118,12 @@ void Console::renderConsoleMessages(DrawDevice *ddevice) {
   // Render console panel
   int consoleOffset = CONSOLE_HEIGHT - consoleHeight;
   // Make panel slightly transparent
-  RectangleRenderer rrenderer(myRectangle,Color(0.0f,0.0f,1.0f,0.85f));
+  RectangleRenderer rrenderer(myRectangle,Color(0.0f,0.0f,100.0f,8.5f));
   rrenderer.render(ddevice);
 
   dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
   assert(font);
-  FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(1.0f,1.0f,0,1.0f), Rectangle(0,0,0,0));
+  FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(255.0f,255.0f,0,255.0f), myRectangle);
 
   // Render console messages
   int font_height = font->getHeight();

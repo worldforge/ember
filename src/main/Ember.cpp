@@ -6,6 +6,7 @@
 #include <services/gui/Panel.h>
 #include <services/gui/Label.h>
 #include <services/gui/TextBox.h>
+#include <services/gui/Console.h>
 #include <framework/Exception.h>
 //#include <SDL/SDL_keysym.h>
 #include <iostream>
@@ -37,6 +38,8 @@ int main(int argc, char **argv)
             dime::ImageService::getInstance()->addPath("./bin/");
             dime::ImageService::getInstance()->addPath("../../bin/");
 
+	    dime::Console myTestConsole(dime::Rectangle(300,120,300,100));
+
 	    dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 	    dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(10,40,100,35));
 
@@ -59,6 +62,7 @@ int main(int argc, char **argv)
             dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestPanel);
 	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
 	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
+	    dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestConsole);
           
             myApp->mainLoop();
         }
