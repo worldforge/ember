@@ -1,3 +1,10 @@
+2003-05-09 James Turner <james at worldforge dot org>
+    * Overhaul configure.ac to be totally pkg-config
+    based, to work with the current stable release of all
+	the WorldForge libs.
+	* Remove all the copied AM_PATH_xxxx macros from
+	acinlude.m4, since they are no longer necessary.
+
 2003-05-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* Cal3DConverter: converts cal3d meshes to ogre meshes,
 	without material, textures or animations yet. Does the 

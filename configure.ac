@@ -43,7 +43,7 @@ AM_PATH_SDL(1.2.0, ,
 )
 
 AC_CHECK_LIB(SDL_image, IMG_Load, , [
-    AC_MSG_ERROR(libSDL_image not found, please install it.  It can be found at www.libsdl.org under "libraries")
+    AC_MSG_ERROR([libSDL_image not found])
 ])
 
 CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
@@ -91,25 +91,6 @@ AC_MSG_RESULT([
 # Check for the Boost shared_ptr.hpp shared pointer header
 AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
 
-
-# Check for SigC++
-SIGC_VERSION=1.0.4
-PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2.1,
-     [
-         CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
-         LDFLAGS="$LDFLAGS $SIGC_LIBS"
-     ],
-     [
-        AM_PATH_SIGC($SIGC_VERSION,[
-                CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
-                LDFLAGS="$LDFLAGS $SIGC_LIBS"
-                ],
-                AC_MSG_ERROR(Couldn't find sigc++ or insufficient version found. Please goto http://sourceforge.net/projects/libsigc/ and get at least version $SIGC_VERSION)
-        )
-     AC_MSG_WARN(Please note the we will drop support for this version of SigC++ eventually)
-     ])
-
-
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
 OGRE_VERSION=0.10.0
@@ -123,54 +104,17 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.10.0,
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://ogre.sf.net to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
 
-# Check for Atlas
-AM_PATH_ATLAS(0.4.5 ,[
-    CXXFLAGS="$CXXFLAGS $ATLAS_CFLAGS"
-    LDFLAGS="$LDFLAGS $ATLAS_LIBS"
-    ],
-AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
-)
-
-
-
-# Check for wfmath
-WFMATH_VERSION=0.2.10
-PKG_CHECK_MODULES(WFMATH, wfmath-0.2 >= 0.2.10,
+# Check for the WorldForge libs
+PKG_CHECK_MODULES(WF, wfmath-0.2 >= 0.2.10 \
+ eris-1.0 \
+ atlascpp-0.4 \
+ varconf-1.0,
 	[
-		CXXFLAGS="$CXXFLAGS $WFMATH_CFLAGS"
-		LDFLAGS="$LDFLAGS $WFMATH_LIBS"
+		CPPFLAGS="$CPPFLAGS $WF_CFLAGS"
+		LDFLAGS="$LDFLAGS $WF_LIBS"
 	],
-	[
-		AM_PATH_WFMATH(0.2.10 ,[
-			CXXFLAGS="$CXXFLAGS $WFMATH_CFLAGS"
-			LDFLAGS="$LDFLAGS $WFMATH_LIBS"
-		],
-		AC_MSG_ERROR(Couldn't find WFmath [or tests failed]. Please goto ftp://ftp.worldforge.org or cvs for latest wfmath))
-	])
-
-
-# Check for Eris
-AM_PATH_ERIS(0.9.7 ,[
-    CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
-    LDFLAGS="$LDFLAGS $ERIS_LIBS"
-    ],
-AC_MSG_ERROR(Couldn't find Eris [or tests failed])
+ AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
 )
-
-# Check for Varconf
-VARCONF_VERSION=0.5.2
-PKG_CHECK_MODULES(VARCONF, varconf-0.5 >= 0.5.2,
-	[
-		CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
-		LDFLAGS="$LDFLAGS $VARCONF_LIBS"
-	],
-	[
-		AM_PATH_VARCONF(0.5.2 ,[
-			CXXFLAGS="$CXXFLAGS $VARCONF_CFLAGS"
-			LDFLAGS="$LDFLAGS $VARCONF_LIBS"
-		],
-		AC_MSG_ERROR(Couldn't find Varconf [or tests failed]. Please goto ftp://ftp.worldforge.org or cvs for latest varconf))
-	])
 
 # Check for the FreeType 2 library
 #
