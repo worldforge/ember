@@ -18,7 +18,7 @@ int TextBox::draw(DrawDevice *target)
 }
 
 bool TextBox::keyPress( KeyPressEvent *event)
- { 
+{
     if (event->getState() == KeyPressEvent::PRESSED)
         {
             int i = 0;
@@ -30,16 +30,25 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      case SDLK_BACKSPACE:
                 {
 		  unsigned int len = myText.length();
-		  assert(len<=myCaretPos);
+		  assert(len>=myCaretPos);
 
                     if((len > 0)&&(myCaretPos>0))
                         {
                             myText.erase(myCaretPos-1,1);
                             myCaretPos--;
                         }
-                    
                 }
 		break;
+	      case SDLK_DELETE:
+		{
+		  unsigned int len = myText.length();
+		  assert(len>=myCaretPos);
+
+                    if((len > 0)&&(myCaretPos<len))
+                        {
+                            myText.erase(myCaretPos,1);
+                        }
+		}
 	      case SDLK_RETURN:
 	      {
 		// TODO: Accept input and either call default widget pressed
@@ -54,13 +63,13 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      case SDLK_LEFT:
 	      {
 		// Move caret left
-		myCaretPos--;
+		if (myCaretPos != 0)
+		  myCaretPos--;
 	      }
 	      break;
 	      case SDLK_RIGHT:
 	      {
 		// Move caret right
-        // FIXME: Don't pass the end of line if we do tack a space onto it
 		if (myCaretPos!=myText.length())
 		  myCaretPos++;
 	      }
@@ -74,8 +83,6 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      case SDLK_END:
 	      {
 		// Move caret to end
-		// TODO: Verify if I got this right or if it should
-		//       be length()-1
 		myCaretPos = myText.length();
 	      }
 	      break;
