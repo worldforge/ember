@@ -10,8 +10,8 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.15  2002-08-16 22:38:52  xmp
- *      Revert something that snuck in
+ *      Revision 1.16  2002-08-16 23:17:25  xmp
+ *      Credits to R Steinke for this round function for use where a system's libc lacks it.
  *
  *      Revision 1.14  2002/08/16 22:37:12  xmp
  *      Script to run dime from correct dir
@@ -72,6 +72,7 @@
 
 #include "RectangleRenderer.h"
 #include <math.h>
+inline int dimeroundf(float x) {return x + (x > 0) ? 0.5 : -0.5;}
 
 
 /**
@@ -131,11 +132,11 @@ dime::RectangleRenderer::RectangleRenderer(const Rectangle &rect,
 		SDL_Rect smallRect;
 		for (int y=0;y < src.h;y++)
 		{
-		    yCheck = (int)roundf( yProportion * (float)y );
+		    yCheck = dimeroundf( yProportion * (float)y );
 		    lastXCheck = 0;
 		    for (int x=0; x < src.w; x++)
 		    {
-			xCheck = (int)roundf( xProportion * (float)x );
+			xCheck = dimeroundf( xProportion * (float)x );
 			color = getpixel(mySurface, x, y);
 			if ((yCheck - lastYCheck == 1) && (xCheck 
 				    - lastXCheck == 1))
