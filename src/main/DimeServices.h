@@ -201,6 +201,7 @@ class DimeServices
     {
         myLoggingService = new dime::LoggingService();
 		myInputService	 = new dime::InputService();
+		myGuiService	 = new dime::GuiService();
     }
 
 
