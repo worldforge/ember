@@ -1,4 +1,7 @@
 2002-12-16 M Pollard <circlemaster@blueyonder.co.uk>
+	* EventGenerator.cpp/h: Forgot to null out myFocusedWidget oops!
+
+2002-12-16 M Pollard <circlemaster@blueyonder.co.uk>
 	* Converted SigC::Object to virtual SigC::Object.
 
 2002-12-15 M Pollard <circlemaster@blueyonder.co.uk>

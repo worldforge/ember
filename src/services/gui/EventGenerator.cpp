@@ -43,6 +43,7 @@ dime::EventGenerator::EventGenerator(Widget *rootWidget)
   myPointedWidget = NULL;
   myMouseCaptureWidget = NULL;
   myKeyboardCaptureWidget= NULL;
+  myFocusedWidget = NULL:
 }
 
 //---------------------------------------------------------------------------------------------------
