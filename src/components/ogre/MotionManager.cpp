@@ -92,7 +92,7 @@ bool MotionManager::frameStarted(const Ogre::FrameEvent& event)
 	doMotionUpdate(event.timeSinceLastFrame);
 	doAnimationUpdate(event.timeSinceLastFrame);
 	if (mTerrainGenerator->mGround) {
-		mTerrainGenerator->mGround->update(DimeOgre::getSingleton().getSceneManager()->getCamera("AvatarCamera"));
+		//mTerrainGenerator->mGround->update(DimeOgre::getSingleton().getSceneManager()->getCamera("AvatarCamera"));
 	}
 	return true;
 }

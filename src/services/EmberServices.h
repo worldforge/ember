@@ -27,7 +27,7 @@ namespace dime {
   class LoggingService;
   class ConfigService;
   class InputService;
-  class GuiService;
+  //class GuiService;
   class MetaserverService;
   class ServerService;
   class SoundService;
@@ -96,7 +96,7 @@ class DimeServices
     /**
      * The instance of the GuiService
      */
-    dime::GuiService *myGuiService;
+    //dime::GuiService *myGuiService;
 
     /**
      * The instance of the MetaserverService
@@ -171,7 +171,7 @@ class DimeServices
     /**
      * Returns an instance of the GuiService
      */
-    dime::GuiService *getGuiService();
+    //dime::GuiService *getGuiService();
 
     /**
      * Returns an instance of the MetaserverService

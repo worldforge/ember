@@ -103,7 +103,7 @@ AvatarDimeEntity* DimeEntityFactory::createAvatarEntity(const Atlas::Objects::En
 	
 	//rotate node to fit with WF space
 	//perhaps this is something to put in the model spec instead?
-	scaleNode->rotate(Ogre::Vector3::UNIT_Y,90);
+	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	
 	model->createFromXML("modeldefinitions/settler.modeldef.xml");
 	
@@ -185,7 +185,7 @@ DimePhysicalEntity* DimeEntityFactory::createPhysicalEntity(const Atlas::Objects
 	
 	//rotate node to fit with WF space
 	//perhaps this is something to put in the model spec instead?
-	scaleNode->rotate(Ogre::Vector3::UNIT_Y,90);
+	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 
 	scaleNode->attachObject(model);
 

@@ -95,7 +95,7 @@ Model* DimePhysicalEntity::getModel() const
 
 void DimePhysicalEntity::scaleNode() {
 	if (mModel->getRotation()) {
-		mScaleNode->rotate(Ogre::Vector3::UNIT_Y,mModel->getRotation());
+		mScaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)mModel->getRotation());
 	}
 	if (mModel->getScale()) {
 		if (mModel->getScale() != 1) {

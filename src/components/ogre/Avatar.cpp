@@ -117,7 +117,7 @@ void Avatar::createAvatar()
 	mAvatarModel = model;
 	
 	mAvatarModelNode->attachObject(mAvatarModel);
-	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,90);
+	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	//mAvatarModelNode->showBoundingBox(true);
 
 	createAnimations();
@@ -271,13 +271,13 @@ void Avatar::attemptRotate(AvatarControllerMovement movement)
 	//if we're moving we must sync the rotation with messages sent to the server
 	if (!movement.isMoving && fabs(getAvatarCamera()->getYaw()) > mThresholdDegreesOfYawForAvatarRotation) {
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
-		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
+		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getAvatarCamera()->getYaw());
 		getAvatarCamera()->yaw(-getAvatarCamera()->getYaw());
 //		mAccumulatedHorizontalRotation = 0;
 	} else if (isOkayToSendRotationMovementChangeToServer()) {
 		// rotate the Avatar Node only in X position (no vertical rotation)
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
-		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
+		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getAvatarCamera()->getYaw());
 		getAvatarCamera()->yaw(-getAvatarCamera()->getYaw());
 
 //		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);

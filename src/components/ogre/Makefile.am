@@ -3,11 +3,8 @@ bin_PROGRAMS = DimeOgre
 
 DimeOgre_LDADD = \
 $(top_builddir)/src/services/libServices.a \
-$(top_builddir)/src/services/gui/libGuiService.a \
-$(top_builddir)/src/services/gui/widget/libGuiServiceWidget.a \
 $(top_builddir)/src/services/config/libConfigService.a \
 $(top_builddir)/src/services/input/libInputService.a \
-$(top_builddir)/src/services/platform/libPlatformService.a \
 $(top_builddir)/src/services/image/libImageService.a \
 $(top_builddir)/src/services/metaserver/libMetaserverService.a \
 $(top_builddir)/src/services/font/libFontService.a \

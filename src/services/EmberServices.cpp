@@ -24,7 +24,7 @@
 #include "logging/LoggingService.h"
 #include "config/ConfigService.h"
 #include "input/InputService.h"
-#include "gui/GuiService.h"
+//#include "gui/GuiService.h"
 #include "sound/SoundService.h"
 #include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
@@ -40,7 +40,7 @@ DimeServices* DimeServices::theInstance = NULL;
   {
     // TODO: Free any allocated resources here.
     delete myConfigService;
-    delete myGuiService;
+    //delete myGuiService;
     delete myMetaserverService;
     delete myServerService;
   }
@@ -80,7 +80,7 @@ DimeServices* DimeServices::theInstance = NULL;
   {
     return dime::InputService::getInstance();
   }
-
+/*
   GuiService* DimeServices::getGuiService()
   {
     if (myGuiService == NULL)
@@ -88,7 +88,7 @@ DimeServices* DimeServices::theInstance = NULL;
     
     return myGuiService;
   }
-
+*/
   MetaserverService* DimeServices::getMetaserverService()
   {
     if (myMetaserverService == NULL)
@@ -113,7 +113,7 @@ DimeServices* DimeServices::theInstance = NULL;
   DimeServices::DimeServices()
   {
     myConfigService = NULL;
-    myGuiService = NULL;
+    //myGuiService = NULL;
     myMetaserverService = NULL;
     myServerService = NULL;
     mySoundService = NULL;

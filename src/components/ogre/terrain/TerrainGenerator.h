@@ -103,7 +103,7 @@ public:
 
 
 	GroundCover* mGround;
-	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
+	//void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
 
 protected:
 

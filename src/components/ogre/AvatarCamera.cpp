@@ -63,7 +63,7 @@ void AvatarCamera::createNodesAndCamera()
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(WF2OGRE_VECTOR3(0,2,0));
 	//rotate to sync with WF world
-    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,180);
+    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 
 	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
 	mAvatarCameraPitchNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
@@ -101,12 +101,12 @@ void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 void AvatarCamera::pitch(Ogre::Real degrees)
 {
 	degreePitch += degrees;
-	mAvatarCameraPitchNode->pitch(degrees);
+	mAvatarCameraPitchNode->pitch((Ogre::Degree)degrees);
 }
 void AvatarCamera::yaw(Ogre::Real degrees)
 {
 	degreeYaw += degrees;
-	mAvatarCameraRootNode->yaw(degrees);
+	mAvatarCameraRootNode->yaw((Ogre::Degree)degrees);
 	
 }
 

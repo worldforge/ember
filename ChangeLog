@@ -1,3 +1,7 @@
+2004-10-04 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* Fixed many small details that prevented Ember
+	to build and run flawlessly.
+
 2004-08-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* /src/services/server/OOGChat.(h|cpp):
 	Changed OOG send msg command from "say" to "talk", "say" will be
