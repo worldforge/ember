@@ -31,7 +31,7 @@ class Avatar;
 class Model;
 class PersonEmberEntity;
 
-/*
+/**
  * This is the main player avatar. We want this one to behave a little different
  * than the other game entities, thus it has it's own subclass.
  * 
@@ -45,13 +45,13 @@ public:
 	
 	
 	
-	/* 
+	/**
 	 * used by the main application to set the EmberOgre::Avatar connected to this instance 
 	 */
 	void setAvatar(Avatar* avatar) {mAvatar = avatar;}
 	Avatar* getAvatar() {return mAvatar;}
 	
-	/*
+	/**
 	 * returns the Ogre::SceneNode which represents the avatar
 	 */
 	Ogre::SceneNode* getAvatarSceneNode();
