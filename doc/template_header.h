@@ -29,6 +29,10 @@
 //
 // - Always return a value at the end of non-void functions.
 //
+// - To get a very similar style use the indent program with these options:
+//   indent -i4 -nbad -nbap -npsl --no-tabs -bli0 <sourcefile>
+//  [if you find better options then tell me. ]
+//
 //---------------------------------------------------------------------------------------------------
 // MSVC coding needs
 //
