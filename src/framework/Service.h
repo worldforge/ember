@@ -56,7 +56,7 @@ class Service
      * <li> CRITICAL    - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.  </li>
      * </ul>
      *
-     * (The difference between ERROR and CRITICAL is basically that Errors
+     * (The difference between FAILURE and CRITICAL is basically that Errors
      * mean that the rest of the systm may still work fine, while critical means
      * that the whole program is likely to be unstable.)
      */
@@ -65,7 +65,7 @@ class Service
 		OK       = 0,
 		NOTE     = 1,
 		WARNING  = 2,
-		ERROR    = 3,
+		FAILURE  = 3,
 		CRITICAL = 4
 	};
 

@@ -128,7 +128,7 @@ class LoggingService: public Service
 	{
 		INFO		= 0,
 		WARNING		= 1,
-		ERROR		= 2,
+		FAILURE		= 2,
 		CRITICAL	= 3
 	};
 
@@ -219,7 +219,7 @@ class LoggingService: public Service
 			fprintf(myFile, "[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
 				ctm->tm_year, ctm->tm_mon, ctm->tm_mday, ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
 				(importance == CRITICAL) ?  "CRITICAL" : 
-					((importance == ERROR) ?  "ERROR" : 
+					((importance == FAILURE) ?  "FAILURE" : 
 						((importance == WARNING) ? "WARNING" : "INFO")),
 				file.c_str(), line, message.c_str());
 		}

@@ -11,7 +11,7 @@ void dime::GuiService::refresh()
         }
 	else
         {
-            dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::ERROR, "Unable to refresh Gui as no draw target has been specified");
+            dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, "Unable to refresh Gui as no draw target has been specified");
 	}
 
     
