@@ -1,3 +1,12 @@
+2004-01-26 Al Riddoch <alriddoch@zepler.org>
+
+	* src/services/server/ServerService.cpp,
+	  src/main/Dime.cpp: Fixes to build with the latest updates
+	  to Atlas-C++ and Eris.
+
+	* src/components/ogre/Console.cpp: Include fixes to build
+	  with the latest Ogre.
+
 2004-01-20 Ron Steinke <rsteinke@w-link.net>
 	* configure.ac: Add $SDL_LIBS as the 'additional libs' argument
 	  of AC_CHECK_LIB for SDL_image. This will hopefully allow the

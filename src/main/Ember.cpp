@@ -20,7 +20,7 @@
 #include "config.h"
 #endif
 
-#include <Eris/Types.h>
+#include <Eris/Exceptions.h>
 
 #include "test/TestServices.h"
 #include "services/DimeServices.h"

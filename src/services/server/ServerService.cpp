@@ -27,6 +27,7 @@
 #include <Eris/Person.h>
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
+#include <Eris/Exceptions.h>
 
 #include <Atlas/Objects/Entity/GameEntity.h>
 #include <Atlas/Objects/Operation/Move.h>
@@ -334,7 +335,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
       if (myPlayer)
       {
 		fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
-		Atlas::Objects::Entity::GameEntity character(Atlas::Objects::Entity::GameEntity::Instantiate());
+		Atlas::Objects::Entity::GameEntity character;
 		character.setParents(Atlas::Message::Element::ListType(1,"settler"));	//TODO: settler shouldn't be fixed
 		character.setName("foobarito");
 		character.setAttr("description", "a person");
@@ -369,7 +370,6 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		Atlas::Objects::Operation::Touch touch;
 		Atlas::Message::Element::MapType opargs;
 
-		touch = Atlas::Objects::Operation::Touch::Instantiate();
 		opargs["id"] = args;
 		touch.setFrom(myAvatar->getID());
 		touch.setArgs(Atlas::Message::Element::ListType(1, opargs));
@@ -386,8 +386,6 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &)
 		Atlas::Objects::Operation::Move move;
 		Atlas::Message::Element::MapType opargs;
 		Atlas::Message::Element::ListType pos;
-
-		move = Atlas::Objects::Operation::Move::Instantiate();
 
 		opargs["pos"] = pos;
 		opargs["loc"] = myAvatar->getEntity()->getContainer()->getID();

@@ -9,6 +9,9 @@
 #include <OgrePanelGuiElement.h>
 #include <OgreTextAreaGuiElement.h>
 #include <OgreNoMemoryMacros.h>
+#include <OgreFrameListener.h>
+#include <OgreRoot.h>
+#include <OgreRenderWindow.h>
 #include <stdlib.h>
 
 #include "Console.h"
