@@ -22,57 +22,39 @@
 #define DIMEEVENTPROCESSOR_H
 
 #include "EmberOgrePrerequisites.h"
-#include <OgreEventProcessor.h>
-#include <OgreEventQueue.h>
 
-#include <OgreEventListeners.h> 
 /*
  *  @author Erik Hjortsberg
  * 
- * This class is basically a subclass of Ogre::EventProcessor with the addition 
- * of allowing the application to grab or release the mouse, something which
- * is not possible with the current EventProcessor class (as of Ogre 0.14.
- * By default the mouse is not grabbed until toggleMouse() is called.
  * 
  */
 namespace EmberOgre {
 
-class EmberEventProcessor : public Ogre::EventProcessor, virtual Ogre::MouseListener {
+class EmberEventProcessor {
 public:
 
 	EmberEventProcessor();
-	void initialise(Ogre::RenderWindow* ren);
+// 	void initialise(Ogre::RenderWindow* ren);
+// 
+// 	/*
+// 	 * call this method when you want to toggle the grabbing or release of the mouse
+// 	 */
+// 	void toggleMouse();
+// 	
+// 
+// 	/*
+// 	 * Returns true if the application has grabbed the mouse.
+// 	 */
+// 	bool isMouseUsed();
+/*	
 
-	/*
-	 * call this method when you want to toggle the grabbing or release of the mouse
-	 */
-	void toggleMouse();
-	
-	/*
-	 * takes a screenshot and writes it to a file
-	 * returns the name of the screenshot
-	 */
-/*	std::string takeScreenshot(); */
-	
-	/*
-	 * Returns true if the application has grabbed the mouse.
-	 */
-	bool isMouseUsed();
-	
-	virtual void mousePressed (Ogre::MouseEvent *e);
-	
-	virtual void 	mouseReleased (Ogre::MouseEvent *e) {}
-	virtual void 	mouseClicked (Ogre::MouseEvent *e) {}
-	virtual void 	mouseEntered (Ogre::MouseEvent *e) {}
-	virtual void 	mouseExited (Ogre::MouseEvent *e) {}
 	
 protected:
 
-	void createInputReader(bool useMouse);
 private:
 	bool mUseMouse;
 	Ogre::RenderWindow* mWin;
-//	virtual ~EmberEventProcessor();
+//	virtual ~EmberEventProcessor();*/
 };
 
 }

@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.68  2005-01-07 02:42:48  erik
+ *      Revision 1.69  2005-01-22 02:01:26  erik
+ *      2005-01-22  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Rewrote the input system. I've completely removed Ogre's input system and replaced it.
+ *      	Ember now only depends on SDL for input.
+ *      	This fixes all of the mouse issues as well as the issues with international characters.
+ *
+ *      Revision 1.68  2005/01/07 02:42:48  erik
  *      2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* check for, and if not found, copy config files from share to user's home dir
@@ -1053,7 +1060,7 @@ void EmberOgre::createScene(void)
 	//set fog, do this before calling TerrainSceneManager::setViewGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	Ogre::ColourValue fadeColour(1,1,1);
-	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 64, 256);
+	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, 192, 256);
 	
 	
 	

@@ -38,6 +38,9 @@
 #include <sigc++/object_slot.h>
 #endif
 
+#include "GUIManager.h"
+#include "input/Input.h"
+
 namespace EmberOgre {
 
 class Avatar;
@@ -46,7 +49,7 @@ class GUIManager;
 class EmberEntity;
 
 class AvatarCamera 
-:virtual public SigC::Object , Ogre::MouseMotionListener
+:virtual public SigC::Object 
 //: public Ogre::FrameListener 
 {
 public:
@@ -113,10 +116,11 @@ public:
 	
 	SigC::Signal1<void, Ogre::Camera*> MovedCamera;
 	
-	void updateFromMouseMovement(const Ogre::FrameEvent & event, InputManager* inputManager);
-	
-	void mouseMoved (Ogre::MouseEvent *e);
-	void mouseDragged (Ogre::MouseEvent *e) {};
+	void mouseMoved(const MouseMotion& motion);
+// 	int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement);
+
+// 	void mouseMoved (Ogre::MouseEvent *e);
+// 	void mouseDragged (Ogre::MouseEvent *e) {};
 
 	EmberEntity* pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
 

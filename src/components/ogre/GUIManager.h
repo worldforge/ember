@@ -56,15 +56,17 @@ class Widget;
 class ConsoleWidget;
 class MousePicker;
 class EmberEventProcessor;
+class Input;
+
 
 /*
  * This class will be responsible for all the GUI related things
  */
 class GUIManager : 
 public Ember::Singleton<GUIManager>, 
-Ogre::MouseMotionListener, 
+/*Ogre::MouseMotionListener, 
 Ogre::MouseListener,
-Ogre::KeyListener,
+Ogre::KeyListener,*/
 Ogre::FrameListener,
 virtual public SigC::Object
 {
@@ -86,38 +88,38 @@ public:
 
 
 
-	virtual void 	mouseMoved (Ogre::MouseEvent *e);
-	virtual void 	mouseDragged (Ogre::MouseEvent *e);
-	virtual void 	keyPressed (Ogre::KeyEvent *e);
-	virtual void 	keyReleased (Ogre::KeyEvent *e);
-	virtual void 	mousePressed (Ogre::MouseEvent *e);
-	virtual void 	mouseReleased (Ogre::MouseEvent *e);
-
-	// do-nothing events
-	virtual void 	keyClicked (Ogre::KeyEvent *e) {}
-	virtual void 	mouseClicked (Ogre::MouseEvent *e) {}
-	virtual void 	mouseEntered (Ogre::MouseEvent *e) {}
-	virtual void 	mouseExited (Ogre::MouseEvent *e) {}
+// 	virtual void 	mouseMoved (Ogre::MouseEvent *e);
+// 	virtual void 	mouseDragged (Ogre::MouseEvent *e);
+// 	virtual void 	keyPressed (Ogre::KeyEvent *e);
+// 	virtual void 	keyReleased (Ogre::KeyEvent *e);
+// 	virtual void 	mousePressed (Ogre::MouseEvent *e);
+// 	virtual void 	mouseReleased (Ogre::MouseEvent *e);
+// 
+// 	// do-nothing events
+// 	virtual void 	keyClicked (Ogre::KeyEvent *e) {}
+// 	virtual void 	mouseClicked (Ogre::MouseEvent *e) {}
+// 	virtual void 	mouseEntered (Ogre::MouseEvent *e) {}
+// 	virtual void 	mouseExited (Ogre::MouseEvent *e) {}
 
 
 	bool frameStarted(const Ogre::FrameEvent& evt);
 
 	CEGUI::Window* getMainSheet();
 	
-	EmberEventProcessor* getEventProcessor() { return mEventProcessor; }
+	//EmberEventProcessor* getEventProcessor() { return mEventProcessor; }
 	
 	void initialize();
 	
-	void setKeyListener(Ogre::KeyListener* listener) {mKeyListener; }
-	void setMouseListener(Ogre::MouseListener* listener) {mMouseListener = listener; }
-	void setMouseMotionListener(Ogre::MouseMotionListener* listener) {mMouseMotionListener = listener;}
+/*	void setKeyListener(Ogre::KeyListener* listener) {mKeyListener; }
+	void setMouseListener(Ogre::MouseListener* listener) {mMouseListener = listener; }*/
 	
 	void setDebugText(std::string text);
 
-	bool isInGUIMode() { return mInGUIMode; }
-	bool isInMovementKeysMode();
+	const bool isInGUIMode() const;
+	const bool isInMovementKeysMode() const;
 	
 	inline MousePicker* getMousePicker() { return mMousePicker; }
+	Input* getInput() const;
 protected:
 
 
@@ -129,16 +131,20 @@ protected:
 	
 	ConsoleWidget* mConsoleWidget;
 
-	EmberEventProcessor* mEventProcessor;
+	//EmberEventProcessor* mEventProcessor;
+	Input *mInput;
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreRenderer* mGuiRenderer;
 
 	std::set<Widget*> mWidgets;
+	
 
+// 	//polls the mouse for new events and movements
+// 	void pollMouse(const Ogre::FrameEvent& evt);
 
-
-	CEGUI::MouseButton convertOgreButtonToCegui(int ogre_button_id);
+	
+/*	CEGUI::MouseButton convertOgreButtonToCegui(int ogre_button_id);*/
 	void updateStats(void);
 
 
@@ -146,15 +152,12 @@ protected:
 //	float	mUpdateFreq;
 
 		
-	bool mInGUIMode;
 	
-	//these will recieve input when we're not in GUI mode
-	Ogre::MouseMotionListener* mMouseMotionListener;
-	Ogre::MouseListener* mMouseListener;
+/*	Ogre::MouseListener* mMouseListener;*/
 	Ogre::KeyListener* mKeyListener;
 	
-	Ogre::MouseEvent* mMouseReleasedOgreEvent;
-	Ogre::MouseEvent* mMousePressedOgreEvent;
+	//Ogre::MouseEvent* mMouseReleasedOgreEvent;
+	//Ogre::MouseEvent* mMousePressedOgreEvent;
 	
 	MousePicker* mMousePicker;
 

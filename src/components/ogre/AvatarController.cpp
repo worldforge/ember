@@ -34,7 +34,7 @@
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
-#include "EmberEventProcessor.h"
+#include "input/Input.h"
 
 using namespace Ogre;
 namespace EmberOgre {
@@ -68,10 +68,10 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
 	
-	mKeyCodeForForwardMovement = Ogre::KC_W;
-	mKeyCodeForBackwardsMovement = Ogre::KC_S;
-	mKeyCodeForLeftMovement = Ogre::KC_A;
-	mKeyCodeForRightMovement = Ogre::KC_D;
+	mKeyCodeForForwardMovement = SDLK_w;
+	mKeyCodeForBackwardsMovement = SDLK_s;
+	mKeyCodeForLeftMovement = SDLK_a;
+	mKeyCodeForRightMovement = SDLK_d;
 
 }
 AvatarController::~AvatarController()
@@ -95,95 +95,12 @@ void AvatarController::setAvatar(Avatar* avatar)
 
 
 
-void AvatarController::frameStarted(const FrameEvent & event, InputReader* inputReader) {
-		
-/*
- * 	if (inputReader->isKeyDown(KC_F7)) {
-		EmberEntity* EmberEntity = doMousePicking(event, inputReader);
-		if ( EmberEntity == NULL ) {    
-	     	// Nada! 
-			Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
-		} else { 
-			std::string aString;
-			aString = "OgreID: " + EmberEntity->getSceneNode()->getName();
-			aString += " ErisID: " + EmberEntity->getID();
-			aString += " ErisName: " + EmberEntity->getName();
-			Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
-		} 	
-	}
-	
-	*/
-	//is this the correct order to check things?
-/*	if (mInputManager->isMouseUsed()) {
-		checkMouseClicks(event, inputReader);
-		//mAvatarCamera->updateFromMouseMovement(event, mInputManager);
-		
-	}
-	*/
-//	checkMovementKeys(event, inputReader);
-	//movementForFrame.timeSlice = event.timeSinceLastFrame;
-/*
-	if (movementForFrame.isMoving) {
-		std::string aString;
-		Ogre::Vector3 pos = mAvatar->mAvatarNode->getPosition();
-		aString += "X: " + StringConverter::toString((long)OGRE2WF(pos.x));
-		aString += " Y: " + StringConverter::toString((long)OGRE2WF(pos.y));
-		aString += " Z: " + StringConverter::toString((long)OGRE2WF(pos.z));
-	
-		Root::getSingleton().getAutoCreatedWindow()->setDebugText(aString);
-	}
-
-	
-	//mAvatar->updateFrame(movementForFrame);
-	
-	// check if a second has passed, then check for entity equailty, then make Avatar update the server
-	// or something!
-	mTimeToUpdate = mTimeToUpdate - event.timeSinceLastFrame;
-	if(mTimeToUpdate<=0) {
-		//std::cout << "	UPDATING INTO SERVER" << std::endl;
-		mTimeToUpdate = mUpdateInterval;
-	}
-
-*/
-	
-}
 
 
 
 
 
-void AvatarController::keyPressed (Ogre::KeyEvent *e)
-{
-/*	if (mKeyCodeForForwardMovement)
-		mIsForwardMovement = true;
-		
-	if (mKeyCodeForBackwardsMovement)
-		mIsBackwardsMovement = true;
-		
-	if (mKeyCodeForLeftMovement)
-		mIsLeftMovement = true;
-		
-	if (mKeyCodeForRightMovement)
-		mIsRightMovement = true;
-	*/
-}
 
-
-void AvatarController::keyReleased (Ogre::KeyEvent *e)
-{
-// 	if (mKeyCodeForForwardMovement)
-// 		mIsForwardMovement = false;
-// 		
-// 	if (mKeyCodeForBackwardsMovement)
-// 		mIsBackwardsMovement = false;
-// 		
-// 	if (mKeyCodeForLeftMovement)
-// 		mIsLeftMovement = false;
-// 		
-// 	if (mKeyCodeForRightMovement)
-// 		mIsRightMovement = false;
-
-}
 
 
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
@@ -195,7 +112,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 	movementForFrame.isMoving = false;	
 	
 	if (mGUIManager->isInMovementKeysMode()) {
-		checkMovementKeys(event, mGUIManager->getEventProcessor()->getInputReader());
+		checkMovementKeys(event, mGUIManager->getInput());
 	}	
 	movementForFrame.timeSlice = event.timeSinceLastFrame;
 	
@@ -207,33 +124,33 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 
 
 
-void AvatarController::checkMovementKeys(const FrameEvent & event, InputReader* inputReader)
+void AvatarController::checkMovementKeys(const FrameEvent & event, const Input* input)
 {
 		//Real timePassed = event.timeSinceLastFrame;
-		bool isRunning = inputReader->isKeyDown(KC_LSHIFT);
+		bool isRunning = input->isKeyDown(SDLK_RSHIFT) || input->isKeyDown(SDLK_LSHIFT);
 
 		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
 		bool isMovement = false; 
 
 		// forwards / backwards
-		if(inputReader->isKeyDown(mKeyCodeForForwardMovement))  // W also, and same for the rest
+		if(input->isKeyDown(mKeyCodeForForwardMovement))  // W also, and same for the rest
 		{
 			movement.x = 1; 	//scale this
 			isMovement = true;
 		}
-		else if(inputReader->isKeyDown(mKeyCodeForBackwardsMovement))
+		else if(input->isKeyDown(mKeyCodeForBackwardsMovement))
 		{
 			movement.x = -1;		//scale
 			isMovement = true;
 		}
 
 		// strafe
-		if(inputReader->isKeyDown(mKeyCodeForLeftMovement))
+		if(input->isKeyDown(mKeyCodeForLeftMovement))
 		{
 			movement.z = -1;
 			isMovement = true;
 		}
-		else if(inputReader->isKeyDown(mKeyCodeForRightMovement))
+		else if(input->isKeyDown(mKeyCodeForRightMovement))
 		{
 			movement.z = 1;
 			isMovement = true;

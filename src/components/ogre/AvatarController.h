@@ -25,6 +25,7 @@
 #include <OgreInput.h>
 #include <OgreStringConverter.h>
 
+#include <SDL.h>
 
 
 
@@ -37,6 +38,7 @@ class AvatarCamera;
 class GUIManager;
 
 class InputManager;
+class Input;
 //class InputManager::MouseListener;
 
 struct AvatarControllerMovement
@@ -51,7 +53,7 @@ struct AvatarControllerMovement
 };
 
 class AvatarController 
-: public Ogre::KeyListener, public Ogre::FrameListener
+: public Ogre::FrameListener
 //: public InputManager::MouseListener
 {
 public:
@@ -62,10 +64,9 @@ public:
 	virtual ~AvatarController();
 
 
-	void frameStarted(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
-	
-	
 	bool frameStarted(const Ogre::FrameEvent & event);
+	
+	
 
 	
 
@@ -73,12 +74,7 @@ public:
 	
 	AvatarCamera* getAvatarCamera() const;
 
-	
-	virtual void 	keyPressed (Ogre::KeyEvent *e);
-	virtual void 	keyReleased (Ogre::KeyEvent *e);
-	// do-nothing events
-	virtual void 	keyClicked (Ogre::KeyEvent *e) {}
-	
+		
 
 protected:
 
@@ -87,7 +83,7 @@ protected:
 	GUIManager* mGUIManager;
 
 
-	void checkMovementKeys(const Ogre::FrameEvent & event, Ogre::InputReader* inputReader);
+	void checkMovementKeys(const Ogre::FrameEvent & event, const Input* input);
 
 
 	AvatarCamera* mAvatarCamera;
@@ -104,10 +100,10 @@ protected:
     
     AvatarControllerMovement movementForFrame;
 	
-	Ogre::KeyCode mKeyCodeForForwardMovement;
-	Ogre::KeyCode mKeyCodeForBackwardsMovement;
-	Ogre::KeyCode mKeyCodeForLeftMovement;
-	Ogre::KeyCode mKeyCodeForRightMovement;
+	SDLKey mKeyCodeForForwardMovement;
+	SDLKey mKeyCodeForBackwardsMovement;
+	SDLKey mKeyCodeForLeftMovement;
+	SDLKey mKeyCodeForRightMovement;
 	
 	
 	

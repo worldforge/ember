@@ -29,6 +29,7 @@ dnl AM_PROG_LEX
 AM_MAINTAINER_MODE
 
 
+
 # Check for C libraries:
 AC_LANG([C++])
 AC_REQUIRE_CPP
@@ -50,10 +51,31 @@ AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memset select])
 
+#taken from Sear
+STATIC_LIBSTDCPP=
+STATIC_LIBGCC=
+
+AC_ARG_ENABLE(static_build,
+  [  --enable-static-build	enable static link of some libs [default=no]],
+  [
+    if test "$enableval" = "yes"; then
+      link_static="true"
+      STATIC_LIBSTDCPP=`$CXX -print-file-name=libstdc++.a`
+      STATIC_LIBGCC=`$CXX -print-file-name=libgcc.a`
+    else
+      link_static="false"
+    fi
+  ],[
+    link_static="false"
+  ]
+)
+AM_CONDITIONAL(BUILD_STATIC, test x"$link_static" = xtrue)
+
+
 AC_MSG_RESULT([
 
 		**************************************
-		* Checking for C Libraries
+		* Checking for SDL Libraries
 		**************************************
 
 	])
@@ -72,6 +94,13 @@ AM_PATH_SDL(1.2.0, [
 #WF_CHECK_GL_SINGLE_LIB
 
 # OpenAL check
+AC_MSG_RESULT([
+
+		**************************************
+		* Checking for C Libraries
+		**************************************
+
+	])
 
 AC_LANG_PUSH(C)
 
@@ -155,6 +184,7 @@ AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost),
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
 # Check for OGRE
+#should be 0.15.0, but there's a bug in the 0.15.1 release, the OGRE.pc file states that it's 0.15.0
 OGRE_VERSION=0.15.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 	[
@@ -166,7 +196,7 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 	])
 
 # Check for CEGUI
-PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
+PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.1,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
@@ -182,8 +212,8 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.01,
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, eris-1.3 \
- varconf-1.0 mercator-0.2,
+PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.2 \
+ varconf-1.0 = 0.6.1 mercator-0.2,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
@@ -305,6 +335,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
+		 src/components/ogre/input/Makefile
 		 src/components/ogre/EmberSceneManager/Makefile
 		 src/components/ogre/EmberSceneManager/src/Makefile
 		 src/components/ogre/EmberSceneManager/include/Makefile
