@@ -24,7 +24,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.15  2003-11-26 19:03:43  aglanor
+ *      Revision 1.16  2003-11-29 01:25:58  aglanor
+ *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: added AvatarKeyboardListener.(h|cpp)
+ *      	        and restored local avatar movement.
+ *
+ *      Revision 1.15  2003/11/26 19:03:43  aglanor
  *      2003-11-26 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: added Avatar.(h|cpp) to store
  *              the whole scenenode tree for the avatar and to control
@@ -325,6 +330,12 @@ public:
 	Ogre::Entity* mOgreHead;
 	Ogre::SceneNode* mOgreHeadNode;
 	Ogre::Camera* mOgreHeadCamera;
+
+	// TODO: possibly we'd like to do the following in a different way,
+	// perhaps refactoring stuff
+	Avatar* getAvatar() {
+		return &mAvatar;
+	}
 
 protected:
 	Ogre::Root *mRoot;

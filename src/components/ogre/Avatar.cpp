@@ -53,20 +53,24 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	// The avatar itself
 	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mAvatarNode->setPosition(0,0,0);
-	//mAvatarNode->setOrientation(0,0,0,1);
+	//mAvatarNode->setOrientation(0,1,0,0);
 	mAvatarNode->setScale(0.01,0.01,0.01);
 	// TODO: very important! When the scale is set to default (1,1,1)
 	// and a mesh with normal scale is put here (like 2 meters high and things like that)
 	// we'll need to rescale the local space position for the nodes (shown below)
 	// - will be like dividing by 100 or something
+
+	// Model Node and Entity for display
+	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
+	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
 	mAvatarEntity = mSceneMgr->createEntity("AvatarEntity", "robot.mesh");
-	mAvatarNode->attachObject(mAvatarEntity);
+	mAvatarModelNode->attachObject(mAvatarEntity);
 
 	// 1st person, 3rd person and Top camera nodes
 	mAvatar1pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("Avatar1pCameraNode"));
 	mAvatar1pCameraNode->setPosition(0,8500,0);
 	mAvatar3pCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatar1pCameraNode->createChild("Avatar3pCameraNode"));
-	Ogre::Vector3 pos = Ogre::Vector3(-15000,2500,0);
+	Ogre::Vector3 pos = Ogre::Vector3(0,2500,15000);
 	//mAvatar3pCameraNode->setPosition(15000,2500,0);
 	mAvatar3pCameraNode->setPosition(pos);
 	mAvatarTopCameraNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarTopCameraNode"));
@@ -90,7 +94,7 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 	mAvatar3pCamera = mSceneMgr->createCamera("Avatar3pCamera");
 	mAvatar3pCameraNode->attachObject(mAvatar3pCamera);
 	// Look to the Avatar's head
-	mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
+	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
 	mAvatar3pCamera->setNearClipDistance(1);
 
 	// Create the Top camera
@@ -104,6 +108,14 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 Avatar::~Avatar()
 {
 }
+
+
+void Avatar::move(Ogre::Vector3 move)
+{
+	//fprintf(stderr, "TRACE - AVATAR MOVING\n");
+	mAvatarNode->translate(mAvatarNode->getOrientation()*move);
+}
+
 
 Ogre::Camera* Avatar::getAvatar1pCamera()
 {
@@ -119,3 +131,4 @@ Ogre::Camera* Avatar::getAvatarTopCamera()
 {
 	return mAvatarTopCamera;
 }
+

@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.33  2003-11-26 19:03:43  aglanor
+ *      Revision 1.34  2003-11-29 01:25:58  aglanor
+ *      2003-11-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: added AvatarKeyboardListener.(h|cpp)
+ *      	        and restored local avatar movement.
+ *
+ *      Revision 1.33  2003/11/26 19:03:43  aglanor
  *      2003-11-26 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: added Avatar.(h|cpp) to store
  *              the whole scenenode tree for the avatar and to control
@@ -263,6 +268,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "InputManager.h"
 #include "Console.h"
 #include "ConsoleObjectImpl.h"
+#include "Avatar.h"
+#include "AvatarKeyboardListener.h"
 #include "PlayerMouseListener.h"
 #include "EntityListener.h"
 
@@ -377,6 +384,27 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 void DimeOgre::createScene(void)
 {
+/*
+	Ogre::Entity* mDebug_0_0_0 = mOgreHead = mSceneMgr->createEntity("test", "ogrehad.mesh");
+	Ogre::SceneNode* mDebug_0_0_0_Node;
+*/
+	Ogre::Entity* 		mDebug_0_0_1_Enty;
+	Ogre::SceneNode* 	mDebug_0_0_1_Node;
+	Ogre::Entity* 		mDebug_1_0_0_Enty;
+	Ogre::SceneNode* 	mDebug_1_0_0_Node;
+
+	mDebug_0_0_1_Enty = mOgreHead = mSceneMgr->createEntity("Debug_0_0_1", "robot.mesh");
+	mDebug_0_0_1_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mDebug_0_0_1_Node->setPosition(0,0,-5);
+	mDebug_0_0_1_Node->setScale(0.01,0.01,0.01);
+	mDebug_0_0_1_Node->attachObject(mDebug_0_0_1_Enty);
+
+	mDebug_1_0_0_Enty = mOgreHead = mSceneMgr->createEntity("Debug_1_0_0", "robot.mesh");
+	mDebug_1_0_0_Node = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mDebug_1_0_0_Node->setPosition(5,0,0);
+	mDebug_1_0_0_Node->setScale(0.01,0.01,0.01);
+	mDebug_1_0_0_Node->attachObject(mDebug_1_0_0_Enty);
+
   mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   // Create a light
   Ogre::Light* l = mSceneMgr->createLight("MainLight");
@@ -395,11 +423,11 @@ void DimeOgre::createScene(void)
 	// ----------------------------------------
 
 	//create the entity
-	mOgreHead = mSceneMgr->createEntity("test", "robot.mesh");
+	mOgreHead = mSceneMgr->createEntity("test", "ogrehead.mesh");
 
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-	mOgreHeadNode->setPosition(10,0,0);
+	mOgreHeadNode->setPosition(0,0,0);
 	mOgreHeadNode->setScale(0.01,0.01,0.01);
 
 	// attach the node to the entity
@@ -489,6 +517,7 @@ void DimeOgre::createFrameListener(void)
 	InputManager::getSingleton().addMouseListener(&(PlayerMouseListener::getSingleton()));
 	PlayerMouseListener::getSingleton().setCamera(mAvatar.getAvatar1pCamera());
 	EntityListener::getSingleton().setSceneManager(mSceneMgr);
+	AvatarKeyboardListener::getSingleton().setAvatar(&mAvatar);
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
 }

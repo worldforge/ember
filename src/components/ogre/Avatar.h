@@ -39,6 +39,8 @@ class Avatar
 	Ogre::Camera* getAvatar3pCamera(void);
 	Ogre::Camera* getAvatarTopCamera(void);
 
+	void move(Ogre::Vector3 move);
+
 	private:
 
 	Ogre::SceneManager* mSceneMgr;
@@ -50,6 +52,11 @@ class Avatar
 	Ogre::Camera* mAvatar1pCamera;
 	Ogre::Camera* mAvatar3pCamera;
 	Ogre::Camera* mAvatarTopCamera;
+
+	// node for rotating the model for the entity
+	// if it's not looking in the -Z direction (default)
+	// To be removed once we've standarized on models
+	Ogre::SceneNode* mAvatarModelNode;
 
 
 }; //End of class declaration

@@ -43,7 +43,6 @@ InputManager* InputManager::_instance = 0;
 
 InputManager & InputManager::getSingleton(void)
 {
-	fprintf(stderr, "TRACE - INPUT MANAGER - SINGLETON ENTERING\n");
 	if(_instance == 0)
 		_instance = new InputManager;
 	return *_instance;
@@ -51,7 +50,6 @@ InputManager & InputManager::getSingleton(void)
 
 InputManager::InputManager(void)
 {
-	fprintf(stderr, "TRACE - INPUT MANAGER - CONTRUCTOR ENTERING\n");
 	mEventQueue.activateEventQueue(true);
 
 	mInputReader = Ogre::PlatformManager::getSingleton().createInputReader();
@@ -59,7 +57,6 @@ InputManager::InputManager(void)
 	mInputReader->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow(), true, true);
 
 	Ogre::Root::getSingleton().addFrameListener(this);
-	fprintf(stderr, "TRACE - INPUT MANAGER - CONTRUCTOR - ADDED FRAME LISTENER\n");
 
 	int i;
 	for(i=0; i<NUM_KEYS; i++)
@@ -71,8 +68,6 @@ InputManager::InputManager(void)
 	// hack: fallback in case there's no way to exit the app;
 	timer=6000;
 	worldConnected = false; // UGLY HACK
-
-	fprintf(stderr, "TRACE - INPUT MANAGER - CONTRUCTOR DONE\n");
 }
 
 InputManager::~InputManager()
@@ -169,6 +164,9 @@ bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 
 		delete e;
 	}
+
+	// Call to the ACT methods for the unbuffered input
+	AvatarKeyboardListener::getSingleton().act(evt.timeSinceLastFrame);
 
 	return true;
 }

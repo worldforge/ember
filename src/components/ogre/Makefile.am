@@ -18,9 +18,10 @@ $(top_srcdir)/src/services/logging/libLoggingService.a \
 $(top_srcdir)/src/framework/libFramework.a 
 
 
-DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp PlayerMouseListener.cpp \
-		   Avatar.cpp EntityListener.cpp ConsoleObjectImpl.cpp \
-		   MediaDeployer.cpp
+DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
+			Avatar.cpp AvatarKeyboardListener.cpp PlayerMouseListener.cpp \
+			EntityListener.cpp ConsoleObjectImpl.cpp \
+			MediaDeployer.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 
