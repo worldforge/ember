@@ -1,2 +1,3 @@
 INCLUDES = -I$(top_srcdir)/src
-SUBDIRS = main services
+SUBDIRS = services main
+
