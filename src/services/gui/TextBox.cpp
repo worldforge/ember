@@ -30,7 +30,8 @@ bool TextBox::keyPress( KeyPressEvent *event)
                         }
                     else if(myText.length() ==1)
                         {
-                            myText = (Uint16*)"";
+			  //                            myText = (Uint16*)"";
+			  myText.clear();
                         }
                     
                 }

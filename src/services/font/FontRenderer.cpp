@@ -20,8 +20,14 @@ void dime::FontRenderer::updateTextBlended()
     fg.r = (Uint8)myColor.getR();
     fg.g = (Uint8)myColor.getG();
     fg.b = (Uint8)myColor.getB();
-
-	assert(myFont);
+    
+    assert(myFont);
+    
+    /* If nothing to draw then don't */
+    if (myText.empty()) {
+      myTextSurface=NULL;
+      return;
+    }	  
 
     /* Get the dimensions of the text surface */
     if ((myFont->sizeText(myText, &width, NULL)) || !width ) {
