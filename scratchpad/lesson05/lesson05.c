@@ -51,7 +51,7 @@ int resizeWindow( int width, int height )
     ratio = ( GLfloat )width / ( GLfloat )height;
 
     /* Setup our viewport. */
-    glViewport( 0, 0, ( GLsizei )width, ( GLsizei )height );
+    glViewport( 100, 100, ( GLsizei )width-100, ( GLsizei )height-100 );
 
     /* change to the projection matrix and set our viewing volume. */
     glMatrixMode( GL_PROJECTION );
@@ -140,11 +140,18 @@ int drawGLScene( GLvoid )
     glBegin( GL_QUADS);
     glColor3f(1.0f, 1.0f, 1.0f);
     glVertex3f(0.0f,0.0f, -1.0f);
+    glColor3f(0.0f, 1.0f, 0.0f);
     glVertex3f(40.0f, 0.0f, -1.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);
     glVertex3f(40.0f, 40.0f, -1.0f);
+    glColor3f(1.0f, 0.0f, 0.0f);
     glVertex3f(0.0f, 40.0f, -1.0f);
     glEnd();
     
+    glBegin( GL_POINTS);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(50.0f, 50.0f, -1.0);
+    glEnd();
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity( );
     

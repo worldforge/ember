@@ -113,6 +113,23 @@ AM_PATH_CPPUNIT(1.8.0, [
 *** To get CppUnit see http://cppunit.sourceforge.net
 ]))
 
+dnl OpenGL and GLU check
+
+
+AC_CHECK_LIB(GL,
+	     glViewport,
+	     LIBS="$LIBS -lGL",
+	     AC_MSG_ERROR([
+	     Unable to find An OpenGL environment
+	     ])
+	)
+AC_CHECK_LIB(GLU,
+	     gluPerspective,
+	     LIBS="$LIBS -lGLU",
+	     AC_MSG_ERROR([
+	     Unable to find the GLU library
+	     ])
+)
 
 dnl AC_CHECK_LIB(eris,main)
 dnl AC_CHECK_LIB(skstream,main)

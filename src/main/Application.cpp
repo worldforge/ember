@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.27  2002-05-27 00:25:56  nikal
+ *      Revision 1.28  2002-07-02 03:35:18  nikal
+ *      Added OpenGL DrawDevice.  It's not complete.  It needs a blitSurface function implemenation. It compiles, and hasn't been tested, but I don't have the time.  Anyone can feel free to implement it, or test it.  I will as soon as I have time if I can.
+ *
+ *      Revision 1.27  2002/05/27 00:25:56  nikal
  *      Tests are now being run
  *
  *      Revision 1.26  2002/05/25 22:17:54  xmp
@@ -192,7 +195,8 @@ namespace dime
                 return;
             } 
         else 
-            {
+            {    
+                
                 myScreen = SDL_SetVideoMode(myWidth, myHeight, 16, SDL_SWSURFACE);
             }
 
@@ -254,7 +258,7 @@ namespace dime
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-		//Eris::PollDefault::poll();
+	Eris::PollDefault::poll();
 #endif
     }
 

@@ -51,6 +51,12 @@ public:
     * Creates a new DrawDevice using default values.
     */
     DrawDevice(){}
+    DrawDevice(int w, int h)
+        : myDimensions(w, h)
+    {
+    }
+    
+    
     
     /**
     * Virtual destructor
