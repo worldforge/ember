@@ -65,11 +65,8 @@ bool InputManager::frameStarted(const Ogre::FrameEvent & evt)
 	{
 		Ogre::InputEvent* e = mEventQueue.pop();
 
-		fprintf(stderr, "TRACE - EVENT EVENT EVENT EVENT\n");
-
 		if(e->getID() == Ogre::KeyEvent::KE_KEY_PRESSED)
 		{
-			fprintf(stderr, "TRACE - KEY event\n");
 			//fprintf(stderr, ((Ogre::KeyEvent*)e)->getKey());
 			mKeyDown[((Ogre::KeyEvent*)e)->getKey()]=true;
 			std::list<Ogre::KeyListener*>::iterator i;

@@ -30,11 +30,8 @@ using dime::LoggingService;
 	{
 		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - ENTERING\n";
 		mState = CS_CLOSED;
-		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - STATE SET\n";
 		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->setScroll(0, 1);
-		S_LOG_VERBOSE() << "TRACE - CONTRUCTOR - SCROLL SET\n";
 		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->show();
-		S_LOG_VERBOSE() << "TRACE - CONSTRUCTOR - SHOWN\n";
 		int i;
 		for(i=0; i<getNumLines(); i++)
 		{
@@ -104,14 +101,12 @@ using dime::LoggingService;
 
 	void Console::open(void)
 	{
-		S_LOG_VERBOSE() << "TRACE - CONSOLE - CALL TO OPEN METHOD\n";
 		static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->show();
 		mState = CS_OPENING;
 	}
 
 	void Console::close(void)
 	{
-		S_LOG_VERBOSE() << "TRACE - CONSOLE - CALL TO CLOSE METHOD\n";
 		mState = CS_CLOSING;
 	}
 
@@ -119,15 +114,11 @@ using dime::LoggingService;
 	{
 		if(mState == CS_OPENING)
 		{
-			S_LOG_VERBOSE() << "TRACE - CONSOLE - OPENING\n";
 			static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->scroll(0, -2*event.timeSinceLastFrame);
 			if(static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->getScrollY() <= 0)
 			{
-				S_LOG_VERBOSE() << "TRACE - CONSOLE - OPENING - FULLY OPEN\n";
 				static_cast<Ogre::Overlay*>(Ogre::OverlayManager::getSingleton().getByName("console"))->setScroll(0, 0);
 				mState = CS_OPEN;
-			} else {
-				S_LOG_VERBOSE() << "TRACE - CONSOLE - OPENING - NOT YET OPEN\n";
 			}
 		}
 		else if(mState == CS_CLOSING)
@@ -151,8 +142,6 @@ using dime::LoggingService;
 
 	void Console::keyPressed(Ogre::KeyEvent* e)
 	{
-
-		S_LOG_VERBOSE() << "TRACE - CONSOLE - KEY PRESSED\n";
 
 		// TODO This is all a big mess :(
 		if(e->getKey() == Ogre::KC_LSHIFT || e->getKey() == Ogre::KC_RSHIFT)
@@ -284,7 +273,7 @@ using dime::LoggingService;
 				mCommandLine.insert(mCursorPos, c);
 				mCursorPos++;
 			}
-			else if(e->getKey() == Ogre::KC_SLASH)
+			else if(e->getKey() == Ogre::KC_SLASH || e->getKey() == Ogre::KC_F11) 
 			{
 				char c[2];
 				c[1] = 0;
@@ -320,20 +309,30 @@ using dime::LoggingService;
 
 			if(e->getKey() == Ogre::KC_RETURN)
 			{
+				// echo the command
 				if(!mPrompt)
+				{
 					write(">>> " + mCommandLine + "\n");
+				}
 				else
+				{
 					write("... " + mCommandLine + "\n");
-			        myBackend->runCommand("/" + mCommandLine);
-                                // Write all commands to the console
-                                const std::list<std::string> msgs = myBackend->getConsoleMessages();
-                                std::list<std::string>::const_iterator index = msgs.begin();
-                                std::list<std::string>::const_iterator end = msgs.end();
-                                while( index != end ) {
-                                    write("... " + *index + "\n");
-                                    ++index;
-                                }
-                                setLineText(0, ">>> _");
+				}
+
+				// run the command
+				myBackend->runCommand(mCommandLine);
+
+				// Write all queued messages to the console
+				const std::list<std::string> msgs = myBackend->getConsoleMessages();
+				std::list<std::string>::const_iterator index = msgs.begin();
+				std::list<std::string>::const_iterator end = msgs.end();
+				while( index != end )
+				{
+					write("... " + *index + "\n");
+					++index;
+				}
+
+				setLineText(0, ">>> _");
 				mCommandLine = "";
 				mCursorPos = 0;
 			}
