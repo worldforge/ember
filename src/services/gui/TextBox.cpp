@@ -29,9 +29,8 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      {
 	      case SDLK_BACKSPACE:
                 {
-                    // FIXME: reinventing the wheel bigtime, use std::string::erase(index,len)
-                    // rather than all that stupid substringing.
 		  unsigned int len = myText.length();
+		  assert(len<=myCaretPos);
 
                     if((len > 0)&&(myCaretPos>0))
                         {
@@ -61,8 +60,9 @@ bool TextBox::keyPress( KeyPressEvent *event)
 	      case SDLK_RIGHT:
 	      {
 		// Move caret right
-        // FIXME: Don't pass the end of line if we do tack a space onto itn
-		myCaretPos++;
+        // FIXME: Don't pass the end of line if we do tack a space onto it
+		if (myCaretPos!=myText.length())
+		  myCaretPos++;
 	      }
 	      break;
 	      case SDLK_HOME:
@@ -100,7 +100,7 @@ bool TextBox::keyPress( KeyPressEvent *event)
             
             myFontRenderer->setText(fittedText);
         }
-    return true;        
+    return true;
 }
 
 void TextBox::drawCaret(DrawDevice* target)
