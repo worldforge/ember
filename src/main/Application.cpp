@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.24  2002-05-15 20:15:57  tim
+ *      Revision 1.25  2002-05-16 04:26:57  nikal
+ *       I believe this enable testing with CPPUNIT to be done on a MakeCheck
+ *
+ *      Revision 1.24  2002/05/15 20:15:57  tim
  *      First DataModel release!
  *
  *      Revision 1.23  2002/05/14 04:54:44  tim
@@ -256,7 +259,7 @@ namespace dime
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-		Eris::PollDefault::poll();
+		//Eris::PollDefault::poll();
 #endif
     }
 

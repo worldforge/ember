@@ -70,7 +70,7 @@ namespace dime
 
 		msrv = new Eris::Meta("dime", "metaserver.worldforge.org", 1);
 		msrv->GotServerCount.connect(SigC::slot(*this, &MetaserverService::GotServerCount));
-		msrv->Failure.connect(SigC::slot(*this, &MetaserverService::GotFailure));
+		//msrv->Failure.connect(SigC::slot(*this, &MetaserverService::GotFailure));
 		msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::ReceivedServerInfo));
 		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::CompletedServerList));
 		listed = false;
@@ -89,15 +89,15 @@ namespace dime
 	{
 	  char str[1024];
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got " << count << " game servers." << ENDM;
-	}	
-	
-	void MetaserverService::GotFailure(string msg)
-	{
-	 LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
 	}
-  
-  void MetaserverService::ReceivedServerInfo(Eris::ServerInfo sInfo)
-  {
+    
+    void MetaserverService::GotFailure(const string msg)
+    {
+        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
+    }
+    
+    void MetaserverService::ReceivedServerInfo(Eris::ServerInfo sInfo)
+    {
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
 										  << "Hostname: " <<sInfo.getHostname()
 										  << "\n\rServerName: "<<sInfo.getServername()

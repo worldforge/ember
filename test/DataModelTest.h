@@ -16,13 +16,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef USE_CPP_UNIT
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "DataModelService.h"
-#include "DataObject.h"
-#include <framework/exception.h>
+#include <services/datamodel/DataModelService.h>
+#include <services/datamodel/DataObject.h>
+#include <framework/Exception.h>
 
 namespace dime
 {
@@ -220,4 +219,4 @@ void DataModelTestCase::onDelete(PDataObject p, DataType t)
 }
 
 }
-#endif
+
