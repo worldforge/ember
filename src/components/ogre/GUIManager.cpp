@@ -391,7 +391,7 @@ void GUIManager::pushMousePicker( MousePicker * mousePicker )
 MousePicker * GUIManager::popMousePicker()
 {
 	//only pop if there's more than one registered picker
-	if (mMousePicker.size() > 1) 
+	if (mMousePickers.size() > 1) 
 		mMousePickers.pop();
 	return mMousePickers.top();
 }

@@ -1,5 +1,9 @@
 2005-03-01  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* silly bug, now fixed
+
+2005-03-01  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added ability to use different MousePickers
 	* Allow the user to select ModelBlocks. The selected block will be highlighted, and the attach points shown.
 	* Added widget for editing Carpenter.
