@@ -193,7 +193,7 @@ void EntityListener::entered( Eris::Entity *e )
 	mCamera->move(height);
 	mCamera->setOrientation(Atlas2Ogre(e->getOrientation()));
         mWindow->setDebugText("Avatar entered the world");
-		*/
+	*/
 
 }
 

@@ -1,3 +1,8 @@
+2004-07-08 Miguel Guzman <aglanor [at] telefonica [dot] net>
+
+	* ServerService.cpp: made it more robust against Eris errors,
+	  catching more exceptions and being more verbose.
+
 2004-02-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix deps so that we no longer get 2 potentially conflicting
