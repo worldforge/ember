@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.14  2002-05-10 23:51:25  xmp
+ *      Revision 1.15  2002-05-11 00:02:43  xmp
+ *      Final fixes and tidy up.  Application now a singleton.
+ *
+ *      Revision 1.14  2002/05/10 23:51:25  xmp
  *      A slightly broken attempt to turn Application into a singleton.  Still needs work
  *
  *      Revision 1.13  2002/04/26 12:16:51  xmp
@@ -136,16 +139,24 @@ namespace dime
 		{
 			quit();
 		}
-	 
-		static Application *getInstanceNew()
-		{
-			theApplication = new Application;
-			return theApplication;
-		}
 		
+		//----------------------------------------------------------------------
+		// Singleton
+
+		/**
+		 * Returns the Application instance.
+		 */
 		static Application *getInstance()
 		{
-			return theApplication;
+			if( theApplication )
+			{
+				return theApplication;
+			}
+			else
+			{
+				theApplication = new Application();
+				return theApplication;
+			}
 		}
 
     private:

@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.20  2002-05-10 23:56:41  tim
+ *      Revision 1.21  2002-05-11 00:02:43  xmp
+ *      Final fixes and tidy up.  Application now a singleton.
+ *
+ *      Revision 1.20  2002/05/10 23:56:41  tim
  *      *** empty log message ***
  *
  *      Revision 1.19  2002/05/10 22:35:49  tim
@@ -112,7 +115,7 @@ namespace dime
      * timeStamp importance file "\t" line "\t" message
      */
 
-	Application * Application::theApplication;
+	Application * Application::theApplication = NULL;
 
     class CerrLogObserver: public dime::LoggingService::Observer
     {

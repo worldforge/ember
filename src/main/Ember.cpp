@@ -21,8 +21,7 @@ void onMouseButtonUp(dime::MouseButtonEvent *event)
 
 int main(int argc, char **argv)
 {
-    dime::Application *myApp = NULL;
-	dime::Application::getInstanceNew();
+    dime::Application *myApp = dime::Application::getInstance();
 	
 	dime::ImageService::getInstance()->addPath("./bin/");
 	dime::ImageService::getInstance()->addPath("../../bin/");
