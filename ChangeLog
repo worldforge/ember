@@ -1,3 +1,7 @@
+2005-03-14  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Removed obsolete files.
+
 2005-03-14  Eric Sandalll  <eric@sandall.us>
 	* configure.ac: Fix ilInit check
 
