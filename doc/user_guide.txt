@@ -1,0 +1,80 @@
+The DIME users guide				(last updated:9/10/02 XMP)
+
+Introduction
+
+Dime is a new and upcoming Worldforge client that is designed from the
+beginning to be fully modular and to make full use of the stable libraries
+availible.
+
+The Console
+
+The Dime console is currently the best and only way to control Dime, until a
+GUI system is finalised.
+
+Basic Commands
+
+/QUIT
+Quits dime.
+
+ServerService Commands
+
+/CONNECT <hostname>
+<hostname> - The name or ip address of the server you wish to connect to.
+Connect allows you to connect to a standard worldforge server, current
+servers known to be compatible are stage and cyphesis.  You should however be
+able to connect to any worldforge server that speaks proper ATLAS.
+
+/RECONNECT
+This should reconnnect you to the last server you were connected to.
+
+/DISCONNECT
+Disconnects you from the server you are currently connected to.
+
+/CREATEACC <username> <password> <realname>
+<username> - Desired username (no spaces allowed)
+<password> - Desired password (no spaces)
+<realname> - Your real name (spaces allowed)
+Allows you to create a new user account on ATLAS based servers that
+support it.
+
+/LOGIN <username> <password>
+<username> - The username you wish to login with.
+<password> - The password for the above userid.
+Logs you into the server using the specified username and password. Once
+logged in you can access the OOG chat rooms and select your IG character
+to take control of.
+
+/LOGOUT
+Logs you out of the server you are logged into.
+
+/LISTCHARS
+GNDN
+
+/TAKECHAR
+GNDN
+
+OOGChat Commands:
+
+/SAY <what>
+<what> - What you wish to say.
+Speaks in your current room.
+
+/ME <emote>
+/EMOTE <emote>
+<emote> - An emote by you.
+Emotes in your current room.
+
+/JOIN <roomname>
+<roomname> - Name of room to join.
+GNDN
+
+/PART <roomname>
+<roomname> - Name of room to part from.
+GNDN
+
+/MSG <id> <msg>
+<id> - Target of message
+<msg> - Message to send
+Sends a private message to the target. GNDN.
+
+GNDN = Goes Nowhere Does Nothing (at present)

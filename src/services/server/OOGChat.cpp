@@ -49,6 +49,7 @@ namespace dime {
       ConsoleBackend::getMainConsole()->registerCommand( CMD_ME, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_JOIN, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_PART, this );
+      ConsoleBackend::getMainConsole()->registerCommand( CMD_MSG, this );
     }
 
     OOGChat::~OOGChat()
@@ -60,6 +61,7 @@ namespace dime {
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_ME );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_JOIN );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_PART );
+      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_MSG );
     }
 
 
@@ -72,8 +74,14 @@ namespace dime {
 
   void OOGChat::privateTalk(const std::string& name, const std::string& msg)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "PRIVMSG("<<name<<") says:"<<msg<< ENDM;
-    ConsoleBackend::getMainConsole()->pushMessage("Private Message received");
+    std::ostrstream temp;
+
+    temp << "PRIVMSG("<<name<<") says:"<<msg;
+
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<<temp.str()<<ENDM;
+
+    temp<<std::ends;
+    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 
   void OOGChat::loggedIn( const Atlas::Objects::Entity::Player& player)
@@ -87,6 +95,7 @@ namespace dime {
   {
     // %FIXME xmp,4: Don't allow talk until we have logged in
     // %FIXME xmp,4: Stop just using myLobby to allow chat to multiple rooms
+
     if (command==CMD_SAY)
     {
       myLobby->say(args);
@@ -97,6 +106,8 @@ namespace dime {
     } else if (command == CMD_JOIN) {
       return;
     } else if (command == CMD_PART) {
+      return;
+    } else if (command == CMD_MSG) {
       return;
     }
   }

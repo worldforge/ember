@@ -81,6 +81,7 @@ class OOGChat : virtual public SigC::Object, public ConsoleObject
     static const char * const CMD_ME = "me";
     static const char * const CMD_JOIN = "join";
     static const char * const CMD_PART = "part";
+    static const char * const CMD_PART = "msg";
 
     //======================================================================
     // Private Variables

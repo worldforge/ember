@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.19  2002-10-04 14:44:32  xmp
+ *      Revision 1.20  2002-10-09 13:41:23  xmp
+ *      -Updated documentation
+ *      -Polished a few things
+ *      -Added quit command
+ *
+ *      Revision 1.19  2002/10/04 14:44:32  xmp
  *      Major code cleanup of Application Class.  Removed variables that were duplicated in DimeServices
  *
  *      Revision 1.18  2002/09/07 13:38:10  aglanor
@@ -75,7 +80,7 @@
  *      Cleaning up the style of Application.h/cpp and Dime
  *
  *      Revision 1.2  2002/01/13 01:50:09  zzorn
- *      Changed comments to use /** so that doxygen generates documentation for them.
+ *      Changed comments to use ** at the beginning so that doxygen generates documentation for them.
  *
  *      Revision 1.1  2002/01/12 23:43:26  nikal
  *      adding the skeleton Application and a basic int main()
@@ -90,13 +95,16 @@
 
 #include <list>
 #include <string>
+
 #include <SDL/SDL.h>
-#include <main/DimeServices.h>
-#include <services/platform/SDLDrawDevice.h>
+
+#include "main/DimeServices.h"
+#include "services/platform/SDLDrawDevice.h"
+#include "framework/ConsoleObject.h"
 
 namespace dime 
 {
-    class Application : public SigC::Object
+    class Application : public ConsoleObject, virtual public SigC::Object
     {
         //======================================================================
         // Inner Classes, Typedefs, and Enums
@@ -168,6 +176,11 @@ namespace dime
 	    return theApplication;
 	  }
 
+	/**
+	 * Callback for running Console Commands
+	 */
+	void runCommand(const std::string&,const std::string&);
+
     private:
         /**
          * The width of the screen
@@ -198,7 +211,11 @@ namespace dime
 	 * Pointer to ourselves
 	 */
 	static Application *theApplication;
-       
+
+	/**
+	 * Commands for the console
+	 */
+	static const char* const CMD_QUIT = "quit";
     };//class Application
 }//namespace dime
 

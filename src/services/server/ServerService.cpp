@@ -260,7 +260,7 @@ namespace dime
         connect(server, (short)atoi(port.c_str()));
     } else if(command == RECONNECT) {
       reconnect();
-    } else if (command==CONNECT){
+    } else if (command==DISCONNECT){
       disconnect();
     } else if (command == CREATEACC) {
       if (!myPlayer) return;

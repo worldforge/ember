@@ -10,7 +10,12 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.38  2002-10-04 14:44:32  xmp
+ *      Revision 1.39  2002-10-09 13:41:22  xmp
+ *      -Updated documentation
+ *      -Polished a few things
+ *      -Added quit command
+ *
+ *      Revision 1.38  2002/10/04 14:44:32  xmp
  *      Major code cleanup of Application Class.  Removed variables that were duplicated in DimeServices
  *
  *      Revision 1.37  2002/09/07 13:38:10  aglanor
@@ -143,6 +148,7 @@
 #include "DimeServices.h"
 #include "services/datamodel/DataObject.h"
 #include "services/datamodel/DataModelService.h"
+#include "framework/ConsoleBackend.h"
 
 #include <iostream>
 #include <iomanip>
@@ -248,7 +254,9 @@ namespace dime
 
 
         LoggingService *logging = DimeServices::getInstance()->getLoggingService();
-	logging->addObserver(new CerrLogObserver());
+	CerrLogObserver* obs = new CerrLogObserver();
+	obs->setFilter(LoggingService::VERBOSE);
+	logging->addObserver(obs);
 
         if(myWidth < 0)
 	  {
@@ -324,6 +332,8 @@ namespace dime
 	// Create and start ServerService
 	DimeServices::getInstance()->getServerService()->start();
 #endif
+
+	ConsoleBackend::getMainConsole()->registerCommand(CMD_QUIT,this);
     }
 
     Application::~Application() {
@@ -370,4 +380,10 @@ namespace dime
 	myShouldQuit = true;
       }
 
+    void Application::runCommand(const std::string& cmd, const std::string& args)
+    {
+      if (cmd==CMD_QUIT){
+	quit();
+      }
+    }
 }
