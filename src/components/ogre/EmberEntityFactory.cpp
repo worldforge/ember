@@ -90,7 +90,8 @@ Eris::Entity* DimeEntityFactory::createWorld(const Atlas::Objects::Entity::GameE
       // Extract base points and send to terrain        
       //TerrainEntity * te = new TerrainEntity(ge,w);
 	mTerrainGenerator->initTerrain(we, world);
-	buildTerrainAroundAvatar();
+	mTerrainGenerator->prepareAllSegments(false);
+	//buildTerrainAroundAvatar();
 	//mTerrainSource->setHasTerrain(true);
 	//mSceneManager->setWorldGeometry("");
     return we;
@@ -103,12 +104,17 @@ void DimeEntityFactory::setAvatar(Eris::Avatar* avatar)
 
 void DimeEntityFactory::buildTerrainAroundAvatar()
 {
-	WFMath::Point<3> point = mAvatar->getEntity()->getPosition();
+	int size = 4;
+	//for now we'll only build terrain around position 0:0
+	mTerrainGenerator->prepareSegments(-size, -size, (size * 2) + 1, true);
+	
+	
+/*	WFMath::Point<3> point = mAvatar->getEntity()->getPosition();
 	//decide how many segments we need
-    long lowXBound = lrintf(point.x() / TerrainGenerator::segSize) - 2,
-         lowYBound = lrintf(point.y() / TerrainGenerator::segSize) - 2;
-	mTerrainGenerator->prepareSegments(lowXBound, lowYBound, 5);
-
+    long lowXBound = lrintf(point.x() / TerrainGenerator::segSize) - size,
+         lowYBound = lrintf(point.y() / TerrainGenerator::segSize) - size;
+	mTerrainGenerator->prepareSegments(lowXBound, lowYBound, (size * 2) + 1);
+*/
 }
 /* namespace Sear */
 

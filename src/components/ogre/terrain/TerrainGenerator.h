@@ -55,6 +55,15 @@ namespace DimeOgre {
 class TerrainShader;
 class DimeTerrainPageSource;
 
+
+/*
+ * This class takes care of generating terrain for Ogre's scenemanager.
+ * This involves getting terraing from Mercator, converting this to ogre
+ * format and creating materials to make it look good.
+ * 
+ * It works closely with DimeTerrainPageSource.
+ * 
+ */
 class TerrainGenerator
 {
 public:
@@ -68,11 +77,28 @@ public:
 	Ogre::SceneNode* generateTerrain();
     void setBasePoint(int x, int y, float z) {mTerrain.setBasePoint(x,y,z);}
 	//void loadSegmentAt(WFMath::Point<3> aPoint);
-	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments);
+	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
+
+	/*
+	 * Prepares all segments aquired from Mercator. Note that this can be very,
+	 * very expensive if there's a lot of terrain defined.
+	 * If true is supplied the segments will also be pushed onto the terrain
+	 */
+	void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain);
 	
 	virtual float getHeight(float x, float z) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::World *world);
 	Ogre::Material* getMaterialForSegment(long x, long y);
+
+	float TerrainGenerator::getMaxHeightForSegment(int ogreX, int ogreZ) const;
+	float TerrainGenerator::getMinHeightForSegment(int ogreX, int ogreZ) const;
+	
+	/*
+	 * Return true if there is a valid piece of terrain at the supplied segment indices.
+	 * By valid means a populated terrain with a corresponding material-
+	 */
+	bool isValidTerrainAt(int x, int y);
+
 
 
 protected:
@@ -90,10 +116,29 @@ protected:
 
 	const Mercator::Terrain::Segmentstore* mSegments;
 	
+	/*
+	 * the min and max indices for segments
+	 */
 	int mXmin, mXmax, mYmin, mYmax;
-	void generateTerrainTexture(Mercator::Segment* segment, long segmentX, long segmentY);
+	
+	/*
+	 * Creates a material for the supplied segment. This is done through the 
+	 * registered TerrainShaders.
+	 * The created material is then put into mShaderMap.
+	 * Use getMaterialForSegment(...) to access the material.
+	 */
+	void generateTerrainMaterials(Mercator::Segment* segment, long segmentX, long segmentY);
+
+	/*
+	 * We can't use the alphamaps generated from WF. Thus we need to convert them first.
+	 * Which is done by this method.
+	 */
 	Ogre::DataChunk* convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor);
 	Ogre::ushort mNumberOfTilesInATerrainPage;
+
+	/*
+	 * Creates an alpha texture for the supplied surface.
+	 */
 	void createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
 	
 

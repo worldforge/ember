@@ -26,6 +26,7 @@
 namespace DimeOgre {
 
 class TerrainGenerator;
+class DimeTerrainSceneManager;
 class DimeTerrainPageSource : public Ogre::TerrainPageSource {
 	
 	
@@ -39,13 +40,14 @@ protected:
         [0..1], which will be duly scaled by the TerrainRenderables it
         creates.
     */
-    //virtual TerrainPage* buildPage(Real* heightData, Material* pMaterial);
+//    virtual TerrainPage* buildPage(Real* heightData, Material* pMaterial);
 
 	TerrainGenerator* mGenerator;
 	Ogre::ushort mX;
 	Ogre::ushort mZ;
 	bool mHasTerrain;
 	void generatePage(int x, int y);
+	DimeTerrainSceneManager* getDimeTerrainSceneManager() const;
 
 public:
     virtual void requestPage (Ogre::ushort x, Ogre::ushort z);
@@ -54,6 +56,19 @@ public:
 	DimeTerrainPageSource(TerrainGenerator* const generator);
 	virtual ~DimeTerrainPageSource();
 	void setHasTerrain(bool hasTerrain);
+	
+	/*
+	 * Pushes the page at the specified indices onto the terrain.
+	 * Returns false if no page at that place has been initialized through Mercator
+	 * Don't forget to call resizeTerrain() after adding pages.
+	 */
+	bool pushPage(int x, int y);
+	
+	/*
+	 * Resizes the octree in the scenemanager.
+	 * Don't forget to do this after adding pages.
+	 */
+	void resizeTerrain();
 
     /** Initialise this tile source based on a series of options as
         dictated by the scene manager. 

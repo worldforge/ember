@@ -42,9 +42,13 @@ public:
 	DimeTerrainSceneManager();
 	virtual ~DimeTerrainSceneManager();
 
-void attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page);
-Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
+	void attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page,float maxY, float minY);
+	Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
 
+	void doResize();
+	
+	int getPageOffset();
+	
 //	void buildTerrain(long segmentXStart, long segmentZStart, long numberOfSegments);
 //	void setGenerator(TerrainGenerator* generator) { mGenerator = generator;}
 //	void setPositionOfAvatar(Ogre::Vector3 point) { mPositionOfAvatar = point; }
@@ -52,6 +56,14 @@ Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
 protected:
 	Ogre::ushort mPageOffset;
 	void setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page); 
+
+	float mMaxX;
+	float mMaxY;
+	float mMaxZ;
+	float mMinX;
+	float mMinY;
+	float mMinZ;
+	
 
 private:
 //	static DimeTerrainSceneManager* _instance;

@@ -43,28 +43,40 @@ DimeTerrainSceneManager::DimeTerrainSceneManager()
 	mPagingEnabled = true;
 	mLivePageMargin = 1;
 	mBufferedPageMargin = 20;
-	mPageOffset = 1;
+	mPageOffset = 10;
 
 }
 DimeTerrainSceneManager::~DimeTerrainSceneManager()
 {}
 
+int DimeTerrainSceneManager::getPageOffset()
+{
+	return mPageOffset;	
+}
 
-void DimeTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page)
+void DimeTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page, float maxY, float minY)
 {
   //  assert(pageX == 0 && pageZ == 0 && "Multiple pages not yet supported");
 	Ogre::ushort adjustedX = pageX + mPageOffset;
 	Ogre::ushort adjustedZ = pageZ + mPageOffset;
+	short ogreX = (short) pageX;
+	short ogreZ = (short) pageZ;
 	
 
     assert(mTerrainPages[adjustedX][adjustedZ] == 0 && "Page at that index not yet expired!");
     // Insert page into list
     mTerrainPages[adjustedX][adjustedZ] = page;
     // Attach page to terrain root
-    page->pageSceneNode->translate(Ogre::Vector3(((short)(pageX)) * 64, 0, ((short)(pageZ)) * 64));
+    page->pageSceneNode->translate(Ogre::Vector3(ogreX * 64, 0, ogreZ * 64));
     setupPageNeighbors(adjustedX, adjustedZ, page);
     mTerrainRoot->addChild(page->pageSceneNode);
 
+	mMinX = std::min(mMinX, ogreX * 64.0f);
+	mMaxX = std::max(mMaxX, (ogreX * 64) + 64.0f);
+	mMinY = std::min(mMinY, minY);
+	mMaxY = std::max(mMaxY, maxY);
+	mMinZ = std::min(mMinZ, ogreZ * 64.0f);
+	mMaxZ = std::max(mMaxZ, (ogreZ * 64) + 64.0f);
 }
 
 void DimeTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page) 
@@ -119,29 +131,7 @@ void DimeTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushor
            
  		}
 	}
-	
-/*	
-	
-	    for ( size_t j = 0; j < tilesPerPage; j++ )
-        {
-            for ( size_t i = 0; i < tilesPerPage; i++ )
-            {
-                if ( j != tilesPerPage - 1 )
-                {
-                    tiles[ i ][ j ] -> _setNeighbor( TerrainRenderable::SOUTH, tiles[ i ][ j + 1 ] );
-                    tiles[ i ][ j + 1 ] -> _setNeighbor( TerrainRenderable::NORTH, tiles[ i ][ j ] );
-                }
-
-                if ( i != tilesPerPage - 1 )
-                {
-                    tiles[ i ][ j ] -> _setNeighbor( TerrainRenderable::EAST, tiles[ i + 1 ][ j ] );
-                    tiles[ i + 1 ][ j ] -> _setNeighbor( TerrainRenderable::WEST, tiles[ i ][ j ] );
-                }
-
-            }
-        }
-	*/
-	
+		
 }
 
 
@@ -161,189 +151,11 @@ Ogre::TerrainPage* DimeTerrainSceneManager::getTerrainPage( const Ogre::Vector3 
     }
 }
 
-/*
-void DimeTerrainSceneManager::buildTerrainAroundAvatar()
+void DimeTerrainSceneManager::doResize()
 {
-	//decide how many segments we need
-    long lowXBound = lrintf(OGRE2WF(mPositionOfAvatar.x) / TerrainGenerator::segSize) - 2,
-         lowZBound = lrintf(OGRE2WF(mPositionOfAvatar.z) / TerrainGenerator::segSize) - 2;
-	buildTerrain(lowXBound, lowZBound, 5);
-
+	resize( Ogre::AxisAlignedBox( mMinX, mMinY, mMinZ, mMaxX, mMaxY, mMaxZ ) );
+	
 }
-
-
-void DimeTerrainSceneManager::buildTerrain(long segmentXStart, long segmentZStart, long numberOfSegments)
-{
-	int i,j;
-
-	mGenerator->prepareSegments(segmentXStart, segmentZStart, numberOfSegments);
-	
-    Ogre::TerrainOptions* options = new Ogre::TerrainOptions();
-    
-    //mTerrain = terrain;
-    
-    options->max_mipmap = 5;
-
-    options->scalex = WF2OGRE(1); //100/64;
-
-    options->scaley = WF2OGRE(1);
-
-    options->scalez = WF2OGRE(1);//100/64;
-
-    options->max_pixel_error = 8;
-
-    options->size = 64+1 ;
-//    options->world_size = (TerrainGenerator::segSize * numberOfSegments) + 1;
-    options->world_size = (TerrainGenerator::segSize * numberOfSegments) + 1;
-
-
-//    options->colored = true;
-
-//    options->lit = true;
-
-    mScale = Ogre::Vector3( options->scalex, options->scaley, options->scalez );
-
-    mTileSize = options->size;
-
-	Ogre::String detail_texture = "terrain_detail.jpg";
-
-    Ogre::String world_texture = "terrain_texture.jpg";
-	
-    // set up the octree size.
-    float max_x = options->scalex * options->world_size;
-
-    float max_y = WF2OGRE(255) * options->scaley;
-
-    float max_z = options->scalez * options->world_size;
-
-    resize( Ogre::AxisAlignedBox( 0, 0, 0, max_x, max_y, max_z ) );
-
-
-
-
-    mTerrainMaterial = createMaterial( "Terrain" );
-
-
-    mTerrainMaterial->getTechnique(0)->getPass(0)->createTextureUnitState( world_texture, 0 );
-
-
-
-    mTerrainMaterial->getTechnique(0)->getPass(0)->createTextureUnitState( detail_texture, 1 );
-
-
-    mTerrainMaterial -> setLightingEnabled( options->lit );
-
-    mTerrainMaterial->load();
-
-
-    //create a root terrain node.
-    mTerrainRoot = getRootSceneNode() -> createChildSceneNode( "Terrain" );
-    //mTerrainRoot->rotate(Ogre::Vector3::UNIT_Y,180);
-	//mTerrainRoot->showBoundingBox(true);
-    //setup the tile array.
-    int num_tiles = ( options->world_size - 1 ) / ( options->size - 1 );
-    
-    for (i = 0; i < num_tiles; i++ )
-    {
-        mTiles.push_back( Ogre::TerrainRow() );
-
-        for (j = 0; j < num_tiles; j++ )
-        {
-            mTiles[ i ].push_back( 0 );
-        }
-    }
-
-    char name[ 24 ];
-    int p = 0;
-    int q = 0;
-    
-    int worldXOffset = segmentXStart * TerrainGenerator::segSize;
-    int worldZOffset = segmentZStart * TerrainGenerator::segSize;
-
-    for ( j = worldZOffset; j < (worldZOffset + options->world_size) - 1; j += ( options->size - 1 ) )
-    {
-        p = 0;
-
-        for ( i = worldXOffset; i < (worldXOffset + options->world_size) - 1; i += ( options->size - 1 ) )
-        {
-  
-            options->startx = i;
-            options->startz = j;
-            sprintf( name, "tile[%d,%d]", p, q );
-
-            Ogre::SceneNode *c = mTerrainRoot -> createChildSceneNode( name );
-            DimeTerrainRenderable *tile = new DimeTerrainRenderable();
-            //c->rotate(Ogre::Vector3::UNIT_Y,-90);
-            
-
-            tile -> setMaterial( mTerrainMaterial );
-            tile -> init( *options, mGenerator );
-
-            mTiles[ p ][ q ] = tile;
-
-            c -> attachObject( tile );
-            p++;
-        }
-        std::string output = std::string("TRACE - TERRAIN SCENE MANAGER - CREATED TILEROW: ");
-        output += q;
-//        output += name;
-		dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::INFO) << output  << dime::ENDM;
-
-        q++;
-
-    }
-
-
-    //setup the neighbor links.
-    int size = ( int ) mTiles.size();
-
-    for ( j = 0; j < size; j++ )
-    {
-        for ( i = 0; i < size; i++ )
-        {
-            if ( j != size - 1 )
-            {
-                mTiles[ i ][ j ] -> _setNeighbor( Ogre::TerrainRenderable::SOUTH, mTiles[ i ][ j + 1 ] );
-                mTiles[ i ][ j + 1 ] -> _setNeighbor( Ogre::TerrainRenderable::NORTH, mTiles[ i ][ j ] );
-            }
-
-            if ( i != size - 1 )
-            {
-                mTiles[ i ][ j ] -> _setNeighbor( Ogre::TerrainRenderable::EAST, mTiles[ i + 1 ][ j ] );
-                mTiles[ i + 1 ][ j ] -> _setNeighbor( Ogre::TerrainRenderable::WEST, mTiles[ i ][ j ] );
-            }
-
-        }
-    }
-
-    if(options->lit)
-    {
-        for ( j = 0; j < size; j++ )
-        {
-            for ( i = 0; i < size; i++ )
-            {
-                mTiles[ i ][ j ] -> _calculateNormals( );
-                //  mTiles[ i ][ j ] -> _generateVertexLighting( Vector3( 255, 100, 255 ), ColourValue(.25,.25,.25) );
-            }
-        }
-    }
-	
-	//mTerrainRoot->rotate(Ogre::Vector3::UNIT_Y,180);
-
-    
-     for ( j = 0; j < size; j++ )
-     {
-         for ( i = 0; i < size; i++ )
-         {
-             mTiles[ i ][ j ] -> _generateVertexLighting( Ogre::Vector3( 255, 50, 255 ), Ogre::ColourValue( .25, .25, .25 ) );
-         }
-     }
-     
-
-
-
-}
-*/
 }
 
 

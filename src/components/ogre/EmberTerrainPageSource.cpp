@@ -16,6 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "TerrainGenerator.h"
+#include "DimeTerrainSceneManager.h"
 
 #include "DimeTerrainPageSource.h"
 
@@ -35,16 +36,15 @@ DimeTerrainPageSource::~DimeTerrainPageSource()
 void DimeTerrainPageSource::requestPage(Ogre::ushort x, Ogre::ushort z) 
 {
 	if (mHasTerrain) {
-		for (int i = x - 1; i <= x + 1; ++i) {
-			for (int j = z - 1; j <= z + 1; ++j) {
-				mX = i;
-				mZ = j;
-				generatePage(i, j);
-
-			}
-		}
+		//TODO: implement paging
 	}
 }
+
+DimeTerrainSceneManager* DimeTerrainPageSource::getDimeTerrainSceneManager() const
+{
+	return static_cast<DimeTerrainSceneManager*>(mSceneManager);
+}
+
 
 void DimeTerrainPageSource::expirePage(Ogre::ushort x, Ogre::ushort z)
 {
@@ -65,15 +65,49 @@ void DimeTerrainPageSource::generatePage(int x, int y)
 			heightData[pointer++] = height;
 		}
 	}
-	TerrainPage* page = buildPage(heightData, mGenerator->getMaterialForSegment(x, -y - 1 ));
-	mSceneManager->attachPage(x, y, page);
+	Ogre::Material* material = mGenerator->getMaterialForSegment(x, -y - 1 );
+	assert(material);
+	TerrainPage* page = buildPage(heightData, material);
+	
+	
+	getDimeTerrainSceneManager()->attachPage(x, y, page, mGenerator->getMaxHeightForSegment(x,y), mGenerator->getMinHeightForSegment(x,y));
+
 	
 }
 
 void DimeTerrainPageSource::setHasTerrain(bool hasTerrain)
 {
 	mHasTerrain = hasTerrain;	
+
+	int size = 3;
+	//this is temporary until we've got paging working
+	for (int i = 0 - size; i <= 0 + size; ++i) {
+		for (int j = 0 - size; j <= 0 + size; ++j) {
+			mX = i;
+			mZ = j;
+			generatePage(i, j);
+
+		}
+	}
+	resizeTerrain();
+	
 }
+
+bool DimeTerrainPageSource::pushPage(int x, int y)
+{
+	if (mGenerator->isValidTerrainAt(x, y)) {
+		generatePage(x, y);
+	} else {
+		return false;
+	}
+	return true;
+}
+
+void DimeTerrainPageSource::resizeTerrain()
+{
+	getDimeTerrainSceneManager()->doResize();
+}
+
 
 
 }

@@ -32,7 +32,15 @@ public:
 
 	DimeTerrainRenderable();
 	virtual ~DimeTerrainRenderable();
-	void DimeTerrainRenderable::init( Ogre::TerrainOptions &options, TerrainGenerator* generator );
+	//void DimeTerrainRenderable::init( Ogre::TerrainOptions &options, TerrainGenerator* generator );
+    
+    /** Initializes the TerrainRenderable.
+    @param startx, startz 
+    The starting points of the top-left of this tile, in terms of the
+    number of vertices.
+    @param pageHeightData The source height data for the entire parent page
+    */
+   // void initialise(int startx, int startz, Real* pageHeightData, Vector3 center));
 };
 
 }
