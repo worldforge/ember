@@ -208,7 +208,7 @@ class FontRenderer
         myUpdate = true;
     }
     
-    void getFont(Font *font)
+    void setFont(Font *font)
     {
         myFont = font;
         myUpdate = true;
