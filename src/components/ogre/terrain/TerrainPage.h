@@ -127,18 +127,15 @@ private:
 	TerrainPosition mPosition;
 	Ogre::MaterialPtr mMaterial;
 	
+	
 	/**
-		A vector of all the Mercator segments needed for this page. If the ratio between Mercator segments and Ogre pages is 1:1
-		this will only contain one element. If it's 2:1 it will contain 4, if 3:1 it will contain 9 and so on. (mercator_segments*mercator_segments)
-		The segments are stored in a vector like this:
-		|3|4|
-		|---|
-		|1|2|
-		
-		(where the horizontal axis is the x-axis and the vertical the y axis)
-	*/
-	SegmentVector mMercatorSegments;
-// 	void createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
+	 *    gets a segment for the x and y position in the page
+	 * @param x 
+	 * @param y 
+	 * @return 
+	 */
+	Mercator::Segment* getSegment(int x, int y) const;
+	
 
 	/**
 	Not really used
@@ -202,7 +199,7 @@ private:
 	*/
 	const unsigned int mAlphaMapScale;
 
-	void fillAlphaLayer(Ogre::MemoryDataStream* image, Ogre::MemoryDataStream* wfImage, unsigned int channel, int startX, int startY);
+	void fillAlphaLayer(unsigned char* imagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY);
 
 };
 

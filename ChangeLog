@@ -1,3 +1,7 @@
+2005-03-15  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Fix for segfault when generating terrain materials.
+
 2005-03-14  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Removed obsolete files.
