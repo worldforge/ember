@@ -1,4 +1,4 @@
-# Process this file with autoconf to produce a configure script.
+## Process this file with autoconf to produce a configure script.
 AC_INIT
 
 # Detect the canonical host and target build environment.
@@ -69,13 +69,16 @@ AC_CHECK_LIB(openal,
 	)
 
 # Test for libxml2
-AM_PATH_XML2(2.4.23,[
-    CFLAGS="$CFLAGS $XML_CFLAGS"
-    CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
-    LDFLAGS="$LDFLAGS $XML_LIBS"
-    ],
-AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
+PKG_CHECK_MODULES(libxml-2.0, libxml-2.0 >= 2.4.23,
+	[
+		CFLAGS="$CPPFLAGS $XML_CFLAGS"
+		CPPFLAGS="$CPPFLAGS $XML_CPPFLAGS"
+		CXXFLAGS="$CPPFLAGS $XML_CXXFLAGS"
+		LDFLAGS="$LDFLAGS $XML_LIBS"
+	],
+ AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries)
 )
+
 
 # Check for C++ libraries:
 AC_LANG([C++])

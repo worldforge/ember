@@ -1,3 +1,7 @@
+2003-09-07 Martin Pollard <circlemaster [at] blueyonder [dot] co [dot] uk>
+	* configure.ac: changed libxml to pkg-config check - untested so if
+	it breaks, please fix.
+
 2003-09-07 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* ServerService: added touch operation
 
