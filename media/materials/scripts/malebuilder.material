@@ -6,7 +6,7 @@ material /global/body_parts/eyes/blue_eye_01
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/eyes/textures/blue_eye_01/eye_128.png
+                texture 3d_objects/body_parts/eyes/textures/blue_eye_01/low/eye.png
             }
         }
     }
@@ -20,7 +20,7 @@ material /global/body_parts/hair/plain
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/hair/textures/plain/hair_128.png
+                texture 3d_objects/body_parts/hair/textures/plain/low/hair.png
             }
         }
     }
@@ -34,7 +34,7 @@ material /global/body_parts/humanoid_head/young_one
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/humanoid_head/textures/young_one/head_128.png
+                texture 3d_objects/body_parts/humanoid_head/textures/young_one/low/head.png
             }
         }
     }
@@ -48,7 +48,7 @@ material /global/body_parts/humanoid_head/worksman
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/humanoid_head/textures/worksman/head_128.png
+                texture 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
             }
         }
     }
@@ -63,7 +63,7 @@ material /global/body_parts/humanoid_body/male_pink
 	
            texture_unit
             {
-                texture 3d_objects/body_parts/humanoid_body/textures/male_pink/humanoid_body_128.png
+                texture 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
             }
         }
     }
@@ -81,7 +81,7 @@ material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides
  		alpha_rejection greater_equal 128
           texture_unit
             {
-                texture 3d_objects/clothes/footwear/textures/leather_shoes_wrapped_cotton_sides/footwear_128.png 
+                texture 3d_objects/clothes/footwear/textures/leather_shoes_wrapped_cotton_sides/low/footwear.png 
             }
         }
     }
@@ -101,7 +101,7 @@ material /global/clothes/dress/ragged
 		alpha_rejection greater_equal 128            
            texture_unit
             {
-                texture 3d_objects/clothes/dress/textures/ragged/dress_128.png
+                texture 3d_objects/clothes/dress/textures/ragged/low/dress.png
 	    }
         }
     }
@@ -119,7 +119,7 @@ material /global/clothes/dress/sun
  		alpha_rejection greater_equal 128            
           texture_unit
             {
-                texture 3d_objects/clothes/dress/textures/sun/dress_128.png
+                texture 3d_objects/clothes/dress/textures/sun/low/dress.png
 	    }
         }
     }
@@ -137,7 +137,7 @@ material /global/clothes/dress/dark_rags
 		alpha_rejection greater_equal 128            
            texture_unit
             {
-                texture 3d_objects/clothes/dress/textures/dark_rags/dress_128.png
+                texture 3d_objects/clothes/dress/textures/dark_rags/low/dress.png
 	    }
         }
     }
@@ -155,7 +155,7 @@ material /global/clothes/dress/fine
 		alpha_rejection greater_equal 128            
            texture_unit
             {
-                texture 3d_objects/clothes/dress/textures/fine/dress_128.png
+                texture 3d_objects/clothes/dress/textures/fine/low/dress.png
 	    }
         }
     }

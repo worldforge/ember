@@ -10,7 +10,7 @@ material /global/items/cylinder/wood_boards
       emissive 0.000000 0.000000 0.000000
       texture_unit
       {
-        texture 3d_objects/items/cylinder/textures/wood_boards/cylinder.png
+        texture 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
       }
     }
   }
@@ -28,7 +28,7 @@ material plants/tree/gnarly
       emissive 0.000000 0.000000 0.000000
       texture_unit
       {
-        texture 3d_objects/items/cylinder/textures/wood_boards/cylinder.png
+        texture 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
       }
     }
   }

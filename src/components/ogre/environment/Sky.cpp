@@ -27,7 +27,7 @@ namespace EmberOgre {
 
 Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
-  sceneMgr->setSkyBox(true, "Sky/Waterworld09", 253);
+  sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
 
 }
 

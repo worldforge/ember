@@ -251,7 +251,7 @@ public:
 			);*/
 	
 			waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
-			waterEntity->setMaterialName("Environment/Water/Simple"); 
+			waterEntity->setMaterialName("/global/environment/water/simple"); 
 			waterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
 			waterEntity->setCastShadows(false);
 			

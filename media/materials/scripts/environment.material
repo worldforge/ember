@@ -10,7 +10,7 @@ material /global/fire
 		alpha_rejection greater_equal 128            
            texture_unit
             {
-                texture 3d_objects/items/fire/textures/flame/flame.png
+                texture 3d_objects/items/fire/textures/flame/low/flame.png
 	    	}
         }
     }
@@ -25,7 +25,7 @@ material /global/environment/ground/grass
     {
       texture_unit
       {
-        texture 3d_objects/environment/ground/textures/rabbithill_grass/ground.png
+        texture 3d_objects/environment/ground/textures/rabbithill_grass/low/ground.png
       }
     }
   }
@@ -34,7 +34,7 @@ material /global/environment/ground/grass
 
 
 
-material Sky/Forgottenland
+material /global/environment/sky/forgottenland
 {
 	technique
 	{
@@ -53,7 +53,26 @@ material Sky/Forgottenland
 }
 
 
-material Sky/Waterworld09
+material /global/environment/sky/day_1
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			fog_override true
+			texture_unit
+			{
+				cubic_texture 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_ft.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_bk.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_lt.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_rt.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_up.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_dn.png separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+} 
+
+
+material /global/environment/sky/day
 {
 	technique
 	{
@@ -72,7 +91,7 @@ material Sky/Waterworld09
 } 
 
 
-material Environment/Water/Simple
+material /global/environment/water/simple
 {
         technique
         {

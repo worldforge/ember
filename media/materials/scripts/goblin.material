@@ -6,7 +6,7 @@ material Goblin/Head
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/humanoid_head/textures/worksman/head.jpg 
+				texture 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
             }
         }
     }
@@ -20,7 +20,7 @@ material Goblin/Skin
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/humanoid_body/textures/male_pink/humanoid_body.png 
+				texture 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
             }
         }
     }
@@ -34,7 +34,7 @@ material Goblin/Mouth
         {
             texture_unit
             {
-                texture 3d_objects/body_parts/humanoid_head/textures/worksman/head.jpg 
+				texture 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
             }
         }
     }
@@ -48,7 +48,7 @@ material Goblin/Eyes
 		{
 			texture_unit
 			{
-				texture 3d_objects/body_parts/humanoid_head/textures/worksman/head.jpg
+				texture 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
 			}
 		}
 	}

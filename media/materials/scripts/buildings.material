@@ -1,7 +1,35 @@
 
 
 
-
+material /global/building_primitives/rough_timber/column
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      //specular 0.449020 0.449020 0.449020 1
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_column.png
+      }
+    }
+  }
+}
+material /global/building_primitives/rough_timber/column_end
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_column_ends.png
+      }
+    }
+  }
+}
 
 
 
@@ -15,10 +43,10 @@ material /global/building_primitives/rough_timber/beam
   {
     pass
     {
-      specular 0.449020 0.449020 0.449020 1
+      //specular 0.449020 0.449020 0.449020 1
       texture_unit
       {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_beam.png
+        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_beam.png
       }
     }
   }
@@ -32,7 +60,7 @@ material /global/building_primitives/rough_timber/beam_end
     {
       texture_unit
       {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_beam_end.png
+        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_beam_end.png
       }
     }
   }
@@ -45,10 +73,26 @@ material /global/building_primitives/rough_timber/wall
   {
     pass
     {
-      specular 0.449020 0.449020 0.449020 1
+      //specular 0.449020 0.449020 0.449020 1
       texture_unit
       {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_wall.png
+        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_wall.png
+      }
+    }
+  }
+}
+
+material /global/building_primitives/template/wall_edges
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      //specular 0.449020 0.449020 0.449020 1
+      texture_unit
+      {
+        texture 3d_objects/items/building_primitives/textures/template/wall_edges.png
       }
     }
   }
@@ -64,7 +108,7 @@ material /global/building_primitives/rough_stone/wall
     {
       texture_unit
       {
-        texture 3d_objects/items/building_primitives/textures/rough_stone/stone.png
+        texture 3d_objects/items/building_primitives/textures/rough_stone/low/stone.png
       }
     }
   }
@@ -79,7 +123,7 @@ material /global/building_primitives/rough_timber/roof_top
     {
       texture_unit
       {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_roof_top.png
+        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_roof_top.png
       }
     }
   }
@@ -94,7 +138,7 @@ material /global/building_primitives/rough_timber/roof_bottom
     {
       texture_unit
       {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_roof_bottom.png
+        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_roof_bottom.png
       }
     }
   }
@@ -129,7 +173,7 @@ material /global/building_element/rough_stone/wall/top
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/wall_top.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_top.png
       }
     }
   }
@@ -144,7 +188,7 @@ material /global/building_element/rough_stone/wall/bottom
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/wall_bottom.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_bottom.png
       }
     }
   }
@@ -159,7 +203,7 @@ material /global/building_element/rough_stone/wall/side
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/wall_side.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_side.png
       }
     }
   }
@@ -174,7 +218,7 @@ material /global/building_element/rough_stone/wall/normal
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/wall_texture_small.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_texture_small.png
       }
     }
   }
@@ -190,7 +234,7 @@ material /global/building_element/timber_rough/roof
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/timber_rough/roof.png
+        texture 3d_objects/items/building_element/textures/timber_rough/low/roof.png
       }
     }
   }
@@ -205,7 +249,7 @@ material /global/building_element/timber_rough/normal_slope_wall
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/timber_rough/normal_slope_wall.png
+        texture 3d_objects/items/building_element/textures/timber_rough/low/normal_slope_wall.png
       }
     }
   }
@@ -220,7 +264,7 @@ material /global/building_element/timber_rough/door_element
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/timber_rough/door_element.png
+        texture 3d_objects/items/building_element/textures/timber_rough/low/door_element.png
       }
     }
   }
@@ -236,7 +280,7 @@ material /global/building_element/timber_frame/beam_end
       specular 0.449020 0.449020 0.449020 5.000000
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/timber_frame/beam_end.png
+        texture 3d_objects/items/building_element/textures/timber_frame/low/beam_end.png
       }
     }
   }
@@ -252,7 +296,7 @@ material /global/building_element/timber_frame/beam
       specular 0.449020 0.449020 0.449020 5.000000
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/timber_frame/beam.png
+        texture 3d_objects/items/building_element/textures/timber_frame/low/beam.png
       }
     }
   }
@@ -271,7 +315,7 @@ material /global/building_element/rough_stone/floor
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/floor.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/floor.png
       }
     }
   }
@@ -286,7 +330,7 @@ material /global/building_element/rough_stone/ceiling
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/ceiling.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/ceiling.png
       }
     }
   }
@@ -301,7 +345,7 @@ material /global/building_element/rough_stone/floor/east_west
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/floor_east_west_side.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/floor_east_west_side.png
       }
     }
   }
@@ -316,7 +360,7 @@ material /global/building_element/rough_stone/floor/north_south
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/floor_north_south_side.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/floor_north_south_side.png
       }
     }
   }

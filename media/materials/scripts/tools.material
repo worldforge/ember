@@ -10,7 +10,7 @@ material Items/Tool/Head
       emissive 0.000000 0.000000 0.000000
       texture_unit
       {
-        texture 3d_objects/items/tool/textures/settler_tools/tool_head.png
+        texture 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
       }
     }
   }
@@ -28,7 +28,7 @@ material Items/Tool/Handle
       emissive 0.000000 0.000000 0.000000
       texture_unit
       {
-        texture 3d_objects/items/tool/textures/settler_tools/tool_handle.png
+        texture 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
       }
     }
   }

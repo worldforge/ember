@@ -7,7 +7,7 @@ material /global/creature/pig/skin
     {
         texture_unit
 	{
-		texture 3d_objects/creatures/quadruped_v2/textures/pink_pig/quadruped_v2_128.png
+		texture 3d_objects/creatures/quadruped_v2/textures/pink_pig/low/quadruped_v2.png
 	}
 
     }
@@ -23,7 +23,8 @@ material /global/creature/squirrel/skin
     {
         texture_unit
 	{
-		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
+//		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
+		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/simple_squirrel_small.png
 	}
 
     }
@@ -40,7 +41,7 @@ material /global/creature/chicken
     {
       texture_unit
       {
-        texture 3d_objects/creatures/avian/textures/redchicken/chickentex_256.png
+        texture 3d_objects/creatures/avian/textures/redchicken/low/chickentex.png
       }
     }
   }
@@ -54,7 +55,7 @@ material /global/creature/deer
     {
       texture_unit
       {
-        texture 3d_objects/creatures/quadruped_v2/textures/deer/quadruped_v2_128.png
+        texture 3d_objects/creatures/quadruped_v2/textures/deer/low/quadruped_v2.png
       }
     }
   }

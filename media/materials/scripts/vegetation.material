@@ -13,7 +13,7 @@ material /global/plants/tree/fir/branch
         texture_unit
 	{
 	
-		texture 3d_objects/plants/fir/textures/common_fir/fir_branch_normal_01_hh_128.png
+		texture 3d_objects/plants/fir/textures/common_fir/low/fir_branch_normal_01_hh.png
 	}
 
     }
@@ -30,7 +30,7 @@ material /global/plants/tree/fir/bark
     {
          texture_unit
 	{
-		texture 3d_objects/plants/fir/textures/common_fir/bark_small_128.png
+		texture 3d_objects/plants/fir/textures/common_fir/low/bark_small.png
 	}
     }
   }
@@ -49,7 +49,7 @@ material /global/plants/tree/oak
          cull_software none
          texture_unit
 	{
-		texture 3d_objects/plants/tree/textures/gnarly/tree_128.png
+		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
 //		texture 3d_objects/plants/tree/textures/gnarly/tree.png
 	}
       diffuse 1.000000 1.000000 1.000000
@@ -67,7 +67,7 @@ material /global/plants/fruitable/acorn/shiny
     {
          texture_unit
 	{
-		texture 3d_objects/plants/fruitable/textures/acorn/fruitable_128.png
+		texture 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
 	}
      specular 0.898039 0.898039 0.898039 10.0
 
@@ -86,7 +86,7 @@ material /global/plants/fruitable/acorn/matte
     {
          texture_unit
 	{
-		texture 3d_objects/plants/fruitable/textures/acorn/fruitable_128.png
+		texture 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
 	}
     }
   }
@@ -122,7 +122,7 @@ material Field/Heartblood
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/heartblood/field.png
+		texture 3d_objects/environment/field/textures/heartblood/low/field.png
 	}
 
 	ambient 1 1 1
@@ -149,7 +149,7 @@ material Field/Heartblood/Low
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/heartblood/field.png
+		texture 3d_objects/environment/field/textures/heartblood/low/field.png
 	}
 
 	ambient 1 1 1
@@ -176,7 +176,7 @@ material Field/Bittergrass
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/bittergrass/field.png
+		texture 3d_objects/environment/field/textures/bittergrass/low/field.png
 	}
 
 	diffuse 1.000000 1.000000 1.000000
@@ -202,7 +202,7 @@ material Field/Bittergrass/Low
         texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/bittergrass/field.png
+		texture 3d_objects/environment/field/textures/bittergrass/low/field.png
 	}
 
       diffuse 1.000000 1.000000 1.000000
@@ -229,7 +229,7 @@ material Field/Thingrass
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/thingrass/field.png
+		texture 3d_objects/environment/field/textures/thingrass/low/field.png
 	}
 
 	diffuse 1.000000 1.000000 1.000000
@@ -255,7 +255,7 @@ material Field/Thingrass/Low
         texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/thingrass/field.png
+		texture 3d_objects/environment/field/textures/thingrass/low/field.png
 	}
 
       diffuse 1.000000 1.000000 1.000000
@@ -281,7 +281,7 @@ material Field/Teardrops
         texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/teardrops/field.png
+		texture 3d_objects/environment/field/textures/teardrops/low/field.png
 	}
 
 	diffuse 1.000000 1.000000 1.000000
@@ -307,7 +307,7 @@ material Field/Teardrops/Low
         texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/teardrops/field.png
+		texture 3d_objects/environment/field/textures/teardrops/low/field.png
 	}
 
       diffuse 1.000000 1.000000 1.000000
