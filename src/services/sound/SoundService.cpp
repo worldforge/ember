@@ -34,9 +34,9 @@
 
 namespace dime
 {
-// List of SoundService's console commands
-	static const char * const SoundService::PLAYSOUND = "playsound";
-	static const char * const SoundService::PLAYMUSIC = "playmusic";
+    // List of SoundService's console commands
+	const char * const SoundService::PLAYSOUND = "playsound";
+	const char * const SoundService::PLAYMUSIC = "playmusic";
 
   /* ctor */
   SoundService::SoundService()

@@ -38,15 +38,15 @@ namespace dime
 {
 
     // List of ServerService's console commands
-    static const char * const ServerService::CONNECT = "connect";
-    static const char * const ServerService::RECONNECT = "reconnect";
-    static const char * const ServerService::DISCONNECT = "disconnect";
-    static const char * const ServerService::CREATEACC = "createacc";
-    static const char * const ServerService::LOGIN = "login";
-    static const char * const ServerService::LOGOUT = "logout";
-    static const char * const ServerService::CREATECHAR = "createchar";
-    static const char * const ServerService::TAKECHAR = "takechar";
-    static const char * const ServerService::LISTCHARS = "listchars";
+    const char * const ServerService::CONNECT = "connect";
+    const char * const ServerService::RECONNECT = "reconnect";
+    const char * const ServerService::DISCONNECT = "disconnect";
+    const char * const ServerService::CREATEACC = "createacc";
+    const char * const ServerService::LOGIN = "login";
+    const char * const ServerService::LOGOUT = "logout";
+    const char * const ServerService::CREATECHAR = "createchar";
+    const char * const ServerService::TAKECHAR = "takechar";
+    const char * const ServerService::LISTCHARS = "listchars";
 
 
   /* ctor */
