@@ -117,7 +117,7 @@ namespace dime {
 	/**
 	 * Creates a new BmpRecRenderer from filename of the given style.
 	 */
-	BmpRecRenderer(const Rectangle &rect, std::string filename, BitmapStyle style);
+	BmpRecRenderer(const Rectangle &rect, const std::string filename, BitmapStyle style);
 
 
 	//----------------------------------------------------------------------

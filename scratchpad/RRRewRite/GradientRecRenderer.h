@@ -111,16 +111,14 @@ namespace dime {
 	}
         
 	/**
-	 * Creates a new GradientRecRenderer for a solid color based on red,
-	 * green and blue.
+	 * Creates a new GradientRecRenderer for a 4-corner gradient
 	 */
-	GradientRecRenderer(const Rectangle &rect,
-                          Uint8 red, Uint8 green, Uint8 blue);
+	GradientRecRenderer(const Rectangle &rect, Color topleft, Color topright, Color bottomleft, Color bottomright);
         
 	/**
-	 * Creates a new GradientRecRenderer with a solid color.
+	 * Creates a new GradientRecRenderer with a horizontal/vertical gradient.
 	 */
-	GradientRecRenderer(const Rectangle &rect, const Color &color);
+	GradientRecRenderer(const Rectangle &rect, Color color1, Color color2, GradientType type);
 
 	//----------------------------------------------------------------------
 	// Destructor

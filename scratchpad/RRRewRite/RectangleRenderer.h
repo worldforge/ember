@@ -54,6 +54,10 @@ namespace dime {
      * myRectangleRenderer->render(myScreen);
      * 
      * @author Dean Dickison (Winand)
+	 * @author Adam Gregory (Adamgreg)
+	 *
+	 * @todo Renaming. RectangleRenderer -> Renderer. xRecRenderer -> xRenderer. RRFactory -> RFactory/RendererFactory.
+	 * @todo Make into base class of FontRenderer if suitable.
      */
 
     class RectangleRenderer
@@ -75,9 +79,9 @@ namespace dime {
     private:
         
 	//======================================================================
-	// Private Variables
+	// Protected Variables
 	//======================================================================
-    private:     
+    protected:     
 
 	/**
 	 * The surface that this RectangleRenderer acts upon
@@ -93,11 +97,6 @@ namespace dime {
 	// Public Methods
 	// ===================================================================
     public:
-
-	/**
-	 * Calls appropriate private function to render 
-	 */
-	int render(DrawDevice *device);
 	
 	//----------------------------------------------------------------------
 	// Constructors
@@ -161,6 +160,11 @@ namespace dime {
 
 	//----------------------------------------------------------------------
 	// Other public methods	
+
+	/**
+	 * Calls appropriate private function to render 
+	 */
+	virtual int render(DrawDevice *device) = 0;
 
 	/**
 	 * Sets this RectangleRenderer using supplied values..

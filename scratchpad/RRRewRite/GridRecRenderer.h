@@ -115,18 +115,6 @@ namespace dime {
 	 */
 	GridRecRenderer(const Rectangle &rect, std::vector<RectangleRenderer>
 		&gridVector, int columns, int rows, std::vector<int> &lines);
-        
-	/**
-	 * Creates a new GridRecRenderer for a solid color based on red,
-	 * green and blue.
-	 */
-	GridRecRenderer(const Rectangle &rect,
-                          Uint8 red, Uint8 green, Uint8 blue);
-        
-	/**
-	 * Creates a new GridRecRenderer with a solid color.
-	 */
-	GridRecRenderer(const Rectangle &rect, const Color &color);
 
 	//----------------------------------------------------------------------
 	// Destructor
@@ -151,6 +139,11 @@ namespace dime {
 	 * Renders using a DrawDevice
 	 */
 	int render(DrawDevice *device);
+	
+	/**
+	 * Updates the dimensions of the grid.
+	 */	
+	void updateGridDimensions();
 
 	//======================================================================
 	// Protected Methods
