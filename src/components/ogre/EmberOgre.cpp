@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.19  2003-09-07 12:38:51  aglanor
+ *      Revision 1.20  2003-09-29 06:28:15  aglanor
+ *      changed the texture of the plane to look like ground
+ *
+ *      Revision 1.19  2003/09/07 12:38:51  aglanor
  *      2003-09-07 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * ServerService: added touch operation
  *
@@ -330,7 +333,7 @@ void DimeOgre::createScene(void)
         );
 
         waterEntity = mSceneMgr->createEntity("water", "WaterPlane");
-        waterEntity->setMaterialName("Examples/TextureEffect4");
+	waterEntity->setMaterialName("Examples/RustySteel");
 
         Ogre::SceneNode *waterNode = static_cast<Ogre::SceneNode*>(
             mSceneMgr->getRootSceneNode()->createChild("WaterNode"));
