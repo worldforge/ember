@@ -36,8 +36,9 @@ bool TextBox::keyPress( KeyPressEvent *event)
                         }
                     else if(len ==1)
                         {
-			  // myText = (Uint16*)"";
-			  myText.clear();
+			  myText = (Uint16*)"";
+			  //myText.clear(); Backed out because of lackings of
+			  // certain versions of gcc's STL
 			  myCaretPos--;
                         }
                     
