@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.14  2003-11-25 08:03:05  aglanor
+ *      Revision 1.15  2003-11-26 19:03:43  aglanor
+ *      2003-11-26 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/components/ogre: added Avatar.(h|cpp) to store
+ *              the whole scenenode tree for the avatar and to control
+ *              its movement, looks, etc.
+ *
+ *      Revision 1.14  2003/11/25 08:03:05  aglanor
  *      2003-11-25 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/components/ogre: added 3rd person camera and
  *      	        (now working) top view camera. Added another camera
@@ -132,6 +138,7 @@ Description: Base class for all the OGRE examples
 #include <OgreConfigFile.h>
 #include "OgreFrameListener.h"
 #include <framework/ConsoleObject.h> //TODO: this will be included in a different class
+#include "Avatar.h"
 
 // Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
 /*
@@ -327,15 +334,7 @@ protected:
 	Ogre::RenderWindow* mWindow;
 
 	// Avatar setup
-	Ogre::Entity* mAvatarEntity;
-	Ogre::SceneNode* mAvatarNode;
-	Ogre::SceneNode* mAvatar1pCameraNode;
-	Ogre::SceneNode* mAvatar3pCameraNode;
-	Ogre::SceneNode* mAvatarTopCameraNode;
-	Ogre::Camera* mAvatar1pCamera;
-	Ogre::Camera* mAvatar3pCamera;
-	Ogre::Camera* mAvatarTopCamera;
-
+	Avatar mAvatar;
 
     // These internal methods package up the stages in the startup process
     /** Sets up the application - returns false if the user chooses to abandon configuration. */
@@ -402,16 +401,16 @@ protected:
     {
 
         // Create 1st person viewport, entire window
-        Ogre::Viewport* vp = mWindow->addViewport(mAvatar1pCamera);
+        Ogre::Viewport* vp = mWindow->addViewport(mAvatar.getAvatar1pCamera());
         vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 	//float left=0.0f, float top=0.0f, float width=1.0f, float height=1.0f)
 
-		Ogre::Viewport* rightvp = mWindow->addViewport(mAvatarTopCamera,1,0.70,0.05,0.25,0.25);
+		Ogre::Viewport* rightvp = mWindow->addViewport(mAvatar.getAvatarTopCamera(),1,0.70,0.05,0.25,0.25);
 		rightvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 		rightvp->setOverlaysEnabled(false);
 
-		Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar3pCamera,9,0.05,0.05,0.25,0.25);
+		Ogre::Viewport* leftvp = mWindow->addViewport(mAvatar.getAvatar3pCamera(),9,0.05,0.05,0.25,0.25);
 		leftvp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 		leftvp->setOverlaysEnabled(false);
 

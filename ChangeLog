@@ -1,3 +1,8 @@
+2003-11-26 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* src/components/ogre: added Avatar.(h|cpp) to store
+	the whole scenenode tree for the avatar and to control
+	its movement, looks, etc.
+
 2003-11-25 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* src/components/ogre: added 3rd person camera and
 	(now working) top view camera. Added another camera
