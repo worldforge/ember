@@ -42,6 +42,16 @@
 
 namespace dime 
 {
+
+/**
+ *	The default way to throw exceptions is to use one of the following macros.
+ */
+
+#define THROW(message) throw Exception(message, __FILE__, __LINE__);
+#define THROW1(message, p1) throw Exception(message, __FILE__, __LINE__, p1);
+#define THROW2(message, p1, p2) throw Exception(message, __FILE__, __LINE__, p1, p2);
+#define THROW3(message, p1, p2, p3) throw Exception(message, __FILE__, __LINE__, p1, p2, p3);
+
 /**
  * The base class for all exceptions that are thrown within Dime.
  *
@@ -55,6 +65,9 @@ namespace dime
  * @author Xmp (Martin Pollard)
  *
  */
+
+const int EXCEPTION_TEXT_SIZE = 1024;
+
 class Exception
 {
 
@@ -62,7 +75,10 @@ class Exception
 	// Private Variables
 	//======================================================================
 private:
-      std::string myError;
+    std::string myError;
+	std::string myFile;
+	int	myLine;
+
 	//======================================================================
 	// Public Methods
 	//======================================================================
@@ -85,7 +101,25 @@ public:
     Exception(const std::string& error)
 		: myError(error)
     {
+		myLine = -1;
+		myFile = "";
     }
+
+    /**
+    * Creates a new generic Exception using the specified error string, file and line
+	* occurence.
+    */
+    Exception(const std::string& error, std::string & file, int line, ...)
+		: myFile(file)
+    {
+		myLine = line;
+		char buffer[EXCEPTION_TEXT_SIZE];
+		va_list va;
+		va_start (va, line);
+		vsprintf(buffer, error.c_str(), va);
+		error = buffer;
+    }
+
 
     //----------------------------------------------------------------------
     // Destructor

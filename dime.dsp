@@ -288,6 +288,10 @@ SOURCE=.\src\main\Application.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\framework\BaseException.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\platform\Color.h
 # End Source File
 # Begin Source File
