@@ -29,10 +29,6 @@
 #include <Eris/World.h>
 #include <Eris/Avatar.h>
 
-#include <Atlas/Objects/Entity/GameEntity.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Message/Element.h>
-
 #include <sigc++/object.h>
 
 namespace dime {
@@ -174,6 +170,7 @@ class ServerService : public Service, public ConsoleObject,
     static const char * const CREATECHAR;
     static const char * const TAKECHAR;
     static const char * const LISTCHARS;
+    static const char * const TOUCH;	
 }; //ServerService
 
 } // namespace dime
