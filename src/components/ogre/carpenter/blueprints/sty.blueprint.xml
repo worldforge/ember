@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<blueprint name="sty" startingblock="mainpole">
+
+  <buildingblocks>
+    <buildingblock blocktype="fence/pole/timber" name="mainpole"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock1"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock2"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock3"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock4"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock5"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock6"/>
+    <buildingblock blocktype="fence/section/timber" name="_buildingBlock7"/>
+    <buildingblock blocktype="fence/gate/timber" name="_buildingBlock8"/>
+  </buildingblocks>
+
+  <bindings>
+    <binding block1="mainpole" block2="_buildingBlock1" point1="west/up" point2="east/up"/>
+    <binding block1="mainpole" block2="_buildingBlock1" point1="west/down" point2="east/down"/>
+    <binding block1="_buildingBlock1" block2="_buildingBlock2" point1="west/down" point2="east/down"/>
+    <binding block1="_buildingBlock1" block2="_buildingBlock2" point1="west/up" point2="east/up"/>
+    <binding block1="_buildingBlock2" block2="_buildingBlock3" point1="north/up" point2="east/up"/>
+    <binding block1="_buildingBlock2" block2="_buildingBlock3" point1="north/down" point2="east/down"/>
+    <binding block1="_buildingBlock3" block2="_buildingBlock4" point1="west/up" point2="east/up"/>
+    <binding block1="_buildingBlock3" block2="_buildingBlock4" point1="west/down" point2="east/down"/>
+    <binding block1="_buildingBlock4" block2="_buildingBlock5" point1="north/up" point2="east/up"/>
+    <binding block1="_buildingBlock4" block2="_buildingBlock5" point1="north/down" point2="east/down"/>
+    <binding block1="_buildingBlock5" block2="_buildingBlock6" point1="west/up" point2="east/up"/>
+    <binding block1="_buildingBlock5" block2="_buildingBlock6" point1="west/down" point2="east/down"/>
+    <binding block1="_buildingBlock6" block2="_buildingBlock7" point1="north/down" point2="east/down"/>
+    <binding block1="_buildingBlock6" block2="_buildingBlock7" point1="north/up" point2="east/up"/>
+    <binding block1="mainpole" block2="_buildingBlock8" point1="north/up" point2="east/up"/>
+    <binding block1="mainpole" block2="_buildingBlock8" point1="north/down" point2="east/down"/>
+  </bindings>
+
+</blueprint>

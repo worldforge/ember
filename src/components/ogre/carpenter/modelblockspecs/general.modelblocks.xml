@@ -12,4 +12,7 @@
   <buildingblockspec blockspec="adapter_a_24_12" name="adapter/a/24/12" />
   <buildingblockspec blockspec="adapter_a_12_6" name="adapter/a/12/6" />
   <buildingblockspec blockspec="adapter_a_6_3" name="adapter/a/6/3" />
+  <buildingblockspec blockspec="fence/pole" name="fence/pole/timber" />
+  <buildingblockspec blockspec="fence/section" name="fence/section/timber" />
+  <buildingblockspec blockspec="fence/gate" name="fence/gate/timber" />
 </buildingblockspecs>

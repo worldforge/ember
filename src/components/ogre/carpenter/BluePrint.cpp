@@ -201,6 +201,11 @@ BuildingBlockBinding* BluePrint::addBinding(const BuildingBlock* block1, const A
 
 void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings)
 {
+	//we place each unvound block through
+	//1) first rotate it so the vector of the two unbound points matches that of the vector of the two bound points
+	//2) then we rotate the unbound block along this vector so the normals of the attach points of the unbound block matches the inverse of the normals of the attach points of the bound block
+
+
 	std::vector<BuildingBlockBinding*>::iterator I = bindings.begin();
 	BuildingBlockBinding* binding1 = *I;
 	BuildingBlockBinding* binding2 = *(++I);
@@ -212,18 +217,18 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	const AttachPoint* unboundPoint1;
 	const AttachPoint* unboundPoint2;
 
+	//find out which block is unbound
 	if (binding1->mBlock1->isAttached()) {
 		boundBlock = &mBuildingBlocks.find(binding1->mBlock1->getName())->second;
-//		unboundBlock = binding1->mBlock2;
 		boundPoint1 = binding1->mPoint1;
 		unboundPoint1 = binding1->mPoint2;
 	} else {
 		boundBlock = &mBuildingBlocks.find(binding1->mBlock2->getName())->second;
-//		unboundBlock = binding1->mBlock1;
 		boundPoint1 = binding1->mPoint2;
 		unboundPoint1 = binding1->mPoint1;
 	}
-	
+
+	//find out which point is unbound	
 	if (binding2->mBlock1->isAttached()) {
 		boundPoint2 = binding2->mPoint1;
 		unboundPoint2 = binding2->mPoint2;
@@ -234,7 +239,9 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	
 	WFMath::Vector<3> boundPointNormal = boundPoint1->getPosition() - boundPoint2->getPosition();
 	boundPointNormal.rotate(boundBlock->getOrientation());
+	boundPointNormal.normalize();
 	WFMath::Vector<3> unboundPointNormal = unboundPoint1->getPosition() - unboundPoint2->getPosition();
+	unboundPointNormal.normalize();
 	
 	//we need the quaternion needed to rotate unboundPointNormal (and thus the whole unboundBlock) to point in the same direction as boundPointNormal
 	WFMath::Quaternion neededRotation;
@@ -242,16 +249,42 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	try {
 		neededRotation.rotation(unboundPointNormal, boundPointNormal);
 	} catch (WFMath::ColinearVectors<3> & e) {
-/*		neededRotation = boundBlock->mRotation;
-		neededRotation.inverse();	*/
-		//HACK: does this really work in all cases?
-		WFMath::Vector<3> upVector(0,0,1);
-		upVector.setValid(true);
-		neededRotation = WFMath::Quaternion(upVector, 3.1415926535898 );
+			//colinear eh? we need to flip the block
+			
+			//use one of the point normals for flipping
+			WFMath::Vector<3> flipVector = unboundPoint1->getNormal();
+			neededRotation = WFMath::Quaternion(flipVector, WFMath::Pi );
+			
 	}
-
-	//do the rotation
+	
+	//do the first rotation
 	unboundBlock->setOrientation(unboundBlock->getOrientation() * neededRotation);
+	
+	//now we must rotate around the unboundPointNormal so the normals of the point line up (i.e. the normal of an unbound point should be the inverse of a normal of a bound point)
+	WFMath::Vector<3> worldNormalOfBoundPoint1 = boundPoint1->getNormal();
+	worldNormalOfBoundPoint1.rotate(boundBlock->getOrientation());
+	
+	WFMath::Vector<3> worldNormalOfUnboundPoint1 = unboundPoint1->getNormal();
+	worldNormalOfUnboundPoint1.rotate(unboundBlock->getOrientation());
+	try {
+		//rotate through the normals of the points
+		neededRotation.rotation(-worldNormalOfBoundPoint1, worldNormalOfUnboundPoint1);
+		//neededRotation.inverse();
+		
+
+	} catch (WFMath::ColinearVectors<3> & e) 
+	{	
+		//colinear eh? we need to flip the block
+		
+		//use one of the point normals for flipping
+		WFMath::Vector<3> flipVector = unboundPoint1->getPosition() - unboundPoint2->getPosition();
+		flipVector.rotate(unboundBlock->getOrientation());
+		flipVector.normalize();
+		neededRotation = WFMath::Quaternion(flipVector, WFMath::Pi );
+	}
+	//do the second rotation
+	unboundBlock->setOrientation(unboundBlock->getOrientation() * neededRotation.inverse());
+	
 
 	unboundBlock->mAttached = true;
 	mAttachedBlocks.push_back(unboundBlock);
@@ -265,64 +298,7 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	unboundBlock->mBoundPoints.push_back(unboundPoint2);
 	boundBlock->mBoundPoints.push_back(boundPoint1);
 	boundBlock->mBoundPoints.push_back(boundPoint2);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
-	
-	
-// 	//we need the world normal of point1
-// 	WFMath::Vector<3> worldNormal1 = point1->mNormal;
-// 	worldNormal1.rotate(block1->mRotation);
-// 	
-// 	//first check if the other AttachPoint of block2 is already bound, if so, we don't have to reposition the block, only align the AttachPoint
-// 	
-// 	const AttachPoint* sibling = point2->getSibling();
-// 	std::vector<const AttachPoint*>::iterator I_end = block2->mBoundPoints.end();
-// 	bool found = false;
-// 	for (std::vector<const AttachPoint*>::iterator I = block2->mBoundPoints.begin();I != I_end;++I) {
-// 		if (*I == sibling) {
-// 			found = true;
-// 			break;
-// 		}
-// 	}
-// 
-// 	if (!found) {
-// 		
-// 		//rotate the block so that block2's point's normal is the inverse of block1's point's normal
-// 		
-// 		
-// 		WFMath::Vector<3> worldNormal2 = point2->mNormal;
-// 		worldNormal2.rotate(block2->mRotation);
-// 		
-// 		//we need the quaternion needed to rotate worldNormal2 (and thus the whole block2) to point in the same direction as the inverse of worldNormal1
-// 		//(remember, two attachpoints can only attach if their normals are inverse of each other)
-// 		WFMath::Quaternion neededRotation;
-// 		neededRotation.rotation(worldNormal2, -worldNormal1);
-// 		
-// 		//do the rotation
-// 		block2->mRotation = neededRotation;
-// 		
-// 		//we now have to position the block
-// 		WFMath::Vector<3> distance = block1->getWorldPositionForPoint(point1) - block2->getWorldPositionForPoint(point2);
-// 		block2->mPosition = block2->mPosition + distance;
-// 	} else {
-// 		//just rotate the block along the sibling's normal until point2's position is over point1
-// 		//TODO: implement this
-// 	
-// 	}
-// 		
-// 		
-// 	block1->mBoundPoints.push_back(point1);
-// 	block2->mBoundPoints.push_back(point2);
-// 	
-// 	block2->mAttached = true;
+
 
 
 } 

@@ -1,3 +1,9 @@
+2005-03-22  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* removed pig and squirrel pack
+	* added fence bblocks and a sty blueprint
+	* fixed the way the BluePrint calculates the orientations of buildin blocks
+
 2003-05-21 Miguel Guzman (Aglanor)
 
 	* The merchant now makes a sound when he speaks.

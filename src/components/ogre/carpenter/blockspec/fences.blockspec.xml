@@ -1,0 +1,111 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<blockspecs>
+  <blockspec name="fence/pole" >
+    <bbox x="0.3" y="0.3" z="1.5" />
+    <attachpairs>
+      <attachpair name="north" type="fence" >
+        <attachpoint name="up" >
+          <normal type="NORTH" />
+          <position x="0"  y="0.15" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="NORTH" />
+          <position x="0" y="0.15" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="south" type="fence" >
+        <attachpoint name="up" >
+          <normal type="SOUTH" />
+          <position x="0"  y="-0.15" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="SOUTH" />
+          <position x="0" y="-0.15" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="east" type="fence" >
+        <attachpoint name="up" >
+          <normal type="EAST" />
+          <position x="0.15"  y="0" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="EAST" />
+          <position x="0.15" y="0" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="west" type="fence" >
+        <attachpoint name="up" >
+          <normal type="WEST" />
+          <position x="-0.15"  y="0" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="WEST" />
+          <position x="-0.15" y="0" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+     </attachpairs>
+    </blockspec>
+  <blockspec name="fence/section" >
+    <bbox x="3" y="0.3" z="1.5" />
+    <attachpairs>
+      <attachpair name="east" type="fence" >
+        <attachpoint name="up" >
+          <normal type="EAST" />
+          <position x="1.3"  y="0" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="EAST" />
+          <position x="1.3" y="0" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="west" type="fence" >
+        <attachpoint name="up" >
+          <normal type="WEST" />
+          <position x="-1.5"  y="0" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="WEST" />
+          <position x="-1.5" y="0" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      
+      <attachpair name="north" type="fence" >
+        <attachpoint name="up" >
+          <normal type="NORTH" />
+          <position x="-1.35"  y="0.15" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="NORTH" />
+          <position x="-1.35" y="0.15" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      <attachpair name="south" type="fence" >
+        <attachpoint name="up" >
+          <normal type="SOUTH" />
+          <position x="-1.35"  y="-0.15" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="SOUTH" />
+          <position x="-1.35" y="-0.15" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+      
+     </attachpairs>
+    </blockspec>
+   <blockspec name="fence/gate" >
+    <bbox x="2.6" y="0.3" z="1.5" />
+    <attachpairs>
+      <attachpair name="east" type="fence" >
+        <attachpoint name="up" >
+          <normal type="EAST" />
+          <position x="1.3"  y="0" z="0.25" />
+        </attachpoint>
+        <attachpoint  name="down" >
+          <normal type="EAST" />
+          <position x="1.3" y="0" z="-0.25" />
+        </attachpoint>
+      </attachpair>
+     </attachpairs>
+    </blockspec>
+
+ </blockspecs>
