@@ -14,7 +14,7 @@ $(top_srcdir)/src/services/font/libFontService.a \
 $(top_srcdir)/src/services/server/libServerService.a \
 $(top_srcdir)/src/services/sound/libSoundService.a \
 $(top_srcdir)/test/libTestServices.a \
-$(top_srcdir)/src/framework/libFramework.a \ 
+$(top_srcdir)/src/framework/libFramework.a \
 $(top_srcdir)/src/services/logging/libLoggingService.a 
 
 
