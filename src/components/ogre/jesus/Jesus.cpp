@@ -525,11 +525,16 @@ Carpenter::BluePrint* Jesus::loadBlueprint(std::string filename)
 }
 
 
-Construction::Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::SceneNode* node)
-: mBlueprint(blueprint), mBaseNode(node), mJesus(jesus)
+Construction::Construction(Carpenter::BluePrint* bluePrint, Jesus* jesus, Ogre::SceneNode* node)
+: mBaseNode(node), mJesus(jesus), mBlueprint(bluePrint)
 {
 
-	std::vector<Carpenter::BuildingBlock*> buildingBlocks = blueprint->getAttachedBlocks();
+
+}
+
+void Construction::buildFromBluePrint(bool createAttachPointNodes)
+{
+	std::vector<Carpenter::BuildingBlock*> buildingBlocks = mBlueprint->getAttachedBlocks();
 	
 	std::vector<Carpenter::BuildingBlock*>::const_iterator J = buildingBlocks.begin();
 	std::vector<Carpenter::BuildingBlock*>::const_iterator J_end = buildingBlocks.end();
@@ -538,21 +543,22 @@ Construction::Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::
 	{
 		Carpenter::BuildingBlock* block = *J;
 		if (block->isAttached()) {
-			createModelBlock(block);
+			ModelBlock* modelBlock = createModelBlock(block, createAttachPointNodes);
 		}
 	}
-	//mModelBlocks[0]->createAttachPointNodes();
+
 }
 
-ModelBlock* Construction::createModelBlock(Carpenter::BuildingBlock* buildingBlock)
+ModelBlock* Construction::createModelBlock(Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes)
 {
 	std::string blockSpecName = buildingBlock->getBuildingBlockSpec()->getName();
 	
 	Model* model = mJesus->createModelForBlockType(blockSpecName, buildingBlock->getName());
 	ModelBlock* modelBlock = new ModelBlock(mBaseNode, buildingBlock, model, this);
-	mModelBlocks.push_back(modelBlock);
 	
-	modelBlock->createAttachPointNodes();
+	if (createAttachPointNodes) 
+		modelBlock->createAttachPointNodes();
+	mModelBlocks.push_back(modelBlock);
 	return modelBlock;	
 }
 

@@ -214,6 +214,9 @@ public:
 	void deselect();
 	
 	std::vector<AttachPointNode*> getAttachPointNodes() const;
+	
+	const Model* getModel() const { return mModel;}
+	const Ogre::SceneNode* getNode() const { return mNode;}
 protected:
 	Carpenter::BuildingBlock* mBuildingBlock;
 	Model* mModel;
@@ -249,17 +252,21 @@ public:
 	//inline Ogre::BillboardSet* getBillBoardSet() const { return mPointBillBoardSet; }
 	inline Jesus* getJesus() const { return mJesus; }
 	inline Carpenter::BluePrint* getBluePrint() const { return mBlueprint; }
+
+
+	void buildFromBluePrint(bool createAttachPointNodes);
+
 	
 	/**
 	 *    Creates a new ModelBlock and adds it to the construction.
 	 * @param buildingBlock 
 	 * @return 
 	 */
-	ModelBlock* createModelBlock(Carpenter::BuildingBlock* buildingBlock);
+	ModelBlock* createModelBlock(Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes);
 	
 	std::vector<ModelBlock*> getModelBlocks() const;
 protected:
-	Carpenter::BluePrint* mBlueprint;
+ 	Carpenter::BluePrint* mBlueprint;
 	Ogre::SceneNode* mBaseNode;
 	Jesus* mJesus;
 	

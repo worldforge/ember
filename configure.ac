@@ -7,7 +7,6 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE
-#(Ember, 0.2.0, clients@worldforge.org)
 AM_CONFIG_HEADER(config.h)
 
 AC_PREREQ(2.50)
@@ -205,6 +204,8 @@ PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
 	[
 		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
+
+LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 #CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 

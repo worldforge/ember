@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.75  2005-03-04 01:14:05  erik
+ *      Revision 1.76  2005-03-09 21:44:24  erik
+ *      2005-03-09  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* TerrainPage.cpp: removed debug image output code
+ *      	* TerrainPage.cpp: made MemoryDataStreams pass by pointer instead of reference
+ *      	* JesusEdit: show a construction object in the preview instead of just a model (this currently segfaults
+ *      	* removed path to shared dirs
+ *      	* added path to splatting materials
+ *
+ *      Revision 1.75  2005/03/04 01:14:05  erik
  *      2005-03-04  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Added more functionality and bug fixes to JesusEdit.
@@ -1126,6 +1135,7 @@ void EmberOgre::setupJesus()
     node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	blueprint->compile();
 	Construction* construction = new Construction(blueprint, mJesus, node);
+	construction->buildFromBluePrint(blueprint);
 	
 	EventCreatedJesus.emit(mJesus);
 

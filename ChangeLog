@@ -1,3 +1,11 @@
+2005-03-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TerrainPage.cpp: removed debug image output code 
+	* TerrainPage.cpp: made MemoryDataStreams pass by pointer instead of reference
+	* JesusEdit: show a construction object in the preview instead of just a model (this currently segfaults 
+	* removed path to shared dirs
+	* added path to splatting materials
+
 2005-03-06  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Use std::list instead of std::vector to avoid scary, scary bug. Thanks rakshasa and AlRiddoch.

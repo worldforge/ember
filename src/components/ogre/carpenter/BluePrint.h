@@ -167,6 +167,8 @@ public:
 	 * @param binding 
 	 */
 	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings);
+	
+	inline Carpenter* const getCarpenter() { return mCarpenter;}
 
 protected:
 	std::map<const std::string,  BuildingBlock> mBuildingBlocks;
