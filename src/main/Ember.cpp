@@ -38,7 +38,7 @@ int main(int argc, char **argv)
             dime::ImageService::getInstance()->addPath("./bin/");
             dime::ImageService::getInstance()->addPath("../../bin/");
 
-	    dime::Console myTestConsole(dime::Rectangle(300,120,300,100));
+	    dime::Console myTestConsole(dime::Rectangle(300,120,300,120));
 
 	    dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 	    dime::TextBox myTestTextBox("TextBox!", dime::Rectangle(10,40,100,35));

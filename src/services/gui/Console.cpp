@@ -138,7 +138,8 @@ void Console::renderConsoleMessages(DrawDevice *ddevice) {
 
   // Render current command string
   std::string str = CONSOLE_PROMPT_STRING + myCommand + CONSOLE_CURSOR_STRING;
-  frenderer.setRectangle(Rectangle(CONSOLE_TEXT_OFFSET_X, CONSOLE_TEXT_OFFSET_Y - consoleOffset,myRectangle.getWidth(),font_height));
+  frenderer.setRectangle(Rectangle(myRectangle.getX()+CONSOLE_TEXT_OFFSET_X,
+				   myRectangle.getY()+CONSOLE_TEXT_OFFSET_Y - consoleOffset,myRectangle.getWidth(),font_height));
   frenderer.setText(str);
   frenderer.render(ddevice);
 }
@@ -236,6 +237,33 @@ void Console::runCommand(const std::string &command, const std::string &args) {
 
 bool Console::keyPress( KeyPressEvent *event )
 {
+    if (event->getState() == KeyPressEvent::PRESSED)
+        {
+            switch (event->getKey().getKey())
+	      {
+	      case SDLK_BACKSPACE:
+		if (myCommand.length()!=0)
+		  {
+		    myCommand.erase(myCommand.length()-1,1);
+		  }
+		break;
+	      case SDLK_RETURN:
+	      {
+		runCommand(myCommand);
+		myCommand="";
+	      }
+	      break;
+	      case SDLK_TAB:
+	      {
+		// TODO: Pass focus to next control
+	      }
+	      break;
+	      default:
+		  myCommand+=event->getKey().getKey();
+	      }
+
+	  return true;
+	}
   return false;
 }
 
