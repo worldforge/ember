@@ -145,6 +145,16 @@ AC_CHECK_LIB(GLU,
 	     ])
 )
 
+dnl OpenAL check
+
+AC_CHECK_LIB(openal,
+	alutInit ,
+	     LIBS="$LIBS -lAL",
+	     AC_MSG_ERROR([
+	     Unable to find OpenAL (Open Audio Layer)
+	     ])
+	)
+
 dnl debugging option
 AC_ARG_ENABLE(debug,[  --enable-debug     creates debugging code [default=no]],
 [ 
