@@ -24,7 +24,21 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.42  2005-03-04 01:14:05  erik
+ *      Revision 1.43  2005-03-20 15:40:45  erik
+ *      2005-03-20  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* EmberOgre.h: added convenience getRootSceneNode
+ *      	* EmberOgre.h: added and cleaned up comments
+ *      	* EmberOgre.cpp: setupJesus now loads all blockspecs, building blocks, modeldefinitions and blueprints (both global and user)
+ *      	* Jesus added methods for saving blueprints, these will be saved to ~/.ember/carpenter/blueprints/
+ *      	* Jesus now loads and holds all blueprints
+ *      	* BluePrint.cpp, BluePrint.h: make BuildingBlockBinding all const
+ *      	* made sure all blueprints have names
+ *      	* JesusEdit: added ability to save and load blueprints. This is very temporary and should use a better method and GUI.
+ *      	* MakeEntityWidget: added null checks
+ *      	* Widget.h: added comment
+ *
+ *      Revision 1.42  2005/03/04 01:14:05  erik
  *      2005-03-04  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Added more functionality and bug fixes to JesusEdit.
@@ -481,7 +495,7 @@ public:
 	EmberTerrainSceneManager* getSceneManager();
 	TerrainGenerator* getTerrainGenerator();
 	MotionManager* getMotionManager();
-	Ogre::Root* EmberOgre::getOgreRoot();
+	Ogre::Root* getOgreRoot();
 	EmberEntityFactory* getEntityFactory();
 	AvatarCamera* getMainCamera();
 	
@@ -509,7 +523,14 @@ public:
 	 * throws en exception if no such node has been created
 	 * @return 
 	 */
-	Ogre::SceneNode* getWorldSceneNode();
+	Ogre::SceneNode* getWorldSceneNode() const;
+	
+	
+	/**
+	 *    returns the root scene node
+	 * @return 
+	 */
+	Ogre::SceneNode* getRootSceneNode() const;
 	
 
 
@@ -565,7 +586,7 @@ protected:
 	void createScene(void);
 	
 	/**
-	 *    Sets up Jesus. This inialized the mJesus member.
+	 *    Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
 	 */
 	void setupJesus();
 	
@@ -583,7 +604,9 @@ protected:
 	*/
 	void checkForConfigFiles();
 
-    /// Method which will define the source of resources (other than current folder)
+    /**
+	 Method which will define the source of resources (other than current folder)
+	 */
     virtual void setupResources(void);
     
 //    EmberTerrainPageSource* mPageSource;
@@ -593,6 +616,9 @@ protected:
 	GUIManager* mGUIManager;  
 	ModelDefinitionManager* mModelDefinitionManager;
 	
+	/**
+	when this is fale the app will exit
+	*/
 	bool mKeepOnRunning;
 	
 	Jesus* mJesus;

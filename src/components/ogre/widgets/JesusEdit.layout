@@ -31,7 +31,7 @@
 			</Window>
 			<Window Type="TaharezLook/Listbox" Name="AvailableBlocks">
 				<Property Name="Position" Value="x:0 y:0.45" /> 
-				<Property Name="Size" Value="w:0.45 h:0.4" /> 
+				<Property Name="Size" Value="w:0.45 h:0.35" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
 			</Window>
@@ -68,6 +68,12 @@
 				<Property Name="Position" Value="x:0.0 y:0.9" /> 
 				<Property Name="Size" Value="w:0.2 h:0.1" /> 
 				<Property Name="Text" Value="Switch mode" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>
+			<Window Type="TaharezLook/Button" Name="File">
+				<Property Name="Position" Value="x:0.0 y:0.8" /> 
+				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="Text" Value="File" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 		

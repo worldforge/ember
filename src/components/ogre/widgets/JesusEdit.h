@@ -59,6 +59,7 @@ class AttachPointNode;
 class Construction;
 class Jesus;
 class Model;
+class JesusEdit;
 
 
 
@@ -142,6 +143,37 @@ protected:
 	
 };
 
+class JesusEditFile
+{
+public:
+	JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus* jesus);
+	~JesusEditFile();
+	
+	void show();
+	void hide();
+	void switchVisibility();
+	
+protected:
+	CEGUI::Window* mWindow;
+	JesusEdit* mJesusEdit;
+	Jesus* mJesus;
+	
+	bool Load_Click(const CEGUI::EventArgs& args);
+	bool Save_Click(const CEGUI::EventArgs& args);
+
+	CEGUI::PushButton* mLoadButton;
+	CEGUI::PushButton* mSaveButton;
+	CEGUI::Listbox* mBluePrintList;
+	CEGUI::Editbox* mNewNameEditBox;
+	
+	void fillBluePrintList();
+	
+	bool saveBluePrint(const std::string& name, Carpenter::BluePrint* blueprint );
+		
+	
+
+};
+
 
 
 class JesusEdit : public Widget
@@ -152,7 +184,16 @@ public:
     ~JesusEdit();
 	
 	virtual void buildWidget();
+
 	
+	inline Construction* getConstruction() const {return mCurrentConstruction;}
+	
+	/**
+	 *    loads the supplied construction
+	 * @param construction 
+	 */
+	void loadConstruction(Construction* construction);
+
 protected:
 
 	/**
@@ -215,6 +256,7 @@ protected:
 	 */
 	bool CreateNew_Click(const CEGUI::EventArgs& args);
 
+	bool File_Click(const CEGUI::EventArgs& args);
 	
 	
 	bool AvailableBlocksList_SelectionChanged(const CEGUI::EventArgs& args);
@@ -275,11 +317,6 @@ protected:
 	void fillNewAttachPointList(const Carpenter::BlockSpec* blockspec);
 	
 	
-	/**
-	 *    loads the supplied construction
-	 * @param construction 
-	 */
-	void loadConstruction(Construction* construction);
 
 	
 	///---------start CEGUI elements
@@ -337,6 +374,7 @@ protected:
 	
 //	void createPreviewTexture();
 	JesusEditPreview* mPreview;
+	JesusEditFile* mFile;
 };
 
 

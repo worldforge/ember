@@ -68,7 +68,7 @@ class BuildingBlockBinding
 {
 friend class BluePrint;
 public:
-	BuildingBlockBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2);
+	BuildingBlockBinding(const BuildingBlock* block1, const AttachPoint* point1, const BuildingBlock* block2,	const AttachPoint* point2);
 	const std::string& getType() const;
 	const BuildingBlock* getBlock1() const { return mBlock1; }
 	const BuildingBlock* getBlock2() const { return mBlock2; }
@@ -78,9 +78,9 @@ public:
 
 protected:
 	const AttachPoint* mPoint1;
-	BuildingBlock* mBlock2;
+	const BuildingBlock* mBlock2;
 	const AttachPoint* mPoint2;
-	BuildingBlock* mBlock1;
+	const BuildingBlock* mBlock1;
 };
 
 
@@ -166,7 +166,7 @@ public:
 //    	void deleteBuildingBlock(const std::string & name);
 
 	BuildingBlockBinding* addBinding(BuildingBlockBindingDefinition definition);
-	BuildingBlockBinding* addBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2);
+	BuildingBlockBinding* addBinding(const BuildingBlock* block1, const AttachPoint* point1, const BuildingBlock* block2,	const AttachPoint* point2);
 	const std::vector< BuildingBlock*> getAttachedBlocks() const;
 	const std::list< BuildingBlockBinding>* getBindings() const;
 
@@ -175,7 +175,7 @@ public:
 	 * @param name 
 	 */
 	void setStartingBlock(const std::string& name);
-	const std::string& getStartingBlock() {return mName;}
+	inline const BuildingBlock* getStartingBlock() const {return mStartingBlock;}
 	
 	/**
 	 *    Places the unbound block in the supplied bindings correctly

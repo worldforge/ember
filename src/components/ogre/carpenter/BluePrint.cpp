@@ -53,8 +53,8 @@ void BluePrint::doBindingsForBlock(BuildingBlock *block)
 	for (;I != I_end; ++I) {
 		BuildingBlock* unboundBlock = 0;
 		const AttachPair* pair = 0;
-		BuildingBlock* block1 = (*I).mBlock1;
-		BuildingBlock* block2 = (*I).mBlock2;
+		BuildingBlock* block1 = &mBuildingBlocks.find((*I).mBlock1->getName())->second;
+		BuildingBlock* block2 = &mBuildingBlocks.find((*I).mBlock2->getName())->second;
 		if (block1 == block && !block2->isAttached()) {
 			unboundBlock = block2;
 			pair = (*I).mPoint2->getAttachPair();
@@ -88,6 +88,8 @@ const AttachPair* BuildingBlock::getAttachPair(const std::string& name)
 
 void BluePrint::compile()
 {
+
+	mAttachedBlocks.clear();
 
 	BuildingBlock* baseBlock = mStartingBlock;
 	mStartingBlock->mAttached = true;
@@ -188,7 +190,7 @@ BuildingBlockBinding* BluePrint::addBinding(BuildingBlockBindingDefinition defin
 	return addBinding(block1, point1, block2, point2);
 }
 
-BuildingBlockBinding* BluePrint::addBinding(BuildingBlock* block1, const AttachPoint* point1, BuildingBlock* block2,	const AttachPoint* point2)
+BuildingBlockBinding* BluePrint::addBinding(const BuildingBlock* block1, const AttachPoint* point1, const BuildingBlock* block2,	const AttachPoint* point2)
 {
 	BuildingBlockBinding binding(block1, point1, block2, point2);
 	
@@ -211,12 +213,12 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	const AttachPoint* unboundPoint2;
 
 	if (binding1->mBlock1->isAttached()) {
-		boundBlock = binding1->mBlock1;
+		boundBlock = &mBuildingBlocks.find(binding1->mBlock1->getName())->second;
 //		unboundBlock = binding1->mBlock2;
 		boundPoint1 = binding1->mPoint1;
 		unboundPoint1 = binding1->mPoint2;
 	} else {
-		boundBlock = binding1->mBlock2;
+		boundBlock = &mBuildingBlocks.find(binding1->mBlock2->getName())->second;
 //		unboundBlock = binding1->mBlock1;
 		boundPoint1 = binding1->mPoint2;
 		unboundPoint1 = binding1->mPoint1;
@@ -330,7 +332,7 @@ const std::vector< const AttachPoint * > BuildingBlock::getAllPoints( ) const
 	return getBlockSpec()->getAllPoints();
 }
 
-BuildingBlockBinding::BuildingBlockBinding( BuildingBlock * block1, const AttachPoint * point1, BuildingBlock * block2, const AttachPoint * point2)
+BuildingBlockBinding::BuildingBlockBinding( const BuildingBlock * block1, const AttachPoint * point1, const BuildingBlock * block2, const AttachPoint * point2)
 : mBlock1(block1), mPoint1(point1), mBlock2(block2), mPoint2(point2)
 {
 }

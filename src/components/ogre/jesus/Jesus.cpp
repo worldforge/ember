@@ -33,6 +33,8 @@
 #include <xercesc/util/OutOfMemoryException.hpp>
 
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 
 using namespace xercesc;
@@ -465,7 +467,34 @@ void Jesus::fillFromElement(xercesc::DOMElement* element, T& geometryObject)
 
 }
 
-void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, std::string filename)
+bool Jesus::addBluePrint(Carpenter::BluePrint* blueprint)
+{
+	if (mBlueprints.find(blueprint->getName()) != mBlueprints.end()) {
+		//there is already a blueprint with that name
+		return false;
+	}
+	mBlueprints.insert(std::map<std::string, Carpenter::BluePrint*>::value_type(blueprint->getName(), blueprint));
+	return true;
+}
+
+Carpenter::BluePrint* Jesus::getBluePrint(const std::string& name) const
+{
+	std::map<std::string, Carpenter::BluePrint*>::const_iterator I = mBlueprints.find(name);
+	if (I != mBlueprints.end()) 
+	{
+		return I->second;
+	}
+	return 0;
+	
+}
+
+
+void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename)
+{
+	saveBlueprintToFile(blueprint, filename, blueprint->getName());
+}
+
+void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename, const std::string& name)
 {
 	if (filename == "") {
 		return;
@@ -483,107 +512,116 @@ void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, std::string fil
 	}
 	
 	
-   {
-       //  Nest entire test in an inner block.
-       //  The tree we create below is the same that the XercesDOMParser would
-       //  have created, except that no whitespace text nodes would be created.
+	   
+	//make sure the directory exists
+	std::string dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "/carpenter/blueprints";
+	struct stat tagStat;
+	int ret;
+	ret = stat( dir.c_str(), &tagStat );
+	if (ret == -1) {
+		mkdir(dir.c_str(), S_IRWXU);
+	}
+	
+	
+	
+	
+	try {
+		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(X((dir + "/" + filename).c_str()));
+		DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("LS"));
+		DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
-       // <company>
-       //     <product>Xerces-C</product>
-       //     <category idea='great'>XML Parsing Tools</category>
-       //     <developedBy>Apache Software Foundation</developedBy>
-       // </company>
-
-       DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("LS"));
-       DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
-       XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(X(filename.c_str()));
-
-       if (impl != NULL)
-       {
-           try
-           {
-               DOMDocument* doc = impl->createDocument(
-                           0,                    // root element namespace URI.
-                           X("blueprint"),         // root element name
-                           0);                   // document type object (DTD).
-
-               DOMElement* rootElem = doc->getDocumentElement();
-			   
-			   //set the starting block
-              rootElem->setAttribute(X("startingblock"), X(blueprint->getStartingBlock().c_str()));
-              //and name
-			  rootElem->setAttribute(X("name"), X(blueprint->getName().c_str()));
-			   
-			  //now iterate over all building blocks
-               DOMElement*  bblocksElem = doc->createElement(X("buildingblocks"));
-               rootElem->appendChild(bblocksElem);
-			   
-			   const std::vector< Carpenter::BuildingBlock*> bblocks = blueprint->getAttachedBlocks();
-			   
-			   std::vector< Carpenter::BuildingBlock*>::const_iterator I = bblocks.begin();
-			   std::vector< Carpenter::BuildingBlock*>::const_iterator I_end = bblocks.end();
-			   
-			   for (;I != I_end; ++I) {
-					DOMElement*  bblockElem = doc->createElement(X("buildingblock"));
-					bblockElem->setAttribute(X("blocktype"), X( (*I)->getBuildingBlockSpec()->getName().c_str() ));
-					bblockElem->setAttribute(X("name"), X((*I)->getName().c_str()));
-					bblocksElem->appendChild(bblockElem);
-			  		
-			   }
-			   
-			   
-			   //iterate over the bindings
-               DOMElement*  bindingsElem = doc->createElement(X("bindings"));
-               rootElem->appendChild(bindingsElem);
-			   
-			   const std::list< Carpenter::BuildingBlockBinding>* bindings = blueprint->getBindings();
-			   std::list< Carpenter::BuildingBlockBinding>::const_iterator J = bindings->begin();
-			   std::list< Carpenter::BuildingBlockBinding>::const_iterator J_end = bindings->end();
-			   
-			   for (;J != J_end; ++J) {
-					DOMElement*  bindingElem = doc->createElement(X("binding"));
-					bindingElem->setAttribute(X("block1"), X((*J).getBlock1()->getName().c_str()));
-					bindingElem->setAttribute(X("block2"), X((*J).getBlock2()->getName().c_str()));
-					const Carpenter::AttachPoint* point1 = (*J).getAttachPoint1();
-					std::string point1Name = point1->getAttachPair()->getName() + "/" + point1->getName();
-					const Carpenter::AttachPoint* point2 = (*J).getAttachPoint2();
-					std::string point2Name = point2->getAttachPair()->getName() + "/" + point2->getName();
-					bindingElem->setAttribute(X("point1"), X(point1Name.c_str()));
-					bindingElem->setAttribute(X("point2"), X(point2Name.c_str()));
-					
-					bindingsElem->appendChild(bindingElem);
-			  		
-			   }
-			   
-			  
-           		theSerializer->writeNode(myFormTarget, *doc);
-            delete theSerializer;
-            delete myFormTarget;
-
-//               doc->release();
-           }
-           catch (const OutOfMemoryException&)
-           {
-               XERCES_STD_QUALIFIER cerr << "OutOfMemoryException" << XERCES_STD_QUALIFIER endl;
-//               errorCode = 5;
-           }
-           catch (const DOMException& e)
-           {
-               XERCES_STD_QUALIFIER cerr << "DOMException code is:  " << e.code << XERCES_STD_QUALIFIER endl;
-//               errorCode = 2;
-           }
-           catch (...)
-           {
-               XERCES_STD_QUALIFIER cerr << "An error occurred creating the document" << XERCES_STD_QUALIFIER endl;
-//               errorCode = 3;
-           }
-       }  // (inpl != NULL)
-       else
-       {
-           XERCES_STD_QUALIFIER cerr << "Requested implementation is not supported" << XERCES_STD_QUALIFIER endl;
-//           errorCode = 4;
-       }
-   }
+		if (impl != NULL)
+		{
+			try
+			{
+				DOMDocument* doc = impl->createDocument(
+							0,                    // root element namespace URI.
+							X("blueprint"),         // root element name
+							0);                   // document type object (DTD).
+	
+				DOMElement* rootElem = doc->getDocumentElement();
+				
+				//set the starting block
+				rootElem->setAttribute(X("startingblock"), X(blueprint->getStartingBlock()->getName().c_str()));
+				//and name
+				rootElem->setAttribute(X("name"), X(name.c_str()));
+				
+				//now iterate over all building blocks
+				DOMElement*  bblocksElem = doc->createElement(X("buildingblocks"));
+				rootElem->appendChild(bblocksElem);
+				
+				const std::vector< Carpenter::BuildingBlock*> bblocks = blueprint->getAttachedBlocks();
+				
+				std::vector< Carpenter::BuildingBlock*>::const_iterator I = bblocks.begin();
+				std::vector< Carpenter::BuildingBlock*>::const_iterator I_end = bblocks.end();
+				
+				for (;I != I_end; ++I) {
+						DOMElement*  bblockElem = doc->createElement(X("buildingblock"));
+						bblockElem->setAttribute(X("blocktype"), X( (*I)->getBuildingBlockSpec()->getName().c_str() ));
+						bblockElem->setAttribute(X("name"), X((*I)->getName().c_str()));
+						bblocksElem->appendChild(bblockElem);
+						
+				}
+				
+				
+				//iterate over the bindings
+				DOMElement*  bindingsElem = doc->createElement(X("bindings"));
+				rootElem->appendChild(bindingsElem);
+				
+				const std::list< Carpenter::BuildingBlockBinding>* bindings = blueprint->getBindings();
+				std::list< Carpenter::BuildingBlockBinding>::const_iterator J = bindings->begin();
+				std::list< Carpenter::BuildingBlockBinding>::const_iterator J_end = bindings->end();
+				
+				for (;J != J_end; ++J) {
+						DOMElement*  bindingElem = doc->createElement(X("binding"));
+						bindingElem->setAttribute(X("block1"), X((*J).getBlock1()->getName().c_str()));
+						bindingElem->setAttribute(X("block2"), X((*J).getBlock2()->getName().c_str()));
+						const Carpenter::AttachPoint* point1 = (*J).getAttachPoint1();
+						std::string point1Name = point1->getAttachPair()->getName() + "/" + point1->getName();
+						const Carpenter::AttachPoint* point2 = (*J).getAttachPoint2();
+						std::string point2Name = point2->getAttachPair()->getName() + "/" + point2->getName();
+						bindingElem->setAttribute(X("point1"), X(point1Name.c_str()));
+						bindingElem->setAttribute(X("point2"), X(point2Name.c_str()));
+						
+						bindingsElem->appendChild(bindingElem);
+						
+				}
+				
+				//puny humans must be able to read it too!
+				if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
+					theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+							
+				
+				theSerializer->writeNode(myFormTarget, *doc);
+				delete theSerializer;
+				delete myFormTarget;
+	
+			}
+			catch (const OutOfMemoryException&)
+			{
+				XERCES_STD_QUALIFIER cerr << "OutOfMemoryException" << XERCES_STD_QUALIFIER endl;
+	//               errorCode = 5;
+			}
+			catch (const DOMException& e)
+			{
+				XERCES_STD_QUALIFIER cerr << "DOMException code is:  " << e.code << XERCES_STD_QUALIFIER endl;
+	//               errorCode = 2;
+			}
+			catch (...)
+			{
+				XERCES_STD_QUALIFIER cerr << "An error occurred creating the document" << XERCES_STD_QUALIFIER endl;
+	//               errorCode = 3;
+			}
+		}  // (inpl != NULL)
+		else
+		{
+			XERCES_STD_QUALIFIER cerr << "Requested implementation is not supported" << XERCES_STD_QUALIFIER endl;
+	//           errorCode = 4;
+		}
+	} catch (const std::exception& ex) {
+		//TODO: catch errors and do something
+	}
+	
 
    XMLPlatformUtils::Terminate();
    //return errorCode;
@@ -755,11 +793,11 @@ void Construction::buildFromBluePrint(bool createAttachPointNodes)
 
 }
 
-ModelBlock* Construction::createModelBlock(Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes)
+ModelBlock* Construction::createModelBlock(const Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes)
 {
 	std::string blockSpecName = buildingBlock->getBuildingBlockSpec()->getName();
 	
-	Model* model = mJesus->createModelForBlockType(blockSpecName, buildingBlock->getName());
+	Model* model = mJesus->createModelForBlockType(blockSpecName, mBaseNode->getName() + buildingBlock->getName());
 	ModelBlock* modelBlock = new ModelBlock(mBaseNode, buildingBlock, model, this);
 	
 	if (createAttachPointNodes) 
@@ -809,7 +847,7 @@ ModelBlock::~ModelBlock()
 }
 
 
-ModelBlock::ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock, Model* model, Construction* construction)
+ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock* buildingBlock, Model* model, Construction* construction)
 : mBuildingBlock(buildingBlock), mModel(model), mConstruction(construction), mModelNode(0)
 {
 	
@@ -817,7 +855,7 @@ ModelBlock::ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buil
 	mNode = baseNode->createChildSceneNode(Atlas2Ogre(buildingBlock->getPosition()), Atlas2Ogre(buildingBlock->getOrientation()));
 	
 	
-	mPointBillBoardSet = EmberOgre::getSingleton().getSceneManager()->createBillboardSet( buildingBlock->getName() + "_billboardset");
+	mPointBillBoardSet = EmberOgre::getSingleton().getSceneManager()->createBillboardSet( std::string("__construction_") + construction->getBluePrint()->getName() + "_" + buildingBlock->getName() + "_billboardset__" + mNode->getName());
 	mPointBillBoardSet->setDefaultDimensions(1, 1);
 	mPointBillBoardSet->setMaterialName("carpenter/flare");
 	mPointBillBoardSet->setVisible(false);

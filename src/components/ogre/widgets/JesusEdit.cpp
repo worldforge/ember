@@ -56,8 +56,8 @@ JesusEdit::~JesusEdit()
 
 void JesusEdit::buildWidget()
 {
-	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEdit.widget", "JesusEdit/");
+
+	loadMainSheet("JesusEdit.widget", "JesusEdit/");
 	mMainWindow->setVisible(false);
 	
 	
@@ -66,6 +66,9 @@ void JesusEdit::buildWidget()
 	//bind buttons
 	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/SwitchMode"));
 	BIND_CEGUI_EVENT(switchButton, CEGUI::ButtonBase::EventMouseClick, JesusEdit::SwitchMode_Click)
+	
+	CEGUI::PushButton* fileButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/File"));
+	BIND_CEGUI_EVENT(fileButton, CEGUI::ButtonBase::EventMouseClick, JesusEdit::File_Click)
 	
 	mCreateNew = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/CreateNew"));
 	BIND_CEGUI_EVENT(mCreateNew, CEGUI::ButtonBase::EventMouseClick, JesusEdit::CreateNew_Click)
@@ -133,9 +136,13 @@ void JesusEdit::pickedModelBlock(ModelBlock* modelBlock, const CEGUI::MouseEvent
 		loadConstruction(modelBlock->getConstruction());
 	}
 	
-	CEGUI::ListboxItem* item = mCurrentBlocksListLookup.find(modelBlock)->second;
-	mCurrentBlocksList->ensureItemIsVisible(item);
-	mCurrentBlocksList->setItemSelectState(item, true);
+	//use the lookup map to see what ListBoxItem corresponds to the picked ModleBlock
+	std::map<ModelBlock*, CEGUI::ListboxItem*>::iterator I = mCurrentBlocksListLookup.find(modelBlock);
+	if (I != mCurrentBlocksListLookup.end()) {
+		CEGUI::ListboxItem* item = I->second;
+		mCurrentBlocksList->ensureItemIsVisible(item);
+		mCurrentBlocksList->setItemSelectState(item, true);
+	}
 
 }
 
@@ -144,6 +151,7 @@ void JesusEdit::loadConstruction(Construction* construction)
 	mCurrentConstruction = construction;
 	mCurrentBlocksList->resetList();
 	mCurrentBlocksList->clearAllSelections();
+	mCurrentBlocksListLookup.clear();
 	std::vector<ModelBlock*> blocks = construction->getModelBlocks();
 	
 	for (std::vector<ModelBlock*>::iterator I = blocks.begin(); I != blocks.end(); ++I) 
@@ -151,10 +159,11 @@ void JesusEdit::loadConstruction(Construction* construction)
 		CEGUI::String name((*I)->getBuildingBlock()->getName());
 		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, *I);
 		mCurrentBlocksList->addItem(item);
+		//add to the lookup map
 		mCurrentBlocksListLookup.insert(std::map<ModelBlock*, CEGUI::ListboxItem*>::value_type(*I, item));
 	}
 	
-	loadFromJesus(construction->getJesus());
+	//loadFromJesus(construction->getJesus());
 	
 }
 
@@ -163,6 +172,8 @@ void JesusEdit::createdJesus(Jesus* jesus)
 	mMainWindow->setVisible(true);
 	loadFromJesus(jesus);
 	mPreview = new JesusEditPreview(mGuiManager, jesus);
+	mFile = new JesusEditFile(mGuiManager, this, jesus);
+	mFile->hide();
 
 }
 
@@ -455,6 +466,7 @@ JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 	//make the cameranode a child of the main entity node
 	mCameraNode = mEntityNode->createChildSceneNode();
 	mCameraNode->setPosition(Ogre::Vector3(0,5,-20));
+	guiManager->getMainSheet()->addChildWindow(mPreviewWindow);
 	createCamera();
 	createPreviewTexture();
 }
@@ -573,29 +585,161 @@ void JesusEditPreview::createPreviewTexture()
 
 }
 
-    void JesusEditPreviewRenderListener::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
-    {
-		//hide the gui and the cursor
-		mGuiManager->getMainSheet()->setVisible(false);
-		CEGUI::MouseCursor::getSingleton().hide();
+void JesusEditPreviewRenderListener::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+{
+	//hide the gui and the cursor
+	mGuiManager->getMainSheet()->setVisible(false);
+	CEGUI::MouseCursor::getSingleton().hide();
 
-    }
-    void JesusEditPreviewRenderListener::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
-    {
-		//show the gui and the cursor again
-		mGuiManager->getMainSheet()->setVisible(true);
-		CEGUI::MouseCursor::getSingleton().show();
-
-    }
-
+}
+void JesusEditPreviewRenderListener::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+{
+	//show the gui and the cursor again
+	mGuiManager->getMainSheet()->setVisible(true);
+	CEGUI::MouseCursor::getSingleton().show();
 
 }
 
-bool EmberOgre::JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
+JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus* jesus) : mJesusEdit(jesusEdit), mJesus(jesus)
+{
+	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditFile.widget", "JesusEditFile/");
+
+	mBluePrintList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Blueprints"));
+/*	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventSelectionChanged, JesusEditFile::BluePrintList_SelectionChanged)
+	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventListContentsChanged, JesusEditFile::BluePrintList_SelectionChanged)*/
+	
+	
+	mLoadButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Load"));
+	BIND_CEGUI_EVENT(mLoadButton, CEGUI::ButtonBase::EventMouseClick, JesusEditFile::Load_Click)
+	mSaveButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Save"));
+	BIND_CEGUI_EVENT(mSaveButton, CEGUI::ButtonBase::EventMouseClick, JesusEditFile::Save_Click)
+
+	mNewNameEditBox = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/NewName"));
+	
+	guiManager->getMainSheet()->addChildWindow(mWindow);
+		
+	fillBluePrintList();
+
+}
+
+void JesusEditFile::fillBluePrintList()
+{
+	mBluePrintList->resetList();
+	
+	const std::map<std::string, Carpenter::BluePrint* >* blueprintMap = mJesus->getAllBluePrints();
+	
+	std::map<std::string, Carpenter::BluePrint* >::const_iterator I = blueprintMap->begin();
+	std::map<std::string, Carpenter::BluePrint* >::const_iterator I_end = blueprintMap->end();
+	
+	for (; I != I_end; ++I)
+	{
+		CEGUI::String name(I->first);
+		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, 0);
+		mBluePrintList->addItem(item);
+		
+	}
+	
+	
+	
+}
+	
+bool JesusEditFile::Load_Click( const CEGUI::EventArgs & args )
+{
+	CEGUI::ListboxItem* item = mBluePrintList->getFirstSelectedItem();
+	if (item) {
+		std::string name(item->getText().c_str());
+	
+		Carpenter::BluePrint* blueprint = mJesus->getBluePrint(name);
+		if (blueprint) {
+			Ogre::SceneNode*  avatarNode = EmberOgre::getSingleton().getAvatar()->getAvatarSceneNode();
+			
+
+			//create a new node on the same "level" as the avatar
+			Ogre::SceneNode* node = avatarNode->getParentSceneNode()->createChildSceneNode();
+			
+			Construction* construction = new Construction(blueprint, mJesus, node);
+			construction->buildFromBluePrint(blueprint);
+			
+			//place the node in front of the avatar
+			
+			
+			Ogre::Vector3 o_vector(0,0,-5);
+			Ogre::Vector3 o_pos = avatarNode->getPosition() + (avatarNode->getOrientation() * o_vector);
+			node->setPosition(o_pos);
+			
+			mJesusEdit->loadConstruction(construction);
+		
+		}
+	}
+
+
+	return true;
+}
+bool JesusEditFile::Save_Click( const CEGUI::EventArgs & args )
+{
+
+	std::string name(mNewNameEditBox->getText().c_str());
+	
+	//check that there is a name
+	if (name != "") {
+		saveBluePrint(name, mJesusEdit->getConstruction()->getBluePrint());
+/*		//check if there's already a blueprint saved with that name
+		if (mJesus->getAllBluePrints()->find(name) == mJesus->getAllBluePrints().end()) {
+		} else {
+			//there is a blueprint already, but check if this is defined in the home dir
+		}*/
+		
+	}
+
+	return true;
+}
+
+bool JesusEditFile::saveBluePrint(const std::string& name, Carpenter::BluePrint* blueprint )
+{
+	mJesus->saveBlueprintToFile(blueprint, name + ".blueprint.xml", name);
+	return true;
+}
+
+void JesusEditFile::show()
+{
+	mWindow->setVisible(true);
+	mWindow->moveToFront ();
+}
+
+void JesusEditFile::hide()
+{
+	mWindow->setVisible(false);
+}
+	
+void JesusEditFile::switchVisibility()
+{
+	if (mWindow->isVisible()) {
+		hide();
+	} else {
+		show();
+	}
+}
+
+
+	
+bool JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 {
 
 	mCurrentConstruction->getJesus()->saveBlueprintToFile(mCurrentConstruction->getBluePrint() , "/tmp/test.blueprint.xml");
+	return true;
 }
+
+bool JesusEdit::File_Click(const CEGUI::EventArgs& args)
+{
+	if (mFile)
+	{
+		mFile->switchVisibility();
+	}
+}
+	
+
+}
+
 
 
 

@@ -144,28 +144,30 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 {
 	//HACK: low level mucking, this should be possible through Eris
 	CEGUI::ListboxItem* item = mTypeList->getFirstSelectedItem();
-	Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
-	
-	Atlas::Objects::Operation::Create c;
-	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
-	c->setFrom(avatar->getId());
-	
-	Atlas::Message::MapType msg;
-	msg["loc"] = avatar->getLocation()->getId();
-	
-	Ogre::Vector3 o_vector(2,0,0);
-	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-	
-// 	WFMath::Vector<3> vector(0,2,0);
-// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
-	WFMath::Point<3> pos = Ogre2Atlas(o_pos);
-	
-	msg["pos"] = pos.toAtlas();
-	msg["name"] = mName->getText().c_str();
-	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
-	c->setArgsAsList(Atlas::Message::ListType(1, msg));
-	mConn->send(c);
-	std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
+	if (item) {
+		Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
+		
+		Atlas::Objects::Operation::Create c;
+		AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+		c->setFrom(avatar->getId());
+		
+		Atlas::Message::MapType msg;
+		msg["loc"] = avatar->getLocation()->getId();
+		
+		Ogre::Vector3 o_vector(2,0,0);
+		Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
+		
+	// 	WFMath::Vector<3> vector(0,2,0);
+	// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
+		WFMath::Point<3> pos = Ogre2Atlas(o_pos);
+		
+		msg["pos"] = pos.toAtlas();
+		msg["name"] = mName->getText().c_str();
+		msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
+		c->setArgsAsList(Atlas::Message::ListType(1, msg));
+		mConn->send(c);
+		std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
+	}
 	
 //	Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }

@@ -23,7 +23,21 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.76  2005-03-09 21:44:24  erik
+ *      Revision 1.77  2005-03-20 15:40:45  erik
+ *      2005-03-20  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* EmberOgre.h: added convenience getRootSceneNode
+ *      	* EmberOgre.h: added and cleaned up comments
+ *      	* EmberOgre.cpp: setupJesus now loads all blockspecs, building blocks, modeldefinitions and blueprints (both global and user)
+ *      	* Jesus added methods for saving blueprints, these will be saved to ~/.ember/carpenter/blueprints/
+ *      	* Jesus now loads and holds all blueprints
+ *      	* BluePrint.cpp, BluePrint.h: make BuildingBlockBinding all const
+ *      	* made sure all blueprints have names
+ *      	* JesusEdit: added ability to save and load blueprints. This is very temporary and should use a better method and GUI.
+ *      	* MakeEntityWidget: added null checks
+ *      	* Widget.h: added comment
+ *
+ *      Revision 1.76  2005/03/09 21:44:24  erik
  *      2005-03-09  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* TerrainPage.cpp: removed debug image output code
@@ -1076,7 +1090,7 @@ void EmberOgre::preloadMedia(void)
 		while (ep = readdir (dp)) {
 			if (ep->d_name != "." && ep->d_name != "..") {
 				try {
-					fprintf(stderr, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
+					fprintf(stdout, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
 					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");
 /*					if (modeldef->isValid()) {
 						Model* model = Model::Create(ep->d_name, ep->d_name);
@@ -1118,24 +1132,119 @@ void EmberOgre::setupJesus()
 	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
 	mJesus = new Jesus(carpenter);
 
-	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/floors.blockspec.xml");
+	DIR *dp;
+	struct dirent *ep;
+	std::string dir;
+	//load all blockspecs
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/carpenter/blockspec";
+	dp = opendir (dir.c_str());
+	if (dp != 0)
+	{
+		while (ep = readdir (dp)) {
+			if (ep->d_type != 4) {
+				std::cout << "TRACE - LOADING BLOCKSPEC: " << ep->d_name << "\n";
+				mJesus->loadBlockSpec(dir + "/" + ep->d_name);
+			}
+		}
+		(void) closedir (dp);
+	}
+	
+	//load all buildingblockspecs
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/carpenter/modelblockspecs";
+	dp = opendir (dir.c_str());
+	if (dp != 0)
+	{
+		while (ep = readdir (dp)) {
+			if (ep->d_type != 4) {
+				std::cout << "TRACE - LOADING BUILDINGBLOCKSPEC: " << ep->d_name << "\n";
+				mJesus->loadBuildingBlockSpecDefinition(dir + "/" + ep->d_name);
+			}
+		}
+		(void) closedir (dp);
+	}
+	
+	//load all modelmappings
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/jesus/modelmappings";
+	dp = opendir (dir.c_str());
+	if (dp != 0)
+	{
+		while (ep = readdir (dp)) {
+			if (ep->d_type != 4) {
+				std::cout << "TRACE - LOADING MODELMAPPING: " <<  ep->d_name << "\n";
+				mJesus->loadModelBlockMapping(dir + "/" + ep->d_name);
+			}
+		}
+		(void) closedir (dp);
+	}
+	
+	
+	//load all global blueprints
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/carpenter/blueprints";
+	dp = opendir (dir.c_str());
+	if (dp != 0)
+	{
+		while (ep = readdir (dp)) {
+			if (ep->d_type != 4) {
+				std::cout << "TRACE - LOADING GLOBAL BLUEPRINT: " << ep->d_name << "\n";
+				Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(dir + "/" + ep->d_name);
+				if (blueprint) {
+					blueprint->compile();
+					bool result = mJesus->addBluePrint(blueprint);
+					if (!result)
+					{
+						std::cerr << "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name << "\n";
+					}
+				}
+			}
+		}
+		(void) closedir (dp);
+	}
+	
+	//load all local blueprints
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "/carpenter/blueprints";
+	dp = opendir (dir.c_str());
+	if (dp != 0)
+	{
+		while (ep = readdir (dp)) {
+			if (ep->d_name != "." && ep->d_name != "..") {
+				std::cout << "TRACE - LOADING LOCAL BLUEPRINT: " << ep->d_name << "\n";
+				Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(dir + "/" + ep->d_name);
+				if (blueprint) {
+					blueprint->compile();
+					bool result = mJesus->addBluePrint(blueprint);
+					if (!result)
+					{
+						std::cerr << "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name << "\n";
+					}
+				}
+			}
+		}
+		(void) closedir (dp);
+	}
+	
+	
+/*	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/floors.blockspec.xml");
 	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/walls.blockspec.xml");
 	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/roofs.blockspec.xml");
 	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/slopewalls.blockspec.xml");
-	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/adapters.blockspec.xml");
-	mJesus->loadBuildingBlockSpecDefinition(datadir + "/carpenter/modelblockspecs/general.modelblocks.xml");
+	mJesus->loadBlockSpec(datadir + "/carpenter/blockspec/adapters.blockspec.xml");*/
+/*	mJesus->loadBuildingBlockSpecDefinition(datadir + "/carpenter/modelblockspecs/general.modelblocks.xml");*/
 	
-	mJesus->loadModelBlockMapping(datadir + "/jesus/modelmappings/general.modelmapping.xml");
+// 	mJesus->loadModelBlockMapping(datadir + "/jesus/modelmappings/general.modelmapping.xml");
 	
 	
 //	Carpenter::BluePrint* housePrint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/house.blueprint.xml");
-	Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/empty.blueprint.xml");
+//	Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(datadir + "/carpenter/blueprints/empty.blueprint.xml");
 	
-    Ogre::SceneNode* node;
-    node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	blueprint->compile();
-	Construction* construction = new Construction(blueprint, mJesus, node);
-	construction->buildFromBluePrint(blueprint);
+/*	Carpenter::BluePrint* blueprint = mJesus->getBluePrint("empty");
+	if (blueprint) {
+		Ogre::SceneNode* node;
+		node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+		blueprint->compile();
+		Construction* construction = new Construction(blueprint, mJesus, node);
+		construction->buildFromBluePrint(blueprint);
+	
+	}*/
 	
 	EventCreatedJesus.emit(mJesus);
 
@@ -1231,7 +1340,7 @@ Ogre::Root* EmberOgre::getOgreRoot()
 	return mRoot;
 }
 
-Ogre::SceneNode * EmberOgre::getWorldSceneNode( )
+Ogre::SceneNode * EmberOgre::getWorldSceneNode( ) const
 {
 	return mEmberEntityFactory->getWorld()->getSceneNode();
 /*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
@@ -1240,6 +1349,12 @@ Ogre::SceneNode * EmberOgre::getWorldSceneNode( )
 		throw Exception();
 	return node;*/
 }
+
+Ogre::SceneNode* EmberOgre::getRootSceneNode() const
+{
+	return mSceneMgr->getRootSceneNode();
+}
+
 
 AvatarCamera* EmberOgre::getMainCamera()
 {

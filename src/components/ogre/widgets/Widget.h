@@ -34,6 +34,9 @@
 
 namespace EmberOgre {
 
+/**
+Utility define for binding CEGUI elements to methods. 
+*/
 #define BIND_CEGUI_EVENT(window, event, method) window->subscribeEvent(event, CEGUI::Event::Subscriber(&method, this)); 
 
 

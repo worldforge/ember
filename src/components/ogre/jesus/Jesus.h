@@ -123,8 +123,9 @@ public:
 	 * @param filename 
 	 * @return 
 	 */
-	void saveBlueprintToFile(Carpenter::BluePrint* blueprint, std::string filename);
-	
+	void saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename);
+	void saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename, const std::string& name);
+		
 	/**
 	 *    Creates a new Model instance for the supplied block type.
 	 *    If there's no Model defined for the supplies block type, a null pointer will be returned.
@@ -148,15 +149,24 @@ public:
 	 */
 	inline Carpenter::Carpenter* getCarpenter() const { return mCarpenter; }
 	
+	/**
+	 *    adds a blueprint
+	 * @param blueprint 
+	 * @return false if there's already a blueprint with the same name as the supplied blueprint
+	 */
 	bool addBluePrint(Carpenter::BluePrint* blueprint);
 	
 	/**
 	 *    returns a blueprint with the supplied name
 	 *	  note that the blueprint must already be loaded and added to Jesus with addBluePrint(...)
+	 *	  @see addBluePrint(Carpenter::BluePrint*)
 	 * @param name 
 	 * @return 
 	 */
-	Carpenter::BluePrint* getBluePrint(const std::string& name);
+	Carpenter::BluePrint* getBluePrint(const std::string& name) const;
+	
+	
+	inline const std::map<std::string , Carpenter::BluePrint* > * getAllBluePrints() const {return &mBlueprints;}
 
 protected:
 	/**
@@ -166,6 +176,10 @@ protected:
 	 */
 	template <typename T> void fillFromElement(xercesc::DOMElement* , T& );
 	
+	/**
+	a map of what Model should represent a certain Carpenter::BuildingBlockSpec
+	the first value is the name of the Carpenter::BuildingBlockSpec and the second value is the name of the Model
+	*/
 	std::map<std::string, std::string> mModelMappings;
 	Carpenter::Carpenter* mCarpenter;
 	
@@ -181,6 +195,9 @@ protected:
 	
 	void addAttachPointType(const std::string & type);
 	
+	/**
+	all blueprints are stored here
+	*/
 	std::map<std::string , Carpenter::BluePrint* > mBlueprints;
 
 };
@@ -227,11 +244,11 @@ A mapping between a Carpenter::BuildingBlock and an Ember::Model.
 class ModelBlock
 {
 public:
-	ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock,  Model* model, Construction* construction);
+	ModelBlock(Ogre::SceneNode* baseNode, const Carpenter::BuildingBlock* buildingBlock,  Model* model, Construction* construction);
 	~ModelBlock();
 	void selectAttachPointNode(AttachPointNode* selectedNode);
 	
-	inline Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
+	inline const Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
 	inline Construction* getConstruction() const { return mConstruction; }
 	void createAttachPointNodes();
 	void select();
@@ -242,7 +259,7 @@ public:
 	const Model* getModel() const { return mModel;}
 	const Ogre::SceneNode* getNode() const { return mNode;}
 protected:
-	Carpenter::BuildingBlock* mBuildingBlock;
+	const Carpenter::BuildingBlock* mBuildingBlock;
 	Model* mModel;
 	
 	std::vector<AttachPointNode*> mAttachPointNodes;
@@ -286,7 +303,7 @@ public:
 	 * @param buildingBlock 
 	 * @return 
 	 */
-	ModelBlock* createModelBlock(Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes);
+	ModelBlock* createModelBlock(const Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes);
 	
 	std::vector<ModelBlock*> getModelBlocks() const;
 protected:
