@@ -32,20 +32,6 @@ AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, , [
 dnl AC_MSG_ERROR(libSDL_ttf not found, please install it.  It can be found at www.libsdl.org under "libraries")
 ])
 
-AC_CHECK_LIB(cssys,main)
-
-AC_CHECK_LIB(csgfx,main)
-
-AC_CHECK_LIB(csutil,main)
-
-AC_CHECK_LIB(csgeom,main)
-
-AC_CHECK_LIB(cstool,main)
-
-AC_CHECK_LIB(csutil,main)
-
-AC_CHECK_LIB(csws,main)
-
 AM_PATH_SIGC(1.0.3,[
        CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
        LDFLAGS="$LDFLAGS $SIGC_LIBS"
