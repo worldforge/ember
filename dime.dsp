@@ -203,7 +203,7 @@ SOURCE=.\src\services\platform\SDLDrawDevice.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\src\services\config\ConfigService.cpp
+SOURCE=.\src\services\datamodel\DataModelService.cpp
 # End Source File
 # Begin Source File
 
@@ -234,9 +234,41 @@ SOURCE=.\src\services\platform\PlatformService.cpp
 SOURCE=.\src\framework\ServiceManager.cpp
 # End Source File
 # End Group
+# Begin Group "DataProviders"
+
+# PROP Default_Filter "*.cpp"
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\DataProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\FolderProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\LinkProvider.cpp
+# End Source File
+# End Group
+# Begin Group "UnitTests"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\DataModelTest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\input\InputServiceTest.cpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\src\main\Application.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\DataObject.cpp
 # End Source File
 # Begin Source File
 
@@ -249,10 +281,6 @@ SOURCE=.\src\services\gui\EventGenerator.cpp
 # Begin Source File
 
 SOURCE=.\src\services\input\InputDevice.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\services\input\InputServiceTest.cpp
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
@@ -308,6 +336,22 @@ SOURCE=.\src\components\cs\CSComponent.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\services\datamodel\DataModel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\DataModelService.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\DataObject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\DataProvider.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\services\platform\Dimension.h
 # End Source File
 # Begin Source File
@@ -325,6 +369,10 @@ SOURCE=.\src\services\gui\EventGenerator.h
 # Begin Source File
 
 SOURCE=.\src\framework\Exception.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\FolderProvider.h
 # End Source File
 # Begin Source File
 
@@ -369,6 +417,10 @@ SOURCE=.\src\services\gui\KeyPressEvent.h
 # Begin Source File
 
 SOURCE=.\src\services\gui\LineEdit.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\services\datamodel\LinkProvider.h
 # End Source File
 # Begin Source File
 

@@ -16,7 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef USE_CPPUNIT
+#ifdef USE_CPP_UNIT
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -64,7 +64,8 @@ protected:
 	void			testGetInputDevice();
 	void			testInputDevices();
 	void			testInputMappings();
-	void			eventWasFired(InputDevice *, SDLKey const &, InputMapping::InputSignalType);
+	void			eventWasFired(InputDevice *, InputDevice *,
+				DimeKey const &, InputMapping::InputSignalType);
 
 	
 };
@@ -140,8 +141,8 @@ void InputServiceTestCase::setUp ()
 	
 	myKD = new KeyboardDevice();
 	myMD = new MouseDevice();
-	myRD1 = new RepetitionDevice(500);
-	myRD2 = new RepetitionDevice(2000);
+	myRD1 = new RepetitionDevice(500, 0, true);
+	myRD2 = new RepetitionDevice(2000, 0, true);
 
 	myIS->addInputMapping(new InputMapping(myMD, 
 								SigC::slot(*this, &InputServiceTestCase::eventWasFired)));
@@ -166,15 +167,16 @@ void InputServiceTestCase::tearDown()
 }
 
 
-void InputServiceTestCase::eventWasFired(InputDevice * device, SDLKey const & key, 
+void InputServiceTestCase::eventWasFired(InputDevice * device, 
+										 InputDevice * device2, 
+										 DimeKey const & key, 
 										 InputMapping::InputSignalType type)
 {
 	InputEvent ie;
 
 	ie.myID = device;
-	ie.myKey = key;
+	ie.myKey = key.getKey();
 	ie.myType = type;
-
 	myEvents.push_back(ie);
 }
 

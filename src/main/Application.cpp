@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.23  2002-05-14 04:54:44  tim
+ *      Revision 1.24  2002-05-15 20:15:57  tim
+ *      First DataModel release!
+ *
+ *      Revision 1.23  2002/05/14 04:54:44  tim
  *      Minor fixes
  *
  *      Revision 1.22  2002/05/13 20:52:39  nikal
@@ -199,7 +202,7 @@ namespace dime
 #ifdef USE_CPP_UNIT
 		CppUnit::TextTestResult result;
 		CppUnit::TestFactoryRegistry::getRegistry().makeTest()->run(&result);
-		result.print(cerr);
+		result.print(std::cerr);
 
 		//See <services/input/InputServiceTest.cpp> for how to write your own tests.
 #endif 
