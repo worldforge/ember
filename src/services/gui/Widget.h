@@ -22,6 +22,7 @@
 // Included headers from the current project
 #include "Dimension.h"
 #include "Rectangle.h"
+#include <services/platform/SDLDrawDevice.h>
 
 // Included custom library headers
 
@@ -224,7 +225,7 @@ class Widget : public SigC::Object
 	/**
 	 * Draws the widget, and/or its children.
 	 */
-    virtual int draw() = 0;
+    virtual int draw(SDLDrawDevice *target) = 0;
 
 	
 	/**

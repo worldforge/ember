@@ -1,7 +1,7 @@
 #include "Container.h"
 #include <assert.h>
 
-int dime::Container::draw()
+int dime::Container::draw(SDLDrawDevice *target)
 {
 	//iterate through children Widgets, telling them all to draw.
 	int retval; //return value
@@ -9,7 +9,7 @@ int dime::Container::draw()
 	std::vector<Widget*>::iterator end = myChildren.end();
 	for (std::vector<Widget*>::iterator i = myChildren.begin(); i != end; i++)
 	{
-		retval = (*i)->draw();
+		retval = (*i)->draw(target);
 		if (retval != 0) return retval;
 	}
 	return 0;

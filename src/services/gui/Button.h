@@ -194,7 +194,7 @@ class Button : public Widget
 	/**
 	 * Draws the widget, and/or its children.
 	 */
-    virtual int draw();
+    virtual int draw(SDLDrawDevice *target);
 
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals

@@ -116,7 +116,7 @@ class Container : public Widget
 	/**
 	 * Tells the children widgets in myChildren to draw themselves.
 	 */
-	virtual int draw();
+	virtual int draw(SDLDrawDevice *target);
 
 	/**
 	 * Checks if a mouse event has occured within the boundaries of the widget, and fires the appropriate signals

@@ -3,7 +3,14 @@
 
 void dime::GuiService::refresh()
 {
-	myRootWidget.draw();
+	if (myDrawTarget != NULL)
+	{
+		myRootWidget.draw(myDrawTarget);
+	}
+	else
+	{
+		dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::ERROR, "Unable to refresh Gui as no draw target has been specified");
+	}
 }
 
 void dime::GuiService::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
@@ -27,6 +34,9 @@ dime::GuiService::GuiService()
 {
 	setName( "GuiService" );
 	setDescription( "Handles the Widgets that make up the GUI" );
+	
+	myDrawTarget = NULL;
+	
 	dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::INFO, "GuiService initialized.");
 	
 	myRootWidget.setRectangle(dime::Rectangle(0,0,640,480));	//TODO: get real screen dimensions. Maybe do this elsewhere.

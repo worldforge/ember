@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.6  2002-03-31 19:15:45  tim
+ *      Revision 1.7  2002-04-07 05:38:25  adamgreg
+ *
+ *      Made GuiService draw widgets to a DrawDevice associated with it. So that the Gui can now be drawn to areas other than the main screen if desired. Also more general for when an OpenGL version turns up.
+ *
+ *      Revision 1.6  2002/03/31 19:15:45  tim
  *      Bugfixes, MSVC compatibility fixes, Since boost is working ImageService is now caching
  *
  *      Revision 1.5  2002/03/30 09:33:06  adamgreg
@@ -145,6 +149,11 @@ namespace dime
          * Our pointer to the SDL_surface we use as the screen
          */
         SDL_Surface *myScreen;
+		
+		/**
+		 * Our pointer to a DrawDevice wrapped around the SDL_surface we use as the screen
+		 */
+		SDLDrawDevice *myDrawDevice;
        
     };//class Application
 }//namespace dime

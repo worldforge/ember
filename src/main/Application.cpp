@@ -10,7 +10,11 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.9  2002-04-02 21:15:40  tim
+ *      Revision 1.10  2002-04-07 05:38:25  adamgreg
+ *
+ *      Made GuiService draw widgets to a DrawDevice associated with it. So that the Gui can now be drawn to areas other than the main screen if desired. Also more general for when an OpenGL version turns up.
+ *
+ *      Revision 1.9  2002/04/02 21:15:40  tim
  *      Fixed the project files/Install for VisualC++
  *
  *      Revision 1.8  2002/03/31 19:15:45  tim
@@ -149,13 +153,19 @@ namespace dime
 		// Initialize the InputService
 		myInputService = InputService::getInstance();
 	
-		// Mouse and Keyboard is needed, so create them
+		// Mouse and Keyboard are needed, so create them
 
 		new MouseDevice;
 		new KeyboardDevice;
 
+		// Initialize the DrawDevice
+		myDrawDevice = new SDLDrawDevice(myScreen);
+
 		// Initialize the GuiService.
 		myGuiService = DimeServices::getInstance()->getGuiService();
+		
+		// Set the DrawDevice target for GuiService
+		myGuiService->setDrawTarget(myDrawDevice);
     }
 
     Application::~Application() {

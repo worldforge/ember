@@ -23,6 +23,7 @@
 #include <framework/Service.h>
 #include <services/input/InputService.h>
 #include "Container.h"
+#include <services/platform/SDLDrawDevice.h>
 
 // Included custom library headers
 
@@ -54,6 +55,8 @@ class GuiService : public Service, public SigC::Object
     Container myRootWidget;
 
 	InputService *myInputService;
+	
+	SDLDrawDevice *myDrawTarget;
 
     //======================================================================
     // Public Methods
@@ -97,6 +100,14 @@ class GuiService : public Service, public SigC::Object
     //----------------------------------------------------------------------
     // Other public methods
 	
+	/**
+	 * Sets the target DrawDevice target for GuiService to render Widgets onto.
+	 */
+	void setDrawTarget(SDLDrawDevice *target)
+	{
+		myDrawTarget = target;
+	}
+
 	/**
 	 * Draws the GUI
 	 */
