@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.23  2003-10-21 20:51:42  aglanor
+ *      Revision 1.24  2003-10-22 08:42:08  lee
+ *      Added include of stdlib.h to DimeOgre to stop errors from not declaring
+ *      malloc in OgreStdHeaders.h (why it needs it, i don't know)
+ *
+ *      Revision 1.23  2003/10/21 20:51:42  aglanor
  *      actually restored it
  *
  *      Revision 1.22  2003/10/21 20:48:37  aglanor
@@ -169,6 +173,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
 
+// Headers to stop compile problems from headers
+#include <stdlib.h>
 
 // ------------------------------
 // Include OGRE dime client files
