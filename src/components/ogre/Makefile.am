@@ -1,8 +1,8 @@
 # TODO: add a configure check to replace hack here.
 #OGRE_PATH=/home/xmp/ogrenew
-OGRE_PATH=/home/aglanor/code/ogrenew
+OGRE_PATH=/home/aglanor/code/ogre/ogrenew
 INCLUDES = -I/usr/include/stlport -I$(top_srcdir)/src \
-	-I$(OGRE_PATH)/OgreMain/include
+	-I$(OGRE_PATH)/OgreMain/include -I$(OGRE_PATH)/PlugIns/GuiElements/include
 
 bin_PROGRAMS = OgreApp
 

@@ -1,3 +1,8 @@
+2003-01-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+	* OgreApp.cpp/h: added basic GUI elements.
+	Now OgreApp inherits from ogre::ActionListener 
+	and ogre::MouseListener
+
 2002-12-16 M Pollard <circlemaster@blueyonder.co.uk>
 	* EventGenerator.cpp/h: Forgot to null out myFocusedWidget oops!
 

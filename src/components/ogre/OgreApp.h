@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.6  2002-12-10 00:02:45  aglanor
+ *      Revision 1.7  2003-01-05 22:13:46  aglanor
+ *      2003-01-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* OgreApp.cpp/h: added basic GUI elements.
+ *      	Now OgreApp inherits from ogre::ActionListener
+ *      	and ogre::MouseListener
+ *
+ *      Revision 1.6  2002/12/10 00:02:45  aglanor
  *      2002-12-07 Miguel Guzman (Aglanor) <aglanor@telefonica.net>
  *
  *      	* OgreApp.cpp: meshes are placed into the OGRE scene when an entity is created.
@@ -49,6 +55,15 @@ Description: Base class for all the OGRE examples
 #include <Ogre.h>
 #include <OgreConfigFile.h>
 #include "OgreFrameListener.h"
+
+// Include OGRE GUI classes (TODO: perhaps in future OGRE releases this will be cleaner)
+#include "OgreOverlayManager.h"
+#include "OgreCursorGuiElement.h"
+#include "OgreButtonGuiElement.h"
+#include "OgreListGuiElement.h"
+#include "OgreListChanger.h"
+#include "OgreEventProcessor.h"
+#include "OgreStringResource.h"
 
 // ------------------------------
 // Include Eris header files
@@ -79,7 +94,7 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class OgreApplication : virtual public SigC::Object
+class OgreApplication : virtual public SigC::Object, public ActionListener, public MouseListener
 {
 public:
     /// Standard constructor
@@ -315,6 +330,25 @@ protected:
             ResourceManager::addCommonArchiveEx( archName, typeName );
         }
     }
+
+	void mouseClicked(MouseEvent* e) {}
+	void mouseEntered(MouseEvent* e) {}
+	void mouseExited(MouseEvent* e) {}
+	void mousePressed(MouseEvent* e) {}
+	void mouseReleased(MouseEvent* e) {}
+
+	void actionPerformed(ActionEvent* e)
+	{
+        // Think about doing something here
+        std::string action = e->getActionCommand();
+        LogManager::getSingleton().logMessage("Got event: " + action);
+
+        if (action == "SS/Setup/HostScreen/Exit")
+            Root::getSingleton().getRenderSystem()->shutdown();
+	}
+
+
+
 
 };
 

@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.10  2002-12-10 00:02:45  aglanor
+ *      Revision 1.11  2003-01-05 22:13:46  aglanor
+ *      2003-01-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* OgreApp.cpp/h: added basic GUI elements.
+ *      	Now OgreApp inherits from ogre::ActionListener
+ *      	and ogre::MouseListener
+ *
+ *      Revision 1.10  2002/12/10 00:02:45  aglanor
  *      2002-12-07 Miguel Guzman (Aglanor) <aglanor@telefonica.net>
  *
  *      	* OgreApp.cpp: meshes are placed into the OGRE scene when an entity is created.
@@ -84,6 +90,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #undef DEBUGTEMP
 #define DEBUG
 #endif
+
 // ----------------------------------------------------------------------------
 // Include the OGRE example framework
 // This includes the classes defined to make getting an OGRE application running
@@ -329,7 +336,7 @@ public:
 		// Pressing 2 connects to red.worldforge.org
 		if(mInputDevice->isKeyDown(Ogre::KC_2) && timeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","18.224.0.35");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("connect","68.45.81.20");
 			timeUntilNextToggle = 1;
 		}
 
@@ -460,7 +467,7 @@ void OgreApplication::createScene(void)
   mSceneMgr->setWorldGeometry("terrain.cfg");
 
 //#if 0
-  
+
   //create the entity
   mShip = mSceneMgr->createEntity("blackdog", "squirel_of_doom.mesh");
 
@@ -472,6 +479,25 @@ void OgreApplication::createScene(void)
   // attach the node to the entity
   mShipNode->attachObject(mShip);
 //#endif
+
+	// a hack from the OGRE GUI sample
+	Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
+	ActionTarget* at = static_cast<ButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Join"));
+
+	at->addActionListener(this);
+	at = static_cast<ButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
+	at->addActionListener(this);
+	o->show();
+	
+			ListChanger* list = static_cast<ListGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/AvailableGamesList"));
+
+		list->addListItem(new StringResource("test1"));
+		list->addListItem(new StringResource("test2"));
+
+		(GuiManager::getSingleton().getGuiElement("Core/CurrFps"))->addMouseListener(this);
+
+		GuiContainer* pCursorGui = OverlayManager::getSingleton().getCursorGui();
+		pCursorGui->setMaterialName("Cursor/default");
 }
 
 void OgreApplication::createFrameListener(void)

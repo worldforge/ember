@@ -215,7 +215,7 @@ fi
 
 AC_LANG_SAVE
 AC_LANG([C])
-# Test for libxml2
+ Test for libxml2
 AM_PATH_XML2(2.4.23,[
     CFLAGS="$CFLAGS $XML_CFLAGS"
     CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
