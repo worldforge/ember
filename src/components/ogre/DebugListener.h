@@ -46,7 +46,7 @@ private:
     static DebugListener* _instance;
 	void updateStats(void);
 	Ogre::String mString;
-	Ogre::GuiElement* mDebugElement;
+//	Ogre::GuiElement* mDebugElement;
 };
 
 }

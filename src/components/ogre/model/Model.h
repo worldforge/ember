@@ -217,6 +217,7 @@ protected:
 	Ogre::AnimationStateSet* mAnimationStateSet;
 	
 };
+typedef Ogre::SharedPtr<Model> ModelPtr;
 
 }
 #endif // MODEL_H

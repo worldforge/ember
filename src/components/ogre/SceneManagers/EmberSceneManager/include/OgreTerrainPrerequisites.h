@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -43,7 +43,7 @@ namespace Ogre
 // Windows Settings
 //-----------------------------------------------------------------------
 
-#if OGRE_PLATFORM == PLATFORM_WIN32 
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 #   ifdef PLUGIN_TERRAIN_EXPORTS 
 #       define _OgreTerrainExport __declspec(dllexport) 
 #   else 

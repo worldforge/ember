@@ -41,7 +41,20 @@ XERCES_CPP_NAMESPACE_USE
 
 namespace EmberOgre {
 
+class ModelDefinition;
 class Model;
+
+     class ModelDefinitionPtr : public Ogre::SharedPtr<ModelDefinition> 
+     {
+     public:
+         ModelDefinitionPtr() : Ogre::SharedPtr<ModelDefinition>() {}
+         explicit ModelDefinitionPtr(ModelDefinition* rep) : Ogre::SharedPtr<ModelDefinition>(rep) {}
+         ModelDefinitionPtr(const ModelDefinitionPtr& r) : Ogre::SharedPtr<ModelDefinition>(r) {} 
+         ModelDefinitionPtr(const Ogre::ResourcePtr& r);
+         ModelDefinitionPtr& operator=(const Ogre::ResourcePtr& r);
+     protected:
+         void destroy(void);
+     };
 
 /**
 @author Erik Hjortsberg
@@ -49,17 +62,22 @@ class Model;
 class ModelDefinition : public Ogre::Resource {
 	
 public:
-    ModelDefinition(const Ogre::String& name, const Ogre::String& path);
+
+ 
+	ModelDefinition (const Ogre::String& path, Ogre::ResourceManager *creator, const Ogre::String &name, Ogre::ResourceHandle handle, const Ogre::String &group, bool isManual=false, Ogre::ManualResourceLoader *loader=0);
 
     ~ModelDefinition();
 	
         /** Generic load - called by ModelDefinitionManager.
         */
-        virtual void load(void);
+        virtual void loadImpl(void);
 
         /** Generic unload - called by ModelDefinitionManager.
         */
-        virtual void unload(void);
+        virtual void unloadImpl(void);
+		
+		virtual size_t calculateSize (void) const; 
+
 		
 	Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
     bool isValid(void);
@@ -113,6 +131,9 @@ protected:
 	bool mIsValid;
 	
 };
+
+//typedef Ogre::SharedPtr<ModelDefinition> ModelDefinitionPtr;
+
 
 };
 

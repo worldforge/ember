@@ -16,7 +16,7 @@ public:
 		Ogre::Vector3		vPos;
 		Ogre::Vector3		vScale;
 		Ogre::Quaternion	qOrient;
-		Ogre::Mesh*		pMesh;
+		Ogre::MeshPtr		pMesh;
 	};
 	
 public:
@@ -62,7 +62,7 @@ private:
 						~Block				(void);
 	
 		void 			add					(InstanceData* pInst);
-		void 			build				(Ogre::Mesh* mesh);
+		void 			build				(Ogre::MeshPtr mesh);
 		bool 			cull				(Ogre::Camera* camera,Ogre::Real max_dist,Ogre::Real min_dist,Ogre::Real cos_view_angle,GroundCover::DetailListener* listener);
 		void 			setSubEntities		(Ogre::Entity* entity);		
 		void 			reconfigureDetail	(GroundCover::Detail* detail,GroundCover::DetailListener* listener);
@@ -112,7 +112,7 @@ protected:
 
 	Ogre::Entity*		_big_entity; // The big foliage entity that holds all the low LOD stuff for the distance
 	Ogre::SceneNode*	_big_node; // The big foliage scene node
-	Ogre::Mesh*		_big_mesh; // The big foliage mesh
+	Ogre::MeshPtr		_big_mesh; // The big foliage mesh
 
 	Ogre::Vector3		_size; // The size of the world our foliage will exist in	
 	unsigned int		_x_blocks,_z_blocks; // The number of blocks in the Z and Z directions

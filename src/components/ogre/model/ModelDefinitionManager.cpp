@@ -47,30 +47,51 @@ namespace EmberOgre
 
     }
     //-----------------------------------------------------------------------
-    Ogre::Resource* ModelDefinitionManager::create( const Ogre::String& name)
+/*    Ogre::Resource* ModelDefinitionManager::create( const Ogre::String& name, const Ogre::String &group)
     {
 		std::string path;
-		Ogre::ResourceManager::FileMap::const_iterator it;
-		if( ( it = mArchiveFiles.find( name ) ) != mArchiveFiles.end() )
+		Ogre::ResourceManager::ResourceMap::const_iterator it;
+		if( ( it = mResources.find( name ) ) != mResources.end() )
 		{
 			path = std::string(it->second->getName() + "/" + name);
 		} 
 		
 		return new ModelDefinition(name, path);
-    }
+    }*/
 	
     //-----------------------------------------------------------------------
-    ModelDefinition* ModelDefinitionManager::load( const Ogre::String& filename, int priority)
+    
+	
+	ModelDefinitionPtr ModelDefinitionManager::load( const Ogre::String& filename, const Ogre::String &group)
     {
-        ModelDefinition* pModelDefinition = (ModelDefinition*)(getByName(filename));
-        if (!pModelDefinition)
+        ModelDefinitionPtr pModelDefinition = getByName(filename);
+        if (pModelDefinition.isNull())
         {
-            pModelDefinition = (ModelDefinition*)create(filename);
-            ResourceManager::load(pModelDefinition, priority);
+            pModelDefinition = create(filename, group);
+			pModelDefinition->load();
+            //ResourceManager::load(pModelDefinition, group, priority);
         }
         return pModelDefinition;
 
     }
+	
+	     Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
+         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
+         const Ogre::NameValuePairList* createParams)
+     {
+         // no use for createParams here
+		std::string path;
+		Ogre::FileInfoListPtr pList = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo (group, name);
+		
+		
+		Ogre::FileInfoList::const_iterator it;
+		if( (it = pList->begin() ) != pList->end() )
+		{
+			path = std::string(it->archive->getName() + "/" + name);
+		} 
+		 //TODO: implement this in the right way
+         return new ModelDefinition(path, this, name, handle, group, isManual, loader);
+     }
 
 
 

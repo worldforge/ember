@@ -5,7 +5,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -41,8 +41,8 @@ namespace Ogre {
         "ATTRIB v16 = vertex.position;\n"
         "PARAM c0[4] = { program.local[0..3] };\n"
         "PARAM c4 = program.local[4];\n"
-        "	MOV result.texcoord[0].xy, v24;\n"
-        "	MOV result.texcoord[1].xy, v25;\n"
+        "	MOV result.texcoord[0], v24;\n"
+        "	MOV result.texcoord[1], v25;\n"
         "	MOV R0, v16;\n"
         "	MAD R0.y, v17.x, c4.x, R0.y;\n"
         "	DP4 result.position.x, c0[0], R0;\n"
@@ -52,6 +52,30 @@ namespace Ogre {
         "	MOV result.color.front.primary, c5.x;\n"
         "END\n";
 
+	String TerrainVertexProgram::mShadowReceiverArbvp1 = 
+		"!!ARBvp1.0\n"
+		"PARAM c[14] = { program.local[0..12], { 1 } };\n"
+		"TEMP R0;\n"
+		"TEMP R1;\n"
+		"TEMP R2;\n"
+		"MOV result.color, c[13].x;\n"
+		"MUL R0.x, vertex.weight, c[12];\n"
+		"ADD R1.y, R0.x, vertex.position;\n"
+		"MOV R1.xzw, vertex.position;\n"
+		"DP4 result.position.w, R1, c[3];\n"
+		"DP4 result.position.z, R1, c[2];\n"
+		"DP4 R0.w, R1, c[7];\n"
+		"DP4 R0.z, R1, c[6];\n"
+		"DP4 R0.y, R1, c[5];\n"
+		"DP4 R0.x, R1, c[4];\n"
+		"DP4 result.position.y, R1, c[1];\n"
+		"DP4 R2.y, R0, c[9];\n"
+		"DP4 R2.z, R0, c[11];\n"
+		"DP4 R2.x, R0, c[8];\n"
+		"RCP R0.x, R2.z;\n"
+		"DP4 result.position.x, R1, c[0];\n"
+		"MUL result.texcoord[0].xy, R2, R0.x;\n"
+		"END\n";
     String TerrainVertexProgram::mLinearFogArbvp1 = 
         "!!ARBvp1.0\n"
         "PARAM c5 = { 1, 1, 1, 1 };\n"
@@ -64,8 +88,8 @@ namespace Ogre {
         "ATTRIB v16 = vertex.position;\n"
         "PARAM c0[4] = { program.local[0..3] };\n"
         "PARAM c4 = program.local[4];\n"
-        "	MOV result.texcoord[0].xy, v24;\n"
-        "	MOV result.texcoord[1].xy, v25;\n"
+        "	MOV result.texcoord[0], v24;\n"
+        "	MOV result.texcoord[1], v25;\n"
         "	MOV R1, v16;\n"
         "	MAD R1.y, v17.x, c4.x, R1.y;\n"
         "	DP4 R0.x, c0[0], R1;\n"
@@ -91,8 +115,8 @@ namespace Ogre {
         "PARAM c5 = program.local[5];\n"
         "PARAM c0[4] = { program.local[0..3] };\n"
         "PARAM c4 = program.local[4];\n"
-        "	MOV result.texcoord[0].xy, v24;\n"
-        "	MOV result.texcoord[1].xy, v25;\n"
+        "	MOV result.texcoord[0], v24;\n"
+        "	MOV result.texcoord[1], v25;\n"
         "	MOV R1, v16;\n"
         "	MAD R1.y, v17.x, c4.x, R1.y;\n"
         "	DP4 R0.x, c0[0], R1;\n"
@@ -120,8 +144,8 @@ namespace Ogre {
         "ATTRIB v16 = vertex.position;\n"
         "PARAM c0[4] = { program.local[0..3] };\n"
         "PARAM c4 = program.local[4];\n"
-        "	MOV result.texcoord[0].xy, v24;\n"
-        "	MOV result.texcoord[1].xy, v25;\n"
+        "	MOV result.texcoord[0], v24;\n"
+        "	MOV result.texcoord[1], v25;\n"
         "	MOV R1, v16;\n"
         "	MAD R1.y, v17.x, c4.x, R1.y;\n"
         "	DP4 R0.x, c0[0], R1;\n"
@@ -175,7 +199,31 @@ namespace Ogre {
         "	mov oFog, r0.z\n"
         "	mov oPos, r0\n"
         "	mov oD0, c5.x\n";
-    String TerrainVertexProgram::mExpFogVs_1_1 = 
+
+	String TerrainVertexProgram::mShadowReceiverVs_1_1 = 
+		"vs_1_1\n"
+		"def c13, 1, 1, 1, 1\n"
+		"dcl_blendweight v1\n"
+		"dcl_texcoord1 v8\n"
+		"dcl_texcoord0 v7\n"
+		"dcl_position v0\n"
+		"mov r1, v0\n"
+		"mad r1.y, v1.x, c12.x, r1.y\n"
+		"dp4 oPos.x, c0, r1\n"
+		"dp4 oPos.y, c1, r1\n"
+		"dp4 oPos.z, c2, r1\n"
+		"dp4 oPos.w, c3, r1\n"
+		"dp4 r0.x, c4, r1\n"
+		"dp4 r0.y, c5, r1\n"
+		"dp4 r0.z, c6, r1\n"
+		"dp4 r0.w, c7, r1\n"
+		"dp4 r1.x, c8, r0\n"
+		"dp4 r1.y, c9, r0\n"
+		"dp4 r1.w, c11, r0\n"
+		"rcp r0.x, r1.w\n"
+		"mul oT0.xy, r1.xy, r0.x\n"
+		"mov oD0, c13\n";
+	String TerrainVertexProgram::mExpFogVs_1_1 = 
         "vs_1_1\n"
         "def c6, 1, 1, 1, 1\n"
         "def c7, 2.71828, 0, 0, 0\n"
@@ -228,51 +276,66 @@ namespace Ogre {
         "	rcp oFog, r0.z\n";
 
     const String& TerrainVertexProgram::getProgramSource(
-        FogMode fogMode, const String syntax)
+        FogMode fogMode, const String syntax, bool shadowReceiver)
     {
-        switch(fogMode)
-        {
-        case FOG_NONE:
-            if (syntax == "arbvp1")
-            {
-                return mNoFogArbvp1;
-            }
-            else
-            {
-                return mNoFogVs_1_1;
-            }
-            break;
-        case FOG_LINEAR:
-            if (syntax == "arbvp1")
-            {
-                return mLinearFogArbvp1;
-            }
-            else
-            {
-                return mLinearFogVs_1_1;
-            }
-            break;
-        case FOG_EXP:
-            if (syntax == "arbvp1")
-            {
-                return mExpFogArbvp1;
-            }
-            else
-            {
-                return mExpFogVs_1_1;
-            }
-            break;
-        case FOG_EXP2:
-            if (syntax == "arbvp1")
-            {
-                return mExp2FogArbvp1;
-            }
-            else
-            {
-                return mExp2FogVs_1_1;
-            }
-            break;
-        };
+		if (shadowReceiver)
+		{
+			if (syntax == "arbvp1")
+			{
+				return mShadowReceiverArbvp1;
+			}
+			else
+			{
+				return mShadowReceiverVs_1_1;
+			}
+		}
+		else
+		{
+
+			switch(fogMode)
+			{
+			case FOG_NONE:
+				if (syntax == "arbvp1")
+				{
+					return mNoFogArbvp1;
+				}
+				else
+				{
+					return mNoFogVs_1_1;
+				}
+				break;
+			case FOG_LINEAR:
+				if (syntax == "arbvp1")
+				{
+					return mLinearFogArbvp1;
+				}
+				else
+				{
+					return mLinearFogVs_1_1;
+				}
+				break;
+			case FOG_EXP:
+				if (syntax == "arbvp1")
+				{
+					return mExpFogArbvp1;
+				}
+				else
+				{
+					return mExpFogVs_1_1;
+				}
+				break;
+			case FOG_EXP2:
+				if (syntax == "arbvp1")
+				{
+					return mExp2FogArbvp1;
+				}
+				else
+				{
+					return mExp2FogVs_1_1;
+				}
+				break;
+			};
+		}
         // default
         return StringUtil::BLANK;
 

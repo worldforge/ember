@@ -20,7 +20,7 @@
 #include "EmberPhysicalEntity.h"
 
 #include "EmberOgre.h"
-#include "environment/GroundCover.h"
+//#include "environment/GroundCover.h"
 #include "MathConverter.h"
 #include "MotionManager.h"
 #include "TerrainGenerator.h"

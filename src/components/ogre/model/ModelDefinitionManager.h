@@ -29,6 +29,7 @@
 namespace EmberOgre {
 
 class ModelDefinition;
+class ModelDefinitionPtr;
 /**
 @author Erik Hjortsberg
 */
@@ -40,13 +41,13 @@ public:
 
     //~ModelDefinitionManager();
 	
-        ModelDefinition* load( const Ogre::String& filename, int priority = 1);
+        ModelDefinitionPtr load( const Ogre::String& filename, const Ogre::String &group);
 
         /** Creates a Skeleton resource.
             @note
                 Mainly used internally.
         */
-        Ogre::Resource* create( const Ogre::String& name);
+//        Ogre::Resource* create( const Ogre::String& name);
 
         /** Override standard Singleton retrieval.
         @remarks
@@ -80,6 +81,10 @@ public:
         preventing link errors.
         */
 //         static ModelDefinitionManager* getSingletonPtr(void);
+
+		Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
+         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
+         const Ogre::NameValuePairList* createParams);
 
 };
 

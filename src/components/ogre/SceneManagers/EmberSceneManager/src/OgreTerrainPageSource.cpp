@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -74,7 +74,7 @@ namespace Ogre {
 	TerrainPageSource::TerrainPageSource() : mSceneManager(0), mAsyncLoading(false) {
 	}
 	//-------------------------------------------------------------------------
-	TerrainPage* TerrainPageSource::buildPage(Real* heightData, Material* pMaterial)
+	TerrainPage* TerrainPageSource::buildPage(Real* heightData, const MaterialPtr& pMaterial)
     {
         String name;
 
@@ -105,13 +105,10 @@ namespace Ogre {
 
                 SceneNode *c = page->pageSceneNode->createChildSceneNode( name );
                 TerrainRenderable *tile = new TerrainRenderable(name);
+				// set queue
+				tile->setRenderQueueGroup(mSceneManager->getWorldGeometryRenderQueue());
                 // Initialise the tile
-/*				if (p == 5 && q == 0) {
-					tile->setMaterial(static_cast<Ogre::Material*>(Ogre::MaterialManager::getSingleton().getByName("Malebuilder/Body")));
-				} else {
-                	tile->setMaterial(pMaterial);
-				}*/
-               tile->setMaterial(pMaterial);
+                tile->setMaterial(pMaterial);
                 tile->initialise(i, j, heightData);
                 // Attach it to the page
                 page->tiles[ p ][ q ] = tile;

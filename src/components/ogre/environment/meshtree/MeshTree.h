@@ -62,7 +62,7 @@ class Tree
 
     void Grow(void);
     Real GetRandomValue(const Real fUpperBound);
-    Mesh* CreateMesh(const String &name); 
+    Ogre::MeshPtr CreateMesh(const String &name); 
     inline TParameters* GetParameters(void){return mpParameters;};
     inline Real GetScale(void){return mfScale;};
 };

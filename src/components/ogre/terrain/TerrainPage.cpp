@@ -102,7 +102,7 @@ float TerrainPage::getMinHeight()
 }
 
 
-Ogre::Material* TerrainPage::generateTerrainMaterials() {
+Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	if (getNumberOfSegmentsPerAxis() == 1) {
 		mMaterial = generateTerrainMaterialSimple();
@@ -151,7 +151,7 @@ const Ogre::Vector3 TerrainPage::getOgrePosition() const
 }
 
 
-Ogre::Material* TerrainPage::getMaterial() const
+Ogre::MaterialPtr TerrainPage::getMaterial() const
 {
 	return mMaterial;
 }
@@ -177,13 +177,13 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 	
 }
 
-Ogre::DataChunk* TerrainPage::convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor) {
+Ogre::MemoryDataStreamPtr TerrainPage::convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor) {
     //int width = getTerrainOptions().pageSize - 1;
     int width = 64;
     int bufferSize = width*width*mBytesPerPixel*factor*factor;
-	Ogre::DataChunk chunk(dataStart, 65*65);
-    Ogre::DataChunk* finalChunk = new Ogre::DataChunk();
-    finalChunk->allocate(bufferSize);
+	Ogre::MemoryDataStream chunk(dataStart, 65*65, false);
+    Ogre::MemoryDataStream* finalChunk = new Ogre::MemoryDataStream(bufferSize);
+    //finalChunk->allocate(bufferSize);
     Ogre::uchar* finalPtr = finalChunk->getPtr();
     Ogre::uchar* chunkPtr = chunk.getPtr();
     long i,j; 
@@ -223,10 +223,10 @@ Ogre::DataChunk* TerrainPage::convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dat
     }   
     */
     
-	return finalChunk;
+	return Ogre::MemoryDataStreamPtr(finalChunk);
 }
 
-Ogre::Texture* TerrainPage::createAlphaTexture(Ogre::String name, Mercator::Surface* surface) {
+Ogre::TexturePtr TerrainPage::createAlphaTexture(Ogre::String name, Mercator::Surface* surface) {
 
 
     //the format for our alpha texture
@@ -237,40 +237,40 @@ Ogre::Texture* TerrainPage::createAlphaTexture(Ogre::String name, Mercator::Surf
 	 * because somehow Ogre doesn't like the 8 bit mask
 	 * 
 	 */
-	Ogre::DataChunk* finalChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), 1);
+	Ogre::MemoryDataStreamPtr finalChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), 1);
 	
 	//printTextureToImage(finalChunk, name, pixelFormat);
-	
+	Ogre::DataStreamPtr temp(finalChunk.get());
 	//create the new alpha texture
-	Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(name, *finalChunk, getAlphaTextureSize(), getAlphaTextureSize(), pixelFormat);
-	finalChunk->clear();
-	delete finalChunk;
+	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(name, "General", temp, getAlphaTextureSize(), getAlphaTextureSize(), pixelFormat);
+//	finalChunk->clear();
+//	delete finalChunk;
 	
 	return splatTexture;
 	
 }
 
-void TerrainPage::printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat, int height, int width) {
+void TerrainPage::printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat, int height, int width) {
 // DEBUG   
 //prints the bitmap to a png-image
 //TODO: remove when finished with debugging
 	
 	const Ogre::String extension = "png";
 	
-	Ogre::ImageCodec::ImageData imgData;
-	imgData.width = width;
-	imgData.height = height;
+	Ogre::ImageCodec::ImageData* imgData = new Ogre::ImageCodec::ImageData();
+	imgData->width = width;
+	imgData->height = height;
 	
-	//imgData.depth =  1;
-	imgData.format = pixelFormat;	
+	imgData->depth =  1;
+	imgData->format = pixelFormat;	
 	     		
 	Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
-	
 	// Write out
+	Ogre::SharedPtr<Ogre::Codec::CodecData> temp(imgData);
 	
 	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
 	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
-	pCodec->codeToFile(*dataChunk, Ogre::String("img/") + name + "." + extension, &imgData);
+	pCodec->codeToFile(dataChunk, Ogre::String("img/") + name + "." + extension, temp);
 	
 }
 
@@ -282,7 +282,7 @@ inline int  EmberOgre::TerrainPage::getAlphaTextureSize( ) const
 
 }
 
-Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
+Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 { 
  
 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
@@ -295,7 +295,7 @@ Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 	mMaterialName = materialNameSS.str();
 		
 
-	Ogre::Material* material = sceneManager->createMaterial(mMaterialName);
+	Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(mMaterialName, "General"));
 	
 	Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
 	pass->setLightingEnabled(false);
@@ -395,7 +395,7 @@ Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 					surface = *surfaceListI;
 					std::stringstream splatTextureNameSS_;
 					splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
-					Ogre::DataChunk* tempChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), 1);
+					Ogre::MemoryDataStreamPtr tempChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), 1);
 	/*				printTextureToImage(tempChunk, splatTextureNameSS_.str(), pixelFormat, 64, 64);*/
 					
 					ILuint tempImageName;
@@ -426,10 +426,20 @@ Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 		
 		imagePointer = ilGetData();
 		//wrap the image data in a Datachunk
-		Ogre::DataChunk finalChunk(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * 2) );
-//  		printTextureToImage(&finalChunk, splatTextureName, pixelFormat, (getTerrainOptions().pageSize - 1) * 2, (getTerrainOptions().pageSize - 1)*2);
 
-		Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, finalChunk, getAlphaTextureSize() * mAlphaMapScale , getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
+		Ogre::MemoryDataStream* finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * 2) );
+		Ogre::DataStreamPtr temp(finalChunk);
+		
+		char name[100];
+		strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureName + std::string(".png")).c_str());
+		ilSaveImage(name);
+
+				
+// 		Ogre::MemoryDataStream finalChunk_(finalChunk, false);
+// 		Ogre::MemoryDataStreamPtr temp_(&finalChunk_);
+//   		printTextureToImage(temp_, splatTextureName, pixelFormat, (getTerrainOptions().pageSize - 1) * 2, (getTerrainOptions().pageSize - 1)*2);
+
+		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", temp, getAlphaTextureSize() * mAlphaMapScale , getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
 		ilDeleteImages(1, &ImageName);
 		
 // 		SegmentVector::iterator I = segmentI_begin;
@@ -504,7 +514,7 @@ Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
  
  }
 
-Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialSimple( )
+Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialSimple( )
 {
 
 	Mercator::Segment* segment = mGenerator->getTerrain().getSegment((int)mPosition.x(), (int)mPosition.y());
@@ -522,7 +532,7 @@ Ogre::Material * EmberOgre::TerrainPage::generateTerrainMaterialSimple( )
 	mMaterialName = materialNameSS.str();
 		
 
-	Ogre::Material* material = sceneManager->createMaterial(mMaterialName);
+	Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create(mMaterialName, "General");
 	
 	Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
 	pass->setLightingEnabled(false);

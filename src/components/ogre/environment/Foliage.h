@@ -27,7 +27,7 @@
 
 namespace EmberOgre {
 
-class GroundCover;
+//class GroundCover;
 /**
 @author Erik Hjortsberg
 */
@@ -47,7 +47,7 @@ public:
 	
 
 protected:
-	GroundCover* mGround;
+	//GroundCover* mGround;
 	
 	bool mVisible;
 	

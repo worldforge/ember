@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -28,7 +28,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreTerrainPrerequisites.h"
 #include "OgreTerrainPageSource.h"
 #include "OgreImage.h"
-#include "OgreSDDataChunk.h"
 
 namespace Ogre {
 
@@ -48,7 +47,7 @@ namespace Ogre {
         /// Image containing the source heightmap if loaded from non-RAW
         Image mImage;
         /// Arbitrary data loaded from RAW
-        SDDataChunk mRawData;
+        MemoryDataStreamPtr mRawData;
         /// The (single) terrain page this source will provide
         TerrainPage* mPage;
         /// Source file name

@@ -11,7 +11,7 @@ GroundCover::GroundCover(SceneManager* manager, const Vector3& size, int sizeOfA
 {
 	_manager = manager;
 	_big_entity = NULL;
-	_big_mesh = NULL;
+	_big_mesh.setNull();
 	_big_node = NULL;
 	_listener = NULL;
 	_size = size;
@@ -43,11 +43,11 @@ void GroundCover::add(const Vector3& position, const String& high_mesh, const St
 GroundCover::InstanceData* GroundCover::add (const String& high_mesh, const String& low_mesh)
 {
 	// See if we've already loaded the mesh
-	Mesh* mesh = (Mesh*)MeshManager::getSingleton().getByName(high_mesh);
-	if(!mesh)
+	MeshPtr mesh = MeshManager::getSingleton().getByName(high_mesh);
+	if(!mesh.isNull())
 	{
 		// If not, load the high resolution version and set the low version as an LOD
-		mesh = MeshManager::getSingleton().load(high_mesh);
+		mesh = MeshManager::getSingleton().load(high_mesh, "environment");
         mesh->createManualLodLevel(_max_dist,low_mesh); 
 	}
 	
@@ -163,11 +163,11 @@ void GroundCover::compile()
 	if(_big_entity)
 		_manager->removeEntity(_big_entity->getName());
 	
-	if(_big_mesh)
+	if(_big_mesh.isNull())
 		MeshManager::getSingleton().unload(_big_mesh);
 		
 	// Build the low LOD versions of all the blocks into the giant foliage mesh	
-	_big_mesh = MeshManager::getSingleton().createManual(GroundCover::MESH_NAME);
+	_big_mesh = MeshManager::getSingleton().createManual(GroundCover::MESH_NAME, "environment");
 
 	for(std::map<unsigned int,GroundCover::Block*>::iterator b = _blocks.begin();b != _blocks.end();b++)
 	{		
@@ -223,7 +223,7 @@ GroundCover::~GroundCover()
 	if(_big_mesh)
 	{
 		MeshManager::getSingleton().unload(_big_mesh);
-		delete _big_mesh;
+		//delete _big_mesh;
 	}
 }
 
@@ -318,7 +318,7 @@ void GroundCover::Block::setSubEntities(Entity* entity)
 }
 
 
-void GroundCover::Block::build(Mesh* mesh)
+void GroundCover::Block::build(MeshPtr mesh)
 {
 	// Clear the list of sub-entities and sub-meshes
 	_subentities.clear();
@@ -333,7 +333,7 @@ void GroundCover::Block::build(Mesh* mesh)
 	{		
 		if ((*i)->pMesh->getNumLodLevels() > 1)
 		{
-			Mesh* lod = (*i)->pMesh->getLodLevel(1).manualMesh;
+			MeshPtr lod = (*i)->pMesh->getLodLevel(1).manualMesh;
 			if (lod)
 			{
 				unsigned short subs = lod->getNumSubMeshes();
@@ -362,7 +362,7 @@ void GroundCover::Block::build(Mesh* mesh)
 		{
 			if ((*i)->pMesh->getNumLodLevels() > 1)
 			{
-				Mesh* lod = (*i)->pMesh->getLodLevel(1).manualMesh;
+				MeshPtr lod = (*i)->pMesh->getLodLevel(1).manualMesh;
 				if (lod)
 				{
 					unsigned short subs = lod->getNumSubMeshes();
@@ -434,7 +434,7 @@ void GroundCover::Block::build(Mesh* mesh)
 		{
 			if ((*i)->pMesh->getNumLodLevels() > 1)
 			{
-				Mesh* lod = (*i)->pMesh->getLodLevel(1).manualMesh;
+				MeshPtr lod = (*i)->pMesh->getLodLevel(1).manualMesh;
 				if (lod)
 				{
 					unsigned short subs = lod->getNumSubMeshes();

@@ -71,7 +71,7 @@ void Tree::makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type)
 
 	Ogre::Tree* pTree = new Ogre::Tree("TreeTest", pParams, u8Season, iSeed);
 	pTree->Grow();
-	Mesh *pTreeMesh = pTree->CreateMesh(meshName);
+	MeshPtr pTreeMesh = pTree->CreateMesh(meshName);
 	pTreeMesh->getSubMesh(0)->setMaterialName("BarkTextMat");
         if (pTree->GetParameters()->GetLeaves() > 0)
         {

@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.71  2005-02-10 00:54:03  erik
+ *      Revision 1.72  2005-02-13 15:42:49  erik
+ *      2005-02-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Moved to OGRE 1.0 and CEGUI 0.2.
+ *      	* Improved terrain LOD calculations. Though it still needs a lot of tweaking.
+ *
+ *      Revision 1.71  2005/02/10 00:54:03  erik
  *      2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* send event on eris polling start and stop
@@ -582,7 +588,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "AvatarCamera.h"
-#include "DebugListener.h"
 #include "GUIManager.h"
 
 #include "EmberEntity.h"
@@ -794,7 +799,7 @@ bool EmberOgre::setup(void)
     chooseSceneManager();
 
     // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     
     // Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
@@ -805,6 +810,11 @@ bool EmberOgre::setup(void)
 // 	//add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
+ 	fprintf(stderr, "TRACE - BEGIN PRELOAD\n");
+ 	preloadMedia();
+ 	fprintf(stderr, "TRACE - END PRELOAD\n");
+	
+	
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
     
 	
@@ -823,9 +833,6 @@ bool EmberOgre::setup(void)
 
 
 
- 	fprintf(stderr, "TRACE - BEGIN PRELOAD\n");
- 	preloadMedia();
- 	fprintf(stderr, "TRACE - END PRELOAD\n");
 
 
     createFrameListener();
@@ -922,12 +929,12 @@ void EmberOgre::checkForConfigFiles()
 
 void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
 {
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists(section, variableName)) {
-		std::string value =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue(section, variableName)) + "/";
-		manager->addArchiveEx(value, type);
-	} else {
-		//throw new Exception(std::string("Could not find setting: ") + variableName + " in section " + section + ".");
-	}
+// 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists(section, variableName)) {
+// 		std::string value =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue(section, variableName)) + "/";
+// 		manager->addArchiveEx(value, type);
+// 	} else {
+// 		//throw new Exception(std::string("Could not find setting: ") + variableName + " in section " + section + ".");
+// 	}
 
 } 
 
@@ -943,12 +950,13 @@ void EmberOgre::setupResources(void)
 	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/";
 	
 	mModelDefinitionManager = new ModelDefinitionManager();
-	mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions", "FileSystem");
+	
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
  	
 	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
-		mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem");
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem", "modeldefinitions");
  	} else {
-		mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem");
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem", "modeldefinitions");
 	}
 	
 // /*	std::string modeldefspath = "modeldefinitions/";
@@ -970,21 +978,26 @@ void EmberOgre::setupResources(void)
     Ogre::ConfigFile cf;
     cf.load("resources.cfg");
 
-    // Go through all settings in the file
-    Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
-
-//	std::string mediaHomePath = "/home/erik/code/worldforge/forge_cvs/clients/ember/Media/";
-
-
-	//Ogre::ResourceManager::addCommonSearchPath(mediaHomePath);
-    Ogre::String typeName, archName;
-    while (i.hasMoreElements())
-    {
-        typeName = i.peekNextKey();
-        archName = i.getNext();
-		//std::cout << "Adding archive/filesystem: " << mediaHomePath + archName << "\n";
-        Ogre::ResourceManager::addCommonArchiveEx( mediaHomePath + archName, typeName );
-    }
+    
+	// Go through all sections & settings in the file
+	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+	
+	Ogre::String secName, typeName, archName;
+	while (seci.hasMoreElements())
+	{
+		secName = seci.peekNextKey();
+		Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+		Ogre::ConfigFile::SettingsMultiMap::iterator i;
+		for (i = settings->begin(); i != settings->end(); ++i)
+		{
+			typeName = i->first;
+			archName = i->second;
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+				mediaHomePath + archName, typeName, secName);
+		}
+	}
+	
+	
 	
 //     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
 	
@@ -996,6 +1009,8 @@ void EmberOgre::setupResources(void)
 
 void EmberOgre::preloadMedia(void)
 {
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 	
 
@@ -1007,7 +1022,7 @@ void EmberOgre::preloadMedia(void)
 	
 	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
 		try {
-			Ogre::TextureManager::getSingleton().load(*I);
+			Ogre::TextureManager::getSingleton().load(*I, "General");
 		} catch (Ogre::Exception e) {
 			std::cerr << "Error when loading texture " << *I << ".\n";
 		}
@@ -1027,7 +1042,7 @@ void EmberOgre::preloadMedia(void)
 			if (ep->d_name != "." && ep->d_name != "..") {
 				try {
 					fprintf(stderr, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
-					ModelDefinition* modeldef = mModelDefinitionManager->load(ep->d_name);
+					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");
 /*					if (modeldef->isValid()) {
 						Model* model = Model::Create(ep->d_name, ep->d_name);
 						mNode->attachObject(model);

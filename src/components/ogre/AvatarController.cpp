@@ -29,7 +29,6 @@
 #include "GUIManager.h"
 #include "OgreStringConverter.h"
 #include "Avatar.h"
-#include "DebugListener.h"
 #include "EmberOgre.h"
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"

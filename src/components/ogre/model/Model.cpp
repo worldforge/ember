@@ -57,7 +57,7 @@ Model::~Model()
 
 Model* Model::Create(std::string type, std::string name)
 {
-	ModelDefinition* def = ModelDefinitionManager::getSingleton().load(type);
+	ModelDefinitionPtr def = ModelDefinitionManager::getSingleton().load(type, "modeldefinitions");
 	if (!def->isValid()) {
 		return NULL;
 	}
@@ -239,7 +239,7 @@ Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getAnimationState(name);
 	}
-	Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
+	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
 	
 }
 
@@ -249,7 +249,7 @@ Ogre::AnimationStateSet* Model::getAllAnimationStates()
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getAllAnimationStates();
 	}
-	Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
+	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
 	
 }
 
@@ -260,7 +260,7 @@ Ogre::SkeletonInstance * Model::getSkeleton ()
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getSkeleton();
 	}
-	Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
+	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
 }
 
 void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
@@ -269,7 +269,7 @@ void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObjec
 		SubModel* submodel = *(mSubmodels.begin());
 		submodel->getEntity()->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
 	} else {
-		Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
+		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
 	}	
 }
 
@@ -279,7 +279,7 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->detachObjectFromBone(movableName);
 	}
-	Except(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");		
+	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");		
 }
 
 /** Overridden - see MovableObject.

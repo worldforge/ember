@@ -85,7 +85,7 @@ public:
 	 *    Generates the terrain materials needed.
 	 * @return 
 	 */
-	Ogre::Material* generateTerrainMaterials();
+	Ogre::MaterialPtr generateTerrainMaterials();
 	
 	/**
 	 *    Fills the supplied data buffer with height data. Make sure that the supplied buffer can take getVerticeCount() number of elements.
@@ -115,7 +115,7 @@ public:
 	 *    The material used for the page
 	 * @return 
 	 */
-	Ogre::Material* getMaterial() const;
+	Ogre::MaterialPtr getMaterial() const;
 	
 private:
 
@@ -125,7 +125,7 @@ private:
 	Internal position
 	*/
 	TerrainPosition mPosition;
-	Ogre::Material* mMaterial;
+	Ogre::MaterialPtr mMaterial;
 	
 	/**
 		A vector of all the Mercator segments needed for this page. If the ratio between Mercator segments and Ogre pages is 1:1
@@ -153,21 +153,21 @@ private:
 	 * @param factor 
 	 * @return 
 	 */
-	Ogre::DataChunk* convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor);
+	Ogre::MemoryDataStreamPtr convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor);
 	
 	
 	/**
 	 * Method used when the mapping between mercator segments and ogre pages is 1:1
 	 * @return 
 	 */
-	Ogre::Material* generateTerrainMaterialSimple();
+	Ogre::MaterialPtr generateTerrainMaterialSimple();
 	
 	
 	/**
 	 * Method used when the mapping between mercator segments and ogre pages isn't 1:1
 	 * @return 
 	 */
-	Ogre::Material* generateTerrainMaterialComplex();
+	Ogre::MaterialPtr generateTerrainMaterialComplex();
 	
 	/**
 	EmberOgre::Shaders used for this page
@@ -180,14 +180,14 @@ private:
 	 * @param surface the surface used
 	 * @return 
 	 */
-	Ogre::Texture* createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
+	Ogre::TexturePtr createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
 	
 	inline const Ogre::TerrainOptions& getTerrainOptions() const;
 	
 	/**
 	 * Prints the supplied image (as a dataChunk) to a image file.
 	 */
-	void printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat, int width, int height);
+	void printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat, int width, int height);
 
 	/**
 	 *    The size in pixels of one side of the AlphaTexture. This is in sizes of 64.

@@ -55,15 +55,15 @@ EmberOgre_LDADD = $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 
 
 EmberOgre_SOURCES = Avatar.cpp EntityListener.cpp ConsoleObjectImpl.cpp \
-		MediaDeployer.cpp AvatarController.cpp DebugListener.cpp environment/Water.cpp \
+		MediaDeployer.cpp AvatarController.cpp environment/Water.cpp \
 		TerrainGenerator.cpp MotionManager.cpp AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp \
-		MousePicker.cpp Avatar.h 	MathConverter.h EntityListener.h ConsoleObjectImpl.h \
-	MediaDeployer.h AvatarController.h 	DebugListener.h environment/Water.h \
-	TerrainGenerator.h MotionManager.h AvatarCamera.h 	TerrainShader.h GUIManager.h \
-	MousePicker.h 	EmberEntityFactory.cpp EmberEntityFactory.h EmberEntity.h \
-	EmberEventProcessor.cpp 	EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
-	EmberPhysicalEntity.cpp EmberPhysicalEntity.h 	EmberEntity.cpp EmberOgrePrerequisites.h \
-	AvatarEmberEntity.cpp AvatarEmberEntity.h 	PersonEmberEntity.cpp PersonEmberEntity.h \
+		MousePicker.cpp Avatar.h MathConverter.h EntityListener.h ConsoleObjectImpl.h \
+	MediaDeployer.h AvatarController.h  environment/Water.h \
+	TerrainGenerator.h MotionManager.h AvatarCamera.h TerrainShader.h GUIManager.h \
+	MousePicker.h EmberEntityFactory.cpp EmberEntityFactory.h EmberEntity.h \
+	EmberEventProcessor.cpp EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
+	EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
+	AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
 	WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp
 
 

@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -27,7 +27,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <OgreTerrainSceneManager.h>
 #include <OgreRoot.h>
 #include "OgreHeightmapTerrainPageSource.h"
-#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {
@@ -35,7 +34,7 @@ OctreeSceneManager* octreePlugin;
 TerrainSceneManager* terrainPlugin;
 HeightmapTerrainPageSource* heightmapTerrainPageSource;
 
-extern "C" void dllStartPlugin( void )
+extern "C" void _OgreTerrainExport dllStartPlugin( void )
 {
     // Create new scene manager
     octreePlugin = new OctreeSceneManager();
@@ -50,7 +49,7 @@ extern "C" void dllStartPlugin( void )
     terrainPlugin->registerPageSource("Heightmap", heightmapTerrainPageSource);
 }
 
-extern "C" void dllStopPlugin( void )
+extern "C" void _OgreTerrainExport dllStopPlugin( void )
 {
     delete heightmapTerrainPageSource;
     delete octreePlugin;

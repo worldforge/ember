@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -309,7 +309,7 @@ public:
     */
     virtual void attachPage(ushort pageX, ushort pageZ, TerrainPage* page);
     /// Get a pointer to the material being used for the terrain
-    Material* getTerrainMaterial(void);
+    MaterialPtr& getTerrainMaterial(void);
     // Overridden from basic scene manager
     void _renderScene(Camera *cam, Viewport *vp, bool includeOverlays);
 
@@ -317,6 +317,8 @@ public:
     SceneNode* getTerrainRootNode(void) const { return mTerrainRoot; }
     /** Overridden from SceneManager */
     void clearScene(void);
+	/** Overridden from SceneManager */
+	void setWorldGeometryRenderQueue(RenderQueueGroupID qid);
 
 
 protected:

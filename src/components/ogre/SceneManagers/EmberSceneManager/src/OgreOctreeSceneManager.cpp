@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -71,6 +71,10 @@ int OctreeSceneManager::intersect_call = 0;
 
 Intersection intersect( const Ray &one, const AxisAlignedBox &two )
 {
+    OctreeSceneManager::intersect_call++;
+    // Null box?
+    if (two.isNull()) return OUTSIDE;
+
     bool inside = true;
     const Vector3* pCorners = two.getAllCorners();
     Vector3 origin = one.getOrigin();
@@ -136,6 +140,9 @@ Intersection intersect( const Ray &one, const AxisAlignedBox &two )
 Intersection intersect( const PlaneBoundedVolume &one, const AxisAlignedBox &two )
 {
     OctreeSceneManager::intersect_call++;
+    // Null box?
+    if (two.isNull()) return OUTSIDE;
+
     // Get corners of the box
     const Vector3* pCorners = two.getAllCorners();
 
@@ -181,6 +188,9 @@ Intersection intersect( const PlaneBoundedVolume &one, const AxisAlignedBox &two
 Intersection intersect( const AxisAlignedBox &one, const AxisAlignedBox &two )
 {
     OctreeSceneManager::intersect_call++;
+    // Null box?
+    if (one.isNull() || two.isNull()) return OUTSIDE;
+
     const Vector3 * outside = one.getAllCorners();
     const Vector3 *inside = two.getAllCorners();
 
@@ -213,6 +223,9 @@ Intersection intersect( const AxisAlignedBox &one, const AxisAlignedBox &two )
 Intersection intersect( const Sphere &one, const AxisAlignedBox &two )
 {
     OctreeSceneManager::intersect_call++;
+    // Null box?
+    if (two.isNull()) return OUTSIDE;
+
     float sradius = one.getRadius();
 
     sradius *= sradius;
@@ -296,6 +309,7 @@ void OctreeSceneManager::init( AxisAlignedBox &box, int depth )
     // Don't do it this way, it will add it to the mSceneNodes which we don't want
     //mSceneRoot = createSceneNode( "SceneRoot" );
     mSceneRoot = new OctreeNode( this, "SceneRoot" );
+	mSceneRoot->_notifyRootNode();
     // -- End changes by Steve
 
     if ( mOctree != 0 )
@@ -367,12 +381,12 @@ void OctreeSceneManager::destroySceneNode( const String &name )
     SceneManager::destroySceneNode( name );
 }
 
-bool OctreeSceneManager::getOptionValues( const String & key, std::list < SDDataChunk > &refValueList )
+bool OctreeSceneManager::getOptionValues( const String & key, StringVector  &refValueList )
 {
     return SceneManager::getOptionValues( key, refValueList );
 }
 
-bool OctreeSceneManager::getOptionKeys( std::list < String > & refKeys )
+bool OctreeSceneManager::getOptionKeys( StringVector & refKeys )
 {
     SceneManager::getOptionKeys( refKeys );
     refKeys.push_back( "CullCamera" );

@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -129,6 +129,8 @@ void OctreeNode::_updateBounds( void )
 */
 bool OctreeNode::_isIn( AxisAlignedBox &box )
 {
+	// Always fail if not in the scene graph
+	if (!mIsInSceneGraph) return false;
 
     Vector3 center = mWorldAABB.getMaximum().midPoint( mWorldAABB.getMinimum() );
 

@@ -92,9 +92,10 @@ Real Tree::GetRandomValue(const Real fUpperBound)
 
 //---------------------------------------------------------------------------
 
-Mesh* Tree::CreateMesh(const String &name) 
+Ogre::MeshPtr Tree::CreateMesh(const String &name) 
 { 
-   Mesh* pMesh = MeshManager::getSingleton().createManual(name); 
+	//HACK: implement ManualResourceLoader
+   Ogre::MeshPtr pMesh = MeshManager::getSingleton().createManual(name,"trees"); 
    SubMesh *pStemsSub, *pLeavesSub, *pCoordFrameSub;
 
    // Set up vertex data 

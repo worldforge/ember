@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -164,6 +164,35 @@ namespace Ogre {
 	    fog = 1 / (exp((src1*src1) * log(2.718281828f)));
     }
 
+	// Shadow receiver vertex program
+    void terrain_shadow_receiver_vp(
+	    float4 position : POSITION,
+	    float2 uv1   	: TEXCOORD0,
+	    float2 uv2	 	: TEXCOORD1,
+	    float delta     : BLENDWEIGHT,
+
+	    out float4 oPosition : POSITION,
+	    out float2 oUv1		 : TEXCOORD0,
+	    out float4 colour    : COLOR,
+	    uniform float4x4 worldViewProj,
+		uniform float4x4 world,
+	    uniform float4x4 textureViewProj,
+	    uniform float morphFactor
+	    )
+    {
+	    // Apply morph
+	    position.y = position.y + (delta.x * morphFactor);
+	    // world / view / projection
+	    oPosition = mul(worldViewProj, position);
+		
+	    // Main texture coords
+		float4 worldpos = mul(world, position);
+	    float4 projuv = mul(textureViewProj, worldpos);
+		oUv1.xy = projuv.xy / projuv.w;
+	    // Full bright (no lighting)
+	    colour = float4(1,1,1,1);
+    }
+
     @endcode
     */
     class TerrainVertexProgram
@@ -173,15 +202,18 @@ namespace Ogre {
         static String mLinearFogArbvp1;
         static String mExpFogArbvp1;
         static String mExp2FogArbvp1;
+		static String mShadowReceiverArbvp1;
 
         static String mNoFogVs_1_1;
         static String mLinearFogVs_1_1;
         static String mExpFogVs_1_1;
         static String mExp2FogVs_1_1;
+		static String mShadowReceiverVs_1_1;
 
     public:
         /// General purpose method to get any of the program sources
-        static const String& getProgramSource(FogMode fogMode, const String syntax);
+        static const String& getProgramSource(FogMode fogMode, 
+			const String syntax, bool shadowReceiver = false);
 
 
     };

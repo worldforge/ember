@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.2.0, clients@worldforge.org)
+AC_INIT(Ember, 0.2.1, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -186,9 +186,8 @@ AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost),
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
 # Check for OGRE
-#should be 0.15.2, but there's a bug in the 0.15.2 release, the OGRE.pc file states that it's 0.15.0
-OGRE_VERSION=0.15.0
-PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
+OGRE_VERSION=1.0.0
+PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
@@ -198,7 +197,7 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 	])
 
 # Check for CEGUI
-PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.1,
+PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
@@ -241,6 +240,7 @@ AC_CHECK_LIB(ILU, iluFlipImage,
 		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
 		LDFLAGS="$LDFLAGS $ILU_LIBS"
 	]
+	,,-lIL
 
 )
 

@@ -31,7 +31,6 @@
 
 namespace EmberOgre {
 class Avatar;
-class DebugListener;
 class EmberEntity;
 class AvatarCamera;
 

@@ -65,6 +65,23 @@ void EmberTerrainPageSource::addPage(TerrainPage* page)
 		
 	getEmberTerrainSceneManager()->attachPage((long)vector.x, (long)vector.z, ogrePage, page->getMaxHeight(), page->getMinHeight());
 
+	
+	//HACK: This only works if the tile size is 65 or lower (i.e. the same size of mercator segments
+	typedef std::vector < TerrainRenderable * > TerrainRow;
+	typedef std::vector < TerrainRow > Terrain2D;
+	Terrain2D tiles = ogrePage->tiles;
+	for ( size_t j = 0; j < ogrePage->tilesPerPage; j++ )
+	{
+		for ( size_t i = 0; i < ogrePage->tilesPerPage; i++ )
+		{
+			Ogre::Vector3 center = tiles[ i ][ j ]->getWorldPosition();
+			TerrainPosition terrainPosition = Ogre2Atlas_TerrainPosition(center);
+			if (!mGenerator->isValidTerrainAt(terrainPosition)) {
+				tiles[ i ][ j ]->setForcedRenderLevel(4);
+			}
+		}
+	}
+
 }
 
 // void EmberTerrainPageSource::generatePage(TerrainPosition& point)

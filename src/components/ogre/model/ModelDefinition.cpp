@@ -33,20 +33,62 @@
 
 namespace EmberOgre {
 
-ModelDefinition::ModelDefinition(const Ogre::String& name, const Ogre::String& path)
-: mScale(0)
+
+     ModelDefinitionPtr::ModelDefinitionPtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<ModelDefinition>()
+     {
+         // lock & copy other mutex pointer
+         OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+         OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+         pRep = static_cast<ModelDefinition*>(r.getPointer());
+         pUseCount = r.useCountPointer();
+         if (pUseCount)
+         {
+             ++(*pUseCount);
+         }
+     }
+     //-----------------------------------------------------------------------
+     ModelDefinitionPtr& ModelDefinitionPtr::operator=(const Ogre::ResourcePtr& r)
+     {
+         if (pRep == static_cast<ModelDefinition*>(r.getPointer()))
+             return *this;
+         release();
+         // lock & copy other mutex pointer
+         OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+         OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+         pRep = static_cast<ModelDefinition*>(r.getPointer());
+         pUseCount = r.useCountPointer();
+         if (pUseCount)
+         {
+             ++(*pUseCount);
+         }
+         return *this;
+     }
+     //-----------------------------------------------------------------------
+     void ModelDefinitionPtr::destroy(void)
+     {
+         // We're only overriding so that we can destroy after full definition of Mesh
+         Ogre::SharedPtr<ModelDefinition>::destroy();
+     }
+
+
+
+
+
+ModelDefinition::ModelDefinition (const Ogre::String& path, Ogre::ResourceManager *creator, const Ogre::String &name, Ogre::ResourceHandle handle, const Ogre::String &group, bool isManual, Ogre::ManualResourceLoader *loader)
+: Ogre::Resource(creator, name, handle, group, isManual, loader)
+, mScale(0)
 , mRotation(0)
 , mUseScaleOf(0)
 , mPath(path)
 {
-	mName = name;
+	//mName = name;
 	mIsValid = false;
 }
 
 
 ModelDefinition::~ModelDefinition()
 {
-        unload();
+        //unload();
 
 		
 }
@@ -57,16 +99,25 @@ ModelDefinition::~ModelDefinition()
 	}
 
 	
-    void ModelDefinition::load(void)
+    void ModelDefinition::loadImpl(void)
 	{
 		mIsValid = createFromXML(mPath);
 		mIsLoaded = true;
 	}	
     
 	
-	void ModelDefinition::unload(void)
+	void ModelDefinition::unloadImpl(void)
     {
+		//we don't hold any references
+		
+		mSubModels.clear();
+		mActions.clear();
 	}	
+	
+	size_t ModelDefinition::calculateSize (void) const
+	{
+		return sizeof(mSubModels) + sizeof(mActions);
+	}
 	
 	Model* ModelDefinition::createModel(Ogre::String name, Ogre::SceneManager* sceneManager)
 	{
@@ -148,6 +199,7 @@ ModelDefinition::~ModelDefinition()
 			aModel->showPart(*I);	
 		}
 		
+		//return ModelPtr(aModel);
 		return aModel;
 	
 	}
@@ -237,7 +289,7 @@ bool ModelDefinition::createFromXML(std::string path)
 		subModelDef.Mesh = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(submodelsNodes->item(i))->getAttribute(tempStr));
 		try {
 			//preload
-			Ogre::MeshManager::getSingleton().load(subModelDef.Mesh);
+			Ogre::MeshManager::getSingleton().load(subModelDef.Mesh, "General");
 			
 			
 			
@@ -263,7 +315,7 @@ bool ModelDefinition::createFromXML(std::string path)
 						if (subentity->hasAttribute(tempStr)) {
 							subEntityDef.Material = xercesc::XMLString::transcode(subentity->getAttribute(tempStr));
 							//preload
-							EmberOgre::getSingleton().getSceneManager()->getMaterial(subEntityDef.Material);
+							Ogre::MaterialManager::getSingleton().getByName(subEntityDef.Material);
 							
 							
 						}

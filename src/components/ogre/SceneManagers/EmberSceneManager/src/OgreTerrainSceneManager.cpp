@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -109,7 +109,7 @@ namespace Ogre
         if ( !val.empty() )
             setPageSize(atoi( val.c_str() ));
         else
-            Except(Exception::ERR_ITEM_NOT_FOUND, "Missing option 'PageSize'",
+            OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Missing option 'PageSize'",
             "TerrainSceneManager::loadConfig");
 
 
@@ -117,7 +117,7 @@ namespace Ogre
         if ( !val.empty() )
             setTileSize(atoi( val.c_str() ));
         else
-            Except(Exception::ERR_ITEM_NOT_FOUND, "Missing option 'TileSize'",
+            OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Missing option 'TileSize'",
             "TerrainSceneManager::loadConfig");
 
         Vector3 v = Vector3::UNIT_SCALE;
@@ -180,7 +180,7 @@ namespace Ogre
         String pageSourceName = config.getSetting("PageSource");
         if (pageSourceName == "")
         {
-            Except(Exception::ERR_ITEM_NOT_FOUND, "Missing option 'PageSource'",
+            OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Missing option 'PageSource'",
             "TerrainSceneManager::loadConfig");
         }
         TerrainPageSourceOptionList optlist;
@@ -215,7 +215,7 @@ namespace Ogre
                 StringConverter::toString( image.getWidth() ) +
                 "," + StringConverter::toString( image.getHeight() ) +
                 ". Should be 2^n+1, 2^n+1";
-            Except( Exception::ERR_INVALIDPARAMS, err, "TerrainSceneManager::loadHeightmap" );
+            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, err, "TerrainSceneManager::loadHeightmap" );
         }
 
         int upperRange = 0;
@@ -236,7 +236,7 @@ namespace Ogre
         }
         else
         {
-            Except( Exception::ERR_INVALIDPARAMS, "Error: Image is not a grayscale image.",
+            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error: Image is not a grayscale image.",
                 "TerrainSceneManager::setWorldGeometry" );
         }
 
@@ -260,11 +260,13 @@ namespace Ogre
         if (mCustomMaterialName == "")
         {
             // define our own material
-            mOptions.terrainMaterial = static_cast<Material*>(
-                MaterialManager::getSingleton().getByName(TERRAIN_MATERIAL_NAME));
-            if (!mOptions.terrainMaterial)
+            mOptions.terrainMaterial = 
+                MaterialManager::getSingleton().getByName(TERRAIN_MATERIAL_NAME);
+            if (mOptions.terrainMaterial.isNull())
             {
-                mOptions.terrainMaterial = createMaterial( "TerrainSceneManager/Terrain" );
+                mOptions.terrainMaterial = MaterialManager::getSingleton().create(
+                    "TerrainSceneManager/Terrain",
+                    ResourceGroupManager::getSingleton().getWorldResourceGroupName());
 
             }
             else
@@ -287,7 +289,7 @@ namespace Ogre
 
             if (mOptions.lodMorph && 
                 mDestRenderSystem->getCapabilities()->hasCapability(RSC_VERTEX_PROGRAM) &&
-				GpuProgramManager::getSingleton().getByName("Terrain/VertexMorph") == 0)
+				GpuProgramManager::getSingleton().getByName("Terrain/VertexMorph").isNull())
             {
                 // Create & assign LOD morphing vertex program
                 String syntax;
@@ -305,8 +307,9 @@ namespace Ogre
                 const String& source = TerrainVertexProgram::getProgramSource(
                     fm, syntax);
 
-                GpuProgram* prog = GpuProgramManager::getSingleton().createProgramFromString(
-                    "Terrain/VertexMorph", source, GPT_VERTEX_PROGRAM, syntax);
+                GpuProgramPtr prog = GpuProgramManager::getSingleton().createProgramFromString(
+                    "Terrain/VertexMorph", ResourceGroupManager::getSingleton().getWorldResourceGroupName(), 
+                    source, GPT_VERTEX_PROGRAM, syntax);
 
                 // Attach
                 pass->setVertexProgram("Terrain/VertexMorph");
@@ -327,6 +330,26 @@ namespace Ogre
                     pass->setFog(true, FOG_LINEAR, getFogColour(), 0, 1, 0);
                 }
 
+				// Also set shadow receiver program
+				const String& source2 = TerrainVertexProgram::getProgramSource(
+					fm, syntax, true);
+
+				prog = GpuProgramManager::getSingleton().createProgramFromString(
+					"Terrain/VertexMorphShadowReceive", 
+					ResourceGroupManager::getSingleton().getWorldResourceGroupName(), 
+					source2, GPT_VERTEX_PROGRAM, syntax);
+				pass->setShadowReceiverVertexProgram("Terrain/VertexMorphShadowReceive");
+				params = pass->getShadowReceiverVertexProgramParameters();
+				// worldviewproj
+				params->setAutoConstant(0, GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+				// world
+				params->setAutoConstant(4, GpuProgramParameters::ACT_WORLD_MATRIX);
+				// texture view / proj
+				params->setAutoConstant(8, GpuProgramParameters::ACT_TEXTURE_VIEWPROJ_MATRIX);
+				// morph factor
+				params->setAutoConstant(12, GpuProgramParameters::ACT_CUSTOM, MORPH_CUSTOM_PARAM_ID);
+
+
                 // Set param index
                 mLodMorphParamName = "";
                 mLodMorphParamIndex = 4;
@@ -338,8 +361,8 @@ namespace Ogre
         else
         {
             // Custom material
-            mOptions.terrainMaterial = static_cast<Material*>(
-                MaterialManager::getSingleton().getByName(mCustomMaterialName));
+            mOptions.terrainMaterial = 
+                MaterialManager::getSingleton().getByName(mCustomMaterialName);
             mOptions.terrainMaterial->load();
 
         }
@@ -413,6 +436,13 @@ namespace Ogre
     //-------------------------------------------------------------------------
     void TerrainSceneManager::setWorldGeometry( const String& filename )
     {
+        // Clear out any existing world resources (if not default)
+        if (ResourceGroupManager::getSingleton().getWorldResourceGroupName() != 
+            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)
+        {
+            ResourceGroupManager::getSingleton().clearResourceGroup(
+                ResourceGroupManager::getSingleton().getWorldResourceGroupName());
+        }
         mTerrainPages.clear();
         // Load the configuration
         loadConfig(filename);
@@ -433,6 +463,8 @@ namespace Ogre
     {
         OctreeSceneManager::clearScene();
         mTerrainPages.clear();
+        // Octree has destroyed our root
+        mTerrainRoot = 0;
     }
     //-------------------------------------------------------------------------
     void TerrainSceneManager::_renderScene(Camera* cam, Viewport *vp, bool includeOverlays)
@@ -743,7 +775,7 @@ namespace Ogre
         PageSourceMap::iterator i = mPageSources.find(typeName);
         if (i == mPageSources.end())
         {
-            Except(Exception::ERR_ITEM_NOT_FOUND, 
+            OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
                 "Cannot locate a TerrainPageSource for type " + typeName,
                 "TerrainSceneManager::selectPageSource");
         }
@@ -828,8 +860,9 @@ namespace Ogre
                 worldFrag.singleIntersection.x = origin.x;
                 worldFrag.singleIntersection.z = origin.z;
                 worldFrag.singleIntersection.y = height;
-                listener->queryResult(&worldFrag, 
-                    (worldFrag.singleIntersection - origin).length());
+                if (!listener->queryResult(&worldFrag, 
+                    (worldFrag.singleIntersection - origin).length()))
+					return;
             }
         }
         else
@@ -838,8 +871,9 @@ namespace Ogre
             if (static_cast<TerrainSceneManager*>(mParentSceneMgr)->intersectSegment(
                 origin, origin + (dir * 100000), &worldFrag.singleIntersection))
             {
-                listener->queryResult(&worldFrag, 
-                    (worldFrag.singleIntersection - origin).length());
+                if (!listener->queryResult(&worldFrag, 
+                    (worldFrag.singleIntersection - origin).length()))
+					return;
             }
 
 
@@ -848,7 +882,7 @@ namespace Ogre
 
     }
     //-------------------------------------------------------------------------
-    Material* TerrainSceneManager::getTerrainMaterial(void)
+    MaterialPtr& TerrainSceneManager::getTerrainMaterial(void)
     {
         return mOptions.terrainMaterial;
     }
@@ -857,6 +891,24 @@ namespace Ogre
     {
         return PageSourceIterator(mPageSources.begin(), mPageSources.end());
     }
+	//-------------------------------------------------------------------------
+	void TerrainSceneManager::setWorldGeometryRenderQueue(RenderQueueGroupID qid)
+	{
+		for (TerrainPage2D::iterator pi = mTerrainPages.begin(); 
+			pi != mTerrainPages.end(); ++pi)
+		{
+			TerrainPageRow& row = *pi;
+			for (TerrainPageRow::iterator ri = row.begin(); ri != row.end(); ++ri)
+			{
+				TerrainPage* page = *ri;
+				if (page)
+				{
+					page->setRenderQueue(qid);
+				}
+			}
+		}
+
+	}
 
 
 } //namespace

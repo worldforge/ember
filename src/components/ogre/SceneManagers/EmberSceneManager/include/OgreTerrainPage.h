@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -26,6 +26,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #define __TerrainPage_H__
 
 #include "OgreTerrainPrerequisites.h"
+#include "OgreRenderQueue.h"
 
 namespace Ogre {
 
@@ -78,6 +79,9 @@ namespace Ogre {
         TerrainRenderable * getTerrainTile( const Vector3 & pt );
 
 		void translate(const Ogre::Vector3 pos);
+		
+		/** Sets the render queue group which the tiles should be rendered in. */
+		void setRenderQueue(RenderQueueGroupID qid);
 
     };
 

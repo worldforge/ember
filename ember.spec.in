@@ -12,7 +12,7 @@ Copyright: GPL
 Group: Amusements/Games
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Prefix: %{_prefix}
-Requires: eris >= 1.3.3 mercator varconf OGRE >= 0.15.0 boost CEGUI >= 0.1.0 libxerces-c25 SDL >= 1.2  Atlas-C++ >= 0.5.91
+Requires: eris >= 1.3.3 mercator varconf OGRE >= 1.0.0 boost CEGUI >= 0.2.0 libxerces-c25 SDL >= 1.2  Atlas-C++ >= 0.5.91
 #BuildRequires: Atlas-C++-devel >= 0.5.91 eris-devel mercator-devel varconf-devel OGRE-devel boost-devel CEGUI-devel libxerces-c25-devel
 
 %description

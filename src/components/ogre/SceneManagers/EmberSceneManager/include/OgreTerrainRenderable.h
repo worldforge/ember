@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -104,7 +104,7 @@ namespace Ogre
             lodMorphStart = 0.5;
             useTriStrips = false;
             primaryCamera = 0;
-            terrainMaterial = 0;
+            terrainMaterial.setNull();
         };
         /// The size of one edge of a terrain page, in vertices
         size_t pageSize;
@@ -134,7 +134,7 @@ namespace Ogre
         /// Whether vertex colours are enabled
         bool coloured;
         /// Pointer to the material to use to render the terrain
-        Material *terrainMaterial;
+        MaterialPtr terrainMaterial;
 		
 		///use debug materials, changing according to the lod
 		bool debuglod;
@@ -217,7 +217,7 @@ namespace Ogre
         */
         virtual void getRenderOperation( RenderOperation& rend );
 
-        virtual Material* getMaterial( void ) const
+        virtual const MaterialPtr& getMaterial( void ) const
         {
             return mMaterial;
         };
@@ -265,7 +265,7 @@ namespace Ogre
         }
 
 
-        void setMaterial( Material *m )
+        void setMaterial(const MaterialPtr& m )
         {
             mMaterial = m;
         };
@@ -379,7 +379,7 @@ namespace Ogre
         /// The MovableObject type
         static String mType;
         /// Current material used by this tile
-        Material *mMaterial;    
+        MaterialPtr mMaterial;    
         /// Whether this tile has been initialised    
         bool mInit;
         /// Shared array of IndexData (reuse indexes across tiles)
@@ -391,7 +391,7 @@ namespace Ogre
         /// Optional set of delta buffers, used to morph from one LOD to the next
         HardwareVertexBufferSharedPtr* mDeltaBuffers;
         /// System-memory buffer with just positions in it, for CPU operations
-        Real* mPositionBuffer;
+        float* mPositionBuffer;
         /// Forced rendering LOD level, optional
         int mForcedRenderLevel;
         /// Array of LOD indexes specifying which LOD is the next one down

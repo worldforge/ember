@@ -136,6 +136,7 @@ public:
 		waterPlane.d = 0; 
 		Ogre::MeshManager::getSingleton().createPlane(
 			"WaterPlane",
+			"environment",
 			waterPlane,
 			1000, 1000,
 			5, 5,
@@ -197,7 +198,7 @@ public:
 			
 			{
 				Viewport *v = rttTex->addViewport( mCamera );
-				Material* mat = (Material*)MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
+				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
 				mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
 				v->setOverlaysEnabled(false);
 				rttTex->addListener(mRefractionListener);
@@ -207,7 +208,7 @@ public:
 			rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Reflection", 512, 512 );
 			{
 				Viewport *v = rttTex->addViewport( mCamera );
-				Material* mat = (Material*)MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
+				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
 				mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
 				v->setOverlaysEnabled(false);
 				rttTex->addListener(mReflectionListener);
