@@ -124,7 +124,7 @@ private:
                 myInitialized = true;
             }
         myLog = dime::LoggingService::getInstance();
-        myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
+        myLog->slog(__FILE__, __LINE__, LoggingService::INFO) 
             << "Started Font Service"<<ENDM;
     }
 
