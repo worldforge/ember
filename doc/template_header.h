@@ -21,6 +21,13 @@
 //   See Ottinger's naming rules for more info:
 //   http://www.objectmentor.com/publications/naming.htm
 //
+// - Leave the different separator comments of the template header
+//   (such as Protected Methods, Public Constants, etc) in place even if you don't
+//   use them initially.  This way there is a clear place where to put new methods,
+//   variables, and constants of different types, and the code stays clearer.
+//
+//
+
 
 //  ----------------------< Start of template >---------------------------
 /*
@@ -44,9 +51,9 @@
 #ifndef <FILENAME>_H
 #define <FILENAME>_H
 
-// Include other headers of the current program here
+// Include headers from the current project here
 
-// Include library headers here
+// Include custom library headers here
 
 // Include system headers here
 
@@ -241,6 +248,41 @@ class NameOfClass
     // Private Methods
     //======================================================================
     private:
+
+
+    //======================================================================
+    // Disabled constructors and operators
+    //======================================================================
+    private:
+
+    // TODO: If you don't want to provide a copy constructor or some other
+    //       of the standard constructors/operators, then delete the one in
+    //       the public section at the start of the header.  Otherwise delete
+    //       the one in this section.
+
+    /**
+     * Constructor not provided.
+     */
+    NameOfClass()
+    {
+    }
+
+
+    /**
+     * Copy constructor not provided.
+     */
+    NameOfClass( const NameOfClass &source )
+    {
+    }
+
+
+    /**
+     * Assignment operator not provided.
+     */
+    NameOfClass &operator= ( const NameOfClass &source )
+    {
+        return &this;
+    }
 
 
 }; // End of class
