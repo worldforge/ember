@@ -68,10 +68,7 @@ class ServiceManager
     * Starts all services.
     * 
     */
-    void startAll()
-    {
-        // TODO..
-    }
+    void startAll();
    
    /**
     * Stops all services.
@@ -95,16 +92,6 @@ class ServiceManager
     {
         return myServiceVector.begin();
     }
-     
-   /** 
-    * Deletes all the services, freeing the memory.
-    * TODO(zzorn): I don't think we want to delete the services from here, as
-    *              we don't own them (they are just registered here with a pointer,
-    *              they are created elsewhere and for clarity should probably be
-    *              deleted in the same place where they were created.
-    */
-   void deleteAll();
-
    
    /**
     * Registers a new service and adds it to the list of registered services, if it isn't

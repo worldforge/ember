@@ -23,10 +23,20 @@ namespace dime
 	{
 	}
 
-	
+    void ServiceManager::startAll()
+	{
+	   for(Iter j = myServiceVector.begin(); j != myServiceVector.end(); j++)
+		{	
+			(*j)->start();
+		}
+	}
+		
 	void ServiceManager::stopAll(int code)
 	{
-	   cout << "one manager to stop them all" << endl;
+	   for(Iter j = myServiceVector.begin(); j != myServiceVector.end(); j++)
+		{	
+			(*j)->stop(0);
+		}
 	}
 		
 	void ServiceManager::listAll()
@@ -40,10 +50,17 @@ namespace dime
 	
 	
 
-	bool ServiceManager::addService( Service *service )
+	bool ServiceManager::addService( Service *pservice )
 	{
-		myServiceVector.push_back(service);
-		return true; // TODO: make boolean false if service couldn't be inserted
+		for(Iter j = myServiceVector.begin(); j != myServiceVector.end(); j++)
+			{	
+				if ( ((pservice)->getName()) == ((*j)->getName()) )
+				{
+					return false; // services can't be duplicated
+				}
+			}
+		myServiceVector.push_back(pservice);
+		return true;
 	}
 		
 	bool ServiceManager::removeService( Service *service )
@@ -53,21 +70,13 @@ namespace dime
 				if ((service)==*j)
 				{
 					myServiceVector.erase(j);
+					return true;
 				}
 			}
-		return true; // TODO: make it return proper value
+		return false; // the service was not there
 	}	
-	
-	void ServiceManager::deleteAll()
-	{
-	   for(Iter j = myServiceVector.begin(); j != myServiceVector.end(); j++)
-	     {	
-		delete *j;
-	     }
+
 	}
-	
-	
-     }
    // namespace services
 }
 // namespace dime
