@@ -162,13 +162,13 @@ AC_CHECK_LIB(GL,
 	     Unable to find An OpenGL environment
 	     ])
 	)
-AC_CHECK_LIB(GLU,
-	     gluPerspective,
-	     LIBS="$LIBS -lGLU",
-	     AC_MSG_ERROR([
-	     Unable to find the GLU library
-	     ])
-)
+#AC_CHECK_LIB(GLU,
+#	     gluPerspective,
+#	     LIBS="$LIBS -lGLU",
+#	     AC_MSG_ERROR([
+#	     Unable to find the GLU library
+#	     ])
+#)
 
 # OpenAL check
 
@@ -249,6 +249,7 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 src/components/Makefile
 		 src/components/debug/Makefile
+		 src/components/ogre/Makefile
 		 src/framework/Makefile
 		 src/services/Makefile
 		 src/services/config/Makefile
