@@ -25,9 +25,8 @@
 #define CONSOLE_H
 
 // Included headers from the current project
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleBackend.h"
 #include "services/gui/widget/Widget.h"
-#include "framework/Tokeniser.h"
 #include "services/platform/RectangleRenderer.h"
 #include "services/font/FontRenderer.h"
 
@@ -35,15 +34,9 @@
 
 // Included system headers
 #include <string>
-#include <list>
-#include <map>
-
 
 
 namespace dime {
-
-#define CONSOLE_MESSAGE 0x1
-#define SCREEN_MESSAGE  0x2
 
 // Forward Declarations
 class ConsoleObject;
@@ -61,35 +54,33 @@ class ConsoleObject;
  * @see Widget
  *
  */
-class Console : public ConsoleObject, public Widget {
-  // Constants
-static const unsigned int MAX_MESSAGES = 7;
-static const int FONT_HEIGHT = 12;
-static const int LINE_SPACING = 5;
-static const int CONSOLE_TEXT_OFFSET_X = 5;
-static const int CONSOLE_TEXT_OFFSET_Y = 5;
+class Console : public Widget {
+  //======================================================================
+  // Private Constants
+  //======================================================================
+ private:
+  static const int FONT_HEIGHT = 12;
+  static const int LINE_SPACING = 5;
+  static const int CONSOLE_TEXT_OFFSET_X = 5;
+  static const int CONSOLE_TEXT_OFFSET_Y = 5;
 
-static const int CONSOLE_SPEED = 10;
+  static const int CONSOLE_SPEED = 10;
 
-static const char* CONSOLE_PROMPT_STRING;
-static const char* CONSOLE_CURSOR_STRING;
+  static const char* CONSOLE_PROMPT_STRING;
+  static const char* CONSOLE_CURSOR_STRING;
 
-
-public:
+  //======================================================================
+  // Public Methods
+  //======================================================================
+ public:
   Console(const Rectangle& rect);
   ~Console();
    
   /**
-   * Add a message to the console and/or screen message queue
-   * message is the message string
-   * type is where to display the message: CONSOLE_MESSAGE and/or SCREEN_MESSAGE
-   * duration is how long the SCREEN_MESSAGE lasts before being removed
-   */ 
-  static void pushMessage(const std::string &message, int type, int duration);
-  /**
     * Draws the widget, and/or its children.
     */
   virtual int draw(DrawDevice *target);
+
   /**
    * Toggles whether the console is visible or not
    */ 
@@ -102,32 +93,13 @@ public:
     * Returns true if the keypress was processed.
     * Override the event methods in derived classes when neccesary.
     */
-
   virtual bool keyPress( KeyPressEvent *event);
 
-  /**
-   * Registers a command with the console
-   * command is the command to register
-   * object is the originating object
-   */ 
-  static void registerCommand(const std::string &command, ConsoleObject *object);
-
-  /**
-   * This is the method the determines what object the pass the command onto
-   * command is the command string to process
-   */ 
-  void runCommand(const std::string &command);
-
-  /**
-   * This is the ConsoleObject method.
-   * command is the command to run
-   * args is the commands arguments
-   */ 
-  void runCommand(const std::string &command, const std::string &args);
-
 protected:
-  // Pair used to assign a duration to the screen message
-  typedef std::pair<std::string, unsigned int> screenMessage;
+  /**
+   * ConsoleBackend that we are displaying
+   */
+  ConsoleBackend* myBackend;
 
   /**
    * Height of console when full size
@@ -164,30 +136,6 @@ protected:
    *  command is the current command string
    */ 
   void renderConsoleMessages(DrawDevice* ddevice);
-  /**
-   * This renders the screen messages
-   */ 
-  void renderScreenMessages(DrawDevice* ddevice);
-
-
-  /**
-   * Current console messages
-   */
-  static std::list<std::string> console_messages;
-  
-  /**
-   * Current screen messages
-   */
-  static std::list<screenMessage> screen_messages;
-
-  /**
-    * Mapping of registered commands to associated object
-    */
-  static std::map<std::string, ConsoleObject*> _registered_commands;
- 
-  // List of Console's console commands
-  static const char * const TOGGLE_CONSOLE = "toggle_console";
-  static const char * const LIST_CONSOLE_COMMANDS = "list_commands";
 };
 
 } /* namespace dime */

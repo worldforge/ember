@@ -25,7 +25,7 @@
 #include "services/datamodel/IntProvider.h"
 #include "services/datamodel/DataObject.h"
 #include "services/datamodel/FloatProvider.h"
-#include "services/gui/widget/Console.h"
+#include "framework/ConsoleBackend.h"
 
 // System headers
 #include <iostream>
@@ -59,14 +59,14 @@ namespace dime
 	MetaserverService::MetaserverService()
 	{
 	    setName("Metaserver Service");
-		setDescription("Service for Metaserver session");
-		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
-		//        setStatus( Service::Status::OK );
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
-		msrv = NULL;
-    Console::registerCommand(META_LIST,this);
-    Console::registerCommand(META_REFRESH,this);
-    Console::registerCommand(META_ABORT,this);
+	    setDescription("Service for Metaserver session");
+	    // TODO(zzorn, 2002-01-19): Set the status of the service to OK.
+	    //        setStatus( Service::Status::OK );
+	    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
+	    msrv = NULL;
+	    ConsoleBackend::getMainConsole()->registerCommand(META_LIST,this);
+	    ConsoleBackend::getMainConsole()->registerCommand(META_REFRESH,this);
+	    ConsoleBackend::getMainConsole()->registerCommand(META_ABORT,this);
 	}
 
 	/* dtor */

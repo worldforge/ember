@@ -21,19 +21,17 @@
 
 void dime::GuiService::refresh()
 {
-    
-    if (myDrawTarget != NULL)
-        {
-            myRootWidget.draw(myDrawTarget);
-            myDrawTarget->update();
-        }
-	else
-        {
-            dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, "Unable to refresh Gui as no draw target has been specified");
-	}
-
-    
+  if (myDrawTarget != NULL)
+    {
+      myRootWidget.draw(myDrawTarget);
+      myDrawTarget->update();
+    }
+  else
+    {
+      dime::LoggingService::getInstance()->log(__FILE__, __LINE__, dime::LoggingService::FAILURE, "Unable to refresh Gui as no draw target has been specified");
+    }    
 }
+
 /*
   void dime::GuiService::MouseMotion(InputDevice *mouse, const SDLKey &key, dime::InputMapping::InputSignalType signaltype)
   {

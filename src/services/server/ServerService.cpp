@@ -18,7 +18,7 @@
 
 #include "ServerService.h"
 #include "services/logging/LoggingService.h"
-#include "services/gui/widget/Console.h"
+#include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
 #include <sigc++/object_slot.h>
@@ -37,7 +37,7 @@ namespace dime
 
 
   /* ctor */
-  ServerService::ServerService() : myConn(NULL), myLobby(NULL), myConnected(false)
+  ServerService::ServerService() : myConn(NULL), myPlayer(NULL), myLobby(NULL), myWorld(NULL), myConnected(false)
   {
     setName("Server Service");
     setDescription("Service for Server session");
@@ -56,15 +56,15 @@ namespace dime
     myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
     myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
-    Console::registerCommand(CONNECT,this);
-    Console::registerCommand(RECONNECT,this);
-    Console::registerCommand(DISCONNECT,this);
-    Console::registerCommand(CREATEACC,this);
-    Console::registerCommand(LOGIN,this);
-    Console::registerCommand(LOGOUT,this);
-    Console::registerCommand(CREATECHAR,this);
-    Console::registerCommand(LISTCHARS,this);
-    Console::registerCommand(TAKECHAR,this);
+    ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
+    ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);
+    ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this);
+    ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this);
+    ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this);
+    ConsoleBackend::getMainConsole()->registerCommand(LOGOUT,this);
+    ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this);
+    ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this);
+    ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
   }
 	
   /* dtor */

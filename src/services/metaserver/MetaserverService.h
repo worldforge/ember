@@ -43,7 +43,7 @@ namespace dime {
  * @see dime::ConsoleObject
  */
 class MetaserverService: public Service,
-  public ConsoleObject, public SigC::Object
+  public ConsoleObject, virtual public SigC::Object
 {
     //======================================================================
     // Private Variables
@@ -53,7 +53,7 @@ class MetaserverService: public Service,
     Eris::Meta * msrv;
     Eris::ServerList serverlist;
     bool listed;
-	StringProvider * myStateDMP;
+    StringProvider * myStateDMP;
 
 		
     //----------------------------------------------------------------------
@@ -93,10 +93,10 @@ class MetaserverService: public Service,
      */ 
     virtual void runCommand(const std::string &command, const std::string &args);
 
-  // List of MetaserverService's console commands
-  static const char * const META_REFRESH = "meta_refresh";
-  static const char * const META_ABORT = "meta_abort";
-  static const char * const META_LIST = "meta_list";
+    // List of MetaserverService's console commands
+    static const char * const META_REFRESH = "meta_refresh";
+    static const char * const META_ABORT = "meta_abort";
+    static const char * const META_LIST = "meta_list";
 }; //MetaserverService
 
 } // namespace dime

@@ -40,7 +40,7 @@ namespace dime {
  * @see dime::MetaserverService
  * @see dime::ConsoleObject
  */
-class ServerService: public Service, public ConsoleObject, public SigC::Object
+class ServerService: public Service, public ConsoleObject, virtual public SigC::Object
 {
     //======================================================================
     // Private Variables

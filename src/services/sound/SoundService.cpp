@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2002 Miguel Guzman Miranda (Aglanor)
-  Code based on the Woldspace OpenAL tutorials by Lord Loki
+  Code based on the Worldspace OpenAL tutorials by Lord Loki
   	at http://worldspace.berlios.de/openal/
 
   This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 
 #include "SoundService.h"
 #include "services/logging/LoggingService.h"
-#include "services/gui/widget/Console.h"
+#include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
 /*
@@ -285,8 +285,8 @@ namespace dime
 */
 
 
-		Console::registerCommand(PLAYSOUND,this);
-		Console::registerCommand(PLAYMUSIC,this);
+		ConsoleBackend::getMainConsole()->registerCommand(PLAYSOUND,this);
+		ConsoleBackend::getMainConsole()->registerCommand(PLAYMUSIC,this);
 
 		setRunning( true );
 		setStatus(Service::OK);
