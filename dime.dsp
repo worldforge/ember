@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"bin_release/dime.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 sdlmain.lib sdl.lib cppunit.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
+# ADD LINK32 sdlmain.lib sdl.lib /nologo /subsystem:windows /machine:I386 /out:"bin_release/dime.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Debug"
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"bin/dime.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib cppunitcd.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
+# ADD LINK32 libsigc.lib sdlmain.lib sdl.lib sdl_image.lib /nologo /subsystem:windows /debug /machine:I386 /out:"bin/dime.exe" /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "dime - Win32 Debug CppUnit"
