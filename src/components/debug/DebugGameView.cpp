@@ -53,17 +53,19 @@ void DebugGameView::entityCreate( Eris::Entity *e )
 
     /* Whenever a new entity is created, make sure to connect to those signals
        too */
-    e->AddedMember.connect( SigC::slot( this, &addedMember ) );
 
-    e->RemovedMember.connect( SigC::slot( this, &removedMember ) );
+    // Xmp's Notes: hmm need to work out how to connect these
+    //e->AddedMember.connect( SigC::slot( this, &addedMember ) );
 
-    e->Recontainered.connect( SigC::slot( this, &recontainered ) );
+    //e->RemovedMember.connect( SigC::slot( this, &removedMember ) );
 
-    e->Changed.connect( SigC::bind( SigC::slot( this, &changed ), e ) );
+    //e->Recontainered.connect( SigC::slot( this, &recontainered ) );
 
-    e->Moved.connect( SigC::bind( SigC::slot( this, &moved ), e ) );
+    //e->Changed.connect( SigC::bind( SigC::slot( this, &changed ), e ) );
 
-    e->Say.connect( SigC::slot( SigC::slot( this, &say ), e ) );
+    //e->Moved.connect( SigC::bind( SigC::slot( this, &moved ), e ) );
+
+    //e->Say.connect( SigC::slot( SigC::slot( this, &say ), e ) );
 }
 
 
