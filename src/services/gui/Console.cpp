@@ -234,7 +234,7 @@ void Console::runCommand(const std::string &command, const std::string &args) {
   }
 }
 
-bool keyPress( KeyPressEvent *event )
+bool Console::keyPress( KeyPressEvent *event )
 {
   return false;
 }
