@@ -1,7 +1,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <iostream>
-#include <services/platform/RectangleRenderer.h>
+#include <services/platform/BitmapRenderer.h>
 #include <services/platform/OGLDrawDevice.h>
 
 int main(int argc, char **argv) {
@@ -25,22 +25,19 @@ int main(int argc, char **argv) {
   int done=0;
 
 	dime::OGLDrawDevice myDevice(screen->w, screen->h);
-	dime::Rectangle myR(50,10, 500,400);
+	dime::Rectangle myR(300,300, 100,100);
   
-  dime::RectangleRenderer myRR(myR, "test.png", dime::RectangleRenderer::TILE);
+  dime::BitmapRenderer myRR(myR, "test.png", dime::BitmapRenderer::TILE);
 
   
   SDL_Surface *picture, *picture2;
-  picture = IMG_Load("test.png");
-  picture2 = IMG_Load("nehe.bmp");
   
-  std::cout << picture->format->Rmask << " " << picture->format->Gmask << " "<< picture->format->Bmask << " " << picture->format->Amask << std::endl;
-  std::cout << picture2->format->Rmask << " " << picture2->format->Gmask << " " << picture2->format->Bmask << " " << picture2->format->Amask << std::endl;
   myDevice.init();
   myDevice.clearScreen();
-  myRR.render(&myDevice);
-  myDevice.drawPixel(100,100,dime::Color(100,100,100));
-  myDevice.drawLine(0, 0, 100, 100, dime::Color(0,0,255));
+  SDL_Rect myRect;
+  SDL_Rect gradientRect;
+  myRect.x = 100; myRect.y = 100; myRect.w = 100; myRect.h = 100;
+  gradientRect.x = 200; gradientRect.y = 100; gradientRect.w = 100; gradientRect.h = 100;
   myDevice.update();
   
   while(done == 0)
@@ -57,10 +54,18 @@ int main(int argc, char **argv) {
       }
     }
 	
-    myDevice.clearScreen();
+    //myDevice.clearScreen();
     myRR.render(&myDevice);
-    myDevice.drawPixel(100,100,dime::Color(100,100,100));
-    myDevice.drawLine(0, 0, 100, 100, dime::Color(0,0,255));
+    myDevice.drawPixel(25,100,dime::Color(100.0f,100.0f,100.0f));
+    myDevice.drawPixel(25,102,dime::Color(100.0f,100.0f,100.0f));
+    myDevice.drawPixel(25,101,dime::Color(100.0f,100.0f,100.0f));
+    myDevice.fillRect(&myRect, dime::Color(255.0f, 0.0f, 0.0f));
+    myDevice.drawGradient(&gradientRect,
+		           dime::Color(255.0f, 0.0f, 0.0f),
+			   dime::Color(0.0f, 255.0f, 0.0f),
+			   dime::Color(0.0f, 0.0f, 255.0f),
+			   dime::Color(255.0f, 0.0f, 255.0f));
+    myDevice.drawLine(200, 200, 250, 250, dime::Color(0.0f,0.0f,255.0f));
     myDevice.update();
   }
 	SDL_Quit();
