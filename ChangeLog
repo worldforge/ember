@@ -1,5 +1,9 @@
 2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* added and cleaned up comments
+
+2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* added comments, removed old code
 	* send string by reference
 
