@@ -108,7 +108,13 @@ namespace dime
          * keyboard input again goes to the widget that has the focus.
          */
         virtual void releaseKeyboard( Widget *widget );
-        
+       
+	/**
+	 * Gives a widget focus, calls loseFocus of oldFocusWidget,
+	 * calls gainFocus on newFocusWidget
+	 */
+	virtual void giveWidgetFocus( Widget *widget );
+	
         //---------------------------------------------------------------------------------------------------
         // Mouse events
         //---------------------------------------------------------------------------------------------------

@@ -101,7 +101,7 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
     else if (mouse->getKeyState(key) == dime::InputDevice::RELEASED)
         {
             event = new MouseButtonEvent(mouse, eventDest, button, MouseButtonEvent::RELEASED);
-			captureKeyboard(myPointedWidget);
+	    giveWidgetFocus(myPointedWidget);
             eventDest->mouseUp( event );
         }
 }
@@ -120,10 +120,14 @@ void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice 
         {
             eventDest = myKeyboardCaptureWidget;
         }
-    else
+    else if(myFocusedWidget)
         {
-            eventDest = myRootWidget;
+            eventDest = myFocusedWidget;
         }
+    else
+	{
+	    eventDest = myRootWidget;
+	}
 
    
     if(keyboard->getKeyState(key) == dime::InputDevice::PRESSED)
@@ -224,6 +228,12 @@ void dime::EventGenerator::releaseKeyboard( dime::Widget *widget ) {
     myKeyboardCaptureWidget = NULL;
 } // releaseKeyboard
 
+/*--------------------------------------------------------------------------*/
+void dime::EventGenerator::giveWidgetFocus( dime::Widget *widget) {
+  //myFocusedWidget.loseFocus();
+  myFocusedWidget = widget;
+  //myFocusedWidget.gainFocus();
+}
 
 /*--------------------------------------------------------------------------*/
 /*----[ Mouse events: ]-----------------------------------------------------*/
