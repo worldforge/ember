@@ -101,12 +101,6 @@ void Avatar::createAvatar()
 	//mAvatarNode->setOrientation(0,1,0,0);
 	//mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
 	
-	//mAvatarNode->setScale(OGRESCALER);
-	// TODO: very important! When the scale is set to default (1,1,1)
-	// and a mesh with normal scale is put here (like 2 meters high and things like that)
-	// we'll need to rescale the local space position for the nodes (shown below)
-	// - will be like dividing by 100 or something
-
 	// Model Node and Entity for display
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));

@@ -98,7 +98,6 @@ void AvatarCamera::createNodesAndCamera()
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
 	mCamera->setNearClipDistance(0.01);
-	
 	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 	{
 		mCamera->setFarClipDistance(0);
@@ -116,6 +115,9 @@ void AvatarCamera::createViewPort()
     // Create 1st person viewport, entire window
     mViewPort = mWindow->addViewport(mCamera);
     mViewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
+    mCamera->setAspectRatio(
+		Ogre::Real(mViewPort->getActualWidth()) / Ogre::Real(mViewPort->getActualHeight()));
+
 	
 }
 
