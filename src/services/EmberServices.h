@@ -147,12 +147,13 @@ class DimeServices
     virtual ~DimeServices()
     {
       // TODO: Free any allocated resources here.
+      delete myConfigService;
       delete myGuiService;
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-		delete myMetaserverService;
-		delete myServerService;
+      delete myMetaserverService;
+      delete myServerService;
 #endif
     }
 

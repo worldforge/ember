@@ -34,7 +34,7 @@ namespace dime {
  * @author Tim Enderling
  */
 
-class StringProvider: public DataProvider, public SigC::Object
+class StringProvider: public DataProvider, virtual public SigC::Object
 {
     //======================================================================
     // Public Constants and enums

@@ -37,7 +37,7 @@ namespace dime
  *
  */
 
-class StateManagerTestCase : public CppUnit::TestCase, public SigC::Object 
+class StateManagerTestCase : public CppUnit::TestCase, virtual public SigC::Object 
 {
 
   CPPUNIT_TEST_SUITE( StateManagerTestCase );

@@ -59,7 +59,7 @@ typedef boost::shared_ptr<DataObject> PDataObject;
  * @author Tim Enderling
  */
 
-class DataObject: public SigC::Object
+class DataObject: virtual public SigC::Object
 {
     //======================================================================
     // Public Constants and enums

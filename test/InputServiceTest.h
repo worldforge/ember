@@ -32,7 +32,7 @@ namespace dime
  *
  */
 
-class InputServiceTestCase : public CppUnit::TestCase, public SigC::Object 
+class InputServiceTestCase : public CppUnit::TestCase, virtual public SigC::Object 
 {
   struct InputEvent
   {

@@ -48,7 +48,7 @@ namespace dime {
  * @author Hans Häggström
  * @author Adam Gregory
  */
-class GuiService : public Service, public SigC::Object
+class GuiService : public Service, virtual public SigC::Object
 
 {
   //======================================================================

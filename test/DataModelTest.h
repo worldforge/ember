@@ -36,7 +36,7 @@
 namespace dime
 {
 
-class DataModelTestCase : public CppUnit::TestFixture, public SigC::Object 
+class DataModelTestCase : public CppUnit::TestFixture, virtual public SigC::Object 
 {
   CPPUNIT_TEST_SUITE( DataModelTestCase );
   CPPUNIT_TEST( testRoot );

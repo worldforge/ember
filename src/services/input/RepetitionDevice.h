@@ -51,7 +51,7 @@ namespace dime {
  * device uses the SDL message loop passing some SDL_USEREVENT to fix this.
  */
 
-class RepetitionDevice: public InputDevice, public SigC::Object
+class RepetitionDevice: public InputDevice, virtual public SigC::Object
 {
     //======================================================================
     // Private Variables

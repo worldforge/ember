@@ -39,7 +39,7 @@ namespace dime
 {
     class Widget;
     
-    class EventGenerator : public SigC::Object
+    class EventGenerator : virtual public SigC::Object
     {
       friend class dime::Widget;
         
