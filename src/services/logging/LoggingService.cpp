@@ -232,9 +232,11 @@ void dime::LoggingService::erisLogReceiver (Eris::LogLevel level,
         importance = WARNING;
         break;
     case Eris::LOG_NOTICE:
+      importance=INFO;
+      break;
     case Eris::LOG_VERBOSE:
     default:
-        importance = INFO;
+        importance = VERBOSE;
     }
 
     sendMessage (msg, "ERIS", 0, importance);

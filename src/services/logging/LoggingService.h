@@ -122,16 +122,18 @@ namespace dime
 
         /**
 	 * This enum contains all levels of message importance.
-	 * -INFO messages are intended to be read only to look for reasons of errors
-	 * -WARNING messages appear whenever something could get critical in some case
-	 * -CRITICAL messages should be read always and contain fatal errors
+	 * -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of dime's internal state.
+	 * -INFO messages are intended to be read only to look for reasons of errors.
+	 * -WARNING messages appear whenever something could get critical in some case.
+	 * -CRITICAL messages should be read always and contain fatal errors.
 	 */
         enum MessageImportance
         {
-            INFO = 0,
-            WARNING = 1,
-            FAILURE = 2,
-            CRITICAL = 3
+	  VERBOSE = 0,
+	  INFO = 1,
+	  WARNING = 2,
+	  FAILURE = 3,
+	  CRITICAL = 4
         };
 
 
@@ -233,7 +235,7 @@ namespace dime
                                                      FAILURE) ? "FAILURE"
                                                     : ((importance ==
                                                         WARNING) ? "WARNING" :
-                                                       "INFO")),
+                                                       ((importance== INFO) ?"INFO":"VERBOSE"))),
                          file.c_str (), line, message.c_str ());
             }
 
