@@ -119,7 +119,8 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
 			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(xPos,zPos), zPos);
 			Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE * Ogre::Math::RangeRandom(0.8f, 1.0f);
-			instance->vScale = scale;
+			//make the patches a bit smaller
+			instance->vScale = scale * 0.5;
 			Ogre::Quaternion rotation;
 			rotation.FromAngleAxis((Ogre::Degree)Ogre::Math::RangeRandom(0.0f, 360.0f), Ogre::Vector3::UNIT_Y);
 			instance->qOrient = rotation;
