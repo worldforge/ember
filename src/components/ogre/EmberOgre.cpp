@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.15  2003-07-03 20:12:25  aglanor
+ *      Revision 1.16  2003-07-12 11:39:59  alriddoch
+ *      <aglanor from alistair's machine>
+ *      - fixed pig movement, and on-game chat is now shown on screen
+ *
+ *      Revision 1.15  2003/07/03 20:12:25  aglanor
  *      added sample animation to demo mesh
  *
  *      Revision 1.14  2003/06/23 01:20:34  aglanor
@@ -284,7 +288,7 @@ void DimeOgre::createScene(void)
 	// create the node
 	mOgreHeadNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mOgreHeadNode->setPosition(0,0,0);
-	mOgreHeadNode->setScale(1,1,1);
+	mOgreHeadNode->setScale(0.001,0.001,0.001);
 
 	// attach the node to the entity
 	mOgreHeadNode->attachObject(mOgreHead);
@@ -403,6 +407,8 @@ void DimeOgre::initializeDimeServices(void)
 	// Initialize the Configuration Service
 	dime::DimeServices::getInstance()->getConfigService()->start();
 
+
+/*
 	// Initialize the Sound Service
 #ifndef WIN32
 	// Test that /dev/dsp is availible
@@ -415,6 +421,7 @@ void DimeOgre::initializeDimeServices(void)
 #ifndef WIN32
 	}
 #endif
+*/
 
 	// Initialize and start the Metaserver Service.
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
@@ -545,6 +552,8 @@ void DimeOgre::entered( Eris::Entity *e )
 	// TODO: do this when the avatar moves too
 	mCamera->setPosition(Atlas2Ogre(e->getPosition()));
 	mCamera->setOrientation(Atlas2Ogre(e->getOrientation()));
+        mWindow->setDebugText("Avatar entered the world");
+
 }
 
 void DimeOgre::appearance( Eris::Entity *e )
@@ -566,25 +575,31 @@ void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
 
 void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {
-	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR " << e->getID() << std::endl;
+	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR " 
+}
+<< e->getID() << std::endl;
 	/*
-	Ogre::Entity* o = mSceneMgr->getEntity(e->getID());
-	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
-	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
-	o = mSceneMgr->getEntity("Bob_214");
-	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
-	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
+        TODO: ENTITY CHANGES HERE
 	*/
 }
 
 void DimeOgre::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
 {
 	fprintf(stderr, "TRACE - ENTITY MOVED\n");
+
+	Ogre::Entity* o = mSceneMgr->getEntity(e->getID());
+	o->getParentNode()->setPosition(Atlas2Ogre(e->getPosition()));
+	o->getParentNode()->setOrientation(Atlas2Ogre(e->getOrientation()));
 }
 
 void DimeOgre::say( const std::string &s, Eris::Entity *e )
 {
-	std::cout << "TRACE - ENTITY SAYS: {" << s << "]\n" << std::endl;
+        std::string message = "<";
+        message.append(e->getName());
+        message.append("> ");
+        message.append(s);
+	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
+        mWindow->setDebugText(message);
 
 	// TODO: fix this one
 	/*
