@@ -67,8 +67,7 @@ namespace dime {
       {
           
       }
-      
-      
+            
               
     /** 
      * Returns the type for this event.
@@ -79,7 +78,17 @@ namespace dime {
       {
           return myState;
       }
+
       
+    /** 
+     * Returns the key pressed for this event.
+     *
+     * @return State for this event.
+     */
+      char getKey()
+      {
+          return myKey;
+      }
     
 
 

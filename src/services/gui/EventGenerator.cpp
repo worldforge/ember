@@ -83,6 +83,7 @@ void dime::EventGenerator::MouseClick(InputDevice * otherDevice, InputDevice *mo
     else if (mouse->getKeyState(key) == dime::InputDevice::RELEASED)
         {
             event = new MouseButtonEvent(mouse, eventDest, button, MouseButtonEvent::RELEASED);
+			captureKeyboard(myPointedWidget);
             eventDest->mouseUp( event );
         }
 }
@@ -96,8 +97,7 @@ void dime::EventGenerator::KeyboardPress(InputDevice * otherDevice, InputDevice 
     // Select mouse event destination:
     dime::Widget *eventDest  = NULL;
     
-    // Get the widget the keyboard is captured by
-    
+    // Get the widget the keyboard is captured by   
     if (myKeyboardCaptureWidget)
         {
             eventDest = myKeyboardCaptureWidget;

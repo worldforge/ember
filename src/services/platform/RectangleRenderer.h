@@ -30,13 +30,6 @@
 #include <SDL/SDL.h>
 #include <string>
 
-/**
- * Flags to specify which type of rendering should be used
- */
-#define FLAT_COLOR      1
-#define GRADIENT        2
-#define BITMAP          3
-#define GRID            4
 
 namespace dime {
 
@@ -72,6 +65,17 @@ namespace dime {
         // Public Constants
         //======================================================================
     public:
+		/**
+		 * Flags to specify which type of rendering should be used
+		 */
+		enum RenderType
+		{
+			FLAT_COLOR,
+			GRADIENT,
+			BITMAP,
+			GRID
+		};
+
 
         //======================================================================
         // Private Constants

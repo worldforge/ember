@@ -164,7 +164,7 @@ class FontRenderer
         return myType;
     }
     
-    std::string getText()
+    std::string getText() const
     {
         return myText;
     }

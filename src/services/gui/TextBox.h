@@ -23,6 +23,7 @@
 #include "Label.h"
 #include "services/font/FontService.h"
 #include "services/font/FontRenderer.h"
+#include "services/platform/RectangleRenderer.h"
 
 
 // Included custom library headers
@@ -69,6 +70,7 @@ class TextBox : public Label
     private:
 
 
+
     //======================================================================
     // Private Variables
     //======================================================================
@@ -76,7 +78,7 @@ class TextBox : public Label
 
     // NOTE: Class variables are prefixed with "my", static variables are
     //       prefixed with "the".
-
+	RectangleRenderer myBackRect;
 
 	//======================================================================
     // Public Methods
@@ -93,6 +95,10 @@ class TextBox : public Label
     {
     }
 
+	TextBox(const Rectangle& rect) : Label("Test",rect),
+		myBackRect(RectangleRenderer::FLAT_COLOR, rect, Color(255,0,0))
+    {
+    }
 
     /**
      * Copy constructor.
@@ -125,8 +131,6 @@ class TextBox : public Label
      */
     virtual ~TextBox()
     {
-		if (myParent != NULL) myParent->removeWidget(this);
-
         // TODO: Free any allocated resources here.
     }
 
@@ -147,17 +151,25 @@ class TextBox : public Label
 	 */
     virtual int draw(DrawDevice *target);
 
-#if 0
 	/**
 	 * Takes keyPresses and feeds them into the textbuffer.
 	 */
 	virtual bool keyPress( KeyPressEvent *event)
 	{ 
-		
+		if (event->getState() == KeyPressEvent::PRESSED)
+		{
+			std::string &myText=myFontRenderer->getText();
+			myText += event->getKey();
+			myFontRenderer->setText(myText);
+			
+		}
 		return true;        
 	}
-#endif
- 
+
+	virtual void mouseUp( MouseButtonEvent* event) {
+		Widget::onMouseUp(event);
+	}
+
 
     //======================================================================
     // Protected Methods

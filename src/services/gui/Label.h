@@ -66,18 +66,18 @@ class Label : public Widget
     //======================================================================
     private:
 
+    //======================================================================
+    // Protected Variables
+    //======================================================================
+    protected:
+
+	FontRenderer *myFontRenderer;
 
     //======================================================================
     // Private Variables
     //======================================================================
     private:
 
-    /**
-     * NOTE: This is the text stored by the static widget
-     */
-    std::string  myText;
-    FontRenderer *myFontRenderer;
-  
 
     //======================================================================
     // Public Methods
@@ -103,11 +103,26 @@ class Label : public Widget
     }
     
     /**
+     * Creates a new Label using default values.
+     */
+    Label(const Rectangle& rect) 
+        : Widget(rect)
+    {
+#ifdef _MSC_VER
+      dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",20);
+#else
+      dime::Font *font = dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf",20);
+#endif 
+      assert(font);
+      myFontRenderer = new FontRenderer(FontRenderer::BLENDED, "", font, Color(255,255,255), Rectangle(0,0,0,0));
+    }
+
+    
+	/**
      * Creates a new Label using rect and text.
      */
-    Label(std::string text, Rectangle rect) 
-        : Widget(rect), 
-          myText(text)
+    Label(const std::string text, const Rectangle& rect) 
+        : Widget(rect)
     {
 #ifdef _MSC_VER
       dime::Font *font = dime::FontService::getInstance()->loadFont("..\\bin\\nasal.ttf",20);
@@ -121,7 +136,7 @@ class Label : public Widget
     /**
      * Copy constructor.
      */
-    Label( const Label &source ) : myFontRenderer(source.myFontRenderer)
+    Label( const Label &source )
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -135,7 +150,7 @@ class Label : public Widget
     Label &operator= ( const Label &source )
     {
         // Copy fields from source class to this class here.
-		myText = source.myText;
+		myFontRenderer = new FontRenderer(*source.myFontRenderer);
 
         // Return this object with new value
         return *this;
@@ -165,7 +180,7 @@ class Label : public Widget
      */
     virtual std::string getText() const
     {
-        return myText;
+        return myFontRenderer->getText();
     }
 
 
@@ -177,8 +192,8 @@ class Label : public Widget
 	 *
 	 * @param text The new text to go in label
      */
-    virtual void setText( std::string text ) {
-		myText = text;		
+    virtual void setText( const std::string& text ) {
+		myFontRenderer->setText(text);
 	}
 
 	/**

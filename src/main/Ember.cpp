@@ -4,6 +4,7 @@
 #include <services/gui/Button.h>
 #include <services/gui/Panel.h>
 #include <services/gui/Label.h>
+#include <services/gui/TextBox.h>
 //#include <SDL/SDL_keysym.h>
 #include <iostream>
 
@@ -27,14 +28,17 @@ int main(int argc, char **argv)
 
 	dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 
+	dime::TextBox myTestTextBox(dime::Rectangle(10,40,200,60));
+
 	dime::Button myTestButton(dime::Rectangle(300,300,100,75));
-	myTestButton.setBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"quitbutton2.png"));
-	myTestButton.setHighlightBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"quitbutton.png"));
+	myTestButton.setBackground(dime::RectangleRenderer(dime::RectangleRenderer::BITMAP,myTestButton.getRectangle(),"quitbutton2.png"));
+	myTestButton.setHighlightBackground(dime::RectangleRenderer(dime::RectangleRenderer::BITMAP,myTestButton.getRectangle(),"quitbutton.png"));
 
 	dime::Panel myTestPanel(dime::Rectangle(200,200,300,200));
-	myTestPanel.setBackground(dime::RectangleRenderer(BITMAP,myTestPanel.getRectangle(),"masonwindowback2.jpg"));
+	myTestPanel.setBackground(dime::RectangleRenderer(dime::RectangleRenderer::BITMAP,myTestPanel.getRectangle(),"masonwindowback2.jpg"));
+
 	myTestPanel.addWidget(&myTestButton);
-    myTestPanel.addWidget(&myTestLabel);
+
     myTestButton.onMouseUp.connect(SigC::slot(onMouseButtonUp));
     myTestButton.onMouseDown.connect(SigC::slot(onMouseButtonDown));
     
@@ -45,6 +49,8 @@ int main(int argc, char **argv)
 		SigC::slot(myApp, &dime::Application::escPressed)));
 
 	dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestPanel);
+	dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestLabel);
+	dime::DimeServices::getInstance()->getGuiService()->getRootWidget().addWidget(&myTestTextBox);
 	
     myApp.mainLoop();
     return 0;

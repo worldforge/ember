@@ -125,7 +125,7 @@ namespace dime {
         /**
          * Creates a new Widget using rect.
          */
-        Widget(Rectangle rect): myParent(NULL), myRectangle(rect)
+        Widget(const Rectangle& rect): myParent(NULL), myRectangle(rect)
         {
 
         }
@@ -366,9 +366,9 @@ namespace dime {
          * Override the event methods in derived classes when neccesary.
          */
         
-       virtual bool keyPress( KeyPressEvent *event)
-        { 
-            return false;
+		virtual bool keyPress( KeyPressEvent *event)
+        {
+			return false;
         }
         
 
@@ -379,7 +379,8 @@ namespace dime {
         */
         virtual bool captureKeyboard() {
 			//TODO: What should be returned here
-			return false;  }
+			return false;
+		}
         
         /**
          * Releases the keyboard if it was captured by captureKeyboard().
