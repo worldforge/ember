@@ -54,6 +54,7 @@ class State
     //======================================================================
     public:
 
+    typedef std::vector<WidgetInfo*>::iterator widgetIter;
 
     //======================================================================
     // Public Constants
@@ -73,7 +74,7 @@ class State
     private:
 
         std::string myName;
-        std::list<WidgetInfo> myWidgets;
+        std::vector<WidgetInfo*> myWidgets;
 
     //======================================================================
     // Public Methods
@@ -143,7 +144,7 @@ class State
     /**
      * Gets the value of Widgets of this State
      */
-    std::list<WidgetInfo> getWidgets() const
+    std::vector<WidgetInfo*> getWidgets() const
     {
         return myWidgets;
     }
@@ -163,9 +164,9 @@ class State
     /**
      * Adds a WidgetInfo to this State
      */
-    void addWidget( const WidgetInfo& widget )
+    void addWidget(  WidgetInfo* widget )
     {
-        myWidgets.insert(myWidgets.end(),WidgetInfo(widget));
+        myWidgets.push_back( widget );
     }
 
     /**
@@ -173,7 +174,7 @@ class State
      */
     void addWidget(const std::string& name, const dime::Rectangle& pos, const std::string& type)
       {
-        myWidgets.insert( myWidgets.end(), WidgetInfo( name, pos,type ) );
+        myWidgets.push_back( new WidgetInfo( name, pos,type ) );
       }
 
 
@@ -188,6 +189,10 @@ class State
 	// For each widget in myWidgets ask it to make itself and
 	// children. Then return a pointer to the made Widget for
 	// addition to root widget.
+	for ( widgetIter iter = myWidgets.begin();iter != myWidgets.end(); iter++ )
+	  {
+	    root.addWidget((*iter)->getWidget());
+	  }
       }
 
     void unload()

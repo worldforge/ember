@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "services/platform/Rectangle.h"
+#include "services/gui/Widget.h"
 
 // Included custom library headers
 
@@ -51,7 +52,7 @@ class WidgetInfo
     // Inner Classes, Typedefs, and Enums
     //======================================================================
     public:
-
+    typedef std::vector<WidgetInfo*>::iterator widgetIter;
 
     //======================================================================
     // Public Constants
@@ -88,7 +89,7 @@ class WidgetInfo
 	/*
 	 * Children of Widget
 	 */
-	std::vector<WidgetInfo> myChildren;
+	std::vector<WidgetInfo*> myChildren;
 
     //======================================================================
     // Public Methods
@@ -204,7 +205,18 @@ class WidgetInfo
 
     //----------------------------------------------------------------------
     // Other public methods
-    // NOTE: Group related public methods together and crate a separator comment like above for them.
+    // NOTE: Group related public methods together and create a separator comment like above for them.
+
+    void addChild( WidgetInfo* p )
+      {
+	myChildren.push_back(p);
+      }
+
+    Widget* getWidget()
+      {
+	return NULL;
+      }
+
     
     //======================================================================
     // Protected Methods
