@@ -30,10 +30,10 @@
 
 namespace DimeOgre {
 
-class MyListItem : public CEGUI::ListboxTextItem
+class ServerBrowserWidgetListItem : public CEGUI::ListboxTextItem
 {
 public:
-	MyListItem(const CEGUI::String& text) : ListboxTextItem(text)
+	ServerBrowserWidgetListItem(const CEGUI::String& text) : ListboxTextItem(text)
 	{
 		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	}
@@ -55,7 +55,7 @@ void ServerBrowserWidget::buildWidget()
 
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/ServerBrowserWidget.xml");
 
-	mServerList = static_cast<CEGUI::MultiColumnList*>(mMainWindow->getChild((CEGUI::utf8*)"ServerBrowser/ServerList"));
+	mServerList = static_cast<CEGUI::MultiColumnList*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ServerList"));
 
 	mServerList->addColumn((CEGUI::utf8*)"Server Name", 0, 0.2f);
 	mServerList->addColumn((CEGUI::utf8*)"Address", 1, 0.2f);
@@ -65,10 +65,12 @@ void ServerBrowserWidget::buildWidget()
 	mServerList->addColumn((CEGUI::utf8*)"Server type", 5, 0.2f);
 	mServerList->setSelectionMode(CEGUI::MultiColumnList::RowSingle);
 
-	CEGUI::PushButton* refresh = static_cast<CEGUI::PushButton*>(mMainWindow->getChild((CEGUI::utf8*)"ServerBrowser/Refresh"));
+	CEGUI::PushButton* refresh = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/Refresh"));
 	refresh->subscribeEvent(CEGUI::ButtonBase::EventMouseClick, 
 		boost::bind(&ServerBrowserWidget::Refresh_Click, this, _1));
 	
+	CEGUI::PushButton* connectButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/Connect"));
+	BIND_CEGUI_EVENT(connectButton, CEGUI::ButtonBase::EventMouseClick, ServerBrowserWidget::Connect_Click)
 	
 	getMainSheet()->addChildWindow(mMainWindow); 
 
@@ -82,6 +84,7 @@ void ServerBrowserWidget::buildWidget()
 
 }
 
+
 void ServerBrowserWidget::connectedToServer(Eris::Connection* connection) 
 {
 	mGuiManager->removeWidget(this);
@@ -93,6 +96,20 @@ bool ServerBrowserWidget::Refresh_Click(const CEGUI::EventArgs& args)
 {
 	mServerList->resetList();
 	metaServer->refresh();
+	return true;
+
+}
+
+bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
+{
+	uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
+
+/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
+	if (selectedRowIndex != -1) {
+		CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 0));
+		const CEGUI::String ipadress = selectedItem->getText();
+		dime::DimeServices::getInstance()->getServerService()->connect(std::string(ipadress.c_str()));
+	}
 	return true;
 
 }
@@ -124,20 +141,20 @@ void ServerBrowserWidget::receivedServerInfo(const Eris::ServerInfo& sInfo)
 	int rowNumber = mServerList->getRowCount();
 	mServerList->addRow();
 	
-	MyListItem* item = new MyListItem(CEGUI::String(sInfo.getServername()));
+	ServerBrowserWidgetListItem* item = new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getServername()));
 //	item->setUserData(&sInfo);
 	
 	
 	mServerList->setItem(item, 0, rowNumber);
-	mServerList->setItem(new MyListItem(CEGUI::String(sInfo.getHostname())), 1, rowNumber);
+	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getHostname())), 1, rowNumber);
 	std::stringstream ss_ping;
 	ss_ping << sInfo.getPing();
-	mServerList->setItem(new MyListItem(CEGUI::String(ss_ping.str())), 2, rowNumber);
+	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(ss_ping.str())), 2, rowNumber);
 	std::stringstream ss_clientNum;
 	ss_clientNum << sInfo.getNumClients();
-	mServerList->setItem(new MyListItem(CEGUI::String(ss_clientNum.str())), 3 ,rowNumber);
-	mServerList->setItem(new MyListItem(CEGUI::String(sInfo.getRuleset())), 4, rowNumber);
-	mServerList->setItem(new MyListItem(CEGUI::String(sInfo.getServer())), 5, rowNumber);
+	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(ss_clientNum.str())), 3 ,rowNumber);
+	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getRuleset())), 4, rowNumber);
+	mServerList->setItem(new ServerBrowserWidgetListItem(CEGUI::String(sInfo.getServer())), 5, rowNumber);
 	
 	
 	

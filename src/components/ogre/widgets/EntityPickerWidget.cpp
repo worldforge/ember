@@ -40,12 +40,11 @@
 
 namespace DimeOgre {
 
-EntityPickerWidget::EntityPickerWidget(GUIManager* guiManager, MousePicker* mousePicker) : Widget::Widget(guiManager),
-mMousePicker(mousePicker)
+EntityPickerWidget::EntityPickerWidget(GUIManager* guiManager) : Widget::Widget(guiManager)
 {
-
-	mousePicker->EventPickedEntity.connect(SigC::slot(*this, &EntityPickerWidget::pickedEntity));
-	mousePicker->EventPickedNothing.connect(SigC::slot(*this, &EntityPickerWidget::pickedNothing));
+	mMousePicker = mGuiManager->getMousePicker();
+	mMousePicker->EventPickedEntity.connect(SigC::slot(*this, &EntityPickerWidget::pickedEntity));
+	mMousePicker->EventPickedNothing.connect(SigC::slot(*this, &EntityPickerWidget::pickedNothing));
 
 }
 
@@ -130,8 +129,8 @@ void EntityPickerWidget::showMenu(CEGUI::Point position)
 {
 	mMainWindow->setEnabled(true);
 	mMainWindow->setVisible(true);
-	mMainWindow_MouseOut_Connection = mMainWindow->subscribeEvent(CEGUI::Window::EventMouseLeaves, 
-		boost::bind(&EntityPickerWidget::mainWindow_MouseOut, this, _1));
+	//mMainWindow_MouseOut_Connection = mMainWindow->subscribeEvent(CEGUI::Window::EventMouseLeaves, 
+//		boost::bind(&EntityPickerWidget::mainWindow_MouseOut, this, _1));
 	position.d_x = position.d_x - 10.0f;
 	position.d_y = position.d_y - 10.0f;
 	mMainWindow->setPosition(CEGUI::Absolute, position );
@@ -209,7 +208,7 @@ void EntityPickerWidget::removeMenu()
 	mButtonSet.empty();
 	*/
 
-	mMainWindow_MouseOut_Connection.disconnect();
+//	mMainWindow_MouseOut_Connection.disconnect();
 	mMainWindow->setEnabled(false);
 	mMainWindow->setVisible(false);
 }

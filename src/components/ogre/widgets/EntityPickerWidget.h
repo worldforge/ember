@@ -41,7 +41,7 @@ This widget will pop up when a DimeEntity is picked
 */
 class EntityPickerWidget : public Widget {
 public:
-    EntityPickerWidget(GUIManager* guiManager, MousePicker* mousePicker);
+    EntityPickerWidget(GUIManager* guiManager);
 
     ~EntityPickerWidget();
 	

@@ -2,7 +2,7 @@
 <GUILayout> 
 
 	<Window Type="TaharezLook/FrameWindow" Name="ConsoleMainWindow">
-		<Property Name="Position" Value="x:0 y:-0.45" /> 
+		<Property Name="Position" Value="x:0 y:-0.475" /> 
 		<Property Name="Size" Value="w:1 h:0.5" /> 
 		<Property Name="FrameEnabled" Value="False" /> 
 		<Property Name="Alpha" Value="0.6" /> 
@@ -11,12 +11,12 @@
 			<Property Name="Text" Value="" /> 
 			<Property Name="ReadOnly" Value="true" /> 
 			<Property Name="Position" Value="x:0 y:0" /> 
-			<Property Name="Size" Value="w:1 h:0.9" /> 
+			<Property Name="Size" Value="w:1 h:0.95" /> 
 		</Window>
 		<Window Type="TaharezLook/Editbox" Name="ConsoleInputBox">
 			<Property Name="Text" Value="" /> 
-			<Property Name="Position" Value="x:0 y:0.9" /> 
-			<Property Name="Size" Value="w:1 h:0.1" /> 
+			<Property Name="Position" Value="x:0 y:0.95" /> 
+			<Property Name="Size" Value="w:1 h:0.05" /> 
 		</Window>
 		
 	</Window>

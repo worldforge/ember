@@ -45,8 +45,8 @@ void InspectWidget::buildWidget()
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
-	mChildList = static_cast<CEGUI::Listbox*>(mMainWindow->getChild((CEGUI::utf8*)"InspectWidget/ChildList"));
-	mInfo = static_cast<CEGUI::StaticText*>(mMainWindow->getChild((CEGUI::utf8*)"InspectWidget/EntityInfo"));
+	mChildList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ChildList"));
+	mInfo = static_cast<CEGUI::StaticText*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/EntityInfo"));
 	
 	getMainSheet()->addChildWindow(mMainWindow); 
 	

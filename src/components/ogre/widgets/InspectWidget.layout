@@ -3,29 +3,30 @@
 
 	<Window Type="TaharezLook/FrameWindow" Name="InspectWidget/Mainwindow">
 		<Property Name="Position" Value="x:0.6 y:0.1" /> 
-		<Property Name="Size" Value="w:0.4 h:0.4" /> 
+		<Property Name="Size" Value="w:0.2 h:0.2" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Inspect" />
-		
-		<Window Type="TaharezLook/StaticText" Name="InspectWidget/EntityInfo">
-			<Property Name="Position" Value="x:0 y:0" /> 
-			<Property Name="Size" Value="w:1 h:0.8" /> 
-			<Property Name="Text" Value="" /> 
+		<Window Type="DefaultGUISheet" Name="InspectWidget/MainInnerWindow">
+			<Property Name="Position" Value="x:0.02 y:0.02" /> 
+			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Property Name="Alpha" Value="0.6" /> 
-			<Property Name="ReadOnly" Value="true" /> 
+			
+			<Window Type="TaharezLook/StaticText" Name="InspectWidget/EntityInfo">
+				<Property Name="Position" Value="x:0 y:0" /> 
+				<Property Name="Size" Value="w:0.95 h:0.6" /> 
+				<Property Name="Text" Value="" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="ReadOnly" Value="true" /> 
+				<Property Name="VertFormatting" Value="TopAligned" /> 
+			</Window>
+			<Window Type="TaharezLook/Listbox" Name="InspectWidget/ChildList">
+				<Property Name="Position" Value="x:0 y:0.6" /> 
+				<Property Name="Size" Value="w:0.95 h:0.4" /> 
+				<Property Name="Text" Value="Contains" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Alpha" Value="0.6" /> 
+				<Property Name="ReadOnly" Value="true" /> 
+			</Window>
 		</Window>
-		<Window Type="TaharezLook/Listbox" Name="InspectWidget/ChildList">
-			<Property Name="Position" Value="x:0 y:0.8" /> 
-			<Property Name="Size" Value="w:1 h:0.2" /> 
-			<Property Name="Text" Value="" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			<Property Name="Alpha" Value="0.6" /> 
-			<Property Name="ReadOnly" Value="true" /> 
-		</Window>
-
-		
 	</Window>
- 
-
  </GUILayout> 

@@ -25,6 +25,7 @@
 #include "DimeOgre.h"
 #include "services/DimeServices.h"
 #include "services/server/ServerService.h"
+#include "services/logging/LoggingService.h"
 #include "Avatar.h"
 
 #include <wfmath/atlasconv.h>
@@ -58,10 +59,10 @@ void MakeEntityWidget::buildWidget()
 	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"widgets/MakeEntityWidget.xml");
 	mMainWindow->setVisible(false);
 	
-	mTypeList = static_cast<CEGUI::Listbox*>(mMainWindow->getChild((CEGUI::utf8*)"MakeEntity/TypeList"));
-	mName = static_cast<CEGUI::Editbox*>(mMainWindow->getChild((CEGUI::utf8*)"MakeEntity/Name"));
+	mTypeList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/TypeList"));
+	mName = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/Name"));
 	
-	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(mMainWindow->getChild((CEGUI::utf8*)"MakeEntity/CreateButton"));
+	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/CreateButton"));
 	
 	button->subscribeEvent(CEGUI::ButtonBase::EventMouseClick, 
 		boost::bind(&MakeEntityWidget::createButton_Click, this, _1));
@@ -114,13 +115,17 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	
 	Atlas::Message::Element::MapType msg;
 	msg["loc"] = avatar->getContainer()->getID();
-	WFMath::Point<3> pos = avatar->getPosition() + WFMath::Vector<3>(2,0,0);
+	Ogre::SceneNode* node = avatar->getAvatarSceneNode();
+//	Ogre::Vector3 newPos = node->getPosition() + (node->getOrientation() * Ogre::Vector3(0,0,-2));
+	Ogre::Vector3 newPos = node->getPosition() + ( Ogre::Vector3(0,0,-2));
+	WFMath::Point<3> pos = Ogre2Atlas(newPos);
+
 	msg["pos"] = pos.toAtlas();
 	msg["name"] = mName->getText().c_str();
 	msg["parents"] = Atlas::Message::Element::ListType(1, typeinfo->getName());
 	c.setArgs(Atlas::Message::Element::ListType(1, msg));
 	mConn->send(c);
-
+//	dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }
 
 

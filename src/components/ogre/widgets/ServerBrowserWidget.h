@@ -60,7 +60,9 @@ protected:
 	
 	Eris::Meta* metaServer;
 	bool Refresh_Click(const CEGUI::EventArgs& args);
-	
+	bool Connect_Click(const CEGUI::EventArgs& args);
+
+		
 	void connectedToServer(Eris::Connection* connection);
 
 

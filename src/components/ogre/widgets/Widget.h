@@ -28,7 +28,10 @@
 #include <sigc++/object_slot.h>
 #endif
 
+
 namespace DimeOgre {
+
+#define BIND_CEGUI_EVENT(window, event, method) window->subscribeEvent(event, boost::bind(&method, this, _1)); 
 	
 class GUIManager;
 

@@ -6,18 +6,19 @@
 		<Property Name="Size" Value="w:0.4 h:0.4" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Chat" />
-		
-		<Window Type="TaharezLook/MultiLineEditbox" Name="ChatTextBox">
-			<Property Name="Position" Value="x:0 y:0" /> 
-			<Property Name="Size" Value="w:1 h:1" /> 
-			<Property Name="Text" Value="" /> 
+		<Window Type="DefaultGUISheet" Name="Chat/MainInnerWindow">
+			<Property Name="Position" Value="x:0.02 y:0.02" /> 
+			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Property Name="Alpha" Value="0.6" /> 
-			<Property Name="ReadOnly" Value="true" /> 
-		</Window>
-
 		
+			<Window Type="TaharezLook/MultiLineEditbox" Name="ChatTextBox">
+				<Property Name="Position" Value="x:0 y:0" /> 
+				<Property Name="Size" Value="w:1 h:1" /> 
+				<Property Name="Text" Value="" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Alpha" Value="0.6" /> 
+				<Property Name="ReadOnly" Value="true" /> 
+			</Window>
+		</Window>
 	</Window>
- 
-
  </GUILayout> 

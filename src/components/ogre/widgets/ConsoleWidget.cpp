@@ -46,9 +46,9 @@ void ConsoleWidget::frameStarted(const Ogre::FrameEvent & event)
 	{
 		mMainWindow->setYPosition(mMainWindow->getYPosition() - (mSpeedOfWindow*event.timeSinceLastFrame));
 		
-		if(mMainWindow->getYPosition() <= -0.45)
+		if(mMainWindow->getYPosition() <= -0.475)
 		{
-			mMainWindow->setYPosition(-0.45);
+			mMainWindow->setYPosition(-0.475);
 			mState = CS_CLOSED;
 		}
 	}
