@@ -187,20 +187,38 @@ Widget* GUIManager::createWidget(const std::string& name)
 	
 		widget = WidgetLoader::createWidget(name);
 		if (widget == 0) {
-			std::cerr << "Could not find widget with name " << name <<".\n";
+			S_LOG_FAILURE( "Could not find widget with name " << name )
 			return 0;
 		}
 		widget->init(this);
 		widget->buildWidget();
 		addWidget(widget);
-		std::cout << "Successfully loaded widget " << name << "\n";
+		S_LOG_INFO(  "Successfully loaded widget " << name )
 	} catch (std::exception e) {
-		std::cerr << "Error when loading widget " << name <<".\n";
+		S_LOG_FAILURE(  "Error when loading widget " << name )
 		return 0;
 	}
 	return widget;
 }
 
+
+// bool GUIManager::confirm(const std::string & text)
+// {
+// 	CEGUI::Window window = mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/FrameWindow", (CEGUI::utf8*)"ConfirmBox");
+// 	
+// 	CEGUI::PushButton yesButton = (CEGUI::PushButton*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"ConfirmBox/Yes");
+// 	yesButton->setText("Yes");
+// 	yes
+// 	CEGUI::PushButton noButton = (CEGUI::PushButton*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"ConfirmBox/No");
+// 	CEGUI::StaticText text = (CEGUI::PushButton*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"ConfirmBox/Text");
+// 	
+// 	
+// 	window->addChildWindow(yesButton);
+// 	window->addChildWindow(noButton);
+// 	window->addChildWindow(text);
+// 	mSheet->addChildWindow(window);
+// 	
+// }
 
 void GUIManager::setDebugText(const std::string& text)
 {
@@ -274,9 +292,18 @@ const std::string GUIManager::takeScreenshot()
 		filename << "0";
 	} 
 	filename << sec << ".png";
+
+	//make sure the directory exists
+	const std::string dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "/screenshots/";
+	struct stat tagStat;
+	int ret;
+	ret = stat( dir.c_str(), &tagStat );
+	if (ret == -1) {
+		mkdir(dir.c_str(), S_IRWXU);
+	}
 	
 	// take screenshot
-	mWindow->writeContentsToFile(filename.str());
+	mWindow->writeContentsToFile(dir + filename.str());
 	return filename.str();
 }
 

@@ -1,5 +1,11 @@
 2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* save screen shots to ~/.ember/screenshots
+	* Use the S_LOG* macros.
+	
+
+2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added a reference in Model to the ModelDefinition used
 	* Added datatype and parsing of Sounds attached to an Action.
 	* Use the S_LOG* macros.
