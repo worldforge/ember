@@ -21,7 +21,7 @@
 
 #include "EmberOgre.h"
 
-#include "MathConverter.h"
+#include "EmberOgrePrerequisites.h"
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
 //#include "EmberTerrainRenderable.h"
@@ -33,50 +33,31 @@
 //#include "environment/GroundCover.h"
 
 #include "TerrainGenerator.h"
+#include "TerrainPage.h"
 
 
 
 using namespace Ogre;
 namespace EmberOgre {
 
-/*
-TerrainGenerator* TerrainGenerator::_instance = 0;
-
-
-TerrainGenerator & TerrainGenerator::getSingleton(void)
-{
-	//fprintf(stderr, "TRACE - ENTITY LISTENER - SINGLETON ENTERING\n");
-	if(_instance == 0)
-		_instance = new TerrainGenerator;
-	return *_instance;
-}
-*/
-
 
 TerrainGenerator::TerrainGenerator()
 
 {
     loadTerrainOptions();
-	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED, mOptions.pageSize - 1);
+	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
 
   
-//    this->addShader(new TerrainShader("granite.png", new Mercator::FillShader()));
-
-/*    this->addShader(new TerrainShader("terr_dirt-grass.jpg", new Mercator::FillShader()));
-    //this->addShader(new TerrainShader("sand.png", new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
-    this->addShader(new TerrainShader("rabbithill_grass_hh_light_ah.png", new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass*/
-/*sand = "sand.png"
-grass = "grass_1024.jpg"
-snow = "snow.png"
-rock = "terr_dirt-grass.jpg"*/
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
+
+
 //    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-/*    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow*/
    
 	
 	mTerrainPageSource = new EmberTerrainPageSource(this);
@@ -158,27 +139,37 @@ void TerrainGenerator::addShader(TerrainShader* shader)
 
 void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain)
 {
-	int i,j;
-	for (i = segmentXStart; i < segmentXStart + numberOfSegments; ++i) {
-		for (j = segmentZStart; j < segmentZStart + numberOfSegments; ++j) {
-			if (i >= mXmin && i <= mXmax && j >= mYmin && j <=mYmax) {
-				mTerrain->getSegment(i, j)->populate();
-				TerrainPosition pos(i,j);
-				generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
-				if (alsoPushOntoTerrain) {
-					TerrainPosition pos(i, j);
-					mTerrainPageSource->pushPage(pos);
-				}
-			}
-		}
-	}
-//	generateUnderVegetation(0, 0, 1);
-//	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
-	mTerrainPageSource->setHasTerrain(true);
-	if (alsoPushOntoTerrain) {
-		mTerrainPageSource->resizeTerrain();
-	}
+//TODO: implement!
+
+
+// 	int i,j;
+// 	for (i = segmentXStart; i < segmentXStart + numberOfSegments; ++i) {
+// 		for (j = segmentZStart; j < segmentZStart + numberOfSegments; ++j) {
+// 			if (i >= mXmin && i <= mXmax && j >= mYmin && j <=mYmax) {
+// 				mTerrain->getSegment(i, j)->populate();
+// 				mTerrain->getSegment(i, j)->populateNormals();
+// 				mTerrain->getSegment(i, j)->populateSurfaces();
+// 				TerrainPosition pos(i,j);
+// 				generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
+// 				if (alsoPushOntoTerrain) {
+// 					TerrainPosition pos(i, j);
+// 					mTerrainPageSource->pushPage(pos);
+// 				}
+// 			}
+// 		}
+// 	}
+// //	generateUnderVegetation(0, 0, 1);
+// //	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
+// 	mTerrainPageSource->setHasTerrain(true);
+// 	if (alsoPushOntoTerrain) {
+// 		mTerrainPageSource->resizeTerrain();
+// 	}
 	
+}
+
+int TerrainGenerator::getSegmentSize() const
+{
+	return mOptions.pageSize - 1;
 }
 
 void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
@@ -202,16 +193,25 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	int i,j;
 	for (i = mXmin; i < mXmax; ++i) {
 		for (j = mYmin; j < mYmax; ++j) {
-			mTerrain->getSegment(i, j)->populate();
+			Mercator::Segment* segment = mTerrain->getSegment(i, j);
+			segment->populate();
+			segment->populateNormals();
+			segment->populateSurfaces();
 		}
 	}
 
-	for (i = mXmin; i < mXmax; ++i) {
-		for (j = mYmin; j < mYmax; ++j) {
-			TerrainPosition pos(i,j);
-			generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
+	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
+	int xNumberOfPages = (mXmax - mXmin) / mercatorSegmentsPerPage;
+	int yNumberOfPages = (mYmax - mYmin) / mercatorSegmentsPerPage;
+	int xStart = mXmin / xNumberOfPages;
+	int yStart = mYmin / yNumberOfPages;
+	for (i = 0; i < xNumberOfPages; ++i) {
+		for (j = 0; j < yNumberOfPages; ++j) {
+			TerrainPosition pos(xStart + i, yStart + j);
+			TerrainPage page(pos, mShaderMap, this);
+			page.generateTerrainMaterials();
 			if (alsoPushOntoTerrain) {
-				mTerrainPageSource->pushPage(pos);
+				mTerrainPageSource->addPage(&page);
 			}
 		}
 	}
@@ -229,248 +229,20 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 
 bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
 {
+	return true;
 	int x = (int)position.x();
 	int y = (int)position.y();
 	Mercator::Segment* segment = mTerrain->getSegment(x,y);
-	return (segment &&	segment->isValid() && getMaterialForSegment(position));
+	return (segment &&	segment->isValid());
+//	return (segment &&	segment->isValid() && getMaterialForSegment(position));
 }
 
 
 
-void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, TerrainPosition& position) {
-	long segmentX = (long)position.x();
-	long segmentY = (long)position.y();
- 
-	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-
-			
-	segment->populateNormals();
-	segment->populateSurfaces();
-	
-	EmberTerrainSceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
-	std::stringstream materialNameSS;
-	materialNameSS << "EmberTerrain_Segment";
-	materialNameSS << "_" << segmentX << "_" << segmentY;
-	const Ogre::String materialName = materialNameSS.str();
-		
-
-	Ogre::Material* material = sceneManager->createMaterial(materialName);
-	
-	Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
-	pass->setLightingEnabled(false);
-	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-	
-    
-    const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
-    Mercator::Segment::Surfacestore::const_iterator I = surfaces.begin();
-
-//	pass->setShininess(20);
-//	pass->setSpecular(1,1,1,1);
-//granite layer
-	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-	{
-		const Mercator::Shader* mercShader = &((*I)->m_shader);
-		TerrainShader* shader = mShaderMap[mercShader];
-	    textureUnitState->setTextureName(shader->getTextureName());
-	}
-    textureUnitState->setTextureCoordSet(1);
-  
-	++I;
-    
-
-
-    int textureUnits = 0;
-    for (int texNo = 1; I != surfaces.end(); ++I, ++texNo) {
-        if (!(*I)->m_shader.checkIntersect(**I)) {
-            continue;
-        }
-
-        //we need an unique name for our alpha texture
-		std::stringstream splatTextureNameSS;
-		splatTextureNameSS << materialName << "_" << texNo;
-		const Ogre::String splatTextureName = splatTextureNameSS.str();
-
-		createAlphaTexture(splatTextureName, *I);
-		
-
-		
-		{
-			const Mercator::Shader* mercShader = &((*I)->m_shader);
-			TerrainShader* shader = mShaderMap[mercShader];
-			pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
-			pass->setLightingEnabled(false);
-			pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
-/*
- * 	TODO: implement this in a more efficient manner
-			if (pass->getNumTextureUnitStates() < numberOfTextureUnitsOnCard - 1) {
-				//there's room for two more texture unit states
-				shader->addTextureUnitsToPass(pass, splatTextureName);
-			} else {
-				//we need to use a new pass, else we would run out of texture units
-				pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
-			}
-*/			
-		}
-		++textureUnits;
-    
-    }
-   
-	//create all lod levels
-	if (mOptions.debuglod) {
-		for (int i = 1; i < mOptions.maxGeoMipMapLevel; ++i) {
-			Ogre::Technique *tech = material->createTechnique();
-			tech->setLodIndex(i);
-			
-			Ogre::TextureUnitState *textureUnitState = tech->createPass()->createTextureUnitState();
-			std::stringstream ss;
-			ss << "lod" << i << ".png";
-			textureUnitState->setTextureName(ss.str());
-			textureUnitState->setTextureCoordSet(0);
-		
-		}
-	} else {
-		for (int i = 1; i < mOptions.maxGeoMipMapLevel; ++i) {
-		
-		}
-	
-	}
-	
-/*	mOptions.maxGeoMipMapLevel
-	
-	
-	//create lower lod versions
-	Ogre::Technique* tech;
-	
-	tech = material->createTechnique();
-	tech->setLodIndex(1);
-	textureUnitState = tech->createPass()->createTextureUnitState();
-	textureUnitState->setTextureName("lod1.png");
-    textureUnitState->setTextureCoordSet(0);
-	
-	tech = material->createTechnique();
-	tech->setLodIndex(2);
-	textureUnitState = tech->createPass()->createTextureUnitState();
-	textureUnitState->setTextureName("lod2.png");
-    textureUnitState->setTextureCoordSet(0);
-	tech = material->createTechnique();
-	
-	tech->setLodIndex(3);
-	textureUnitState = tech->createPass()->createTextureUnitState();
-	textureUnitState->setTextureName("lod3.png");
-    textureUnitState->setTextureCoordSet(0);
-
-	tech = material->createTechnique();
-	tech->setLodIndex(4);
-	textureUnitState = tech->createPass()->createTextureUnitState();
-	textureUnitState->setTextureName("lod4.png");
-    textureUnitState->setTextureCoordSet(0);
-	
-	std::vector< Ogre::Real > lodDistanceList;
-	lodDistanceList.push_back((mOptions.pageSize - 1));
-	lodDistanceList.push_back((mOptions.pageSize - 1) * 2);
-	lodDistanceList.push_back((mOptions.pageSize - 1) * 3);
-	lodDistanceList.push_back((mOptions.pageSize - 1) * 4);
-	material->setLodLevels(lodDistanceList);*/
-	
-		
-
-	
-	
-	
-			
-	//store our new material in the materialStore for later retrieval   
-	material->load();
-	std::stringstream ss;
-	ss << segmentX <<":"<<segmentY;	
-/*	materialStore[ss.str()] = static_cast<Ogre::Material*>(Ogre::MaterialManager::getSingleton().getByName("Malebuilder/Body"));
-	return;*/
-	materialStore[ss.str()] = material;
-		// (LayerBlendOperationEx op, LayerBlendSource source1=LBS_TEXTURE, LayerBlendSource source2=LBS_CURRENT, const ColourValue &arg1=ColourValue::White, const ColourValue &arg2=ColourValue::White, Real manualBlend=0.0)
-//		LayerBlendOperationEx op, LayerBlendSource source1=LBS_TEXTURE, LayerBlendSource source2=LBS_CURRENT, Real arg1=1.0, Real arg2=1.0, Real manualBlend=0.0)
-        
-        
-        
-        
-        
-        
-    
-	
-	
-}
 
 
 
-Ogre::DataChunk* TerrainGenerator::convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor) {
-    int width = mOptions.pageSize - 1;
-    int bufferSize = width*width*4*factor*factor;
-	Ogre::DataChunk chunk(dataStart, (mOptions.pageSize) * (mOptions.pageSize));
-    Ogre::DataChunk* finalChunk = new Ogre::DataChunk();
-    finalChunk->allocate(bufferSize);
-    Ogre::uchar* finalPtr = finalChunk->getPtr();
-    Ogre::uchar* chunkPtr = chunk.getPtr();
-    long i,j; 
-    long sizeOfOneChannel = width*width;
 
-     Ogre::uchar* tempPtr = finalPtr + bufferSize;
-    for (i = 0; i < width; ++i) {
-    	for (int l = 0; l < factor; ++l) {
-	    	tempPtr -= (width * 4 * factor);
-	    	for (j = 0; j < width; ++j) {
-	        	Ogre::uchar alpha = *(chunkPtr + j);
-	        	for (int k = 0; k < factor; ++k) {
-		        	*(tempPtr++) = 0;
-		        	*(tempPtr++) = 0;
-		        	*(tempPtr++) = 0;
-		        	*(tempPtr++) = alpha;
-	        	}
-	    		
-	    	}
-	    	tempPtr -= (width * 4 * factor);
-    	}
-    	chunkPtr += mOptions.pageSize;
-    	//++chunkPtr;
-    }
-   /*
-    Ogre::uchar* tempPtr = finalPtr;
-    for (i = 0; i < width; ++i) {
-    	for (j = 0; j < width; ++j) {
-        	Ogre::uchar alpha = *(chunkPtr++);
-        	*tempPtr++ = 0;
-        	*tempPtr++ = 0;
-        	*tempPtr++ = 0;
-        	*tempPtr++ = alpha;
-    		
-    	}
-    	++chunkPtr;
-    }   
-    */
-    
-	return finalChunk;
-}
-
-
-
-void TerrainGenerator::createAlphaTexture(Ogre::String name, Mercator::Surface* surface) {
-    short factor = 1;
-
-
-    //the format for our alpha texture
-    //for some reason we can't use PF_A8
-    Ogre::PixelFormat pixelFormat = PF_B8G8R8A8;
-
-	/*first we need to change the 8 bit mask into 32 bits
-	 * because somehow Ogre doesn't like the 8 bit mask
-	 * 
-	 */
-	Ogre::DataChunk* finalChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), factor);
-	
-	//printTextureToImage(finalChunk, name, pixelFormat);
-	
-	//create the new alpha texture
-	Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(name, *finalChunk, (mOptions.pageSize - 1) * factor, (mOptions.pageSize - 1) * factor, pixelFormat);
-	
-	
-}
 void TerrainGenerator::printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat) {
 // DEBUG   
 //prints the bitmap to a png-image
@@ -497,10 +269,6 @@ void TerrainGenerator::printTextureToImage(Ogre::DataChunk* dataChunk, const Ogr
 float TerrainGenerator::getHeight(TerrainPosition& point) const
 {
 	
-// 	//convert our ogre coordinates to atlas
-// 	float atlasX = ogreX;
-// 	float atlasY = -ogreZ;
-	
 	float height = 0;
 	WFMath::Vector<3> vector;
 	
@@ -511,27 +279,7 @@ float TerrainGenerator::getHeight(TerrainPosition& point) const
 }
 
 
-float TerrainGenerator::getMaxHeightForSegment(TerrainPosition& point) const
-{
-	
-/*	//convert our ogre coordinates to atlas
-	int atlasX = ogreX;
-	int atlasY = -ogreZ;*/
-	
-	return mTerrain->getSegment((int)point.x(), (int)point.y())->getMax();
-	
-}
 
-float TerrainGenerator::getMinHeightForSegment(TerrainPosition& point) const
-{
-	
-/*	//convert our ogre coordinates to atlas
-	int atlasX = ogreX;
-	int atlasY = -ogreZ;*/
-	
-	return mTerrain->getSegment((int)point.x(), (int)point.y())->getMin();
-	
-}
 
 
 bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world) 
@@ -648,23 +396,23 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
     return true;
 }
 
-Ogre::Material* TerrainGenerator::getMaterialForSegment(TerrainPosition& atPosition)
-{
-	long x = (long)atPosition.x();
-	long y = (long)atPosition.y();
-	std::stringstream ss;
-	ss << x <<":"<<y;
-	return materialStore[ss.str()];
-}
+// Ogre::Material* TerrainGenerator::getMaterialForSegment(TerrainPosition& atPosition)
+// {
+// 	long x = (long)atPosition.x();
+// 	long y = (long)atPosition.y();
+// 	std::stringstream ss;
+// 	ss << x <<":"<<y;
+// 	return materialStore[ss.str()];
+// }
 
 const TerrainPosition TerrainGenerator::getMax( ) const
 {
-	return TerrainPosition(mXmax * 64, mYmax * 64);
+	return TerrainPosition(mXmax * (mOptions.pageSize - 1), mYmax * (mOptions.pageSize - 1));
 }
 
 const TerrainPosition TerrainGenerator::getMin( ) const
 {
-	return TerrainPosition(mXmin * 64, mYmin * 64);
+	return TerrainPosition(mXmin * (mOptions.pageSize - 1), mYmin * (mOptions.pageSize - 1));
 }
 
 }

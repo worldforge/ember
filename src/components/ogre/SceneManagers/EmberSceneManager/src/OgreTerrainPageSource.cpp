@@ -111,12 +111,13 @@ namespace Ogre {
 				} else {
                 	tile->setMaterial(pMaterial);
 				}*/
-                tile->setMaterial(pMaterial);
+               tile->setMaterial(pMaterial);
                 tile->initialise(i, j, heightData);
                 // Attach it to the page
                 page->tiles[ p ][ q ] = tile;
                 // Attach it to the node
                 c ->attachObject( tile );
+ 				//tile->setForcedRenderLevel(4);
                 p++;
             }
 

@@ -27,6 +27,7 @@ namespace EmberOgre {
 
 class TerrainGenerator;
 class EmberTerrainSceneManager;
+class TerrainPage;
 class EmberTerrainPageSource : public Ogre::TerrainPageSource {
 	
 	
@@ -50,6 +51,9 @@ protected:
 	EmberTerrainSceneManager* getEmberTerrainSceneManager() const;
 
 public:
+	void addPage(TerrainPage* page);
+
+
 	static const std::string Name;
     virtual void requestPage (Ogre::ushort x, Ogre::ushort z);
     virtual void expirePage (Ogre::ushort x, Ogre::ushort z);	

@@ -65,7 +65,7 @@ class TerrainShader;
 class EmberTerrainPageSource;
 
 
-/*
+/**
  * This class takes care of generating terrain for Ogre's scenemanager.
  * This involves getting terraing from Mercator, converting this to ogre
  * format and creating materials to make it look good.
@@ -79,16 +79,12 @@ public:
 
 	TerrainGenerator();
 	virtual ~TerrainGenerator();
-	//static TerrainGenerator & getSingleton(void);
-	
-	//static const int TerrainGenerator::segSize = 64;
 
 	Ogre::SceneNode* generateTerrain();
     void setBasePoint(int x, int y, float z) {mTerrain->setBasePoint(x,y,z);}
-	//void loadSegmentAt(WFMath::Point<3> aPoint);
 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
 
-	/*
+	/**
 	 * Prepares all segments aquired from Mercator. Note that this can be very,
 	 * very expensive if there's a lot of terrain defined.
 	 * If true is supplied the segments will also be pushed onto the terrain
@@ -97,14 +93,10 @@ public:
 	
 	virtual float getHeight(TerrainPosition& atPosition) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
-	Ogre::Material* getMaterialForSegment(TerrainPosition& atPosition);
-
-	float TerrainGenerator::getMaxHeightForSegment(TerrainPosition& atPosition) const;
-	float TerrainGenerator::getMinHeightForSegment(TerrainPosition& atPosition) const;
 	
-	/*
+	/**
 	 * Return true if there is a valid piece of terrain at the supplied segment indices.
-	 * By valid means a populated terrain with a corresponding material-
+	 * By valid means a populated terrain-
 	 */
 	bool isValidTerrainAt(TerrainPosition& atPosition);
 	
@@ -114,6 +106,13 @@ public:
 	
 	const TerrainPosition getMax() const;
 	const TerrainPosition getMin() const;
+	
+	/**
+	 *    the size of one terrain segment
+	 *	(note that this is different from Mercator segments, which always are of size 64)
+	 * @return 
+	 */
+	int getSegmentSize() const;
 
 // 	GroundCover* mGround;
 // 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
@@ -133,49 +132,29 @@ protected:
 
 	const Mercator::Terrain::Segmentstore* mSegments;
 	
-	/*
+	/**
 	 * the min and max indices for segments
 	 */
 	int mXmin, mXmax, mYmin, mYmax;
 	
-	/*
-	 * Creates a material for the supplied segment. This is done through the 
-	 * registered TerrainShaders.
-	 * The created material is then put into mShaderMap.
-	 * Use getMaterialForSegment(...) to access the material.
-	 */
-	void generateTerrainMaterials(Mercator::Segment* segment, TerrainPosition& atPosition);
-
 	void loadTerrainOptions();
 	
 	Ogre::TerrainOptions mOptions;
 	
 	
-	/*
-	 * We can't use the alphamaps generated from WF. Thus we need to convert them first.
-	 * Which is done by this method.
-	 */
-	Ogre::DataChunk* convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor);
-	//Ogre::ushort mNumberOfTilesInATerrainPage;
-
-	/*
-	 * Creates an alpha texture for the supplied surface.
-	 */
-	void createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
-	
 
 
-	/*
+	/**
 	 * Prints the supplied image (as a dataChunk) to a image file.
 	 */
 	void printTextureToImage(Ogre::DataChunk* dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat);
 	
-	/*
+	/**
 	 * This holds a map of the TerrainShaders
 	 */
 	std::map<const Mercator::Shader*, TerrainShader*> mShaderMap;
 	
-	/*
+	/**
 	 * Adds a TerrainShader to the map of shaders.
 	 * Note that this also registers the enclosed Mercator::Shader with the 
 	 * Mercator::Terrain.

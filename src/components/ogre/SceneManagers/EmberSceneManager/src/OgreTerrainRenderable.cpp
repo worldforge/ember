@@ -325,6 +325,7 @@ namespace Ogre
        if ( mForcedRenderLevel >= 0 )
         {
             mRenderLevel = mForcedRenderLevel;
+			mMaterialLodIndex = std::min(mMaterial->getNumLodLevels() - 1, mForcedRenderLevel);
             return ;
         }
 
