@@ -287,13 +287,13 @@ AC_CONFIG_FILES([Makefile
 		 src/services/sound/Makefile
 		 ember.dox
 		 ember.spec
+		 src/extensions/Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
 		 src/components/ogre/EmberSceneManager/Makefile
 		 src/components/ogre/EmberSceneManager/src/Makefile
 		 src/components/ogre/EmberSceneManager/include/Makefile
-		 src/extensions/Makefile
 ])
 
 #		 src/tests/Makefile

@@ -1,5 +1,9 @@
 2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* fixed Makefile order, thanks Demitar
+
+2004-11-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* added output of the eris log to debugwidget
 	* fixed Wield and Use ops
 	* removed reference to unneeded Makefile.in
