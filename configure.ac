@@ -173,7 +173,7 @@ AC_ARG_ENABLE(gprof,[  --enable-gprof     Add flags for gprof [default=no]],
    fi
 ], [ac_use_gprof_code="no"])
 
-if test "x$ac_use_gprof_code" = "xyes"; then
+if test "x$ac_use_gprof_code" = "yes"; then
       CFLAGS="$CFLAGS -pg -g -a"
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
