@@ -150,15 +150,15 @@ class Label : public Widget
      */
     virtual ~Label()
     {
-	if (myParent != NULL) myParent->removeWidget(this);
+		if (myParent != NULL) myParent->removeWidget(this);
+
+		delete myFontRenderer;
        // TODO: Free any allocated resources here.
     }
 
 
     //----------------------------------------------------------------------
     // Getters
-
-    // Example of a getter method:
 
     /**
      * Returns the text of the Label
@@ -172,21 +172,19 @@ class Label : public Widget
     //----------------------------------------------------------------------
     // Setters
 
-    // Example of a setter method:
-
     /**
-     * Sets the name of this gizmo.
-     * If there already is a gizmo with this name, a number will be
-     * appended to the name, and the naming will be attempted again.
-     *
-     * @param name The new name of the gizmo.
+     * Sets the text of this label widget
+	 *
+	 * @param text The new text to go in label
      */
     virtual void setText( std::string text ) {
 		myText = text;		
 	}
 
 	/**
-	 * Sets the font used to draw this Widget
+	 * Sets the FontRenderer used to draw this Widget
+	 *
+	 * @param font The new font renderer
 	 */
 	virtual void setFont( FontRenderer *font ) {
 		myFontRenderer = font;
