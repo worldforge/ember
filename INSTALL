@@ -24,7 +24,7 @@ http://www.libsdl.org/projects/SDL_mixer/index.html
 
 libsigc++
 install this library from your distro CDs
-Version: 1.0.3
+Version: 1.0.4 or 1.2.0 (support for sigc++-1.0 will be dropped soon)
 (needed for Eris, see below)
 
 skstream2
@@ -35,7 +35,7 @@ ftp://victor.worldforge.org/pub/worldforge/libs/skstream
 
 Atlas-C++
 C++ implementation of Worldforge Protocol ("Atlas")
-Version: 0.4.4
+Version: 0.4.5
 ftp://victor.worldforge.org/pub/worldforge/libs/Atlas-C++
 (needed for Eris, see below)
 
@@ -46,7 +46,7 @@ Version: CVS
 
 Eris
 client side session layer
-Version: 0.9.5 pref CVS
+Version: 0.9.6 pref CVS
 
 Varconf
 config files stuff

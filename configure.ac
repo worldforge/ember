@@ -37,7 +37,7 @@ CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
 
 dnl Check for SigC++
-SIGC_VERSION=1.0.3
+SIGC_VERSION=1.0.4
 PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
      [
          CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
@@ -50,10 +50,11 @@ PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
                 ],
                 AC_MSG_ERROR(Couldn't find sigc++ or insufficient version found. Please goto http://sourceforge.net/projects/libsigc/ and get at least version $SIGC_VERSION)
         )
+     AC_MSG_WARN(Please note the we will drop support for this version of SigC++ soon)
      ])
 
 dnl Check for Atlas
-AM_PATH_ATLAS(0.4.4 ,[
+AM_PATH_ATLAS(0.4.5 ,[
     CXXFLAGS="$CXXFLAGS $ATLAS_CFLAGS"
     LDFLAGS="$LDFLAGS $ATLAS_LIBS"
     ],
