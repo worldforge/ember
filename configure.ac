@@ -30,6 +30,14 @@ AM_MAINTAINER_MODE
 # Check for C libraries:
 AC_LANG([C])
 
+AC_MSG_RESULT([
+
+		**************************************
+		* Checking for C Libraries
+		**************************************
+
+	])
+
 # Check for SDL and SDL_image
 AM_PATH_SDL(1.2.0, , 
 	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
@@ -72,6 +80,14 @@ AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
 
 # Check for C++ libraries:
 AC_LANG([C++])
+
+AC_MSG_RESULT([
+
+		**************************************
+		* Checking for C++ Libraries
+		**************************************
+
+	])
 
 # Check for the Boost shared_ptr.hpp shared pointer header
 AC_CHECK_HEADER(boost/shared_ptr.hpp, ,AC_MSG_ERROR(The Boost C++ libraries are required to build Dime. They're available from www.boost.org))
@@ -258,6 +274,13 @@ AC_CHECK_FUNCS([memset select])
 AC_LANG([C++])
 AC_REQUIRE_CPP
 
+AC_MSG_RESULT([
+
+		**************************************
+		* Tests Passed, Creating Makefiles.
+		**************************************
+
+	])
 
 AC_CONFIG_FILES([Makefile
 		 bin/Makefile
@@ -285,5 +308,15 @@ AC_CONFIG_FILES([Makefile
 		 dime.spec
 		 src/components/ogre/Makefile
 ])
+
+
+
+AC_MSG_RESULT([
+
+		**************************************
+		* Finished.  Run make to compile dime.
+		**************************************
+
+	])
 
 AC_OUTPUT
