@@ -110,7 +110,7 @@ long dime::GuiService::parseLabel(xmlNodePtr widgetNode, xmlDocPtr doc)
   xmlGetProp(widgetNode, (const xmlChar *)"name");
 
   // Get data
-  string data = (const char*)xmlGetProp(widgetNode, (const xmlChar *)"data");
+  std::string data = (const char*)xmlGetProp(widgetNode, (const xmlChar *)"data");
 
   // Get rectangle
   // FIXME: there has to be a better way to do this
