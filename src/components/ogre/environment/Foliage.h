@@ -31,9 +31,9 @@ class GroundCover;
 /**
 @author Erik Hjortsberg
 */
-class Foliage : virtual Ogre::FrameListener {
+class Foliage : public Ogre::FrameListener {
 public:
-    Foliage();
+    Foliage(Ogre::Camera* camera, Ogre::SceneManager* mSceneMgr);
 
     ~Foliage();
 	
@@ -46,6 +46,9 @@ protected:
 	GroundCover* mGround;
 	
 	bool mVisible;
+	
+	Ogre::Camera* mCamera;
+	Ogre::SceneManager* mSceneMgr;
 
 };
 

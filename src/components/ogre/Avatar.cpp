@@ -50,8 +50,8 @@
 //#include "EmberTerrainSceneManager.h"
 
 #include "AvatarEmberEntity.h"
-#include "Model.h"
-#include "SubModel.h"
+#include "model/Model.h"
+#include "model/SubModel.h"
 
 #include <Ogre.h>
 
@@ -109,9 +109,10 @@ void Avatar::createAvatar()
 	// Model Node and Entity for display
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
 	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
-	Model* model = new Model(mSceneMgr, "AvatarEntity");
-	//TODO add better resource handling
-	model->createFromXML("modeldefinitions/malebuilder.modeldef.xml");
+	
+	Model* model = Model::Create("malebuilder.modeldef.xml", "AvatarEntity");
+	//Model::Create("malebuilder.modeldef.xml", "AvatarEntity1");
+
 
 	mAvatarModel = model;
 	

@@ -23,10 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.59  2004-11-08 19:41:58  erik
- *      2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
+ *      Revision 1.60  2004-11-11 23:57:26  erik
+ *      2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
- *      	* Fixed stupid compile bug.
+ *      	*  Added environment classes: Sun, Sky, Water, Foliage
+ *      	* Rewrote Model handling to use a subclass of Ogre::ResourceManager
+ *      	* Various fixes to get the resouce handling to work better for distributions.
+ *      	* Upon startup now only a lone avatar is shown. This is for debugging and shall be removed.
+ *      	* Removed bug where images were written to a non-existant directory, resulting in strange resource allocation problems. Ugly one.
+ *      	* Various small changes to widgets.
  *
  *      Revision 1.57  2004/11/04 21:40:26  erik
  *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
@@ -492,9 +497,12 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "DebugListener.h"
 #include "GUIManager.h"
 
-#include "environment/Water.h"
+
 
 #include "EmberTerrainSceneManager.h"
+#include "model/ModelDefinitionManager.h"
+#include "model/ModelDefinition.h"
+#include "model/Model.h"
 
 // ------------------------------
 // Include Ember header files
@@ -538,18 +546,19 @@ http://www.gnu.org/copyleft/lesser.txt.
 #endif
 
 #include <Ogre.h>
+// #include <OgreFontManager.h>
+// #include <OgreParticleSystemManager.h>
 
 #ifdef DEBUGTEMP
 #undef DEBUGTEMP
 #define DEBUG
 #endif
 
-// ----------------------------------------------------------------------------
-// Include the OGRE example framework
-// This includes the classes defined to make getting an OGRE application running
-// a lot easier. It automatically sets up all the main objects and allows you to
-// just override the bits you want to instead of writing it all from scratch.
-// ----------------------------------------------------------------------------
+#include <stddef.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 
 namespace EmberOgre {
 
@@ -644,14 +653,10 @@ void EmberOgre::shutdown()
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::setup(void)
 {
+	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
-		std::string pluginrc =  configSrv->getHomeDirectory() + std::string(configSrv->getValue("ogre", "pluginrc"));
-
-		std::string configrc =  configSrv->getHomeDirectory() + std::string(configSrv->getValue("ogre", "ogrerc"));
-
-
-    mRoot = new Ogre::Root(pluginrc, configrc);
+    mRoot = new Ogre::Root();
 	
     setupResources();
 
@@ -660,7 +665,16 @@ bool EmberOgre::setup(void)
 
     chooseSceneManager();
 
-	//add ourself as a frame listener
+    // Set default mipmap level (NB some APIs ignore this)
+    Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
+    
+    // Set default animation mode
+	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
+
+	//remove padding for bounding boxes
+    Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);    
+	
+// 	//add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
@@ -679,14 +693,10 @@ bool EmberOgre::setup(void)
 
 
 
-    // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipMaps(5);
-    
-    // Set default animation mode
-	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
-	//remove padding for bounding boxes
-    Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);    
+// 	fprintf(stderr, "TRACE - BEGIN PRELOAD\n");
+// 	preloadMedia();
+// 	fprintf(stderr, "TRACE - END PRELOAD\n");
 
 
     createFrameListener();
@@ -711,7 +721,8 @@ bool EmberOgre::configure(void)
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg
-    if(mRoot->restoreConfig())
+	bool success = mRoot->restoreConfig();
+    if(success)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
@@ -741,36 +752,114 @@ void EmberOgre::chooseSceneManager(void)
 }
 
 
+void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
+{
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists(section, variableName)) {
+		std::string value =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue(section, variableName)) + "/";
+		manager->addArchiveEx(value, type);
+	} else {
+		//throw new Exception(std::string("Could not find setting: ") + variableName + " in section " + section + ".");
+	}
+
+} 
+
 /// Method which will define the source of resources (other than current folder)
 void EmberOgre::setupResources(void)
 {
-	std::string resourcesrc = "resources.cfg";
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("ogre", "resourcesrc")) {
-		resourcesrc =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue("ogre", "resourcesrc"));
-	} 
-    
+ 	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/";
+	
+	mModelDefinitionManager = new ModelDefinitionManager();
+	mModelDefinitionManager->addArchiveEx(mediaHomePath + "modeldefinitions", "FileSystem");
+	
+// /*	std::string modeldefspath = "modeldefinitions/";
+// 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("ogre", "modeldefinitionpath")) {
+// 		modeldefspath =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue("ogre", "modeldefinitionpath")) + "/";
+// 	} 
+// 	mModelDefinitionManager->addArchiveEx(modeldefspath, "FileSystem");*/
+// 	
+// 	getResourceArchiveFromVarconf(mModelDefinitionManager, "modeldefinitions");
+// 	getResourceArchiveFromVarconf(Ogre::TextureManager::getSingletonPtr(), "common");
+// 	getResourceArchiveFromVarconf(Ogre::GpuProgramManager::getSingletonPtr(), "programs");
+// 	getResourceArchiveFromVarconf(Ogre::FontManager::getSingletonPtr(), "fonts");
+// 	getResourceArchiveFromVarconf(Ogre::MaterialManager::getSingletonPtr(), "materials");
+// 	getResourceArchiveFromVarconf(Ogre::TextureManager::getSingletonPtr(), "textures");
+// 	getResourceArchiveFromVarconf(Ogre::ParticleSystemManager::getSingletonPtr(), "particles");
+
+		    
 	// Load resource paths from config file
     Ogre::ConfigFile cf;
-    cf.load(resourcesrc);
+    cf.load("resources.cfg");
 
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator();
 
 //	std::string mediaHomePath = "/home/erik/code/worldforge/forge_cvs/clients/ember/Media/";
- 	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "Media/";
 
-//	Ogre::ResourceManager::addCommonSearchPath(std::string();
+
+	//Ogre::ResourceManager::addCommonSearchPath(mediaHomePath);
     Ogre::String typeName, archName;
     while (i.hasMoreElements())
     {
         typeName = i.peekNextKey();
         archName = i.getNext();
-		std::cout << "Adding archive/filesystem: " << mediaHomePath + archName << "\n";
+		//std::cout << "Adding archive/filesystem: " << mediaHomePath + archName << "\n";
         Ogre::ResourceManager::addCommonArchiveEx( mediaHomePath + archName, typeName );
     }
+	
+//     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
+	
+	fprintf(stderr, "TRACE - ADDED MEDIA PATHS\n");
+	
 }
 
 
+
+void EmberOgre::preloadMedia(void)
+{
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	
+	
+	Ogre::TextureManager::getSingleton().load(std::string(configSrv->getValue("shadertextures", "rock")));
+	Ogre::TextureManager::getSingleton().load(std::string(configSrv->getValue("shadertextures", "sand")));
+	Ogre::TextureManager::getSingleton().load(std::string(configSrv->getValue("shadertextures", "grass")));
+	  
+	DIR *dp;
+	struct dirent *ep;
+	
+	std::string modeldefDir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/modeldefinitions";
+	dp = opendir (modeldefDir.c_str());
+	if (dp != NULL)
+	{
+		while (ep = readdir (dp)) {
+			if (ep->d_name != "." && ep->d_name != "..") {
+				try {
+					fprintf(stderr, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
+					ModelDefinition* modeldef = mModelDefinitionManager->load(ep->d_name);
+					if (modeldef->isValid()) {
+						Ogre::SceneNode* mNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+						Model* model = Model::Create(ep->d_name, ep->d_name);
+						mNode->attachObject(model);
+					}
+				} catch (Ogre::Exception ex)
+				{
+					fprintf(stderr, (std::string("TRACE - ERROR PRELOADING: ") + ep->d_name + "\n").c_str());
+				}
+			}
+		}
+		(void) closedir (dp);
+	}
+
+	
+	
+// 	mModelDefinitionManager->load("malebuilder.modeldef.xml");
+// 	mModelDefinitionManager->load("settler.modeldef.xml");
+// 	mModelDefinitionManager->load("merchant.modeldef.xml");
+// 	mModelDefinitionManager->load("pig.modeldef.xml");
+// 	mModelDefinitionManager->load("fir.modeldef.xml");
+// 	mModelDefinitionManager->load("oak.modeldef.xml");
+
+
+}
 
 void EmberOgre::createScene(void)
 {
@@ -781,19 +870,7 @@ void EmberOgre::createScene(void)
 //  mSceneMgr->setShadowFarDistance(2000);
  	mSceneMgr->showBoundingBoxes(true);
  */
-mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
   // Create a light
-  Ogre::Light* l = mSceneMgr->createLight("SunLight");
-  l->setType(Ogre::Light::LT_DIRECTIONAL);
-  l->setPosition(WF2OGRE_VECTOR3(-1500,50,150));
-	Ogre::Vector3 dir;
-	dir = -l->getPosition();
-	dir.normalise();
-	l->setDirection(dir);
-  l->setDiffuseColour(1, 1, 0.7); //yellow
-  l->setSpecularColour(1, 1, 0.7); //yellow
-  l->setCastShadows(false);
-  l->setAttenuation(10000, 1, 0, 0);
   
 
 
@@ -815,9 +892,7 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
 
   // create a Skydome
 //  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
-  mSceneMgr->setSkyBox(true, "Sky/Waterworld09", 253);
 
-		mWater = new Water(getMainCamera()->getCamera(), getSceneManager());
   
          
 	 
@@ -898,7 +973,9 @@ void EmberOgre::initializeEmberServices(void)
 
 	// Initialize the Configuration Service
 	Ember::EmberServices::getInstance()->getConfigService()->start();
-	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "ember.conf");
+	// Change working directory
+	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig("ember.conf");
 
 
 /*

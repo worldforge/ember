@@ -74,7 +74,7 @@ class ConfigService: public Service
      * @param Section of config space to look in.
      * @param Key to return value of.
      */
-    varconf::Variable getValue(const std::string& section, const std::string& key);
+    varconf::Variable getValue(const std::string& section, const std::string& key) const;
 
     /**
      * Sets value of key in appropriate section.
@@ -108,7 +108,7 @@ class ConfigService: public Service
      * @param Section of config space to look in.
      * @param Key to look for.
      */
-    bool itemExists(const std::string& section, const std::string& key);
+    bool itemExists(const std::string& section, const std::string& key) const;
 
     /**
      * Returns true if the key exists in the section give but is successfully
@@ -139,6 +139,15 @@ class ConfigService: public Service
 	*/
 	std::string getHomeDirectory() const;
 	
+	/**
+	* returns the path to the shared data directory, where common media is
+	*/
+	std::string getSharedDataDirectory() const;
+	
+	/**
+	* returns the path to the ember data directory, where ember media is
+	*/
+	std::string getEmberDataDirectory() const;
 	
 
 }; //ConfigService

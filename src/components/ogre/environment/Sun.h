@@ -23,6 +23,8 @@
 #ifndef DIMEOGRESUN_H
 #define DIMEOGRESUN_H
 
+#include <Ogre.h>
+
 namespace EmberOgre {
 
 /**
@@ -30,9 +32,12 @@ namespace EmberOgre {
 */
 class Sun{
 public:
-    Sun();
+    Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
 
     ~Sun();
+	
+protected:
+	Ogre::Light* mSun;
 
 };
 

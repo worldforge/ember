@@ -23,6 +23,8 @@
 #ifndef DIMEOGRESKY_H
 #define DIMEOGRESKY_H
 
+#include <Ogre.h>
+
 namespace EmberOgre {
 
 /**
@@ -30,7 +32,7 @@ namespace EmberOgre {
 */
 class Sky{
 public:
-    Sky();
+    Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
 
     ~Sky();
 

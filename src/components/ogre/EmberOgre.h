@@ -24,7 +24,17 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.32  2004-11-04 21:40:26  erik
+ *      Revision 1.33  2004-11-11 23:57:26  erik
+ *      2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	*  Added environment classes: Sun, Sky, Water, Foliage
+ *      	* Rewrote Model handling to use a subclass of Ogre::ResourceManager
+ *      	* Various fixes to get the resouce handling to work better for distributions.
+ *      	* Upon startup now only a lone avatar is shown. This is for debugging and shall be removed.
+ *      	* Removed bug where images were written to a non-existant directory, resulting in strange resource allocation problems. Ugly one.
+ *      	* Various small changes to widgets.
+ *
+ *      Revision 1.32  2004/11/04 21:40:26  erik
  *      2004-11-04 Erik Hjortsberg <erik@katastrof.nu>
  *      http://erikhjortsberg.blogspot.com/
  *
@@ -370,7 +380,8 @@ class InputManager;
 
 class GUIManager;
 
-class Water;
+class ModelDefinitionManager;
+
 
 
 
@@ -444,7 +455,6 @@ protected:
 	Ogre::RenderWindow* mWindow;
 	
 	
-	Water* mWater;
 	
 //	TerrainGenerator* mTerrainGenerator;
 
@@ -464,6 +474,11 @@ protected:
 	void createFrameListener(void);
 
 	void createScene(void);
+	
+	void preloadMedia(void);
+
+	void getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section = "media", std::string type = "FileSystem");
+
 
     /// Method which will define the source of resources (other than current folder)
     virtual void setupResources(void);
@@ -473,6 +488,7 @@ protected:
 	//InputManager* mInputManager;
 	MotionManager* mMotionManager;
 	GUIManager* mGUIManager;  
+	ModelDefinitionManager* mModelDefinitionManager;
 	
 	bool mKeepOnRunning;
 

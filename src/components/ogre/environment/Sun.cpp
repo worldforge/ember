@@ -21,11 +21,26 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Sun.h"
+#include "components/ogre/MathConverter.h"
 
 namespace EmberOgre {
 
-Sun::Sun()
+Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
+  mSun = sceneMgr->createLight("SunLight");
+  mSun->setType(Ogre::Light::LT_DIRECTIONAL);
+  mSun->setPosition(WF2OGRE_VECTOR3(-1500,50,150));
+	Ogre::Vector3 dir;
+	dir = -mSun->getPosition();
+	dir.normalise();
+	mSun->setDirection(dir);
+  mSun->setDiffuseColour(1, 1, 0.7); //yellow
+  mSun->setSpecularColour(1, 1, 0.7); //yellow
+  mSun->setCastShadows(false);
+  mSun->setAttenuation(10000, 1, 0, 0);
+  
+  sceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.25));
+
 }
 
 

@@ -22,15 +22,15 @@
 //
 #include "Foliage.h"
 
-#include "environment/GroundCover.h"
-#include "EmberOgre.h"
-#include "TerrainGenerator.h"
-#include "Avatar.h"
-#include "AvatarCamera.h"
+#include "GroundCover.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/TerrainGenerator.h"
+
 
 namespace EmberOgre {
 
-Foliage::Foliage()
+Foliage::Foliage(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
+: mCamera(camera), mSceneMgr(sceneMgr)
 {
 }
 
@@ -39,6 +39,15 @@ Foliage::~Foliage()
 {
 }
 
+void Foliage::setVisible(bool visible)
+{
+	mVisible = visible;
+	mGround->getSceneNode()->setVisible(mVisible);
+}
+
+
+
+//This is all very quick and messy, to be replaced by something better in the future
 void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments)
 {
 
@@ -48,7 +57,7 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 	long xStart = segmentXStart * 64;
 	long zStart = segmentZStart * 64;
 	
-	mGround = new GroundCover(EmberOgre::getSingleton().getSceneManager(), Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
+	mGround = new GroundCover(mSceneMgr, Ogre::Vector3(numberOfSegments * 64,0,  numberOfSegments * 64), 16, Ogre::Vector3(0,0,0));
 	
 	long spaceBetween = 3;
 	
@@ -117,7 +126,7 @@ void Foliage::generateUnderVegetation(long segmentXStart, long segmentZStart, lo
 bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 {	
 	if (mVisible) {
-		mGround->update(EmberOgre::getSingleton().getAvatar()->getAvatarCamera()->getCamera());
+		mGround->update(mCamera);
 	}
 
 

@@ -288,6 +288,8 @@ AC_CONFIG_FILES([Makefile
 		 ember.dox
 		 ember.spec
 		 src/components/ogre/Makefile
+		 src/components/ogre/environment/Makefile
+		 src/components/ogre/model/Makefile
 ])
 
 #		 src/tests/Makefile

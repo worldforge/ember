@@ -34,6 +34,7 @@ namespace EmberOgre {
 
 class SubModel;
 class SubModelPart;
+class ModelDefinition;
 
 /*
  * This is the standard model used in Ember.
@@ -48,7 +49,13 @@ class SubModelPart;
 
 class Model : public Ogre::MovableObject
 {
+
+friend class ModelDefinition;
+
 public:
+
+	static Model* Create(std::string type, std::string name);
+
 	enum UseScaleOf {
 		MODEL_HEIGHT = 1,
 		MODEL_WIDTH = 2,
@@ -106,7 +113,7 @@ public:
 	 */
 	const unsigned short getUseScaleOf() const;
 	
-	bool createFromXML(std::string path);
+// 	bool createFromXML(std::string path);
 
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
 	Ogre::AnimationStateSet* getAllAnimationStates();
@@ -174,7 +181,7 @@ protected:
 	/*
 	 * read info about the animations from the an animation node
 	 */
-	void readAnimations(xercesc::DOMElement* animationsNode);
+/*	void readAnimations(xercesc::DOMElement* animationsNode);*/
 	
 	std::string mName;
 	

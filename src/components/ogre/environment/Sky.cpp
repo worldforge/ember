@@ -22,10 +22,13 @@
 //
 #include "Sky.h"
 
+
 namespace EmberOgre {
 
-Sky::Sky()
+Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
+  sceneMgr->setSkyBox(true, "Sky/Waterworld09", 253);
+
 }
 
 

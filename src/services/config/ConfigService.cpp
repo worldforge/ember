@@ -34,16 +34,16 @@ namespace Ember
     	setStatusText("Configuration Service status OK.");
     }
 
-    varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key)
+    varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key) const
     {
-	string value;
-	value = std::string(varconf::Config::inst()->getItem(section, key));
-	return value;
+		string value;
+		value = std::string(varconf::Config::inst()->getItem(section, key));
+		return value;
     }
 
     void ConfigService::setValue(const std::string& section, const std::string& key, const varconf::Variable& value)
     {
-	varconf::Config::inst()->setItem(section, key, value);
+		varconf::Config::inst()->setItem(section, key, value);
     }
 
     Service::Status ConfigService::start()
@@ -59,7 +59,7 @@ namespace Ember
 	return;
     }
 
-    bool ConfigService::itemExists(const std::string& section, const std::string& key)
+    bool ConfigService::itemExists(const std::string& section, const std::string& key) const
     {
 	return varconf::Config::inst()->find(section, key);
     }
@@ -82,6 +82,26 @@ namespace Ember
 	std::string ConfigService::getHomeDirectory() const
 	{
 		return std::string(getenv("HOME")) + "/.ember/";
+
+	}
+
+	std::string ConfigService::getSharedDataDirectory() const
+	{
+		if (itemExists("paths", "sharedir")) {
+			return std::string(getValue("paths", "sharedir")) + "/";
+		} else {
+			return getHomeDirectory();
+		}
+
+	}
+	
+	std::string ConfigService::getEmberDataDirectory() const
+	{
+		if (itemExists("paths", "datadir")) {
+			return std::string(getValue("paths", "datadir")) + "/";
+		} else {
+			return getHomeDirectory();
+		}
 
 	}
 

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <Ogre.h>
 
 namespace EmberOgre {
 

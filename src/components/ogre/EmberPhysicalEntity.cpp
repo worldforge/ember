@@ -23,7 +23,7 @@
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "EmberEntityFactory.h"
-#include "Model.h"
+#include "model/Model.h"
 
 
 #include "EmberEntity.h"

@@ -24,6 +24,9 @@ namespace EmberOgre {
 class EmberEntity;
 class TerrainGenerator;
 class Foliage;
+class Water;
+class Sun;
+class Sky;
 
 class WorldEmberEntity : public EmberEntity {
 public:
@@ -46,7 +49,9 @@ protected:
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
 	
 	Foliage* mFoliage;
-
+	Water* mWater;
+	Sun* mSun;
+	Sky* mSky;
 };
 
 }

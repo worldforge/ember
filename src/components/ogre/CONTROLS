@@ -1,5 +1,5 @@
-Controls for dime - OGRE
-This is a temporary file, when dime is more advanced the controls will be defined via the configuration service.
+Controls for ember - OGRE
+This is a temporary file, when ember is more advanced the controls will be defined via the configuration service.
 
 MOUSE: look around when not in game GUI mode
 		point & click when in game GUI mode
@@ -9,13 +9,5 @@ S: walk backwards
 A: sidestep left
 D: sidestep right
 
-O: camera yaw
-P: camera yaw
-I: camera pitch
-K: camera pitch
-
-F: toggle debug GUI on / off
-Y: toggle wireframe mode
-H: toggle game GUI on / off
-
-ESC: quit game
+F8: take screenshot
+F12: show debug console

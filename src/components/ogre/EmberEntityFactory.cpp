@@ -40,7 +40,9 @@
 #include "EmberOgre.h"
 
 
-#include "Model.h"
+#include "model/Model.h"
+#include "model/ModelDefinitionManager.h"
+
 
 
 #include "framework/ConsoleBackend.h"
@@ -110,13 +112,14 @@ AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
-	Model* model = new Model(mSceneManager, ge->getId());
+	Model* model = Model::Create("settler.modeldef.xml", ge->getId());
+	//Model* model = new Model(mSceneManager, ge->getId());
 	
 	//rotate node to fit with WF space
 	//perhaps this is something to put in the model spec instead?
 	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	
-	model->createFromXML("modeldefinitions/settler.modeldef.xml");
+//	model->createFromXML("modeldefinitions/settler.modeldef.xml");
 	
 //	Ogre::Entity* ogreEntity = mSceneManager->createEntity(ge.getId(), "robot.mesh");
 //	mAnimStateWalk = model->getAnimationState("walk");	
@@ -191,14 +194,16 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	//scaleNode->showBoundingBox(true);
 
 	std::string typeName = mTypeService->getTypeForAtlas(ge)->getName();
-	Model* model = new Model(mSceneManager, ge->getId());
+	Model* model = Model::Create(typeName + ".modeldef.xml", ge->getId());
+	//Model* model = new Model(mSceneManager, ge->getId());
 
 	//try to open the model definition file
-	bool result = model->createFromXML(std::string("modeldefinitions/") + typeName + ".modeldef.xml");
-	if (!result) 
+//	bool result = model->createFromXML(std::string("modeldefinitions/") + typeName + ".modeldef.xml");
+	if (!model) 
 	{
 		std::cout << "Could not find " << typeName << ", using placeholder.";
-		model->createFromXML("modeldefinitions/placeholder.modeldef.xml");
+		model = Model::Create(std::string("placeholder.modeldef.xml"), ge->getId());
+		//model->createFromXML("modeldefinitions/placeholder.modeldef.xml");
 	}
 	
 	//rotate node to fit with WF space
@@ -218,6 +223,8 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 
 void EmberEntityFactory::loadTypeInfo()
 {
+//TODO: put this in a separate xml file or something
+
 	mPersonSet.insert("settler");
 	mPersonSet.insert("merchant");
 	mPersonSet.insert("mercenary");

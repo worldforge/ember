@@ -25,7 +25,7 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "Model.h"
+#include "model/Model.h"
 
 #include "PersonEmberEntity.h"
 namespace EmberOgre {

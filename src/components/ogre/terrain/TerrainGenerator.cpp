@@ -28,7 +28,7 @@
 #include "TerrainShader.h"
 #include "EmberTerrainPageSource.h"
 
-#include "environment/GroundCover.h"
+//#include "environment/GroundCover.h"
 
 #include "TerrainGenerator.h"
 
@@ -64,24 +64,28 @@ TerrainGenerator::TerrainGenerator()
   
 //    this->addShader(new TerrainShader("granite.png", new Mercator::FillShader()));
 
-//    this->addShader(new TerrainShader("terr_rock6.jpg", new Mercator::FillShader()));
+/*    this->addShader(new TerrainShader("terr_dirt-grass.jpg", new Mercator::FillShader()));
+    //this->addShader(new TerrainShader("sand.png", new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
+    this->addShader(new TerrainShader("rabbithill_grass_hh_light_ah.png", new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass*/
+/*sand = "sand.png"
+grass = "grass_1024.jpg"
+snow = "snow.png"
+rock = "terr_dirt-grass.jpg"*/
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
 //    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
+/*    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow*/
    
     mTerrainPageSource = new EmberTerrainPageSource(this);
     EmberOgre::getSingleton().getSceneManager()->registerPageSource("EmberTerrain", mTerrainPageSource);
 
-	std::string terrainrc = "terrain.cfg";
-	terrainrc = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue("ogre", "terrainrc"));
 
 
-    EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(terrainrc);
+    EmberOgre::getSingleton().getSceneManager()->setWorldGeometry("terrain.cfg");
 
 }
 
@@ -365,7 +369,7 @@ void TerrainGenerator::createAlphaTexture(Ogre::String name, Mercator::Surface* 
 	 */
 	Ogre::DataChunk* finalChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), factor);
 	
-	printTextureToImage(finalChunk, name, pixelFormat);
+	//printTextureToImage(finalChunk, name, pixelFormat);
 	
 	//create the new alpha texture
 	Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(name, *finalChunk, (mNumberOfTilesInATerrainPage - 1) * factor, (mNumberOfTilesInATerrainPage - 1) * factor, pixelFormat);
@@ -388,6 +392,9 @@ void TerrainGenerator::printTextureToImage(Ogre::DataChunk* dataChunk, const Ogr
 	Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
 	
 	// Write out
+	
+	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
+	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
 	pCodec->codeToFile(*dataChunk, Ogre::String("img/") + name + "." + extension, &imgData);
 	
 }

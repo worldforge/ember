@@ -21,7 +21,10 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Water.h"
-#include "EmberOgre.h"
+#include "components/ogre/EmberOgre.h"
+
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 
 
@@ -172,6 +175,13 @@ public:
 			}
 		}
 	
+		//default to normal water if "fresnelwater" not found in config
+		if (canDoFresnel && Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fresnelwater")) {
+			canDoFresnel = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fresnelwater");
+		} else {
+			canDoFresnel = false;
+		}
+		
 		if (canDoFresnel)
 		{
 			createFresnelWater(camera, mSceneMgr);

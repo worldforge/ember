@@ -23,12 +23,22 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 
 #include "EmberEntity.h"
-#include "Model.h"
+#include "model/Model.h"
 #include "TerrainGenerator.h"
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
+#include "environment/Water.h"
+#include "environment/Sun.h"
+#include "environment/Sky.h"
+#include "EmberOgre.h"
+#include "Avatar.h"
+#include "AvatarCamera.h"
+
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
@@ -52,8 +62,17 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);
 	mTerrainGenerator->prepareAllSegments(false);
-	mFoliage = new Foliage();
+	mFoliage = new Foliage(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 	mFoliage->generateUnderVegetation(-2, -2, 4);
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage")) {
+		bool vis = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
+		mFoliage->setVisible(vis);
+	}
+	
+	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+
+	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+	mSky = new Sky(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 
 	
 }

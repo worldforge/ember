@@ -30,7 +30,7 @@
 #include "framework/ConsoleBackend.h"
 #include "Avatar.h"
 #include "GUIManager.h"
-#include "Model.h"
+#include "model/Model.h"
 #include "AvatarEmberEntity.h"
 #include "EmberOgre.h"
 

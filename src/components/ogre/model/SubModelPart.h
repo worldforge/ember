@@ -9,8 +9,11 @@ namespace EmberOgre {
 
 class SubModel;
 class Model;
+class ModelDefinition;
+
 
 class SubModelPart{
+friend class ModelDefinition;
 public:
 	typedef std::set<Ogre::SubEntity*> SubEntitySet;
 
