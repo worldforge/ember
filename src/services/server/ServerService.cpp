@@ -293,7 +293,7 @@ namespace dime
     } else if (command==TAKECHAR) {
       if (myPlayer)
       {
-        //myPlayer->takeCharacter();
+        myPlayer->takeCharacter(args);
       }
     } else if (command==LISTCHARS) {
       if (myPlayer)
