@@ -1,3 +1,7 @@
+2005-02-15  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added fragment shader for terrain. I temporarely removed the old splatting method (using many passes), but I have to add that back in in order to provide a fallback for people without shader support.
+
 2005-02-13  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Moved to OGRE 1.0 and CEGUI 0.2.

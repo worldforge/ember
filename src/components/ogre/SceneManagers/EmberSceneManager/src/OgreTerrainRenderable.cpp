@@ -580,12 +580,13 @@ namespace Ogre
 								if ( mMinLevelDistSqr[ level ] < D2 ) {
 									//this is probably temporary
 									//enforce maximum levels of lod for distant tiles
-									Real maxForThisLevel = (level + level) * (64 * 64);
+/*									Real maxForThisLevel = (level + level) * (64 * 64);
 									if (D2 > maxForThisLevel) {
 										 mMinLevelDistSqr[ level ] == maxForThisLevel;
 									} else {
 										mMinLevelDistSqr[ level ] = D2;
-									}
+									}*/
+									mMinLevelDistSqr[ level ] = D2;
 								}
 
 								// Should be save height difference?

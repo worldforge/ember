@@ -105,7 +105,8 @@ float TerrainPage::getMinHeight()
 Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	if (getNumberOfSegmentsPerAxis() == 1) {
-		mMaterial = generateTerrainMaterialSimple();
+		mMaterial = generateTerrainMaterialComplex();
+		//generateTerrainMaterialSimple();
 	} else {
 		mMaterial = generateTerrainMaterialComplex();
 /*		std::vector<const Mercator::Segment::Surfacestore&> surfaceStores;
@@ -176,6 +177,8 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 
 	
 }
+
+
 
 Ogre::MemoryDataStreamPtr TerrainPage::convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor) {
     //int width = getTerrainOptions().pageSize - 1;
@@ -282,6 +285,56 @@ inline int  EmberOgre::TerrainPage::getAlphaTextureSize( ) const
 
 }
 
+void EmberOgre::TerrainPage::fillAlphaLayer(Ogre::MemoryDataStream& finalImage, Ogre::MemoryDataStream& wfImage, unsigned int channel, int startX, int startY) {
+    //int width = getTerrainOptions().pageSize - 1;
+	int bytesPerPixel = 1;
+    int width = 64;
+    int bufferSize = width*width*bytesPerPixel;
+	int finalImageSize = getAlphaTextureSize( );
+//	Ogre::MemoryDataStream chunk(dataStart, 65*65, false);
+//    Ogre::MemoryDataStream* finalChunk = new Ogre::MemoryDataStream(bufferSize);
+    //finalChunk->allocate(bufferSize);
+    Ogre::uchar* finalImagePtr = finalImage.getPtr();
+    Ogre::uchar* wfImagePtr = wfImage.getPtr();
+    long i,j; 
+    long sizeOfOneChannel = width*width;
+
+    Ogre::uchar* start = finalImagePtr + ((startX * 4) + ((startY) * finalImageSize * 4));
+    Ogre::uchar* end = start + (finalImageSize * 4 * 64);//  - (finalImageSize * 4) ;
+	
+//     Ogre::uchar* tempPtr = finalImagePtr + ((startX * 4) + (startY * finalImageSize * 4)) + channel;
+//     for (i = 0; i < width; ++i) {
+//     	for (j = 0; j < width; ++j) {
+//         	Ogre::uchar alpha = *(wfImagePtr++);
+//         	*tempPtr++ = alpha;
+// 			tempPtr++;
+//         	tempPtr++;
+//         	tempPtr++;
+//     		
+//     	}
+//     	++wfImagePtr;
+// 		tempPtr += (finalImageSize - width) * 4;
+//     }   
+
+//position the pointer at the end of data, and starting at the correct channel
+    Ogre::uchar* tempPtr = end + channel + 1;
+    for (i = 0; i < width; ++i) {
+	    tempPtr -= (width * mBytesPerPixel);
+		for (j = 0; j < width; ++j) {
+			Ogre::uchar alpha = *(wfImagePtr + j);
+			*(tempPtr) = alpha;
+			//skip three channels
+			tempPtr += 4;
+
+			
+		}
+		tempPtr -= (finalImageSize * 4);
+    	wfImagePtr += 65;
+    	//++chunkPtr;
+    }
+
+}
+
 Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 { 
  
@@ -299,8 +352,13 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 	
 	Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
 	pass->setLightingEnabled(false);
+	pass->setFragmentProgram("splat3arb");
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+
+	Ogre::TextureUnitState * alphaTextureUnitState = pass->createTextureUnitState();
 	
+	
+		
 	//for convenience we declare these here to be used every time we want to iterate over the segments later on
 	SegmentVector::iterator segmentI_begin = mMercatorSegments.begin();
 	SegmentVector::iterator segmentI_end = mMercatorSegments.end();
@@ -338,12 +396,39 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 		const Mercator::Shader* mercShader = &(surface->m_shader);
 		TerrainShader* shader = mShaderMap[mercShader];
 	    textureUnitState->setTextureName(shader->getTextureName());
+//	    textureUnitState->setTextureName("splat3d.dds");
 	    textureUnitState->setTextureCoordSet(1);
+		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
-  
+
+	
+	//we need an unique name for our alpha texture
+	std::stringstream splatTextureNameSS;
+	splatTextureNameSS << mMaterialName;
+	const Ogre::String splatTextureName = splatTextureNameSS.str();
+	
+	//the format for our alpha texture
+	Ogre::PixelFormat pixelFormat = Ogre::PF_B8G8R8A8;
+
+	ILuint ImageName;
+	ilGenImages( 1, &ImageName );
+	ilBindImage( ImageName );
+	ilTexImage(getAlphaTextureSize() , getAlphaTextureSize(), 1, mBytesPerPixel, IL_BGRA, IL_UNSIGNED_BYTE, 0 );
+	unsigned char * imagePointer = ilGetData();
+	
+	//clear the image
+	memset (imagePointer, 0, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel);
+	
+	Ogre::MemoryDataStream finalChunk = Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel, false);
+	
+
+	
+	
+		  
 	//now loop over all the remaining surfaces, and for each surface create a common alpha image from the different segments
-	int i = 1;
-	for (int i = 1; i < aValidSegment->getSurfaces().size(); ++i) {
+	
+	int numberOfSegmentsToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
+	for (int i = 0; i < numberOfSegmentsToDo; ++i) {
 
 		TerrainShader* shader;
 		
@@ -368,35 +453,36 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 			continue;
 		}*/
 		
-        //we need an unique name for our alpha texture
-		std::stringstream splatTextureNameSS;
-		splatTextureNameSS << mMaterialName << "_" << i;
-		const Ogre::String splatTextureName = splatTextureNameSS.str();
-		
-		//the format for our alpha texture
-		//for some reason we can't use PF_A8
-		Ogre::PixelFormat pixelFormat = Ogre::PF_B8G8R8A8;
-
-		ILuint ImageName;
-		ilGenImages( 1, &ImageName );
-		ilBindImage( ImageName );
-		ilTexImage(getAlphaTextureSize() , getAlphaTextureSize(), 1, mBytesPerPixel, IL_BGRA, IL_UNSIGNED_BYTE, 0 );
-		unsigned char * imagePointer = ilGetData();
-		
-		//clear the image
-		memset (imagePointer, 0, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel);
 		
 		SegmentVector::iterator I = segmentI_begin;
 		
 		for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 			for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
-				if (*I) {
+				if (*I && i < 4) {
 					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[*(I)];
 					surface = *surfaceListI;
 					std::stringstream splatTextureNameSS_;
 					splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
-					Ogre::MemoryDataStreamPtr tempChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), 1);
-	/*				printTextureToImage(tempChunk, splatTextureNameSS_.str(), pixelFormat, 64, 64);*/
+					Ogre::MemoryDataStream tempChunk = Ogre::MemoryDataStream(surface->getData(), 65*65, false);
+					
+/*					if (mPosition.x() == -1 && mPosition.y() == -1 && x == getNumberOfSegmentsPerAxis() - 2 && y == getNumberOfSegmentsPerAxis() - 2) 
+						fillAlphaLayer(*finalChunk, *tempChunk, i, (getNumberOfSegmentsPerAxis() - x + 1) * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);*/
+//					if (mPosition.x() == -1 && mPosition.y() == -1 && x == 0  && y == 0 ) 
+// 					if (x == 1  && y == 1 ) 
+// 						fillAlphaLayer(*finalChunk, *tempChunk, i, (2) * 64, (2) * 64);
+
+
+// 					if (x == 3  && y == 3 ) 
+					//we have to do this strange convertion because the ogre-wf coord convertion is a bit of a mess with the 
+					//fillAlphaLayer(...) method. I don't have time to fix this now.
+					int x_ = (x == (getNumberOfSegmentsPerAxis() - 1)) ? 0 : x + 1;
+					fillAlphaLayer(finalChunk, tempChunk, i, x_ * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
+
+
+
+																		
+/*					Ogre::MemoryDataStreamPtr tempChunk = convertWFAlphaTerrainToOgreFormat(surface->getData(), i - 1);*/
+/*// 					printTextureToImage(tempChunk, splatTextureNameSS_.str(), pixelFormat, 64, 64);
 					
 					ILuint tempImageName;
 					ilGenImages( 1, &tempImageName );
@@ -409,39 +495,85 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 	// 				strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureNameSS_.str() + std::string(".png")).c_str());
 	// 				ilSaveImage(name);
 	
-					ilDeleteImages(1, &tempImageName);
+					ilDeleteImages(1, &tempImageName);*/
 				}
 				++I;
 			}
 		}
-		ilBindImage(ImageName);
-		
-		if (mAlphaMapScale > 1) {
-			//double the size of the image
-			
-			//use filter to smooth everything out
-			iluImageParameter(ILU_FILTER, ILU_SCALE_BSPLINE);
-			iluScale(getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, 1);
+/*		ilBindImage(ImageName);*/
+		if (i < 2) {
+			Ogre::TextureUnitState * splatTextureUnitState = pass->createTextureUnitState();
+			splatTextureUnitState->setTextureName(shader->getTextureName());
+			splatTextureUnitState->setTextureCoordSet(1);
+    		splatTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		}
 		
+
+/*			std::vector<std::list<Mercator::Surface*>::iterator>::iterator Itemp = surfaceListIterators.begin();
+			surface = *(*Itemp);*/
+			//surface = *(mMercatorSegments[0]->getSurfaces().begin());
+/*			pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
+			pass->setLightingEnabled(false);
+			pass->setSelfIllumination(Ogre::ColourValue(1,1,1));*/
+/*
+* 	TODO: implement this in a more efficient manner
+			if (pass->getNumTextureUnitStates() < numberOfTextureUnitsOnCard - 1) {
+				//there's room for two more texture unit states
+				shader->addTextureUnitsToPass(pass, splatTextureName);
+			} else {
+				//we need to use a new pass, else we would run out of texture units
+				pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
+			}
+*/			
+
+//		++textureUnits;
+		
+	}
+	
+	ilBindImage(ImageName);
+		
+	if (mAlphaMapScale > 1) {
+		
+		//double the size of the image
+		
+		//use filter to smooth everything out
+		iluImageParameter(ILU_FILTER, ILU_SCALE_BSPLINE);
+		iluScale(getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, 1);
 		imagePointer = ilGetData();
 		//wrap the image data in a Datachunk
-
-		Ogre::MemoryDataStream* finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * 2) );
-		Ogre::DataStreamPtr temp(finalChunk);
+		//delete finalChunk;
+		finalChunk = Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * mAlphaMapScale) , false);
+	}
 		
-		char name[100];
-		strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureName + std::string(".png")).c_str());
-		ilSaveImage(name);
+	Ogre::DataStreamPtr temp(&finalChunk);
+	
+	char name[100];
+	strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureName + std::string(".png")).c_str());
+	ilSaveImage(name);
+	
+	
+	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", temp, getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
+	temp.setNull();
+	ilDeleteImages(1, &ImageName);
+	alphaTextureUnitState->setTextureName(splatTextureName);
+    alphaTextureUnitState->setTextureCoordSet(0);
+	alphaTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_MIRROR);
+//	delete finalChunk;
 
+/*		Ogre::MemoryDataStream* finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * mAlphaMapScale) );*/
 				
 // 		Ogre::MemoryDataStream finalChunk_(finalChunk, false);
 // 		Ogre::MemoryDataStreamPtr temp_(&finalChunk_);
 //   		printTextureToImage(temp_, splatTextureName, pixelFormat, (getTerrainOptions().pageSize - 1) * 2, (getTerrainOptions().pageSize - 1)*2);
 
-		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", temp, getAlphaTextureSize() * mAlphaMapScale , getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
-		ilDeleteImages(1, &ImageName);
+/*		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", temp, getAlphaTextureSize() * mAlphaMapScale , getAlphaTextureSize() * mAlphaMapScale, pixelFormat);*/
+
 		
+		
+    
+	
+	
+				
 // 		SegmentVector::iterator I = segmentI_begin;
 // 		std::vector<Ogre::DataChunk*> datachunks;
 // 		for(SegmentVector::iterator I = segmentI_begin; I != segmentI_end; ++I) {
@@ -456,27 +588,8 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 //             continue;
 //         }
 		
-
-/*			std::vector<std::list<Mercator::Surface*>::iterator>::iterator Itemp = surfaceListIterators.begin();
-			surface = *(*Itemp);*/
-			//surface = *(mMercatorSegments[0]->getSurfaces().begin());
-			pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
-			pass->setLightingEnabled(false);
-			pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
-/*
- * 	TODO: implement this in a more efficient manner
-			if (pass->getNumTextureUnitStates() < numberOfTextureUnitsOnCard - 1) {
-				//there's room for two more texture unit states
-				shader->addTextureUnitsToPass(pass, splatTextureName);
-			} else {
-				//we need to use a new pass, else we would run out of texture units
-				pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
-			}
-*/			
-
-//		++textureUnits;
     
-    }
+    
    
 	//create all lod levels
 	if (getTerrainOptions().debuglod) {
@@ -499,6 +612,8 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 	}
 	
 	
+	
+	
 		
 
 	
@@ -509,6 +624,7 @@ Ogre::MaterialPtr EmberOgre::TerrainPage::generateTerrainMaterialComplex( )
 //		LayerBlendOperationEx op, LayerBlendSource source1=LBS_TEXTURE, LayerBlendSource source2=LBS_CURRENT, Real arg1=1.0, Real arg2=1.0, Real manualBlend=0.0)
         
         
+	
 	return material;
 
  

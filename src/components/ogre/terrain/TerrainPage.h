@@ -202,6 +202,8 @@ private:
 	*/
 	const unsigned int mAlphaMapScale;
 
+	void fillAlphaLayer(Ogre::MemoryDataStream& image, Ogre::MemoryDataStream& wfImage, unsigned int channel, int startX, int startY);
+
 };
 
 

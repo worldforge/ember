@@ -53,8 +53,8 @@ TerrainGenerator::TerrainGenerator()
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
+//     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
+//     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
 
 
 //    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
