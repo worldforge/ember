@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.12  2003-10-29 18:25:25  aglanor
+ *      Revision 1.13  2003-10-30 07:37:41  aglanor
+ *      2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/services/components/ogre:
+ *              Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
+ *              Moved Ogre response to console commands from the app
+ *              to its own class, ConsoleObjectImpl.
+ *
+ *      Revision 1.12  2003/10/29 18:25:25  aglanor
  *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre/: DimeOgre.(h|cpp):
  *              Added ConsoleObject inheritance, it runs the Quit command.
@@ -160,7 +167,7 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class DimeOgre: virtual public SigC::Object, public dime::ConsoleObject //, public Ogre::ActionListener, public Ogre::MouseListener
+class DimeOgre: virtual public SigC::Object //, public Ogre::ActionListener, public Ogre::MouseListener
 // TODO: the DimeOgre ConsoleObject will be included in a different class
 {
 public:
@@ -297,11 +304,6 @@ public:
         void removedMember(Eris::Entity *e);
 
 	/**
-	 * Receive commands from console
-	 */
-	void runCommand(const std::string &command, const std::string &args);
-
-	/**
 	 * Update the scene animations for all entities
 	 */
 	void updateAnimations(Ogre::Real time);
@@ -429,17 +431,6 @@ protected:
             Ogre::Root::getSingleton().getRenderSystem()->shutdown();
 	}
 	*/
-
-	// TODO: these should be private methods of OgreConsoleListener
-	void quit();
-
-	private:
-
-	// List of Ogre's console commands
-	static const char * const QUIT;
-	static const char * const ADDMEDIA;
-	static const char * const MOVEMEDIA;
-
 
 };
 

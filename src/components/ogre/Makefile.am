@@ -18,7 +18,8 @@ $(top_srcdir)/src/services/logging/libLoggingService.a \
 $(top_srcdir)/src/framework/libFramework.a 
 
 
-DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp
+DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
+		   ConsoleObjectImpl.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.27  2003-10-29 18:25:25  aglanor
+ *      Revision 1.28  2003-10-30 07:37:41  aglanor
+ *      2003-10-30 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *              * src/services/components/ogre:
+ *              Makefile.am, DimeOgre.(h|cpp), ConsoleObjectImpl.(h|cpp):
+ *              Moved Ogre response to console commands from the app
+ *              to its own class, ConsoleObjectImpl.
+ *
+ *      Revision 1.27  2003/10/29 18:25:25  aglanor
  *      2003-10-29 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * src/services/components/ogre/: DimeOgre.(h|cpp):
  *              Added ConsoleObject inheritance, it runs the Quit command.
@@ -225,6 +232,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "MathConverter.h"
 #include "InputManager.h"
 #include "Console.h"
+#include "ConsoleObjectImpl.h"
 
 
 // ------------------------------
@@ -277,12 +285,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 // a lot easier. It automatically sets up all the main objects and allows you to
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
-
-
-	// List of Ogre's console commands
-	const char * const DimeOgre::QUIT = "quit";
-	const char * const DimeOgre::ADDMEDIA = "addmedia";
-	const char * const DimeOgre::MOVEMEDIA = "movemedia";
 
 
 
@@ -447,12 +449,9 @@ void DimeOgre::createFrameListener(void)
 	InputManager::getSingleton().addKeyListener(&(Console::getSingleton()));
 	fprintf(stderr, "TRACE - INPUT MANAGER ADDED - NOW GONNA ADD CONSOLE FRAME LISTENER\n");
 	mRoot->addFrameListener(&(Console::getSingleton()));
+	ConsoleObjectImpl::getSingleton();
 	//Console::getSingleton().write("Welcome to Dime / Ember!\n");
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENERS\n");
-
-    dime::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
-    dime::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
-    dime::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
 }
 
 void DimeOgre::createCamera(void)
@@ -703,16 +702,6 @@ void DimeOgre::addedMember(Eris::Entity *e)
 void DimeOgre::removedMember(Eris::Entity *e)
 {}
 
-void DimeOgre::runCommand(const std::string &command, const std::string &args)
-{
-	if(command == QUIT){
-		dime::ConsoleBackend::getMainConsole()->pushMessage("Bye");
-		quit();
-	} else {
-		dime::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
-	}
-
-}
 
 void DimeOgre::updateAnimations(Ogre::Real time)
 {
@@ -722,12 +711,6 @@ void DimeOgre::updateAnimations(Ogre::Real time)
 	animState->setEnabled(true);
 	animState->addTime(time);
 
-}
-
-
-void DimeOgre::quit()
-{
-	mRoot->shutdown();
 }
 
 
