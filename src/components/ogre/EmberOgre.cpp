@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.16  2003-07-12 11:39:59  alriddoch
+ *      Revision 1.17  2003-08-28 17:12:08  aglanor
+ *      fixed typo
+ *
+ *      Revision 1.16  2003/07/12 11:39:59  alriddoch
  *      <aglanor from alistair's machine>
  *      - fixed pig movement, and on-game chat is now shown on screen
  *
@@ -575,9 +578,7 @@ void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
 
 void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {
-	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR " 
-}
-<< e->getID() << std::endl;
+	std::cout << "TRACE - ENTITY CHANGED - PROCESSING CHANGES FOR "  << e->getID() << std::endl;
 	/*
         TODO: ENTITY CHANGES HERE
 	*/
