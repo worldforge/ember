@@ -1,12 +1,15 @@
 /*
-DimeOgreFrameListener.h by Miguel Guzman (Aglanor)
+PlayerFrameListener.h by Miguel Guzman (Aglanor)
 Based on OGRE's ExampleFrameListener.h
 (Follows ExampleFrameListener.h copyright notice)
 
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.1  2003-04-24 19:42:09  aglanor
+ *      Revision 1.2  2003-04-24 20:02:08  aglanor
+ *      Makefile and include changes after the renaming
+ *
+ *      Revision 1.1  2003/04/24 19:42:09  aglanor
  *      2003-04-24 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * components/ogre: big cleanup. Files renamed.
  *
@@ -58,8 +61,8 @@ Description: Defines an example frame listener which responds to frame events.
 -----------------------------------------------------------------------------
 */
 
-#ifndef __DimeOgreFrameListener_H__
-#define __DimeOgreFrameListener_H__
+#ifndef __PlayerFrameListener_H__
+#define __PlayerFrameListener_H__
 
 #include "Ogre.h"
 #include "OgreKeyEvent.h"
@@ -67,11 +70,11 @@ Description: Defines an example frame listener which responds to frame events.
 
 using namespace Ogre;
 
-class DimeOgreFrameListener: public FrameListener, public KeyListener
+class PlayerFrameListener: public FrameListener, public KeyListener
 {
 public:
 	// Constructor takes a RenderWindow because it uses that to determine input context
-	DimeOgreFrameListener(RenderWindow* win, Camera* cam, bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
+	PlayerFrameListener(RenderWindow* win, Camera* cam, bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
 	{
 		mUseBufferedInputKeys = useBufferedInputKeys;
 		mUseBufferedInputMouse = useBufferedInputMouse;
@@ -100,7 +103,7 @@ public:
 		mTimeUntilNextToggle = 0;
 	}
 
-	virtual ~DimeOgreFrameListener()
+	virtual ~PlayerFrameListener()
 	{
 		if (mInputTypeSwitchingOn)
 		{

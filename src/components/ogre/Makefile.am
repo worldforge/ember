@@ -1,7 +1,7 @@
 INCLUDES=-I$(top_srcdir)/src
-bin_PROGRAMS = OgreApp
+bin_PROGRAMS = DimeOgre
 
-OgreApp_LDADD = $(top_srcdir)/src/services/gui/libGuiService.a \
+DimeOgre_LDADD = $(top_srcdir)/src/services/gui/libGuiService.a \
 $(top_srcdir)/src/services/gui/widget/libGuiServiceWidget.a \
 $(top_srcdir)/src/services/config/libConfigService.a \
 $(top_srcdir)/src/services/input/libInputService.a \
@@ -18,7 +18,7 @@ $(top_srcdir)/src/framework/libFramework.a \
 $(top_srcdir)/src/services/libServices.a
 
 
-OgreApp_SOURCES = OgreApp.cpp
+DimeOgre_SOURCES = DimeOgre.cpp
 
 EXTRA_DIST = plugins.cfg  resources.cfg  terrain.cfg
 

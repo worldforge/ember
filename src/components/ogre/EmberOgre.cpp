@@ -23,7 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.1  2003-04-24 19:42:09  aglanor
+ *      Revision 1.2  2003-04-24 20:02:08  aglanor
+ *      Makefile and include changes after the renaming
+ *
+ *      Revision 1.1  2003/04/24 19:42:09  aglanor
  *      2003-04-24 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * components/ogre: big cleanup. Files renamed.
  *
@@ -68,7 +71,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include OGRE dime client files
 // ------------------------------
-#include "DimeOgreFrameListener.h"
+#include "DimeOgre.h"
+#include "PlayerFrameListener.h"
 #include "OgreGameView.h"
 
 
@@ -121,7 +125,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // a lot easier. It automatically sets up all the main objects and allows you to
 // just override the bits you want to instead of writing it all from scratch.
 // ----------------------------------------------------------------------------
-#include "OgreApp.h"
+
 
 
 // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
@@ -228,7 +232,7 @@ void OgreApplication::createScene(void)
 	pCursorGui->setMaterialName("Cursor/default");
 }
 
-void OgreApplication::createFrameListener(void)
+void DimeOgre::createFrameListener(void)
 {
 
 	fprintf(stderr, "TRACE - CREATING FRAME LISTENER\n");
@@ -257,7 +261,7 @@ void OgreApplication::createFrameListener(void)
 #endif
 }
 
-void OgreApplication::createCamera(void)
+void DimeOgre::createCamera(void)
 {
   // Create the camera
   mCamera = mSceneMgr->createCamera("PlayerCam");
@@ -274,7 +278,7 @@ void OgreApplication::createCamera(void)
 
 }
 
-void OgreApplication::initializeDimeServices(void)
+void DimeOgre::initializeDimeServices(void)
 {
 	// Initialize dime services
 
@@ -319,7 +323,7 @@ void OgreApplication::initializeDimeServices(void)
 }
 
 
-void OgreApplication::connectWorldSignals(void) {
+void DimeOgre::connectWorldSignals(void) {
 
     /* Find out where the Eris world instance resides... */
     Eris::World *w = dime::DimeServices::getInstance()->getServerService()->getWorld();
@@ -339,7 +343,7 @@ void OgreApplication::connectWorldSignals(void) {
 
 /* Eris::World entity signals */
 
-void OgreApplication::entityCreate( Eris::Entity *e )
+void DimeOgre::entityCreate( Eris::Entity *e )
 {
 
 	// create the ogre entity
@@ -377,32 +381,32 @@ void OgreApplication::entityCreate( Eris::Entity *e )
 }
 
 
-void OgreApplication::entityDelete( Eris::Entity *e )
+void DimeOgre::entityDelete( Eris::Entity *e )
 {}
 
-void OgreApplication::entered( Eris::Entity *e )
+void DimeOgre::entered( Eris::Entity *e )
 {}
 
-void OgreApplication::appearance( Eris::Entity *e )
+void DimeOgre::appearance( Eris::Entity *e )
 {
 	fprintf(stderr, "TRACE - APPEARANCE - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
 }
 
-void OgreApplication::disappearance( Eris::Entity *e )
+void DimeOgre::disappearance( Eris::Entity *e )
 {}
 
 /* Eris::Entity signals */
 
-void OgreApplication::recontainered( Eris::Entity *e, Eris::Entity *c )
+void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
 {}
 
-void OgreApplication::changed( const Eris::StringSet &s, Eris::Entity *e  )
+void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
 {}
 
-void OgreApplication::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
+void DimeOgre::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
 {}
 
-void OgreApplication::say( const std::string &s, Eris::Entity *e )
+void DimeOgre::say( const std::string &s, Eris::Entity *e )
 {
 	// TODO: fix this one
 	/*
@@ -410,13 +414,13 @@ void OgreApplication::say( const std::string &s, Eris::Entity *e )
 	*/
 }
 
-void OgreApplication::addedMember(Eris::Entity *e)
+void DimeOgre::addedMember(Eris::Entity *e)
 {}
 
-void OgreApplication::removedMember(Eris::Entity *e)
+void DimeOgre::removedMember(Eris::Entity *e)
 {}
 
-void OgreApplication::runCommand(const std::string &command, const std::string &args)
+void DimeOgre::runCommand(const std::string &command, const std::string &args)
 {
 }
 
@@ -437,7 +441,7 @@ int main(int argc, char **argv)
 #endif
 {
     // Create application object
-    OgreApplication app;
+    DimeOgre app;
 
 	// Initialize all dime services needed for this application
 	app.initializeDimeServices();

@@ -24,7 +24,10 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.1  2003-04-24 19:42:09  aglanor
+ *      Revision 1.2  2003-04-24 20:02:08  aglanor
+ *      Makefile and include changes after the renaming
+ *
+ *      Revision 1.1  2003/04/24 19:42:09  aglanor
  *      2003-04-24 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *              * components/ogre: big cleanup. Files renamed.
  *
@@ -56,8 +59,8 @@ Description: Base class for all the OGRE examples
 -----------------------------------------------------------------------------
 */
 
-#ifndef __OgreApplication_H__
-#define __OgreApplication_H__
+#ifndef __DimeOgre_H__
+#define __DimeOgre_H__
 
 #include <Ogre.h>
 #include <OgreConfigFile.h>
@@ -101,17 +104,17 @@ class CameraFrameListener;
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
-class OgreApplication : virtual public SigC::Object, public ActionListener, public MouseListener
+class DimeOgre: virtual public SigC::Object, public ActionListener, public MouseListener
 {
 public:
     /// Standard constructor
-    OgreApplication()
+    DimeOgre()
     {
         mFrameListener = 0;
         mRoot = 0;
     }
     /// Standard destructor
-    virtual ~OgreApplication()
+    virtual ~DimeOgre()
     {
         if (mFrameListener)
             delete mFrameListener;
