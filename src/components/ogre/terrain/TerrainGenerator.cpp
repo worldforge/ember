@@ -20,6 +20,7 @@
 
 #include "MathConverter.h"
 #include <OgreStringConverter.h>
+#include <OgreRenderSystemCapabilities.h>
 #include "services/logging/LoggingService.h"
 #include "DimeTerrainRenderable.h"
 #include "TerrainShader.h"
@@ -132,11 +133,10 @@ bool TerrainGenerator::isValidTerrainAt(int x, int y)
 
 void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long segmentX, long segmentY) {
 	
-	
-//    m_seaTexture = RenderSystem::getInstance().requestTexture("water");
-//    m_shadowTexture = RenderSystem::getInstance().requestTexture("shadow");
-		
-		
+ 
+	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
+
+			
 	segment->populateNormals();
 	segment->populateSurfaces();
 	
@@ -148,6 +148,7 @@ void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long
 	Ogre::Material* material = sceneManager->createMaterial(materialName);
 	Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
 	//pass->setLightingEnabled(false);
+	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	
     
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
@@ -181,73 +182,23 @@ void TerrainGenerator::generateTerrainMaterials(Mercator::Segment* segment, long
 		createAlphaTexture(splatTextureName, *I);
 		
 
-
-/*
-        Ogre::ushort width = 64;
-        int bufferSize = width*width;
-		Ogre::DataChunk chunk((*I)->getData(), (width + 1) * (width + 1));
-        Ogre::DataChunk finalChunk;
-        finalChunk.allocate(bufferSize);
-        Ogre::uchar* finalPtr = finalChunk.getPtr();
-        Ogre::uchar* chunkPtr = chunk.getPtr();
-        long i,j; 
-        long sizeOfOneChannel = width*width;
-        Ogre::uchar* tempPtr = finalPtr + (width*width);
-        for (i = 0; i < width; ++i) {
-        	tempPtr = tempPtr - (width);
-        	for (j = 0; j < width; ++j) {
-	        	Ogre::uchar color = *(chunkPtr++);
-	        	*(tempPtr + j) = color;        		
-        	}
-        	++chunkPtr;
-        }
-        
-        */
-        
-
- 
-
-
-		//Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual (splatTextureName, Ogre::TEX_TYPE_2D, width, width, 5, Ogre::PF_A8R8G8B8, Ogre::TU_DEFAULT);
-		//splatTexture->loadRawData(finalChunk, width, width, PF_A8R8G8B8);
-		//Ogre::Root::getSingletonPtr()->getTextureManager()->add(splatTexture);
-// 		Ogre::Texture* splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, chunk, width, width, PF_A8);
-//		Ogre::Texture* testTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->load("alpha_splat_a.tga");
-//		Ogre::Image* image = new Ogre::Image();
-//		image->loadRawData(chunk, width, width, PF_A8);
-//		bool hasAlpha = image->getHasAlpha();
-//		Ogre::PixelFormat format = image->getFormat();
-		
 		
 		{
 			const Mercator::Shader* mercShader = &((*I)->m_shader);
 			TerrainShader* shader = mShaderMap[mercShader];
-			shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
-			//shader->addTextureUnitsToPass(pass, splatTextureName, textureNames[texNo]);
+			pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
+/*
+			if (pass->getNumTextureUnitStates() < numberOfTextureUnitsOnCard - 1) {
+				//there's room for two more texture unit states
+				shader->addTextureUnitsToPass(pass, splatTextureName);
+			} else {
+				//we need to use a new pass, else we would run out of texture units
+				pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
+			}
+*/			
 		}
-/*        
- 		Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
-        textureUnitStateSplat->setTextureName(splatTextureName);
-        //textureUnitStateSplat->setTextureName("alpha_splat_a.tga");
-        
-        textureUnitStateSplat->setTextureCoordSet(0);
-		textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
-		textureUnitStateSplat->setAlphaOperation(LBX_SOURCE1, LBS_TEXTURE, LBS_TEXTURE);
-		textureUnitStateSplat->setColourOperationEx(LBX_SOURCE1, LBS_CURRENT, LBS_CURRENT);
-
-		Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-        textureUnitState->setTextureName(textureNames[texNo]);
-        textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-        textureUnitState->setTextureCoordSet(1);
-		textureUnitState->setColourOperationEx(LBX_BLEND_CURRENT_ALPHA, LBS_TEXTURE, LBS_CURRENT);
-*/
 		++textureUnits;
-  
-  
-   
-   
-   
-   
+    
     }
    
 	//store our new material in the materialStore for later retrieval   
