@@ -90,7 +90,7 @@ public:
     
     FT_Bitmap *getPixmapPointer()
     {
-        return& myPixmap;
+        return &myPixmap;
     }
     
     

@@ -75,7 +75,7 @@ private:
     //std::map<char, Glyph *> myGlyphs;
     //std::map<char, Glyph *>::iterator myCurrentGlyph;
     Glyph *myCurrentGlyph;
-    Glyph myGlyphCache[256];
+    std::map<Uint16, Glyph*> myGlyphCache;
     Glyph myGlyphScratch;
     //----------------------------------------------------------------------
     // private member functions.

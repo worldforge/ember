@@ -42,6 +42,7 @@ void dime::FontRenderer::updateTextBlended()
         }
         width = glyph->getPixmap().width;
         src = (Uint8 *)glyph->getPixmap().buffer;
+        assert(src);
         for ( row = 0; row < glyph->getPixmap().rows; ++row ) {
             dst = (Uint32*) textbuf->pixels +
                 (row+glyph->getYOffset()) * textbuf->pitch/4 +

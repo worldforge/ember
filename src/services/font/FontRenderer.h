@@ -91,10 +91,11 @@ class FontRenderer
     Type myType;
     std::string myText;
     SDL_Surface *myTextSurface;
+    Font *myFont;
     Color myColor;
     Rectangle myRectangle;
     bool myUpdate;
-    Font *myFont;
+
 
 
 
@@ -113,8 +114,9 @@ class FontRenderer
      *@param text the text for this FontRenderer
      *@param color the color for the text.
      */
-    FontRenderer(const Type type, const std::string text, const Color &color, const Rectangle &rectangle)
-        : myType(type), myText(text), myTextSurface(NULL), myColor(color),  myUpdate(false), myRectangle(rectangle), myFont(NULL)
+
+    FontRenderer(const Type type, const std::string text, Font *font, const Color &color, const Rectangle &rectangle)
+        : myType(type), myText(text), myTextSurface(NULL), myFont(font), myColor(color),  myUpdate(false), myRectangle(rectangle)
     {
         updateTextBlended();
     }

@@ -76,8 +76,8 @@ class Label : public Widget
      * NOTE: This is the text stored by the static widget
      */
     std::string  myText;
-	FontRenderer myFont;
-
+    FontRenderer myFontRenderer;
+    
 
     //======================================================================
     // Public Methods
@@ -90,21 +90,26 @@ class Label : public Widget
     /**
      * Creates a new Label using default values.
      */
-	Label() : Widget(), myFont(FontRenderer::BLENDED, "", Color(255,255,255), Rectangle(0,0,0,0))
+    Label() 
+        : Widget(),
+          myFontRenderer(FontRenderer::BLENDED, "", dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf", 20), Color(255,255,255), Rectangle(0,0,0,0))
     {
     }
-
+    
     /**
      * Creates a new Label using rect and text.
      */
-    Label(std::string text, Rectangle rect) : Widget(rect), myText(text), myFont(FontRenderer::BLENDED, text, Color(255,255,255), rect)
+    Label(std::string text, Rectangle rect) 
+        : Widget(rect), 
+          myText(text),
+          myFontRenderer(FontRenderer::BLENDED, text, dime::FontService::getInstance()->loadFont("../../bin/nasal.ttf", 20), Color(255,255,255), rect)
     {
     }
 
     /**
      * Copy constructor.
      */
-    Label( const Label &source ) : myFont(source.myFont)
+    Label( const Label &source ) : myFontRenderer(source.myFontRenderer)
     {
         // Use assignment operator to do the copy
         // NOTE: If you need to do custom initialization in the constructor this may not be enough.
@@ -172,7 +177,7 @@ class Label : public Widget
 	 * Sets the font used to draw this Widget
 	 */
 	virtual void setFont( const FontRenderer &font ) {
-		myFont = font;
+		myFontRenderer = font;
 	}
 
 

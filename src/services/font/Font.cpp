@@ -23,26 +23,27 @@
 #define FT_CEIL(X)	(((X + 63) & -64) / 64)
 bool dime::Font::getGlyphMetrics(Uint16 ch, int* minx, int* maxx, int* miny, int* maxy, int* advance)
 {
-	if(!findGlyph( ch))
+    Glyph *glyph = findGlyph(ch);
+	if(glyph)
         {
             return false;
         }
     else
         {
             if ( minx ) {
-                *minx = myCurrentGlyph->getMinX();
+                *minx = glyph->getMinX();
             }
             if ( maxx ) {
-                *maxx =myCurrentGlyph->getMaxX();
+                *maxx =glyph->getMaxX();
             }
             if ( miny ) {
-                *miny = myCurrentGlyph->getMinY();
+                *miny = glyph->getMinY();
             }
             if ( maxy ) {
-                *maxy = myCurrentGlyph->getMaxY();
+                *maxy = glyph->getMaxY();
             }
             if ( advance ) {
-                *advance = myCurrentGlyph->getYAdvance();
+                *advance = glyph->getYAdvance();
             }
         }
     return true;
@@ -51,23 +52,24 @@ bool dime::Font::getGlyphMetrics(Uint16 ch, int* minx, int* maxx, int* miny, int
 
 dime::Glyph *dime::Font::findGlyph(Uint16 ch)
 {
-    bool retval = false;
-   if( ch < 256 ) {
-       myCurrentGlyph = &myGlyphCache[ch];
-   } else {
-       if ( myGlyphScratch.getCached() != ch ) {
-           //flushGlyph( &myGlyphScratch );
-       }
-       myCurrentGlyph = &myGlyphScratch;
-   }
-   
-   retval = loadGlyph( ch, myCurrentGlyph );
-   if(!retval) 
-       {
-           return NULL;
-       }
-   
-   return myCurrentGlyph;
+    std::map<Uint16, Glyph*>::iterator search;
+    search = myGlyphCache.find(ch);
+    if(search == myGlyphCache.end())
+        {
+            Glyph *newGlyph = new Glyph();
+            bool retval = loadGlyph(ch, newGlyph);
+            if(retval)
+                {
+                    return NULL;
+                }
+            
+            myGlyphCache[ch] = newGlyph;
+            return newGlyph;
+        }
+    else 
+        {
+            return search->second;
+        }
 }
 
 bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
@@ -130,9 +132,10 @@ bool dime::Font::loadGlyph(Uint16 ch, dime::Glyph *cached)
     }
     /* Copy over information to cache */
     src = &glyph->bitmap;
-    dst = cached->getPixmapPointer();
+    dst = cached->getPixmapPointer(); 
     memcpy( dst, src, sizeof( *dst ) );
     
+   
     /* Adjust for bold and italic text */
     if( myStyle & STYLE_BOLD ) {
         int bump = myGlyphOverhang;
@@ -201,12 +204,12 @@ bool dime::Font::sizeText(const char *text, int *w, int *h)
     /* Load each character and sum it's bounding box */
     x= 0;
     for ( ch=text; *ch; ++ch ) {
-        if(!findGlyph(*ch))
+        glyph = findGlyph(*ch);
+        if(glyph)
         {
             return false;
         }
-           
-        glyph = myCurrentGlyph;
+        
         z = x + glyph->getMinX();
         if ( minx > z ) {
             minx = z;
