@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.11  2003-01-05 22:13:46  aglanor
+ *      Revision 1.12  2003-01-06 03:48:20  aglanor
+ *      2003-01-06 Miguel Guzman <aglanor [at] telefonica [dot] net>
+ *      	* OgreApp.cpp/h: dual mode for the GUI: press 'H' to display
+ *      	the GUI and use the mouse to click on it.
+ *      	Press 'H' again to hide it and return to fullscreen mouseview.
+ *
+ *      Revision 1.11  2003/01/05 22:13:46  aglanor
  *      2003-01-05 Miguel Guzman <aglanor [at] telefonica [dot] net>
  *      	* OgreApp.cpp/h: added basic GUI elements.
  *      	Now OgreApp inherits from ogre::ActionListener
@@ -125,8 +131,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 	    std::cerr << ctm->tm_hour << ":";
 	    std::cerr.width(2);
 	    std::cerr <<  ctm->tm_min << ":";
-	    std::cerr.width(2);			
-	    std::cerr << ctm->tm_sec << "] ";			
+	    std::cerr.width(2);
+	    std::cerr << ctm->tm_sec << "] ";
 	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
 
             if(importance == dime::LoggingService::CRITICAL)
@@ -159,8 +165,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 class TerrainListener : public BaseFrameListener
 {
-  public:
-    TerrainListener(RenderWindow* win, Camera* cam) :BaseFrameListener(win, cam) { };
+
+	public:
+		TerrainListener(RenderWindow* win, Camera* cam) :BaseFrameListener(win, cam) { };
 
  // Override frameStarted event to process that (don't care about frameEnded)
     bool frameStarted(const FrameEvent& evt)
@@ -169,7 +176,6 @@ class TerrainListener : public BaseFrameListener
         float rotScale;
         // local just to stop toggles flipping too fast
         static Real timeUntilNextToggle = 0;
-
         if (timeUntilNextToggle >= 0)
             timeUntilNextToggle -= evt.timeSinceLastFrame;
 
@@ -245,16 +251,9 @@ class TerrainListener : public BaseFrameListener
             return false;
         }
 
-        // Rotate view by mouse relative position
-        float rotX, rotY;
-        rotX = -mInputDevice->getMouseRelativeX() * 0.13;
-        rotY = -mInputDevice->getMouseRelativeY() * 0.13;
 
 
-        // Make all the changes to the camera
-        // Note that YAW direction is around a fixed axis (freelook stylee) rather than a natural YAW (e.g. airplane)
-        mCamera->yaw(rotX);
-        mCamera->pitch(rotY);
+        // Make position changes to the camera
         mCamera->moveRelative(vec);
 
         // Rotate scene node if required
@@ -291,6 +290,99 @@ class TerrainListener : public BaseFrameListener
 
 };
 
+// Listens to the mouse - can switch between buffered and unbuffered mode
+class MouseFrameListener : public BaseFrameListener
+{
+private:
+	bool mBuffered;
+
+	EventProcessor* mEventProcessor;
+
+public:
+
+	MouseFrameListener(RenderWindow* win, Camera* cam, bool buffered = false) : BaseFrameListener(win, cam)
+	{
+		mBuffered = buffered;
+	}
+
+	~MouseFrameListener()
+	{
+		if(mEventProcessor!=NULL)
+			delete mEventProcessor;
+	}
+
+	bool frameStarted(const FrameEvent& evt)
+	{
+		// local just to stop toggles flipping too fast
+        static Real timeUntilNextToggle = 0;
+        if (timeUntilNextToggle >= 0)
+            timeUntilNextToggle -= evt.timeSinceLastFrame;
+
+
+			// Copy the current state of the input devices
+			mInputDevice->capture();
+
+/*
+			if(mInputDevice->isKeyDown(Ogre::KC_H) && timeUntilNextToggle <= 0) {
+				if(mBuffered) {
+					mBuffered = false;
+					fprintf(stderr, "TRACE - BUFFERED MODE ON\n");
+					timeUntilNextToggle = 1;
+				} else {
+					mBuffered = true;
+
+					fprintf(stderr, "TRACE - BUFFERED MODE OFF\n");
+					timeUntilNextToggle = 1;
+				}
+			}
+*/
+
+		if(mBuffered) {
+
+			if(mInputDevice->isKeyDown(Ogre::KC_H) && timeUntilNextToggle <= 0) {
+				Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
+				o->hide();
+				//delete mEventProcessor;
+				mBuffered = false;
+				fprintf(stderr, "TRACE - BUFFERED MODE OFF\n");
+				timeUntilNextToggle = 1;
+			}
+
+		} else { // not buffered: we can mouselook
+
+			if(mInputDevice->isKeyDown(Ogre::KC_H) && timeUntilNextToggle <= 0) {
+				Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("SS/Setup/HostScreen/Overlay");
+				o->show();
+				//OverlayManager::getSingleton().createCursorOverlay();
+
+//            	OverlayManager::getSingleton().createCursorOverlay();
+
+		mEventProcessor = new EventProcessor();
+		mEventProcessor->initialise(mWindow);
+		OverlayManager::getSingleton().createCursorOverlay();
+		mEventProcessor->startProcessingEvents();
+
+				mBuffered = true;
+				fprintf(stderr, "TRACE - BUFFERED MODE ON\n");
+				timeUntilNextToggle = 1;
+			}
+
+			// Rotate view by mouse relative position
+        	float rotX, rotY;
+        	rotX = -mInputDevice->getMouseRelativeX() * 0.13;
+        	rotY = -mInputDevice->getMouseRelativeY() * 0.13;
+			mCamera->yaw(rotX);
+			mCamera->pitch(rotY);
+
+		}
+
+
+
+			return true;
+	}
+
+};
+
 // TODO: find a proper way to do all this stuff (Aglanor)
 class DimeFrameListener : public BaseFrameListener
 {
@@ -299,29 +391,30 @@ private:
 
 	OgreApplication* mOgreApplication;
 
+
 public:
 
 	DimeFrameListener(RenderWindow* win, Camera* cam, OgreApplication* app) : BaseFrameListener(win, cam)
 	{
 		mOgreApplication = app;
 	}
-	
+
 	~DimeFrameListener() {}
 
 	bool frameStarted(const FrameEvent& evt)
 	{
-	
+
 		// local just to stop toggles flipping too fast
         static Real timeUntilNextToggle = 0;
         if (timeUntilNextToggle >= 0)
             timeUntilNextToggle -= evt.timeSinceLastFrame;
 
 
-			// Eris polling
+// Eris polling
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
-			Eris::PollDefault::poll();
+		Eris::PollDefault::poll();
 #endif
 
 		// Copy the current state of the input devices
@@ -354,7 +447,7 @@ public:
 			timeUntilNextToggle = 1;
 			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
 			mOgreApplication->connectWorldSignals();
-
+			timeUntilNextToggle = 1;
 		}
 
 
@@ -487,27 +580,30 @@ void OgreApplication::createScene(void)
 	at->addActionListener(this);
 	at = static_cast<ButtonGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/Exit"));
 	at->addActionListener(this);
-	o->show();
-	
-			ListChanger* list = static_cast<ListGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/AvailableGamesList"));
 
-		list->addListItem(new StringResource("test1"));
-		list->addListItem(new StringResource("test2"));
 
-		(GuiManager::getSingleton().getGuiElement("Core/CurrFps"))->addMouseListener(this);
+	ListChanger* list = static_cast<ListGuiElement*>(GuiManager::getSingleton().getGuiElement("SS/Setup/HostScreen/AvailableGamesList"));
 
-		GuiContainer* pCursorGui = OverlayManager::getSingleton().getCursorGui();
-		pCursorGui->setMaterialName("Cursor/default");
+	list->addListItem(new StringResource("test1"));
+	list->addListItem(new StringResource("test2"));
+
+	(GuiManager::getSingleton().getGuiElement("Core/CurrFps"))->addMouseListener(this);
+
+	GuiContainer* pCursorGui = OverlayManager::getSingleton().getCursorGui();
+	pCursorGui->setMaterialName("Cursor/default");
 }
 
 void OgreApplication::createFrameListener(void)
 {
-  mFrameListener= new TerrainListener(mWindow, mCamera);
-  mRoot->addFrameListener(mFrameListener);
-  CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
-  mRoot->addFrameListener(cameraFrameListener);
-  DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera, this);
-  mRoot->addFrameListener(dimeFrameListener);
+	MouseFrameListener* mouseFrameListener = new MouseFrameListener(mWindow, mCamera, false);
+	mRoot->addFrameListener(mouseFrameListener);
+	mFrameListener= new TerrainListener(mWindow, mCamera);
+	mRoot->addFrameListener(mFrameListener);
+	CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
+	mRoot->addFrameListener(cameraFrameListener);
+	DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera, this);
+	mRoot->addFrameListener(dimeFrameListener);
+
 #if 0
     CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
     mRoot->addFrameListener(cameraRotator);
