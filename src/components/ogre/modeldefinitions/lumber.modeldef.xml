@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="log" usescaleof="height">
+  <submodels>
+    <submodel mesh="3d_objects/plants/tree/models/log/tree_log.mesh" >
+      <parts>
+        <part name="log" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="wall">
+  <submodels>
+    <submodel mesh="3d_objects/items/building_element/models/standard_wall/standard_wall.mesh">
+      <parts>
+        <part name="wall" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<model name="hammer" >
+  <submodels>
+    <submodel mesh="3d_objects/items/tool/models/hammer/hammer.mesh">
+      <parts>
+        <part name="Hammer" show="true" />
+      </parts>
+    </submodel>
+  </submodels>
+</model>

@@ -1,5 +1,9 @@
 2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* added various new models
+
+2005-02-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* moved widgets to a separate object archive
 	* added double click actions to server browser and server widget
 	* mask password
