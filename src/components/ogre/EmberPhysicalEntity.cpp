@@ -176,6 +176,7 @@ void DimePhysicalEntity::handleMove()
 	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
 }
 
+/*
 void DimePhysicalEntity::handleTalk(const std::string &msg)
 {
 	
@@ -186,6 +187,7 @@ void DimePhysicalEntity::handleTalk(const std::string &msg)
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
 	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
+*/
 
 void DimePhysicalEntity::setVisible(bool vis)
 {

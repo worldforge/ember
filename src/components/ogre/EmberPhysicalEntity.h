@@ -63,7 +63,7 @@ public:
 	
 	/* from eris 1.2 */
 	virtual void handleMove();
-	virtual void handleTalk(const std::string &msg);
+//	virtual void handleTalk(const std::string &msg);
 // not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
 	/// update the container of this entity (may be NULL)
 //	virtual void setContainer(Entity *pr);

@@ -45,7 +45,7 @@ public:
 	
 	
 	/*Eris methods, see Eris::Entity.h for documentation */
-	virtual void handleTalk(const std::string &msg);
+//	virtual void handleTalk(const std::string &msg);
 	virtual void handleMove();
 	virtual void addMember(Entity *e);
 	virtual void rmvMember(Entity *e);

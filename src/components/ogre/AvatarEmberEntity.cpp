@@ -57,6 +57,7 @@ void AvatarDimeEntity::handleMove()
 //	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 }
 
+/*
 void AvatarDimeEntity::handleTalk(const std::string &msg)
 {
 	std::string message = "<";
@@ -67,7 +68,7 @@ void AvatarDimeEntity::handleTalk(const std::string &msg)
 	std::cout << "TRACE - AVATAR SAYS: [" << message << "]\n" << std::endl;
 	dime::ConsoleBackend::getMainConsole()->pushMessage(message);
 }
-
+*/
 /*
 void AvatarDimeEntity::setVisible(bool vis)
 {
