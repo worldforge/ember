@@ -22,6 +22,7 @@
 // Include headers from the current project here
 #include <services/test/TestService.h>
 #include <services/LoggingService.h>
+
 // Include custom library headers here
 
 // Include system headers here
@@ -41,7 +42,7 @@ namespace main {
  * Example: <p>
  * <code>
  *
- *   DimeServices.getInstance()->getLoggingService()->log( message );  <br/>
+ *   DimeServices.getInstance()->getLoggingService()->log( ... );  <br/>
  *   ... = DimeServices.getInstance()->getMetaServerService()->getMetaServerList();
  *
  * </code>
@@ -80,7 +81,7 @@ class DimeServices
     dime::services::LoggingService *myLoggingService;
 
     /**
-     * This variable is used to keep track of the next free ID number for a new gizmo.
+     * The DimeServices singleton instance.
      */
     static DimeServices *theInstance;
 
@@ -112,16 +113,15 @@ class DimeServices
      */
     static DimeServices *getInstance()
     {
-        if(theInstance) 
-            {
-                return theInstance;
-            }
-        
+        if( theInstance )
+        {
+            return theInstance;
+        }
         else
-            {
-                theInstance = new DimeServices();
-                return theInstance;
-            }
+        {
+            theInstance = new DimeServices();
+            return theInstance;
+        }
     }
 
 
@@ -138,7 +138,7 @@ class DimeServices
     }
 
     /**
-     * returns an instance of the LoggingService
+     * Returns an instance of the LoggingService
      */
     dime::services::LoggingService *getLoggingService()
     {
