@@ -58,18 +58,8 @@ AC_MSG_RESULT([
 
 	])
 
-# Check for SDL and SDL_image
-AM_PATH_SDL(1.2.0, , 
-	AC_MSG_ERROR(libSDL >=1.2.0 is required to build Dime.  It's available from www.libsdl.org)
-)
-
-AC_CHECK_LIB(SDL_image, IMG_Load, , [
-    AC_MSG_ERROR([libSDL_image not found])
-],$SDL_LIBS)
-
-CFLAGS="$CFLAGS $SDL_CFLAGS -Wall"
-CXXFLAGS="$CXXFLAGS $SDL_CFLAGS -Wall"
-LDFLAGS="$LDFLAGS $SDL_LIBS"
+WF_CHECK_SDL_IMAGE(1.2.0)
+dnl don't add SDL flags yet, SDL_main confuses later checks
 
 AC_CHECK_LIB(GL,
 	     glViewport,,
@@ -253,6 +243,9 @@ dnl disabled cal3d, until needed
 
 #AC_LANG([C++])
 
+dnl add SDL flags here, now that we're done with the other tests
+CXXFLAGS="$CXXFLAGS $WF_SDL_IMAGE_CFLAGS"
+LIBS="$LIBS $WF_SDL_IMAGE_LIBS"
 
 AC_MSG_RESULT([
 

@@ -1,3 +1,7 @@
+2004-02-08 Ron Steinke <rsteinke@w-link.net>
+	* configure.ac, acinclude.m4: Use new combined macro for libz, libpng,
+	  SDL and SDL_image check that will also work under win32.
+
 2004-01-28 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* Fixed ogre component to get less warnings.
 
