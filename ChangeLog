@@ -1,13 +1,2109 @@
-2002-05-12 James Turner <james@worldforge.org>
+2002-07-20 16:47  nikal
 
-    * Added more macros to acinclude.m4 to make configure a bit
-      more robust in the face of missing packages and so on.
-    * Added a note to INSTALL about currently needing nasal.ttf
+	* text/public/: dimestyle.css, index.txt:  removing the
+	dimestylesheet and reference
 
-2002-03-27 Dan Tomalesky <grim@xynesis.com>
-    * Added eris into configure.in and added the m4 macro for eris into 
-      acinclude.m4 so that configure reports nicely that you don't have it
-      instead of crazy automake errors.
+2002-07-20 14:42  nikal
 
-2002-03-27 Adam Gregory <Adammgregory@yahoo.com>
-    * Added GuiService to the main build process, with suitably disastrous results :D
+	* text/public/: dimestyle.css, index.txt: Adding a stylesheet and
+	it's reference
+
+2002-07-20 13:27  nikal
+
+	* text/public/: battleplan.txt, concept_doc.txt, features.txt,
+	index.txt, news.txt, developer_doc/architecture.txt,
+	developer_doc/components.txt, developer_doc/data_model.txt,
+	developer_doc/data_model_fw.txt, developer_doc/design.txt,
+	developer_doc/development_methodology.txt, developer_doc/index.txt,
+	developer_doc/scripting.txt, developer_doc/services.txt,
+	working_notes/index.txt, working_notes/theme_format.txt,
+	working_notes/ui_story_acorn.txt: Adding all the files for the
+	first iteration of the cvs website.  I hope this all works. :)
+
+2002-07-19 22:16  nikal
+
+	* text/public/index.txt: Added the first version of Dime's website
+	for cvs2web
+
+2002-07-17 10:18  nikal
+
+	* doc/template_header.h: Some changes to the coding doc
+
+2002-07-16 15:01  nikal
+
+	* configure.in, scratchpad/testOGL/do.sh,
+	scratchpad/testOGL/test.cpp, src/main/Makefile.am,
+	src/services/Makefile.am, src/services/platform/OGLDrawDevice.cpp:
+	Modified the Makefile.am's and configure.in to include the new
+	LoggingService Organization.  Also made some minor changes to
+	testOGL*
+
+2002-07-16 14:59  nikal
+
+	* src/services/logging/Makefile.am: Adding the Makefile.am for
+	LoggingService
+
+2002-07-16 14:59  nikal
+
+	* src/services/logging/: LoggingService.cpp, LoggingService.h:
+	Reorganized LoggingService so that methods are no longer inline. 
+	Better compile times.
+
+2002-07-15 15:51  nikal
+
+	* src/main/Application.cpp: Moved the errant #include to the top of
+	the file.
+
+2002-07-15 06:51  nikal
+
+	* src/services/datamodel/: BoolProvider.cpp, FloatProvider.cpp,
+	IntProvider.cpp, StringProvider.cpp: Changed return PDataKey(NULL);
+	with return PDataKey()
+
+2002-07-14 10:31  tim
+
+	* test/DataModelTest.cpp: [no log message]
+
+2002-07-14 09:49  tim
+
+	* src/services/metaserver/MetaserverService.cpp: [no log message]
+
+2002-07-14 09:38  tim
+
+	* test/DataModelTest.cpp: [no log message]
+
+2002-07-14 09:34  tim
+
+	* src/: main/Application.cpp, services/datamodel/DataObject.cpp,
+	services/datamodel/DataObject.h: [no log message]
+
+2002-07-11 14:55  xmp
+
+	* src/services/platform/: OGLDrawDevice.cpp, OGLDrawDevice.h: First
+	steps to an OpenGL widget system
+
+2002-07-11 14:55  xmp
+
+	* scratchpad/testOGL/test.cpp: First steps towards openGL widgets,
+	quite a bit of code needs shifting from these files to
+	OGLDrawDevice.cpp but it should be ok.
+
+2002-07-11 10:48  xmp
+
+	* src/services/platform/OGLDrawDevice.cpp: Adjust viewport size
+
+2002-07-11 10:39  xmp
+
+	* src/services/platform/OGLDrawDevice.cpp: Ok I'm trying this init
+	function out but I doubt it's quite right.  Could you check this
+	over nikal?  My openGL is rough.
+
+2002-07-11 10:37  xmp
+
+	* scratchpad/testOGL/test.cpp: Corrections to my own work
+
+2002-07-11 10:05  xmp
+
+	* src/services/platform/: DrawDevice.h, OGLDrawDevice.cpp,
+	OGLDrawDevice.h, SDLDrawDevice.cpp, SDLDrawDevice.h: Created an
+	init function
+
+2002-07-11 10:05  xmp
+
+	* scratchpad/testOGL/: do.sh, test.cpp: A few fixes
+
+2002-07-11 07:38  nikal
+
+	* scratchpad/testOGL/: do.sh, test.cpp:  added files to test
+	OGLDrawDevice
+
+2002-07-11 07:31  nikal
+
+	* src/services/platform/: OGLDrawDevice.cpp, OGLDrawDevice.h:  some
+	fixes to the OGLDrawDevice
+
+2002-07-09 06:10  xmp
+
+	* src/services/gui/: TextBox.cpp, TextBox.h: Fix an issue with us
+	loosing text when it goes off screen.  Have to sort out the initial
+	text always getting zapped now.
+
+2002-07-08 05:50  xmp
+
+	* src/services/gui/: TextBox.cpp, TextBox.h: Partially working
+	caret
+
+2002-07-07 09:58  xmp
+
+	* src/services/font/FontRenderer.h: Somehow a setFont was misnamed
+	as a getFont, fixed
+
+2002-07-07 05:26  xmp
+
+	* src/services/datamodel/Makefile.am: Fixed Makefile.am to drag in
+	the new files.
+
+2002-07-06 12:44  tim
+
+	* dime.vcproj, src/services/datamodel/StringProvider.h,
+	src/services/metaserver/MetaserverService.cpp,
+	src/services/server/ServerService.cpp,
+	src/services/datamodel/BoolProvider.cpp,
+	src/services/datamodel/BoolProvider.h,
+	src/services/datamodel/FloatProvider.cpp,
+	src/services/datamodel/FloatProvider.h: [no log message]
+
+2002-07-04 16:11  xmp
+
+	* src/services/gui/: EventGenerator.cpp, MouseButtonEvent.h: Added
+	an invalid button state just incase someone clicks with the fourth
+	mouse button or something
+
+2002-07-04 15:54  xmp
+
+	* src/services/gui/: TextBox.cpp, TextBox.h: The idea's behind
+	caret work
+
+2002-07-04 06:29  tim
+
+	* dime.vcproj: [no log message]
+
+2002-07-03 04:38  xmp
+
+	* src/: main/Application.cpp, services/logging/LoggingService.h:
+	Hook eris's logging service into Dime's
+
+2002-07-02 15:03  xmp
+
+	* src/services/metaserver/MetaserverService.cpp: Uped
+	MaxActiveQueries to 10 just in case will work as long as we don't
+	have more than 10 servers.
+
+2002-07-02 15:00  tim
+
+	* src/: main/Application.cpp,
+	services/datamodel/DataModelService.cpp,
+	services/datamodel/DataModelService.h: Dump level added
+
+2002-07-02 13:56  xmp
+
+	* src/services/metaserver/MetaserverService.cpp: Increased
+	metaserver maxQueries from 1 to 3
+
+2002-07-02 13:22  tim
+
+	* src/services/datamodel/Makefile.am: [no log message]
+
+2002-07-02 12:13  tim
+
+	* src/main/Application.cpp, dime.vcproj, doc/template_header.h,
+	src/mscprag.h, src/services/datamodel/DataModelService.cpp,
+	src/services/datamodel/DataModelService.h,
+	src/services/datamodel/DataObject.cpp,
+	src/services/datamodel/IntProvider.cpp,
+	src/services/datamodel/StringProvider.cpp,
+	src/services/datamodel/StringProvider.h,
+	src/services/metaserver/MetaserverService.cpp,
+	src/services/metaserver/MetaserverService.h: Test usage of DDM in
+	MetaserverService
+
+2002-07-02 08:28  xmp
+
+	* configure.in: Tidy up on configure.in
+
+2002-07-01 20:35  nikal
+
+	* AUTHORS, configure.in, scratchpad/lesson05/lesson05.c,
+	src/main/Application.cpp, src/services/platform/DrawDevice.h,
+	src/services/platform/Makefile.am,
+	src/services/platform/OGLDrawDevice.cpp,
+	src/services/platform/OGLDrawDevice.h: Added OpenGL DrawDevice. 
+	It's not complete.  It needs a blitSurface function implemenation.
+	It compiles, and hasn't been tested, but I don't have the time. 
+	Anyone can feel free to implement it, or test it.  I will as soon
+	as I have time if I can.
+
+2002-07-01 18:07  rsteinke
+
+	* configure.in: Need to add CPPUNIT_LIBS to LIBS, not LDFLAGS
+
+2002-07-01 12:54  nikal
+
+	* scratchpad/lesson05/lesson05.c: yay
+
+2002-07-01 11:28  nikal
+
+	* scratchpad/lesson05/: Makefile, README, lesson05.c: some opengl
+	files to play around with. for Xmp
+
+2002-06-26 12:57  xmp
+
+	* test/Makefile.am: Makefile build fix
+
+2002-06-18 05:27  mkoch
+
+	* autogen.sh: only use "-I /usr/local/share/aclocal" is present
+
+2002-06-18 05:26  mkoch
+
+	* src/services/datamodel/: DataObject.cpp, DataProvider.cpp,
+	FolderProvider.cpp, IntProvider.cpp, LinkProvider.cpp: make it
+	compile
+
+2002-06-18 05:25  mkoch
+
+	* src/services/Makefile.am, src/services/config/Makefile.am,
+	src/services/datamodel/Makefile.am,
+	src/services/metaserver/Makefile.am,
+	src/services/platform/Makefile.am, src/services/server/Makefile.am,
+	test/Makefile.am, src/Makefile.am, src/main/Makefile.am,
+	src/services/font/Makefile.am, src/services/gui/Makefile.am,
+	src/services/image/Makefile.am, src/services/input/Makefile.am,
+	src/services/test/Makefile.am: Makefile cleanup
+
+2002-06-18 05:09  mkoch
+
+	* src/services/gui/Label.h: introduced: #define FONT_FILE ....	to
+	make code easier to read
+
+2002-06-16 13:12  nikal
+
+	* INSTALL: Added freetype2 to the dependancies and removed
+	CrystalSpace from them
+
+2002-06-15 12:37  xmp
+
+	* src/components/: State.h, WidgetInfo.h: More work on statemanager
+
+2002-06-15 07:57  xmp
+
+	* src/components/State.h: Fix to earlier commit
+
+2002-06-14 07:20  xmp
+
+	* src/: components/State.h, components/WidgetInfo.h,
+	main/StateManager.h, services/gui/Widget.cpp,
+	services/gui/Widget.h: More work on States.
+
+2002-06-13 16:39  xmp
+
+	* src/: components/State.h, components/WidgetInfo.h,
+	framework/Service.h, services/platform/SDLDrawDevice.h: -Delete a
+	done TODO.  -Add newline to end of SDLDrawDevice.h -Latest work on
+	States.
+
+2002-06-12 13:01  nullstar
+
+	* doc/dime_services.txt: Narrative descriptions of Dime services.
+
+2002-06-10 11:20  xmp
+
+	* configure.in, dime.spec.in, .cvsignore: spec files thing, should
+	be ok, please correct if it isn't
+
+2002-06-10 11:04  xmp
+
+	* configure.in: Doxygen documenting enabled if anyone's build
+	environment breaks out in spots over this give us a shout.
+
+2002-06-09 10:55  xmp
+
+	* src/components/State.h, test/InputServiceTest.h,
+	test/StateManagerTest.h: Copyright (left) stuff and a little fix to
+	state.h
+
+2002-06-08 12:01  nikal
+
+	* src/services/gui/TextBox.h: TextBoxes now tile their bg
+
+2002-06-08 12:01  nikal
+
+	* src/services/platform/: DrawDevice.h, RectangleRenderer.cpp,
+	SDLDrawDevice.cpp, SDLDrawDevice.h: quick fix for the Tiling
+	problem
+
+2002-06-08 10:52  xmp
+
+	* src/main/Makefile.am, src/main/StateManager.cpp,
+	test/InputServiceTest.h, test/Makefile.am, test/TestServices.cpp,
+	test/StateManagerTest.cpp, test/StateManagerTest.h: Tests for
+	StateManager
+
+2002-06-08 09:18  xmp
+
+	* test/: DataModelTest.cpp, InputServiceTest.cpp,
+	InputServiceTest.h, TestServices.cpp: Fixed unit tests by moving
+	CPPUNIT_TEST_SUITE_REGISTRATION to correct file
+
+2002-06-07 12:29  xmp
+
+	* src/: components/State.h, components/WidgetInfo.h,
+	main/StateManager.cpp, main/StateManager.h: Fixes to StateManager
+	ProtoCode
+
+2002-06-04 06:25  tim
+
+	* dime.vcproj, Visual C++ 6.0.txt, dime.dsp, dime.dsw,
+	src/mscprag.h: Removed VC6 support.
+
+2002-06-02 08:52  xmp
+
+	* INSTALL: Bumped cppunit required version to 1.8.0
+
+2002-06-02 06:12  jmt
+
+	* configure.in: bump required version of CppUnit to 1.8.0
+
+2002-06-02 05:27  xmp
+
+	* src/: components/State.h, components/WidgetInfo.h,
+	main/StateManager.h: Checked in progress to date on state's for
+	peer review.
+
+2002-06-02 04:55  xmp
+
+	* src/services/gui/TextBox.cpp: Back out changes the require
+	.clear() method on STL basic_strings
+
+2002-06-01 17:01  xmp
+
+	* src/services/input/InputServiceTest.cpp,
+	test/InputServiceTest.cpp, test/Makefile.am: Moving
+	InputServiceTest to the test dir
+
+2002-06-01 16:40  tim
+
+	* src/services/datamodel/: DataProvider.cpp, DataProvider.h: Bug
+	fixes
+
+2002-06-01 15:53  xmp
+
+	* src/services/datamodel/DataObject.cpp: A little fix worked out
+	with Tim.
+
+2002-06-01 08:10  tim
+
+	* dime.vcproj, src/services/datamodel/DataModel.h,
+	src/services/datamodel/DataObject.cpp,
+	src/services/datamodel/DataObject.h,
+	src/services/datamodel/DataProvider.cpp,
+	src/services/datamodel/LinkProvider.cpp,
+	src/services/input/InputDevice.cpp, test/TestServices.cpp: Several
+	bug fixes. Unit tests run properly again.
+
+2002-05-30 10:46  xmp
+
+	* src/services/gui/: TextBox.cpp, TextBox.h: Bit more work to get
+	caret functions in
+
+2002-05-30 10:42  tim
+
+	* dime.vcproj, src/services/datamodel/IntProvider.cpp,
+	src/services/datamodel/IntProvider.h: [no log message]
+
+2002-05-30 05:01  xmp
+
+	* src/services/gui/TextBox.h: Lining up the text in the textbox to
+	avoid collision with borders, stop gap until we have a theme or
+	something that tells us how big the border should be.
+
+2002-05-29 14:32  xmp
+
+	* src/services/datamodel/: DataProvider.cpp, DataProvider.h,
+	LinkProvider.cpp: Minor fixes and warning removal, thank Tim for
+	the work.
+
+2002-05-29 13:08  tim
+
+	* Visual C++ 6.0.txt, dime.dsp, dime.sln, dime.vcproj,
+	src/services/datamodel/DataModel.h,
+	src/services/datamodel/LinkProvider.cpp,
+	src/services/datamodel/LinkProvider.h,
+	src/services/server/ServerService.cpp,
+	src/services/server/ServerService.h: Tim goes .NET
+
+2002-05-26 17:25  nikal
+
+	* src/main/Application.cpp, src/main/Dime.cpp,
+	test/DataModelTest.cpp, test/DataModelTest.h,
+	test/TestServices.cpp: Tests are now being run
+
+2002-05-26 17:23  xmp
+
+	* test/.cvsignore: .cvsignore
+
+2002-05-26 17:20  xmp
+
+	* src/services/: font/FontRenderer.cpp, gui/TextBox.cpp: Sort out
+	inability of TextBox and fontrender to handle zero length strings.
+
+2002-05-26 14:37  nikal
+
+	* Makefile.am: fixing Makefile.am subdir order
+
+2002-05-26 14:03  nikal
+
+	* configure.in, src/main/Dime.cpp, src/main/Makefile.am,
+	test/DataModelTest.cpp, test/DataModelTest.h, test/Makefile.am,
+	test/TestServices.cpp, test/TestServices.h, test/TestSuite.cpp,
+	test/nulltest.sh:  more work towards getting cpp-unit test done
+
+2002-05-25 19:32  nikal
+
+	* src/: main/Dime.cpp, services/gui/TextBox.h: Tiling bitmaps
+	aren't working. but if we do a stretch then it does.
+
+2002-05-25 15:32  xmp
+
+	* INSTALL, configure.in: Added varconf to list of needed files
+
+2002-05-25 15:17  xmp
+
+	* src/main/: Application.cpp, DimeServices.h, Makefile.am: Add
+	serverservice to the main build.
+
+2002-05-25 14:58  xmp
+
+	* src/services/datamodel/: DataObject.cpp, DataProvider.cpp: Fixes
+	to warnings.
+
+2002-05-25 14:08  xmp
+
+	* src/services/server/: ServerService.cpp, ServerService.h: -Bit of
+	a rewrite to change the use of the Eris::Connection object so that
+	it is now created and destroyed with ServerService rather than on
+	connect/disconnect.  -Added connect method.  -Reformated the text
+	so I don't get frustrated with it.
+
+2002-05-24 12:05  xmp
+
+	* src/services/server/: ServerService.cpp, ServerService.h:
+	Serverservice updates
+
+2002-05-20 15:56  xmp
+
+	* src/services/gui/theme/: IconStyle.h, Style.h, TextStyle.h:
+	-Corrections on Style.h added TODO for adding and deleting
+	TextStyles and IconStyles from the mapping.  -Fixed TextStyles
+	setter methods.  -Redid IconStyles.
+
+2002-05-20 15:48  nikal
+
+	* CodeGen.pl: Still more little fixes to CodeGen.pl
+
+2002-05-20 15:31  xmp
+
+	* src/services/gui/theme/: IconStyle.h, Style.h, TextStyle.h: -Have
+	to redo IconStyle I was reading TextStyles' schema as I was writing
+	it.  Doh! -Added a missing include to TextStyle -Did Style.
+
+2002-05-20 15:30  nikal
+
+	* src/services/platform/RectangleRenderer.cpp: Tiling works with
+	RectangleRenderers
+
+2002-05-20 15:11  xmp
+
+	* src/services/gui/theme/IconStyle.h: First revision of IconStyle
+
+2002-05-20 15:10  nikal
+
+	* CodeGen.pl, src/services/platform/RectangleRenderer.cpp: quick
+	fixes for the CodeGen.pl
+
+2002-05-20 14:37  nikal
+
+	* src/services/gui/: TextStyle.h, Theme.h, ThemeAuthor.h,
+	theme/TextStyle.h, theme/Theme.h, theme/ThemeAuthor.h: Moving some
+	files around
+
+2002-05-20 11:49  nikal
+
+	* src/: main/Dime.cpp, services/font/FontRenderer.h,
+	services/gui/TextBox.h, services/gui/TextStyle.h,
+	services/platform/Color.h, services/platform/RectangleRenderer.cpp,
+	services/platform/RectangleRenderer.h: Quick changes to
+	RectangleRenderer, and some theme stuff
+
+2002-05-20 11:00  xmp
+
+	* configure.in, src/services/font/Font.cpp,
+	src/services/metaserver/MetaserverService.cpp,
+	src/services/metaserver/MetaserverService.h,
+	src/services/server/ServerService.cpp,
+	src/services/server/ServerService.h: -Set version in autoconf
+	-Fixed naming conventions in ServerService and Metaserver service. 
+	-More work on ServerService.  -A fix in Font.cpp for -Wall.
+
+2002-05-19 23:10  nikal
+
+	* CodeGen.pl, src/services/gui/ThemeAuthor.h: Some starting headers
+	working towards Themes, and A perl script to automatically generate
+	your basic header based on Member names.  The script assumes all
+	members are named without the my or set or get. those will be
+	added.	So if your member should be called myTextColor, then enter
+	TextColor.
+
+2002-05-18 11:37  xmp
+
+	* src/services/server/ServerService.cpp: Use the singleton
+	interface on connection for now
+
+2002-05-18 05:00  xmp
+
+	* src/: framework/Service.h, services/config/ConfigService.cpp,
+	services/config/ConfigService.h, services/font/FontRenderer.cpp,
+	services/font/FontService.h, services/gui/GuiService.h,
+	services/gui/Label.h, services/image/ImageService.h,
+	services/input/InputService.h, services/logging/LoggingService.h,
+	services/metaserver/MetaserverService.cpp,
+	services/metaserver/MetaserverService.h,
+	services/server/ServerService.cpp, services/server/ServerService.h,
+	services/test/TestService.cpp, services/test/TestService.h: -Fixed
+	two signed-unsigned comparisons\n-Made everybody use the enum
+	Service::Status for their service status values rather than ints.
+
+2002-05-18 03:51  xmp
+
+	* src/services/: logging/LoggingService.h,
+	server/ServerService.cpp: -Fixed a bug in LoggingService where
+	somewas passing a struct rather than it's member into
+	sprintf.\n-Got rid of a warning in ServerService caused by
+	initialiser order.
+
+2002-05-16 10:55  xmp
+
+	* src/services/font/FontRenderer.h: Another -Wall fix
+
+2002-05-16 10:54  xmp
+
+	* configure.in: Turn on -Wall
+
+2002-05-16 10:54  xmp
+
+	* src/services/gui/: Event.h, GuiService.h, KeyPressEvent.h,
+	Widget.h: Changes to remove a few -Wall warnings
+
+2002-05-16 10:41  xmp
+
+	* src/services/metaserver/: MetaserverService.cpp,
+	MetaserverService.h: Just a few tweaks
+
+2002-05-16 10:23  xmp
+
+	* src/services/datamodel/.cvsignore: .cvsignore
+
+2002-05-16 10:02  xmp
+
+	* src/services/datamodel/: DataObject.cpp, DataObject.h: Quick
+	fixes to DataObject to coping with gcc strictness
+
+2002-05-16 10:01  xmp
+
+	* test/TestSuite.cpp: Not completely fixed but better
+
+2002-05-15 21:26  nikal
+
+	* Makefile.am, configure.in, src/main/Application.cpp,
+	src/services/Makefile.am, src/services/datamodel/DataModelTest.cpp,
+	src/services/datamodel/Makefile.am,
+	src/services/metaserver/MetaserverService.cpp,
+	src/services/metaserver/MetaserverService.h, test/DataModelTest.h,
+	test/Makefile.am, test/TestSuite.cpp, test/nulltest.sh:  I believe
+	this enable testing with CPPUNIT to be done on a MakeCheck
+
+2002-05-15 15:46  xmp
+
+	* INSTALL, configure.in: Increased required eris version to 0.9.5
+
+2002-05-15 15:22  xmp
+
+	* src/services/: Makefile.am, ServiceTest.cpp,
+	datamodel/DataModelService.cpp, datamodel/DataObject.cpp,
+	datamodel/DataProvider.cpp, datamodel/DataProvider.h,
+	datamodel/FolderProvider.cpp, datamodel/LinkProvider.cpp,
+	datamodel/Makefile.am: Work on datamodel gcc fixes
+
+2002-05-15 14:13  xmp
+
+	* src/services/datamodel/: DataObject.cpp, Makefile.am: a few
+	changes to datamodel to work with gcc's stricter type enforcement
+
+2002-05-15 13:47  xmp
+
+	* configure.in: Datamodel automake stuff
+
+2002-05-15 13:15  tim
+
+	* dime.dsp, src/main/Application.cpp,
+	src/services/datamodel/DataModel.h,
+	src/services/datamodel/DataModelService.cpp,
+	src/services/datamodel/DataModelService.h,
+	src/services/datamodel/DataModelTest.cpp,
+	src/services/datamodel/DataObject.cpp,
+	src/services/datamodel/DataObject.h,
+	src/services/datamodel/DataProvider.cpp,
+	src/services/datamodel/DataProvider.h,
+	src/services/datamodel/FolderProvider.cpp,
+	src/services/datamodel/FolderProvider.h,
+	src/services/datamodel/LinkProvider.cpp,
+	src/services/datamodel/LinkProvider.h,
+	src/services/input/InputServiceTest.cpp: First DataModel release!
+
+2002-05-15 13:15  xmp
+
+	* src/services/server/: ServerService.cpp, ServerService.h: Server
+	service work
+
+2002-05-15 06:42  xmp
+
+	* src/services/metaserver/MetaserverService.cpp: Enabling the
+	getGameServerCount stuff.  With thanks to James for his fixes
+
+2002-05-15 05:32  xmp
+
+	* src/services/server/Makefile.am: This makefile got accidently
+	deleted directly due to a breakdown in communication doh!  I meant
+	the other one.
+
+2002-05-14 16:09  xmp
+
+	* src/services/server/: ServerService.cpp, ServerService.h:
+	Copyright (left) stuff
+
+2002-05-14 16:06  xmp
+
+	* src/services/server/: ServerService.cpp, ServerService.h: Ok
+	serverservice is actually doing something but I don't recomment
+	using it yet
+
+2002-05-14 14:53  xmp
+
+	* src/services/font/FontService.h: Just some logging changes
+
+2002-05-14 14:49  xmp
+
+	* src/services/: font/FontService.cpp, font/FontService.h,
+	metaserver/MetaserverService.cpp, metaserver/MetaserverService.h:
+	Metaserver service has just been rewritten to work with how eris
+	now works.  Eris still needs to be corrected as it does not yet
+	emit a signal it is supposed to.
+
+2002-05-14 10:48  xmp
+
+	* src/services/metaserver/MetaserverService.cpp: opps recommented
+	something that was defined by eris but not implemented by eris
+
+2002-05-14 10:45  xmp
+
+	* src/services/metaserver/: MetaserverService.cpp,
+	MetaserverService.h: Enabling a few commented out lines that now
+	have use
+
+2002-05-14 09:50  xmp
+
+	* src/services/server/ServerService.cpp: Fix a few errors that
+	snuck in. Doh!
+
+2002-05-14 09:46  xmp
+
+	* configure.in, src/services/Makefile.am,
+	src/services/server/.cvsignore: Further automake changes to
+	integrate serverservice
+
+2002-05-14 09:42  xmp
+
+	* src/services/server/: Makefile, ServerService.cpp: Remove old
+	makefile integrate into automake build
+
+2002-05-14 09:15  xmp
+
+	* src/: .cvsignore, framework/.cvsignore, main/.cvsignore,
+	services/.cvsignore, services/config/.cvsignore,
+	services/font/.cvsignore, services/image/.cvsignore,
+	services/input/.cvsignore, services/metaserver/.cvsignore,
+	services/platform/.cvsignore, services/test/.cvsignore: More
+	.cvsignores
+
+2002-05-14 09:10  xmp
+
+	* .cvsignore: A .cvsignore
+
+2002-05-13 21:54  tim
+
+	* src/: main/Application.cpp, main/Dime.cpp,
+	services/gui/TextBox.cpp, services/logging/LoggingService.h: Minor
+	fixes
+
+2002-05-13 16:16  xmp
+
+	* src/: main/Dime.cpp, services/font/FontRenderer.cpp,
+	services/font/FontRenderer.h, services/font/FontService.cpp,
+	services/font/FontService.h: Throwing an catching font errors
+
+2002-05-13 15:42  xmp
+
+	* src/services/server/ServerService.cpp: just a few more
+	loggingservice additions
+
+2002-05-13 15:37  xmp
+
+	* src/services/metaserver/: MetaserverService.cpp,
+	MetaserverService.h: moved from cout's to logging service
+
+2002-05-13 14:27  xmp
+
+	* src/services/metaserver/MetaserverService.cpp: Loggingservice
+	statements rather than couts beginning in metaserver
+
+2002-05-13 14:14  xmp
+
+	* src/services/logging/LoggingService.h: removed using namespace
+	std from a header file
+
+2002-05-13 13:58  xmp
+
+	* src/services/gui/Panel.cpp: kill warning about missing newline at
+	end of file
+
+2002-05-13 13:52  nikal
+
+	* src/: main/Application.cpp, services/input/InputDevice.h: Unicode
+	should be working
+
+2002-05-13 13:08  nikal
+
+	* src/services/input/DimeKey.h:  adding file I forgot to add
+
+2002-05-13 13:05  xmp
+
+	* AUTHORS: Add me to it
+
+2002-05-13 12:53  xmp
+
+	* configure.in: Made SDL_image required to complete configure
+
+2002-05-13 12:37  nikal
+
+	* src/: main/Application.h, services/gui/EventGenerator.cpp,
+	services/gui/EventGenerator.h, services/gui/KeyPressEvent.h,
+	services/gui/TextBox.cpp, services/input/InputDevice.cpp,
+	services/input/InputDevice.h, services/input/InputMapping.h,
+	services/input/RepetitionDevice.h: Preliminary Unicode support.  I
+	think this breaks TextBox, but I'm not sure. :)
+
+2002-05-12 17:57  nikal
+
+	* src/: main/Dime.cpp, services/font/Font.cpp,
+	services/font/Font.h, services/font/FontRenderer.cpp,
+	services/font/FontRenderer.h, services/gui/Label.h,
+	services/gui/TextBox.cpp, services/gui/TextBox.h:  some initial
+	changes on the way having unicode textboxes
+
+2002-05-12 05:27  xmp
+
+	* src/services/gui/: TextBox.cpp, TextBox.h: moved keypress to cpp
+	file now it's grown too big
+
+2002-05-12 04:57  jmt
+
+	* ChangeLog, INSTALL: 2002-05-12 James Turner
+	<james@worldforge.org>
+	
+	    * Added a note to INSTALL about currently needing nasal.ttf
+
+2002-05-12 04:47  jmt
+
+	* acinclude.m4: 2002-05-12 James Turner <james@worldforge.org>
+	
+	    * Added more macros to acinclude.m4 to make configure a bit
+	      more robust in the face of missing packages and so on.
+
+2002-05-11 13:07  xmp
+
+	* src/: framework/Exception.h, services/font/FontRenderer.cpp,
+	services/font/FontRenderer.h: -Fixes to Exception -Added throws and
+	an assert to fontservice
+
+2002-05-11 12:02  tim
+
+	* dime.dsp, src/framework/BaseException.h,
+	src/framework/Exception.h: Corrected the filename from
+	BaseException.h to Exception.h
+
+2002-05-11 11:32  tim
+
+	* dime.dsp, src/framework/BaseException.h,
+	src/services/logging/LoggingService.h: Useful additions to the
+	Exceptions class.
+
+2002-05-11 08:44  nullstar
+
+	* src/services/config/: ConfigService.cpp, ConfigService.h,
+	dime.conf: ConfigService now uses varconf behind the scenes. 
+	Modified dime.conf and reformatted to use varconf format.
+	
+	Code compiles, needs to be tested.
+
+2002-05-10 17:52  xmp
+
+	* src/framework/BaseException.h: Beginnings of an exception
+	handling system
+
+2002-05-10 17:02  xmp
+
+	* src/main/: Application.cpp, Application.h, Dime.cpp: Final fixes
+	and tidy up.  Application now a singleton.
+
+2002-05-10 16:56  tim
+
+	* src/main/Application.cpp: [no log message]
+
+2002-05-10 16:51  xmp
+
+	* src/main/: Application.h, Dime.cpp: A slightly broken attempt to
+	turn Application into a singleton.  Still needs work
+
+2002-05-10 16:37  tim
+
+	* dime.dsp, src/services/gui/EventGenerator.h,
+	src/services/input/InputDevice.cpp,
+	src/services/input/InputDevice.h,
+	src/services/input/InputMapping.h,
+	src/services/input/InputService.h,
+	src/services/input/RepetitionDevice.h: Introduced a new feature and
+	a bugfix to RepetitionDevice
+
+2002-05-10 15:35  tim
+
+	* src/main/Application.cpp: Fixed RepititionDevice (by adding
+	something to SDL_INIT)
+
+2002-05-10 15:15  xmp
+
+	* dime.dsp, src/services/gui/KeyPressEvent.h,
+	src/services/gui/TextBox.h: Some basic msvc6 fixes for my edit box
+
+2002-05-10 00:39  nikal
+
+	* bin/quitbutton.png, bin/quitbutton2.png, bin/textboxback.png,
+	src/main/Dime.cpp, src/services/gui/Label.h,
+	src/services/gui/TextBox.h:  some last minute changes
+
+2002-05-10 00:11  nikal
+
+	* src/: main/Dime.cpp, services/gui/EventGenerator.cpp,
+	services/gui/KeyPressEvent.h, services/gui/Label.h,
+	services/gui/TextBox.h: minor changes to TextBox and Label.  Minor
+	editing is now possible with TextBoxes. :)
+
+2002-05-09 13:06  nullstar
+
+	* INSTALL: Updated per my experience.  Several omissions to the
+	dependencies list have been added. :)
+
+2002-05-09 12:06  nullstar
+
+	* autogen.sh: Added line to remove config.cache.
+
+2002-05-08 17:31  xmp
+
+	* src/: main/Dime.cpp, services/font/FontRenderer.h,
+	services/gui/EventGenerator.cpp, services/gui/KeyPressEvent.h,
+	services/gui/Label.h, services/gui/TextBox.cpp,
+	services/gui/TextBox.h, services/gui/Widget.h,
+	services/platform/RectangleRenderer.h: -Almost working editbox,
+	cool or what?
+
+2002-05-08 13:57  xmp
+
+	* src/services/: gui/EventGenerator.cpp, gui/EventGenerator.h,
+	gui/KeyPressEvent.h, gui/MouseButtonEvent.h, gui/Widget.h,
+	input/InputMapping.h: -Just edited an example in one of Tim's
+	comments -Added beginnings of keyboard event handling in widgets
+
+2002-05-08 10:19  xmp
+
+	* src/services/font/FontService.h: Removed a reference to SDL_image
+	that had mysteriously snuck in
+
+2002-05-08 08:42  xmp
+
+	* src/services/: font/Font.cpp, gui/Makefile.am, gui/TextBox.cpp,
+	gui/TextBox.h: -Commented out an unused variable -Did a bit more
+	work on editbox and discovered that nobody has written keyboard
+	events yet, bah!
+
+2002-05-08 08:21  xmp
+
+	* src/services/gui/: Label.h, TextBox.h: Plugged a memory leak on
+	myFontRenderer and started thinking how to do editboxes.
+
+2002-05-08 06:41  xmp
+
+	* dime.dsp: Updated MSVC project file
+
+2002-05-08 06:36  xmp
+
+	* src/: main/Dime.cpp, services/gui/Label.h: Just a little ifdef to
+	sort out differing paths on different platforms
+
+2002-05-07 21:10  nikal
+
+	* src/: main/Dime.cpp, services/font/Font.cpp,
+	services/font/Font.h, services/font/FontRenderer.cpp,
+	services/font/FontRenderer.h, services/font/Glyph.h,
+	services/gui/Label.cpp, services/gui/Label.h:
+	FontService/FontRenderer seem to be working now.  There is still
+	alot of work to be done.  We need themes, and we need a way to load
+	themes from files.  We also need new widgets, and exceptions for
+	error checking.
+
+2002-05-06 07:15  nikal
+
+	* src/: main/Makefile.am, services/font/Font.cpp,
+	services/font/Font.h, services/font/FontRenderer.cpp,
+	services/font/FontRenderer.h, services/font/FontService.cpp,
+	services/font/Glyph.h, services/gui/Label.cpp,
+	services/gui/Label.h:  some more simple changes to FontService.cpp
+
+2002-05-06 07:10  nikal
+
+	* bin/: quitbutton.png, quitbutton2.png: some testing pictures
+
+2002-05-05 05:29  xmp
+
+	* src/: main/Dime.cpp, services/font/Font.h,
+	services/font/FontRenderer.cpp, services/font/FontRenderer.h,
+	services/font/FontService.cpp, services/gui/Label.cpp,
+	services/gui/Label.h: Fixes to fontservice and label widget
+
+2002-05-05 00:31  nikal
+
+	* src/services/font/: Font.cpp, Font.h, FontRenderer.cpp,
+	FontRenderer.h, Makefile.am: Font Renderer has been added. 
+	Absolutely no testing has been done. It compiles and that's it.
+	(it's 2 am and I have to work tomorrow)...
+
+2002-05-04 13:13  xmp
+
+	* src/services/font/FontRenderer.h: Set up for fontrenderer
+
+2002-05-04 12:15  nikal
+
+	* src/services/font/: Font.cpp, Font.h: quick naming convention
+	change
+
+2002-05-04 11:29  nikal
+
+	* configure.in, scratchpad/FontService.cpp,
+	scratchpad/FontService.h, src/services/Makefile.am,
+	src/services/font/Font.cpp, src/services/font/Font.h,
+	src/services/font/FontService.cpp, src/services/font/FontService.h,
+	src/services/font/Glyph.h, src/services/font/Makefile.am: oops,
+	wrong directory. This is the preliminary FontService.
+
+2002-05-04 11:28  nikal
+
+	* src/main/Dime.cpp: preliminary FontService is done.
+
+2002-05-04 09:48  xmp
+
+	* src/services/gui/: Label.h, Makefile.am: Just added Label.cpp to
+	the Makefile.am
+
+2002-05-04 08:59  xmp
+
+	* src/: framework/Component.h, framework/ComponentFactory.h,
+	services/gui/Button.h, services/gui/Label.cpp,
+	services/gui/Label.h: Some tweaks to labels and a spelling
+	correction or two in some other files
+
+2002-05-03 05:53  xmp
+
+	* src/services/gui/: Label.cpp, TextBox.h, Theme.h: Just tidying up
+	these files
+
+2002-05-02 07:54  xmp
+
+	* src/: main/Dime.cpp, services/gui/Label.h: Fixes to Label widget
+	class and added a demo routine to dime.cpp.  Will become usable the
+	moment nikal does fontservice
+
+2002-05-02 07:05  xmp
+
+	* src/services/gui/: Label.cpp, Label.h: Started work on Label
+	widget.  Sorted out some of the basic methods.	Added all the
+	widget subclass things.  Label.cpp created
+
+2002-05-02 06:45  xmp
+
+	* src/services/server/: ServerService.cpp, ServerService.h: Just
+	tidied ServiceService up a bit by commenting out all the stuff
+	accidently copied from metaserver that isn't needed.
+
+2002-05-02 06:35  xmp
+
+	* src/services/gui/Button.h: Fixed my little bug in the event
+	routines where highlight should have been lowlight and vice versa. 
+	Fixed.
+
+2002-05-01 11:00  xmp
+
+	* src/services/metaserver/MetaserverService.cpp: Removed call to
+	removed function in ERIS
+
+2002-04-30 02:17  nikal
+
+	* src/main/Application.cpp: Remember to use proper capitalization
+	in directory and file names.
+
+2002-04-29 15:21  xmp
+
+	* dime.dsp, src/main/Dime.cpp, src/services/gui/Button.h,
+	src/services/gui/Panel.h, src/services/gui/Widget.h: -created a new
+	ctor for widgets that accepts a rect for input and changed test
+	button and panel to use it -removed some none existant h files from
+	MSVC project file
+
+2002-04-29 14:07  xmp
+
+	* src/: main/Dime.cpp, services/gui/Button.h: hilighting and
+	lowlighting of buttons is now internalised within the class and not
+	reliant on external callbacks.	old external callbacks removed
+
+2002-04-29 12:34  xmp
+
+	* src/: framework/Service.h, services/gui/GuiService.cpp,
+	services/logging/LoggingService.h: changing logging enum keyword
+	from ERROR to FAILURE to avoid a #define ERROR done by windows
+
+2002-04-29 12:23  xmp
+
+	* src/main/Application.cpp: Moved to new eris polling method
+
+2002-04-29 10:34  xmp
+
+	* src/services/metaserver/: MetaserverService.cpp,
+	MetaserverService.h: Compatiblity and annoyance fix -Removed
+	stdint.h refs eris already includes this or does alternative in
+	win32 -Added msrv=NULL to constructor doesn't affect anything just
+	makes it a bit cleaner
+
+2002-04-29 09:06  xmp
+
+	* src/services/config/ConfigService.cpp: replaced an <iostream.h>
+	with <iostream> and a using namespace std statement
+
+2002-04-29 08:48  xmp
+
+	* src/main/DimeServices.h: ensure that myMetaService is NULL when
+	creating singleton so that will properly do a new when get
+	instanced
+
+2002-04-29 08:45  xmp
+
+	* src/framework/ServiceManager.cpp: replaced an <iostream.h> with
+	<iostream> and a using namespace std statement
+
+2002-04-26 05:16  xmp
+
+	* src/main/: Application.cpp, Application.h, DimeServices.h:
+	Replaced my previous hacky style #ifdefs with one #if per
+	metaserver location.
+
+2002-04-25 15:35  xmp
+
+	* dime.dsp, src/main/Application.cpp, src/main/Application.h,
+	src/main/DimeServices.h, src/services/gui/EventGenerator.h: Three
+	changes rating: minor/bugfix -Ok MSVC #ifdef's in to avoid use of
+	ERIS.  -Made a few variables initialise to NULL in eventgenerator
+	to fix segfaults -Added a few items to the MSVC project file
+
+2002-04-24 15:41  aglanor
+
+	* src/services/metaserver/MetaserverService.cpp: minor fixes
+
+2002-04-24 15:38  aglanor
+
+	* src/main/: Application.cpp, Application.h, DimeServices.h,
+	Makefile.am: modified dimeservices and main app so
+	MetaserverService is included, can be instantiated and is polled
+	each step of the main loop
+
+2002-04-20 14:44  xmp
+
+	* src/services/gui/.cvsignore: A little change to .cvsignore sorry
+
+2002-04-20 14:41  xmp
+
+	* src/services/gui/.cvsignore: .cvsignore
+
+2002-04-20 14:34  nikal
+
+	* src/: main/Dime.cpp, services/logging/LoggingService.h: Fixing
+	the warnings in LoggingService.h and taking out the cout << DORK!
+	in dime.cpp
+
+2002-04-20 14:07  nikal
+
+	* doc/template_header.h: more updates to template_header.h
+
+2002-04-20 13:51  tim
+
+	* doc/template_header.h: Added two important points to
+	template_header.h
+
+2002-04-20 13:37  tim
+
+	* dime.dsp, src/mscprag.h, src/main/Application.h,
+	src/main/Dime.cpp, src/services/gui/EventGenerator.cpp,
+	src/services/gui/EventGenerator.h,
+	src/services/gui/MouseButtonEvent.h,
+	src/services/gui/MouseMotionEvent.h, src/services/gui/Widget.h,
+	src/services/input/InputDevice.cpp,
+	src/services/input/InputMapping.h: Compatibility and bug fixes
+
+2002-04-20 13:29  nikal
+
+	* doc/template_header.h:  updated the coding document to include
+	MSVC specific stuff that we need. Such as no partial instantiation,
+	correct use of namespaces, and returning values at the end of
+	non-void functions
+
+2002-04-20 11:12  nikal
+
+	* src/services/gui/Event.h: still more files
+
+2002-04-20 11:11  nikal
+
+	* src/services/gui/Makefile:  removing some superflous files
+
+2002-04-20 11:10  nikal
+
+	* src/services/gui/: MouseButtonEvent.h, MouseMotionEvent.h: added
+	missing files from last commit
+
+2002-04-20 10:19  nikal
+
+	* src/: main/Application.cpp, main/Dime.cpp,
+	services/gui/Button.cpp, services/gui/EventGenerator.cpp,
+	services/gui/EventGenerator.h, services/gui/Makefile,
+	services/gui/Makefile.am, services/gui/Panel.h,
+	services/gui/Widget.h, services/input/InputDevice.cpp,
+	services/input/InputMapping.h, services/logging/LoggingService.h:
+	Events now have their own classes which are passed to the
+	listeners.  and buttonup, buttondown, mousexit, and mouseenter all
+	work properly.
+
+2002-04-20 10:18  xmp
+
+	* src/services/platform/SDLDrawDevice.cpp: Added include <stdlib.h>
+	for certain systems requiring that include file for abs()
+
+2002-04-16 21:02  nikal
+
+	* src/: main/Application.cpp, main/Dime.cpp, services/gui/Button.h,
+	services/gui/EventGenerator.cpp, services/gui/EventGenerator.h,
+	services/gui/GuiService.cpp, services/gui/GuiService.h,
+	services/gui/Widget.cpp, services/gui/Widget.h,
+	services/platform/Rectangle.h: Dime is now using the event
+	generator, and events have been sped up.  (previously we were only
+	processing one event per screen refresh.  now we process all events
+	the do the screen refresh.)  The event system is very close to
+	being in place, new widgets will come over the next few days.
+
+2002-04-15 21:18  nikal
+
+	* src/services/gui/: EventGenerator.cpp, EventGenerator.h,
+	Widget.cpp: fixes assert error/also starting to add functionality
+	to EventGenerator, which should be used full time
+	tomorrow(sometime)
+
+2002-04-15 20:13  nikal
+
+	* src/services/gui/: EventGenerator.cpp, EventGenerator.h,
+	Makefile, Makefile.am, Widget.cpp, Widget.h: This commit should fix
+	the compilation issue. :)
+
+2002-04-14 22:53  nikal
+
+	* src/main/: Application.cpp, Application.h: [no log message]
+
+2002-04-14 22:52  nikal
+
+	* src/services/gui/: EventGenerator.cpp, EventGenerator.h,
+	GuiService.cpp, GuiService.h, Widget.cpp, Widget.h: Added
+	EventGenerator.h/cpp.  this doesn't compile but i'm tired.
+	Hopefully adamgreg will be able to fix it tonight, if not, i'll fix
+	it tomorrow
+
+2002-04-14 19:00  nikal
+
+	* src/services/platform/RectangleRenderer.cpp: Stopped RRs from
+	updating each time they drew something.  I added the update into
+	the GuiService.cpps draw method, which updates once after drawing
+	everything.  This removes the flicker, but doesn't speed it up much
+	as blits are still being done each redraw. :
+
+2002-04-14 17:14  nikal
+
+	* src/services/gui/: Button.h, Container.cpp, Container.h,
+	GuiService.cpp, GuiService.h, Makefile, Makefile.am, Panel.h,
+	Widget.cpp, Widget.h: Removed Container.* and depandancies on them.
+	 This is due to the nasty circular depandancy widgets and
+	containers had.  And the fact that the Composite pattern requires
+	this.  Hope Adamgreg is paying attention
+
+2002-04-13 20:22  nikal
+
+	* scratchpad/: FontService.cpp, FontService.h:	adding some
+	preliminary FontService files for adamgreg to play with
+
+2002-04-08 00:51  adamgreg
+
+	* src/: main/Application.h, main/Dime.cpp, services/gui/Button.cpp,
+	services/gui/Button.h, services/gui/Container.cpp,
+	services/gui/Container.h, services/gui/Dimension.h,
+	services/gui/GuiService.cpp, services/gui/GuiService.h,
+	services/gui/Makefile, services/gui/Makefile.am,
+	services/gui/Panel.cpp, services/gui/Panel.h,
+	services/gui/Rectangle.h, services/gui/Widget.h,
+	services/platform/Dimension.h, services/platform/DrawDevice.h,
+	services/platform/Rectangle.h,
+	services/platform/RectangleRenderer.h,
+	services/platform/SDLDrawDevice.h: 
+	Added simple panels. Cleaned up the way my Gui code was using
+	SDLDrawDevices instead of the DrawDevice base class. Made
+	GuiService get the root widget dimensions properly. Moved
+	Rectangle.h and Dimension.h to services/platform/ because they're
+	used there and not just in the gui, and are pretty useful for other
+	things. Probably did some other things I've forgotten about :).
+	Mostly just cleaning it up.
+
+2002-04-06 23:19  adamgreg
+
+	* src/: main/Dime.cpp, services/image/ImageService.h: 
+	altered ImageService to use media files in dime/bin .
+	dime/src/main/data can now be removed.
+
+2002-04-06 22:38  adamgreg
+
+	* src/: main/Application.cpp, main/Application.h,
+	services/gui/Button.cpp, services/gui/Button.h,
+	services/gui/Container.cpp, services/gui/Container.h,
+	services/gui/GuiService.cpp, services/gui/GuiService.h,
+	services/gui/Widget.h: 
+	Made GuiService draw widgets to a DrawDevice associated with it. So
+	that the Gui can now be drawn to areas other than the main screen
+	if desired. Also more general for when an OpenGL version turns up.
+
+2002-04-03 00:17  tim
+
+	* dime.dsp: MSVC project fixed
+
+2002-04-02 14:15  tim
+
+	* Visual C++ 6.0.txt, dime.dsp, bin/masonwindowback.jpg,
+	bin/masonwindowback2.jpg, src/main/Application.cpp,
+	src/services/input/InputServiceTest.cpp: Fixed the project
+	files/Install for VisualC++
+
+2002-04-02 09:37  tim
+
+	* src/services/gui/Button.h: Fixed a little bug causing dime to
+	crash at startup.
+
+2002-04-01 00:18  adamgreg
+
+	* src/: main/Dime.cpp, services/gui/Button.cpp,
+	services/gui/Button.h, services/gui/Container.h,
+	services/gui/Widget.cpp, services/gui/Widget.h,
+	services/platform/RectangleRenderer.cpp,
+	services/platform/RectangleRenderer.h: 
+	Fixed segfault when destroying some widgets. Added standard and
+	highlight RectangleRenderers to Button. Made RectangleRenderers use
+	the new Rectangle class. Added another (blank for now) constructor
+	to RectangleRenderer to make it fetch themescheme info to
+	initialize itself with.
+
+2002-03-31 12:15  tim
+
+	* dime.dsp, src/main/Application.cpp, src/main/Application.h,
+	src/main/Dime.cpp, src/services/gui/Button.cpp,
+	src/services/gui/Button.h, src/services/gui/Container.cpp,
+	src/services/gui/GuiService.cpp, src/services/gui/Panel.h,
+	src/services/gui/Widget.cpp, src/services/image/ImageService.cpp,
+	src/services/image/ImageService.h,
+	src/services/input/InputDevice.cpp,
+	src/services/input/InputService.h,
+	src/services/input/InputServiceTest.cpp,
+	src/services/platform/RectangleRenderer.cpp,
+	src/services/platform/SDLDrawDevice.cpp: Bugfixes, MSVC
+	compatibility fixes, Since boost is working ImageService is now
+	caching
+
+2002-03-31 01:42  adamgreg
+
+	* configure.in, src/main/Dime.cpp, src/main/Makefile.am,
+	src/main/data/masonwindowback.jpg,
+	src/main/data/masonwindowback2.jpg, src/services/Makefile.am,
+	src/services/gui/Button.cpp, src/services/gui/Button.h,
+	src/services/gui/Container.cpp, src/services/gui/Container.h,
+	src/services/gui/Dimension.h, src/services/gui/GuiService.cpp,
+	src/services/gui/Rectangle.h, src/services/gui/Widget.cpp,
+	src/services/gui/Widget.h, src/services/image/ImageService.cpp,
+	src/services/image/ImageService.h, src/services/image/Makefile.am,
+	src/services/platform/RectangleRenderer.cpp,
+	src/services/platform/RectangleRenderer.h: 
+	Added Rectangle class for Widget to use. Later should make RR use
+	it too so that people creating widgets don't have to worry about
+	calling Rectangle::getSDL_Rect(). Kept Dimension, for defining
+	max/min/pref dimensions. Quite a few functions in Rectangle so that
+	they'll play nicely together.  Messed a bit with nikal's
+	ImageService - added image caching. There's a complete
+	implementation using Boost shared pointers, which is commented out
+	for now because I don't know if many people have or want the boost
+	dev files. Incomplete implementation that loads but doesn't unload
+	from cache properly.  Did some tidying of RectangleRenderer, and
+	tried to make it a bit safer and easier to use. And implemented
+	bitmap type RRs using ImageService and DrawDevice.  ...pretty
+	bitmapped buttons! (now nikal won't shout at me :)
+
+2002-03-30 20:43  nikal
+
+	* src/services/image/: ImageService.cpp, ImageService.h:
+	ImageService 0.0.1 now works. It loads images, and searches paths
+	for them.  You can add search paths but not delete them.  Next
+	iteration will allow for deleting search paths, and will cache
+	instances of an image so there are no more than one instance in
+	memory per time, and that the instance is deleted when no longer
+	needed.
+
+2002-03-30 02:33  adamgreg
+
+	* ChangeLog, src/main/Application.cpp, src/main/Application.h,
+	src/main/Dime.cpp, src/main/DimeServices.h, src/main/Makefile.am,
+	src/services/gui/Button.cpp, src/services/gui/Button.h,
+	src/services/gui/Container.cpp, src/services/gui/GuiService.cpp,
+	src/services/gui/GuiService.h, src/services/gui/Makefile,
+	src/services/gui/Makefile.am, src/services/gui/Panel.cpp,
+	src/services/gui/Panel.h, src/services/gui/Widget.cpp,
+	src/services/gui/Widget.h, src/services/input/InputDevice.cpp,
+	src/services/input/InputService.h,
+	src/services/logging/LoggingService.h,
+	src/services/platform/RectangleRenderer.cpp,
+	src/services/platform/RectangleRenderer.h,
+	src/services/platform/SDLDrawDevice.h: 
+	Input now successfully obtained by GuiService from InputService.
+	Button Widget added. Widget events work. Proper use of
+	RectangleRenderers.  The upshot is : pretty thing on screen that
+	does stuff. Check it out!
+
+2002-03-29 22:23  nikal
+
+	* configure.in, doc/template_header.h: fixing configure.in to
+	include services/platform
+
+2002-03-29 22:17  nikal
+
+	* src/services/: Makefile.am, gui/Makefile, input/InputDevice.h,
+	platform/DrawDevice.h, platform/RectangleRenderer.cpp,
+	platform/RectangleRenderer.h, platform/SDLDrawDevice.cpp,
+	platform/SDLDrawDevice.h: commiting fixed RectangleRenderers, which
+	compile and use DrawDevice's to do their rendering.  Makefiles
+	should now also try and compile the platform stuff via automake
+	etc.
+
+2002-03-29 15:37  nikal
+
+	* src/services/platform/: Color.h, DrawDevice.h, SDLDrawDevice.cpp,
+	SDLDrawDevice.h: Added Color.h which is a simple Color
+	encapsulation allowing division multiplication addition and
+	subtraction.  Updated DrawDevice.h and SDLDrawDevice.* to do
+	Gradients and to use the Color class
+
+2002-03-27 21:29  adamgreg
+
+	* src/: main/Makefile.am, services/gui/Makefile,
+	services/input/InputDevice.cpp, services/input/InputDevice.h,
+	services/input/Makefile.am: 
+	Added GuiService to the main build process. Dime now segfaults. 
+	MUHAHAHAHAHAHAHAHA!!
+
+2002-03-27 19:35  adamgreg
+
+	* src/main/DimeServices.h: 
+	Added line to initialize GuiService to DimeServices.h
+
+2002-03-27 19:28  grimicus
+
+	* ChangeLog, acinclude.m4, configure.in: 2002-03-27 Dan Tomalesky
+	<grim@xynesis.com>     * Added eris into configure.in and added the
+	m4 macro for eris into	     acinclude.m4 so that configure reports
+	nicely that you don't have it	    instead of crazy automake
+	errors.
+
+2002-03-27 00:39  adamgreg
+
+	* src/services/gui/Makefile.am: 
+	Whoops, forgot to cvs add the Makefile.am I added to
+	src/services/gui
+
+2002-03-27 00:37  adamgreg
+
+	* configure.in, src/services/Makefile.am,
+	src/services/gui/GuiService.cpp, src/services/gui/GuiService.h,
+	src/services/gui/Makefile, src/services/input/InputDevice.h: 
+	Added automake stuff for GuiService (I think). Added int
+	getAxis(int) function prototype to InputDevice.h so that
+	InputDevice.cpp would compile. Fleshed out constructor of
+	GuiService
+
+2002-03-25 22:16  nikal
+
+	* src/services/platform/: DrawDevice.h, Makefile.am,
+	SDLDrawDevice.cpp, SDLDrawDevice.h: Adding the DrawDevice
+	interface.  Adding the SDLDrawDevice implementation of the
+	DrawDevice Interface.  After being accused of pre-mature
+	optimizational type thougts, and pleading guilty, I decided to get
+	this done so we could start using it.
+
+2002-03-25 01:59  adamgreg
+
+	* src/services/: gui/Container.cpp, gui/Container.h,
+	gui/Dimension.h, gui/GuiService.cpp, gui/GuiService.h,
+	gui/Widget.h, input/InputDevice.cpp, input/InputMapping.h,
+	input/InputService.h: 
+	Containers now process mouse input from InputService. Currently
+	only motion events leading to firing of onMouseEnter and
+	onMouseExit signals. The input service and dimension files being
+	commited I haven't made any actual changes to :-/
+
+2002-03-24 18:00  adamgreg
+
+	* src/services/: gui/GuiService.cpp, gui/GuiService.h,
+	input/InputMapping.h: 
+	fix so InputMapping works with g++.
+
+2002-03-24 13:03  nikal
+
+	* configure.in, src/services/Makefile.am,
+	src/services/gui/test.cpp: Removed some superfluous files,
+	dependancies, and compilations.  It compiles on my machine now
+
+2002-03-24 10:32  adamgreg
+
+	* AUTHORS, src/main/DimeServices.h,
+	src/services/gui/GuiService.cpp, src/services/gui/GuiService.h,
+	src/services/gui/Panel.h,
+	src/services/platform/RectangleRenderer.h: 
+	Started getting input into GuiService. Added GuiService to the
+	services managed by DimeServices.
+
+2002-03-21 18:33  winand
+
+	* src/services/platform/: RectangleRenderer.cpp, Makefile.am,
+	PlatformService.cpp, PlatformService.h, RectangleRenderer.h: [no
+	log message]
+
+2002-03-21 18:09  winand
+
+	* src/services/Makefile.am: [no log message]
+
+2002-03-21 12:21  tim
+
+	* src/services/input/InputServiceTest.cpp: InputServiceTest.cpp
+	added
+
+2002-03-18 15:14  tim
+
+	* src/services/: input/InputDevice.cpp, input/InputService.h,
+	logging/LoggingService.h: Minor bugfixes; New tests for
+	InputService
+
+2002-03-17 22:47  adamgreg
+
+	* src/services/gui/: Container.cpp, Container.h, GuiService.cpp,
+	GuiService.h, Widget.cpp, Widget.h: 
+	Just renaming some things so they fit the style guidlines or make
+	more sense
+
+2002-03-17 22:25  adamgreg
+
+	* src/services/gui/: Application.h, Container.cpp, Container.h,
+	GuiService.cpp, GuiService.h, Panel.h, ParaGuiApplication.cpp,
+	ParaGuiApplication.h, ParaGuiService.cpp, ParaGuiService.h,
+	Widget.cpp, Widget.h: 
+	Adamgreg - Fleshed out Container. fixed Widget and added myParent
+	and supporting functionality to it. ParaGui stuff is gone now.
+	Added root container widget to GuiService and a system to pass a
+	draw message down the widget tree, though it's not going to get
+	anywhere useful yet.  This is a first attempt, so be gentle. ;)
+
+2002-03-16 21:46  nikal
+
+	* doc/template_header.h: Updating our coding style/header template
+	to reflect the decision that only one namespace should be used. 
+	"Dime::"
+
+2002-03-03 11:03  alriddoch
+
+	* configure.in: CppUnit missing is no longer fatal
+
+2002-03-03 10:44  alriddoch
+
+	* acinclude.m4: Added cppunit.4 so that configure will still run
+	without cppunit
+
+2002-02-25 12:35  tim
+
+	* dime.dsp, src/services/input/InputDevice.cpp,
+	src/services/input/InputDevice.h,
+	src/services/input/InputService.h: Bugfixes, New tests
+
+2002-02-19 00:13  lee
+
+	* src/services/logging/LoggingService.h: Fixed the warning from
+	passing strings through "..."
+	
+	It looked like it was almost the wrong place
+	
+	Also, most of the services code is in the headers, but should be in
+	the cpp files
+
+2002-02-19 00:03  zzorn
+
+	* scratchpad/TeaTimeGui/: readme.txt, src/american.ttf,
+	src/arial.ttf, src/blackadd.ttf, src/fe______.ttf, src/gripbg1.cel,
+	src/guitest.cc, src/guitest.gdt, src/guitest.gpr, src/mousecur.cel,
+	src/mousehor.cel, src/mouselef.cel, src/mousemov.cel,
+	src/mouserig.cel, src/mousever.cel, src/rhide.key, src/splash.cel,
+	src/ttapplic.cc, src/ttapplic.h, src/ttbutton.cc, src/ttbutton.h,
+	src/ttedit.cc, src/ttedit.h, src/ttform.cc, src/ttform.h,
+	src/ttgui.h, src/ttguidef.h, src/ttguigfx.cc, src/ttguigfx.h,
+	src/ttlist.cc, src/ttlist.h, src/ttmousev.cc, src/ttmousev.h,
+	src/ttproper.h, src/ttstatic.cc, src/ttstatic.h, src/tttime.cc,
+	src/tttime.h, src/ttwindow.cc, src/ttwindow.h, src/ttwstyle.cc,
+	src/ttwstyle.h: Added old GUI library by zzorn, to use as
+	inspiration or possible starting point if we decide to build an own
+	gui toolkit.  Uses Allegro, doesn't necessarily compile.
+
+2002-02-18 18:11  lee
+
+	* INSTALL, configure.in, src/services/Makefile.am,
+	src/services/input/InputDevice.cpp,
+	src/services/input/InputDevice.h, src/services/input/Makefile.am:
+	Most changes are to get Dime compiling again under LINUX
+	
+	fixes: - changed sdl to SDL in includes (ie SDL/SDL_events.h
+	instead of sdl/SDL_events.h - changed scoping of "i" in
+	InputService::~InputService so that is in scope - added CPPUnit
+	(version 1.6.2) as a requirement of Dime - created makefile for
+	Input service - added Input service to subdirs to be built
+	
+	A side note: - there are a number of warnings about passing strings
+	through "...".	By ISO C++ this is not allowed, only primative data
+	types can be passed by value through "..."
+	
+	Lee, 19 feb 2002
+
+2002-02-18 14:51  tim
+
+	* dime.dsp, src/mscprag.h, src/main/Application.cpp,
+	src/main/DimeServices.h, src/services/input/InputDevice.cpp,
+	src/services/input/InputMapping.h: Added CppUnit stuff.
+
+2002-02-18 14:04  zzorn
+
+	* doc/template_header.h: Changed copy constructor return to return
+	*this.
+
+2002-02-17 21:26  alistaird
+
+	* src/framework/: templategameview.cpp, templategameview.h: 
+	2002/02/18 AlistairD lord_inh@yahoo.co.uk
+
+2002-02-17 18:48  nikal
+
+	* src/services/gui/test.cpp: Forgot this file.
+
+2002-02-17 18:45  nikal
+
+	* src/services/gui/: Application.h, Container.h, Dimension.h,
+	GuiService.h, Makefile, ParaGuiApplication.cpp,
+	ParaGuiApplication.h, ParaGuiService.cpp, ParaGuiService.h,
+	Widget.cpp, Widget.h: Worked on getting a working Application,
+	which holds the main screen for the GUI.  Then wrapped up the
+	ParaGUI Application.
+
+2002-02-16 15:46  alistaird
+
+	* src/framework/: templategameview.cpp, templategameview.h: 
+	2002/02/16 AlistairD lord_inh@yahoo.co.uk Templates for game view
+	creation. Probably full of errors right now, and there's no stable
+	API yet except for the Eris stuff. This is my first ever CVS
+	commit, yay! :)
+
+2002-02-16 14:16  nikal
+
+	* src/services/gui/: Button.h, Container.h, Dimension.h, Label.h,
+	LineEdit.h, TextBox.h, Theme.h, Widget.h: Adding the skeleton files
+	for the GuiService.
+
+2002-02-16 11:28  tim
+
+	* src/services/input/: InputDevice.cpp, InputDevice.h,
+	InputMapping.h, InputService.h: Made InputService compile
+
+2002-02-14 14:44  tim
+
+	* dime.dsp, src/services/input/InputDevice.cpp,
+	src/services/input/InputDevice.h,
+	src/services/input/InputMapping.h,
+	src/services/input/InputService.h: (part of) InputService
+	implementation
+
+2002-02-09 22:04  lee
+
+	* INSTALL: Updated the Install file, added some version number so
+	some things.
+	
+	Added details about installing dependancies on a package system (ie
+	RPM)
+
+2002-02-09 20:07  lee
+
+	* AUTHORS, configure.in, src/Makefile.am, src/main/Makefile.am:
+	tidyed up Makefiles, bumped SigC++ required to 1.0.3 and Atlas-C++
+	to 0.4.4 (same as Eris requires)
+	
+	Added self to Authors
+
+2002-02-09 17:50  lee
+
+	* src/services/: config/Makefile, metaserver/Makefile,
+	test/Makefile: Removing some more unnecessary Makefiles
+
+2002-02-09 17:46  lee
+
+	* src/services/Makefile: Removed unneed Makefile
+
+2002-02-06 09:18  tim
+
+	* src/services/input/InputMapping.h: InputService implementation
+
+2002-02-06 09:11  tim
+
+	* dime.dsp, src/services/input/InputService.h,
+	src/services/logging/LoggingService.h: InputService implementation
+
+2002-02-05 15:13  demitar
+
+	* Makefile.am, configure.in, src/Makefile.am,
+	src/services/Makefile.am, src/services/config/Makefile.am,
+	src/services/metaserver/Makefile.am, src/services/test/Makefile.am:
+	New makefiles... probably need to autogen and clean out old
+	makefiles.
+
+2002-02-02 08:24  tim
+
+	* src/services/: input/InputService.h, logging/LoggingService.h:
+	Bugfixing
+
+2002-02-01 11:52  aglanor
+
+	* src/components/cs/: CSComponent.cpp, CSComponent.h, Makefile,
+	cs-config: Crystal Space basic component. Change cs-config with
+	your own and make
+
+2002-01-29 18:07  aglanor
+
+	* src/services/server/: ServerService.cpp, ServerService.h: minor
+	changes
+
+2002-01-29 17:26  aglanor
+
+	* src/services/server/: Makefile, ServerService.cpp,
+	ServerService.h: Layout of the Server Service files
+
+2002-01-29 17:09  aglanor
+
+	* src/services/: ServiceTest.cpp, metaserver/MetaserverService.cpp,
+	metaserver/MetaserverService.h: Metaserver can do a .poll() and
+	retrieve the number of servers
+
+2002-01-29 16:11  zzorn
+
+	* src/services/input/InputService.h: Oh, just the silly editor
+	timestamping the file. Sorry.
+
+2002-01-29 15:54  aglanor
+
+	* src/services/: Makefile, ServiceTest.cpp,
+	metaserver/MetaserverService.cpp, metaserver/MetaserverService.h:
+	Metaserver basic implementation, 2nd try
+
+2002-01-29 15:04  zzorn
+
+	* src/services/gui/GuiService.h: Adding intial header for a service
+	that provides basic GUI widgets.
+
+2002-01-29 15:02  zzorn
+
+	* src/framework/Service.h: Small fixes
+
+2002-01-29 14:48  zzorn
+
+	* doc/template_header.h: Small fixes
+
+2002-01-28 15:49  aglanor
+
+	* src/services/Makefile.am: it was in the way
+
+2002-01-28 15:34  aglanor
+
+	* src/services/Makefile: [no log message]
+
+2002-01-28 15:30  aglanor
+
+	* src/services/metaserver/: MetaserverService.cpp,
+	MetaserverService.h: [no log message]
+
+2002-01-28 13:52  tim
+
+	* src/services/logging/LoggingService.h: no message
+
+2002-01-28 13:45  tim
+
+	* dime.dsp, src/services/config/ConfigService.h,
+	src/services/logging/LoggingService.cpp,
+	src/services/logging/LoggingService.h: fixed project
+	files/compatibility to windows
+
+2002-01-28 13:02  aglanor
+
+	* src/services/: ServiceTest.cpp, metaserver/Makefile,
+	metaserver/MetaserverService.cpp, metaserver/MetaserverService.h:
+	basic layout of the metaserver service
+
+2002-01-28 12:10  aglanor
+
+	* INSTALL, src/Makefile.am, src/services/config/ConfigService.cpp,
+	src/services/config/Makefile, src/services/test/Makefile,
+	src/services/test/TestService.cpp: some changes in the makefiles so
+	I can test my services apart from the main app. Also, changed
+	dependency sktream to skstream2 (CVS version)
+
+2002-01-27 17:36  aglanor
+
+	* INSTALL: added urls for ftp downloading of libraries
+
+2002-01-27 16:39  aglanor
+
+	* INSTALL: dependencies updated
+
+2002-01-27 16:20  nikal
+
+	* src/main/: Application.cpp, Application.h, Dime.cpp,
+	DimeServices.cpp, DimeServices.h: Some minor changes reflecting
+	Dime's decision to use only dime:: as a namespace
+
+2002-01-27 16:12  aglanor
+
+	* src/: framework/Makefile.am, services/config/Makefile,
+	services/input/InputService.h, services/test/Makefile: minor fixes
+
+2002-01-27 16:08  aglanor
+
+	* src/: framework/Service.h, framework/ServiceManager.cpp,
+	framework/ServiceManager.h, services/config/ConfigService.h,
+	services/input/InputService.h, services/logging/LoggingService.h,
+	services/test/TestService.cpp, services/test/TestService.h: Fixed
+	namespaces - all dime::framework is now dime:: and all
+	dime::services::whatever is now dime:: too. For the children.
+
+2002-01-27 15:41  aglanor
+
+	* src/: framework/Makefile.am, framework/ServiceTest.cpp,
+	services/ServiceTest.cpp, services/config/ConfigService.cpp,
+	services/config/ConfigService.h, services/config/Makefile,
+	services/test/Makefile: moving this file to a proper place
+
+2002-01-27 14:14  aglanor
+
+	* configure.in, dime.dox, dime.dox.in, src/framework/Makefile.am:
+	[no log message]
+
+2002-01-27 13:15  aglanor
+
+	* src/: Makefile.am, framework/Makefile.am: [no log message]
+
+2002-01-27 12:11  aglanor
+
+	* src/framework/: Makefile, Makefile.am: [no log message]
+
+2002-01-27 10:57  nikal
+
+	* src/main/: Application.cpp, Application.h: Created and added a
+	LogObserver which prints messages out to std::cerr.  Ther is a
+	small bug. not sure where.
+
+2002-01-27 10:03  aglanor
+
+	* src/services/: Makefile, Makefile.am: [no log message]
+
+2002-01-27 09:30  nikal
+
+	* src/services/test/TestService.h: Changed the include to reflect a
+	moved header.
+
+2002-01-27 08:22  aglanor
+
+	* src/services/config/: ConfigService.cpp, ConfigService.h,
+	Makefile: Hash_map added, it seems to work more or less...
+
+2002-01-27 04:25  tim
+
+	* dime.dsp, src/services/logging/LoggingService.h: Correction of
+	the project file
+
+2002-01-26 23:36  zzorn
+
+	* make_docs.bat: Added a windows bat file for making the
+	documentation with doxygen.
+
+2002-01-26 23:31  zzorn
+
+	* src/: services/config/ConfigService.cpp,
+	services/config/ConfigService.h, services/test/TestService.cpp,
+	services/test/TestService.h, main/DimeServices.h: Corrected paths
+	to moved files.
+
+2002-01-26 23:31  zzorn
+
+	* src/services/: AbstractService.h, LoggingService.cpp,
+	LoggingService.h, Service.h, ServiceManager.cpp, ServiceManager.h,
+	ServiceTest.cpp: Removed files that were moved, and deleted
+	AbstractService that is replaced by Service.
+
+2002-01-26 23:30  zzorn
+
+	* src/framework/: Service.h, ServiceManager.cpp, ServiceManager.h,
+	ServiceTest.cpp: Moved service manager and base class to the
+	framework.
+
+2002-01-26 23:29  zzorn
+
+	* src/services/logging/: LoggingService.cpp, LoggingService.h:
+	Moved logging service to it's own subdirectory.
+
+2002-01-26 23:06  zzorn
+
+	* doc/template_header.h: std::String -> std::string
+
+2002-01-26 23:03  zzorn
+
+	* src/services/input/InputService.h: Adding InputService header. 
+	Will not compile yet.
+
+2002-01-26 17:49  zzorn
+
+	* AUTHORS, README: Removed old comment from readme, and spelled
+	zzorn with lowercase z.
+
+2002-01-26 17:48  zzorn
+
+	* src/main/DimeServices.h: Fixed some method comment.
+
+2002-01-26 17:27  nikal
+
+	* src/main/DimeServices.cpp: Adding DimeServices.cpp which contains
+	the static reference to theInstance
+
+2002-01-26 17:26  nikal
+
+	* src/main/: Application.cpp, Application.h, DimeServices.h,
+	Makefile.am: Hacking logging into Dime.
+
+2002-01-26 11:53  nikal
+
+	* src/main/Makefile: Removing the Makefiles which I forgot to
+	remove last commite
+
+2002-01-26 11:51  nikal
+
+	* Makefile.am, autogen.sh, configure.in, src/Makefile.am,
+	src/main/Makefile, src/main/Makefile.am: Added autoconf files for a
+	basic compile of Dime
+
+2002-01-26 09:20  tim
+
+	* src/services/LoggingService.h: Bug and compatibility fixes.
+
+2002-01-25 19:55  aglanor
+
+	* AUTHORS, COPYING, INSTALL, src/services/LoggingService.h,
+	src/services/ServiceManager.cpp, src/services/ServiceTest.cpp:
+	Weird stuff like a list of people and a fancy license, try it, it
+	rocks
+
+2002-01-24 18:19  aglanor
+
+	* src/services/config/: ConfigService.cpp, ConfigService.h,
+	Makefile, dime.conf: basic design for the Dime Configuration
+	Service, and a sample configuration file
+
+2002-01-24 03:58  tim
+
+	* Visual C++ 6.0.txt, dime.dsp, dime.dsw, src/main/Application.cpp,
+	src/services/LoggingService.cpp, src/services/LoggingService.h,
+	src/services/ServiceManager.cpp, src/services/ServiceManager.h:
+	Changed observer handling of the LoggingService to a more
+	C++-convenient way (thanks goes to Nikal) Added the Visual C++ 6.0
+	workspace and a small readme to the CVS
+
+2002-01-23 14:38  aglanor
+
+	* src/services/: ServiceManager.cpp, ServiceManager.h: Fixed
+	addition and removing of services, method +deleteAll+ removed
+
+2002-01-21 16:39  aglanor
+
+	* src/services/: Makefile, ServiceManager.cpp, ServiceManager.h,
+	ServiceTest.cpp: Implementation of the Service Manager
+
+2002-01-21 10:34  zzorn
+
+	* src/services/LoggingService.h: Changed sprintf to snprintf to
+	avoid buffer overruns, and added some notes.
+
+2002-01-21 10:33  zzorn
+
+	* src/framework/: Component.h, ComponentFactory.h: Changed
+	namespace to framework
+
+2002-01-20 16:42  tim
+
+	* src/services/LoggingService.h: Fixed some minor TODOs, added
+	filter feature, removed formatID from the FileObservers, made it
+	compile
+
+2002-01-20 14:13  zzorn
+
+	* src/: framework/Component.h, framework/ComponentFactory.h,
+	components/Component.h, components/ComponentFactory.h: Moved
+	component base classes to the framework.
+
+2002-01-20 14:11  zzorn
+
+	* src/services/test/TestService.h: no message
+
+2002-01-20 14:10  zzorn
+
+	* src/main/DimeServices.h: Added DimeService singleton, for
+	accessing all dime services.
+
+2002-01-20 13:07  zzorn
+
+	* doc/template_header.h: Updated the template document, and wrote
+	some questions about the TODO tag system to use.
+
+2002-01-20 12:28  zzorn
+
+	* src/services/Service.h: Added enum for service state.
+
+2002-01-20 11:25  tim
+
+	* src/services/LoggingService.h: First version of the Logging
+	Service (not compilable)
+
+2002-01-20 09:20  nikal
+
+	* src/main/: Application.cpp, Application.h, Dime.cpp, dime.cpp:
+	Cleaning up the style of Application.h/cpp and Dime
+
+2002-01-20 08:26  nikal
+
+	* src/main/: Makefile, application.cpp, application.h: [no log
+	message]
+
+2002-01-19 12:22  zzorn
+
+	* src/services/ServiceManager.cpp: mm. This file says it is changed
+	even when I committed it..
+
+2002-01-19 12:21  zzorn
+
+	* doc/template_header.h: Updated the coding guidelines and added a
+	section for disabled constructors and operators.
+
+2002-01-19 12:14  zzorn
+
+	* src/framework/Makefile: Added directory for framework classes,
+	and empty makefile.
+
+2002-01-19 12:11  zzorn
+
+	* src/services/: AbstractService.h, Service.h, ServiceManager.h,
+	ServiceTest.cpp, test/TestService.cpp, test/TestService.h: Changed
+	some methods, added stubs for others, and added some documentation.
+
+2002-01-18 20:42  aglanor
+
+	* src/services/: AbstractService.h, Makefile, Service.h,
+	ServiceManager.cpp, ServiceManager.h, ServiceTest.cpp,
+	test/Makefile, test/TestService.cpp, test/TestService.h: agla's
+	fr1s+ c0mm1+ w00+!!1! (dime service interface, service manager and
+	a test service)
+
+2002-01-16 14:27  zzorn
+
+	* src/components/ComponentFactory.h: Added ComponentFactory
+
+2002-01-16 14:03  zzorn
+
+	* doc/template_header.h, src/components/Component.h: Reversed
+	include orders in template header as recommended by  John Lakos in
+	Large-Scale C++ Software Design (Addison-Wesley, 1996)
+	
+	Fixed Component & ComponentFactory a bit
+
+2002-01-16 12:57  zzorn
+
+	* src/components/Component.h: added includes
+
+2002-01-16 12:53  zzorn
+
+	* src/components/Component.h: Adding first version of component
+	interface
+
+2002-01-15 18:12  zzorn
+
+	* doc/template_header.h: Moved variables before methods, so that
+	inline methods can access the variables (getters & setters for
+	example).
+
+2002-01-12 18:50  zzorn
+
+	* src/main/application.h: Changed comments to use /** so that
+	doxygen generates documentation for them.
+
+2002-01-12 18:49  zzorn
+
+	* dime.dox: Adding doxygen file for dime
+
+2002-01-12 17:51  zzorn
+
+	* doc/template_header.h: Adding coding style / template header
+	document
+
+2002-01-12 16:43  nikal
+
+	* src/main/: Makefile, application.cpp, application.h, dime.cpp:
+	adding the skeleton Application and a basic int main()
+
+2002-01-12 13:54  zzorn
+
+	* README: Adding initial README for dime
+

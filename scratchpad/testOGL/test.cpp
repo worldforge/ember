@@ -25,19 +25,22 @@ int main(int argc, char **argv) {
   int done=0;
 
 	dime::OGLDrawDevice myDevice(screen->w, screen->h);
-	dime::Rectangle myR(50,10, 100,100);
+	dime::Rectangle myR(50,10, 500,400);
   
-  dime::RectangleRenderer myRR(myR, "nehe.bmp", dime::RectangleRenderer::TILE);
+  dime::RectangleRenderer myRR(myR, "test.png", dime::RectangleRenderer::TILE);
 
   
-  SDL_Surface *picture;
+  SDL_Surface *picture, *picture2;
   picture = IMG_Load("test.png");
-  std::cout << picture->format->Rmask << " " << picture->format->Gmask << " "<< picture->format->Bmask ;
+  picture2 = IMG_Load("nehe.bmp");
+  
+  std::cout << picture->format->Rmask << " " << picture->format->Gmask << " "<< picture->format->Bmask << " " << picture->format->Amask << std::endl;
+  std::cout << picture2->format->Rmask << " " << picture2->format->Gmask << " " << picture2->format->Bmask << " " << picture2->format->Amask << std::endl;
   myDevice.init();
   myDevice.clearScreen();
   myRR.render(&myDevice);
   myDevice.drawPixel(100,100,dime::Color(100,100,100));
-  myDevice.drawLine(0, 0, 100, 00, dime::Color(0,0,255));
+  myDevice.drawLine(0, 0, 100, 100, dime::Color(0,0,255));
   myDevice.update();
   
   while(done == 0)

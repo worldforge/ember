@@ -100,7 +100,7 @@ void dime::OGLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL
   
   // Generate The Texture 
   glTexImage2D( GL_TEXTURE_2D, 0, 3, src->w,
-		src->h, 0, GL_BGR,
+		src->h, 0, GL_RGB,
 		GL_UNSIGNED_BYTE, src->pixels );
   
   // Linear Filtering 
