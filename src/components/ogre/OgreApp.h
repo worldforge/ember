@@ -38,6 +38,10 @@ Description: Base class for all the OGRE examples
 
 using namespace Ogre;
 
+class TerrainListener;
+
+class CameraRotator;
+
 /** Base class which manages the standard startup of an Ogre application.
     Designed to be subclassed for specific examples if required.
 */
@@ -176,5 +180,39 @@ protected:
 
 };
 
+// ----------------------------------------------------------------------------
+// Define the application object
+// This is derived from BaseApplication which is the class OGRE provides to
+// make it easier to set up OGRE without rewriting the same code all the time.
+// You can override extra methods of BaseApplication if you want to further
+// specialise the setup routine, otherwise the only mandatory override is the
+// 'createScene' method which is where you set up your own personal scene.
+// ----------------------------------------------------------------------------
+class OgreApp : public BaseApplication
+{
+public:
+    // Basic constructor
+    OgreApp() {}
+	Entity* mShip;
+	SceneNode* mShipNode;
+
+protected:
+
+  // Just override the mandatory create scene method
+  void createScene(void);
+
+  // Override this too.
+  void createFrameListener(void);
+	
+  virtual void chooseSceneManager(void)
+    {
+      // Get the SceneManager
+      mSceneMgr = mRoot->getSceneManager( ST_EXTERIOR_CLOSE );
+    }
+
+  virtual void createCamera(void);
+
+
+};
 
 #endif

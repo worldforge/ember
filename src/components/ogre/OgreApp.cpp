@@ -239,97 +239,57 @@ public:
 
 };
 
-
-// ----------------------------------------------------------------------------
-// Define the application object
-// This is derived from BaseApplication which is the class OGRE provides to
-// make it easier to set up OGRE without rewriting the same code all the time.
-// You can override extra methods of BaseApplication if you want to further
-// specialise the setup routine, otherwise the only mandatory override is the
-// 'createScene' method which is where you set up your own personal scene.
-// ----------------------------------------------------------------------------
-class OgreApp : public BaseApplication
+void OgreApp::createScene(void)
 {
-public:
-    // Basic constructor
-    OgreApp() {}
-	Entity* mShip;
-	SceneNode* mShipNode;
+  mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+  // Create a light
+  Light* l = mSceneMgr->createLight("MainLight");
+  l->setPosition(20,80,50);
 
-protected:
+  // create a Skydome
+  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
-    // Just override the mandatory create scene method
-    void createScene(void)
-    {
+  // set the world geometry
+  mSceneMgr->setWorldGeometry("terrain.cfg");
 
+#if 0
+  // create the entity
+  mShip = mSceneMgr->createEntity("razor", "razor.mesh");
 
-		mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
-		// Create a light
-        Light* l = mSceneMgr->createLight("MainLight");
-        l->setPosition(20,80,50);
+  // create the node
+  mShipNode = mSceneMgr->getRootSceneNode()->createChild();
 
-		// create a Skydome
-		mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+  // attach the node to the entity
+  mShipNode->attachObject(mShip);
+#endif
+}
 
-		// set the world geometry
-		mSceneMgr->setWorldGeometry("terrain.cfg");
-/*
+void OgreApp::createFrameListener(void)
+{
+  mFrameListener= new TerrainListener(mWindow, mCamera);
+  mRoot->addFrameListener(mFrameListener);
+#if 0
+    CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
+    mRoot->addFrameListener(cameraRotator);
+#endif
+}
 
-		// create the entity
-		mShip = mSceneMgr->createEntity("razor", "razor.mesh");
+void OgreApp::createCamera(void)
+{
+  // Create the camera
+  mCamera = mSceneMgr->createCamera("PlayerCam");
 
-		// create the node
-		mShipNode = mSceneMgr->getRootSceneNode()->createChild();
+  // Position it at 500 in Z direction
+  mCamera->setPosition(Vector3(128,25,128));
 
-		// attach the node to the entity
-		mShipNode->attachObject(mShip);
-		*/
+  // Look back along -Z
+  mCamera->lookAt(Vector3(0,0,-300));
+  mCamera->setNearClipDistance( 1 );
+  // do not clip at far distance
+  // so we can see the skydome
+  //mCamera->setFarClipDistance( 384 );
 
-    }
-
-	void createFrameListener(void)
-    {
-		mFrameListener= new TerrainListener(mWindow, mCamera);
-		mRoot->addFrameListener(mFrameListener);
-	/*
-		CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
-        mRoot->addFrameListener(cameraRotator);
-		*/
-
-    }
-	
-	virtual void chooseSceneManager(void)
-    {
-        // Get the SceneManager
-        mSceneMgr = mRoot->getSceneManager( ST_EXTERIOR_CLOSE );
-    }
-
-    virtual void createCamera(void)
-    {
-        // Create the camera
-        mCamera = mSceneMgr->createCamera("PlayerCam");
-
-        // Position it at 500 in Z direction
-        mCamera->setPosition(Vector3(128,25,128));
-
-        // Look back along -Z
-        mCamera->lookAt(Vector3(0,0,-300));
-        mCamera->setNearClipDistance( 1 );
-		// do not clip at far distance
-		// so we can see the skydome
-        //mCamera->setFarClipDistance( 384 );
-
-    }
-
-
-
-};
-
-
-
-
-
-
+}
 
 
 // ----------------------------------------------------------------------------
