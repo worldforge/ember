@@ -125,6 +125,7 @@ class Button : public Widget
      */
     Button() : Widget()
     {
+		myCurrentBackground = &myStandardBackground;
     }
 
 
