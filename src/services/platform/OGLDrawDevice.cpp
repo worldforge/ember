@@ -49,12 +49,87 @@ void dime::OGLDrawDevice::drawLine(int x1, int y1, int x2, int y2, dime::Color c
 
 void dime::OGLDrawDevice::blitSurface(SDL_Rect *srcRect, SDL_Rect *destRect, SDL_Surface *src)
 {
-    
+  //Ok, this function was annoying for me to write.  Not only is it not effecient,
+  //it's hard to understand. I'm going to rewrite it tomorrow morning. -nikal 2002-07-10 12:30AM
+  GLuint texture[1];
+  //If our src bitmap is null, return.
+  if(!src)
+    {
+      return;
+    }
+  //Avoid division by 0
+  if(src->w <= 0 || src->h <= 0)
+    {
+      return;
+    }
+  GLfloat srcX, srcY, srcW, srcH;
+  GLfloat destX, destY, destW, destH;
+  if(!srcRect)
+    {
+      srcX = 0;
+      srcY = 0;
+      srcW = src->w;
+      srcH = src->h;
+    }
+  else 
+    {
+      srcX = srcRect->x;
+      srcY = srcRect->y;
+      srcW = srcRect->w;
+      srcH = srcRect->h;
+    }
+  //If the destination is null, then do we return? or continue?
+  if(!destRect)
+    {
+      destX=0;
+      destY=0;
+    }
+  else
+    {
+      destX = destRect->x;
+      destY = destRect->y;
+    }
+  destW = srcW;
+  destH = srcH;
+  // we really need a way to cache GL textures. :)
+  // Create The Texture 
+  glGenTextures( 1, &texture[0] );
+  
+  // Typical Texture Generation Using Data From The Bitmap
+  glBindTexture( GL_TEXTURE_2D, texture[0] );
+  
+  // Generate The Texture 
+  glTexImage2D( GL_TEXTURE_2D, 0, 3, src->w,
+		src->h, 0, GL_BGR,
+		GL_UNSIGNED_BYTE, src->pixels );
+  
+  // Linear Filtering 
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  saveMatrices();
+  glBegin(GL_QUADS);
+  
+  // Top Left Of The Texture and Quad 
+  glTexCoord2f( srcX/src->w, srcY/src->h ); 
+  glVertex3f( destX, destY, -1.0f );
+  // Top Right Of The Texture and Quad 
+  glTexCoord2f( srcW/src->w, srcY/src->h ); 
+  glVertex3f(  destX+destW, destY, -1.0f );
+  // Bottom Right Of The Texture and Quad 
+  glTexCoord2f( srcW/src->w, srcH/src->h ); 
+  glVertex3f(  destX+destW, destY+destW, -1.0f );
+  // Top Left Of The Texture and Quad 
+  glTexCoord2f( srcX/src->w, srcH/src->h ); 
+  glVertex3f( destX,  destY+destW , -1.0f);
+
+  glEnd();
+  restoreMatrices();
 }
 
 void dime::OGLDrawDevice::update()
 {
-
+  //probably should assume double-buffering
+  SDL_GL_SwapBuffers( );
 }
 
 void dime::OGLDrawDevice::fillRect(SDL_Rect *destRect, dime::Color color)
@@ -119,4 +194,30 @@ void dime::OGLDrawDevice::restoreMatrices()
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+}
+
+void dime::OGLDrawDevice::clearScreen()
+{
+
+    /* Enable Texture Mapping ( NEW ) */
+    glEnable( GL_TEXTURE_2D );
+
+    /* Enable smooth shading */
+    glShadeModel( GL_SMOOTH );
+
+    /* Set the background black */
+    glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+
+    /* Depth buffer setup */
+    glClearDepth( 1.0f );
+
+    /* Enables Depth Testing */
+    glEnable( GL_DEPTH_TEST );
+
+    /* The Type Of Depth Test To Do */
+    glDepthFunc( GL_LEQUAL );
+
+    /* Really Nice Perspective Calculations */
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
