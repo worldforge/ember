@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.6  2003-04-25 00:48:14  aglanor
+ *      Revision 1.7  2003-04-26 14:57:26  aglanor
+ *      quick coordinates hack to fix position of entities when entering the world.
+ *      I'm in the process of writing a proper Atlas<-->Ogre MathConverter.
+ *
+ *      Revision 1.6  2003/04/25 00:48:14  aglanor
  *      basic media selection:
  *          - if Eris Entity is a settler, it will look like a robot
  *          - else, will look like the good old squirrel
@@ -353,8 +357,8 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 		ogreEntity = mSceneMgr->createEntity(e->getID(), "robot.mesh");
 	}
 	else {
-		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - SQUIRREL MESH\n");
-		ogreEntity = mSceneMgr->createEntity(e->getID(), "squirel_of_doom.mesh");
+		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH\n");
+		ogreEntity = mSceneMgr->createEntity(e->getID(), "razor.mesh");
 	}
 
 
@@ -365,11 +369,12 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 
 	// set the node position based on eris entity position
 	WFMath::Point<3> position = e->getPosition();
-	ogreNode->setPosition(position.x(),position.y(),position.z());
+	// position coversion... from Ogre to Eris
+	ogreNode->setPosition(position.x(),position.z(),-position.y());
 
 	// scale HACK. This is very hacky. Fix this.
         if(!strcmp(e->getType()->getName().c_str(),"settler")) {	// 0 if strings are equal
-		ogreNode->setScale(0.1,0.1,0.1);		// robots are bigger :P
+		ogreNode->setScale(0.05,0.05,0.05);		// robots are bigger :P
 	}
 	else {
 		ogreNode->setScale(0.02,0.02,0.02);
@@ -402,32 +407,46 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 
 
 void DimeOgre::entityDelete( Eris::Entity *e )
-{}
+{
+	fprintf(stderr, "TRACE - ENTITY DELETED\n");
+}
 
 void DimeOgre::entered( Eris::Entity *e )
-{}
+{
+	fprintf(stderr, "TRACE - ENTITY ENTERED\n");
+}
 
 void DimeOgre::appearance( Eris::Entity *e )
 {
-	fprintf(stderr, "TRACE - APPEARANCE\n");
+	fprintf(stderr, "TRACE - ENTITY APPEARS\n");
 }
 
 void DimeOgre::disappearance( Eris::Entity *e )
-{}
+{
+	fprintf(stderr, "TRACE - ENTITY DISAPPPEARS\n");
+}
 
 /* Eris::Entity signals */
 
 void DimeOgre::recontainered( Eris::Entity *e, Eris::Entity *c )
-{}
+{
+	fprintf(stderr, "TRACE - ENTITY RECONTAINERED\n");
+}
 
 void DimeOgre::changed( const Eris::StringSet &s, Eris::Entity *e  )
-{}
+{
+	fprintf(stderr, "TRACE - ENTITY CHANGED\n");
+}
 
 void DimeOgre::moved( const WFMath::Point< 3 > &p, Eris::Entity *e )
-{}
+{
+	fprintf(stderr, "TRACE - ENTITY MOVED\n");
+}
 
 void DimeOgre::say( const std::string &s, Eris::Entity *e )
 {
+	std::cout << "TRACE - ENTITY SAYS: {" << s << "]\n" << std::endl;
+
 	// TODO: fix this one
 	/*
     dime::LoggingService::getInstance()->slog(__FILE__, __LINE__, dime::LoggingService::VERBOSE) << e->getName() << " says: "<< s<< ENDM;
