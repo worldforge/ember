@@ -99,12 +99,12 @@ Jesus::Jesus(Carpenter::Carpenter* carpenter)
 : mCarpenter(carpenter)
 {
 	
-	mNormalTypes["NORTH"] = WFMath::Vector<3>(0,0,1);
-	mNormalTypes["SOUTH"] = WFMath::Vector<3>(0,0,-1);
+	mNormalTypes["NORTH"] = WFMath::Vector<3>(0,1,0);
+	mNormalTypes["SOUTH"] = WFMath::Vector<3>(0,-1,0);
 	mNormalTypes["WEST"] = WFMath::Vector<3>(-1,0,0);
 	mNormalTypes["EAST"] = WFMath::Vector<3>(1,0,0);
-	mNormalTypes["UP"] = WFMath::Vector<3>(0,1,0);
-	mNormalTypes["DOWN"] = WFMath::Vector<3>(0,-1,0);
+	mNormalTypes["UP"] = WFMath::Vector<3>(0,0,1);
+	mNormalTypes["DOWN"] = WFMath::Vector<3>(0,0,-1);
 	
 }
 
@@ -311,7 +311,12 @@ bool Jesus::loadBlockSpec(const std::string& filename)
 				xercesc::XMLString::transcode("type", tempStr, 99);
 				std::string normalType1 = xercesc::XMLString::transcode(point1NormalNode->getAttribute(tempStr));
 				
-				WFMath::Vector<3> normal1 = mNormalTypes[normalType1];
+				std::map<const std::string, WFMath::Vector<3> >::iterator I_normal;
+				I_normal = mNormalTypes.find(normalType1);
+				if (I_normal == mNormalTypes.end()) {
+					throw std::exception();
+				}
+				WFMath::Vector<3> normal1 = I_normal->second;
 				
 	
 				xercesc::XMLString::transcode("position", tempStr, 99);
@@ -334,7 +339,12 @@ bool Jesus::loadBlockSpec(const std::string& filename)
 				xercesc::XMLString::transcode("type", tempStr, 99);
 				std::string normalType2 = xercesc::XMLString::transcode(point2NormalNode->getAttribute(tempStr));
 				
-				WFMath::Vector<3> normal2 = mNormalTypes[normalType2];
+				I_normal = mNormalTypes.find(normalType2);
+				if (I_normal == mNormalTypes.end()) {
+					throw std::exception();
+				}
+				WFMath::Vector<3> normal2 = I_normal->second;
+
 				
 	
 				xercesc::XMLString::transcode("position", tempStr, 99);
