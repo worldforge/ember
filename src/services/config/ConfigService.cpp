@@ -2,14 +2,10 @@
 
 #include <iostream.h>
 
-using namespace dime::framework;
-
 namespace dime
 {
-   namespace services
-     {
-	namespace config
-	  {
+	namespace services
+	{
 
 	/* ctor */
 	ConfigService::ConfigService()
@@ -21,8 +17,8 @@ namespace dime
 
         //setName("Test Service");
         //setDescription("Basic test service for testing and debugging.");
-// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
-//        setStatus( Service::Status::OK );
+		// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
+		//        setStatus( Service::Status::OK );
 
 	}
 
@@ -32,7 +28,13 @@ namespace dime
 		setStatus(1);
         setRunning( true );
 		// TODO: has to call the Persistance Service and load user configuration data into the hashtable (agla)
+
+
+		inputMap["KEY_UP"]="move_forward";		
+		inputMap["KEY_DOWN"]="move_backwards";
+			
 		return 0;
+	
 	}
 
 	/* Interface method for stopping the test service 	*/
@@ -41,9 +43,9 @@ namespace dime
 		// TODO: stop the service, save any data that might be unsaved (agla)
 	}
 
-	void getConfig(std::string StringKey)   // what the hell should this return?
+	const char* ConfigService::getParam(const char* StringKey)   // what the hell should this return?
 	{
-		// TODO: implement. Easier said than done :)  (agla)
+		return inputMap[StringKey];
 	}
 	
 	bool ConfigService::saveConfig()
@@ -52,7 +54,6 @@ namespace dime
 		return true;  // or false, if couldn't write to disk
 	}
 	
-		} // namespace testservice
 	} // namespace services
 } // namespace dime
 

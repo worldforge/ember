@@ -19,12 +19,13 @@
 #ifndef CONFIGSERVICE_H
 #define CONFIGSERVICE_H
 
-#include "framework/Service.h"
+#include "../Service.h"
 #include <string>
+#include <hash_map>
+#include <algorithm>
 
 namespace dime {
 	namespace services {
-		namespace config {
 
 /**
  * Dime Configuration Service
@@ -39,8 +40,18 @@ class ConfigService: public Service
     // Private Variables
     //======================================================================
     private:
-		std::string myTestMessage;
-		int myTestNumber;
+
+		/** struct for comparation of two strings */
+		struct eqstr
+		{
+  			bool operator()(const char* s1, const char* s2) const
+  			{
+    			return strcmp(s1, s2) == 0;
+  			}
+		};
+
+  		std::hash<const char*> H;
+		std::hash_map<const char*, const char*, hash<const char*>, eqstr> inputMap;
 
 		
     //----------------------------------------------------------------------
@@ -68,14 +79,15 @@ class ConfigService: public Service
 
    void stop(int code) ;
 	
+	const char* getParam( const char* );
+
 	/**
 	 * Saves the configuration parameters to a file
 	 */
-   	bool ConfigService::saveConfig();
+   	bool saveConfig();
 
 }; //ConfigService
 
-		} // namespace config
 	} // namespace services
 } // namespace dime
 

@@ -1,15 +1,11 @@
 FLAGS = -g
 CC = g++
 
-all: ConfigService
-
-ConfigService: ConfigService.o
-	g++ ConfigService.o -o ConfigService
+all: ConfigService.o
 
 ConfigService.o: ConfigService.cpp
 	g++ -c ConfigService.cpp
 
 clean:
 	rm -R *.o
-	rm ConfigService
 
