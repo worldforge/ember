@@ -61,14 +61,13 @@ class ConsoleObject;
  */
 class Console : public ConsoleObject, public Widget {
   // Constants
-static const unsigned int MAX_MESSAGES = 5;
-static const int FONT_HEIGHT = 15;
+static const unsigned int MAX_MESSAGES = 7;
+static const int FONT_HEIGHT = 12;
 static const int LINE_SPACING = 5;
 static const int CONSOLE_TEXT_OFFSET_X = 5;
 static const int CONSOLE_TEXT_OFFSET_Y = 5;
 
 static const int CONSOLE_SPEED = 10;
-static const int CONSOLE_HEIGHT = 100;
 
 static const char* CONSOLE_PROMPT_STRING;
 static const char* CONSOLE_CURSOR_STRING;
@@ -129,6 +128,21 @@ protected:
   typedef std::pair<std::string, unsigned int> screenMessage;
 
   /**
+   * Height of console when full size
+   */
+  int fullHeight;
+
+  /**
+   * The height of the console. determined by number of messages allowed
+   */
+  int consoleHeight;
+
+  /**
+   * Flag determining whether console is moving
+   */
+  bool animateConsole;
+
+  /**
    * Current command string
    */
   std::string myCommand;
@@ -143,8 +157,6 @@ protected:
    */ 
   void renderScreenMessages(DrawDevice* ddevice);
 
-  bool animateConsole; // Flag determining whether console is moving
-  int consoleHeight; // the height of the console. determined by number of messages allowed
 
   /**
    * Current console messages

@@ -46,8 +46,9 @@ std::list<std::string> Console::console_messages = std::list<std::string>();
 //%TODO Xmp,3: abstract SDL_GetTicks()
 Console::Console(const Rectangle& rect) :
   Widget(rect),
-  animateConsole(0),
-  consoleHeight(CONSOLE_HEIGHT)
+  fullHeight(rect.getHeight()),
+  consoleHeight(rect.getHeight()),
+  animateConsole(0)
 {
   // Register console commands
   registerCommand(TOGGLE_CONSOLE, this);
@@ -80,9 +81,9 @@ int Console::draw(DrawDevice* target){
     consoleHeight += CONSOLE_SPEED;
 
     // Have we reached full height?
-    if (consoleHeight >= CONSOLE_HEIGHT) {
+    if (consoleHeight >= fullHeight) {
       // Disable animation
-      consoleHeight = CONSOLE_HEIGHT;
+      consoleHeight = fullHeight;
       animateConsole = 0;
     }
     renderConsoleMessages(target);
@@ -114,12 +115,12 @@ void Console::renderConsoleMessages(DrawDevice *ddevice) {
   int i;
 
   // Render console panel
-  int consoleOffset = CONSOLE_HEIGHT - consoleHeight;
+  int consoleOffset = fullHeight - consoleHeight;
   // Make panel slightly transparent
   RectangleRenderer rrenderer(myRectangle,Color(0.0f,0.0f,100.0f,8.5f));
   rrenderer.render(ddevice);
 
-  dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,16);
+  dime::Font *font = dime::FontService::getInstance()->loadFont(FONT_FILE,FONT_HEIGHT);
   assert(font);
   FontRenderer frenderer(FontRenderer::BLENDED, Font::FontString(), font, Color(255.0f,255.0f,0,255.0f), myRectangle);
 

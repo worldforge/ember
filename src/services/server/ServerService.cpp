@@ -24,6 +24,7 @@
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
 #include <Eris/Connection.h>
+#include <Eris/Person.h>
 
 #include <list>
 #include <algorithm>
@@ -207,29 +208,40 @@ namespace dime
 
   void ServerService::sightPerson(Eris::Person* person)
   {
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sighted Person name:\""<< person->getName()<<"\" id:"<<person->getAccount()<< ENDM;    
   }
 
   void ServerService::privateTalk(const std::string& name, const std::string& msg)
   {
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "PRIVMSG("<<name<<") says:"<<msg<< ENDM;
   }
 
   void ServerService::loggedIn( const Atlas::Objects::Entity::Player& player )
   {
+    // Xmp's Notes
+    // Erm dunno what this function is for eris's doxygen doesn't explain
   }
 
   void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &) {}
 
   void ServerService::gotAllCharacters() {}
 
-  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &) {}
+  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
+  {
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Login Failure:"<<msg<< ENDM;    
+  }
 
   void ServerService::loginSuccess(){
     myWorld = new Eris::World(myPlayer, myConn);
+
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;    
   }
 
   void ServerService::logoutComplete(bool clean) {
     delete myWorld;
     myWorld = NULL;
+
+    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleaness="<<clean<< ENDM;    
   }
 
   void ServerService::runCommand(const std::string &command, const std::string &args)
