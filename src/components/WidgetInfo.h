@@ -25,6 +25,7 @@
 // Included custom library headers
 
 // Included system headers
+#include <string>
 
 namespace dime {
 
@@ -178,9 +179,9 @@ class WidgetInfo
     /**
      * Sets the value of Pos of this WidgetInfo
      */
-    void setYPos( dime::Rectangle Pos )
+    void setPos( dime::Rectangle Pos )
     {
-        myYPos = yPos ;
+        myPos = Pos;
     }
 
     /**

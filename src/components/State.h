@@ -25,6 +25,8 @@
 // Included custom library headers
 
 // Included system headers
+#include <list>
+#include <string>
 
 namespace dime {
 

@@ -26,6 +26,8 @@
 // Included custom library headers
 
 // Included system headers
+#include <string>
+#include <list>
 
 namespace dime {
 
@@ -151,16 +153,18 @@ class StateManager
     /**
      * Sets the value of State of this StateManager
      */
-    void setState( State state )
-    {
-        myCurrentState = state ;
-    }
+    void setState( const std::string& newState )
+      {
+	myCurrentState = findState(newState);
+      }
 
 
     //----------------------------------------------------------------------
     // Other public methods
     // NOTE: Group related public methods together and crate a separator comment like above for them.
-    
+    State& findState(const std::string& state);
+
+
     //======================================================================
     // Protected Methods
     //======================================================================
