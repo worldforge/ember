@@ -86,12 +86,30 @@ class JesusEditPreview
 {
 public:
 	JesusEditPreview(GUIManager* guiManager, Jesus* jesus);
-
-/*	void setModel(Model *);*/
-	void clearAndDestroyModel();
+	~JesusEditPreview();
+	
+	/**
+	 *    shows a preview of the BuildingBlockSpec
+	 * @param spec 
+	 */
 	void showBuildingBlock(const std::string & spec);
+	
+	
+	/**
+	 *    selects the attach point (makes it begin to blink etc.)
+	 * @param point 
+	 */
+	void selectAttachPoint(const Carpenter::AttachPoint* point);
+	
+	
+	/**
+	 *    zooms the camera to the specified value
+	 * @param value a value between 0.0 and 1.0
+	 */
+	void setZoom(float value);
 
 protected:
+	Jesus* mJesus;
 	Construction* mConstruction;
 	GUIManager* mGuiManager;
 	void createPreviewTexture();
@@ -99,9 +117,27 @@ protected:
 	Ogre::SceneNode* mCameraNode;
 	Ogre::SceneNode* mEntityNode;
 	Ogre::Camera* mCamera;
-	Model* mModel;
+	//Model* mModel;
 	JesusEditPreviewRenderListener* mListener;
 	Carpenter::BluePrint* mBlueprint;
+	
+	Carpenter::BuildingBlock* mBlock;
+	ModelBlock* mModelBlock;
+	
+	bool Zoom_ValueChanged(const CEGUI::EventArgs& args);
+	
+	CEGUI::Slider* mZoomSlider;
+	
+	/**
+	the minimum and maximum camera distance, as used by zoom()
+	*/
+	Ogre::Real mMinCameraDistance, mMaxCameraDistance;
+
+	
+	/**
+	The currently selected AttachPointNode
+	*/
+	AttachPointNode* mSelectedAttachPointNode;
 };
 
 
@@ -166,7 +202,12 @@ protected:
 	inline ModelBlock* getSelectedBlock() { return mCurrentlySelectedBlock;};
 	ModelBlock* mCurrentlySelectedBlock;
 // 	const Carpenter::BuildingBlockSpec* mCurrentlySelectedBuildingBlockSpec;
+	
+	/**
+	The selected attach point node of the existing building block.
+	*/
 	AttachPointNode* mCurrentlySelectedAttachPointNode;
+	
 // 	Carpenter::BlockSpec* getNewBlockSpec();
 	const Carpenter::BuildingBlockSpec* getNewBuildingBlockSpec() const;
 	/**

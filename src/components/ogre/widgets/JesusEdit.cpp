@@ -25,6 +25,7 @@
 #include "../jesus/Jesus.h"
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUISlider.h>
 #include "../GUIManager.h"
 #include "../carpenter/Carpenter.h"
 #include "../carpenter/BluePrint.h"
@@ -207,6 +208,48 @@ bool JesusEdit::CurrentBlocksList_SelectionChanged( const CEGUI::EventArgs & arg
 	
 }
 
+bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & args )
+{
+	const Carpenter::BuildingBlockSpec* bblockSpec = getNewBuildingBlockSpec( );
+	if (bblockSpec) {
+		fillNewAttachPointList(bblockSpec->getBlockSpec());
+		
+		
+		mPreview->showBuildingBlock(bblockSpec->getName());
+		
+/*		mPreview->clearAndDestroyModel();
+		Model* model = EmberOgre::getSingleton().getJesus()->createModelForBlockType(bblockSpec->getName(),"JesusEditPreviewModel");
+		if (model) {
+			mPreview->setModel(model);
+		}*/
+	} else {
+		mNewPointsList->resetList();
+		mNewPointsList->clearAllSelections();
+	
+	}
+	updateCreateButton();
+	return true;
+
+}
+
+void JesusEdit::fillNewAttachPointList(const Carpenter::BlockSpec * blockspec )
+{
+	mNewPointsList->resetList();
+	mNewPointsList->clearAllSelections();
+	
+	const std::vector<const Carpenter::AttachPoint*> nodes = blockspec->getAllPoints();
+	for (std::vector<const Carpenter::AttachPoint*>::const_iterator I = nodes.begin(); I != nodes.end(); ++I) 
+	{
+		CEGUI::String name((*I)->getAttachPair()->getName() + "/" + (*I)->getName() + " ("+(*I)->getAttachPair()->getType() +")");
+		ConstWrapper<const Carpenter::AttachPoint*>* holder = new ConstWrapper<const Carpenter::AttachPoint*>(*I);
+		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, holder);
+		mNewPointsList->addItem(item);
+		
+	}
+
+}
+
+
 void JesusEdit::fillAttachPointList(ModelBlock* block)
 {	
 	mCurrentPointsList->resetList();
@@ -257,50 +300,18 @@ bool JesusEdit::CurrentPointsList_SelectionChanged( const CEGUI::EventArgs & arg
 
 bool JesusEdit::NewPointsList_SelectionChanged( const CEGUI::EventArgs & args )
 {
+	CEGUI::ListboxItem* item = mNewPointsList->getFirstSelectedItem();
+	if (item) {
+		const Carpenter::AttachPoint* point = getSelectedPointForNewBlock();
+		mPreview->selectAttachPoint(point);
+	}
+
 	updateBindingButton( );
 	return true;
 }
 
-bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & args )
-{
-	const Carpenter::BuildingBlockSpec* bblockSpec = getNewBuildingBlockSpec( );
-	if (bblockSpec) {
-		fillNewAttachPointList(bblockSpec->getBlockSpec());
-		
-		
-		mPreview->showBuildingBlock(bblockSpec->getName());
-		
-/*		mPreview->clearAndDestroyModel();
-		Model* model = EmberOgre::getSingleton().getJesus()->createModelForBlockType(bblockSpec->getName(),"JesusEditPreviewModel");
-		if (model) {
-			mPreview->setModel(model);
-		}*/
-	} else {
-		mNewPointsList->resetList();
-		mNewPointsList->clearAllSelections();
-	
-	}
-	updateCreateButton();
-	return true;
 
-}
 
-void JesusEdit::fillNewAttachPointList(const Carpenter::BlockSpec * blockspec )
-{
-	mNewPointsList->resetList();
-	mNewPointsList->clearAllSelections();
-	
-	const std::vector<const Carpenter::AttachPoint*> nodes = blockspec->getAllPoints();
-	for (std::vector<const Carpenter::AttachPoint*>::const_iterator I = nodes.begin(); I != nodes.end(); ++I) 
-	{
-		CEGUI::String name((*I)->getAttachPair()->getName() + "/" + (*I)->getName() + " ("+(*I)->getAttachPair()->getType() +")");
-		ConstWrapper<const Carpenter::AttachPoint*>* holder = new ConstWrapper<const Carpenter::AttachPoint*>(*I);
-		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, holder);
-		mNewPointsList->addItem(item);
-		
-	}
-
-}
 
 void JesusEdit::updateCreateButton( )
 {
@@ -409,123 +420,161 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 	if (mCurrentlySelectedAttachPointNode && getSelectedPointForNewBlock()) {
 		mBindings.insert(std::map<AttachPointNode*, const Carpenter::AttachPoint*>::value_type(mCurrentlySelectedAttachPointNode, getSelectedPointForNewBlock()));
 	}
+	CEGUI::ListboxItem* item;
+	item = mNewPointsList->getFirstSelectedItem();
+	std::stringstream ss;
+	ss << mBindings.size();
+	item->setText(item->getText() + " (" + ss.str() + ")");
+	item = mCurrentPointsList->getFirstSelectedItem();
+	item->setText(item->getText() + " (" + ss.str() + ")");
+
 	updateCreateButton();
 }
 
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
-: mGuiManager(guiManager), mModel(0)
+: mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(1), mMaxCameraDistance(40)
 {
-	
+	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
-	mEntityNode->setPosition(Ogre::Vector3(10000,10000,10000));
+	mEntityNode->setPosition(Ogre::Vector3(100000,100000,100000));
 	
-	mBlueprint = new Carpenter::BluePrint("preview", jesus->getCarpenter());
-	Construction* construction = new Construction(mBlueprint, jesus, mEntityNode->createChildSceneNode());
-	mConstruction = construction;
 
+	//make the cameranode a child of the main entity node
 	mCameraNode = mEntityNode->createChildSceneNode();
-	mCameraNode->setPosition(Ogre::Vector3(0,0,-5));
+	mCameraNode->setPosition(Ogre::Vector3(0,5,-20));
 	createCamera();
 	createPreviewTexture();
 }
 
-// void JesusEditPreview::setModel(Model * model)
-// {
-// 	if (mModel) {
-// 		clearAndDestroyModel();
-// 	}
-// 	mEntityNode->attachObject(model);
-// 	mModel = model;
-// }
+JesusEditPreview::~JesusEditPreview()
+{
+	delete mBlueprint;
+	delete mConstruction;
+}
 
 void JesusEditPreview::showBuildingBlock(const std::string & spec)
 {
+
+//make sure to delete the old blueprint and construction
+//it's a bit of resource waste, but it's ok
+	delete mBlueprint;
+	delete mConstruction;
+	mSelectedAttachPointNode = 0;
+	//delete mModelBlock;
+
+	mBlueprint = new Carpenter::BluePrint("preview", mJesus->getCarpenter());
+	mConstruction = new Construction(mBlueprint, mJesus, mEntityNode);
 	
 	Carpenter::BuildingBlockDefinition def;
 	def.mName = "preview";
 	def.mBuildingBlockSpec = spec;
-	Carpenter::BuildingBlock* block = mBlueprint->createBuildingBlock(def);
+	mBlock = mBlueprint->createBuildingBlock(def);
 	
-	ModelBlock* modelBlock = mConstruction->createModelBlock(block, true);
-	
-	
+	mModelBlock = mConstruction->createModelBlock(mBlock, true);
+	mModelBlock->select();
 	
 
+}
+
+void JesusEditPreview::setZoom(float value)
+{
+	Ogre::Real newDistance = (mMaxCameraDistance * mMinCameraDistance) * value;
+	Ogre::Vector3 position = mCameraNode->getPosition();
+	position.z = -newDistance;
+	mCameraNode->setPosition(position);
+}
+
+bool JesusEditPreview::Zoom_ValueChanged(const CEGUI::EventArgs& args)
+{
+	setZoom(mZoomSlider->getCurrentValue());
+	return true;
 }
 
 void JesusEditPreview::createCamera()
 {	
 	mCamera = EmberOgre::getSingleton().getSceneManager()->createCamera("JesusPreviewCamera");
-	//EmberOgre::getSingleton().getMainCamera()->getCamera()->getParentSceneNode()->attachObject(camera);
-	// Look to the Avatar's head
+
+	//track the node containing the model
 	mCamera->setAutoTracking(true, mEntityNode);
 	mCamera->setNearClipDistance(0.01);
 	mCamera->setFarClipDistance(100);
 	mCameraNode->attachObject(mCamera);
 }
 
+void JesusEditPreview::selectAttachPoint(const Carpenter::AttachPoint* point)
+{
+	if (mSelectedAttachPointNode) {
+		mSelectedAttachPointNode->deselect();
+		mSelectedAttachPointNode = 0;
+	}
+	
+	std::vector<AttachPointNode*> nodes = mModelBlock->getAttachPointNodes();
+	for (std::vector<AttachPointNode*>::iterator I = nodes.begin(); I != nodes.end(); ++I) 
+	{
+		if ((*I)->getAttachPoint() == point) {
+			mSelectedAttachPointNode = (*I);
+			break;
+		}
+	}
+	if (mSelectedAttachPointNode)
+	{
+		mSelectedAttachPointNode->select();
+	}
+
+}
 
 void JesusEditPreview::createPreviewTexture()
 {
 
 
-
+	//first, create a RenderTexture to which the Ogre renderer should render the image
 	Ogre::RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "JesusEditPreview", 256, 256 );
 	rttTex->removeAllViewports();
+	
+	//add a listener, because we want to hide some things when rendering this
+	//for instance, we don't want to render the CEGUI
 	mListener = new JesusEditPreviewRenderListener(mGuiManager);
 	rttTex->addListener(mListener);
+	//make sure the camera renders into this new texture
 	Ogre::Viewport *v = rttTex->addViewport(mCamera );
 
-	
+	//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(rttTex->getName());
+	
+	//create a CEGUI texture from our Ogre texture
 	CEGUI::Texture* ceguiTexture = mGuiManager->getGuiRenderer()->createTexture(texPtr);
 	
+	//we need a imageset in order to create GUI elements from the ceguiTexture
 	CEGUI::Imageset* imageSet = CEGUI::ImagesetManager::getSingleton().createImageset("JesusEditPreview", ceguiTexture);
+	
+	//we only want one element: the whole texture
 	imageSet->defineImage("full", CEGUI::Rect(0,0,256,256), CEGUI::Point(0,0));
+	
 	
 	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Image"));
 	
+	mZoomSlider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Zoom"));
+	BIND_CEGUI_EVENT(mZoomSlider, CEGUI::Slider::EventValueChanged, JesusEditPreview::Zoom_ValueChanged);
+	//assign our image element to the StaticImage widget
 	imageWidget->setImage(&imageSet->getImage("full"));
 
 }
 
     void JesusEditPreviewRenderListener::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
     {
+		//hide the gui and the cursor
 		mGuiManager->getMainSheet()->setVisible(false);
 		CEGUI::MouseCursor::getSingleton().hide();
-//         // Hide plane and objects above the water
-//         pPlaneEnt->setVisible(false);
-//         std::vector<Entity*>::iterator i, iend;
-//         iend = aboveWaterEnts.end();
-//         for (i = aboveWaterEnts.begin(); i != iend; ++i)
-//         {
-//             (*i)->setVisible(false);
-//         }
 
     }
     void JesusEditPreviewRenderListener::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
     {
+		//show the gui and the cursor again
 		mGuiManager->getMainSheet()->setVisible(true);
 		CEGUI::MouseCursor::getSingleton().show();
-/*        // Show plane and objects above the water
-        pPlaneEnt->setVisible(true);
-        std::vector<Entity*>::iterator i, iend;
-        iend = aboveWaterEnts.end();
-        for (i = aboveWaterEnts.begin(); i != iend; ++i)
-        {
-            (*i)->setVisible(true);
-        }*/
+
     }
 
-void JesusEditPreview::clearAndDestroyModel( )
-{
-	if (mModel) {
-		mEntityNode->detachObject(mModel);
-	}
-	//EmberOgre::getSingleton().getSceneManager()->removeEntity(mModel);
-	delete mModel;
-	mModel = 0;
-}
 
 }
 

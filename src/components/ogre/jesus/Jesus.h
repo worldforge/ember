@@ -183,6 +183,7 @@ class AttachPointNode
 {
 public:
 	AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour, Ogre::BillboardSet* billboardSet);
+	~AttachPointNode();
 	void select();
 	void deselect();
 	inline const Carpenter::AttachPoint* getAttachPoint() const { return mAttachPoint;}
@@ -205,6 +206,7 @@ class ModelBlock
 {
 public:
 	ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock,  Model* model, Construction* construction);
+	~ModelBlock();
 	void selectAttachPointNode(AttachPointNode* selectedNode);
 	
 	inline Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
@@ -248,7 +250,7 @@ class Construction
 {
 public:
 	Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::SceneNode* node);
-	
+	~Construction();
 	//inline Ogre::BillboardSet* getBillBoardSet() const { return mPointBillBoardSet; }
 	inline Jesus* getJesus() const { return mJesus; }
 	inline Carpenter::BluePrint* getBluePrint() const { return mBlueprint; }

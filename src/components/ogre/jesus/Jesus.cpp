@@ -61,6 +61,12 @@ AttachPointNode::AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelN
 //	mFlare = billboardSet->createBillboard(0,0,0 , colour);
 
 }
+
+AttachPointNode::~AttachPointNode()
+{
+	Ogre::ControllerManager::getSingleton().destroyController(mController);
+}
+
 	
 bool Jesus::loadModelBlockMapping(const std::string& filename)
 {
@@ -532,6 +538,14 @@ Construction::Construction(Carpenter::BluePrint* bluePrint, Jesus* jesus, Ogre::
 
 }
 
+Construction::~Construction()
+{
+	for (std::vector<ModelBlock*>::iterator I = mModelBlocks.begin(); I != mModelBlocks.end(); ++I) {
+		delete *I;
+	}
+//	mBaseNode->removeAndDestroyAllChildren();
+}
+
 void Construction::buildFromBluePrint(bool createAttachPointNodes)
 {
 	std::vector<Carpenter::BuildingBlock*> buildingBlocks = mBlueprint->getAttachedBlocks();
@@ -581,6 +595,27 @@ Model* Jesus::createModelForBlockType(const std::string& blockType, const std::s
 	}
 	return Model::Create(I->second + ".modeldef.xml", modelName);
 }
+
+ModelBlock::~ModelBlock()
+{
+	EmberOgre::getSingleton().getSceneManager()->removeBillboardSet(mPointBillBoardSet);
+	mNode->getParent()->removeChild(mNode);
+	EmberOgre::getSingleton().getSceneManager()->destroySceneNode (mNode->getName());
+	if (mModelNode) 
+		EmberOgre::getSingleton().getSceneManager()->destroySceneNode (mModelNode->getName());
+		
+	if (mModel) 
+		delete mModel;
+		
+	std::vector<AttachPointNode* >::iterator I = mAttachPointNodes.begin();
+	std::vector<AttachPointNode* >::iterator I_end = mAttachPointNodes.end();
+	for(; I != I_end; ++I) {
+ 		delete *I;
+	}
+
+	
+}
+
 
 ModelBlock::ModelBlock(Ogre::SceneNode* baseNode, Carpenter::BuildingBlock* buildingBlock, Model* model, Construction* construction)
 : mBuildingBlock(buildingBlock), mModel(model), mConstruction(construction), mModelNode(0)
