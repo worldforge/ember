@@ -24,6 +24,7 @@
 #include <services/logging/LoggingService.h>
 #include <services/input/InputService.h>
 #include <services/gui/GuiService.h>
+#include <services/sound/SoundService.h>
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
