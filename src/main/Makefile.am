@@ -17,6 +17,4 @@ $(top_srcdir)/src/services/datamodel/libDataModelService.a \
 $(top_srcdir)/src/services/logging/libLoggingService.a \
 $(top_srcdir)/src/framework/libFramework.a
 
-dime_SOURCES = Application.cpp Dime.cpp DimeServices.cpp StateManager.cpp
-
-noinst_HEADERS = Application.h DimeServices.h StateManager.h
+dime_SOURCES = Application.cpp Dime.cpp DimeServices.cpp StateManager.cpp Application.h DimeServices.h StateManager.h

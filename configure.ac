@@ -196,6 +196,7 @@ AC_REQUIRE_CPP
 
 AC_OUTPUT([
   Makefile
+  bin/Makefile
   src/Makefile
   src/components/Makefile
   src/components/debug/Makefile
