@@ -19,13 +19,17 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <Ogre.h>
-#include <OgreEntity.h>
-#include <OgreMovableObject.h>
+//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
+//this seems to be because both uses their own internal memory handlers
+#include <xercesc/util/XMemory.hpp>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
+
+#include <Ogre.h>
+#include <OgreEntity.h>
+#include <OgreMovableObject.h>
 
 namespace DimeOgre {
 

@@ -17,8 +17,8 @@
 */
 
 
-#include "SubModel.h"
 #include "Model.h"
+#include "SubModel.h"
 #include "SubModelPart.h"
 
 namespace DimeOgre {

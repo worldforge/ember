@@ -1,6 +1,6 @@
+#include "Model.h"
 #include "SubModelPart.h"
 #include "SubModel.h"
-#include "Model.h"
 
 namespace DimeOgre {
 
