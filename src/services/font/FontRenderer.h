@@ -109,7 +109,7 @@ class FontRenderer
      */
 
     FontRenderer(const Type type, const Font::FontString text, Font *font, const Color &color, const Rectangle &rectangle)
-        : myType(type), myText(text), myTextSurface(NULL), myFont(font), myColor(color),  myUpdate(false), myRectangle(rectangle)
+      : myType(type), myText(text), myTextSurface(NULL), myFont(font), myColor(color), myRectangle(rectangle), myUpdate(false)
     {
         updateTextBlended();
     }
