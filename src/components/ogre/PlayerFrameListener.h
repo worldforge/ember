@@ -6,7 +6,13 @@ Based on OGRE's ExampleFrameListener.h
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.3  2003-04-24 21:12:49  aglanor
+ *      Revision 1.4  2003-04-24 23:21:09  aglanor
+ *      DimeOgre app is again linked back from the FrameListener, so entities sighted
+ *      are created in the Ogre SceneManager (as squirrels, of course).
+ *      I've also made the sample entity the ogrehead.mesh, you need to have it
+ *      on your media dir too.
+ *
+ *      Revision 1.3  2003/04/24 21:12:49  aglanor
  *      removed ogre namespace
  *
  *      Revision 1.2  2003/04/24 20:02:08  aglanor
@@ -92,8 +98,13 @@ class PlayerFrameListener: public Ogre::FrameListener, public Ogre::KeyListener
 {
 public:
 	// Constructor takes a RenderWindow because it uses that to determine input context
-	PlayerFrameListener(Ogre::RenderWindow* win, Ogre::Camera* cam, bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
+	PlayerFrameListener(Ogre::RenderWindow* win, Ogre::Camera* cam,
+		DimeOgre* theApp,
+		bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
 	{
+		// point back to the DimeOgre application to which this listener belongs
+		mDimeOgre = theApp;
+
 		mUseBufferedInputKeys = useBufferedInputKeys;
 		mUseBufferedInputMouse = useBufferedInputMouse;
 		mInputTypeSwitchingOn = mUseBufferedInputKeys || mUseBufferedInputMouse;
@@ -258,10 +269,9 @@ public:
 		// Pressing 4 takes the character ''
 		if(mInputDevice->isKeyDown(Ogre::KC_4) && mTimeUntilNextToggle <= 0) {
 			// TODO: this is an ugly hack (Aglanor)
-			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","ogre_207");
+			dime::DimeServices::getInstance()->getServerService()->runCommand("takechar","Bob_1");
 			fprintf(stderr, "TRACE - LOGGED IN - OOOOOOOOOOOOOOOOOOOOOOOOOO");
-			// TODO: connect these world signals
-			//mOgreApplication->connectWorldSignals();
+			mDimeOgre->connectWorldSignals();	// connect Eris signals
 			mTimeUntilNextToggle = 1;
 		}
 
@@ -399,6 +409,7 @@ public:
 	void keyReleased(Ogre::KeyEvent* e) {}
 
 protected:
+	DimeOgre* mDimeOgre;	// pointer back to the DimeOgre application
 	Ogre::EventProcessor* mEventProcessor;
 	Ogre::InputReader* mInputDevice;
 	Ogre::Camera* mCamera;
@@ -412,6 +423,7 @@ protected:
 	// just to stop toggles flipping too fast
 	Ogre::Real mTimeUntilNextToggle ;
 	float mRotX, mRotY;
+
 
 };
 

@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.4  2003-04-24 21:21:07  aglanor
+ *      Revision 1.5  2003-04-24 23:21:09  aglanor
+ *      DimeOgre app is again linked back from the FrameListener, so entities sighted
+ *      are created in the Ogre SceneManager (as squirrels, of course).
+ *      I've also made the sample entity the ogrehead.mesh, you need to have it
+ *      on your media dir too.
+ *
+ *      Revision 1.4  2003/04/24 21:21:07  aglanor
  *      more namespace removal
  *
  *      Revision 1.3  2003/04/24 20:27:26  aglanor
@@ -206,12 +212,12 @@ void DimeOgre::createScene(void)
 //#if 0
 
   //create the entity
-  mShip = mSceneMgr->createEntity("blackdog", "squirel_of_doom.mesh");
+  mShip = mSceneMgr->createEntity("ogre", "ogrehead.mesh");
 
   // create the node
   mShipNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
   mShipNode->setPosition(10,25,128);
-  mShipNode->setScale(0.01,0.01,0.01);
+  mShipNode->setScale(1,1,1);
 
   // attach the node to the entity
   mShipNode->attachObject(mShip);
@@ -242,29 +248,10 @@ void DimeOgre::createFrameListener(void)
 {
 
 	fprintf(stderr, "TRACE - CREATING FRAME LISTENER\n");
-	PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, false, false);
+	PlayerFrameListener* playerFrameListener = new PlayerFrameListener(mWindow, mCamera, this, false, false);
 	mRoot->addFrameListener(playerFrameListener);
 	fprintf(stderr, "TRACE - CREATED FRAME LISTENER\n");
 
-
-	/*
-	MouseFrameListener* mouseFrameListener = new MouseFrameListener(mWindow, mCamera, false);
-	mRoot->addFrameListener(mouseFrameListener);
-	*/
-
-	/*
-	mFrameListener= new TerrainListener(mWindow, mCamera);
-	mRoot->addFrameListener(mFrameListener);
-	CameraFrameListener* cameraFrameListener = new CameraFrameListener(mWindow, mCamera);
-	mRoot->addFrameListener(cameraFrameListener);
-	DimeFrameListener* dimeFrameListener = new DimeFrameListener(mWindow, mCamera, this);
-	mRoot->addFrameListener(dimeFrameListener);
-	*/
-
-#if 0
-    CameraRotator* cameraRotator = new CameraRotator(mWindow, mCamera, mShipNode, Vector3(0, 0, 100));
-    mRoot->addFrameListener(cameraRotator);
-#endif
 }
 
 void DimeOgre::createCamera(void)
@@ -362,15 +349,14 @@ void DimeOgre::entityCreate( Eris::Entity *e )
 	// set the node position based on eris entity position
 	WFMath::Point<3> position = e->getPosition();
 	ogreNode->setPosition(position.x(),position.y(),position.z());
-	ogreNode->setScale(0.05,0.05,0.05);
+	ogreNode->setScale(0.20,0.20,0.20);
 
 	// attach the node to the entity
 	ogreNode->attachObject(ogreEntity);
 
 	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
 
-    /* Whenever a new entity is created, make sure to connect to those signals
-       too */
+    // Whenever a new entity is created, make sure to connect to those signals too
 
     // Xmp's Notes: hmm need to work out how to connect these
     e->AddedMember.connect( SigC::slot( *this, &DimeOgre::addedMember ) );
