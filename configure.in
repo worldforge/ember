@@ -46,7 +46,7 @@ AM_PATH_ATLAS(0.4.4 ,[
 AC_MSG_ERROR(Couldn't find Atlas [or tests failed])
 )
 
-AM_PATH_ERIS(0.9.2 ,[
+AM_PATH_ERIS(0.9.1 ,[
     CXXFLAGS="$CXXFLAGS $ERIS_CFLAGS"
     LDFLAGS="$LDFLAGS $ERIS_LIBS"
     ],
@@ -79,6 +79,7 @@ AC_OUTPUT([
   src/services/metaserver/Makefile
   src/services/input/Makefile
   src/services/gui/Makefile
+  src/services/platform/Makefile
   src/main/Makefile
   dnl dime.dox
 ])
