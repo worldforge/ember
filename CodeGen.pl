@@ -17,7 +17,8 @@ my $curMemType;
 print "Please enter a Member name for this class(enter 'xxx' to quit) ";
 $curMemName = <>;
 chomp $curMemName;
-while($curMemName ne "xxx")
+$curMemName = uc (substr($curMemName, 0, 1)) . substr($curMemName, 1);
+while($curMemName ne "Xxx")
 {
     print "please Enter the Type for member: $curMemName: ";
     $curMemType = <>;
@@ -28,7 +29,7 @@ while($curMemName ne "xxx")
     print "Please enter a Member name for this class(enter 'xxx' to quit) ";
     $curMemName = <>;
     chomp $curMemName;
-
+    $curMemName = uc (substr($curMemName, 0, 1)) . substr($curMemName, 1);
 }
 open(HEADER, ">$className".".h");
 
@@ -200,7 +201,7 @@ foreach $key (keys %myMembers)
     print HEADER "    /**\n";
     print HEADER "     * Sets the value of $key of this $className\n";
     print HEADER "     */\n";
-    print HEADER "    void set"."$key( $myMembers{$key} $key )\n    {\n        my"."$key"." = $key;\n    }\n\n";
+    print HEADER "    void set"."$key( $myMembers{$key} " . lc(substr($key, 0, 1)) . substr($key,1) . " )\n    {\n        my"."$key"." = ". lc(substr($key, 0, 1)) . substr($key,1) . " ;\n    }\n\n";
 }
 print HEADER <<EOF;
 
