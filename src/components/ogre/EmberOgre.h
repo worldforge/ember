@@ -24,7 +24,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.37  2005-01-04 23:02:36  erik
+ *      Revision 1.38  2005-01-07 02:42:48  erik
+ *      2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* check for, and if not found, copy config files from share to user's home dir
+ *
+ *      Revision 1.37  2005/01/04 23:02:36  erik
  *      2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* moved all use of terrain coordinates, both in ogre and in atlas, to the common class TerrainPosition
@@ -522,6 +527,11 @@ protected:
 
 	void getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section = "media", std::string type = "FileSystem");
 
+	/**
+	
+	makes sure that there are files in ~/.ember
+	*/
+	void checkForConfigFiles();
 
     /// Method which will define the source of resources (other than current folder)
     virtual void setupResources(void);

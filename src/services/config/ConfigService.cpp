@@ -100,7 +100,7 @@ namespace Ember
 		if (itemExists("paths", "datadir")) {
 			return std::string(getValue("paths", "datadir")) + "/";
 		} else {
-			return getHomeDirectory();
+			return EMBERDATADIR;
 		}
 
 	}

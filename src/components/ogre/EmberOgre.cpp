@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.67  2005-01-07 01:07:17  erik
+ *      Revision 1.68  2005-01-07 02:42:48  erik
+ *      2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* check for, and if not found, copy config files from share to user's home dir
+ *
+ *      Revision 1.67  2005/01/07 01:07:17  erik
  *      2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* improves resource handling for modeldefinitions
@@ -754,6 +759,8 @@ bool EmberOgre::setup(void)
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
+	checkForConfigFiles();
+	
     mRoot = new Ogre::Root();
 	
     setupResources();
@@ -851,6 +858,44 @@ void EmberOgre::chooseSceneManager(void)
     
 }
 
+void EmberOgre::checkForConfigFiles()
+{
+ 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+
+	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+		
+	//make sure that there are files 
+	struct stat tagStat;
+    int ret;
+	
+	ret = stat( "ogre.cfg", &tagStat );
+	if (ret == -1) {
+		//copy conf file from shared
+		std::string sharePath(ETCDIR);
+		sharePath = sharePath + "/ember/ogre.cfg";
+		std::ifstream  IN (sharePath.c_str());
+		std::ofstream  OUT ("ogre.cfg"); 
+		OUT << IN.rdbuf();
+	}
+	ret = stat( "resources.cfg", &tagStat );
+	if (ret == -1) {
+		//copy conf file from shared
+		std::string sharePath(ETCDIR);
+		sharePath = sharePath + "/ember/resources.cfg";
+		std::ifstream  IN (sharePath.c_str());
+		std::ofstream  OUT ("resources.cfg"); 
+		OUT << IN.rdbuf();
+	}
+	ret = stat( "plugins.cfg", &tagStat );
+	if (ret == -1) {
+		//copy conf file from shared
+		std::string sharePath(ETCDIR);
+		sharePath = sharePath + "/ember/plugins.cfg";
+		std::ifstream  IN (sharePath.c_str());
+		std::ofstream  OUT ("plugins.cfg"); 
+		OUT << IN.rdbuf();
+	}
+}
 
 void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
 {
@@ -867,6 +912,11 @@ void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, st
 void EmberOgre::setupResources(void)
 {
  	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+
+	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+		
+
+	
 	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/";
 	
 	mModelDefinitionManager = new ModelDefinitionManager();
@@ -1102,7 +1152,25 @@ void EmberOgre::initializeEmberServices(void)
 	// Initialize the Configuration Service
 	Ember::EmberServices::getInstance()->getConfigService()->start();
 	// Change working directory
+	struct stat tagStat;
+    int ret;
+	ret = stat( Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
+	if (ret == -1) {
+		mkdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str(), S_IRWXU);
+	}
+	
+	
 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+	
+	ret = stat( "ember.conf", &tagStat );
+	if (ret == -1) {
+		//copy conf file from shared
+		std::string sharePath(ETCDIR);
+		sharePath = sharePath + "/ember/ember.conf";
+		std::ifstream  IN (sharePath.c_str());
+		std::ofstream  OUT ("ember.conf"); 
+		OUT << IN.rdbuf();
+	}
 	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig("ember.conf");
 
 

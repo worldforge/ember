@@ -1,5 +1,13 @@
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* check for, and if not found, copy config files from share to user's home dir
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* better handling of resource paths
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* removed unnecessary config file
 
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
