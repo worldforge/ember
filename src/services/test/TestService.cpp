@@ -1,6 +1,6 @@
 #include "TestService.h"
 
-#include <iostream.h>
+#include <iostream>
 
 namespace dime
 {
@@ -24,7 +24,7 @@ namespace dime
 	/* Method for starting the test service 	*/
 	    Service::Status TestService::start()
 	       {
-		  cout << "I'm the Test Service Starting" << endl;
+		  std::cout << "I'm the Test Service Starting" << std::endl;
 		  setStatus(Service::OK);
           setRunning( true );
 		  return Service::OK;
@@ -33,7 +33,7 @@ namespace dime
 	/* Interface method for stopping the test service 	*/
 	     void TestService::stop(int code)
 	       {
-		  cout << "I'm the Test Service Stopping" << endl;
+		  std::cout << "I'm the Test Service Stopping" << std::endl;
 		  //setStatus(code);
 		  //setActive(0);
           setRunning( false );
