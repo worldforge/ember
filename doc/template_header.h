@@ -44,11 +44,11 @@
 #ifndef <FILENAME>_H
 #define <FILENAME>_H
 
-// Include system headers here
+// Include other headers of the current program here
 
 // Include library headers here
 
-// Include other headers of the current program here
+// Include system headers here
 
 namespace applicationNamespace {
 namespace subsystemNamespace {
@@ -153,6 +153,9 @@ class NameOfClass
     NameOfClass &operator= ( const NameOfClass &source )
     {
         // Copy fields from source class to this class here.
+
+        // Return this object with new value
+        return &this;
     }
 
 
@@ -162,7 +165,7 @@ class NameOfClass
     /**
      * Deletes a NameOfClass instance.
      */
-    ~NameOfClass()
+    virtual ~NameOfClass()
     {
         // TODO: Free any allocated resources here.
     }
@@ -177,7 +180,7 @@ class NameOfClass
      * Returns the name of this gizmo.
      * The name is guaranteed to be unique among all gizmos.
      */
-    std::String getName() const
+    virtual std::String getName() const
     {
         return myName;
         // NOTE: If we just read or set a local variable, the
@@ -199,7 +202,7 @@ class NameOfClass
      *
      * @param name The new name of the gizmo.
      */
-    void setName( std::String name );
+    virtual void setName( std::String name );
 
 
     //----------------------------------------------------------------------
