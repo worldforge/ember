@@ -346,7 +346,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 {
 	Ogre::SceneNode* oldAvatar = mAvatarNode;
 	
-	mAvatarController->createAvatarCameras(EmberEntity->getAvatarSceneNode());
+	mAvatarController->createAvatarCameras(EmberEntity->getSceneNode());
 	
 	
 	//HACK!!! DEBUG!!

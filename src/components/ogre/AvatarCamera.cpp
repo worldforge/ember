@@ -75,7 +75,7 @@ void AvatarCamera::createNodesAndCamera()
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(WF2OGRE_VECTOR3(0,2,0));
 	//rotate to sync with WF world
-    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
+    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
 
 	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
 	mAvatarCameraPitchNode->setPosition(WF2OGRE_VECTOR3(0,0,0));
@@ -88,7 +88,13 @@ void AvatarCamera::createNodesAndCamera()
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
 	mCamera->setNearClipDistance(0.01);
-	mCamera->setFarClipDistance(6000);
+	
+	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
+	{
+		mCamera->setFarClipDistance(0);
+	} else {
+		mCamera->setFarClipDistance(6000);
+	}
 	
 	createViewPort();
 }
@@ -110,6 +116,10 @@ void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 	}
 	mAvatarNode = sceneNode;
 	mAvatarNode->addChild(mAvatarCameraRootNode);
+/*	const Ogre::AxisAlignedBox ogreBoundingBox = mAvatarNode->_getWorldAABB();
+	const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
+	
+	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,ogreMax.y,0));*/
 }
 
 
