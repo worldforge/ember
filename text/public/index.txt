@@ -9,6 +9,21 @@
 <p><table class="chart">   
   <tr>
     <td class="subcaption">
+      <b>2002-Aug-27</b> - Dime connects to server!
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <p>
+    Big news, some of our effort has finally given birth to fruit.  Dime can
+    now connect to a server using Eris.  There's a lot more to do before we
+    can do anything of importance but it's a big start.
+    </p>
+      <i>Xmp</i>
+    </td>
+  </tr>  
+  <tr>
+    <td class="subcaption">
       <b>2002-Aug-26</b> - Updated Tasks
     </td>
   </tr>
