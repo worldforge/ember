@@ -201,6 +201,7 @@ AC_OUTPUT([
   src/services/gui/Makefile
   src/services/platform/Makefile
   src/services/server/Makefile
+  src/services/sound/Makefile
   src/services/datamodel/Makefile
   test/Makefile
   src/main/Makefile
