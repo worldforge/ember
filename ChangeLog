@@ -1,5 +1,9 @@
 2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* better handling of types, get all in a hierarcy after they've all been loaded
+
+2005-01-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* improves resource handling for modeldefinitions
 	* added dynamic tree generation
 		this is preliminary, to be replaced with a better solution in the future

@@ -28,10 +28,12 @@
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
+#include <Eris/View.h>
 
 
 namespace EmberOgre {
 
+class AvatarEmberEntity;
 /**
 @author Erik Hjortsberg
 */
@@ -57,6 +59,13 @@ protected:
 	
 	bool createButton_Click(const CEGUI::EventArgs& args);
 	
+	/**
+	Loads all types into the list
+	*/
+	void loadAllTypes();
+	
+	void addToList(Eris::TypeInfo* typeInfo, int level);
+
 
 };
 

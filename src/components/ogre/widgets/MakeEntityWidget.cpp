@@ -79,7 +79,6 @@ void MakeEntityWidget::buildWidget()
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &MakeEntityWidget::connectedToServer));
 	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &MakeEntityWidget::gotAvatar));
 
-
 	getMainSheet()->addChildWindow(mMainWindow); 
 
 
@@ -87,7 +86,20 @@ void MakeEntityWidget::buildWidget()
 
 void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
 {
+	loadAllTypes();
 	mMainWindow->setVisible(true);
+}
+
+
+
+
+
+void MakeEntityWidget::loadAllTypes()
+{
+	Eris::TypeService* typeservice = mConn->getTypeService();
+	Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
+	addToList(typeInfo, 0);
+
 }
 
 void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
@@ -98,15 +110,37 @@ void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
 
 }
 
+void MakeEntityWidget::addToList(Eris::TypeInfo* typeInfo, int level)
+{
+	std::stringstream levelindicator;
+	for (int i = 0; i < level; ++i) {
+		levelindicator << "-";
+	}
+	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(levelindicator.str() + typeInfo->getName());
+	item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	item->setUserData(typeInfo);
+	mTypeList->addItem(item);
+	
+	const Eris::TypeInfoSet children = typeInfo->getChildren();
+	Eris::TypeInfoSet::const_iterator I = children.begin();
+	Eris::TypeInfoSet::const_iterator I_end = children.end();
+	
+	for (;I != I_end; ++I)
+	{
+		addToList(*I, level+1);
+	}
+	
+}
+
 void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 {
-	mTypes.insert(typeInfo);
+/*	mTypes.insert(typeInfo);
 	
 	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(typeInfo->getName());
 	item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	item->setUserData(typeInfo);
 	
-	mTypeList->addItem(item);
+	mTypeList->addItem(item);*/
 }
 
 bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
