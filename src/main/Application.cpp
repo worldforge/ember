@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.30  2002-07-02 22:00:13  tim
+ *      Revision 1.31  2002-07-03 11:38:48  xmp
+ *      Hook eris's logging service into Dime's
+ *
+ *      Revision 1.30  2002/07/02 22:00:13  tim
  *      Dump level added
  *
  *      Revision 1.29  2002/07/02 19:13:49  tim
@@ -127,6 +130,7 @@
 // GNDN: MSVC < version 7 is broken
 #else
 #include <Eris/PollDefault.h>
+#include <Eris/Log.h>
 #endif
 
 namespace dime
@@ -253,6 +257,9 @@ namespace dime
 #if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
 // GNDN: MSVC < version 7 is broken
 #else
+		// Set Eris Logging Level
+		Eris::setLogLevel(Eris::LOG_DEBUG);
+
 		myMetaserverService = DimeServices::getInstance()->getMetaserverService();
 		myMetaserverService->start();
 		

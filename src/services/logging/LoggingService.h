@@ -23,7 +23,11 @@
 #include "framework/Service.h"
 
 // Include library headers here
+#include "Eris/Log.h"
+#include <sigc++/object.h>
+#include <sigc++/object_slot.h>
 
+// Include system headers here
 #include <string>
 #include <list>
 #include <stdio.h> 
@@ -31,7 +35,6 @@
 #include <ctime>
 //#include <varargs.h> //TODO: Needed by unix?
 
-// Include system headers here
 
 namespace dime {
 
@@ -109,7 +112,7 @@ const int MESSAGE_BUFFER_SIZE = 1024;
  * @author Tim Enderling
  */
 
-class LoggingService: public Service
+ class LoggingService: public Service, virtual public SigC::Object
 {
     //======================================================================
     // Public Constants and enums
@@ -344,7 +347,7 @@ class LoggingService: public Service
 	 virtual Service::Status start()
 	 {
 		 setRunning(true);
-     setStatus(Service::OK);
+		 setStatus(Service::OK);
 		 return Service::OK;
 	 }
 
@@ -578,16 +581,15 @@ class LoggingService: public Service
     // Private Methods
     //======================================================================
     private:
-
-	//----------------------------------------------------------------------
-    // Constructors
+        //----------------------------------------------------------------------
+	// Constructors
 	
 	/**
-     * Creates a new LoggingService using default values.
+	 * Creates a new LoggingService using default values.
 	 * Private so LoggingService can only be initialized through getInstance.
-     */
-    LoggingService()
-    {
+	 */
+	LoggingService()
+	  {
 
 		//set service properties
 		setName("Logging");
@@ -599,10 +601,39 @@ class LoggingService: public Service
 		myFile				= "";
 		myLine				= -1;
 		myImportance		= INFO;
-    }
+
+		//Hook up to Eris's logging Service
+		Eris::Logged.connect(SigC::slot(*this,&LoggingService::erisLogReceiver));
+	  }
 	
 	//----------------------------------------------------------------------
     // Other private methods
+
+    /**
+     *
+     */
+    void erisLogReceiver(Eris::LogLevel level, const std::string& msg)
+      {
+	MessageImportance importance;
+
+	// Translate Eris importance's to ours
+	switch (level)
+	  {
+	  case Eris::LOG_ERROR:
+	    importance = CRITICAL;
+	    break;
+	  case Eris::LOG_WARNING:
+	    importance = WARNING;
+	    break;
+	  case Eris::LOG_NOTICE:
+	  case Eris::LOG_VERBOSE:
+	  default:
+	    importance = INFO;
+	  }
+
+	sendMessage(msg, "ERIS", 0, importance);
+      }
+
 
 	/**
 	 * Unifies the sending mechanism for streaming- and formatting-input
