@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="Taharez Frame Window" Name="MainWindow">
+	<Window Type="Taharez Frame Window" Name="ConsoleMainWindow">
 		<Property Name="Position" Value="x:0 y:-0.45" /> 
 		<Property Name="Size" Value="w:1 h:0.5" /> 
 		<Property Name="FrameEnabled" Value="False" /> 

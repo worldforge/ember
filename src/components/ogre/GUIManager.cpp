@@ -68,53 +68,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		fprintf(stderr, "CEGUI - SHEET CREATED\n");
 
 
-		
-	
-
-		
-		
-		
-		
-		/*
-		CEGUI::PushButton* btn = (CEGUI::PushButton*)CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez Button", (CEGUI::utf8*)"Demo7/Window1/Quit");
-		fwnd->addChildWindow(btn);
-		btn->setMaximumSize(CEGUI::Size(1.0f, 1.0f));
-		btn->setPosition(CEGUI::Point(0.02f, 0.1f));
-		btn->setSize(CEGUI::Size(0.25f, 0.1f));
-		btn->setText((CEGUI::utf8*)"Exit Demo");
-		fprintf(stderr, "CEGUI - SAMPLE BUTTON CREATED\n");
-		*/
-		//
-                // CEGUI logo
-                //
-		/*
-                CEGUI::StaticImage* clogo = (CEGUI::StaticImage*)CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"Taharez StaticImage", (CEGUI::utf8*)"Cegui Logo");
-                sheet->addChildWindow(clogo);
-                clogo->setFrameEnabled(false);
-                clogo->setBackgroundEnabled(false);
-		CEGUI::Imageset* giset = CEGUI::ImagesetManager::getSingleton().createImageset((CEGUI::utf8*)"ogregui.xml");
-                clogo->setImage(&giset->getImage((CEGUI::utf8*)"CeguiLogo"));
-                clogo->setPosition(CEGUI::Point(0.9125f, 0.9115f));
-                clogo->setSize(CEGUI::Size(0.075, 0.0385f));
-                clogo->setAlwaysOnTop(true);
-                clogo->setAlpha(0.9f);
-                clogo->setEnabled(false);
-                clogo->setInheritsAlpha(false);
-		
-		sheet->show();
-		sheet->activate();
-		fwnd->show();
-		fwnd->activate();
-		btn->show();
-		fwnd->activate();
-		//CEGUI::System::getSingleton().renderGUI();
-		fprintf(stderr, "CEGUI - GUI RENDERED\n");
-		*/
-		
-/*	} catch(CEGUI::Exception e) {
-		fprintf(stderr, "Exception creating CEGUI - can't show message because it's protected. WTF?\n");
-	}
-*/	mEventProcessor->addKeyListener(this);
+	mEventProcessor->addKeyListener(this);
 	mEventProcessor->addMouseMotionListener(this);
 	mEventProcessor->addMouseListener(this);
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -141,6 +95,10 @@ void GUIManager::initialize()
 		mConsoleWidget->buildWidget();
 		addWidget(mConsoleWidget);
 		fprintf(stderr, "CEGUI - CREATED CONSOLE\n");
+		
+		ChatWidget* chatWidget = new ChatWidget(this);
+		chatWidget->buildWidget();
+		addWidget(chatWidget);		
 	
 }
 

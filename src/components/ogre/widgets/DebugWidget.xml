@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
  <GUILayout> 
-    <Window Type="Taharez Frame Window" Name="DebugWindow"> 
+    <Window Type="Taharez Frame Window" Name="DebugMainWindow"> 
        <Property Name="Position" Value="x:0.25 y:0.25" /> 
        <Property Name="Size" Value="w:0.5 h:0.5" /> 
        <Property Name="Text" Value="Debug window" /> 

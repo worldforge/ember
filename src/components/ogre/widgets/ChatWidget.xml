@@ -1,10 +1,9 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="Taharez Frame Window" Name="MainWindow">
-		<Property Name="Position" Value="x:0.3 y:0.3" /> 
+	<Window Type="Taharez Frame Window" Name="ChatMainWindow">
+		<Property Name="Position" Value="x:0 y:0.3" /> 
 		<Property Name="Size" Value="w:0.4 h:0.4" /> 
-		<Property Name="FrameEnabled" Value="False" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Chat" />
 		
@@ -12,6 +11,7 @@
 			<Property Name="Position" Value="x:0 y:0" /> 
 			<Property Name="Size" Value="w:1 h:1" /> 
 			<Property Name="Text" Value="" /> 
+			<Property Name="Alpha" Value="0.6" /> 
 		</Window>
 
 		
