@@ -1,5 +1,9 @@
 2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* added more comments
+
+2005-03-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* added Name accessor to BluePrint, now all blueprint must have names
 	* changed the way the bounding boxes are defined in the blockspec's, now you define the complete dimension of the bounding box (just easier to imagine it that way)
 	* various fixes to Jesus, started on methods for loading a lot of BluePrints and keeping them in memory

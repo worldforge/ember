@@ -54,7 +54,18 @@ template<> WidgetLoader WidgetLoaderHolder<ASubClassOfWidget>::loader("associate
 // };
 
 
-/** Base class for all widgets
+/** 
+
+Base class for all widgets.
+Put all widget set up code in the buildWidget() method.
+
+
+NOTE: Perhaps we should provide another base class for widgets that have a single movable window?
+
+
+When creating a new Widget class, make sure you also add it to WidgetDefinitions.
+@see WidgetDefinitions
+
 */
 class Widget : virtual public SigC::Object
 {
@@ -65,7 +76,19 @@ public:
 	
 	void init(GUIManager* guiManager);
 	
+	
+	/**
+	 *    Called each frame.
+	 * @param evt 
+	 */
 	virtual void frameStarted(const Ogre::FrameEvent& evt);
+	
+	
+	/**
+	 *    Called by the GUIManager to tell the widget to create all needed GUI elements.
+	 *    Override this in your subclass.
+	 *    Remember to call getMainSheet()->addChildWindow(mMainWindow); to add the main window to the gui system, else it won't be shown.
+ 	 */
 	virtual void buildWidget();
 protected:
 	CEGUI::Window* mMainWindow;

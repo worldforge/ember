@@ -30,6 +30,9 @@ typedef Widget* (*FactoryFunc)();
 
 /**
 @author Erik Hjortsberg
+
+Utility class for registering Widgets.
+If you create a new widget, make sure you add it to this class, else it won't be linked and you cannot create it dynamically.
 */
 class WidgetDefinitions{
 public:
