@@ -10,7 +10,10 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.29  2002-07-02 19:13:49  tim
+ *      Revision 1.30  2002-07-02 22:00:13  tim
+ *      Dump level added
+ *
+ *      Revision 1.29  2002/07/02 19:13:49  tim
  *      Test usage of DDM in MetaserverService
  *
  *      Revision 1.28  2002/07/02 03:35:18  nikal
@@ -183,7 +186,7 @@ namespace dime
 		dump << "onMetaserverService called." << std::endl;
 		dump << "dumping /servers {" << std::endl;
 
-		DataModelService::dump(DataObject::getRoot("/servers"), dump);
+		DataModelService::dump(DataObject::getRoot("/"), dump, true, 0);
 
 		dump << "}";
 		dump.put(0);

@@ -89,7 +89,8 @@ class DataModelService //: public Service
 	 * Helper functions
 	 */
 
-	static void dump(PDataObject toDump, std::strstream & dumpDest, bool recursive = true);
+	static void dump(PDataObject toDump, std::strstream & dumpDest, bool recursive = true,
+																	int level = 0);
 
 	//----------------------------------------------------------------------
     // Singleton
