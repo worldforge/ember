@@ -213,6 +213,8 @@ if test "$ac_use_gprof_code" = "yes"; then
       CXXFLAGS="$CXXFLAGS -pg -g -a"
 fi
 
+AC_LANG_SAVE
+AC_LANG([C])
 # Test for libxml2
 AM_PATH_XML2(2.4.24,[
     CFLAGS="$CFLAGS $XML_CFLAGS"
@@ -221,6 +223,7 @@ AM_PATH_XML2(2.4.24,[
     ],
 AC_MSG_ERROR(Couldn't find LibXML2 [or tests failed])
 )
+AC_LANG_RESTORE
 
 # Checks for header files.
 AC_HEADER_STDC

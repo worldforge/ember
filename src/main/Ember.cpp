@@ -43,6 +43,7 @@ int main(int argc, char **argv)
     {
       dime::ImageService::getInstance()->addPath("./bin/");
       dime::ImageService::getInstance()->addPath("../../bin/");
+      dime::Application::getInstance()->getStateMgr()->setState("initial state");
       dime::Application::getInstance()->mainLoop();
     }
   catch ( dime::Exception e )

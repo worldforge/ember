@@ -10,7 +10,22 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.40  2002-11-12 17:46:47  xmp
+ *      Revision 1.41  2002-11-12 18:52:24  xmp
+ *      2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * configure.in: added to allow older distros to build
+ *
+ *              * configure.ac: modified to workaround bug in libxml's AM_PATH (not
+ *                setting CPPFLAGS when checking only CFLAGS)
+ *
+ *              * MetaserverService.cpp/h, Application.cpp/h: Removed DataModel, it's
+ *                buggy.
+ *
+ *              * Dime.cpp Applicatition.cpp/h StateManager.cpp:
+ *                Moved Widget loading into StateManager.  Fixed a circular calling bug.
+ *
+ *      Known bug in that the widgets still aren't quite loading yet.  I'll have this fixed soon.  Escape key to quit still works however.
+ *
+ *      Revision 1.40  2002/11/12 17:46:47  xmp
  *      Readded configure.in
  *
  *      Revision 1.39  2002/10/09 13:41:22  xmp
@@ -234,7 +249,7 @@ namespace dime
 
     };
 
-
+#if 0
   void onMetaserverService(PDataObject p, DataType t)
   {
     //fired whenever the state changed
@@ -250,6 +265,7 @@ namespace dime
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)
       << dump.str() << ENDM;
   }
+#endif
 
     Application::Application(int width, int height, std::string title) :
       myWidth(width), myHeight(height), myShouldQuit(false) 
@@ -325,13 +341,14 @@ namespace dime
 	Eris::setLogLevel(Eris::LOG_DEBUG);
 
 	DimeServices::getInstance()->getMetaserverService()->start();
-		
+
+#if 0		
 	//just for test:
 	PDataObject metaState = DataObject::getRoot("/servers/state"); 
 	metaState->addConnection(SigC::slot(onMetaserverService), POST_VALUE_CHANGE);
 
 	onMetaserverService(metaState, POST_VALUE_CHANGE);
-
+#endif
 	// Create and start ServerService
 	DimeServices::getInstance()->getServerService()->start();
 #endif

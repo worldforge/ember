@@ -21,10 +21,12 @@
 
 // Current project
 #include "services/logging/LoggingService.h"
+#if 0
 //#include "services/datamodel/DataModelService.h"
 #include "services/datamodel/IntProvider.h"
 #include "services/datamodel/DataObject.h"
 #include "services/datamodel/FloatProvider.h"
+#endif
 #include "framework/ConsoleBackend.h"
 
 // System headers
@@ -90,6 +92,7 @@ namespace dime
 		msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
 		listed = false;
 
+#if 0
 		PDataObject root = DataObject::getRoot();
 		PDataObject servers = root->addChild("servers");        
 		servers->addChild("metaserver", 
@@ -103,6 +106,7 @@ namespace dime
 
 		myStateDMP = new StringProvider("Listing servers.", "State of MetaserverService");
 		servers->addChild("state", myStateDMP);
+#endif
 
 		return Service::OK;
 	}
@@ -112,8 +116,10 @@ namespace dime
 	{
 		setStatus(Service::OK);
 		setRunning( false );
+#if 0
 		PDataObject servers = DataObject::getRoot("/servers");
 		servers->remove(); //HINT: This also frees myStateDMP
+#endif
 	}
 
 	void MetaserverService::gotServerCount(int count)
@@ -129,6 +135,7 @@ namespace dime
     
     void MetaserverService::receivedServerInfo(Eris::ServerInfo sInfo)
     {
+#if 0
 		PDataObject list = DataObject::getRoot("/servers/list");
 
 		PDataObject entry = list->addChild();
@@ -147,6 +154,7 @@ namespace dime
 			"Estimated round-trip-time (ping) in milliseconds"));
 		entry->addChild("uptime", new FloatProvider(sInfo.getUptime(),
 			"Server uptime in seconds"));
+#endif
 
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
 										  << "Hostname: " <<sInfo.getHostname()

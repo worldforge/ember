@@ -1,4 +1,16 @@
 2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
+	* configure.in: added to allow older distros to build
+
+	* configure.ac: modified to workaround bug in libxml's AM_PATH (not
+	  setting CPPFLAGS when checking only CFLAGS)
+
+	* MetaserverService.cpp/h, Application.cpp/h: Removed DataModel, it's
+	  buggy.
+
+	* Dime.cpp Applicatition.cpp/h StateManager.cpp:
+	  Moved Widget loading into StateManager.  Fixed a circular calling bug.
+
+2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
         * configure.ac: modernised the syntax
 
 2002-11-11 M Pollard <circlemaster@blueyonder.co.uk>

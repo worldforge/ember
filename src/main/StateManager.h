@@ -106,36 +106,7 @@ class StateManager
     /**
      * Creates a new StateManager using default values.
      */
-    StateManager(const std::string& stateFile, const std::string& initialState)
-      : myStateFile(stateFile), myStateDoc(NULL)
-    {
-      // Load the XML Document containing the States
-      xmlNodePtr cur;
-
-      myStateDoc = xmlParseFile(myStateFile.c_str());
-      if (!myStateDoc)
-	{
-	  xmlFreeDoc(myStateDoc);
-	  throw "Missing State Doc";
-	}
-
-      cur = xmlDocGetRootElement(myStateDoc);
-
-      if (!cur)
-	{
-	  xmlFreeDoc(myStateDoc);
-	  throw "Empty State Doc";
-	}
-
-      if (xmlStrcmp(cur->name, (const xmlChar *) "states"))
-	{
-	  xmlFreeDoc(myStateDoc);
-	  throw "document of the wrong type, root node != states";
-	}
-      // OK if we're here then we've loaded the doc
-
-      setState(initialState);
-    }
+    StateManager(const std::string& stateFile);
 
     /**
      * Copy constructor.

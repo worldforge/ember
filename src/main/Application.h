@@ -10,7 +10,22 @@
  *  Change History (most recent first):    
  *
  *      $Log$
- *      Revision 1.21  2002-11-12 17:46:47  xmp
+ *      Revision 1.22  2002-11-12 18:52:24  xmp
+ *      2002-11-12 M Pollard <circlemaster@blueyonder.co.uk>
+ *              * configure.in: added to allow older distros to build
+ *
+ *              * configure.ac: modified to workaround bug in libxml's AM_PATH (not
+ *                setting CPPFLAGS when checking only CFLAGS)
+ *
+ *              * MetaserverService.cpp/h, Application.cpp/h: Removed DataModel, it's
+ *                buggy.
+ *
+ *              * Dime.cpp Applicatition.cpp/h StateManager.cpp:
+ *                Moved Widget loading into StateManager.  Fixed a circular calling bug.
+ *
+ *      Known bug in that the widgets still aren't quite loading yet.  I'll have this fixed soon.  Escape key to quit still works however.
+ *
+ *      Revision 1.21  2002/11/12 17:46:47  xmp
  *      Readded configure.in
  *
  *      Revision 1.20  2002/10/09 13:41:23  xmp
@@ -189,8 +204,7 @@ namespace dime
 	      {
 		try
 		  {
-		    myStateManager = new StateManager("states.xml",
-						      "Initial State");
+		    myStateManager = new StateManager("states.xml");
 		  }
 		catch( char* stateMgrErr )
 		  {
