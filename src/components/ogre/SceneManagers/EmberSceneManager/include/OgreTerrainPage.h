@@ -77,6 +77,7 @@ namespace Ogre {
         */
         TerrainRenderable * getTerrainTile( const Vector3 & pt );
 
+		void translate(const Ogre::Vector3 pos);
 
     };
 

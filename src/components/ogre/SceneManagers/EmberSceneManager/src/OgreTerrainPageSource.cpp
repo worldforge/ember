@@ -106,6 +106,11 @@ namespace Ogre {
                 SceneNode *c = page->pageSceneNode->createChildSceneNode( name );
                 TerrainRenderable *tile = new TerrainRenderable(name);
                 // Initialise the tile
+/*				if (p == 5 && q == 0) {
+					tile->setMaterial(static_cast<Ogre::Material*>(Ogre::MaterialManager::getSingleton().getByName("Malebuilder/Body")));
+				} else {
+                	tile->setMaterial(pMaterial);
+				}*/
                 tile->setMaterial(pMaterial);
                 tile->initialise(i, j, heightData);
                 // Attach it to the page

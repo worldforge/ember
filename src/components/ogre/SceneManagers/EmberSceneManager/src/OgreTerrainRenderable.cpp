@@ -46,6 +46,8 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreException.h"
 #include <OgreNoMemoryMacros.h>
 
+#include "components/ogre/GUIManager.h"
+
 namespace Ogre
 {
     //-----------------------------------------------------------------------
@@ -236,6 +238,7 @@ namespace Ogre
         mCenter = Vector3( ( startx * msOptions->scale.x + (endx - 1) * msOptions->scale.x ) / 2,
             ( min + max ) / 2,
             ( startz * msOptions->scale.z + (endz - 1) * msOptions->scale.z ) / 2 );
+		mWorldCenter = Vector3::UNIT_SCALE + mCenter;
 
         // Create delta buffer list if required to morph
         if (msOptions->lodMorph)
@@ -319,7 +322,7 @@ namespace Ogre
     void TerrainRenderable::_notifyCurrentCamera( Camera* cam )
     {
 
-        if ( mForcedRenderLevel >= 0 )
+       if ( mForcedRenderLevel >= 0 )
         {
             mRenderLevel = mForcedRenderLevel;
             return ;
@@ -327,7 +330,7 @@ namespace Ogre
 
 
         Vector3 cpos = cam -> getDerivedPosition();
-        Vector3 diff = mCenter - cpos;
+        Vector3 diff = mWorldCenter - cpos;
 
         Real L = diff.squaredLength();
 
@@ -394,6 +397,9 @@ namespace Ogre
             mLastNextLevel = nextLevel;
 
         }
+		
+		mMaterialLodIndex = mMaterial->getLodIndexSquaredDepth (L);
+
 
     }
     //-----------------------------------------------------------------------
@@ -1464,6 +1470,19 @@ namespace Ogre
         return numIndexes;
 
     }
+	
+	 Technique * TerrainRenderable::getTechnique (void) const
+	 {
+		if (msOptions->debuglod) 
+		 	return mMaterial->getBestTechnique(mRenderLevel);
+	 	return mMaterial->getBestTechnique(mMaterialLodIndex);
+		
+	 }
+
+	void TerrainRenderable::_notifyParentTranslate(const Vector3& vector)
+	{
+		mWorldCenter = vector + mCenter;
+	}
 
 
 } //namespace

@@ -22,6 +22,8 @@
 
 using namespace Ogre;
 namespace EmberOgre {
+
+const std::string EmberTerrainPageSource::Name = "EmberTerrain";
 	
 EmberTerrainPageSource::EmberTerrainPageSource(TerrainGenerator* const generator ) : 
 mGenerator(generator)
@@ -68,10 +70,10 @@ void EmberTerrainPageSource::generatePage(int x, int y)
 	Ogre::Material* material = mGenerator->getMaterialForSegment(x, -y - 1 );
 	assert(material);
 	TerrainPage* page = buildPage(heightData, material);
-	page->tiles[0][0]->setCastShadows(false);
+/*	page->tiles[0][0]->setCastShadows(false);
 	page->tiles[0][1]->setCastShadows(false);
 	page->tiles[1][0]->setCastShadows(false);
-	page->tiles[1][1]->setCastShadows(false);
+	page->tiles[1][1]->setCastShadows(false);*/
 	
 	getEmberTerrainSceneManager()->attachPage(x, y, page, mGenerator->getMaxHeightForSegment(x,y), mGenerator->getMinHeightForSegment(x,y));
 
@@ -82,8 +84,9 @@ void EmberTerrainPageSource::setHasTerrain(bool hasTerrain)
 {
 	mHasTerrain = hasTerrain;	
 
-	int size = 2;
-	//this is temporary until we've got paging working
+//	generatePage(-1, -1);
+	int size = 3;
+//	this is temporary until we've got paging working
 	for (int i = 0 - size; i <= 0 + size; ++i) {
 		for (int j = 0 - size; j <= 0 + size; ++j) {
 			mX = i;

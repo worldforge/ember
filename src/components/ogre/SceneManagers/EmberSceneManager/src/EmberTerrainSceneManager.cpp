@@ -21,6 +21,7 @@
 //#include "EmberTerrainRenderable.h"
 #include "components/ogre/MathConverter.h"
 
+#include "EmberTerrainPageSource.h"
 #include "EmberTerrainSceneManager.h"
 namespace EmberOgre {
 
@@ -55,8 +56,56 @@ int EmberTerrainSceneManager::getPageOffset()
 	return mPageOffset;	
 }
 
+//-------------------------------------------------------------------------
+void EmberTerrainSceneManager::setWorldGeometry( const Ogre::String& filename )
+{
+	mTerrainPages.clear();
+	// Load the configuration
+	loadConfig(filename);
+// 	mOptions = options;
+// 	mTerrainPages.clear();
+
+// 	// Resize the octree, allow for 1 page for now
+// 	float max_x = mOptions.scale.x * mOptions.pageSize;
+// 	float max_y = mOptions.scale.y;
+// 	float max_z = mOptions.scale.z * mOptions.pageSize;
+// 	resize( Ogre::AxisAlignedBox( 0, 0, 0, max_x, max_y, max_z ) );
+
+//	setupTerrainMaterial();
+
+	setupTerrainPages();
+
+}
+
+//-------------------------------------------------------------------------
+void EmberTerrainSceneManager::setWorldGeometry(  Ogre::TerrainOptions& options )
+{
+	mTerrainPages.clear();
+	mOptions = options;
+	
+	// Load the configuration
+//	loadConfig(filename);
+// 	mOptions = options;
+// 	mTerrainPages.clear();
+
+// 	// Resize the octree, allow for 1 page for now
+// 	float max_x = mOptions.scale.x * mOptions.pageSize;
+// 	float max_y = mOptions.scale.y;
+// 	float max_z = mOptions.scale.z * mOptions.pageSize;
+// 	resize( Ogre::AxisAlignedBox( 0, 0, 0, max_x, max_y, max_z ) );
+
+//	setupTerrainMaterial();
+	Ogre::TerrainPageSourceOptionList optlist;
+	selectPageSource(EmberTerrainPageSource::Name, optlist);
+	setupTerrainPages();
+
+}
+
+
 void EmberTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page, float maxY, float minY)
 {
+	//real size of one page
+	Ogre::Real pageSize = mOptions.pageSize - 1;
   //  assert(pageX == 0 && pageZ == 0 && "Multiple pages not yet supported");
 	Ogre::ushort adjustedX = pageX + mPageOffset;
 	Ogre::ushort adjustedZ = pageZ + mPageOffset;
@@ -68,16 +117,16 @@ void EmberTerrainSceneManager::attachPage(Ogre::ushort pageX, Ogre::ushort pageZ
     // Insert page into list
     mTerrainPages[adjustedX][adjustedZ] = page;
     // Attach page to terrain root
-    page->pageSceneNode->translate(Ogre::Vector3(ogreX * 64, 0, ogreZ * 64));
+    page->translate(Ogre::Vector3(ogreX * pageSize, 0, ogreZ * pageSize));
     setupPageNeighbors(adjustedX, adjustedZ, page);
     mTerrainRoot->addChild(page->pageSceneNode);
 
-	mMinX = std::min(mMinX, ogreX * 64.0f);
-	mMaxX = std::max(mMaxX, (ogreX * 64) + 64.0f);
+	mMinX = std::min(mMinX, ogreX * pageSize);
+	mMaxX = std::max(mMaxX, (ogreX * pageSize) + pageSize);
 	mMinY = std::min(mMinY, minY);
 	mMaxY = std::max(mMaxY, maxY);
-	mMinZ = std::min(mMinZ, ogreZ * 64.0f);
-	mMaxZ = std::max(mMaxZ, (ogreZ * 64) + 64.0f);
+	mMinZ = std::min(mMinZ, ogreZ * pageSize);
+	mMaxZ = std::max(mMaxZ, (ogreZ * pageSize) + pageSize);
 }
 
 void EmberTerrainSceneManager::setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page) 

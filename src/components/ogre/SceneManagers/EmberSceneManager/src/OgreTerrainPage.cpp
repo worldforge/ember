@@ -25,6 +25,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreTerrainPage.h"
 #include "OgreTerrainRenderable.h"
 #include <OgreNoMemoryMacros.h>
+#include <OgreSceneNode.h>
 
 namespace Ogre {
 
@@ -116,6 +117,24 @@ namespace Ogre {
 
         return 0;
     }
+	
+	void TerrainPage::translate(const Ogre::Vector3 pos)
+	{
+		pageSceneNode->translate(pos);
+		
+        Terrain2D::iterator i, iend;
+        iend = tiles.end();
+        for (i = tiles.begin(); i != iend; ++i)
+        {
+            TerrainRow::iterator j, jend;
+            jend = i->end();
+            for (j = i->begin(); j != jend; ++j)
+            {
+				(*j)->_notifyParentTranslate(pos);
+            }
+        }
+		
+	}
 
 }
 

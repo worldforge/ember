@@ -39,6 +39,9 @@
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
+
+#include "EmberSceneManager/include/OgreTerrainRenderable.h"
+
 /*
 #include <Eris/PollDefault.h>
 #include <Eris/Log.h>
@@ -51,6 +54,10 @@
 #include <Atlas/Objects/Entity/GameEntity.h>
 */
 // class GroundCover;
+namespace Ogre
+{
+	class TerrainOptions;
+}
 
 namespace EmberOgre {
 	
@@ -74,10 +81,10 @@ public:
 	virtual ~TerrainGenerator();
 	//static TerrainGenerator & getSingleton(void);
 	
-	static const int TerrainGenerator::segSize = 64;
+	//static const int TerrainGenerator::segSize = 64;
 
 	Ogre::SceneNode* generateTerrain();
-    void setBasePoint(int x, int y, float z) {mTerrain.setBasePoint(x,y,z);}
+    void setBasePoint(int x, int y, float z) {mTerrain->setBasePoint(x,y,z);}
 	//void loadSegmentAt(WFMath::Point<3> aPoint);
 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
 
@@ -100,7 +107,10 @@ public:
 	 * By valid means a populated terrain with a corresponding material-
 	 */
 	bool isValidTerrainAt(int x, int y);
+	
+	const Ogre::TerrainOptions& getTerrainOptions() const;
 
+	const Mercator::Terrain& getTerrain() const;
 
 // 	GroundCover* mGround;
 // 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
@@ -109,7 +119,7 @@ protected:
 
 	typedef std::map<std::string, Ogre::Material*> MaterialStore;
 	MaterialStore materialStore;
-	Mercator::Terrain mTerrain;
+	Mercator::Terrain* mTerrain;
 	
 	
 	//static TerrainGenerator* _instance;
@@ -133,12 +143,17 @@ protected:
 	 */
 	void generateTerrainMaterials(Mercator::Segment* segment, long segmentX, long segmentY);
 
+	void loadTerrainOptions();
+	
+	Ogre::TerrainOptions mOptions;
+	
+	
 	/*
 	 * We can't use the alphamaps generated from WF. Thus we need to convert them first.
 	 * Which is done by this method.
 	 */
 	Ogre::DataChunk* convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor);
-	Ogre::ushort mNumberOfTilesInATerrainPage;
+	//Ogre::ushort mNumberOfTilesInATerrainPage;
 
 	/*
 	 * Creates an alpha texture for the supplied surface.

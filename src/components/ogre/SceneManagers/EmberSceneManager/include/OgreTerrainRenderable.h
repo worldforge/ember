@@ -135,6 +135,9 @@ namespace Ogre
         bool coloured;
         /// Pointer to the material to use to render the terrain
         Material *terrainMaterial;
+		
+		///use debug materials, changing according to the lod
+		bool debuglod;
 
     };
 
@@ -293,7 +296,14 @@ namespace Ogre
             GpuProgramParameters* params) const;
         /// Get the static list of indexes cached (internal use only)
         static TerrainBufferCache& _getIndexCache(void) {return msIndexCache;}
-    protected:
+    
+		virtual Technique * getTechnique (void) const;
+		
+		void _notifyParentTranslate(const Vector3& vector);
+	
+	protected:
+		uint mMaterialLodIndex;
+	
         /// Static list of index buffers
         static TerrainBufferCache msIndexCache;
         /// Static link to static shared options
@@ -412,6 +422,8 @@ namespace Ogre
 
         /// Create a blank delta buffer for usein morphing
         HardwareVertexBufferSharedPtr createDeltaBuffer(void);
+		
+		Vector3 mWorldCenter;
 
     };
 

@@ -65,6 +65,9 @@ public:
 	 */
 	int getPageOffset();
 	
+	void setWorldGeometry( const Ogre::String& filename );
+	void setWorldGeometry(  Ogre::TerrainOptions& options );
+	
 protected:
 
 	/* 

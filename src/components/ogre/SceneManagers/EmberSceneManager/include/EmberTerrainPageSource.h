@@ -50,6 +50,7 @@ protected:
 	EmberTerrainSceneManager* getEmberTerrainSceneManager() const;
 
 public:
+	static const std::string Name;
     virtual void requestPage (Ogre::ushort x, Ogre::ushort z);
     virtual void expirePage (Ogre::ushort x, Ogre::ushort z);	
  
