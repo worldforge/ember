@@ -89,7 +89,7 @@
 // Included system headers
 
 
-namespace Dime {
+namespace dime {
 
 /**
  * The Label interface.
@@ -151,6 +151,13 @@ class Label : public Widget
     {
     }
 
+    /**
+     * Creates a new Label using rect and text.
+     */
+    Label(std::string text, Rectangle rect) : Widget(rect), myText(text)
+    {
+
+    }
 
     /**
      * Copy constructor.
@@ -171,7 +178,7 @@ class Label : public Widget
         // Copy fields from source class to this class here.
 
         // Return this object with new value
-        return &this;
+        return *this;
     }
 
 
@@ -220,6 +227,11 @@ class Label : public Widget
 
     //----------------------------------------------------------------------
     // Other public methods
+
+	/**
+	 * Draws the widget, and/or its children.
+	 */
+    virtual int draw(DrawDevice *target);
 
 
     //======================================================================
