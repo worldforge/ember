@@ -114,7 +114,7 @@ class FontRenderer
      *@param color the color for the text.
      */
     FontRenderer(const Type type, const std::string text, const Color &color, const Rectangle &rectangle)
-        : myType(type), myText(text), myTextSurface(NULL), myColor(color),  myUpdate(false), myRectangle(rectangle)
+        : myType(type), myText(text), myTextSurface(NULL), myColor(color),  myUpdate(false), myRectangle(rectangle), myFont(NULL)
     {
         updateTextBlended();
     }
@@ -235,7 +235,7 @@ class FontRenderer
                     }
                 renderText(device);
             }
-        
+        return 0;
     }
     
     

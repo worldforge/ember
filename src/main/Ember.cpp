@@ -25,7 +25,8 @@ int main(int argc, char **argv)
 	dime::ImageService::getInstance()->addPath("./bin/");
 	dime::ImageService::getInstance()->addPath("../../bin/");
 
-	dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
+	// FIXME: This invokes the faulty FontRenderer constructor
+	//dime::Label myTestLabel("Dime test!",dime::Rectangle(10,10,200,30));
 
 	dime::Button myTestButton(dime::Rectangle(300,300,100,75));
 	myTestButton.setBackground(dime::RectangleRenderer(BITMAP,myTestButton.getRectangle(),"quitbutton2.png"));

@@ -116,12 +116,16 @@ void dime::FontService::flushGlyph( dime::Glyph* glyph )
 	glyph->setStored(false);
 	glyph->setIndex(0);
 	if( glyph->getBitmap().buffer ) {
-		free( glyph->getBitmap().buffer );
-		glyph->getBitmap().buffer = 0;
+		delete glyph->getBitmap().buffer;
+		// Work around for MSVC 6 stupidity
+		FT_Bitmap &temp = glyph->getBitmap();
+		temp.buffer = NULL;
 	}
 	if( glyph->getPixmap().buffer ) {
-		free( glyph->getPixmap().buffer );
-		glyph->getPixmap().buffer = 0;
+		delete glyph->getPixmap().buffer;
+		// Work around for MSVC 6 stupidity
+		FT_Bitmap &temp = glyph->getPixmap();
+		temp.buffer = NULL;
 	}
 	glyph->setCached(false);
 }

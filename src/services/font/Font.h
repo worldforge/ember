@@ -185,7 +185,7 @@ public:
         return myCurrentGlyph;
     }
     
-    FT_Face setFace(FT_Face &face)
+    void setFace(FT_Face &face)
     {
         myFace = face;
     }

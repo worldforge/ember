@@ -14,7 +14,7 @@ void dime::FontRenderer::updateTextBlended()
     Uint32 *dst;
     int row, col;
     Glyph *glyph;
-    FT_Error error;
+    //FT_Error error;
 
     /* get color */
     fg.r = (Uint8)myColor.getR();
