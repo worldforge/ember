@@ -10,7 +10,10 @@
   *  Change History (most recent first):    
   *
   *      $Log$
-  *      Revision 1.1  2002-01-12 23:43:26  nikal
+  *      Revision 1.2  2002-01-13 01:50:09  zzorn
+  *      Changed comments to use /** so that doxygen generates documentation for them.
+  *
+  *      Revision 1.1  2002/01/12 23:43:26  nikal
   *      adding the skeleton Application and a basic int main()
   *
   *      Revision 1.2  2001/12/09 20:40:02  nikal
@@ -33,7 +36,7 @@ namespace dime
     class Application 
     {
     public:
-      /*
+      /**
        * Ctor for dime::main::Application.  Allcoates and pops up an SDL window 
        * of width, and height with title.
        *
@@ -42,26 +45,27 @@ namespace dime
        * @param title The title of the Application window(default="Dime Application")
        */      
       Application(int width=640, int height=480, std::string title="Dime Application");
-      /*
+
+      /**
        * Dtor for dime::main::Application.  Free the current surface.
        *
        */
       ~Application();
        
-      /* 
+      /**
        * Main loop step.   Does one iteration of the mainloop. 
        *
        *
        */
       void mainLoopStep();
 
-      /*
+      /**
        * the Main loop.  Returns when application has received an "exit" command
        *
        */
       void mainLoop();
        
-      /*
+      /**
        * return true if application has received an "exit" command else false.
        *
        * @return true if "shouldquit" else false
