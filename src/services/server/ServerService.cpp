@@ -61,6 +61,11 @@ namespace dime
 
 		// Bind failure signal
 		myConn->Failure.connect(SigC::slot(*this, &ServerService::GotFailure));
+		myConn->Connected.connect(SigC::slot(*this, &ServerService::Connected));
+		myConn->Disconnected.connect(SigC::slot(*this, &ServerService::Disconnected));
+		myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::Disconnecting));
+		myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::StatusChanged));
+		myConn->Timeout.connect(SigC::slot(*this, &ServerService::Timeout));
 
 		try {
 		  myConn->connect( myHost, myPort );
@@ -92,6 +97,32 @@ namespace dime
 	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Server error: " << msg << ENDM;
 	}	
 	
+	void Connected()
+	{
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
+	}
+
+	bool Disconnecting()
+	{
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnecting"<< ENDM;
+	  return true;
+	}
+
+	void Disconnected()
+	{
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
+	}
+
+	void StatusChanged(Eris::BaseConnection::Status status)
+	{
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Status Changed to: "<<status<<ENDM;
+	}
+
+	void Timeout(Eris::BaseConnection::Status status)
+	{
+	  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Connection Timed Out"<< ENDM;
+	}
+
 	
 } // namespace dime
 

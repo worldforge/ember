@@ -75,6 +75,15 @@ class ServerService: public Service, public SigC::Object
 	
 	void GotFailure(const string& msg);
 
+	void Connected();
+
+	bool Disconnecting();
+
+	void Disconnected();
+
+	void StatusChanged(Eris::BaseConnection::Status);
+
+	void Timeout(Eris::BaseConnection::Status);
 }; //ServerService
 
 } // namespace dime
