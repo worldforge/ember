@@ -1,5 +1,5 @@
 #include "Application.h"
-
+#include <test/TestServices.h>
 #include <main/DimeServices.h>
 #include <services/image/ImageService.h>
 #include <services/gui/Button.h>
@@ -23,6 +23,9 @@ void onMouseButtonUp(dime::MouseButtonEvent *event)
 
 int main(int argc, char **argv)
 {
+    bool success = runTests();
+    if(!success)
+        return 1;
     try
         {
             

@@ -68,7 +68,8 @@ AM_PATH_CPPUNIT(1.6.2, [
   AC_MSG_RESULT(
 *** Found CppUnit
 *** Setting up make check to run tests...)
-found_cppunit=yes
+	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
+	LDFLAGS="$LDFLAGS $CPPUNIT_LIBS"
 ], 
   AC_MSG_RESULT([
 
@@ -124,8 +125,6 @@ dnl AC_CHECK_LIB(skstream,main)
 AC_LANG_CPLUSPLUS
 AC_REQUIRE_CPP
 
-## Set up conditional make target for CppUnit
-AM_CONDITIONAL(USE_CPPUNIT, test "$found_cppunit" = "yes")
 
 
 AC_OUTPUT([
@@ -143,8 +142,9 @@ AC_OUTPUT([
   src/services/platform/Makefile
   src/services/server/Makefile
   src/services/datamodel/Makefile
-  src/main/Makefile
   test/Makefile
+  src/main/Makefile
+ 
   dnl dime.dox
 ])
 
