@@ -19,15 +19,19 @@
 #ifndef FONTSERVICE_H
 #define FONTSERVICE_H
 
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#include "Font.h"
+
 #include <framework/Service.h>
-#include <services/platform/Color.h>
 #include <services/logging/LoggingService.h>
 #include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL/SDL_image.h>
 #include <list>
 #include <map>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 namespace dime {
 
@@ -40,22 +44,20 @@ namespace dime {
  */
 class FontService : public Service
 {
-	//======================================================================
-	// Inner Classes, Typedefs, and Enums
-	//======================================================================
 public:
-
-	
-
+     
     //======================================================================
     // Private Variables
     //======================================================================
 private:
-
+    dime::LoggingService *myLog;
     std::list<std::string> mySearchPaths;
-    std::map<std::string, TTF_Font *> myFonts;
-	static FontService *theInstance;
-
+    std::map<std::string/*name*/, int/*size*/>myFonts;
+    static FontService *theInstance;
+    /* The FreeType font engine/library */
+    FT_Library library;
+    bool myInitialized;
+    
     //----------------------------------------------------------------------
     // Constructors & Destructor
     
@@ -95,34 +97,36 @@ public:
     
     //----------------------------------------------------------------------
     // Other public methods
-    TTF_Font *loadFont(std::string fontName, int pointSize);
-
-    SDL_Surface *renderFont(TTF_Font *font, char *text, Color fontColor);
-    SDL_Surface *renderFont(TTF_Font *font, std::string text, Color fontColor);
+    Font *loadFontIndex(std::string fontName, int pointSize, int index);
+    Font *loadFont(std::string fontName, int pointSize);
+    void closeFont( dime::Font* font );
+    void flushGlyph( dime::Glyph* glyph );
+    void flushCache( Font* font );
     
-                            
 
 private:
     
-    /** my instance of the LogginService */
-    LoggingService *myLoggingService;
-    
-    
-    /** Creates a new ImageService using default values. */
+    /** Creates a new FontService using default values. */
     FontService() 
     {
         setName("Font Service");
-        setDescription("Service for easy loading and caching of fonts");
+        setDescription("Service for loading and caching images");
         addPath("./");
         addPath("../");
-        addPath("./data/fonts");
-        myLoggingService = LoggingService::getInstance();
-        if(TTF_Init()) {
-             myLoggingService->log(__FILE__, __LINE__, dime::LoggingService::ERROR, 
-                                   "Couldn't initialize the SDL_ttf library!\n");
-             assert(-1);
-        }
-        
+        addPath("./data/");
+        FT_Error error;
+        error = FT_Init_FreeType( &library );
+        if ( error ) 
+            {
+                myInitialized = false;
+            } 
+        else 
+            {
+                myInitialized = true;
+            }
+        myLog = dime::LoggingService::getInstance();
+        myLog->slog(__FILE__, __LINE__, LoggingService::WARNING) 
+            << "Started Font Service\n";
     }
 
 }; //FontService
