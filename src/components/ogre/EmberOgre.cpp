@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.60  2004-11-11 23:57:26  erik
+ *      Revision 1.61  2004-11-12 01:15:23  erik
+ *      2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Added EmberTerrainSceneManager, which removes the need to link to Ogre's TerrainSceneManager.
+ *
+ *      Revision 1.60  2004/11/11 23:57:26  erik
  *      2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*  Added environment classes: Sun, Sky, Water, Foliage
@@ -499,7 +504,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 
-#include "EmberTerrainSceneManager.h"
+#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
 #include "model/Model.h"

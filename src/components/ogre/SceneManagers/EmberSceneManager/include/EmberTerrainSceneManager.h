@@ -21,9 +21,9 @@
 #define DIMETERRAINSCENEMANAGER_H
 
 #include <Ogre.h>
-#include <OgreTerrainSceneManager.h>
-#include <OgreTerrainRenderable.h>
-#include <OgreTerrainPage.h>
+#include "OgreTerrainSceneManager.h"
+#include "OgreTerrainRenderable.h"
+#include "OgreTerrainPage.h"
 #include <wfmath/point.h>
 
 class TerrainGenerator;

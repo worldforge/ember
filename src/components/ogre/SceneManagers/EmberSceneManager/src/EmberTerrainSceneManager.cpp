@@ -17,9 +17,9 @@
 */
 #include "services/logging/LoggingService.h"
 
-#include "TerrainGenerator.h"
+#include "components/ogre/TerrainGenerator.h"
 //#include "EmberTerrainRenderable.h"
-#include "MathConverter.h"
+#include "components/ogre/MathConverter.h"
 
 #include "EmberTerrainSceneManager.h"
 namespace EmberOgre {

@@ -20,8 +20,8 @@
 #define DIMETERRAINPAGESOURCE_H
 
 #include <Ogre.h>
-#include <OgreTerrainPageSource.h>
-#include <OgreTerrainSceneManager.h>
+#include "OgreTerrainPageSource.h"
+#include "OgreTerrainSceneManager.h"
 
 namespace EmberOgre {
 

@@ -49,7 +49,7 @@
 //#include "MathConverter.h"
 #include "TerrainGenerator.h"
 //#include "EmberTerrainSceneManager.h"
-#include "EmberTerrainPageSource.h"
+#include "EmberSceneManager/include/EmberTerrainPageSource.h"
 
 
 namespace EmberOgre {

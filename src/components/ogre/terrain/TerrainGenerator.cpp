@@ -26,7 +26,7 @@
 #include <OgreRenderSystemCapabilities.h>
 //#include "EmberTerrainRenderable.h"
 #include "TerrainShader.h"
-#include "EmberTerrainPageSource.h"
+#include "EmberSceneManager/include/EmberTerrainPageSource.h"
 
 //#include "environment/GroundCover.h"
 

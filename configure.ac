@@ -151,7 +151,7 @@ OGRE_VERSION=0.15.0
 PKG_CHECK_MODULES(OGRE, OGRE >= 0.15.0,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS  `pkg-config --variable=plugindir OGRE`/Plugin_OctreeSceneManager.so"
+		LDFLAGS="$LDFLAGS $OGRE_LIBS"
 	],
 	[
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://www.ogre3d.org to get the latest, or check config.log to see why the tests failed, and fix it.)
@@ -290,6 +290,9 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
+		 src/components/ogre/EmberSceneManager/Makefile
+		 src/components/ogre/EmberSceneManager/src/Makefile
+		 src/components/ogre/EmberSceneManager/include/Makefile
 ])
 
 #		 src/tests/Makefile

@@ -1,3 +1,16 @@
+2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Added EmberTerrainSceneManager, which removes the need to link to Ogre's TerrainSceneManager.
+
+2004-11-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  Added environment classes: Sun, Sky, Water, Foliage
+	* Rewrote Model handling to use a subclass of Ogre::ResourceManager
+	* Various fixes to get the resouce handling to work better for distributions.
+	* Upon startup now only a lone avatar is shown. This is for debugging and shall be removed.
+	* Removed bug where images were written to a non-existant directory, resulting in strange resource allocation problems. Ugly one.
+	* Various small changes to widgets.
+
 2004-11-08  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Fixed stupid compile bug.
