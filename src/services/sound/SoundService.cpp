@@ -74,6 +74,8 @@ namespace dime
 		// Initialize OpenAL
 		alutInit(NULL,0);
 		alGenBuffers(NUM_BUFFERS,myBuffers);
+		alGenSources(NUM_SOURCES,mySources);
+
 
 		for (int i=0;i<NUM_BUFFERS;i++)
 		{
@@ -85,9 +87,18 @@ namespace dime
 		}
 
 		TestPlatform();
-					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "trace2" << ENDM;
 
 		alutLoadWAV("boom.wav",&data,&format,&size,&bits,&freq);		// Load WAV file
+
+		if(alGetError() != AL_NO_ERROR)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error loading wav" << ENDM;
+			return Service::FAILURE;
+		} else {
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "WAV file loaded"  << ENDM;
+		}
+
+
 					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Loaded WAV file? let's check"  << ENDM;
 
 LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "format: " << format << ENDM;
@@ -99,11 +110,17 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "freq: " << freq << ENDM;
 
 		alBufferData(myBuffers[0],format,data,size,freq);				// Connect WAV to buffer
+
 		if(alGetError() != AL_NO_ERROR)
 		{
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error reading wav" << ENDM;
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error connecting wav to buffer" << ENDM;
 			return Service::FAILURE;
+		} else {
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "WAV connected to buffer"  << ENDM;
 		}
+
+
+	free (data);  // should be UnloadWAV
 
 	//	 UnloadWAV();
 
@@ -112,12 +129,88 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 		alListenerfv(AL_VELOCITY,listenerVel);			// velocity
 		alListenerfv(AL_ORIENTATION,listenerOri);		// orientation
 
+		int error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in listener parameters: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Listener Parameters OK" << ENDM;
+			}
+
 		alSourcef(mySources[0],AL_PITCH,1.0f); 					// source Frequency
+
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameter pitch: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source parameter pitch OK" << ENDM;
+			}
+
 		alSourcef(mySources[0],AL_GAIN,1.0f);						// source gain
+
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameter gain: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source parameter gain OK" << ENDM;
+			}
+
+
+
 		alSourcefv(mySources[0],AL_POSITION,sourcePos);	// source position
+
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameter position: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source parameter position OK" << ENDM;
+			}
+
+
+
 		alSourcefv(mySources[0],AL_VELOCITY,sourceVel);	// source velocity
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameter velocity: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source parameter velocity OK" << ENDM;
+			}
+
+
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameters: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source Parameters OK" << ENDM;
+			}
+
+		alSourcei(mySources[0],AL_LOOPING,AL_FALSE);		// looping play
+
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error in source parameter looping: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Source parameter looping OK" << ENDM;
+			}
+
+
+
 		alSourcei(mySources[0],AL_BUFFER,myBuffers[0]);		// link the source to the buffer
-		alSourcei(mySources[0],AL_LOOPING,AL_TRUE);		// looping play
+
+		error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error attaching buffer to source: " << error << ENDM;
+			} else {
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Buffer attached OK" << ENDM;
+			}
+
 
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Press 1 to play sound, 2 to stop, 3 to go on with dime." << ENDM;
 
@@ -137,11 +230,23 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 				break;
 			case '3':
 				loop = false;
-
+				break;
 		}
+			error = alGetError();
+			if(error != AL_NO_ERROR)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error: " << error << ENDM;
+			}
+
 	} while (loop);
 
+		error = alGetError();
+		if(error != AL_NO_ERROR)
+		{
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::FAILURE) << "Error playing wav: " << error << ENDM;
 
+			return Service::FAILURE;
+		}
 
 	alSourceStop(mySources[0]);
 
@@ -227,5 +332,7 @@ LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) <<
 
 
 	}
+
+
 
 } // namespace dime
