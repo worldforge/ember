@@ -110,6 +110,7 @@ public:
 	
 
 	bool isInGUIMode() { return mInGUIMode; }
+	bool isInMovementKeysMode();
 	
 protected:
 
@@ -151,7 +152,10 @@ protected:
 	MousePicker* mMousePicker;
 
 	//events
-	void mSheet_MouseClick(const CEGUI::EventArgs& args);
+	void mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
+	void mSheet_CaptureLost(const CEGUI::EventArgs& args);
+	
+	
 	
 
 };

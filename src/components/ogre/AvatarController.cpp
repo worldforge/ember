@@ -347,13 +347,17 @@ void AvatarController::keyReleased (Ogre::KeyEvent *e)
 
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 {
-	if (!mGUIManager->isInGUIMode()) {
+	movementForFrame.movementDirection = Ogre::Vector3::ZERO;
+	movementForFrame.isRunning = false;
+	movementForFrame.isMoving = false;	
+	
+	if (mGUIManager->isInMovementKeysMode()) {
 		checkMovementKeys(event, mGUIManager->getEventProcessor()->getInputReader());
-		
-		movementForFrame.timeSlice = event.timeSinceLastFrame;
-		
-		mAvatar->updateFrame(movementForFrame);
-	}
+	}	
+	movementForFrame.timeSlice = event.timeSinceLastFrame;
+	
+	mAvatar->updateFrame(movementForFrame);
+	
 
 	return true;
 }

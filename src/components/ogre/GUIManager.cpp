@@ -33,6 +33,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 , mMouseListener(0)
 , mKeyListener(0)
 , mInGUIMode(true)
+
 {
 
 	mEventProcessor = new Ogre::EventProcessor();
@@ -62,8 +63,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mSheet = CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
-		mSheet->subscribeEvent(CEGUI::ButtonBase::MouseClickEvent, 
-		boost::bind(&GUIManager::mSheet_MouseClick, this, _1));
+		mSheet->subscribeEvent(CEGUI::ButtonBase::MouseButtonDownEvent, 
+			boost::bind(&GUIManager::mSheet_MouseButtonDown, this, _1));
+		mSheet->subscribeEvent(CEGUI::Window::CaptureLostEvent, 
+			boost::bind(&GUIManager::mSheet_CaptureLost, this, _1));
+			
 
 		fprintf(stderr, "CEGUI - SHEET CREATED\n");
 
@@ -143,8 +147,16 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 }
 
-void GUIManager::mSheet_MouseClick(const CEGUI::EventArgs& args)
+void GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
+	fprintf(stderr, "CEGUI - MAIN SHEET CAPTURING INPUT\n");
+	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
+	if (aWindow) {
+		aWindow->releaseInput();
+		aWindow->deactivate();
+	}
+	mSheet->activate();
+	mSheet->captureInput();
 
 //TODO: implement this
 /*
@@ -154,7 +166,14 @@ void GUIManager::mSheet_MouseClick(const CEGUI::EventArgs& args)
 */
 }
 
+void GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
+{
+	fprintf(stderr, "CEGUI - MAIN SHEET RELEASE INPUT\n");
+}
 
+bool GUIManager::isInMovementKeysMode() {
+	return mSheet->isCapturedByThis() || !mInGUIMode; 
+}
 
 
 
