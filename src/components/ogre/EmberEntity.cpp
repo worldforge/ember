@@ -63,34 +63,33 @@ void DimeEntity::createOgreEntity(Ogre::SceneManager* sceneManager) {
 */	
 	if(!strcmp(getType()->getName().c_str(),"settler"))	// 0 if strings are equal
 	{
-		//fprintf(stderr, "TRACE - FOUND A SETTLER - MALEBUILDER MESH\n");
 		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
 	}
 	else if(!strcmp(getType()->getName().c_str(),"merchant"))
 	{
-		//fprintf(stderr, "TRACE - FOUND A MERCHANT - ROBOT MESH\n");
 		mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
 	}
 	else if(!strcmp(getType()->getName().c_str(),"pig"))
 	{
-		//fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
-		mOgreEntity = sceneManager->createEntity(getID(), "Pig.mesh");
-		mOgreNode->setScale(WF2OGRE_VECTOR3(0.2,0.2,0.2));
+		mOgreEntity = sceneManager->createEntity(getID(), "pig.mesh");
+		mOgreNode->setScale(20,20,20);
+	}
+	else if(!strcmp(getType()->getName().c_str(),"squirrel"))
+	{
+		mOgreEntity = sceneManager->createEntity(getID(), "squirrel.mesh");
 	}
 	else if(!strcmp(getType()->getName().c_str(),"fir"))
 	{
-		//fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
 		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
 	}
 	else if(!strcmp(getType()->getName().c_str(),"oak"))
 	{
-		//fprintf(stderr, "TRACE - FOUND A PIG - OGREHEAD MESH\n");
 		mOgreEntity = sceneManager->createEntity(getID(), "Fir.mesh");
 	}
 	else
 	{
 		// TODO: razor should be a coin
-		fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH: ");
+		//fprintf(stderr, "TRACE - FOUND ANYTHING ELSE - RAZOR MESH: ");
 		fprintf(stderr, getType()->getName().c_str());
 		fprintf(stderr, "\n");
 

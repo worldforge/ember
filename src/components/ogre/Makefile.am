@@ -24,7 +24,7 @@ DimeOgre_SOURCES = DimeOgre.cpp Console.cpp InputManager.cpp \
 			MediaDeployer.cpp DimeEventProcessor.cpp \
 			AvatarController.cpp DebugListener.cpp \
 			DimeEntity.cpp DimeEntityFactory.cpp \
-			AvatarDimeEntity.cpp TerrainGenerator.cpp \
+			TerrainGenerator.cpp \
 			DimeTerrainRenderable.cpp DimeTerrainSceneManager.cpp
 			
 

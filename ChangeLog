@@ -1,5 +1,11 @@
 2004-07-08 Miguel Guzman <aglanor [at] telefonica [dot] net>
 
+	* DimeEntity.cpp, resources.cfg: added checks for i
+	pig and squirrel models.
+	* Makefile.am: removed (temporarily) an unused file.
+
+2004-07-08 Miguel Guzman <aglanor [at] telefonica [dot] net>
+
 	* ServerService.cpp: made it more robust against Eris errors,
 	  catching more exceptions and being more verbose.
 
