@@ -19,6 +19,7 @@
 
 #include "ConfigService.h"
 #include "services/logging/LoggingService.h"
+#include "framework/prefix.h"
 
 #include <iostream>
 
@@ -100,7 +101,7 @@ namespace Ember
 		if (itemExists("paths", "datadir")) {
 			return std::string(getValue("paths", "datadir")) + "/";
 		} else {
-			return EMBERDATADIR;
+			return BR_DATADIR("/ember/data/");
 		}
 
 	}

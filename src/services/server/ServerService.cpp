@@ -68,22 +68,9 @@ namespace Ember
     setName("Server Service");
     setDescription("Service for Server session");
 
-    // Create new instance of myConn the constructor sets the
-    // singleton instance up.  Do _not_ use Connection::Instance()
-    // this does not create a new connection.
-    // We are connected without debuging enabled thus the false
-    myConn = new Eris::Connection("ember",false);
-
-    // Bind signals
-    myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
-    myConn->Connected.connect(SigC::slot(*this, &ServerService::connected));
-    myConn->Disconnected.connect(SigC::slot(*this, &ServerService::disconnected));
-    myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::disconnecting));
-    myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
-    //myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
 	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
-	ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);
+/*	ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);*/
 	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this);
 	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this);
 	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this);
@@ -135,8 +122,25 @@ namespace Ember
     myHost = host;
     myPort = port;
     try {
-      // If the connection fails here an exception is thrown
-      myConn->connect( myHost, myPort );
+		// Create new instance of myConn the constructor sets the
+		// singleton instance up.  Do _not_ use Connection::Instance()
+		// this does not create a new connection.
+		// We are connected without debuging enabled thus the false
+		myConn = new Eris::Connection("ember",myHost, port, false);
+		
+		// Bind signals
+		myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
+		myConn->Connected.connect(SigC::slot(*this, &ServerService::connected));
+		myConn->Disconnected.connect(SigC::slot(*this, &ServerService::disconnected));
+		myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::disconnecting));
+		myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
+		//myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
+      // If the connection fails here an errnumber is returned
+      int errno = myConn->connect();
+		if (errno) 
+		{
+			return false;
+		}
     }
     catch (Eris::BaseException except)
     {
@@ -152,23 +156,26 @@ namespace Ember
     return true;
   }
 
-  void ServerService::reconnect()
-  {
-    if (!myConn) return;
-    try {
-        myConn->reconnect();
-      }
-    catch (Eris::BaseException except)
-    {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect:" << except._msg << ENDM;
-        return;
-    }
-    catch (...)
-      {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on reconnect" << ENDM;
-        return;
-      }
-  }
+
+//   void ServerService::reconnect()
+//   {
+//     if (!myConn) return;
+//     try {
+// 		const std::string host = myConn->get
+//         myConn->reconnect();
+//       }
+//     catch (Eris::BaseException except)
+//     {
+//         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect:" << except._msg << ENDM;
+//         return;
+//     }
+//     catch (...)
+//       {
+//         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on reconnect" << ENDM;
+//         return;
+//       }
+//   }
+
 
   void ServerService::disconnect()
   {
@@ -342,10 +349,10 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 			connect(server, (short)atoi(port.c_str()));
 			ConsoleBackend::getMainConsole()->pushMessage("Connected.");
 
-		// Reconnect command
-		} else if(command == RECONNECT) {
-			ConsoleBackend::getMainConsole()->pushMessage("Reconnecting...");
-			reconnect();
+// 		// Reconnect command
+// 		} else if(command == RECONNECT) {
+// 			ConsoleBackend::getMainConsole()->pushMessage("Reconnecting...");
+// 			reconnect();
 
 		// Disonnect command
 		} else if (command==DISCONNECT){

@@ -9,6 +9,8 @@ AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
+AC_LIBTOOL_DLOPEN
+
 AC_PREREQ(2.50)
 AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
 
@@ -26,6 +28,7 @@ dnl AM_PROG_LEX
 
 # Allow maintainer mode
 AM_MAINTAINER_MODE
+
 
 
 
@@ -114,6 +117,11 @@ AC_CHECK_LIB([xerces-c],
 	
 	
 AC_LANG_POP(C)
+
+# make sure binreloc funtionality is used
+AM_BINRELOC
+CXXFLAGS="$CXXFLAGS $BINRELOC_CFLAGS"
+
 
 # Test for libxml2
 #PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
@@ -213,7 +221,7 @@ LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.3 \
+PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.4 \
  varconf-1.0 >= 0.6.1 mercator-0.2 atlascpp-0.6 >= 0.5.92,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
@@ -223,7 +231,6 @@ PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.3 \
 )
 # AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
-
 
 AC_CHECK_LIB(IL, ilInit,
 	[

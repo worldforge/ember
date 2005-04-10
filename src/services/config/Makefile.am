@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src -DETCDIR=\"@sysconfdir@\" -DEMBERDATADIR=\"@datadir@/ember/data/\"
+INCLUDES = -I$(top_srcdir)/src 
 
 noinst_LIBRARIES = libConfigService.a
 

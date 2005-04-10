@@ -15,7 +15,7 @@ uninstall-local:
 	find $(DESTDIR)$(datadir)/ember/data/media/gui/cegui/widgets/ -name  \*.widget | xargs rm
 
 
-INCLUDES = -I$(top_srcdir)/src -DETCDIR=\"$(sysconfdir)\" -DEMBERDATADIR=\"@datadir@/ember/data/\"
+INCLUDES = -I$(top_srcdir)/src 
 METASOURCES = AUTO
 noinst_LIBRARIES = libWidgets.a
 libWidgets_a_SOURCES = Widget.cpp Widget.h ChatWidget.cpp ChatWidget.h \

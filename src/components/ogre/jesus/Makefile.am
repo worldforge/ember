@@ -13,7 +13,7 @@ uninstall-local:
 
 
 
-INCLUDES = -I$(top_srcdir)/src -DETCDIR=\"$(sysconfdir)\" -DEMBERDATADIR=\"@datadir@/ember/data/\"
+INCLUDES = -I$(top_srcdir)/src 
 METASOURCES = AUTO
 noinst_LIBRARIES = libJesus.a
 noinst_HEADERS = Jesus.h JesusMousePicker.h JesusPickerObject.h
