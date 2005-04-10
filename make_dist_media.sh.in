@@ -6,7 +6,7 @@ mkdir -p ${media_dir}/media/common
 cd ${media_dir}
 #try to get the textures needed
 #don't include lines starting with "/"
-grep -rIE --no-filename "^[^/].*texture 3d" ../media/*.material | replace "texture 3d_" "3d_" > common_textures.list
+grep -rIE --no-filename "^[^/].*texture 3d"  ../media/materials/scripts/*.material | replace "texture 3d_" "3d_" > common_textures.list
 cd ${current}/media/common ; tar cf - `cat ${current}/${media_dir}/common_textures.list ` | ( cd ${current}/${media_dir}/media/common; tar xf -)
 
 #copy all meshes

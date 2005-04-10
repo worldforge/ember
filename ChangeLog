@@ -1,5 +1,11 @@
 2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* changed the default grass texture
+	* increased the default max pixel error
+	* fix for the make_dist_media script; make it find the material files
+
+2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* wait with inclusion of FoliageArea until it at least compiles
 
 2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
