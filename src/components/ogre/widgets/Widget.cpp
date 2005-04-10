@@ -1,6 +1,7 @@
 #include "Widget.h"
 
 #include "../GUIManager.h"
+#include <CEGUIWindow.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>

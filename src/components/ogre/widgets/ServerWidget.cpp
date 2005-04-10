@@ -36,6 +36,7 @@
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
+#include <elements/CEGUIPushButton.h> 
 
 
 namespace EmberOgre {

@@ -24,6 +24,7 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <elements/CEGUIStaticText.h>
+#include <elements/CEGUIPushButton.h>
 
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
@@ -75,7 +76,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 		Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 		//chdir(configSrv->getEmberDataDirectory().c_str());
-	
+		dlopen( "libCEGUITaharezLook.so", RTLD_NOW );
+		fprintf(stderr, dlerror());
 		try {	
 			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 			

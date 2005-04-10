@@ -29,6 +29,7 @@
 
 #include "../GUIManager.h"
 #include "ServerBrowserWidget.h"
+#include <elements/CEGUIPushButton.h>
 
 namespace EmberOgre {
 

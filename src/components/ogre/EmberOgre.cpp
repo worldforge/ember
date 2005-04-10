@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.79  2005-03-31 21:17:35  erik
+ *      Revision 1.80  2005-04-10 23:11:23  erik
+ *      2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* removed unecessary include from GUIManager.h
+ *      	* add binreloc support to EmberOgre.cpp
+ *
+ *      Revision 1.79  2005/03/31 21:17:35  erik
  *      2005-03-31  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Use the S_LOG* macros.
@@ -626,6 +632,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/sound/SoundService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
+#include "framework/prefix.h"
 
 
 // ------------------------------
@@ -855,7 +862,12 @@ bool EmberOgre::setup(void)
 
 	checkForConfigFiles();
 	
-    mRoot = new Ogre::Root();
+//don't use the plugins 
+    mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
+	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
+	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
+	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
+
 	
     setupResources();
 

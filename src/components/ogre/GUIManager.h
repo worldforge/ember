@@ -28,7 +28,7 @@
 #include <CEGUIImageset.h>
 #include <elements/CEGUIStaticImage.h>*/
 #include "EmberOgrePrerequisites.h"
-#include <elements/CEGUIPushButton.h>
+//#include <elements/CEGUIPushButton.h>
 #include <OgreCEGUIRenderer.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -41,7 +41,6 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include "EmberOgrePrerequisites.h"
 #include <OgreKeyEvent.h> 
 //#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"

@@ -32,6 +32,7 @@
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
+#include <elements/CEGUIPushButton.h>
 #include <Eris/Entity.h>
 #include "IngameChatWidget.h"
 
