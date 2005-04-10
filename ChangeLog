@@ -1,5 +1,9 @@
 2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* wait with inclusion of FoliageArea until it at least compiles
+
+2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* removed unecessary include from GUIManager.h
 	* add binreloc support to EmberOgre.cpp
 
