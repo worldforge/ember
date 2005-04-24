@@ -1,5 +1,45 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberOgre: 
+		enable loading of the plugin.cfg file for now, we'll have to add a command line switch or something
+		check for ".modeldef" when loading modeldefinitions
+		Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+	* src/components/ogre/EmberEntityFactory.*,  src/components/ogre/EmberOgrePrerequisites.h
+		Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+		check for config.h
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/WorldEmberEntity.cpp: disable foliage for now, until the foliage code works
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.cpp:
+		check for config.h
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinition.*, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/SubModel.cpp:
+		Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+		When parsing xml files, abort if they don't even have a root element.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/Jesus.cpp:
+		Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+		Fix for not being able to create the ~/.ember/carpenter/blueprint dir
+		When parsing xml files, abort if they don't even have a root element.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Tree.cpp, src/components/ogre/environment/Water.cpp, src/components/ogre/environment/meshtree/MeshTree.cpp,  src/components/ogre/environment/meshtree/TParameters.cpp,  src/components/ogre/environment/meshtree/TStem.cpp: Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/environment/Sun.cpp : removed unnecessary lightning directives
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/environment/FoliageArea*: added classes for areas of foliage. The plan is to have one or many instances of FoliageArea attached to every TerrainPage. 
 	* src/components/ogre/environment/Foliage*:  
 		Redesigned the class so it's now more of a "foliage manager" class.
