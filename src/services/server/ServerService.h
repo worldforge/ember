@@ -136,6 +136,7 @@ class ServerService : public Service, public ConsoleObject,
 	
     void takeCharacter(const std::string &id);
 
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description);
 
     void runCommand(const std::string &, const std::string &);
 

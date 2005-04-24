@@ -415,51 +415,16 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 		
 		// Create Character command
 		} else if (command==CREATECHAR) {
-			ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
-			if (myAccount)
-			{
-				// Split string into name/type/sex/description
-				Tokeniser tokeniser = Tokeniser();
-				tokeniser.initTokens(args);
-				std::string name = tokeniser.nextToken();
-				std::string sex  = tokeniser.nextToken();
-				std::string type = tokeniser.nextToken();
-				std::string description = tokeniser.remainingTokens();     
+			// Split string into name/type/sex/description
+			Tokeniser tokeniser = Tokeniser();
+			tokeniser.initTokens(args);
+			std::string name = tokeniser.nextToken();
+			std::string sex  = tokeniser.nextToken();
+			std::string type = tokeniser.nextToken();
+			std::string description = tokeniser.remainingTokens();   
 				
-				std::string msg;
-				msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
-				ConsoleBackend::getMainConsole()->pushMessage(msg);
-				
-				fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
-				Atlas::Objects::Entity::GameEntity character;
-				character->setParentsAsList(Atlas::Message::ListType(1,type));
-				character->setName(name);
-				character->setAttr("sex", sex);
-				character->setAttr("description", description);
-				fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
-				try {
-					myAccount->createCharacter(character);
-				} 
-				catch (Eris::BaseException except)
-				{
-					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
-					return;
-				}
-				catch (std::runtime_error except)
-				{
-					LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
-					return;
-				}
-				fprintf(stderr, "TRACE - DONE\n");
-				if (myAvatar) {
-					GotAvatar.emit(myAvatar);
-					myView = myAvatar->getView();
-					if (myView) {
-						GotView.emit(myView);
-					}
-				}
-			} else {
-				ConsoleBackend::getMainConsole()->pushMessage("Not logged in. Can't create char...");
+			if (!createCharacter(name, sex, type, description)) {
+				return;
 			}
 
 		// Take Character Command
@@ -499,6 +464,51 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 	
 			myConn->send(touch);
 		}	
+	}
+	
+	bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description)
+	{
+		ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
+		if (myAccount)
+		{
+			std::string msg;
+			msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
+			ConsoleBackend::getMainConsole()->pushMessage(msg);
+			
+			fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
+			Atlas::Objects::Entity::GameEntity character;
+			character->setParentsAsList(Atlas::Message::ListType(1,type));
+			character->setName(name);
+			character->setAttr("sex", sex);
+			character->setAttr("description", description);
+			fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
+			try {
+				myAccount->createCharacter(character);
+			} 
+			catch (Eris::BaseException except)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
+				return false;
+			}
+			catch (std::runtime_error except)
+			{
+				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
+				return false;
+			}
+			fprintf(stderr, "TRACE - DONE\n");
+			if (myAvatar) {
+				GotAvatar.emit(myAvatar);
+				myView = myAvatar->getView();
+				if (myView) {
+					GotView.emit(myView);
+				}
+			}
+		} else {
+			ConsoleBackend::getMainConsole()->pushMessage("Not logged in. Can't create char...");
+		}
+
+	
+		return true;
 	}
   
    	void ServerService::moveToPoint(const WFMath::Point<3>& dest) {
@@ -710,7 +720,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 			std::string msg;
 			msg = "Saying: [" + message + "]. ";
 			ConsoleBackend::getMainConsole()->pushMessage(msg);
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << msg << ENDM;
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << msg << ENDM;
  		}
  		catch (Eris::BaseException except)
  		{

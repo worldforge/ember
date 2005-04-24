@@ -1,5 +1,9 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Refactor create character code to a separate method.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Use a different imageset for the mouse cursor. This is to prepare for future skins.
 
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
