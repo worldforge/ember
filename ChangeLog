@@ -1,5 +1,9 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Change method signatures to conform with latest Eris.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Use version 1.0.1 of Ogre.
 	* Rearranged library checking order, so more meaningful messages are produces for missing libs.
 

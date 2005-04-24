@@ -22,6 +22,7 @@
 #include <OgreNoMemoryMacros.h>
 
 #include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -47,6 +48,19 @@
 #include <OgreException.h>
 
 #include "MathConverter.h"
+
+
+
+// namespace Atlas
+// {
+// 	namespace Objects
+// 	{
+// 		namespace Operation
+// 		{
+// 			class Action;
+// 		}
+// 	}
+// }
 
 namespace EmberOgre {
 class EmberEntityFactory;
@@ -122,9 +136,11 @@ protected:
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
-    virtual void onAction(const Atlas::Objects::Root& act);
+    virtual void onAction(const Atlas::Objects::Operation::Action& act);
     virtual void onImaginary(const Atlas::Objects::Root& act);
-		
+	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
+	
+	
 	/* 
 	 * Creates the main scene node which holds the entity.
 	 */

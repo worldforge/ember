@@ -28,6 +28,8 @@
 
 #include "EmberOgre.h"
 
+//#include <Atlas/Objects/ObjectsFwd.h>
+
 using namespace Ogre;
 
 namespace EmberOgre {
@@ -164,7 +166,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	std::string message = "<";
 	message.append(getName());
 	message.append(",");
-	std::string type = getType()->getName(); // Eris type as a string
+	const std::string type = getType()->getName(); // Eris type as a string
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
@@ -179,6 +181,12 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	}
 	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
+}
+
+
+void EmberEntity::onSoundAction( const Atlas::Objects::Operation::RootOperation & op )
+{
+	int i = 0;
 }
 
 
@@ -259,10 +267,24 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	Eris::Entity::onLocationChanged(oldLocation);
 }
 
-void EmberEntity::onAction(const Atlas::Objects::Root& act)
+void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)
 {
-	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString());
-	S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("action").asString())
+	
+/*	std::string allattribs;
+	
+	Atlas::Objects::BaseObjectData::const_iterator I = act->begin();
+
+	for (; I != act->end(); ++I) 
+	{
+		//const Atlas::Message::Element e = (const Atlas::Message::Element)(*I).second;
+		allattribs.append((*I).first + " : ");
+	
+	}*/
+	
+	if (act->hasAttr("name")) {
+		GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("name").asString());
+		S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("name").asString())
+	}
 }
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
@@ -332,6 +354,7 @@ void EmberEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
 
 */
 }
+
 
 
 
