@@ -1,5 +1,9 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ChatWidget.* : Update the chat text at the top of the editbox instead of the bottom.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/JesusEdit* :
 		Use absolute values for size and position.
 		Renamed windows to Builder lest people think I'm religious.

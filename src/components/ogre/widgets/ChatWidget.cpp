@@ -61,9 +61,9 @@ void ChatWidget::appendOOGChatLine(const std::string& line, EmberEntity* entity)
 	
 	// Add the message to the chat box
 	CEGUI::String current = mChatTextBox->getText();
-	current.append(message);
-	current.append((CEGUI::utf8*)"\n");
-	mChatTextBox->setText(current);
+	message.append("\n");
+	message.append(current.c_str());
+	mChatTextBox->setText(CEGUI::String(message));
 }
 
 void ChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
@@ -76,9 +76,9 @@ void ChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
 
 	// Add the message to the chat box
 	CEGUI::String current = mChatTextBox->getText();
-	current.append(message);
-	current.append((CEGUI::utf8*)"\n");
-	mChatTextBox->setText(current);
+	message.append("\n");
+	message.append(current.c_str());
+	mChatTextBox->setText(CEGUI::String(message));
 }
 
 };
