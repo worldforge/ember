@@ -70,8 +70,8 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 		mFoliage = new Foliage(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 		bool vis = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
 		if (vis) {
-			mFoliage->generateUnderVegetation(mTerrainGenerator->getMin(), mTerrainGenerator->getMax());
-			mFoliage->setVisible(vis);
+/*			mFoliage->generateUnderVegetation(mTerrainGenerator->getMin(), mTerrainGenerator->getMax());
+			mFoliage->setVisible(vis);*/
 		}
 //		mFoliage->setVisible(vis);
 	}
