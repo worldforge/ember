@@ -1,6 +1,6 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
-	* src/components/ogre/widgets/ServerBrowserWidget.xml, src/components/ogre/widgets/Performance.widget: Disallow resizing.
+	* Disallow resizing.
 
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
