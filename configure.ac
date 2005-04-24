@@ -120,7 +120,7 @@ AC_LANG_POP(C)
 
 # make sure binreloc funtionality is used
 AM_BINRELOC
-CXXFLAGS="$CXXFLAGS $BINRELOC_CFLAGS"
+# CXXFLAGS="$CXXFLAGS $BINRELOC_CFLAGS"
 
 
 # Test for libxml2
@@ -176,6 +176,25 @@ AC_MSG_RESULT([
 		**************************************
 
 	])
+AC_CHECK_LIB(IL, ilInit,
+	[
+		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
+		LDFLAGS="$LDFLAGS $IL_LIBS -lIL"
+	]
+,AC_MSG_ERROR([
+****************************************************************
+* You do not have DevIL installed.  This is required to build. *
+* You may find it at http://openil.sourceforge.net/.           *
+****************************************************************]))
+AC_CHECK_LIB(ILU, iluFlipImage,
+	[
+		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
+		LDFLAGS="$LDFLAGS $ILU_LIBS"
+	]
+	,,-lIL
+
+)
+
 
 # Check for the Boost shared_ptr.hpp shared pointer header
 #AC_CHECK_HEADER(boost/shared_ptr.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
@@ -188,9 +207,18 @@ AC_MSG_RESULT([
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
+PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.2,
+	[
+		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
+		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
+	],
+	[
+		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
+	])
+
 # Check for OGRE
-OGRE_VERSION=1.0.0
-PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.0,
+OGRE_VERSION=1.0.1
+PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.1,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
@@ -202,10 +230,10 @@ PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.0,
 # Check for CEGUI
 #uncomment this when Ogre includes the CEGUI-OGRE.pc file again (should be the next release after 1.0.0)
 #PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
-PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.2,
+PKG_CHECK_MODULES(CEGUI-OGRE, CEGUI-OGRE >= 1.0,
 	[
-		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
-		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
+		CXXFLAGS="$CXXFLAGS $CEGUI_OGRE_CFLAGS"
+		LDFLAGS="$LDFLAGS $CEGUI_OGRE_LIBS"
 	],
 	[
 		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
@@ -232,24 +260,7 @@ PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.4 \
 # AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
 
-AC_CHECK_LIB(IL, ilInit,
-	[
-		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
-		LDFLAGS="$LDFLAGS $IL_LIBS"
-	]
-,AC_MSG_ERROR([
-****************************************************************
-* You do not have DevIL installed.  This is required to build. *
-* You may find it at http://openil.sourceforge.net/.           *
-****************************************************************]))
-AC_CHECK_LIB(ILU, iluFlipImage,
-	[
-		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
-		LDFLAGS="$LDFLAGS $ILU_LIBS"
-	]
-	,,-lIL
 
-)
 
 
 
