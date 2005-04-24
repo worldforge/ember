@@ -385,12 +385,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 
 const TerrainPosition TerrainGenerator::getMax( ) const
 {
-	return TerrainPosition(mXmax * (mOptions.pageSize - 1), mYmax * (mOptions.pageSize - 1));
+	return TerrainPosition(mXmax * 64, mYmax * 64);
 }
 
 const TerrainPosition TerrainGenerator::getMin( ) const
 {
-	return TerrainPosition(mXmin * (mOptions.pageSize - 1), mYmin * (mOptions.pageSize - 1));
+	return TerrainPosition(mXmin * 64, mYmin * 64);
 }
 
 }

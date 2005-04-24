@@ -1,6 +1,10 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
-	* Disallow resizing.
+	* src/components/ogre/TerrainGenerator.cpp: Report the correct size of the terrain.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ServerBrowserWidget.xml, src/components/ogre/widgets/Performance.widget: Disallow resizing.
 
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
