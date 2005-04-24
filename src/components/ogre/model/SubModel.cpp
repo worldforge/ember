@@ -20,6 +20,7 @@
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace EmberOgre {
 

@@ -26,6 +26,7 @@
 
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
+#include <OgreNoMemoryMacros.h>
 
 
 namespace EmberOgre

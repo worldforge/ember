@@ -258,6 +258,12 @@ bool ModelDefinition::createFromXML(std::string path)
 	
 	xercesc::DOMElement* root = doc->getDocumentElement();
 	
+	if (!root)
+	{
+		parser->release();
+		return false;
+	}
+	
 	xercesc::XMLString::transcode("scale", tempStr, 99);
 	if (root->hasAttribute(tempStr)) {
 		mScale = atof(xercesc::XMLString::transcode(root->getAttribute(tempStr)));
