@@ -82,7 +82,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 			
 			try {
-				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLookMouse", (CEGUI::utf8*)"MouseArrow");
 			} catch (CEGUI::Exception e) {
 				fprintf(stderr, "CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.\n");
 			}
@@ -166,10 +166,10 @@ void GUIManager::initialize()
 		createWidget("ServerBrowserWidget");
 		createWidget("InspectWidget");
 		createWidget("MakeEntityWidget");
+		createWidget("JesusEdit");
 		createWidget("ServerWidget");
 		createWidget("GiveWidget");
 		createWidget("EntityPickerWidget");
-		createWidget("JesusEdit");
 
 /*		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
 		mSheet->addChildWindow(helpWindow );*/

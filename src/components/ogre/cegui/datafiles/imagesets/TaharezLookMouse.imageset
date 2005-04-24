@@ -1,0 +1,10 @@
+<Imageset Name="TaharezLookMouse" Imagefile="gui/TaharezLook.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
+	<Image Name="MouseTarget" XPos="182" YPos="127" Width="17" Height="17" XOffset="-8" YOffset="-8" />
+	<Image Name="MouseArrow" XPos="138" YPos="127" Width="31" Height="25" XOffset="0" YOffset="0" />
+	<Image Name="MouseMoveCursor" XPos="201" YPos="127" Width="18" Height="18" XOffset="-8" YOffset="-8" />
+	<Image Name="MouseNoSoCursor" XPos="221" YPos="127" Width="8" Height="18" XOffset="-3" YOffset="-8" />
+	<Image Name="MouseEsWeCursor" XPos="182" YPos="150" Width="18" Height="8" XOffset="-8" YOffset="-3" />
+	<Image Name="MouseNeSwCursor" XPos="201" YPos="147" Width="14" Height="14" XOffset="-7" YOffset="-7" />
+	<Image Name="MouseNwSeCursor" XPos="230" YPos="126" Width="14" Height="14" XOffset="-7" YOffset="-7" />
+	<Image Name="MouseTextBar" XPos="173" YPos="127" Width="7" Height="18" XOffset="-2" YOffset="-9" />
+</Imageset>
