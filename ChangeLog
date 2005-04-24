@@ -1,5 +1,9 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ServerBrowserWidget.xml, src/components/ogre/widgets/Performance.widget: Disallow resizing.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Added tabs for choosing and creating characters.
 	* Added functionality for creating characters through the gui. The list of possible types are hard coded though (to only include "settler").
 
