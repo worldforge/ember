@@ -23,7 +23,18 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.80  2005-04-10 23:11:23  erik
+ *      Revision 1.81  2005-04-24 12:42:32  erik
+ *      2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre:
+ *      		enable loading of the plugin.cfg file for now, we'll have to add a command line switch or something
+ *      		check for ".modeldef" when loading modeldefinitions
+ *      		Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+ *      	* src/components/ogre/EmberEntityFactory.*,  src/components/ogre/EmberOgrePrerequisites.h
+ *      		Use OgreNoMemoryMacros.h, though this seems to be in vain. One still gets linking errors with the Ogre debug memory manager, forcing one to disable the Ogre MemoryManager in OgreConfig.h.
+ *      		check for config.h
+ *
+ *      Revision 1.80  2005/04/10 23:11:23  erik
  *      2005-04-11  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* removed unecessary include from GUIManager.h
@@ -727,6 +738,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 #include "jesus/Jesus.h"
+#include <OgreNoMemoryMacros.h>
 
 namespace EmberOgre {
 
@@ -863,10 +875,10 @@ bool EmberOgre::setup(void)
 	checkForConfigFiles();
 	
 //don't use the plugins 
-    mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
-	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
-	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
-	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
+    mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+// 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
+// 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
+// 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
 
 	
     setupResources();
@@ -1119,7 +1131,8 @@ void EmberOgre::preloadMedia(void)
 	{
 		//Ogre::SceneNode* mNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 		while (ep = readdir (dp)) {
-			if (ep->d_name != "." && ep->d_name != "..") {
+			std::string filename(ep->d_name);
+			if (ep->d_name != "." && ep->d_name != ".." && filename.find(".modeldef")) {
 				try {
 					fprintf(stdout, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
 					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");

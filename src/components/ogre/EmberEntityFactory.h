@@ -32,7 +32,6 @@
 
 #include <Atlas/Objects/Entity.h>
 
-#include "EmberOgrePrerequisites.h"
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -45,6 +44,7 @@
 #endif
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+#include "EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

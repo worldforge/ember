@@ -19,6 +19,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include "EmberEntityFactory.h"
 
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
@@ -38,7 +39,6 @@
 #include "EmberPhysicalEntity.h"
 #include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
-#include "EmberEntityFactory.h"
 #include "EmberOgre.h"
 
 
@@ -52,6 +52,9 @@
 #include "TerrainGenerator.h"
 //#include "EmberTerrainSceneManager.h"
 #include "EmberSceneManager/include/EmberTerrainPageSource.h"
+
+
+#include <OgreNoMemoryMacros.h>
 
 
 namespace EmberOgre {

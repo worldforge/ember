@@ -19,9 +19,12 @@
 #ifndef __EmberPrerequisites_H__
 #define __EmberPrerequisites_H__
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include <OgreMemoryMacros.h>
 #include <Ogre.h>
-#include <OgreNoMemoryMacros.h>
 #include "MathConverter.h"
 
 ///include the Logging service, since we want logging available from most classes
@@ -58,5 +61,7 @@
 #define TYPEDEF_STL_LIST(tp, name)         TYPEDEF_STL_CONTAINER1(list, tp, name)
 #define TYPEDEF_STL_SET(tp, name)         TYPEDEF_STL_CONTAINER1(set, tp, name)
 #define TYPEDEF_STL_MAP(tpkey, tpval, name) TYPEDEF_STL_CONTAINER2(map, tpkey, tpval, name) 
+
+
 
 #endif
