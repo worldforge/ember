@@ -1,10 +1,10 @@
 //
-// C++ Interface: Foliage
+// C++ Interface: FoliageArea
 //
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2004
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,47 +20,48 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGREFOLIAGE_H
-#define DIMEOGREFOLIAGE_H
-
+#ifndef EMBEROGREFOLIAGEAREA_H
+#define EMBEROGREFOLIAGEAREA_H
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 
-class FoliageArea;
-
-//class GroundCover;
+class Foliage;
 /**
 @author Erik Hjortsberg
 */
-class Foliage {
+class FoliageArea : public Ogre::FrameListener {
 public:
-    Foliage(Ogre::Camera* camera, Ogre::SceneManager* mSceneMgr);
+    FoliageArea();
 
-    ~Foliage();
+    ~FoliageArea();
+
+	void init(Foliage* foliage, Ogre::SceneManager* sceneManager, const std::string& name);
+
+	bool frameStarted(const Ogre::FrameEvent & evt);
 	
-	FoliageArea* createArea();	
+	//generates and compiles the undervegetation
+	//this might take a while
+	void generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent);
+	void setVisible(bool visible);
 
-	Ogre::Entity* getEntity(int index);
+	
 
 protected:
-	std::vector<Ogre::Entity* > mEntities;
-
-	//GroundCover* mGround;
-	std::list<FoliageArea*> mFoliageAreas;
-
-	void createGrassMesh();
-	
-	
-	Ogre::Camera* mCamera;
 	Ogre::SceneManager* mSceneMgr;
 
 	Foliage* mFoliage;
-	
-	//defines the extent of the foliage
+
+	bool mVisible;
+
+	void waveGrass(Ogre::Real timeElapsed);
+
+	TerrainPosition mExtentMin, mExtentMax;
+
+	Ogre::StaticGeometry* mStaticGeom;
 
 };
 
-};
+}
 
 #endif

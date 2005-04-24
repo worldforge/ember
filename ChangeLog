@@ -1,5 +1,12 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/environment/FoliageArea*: added classes for areas of foliage. The plan is to have one or many instances of FoliageArea attached to every TerrainPage. 
+	* src/components/ogre/environment/Foliage*:  
+		Redesigned the class so it's now more of a "foliage manager" class.
+		Adapted it to the new Ogre::StaticGeometry class in Ogre.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/ChatWidget.* : Update the chat text at the top of the editbox instead of the bottom.
 
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
