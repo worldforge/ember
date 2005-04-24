@@ -20,11 +20,12 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include "Water.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "Water.h"
 #include "components/ogre/EmberOgre.h"
 
+#include <OgreNoMemoryMacros.h>
 
 
 
