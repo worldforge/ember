@@ -27,6 +27,9 @@
 #include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "JesusPickerObject.h"
 
+
+#include <OgreNoMemoryMacros.h> 
+
 #include <xercesc/dom/DOMWriter.hpp>
 
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
@@ -187,6 +190,11 @@ bool Jesus::loadModelBlockMapping(const std::string& filename)
 	
 	xercesc::DOMElement* root = doc->getDocumentElement();
 	
+	if (!root)
+	{
+		parser->release();
+		return false;
+	}
 
 	 
 
@@ -258,6 +266,11 @@ bool Jesus::loadBlockSpec(const std::string& filename)
 	
 	xercesc::DOMElement* root = doc->getDocumentElement();
 	
+	if (!root)
+	{
+		parser->release();
+		return false;
+	}
  
 
 	xercesc::XMLString::transcode("blockspec", tempStr, 99);
@@ -424,6 +437,11 @@ bool Jesus::loadBuildingBlockSpecDefinition(const std::string& filename)
 	
 	xercesc::DOMElement* root = doc->getDocumentElement();
 	
+	if (!root)
+	{
+		parser->release();
+		return false;
+	}
 
 	 
 
@@ -536,6 +554,7 @@ void Jesus::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::stri
 	int ret;
 	ret = stat( dir.c_str(), &tagStat );
 	if (ret == -1) {
+		mkdir((Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "carpenter").c_str(), S_IRWXU);
 		mkdir(dir.c_str(), S_IRWXU);
 	}
 	
@@ -687,6 +706,12 @@ Carpenter::BluePrint* Jesus::loadBlueprint(std::string filename)
 	
 	
 	xercesc::DOMElement* root = doc->getDocumentElement();
+	
+	if (!root)
+	{
+		parser->release();
+		return false;
+	}
 	
 	xercesc::XMLString::transcode("startingblock", tempStr, 99);
 	std::string startingBlockName = xercesc::XMLString::transcode(root->getAttribute(tempStr));
