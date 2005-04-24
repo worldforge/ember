@@ -4,7 +4,7 @@
 		<Property Name="Position" Value="x:0.7 y:0.5" /> 
 		<Property Name="Size" Value="w:0.3 h:0.2" /> 
 		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="JesusEdit Preview" />
+		<Property Name="Text" Value="Builder Preview" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="AbsolutePosition" Value="x:5 y:5" /> 
 			<Property Name="Size" Value="w:0.98 h:0.9" /> 

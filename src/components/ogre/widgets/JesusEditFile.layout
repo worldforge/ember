@@ -2,36 +2,36 @@
 <GUILayout> 
 	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.55 y:0.025" /> 
-		<Property Name="Size" Value="w:0.3 h:0.5" /> 
+		<Property Name="AbsoluteSize" Value="w:400 h:400" /> 
 		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="JesusEdit" />
+		<Property Name="Text" Value="Open/Save" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.05 y:0.1" /> 
 			<Property Name="Size" Value="w:0.95 h:0.9" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 			<Window Type="TaharezLook/Listbox" Name="Blueprints">
-				<Property Name="Position" Value="x:0 y:0.05" /> 
-				<Property Name="Size" Value="w:0.8 h:0.5" /> 
+				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
+				<Property Name="AbsoluteSize" Value="w:150 h:300" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Load">
 				<Property Name="Enabled" Value="False" /> 
-				<Property Name="Position" Value="x:0.0 y:0.8" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsolutePosition" Value="x:0 y:310" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Load" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Save">
 				<Property Name="Enabled" Value="False" /> 
-				<Property Name="Position" Value="x:0.2 y:0.8" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsolutePosition" Value="x:80 y:310" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Save" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 			<Window Type="TaharezLook/Editbox" Name="NewName">
-				<Property Name="Position" Value="x:0.4 y:0.8" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsolutePosition" Value="x:160 y:310" /> 
+				<Property Name="AbsoluteSize" Value="w:150 h:25" /> 
 			</Window>
 		</Window>
 	</Window>

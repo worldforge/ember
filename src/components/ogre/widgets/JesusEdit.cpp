@@ -488,6 +488,7 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 	Ogre::Vector3 o_vector(5,0,0);
 	Ogre::Vector3 o_pos = avatarNode->getPosition() + (avatarNode->getOrientation() * o_vector);
 	node->setPosition(o_pos);
+	node->setOrientation(avatarNode->getOrientation());
 
 	return construction;
 

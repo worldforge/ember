@@ -1,5 +1,12 @@
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/JesusEdit* :
+		Use absolute values for size and position.
+		Renamed windows to Builder lest people think I'm religious.
+		Set the orientation of newly created constructions.
+
+2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainGenerator.cpp: Report the correct size of the terrain.
 
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>

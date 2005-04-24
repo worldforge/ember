@@ -4,7 +4,7 @@
 		<Property Name="Position" Value="x:0.55 y:0.025" /> 
 		<Property Name="Size" Value="w:0.45 h:0.5" /> 
 		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="JesusEdit" />
+		<Property Name="Text" Value="Builder" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.05 y:0.1" /> 
 			<Property Name="Size" Value="w:0.95 h:0.9" /> 
@@ -39,30 +39,30 @@
 			<Window Type="TaharezLook/Button" Name="Bind">
 				<Property Name="Enabled" Value="False" /> 
 				<Property Name="Position" Value="x:0.2 y:0.9" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Bind" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Remove">
 				<Property Name="Enabled" Value="False" /> 
 				<Property Name="Position" Value="x:0.2 y:0.8" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Remove" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>			
 			<Window Type="TaharezLook/Button" Name="CreateNew">
 				<Property Name="Position" Value="x:0.4 y:0.9" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Create New" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 			<Window Type="TaharezLook/Editbox" Name="NewName">
 				<Property Name="Position" Value="x:0.6 y:0.9" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Create">
 				<Property Name="Position" Value="x:0.8 y:0.9" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Create" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Enabled" Value="False" /> 
@@ -73,13 +73,13 @@
 						
 			<Window Type="TaharezLook/Button" Name="SwitchMode">
 				<Property Name="Position" Value="x:0.0 y:0.9" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Switch mode" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="File">
 				<Property Name="Position" Value="x:0.0 y:0.8" /> 
-				<Property Name="Size" Value="w:0.2 h:0.1" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="File" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
