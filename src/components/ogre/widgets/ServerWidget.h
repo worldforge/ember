@@ -36,6 +36,18 @@
 
 namespace EmberOgre {
 
+class NewCharacter
+{
+public:
+	std::string name;
+	std::string description;
+	std::string gender;
+	std::string type;
+	
+	bool isValid() const;
+	
+};
+
 class GUIManager;
 class Widget;
 /**
@@ -58,10 +70,28 @@ protected:
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool Choose_Click(const CEGUI::EventArgs& args);
+	bool CreateChar_Click(const CEGUI::EventArgs& args);
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	
 	void loginSuccess(Eris::Account* account);
 	void gotAllCharacters(Eris::Account* account);
+	
+	NewCharacter mNewChar;
+	
+	CEGUI::PushButton* mCreateChar;
+	CEGUI::Editbox* mNewCharName;
+	CEGUI::MultiLineEditbox* mNewCharDescription;
+	CEGUI::Combobox* mTypesList;
+	CEGUI::RadioButton* mGenderRadioButton;
+	
+	bool TypesList_SelectionChanged(const CEGUI::EventArgs& args);
+	bool Gender_SelectionChanged(const CEGUI::EventArgs& args);
+	bool Name_TextChanged(const CEGUI::EventArgs& args);
+	bool Description_TextChanged(const CEGUI::EventArgs& args);
+	
+	void updateNewCharacter();
+	
+	
 
 
 

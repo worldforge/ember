@@ -37,6 +37,11 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
 #include <elements/CEGUIPushButton.h> 
+#include <elements/CEGUIEditbox.h> 
+#include <elements/CEGUIMultiLineEditbox.h>
+#include <elements/CEGUIRadioButton.h>
+#include <elements/CEGUIComboDropList.h> 
+#include <elements/CEGUICombobox.h> 
 
 
 namespace EmberOgre {
@@ -65,10 +70,36 @@ void ServerWidget::buildWidget()
 	BIND_CEGUI_EVENT(createAcc, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateAcc_Click);
 
 	mCharacterList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/CharacterList"));
-	CEGUI::PushButton* choose = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/Choose"));
+	CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/Choose"));
+	mCreateChar = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/CreateButton"));
 	
-	BIND_CEGUI_EVENT(choose, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
+	BIND_CEGUI_EVENT(chooseChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
+	BIND_CEGUI_EVENT(mCreateChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateChar_Click);
 	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
+	
+	
+	mNewCharName = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/NameEdit"));
+	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Description"));
+	mTypesList = static_cast<CEGUI::Combobox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Type"));
+	
+	
+	//NOTE: hardcoded! we should get the values from the server somehow
+	CEGUI::ListboxItem* item = new ColoredListItem("settler", 0, 0);
+	mTypesList->addItem(item);
+
+	
+	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Gender/Male"));
+	CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Gender/Female"));
+	
+	BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
+	BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
+	BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged);
+	BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
+	BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
+	
+	
+	updateNewCharacter();
+	
 	
 		
 	Ember::EmberServices::getInstance()->getServerService()->GotAccount.connect(SigC::slot(*this, &ServerWidget::createdAccount));
@@ -92,7 +123,7 @@ void ServerWidget::createdAccount(Eris::Account* account)
 void ServerWidget::loginSuccess(Eris::Account* account) 
 {
 	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel")->setVisible(false);
-	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel")->setVisible(true);
+	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CharacterTabControl")->setVisible(true);
 	account->refreshCharacterInfo();
 	
 }
@@ -125,6 +156,50 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 		Ember::EmberServices::getInstance()->getServerService()->takeCharacter(*id);
 	}
 }
+
+bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
+{
+		
+	Ember::EmberServices::getInstance()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description);
+}
+
+bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
+{
+	CEGUI::ListboxItem* item = mTypesList->getSelectedItem();
+	if (item) {
+	
+		std::string type = item->getText().c_str();
+		mNewChar.type = type;
+	}
+	updateNewCharacter();
+}
+bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args)
+{
+	CEGUI::RadioButton* selected = mGenderRadioButton->getSelectedButtonInGroup();
+	mNewChar.gender = selected->getText().c_str();
+	
+	updateNewCharacter();
+}
+bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args)
+{
+	std::string name = mNewCharName->getText().c_str();
+	mNewChar.name = name;
+	updateNewCharacter();
+
+}
+bool ServerWidget::Description_TextChanged(const CEGUI::EventArgs& args)
+{
+	std::string description = mNewCharDescription->getText().c_str();
+	mNewChar.description = description;
+	updateNewCharacter();
+}
+
+void ServerWidget::updateNewCharacter()
+{
+	mCreateChar->setEnabled(mNewChar.isValid());
+}
+
+
 
 
 bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
@@ -160,3 +235,8 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 
 
 };
+
+bool EmberOgre::NewCharacter::isValid( ) const
+{
+	return name != "" && gender != "" && type != "";
+}

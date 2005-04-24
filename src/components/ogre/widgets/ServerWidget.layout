@@ -2,8 +2,9 @@
 <GUILayout> 
 
 	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0.2 y:0.2" /> 
-		<Property Name="Size" Value="w:0.5 h:0.5" /> 
+		<Property Name="SizingEnabled" Value="false" /> 
+		<Property Name="Position" Value="x:0.2 y:0.1" /> 
+		<Property Name="AbsoluteSize" Value="w:400 h:500" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Server" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
@@ -11,46 +12,46 @@
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 			<Window Type="TaharezLook/StaticText" Name="Info">
-				<Property Name="Position" Value="x:0.02 y:0.02" /> 
-				<Property Name="Size" Value="w:.96 h:0.4" /> 
-				<Property Name="InheritsAlpha" Value="true" /> 
+				<Property Name="Position" Value="x:0 y:0" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
+				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 				<Property Name="Text" Value="Server info" /> 
 			</Window>
 			<Window Type="TaharezLook/StaticText" Name="LoginPanel">
-				<Property Name="Position" Value="x:0.02 y:0.45" /> 
-				<Property Name="Size" Value="w:.96 h:0.4" /> 
+				<Property Name="Position" Value="x:0.02 y:0.25" /> 
+				<Property Name="Size" Value="w:.96 h:0.75" /> 
 				<Property Name="Text" Value="Login" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 				<Window Type="TaharezLook/StaticText" Name="LoginPanel/NameText">
-					<Property Name="Position" Value="x:0 y:0.2" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="AbsolutePosition" Value="x:30 y:40" /> 
+					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Name:" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 					<Property Name="FrameEnabled" Value="False" /> 
 					<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="LoginPanel/NameEdit">
-					<Property Name="Position" Value="x:0 y:0.3" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="AbsolutePosition" Value="x:30 y:70" /> 
+					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
 
 				<Window Type="TaharezLook/StaticText" Name="LoginPanel/PasswordText">
-					<Property Name="Position" Value="x:0 y:0.4" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="AbsolutePosition" Value="x:30 y:100" /> 
+					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Password:" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 					<Property Name="FrameEnabled" Value="False" /> 
 					<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="LoginPanel/PasswordEdit">
-					<Property Name="Position" Value="x:0.0 y:0.5" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
+					<Property Name="AbsolutePosition" Value="x:30.0 y:130" /> 
+					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="" /> 
 					<Property Name="MaskText" Value="True" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
@@ -58,16 +59,14 @@
 								
 				
 				<Window Type="TaharezLook/Button" Name="LoginPanel/Login">
-					<Property Name="Position" Value="x:0.3 y:0.8" /> 
-					<Property Name="Size" Value="w:0.3 h:0.2" /> 
-					<Property Name="MaximumSize" Value="w:1 h:1" /> 
+					<Property Name="AbsolutePosition" Value="x:30 y:160" /> 
+					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Login" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
 				<Window Type="TaharezLook/Button" Name="LoginPanel/CreateAcc">
-					<Property Name="Position" Value="x:0.7 y:0.8" /> 
-					<Property Name="Size" Value="w:0.3 h:0.2" /> 
-					<Property Name="MaximumSize" Value="w:1 h:1" /> 
+					<Property Name="AbsolutePosition" Value="x:140 y:160" /> 
+					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Create" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
@@ -76,104 +75,109 @@
 			
 			
 			
-			
-			<Window Type="TaharezLook/StaticText" Name="ChooseCharacterPanel">
-				<Property Name="Position" Value="x:0.02 y:0.45" /> 
-				<Property Name="Size" Value="w:.96 h:0.4" /> 
-				<Property Name="Text" Value="Characters" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="VertFormatting" Value="TopAligned" /> 
-				<Property Name="Visible" Value="False" /> 
-				<Window Type="TaharezLook/Listbox" Name="ChooseCharacterPanel/CharacterList">
-					<Property Name="Position" Value="x:0 y:0.05" /> 
-					<Property Name="Size" Value="w:0.5 h:0.7" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-				</Window>
-				<Window Type="TaharezLook/Button" Name="ChooseCharacterPanel/Choose">
-					<Property Name="Position" Value="x:0.4 y:0.8" /> 
-					<Property Name="Size" Value="w:0.3 h:0.15" /> 
-					<Property Name="MaximumSize" Value="w:1 h:1" /> 
-					<Property Name="Text" Value="Choose" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-				</Window>
-			</Window>
-			
-			<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel">
-				<Property Name="Position" Value="x:0.02 y:0.45" /> 
-				<Property Name="Size" Value="w:.96 h:0.4" /> 
-				<Property Name="Text" Value="Characters" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="VertFormatting" Value="TopAligned" /> 
-				<Property Name="Visible" Value="False" /> 
-				<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/NameText">
-					<Property Name="Position" Value="x:0 y:0.1" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
-					<Property Name="Text" Value="Name:" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="FrameEnabled" Value="False" /> 
-					<Property Name="BackgroundEnabled" Value="False" /> 
-				</Window>
-				<Window Type="TaharezLook/Editbox" Name="CreateCharacterPanel/NameEdit">
-					<Property Name="Position" Value="x:0.5 y:0.1" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
-					<Property Name="Text" Value="" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-				</Window>
-				
-				<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/TypeText">
-					<Property Name="Position" Value="x:0. y:0.2" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
-					<Property Name="Text" Value="Type:" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="FrameEnabled" Value="False" /> 
-					<Property Name="BackgroundEnabled" Value="False" /> 
-				</Window>
-				<Window Type="TaharezLook/Listbox" Name="CreateCharacterPanel/Type">
-					<Property Name="Position" Value="x:0.5 y:0.2" /> 
-					<Property Name="Size" Value="w:0.5 h:0.7" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-				</Window>
-				<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/GenderText">
-					<Property Name="Position" Value="x:0. y:0.2" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
-					<Property Name="Text" Value="Type:" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="FrameEnabled" Value="False" /> 
-					<Property Name="BackgroundEnabled" Value="False" /> 
-				</Window>
-				<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Male">
-					<Property Name="Position" Value="x:0 y:0.05" /> 
-					<Property Name="Size" Value="w:0.5 h:0.7" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="Text" Value="Male" /> 
-				</Window>
-				<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Female">
-					<Property Name="Position" Value="x:0 y:0.05" /> 
-					<Property Name="Size" Value="w:0.5 h:0.7" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="Text" Value="Female" /> 
-					
-				</Window>
-				<Window Type="TaharezLook/Editbox" Name="CreateCharacterPanel/Description">
-					<Property Name="Position" Value="x:0.0 y:0.5" /> 
-					<Property Name="Size" Value="w:0.5 h:0.1" /> 
-					<Property Name="Text" Value="" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-				</Window>
-				
 
-				<Window Type="TaharezLook/Button" Name="CreateCharacterPanel/Create">
-					<Property Name="Position" Value="x:0.4 y:0.8" /> 
-					<Property Name="Size" Value="w:0.3 h:0.15" /> 
-					<Property Name="MaximumSize" Value="w:1 h:1" /> 
+			<Window Type="TaharezLook/TabControl" Name="CharacterTabControl">
+				<Property Name="Position" Value="x:0 y:0.25" /> 
+				<Property Name="Size" Value="w:1 h:0.7" /> 
+				<Property Name="InheritsAlpha" Value="false" /> 
+				<Property Name="Visible" Value="false" /> 
+				<Window Type="DefaultGUISheet" Name="ChooseCharacterPanel">
+					<Property Name="Position" Value="x:0 y:0" /> 
+					<Property Name="Size" Value="w:1 h:1" /> 
 					<Property Name="Text" Value="Choose" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
+					<Property Name="InheritsAlpha" Value="false" /> 
+					<Property Name="Visible" Value="true" /> 
+					<Window Type="TaharezLook/Listbox" Name="ChooseCharacterPanel/CharacterList">
+						<Property Name="Position" Value="x:0 y:0.05" /> 
+						<Property Name="Size" Value="w:0.5 h:0.7" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+					</Window>
+					<Window Type="TaharezLook/Button" Name="ChooseCharacterPanel/Choose">
+						<Property Name="Position" Value="x:0.4 y:0.8" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="MaximumSize" Value="w:1 h:1" /> 
+						<Property Name="Text" Value="Choose" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+					</Window>
+				</Window>
+				<Window Type="DefaultGUISheet" Name="CreateCharacterPanel">
+					<Property Name="Position" Value="x:0 y:0" /> 
+					<Property Name="Size" Value="w:1 h:1" /> 
+					<Property Name="Text" Value="Create" /> 
+					<Property Name="InheritsAlpha" Value="false" /> 
+					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/NameText">
+						<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="Text" Value="Name:" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="FrameEnabled" Value="False" /> 
+						<Property Name="BackgroundEnabled" Value="False" /> 
+					</Window>
+					<Window Type="TaharezLook/Editbox" Name="CreateCharacterPanel/NameEdit">
+						<Property Name="AbsolutePosition" Value="x:100 y:0" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="Text" Value="" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+					</Window>
+					
+					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/TypeText">
+						<Property Name="AbsolutePosition" Value="x:0 y:30" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="Text" Value="Type:" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="FrameEnabled" Value="False" /> 
+						<Property Name="BackgroundEnabled" Value="False" /> 
+					</Window>
+					<Window Type="TaharezLook/Combobox" Name="CreateCharacterPanel/Type">
+						<Property Name="AbsolutePosition" Value="x:100 y:30" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:200" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="ReadOnly" Value="true" /> 
+					</Window>
+					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/GenderText">
+						<Property Name="AbsolutePosition" Value="x:0 y:60" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="Text" Value="Gender:" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="FrameEnabled" Value="False" /> 
+						<Property Name="BackgroundEnabled" Value="False" /> 
+					</Window>
+					<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Male">
+						<Property Name="AbsolutePosition" Value="x:100 y:60" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="Text" Value="Male" /> 
+					</Window>
+					<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Female">
+						<Property Name="AbsolutePosition" Value="x:200 y:60" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="Text" Value="Female" /> 
+						
+					</Window>
+					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/DescriptionText">
+						<Property Name="AbsolutePosition" Value="x:0 y:90" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="Text" Value="Description:" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+						<Property Name="FrameEnabled" Value="False" /> 
+						<Property Name="BackgroundEnabled" Value="False" /> 
+					</Window>
+					<Window Type="TaharezLook/MultiLineEditbox" Name="CreateCharacterPanel/Description">
+						<Property Name="AbsolutePosition" Value="x:100 y:90" /> 
+						<Property Name="AbsoluteSize" Value="w:250 h:100" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+					</Window>
+					
+					
+					<Window Type="TaharezLook/Button" Name="CreateCharacterPanel/CreateButton">
+						<Property Name="AbsolutePosition" Value="x:100 y:200" /> 
+						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="Text" Value="Create" /> 
+						<Property Name="InheritsAlpha" Value="True" /> 
+					</Window>
 				</Window>
 			</Window>
-			
-			
 		</Window>
 	</Window>
  </GUILayout> 
