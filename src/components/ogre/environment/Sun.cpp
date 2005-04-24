@@ -35,9 +35,9 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 	dir.normalise();
 	mSun->setDirection(dir);
   mSun->setDiffuseColour(1, 1, 0.7); //yellow
-  mSun->setSpecularColour(1, 1, 0.7); //yellow
-  mSun->setCastShadows(false);
-  mSun->setAttenuation(10000, 1, 0, 0);
+  //mSun->setSpecularColour(1, 1, 0.7); //yellow
+  mSun->setCastShadows(true);
+  //mSun->setAttenuation(10000, 1, 0, 0);
   
   sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
 
