@@ -11,6 +11,12 @@ foliage
 
 sun
 	-implement time, making the sun move over the sky etc.
+	
+* a map widget, which shows a map of the world
+* add a constant-running key
+* move the input system to something more like the one used in sear, which will allow the user to define the key bindings for different actions
+* add a basepoint editor
+* add mouselook toggle, perhaps caps lock
 
 
 

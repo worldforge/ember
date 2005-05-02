@@ -1,3 +1,67 @@
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: added more ideas of upcoming features
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/HelpWidget.xml, src/components/ogre/widgets/WidgetDefinitions.cpp:
+		* Added help widget.
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/widgets/ServerBrowserWidget.cpp: make sure the window is moved to front when activated
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/widgets/ServerBrowserWidget.cpp
+		* made use of the new utility methods in Widget
+		* added some null pointer checks
+		* get the hostname of the meta server from the ember.conf file
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/MakeEntityWidget.cpp|h,
+		* made use of the new utility methods in Widget
+		* get all types from eris. Note that this currently requires a cvs version of eris and will segfault with 1.3.4
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Help.*: Added help widget.
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ChatWidget.cpp, src/components/ogre/widgets/DebugWidget.cpp, src/components/ogre/widgets/InspectWidget.cpp, InventoryWidget.cpp:
+		*made use of the new utility methods in Widget
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Widget.*:
+		* added utility methods for autoregistering show_ and hide_ console commands for widgets
+		* added utility methods for closing widget windows
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/modeldefinitions/lumber.modeldel.xml: make it scale in accordance with the bounding box sent from the server, though it makes the lumber look a little cartoonish
+	*  src/components/ogre/modeldefinitions/pig.modeldel.xml: added walk animations
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/carpenter/jesus/Jesus.cpp:
+		Only do autoscale if the scale in the modeldefinition is undefined. Scaling should in the future be removed althogether though.
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.cpp:
+		Put shared data in share/games/ember, as suggested by the FHS
+	* Makefile.am:
+		Don't put the binary in bin/games because autopackage expect it to be in bin.
+		Put shared data in share/games/ember, as suggested by the FHS
+
+2005-05-02  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* autopackage/default.apspec.in:
+		update for use only with static builds.
+
 2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/EmberOgre: 
@@ -3371,4 +3435,6 @@ BIG GAP HERE DUE TO DEVELOPER LAZINESS sorry!
 2002-01-12 13:54  zzorn
 
 	* README: Adding initial README for dime
+
+l README for dime
 
