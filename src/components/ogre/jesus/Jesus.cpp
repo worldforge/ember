@@ -933,24 +933,29 @@ ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock
 		mModelNode = mNode->createChildSceneNode();
 		mModelNode->attachObject(model);
 		model->setQueryFlags(Jesus::CM_MODELBLOCK);
-		const Ogre::AxisAlignedBox ogreBoundingBox = model->getBoundingBox();
-		const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
-		const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
-	
-
-		const WFMath::AxisBox<3> wfBoundingBox = buildingBlock->getBuildingBlockSpec()->getBlockSpec()->getBoundingBox();	
-		const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
-		const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
 		
-		Ogre::Real scaleX;		
-		Ogre::Real scaleY;		
-		Ogre::Real scaleZ;		
+		//only autoscale the model if we've not set the scale in the modeldefinition
+		//TODO: it would of course be best if all models were correctly scaled and this code could be removed
+		if (model->getDefinition()->getScale() == 0) {
+			const Ogre::AxisAlignedBox ogreBoundingBox = model->getBoundingBox();
+			const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
+			const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
+		
 	
-		scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-		scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-		scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
-
-		mModelNode->setScale(scaleX, scaleY, scaleZ);
+			const WFMath::AxisBox<3> wfBoundingBox = buildingBlock->getBuildingBlockSpec()->getBlockSpec()->getBoundingBox();	
+			const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
+			const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
+			
+			Ogre::Real scaleX;		
+			Ogre::Real scaleY;		
+			Ogre::Real scaleZ;		
+		
+			scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+			scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+			scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+	
+			mModelNode->setScale(scaleX, scaleY, scaleZ);
+		}
 		
 	}
 
