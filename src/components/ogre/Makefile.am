@@ -1,7 +1,7 @@
 SUBDIRS = environment model EmberSceneManager modeldefinitions input widgets \
 		carpenter jesus
 
-
+#gamesdir = $(bindir)/games
 bin_PROGRAMS = ember.bin
 
 if BUILD_STATIC
@@ -79,11 +79,11 @@ ember_bin_SOURCES = Avatar.cpp EntityListener.cpp ConsoleObjectImpl.cpp \
 #dist_cegui_DATA = cegui
 
 
-ceguifontsdir = $(datadir)/ember/data/media/gui/cegui/datafiles/fonts
-ceguiimagesetsdir = $(datadir)/ember/data/media/gui/cegui/datafiles/imagesets
-ceguilayoutsdir = $(datadir)/ember/data/media/gui/cegui/datafiles/layouts
-ceguischemesdir = $(datadir)/ember/data/media/gui/cegui/datafiles/schemes
-ceguischemadir = $(datadir)/ember/data/media/gui
+ceguifontsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/fonts
+ceguiimagesetsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/imagesets
+ceguilayoutsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/layouts
+ceguischemesdir = $(datadir)/games/ember/media/gui/cegui/datafiles/schemes
+ceguischemadir = $(datadir)/games/ember/media/gui
 
 
 dist_ceguifonts_DATA = cegui/datafiles/fonts/Font.xsd cegui/datafiles/fonts/tahoma-14.xml cegui/datafiles/fonts/tahoma-10.xml cegui/datafiles/fonts/tahoma-8.xml cegui/datafiles/fonts/tahoma.ttf

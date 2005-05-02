@@ -5,7 +5,6 @@ EXTRA_DIST = run
 confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ember.conf
 
-mediadir = $(datadir)/ember/data/media
 
 appdir = $(datadir)/applications
 dist_app_DATA = ember.desktop
