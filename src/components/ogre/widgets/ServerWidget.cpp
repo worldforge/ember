@@ -118,6 +118,7 @@ void ServerWidget::createdAccount(Eris::Account* account)
 {
 	mAccount = account;
 	mMainWindow->setVisible(true);
+	mMainWindow->moveToFront();
 }
 
 void ServerWidget::loginSuccess(Eris::Account* account) 
