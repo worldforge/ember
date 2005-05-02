@@ -105,7 +105,7 @@ namespace Ember
 		if (itemExists("paths", "datadir")) {
 			return std::string(getValue("paths", "datadir")) + "/";
 		} else {
-			return BR_DATADIR("/ember/data/");
+			return BR_DATADIR("/games/ember/");
 		}
 
 	}
