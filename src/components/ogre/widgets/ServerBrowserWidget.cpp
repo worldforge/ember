@@ -22,9 +22,10 @@
 //
 #include <elements/CEGUIMultiColumnList.h> 
 
+#include "Widget.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
-#include "Widget.h"
+#include "services/config/ConfigService.h"
 
 
 #include "../GUIManager.h"
@@ -87,8 +88,7 @@ void ServerBrowserWidget::buildWidget()
 
 void ServerBrowserWidget::connectedToServer(Eris::Connection* connection) 
 {
-	mGuiManager->removeWidget(this);
-	delete this;
+	hide();
 }
 	
 
@@ -139,7 +139,9 @@ void ServerBrowserWidget::connectWithColumnList()
 /*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
 	if (selectedRowIndex != -1) {
 		CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
-		serverName = std::string(selectedItem->getText().c_str());
+		if (selectedItem) {
+			serverName = std::string(selectedItem->getText().c_str());
+		}
 	}
 	if (serverName != "") {
 		Ember::EmberServices::getInstance()->getServerService()->connect(serverName);
@@ -148,7 +150,11 @@ void ServerBrowserWidget::connectWithColumnList()
 
 void ServerBrowserWidget::connectToServer()
 {
-    metaServer = new Eris::Meta("metaserver.worldforge.org", 10);
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+
+	const std::string metaserverHostname(configSrv->getValue("servers", "metaserver"));
+	
+    metaServer = new Eris::Meta(metaserverHostname, 10);
 //    metaServer->GotServerCount.connect(SigC::slot(*this, &ServerBrowserWidget::gotServerCount));
     metaServer->Failure.connect(SigC::slot(*this, &ServerBrowserWidget::gotFailure));
     metaServer->ReceivedServerInfo.connect(SigC::slot(*this, &ServerBrowserWidget::receivedServerInfo));
