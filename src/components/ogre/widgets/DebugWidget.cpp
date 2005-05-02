@@ -32,6 +32,9 @@ void DebugWidget::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	Eris::Logged.connect(SigC::slot(*this, &DebugWidget::recieveLog));
+	
+	registerConsoleVisibilityToggleCommand("debug");
+	enableCloseButton();
 
 }
 

@@ -48,6 +48,9 @@ void ChatWidget::buildWidget()
 	
 	mGuiManager->AppendIGChatLine.connect(SigC::slot(*this, &ChatWidget::appendIGChatLine));
 	mGuiManager->AppendOOGChatLine.connect(SigC::slot(*this, &ChatWidget::appendOOGChatLine));
+	
+	registerConsoleVisibilityToggleCommand("chat");
+	enableCloseButton();
 
 }
 

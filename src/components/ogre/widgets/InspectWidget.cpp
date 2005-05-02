@@ -54,6 +54,8 @@ void InspectWidget::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &InspectWidget::handleAction));
+	enableCloseButton();
+	
 /*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
 }
 

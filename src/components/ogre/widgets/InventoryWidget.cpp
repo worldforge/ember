@@ -67,6 +67,7 @@ void InventoryWidget::buildWidget()
 	CEGUI::PushButton* wieldButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/Wield"));
 	BIND_CEGUI_EVENT(wieldButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Wield_Click)
 
+	enableCloseButton();
 	
 	
 	
@@ -77,6 +78,7 @@ void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 	mMainWindow->setVisible(true);
 	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
 	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
+	registerConsoleVisibilityToggleCommand("inventory");
 
 }
 void InventoryWidget::addedEntity(EmberEntity* dimeEntity) {
