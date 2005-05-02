@@ -1,12 +1,12 @@
 # -*-shell-script-*-
 # autopackage specfile for ember
 
-# TODO: split into two packages, for devel stuff and main
-
 [Meta]
 RootName: @worldforge.org/clients/ember:$SOFTWAREVERSION
 DisplayName: Ember - a client for Worldforge
 ShortName: ember
+AutopackageTarget: 1.0.0
+URL: http://www.worldforge.org/dev/eng/clients/ember
 Maintainer: Erik Hjortsberg <erik@katastrof.nu>
 Packager: Erik Hjortsberg <erik@katastrof.nu>
 Summary: Ember is a client for MMORPGs using the Worldforge system. It uses the Ogre 3d engine with CEGUI.
@@ -20,28 +20,35 @@ Den använder sig av 3d motorn Ogre tillsammans med CEGUI.
 Ember is a fully usable client for the Worldforge system. It can connect to both Cyphesis and Indri servers. The world is presented in full 3d, utilizing modern features such as fragment and vertex shaders. Ember scales to lower end GPU too, but requires at the minimum a Geforce2 or equivalent graphics card.
 
 [BuildPrepare]
-prepareBuild --enable-binreloc --enable-static
+#prepareBuild --enable-binreloc --enable-static
 
 [BuildUnprepare]
-unprepareBuild
+#unprepareBuild
 
 [Imports]
 #rm -rf include
 #find -name '*.la' | xargs rm
-echo '*' | import
+#echo '*' | import
+import <<EOF
+$source_dir/*
+EOF
 
 [Prepare]
-require @libsdl.org/sdl 1.2
-require @gnu.org/libstdc++ 3
+#require @libsdl.org/sdl 1.2
+#require @gnu.org/libstdc++ 3
 
 
 [Install]
+#installConfig ./etc/*
+copyFiles ./etc/ember/* "$PREFIX/etc/ember"
 installExe ./bin/*
 installLib ./lib/*
-#installMan 1 ./man/man1/gaim.1
+installData ./share/*
 installDesktop "Amusements/Games" ./share/applications/ember.desktop
-copyFiles ./share/ember/* "$PREFIX/share/ember/"
-installIcon ./share/pixmaps/ember.png
+#copyFiles ./share/ember/* "$PREFIX/share/ember/"
+installIcon ./share/icons/worldforge/ember.png
 
 [Uninstall]
 uninstallFromLog
+
+
