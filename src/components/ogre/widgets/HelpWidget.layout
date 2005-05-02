@@ -2,15 +2,16 @@
 <GUILayout> 
 
 	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0.4 y:0.025" /> 
-		<Property Name="Size" Value="w:0.3 h:0.25" /> 
+		<Property Name="AbsolutePosition" Value="x:90 y:50" /> 
+		<Property Name="AbsoluteSize" Value="w:800 h:600" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Help" />
+		<Property Name="Visible" Value="true" />
 		<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
-			<Property Name="Position" Value="x:0 y:0.1" /> 
-			<Property Name="Size" Value="w:1 h:1" /> 
-			<Property Name="Text" Value="Welcome to Ember!\nThis text will help you get the basics of using Ember." /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
+			<Property Name="AbsolutePosition" Value="x:10 y:30" /> 
+			<Property Name="AbsoluteSize" Value="w:780 h:560" /> 
+			<Property Name="Text" Value="We can't use linebreaks in the xml definition, so the help text will be set in Help.cpp instead." /> 
+			<Property Name="InheritsAlpha" Value="false" /> 
 			<Property Name="Alpha" Value="0.6" /> 
 			<Property Name="ReadOnly" Value="true" /> 
 		</Window>
