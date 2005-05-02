@@ -46,6 +46,7 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIPushButton.h> 
+#include "framework/ConsoleBackend.h"
 
 namespace EmberOgre {
 
@@ -53,6 +54,14 @@ namespace EmberOgre {
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
 
+MakeEntityWidget::MakeEntityWidget()
+ : mIsReady(false), Widget() 
+{
+
+
+}
+
+	
 MakeEntityWidget::~MakeEntityWidget()
 {
 }
@@ -60,8 +69,9 @@ MakeEntityWidget::~MakeEntityWidget()
 void MakeEntityWidget::buildWidget()
 {
 
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/MakeEntityWidget.xml", "MakeEntity/");
-	mMainWindow->setVisible(false);
+	loadMainSheet("MakeEntityWidget.xml", "MakeEntity/");
+	//mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/MakeEntityWidget.xml", "MakeEntity/");
+	//mMainWindow->setVisible(false);
 	
 	mTypeList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/TypeList"));
 	mName = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/Name"));
@@ -76,15 +86,34 @@ void MakeEntityWidget::buildWidget()
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &MakeEntityWidget::connectedToServer));
 	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &MakeEntityWidget::gotAvatar));
 
-	getMainSheet()->addChildWindow(mMainWindow); 
+	//getMainSheet()->addChildWindow(mMainWindow); 
 
+	registerConsoleVisibilityToggleCommand("entitycreator");
+	enableCloseButton();
 
 }
+
+
+
+
+void MakeEntityWidget::show()
+{
+	if (mIsReady)
+	{
+		if (mMainWindow) 
+			mMainWindow->setVisible(true);
+		S_LOG_INFO("Showing entity creator window.");
+	} else {
+		S_LOG_FAILURE("Can't show entity creator window before we're and have taken an avatar.");
+	}
+}
+
+
 
 void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
 {
 	loadAllTypes();
-	mMainWindow->setVisible(true);
+	mIsReady = true;
 }
 
 
@@ -117,6 +146,9 @@ void MakeEntityWidget::addToList(Eris::TypeInfo* typeInfo, int level)
 	item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	item->setUserData(typeInfo);
 	mTypeList->addItem(item);
+	
+	if (typeInfo->hasUnresolvedChildren())
+		typeInfo->resolveChildren();
 	
 	const Eris::TypeInfoSet children = typeInfo->getChildren();
 	Eris::TypeInfoSet::const_iterator I = children.begin();

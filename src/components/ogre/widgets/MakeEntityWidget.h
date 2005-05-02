@@ -41,9 +41,19 @@ class MakeEntityWidget : public Widget
 {
 public:
 
+	MakeEntityWidget();
     ~MakeEntityWidget();
 	void buildWidget();
+
+	
+	virtual void show();
+
 protected:
+
+	/**
+	flag for showing when the widget is ready to be shown
+	*/
+	bool mIsReady;
 
 	std::set<Eris::TypeInfo*> mTypes;
 	
