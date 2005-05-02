@@ -32,6 +32,9 @@
 #endif
 
 
+#include "framework/ConsoleObject.h"
+
+
 namespace EmberOgre {
 
 /**
@@ -70,7 +73,7 @@ When creating a new Widget class, make sure you also add it to WidgetDefinitions
 @see WidgetDefinitions
 
 */
-class Widget : virtual public SigC::Object
+class Widget : virtual public SigC::Object, public Ember::ConsoleObject
 {
 public:
 
@@ -93,7 +96,22 @@ public:
 	 *    Remember to call getMainSheet()->addChildWindow(mMainWindow); to add the main window to the gui system, else it won't be shown.
  	 */
 	virtual void buildWidget();
+	
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
+	virtual void show();
+	virtual void hide();
+	
 protected:
+
+	void enableCloseButton();
+
+	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
+
+	std::string mCommandSuffix;
+	void registerConsoleVisibilityToggleCommand(const std::string & commandSuffix);
+	
+	
 	CEGUI::Window* mMainWindow;
 
 	GUIManager* mGuiManager;

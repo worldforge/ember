@@ -13,6 +13,10 @@
 #include <sigc++/object_slot.h>
 #endif
 
+#include <elements/CEGUIFrameWindow.h>
+
+#include "framework/ConsoleBackend.h"
+
 //#include "ServerBrowserWidget.h"
 
 namespace EmberOgre
@@ -103,6 +107,50 @@ namespace EmberOgre
 	
 	}
 	
+	void Widget::registerConsoleVisibilityToggleCommand(const std::string & commandSuffix)
+	{
+		mCommandSuffix = commandSuffix;
+		Ember::ConsoleBackend::getMainConsole()->registerCommand("show_" + commandSuffix, this);
+		Ember::ConsoleBackend::getMainConsole()->registerCommand("hide_" + commandSuffix, this);
 	
+	}
+
+	void Widget::runCommand(const std::string &command, const std::string &args)
+	{
+		if(command == "show_" + mCommandSuffix)
+		{
+			show();
+		}
+		else if(command == "hide_" + mCommandSuffix)
+		{
+			hide();
+		}
+	}
+
+	void  Widget::show()
+	{
+		if (mMainWindow) {
+			mMainWindow->setVisible(true);
+		}
+	}
 	
+	void  Widget::hide()
+	{
+		if (mMainWindow) {
+			mMainWindow->setVisible(false);
+		}
+	}
+
+	bool Widget::MainWindow_CloseClick(const CEGUI::EventArgs& args)
+	{
+		hide();
+	}
+	
+	void Widget::enableCloseButton()
+	{
+		assert(mMainWindow);
+		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventCloseClicked, Widget::MainWindow_CloseClick)
+	}
+	
+
 }
