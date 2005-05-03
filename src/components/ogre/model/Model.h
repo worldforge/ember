@@ -171,6 +171,13 @@ public:
 
         /** Overridden from MovableObject */
         virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);	
+		
+		
+	/**
+	 *    returns a pointer to the defintion of the Model
+	 * @return 
+	 */
+	inline ModelDefinitionPtr getDefinition() const { return mDefinition; }
 protected:
 
 	ModelDefinitionPtr mDefinition;

@@ -122,6 +122,9 @@ public:
     bool isValid(void);
 	
 	const ActionDefinition* getDefinitionForAction(const std::string& name) const;
+	
+	inline Ogre::Real getScale() const { return mScale; }
+	
 		
 		
 protected:

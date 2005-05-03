@@ -53,7 +53,7 @@ Model::~Model()
  		SubModel* submodel = *I;
 		mSceneManager->removeEntity(submodel->getEntity());
 	}
-	delete mAnimationStateSet;
+	//delete mAnimationStateSet;
 }
 
 Model* Model::Create(std::string type, std::string name)
