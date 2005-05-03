@@ -88,3 +88,23 @@ void main_fp
 
 }
 
+// Fragment program for automatic terrain texture generation
+void splat_fp
+(
+    float4              iCoverage	: TEXCOORD0,
+    float4              iTexcoord	: TEXCOORD1,
+
+	out float4          oColor		: COLOR,
+
+    uniform sampler2D   textureUnit0,
+    uniform sampler2D   textureUnit1,
+    uniform sampler2D   textureUnit2,
+    uniform sampler2D   textureUnit3
+)
+{
+	oColor = tex2D(textureUnit1, iTexcoord.xy);
+	oColor = (lerp(oColor, tex2D(textureUnit2, iTexcoord.xy) , tex2D(textureUnit0, iCoverage.xy).w));
+	oColor = (lerp(oColor, tex2D(textureUnit3, iTexcoord.xy), tex2D(textureUnit0, iCoverage.xy).x));
+	 
+
+}

@@ -91,7 +91,7 @@ public:
 	 */
 	void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain);
 	
-	virtual float getHeight(TerrainPosition& atPosition) const;
+	virtual float getHeight(const TerrainPosition& atPosition) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
 	
 	/**
@@ -119,6 +119,8 @@ public:
 
 protected:
 
+
+	Mercator::Shader* mGrassShader;
 	typedef std::map<std::string, Ogre::Material*> MaterialStore;
 	MaterialStore materialStore;
 	Mercator::Terrain* mTerrain;

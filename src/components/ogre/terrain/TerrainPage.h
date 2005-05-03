@@ -42,6 +42,7 @@ namespace EmberOgre {
 
 class TerrainShader;
 class TerrainGenerator;
+class FoliageArea;
 
 TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
@@ -117,7 +118,21 @@ public:
 	 */
 	Ogre::MaterialPtr getMaterial() const;
 	
+	/**
+	 *    creates the foliage for this page
+	 */
+	void createFoliage(Mercator::Shader* grassShader);
+	
 private:
+
+	
+	FoliageArea* mFoliageArea;
+
+	/**
+	this holds a map of the area, to be used in a map widget etc.
+	*/
+	Ogre::TexturePtr mMap;
+
 
 	TerrainGenerator* mGenerator;
 	

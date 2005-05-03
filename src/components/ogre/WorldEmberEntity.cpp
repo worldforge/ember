@@ -62,19 +62,11 @@ WorldEmberEntity::~WorldEmberEntity()
 void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	//mOgreNode = mSceneManager->getRootSceneNode();
+	mFoliage = new Foliage(EmberOgre::getSingleton().getSceneManager());
 	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);
 	mTerrainGenerator->prepareAllSegments(true);
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage")) {
-		mFoliage = new Foliage(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
-		bool vis = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
-		if (vis) {
-/*			mFoliage->generateUnderVegetation(mTerrainGenerator->getMin(), mTerrainGenerator->getMax());
-			mFoliage->setVisible(vis);*/
-		}
-//		mFoliage->setVisible(vis);
-	}
 	
 	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 

@@ -45,3 +45,18 @@ fragment_program splat4arb_cg cg
 	entry_point main_fp
 	profiles ps_2_0 arbfp1
 }
+
+fragment_program splat_cg cg
+{
+	source Splat.cg
+	entry_point splat_fp
+	profiles ps_2_0 arbfp1
+}
+
+//vertex_program splat_vp_cg cg
+//{
+//	source Splat.cg
+//	entry_point splat_vp
+//	profiles vs_1_1 arbvp1
+//}
+

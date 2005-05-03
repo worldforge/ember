@@ -45,13 +45,17 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
-
+#include "environment/Foliage.h"
+#include "environment/FoliageArea.h"
 #include "TerrainGenerator.h"
+
+#include <Mercator/Segment.h>
+#include <Mercator/Shader.h>
 
 namespace EmberOgre {
 
 TerrainPage::TerrainPage(TerrainPosition& position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
-: mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mAlphaMapScale(2)
+: mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mAlphaMapScale(2), mFoliageArea(0)
 {
 }
 
@@ -99,6 +103,7 @@ float TerrainPage::getMinHeight()
 }
 
 
+
 Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	//Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
@@ -123,6 +128,7 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 	Ogre::Technique* tech = mMaterial->createTechnique();
 	tech->createPass();
 	generateTerrainTechniqueSimple(tech);
+// 	generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	
 	//and if the user so wants, we'll add some debug materials
 	if (getTerrainOptions().debuglod) {
@@ -296,18 +302,54 @@ inline int  EmberOgre::TerrainPage::getAlphaTextureSize( ) const
 
 void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY) {
 
+// 	if (startX != 64 || startY != 64) {
+// 		return;
+// 	
+// 	}
+
 	//int width = getTerrainOptions().pageSize - 1;
-	int bytesPerPixel = 1;
     int width = 64;
-    int bufferSize = width*width*bytesPerPixel;
-	int finalImageSize = getAlphaTextureSize( );
+ 	int finalImageWidth = getAlphaTextureSize( );
+	
 
     long i,j; 
-    long sizeOfOneChannel = width*width;
 
-    Ogre::uchar* start = finalImagePtr + ((startX * 4) + ((startY) * finalImageSize * 4));
-    Ogre::uchar* end = start + (finalImageSize * 4 * 64);//  - (finalImageSize * 4) ;
 	
+	
+    Ogre::uchar* start = finalImagePtr + (4 * finalImageWidth * (startY - 1)) + (startX * 4);
+    Ogre::uchar* end = start + (width * finalImageWidth * 4) + (width * 4);
+	
+	
+//     Ogre::uchar* start = finalImagePtr + ((startX * 4) + ((startY) * finalImageSize * 4));
+//     Ogre::uchar* end = start + (finalImageSize * 4 * 64);//  - (finalImageSize * 4) ;
+
+	
+	
+	
+	
+	
+//	wfImagePtr += 65;
+	
+    Ogre::uchar* tempPtr = end + channel;
+    for (i = 0; i < width; ++i) {
+	    tempPtr -= (width * 4);
+		for (j = 0; j < width; ++j) {
+			//Ogre::uchar alpha = 255 - j;
+			Ogre::uchar alpha = *(wfImagePtr + j);
+			*(tempPtr) = alpha;
+			//skip four channels
+			tempPtr += 4;
+
+			
+		}
+		tempPtr -= (finalImageWidth * 4);
+		wfImagePtr += 65;
+    }
+
+	return;	
+	
+	
+		
 //     Ogre::uchar* tempPtr = finalImagePtr + ((startX * 4) + (startY * finalImageSize * 4)) + channel;
 //     for (i = 0; i < width; ++i) {
 //     	for (j = 0; j < width; ++j) {
@@ -318,35 +360,110 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 //         	tempPtr++;
 //     		
 //     	}
-//     	++wfImagePtr;
+//     	
 // 		tempPtr += (finalImageSize - width) * 4;
 //     }   
 
+    	//wfImagePtr += 65;
 //position the pointer at the end of data, and starting at the correct channel
-    Ogre::uchar* tempPtr = end - (3 - channel);
-    for (i = 0; i < width; ++i) {
-	    tempPtr -= (width * mBytesPerPixel);
-		for (j = 0; j < width; ++j) {
-			Ogre::uchar alpha = *(wfImagePtr + j);
-			*(tempPtr) = alpha;
-			//skip four channels
-			tempPtr += 4;
-
-			
-		}
-		tempPtr -= (finalImageSize * 4);
-    	wfImagePtr += 65;
-    	//++chunkPtr;
-    }
+    
+	
+	
+	
+	
+	
+	
+// 	Ogre::uchar* tempPtr = end - (3 - channel);
+//     for (i = 0; i < width; ++i) {
+// 	    tempPtr -= (width * mBytesPerPixel);
+// 		for (j = 0; j < width; ++j) {
+// 			Ogre::uchar alpha = *(wfImagePtr + j);
+// 			*(tempPtr) = alpha;
+// 			//skip four channels
+// 			tempPtr += 4;
+// 
+// 			
+// 		}
+// 		tempPtr -= (finalImageSize * 4);
+//     	wfImagePtr += 65;
+//     	//++chunkPtr;
+//     }
 
 }
+
+
+void EmberOgre::TerrainPage::createFoliage(Mercator::Shader* grassShader)
+{
+	if (!mFoliageArea) {
+		mFoliageArea = Foliage::getSingleton().createArea();
+	}
+	double grassSpacing = Foliage::getSingleton().getGrassSpacing();
+	
+	//for each 1 m^2, how big chance is there of grass? [0,1.0]
+	Ogre::Real grassChanceThreshold = 1 / grassSpacing; 
+	TerrainPosition worldUnitsStartOfPage((getTerrainOptions().pageSize - 1) * mPosition.x(), (getTerrainOptions().pageSize - 1) * mPosition.y());
+	
+	//for now, just check with the grass shader
+	for (int segment_y = 0; segment_y < getNumberOfSegmentsPerAxis(); ++segment_y) {
+		for (int segment_x = 0; segment_x < getNumberOfSegmentsPerAxis(); ++segment_x) {
+			Mercator::Segment* segment = getSegment(segment_x,segment_y);
+			if (segment && segment->isValid()) {
+				Mercator::Surface* surface = 0;
+				Mercator::Segment::Surfacestore::iterator I = segment->getSurfaces().begin();
+				for (; I != segment->getSurfaces().end(); ++I) {
+					Mercator::Surface* aSurface = *I;
+					
+					if (grassShader == &aSurface->m_shader) {
+						surface = *I;
+						break;
+					}
+				}
+				if (!surface) {
+					//we could not find any grass surface
+					return;
+				}
+				for (unsigned int x = 0; x < 64; ++x) {
+					for (unsigned int y = 0; y < 64; ++y) {
+						
+						//first check if this is a good spot for grass (the more "green", the greater chance of grass
+						//then check with grassChanceThreshold if we should do grass
+						unsigned char cover = (*surface)(x, y, 0);
+						unsigned char coverChance = (unsigned char) Ogre::Math::RangeRandom(0, 255);
+						if (cover > coverChance) {
+							Ogre::Real grassChance = Ogre::Math::UnitRandom();
+							if (grassChanceThreshold > grassChance) {
+								//some random offset
+								Ogre::Real x_offset = Ogre::Math::RangeRandom(-1, 1);
+								Ogre::Real y_offset = Ogre::Math::RangeRandom(-1, 1);
+								TerrainPosition position(worldUnitsStartOfPage.x() + (segment_x * 64) + x + x_offset, worldUnitsStartOfPage.y() + (segment_y * 64) + y + y_offset);
+								if (Ogre::Math::UnitRandom() > 0.95) {
+									const Ogre::Vector3 scale(1, Ogre::Math::RangeRandom(0.5, 0.8), 1);
+
+									mFoliageArea->placeGrass(1, position, scale);
+								} else {
+									mFoliageArea->placeGrass(4, position);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	mFoliageArea->build();
+	
+	
+}
+
 
 void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* technique)
 { 
  
 	Ogre::Pass* pass = technique->getPass(0);
 	pass->setLightingEnabled(false);
-	pass->setFragmentProgram("splat3arb");
+	//pass->setFragmentProgram("splat3arb");
+	pass->setFragmentProgram("splat_cg");
+	
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
 	Ogre::TextureUnitState * alphaTextureUnitState = pass->createTextureUnitState();
@@ -397,10 +514,20 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	//we need an unique name for our alpha texture
 	std::stringstream splatTextureNameSS;
 	splatTextureNameSS << mMaterialName;
-	const Ogre::String splatTextureName = splatTextureNameSS.str();
+	Ogre::String splatTextureName(splatTextureNameSS.str());
 	
 	//the format for our alpha texture
 	Ogre::PixelFormat pixelFormat = Ogre::PF_B8G8R8A8;
+	
+// 	//let's create our map image
+// 	ILuint mapImageName;
+// 	ilGenImages( 1, &mapImageName );
+// 	ilBindImage( mapImageName );
+// 	ilTexImage(getAlphaTextureSize() , getAlphaTextureSize(), 1, 3, IL_RGB, IL_UNSIGNED_BYTE, 0 );
+// 	unsigned char * mapImagePointer = ilGetData();
+
+	
+	
 
 	ILuint ImageName;
 	ilGenImages( 1, &ImageName );
@@ -442,9 +569,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 				}
 			}
 		}
-		if (!intersects) {
+/*		if (!intersects) {
 			continue;
-		}
+		}*/
 		
 /*		SegmentVector::iterator I = segmentI_begin;*/
 		
@@ -457,13 +584,12 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[segment];
 					surface = *surfaceListI;
 					if (surface->isValid()) {
-						std::stringstream splatTextureNameSS_;
-						splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
+/*						std::stringstream splatTextureNameSS_;
+						splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;*/
 						
-						//we have to do this strange convertion because the ogre-wf coord convertion is a bit of a mess with the 
-						//fillAlphaLayer(...) method. I don't have time to fix this now.
-						int x_ = (x == (getNumberOfSegmentsPerAxis() - 1)) ? 0 : x + 1;
-						fillAlphaLayer(finalChunk->getPtr(), surface->getData(), i, x_ * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
+						fillAlphaLayer(finalChunk->getPtr(), surface->getData(), i, x * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
+						
+						
 	
 	
 	
@@ -473,7 +599,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 				}
 			}
 		}
-		if (i < 2) {
+		if (i < 3) {
 			Ogre::TextureUnitState * splatTextureUnitState = pass->createTextureUnitState();
 			splatTextureUnitState->setTextureName(shader->getTextureName());
 			splatTextureUnitState->setTextureCoordSet(1);
@@ -484,6 +610,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	}
 	
 	ilBindImage(ImageName);
+/*	char name[100];
+	strcpy(name, (std::string("/home/erik/") + splatTextureName + std::string(".png")).c_str());
+	ilSaveImage(name);*/
 		
 	if (mAlphaMapScale > 1) {
 		
@@ -501,18 +630,17 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		
 	Ogre::DataStreamPtr dataStreamPtr(finalChunk);
 
-/*	char name[100];
-	strcpy(name, (std::string("/home/erik/opt/worldforge/share/ember/data/temp/") + splatTextureName + std::string(".png")).c_str());
-	ilSaveImage(name);*/
 	
 	
 	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
 /*	temp.setNull();
 	splatTexture.setNull();*/
-	ilDeleteImages(1, &ImageName);
+	if (mAlphaMapScale > 1) {
+		ilDeleteImages(1, &ImageName);
+	}
 	alphaTextureUnitState->setTextureName(splatTextureName);
     alphaTextureUnitState->setTextureCoordSet(0);
-	alphaTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_MIRROR);
+	alphaTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
  
 
@@ -633,7 +761,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
         //we need an unique name for our alpha texture
 		std::stringstream splatTextureNameSS;
 		splatTextureNameSS << mMaterialName << "_" << i;
-		const Ogre::String splatTextureName = splatTextureNameSS.str();
+		const Ogre::String splatTextureName(splatTextureNameSS.str());
 		
 				
 /*		SegmentVector::iterator I = segmentI_begin;*/
@@ -650,11 +778,8 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 						std::stringstream splatTextureNameSS_;
 						splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
 						
-						//we have to do this strange convertion because the ogre-wf coord convertion is a bit of a mess with the 
-						//fillAlphaLayer(...) method. I don't have time to fix this now.
-						int x_ = (x == (getNumberOfSegmentsPerAxis() - 1)) ? 0 : x + 1;
-						int alphaChannel = 3;
-						fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, x_ * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
+						int alphaChannel = 0;
+						fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, x * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
 
 					}
 				}

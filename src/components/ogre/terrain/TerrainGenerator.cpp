@@ -28,6 +28,7 @@
 #include "TerrainShader.h"
 #include "EmberSceneManager/include/EmberTerrainPageSource.h"
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+#include "environment/Foliage.h"
 
 
 //#include "environment/GroundCover.h"
@@ -44,6 +45,8 @@ namespace EmberOgre {
 TerrainGenerator::TerrainGenerator()
 
 {
+	//new Foliage(EmberOgre::getSingleton().getSceneManager());
+	
     loadTerrainOptions();
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
 
@@ -51,8 +54,10 @@ TerrainGenerator::TerrainGenerator()
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
+	
     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+	mGrassShader =  new Mercator::GrassShader(1.f, 80.f, .5f, 1.f);
+    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")),mGrassShader)); // Grass
 //     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
 //     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
 
@@ -187,7 +192,10 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 // 	}
 // 
 // 	return;	
-	
+	bool showFoliage = false;
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage")) {
+		showFoliage = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
+	}
 	
 	
 	int i,j;
@@ -212,6 +220,9 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 			TerrainPosition pos(xStart + i, yStart + j);
 			TerrainPage page(pos, mShaderMap, this);
 			page.generateTerrainMaterials();
+			if (showFoliage) {
+				page.createFoliage(mGrassShader);
+			}
 			if (alsoPushOntoTerrain) {
 				mTerrainPageSource->addPage(&page);
 			}
@@ -246,7 +257,7 @@ bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
 
 
 
-float TerrainGenerator::getHeight(TerrainPosition& point) const
+float TerrainGenerator::getHeight(const TerrainPosition& point) const
 {
 	
 	float height = 0;
