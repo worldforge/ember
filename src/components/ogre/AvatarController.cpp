@@ -110,7 +110,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 	movementForFrame.isRunning = false;
 	movementForFrame.isMoving = false;	
 	
-	if (mGUIManager->isInMovementKeysMode()) {
+	if (mGUIManager->isInMovementKeysMode() && mGUIManager->getInput()) {
 		checkMovementKeys(event, mGUIManager->getInput());
 	}	
 	movementForFrame.timeSlice = event.timeSinceLastFrame;

@@ -53,14 +53,13 @@ namespace EmberOgre {
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
-: mWindow(window)
+: mWindow(window), mInput(0)
 
 {
 
 // 	mEventProcessor = new EmberEventProcessor();
 // 	mEventProcessor->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow());
 // 	mEventProcessor->startProcessingEvents();
-	
 	WidgetDefinitions w;
 	
 	try {
@@ -110,12 +109,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		pushMousePicker(picker);
 		
 		mInput = new Input(mGuiSystem, mGuiRenderer);
-//	mGUIManager->getInput()->MouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
-		
 		mInput->KeyPressed.connect(SigC::slot(*this, &GUIManager::pressedKey));
-/*		mEventProcessor->addKeyListener(this);
-		mEventProcessor->addMouseMotionListener(this);
-		mEventProcessor->addMouseListener(this);*/
+		
 		Ogre::Root::getSingleton().addFrameListener(this);
 	
 	} catch (CEGUI::Exception e) {
@@ -170,6 +165,7 @@ void GUIManager::initialize()
 		createWidget("ServerWidget");
 		createWidget("GiveWidget");
 		createWidget("EntityPickerWidget");
+		createWidget("Help");
 
 /*		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
 		mSheet->addChildWindow(helpWindow );*/
@@ -366,7 +362,7 @@ const bool GUIManager::isInMovementKeysMode() const {
 }
 
 const bool GUIManager::isInGUIMode() const { 
-	return mInput->isInGUIMode(); 
+	return mInput && mInput->isInGUIMode(); 
 }
 
 
