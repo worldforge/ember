@@ -1,11 +1,11 @@
 [Desktop Entry]
-Categories=Game
+Categories=Games;
 Comment=
 Comment[sv]=
 Encoding=UTF-8
 Exec=ember
 GenericName=3d client for Worldforge MMORPGs
-GenericName[sv]=3d client for Worldforge MMORPGs
+GenericName[sv]=3d klient för Worldforge MMORPGs
 Icon=ember
 MimeType=
 Name=Ember
@@ -13,7 +13,6 @@ Name[sv]=Ember
 Path=
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
 X-DCOP-ServiceType=
 X-KDE-StartupNotify=true
