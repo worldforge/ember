@@ -113,7 +113,17 @@ void Avatar::createAvatar()
 	
 	mAvatarModelNode->attachObject(mAvatarModel);
 	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-	//mAvatarModelNode->showBoundingBox(true);
+  
+  
+/*  Ogre::Light* light = mSceneMgr->createLight("AvatarLight__");
+           light->setType(Ogre::Light::LT_POINT);
+            light->setCastShadows(true);
+            light->setDiffuseColour(0.6,0.6,0.6);
+            //light->setSpecularColour(1, 1, 1);
+            light->setAttenuation(50,1,0.0005,0);
+	mAvatarModelNode->attachObject(light);*/
+// 
+// 	mAvatarModelNode->showBoundingBox(true);
 
 }
 
@@ -133,7 +143,7 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 	}	
 
 	
-	if (mEntitiesToBeRemovedFromInventory.size() > 0) {
+/*	if (mEntitiesToBeRemovedFromInventory.size() > 0) {
 		std::set<Eris::Entity*>::iterator J = mEntitiesToBeRemovedFromInventory.begin();
 		std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemovedFromInventory.end();
 		
@@ -144,7 +154,7 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 		}
 		
 		mEntitiesToBeRemovedFromInventory.clear();
-	}
+	}*/
 	return true;
 }
 
@@ -217,7 +227,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 		//we are already moving
 		//let's see if we've changed speed or direction or even stopped
 		if (!newMovementState.isMoving) {
-			fprintf(stderr, "TRACE - STOPPED\n");
+			S_LOG_INFO( "TRACE - STOPPED");
 			//we have stopped; we must alert the server
 			sendToServer = true;
 			//plus stop the animation of the avatar
@@ -229,7 +239,7 @@ void Avatar::attemptMove(AvatarControllerMovement movement)
 	}
 		
 	if (sendToServer) {
-		fprintf(stderr, "TRACE - SEND MOVE OPS TO SERVER\n");
+		S_LOG_INFO("TRACE - SEND MOVE OPS TO SERVER");
 		mMovementStateAtBeginningOfMovement = newMovementState;
 		mMovementStateAtLastServerMessage = newMovementState;
 		mTimeSinceLastServerMessage = 0;
