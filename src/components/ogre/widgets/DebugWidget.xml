@@ -3,27 +3,28 @@
 
 	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0 y:0.3" /> 
-		<Property Name="Size" Value="w:0.3 h:0.2" /> 
+		<Property Name="AbsoluteSize" Value="w:300 h:150" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Eris log" />
+		<Property Name="Visible" Value="false" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="Position" Value="x:0 y:0.1" /> 
-			<Property Name="Size" Value="w:0.96 h:0.7" /> 
+			<Property Name="AbsolutePosition" Value="x:5 y:30" /> 
+			<Property Name="AbsoluteSize" Value="w:290 h:115" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 		
-			<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
-				<Property Name="Position" Value="x:0 y:0.15" /> 
-				<Property Name="Size" Value="w:1 h:0.95" /> 
-				<Property Name="Text" Value="" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-			</Window>
 			<Window Type="TaharezLook/Combobox" Name="LogLevelDropList">
-				<Property Name="Position" Value="x:0 y:0" /> 
-				<Property Name="Size" Value="w:1 h:0.15" /> 
+				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
+				<Property Name="AbsoluteSize" Value="w:100 h:85" /> 
 				<Property Name="InheritsAlpha" Value="False" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="Text" Value="Loglevel" /> 
+			</Window>
+			<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
+				<Property Name="AbsolutePosition" Value="x:0 y:30" /> 
+				<Property Name="AbsoluteSize" Value="w:290 h:85" /> 
+				<Property Name="Text" Value="" /> 
+				<Property Name="InheritsAlpha" Value="false" /> 
+				<Property Name="ReadOnly" Value="true" /> 
 			</Window>
 			
 		</Window>
