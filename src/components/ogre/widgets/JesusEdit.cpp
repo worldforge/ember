@@ -39,13 +39,18 @@
 #include "../PersonEmberEntity.h"
 #include "../AvatarEmberEntity.h"
 #include "../model/Model.h"
+#include "framework/ConsoleBackend.h"
 
 #include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 namespace EmberOgre {
 
+
+
 JesusEdit::JesusEdit()
- : Widget(), mInJesusMode(false), mCurrentConstruction(0), mCurrentlySelectedBlock(0), mCurrentlySelectedAttachPointNode(0), mJesus(0)
+ : Widget(), mInJesusMode(false), mCurrentConstruction(0), mCurrentlySelectedBlock(0), mCurrentlySelectedAttachPointNode(0), mJesus(0), mFile(0), mPreview(0)
 {
+
+
 }
 
 
@@ -120,7 +125,35 @@ void JesusEdit::buildWidget()
 	updateBindingButton();
 	updateCreateButton();
 
+	registerConsoleVisibilityToggleCommand("builder");
+	enableCloseButton();
 	
+}
+
+
+
+void JesusEdit::show()
+{
+	if (mJesus)
+	{
+		if (mMainWindow) 
+			mMainWindow->setVisible(true);
+		if (mPreview) 
+			mPreview->setVisible(true);
+		S_LOG_INFO("Showing builder window.");
+	} else {
+		S_LOG_FAILURE("Can't show builder window before the main Jesus object is loaded.");
+	}
+}
+void JesusEdit::hide()
+{
+	S_LOG_INFO("Hiding builder window.");
+	if (mMainWindow) 
+		mMainWindow->setVisible(false);
+	if (mPreview) 
+		mPreview->setVisible(false);
+	if (mFile) 
+		mFile->hide();
 }
 
 bool JesusEdit::SwitchMode_Click(const CEGUI::EventArgs& args)
@@ -172,7 +205,6 @@ void JesusEdit::loadConstruction(Construction* construction)
 
 void JesusEdit::createdJesus(Jesus* jesus)
 {
-	mMainWindow->setVisible(true);
 	loadFromJesus(jesus);
 	mPreview = new JesusEditPreview(mGuiManager, jesus);
 	mFile = new JesusEditFile(mGuiManager, this, jesus);
@@ -498,7 +530,7 @@ JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 : mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(0.5), mMaxCameraDistance(40)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
-	
+	setVisible(false);
 	
 	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -517,6 +549,11 @@ JesusEditPreview::~JesusEditPreview()
 {
 	delete mBlueprint;
 	delete mConstruction;
+}
+
+void JesusEditPreview::setVisible(bool visible)
+{
+	mPreviewWindow->setVisible(visible);
 }
 
 void JesusEditPreview::showBuildingBlock(const std::string & spec)

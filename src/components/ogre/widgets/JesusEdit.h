@@ -33,6 +33,7 @@
 #include <CEGUIMouseCursor.h>
 
 #include "../GUIManager.h"
+#include "framework/ConsoleObject.h"
 
 
 namespace Carpenter
@@ -109,6 +110,9 @@ public:
 	 */
 	void setZoom(float value);
 
+	void setVisible(bool visible);
+	
+	
 protected:
 	CEGUI::Window* mPreviewWindow;
 	Jesus* mJesus;
@@ -204,6 +208,12 @@ public:
 	 */
 	Construction* createNewConstructionFromBlueprint(Carpenter::BluePrint* blueprint);
 
+	
+	virtual void show();
+	virtual void hide();
+	
+
+	
 protected:
 
 	/**
