@@ -1,5 +1,92 @@
 2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ServerBrowserWidget.cpp:
+		*if no metaserver value is found in the config file, default to metaserver.worldforge.org
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*ember.desktop: removed some unneeded parameters and make sure that the swedish writeup is in utf8
+	*ember.conf: added metaserver values
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*src/components/ogre/model/Model.cpp: don't delete the AnimationState in the destructor, since that will lead to a crash
+	*src/components/ogre/model/Model.h: added accessor for the ModelDefinition
+	*src/components/ogre/model/ModelDefinition.h: added accessor for the scale
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp:
+		* use the S_LOG_* macros
+		* cleaned up some code
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp:
+		* use the S_LOG_* macros
+		* removed the light
+		* don't delay removal of entities from the avatar inventory, but keep the delay for additions (we need it for getting full info from the entities)
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*src/components/ogre/GUIManager.cpp, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp:
+		* add checks for null values
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*src/components/ogre/EmberEntity.*:
+		* try to get the name of the action performed, though it doesn't seem to be working. Is it perhaps not sent?
+		* better handling of entity visibility, though there are some quirks left
+		* use S_LOG_* macros
+	*src/components/ogre/AvatarEmberEntity.cpp:
+		* removed light on the avatar
+		* don't delay removal of entities from the avatar inventory, but keep the delay for additions (we need it for getting full info from the entities)
+	*src/components/ogre/EmberPhysicalEntity.*:
+		* better handling of entity visibility, though there are some quirks left
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/FoliageArea.*:
+		*finished methods for placing grass in the terrain
+		*set the size of each grass patch to 32x32, with a culling distance of 34
+	* src/components/ogre/environment/Foliage*:
+		*get settings from ember.conf
+
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*src/components/ogre/TerrainPage.*:
+		* rewrote the terrain splatting generation code to actually work without quirks
+		* added foliage generation code. This looks really good, but eats a _lot_ of memory. We need to simplify the grass mesh and to perhaps add a system for offloading unused grass patches to the hard drive.
+		* removed some debug code which saved temporary splatting images to the file system
+		* use a new splatting fragment shader
+	*src/components/ogre/WorldEmberEntity.*:
+		* moved most foliage code to TerrainGenerator and TerrainPage, but do the initial construction of Foliage here
+	*src/components/ogre/TerrainGenerator.cpp:
+		* create foliage if specified in ember.conf
+	*media/materials/spatting/Splat.cg, media/materials/spatting/splat.program:
+		* rewrote the splatting shader in Cg
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/DebugWidget.xml, src/components/ogre/widgets/MakeEntityWidget.xml, src/components/ogre/widgets/ServerBrowserWidget.xml:
+		*Use absolute positioning and size
+		*Hide some widgets by default, though they can all be shown through the show_* console commands.
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/JesusEdit.cpp|h:
+		* made use of the new utility methods in Widget
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Performance.cpp|h:
+		* made use of the new utility methods in Widget
+		* only update when the widget is visible
+		* try to better calculate the time spent in eris, though it still isn't correct
+
+2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* TODO: added more ideas of upcoming features
 
 2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>

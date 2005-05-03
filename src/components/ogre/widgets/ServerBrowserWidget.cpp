@@ -152,7 +152,12 @@ void ServerBrowserWidget::connectToServer()
 {
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
-	const std::string metaserverHostname(configSrv->getValue("servers", "metaserver"));
+	const std::string metaserverHostname;
+	if (configSrv->hasValue("servers", "metaserver")) {
+		metaserverHostname = configSrv->getValue("servers", "metaserver");
+	} else {
+		metaserverHostname = "metaserver.worldforge.org";
+	}
 	
     metaServer = new Eris::Meta(metaserverHostname, 10);
 //    metaServer->GotServerCount.connect(SigC::slot(*this, &ServerBrowserWidget::gotServerCount));
