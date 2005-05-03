@@ -45,29 +45,32 @@ Performance::~Performance()
 
 void Performance::buildWidget()
 {
-
-
 	loadMainSheet("Performance.widget", "Performance/");
 	
 	mMainText = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow(getPrefix() + "TextBox"));
 	
 	EmberOgre::getSingleton().EventStartErisPoll.connect(SigC::slot(*this, &Performance::startErisPolling));
 	EmberOgre::getSingleton().EventEndErisPoll.connect(SigC::slot(*this, &Performance::endErisPolling));
-
+	
+	
+	registerConsoleVisibilityToggleCommand("performance");
+	enableCloseButton();
 }
 
 void Performance::frameStarted(const Ogre::FrameEvent& evt)
 {
 
-	std::stringstream ss;
-	const Ogre::RenderTarget::FrameStats& stats = EmberOgre::getSingleton().getRenderWindow()->getStatistics();
+	if (mMainWindow->isVisible()) {
+		std::stringstream ss;
+		const Ogre::RenderTarget::FrameStats& stats = EmberOgre::getSingleton().getRenderWindow()->getStatistics();
+		
+		ss << "Current FPS: " << stats.lastFPS << "\n";
+		ss << "Average FPS: " << stats.avgFPS << "\n";
+		ss << "Traingle count: " << stats.triangleCount << "\n";
+		ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n";
 	
-	ss << "Current FPS: " << stats.lastFPS << "\n";
-	ss << "Average FPS: " << stats.avgFPS << "\n";
-	ss << "Traingle count: " << stats.triangleCount << "\n";
-	ss << "Time in eris: " << getAverageErisTime() << "\n";
-
-	mMainText->setText(ss.str());
+		mMainText->setText(ss.str());
+	}
 
 
 }
@@ -75,7 +78,11 @@ void Performance::frameStarted(const Ogre::FrameEvent& evt)
 Ogre::Real Performance::getAverageErisTime() const 
 {
 	if (mErisTimes.size()) {
-		return std::accumulate(mErisTimes.begin(), mErisTimes.end(), 0) / Ogre::Real(mErisTimes.size());
+		
+		long inEris = std::accumulate(mErisTimes.begin(), mErisTimes.end(), 0);
+		long notInEris = std::accumulate(mNotInErisTimes.begin(), mNotInErisTimes.end(), 0);
+	
+		return  inEris / notInEris ;
 	}
 	return 0;
 }
@@ -83,10 +90,16 @@ Ogre::Real Performance::getAverageErisTime() const
 void Performance::startErisPolling()
 {
 	mTimer.reset();
+	mNotInErisTimes.push_back(mNotInErisTimer.getMilliseconds());
+	if (mNotInErisTimes.size() > 100) {
+		mNotInErisTimes.pop_front();
+	}
 }
 
 void Performance::endErisPolling()
 {
+	mNotInErisTimer.reset();
+	
 	mErisTimes.push_back(mTimer.getMilliseconds());
 	if (mErisTimes.size() > 100) {
 		mErisTimes.pop_front();

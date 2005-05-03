@@ -49,10 +49,11 @@ protected:
 	void endErisPolling();
 	
 	std::deque<long> mErisTimes;
+	std::deque<long> mNotInErisTimes;
 	
 	Ogre::Real getAverageErisTime() const;
 	
-	Ogre::Timer mTimer;
+	Ogre::Timer mTimer, mNotInErisTimer;
 	
 	CEGUI::MultiLineEditbox* mMainText;
 };
