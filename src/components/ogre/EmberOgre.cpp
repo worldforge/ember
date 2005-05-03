@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.81  2005-04-24 12:42:32  erik
+ *      Revision 1.82  2005-05-03 19:38:16  erik
+ *      2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp:
+ *      		* use the S_LOG_* macros
+ *      		* cleaned up some code
+ *
+ *      Revision 1.81  2005/04/24 12:42:32  erik
  *      2005-04-24  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre:
@@ -841,7 +848,7 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 	
 	
 	if (!mKeepOnRunning)
-		fprintf(stderr, "Shutting down EmberOgre.\n");
+		S_LOG_INFO( "Shutting down EmberOgre.");
 	return mKeepOnRunning;
 }
 
@@ -875,10 +882,11 @@ bool EmberOgre::setup(void)
 	checkForConfigFiles();
 	
 //don't use the plugins 
-    mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
-// 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
-// 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
-// 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
+//    mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+    mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
+ 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
+ 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
+ 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
 
 	
     setupResources();
@@ -900,10 +908,9 @@ bool EmberOgre::setup(void)
 // 	//add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
- 	fprintf(stderr, "TRACE - BEGIN PRELOAD\n");
+ 	S_LOG_INFO( "TRACE - BEGIN PRELOAD");
  	preloadMedia();
- 	fprintf(stderr, "TRACE - END PRELOAD\n");
-	
+ 	S_LOG_INFO( "TRACE - END PRELOAD");
 	
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
     
@@ -935,12 +942,8 @@ bool EmberOgre::setup(void)
     createScene();
 
 	setupJesus();
-/*
-    EmberEntityFactory = new EmberEntityFactory(mSceneMgr);
     
-    Ember::EmberServices::getInstance()->getServerService()->getView()->registerFactory(EmberEntityFactory);
-*/
-    return true;
+	return true;
 
 }
 /** Configures the application - returns false if the user chooses to abandon configuration. */
@@ -955,7 +958,6 @@ bool EmberOgre::configure(void)
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
         mWindow = mRoot->initialise(true, "Ember");
-        //mRoot->showDebugOverlay(true);
         return true;
     }
     else
@@ -976,7 +978,8 @@ void EmberOgre::chooseSceneManager(void)
     EmberTerrainSceneManager* mEmberTerr = dynamic_cast<EmberTerrainSceneManager*>(mSceneMgr);
     assert(mEmberTerr);
 
-    
+   //mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+   
     
 }
 
@@ -1093,7 +1096,7 @@ void EmberOgre::setupResources(void)
 	
 //     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
 	
-	fprintf(stderr, "TRACE - ADDED MEDIA PATHS\n");
+	S_LOG_INFO(  "TRACE - ADDED MEDIA PATHS");
 	
 }
 
@@ -1134,7 +1137,7 @@ void EmberOgre::preloadMedia(void)
 			std::string filename(ep->d_name);
 			if (ep->d_name != "." && ep->d_name != ".." && filename.find(".modeldef")) {
 				try {
-					fprintf(stdout, (std::string("TRACE - PRELOADING: ") + ep->d_name + "\n").c_str());
+					S_LOG_INFO(  "TRACE - PRELOADING: "<< ep->d_name);
 					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");
 /*					if (modeldef->isValid()) {
 						Model* model = Model::Create(ep->d_name, ep->d_name);
@@ -1142,7 +1145,7 @@ void EmberOgre::preloadMedia(void)
 					}*/
 				} catch (Ogre::Exception ex)
 				{
-					fprintf(stderr, (std::string("TRACE - ERROR PRELOADING: ") + ep->d_name + "\n").c_str());
+					S_LOG_FAILURE( "TRACE - ERROR PRELOADING: " <<ep->d_name );
 				}
 			}
 		}
@@ -1186,7 +1189,7 @@ void EmberOgre::setupJesus()
 	{
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
-				std::cout << "TRACE - LOADING BLOCKSPEC: " << ep->d_name << "\n";
+				S_LOG_INFO( "TRACE - LOADING BLOCKSPEC: " << ep->d_name );
 				mJesus->loadBlockSpec(dir + "/" + ep->d_name);
 			}
 		}
@@ -1200,7 +1203,7 @@ void EmberOgre::setupJesus()
 	{
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
-				std::cout << "TRACE - LOADING BUILDINGBLOCKSPEC: " << ep->d_name << "\n";
+				S_LOG_INFO( "TRACE - LOADING BUILDINGBLOCKSPEC: " << ep->d_name);
 				mJesus->loadBuildingBlockSpecDefinition(dir + "/" + ep->d_name);
 			}
 		}
@@ -1214,7 +1217,7 @@ void EmberOgre::setupJesus()
 	{
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
-				std::cout << "TRACE - LOADING MODELMAPPING: " <<  ep->d_name << "\n";
+				S_LOG_INFO( "TRACE - LOADING MODELMAPPING: " <<  ep->d_name );
 				mJesus->loadModelBlockMapping(dir + "/" + ep->d_name);
 			}
 		}
@@ -1229,14 +1232,14 @@ void EmberOgre::setupJesus()
 	{
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
-				std::cout << "TRACE - LOADING GLOBAL BLUEPRINT: " << ep->d_name << "\n";
+				S_LOG_INFO(  "TRACE - LOADING GLOBAL BLUEPRINT: " << ep->d_name );
 				Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(dir + "/" + ep->d_name);
 				if (blueprint) {
 					blueprint->compile();
 					bool result = mJesus->addBluePrint(blueprint);
 					if (!result)
 					{
-						S_LOG_FAILURE( "COULD NOT ADD BLUEPRINT: " << ep->d_name)
+						S_LOG_FAILURE( "COULD NOT ADD BLUEPRINT: " << ep->d_name);
 					}
 				}
 			}
@@ -1251,14 +1254,14 @@ void EmberOgre::setupJesus()
 	{
 		while (ep = readdir (dp)) {
 			if (ep->d_name != "." && ep->d_name != "..") {
-				std::cout << "TRACE - LOADING LOCAL BLUEPRINT: " << ep->d_name << "\n";
+				S_LOG_INFO( "TRACE - LOADING LOCAL BLUEPRINT: " << ep->d_name );
 				Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(dir + "/" + ep->d_name);
 				if (blueprint) {
 					blueprint->compile();
 					bool result = mJesus->addBluePrint(blueprint);
 					if (!result)
 					{
-						S_LOG_FAILURE(  "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name )
+						S_LOG_FAILURE(  "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name );
 					}
 				}
 			}
