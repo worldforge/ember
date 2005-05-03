@@ -46,6 +46,11 @@ public:
 	void setVisible(bool visible);
 
 	
+	void placeGrass(int type, const TerrainPosition& position);
+	void placeGrass(int type, const TerrainPosition& position, const Ogre::Vector3& scale);
+	void build();
+	
+	
 
 protected:
 	Ogre::SceneManager* mSceneMgr;

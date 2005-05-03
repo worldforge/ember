@@ -24,6 +24,7 @@
 #define DIMEOGREFOLIAGE_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "framework/Singleton.h"
 
 namespace EmberOgre {
 
@@ -33,15 +34,19 @@ class FoliageArea;
 /**
 @author Erik Hjortsberg
 */
-class Foliage {
+class Foliage : public Ember::Singleton<Foliage>
+{
+
 public:
-    Foliage(Ogre::Camera* camera, Ogre::SceneManager* mSceneMgr);
+    Foliage( Ogre::SceneManager* mSceneMgr);
 
     ~Foliage();
 	
 	FoliageArea* createArea();	
 
 	Ogre::Entity* getEntity(int index);
+	
+	inline double getGrassSpacing() const {return mGrassSpacing;}
 
 protected:
 	std::vector<Ogre::Entity* > mEntities;
@@ -51,8 +56,8 @@ protected:
 
 	void createGrassMesh();
 	
-	
-	Ogre::Camera* mCamera;
+
+	double mGrassSpacing;	
 	Ogre::SceneManager* mSceneMgr;
 
 	Foliage* mFoliage;

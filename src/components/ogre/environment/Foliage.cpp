@@ -39,8 +39,12 @@ namespace EmberOgre {
 #define GRASS_MESH_NAME "grassblades"
 #define GRASS_MATERIAL "Examples/GrassBlades"
 #define OFFSET_PARAM 999
-Foliage::Foliage(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
-: mCamera(camera), mSceneMgr(sceneMgr)
+
+template<> Foliage* Ember::Singleton<Foliage>::ms_Singleton = 0;
+
+
+Foliage::Foliage( Ogre::SceneManager* sceneMgr)
+:  mSceneMgr(sceneMgr)
 {
 	createGrassMesh();
 
@@ -50,12 +54,20 @@ Foliage::Foliage(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 	Ogre::Entity* e0 = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
 	Ogre::Entity* e1 = mSceneMgr->createEntity("environment/field/teardrops", "environment/field/small_plant/teardrops/normal.mesh");
 	Ogre::Entity* e2 = mSceneMgr->createEntity("environment/field/thingrass", "environment/field/small_plant/thingrass/normal.mesh");
+//	Ogre::Entity* e3 = mSceneMgr->createEntity("environment/field/bittergrass", "3d_objects/environment/field/models/small_plant/wide_grass.mesh");
 	Ogre::Entity* e3 = mSceneMgr->createEntity("environment/field/bittergrass", "environment/field/small_plant/bittergrass/normal.mesh");
 
 	mEntities.push_back(e0);
 	mEntities.push_back(e1);
 	mEntities.push_back(e2);
 	mEntities.push_back(e3);
+	
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	//mSubmeshSize = (int)configSrv->getValue("foliage", "submeshsize");
+	mGrassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
+// 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
+// 	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
+
 
 }
 

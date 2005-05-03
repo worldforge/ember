@@ -55,15 +55,46 @@ void FoliageArea::init(Foliage* foliage, Ogre::SceneManager* sceneManager, const
 	mSceneMgr = sceneManager;
 
 	mStaticGeom = mSceneMgr->createStaticGeometry(name);
-	mStaticGeom->setRegionDimensions(Ogre::Vector3(64,64, 64));
+	mStaticGeom->setRegionDimensions(Ogre::Vector3(32,32, 32));
 	// Set the region origin so the centre is at 0 world
 	//s->setOrigin((endPosition - startPosition) / 2);
-	mStaticGeom->setRenderingDistance(33);
+	mStaticGeom->setRenderingDistance(34);
 
 	mStaticGeom->setRenderQueueGroup(Ogre::RENDER_QUEUE_7);
 
 }
 
+
+void FoliageArea::placeGrass(int type, const TerrainPosition& position)
+{
+	const Ogre::Vector3 scale(
+		1, Ogre::Math::RangeRandom(0.85, 1.15), 1);
+	placeGrass(type, position, scale);
+}
+
+
+void FoliageArea::placeGrass(int type, const TerrainPosition& position, const Ogre::Vector3& scale)
+{
+	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
+	Ogre::Entity* currentEnt;
+	currentEnt = mFoliage->getEntity(type);
+	Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
+	ogrePosition.y = terrain->getHeight(position);
+	
+	Ogre::Quaternion orientation;
+	orientation.FromAngleAxis(
+		Ogre::Degree(Ogre::Math::RangeRandom(0, 359)),
+		Ogre::Vector3::UNIT_Y);
+	mStaticGeom->addEntity(currentEnt, ogrePosition, orientation, scale);
+
+
+}
+
+void FoliageArea::build()
+{
+	assert(mStaticGeom);
+	mStaticGeom->build();
+}
 
 //This is all very quick and messy, to be replaced by something better in the future
 void FoliageArea::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent)
