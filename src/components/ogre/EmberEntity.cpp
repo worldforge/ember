@@ -126,10 +126,10 @@ void EmberEntity::setMoving(bool moving)
 	std::string type = getType()->getName(); // Eris type as a string
 	if(type.compare("pig")==0) { 	// if it's a pig
 		if(moving) { 				// and the pig *starts* moving
-			S_LOG_INFO( "THE PIG STARTS MOVING" )
+			S_LOG_INFO( "THE PIG STARTS MOVING" );
 			Ember::EmberServices::getInstance()->getSoundService()->playTestGrunt();
 		} else {					// the pig is stopping
-			S_LOG_INFO( "THE PIG STOPS MOVING" )
+			S_LOG_INFO( "THE PIG STOPS MOVING" );
 		}
 	}
 	
@@ -203,15 +203,23 @@ void EmberEntity::checkVisibility(bool vis)
 	if (container) {
 		//check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {
-			getSceneNode()->setVisible(true);	
+			//don't cascade, only change the top node
+			setVisible(true);	
 		} else {
-			getSceneNode()->setVisible(false);	
+			setVisible(false);	
 		}
 		
 	} else {
-		getSceneNode()->setVisible(vis);
+		setVisible(vis);
 	}
 }
+
+
+void EmberEntity::setVisible(bool visible)
+{
+	getSceneNode()->setVisible(visible, false);	
+}
+
 
 void EmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity) 
 {
@@ -227,7 +235,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	if (getLocation() == oldLocation)
 	{
-		S_LOG_INFO( "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" )
+		S_LOG_INFO( "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" );
 		return Eris::Entity::onLocationChanged(oldLocation);
 	
 	}
@@ -251,7 +259,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	} else {
 		//add to the world
-		S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" )
+		S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
 //		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 	}		
 	
@@ -272,19 +280,20 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)
 	
 /*	std::string allattribs;
 	
-	Atlas::Objects::BaseObjectData::const_iterator I = act->begin();
+	//Atlas::Objects::BaseObjectData::const_iterator I = act->begin();
+	std::list< std::string >::const_iterator I = act->getParents().begin();
 
-	for (; I != act->end(); ++I) 
+	for (; I != act->getParents().end(); ++I) 
 	{
 		//const Atlas::Message::Element e = (const Atlas::Message::Element)(*I).second;
-		allattribs.append((*I).first + " : ");
+		allattribs.append((*I) + " : ");
 	
 	}*/
 	
-	if (act->hasAttr("name")) {
-		GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("name").asString());
-		S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + act->getAttr("name").asString())
-	}
+	std::string name = act->getName();
+	
+	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
+	S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
 }
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)

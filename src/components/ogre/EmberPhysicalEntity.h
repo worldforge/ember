@@ -80,6 +80,9 @@ public:
 	virtual void adjustHeightPosition(); 
 	
 	
+	virtual void setVisible(bool visible);
+
+	
 
 protected: 
 

@@ -62,6 +62,12 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	*/
 }
 
+void EmberPhysicalEntity::setVisible(bool visible)
+{
+	EmberEntity::setVisible(visible);
+	getScaleNode()->setVisible(visible, false);	
+}
+
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	EmberEntity::init(ge);

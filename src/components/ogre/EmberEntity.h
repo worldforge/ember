@@ -122,6 +122,13 @@ public:
 	* returns a list of all suggested responses
 	*/
 	std::vector<std::string> getSuggestedResponses() const;
+	
+	
+	/**
+	 *    Sets the visibity of the Entity
+	 * @param visible 
+	 */
+	virtual void setVisible(bool visible);
 
 
 protected: 

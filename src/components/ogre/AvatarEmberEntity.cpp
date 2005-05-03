@@ -50,6 +50,14 @@ void AvatarEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	PersonEmberEntity::init(ge);
 	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
+
+/*  Ogre::Light* light = mSceneManager->createLight("AvatarLight");
+           light->setType(Ogre::Light::LT_POINT);
+            light->setCastShadows(true);
+            light->setDiffuseColour(0.6,0.6,0.6);
+            //light->setSpecularColour(1, 1, 1);
+            light->setAttenuation(50,1,0.0005,0);
+	getSceneNode()->attachObject(light);*/
 }
 
 void AvatarEmberEntity::onMoved()
@@ -85,6 +93,7 @@ void AvatarEmberEntity::setVisible(bool vis)
 //void AvatarEmberEntity::addMember(Entity *e) 
 void AvatarEmberEntity::onChildAdded(Entity *e) 
 {
+	//mAvatar->EventAddedEntityToInventory.emit(static_cast<EmberEntity*>(e));
 	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
 	//PersonEmberEntity::addMember(e);
 	
@@ -94,7 +103,8 @@ void AvatarEmberEntity::onChildAdded(Entity *e)
 /*void AvatarEmberEntity::rmvMember(Entity *e)*/
 void AvatarEmberEntity::onChildRemoved(Entity *e)
 {
-	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
+	mAvatar->EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(e));
+//	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
 //	PersonEmberEntity::rmvMember(e);	
 }
 
