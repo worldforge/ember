@@ -1,5 +1,11 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/programs/Grass.cg, media/materials/scripts/vegetation.material
+		* added parameter for waving the grass
+		* use the simplegrass mesh for regular grass since it contains less vertices
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainGenerator.cpp:
 		* require vertex shader capabilities for foliage
 

@@ -6,7 +6,7 @@ material /global/plants/tree/fir/branch
   {
     pass
     {
-          scene_blend alpha_blend 
+          //scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
 		alpha_rejection greater_equal 64
@@ -77,6 +77,24 @@ material /global/plants/fruitable/acorn/shiny
 
 }
 
+
+material /global/plants/mushroom/amanita
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+         texture_unit
+		{
+			texture 3d_objects/plants/mushroom/textures/amanita/low/mushroom.png
+		}
+    }
+  }
+}
+
+
+
 material /global/plants/fruitable/acorn/matte
 {
   receive_shadows on
@@ -104,12 +122,49 @@ material /global/plants/fruitable/acorn/matte
 
 
 
+vertex_program Field/GrassWaverVp cg
+{
+	source Grass.cg
+	entry_point grass_vp
+	profiles vs_1_1 arbvp1
+}
 
+vertex_program Field/GrassFaderVp cg
+{
+	source Grass.cg
+	entry_point grassfader_vp
+	profiles vs_1_1 arbvp1
+}
 
 
 
 material Field/Heartblood
 {
+
+	// Vertex program waving grass
+    technique
+    {
+        pass
+        {
+			vertex_program_ref Field/GrassFaderVp
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named_auto ambient ambient_light_colour
+				param_named_auto objSpaceLight light_position_object_space 0
+				param_named_auto lightColour light_diffuse_colour 0
+			}
+			alpha_rejection greater_equal 10 
+			scene_blend alpha_blend
+		    cull_hardware none
+            cull_software none
+            texture_unit
+            {
+				texture 3d_objects/environment/field/textures/heartblood/low/field.png
+            }
+        }
+    }
+
+
   //receive_shadows off
   technique
   {
@@ -125,18 +180,38 @@ material Field/Heartblood
 		texture 3d_objects/environment/field/textures/heartblood/low/field.png
 	}
 
-	ambient 1 1 1
-      diffuse 1.000000 1.000000 1.000000
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.000000 0.000000 0.000000
     }
   }
 
 }
 
 
-material Field/Heartblood/Low
+
+material /global/environment/field/small_plant/bittergrass
 {
+	// Vertex program waving grass
+    technique
+    {
+        pass
+        {
+			vertex_program_ref Field/GrassFaderVp
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named_auto ambient ambient_light_colour
+				param_named_auto objSpaceLight light_position_object_space 0
+				param_named_auto lightColour light_diffuse_colour 0
+				param_named_auto offset custom 999
+			}
+			alpha_rejection greater_equal 10 
+			scene_blend alpha_blend
+		    cull_hardware none
+            cull_software none
+            texture_unit
+            {
+				texture 3d_objects/environment/field/textures/bittergrass/low/field_1_.png
+            }
+        }
+    }
   //receive_shadows off
   technique
   {
@@ -145,70 +220,13 @@ material Field/Heartblood/Low
           //scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
- 		alpha_rejection greater_equal 128
+ 		alpha_rejection greater_equal 10
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/heartblood/low/field.png
+		texture 3d_objects/environment/field/textures/bittergrass/low/field_1_.png
 	}
 
-	ambient 1 1 1
-      diffuse 1.000000 1.000000 1.000000
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.000000 0.000000 0.000000
-    }
-  }
-
-}
-
-
-material Field/Bittergrass
-{
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          //scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
- 		alpha_rejection greater_equal 128
-       texture_unit
-	{
-	
-		texture 3d_objects/environment/field/textures/bittergrass/low/field.png
-	}
-
-	diffuse 1.000000 1.000000 1.000000
-      ambient 1 1 1
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.500000 0.500000 0.500000
-    }
-  }
-
-}
-
-material Field/Bittergrass/Low
-{
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
-		alpha_rejection greater_equal 128
-        texture_unit
-	{
-	
-		texture 3d_objects/environment/field/textures/bittergrass/low/field.png
-	}
-
-      diffuse 1.000000 1.000000 1.000000
-      ambient 1 1 1
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.500000 0.500000 0.500000
     }
   }
 
@@ -217,6 +235,29 @@ material Field/Bittergrass/Low
 
 material Field/Thingrass
 {
+	// Vertex program waving grass
+    technique
+    {
+        pass
+        {
+			vertex_program_ref Field/GrassWaverVp
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named_auto ambient ambient_light_colour
+				param_named_auto objSpaceLight light_position_object_space 0
+				param_named_auto lightColour light_diffuse_colour 0
+				param_named_auto offset custom 999
+			}
+			alpha_rejection greater_equal 128 
+			//scene_blend alpha_blend
+		    cull_hardware none
+            cull_software none
+            texture_unit
+            {
+				texture 3d_objects/environment/field/textures/thingrass/low/field.png
+            }
+        }
+    }
   //receive_shadows off
   technique
   {
@@ -225,50 +266,44 @@ material Field/Thingrass
           //scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
- 		alpha_rejection greater_equal 32
+ 		alpha_rejection greater_equal 128
        texture_unit
 	{
 	
 		texture 3d_objects/environment/field/textures/thingrass/low/field.png
 	}
 
-	diffuse 1.000000 1.000000 1.000000
-      ambient 1 1 1
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.500000 0.500000 0.500000
     }
   }
 
 }
 
-material Field/Thingrass/Low
-{
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
-		alpha_rejection greater_equal 32
-        texture_unit
-	{
-	
-		texture 3d_objects/environment/field/textures/thingrass/low/field.png
-	}
-
-      diffuse 1.000000 1.000000 1.000000
-      ambient 1 1 1
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.500000 0.500000 0.500000
-    }
-  }
-
-}
 
 material Field/Teardrops
 {
+	// Vertex program waving grass
+    technique
+    {
+        pass
+        {
+			vertex_program_ref Field/GrassWaverVp
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named_auto ambient ambient_light_colour
+				param_named_auto objSpaceLight light_position_object_space 0
+				param_named_auto lightColour light_diffuse_colour 0
+				param_named_auto offset custom 999
+			}
+			alpha_rejection greater_equal 128 
+			//scene_blend alpha_blend
+		    cull_hardware none
+            cull_software none
+            texture_unit
+            {
+				texture 3d_objects/environment/field/textures/teardrops/low/field.png
+            }
+        }
+    }
   //receive_shadows off
   technique
   {
@@ -284,41 +319,54 @@ material Field/Teardrops
 		texture 3d_objects/environment/field/textures/teardrops/low/field.png
 	}
 
-	diffuse 1.000000 1.000000 1.000000
-      ambient 1 1 1
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.500000 0.500000 0.500000
     }
   }
 
 }
 
-material Field/Teardrops/Low
+
+material Examples/GrassBlades
 {
-  //receive_shadows off
-  technique
-  {
-    pass
+	// Vertex program waving grass
+    technique
     {
-          scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
-		alpha_rejection greater_equal 128
-        texture_unit
-	{
-	
-		texture 3d_objects/environment/field/textures/teardrops/low/field.png
-	}
-
-      diffuse 1.000000 1.000000 1.000000
-      ambient 1 1 1
-      //specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.500000 0.500000 0.500000
+        pass
+        {
+			vertex_program_ref Field/GrassWaverVp
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named_auto ambient ambient_light_colour
+				param_named_auto objSpaceLight light_position_object_space 0
+				param_named_auto lightColour light_diffuse_colour 0
+				param_named_auto offset custom 999
+			}
+			alpha_rejection greater 150 
+			//scene_blend alpha_blend
+		    cull_hardware none
+            cull_software none
+            texture_unit
+            {
+                texture gras_02.png 
+            }
+        }
     }
-  }
 
+	// Non-vertex program technique (no waving)
+	technique
+    {
+        pass
+        {
+			alpha_rejection greater 150 
+			//scene_blend alpha_blend
+		    cull_hardware none
+            cull_software none
+            texture_unit
+            {
+                texture gras_02.png 
+            }
+        }
+    }
 }
-
 
 
 
