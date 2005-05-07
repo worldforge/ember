@@ -310,7 +310,6 @@ void Model::setUserObject (Ogre::UserDefinedObject *obj)
  		SubModel* submodel = *I;
 		Ogre::Entity* entity = submodel->getEntity();
 		entity->setUserObject(obj);
-		int i = 0;
 	}
 }
 
@@ -331,33 +330,28 @@ void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 */
 const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 {
-	Ogre::AxisAlignedBox aa_box;
-	Ogre::AxisAlignedBox* full_aa_box = new Ogre::AxisAlignedBox();
-	full_aa_box->setNull();
+	mFull_aa_box.setNull();
 	 
 	SubModelSet::const_iterator child_itr = mSubmodels.begin();
 	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
 	for( ; child_itr != child_itr_end; child_itr++)
 	{
 		SubModel* submodel = *child_itr;
-		aa_box = submodel->getEntity()->getBoundingBox();
              
-		full_aa_box->merge(aa_box);
+		mFull_aa_box.merge(submodel->getEntity()->getBoundingBox());
 	}
 	 
 //	 std::cout << "Boundingbox: " << full_aa_box->getMaximum().x << " : " << full_aa_box->getMaximum().y << " : " << full_aa_box->getMaximum().z;
 	 
 	 //full_aa_box->scale(mParentNode->_getDerivedScale());
-	return *full_aa_box;
+	return mFull_aa_box;
 }
 
 /** Overridden - see MovableObject.
 */
 const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 {
-	Ogre::AxisAlignedBox aa_box;
-	Ogre::AxisAlignedBox* full_aa_box = new Ogre::AxisAlignedBox();
-	full_aa_box->setNull();
+	mWorldFull_aa_box.setNull();
 	 
 	SubModelSet::const_iterator child_itr = mSubmodels.begin();
 	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
@@ -365,15 +359,14 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 	for( ; child_itr != child_itr_end; child_itr++)
 	{
 		SubModel* submodel = *child_itr;
-		aa_box = submodel->getEntity()->getWorldBoundingBox(derive);
- 
- 		full_aa_box->merge(aa_box);
+
+ 		mWorldFull_aa_box.merge(submodel->getEntity()->getWorldBoundingBox(derive));
 	}
 	 
 //	 std::cout << "Boundingbox: " << full_aa_box->getMaximum().x << " : " << full_aa_box->getMaximum().y << " : " << full_aa_box->getMaximum().z;
 	 
 	 //full_aa_box->scale(mParentNode->_getDerivedScale());
-	return *full_aa_box;
+	return mWorldFull_aa_box;
 }
 
 Ogre::Real Model::getBoundingRadius() const

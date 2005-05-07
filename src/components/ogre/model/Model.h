@@ -180,6 +180,9 @@ public:
 	inline ModelDefinitionPtr getDefinition() const { return mDefinition; }
 protected:
 
+	mutable Ogre::AxisAlignedBox mFull_aa_box;
+	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
+
 	ModelDefinitionPtr mDefinition;
 
 	//set of all animations currently running
