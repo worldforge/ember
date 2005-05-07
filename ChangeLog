@@ -1,5 +1,11 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ServerBrowserWidget.cpp:
+		* catch segfaults on doubleclicking on a header in the grid
+		* oops, make it compile against ConfigService
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/FoliageArea.*, src/components/ogre/Foliage.*, src/components/ogre/TerrainPage.cpp:
 		* use names for foliage entities instead of index
 		* wave the grass

@@ -134,17 +134,19 @@ void ServerBrowserWidget::connectWithColumnList()
 {
 	
 	std::string serverName;	
-	uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
-
-/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
-	if (selectedRowIndex != -1) {
-		CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
-		if (selectedItem) {
-			serverName = std::string(selectedItem->getText().c_str());
+	if (mServerList->getFirstSelectedItem()) {
+		uint selectedRowIndex = mServerList->getItemRowIndex(mServerList->getFirstSelectedItem());
+	
+	/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
+		if (selectedRowIndex != -1) {
+			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
+			if (selectedItem) {
+				serverName = std::string(selectedItem->getText().c_str());
+			}
 		}
-	}
-	if (serverName != "") {
-		Ember::EmberServices::getInstance()->getServerService()->connect(serverName);
+		if (serverName != "") {
+			Ember::EmberServices::getInstance()->getServerService()->connect(serverName);
+		}
 	}
 }
 
@@ -152,9 +154,9 @@ void ServerBrowserWidget::connectToServer()
 {
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
-	const std::string metaserverHostname;
-	if (configSrv->hasValue("servers", "metaserver")) {
-		metaserverHostname = configSrv->getValue("servers", "metaserver");
+	std::string metaserverHostname;
+	if (configSrv->itemExists("servers", "metaserver")) {
+		metaserverHostname = std::string(configSrv->getValue("servers", "metaserver"));
 	} else {
 		metaserverHostname = "metaserver.worldforge.org";
 	}
