@@ -1,5 +1,10 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.conf
+		* show foliage by default
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/ServerBrowserWidget.cpp:
 		* catch segfaults on doubleclicking on a header in the grid
 		* oops, make it compile against ConfigService
