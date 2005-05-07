@@ -1,5 +1,10 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainGenerator.cpp:
+		* require vertex shader capabilities for foliage
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/Model.*:
 		* fix memory leak
 

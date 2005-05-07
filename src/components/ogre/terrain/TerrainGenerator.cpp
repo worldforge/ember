@@ -193,7 +193,8 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 // 
 // 	return;	
 	bool showFoliage = false;
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage")) {
+	
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
 		showFoliage = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
 	}
 	
