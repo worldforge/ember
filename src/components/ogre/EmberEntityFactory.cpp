@@ -19,19 +19,12 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include "EmberOgrePrerequisites.h"
 #include "EmberEntityFactory.h"
+
 
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
-
-// #include <xercesc/util/XMemory.hpp>
-// 
-// #include <xercesc/dom/DOM.hpp>
-// #include <xercesc/util/XMLString.hpp>
-// #include <xercesc/util/PlatformUtils.hpp>
-// 
-
-
 
 
 #include "EmberEntity.h"
@@ -48,13 +41,11 @@
 
 
 #include "framework/ConsoleBackend.h"
-//#include "MathConverter.h"
 #include "TerrainGenerator.h"
-//#include "EmberTerrainSceneManager.h"
 #include "EmberSceneManager/include/EmberTerrainPageSource.h"
 
 
-#include <OgreNoMemoryMacros.h>
+
 
 
 namespace EmberOgre {

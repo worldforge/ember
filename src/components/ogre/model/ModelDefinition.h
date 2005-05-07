@@ -23,23 +23,24 @@
 #ifndef EMBEROGREMODELDEFINITION_H
 #define EMBEROGREMODELDEFINITION_H
 
-#include <OgreNoMemoryMacros.h> 
-//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-//this seems to be because both uses their own internal memory handlers
-#include <xercesc/util/XMemory.hpp>
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-// indicate using Xerces-C++ namespace in general
-XERCES_CPP_NAMESPACE_USE
-
-// // need to properly scope any forward declarations
-// XERCES_CPP_NAMESPACE_BEGIN
-//   class AttributeList;
-// XERCES_CPP_NAMESPACE_END
-#include <OgreMemoryMacros.h> 
-
 #include "components/ogre/EmberOgrePrerequisites.h"
+
+//#include <OgreNoMemoryMacros.h> 
+	//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
+	//this seems to be because both uses their own internal memory handlers
+	#include <xercesc/util/XMemory.hpp>
+	#include <xercesc/dom/DOM.hpp>
+	#include <xercesc/util/XMLString.hpp>
+	#include <xercesc/util/PlatformUtils.hpp>
+	// indicate using Xerces-C++ namespace in general
+	XERCES_CPP_NAMESPACE_USE
+	
+	// // need to properly scope any forward declarations
+	// XERCES_CPP_NAMESPACE_BEGIN
+	//   class AttributeList;
+	// XERCES_CPP_NAMESPACE_END
+//#include <OgreMemoryMacros.h> 
+
 
 namespace EmberOgre {
 

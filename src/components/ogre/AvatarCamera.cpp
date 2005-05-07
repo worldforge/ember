@@ -62,25 +62,6 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 AvatarCamera::~AvatarCamera()
 {}
 
-/*bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
-{
-	*
-	 * M.O. is to check if we're aligned behind the avatar.
-	 * If not, we'll try to ease ourself into the position.
-	 *
-	SceneNode* sceneNode = static_cast<SceneNode*>(mCamera->getParentNode());
-	//mCameraNode->setOrientation(Ogre::Quaternion::Slerp(0.2, mCameraNode->getOrientation(), mLastOrientationOfTheCamera, false);
-	//mLastOrientationOfTheCamera = mCameraNode->getOrientation();
-	
-	return true;	
-}
-bool AvatarCamera::frameEnded(const Ogre::FrameEvent& event)
-{
-	return true;
-}
-*/
-
-
 void AvatarCamera::createNodesAndCamera()
 {
 	//create the nodes for the camera

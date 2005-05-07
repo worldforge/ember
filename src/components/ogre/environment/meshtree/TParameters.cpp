@@ -1,5 +1,4 @@
 #include "TParameters.h"
-#include <OgreNoMemoryMacros.h>
 
 //---------------------------------------------------------------------------
 

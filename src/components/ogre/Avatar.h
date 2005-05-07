@@ -22,30 +22,29 @@
 
 #ifndef AVATAR_H
 #define AVATAR_H
-#include <OgreNoMemoryMacros.h>
-
-
-
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
-
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
-
 #include "EmberOgrePrerequisites.h"
+
+//#include <OgreNoMemoryMacros.h>
+
+	#include <Eris/Entity.h>
+	#include <Eris/View.h>
+	#include <Eris/PollDefault.h>
+	#include <Eris/Log.h>
+	#include <Eris/TypeInfo.h>
+	
+	#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+	#include <sigc++/signal_system.h>
+	#else
+	#include <sigc++/object.h>
+	#include <sigc++/signal.h>
+	#include <sigc++/slot.h>
+	#include <sigc++/bind.h>
+	#include <sigc++/object_slot.h>
+	#endif
+//#include <OgreMemoryMacros.h>
+
 #include <OgrePredefinedControllers.h> 
 
-#include "MathConverter.h"
 
 
 namespace EmberOgre {
@@ -58,6 +57,7 @@ class Model;
 
 struct AvatarMovementState
 {
+public:
 	bool isMoving;
 	bool isRunning;
 	Ogre::Vector3 velocity;
@@ -107,7 +107,7 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 	
 	//void touch(EmberEntity* entity);
 	
-	void updateFrame(AvatarControllerMovement movement);
+	void updateFrame(AvatarControllerMovement& movement);
 	
 	void setAvatarController(AvatarController* avatarController);
 	
@@ -147,7 +147,7 @@ protected:
 	 * The parameter timeSlice denotes the slice of time under which the movement
 	 * shall take place.
 	 */
-	void attemptMove(AvatarControllerMovement movement);
+	void attemptMove(AvatarControllerMovement& movement);
 	
 	/**
 	 * Attempts to rotate the avatar to a certain direction
@@ -158,7 +158,7 @@ protected:
 	 * But when moving, rotation happens in interval
 	 * 
 	 */
-	void attemptRotate(AvatarControllerMovement movement);
+	void attemptRotate(AvatarControllerMovement& movement);
 	
 	
 	/**

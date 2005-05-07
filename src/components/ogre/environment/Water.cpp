@@ -25,7 +25,6 @@
 #include "services/config/ConfigService.h"
 #include "components/ogre/EmberOgre.h"
 
-#include <OgreNoMemoryMacros.h>
 
 
 

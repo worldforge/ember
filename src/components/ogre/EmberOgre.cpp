@@ -23,7 +23,25 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.82  2005-05-03 19:38:16  erik
+ *      Revision 1.83  2005-05-07 22:24:07  erik
+ *      2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	*src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberOgrePrerequisites.h, src/components/ogre/MathConverter.h, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/SubModel.cpp, src/components/ogre/jesus/Jesus.cpp, src/components/ogre/environment/Tree.cpp, src/components/ogre/environment/Water.cpp, src/components/ogre/environment/meshtree/MeshTree.cpp, src/components/ogre/environment/meshtree/TParameters.cpp, src/components/ogre/environment/meshtree/TStem.cpp, src/components/ogre/EmberSceneManager/src/*.cpp, src/components/ogre/EmberSceneManager/include/OgreTerrainRenderable.h:
+ *      		* removed Ogre memory macros since we're not using the ogre memory manager anyway
+ *      		* cleaned up old unused code
+ *
+ *      	*src/components/ogre/EmberOgre.cpp:
+ *      		* removed references to EntityListener
+ *      		* removed references to MetaServerService
+ *      		* removed Ogre memory macros since we're not using the ogre memory manager anyway
+ *      		* cleaned up include directives
+ *
+ *      	*src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h:
+ *      		* pass MovementUpdates as references
+ *      		* only update the orientation of the avatar when needed
+ *      		* removed Ogre memory macros since we're not using the ogre memory manager anyway
+ *
+ *      Revision 1.82  2005/05/03 19:38:16  erik
  *      2005-05-03  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp:
@@ -635,37 +653,39 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 // Headers to stop compile problems from headers
 #include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 // ------------------------------
 // Include Eris header files
 // ------------------------------
-#include <Eris/Entity.h>
-#include <Eris/View.h>
+#include <Eris/PollDefault.h>
+
+
+#include "EmberOgrePrerequisites.h"
 
 //Ember headers
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
-#include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
-#include "framework/prefix.h"
+#include "framework/prefix.h" //this is needed for binreloc functionality
 
 
 // ------------------------------
 // Include OGRE Ember client files
 // ------------------------------
-//#include "OgreGameView.h"
-//#include "MathConverter.h"
-//#include "EmberTerrainPageSource.h"
 #include "TerrainGenerator.h"
 
 
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
 #include "AvatarController.h"
-#include "EntityListener.h"
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "AvatarCamera.h"
@@ -686,7 +706,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
-#include "model/Model.h"
 
 // ------------------------------
 // Include Ember header files
@@ -697,55 +716,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "EmberOgre.h"
 
-// ------------------------------
-// Include Eris header files
-// ------------------------------
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-// GNDN: MSVC < version 7 is broken
-#else
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/Factory.h>
-#endif
-
-// ------------------------------
-// Include WFmath header files
-// ------------------------------
-#include <wfmath/point.h>
-#include <wfmath/vector.h>
-#include <wfmath/axisbox.h>
-#include <wfmath/quaternion.h>
-
-
-// ----------------------------------------------------------------------------
-// Include the main OGRE header files
-// Ogre.h just expands to including lots of individual OGRE header files
-// ----------------------------------------------------------------------------
-
-// The DEBUG stuff is a workaround for compile errors this causes in OGRE
-#ifdef DEBUG
-#define DEBUGTEMP
-#undef DEBUG
-#endif
-
-#include "EmberOgrePrerequisites.h"
-// #include <OgreFontManager.h>
-// #include <OgreParticleSystemManager.h>
-
-#ifdef DEBUGTEMP
-#undef DEBUGTEMP
-#define DEBUG
-#endif
-
-#include <stddef.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <dirent.h>
-
-
 #include "jesus/Jesus.h"
-#include <OgreNoMemoryMacros.h>
+
 
 namespace EmberOgre {
 
@@ -926,6 +898,8 @@ bool EmberOgre::setup(void)
 	mAvatar = new Avatar(mSceneMgr);
 	
 	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
+	
+	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
 
 
@@ -933,7 +907,6 @@ bool EmberOgre::setup(void)
 
 	mRoot->addFrameListener(mMotionManager);
 	ConsoleObjectImpl::getSingleton();
-	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
 
 	mGUIManager->initialize();
@@ -1325,9 +1298,6 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 void EmberOgre::connectViewSignals(Eris::View* world)
 {
     Eris::Factory::registerFactory(mEmberEntityFactory);
-	//world->registerFactory(mEmberEntityFactory, 10);
-	
-	EntityListener::getSingleton().connectViewSignals();
 }
 
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
@@ -1397,9 +1367,9 @@ void EmberOgre::initializeEmberServices(void)
 
 	// Initialize the Logging service and an error observer
 	Ember::LoggingService *logging = Ember::EmberServices::getInstance()->getLoggingService();
-	CerrLogObserver* obs = new CerrLogObserver();
-	obs->setFilter(Ember::LoggingService::VERBOSE);
-	logging->addObserver(obs);
+// 	CerrLogObserver* obs = new CerrLogObserver();
+// 	obs->setFilter(Ember::LoggingService::VERBOSE);
+// 	logging->addObserver(obs);
 
 
 	// Initialize the Configuration Service
@@ -1449,7 +1419,7 @@ void EmberOgre::initializeEmberServices(void)
 	// Set Eris Logging Level
 	Eris::setLogLevel(Eris::LOG_DEBUG);
 
-	Ember::EmberServices::getInstance()->getMetaserverService()->start();
+// 	Ember::EmberServices::getInstance()->getMetaserverService()->start();
 
 	// Initialize the Server Service
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &EmberOgre::connectedToServer));

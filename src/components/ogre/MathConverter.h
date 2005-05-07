@@ -11,7 +11,25 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.13  2005-01-04 23:02:36  erik
+ *      Revision 1.14  2005-05-07 22:24:07  erik
+ *      2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	*src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberOgrePrerequisites.h, src/components/ogre/MathConverter.h, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/SubModel.cpp, src/components/ogre/jesus/Jesus.cpp, src/components/ogre/environment/Tree.cpp, src/components/ogre/environment/Water.cpp, src/components/ogre/environment/meshtree/MeshTree.cpp, src/components/ogre/environment/meshtree/TParameters.cpp, src/components/ogre/environment/meshtree/TStem.cpp, src/components/ogre/EmberSceneManager/src/*.cpp, src/components/ogre/EmberSceneManager/include/OgreTerrainRenderable.h:
+ *      		* removed Ogre memory macros since we're not using the ogre memory manager anyway
+ *      		* cleaned up old unused code
+ *
+ *      	*src/components/ogre/EmberOgre.cpp:
+ *      		* removed references to EntityListener
+ *      		* removed references to MetaServerService
+ *      		* removed Ogre memory macros since we're not using the ogre memory manager anyway
+ *      		* cleaned up include directives
+ *
+ *      	*src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h:
+ *      		* pass MovementUpdates as references
+ *      		* only update the orientation of the avatar when needed
+ *      		* removed Ogre memory macros since we're not using the ogre memory manager anyway
+ *
+ *      Revision 1.13  2005/01/04 23:02:36  erik
  *      2005-01-04  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* moved all use of terrain coordinates, both in ogre and in atlas, to the common class TerrainPosition
@@ -220,17 +238,13 @@ Description:	Point, Vector and Quaternion converter
 #define __MATH_CONVERTER_H__
 
 // ------------------------------
-// Include Ogre header files
-// ------------------------------
-#include "EmberOgrePrerequisites.h"
-
-// ------------------------------
 // Include WFmath header files
 // ------------------------------
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/axisbox.h>
 #include <wfmath/quaternion.h>
+#include <wfmath/const.h>
 
 namespace EmberOgre {
 

@@ -28,12 +28,13 @@
 #include "JesusPickerObject.h"
 
 
-#include <OgreNoMemoryMacros.h> 
+//#include <OgreNoMemoryMacros.h> 
 
-#include <xercesc/dom/DOMWriter.hpp>
-
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include <xercesc/util/OutOfMemoryException.hpp>
+	#include <xercesc/dom/DOMWriter.hpp>
+	
+	#include <xercesc/framework/LocalFileFormatTarget.hpp>
+	#include <xercesc/util/OutOfMemoryException.hpp>
+//#include <OgreMemoryMacros.h> 
 
 
 #include "services/EmberServices.h"

@@ -23,7 +23,6 @@
 #include "config.h"
 #endif
 
-#include <OgreMemoryMacros.h>
 #include <Ogre.h>
 #include "MathConverter.h"
 

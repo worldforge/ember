@@ -1,6 +1,5 @@
 #include "TStem.h"
 #include "MeshTree.h"
-#include <OgreNoMemoryMacros.h>
 
 
 //---------------------------------------------------------------------------

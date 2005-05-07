@@ -59,13 +59,6 @@ public:
 	virtual ~AvatarCamera();
 
 	/*
-	 * Methods from Ogre::FrameListener
-	 *
-	bool frameStarted(const Ogre::FrameEvent& event);
-	bool frameEnded(const Ogre::FrameEvent& event);
-	*/
-	
-	/*
 	 * Pitches the camera the supplied degrees
 	 */
 	virtual void pitch(Ogre::Degree degrees);

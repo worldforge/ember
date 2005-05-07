@@ -42,7 +42,6 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include <OgreAxisAlignedBox.h>
 #include <OgreString.h>
 #include <OgreHardwareBufferManager.h>
-#include <OgreNoMemoryMacros.h>
 
 #include <vector>
 

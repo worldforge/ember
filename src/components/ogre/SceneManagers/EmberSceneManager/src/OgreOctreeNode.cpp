@@ -37,7 +37,6 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 
 #include "OgreOctreeNode.h"
 #include "OgreOctreeSceneManager.h"
-#include <OgreNoMemoryMacros.h>
 
 namespace Ogre
 {

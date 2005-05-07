@@ -25,7 +25,6 @@
 #include "meshtree/MeshTree.h"
 #include <Ogre.h>
 #include "Tree.h"
-#include <OgreNoMemoryMacros.h>
 
 namespace EmberOgre {
 using namespace Ogre;

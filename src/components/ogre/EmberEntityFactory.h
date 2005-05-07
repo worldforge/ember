@@ -18,21 +18,23 @@
 
 #ifndef DIMEENTITYFACTORY_H
 #define DIMEENTITYFACTORY_H
-#include <OgreNoMemoryMacros.h>
+#include "EmberOgrePrerequisites.h"
 
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/Factory.h>
-#include <wfmath/point.h>
+//#include <OgreNoMemoryMacros.h>
 
-#include <Eris/Connection.h>
+	#include <Eris/Entity.h>
+	#include <Eris/View.h>
+	#include <Eris/PollDefault.h>
+	#include <Eris/Log.h>
+	#include <Eris/TypeInfo.h>
+	#include <Eris/Factory.h>
+	#include <Eris/Connection.h>
+	
+	#include <Atlas/Objects/Entity.h>
+	
 
-#include <Atlas/Objects/Entity.h>
-
-
+//#include <OgreMemoryMacros.h>
+	
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
 #else
@@ -44,7 +46,6 @@
 #endif
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
-#include "EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

@@ -19,20 +19,20 @@
 #ifndef DIMEENTITY_H
 #define DIMEENTITY_H
 
-#include <OgreNoMemoryMacros.h>
+#include "EmberOgrePrerequisites.h"
 
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Operation.h>
+//#include <OgreNoMemoryMacros.h>
 
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
+	#include <Atlas/Objects/Entity.h>
+	#include <Atlas/Objects/Operation.h>
+	
+	#include <Eris/Entity.h>
+	#include <Eris/View.h>
+	#include <Eris/PollDefault.h>
+	#include <Eris/Log.h>
+	#include <Eris/TypeInfo.h>
 
-#include <wfmath/axisbox.h>
-#include <wfmath/const.h>
-
+//#include <OgreMemoryMacros.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -44,10 +44,10 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include "EmberOgrePrerequisites.h"
+
 #include <OgreException.h>
 
-#include "MathConverter.h"
+
 
 
 

@@ -25,7 +25,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 */
 
 #include "OgreTerrainVertexProgram.h"
-#include <OgreNoMemoryMacros.h>
 
 namespace Ogre {
 

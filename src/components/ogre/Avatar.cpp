@@ -160,12 +160,14 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 
 
 
-void Avatar::updateFrame(AvatarControllerMovement movement)
+void Avatar::updateFrame(AvatarControllerMovement& movement)
 {
 	
 	//for now we'll just rotate without notifying the server
 	//except when moving!
 	attemptRotate(movement);
+	
+	
 	//this next method will however send send stuff to the server
 	attemptMove(movement);
 	
@@ -180,7 +182,7 @@ void Avatar::updateFrame(AvatarControllerMovement movement)
 	
 }
 
-void Avatar::attemptMove(AvatarControllerMovement movement)
+void Avatar::attemptMove(AvatarControllerMovement& movement)
 {
 	Ogre::Vector3 move = movement.movementDirection;
 	bool isRunning = movement.isRunning;
@@ -277,7 +279,7 @@ void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
 void Avatar::attemptJump() {}
 
 
-void Avatar::attemptRotate(AvatarControllerMovement movement)
+void Avatar::attemptRotate(AvatarControllerMovement& movement)
 {
 	//TODO: remove the direct references to AvatarCamera
 	float degHoriz = movement.rotationDegHoriz;
@@ -292,7 +294,7 @@ void Avatar::attemptRotate(AvatarControllerMovement movement)
 		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
 		getAvatarCamera()->yaw(-getAvatarCamera()->getYaw());
 //		mAccumulatedHorizontalRotation = 0;
-	} else if (isOkayToSendRotationMovementChangeToServer()) {
+	} else if (isOkayToSendRotationMovementChangeToServer() && (getAvatarCamera()->getYaw().valueDegrees())) {
 		// rotate the Avatar Node only in X position (no vertical rotation)
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
 		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());

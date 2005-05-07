@@ -38,17 +38,6 @@
 using namespace Ogre;
 namespace EmberOgre {
 
-/*
-AvatarController* AvatarController::_instance = 0;
-
-AvatarController& AvatarController::getSingleton(void)
-{
-	if(_instance == 0)
-		_instance = new AvatarController;
-	return *_instance;
-}
-
-*/
 
 AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager) 
 : mEntityUnderCursor(NULL) 
@@ -62,6 +51,9 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	//AvatarController* avatarController = this;
 	//EmberOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
 	createAvatarCameras(avatar->getAvatarSceneNode());
+	
+	
+	
 	mAvatar->setAvatarController(this);
 	
 	Ogre::Root::getSingleton().addFrameListener(this);

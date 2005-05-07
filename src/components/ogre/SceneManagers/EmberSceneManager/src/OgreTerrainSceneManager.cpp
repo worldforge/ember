@@ -48,7 +48,6 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreTerrainVertexProgram.h"
 #include "OgreTerrainPage.h"
 #include "OgreLogManager.h"
-#include <OgreNoMemoryMacros.h>
 
 #define TERRAIN_MATERIAL_NAME "TerrainSceneManager/Terrain"
 
@@ -470,10 +469,10 @@ namespace Ogre
     void TerrainSceneManager::_renderScene(Camera* cam, Viewport *vp, bool includeOverlays)
     {
         // For now, no paging and expect immediate response
-        if (mTerrainPages[0][0] == 0)
+/*        if (mTerrainPages[0][0] == 0)
         {
             mActivePageSource->requestPage(0, 0);
-        }
+        }*/
         SceneManager::_renderScene(cam, vp, includeOverlays);
 
     }
@@ -493,7 +492,7 @@ namespace Ogre
     void TerrainSceneManager::_renderVisibleObjects( void )
     {
 
-        mDestRenderSystem -> setLightingEnabled( false );
+        //mDestRenderSystem -> setLightingEnabled( false );
 
         OctreeSceneManager::_renderVisibleObjects();
 
