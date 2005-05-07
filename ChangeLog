@@ -1,5 +1,11 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/FoliageArea.*, src/components/ogre/Foliage.*, src/components/ogre/TerrainPage.cpp:
+		* use names for foliage entities instead of index
+		* wave the grass
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/programs/Grass.cg, media/materials/scripts/vegetation.material
 		* added parameter for waving the grass
 		* use the simplegrass mesh for regular grass since it contains less vertices

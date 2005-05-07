@@ -33,8 +33,13 @@
 
 namespace EmberOgre {
 
+	Ogre::Real FoliageArea::mXinc = Ogre::Math::PI * 0.004;
+	Ogre::Real FoliageArea::mZinc = Ogre::Math::PI * 0.0055;
+
 FoliageArea::FoliageArea()
 {
+	Ogre::Real mXpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
+	Ogre::Real mZpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
 }
 
 
@@ -48,6 +53,51 @@ void FoliageArea::setVisible(bool visible)
 	//mGround->getSceneNode()->setVisible(mVisible);
 }
 
+	void FoliageArea::waveGrass(Ogre::Real timeElapsed)
+	{
+
+		mXpos += mXinc * timeElapsed;
+		mZpos += mZinc * timeElapsed;
+
+		// Update vertex program parameters by binding a value to each renderable
+		static Ogre::Vector4 offset(0,0,0,0);
+
+		Ogre::StaticGeometry::RegionIterator rit =  mStaticGeom->getRegionIterator();
+		while (rit.hasMoreElements())
+		{
+			Ogre::StaticGeometry::Region* reg = rit.getNext();
+
+			// a little randomness
+			mXpos += reg->getCentre().x * 0.000001;
+			mZpos += reg->getCentre().z * 0.000001;
+			offset.x = Ogre::Math::Sin(mXpos);
+			offset.z = Ogre::Math::Sin(mZpos);
+
+			Ogre::StaticGeometry::Region::LODIterator lodit = reg->getLODIterator();
+			while (lodit.hasMoreElements())
+			{
+				Ogre::StaticGeometry::LODBucket* lod = lodit.getNext();
+				Ogre::StaticGeometry::LODBucket::MaterialIterator matit = 
+					lod->getMaterialIterator();
+				while (matit.hasMoreElements())
+				{
+					Ogre::StaticGeometry::MaterialBucket* mat = matit.getNext();
+					Ogre::StaticGeometry::MaterialBucket::GeometryIterator geomit = 
+						mat->getGeometryIterator();
+					while (geomit.hasMoreElements())
+					{
+						Ogre::StaticGeometry::GeometryBucket* geom = geomit.getNext();
+						geom->setCustomParameter(OFFSET_PARAM, offset);
+
+					}
+				}
+			}
+		}
+
+	}
+
+	
+	
 
 void FoliageArea::init(Foliage* foliage, Ogre::SceneManager* sceneManager, const std::string& name)
 {
@@ -62,10 +112,11 @@ void FoliageArea::init(Foliage* foliage, Ogre::SceneManager* sceneManager, const
 
 	mStaticGeom->setRenderQueueGroup(Ogre::RENDER_QUEUE_7);
 
+	
 }
 
 
-void FoliageArea::placeGrass(int type, const TerrainPosition& position)
+void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& position)
 {
 	const Ogre::Vector3 scale(
 		1, Ogre::Math::RangeRandom(0.85, 1.15), 1);
@@ -73,19 +124,21 @@ void FoliageArea::placeGrass(int type, const TerrainPosition& position)
 }
 
 
-void FoliageArea::placeGrass(int type, const TerrainPosition& position, const Ogre::Vector3& scale)
+void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale)
 {
 	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 	Ogre::Entity* currentEnt;
 	currentEnt = mFoliage->getEntity(type);
-	Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
-	ogrePosition.y = terrain->getHeight(position);
-	
-	Ogre::Quaternion orientation;
-	orientation.FromAngleAxis(
-		Ogre::Degree(Ogre::Math::RangeRandom(0, 359)),
-		Ogre::Vector3::UNIT_Y);
-	mStaticGeom->addEntity(currentEnt, ogrePosition, orientation, scale);
+	if (currentEnt) {
+		Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
+		ogrePosition.y = terrain->getHeight(position);
+		
+		Ogre::Quaternion orientation;
+		orientation.FromAngleAxis(
+			Ogre::Degree(Ogre::Math::RangeRandom(0, 359)),
+			Ogre::Vector3::UNIT_Y);
+		mStaticGeom->addEntity(currentEnt, ogrePosition, orientation, scale);
+	}
 
 
 }
@@ -93,13 +146,16 @@ void FoliageArea::placeGrass(int type, const TerrainPosition& position, const Og
 void FoliageArea::build()
 {
 	assert(mStaticGeom);
-	mStaticGeom->build();
+	try {
+		mStaticGeom->build();
+	} catch (Ogre::Exception& e) {}
+	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
 //This is all very quick and messy, to be replaced by something better in the future
 void FoliageArea::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent)
 {
-	mExtentMin = minExtent;
+/*	mExtentMin = minExtent;
 	mExtentMax = maxExtent;
 
 	Ogre::Vector3 startPosition = Atlas2Ogre(minExtent);
@@ -157,7 +213,7 @@ void FoliageArea::generateUnderVegetation(TerrainPosition minExtent, TerrainPosi
 			//std::cout << "Added entity at: " << pos;
 			
 		}
-	}
+	}*/
 	
 // 	spaceBetween = bushSpacing;
 // 	for (double i = startPosition.x; i < endPosition.x; i = i + spaceBetween) {
@@ -205,9 +261,11 @@ void FoliageArea::generateUnderVegetation(TerrainPosition minExtent, TerrainPosi
 
 bool FoliageArea::frameStarted(const Ogre::FrameEvent & evt)
 {	
-	if (mVisible) {
-		//waveGrass(evt.timeSinceLastFrame);
-	}
+	waveGrass(evt.timeSinceLastFrame);
+
+	return true;
+/*	if (mVisible) {
+	}*/
 	return true;
 
 
@@ -218,52 +276,52 @@ bool FoliageArea::frameStarted(const Ogre::FrameEvent & evt)
 
 
 
-void FoliageArea::waveGrass(Ogre::Real timeElapsed)
-{
-	static Ogre::Real xinc = Ogre::Math::PI * 0.4;
-	static Ogre::Real zinc = Ogre::Math::PI * 0.55;
-	static Ogre::Real xpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
-	static Ogre::Real zpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
-
-	xpos += xinc * timeElapsed;
-	zpos += zinc * timeElapsed;
-
-	// Update vertex program parameters by binding a value to each renderable
-	static Ogre::Vector4 offset(0,0,0,0);
-
-	Ogre::StaticGeometry::RegionIterator rit =  mStaticGeom->getRegionIterator();
-	while (rit.hasMoreElements())
-	{
-		Ogre::StaticGeometry::Region* reg = rit.getNext();
-
-		// a little randomness
-		xpos += reg->getCentre().x * 0.001;
-		zpos += reg->getCentre().z * 0.001;
-		offset.x = Ogre::Math::Sin(xpos) * 0.05;
-		offset.z = Ogre::Math::Sin(zpos) * 0.05;
-
-		Ogre::StaticGeometry::Region::LODIterator lodit = reg->getLODIterator();
-		while (lodit.hasMoreElements())
-		{
-			Ogre::StaticGeometry::LODBucket* lod = lodit.getNext();
-			Ogre::StaticGeometry::LODBucket::MaterialIterator matit = 
-				lod->getMaterialIterator();
-			while (matit.hasMoreElements())
-			{
-				Ogre::StaticGeometry::MaterialBucket* mat = matit.getNext();
-				Ogre::StaticGeometry::MaterialBucket::GeometryIterator geomit = 
-					mat->getGeometryIterator();
-				while (geomit.hasMoreElements())
-				{
-					Ogre::StaticGeometry::GeometryBucket* geom = geomit.getNext();
-					geom->setCustomParameter(OFFSET_PARAM, offset);
-
-				}
-			}
-		}
-	}
-
-}
+// void FoliageArea::waveGrass(Ogre::Real timeElapsed)
+// {
+// 	static Ogre::Real xinc = Ogre::Math::PI * 0.4;
+// 	static Ogre::Real zinc = Ogre::Math::PI * 0.55;
+// 	static Ogre::Real xpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
+// 	static Ogre::Real zpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
+// 
+// 	xpos += xinc * timeElapsed;
+// 	zpos += zinc * timeElapsed;
+// 
+// 	// Update vertex program parameters by binding a value to each renderable
+// 	static Ogre::Vector4 offset(0,0,0,0);
+// 
+// 	Ogre::StaticGeometry::RegionIterator rit =  mStaticGeom->getRegionIterator();
+// 	while (rit.hasMoreElements())
+// 	{
+// 		Ogre::StaticGeometry::Region* reg = rit.getNext();
+// 
+// 		// a little randomness
+// 		xpos += reg->getCentre().x * 0.001;
+// 		zpos += reg->getCentre().z * 0.001;
+// 		offset.x = Ogre::Math::Sin(xpos) * 0.05;
+// 		offset.z = Ogre::Math::Sin(zpos) * 0.05;
+// 
+// 		Ogre::StaticGeometry::Region::LODIterator lodit = reg->getLODIterator();
+// 		while (lodit.hasMoreElements())
+// 		{
+// 			Ogre::StaticGeometry::LODBucket* lod = lodit.getNext();
+// 			Ogre::StaticGeometry::LODBucket::MaterialIterator matit = 
+// 				lod->getMaterialIterator();
+// 			while (matit.hasMoreElements())
+// 			{
+// 				Ogre::StaticGeometry::MaterialBucket* mat = matit.getNext();
+// 				Ogre::StaticGeometry::MaterialBucket::GeometryIterator geomit = 
+// 					mat->getGeometryIterator();
+// 				while (geomit.hasMoreElements())
+// 				{
+// 					Ogre::StaticGeometry::GeometryBucket* geom = geomit.getNext();
+// 					geom->setCustomParameter(OFFSET_PARAM, offset);
+// 
+// 				}
+// 			}
+// 		}
+// 	}
+// 
+// }
 
 
 }

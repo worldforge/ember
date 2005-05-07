@@ -49,18 +49,27 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 	createGrassMesh();
 
 	Ogre::Entity* e = mSceneMgr->createEntity("1", GRASS_MESH_NAME);
-	mEntities.push_back(e);
+	mEntities["grass"] = e;
 
-	Ogre::Entity* e0 = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
-	Ogre::Entity* e1 = mSceneMgr->createEntity("environment/field/teardrops", "environment/field/small_plant/teardrops/normal.mesh");
-	Ogre::Entity* e2 = mSceneMgr->createEntity("environment/field/thingrass", "environment/field/small_plant/thingrass/normal.mesh");
-//	Ogre::Entity* e3 = mSceneMgr->createEntity("environment/field/bittergrass", "3d_objects/environment/field/models/small_plant/wide_grass.mesh");
-	Ogre::Entity* e3 = mSceneMgr->createEntity("environment/field/bittergrass", "environment/field/small_plant/bittergrass/normal.mesh");
-
-	mEntities.push_back(e0);
-	mEntities.push_back(e1);
-	mEntities.push_back(e2);
-	mEntities.push_back(e3);
+	Ogre::Entity* entity;
+	 
+	try {
+		entity = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
+		mEntities["heartblood"] = entity;
+	} catch (Ogre::Exception& e) {}
+	try {
+		entity = mSceneMgr->createEntity("environment/field/teardrops", "environment/field/small_plant/teardrops/normal.mesh");
+		mEntities["teardrops"] = entity;
+	} catch (Ogre::Exception& e) {}
+	try {
+		entity = mSceneMgr->createEntity("environment/field/thingrass", "environment/field/small_plant/thingrass/normal.mesh");
+		mEntities["thingrass"] = entity;
+	} catch (Ogre::Exception& e) {}
+	try {
+		entity = mSceneMgr->createEntity("environment/field/bittergrass", "3d_objects/environment/field/models/small_plant/simplegrass.mesh");
+		mEntities["bittergrass"] = entity;
+	} catch (Ogre::Exception& e) {}
+	
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 	//mSubmeshSize = (int)configSrv->getValue("foliage", "submeshsize");
@@ -76,9 +85,13 @@ Foliage::~Foliage()
 {
 }
 
-Ogre::Entity* Foliage::getEntity(int index)
+Ogre::Entity* Foliage::getEntity(const std::string& name)
 {
-	return mEntities[index];
+	std::map<const std::string, Ogre::Entity*>::iterator I = mEntities.find(name);
+	if (I != mEntities.end()) {
+		return I->second;
+	}
+	return 0;
 }
 
 FoliageArea* Foliage::createArea()

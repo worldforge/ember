@@ -439,9 +439,9 @@ void EmberOgre::TerrainPage::createFoliage(Mercator::Shader* grassShader)
 								if (Ogre::Math::UnitRandom() > 0.95) {
 									const Ogre::Vector3 scale(1, Ogre::Math::RangeRandom(0.5, 0.8), 1);
 
-									mFoliageArea->placeGrass(1, position, scale);
+									mFoliageArea->placeGrass("heartblood", position, scale);
 								} else {
-									mFoliageArea->placeGrass(4, position);
+									mFoliageArea->placeGrass("bittergrass", position);
 								}
 							}
 						}

@@ -46,20 +46,25 @@ public:
 	void setVisible(bool visible);
 
 	
-	void placeGrass(int type, const TerrainPosition& position);
-	void placeGrass(int type, const TerrainPosition& position, const Ogre::Vector3& scale);
+	void placeGrass(const std::string& type, const TerrainPosition& position);
+	void placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale);
 	void build();
 	
 	
 
 protected:
+	static Ogre::Real mXinc;
+	static Ogre::Real mZinc;
+	Ogre::Real mXpos;
+	Ogre::Real mZpos;
+	
 	Ogre::SceneManager* mSceneMgr;
 
+	void waveGrass(Ogre::Real timeElapsed);
 	Foliage* mFoliage;
 
 	bool mVisible;
 
-	void waveGrass(Ogre::Real timeElapsed);
 
 	TerrainPosition mExtentMin, mExtentMax;
 

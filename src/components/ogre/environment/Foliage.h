@@ -44,12 +44,12 @@ public:
 	
 	FoliageArea* createArea();	
 
-	Ogre::Entity* getEntity(int index);
+	Ogre::Entity* getEntity(const std::string& name);
 	
 	inline double getGrassSpacing() const {return mGrassSpacing;}
 
 protected:
-	std::vector<Ogre::Entity* > mEntities;
+	std::map<const std::string, Ogre::Entity* > mEntities;
 
 	//GroundCover* mGround;
 	std::list<FoliageArea*> mFoliageAreas;
