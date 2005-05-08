@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.83  2005-05-07 22:24:07  erik
+ *      Revision 1.84  2005-05-08 20:01:17  erik
+ *      2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp:
+ *      		* make it work with Eris 1.3.5
+ *
+ *      Revision 1.83  2005/05/07 22:24:07  erik
  *      2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberOgrePrerequisites.h, src/components/ogre/MathConverter.h, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/SubModel.cpp, src/components/ogre/jesus/Jesus.cpp, src/components/ogre/environment/Tree.cpp, src/components/ogre/environment/Water.cpp, src/components/ogre/environment/meshtree/MeshTree.cpp, src/components/ogre/environment/meshtree/TParameters.cpp, src/components/ogre/environment/meshtree/TStem.cpp, src/components/ogre/EmberSceneManager/src/*.cpp, src/components/ogre/EmberSceneManager/include/OgreTerrainRenderable.h:
@@ -795,8 +801,8 @@ EmberOgre::~EmberOgre()
 		delete mTerrainGenerator;
 	if (mMotionManager)
 		delete mMotionManager;
-	if (mAvatar)
-		delete mAvatar;
+/*	if (mAvatar)
+		delete mAvatar;*/
 	if (mAvatarController)
 		delete mAvatarController;
 	if (mModelDefinitionManager)
@@ -1297,7 +1303,7 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
 void EmberOgre::connectViewSignals(Eris::View* world)
 {
-    Eris::Factory::registerFactory(mEmberEntityFactory);
+    world->registerFactory(mEmberEntityFactory);
 }
 
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
