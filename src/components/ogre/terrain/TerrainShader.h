@@ -21,6 +21,9 @@
 
 #include "EmberOgrePrerequisites.h"
 #include <Mercator/Shader.h>
+#include <Mercator/Terrain.h>
+#include <Mercator/Segment.h>
+
 
 
 namespace EmberOgre {
@@ -28,7 +31,7 @@ namespace EmberOgre {
 class TerrainShader{
 public:
 
-	TerrainShader(const Ogre::String textureName, Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const Ogre::String textureName, Mercator::Shader* shader);
 	virtual ~TerrainShader();
 	
 	Mercator::Shader* getShader() const;
@@ -48,9 +51,21 @@ public:
 	 */
 	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName);
 	
+	inline int getTerrainIndex() const { return mTerrainIndex;}
+	
+	
+	/**
+	 *    returns the Surface for the given segment
+	 * @param segment 
+	 * @return a surface, or null if no could be found
+	 */
+	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
+	
 protected:
 	const Ogre::String mTextureName;
 	Mercator::Shader* mShader;
+	Mercator::Terrain* mTerrain;
+	int mTerrainIndex;
 };
 
 }

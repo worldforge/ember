@@ -1,10 +1,16 @@
 #include "TerrainShader.h"
 namespace EmberOgre {
 
-TerrainShader::TerrainShader(const Ogre::String textureName, Mercator::Shader* shader)
+TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  const Ogre::String textureName, Mercator::Shader* shader)
 : mTextureName(textureName)
 , mShader(shader)
-{}
+, mTerrain(terrain)
+, mTerrainIndex(terrainIndex)
+{
+
+	mTerrain->addShader(shader, mTerrainIndex);
+
+}
 TerrainShader::~TerrainShader()
 {}
 
@@ -59,6 +65,16 @@ Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::
     return pass; 
 //	textureUnitState->setColourOperationEx(LBX_BLEND_CURRENT_ALPHA, LBS_TEXTURE, LBS_CURRENT);
 	
+}
+
+Mercator::Surface* TerrainShader::getSurfaceForSegment(Mercator::Segment* segment) const
+{
+
+	Mercator::Surface* surface = 0;
+	if (segment->getSurfaces().find(getTerrainIndex()) != segment->getSurfaces().end()) {
+		surface = segment->getSurfaces().find(getTerrainIndex())->second;
+	}
+	return surface;
 }
 
 

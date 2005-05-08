@@ -53,11 +53,13 @@ TerrainGenerator::TerrainGenerator()
   
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader()));
 	
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f))); // Sandy beach
-	mGrassShader =  new Mercator::GrassShader(1.f, 80.f, .5f, 1.f);
-    this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "grass")),mGrassShader)); // Grass
+	
+    createShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader());
+	
+    createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
+
+	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
 //     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
 //     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
 
@@ -135,10 +137,14 @@ void TerrainGenerator::loadTerrainOptions()
 	mOptions.scale.y = 100;
 }
 
-void TerrainGenerator::addShader(TerrainShader* shader)
+TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Mercator::Shader* mercatorShader)
 {
-	mTerrain->addShader(shader->getShader());
+	int index = mShaderMap.size();
+    TerrainShader* shader = new TerrainShader(mTerrain, index, textureName, mercatorShader);
+
+	mBaseShaders.push_back(shader);
 	mShaderMap[shader->getShader()] = shader;
+	return shader;
 }
 
 
@@ -220,6 +226,9 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 		for (j = 0; j < yNumberOfPages; ++j) {
 			TerrainPosition pos(xStart + i, yStart + j);
 			TerrainPage page(pos, mShaderMap, this);
+			for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
+				page.addShader(*I);
+			}
 			page.generateTerrainMaterials();
 			if (showFoliage) {
 				page.createFoliage(mGrassShader);

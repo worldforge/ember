@@ -120,7 +120,7 @@ public:
 protected:
 
 
-	Mercator::Shader* mGrassShader;
+	TerrainShader* mGrassShader;
 	typedef std::map<std::string, Ogre::Material*> MaterialStore;
 	MaterialStore materialStore;
 	Mercator::Terrain* mTerrain;
@@ -153,11 +153,17 @@ protected:
 	std::map<const Mercator::Shader*, TerrainShader*> mShaderMap;
 	
 	/**
-	 * Adds a TerrainShader to the map of shaders.
-	 * Note that this also registers the enclosed Mercator::Shader with the 
-	 * Mercator::Terrain.
+	a list of the shaders, which will all be used on all Pages
+	*/
+	std::list<TerrainShader*> mBaseShaders;
+	 
+	/**
+	 * Create and registers a new texture shader.
+	 * @param textureName 
+	 * @param mercatorShader 
+	 * @return 
 	 */
-	void addShader(TerrainShader* shader);
+	TerrainShader* createShader(const std::string& textureName, Mercator::Shader* mercatorShader);
 	
 	EmberTerrainPageSource* mTerrainPageSource;
 };

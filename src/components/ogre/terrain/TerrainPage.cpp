@@ -392,7 +392,7 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 }
 
 
-void EmberOgre::TerrainPage::createFoliage(Mercator::Shader* grassShader)
+void EmberOgre::TerrainPage::createFoliage(TerrainShader* grassShader)
 {
 	if (!mFoliageArea) {
 		mFoliageArea = Foliage::getSingleton().createArea();
@@ -408,16 +408,7 @@ void EmberOgre::TerrainPage::createFoliage(Mercator::Shader* grassShader)
 		for (int segment_x = 0; segment_x < getNumberOfSegmentsPerAxis(); ++segment_x) {
 			Mercator::Segment* segment = getSegment(segment_x,segment_y);
 			if (segment && segment->isValid()) {
-				Mercator::Surface* surface = 0;
-				Mercator::Segment::Surfacestore::iterator I = segment->getSurfaces().begin();
-				for (; I != segment->getSurfaces().end(); ++I) {
-					Mercator::Surface* aSurface = *I;
-					
-					if (grassShader == &aSurface->m_shader) {
-						surface = *I;
-						break;
-					}
-				}
+				Mercator::Surface* surface = grassShader->getSurfaceForSegment(segment);
 				if (!surface) {
 					//we could not find any grass surface
 					return;
@@ -455,6 +446,11 @@ void EmberOgre::TerrainPage::createFoliage(Mercator::Shader* grassShader)
 	
 }
 
+void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
+{
+	mUsedShaders.push_back(shader);
+}
+
 
 void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* technique)
 { 
@@ -469,19 +465,20 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	Ogre::TextureUnitState * alphaTextureUnitState = pass->createTextureUnitState();
 	
 	
-		
+	//use this iterator to iterate over all shaders we will use. The first shader will be used as a base (i.e. with no alpha map), so make sure that it's something like rock or dirt (upon which one would want to put some grass etc.)
+	std::list<TerrainShader*>::iterator shadersIterator = mUsedShaders.begin();
 
 	//we'll start by getting a the first surface of the first segment, since we're only interested in the name of the texture used for the backdrop (we won't be needing any alpha texture)    
 	Mercator::Segment* aValidSegment = 0;
-	typedef std::list<Mercator::Surface*>::iterator vectorOfSurfaceListIterator;
-	std::map<Mercator::Segment*, vectorOfSurfaceListIterator> segmentSurfaceListIteratorMapping;
+/*	typedef std::list<Mercator::Surface*>::iterator vectorOfSurfaceListIterator;
+	std::map<Mercator::Segment*, vectorOfSurfaceListIterator> segmentSurfaceListIteratorMapping;*/
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 			Mercator::Segment* segment = getSegment(x,y);
 			if (segment && segment->isValid()) {
 				aValidSegment = segment;
-				std::list<Mercator::Surface*>::iterator tempI = segment->getSurfaces().begin();
-				segmentSurfaceListIteratorMapping[segment] = tempI;
+/*				std::list<Mercator::Surface*>::iterator tempI = segment->getSurfaces().begin();
+				segmentSurfaceListIteratorMapping[segment] = tempI;*/
 			} else {
 	/*			segmentSurfaceListIteratorMapping[*I] = surfaceListIterators;
 				std::list<Mercator::Surface*>::iterator tempI;
@@ -494,7 +491,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		return;
 	}
 	
-	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
+	Mercator::Surface* surface = (*shadersIterator)->getSurfaceForSegment(aValidSegment);
  
 //	pass->setShininess(20);
 //	pass->setSpecular(1,1,1,1);
@@ -502,9 +499,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 //granite layer
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 	{
-		const Mercator::Shader* mercShader = &(surface->m_shader);
-		TerrainShader* shader = mShaderMap[mercShader];
-	    textureUnitState->setTextureName(shader->getTextureName());
+	    textureUnitState->setTextureName((*shadersIterator)->getTextureName());
 //	    textureUnitState->setTextureName("splat3d.dds");
 	    textureUnitState->setTextureCoordSet(1);
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
@@ -546,10 +541,14 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		  
 	//now loop over all the remaining surfaces, and for each surface create a common alpha image from the different segments
 	
-	int numberOfSegmentsToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
-	for (int i = 0; i < numberOfSegmentsToDo; ++i) {
+/*	int numberOfSegmentsToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
+	for (int i = 0; i < numberOfSegmentsToDo; ++i) {*/
+	
+	int numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
+	++shadersIterator;
+	for (; shadersIterator != mUsedShaders.end() ; ++shadersIterator) {
 
-		TerrainShader* shader;
+//		TerrainShader* shader;
 		
 		//check if at least one surface instersects, else continue
 		bool intersects = false;
@@ -558,12 +557,12 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 			for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 				Mercator::Segment* segment = getSegment(x,y);
 				if (segment && segment->isValid()) {
-					std::list<Mercator::Surface*>::iterator* surfaceListI = &(segmentSurfaceListIteratorMapping[segment]);
-					surface = *(++(*surfaceListI));
+/*					std::list<Mercator::Surface*>::iterator* surfaceListI = &(segmentSurfaceListIteratorMapping[segment]);*/
+					surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				
-					const Mercator::Shader* mercShader = &(surface->m_shader);
-					shader = mShaderMap[mercShader];
-					if (surface->m_shader.checkIntersect(*surface)) {
+/*					const Mercator::Shader* mercShader = &(surface->m_shader);
+					shader = mShaderMap[mercShader];*/
+					if ((*shadersIterator)->getShader()->checkIntersect(*segment)) {
 						intersects = true;
 					}
 				}
@@ -579,15 +578,16 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 			for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 				
 				Mercator::Segment* segment = getSegment(x,y);
-				if (segment && segment->isValid() && i < 4) {
+				if (segment && segment->isValid() && pass->getNumTextureUnitStates()  < 4) {
 					
-					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[segment];
-					surface = *surfaceListI;
-					if (surface->isValid()) {
+					surface = (*shadersIterator)->getSurfaceForSegment(segment);
+/*					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[segment];
+					surface = *surfaceListI;*/
+					if (surface && surface->isValid()) {
 /*						std::stringstream splatTextureNameSS_;
 						splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;*/
 						
-						fillAlphaLayer(finalChunk->getPtr(), surface->getData(), i, x * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
+						fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, x * 64, (getNumberOfSegmentsPerAxis() - y - 1) * 64);
 						
 						
 	
@@ -599,9 +599,10 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 				}
 			}
 		}
-		if (i < 3) {
+		//TODO: make it not hard coded to 4
+		if (pass->getNumTextureUnitStates()  < 4) {
 			Ogre::TextureUnitState * splatTextureUnitState = pass->createTextureUnitState();
-			splatTextureUnitState->setTextureName(shader->getTextureName());
+			splatTextureUnitState->setTextureName((*shadersIterator)->getTextureName());
 			splatTextureUnitState->setTextureCoordSet(1);
     		splatTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		}
@@ -673,20 +674,21 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 	//the format for our alpha texture
 	Ogre::PixelFormat pixelFormat = Ogre::PF_B8G8R8A8;
 
+	std::list<TerrainShader*>::iterator shadersIterator = mUsedShaders.begin();
 			
 	
 	
 	//we'll start by getting a the first surface of the first segment, since we're only interested in the name of the texture used for the backdrop (we won't be needing any alpha texture)    
 	Mercator::Segment* aValidSegment = 0;
-	typedef std::list<Mercator::Surface*>::iterator vectorOfSurfaceListIterator;
-	std::map<Mercator::Segment*, vectorOfSurfaceListIterator> segmentSurfaceListIteratorMapping;
+/*	typedef std::list<Mercator::Surface*>::iterator vectorOfSurfaceListIterator;
+	std::map<Mercator::Segment*, vectorOfSurfaceListIterator> segmentSurfaceListIteratorMapping;*/
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 			Mercator::Segment* segment = getSegment(x,y);
 			if (segment && segment->isValid()) {
 				aValidSegment = segment;
-				std::list<Mercator::Surface*>::iterator tempI = segment->getSurfaces().begin();
-				segmentSurfaceListIteratorMapping[segment] = tempI;
+/*				std::list<Mercator::Surface*>::iterator tempI = segment->getSurfaces().begin();
+				segmentSurfaceListIteratorMapping[segment] = tempI;*/
 			} else {
 	/*			segmentSurfaceListIteratorMapping[*I] = surfaceListIterators;
 				std::list<Mercator::Surface*>::iterator tempI;
@@ -699,7 +701,8 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 		return;
 	}
 	
-	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
+	Mercator::Surface* surface = (*shadersIterator)->getSurfaceForSegment(aValidSegment);
+// 	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
 	
 	
 	
@@ -717,9 +720,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 //granite layer
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 	{
-		const Mercator::Shader* mercShader = &(surface->m_shader);
-		TerrainShader* shader = mShaderMap[mercShader];
-	    textureUnitState->setTextureName(shader->getTextureName());
+/*		const Mercator::Shader* mercShader = &(surface->m_shader);
+		TerrainShader* shader = mShaderMap[mercShader];*/
+	    textureUnitState->setTextureName((*shadersIterator)->getTextureName());
 	}
     textureUnitState->setTextureCoordSet(1);
 	
@@ -729,10 +732,12 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 	
 	//now loop over all the remaining surfaces, and for each surface create a common alpha image from the different segments
 	
-	int numberOfSurfacesToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
-	for (int i = 0; i < numberOfSurfacesToDo; ++i) {
+// 	int numberOfSurfacesToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
+// 	for (int i = 0; i < numberOfSurfacesToDo; ++i) {
+	++shadersIterator;
+	for (; shadersIterator != mUsedShaders.end() ; ++shadersIterator) {
 
-		TerrainShader* shader;
+// 		TerrainShader* shader;
 		Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel, false);
 		
 		//check if at least one surface instersects, else continue
@@ -742,12 +747,13 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 			for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 				Mercator::Segment* segment = getSegment(x,y);
 				if (segment && segment->isValid()) {
-					std::list<Mercator::Surface*>::iterator* surfaceListI = &(segmentSurfaceListIteratorMapping[segment]);
-					surface = *(++(*surfaceListI));
+/*					std::list<Mercator::Surface*>::iterator* surfaceListI = &(segmentSurfaceListIteratorMapping[segment]);
+					surface = *(++(*surfaceListI));*/
+					surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				
-					const Mercator::Shader* mercShader = &(surface->m_shader);
-					shader = mShaderMap[mercShader];
-					if (surface->m_shader.checkIntersect(*surface)) {
+/*					const Mercator::Shader* mercShader = &(surface->m_shader);
+					shader = mShaderMap[mercShader];*/
+					if ((*shadersIterator)->getShader()->checkIntersect(*segment)) {
 						intersects = true;
 					}
 				}
@@ -760,7 +766,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 		
         //we need an unique name for our alpha texture
 		std::stringstream splatTextureNameSS;
-		splatTextureNameSS << mMaterialName << "_" << i;
+		splatTextureNameSS << mMaterialName << "_" << (*shadersIterator)->getTerrainIndex();
 		const Ogre::String splatTextureName(splatTextureNameSS.str());
 		
 				
@@ -770,11 +776,12 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 			for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 				
 				Mercator::Segment* segment = getSegment(x,y);
-				if (segment && segment->isValid() && i < 4) {
+				if (segment && segment->isValid()) {
 					
-					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[segment];
-					surface = *surfaceListI;
-					if (surface->isValid()) {
+/*					std::list<Mercator::Surface*>::iterator surfaceListI = segmentSurfaceListIteratorMapping[segment];
+					surface = *surfaceListI;*/
+					surface = (*shadersIterator)->getSurfaceForSegment(segment);
+					if (surface && surface->isValid()) {
 						std::stringstream splatTextureNameSS_;
 						splatTextureNameSS_ << splatTextureName << "_" << x << "_" << y;
 						
@@ -789,7 +796,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 		Ogre::DataStreamPtr dataStreamPtr(splatChunk);
 		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), pixelFormat);
 		{
-			pass = shader->addPassToTechnique(technique, splatTextureName);
+			pass = (*shadersIterator)->addPassToTechnique(technique, splatTextureName);
 			pass->setLightingEnabled(false);
 			pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
 /*

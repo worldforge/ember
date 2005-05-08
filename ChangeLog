@@ -1,5 +1,11 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainGenerator.*, src/components/ogre/TerrainPage.*, src/components/ogre/TerrainShader.*:
+		* make it work with Mercator 0.2.2
+		* began work with integrating Mercator Areas. It should be possible to add a new TerrainShader to a TerrainPage in the future. We'll start by just adding a new Pass, and later on we'll integrate it with the pixel shader.
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/server/ServerService.cpp:
 		* make it work with Atlas 0.5.95
 

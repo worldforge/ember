@@ -121,10 +121,21 @@ public:
 	/**
 	 *    creates the foliage for this page
 	 */
-	void createFoliage(Mercator::Shader* grassShader);
+	void createFoliage(TerrainShader* grassShader);
+	
+	/**
+	 *    this adds a shader to the page, meaning that it will be used in rendering 
+	 * @param shader 
+	 */
+	void addShader(TerrainShader* shader);
 	
 private:
 
+
+	/**
+	a list of the shaders to be used on the page
+	*/
+	std::list<TerrainShader*> mUsedShaders;
 	
 	FoliageArea* mFoliageArea;
 
