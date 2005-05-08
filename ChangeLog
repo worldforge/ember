@@ -1,5 +1,10 @@
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/server/ServerService.cpp:
+		* make it work with Atlas 0.5.95
+
+2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.cpp:
 		* make it work with Eris 1.3.5
 

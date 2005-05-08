@@ -70,7 +70,6 @@ namespace Ember
 
 
 	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
-/*	ConsoleBackend::getMainConsole()->registerCommand(RECONNECT,this);*/
 	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this);
 	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this);
 	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this);
@@ -83,8 +82,8 @@ namespace Ember
 
 	
 	//register extension operations of atlas
-	WieldData::WIELD_NO = Atlas::Objects::objectFactory.addFactory("wield", (Atlas::Objects::FactoryMethod)&Wield::factory);
-	UseData::USE_NO = Atlas::Objects::objectFactory.addFactory("use", (Atlas::Objects::FactoryMethod)&Use::factory);
+	WieldData::WIELD_NO = Atlas::Objects::Factories::instance()->addFactory("wield", (Atlas::Objects::FactoryMethod)&Wield::factory);
+	UseData::USE_NO = Atlas::Objects::Factories::instance()->addFactory("use", (Atlas::Objects::FactoryMethod)&Use::factory);
 
   }
 
