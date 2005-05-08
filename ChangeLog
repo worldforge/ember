@@ -1,3 +1,8 @@
+2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*, src/components/ogre/EmberPhysicalEntity.*, src/components/ogre/WorldEmberEntity.*
+		* changed the way entities decide their height. The nodehierarcy is now walked until an entity which knows how to decide the height (for example the terrain) is found. This means no more flying pigs.
+
 2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/TerrainGenerator.*, src/components/ogre/TerrainPage.*, src/components/ogre/TerrainShader.*:

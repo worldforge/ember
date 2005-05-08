@@ -35,7 +35,8 @@ public:
 	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
 	virtual ~WorldEmberEntity();
 
-	virtual void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity);
+	virtual void adjustHeightPositionForContainedNode(EmberEntity* const entity);
+	virtual float getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity);
 
 protected:
 	TerrainGenerator* mTerrainGenerator;

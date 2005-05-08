@@ -237,14 +237,6 @@ void EmberPhysicalEntity::setContainer(Entity *pr)
 
 
 
-void EmberPhysicalEntity::adjustHeightPosition()
-{
-	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
-	if (container) {
-		container->adjustHeightPositionForContainedNode(this);
-	}
-	
-}
 
 
 }

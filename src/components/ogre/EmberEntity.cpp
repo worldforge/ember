@@ -61,9 +61,14 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	
 	
 	// set the Ogre node position and orientation based on Atlas data
-	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
-	Ogre::Quaternion orientation = Atlas2Ogre(getOrientation());
-	getSceneNode()->setOrientation(orientation);
+	if (getPosition().isValid()) {
+		getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
+		adjustHeightPosition();
+	}
+	if (getOrientation().isValid()) {
+		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+	}
+	//adjustHeightPosition();
 	S_LOG_INFO( "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")")
 }
 
@@ -221,12 +226,40 @@ void EmberEntity::setVisible(bool visible)
 }
 
 
+void EmberEntity::adjustHeightPosition()
+{
+	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
+	if (container) {
+		container->adjustHeightPositionForContainedNode(this);
+	}
+	
+}
+
+float EmberEntity::getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity)
+{
+	float height = 0;
+	//send it upwards until we get a an entity which knows how to set the height
+	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
+	if (container) {
+		TerrainPosition derivedPosition(getPosition().x() + position.x(), getPosition().y() + position.y());
+		height = container->getHeightPositionForContainedNode(derivedPosition, entity);
+	}
+	
+	//adjust the height after our own height
+	height -= getPosition().z();
+	return height;
+	
+}
+
+
+
 void EmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity) 
 {
-	//for generic entities we set the height to 0
+
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	Ogre::Vector3 position = sceneNode->getPosition();
-	sceneNode->setPosition(position.x, 0,position.z);
+	sceneNode->setPosition(position.x, getHeightPositionForContainedNode(TerrainPosition(entity->getPosition().x(), entity->getPosition().y()), entity), position.z);
+	
 }
 
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
@@ -239,8 +272,9 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		return Eris::Entity::onLocationChanged(oldLocation);
 	
 	}
+	Eris::Entity::onLocationChanged(oldLocation);
 
-	EmberEntity* newLocationEntity = dynamic_cast<EmberEntity*>(getLocation());
+	EmberEntity* newLocationEntity = static_cast<EmberEntity*>(getLocation());
 	
 	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
 	
@@ -248,15 +282,20 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		//detach from our current object
 		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
 	}
-	if (newLocationEntity) {
+	if (newLocationEntity) { 
 
 		
 			// add to the new entity
 			newLocationEntity->getSceneNode()->addChild(getSceneNode());
 			S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" )
-			
-			getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
-			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+			if (getPosition().isValid()) {
+				getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
+				adjustHeightPosition();
+			}
+			if (getOrientation().isValid()) {
+				getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+			}
+
 	} else {
 		//add to the world
 		S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
@@ -272,7 +311,6 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
 	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 	
-	Eris::Entity::onLocationChanged(oldLocation);
 }
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)

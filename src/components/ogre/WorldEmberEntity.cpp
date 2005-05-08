@@ -88,6 +88,13 @@ void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const e
 
 }
 
+float WorldEmberEntity::getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity)
+{
+	return mTerrainGenerator->getHeight(position);
+
+}
+
+
  void WorldEmberEntity::onMoved(){
  	Eris::Entity::onMoved();
  }

@@ -97,6 +97,15 @@ public:
 	 */
 	virtual void adjustHeightPositionForContainedNode(EmberEntity* const entity);
 
+	virtual float getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity);
+	
+	/**
+	 * Adjust the height of the entity so that it "snaps" to the ground.
+	 * This is most often done by making a call to the containing node's
+	 * adjustHeightPositionForContainedNode method.
+	 */
+	virtual void adjustHeightPosition(); 
+	
 	/*
 	 * return the scenenode to which this entity belongs
 	 */
