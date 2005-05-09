@@ -24,6 +24,7 @@ libWidgets_a_SOURCES = Widget.cpp Widget.h ChatWidget.cpp ChatWidget.h \
 					IngameEventsWidget.cpp IngameEventsWidget.h InspectWidget.cpp InspectWidget.h \
 					InventoryWidget.cpp InventoryWidget.h MakeEntityWidget.cpp MakeEntityWidget.h \
 					ServerBrowserWidget.cpp ServerBrowserWidget.h ServerWidget.cpp ServerWidget.h 		 \
-			Performance.cpp Performance.h WidgetDefinitions.cpp JesusEdit.cpp Help.cpp \
-	TerrainEdit.cpp Map.cpp
-noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h TerrainEdit.h Map.h
+			Performance.cpp Performance.h WidgetDefinitions.cpp JesusEdit.cpp Help.cpp 
+#TerrainEdit.cpp Map.cpp
+noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h 
+#TerrainEdit.h Map.h
