@@ -249,8 +249,8 @@ LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.4 \
- varconf-1.0 >= 0.6.1 mercator-0.2 atlascpp-0.6 >= 0.5.92,
+PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.5 \
+ varconf-1.0 >= 0.6.2 mercator-0.2 >= 0.2.2 atlascpp-0.6 >= 0.5.95,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
