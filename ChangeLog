@@ -1,5 +1,10 @@
 2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberOgre.*
+		* allow command line switches, mostly used for defining whether ogre plugins should be loaded through binreloc or ~/.ember/plugins.cfg. Code shamelessly taken from Sear, thanks to all Sear developers.
+
+2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/widgets/Makefile.am:
 		* oops, don't include TerrainEdit just yet. Thanks Kai and James.
 

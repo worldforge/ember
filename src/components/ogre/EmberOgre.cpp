@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.84  2005-05-08 20:01:17  erik
+ *      Revision 1.85  2005-05-09 18:41:22  erik
+ *      2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* allow command line switches, mostly used for defining whether ogre plugins should be loaded through binreloc or ~/.ember/plugins.cfg. Code shamelessly taken from Sear, thanks to all Sear developers.
+ *
+ *      Revision 1.84  2005/05/08 20:01:17  erik
  *      2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp:
@@ -831,9 +837,9 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 }
 
 
-void EmberOgre::go(void)
+void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 {
-	if (!setup())
+	if (!setup(loadOgrePluginsThroughBinreloc))
 		return;
 
 // 	try {
@@ -852,19 +858,22 @@ void EmberOgre::shutdown()
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
-bool EmberOgre::setup(void)
+bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 {
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 
 	checkForConfigFiles();
 	
-//don't use the plugins 
-//    mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
-    mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
- 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
- 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
- 	mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
+    
+	if (loadOgrePluginsThroughBinreloc) {
+		mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
+		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
+		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
+		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
+	} else {
+		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+	}
 
 	
     setupResources();
@@ -1451,6 +1460,39 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 int main(int argc, char **argv)
 #endif
 {
+	bool exit_program = false;
+	bool useBinrelocPluginsLoading = false;
+	if (argc > 1) {
+		std::string invoked = std::string((char *)argv[0]);
+		(argv)++;
+		argc--;
+		while (argc > 0)  {
+			std::string arg = std::string((char *)argv[0]);
+			argv++;
+			argc--;
+			if (arg == "-v" || arg == "--version") {
+				std::cout << "Ember version: " << VERSION << std::endl;
+				exit_program = true;
+			} else if (arg == "-b" || arg == "--binrelocloading") {
+				useBinrelocPluginsLoading = true;
+			} else if (arg == "-h" || arg == "--help") {
+				std::cout << invoked << " {options}" << std::endl;
+				std::cout << "-h, --help    - display this message" << std::endl;
+				std::cout << "-v, --version - display version info" << std::endl;
+				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg" << std::endl;
+				exit_program = true;
+			} else {
+		//        std::cout << "Unknown arument: " << arg << std::endl;
+			}
+		}
+	}
+
+	if (exit_program) {
+		return 0;
+	}
+
+
+
     // Create application object
     EmberOgre::EmberOgre app;
 
@@ -1458,7 +1500,7 @@ int main(int argc, char **argv)
 	app.initializeEmberServices();
 
     try {
-        app.go();
+        app.go(useBinrelocPluginsLoading);
     } catch( Ogre::Exception& e ) {
 #if OGRE_PLATFORM == PLATFORM_WIN32
         MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);

@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.43  2005-03-20 15:40:45  erik
+ *      Revision 1.44  2005-05-09 18:41:22  erik
+ *      2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* allow command line switches, mostly used for defining whether ogre plugins should be loaded through binreloc or ~/.ember/plugins.cfg. Code shamelessly taken from Sear, thanks to all Sear developers.
+ *
+ *      Revision 1.43  2005/03/20 15:40:45  erik
  *      2005-03-20  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* EmberOgre.h: added convenience getRootSceneNode
@@ -476,7 +482,11 @@ public:
 		return true;
 	}
 	
-    virtual void go(void);
+    /**
+     * starts the main app
+     * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
+     */
+    virtual void go(bool loadOgrePluginsThroughBinreloc = false);
 	void shutdown();
 
 	/**
@@ -558,10 +568,10 @@ protected:
 
     /**
      * Sets up the application - returns false if the user chooses to abandon configuration.
-     * @param  
+     * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      * @return 
      */
-    virtual bool setup(void);
+    virtual bool setup(bool loadOgrePluginsThroughBinreloc = false);
   
 	
 	/**
