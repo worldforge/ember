@@ -2,6 +2,8 @@ INCLUDES = -I$(top_srcdir)/src
 SUBDIRS = src
 EXTRA_DIST = run
 
+bin_PROGRAMS = ember
+
 confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ember.conf
 
