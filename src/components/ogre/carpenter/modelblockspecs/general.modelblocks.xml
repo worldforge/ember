@@ -4,7 +4,11 @@
   <buildingblockspec blockspec="wall12" name="wall/12/timber" />
   <buildingblockspec blockspec="wall6" name="wall/6/timber" />
   <buildingblockspec blockspec="wall3" name="wall/3/timber" />
-  <buildingblockspec blockspec="floor24" name="floor/24/stone" />
+  <buildingblockspec blockspec="floor24" name="floor/24/stone_" />
+  <buildingblockspec blockspec="floor/24" name="floor/24/stone" />
+  <buildingblockspec blockspec="floor/12" name="floor/12/stone" />
+  <buildingblockspec blockspec="floor/6" name="floor/6/stone" />
+  <buildingblockspec blockspec="floor/3" name="floor/3/stone" />
   <buildingblockspec blockspec="roof24" name="roof/24/stone" />
   <buildingblockspec blockspec="slopewall24" name="slopewall/24/timber" />
   <buildingblockspec blockspec="slopewall12" name="slopewall/12/timber" />

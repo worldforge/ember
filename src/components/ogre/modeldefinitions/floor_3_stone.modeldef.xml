@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="wall_3" scale="1">
+<model name="floor_3_stone">
   <submodels>
-    <submodel mesh="3d_objects/items/building_primitives/models/wall_blocks/wall_3x3x0_3.mesh">
+	  <submodel mesh="3d_objects/items/building_primitives/models/wall_blocks/floor_3x3x0_3.mesh">
       <parts>
         <part name="main" show="true" />
       </parts>

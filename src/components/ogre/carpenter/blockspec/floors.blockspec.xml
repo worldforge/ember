@@ -1,10 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <blockspecs>
   <blockspec name="floor24" >
-    <bbox x="24" z="0.3" y="24" >
-<!--bounding boxes with only three values defined assume that the center of the block is at 0,0,0 and expands the bounding box in all directions.
-So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2 and it's second at 12,1.5,0.2.
--->    </bbox>
+    <bbox x="24" z="0.3" y="24" />
     <attachpairs>
       <attachpair name="upnorth"  type="a24">
         <attachpoint name="west" >
@@ -87,5 +84,185 @@ So a bbox with the values 12,1.5,0.2 would have it's first corner at -12,-3,-0.2
         </attachpoint>
       </attachpair>
     </attachpairs>
+  </blockspec>
+  <blockspec name="floor/24" >
+	  <bbox x="24" z="0.3" y="24" />
+	  <attachpairs>
+		  <attachpair name="north"  type="floor/24">
+			  <attachpoint name="west" >
+				  <normal type="NORTH" />
+				  <position x="-4" z="0" y="12" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="NORTH" />
+				  <position x="4" z="0" y="12" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="south"  type="floor/24">
+			  <attachpoint  name="west" >
+				  <normal type="SOUTH" />
+				  <position x="-4" z="0" y="-12" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="SOUTH" />
+				  <position x="4" z="0" y="-12" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="east"  type="floor/24">
+			  <attachpoint  name="north" >
+				  <normal type="EAST" />
+				  <position x="12" z="0" y="4" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="EAST" />
+				  <position x="12" z="0" y="-4" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="west"  type="floor/24">
+			  <attachpoint  name="north" >
+				  <normal type="WEST" />
+				  <position x="-12" z="0" y="4" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="WEST" />
+				  <position x="-12" z="0" y="-4" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+  </blockspec>
+  <blockspec name="floor/12" >
+	  <bbox x="12" z="0.3" y="12" />
+	  <attachpairs>
+		  <attachpair name="north"  type="floor/12">
+			  <attachpoint name="west" >
+				  <normal type="NORTH" />
+				  <position x="-2" z="0" y="6" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="NORTH" />
+				  <position x="2" z="0" y="6" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="south"  type="floor/12">
+			  <attachpoint  name="west" >
+				  <normal type="SOUTH" />
+				  <position x="-2" z="0" y="-6" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="SOUTH" />
+				  <position x="2" z="0" y="-6" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="east"  type="floor/12">
+			  <attachpoint  name="north" >
+				  <normal type="EAST" />
+				  <position x="6" z="0" y="2" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="EAST" />
+				  <position x="6" z="0" y="-2" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="west"  type="floor/12">
+			  <attachpoint  name="north" >
+				  <normal type="WEST" />
+				  <position x="-6" z="0" y="2" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="WEST" />
+				  <position x="-6" z="0" y="-2" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+  </blockspec>
+  <blockspec name="floor/6" >
+	  <bbox x="6" z="0.3" y="6" />
+	  <attachpairs>
+		  <attachpair name="north"  type="floor/6">
+			  <attachpoint name="west" >
+				  <normal type="NORTH" />
+				  <position x="-1" z="0" y="3" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="NORTH" />
+				  <position x="1" z="0" y="3" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="south"  type="floor/6">
+			  <attachpoint  name="west" >
+				  <normal type="SOUTH" />
+				  <position x="-1" z="0" y="-3" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="SOUTH" />
+				  <position x="1" z="0" y="-3" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="east"  type="floor/6">
+			  <attachpoint  name="north" >
+				  <normal type="EAST" />
+				  <position x="3" z="0" y="1" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="EAST" />
+				  <position x="3" z="0" y="-1" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="west"  type="floor/6">
+			  <attachpoint  name="north" >
+				  <normal type="WEST" />
+				  <position x="-3" z="0" y="1" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="WEST" />
+				  <position x="-3" z="0" y="-1" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+  </blockspec>
+  <blockspec name="floor/3" >
+	  <bbox x="3" z="0.3" y="3" />
+	  <attachpairs>
+		  <attachpair name="north"  type="floor/3">
+			  <attachpoint name="west" >
+				  <normal type="NORTH" />
+				  <position x="-0.5" z="0" y="1.5" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="NORTH" />
+				  <position x="0.5" z="0" y="1.5" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="south"  type="floor/3">
+			  <attachpoint  name="west" >
+				  <normal type="SOUTH" />
+				  <position x="-0.5" z="0" y="-1.5" />
+			  </attachpoint>
+			  <attachpoint  name="east" >
+				  <normal type="SOUTH" />
+				  <position x="0.5" z="0" y="-1.5" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="east"  type="floor/3">
+			  <attachpoint  name="north" >
+				  <normal type="EAST" />
+				  <position x="1.5" z="0" y="0.5" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="EAST" />
+				  <position x="1.5" z="0" y="-0.5" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="west"  type="floor/3">
+			  <attachpoint  name="north" >
+				  <normal type="WEST" />
+				  <position x="-1.5" z="0" y="0.5" />
+			  </attachpoint>
+			  <attachpoint  name="south" >
+				  <normal type="WEST" />
+				  <position x="-1.5" z="0" y="-0.5" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
   </blockspec>
 </blockspecs>

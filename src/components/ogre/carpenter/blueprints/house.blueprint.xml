@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <blueprint name="house" startingblock="mainfloor">
   <buildingblocks>
-    <buildingblock blocktype="floor/24/stone" name="mainfloor" />
+    <buildingblock blocktype="floor/24/stone_" name="mainfloor" />
     <buildingblock blocktype="wall/24/timber" name="westwall" />
     <buildingblock blocktype="wall/24/timber" name="eastwall" />
     <buildingblock blocktype="wall/24/timber" name="northwall" />

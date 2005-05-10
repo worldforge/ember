@@ -1,5 +1,10 @@
 2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/carpenter/*, src/components/ogre/modeldefinitions/*, src/components/ogre/jesus/*
+		* general media additions
+
+2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/scripts/buildings.material: add more material and change some other
 
 2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>

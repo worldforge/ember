@@ -223,11 +223,34 @@
 				  <position x="1.35" z="-0.5" y="0" />
 			  </attachpoint>
 		  </attachpair>
+	  
+	  
+		  <attachpair name="down_north" type="floor/3" >
+			  <attachpoint name="east" >
+				  <normal type="NORTH" />
+				  <position x="0.5" y="0" z="-1.35" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="NORTH" />
+				  <position x="-0.5" y="0" z="-1.35"/>
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_south" type="floor/3" >
+			  <attachpoint name="east" >
+				  <normal type="SOUTH" />
+				  <position x="0.5" y="0" z="-1.35" />
+			  </attachpoint>
+			  <attachpoint name="down" >
+				  <normal type="SOUTH" />
+				  <position x="-0.5" y="0" z="-1.35"/>
+			  </attachpoint>
+		  </attachpair>
+	  
 	  </attachpairs>
 	  <bbox x="3" z="3" y="0.3" />
   </blockspec>
   <blockspec name="column/3" >
-	  <bbox x="1" y="1" z="3" />
+	  <bbox x="0.5" y="0.5" z="3" />
 	  <attachpairs>
 		  <attachpair name="north" type="column" >
 			  <attachpoint name="up" >

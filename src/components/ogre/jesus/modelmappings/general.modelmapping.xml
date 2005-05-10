@@ -9,7 +9,11 @@
   <modelmapping model="column_fractured_3" blocktype="column/fractured/3/stone" />
   <modelmapping model="column_segmented_3" blocktype="column/segmented/3/stone" />
   <modelmapping model="wall_1.5" blocktype="wall/1.5/timber" />
-  <modelmapping model="floor" blocktype="floor/24/stone" />
+  <modelmapping model="floor" blocktype="floor/24/stone_" />
+  <modelmapping model="floor_24_stone" blocktype="floor/24/stone" />
+  <modelmapping model="floor_12_stone" blocktype="floor/12/stone" />
+  <modelmapping model="floor_6_stone" blocktype="floor/6/stone" />
+  <modelmapping model="floor_3_stone" blocktype="floor/3/stone" />
   <modelmapping model="roof" blocktype="roof/24/stone" />
   <modelmapping model="slopewall" blocktype="slopewall/24/timber" />
   <modelmapping model="slopewall" blocktype="slopewall/12/timber" />

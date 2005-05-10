@@ -102,4 +102,110 @@
       </attachpair>
     </attachpairs>
   </blockspec>
+
+
+
+  <blockspec name="adapter_floor_24_12" >
+	  <attachpairs>
+		  <attachpair name="up" type="floor/24" >
+			  <attachpoint name="left" >
+				  <normal type="UP" />
+				  <position x="-4" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="UP" />
+				  <position x="4" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_left" type="floor/12" >
+			  <attachpoint  name="left" >
+				  <normal type="DOWN" />
+				  <position x="-8" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="DOWN" />
+				  <position x="-4" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_right" type="floor/12" >
+			  <attachpoint  name="left" >
+				  <normal type="DOWN" />
+				  <position x="8" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="DOWN" />
+				  <position x="4" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+  </blockspec>
+  <blockspec name="adapter_floor_12_6" >
+	  <attachpairs>
+		  <attachpair name="up" type="floor/12" >
+			  <attachpoint  name="left" >
+				  <normal type="UP" />
+				  <position x="-2" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="UP" />
+				  <position x="2" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_left" type="floor/6" >
+			  <attachpoint  name="left" >
+				  <normal type="DOWN" />
+				  <position x="-4" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="DOWN" />
+				  <position x="-2" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_right" type="floor/6" >
+			  <attachpoint  name="left" >
+				  <normal type="DOWN" />
+				  <position x="4" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="DOWN" />
+				  <position x="2" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+  </blockspec>
+  <blockspec name="adapter_floor_6_3" >
+	  <attachpairs>
+		  <attachpair name="up" type="floor/6" >
+			  <attachpoint  name="left" >
+				  <normal type="UP" />
+				  <position x="-1" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="UP" />
+				  <position x="1" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_left" type="floor/3" >
+			  <attachpoint  name="left" >
+				  <normal type="DOWN" />
+				  <position x="-2" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="DOWN" />
+				  <position x="-1" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+		  <attachpair name="down_right" type="floor/3" >
+			  <attachpoint  name="left" >
+				  <normal type="DOWN" />
+				  <position x="1" z="0" y="0" />
+			  </attachpoint>
+			  <attachpoint  name="right" >
+				  <normal type="DOWN" />
+				  <position x="2" z="0" y="0" />
+			  </attachpoint>
+		  </attachpair>
+	  </attachpairs>
+  </blockspec>
+
 </blockspecs>
