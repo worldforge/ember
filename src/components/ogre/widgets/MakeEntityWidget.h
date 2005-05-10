@@ -55,7 +55,8 @@ protected:
 	*/
 	bool mIsReady;
 
-	std::set<Eris::TypeInfo*> mTypes;
+	std::map<Eris::TypeInfo*, CEGUI::ListboxItem*> mTypes;
+//	std::set<Eris::TypeInfo*> mTypes;
 	
 	CEGUI::Listbox* mTypeList;
 	CEGUI::Editbox* mName;
@@ -74,6 +75,7 @@ protected:
 	void loadAllTypes();
 	
 	void addToList(Eris::TypeInfo* typeInfo, int level);
+	
 
 
 };

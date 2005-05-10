@@ -112,7 +112,7 @@ void MakeEntityWidget::show()
 
 void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
 {
-	loadAllTypes();
+// 	loadAllTypes();
 	mIsReady = true;
 }
 
@@ -131,8 +131,8 @@ void MakeEntityWidget::loadAllTypes()
 void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
 {
 	mConn = conn;
-	Eris::TypeService* typeservice = conn->getTypeService();
-	typeservice->BoundType.connect(SigC::slot(*this, &MakeEntityWidget::boundAType));
+ 	Eris::TypeService* typeservice = conn->getTypeService();
+ 	typeservice->BoundType.connect(SigC::slot(*this, &MakeEntityWidget::boundAType));
 
 }
 
@@ -163,13 +163,36 @@ void MakeEntityWidget::addToList(Eris::TypeInfo* typeInfo, int level)
 
 void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 {
-/*	mTypes.insert(typeInfo);
+	std::stringstream levelindicator;
+	Eris::TypeInfo* parentType;
+	if (typeInfo->getParents().size()) {
+		parentType = *typeInfo->getParents().begin();
+		while (parentType) {
+			levelindicator << "-";
+			if (parentType->getParents().size()) {
+				parentType = *parentType->getParents().begin();
+			} else {
+				parentType = 0;
+			}
+		}
+	}
 	
-	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(typeInfo->getName());
-	item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	CEGUI::ListboxTextItem* item = new ColoredListItem(levelindicator.str() + typeInfo->getName());
 	item->setUserData(typeInfo);
+	mTypes[typeInfo] = item;
 	
-	mTypeList->addItem(item);*/
+	if (mTypes.size() == 0) {
+		mTypeList->addItem(item);
+	} else {
+		CEGUI::ListboxItem* parentListItem = mTypes[*typeInfo->getParents().begin()];
+		mTypeList->insertItem(item, parentListItem);
+	}
+	if (typeInfo->hasUnresolvedChildren())
+		typeInfo->resolveChildren();
+	
+	
+	//item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	
 }
 
 bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
