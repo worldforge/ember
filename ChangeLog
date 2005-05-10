@@ -1,5 +1,10 @@
 2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Makefile.am: don't try to compile the ember script, doh!
+	* ember.spec.in: bump wf lib required
+
+2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/carpenter/*, src/components/ogre/modeldefinitions/*, src/components/ogre/jesus/*
 		* general media additions
 
