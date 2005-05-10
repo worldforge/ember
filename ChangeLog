@@ -1,3 +1,7 @@
+2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/malebuilder.material: removed syntax error
+
 2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Makefile.am: copy the ember script file to the bin dir

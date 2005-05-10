@@ -72,7 +72,7 @@ material /global/body_parts/humanoid_body/male_pink
 material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides
 {
     technique
-    {footwear
+    {
       pass
         {
           scene_blend alpha_blend 
