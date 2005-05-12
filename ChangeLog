@@ -1,3 +1,8 @@
+2005-05-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/DebugListener.cpp, src/components/ogre/DebugListener.h, src/components/ogre/EntityListener.cpp,src/components/ogre/OgreMain.diff, src/components/ogre/OgreTerrainSceneManager.h.diff, src/components/ogre/terrain.cfg:
+		* removed obsolete files
+
 2005-05-10  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/MakeEntityWidget.*
