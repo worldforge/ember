@@ -131,7 +131,7 @@ ModelDefinition::~ModelDefinition()
 			
 		std::list<SubModelDefinition>::iterator I_subModels = mSubModels.begin();
 		std::list<SubModelDefinition>::iterator I_subModels_end = mSubModels.end();
-		std::cout << "Number of submodels: " << mSubModels.size() << "\n";
+		S_LOG_INFO("Number of submodels: " << mSubModels.size());
 		
 		for (; I_subModels != I_subModels_end; ++I_subModels) {
 			std::string entityName = name + "/" + (*I_subModels).Mesh;
@@ -225,8 +225,7 @@ bool ModelDefinition::createFromXML(std::string path)
 	}
 	catch (const xercesc::XMLException& toCatch) {
 	        char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	        std::cout << "Error during initialization! :\n"
-	         << message << "\n";
+	        S_LOG_FAILURE( "Error during initialization! :\n" << message );
 	    xercesc::XMLString::release(&message);
 	    return false;
 	}
@@ -287,7 +286,7 @@ bool ModelDefinition::createFromXML(std::string path)
 
 	xercesc::XMLString::transcode("submodel", tempStr, 99);
 	xercesc::DOMNodeList* submodelsNodes = doc->getElementsByTagName(tempStr);
-	std::cout << "Number of submodel nodes: " << submodelsNodes->getLength() << "\n";
+	S_LOG_INFO( "Number of submodel nodes: " << submodelsNodes->getLength());
 	
 	for (unsigned int i = 0; i < submodelsNodes->getLength(); ++i) {
 		SubModelDefinition subModelDef;
@@ -402,7 +401,7 @@ void ModelDefinition::readAnimations(xercesc::DOMElement* animationsNode)
 		
 		xercesc::XMLString::transcode("name", tempStr, 99);
 		std::string name = xercesc::XMLString::transcode(dynamic_cast<xercesc::DOMElement*>(animationNodes->item(i))->getAttribute(tempStr));
-		std::cout << "Added action: " << name << "\n";
+		S_LOG_INFO("Added action: " << name);
 		actionDef.Name = name;
 		mActions.insert(ActionDefinitionsType::value_type(name, actionDef));
 

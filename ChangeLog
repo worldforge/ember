@@ -1,5 +1,9 @@
 2005-05-15  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/ModelDefinition.cpp: use the S_LOG* macros
+
+2005-05-15  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/Makefile.am: removed obsolete files
 
 2005-05-12  Erik Hjortsberg  <erik@katastrof.nu>
