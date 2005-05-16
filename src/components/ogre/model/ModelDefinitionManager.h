@@ -5,6 +5,7 @@
 //
 //
 // Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2004
+// Copyright (c) 2005 The Cataclysmos Team
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,11 +26,10 @@
 
 #include <OgreResourceManager.h>
 #include "framework/Singleton.h"
+#include "ModelDefinition.h"
 
 namespace EmberOgre {
 
-class ModelDefinition;
-class ModelDefinitionPtr;
 /**
 @author Erik Hjortsberg
 */
@@ -37,56 +37,23 @@ class ModelDefinitionManager: public Ogre::ResourceManager, public Ember::Single
 
 {
 public:
+    /// Constructor
     ModelDefinitionManager();
-
-    //~ModelDefinitionManager();
+    ~ModelDefinitionManager();
 	
-        ModelDefinitionPtr load( const Ogre::String& filename, const Ogre::String &group);
+	inline Ogre::SceneManager* getSceneManager() const { return mSceneManager; }
+	inline void setSceneManager(Ogre::SceneManager* sceneManager) { mSceneManager = sceneManager; }
+	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+protected:
 
-        /** Creates a Skeleton resource.
-            @note
-                Mainly used internally.
-        */
-//        Ogre::Resource* create( const Ogre::String& name);
-
-        /** Override standard Singleton retrieval.
-        @remarks
-        Why do we do this? Well, it's because the Singleton
-        implementation is in a .h file, which means it gets compiled
-        into anybody who includes it. This is needed for the
-        Singleton template to work, but we actually only want it
-        compiled into the implementation of the class based on the
-        Singleton, not all of them. If we don't change this, we get
-        link errors when trying to use the Singleton-based class from
-        an outside dll.
-        @par
-        This method just delegates to the template version anyway,
-        but the implementation stays in this single compilation unit,
-        preventing link errors.
-        */
-/*        static ModelDefinitionManager& getSingleton(void);*/
-        /** Override standard Singleton retrieval.
-        @remarks
-        Why do we do this? Well, it's because the Singleton
-        implementation is in a .h file, which means it gets compiled
-        into anybody who includes it. This is needed for the
-        Singleton template to work, but we actually only want it
-        compiled into the implementation of the class based on the
-        Singleton, not all of them. If we don't change this, we get
-        link errors when trying to use the Singleton-based class from
-        an outside dll.
-        @par
-        This method just delegates to the template version anyway,
-        but the implementation stays in this single compilation unit,
-        preventing link errors.
-        */
-//         static ModelDefinitionManager* getSingletonPtr(void);
-
-		Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-         const Ogre::NameValuePairList* createParams);
+	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
+        const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
+        const Ogre::NameValuePairList* createParams);
+	Ogre::SceneManager* mSceneManager;
 
 };
+
+
 
 };
 

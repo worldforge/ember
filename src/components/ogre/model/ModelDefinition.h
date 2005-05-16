@@ -5,6 +5,7 @@
 //
 //
 // Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2004
+// Copyright (c) 2005 The Cataclysmos Team
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,22 +26,6 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
-//#include <OgreNoMemoryMacros.h> 
-	//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-	//this seems to be because both uses their own internal memory handlers
-	#include <xercesc/util/XMemory.hpp>
-	#include <xercesc/dom/DOM.hpp>
-	#include <xercesc/util/XMLString.hpp>
-	#include <xercesc/util/PlatformUtils.hpp>
-	// indicate using Xerces-C++ namespace in general
-	XERCES_CPP_NAMESPACE_USE
-	
-	// // need to properly scope any forward declarations
-	// XERCES_CPP_NAMESPACE_BEGIN
-	//   class AttributeList;
-	// XERCES_CPP_NAMESPACE_END
-//#include <OgreMemoryMacros.h> 
-
 
 namespace EmberOgre {
 
@@ -48,24 +33,40 @@ namespace EmberOgre {
 class ModelDefinition;
 class Model;
 
-     class ModelDefinitionPtr : public Ogre::SharedPtr<ModelDefinition> 
-     {
-     public:
-         ModelDefinitionPtr() : Ogre::SharedPtr<ModelDefinition>() {}
-         explicit ModelDefinitionPtr(ModelDefinition* rep) : Ogre::SharedPtr<ModelDefinition>(rep) {}
-         ModelDefinitionPtr(const ModelDefinitionPtr& r) : Ogre::SharedPtr<ModelDefinition>(r) {} 
-         ModelDefinitionPtr(const Ogre::ResourcePtr& r);
-         ModelDefinitionPtr& operator=(const Ogre::ResourcePtr& r);
-     protected:
-         void destroy(void);
-     };
-
 /**
 @author Erik Hjortsberg
 */
 class ModelDefinition : public Ogre::Resource {
 	
+	friend class XMLModelDefinitionSerializer;
+	friend class Model;
+
 public:
+    //th ModelDefinition(const Ogre::String& name, const Ogre::String& path);
+
+	ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
+		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+
+    virtual ~ModelDefinition();
+
+    bool isValid(void);
+
+	//Ogre resource virtual functions
+ 	void loadImpl(void);
+
+ 	void unloadImpl(void);
+
+	size_t calculateSize(void) const { return 0; }
+
+	//Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
+	
+	inline Ogre::Real getScale() const { return mScale; }
+	
+protected:
+	inline void setValid(bool valid) { mIsValid = valid; }
+
+
+private:
 	struct AnimationDefinition
 	{
 		std::string Name;
@@ -76,6 +77,7 @@ public:
 	{
 		std::string Name;
 		bool Repeat;
+		Ogre::Real volume;
 	};
 	
 	struct ActionDefinition
@@ -103,42 +105,14 @@ public:
 		std::string Mesh;
 		std::list<PartDefinition> Parts;
 	};
- 
-	ModelDefinition (const Ogre::String& path, Ogre::ResourceManager *creator, const Ogre::String &name, Ogre::ResourceHandle handle, const Ogre::String &group, bool isManual=false, Ogre::ManualResourceLoader *loader=0);
-
-    ~ModelDefinition();
 	
-        /** Generic load - called by ModelDefinitionManager.
-        */
-        virtual void loadImpl(void);
-
-        /** Generic unload - called by ModelDefinitionManager.
-        */
-        virtual void unloadImpl(void);
-		
-		virtual size_t calculateSize (void) const; 
-
-		
-	Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager, ModelDefinitionPtr pointerToSelf);
-    bool isValid(void);
-	
-	const ActionDefinition* getDefinitionForAction(const std::string& name) const;
-	
-	inline Ogre::Real getScale() const { return mScale; }
-	
-		
-		
-protected:
+	//void readAnimations(xercesc::DOMElement* animationsNode);
+	//bool createFromXML(std::string path);
 
 	
-	void readAnimations(xercesc::DOMElement* animationsNode);
-	bool createFromXML(std::string path);
-
 	
-TYPEDEF_STL_MAP(std::string, ActionDefinition, ActionDefinitionsType);
-	
-	std::list<SubModelDefinition> mSubModels;
-	ActionDefinitionsType mActions;
+	std::vector<SubModelDefinition> mSubModels;
+	std::vector<ActionDefinition> mActions;
 	
 	unsigned short mUseScaleOf;
 	Ogre::Real mScale;
@@ -149,8 +123,51 @@ TYPEDEF_STL_MAP(std::string, ActionDefinition, ActionDefinitionsType);
 	
 };
 
-//typedef Ogre::SharedPtr<ModelDefinition> ModelDefinitionPtr;
+/** Specialisation of SharedPtr to allow SharedPtr to be assigned to ModelDefnPtr 
+@note Has to be a subclass since we need operator=.
+We could templatise this instead of repeating per Resource subclass, 
+except to do so requires a form VC6 does not support i.e.
+ResourceSubclassPtr<T> : public SharedPtr<T>
+*/
+class ModelDefnPtr : public Ogre::SharedPtr<ModelDefinition> 
+{
+public:
+    ModelDefnPtr() : Ogre::SharedPtr<ModelDefinition>() {}
+    explicit ModelDefnPtr(ModelDefinition* rep) : Ogre::SharedPtr<ModelDefinition>(rep) {}
+    ModelDefnPtr(const ModelDefnPtr& r) : Ogre::SharedPtr<ModelDefinition>(r) {} 
+    ModelDefnPtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<ModelDefinition>()
+    {
+		// lock & copy other mutex pointer
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+        pRep = static_cast<ModelDefinition*>(r.getPointer());
+        pUseCount = r.useCountPointer();
+        if (pUseCount)
+        {
+            ++(*pUseCount);
+        }
+    }
 
+    /// Operator used to convert a ResourcePtr to a ModelDefnPtr
+    ModelDefnPtr& operator=(const Ogre::ResourcePtr& r)
+    {
+        if (pRep == static_cast<ModelDefinition*>(r.getPointer()))
+            return *this;
+        release();
+		// lock & copy other mutex pointer
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+        pRep = static_cast<ModelDefinition*>(r.getPointer());
+        pUseCount = r.useCountPointer();
+        if (pUseCount)
+        {
+            ++(*pUseCount);
+        }
+        return *this;
+    }
+};
+
+typedef ModelDefnPtr ModelDefinitionPtr;
 
 };
 

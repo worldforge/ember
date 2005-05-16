@@ -5,6 +5,7 @@
 //
 //
 // Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2004
+// Copyright (c) 2005 The Cataclysmos Team
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +28,8 @@
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
 
+#include "XMLModelDefinitionSerializer.h"
+
 
 namespace EmberOgre
 {
@@ -41,58 +44,36 @@ namespace EmberOgre
         assert( ms_Singleton );  return ( *ms_Singleton );  
     }*/
     //-----------------------------------------------------------------------
-    ModelDefinitionManager::ModelDefinitionManager()
-    {
 
 
-    }
-    //-----------------------------------------------------------------------
-/*    Ogre::Resource* ModelDefinitionManager::create( const Ogre::String& name, const Ogre::String &group)
-    {
-		std::string path;
-		Ogre::ResourceManager::ResourceMap::const_iterator it;
-		if( ( it = mResources.find( name ) ) != mResources.end() )
-		{
-			path = std::string(it->second->getName() + "/" + name);
-		} 
-		
-		return new ModelDefinition(name, path);
-    }*/
-	
-    //-----------------------------------------------------------------------
-    
-	
-	ModelDefinitionPtr ModelDefinitionManager::load( const Ogre::String& filename, const Ogre::String &group)
-    {
-        ModelDefinitionPtr pModelDefinition = getByName(filename);
-        if (pModelDefinition.isNull())
-        {
-            pModelDefinition = create(filename, group);
-			pModelDefinition->load();
-            //ResourceManager::load(pModelDefinition, group, priority);
-        }
-        return pModelDefinition;
+ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0)
+{
+    mLoadOrder = 300.0f;
+    mResourceType = "ModelDefinition";
+        
+	mScriptPatterns.push_back("*.modeldef.xml");
+	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
-    }
-	
-	     Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-         const Ogre::NameValuePairList* createParams)
-     {
-         // no use for createParams here
-		std::string path;
-		Ogre::FileInfoListPtr pList = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo (group, name);
-		
-		
-		Ogre::FileInfoList::const_iterator it;
-		if( (it = pList->begin() ) != pList->end() )
-		{
-			path = std::string(it->archive->getName() + "/" + name);
-		} 
-		 //TODO: implement this in the right way
-         return new ModelDefinition(path, this, name, handle, group, isManual, loader);
-     }
+	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
+}
+
+ModelDefinitionManager::~ModelDefinitionManager()
+{
+	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+}
 
 
+void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
+{
+    XMLModelDefinitionSerializer serializer;
+	serializer.parseScript(stream, groupName);
+}
+
+Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
+    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
+    const Ogre::NameValuePairList* createParams)
+{
+     return new ModelDefinition(this, name, handle, group, isManual, loader);
+}
 
 }

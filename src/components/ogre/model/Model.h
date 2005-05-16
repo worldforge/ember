@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2004  Erik Hjortsberg
+    Copyright (c) 2005 The Cataclysmos Team
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,13 +19,6 @@
 
 #ifndef MODEL_H
 #define MODEL_H
-
-// //we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-// //this seems to be because both uses their own internal memory handlers
-// #include <xercesc/util/XMemory.hpp>
-// #include <xercesc/dom/DOM.hpp>
-// #include <xercesc/util/XMLString.hpp>
-// #include <xercesc/util/PlatformUtils.hpp>
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreEntity.h>
@@ -54,7 +48,7 @@ friend class ModelDefinition;
 
 public:
 
-	static Model* Create(std::string type, std::string name);
+	//static Model* Create(std::string type, std::string name, ModelDefinitionPtr modelDefPointer);
 
 	enum UseScaleOf {
 		MODEL_HEIGHT = 1,
@@ -75,14 +69,15 @@ public:
 	typedef std::map<std::string, StringSet > SubModelPartMapping;
 	typedef std::map<std::string, SubModelPart*> SubModelPartMap;
 
-	Model(Ogre::SceneManager* sceneManager, std::string name, ModelDefinitionPtr modelDefPtr);
+	Model(std::string name);
+	bool create(std::string modelType); // create model of specific type
+
 	virtual ~Model();
 
 	bool addSubmodel(SubModel* submodel);
  	bool removeSubmodel(SubModel* submodel);
  	
  	void startAnimation(std::string nameOfAnimation);
- 	void pauseAnimation(std::string nameOfAnimation);
  	void stopAnimation(std::string nameOfAnimation);
  	void resetAnimations();
 
@@ -177,13 +172,11 @@ public:
 	 *    returns a pointer to the defintion of the Model
 	 * @return 
 	 */
-	inline ModelDefinitionPtr getDefinition() const { return mDefinition; }
+	inline ModelDefnPtr getDefinition() const { return _masterModel; }
 protected:
 
 	mutable Ogre::AxisAlignedBox mFull_aa_box;
 	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
-
-	ModelDefinitionPtr mDefinition;
 
 	//set of all animations currently running
 	std::set< std::string > mRunningAnimations;
@@ -204,6 +197,7 @@ protected:
 	
 	// the name of the model
 	std::string mName;
+	ModelDefnPtr _masterModel; // model this was copied from
 	
 	//a set of all submodels belonging to the model
 	SubModelSet mSubmodels;
@@ -227,9 +221,11 @@ protected:
 	
 	//set of all animation states
 	Ogre::AnimationStateSet* mAnimationStateSet;
+
 	
+	bool createFromDefn();
+	void enableAnimation(std::string nameOfAnimation,bool enable);
 };
-typedef Ogre::SharedPtr<Model> ModelPtr;
 
 }
 #endif // MODEL_H

@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2004  Erik Hjortsberg
+	Copyright (c) 2005 The Cataclysmos Team
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,16 +34,15 @@ namespace EmberOgre {
 
 Ogre::String Model::msMovableType = "Model";
 
-Model::Model(Ogre::SceneManager* sceneManager, std::string name, ModelDefinitionPtr modelDefPointer)
+Model::Model(std::string name)
 : MovableObject::MovableObject()
 , mName(name)
-, mSceneManager(sceneManager)
+, mSceneManager(0)
 , mScale(0)
 , mRotation(0)
 , mVisible(true)
 , mSkeletonInstance(0)
 , mAnimationStateSet(0)
-, mDefinition(modelDefPointer)
 {}
 Model::~Model()
 {
@@ -53,17 +53,107 @@ Model::~Model()
  		SubModel* submodel = *I;
 		mSceneManager->removeEntity(submodel->getEntity());
 	}
-	//delete mAnimationStateSet;
+	delete mAnimationStateSet;
 }
 
-Model* Model::Create(std::string type, std::string name)
-
+bool Model::create(std::string modelType)
 {
-	ModelDefinitionPtr def = ModelDefinitionManager::getSingleton().load(type, "modeldefinitions");
-	if (!def->isValid()) {
-		return NULL;
+	const Ogre::String groupName = "ModelDefinitions";
+	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
+	try {
+		_masterModel= ModelDefinitionManager::instance().load(modelType, groupName);
+	} catch (Ogre::Exception& ex) {
+		return false;
 	}
-	return def->createModel(name, EmberOgre::getSingleton().getSceneManager(), def);
+	if (!_masterModel->isValid()) {
+		return false;
+	}
+	else
+		return createFromDefn();
+}
+
+
+bool Model::createFromDefn()
+{
+	// create instance of model from definition
+	Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+	assert(sceneManager);
+	mScale=_masterModel->mScale ;
+	mUseScaleOf=_masterModel->mUseScaleOf;
+	mRotation = _masterModel->mRotation;
+
+	std::vector<std::string> showPartVector;
+
+	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels = _masterModel->mSubModels.begin();
+	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels_end = _masterModel->mSubModels.end();
+	S_LOG_INFO("Number of submodels: " << _masterModel->mSubModels.size()); 
+	
+	for (; I_subModels != I_subModels_end; ++I_subModels) 
+	{
+		std::string entityName = mName + "/" + (*I_subModels).Mesh;
+		try {
+			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels).Mesh);
+
+			SubModel* submodel = new SubModel(entity);
+
+			Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
+				
+			std::list<ModelDefinition::PartDefinition>::iterator I_parts = (*I_subModels).Parts.begin();
+			std::list<ModelDefinition::PartDefinition>::iterator I_parts_end = (*I_subModels).Parts.end();
+			for (; I_parts != I_parts_end; ++I_parts) {
+				Model::StringSet parts;
+				if ((*I_parts).SubEntities.size() > 0)
+				{
+					std::list<ModelDefinition::SubEntityDefinition>::iterator I_subEntities = (*I_parts).SubEntities.begin();
+					std::list<ModelDefinition::SubEntityDefinition>::iterator I_subEntities_end = (*I_parts).SubEntities.end();
+					for (; I_subEntities != I_subEntities_end; ++I_subEntities) {
+						parts.insert((*I_subEntities).SubEntity);
+						if ((*I_subEntities).Material != "") {
+							entity->getSubEntity((*I_subEntities).SubEntity)->setMaterialName((*I_subEntities).Material);
+						}
+					}		
+				} 
+				Model::SubModelPartMapping::value_type part((*I_parts).Name, parts);
+				submodelPartMapping->insert(part);
+				if ((*I_parts).Show) {
+					showPartVector.push_back((*I_parts).Name);
+				}
+			}
+			submodel->createSubModelParts(submodelPartMapping);
+			addSubmodel(submodel);
+		} 
+		catch (Ogre::Exception e) 
+		{
+			//std::cerr << "Error when loading the submodel " << entityName << ".\n";
+			S_LOG_FAILURE( "Submodel load error for " + entityName );
+			return false;
+		}
+	}
+
+	std::vector<ModelDefinition::ActionDefinition>::const_iterator I_actions = _masterModel->mActions.begin();
+	std::vector<ModelDefinition::ActionDefinition>::const_iterator I_actions_end = _masterModel->mActions.end();
+	for (;I_actions != I_actions_end; ++I_actions) {
+		std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
+		
+		
+		std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims = (*I_actions).Animations.begin();
+		std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims_end = (*I_actions).Animations.end();
+		for (;I_anims != I_anims_end; ++I_anims) {
+			Model::AnimationPart* animPart = new Model::AnimationPart();
+			animPart->name = (*I_anims).Name;
+			animPart->weight = (*I_anims).Weight;
+			animationPartSet->insert(animPart);
+		}
+		mAnimationPartMap.insert(Model::AnimationPartMap::value_type((*I_actions).Name, animationPartSet));
+	}
+	
+	
+	std::vector<std::string>::const_iterator I = showPartVector.begin();
+	std::vector<std::string>::const_iterator I_end = showPartVector.end();
+	for (;I != I_end; I++) {
+		showPart(*I);	
+	}
+	return true;
 }
 
 
@@ -121,119 +211,70 @@ const unsigned short Model::getUseScaleOf() const
 	return mUseScaleOf;
 }
 
-//const std::vector<
-
 void Model::startAnimation(std::string nameOfAnimation)
 {
-	if (mAnimationStateSet) {
-		if (mRunningAnimations.find(nameOfAnimation) == mRunningAnimations.end()) 
-		{
-			//The animations is not started, start a new
-			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-			if (partmap_iter != mAnimationPartMap.end()) {
-				std::cout << "Starting animation: " << nameOfAnimation << "\n";
-				mRunningAnimations.insert(nameOfAnimation);
-				std::multiset< AnimationPart* >* part = partmap_iter->second;
-				std::multiset< AnimationPart* >::const_iterator I = part->begin();
-				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-				for (; I != I_end; ++I) {
-					std::cout << "Starting subanimation: " << (*I)->name << "\n";
-					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-					if (J != mAnimationStateSet->end()) {
-						//also set the weight of the animations part
-						J->second.setWeight((*I)->weight);
-						
-						MotionManager::getSingleton().addAnimation(&J->second);
-					} else {
-						S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.")
-					}
-				}
-			}
-		} else if (mPausedAnimations.find(nameOfAnimation) != mPausedAnimations.end()) {
-			//The animation is started but is paused, unpause it
-			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-			if (partmap_iter != mAnimationPartMap.end()) {
-				mPausedAnimations.erase(nameOfAnimation);
-				std::multiset< AnimationPart* >* part = partmap_iter->second;
-				std::multiset< AnimationPart* >::const_iterator I = part->begin();
-				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-				for (; I != I_end; ++I) {
-					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-					if (J != mAnimationStateSet->end()) {
-						MotionManager::getSingleton().unpauseAnimation(&J->second);
-					} else {
-						S_LOG_FAILURE( "Error: the subanimation " << (*I)->name << " does not exist.")
-					}
-				}
-			}
-		}
-	}
-	
-	//TODO check in pausedanimation to see if the anim is paused
-	
-}
-void Model::pauseAnimation(std::string nameOfAnimation)
-{
-	if (mAnimationStateSet) {
-		if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
-		{
-			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-			if (partmap_iter != mAnimationPartMap.end()) {
-				mPausedAnimations.insert(nameOfAnimation);
-				std::multiset< AnimationPart* >* part = partmap_iter->second;
-				std::multiset< AnimationPart* >::const_iterator I = part->begin();
-				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-				for (; I != I_end; ++I) {
-					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-					MotionManager::getSingleton().pauseAnimation(&J->second);
-				}
-			}
-		}
-	}	
+	enableAnimation(nameOfAnimation,true);
 }
 
 void Model::stopAnimation(std::string nameOfAnimation)
 {
-	if (mAnimationStateSet) {
-		if (mRunningAnimations.find(nameOfAnimation) != mRunningAnimations.end()) 
+	enableAnimation(nameOfAnimation,false);
+}	
+
+void Model::enableAnimation(std::string nameOfAnimation,bool enable)
+{
+	if (mAnimationStateSet)
+	{
+		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+		if (partmap_iter != mAnimationPartMap.end()) 
 		{
-			AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-			if (partmap_iter != mAnimationPartMap.end()) {
-				mRunningAnimations.erase(nameOfAnimation);
-				std::multiset< AnimationPart* >* part = partmap_iter->second;
-				std::multiset< AnimationPart* >::const_iterator I = part->begin();
-				std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-				for (; I != I_end; ++I) {
-					Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-					MotionManager::getSingleton().removeAnimation(&J->second);
+			std::multiset< AnimationPart* >* part = partmap_iter->second;
+			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+			for (; I != I_end; ++I) 
+			{ // go through each anim part and update its related anim state 
+				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+				if (J != mAnimationStateSet->end()) {
+					if (enable) {
+						//also set the weight of the animations part
+						J->second.setWeight((*I)->weight);
+						MotionManager::getSingleton().addAnimation(&J->second);
+					} else {
+						MotionManager::getSingleton().removeAnimation(&J->second);
+					}
+				} else {
+					S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.");
 				}
 			}
 		}
-	}	
-	
+	}
 }
+
 
 void Model::resetAnimations()
 {
-	if (mAnimationStateSet) {
-		std::set< std::string >::const_iterator iter_running = mRunningAnimations.begin();
-		std::set< std::string >::const_iterator iter_running_end = mRunningAnimations.begin();
-		
-		for (; iter_running != iter_running_end; ++iter_running) {
-			std::multiset< AnimationPart* >* part = mAnimationPartMap[*iter_running];
+	if (mAnimationStateSet)
+	{
+		AnimationPartMap::iterator it;
+		for ( it= mAnimationPartMap.begin();it != mAnimationPartMap.end();it++) 
+		{
+			std::multiset< AnimationPart* >* part = it->second;
 			std::multiset< AnimationPart* >::const_iterator I = part->begin();
 			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) {
+			for (; I != I_end; ++I) 
+			{ // go through each anim part and update its related anim state 
 				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				MotionManager::getSingleton().removeAnimation(&J->second);
+				if (J != mAnimationStateSet->end()) {
+					MotionManager::getSingleton().removeAnimation(&J->second);
+				} else {
+					S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.");
+				}
+					
+				
 			}
-		}	
-	}	
-	mRunningAnimations.clear();	
-	mPausedAnimations.clear();	
-
+		}
+	}
 }
-
 
 
 
@@ -243,7 +284,7 @@ Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getAnimationState(name);
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
+	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
 	
 }
 
@@ -253,7 +294,7 @@ Ogre::AnimationStateSet* Model::getAllAnimationStates()
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getAllAnimationStates();
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
+	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
 	
 }
 
@@ -264,7 +305,7 @@ Ogre::SkeletonInstance * Model::getSkeleton ()
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->getSkeleton();
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
+	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
 }
 
 void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
@@ -273,7 +314,7 @@ void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObjec
 		SubModel* submodel = *(mSubmodels.begin());
 		submodel->getEntity()->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
 	} else {
-		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
+		Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
 	}	
 }
 
@@ -283,7 +324,7 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 		SubModel* submodel = *(mSubmodels.begin());
 		return submodel->getEntity()->detachObjectFromBone(movableName);
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");		
+	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");		
 }
 
 /** Overridden - see MovableObject.
@@ -340,10 +381,7 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
              
 		mFull_aa_box.merge(submodel->getEntity()->getBoundingBox());
 	}
-	 
-//	 std::cout << "Boundingbox: " << full_aa_box->getMaximum().x << " : " << full_aa_box->getMaximum().y << " : " << full_aa_box->getMaximum().z;
-	 
-	 //full_aa_box->scale(mParentNode->_getDerivedScale());
+
 	return mFull_aa_box;
 }
 
@@ -363,9 +401,6 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
  		mWorldFull_aa_box.merge(submodel->getEntity()->getWorldBoundingBox(derive));
 	}
 	 
-//	 std::cout << "Boundingbox: " << full_aa_box->getMaximum().x << " : " << full_aa_box->getMaximum().y << " : " << full_aa_box->getMaximum().z;
-	 
-	 //full_aa_box->scale(mParentNode->_getDerivedScale());
 	return mWorldFull_aa_box;
 }
 
