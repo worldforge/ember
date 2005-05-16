@@ -55,6 +55,11 @@ namespace Ember {
 			assert( ms_Singleton ); 
 			return ms_Singleton; 
 		}
+		
+		static T& instance( void )
+		{
+			return getSingleton();
+		}
 	};
 }
 #endif

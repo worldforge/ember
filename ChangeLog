@@ -1,5 +1,9 @@
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/framework/Singleton.h: added instance() method
+
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/framework/tinyxml/*, src/framework/Makefile.am:
 		* added tinyxml implementation adapted to Ogre and with case insensitive comparison, this will lead to xerces-c being phased out
 
