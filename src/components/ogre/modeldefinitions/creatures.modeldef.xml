@@ -1,0 +1,151 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<models>
+
+	<model name="dog" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/creatures/quadruped/models/dog/dog.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+	<model name="crab" usescaleof="height" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/insect/models/spider/spider.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="_Walk_s.BAKED.002" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+	
+	<model name="deer" usescaleof="height" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/quadruped_v2/models/deer/deer.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="idle">
+				<AnimationParts>
+					<animationpart name="Stand" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="run">
+				<AnimationParts>
+					<animationpart name="Run" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+
+	<model name="squirrel" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/quadruped/models/squirrel/squirrel.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions> 
+	</model>
+	
+	<model name="chicken" rotation="90" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/avian/models/chicken/chicken.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="idle">
+				<AnimationParts>
+					<animationpart name="WingFold" weight="0.5" />
+					<animationpart name="Peck1" weight="0.5" />
+				</AnimationParts>
+			</Action>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="WingFold" weight="0.5" />
+					<animationpart name="Walk" weight="0.5" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	<model name="pig" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_skeletons/pig/pig.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="idle">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+	
+	<model name="spider" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/insect/models/spider/spider.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="_Walk_s.BAKED.002" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+	
+	
+	
+	
+</models>

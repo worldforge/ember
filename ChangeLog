@@ -1,5 +1,10 @@
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/modeldefinitions/*
+		* modeldefintiions now behave more like an Ogre .material script, with many models defined in one file
+
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/Makefile.am, src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinitions.cpp, src/components/ogre/model/ModelDefinitions.h,src/components/ogre/model/ModelDefinitionsManager.cpp, src/components/ogre/model/ModelDefintionsManager.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.h:
 		* incorporated changes from the Cataclysmos project, http://www.cataclysmos.org/
 		* removed xerces in favor of tinyxml

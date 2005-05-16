@@ -1,0 +1,105 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<models>
+
+	<model name="axe" >
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/axe/tool.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+
+	<model name="barrel" usescaleof="height"  >
+		<submodels>
+			<submodel mesh="3d_objects/items/cylinder/models/barrel/cylinder_barrel_closed.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+
+	<model name="campfire">
+		<submodels>
+			<submodel mesh="3d_objects/items/fire/models/campfire/campfire.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+
+	<model name="hammer" >
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/hammer/hammer.mesh">
+			<parts>
+				<part name="Hammer" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+
+	
+	<model name="scythe" >
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/scythe/scythe.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
+	<model name="spade" >
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="sty" usescaleof="width" rotation="-180">
+		<submodels>
+			<submodel mesh="3d_objects/items/building_element/models/wooden_fence/pig-sty.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+
+	
+	
+	<model name="table" usescaleof="height"  >
+		<submodels>
+			<submodel mesh="3d_objects/items/furniture/models/table/simple_table.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>			
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</models>

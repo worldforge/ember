@@ -1,0 +1,50 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<models>
+	<model name="acorn" >
+		<submodels>
+			<submodel mesh="3d_objects/plants/fruitable/models/acorn/acorn.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
+	<model name="fire">
+		<submodels>
+			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="idle">
+				<AnimationParts>
+					<animationpart name="innerFire.BAKED" weight="1" />
+					<animationpart name="outerFire.BAKED" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
+	
+	<model name="log">
+		<submodels>
+			<submodel mesh="3d_objects/plants/tree/models/log/tree_log.mesh" >
+			<parts>
+				<part name="log" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="mushroom_amanita">
+		<submodels>
+			<submodel mesh="3d_objects/plants/mushroom/models/round_mushroom/mushroom.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>	
+</models>

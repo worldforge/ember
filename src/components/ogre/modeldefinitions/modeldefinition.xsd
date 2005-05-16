@@ -57,12 +57,16 @@
 						<xsd:element name="Action">
 							<xsd:complexType>
 								<xsd:attribute name="Name" type="xsd:string" use="required"/> 
-								<xsd:sequence>					
-									<xsd:element name="AnimationPart">
-										<xsd:attribute name="Name" type="xsd:string" use="required"/> 
-										<xsd:attribute name="Weight" type="xsd:string" use="required"/> 
-									</xsd:element>
-								</xsd:sequence>					
+								<xsd:element name="ActionsParts">
+									<xsd:complexType>
+										<xsd:sequence>					
+											<xsd:element name="AnimationPart">
+												<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+												<xsd:attribute name="Weight" type="xsd:string" use="required"/> 
+											</xsd:element>
+										</xsd:sequence>					
+									</xsd:complexType>
+								</xsd:element>
 							</xsd:complexType>
 						</xsd:element>
 					</xsd:sequence>					

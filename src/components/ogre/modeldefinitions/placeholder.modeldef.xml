@@ -1,10 +1,12 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<model name="placeholder" >
-  <submodels>
-    <submodel mesh="placeholder.mesh" >
-      <parts>
-        <part name="main" show="true" >
-      </parts>
-    </submodel>
-  </submodels>
-</model>
+<models>
+	<model name="placeholder" >
+		<submodels>
+			<submodel mesh="placeholder.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
+</models>
