@@ -1,5 +1,9 @@
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/resources.cfg : add entry for ModelDefinitions
+
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/Avatar.cpp, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberOgre.cpp: updates for new ModelDefinitions system
 	* src/components/ogre/Makefile.am : rearrange libs
 
