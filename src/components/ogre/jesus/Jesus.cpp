@@ -886,7 +886,10 @@ Model* Jesus::createModelForBlockType(const std::string& blockType, const std::s
 	if (I == mModelMappings.end()) {
 		return 0;
 	}
-	return Model::Create(I->second + ".modeldef.xml", modelName);
+	Model* aModel = new Model(modelName);
+	aModel->create(I->second);
+	return aModel;
+//	return Model::Create(I->second + ".modeldef.xml", modelName);
 }
 
 ModelBlock::~ModelBlock()

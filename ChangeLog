@@ -1,5 +1,9 @@
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/jesus/Jesus.cpp: updates for new ModelDefinitions system
+
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/environment/meshtree/TStem.cpp: To please James, Lord of the Autobuilder, I've removed some compile warnings.
 
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
