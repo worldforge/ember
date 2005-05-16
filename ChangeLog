@@ -1,5 +1,10 @@
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/Avatar.cpp, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberOgre.cpp: updates for new ModelDefinitions system
+	* src/components/ogre/Makefile.am : rearrange libs
+
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/modeldefinitions/*
 		* modeldefintiions now behave more like an Ogre .material script, with many models defined in one file
 

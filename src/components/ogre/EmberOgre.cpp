@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.85  2005-05-09 18:41:22  erik
+ *      Revision 1.86  2005-05-16 23:25:15  erik
+ *      2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/Avatar.cpp, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberOgre.cpp: updates for new ModelDefinitions system
+ *      	* src/components/ogre/Makefile.am : rearrange libs
+ *
+ *      Revision 1.85  2005/05/09 18:41:22  erik
  *      2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -882,6 +888,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
     if (!carryOn) return false;
 
     chooseSceneManager();
+	
+	mModelDefinitionManager->setSceneManager(mSceneMgr);
 
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -1034,12 +1042,12 @@ void EmberOgre::setupResources(void)
 	
 	mModelDefinitionManager = new ModelDefinitionManager();
 	
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
  	
 	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem", "modeldefinitions");
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
  	} else {
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem", "modeldefinitions");
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
 	}
 	
 // /*	std::string modeldefspath = "modeldefinitions/";
@@ -1113,33 +1121,27 @@ void EmberOgre::preloadMedia(void)
 	  
 	
 	//TODO: use C++ io methods
-	DIR *dp;
-	struct dirent *ep;
-	
-	std::string modeldefDir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/modeldefinitions";
-	dp = opendir (modeldefDir.c_str());
-	if (dp != NULL)
-	{
-		//Ogre::SceneNode* mNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
-		while (ep = readdir (dp)) {
-			std::string filename(ep->d_name);
-			if (ep->d_name != "." && ep->d_name != ".." && filename.find(".modeldef")) {
-				try {
-					S_LOG_INFO(  "TRACE - PRELOADING: "<< ep->d_name);
-					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");
-/*					if (modeldef->isValid()) {
-						Model* model = Model::Create(ep->d_name, ep->d_name);
-						mNode->attachObject(model);
-					}*/
-				} catch (Ogre::Exception ex)
-				{
-					S_LOG_FAILURE( "TRACE - ERROR PRELOADING: " <<ep->d_name );
-				}
-			}
-		}
-		(void) closedir (dp);
-/*		mSceneMgr->destroySceneNode(mNode->getName());*/
-	}
+// 	DIR *dp;
+// 	struct dirent *ep;
+// 	
+// 	std::string modeldefDir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/modeldefinitions";
+// 	dp = opendir (modeldefDir.c_str());
+// 	if (dp != NULL)
+// 	{
+// 		while (ep = readdir (dp)) {
+// 			std::string filename(ep->d_name);
+// 			if (ep->d_name != "." && ep->d_name != ".." && filename.find(".modeldef")) {
+// 				try {
+// 					S_LOG_INFO(  "TRACE - PRELOADING: "<< ep->d_name);
+// 					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");
+// 				} catch (Ogre::Exception ex)
+// 				{
+// 					S_LOG_FAILURE( "TRACE - ERROR PRELOADING: " <<ep->d_name );
+// 				}
+// 			}
+// 		}
+// 		(void) closedir (dp);
+// 	}
 	
 	//only autogenerate trees if we're not using the pregenerated ones
  	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 

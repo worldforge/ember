@@ -108,7 +108,9 @@ AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
-	Model* model = Model::Create("settler.modeldef.xml", ge->getId());
+	Model* model = new Model(ge->getId());
+	model->create("settler");
+/*	Model* model = Model::Create("settler.modeldef.xml", );*/
 	//Model* model = new Model(mSceneManager, ge->getId());
 	
 	//rotate node to fit with WF space
@@ -195,15 +197,20 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	//scaleNode->showBoundingBox(true);
 
 	std::string typeName = mTypeService->getTypeForAtlas(ge)->getName();
-	Model* model = Model::Create(typeName + ".modeldef.xml", ge->getId());
+	
+	Model* model = new Model(ge->getId());
+	bool result = model->create(typeName);
+	
+// 	Model* model = Model::Create(typeName + ".modeldef.xml", ge->getId());
 	//Model* model = new Model(mSceneManager, ge->getId());
 
 	//try to open the model definition file
 //	bool result = model->createFromXML(std::string("modeldefinitions/") + typeName + ".modeldef.xml");
-	if (!model) 
+	if (!result) 
 	{
 		std::cout << "Could not find " << typeName << ", using placeholder.";
-		model = Model::Create(std::string("placeholder.modeldef.xml"), ge->getId());
+		result = model->create("placeholder");
+		assert(result);
 		//model->createFromXML("modeldefinitions/placeholder.modeldef.xml");
 	}
 	
