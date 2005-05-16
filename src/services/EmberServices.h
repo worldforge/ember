@@ -101,7 +101,7 @@ class EmberServices
     /**
      * The instance of the MetaserverService
      */
-    Ember::MetaserverService *myMetaserverService;
+//     Ember::MetaserverService *myMetaserverService;
 
     /**
      * The instance of the ServerService
@@ -176,7 +176,7 @@ class EmberServices
     /**
      * Returns an instance of the MetaserverService
      */
-    Ember::MetaserverService *getMetaserverService();
+//     Ember::MetaserverService *getMetaserverService();
 
     /**
      * Returns an instance of the ServerService

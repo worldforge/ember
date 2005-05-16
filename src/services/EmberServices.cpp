@@ -41,7 +41,7 @@ EmberServices* EmberServices::theInstance = NULL;
     // TODO: Free any allocated resources here.
     delete myConfigService;
     //delete myGuiService;
-    delete myMetaserverService;
+//     delete myMetaserverService;
     delete myServerService;
   }
 
@@ -91,12 +91,12 @@ EmberServices* EmberServices::theInstance = NULL;
     return myGuiService;
   }
 */
-  MetaserverService* EmberServices::getMetaserverService()
-  {
-    if (myMetaserverService == NULL)
-      myMetaserverService = new Ember::MetaserverService();
-    return myMetaserverService;
-  }
+// /*  MetaserverService* EmberServices::getMetaserverService()
+//   {
+//     if (myMetaserverService == NULL)
+//       myMetaserverService = new Ember::MetaserverService();
+//     return myMetaserverService;
+//   }*/
   
   ServerService* EmberServices::getServerService()
   {
@@ -116,7 +116,7 @@ EmberServices* EmberServices::theInstance = NULL;
   {
     myConfigService = NULL;
     //myGuiService = NULL;
-    myMetaserverService = NULL;
+//     myMetaserverService = NULL;
     myServerService = NULL;
     mySoundService = NULL;
   }

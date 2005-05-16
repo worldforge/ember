@@ -1,5 +1,9 @@
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/EmberServices.* : removed reference to MetaServerService, since that's not used anymore
+
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/resources.cfg : add entry for ModelDefinitions
 
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
