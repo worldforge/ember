@@ -1,3 +1,8 @@
+2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/tinyxml/*, src/framework/Makefile.am:
+		* added tinyxml implementation adapted to Ogre and with case insensitive comparison, this will lead to xerces-c being phased out
+
 2005-05-15  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/ModelDefinition.cpp: use the S_LOG* macros
