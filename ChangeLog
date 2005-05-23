@@ -1,3 +1,8 @@
+2005-05-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/tinyxml
+		* Oops, forgot to add files to cvs. Sorry Miguel!
+
 2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/jesus/Jesus.cpp: updates for new ModelDefinitions system
