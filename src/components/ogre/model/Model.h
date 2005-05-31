@@ -46,6 +46,11 @@ class Model : public Ogre::MovableObject
 
 friend class ModelDefinition;
 
+
+// class AttachPoint
+// {
+// }
+
 public:
 
 	//static Model* Create(std::string type, std::string name, ModelDefinitionPtr modelDefPointer);
@@ -120,6 +125,7 @@ public:
 	Ogre::SkeletonInstance * getSkeleton ();
 	void attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	Ogre::MovableObject * detachObjectFromBone (const Ogre::String &movableName);
+	void detachAllObjectsFromBone(void);
 	
 	inline bool isAnimated() { return mAnimationPartMap.size(); }
 
@@ -173,8 +179,21 @@ public:
 	 * @return 
 	 */
 	inline ModelDefnPtr getDefinition() const { return _masterModel; }
+	
+	void attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
+	void attachObjectToAttachPoint(const Ogre::String &boneName, Ogre::MovableObject *pMovable,  const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
+	//void attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
+	
+	bool hasAttachPoint(const std::string& attachPoint) const; 
+	
 protected:
 
+	Ogre::Entity::ChildObjectList mChildObjectList;
+	
+	void attachObjectImpl(Ogre::MovableObject *pObject, Ogre::TagPoint *pAttachingPoint);
+	void detachObjectImpl(MovableObject* pObject);
+	void detachAllObjectsImpl(void);
+	
 	mutable Ogre::AxisAlignedBox mFull_aa_box;
 	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
 
@@ -203,7 +222,7 @@ protected:
 	SubModelSet mSubmodels;
 	//a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	SubModelPartMap mSubModelPartMap;
-	Ogre::SceneManager* mSceneManager;
+	//Ogre::SceneManager* mSceneManager;
 	
 	Ogre::SkeletonInstance* mSkeletonInstance;
 	
@@ -216,8 +235,6 @@ protected:
 	//for example, if you use a model of a human you probably want to scale according to the height
 	//this might mean that width and depths aren't correct though
 	unsigned short mUseScaleOf;
-	
-	bool mVisible;
 	
 	//set of all animation states
 	Ogre::AnimationStateSet* mAnimationStateSet;

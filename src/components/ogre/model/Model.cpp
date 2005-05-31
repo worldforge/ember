@@ -30,6 +30,8 @@
 
 #include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 
+#include <OgreTagPoint.h>
+
 namespace EmberOgre {
 
 Ogre::String Model::msMovableType = "Model";
@@ -37,13 +39,13 @@ Ogre::String Model::msMovableType = "Model";
 Model::Model(std::string name)
 : MovableObject::MovableObject()
 , mName(name)
-, mSceneManager(0)
 , mScale(0)
 , mRotation(0)
-, mVisible(true)
 , mSkeletonInstance(0)
 , mAnimationStateSet(0)
-{}
+{
+ mVisible = true;
+}
 Model::~Model()
 {
 	resetAnimations();
@@ -51,9 +53,10 @@ Model::~Model()
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
  		SubModel* submodel = *I;
-		mSceneManager->removeEntity(submodel->getEntity());
+		Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+		sceneManager->removeEntity(submodel->getEntity());
 	}
-	delete mAnimationStateSet;
+//	delete mAnimationStateSet;
 }
 
 bool Model::create(std::string modelType)
@@ -107,6 +110,7 @@ bool Model::createFromDefn()
 					std::list<ModelDefinition::SubEntityDefinition>::iterator I_subEntities = (*I_parts).SubEntities.begin();
 					std::list<ModelDefinition::SubEntityDefinition>::iterator I_subEntities_end = (*I_parts).SubEntities.end();
 					for (; I_subEntities != I_subEntities_end; ++I_subEntities) {
+						ModelDefinition::SubEntityDefinition def = *I_subEntities;
 						parts.insert((*I_subEntities).SubEntity);
 						if ((*I_subEntities).Material != "") {
 							entity->getSubEntity((*I_subEntities).SubEntity)->setMaterialName((*I_subEntities).Material);
@@ -122,7 +126,7 @@ bool Model::createFromDefn()
 			submodel->createSubModelParts(submodelPartMapping);
 			addSubmodel(submodel);
 		} 
-		catch (Ogre::Exception e) 
+		catch (Ogre::Exception& e) 
 		{
 			//std::cerr << "Error when loading the submodel " << entityName << ".\n";
 			S_LOG_FAILURE( "Submodel load error for " + entityName );
@@ -192,6 +196,12 @@ void Model::hidePart(std::string partName)
 void Model::setVisible(bool visible) 
 {
 	mVisible = visible;
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+		(*I)->getEntity()->setVisible(visible);		
+	}
+	
 }
 
 
@@ -277,6 +287,31 @@ void Model::resetAnimations()
 }
 
 
+void Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
+{
+	std::string boneName;
+	for (ModelDefinition::AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I < _masterModel->mAttachPoints.end();  ++I) {
+		if (I->Name == attachPointName) {
+			boneName = I->BoneName;
+			break;
+		}
+	}
+	if (boneName != "") {
+		attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, scale);
+	}
+}
+
+bool Model::hasAttachPoint(const std::string& attachPoint) const
+{
+	for (ModelDefinition::AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I < _masterModel->mAttachPoints.end();  ++I) {
+		if (I->Name == attachPoint) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 {
@@ -310,22 +345,126 @@ Ogre::SkeletonInstance * Model::getSkeleton ()
 
 void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
+	attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, Ogre::Vector3::UNIT_SCALE);
+}
+
+void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition, const Ogre::Vector3 &scale)
+{
 	if (mSubmodels.size()) {
 		SubModel* submodel = *(mSubmodels.begin());
-		submodel->getEntity()->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
+		Ogre::Entity* entity = submodel->getEntity();
+		
+		Ogre::SkeletonInstance* skeletonInstance = getSkeleton();
+
+        if (mChildObjectList.find(pMovable->getName()) != mChildObjectList.end())
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
+                "An object with the name " + pMovable->getName() + " already attached",
+                "Entity::attachObjectToBone");
+        }
+        if(pMovable->isAttached())
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Object already attached to a sceneNode or a Bone", 
+                "Entity::attachObjectToBone");
+        }
+        if (!entity->hasSkeleton())
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "This entity's mesh has no skeleton to attach object to.", 
+                "Entity::attachObjectToBone");
+        }
+        Ogre::Bone* bone = skeletonInstance->getBone(boneName);
+        if (!bone)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Cannot locate bone named " + boneName, 
+                "Entity::attachObjectToBone");
+        }
+
+        Ogre::TagPoint *tp = skeletonInstance->createTagPointOnBone(
+            bone, offsetOrientation, offsetPosition);
+        tp->setParentEntity(entity);
+        tp->setChildObject(pMovable);
+		tp->setScale(scale);
+
+        attachObjectImpl(pMovable, tp);
+
+        // Trigger update of bounding box if necessary
+        if (mParentNode)
+            mParentNode->needUpdate();
 	} else {
 		Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
 	}	
 }
 
+//-----------------------------------------------------------------------
+void Model::attachObjectImpl(Ogre::MovableObject *pObject, Ogre::TagPoint *pAttachingPoint)
+{
+	assert(mChildObjectList.find(pObject->getName()) == mChildObjectList.end());
+	mChildObjectList[pObject->getName()] = pObject;
+	pObject->_notifyAttached(pAttachingPoint, true);
+}
+
+
 Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableName)
 {
-	if (mSubmodels.size()) {
-		SubModel* submodel = *(mSubmodels.begin());
-		return submodel->getEntity()->detachObjectFromBone(movableName);
+	Ogre::Entity::ChildObjectList::iterator i = mChildObjectList.find(movableName);
+
+	if (i == mChildObjectList.end())
+	{
+		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No child object entry found named " + movableName, 
+			"Entity::detachObjectFromBone");
 	}
-	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");		
+	MovableObject *obj = i->second;
+	detachObjectImpl(obj);
+	mChildObjectList.erase(i);
+
+	// Trigger update of bounding box if necessary
+	if (mParentNode)
+		mParentNode->needUpdate();
+
+	return obj;
+	
 }
+
+
+//-----------------------------------------------------------------------
+void Model::detachAllObjectsFromBone(void)
+{
+	detachAllObjectsImpl();
+
+	// Trigger update of bounding box if necessary
+	if (mParentNode)
+		mParentNode->needUpdate();
+}
+//-----------------------------------------------------------------------
+void Model::detachObjectImpl(MovableObject* pObject)
+{
+	Ogre::TagPoint* tp = static_cast<Ogre::TagPoint*>(pObject->getParentNode());
+
+	// free the TagPoint so we can reuse it later
+	getSkeleton()->freeTagPoint(tp);
+
+	pObject->_notifyAttached((Ogre::TagPoint*)0);
+}
+//-----------------------------------------------------------------------
+void Model::detachAllObjectsImpl(void)
+{
+	Ogre::Entity::ChildObjectList::const_iterator i, iend;
+	iend = mChildObjectList.end();
+	for (i = mChildObjectList.begin(); i != iend; ++i)
+	{
+		detachObjectImpl(i->second);
+	}
+	mChildObjectList.clear();
+}
+
+
+
+
+
+
+
+
+
 
 /** Overridden - see MovableObject.
 */
@@ -338,7 +477,16 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 			SubModel* submodel = *I;
 			submodel->getEntity()->_notifyCurrentCamera(cam);		
 		}
+		
+		// Notify any child objects
+		Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
+		Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
+		for( ; child_itr != child_itr_end; child_itr++)
+		{
+			(*child_itr).second->_notifyCurrentCamera(cam);
+		}
 	}
+	
 	
 }
 
@@ -433,7 +581,18 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 			SubModel* submodel = *I;
 			submodel->getEntity()->_updateRenderQueue(queue);
 		}
+		
+		Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
+		Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
+		for( ; child_itr != child_itr_end; child_itr++)
+		{
+			if ((*child_itr).second->isVisible())
+				(*child_itr).second->_updateRenderQueue(queue);
+		}
+		
 	}	
+	
+	
 }
 
 
