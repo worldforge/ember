@@ -23,6 +23,7 @@
 #include <Mercator/Shader.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
+#include <Mercator/AreaShader.h>
 
 
 
@@ -32,6 +33,7 @@ class TerrainShader{
 public:
 
 	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const Ogre::String textureName, Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre::MaterialPtr material, Mercator::Shader* shader);
 	virtual ~TerrainShader();
 	
 	Mercator::Shader* getShader() const;
@@ -52,6 +54,9 @@ public:
 	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName);
 	
 	inline int getTerrainIndex() const { return mTerrainIndex;}
+
+	void addMaterialToTechnique(Ogre::Technique*  technique, Ogre::String splatTextureName);
+	void addSplatToTechnique(Ogre::Technique*  technique, Ogre::String splatTextureName);
 	
 	
 	/**
@@ -66,6 +71,7 @@ protected:
 	Mercator::Shader* mShader;
 	Mercator::Terrain* mTerrain;
 	int mTerrainIndex;
+	Ogre::MaterialPtr mMaterial;
 };
 
 }
