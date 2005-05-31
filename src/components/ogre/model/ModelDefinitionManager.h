@@ -44,12 +44,18 @@ public:
 	inline Ogre::SceneManager* getSceneManager() const { return mSceneManager; }
 	inline void setSceneManager(Ogre::SceneManager* sceneManager) { mSceneManager = sceneManager; }
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	
+	const ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
 protected:
 
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
         const Ogre::NameValuePairList* createParams);
 	Ogre::SceneManager* mSceneManager;
+	
+	typedef std::map<int, ModelDefinition::AreaDefinition> AreaDefinitionStore;
+	AreaDefinitionStore mAreaDefinitions;
+	void loadAreas();
 
 };
 

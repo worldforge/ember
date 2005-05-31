@@ -55,13 +55,44 @@ ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0)
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
+	
+	loadAreas();
 }
+
+
 
 ModelDefinitionManager::~ModelDefinitionManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 }
 
+void ModelDefinitionManager::loadAreas() {
+	ModelDefinition::AreaDefinition def;
+	def.Id = 6; //oak
+	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/ground.png";
+	mAreaDefinitions[def.Id] = def;
+	
+	def = ModelDefinition::AreaDefinition();
+	def.Id = 7; //ploughed field
+	def.MaterialName = "/global/environment/ground/ploughed_field";
+	mAreaDefinitions[def.Id] = def;
+	
+	def = ModelDefinition::AreaDefinition();
+	def.Id = 5; //sty
+	def.TextureName = "sand.png";
+	mAreaDefinitions[def.Id] = def;
+	
+}
+
+const ModelDefinition::AreaDefinition* ModelDefinitionManager::getAreaDefinition(int layer) const
+{
+
+	AreaDefinitionStore::const_iterator I = mAreaDefinitions.find(layer);
+	if (I != mAreaDefinitions.end()) {
+		return &(I->second);
+	}
+	return 0;
+}
 
 void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
