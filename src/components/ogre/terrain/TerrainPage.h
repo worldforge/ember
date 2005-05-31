@@ -47,6 +47,12 @@ class FoliageArea;
 TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 
+struct PageSegment
+{
+	TerrainPosition pos;
+	Mercator::Segment* segment;
+};
+
 /**
 
 This is a bridge class between one Ogre::TerrainPage instance and one or many Mercator::Segment.
@@ -129,8 +135,21 @@ public:
 	 */
 	void addShader(TerrainShader* shader);
 	
+	void updateShaderTexture(TerrainShader* shader);
+	
+	void populateSurfaces();
+	
+	
 private:
 
+
+	void addShaderToSimpleTechnique(Ogre::Technique* technique, TerrainShader* shader);
+
+	typedef std::map<TerrainShader*, Ogre::TexturePtr> ShaderTextureMap;
+	ShaderTextureMap mShaderTextures;
+	
+	typedef std::vector<PageSegment> SegmentVector;
+	SegmentVector mValidSegments;
 
 	/**
 	a list of the shaders to be used on the page
@@ -195,6 +214,8 @@ private:
 	 * @return 
 	 */
 	void generateTerrainTechniqueComplex(Ogre::Technique* technique);
+	
+	void generateTerrainTechniqueComplexAtlas(Ogre::Technique* technique);
 	
 	/**
 	EmberOgre::Shaders used for this page
