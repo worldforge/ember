@@ -998,7 +998,7 @@ bool TiXmlDocument::LoadFile( Ogre::DataStreamPtr stream ,TiXmlEncoding encoding
 		TIXML_STRING data;
 		data.reserve( length );
 
-		const int BUF_SIZE = 2048;
+		const int BUF_SIZE = length;
 		char buf[BUF_SIZE];
 
 		while( stream->read( buf, BUF_SIZE ) )
