@@ -89,7 +89,12 @@ void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& st
 void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
 	_XMLDoc = new TiXmlDocument();
-	_XMLDoc->LoadFile(stream); //load from data stream
+	bool success = _XMLDoc->LoadFile(stream); //load from data stream
+	
+	if (!success) {
+		S_LOG_FAILURE("Failed to load modeldefinition file!");
+		return;
+	}
 	
 	TiXmlElement* elem;
 
@@ -106,7 +111,7 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 		} else {
 			name = tmp;
 		}
-		
+				
 		ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
 		readModel(modelDef, smElem);
 		modelDef->setValid(true);
@@ -153,6 +158,11 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	if (elem)
 		readActions(modelDef, elem);
 
+	//attachpoints
+	elem = modelNode->FirstChildElement("attachpoints");
+	if (elem)
+		readAttachPoints(modelDef, elem);
+		
 }
 
 
@@ -309,8 +319,8 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 			if (tmp) { 
 				soundDef.Name = tmp;
 				tmp =  animElem->Attribute("repeat");
-				if (tmp && std::string(tmp) == "true") { 
-					soundDef.Repeat = true;
+				if (tmp) { 
+					soundDef.Repeat = Ogre::StringConverter::parseBool(tmp);
 				}
 				actionDef.Sounds.push_back(soundDef);
 			}
@@ -357,5 +367,37 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 		S_LOG_FAILURE( "  No anim parts found !!" );
 	}
 }
+
+
+void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode)
+{
+	ModelDefinition::AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
+	
+	const char* tmp = 0;
+	bool nopartfound = true;
+
+	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
+            apElem != 0; apElem = apElem->NextSiblingElement())
+	{
+		ModelDefinition::AttachPointDefinition attachPointDef;
+		nopartfound = false;
+
+		// name
+		tmp =  apElem->Attribute("name");
+		if (tmp)
+			attachPointDef.Name = tmp;
+		S_LOG_INFO( "  Add attachpoint  : "+ attachPointDef.Name );
+
+		// weight
+		tmp =  apElem->Attribute("bone");
+		if (tmp)
+			attachPointDef.BoneName = tmp;
+
+
+		attachPoints.push_back(attachPointDef);
+	}
+
+}
+
 
 } //end namespace

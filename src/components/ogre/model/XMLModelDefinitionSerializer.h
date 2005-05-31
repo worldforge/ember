@@ -54,6 +54,7 @@ private:
 	void readSubEntities(TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part);
 	void readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode);
 	void readAnimationParts(TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action);
+	void readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode);
 
 };
 
