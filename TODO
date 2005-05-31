@@ -17,6 +17,7 @@ sun
 * move the input system to something more like the one used in sear, which will allow the user to define the key bindings for different actions
 * add a basepoint editor
 * add mouselook toggle, perhaps caps lock
+* add a check for nvidia cards and SGI Mesa libGL, and if so warn the user
 
 
 
