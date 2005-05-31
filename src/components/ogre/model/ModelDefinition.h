@@ -42,6 +42,14 @@ class ModelDefinition : public Ogre::Resource {
 	friend class Model;
 
 public:
+
+	struct AreaDefinition
+	{
+		int Id;
+		std::string TextureName;
+		std::string MaterialName;
+	};
+	
     //th ModelDefinition(const Ogre::String& name, const Ogre::String& path);
 
 	ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
@@ -67,6 +75,14 @@ protected:
 
 
 private:
+
+
+	struct AttachPointDefinition
+	{
+		std::string Name;
+		std::string BoneName;
+	};
+
 	struct AnimationDefinition
 	{
 		std::string Name;
@@ -113,6 +129,9 @@ private:
 	
 	std::vector<SubModelDefinition> mSubModels;
 	std::vector<ActionDefinition> mActions;
+	
+	typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
+	AttachPointDefinitionStore mAttachPoints;
 	
 	unsigned short mUseScaleOf;
 	Ogre::Real mScale;
