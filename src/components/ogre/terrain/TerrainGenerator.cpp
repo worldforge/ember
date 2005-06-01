@@ -35,7 +35,9 @@
 
 #include "TerrainGenerator.h"
 #include "TerrainPage.h"
-
+#include <Mercator/Area.h>
+#include "model/ModelDefinition.h"
+#include "model/ModelDefinitionManager.h"
 
 
 using namespace Ogre;
@@ -43,7 +45,7 @@ namespace EmberOgre {
 
 
 TerrainGenerator::TerrainGenerator()
-
+: mGrassShader(0)
 {
 	//new Foliage(EmberOgre::getSingleton().getSceneManager());
 	
@@ -58,10 +60,14 @@ TerrainGenerator::TerrainGenerator()
     createShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader());
 	
     createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
+ 
+ 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
 
-	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
-//     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f))); // Underwater
-//     this->addShader(new TerrainShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f))); // Snow
+
+
+
+//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
+//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
 
 
 //    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
@@ -73,6 +79,7 @@ TerrainGenerator::TerrainGenerator()
 
 
     EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
+	Ogre::Root::getSingleton().addFrameListener(this);
 
 }
 
@@ -145,6 +152,67 @@ TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Me
 	mBaseShaders.push_back(shader);
 	mShaderMap[shader->getShader()] = shader;
 	return shader;
+}
+
+TerrainShader* TerrainGenerator::createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader)
+{
+	int index = mShaderMap.size();
+    TerrainShader* shader = new TerrainShader(mTerrain, index, material, mercatorShader);
+
+	mBaseShaders.push_back(shader);
+	mShaderMap[shader->getShader()] = shader;
+	return shader;
+}
+
+
+
+void TerrainGenerator::addArea(Mercator::Area* area)
+{
+	mTerrain->addArea(area);
+	if (!mAreaShaders.count(area->getLayer())) {
+		TerrainShader* shader;
+		const ModelDefinition::AreaDefinition* areaDef = ModelDefinitionManager::getSingleton().getAreaDefinition(area->getLayer());
+		if (areaDef) {
+			if (areaDef->MaterialName != "") {
+				Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(areaDef->MaterialName));
+				if (!material.isNull()) {
+					material->load();
+					shader = createShader(material, new Mercator::AreaShader(area->getLayer()));
+				} else {
+					return;
+				}
+			} else {
+				shader = createShader(areaDef->TextureName, new Mercator::AreaShader(area->getLayer()));
+			}
+		}
+		mAreaShaders[area->getLayer()] = shader;
+	}
+	markShaderForUpdate(mAreaShaders[area->getLayer()]);
+}
+
+void TerrainGenerator::markShaderForUpdate(TerrainShader* shader)
+{
+	mShadersToUpdate.insert(shader);
+}
+
+bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
+{
+	//update shaders that needs updating
+	if (mShadersToUpdate.size()) {
+		for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+			J->second->populateSurfaces();
+		}	
+		
+		for (ShaderSet::iterator I = mShadersToUpdate.begin(); I != mShadersToUpdate.end(); ++I) {
+			for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+				J->second->updateShaderTexture(*I);
+			}
+		}	
+	}
+	
+	mShadersToUpdate.clear();
+	return true;
+
 }
 
 
@@ -225,16 +293,19 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	for (i = 0; i < xNumberOfPages; ++i) {
 		for (j = 0; j < yNumberOfPages; ++j) {
 			TerrainPosition pos(xStart + i, yStart + j);
-			TerrainPage page(pos, mShaderMap, this);
+			std::stringstream ss;
+			ss << pos;
+			TerrainPage* page = new TerrainPage(pos, mShaderMap, this);
+			mPages[ss.str()] = page;
 			for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
-				page.addShader(*I);
+				page->addShader(*I);
 			}
-			page.generateTerrainMaterials();
-			if (showFoliage) {
-				page.createFoliage(mGrassShader);
+			page->generateTerrainMaterials();
+			if (showFoliage && mGrassShader) {
+				page->createFoliage(mGrassShader);
 			}
 			if (alsoPushOntoTerrain) {
-				mTerrainPageSource->addPage(&page);
+				mTerrainPageSource->addPage(page);
 			}
 		}
 	}

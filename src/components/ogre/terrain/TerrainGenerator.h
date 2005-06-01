@@ -63,6 +63,7 @@ namespace EmberOgre {
 	
 class TerrainShader;
 class EmberTerrainPageSource;
+class TerrainPage;
 
 
 /**
@@ -73,13 +74,16 @@ class EmberTerrainPageSource;
  * It works closely with EmberTerrainPageSource.
  * 
  */
-class TerrainGenerator
+class TerrainGenerator :  public Ogre::FrameListener
 {
 public:
 
 	TerrainGenerator();
 	virtual ~TerrainGenerator();
 
+	
+	virtual bool frameStarted(const Ogre::FrameEvent & evt);
+	
 	Ogre::SceneNode* generateTerrain();
     void setBasePoint(int x, int y, float z) {mTerrain->setBasePoint(x,y,z);}
 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
@@ -113,13 +117,25 @@ public:
 	 * @return 
 	 */
 	int getSegmentSize() const;
+	
+	void addArea(Mercator::Area* area);
 
 // 	GroundCover* mGround;
 // 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
 
 protected:
+	typedef std::map<int,TerrainShader*> AreaShaderstore;
+  	AreaShaderstore mAreaShaders;
 
-
+	void markShaderForUpdate(TerrainShader* shader);
+	
+	typedef std::set<TerrainShader*> ShaderSet;
+	ShaderSet mShadersToUpdate;
+	
+	typedef std::map<std::string, TerrainPage*> PageStore;
+	PageStore mPages;
+	
+	
 	TerrainShader* mGrassShader;
 	typedef std::map<std::string, Ogre::Material*> MaterialStore;
 	MaterialStore materialStore;
@@ -164,6 +180,8 @@ protected:
 	 * @return 
 	 */
 	TerrainShader* createShader(const std::string& textureName, Mercator::Shader* mercatorShader);
+	
+	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
 	EmberTerrainPageSource* mTerrainPageSource;
 };
