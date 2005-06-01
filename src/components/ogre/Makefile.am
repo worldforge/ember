@@ -59,17 +59,17 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 	$(top_builddir)/src/services/libServices.a $(EMBER_EXT_LIBS)
 
 
-ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp \
-	MediaDeployer.cpp AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp \
-	MotionManager.cpp AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp \
-	Avatar.h MathConverter.h ConsoleObjectImpl.h MediaDeployer.h \
-	AvatarController.h environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h \
-	TerrainShader.h GUIManager.h MousePicker.h EmberEntityFactory.cpp EmberEntityFactory.h \
-	EmberEntity.h EmberEventProcessor.cpp EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
-	EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
-	AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
-	WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp TerrainPage.h
-#TerrainArea.cpp TerrainArea.h
+ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp 	MediaDeployer.cpp \
+	AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp 	MotionManager.cpp \
+	AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp 	Avatar.h \
+	MathConverter.h ConsoleObjectImpl.h MediaDeployer.h 	AvatarController.h \
+	environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h 	TerrainShader.h \
+	GUIManager.h MousePicker.h EmberEntityFactory.cpp EmberEntityFactory.h \
+		EmberEntity.h EmberEventProcessor.cpp EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
+		EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
+		AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
+		WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp TerrainPage.h TerrainArea.cpp \
+	TerrainArea.h FreeCameraController.cpp
 
 
 
@@ -99,3 +99,4 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg 
 
 
+noinst_HEADERS = FreeCameraController.h
