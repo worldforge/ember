@@ -41,7 +41,7 @@
 #include "AvatarCamera.h"
 
 #include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
-
+#include <Mercator/Area.h>
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
@@ -78,13 +78,25 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity)
 {
-	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	Ogre::Vector3 position = sceneNode->getPosition();
-	//get the height from Mercator through the TerrainGenerator
-	assert(mTerrainGenerator);
-	TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
-	float height = mTerrainGenerator->getHeight(pos);
-	sceneNode->setPosition(position.x, height,position.z);
+	bool adjustHeight = true;
+   if (entity->hasAttr("mode")) {
+		const Atlas::Message::Element &modeElem = entity->valueOfAttr("mode");
+		std::string mode = modeElem.asString();
+		if (mode == "swimming") {
+			adjustHeight = false;
+		}
+   }
+   
+   if (adjustHeight) {
+	
+		Ogre::SceneNode* sceneNode = entity->getSceneNode();
+		Ogre::Vector3 position = sceneNode->getPosition();
+		//get the height from Mercator through the TerrainGenerator
+		assert(mTerrainGenerator);
+		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+		float height = mTerrainGenerator->getHeight(pos);
+		sceneNode->setPosition(position.x, height,position.z);
+	}
 
 }
 
@@ -111,6 +123,11 @@ float WorldEmberEntity::getHeightPositionForContainedNode(const TerrainPosition&
  {
  	Eris::Entity::onLocationChanged(oldLocation);
  }
+ 
+void WorldEmberEntity::addArea(TerrainArea* area)
+{
+	mTerrainGenerator->addArea(area->getArea());
+}
 
 
 

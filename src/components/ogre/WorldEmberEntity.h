@@ -48,7 +48,9 @@ protected:
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
-	
+
+	void addArea(TerrainArea* area);
+		
 	Foliage* mFoliage;
 	Water* mWater;
 	Sun* mSun;
