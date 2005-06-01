@@ -28,10 +28,9 @@
 	
 	#include <Eris/Entity.h>
 	#include <Eris/View.h>
-	#include <Eris/PollDefault.h>
-	#include <Eris/Log.h>
-	#include <Eris/TypeInfo.h>
-
+	//#include <Eris/PollDefault.h>
+	//#include <Eris/Log.h>
+	//#include <Eris/TypeInfo.h>
 //#include <OgreMemoryMacros.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -46,6 +45,7 @@
 
 
 #include <OgreException.h>
+#include "TerrainArea.h"
 
 
 
@@ -62,8 +62,15 @@
 // 	}
 // }
 
+namespace Mercator
+{
+	class Area;
+}
+
 namespace EmberOgre {
 class EmberEntityFactory;
+class Model;
+//class TerrainArea;
 
 /*
  * A representation of an Eris::Entity, ie. a world entity.
@@ -83,6 +90,14 @@ public:
 		CM_NATURE = 1<<3,
 		CM_UNDEFINED = 1<<4,
 		CM_TERRAIN = 1<<5
+	};
+	
+	enum PlacementMode
+	{
+		PM_DEFAULT = 1<<0,
+		PM_SWIMMING = 1<<1,
+		PM_FLOATING = 1<<2,
+		PM_PROJECTILE = 1<<3
 	};
 
 	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
@@ -138,10 +153,25 @@ public:
 	 * @param visible 
 	 */
 	virtual void setVisible(bool visible);
+	
 
+	/**
+	 *    gets the location as cast to an EmberEntity
+	 * @return 
+	 */
+	inline EmberEntity* getEmberLocation() const { return static_cast<EmberEntity*>(getLocation());}
+	
+	virtual void attachToPointOnModel(const std::string& point, Model* model) {};
+	virtual void detachFromModel() {};
+	
+	inline bool isInitialized() const { return mIsInitialized; }
+
+	inline PlacementMode getPlacementMode() const { return mPlacementMode; }
 
 protected: 
 
+	bool mIsInitialized;
+	
 	/*
 	 * Overridden from Eris::Entity
 	 * @see Eris::Entity
@@ -155,6 +185,8 @@ protected:
     virtual void onAction(const Atlas::Objects::Operation::Action& act);
     virtual void onImaginary(const Atlas::Objects::Root& act);
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
+	
+	virtual void addArea(TerrainArea* area);
 	
 	
 	/* 
@@ -176,6 +208,10 @@ protected:
 	Ogre::SceneManager* mSceneManager;
 	
 	Eris::View* mView;
+	
+	TerrainArea mTerrainArea;
+	
+	PlacementMode mPlacementMode;
 
 };
 

@@ -25,9 +25,10 @@
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "EmberEntity.h"
+#include "TerrainArea.h"
 
 #include "EmberOgre.h"
-
+#include <Mercator/Area.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
 
 using namespace Ogre;
@@ -40,15 +41,17 @@ EmberEntity::EmberEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::Typ
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
 mSceneManager(sceneManager)
+, mIsInitialized(false)
 , mView(vw)
 , Eris::Entity(id, ty, vw) 
+, mTerrainArea(this)
 {
 	createSceneNode();
 }
 
 EmberEntity::~EmberEntity()
 {
-	Ogre::SceneNode *parent = dynamic_cast<Ogre::SceneNode*>(getSceneNode()->getParent());
+	Ogre::SceneNode *parent = static_cast<Ogre::SceneNode*>(getSceneNode()->getParent());
 	if (parent) {
 		parent->removeAndDestroyChild(getSceneNode()->getName());
 	}
@@ -68,8 +71,17 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	if (getOrientation().isValid()) {
 		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	}
-	//adjustHeightPosition();
-	S_LOG_INFO( "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")")
+	std::stringstream ss;
+	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")";
+	S_LOG_INFO( ss.str());
+	
+	if (hasAttr("area")) {
+		mTerrainArea.init();
+		addArea(&mTerrainArea);
+	}
+	
+	mIsInitialized = true;
+	
 }
 
 
@@ -273,6 +285,9 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	}
 	Eris::Entity::onLocationChanged(oldLocation);
+	
+	//if we're attached to something, detach from it
+	detachFromModel();
 
 	EmberEntity* newLocationEntity = static_cast<EmberEntity*>(getLocation());
 	
@@ -352,6 +367,15 @@ std::vector< std::string > EmberEntity::getSuggestedResponses( ) const
 bool EmberEntity::hasSuggestedResponses( ) const
 {
 	return mSuggestedResponses.size() > 0;
+}
+
+
+void EmberEntity::addArea(TerrainArea* area)
+{
+//just pass it on
+	if (getEmberLocation()) {
+		getEmberLocation()->addArea(area);
+	}
 }
 
 /*
