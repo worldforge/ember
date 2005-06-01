@@ -96,17 +96,17 @@ Avatar::~Avatar()
 void Avatar::createAvatar()
 {
 	// The avatar itself
-	mAvatarNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mAvatarNode = static_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	mAvatarNode->setPosition(Ogre::Vector3(0,0,0));
 	//mAvatarNode->setOrientation(0,1,0,0);
 	//mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
 	
 	// Model Node and Entity for display
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
-	mAvatarModelNode = dynamic_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
+	mAvatarModelNode = static_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
 	
 	Model* model = new Model("AvatarEntity");
-	model->create("settler");
+model->create("settler");
 	
 // 	Model* model = Model::Create("spider.modeldef.xml", "AvatarEntity");
 	//Model::Create("malebuilder.modeldef.xml", "AvatarEntity1");
