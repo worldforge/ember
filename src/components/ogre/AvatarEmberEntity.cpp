@@ -96,6 +96,7 @@ void AvatarEmberEntity::onChildAdded(Entity *e)
 	//mAvatar->EventAddedEntityToInventory.emit(static_cast<EmberEntity*>(e));
 	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
 	//PersonEmberEntity::addMember(e);
+	EmberPhysicalEntity::onChildAdded(e);
 	
 }
 
@@ -104,6 +105,7 @@ void AvatarEmberEntity::onChildAdded(Entity *e)
 void AvatarEmberEntity::onChildRemoved(Entity *e)
 {
 	mAvatar->EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(e));
+	EmberPhysicalEntity::onChildRemoved(e);
 //	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
 //	PersonEmberEntity::rmvMember(e);	
 }
