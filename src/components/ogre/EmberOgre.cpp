@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.86  2005-05-16 23:25:15  erik
+ *      Revision 1.87  2005-06-01 00:23:35  erik
+ *      2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added method for random access to entities in the main Eris::View
+ *
+ *      Revision 1.86  2005/05/16 23:25:15  erik
  *      2005-05-17  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/Avatar.cpp, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberOgre.cpp: updates for new ModelDefinitions system
@@ -1291,7 +1297,7 @@ void EmberOgre::createScene(void)
 */
 	//set fog, do this before calling TerrainSceneManager::setViewGeometry 
 //	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
-mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
 	Ogre::ColourValue fadeColour(1,1,1);
 	double fogstartDistance = 192; //default for fog
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
@@ -1314,8 +1320,15 @@ mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
 void EmberOgre::connectViewSignals(Eris::View* world)
 {
+	mWorldView = world;
     world->registerFactory(mEmberEntityFactory);
 }
+
+EmberEntity* EmberOgre::getEntity(const std::string & id) const
+{
+	return static_cast<EmberEntity*>(mWorldView->getEntity(id));
+}
+
 
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
 {

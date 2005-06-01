@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.44  2005-05-09 18:41:22  erik
+ *      Revision 1.45  2005-06-01 00:23:35  erik
+ *      2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added method for random access to entities in the main Eris::View
+ *
+ *      Revision 1.44  2005/05/09 18:41:22  erik
  *      2005-05-09  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -454,6 +460,8 @@ class ModelDefinitionManager;
 
 class Jesus;
 
+class EmberEntity;
+
 
 
 
@@ -476,11 +484,11 @@ public:
     /// Standard destructor
     ~EmberOgre();
 
-	bool frameStarted(const Ogre::FrameEvent & evt);
-	inline bool frameEnded(const Ogre::FrameEvent & evt)
+	virtual bool frameStarted(const Ogre::FrameEvent & evt);
+/*	inline bool frameEnded(const Ogre::FrameEvent & evt)
 	{
 		return true;
-	}
+	}*/
 	
     /**
      * starts the main app
@@ -542,6 +550,7 @@ public:
 	 */
 	Ogre::SceneNode* getRootSceneNode() const;
 	
+	EmberEntity* getEntity(const std::string & id) const;
 
 
 
@@ -632,6 +641,8 @@ protected:
 	bool mKeepOnRunning;
 	
 	Jesus* mJesus;
+	
+	Eris::View* mWorldView;
 
 
 
