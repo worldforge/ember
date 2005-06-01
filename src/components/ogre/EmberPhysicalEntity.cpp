@@ -37,6 +37,8 @@ namespace EmberOgre {
 EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 mAnimationState_Walk(NULL),
 mScaleNode(nodeWithModel),
+mModelAttachedTo(0), 
+mModelMarkedToAttachTo(0),
 EmberEntity(id, ty, vw, sceneManager)
 {
 	mModel = static_cast<Model*>(getScaleNode()->getAttachedObject(0));
@@ -46,7 +48,7 @@ EmberEntity(id, ty, vw, sceneManager)
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
 	delete mModel;
-	Ogre::SceneNode *parent = dynamic_cast<Ogre::SceneNode*>(getScaleNode()->getParent());
+	Ogre::SceneNode *parent = static_cast<Ogre::SceneNode*>(getScaleNode()->getParent());
 	if (parent) {
 		parent->removeAndDestroyChild(getScaleNode()->getName());
 	}
@@ -66,6 +68,7 @@ void EmberPhysicalEntity::setVisible(bool visible)
 {
 	EmberEntity::setVisible(visible);
 	getScaleNode()->setVisible(visible, false);	
+	//getModel()->setVisible(visible);
 }
 
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
@@ -79,6 +82,13 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	getSceneNode()->addChild(getScaleNode());
 
 	getModel()->setUserObject(this);
+	
+	//check if we should do delayed attachment
+	if (mModelMarkedToAttachTo) {
+		attachToPointOnModel(mAttachPointMarkedToAttachTo, mModelMarkedToAttachTo);
+		mModelMarkedToAttachTo = 0;
+		mAttachPointMarkedToAttachTo = "";
+	}
 }
 
 
@@ -107,72 +117,137 @@ void EmberPhysicalEntity::loadAnimationsFromModel()
 }
 
 
+void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model* model)
+{
+	//if we're not initialized, delay attachment until after init
+	if (!isInitialized()) {
+		mModelMarkedToAttachTo = model;
+		mAttachPointMarkedToAttachTo = point;
+	} else {
+		if (model->hasAttachPoint(point)) {
+			getScaleNode()->detachObject(getModel());
+			getModel()->setVisible(true);
+			model->attachObjectToAttachPoint( point, getModel(), getScaleNode()->getScale());
+			mModelAttachedTo = model;
+		}
+	}
+}
+
+void EmberPhysicalEntity::detachFromModel()
+{
+	if (mModelAttachedTo) {
+		mModelAttachedTo->detachObjectFromBone(getModel()->getName());
+		getScaleNode()->attachObject(getModel());
+		checkVisibility(isVisible());
+		mModelAttachedTo = 0;
+	}
+}
+
+
+bool EmberPhysicalEntity::nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
+    if (str == "right_hand_wield") {
+        std::cout << "set right_hand_wield to " << v.asString() << std::endl;
+        std::string id = v.asString();
+        if (id.empty()) {
+			detachEntity("right_hand_wield");
+            //m_attached.erase("right_hand_wield");
+        } else {
+			//detach first
+			detachEntity("right_hand_wield");
+			attachEntity("right_hand_wield", id);
+        }
+		return true;
+    }
+	return Eris::Entity::nativeAttrChanged(str, v);
+
+}
+
+
+
+void EmberPhysicalEntity::onChildAdded(Entity *e) 
+{
+	Eris::Entity::onChildAdded(e);
+	//see if it's in our attach map
+	if (mAttachedEntities.find(e->getId()) != mAttachedEntities.end()) {
+		EmberEntity* emberEntity = static_cast<EmberEntity*>(e);
+		emberEntity->attachToPointOnModel(mAttachedEntities[e->getId()], getModel());
+	}
+	
+/*	if (hasChild(entityId)) {
+	}*/
+	
+	
+}
+
+
+
+void EmberPhysicalEntity::onChildRemoved(Entity *e)
+{
+	//NOTE: we don't have to do detachment here, like we do attachment in onChildAdded, since that is done by the EmberEntity::onLocationChanged(...) method
+	Eris::Entity::onChildRemoved(e);
+}
 
 
 void EmberPhysicalEntity::scaleNode() {
 	if (getModel()->getRotation()) {
 		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
 	}
+		
+	const Ogre::AxisAlignedBox ogreBoundingBox = getModel()->getWorldBoundingBox(true);
+	const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
+	const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
+
+	if (hasBBox()) {
+
+		const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
+		const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
+		const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
+		
+		Ogre::Real scaleX;		
+		Ogre::Real scaleY;		
+		Ogre::Real scaleZ;		
+
+		
+		
+		switch (getModel()->getUseScaleOf()) {
+			case Model::MODEL_HEIGHT:
+				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+				break;
+			case Model::MODEL_WIDTH:
+				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+				break;
+			case Model::MODEL_DEPTH:
+				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+				break;
+				
+			default:				
+				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+		}
+			
+		
+		//Ogre::Real finalScale = std::max(scaleX, scaleY);
+		//finalScale = std::max(finalScale, scaleZ);
+		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
+		
+	} else if (!getModel()->getScale()) {
+		//set to small size
+		
+		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
+		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
+		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
+		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
+	}		
+
 	if (getModel()->getScale()) {
 		if (getModel()->getScale() != 1) {
 			//only scale if it's not 1
-			getScaleNode()->setScale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
+			getScaleNode()->scale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
 		}
-	} else {
-		const Ogre::AxisAlignedBox ogreBoundingBox = getModel()->getWorldBoundingBox(true);
-		const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
-		const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
-	
-		if (hasBBox()) {
+	}
 
-			const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
-			const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
-			const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
-			
-			Ogre::Real scaleX;		
-			Ogre::Real scaleY;		
-			Ogre::Real scaleZ;		
-
-			
-// 			if ((wfMax.x() - wfMin.x()) > 100 || (wfMax.y() - wfMin.y()) > 100 || (wfMax.z() - wfMin.z()) > 100) 
-// 			{
-// 				//big!!!
-// 				int i = 0;
-// 			}
-			
-			switch (getModel()->getUseScaleOf()) {
-				case Model::MODEL_HEIGHT:
-					scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-					break;
-				case Model::MODEL_WIDTH:
-					scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-					break;
-				case Model::MODEL_DEPTH:
-					scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
-					break;
-					
-				default:				
-					scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-					scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-					scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
-			}
-				
-			
-			//Ogre::Real finalScale = std::max(scaleX, scaleY);
-			//finalScale = std::max(finalScale, scaleZ);
-			getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-			
-		} else {
-			//set to small size
-			
-			Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
-			Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
-			Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
-			getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-		}		
-
-	}	
-	
+		
 }
 
 
@@ -199,6 +274,43 @@ void EmberPhysicalEntity::onMoved()
 	Eris::Entity::onMoved();
 	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
 }
+
+void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
+{
+	std::string entityId;
+	for(AttachedEntitiesStore::iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
+		if (I->second == attachPoint) {
+			entityId = I->first;
+			break;
+		}
+	}
+	
+	if (entityId != "") {
+		mAttachedEntities.erase(entityId);
+		if (hasChild(entityId)) {
+			//we already have the entity, do the detachment
+			EmberEntity* entity = EmberOgre::getSingleton().getEntity(entityId);
+			if (entity) {
+				entity->detachFromModel();
+			}
+		}
+	}
+}
+	
+void EmberPhysicalEntity::attachEntity(const std::string & attachPoint, const std::string & entityId)
+{
+	mAttachedEntities[entityId] = attachPoint;
+	if (hasChild(entityId)) {
+		//we already have the entity, do the attachment now, else we will just wait for the onChildAdded event
+		EmberEntity* entity = EmberOgre::getSingleton().getEntity(entityId);
+		if (entity) {
+			entity->attachToPointOnModel(attachPoint, getModel());
+		}
+	}
+
+}
+
+
 
 /*
 void EmberPhysicalEntity::handleTalk(const std::string &msg)

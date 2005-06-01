@@ -35,18 +35,14 @@ namespace EmberOgre {
 class EmberEntity;
 class Model;
 	
-/*
+/**
  * Represents a Ember entity with a physical representation in the world.
  * This is represented by a an Ogre::Entity.
  */
 class EmberPhysicalEntity : public EmberEntity{
 public:
 
-/*eris 1.3
-	EmberEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, Ogre::Entity* ogreEntity); 
-*/
 	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
-//	, Ogre::Entity* ogreEntity); 
 	virtual ~EmberPhysicalEntity();
 	
 	
@@ -65,8 +61,6 @@ public:
 
 	inline Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
 	{
-		//return EmberOgre::getSingleton().getSceneManager()->getSceneNode(getId() + "_scaleNode");
-	
 		return mScaleNode;
 	}	
 	
@@ -76,10 +70,32 @@ public:
 	
 	virtual void setVisible(bool visible);
 
+	virtual void attachToPointOnModel(const std::string& point, Model* model);
+	virtual void detachFromModel();
 	
 
 protected: 
 
+	/**
+	If the entity is attached to another entity, this is the model to which it is attached to.
+	This will be 0 if the entity isn't attached.
+	*/
+	Model* mModelAttachedTo;
+	
+	Model* mModelMarkedToAttachTo;
+	std::string mAttachPointMarkedToAttachTo;
+
+	virtual void onChildAdded(Entity *e);
+	virtual void onChildRemoved(Entity *e);
+
+
+	void detachEntity(const std::string & entityId);
+	void attachEntity(const std::string & attachPoint, const std::string & entityId);
+
+	virtual bool nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+
+	typedef std::map<std::string, std::string> AttachedEntitiesStore;
+	AttachedEntitiesStore mAttachedEntities;	
 
 	/* from eris 1.2 */
 	virtual void onMoved();
