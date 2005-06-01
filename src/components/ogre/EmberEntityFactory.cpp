@@ -77,13 +77,20 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Game
 //	Ember::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
 	Eris::Entity* emberEntity;
 /*    Eris::TypeInfoPtr type = mTypeService->getTypeForAtlas(ge);*/
+
+	bool isPhysical = true;
+	for (NonPhysicalTypeStore::const_iterator I = mNonPhysicalTypes.begin(); I != mNonPhysicalTypes.end(); ++I) {
+		if (type->isA(mTypeService->getTypeByName(*I))) {
+			isPhysical = false;
+		}
+	}
+
     if (ge->getId() == mAvatar->getId()) {
    	
     	AvatarEmberEntity* avatarEntity = createAvatarEntity(ge, type,  w);
     	emberEntity = avatarEntity;
  
-    } else if (type->isA(mTypeService->getTypeByName("boundary")) 
-    || type->isA(mTypeService->getTypeByName("weather"))) {
+    } else if (!isPhysical) {
 		fprintf(stderr, "TRACE - CREATE IMMATERIAL ENTITY\n");
 
     	//we don't want this to have any Ogre::Entity
@@ -200,6 +207,9 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	
 	Model* model = new Model(ge->getId());
 	bool result = model->create(typeName);
+	if (typeName == "axe") {
+		int i = 0;
+	}
 	
 // 	Model* model = Model::Create(typeName + ".modeldef.xml", ge->getId());
 	//Model* model = new Model(mSceneManager, ge->getId());
@@ -237,6 +247,11 @@ void EmberEntityFactory::loadTypeInfo()
 	mPersonSet.insert("merchant");
 	mPersonSet.insert("mercenary");
 	mPersonSet.insert("butcher");
+	
+	mNonPhysicalTypes.insert("boundary");
+	mNonPhysicalTypes.insert("weather");
+	mNonPhysicalTypes.insert("ploughed_field");
+
 		
 }
 
