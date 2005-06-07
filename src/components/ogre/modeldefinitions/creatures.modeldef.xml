@@ -1,6 +1,15 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
+	<model name="fish" usescaleof="width">
+		<submodels>
+			<submodel mesh="3d_objects/creatures/tubular/models/fish_01/fish_01.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
 	<model name="dog" usescaleof="height">
 		<submodels>
 			<submodel mesh="3d_objects/creatures/quadruped/models/dog/dog.mesh" >
@@ -145,7 +154,51 @@
 		</Actions>
 	</model>	
 	
+	<model name="cow" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/creatures/quadruped_v2/models/cow/Cow.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="idle">
+				<AnimationParts>
+					<animationpart name="Stand" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
 	
+	<model name="rabbit" usescaleof="height" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/quadruped_v2/models/bunny/RabbitHi.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="walk">
+				<AnimationParts>
+					<animationpart name="Run" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="idle">
+				<AnimationParts>
+					<animationpart name="SitUp" weight="1" />
+					<animationpart name="LookAround" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>	
 	
+
 	
 </models>

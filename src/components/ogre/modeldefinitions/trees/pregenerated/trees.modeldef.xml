@@ -10,7 +10,7 @@
 		</submodels>
 	</model>
 	
-	<model name="fir" usescaleof="height" >
+	<model name="fir" usescaleof="height" scale="2" >
 		<submodels>
 			<submodel mesh="3d_objects/plants/fir/models/fir/fir.mesh" >
 				<parts>
@@ -20,9 +20,19 @@
 		</submodels>
 	</model>
 	
-	<model name="oak" usescaleof="height"  >
+	<model name="oak" usescaleof="height" scale="2.6" >
 		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/Straight_up_tree/Straight_up_tree.mesh" >
+			<submodel mesh="3d_objects/plants/tree/models/oak_static/old_oak.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="oak_young" usescaleof="height" >
+		<submodels>
+			<submodel mesh="3d_objects/plants/tree/models/oak_02/oak_02.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>

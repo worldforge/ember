@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="settler" usescaleof="height" >
+	<model name="settler_" usescaleof="height" >
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/alpha_male.mesh" >
 				<parts>
@@ -56,25 +56,72 @@
 				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
 			</Action>
 		</Actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RightHand" />
+		</attachpoints>
 	</model>	
 
-	<model name="_settler" usescaleof="height" >
+	<model name="settler" usescaleof="height" >
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/AlphaMaleMesh.001.mesh" >
 				<parts>
-					<part name="Body" show="true" >
+					<part name="UpperLegs" show="false" >
 						<subentities>
 							<subentity name="am_Body_UpLeg" />
-							<subentity name="am_Body_UpForeArm" />
+						</subentities>
+					</part>      
+					<part name="Neck" show="true" >
+						<subentities>
 							<subentity name="am_Body_Neck" />
+						</subentities>
+					</part>      
+					<part name="LowerTorso" show="true" >
+						<subentities>
 							<subentity name="am_Body_LowerTors" />
+						</subentities>
+					</part>      
+					<part name="Hips" show="true" >
+						<subentities>
 							<subentity name="am_Body_Hips" />
+						</subentities>
+					</part>      
+					<part name="Feet" show="false" >
+						<subentities>
 							<subentity name="am_Body_Foot" />
+						</subentities>
+					</part>      
+					<part name="MiddleLegs" show="false" >
+						<subentities>
 							<subentity name="am_Body_MidLeg" />
+						</subentities>
+					</part>      
+					<part name="UpperTorso" show="false" >
+						<subentities>
 							<subentity name="am_Body_UpperTors" />
+						</subentities>
+					</part>      
+					<part name="Calves" show="false" >
+						<subentities>
 							<subentity name="am_Body_Calves" />
+						</subentities>
+					</part>      
+					<part name="UpperArms" show="false" >
+						<subentities>
 							<subentity name="am_Body_UpperArm" />
+						</subentities>
+					</part>      
+					<part name="UpperForeArms" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpForeArm" />
+						</subentities>
+					</part>      
+					<part name="LowerForeArms" show="true" >
+						<subentities>
 							<subentity name="am_Body_LowForeAr" />
+						</subentities>
+					</part>      
+					<part name="Hands" show="true" >
+						<subentities>
 							<subentity name="am_Body_Hand" />
 						</subentities>
 					</part>      
@@ -109,11 +156,14 @@
 			</Action>
 			<Action name="walk">
 				<AnimationParts>
-					<animationpart name="walk" weight="1" />
+					<animationpart name="walk.001" weight="1" />
 				</AnimationParts>
 				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
 			</Action>
 		</Actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RightHand" />
+		</attachpoints>
 	</model>		
 	
 	<model name="butcher" usescaleof="height" >
@@ -168,6 +218,9 @@
 				</parts>
 			</submodel>
 		</submodels>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
+		</attachpoints>
 	</model>
 
 	<model name="marshall" usescaleof="height" >
@@ -222,6 +275,9 @@
 				</parts>      
 			</submodel>
 		</submodels>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
+		</attachpoints>
 	</model>
 
 
@@ -277,6 +333,9 @@
 				</parts>      
 			</submodel>
 		</submodels>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
+		</attachpoints>
 	</model>
 	
 	
@@ -332,6 +391,9 @@
 				</parts>      
 			</submodel>
 		</submodels>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
+		</attachpoints>
 	</model>
 	
 

@@ -1,6 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="acorn" >
+	<model name="acorn" scale="10">
 		<submodels>
 			<submodel mesh="3d_objects/plants/fruitable/models/acorn/acorn.mesh" >
 			<parts>
@@ -28,23 +28,56 @@
 		</Actions>
 	</model>	
 	
-	<model name="log">
+	<model name="lumber">
 		<submodels>
 			<submodel mesh="3d_objects/plants/tree/models/log/tree_log.mesh" >
-			<parts>
-				<part name="log" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
-	<model name="mushroom_amanita">
-		<submodels>
-			<submodel mesh="3d_objects/plants/mushroom/models/round_mushroom/mushroom.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
 			</submodel>
 		</submodels>
 	</model>	
+	
+	<model name="mushroom" scale="3">
+		<submodels>
+			<submodel mesh="3d_objects/plants/mushroom/models/round_mushroom/mushroom.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="turnip" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/plants/fruitable/models/leafy_round_rooth_growth/leafy_round_rooth_growth.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="carrot" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/plants/fruitable/models/leafy_long_rooth_growth/leafy_long_rooth_growth.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="boulder" >
+		<submodels>
+			<submodel mesh="3d_objects/environment/boulder/models/boulder_02/boulder_02.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+
+	
 </models>

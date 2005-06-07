@@ -1,9 +1,9 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="axe" >
+	<model name="axe"  scale="1" >
 		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/axe/tool.mesh">
+			<submodel mesh="3d_objects/items/tool/models/axe/Axe.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -35,7 +35,7 @@
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/hammer/hammer.mesh">
 			<parts>
-				<part name="Hammer" show="true" />
+				<part name="main" show="true" />
 			</parts>
 			</submodel>
 		</submodels>
@@ -52,7 +52,7 @@
 		</submodels>
 	</model>
 	
-	<model name="spade" >
+	<model name="spade" usescaleof="height" >
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh">
 			<parts>
@@ -61,6 +61,16 @@
 			</submodel>
 		</submodels>
 	</model>	
+	
+	<model name="shovel" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
 	<model name="sty" usescaleof="width" rotation="-180">
 		<submodels>
@@ -85,9 +95,70 @@
 	</model>			
 
 
+	<model name="coin" usescaleof="height"  >
+		<submodels>
+			<submodel mesh="3d_objects/items/coin/models/lowpoly_coin/lowpoly_coin.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
+	<model name="bucksaw" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/bucksaw/bucksaw.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+
+	<model name="bread">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
+	<model name="breadslice" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_slize.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
+	<model name="bread_cut">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_cut.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="marketstall" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
+				<parts>
+					<part name="frame" show="true" />
+				</parts>
+			</submodel>
+			<submodel mesh="3d_objects/items/canvas/models/marketstall/marketstall_canvas_1.mesh" >
+				<parts>
+					<part name="canvas" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
 	
 	

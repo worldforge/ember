@@ -141,7 +141,7 @@
 		</submodels>
 	</model>
 	
-	<model name="wall_3">
+	<model name="wall_1_5">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/wall_blocks/wall_1_5x3x0_3.mesh">
 			<parts>
@@ -171,7 +171,7 @@
 		</submodels>
 	</model>
 	
-	<model name="roof">
+	<model name="wall_with_door">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_element/models/door_element/door_element.mesh">
 			<parts>
