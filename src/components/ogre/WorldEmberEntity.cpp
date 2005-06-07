@@ -78,19 +78,22 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity)
 {
-	bool adjustHeight = true;
-   if (entity->hasAttr("mode")) {
-		const Atlas::Message::Element &modeElem = entity->valueOfAttr("mode");
-		std::string mode = modeElem.asString();
-		if (mode == "swimming") {
-			adjustHeight = false;
-		}
-   }
-   
-   if (adjustHeight) {
+	Ogre::SceneNode* sceneNode = entity->getSceneNode();
+	Ogre::Vector3 position = sceneNode->getPosition();
 	
-		Ogre::SceneNode* sceneNode = entity->getSceneNode();
-		Ogre::Vector3 position = sceneNode->getPosition();
+	if (entity->getPlacementMode() == EmberEntity::PM_FLOATING) {
+		sceneNode->setPosition(position.x, 0,position.z);
+	} else if (entity->getPlacementMode() == EmberEntity::PM_SWIMMING) {
+	//if it's swimming, make sure that it's between the sea bottom and the surface
+		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+		float height = mTerrainGenerator->getHeight(pos);
+		if (position.y < height) {
+			sceneNode->setPosition(position.x, height,position.z);
+		} else if (position.y > 0) {
+			sceneNode->setPosition(position.x, 0,position.z);
+		}
+		
+	} else {
 		//get the height from Mercator through the TerrainGenerator
 		assert(mTerrainGenerator);
 		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
