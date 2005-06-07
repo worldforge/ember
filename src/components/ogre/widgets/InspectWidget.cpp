@@ -20,7 +20,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-
 #include "Widget.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
@@ -30,6 +29,8 @@
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
+
+#include <Eris/TypeInfo.h>
 
 namespace EmberOgre {
 
