@@ -114,7 +114,7 @@ material /global/building_primitives/template/floor
   }
 }
 
-material /global/building_primitives/rough_stone/floor
+material /global/building_primitives/rough_stone/floor_
 {
   // receive_shadows on
   technique
@@ -396,6 +396,55 @@ material /global/building_element/rough_stone/floor/north_south
   }
 }
 
+material /global/items/canvas/red_white_stripes/main
+{
+  technique
+  {
+    pass
+    {
+		alpha_rejection greater_equal 10 
+	    cull_hardware none
+        cull_software none
+      texture_unit
+      {
+        texture 3d_objects/items/canvas/textures/red_white_stripes/canvas_main.png
+      }
+    }
+  }
+}
+
+material /global/items/canvas/red_white_stripes/details
+{
+  technique
+  {
+    pass
+    {
+		alpha_rejection greater_equal 10 
+	    cull_hardware none
+        cull_software none
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/canvas/textures/red_white_stripes/canvas_details.png
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 material carpenter/flare
 {
@@ -424,29 +473,7 @@ material carpenter/flare
 
 
 
-// Bump map with Parallax offset vertex program, support for this is required 
-vertex_program Examples/OffsetMappingVP cg 
-{ 
-   source OffsetMapping.cg 
-   entry_point main_vp 
-   profiles vs_1_1 arbvp1 
-} 
 
-// Bump map with parallax fragment program 
-fragment_program Examples/OffsetMappingFP cg
-{ 
-   source OffsetMapping.cg
-   entry_point main_fp
-   profiles ps_2_0 arbfp1
-} 
-
-// Bump map with parallax fragment program 
-fragment_program Examples/OffsetMappingPS asm 
-{ 
-   source OffsetMapping_specular.asm 
-   // sorry, only for ps_1_4 and above:) 
-   syntax ps_1_4 
-} 
 
 
 material /global/building_element/timber_rough/door_element

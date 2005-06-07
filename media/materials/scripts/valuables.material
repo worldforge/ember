@@ -1,0 +1,36 @@
+material /global/items/coin/moraf_coin/front
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.449020 0.449020 0.449020 50.000000
+		alpha_rejection greater_equal 128            
+      texture_unit
+      {
+        texture 3d_objects/items/coin/textures/moraf_coin/coin_front.png
+      }
+    }
+  }
+}
+
+
+material /global/items/coin/moraf_coin/back
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      specular 0.449020 0.449020 0.449020 50.000000
+		alpha_rejection greater_equal 128            
+      texture_unit
+      {
+        texture 3d_objects/items/coin/textures/moraf_coin/coin_back.png
+      }
+    }
+  }
+}
+
+

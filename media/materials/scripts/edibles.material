@@ -1,0 +1,16 @@
+
+material /global/items/food/country_bread
+{
+  technique
+  {
+    pass
+    {
+         texture_unit
+		{
+		
+			texture 3d_objects/items/food/textures/country_bread/food.png
+		}
+
+    }
+  }
+}

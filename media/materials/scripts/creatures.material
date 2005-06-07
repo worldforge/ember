@@ -6,13 +6,45 @@ material /global/creature/pig/skin
     pass
     {
         texture_unit
-	{
-		texture 3d_objects/creatures/quadruped_v2/textures/pink_pig/low/quadruped_v2.png
-	}
+		{
+			texture 3d_objects/creatures/quadruped_v2/textures/pink_pig/low/quadruped_v2.png
+		}
 
     }
   }
 }
+
+material /global/creature/cow
+{
+  technique
+  {
+    pass
+    {
+        texture_unit
+		{
+			texture 3d_objects/creatures/quadruped_v2/textures/cow/cow.png
+		}
+
+    }
+  }
+}
+
+material /global/creature/mottled_oker
+{
+  technique
+  {
+    pass
+    {
+        texture_unit
+		{
+			texture 3d_objects/creatures/quadruped_v2/textures/mottled_oker/quadruped_v2.png
+		}
+
+    }
+  }
+}
+
+
 
 material /global/creature/squirrel/skin
 {
@@ -31,6 +63,40 @@ material /global/creature/squirrel/skin
   }
 }
 
+
+material /global/creature/tubular/fish/scaly_brown_white
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+ 		alpha_rejection greater_equal 32 
+       texture_unit
+		{
+			texture 3d_objects/creatures/tubular/textures/scaly_brown_white/tubular.png
+		}
+
+    }
+  }
+}
+
+material /global/creature/fish/steelhead
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+        texture_unit
+	{
+//		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
+		texture steelhead.png
+	}
+
+    }
+  }
+}
 
 
 material /global/creature/chicken
@@ -61,3 +127,66 @@ material /global/creature/deer
   }
 }
 
+material /global/creature/dog
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/creatures/quadruped/textures/white_fur/low/quadruped.png
+      }
+    }
+  }
+}
+
+material /global/creature/insect/emerald
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/creatures/insect/textures/emerald/insect.png
+      }
+    }
+  }
+}
+material /global/creature/insect/carrion
+{
+
+//	technique
+//	{
+//		pass
+//		{
+//			vertex_program_ref HardwareSkinningFourWeightsFullHANIM
+//			{
+//				param_named_auto worldMatrix3x4Array[0] world_matrix_array_3x4
+//				param_named_auto viewProjectionMatrix viewproj_matrix
+//				param_named_auto lightPos[0] light_position 0
+//				param_named_auto lightPos[1] light_position 1
+//				param_named_auto lightDiffuseColour[0] light_diffuse_colour 0
+//				param_named_auto lightDiffuseColour[1] light_diffuse_colour 1
+//				param_named_auto ambient ambient_light_colour
+//			
+//			}
+//			texture_unit
+//			{
+//				texture 3d_objects/creatures/insect/textures/carrion/insect.png
+//			}
+//		}
+//	}
+
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture 3d_objects/creatures/insect/textures/carrion/insect.png
+			}
+		}
+	}
+}

@@ -5,7 +5,7 @@ material Items/Tool/Head
   {
     pass
     {
-      diffuse 0.427451 0.290196 0.000000
+      //diffuse 0.427451 0.290196 0.000000
       specular 0.449020 0.449020 0.449020 50.000000
       emissive 0.000000 0.000000 0.000000
       texture_unit
@@ -23,7 +23,7 @@ material Items/Tool/Handle
   {
     pass
     {
-      diffuse 0.427451 0.290196 0.000000
+      //diffuse 0.427451 0.290196 0.000000
       specular 0.449020 0.449020 0.449020 50.000000
       emissive 0.000000 0.000000 0.000000
       texture_unit
@@ -33,3 +33,52 @@ material Items/Tool/Handle
     }
   }
 }
+
+material /global/items/tool/settler_tools/head
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      cull_hardware none
+      cull_software none
+      specular 0.449020 0.449020 0.449020 50.000000
+      texture_unit
+      {
+        texture 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
+      }
+    }
+  }
+}
+
+material /global/items/tool/settler_tools/handle
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
+      }
+    }
+  }
+}
+
+material /global/items/saddle/brownleather
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/saddle/textures/brownleather/brownleathersaddle_256.png
+      }
+    }
+  }
+}
+

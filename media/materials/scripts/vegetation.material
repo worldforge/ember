@@ -44,15 +44,32 @@ material /global/plants/tree/oak
     pass
     {
         // scene_blend alpha_blend 
-		alpha_rejection greater_equal 64
+		alpha_rejection greater_equal 32
          cull_hardware none 
          cull_software none
          texture_unit
 	{
-		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
-//		texture 3d_objects/plants/tree/textures/gnarly/tree.png
+//		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
+		texture 3d_objects/plants/tree/textures/gnarly/tree.png
 	}
-      diffuse 1.000000 1.000000 1.000000
+//      diffuse 1.000000 1.000000 1.000000
+    }
+  }
+}
+
+
+material /global/environment/ground/leaf_covered
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+         texture_unit
+		{
+			texture 3d_objects/environment/ground/textures/leaf_covered/ground.png
+			scale 0.1 0.1
+		}
     }
   }
 }
@@ -113,32 +130,51 @@ material /global/plants/fruitable/acorn/matte
 }
 
 
-
-
-
-
-
-
-
-
-
-vertex_program Field/GrassWaverVp cg
+material /global/plants/fruitable/red_beet
 {
-	source Grass.cg
-	entry_point grass_vp
-	profiles vs_1_1 arbvp1
-}
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+ 		alpha_rejection greater_equal 32
+		texture_unit
+		{
+			texture 3d_objects/plants/fruitable/textures/red_beet/fruitable.png
+		}
+    }
+  }
 
-vertex_program Field/GrassFaderVp cg
-{
-	source Grass.cg
-	entry_point grassfader_vp
-	profiles vs_1_1 arbvp1
 }
 
 
+material /global/plants/fruitable/furry_orange
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+ 		alpha_rejection greater_equal 128
+		texture_unit
+		{
+			texture 3d_objects/plants/fruitable/textures/furry_orange/fruitable.png
+		}
+    }
+  }
 
-material Field/Heartblood
+}
+
+
+
+
+
+
+
+
+
+
+material /global/plants/field/heartblood
 {
 
 	// Vertex program waving grass
@@ -159,7 +195,8 @@ material Field/Heartblood
             cull_software none
             texture_unit
             {
-				texture 3d_objects/environment/field/textures/heartblood/low/field.png
+			
+				texture 3d_objects/plants/tussock/textures/heartblood/low/tussock.png
             }
         }
     }
@@ -177,7 +214,7 @@ material Field/Heartblood
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/heartblood/low/field.png
+		texture 3d_objects/plants/tussock/textures/heartblood/low/tussock.png
 	}
 
     }
@@ -187,7 +224,7 @@ material Field/Heartblood
 
 
 
-material /global/environment/field/small_plant/bittergrass
+material /global/plants/field/bittergrass
 {
 	// Vertex program waving grass
     technique
@@ -208,7 +245,7 @@ material /global/environment/field/small_plant/bittergrass
             cull_software none
             texture_unit
             {
-				texture 3d_objects/environment/field/textures/bittergrass/low/field_1_.png
+				texture 3d_objects/plants/field/textures/bittergrass/low/field_1_.png
             }
         }
     }
@@ -224,7 +261,7 @@ material /global/environment/field/small_plant/bittergrass
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/bittergrass/low/field_1_.png
+		texture 3d_objects/plants/field/textures/bittergrass/low/field_1_.png
 	}
 
     }
@@ -233,7 +270,7 @@ material /global/environment/field/small_plant/bittergrass
 }
 
 
-material Field/Thingrass
+material /global/plants/field/thingrass
 {
 	// Vertex program waving grass
     technique
@@ -254,7 +291,7 @@ material Field/Thingrass
             cull_software none
             texture_unit
             {
-				texture 3d_objects/environment/field/textures/thingrass/low/field.png
+				texture 3d_objects/plants/field/textures/thingrass/low/field.png
             }
         }
     }
@@ -270,7 +307,7 @@ material Field/Thingrass
        texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/thingrass/low/field.png
+		texture 3d_objects/plants/field/textures/thingrass/low/field.png
 	}
 
     }
@@ -279,7 +316,7 @@ material Field/Thingrass
 }
 
 
-material Field/Teardrops
+material /global/plants/field/teardrops
 {
 	// Vertex program waving grass
     technique
@@ -300,7 +337,7 @@ material Field/Teardrops
             cull_software none
             texture_unit
             {
-				texture 3d_objects/environment/field/textures/teardrops/low/field.png
+				texture 3d_objects/plants/field/textures/teardrops/low/field.png
             }
         }
     }
@@ -316,7 +353,7 @@ material Field/Teardrops
         texture_unit
 	{
 	
-		texture 3d_objects/environment/field/textures/teardrops/low/field.png
+		texture 3d_objects/plants/field/textures/teardrops/low/field.png
 	}
 
     }

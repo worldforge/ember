@@ -75,7 +75,7 @@ material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides
     {
       pass
         {
-          scene_blend alpha_blend 
+          //scene_blend alpha_blend 
          //cull_hardware none 
          //cull_software none
  		alpha_rejection greater_equal 128

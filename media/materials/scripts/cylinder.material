@@ -5,7 +5,7 @@ material /global/items/cylinder/wood_boards
   {
     pass
     {
-      diffuse 0.427451 0.290196 0.000000
+      //diffuse 0.427451 0.290196 0.000000
       specular 0.449020 0.449020 0.449020 50.000000
       emissive 0.000000 0.000000 0.000000
       texture_unit
@@ -23,7 +23,7 @@ material plants/tree/gnarly
   {
     pass
     {
-      diffuse 0.427451 0.290196 0.000000
+      //diffuse 0.427451 0.290196 0.000000
       specular 0.449020 0.449020 0.449020 50.000000
       emissive 0.000000 0.000000 0.000000
       texture_unit
