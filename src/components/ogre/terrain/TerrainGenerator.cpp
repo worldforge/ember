@@ -184,10 +184,12 @@ void TerrainGenerator::addArea(Mercator::Area* area)
 			} else {
 				shader = createShader(areaDef->TextureName, new Mercator::AreaShader(area->getLayer()));
 			}
+			mAreaShaders[area->getLayer()] = shader;
 		}
-		mAreaShaders[area->getLayer()] = shader;
 	}
-	markShaderForUpdate(mAreaShaders[area->getLayer()]);
+	if (mAreaShaders.count(area->getLayer())) {
+		markShaderForUpdate(mAreaShaders[area->getLayer()]);
+	}
 }
 
 void TerrainGenerator::markShaderForUpdate(TerrainShader* shader)
