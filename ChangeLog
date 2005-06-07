@@ -1,3 +1,112 @@
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.cpp,
+		* added NONE and ALL as use scale directives. ALL is default
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.*
+		* when failing at loading a model, reset the instance so it can be loaded again
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Makefile.am
+		* added new files
+	* src/components/ogre/FreeCameraController.*
+		* class for allowing free flight mode
+	* src/components/ogre/TerrainArea.*
+		* class for handling Mercator::Areas
+
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*
+		* added support for Mercator::Area
+		* added support for attaching entities to bones
+		* began work on a better system for placement of entities
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/Avatar.cpp
+		* changed from dynamic to static cast
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarEmberEntity.cpp
+		* propogate event upwards
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityFactory.*
+		* better checks for non-physical entities
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberPhysicalEntity.*
+		* added support for attaching entities to bones, right now there's a hack to look for an entity attached to the right hand
+		* changed the model scaling code a bit. A model can now both be scaled uniformly according to a certain axis and be scaled uniformly in addition
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/WorldEmberEntity.*
+		* added preliminary support for different placement modes (swimming, flying etc.) for entities
+		* added support for Mercator::Area
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.*
+		* added method for random access to entities in the main Eris::View
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/TerrainGenerator.*
+		* added support for Mercator::Areas
+
+2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/TerrainPage.*
+		* moved some logic into TerrainShader
+		* cleaned up the methods for shader generation
+		* removed unnecessary creation of unused techniques for terrain splatting
+		* store all Mercator::Segments* in a local map for increased speed
+		* added the ability to update a splatting texture on the fly from a Mercator::Shader
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/TerrainShader.*
+		* moved some logic from TerrainPage to TerrainShader
+		* added the ability to define a material to be used. The best technique of the material will be copied to the splatting material, and the texture named "splat" will be replaced with the splatting texture
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.*
+		* added parsing of attach points
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinitionManager.*
+		* added some Area Definitions for testing purpose
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinition.h
+		* added data structure for attach points
+		* added temporary data structure for defining how to render an Mercator::Area. This will be removed in the future for something better
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+ 	* src/components/ogre/model/Model.*
+		* added abilty to attach entities to bones
+		* propogate visiblity changes to subentities
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/tinyxml/tinyxml.cpp: bugfix for not being able to load data from Ogre's DataStream in chunks. We now read it all at once.
+
+2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: added items
+
 2005-05-31  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* configure.ac: bump version

@@ -40,50 +40,6 @@ XMLModelDefinitionSerializer::~XMLModelDefinitionSerializer()
 {}
 void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pModelDef)
 {
-/*	modelDef = pModelDef;
-	S_LOG_INFO( "Begin XML Load :"+ modelDef->getName() );
-	_XMLDoc = new TiXmlDocument();
-	_XMLDoc->LoadFile(stream); //load from data stream
-
-	TiXmlElement* elem;
-
-
-	TiXmlElement* rootElem = _XMLDoc->RootElement();
-
-	//root elements
-	//scale
-	const char* tmp =  rootElem->Attribute("scale");
-	if (tmp)
-		modelDef->mScale=Ogre::StringConverter::parseReal(tmp);
-	
-	//rotation
-	tmp =  rootElem->Attribute("rotation");
-	if (tmp)
-		modelDef->mScale = Ogre::StringConverter::parseReal(tmp);
-
-	//usescaleof
-	tmp =  rootElem->Attribute("usescaleof");
-	if (tmp)
-	{
-		if (tmp == "height")
-			modelDef->mUseScaleOf = Model::MODEL_HEIGHT;
-		else if (tmp == "width") 
-			modelDef->mUseScaleOf = Model::MODEL_WIDTH;
-		else 
-			modelDef->mUseScaleOf = Model::MODEL_DEPTH;
-	}
-	
-	//submodels
-	elem = rootElem->FirstChildElement("submodels");
-	if (elem)
-		readSubModels(elem);
-
-	//actions
-	elem = rootElem->FirstChildElement("Actions");
-	if (elem)
-		readAnimations(elem);
-
-	S_LOG_INFO( "End XML Load :"+ modelDef->getName()); */
 }
 
 void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
@@ -144,8 +100,10 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 			modelDef->mUseScaleOf = Model::MODEL_HEIGHT;
 		else if (useScaleOf == "width") 
 			modelDef->mUseScaleOf = Model::MODEL_WIDTH;
-		else 
+		else if (useScaleOf == "depth") 
 			modelDef->mUseScaleOf = Model::MODEL_DEPTH;
+		else if (useScaleOf == "none") 
+			modelDef->mUseScaleOf = Model::MODEL_NONE;
 	}
 	
 	//submodels
