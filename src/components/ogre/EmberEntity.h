@@ -95,9 +95,12 @@ public:
 	enum PlacementMode
 	{
 		PM_DEFAULT = 1<<0,
-		PM_SWIMMING = 1<<1,
+		PM_STANDING = 1<<1,
 		PM_FLOATING = 1<<2,
-		PM_PROJECTILE = 1<<3
+		PM_PROJECTILE = 1<<3,
+		PM_SWIMMING = 1<<4,
+		PM_WALKING = 1<<5,
+		PM_RUNNING = 1<<6
 	};
 
 	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
@@ -187,6 +190,7 @@ protected:
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
 	
 	virtual void addArea(TerrainArea* area);
+	virtual bool nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 	
 	/* 

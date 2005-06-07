@@ -158,7 +158,7 @@ bool EmberPhysicalEntity::nativeAttrChanged(const std::string& str, const Atlas:
         }
 		return true;
     }
-	return Eris::Entity::nativeAttrChanged(str, v);
+	return EmberEntity::nativeAttrChanged(str, v);
 
 }
 
@@ -219,7 +219,10 @@ void EmberPhysicalEntity::scaleNode() {
 			case Model::MODEL_DEPTH:
 				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
 				break;
+			case Model::MODEL_NONE:
+				break;
 				
+			case Model::MODEL_ALL:
 			default:				
 				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
 				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		

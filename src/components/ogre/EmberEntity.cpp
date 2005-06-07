@@ -378,6 +378,27 @@ void EmberEntity::addArea(TerrainArea* area)
 	}
 }
 
+bool EmberEntity::nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v)
+{
+    if (str == "mode") {
+        std::string mode = v.asString();
+        if (mode.empty()) {
+			mPlacementMode = PM_DEFAULT;
+        } else if (mode == "standing") {
+			mPlacementMode = PM_STANDING;
+        } else if (mode == "running") {
+			mPlacementMode = PM_RUNNING;
+        } else if (mode == "walking") {
+			mPlacementMode = PM_WALKING;
+        } else if (mode == "swimming") {
+			mPlacementMode = PM_SWIMMING;
+        } else if (mode == "floating") {
+			mPlacementMode = PM_FLOATING;
+        }
+	}
+	Entity::nativeAttrChanged(str, v);
+}
+
 /*
 void EmberEntity::addMember(Entity *e) 
 {
