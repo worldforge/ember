@@ -1,5 +1,10 @@
 2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/framework/tinyxml/*, src/components/ogre/model/XMLModelDefinitionSerializer.*
+		* moved the tinyxml classes into the Ember namespace to avoid collisions with other implementations
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  media/materials/programs/OffsetMapping.cg
 		* added splatted offsetmapping shader
 

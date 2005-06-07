@@ -45,16 +45,16 @@ public :
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 
 private:
-	TiXmlDocument* _XMLDoc;
+	Ember::TiXmlDocument* _XMLDoc;
 	//ModelDefinition* _pModelDef;
 
-	void readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode);
-	void readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode);
-	void readParts(TiXmlElement* mPartNode,ModelDefinition::SubModelDefinition& subModel);
-	void readSubEntities(TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part);
-	void readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode);
-	void readAnimationParts(TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action);
-	void readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode);
+	void readModel(ModelDefinitionPtr modelDef, Ember::TiXmlElement* modelNode);
+	void readSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mSubModelNode);
+	void readParts(Ember::TiXmlElement* mPartNode,ModelDefinition::SubModelDefinition& subModel);
+	void readSubEntities(Ember::TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part);
+	void readActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimNode);
+	void readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action);
+	void readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode);
 
 };
 

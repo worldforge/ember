@@ -37,6 +37,7 @@ distribution.
 
 #include <assert.h>
 
+namespace Ember {
 /*
    TiXmlString is an emulation of the std::string template.
    Its purpose is to allow compiling TinyXML on compilers with no or poor STL support.
@@ -240,6 +241,8 @@ public :
         return (* this);
     }
 } ;
+
+}
 
 #ifdef _MSC_VER
 #pragma warning( default : 4530 )

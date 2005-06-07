@@ -63,6 +63,8 @@ distribution.
 	#define TIXML_OSTREAM	TiXmlOutStream
 #endif
 
+namespace Ember {
+
 class TiXmlDocument;
 class TiXmlElement;
 class TiXmlComment;
@@ -1420,6 +1422,8 @@ public:
 private:
 	TiXmlNode* node;
 };
+
+}
 
 #ifdef _MSC_VER
 #pragma warning( default : 4530 )

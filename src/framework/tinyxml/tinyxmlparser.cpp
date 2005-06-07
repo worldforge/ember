@@ -26,6 +26,7 @@ distribution.
 #include <ctype.h>
 #include <stddef.h>
 
+namespace Ember {
 //#define DEBUG_PARSER
 
 // Note tha "PutString" hardcodes the same list. This
@@ -1505,4 +1506,4 @@ bool TiXmlText::Blank() const
 			return false;
 	return true;
 }
-
+}

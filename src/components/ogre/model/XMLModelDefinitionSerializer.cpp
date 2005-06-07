@@ -44,7 +44,7 @@ void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& st
 
 void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	_XMLDoc = new TiXmlDocument();
+	_XMLDoc = new Ember::TiXmlDocument();
 	bool success = _XMLDoc->LoadFile(stream); //load from data stream
 	
 	if (!success) {
@@ -52,12 +52,12 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 		return;
 	}
 	
-	TiXmlElement* elem;
+	Ember::TiXmlElement* elem;
 
 
-	TiXmlElement* rootElem = _XMLDoc->RootElement();
+	Ember::TiXmlElement* rootElem = _XMLDoc->RootElement();
 
-	for (TiXmlElement* smElem = rootElem->FirstChildElement();
+	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
     {
 		const char* tmp =  smElem->Attribute("name");
@@ -77,9 +77,9 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 	
 }
 
-void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode)
+void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember::TiXmlElement* modelNode)
 {
-	TiXmlElement* elem;
+	Ember::TiXmlElement* elem;
 	//root elements
 	//scale
 	const char* tmp =  modelNode->Attribute("scale");
@@ -125,14 +125,14 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 
 
 
-void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode)
+void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mSubModelNode)
 {
 	S_LOG_INFO( "Read Submodels" );
 	const char* tmp = 0;
-	TiXmlElement* elem;
+	Ember::TiXmlElement* elem;
 	bool notfound = true;
 
-	for (TiXmlElement* smElem = mSubModelNode->FirstChildElement();
+	for (Ember::TiXmlElement* smElem = mSubModelNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
     {
 		ModelDefinition::SubModelDefinition subModelDef;
@@ -172,13 +172,13 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Ti
 	}
 }
 
-void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode,ModelDefinition::SubModelDefinition& subModel)
+void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode,ModelDefinition::SubModelDefinition& subModel)
 {
-	TiXmlElement* elem;
+	Ember::TiXmlElement* elem;
 	const char* tmp = 0;
 	bool notfound = true;
 
-	for (TiXmlElement* partElem = mPartNode->FirstChildElement();
+	for (Ember::TiXmlElement* partElem = mPartNode->FirstChildElement();
             partElem != 0; partElem = partElem->NextSiblingElement())
 	{
 		ModelDefinition::PartDefinition partDef;
@@ -209,13 +209,13 @@ void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode,ModelDefini
 	}
 }
 
-void XMLModelDefinitionSerializer::readSubEntities(TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part)
+void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part)
 {
 
 	const char* tmp = 0;
 	bool notfound = true;
 
-	for (TiXmlElement* seElem = mSubEntNode->FirstChildElement();
+	for (Ember::TiXmlElement* seElem = mSubEntNode->FirstChildElement();
             seElem != 0; seElem = seElem->NextSiblingElement())
 	{
 		ModelDefinition::SubEntityDefinition subEntityDef;
@@ -247,14 +247,14 @@ void XMLModelDefinitionSerializer::readSubEntities(TiXmlElement* mSubEntNode,Mod
 	}
 }
 
-void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode)
+void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimNode)
 {
-	TiXmlElement* elem;
+	Ember::TiXmlElement* elem;
 	const char* tmp = 0;
 	bool notfound = true;
 	S_LOG_INFO( "Read Actions" );
 
-	for (TiXmlElement* animElem = mAnimNode->FirstChildElement();
+	for (Ember::TiXmlElement* animElem = mAnimNode->FirstChildElement();
             animElem != 0; animElem = animElem->NextSiblingElement())
 	{
 		ModelDefinition::ActionDefinition actionDef;
@@ -294,12 +294,12 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 
 }
 
-void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action)
+void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action)
 {
 	const char* tmp = 0;
 	bool nopartfound = true;
 
-	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
+	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		ModelDefinition::AnimationDefinition animDef;
@@ -327,14 +327,14 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 }
 
 
-void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode)
+void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode)
 {
 	ModelDefinition::AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
 	
 	const char* tmp = 0;
 	bool nopartfound = true;
 
-	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
+	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		ModelDefinition::AttachPointDefinition attachPointDef;

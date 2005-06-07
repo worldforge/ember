@@ -32,7 +32,7 @@ distribution.
 #include <ctype.h>
 
 #include  <tinyxml/tinystr.h>
-
+namespace Ember {
 // TiXmlString constructor, based on a C string
 TiXmlString::TiXmlString (const char* instring)
 {
@@ -314,5 +314,6 @@ bool TiXmlString::operator > (const TiXmlString & compare) const
 	return false;
 }
 
+}
 
 #endif	// TIXML_USE_STL
