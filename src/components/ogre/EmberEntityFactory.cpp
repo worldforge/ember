@@ -207,21 +207,13 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	
 	Model* model = new Model(ge->getId());
 	bool result = model->create(typeName);
-	if (typeName == "axe") {
-		int i = 0;
-	}
-	
-// 	Model* model = Model::Create(typeName + ".modeldef.xml", ge->getId());
-	//Model* model = new Model(mSceneManager, ge->getId());
 
 	//try to open the model definition file
-//	bool result = model->createFromXML(std::string("modeldefinitions/") + typeName + ".modeldef.xml");
 	if (!result) 
 	{
-		std::cout << "Could not find " << typeName << ", using placeholder.";
+		S_LOG_FAILURE( "Could not find " << typeName << ", using placeholder.");
 		result = model->create("placeholder");
 		assert(result);
-		//model->createFromXML("modeldefinitions/placeholder.modeldef.xml");
 	}
 	
 	//rotate node to fit with WF space
@@ -247,6 +239,7 @@ void EmberEntityFactory::loadTypeInfo()
 	mPersonSet.insert("merchant");
 	mPersonSet.insert("mercenary");
 	mPersonSet.insert("butcher");
+	mPersonSet.insert("marshall");
 	
 	mNonPhysicalTypes.insert("boundary");
 	mNonPhysicalTypes.insert("weather");
