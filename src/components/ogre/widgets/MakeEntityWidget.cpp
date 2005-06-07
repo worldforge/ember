@@ -53,11 +53,13 @@ namespace EmberOgre {
 /*template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
+const char * const MakeEntityWidget::CREATEENTITY= "createentity";
 
 MakeEntityWidget::MakeEntityWidget()
  : mIsReady(false), Widget() 
 {
 
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEENTITY,this);
 
 }
 
@@ -195,38 +197,62 @@ void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 	
 }
 
+void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == CREATEENTITY)
+	{
+		Eris::TypeService* typeService = mConn->getTypeService();
+		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
+		if (typeinfo) {
+			createEntityOfType(typeinfo);
+		}
+	} else {
+		Widget::runCommand(command, args);
+	}
+
+}
+
+
 bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 {
 	//HACK: low level mucking, this should be possible through Eris
 	CEGUI::ListboxItem* item = mTypeList->getFirstSelectedItem();
 	if (item) {
 		Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
+		createEntityOfType(typeinfo);
 		
-		Atlas::Objects::Operation::Create c;
-		AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
-		c->setFrom(avatar->getId());
-		
-		Atlas::Message::MapType msg;
-		msg["loc"] = avatar->getLocation()->getId();
-		
-		Ogre::Vector3 o_vector(2,0,0);
-		Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-		
-	// 	WFMath::Vector<3> vector(0,2,0);
-	// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
-		WFMath::Point<3> pos = Ogre2Atlas(o_pos);
-		
-		msg["pos"] = pos.toAtlas();
-		msg["name"] = mName->getText().c_str();
-		msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
-		c->setArgsAsList(Atlas::Message::ListType(1, msg));
-		mConn->send(c);
-		std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
 	}
 	
 //	Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }
 
+void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
+{
+	Atlas::Objects::Operation::Create c;
+	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+	c->setFrom(avatar->getId());
+	
+	Atlas::Message::MapType msg;
+	msg["loc"] = avatar->getLocation()->getId();
+	
+	Ogre::Vector3 o_vector(2,0,0);
+	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
+	
+// 	WFMath::Vector<3> vector(0,2,0);
+// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
+	WFMath::Point<3> pos = Ogre2Atlas(o_pos);
+	WFMath::Quaternion orientation = avatar->getOrientation();
+	
+	msg["pos"] = pos.toAtlas();
+	msg["name"] = mName->getText().c_str();
+	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
+	msg["orientation"] = orientation.toAtlas();
+	
+	c->setArgsAsList(Atlas::Message::ListType(1, msg));
+	mConn->send(c);
+	std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
+
+}
 
 
 };

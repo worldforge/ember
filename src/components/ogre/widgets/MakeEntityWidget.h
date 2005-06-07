@@ -48,6 +48,10 @@ public:
 	
 	virtual void show();
 
+	static const char * const CREATEENTITY;
+	
+	virtual void runCommand(const std::string &command, const std::string &args);
+
 protected:
 
 	/**
@@ -76,6 +80,7 @@ protected:
 	
 	void addToList(Eris::TypeInfo* typeInfo, int level);
 	
+	void createEntityOfType(Eris::TypeInfo* typeinfo);
 
 
 };

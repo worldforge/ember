@@ -1,5 +1,10 @@
 2005-06-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/MakeEntityWidget.*
+		* added /createentity console command
+
+2005-06-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/JesusEdit.*
 		* don't render if not shown
 
