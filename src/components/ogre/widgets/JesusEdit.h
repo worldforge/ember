@@ -145,6 +145,7 @@ protected:
 	*/
 	AttachPointNode* mSelectedAttachPointNode;
 	
+	Ogre::RenderTexture* mRenderTexture;
 };
 
 class JesusEditFile

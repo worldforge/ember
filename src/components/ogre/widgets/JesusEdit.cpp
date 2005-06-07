@@ -530,7 +530,6 @@ JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 : mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(0.5), mMaxCameraDistance(40)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
-	setVisible(false);
 	
 	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -543,6 +542,7 @@ JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 	guiManager->getMainSheet()->addChildWindow(mPreviewWindow);
 	createCamera();
 	createPreviewTexture();
+	setVisible(false);
 }
 
 JesusEditPreview::~JesusEditPreview()
@@ -554,6 +554,7 @@ JesusEditPreview::~JesusEditPreview()
 void JesusEditPreview::setVisible(bool visible)
 {
 	mPreviewWindow->setVisible(visible);
+	mRenderTexture->setActive(visible);
 }
 
 void JesusEditPreview::showBuildingBlock(const std::string & spec)
@@ -632,18 +633,19 @@ void JesusEditPreview::createPreviewTexture()
 
 
 	//first, create a RenderTexture to which the Ogre renderer should render the image
-	Ogre::RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "JesusEditPreview", 256, 256 );
-	rttTex->removeAllViewports();
+	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "JesusEditPreview", 256, 256 );
+	mRenderTexture->removeAllViewports();
+	mRenderTexture->setActive(false);
 	
 	//add a listener, because we want to hide some things when rendering this
 	//for instance, we don't want to render the CEGUI
 	mListener = new JesusEditPreviewRenderListener(mGuiManager);
-	rttTex->addListener(mListener);
+	mRenderTexture->addListener(mListener);
 	//make sure the camera renders into this new texture
-	Ogre::Viewport *v = rttTex->addViewport(mCamera );
+	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
 
 	//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
-	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(rttTex->getName());
+	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
 	
 	//create a CEGUI texture from our Ogre texture
 	CEGUI::Texture* ceguiTexture = mGuiManager->getGuiRenderer()->createTexture(texPtr);
