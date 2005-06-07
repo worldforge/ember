@@ -42,7 +42,7 @@ public:
 
     ~Help();
 	virtual void buildWidget();
-	void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 	static const char * const HELP;
 	

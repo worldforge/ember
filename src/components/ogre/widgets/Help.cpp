@@ -119,6 +119,8 @@ void Help::runCommand(const std::string &command, const std::string &args)
 	if(command == HELP)
 	{
 		show();
+	} else {
+		Widget::runCommand(command, args);
 	}
 
 }
