@@ -290,8 +290,8 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
 	int xNumberOfPages = (int)ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
 	int yNumberOfPages = (int)ceil((mYmax - mYmin) / (double)mercatorSegmentsPerPage);
-	int xStart = (int)floor(mXmin / (double)(mercatorSegmentsPerPage));
-	int yStart = (int)floor(mYmin / (double)(mercatorSegmentsPerPage));
+	int xStart = (int)ceil(mXmin / (double)(mercatorSegmentsPerPage));
+	int yStart = (int)ceil(mYmin / (double)(mercatorSegmentsPerPage));
 	for (i = 0; i < xNumberOfPages; ++i) {
 		for (j = 0; j < yNumberOfPages; ++j) {
 			TerrainPosition pos(xStart + i, yStart + j);
