@@ -56,9 +56,11 @@ public:
 	//static Model* Create(std::string type, std::string name, ModelDefinitionPtr modelDefPointer);
 
 	enum UseScaleOf {
-		MODEL_HEIGHT = 1,
+		MODEL_ALL = 0,
+		MODEL_NONE = 1,
 		MODEL_WIDTH = 2,
-		MODEL_DEPTH = 3
+		MODEL_DEPTH = 3,
+		MODEL_HEIGHT = 4
 	};
 	
 	struct AnimationPart
@@ -188,6 +190,20 @@ public:
 	
 protected:
 
+	
+	
+	/**
+	 *    Clears all the submodels
+	 */
+	void Model::resetSubmodels();
+	
+	
+	/**
+	 *    Resets the whole model.
+	 */
+	void Model::reset();
+	
+	
 	Ogre::Entity::ChildObjectList mChildObjectList;
 	
 	void attachObjectImpl(Ogre::MovableObject *pObject, Ogre::TagPoint *pAttachingPoint);

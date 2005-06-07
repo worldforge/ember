@@ -48,16 +48,15 @@ Model::Model(std::string name)
 }
 Model::~Model()
 {
-	resetAnimations();
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
- 		SubModel* submodel = *I;
-		Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
-		sceneManager->removeEntity(submodel->getEntity());
-	}
-//	delete mAnimationStateSet;
 }
+
+void Model::reset()
+{
+	resetAnimations();
+	resetSubmodels();
+
+}
+
 
 bool Model::create(std::string modelType)
 {
@@ -72,8 +71,15 @@ bool Model::create(std::string modelType)
 		return false;
 	}
 	else
-		return createFromDefn();
+	{
+		bool success =  createFromDefn();
+		if (!success) {
+			reset();
+		}
+		return success;
+	}
 }
+
 
 
 bool Model::createFromDefn()
@@ -129,7 +135,8 @@ bool Model::createFromDefn()
 		catch (Ogre::Exception& e) 
 		{
 			//std::cerr << "Error when loading the submodel " << entityName << ".\n";
-			S_LOG_FAILURE( "Submodel load error for " + entityName );
+			std::string desc = e.getFullDescription();
+			S_LOG_FAILURE( "Submodel load error for " + entityName + ". \nOgre error: " + e.getFullDescription());
 			return false;
 		}
 	}
@@ -165,7 +172,9 @@ bool Model::addSubmodel(SubModel* submodel)
 {
 	if (mSubmodels.size()) {
 		SubModel* existingSubmodel = *(mSubmodels.begin());
-		submodel->getEntity()->shareSkeletonInstanceWith(existingSubmodel->getEntity());
+		if (existingSubmodel->getEntity()->getSkeleton()) {
+			submodel->getEntity()->shareSkeletonInstanceWith(existingSubmodel->getEntity());
+		}
 	} else {
 		mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 	}
@@ -284,6 +293,18 @@ void Model::resetAnimations()
 			}
 		}
 	}
+}
+
+void Model::resetSubmodels()
+{
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+ 		SubModel* submodel = *I;
+		Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+		sceneManager->removeEntity(submodel->getEntity());
+	}
+	mSubmodels.clear();
 }
 
 
