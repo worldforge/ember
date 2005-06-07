@@ -1,5 +1,46 @@
 2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  media/materials/programs/OffsetMapping.cg
+		* added splatted offsetmapping shader
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/*
+		* various new models
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/*:
+		* various additions of new materials and a fix for the z-fighting when the water and the ground has the same height (0)
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/WorldEmberEntity.cpp
+		* add support for swimming and floating
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/TerrrainGenerator.cpp:
+		* added checks for null values
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/EmberEntityFactory.cpp:
+		* better error logging
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*, src/components/ogre/EmberPhysicalEntity.cpp
+		* check NONE and ALL when scaling the model
+		* react on an entity's "mode" changes
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp:
+		* Only pick visible entities.
+
+2005-06-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.cpp,
 		* added NONE and ALL as use scale directives. ALL is default
 

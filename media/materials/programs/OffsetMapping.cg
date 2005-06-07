@@ -93,3 +93,48 @@ void main_fp(float2 uv : TEXCOORD0,
 		
 	oColor = float4(col, 1);
 }
+
+void mainsplat_fp(float2 uv : TEXCOORD0,
+	float3 lightDir : TEXCOORD1,
+	float3 eyeDir : TEXCOORD2,
+	float3 halfAngle : TEXCOORD3,
+	uniform float3 lightDiffuse,
+	uniform float3 lightSpecular,
+	uniform float4 scaleBias,
+    uniform float4 ambient,
+	uniform float tile,
+	uniform sampler2D splatMap,
+	uniform sampler2D normalHeightMap,
+	uniform sampler2D diffuseMap,
+	out float4 oColor : COLOR)
+	
+{
+	float splat = tex2D(splatMap, uv).w;
+	if (splat != 0.0) {
+		// get the height using the tex coords
+		float height = tex2D(normalHeightMap, uv).a;
+	
+		// scale and bias factors	
+		float scale = scaleBias.x;
+		float bias = scaleBias.y;
+	
+		// calculate displacement	
+		float displacement = (height * scale) + bias;
+		
+		float3 uv2 = float3(uv, 1) * 40;
+		
+		// calculate the new tex coord to use for normal and diffuse
+		float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+		
+		// get the new normal and diffuse values
+		float3 normal = expand(tex2D(normalHeightMap, newTexCoord ).xyz);
+		float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+		
+//		float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular;
+//		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular;
+		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse;
+			
+		oColor = float4(col, 1);
+		oColor.w = splat;
+	}
+}
