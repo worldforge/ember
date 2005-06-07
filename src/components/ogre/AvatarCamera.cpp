@@ -196,7 +196,7 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 			Ogre::MovableObject* movable = ( *rayIterator ).movable;
 			
 // 			if (movable && movable->getUserObject() != 0 && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
-			if (movable && movable->getUserObject()) {
+			if (movable && movable->isVisible() && movable->getUserObject()) {
 				//check that it's not in the exclude list
 				bool isNotInInclude = true;
 				for (std::vector<Ogre::UserDefinedObject*>::iterator exclude_I = excludeStart; exclude_I != excludeEnd; ++exclude_I) {
@@ -279,7 +279,7 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 
 			Ogre::MovableObject* movable = ( *rayIterator ).movable;
 			
-			if (movable && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
+			if (movable && movable->isVisible() && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
 				if ( ( *rayIterator ).distance < closestDistance ) { 
 					closestObject = movable; 
 					closestDistance = ( *rayIterator ).distance ; 
@@ -297,7 +297,7 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 		//Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 	} else { 
 		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
-		return  dynamic_cast<EmberEntity*>(closestObject->getUserObject());
+		return  static_cast<EmberEntity*>(closestObject->getUserObject());
 
 	} 		
 	
