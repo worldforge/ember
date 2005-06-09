@@ -1,5 +1,23 @@
 2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/environment/Sun.cpp
+		* use spotlight since the offset mapping doesn't work with directional lights
+	*  src/components/ogre/environment/Foliage.cpp
+		* use "tussock" instead of "field"
+
+
+2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinitionManager.cpp:
+		* update the hackish area definitions
+
+2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/server/ServerService.cpp:
+		* changed errno to errorno since it appears to mess with some kind of macro on some systems
+
+2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberPhysicalEntity.cpp:
 		* bugfix for usescale=none
 

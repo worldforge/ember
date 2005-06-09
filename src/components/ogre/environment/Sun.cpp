@@ -28,8 +28,8 @@ namespace EmberOgre {
 Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
   mSun = sceneMgr->createLight("SunLight");
-  mSun->setType(Ogre::Light::LT_DIRECTIONAL);
-  mSun->setPosition(-1500,50,150);
+  mSun->setType(Ogre::Light::LT_SPOTLIGHT);
+  mSun->setPosition(-1500,1000,0);
 	Ogre::Vector3 dir;
 	dir = -mSun->getPosition();
 	dir.normalise();
@@ -37,9 +37,10 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
   mSun->setDiffuseColour(1, 1, 0.7); //yellow
   //mSun->setSpecularColour(1, 1, 0.7); //yellow
   mSun->setCastShadows(true);
-  //mSun->setAttenuation(10000, 1, 0, 0);
+  mSun->setAttenuation(1000000, 1, 0, 0);
   
-  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
+//  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
+  sceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
 
 }
 
