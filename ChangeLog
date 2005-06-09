@@ -1,5 +1,10 @@
 2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberPhysicalEntity.cpp:
+		* bugfix for usescale=none
+
+2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberSceneManager/include/OgreTerrainSceneManager.h, src/components/ogre/EmberSceneManager/src/OgreOctreeSceneManagerDll.cpp, src/components/ogre/EmberSceneManager/src/OgreTerrainRenderable.cpp, src/components/ogre/EmberSceneManager/src/OgreTerrainSceneManager.cpp
 		* sync with Ogre 1.0.2
 

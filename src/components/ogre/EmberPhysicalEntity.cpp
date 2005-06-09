@@ -220,6 +220,7 @@ void EmberPhysicalEntity::scaleNode() {
 				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
 				break;
 			case Model::MODEL_NONE:
+				scaleX = scaleY = scaleZ = 1;
 				break;
 				
 			case Model::MODEL_ALL:
