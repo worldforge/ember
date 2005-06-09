@@ -73,12 +73,12 @@ void ModelDefinitionManager::loadAreas() {
 	mAreaDefinitions[def.Id] = def;
 	
 	def = ModelDefinition::AreaDefinition();
-	def.Id = 7; //ploughed field
+	def.Id = 8; //ploughed field
 	def.MaterialName = "/global/environment/ground/ploughed_field";
 	mAreaDefinitions[def.Id] = def;
 	
 	def = ModelDefinition::AreaDefinition();
-	def.Id = 5; //sty
+	def.Id = 7; //sty
 	def.TextureName = "sand.png";
 	mAreaDefinitions[def.Id] = def;
 	
