@@ -135,8 +135,8 @@ namespace Ember
 		myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
 		//myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
       // If the connection fails here an errnumber is returned
-      int errno = myConn->connect();
-		if (errno) 
+      int errorno = myConn->connect();
+		if (errorno) 
 		{
 			return false;
 		}
