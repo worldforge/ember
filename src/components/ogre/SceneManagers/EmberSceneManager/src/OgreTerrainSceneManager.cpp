@@ -76,15 +76,22 @@ namespace Ogre
 
 
     }
-    //-------------------------------------------------------------------------
-    TerrainSceneManager::~TerrainSceneManager()
-    {
-        // Make sure the indexes are destroyed during orderly shutdown
-        // and not when statics are destroyed (may be too late)
-        TerrainRenderable::_getIndexCache().shutdown();
+	//-------------------------------------------------------------------------
+	void TerrainSceneManager::shutdown(void)
+	{
+		// Make sure the indexes are destroyed during orderly shutdown
+		// and not when statics are destroyed (may be too late)
+		TerrainRenderable::_getIndexCache().shutdown();
+
+		// Make sure we free up material (static)
+		mOptions.terrainMaterial.setNull();
 
 		// destroy listener manager
 		delete TerrainPageSourceListenerManager::getSingletonPtr();
+	}
+    //-------------------------------------------------------------------------
+    TerrainSceneManager::~TerrainSceneManager()
+    {
     }
     //-------------------------------------------------------------------------
     void TerrainSceneManager::loadConfig(const String& filename)
@@ -492,7 +499,7 @@ namespace Ogre
     void TerrainSceneManager::_renderVisibleObjects( void )
     {
 
-        //mDestRenderSystem -> setLightingEnabled( false );
+        mDestRenderSystem -> setLightingEnabled( false );
 
         OctreeSceneManager::_renderVisibleObjects();
 

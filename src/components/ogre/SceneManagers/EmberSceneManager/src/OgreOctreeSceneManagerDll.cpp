@@ -48,6 +48,11 @@ extern "C" void _OgreTerrainExport dllStartPlugin( void )
 
     terrainPlugin->registerPageSource("Heightmap", heightmapTerrainPageSource);
 }
+extern "C" void _OgreTerrainExport dllShutdownPlugin( void )
+{
+	terrainPlugin->shutdown();
+	heightmapTerrainPageSource->shutdown();
+}
 
 extern "C" void _OgreTerrainExport dllStopPlugin( void )
 {

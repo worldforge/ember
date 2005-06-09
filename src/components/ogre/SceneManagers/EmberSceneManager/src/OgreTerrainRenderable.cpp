@@ -45,7 +45,6 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreViewport.h"
 #include "OgreException.h"
 
-
 namespace Ogre
 {
     //-----------------------------------------------------------------------
@@ -63,7 +62,7 @@ namespace Ogre
 
     //-----------------------------------------------------------------------
     TerrainRenderable::TerrainRenderable(const String& name)
-        : mTerrain(0), mName(name),  mDeltaBuffers(0), mPositionBuffer(0)
+        : Renderable(), mTerrain(0), mName(name),  mDeltaBuffers(0), mPositionBuffer(0)
     {
         mForcedRenderLevel = -1;
         mLastNextLevel = -1;
@@ -209,11 +208,11 @@ namespace Ogre
                 *pSysPos++ = *pPos++ = height; // y
                 *pSysPos++ = *pPos++ = ( float ) j * msOptions->scale.z; //z
 
-                *pTex0++ = ( float ) i / ( float ) msOptions->pageSize;
-                *pTex0++ = ( float ) ( float ) j / ( float ) msOptions->pageSize;
+                *pTex0++ = ( float ) i / ( float ) ( msOptions->pageSize - 1 );
+                *pTex0++ = ( float ) j / ( float ) ( msOptions->pageSize - 1 );
 
-                *pTex1++ = ( ( float ) i / ( float ) msOptions->tileSize ) * msOptions->detailTile;
-                *pTex1++ = ( ( float ) ( float ) j / ( float ) msOptions->tileSize ) * msOptions->detailTile;
+                *pTex1++ = ( ( float ) i / ( float ) ( msOptions->tileSize - 1 ) ) * msOptions->detailTile;
+                *pTex1++ = ( ( float ) j / ( float ) ( msOptions->tileSize - 1 ) ) * msOptions->detailTile;
 
                 if ( height < min )
                     min = ( Real ) height;

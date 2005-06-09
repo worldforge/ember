@@ -320,6 +320,9 @@ public:
 	/** Overridden from SceneManager */
 	void setWorldGeometryRenderQueue(RenderQueueGroupID qid);
 
+	/// Shutdown cleanly before we get destroyed
+	void shutdown(void);
+
 
 protected:
 
