@@ -60,7 +60,6 @@
 
 namespace EmberOgre {
 
-template<> Avatar* Ember::Singleton<Avatar>::ms_Singleton = 0;
 
 Avatar::Avatar()
 {

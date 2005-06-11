@@ -94,7 +94,7 @@ void AvatarEmberEntity::setVisible(bool vis)
 void AvatarEmberEntity::onChildAdded(Entity *e) 
 {
 	//mAvatar->EventAddedEntityToInventory.emit(static_cast<EmberEntity*>(e));
-	mAvatar->mEntitiesToBeAddedToInventory.insert(e);
+	EmberOgre::getSingleton().getAvatar()->mEntitiesToBeAddedToInventory.insert(e);
 	//PersonEmberEntity::addMember(e);
 	EmberPhysicalEntity::onChildAdded(e);
 	
@@ -104,7 +104,7 @@ void AvatarEmberEntity::onChildAdded(Entity *e)
 /*void AvatarEmberEntity::rmvMember(Entity *e)*/
 void AvatarEmberEntity::onChildRemoved(Entity *e)
 {
-	mAvatar->EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(e));
+	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(e));
 	EmberPhysicalEntity::onChildRemoved(e);
 //	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
 //	PersonEmberEntity::rmvMember(e);	

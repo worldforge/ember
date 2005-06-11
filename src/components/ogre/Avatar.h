@@ -74,7 +74,7 @@ public:
  *  
  * TODO: create facilities for animation of the avatar, walking, running, jumping etc.
  */
-class Avatar : virtual public SigC::Object, public Ogre::FrameListener, public Ember::Singleton<Avatar>
+class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 {
 	friend class AvatarController;
 	friend class AvatarEmberEntity;
