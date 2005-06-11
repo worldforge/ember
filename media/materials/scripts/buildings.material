@@ -233,7 +233,7 @@ material /global/building_element/rough_stone/wall/side
     {
       texture_unit
       {
-        texture 3d_objects/items/building_element/textures/rough_stone/wall_side.png
+        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_side.png
       }
     }
   }
@@ -407,7 +407,7 @@ material /global/items/canvas/red_white_stripes/main
         cull_software none
       texture_unit
       {
-        texture 3d_objects/items/canvas/textures/red_white_stripes/canvas_main.png
+        texture 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_main.png
       }
     }
   }
@@ -425,7 +425,7 @@ material /global/items/canvas/red_white_stripes/details
       
 	  texture_unit
       {
-        texture 3d_objects/items/canvas/textures/red_white_stripes/canvas_details.png
+        texture 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_details.png
       }
     }
   }
@@ -572,7 +572,7 @@ material /global/building_element/timber_rough/door_element
          // Base diffuse texture map 
          texture_unit 
          { 
-            texture 3d_objects/items/building_primitives/textures/rough_stone/stone.png
+            texture 3d_objects/items/building_primitives/textures/rough_stone/low/stone.png
          } 
 	  }
    }
@@ -612,7 +612,7 @@ material /global/building_primitives/rough_timber/wall
          // Normal + height(alpha) map 
          texture_unit 
          { 
-            texture 3d_objects/items/building_primitives/stone/wall_NH.png
+            texture 3d_objects/items/building_primitives/stone/low/wall_NH.png
 //            texture rockwall_NH.tga
             tex_coord_set 0 
          } 
@@ -620,7 +620,7 @@ material /global/building_primitives/rough_timber/wall
          // Base diffuse texture map 
          texture_unit 
          { 
-            texture 3d_objects/items/building_primitives/stone/wall_colormap.png
+            texture 3d_objects/items/building_primitives/stone/low/wall_colormap.png
 //            texture rockwall.tga
             tex_coord_set 1 
          } 
@@ -678,7 +678,7 @@ material /global/building_primitives/rough_timber/wall
          // Base diffuse texture map 
          texture_unit 
          { 
-            texture 3d_objects/items/building_primitives/textures/rough_stone/stone.png
+            texture 3d_objects/items/building_primitives/textures/rough_stone/low/stone.png
          } 
 	  }
    }

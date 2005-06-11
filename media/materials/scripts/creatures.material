@@ -22,7 +22,7 @@ material /global/creature/cow
     {
         texture_unit
 		{
-			texture 3d_objects/creatures/quadruped_v2/textures/cow/cow.png
+			texture 3d_objects/creatures/quadruped_v2/textures/cow/cow_256.png
 		}
 
     }
@@ -37,7 +37,7 @@ material /global/creature/mottled_oker
     {
         texture_unit
 		{
-			texture 3d_objects/creatures/quadruped_v2/textures/mottled_oker/quadruped_v2.png
+			texture 3d_objects/creatures/quadruped_v2/textures/mottled_oker/low/quadruped_v2.png
 		}
 
     }
@@ -74,29 +74,28 @@ material /global/creature/tubular/fish/scaly_brown_white
  		alpha_rejection greater_equal 32 
        texture_unit
 		{
-			texture 3d_objects/creatures/tubular/textures/scaly_brown_white/tubular.png
+			texture 3d_objects/creatures/tubular/textures/scaly_brown_white/low/tubular.png
 		}
 
     }
   }
 }
 
-material /global/creature/fish/steelhead
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-        texture_unit
-	{
-//		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
-		texture steelhead.png
-	}
-
-    }
-  }
-}
+//material /global/creature/fish/steelhead
+//{
+//  receive_shadows on
+//  technique
+//  {
+//    pass
+//    {
+//        texture_unit
+//	{
+//		texture steelhead.png
+//	}
+//
+//    }
+//  }
+//}
 
 
 material /global/creature/chicken
@@ -149,7 +148,7 @@ material /global/creature/insect/emerald
     {
       texture_unit
       {
-        texture 3d_objects/creatures/insect/textures/emerald/insect.png
+        texture 3d_objects/creatures/insect/textures/emerald/low/insect.png
       }
     }
   }
@@ -174,7 +173,7 @@ material /global/creature/insect/carrion
 //			}
 //			texture_unit
 //			{
-//				texture 3d_objects/creatures/insect/textures/carrion/insect.png
+//				texture 3d_objects/creatures/insect/textures/carrion/low/insect.png
 //			}
 //		}
 //	}
@@ -185,7 +184,7 @@ material /global/creature/insect/carrion
 		{
 			texture_unit
 			{
-				texture 3d_objects/creatures/insect/textures/carrion/insect.png
+				texture 3d_objects/creatures/insect/textures/carrion/low/insect.png
 			}
 		}
 	}

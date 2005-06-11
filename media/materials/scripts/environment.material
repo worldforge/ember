@@ -39,7 +39,7 @@ material /global/environment/boulder/moraf_rock
     {
       texture_unit
       {
-        texture 3d_objects/environment/boulder/textures/moraf_rock/boulder.png
+        texture 3d_objects/environment/boulder/textures/moraf_rock/low/boulder.png
       }
     }
   }
@@ -300,7 +300,7 @@ material /global/environment/ground/ploughed_field
          texture_unit 
          { 
 				colour_op_ex blend_current_alpha src_texture src_current
-           texture 3d_objects/environment/ground/textures/plowed_field/plowed_field_diffuse.png
+           texture 3d_objects/environment/ground/textures/plowed_field/low/plowed_field_diffuse.png
            tex_coord_set 1 
     		tex_address_mode wrap
 			scale 0.25 0.25
@@ -347,14 +347,14 @@ material /global/environment/ground/ploughed_field
          // Normal + height(alpha) map 
          texture_unit 
          { 
-            texture 3d_objects/environment/ground/textures/plowed_field/plowed_field_normals_and_height_inverted.png
+            texture 3d_objects/environment/ground/textures/plowed_field/low/plowed_field_normals_and_height_inverted.png
             tex_coord_set 1 
          } 
 
          // Base diffuse texture map 
          texture_unit 
          { 
-            texture 3d_objects/environment/ground/textures/plowed_field/plowed_field_diffuse.png
+            texture 3d_objects/environment/ground/textures/plowed_field/low/plowed_field_diffuse.png
             tex_coord_set 1 
          } 
       } 

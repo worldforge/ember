@@ -9,7 +9,7 @@ material /global/items/coin/moraf_coin/front
 		alpha_rejection greater_equal 128            
       texture_unit
       {
-        texture 3d_objects/items/coin/textures/moraf_coin/coin_front.png
+        texture 3d_objects/items/coin/textures/moraf_coin/low/coin_front.png
       }
     }
   }
@@ -27,7 +27,7 @@ material /global/items/coin/moraf_coin/back
 		alpha_rejection greater_equal 128            
       texture_unit
       {
-        texture 3d_objects/items/coin/textures/moraf_coin/coin_back.png
+        texture 3d_objects/items/coin/textures/moraf_coin/low/coin_back.png
       }
     }
   }

@@ -50,7 +50,7 @@ material /global/plants/tree/oak
          texture_unit
 	{
 //		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
-		texture 3d_objects/plants/tree/textures/gnarly/tree.png
+		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
 	}
 //      diffuse 1.000000 1.000000 1.000000
     }
@@ -67,7 +67,7 @@ material /global/environment/ground/leaf_covered
     {
          texture_unit
 		{
-			texture 3d_objects/environment/ground/textures/leaf_covered/ground.png
+			texture 3d_objects/environment/ground/textures/leaf_covered/low/ground.png
 			scale 0.1 0.1
 		}
     }
@@ -140,7 +140,7 @@ material /global/plants/fruitable/red_beet
  		alpha_rejection greater_equal 32
 		texture_unit
 		{
-			texture 3d_objects/plants/fruitable/textures/red_beet/fruitable.png
+			texture 3d_objects/plants/fruitable/textures/red_beet/low/fruitable.png
 		}
     }
   }
@@ -158,7 +158,7 @@ material /global/plants/fruitable/furry_orange
  		alpha_rejection greater_equal 128
 		texture_unit
 		{
-			texture 3d_objects/plants/fruitable/textures/furry_orange/fruitable.png
+			texture 3d_objects/plants/fruitable/textures/furry_orange/low/fruitable.png
 		}
     }
   }

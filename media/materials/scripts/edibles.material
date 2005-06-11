@@ -8,7 +8,7 @@ material /global/items/food/country_bread
          texture_unit
 		{
 		
-			texture 3d_objects/items/food/textures/country_bread/food.png
+			texture 3d_objects/items/food/textures/country_bread/low/food.png
 		}
 
     }
