@@ -104,6 +104,7 @@ void fog_linear_vp
 	out float2         oCoverage           : TEXCOORD0,
 	out float2         oTexcoord           : TEXCOORD1,
 	out float          oFog                : TEXCOORD2,
+	out float          oFogFade                : TEXCOORD3,
 	out float4         oColour    : COLOR
 
 )
@@ -111,22 +112,23 @@ void fog_linear_vp
 
 	
 	//iFogStart = 192;
-	iFogMax = 256;
+	//iFogMax = 256;
 	oPosition  = mul(worldViewProj,iPosition);
 	oTexcoord = iTexcoord;
 	oCoverage = iCoverage;
 	oColour = iColor;
+// 	oFogFade = 1;
 	
 	//this is truly an assfaced way to do this. If you know a better way to do it, feel free to change the code.
 	//starting at the distance of 192 meters, fade out vertices until the distance of 256 meters, where they should be transparent
 	if (oPosition.z >= iFogStart) {
 		oFog =  ((oPosition.z  - iFogStart)   / (iFogMax - iFogStart));
-	} else if (oPosition.z >= iFogMax) {
-		oFog = 1;
+/*		if (oPosition.z > 300) {
+			oFogFade = ((600 - oPosition.z ) / 300);
+		}*/
 	} else {
 		oFog = 0;
 	}
-
 }
 
 
@@ -138,6 +140,7 @@ void splat_fp
     float2              iTexcoord	: TEXCOORD1,
 	//how much fog to apply. 0..1, where 0 = zero fog and 1 = full fog
 	float				iFog 		: TEXCOORD2,
+// 	float				iFogFade	: TEXCOORD3,
 	
 	//the colour of the fog
 	uniform float4				iFogColour,
@@ -151,7 +154,6 @@ void splat_fp
 )
 {
 //	float fogFactor   = exp2(-abs(iFog));
-	iFogColour = float4(1,1,1,1);
 	//only do lerp if we can see the pixels (i.e. not when in full fog
 	if (iFog < 1.0) {
 		
@@ -165,9 +167,9 @@ void splat_fp
 		}
 	} else {
 		oColor = iFogColour;
+// 		oColor.w = iFogFade;
 	}
-	
-	 
+		 
 
 }
 
