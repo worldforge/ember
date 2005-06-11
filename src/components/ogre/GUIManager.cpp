@@ -78,7 +78,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		dlopen( "libCEGUITaharezLook.so", RTLD_NOW );
 		fprintf(stderr, dlerror());
 		try {	
-			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
+//			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
+			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 			
 			try {
 				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLookMouse", (CEGUI::utf8*)"MouseArrow");
@@ -86,8 +87,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 				fprintf(stderr, "CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.\n");
 			}
 			try {
-//				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
-				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
+				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
+//				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
 			} catch (CEGUI::Exception e) {
 				fprintf(stderr, "CEGUI - could not set default font.\n");
 			}

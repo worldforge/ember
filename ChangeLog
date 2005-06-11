@@ -1,3 +1,13 @@
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.cpp
+		* revert to TaharezLook since the DAoC look needs some dirty work in CEGUI
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.*
+		* make Avatar singleton, since there will always only be one Avatar (right?)
+
 2005-06-09  Erik Hjortsberg  <erik@katastrof.nu>
 
 	*  src/components/ogre/environment/Sun.cpp
