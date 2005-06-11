@@ -1,3 +1,42 @@
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefintions/items.modeldef.xml:
+		* update stall definition
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/WorldEmberEntity.cpp
+		* make sure that the mercator terrain is initiated before the environment is created
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*, src/components/ogre/EmberPhysicalEntity.*
+		* use onAttributeChanged in new eris
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/environment/Sky.cpp
+		* moved fog settings from EmberOgre to Sky
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac
+		* bump atlas and mercator versions
+	*extensions/Makefile.am
+		* don't build Wield and Use since these are in Atlas as of 0.5.96
+	* sevices/server/ServerService.cpp
+		* updated references to Wield and Use
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/splatting/Splat.cg
+		* don't use preset values
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/buildings.material
+		* fix material for canvas
+
 2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/TerrainPage.cpp

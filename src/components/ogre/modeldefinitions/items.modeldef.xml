@@ -145,7 +145,7 @@
 		</submodels>
 	</model>			
 	
-	<model name="marketstall" usescaleof="height">
+	<model name="stall" usescaleof="none" scale="1">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
 				<parts>
