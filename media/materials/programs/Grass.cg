@@ -37,6 +37,8 @@ void grassfader_vp(float4 position : POSITION,
 			  out float4 oPosition : POSITION,
 			  out float2 oUv	   : TEXCOORD0,
 			  out float4 colour    : COLOR,
+			  out float oFog       : FOG,
+			  
 
 			  uniform float4x4 worldViewProj,
 			  uniform float4 ambient,
@@ -67,4 +69,5 @@ void grassfader_vp(float4 position : POSITION,
 	
 	//starting at the distance of 16 meters, fade out vertices until the distance of 32 meters, where they should be transparent
 	colour.w = colour.w * ((32 - (oPosition.z ))   / 16);
+	oFog = oPosition.x;
 }

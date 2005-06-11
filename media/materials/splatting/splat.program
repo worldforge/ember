@@ -46,10 +46,25 @@ fragment_program splat4arb_cg cg
 	profiles ps_2_0 arbfp1
 }
 
+
+vertex_program fog_linear_vp cg
+{
+	source Splat.cg
+	entry_point fog_linear_vp
+	profiles vs_2_0 arbvp1 
+}
+
 fragment_program splat_cg cg
 {
 	source Splat.cg
 	entry_point splat_fp
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatatlas_cg cg
+{
+	source Splat.cg
+	entry_point splatatlas_fp
 	profiles ps_2_0 arbfp1
 }
 

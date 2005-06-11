@@ -1,6 +1,6 @@
 
 // Vertex program for automatic terrain texture generation
-void main_vp
+void main_vp__
 (
     float4             iPosition           : POSITION,
 	float4             iNormal             : NORMAL,
@@ -88,8 +88,91 @@ void main_fp
 
 }
 
+
+void fog_linear_vp
+(
+	uniform float4x4   worldViewProj,
+    float4             iPosition           : POSITION,
+	float2             iCoverage           : TEXCOORD0,
+	float2             iTexcoord           : TEXCOORD1,
+    float4             iColor             : COLOR,
+	
+	uniform float              iFogStart,
+	uniform float              iFogMax,
+
+	out float4         oPosition           : POSITION,
+	out float2         oCoverage           : TEXCOORD0,
+	out float2         oTexcoord           : TEXCOORD1,
+	out float          oFog                : TEXCOORD2,
+	out float4         oColour    : COLOR
+
+)
+{
+
+	
+	//iFogStart = 192;
+	iFogMax = 256;
+	oPosition  = mul(worldViewProj,iPosition);
+	oTexcoord = iTexcoord;
+	oCoverage = iCoverage;
+	oColour = iColor;
+	
+	//this is truly an assfaced way to do this. If you know a better way to do it, feel free to change the code.
+	//starting at the distance of 192 meters, fade out vertices until the distance of 256 meters, where they should be transparent
+	if (oPosition.z >= iFogStart) {
+		oFog =  ((oPosition.z  - iFogStart)   / (iFogMax - iFogStart));
+	} else if (oPosition.z >= iFogMax) {
+		oFog = 1;
+	} else {
+		oFog = 0;
+	}
+
+}
+
+
+
 // Fragment program for automatic terrain texture generation
 void splat_fp
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	//how much fog to apply. 0..1, where 0 = zero fog and 1 = full fog
+	float				iFog 		: TEXCOORD2,
+	
+	//the colour of the fog
+	uniform float4				iFogColour,
+
+	out float4          oColor		: COLOR,
+	
+    uniform sampler2D   textureUnit0,
+    uniform sampler2D   textureUnit1,
+    uniform sampler2D   textureUnit2,
+    uniform sampler2D   textureUnit3
+)
+{
+//	float fogFactor   = exp2(-abs(iFog));
+	iFogColour = float4(1,1,1,1);
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+	if (iFog < 1.0) {
+		
+		oColor = tex2D(textureUnit1, iTexcoord.xy);
+		oColor = (lerp(oColor, tex2D(textureUnit2, iTexcoord.xy) , tex2D(textureUnit0, iCoverage.xy).w));
+		oColor = (lerp(oColor, tex2D(textureUnit3, iTexcoord.xy), tex2D(textureUnit0, iCoverage.xy).x));
+		//only apply fog if there is any
+		if (iFog > 0) {
+			oColor = lerp(iFogColour, oColor, 1- iFog);
+//			oColor = lerp(fogColor, oColor, iFog);
+		}
+	} else {
+		oColor = iFogColour;
+	}
+	
+	 
+
+}
+
+// Fragment program for automatic terrain texture generation
+void splatatlas_fp
 (
     float4              iCoverage	: TEXCOORD0,
     float4              iTexcoord	: TEXCOORD1,
@@ -102,9 +185,12 @@ void splat_fp
     uniform sampler2D   textureUnit3
 )
 {
-	oColor = tex2D(textureUnit1, iTexcoord.xy);
-	oColor = (lerp(oColor, tex2D(textureUnit2, iTexcoord.xy) , tex2D(textureUnit0, iCoverage.xy).w));
-	oColor = (lerp(oColor, tex2D(textureUnit3, iTexcoord.xy), tex2D(textureUnit0, iCoverage.xy).x));
+	oColor = tex2D(textureUnit1, float2(iTexcoord.x, (int(iTexcoord.y * 100000) % 100000) * 0.000002));
+	
+	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.2)), tex2D(textureUnit0, iCoverage.xy).w));
+	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.4)), tex2D(textureUnit0, iCoverage.xy).x));
+	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.6)), tex2D(textureUnit0, iCoverage.xy).y));
+	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.8)), tex2D(textureUnit0, iCoverage.xy).z));
 	 
 
 }
