@@ -1,5 +1,40 @@
 2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainPage.cpp
+		* added linear fog vertex shader
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/WorldEmberEntity.cpp
+		* init the Sky before creating the terrain, because the Sky will set the fog parameters. Perhaps we need a separate Fog class?
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/iteams.modeldef.xml
+		* added boat and jetty
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Sky.cpp:
+		* set default values for shaders which will somehow use fog. The values are taken from the SceneManager
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.*, src/components/ogre/AvatarEmberEntity.cpp:
+		* since it will be possible to have many Avatars, remove the Singleton pattern from the Avatar, and make AvatarEmberEntity go through EmberOgre instead when accessing the avatar.
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/programs/Grass.cg, media/materials/splatting/Splat.cg, media/materials/splatting/splat.program
+		* added linear fog vertex shader and modified the splat fragment shader to accept a fog value
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/*
+		* changed to low detail textures. In the future we might need a better way to set the detail level.
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* autopackage/default.apspec.in:
 		* change category to "Games", perhaps this will work better on both Gnome and KDE, though autopackage is still a little flaky with menus
 

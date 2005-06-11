@@ -467,6 +467,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 	//pass->setFragmentProgram("splat3arb");
 	pass->setFragmentProgram("splatatlas_cg");
 	
+	
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
 	Ogre::TextureUnitState * alphaTextureUnitState = pass->createTextureUnitState();
@@ -609,12 +610,16 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
  
 	Ogre::Pass* pass = technique->getPass(0);
 	pass->setLightingEnabled(false);
-	//pass->setFragmentProgram("splat3arb");
+	
+	//add fragment shader for splatting
 	pass->setFragmentProgram("splat_cg");
+	
+	//add vertex shader for fog	
+	pass->setVertexProgram("fog_linear_vp");
 	
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
-	Ogre::TextureUnitState * alphaTextureUnitState = pass->createTextureUnitState();
+	Ogre::TextureUnitState * alphaTextureUnitState = pass->createTextureUnitState( );
 	
 	
 	//use this iterator to iterate over all shaders we will use. The first shader will be used as a base (i.e. with no alpha map), so make sure that it's something like rock or dirt (upon which one would want to put some grass etc.)
