@@ -21,13 +21,25 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Sky.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 
 namespace EmberOgre {
 
 Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
   sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
-	
+
+  
+	Ogre::ColourValue fadeColour(0.9,0.9,0.9);
+	double fogstartDistance = 96; //default for fog
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
+		fogstartDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart");
+	}
+	sceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, 256);
+  
+  	
 	//set up values for the splatting shader and the linear fog shader
 	Ogre::HighLevelGpuProgramPtr splatProgram = Ogre::HighLevelGpuProgramManager::getSingleton().getByName("splat_cg");
 	if (!splatProgram.isNull()) {

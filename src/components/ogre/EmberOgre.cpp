@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.87  2005-06-01 00:23:35  erik
+ *      Revision 1.88  2005-06-11 22:57:09  erik
+ *      2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp, src/components/ogre/environment/Sky.cpp
+ *      		* moved fog settings from EmberOgre to Sky
+ *
+ *      Revision 1.87  2005/06/01 00:23:35  erik
  *      2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -1295,15 +1301,7 @@ void EmberOgre::createScene(void)
         node->scale(0.1,0.1,0.1);
         node->yaw(90);
 */
-	//set fog, do this before calling TerrainSceneManager::setViewGeometry 
-//	Ogre::ColourValue fadeColour(0.93, 0.86, 0.76);
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
-	Ogre::ColourValue fadeColour(1,1,1);
-	double fogstartDistance = 192; //default for fog
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
-		fogstartDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart");
-	}
-	mSceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, 256);
 	
 	
 	
