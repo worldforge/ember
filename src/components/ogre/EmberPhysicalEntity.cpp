@@ -144,7 +144,7 @@ void EmberPhysicalEntity::detachFromModel()
 }
 
 
-bool EmberPhysicalEntity::nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
+void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
     if (str == "right_hand_wield") {
         std::cout << "set right_hand_wield to " << v.asString() << std::endl;
         std::string id = v.asString();
@@ -156,9 +156,9 @@ bool EmberPhysicalEntity::nativeAttrChanged(const std::string& str, const Atlas:
 			detachEntity("right_hand_wield");
 			attachEntity("right_hand_wield", id);
         }
-		return true;
+		return;		
     }
-	return EmberEntity::nativeAttrChanged(str, v);
+	EmberEntity::onAttrChanged(str, v);
 
 }
 

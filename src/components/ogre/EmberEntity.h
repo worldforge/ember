@@ -190,7 +190,7 @@ protected:
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
 	
 	virtual void addArea(TerrainArea* area);
-	virtual bool nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 	
 	/* 

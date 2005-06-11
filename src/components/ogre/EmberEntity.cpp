@@ -378,7 +378,7 @@ void EmberEntity::addArea(TerrainArea* area)
 	}
 }
 
-bool EmberEntity::nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v)
+void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
     if (str == "mode") {
         std::string mode = v.asString();
@@ -396,7 +396,7 @@ bool EmberEntity::nativeAttrChanged(const std::string& str, const Atlas::Message
 			mPlacementMode = PM_FLOATING;
         }
 	}
-	Entity::nativeAttrChanged(str, v);
+	Entity::onAttrChanged(str, v);
 }
 
 /*

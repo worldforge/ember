@@ -92,7 +92,7 @@ protected:
 	void detachEntity(const std::string & entityId);
 	void attachEntity(const std::string & attachPoint, const std::string & entityId);
 
-	virtual bool nativeAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
 	AttachedEntitiesStore mAttachedEntities;	
