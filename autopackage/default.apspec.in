@@ -44,7 +44,7 @@ copyFiles ./etc/ember/* "$PREFIX/etc/ember"
 installExe ./bin/*
 installLib ./lib/*
 installData ./share/*
-installDesktop "Amusements/Games" ./share/applications/ember.desktop
+installDesktop "Games" ./share/applications/ember.desktop
 #copyFiles ./share/ember/* "$PREFIX/share/ember/"
 installIcon ./share/icons/worldforge/ember.png
 
