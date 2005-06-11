@@ -61,6 +61,11 @@ WorldEmberEntity::~WorldEmberEntity()
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
+	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+
+	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+	mSky = new Sky(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+	
 	//mOgreNode = mSceneManager->getRootSceneNode();
 	mFoliage = new Foliage(EmberOgre::getSingleton().getSceneManager());
 	Eris::Entity::init(ge);
@@ -68,10 +73,6 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	mTerrainGenerator->prepareAllSegments(true);
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	
-	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
-
-	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
-	mSky = new Sky(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 
 	
 }
