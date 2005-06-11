@@ -407,7 +407,7 @@ material /global/items/canvas/red_white_stripes/main
         cull_software none
       texture_unit
       {
-        texture 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_main.png
+        texture 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_main.png
       }
     }
   }
@@ -425,7 +425,7 @@ material /global/items/canvas/red_white_stripes/details
       
 	  texture_unit
       {
-        texture 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_details.png
+        texture 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_details.png
       }
     }
   }
