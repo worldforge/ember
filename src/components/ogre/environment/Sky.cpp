@@ -22,12 +22,35 @@
 //
 #include "Sky.h"
 
-
 namespace EmberOgre {
 
 Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
   sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
+	
+	//set up values for the splatting shader and the linear fog shader
+	Ogre::HighLevelGpuProgramPtr splatProgram = Ogre::HighLevelGpuProgramManager::getSingleton().getByName("splat_cg");
+	if (!splatProgram.isNull()) {
+		splatProgram->load();
+//		splatProgram->createParameters();
+		Ogre::GpuProgramParametersSharedPtr fpParams = splatProgram->getDefaultParameters();
+		fpParams->setAutoAddParamName(true);
+		Ogre::ColourValue fogColour = sceneMgr->getFogColour();
+		fpParams->setNamedConstant("iFogColour",  fogColour);
+	}
+	
+	Ogre::HighLevelGpuProgramPtr fogProgram = Ogre::HighLevelGpuProgramManager::getSingleton().getByName("fog_linear_vp");
+	if (!fogProgram.isNull()) {
+		fogProgram->load();
+//		fogProgram->createParameters();
+		Ogre::GpuProgramParametersSharedPtr vpParams = fogProgram->getDefaultParameters();
+		vpParams->setAutoAddParamName(true);
+		Ogre::ColourValue fogColour = sceneMgr->getFogColour();
+		vpParams->setNamedAutoConstant("worldViewProj",  Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+		//get the values for the linear fog from the SceneManager
+		vpParams->setNamedConstant("iFogStart",  sceneMgr->getFogStart());
+		vpParams->setNamedConstant("iFogMax",  sceneMgr->getFogEnd());
+	}
 
 }
 
