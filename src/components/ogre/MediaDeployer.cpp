@@ -63,7 +63,7 @@ bool MediaDeployer::addMedia(std::string modelName, std::string id, Ogre::Vector
 {
 
 	// create the ogre node and entity
-	Ogre::SceneNode* ogreNode = dynamic_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	Ogre::SceneNode* ogreNode = static_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
 	Ogre::Entity* ogreEntity;
 	ogreEntity = mSceneMgr->createEntity(id,modelName);
 	ogreNode->setPosition(position);

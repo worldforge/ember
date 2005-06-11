@@ -1,5 +1,10 @@
 2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/MediaDeployer.cpp
+		* use static_cast. This file is not used now however, but might be used in the future
+
+2005-06-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/GUIManager.cpp
 		* revert to TaharezLook since the DAoC look needs some dirty work in CEGUI
 
