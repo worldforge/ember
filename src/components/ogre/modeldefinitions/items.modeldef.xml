@@ -158,6 +158,26 @@
 				</parts>
 			</submodel>
 		</submodels>
+	</model>		
+		
+	<model name="boat" usescaleof="depth" >
+		<submodels>
+			<submodel mesh="3d_objects/items/building_primitives/models/goatboat/goatboat.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="jetty" rotation="-90">
+		<submodels>
+			<submodel mesh="3d_objects/items/building_primitives/models/jetty/jetty.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
 	</model>			
 	
 	
