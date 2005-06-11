@@ -44,6 +44,7 @@
 //#include <OgreMemoryMacros.h>
 
 #include <OgrePredefinedControllers.h> 
+#include "framework/Singleton.h"
 
 
 
@@ -73,7 +74,7 @@ public:
  *  
  * TODO: create facilities for animation of the avatar, walking, running, jumping etc.
  */
-class Avatar : virtual public SigC::Object, public Ogre::FrameListener
+class Avatar : virtual public SigC::Object, public Ogre::FrameListener, public Ember::Singleton<Avatar>
 {
 	friend class AvatarController;
 	friend class AvatarEmberEntity;
