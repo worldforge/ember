@@ -19,8 +19,6 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
-#include "extensions/Atlas/Operations/Wield.h"
-#include "extensions/Atlas/Operations/Use.h"
 #include "ServerService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
@@ -80,12 +78,7 @@ namespace Ember
 	ConsoleBackend::getMainConsole()->registerCommand(SAY,this);
 	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this);
 
-	
-	//register extension operations of atlas
-	WieldData::WIELD_NO = Atlas::Objects::Factories::instance()->addFactory("wield", (Atlas::Objects::FactoryMethod)&Wield::factory);
-	UseData::USE_NO = Atlas::Objects::Factories::instance()->addFactory("use", (Atlas::Objects::FactoryMethod)&Use::factory);
-
-  }
+	  }
 
   /* dtor */
   ServerService::~ServerService()
@@ -657,7 +650,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  		try {
 /*			Atlas::Objects::Operation::Action wieldOp;
 			wieldOp->setParents(std::list<std::string>(1, "wield"));*/
-			Wield wieldOp;
+			Atlas::Objects::Operation::Wield wieldOp;
 			wieldOp->setFrom(myAvatar->getEntity()->getId());
 			Atlas::Objects::Entity::GameEntity what;
 			what->setId(entity->getId());
@@ -685,7 +678,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
  		try {
- 			Use useOp;
+ 			Atlas::Objects::Operation::Use useOp;
 			useOp->setFrom(myAvatar->getEntity()->getId());
 			Atlas::Objects::Entity::GameEntity what;
 			what->setLoc(entity->getLocation()->getId());
