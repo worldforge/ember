@@ -613,11 +613,17 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	Ogre::Pass* pass = technique->getPass(0);
 	pass->setLightingEnabled(false);
 	
-	//add fragment shader for splatting
-	pass->setFragmentProgram("splat_cg");
-	
-	//add vertex shader for fog	
-	pass->setVertexProgram("fog_linear_vp");
+	try {
+		//add fragment shader for splatting
+		pass->setFragmentProgram("splat_cg");
+		
+		//add vertex shader for fog	
+		pass->setVertexProgram("fog_linear_vp");
+	} catch (Ogre::Exception& ex) {
+		//if there was some kind of error, go with the simple technique
+		generateTerrainTechniqueSimple(technique);
+		return;
+	}
 	
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 

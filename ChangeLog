@@ -1,5 +1,10 @@
 2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* stc/components/ogre/TerrainPage.cpp
+		* in the event of some problem with the complex material, default to simple material
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainPage.cpp:
 		* added extra checks for shader support on GPU
 	* autopackage/default.apspec.in
