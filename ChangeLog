@@ -1,5 +1,10 @@
 2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/model/ModelDefinitionsManager.cpp
+		* use low quality material
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/modeldefintions/items.modeldef.xml:
 		* update stall definition
 

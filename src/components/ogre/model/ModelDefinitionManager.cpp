@@ -69,7 +69,7 @@ ModelDefinitionManager::~ModelDefinitionManager()
 void ModelDefinitionManager::loadAreas() {
 	ModelDefinition::AreaDefinition def;
 	def.Id = 6; //oak
-	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/ground.png";
+	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/low/ground.png";
 	mAreaDefinitions[def.Id] = def;
 	
 	def = ModelDefinition::AreaDefinition();
