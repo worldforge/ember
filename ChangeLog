@@ -1,5 +1,14 @@
 2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainPage.cpp:
+		* added extra checks for shader support on GPU
+	* autopackage/default.apspec.in
+		* copy the libraries instead of using the installLib method
+	* ember.desktop
+		* change category to Game
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/EmberOgre.cpp
 		* catch exceptions when adding resources
 

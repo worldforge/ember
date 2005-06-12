@@ -125,7 +125,9 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	//we'll use at least two different techniques
 	//for modern GPU's we'll use a technique which uses fragment shaders
-	if (Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") && !Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0")) {
+	if ((Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") || Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0")) &&
+		(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") || Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0"))
+	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
 		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
 //		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));

@@ -42,7 +42,7 @@ EOF
 #installConfig ./etc/*
 copyFiles ./etc/ember/* "$PREFIX/etc/ember"
 installExe ./bin/*
-installLib ./lib/*
+copyFiles ./lib/ember/* "$PREFIX/lib/ember"
 installData ./share/*
 installDesktop "Games" ./share/applications/ember.desktop
 #copyFiles ./share/ember/* "$PREFIX/share/ember/"
