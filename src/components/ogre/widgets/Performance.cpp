@@ -66,8 +66,8 @@ void Performance::frameStarted(const Ogre::FrameEvent& evt)
 		
 		ss << "Current FPS: " << stats.lastFPS << "\n";
 		ss << "Average FPS: " << stats.avgFPS << "\n";
-		ss << "Traingle count: " << stats.triangleCount << "\n";
-		ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n";
+		ss << "Triangle count: " << stats.triangleCount << "\n";
+		//ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n";
 	
 		mMainText->setText(ss.str());
 	}
