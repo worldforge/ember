@@ -1,5 +1,10 @@
 2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/EmberOgre.cpp
+		* catch exceptions when adding resources
+
+2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf
 		* default to foliage off, since it requires some memory
 

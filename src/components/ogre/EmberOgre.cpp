@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.88  2005-06-11 22:57:09  erik
+ *      Revision 1.89  2005-06-12 01:08:19  erik
+ *      2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	*  src/components/ogre/EmberOgre.cpp
+ *      		* catch exceptions when adding resources
+ *
+ *      Revision 1.88  2005/06/11 22:57:09  erik
  *      2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp, src/components/ogre/environment/Sky.cpp
@@ -1055,11 +1061,15 @@ void EmberOgre::setupResources(void)
 	mModelDefinitionManager = new ModelDefinitionManager();
 	
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
- 	
-	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
- 	} else {
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
+	try {
+	
+		if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
+		} else {
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
+		}
+	} catch (Ogre::Exception& ex) {
+		S_LOG_FAILURE("Couldn't load trees. Continuing as if nothing happened.");
 	}
 	
 // /*	std::string modeldefspath = "modeldefinitions/";
@@ -1095,8 +1105,12 @@ void EmberOgre::setupResources(void)
 		{
 			typeName = i->first;
 			archName = i->second;
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-				mediaHomePath + archName, typeName, secName);
+			try {
+				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+					mediaHomePath + archName, typeName, secName);
+			} catch (Ogre::Exception& ex) {
+				S_LOG_FAILURE("Couldn't load " + mediaHomePath + archName + ". Continuing as if nothing happened.");
+			}
 		}
 	}
 	
