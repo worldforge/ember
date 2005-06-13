@@ -244,6 +244,7 @@ void EmberEntityFactory::loadTypeInfo()
 	mNonPhysicalTypes.insert("boundary");
 	mNonPhysicalTypes.insert("weather");
 	mNonPhysicalTypes.insert("ploughed_field");
+	mNonPhysicalTypes.insert("path");
 
 		
 }

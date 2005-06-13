@@ -1,3 +1,13 @@
+2005-06-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Sky.cpp
+		* added better checks for shader support on the GPU
+	* src/components/ogre/EmberEntityFactory.cpp:
+		* added "path" to the hackish non-physical entity set. I really need to redesign this...
+	* ember.conf
+		* for performance reasons increase the maxpixelerror to 15. It might not look as good, but it will be nicer to older graphic cards.
+
+
 2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* stc/components/ogre/TerrainPage.cpp
