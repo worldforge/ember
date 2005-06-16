@@ -43,6 +43,19 @@ class ModelDefinition : public Ogre::Resource {
 
 public:
 
+	/**
+	whether to use a certain axis for scaling
+	for example, if you use a model of a human you probably want to scale according to the height
+	this might mean that width and depths aren't correct though
+	*/
+	enum UseScaleOf {
+		MODEL_ALL = 0,
+		MODEL_NONE = 1,
+		MODEL_WIDTH = 2,
+		MODEL_DEPTH = 3,
+		MODEL_HEIGHT = 4
+	};
+
 	struct AreaDefinition
 	{
 		int Id;
@@ -69,6 +82,7 @@ public:
 	//Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
 	
 	inline Ogre::Real getScale() const { return mScale; }
+	inline const UseScaleOf getUseScaleOf() const { return mUseScaleOf; }
 	
 protected:
 	inline void setValid(bool valid) { mIsValid = valid; }
@@ -133,7 +147,7 @@ private:
 	typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
 	AttachPointDefinitionStore mAttachPoints;
 	
-	unsigned short mUseScaleOf;
+	UseScaleOf mUseScaleOf;
 	Ogre::Real mScale;
 	Ogre::Real mRotation;
 	const Ogre::String mPath;

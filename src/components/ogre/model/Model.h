@@ -41,86 +41,110 @@ class ModelDefinition;
  * of createFromXML(...)
  */
 
+struct AnimationPart
+{
+	Ogre::AnimationState* state;
+	Ogre::Real weight;
+};
+
+
+typedef std::vector<AnimationPart> AnimationPartSet;
+
+
+class AnimationSet
+{
+public:
+	void addTime(Ogre::Real timeSlice);
+	void addAnimationPart(AnimationPart part);
+	void setEnabled(bool state);
+	
+protected:
+	AnimationPartSet mAnimations;
+};
+
+
+
+class Action
+{
+public:
+	inline AnimationSet* getAnimations() { return &mAnimations; }
+	inline void setName(const std::string& name) { mName = name; }
+	inline const std::string& getName() { return mName; }
+	
+
+protected:
+	std::string mName;
+	AnimationSet mAnimations;
+};
+
+ 
+ 
 class Model : public Ogre::MovableObject
 {
 
 friend class ModelDefinition;
 
 
-// class AttachPoint
-// {
-// }
 
 public:
 
-	//static Model* Create(std::string type, std::string name, ModelDefinitionPtr modelDefPointer);
 
-	enum UseScaleOf {
-		MODEL_ALL = 0,
-		MODEL_NONE = 1,
-		MODEL_WIDTH = 2,
-		MODEL_DEPTH = 3,
-		MODEL_HEIGHT = 4
-	};
+
 	
-	struct AnimationPart
-	{
-		std::string name;
-		Ogre::Real weight;
-	};
 	
-	typedef std::map<std::string, std::multiset< AnimationPart* >* > AnimationPartMap;
+	
+	typedef std::map<std::string, Action> ActionStore;
 
 	typedef std::set<SubModel*> SubModelSet;
 	typedef std::set<std::string> StringSet;
 	typedef std::map<std::string, StringSet > SubModelPartMapping;
 	typedef std::map<std::string, SubModelPart*> SubModelPartMap;
 
-	Model(std::string name);
-	bool create(std::string modelType); // create model of specific type
+	Model(const std::string& name);
+	bool create(const std::string& modelType); // create model of specific type
 
 	virtual ~Model();
 
 	bool addSubmodel(SubModel* submodel);
  	bool removeSubmodel(SubModel* submodel);
  	
- 	void startAnimation(std::string nameOfAnimation);
- 	void stopAnimation(std::string nameOfAnimation);
- 	void resetAnimations();
+	Action* getAction(const std::string& name);	
+	
+	
 
-	/*
+	/**
 	 * hides and shows a certain part of the model
 	 */
-	void showPart(std::string partName);
-	void hidePart(std::string partName);
+	void showPart(const std::string& partName);
+	void hidePart(const std::string& partName);
 	void setVisible(bool visible);
 	
-	/*
+	/**
 	 * if defined in the modeldef, returns a scaler by which the node containing 
 	 * the model can be scaled
 	 */
 	const Ogre::Real getScale() const;
 
-	/*
+	/**
 	 * if defined in the modeldef, returns an amount of degrees by which the node containing 
 	 * the model can be rotated
 	 */
 	const Ogre::Real getRotation() const;
 	
-	/*
+	/**
 	 * if defined in the modeldef, returns an axis by which the model can be scaled
 	 * I.e. when dealing with something such as a fir tree, you want to use the
 	 * height of the tree to determine how much it should be scaled, since the 
 	 * bounding box supplied by eris doesn't take the branches into account
 	 */
-	const unsigned short getUseScaleOf() const;
+	const ModelDefinition::UseScaleOf getUseScaleOf() const;
 	
-	const SubModelPartMap& getSubmodelParts() const
+	
+	inline const SubModelPartMap& getSubmodelParts() const
 	{
 		return mSubModelPartMap;
 	}
 	
-// 	bool createFromXML(std::string path);
 
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
 	Ogre::AnimationStateSet* getAllAnimationStates();
@@ -129,7 +153,7 @@ public:
 	Ogre::MovableObject * detachObjectFromBone (const Ogre::String &movableName);
 	void detachAllObjectsFromBone(void);
 	
-	inline bool isAnimated() { return mAnimationPartMap.size(); }
+	//inline bool isAnimated() { return mAnimationPartMap.size(); }
 
 
         /** Overridden - see MovableObject.
@@ -190,8 +214,7 @@ public:
 	
 protected:
 
-	
-	
+
 	/**
 	 *    Clears all the submodels
 	 */
@@ -213,51 +236,59 @@ protected:
 	mutable Ogre::AxisAlignedBox mFull_aa_box;
 	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
 
-	//set of all animations currently running
-	std::set< std::string > mRunningAnimations;
-	//set of all animation currently paused
-	std::set< std::string > mPausedAnimations;
+// 	//set of all animations currently running
+// 	std::set< std::string > mRunningAnimations;
+// 	//set of all animation currently paused
+// 	std::set< std::string > mPausedAnimations;
 
 	static Ogre::String msMovableType;
 	
-	/*
-	 * a map of all the Ogre::Animations that make up a certain animation
-	 */
-	AnimationPartMap mAnimationPartMap;
 	
-	/*
-	 * read info about the animations from the an animation node
-	 */
-/*	void readAnimations(xercesc::DOMElement* animationsNode);*/
+	/**
+	all actions belonging to the model
+	*/
+	ActionStore mActions;
 	
-	// the name of the model
+	
+	/**
+	 the name of the model
+	*/
 	std::string mName;
-	ModelDefnPtr _masterModel; // model this was copied from
 	
-	//a set of all submodels belonging to the model
+	/**
+	modeldef this was copied from
+	*/
+	ModelDefnPtr _masterModel; 
+	
+	/**
+	a set of all submodels belonging to the model
+	*/
 	SubModelSet mSubmodels;
-	//a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
+	/**
+	a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
+	*/
 	SubModelPartMap mSubModelPartMap;
-	//Ogre::SceneManager* mSceneManager;
 	
 	Ogre::SkeletonInstance* mSkeletonInstance;
 	
-	//how much to scale the model from it's initial size
+	/**
+	how much to scale the model from it's initial size
+	*/
 	Ogre::Real mScale;
-	//how much the model should be rotated around the Y-axis from it's initial position
+	/**
+	how much the model should be rotated around the Y-axis from it's initial position
+	*/
 	Ogre::Real mRotation;
 	
-	//whether to use a certain axis for scaling
-	//for example, if you use a model of a human you probably want to scale according to the height
-	//this might mean that width and depths aren't correct though
-	unsigned short mUseScaleOf;
 	
-	//set of all animation states
+	/**
+	set of all animation states
+	*/
 	Ogre::AnimationStateSet* mAnimationStateSet;
 
 	
 	bool createFromDefn();
-	void enableAnimation(std::string nameOfAnimation,bool enable);
+	//void enableAnimation(const std::string& nameOfAnimation,bool enable);
 };
 
 }

@@ -97,13 +97,13 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	{
 		std::string useScaleOf(tmp);
 		if (useScaleOf == "height")
-			modelDef->mUseScaleOf = Model::MODEL_HEIGHT;
+			modelDef->mUseScaleOf = ModelDefinition::MODEL_HEIGHT;
 		else if (useScaleOf == "width") 
-			modelDef->mUseScaleOf = Model::MODEL_WIDTH;
+			modelDef->mUseScaleOf = ModelDefinition::MODEL_WIDTH;
 		else if (useScaleOf == "depth") 
-			modelDef->mUseScaleOf = Model::MODEL_DEPTH;
+			modelDef->mUseScaleOf = ModelDefinition::MODEL_DEPTH;
 		else if (useScaleOf == "none") 
-			modelDef->mUseScaleOf = Model::MODEL_NONE;
+			modelDef->mUseScaleOf = ModelDefinition::MODEL_NONE;
 	}
 	
 	//submodels

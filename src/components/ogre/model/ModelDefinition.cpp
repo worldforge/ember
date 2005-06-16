@@ -37,7 +37,7 @@ namespace EmberOgre {
 
 ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) 
-    : Resource(creator, name, handle, group, isManual, loader), mScale(Model::MODEL_ALL), mUseScaleOf(0), mRotation(0), mIsValid(false)
+    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(0), mIsValid(false)
 {
     if (createParamDictionary("ModelDefinition"))
     {

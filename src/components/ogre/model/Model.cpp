@@ -34,9 +34,46 @@
 
 namespace EmberOgre {
 
+
+void AnimationSet::addAnimationPart(AnimationPart part)
+{
+	mAnimations.push_back(part);
+}
+
+void AnimationSet::addTime(Ogre::Real timeSlice)
+{
+	AnimationPartSet::iterator I = mAnimations.begin();
+	for (; I != mAnimations.end(); ++I) {
+		I->state->addTime(timeSlice);
+	}
+}
+
+void AnimationSet::setEnabled(bool state)
+{
+	AnimationPartSet::iterator I = mAnimations.begin();
+	for (; I != mAnimations.end(); ++I) {
+		I->state->setEnabled(state);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Ogre::String Model::msMovableType = "Model";
 
-Model::Model(std::string name)
+Model::Model(const std::string& name)
 : MovableObject::MovableObject()
 , mName(name)
 , mScale(0)
@@ -52,13 +89,13 @@ Model::~Model()
 
 void Model::reset()
 {
-	resetAnimations();
+//	resetAnimations();
 	resetSubmodels();
 
 }
 
 
-bool Model::create(std::string modelType)
+bool Model::create(const std::string& modelType)
 {
 	const Ogre::String groupName = "ModelDefinitions";
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
@@ -88,7 +125,6 @@ bool Model::createFromDefn()
 	Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
 	assert(sceneManager);
 	mScale=_masterModel->mScale ;
-	mUseScaleOf=_masterModel->mUseScaleOf;
 	mRotation = _masterModel->mRotation;
 
 	std::vector<std::string> showPartVector;
@@ -144,18 +180,29 @@ bool Model::createFromDefn()
 	std::vector<ModelDefinition::ActionDefinition>::const_iterator I_actions = _masterModel->mActions.begin();
 	std::vector<ModelDefinition::ActionDefinition>::const_iterator I_actions_end = _masterModel->mActions.end();
 	for (;I_actions != I_actions_end; ++I_actions) {
-		std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
-		
+		//std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
+		Action action;
+		action.setName(I_actions->Name);
 		
 		std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims = (*I_actions).Animations.begin();
 		std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims_end = (*I_actions).Animations.end();
 		for (;I_anims != I_anims_end; ++I_anims) {
-			Model::AnimationPart* animPart = new Model::AnimationPart();
-			animPart->name = (*I_anims).Name;
-			animPart->weight = (*I_anims).Weight;
-			animationPartSet->insert(animPart);
+			if (getAllAnimationStates() && getAllAnimationStates()->find(I_anims->Name) != getAllAnimationStates()->end()) {
+				AnimationPart animPart;
+				try {
+					Ogre::AnimationState* state = getAnimationState(I_anims->Name);
+					animPart.state = state;
+					animPart.weight = I_anims->Weight;
+					action.getAnimations()->addAnimationPart(animPart);
+				} catch (Ogre::Exception& ex) {
+					S_LOG_FAILURE("Error when loading animation: " +I_anims->Name + ".\n" + ex.getFullDescription() );
+				}
+			}
 		}
-		mAnimationPartMap.insert(Model::AnimationPartMap::value_type((*I_actions).Name, animationPartSet));
+		
+		//TODO: add sounds too
+		
+		mActions[I_actions->Name] = action;
 	}
 	
 	
@@ -192,12 +239,12 @@ bool Model::removeSubmodel(SubModel* submodel)
 	return true;
 }
 
-void Model::showPart(std::string partName)
+void Model::showPart(const std::string& partName)
 {
 	mSubModelPartMap[partName]->show();	
 }
 
-void Model::hidePart(std::string partName)
+void Model::hidePart(const std::string& partName)
 {
 	mSubModelPartMap[partName]->hide();	
 }
@@ -225,75 +272,87 @@ const Ogre::Real Model::getRotation() const
 	return mRotation;
 }
 
-const unsigned short Model::getUseScaleOf() const
+const ModelDefinition::UseScaleOf Model::getUseScaleOf() const
 {
-	return mUseScaleOf;
+	return _masterModel->getUseScaleOf();
 }
 
-void Model::startAnimation(std::string nameOfAnimation)
-{
-	enableAnimation(nameOfAnimation,true);
-}
 
-void Model::stopAnimation(std::string nameOfAnimation)
+Action* Model::getAction(const std::string& name)
 {
-	enableAnimation(nameOfAnimation,false);
-}	
-
-void Model::enableAnimation(std::string nameOfAnimation,bool enable)
-{
-	if (mAnimationStateSet)
-	{
-		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
-		if (partmap_iter != mAnimationPartMap.end()) 
-		{
-			std::multiset< AnimationPart* >* part = partmap_iter->second;
-			std::multiset< AnimationPart* >::const_iterator I = part->begin();
-			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) 
-			{ // go through each anim part and update its related anim state 
-				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				if (J != mAnimationStateSet->end()) {
-					if (enable) {
-						//also set the weight of the animations part
-						J->second.setWeight((*I)->weight);
-						MotionManager::getSingleton().addAnimation(&J->second);
-					} else {
-						MotionManager::getSingleton().removeAnimation(&J->second);
-					}
-				} else {
-					S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.");
-				}
-			}
-		}
+	ActionStore::iterator I = mActions.find(name);
+	if (I == mActions.end()) {
+		return 0;
 	}
+	return &(I->second);
 }
 
+// void Model::startAnimation(const std::string& nameOfAnimation)
+// {
+// 	enableAnimation(nameOfAnimation,true);
+// }
+// 
+// void Model::stopAnimation(const std::string& nameOfAnimation)
+// {
+// 	enableAnimation(nameOfAnimation,false);
+// }	
 
-void Model::resetAnimations()
-{
-	if (mAnimationStateSet)
-	{
-		AnimationPartMap::iterator it;
-		for ( it= mAnimationPartMap.begin();it != mAnimationPartMap.end();it++) 
-		{
-			std::multiset< AnimationPart* >* part = it->second;
-			std::multiset< AnimationPart* >::const_iterator I = part->begin();
-			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
-			for (; I != I_end; ++I) 
-			{ // go through each anim part and update its related anim state 
-				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
-				if (J != mAnimationStateSet->end()) {
-					MotionManager::getSingleton().removeAnimation(&J->second);
-				} else {
-					S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.");
-				}
-					
-				
-			}
-		}
-	}
-}
+
+
+// void Model::enableAnimation(const std::string& nameOfAnimation,bool enable)
+// {
+// 	if (mAnimationStateSet)
+// 	{
+// 		AnimationPartMap::iterator partmap_iter = mAnimationPartMap.find(nameOfAnimation);
+// 		if (partmap_iter != mAnimationPartMap.end()) 
+// 		{
+// 			std::multiset< AnimationPart* >* part = partmap_iter->second;
+// 			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+// 			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+// 			for (; I != I_end; ++I) 
+// 			{ // go through each anim part and update its related anim state 
+// 				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+// 				if (J != mAnimationStateSet->end()) {
+// 					if (enable) {
+// 						//also set the weight of the animations part
+// 						J->second.setWeight((*I)->weight);
+// 						MotionManager::getSingleton().addAnimation(&J->second);
+// 					} else {
+// 						MotionManager::getSingleton().removeAnimation(&J->second);
+// 					}
+// 				} else {
+// 					S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.");
+// 				}
+// 			}
+// 		}
+// 	}
+// }
+// 
+// 
+// void Model::resetAnimations()
+// {
+// 	if (mAnimationStateSet)
+// 	{
+// 		AnimationPartMap::iterator it;
+// 		for ( it= mAnimationPartMap.begin();it != mAnimationPartMap.end();it++) 
+// 		{
+// 			std::multiset< AnimationPart* >* part = it->second;
+// 			std::multiset< AnimationPart* >::const_iterator I = part->begin();
+// 			std::multiset< AnimationPart* >::const_iterator I_end = part->end();
+// 			for (; I != I_end; ++I) 
+// 			{ // go through each anim part and update its related anim state 
+// 				Ogre::AnimationStateSet::iterator J = mAnimationStateSet->find((*I)->name);
+// 				if (J != mAnimationStateSet->end()) {
+// 					MotionManager::getSingleton().removeAnimation(&J->second);
+// 				} else {
+// 					S_LOG_FAILURE("The subanimation " << (*I)->name << " does not exist.");
+// 				}
+// 					
+// 				
+// 			}
+// 		}
+// 	}
+// }
 
 void Model::resetSubmodels()
 {
