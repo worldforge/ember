@@ -18,6 +18,9 @@ sun
 * add a basepoint editor
 * add mouselook toggle, perhaps caps lock
 * add a check for nvidia cards and SGI Mesa libGL, and if so warn the user
+* show ping
+* add the players position the the debug widget
+* allow the user to close the window though the window manager
 
 
 
