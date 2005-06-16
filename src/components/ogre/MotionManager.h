@@ -47,8 +47,8 @@ public:
 	 * That means that until removeEntity is called for the specific entity
 	 * new positions for the entity will be calculated for each frame.
 	 */
-	void addEntity(EmberPhysicalEntity* entity) {mMotionSet.insert(entity);}
-	void removeEntity(EmberPhysicalEntity* entity) {mMotionSet.erase(entity);}
+	void addEntity(EmberEntity* entity);
+	void removeEntity(EmberEntity* entity);
 	
 	/*
 	 * Registers an animationState. After registration it will be enough to use
@@ -68,6 +68,12 @@ public:
 	 */
 	void unpauseAnimation(Ogre::AnimationState* animationState);
 	
+	void addAnimatedEntity(EmberPhysicalEntity* entity);
+	void removeAnimatedEntity(EmberPhysicalEntity* entity);
+	
+/*	void addAction(Action* action);
+	void removeAction(Action* action);*/
+	
 
 
 	/*
@@ -79,14 +85,20 @@ public:
 	/*
 	 * Adjusts the height of the supplied node
 	 */
-	void adjustHeightPositionForNode(Ogre::SceneNode* sceneNode);
+	//void adjustHeightPositionForNode(Ogre::SceneNode* sceneNode);
 
 	void setTerrainGenerator(TerrainGenerator* generator);
 	
 	
 private:
 
-	/*
+	typedef std::map<std::string , EmberPhysicalEntity*> EntityStore;
+	EntityStore mAnimatedEntities;
+
+// 	typedef std::set<Action*> ActionStore;
+// 	ActionStore mActions;
+
+	/**
 	 * A pointer to the applications ControllerManager. This will take care of 
 	 * keeping tabs on all controllers.
 	 */
@@ -116,12 +128,12 @@ private:
 	/* 
 	 * Update the motion for a single EmberEntity
 	 */
-	void updateMotionForEntity(EmberPhysicalEntity* entity, Ogre::Real timeSlice);
+	void updateMotionForEntity(EmberEntity* entity, Ogre::Real timeSlice);
 
 	/*
 	 * This contains all of the entities that will be moved each frame
 	 */
-	std::set<EmberPhysicalEntity*> mMotionSet;
+	std::set<EmberEntity*> mMotionSet;
 	
 	TerrainGenerator* mTerrainGenerator;
 	

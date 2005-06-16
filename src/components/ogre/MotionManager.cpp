@@ -49,44 +49,44 @@ template<> MotionManager* Ember::Singleton<MotionManager>::ms_Singleton = 0;
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 {
-	std::set<EmberPhysicalEntity*>::iterator I;
-	for (I = mMotionSet.begin();I != mMotionSet.end(); ++I) {
+	std::set<EmberEntity*>::iterator I;
+	for (I = mMotionSet.begin(); I != mMotionSet.end(); ++I) {
 		updateMotionForEntity(*I, timeSlice);
 	}
 }
 
 void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 {
-	AnimationStateSet::iterator I = mAnimations.begin();
+
+	EntityStore::iterator I = mAnimatedEntities.begin();
+	for (;I != mAnimatedEntities.end(); ++I) {
+		I->second->updateAnimation(timeSlice);
+	}
+/*	AnimationStateSet::iterator I = mAnimations.begin();
 	AnimationStateSet::iterator I_end = mAnimations.end();
 	for (;I != I_end; ++I) {
 		if ((*I)->getEnabled()) {
 			(*I)->addTime(timeSlice);
 		}
-	}
+	}*/
 }
 
-void MotionManager::updateMotionForEntity(EmberPhysicalEntity* entity, Ogre::Real timeSlice)
+
+
+void MotionManager::updateMotionForEntity(EmberEntity* entity, Ogre::Real timeSlice)
 {
-	//update the position of the entity
-	Ogre::Vector3 velocity = Atlas2Ogre(entity->getVelocity());
-	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	//sceneNode->setOrientation(Atlas2Ogre(entity->getOrientation()));
-//	sceneNode->translate(sceneNode->getOrientation() * (WF2OGRE(velocity) * timeSlice));
-	sceneNode->translate(velocity * timeSlice);
-	entity->adjustHeightPosition();
-	//adjustHeightPositionForNode(sceneNode);
+	entity->updateMotion(timeSlice);
 }
 
-void MotionManager::adjustHeightPositionForNode(Ogre::SceneNode* sceneNode) {
-	Ogre::Vector3 position = sceneNode->getPosition();
-	//get the height from Mercator through the TerrainGenerator
-	assert(mTerrainGenerator);
-	TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
-	float height = mTerrainGenerator->getHeight(pos);
-	sceneNode->setPosition(position.x, height,position.z);
-
-}
+// void MotionManager::adjustHeightPositionForNode(Ogre::SceneNode* sceneNode) {
+// 	Ogre::Vector3 position = sceneNode->getPosition();
+// 	//get the height from Mercator through the TerrainGenerator
+// 	assert(mTerrainGenerator);
+// 	TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+// 	float height = mTerrainGenerator->getHeight(pos);
+// 	sceneNode->setPosition(position.x, height,position.z);
+// 
+// }
 
 bool MotionManager::frameStarted(const Ogre::FrameEvent& event)
 {
@@ -99,6 +99,31 @@ bool MotionManager::frameEnded(const Ogre::FrameEvent& event)
 {
 	return true;
 }
+
+void MotionManager::addEntity(EmberEntity* entity) 
+{
+	mMotionSet.insert(entity);
+	entity->updateMotion(0);
+}
+
+void MotionManager::removeEntity(EmberEntity* entity) 
+{
+	mMotionSet.erase(entity);
+	entity->updateMotion(0);
+}
+
+
+
+void MotionManager::addAnimatedEntity(EmberPhysicalEntity* entity)
+{
+	mAnimatedEntities[entity->getId()] = entity;
+}
+
+void MotionManager::removeAnimatedEntity(EmberPhysicalEntity* entity)
+{
+	mAnimatedEntities.erase(entity->getId());
+}
+
 
 void MotionManager::addAnimation(Ogre::AnimationState* animationState)
 {

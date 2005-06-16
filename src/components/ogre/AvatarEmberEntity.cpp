@@ -62,12 +62,12 @@ void AvatarEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 void AvatarEmberEntity::onMoved()
 {
+	//EmberPhysicalEntity::onMoved();
+	
 	if (getAvatar()) {
 		getAvatar()->movedInWorld();
 	}
 	Eris::Entity::onMoved();
-//	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-//	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 }
 
 /*

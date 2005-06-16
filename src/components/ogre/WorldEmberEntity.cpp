@@ -83,9 +83,9 @@ void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const e
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	Ogre::Vector3 position = sceneNode->getPosition();
 	
-	if (entity->getPlacementMode() == EmberEntity::PM_FLOATING) {
+	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
-	} else if (entity->getPlacementMode() == EmberEntity::PM_SWIMMING) {
+	} else if (entity->getMovementMode() == EmberEntity::MM_SWIMMING) {
 	//if it's swimming, make sure that it's between the sea bottom and the surface
 		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
 		float height = mTerrainGenerator->getHeight(pos);

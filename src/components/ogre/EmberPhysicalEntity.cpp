@@ -33,16 +33,24 @@
 
 namespace EmberOgre {
 
+const char * const EmberPhysicalEntity::ACTION_STAND = "__movement_idle";
+const char * const EmberPhysicalEntity::ACTION_RUN = "__movement_run";
+const char * const EmberPhysicalEntity::ACTION_WALK = "__movement_walk";
+const char * const EmberPhysicalEntity::ACTION_SWIM = "__movement_swim";
+const char * const EmberPhysicalEntity::ACTION_FLOAT = "__movement_float";
+
+
 
 EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
 mAnimationState_Walk(NULL),
 mScaleNode(nodeWithModel),
 mModelAttachedTo(0), 
 mModelMarkedToAttachTo(0),
-EmberEntity(id, ty, vw, sceneManager)
+EmberEntity(id, ty, vw, sceneManager),
+mCurrentMovementAction(0)
 {
 	mModel = static_cast<Model*>(getScaleNode()->getAttachedObject(0));
-	loadAnimationsFromModel();
+//	loadAnimationsFromModel();
 }
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
@@ -94,10 +102,10 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 void EmberPhysicalEntity::loadAnimationsFromModel()
 {
-	if (getModel()->isAnimated()) {
+/*	if (getModel()->isAnimated()) {
 		//start with the idle animation
 		getModel()->startAnimation("idle");
-	}
+	}*/
 /*
  * 	Ogre::AnimationStateSet* states = mModel->getAllAnimationStates();
 	if (states->size()) {
@@ -124,7 +132,7 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model* 
 		mModelMarkedToAttachTo = model;
 		mAttachPointMarkedToAttachTo = point;
 	} else {
-		if (model->hasAttachPoint(point)) {
+		if (model->hasAttachPoint(point) && model->getSkeleton()) {
 			getScaleNode()->detachObject(getModel());
 			getModel()->setVisible(true);
 			model->attachObjectToAttachPoint( point, getModel(), getScaleNode()->getScale());
@@ -162,6 +170,34 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 
 }
 
+void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
+{
+/*	if (newMode != mMovementMode) 
+	{*/
+		const char * actionName;
+		if (newMode == EmberEntity::MM_WALKING) {
+			actionName = ACTION_WALK;
+		} else if (newMode == EmberEntity::MM_RUNNING) {
+			actionName = ACTION_WALK;
+		} else if (newMode == EmberEntity::MM_SWIMMING) {
+			actionName = ACTION_SWIM;
+		} else {
+			actionName = ACTION_STAND;
+		}
+		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
+			Action* newAction = mModel->getAction(actionName);
+			if (newAction) {
+				MotionManager::getSingleton().addAnimatedEntity(this);
+				mCurrentMovementAction = newAction;
+				mCurrentMovementAction->getAnimations()->setEnabled(true);
+				
+			}
+		}
+		//might set mCurrentMovementAction to 0
+// 	}
+
+	EmberEntity::onModeChanged(newMode);
+}
 
 
 void EmberPhysicalEntity::onChildAdded(Entity *e) 
@@ -210,20 +246,20 @@ void EmberPhysicalEntity::scaleNode() {
 		
 		
 		switch (getModel()->getUseScaleOf()) {
-			case Model::MODEL_HEIGHT:
+			case ModelDefinition::MODEL_HEIGHT:
 				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
 				break;
-			case Model::MODEL_WIDTH:
+			case ModelDefinition::MODEL_WIDTH:
 				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
 				break;
-			case Model::MODEL_DEPTH:
+			case ModelDefinition::MODEL_DEPTH:
 				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
 				break;
-			case Model::MODEL_NONE:
+			case ModelDefinition::MODEL_NONE:
 				scaleX = scaleY = scaleZ = 1;
 				break;
 				
-			case Model::MODEL_ALL:
+			case ModelDefinition::MODEL_ALL:
 			default:				
 				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
 				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
@@ -255,28 +291,39 @@ void EmberPhysicalEntity::scaleNode() {
 }
 
 
-void EmberPhysicalEntity::onMoved()
+void EmberPhysicalEntity::updateMotion(Ogre::Real timeSlice)
 {
-	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
-	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	MotionManager* motionManager = &MotionManager::getSingleton();
-	if (getVelocity() != WFMath::Vector<3>().zero()) {
-		//the entity is moving
-		motionManager->addEntity(this);
-		if (getModel()->isAnimated()) {
-			getModel()->stopAnimation("idle");
-			getModel()->startAnimation("walk");
-		}
-	} else {
-		//the entity has stopped moving
-		motionManager->removeEntity(this);
-		if (getModel()->isAnimated()) {
-			getModel()->stopAnimation("walk");
-			getModel()->startAnimation("idle");
+	EmberEntity::updateMotion(timeSlice);
+}
+
+
+void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
+{
+	if (mCurrentMovementAction) {
+		//check if we're walking backward
+		if (getVelocity().y() < 0) {
+			mCurrentMovementAction->getAnimations()->addTime(-timeSlice);
+		} else {
+			mCurrentMovementAction->getAnimations()->addTime(timeSlice);
 		}
 	}
-	Eris::Entity::onMoved();
-	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
+}
+
+void EmberPhysicalEntity::setMoving(bool moving)
+{
+// 	MotionManager* motionManager = &MotionManager::getSingleton();
+// 	if (moving) {
+// 		if (getModel()->isAnimated()) {
+// 			getModel()->stopAnimation("idle");
+// 			getModel()->startAnimation("walk");
+// 		}
+// 	} else {
+// 		if (getModel()->isAnimated()) {
+// 			getModel()->stopAnimation("walk");
+// 			getModel()->startAnimation("idle");
+// 		}
+// 	}
+	EmberEntity::setMoving(moving);
 }
 
 void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)

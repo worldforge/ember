@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.89  2005-06-12 01:08:19  erik
+ *      Revision 1.90  2005-06-16 18:33:22  erik
+ *      2005-06-16  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberEntity.* src/components/ogre/Acatar.cpp, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/EmberPhysicalEntity.*, MotionManager.*, src/components/ogre/EmberOgre.cpp
+ *      		* reworked how animations are played and how motion is handled, instead of the MotionManager being tied direclty to Model and automatically updating the animations and motions, they are now more decoupled with EmberEntity and its subclasses acting as mediators. Motion prediction is now fully delegated to Eris (which works splendidly, great work James!), with the MotionManager only keeping track of which entities needs moving.
+ *
+ *      Revision 1.89  2005/06/12 01:08:19  erik
  *      2005-06-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*  src/components/ogre/EmberOgre.cpp
@@ -820,7 +826,8 @@ template<> EmberOgre* Ember::Singleton<EmberOgre>::ms_Singleton = 0;
 EmberOgre::EmberOgre() :
 //mFrameListener(0),
 mRoot(0),
-mKeepOnRunning(true)
+mKeepOnRunning(true),
+mWorldView(0)
 {}
 
 EmberOgre::~EmberOgre()
@@ -852,6 +859,8 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	EventStartErisPoll.emit();
 	Eris::PollDefault::poll(1);
+	if (mWorldView)
+		mWorldView->update();
 	EventEndErisPoll.emit();
 	
 	

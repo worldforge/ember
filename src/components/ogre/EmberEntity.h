@@ -92,17 +92,25 @@ public:
 		CM_TERRAIN = 1<<5
 	};
 	
-	enum PlacementMode
+	enum MovementMode
 	{
-		PM_DEFAULT = 1<<0,
-		PM_STANDING = 1<<1,
-		PM_FLOATING = 1<<2,
-		PM_PROJECTILE = 1<<3,
-		PM_SWIMMING = 1<<4,
-		PM_WALKING = 1<<5,
-		PM_RUNNING = 1<<6
+		MM_DEFAULT = 1<<0,
+		MM_STANDING = 1<<1,
+		MM_FLOATING = 1<<2,
+		MM_PROJECTILE = 1<<3,
+		MM_SWIMMING = 1<<4,
+		MM_WALKING = 1<<5,
+		MM_RUNNING = 1<<6
 	};
 
+	static const char * const MODE_STANDING;
+	static const char * const MODE_RUNNING;
+	static const char * const MODE_WALKING;
+	static const char * const MODE_SWIMMING;
+	static const char * const MODE_FLOATING;
+	
+	
+	
 	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
 	virtual ~EmberEntity();
 	
@@ -169,11 +177,19 @@ public:
 	
 	inline bool isInitialized() const { return mIsInitialized; }
 
-	inline PlacementMode getPlacementMode() const { return mPlacementMode; }
+	inline MovementMode getMovementMode() const { return mMovementMode; }
+	
+	virtual void updateMotion(Ogre::Real timeSlice);
 
 protected: 
 
+
+	virtual void onModeChanged(MovementMode newMode);
+
+
 	bool mIsInitialized;
+	
+	bool mIsInMotionManager;
 	
 	/*
 	 * Overridden from Eris::Entity
@@ -191,6 +207,7 @@ protected:
 	
 	virtual void addArea(TerrainArea* area);
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+	
 	
 	
 	/* 
@@ -215,7 +232,7 @@ protected:
 	
 	TerrainArea mTerrainArea;
 	
-	PlacementMode mPlacementMode;
+	MovementMode mMovementMode;
 
 };
 

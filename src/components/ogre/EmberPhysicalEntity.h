@@ -34,6 +34,7 @@ namespace EmberOgre {
 
 class EmberEntity;
 class Model;
+class Action;
 	
 /**
  * Represents a Ember entity with a physical representation in the world.
@@ -41,6 +42,15 @@ class Model;
  */
 class EmberPhysicalEntity : public EmberEntity{
 public:
+
+	static const char * const ACTION_STAND;
+	static const char * const ACTION_RUN;
+	static const char * const ACTION_WALK;
+	static const char * const ACTION_SWIM;
+	static const char * const ACTION_FLOAT;
+
+
+
 
 	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
 	virtual ~EmberPhysicalEntity();
@@ -73,8 +83,16 @@ public:
 	virtual void attachToPointOnModel(const std::string& point, Model* model);
 	virtual void detachFromModel();
 	
+	virtual void updateMotion(Ogre::Real timeSlice);
+	
+	void updateAnimation(Ogre::Real timeSlice);
 
 protected: 
+
+	
+	virtual void onModeChanged(MovementMode newMode);
+
+	Action* mCurrentMovementAction;
 
 	/**
 	If the entity is attached to another entity, this is the model to which it is attached to.
@@ -97,8 +115,10 @@ protected:
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
 	AttachedEntitiesStore mAttachedEntities;	
 
-	/* from eris 1.2 */
-	virtual void onMoved();
+//	virtual void onMoved();
+	virtual void setMoving(bool moving);
+
+
 //	virtual void handleTalk(const std::string &msg);
 // not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
 	/// update the container of this entity (may be NULL)

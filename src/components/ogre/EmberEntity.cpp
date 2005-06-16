@@ -35,9 +35,14 @@ using namespace Ogre;
 
 namespace EmberOgre {
 
-/*eris 1.3
-EmberEntity::EmberEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* ty, Eris::View* vw, , Ogre::Entity* ogreEntity) : Eris::Entity(ge, ty, vw) 
-*/
+
+const char * const EmberEntity::MODE_STANDING = "standing";
+const char * const EmberEntity::MODE_RUNNING = "running";
+const char * const EmberEntity::MODE_WALKING = "walking";
+const char * const EmberEntity::MODE_SWIMMING = "swimming";
+const char * const EmberEntity::MODE_FLOATING = "floating";
+
+
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
 mSceneManager(sceneManager)
@@ -45,6 +50,7 @@ mSceneManager(sceneManager)
 , mView(vw)
 , Eris::Entity(id, ty, vw) 
 , mTerrainArea(this)
+, mIsInMotionManager(false)
 {
 	createSceneNode();
 }
@@ -107,51 +113,46 @@ void EmberEntity::createSceneNode()
 	}		
 }
 
+void EmberEntity::updateMotion(Ogre::Real timeSlice)
+{
+	getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+	adjustHeightPosition();
+
+
+}
+
 
 
 
 void EmberEntity::onMoved()
 {
-	getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
-	getSceneNode()->setOrientation(Atlas2Ogre(getViewOrientation()));
 	Eris::Entity::onMoved();
-	/*
-	getSceneNode()->setPosition(WF2OGRE_VECTOR3(1,1,1) * Atlas2Ogre(getPosition()));
-	getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	MotionManager* motionManager = &MotionManager::getSingleton();
-	if (getVelocity() != WFMath::Vector<3>().zero()) {
-		motionManager->addEntity(this);
-		if (mAnimationState_Walk) {
-			mAnimationState_Walk->setEnabled(true);
-//			motionManager->addAnimation(mAnimationState_Walk);
-		}
-	} else {
-		motionManager->removeEntity(this);
-		if (mAnimationState_Walk) {
-			mAnimationState_Walk->setEnabled(false);
-//			motionManager->removeAnimation(mAnimationState_Walk);
-		}
-	}
-	//Root::getSingleton().getAutoCreatedWindow()->setDebugText(std::string("Moved: " + _id) );
-	 */
+	WFMath::Quaternion orient = getOrientation();
+	getSceneNode()->setOrientation(Atlas2Ogre(orient));
+	updateMotion(0);
 }
 
 void EmberEntity::setMoving(bool moving)
 {
-	// When a pig starts or stops moving, we'll emit a sound
-	// here will be the sound emission
-	std::string type = getType()->getName(); // Eris type as a string
-	if(type.compare("pig")==0) { 	// if it's a pig
-		if(moving) { 				// and the pig *starts* moving
-			S_LOG_INFO( "THE PIG STARTS MOVING" );
-			Ember::EmberServices::getInstance()->getSoundService()->playTestGrunt();
-		} else {					// the pig is stopping
-			S_LOG_INFO( "THE PIG STOPS MOVING" );
+	// Call the overridden method 
+	Eris::Entity::setMoving(moving);
+	
+	MotionManager* motionManager = &MotionManager::getSingleton();
+	if (moving) {
+		//the entity is moving
+		if (!mIsInMotionManager) {
+			motionManager->addEntity(this);
+			mIsInMotionManager = true;
+		}
+	} else {
+		//the entity has stopped moving
+		if (mIsInMotionManager) {
+			motionManager->removeEntity(this);
+			mIsInMotionManager = false;
 		}
 	}
 	
-	// Call the overridden method 
-	Eris::Entity::setMoving(moving);
+
 
 }
 
@@ -382,23 +383,32 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 {
     if (str == "mode") {
         std::string mode = v.asString();
+		MovementMode newMode;
         if (mode.empty()) {
-			mPlacementMode = PM_DEFAULT;
-        } else if (mode == "standing") {
-			mPlacementMode = PM_STANDING;
-        } else if (mode == "running") {
-			mPlacementMode = PM_RUNNING;
-        } else if (mode == "walking") {
-			mPlacementMode = PM_WALKING;
-        } else if (mode == "swimming") {
-			mPlacementMode = PM_SWIMMING;
-        } else if (mode == "floating") {
-			mPlacementMode = PM_FLOATING;
-        }
+			newMode = MM_DEFAULT;
+        } else if (mode == MODE_STANDING) {
+			newMode = MM_STANDING;
+        } else if (mode == MODE_RUNNING) {
+			newMode = MM_RUNNING;
+        } else if (mode == MODE_WALKING) {
+			newMode = MM_WALKING;
+        } else if (mode == MODE_SWIMMING) {
+			newMode = MM_SWIMMING;
+        } else if (mode == MODE_FLOATING) {
+			newMode = MM_FLOATING;
+        } else {
+			newMode = MM_DEFAULT;
+		}
+		
+		onModeChanged(newMode);
 	}
 	Entity::onAttrChanged(str, v);
 }
 
+void EmberEntity::onModeChanged(MovementMode newMode)
+{
+	mMovementMode = newMode;
+}
 /*
 void EmberEntity::addMember(Entity *e) 
 {
