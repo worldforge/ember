@@ -42,16 +42,16 @@ public:
 
     ~JesusMousePicker();
 
-	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const CEGUI::MouseEventArgs& args);
+	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
 
-	SigC::Signal2<void, ModelBlock*, const CEGUI::MouseEventArgs&> EventPickedModelBlock;
-	SigC::Signal2<void, AttachPointNode*, const CEGUI::MouseEventArgs&> EventPickedAttachPointNode;
+	SigC::Signal2<void, ModelBlock*, const MousePickerArgs&> EventPickedModelBlock;
+	SigC::Signal2<void, AttachPointNode*, const MousePickerArgs&> EventPickedAttachPointNode;
 
 	
 protected:
 
-	virtual void onEventPickedModelBlock(ModelBlock* modelBlock, const CEGUI::MouseEventArgs& args);
-	virtual void onEventPickedAttachPointNode(AttachPointNode* node, const CEGUI::MouseEventArgs& args);
+	virtual void onEventPickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs& args);
+	virtual void onEventPickedAttachPointNode(AttachPointNode* node, const MousePickerArgs& args);
 
 	
 

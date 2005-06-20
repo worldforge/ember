@@ -37,7 +37,7 @@ JesusMousePicker::~JesusMousePicker()
 {
 }
 
-void JesusMousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const CEGUI::MouseEventArgs& args)
+void JesusMousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const MousePickerArgs& args)
 {
 	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
@@ -63,12 +63,12 @@ void JesusMousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,con
 	
 }
 
-void JesusMousePicker::onEventPickedModelBlock(ModelBlock* modelBlock, const CEGUI::MouseEventArgs& args)
+void JesusMousePicker::onEventPickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs& args)
 {
 	EventPickedModelBlock.emit(modelBlock, args);
 }
 
-void JesusMousePicker::onEventPickedAttachPointNode(AttachPointNode* node, const CEGUI::MouseEventArgs& args)
+void JesusMousePicker::onEventPickedAttachPointNode(AttachPointNode* node, const MousePickerArgs& args)
 {
 	EventPickedAttachPointNode.emit(node, args);
 }
