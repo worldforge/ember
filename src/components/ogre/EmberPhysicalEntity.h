@@ -56,12 +56,8 @@ public:
 	virtual ~EmberPhysicalEntity();
 	
 	
-	/*
-	 * return the Ogre::Entity of this object
-	 */
-//	Ogre::MovableObject* getOgreEntity();
 
-	/*
+	/**
 	 * return the Model of this object
 	 */
 	inline Model* EmberPhysicalEntity::getModel() const
@@ -87,8 +83,20 @@ public:
 	
 	void updateAnimation(Ogre::Real timeSlice);
 
+	virtual void showOgreBoundingBox(bool show);
+// 	virtual void showErisBoundingBox(bool show);
+
+	virtual bool getShowOgreBoundingBox();
+// 	virtual bool getShowErisBoundingBox();
+
 protected: 
 
+	
+	/**
+	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
+	 * @return 
+	 */
+	void connectEntities();
 	
 	virtual void onModeChanged(MovementMode newMode);
 
@@ -144,10 +152,6 @@ protected:
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 
 
-	/*
-	 * Checks the model for animations and assign registers them with MotionManager
-	 */
-	void loadAnimationsFromModel();
 
 
 	/*

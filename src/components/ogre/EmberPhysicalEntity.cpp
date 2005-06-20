@@ -24,12 +24,18 @@
 #include "GUIManager.h"
 #include "EmberEntityFactory.h"
 #include "model/Model.h"
+#include "model/SubModel.h"
 
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
 
 #include "EmberOgre.h"
+
+#include "EmberEntityUserObject.h"
+#include "ogreopcode/include/OgreCollisionManager.h"
+#include "ogreopcode/include/OgreCollisionShape.h"
+#include "ogreopcode/include/OgreCollisionObject.h"
 
 namespace EmberOgre {
 
@@ -55,6 +61,7 @@ mCurrentMovementAction(0)
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
+	delete mModel->getUserObject();
 	delete mModel;
 	Ogre::SceneNode *parent = static_cast<Ogre::SceneNode*>(getScaleNode()->getParent());
 	if (parent) {
@@ -75,7 +82,7 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 void EmberPhysicalEntity::setVisible(bool visible)
 {
 	EmberEntity::setVisible(visible);
-	getScaleNode()->setVisible(visible, false);	
+	getScaleNode()->setVisible(visible && getLocation(), false);	
 	//getModel()->setVisible(visible);
 }
 
@@ -89,7 +96,10 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	scaleNode();
 	getSceneNode()->addChild(getScaleNode());
 
-	getModel()->setUserObject(this);
+	
+/*	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), 0, 0);
+	getModel()->setUserObject(userObject);*/
+	connectEntities();
 	
 	//check if we should do delayed attachment
 	if (mModelMarkedToAttachTo) {
@@ -99,29 +109,33 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	}
 }
 
-
-void EmberPhysicalEntity::loadAnimationsFromModel()
+void EmberPhysicalEntity::connectEntities()
 {
-/*	if (getModel()->isAnimated()) {
-		//start with the idle animation
-		getModel()->startAnimation("idle");
-	}*/
-/*
- * 	Ogre::AnimationStateSet* states = mModel->getAllAnimationStates();
-	if (states->size()) {
-		Ogre::AnimationStateSet::iterator itr_end = states->end();
-		Ogre::AnimationStateSet::iterator itr;
-		itr = states->find(std::string("Walk"));
-		if (itr == itr_end) {
-			itr = states->find(std::string("walk"));
-		}
-		if (itr != itr_end) {
-			std::cout << "Found animation state";
-			mAnimationState_Walk = &(itr->second);
-			MotionManager::getSingleton().addAnimation(mAnimationState_Walk);
-		}
-	}	
-	*/
+	Ogre::CollisionContext* collideContext = Ogre::CollisionManager::getSingletonPtr()->GetDefaultContext();
+	const Model::SubModelSet submodels = getModel()->getSubmodels();
+	EmberEntityUserObject::CollisionObjectStore collisionObjects;
+	for (Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
+	{
+		std::string collideShapeName = std::string("entity_") + (*I)->getEntity()->getName();
+		Ogre::CollisionShape *collideShape = Ogre::CollisionManager::getSingletonPtr()->NewShape(collideShapeName.c_str());
+		collideShape->Load((*I)->getEntity());
+		Ogre::CollisionObject* collideObject = collideContext->NewObject();
+		collideObject->SetShape(collideShape);
+		
+		collideContext->AddObject(collideObject);
+		
+		collisionObjects.push_back(collideObject);
+		//collideShape->setDebug(true);
+		//collideShape->Visualize();
+/*	
+		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), (*I)->getEntity(), 0);
+		(*I)->getEntity()->setUserObject(userObject);*/
+	
+	}
+	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionObjects);
+	getModel()->setUserObject(userObject);
+
+
 }
 
 
@@ -150,6 +164,24 @@ void EmberPhysicalEntity::detachFromModel()
 		mModelAttachedTo = 0;
 	}
 }
+
+void EmberPhysicalEntity::showOgreBoundingBox(bool show)
+{
+	getScaleNode()->showBoundingBox(show);
+}
+
+// void EmberPhysicalEntity::showErisBoundingBox(bool show)
+// {
+// }
+
+bool EmberPhysicalEntity::getShowOgreBoundingBox()
+{
+	return getScaleNode()->getShowBoundingBox();
+}
+
+// bool EmberPhysicalEntity::getShowErisBoundingBox()
+// {
+// }
 
 
 void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
@@ -186,11 +218,13 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 		}
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
 			Action* newAction = mModel->getAction(actionName);
+			mCurrentMovementAction = newAction;
 			if (newAction) {
 				MotionManager::getSingleton().addAnimatedEntity(this);
-				mCurrentMovementAction = newAction;
 				mCurrentMovementAction->getAnimations()->setEnabled(true);
 				
+			} else {
+				MotionManager::getSingleton().removeAnimatedEntity(this);
 			}
 		}
 		//might set mCurrentMovementAction to 0
