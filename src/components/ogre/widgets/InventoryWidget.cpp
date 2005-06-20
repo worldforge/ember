@@ -52,12 +52,14 @@ InventoryWidget::~InventoryWidget()
 void InventoryWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/InventoryWidget.xml", "Inventory/");
+
+	loadMainSheet("InventoryWidget.xml", "Inventory/");
+/*	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/InventoryWidget.xml", "Inventory/");*/
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
 	mListBox = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/ListBox"));
-	getMainSheet()->addChildWindow(mMainWindow); 
+// 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));
 	

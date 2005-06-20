@@ -31,45 +31,85 @@
 #include <elements/CEGUIStaticText.h> 
 
 #include <Eris/TypeInfo.h>
-
+#include <elements/CEGUIPushButton.h>
+#include <Atlas/Codecs/Bach.h>
+#include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Objects/Encoder.h>
 namespace EmberOgre {
+
+
+
+class Decoder : public Atlas::Message::DecoderBase {
+  private:
+    virtual void messageArrived(const Atlas::Message::MapType& obj) {
+        m_check = true;
+        m_obj = obj;
+    }
+    bool m_check;
+    Atlas::Message::MapType m_obj;
+  public:
+    Decoder() : m_check (false) { }
+    bool check() const { return m_check; }
+    const Atlas::Message::MapType & get() {
+        m_check = false; return m_obj;
+    }
+};
+
+
+
 
 /*template<> WidgetLoader WidgetLoaderHolder<InspectWidget>::loader("InspectWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("InspectWidget", &createWidgetInstance<InspectWidget>);
 
 
-InspectWidget::~InspectWidget()
+InspectWidget::InspectWidget() : mCurrentEntity(0)
 {
 }
 
 void InspectWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/InspectWidget.xml", "InspectWidget/");
+	//mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/InspectWidget.xml", "InspectWidget/");
+	loadMainSheet("InspectWidget.xml", "InspectWidget/");
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
 	mChildList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ChildList"));
 	mInfo = static_cast<CEGUI::StaticText*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/EntityInfo"));
 	
-	getMainSheet()->addChildWindow(mMainWindow); 
+// 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &InspectWidget::handleAction));
 	enableCloseButton();
+
+	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ShowOgreBoundingBox"));
+	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowOgreBoundingBox_Click)
 	
+	button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ShowErisBoundingBox"));
+	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click)
+	
+		
 /*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
 }
 
 void InspectWidget::handleAction(const std::string& action, EmberEntity* entity) {
 
 	if (action == "inspect") {
+		mMainWindow->setVisible(true);
+		mCurrentEntity = entity;
 		showEntityInfo(entity);
+	}
+}
+
+void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
+{
+	if (mMainWindow->isVisible() && mCurrentEntity) {
+		showEntityInfo(mCurrentEntity);
 	}
 }
 
 void InspectWidget::showEntityInfo(EmberEntity* entity)
 {
-	mMainWindow->setVisible(true);
 	
 	
 	Eris::Entity* parent = entity->getLocation();
@@ -85,8 +125,8 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	}
 	ss << "\n";
 	
-	ss << "Position: " << entity->getPosition() << "\n";
-	ss << "Velocity: " << entity->getVelocity() << "\n";
+	ss << "Position: " << entity->getPredictedPos() << "\n";
+	ss << "Velocity: " << entity->getPredictedVelocity() << "\n";
 	ss << "Orientation: " << entity->getOrientation() << "\n";
 	ss << "Boundingbox: " << entity->getBBox() << "\n";
 	
@@ -101,8 +141,32 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	}*/
 	
 	ss << "Type: " << entity->getType()->getName() << "\n";
+	
+// 	ss << "Attributes:\n";
+// 	
+//  	const Eris::Entity::AttrMap attributes = entity->getAttributes();
+//  	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
+// 		if (I->second.isString()) {
+// 			ss  << I->first << ": " << I->second.asString() << "\n";
+// 		}
+//  	}
 
-		
+
+// 	Decoder bridge;
+// 	Atlas::Codecs::Bach codec(ss, bridge);
+// 	Atlas::Objects::ObjectsEncoder enc(codec);
+// 	
+// 	const Eris::Entity::AttrMap attributes = entity->getAttributes();
+// 	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
+// 		codec.streamBegin();
+// 
+// 		I->second.sendContents(bridge);
+// 		//enc.streamObjectsMessage(I->second);
+// 		codec.streamEnd();
+// 	}
+
+
+
 	mInfo->setText(ss.str());
 	
 	
@@ -117,8 +181,24 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	
 	
 	
+	
 }
 
+bool InspectWidget::ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args)
+{
+	if (mCurrentEntity) {
+		mCurrentEntity->showOgreBoundingBox(!mCurrentEntity->getShowOgreBoundingBox());
+	}
+	return true;
+}
+
+bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
+{
+	if (mCurrentEntity) {
+		mCurrentEntity->showErisBoundingBox(!mCurrentEntity->getShowErisBoundingBox());
+	}
+	return true;
+}
 
 
 
