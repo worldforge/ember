@@ -1,3 +1,108 @@
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/InventoryWidget.*, 
+		* better use of the base class Widget
+	* src/components/ogre/widgets/InspectWidget.*, 
+		* added debug buttons for showing the bounding box of both the ogre entity and the eris entity
+		* update values each frame (note: this will lead to a segfault if the inspected entity is deleted, needs to be fixed)
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/EntityPickerWidget.*, src/components/ogre/widgets/JesusEdit.*
+		* use the new MousePickerArgs class when doing mouse picking
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/TerrainPage.cpp
+		* please the God of Compilator Warnings
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/EmberOgre.cpp
+		* create the CollisionManager on init
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/EmberPhysicalEntity.*: 
+		* create and connect OgreOpcode::CollisionShapes and OgreOpcode::CollisionObjects on init
+		* removed some obsolete code
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityFactory.*: 
+		* added some more assert help texts
+		* added more entities to the do_not_show list. I really have to move this to somewhere else.
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*:
+		* added debug methods for showing the bounding box of both the ogre entity and the atlas/eris entity
+		* fixed an issue where a entity was deleted and it's children being moved to limbo, though this seems to have been fixed in eris cvs
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/JesusMousePicker.*: 
+		* use the new MousePickerArgs class when doing mouse picking
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp: upon connection, remove the debug avatar entity
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp: 
+		* use the new MousePickerArgs class when doing mouse picking
+		* use ogreopcode for mouse picking (note: also update pickObject(...))
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.cpp: 
+		* catch all exceptions by reference instead of by value (note: make sure this is so in the whole project)
+		* better exception handling when failing to load a widget
+		* use the new MousePickerArgs class when doing mouse picking
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/MousePicker.*: pass an instance of MousePickerArgs instead of CEGUI::MouseEventArgs since this is better decoupled from CEGUI and allows us to add our own data
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityUserObject.*: added new class to be used with mouse picking, which encapsules the entity, the model and all OgreOpcode::CollisionObjects belonging to it
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp: prevent a segfault by making sure the model has submodels before we try to get animations
+	* src/components/ogre/model/Model.h: added accessor for the submodels
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: build ogreopcode and opcode
+	* src/components/ogre/Makefile.am: add links to ogreopcode and opcode
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/ogreopcode/opcode: Opcode version 1.3.1 with patches for 64-bit systems
+	* src/components/ogre/ogreopcode: OgreOpcode which links Opcode with Ogre, this will be used for mouse picking and general collision detection
+
+2005-06-16  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.* src/components/ogre/Acatar.cpp, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/EmberPhysicalEntity.*, MotionManager.*, src/components/ogre/EmberOgre.cpp
+		* reworked how animations are played and how motion is handled, instead of the MotionManager being tied direclty to Model and automatically updating the animations and motions, they are now more decoupled with EmberEntity and its subclasses acting as mediators. Motion prediction is now fully delegated to Eris (which works splendidly, great work James!), with the MotionManager only keeping track of which entities needs moving.
+
+2005-06-16  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.*
+		* added Animation and Actions to the model
+		* moved UseScaleOf enum to ModelDefinition
+		* removed startAnimation, stopAnimation and resetAnimation since we're gonna do this with the Animation class in collaboration with the EmberPhysicalEntity class instead
+		* added comments
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/ModelDefinition.*
+		* moved UseScaleOf enum to ModelDefinition
+
+2005-06-16  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: added some more items
+
 2005-06-13  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/Sky.cpp
