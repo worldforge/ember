@@ -555,7 +555,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 				surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				if (surface && surface->isValid()) {
 					
-					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), splattextureChannel, I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - I->pos.y() - 1) * 64);
+					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), splattextureChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
 				}
 			}
 		}
@@ -721,7 +721,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 				surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				if (surface && surface->isValid()) {
 					
-					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - I->pos.y() - 1) * 64);
+					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
 				}
 			}
 		}
@@ -880,7 +880,7 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 			if (surface && surface->isValid()) {
 				
 				int alphaChannel = 0;
-				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - I->pos.y() - 1) * 64);
+				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
 			}
 		}
 		
@@ -937,7 +937,7 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 			if (surface && surface->isValid()) {
 			
 				int alphaChannel = 0;
-				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - I->pos.y() - 1) * 64);
+				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
 
 			}
 		}
