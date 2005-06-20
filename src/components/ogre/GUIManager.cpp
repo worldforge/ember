@@ -83,18 +83,18 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			
 			try {
 				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLookMouse", (CEGUI::utf8*)"MouseArrow");
-			} catch (CEGUI::Exception e) {
+			} catch (CEGUI::Exception& e) {
 				fprintf(stderr, "CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.\n");
 			}
 			try {
 				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
 //				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
-			} catch (CEGUI::Exception e) {
+			} catch (CEGUI::Exception& e) {
 				fprintf(stderr, "CEGUI - could not set default font.\n");
 			}
 		
 		
-		} catch (CEGUI::Exception e) {
+		} catch (CEGUI::Exception& e) {
 			fprintf(stderr, "CEGUI - could not create default scheme.\n");
 		}
 		
@@ -115,7 +115,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
 	
-	} catch (CEGUI::Exception e) {
+	} catch (CEGUI::Exception& e) {
 		fprintf(stderr, "GUIManager - error when creating gui.\n");
 	
 	}
@@ -171,10 +171,10 @@ void GUIManager::initialize()
 
 /*		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
 		mSheet->addChildWindow(helpWindow );*/
-	} catch (std::exception e) {
+	} catch (std::exception& e) {
 		fprintf(stderr, "GUIManager - error when initializing widgets.\n");
 
-	} catch (CEGUI::Exception e) {
+	} catch (CEGUI::Exception& e) {
 		fprintf(stderr, "GUIManager - error when initializing widgets.\n");
 	}
 	
@@ -194,7 +194,10 @@ Widget* GUIManager::createWidget(const std::string& name)
 		widget->buildWidget();
 		addWidget(widget);
 		S_LOG_INFO(  "Successfully loaded widget " << name )
-	} catch (std::exception e) {
+	} catch (std::exception& e) {
+		S_LOG_FAILURE(  "Error when loading widget " << name )
+		return 0;
+	} catch (CEGUI::Exception& e) {
 		S_LOG_FAILURE(  "Error when loading widget " << name )
 		return 0;
 	}
@@ -324,6 +327,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 		aWidget->frameStarted(evt);
 	}
 	
+	
 	return true;
 
 
@@ -345,8 +349,10 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 		CEGUI::Point position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
 		Ogre::Real x = position.d_x;
 		Ogre::Real y = position.d_y;
-
-		getMousePicker()->doMousePicking(x, y, mouseArgs);
+		MousePickerArgs pickerArgs;
+		pickerArgs.windowX = mouseArgs.position.d_x;
+		pickerArgs.windowY = mouseArgs.position.d_y;
+		getMousePicker()->doMousePicking(x, y, pickerArgs);
 	}
 
 
