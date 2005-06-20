@@ -42,6 +42,12 @@ namespace EmberOgre {
 
 class EmberEntity;
 
+
+struct MousePickerArgs
+{
+	float windowX, windowY;
+};
+
 /**
 @author Erik Hjortsberg
 */
@@ -51,20 +57,20 @@ public:
 
     ~MousePicker();
 
-	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const CEGUI::MouseEventArgs& args);
+	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
 
 
 
-	SigC::Signal2<void, EmberEntity*, const CEGUI::MouseEventArgs&> EventPickedEntity;
-	SigC::Signal1<void, const CEGUI::MouseEventArgs&> EventPickedNothing;
+	SigC::Signal2<void, EmberEntity*, const MousePickerArgs&> EventPickedEntity;
+	SigC::Signal1<void, const MousePickerArgs&> EventPickedNothing;
 	
 	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntity; }
 
 	
 protected:
 
-	virtual void onEventPickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args);
-	virtual void onEventPickedNothing(const CEGUI::MouseEventArgs& args);
+	virtual void onEventPickedEntity(EmberEntity* entity, const MousePickerArgs& args);
+	virtual void onEventPickedNothing(const MousePickerArgs& args);
 
 	
 

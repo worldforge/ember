@@ -43,7 +43,7 @@ MousePicker::~MousePicker()
 {
 }
 
-void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const CEGUI::MouseEventArgs& args)
+void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const MousePickerArgs& args)
 {
 	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
@@ -60,12 +60,12 @@ void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const CE
 
 
 
-void MousePicker::onEventPickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args)
+void MousePicker::onEventPickedEntity(EmberEntity* entity, const MousePickerArgs& args)
 {
 	EventPickedEntity.emit(entity, args);
 }
 
-void MousePicker::onEventPickedNothing(const CEGUI::MouseEventArgs& args)
+void MousePicker::onEventPickedNothing(const MousePickerArgs& args)
 {
 	EventPickedNothing.emit(args);
 }
