@@ -213,20 +213,22 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	{
 		S_LOG_FAILURE( "Could not find " << typeName << ", using placeholder.");
 		result = model->create("placeholder");
-		assert(result);
-	}
-	
+		assert(result); //if this fails we don't even have the placeholder and something is very wrong
+	} 
 	//rotate node to fit with WF space
 	//perhaps this is something to put in the model spec instead?
 	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-
+	
 	scaleNode->attachObject(model);
 
+	EmberPhysicalEntity* entity;
 	if (mPersonSet.find(typeName) != mPersonSet.end()) {
-		return new PersonEmberEntity(ge->getId(), type,  world, mSceneManager, scaleNode);
+		entity = new PersonEmberEntity(ge->getId(), type,  world, mSceneManager, scaleNode);
 	} else {
-		return new EmberPhysicalEntity(ge->getId(), type, world, mSceneManager, scaleNode);
+		entity = new EmberPhysicalEntity(ge->getId(), type, world, mSceneManager, scaleNode);
 	}
+	return entity;
+	
 	
 }
 
@@ -245,6 +247,8 @@ void EmberEntityFactory::loadTypeInfo()
 	mNonPhysicalTypes.insert("weather");
 	mNonPhysicalTypes.insert("ploughed_field");
 	mNonPhysicalTypes.insert("path");
+	mNonPhysicalTypes.insert("wall");
+	mNonPhysicalTypes.insert("hall");
 
 		
 }
