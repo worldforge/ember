@@ -30,6 +30,11 @@
 
 #include "jesus/JesusPickerObject.h"
 
+#include "EmberEntityUserObject.h"
+#include "ogreopcode/include/OgreCollisionManager.h"
+#include "ogreopcode/include/OgreCollisionShape.h"
+#include "ogreopcode/include/OgreCollisionObject.h"
+#include "model/Model.h"
 namespace EmberOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
@@ -247,7 +252,7 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 	raySceneQuery->execute(); 
 	Ogre::RaySceneQueryResult result = raySceneQuery->getLastResults(); 
 	   
-	Ogre::MovableObject *closestObject = NULL; 
+	Ogre::MovableObject *closestObject; 
 	Ogre::Real closestDistance = mClosestPickingDistance;
 	 
 	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator; 
@@ -271,6 +276,7 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 	//Ogre::UserDefinedObject* avatarObject = dynamic_cast<Ogre::UserDefinedObject*>(mAvatar->mErisAvatarEntity);
 	rayIterator = result.begin( );
 	rayIterator_end = result.end( );
+	EmberEntityUserObject* userObject = 0;
 	if (rayIterator != rayIterator_end) {
 		for ( ; 
 			rayIterator != rayIterator_end; 
@@ -281,8 +287,26 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 			
 			if (movable && movable->isVisible() && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
 				if ( ( *rayIterator ).distance < closestDistance ) { 
+					bool isColliding = false;
 					closestObject = movable; 
-					closestDistance = ( *rayIterator ).distance ; 
+					EmberEntityUserObject* aUserObject = static_cast<EmberEntityUserObject*>(movable->getUserObject());
+					
+					EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
+					//only do opcode detection if there's a CollisionObject
+					for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
+						Ogre::CollisionShape* collisionShape = (*I)->GetShape();
+						Ogre::CollisionPair pick_result;
+						
+						isColliding = collisionShape->LineCheck(Ogre::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
+						if (isColliding) {
+							Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
+							Ogre::Real realDistance = distance.length(); 
+							if (realDistance < closestDistance) {
+								closestDistance = realDistance; 
+								userObject = aUserObject;
+							}
+						}
+					}
 				}
 			}
 		} 
@@ -290,14 +314,14 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 
  
    // No movable clicked 
-	if ( closestObject == NULL ) {    
+	if ( userObject == 0 ) {    
 
 		fprintf(stderr, "TRACE - PICKED NONE\n");
 	     return NULL;
 		//Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
 	} else { 
 		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
-		return  static_cast<EmberEntity*>(closestObject->getUserObject());
+		return  userObject->getEmberEntity();;
 
 	} 		
 	
