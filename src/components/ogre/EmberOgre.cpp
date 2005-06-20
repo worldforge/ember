@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.90  2005-06-16 18:33:22  erik
+ *      Revision 1.91  2005-06-20 23:22:10  erik
+ *      2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	*  src/components/ogre/EmberOgre.cpp
+ *      		* create the CollisionManager on init
+ *
+ *      Revision 1.90  2005/06/16 18:33:22  erik
  *      2005-06-16  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberEntity.* src/components/ogre/Acatar.cpp, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/EmberPhysicalEntity.*, MotionManager.*, src/components/ogre/EmberOgre.cpp
@@ -743,7 +749,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "carpenter/Carpenter.h"
 #include "carpenter/BluePrint.h"
 
-
+#include "ogreopcode/include/OgreCollisionManager.h"
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "model/ModelDefinitionManager.h"
@@ -865,7 +871,7 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 	
 	
 	if (!mKeepOnRunning)
-		S_LOG_INFO( "Shutting down EmberOgre.");
+		S_LOG_INFO( "Shutting down Ember.");
 	return mKeepOnRunning;
 }
 
@@ -915,6 +921,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
     if (!carryOn) return false;
 
     chooseSceneManager();
+	
+	new Ogre::CollisionManager(mSceneMgr);
 	
 	mModelDefinitionManager->setSceneManager(mSceneMgr);
 
