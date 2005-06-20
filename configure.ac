@@ -378,6 +378,8 @@ AC_CONFIG_FILES([Makefile
 		 autopackage/default.apspec
 		 make_dist_media.sh
 		 src/extensions/Makefile
+		 src/components/ogre/ogreopcode/opcode/Makefile
+		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
