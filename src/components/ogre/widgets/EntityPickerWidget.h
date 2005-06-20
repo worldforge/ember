@@ -32,6 +32,7 @@ namespace EmberOgre {
 class Widget;
 class EmberEntity;
 class MousePicker;
+struct MousePickerArgs;
 
 /**
 @author Erik Hjortsberg
@@ -56,8 +57,8 @@ protected:
 	
 	std::set<CEGUI::PushButton*> mButtonSet;
 	
-	void pickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args);
-	void pickedNothing(const CEGUI::MouseEventArgs& args);
+	void pickedEntity(EmberEntity* entity, const MousePickerArgs& args);
+	void pickedNothing(const MousePickerArgs& args);
 	
 	bool buttonTouch_Click(const CEGUI::EventArgs& args);
 	bool buttonTake_Click(const CEGUI::EventArgs& args);

@@ -158,9 +158,9 @@ void EntityPickerWidget::showMenu(CEGUI::Point position)
 
 }
 
-void EntityPickerWidget::pickedEntity(EmberEntity* entity, const CEGUI::MouseEventArgs& args)
+void EntityPickerWidget::pickedEntity(EmberEntity* entity, const MousePickerArgs& args)
 {
-	showMenu(args.position);
+	showMenu(CEGUI::Point(args.windowX, args.windowY));
 	CEGUI::String name(entity->getType()->getName() + " ("+ entity->getName() +")");
 	mEntityName->setText(name);
 	mPickedEntity = entity;
@@ -170,7 +170,7 @@ void EntityPickerWidget::pickedEntity(EmberEntity* entity, const CEGUI::MouseEve
 
 }
 
-void EntityPickerWidget::pickedNothing(const CEGUI::MouseEventArgs& args)
+void EntityPickerWidget::pickedNothing(const MousePickerArgs& args)
 {
 	if (mMainWindow->isVisible()) {
 		removeMenu();

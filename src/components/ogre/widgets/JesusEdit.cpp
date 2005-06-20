@@ -166,7 +166,7 @@ bool JesusEdit::SwitchMode_Click(const CEGUI::EventArgs& args)
 	mInJesusMode = !mInJesusMode;
 }
 
-void JesusEdit::pickedModelBlock(ModelBlock* modelBlock, const CEGUI::MouseEventArgs&)
+void JesusEdit::pickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs&)
 {
 	if (mCurrentConstruction != modelBlock->getConstruction()) {
 		loadConstruction(modelBlock->getConstruction());
@@ -228,7 +228,7 @@ void JesusEdit::loadFromJesus(Jesus* jesus)
 }
 
 
-void JesusEdit::pickedAttachPointNode(AttachPointNode* pointNode, const CEGUI::MouseEventArgs&)
+void JesusEdit::pickedAttachPointNode(AttachPointNode* pointNode, const MousePickerArgs&)
 {
 	CEGUI::ListboxItem* item = mCurrentPointsListLookup.find(pointNode)->second;
 	mCurrentPointsList->ensureItemIsVisible(item);

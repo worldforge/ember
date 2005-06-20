@@ -328,14 +328,14 @@ protected:
 	 * @param modelBlock 
 	 * @param  
 	 */
-	void pickedModelBlock(ModelBlock* modelBlock, const CEGUI::MouseEventArgs&);
+	void pickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs&);
 	
 	/**
 	 *    bound to JesusMousePicker::EventPickedAttachPointNode
 	 * @param pointNode 
 	 * @param  
 	 */
-	void pickedAttachPointNode(AttachPointNode* pointNode, const CEGUI::MouseEventArgs&);
+	void pickedAttachPointNode(AttachPointNode* pointNode, const MousePickerArgs&);
 
 	
 	/**
