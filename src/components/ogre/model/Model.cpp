@@ -184,18 +184,20 @@ bool Model::createFromDefn()
 		Action action;
 		action.setName(I_actions->Name);
 		
-		std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims = (*I_actions).Animations.begin();
-		std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims_end = (*I_actions).Animations.end();
-		for (;I_anims != I_anims_end; ++I_anims) {
-			if (getAllAnimationStates() && getAllAnimationStates()->find(I_anims->Name) != getAllAnimationStates()->end()) {
-				AnimationPart animPart;
-				try {
-					Ogre::AnimationState* state = getAnimationState(I_anims->Name);
-					animPart.state = state;
-					animPart.weight = I_anims->Weight;
-					action.getAnimations()->addAnimationPart(animPart);
-				} catch (Ogre::Exception& ex) {
-					S_LOG_FAILURE("Error when loading animation: " +I_anims->Name + ".\n" + ex.getFullDescription() );
+		if (mSubmodels.size()) {
+			std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims = (*I_actions).Animations.begin();
+			std::list<ModelDefinition::AnimationDefinition>::const_iterator I_anims_end = (*I_actions).Animations.end();
+			for (;I_anims != I_anims_end; ++I_anims) {
+				if (getSkeleton() && getAllAnimationStates() && getAllAnimationStates()->find(I_anims->Name) != getAllAnimationStates()->end()) {
+					AnimationPart animPart;
+					try {
+						Ogre::AnimationState* state = getAnimationState(I_anims->Name);
+						animPart.state = state;
+						animPart.weight = I_anims->Weight;
+						action.getAnimations()->addAnimationPart(animPart);
+					} catch (Ogre::Exception& ex) {
+						S_LOG_FAILURE("Error when loading animation: " +I_anims->Name + ".\n" + ex.getFullDescription() );
+					}
 				}
 			}
 		}
@@ -536,7 +538,6 @@ void Model::detachAllObjectsImpl(void)
 	}
 	mChildObjectList.clear();
 }
-
 
 
 

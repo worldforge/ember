@@ -145,6 +145,12 @@ public:
 		return mSubModelPartMap;
 	}
 	
+	inline const SubModelSet& getSubmodels() const
+	{
+		return mSubmodels;
+	}
+	
+	
 
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
 	Ogre::AnimationStateSet* getAllAnimationStates();
