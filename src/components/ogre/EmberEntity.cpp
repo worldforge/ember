@@ -31,7 +31,54 @@
 #include <Mercator/Area.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
 
+
+
+#include "model/Model.h"
+
 using namespace Ogre;
+
+
+namespace Ogre {
+    #define POSITION_BINDING 0
+
+	/**
+	This is just like a WireBoundBox but not aligned to the axes
+	*/
+	class OOBBWireBoundingBox  : public WireBoundingBox
+	{
+		public:
+	
+		void OOBBWireBoundingBox::getWorldTransforms( Matrix4* xform ) const
+		{
+			SimpleRenderable::getWorldTransforms(xform);
+		}
+		//-----------------------------------------------------------------------
+		const Quaternion& OOBBWireBoundingBox::getWorldOrientation(void) const
+		{
+			return SimpleRenderable::getWorldOrientation();
+		}
+		//-----------------------------------------------------------------------
+		const Vector3& OOBBWireBoundingBox::getWorldPosition(void) const
+		{
+			return SimpleRenderable::getWorldPosition();
+		}				
+
+	};
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 namespace EmberOgre {
 
@@ -51,16 +98,28 @@ mSceneManager(sceneManager)
 , Eris::Entity(id, ty, vw) 
 , mTerrainArea(this)
 , mIsInMotionManager(false)
+, mErisEntityBoundingBox(0)
 {
 	createSceneNode();
 }
 
 EmberEntity::~EmberEntity()
 {
-	Ogre::SceneNode *parent = static_cast<Ogre::SceneNode*>(getSceneNode()->getParent());
+	//detach all children so we don't destroy them
+	while (getSceneNode()->numChildren()) {
+		getSceneNode()->removeChild((short unsigned int)0);
+	}
+	Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(getSceneNode()->getParent());
 	if (parent) {
 		parent->removeAndDestroyChild(getSceneNode()->getName());
+	} else {
+		getSceneNode()->getCreator()->destroySceneNode(getSceneNode()->getName());
 	}
+	if (mErisEntityBoundingBox)
+	{
+		EmberOgre::getSingleton().getWorldSceneNode()->removeAndDestroyChild(mErisEntityBoundingBox->getParentSceneNode()->getName());
+	}
+	
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
 
@@ -235,7 +294,7 @@ void EmberEntity::checkVisibility(bool vis)
 
 void EmberEntity::setVisible(bool visible)
 {
-	getSceneNode()->setVisible(visible, false);	
+	getSceneNode()->setVisible(visible && getLocation(), false);	
 }
 
 
@@ -290,42 +349,46 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	//if we're attached to something, detach from it
 	detachFromModel();
 
-	EmberEntity* newLocationEntity = static_cast<EmberEntity*>(getLocation());
-	
-	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
-	
-	if (getSceneNode()->getParentSceneNode()) {
-		//detach from our current object
-		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
-	}
-	if (newLocationEntity) { 
-
-		
-			// add to the new entity
-			newLocationEntity->getSceneNode()->addChild(getSceneNode());
-			S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" )
-			if (getPosition().isValid()) {
-				getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
-				adjustHeightPosition();
-			}
-			if (getOrientation().isValid()) {
-				getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-			}
-
+	if (!getLocation()) {
+		return;	
 	} else {
-		//add to the world
-		S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
-//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
-	}		
+		EmberEntity* newLocationEntity = static_cast<EmberEntity*>(getLocation());
+		
+		Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+		
+		if (getSceneNode()->getParentSceneNode()) {
+			//detach from our current object
+			getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
+		}
+		if (newLocationEntity) { 
 	
-	checkVisibility(isVisible());
-    std::stringstream ss;
-	ss << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " <<  getOrientation();                                                      
-	S_LOG_INFO( ss.str() )
-
-	//we adjust the entity so it retains it's former position in the world
-	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
-	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+			
+				// add to the new entity
+				newLocationEntity->getSceneNode()->addChild(getSceneNode());
+				S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" )
+				if (getPosition().isValid()) {
+					getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
+					adjustHeightPosition();
+				}
+				if (getOrientation().isValid()) {
+					getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+				}
+	
+		} else {
+			//add to the world
+			S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
+	//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
+		}		
+		
+		checkVisibility(isVisible());
+		std::stringstream ss;
+		ss << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " <<  getOrientation();                                                      
+		S_LOG_INFO( ss.str() )
+	
+		//we adjust the entity so it retains it's former position in the world
+		Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
+		getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+	}
 	
 }
 
@@ -346,7 +409,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)
 	
 	std::string name = act->getName();
 	
-	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
+	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
 	S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
 }
 
@@ -409,54 +472,45 @@ void EmberEntity::onModeChanged(MovementMode newMode)
 {
 	mMovementMode = newMode;
 }
-/*
-void EmberEntity::addMember(Entity *e) 
-{
-	try{
-		SceneNode* sceneNode = mSceneManager->getSceneNode(e->getID());
 
+void EmberEntity::showOgreBoundingBox(bool show)
+{
+	getSceneNode()->showBoundingBox(show);
+}
+
+void EmberEntity::showErisBoundingBox(bool show)
+{
+	if (!mErisEntityBoundingBox) {
+		//mErisEntityBoundingBox = new Ogre::WireBoundingBox();
+		mErisEntityBoundingBox = new Ogre::OOBBWireBoundingBox();
+		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+		boundingBoxNode->attachObject(mErisEntityBoundingBox);
+		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox().highCorner()), Atlas2Ogre(getBBox().lowCorner()));
+		mErisEntityBoundingBox->setupBoundingBox(aabb);
+/*		Model* model = new Model(getName() + "fdsfs");
+		model->create("placeholder");
+		boundingBoxNode->attachObject(model);*/
+		
+		boundingBoxNode->setPosition(Atlas2Ogre(getPosition()));
+		boundingBoxNode->setOrientation(Atlas2Ogre(getOrientation()));
+	}
+	mErisEntityBoundingBox->setVisible(show);
 	
-		//sceneNode->getParent()->removeChild(sceneNode->getName());	
-		getSceneNode()->addChild(sceneNode);
-	} catch(Ogre::Exception ex) {
-		int i = 1;
-		//the contained item haven't been initialised yet
-		//this is no problem though because when it do get initialized
-		//it's container will be set
-	}
+//	
+}
 
-	Entity::addMember(e);
+bool EmberEntity::getShowOgreBoundingBox()
+{
+	return getSceneNode()->getShowBoundingBox();
+}
+bool EmberEntity::getShowErisBoundingBox()
+{
+	return (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible());
 	
 }
 
-void EmberEntity::rmvMember(Entity *e)
-{
-	try{
-		getSceneNode()->removeChild(e->getID());
-	} catch(Ogre::Exception ex) {
-		int i = 1;
-		//the contained item haven't been initialised yet
-		//this is no problem though because when it do get initialized
-		//it's container will be set
-	}
-	Entity::rmvMember(e);	
-}
-*/
-/*
-void EmberEntity::markAsMainAvatar(Ogre::SceneManager* sceneManager)
-{
-	mIsMainAvatar = true;
-	if (mOgreEntity != NULL) {
-		delete mOgreEntity;
-	}
-	mOgreEntity = sceneManager->createEntity(getID(), "robot.mesh");
-	mOgreNode->attachObject(mOgreEntity);
-	mOgreEntity->setUserObject(this);
-}
 
-*/
 }
-
 
 
 

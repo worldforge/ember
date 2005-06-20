@@ -61,6 +61,10 @@
 // 		}
 // 	}
 // }
+namespace Ogre
+{
+	class OOBBWireBoundingBox;
+}
 
 namespace Mercator
 {
@@ -132,7 +136,7 @@ public:
 	 */
 	virtual void adjustHeightPosition(); 
 	
-	/*
+	/**
 	 * return the scenenode to which this entity belongs
 	 */
 	inline Ogre::SceneNode* getSceneNode() const 
@@ -140,7 +144,7 @@ public:
 		//return EmberOgre::getSingleton().getSceneManager()->getSceneNode(getId());
 		return mOgreNode;	
 	}
-	/*
+	/**
 	 * Called by a contained member to see if the member is allowed to be shown.
 	 * This can be reimplemented in a subclass such as AvatarEmberEntity to 
 	 * disallow things that belongs to a characters inventory to be shown.
@@ -148,12 +152,12 @@ public:
 	virtual bool allowVisibilityOfMember(EmberEntity* entity);
 
 	
-	/*
+	/**
 	*return true if the entity has a list of suggested responses
 	*/
 	bool hasSuggestedResponses() const;
 	
-	/*
+	/**
 	* returns a list of all suggested responses
 	*/
 	std::vector<std::string> getSuggestedResponses() const;
@@ -172,26 +176,73 @@ public:
 	 */
 	inline EmberEntity* getEmberLocation() const { return static_cast<EmberEntity*>(getLocation());}
 	
+	/**
+	attaches the entity to another entity (or in reality another Model)
+	*/
 	virtual void attachToPointOnModel(const std::string& point, Model* model) {};
+	
+	/**
+	detaches the entity from another entity (or in reality another Model)
+	*/
 	virtual void detachFromModel() {};
 	
+	/**
+	if this is true, init(...) has been called and the entity been set up
+	*/
 	inline bool isInitialized() const { return mIsInitialized; }
 
+	/**
+	the mode the entity is in, like walking, running, swimming etc.
+	*/
 	inline MovementMode getMovementMode() const { return mMovementMode; }
 	
+	/**
+	Call this method once per frame to update the motion of the entity
+	*/
 	virtual void updateMotion(Ogre::Real timeSlice);
+	
+	/**
+	For debugging.
+	Shows the Ogre bounding box.
+	*/
+	virtual void showOgreBoundingBox(bool show);
+	
+
+	/**
+	For debugging.
+	Shows the eris/atlas bounding box.
+	@see mErisEntityBoundingBox
+	*/
+	virtual void showErisBoundingBox(bool show);
+
+	/**
+	returns whether the ogre bounding box is shown
+	*/
+	virtual bool getShowOgreBoundingBox();
+	
+	/**
+	returns whether the eris/atlas bounding box is shown
+	@see mErisEntityBoundingBox
+	*/
+	virtual bool getShowErisBoundingBox();
 
 protected: 
 
 
-	virtual void onModeChanged(MovementMode newMode);
+	
 
-
+	/**
+	if this is true, init(...) has been called and the entity been set up
+	*/
 	bool mIsInitialized;
 	
+	/**
+	if true, the entity is already registered with the motion manager, so we don't need to add it again (which can be expensive since
+	the motionmanager holds all entities needing updated motions in a std::set)
+	*/
 	bool mIsInMotionManager;
 	
-	/*
+	/**
 	 * Overridden from Eris::Entity
 	 * @see Eris::Entity
 	 */
@@ -204,24 +255,38 @@ protected:
     virtual void onAction(const Atlas::Objects::Operation::Action& act);
     virtual void onImaginary(const Atlas::Objects::Root& act);
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
+	virtual void onModeChanged(MovementMode newMode);
 	
 	virtual void addArea(TerrainArea* area);
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 	
+	/**
 	
-	/* 
+	For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
+	This is often different from the Ogre bounding box.
+	*/
+	Ogre::OOBBWireBoundingBox* mErisEntityBoundingBox;
+	
+	/**
 	 * Creates the main scene node which holds the entity.
 	 */
 	void EmberEntity::createSceneNode();
 	
+	/**
+	override from eris
+	this is called by eris just after the entity has been put into the world
+	*/
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 
 	virtual void checkVisibility(bool vis);
 
+	/**
+	Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
+	*/
 	std::vector<std::string> mSuggestedResponses;
 
-	/*
+	/**
 	 * The main SceneNode which holds the entity in the ogre world space.
 	 */
 	Ogre::SceneNode* mOgreNode;
@@ -230,8 +295,16 @@ protected:
 	
 	Eris::View* mView;
 	
+	/**
+	If there's a terrainarea belonging to this entity, that's stored here.
+	TODO: check if we can save some memory by using a pointer?
+	*/
 	TerrainArea mTerrainArea;
-	
+
+		
+	/**
+	the mode the entity is in, like walking, running, swimming etc.
+	*/
 	MovementMode mMovementMode;
 
 };
