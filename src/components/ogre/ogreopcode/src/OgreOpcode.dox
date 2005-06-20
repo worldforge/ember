@@ -1,0 +1,187 @@
+/// @mainpage Index
+///
+/// @section intro_sec OgreOpcode 0.1
+///
+///  Welcome to OgreOpcode, version 0.1!
+///
+/// @section menu_sec Usage
+///
+/// - @ref collide_initialization
+/// - @ref collide_handling_collisions
+///
+/// @section collide_initialization Initialization and Setup
+///
+/// - @ref collide_create_server
+/// - @ref collide_define_classes
+/// - @ref collide_define_types
+/// - @ref collide_create_context
+/// - @ref collide_app_objects
+///
+/// @subsection collide_create_server Create Collision Server
+///
+/// The collision server must be created prior to using the collision
+/// detection system.
+///
+/// @code
+///     new CollisionManager();
+/// @endcode
+///
+///
+/// @subsection collide_define_classes Define Collision Classes
+///
+/// A collision class doesn't need to correspond to an @c EntityType (or game
+/// object type).  The class is really like a category type for determining
+/// collision relationships.  So let's say we have @c "vehicle", @c "powerup"
+/// and @c "bullet" classes.
+///
+/// @code
+///     CollisionManager::getSingletonPtr()->BeginCollClasses();
+///     CollisionManager::getSingletonPtr()->AddCollClass("vehicle");
+///     CollisionManager::getSingletonPtr()->AddCollClass("powerup");
+///     CollisionManager::getSingletonPtr()->AddCollClass("bullet");
+///     CollisionManager::getSingletonPtr()->EndCollClasses();
+/// @endcode
+///
+///
+/// @subsection collide_define_types Define Collision Types
+///
+/// Collision types define what happens when two classes collide.  They tell
+/// the collision system whether or not it should report a collision and
+/// the amount of work that it should do in determining whether or not
+/// a collision occurred.
+///
+/// Collision types are one of:
+///
+///     - COLLTYPE_IGNORE: Don't report collisions.
+///     - COLLTYPE_QUICK: Do fast %sphere vs. %sphere checks.
+///     - COLLTYPE_CONTACT: Report the first contact.
+///     - COLLTYPE_EXACT: Report all contacts.
+///
+/// So using the example from the previous section, vehicles could bounce
+/// off each other and requires exact hit, powerups can be picked up by
+/// being around the right place, and bullets require exact.  Powerups
+/// ignore other powerups and bullets.  Bullets ignore other bullets.
+///
+/// @code
+///     CollisionManager::getSingletonPtr()->BeginCollTypes()
+///     CollisionManager::getSingletonPtr()->AddCollType("vehicle", "vehicle", COLLTYPE_EXACT);
+///     CollisionManager::getSingletonPtr()->AddCollType("vehicle", "powerup", COLLTYPE_QUICK);
+///     CollisionManager::getSingletonPtr()->AddCollType("vehicle", "bullet", COLLTYPE_EXACT);
+///     CollisionManager::getSingletonPtr()->AddCollType("powerup", "powerup", COLLTYPE_IGNORE);
+///     CollisionManager::getSingletonPtr()->AddCollType("powerup", "bullet", COLLTYPE_IGNORE);
+///     CollisionManager::getSingletonPtr()->AddCollType("bullet", "bullet", COLLTYPE_IGNORE);
+///     CollisionManager::getSingletonPtr()->EndCollTypes()
+/// @endcode
+///
+///
+/// @subsection collide_create_context Create a Collision Context
+///
+/// A collision context is a space within which collisions occur.  It is used
+/// to minimize the set of objects that any given object can collide with (since
+/// it can only collide with those in the same context).  The default collision
+/// context can be obtained by:
+///
+/// @code
+///     CollisionContext *collideContext;
+///
+///     ...
+///
+///     collideContext = CollisionManager::getSingletonPtr()->GetDefaultContext();
+/// @endcode
+///
+/// @subsection collide_app_objects Setting Up Application Objects
+///
+/// Once you have the collision system initialized and ready to go, it is
+/// now time to add in your application's objects.
+///
+/// To do this, you need to do the following things:
+///
+///    - Create an CollisionShape
+///    - Load the collision geometry
+///    - Create an CollisionObject
+///    - Add the collision object to the CollisionContext
+///
+/// In C++, initializing a vehicle from the previous examples might
+/// look like:
+///
+/// @code
+///     CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("vehicle");
+///
+///     collideShape->Load(fileServer, "data:vehicle/collide.n3d");
+///
+///     CollisionObject *collideObject = collideContext->NewObject();
+///     collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass(this->GetName()));
+///     collideObject->SetShape(collideShape);
+///
+///     collideContext->AddObject(collideObject);
+/// @endcode
+///
+/// While simply setting the radius on the CollisionObject is possible with
+/// CollisionObject::SetRadius(), this is not recommended.  Doing so will
+/// not provide enough data for the more precise collision types and will
+/// prevent ray picking from working correctly on that object.
+///
+/// You may use CollisionObject::SetClientData() and
+/// CollisionObject::GetClientData() to store a pointer to your application
+/// specific object that is associated with the CollisionObject.  This lets
+/// you easily determine which object in your application is involved in
+/// a collision given an CollisionObject from an CollisionPair (see @ref
+/// collide_handling_collisions).
+///
+/// @section collide_handling_collisions Handling and Responding to Collisions
+///
+/// Call CollisionContext::Collide() in your game loop to compute contacts
+/// between collision objects in context.
+///
+/// @code
+///     while(gameTrigger())
+///     {
+///         ...
+///         collideContext->Collide();
+///     }
+/// @endcode
+///
+/// You can retrieve the number of collisions and description of a contact
+/// between two nCollideObjects with the given nCollidiObject by calling
+/// CollisionContext::GetCollissions():
+///
+/// @code
+///     CollisionPair **collisionReport;
+///
+///     int num_collide = collideContext->GetCollissions(collideObject, collisionReport);
+///     if (num_collide)
+///     {
+///         CollisionObject* col1 = collisionReport->col1;
+///         CollisionObject* col2 = collisionReport->col2;
+///     }
+/// @endcode
+///
+/// CollisionPair contains the information of collision like pointer to
+/// CollisionObject, the object which is collided, time stamp, contact point and so on.
+///
+/// You can also retrieve the collision info from CollisionObject::GetCollissions():
+///
+/// @code
+///     CollisionObject* collideObject = myEntity->GetCollideObject();
+///
+///     CollisionPair *collisionPair;
+///
+///     int num_collide = collideObject->GetNumCollissions();
+///     if (collideObject && num_collide)
+///     {
+///         collideObject->GetCollissions (collisionPair);
+///
+///         // other process
+///         ...
+///     }
+/// @endcode
+///
+///
+/// When an object is destroyed, it must remove itself from the collision
+/// system.
+///
+/// @code
+///     collideContext->RemObject(collideObject);
+///     collideContext->ReleaseObject(collideObject);
+/// @endcode
+///

@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreopcode", "ogreopcode.vcproj", "{38E0EE4E-1D0C-4335-9968-412D376AB431}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6B19233C-49A3-467D-BFA0-2B5CE77745D9} = {6B19233C-49A3-467D-BFA0-2B5CE77745D9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Opcode", "..\opcode13\Opcode.vcproj", "{6B19233C-49A3-467D-BFA0-2B5CE77745D9}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreOpcodeExample", "..\example\scripts\ogreOpcodeExample.vcproj", "{294D38DC-9A72-445B-A890-9B8C597ABBCA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38E0EE4E-1D0C-4335-9968-412D376AB431} = {38E0EE4E-1D0C-4335-9968-412D376AB431}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{38E0EE4E-1D0C-4335-9968-412D376AB431}.Debug.ActiveCfg = Debug|Win32
+		{38E0EE4E-1D0C-4335-9968-412D376AB431}.Debug.Build.0 = Debug|Win32
+		{38E0EE4E-1D0C-4335-9968-412D376AB431}.Release.ActiveCfg = Release|Win32
+		{38E0EE4E-1D0C-4335-9968-412D376AB431}.Release.Build.0 = Release|Win32
+		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Debug.ActiveCfg = Debug|Win32
+		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Debug.Build.0 = Debug|Win32
+		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Release.ActiveCfg = Release|Win32
+		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Release.Build.0 = Release|Win32
+		{294D38DC-9A72-445B-A890-9B8C597ABBCA}.Debug.ActiveCfg = Debug|Win32
+		{294D38DC-9A72-445B-A890-9B8C597ABBCA}.Debug.Build.0 = Debug|Win32
+		{294D38DC-9A72-445B-A890-9B8C597ABBCA}.Release.ActiveCfg = Release|Win32
+		{294D38DC-9A72-445B-A890-9B8C597ABBCA}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
