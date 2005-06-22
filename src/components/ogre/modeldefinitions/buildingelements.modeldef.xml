@@ -111,16 +111,28 @@
 		</submodels>
 	</model>
 	
-	<model name="house3">
+	<model name="house3_">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/butchers_house/butchers_house.mesh" >
 			<parts>
-				<part name="house3" show="true" />
+				<part name="main" show="true" />
 			</parts>
 			</submodel>
 		</submodels>
 	</model>
 	
+	<model name="house3"  usescaleof="depth" rotation="-90">
+		<submodels>
+			<submodel mesh="junkyard/models/house/house.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
+	
+
 	<model name="roof">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_element/models/normal_slope_roof/normal_slope_roof.mesh">

@@ -75,7 +75,7 @@ Avatar::Avatar(Ogre::SceneManager* sceneManager)
 
 	//mAvatarCamera = NULL;
 
-	mWalkSpeed = 20.0;
+	mWalkSpeed = 5.0;
 	mRunSpeed = 20.0;
 
 	mSceneMgr = sceneManager; // TODO: assert it's not null

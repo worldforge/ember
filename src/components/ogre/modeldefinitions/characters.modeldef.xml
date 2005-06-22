@@ -44,12 +44,12 @@
 			</submodel>
 		</submodels>
 		<Actions>
-			<Action name="idle">
+			<Action name="__movement_idle">
 				<AnimationParts>
 					<animationpart name="_ildeBreathing.BAKED" weight="1" />
 				</AnimationParts>
 			</Action>
-			<Action name="walk">
+			<Action name="__movement_walk">
 				<AnimationParts>
 					<animationpart name="_walk.BAKED" weight="1" />
 				</AnimationParts>
@@ -61,6 +61,138 @@
 		</attachpoints>
 	</model>	
 
+	<model name="settler__" usescaleof="height" >
+		<submodels>
+			<submodel mesh="Alpha_Male.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="__movement_idle">
+				<AnimationParts>
+					<animationpart name="PoseC" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_walk">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
+			</Action>
+		</Actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RightHand" />
+		</attachpoints>
+	</model>		
+
+	<model name="settler_____" usescaleof="height" >
+		<submodels>
+			<submodel mesh="3d_skeletons/alpha_male/models/Alpha_Male.mesh" >
+				<parts>
+					<part name="UpperLegs" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpLeg" />
+						</subentities>
+					</part>      
+					<part name="Neck" show="true" >
+						<subentities>
+							<subentity name="am_Body_Neck" />
+						</subentities>
+					</part>      
+					<part name="LowerTorso" show="true" >
+						<subentities>
+							<subentity name="am_Body_LowerTors" />
+						</subentities>
+					</part>      
+					<part name="Hips" show="true" >
+						<subentities>
+							<subentity name="am_Body_Hips" />
+						</subentities>
+					</part>      
+					<part name="Feet" show="false" >
+						<subentities>
+							<subentity name="am_Body_Foot" />
+						</subentities>
+					</part>      
+					<part name="MiddleLegs" show="false" >
+						<subentities>
+							<subentity name="am_Body_MidLeg" />
+						</subentities>
+					</part>      
+					<part name="UpperTorso" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpperTors" />
+						</subentities>
+					</part>      
+					<part name="Calves" show="false" >
+						<subentities>
+							<subentity name="am_Body_Calves" />
+						</subentities>
+					</part>      
+					<part name="UpperArms" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpperArm" />
+						</subentities>
+					</part>      
+					<part name="UpperForeArms" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpForeArm" />
+						</subentities>
+					</part>      
+					<part name="LowerForeArms" show="true" >
+						<subentities>
+							<subentity name="am_Body_LowForeAr" />
+						</subentities>
+					</part>      
+					<part name="Hands" show="true" >
+						<subentities>
+							<subentity name="am_Body_Hand" />
+						</subentities>
+					</part>      
+					<part name="Face" show="true" >
+						<subentities>
+							<subentity name="am_Body_Face" />
+						</subentities>
+					</part>      
+					<part name="Hair" show="true" >
+						<subentities>
+							<subentity name="am_Body_Hair" />
+						</subentities>
+					</part>
+					<part name="Dress1" show="true" >
+						<subentities>
+							<subentity name="amDress" />
+						</subentities>
+					</part>
+					<part name="Boots" show="true" >
+						<subentities>
+							<subentity name="amBoots" />
+						</subentities>
+					</part>  
+				</parts>      
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="__movement_idle">
+				<AnimationParts>
+					<animationpart name="Breathing2" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_walk">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
+			</Action>
+		</Actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RightHand" />
+		</attachpoints>
+	</model>		
+	
+	
 	<model name="settler" usescaleof="height" >
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/AlphaMaleMesh.001.mesh" >
@@ -149,12 +281,12 @@
 			</submodel>
 		</submodels>
 		<Actions>
-			<Action name="idle">
+			<Action name="__movement_idle">
 				<AnimationParts>
 					<animationpart name="Breathing" weight="1" />
 				</AnimationParts>
 			</Action>
-			<Action name="walk">
+			<Action name="__movement_walk">
 				<AnimationParts>
 					<animationpart name="walk.001" weight="1" />
 				</AnimationParts>
@@ -165,7 +297,7 @@
 			<attachpoint name="right_hand_wield" bone="RightHand" />
 		</attachpoints>
 	</model>		
-	
+		
 	<model name="butcher" usescaleof="height" >
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >

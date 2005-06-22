@@ -68,9 +68,14 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 			name = tmp;
 		}
 				
-		ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
-		readModel(modelDef, smElem);
-		modelDef->setValid(true);
+		try {
+			ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
+			readModel(modelDef, smElem);
+			modelDef->setValid(true);
+		} catch (Ogre::Exception& ex) {
+			S_LOG_FAILURE(ex.getFullDescription());
+			std::cerr << ex.getFullDescription();
+		}
 		
 		//modelDef->_notifyOrigin(context.filename);
 	}	

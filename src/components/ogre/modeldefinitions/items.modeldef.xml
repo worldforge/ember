@@ -52,7 +52,7 @@
 		</submodels>
 	</model>
 	
-	<model name="spade" usescaleof="height" >
+	<model name="spade" usescaleof="none" scale="1" >
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh">
 			<parts>
@@ -62,7 +62,7 @@
 		</submodels>
 	</model>	
 	
-	<model name="shovel" usescaleof="height">
+	<model name="shovel" usescaleof="none" scale="1">
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh" >
 				<parts>
@@ -145,16 +145,16 @@
 		</submodels>
 	</model>			
 	
-	<model name="stall" usescaleof="none" scale="1">
+	<model name="stall" usescaleof="none" scale="1" rotation="-90">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
-				<parts>
-					<part name="frame" show="true" />
-				</parts>
-			</submodel>
 			<submodel mesh="3d_objects/items/canvas/models/marketstall/marketstall_canvas_1.mesh" >
 				<parts>
 					<part name="canvas" show="true" />
+				</parts>
+			</submodel>
+			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
+				<parts>
+					<part name="frame" show="true" />
 				</parts>
 			</submodel>
 		</submodels>
@@ -181,11 +181,97 @@
 	</model>			
 	
 	
+	<model name="gravestone_simple" usescaleof="height" >
+		<submodels>
+			<submodel mesh="roundedgrave.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+			
+	<model name="gravestone_stylish" usescaleof="height" >
+		<submodels>
+			<submodel mesh="stylishgrave.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="gravestone_rounded" usescaleof="height" >
+		<submodels>
+			<submodel mesh="roundedgrave.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="mausoleum" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/items/building/models/mausoleum/mausoleum.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="tinderbox" usescaleof="height">
+		<submodels>
+			<submodel mesh="3d_objects/items/box/models/tinderbox/tinderbox.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="torch" usescaleof="none" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/torch/torch.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="tower" usescaleof="height" rotation="-90">
+		<submodels>
+			<submodel mesh="junkyard/models/broken_tower/Tower01.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
 	
+	<model name="gallows">
+		<submodels>
+			<submodel mesh="junkyard/models/gallows/gallows.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
 	
 	
-	
+	<model name="ham" usescaleof="none" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/ham/food_ham.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
 	
 	
 	

@@ -19,7 +19,7 @@
 			</submodel>
 		</submodels>
 		<Actions>
-			<Action name="idle">
+			<Action name="__movement_idle">
 				<AnimationParts>
 					<animationpart name="innerFire.BAKED" weight="1" />
 					<animationpart name="outerFire.BAKED" weight="1" />
@@ -70,7 +70,7 @@
 	
 	<model name="boulder" >
 		<submodels>
-			<submodel mesh="3d_objects/environment/boulder/models/boulder_02/boulder_02.mesh">
+			<submodel mesh="3d_objects/environment/boulder/models/boulder_03/boulder_03.mesh">
 				<parts>
 					<part name="main" show="true" />
 				</parts>
