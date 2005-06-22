@@ -21,8 +21,14 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Sky.h"
+#include "../EmberOgrePrerequisites.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "../EmberOgre.h"
+#include "../TerrainGenerator.h"
+
+//#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
+
 
 
 namespace EmberOgre {
@@ -34,10 +40,17 @@ Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
   
 	Ogre::ColourValue fadeColour(0.9,0.9,0.9);
 	double fogstartDistance = 96; //default for fog
+	double fogmaxDistance = 256; //default for fog gradient endind (i.e. where the fog is at 100%)
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
 		fogstartDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart");
 	}
-	sceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, 256);
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogmax")) {
+		fogmaxDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogmax");
+	}
+	sceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, fogmaxDistance);
+	
+//	EmberOgre::getSingleton().getTerrainGenerator()->getTerrainOptions().fogEnd = fogendDistance * fogendDistance;
+
   
   	try {
 		//set up values for the splatting shader and the linear fog shader

@@ -1,3 +1,17 @@
+2005-06-22  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* /src/components/ogre/environment/Sky.cpp
+		* get the setting for fog max distance from the config file
+
+2005-06-22  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberSceneManager/src/OgreTerrainRenderable.cpp
+		* if a piece of terrain is fully in the fog, apply the lowest LOD to it, since it's not actually seen anyway
+
+2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.conf: added setting for fog max distance
+
 2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/InventoryWidget.*, 
