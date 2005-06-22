@@ -334,7 +334,16 @@ namespace Ogre
         Vector3 diff = mWorldCenter - cpos;
 
         Real L = diff.squaredLength();
+		
 
+		//if we're fully in the fog, use the lowest LOD level
+		Ogre::SceneManager* sceneMgr = Root::getSingleton().getSceneManager(Ogre::ST_EXTERIOR_FAR);
+		
+		if (L >= (sceneMgr->getFogEnd() * sceneMgr->getFogEnd())) {
+			//mMaterialLodIndex = msOptions->maxGeoMipMapLevel - 1;
+			mRenderLevel = msOptions->maxGeoMipMapLevel - 1;
+			return;
+		}
         mRenderLevel = -1;
 
         for ( int i = 0; i < msOptions->maxGeoMipMapLevel; i++ )
