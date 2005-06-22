@@ -44,6 +44,21 @@ material /global/creature/mottled_oker
   }
 }
 
+material /global/creature/greyhair
+{
+  technique
+  {
+    pass
+    {
+        texture_unit
+		{
+			texture 3d_objects/creatures/quadruped_v2/textures/greyhair/greyhair256.png
+		}
+
+    }
+  }
+}
+
 
 
 material /global/creature/squirrel/skin
@@ -153,6 +168,7 @@ material /global/creature/insect/emerald
     }
   }
 }
+
 material /global/creature/insect/carrion
 {
 
@@ -189,3 +205,20 @@ material /global/creature/insect/carrion
 		}
 	}
 }
+
+
+
+material /global/body_parts/skeleton/bone/skeleton
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/body_parts/skeleton/textures/bone/skeleton.png
+      }
+    }
+  }
+}
+

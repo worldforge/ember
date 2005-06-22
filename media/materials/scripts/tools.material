@@ -82,3 +82,20 @@ material /global/items/saddle/brownleather
   }
 }
 
+material /global/items/box/craftsman_wood/box_craftsman_wood
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/box/textures/craftsman_wood/box_craftsman_wood.png
+      }
+    }
+  }
+}
+
+
+

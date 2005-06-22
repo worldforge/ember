@@ -14,3 +14,17 @@ material /global/items/food/country_bread
     }
   }
 }
+
+material /global/items/food/meat
+{
+  technique
+  {
+    pass
+    {
+         texture_unit
+		{
+			texture 3d_objects/items/food/textures/meat/low/food_meat.png
+		}
+    }
+  }
+}

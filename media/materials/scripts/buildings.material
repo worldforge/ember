@@ -66,7 +66,7 @@ material /global/building_primitives/rough_timber/beam_end
   }
 }
 
-material /global/building_primitives/rough_timber/wall__
+material /global/building_primitives/rough_timber/wall
 {
   // receive_shadows on
   technique
@@ -300,6 +300,51 @@ material /global/building_element/timber_rough/door_element_
   }
 }
 
+material /global/building_element/timber_rough/corner_pillar
+{
+  // receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_rough/low/corner_pillar.png
+      }
+    }
+  }
+}
+
+material /global/building_element/timber_rough/wall_side
+{
+  // receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_rough/low/wall_side.png
+      }
+    }
+  }
+}
+
+material /global/building_element/timber_rough/wall
+{
+  // receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/building_element/textures/timber_rough/wall_logs-aged_256x256.png
+      }
+    }
+  }
+}
+
 material /global/building_element/timber_frame/beam_end
 {
   // receive_shadows on
@@ -426,6 +471,142 @@ material /global/items/canvas/red_white_stripes/details
 	  texture_unit
       {
         texture 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_details.png
+      }
+    }
+  }
+}
+
+material /global/items/building/mausoleum/wall
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/wall.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/triangle
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/triangle.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/colonne-
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/colonne-.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/colonne
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/colonne.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/dirty-st
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/dirty-st.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/floor
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/floor.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/panel
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/panel.jpg
+
+      }
+    }
+  }
+}
+material /global/items/building/mausoleum/roof
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/roof.jpg
+
+      }
+    }
+  }
+}      
+material /global/items/building/mausoleum/bordure
+{
+  technique
+  {
+    pass
+    {
+      
+	  texture_unit
+      {
+        texture 3d_objects/items/building/models/mausoleum/bordure.jpg
+
       }
     }
   }
@@ -580,7 +761,7 @@ material /global/building_element/timber_rough/door_element
 }
 
 
-material /global/building_primitives/rough_timber/wall
+material /global/building_primitives/rough_timber/wall___
 { 
 
   // This is the preferred technique which uses both vertex and 

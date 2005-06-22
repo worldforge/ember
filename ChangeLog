@@ -1,5 +1,14 @@
 2005-06-22  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/Avatar.cpp
+		* set the walk speed to 5 again
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp
+		* upon error, log an error and continue
+	* src/components/ogre/modeldefinitions/*
+		* added a lot of new entities, amongst them the mausoleum, the skeleton (and lych), the broken tower, the house and the gallows	 
+
+2005-06-22  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* /src/components/ogre/environment/Sky.cpp
 		* get the setting for fog max distance from the config file
 

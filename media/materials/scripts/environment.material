@@ -45,7 +45,19 @@ material /global/environment/boulder/moraf_rock
   }
 }
 
-
+material /global/environment/stone/stone_boulder_mossy
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/environment/stone/textures/stone_boulder_mossy/stone.png
+      }
+    }
+  }
+}
 
 
 
