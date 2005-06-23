@@ -24,7 +24,9 @@
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
 
+
 #include "InspectWidget.h"
+#include "../EmberOgre.h"
 
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
@@ -64,12 +66,21 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 InspectWidget::InspectWidget() : mCurrentEntity(0)
 {
+	EmberOgre::getSingleton().getMainView()->EntityDeleted.connect(SigC::slot(*this, &InspectWidget::View_EntityDeleted));
+}
+
+void InspectWidget::View_EntityDeleted(Eris::Entity* entity)
+{
+	if (entity == mCurrentEntity)
+	{
+		mCurrentEntity = 0;
+	}
 }
 
 void InspectWidget::buildWidget()
 {
 	
-	//mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/InspectWidget.xml", "InspectWidget/");
+
 	loadMainSheet("InspectWidget.xml", "InspectWidget/");
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
@@ -77,7 +88,6 @@ void InspectWidget::buildWidget()
 	mChildList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ChildList"));
 	mInfo = static_cast<CEGUI::StaticText*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/EntityInfo"));
 	
-// 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &InspectWidget::handleAction));
 	enableCloseButton();

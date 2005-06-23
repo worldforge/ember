@@ -1,5 +1,14 @@
 2005-06-23  Erik Hjortsberg  <erik@erik>
 
+	* 
+
+2005-06-23  Erik Hjortsberg  <erik@erik>
+
+	* src/components/ogre/widgets/InspectWidget.*
+		* when the inspected entity is deleted, remove the reference to it
+
+2005-06-23  Erik Hjortsberg  <erik@erik>
+
 	* src/components/ogre/EmberOgre.*
 		* added accessor for the main View and made some accessors const
 
