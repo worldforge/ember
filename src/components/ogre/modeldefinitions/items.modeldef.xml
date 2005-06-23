@@ -211,7 +211,7 @@
 		</submodels>
 	</model>			
 	
-	<model name="mausoleum" usescaleof="height">
+	<model name="mausoleum" usescaleof="height" rotation="-90">
 		<submodels>
 			<submodel mesh="3d_objects/items/building/models/mausoleum/mausoleum.mesh" >
 				<parts>
