@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.45  2005-06-01 00:23:35  erik
+ *      Revision 1.46  2005-06-23 11:29:51  erik
+ *      2005-06-23  Erik Hjortsberg  <erik@erik>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added accessor for the main View and made some accessors const
+ *
+ *      Revision 1.45  2005/06/01 00:23:35  erik
  *      2005-06-01  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -509,13 +515,14 @@ public:
 
 	// TODO: possibly we'd like to do the following in a different way,
 	// perhaps refactoring stuff
-	Avatar* getAvatar();
-	EmberTerrainSceneManager* getSceneManager();
-	TerrainGenerator* getTerrainGenerator();
-	MotionManager* getMotionManager();
-	Ogre::Root* getOgreRoot();
-	EmberEntityFactory* getEntityFactory();
-	AvatarCamera* getMainCamera();
+	Avatar* getAvatar() const;
+	EmberTerrainSceneManager* getSceneManager() const;
+	TerrainGenerator* getTerrainGenerator() const;
+	MotionManager* getMotionManager() const;
+	Ogre::Root* getOgreRoot() const;
+	EmberEntityFactory* getEntityFactory() const;
+	AvatarCamera* getMainCamera() const;
+	inline Eris::View* const getMainView() { return mWorldView;};
 	
 	inline Jesus* getJesus() const { return mJesus; }
 	

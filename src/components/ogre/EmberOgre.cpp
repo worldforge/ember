@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.91  2005-06-20 23:22:10  erik
+ *      Revision 1.92  2005-06-23 11:29:51  erik
+ *      2005-06-23  Erik Hjortsberg  <erik@erik>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added accessor for the main View and made some accessors const
+ *
+ *      Revision 1.91  2005/06/20 23:22:10  erik
  *      2005-06-21  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*  src/components/ogre/EmberOgre.cpp
@@ -1368,27 +1374,27 @@ void EmberOgre::connectedToServer(Eris::Connection* connection)
 
 
 
-Avatar* EmberOgre::getAvatar() {
+Avatar* EmberOgre::getAvatar() const {
 	return mAvatar;
 }
 
 
-EmberTerrainSceneManager* EmberOgre::getSceneManager()
+EmberTerrainSceneManager* EmberOgre::getSceneManager() const
 {
 	return mSceneMgr;
 }
 
-TerrainGenerator* EmberOgre::getTerrainGenerator()
+TerrainGenerator* EmberOgre::getTerrainGenerator() const
 {
 	return mTerrainGenerator;
 }
 
-MotionManager* EmberOgre::getMotionManager()
+MotionManager* EmberOgre::getMotionManager() const
 {
 	return mMotionManager;
 }
 
-Ogre::Root* EmberOgre::getOgreRoot()
+Ogre::Root* EmberOgre::getOgreRoot() const
 {
 	assert(mRoot);
 	return mRoot;
@@ -1410,12 +1416,12 @@ Ogre::SceneNode* EmberOgre::getRootSceneNode() const
 }
 
 
-AvatarCamera* EmberOgre::getMainCamera()
+AvatarCamera* EmberOgre::getMainCamera() const
 {
 	return mAvatar->getAvatarCamera();
 }
 
-EmberEntityFactory* EmberOgre::getEntityFactory()
+EmberEntityFactory* EmberOgre::getEntityFactory() const
 {
 	return mEmberEntityFactory;
 }

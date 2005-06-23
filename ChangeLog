@@ -1,5 +1,10 @@
 2005-06-23  Erik Hjortsberg  <erik@erik>
 
+	* src/components/ogre/EmberOgre.*
+		* added accessor for the main View and made some accessors const
+
+2005-06-23  Erik Hjortsberg  <erik@erik>
+
 	* src/components/ogre/EmberSceneManager/src/OgreTerrainRenderable.cpp
 		* make it right this time
 
