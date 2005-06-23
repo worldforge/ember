@@ -351,6 +351,7 @@ namespace Ogre
             if ( mMinLevelDistSqr[ i ] > L )
             {
                 mRenderLevel = i - 1;
+		mMaterialLodIndex = mMaterial->getLodIndexSquaredDepth (L);
                 break;
             }
         }
