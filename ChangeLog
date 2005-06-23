@@ -1,3 +1,10 @@
+2005-06-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityUserObject.*, AvatarCamera.cpp
+	* src/components/ogre/jesus/JesusPickerObject.*
+		* added a getTypeName() method to the UserObjects 
+		* use the getTypeName() method in the picking methods
+
 2005-06-23  Erik Hjortsberg  <erik@erik>
 
 	* src/components/ogre/modeldefinitions/iteam.modeldef.xml

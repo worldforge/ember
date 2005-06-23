@@ -285,7 +285,7 @@ EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY)
 
 			Ogre::MovableObject* movable = ( *rayIterator ).movable;
 			
-			if (movable && movable->isVisible() && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
+			if (movable && movable->isVisible() && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && movable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
 				if ( ( *rayIterator ).distance < closestDistance ) { 
 					bool isColliding = false;
 					closestObject = movable; 

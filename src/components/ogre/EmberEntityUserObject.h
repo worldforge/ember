@@ -42,6 +42,7 @@ class EmberEntityUserObject : public Ogre::UserDefinedObject
 {
 public:
 
+	static const std::string s_TypeName;
 	typedef std::vector<Ogre::CollisionObject*> CollisionObjectStore;
 	
     EmberEntityUserObject(EmberEntity* emberEntity , Model* model, CollisionObjectStore collisionObject);
@@ -51,6 +52,7 @@ public:
 	EmberEntity* getEmberEntity() const;
 	Model* getModel() const ;
 	CollisionObjectStore* getCollisionObjects() { return &mCollisionObjects; }
+	virtual const Ogre::String & getTypeName (void) const;
 
 private:
 	EmberEntity*  mEmberEntity;

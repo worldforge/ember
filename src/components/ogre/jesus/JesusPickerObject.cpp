@@ -26,6 +26,8 @@
 
 namespace EmberOgre {
 
+const Ogre::String JesusPickerObject::s_TypeName = "JesusPickerObject";
+
 JesusPickerObject::JesusPickerObject(ModelBlock* modelBlock, AttachPointNode* pointNode)
 : mModelBlock(modelBlock), mPointNode(pointNode)
 {
@@ -34,6 +36,11 @@ JesusPickerObject::JesusPickerObject(ModelBlock* modelBlock, AttachPointNode* po
 
 JesusPickerObject::~JesusPickerObject()
 {
+}
+
+const Ogre::String & JesusPickerObject::getTypeName (void) const
+{
+	return s_TypeName;
 }
 
 

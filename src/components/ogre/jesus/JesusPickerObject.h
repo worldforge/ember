@@ -36,13 +36,14 @@ class AttachPointNode;
 class JesusPickerObject : public Ogre::UserDefinedObject
 {
 public:
+	static const std::string s_TypeName;
     JesusPickerObject(ModelBlock* modelBlock, AttachPointNode* pointNode);
 
     ~JesusPickerObject();
 	
 	inline ModelBlock* getModelBlock() const { return mModelBlock; }
 	inline AttachPointNode* getPointNode() const { return mPointNode; }
-
+	virtual const Ogre::String & 	getTypeName (void) const;
 protected:
 ModelBlock* mModelBlock;
 AttachPointNode* mPointNode;

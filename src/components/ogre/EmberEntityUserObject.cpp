@@ -28,6 +28,9 @@
 
 namespace EmberOgre {
 
+const Ogre::String EmberEntityUserObject::s_TypeName = "EmberEntityPickerObject";
+
+
 EmberEntityUserObject::EmberEntityUserObject(EmberEntity* emberEntity,  Model* model,  CollisionObjectStore collisionObjects)
 : mModel(model),
 mEmberEntity(emberEntity),
@@ -54,6 +57,10 @@ EmberEntity*  EmberEntityUserObject::getEmberEntity() const
 	return mModel;
 }
 
+const Ogre::String & EmberEntityUserObject::getTypeName (void) const
+{
+	return s_TypeName;
+}
 
 
 
