@@ -31,6 +31,7 @@
 #include "../GUIManager.h"
 #include "ServerBrowserWidget.h"
 #include <elements/CEGUIPushButton.h>
+#include <elements/CEGUIEditbox.h>
 
 namespace EmberOgre {
 
@@ -45,6 +46,16 @@ ServerBrowserWidget::~ServerBrowserWidget()
 {
 	delete mMainWindow;
 }
+
+bool ServerBrowserWidget::ManualServerName_KeyUp(const CEGUI::EventArgs& e)
+{
+	const CEGUI::KeyEventArgs& k_e = static_cast<const CEGUI::KeyEventArgs&>(e);
+	if (k_e.scancode == CEGUI::Key::Return) {
+		doConnect();
+	}	
+	return true;
+}
+
 
 void ServerBrowserWidget::buildWidget()
 {
@@ -72,6 +83,8 @@ void ServerBrowserWidget::buildWidget()
 	BIND_CEGUI_EVENT(connectButton, CEGUI::ButtonBase::EventMouseClick, ServerBrowserWidget::Connect_Click)
 	
 
+	CEGUI::Window* manualNameWindow = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ManualServerName");
+	BIND_CEGUI_EVENT(manualNameWindow, CEGUI::Editbox::EventKeyUp, ServerBrowserWidget::ManualServerName_KeyUp)
 	
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
 
@@ -102,6 +115,13 @@ bool ServerBrowserWidget::Refresh_Click(const CEGUI::EventArgs& args)
 
 bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 {
+	doConnect();
+	return true;
+
+}
+
+void ServerBrowserWidget::doConnect()
+{
 	std::string serverName;	
 
 	//first we check if there is text in the ManualServerName textbox
@@ -119,8 +139,6 @@ bool ServerBrowserWidget::Connect_Click(const CEGUI::EventArgs& args)
 	//if ManualServerName is empty we try to connect to the server selected from the list 
 		connectWithColumnList();
 	}
-		
-	return true;
 
 }
 

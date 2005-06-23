@@ -48,7 +48,7 @@ public:
 /*	static ServerBrowserWidget s;*/
 protected:
 	CEGUI::MultiColumnList* mServerList;
-
+	bool ManualServerName_KeyUp(const CEGUI::EventArgs& e);
 	
     void gotFailure(const std::string& msg);
 
@@ -66,6 +66,8 @@ protected:
 	void connectedToServer(Eris::Connection* connection);
 
 	bool ServerList_DoubleClick(const CEGUI::EventArgs& args);
+
+	void doConnect();
 
 	
 	/**
