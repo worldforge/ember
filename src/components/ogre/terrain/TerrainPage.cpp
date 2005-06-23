@@ -416,6 +416,9 @@ void EmberOgre::TerrainPage::createFoliage(TerrainShader* grassShader)
 		Mercator::Surface* surface = grassShader->getSurfaceForSegment(segment);
 		if (!surface) {
 			//we could not find any grass surface
+			std::stringstream ss;
+			ss << "Could not find any grass for area " << mPosition.x() << ":" << mPosition.y()  << ".";
+			S_LOG_INFO(ss.str());
 			return;
 		}
 		for (unsigned int x = 0; x < 64; ++x) {
