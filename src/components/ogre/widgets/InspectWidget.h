@@ -50,6 +50,7 @@ protected:
 
 	EmberEntity* mCurrentEntity;
 
+	void Server_GotView(Eris::View* view);
 	void View_EntityDeleted(Eris::Entity* entity);
 
 };

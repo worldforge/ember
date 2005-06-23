@@ -37,6 +37,8 @@
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Objects/Encoder.h>
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
 namespace EmberOgre {
 
 
@@ -66,7 +68,13 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 InspectWidget::InspectWidget() : mCurrentEntity(0)
 {
-	EmberOgre::getSingleton().getMainView()->EntityDeleted.connect(SigC::slot(*this, &InspectWidget::View_EntityDeleted));
+
+	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &InspectWidget::Server_GotView));
+}
+
+void InspectWidget::Server_GotView(Eris::View* view)
+{
+	view->EntityDeleted.connect(SigC::slot(*this, &InspectWidget::View_EntityDeleted));
 }
 
 void InspectWidget::View_EntityDeleted(Eris::Entity* entity)
