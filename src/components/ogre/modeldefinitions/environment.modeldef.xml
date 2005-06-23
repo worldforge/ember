@@ -78,6 +78,19 @@
 		</submodels>
 	</model>	
 	
+	<!-- non-physical entities -->
+	<model name="boundary" >
+	</model>	
+	<model name="weather" >
+	</model>	
+	<model name="ploughed_field" >
+	</model>	
+	<model name="path" >
+	</model>	
+	<model name="wall" >
+	</model>	
+	<model name="hall" >
+	</model>	
 
 	
 </models>

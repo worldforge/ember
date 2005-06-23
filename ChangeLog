@@ -1,3 +1,13 @@
+2005-06-23  Erik Hjortsberg  <erik@erik>
+
+	* src/components/ogre/EmberEntityFactory.*, src/components/ogre/modeldefinitions/environment.modeldef.xml
+		* removed the list of non-physical entities and put that info into the modeldef instead
+
+2005-06-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/widgets/ServerBrowserWidget.*
+		* allow enter to be used in the editbox for connecting
+
 2005-06-23  Erik Hjortsberg   <erik@katastrof.nu>
 
 

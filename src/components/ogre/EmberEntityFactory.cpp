@@ -78,12 +78,12 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Game
 	Eris::Entity* emberEntity;
 /*    Eris::TypeInfoPtr type = mTypeService->getTypeForAtlas(ge);*/
 
-	bool isPhysical = true;
-	for (NonPhysicalTypeStore::const_iterator I = mNonPhysicalTypes.begin(); I != mNonPhysicalTypes.end(); ++I) {
-		if (type->isA(mTypeService->getTypeByName(*I))) {
-			isPhysical = false;
-		}
-	}
+ 	bool isPhysical = true;
+// 	for (NonPhysicalTypeStore::const_iterator I = mNonPhysicalTypes.begin(); I != mNonPhysicalTypes.end(); ++I) {
+// 		if (type->isA(mTypeService->getTypeByName(*I))) {
+// 			isPhysical = false;
+// 		}
+// 	}
 
     if (ge->getId() == mAvatar->getId()) {
    	
@@ -243,12 +243,6 @@ void EmberEntityFactory::loadTypeInfo()
 	mPersonSet.insert("butcher");
 	mPersonSet.insert("marshall");
 	
-	mNonPhysicalTypes.insert("boundary");
-	mNonPhysicalTypes.insert("weather");
-	mNonPhysicalTypes.insert("ploughed_field");
-	mNonPhysicalTypes.insert("path");
-	mNonPhysicalTypes.insert("wall");
-	mNonPhysicalTypes.insert("hall");
 
 		
 }

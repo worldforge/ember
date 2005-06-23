@@ -134,8 +134,6 @@ protected:
 	
 	WorldEmberEntity *mWorldEntity;
 	
-	typedef std::set<std::string> NonPhysicalTypeStore;
-	NonPhysicalTypeStore mNonPhysicalTypes;
 	
 };
 
