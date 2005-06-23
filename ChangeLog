@@ -1,6 +1,11 @@
 2005-06-23  Erik Hjortsberg  <erik@erik>
 
 	* src/components/ogre/EmberSceneManager/src/OgreTerrainRenderable.cpp
+		* make it right this time
+
+2005-06-23  Erik Hjortsberg  <erik@erik>
+
+	* src/components/ogre/EmberSceneManager/src/OgreTerrainRenderable.cpp
 		* don't forget to set the material lod index
 
 2005-06-22  Erik Hjortsberg  <erik@katastrof.nu>

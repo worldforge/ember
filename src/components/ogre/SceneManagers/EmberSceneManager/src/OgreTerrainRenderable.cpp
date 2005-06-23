@@ -342,6 +342,7 @@ namespace Ogre
 		if (L >= (sceneMgr->getFogEnd() * sceneMgr->getFogEnd())) {
 			//mMaterialLodIndex = msOptions->maxGeoMipMapLevel - 1;
 			mRenderLevel = msOptions->maxGeoMipMapLevel - 1;
+			mMaterialLodIndex = mMaterial->getLodIndexSquaredDepth (L);
 			return;
 		}
         mRenderLevel = -1;
@@ -351,7 +352,6 @@ namespace Ogre
             if ( mMinLevelDistSqr[ i ] > L )
             {
                 mRenderLevel = i - 1;
-		mMaterialLodIndex = mMaterial->getLodIndexSquaredDepth (L);
                 break;
             }
         }
