@@ -1,5 +1,10 @@
 2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberPhysicalEntity.cpp
+		* remove the animation from the MotionManager upon deletion, so to avoid the Curse of the Segfault
+
+2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/scripts/vegetation.material: added green apple material
 	* src/components/ogre/modeldefinitions/environment.modeldef.xml: added apple (which is an acorn with a green apple material)
 

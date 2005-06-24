@@ -67,6 +67,11 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	if (parent) {
 		parent->removeAndDestroyChild(getScaleNode()->getName());
 	}
+	
+	//make sure it's not in the MotionManager
+	//TODO: keep a marker in the entity so we don't need to call this for all entities
+	MotionManager::getSingleton().removeAnimatedEntity(this);
+
 /*
   	if (mAnimationState_Walk) {
 		MotionManager::getSingleton().removeAnimation(mAnimationState_Walk);
