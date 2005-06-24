@@ -125,6 +125,11 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	elem = modelNode->FirstChildElement("attachpoints");
 	if (elem)
 		readAttachPoints(modelDef, elem);
+
+	//attachpoints
+	elem = modelNode->FirstChildElement("ParticleSystems");
+	if (elem)
+		readParticleSystems(modelDef, elem);
 		
 }
 
@@ -358,6 +363,67 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 
 
 		attachPoints.push_back(attachPointDef);
+	}
+
+}
+
+void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode)
+{
+	Ember::TiXmlElement* elem;
+	ModelDefinition::ParticleSystemSet& particleSystems = modelDef->mParticleSystems;
+	
+	const char* tmp = 0;
+	bool nopartfound = true;
+
+	for (Ember::TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
+            apElem != 0; apElem = apElem->NextSiblingElement())
+	{
+		ModelDefinition::ParticleSystemDefinition def;
+		nopartfound = false;
+
+		// name
+		tmp =  apElem->Attribute("script");
+		if (tmp)
+			def.Script = tmp;
+		S_LOG_INFO( "  Add particlescript  : "+ def.Script );
+
+		elem = apElem->FirstChildElement("Bindings");
+		if (elem)
+			readParticleSystemsBindings(def, elem);
+
+
+		particleSystems.push_back(def);
+	}
+}
+
+void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode)
+{
+	const char* tmp = 0;
+	bool nopartfound = true;
+
+	for (Ember::TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
+            apElem != 0; apElem = apElem->NextSiblingElement())
+	{
+		ModelDefinition::BindingDefinition binding;
+		
+		// name
+		tmp =  apElem->Attribute("emittervar");
+		if (tmp)
+			binding.EmitterVar = tmp;
+		else
+			continue;
+
+		// weight
+		tmp =  apElem->Attribute("atlasattribute");
+		if (tmp)
+			binding.AtlasAttribute = tmp;
+		else
+			continue;
+		
+		S_LOG_INFO( "  Add binding between "+ binding.EmitterVar + " and " + binding.AtlasAttribute + "." );
+
+
+		def.Bindings.push_back(binding);
 	}
 
 }

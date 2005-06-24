@@ -173,7 +173,7 @@
 		</submodels>
 	</model>
 	
-	<model name="wall">
+	<model name="wall__">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_element/models/standard_wall/standard_wall.mesh">
 			<parts>

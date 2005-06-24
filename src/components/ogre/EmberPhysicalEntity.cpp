@@ -107,6 +107,14 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 		mModelMarkedToAttachTo = 0;
 		mAttachPointMarkedToAttachTo = "";
 	}
+
+	//NOTE: for now, add all particle systems. we will want to add some visibility flag or something in the future
+	for (ParticleSystemSet::iterator I = mModel->getParticleSystems().begin(); I != mModel->getParticleSystems().end(); ++I) 
+	{
+		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
+	}
+
+	onModeChanged(EmberEntity::MM_DEFAULT);
 }
 
 void EmberPhysicalEntity::connectEntities()
@@ -185,19 +193,30 @@ bool EmberPhysicalEntity::getShowOgreBoundingBox()
 
 
 void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
-    if (str == "right_hand_wield") {
-        std::cout << "set right_hand_wield to " << v.asString() << std::endl;
-        std::string id = v.asString();
-        if (id.empty()) {
+	if (str == "right_hand_wield") {
+		std::cout << "set right_hand_wield to " << v.asString() << std::endl;
+		std::string id = v.asString();
+		if (id.empty()) {
 			detachEntity("right_hand_wield");
-            //m_attached.erase("right_hand_wield");
-        } else {
+		//m_attached.erase("right_hand_wield");
+		} else {
 			//detach first
 			detachEntity("right_hand_wield");
 			attachEntity("right_hand_wield", id);
-        }
+		}
 		return;		
-    }
+	}
+
+	//check if the changed attribute should affect any particle systems
+	if (mModel->hasParticles()) {
+		ParticleSystemBindingsPtrSet bindings = mModel->getAllParticleSystemBindings();
+		for (ParticleSystemBindingsPtrSet::iterator I = bindings.begin(); I != bindings.end(); ++I) {
+			if ((*I)->getVariableName() == str) {
+				(*I)->scaleValue(v.asFloat());
+			}
+		}
+	}
+
 	EmberEntity::onAttrChanged(str, v);
 
 }

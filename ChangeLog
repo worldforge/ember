@@ -1,5 +1,19 @@
 2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/Model.h, src/components/ogre/model/XMLModelDefintionSerializer.*
+		* added support for particle systems
+	*src/components/ogre/EmberPhysicalEntity.cpp
+		* when an attribute is changed, check if this should change a particle system
+	*src/components/ogre/modeldefinition/environment.modeldef.xml
+		* added particles to fire
+	*media/materials/textures/smoke.png
+	*media/materials/textures/smokecolors.png
+	*media/materials/particle/smoke.particle
+	*media/materials/material/smoke.material
+		* added smoke textures
+
+2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Ember.kdevelop: updated the project file
 
 2005-06-23  Erik Hjortsberg  <erik@katastrof.nu>

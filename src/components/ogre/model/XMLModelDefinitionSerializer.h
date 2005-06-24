@@ -55,6 +55,8 @@ private:
 	void readActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimNode);
 	void readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action);
 	void readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode);
+	void readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode);
+	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode);
 
 };
 

@@ -56,7 +56,32 @@ void AnimationSet::setEnabled(bool state)
 	}
 }
 
+ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, const std::string& emitterVal, const std::string& variableName) :
+mParticleSystem(parentSystem)
+, mEmitterVal(emitterVal)
+, mVariableName(variableName)
+{
+	//TODO: add more emitter values to bind
+	if (mEmitterVal == "emission_rate") {
+		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
+		if (emitter) {
+			mOriginalValue = emitter->getEmissionRate();
+		}
+	}
 
+}
+
+void ParticleSystemBinding::scaleValue(Ogre::Real scaler)
+{
+	
+	//TODO: add more emitter values to bind
+	if (mEmitterVal == "emission_rate") {
+		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
+		if (emitter) {
+			emitter->setEmissionRate(mOriginalValue * scaler);
+		}
+	}
+}
 
 
 
@@ -207,6 +232,34 @@ bool Model::createFromDefn()
 		mActions[I_actions->Name] = action;
 	}
 	
+	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = _masterModel->mParticleSystems.begin();
+	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = _masterModel->mParticleSystems.end();
+	for (;I_particlesys != I_particlesys_end; ++I_particlesys) {
+		//first try to create the ogre particle system
+		std::string name(mName + "/particle" + I_particlesys->Script);
+		Ogre::ParticleSystem* ogreParticleSystem;
+		try {		
+			 ogreParticleSystem = Ogre::ParticleSystemManager::getSingleton().createSystem(name, I_particlesys->Script);
+		} catch (Ogre::Exception& ex) {
+			S_LOG_FAILURE("Could not create particle system: " + name);
+			std::cerr << ex.getFullDescription() + "\n";
+			continue;
+		}
+		if (ogreParticleSystem) {
+			//ogreParticleSystem->setDefaultDimensions(1, 1);
+			ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem);
+			for (ModelDefinition::BindingSet::const_iterator I = I_particlesys->Bindings.begin(); I != I_particlesys->Bindings.end(); ++I) {
+				ParticleSystemBinding* binding = particleSystem->addBinding(I->EmitterVar, I->AtlasAttribute);
+				mAllParticleSystemBindings.push_back(binding);
+			}
+			mParticleSystems.push_back(particleSystem);
+		}
+		
+	}
+
+	
+
+
 	
 	std::vector<std::string>::const_iterator I = showPartVector.begin();
 	std::vector<std::string>::const_iterator I_end = showPartVector.end();
@@ -214,6 +267,21 @@ bool Model::createFromDefn()
 		showPart(*I);	
 	}
 	return true;
+}
+
+bool Model::hasParticles() const
+{
+	return mParticleSystems.size() > 0;
+}
+
+const ParticleSystemBindingsPtrSet& Model::getAllParticleSystemBindings() const
+{
+	return mAllParticleSystemBindings;
+}
+
+ParticleSystemSet& Model::getParticleSystems()
+{
+	return mParticleSystems;
 }
 
 
@@ -738,5 +806,27 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 	}
 }
 
+Ogre::ParticleSystem* ParticleSystem::getOgreParticleSystem()
+{
+	return mOgreParticleSystem;
 }
 
+ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem) : 
+		mOgreParticleSystem(ogreParticleSystem)
+{
+	assert(ogreParticleSystem);
+}
+
+ParticleSystemBindingsPtrSet& ParticleSystem::getBindings( )
+{
+	return mBindings;
+}
+
+ParticleSystemBinding * ParticleSystem::addBinding( const std::string & emitterVal, const std::string & variableName )
+{
+	ParticleSystemBinding* binding = new ParticleSystemBinding(this, emitterVal, variableName);
+	mBindings.push_back(binding);
+	return binding;
+}
+
+}

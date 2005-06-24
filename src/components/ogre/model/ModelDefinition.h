@@ -90,6 +90,22 @@ protected:
 
 private:
 
+	
+	struct BindingDefinition
+	{
+		std::string EmitterVar;
+		std::string AtlasAttribute;
+	};
+
+	typedef std::vector<BindingDefinition> BindingSet;
+
+	struct ParticleSystemDefinition
+	{
+		std::string Script;
+		BindingSet Bindings;
+	};
+
+	typedef std::vector<ParticleSystemDefinition> ParticleSystemSet;
 
 	struct AttachPointDefinition
 	{
@@ -143,6 +159,7 @@ private:
 	
 	std::vector<SubModelDefinition> mSubModels;
 	std::vector<ActionDefinition> mActions;
+	ParticleSystemSet mParticleSystems;
 	
 	typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
 	AttachPointDefinitionStore mAttachPoints;

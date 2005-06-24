@@ -77,6 +77,45 @@ protected:
 	AnimationSet mAnimations;
 };
 
+class ParticleSystem;
+class ParticleSystemBinding
+{
+public:
+	ParticleSystemBinding(ParticleSystem* parentSystem, const std::string& emitterVal, const std::string& variableName);
+	void scaleValue(Ogre::Real scaler);
+private:
+	std::string mEmitterVal;
+	std::string mVariableName;
+	ParticleSystem* mParticleSystem;
+	Ogre::Real mOriginalValue;
+public:
+	inline const std::string& getEmitterVal() const {return mEmitterVal;}
+	inline const std::string& getVariableName() const {return mVariableName;}
+
+};
+typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
+typedef std::vector<ParticleSystemBinding*> ParticleSystemBindingsPtrSet;
+
+class ParticleSystem
+{
+public:
+	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem);
+	Ogre::ParticleSystem* getOgreParticleSystem();
+	
+	/**
+	 *        Adds a new binding.
+	 * @param emitterVal the name of the particle emitter
+	 * @param variableName the name of the atlas attribute
+	 * @return a pointer to the newly created binding
+	 */
+	ParticleSystemBinding* addBinding(const std::string& emitterVal, const std::string& variableName);
+	ParticleSystemBindingsPtrSet& getBindings();
+protected:
+	Ogre::ParticleSystem* mOgreParticleSystem;
+	ParticleSystemBindingsPtrSet mBindings;
+
+};
+typedef std::vector<ParticleSystem*> ParticleSystemSet;
  
  
 class Model : public Ogre::MovableObject
@@ -110,7 +149,7 @@ public:
  	
 	Action* getAction(const std::string& name);	
 	
-	
+	ParticleSystemBindingsSet& getAllBindings();
 
 	/**
 	 * hides and shows a certain part of the model
@@ -217,10 +256,17 @@ public:
 	//void attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	
 	bool hasAttachPoint(const std::string& attachPoint) const; 
+
+	const ParticleSystemBindingsPtrSet& getAllParticleSystemBindings() const;
+
+	ParticleSystemSet& getParticleSystems();
+	
+	bool hasParticles() const;
 	
 protected:
 
-
+	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
+	ParticleSystemSet mParticleSystems;
 	/**
 	 *    Clears all the submodels
 	 */
