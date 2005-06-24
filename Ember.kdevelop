@@ -9,7 +9,7 @@
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
+    <description></description>
     <secondaryLanguages/>
     <versioncontrol>kdevcvsservice</versioncontrol>
   </general>
@@ -19,10 +19,10 @@
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>src/components/ogre/ember</mainprogram>
+      <mainprogram>src/components/ogre/ember.bin</mainprogram>
       <directoryradio>executable</directoryradio>
       <customdirectory>/home/erik/code/worldforge/forge_cvs/clients/ember/src/components/ogre/</customdirectory>
-      <programargs/>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -39,16 +39,18 @@
         <cxxflags>-O2 -g0</cxxflags>
       </optimized>
       <debug>
-        <configargs>--enable-debug=full --prefix=/home/erik/opt/worldforge --enable-pch=true</configargs>
+        <configargs>--enable-debug=full --prefix=/home/erik/opt/worldforge --enable-pch=true </configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpghpfoptions</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
-        <envvars/>
+        <envvars>
+          <envvar value="/usr/local/lib/pkgconfig:/home/erik/x86/lib/pkgconfig" name="PKG_CONFIG_PATH" />
+        </envvars>
         <topsourcedir/>
         <cppflags/>
-        <ldflags/>
+        <ldflags>-L/home/erik/x86/lib</ldflags>
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
@@ -72,27 +74,62 @@
         <cxxflags/>
         <f77flags/>
       </default>
+      <debug_static>
+        <envvars/>
+        <configargs>--enable-static-build=yes --prefix=/home/erik/opt/ember_static --enable-debug=full</configargs>
+        <builddir>debug_static</builddir>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpghpfoptions</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags>-O0 -g3</cxxflags>
+        <f77flags/>
+      </debug_static>
+      <static>
+        <envvars/>
+        <configargs>--enable-static-build=yes --prefix=/home/erik/opt/ember_static </configargs>
+        <builddir>static</builddir>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpghpfoptions</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags>-O2 -g0</cxxflags>
+        <f77flags/>
+      </static>
     </configurations>
     <make>
       <envvars>
+        <envvar value="/home/erik/x86/lib" name="LD_LIBRARY_PATH" />
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -188,10 +225,7 @@
     </creategettersetter>
   </kdevcppsupport>
   <kdevfileview>
-    <groups>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidenonlocation>false</hidenonlocation>
-    </groups>
+    <groups/>
     <tree>
       <hidepatterns>*.o,*.lo,CVS,*~</hidepatterns>
       <showvcsfields>false</showvcsfields>
@@ -206,13 +240,13 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
+      <docsystem>Doxygen-dokumentationssamling</docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
-    <customArguments/>
+    <customArguments></customArguments>
     <customTagfilePath>ember.ctags</customTagfilePath>
   </ctagspart>
 </kdevelop>

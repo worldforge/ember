@@ -1,3 +1,7 @@
+2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Ember.kdevelop: updated the project file
+
 2005-06-23  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/TerrainPage.cpp: added some debug output
