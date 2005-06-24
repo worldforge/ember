@@ -1,5 +1,10 @@
 2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/scripts/vegetation.material: added green apple material
+	* src/components/ogre/modeldefinitions/environment.modeldef.xml: added apple (which is an acorn with a green apple material)
+
+2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/Model.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/Model.h, src/components/ogre/model/XMLModelDefintionSerializer.*
 		* added support for particle systems
 	*src/components/ogre/EmberPhysicalEntity.cpp

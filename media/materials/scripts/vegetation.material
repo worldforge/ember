@@ -93,7 +93,24 @@ material /global/plants/fruitable/acorn/shiny
 
 
 }
+material /global/plants/fruitable/green_apple
+{
+  receive_shadows on
+  technique
+{
+    pass
+{
+         texture_unit
+{
+		texture 3d_objects/plants/fruitable/textures/green_apple/low/fruitable.png
+}
+     specular 0.898039 0.898039 0.898039 10.0
 
+}
+}
+
+
+}
 
 material /global/plants/mushroom/amanita
 {

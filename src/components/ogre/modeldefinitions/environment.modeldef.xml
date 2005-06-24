@@ -87,6 +87,22 @@
 		</submodels>
 	</model>	
 	
+	<model name="apple" scale="10">
+		<submodels>
+			<submodel mesh="3d_objects/plants/fruitable/models/acorn/acorn.mesh" >
+				<parts>
+						<part name="main" show="true" >
+							<subentities>
+								<subentity name="top" material="/global/plants/fruitable/green_apple"  />
+								<subentity name="bottom" material="/global/plants/fruitable/green_apple"  />
+							</subentities>
+						</part>  
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
+	
 	<!-- non-physical entities -->
 	<model name="boundary" >
 	</model>	
