@@ -111,7 +111,7 @@
 		</submodels>
 	</model>
 	
-	<model name="house3_">
+	<model name="butcher_house">
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/butchers_house/butchers_house.mesh" >
 			<parts>

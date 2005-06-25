@@ -11,21 +11,6 @@
 	</model>
 	
 	<model name="fire">
-		<submodels>
-			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="innerFire.BAKED" weight="1" />
-					<animationpart name="outerFire.BAKED" weight="1" />
-				</AnimationParts>
-			</Action>
-		</Actions>
 		<ParticleSystems>
 			<ParticleSystem script="Examples/Smoke">
 				<Bindings>

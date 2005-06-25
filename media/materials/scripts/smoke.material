@@ -17,3 +17,22 @@ material Examples/Smoke
 		}
 	}
 }
+
+material Examples/Fire
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture fire.png
+				tex_address_mode clamp
+			}
+		}
+	}	
+}
