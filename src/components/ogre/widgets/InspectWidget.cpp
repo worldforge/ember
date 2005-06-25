@@ -143,7 +143,8 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	}
 	ss << "\n";
 	
-	ss << "Position: " << entity->getPredictedPos() << "\n";
+	ss << "PredPosition: " << entity->getPredictedPos() << "\n";
+	ss << "Position: " << entity->getPosition() << "\n";
 	ss << "Velocity: " << entity->getPredictedVelocity() << "\n";
 	ss << "Orientation: " << entity->getOrientation() << "\n";
 	ss << "Boundingbox: " << entity->getBBox() << "\n";
@@ -160,14 +161,14 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	
 	ss << "Type: " << entity->getType()->getName() << "\n";
 	
-// 	ss << "Attributes:\n";
-// 	
-//  	const Eris::Entity::AttrMap attributes = entity->getAttributes();
-//  	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
-// 		if (I->second.isString()) {
-// 			ss  << I->first << ": " << I->second.asString() << "\n";
-// 		}
-//  	}
+	ss << "Attributes:\n";
+	
+ 	const Eris::Entity::AttrMap attributes = entity->getAttributes();
+ 	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
+		if (I->second.isString()) {
+			ss  << I->first << ": " << I->second.asString() << "\n";
+		}
+ 	}
 
 
 // 	Decoder bridge;

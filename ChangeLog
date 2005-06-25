@@ -1,5 +1,36 @@
 2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/InspectWidget.*
+		* show both the predicted position and the last known from the server
+		* show all string attributes for the entity
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ServerBrowserWidget.*
+		* added ability to use Enter for connecting after entering an address
+	* src/components/ogre/widgets/MakeEntityWidget.*
+		* added the keyword "make" as an alias for "createentity"
+	* src/components/ogre/widgets/InventoryWidget.cpp
+		* when dropping something, drop it in front of the avatar
+	* src/components/ogre/widgets/EntityPickerWidget.*
+		* try to get the default operation from the wielded entity, so you'll get "Chop with axe" instead of "Use"
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/server/ServerService.cpp
+		* removed unneeded comments and output
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/smoke.material,  media/particle/smoke.particle
+		* added fire particle script and tweaked the smoke script
+	* src/components/ogre/modeldefinitions/buildingelements.modeldef.xml
+		* added the butcher's house
+	* src/components/ogre/modeldefinitions/environement.modeldef.xml
+		* removed the fire mesh, only use the particles
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/EmberPhysicalEntity.*
 		* added method for getting the entity attached to a certain attach point
 
