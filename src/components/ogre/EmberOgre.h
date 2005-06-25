@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.46  2005-06-23 11:29:51  erik
+ *      Revision 1.47  2005-06-25 11:02:46  erik
+ *      2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added method for getting a random EmberEntity from the world (just like Eris::View::getEntity but with a cast to EmberEntity)
+ *
+ *      Revision 1.46  2005/06/23 11:29:51  erik
  *      2005-06-23  Erik Hjortsberg  <erik@erik>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -522,6 +528,12 @@ public:
 	Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
 	AvatarCamera* getMainCamera() const;
+	
+	/**
+	 * Gets the entity with the supplies id from the world.
+	 */
+	EmberEntity* getEmberEntity(const std::string & eid) const;
+	
 	inline Eris::View* const getMainView() { return mWorldView;};
 	
 	inline Jesus* getJesus() const { return mJesus; }

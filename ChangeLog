@@ -1,5 +1,10 @@
 2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberOgre.*
+		* added method for getting a random EmberEntity from the world (just like Eris::View::getEntity but with a cast to EmberEntity)
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberEntity.*
 		* added support for the "fixed" mode, which will position the entity exactly according to its position
 

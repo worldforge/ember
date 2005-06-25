@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.92  2005-06-23 11:29:51  erik
+ *      Revision 1.93  2005-06-25 11:02:46  erik
+ *      2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added method for getting a random EmberEntity from the world (just like Eris::View::getEntity but with a cast to EmberEntity)
+ *
+ *      Revision 1.92  2005/06/23 11:29:51  erik
  *      2005-06-23  Erik Hjortsberg  <erik@erik>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -1019,6 +1025,13 @@ void EmberOgre::chooseSceneManager(void)
    
     
 }
+
+EmberEntity* EmberOgre::getEmberEntity(const std::string & eid) const
+{
+	assert(mWorldView);
+	return static_cast<EmberEntity*>(mWorldView->getEntity(eid));
+}
+
 
 void EmberOgre::checkForConfigFiles()
 {
