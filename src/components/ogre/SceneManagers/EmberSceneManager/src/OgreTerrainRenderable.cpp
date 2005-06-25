@@ -472,13 +472,13 @@ namespace Ogre
         for ( int level = 1; level < msOptions->maxGeoMipMapLevel; level++ )
         {
             mMinLevelDistSqr[ level ] = 0;
-			
+/*			
 			//make sure that the tile at the camera always is at LOD 0
 			if (level == 1) {
 	            mMinLevelDistSqr[ level ] = msOptions->tileSize * msOptions->tileSize;
 				
 			}
-			
+			*/
             int step = 1 << level;
             // The step of the next higher LOD
             int higherstep = step >> 1;

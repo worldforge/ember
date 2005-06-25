@@ -1,3 +1,8 @@
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberSceneManager
+		* removed code that forced the tile closest to the Avatar to always render with the highest LOD. this will speed up things
+
 2005-06-25  Hagen Moebius  <hagen.moebius@starschiffchen.de>
 
 	* src/components/ogre/widgets/ConsoleWidget.*
