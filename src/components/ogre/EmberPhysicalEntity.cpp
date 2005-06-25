@@ -48,7 +48,6 @@ const char * const EmberPhysicalEntity::ACTION_FLOAT = "__movement_float";
 
 
 EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
-mAnimationState_Walk(NULL),
 mScaleNode(nodeWithModel),
 mModelAttachedTo(0), 
 mModelMarkedToAttachTo(0),
@@ -73,9 +72,7 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	MotionManager::getSingleton().removeAnimatedEntity(this);
 
 /*
-  	if (mAnimationState_Walk) {
-		MotionManager::getSingleton().removeAnimation(mAnimationState_Walk);
-	}
+
 	mSceneManager->removeEntity(mOgreEntity);
 	mSceneManager->removeEntity(mOgreEntity);
 	
@@ -83,6 +80,26 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	delete mSceneNode;
 	*/
 }
+
+EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string attachPoint)
+{
+	//first check with the attach points
+	std::string entityId;
+	for(AttachedEntitiesStore::iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
+		if (I->second == attachPoint) {
+			entityId = I->first;
+			break;
+		}
+	}	
+
+	if (entityId != "") {
+		//then get the entity from the world
+		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
+		return entity;
+	}
+	return 0;
+}
+
 
 void EmberPhysicalEntity::setVisible(bool visible)
 {

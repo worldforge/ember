@@ -88,6 +88,14 @@ public:
 
 	virtual bool getShowOgreBoundingBox();
 // 	virtual bool getShowErisBoundingBox();
+	
+	
+	/**
+	 *    Returns the entity that's attched to the specified point, if there is such 
+	 * @param attachPoint 
+	 * @return a pointer to the EmberEntity, or 0 if none found
+	 */
+	EmberEntity* getEntityAttachedToPoint(const std::string attachPoint);
 
 protected: 
 
@@ -154,24 +162,24 @@ protected:
 
 
 
-	/*
+	/**
 	 * Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity
 	 */
 	virtual void scaleNode();
 	
 	void setNodes();
 	
-	/*
+	/**
 	 * The main Ogre::Entity
 	 */
 //	Ogre::MovableObject* mOgreEntity;
 	
-	/*
+	/**
 	 * The model of the entity
 	 */
 	 Model* mModel;
 	
-	/*
+	/**
 	 * We need to scale the Ogre::Entity, because the underlying media is not
 	 * always correctly scaled.
 	 * But since each Eris::Entity can contain child entites, we'll get problems
@@ -180,10 +188,6 @@ protected:
 	 */
 	Ogre::SceneNode* mScaleNode;
 	
-	/*
-	 * this will hold the animation for the "Walk" movement
-	 */
-	Ogre::AnimationState* mAnimationState_Walk;
 };
 
 }

@@ -1,5 +1,10 @@
 2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/EmberPhysicalEntity.*
+		* added method for getting the entity attached to a certain attach point
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.*
 		* added method for getting a random EmberEntity from the world (just like Eris::View::getEntity but with a cast to EmberEntity)
 
