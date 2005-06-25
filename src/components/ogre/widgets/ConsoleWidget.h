@@ -54,6 +54,10 @@ protected:
 	
 	//the speed of the window when swithing between open and closed, 0.25 by default
 	Ogre::Real mSpeedOfWindow;
+	// the text of the current command line saved when brwosing the history
+	std::string mCommandLine;
+	bool mTabPressed;
+	int mSelected;
 	
 };
 

@@ -1,6 +1,12 @@
 2005-06-25  Hagen Moebius  <hagen.moebius@starschiffchen.de>
 
-	* src/framework/ConsoleBackend.
+	* src/components/ogre/widgets/ConsoleWidget.*
+		* Added history browsing to the widget.
+		* Added tab completion to the widget.
+
+2005-06-25  Hagen Moebius  <hagen.moebius@starschiffchen.de>
+
+	* src/framework/ConsoleBackend.*
 		* Added history managedment to the console.
 
 2005-06-24  Erik Hjortsberg  <erik@katastrof.nu>
