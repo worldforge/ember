@@ -339,12 +339,6 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 				connect(server);
 			else
 			connect(server, (short)atoi(port.c_str()));
-			ConsoleBackend::getMainConsole()->pushMessage("Connected.");
-
-// 		// Reconnect command
-// 		} else if(command == RECONNECT) {
-// 			ConsoleBackend::getMainConsole()->pushMessage("Reconnecting...");
-// 			reconnect();
 
 		// Disonnect command
 		} else if (command==DISCONNECT){
