@@ -88,6 +88,7 @@ const char * const EmberEntity::MODE_RUNNING = "running";
 const char * const EmberEntity::MODE_WALKING = "walking";
 const char * const EmberEntity::MODE_SWIMMING = "swimming";
 const char * const EmberEntity::MODE_FLOATING = "floating";
+const char * const EmberEntity::MODE_FIXED = "fixed";
 
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
@@ -300,11 +301,14 @@ void EmberEntity::setVisible(bool visible)
 
 void EmberEntity::adjustHeightPosition()
 {
-	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
-	if (container) {
-		container->adjustHeightPositionForContainedNode(this);
-	}
-	
+	if (mMovementMode == MM_FIXED) {
+
+	} else {
+		EmberEntity* container = static_cast<EmberEntity*>(getLocation());
+		if (container) {
+			container->adjustHeightPositionForContainedNode(this);
+		}
+	}	
 }
 
 float EmberEntity::getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity)
@@ -457,8 +461,10 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 			newMode = MM_WALKING;
         } else if (mode == MODE_SWIMMING) {
 			newMode = MM_SWIMMING;
-        } else if (mode == MODE_FLOATING) {
+		} else if (mode == MODE_FLOATING) {
 			newMode = MM_FLOATING;
+		} else if (mode == MODE_FIXED) {
+			newMode = MM_FIXED;
         } else {
 			newMode = MM_DEFAULT;
 		}
@@ -470,6 +476,9 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 
 void EmberEntity::onModeChanged(MovementMode newMode)
 {
+	if (newMode == MM_FIXED) {
+		adjustHeightPosition();
+	}
 	mMovementMode = newMode;
 }
 

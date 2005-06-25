@@ -1,5 +1,10 @@
 2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberEntity.*
+		* added support for the "fixed" mode, which will position the entity exactly according to its position
+
+2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberSceneManager
 		* removed code that forced the tile closest to the Avatar to always render with the highest LOD. this will speed up things
 

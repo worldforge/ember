@@ -98,13 +98,14 @@ public:
 	
 	enum MovementMode
 	{
-		MM_DEFAULT = 1<<0,
-		MM_STANDING = 1<<1,
-		MM_FLOATING = 1<<2,
-		MM_PROJECTILE = 1<<3,
-		MM_SWIMMING = 1<<4,
-		MM_WALKING = 1<<5,
-		MM_RUNNING = 1<<6
+		MM_DEFAULT = 0,
+		MM_STANDING = 1,
+		MM_FLOATING = 2,
+		MM_PROJECTILE = 3,
+		MM_SWIMMING = 4,
+		MM_WALKING = 5,
+		MM_RUNNING = 6,
+		MM_FIXED = 7  
 	};
 
 	static const char * const MODE_STANDING;
@@ -112,6 +113,7 @@ public:
 	static const char * const MODE_WALKING;
 	static const char * const MODE_SWIMMING;
 	static const char * const MODE_FLOATING;
+	static const char * const MODE_FIXED;
 	
 	
 	
