@@ -34,12 +34,11 @@
 #include <sigc++/object_slot.h>
 #endif
 // Included system headers
-#include <string>
+#include <deque>
 #include <list>
 #include <map>
-
-
-
+#include <set>
+#include <string>
 
 namespace Ember {
 
@@ -109,8 +108,22 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Current console messages
      */
-    std::list<std::string> myConsoleMessages;
-  
+    std::list< std::string > myConsoleMessages;
+	
+	/**
+	 * Message history.
+	 **/
+	std::deque< std::string > mHistory;
+	
+	/**
+	 * History iterator.
+	 **/
+	size_t mHistoryPosition;
+	
+    /**
+     * Prefix map for commands.
+     **/
+    std::map< std::string, std::set< std::string > > mPrefixes;
     //======================================================================
     // Public Methods
     //======================================================================
@@ -122,10 +135,11 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Creates a new ConsoleBackend using default values.
      */
-     ConsoleBackend() :
-       myRegisteredCommands(std::map<std::string, ConsoleObject*>()),
-       myConsoleMessages(std::list<std::string>())
-     {
+	ConsoleBackend(void) :
+		myRegisteredCommands(std::map<std::string, ConsoleObject*>()),
+		myConsoleMessages(std::list<std::string>()),
+		mHistoryPosition(0)
+	{
        // Register console commands
        registerCommand(LIST_CONSOLE_COMMANDS, this);
      }
@@ -183,9 +197,59 @@ class ConsoleBackend : public ConsoleObject
 	return myConsoleMessages;
       }
 
+	
+	size_t getHistoryPosition() const
+	{
+		return mHistoryPosition;
+	}
+	
+	const std::set< std::string > & getPrefixes(const std::string & prefix) const;
+	
+	/**
+	 * Get the current history string.
+	 * The history position 0 is managed in the ConsoleWidget.
+	 **/
+	const std::string & getHistoryString()
+	{
+		static std::string sEmpty("");
+		
+		if(mHistoryPosition == 0)
+		{
+			return sEmpty;
+		}
+		else
+		{
+			return mHistory[mHistoryPosition - 1];
+		}
+	}
+	
+	void changeHistory(size_t stHistoryIndex, const std::string & sCommand);
+
 
     //----------------------------------------------------------------------
     // Setters
+	
+	/**
+	 * Moves the history iterator backwards (in time).
+	 **/
+	void moveBackwards(void)
+	{
+		if(mHistoryPosition < mHistory.size())
+		{
+			mHistoryPosition++;
+		}
+	}
+	
+	/**
+	 * Moves the history iterator forwards (in time).
+	 **/
+	void moveForwards(void)
+	{
+		if(mHistoryPosition > 0)
+		{
+			mHistoryPosition--;
+		}
+	}
 
 
     //----------------------------------------------------------------------
@@ -206,10 +270,11 @@ class ConsoleBackend : public ConsoleObject
 
     /**
      * This is the method the determines what object the pass the command onto
-     * command is the command string to process
+	 * 
+     * @param command the command string to process
      */ 
     void runCommand(const std::string &command);
-    
+	
     /**
      * Add a message to the console message queue.
      * message is the message string

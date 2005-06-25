@@ -52,10 +52,16 @@ bool ConsoleBackend::onGotMessage(const std::string &message)
 
 void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *object)
 {
-  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
+LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
 
-  // Assign the ConsoleObject to the command
-  myRegisteredCommands[command] = object;
+// Assign the ConsoleObject to the command
+myRegisteredCommands[command] = object;
+	
+	// prepare the prefix map to have fast access to commands
+	for(std::string::size_type i = 1; i <= command.length(); ++i)
+	{
+		mPrefixes[command.substr(0, i)].insert(command);
+	}
 }
 
 void ConsoleBackend::deregisterCommand(const std::string &command)
@@ -96,8 +102,11 @@ void ConsoleBackend::runCommand(const std::string &command)
   // Print all commands to the console
   // pushMessage(command_string);
 
+	mHistory.push_front(command);
+	mHistoryPosition = 0;
   // If object exists, run the command
-  if (con_obj) con_obj->runCommand(cmd, args);
+	if(con_obj != 0)
+		con_obj->runCommand(cmd, args);
   else { // Else print error message
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
     pushMessage("Unknown command");
@@ -120,6 +129,27 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
   temp<< std::ends;
 
   pushMessage(temp.str());
+}
+
+const std::set< std::string > & ConsoleBackend::getPrefixes(const std::string & prefix) const
+{
+	static std::set< std::string > empty;
+	std::map< std::string, std::set< std::string > >::const_iterator iPrefixes(mPrefixes.find(prefix));
+	
+	if(iPrefixes != mPrefixes.end())
+	{
+		return iPrefixes->second;
+	}
+		
+	return empty;
+}
+
+void ConsoleBackend::changeHistory(size_t stHistoryIndex, const std::string & sCommand)
+{
+	if(stHistoryIndex < mHistory.size())
+	{
+		mHistory[stHistoryIndex - 1] = sCommand;
+	}
 }
 
 } // namespace Ember
