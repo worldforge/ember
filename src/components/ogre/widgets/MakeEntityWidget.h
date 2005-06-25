@@ -49,7 +49,8 @@ public:
 	virtual void show();
 
 	static const char * const CREATEENTITY;
-	
+	static const char * const MAKE;
+		
 	virtual void runCommand(const std::string &command, const std::string &args);
 
 protected:

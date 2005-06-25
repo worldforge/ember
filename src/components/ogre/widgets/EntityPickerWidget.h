@@ -71,7 +71,9 @@ protected:
 	
 	CEGUI::Event::Connection mMainWindow_MouseOut_Connection;
 
-	
+	CEGUI::PushButton* mUseButton;
+	void checkUse();
+
 	void removeMenu();
 	void showMenu(CEGUI::Point position);
 

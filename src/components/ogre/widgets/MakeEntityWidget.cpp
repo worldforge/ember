@@ -54,12 +54,14 @@ namespace EmberOgre {
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
 const char * const MakeEntityWidget::CREATEENTITY= "createentity";
+const char * const MakeEntityWidget::MAKE= "make";
 
 MakeEntityWidget::MakeEntityWidget()
  : mIsReady(false), Widget() 
 {
 
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEENTITY,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(MAKE,this);
 
 }
 
@@ -199,7 +201,7 @@ void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 
 void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == CREATEENTITY)
+	if(command == CREATEENTITY || command == MAKE)
 	{
 		Eris::TypeService* typeService = mConn->getTypeService();
 		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
@@ -244,7 +246,11 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	WFMath::Quaternion orientation = avatar->getOrientation();
 	
 	msg["pos"] = pos.toAtlas();
-	msg["name"] = mName->getText().c_str();
+	if (mName->getText().length() > 0) {
+		msg["name"] = mName->getText().c_str();
+	} else {
+		msg["name"] = typeinfo->getName();
+	}
 	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
 	msg["orientation"] = orientation.toAtlas();
 	

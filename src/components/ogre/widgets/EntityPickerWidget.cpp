@@ -63,7 +63,7 @@ void EntityPickerWidget::buildWidget()
 
 	mMainWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));
-	mMainWindow->setSize(CEGUI::Size(0.1f, 0.2f));
+	mMainWindow->setSize(CEGUI::Size(0.15f, 0.2f));
 	mMainWindow->setAlpha(0.5f);
 	mMainWindow->setVisible(false);
 	mMainWindow->setEnabled(false);
@@ -134,14 +134,14 @@ void EntityPickerWidget::buildWidget()
 	mMenuWindow->addChildWindow(inspectButton);
 	mButtonSet.insert(inspectButton);	
 
-	CEGUI::PushButton* useButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/UseButton"));
-	BIND_CEGUI_EVENT(useButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonUse_Click);
-	useButton->setText((CEGUI::utf8*)"Use");
-	useButton->setSize(CEGUI::Size(1.0f, 0.2f));
-	useButton->setPosition(CEGUI::Point(0.0f, 0.8f));
-	useButton->setInheritsAlpha(true);	
-	mMenuWindow->addChildWindow(useButton);
-	mButtonSet.insert(useButton);	
+	mUseButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/UseButton"));
+	BIND_CEGUI_EVENT(mUseButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonUse_Click);
+	mUseButton->setText((CEGUI::utf8*)"Use");
+	mUseButton->setSize(CEGUI::Size(1.0f, 0.2f));
+	mUseButton->setPosition(CEGUI::Point(0.0f, 0.8f));
+	mUseButton->setInheritsAlpha(true);	
+	mMenuWindow->addChildWindow(mUseButton);
+	mButtonSet.insert(mUseButton);	
 		
 
 }
@@ -164,10 +164,39 @@ void EntityPickerWidget::pickedEntity(EmberEntity* entity, const MousePickerArgs
 	CEGUI::String name(entity->getType()->getName() + " ("+ entity->getName() +")");
 	mEntityName->setText(name);
 	mPickedEntity = entity;
+	checkUse();
 	
 	//TODO: bind the guiManagers onMouseUp event to remove the menu
 	
 
+}
+
+void EntityPickerWidget::checkUse()
+{
+	//try to find the default operation for the wielded entity
+	std::string defaultOp = "";
+	EmberEntity* wieldedEntity = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getEntityAttachedToPoint("right_hand_wield");
+	if (wieldedEntity) {
+		mUseButton->setVisible(true);
+		const Eris::Entity::AttrMap::const_iterator I_attribute = wieldedEntity->getAttributes().find("operations");
+		if (I_attribute != wieldedEntity->getAttributes().end()) {
+			Atlas::Message::Element operations = I_attribute->second;
+			if (operations.isList()) {
+				const Atlas::Message::ListType & plist = operations.asList();
+				Atlas::Message::ListType::const_iterator J = plist.begin();
+				if (J != plist.end() && J->isString()) {
+					defaultOp = J->asString();
+				}				
+			}
+		} 
+		if (defaultOp == "") {
+			mUseButton->setText("Use with " + wieldedEntity->getName());
+		} else {
+			mUseButton->setText(defaultOp + " with " + wieldedEntity->getName());
+		}
+	} else {
+		mUseButton->setVisible(false);
+	}
 }
 
 void EntityPickerWidget::pickedNothing(const MousePickerArgs& args)

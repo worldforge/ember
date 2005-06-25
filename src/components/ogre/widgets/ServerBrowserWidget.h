@@ -48,7 +48,8 @@ public:
 /*	static ServerBrowserWidget s;*/
 protected:
 	CEGUI::MultiColumnList* mServerList;
-	bool ManualServerName_KeyUp(const CEGUI::EventArgs& e);
+//	bool ManualServerName_KeyUp(const CEGUI::EventArgs& e);
+	bool ManualServerName_TextAcceptedEvent(const CEGUI::EventArgs& args);
 	
     void gotFailure(const std::string& msg);
 
@@ -74,6 +75,7 @@ protected:
 	 *    try to connect using the selection in the server list
 	 */
 	void connectWithColumnList();
+
 
 
 };

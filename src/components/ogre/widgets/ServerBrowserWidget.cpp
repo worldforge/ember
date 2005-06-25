@@ -47,14 +47,18 @@ ServerBrowserWidget::~ServerBrowserWidget()
 	delete mMainWindow;
 }
 
-bool ServerBrowserWidget::ManualServerName_KeyUp(const CEGUI::EventArgs& e)
+bool ServerBrowserWidget::ManualServerName_TextAcceptedEvent(const CEGUI::EventArgs& args)
 {
-	const CEGUI::KeyEventArgs& k_e = static_cast<const CEGUI::KeyEventArgs&>(e);
-	if (k_e.scancode == CEGUI::Key::Return) {
-		doConnect();
-	}	
-	return true;
+	doConnect();
 }
+// bool ServerBrowserWidget::ManualServerName_KeyUp(const CEGUI::EventArgs& e)
+// {
+// 	const CEGUI::KeyEventArgs& k_e = static_cast<const CEGUI::KeyEventArgs&>(e);
+// 	if (k_e.scancode == CEGUI::Key::Return) {
+// 		doConnect();
+// 	}	
+// 	return true;
+// }
 
 
 void ServerBrowserWidget::buildWidget()
@@ -84,7 +88,7 @@ void ServerBrowserWidget::buildWidget()
 	
 
 	CEGUI::Window* manualNameWindow = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ManualServerName");
-	BIND_CEGUI_EVENT(manualNameWindow, CEGUI::Editbox::EventKeyUp, ServerBrowserWidget::ManualServerName_KeyUp)
+	BIND_CEGUI_EVENT(manualNameWindow, CEGUI::Editbox::EventTextAccepted, ServerBrowserWidget::ManualServerName_TextAcceptedEvent)
 	
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
 
