@@ -1,5 +1,9 @@
 2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.conf: default to showing the help
+
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/modeldefinitions/*: media updates
 
 2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
