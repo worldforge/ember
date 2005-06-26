@@ -158,12 +158,13 @@ void EntityPickerWidget::showMenu(CEGUI::Point position)
 
 }
 
-void EntityPickerWidget::pickedEntity(EmberEntity* entity, const MousePickerArgs& args)
+void EntityPickerWidget::pickedEntity(const EntityPickResult& result, const MousePickerArgs& args)
 {
+	EmberEntity* entity = result.entity;
 	showMenu(CEGUI::Point(args.windowX, args.windowY));
 	CEGUI::String name(entity->getType()->getName() + " ("+ entity->getName() +")");
 	mEntityName->setText(name);
-	mPickedEntity = entity;
+	mPickResult = result;
 	checkUse();
 	
 	//TODO: bind the guiManagers onMouseUp event to remove the menu
@@ -190,9 +191,9 @@ void EntityPickerWidget::checkUse()
 			}
 		} 
 		if (defaultOp == "") {
-			mUseButton->setText("Use with " + wieldedEntity->getName());
+			mUseButton->setText("Use with " + wieldedEntity->getType()->getName());
 		} else {
-			mUseButton->setText(defaultOp + " with " + wieldedEntity->getName());
+			mUseButton->setText(defaultOp + " with " + wieldedEntity->getType()->getName());
 		}
 	} else {
 		mUseButton->setVisible(false);
@@ -213,41 +214,41 @@ void EntityPickerWidget::pickedNothing(const MousePickerArgs& args)
 
 bool EntityPickerWidget::buttonTouch_Click(const CEGUI::EventArgs& args)
 {
-	EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->touch(mPickedEntity);
-	mGuiManager->EventEntityAction("touch", mPickedEntity);
-	mGuiManager->setDebugText(std::string("Touched ") + mPickedEntity->getName() );
+	EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->touch(mPickResult.entity);
+	mGuiManager->EventEntityAction("touch", mPickResult.entity);
+	//mGuiManager->setDebugText(std::string("Touched ") + mPickResult.entity->getName() );
 	removeMenu();
 	return true;
 }
 
 bool EntityPickerWidget::buttonTake_Click(const CEGUI::EventArgs& args)
 {
-	EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->take(mPickedEntity);
-	mGuiManager->EventEntityAction("take", mPickedEntity);
-	mGuiManager->setDebugText(std::string("Took ") + mPickedEntity->getName());
+	EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->take(mPickResult.entity);
+	mGuiManager->EventEntityAction("take", mPickResult.entity);
+//	mGuiManager->setDebugText(std::string("Took ") + mPickedEntity->getName());
 	removeMenu();
 	return true;
 }
 
 bool EntityPickerWidget::buttonInspect_Click(const CEGUI::EventArgs& args)
 {
-	mGuiManager->EventEntityAction("inspect", mPickedEntity);
+	mGuiManager->EventEntityAction("inspect", mPickResult.entity);
 	removeMenu();
 	return true;
 }
 
 bool EntityPickerWidget::buttonGive_Click(const CEGUI::EventArgs& args)
 {
-	mGuiManager->EventEntityAction("give", mPickedEntity);
+	mGuiManager->EventEntityAction("give", mPickResult.entity);
 	removeMenu();
 	return true;
 }
 
 bool EntityPickerWidget::buttonUse_Click(const CEGUI::EventArgs& args)
 {
-	mGuiManager->setDebugText(std::string("Performin Use on  ") + mPickedEntity->getName() );
-	mGuiManager->EventEntityAction("use", mPickedEntity);
-	Ember::EmberServices::getInstance()->getServerService()->use(mPickedEntity);
+	//mGuiManager->setDebugText(std::string("Performin Use on  ") + mPickResult.entity->getName() );
+	mGuiManager->EventEntityAction("use", mPickResult.entity);
+	Ember::EmberServices::getInstance()->getServerService()->use(mPickResult.entity, Ogre2Atlas(mPickResult.position));
 	removeMenu();
 	return true;
 }

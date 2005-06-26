@@ -35,13 +35,19 @@
 
 
 #include "EmberOgrePrerequisites.h"
-#include <CEGUISystem.h>
-#include <CEGUIInputEvent.h> 
 
 namespace EmberOgre {
 
 class EmberEntity;
-
+/**
+ * Struct used for returning the result of a mouse pick.
+ */
+struct EntityPickResult
+{
+	EmberEntity* entity;
+	Ogre::Vector3 position;
+	Ogre::Real distance;
+};
 
 struct MousePickerArgs
 {
@@ -61,15 +67,15 @@ public:
 
 
 
-	SigC::Signal2<void, EmberEntity*, const MousePickerArgs&> EventPickedEntity;
+	SigC::Signal2<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
 	SigC::Signal1<void, const MousePickerArgs&> EventPickedNothing;
 	
-	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntity; }
+	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntityResult.entity; }
 
 	
 protected:
 
-	virtual void onEventPickedEntity(EmberEntity* entity, const MousePickerArgs& args);
+	virtual void onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args);
 	virtual void onEventPickedNothing(const MousePickerArgs& args);
 
 	
@@ -79,8 +85,7 @@ protected:
     EmberEntity* mEntityUnderCursor;
 	
 	//the last clicked entity
-    EmberEntity* mLastPickedEntity;
-
+	EntityPickResult mLastPickedEntityResult;
 };
 
 }

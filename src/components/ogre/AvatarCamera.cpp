@@ -21,6 +21,8 @@
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "EmberEntity.h"
+#include "EmberEntityFactory.h"
+#include "WorldEmberEntity.h"
 
 
 #include "EmberSceneManager/include/EmberTerrainSceneManager.h"
@@ -28,6 +30,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#include "MousePicker.h"
 #include "jesus/JesusPickerObject.h"
 
 #include "EmberEntityUserObject.h"
@@ -164,9 +167,28 @@ void AvatarCamera::mouseMoved(const MouseMotion& motion, bool isInGuimode)
 	}
 }
 
+bool AvatarCamera::pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector)
+{
+	// Start a new ray query 
+	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ EmberEntity::CM_AVATAR); 
+	
+	
+	raySceneQuery->setRay(cameraRay);
+	RaySceneQueryResult& qryResult = raySceneQuery->execute();
+	RaySceneQueryResult::iterator i = qryResult.begin();
+	if (i != qryResult.end() && i->worldFragment)
+	{
+		SceneQuery::WorldFragment* wf = i->worldFragment;
+		resultVector = i->worldFragment->singleIntersection;
+		return true;
+	} 
+	return false;
+}
+
 std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask )
 {
-	fprintf(stderr, "TRACE - TRYING TO PICK AN ENTITY\n");
+	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << mouseX << ":" << mouseY << ".");
 
 	std::vector<Ogre::RaySceneQueryResultEntry> finalResult;
 	
@@ -221,10 +243,9 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 
 	if ( finalResult.size() == 0 ) {    
 
-		fprintf(stderr, "TRACE - PICKED NONE\n");
+		S_LOG_INFO("Picked none.");
 	} else { 
-		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
-
+		S_LOG_INFO("Picked an entity.");
 	} 		
 	
 	return finalResult;
@@ -232,99 +253,87 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 }
 
 
-EmberEntity* AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
+EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
 {
-	fprintf(stderr, "TRACE - TRYING TO PICK AN ENTITY\n");
+	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << mouseX << ":" << mouseY << ".");
 
+	EntityPickResult result;
+	result.entity = 0;
+	
 	// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
 	//don't know why
 	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ EmberEntity::CM_AVATAR); 
-/*
-	std::stringstream temp;
-	temp << "tjo1: " <<(EmberEntity::CM_PERSONS ||	EmberEntity::CM_CREATURES  || EmberEntity::CM_NATURE || EmberEntity::CM_UNDEFINED) << "\n";
-	temp << "tjo2: " <<(EmberEntity::CM_PERSONS |	EmberEntity::CM_CREATURES  | EmberEntity::CM_NATURE | EmberEntity::CM_UNDEFINED) << "\n";
-	fprintf(stderr, temp.str().c_str() );
-*/	
-//	raySceneQuery->setQueryMask(~ EmberEntity::CM_AVATAR);
 
 	raySceneQuery->execute(); 
-	Ogre::RaySceneQueryResult result = raySceneQuery->getLastResults(); 
+	Ogre::RaySceneQueryResult queryResult = raySceneQuery->getLastResults(); 
 	   
 	Ogre::MovableObject *closestObject; 
 	Ogre::Real closestDistance = mClosestPickingDistance;
 	 
-	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator; 
-	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end; 
-/*
-	std::stringstream temp;
-	Ogre::SceneManager::EntityIterator iter = EmberOgre::getSingletonPtr()->getSceneManager()->getEntityIterator();
-	int count = 0;
-	while (iter.hasMoreElements()) {
-		count++;
-		Ogre::Entity* ent = iter.getNext();
-		temp << ent->getName() << ": " << Ogre::StringConverter::toString(ent->getBoundingBox().getMinimum());
-		temp << "/" << Ogre::StringConverter::toString(ent->getWorldBoundingBox().getMinimum());
-		temp << " ::: ";
-		temp << Ogre::StringConverter::toString(ent->getBoundingBox().getMaximum());
-		temp << "/" << Ogre::StringConverter::toString(ent->getWorldBoundingBox().getMaximum());
-		temp << "\n";
-	}
-	fprintf(stderr, temp.str().c_str() );
-*/
-	//Ogre::UserDefinedObject* avatarObject = dynamic_cast<Ogre::UserDefinedObject*>(mAvatar->mErisAvatarEntity);
-	rayIterator = result.begin( );
-	rayIterator_end = result.end( );
+	
 	EmberEntityUserObject* userObject = 0;
-	if (rayIterator != rayIterator_end) {
-		for ( ; 
-			rayIterator != rayIterator_end; 
-			rayIterator++ ) {
-			//only pick entities that have a userobject attached
-
-			Ogre::MovableObject* movable = ( *rayIterator ).movable;
+	
+	EmberEntity* pickedEntity;
+	Ogre::Real pickedDistance = mClosestPickingDistance;
+	Ogre::Vector3 pickedPosition;
+	Ogre::MovableObject* pickedMovable;
 			
-			if (movable && movable->isVisible() && movable->getUserObject() != NULL && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && movable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
-				if ( ( *rayIterator ).distance < closestDistance ) { 
-					bool isColliding = false;
-					closestObject = movable; 
-					EmberEntityUserObject* aUserObject = static_cast<EmberEntityUserObject*>(movable->getUserObject());
+			std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator = queryResult.begin( ); 
+	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end = queryResult.end( );
+	if (rayIterator != rayIterator_end) {
+		for ( ; rayIterator != rayIterator_end; rayIterator++ ) {
+
+			//check if it's a world fragment (i.e. the terrain) of if it has a MovableObject* attached to it
+			
+			if (rayIterator->worldFragment) {
+				SceneQuery::WorldFragment* wf = rayIterator->worldFragment;
+				pickedPosition = rayIterator->worldFragment->singleIntersection;
+				
+				Vector3 distance = cameraRay.getOrigin() - pickedPosition; 
+				pickedDistance = distance.length(); 
+				pickedEntity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
 					
-					EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
-					//only do opcode detection if there's a CollisionObject
-					for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
-						Ogre::CollisionShape* collisionShape = (*I)->GetShape();
-						Ogre::CollisionPair pick_result;
+			} else {
+			
+				pickedMovable = rayIterator->movable;
+				
+				if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != NULL && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
+					if ( rayIterator->distance < closestDistance ) { 
+						bool isColliding = false;
+						closestObject = pickedMovable; 
+						EmberEntityUserObject* aUserObject = static_cast<EmberEntityUserObject*>(pickedMovable->getUserObject());
 						
-						isColliding = collisionShape->LineCheck(Ogre::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
-						if (isColliding) {
-							Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
-							Ogre::Real realDistance = distance.length(); 
-							if (realDistance < closestDistance) {
-								closestDistance = realDistance; 
-								userObject = aUserObject;
+						EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
+						//only do opcode detection if there's a CollisionObject
+						for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
+							Ogre::CollisionShape* collisionShape = (*I)->GetShape();
+							Ogre::CollisionPair pick_result;
+							
+							isColliding = collisionShape->LineCheck(Ogre::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
+							if (isColliding) {
+								Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
+								pickedDistance = distance.length(); 
+								pickedEntity = aUserObject->getEmberEntity();
+								pickedPosition = pick_result.contact;
 							}
 						}
 					}
 				}
 			}
+			if (pickedDistance < closestDistance) {
+				closestDistance = pickedDistance; 
+				result.entity = pickedEntity;
+				result.position = pickedPosition;
+				result.distance = pickedDistance;
+			}
+			
 		} 
 	}
 
  
-   // No movable clicked 
-	if ( userObject == 0 ) {    
-
-		fprintf(stderr, "TRACE - PICKED NONE\n");
-	     return NULL;
-		//Root::getSingleton().getAutoCreatedWindow()->setDebugText("none");
-	} else { 
-		fprintf(stderr, "TRACE - PICKED AN OBJECT\n");
-		return  userObject->getEmberEntity();;
-
-	} 		
-	
+	return result;
 }
 
 	bool AvatarCamera::worldToScreen(Ogre::Vector3& worldPos, Ogre::Vector3& screenPos) 

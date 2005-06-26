@@ -27,12 +27,14 @@
 #include <elements/CEGUIGUISheet.h>
 #include <CEGUIEvent.h> 
 
+#include "../MousePicker.h"
 namespace EmberOgre {
 
 class Widget;
 class EmberEntity;
 class MousePicker;
 struct MousePickerArgs;
+struct EntityPickResult;
 
 /**
 @author Erik Hjortsberg
@@ -53,11 +55,11 @@ protected:
 	
 	CEGUI::StaticText* mEntityName;
 	
-	EmberEntity* mPickedEntity;
+	EntityPickResult mPickResult;
 	
 	std::set<CEGUI::PushButton*> mButtonSet;
 	
-	void pickedEntity(EmberEntity* entity, const MousePickerArgs& args);
+	void pickedEntity(const EntityPickResult& result, const MousePickerArgs& args);
 	void pickedNothing(const MousePickerArgs& args);
 	
 	bool buttonTouch_Click(const CEGUI::EventArgs& args);

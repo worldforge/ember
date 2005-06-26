@@ -48,6 +48,8 @@ class Avatar;
 class InputManager;
 class GUIManager;
 class EmberEntity;
+struct EntityPickResult;
+
 
 class AvatarCamera 
 :virtual public SigC::Object 
@@ -116,7 +118,7 @@ public:
 // 	void mouseMoved (Ogre::MouseEvent *e);
 // 	void mouseDragged (Ogre::MouseEvent *e) {};
 
-	EmberEntity* pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
+	EntityPickResult pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
 	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
 	inline void setClosestPickingDistance(Ogre::Real distance) { mClosestPickingDistance = distance; }
@@ -129,6 +131,15 @@ public:
 	// returns false if the worldPos is off screen 
 	// 
 	bool worldToScreen(Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
+	
+	/**
+	 *    picks a point in the terrain
+	 * @param mouseX
+	 * @param mouseY 
+	 * @param resultVector 
+	 * @return true if the picking was successful
+	 */
+	bool pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector);
 
 	
 protected:
