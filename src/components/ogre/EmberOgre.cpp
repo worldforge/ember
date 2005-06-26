@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.93  2005-06-25 11:02:46  erik
+ *      Revision 1.94  2005-06-26 21:18:13  erik
+ *      2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp
+ *      		*added more error logging for errors in the Eris::Poll section
+ *      		* try to make the scenemanager shut down cleanly so to avoid a segfault on exit
+ *
+ *      Revision 1.93  2005/06/25 11:02:46  erik
  *      2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -850,6 +857,7 @@ mWorldView(0)
 
 EmberOgre::~EmberOgre()
 {
+	mSceneMgr->shutdown();
 	if (mGUIManager)
 		delete mGUIManager;
 	if (mTerrainGenerator)
@@ -876,7 +884,16 @@ EmberOgre::~EmberOgre()
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	EventStartErisPoll.emit();
-	Eris::PollDefault::poll(1);
+	try {
+		Eris::PollDefault::poll(1);
+	} catch (Ogre::Exception& ex) {
+		std::cerr << ex.getFullDescription();
+		throw ex;
+	} catch (const std::runtime_error& ex)
+	{
+		int i = 0;
+		throw ex;
+	}
 	if (mWorldView)
 		mWorldView->update();
 	EventEndErisPoll.emit();
