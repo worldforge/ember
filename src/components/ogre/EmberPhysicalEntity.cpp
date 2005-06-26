@@ -215,6 +215,8 @@ bool EmberPhysicalEntity::getShowOgreBoundingBox()
 
 
 void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
+	EmberEntity::onAttrChanged(str, v);
+	
 	if (str == "right_hand_wield") {
 		std::cout << "set right_hand_wield to " << v.asString() << std::endl;
 		std::string id = v.asString();
@@ -228,18 +230,20 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 		}
 		return;		
 	}
+// 	if (str == "bbox") {
+// 		scaleNode();
+// 	}
 
 	//check if the changed attribute should affect any particle systems
 	if (mModel->hasParticles()) {
 		ParticleSystemBindingsPtrSet bindings = mModel->getAllParticleSystemBindings();
 		for (ParticleSystemBindingsPtrSet::iterator I = bindings.begin(); I != bindings.end(); ++I) {
-			if ((*I)->getVariableName() == str) {
-				(*I)->scaleValue(v.asFloat());
+			if ((*I)->getVariableName() == str && v.isNum()) {
+				(*I)->scaleValue(v.asNum());
 			}
 		}
 	}
 
-	EmberEntity::onAttrChanged(str, v);
 
 }
 
