@@ -1,3 +1,37 @@
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/*: media updates
+
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberPhysicalEntoty.cpp
+		* use asNum instead of asFloat since the first handles both integers and floats
+
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/MousePicker.*
+		* added a better organized struct for mouse picking results
+	* src/components/ogre/AvatarCamera.*
+		* add the ability to pick in the terrain
+	* src/components/ogre/widgets/EntityPickerWidget.*
+		* use the new struct for mouse picking results
+
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp
+		*added more error logging for errors in the Eris::Poll section
+		* try to make the scenemanager shut down cleanly so to avoid a segfault on exit
+
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* services/server/ServerService.*
+		* added a position argument to the use operation
+
+2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.conf, src/components/ogre/widgets/Help.cpp:
+		* added option for not showing the help on startup ("startuphelp = false")
+
 2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/InspectWidget.*

@@ -241,7 +241,7 @@
 		</submodels>
 	</model>			
 	
-	<model name="tower" usescaleof="height" rotation="-90">
+	<model name="tower" usescaleof="width" rotation="-90">
 		<submodels>
 			<submodel mesh="junkyard/models/broken_tower/Tower01.mesh" >
 				<parts>
