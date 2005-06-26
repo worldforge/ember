@@ -19,11 +19,12 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Anonymous.h>
 #include "ServerService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
-
+#include <wfmath/atlasconv.h>
 
 #include <sigc++/object_slot.h>
 #include <sigc++/object.h>
@@ -664,7 +665,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  		}
    	}   		
 
-	void ServerService::use(Eris::Entity* entity)
+	void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos)
    	{
  		if(!myAvatar) {
  			// TODO: redesign so that this doesn't happen
@@ -675,8 +676,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			Atlas::Objects::Operation::Use useOp;
 			useOp->setFrom(myAvatar->getEntity()->getId());
 			Atlas::Objects::Entity::GameEntity what;
-			what->setLoc(entity->getLocation()->getId());
+			if (entity->getLocation()) {
+				what->setLoc(entity->getLocation()->getId());
+			}
 			what->setId(entity->getId());
+			Atlas::Message::Element apos(pos.toAtlas());
+			what->setPosAsList(apos.asList());
     		useOp->setArgs1(what);
     		getConnection()->send(useOp);
 			//myAvatar->place(entity, target);

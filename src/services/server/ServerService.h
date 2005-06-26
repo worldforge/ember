@@ -153,7 +153,8 @@ class ServerService : public Service, public ConsoleObject,
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
 	void place(Eris::Entity* entity, Eris::Entity* target);
 	void wield(Eris::Entity* entity);
-	void use(Eris::Entity* entity);
+	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
+	//void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
 	// Signals
