@@ -28,6 +28,10 @@
 #include "framework/ConsoleBackend.h"
 #include <elements/CEGUIFrameWindow.h>
 
+#include "services/EmberServices.h"
+#include "services/logging/LoggingService.h"
+#include "services/config/ConfigService.h"
+
 namespace EmberOgre {
 
 const char * const Help::HELP= "help";
@@ -87,6 +91,15 @@ void Help::buildWidget()
 	getMainSheet()->addChildWindow(mHelpIcon); 
 //	getMainSheet()->addChildWindow(mMainWindow); 
 	enableCloseButton();
+	
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+
+	if (configSrv->itemExists("general", "startuphelp") && !((bool)configSrv->getValue("general", "startuphelp"))) {
+		mMainWindow->setVisible(false);
+	}
+
+	
+	
 
 
 }
