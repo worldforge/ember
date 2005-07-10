@@ -21,14 +21,12 @@
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
-#include "components/ogre/MotionManager.h"
 
 
 #include "components/ogre/EmberOgre.h"
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
 
-#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include <OgreTagPoint.h>
 
