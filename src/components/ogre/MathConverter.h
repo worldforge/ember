@@ -11,7 +11,12 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.14  2005-05-07 22:24:07  erik
+ *      Revision 1.15  2005-07-10 21:54:28  erik
+ *      2005-07-10  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/MathConverter.h: added method for converting between Ogre::Vector2 and WFMath
+ *
+ *      Revision 1.14  2005/05/07 22:24:07  erik
  *      2005-05-08  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberOgrePrerequisites.h, src/components/ogre/MathConverter.h, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/SubModel.cpp, src/components/ogre/jesus/Jesus.cpp, src/components/ogre/environment/Tree.cpp, src/components/ogre/environment/Water.cpp, src/components/ogre/environment/meshtree/MeshTree.cpp, src/components/ogre/environment/meshtree/TParameters.cpp, src/components/ogre/environment/meshtree/TStem.cpp, src/components/ogre/EmberSceneManager/src/*.cpp, src/components/ogre/EmberSceneManager/include/OgreTerrainRenderable.h:
@@ -168,8 +173,7 @@ See file COPYING for details.
  *
 
 -----------------------------------------------------------------------------
-*/
-/*
+
 -----------------------------------------------------------------------------
 Filename:    MathConverter.h
 Description:	Point, Vector and Quaternion converter
@@ -273,6 +277,10 @@ inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3 p) {
 	return WFMath::Point<3>(p.x,-p.z,p.y);
 }
 
+inline TerrainPosition Ogre2Atlas(Ogre::Vector2 p) {
+	return TerrainPosition(p.x,-p.y);
+}
+
 inline TerrainPosition Ogre2Atlas_TerrainPosition(Ogre::Vector3 p) {
 	return TerrainPosition(p.x,-p.z);
 }
@@ -328,6 +336,8 @@ inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion aq){
 // #define OGRESCALER Ogre::Vector3(1,1,1)
 
 }
+
+
 
 /*
 Ogre::Vector3 Ogre::Vector3(WFMath::Vector<3> v) {
