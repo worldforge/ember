@@ -24,7 +24,6 @@
 #include "../carpenter/Carpenter.h"
 #include "../carpenter/BluePrint.h"
 #include "../model/Model.h"
-#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "JesusPickerObject.h"
 
 
