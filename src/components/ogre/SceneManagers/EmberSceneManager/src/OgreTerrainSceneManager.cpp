@@ -552,7 +552,9 @@ namespace Ogre
     bool TerrainSceneManager::intersectSegment( const Vector3 & start, 
         const Vector3 & end, Vector3 * result )
     {
-        TerrainRenderable * t = getTerrainTile( start );
+        bool found = false;
+		TerrainRenderable::Neighbor currentDirection = TerrainRenderable::NORTH;
+		TerrainRenderable * t = getTerrainTile( start );
 
         if ( t == 0 )
         {
@@ -560,7 +562,70 @@ namespace Ogre
             return false;
         }
 
-        return t -> intersectSegment( start, end, result );
+		
+        found = t -> intersectSegment( start, end, result );
+		if (!found) {
+			//check the eight tiles sorrounding the tile
+			TerrainRenderable * neighbourTile;
+			TerrainRenderable * cornerTile;
+			neighbourTile = t->_getNeighbor(TerrainRenderable::NORTH);
+			if (neighbourTile) {
+				found = neighbourTile -> intersectSegment( start, end, result );
+				if (!found) {
+					neighbourTile = t->_getNeighbor(TerrainRenderable::SOUTH);
+					if (neighbourTile) {
+						found = neighbourTile -> intersectSegment( start, end, result );
+						if (!found) {
+							neighbourTile = t->_getNeighbor(TerrainRenderable::WEST);
+							if (neighbourTile) {
+								found = neighbourTile -> intersectSegment( start, end, result );
+								if (!found) {
+									neighbourTile = t->_getNeighbor(TerrainRenderable::EAST);
+									if (neighbourTile) {
+										found = neighbourTile -> intersectSegment( start, end, result );
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			//also check the corner tiles
+			if (!found) {
+				//first the north ones
+				neighbourTile = t->_getNeighbor(TerrainRenderable::NORTH);
+				if (neighbourTile) {
+					cornerTile = neighbourTile->_getNeighbor(TerrainRenderable::EAST);
+					if (cornerTile) {
+						found = neighbourTile -> intersectSegment( start, end, result );
+					}
+					if (!found) {
+						cornerTile = neighbourTile->_getNeighbor(TerrainRenderable::WEST);
+						if (cornerTile) {
+							found = neighbourTile -> intersectSegment( start, end, result );
+						}
+					}
+				}
+
+				//then the south ones
+				if (!found) {
+					neighbourTile = t->_getNeighbor(TerrainRenderable::SOUTH);
+					if (neighbourTile) {
+						cornerTile = neighbourTile->_getNeighbor(TerrainRenderable::EAST);
+						if (cornerTile) {
+							found = neighbourTile -> intersectSegment( start, end, result );
+						}
+						if (!found) {
+							cornerTile = neighbourTile->_getNeighbor(TerrainRenderable::WEST);
+							if (cornerTile) {
+								found = neighbourTile -> intersectSegment( start, end, result );
+							}
+						}
+					}
+				}
+			}
+		}
+		return found;
     }
     //-------------------------------------------------------------------------
     void TerrainSceneManager::setUseTriStrips(bool useStrips)

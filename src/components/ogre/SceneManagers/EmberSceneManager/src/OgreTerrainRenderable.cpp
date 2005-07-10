@@ -447,7 +447,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const Vector3& TerrainRenderable::getWorldPosition(void) const
     {
-        return mCenter;
+        return mWorldCenter;
 		// mParentNode->_getDerivedPosition();
     }
     //-----------------------------------------------------------------------

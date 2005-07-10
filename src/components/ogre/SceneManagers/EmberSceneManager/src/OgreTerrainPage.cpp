@@ -89,11 +89,13 @@ namespace Ogre {
         }
     }
     //-------------------------------------------------------------------------
-    TerrainRenderable * TerrainPage::getTerrainTile( const Vector3 & pt )
+    TerrainRenderable * TerrainPage::getTerrainTile( const Vector3 & worldPt )
     {
         /* Since we don't know if the terrain is square, or has holes, we use a line trace
         to find the containing tile...
         */
+		
+		const Vector3 pt = worldPt - pageSceneNode->getPosition();
 
         TerrainRenderable * tile = tiles[ 0 ][ 0 ];
 
