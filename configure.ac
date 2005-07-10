@@ -249,7 +249,7 @@ LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.5 \
+PKG_CHECK_MODULES(WF, eris-1.3 >= 1.3.7 \
  varconf-1.0 >= 0.6.2 mercator-0.2 >= 0.2.3 atlascpp-0.6 >= 0.5.96,
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
@@ -389,9 +389,13 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/input/Makefile
 		 src/components/ogre/carpenter/Makefile
 		 src/components/ogre/jesus/Makefile
-		 src/components/ogre/EmberSceneManager/Makefile
-		 src/components/ogre/EmberSceneManager/src/Makefile
-		 src/components/ogre/EmberSceneManager/include/Makefile
+		 src/components/ogre/SceneManagers/Makefile
+		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
+		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
+		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
+		 src/components/ogre/SceneManagers/EmberSceneManager/Makefile
+		 src/components/ogre/SceneManagers/EmberSceneManager/src/Makefile
+		 src/components/ogre/SceneManagers/EmberSceneManager/include/Makefile
 ])
 
 #		 src/tests/Makefile

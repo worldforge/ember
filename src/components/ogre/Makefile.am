@@ -1,4 +1,4 @@
-SUBDIRS = environment model EmberSceneManager modeldefinitions input widgets \
+SUBDIRS = environment model SceneManagers modeldefinitions input widgets \
 			carpenter jesus ogreopcode
 
 #gamesdir = $(bindir)/games
@@ -51,7 +51,8 @@ endif
 ember_bin_LDADD =  $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
-	$(top_builddir)/src/components/ogre/EmberSceneManager/src/libEmberSceneManager.a $(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
+	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
+	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a \
 	$(top_builddir)/src/components/ogre/jesus/libJesus.a  \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
