@@ -34,6 +34,7 @@
 #include "framework/Tokeniser.h"
 
 #include "EmberOgre.h"
+#include <SDL.h>
 
 namespace EmberOgre {
 
@@ -41,6 +42,7 @@ namespace EmberOgre {
 const char * const ConsoleObjectImpl::QUIT 		= "quit";
 const char * const ConsoleObjectImpl::ADDMEDIA	= "addmedia";
 const char * const ConsoleObjectImpl::MOVEMEDIA	= "movemedia";
+const std::string ConsoleObjectImpl::FULLSCREEN	= "fullscreen";
 
 ConsoleObjectImpl* ConsoleObjectImpl::_consoleObjectImplInstance = 0;
 
@@ -56,6 +58,7 @@ ConsoleObjectImpl::ConsoleObjectImpl(void)
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(FULLSCREEN,this);
 }
 ConsoleObjectImpl::~ConsoleObjectImpl()
 {
@@ -76,7 +79,9 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
         std::string id = tokeniser.nextToken();
 		Ogre::Vector3 position = Ogre::Vector3(0,0,0);
         MediaDeployer::getSingleton().addMedia(modelName,id,position);
-
+	} else if (command == FULLSCREEN){
+		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+		
 	} else {
 		Ember::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
 	}

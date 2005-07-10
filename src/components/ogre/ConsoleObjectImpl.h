@@ -52,6 +52,11 @@ class ConsoleObjectImpl: public Ember::ConsoleObject
 	static const char * const QUIT;
 	static const char * const ADDMEDIA;
 	static const char * const MOVEMEDIA;
+	
+	/**
+	 * switches between full screen and normal screen
+	 */
+	static const std::string FULLSCREEN;
 
 }; // End of class declaration
 
