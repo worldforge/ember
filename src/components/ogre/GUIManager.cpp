@@ -146,7 +146,7 @@ void GUIManager::initialize()
 		mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"DebugText");
 		mSheet->addChildWindow(mDebugText);
 		mDebugText->setMaximumSize(CEGUI::Size(1.0f, 0.1f));
-		mDebugText->setPosition(CEGUI::Point(0.0f, 0.9f));
+		mDebugText->setPosition(CEGUI::Point(0.0f, 0.93f));
 		mDebugText->setSize(CEGUI::Size(1.0f, 0.1f));
 		
 		mDebugText->setFrameEnabled(false);
