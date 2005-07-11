@@ -88,12 +88,12 @@ public:
 
 	enum ClickMasks
 	{
-		CM_AVATAR = 1<<0,
-		CM_PERSONS = 1<<1,
-		CM_CREATURES = 1<<2,
-		CM_NATURE = 1<<3,
-		CM_UNDEFINED = 1<<4,
-		CM_TERRAIN = 1<<5
+		CM_AVATAR = 1<<9,
+		CM_PERSONS = 1<<10,
+		CM_CREATURES = 1<<11,
+		CM_NATURE = 1<<12,
+		CM_UNDEFINED = 1<<13,
+		CM_TERRAIN = 1<<14
 	};
 	
 	enum MovementMode

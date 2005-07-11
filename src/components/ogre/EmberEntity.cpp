@@ -28,6 +28,7 @@
 #include "TerrainArea.h"
 
 #include "EmberOgre.h"
+#include <OgreWireBoundingBox.h>
 #include <Mercator/Area.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
 
