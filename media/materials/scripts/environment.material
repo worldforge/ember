@@ -313,10 +313,10 @@ material /global/environment/ground/ploughed_field
          { 
 				colour_op_ex blend_current_alpha src_texture src_current
            texture 3d_objects/environment/ground/textures/plowed_field/low/plowed_field_diffuse.png
-           tex_coord_set 1 
+           tex_coord_set 0 
     		tex_address_mode wrap
-			scale 0.25 0.25
-        } 
+			scale 0.0025 0.0025
+		} 
 	  }
    }
   

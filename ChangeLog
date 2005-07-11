@@ -1,5 +1,12 @@
 2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/scripts/terrain.cfg
+		* terrain settings file for the paging scene manager. it should probably go somewhere better though...
+	* media/materials/scripts/environment.material
+		* use texture coord 0 but scale the texture
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainShader.cpp: use only texture coords 0
 	* src/components/ogre/TerrainPage.*
 		* removed references to old scene manager
