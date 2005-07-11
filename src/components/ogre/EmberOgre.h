@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.47  2005-06-25 11:02:46  erik
+ *      Revision 1.48  2005-07-11 00:02:30  erik
+ *      2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*:
+ *      		* use EmberPagingSceneManager
+ *      		* initialize some member to 0
+ *
+ *      Revision 1.47  2005/06/25 11:02:46  erik
  *      2005-06-25  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -458,7 +465,8 @@ class AvatarEmberEntity;
 
 class EmberEntityFactory;
 
-class EmberTerrainSceneManager;
+//class EmberTerrainSceneManager;
+class EmberPagingSceneManager;
 
 class TerrainGenerator;
 
@@ -522,7 +530,7 @@ public:
 	// TODO: possibly we'd like to do the following in a different way,
 	// perhaps refactoring stuff
 	Avatar* getAvatar() const;
-	EmberTerrainSceneManager* getSceneManager() const;
+	Ogre::SceneManager* getSceneManager() const;
 	TerrainGenerator* getTerrainGenerator() const;
 	MotionManager* getMotionManager() const;
 	Ogre::Root* getOgreRoot() const;
@@ -585,7 +593,8 @@ protected:
 
 
 	Ogre::Root *mRoot;
-    EmberTerrainSceneManager* mSceneMgr;
+//    EmberTerrainSceneManager* mSceneMgr;
+	EmberPagingSceneManager* mSceneMgr;
 	Ogre::RenderWindow* mWindow;
 	
 	

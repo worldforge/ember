@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.94  2005-06-26 21:18:13  erik
+ *      Revision 1.95  2005-07-11 00:02:30  erik
+ *      2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*:
+ *      		* use EmberPagingSceneManager
+ *      		* initialize some member to 0
+ *
+ *      Revision 1.94  2005/06/26 21:18:13  erik
  *      2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp
@@ -770,7 +777,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "ogreopcode/include/OgreCollisionManager.h"
 
-#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
 
@@ -852,12 +860,17 @@ EmberOgre::EmberOgre() :
 //mFrameListener(0),
 mRoot(0),
 mKeepOnRunning(true),
-mWorldView(0)
+mWorldView(0),
+mGUIManager(0),
+mTerrainGenerator(0),
+mMotionManager(0),
+mAvatarController(0),
+mModelDefinitionManager(0)
 {}
 
 EmberOgre::~EmberOgre()
 {
-	mSceneMgr->shutdown();
+//	mSceneMgr->shutdown();
 	if (mGUIManager)
 		delete mGUIManager;
 	if (mTerrainGenerator)
@@ -977,16 +990,17 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	chdir(configSrv->getHomeDirectory().c_str());
 	
-	mTerrainGenerator = new TerrainGenerator();
-	mMotionManager = new MotionManager();
-	mMotionManager->setTerrainGenerator(mTerrainGenerator);
-	
 	// Avatar
 	mAvatar = new Avatar(mSceneMgr);
 	
 	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
 	
-	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
+	mTerrainGenerator = new TerrainGenerator();
+	mMotionManager = new MotionManager();
+	mMotionManager->setTerrainGenerator(mTerrainGenerator);
+	
+	
+//	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
 
 
@@ -1029,14 +1043,20 @@ bool EmberOgre::configure(void)
 void EmberOgre::chooseSceneManager(void)
 {
 	
-    // We first register our own scenemanager
-    EmberTerrainSceneManager* sceneManager = new EmberTerrainSceneManager();
-    mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
-    //And then request it
-    mSceneMgr = static_cast<EmberTerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
-    
-    EmberTerrainSceneManager* mEmberTerr = dynamic_cast<EmberTerrainSceneManager*>(mSceneMgr);
-    assert(mEmberTerr);
+	EmberPagingSceneManager* sceneManager = new EmberPagingSceneManager();
+	mRoot->setSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, sceneManager);
+	mSceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_REAL_FAR));
+	sceneManager->InitScene();
+	
+ 
+//     // We first register our own scenemanager
+//     EmberTerrainSceneManager* sceneManager = new EmberTerrainSceneManager();
+//     mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
+//     //And then request it
+//     mSceneMgr = static_cast<EmberTerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
+//     
+//     EmberTerrainSceneManager* mEmberTerr = dynamic_cast<EmberTerrainSceneManager*>(mSceneMgr);
+//     assert(mEmberTerr);
 
    //mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
    
@@ -1397,7 +1417,7 @@ EmberEntity* EmberOgre::getEntity(const std::string & id) const
 
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
 {
-	mEmberEntityFactory = new EmberEntityFactory(mSceneMgr,mTerrainGenerator, connection->getTypeService());
+	mEmberEntityFactory = new EmberEntityFactory(mTerrainGenerator, connection->getTypeService());
 	EventCreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
@@ -1409,7 +1429,7 @@ Avatar* EmberOgre::getAvatar() const {
 }
 
 
-EmberTerrainSceneManager* EmberOgre::getSceneManager() const
+Ogre::SceneManager* EmberOgre::getSceneManager() const
 {
 	return mSceneMgr;
 }

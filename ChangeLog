@@ -1,3 +1,43 @@
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.*:
+		* use EmberPagingSceneManager
+		* initialize some member to 0
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac, src/components/ogre/Makefile.am: use the paging scene manager
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager:
+		* added a paging scene manager, which is derived from the PLSM2. scenemanager in Ogreaddons. This will be the main one used from now on.
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberSceneManager/src/OgreTerrainPage.cpp, src/components/ogre/EmberSceneManager/src/OgreTerrainRenderable.cpp, src/components/ogre/EmberSceneManager/src/OgreTerrainSceneManager.cpp:
+		* added better support for terrain picking
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/Jesus.cpp: cleaned up linking and removed links to the SceneManager
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/Model.cpp, src/components/ogre/ModelDefinition.cpp: cleaned up linking and removed links to the SceneManager
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.cpp: adjusted the position of the debug text
+
+2005-07-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/ConsoleObjectImpl.*: added fullscreen switch ("/fullscreen")
+
+2005-07-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/MathConverter.h: added method for converting between Ogre::Vector2 and WFMath
+
 2005-06-26  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember.conf: default to showing the help
