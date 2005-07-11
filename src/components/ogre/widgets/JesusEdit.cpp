@@ -41,7 +41,7 @@
 #include "../model/Model.h"
 #include "framework/ConsoleBackend.h"
 
-#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 namespace EmberOgre {
 
 
