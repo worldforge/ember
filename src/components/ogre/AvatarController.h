@@ -73,7 +73,9 @@ public:
 	
 	AvatarCamera* getAvatarCamera() const;
 
-		
+	void detachCamera();
+	void attachCamera();
+
 
 protected:
 
@@ -104,7 +106,8 @@ protected:
 	SDLKey mKeyCodeForLeftMovement;
 	SDLKey mKeyCodeForRightMovement;
 	
-	
+	Ogre::SceneNode* mFreeFlyingCameraNode;
+	bool mIsAttached;
 	
     
 		

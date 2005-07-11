@@ -25,7 +25,7 @@
 #include "WorldEmberEntity.h"
 
 
-#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -38,6 +38,9 @@
 #include "ogreopcode/include/OgreCollisionShape.h"
 #include "ogreopcode/include/OgreCollisionObject.h"
 #include "model/Model.h"
+
+#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
+
 namespace EmberOgre {
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
@@ -73,7 +76,7 @@ AvatarCamera::~AvatarCamera()
 void AvatarCamera::createNodesAndCamera()
 {
 	//create the nodes for the camera
-	
+	setMode(MODE_THIRD_PERSON);
 	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode("AvatarCameraRootNode"));
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
@@ -90,15 +93,33 @@ void AvatarCamera::createNodesAndCamera()
 	mAvatarCameraNode->attachObject(mCamera);
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
-	mCamera->setNearClipDistance(0.01);
+	mCamera->setNearClipDistance(0.1);
 	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 	{
-		mCamera->setFarClipDistance(0);
+		mCamera->setFarClipDistance(3000);
 	} else {
-		mCamera->setFarClipDistance(6000);
+		mCamera->setFarClipDistance(3000);
 	}
 	
 	createViewPort();
+}
+
+void AvatarCamera::setMode(Mode mode)
+{
+	mMode = mode;
+}
+
+void AvatarCamera::attach(Ogre::SceneNode* toNode) {
+	mIsAttached = true;
+	assert(mAvatarCameraRootNode);
+	if (mAvatarCameraRootNode->getParent()) {
+		mAvatarCameraRootNode->getParent()->removeChild(mAvatarCameraRootNode->getName());
+	}
+	toNode->addChild(mAvatarCameraRootNode);
+	
+	Ogre::Vector3 pos(0,0,10);
+	mAvatarCameraNode->setPosition(pos);
+	mAvatarCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
 }
 
 void AvatarCamera::createViewPort()
@@ -116,32 +137,31 @@ void AvatarCamera::createViewPort()
 
 void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 {
-	if (mAvatarNode) {
-		mAvatarNode->removeChild(mAvatarCameraRootNode->getName());
-	}
 	mAvatarNode = sceneNode;
-	mAvatarNode->addChild(mAvatarCameraRootNode);
-/*	const Ogre::AxisAlignedBox ogreBoundingBox = mAvatarNode->_getWorldAABB();
-	const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
-	
-	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,ogreMax.y,0));*/
+	attach(mAvatarNode);
 }
 
 
 void AvatarCamera::pitch(Ogre::Degree degrees)
 {
-	degreePitch += degrees;
-	mAvatarCameraPitchNode->pitch(degrees);
+	if (mMode == MODE_THIRD_PERSON) {
+		degreePitch += degrees;
+		mAvatarCameraPitchNode->pitch(degrees);
+	} else {
+		mAvatarCameraNode->pitch(degrees);
+	}
 }
 void AvatarCamera::yaw(Ogre::Degree degrees)
 {
-	degreeYaw += degrees;
-	mAvatarCameraRootNode->yaw(degrees);
-	
-	std::stringstream ss;
-	mAvatarCameraRootNode->needUpdate();
-	Ogre::Quaternion q = mAvatarCameraRootNode->_getDerivedOrientation();
-	
+	if (mMode == MODE_THIRD_PERSON) {
+		degreeYaw += degrees;
+		mAvatarCameraRootNode->yaw(degrees);
+		
+		mAvatarCameraRootNode->needUpdate();
+//		Ogre::Quaternion q = mAvatarCameraRootNode->_getDerivedOrientation();
+	} else {
+		mAvatarCameraNode->yaw(degrees);
+	}
 	
 }
 
@@ -260,15 +280,6 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	EntityPickResult result;
 	result.entity = 0;
 	
-	// Start a new ray query 
-	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
-	//don't know why
-	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ EmberEntity::CM_AVATAR); 
-
-	raySceneQuery->execute(); 
-	Ogre::RaySceneQueryResult queryResult = raySceneQuery->getLastResults(); 
-	   
 	Ogre::MovableObject *closestObject; 
 	Ogre::Real closestDistance = mClosestPickingDistance;
 	 
@@ -279,49 +290,91 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	Ogre::Real pickedDistance = mClosestPickingDistance;
 	Ogre::Vector3 pickedPosition;
 	Ogre::MovableObject* pickedMovable;
-			
-			std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator = queryResult.begin( ); 
+	
+/*	unsigned long queryMask = 0xFFFFFFFF;
+	queryMask &= ~ Ogre::RSQ_Height;
+	queryMask &= ~ Ogre::RSQ_Height_no_interpolation;*/
+	
+	
+	
+	// Start a new ray query 
+	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
+
+	
+	Ogre::RaySceneQuery *raySceneQueryTerrain = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay, Ogre::RSQ_FirstTerrain); 
+	
+	
+	unsigned long queryMask = Ogre::RSQ_Entities;
+	queryMask |= EmberEntity::CM_AVATAR;
+	queryMask |= EmberEntity::CM_PERSONS;
+	queryMask |= EmberEntity::CM_CREATURES;
+	queryMask |= EmberEntity::CM_NATURE;
+	queryMask |= EmberEntity::CM_UNDEFINED;
+	Ogre::RaySceneQuery *raySceneQueryEntities = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay, queryMask); 
+
+	raySceneQueryTerrain->execute(); 
+	raySceneQueryEntities->execute(); 
+	
+	//first check the terrain picking
+	Ogre::RaySceneQueryResult queryResult = raySceneQueryTerrain->getLastResults(); 
+	
+	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator = queryResult.begin( ); 
 	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end = queryResult.end( );
+	if (rayIterator != rayIterator_end) {
+		//only need to check the first result since we're using RSQ_FirstTerrain for the terrain picking
+		if (rayIterator->worldFragment) {
+			SceneQuery::WorldFragment* wf = rayIterator->worldFragment;
+			pickedPosition = rayIterator->worldFragment->singleIntersection;
+				
+			Vector3 distance = cameraRay.getOrigin() - pickedPosition; 
+			pickedDistance = distance.length(); 
+			pickedEntity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+			
+			if (pickedDistance < closestDistance) {
+				closestDistance = pickedDistance; 
+				result.entity = pickedEntity;
+				result.position = pickedPosition;
+				result.distance = pickedDistance;
+			}
+					
+		} 		
+	}
+	   
+	//now check the entity picking
+	queryResult = raySceneQueryEntities->getLastResults(); 
+			
+	rayIterator = queryResult.begin( ); 
+	rayIterator_end = queryResult.end( );
 	if (rayIterator != rayIterator_end) {
 		for ( ; rayIterator != rayIterator_end; rayIterator++ ) {
 
 			//check if it's a world fragment (i.e. the terrain) of if it has a MovableObject* attached to it
 			
-			if (rayIterator->worldFragment) {
-				SceneQuery::WorldFragment* wf = rayIterator->worldFragment;
-				pickedPosition = rayIterator->worldFragment->singleIntersection;
-				
-				Vector3 distance = cameraRay.getOrigin() - pickedPosition; 
-				pickedDistance = distance.length(); 
-				pickedEntity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
-					
-			} else {
+			pickedMovable = rayIterator->movable;
 			
-				pickedMovable = rayIterator->movable;
-				
-				if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != NULL && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
-					if ( rayIterator->distance < closestDistance ) { 
-						bool isColliding = false;
-						closestObject = pickedMovable; 
-						EmberEntityUserObject* aUserObject = static_cast<EmberEntityUserObject*>(pickedMovable->getUserObject());
+			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != NULL && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
+				if ( rayIterator->distance < closestDistance ) { 
+					bool isColliding = false;
+					closestObject = pickedMovable; 
+					EmberEntityUserObject* aUserObject = static_cast<EmberEntityUserObject*>(pickedMovable->getUserObject());
+					
+					EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
+					//only do opcode detection if there's a CollisionObject
+					for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
+						Ogre::CollisionShape* collisionShape = (*I)->GetShape();
+						Ogre::CollisionPair pick_result;
 						
-						EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
-						//only do opcode detection if there's a CollisionObject
-						for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
-							Ogre::CollisionShape* collisionShape = (*I)->GetShape();
-							Ogre::CollisionPair pick_result;
-							
-							isColliding = collisionShape->LineCheck(Ogre::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
-							if (isColliding) {
-								Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
-								pickedDistance = distance.length(); 
-								pickedEntity = aUserObject->getEmberEntity();
-								pickedPosition = pick_result.contact;
-							}
+						isColliding = collisionShape->LineCheck(Ogre::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
+						if (isColliding) {
+							Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
+							pickedDistance = distance.length(); 
+							pickedEntity = aUserObject->getEmberEntity();
+							pickedPosition = pick_result.contact;
 						}
 					}
 				}
 			}
+
 			if (pickedDistance < closestDistance) {
 				closestDistance = pickedDistance; 
 				result.entity = pickedEntity;

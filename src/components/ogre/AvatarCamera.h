@@ -57,6 +57,11 @@ class AvatarCamera
 {
 public:
 
+	enum Mode {
+		MODE_THIRD_PERSON = 1,
+		MODE_FIRST_PERSON = 2
+	};
+	
 	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager);
 	virtual ~AvatarCamera();
 
@@ -96,14 +101,16 @@ public:
 	/*
 	 * Returns the current camera orientation in the world
 	 */
-	virtual Ogre::Quaternion getOrienation(bool onlyHorizontal = true) const {
-		if (onlyHorizontal) {
-			return mAvatarCameraRootNode->getWorldOrientation();
+	virtual Ogre::Quaternion getOrientaion(bool onlyHorizontal = true) const {
+		if (!onlyHorizontal) {
+			return mAvatarCameraNode->getWorldOrientation();
 		} else {
 			return mAvatarCameraPitchNode->getWorldOrientation();
 		}
 	}
 	
+	
+	void setMode(Mode mode);
 	
 	/*
 	 * sets the node to which the camera is attached
@@ -140,10 +147,17 @@ public:
 	 * @return true if the picking was successful
 	 */
 	bool pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector);
+	
+	void attach(Ogre::SceneNode* toNode);
+	
 
 	
 protected:
 
+	Mode mMode;
+	
+	bool mIsAttached;
+	
 	/*
 	 * creates all nodes needed and the camera 
 	 */

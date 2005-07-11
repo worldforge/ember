@@ -30,8 +30,9 @@
 #include "OgreStringConverter.h"
 #include "Avatar.h"
 #include "EmberOgre.h"
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 
-#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include "input/Input.h"
 
@@ -63,6 +64,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mKeyCodeForBackwardsMovement = SDLK_s;
 	mKeyCodeForLeftMovement = SDLK_a;
 	mKeyCodeForRightMovement = SDLK_d;
+	mFreeFlyingCameraNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
 }
 AvatarController::~AvatarController()
@@ -86,10 +88,20 @@ void AvatarController::setAvatar(Avatar* avatar)
 
 
 
+void AvatarController::detachCamera() 
+{
+	mIsAttached = false;
+	mAvatarCamera->attach(mFreeFlyingCameraNode);
+	//mAvatarCamera->setMode(AvatarCamera::MODE_FIRST_PERSON);
+}
 
 
-
-
+void AvatarController::attachCamera() 
+{
+	mIsAttached = true;
+	mAvatarCamera->attach(mAvatar->getAvatarSceneNode());
+	//mAvatarCamera->setMode(AvatarCamera::MODE_FIRST_PERSON);
+}
 
 
 
@@ -97,6 +109,35 @@ void AvatarController::setAvatar(Avatar* avatar)
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 {
 
+// 	EmberPagingSceneManager* mScnMgr = static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
+// 	if (mGUIManager->getInput()->isKeyDown(SDLK_F4)) {
+// /*		Real change;
+// 		mScnMgr->getOption( "MaxPixelError", &change );
+// 		change -= 0.5f;
+// 		mScnMgr->setOption( "MaxPixelError", &change ); */
+// 		--Ogre::PagingLandScapeOptions::getSingleton().maxPixelError;
+// 		Ogre::PagingLandScapeOptions::getSingleton().calculateCFactor();
+// 		mScnMgr->WorldDimensionChange();
+// 	}
+// 	if (mGUIManager->getInput()->isKeyDown(SDLK_F5)) {
+// /*		Real change;
+// 		mScnMgr->getOption( "MaxPixelError", &change );
+// 		change += 0.5f;
+// 		mScnMgr->setOption( "MaxPixelError", &change ); */
+// 		++Ogre::PagingLandScapeOptions::getSingleton().maxPixelError; 
+// 		Ogre::PagingLandScapeOptions::getSingleton().calculateCFactor();
+// 		mScnMgr->WorldDimensionChange();
+// 	}
+// 	
+
+	
+	if (mGUIManager->getInput()->isKeyDown(SDLK_F6)) {
+		if (mIsAttached) {
+			detachCamera();
+		} else {
+			attachCamera();
+		}
+	}
 	//getAvatarCamera()->yaw(Ogre::Degree(1.0f));
 	movementForFrame.movementDirection = Ogre::Vector3::ZERO;
 	movementForFrame.isRunning = false;
@@ -107,7 +148,17 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 	}	
 	movementForFrame.timeSlice = event.timeSinceLastFrame;
 	
-	mAvatar->updateFrame(movementForFrame);
+	if (mIsAttached) {
+		mAvatar->updateFrame(movementForFrame);
+	} else {
+		Ogre::Real scaler = 1;
+		if (movementForFrame.isRunning) {
+			scaler = 50;
+		}
+		Ogre::Vector3 correctDirection(movementForFrame.movementDirection.z, movementForFrame.movementDirection.y, -movementForFrame.movementDirection.x);
+		mFreeFlyingCameraNode->translate(mAvatarCamera->getOrientaion(false) * (correctDirection * movementForFrame.timeSlice * scaler));
+
+	}
 	
 
 	return true;
@@ -147,18 +198,18 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, const Input* 
 			isMovement = true;
 		}
 
-/*		// up down
-		if(mInputManager->isKeyDown(KC_PGDOWN))
+		// up down
+		if(input->isKeyDown(SDLK_PAGEUP))
 		{
 			movement.y = -1;
 			isMovement = true;
 		}
-		else if(mInputManager->isKeyDown(KC_PGUP))
+		else if(input->isKeyDown(SDLK_PAGEDOWN))
 		{
 			movement.y = 1;
 			isMovement = true;
 		}
-*/		
+		
 		if(isMovement)
 		{
 			movementForFrame.movementDirection = movement;
