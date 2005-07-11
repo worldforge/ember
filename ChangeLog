@@ -1,5 +1,27 @@
 2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/WorldEmberEntity.cpp: prepare all Mercator::Segments when they are recieved but do not load them until they are requested
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera*, src/components/ogre/AvatarController.*:
+		* added a free camera mode (switch by pressing F6) and some initial structures for allowing the camera to be attached to any entity
+		* make the mouse picking work with the terrain in the paging scene manager
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityFactory.*
+		* always use EmberOgre for getting the scenemanager
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*src/components/ogre/EmberEntity.cpp
+		* fixed includes
+	*src/components/ogre/EmberEntity.h
+		* make the queryflags not collide with the ones in the paging landscape manager
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.*:
 		* use EmberPagingSceneManager
 		* initialize some member to 0

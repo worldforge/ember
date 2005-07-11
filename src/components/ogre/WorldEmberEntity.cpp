@@ -40,7 +40,7 @@
 #include "Avatar.h"
 #include "AvatarCamera.h"
 
-#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include <Mercator/Area.h>
 
 namespace EmberOgre {
@@ -71,7 +71,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	
 	//mOgreNode = mSceneManager->getRootSceneNode();
 	mFoliage = new Foliage(EmberOgre::getSingleton().getSceneManager());
-	mTerrainGenerator->prepareAllSegments(true);
+	mTerrainGenerator->prepareAllSegments();
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	
 
