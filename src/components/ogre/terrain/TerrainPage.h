@@ -62,7 +62,7 @@ This is a bridge class between one Ogre::TerrainPage instance and one or many Me
 */
 class TerrainPage{
 public:
-    TerrainPage(TerrainPosition& position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator);
+    TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator);
 
     ~TerrainPage();
 	
@@ -112,12 +112,7 @@ public:
 	 */
 	const TerrainPosition& getWFPosition() const;
 	
-	/**
-	 *    The position of the page in ogre space
-	 * @return 
-	 */
-	const Ogre::Vector3 getOgrePosition() const;
-	
+
 	/**
 	 *    The material used for the page
 	 * @return 
@@ -138,6 +133,8 @@ public:
 	void updateShaderTexture(TerrainShader* shader);
 	
 	void populateSurfaces();
+	
+	int getPageSize() const ;
 	
 	
 private:
@@ -230,7 +227,7 @@ private:
 	 */
 	Ogre::TexturePtr createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
 	
-	inline const Ogre::TerrainOptions& getTerrainOptions() const;
+// 	inline const Ogre::TerrainOptions& getTerrainOptions() const;
 	
 	/**
 	 * Prints the supplied image (as a dataChunk) to a image file.

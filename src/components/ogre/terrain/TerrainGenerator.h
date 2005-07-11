@@ -40,20 +40,8 @@
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 
-#include "EmberSceneManager/include/OgreTerrainRenderable.h"
-
-/*
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/Factory.h>
 
 
-#include <Eris/Connection.h>
-
-#include <Atlas/Objects/Entity/GameEntity.h>
-*/
-// class GroundCover;
 namespace Ogre
 {
 	class TerrainOptions;
@@ -62,7 +50,7 @@ namespace Ogre
 namespace EmberOgre {
 	
 class TerrainShader;
-class EmberTerrainPageSource;
+
 class TerrainPage;
 
 
@@ -78,6 +66,20 @@ class TerrainGenerator :  public Ogre::FrameListener
 {
 public:
 
+	/**
+	 * STL map to store sparse array of TerrainPage pointers.
+	 * 
+	 */ 
+	typedef std::map<int, TerrainPage *> TerrainPagecolumn;
+     
+			   
+	
+	/**
+	* STL map to store sparse array of TerrainPage pointer columns.
+	*/
+	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
+	
+	
 	TerrainGenerator();
 	virtual ~TerrainGenerator();
 
@@ -91,9 +93,8 @@ public:
 	/**
 	 * Prepares all segments aquired from Mercator. Note that this can be very,
 	 * very expensive if there's a lot of terrain defined.
-	 * If true is supplied the segments will also be pushed onto the terrain
 	 */
-	void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain);
+	void TerrainGenerator::prepareAllSegments();
 	
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
@@ -102,9 +103,9 @@ public:
 	 * Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
 	 */
-	bool isValidTerrainAt(TerrainPosition& atPosition);
+	bool isValidTerrainAt(const TerrainPosition& pos);
 	
-	const Ogre::TerrainOptions& getTerrainOptions() const;
+	//const Ogre::TerrainOptions& getTerrainOptions() const;
 
 	const Mercator::Terrain& getTerrain() const;
 	
@@ -118,10 +119,28 @@ public:
 	 */
 	int getSegmentSize() const;
 	
+	
+	/**
+	 *    Adds a new Mercator::Area to the terrain.
+	 * @param area 
+	 */
 	void addArea(Mercator::Area* area);
+	
+//	TerrainPage* getTerrainPage(uint x, uint z);
+	
+	/**
+	 *    Returns a TerrainPage. If there is no yet existing, a new one is created.
+	 * @param ogrePosition 
+	 * @return 
+	 */
+	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition);
+	
 
 // 	GroundCover* mGround;
 // 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
+	
+	int getPageSize() const;
+
 
 protected:
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
@@ -135,6 +154,7 @@ protected:
 	typedef std::map<std::string, TerrainPage*> PageStore;
 	PageStore mPages;
 	
+	TerrainPagestore mTerrainPages;
 	
 	TerrainShader* mGrassShader;
 	typedef std::map<std::string, Ogre::Material*> MaterialStore;
@@ -157,10 +177,15 @@ protected:
 	
 	void loadTerrainOptions();
 	
-	Ogre::TerrainOptions mOptions;
+	//Ogre::TerrainOptions mOptions;
 	
 	
 
+	/**
+	 *   Creates a new TerrainPage and puts it in mTerrainPages
+	 * @param pos 
+	 */
+	TerrainPage* createPage(const TerrainPosition& pos);
 
 	
 	/**
@@ -183,7 +208,7 @@ protected:
 	
 	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
-	EmberTerrainPageSource* mTerrainPageSource;
+	//EmberTerrainPageSource* mTerrainPageSource;
 };
 }
 

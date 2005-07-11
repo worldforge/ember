@@ -28,9 +28,9 @@
 #include <OgreRenderSystemCapabilities.h>
 //#include "EmberTerrainRenderable.h"
 #include "TerrainShader.h"
-#include "EmberSceneManager/include/EmberTerrainPageSource.h"
-#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
-#include "EmberSceneManager/include/OgreTerrainRenderable.h"
+//#include "EmberSceneManager/include/EmberTerrainPageSource.h"
+//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "EmberSceneManager/include/OgreTerrainRenderable.h"
 
 #include "EmberOgre.h"
 
@@ -55,7 +55,7 @@
 #include <OgreHardwarePixelBuffer.h>
 namespace EmberOgre {
 
-TerrainPage::TerrainPage(TerrainPosition& position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
+TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mAlphaMapScale(2), mFoliageArea(0)
 {
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
@@ -79,12 +79,20 @@ TerrainPage::~TerrainPage()
 Mercator::Segment* TerrainPage::getSegment(int x, int y) const
 {
 	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
-	return mGenerator->getTerrain().getSegment((int)((mPosition.x() * segmentsPerAxis) + x), (int)((mPosition.y() * segmentsPerAxis) + y));
+	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
+	int segmentOffset = segmentsPerAxis / 2;
+	return mGenerator->getTerrain().getSegment((int)((mPosition.x() * segmentsPerAxis) + x) - segmentOffset, (int)((mPosition.y() * segmentsPerAxis) + y) - segmentOffset);
 }
+
+int TerrainPage::getPageSize() const 
+{
+	return mGenerator->getPageSize();
+}
+		
 
 int TerrainPage::getNumberOfSegmentsPerAxis() const
 {
-	return (getTerrainOptions().pageSize -1) / 64;
+	return (getPageSize() -1) / 64;
 }
 	
 float TerrainPage::getMaxHeight()
@@ -113,7 +121,7 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 		
 	//create a name for out material
-	EmberTerrainSceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
+	Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
 	materialNameSS << "_" << mPosition.x() << "_" << mPosition.y();
@@ -129,8 +137,8 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 		(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") || Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0"))
 	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
-		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
-//		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
+//		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
+		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	} else {
 	//and as a fallback for older gfx cards we'll supply a technique which doesn't
 		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
@@ -138,9 +146,9 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 // 	generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	
 	//and if the user so wants, we'll add some debug materials
-	if (getTerrainOptions().debuglod) {
-		generateTerrainTechniqueDebug();
-	}
+// 	if (getTerrainOptions().debuglod) {
+// 		generateTerrainTechniqueDebug();
+// 	}
 
 		
 	mMaterial->load();
@@ -149,28 +157,19 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 }
 	
-inline const Ogre::TerrainOptions& TerrainPage::getTerrainOptions() const
-{
-	return mGenerator->getTerrainOptions();
-}
+// inline const Ogre::TerrainOptions& TerrainPage::getTerrainOptions() const
+// {
+// 	return mGenerator->getTerrainOptions();
+// }
 
 long TerrainPage::getVerticeCount() const
 {
-	return (getTerrainOptions().pageSize) *(getTerrainOptions().pageSize);
+	return (getPageSize()) *(getPageSize());
 }
 
 const TerrainPosition& TerrainPage::getWFPosition() const
 {
 	return mPosition;
-}
-
-const Ogre::Vector3 TerrainPage::getOgrePosition() const
-{
-	Ogre::Vector3 vector = Atlas2Ogre(mPosition);
-	//we have to do this in order to align the pages correctly
-	vector.z = vector.z - 1;
-	return vector;
-
 }
 
 
@@ -183,20 +182,30 @@ Ogre::MaterialPtr TerrainPage::getMaterial() const
 
 void TerrainPage::createHeightData(Ogre::Real* heightData)
 {
-//TODO: make this work with complex pages
-		Ogre::Vector3 vector = getOgrePosition();
-		long xStart = (long)vector.x * (getTerrainOptions().pageSize - 1);
-		long zStart = (long)vector.z * (getTerrainOptions().pageSize - 1);
+	//since Ogre uses a different coord system than WF, we have to do some conversions here
+	TerrainPosition origPosition(mPosition);
+	//start in one of the corners...
+	origPosition[0] = (origPosition[0] * (getPageSize() - 1)) - (getPageSize() / 2);
+	origPosition[1] = (origPosition[1] * (getPageSize() - 1)) + (getPageSize() / 2);
+	 
+	TerrainPosition position(origPosition);
+	
 		
-		for (int i = 0; i < getTerrainOptions().pageSize; ++i) {
-			for (int j = 0; j < getTerrainOptions().pageSize; ++j) {
-				Ogre::Vector3 _pos(xStart + j, 0, zStart + i);
-				TerrainPosition pos = Ogre2Atlas_TerrainPosition(_pos);
-				Ogre::Real height = mGenerator->getHeight(pos);
-				*(heightData++) = height / 100.0;
+		for (int i = 0; i < getPageSize(); ++i) {
+			position = origPosition;
+			position[1] = position[1] - i;
+			//position[1] = position[1] + getPageSize();
+			for (int j = 0; j < getPageSize(); ++j) {
+				position[0] = position[0] + 1;
+				Ogre::Real height = mGenerator->getHeight(position);
+				*(heightData++) = height;
 			}
 		}
 
+		
+		
+
+		
 	
 }
 
@@ -303,7 +312,7 @@ void TerrainPage::printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const
 
 inline int  EmberOgre::TerrainPage::getAlphaTextureSize( ) const
 {
-	return (getTerrainOptions().pageSize - 1);
+	return (getPageSize() - 1);
 
 }
 
@@ -408,13 +417,13 @@ void EmberOgre::TerrainPage::createFoliage(TerrainShader* grassShader)
 	
 	//for each 1 m^2, how big chance is there of grass? [0,1.0]
 	Ogre::Real grassChanceThreshold = 1 / grassSpacing; 
-	TerrainPosition worldUnitsStartOfPage((getTerrainOptions().pageSize - 1) * mPosition.x(), (getTerrainOptions().pageSize - 1) * mPosition.y());
+	TerrainPosition worldUnitsStartOfPage(((getPageSize() - 1) * mPosition.x()) - (getPageSize() - 1), ((getPageSize() - 1) * mPosition.y())  - (getPageSize() - 1));
 	
 	//for now, just check with the grass shader
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		Mercator::Segment* segment = I->segment;
 		Mercator::Surface* surface = grassShader->getSurfaceForSegment(segment);
-		if (!surface) {
+		if (!surface || !surface->isValid()) {
 			//we could not find any grass surface
 			std::stringstream ss;
 			ss << "Could not find any grass for area " << mPosition.x() << ":" << mPosition.y()  << ".";
@@ -567,6 +576,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 	Ogre::TextureUnitState * splatTextureUnitState = pass->createTextureUnitState();
 	splatTextureUnitState->setTextureName("atlassplat.png");
 	splatTextureUnitState->setTextureCoordSet(1);
+	splatTextureUnitState->setTextureScale(0.01, 0.01);
     splatTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
 	
@@ -654,7 +664,8 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	{
 	    textureUnitState->setTextureName((*shadersIterator)->getTextureName());
 //	    textureUnitState->setTextureName("splat3d.dds");
-	    textureUnitState->setTextureCoordSet(1);
+		//textureUnitState->setTextureScale(0.01, 0.01);
+		textureUnitState->setTextureCoordSet(0);
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
 
@@ -732,8 +743,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		if (pass->getNumTextureUnitStates()  < 4) {
 			Ogre::TextureUnitState * splatTextureUnitState = pass->createTextureUnitState();
 			splatTextureUnitState->setTextureName((*shadersIterator)->getTextureName());
-			splatTextureUnitState->setTextureCoordSet(1);
-    		splatTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+			splatTextureUnitState->setTextureCoordSet(0);
+			//splatTextureUnitState->setTextureScale(0.01, 0.01);
+			splatTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		}
 		
 		
@@ -779,7 +791,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
  
 void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
 {
-	for (int i = 1; i < getTerrainOptions().maxGeoMipMapLevel; ++i) {
+/*	for (int i = 1; i < getTerrainOptions().maxGeoMipMapLevel; ++i) {
 		Ogre::Technique *tech = mMaterial->createTechnique();
 		tech->setLodIndex(i);
 		
@@ -789,7 +801,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
 		textureUnitState->setTextureName(ss.str());
 		textureUnitState->setTextureCoordSet(0);
 	
-	}
+	}*/
 }
 
 void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* technique)
@@ -827,12 +839,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 //	pass->setSpecular(1,1,1,1);
 //granite layer
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-	{
-/*		const Mercator::Shader* mercShader = &(surface->m_shader);
-		TerrainShader* shader = mShaderMap[mercShader];*/
-	    textureUnitState->setTextureName((*shadersIterator)->getTextureName());
-	}
-    textureUnitState->setTextureCoordSet(1);
+	textureUnitState->setTextureScale(0.01, 0.01);
+	textureUnitState->setTextureName((*shadersIterator)->getTextureName());
+    textureUnitState->setTextureCoordSet(0);
 	
 	
 	

@@ -24,11 +24,18 @@
 #include "EmberOgrePrerequisites.h"
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
-//#include "EmberTerrainRenderable.h"
 #include "TerrainShader.h"
-#include "EmberSceneManager/include/EmberTerrainPageSource.h"
-#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "environment/Foliage.h"
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeSceneManager.h"
+#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
+#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTextureManager.h"
+#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOptions.h"
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h"
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h"
+#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeCamera.h"
+
+
 
 
 //#include "environment/GroundCover.h"
@@ -39,6 +46,7 @@
 #include "model/ModelDefinition.h"
 #include "model/ModelDefinitionManager.h"
 
+#include "AvatarCamera.h"
 
 using namespace Ogre;
 namespace EmberOgre {
@@ -73,12 +81,12 @@ TerrainGenerator::TerrainGenerator()
 //    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
    
 	
-	mTerrainPageSource = new EmberTerrainPageSource(this);
-    EmberOgre::getSingleton().getSceneManager()->registerPageSource(EmberTerrainPageSource::Name, mTerrainPageSource);
+//	mTerrainPageSource = new EmberTerrainPageSource(this);
+//    EmberOgre::getSingleton().getSceneManager()->registerPageSource(EmberTerrainPageSource::Name, mTerrainPageSource);
 
 
 
-    EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
+  //  EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 }
@@ -86,7 +94,7 @@ TerrainGenerator::TerrainGenerator()
 TerrainGenerator::~TerrainGenerator()
 {
 	delete mTerrain;
-	delete mTerrainPageSource;
+	//delete mTerrainPageSource;
 	
 }
 
@@ -95,53 +103,22 @@ const Mercator::Terrain& TerrainGenerator::getTerrain() const
 	return *mTerrain;
 }
 
-const Ogre::TerrainOptions& TerrainGenerator::getTerrainOptions() const
-{
-	return mOptions;
-}
 
 void TerrainGenerator::loadTerrainOptions()
 {
-// 	Ogre::TerrainOptions& options =  *(new Ogre::TerrainOptions());
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
 	
-	if (configSrv->itemExists("terrain", "detailtile"))
-		mOptions.detailTile = (int)configSrv->getValue("terrain", "detailtile");
-	
-	if (configSrv->itemExists("terrain", "maxmipmaplevel"))
-		mOptions.maxGeoMipMapLevel = (int)configSrv->getValue("terrain", "maxmipmaplevel");
-	
-	if (configSrv->itemExists("terrain", "pagesize"))
-		mOptions.pageSize = (int)configSrv->getValue("terrain", "pagesize");
-	
- 
-	
-	
-	if (configSrv->itemExists("terrain", "tilesize"))
-		mOptions.tileSize = (int)configSrv->getValue("terrain", "tilesize");
-	
-	if (configSrv->itemExists("terrain", "maxpixelerror"))
-		mOptions.maxPixelError = (int)configSrv->getValue("terrain", "maxpixelerror");
-	
-	if (configSrv->itemExists("terrain", "vertexcolours"))
-		mOptions.coloured = (bool)configSrv->getValue("terrain", "vertexcolours");
-	
-	if (configSrv->itemExists("terrain", "vertexnormals"))
-		mOptions.lit = (bool)configSrv->getValue("terrain", "vertexnormals");
-	
-	if (configSrv->itemExists("terrain", "usetristrips"))
-		mOptions.useTriStrips = (bool)configSrv->getValue("terrain", "usetristrips");
-	
-	if (configSrv->itemExists("terrain", "vertexprogrammorph"))
-		mOptions.lodMorph = (bool)configSrv->getValue("terrain", "vertexprogrammorph");
+	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 
-	if (configSrv->itemExists("terrain", "lodmorphstart"))
-		mOptions.lit = (bool)configSrv->getValue("terrain", "lodmorphstart");
+
+	sceneManager->setOption("GroupName", "General");
+	Ogre::PagingLandScapeOptions::getSingleton().groupName = "General";
 	
-	if (configSrv->itemExists("terrain", "usedebuglodcolors"))
-		mOptions.debuglod = (bool)configSrv->getValue("terrain", "usedebuglodcolors");
+	Ogre::PagingLandScapeOptions::getSingleton().loadMapOptions("terrain.cfg");	
 	
-	mOptions.scale.y = 100;
+	
+	Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";
+	Ogre::PagingLandScapeOptions::getSingleton().setTextureFormat("EmberTexture");
 }
 
 TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Mercator::Shader* mercatorShader)
@@ -199,6 +176,12 @@ void TerrainGenerator::markShaderForUpdate(TerrainShader* shader)
 
 bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
 {
+	PagingLandScapeCamera * cam = static_cast<PagingLandScapeCamera *>(EmberOgre::getSingleton().getMainCamera()->getCamera());
+	
+	
+/*	std::stringstream ss;
+	ss << "X: " << cam->mCurrentCameraPageX << " Z: " << cam->mCurrentCameraPageZ;
+	GUIManager::getSingleton().setDebugText(ss.str());*/
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
 		for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
@@ -248,33 +231,22 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 	
 }
 
-int TerrainGenerator::getSegmentSize() const
+int TerrainGenerator::getPageSize() const
 {
-	return mOptions.pageSize - 1;
+	return Ogre::PagingLandScapeOptions::getSingleton().PageSize;
 }
 
-void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
+int TerrainGenerator::getSegmentSize() const
+{
+	return getPageSize() - 1;
+}
+
+void TerrainGenerator::prepareAllSegments()
 {
 	
-// 	mTerrain->getSegment(0, 0)->populate();
-// 	TerrainPosition pos(0,0);
-// 	generateTerrainMaterials(mTerrain->getSegment(0, 0), pos);
-// 	if (alsoPushOntoTerrain) {
-// 		mTerrainPageSource->pushPage(pos);
-// 	}
-// 	mTerrainPageSource->setHasTerrain(true);
-// 	if (alsoPushOntoTerrain) {
-// 		mTerrainPageSource->resizeTerrain();
-// 	}
-// 
-// 	return;	
-	bool showFoliage = false;
-	
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
-		showFoliage = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
-	}
 	
 	
+	//initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	int i,j;
 	for (i = mXmin; i < mXmax; ++i) {
 		for (j = mYmin; j < mYmax; ++j) {
@@ -286,44 +258,65 @@ void TerrainGenerator::prepareAllSegments(bool alsoPushOntoTerrain)
 			}
 		}
 	}
+	
+// 	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
+// 	int xNumberOfPages = (int)ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
+// 	int yNumberOfPages = (int)ceil((mYmax - mYmin) / (double)mercatorSegmentsPerPage);
+// 	int xStart = (int)ceil(mXmin / (double)(mercatorSegmentsPerPage));
+// 	int yStart = (int)ceil(mYmin / (double)(mercatorSegmentsPerPage));
+// 	for (i = 0; i < xNumberOfPages; ++i) {
+// 		for (j = 0; j < yNumberOfPages; ++j) {
+// 			TerrainPosition pos(xStart + i, yStart + j);
+// 			std::stringstream ss;
+// 			ss << pos;
+// 			TerrainPage* page = new TerrainPage(pos, mShaderMap, this);
+// 			mPages[ss.str()] = page;
+// 			mTerrainPages[i][j] = page;
+// 			for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
+// 				page->addShader(*I);
+// 			}
+// 			page->generateTerrainMaterials();
+// 			if (showFoliage && mGrassShader) {
+// 				page->createFoliage(mGrassShader);
+// 			}
+// 			if (alsoPushOntoTerrain) {
+// //				mTerrainPageSource->addPage(page);
+// 			}
+// 		}
+// 	}
+	
+	
+	Ogre::PagingLandScapeSceneManager * sceneManager = Ogre::PagingLandScapeSceneManager::getSingletonPtr();
+	
+	double worldSizeX = getMax().x() - getMin().x();
+	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
+	int pageOffsetX = totalNumberOfPagesX / 2;
+	double worldSizeY = getMax().y() - getMin().y();
+	int totalNumberOfPagesY = static_cast<int>( worldSizeY / (getPageSize() - 1));
+	int pageOffsetY = totalNumberOfPagesY / 2;
+	
+	
+	Ogre::PagingLandScapeOptions::getSingleton().world_height = totalNumberOfPagesY;
+	Ogre::PagingLandScapeOptions::getSingleton().world_width = totalNumberOfPagesX;
+	
+	//update the options
+	Ogre::PagingLandScapeOptions::getSingleton().NumPages = static_cast<Ogre::uint> (static_cast <Ogre::Real> (Ogre::PagingLandScapeOptions::getSingleton().world_height * Ogre::PagingLandScapeOptions::getSingleton().world_width));
+	Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledZ = Ogre::PagingLandScapeOptions::getSingleton().world_height * (Ogre::PagingLandScapeOptions::getSingleton().PageSize - 1) * 0.5f;
+	Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledX = Ogre::PagingLandScapeOptions::getSingleton().world_width  * (Ogre::PagingLandScapeOptions::getSingleton().PageSize - 1) * 0.5f;
 
-	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
-	int xNumberOfPages = (int)ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
-	int yNumberOfPages = (int)ceil((mYmax - mYmin) / (double)mercatorSegmentsPerPage);
-	int xStart = (int)ceil(mXmin / (double)(mercatorSegmentsPerPage));
-	int yStart = (int)ceil(mYmin / (double)(mercatorSegmentsPerPage));
-	for (i = 0; i < xNumberOfPages; ++i) {
-		for (j = 0; j < yNumberOfPages; ++j) {
-			TerrainPosition pos(xStart + i, yStart + j);
-			std::stringstream ss;
-			ss << pos;
-			TerrainPage* page = new TerrainPage(pos, mShaderMap, this);
-			mPages[ss.str()] = page;
-			for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
-				page->addShader(*I);
-			}
-			page->generateTerrainMaterials();
-			if (showFoliage && mGrassShader) {
-				page->createFoliage(mGrassShader);
-			}
-			if (alsoPushOntoTerrain) {
-				mTerrainPageSource->addPage(page);
-			}
-		}
-	}
+	Ogre::PagingLandScapeOptions::getSingleton().maxScaledZ = Ogre::PagingLandScapeOptions::getSingleton().scale.z * Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledZ;
+	Ogre::PagingLandScapeOptions::getSingleton().maxScaledX = Ogre::PagingLandScapeOptions::getSingleton().scale.x * Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledX;
+
+		
+	sceneManager->loadScene();
 	
-//	generateUnderVegetation(-2, -2, 4);
-	
-	mTerrainPageSource->setHasTerrain(true);
-	if (alsoPushOntoTerrain) {
-		mTerrainPageSource->resizeTerrain();
-	}
+			sceneManager->resize(Ogre::AxisAlignedBox(getMin().x(), getMin().y(), -100, getMax().x(), getMax().y(), 100) ,16);
 	
 }
 
 
 
-bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
+bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
 {
 	int x = (int)position.x();
 	int y = (int)position.y();
@@ -334,7 +327,68 @@ bool TerrainGenerator::isValidTerrainAt(TerrainPosition& position)
 
 
 
+TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogrePosition)
+{
+	double worldSizeX = getMax().x() - getMin().x();
+	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
+	int pageOffsetX = totalNumberOfPagesX / 2;
+	double worldSizeY = getMax().y() - getMin().y();
+	int totalNumberOfPagesY = static_cast<int>( worldSizeY / (getPageSize() - 1));
+	int pageOffsetY = totalNumberOfPagesY / 2;
+	
+	Ogre::Vector2 adjustedOgrePos(ogrePosition.x - pageOffsetX, ogrePosition.y - pageOffsetY);
+	
+	TerrainPosition pos;
+	pos = Ogre2Atlas(adjustedOgrePos);
+	
+	int x = static_cast<int>(pos.x());
+	int y = static_cast<int>(pos.y());
+	
+	if (mTerrainPages[x][y] == 0) {
+	
+		//TerrainPosition adjustedPos(pos.x() - pageOffsetX, pos.y() - pageOffsetY);
 
+		mTerrainPages[x][y] = createPage(pos);
+		assert(mTerrainPages[x][y]);
+	}
+	return mTerrainPages[x][y];
+}
+
+TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
+{
+	
+	bool showFoliage = false;
+	
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
+		showFoliage = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
+	}	
+	
+	
+	//since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
+	
+	
+	TerrainPage* page = new TerrainPage(TerrainPosition(pos), mShaderMap, this);
+	//mPages[ss.str()] = page;
+	
+	std::stringstream ss;
+	ss << pos;
+	mPages[ss.str()] = page;
+	
+	//add the base shaders, this should probably be refactored into a server side thing in the future
+	for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
+		page->addShader(*I);
+	}
+	
+	page->generateTerrainMaterials();
+	if (showFoliage && mGrassShader) {
+		page->createFoliage(mGrassShader);
+	}
+
+		
+	return page;
+	
+	
+}
 
 
 
@@ -360,19 +414,19 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 {
 
    if (!we->hasAttr("terrain")) {
-        S_LOG_FAILURE( "View entity has no terrain" )
-        S_LOG_FAILURE( "View entity id " << we->getId() )
+	   S_LOG_FAILURE( "View entity has no terrain" );
+	   S_LOG_FAILURE( "View entity id " << we->getId() );
         return false;
     }
     const Atlas::Message::Element &terrain = we->valueOfAttr("terrain");
     if (!terrain.isMap()) {
-        S_LOG_FAILURE( "Terrain is not a map" )
+		S_LOG_FAILURE( "Terrain is not a map" );
     }
     const Atlas::Message::MapType & tmap = terrain.asMap();
     Atlas::Message::MapType::const_iterator I = tmap.find("points");
     int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
     if (I == tmap.end()) {
-        S_LOG_FAILURE( "No terrain points" )
+		S_LOG_FAILURE( "No terrain points" );
     }
 	if (I->second.isList()) {
         // Legacy support for old list format.
@@ -380,12 +434,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
         Atlas::Message::ListType::const_iterator J = plist.begin();
         for(; J != plist.end(); ++J) {
             if (!J->isList()) {
-                S_LOG_INFO( "Non list in points" )
+				S_LOG_INFO( "Non list in points" );
                 continue;
             }
             const Atlas::Message::ListType & point = J->asList();
             if (point.size() != 3) {
-                S_LOG_INFO( "point without 3 nums" )
+				S_LOG_INFO( "point without 3 nums" );
                 continue;
             }
             int x = (int)point[0].asNum();
@@ -403,12 +457,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
         Atlas::Message::MapType::const_iterator J = plist.begin();
         for(; J != plist.end(); ++J) {
             if (!J->second.isList()) {
-                S_LOG_INFO( "Non list in points" )
+				S_LOG_INFO( "Non list in points" );
                 continue;
             }
             const Atlas::Message::ListType & point = J->second.asList();
             if (point.size() != 3) {
-                S_LOG_INFO( "point without 3 nums" )
+				S_LOG_INFO( "point without 3 nums" );
                 continue;
             }
             int x = (int)point[0].asNum();
@@ -416,7 +470,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
             float z = point[2].asNum();
             Mercator::BasePoint bp;
             if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
-                S_LOG_INFO( "Point [" << x << "," << y << " unchanged")
+				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
                 continue;
             }
             xmin = std::min(xmin, x);
@@ -457,7 +511,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
       
 
     } else {
-        S_LOG_FAILURE( "Terrain is the wrong type" )
+		S_LOG_FAILURE( "Terrain is the wrong type" );
         return false;
     }
     mXmin = xmin;
@@ -465,6 +519,11 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
     mYmin = ymin;
     mYmax = ymax;
     mSegments = &mTerrain->getTerrain();
+	
+
+
+	
+	
     return true;
 }
 

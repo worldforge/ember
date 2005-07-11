@@ -1,5 +1,15 @@
 2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainShader.cpp: use only texture coords 0
+	* src/components/ogre/TerrainPage.*
+		* removed references to old scene manager
+		* added a getPageSize() method
+		* various adaptations for the paging scene manager
+	* src/components/ogre/TerrainGenerator.*
+		* adapted it to use the paging scene manager, generating pages on demand instead of all up front
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/WorldEmberEntity.cpp: prepare all Mercator::Segments when they are recieved but do not load them until they are requested
 
 2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>

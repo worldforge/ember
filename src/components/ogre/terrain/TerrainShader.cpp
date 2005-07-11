@@ -51,7 +51,8 @@ void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, Ogre::String splatTe
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
     textureUnitState->setTextureName(mTextureName);
     textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-    textureUnitState->setTextureCoordSet(1);
+	textureUnitState->setTextureCoordSet(0);
+	textureUnitState->setTextureScale(0.01, 0.01);
 	textureUnitState->setColourOperationEx(Ogre::LBX_BLEND_CURRENT_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
 	
 }
@@ -75,7 +76,9 @@ Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
     textureUnitState->setTextureName(mTextureName);
     textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-    textureUnitState->setTextureCoordSet(1);
+    textureUnitState->setTextureCoordSet(0);
+	textureUnitState->setTextureScale(0.01, 0.01);
+
     
     return pass; 
 //	textureUnitState->setColourOperationEx(LBX_BLEND_CURRENT_ALPHA, LBS_TEXTURE, LBS_CURRENT);
