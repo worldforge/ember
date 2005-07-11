@@ -45,7 +45,7 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 namespace EmberOgre {
 
@@ -71,7 +71,7 @@ public:
 	typedef std::set<Ogre::String> StringSet;
 	
 
-	EmberEntityFactory(EmberTerrainSceneManager* sceneManager, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
+	EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
 	virtual ~EmberEntityFactory();
 /*
  * eris 1.3	
@@ -122,8 +122,6 @@ protected:
 
 
 
-	EmberTerrainSceneManager* mSceneManager;
-	//EmberTerrainPageSource* mTerrainSource;
 	TerrainGenerator* mTerrainGenerator;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;

@@ -42,7 +42,6 @@
 
 #include "framework/ConsoleBackend.h"
 #include "TerrainGenerator.h"
-#include "EmberSceneManager/include/EmberTerrainPageSource.h"
 
 
 
@@ -51,9 +50,8 @@
 namespace EmberOgre {
 
 
-EmberEntityFactory::EmberEntityFactory(EmberTerrainSceneManager* sceneManager,TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
-: mSceneManager(sceneManager)
-, mTerrainGenerator(terrainGenerator)
+EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
+: mTerrainGenerator(terrainGenerator)
 , mTypeService(typeService)
 , mWorldEntity(0)
 {
@@ -94,7 +92,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Game
 		fprintf(stderr, "TRACE - CREATE IMMATERIAL ENTITY\n");
 
     	//we don't want this to have any Ogre::Entity
-		emberEntity = new EmberEntity(ge->getId(), type, w, mSceneManager);
+		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
 
     } else if (type->isA(mTerrainType)) {
 
@@ -114,7 +112,7 @@ AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::
 {
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
-	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
+	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id));
 	Model* model = new Model(ge->getId());
 	model->create("settler");
 /*	Model* model = Model::Create("settler.modeldef.xml", );*/
@@ -133,7 +131,7 @@ AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::
 	// attach the node to the entity
 	scaleNode->attachObject(model);
     	
-    return new AvatarEmberEntity(ge->getId(), type, world,mSceneManager, scaleNode, mAvatar);
+    return new AvatarEmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager(), scaleNode, mAvatar);
 	
 }
 
@@ -148,7 +146,7 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::GameEntity &ge, Er
 
 Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
 	assert(!mWorldEntity);
-	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mSceneManager, mTerrainGenerator);
+	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), mTerrainGenerator);
       // Extract base points and send to terrain        
       //TerrainEntity * te = new TerrainEntity(ge,w);
 //	mTerrainGenerator->prepareSegments(-1, -1, 3, true)
@@ -198,7 +196,7 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
-	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode (id));
+	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id));
 	//mScaleNode->setInheritScale(false);
 	//mScaleNode->setScale(Ogre::Vector3(0.01,0.01,0.01));	
 	//scaleNode->showBoundingBox(true);
@@ -223,9 +221,9 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 
 	EmberPhysicalEntity* entity;
 	if (mPersonSet.find(typeName) != mPersonSet.end()) {
-		entity = new PersonEmberEntity(ge->getId(), type,  world, mSceneManager, scaleNode);
+		entity = new PersonEmberEntity(ge->getId(), type,  world, EmberOgre::getSingleton().getSceneManager(), scaleNode);
 	} else {
-		entity = new EmberPhysicalEntity(ge->getId(), type, world, mSceneManager, scaleNode);
+		entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), scaleNode);
 	}
 	return entity;
 	
