@@ -1,3 +1,11 @@
+2005-07-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/environment/GroundCover.*: deleted unused files
+
+2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/JesusEdit.cpp: removed reference to old scene manager
+
 2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* media/materials/scripts/terrain.cfg
