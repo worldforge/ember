@@ -22,6 +22,7 @@
 //
 #include "Input.h"
 #include <OgreCEGUIRenderer.h>
+#include "../EmberOgre.h"
 
 namespace EmberOgre {
 
@@ -271,7 +272,13 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
             case SDL_KEYDOWN:
 			case SDL_KEYUP:
 				keyChanged(event.key);
-            }
+				break;
+			case SDL_QUIT:
+				EmberOgre::getSingleton().EventRequestQuit.emit();
+				break;
+			}
+			
+			
         }
     
 /*	

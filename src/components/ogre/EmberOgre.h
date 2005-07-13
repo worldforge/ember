@@ -24,7 +24,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.48  2005-07-11 00:02:30  erik
+ *      Revision 1.49  2005-07-13 19:34:04  erik
+ *      2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.h: added a new event for when the user wants to close the window
+ *      	* src/components/ogre/input/Input.cpp: emit the close event when detecting a SDL_QUIT event
+ *
+ *      Revision 1.48  2005/07/11 00:02:30  erik
  *      2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*:
@@ -552,6 +558,10 @@ public:
 	SigC::Signal1<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	SigC::Signal1<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
 	SigC::Signal1<void, Jesus*> EventCreatedJesus;
+	/**
+	 * Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
+	 */ 
+	SigC::Signal0<void> EventRequestQuit;
 	
 	/**
 	Emitted before the eris polling is started

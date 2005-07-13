@@ -1,5 +1,11 @@
 2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberOgre.h: added a new event for when the user wants to close the window
+	* src/components/ogre/input/Input.cpp: emit the close event when detecting a SDL_QUIT event
+
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/Makefile.am: removed xerces
 
 2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
