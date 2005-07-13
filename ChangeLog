@@ -1,3 +1,19 @@
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/Jesus.*, src/components/ogre/jesus/Makefile.am, src/components/ogre/jesus/XMLJesusSerializer.*
+		* finished The Great Purge of Dissident Xerces Element in the Source
+	* configure.ac: 
+		* require ogre 1.0.3 and cegui 0.3.0
+		* removed xerces
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/Quit.*, src/components/ogre/widgets/WidgetDefinitions.cpp
+		*added a quit widget
+	* src/components/ogre/GUIManager.cpp
+		* use the quit widget
+		* various fixes for CEGUI 0.3.0
+
 2005-07-12  Erik Hjortsberg  <erik@katastrof.nu>
 
 	*  src/components/ogre/environment/GroundCover.*: deleted unused files

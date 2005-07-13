@@ -23,14 +23,6 @@
 #ifndef EMBEROGREJESUS_H
 #define EMBEROGREJESUS_H
 
-//we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-//this seems to be because both uses their own internal memory handlers
-#include <xercesc/util/XMemory.hpp>
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-// indicate using Xerces-C++ namespace in general
-XERCES_CPP_NAMESPACE_USE
 
 #include "../EmberOgrePrerequisites.h"
 #include <string>
@@ -71,7 +63,9 @@ Classes for handling Carpenter instances and building creation in Ember. These c
 
 */
 class Jesus{
-public:
+	friend class XMLJesusSerializer;
+
+	public:
 
 	enum ClickMasks
 	{
@@ -83,48 +77,7 @@ public:
 
     ~Jesus();
 	
-	/**
-	 *    Loads BlockSpecs from a xml file
-	 * @param filename 
-	 * @return 
-	 */
-	bool loadBlockSpec(const std::string & filename);
-	
-	
-	/**
-	 *    Loads BuildingBlockSpecDefinitions from a xml file.
-	 * @param filename 
-	 * @return 
-	 */
-	bool loadBuildingBlockSpecDefinition(const std::string& filename);
-	
-	
-	/**
-	 *    Loads ModelBlockMappings from a xml file.
-	 * @param filename 
-	 * @return 
-	 */
-	bool loadModelBlockMapping(const std::string& filename);
-	
-	
-	/**
-	 *    Loads and creates an instance of a BluePrint from a xml file.
-	 *    Note that you have to call compile() on the resulting BluePrint to get it to arrange the BuildingBlocks.
-	 *    NOTE: this should perhaps be moved to another class
-	 * @param filename 
-	 * @return 
-	 */
-	Carpenter::BluePrint* loadBlueprint(std::string filename);
-	
-	/**
-	 *    Saves the supplied blueprint to a xml filename
-	 *    NOTE: this should perhaps be moved to another class
-	 * @param blueprint 
-	 * @param filename 
-	 * @return 
-	 */
-	void saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename);
-	void saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename, const std::string& name);
+
 		
 	/**
 	 *    Creates a new Model instance for the supplied block type.
@@ -169,12 +122,6 @@ public:
 	inline const std::map<std::string , Carpenter::BluePrint* > * getAllBluePrints() const {return &mBlueprints;}
 
 protected:
-	/**
-	 *    Utility method to fill the supplied WFMath object (for example a Vector or a Point) with xyz values from the Xerces Node
-	 * @param  
-	 * @param  
-	 */
-	template <typename T> void fillFromElement(xercesc::DOMElement* , T& );
 	
 	/**
 	a map of what Model should represent a certain Carpenter::BuildingBlockSpec

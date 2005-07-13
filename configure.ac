@@ -109,10 +109,7 @@ AC_CHECK_LIB(openal,
 	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
 	)
 
-AC_CHECK_LIB([xerces-c],
-	[main],,
-		AC_MSG_ERROR([Cannot find xerces library. ]), 
-	-lpthread)
+
 
 	
 	
@@ -207,7 +204,7 @@ AC_CHECK_LIB(ILU, iluFlipImage,
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
-PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.2,
+PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.3,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
@@ -217,8 +214,8 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.2,
 	])
 
 # Check for OGRE
-OGRE_VERSION=1.0.1
-PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.1,
+OGRE_VERSION=1.0.3
+PKG_CHECK_MODULES(OGRE, OGRE >= 1.0.3,
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
