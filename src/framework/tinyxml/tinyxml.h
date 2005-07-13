@@ -22,6 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#define TIXML_USE_STL 1
 
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED

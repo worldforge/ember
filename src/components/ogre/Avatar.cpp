@@ -359,7 +359,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 	
 	mAvatarController->createAvatarCameras(EmberEntity->getSceneNode());
 	
-	mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
+	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
 	
 	//HACK!!! DEBUG!!
 	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
@@ -376,7 +376,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 	
 	
 		
-	//mSceneMgr->destroySceneNode(oldAvatar->getName());
+	mSceneMgr->destroySceneNode(oldAvatar->getName());
 
 }
 

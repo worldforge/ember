@@ -16,13 +16,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// //we must include xerces stuff before ogre stuff, because else we'll get errors when compiling in debug mode
-// //this seems to be because both uses their own internal memory handlers
-// #include <xercesc/util/XMemory.hpp>
-// #include <xercesc/dom/DOM.hpp>
-// #include <xercesc/util/XMLString.hpp>
-// #include <xercesc/util/PlatformUtils.hpp>
-
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
 #include "model/Model.h"
