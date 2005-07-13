@@ -1,5 +1,14 @@
 2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/Makefile.am: removed xerces
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/widgets/JesusEdit.cpp
+		* use the new Jesus serializer class
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/jesus/Jesus.*, src/components/ogre/jesus/Makefile.am, src/components/ogre/jesus/XMLJesusSerializer.*
 		* finished The Great Purge of Dissident Xerces Element in the Source
 	* configure.ac: 

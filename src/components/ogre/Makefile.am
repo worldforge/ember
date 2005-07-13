@@ -38,7 +38,7 @@ EMBER_EXT_LIBS = -L/usr/X11R6/lib \
 	/usr/lib/libasound.a \
  	$(STATIC_LIBSTDCPP) \
 	$(STATIC_LIBGCC) \
-	-lGL -lxerces-c \
+	-lGL \
 	-laudio -lc -lm -lgcc_s -lXext -lstdc++ /usr/lib/libltdl.a 
 
 
