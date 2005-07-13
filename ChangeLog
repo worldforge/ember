@@ -1,5 +1,23 @@
 2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/model/ModelDefiniton.h, src/components/ogre/model/XMLModelDefinitionSerializer.*
+		* better clean up of XML parsing data structures
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: added more items
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScaperenderable.cpp:
+		* don't count delta values beyond 7 meters when determining LOD, since such values must either be counted as spurious, or part of a larger cliff face, which would bring many GPUs to their knees even when seen from afar. In the future we might perhaps need to implement a better LOD mechanism, although the consensus these days seems to solve the LOD issue with brute force, i.e. counting no modern GPUs being so much tailored to handling large amounts of vertices that they have no problems handling low LOD levels. We would however want a better path for old cards too.
+		* also don't count heights of 0 when doing LOD, since these are probably from uninitialized Mercator segments
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp: remove the debug model upon connecting
+	* src/components/ogre/AvatarEmberEntity.cpp,  src/components/ogre/PersonEmberEntity.cpp,  src/components/ogre/WorldEmberEntity.cpp: cleanse it from the oh so unclean xerces code
+	* src/framework/tinyxml/tinyxml.h: always use STL
+
+2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.h: added a new event for when the user wants to close the window
 	* src/components/ogre/input/Input.cpp: emit the close event when detecting a SDL_QUIT event
 

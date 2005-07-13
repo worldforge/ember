@@ -44,8 +44,8 @@ void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& st
 
 void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	_XMLDoc = new Ember::TiXmlDocument();
-	bool success = _XMLDoc->LoadFile(stream); //load from data stream
+	Ember::TiXmlDocument _XMLDoc;
+	bool success = _XMLDoc.LoadFile(stream); //load from data stream
 	
 	if (!success) {
 		S_LOG_FAILURE("Failed to load modeldefinition file!");
@@ -55,7 +55,7 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 	Ember::TiXmlElement* elem;
 
 
-	Ember::TiXmlElement* rootElem = _XMLDoc->RootElement();
+	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
 
 	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())

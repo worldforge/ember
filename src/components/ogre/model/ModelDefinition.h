@@ -152,8 +152,6 @@ private:
 		std::list<PartDefinition> Parts;
 	};
 	
-	//void readAnimations(xercesc::DOMElement* animationsNode);
-	//bool createFromXML(std::string path);
 
 	
 	

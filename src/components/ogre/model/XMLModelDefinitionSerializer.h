@@ -45,7 +45,7 @@ public :
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 
 private:
-	Ember::TiXmlDocument* _XMLDoc;
+	//Ember::TiXmlDocument* _XMLDoc;
 	//ModelDefinition* _pModelDef;
 
 	void readModel(ModelDefinitionPtr modelDef, Ember::TiXmlElement* modelNode);
