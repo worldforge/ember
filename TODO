@@ -2,7 +2,6 @@ TODO LIST
 ---------
 
 terrain
-	-implement paging
 	-better use of GPU shaders (both vertex and pixel shaders)
 	-optimize material better
 	
@@ -12,7 +11,7 @@ foliage
 sun
 	-implement time, making the sun move over the sky etc.
 	
-* a map widget, which shows a map of the world
+* a map widget, which shows a map of the world. Perhaps the paging scene manager can help here?
 * add a constant-running key
 * move the input system to something more like the one used in sear, which will allow the user to define the key bindings for different actions
 * add a basepoint editor
@@ -21,7 +20,7 @@ sun
 * show ping
 * add the players position the the debug widget
 * allow the user to close the window though the window manager
-
+* modify ogre so that the window manager icon can be set
 
 
 
