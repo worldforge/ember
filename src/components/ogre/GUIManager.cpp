@@ -101,6 +101,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
+		mSheet->setRiseOnClickEnabled(false);
+		mSheet->activate();
+		//mSheet->captureInput();
+		mSheet->moveToBack();
+
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 			
@@ -126,13 +131,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 GUIManager::~GUIManager()
 {
 	delete mInput;
-	mInput = 0;
 	
 	//can't delete this one since cegui will then throw a segfault
 /*	delete mGuiSystem;
 	mGuiSystem = 0;*/
 	delete mGuiRenderer;
-	mGuiRenderer = 0;
 	//delete mMousePicker;
 	//mMousePicker = 0;
 
@@ -155,6 +158,7 @@ void GUIManager::initialize()
 	
 
 		mConsoleWidget = dynamic_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
+		createWidget("Quit");
 		createWidget("IngameChatWidget");
 		createWidget("DebugWidget");
 		createWidget("Performance");
@@ -187,18 +191,18 @@ Widget* GUIManager::createWidget(const std::string& name)
 	
 		widget = WidgetLoader::createWidget(name);
 		if (widget == 0) {
-			S_LOG_FAILURE( "Could not find widget with name " << name )
+			S_LOG_FAILURE( "Could not find widget with name " << name );
 			return 0;
 		}
 		widget->init(this);
 		widget->buildWidget();
 		addWidget(widget);
-		S_LOG_INFO(  "Successfully loaded widget " << name )
+		S_LOG_INFO(  "Successfully loaded widget " << name );
 	} catch (std::exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name )
+		S_LOG_FAILURE(  "Error when loading widget " << name );
 		return 0;
 	} catch (CEGUI::Exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name )
+		S_LOG_FAILURE(  "Error when loading widget " << name );
 		return 0;
 	}
 	return widget;
@@ -335,6 +339,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
+	
 	const CEGUI::MouseEventArgs& mouseArgs = dynamic_cast<const CEGUI::MouseEventArgs&>(args);
 	fprintf(stderr, "CEGUI - MAIN SHEET CAPTURING INPUT\n");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
@@ -342,8 +347,8 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 		aWindow->releaseInput();
 		aWindow->deactivate();
 	}
-	mSheet->activate();
-	mSheet->captureInput();
+	//mSheet->activate();
+	//mSheet->captureInput();
 
 	if (getMousePicker()) {
 		CEGUI::Point position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();

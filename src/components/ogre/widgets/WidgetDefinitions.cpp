@@ -37,6 +37,7 @@
 #include "Performance.h"
 #include "JesusEdit.h"
 #include "Help.h"
+#include "Quit.h"
 
 #include "Widget.h"
 namespace EmberOgre
@@ -58,6 +59,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("Performance", &WidgetLoader::createWidgetInstance<Performance>);
 	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);
+	WidgetLoader::registerWidget("Quit", &WidgetLoader::createWidgetInstance<Quit>);
 
 
 }
