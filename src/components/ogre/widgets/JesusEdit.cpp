@@ -40,8 +40,8 @@
 #include "../AvatarEmberEntity.h"
 #include "../model/Model.h"
 #include "framework/ConsoleBackend.h"
+#include "../jesus/XMLJesusSerializer.h"
 
-//#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 namespace EmberOgre {
 
 
@@ -764,7 +764,8 @@ bool JesusEditFile::Save_Click( const CEGUI::EventArgs & args )
 
 bool JesusEditFile::saveBluePrint(const std::string& name, Carpenter::BluePrint* blueprint )
 {
-	mJesus->saveBlueprintToFile(blueprint, name + ".blueprint.xml", name);
+	XMLJesusSerializer serializer(mJesus);
+	serializer.saveBlueprintToFile(blueprint, name + ".blueprint.xml", name);
 	return true;
 }
 

@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.95  2005-07-11 00:02:30  erik
+ *      Revision 1.96  2005-07-13 19:30:33  erik
+ *      2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp, src/components/ogre/widgets/JesusEdit.cpp
+ *      		* use the new Jesus serializer class
+ *
+ *      Revision 1.95  2005/07/11 00:02:30  erik
  *      2005-07-11  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*:
@@ -792,6 +798,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EmberOgre.h"
 
 #include "jesus/Jesus.h"
+#include "jesus/XMLJesusSerializer.h"
+
 
 
 namespace EmberOgre {
@@ -871,21 +879,16 @@ mModelDefinitionManager(0)
 EmberOgre::~EmberOgre()
 {
 //	mSceneMgr->shutdown();
-	if (mGUIManager)
+
 		delete mGUIManager;
-	if (mTerrainGenerator)
 		delete mTerrainGenerator;
-	if (mMotionManager)
 		delete mMotionManager;
 /*	if (mAvatar)
 		delete mAvatar;*/
-	if (mAvatarController)
 		delete mAvatarController;
-	if (mModelDefinitionManager)
 		delete mModelDefinitionManager;
 /*	if (mEmberEntityFactory)
 		delete mEmberEntityFactory;*/
-	if (mRoot)
 		delete mRoot;
 		
 		
@@ -1015,7 +1018,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	// Create the scene
     createScene();
 
-	setupJesus();
+	//setupJesus();
     
 	return true;
 
@@ -1267,6 +1270,7 @@ void EmberOgre::setupJesus()
 
 	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
 	mJesus = new Jesus(carpenter);
+	XMLJesusSerializer serializer(mJesus);
 
 	DIR *dp;
 	struct dirent *ep;
@@ -1279,7 +1283,7 @@ void EmberOgre::setupJesus()
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
 				S_LOG_INFO( "TRACE - LOADING BLOCKSPEC: " << ep->d_name );
-				mJesus->loadBlockSpec(dir + "/" + ep->d_name);
+				serializer.loadBlockSpec(dir + "/" + ep->d_name);
 			}
 		}
 		(void) closedir (dp);
@@ -1293,7 +1297,7 @@ void EmberOgre::setupJesus()
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
 				S_LOG_INFO( "TRACE - LOADING BUILDINGBLOCKSPEC: " << ep->d_name);
-				mJesus->loadBuildingBlockSpecDefinition(dir + "/" + ep->d_name);
+				serializer.loadBuildingBlockSpecDefinition(dir + "/" + ep->d_name);
 			}
 		}
 		(void) closedir (dp);
@@ -1307,7 +1311,7 @@ void EmberOgre::setupJesus()
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
 				S_LOG_INFO( "TRACE - LOADING MODELMAPPING: " <<  ep->d_name );
-				mJesus->loadModelBlockMapping(dir + "/" + ep->d_name);
+				serializer.loadModelBlockMapping(dir + "/" + ep->d_name);
 			}
 		}
 		(void) closedir (dp);
@@ -1322,7 +1326,7 @@ void EmberOgre::setupJesus()
 		while (ep = readdir (dp)) {
 			if (ep->d_type != 4) {
 				S_LOG_INFO(  "TRACE - LOADING GLOBAL BLUEPRINT: " << ep->d_name );
-				Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(dir + "/" + ep->d_name);
+				Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + ep->d_name);
 				if (blueprint) {
 					blueprint->compile();
 					bool result = mJesus->addBluePrint(blueprint);
@@ -1344,7 +1348,7 @@ void EmberOgre::setupJesus()
 		while (ep = readdir (dp)) {
 			if (ep->d_name != "." && ep->d_name != "..") {
 				S_LOG_INFO( "TRACE - LOADING LOCAL BLUEPRINT: " << ep->d_name );
-				Carpenter::BluePrint* blueprint = mJesus->loadBlueprint(dir + "/" + ep->d_name);
+				Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + ep->d_name);
 				if (blueprint) {
 					blueprint->compile();
 					bool result = mJesus->addBluePrint(blueprint);
