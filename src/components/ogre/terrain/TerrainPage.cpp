@@ -137,8 +137,8 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 		(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") || Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0"))
 	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
-//		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
-		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
+		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
+//		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	} else {
 	//and as a fallback for older gfx cards we'll supply a technique which doesn't
 		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
@@ -185,7 +185,7 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 	//since Ogre uses a different coord system than WF, we have to do some conversions here
 	TerrainPosition origPosition(mPosition);
 	//start in one of the corners...
-	origPosition[0] = (origPosition[0] * (getPageSize() - 1)) - (getPageSize() / 2);
+	origPosition[0] = (origPosition[0] * (getPageSize() - 1)) - (getPageSize() / 2) - 1;
 	origPosition[1] = (origPosition[1] * (getPageSize() - 1)) + (getPageSize() / 2);
 	 
 	TerrainPosition position(origPosition);

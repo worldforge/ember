@@ -1,3 +1,15 @@
+2005-07-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/splatting/Splat.cg
+		* updates for TerrainPagingSceneManager
+	* src/components/ogre/TerrainPage.cpp	
+		* corrected the generation of the height map for the TerrainPagingSceneManager
+
+2005-07-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/carpenter/BluePrint.*, src/components/ogre/carpenter/Carpenter.*
+		* Added more error checks to prevent crashes with defect definitions.
+
 2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/model/ModelDefiniton.h, src/components/ogre/model/XMLModelDefinitionSerializer.*

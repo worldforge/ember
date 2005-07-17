@@ -114,8 +114,8 @@ void fog_linear_vp
 	//iFogStart = 192;
 	//iFogMax = 256;
 	oPosition  = mul(worldViewProj,iPosition);
-	oTexcoord = iTexcoord;
 	oCoverage = iCoverage;
+	oTexcoord = iCoverage;
 	oColour = iColor;
 // 	oFogFade = 1;
 	
@@ -156,6 +156,7 @@ void splat_fp
 //	float fogFactor   = exp2(-abs(iFog));
 	//only do lerp if we can see the pixels (i.e. not when in full fog
 	if (iFog < 1.0) {
+		iTexcoord *= 100;
 		
 		oColor = tex2D(textureUnit1, iTexcoord.xy);
 		oColor = (lerp(oColor, tex2D(textureUnit2, iTexcoord.xy) , tex2D(textureUnit0, iCoverage.xy).w));
