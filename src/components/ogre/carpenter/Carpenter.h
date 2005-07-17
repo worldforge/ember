@@ -114,10 +114,11 @@ class BlockSpec
 {
 friend class Carpenter;
 public:
+	typedef std::map<const std::string, AttachPair> AttachPairStore;
 	inline const std::string& getName() const { return mName; }
 	inline const WFMath::AxisBox<3>& getBoundingBox() const { return mBoundingBox; }
 	const AttachPair* getAttachPairForPoint(AttachPoint* point) const;
-	const AttachPair* getAttachPair(const std::string & name) const  { return &(mAttachPairs.find(name)->second); }
+	const AttachPair* getAttachPair(const std::string & name) const;
 	
 	bool addAttachPair(AttachPair* pair);
 	void setBoundingBox(WFMath::AxisBox<3> bbox);
@@ -127,7 +128,7 @@ public:
 protected:
 	std::string mName;
 	WFMath::AxisBox<3> mBoundingBox;
-	std::map<const std::string, AttachPair> mAttachPairs;
+	AttachPairStore mAttachPairs;
 	
 };
 

@@ -219,8 +219,9 @@ public:
 	 */
 	bool remove(const BuildingBlock* bblock);
 
+	typedef std::map<const std::string,  BuildingBlock> BuildingBlockStore;
 protected:
-	std::map<const std::string,  BuildingBlock> mBuildingBlocks;
+	BuildingBlockStore mBuildingBlocks;
 	std::list< BuildingBlockBinding> mBindings;
 	
 	std::vector< BuildingBlock*> mAttachedBlocks;

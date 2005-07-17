@@ -247,6 +247,7 @@ BuildingBlock* BluePrint::createBuildingBlock(BuildingBlockDefinition definition
 
 	mBuildingBlocks[definition.mName];
 	BuildingBlockSpec *buildingBlockSpec = mCarpenter->getBuildingBlockSpec(definition.mBuildingBlockSpec);
+	assert(buildingBlockSpec);
 	mBuildingBlocks[definition.mName].mBlockDefinition = definition;
 	mBuildingBlocks[definition.mName].mBuildingBlockSpec = buildingBlockSpec;
 	return &mBuildingBlocks[definition.mName];
@@ -271,15 +272,20 @@ BuildingBlockBinding* BluePrint::addBinding(BuildingBlockBindingDefinition defin
 {
 	//BuildingBlockBinding binding;
 //	binding.mDefinition = definition;
+	
 	BuildingBlock* block1 = &mBuildingBlocks[definition.mBlock1Name];
 	BuildingBlock* block2 = &mBuildingBlocks[definition.mBlock2Name];
 	
+	if (!block1 || !block2) 
+		return 0;
 	
 	const AttachPair *pair1 = block1->getAttachPair(definition.mPair1Name);
-	const AttachPoint* point1 = pair1->getAttachPoint(definition.mPoint1Name);
-	
 	const AttachPair *pair2 = block2->getAttachPair(definition.mPair2Name);
+	if (!pair1 || !pair2) return 0;
+	
+	const AttachPoint* point1 = pair1->getAttachPoint(definition.mPoint1Name);
 	const AttachPoint* point2 = pair2->getAttachPoint(definition.mPoint2Name);
+	if (!point1 || !point2) return 0;
 	
 	return addBinding(block1, point1, block2, point2);
 }

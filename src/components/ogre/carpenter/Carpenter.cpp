@@ -81,6 +81,15 @@ bool BlockSpec::addAttachPair(AttachPair* pair)
 	return true;
 }
 
+const AttachPair* BlockSpec::getAttachPair(const std::string & name) const
+{
+	AttachPairStore::const_iterator I = mAttachPairs.find(name);
+	if (I == mAttachPairs.end()) {
+		return 0;
+	}
+	return &(I->second); 
+}
+
 void BlockSpec::setBoundingBox(WFMath::AxisBox<3> bbox)
 {
 	mBoundingBox = bbox;
