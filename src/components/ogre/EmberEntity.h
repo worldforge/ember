@@ -89,11 +89,9 @@ public:
 	enum ClickMasks
 	{
 		CM_AVATAR = 1<<9,
-		CM_PERSONS = 1<<10,
-		CM_CREATURES = 1<<11,
-		CM_NATURE = 1<<12,
-		CM_UNDEFINED = 1<<13,
-		CM_TERRAIN = 1<<14
+		CM_ENTITY = 1<<10,
+		CM_NATURE = 1<<11,
+		CM_UNDEFINED = 1<<12
 	};
 	
 	enum MovementMode
@@ -141,11 +139,8 @@ public:
 	/**
 	 * return the scenenode to which this entity belongs
 	 */
-	inline Ogre::SceneNode* getSceneNode() const 
-	{
-		//return EmberOgre::getSingleton().getSceneManager()->getSceneNode(getId());
-		return mOgreNode;	
-	}
+	Ogre::SceneNode* getSceneNode() const;
+	
 	/**
 	 * Called by a contained member to see if the member is allowed to be shown.
 	 * This can be reimplemented in a subclass such as AvatarEmberEntity to 
@@ -176,7 +171,7 @@ public:
 	 *    gets the location as cast to an EmberEntity
 	 * @return 
 	 */
-	inline EmberEntity* getEmberLocation() const { return static_cast<EmberEntity*>(getLocation());}
+	EmberEntity* getEmberLocation() const;
 	
 	/**
 	attaches the entity to another entity (or in reality another Model)

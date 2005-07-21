@@ -23,7 +23,45 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.96  2005-07-13 19:30:33  erik
+ *      Revision 1.97  2005-07-21 21:19:25  erik
+ *      2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      		* src/components/ogre/EmberOgre.cpp
+ *      			* set the icon of the window
+ *      			* reactivated jesus
+ *      			* changed NULL to 0
+ *      		* src/components/ogre/EmberEntity.*
+ *      			* changed NULL to 0
+ *      			* moved some inline methods to the .cpp part
+ *      			* cleaned out some unused ClickMasks
+ *      		* src/components/ogre/EmberPhysicalEntity.cpp
+ *      			* set the click mask to CM_ENTITY
+ *      			* fixed the way the velocity for the entity is checked (to determine whether to show the forward or backwards walking animation)
+ *      		* src/components/ogre/GUIManager.cpp
+ *      			* changed back to just using one single imageset, since TaharezLook can't handle two different
+ *      			* fixed an issue with the main sheet which wasn't raised as it should
+ *      		* src/components/ogre/PersonEmberEntity.cpp
+ *      			* don't set a click mask, we're trying to move away from the deep nesting of the entity class hierarcy
+ *      		* src/components/ogre/TerrainGenerator.cpp
+ *      			* correctly calculate the height of the world
+ *      		* src/components/ogre/TerrainPage.cpp
+ *      			* correct the placement of the terrain and the material, since it was a bit misaligned before
+ *      		* src/components/ogre/WorldEmberEntity.cpp
+ *      			* changed NULL to 0
+ *      		* src/components/ogre/Avatar.*
+ *      			* don't send the scenemanager in the constructor since we now get it through EmberOgre instead
+ *      			* set more correct walk and run speeds
+ *      			* don't create a dummy model on startup, wait for the world connection
+ *      			* added some debug output for the current location and velocity
+ *      		* src/components/ogre/AvatarController.*
+ *      			* changed NULL to 0
+ *      			* start with a detached camera, there are still some bugs though
+ *      			* made movement with the detached camera a little easier
+ *      		* src/components/ogre/AvatarCamera.*
+ *      			* started adding functionality for preventing the camera to dip below the terrain, needs a bit more work though
+ *      			* fixed the pickObject method which hadn't worked since the switch to the paging scene manager
+ *
+ *      Revision 1.96  2005/07/13 19:30:33  erik
  *      2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp, src/components/ogre/widgets/JesusEdit.cpp
@@ -800,6 +838,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "jesus/Jesus.h"
 #include "jesus/XMLJesusSerializer.h"
 
+#include <SDL/SDL_image.h>
+
 
 
 namespace EmberOgre {
@@ -994,7 +1034,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	chdir(configSrv->getHomeDirectory().c_str());
 	
 	// Avatar
-	mAvatar = new Avatar(mSceneMgr);
+	mAvatar = new Avatar();
 	
 	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
 	
@@ -1018,14 +1058,21 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	// Create the scene
     createScene();
 
-	//setupJesus();
+	setupJesus();
     
 	return true;
-
+  
 }
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::configure(void)
 {
+	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
+		//set the icon of the window
+		const char* iconPath = BR_DATADIR("/icons/worldforge/ember.png");
+		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
+	} else {
+		std::cerr << dlerror() << "\n";
+	}
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg
@@ -1607,7 +1654,7 @@ int main(int argc, char **argv)
         app.go(useBinrelocPluginsLoading);
     } catch( Ogre::Exception& e ) {
 #if OGRE_PLATFORM == PLATFORM_WIN32
-        MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+        MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
         fprintf(stderr, "An exception has occured: %s\n",
                 e.getFullDescription().c_str());

@@ -111,7 +111,7 @@ void EmberPhysicalEntity::setVisible(bool visible)
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	EmberEntity::init(ge);
-	getModel()->setQueryFlags(EmberEntity::CM_UNDEFINED);
+	getModel()->setQueryFlags(EmberEntity::CM_ENTITY);
 
 /*	assert(mOgreNode);
 	assert(mScaleNode);*/
@@ -380,7 +380,7 @@ void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
 {
 	if (mCurrentMovementAction) {
 		//check if we're walking backward
-		if (getVelocity().y() < 0) {
+		if (static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
 			mCurrentMovementAction->getAnimations()->addTime(-timeSlice);
 		} else {
 			mCurrentMovementAction->getAnimations()->addTime(timeSlice);

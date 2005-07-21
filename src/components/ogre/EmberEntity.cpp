@@ -155,7 +155,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 void EmberEntity::createSceneNode()
 {
 	EmberEntity* container = dynamic_cast<EmberEntity*>(getLocation());
-	if (container == NULL) {
+	if (container == 0) {
 		S_LOG_INFO( "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" )
 
 		//mSceneManager->createSceneNode(getId());
@@ -519,6 +519,15 @@ bool EmberEntity::getShowErisBoundingBox()
 	
 }
 
+inline Ogre::SceneNode* EmberEntity::getSceneNode() const 
+{
+	return mOgreNode;	
+}
+
+inline EmberEntity* EmberEntity::getEmberLocation() const
+{ 
+	return static_cast<EmberEntity*>(getLocation());
+}
 
 }
 

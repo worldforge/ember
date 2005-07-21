@@ -75,8 +75,6 @@ AvatarCamera::~AvatarCamera()
 
 void AvatarCamera::createNodesAndCamera()
 {
-	//create the nodes for the camera
-	setMode(MODE_THIRD_PERSON);
 	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode("AvatarCameraRootNode"));
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
@@ -101,12 +99,21 @@ void AvatarCamera::createNodesAndCamera()
 		mCamera->setFarClipDistance(3000);
 	}
 	
+	//create the nodes for the camera
+	setMode(MODE_THIRD_PERSON);
 	createViewPort();
 }
 
 void AvatarCamera::setMode(Mode mode)
 {
 	mMode = mode;
+/*	if (mMode == MODE_THIRD_PERSON) {
+		mCamera->setAutoTracking(true, mAvatarCameraRootNode);
+	} else {
+		mCamera->setAutoTracking(false);
+	}*/
+	
+	
 }
 
 void AvatarCamera::attach(Ogre::SceneNode* toNode) {
@@ -208,8 +215,9 @@ bool AvatarCamera::pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vec
 
 std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask )
 {
-	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << mouseX << ":" << mouseY << ".");
+	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
+	querymask |= Ogre::RSQ_Entities;
 	std::vector<Ogre::RaySceneQueryResultEntry> finalResult;
 	
 	// Start a new ray query 
@@ -275,7 +283,7 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 
 EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY) 
 {
-	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << mouseX << ":" << mouseY << ".");
+	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
 	EntityPickResult result;
 	result.entity = 0;
@@ -291,11 +299,6 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	Ogre::Vector3 pickedPosition;
 	Ogre::MovableObject* pickedMovable;
 	
-/*	unsigned long queryMask = 0xFFFFFFFF;
-	queryMask &= ~ Ogre::RSQ_Height;
-	queryMask &= ~ Ogre::RSQ_Height_no_interpolation;*/
-	
-	
 	
 	// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
@@ -306,8 +309,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	
 	unsigned long queryMask = Ogre::RSQ_Entities;
 	queryMask |= EmberEntity::CM_AVATAR;
-	queryMask |= EmberEntity::CM_PERSONS;
-	queryMask |= EmberEntity::CM_CREATURES;
+	queryMask |= EmberEntity::CM_ENTITY;
 	queryMask |= EmberEntity::CM_NATURE;
 	queryMask |= EmberEntity::CM_UNDEFINED;
 	Ogre::RaySceneQuery *raySceneQueryEntities = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay, queryMask); 
@@ -324,7 +326,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 		//only need to check the first result since we're using RSQ_FirstTerrain for the terrain picking
 		if (rayIterator->worldFragment) {
 			SceneQuery::WorldFragment* wf = rayIterator->worldFragment;
-			pickedPosition = rayIterator->worldFragment->singleIntersection;
+			pickedPosition = wf->singleIntersection;
 				
 			Vector3 distance = cameraRay.getOrigin() - pickedPosition; 
 			pickedDistance = distance.length(); 
@@ -352,7 +354,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 			
 			pickedMovable = rayIterator->movable;
 			
-			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != NULL && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
+			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
 				if ( rayIterator->distance < closestDistance ) { 
 					bool isColliding = false;
 					closestObject = pickedMovable; 
@@ -404,6 +406,51 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 		screenPos.y = (-hcsPosition.y + 1) * 0.5; 
 	
 		return true; 
+	}
+
+	inline void AvatarCamera::setClosestPickingDistance(Ogre::Real distance)
+	{
+		mClosestPickingDistance = distance; 
+	}
+	
+	inline Ogre::Real AvatarCamera::getClosestPickingDistance() 
+	{ 
+		return mClosestPickingDistance; 
+	}
+	
+	bool AvatarCamera::adjustForTerrain()
+	{
+		
+		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera->getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::RSQ_Height); 
+		
+		
+		raySceneQueryHeight->execute(); 
+		
+		//first check the terrain picking
+		Ogre::RaySceneQueryResult queryResult = raySceneQueryHeight->getLastResults(); 
+		
+		if (queryResult.begin( ) != queryResult.end()) {
+			Ogre::Vector3 position = queryResult.begin()->worldFragment->singleIntersection;
+			Ogre::Real terrainHeight = position.y;
+			//pad it a little
+			//terrainHeight += 0.4;
+			Ogre::Real cameraHeight = mCamera->getDerivedPosition().y;
+			Ogre::Real cameraNodeHeight = mAvatarCameraNode->getWorldPosition().y;
+			if (terrainHeight > cameraHeight) {
+				mCamera->move(mCamera->getDerivedOrientation().Inverse() * Ogre::Vector3(0,terrainHeight - cameraHeight,0));
+//				mCamera->lookAt(mAvatarCameraRootNode->getPosition());
+				
+			}
+			 else if (cameraHeight != cameraNodeHeight) {
+				Ogre::Real newHeight = std::max(terrainHeight, cameraNodeHeight);
+				mCamera->move(Ogre::Vector3(0,newHeight - cameraHeight,0));
+				mCamera->lookAt(mAvatarCameraRootNode->getWorldPosition());
+				
+			}
+			
+		}
+	
+		
 	}
 
 }

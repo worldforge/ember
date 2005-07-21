@@ -41,18 +41,14 @@ namespace EmberOgre {
 
 
 AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager) 
-: mEntityUnderCursor(NULL) 
-, mSelectedEntity(NULL)
+: mEntityUnderCursor(0) 
+, mSelectedEntity(0)
 , mGUIManager(guiManager)
 , mWindow(window)
-, mAvatarCamera(NULL)
+, mAvatarCamera(0)
 {
+	
 	setAvatar(avatar);
-	
-	//AvatarController* avatarController = this;
-	//EmberOgre::getSingletonPtr()->getOgreRoot()->addFrameListener(avatarController);
-	createAvatarCameras(avatar->getAvatarSceneNode());
-	
 	
 	
 	mAvatar->setAvatarController(this);
@@ -65,14 +61,14 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mKeyCodeForLeftMovement = SDLK_a;
 	mKeyCodeForRightMovement = SDLK_d;
 	mFreeFlyingCameraNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
-
+	detachCamera();
 }
 AvatarController::~AvatarController()
 {}
 
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
-	if (mAvatarCamera == NULL) {
+	if (mAvatarCamera == 0) {
 		mAvatarCamera = new AvatarCamera(avatarSceneNode, EmberOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager);
 	} else {
 		mAvatarCamera->setAvatarNode(avatarSceneNode);
@@ -82,6 +78,8 @@ void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 void AvatarController::setAvatar(Avatar* avatar)
 {
 	mAvatar = avatar;
+	createAvatarCameras(avatar->getAvatarSceneNode());
+	attachCamera();
 }
 
 
@@ -149,11 +147,14 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 	movementForFrame.timeSlice = event.timeSinceLastFrame;
 	
 	if (mIsAttached) {
+//		mAvatarCamera->adjustForTerrain();
 		mAvatar->updateFrame(movementForFrame);
 	} else {
-		Ogre::Real scaler = 1;
+		Ogre::Real scaler = 50;
+		//make this inverse, so that when the run key is pressed, the free flying camera goes slower
+		//this is since we assume that one wants to go fast when in free flying mode
 		if (movementForFrame.isRunning) {
-			scaler = 50;
+			scaler = 10;
 		}
 		Ogre::Vector3 correctDirection(movementForFrame.movementDirection.z, movementForFrame.movementDirection.y, -movementForFrame.movementDirection.x);
 		mFreeFlyingCameraNode->translate(mAvatarCamera->getOrientaion(false) * (correctDirection * movementForFrame.timeSlice * scaler));
@@ -201,12 +202,12 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, const Input* 
 		// up down
 		if(input->isKeyDown(SDLK_PAGEUP))
 		{
-			movement.y = -1;
+			movement.y = 1;
 			isMovement = true;
 		}
 		else if(input->isKeyDown(SDLK_PAGEDOWN))
 		{
-			movement.y = 1;
+			movement.y = -1;
 			isMovement = true;
 		}
 		

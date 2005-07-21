@@ -31,7 +31,7 @@ namespace EmberOgre {
 
 
 AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
-mAvatar(NULL), mErisAvatar(erisAvatar)
+mAvatar(0), mErisAvatar(erisAvatar)
 ,PersonEmberEntity(id, type, vw, sceneManager, nodeWithModel)
 {
 }
@@ -43,6 +43,7 @@ void AvatarEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 {
 	PersonEmberEntity::init(ge);
 	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
+	
 
 /*  Ogre::Light* light = mSceneManager->createLight("AvatarLight");
            light->setType(Ogre::Light::LT_POINT);

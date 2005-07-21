@@ -244,7 +244,7 @@ int TerrainGenerator::getSegmentSize() const
 void TerrainGenerator::prepareAllSegments()
 {
 	
-	
+	Ogre::Real heightMax = 0, heightMin = 0;
 	
 	//initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	int i,j;
@@ -255,6 +255,8 @@ void TerrainGenerator::prepareAllSegments()
 				segment->populate();
 				segment->populateNormals();
 				segment->populateSurfaces();
+				heightMax = std::max(heightMax, segment->getMax());
+				heightMin = std::min(heightMin, segment->getMin());
 			}
 		}
 	}
@@ -310,7 +312,7 @@ void TerrainGenerator::prepareAllSegments()
 		
 	sceneManager->loadScene();
 	
-			sceneManager->resize(Ogre::AxisAlignedBox(getMin().x(), getMin().y(), -100, getMax().x(), getMax().y(), 100) ,16);
+	sceneManager->resize(Ogre::AxisAlignedBox(getMin().x(), heightMin, getMin().y(), getMax().x(), heightMax, getMax().y()) ,16);
 	
 }
 

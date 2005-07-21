@@ -71,8 +71,6 @@ public:
  * with the world rules if such a thing is allowed, the world node is manipulated.
  * If it's a movement it has to be animated.
  * 
- *  
- * TODO: create facilities for animation of the avatar, walking, running, jumping etc.
  */
 class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 {
@@ -82,7 +80,6 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
     public:
 
 	Avatar();
-	Avatar(Ogre::SceneManager* sceneManager);
 	~Avatar();
 
 	Ogre::Camera* getAvatar1pCamera(void);
@@ -203,7 +200,6 @@ protected:
 	float mRunSpeed;
 	
 	
-	Ogre::SceneManager* mSceneMgr;
 	/*
 	 * The main avatar entity
 	 */

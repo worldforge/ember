@@ -128,8 +128,8 @@ public:
 	EntityPickResult pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
 	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
-	inline void setClosestPickingDistance(Ogre::Real distance) { mClosestPickingDistance = distance; }
-	inline Ogre::Real getClosestPickingDistance() { return mClosestPickingDistance; }
+	inline void setClosestPickingDistance(Ogre::Real distance);
+	inline Ogre::Real getClosestPickingDistance();
 
 	// worldToScreenPos 
 	// 
@@ -149,6 +149,12 @@ public:
 	bool pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector);
 	
 	void attach(Ogre::SceneNode* toNode);
+	
+	/**
+	 *    Adjusts the camera for the terrain, so it doesn't dip below it.
+	 * @return 
+	 */
+	bool adjustForTerrain();
 	
 
 	

@@ -1,3 +1,39 @@
+2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+		* src/components/ogre/EmberOgre.cpp
+			* set the icon of the window
+			* reactivated jesus
+			* changed NULL to 0
+		* src/components/ogre/EmberEntity.*
+			* changed NULL to 0
+			* moved some inline methods to the .cpp part
+			* cleaned out some unused ClickMasks
+		* src/components/ogre/EmberPhysicalEntity.cpp
+			* set the click mask to CM_ENTITY
+			* fixed the way the velocity for the entity is checked (to determine whether to show the forward or backwards walking animation)
+		* src/components/ogre/GUIManager.cpp
+			* changed back to just using one single imageset, since TaharezLook can't handle two different
+			* fixed an issue with the main sheet which wasn't raised as it should
+		* src/components/ogre/PersonEmberEntity.cpp
+			* don't set a click mask, we're trying to move away from the deep nesting of the entity class hierarcy
+		* src/components/ogre/TerrainGenerator.cpp
+			* correctly calculate the height of the world
+		* src/components/ogre/TerrainPage.cpp
+			* correct the placement of the terrain and the material, since it was a bit misaligned before
+		* src/components/ogre/WorldEmberEntity.cpp
+			* changed NULL to 0
+		* src/components/ogre/Avatar.*
+			* don't send the scenemanager in the constructor since we now get it through EmberOgre instead
+			* set more correct walk and run speeds
+			* don't create a dummy model on startup, wait for the world connection
+			* added some debug output for the current location and velocity
+		* src/components/ogre/AvatarController.*
+			* changed NULL to 0
+			* start with a detached camera, there are still some bugs though
+			* made movement with the detached camera a little easier
+		* src/components/ogre/AvatarCamera.*
+			* started adding functionality for preventing the camera to dip below the terrain, needs a bit more work though
+			* fixed the pickObject method which hadn't worked since the switch to the paging scene manager
 2005-07-17  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* media/materials/splatting/Splat.cg

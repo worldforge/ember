@@ -39,7 +39,7 @@
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
 mTerrainGenerator(terrainGenerator),
-mFoliage(NULL),
+mFoliage(0),
 EmberEntity(id, ty, vw, sceneManager)
 {
 	//getSceneNode()->setOrientation(Ogre::Quaternion::IDENTITY);

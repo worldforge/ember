@@ -66,6 +66,8 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 				pageSegment.pos = TerrainPosition(x,y);
 				pageSegment.segment = segment;
 				mValidSegments.push_back(pageSegment);
+			} else {
+				int i = 0;
 			}
 		}
 	}
@@ -81,7 +83,9 @@ Mercator::Segment* TerrainPage::getSegment(int x, int y) const
 	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
 	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
 	int segmentOffset = segmentsPerAxis / 2;
-	return mGenerator->getTerrain().getSegment((int)((mPosition.x() * segmentsPerAxis) + x) - segmentOffset, (int)((mPosition.y() * segmentsPerAxis) + y) - segmentOffset);
+	int segX = (int)((mPosition.x() * segmentsPerAxis) + x) - segmentOffset;
+	int segY = (int)((mPosition.y() * segmentsPerAxis) + y) - segmentOffset;
+	return mGenerator->getTerrain().getSegment(segX, segY);
 }
 
 int TerrainPage::getPageSize() const 
@@ -332,7 +336,7 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 
 	
 	
-    Ogre::uchar* start = finalImagePtr + (4 * finalImageWidth * (startY - 1)) + (startX * 4);
+    Ogre::uchar* start = finalImagePtr + (4 * finalImageWidth * (startY - 1)) + ((startX - 1) * 4);
     Ogre::uchar* end = start + (width * finalImageWidth * 4) + (width * 4);
 	
 	
@@ -419,16 +423,22 @@ void EmberOgre::TerrainPage::createFoliage(TerrainShader* grassShader)
 	Ogre::Real grassChanceThreshold = 1 / grassSpacing; 
 	TerrainPosition worldUnitsStartOfPage(((getPageSize() - 1) * mPosition.x()) - (getPageSize() - 1), ((getPageSize() - 1) * mPosition.y())  - (getPageSize() - 1));
 	
+	
+	//since Ogre uses a different coord system than WF, we have to do some conversions here
+	worldUnitsStartOfPage = mPosition;
+	//start in one of the corners...
+	worldUnitsStartOfPage[0] = (worldUnitsStartOfPage[0] * (getPageSize() - 1)) - (getPageSize() / 2);
+	worldUnitsStartOfPage[1] = (worldUnitsStartOfPage[1] * (getPageSize() - 1)) - (getPageSize() / 2);
+	
+	
+	
 	//for now, just check with the grass shader
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		Mercator::Segment* segment = I->segment;
 		Mercator::Surface* surface = grassShader->getSurfaceForSegment(segment);
 		if (!surface || !surface->isValid()) {
 			//we could not find any grass surface
-			std::stringstream ss;
-			ss << "Could not find any grass for area " << mPosition.x() << ":" << mPosition.y()  << ".";
-			S_LOG_INFO(ss.str());
-			return;
+			continue;
 		}
 		for (unsigned int x = 0; x < 64; ++x) {
 			for (unsigned int y = 0; y < 64; ++y) {
@@ -735,7 +745,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 				surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				if (surface && surface->isValid()) {
 					
-					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
+					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, ((int)I->pos.x() * 64), (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
 				}
 			}
 		}

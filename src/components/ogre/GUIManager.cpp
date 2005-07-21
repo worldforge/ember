@@ -82,7 +82,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
 			
 			try {
-				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLookMouse", (CEGUI::utf8*)"MouseArrow");
+				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
 			} catch (CEGUI::Exception& e) {
 				fprintf(stderr, "CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.\n");
 			}
@@ -101,7 +101,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
-		mSheet->setRiseOnClickEnabled(false);
+		//mSheet->setRiseOnClickEnabled(false);
 		mSheet->activate();
 		//mSheet->captureInput();
 		mSheet->moveToBack();

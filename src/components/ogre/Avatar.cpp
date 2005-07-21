@@ -30,15 +30,6 @@
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
 
-/*
-#include "EmberOgrePrerequisites.h"
-
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
-
-#include "MathConverter.h"
-*/
 
 
 #include "EmberEntity.h"
@@ -46,45 +37,38 @@
 #include "PersonEmberEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
-//#include "TerrainGenerator.h"
-#include "MotionManager.h"
-
-//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+//#include "MotionManager.h"
 
 #include "AvatarEmberEntity.h"
 #include "model/Model.h"
 #include "model/SubModel.h"
+#include "EmberOgre.h"
 
+#include "GUIManager.h"
 
 #include "Avatar.h"
 
 namespace EmberOgre {
 
 
-Avatar::Avatar()
-{
-}
 
-Avatar::Avatar(Ogre::SceneManager* sceneManager)  
-: mErisAvatarEntity(NULL)
+Avatar::Avatar()  
+: mErisAvatarEntity(0)
 {
 	mTimeSinceLastServerMessage = 0;
 	mMinIntervalOfRotationChanges = 1; //seconds
 	mAccumulatedHorizontalRotation = 0;
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
-	//mAvatarCamera = NULL;
 
-	mWalkSpeed = 5.0;
-	mRunSpeed = 20.0;
+	mWalkSpeed = 3;
+	mRunSpeed = 5; //5 seems to be the max speed in cyphesis
 
-	mSceneMgr = sceneManager; // TODO: assert it's not null
 
 	// Create the Avatar tree of nodes, with a base entity
 	// and attach all the needed cameras
 	
 	createAvatar();
-//	createAvatarCameras(mAvatarNode);
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
@@ -97,17 +81,17 @@ Avatar::~Avatar()
 void Avatar::createAvatar()
 {
 	// The avatar itself
-	mAvatarNode = static_cast<Ogre::SceneNode*>(mSceneMgr->getRootSceneNode()->createChild());
+	mAvatarNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChild());
 	mAvatarNode->setPosition(Ogre::Vector3(0,0,0));
 	//mAvatarNode->setOrientation(0,1,0,0);
 	//mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
 	
-	// Model Node and Entity for display
+/*	// Model Node and Entity for display
 	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
 	mAvatarModelNode = static_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
 	
 	Model* model = new Model("AvatarEntity");
-model->create("settler");
+	model->create("settler");
 	
 // 	Model* model = Model::Create("spider.modeldef.xml", "AvatarEntity");
 	//Model::Create("malebuilder.modeldef.xml", "AvatarEntity1");
@@ -116,7 +100,7 @@ model->create("settler");
 	mAvatarModel = model;
 	
 	mAvatarModelNode->attachObject(mAvatarModel);
-	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);*/
   
   
 /*  Ogre::Light* light = mSceneMgr->createLight("AvatarLight__");
@@ -133,6 +117,12 @@ model->create("settler");
 
 bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 {
+// 	if (mErisAvatarEntity) {
+// 		std::stringstream ss;
+// 		ss << "X: " << mErisAvatarEntity->getPredictedPos().x() << " Y: " << mErisAvatarEntity->getPredictedPos().y();
+// 		GUIManager::getSingleton().setDebugText(ss.str());
+// 	}
+
 	if (mEntitiesToBeAddedToInventory.size() > 0) {
 		std::set<Eris::Entity*>::iterator I = mEntitiesToBeAddedToInventory.begin();
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
@@ -244,6 +234,15 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 		}
 	}
 		
+	
+	if (mErisAvatarEntity) {
+		std::stringstream ss;
+		
+ 		ss << newMovementState.orientation * newMovementState.velocity << "  ---  " << WFMath::Vector<3>(mErisAvatarEntity->getPredictedVelocity()).rotate((mErisAvatarEntity->getOrientation().inverse()));
+		GUIManager::getSingleton().setDebugText(ss.str());
+	}	
+	
+	
 	if (sendToServer) {
 		S_LOG_INFO("TRACE - SEND MOVE OPS TO SERVER");
 		mMovementStateAtBeginningOfMovement = newMovementState;
@@ -376,7 +375,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 	
 	
 		
-	mSceneMgr->destroySceneNode(oldAvatar->getName());
+	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 
 }
 
