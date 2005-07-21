@@ -48,7 +48,7 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 	}
 
 	Ember::TiXmlDocument _XMLDoc;
-	bool success = _XMLDoc.LoadFile(filename); //load from data stream
+	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
 		S_LOG_FAILURE("Failed to load modeldefinition file!");
@@ -109,7 +109,7 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 	}
 
 	Ember::TiXmlDocument _XMLDoc;
-	bool success = _XMLDoc.LoadFile(filename); //load from data stream
+	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
 		S_LOG_FAILURE("Failed to load modeldefinition file!");
@@ -152,12 +152,8 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 		
 		elem = smElem->FirstChildElement("attachpairs");
 		
-		for (Ember::TiXmlElement* apElem = elem->FirstChildElement();
-				   apElem != 0; apElem = apElem->NextSiblingElement())
-		{
-			readAttachPairs(blockSpec, apElem);
-		
-		}
+		readAttachPairs(blockSpec, elem);
+
 		
 	}
 }
@@ -219,12 +215,12 @@ void XMLJesusSerializer::readAttachPairs(Carpenter::BlockSpec *blockSpec, Ember:
 		if (!tmp) {
 			continue;
 		} 
-		std::string type(type); 
+		std::string type(tmp); 
 	
 		
 		Ember::TiXmlElement* attachPointElem = elem->FirstChildElement("attachpoint");
 		//make sure that there are two attach points
-		if (!elem->NextSiblingElement()) {
+		if (!attachPointElem->NextSiblingElement()) {
 			continue;
 		}
 		
@@ -258,7 +254,7 @@ bool XMLJesusSerializer::loadBuildingBlockSpecDefinition(const std::string& file
 	}
 
 	Ember::TiXmlDocument _XMLDoc;
-	bool success = _XMLDoc.LoadFile(filename); //load from data stream
+	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
 		S_LOG_FAILURE("Failed to load modeldefinition file!");
@@ -305,7 +301,7 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(std::string filename)
 	}
 
 	Ember::TiXmlDocument _XMLDoc;
-	bool success = _XMLDoc.LoadFile(filename); //load from data stream
+	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
 		S_LOG_FAILURE("Failed to load modeldefinition file!");
@@ -334,7 +330,7 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(std::string filename)
 	
 	Carpenter::BluePrint* blueprint = mJesus->getCarpenter()->createBlueprint(name);
 
-	for (Ember::TiXmlElement* bbElem = rootElem->FirstChildElement("buildingblocsks");
+	for (Ember::TiXmlElement* bbElem = rootElem->FirstChildElement("buildingblocks");
 			bbElem != 0; bbElem = bbElem->NextSiblingElement())
 	{
 		for (Ember::TiXmlElement* smElem = bbElem->FirstChildElement("buildingblock");
@@ -432,8 +428,8 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 	
 		
 		Ember::TiXmlElement elem("blueprint");
-		elem.SetAttribute("startingblock", blueprint->getStartingBlock()->getName());
-		elem.SetAttribute("name", name);
+		elem.SetAttribute("startingblock", blueprint->getStartingBlock()->getName().c_str());
+		elem.SetAttribute("name", name.c_str());
 		
 		Ember::TiXmlElement buildingBlocksElem("buildingblocks");
 		//now iterate over all building blocks
@@ -445,8 +441,8 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		
 		for (;I != I_end; ++I) {
 			Ember::TiXmlElement buildingBlockElem("buildingblock");
-			buildingBlockElem.SetAttribute("blocktype",  (*I)->getBuildingBlockSpec()->getName() );
-			buildingBlockElem.SetAttribute("name", (*I)->getName());
+			buildingBlockElem.SetAttribute("blocktype",  (*I)->getBuildingBlockSpec()->getName().c_str() );
+			buildingBlockElem.SetAttribute("name", (*I)->getName().c_str());
 			buildingBlocksElem.InsertEndChild(buildingBlockElem);
 		}
 		
@@ -460,14 +456,14 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		
 		for (;J != J_end; ++J) {
 			Ember::TiXmlElement bindingElem("binding");
-			bindingElem.SetAttribute("block1", (*J).getBlock1()->getName());
-			bindingElem.SetAttribute("block2", (*J).getBlock2()->getName());
+			bindingElem.SetAttribute("block1", (*J).getBlock1()->getName().c_str());
+			bindingElem.SetAttribute("block2", (*J).getBlock2()->getName().c_str());
 			const Carpenter::AttachPoint* point1 = (*J).getAttachPoint1();
 			std::string point1Name = point1->getAttachPair()->getName() + "/" + point1->getName();
 			const Carpenter::AttachPoint* point2 = (*J).getAttachPoint2();
 			std::string point2Name = point2->getAttachPair()->getName() + "/" + point2->getName();
-			bindingElem.SetAttribute("point1", point1Name);
-			bindingElem.SetAttribute("point2", point2Name);
+			bindingElem.SetAttribute("point1", point1Name.c_str());
+			bindingElem.SetAttribute("point2", point2Name.c_str());
 				
 			bindingsElem.InsertEndChild(bindingElem);
 				
@@ -477,7 +473,7 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		elem.InsertEndChild(buildingBlocksElem);
 		_XMLDoc.InsertEndChild(elem);
 
-		_XMLDoc.SaveFile(filename);
+		_XMLDoc.SaveFile(filename.c_str());
 	}
 	catch (...)
 	{

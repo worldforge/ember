@@ -69,8 +69,8 @@ class Jesus{
 
 	enum ClickMasks
 	{
-		CM_MODELBLOCK = 1<<6,
-		CM_ATTACHPOINT = 1<<7
+		CM_MODELBLOCK = 1<<13,
+		CM_ATTACHPOINT = 1<<14
 	};
 
     Jesus(Carpenter::Carpenter* carpenter);
