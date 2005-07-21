@@ -139,6 +139,19 @@ public:
 	const bool isInGUIMode() const { return mInGUIMode; }
 	
 	
+	/**
+	 *    Sets whether or not to use the "locked" moevment mode, in which the input system always will be in movement mode, even though the right mouse button isn't pressed.
+	 * @param  
+	 */
+	void setIsInLockedMovementMode(bool value);
+	
+	/**
+	 *    Returns whether or not we're in the "locked" movement mode, in which the input system always will be in movement mode, even though the right mouse button isn't pressed.
+	 * @return 
+	 */
+	bool getIsInLockedMovementMode();
+	
+	
 protected:
 	CEGUI::System *mGuiSystem;
 	CEGUI::OgreCEGUIRenderer *mGuiRenderer;
@@ -182,6 +195,16 @@ protected:
 	int mMouseY, mMouseX;
 	bool mInGUIMode;
 	
+	/**
+	the amount of time since the last right mouse click
+	used for detecting double clicks
+	*/
+	Ogre::Real mTimeSinceLastRightMouseClick;
+	
+	/**
+	if true, we're in "locked" movement mode, no matter if the right mouse button is pressed or not
+	*/
+	bool mInLockedMovementMode;
 	
 };
 

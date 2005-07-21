@@ -34,6 +34,8 @@ Input::Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer)
 , mGuiRenderer(renderer)
 /*, mMouseMotionListener(0)*/
 , mInGUIMode(true)
+, mInLockedMovementMode(false)
+, mTimeSinceLastRightMouseClick(1000)
 {
 	SDL_ShowCursor(0);
 	SDL_EnableUNICODE(1);
@@ -171,6 +173,17 @@ void Input::processInput(const Ogre::FrameEvent& evt)
     SDL_PumpEvents();
 }
 
+inline bool Input::getIsInLockedMovementMode()
+{
+	return mInLockedMovementMode;
+
+}
+
+inline void Input::setIsInLockedMovementMode(bool value)
+{
+	mInLockedMovementMode = value;
+}
+
 
 void Input::pollMouse(const Ogre::FrameEvent& evt)
 {
@@ -179,17 +192,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	
 	mouseState = SDL_GetMouseState( &mouseX, &mouseY );
 	
-	if (mouseState & SDL_BUTTON_LMASK) {
-		if (!(mMouseState & SDL_BUTTON_LMASK)) {
-			//left mouse button pressed
-			mGuiSystem->injectMouseButtonDown(CEGUI::LeftButton);
-		}
-	} else if (mMouseState & SDL_BUTTON_LMASK) {
-		//left mouse button released
-		mGuiSystem->injectMouseButtonUp(CEGUI::LeftButton);
-
-	}
-	
+	mTimeSinceLastRightMouseClick += evt.timeSinceLastFrame;
 	if (mouseState & SDL_BUTTON_RMASK) {
 		if (!(mMouseState & SDL_BUTTON_RMASK)) {
 			//right mouse button pressed
@@ -203,7 +206,35 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	} else if (mMouseState & SDL_BUTTON_RMASK) {
 		//right mouse button released
 		//SDL_WM_GrabInput(SDL_GRAB_ON);
+		
+		//if there's two right mouse clicks withing 0.25 seconds from each others, it's a double click
+		if (mTimeSinceLastRightMouseClick < 0.25) {
+/*			std::stringstream ss;
+			ss << "mouse: " << mTimeSinceLastRightMouseClick << "\n";
+			fprintf(stderr, ss.str().c_str());*/
+			setIsInLockedMovementMode(!getIsInLockedMovementMode());
+			
+		}
+		mTimeSinceLastRightMouseClick = 0;
 		mInGUIMode = true;
+	} 
+	
+	//if in locked movement mode, override the mInGUIMode setting
+	if (getIsInLockedMovementMode()) {
+		mInGUIMode = false;
+	}
+	
+	
+	
+	if (mouseState & SDL_BUTTON_LMASK) {
+		if (!(mMouseState & SDL_BUTTON_LMASK)) {
+			//left mouse button pressed
+			mGuiSystem->injectMouseButtonDown(CEGUI::LeftButton);
+		}
+	} else if (mMouseState & SDL_BUTTON_LMASK) {
+		//left mouse button released
+		mGuiSystem->injectMouseButtonUp(CEGUI::LeftButton);
+
 	}
 	
 	if (mouseState & SDL_BUTTON_MMASK) {

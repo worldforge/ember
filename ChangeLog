@@ -1,5 +1,11 @@
 2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/input/Input.*
+		* added functionality for turning mouse look on and off, so you don't need to press the righ mouse button constantly. Double clicking with the right mouse button will do the trick.
+		
+
+2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
+
 		* src/components/ogre/EmberOgre.cpp
 			* set the icon of the window
 			* reactivated jesus
