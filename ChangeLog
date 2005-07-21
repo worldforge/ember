@@ -1,5 +1,19 @@
 2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/framework/tinyxml/tinyxml.h, src/framework/tinyxml/tinyxmlparser.cpp
+		* don't use std::string in tinyxml since we want to do insensitive comparisons, which is easier with c-strings (unless we want to rewrite the code in tinyxml...)
+	
+
+2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/Jesus.h
+		* updated the click masks to better fit with the paging scene manager
+	* src/components/ogre/jesus/XMLJesusSerializer.cpp
+		* fixed some bugs with the parsing
+		* don't use std::string in tinyxml since we want to do insensitive comparisons, which is easier with c-strings (unless we want to rewrite the code in tinyxml...)
+
+2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/input/Input.*
 		* added functionality for turning mouse look on and off, so you don't need to press the righ mouse button constantly. Double clicking with the right mouse button will do the trick.
 		

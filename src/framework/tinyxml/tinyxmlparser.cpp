@@ -496,7 +496,7 @@ const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXml
 	// Now try to match it.
 	for( i=0; i<NUM_ENTITY; ++i )
 	{
-		if ( strncmp( entity[i].str, p, entity[i].strLength ) == 0 )
+		if ( strncasecmp( entity[i].str, p, entity[i].strLength ) == 0 )
 		{
 			assert( strlen( entity[i].str ) == entity[i].strLength );
 			*value = entity[i].chr;
