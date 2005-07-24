@@ -1,3 +1,9 @@
+2005-07-24  Miguel Guzman
+
+	* configure.ac: the checking for WF libs now shows the errors upon
+	failing (by displaying $WF_PKG_ERRORS) . Also, properly quoted the 
+	list of libs.
+
 2005-07-21  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/framework/Makefile.am: removed EntityListener since it's not used
