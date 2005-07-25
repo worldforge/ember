@@ -128,12 +128,12 @@ public:
 	Water::Water(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr) : mCamera(camera)
 	{
 	
-		Ogre::Plane waterPlane;
+		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
 
 
 		// create a water plane/scene node
-		waterPlane.normal = Ogre::Vector3::UNIT_Y; 
-		waterPlane.d = 0; 
+/*		waterPlane.normal = ; 
+		waterPlane.d = 0; */
 		Ogre::MeshManager::getSingleton().createPlane(
 			"WaterPlane",
 			"environment",

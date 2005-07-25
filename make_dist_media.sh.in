@@ -13,6 +13,14 @@ cd ${current}/media/common ; tar cf - `cat ${current}/${media_dir}/common_textur
 cd ${current}/media/common ; tar cf - `find . -name \*.mesh` | ( cd ${current}/${media_dir}/media/common; tar xf -)
 cd ${current}/media/common ; tar cf - `find . -name \*.skeleton` | ( cd ${current}/${media_dir}/media/common; tar xf -)
 
+#get the theme media dir
+mkdir -p ${current}/${media_dir}/media/common/themes/ember
+cd ${current}/media/common/themes/ember ; tar cf - `find . -name \*.png` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
+cd ${current}/media/common/themes/ember ; tar cf - `find . -name \*.tga` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
+cd ${current}/media/common/themes/ember ; tar cf - `find . -name \*.jpeg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
+cd ${current}/media/common/themes/ember ; tar cf - `find . -name \*.jpg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
+
+
 cd ${current}/${media_dir}
 cp -a ../media/README ../media/fonts ../media/materials ../media/models ../media/packs ../media/particle media
 rm -f ${current}/${media_dir}/common_textures.list
