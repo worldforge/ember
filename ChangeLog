@@ -1,5 +1,51 @@
 2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/component/ogre/cegui/datafiles/imagesets/TaharezLook.imageset, src/component/ogre/cegui/schemes/TaharezLook.scheme:
+		* updated with new elements for tool tips and updated to cegui 0.3.0
+		* moved references to gui elements to themes/ember/gui
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/component/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapePageManager.cpp: added extra checks for empty pages, else we'll get an error when doing mouse picking without a terrain
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/component/ogre/GUIManager.*
+		* cleaned up code
+		* added reference to StatusIconBar
+		* added new event for the changing of input modes
+	* src/components/ogre/EmberOgre.*
+		* added accessor for the AvatarController (this should be renamed to something else really, like just EntityController. Ah, the joys of subversion.)
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/component/ogre/AvatarController.*, src/component/ogre/Avatar.*
+		* cleaned up how movement is handled, I'm still not entirely happy with it. I need a better abstraction design.
+		* made the camera attach to the avatar upon entering the world
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/component/ogre/widgets/Console.cpp : better use of base class
+	* src/component/ogre/widgets/Console.widget: added tooltip
+	* src/component/ogre/widgets/EntityPickerWidget.cpp: no need for ugly casts
+	* src/component/ogre/widgets/Help.*, src/component/ogre/widgets/HelpWidget.xml
+		* removed icon (is now in StatusIconBar)
+		* changed to std::string for the static command
+		* moved the text to the .widget file
+	* src/component/ogre/widgets/JesusEdit.cpp: added more checks when creating a new binding
+	* src/component/ogre/widgets/Makefile.am, src/component/ogre/widgets/WidgetDefinitions.cpp: added StatusIconBar and IconBase classes
+	* src/component/ogre/widgets/Quit.*: added the console command /softquit , which unlike /quit will show the Quit widget instead of just shutting down direct
+	* src/component/ogre/widgets/ServerWidget.cpp : better use of base class
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/IconBase.*
+		* a class used for status icons and buttons in the gui
+	* src/components/ogre/widgets/StatusIconBar.*
+		* a status icon bar widgets, which show some basic status of the input and movement mode, as well as a help icon and an exit icon
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* configure.ac: bump version and add dependency on SDL_image
 
 2005-07-24  Miguel Guzman
