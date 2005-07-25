@@ -1,5 +1,9 @@
 2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* configfile: added a configfile for WFUT, this one points at http://www.ostgota.lu.se/wf/WFUT. To update to the latest media, run WFUT in the same directory as this config file, like so: "java -jar WFUT.jar update ember-media". This will be better integrated in the ember shell script later on.
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/modeldefinitions/environment.modeldef.xml; added a pile and some grass
 	* src/components/ogre/modeldefinitions/itemsmodeldef.xml; some adjustements to the scythe
 
