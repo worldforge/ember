@@ -24,7 +24,17 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.49  2005-07-13 19:34:04  erik
+ *      Revision 1.50  2005-07-25 19:07:40  erik
+ *      2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/component/ogre/GUIManager.*
+ *      		* cleaned up code
+ *      		* added reference to StatusIconBar
+ *      		* added new event for the changing of input modes
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* added accessor for the AvatarController (this should be renamed to something else really, like just EntityController. Ah, the joys of subversion.)
+ *
+ *      Revision 1.49  2005/07/13 19:34:04  erik
  *      2005-07-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.h: added a new event for when the user wants to close the window
@@ -542,6 +552,7 @@ public:
 	Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
 	AvatarCamera* getMainCamera() const;
+	AvatarController* getAvatarController() const;
 	
 	/**
 	 * Gets the entity with the supplies id from the world.

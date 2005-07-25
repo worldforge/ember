@@ -19,16 +19,8 @@
 #ifndef GUIMANAGER_H
 #define GUIMANAGER_H
 
-/*#include <CEGUIBase.h>
-#include <CEGUIExceptions.h>
-#include <CEGUISystem.h>
-#include <CEGUISchemeManager.h>
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
-#include <CEGUIImageset.h>
-#include <elements/CEGUIStaticImage.h>*/
+
 #include "EmberOgrePrerequisites.h"
-//#include <elements/CEGUIPushButton.h>
 #include <OgreCEGUIRenderer.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -42,7 +34,6 @@
 #endif
 
 #include <OgreKeyEvent.h> 
-//#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 
 #include <SDL.h>
@@ -61,28 +52,40 @@ class EmberEventProcessor;
 class Input;
 
 
-/*
+/**
  * This class will be responsible for all the GUI related things
  */
 class GUIManager : 
 public Ember::Singleton<GUIManager>, 
-/*Ogre::MouseMotionListener, 
-Ogre::MouseListener,
-Ogre::KeyListener,*/
 Ogre::FrameListener,
 virtual public SigC::Object
 {
 public:
 
+	/**
+	The mode of input.
+	*/
+	enum InputMode
+	{
+		IM_MOVEMENT = 1,
+		IM_GUI = 2
+	};
+
+
+
 	GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr);
 	virtual ~GUIManager();
-	//static MotionManager & getSingleton(void);
 	
 	SigC::Signal2<void, const std::string&, EmberEntity*> AppendIGChatLine;
-	SigC::Signal2<void, const std::string&, EmberEntity* > AppendOOGChatLine;
+	SigC::Signal2<void, const std::string&, EmberEntity*> AppendOOGChatLine;
 	
 	SigC::Signal2<void, const std::string&, EmberEntity*> EventEntityAction;
 	
+	/**
+	Emitted when the input mode changes between gui and movment mode.
+	*/
+	SigC::Signal1<void, InputMode> EventInputModeChanged;
+
 	
 	void removeWidget(Widget* widget);
 	void addWidget(Widget* widget);
@@ -141,7 +144,6 @@ public:
 	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
 protected:
 
-
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
 	CEGUI::StaticText* mDebugText;
@@ -183,7 +185,7 @@ protected:
 	//takes a screen shot and writes it to disk
 	const std::string takeScreenshot();
 
-	
+	InputMode mPreviousInputMode;
 	
 
 };

@@ -28,16 +28,6 @@
 
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
-// #include "widgets/ServerBrowserWidget.h"
-// #include "widgets/ServerWidget.h"
-// #include "widgets/ChatWidget.h"
-// #include "widgets/EntityPickerWidget.h"
-// #include "widgets/InventoryWidget.h"
-// #include "widgets/InspectWidget.h"
-// #include "widgets/MakeEntityWidget.h"
-// #include "widgets/GiveWidget.h"
-// #include "widgets/DebugWidget.h"
-// #include "widgets/IngameChatWidget.h"
 #include "MousePicker.h"
 
 #include "EmberEventProcessor.h"
@@ -57,9 +47,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 {
 
-// 	mEventProcessor = new EmberEventProcessor();
-// 	mEventProcessor->initialise(Ogre::Root::getSingleton().getAutoCreatedWindow());
-// 	mEventProcessor->startProcessingEvents();
 	WidgetDefinitions w;
 	
 	try {
@@ -67,16 +54,15 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		fprintf(stdout, "STARTING CEGUI\n");
 		
 		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
-		//mGuiRenderer->setTargetSceneManager(sceneMgr);
 		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 
 		Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
-		//chdir(configSrv->getEmberDataDirectory().c_str());
+		chdir(configSrv->getEmberDataDirectory().c_str());
 		dlopen( "libCEGUITaharezLook.so", RTLD_NOW );
-		fprintf(stderr, dlerror());
+		//fprintf(stderr, dlerror());
 		try {	
 //			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
 			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
@@ -101,15 +87,15 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet); 
-		//mSheet->setRiseOnClickEnabled(false);
 		mSheet->activate();
-		//mSheet->captureInput();
 		mSheet->moveToBack();
 
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 			
-
+		//set a default tool tip
+		CEGUI::System::getSingleton().setTooltip("TaharezLook/Tooltip");
+		
 		fprintf(stderr, "CEGUI - SYSTEM SET UP\n");
 
 		MousePicker* picker = new MousePicker();
@@ -159,6 +145,8 @@ void GUIManager::initialize()
 
 		mConsoleWidget = dynamic_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
 		createWidget("Quit");
+		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
+		createWidget("StatusIconBar");
 		createWidget("IngameChatWidget");
 		createWidget("DebugWidget");
 		createWidget("Performance");
@@ -173,13 +161,11 @@ void GUIManager::initialize()
 		createWidget("EntityPickerWidget");
 		createWidget("Help");
 
-/*		CEGUI::Window* helpWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/HelpWidget.xml", "Help/");
-		mSheet->addChildWindow(helpWindow );*/
 	} catch (std::exception& e) {
-		fprintf(stderr, "GUIManager - error when initializing widgets.\n");
+		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());
 
 	} catch (CEGUI::Exception& e) {
-		fprintf(stderr, "GUIManager - error when initializing widgets.\n");
+		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
 	}
 	
 }
@@ -319,9 +305,24 @@ const std::string GUIManager::takeScreenshot()
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 {
 		
-
+	CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+	
 	mInput->processInput(evt);
 
+	if (mPreviousInputMode == IM_GUI) {
+		if (!mInput->isInGUIMode()) {
+			EventInputModeChanged.emit(IM_MOVEMENT);
+			mPreviousInputMode = IM_MOVEMENT;
+		}
+	} else {
+		if (mInput->isInGUIMode()) {
+			EventInputModeChanged.emit(IM_GUI);
+			mPreviousInputMode = IM_GUI;
+		}
+	}
+	
+	
+	
 	//iterate over all widgets and send them a frameStarted event
 	std::set<Widget*>::iterator I = mWidgets.begin();
 	std::set<Widget*>::iterator I_end = mWidgets.end();
