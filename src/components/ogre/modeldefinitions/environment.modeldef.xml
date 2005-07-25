@@ -87,6 +87,25 @@
 		</submodels>
 	</model>
 	
+	<model name="pile">
+		<submodels>
+			<submodel mesh="3d_objects/environment/ground/models/rounded_heap/rounded_heap.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
+	<model name="grass">
+		<submodels>
+			<submodel mesh="3d_objects/plants/tussock/models/small_plant/simplegrass.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
 	
 	<!-- non-physical entities -->
 	<model name="boundary" >

@@ -61,7 +61,7 @@
 		</attachpoints>
 	</model>	
 
-	<model name="settler__" usescaleof="height" >
+	<model name="settler" usescaleof="height" >
 		<submodels>
 			<submodel mesh="Alpha_Male.mesh" >
 				<parts>
@@ -193,7 +193,7 @@
 	</model>		
 	
 	
-	<model name="settler" usescaleof="height" >
+	<model name="settler_working" usescaleof="height" >
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/AlphaMaleMesh.001.mesh" >
 				<parts>
