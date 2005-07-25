@@ -105,7 +105,7 @@ const CEGUI::Image* IconBase::loadImageFromFile(const std::string & filename)
 	std::string imagesetName = "icons/" + filename;
 	
 	if (!CEGUI::ImagesetManager::getSingleton().isImagesetPresent(imagesetName)) {
-		Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().load("gui/icons/" + filename, "General");
+		Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().load("themes/ember/gui/icons/" + filename, "General");
 		
 		//create a CEGUI texture from our Ogre texture
 		CEGUI::Texture* ceguiTexture =GUIManager::getSingleton().getGuiRenderer()->createTexture(texPtr);
