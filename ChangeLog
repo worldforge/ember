@@ -1,3 +1,7 @@
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: bump version and add dependency on SDL_image
+
 2005-07-24  Miguel Guzman
 
 	* configure.ac: the checking for WF libs now shows the errors upon

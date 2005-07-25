@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.3.1, clients@worldforge.org)
+AC_INIT(Ember, 0.3.2, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -88,7 +88,7 @@ AM_PATH_SDL(1.2.0,
   AC_MSG_ERROR(Couldn't find SDL or insufficent version found. Please goto http://www.libsdl.org/ and get at least version $SDL_VERSION)
 ])
 
-#WF_CHECK_SDL_IMAGE(1.2.0)
+WF_CHECK_SDL_IMAGE(1.2.0)
 #dnl don't add SDL flags yet, SDL_main confuses later checks
 
 #WF_CHECK_GL_SINGLE_LIB
@@ -347,8 +347,10 @@ dnl disabled cal3d, until needed
 #CXXFLAGS="$CXXFLAGS $WF_SDL_IMAGE_CFLAGS"
 #LIBS="$LIBS $WF_SDL_IMAGE_LIBS"
 
-CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-LDFLAGS="$LDFLAGS $SDL_LIBS"
+CXXFLAGS="$CXXFLAGS $SDL_CFLAGS $WF_SDL_IMAGE_CFLAGS"
+
+#LDFLAGS="$LDFLAGS $SDL_LIBS `relaytool --relay SDL_image -lSDL_image`"
+LDFLAGS="$LDFLAGS $SDL_LIBS $WF_SDL_IMAGE_LIBS"
     
 
 AC_MSG_RESULT([
