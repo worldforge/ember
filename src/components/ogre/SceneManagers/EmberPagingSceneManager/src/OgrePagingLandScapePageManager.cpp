@@ -1097,6 +1097,10 @@ namespace Ogre
     PagingLandScapeTile* PagingLandScapePageManager::getTileUnscaled( const Real posx, const Real posz, bool alwaysAnswer )
     {
         uint pagex, pagez;
+        //if there are no pages yet, stop here, since else we'll get a segfault
+        if (mPages.size() == 0) {
+        	return 0;
+        }
         if ( alwaysAnswer )
         {
             uint tilex, tilez;
