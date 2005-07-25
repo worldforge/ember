@@ -58,7 +58,7 @@ class ServerWidget : public Widget
 public:
 
     ~ServerWidget();
-	void buildWidget();
+	virtual void buildWidget();
 
 protected:
 

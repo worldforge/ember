@@ -17,7 +17,7 @@
 				<Property Name="Text" Value="A quitter, eh?" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="HorzFormatting" Value="WordWrapCenterAligned" /> 
+				<Property Name="HorzFormatting" Value="WordWrapMiddleAligned" /> 
 				<Property Name="FrameEnabled" Value="False" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="YesButton">

@@ -19,12 +19,14 @@ INCLUDES = -I$(top_srcdir)/src
 METASOURCES = AUTO
 noinst_LIBRARIES = libWidgets.a
 libWidgets_a_SOURCES = Widget.cpp Widget.h ChatWidget.cpp ChatWidget.h \
-				ConsoleWidget.cpp 		ConsoleWidget.h DebugWidget.cpp DebugWidget.h EntityPickerWidget.cpp \
-						EntityPickerWidget.h GiveWidget.cpp GiveWidget.h IngameChatWidget.cpp IngameChatWidget.h \
-						IngameEventsWidget.cpp IngameEventsWidget.h InspectWidget.cpp InspectWidget.h \
-						InventoryWidget.cpp InventoryWidget.h MakeEntityWidget.cpp MakeEntityWidget.h \
-						ServerBrowserWidget.cpp ServerBrowserWidget.h ServerWidget.cpp ServerWidget.h 		 \
-				Performance.cpp Performance.h WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp
+						ConsoleWidget.cpp 		ConsoleWidget.h DebugWidget.cpp DebugWidget.h EntityPickerWidget.cpp \
+								EntityPickerWidget.h GiveWidget.cpp GiveWidget.h IngameChatWidget.cpp IngameChatWidget.h \
+								IngameEventsWidget.cpp IngameEventsWidget.h InspectWidget.cpp InspectWidget.h \
+								InventoryWidget.cpp InventoryWidget.h MakeEntityWidget.cpp MakeEntityWidget.h \
+								ServerBrowserWidget.cpp ServerBrowserWidget.h ServerWidget.cpp ServerWidget.h 		 \
+						Performance.cpp Performance.h WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp \
+		IconBase.cpp StatusIconBar.cpp
 #TerrainEdit.cpp Map.cpp
-noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h Quit.h
+noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h Quit.h IconBase.h \
+	StatusIconBar.h
 #TerrainEdit.h Map.h

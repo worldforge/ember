@@ -61,7 +61,7 @@ void EntityPickerWidget::buildWidget()
 	mMousePicker->EventPickedEntity.connect(SigC::slot(*this, &EntityPickerWidget::pickedEntity));
 	mMousePicker->EventPickedNothing.connect(SigC::slot(*this, &EntityPickerWidget::pickedNothing));
 
-	mMainWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
+	mMainWindow = mWindowManager->createWindow("DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));
 	mMainWindow->setSize(CEGUI::Size(0.15f, 0.2f));
 	mMainWindow->setAlpha(0.5f);
@@ -69,7 +69,7 @@ void EntityPickerWidget::buildWidget()
 	mMainWindow->setEnabled(false);
 	mMainWindow->setAlwaysOnTop(true);
 	
-	mMenuWindow = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/Menu");
+	mMenuWindow = mWindowManager->createWindow("DefaultGUISheet", "EntityPickerWidget/Menu");
 	mMenuWindow->setPosition(CEGUI::Point(0.0, 0.3f));
 	mMenuWindow->setSize(CEGUI::Size(1.0f, 0.7f));
 	mMenuWindow->setInheritsAlpha(true);	

@@ -10,7 +10,54 @@
 		<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
 			<Property Name="AbsolutePosition" Value="x:10 y:30" /> 
 			<Property Name="AbsoluteSize" Value="w:780 h:560" /> 
-			<Property Name="Text" Value="We can't use linebreaks in the xml definition, so the help text will be set in Help.cpp instead." /> 
+			<Property Name="Text" Value="Welcome to ember.
+This help window can be accessed anytime either by clicking on the help icon down to the left, or by entering the command '/help' in the console (F12 will expand the console).
+
+---Getting started---
+The first thing you would want to do is to connect to a server. Use the server browser window for this. It should have connected to the metaserver and presented a list with available servers. You can also enter your own server address in the textbox in the lower left corner.
+Once connected, you must either create an account or log into an already existing. This is pretty straightforward. Once you've logged in, you must either choose an existing character, or create a new one. Also pretty self explanatory.
+
+---Moving in the world---
+If you press and hold the right mouse button you enter 'movement mode'. While in 'movement mode', mouse movement will pan the camera. Use the wasd keys to move the avatar. Pressing shift will make the avatar run, though the server might not always keep up with this.
+
+---Interacting with the world---
+Your main way of interacting with the world is by clicking with the left mouse button on world entities. This will bring up an action menu. Choose from the menu to perform the desired action.
+* Touch : this will make the avatar touch the entity, provoking different responses depending on the type of entity touched. A NPC will speak with you, while a pig might decide to try to run away from you. Try touching different entities in the world to find out their different responses.
+* Take : moves the entity to your inventory, it the server allows it.
+* Give : displays the Give dialog. Beware! Currently the server allows you to give almost anything to any entity, sometimes without the possibility to get it back.
+* Inspect : shows debug info about the entity.
+* Use : Tries to use the currently wielded entity on the selected entity. Try to use an axe with a tree, or a cleaver with a pig.
+
+---Inventory---
+The inventory can be brought up by the command '/show_inventory'. You can drop or wield items in your inventory. Wielding means that that entity will be used when performing the 'Use' action on another entity.
+
+--- Console ---
+At the top of the screen is the console. It can be expanded and shrunk by pressing F12. The console serves two purposes: it allows you to say things in the world, and it allows you to enter commands to the client. All commands are prefixed by '/', for example '/hide_chat' and '/show_chat'. Enter '/list_commands' for a list of all commands.
+
+--- Commands and keys ---
+Here's a list of the most common keys and some useful commands:
+
+When in movement mode:
+w : forward
+s : back
+a : left
+d : right
+shift : run
+
+General keys
+F12 : toggle console
+F8 : take screenshot and save to ~./ember/screenshots
+F7 : toggle wireframe mode
+
+Commands:
+/quit : quits
+/connect <server> : connects to a server
+/login <name> <password> : tries to log in
+/add <name> <gender> <type> : adds a new character, for example: /add Erik male settler
+
+
+
+For more questions or info, see www.worldforge.org" /> 
 			<Property Name="InheritsAlpha" Value="false" /> 
 			<Property Name="Alpha" Value="0.6" /> 
 			<Property Name="ReadOnly" Value="true" /> 

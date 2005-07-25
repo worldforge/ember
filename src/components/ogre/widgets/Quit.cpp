@@ -24,7 +24,11 @@
 #include "../EmberOgre.h"
 #include <elements/CEGUIPushButton.h>
 
+#include "framework/ConsoleBackend.h"
+
 namespace EmberOgre {
+
+const std::string Quit::SOFTQUIT("softquit");
 
 Quit::Quit()
 {
@@ -37,6 +41,9 @@ Quit::~Quit()
 
 void Quit::buildWidget()
 {
+	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(SOFTQUIT,this);
+	
 	loadMainSheet("Quit.widget", "Quit/");
 	
 	EmberOgre::getSingleton().EventRequestQuit.connect(SigC::slot(*this, &Quit::EmberOgre_RequestQuit));
@@ -69,9 +76,26 @@ bool Quit::No_Click(const CEGUI::EventArgs& args)
 
 void Quit::EmberOgre_RequestQuit() 
 {
+	softquit();
+}
+
+void Quit::softquit()
+{
 	mMainWindow->activate();
 	mMainWindow->moveToFront();
 	mMainWindow->setVisible(true);
+}
+
+
+void Quit::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == SOFTQUIT)
+	{
+		softquit();
+	} else {
+		Widget::runCommand(command, args);
+	}
+
 }
 
 };

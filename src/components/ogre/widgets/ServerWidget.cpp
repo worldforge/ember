@@ -55,14 +55,13 @@ namespace EmberOgre {
 
 ServerWidget::~ServerWidget()
 {
-	//delete mMainWindow;
 }
 
 void ServerWidget::buildWidget()
 {
 
 
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/ServerWidget.xml", "Server/");
+	loadMainSheet("ServerWidget.xml", "Server/");
 
 	CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/Login"));
 	BIND_CEGUI_EVENT(login, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Login_Click);
@@ -110,7 +109,7 @@ void ServerWidget::buildWidget()
 	mMainWindow->setVisible(false);
 
 	
-	getMainSheet()->addChildWindow(mMainWindow); 
+//	getMainSheet()->addChildWindow(mMainWindow); 
 
 }
 

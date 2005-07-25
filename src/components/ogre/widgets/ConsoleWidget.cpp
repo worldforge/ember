@@ -19,7 +19,7 @@ void ConsoleWidget::buildWidget()
 	myBackend->GotMessage.connect(SigC::slot(*this, &ConsoleWidget::pushMessage));
 	mState = CS_CLOSED;
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/widgets/ConsoleWidget.xml", "Console/");
+	loadMainSheet("ConsoleWidget.xml", "Console/");
 	mMainWindow->setAlwaysOnTop(true);
 	
 	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild("Console/InputBox"));
@@ -28,13 +28,6 @@ void ConsoleWidget::buildWidget()
 	BIND_CEGUI_EVENT(mInputBox, CEGUI::Editbox::EventKeyUp, ConsoleWidget::consoleTextBox_KeyUp);
 	
 	
-/*	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild((CEGUI::utf8*)"ConsoleTextBox"));
-	mConsoleTextBox->subscribeEvent(CEGUI::MultiLineEditbox::CharacterEvent, 
-		boost::bind(&ConsoleWidget::consoleTextBox_Character, this, _1));
-	mConsoleTextBox->subscribeEvent(CEGUI::MultiLineEditbox::KeyUpEvent, 
-		boost::bind(&ConsoleWidget::consoleTextBox_KeyUp, this, _1));
-*/	
-	getMainSheet()->addChildWindow(mMainWindow); 
 }
 	
 

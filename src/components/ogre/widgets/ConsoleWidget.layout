@@ -6,18 +6,23 @@
 		<Property Name="AbsoluteSize" Value="w:1024 h:385" /> 
 		<Property Name="FrameEnabled" Value="False" /> 
 		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Tooltip" Value="Use the console for conversions. You can also enter commands.
+/list shows all commands available.
+F12 will expand the console window." />
 		
 		<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
 			<Property Name="Text" Value="" /> 
 			<Property Name="ReadOnly" Value="true" /> 
 			<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
 			<Property Name="AbsoluteSize" Value="w:1024 h:360" /> 
+			<Property Name="InheritsTooltipText" Value="true" />
 		</Window>
 		<Window Type="TaharezLook/Editbox" Name="InputBox">
 			<Property Name="Text" Value="" /> 
 			<Property Name="AbsolutePosition" Value="x:0 y:360" /> 
 			<Property Name="AbsoluteSize" Value="w:1024 h:25" /> 
 			<Property Name="NormalTextColour" Value="00FFFFFF" />
+			<Property Name="InheritsTooltipText" Value="true" />
 		</Window>
 		
 	</Window>

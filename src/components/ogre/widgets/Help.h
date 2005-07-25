@@ -44,12 +44,9 @@ public:
 	virtual void buildWidget();
 	virtual void runCommand(const std::string &command, const std::string &args);
 
-	static const char * const HELP;
+	static const std::string HELP;
 	
 protected:
-	CEGUI::StaticImage* mHelpIcon;
-	
-	bool Icon_Click(const CEGUI::EventArgs& args);
 	
 	void show();
 

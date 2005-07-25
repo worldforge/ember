@@ -442,7 +442,7 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 	
 	Carpenter::BuildingBlock* bblock = mCurrentConstruction->getBluePrint()->createBuildingBlock(definition);
 	
-	//std::vector<Carpenter::BuildingBlockBinding*> bindings = createBindingsForNewBlock(bblock);
+	std::vector< Carpenter::BuildingBlockBinding* > bindings = createBindingsForNewBlock(bblock);
 	mCurrentConstruction->getBluePrint()->placeBindings(bblock, createBindingsForNewBlock(bblock));
 	if (bblock->isAttached()) {
 		mCurrentConstruction->createModelBlock(bblock, true);
@@ -485,7 +485,9 @@ std::vector< Carpenter::BuildingBlockBinding* > JesusEdit::createBindingsForNewB
 	{
 		Carpenter::BuildingBlockBindingDefinition def;
 		Carpenter::BuildingBlockBinding* binding = mCurrentConstruction->getBluePrint()->addBinding(getSelectedBlock()->getBuildingBlock(), I->first->getAttachPoint(), newBlock, I->second);
-		blockBindings.push_back(binding);
+		if (binding) {
+			blockBindings.push_back(binding);
+		} 
 	}
 	return blockBindings;
 }

@@ -38,6 +38,9 @@ public:
     ~Quit();
 	
 	virtual void buildWidget();
+	virtual void runCommand(const std::string &command, const std::string &args);
+
+	static const std::string SOFTQUIT;
 	
 protected:
 	
@@ -46,6 +49,7 @@ protected:
 	
 	void EmberOgre_RequestQuit();
 	
+	void softquit();
 
 };
 
