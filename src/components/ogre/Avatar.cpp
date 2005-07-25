@@ -179,7 +179,7 @@ void Avatar::updateFrame(AvatarControllerMovement& movement)
 void Avatar::attemptMove(AvatarControllerMovement& movement)
 {
 	Ogre::Vector3 move = movement.movementDirection;
-	bool isRunning = movement.isRunning;
+	bool isRunning = movement.mode == AvatarMovementMode::MM_RUN;
 	Ogre::Real timeSlice = movement.timeSlice;
 	float speed = isRunning ? mRunSpeed : mWalkSpeed;
 	Ogre::Vector3 rawVelocity = move * speed;
@@ -235,12 +235,12 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 	}
 		
 	
-	if (mErisAvatarEntity) {
+/*	if (mErisAvatarEntity) {
 		std::stringstream ss;
 		
  		ss << newMovementState.orientation * newMovementState.velocity << "  ---  " << WFMath::Vector<3>(mErisAvatarEntity->getPredictedVelocity()).rotate((mErisAvatarEntity->getOrientation().inverse()));
 		GUIManager::getSingleton().setDebugText(ss.str());
-	}	
+	}	*/
 	
 	
 	if (sendToServer) {
@@ -356,7 +356,6 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 {
 	Ogre::SceneNode* oldAvatar = mAvatarNode;
 	
-	mAvatarController->createAvatarCameras(EmberEntity->getSceneNode());
 	
 	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
 	
@@ -374,6 +373,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 
 	
 	
+	mAvatarController->createAvatarCameras(EmberEntity->getSceneNode());
 		
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 

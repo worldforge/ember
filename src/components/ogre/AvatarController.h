@@ -38,25 +38,43 @@ class GUIManager;
 
 class InputManager;
 class Input;
-//class InputManager::MouseListener;
+class AvatarController;
 
+/**
+The movement mode of the avatar, run or walk.
+*/
+class AvatarMovementMode {
+public:	
+	enum Mode
+	{
+		MM_WALK = 0,
+		MM_RUN = 1
+	};
+};
+	
+	
+/**
+Used for sending the current desired movement to the actual avatar.
+*/
 struct AvatarControllerMovement
 {
 	float rotationDegHoriz;
 	float rotationDegVert;
 	Ogre::Real timeSlice;
 	Ogre::Vector3 movementDirection;
-	bool isRunning;
+	AvatarMovementMode::Mode mode;
 	bool isMoving; 
 	Ogre::Quaternion cameraOrientation;
 };
 
-class AvatarController 
+class AvatarController
 : public Ogre::FrameListener
-//: public InputManager::MouseListener
 {
 public:
-	//static AvatarController & getSingleton(void);
+    
+    
+
+    
     
     AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager);
 
@@ -66,6 +84,10 @@ public:
 	bool frameStarted(const Ogre::FrameEvent & event);
 	
 	
+	/**
+	Emitted when the movement mode changes between run and walk.
+	*/
+	SigC::Signal1<void, AvatarMovementMode::Mode> EventMovementModeChanged;
 
 	
 
@@ -75,6 +97,8 @@ public:
 
 	void detachCamera();
 	void attachCamera();
+	
+	const AvatarControllerMovement& getCurrentMovement() const;
 
 
 protected:
@@ -99,7 +123,7 @@ protected:
     EmberEntity* mEntityUnderCursor;
     EmberEntity* mSelectedEntity;
     
-    AvatarControllerMovement movementForFrame;
+    AvatarControllerMovement movementForFrame, mPreviousMovementForFrame;
 	
 	SDLKey mKeyCodeForForwardMovement;
 	SDLKey mKeyCodeForBackwardsMovement;
@@ -112,6 +136,8 @@ protected:
     
 		
 };
+
+
 
 }
 

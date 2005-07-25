@@ -65,7 +65,7 @@ public:
 	Ogre::Quaternion orientation;
 };
 	
-/*
+/**
  * This class holds the Avatar. In general it recieves instructions from mainly 
  * AvatarController to attempt to move or rotate the avatar. After checking 
  * with the world rules if such a thing is allowed, the world node is manipulated.
@@ -93,7 +93,6 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 		return mAvatarNode;
 	}
 
-	//Ogre::Camera* getCamera() const;
 	
 	virtual bool frameStarted(const Ogre::FrameEvent & event);
 
@@ -103,7 +102,6 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 	
 	void movedInWorld();
 	
-	//void touch(EmberEntity* entity);
 	
 	void updateFrame(AvatarControllerMovement& movement);
 	
@@ -118,7 +116,7 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 
 protected:
 	
-	/*
+	/**
 	 * adjust the avatar to the new position in the terrain
 	 * for now this means setting the correct heigth 
 	 * accoring to mercator terrain, but it will probably
@@ -127,7 +125,7 @@ protected:
 	 */
 	void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement);
 	
-	/*
+	/**
 	 * This method will determine if it's ok to send a small movement change, such as
 	 * a small deviation direction during an already begun movement to the server.
 	 */
@@ -212,15 +210,17 @@ protected:
 
 
 
-	// node for rotating the model for the entity
-	// if it's not looking in the -Z direction (default)
-	// To be removed once we've standarized on models
+	/** node for rotating the model for the entity
+	* if it's not looking in the -Z direction (default)
+	* To be removed once we've standarized on models
+	*/
 	Ogre::SceneNode* mAvatarModelNode;
 
 	AvatarEmberEntity* mErisAvatarEntity;
-	//Eris::Avatar* mErisAvatar;
 
-	//this is used to make sure starts and stops of movement is only sent to the server once
+	/**
+	* this is used to make sure starts and stops of movement is only sent to the server once
+	*/
 	AvatarMovementState mCurrentMovementState;
 	AvatarMovementState mMovementStateAtBeginningOfMovement; //this is perhaps not needed
 	AvatarMovementState mMovementStateAtLastServerMessage;

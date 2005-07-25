@@ -71,7 +71,7 @@ void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 	if (mAvatarCamera == 0) {
 		mAvatarCamera = new AvatarCamera(avatarSceneNode, EmberOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager);
 	} else {
-		mAvatarCamera->setAvatarNode(avatarSceneNode);
+		attachCamera();
 	}
 }
 
@@ -128,6 +128,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 // 	}
 // 	
 
+	movementForFrame = AvatarControllerMovement();
 	
 	if (mGUIManager->getInput()->isKeyDown(SDLK_F6)) {
 		if (mIsAttached) {
@@ -136,16 +137,20 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 			attachCamera();
 		}
 	}
-	//getAvatarCamera()->yaw(Ogre::Degree(1.0f));
-	movementForFrame.movementDirection = Ogre::Vector3::ZERO;
-	movementForFrame.isRunning = false;
-	movementForFrame.isMoving = false;	
-	
 	if (mGUIManager->isInMovementKeysMode() && mGUIManager->getInput()) {
+//		movementForFrame.movementDirection = Ogre::Vector3::ZERO;
+//		movementForFrame.isRunning = false;
+//		movementForFrame.isMoving = false;	
+		
 		checkMovementKeys(event, mGUIManager->getInput());
+		
+		if (movementForFrame.mode != mPreviousMovementForFrame.mode) {
+			EventMovementModeChanged.emit(movementForFrame.mode);
+		}
+		
+		movementForFrame.timeSlice = event.timeSinceLastFrame;
 	}	
-	movementForFrame.timeSlice = event.timeSinceLastFrame;
-	
+		
 	if (mIsAttached) {
 //		mAvatarCamera->adjustForTerrain();
 		mAvatar->updateFrame(movementForFrame);
@@ -153,13 +158,15 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 		Ogre::Real scaler = 50;
 		//make this inverse, so that when the run key is pressed, the free flying camera goes slower
 		//this is since we assume that one wants to go fast when in free flying mode
-		if (movementForFrame.isRunning) {
+		if (movementForFrame.mode == AvatarMovementMode::MM_RUN) {
 			scaler = 10;
 		}
 		Ogre::Vector3 correctDirection(movementForFrame.movementDirection.z, movementForFrame.movementDirection.y, -movementForFrame.movementDirection.x);
 		mFreeFlyingCameraNode->translate(mAvatarCamera->getOrientaion(false) * (correctDirection * movementForFrame.timeSlice * scaler));
 
 	}
+	mPreviousMovementForFrame = movementForFrame;
+		
 	
 
 	return true;
@@ -211,21 +218,22 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, const Input* 
 			isMovement = true;
 		}
 		
+		movementForFrame.mode = isRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
+		movementForFrame.isMoving = isMovement;
 		if(isMovement)
 		{
 			movementForFrame.movementDirection = movement;
-			movementForFrame.isRunning = isRunning;
-			movementForFrame.isMoving = true;
 			
-//			mAvatar->attemptMove(movement, isRunning);
 		} else {
 			movementForFrame.movementDirection = Ogre::Vector3::ZERO;
-			movementForFrame.isRunning = false;
-			movementForFrame.isMoving = false;
-
-//			mAvatar->attemptStop();
 		}
 }
+
+const AvatarControllerMovement & AvatarController::getCurrentMovement() const
+{
+	return movementForFrame;
+}
+
 
 /*
 void AvatarController::mouseMoved(short newX, short newY, short oldX, short oldY)
