@@ -1,5 +1,16 @@
 2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/modeldefinitions/environment.modeldef.xml; added a pile and some grass
+	* src/components/ogre/modeldefinitions/itemsmodeldef.xml; some adjustements to the scythe
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* make_dist_media.sh.in: also copy the theme media
+	* src/components/ogre/widgets/IconBase.cpp: get the icons from themes/ember/gui instead (the svn repos)
+
+
+2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/component/ogre/cegui/datafiles/imagesets/TaharezLook.imageset, src/component/ogre/cegui/schemes/TaharezLook.scheme:
 		* updated with new elements for tool tips and updated to cegui 0.3.0
 		* moved references to gui elements to themes/ember/gui
