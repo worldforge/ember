@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<Imageset Name="iconset_mason" Imagefile="themes/ember/gui/icons/iconset_mason.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
+	<Image Name="spell" XPos="0" YPos="0" Width="48" Height="48" />
+	<Image Name="attack" XPos="48" YPos="0" Width="48" Height="48" />
+	<Image Name="defend" XPos="96" YPos="0" Width="48" Height="48" />
+</Imageset>

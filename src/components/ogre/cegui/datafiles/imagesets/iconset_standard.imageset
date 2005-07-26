@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<Imageset Name="iconset_standard" Imagefile="themes/ember/gui/icons/iconset_standard.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
+	<Image Name="background_A" XPos="0" YPos="0" Width="48" Height="48" />
+	<Image Name="background_B" XPos="48" YPos="0" Width="48" Height="48" />
+	<Image Name="ring" XPos="96" YPos="0" Width="48" Height="48" />
+	<Image Name="ring_over" XPos="144" YPos="0" Width="48" Height="48" />
+	<Image Name="question" XPos="192" YPos="0" Width="48" Height="48" />
+	<Image Name="close1" XPos="0" YPos="48" Width="48" Height="48" />
+	<Image Name="close2" XPos="48" YPos="48" Width="48" Height="48" />
+	<Image Name="walk" XPos="96" YPos="48" Width="48" Height="48" />
+	<Image Name="run" XPos="144" YPos="48" Width="48" Height="48" />
+	<Image Name="abc" XPos="192" YPos="48" Width="48" Height="48" />
+</Imageset>
