@@ -90,7 +90,7 @@ ceguischemadir = $(datadir)/games/ember/media/gui
 
 
 dist_ceguifonts_DATA = cegui/datafiles/fonts/Font.xsd cegui/datafiles/fonts/tahoma-14.xml cegui/datafiles/fonts/tahoma-10.xml cegui/datafiles/fonts/tahoma-8.xml cegui/datafiles/fonts/tahoma.ttf
-dist_ceguiimagesets_DATA = cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/imagesets/TaharezLook.imageset  cegui/datafiles/imagesets/TaharezLookMouse.imageset cegui/datafiles/imagesets/WindowsLook.imageset
+dist_ceguiimagesets_DATA = cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/imagesets/TaharezLook.imageset  cegui/datafiles/imagesets/TaharezLookMouse.imageset cegui/datafiles/imagesets/WindowsLook.imageset cegui/datafiles/imagesets/iconset_standard.imageset cegui/datafiles/imagesets/iconset_mason.imageset
 dist_ceguilayouts_DATA = cegui/datafiles/layouts/GUILayout.xsd
 dist_ceguischemes_DATA = cegui/datafiles/schemes/TaharezLook.scheme cegui/datafiles/schemes/TaharezLookWidgetAliases.scheme cegui/datafiles/schemes/TaharezLookWidgets.scheme cegui/datafiles/schemes/WindowsLook.scheme cegui/datafiles/schemes/WindowsLookWidgets.scheme cegui/datafiles/schemes/GUIScheme.xsd
 dist_ceguischema_DATA = cegui/datafiles/layouts/GUILayout.xsd cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/fonts/Font.xsd cegui/datafiles/schemes/GUIScheme.xsd

@@ -42,7 +42,7 @@ public:
  	
  	void setForeground(const CEGUI::Image* image);
    
-    static const CEGUI::Image* loadImageFromFile(const std::string & filename);
+    static const CEGUI::Image* loadImageFromImageset(const std::string & imagesetName, const std::string & image);
 
 protected:
 	

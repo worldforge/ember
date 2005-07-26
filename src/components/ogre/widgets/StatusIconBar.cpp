@@ -46,13 +46,13 @@ StatusIconBar::~StatusIconBar()
 void StatusIconBar::buildWidget()
 {
 
-	const CEGUI::Image* background = IconBase::loadImageFromFile("background_A.png");
-	const CEGUI::Image* borderactive = IconBase::loadImageFromFile("ring_over.png");
-	const CEGUI::Image* borderinactive = IconBase::loadImageFromFile("ring.png");
+	const CEGUI::Image* background = IconBase::loadImageFromImageset("iconset_standard", "background_A");
+	const CEGUI::Image* borderactive = IconBase::loadImageFromImageset("iconset_standard", "ring_over");
+	const CEGUI::Image* borderinactive = IconBase::loadImageFromImageset("iconset_standard", "ring");
 	const CEGUI::Image* foreground;
 	IconBase* helpIconBase;
 	
-	foreground = IconBase::loadImageFromFile("close2.png");
+	foreground = IconBase::loadImageFromImageset("iconset_standard", "close2");
 	helpIconBase = new IconBase("close2", background, foreground, borderinactive, borderactive);
 	getMainSheet()->addChildWindow(helpIconBase->getContainer());
 	helpIconBase->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(0, 700));
@@ -60,7 +60,7 @@ void StatusIconBar::buildWidget()
 	
 	BIND_CEGUI_EVENT(helpIconBase->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::close_MouseClick);
 	
-	foreground = IconBase::loadImageFromFile("question.png");
+	foreground = IconBase::loadImageFromImageset("iconset_standard", "question");
 	helpIconBase = new IconBase("help", background, foreground, borderinactive, borderactive);
 	getMainSheet()->addChildWindow(helpIconBase->getContainer());
 	helpIconBase->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(50, 700));
@@ -70,9 +70,9 @@ void StatusIconBar::buildWidget()
 	
 	
 	//load all of the movement status images
-	mMovementImage_walk	= IconBase::loadImageFromFile("walk.png");
-	mMovementImage_run	= IconBase::loadImageFromFile("run.png");
-	mMovementImage_gui	= IconBase::loadImageFromFile("abc.png");
+	mMovementImage_walk	= IconBase::loadImageFromImageset("iconset_standard", "walk");
+	mMovementImage_run	= IconBase::loadImageFromImageset("iconset_standard", "run");
+	mMovementImage_gui	= IconBase::loadImageFromImageset("iconset_standard", "abc");
 	
 	mMovementModeIcon = new IconBase("movementmode", background, mMovementImage_gui, borderinactive, borderactive);
 	getMainSheet()->addChildWindow(mMovementModeIcon->getContainer());

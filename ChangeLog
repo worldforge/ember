@@ -1,3 +1,16 @@
+2005-07-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Makefile.am: include new .imageset files
+	* src/components/ogre/widgets/IconBase.* don't get images by file name, get them from the imageset instead
+	* src/components/ogre/widgets/StatuIconBar.* use the new functionality in IconBase
+
+
+2005-07-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/cegui/datafiles/imagesets/iconset_mason.imageset, src/components/ogre/cegui/datafiles/imagesets/iconset_standard.imageset:
+		* instead of using individual files for the icons we'll use CEGUI's imageset functionality. This is good in so many ways, amongst them that we'll have to use imagesizes n^2 for our images since most GFX can't handle other sizes.
+		* separated the images into two different files. The standard icons are those that presumely are game neutral. I put the non-game neutral icons in iconset_mason, even though there probably won't be combat or magic in mason.
+
 2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* configfile: added a configfile for WFUT, this one points at http://www.ostgota.lu.se/wf/WFUT. To update to the latest media, run WFUT in the same directory as this config file, like so: "java -jar WFUT.jar update ember-media". This will be better integrated in the ember shell script later on.

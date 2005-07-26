@@ -100,24 +100,21 @@ CEGUI::PushButton * IconBase::getButton()
 	return mButton;
 }
 
-const CEGUI::Image* IconBase::loadImageFromFile(const std::string & filename)
+const CEGUI::Image* IconBase::loadImageFromImageset(const std::string & imagesetName, const std::string & image)
 {
-	std::string imagesetName = "icons/" + filename;
-	
+	CEGUI::Imageset* imageSet;
 	if (!CEGUI::ImagesetManager::getSingleton().isImagesetPresent(imagesetName)) {
-		Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().load("themes/ember/gui/icons/" + filename, "General");
-		
-		//create a CEGUI texture from our Ogre texture
-		CEGUI::Texture* ceguiTexture =GUIManager::getSingleton().getGuiRenderer()->createTexture(texPtr);
-		
-		//we need a imageset in order to create GUI elements from the ceguiTexture
-		CEGUI::Imageset* imageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imagesetName, ceguiTexture);
-		
-		//we only want one element: the whole texture
-		imageSet->defineImage("fullicon", CEGUI::Rect(0,0,48,48), CEGUI::Point(0,0));
-	
+		try {
+			std::string imagesetFileName = "cegui/datafiles/imagesets/" + imagesetName + ".imageset";
+			imageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imagesetFileName);
+		} catch (Ogre::Exception&) {
+			return 0;
+		}
+	} else {
+		imageSet = CEGUI::ImagesetManager::getSingleton().getImageset(imagesetName);
 	}
-	return &CEGUI::ImagesetManager::getSingleton().getImageset(imagesetName)->getImage("fullicon");
+	
+	return &imageSet->getImage(image);
 
 }
 
