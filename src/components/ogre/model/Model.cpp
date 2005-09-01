@@ -531,10 +531,20 @@ void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObjec
             bone, offsetOrientation, offsetPosition);
         tp->setParentEntity(entity);
         tp->setChildObject(pMovable);
-		tp->setScale(scale);
+        if (mParentNode) {
+        	//since we're using inherit scale on the tagpoint, divide by the parent's scale now, so it evens out later on when the TagPoint is scaled in TagPoint::_updateFromParent(
+        	Ogre::Vector3 parentScale = mParentNode->_getDerivedScale();
+			tp->setScale(scale / parentScale);
+		} else {
+			//no parent node, this is not good...
+			tp->setScale(scale);	
+		}
+		//tp->setInheritScale(false);
 
         attachObjectImpl(pMovable, tp);
 
+		tp->_updateFromParent();
+		
         // Trigger update of bounding box if necessary
         if (mParentNode)
             mParentNode->needUpdate();
