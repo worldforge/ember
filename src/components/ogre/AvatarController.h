@@ -58,6 +58,8 @@ Used for sending the current desired movement to the actual avatar.
 */
 struct AvatarControllerMovement
 {
+	AvatarControllerMovement();
+	
 	float rotationDegHoriz;
 	float rotationDegVert;
 	Ogre::Real timeSlice;

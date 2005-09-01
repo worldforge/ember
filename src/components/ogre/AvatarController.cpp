@@ -40,6 +40,14 @@ using namespace Ogre;
 namespace EmberOgre {
 
 
+AvatarControllerMovement::AvatarControllerMovement() :	rotationDegHoriz(0),
+	rotationDegVert(0),
+	timeSlice(0),
+	movementDirection(Ogre::Vector3::ZERO),
+	isMoving(false)
+{
+}
+
 AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager) 
 : mEntityUnderCursor(0) 
 , mSelectedEntity(0)
