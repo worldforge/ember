@@ -145,7 +145,12 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	
 	ss << "PredPosition: " << entity->getPredictedPos() << "\n";
 	ss << "Position: " << entity->getPosition() << "\n";
-	ss << "Velocity: " << entity->getPredictedVelocity() << "\n";
+	WFMath::Vector<3> velocity = entity->getPredictedVelocity();
+	if (velocity.isValid()) {
+		ss << "Velocity: " << entity->getPredictedVelocity() << "\n";
+	} else {
+		ss << "Velocity: 0\n";
+	}
 	ss << "Orientation: " << entity->getOrientation() << "\n";
 	ss << "Boundingbox: " << entity->getBBox() << "\n";
 	
