@@ -1,3 +1,20 @@
+2005-09-05  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: updated items
+
+2005-09-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarController.* : make sure all values are initiialized to the correct values (in most cases 0) in the constructor
+
+2005-09-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp: since Ogre 1.0.4 the issue with attached entities not being scaled correctly has been fixed, so thus we need to deal with this in Model
+	* configure.ac: require Ogre 1.0.4
+
+2005-09-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/InspectWidget.cpp: Check that the predicted velocity is valid before showing it, since at least with the current Eris it will be invalid if the entity is not moving.
+
 2005-07-26  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Makefile.am: include new .imageset files

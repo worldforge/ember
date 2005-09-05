@@ -1,26 +1,34 @@
 TODO LIST
 ---------
 
-terrain
+* terrain
 	-better use of GPU shaders (both vertex and pixel shaders)
 	-optimize material better
 	
-foliage
+* foliage
 	-research the best way to present foliage, perhaps it would be better to not use static geometry but use a fixed set of entites instead?
 
-sun
-	-implement time, making the sun move over the sky etc.
+* implement time
+	* see if it's possible to use the calendar functionlity from Sear
+	* make the sun move over the sky, changing the light and the shadows
+	* see if it's possible to use Caelum, the Ogre add in project
+
+* settings
+	* add ability to edit the settings from the console
+	* add widgets for editing the settings, this could in this stage just be a very crude but powerful mechanism for changing all kind of settings
+	* add a control center for easy editing of the settings
+	
 	
 * a map widget, which shows a map of the world. Perhaps the paging scene manager can help here?
 * add a constant-running key
 * move the input system to something more like the one used in sear, which will allow the user to define the key bindings for different actions
 * add a basepoint editor
-* add mouselook toggle, perhaps caps lock
 * add a check for nvidia cards and SGI Mesa libGL, and if so warn the user
 * show ping
-* add the players position the the debug widget
-* allow the user to close the window though the window manager
+* add the players position with the debug widget
 * modify ogre so that the window manager icon can be set
-
-
+* add a generic system for defining bindings between entity attributes and model attributes. Like an extension of how it's possible to currently connect an attribute to a particle system property, but much more generic. This will mean for example that the way of defining how a model is scaled will be deprecated, to be replaced by a more generic system.
+* allow dynamic placement of entities. It should be possible to drag and drop an entity into the world and see a "preview" 3d-representation (perphaps with a translucent material)
+* add a widget for creating and editing atlas type definition. There's already example code in cyphesis.
+* add widget for editing and creating entity media definitions. It should be possible from within Ember to create a whole new media type definition and save it. 
 
