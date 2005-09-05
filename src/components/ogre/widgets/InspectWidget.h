@@ -38,8 +38,21 @@ public:
     InspectWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & evt);
+	
+	static const std::string INSPECT;
+		
+	
+	/**
+	 *    reimplement ConsoleObject::runCommand to catch the "inspect $entityid" command
+	 * @param command 
+	 * @param args 
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 protected:
+	
+	void startInspecting(EmberEntity* entity);
+	
 	CEGUI::Listbox* mChildList;
 	CEGUI::StaticText* mInfo;
 	void showEntityInfo(EmberEntity* entity);

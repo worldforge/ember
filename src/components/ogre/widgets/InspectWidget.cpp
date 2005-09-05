@@ -39,9 +39,13 @@
 #include <Atlas/Objects/Encoder.h>
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
+
 namespace EmberOgre {
 
 
+const std::string InspectWidget::INSPECT("inspect");
 
 class Decoder : public Atlas::Message::DecoderBase {
   private:
@@ -69,6 +73,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 InspectWidget::InspectWidget() : mCurrentEntity(0)
 {
 
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(INSPECT,this);
 	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &InspectWidget::Server_GotView));
 }
 
@@ -104,19 +109,48 @@ void InspectWidget::buildWidget()
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowOgreBoundingBox_Click)
 	
 	button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ShowErisBoundingBox"));
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click)
+	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click);
 	
 		
 /*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
 }
 
+void InspectWidget::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == INSPECT)
+	{
+		//the first argument must be a valid entity id
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string entityId = tokeniser.nextToken();
+		if (entityId != "") {
+			EmberEntity* entity = EmberOgre::getSingleton().getEntity(entityId);
+			if (entity != 0) {
+				startInspecting(entity);
+			}
+		} else {
+			Ember::ConsoleBackend::getMainConsole()->pushMessage("You must specifify a valid entity id to inspect.");
+		}
+		
+	} else {
+		Widget::runCommand(command, args);
+	}
+
+}
+
+
 void InspectWidget::handleAction(const std::string& action, EmberEntity* entity) {
 
 	if (action == "inspect") {
-		mMainWindow->setVisible(true);
-		mCurrentEntity = entity;
-		showEntityInfo(entity);
+		startInspecting(entity);
 	}
+}
+
+void InspectWidget::startInspecting(EmberEntity* entity)
+{
+	mMainWindow->setVisible(true);
+	mCurrentEntity = entity;
+	showEntityInfo(entity);
 }
 
 void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
@@ -129,7 +163,7 @@ void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
 void InspectWidget::showEntityInfo(EmberEntity* entity)
 {
 	
-	
+	//TODO: restructure this so it won't be done all over each frame, instead cache the values and only update upon changes to the entity
 	Eris::Entity* parent = entity->getLocation();
 	std::stringstream ss;
 	

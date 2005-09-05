@@ -1,5 +1,10 @@
 2005-09-05  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/InspectWidget.*
+		* added "/inspect $entityid" console command
+
+2005-09-05  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* TODO: updated items
 
 2005-09-01  Erik Hjortsberg  <erik@katastrof.nu>
