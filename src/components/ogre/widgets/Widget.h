@@ -3,23 +3,10 @@
 
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-// #include <CEGUI.h>
-// #include <CEGUIEvent.h> 
-// #include <CEGUIBase.h>
-// #include <CEGUIExceptions.h>
-// #include <CEGUISystem.h>
-// #include <CEGUISchemeManager.h>
-// #include <CEGUIWindow.h>
-//#include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 
-#include <CEGUIWindowManager.h>
-// #include <CEGUIImageset.h>
+//#include <CEGUIWindowManager.h>
 
-// #include <elements/CEGUIStaticImage.h>
-// #include <elements/CEGUIPushButton.h>
-// #include <elements/CEGUIGUISheet.h>
-// #include <renderers/OgreGUIRenderer/ogrerenderer.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -34,6 +21,10 @@
 
 #include "framework/ConsoleObject.h"
 
+namespace CEGUI
+{
+	class WindowManager;
+}
 
 namespace EmberOgre {
 
@@ -80,6 +71,11 @@ public:
 	Widget();
 	virtual ~Widget();
 	
+	
+	/**
+	 *    Sets up the widget, called upon creation.
+	 * @param guiManager 
+	 */
 	void init(GUIManager* guiManager);
 	
 	
@@ -97,21 +93,59 @@ public:
  	 */
 	virtual void buildWidget();
 	
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
+	
+	/**
+	 *    Show the widget.
+	 */
 	virtual void show();
+	
+	/**
+	 *    Hides the widget.
+	 */
 	virtual void hide();
+	
+	/**
+	 *    Get's the window with the supplied name from the WindowManager. Note that you shouldn't supply the prefix (as defined in loadMainSheet) since that will be added by the method.
+	 * @param windowName The name of the window, without the suffix.
+	 * @return A valid Window pointer of 0.
+	 */
+	CEGUI::Window* getWindow(const std::string& windowName);
 	
 protected:
 
+	
+	/**
+	 *    Call this method upon creation of the widget (for example in buildWidget) to enable the close button and wire it to the correct methods.
+	 */
 	void enableCloseButton();
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
 
+	/**
+	*    The suffixed used by registerConsoleVisibilityToggleCommand
+	* @see registerConsoleVisibilityToggleCommand
+	*/
 	std::string mCommandSuffix;
+	
+	
+	/**
+	 *    Call this method upon creation of the widget (for example in buildWidget) to register show and hide commands with the console.
+	 *    The command you choose will be prefixed by "show_" and "hide_". So if you have a widget which shows a map and you call this method with the
+	 *    parameter "map" the commands "show_map" and "hide_map" will be registered with the console.
+	 * @param commandSuffix a string to be prefixed by "show_" and "hide_"
+	 */
 	void registerConsoleVisibilityToggleCommand(const std::string & commandSuffix);
 	
-	
+	/**
+	*     The main window for the widget.
+	*/
 	CEGUI::Window* mMainWindow;
 
 	GUIManager* mGuiManager;
@@ -130,7 +164,7 @@ protected:
 	 * @param prefix The prefix to use
 	 * @return 
 	 */
-	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix);
+	CEGUI::Window* loadMainSheet(const std::string& filename, const std::string& prefix);
 	
 	/**
 	 *    Gets the prefix used in the widget definition
@@ -173,9 +207,18 @@ public:
 	*/
 	static Widget* createWidget(const std::string& name);
 	
+	/**
+	 *    Registers a widget (which functor points at) with a string. The widget can later be loaded through the createWidget method and the same string.
+	 * @param name The name of the widget, which can later be used in createWidget
+	 * @param functor A functor to a Widget, for example "&WidgetLoader::createWidgetInstance<Help>"
+	 */
 	static void registerWidget(const std::string& name, FactoryFunc functor );
 
 	
+	/**
+	 *    Use this together with registerWidget, which requires a functor to a widget as a parameter.
+	 * @return A functor to a Widget.
+	 */
 	template <typename T> static Widget* createWidgetInstance() { return new T; }
 
 };

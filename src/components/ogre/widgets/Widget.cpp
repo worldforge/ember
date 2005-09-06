@@ -14,6 +14,7 @@
 #endif
 
 #include <elements/CEGUIFrameWindow.h>
+#include <CEGUIWindowManager.h>
 
 #include "framework/ConsoleBackend.h"
 
@@ -64,12 +65,21 @@ namespace EmberOgre
 
 		
 	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) { 
+		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
-		mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(std::string("cegui/widgets/") + filename, prefix);
+		mMainWindow = mWindowManager->loadWindowLayout(std::string("cegui/widgets/") + filename, prefix);
 		if (mMainWindow) {
 			getMainSheet()->addChildWindow(mMainWindow); 
 		}
 		return mMainWindow;
+	}
+
+	CEGUI::Window* Widget::getWindow(const std::string& windowName)
+	{
+		assert(mWindowManager && "You must call init() before you can call any other methods.");
+		assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
+		return 	mWindowManager->getWindow(mPrefix + windowName);
+
 	}
 
 	

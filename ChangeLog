@@ -1,3 +1,9 @@
+2005-09-06  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Widget.*
+		* added more utility methods to be used by subclasses, for example a getWindow(...) method
+		* added more comments
+
 2005-09-05  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/InspectWidget.*
