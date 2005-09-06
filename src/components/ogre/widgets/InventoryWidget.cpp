@@ -58,15 +58,15 @@ void InventoryWidget::buildWidget()
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
-	mListBox = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/ListBox"));
+	mListBox = static_cast<CEGUI::Listbox*>(getWindow("ListBox"));
 // 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));
 	
-	CEGUI::PushButton* dropButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/Drop"));
+	CEGUI::PushButton* dropButton = static_cast<CEGUI::PushButton*>(getWindow("Drop"));
 	BIND_CEGUI_EVENT(dropButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Drop_Click)
 	
-	CEGUI::PushButton* wieldButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Inventory/Wield"));
+	CEGUI::PushButton* wieldButton = static_cast<CEGUI::PushButton*>(getWindow("Wield"));
 	BIND_CEGUI_EVENT(wieldButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Wield_Click)
 
 	enableCloseButton();

@@ -28,6 +28,7 @@
 #include "InspectWidget.h"
 #include "../EmberOgre.h"
 
+#include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
@@ -98,17 +99,17 @@ void InspectWidget::buildWidget()
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
-	mChildList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ChildList"));
-	mInfo = static_cast<CEGUI::StaticText*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/EntityInfo"));
+	mChildList = static_cast<CEGUI::Listbox*>(getWindow("ChildList"));
+	mInfo = static_cast<CEGUI::StaticText*>(getWindow("EntityInfo"));
 	
 	
 	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
-	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ShowOgreBoundingBox"));
+	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"));
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowOgreBoundingBox_Click)
 	
-	button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"InspectWidget/ShowErisBoundingBox"));
+	button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"));
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click);
 	
 		

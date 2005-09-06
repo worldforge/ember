@@ -20,16 +20,14 @@ DebugWidget::~DebugWidget()
 
 void DebugWidget::buildWidget() 
 {
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/DebugWidget.xml", "Debug/");
-//	mMainWindow->setAlwaysOnTop(true);
+	loadMainSheet("DebugWidget.xml", "Debug/");
 	
-	mLogTextBox = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Debug/TextBox"));
-	mLoglevelDroplist = static_cast<CEGUI::Combobox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Debug/LogLevelDropList"));
+	mLogTextBox = static_cast<CEGUI::MultiLineEditbox*>(getWindow("TextBox"));
+	mLoglevelDroplist = static_cast<CEGUI::Combobox*>(getWindow("LogLevelDropList"));
 	fillListWithLogLevels(mLoglevelDroplist);
 	
 	BIND_CEGUI_EVENT(mLoglevelDroplist, CEGUI::Combobox::EventListSelectionAccepted, DebugWidget::loglevel_SelectionChanged);
 	
-	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	Eris::Logged.connect(SigC::slot(*this, &DebugWidget::recieveLog));
 	

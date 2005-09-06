@@ -29,6 +29,7 @@
 #include "../EmberPhysicalEntity.h"
 #include "../model/Model.h"
 
+#include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 

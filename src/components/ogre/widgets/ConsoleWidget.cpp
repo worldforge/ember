@@ -22,8 +22,8 @@ void ConsoleWidget::buildWidget()
 	loadMainSheet("ConsoleWidget.xml", "Console/");
 	mMainWindow->setAlwaysOnTop(true);
 	
-	mInputBox = static_cast<CEGUI::Editbox*>(mMainWindow->getChild("Console/InputBox"));
-	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(mMainWindow->getChild("Console/TextBox"));
+	mInputBox = static_cast<CEGUI::Editbox*>(getWindow("InputBox"));
+	mConsoleTextBox = static_cast<CEGUI::MultiLineEditbox*>(getWindow("TextBox"));
 	BIND_CEGUI_EVENT(mInputBox, CEGUI::Editbox::EventCharacterKey, ConsoleWidget::consoleTextBox_Character);
 	BIND_CEGUI_EVENT(mInputBox, CEGUI::Editbox::EventKeyUp, ConsoleWidget::consoleTextBox_KeyUp);
 	

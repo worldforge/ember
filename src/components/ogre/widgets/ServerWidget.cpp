@@ -62,24 +62,25 @@ void ServerWidget::buildWidget()
 
 
 	loadMainSheet("ServerWidget.xml", "Server/");
+	mMainWindow->setVisible(false);
 
-	CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/Login"));
+	CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/Login"));
 	BIND_CEGUI_EVENT(login, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Login_Click);
-	CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/CreateAcc"));
+	CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/CreateAcc"));
 	BIND_CEGUI_EVENT(createAcc, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateAcc_Click);
 
-	mCharacterList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/CharacterList"));
-	CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/ChooseCharacterPanel/Choose"));
-	mCreateChar = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/CreateButton"));
+	mCharacterList = static_cast<CEGUI::Listbox*>(getWindow("ChooseCharacterPanel/CharacterList"));
+	CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(getWindow("ChooseCharacterPanel/Choose"));
+	mCreateChar = static_cast<CEGUI::PushButton*>(getWindow("CreateCharacterPanel/CreateButton"));
 	
 	BIND_CEGUI_EVENT(chooseChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
 	BIND_CEGUI_EVENT(mCreateChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateChar_Click);
 	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
 	
 	
-	mNewCharName = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/NameEdit"));
-	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Description"));
-	mTypesList = static_cast<CEGUI::Combobox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Type"));
+	mNewCharName = static_cast<CEGUI::Editbox*>(getWindow("CreateCharacterPanel/NameEdit"));
+	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
+	mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
 	
 	
 	//NOTE: hardcoded! we should get the values from the server somehow
@@ -87,8 +88,8 @@ void ServerWidget::buildWidget()
 	mTypesList->addItem(item);
 
 	
-	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Gender/Male"));
-	CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CreateCharacterPanel/Gender/Female"));
+	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
+	CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Female"));
 	
 	BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
 	BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
@@ -122,8 +123,8 @@ void ServerWidget::createdAccount(Eris::Account* account)
 
 void ServerWidget::loginSuccess(Eris::Account* account) 
 {
-	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel")->setVisible(false);
-	CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/CharacterTabControl")->setVisible(true);
+	getWindow("LoginPanel")->setVisible(false);
+	getWindow("CharacterTabControl")->setVisible(true);
 	account->refreshCharacterInfo();
 	
 }
@@ -204,8 +205,8 @@ void ServerWidget::updateNewCharacter()
 
 bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 {
-	CEGUI::Window* nameBox = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/PasswordEdit");
+	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
 	
 	CEGUI::String name = nameBox->getText();
 	CEGUI::String password = passwordBox->getText();
@@ -216,8 +217,8 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 
 bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 {
-	CEGUI::Window* nameBox = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Server/LoginPanel/PasswordEdit");
+	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
 	
 	CEGUI::String name = nameBox->getText();
 	CEGUI::String password = passwordBox->getText();

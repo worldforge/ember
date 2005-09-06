@@ -51,10 +51,20 @@ public:
 
 protected:
 	
+	
+	/**
+	 *    Starts inspecting an entity
+	 * @param entity 
+	 */
 	void startInspecting(EmberEntity* entity);
 	
 	CEGUI::Listbox* mChildList;
 	CEGUI::StaticText* mInfo;
+	
+	/**
+	 * Updated the entity information text
+	 * @param entity 
+	 */
 	void showEntityInfo(EmberEntity* entity);
 	
 	void handleAction(const std::string& action, EmberEntity* entity);

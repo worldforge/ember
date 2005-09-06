@@ -48,8 +48,8 @@ void Quit::buildWidget()
 	
 	EmberOgre::getSingleton().EventRequestQuit.connect(SigC::slot(*this, &Quit::EmberOgre_RequestQuit));
 	
-	CEGUI::PushButton* yesButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow(getPrefix() + "YesButton"));
-	CEGUI::PushButton* noButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow(getPrefix() + "NoButton"));
+	CEGUI::PushButton* yesButton = static_cast<CEGUI::PushButton*>(getWindow("YesButton"));
+	CEGUI::PushButton* noButton = static_cast<CEGUI::PushButton*>(getWindow("NoButton"));
 	
 	BIND_CEGUI_EVENT(noButton, CEGUI::ButtonBase::EventMouseClick,Quit::No_Click );
 	BIND_CEGUI_EVENT(yesButton, CEGUI::ButtonBase::EventMouseClick,Quit::Yes_Click );

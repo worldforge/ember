@@ -1,5 +1,11 @@
 2005-09-06  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/widgets/ChatWidget.cpp, src/components/widgets/ConsoleWidget.cpp, src/components/widgets/DebugWidget.cpp, src/components/widgets/EntityPickerWidget.cpp, src/components/widgets/GiveWidget.cpp, src/components/widgets/IconBase.h, src/components/widgets/IngameChatWidget.cpp, src/components/widgets/InspectWidget.*, src/components/widgets/InventoryWidget.cpp, src/components/widgets/JesusEdit.cpp, src/components/widgets/MakeEntityWidget.cpp, src/components/widgets/Performance.cpp, src/components/widgets/Quit.cpp, src/components/widgets/ServerBrowserWidget.cpp, src/components/widgets/ServerWidget.cpp
+		* use new utility methods in Widget.cpp which cleans up the code a bit
+		* added some more comments
+
+2005-09-06  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/Widget.*
 		* added more utility methods to be used by subclasses, for example a getWindow(...) method
 		* added more comments

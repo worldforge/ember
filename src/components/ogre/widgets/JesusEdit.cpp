@@ -29,8 +29,11 @@
 #include "../GUIManager.h"
 #include "../carpenter/Carpenter.h"
 #include "../carpenter/BluePrint.h"
+
+#include <CEGUIWindowManager.h>
 #include <CEGUIImagesetManager.h> 
 #include <CEGUIImageset.h> 
+
 #include "../EmberOgre.h"
 #include "../AvatarCamera.h"
 #include "../Avatar.h"
@@ -69,45 +72,45 @@ void JesusEdit::buildWidget()
 
 	
 	//bind buttons
-	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/SwitchMode"));
+	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(getWindow("SwitchMode"));
 	BIND_CEGUI_EVENT(switchButton, CEGUI::ButtonBase::EventMouseClick, JesusEdit::SwitchMode_Click)
 	
-	CEGUI::PushButton* fileButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/File"));
+	CEGUI::PushButton* fileButton = static_cast<CEGUI::PushButton*>(getWindow("File"));
 	BIND_CEGUI_EVENT(fileButton, CEGUI::ButtonBase::EventMouseClick, JesusEdit::File_Click)
 	
-	mCreateNew = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/CreateNew"));
+	mCreateNew = static_cast<CEGUI::PushButton*>(getWindow("CreateNew"));
 	BIND_CEGUI_EVENT(mCreateNew, CEGUI::ButtonBase::EventMouseClick, JesusEdit::CreateNew_Click)
 	
-	mCreate = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/Create"));
+	mCreate = static_cast<CEGUI::PushButton*>(getWindow("Create"));
 	BIND_CEGUI_EVENT(mCreate, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Create_Click)
 	
-	mBind = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/Bind"));
+	mBind = static_cast<CEGUI::PushButton*>(getWindow("Bind"));
 	BIND_CEGUI_EVENT(mBind, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Bind_Click)
 	
-	mRemove = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/Remove"));
+	mRemove = static_cast<CEGUI::PushButton*>(getWindow("Remove"));
 	BIND_CEGUI_EVENT(mRemove, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Remove_Click)
 	
 	
 	
-	mNewName = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/NewName"));
+	mNewName = static_cast<CEGUI::Editbox*>(getWindow("NewName"));
 	
 	
 	
 	//bind lists
-	mCurrentBlocksList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/CurrentBlocks"));
+	mCurrentBlocksList = static_cast<CEGUI::Listbox*>(getWindow("CurrentBlocks"));
 	BIND_CEGUI_EVENT(mCurrentBlocksList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::CurrentBlocksList_SelectionChanged)
 	BIND_CEGUI_EVENT(mCurrentBlocksList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::CurrentBlocksList_SelectionChanged)
 	
 	
-	mCurrentPointsList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/CurrentPoints"));
+	mCurrentPointsList = static_cast<CEGUI::Listbox*>(getWindow("urrentPoints"));
 	BIND_CEGUI_EVENT(mCurrentPointsList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::CurrentPointsList_SelectionChanged)
 	BIND_CEGUI_EVENT(mCurrentPointsList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::CurrentPointsList_SelectionChanged)
 	
-	mAvailableBlocksList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/AvailableBlocks"));
+	mAvailableBlocksList = static_cast<CEGUI::Listbox*>(getWindow("AvailableBlocks"));
 	BIND_CEGUI_EVENT(mAvailableBlocksList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::AvailableBlocksList_SelectionChanged)
 	BIND_CEGUI_EVENT(mAvailableBlocksList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::AvailableBlocksList_SelectionChanged)
 	
-	mNewPointsList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEdit/NewBlockPoints"));
+	mNewPointsList = static_cast<CEGUI::Listbox*>(getWindow("NewBlockPoints"));
 	BIND_CEGUI_EVENT(mNewPointsList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::NewPointsList_SelectionChanged)
 	BIND_CEGUI_EVENT(mNewPointsList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::NewPointsList_SelectionChanged)
 	

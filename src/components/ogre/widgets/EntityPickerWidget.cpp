@@ -41,6 +41,7 @@
 
 #include "EntityPickerWidget.h"
 
+#include <CEGUIWindowManager.h>
 #include <elements/CEGUIStaticText.h>
 
 //#include <CEGUIWindowProperties.h> 

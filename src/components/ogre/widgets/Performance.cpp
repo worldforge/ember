@@ -47,7 +47,7 @@ void Performance::buildWidget()
 {
 	loadMainSheet("Performance.widget", "Performance/");
 	
-	mMainText = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow(getPrefix() + "TextBox"));
+	mMainText = static_cast<CEGUI::MultiLineEditbox*>(getWindow("TextBox"));
 	
 	EmberOgre::getSingleton().EventStartErisPoll.connect(SigC::slot(*this, &Performance::startErisPolling));
 	EmberOgre::getSingleton().EventEndErisPoll.connect(SigC::slot(*this, &Performance::endErisPolling));

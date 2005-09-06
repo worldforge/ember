@@ -53,19 +53,18 @@ GiveWidget::~GiveWidget()
 void GiveWidget::buildWidget()
 {
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/GiveWidget.xml", "Give/");
+	loadMainSheet("GiveWidget.xml", "Give/");
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	
-	mListBox = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Give/ListBox"));
-	getMainSheet()->addChildWindow(mMainWindow); 
+	mListBox = static_cast<CEGUI::Listbox*>(getWindow("ListBox"));
 	
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &GiveWidget::createdAvatarEmberEntity));
 	
-	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Give/Give"));
+	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(getWindow("Give"));
 	BIND_CEGUI_EVENT(giveButton, CEGUI::ButtonBase::EventMouseClick, GiveWidget::Give_Click)
 	
-	CEGUI::PushButton* cancelButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Give/Cancel"));
+	CEGUI::PushButton* cancelButton = static_cast<CEGUI::PushButton*>(getWindow("Cancel"));
 	BIND_CEGUI_EVENT(cancelButton, CEGUI::ButtonBase::EventMouseClick, GiveWidget::Cancel_Click)
 
 	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &GiveWidget::handleAction));
@@ -125,7 +124,7 @@ void GiveWidget::show(EmberEntity* entity)
 {
 	mTargetEntity = entity;
 	mMainWindow->setVisible(true);
-	CEGUI::Window* textWidget = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Give/Text");
+	CEGUI::Window* textWidget = getWindow("Text");
 	CEGUI::String text("Give to " + entity->getName()+ " ( a " + entity->getType()->getName() + ")");
 	textWidget->setText(text);
 	

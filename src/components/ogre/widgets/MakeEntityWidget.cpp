@@ -77,10 +77,10 @@ void MakeEntityWidget::buildWidget()
 	//mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/MakeEntityWidget.xml", "MakeEntity/");
 	//mMainWindow->setVisible(false);
 	
-	mTypeList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/TypeList"));
-	mName = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/Name"));
+	mTypeList = static_cast<CEGUI::Listbox*>(getWindow("TypeList"));
+	mName = static_cast<CEGUI::Editbox*>(getWindow("Name"));
 	
-	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"MakeEntity/CreateButton"));
+	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("CreateButton"));
 	
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick,MakeEntityWidget::createButton_Click );
 

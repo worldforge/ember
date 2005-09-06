@@ -67,7 +67,7 @@ void ServerBrowserWidget::buildWidget()
 
 	loadMainSheet("ServerBrowserWidget.xml", "ServerBrowser/");
 
-	mServerList = static_cast<CEGUI::MultiColumnList*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ServerList"));
+	mServerList = static_cast<CEGUI::MultiColumnList*>(getWindow("ServerList"));
 
 	mServerList->addColumn((CEGUI::utf8*)"Server Name", 0, 0.2f);
 	mServerList->addColumn((CEGUI::utf8*)"Address", 1, 0.2f);
@@ -79,15 +79,15 @@ void ServerBrowserWidget::buildWidget()
 	
 	BIND_CEGUI_EVENT(mServerList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerBrowserWidget::ServerList_DoubleClick);
 
-	CEGUI::PushButton* refresh = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/Refresh"));
+	CEGUI::PushButton* refresh = static_cast<CEGUI::PushButton*>(getWindow("Refresh"));
 	BIND_CEGUI_EVENT(refresh, CEGUI::ButtonBase::EventMouseClick, ServerBrowserWidget::Refresh_Click);
 
 	
-	CEGUI::PushButton* connectButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/Connect"));
+	CEGUI::PushButton* connectButton = static_cast<CEGUI::PushButton*>(getWindow("Connect"));
 	BIND_CEGUI_EVENT(connectButton, CEGUI::ButtonBase::EventMouseClick, ServerBrowserWidget::Connect_Click)
 	
 
-	CEGUI::Window* manualNameWindow = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ManualServerName");
+	CEGUI::Window* manualNameWindow = getWindow("ManualServerName");
 	BIND_CEGUI_EVENT(manualNameWindow, CEGUI::Editbox::EventTextAccepted, ServerBrowserWidget::ManualServerName_TextAcceptedEvent)
 	
 	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
@@ -132,7 +132,7 @@ void ServerBrowserWidget::doConnect()
 	//if so, we try to connect to the server specified there
 	
 	
-	CEGUI::Window* manualNameWindow = CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"ServerBrowser/ManualServerName");
+	CEGUI::Window* manualNameWindow = getWindow("ManualServerName");
 	
 	if (manualNameWindow->getText() != "") {
 		serverName = std::string(manualNameWindow->getText().c_str());

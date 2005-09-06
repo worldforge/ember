@@ -39,12 +39,9 @@ ChatWidget::~ChatWidget()
 
 void ChatWidget::buildWidget()
 {
+	loadMainSheet("ChatWidget.xml", "Chat/");
 	
-	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/ChatWidget.xml", "Chat/");
-//	mMainWindow->setAlwaysOnTop(true);
-	
-	mChatTextBox = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Chat/TextBox"));
-	getMainSheet()->addChildWindow(mMainWindow); 
+	mChatTextBox = static_cast<CEGUI::MultiLineEditbox*>(getWindow("TextBox"));
 	
 	mGuiManager->AppendIGChatLine.connect(SigC::slot(*this, &ChatWidget::appendIGChatLine));
 	mGuiManager->AppendOOGChatLine.connect(SigC::slot(*this, &ChatWidget::appendOOGChatLine));
