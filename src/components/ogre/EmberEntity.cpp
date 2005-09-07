@@ -154,7 +154,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 void EmberEntity::createSceneNode()
 {
-	EmberEntity* container = dynamic_cast<EmberEntity*>(getLocation());
+	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container == 0) {
 		S_LOG_INFO( "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" )
 
@@ -278,7 +278,7 @@ void EmberEntity::onVisibilityChanged(bool vis)
 
 void EmberEntity::checkVisibility(bool vis)
 {
-	EmberEntity* container = dynamic_cast<EmberEntity*>(getLocation());
+	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container) {
 		//check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {

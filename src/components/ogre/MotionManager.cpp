@@ -25,6 +25,7 @@
 #include "MotionManager.h"
 #include "TerrainGenerator.h"
 
+template<> EmberOgre::MotionManager* Ember::Singleton<EmberOgre::MotionManager>::ms_Singleton = 0;
 namespace EmberOgre {
 
 
@@ -44,7 +45,6 @@ MotionManager & MotionManager::getSingleton(void)
 	return *_instance;
 }
 */
-template<> MotionManager* Ember::Singleton<MotionManager>::ms_Singleton = 0;
 
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)

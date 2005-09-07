@@ -11,7 +11,25 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.15  2005-07-10 21:54:28  erik
+ *      Revision 1.16  2005-09-07 15:39:42  erik
+ *      2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/MotionManager.cpp: MSVC wants to know exact what namespace to look in
+ *      	* src/components/ogre/MathConverter.cpp: MSVC needs math.h
+ *      	* src/components/ogre/GUIManager.cpp:
+ *      		* MSVC wants to know exact what namespace to look in
+ *      		* use macro from CEGUI for dynlib opening; works on both win32 and *nix
+ *      		* temporarily remove JesusEdit since it doesn't work with win32 yet
+ *      		* replace dynamic_cast with static_cast
+ *      		* added win32 includes
+ *      	* src/components/ogre/EmberOgrePrerequisites.h: added type uint
+ *      	* src/components/ogre/EmberEntityFactory.cpp:
+ *      		* MSVC wants to know exact what namespace to look in
+ *      		* replace dynamic_cast with static_cast
+ *      	* src/components/ogre/EmberEntity.cpp:
+ *      		* replace dynamic_cast with static_cast
+ *
+ *      Revision 1.15  2005/07/10 21:54:28  erik
  *      2005-07-10  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/MathConverter.h: added method for converting between Ogre::Vector2 and WFMath
@@ -249,6 +267,8 @@ Description:	Point, Vector and Quaternion converter
 #include <wfmath/axisbox.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/const.h>
+
+#include <math.h>
 
 namespace EmberOgre {
 

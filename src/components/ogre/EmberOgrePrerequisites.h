@@ -61,6 +61,6 @@
 #define TYPEDEF_STL_SET(tp, name)         TYPEDEF_STL_CONTAINER1(set, tp, name)
 #define TYPEDEF_STL_MAP(tpkey, tpval, name) TYPEDEF_STL_CONTAINER2(map, tpkey, tpval, name) 
 
-
+typedef unsigned int uint;
 
 #endif

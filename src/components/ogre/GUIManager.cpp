@@ -24,6 +24,7 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
+#include <CEGUIFactoryModule.h>
 #include <elements/CEGUIStaticText.h>
 #include <elements/CEGUIPushButton.h>
 
@@ -39,6 +40,13 @@
 #include "widgets/WidgetDefinitions.h"
 
 #include <SDL.h>
+
+#ifdef __WIN32__
+#include <windows.h>
+#include <direct.h>
+#endif
+
+template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Singleton = 0;
 
 namespace EmberOgre {
 
@@ -62,8 +70,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 		Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 		chdir(configSrv->getEmberDataDirectory().c_str());
-		dlopen( "libCEGUITaharezLook.so", RTLD_NOW );
-		//fprintf(stderr, dlerror());
+		
+		//use a macro from CEGUIFactoryModule
+		DYNLIB_LOAD( "libCEGUITaharezLook.so");
+//		fprintf(stderr, dlerror());
 		try {	
 //			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
 			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
@@ -144,7 +154,7 @@ void GUIManager::initialize()
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
 	
 
-		mConsoleWidget = dynamic_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
+		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
 		createWidget("Quit");
 		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 		createWidget("StatusIconBar");
@@ -156,7 +166,7 @@ void GUIManager::initialize()
 		createWidget("ServerBrowserWidget");
 		createWidget("InspectWidget");
 		createWidget("MakeEntityWidget");
-		createWidget("JesusEdit");
+		//createWidget("JesusEdit");
 		createWidget("ServerWidget");
 		createWidget("GiveWidget");
 		createWidget("EntityPickerWidget");
@@ -293,7 +303,11 @@ const std::string GUIManager::takeScreenshot()
 	int ret;
 	ret = stat( dir.c_str(), &tagStat );
 	if (ret == -1) {
+#ifdef __WIN32__
+		mkdir(dir.c_str());
+#else
 		mkdir(dir.c_str(), S_IRWXU);
+#endif
 	}
 	
 	// take screenshot
@@ -342,7 +356,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	
-	const CEGUI::MouseEventArgs& mouseArgs = dynamic_cast<const CEGUI::MouseEventArgs&>(args);
+	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	fprintf(stderr, "CEGUI - MAIN SHEET CAPTURING INPUT\n");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 	if (aWindow) {
@@ -434,7 +448,6 @@ MousePicker * GUIManager::popMousePicker()
 }
 
 
-template<> GUIManager* Ember::Singleton<GUIManager>::ms_Singleton = 0;
 
 }
 

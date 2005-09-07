@@ -169,7 +169,7 @@ void EmberEntityFactory::setAvatar(Eris::Avatar* avatar)
 
 void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 {
-	AvatarEmberEntity* avatarEntity = dynamic_cast<AvatarEmberEntity*>(entity);
+	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
    	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
 }
 	
@@ -257,7 +257,7 @@ void EmberEntityFactory::loadTypeInfo()
 /** retrieve this factory's priority level; higher priority factories
 get first chance to process a recieved Atlas entity. The default implementation
 returns one. */
-int EmberEntityFactory::EmberEntityFactory::priority() {
+int EmberEntityFactory::priority() {
 	return 10;
 }
 
