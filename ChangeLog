@@ -1,5 +1,11 @@
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/environment/Sun.*
+		* added methods and signals for changing the position of the sun, the colour of the sun and the ambient lightning
+		* added console commands for changing the position of the sun, the colour of the sun and the ambient lightning, these are "/setsunposition x y z", "/setsuncolour r b g" and "/setambientlight r b g"
+
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainShader.cpp: enable vertex lightning and disable self illumination on the terrain, which allows the ambient light and the sun to better decide the look of the terrain
 
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>

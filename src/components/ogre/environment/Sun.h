@@ -25,19 +25,82 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+#include <sigc++/signal_system.h>
+#else
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+#include <sigc++/slot.h>
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+#endif
+
+
+#include "framework/ConsoleObject.h"
+
 namespace EmberOgre {
 
 /**
 @author Erik Hjortsberg
 */
-class Sun{
+class Sun : virtual public SigC::Object, public Ember::ConsoleObject
+{
 public:
     Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
 
     ~Sun();
 	
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+	
+	/**
+	* emitted when the sun changes position
+	*/
+	SigC::Signal2<void, Sun*, Ogre::Vector3> EventUpdatedSunPosition;
+	
+	/**
+	* emitted when the sun changes colour
+	*/
+	SigC::Signal2<void, Sun*, Ogre::ColourValue> EventUpdatedSunColour;
+	
+	/**
+	* emitted when the world ambient light is changed
+	*/
+	SigC::Signal2<void, Sun*, Ogre::ColourValue> EventUpdatedAmbientLight;
+	
+	static const std::string SETSUNPOSITION;
+	static const std::string SETSUNCOLOUR;
+	static const std::string SETAMBIENTLIGHT;
+	
+	
+	/**
+	 *    changes the sun's position
+	 * @param position a new world position
+	 */
+	void setSunPosition(const Ogre::Vector3& position);
+	
+	
+	/**
+	 *    changes the colour of the sun light
+	 * @param colour 
+	 */
+	void setSunColour(const Ogre::ColourValue& colour);
+	
+	
+	/**
+	 *    changes the ambient light
+	 * @param colour 
+	 */
+	void setAmbientLight(const Ogre::ColourValue& colour);
+	
 protected:
 	Ogre::Light* mSun;
+	
+	Ogre::SceneNode* mSunNode;
 
 };
 
