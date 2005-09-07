@@ -1,3 +1,10 @@
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/TerrainPage.*
+		* get the alpha map scaling from the config file
+		* for simple splatting, use 8 bit bitmaps instead of 32 bit; this should bring the memory usage down a bit
+		* enable vertex lightning for the terrain. Not sure if this is the right way though, perhaps we should rather use lightmaps.
+
 2005-09-06  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/widgets/ChatWidget.cpp, src/components/widgets/ConsoleWidget.cpp, src/components/widgets/DebugWidget.cpp, src/components/widgets/EntityPickerWidget.cpp, src/components/widgets/GiveWidget.cpp, src/components/widgets/IconBase.h, src/components/widgets/IngameChatWidget.cpp, src/components/widgets/InspectWidget.*, src/components/widgets/InventoryWidget.cpp, src/components/widgets/JesusEdit.cpp, src/components/widgets/MakeEntityWidget.cpp, src/components/widgets/Performance.cpp, src/components/widgets/Quit.cpp, src/components/widgets/ServerBrowserWidget.cpp, src/components/widgets/ServerWidget.cpp

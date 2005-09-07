@@ -53,10 +53,17 @@
 #include <Mercator/Shader.h>
 
 #include <OgreHardwarePixelBuffer.h>
+
+#include "services/EmberServices.h"
+#include "services/logging/LoggingService.h"
+#include "services/config/ConfigService.h"
+
+//#include <fenv.h>
+
 namespace EmberOgre {
 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
-: mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mAlphaMapScale(2), mFoliageArea(0)
+: mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mFoliageArea(0)
 {
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
@@ -141,8 +148,8 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 		(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") || Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0"))
 	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
-		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
-//		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
+//		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
+		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	} else {
 	//and as a fallback for older gfx cards we'll supply a technique which doesn't
 		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
@@ -180,6 +187,18 @@ const TerrainPosition& TerrainPage::getWFPosition() const
 Ogre::MaterialPtr TerrainPage::getMaterial() const
 {
 	return mMaterial;
+}
+
+unsigned int TerrainPage::getAlphaMapScale() const
+{
+	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	if (configSrv->itemExists("terrain", "alphamapscale")) {
+		int value = (int)configSrv->getValue("terrain", "alphamapscale");
+		//make sure it can't go below 1
+		return std::min(1, value);
+	} else {
+		return 1;
+	}
 }
 
 
@@ -320,7 +339,7 @@ inline int  EmberOgre::TerrainPage::getAlphaTextureSize( ) const
 
 }
 
-void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY) {
+void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels) {
 
 // 	if (startX != 64 || startY != 64) {
 // 		return;
@@ -336,8 +355,8 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 
 	
 	
-    Ogre::uchar* start = finalImagePtr + (4 * finalImageWidth * (startY - 1)) + ((startX - 1) * 4);
-    Ogre::uchar* end = start + (width * finalImageWidth * 4) + (width * 4);
+    Ogre::uchar* start = finalImagePtr + (numberOfChannels * finalImageWidth * (startY - 1)) + ((startX - 1) * numberOfChannels);
+    Ogre::uchar* end = start + (width * finalImageWidth * numberOfChannels) + (width * numberOfChannels);
 	
 	
 //     Ogre::uchar* start = finalImagePtr + ((startX * 4) + ((startY) * finalImageSize * 4));
@@ -352,17 +371,17 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 	
     Ogre::uchar* tempPtr = end + channel;
     for (i = 0; i < width; ++i) {
-	    tempPtr -= (width * 4);
+	    tempPtr -= (width * numberOfChannels);
 		for (j = 0; j < width; ++j) {
 			//Ogre::uchar alpha = 255 - j;
 			Ogre::uchar alpha = *(wfImagePtr + j);
 			*(tempPtr) = alpha;
-			//skip four channels
-			tempPtr += 4;
+			//advance the number of channels
+			tempPtr += numberOfChannels;
 
 			
 		}
-		tempPtr -= (finalImageWidth * 4);
+		tempPtr -= (finalImageWidth * numberOfChannels);
 		wfImagePtr += 65;
     }
 
@@ -487,7 +506,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 { 
  
 	Ogre::Pass* pass = technique->getPass(0);
-	pass->setLightingEnabled(false);
+	//pass->setLightingEnabled(false);
 	//pass->setFragmentProgram("splat3arb");
 	pass->setFragmentProgram("splatatlas_cg");
 	
@@ -577,7 +596,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 				surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				if (surface && surface->isValid()) {
 					
-					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), splattextureChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
+					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), splattextureChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 4);
 				}
 			}
 		}
@@ -595,28 +614,28 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 	strcpy(name, (std::string("/home/erik/") + splatTextureName + std::string(".png")).c_str());
 	ilSaveImage(name);*/
 		
-	if (mAlphaMapScale > 1) {
+	if (getAlphaMapScale() > 1) {
 		
 		//smooth out the terrain
 		//do this by enlarging the image and apply a blur filter to it
 		
 		//use filter to smooth everything out
 		iluImageParameter(ILU_FILTER, ILU_SCALE_BSPLINE);
-		iluScale(getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, 1);
+		iluScale(getAlphaTextureSize() * getAlphaMapScale(), getAlphaTextureSize() * getAlphaMapScale(), 1);
 		imagePointer = ilGetData();
 		//wrap the image data in a Datachunk
 		delete finalChunk;
-		finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * mAlphaMapScale) , false);
+		finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (getAlphaMapScale() * getAlphaMapScale()) , false);
 	}
 		
 	Ogre::DataStreamPtr dataStreamPtr(finalChunk);
 
 	
 	
-	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
+	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize() * getAlphaMapScale(), getAlphaTextureSize() * getAlphaMapScale(), pixelFormat);
 /*	temp.setNull();
 	splatTexture.setNull();*/
-	if (mAlphaMapScale > 1) {
+	if (getAlphaMapScale() > 1) {
 		ilDeleteImages(1, &ImageName);
 	}
 	alphaTextureUnitState->setTextureName(splatTextureName);
@@ -634,7 +653,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 { 
  
 	Ogre::Pass* pass = technique->getPass(0);
-	pass->setLightingEnabled(false);
+	//pass->setLightingEnabled(false);
 	
 	try {
 		//add fragment shader for splatting
@@ -744,8 +763,8 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 				
 				surface = (*shadersIterator)->getSurfaceForSegment(segment);
 				if (surface && surface->isValid()) {
-					
-					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, ((int)I->pos.x() * 64), (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
+					//use four channels
+					fillAlphaLayer(finalChunk->getPtr(), surface->getData(), pass->getNumTextureUnitStates() - numberOfbaseTextureUnits, ((int)I->pos.x() * 64), (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 4);
 				}
 			}
 		}
@@ -766,28 +785,28 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	strcpy(name, (std::string("/home/erik/") + splatTextureName + std::string(".png")).c_str());
 	ilSaveImage(name);*/
 		
-	if (mAlphaMapScale > 1) {
+	if (getAlphaMapScale() > 1) {
 		
 		//smooth out the terrain
 		//do this by enlarging the image and apply a blur filter to it
 		
 		//use filter to smooth everything out
 		iluImageParameter(ILU_FILTER, ILU_SCALE_BSPLINE);
-		iluScale(getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, 1);
+		iluScale(getAlphaTextureSize() * getAlphaMapScale(), getAlphaTextureSize() * getAlphaMapScale(), 1);
 		imagePointer = ilGetData();
 		//wrap the image data in a Datachunk
 		delete finalChunk;
-		finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (mAlphaMapScale * mAlphaMapScale) , false);
+		finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel * (getAlphaMapScale() * getAlphaMapScale()) , false);
 	}
 		
 	Ogre::DataStreamPtr dataStreamPtr(finalChunk);
 
 	
 	
-	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize() * mAlphaMapScale, getAlphaTextureSize() * mAlphaMapScale, pixelFormat);
+	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize() * getAlphaMapScale(), getAlphaTextureSize() * getAlphaMapScale(), pixelFormat);
 /*	temp.setNull();
 	splatTexture.setNull();*/
-	if (mAlphaMapScale > 1) {
+	if (getAlphaMapScale() > 1) {
 		ilDeleteImages(1, &ImageName);
 	}
 	alphaTextureUnitState->setTextureName(splatTextureName);
@@ -838,7 +857,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 // 	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
  
 	Ogre::Pass* pass = technique->getPass(0);
-	pass->setLightingEnabled(false);
+	//pass->setLightingEnabled(false);
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	
 	   
@@ -870,9 +889,12 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 
 void EmberOgre::TerrainPage::populateSurfaces()
 {
+//	fesetround(FE_TONEAREST);
+
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		I->segment->populateSurfaces();
 	}
+//	fesetround(FE_DOWNWARD);
 }
 
 
@@ -891,18 +913,27 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 	} else if (mShaderTextures.find(shader) == mShaderTextures.end()) {
 		addShaderToSimpleTechnique(mMaterial->getTechnique(0), shader);
 	} else {
+	
+		//update the alpha texture
+		//we do this by first creating a new, empty data chunk
+		//we fill this chunk with the correct alpha values through the fillAlphaLayer method
+		//from this chunk we'll then create a temporary image
+		//we'll then blit from the image directly to the hardware buffer
+		//and when we go out of scope the temporary image is deleted along with the data chunk
+	
 		Ogre::TexturePtr texture = mShaderTextures.find(shader)->second;
 		
 		Mercator::Surface* surface;
 		
-		Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel, true);
+		Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, true);
 		for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 			Mercator::Segment* segment = I->segment;
 			surface = shader->getSurfaceForSegment(segment);
 			if (surface && surface->isValid()) {
 				
 				int alphaChannel = 0;
-				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
+				//use only one channel
+				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
 			}
 		}
 		
@@ -913,11 +944,11 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 		Ogre::DataStreamPtr dataStreamPtr(splatChunk);
 		
 		Ogre::Image image;
-		image.loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
+		image.loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
 		//image->save(std::string("/home/erik/tempimages/") + texture->getName()  + "_temp" + std::string(".png"));
 		
 		
-		
+		//blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox = image.getPixelBox();
 		Ogre::Box targetBox(0,0, texture->getWidth(), texture->getHeight());
 		hardwareBuffer->blitFromMemory(sourceBox);
@@ -929,49 +960,51 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 
 void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* technique, TerrainShader* shader)
 {
-		Mercator::Surface* surface;
-		
-		//check if at least one surface instersects, else continue
-		bool intersects = false;
-	//	for(std::vector<std::list<Mercator::Surface*>::iterator>::iterator I = surfaceListIterators.begin(); I != surfaceListIterators.end(); ++I) {
-		for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-			if (shader->getShader()->checkIntersect(*I->segment)) {
-				intersects = true;
-			}
+	Mercator::Surface* surface;
+	
+	//check if at least one surface instersects, else continue
+	bool intersects = false;
+//	for(std::vector<std::list<Mercator::Surface*>::iterator>::iterator I = surfaceListIterators.begin(); I != surfaceListIterators.end(); ++I) {
+	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+		if (shader->getShader()->checkIntersect(*I->segment)) {
+			intersects = true;
 		}
- 		if (!intersects) {
- 			return;
- 		}
-		
-		Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel, false);
+	}
+	if (!intersects) {
+		return;
+	}
+	
+	Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, false);
 
-		
-		//we need an unique name for our alpha texture
-		std::stringstream splatTextureNameSS;
-		splatTextureNameSS << mMaterialName << "_" << shader->getTerrainIndex();
-		const Ogre::String splatTextureName(splatTextureNameSS.str());
-		
-				
+	
+	//we need an unique name for our alpha texture
+	std::stringstream splatTextureNameSS;
+	splatTextureNameSS << mMaterialName << "_" << shader->getTerrainIndex();
+	const Ogre::String splatTextureName(splatTextureNameSS.str());
+	
+			
 /*		SegmentVector::iterator I = segmentI_begin;*/
+	
+	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+		surface = shader->getSurfaceForSegment(I->segment);
+		if (surface && surface->isValid()) {
 		
-		for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-			surface = shader->getSurfaceForSegment(I->segment);
-			if (surface && surface->isValid()) {
-			
-				int alphaChannel = 0;
-				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64);
+			int alphaChannel = 0;
+			//use only one channel
+			fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
 
-			}
 		}
-			
-		Ogre::DataStreamPtr dataStreamPtr(splatChunk);
+	}
+		
+	Ogre::DataStreamPtr dataStreamPtr(splatChunk);
 		
 /*	Ogre::Image* image = new Ogre::Image();
 	image->loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
 	image->save(std::string("/home/erik/tempimages/") + splatTextureName + "_temp" + std::string(".png"));*/
 	
 	
-		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
+//	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
+	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
 	
 		
 /*	char name[100];

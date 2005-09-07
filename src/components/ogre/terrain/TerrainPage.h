@@ -243,11 +243,12 @@ private:
 	const unsigned int mBytesPerPixel;
 	
 	/**
-	* How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied)
+	* How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
+	This value is taken from the config file.
 	*/
-	const unsigned int mAlphaMapScale;
+	unsigned int getAlphaMapScale() const;
 
-	void fillAlphaLayer(unsigned char* imagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY);
+	void fillAlphaLayer(unsigned char* imagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
 
 };
 
