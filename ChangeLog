@@ -1,5 +1,14 @@
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberEntity.*
+		* catch bbox changes and call the method onBboxChanged
+	* src/components/ogre/EmberPhysicalEntity.*
+		* store the initial bounding box of the model so we can do scaling later on
+		* allow dynamic scaling on bounding box changes, instead of like before just scale upon creation
+
+
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/environment/Sun.*
 		* added methods and signals for changing the position of the sun, the colour of the sun and the ambient lightning
 		* added console commands for changing the position of the sun, the colour of the sun and the ambient lightning, these are "/setsunposition x y z", "/setsuncolour r b g" and "/setambientlight r b g"

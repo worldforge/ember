@@ -370,7 +370,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			
 				// add to the new entity
 				newLocationEntity->getSceneNode()->addChild(getSceneNode());
-				S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" )
+				S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
 				if (getPosition().isValid()) {
 					getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 					adjustHeightPosition();
@@ -471,6 +471,10 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		}
 		
 		onModeChanged(newMode);
+	} else if (str == "bbox") {
+		Entity::onAttrChanged(str, v);
+		onBboxChanged();
+		return;
 	}
 	Entity::onAttrChanged(str, v);
 }
@@ -509,6 +513,15 @@ void EmberEntity::showErisBoundingBox(bool show)
 //	
 }
 
+void EmberEntity::onBboxChanged()
+{
+	if (mErisEntityBoundingBox) {
+		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox().highCorner()), Atlas2Ogre(getBBox().lowCorner()));
+		mErisEntityBoundingBox->setupBoundingBox(aabb);
+	}
+}
+
+
 bool EmberEntity::getShowOgreBoundingBox()
 {
 	return getSceneNode()->getShowBoundingBox();
@@ -519,7 +532,8 @@ bool EmberEntity::getShowErisBoundingBox()
 	
 }
 
-inline Ogre::SceneNode* EmberEntity::getSceneNode() const 
+//inline 
+Ogre::SceneNode* EmberEntity::getSceneNode() const 
 {
 	return mOgreNode;	
 }

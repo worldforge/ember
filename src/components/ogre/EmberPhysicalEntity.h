@@ -106,6 +106,11 @@ protected:
 	 */
 	void connectEntities();
 	
+	/**
+	 *    Called when the bounding box has changed.
+	 */
+	virtual void onBboxChanged();
+	
 	virtual void onModeChanged(MovementMode newMode);
 
 	Action* mCurrentMovementAction;
@@ -122,6 +127,7 @@ protected:
 	virtual void onChildAdded(Entity *e);
 	virtual void onChildRemoved(Entity *e);
 
+	
 
 	void detachEntity(const std::string & entityId);
 	void attachEntity(const std::string & attachPoint, const std::string & entityId);
@@ -160,6 +166,7 @@ protected:
 	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
 
 
+	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;
 
 
 	/**

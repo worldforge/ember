@@ -252,12 +252,18 @@ protected:
     virtual void onAction(const Atlas::Objects::Operation::Action& act);
     virtual void onImaginary(const Atlas::Objects::Root& act);
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
-	virtual void onModeChanged(MovementMode newMode);
 	
 	virtual void addArea(TerrainArea* area);
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 	
+	virtual void onModeChanged(MovementMode newMode);
+	
+	/**
+	 *    Called when the bounding box has changed.
+	 */
+	virtual void onBboxChanged();
+
 	/**
 	
 	For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.

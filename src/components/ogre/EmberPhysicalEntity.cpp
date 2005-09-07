@@ -55,6 +55,14 @@ EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0)
 {
 	mModel = static_cast<Model*>(getScaleNode()->getAttachedObject(0));
+	
+	if (getModel()->getRotation()) {
+		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
+	}
+	
+	mDefaultOgreBoundingBox = getModel()->getWorldBoundingBox(true);
+	
+
 //	loadAnimationsFromModel();
 }
 
@@ -115,7 +123,11 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 /*	assert(mOgreNode);
 	assert(mScaleNode);*/
-	scaleNode();
+	
+	//if there is no bounding box, scaleNode hasn't been called, so do it here
+	if (!hasBBox()) {
+		scaleNode();
+	}
 	getSceneNode()->addChild(getScaleNode());
 
 	
@@ -304,14 +316,10 @@ void EmberPhysicalEntity::onChildRemoved(Entity *e)
 
 
 void EmberPhysicalEntity::scaleNode() {
-	if (getModel()->getRotation()) {
-		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
-	}
 		
-	const Ogre::AxisAlignedBox ogreBoundingBox = getModel()->getWorldBoundingBox(true);
-	const Ogre::Vector3 ogreMax = ogreBoundingBox.getMaximum();
-	const Ogre::Vector3 ogreMin = ogreBoundingBox.getMinimum();
-
+	const Ogre::Vector3 ogreMax = mDefaultOgreBoundingBox.getMaximum();
+	const Ogre::Vector3 ogreMin = mDefaultOgreBoundingBox.getMinimum();
+	
 	if (hasBBox()) {
 
 		const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
@@ -440,6 +448,11 @@ void EmberPhysicalEntity::attachEntity(const std::string & attachPoint, const st
 
 }
 
+void EmberPhysicalEntity::onBboxChanged()
+{
+	EmberEntity::onBboxChanged();
+	scaleNode();
+}
 
 
 /*
