@@ -1,5 +1,9 @@
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainShader.cpp: enable vertex lightning and disable self illumination on the terrain, which allows the ambient light and the sun to better decide the look of the terrain
+
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf: added setting for how much the alpha map should be scaled
 
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>

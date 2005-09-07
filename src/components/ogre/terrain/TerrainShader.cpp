@@ -114,8 +114,8 @@ void TerrainShader::addSplatToTechnique(Ogre::Technique*  technique, Ogre::Strin
 		addMaterialToTechnique(technique, splatTextureName);
 	} else {
 		Ogre::Pass* pass = addPassToTechnique(technique, splatTextureName);
-		pass->setLightingEnabled(false);
-		pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
+		//pass->setLightingEnabled(false);
+		//pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
 	}
 }
 
