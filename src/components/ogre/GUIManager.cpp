@@ -21,6 +21,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "GUIManager.h"
+#include <CEGUIWindowManager.h>
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <elements/CEGUIStaticText.h>

@@ -1,5 +1,11 @@
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/CONTROLS : updated text
+	* src/components/ogre/GUIManager.cpp: include CEGUIWindowManager.h since Widget.h doesn't do that anymore
+	* src/components/ogre/widgets/ConsoleWidget.xml : updated text
+
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberEntity.*
 		* catch bbox changes and call the method onBboxChanged
 	* src/components/ogre/EmberPhysicalEntity.*

@@ -7,7 +7,7 @@
 		<Property Name="FrameEnabled" Value="False" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Tooltip" Value="Use the console for conversions. You can also enter commands.
-/list shows all commands available.
+/list_commands shows all commands available. Press Tab for completion.
 F12 will expand the console window." />
 		
 		<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">

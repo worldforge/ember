@@ -12,6 +12,7 @@ S: walk backwards
 A: sidestep left
 D: sidestep right
 
+F6: switch between free flying camera or third person camera
 F7: switch between render modes
 F8: take screenshot
 F12: show debug console
