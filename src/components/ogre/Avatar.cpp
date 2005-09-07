@@ -128,9 +128,9 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
 		
 		for (; I != I_end; ++I) {
-			EmberEntity* emberEntity = dynamic_cast<EmberEntity*>(*I);
-			if (emberEntity)
-				EventAddedEntityToInventory.emit(emberEntity);
+			//no need to do dynamic cast here
+			EmberEntity* emberEntity = static_cast<EmberEntity*>(*I);
+			EventAddedEntityToInventory.emit(emberEntity);
 		}
 		
 		mEntitiesToBeAddedToInventory.clear();
@@ -346,7 +346,6 @@ void Avatar::movedInWorld()
 	if (!mCurrentMovementState.isMoving) 
 	{
 		mAvatarNode->setPosition(Atlas2Ogre(mErisAvatarEntity->getPosition()));
-		mAvatarNode->setOrientation(Atlas2Ogre(mErisAvatarEntity->getOrientation()));
 	}
 	
 }
