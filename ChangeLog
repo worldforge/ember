@@ -1,3 +1,20 @@
+2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp
+		* initialize mEmberEntityFactory to 0
+		* in getWorld(), if no mEmberEntityFactory, return the root node of Ogre
+	* src/components/ogre/Makefile.am
+		* include terrain.cfg when installing
+
+2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/MeshPreview.*, src/components/ogre/widgets/Makefile.am, src/components/ogre/GUIManager.cpp, src/components/ogre/widgets/WidgetDefinitions.cpp
+		*added new widget for previewing meshes, this will be useful for previewing meshes
+
+2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: require CEGUI 0.4.0, since it's much better and works without a recompile. We'll soon be moving to using a default widget style with Falagard, too.
+
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/CONTROLS : updated text

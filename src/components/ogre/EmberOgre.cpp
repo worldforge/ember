@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.98  2005-07-25 19:07:40  erik
+ *      Revision 1.99  2005-09-08 20:07:52  erik
+ *      2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp
+ *      		* initialize mEmberEntityFactory to 0
+ *      		* in getWorld(), if no mEmberEntityFactory, return the root node of Ogre
+ *      	* src/components/ogre/Makefile.am
+ *      		* include terrain.cfg when installing
+ *
+ *      Revision 1.98  2005/07/25 19:07:40  erik
  *      2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/component/ogre/GUIManager.*
@@ -923,7 +932,8 @@ mGUIManager(0),
 mTerrainGenerator(0),
 mMotionManager(0),
 mAvatarController(0),
-mModelDefinitionManager(0)
+mModelDefinitionManager(0),
+mEmberEntityFactory(0)
 {}
 
 EmberOgre::~EmberOgre()
@@ -1513,7 +1523,11 @@ Ogre::Root* EmberOgre::getOgreRoot() const
 
 Ogre::SceneNode * EmberOgre::getWorldSceneNode( ) const
 {
-	return mEmberEntityFactory->getWorld()->getSceneNode();
+	if (mEmberEntityFactory && mEmberEntityFactory->getWorld()) {
+		return mEmberEntityFactory->getWorld()->getSceneNode();
+	} else {
+		return mSceneMgr->getRootSceneNode();
+	}
 /*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
 	//TODO: implement better exception handling
 	if (node == 0)

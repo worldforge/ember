@@ -98,7 +98,7 @@ dist_ceguischema_DATA = cegui/datafiles/layouts/GUILayout.xsd cegui/datafiles/im
 INCLUDES = -I$(top_srcdir)/src 
 
 confdir = $(sysconfdir)/ember/
-dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg 
+dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
 noinst_HEADERS = FreeCameraController.h EmberEntityUserObject.h
