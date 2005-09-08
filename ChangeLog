@@ -1,5 +1,10 @@
 2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/cegiu/datafiles/schemes/*.scheme
+		* with CEGUI 0.4.0 we don't need to define the widget elements in the xml file, CEGUI will get the info from the .so file
+
+2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/terrain.cfg: terrain settings
 
 2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>

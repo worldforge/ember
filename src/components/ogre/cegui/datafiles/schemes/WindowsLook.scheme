@@ -3,29 +3,5 @@
 	<Imageset Name="WindowsLook" Filename="cegui/datafiles/imagesets/WindowsLook.imageset" />
 	<Font Name="Tahoma-14" Filename="cegui/datafiles/fonts/tahoma-14.xml" />
 	<Font Name="Tahoma-8" Filename="cegui/datafiles/fonts/tahoma-8.xml" />
-	<WindowSet Filename="CEGUIWindowsLook">
-		<WindowFactory Name="WindowsLook/Button" />
-		<WindowFactory Name="WindowsLook/Checkbox" />
-		<WindowFactory Name="WindowsLook/CloseButton" />
-		<WindowFactory Name="WindowsLook/Combobox" />
-		<WindowFactory Name="WindowsLook/ComboDropList" />
-		<WindowFactory Name="WindowsLook/Editbox" />
-		<WindowFactory Name="WindowsLook/FrameWindow" />
-		<WindowFactory Name="WindowsLook/HorizontalScrollbar" />
-		<WindowFactory Name="WindowsLook/HorizontalScrollbarThumb" />
-		<WindowFactory Name="WindowsLook/Listbox" />
-		<WindowFactory Name="WindowsLook/ListHeader" />
-		<WindowFactory Name="WindowsLook/ListHeaderSegment" />
-		<WindowFactory Name="WindowsLook/MultiColumnList" />
-		<WindowFactory Name="WindowsLook/MultiLineEditbox" />
-		<WindowFactory Name="WindowsLook/ProgressBar" />
-		<WindowFactory Name="WindowsLook/RadioButton" />
-		<WindowFactory Name="WindowsLook/Slider" />
-		<WindowFactory Name="WindowsLook/SliderThumb" />
-		<WindowFactory Name="WindowsLook/StaticImage" />
-		<WindowFactory Name="WindowsLook/StaticText" />
-		<WindowFactory Name="WindowsLook/Titlebar" />
-		<WindowFactory Name="WindowsLook/VerticalScrollbar" />
-		<WindowFactory Name="WindowsLook/VerticalScrollbarThumb" />
-	</WindowSet>
+	<WindowSet Filename="CEGUIWindowsLook" />
 </GUIScheme>
