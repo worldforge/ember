@@ -1,5 +1,9 @@
 2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/terrain.cfg: terrain settings
+
+2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.cpp
 		* initialize mEmberEntityFactory to 0
 		* in getWorld(), if no mEmberEntityFactory, return the root node of Ogre
