@@ -171,6 +171,7 @@ void GUIManager::initialize()
 		createWidget("GiveWidget");
 		createWidget("EntityPickerWidget");
 		createWidget("Help");
+		createWidget("MeshPreview");
 
 	} catch (std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());

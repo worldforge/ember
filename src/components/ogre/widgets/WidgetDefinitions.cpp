@@ -39,6 +39,8 @@
 #include "Help.h"
 #include "Quit.h"
 #include "StatusIconBar.h"
+#include "MeshPreview.h"
+
 
 #include "Widget.h"
 namespace EmberOgre
@@ -62,6 +64,8 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidget("Quit", &WidgetLoader::createWidgetInstance<Quit>);
 	WidgetLoader::registerWidget("StatusIconBar", &WidgetLoader::createWidgetInstance<StatusIconBar>);
+	WidgetLoader::registerWidget("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
+	
 
 
 }
