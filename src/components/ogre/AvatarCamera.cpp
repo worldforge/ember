@@ -40,8 +40,17 @@
 #include "model/Model.h"
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
+
+#include "GUIManager.h"
+#include "input/Input.h"
+
 
 namespace EmberOgre {
+ 
+const std::string AvatarCamera::SETCAMERADISTANCE("setcameradistance");
+
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
 	mSceneManager(sceneManager),
@@ -67,6 +76,9 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
 		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "cameradegreespersecond");
 	}
+	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETCAMERADISTANCE,this);
+
 	 
 }
 
@@ -84,8 +96,7 @@ void AvatarCamera::createNodesAndCamera()
 	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
 	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
 	mAvatarCameraNode = static_cast<Ogre::SceneNode*>(mAvatarCameraPitchNode->createChild("AvatarCameraNode"));
-	Ogre::Vector3 pos(0,0,10);
-	mAvatarCameraNode->setPosition(pos);
+	setCameraDistance(10);
 	
 	mCamera = mSceneManager->createCamera("AvatarCamera");
 	mAvatarCameraNode->attachObject(mCamera);
@@ -94,9 +105,9 @@ void AvatarCamera::createNodesAndCamera()
 	mCamera->setNearClipDistance(0.1);
 	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 	{
-		mCamera->setFarClipDistance(3000);
+		mCamera->setFarClipDistance(1000);
 	} else {
-		mCamera->setFarClipDistance(3000);
+		mCamera->setFarClipDistance(1000);
 	}
 	
 	//create the nodes for the camera
@@ -124,8 +135,7 @@ void AvatarCamera::attach(Ogre::SceneNode* toNode) {
 	}
 	toNode->addChild(mAvatarCameraRootNode);
 	
-	Ogre::Vector3 pos(0,0,10);
-	mAvatarCameraNode->setPosition(pos);
+	setCameraDistance(10);
 	mAvatarCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
 }
 
@@ -146,6 +156,13 @@ void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 {
 	mAvatarNode = sceneNode;
 	attach(mAvatarNode);
+}
+
+void AvatarCamera::setCameraDistance(Ogre::Real distance)
+{
+	Ogre::Vector3 pos(0,0,distance);
+	mAvatarCameraNode->setPosition(pos);
+	EventChangedCameraDistance.emit(distance);
 }
 
 
@@ -222,8 +239,6 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 	
 	// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-	//THE GODDAMNED QUERYFLAG DOESN'T WORK!!!!
-	//don't know why
 
 	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , querymask); 
 	
@@ -354,7 +369,8 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 			
 			pickedMovable = rayIterator->movable;
 			
-			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
+//			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
+			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
 				if ( rayIterator->distance < closestDistance ) { 
 					bool isColliding = false;
 					closestObject = pickedMovable; 
@@ -452,6 +468,21 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	
 		
 	}
+	
+	void AvatarCamera::runCommand(const std::string &command, const std::string &args)
+	{
+		if(command == SETCAMERADISTANCE)
+		{
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
+			std::string distance = tokeniser.nextToken();
+			if (distance != "") {
+				float fDistance = Ogre::StringConverter::parseReal(distance);
+				setCameraDistance(fDistance);
+			}
+		}
+	}
+	
 
 }
 

@@ -38,8 +38,7 @@
 #include <sigc++/object_slot.h>
 #endif
 
-#include "GUIManager.h"
-#include "input/Input.h"
+#include "framework/ConsoleObject.h"
 // #include "jesus/JesusMousePicker.h"
 
 namespace EmberOgre {
@@ -48,11 +47,12 @@ class Avatar;
 class InputManager;
 class GUIManager;
 class EmberEntity;
+class MouseMotion;
 struct EntityPickResult;
 
 
 class AvatarCamera 
-:virtual public SigC::Object 
+:virtual public SigC::Object , public Ember::ConsoleObject
 //: public Ogre::FrameListener 
 {
 public:
@@ -62,20 +62,25 @@ public:
 		MODE_FIRST_PERSON = 2
 	};
 	
+	/**
+	Command for setting the distance between the camera and the avatar.
+	*/
+	static const std::string SETCAMERADISTANCE;
+	
 	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager);
 	virtual ~AvatarCamera();
 
-	/*
+	/**
 	 * Pitches the camera the supplied degrees
 	 */
 	virtual void pitch(Ogre::Degree degrees);
 	
-	/*
+	/**
 	 * Yaws the camera the supplied degrees
 	 */
 	virtual void yaw(Ogre::Degree degrees);
 	
-	/*
+	/**
 	 * returns the current degrees of pitch from the cameras initial position
 	 */
 	Ogre::Degree getPitch()
@@ -83,7 +88,7 @@ public:
 		return degreePitch;
 	}
 	
-	/*
+	/**
 	 * returns the current degrees of yaw from the cameras initial position
 	 */
 	Ogre::Degree getYaw()
@@ -91,14 +96,14 @@ public:
 		return degreeYaw;
 	}
 	
-	/*
+	/**
 	 * returns a pointer to the Ogre::Camera instance 
 	 */
 	virtual Ogre::Camera* getCamera()  {
 		return mCamera;	
 	}
 	
-	/*
+	/**
 	 * Returns the current camera orientation in the world
 	 */
 	virtual Ogre::Quaternion getOrientaion(bool onlyHorizontal = true) const {
@@ -112,12 +117,21 @@ public:
 	
 	void setMode(Mode mode);
 	
-	/*
+	/**
 	 * sets the node to which the camera is attached
 	 */
 	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
 	
+	/**
+	* emitted when the camra moves
+	*/
 	SigC::Signal1<void, Ogre::Camera*> MovedCamera;
+	
+	/**
+	* emitted when the distance between the camera and the avatar has changed
+    * @param Ogre::Real the new distance
+	*/
+	SigC::Signal1<void, Ogre::Real> EventChangedCameraDistance;
 	
 	void mouseMoved(const MouseMotion& motion, bool isInGuimode);
 // 	int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement);
@@ -157,6 +171,20 @@ public:
 	bool adjustForTerrain();
 	
 
+
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
+	
+	/**
+	 *    Sets the distance from the camera to the avatar.
+	 * @param distance the new distance
+	 */
+	void setCameraDistance(Ogre::Real distance);
 	
 protected:
 
