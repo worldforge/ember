@@ -65,8 +65,82 @@
 		<submodels>
 			<submodel mesh="Alpha_Male.mesh" >
 				<parts>
-					<part name="main" show="true" />
-				</parts>
+					<part name="MiddleLegs" show="false" >
+						<subentities>
+							<subentity name="am_Body_MidLeg" />
+						</subentities>
+					</part>      
+					<part name="Dress1" show="true" >
+						<subentities>
+							<subentity name="amDress" />
+						</subentities>
+					</part>
+					<part name="Calves" show="false" >
+						<subentities>
+							<subentity name="am_Body_Calves" />
+						</subentities>
+					</part>      
+					<part name="UpperTorso" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpperTors" />
+						</subentities>
+					</part>      
+					<part name="Face" show="true" >
+						<subentities>
+							<subentity name="am_Body_Face" />
+						</subentities>
+					</part>      
+					<part name="LowerForeArms" show="true" >
+						<subentities>
+							<subentity name="am_Body_LowForeAr" />
+						</subentities>
+					</part>      
+					<part name="Hands" show="true" >
+						<subentities>
+							<subentity name="am_Body_Hand" />
+						</subentities>
+					</part>      
+					<part name="UpperLegs" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpLeg" />
+						</subentities>
+					</part>      
+					<part name="LowerTorso" show="true" >
+						<subentities>
+							<subentity name="am_Body_LowerTors" />
+						</subentities>
+					</part>      
+					<part name="UpperArms" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpperArm" />
+						</subentities>
+					</part>      
+					<part name="Neck" show="true" >
+						<subentities>
+							<subentity name="am_Body_Neck" />
+						</subentities>
+					</part>      
+					<part name="Feet" show="false" >
+						<subentities>
+							<subentity name="am_Body_Foot" />
+						</subentities>
+					</part>      
+					<part name="Hips" show="true" >
+						<subentities>
+							<subentity name="am_Body_Hips" />
+						</subentities>
+					</part>      
+					<part name="UpperForeArms" show="false" >
+						<subentities>
+							<subentity name="am_Body_UpForeArm" />
+						</subentities>
+					</part>      
+					<part name="Hair" show="true" >
+						<subentities>
+							<subentity name="am_Body_Hair" />
+						</subentities>
+					</part>
+				</parts> 
 			</submodel>
 		</submodels>
 		<Actions>
@@ -80,6 +154,11 @@
 					<animationpart name="Walk" weight="1" />
 				</AnimationParts>
 				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
+			</Action>
+			<Action name="__movement_swim">
+				<AnimationParts>
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
 			</Action>
 		</Actions>
 		<attachpoints>

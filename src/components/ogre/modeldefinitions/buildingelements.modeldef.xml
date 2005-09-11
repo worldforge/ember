@@ -121,12 +121,12 @@
 		</submodels>
 	</model>
 	
-	<model name="house3"  usescaleof="depth" rotation="-90">
+	<model name="house3"  usescaleof="depth">
 		<submodels>
-			<submodel mesh="junkyard/models/house/house.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
+			<submodel mesh="junkyard/models/blockhouse/blockhouse.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
 			</submodel>
 		</submodels>
 	</model>

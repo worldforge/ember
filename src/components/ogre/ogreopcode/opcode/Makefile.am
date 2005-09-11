@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src -I$(srcdir)/Ice
 METASOURCES = AUTO
-lib_LIBRARIES = libOpcode.a
+noinst_LIBRARIES = libOpcode.a
 libOpcode_a_SOURCES = OPC_AABBCollider.cpp OPC_AABBTree.cpp \
 	OPC_BaseModel.cpp	OPC_BoxPruning.cpp OPC_Collider.cpp OPC_Common.cpp OPC_HybridModel.cpp	OPC_LSSCollider.cpp \
 	OPC_MeshInterface.cpp OPC_Model.cpp	OPC_OBBCollider.cpp Opcode.cpp OPC_OptimizedTree.cpp \

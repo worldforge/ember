@@ -42,7 +42,7 @@
 	</model>
 
 	
-	<model name="scythe" >
+	<model name="scythe" usescaleof="none" scale="1">
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/scythe/scythe.mesh">
 			<parts>
@@ -95,7 +95,7 @@
 	</model>			
 
 
-	<model name="coin" usescaleof="height"  >
+	<model name="coin" usescaleof="none" scale="5"  >
 		<submodels>
 			<submodel mesh="3d_objects/items/coin/models/lowpoly_coin/lowpoly_coin.mesh" >
 				<parts>
