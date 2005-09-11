@@ -25,9 +25,16 @@
 
 #include "Widget.h"
 
+namespace CEGUI
+{
+	class Listbox;
+	class Slider;
+	class Editbox;
+}
+
 namespace EmberOgre {
 
-typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
+typedef std::vector<Ogre::Entity*> EntityStore;
 
 /**
 @author Erik Hjortsberg
@@ -48,10 +55,29 @@ private:
 	
 	int mEntityCounter;
 	
+	void removeMesh(size_t index);
 	void createMesh(const std::string& meshName);
-
-	SceneNodeStore mSceneNodes;
 	
+
+	EntityStore mEntities;
+	
+	CEGUI::Editbox* mNameOfMesh;
+	CEGUI::Listbox* mCreatedMeshes;
+	
+	CEGUI::Slider* mScaleSlider;
+	
+// 	void loadAllAvailableMeshes();
+
+	void createdNewEntity(Ogre::Entity* entity, Ogre::SceneNode* sceneNode);
+	void removedEntity(size_t index);
+	
+	bool createButton_Click(const CEGUI::EventArgs& args);
+	bool removeButton_Click(const CEGUI::EventArgs& args);
+/*	void addMeshToAvailableMeshesList(const std::string& name);*/
+	
+	bool Scale_ValueChanged(const CEGUI::EventArgs& args);
+
+	Ogre::SceneNode* getActiveSceneNode();
 	
 };
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+		<Property Name="Position" Value="x:0.55 y:0.025" /> 
+		<Property Name="AbsoluteSize" Value="w:450 h:250" /> 
+		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Text" Value="Mesh preview" />
+		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
+			<Property Name="AbsolutePosition" Value="x:5 y:25" /> 
+			<Property Name="Size" Value="w:0.95 h:0.9" /> 
+			<Property Name="InheritsAlpha" Value="True" /> 
+			
+			
+			<Window Type="TaharezLook/StaticText" Name="NameText">
+				<Property Name="AbsolutePosition" Value="x:0.0 y:0" /> 
+				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
+				<Property Name="Text" Value="Mesh name:" /> 
+				<Property Name="InheritsAlpha" Value="False" /> 
+				<Property Name="FrameEnabled" Value="False" /> 
+				<Property Name="BackgroundEnabled" Value="False" /> 
+			</Window>
+			<Window Type="TaharezLook/Editbox" Name="MeshName">
+				<Property Name="AbsolutePosition" Value="x:100.0 y:0" /> 
+				<Property Name="AbsoluteSize" Value="w:250 h:25" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>
+			<Window Type="TaharezLook/Button" Name="Create">
+				<Property Name="AbsolutePosition" Value="x:355 y:0" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
+				<Property Name="Text" Value="Create" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Enabled" Value="False" /> 
+			</Window>
+			<Window Type="TaharezLook/StaticText" Name="Meshes">
+				<Property Name="AbsolutePosition" Value="x:0.0 y:30" /> 
+				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
+				<Property Name="Text" Value="Mesh name:" /> 
+				<Property Name="InheritsAlpha" Value="False" /> 
+				<Property Name="FrameEnabled" Value="False" /> 
+				<Property Name="BackgroundEnabled" Value="False" /> 
+			</Window>
+			<Window Type="TaharezLook/Listbox" Name="CreatedMeshes">
+				<Property Name="AbsolutePosition" Value="x:0 y:60" /> 
+				<Property Name="AbsoluteSize" Value="w:150 h:100" /> 
+				<Property Name="InheritsAlpha" Value="false" /> 
+				<Property Name="SelectionMode" Value="RowSingle" /> 
+			</Window>
+			<Window Type="TaharezLook/StaticText" Name="ScaleText">
+				<Property Name="AbsolutePosition" Value="x:155 y:30" /> 
+				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
+				<Property Name="Text" Value="Scale" /> 
+				<Property Name="InheritsAlpha" Value="False" /> 
+				<Property Name="FrameEnabled" Value="False" /> 
+				<Property Name="BackgroundEnabled" Value="False" /> 
+			</Window>
+			<Window Type="TaharezLook/Slider" Name="Scale">
+				<Property Name="AbsolutePosition" Value="x:160 y:60" /> 
+				<Property Name="AbsoluteSize" Value="w:10 h:120" /> 
+				<Property Name="MaximumValue" Value="10" /> 
+				<Property Name="Value" Value="1" /> 
+			</Window>
+			<Window Type="TaharezLook/Button" Name="Remove">
+				<Property Name="AbsolutePosition" Value="x:0 y:165" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
+				<Property Name="Text" Value="Remove" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Enabled" Value="False" /> 
+			</Window>
+
+			
+
+		
+		</Window>
+	</Window>
+ </GUILayout> 
