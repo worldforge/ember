@@ -144,6 +144,9 @@ void splat_fp
 	
 	//the colour of the fog
 	uniform float4				iFogColour,
+	
+	//how much to tile the texture
+	uniform float tile,
 
 	out float4          oColor		: COLOR,
 	
@@ -156,7 +159,7 @@ void splat_fp
 //	float fogFactor   = exp2(-abs(iFog));
 	//only do lerp if we can see the pixels (i.e. not when in full fog
 	if (iFog < 1.0) {
-		iTexcoord *= 100;
+		iTexcoord *= tile;
 		
 		oColor = tex2D(textureUnit1, iTexcoord.xy);
 		oColor = (lerp(oColor, tex2D(textureUnit2, iTexcoord.xy) , tex2D(textureUnit0, iCoverage.xy).w));
