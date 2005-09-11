@@ -40,7 +40,6 @@ using namespace Ogre;
 
 
 namespace Ogre {
-    #define POSITION_BINDING 0
 
 	/**
 	This is just like a WireBoundBox but not aligned to the axes
@@ -178,7 +177,12 @@ void EmberEntity::updateMotion(Ogre::Real timeSlice)
 {
 	getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
 	adjustHeightPosition();
-
+	
+	//if there's a debug bounding box for the eris entity, update it's position
+	if (mErisEntityBoundingBox) {
+		mErisEntityBoundingBox->getParentSceneNode()->setPosition(getSceneNode()->getPosition());
+		mErisEntityBoundingBox->getParentSceneNode()->setOrientation(getSceneNode()->getOrientation());
+	}
 
 }
 
