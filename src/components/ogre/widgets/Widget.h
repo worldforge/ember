@@ -51,6 +51,18 @@ template<> WidgetLoader WidgetLoaderHolder<ASubClassOfWidget>::loader("associate
 // };
 
 
+
+/**
+Because CEGUI::Listbox can't hold const objects in its
+*/
+template<typename T> class ConstWrapper
+{
+public:
+	ConstWrapper(T value) : mValue(value) {}
+	T mValue;
+};
+
+
 /** 
 
 Base class for all widgets.

@@ -414,15 +414,7 @@ protected:
 };
 
 
-/**
-Because CEGUI::Listbox can't hold const objects in its
-*/
-template<typename T> class ConstWrapper
-{
-public:
-	ConstWrapper(T value) : mValue(value) {}
-	T mValue;
-};
+
 
 // class AttachPointHolder
 // {
