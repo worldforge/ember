@@ -1,5 +1,10 @@
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/scripts/environment.material, media/materials/scripts/OffsetMapping.cg: if a parameter in a Cg program is not used, it's apparently removed from the function's prototype. fixed this
+	* media/materials/scripts/vegetation.material: use  a high detail texture for the oak, since it makes such a big difference
+
+2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp: removed preloading of all parsed meshes
 
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>

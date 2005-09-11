@@ -98,11 +98,11 @@ void mainsplat_fp(float2 uv : TEXCOORD0,
 	float3 lightDir : TEXCOORD1,
 	float3 eyeDir : TEXCOORD2,
 	float3 halfAngle : TEXCOORD3,
+	uniform float3 lightAmbient,
+	uniform float tile,
 	uniform float3 lightDiffuse,
 	uniform float3 lightSpecular,
 	uniform float4 scaleBias,
-    uniform float4 ambient,
-	uniform float tile,
 	uniform sampler2D splatMap,
 	uniform sampler2D normalHeightMap,
 	uniform sampler2D diffuseMap,
@@ -121,7 +121,7 @@ void mainsplat_fp(float2 uv : TEXCOORD0,
 		// calculate displacement	
 		float displacement = (height * scale) + bias;
 		
-		float3 uv2 = float3(uv, 1) * 40;
+		float3 uv2 = float3(uv, 1) * tile;
 		
 		// calculate the new tex coord to use for normal and diffuse
 		float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
@@ -132,7 +132,7 @@ void mainsplat_fp(float2 uv : TEXCOORD0,
 		
 //		float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular;
 //		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular;
-		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse;
+		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse * lightAmbient;
 			
 		oColor = float4(col, 1);
 		oColor.w = splat;

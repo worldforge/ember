@@ -50,9 +50,8 @@ material /global/plants/tree/oak
          texture_unit
 	{
 //		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
-		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
+		texture 3d_objects/plants/tree/textures/gnarly/high/tree.png
 	}
-//      diffuse 1.000000 1.000000 1.000000
     }
   }
 }
