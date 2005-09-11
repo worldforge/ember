@@ -95,7 +95,7 @@ namespace Ember
 		if (itemExists("paths", "sharedir")) {
 			return std::string(getValue("paths", "sharedir")) + "/";
 		} else {
-			return getHomeDirectory();
+			return BR_DATADIR("/games/ember/");
 		}
 
 	}
@@ -105,10 +105,19 @@ namespace Ember
 		if (itemExists("paths", "datadir")) {
 			return std::string(getValue("paths", "datadir")) + "/";
 		} else {
-			return BR_DATADIR("/games/ember/");
+			return getHomeDirectory();
 		}
 
 	}
 
+	const std::string ConfigService::getUserMediaDirectory() const
+	{
+		return getEmberDataDirectory() + "/ember-media/";
+	}
+	
+	const std::string ConfigService::getSharedMediaDirectory() const
+	{
+		return getSharedDataDirectory() + "/media/";
+	}
 
 } // namespace Ember

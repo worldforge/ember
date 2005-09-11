@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.100  2005-09-11 11:43:45  erik
+ *      Revision 1.101  2005-09-11 22:08:44  erik
+ *      2005-09-12  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* ember: added some debug output and
+ *      	* src/components/ogre/EmberOgre.cpp: from resource.cfg, also parse the location of the media
+ *      	* services/config/ConfigService.*: added methods for getting the user-specific and shared media
+ *      	* src/components/ogre/resources.cfg: added indications where the media might be found (user or shared)
+ *
+ *      Revision 1.100  2005/09/11 11:43:45  erik
  *      2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp
@@ -1205,7 +1213,8 @@ void EmberOgre::setupResources(void)
 		
 
 	
-	std::string mediaHomePath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/";
+	std::string userMediaPath = Ember::EmberServices::getInstance()->getConfigService()->getUserMediaDirectory();
+	std::string sharedMediaPath = Ember::EmberServices::getInstance()->getConfigService()->getSharedMediaDirectory();
 	
 	mModelDefinitionManager = new ModelDefinitionManager();
 	
@@ -1213,9 +1222,9 @@ void EmberOgre::setupResources(void)
 	try {
 	
 		if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
 		} else {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
 		}
 	} catch (Ogre::Exception& ex) {
 		S_LOG_FAILURE("Couldn't load trees. Continuing as if nothing happened.");
@@ -1244,7 +1253,8 @@ void EmberOgre::setupResources(void)
 	// Go through all sections & settings in the file
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 	
-	Ogre::String secName, typeName, archName;
+	Ogre::String secName, typeName, archName, fullResourcePath;
+	std::string finalTypename;
 	while (seci.hasMoreElements())
 	{
 		secName = seci.peekNextKey();
@@ -1254,11 +1264,17 @@ void EmberOgre::setupResources(void)
 		{
 			typeName = i->first;
 			archName = i->second;
+			if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
+				fullResourcePath = sharedMediaPath + archName;
+			} else {
+				fullResourcePath = userMediaPath + archName;
+			}
+			finalTypename = typeName.substr(0, typeName.find("["));
 			try {
 				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-					mediaHomePath + archName, typeName, secName);
+					fullResourcePath, finalTypename, secName);
 			} catch (Ogre::Exception& ex) {
-				S_LOG_FAILURE("Couldn't load " + mediaHomePath + archName + ". Continuing as if nothing happened.");
+				S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
 			}
 		}
 	}

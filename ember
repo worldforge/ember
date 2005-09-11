@@ -89,9 +89,11 @@ if [ -x $JAVA ] ; then
 
   #make sure the configfile also is copied
   if [ ! -e $homedata/configfile ] ; then
-  	if [ ! -e $etcdir/configfile ] ; then
+     echo "No config file for WFUT found, trying to install."
+     if [ -e $etcdir/configfile ] ; then
       # Copy WFUT to home dir
-      cp $etcdir/configfile $homedata
+	cp $etcdir/configfile $homedata
+	echo "Copied config file for WFUT."
     fi
   fi
   		

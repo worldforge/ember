@@ -149,6 +149,19 @@ class ConfigService: public Service
 	*/
 	const std::string getEmberDataDirectory() const;
 	
+	/**
+	 *    returns the path to the media directory specific to a user, which would normally be ~/.ember/ember-media
+	 * @return 
+	 */
+	const std::string ConfigService::getUserMediaDirectory() const;
+	
+	/**
+	 *    returns the path to the media directory shared between users, which would normally be $prefix/games/ember/media
+	 * @return 
+	 */
+	const std::string ConfigService::getSharedMediaDirectory() const;
+
+
 
 }; //ConfigService
 
