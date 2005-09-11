@@ -1,5 +1,9 @@
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp: removed preloading of all parsed meshes
+
+2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/scripts/environment.material: added new ground material and fixed a bug with the ploughed field
 
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>

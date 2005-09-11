@@ -157,8 +157,8 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 			{
 				//preload
 				//FIX Ogre::MeshManager::getSingleton().load(subModelDef.Mesh);
-					Ogre::MeshManager::getSingleton().load( subModelDef.Mesh, 
-							Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+/*					Ogre::MeshManager::getSingleton().load( subModelDef.Mesh, 
+							Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );*/
 			
 				//parts
 
