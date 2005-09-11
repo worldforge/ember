@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.99  2005-09-08 20:07:52  erik
+ *      Revision 1.100  2005-09-11 11:43:45  erik
+ *      2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp
+ *      		* temporalily disable the sound service for now
+ *
+ *      Revision 1.99  2005/09/08 20:07:52  erik
  *      2005-09-08  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp
@@ -1602,7 +1608,7 @@ void EmberOgre::initializeEmberServices(void)
 //	  fclose(temp);
 //#endif
 	// Initialize the SoundService
-	Ember::EmberServices::getInstance()->getSoundService()->start();
+	//Ember::EmberServices::getInstance()->getSoundService()->start();
 //#ifndef WIN32
 //	}
 //#endif
