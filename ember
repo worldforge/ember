@@ -1,0 +1,122 @@
+#!/bin/bash
+
+
+
+# Function to find the real directory a program resides in.
+# Feb. 17, 2000 - Sam Lantinga, Loki Entertainment Software
+FindPath()
+{
+    fullpath="`echo $0 | grep /`"
+    if [ "$fullpath" = "" ]; then
+        oIFS="$IFS"
+        IFS=:
+        for path in $PATH
+        do if [ -x "$path/$0" ]; then
+               if [ "$path" = "" ]; then
+                   path="."
+               fi
+               fullpath="$path/$0"
+               break
+           fi
+        done
+        IFS="$oIFS"
+    fi
+    if [ "$fullpath" = "" ]; then
+        fullpath="$0"
+    fi
+ 
+    # Is the sed/ls magic portable?
+    if [ -L "$fullpath" ]; then
+        #fullpath="`ls -l "$fullpath" | awk '{print $01}'`"
+        fullpath=`ls -l "$fullpath" |sed -e 's/.* -> //' |sed -e 's/\*//'`
+    fi
+    dirname $fullpath
+}
+
+
+
+
+
+# Setup variables
+
+#get the dir where this script resides in
+path=`FindPath`
+test=${path[0]}
+#if [ "$fullpath" = "" ]; then
+if [ "$test" = "." ]; then
+	path=${PWD}
+	echo fdfsf
+fi
+prefix=${path}/..
+
+#prefix=$HOME/opt/ember_static_x86/
+echo "According to my calculations Ember should be installed in $prefix"
+
+
+
+#scriptPath=$0
+#prefix=`dirname ${scriptPath}`/..
+
+exec_prefix=${prefix}
+bindir=${exec_prefix}/bin
+datadir=${prefix}/share
+etcdir=${prefix}/etc/ember
+homedata=$HOME/.ember
+
+WFUT_JAR=WFUT.jar
+
+# Determine if java executable exists in path
+JAVA=`which java`
+if [ -x $JAVA ] ; then
+
+  # See if Updater exists in home dir
+  if [ ! -e $homedata/$WFUT_JAR ] ; then
+    # Check to see if its in the install dir
+    if [ -e $datadir/ember/$WFUT_JAR ] ; then
+      # Install into home dir 
+      echo "Installing Updater"
+
+      # Create dir if required 
+      if [ ! -d $homedata ] ; then
+        mkdir $homedata
+      fi
+
+      # Copy WFUT to home dir
+      cp $datadir/ember/$WFUT_JAR $homedata
+
+    fi
+  fi
+
+  #make sure the configfile also is copied
+  if [ ! -e $homedata/configfile ] ; then
+  	if [ ! -e $etcdir/configfile ] ; then
+      # Copy WFUT to home dir
+      cp $etcdir/configfile $homedata
+    fi
+  fi
+  		
+
+  # Run Updater if it exists
+  if [ -e $homedata/$WFUT_JAR ] ; then
+    # Store Current dir
+    CUR_DIR=`pwd`
+    # We need to change here so updater knows where to find / store data
+    cd $homedata
+    # Update
+    $JAVA -jar $WFUT_JAR update ember-media
+    # Restore dir
+    cd $CUR_DIR
+  fi
+else
+  echo "Java not found in path. Updater cannot be run."
+fi
+
+LD_LIBRARY=$prefix/lib/ember
+LD_LIBRARY_PATH=$LD_LIBRARY
+export LD_LIBRARY
+export LD_LIBRARY_PATH
+
+# Execute real ember binary
+echo "Starting Ember...."
+$bindir/ember.bin --binrelocloading
+

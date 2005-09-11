@@ -1,5 +1,10 @@
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember: a startup script which copies the needed files and updates the media
+	* Makefile.am: make sure that configfile and the ember script are installed
+
+2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberEntity.cpp: update the debug entity bounding box when moving
 
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
