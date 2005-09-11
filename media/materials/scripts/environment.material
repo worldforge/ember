@@ -31,6 +31,26 @@ material /global/environment/ground/grass
   }
 }
 
+
+
+material /global/environment/ground/straw_and_mud
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/environment/ground/textures/straw_and_mud/low/ground.png
+      }
+    }
+  }
+}
+
+
+
+
 material /global/environment/boulder/moraf_rock
 {
   technique
@@ -128,7 +148,7 @@ material /global/environment/water/simple
                         scene_blend modulate
                         cull_hardware none
                         cull_software none
-						depth_bias 8
+						//depth_bias 1
 						//depth_write off
 						lighting off			
                         texture_unit
@@ -303,7 +323,6 @@ material /global/environment/ground/ploughed_field
 		 texture_unit 
          { 
 			alpha_op_ex source1 src_texture src_texture
-			colour_op_ex source1 src_current src_current
             texture splat
             tex_coord_set 0 
 			tex_address_mode clamp

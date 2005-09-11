@@ -1,5 +1,9 @@
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/scripts/environment.material: added new ground material and fixed a bug with the ploughed field
+
+2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* make_dist_media.sh.in: some fixes to the media fetching
 	* configfile: updated the location of the media
 
