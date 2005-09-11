@@ -43,7 +43,7 @@ public:
 
 	MakeEntityWidget();
     ~MakeEntityWidget();
-	void buildWidget();
+	virtual void buildWidget();
 
 	
 	virtual void show();
