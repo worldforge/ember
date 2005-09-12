@@ -45,7 +45,6 @@ test=${path[0]}
 #if [ "$fullpath" = "" ]; then
 if [ "$test" = "." ]; then
 	path=${PWD}
-	echo fdfsf
 fi
 prefix=${path}/..
 
@@ -59,7 +58,7 @@ echo "According to my calculations Ember should be installed in $prefix"
 
 exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
-datadir=${prefix}/share
+datadir=${prefix}/share/games/ember
 etcdir=${prefix}/etc/ember
 homedata=$HOME/.ember
 
@@ -72,7 +71,7 @@ if [ -x $JAVA ] ; then
   # See if Updater exists in home dir
   if [ ! -e $homedata/$WFUT_JAR ] ; then
     # Check to see if its in the install dir
-    if [ -e $datadir/ember/$WFUT_JAR ] ; then
+    if [ -e $datadir/$WFUT_JAR ] ; then
       # Install into home dir 
       echo "Installing Updater"
 
@@ -82,7 +81,7 @@ if [ -x $JAVA ] ; then
       fi
 
       # Copy WFUT to home dir
-      cp $datadir/ember/$WFUT_JAR $homedata
+      cp $datadir/$WFUT_JAR $homedata
 
     fi
   fi
@@ -92,7 +91,7 @@ if [ -x $JAVA ] ; then
      echo "No config file for WFUT found, trying to install."
      if [ -e $etcdir/configfile ] ; then
       # Copy WFUT to home dir
-	cp $etcdir/configfile $homedata
+	cp $etcdir/configfile $homedata/
 	echo "Copied config file for WFUT."
     fi
   fi

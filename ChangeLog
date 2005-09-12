@@ -1,3 +1,16 @@
+2005-09-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Makefile.am: install the ember script as a script
+	* ember.png: updated the icon with the latest from jayr
+	* ember: fixed some bugs with the installation
+
+2005-09-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember: added some debug output and
+	* src/components/ogre/EmberOgre.cpp: from resource.cfg, also parse the location of the media
+	* services/config/ConfigService.*: added methods for getting the user-specific and shared media
+	* src/components/ogre/resources.cfg: added indications where the media might be found (user or shared)
+
 2005-09-11  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember: a startup script which copies the needed files and updates the media
