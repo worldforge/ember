@@ -739,12 +739,17 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 			submodel->getEntity()->_updateRenderQueue(queue);
 		}
 		
-		Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
-		Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-		for( ; child_itr != child_itr_end; child_itr++)
-		{
-			if ((*child_itr).second->isVisible())
-				(*child_itr).second->_updateRenderQueue(queue);
+		if (getSkeleton() != 0) {
+			//updateAnimation();
+			Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
+			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
+			for( ; child_itr != child_itr_end; child_itr++)
+			{
+				//make sure to do _update here, else attached entities won't be updated if no animation is playing
+				(*child_itr).second->getParentNode()->_update(true, true);
+				if ((*child_itr).second->isVisible())
+					(*child_itr).second->_updateRenderQueue(queue);
+			}
 		}
 		
 	}	
