@@ -116,10 +116,10 @@ EmberEntity::~EmberEntity()
 	} else {
 		getSceneNode()->getCreator()->destroySceneNode(getSceneNode()->getName());
 	}
-	if (mErisEntityBoundingBox)
-	{
-		EmberOgre::getSingleton().getWorldSceneNode()->removeAndDestroyChild(mErisEntityBoundingBox->getParentSceneNode()->getName());
-	}
+	//if (mErisEntityBoundingBox)
+	//{
+	//	EmberOgre::getSingleton().getWorldSceneNode()->removeAndDestroyChild(mErisEntityBoundingBox->getParentSceneNode()->getName());
+	//}
 	
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }

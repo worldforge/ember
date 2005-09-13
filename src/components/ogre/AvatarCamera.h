@@ -47,7 +47,7 @@ class Avatar;
 class InputManager;
 class GUIManager;
 class EmberEntity;
-class MouseMotion;
+struct MouseMotion;
 struct EntityPickResult;
 
 

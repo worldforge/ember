@@ -60,7 +60,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 	
 	try {
 	
-		fprintf(stdout, "STARTING CEGUI\n");
+		S_LOG_INFO("STARTING CEGUI");
 		
 		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
 		mGuiSystem = new CEGUI::System(mGuiRenderer); 
@@ -80,19 +80,19 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			
 			try {
 				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-			} catch (CEGUI::Exception& e) {
-				fprintf(stderr, "CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.\n");
+			} catch (CEGUI::Exception&) {
+				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.");
 			}
 			try {
 				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
 //				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
-			} catch (CEGUI::Exception& e) {
-				fprintf(stderr, "CEGUI - could not set default font.\n");
+			} catch (CEGUI::Exception&) {
+				S_LOG_FAILURE("CEGUI - could not set default font.");
 			}
 		
 		
-		} catch (CEGUI::Exception& e) {
-			fprintf(stderr, "CEGUI - could not create default scheme.\n");
+		} catch (CEGUI::Exception&) {
+			S_LOG_FAILURE("CEGUI - could not create default scheme.");
 		}
 		
 		
@@ -107,7 +107,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		//set a default tool tip
 		CEGUI::System::getSingleton().setTooltip("TaharezLook/Tooltip");
 		
-		fprintf(stderr, "CEGUI - SYSTEM SET UP\n");
+		S_LOG_INFO("CEGUI - SYSTEM SET UP");
 
 		MousePicker* picker = new MousePicker();
 		pushMousePicker(picker);
@@ -117,8 +117,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
 	
-	} catch (CEGUI::Exception& e) {
-		fprintf(stderr, "GUIManager - error when creating gui.\n");
+	} catch (CEGUI::Exception&) {
+		S_LOG_FAILURE("GUIManager - error when creating gui.");
 	
 	}
 
@@ -358,7 +358,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-	fprintf(stderr, "CEGUI - MAIN SHEET CAPTURING INPUT\n");
+	S_LOG_INFO("CEGUI - MAIN SHEET CAPTURING INPUT");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 	if (aWindow) {
 		aWindow->releaseInput();
@@ -383,7 +383,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 
 bool GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
 {
-	fprintf(stderr, "CEGUI - MAIN SHEET RELEASE INPUT\n");
+	S_LOG_INFO("CEGUI - MAIN SHEET RELEASE INPUT");
 	return true;
 }
 
@@ -407,7 +407,7 @@ void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 		}
 
 		//take screenshot		
-		if(key.sym == SDLK_F8)
+		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )
 		{
 			setDebugText("Wrote image: " +takeScreenshot());
 		}

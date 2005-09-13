@@ -103,6 +103,29 @@
 
 2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/MotionManager.cpp: MSVC wants to know exact what namespace to look in
+	* src/components/ogre/MathConverter.cpp: MSVC needs math.h
+	* src/components/ogre/GUIManager.cpp: 
+		* MSVC wants to know exact what namespace to look in
+		* use macro from CEGUI for dynlib opening; works on both win32 and *nix
+		* temporarily remove JesusEdit since it doesn't work with win32 yet
+		* replace dynamic_cast with static_cast
+		* added win32 includes
+	* src/components/ogre/EmberOgrePrerequisites.h: added type uint
+	* src/components/ogre/EmberEntityFactory.cpp: 
+		* MSVC wants to know exact what namespace to look in
+		* replace dynamic_cast with static_cast
+	* src/components/ogre/EmberEntity.cpp: 
+		* replace dynamic_cast with static_cast
+
+	
+
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp: replaced dynamic_cast with static_cast
+
+2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/CONTROLS : updated text
 	* src/components/ogre/GUIManager.cpp: include CEGUIWindowManager.h since Widget.h doesn't do that anymore
 	* src/components/ogre/widgets/ConsoleWidget.xml : updated text
