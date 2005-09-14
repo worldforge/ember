@@ -45,7 +45,9 @@ namespace Ogre
         mIsLoaded (false),
         mIsModified (false),
         mIsRectModified (false),
-        mRect (0, 0, 0, 0, 0, 1)
+        mRect (0, 0, 0, 0, 0, 1),		mMaxheight(100) 		//set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
+		//in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
+
     {
     }
     //-----------------------------------------------------------------------

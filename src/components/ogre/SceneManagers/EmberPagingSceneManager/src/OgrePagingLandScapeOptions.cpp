@@ -1,10 +1,16 @@
 /***************************************************************************
-  OgrePagingLandScapeOptions.cpp  -  description
-  -------------------
-  begin                : Sun Mar 02 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
-  email                : spoke2@supercable.es && tuan.kuranes@free.fr
+   OgrePagingLandScapeOptions.cpp  -  description
+
+   -------------------
+
+   begin                : Sun Mar 02 2003
+
+   copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+
+   email                : spoke2@supercable.es && tuan.kuranes@free.fr
+
 ***************************************************************************/
+
 /***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -13,7 +19,6 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
-
 #include "OgreRoot.h"
 #include "OgreSceneManager.h"
 #include "OgreRenderSystem.h"
@@ -35,6 +40,7 @@
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeCamera.h"
+#include <Ogre.h>
 
 namespace Ogre
 {
@@ -83,7 +89,8 @@ namespace Ogre
 	    change_factor = 1;
 	    max_adjacent_pages = 1;
 	    max_preload_pages = 2;
-	    renderable_factor = 10;
+	    renderable_factor = 10;		std::stringstream ss;			ss << "Renderable factor: " << renderable_factor;		Ogre::LogManager::getSingleton().logMessage(ss.str());
+
 
         scale = Vector3::UNIT_SCALE;
 
@@ -324,7 +331,7 @@ namespace Ogre
 
 	    /* Set up the options For a Map*/
 	    ConfigFile config;
-	    config.load( mapName, groupName, String("="), true);
+	    config.load( mapName);//		config.loadDirect( mapName);
 
         getAvgColors ();
 
@@ -480,7 +487,7 @@ namespace Ogre
         Real Factor = TileSize;
         Factor = Factor * scale.x * Factor * scale.z;
 
-	    renderable_factor = visible_renderables * Factor;
+	    renderable_factor = visible_renderables * Factor;		std::stringstream ss;		ss << "Renderable factor: " << renderable_factor;		Ogre::LogManager::getSingleton().logMessage(ss.str());
 	    //renderable_factor *= renderable_factor;
 
 	    distanceLOD = StringUtil::toReal( config.getSetting( "DistanceLOD" ) );
@@ -595,7 +602,8 @@ namespace Ogre
             Real Factor = TileSize;
             Factor = Factor * scale.x * Factor * scale.z;
 
-	        renderable_factor = visible_renderables * Factor;
+	        renderable_factor = visible_renderables * Factor;		std::stringstream ss;			ss << "Renderable factor: " << renderable_factor;		Ogre::LogManager::getSingleton().logMessage(ss.str());
+
             return true;
 	    }
 	    if ( strKey == "DistanceLOD" )

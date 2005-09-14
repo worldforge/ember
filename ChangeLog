@@ -1,5 +1,15 @@
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/EmberPagingLandScapeData2D_HeightField.cpp:
+		* default to a sane number
+		* get the max height from the Mercator::Terrain
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/OgrePagingLandScapeData2D.cpp: default to a sane value
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/OgrePagingLandScapeListenerManager.cpp: MSVC wants to know exact what namespace to look in
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/OgrePagingLandScapeOpetions.cpp: use the simple load(...) method to load the terrain.cfg. Not entirely sure how this will work on linux.
+
+
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/Model.cpp: 
 		* no need to call the parent in the constructor
 		* make it not segfault a exit. we have to investigate if there's a possibility for a memory leak here
