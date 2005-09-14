@@ -48,6 +48,13 @@
 
 #include "AvatarCamera.h"
 
+#ifdef WIN32
+	#include <tchar.h>
+	#define snprintf _snprintf
+    #include <io.h> // for _access, Win32 version of stat()
+    #include <direct.h> // for _mkdir
+#endif
+
 using namespace Ogre;
 namespace EmberOgre {
 
@@ -106,19 +113,42 @@ const Mercator::Terrain& TerrainGenerator::getTerrain() const
 
 void TerrainGenerator::loadTerrainOptions()
 {
-	Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
+ 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+	
+	//Ogre::ConfigFile cf;
+ //   cf.load("terrain.cfg");
+
+    
+	// Go through all sections & settings in the file
+	//Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+	//
+	//std::string first;	//std::string second;	//std::string pair;	//Ogre::String secName, typeName, archName;
+	//while (seci.hasMoreElements())
+	//{
+	//	secName = seci.peekNextKey();
+	//	Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+	//	Ogre::ConfigFile::SettingsMultiMap::iterator i;
+	//	for (i = settings->begin(); i != settings->end(); ++i)
+	//	{
+	//		first = i->first;
+	//		second = i->second;
+	//		pair = first + "=" + second;
+	//	}
+	//}
+		Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
 	
 	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 
 
 	sceneManager->setOption("GroupName", "General");
 	Ogre::PagingLandScapeOptions::getSingleton().groupName = "General";
-	
+
 	Ogre::PagingLandScapeOptions::getSingleton().loadMapOptions("terrain.cfg");	
 	
 	
-	Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";
+	//Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";
 	Ogre::PagingLandScapeOptions::getSingleton().setTextureFormat("EmberTexture");
+
 }
 
 TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Mercator::Shader* mercatorShader)
@@ -145,6 +175,10 @@ TerrainShader* TerrainGenerator::createShader(Ogre::MaterialPtr material, Mercat
 
 void TerrainGenerator::addArea(Mercator::Area* area)
 {
+ //   _fpreset();
+	//_controlfp(_PC_64, _MCW_PC);
+	//_controlfp(_RC_NEAR, _MCW_RC);
+
 	mTerrain->addArea(area);
 	if (!mAreaShaders.count(area->getLayer())) {
 		TerrainShader* shader;
@@ -244,6 +278,9 @@ int TerrainGenerator::getSegmentSize() const
 void TerrainGenerator::prepareAllSegments()
 {
 	
+ //   _fpreset();
+	//_controlfp(_PC_64, _MCW_PC);
+	//_controlfp(_RC_NEAR, _MCW_RC);
 	Ogre::Real heightMax = 0, heightMin = 0;
 	
 	//initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
@@ -311,8 +348,13 @@ void TerrainGenerator::prepareAllSegments()
 
 		
 	sceneManager->loadScene();
+	Ogre::AxisAlignedBox worldBox(getMin().x(), heightMin, getMin().y(), getMax().x(), heightMax, getMax().y());
+	std::stringstream ss;
+	ss << worldBox;
+	S_LOG_INFO("New size of the world: " << ss.str());
 	
-	sceneManager->resize(Ogre::AxisAlignedBox(getMin().x(), heightMin, getMin().y(), getMax().x(), heightMax, getMax().y()) ,16);
+	sceneManager->resize(worldBox ,16);
+
 	
 }
 
@@ -331,6 +373,8 @@ bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
 
 TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogrePosition)
 {
+	//_fpreset();
+	S_LOG_INFO("Requesting page at ogre position x: " << ogrePosition.x << " y: " << ogrePosition.y);
 	double worldSizeX = getMax().x() - getMin().x();
 	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
 	int pageOffsetX = totalNumberOfPagesX / 2;
@@ -415,6 +459,7 @@ float TerrainGenerator::getHeight(const TerrainPosition& point) const
 bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world) 
 {
 
+	//_fpreset();
    if (!we->hasAttr("terrain")) {
 	   S_LOG_FAILURE( "View entity has no terrain" );
 	   S_LOG_FAILURE( "View entity id " << we->getId() );
@@ -430,6 +475,8 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
     if (I == tmap.end()) {
 		S_LOG_FAILURE( "No terrain points" );
     }
+
+	TerrainDefPointStore pointStore;
 	if (I->second.isList()) {
         // Legacy support for old list format.
         const Atlas::Message::ListType & plist = I->second.asList();
@@ -444,14 +491,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 				S_LOG_INFO( "point without 3 nums" );
                 continue;
             }
-            int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
-            xmin = std::min(xmin, x);
-            xmax = std::max(xmax, x);
-            ymin = std::min(ymin, y);
-            ymax = std::max(ymax, y);
-    //        m_terrain.setBasePoint(x, y, point[2].asNum());
-			mTerrain->setBasePoint(x,y,point[2].asNum());
+            //int x = (int)point[0].asNum();
+            //int y = (int)point[1].asNum();
+
+			TerrainDefPoint defPoint((int)point[0].asNum(),(int)point[1].asNum(),(int)point[3].asNum());
+			pointStore.push_back(defPoint);
+			//mTerrain->setBasePoint(x,y,point[2].asNum());
         }
     } else if (I->second.isMap()) {
 
@@ -470,7 +515,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
             float z = point[2].asNum();
-            Mercator::BasePoint bp;
+			TerrainDefPoint defPoint(x,y,z);
+			pointStore.push_back(defPoint);
+
+			
+			
+	        Mercator::BasePoint bp;
             if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
 				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
                 continue;
@@ -516,6 +566,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 		S_LOG_FAILURE( "Terrain is the wrong type" );
         return false;
     }
+	//createTerrain(pointStore);
     mXmin = xmin;
     mXmax = xmax;
     mYmin = ymin;
@@ -527,6 +578,27 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 	
 	
     return true;
+}
+
+bool TerrainGenerator::createTerrain(const TerrainDefPointStore& terrainPoints)
+{
+	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
+        Mercator::BasePoint bp;
+        if (mTerrain->getBasePoint(I->position.x(), I->position.y(), bp) && (I->height == bp.height())) {
+			S_LOG_INFO( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");
+            continue;
+        }
+        mXmin = std::min(mXmin, static_cast<int>(I->position.x()));
+        mXmax = std::max(mXmax, static_cast<int>(I->position.x()));
+        mYmin = std::min(mYmin, static_cast<int>(I->position.y()));
+        mYmax = std::max(mYmax, static_cast<int>(I->position.y()));
+        bp.height() = I->height;
+        // FIXME Sort out roughness and falloff, and generally
+        // verify this code is the same as that in Terrain layer
+        mTerrain->setBasePoint(I->position.x(), I->position.y(), bp);
+
+	}
+	return true;
 }
 
 // Ogre::Material* TerrainGenerator::getMaterialForSegment(TerrainPosition& atPosition)

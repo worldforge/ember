@@ -132,6 +132,7 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 		
 	//create a name for out material
+	S_LOG_INFO("Creating a material for the terrain.");
 	Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
@@ -148,10 +149,12 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 		(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") || Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0"))
 	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
+		S_LOG_INFO("Try to create a complex material.");
 //		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
 		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	} else {
 	//and as a fallback for older gfx cards we'll supply a technique which doesn't
+		S_LOG_INFO("Try to create a simple material.");
 		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	}
 // 	generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
@@ -327,7 +330,7 @@ void TerrainPage::printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const
 	
 	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
 	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
-	pCodec->codeToFile(dataChunk, Ogre::String("img/") + name + "." + extension, temp);
+	pCodec->codeToFile(dataChunk, Ogre::String("c:\\img/") + name + "." + extension, temp);
 	
 }
 
@@ -568,7 +571,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 /*	int numberOfSegmentsToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
 	for (int i = 0; i < numberOfSegmentsToDo; ++i) {*/
 	
-	int numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
+	size_t numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
 	int splattextureChannel = 0;
 	++shadersIterator;
 	for (; shadersIterator != mUsedShaders.end() ; ++shadersIterator) {
@@ -652,6 +655,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* technique)
 { 
  
+	S_LOG_INFO("Entered generateTerrainTechniqueComplex.");
 	Ogre::Pass* pass = technique->getPass(0);
 	//pass->setLightingEnabled(false);
 	
@@ -668,8 +672,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		
 		//add vertex shader for fog	
 		pass->setVertexProgram("fog_linear_vp");
-	} catch (Ogre::Exception& ex) {
+	} catch (Ogre::Exception&) {
 		//if there was some kind of error, go with the simple technique
+		S_LOG_INFO("Falling back to simple technique.");
 		generateTerrainTechniqueSimple(technique);
 		return;
 	}
@@ -744,7 +749,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 /*	int numberOfSegmentsToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
 	for (int i = 0; i < numberOfSegmentsToDo; ++i) {*/
 	
-	int numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
+	size_t numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
 	++shadersIterator;
 	for (; shadersIterator != mUsedShaders.end() ; ++shadersIterator) {
 
@@ -842,6 +847,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
 
 void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* technique)
 {
+	S_LOG_INFO("Entered generateTerrainTechniqueSimple.");
 
 	Mercator::Segment* segment = mGenerator->getTerrain().getSegment((int)mPosition.x(), (int)mPosition.y());
  
@@ -896,7 +902,10 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 
 void EmberOgre::TerrainPage::populateSurfaces()
 {
-//	fesetround(FE_TONEAREST);
+ //   _fpreset();
+	//_controlfp(_PC_64, _MCW_PC);
+	//_controlfp(_RC_NEAR, _MCW_RC);
+
 
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		I->segment->populateSurfaces();
@@ -1005,14 +1014,16 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 		
 	Ogre::DataStreamPtr dataStreamPtr(splatChunk);
 		
-/*	Ogre::Image* image = new Ogre::Image();
-	image->loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
-	image->save(std::string("/home/erik/tempimages/") + splatTextureName + "_temp" + std::string(".png"));*/
-	
+	Ogre::Image* image = new Ogre::Image();
+	image->loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
+	//image->save(std::string("c:\\skit\\") + splatTextureName + "_temp" + std::string(".png"));
 	
 //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
-	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
+//	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
 	
+//		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
+	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getAlphaTextureSize(), getAlphaTextureSize(), 1, Ogre::PF_A8);
+	splatTexture->loadImage(*image);
 		
 /*	char name[100];
 	strcpy(name, (std::string("/home/erik/tempimages/") + splatTextureName + "_temp" + std::string(".png")).c_str());

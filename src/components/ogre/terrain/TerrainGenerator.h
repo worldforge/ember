@@ -53,6 +53,14 @@ class TerrainShader;
 
 class TerrainPage;
 
+struct TerrainDefPoint
+{
+	public:
+		TerrainDefPoint(float x, float y, double terrainHeight) : position(x,y), height(terrainHeight) {}
+	TerrainPosition position;
+	double height;
+};
+
 
 /**
  * This class takes care of generating terrain for Ogre's scenemanager.
@@ -65,6 +73,9 @@ class TerrainPage;
 class TerrainGenerator :  public Ogre::FrameListener
 {
 public:
+
+
+	typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
 
 	/**
 	 * STL map to store sparse array of TerrainPage pointers.
@@ -99,6 +110,8 @@ public:
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
 	
+	bool createTerrain(const TerrainDefPointStore& terrainPoints);
+
 	/**
 	 * Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-

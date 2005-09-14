@@ -38,8 +38,12 @@ TerrainArea::~TerrainArea()
 
 void TerrainArea::init() {
 	
-    
-    if (!mEntity->hasAttr("area")) {
+ //   _fpreset();
+	//_controlfp(_PC_64, _MCW_PC);
+	//_controlfp(_RC_NEAR , _MCW_RC);
+
+
+	if (!mEntity->hasAttr("area")) {
         S_LOG_FAILURE("AreaModel defined on entity with no area attribute");
         return;
     }

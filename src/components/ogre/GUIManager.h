@@ -21,6 +21,8 @@
 
 
 #include "EmberOgrePrerequisites.h"
+
+#include <CEGUIBase.h>
 #include <OgreCEGUIRenderer.h>
 
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0

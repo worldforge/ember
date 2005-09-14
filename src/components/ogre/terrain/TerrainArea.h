@@ -43,6 +43,7 @@ public:
 	void init();
 	
 	inline Mercator::Area* getArea() const { return mArea; }
+	inline void setArea(Mercator::Area* area) { mArea = area; }
 
 protected:
 

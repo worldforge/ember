@@ -1,3 +1,22 @@
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.h: include CEGUIBase.h since MSVC needed it
+	* src/components/ogre/TerrainArea.*: added method for setting the Mercator::Area
+	* src/components/ogre/TerrainGenerator.cpp: 
+		* added MSVC headers
+		* added some new methods for easier set up of the terrain
+	* src/components/ogre/TerrainPage.cpp: 
+		* added some more logging
+
+	
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/AvatarCamera.h: MouseMotion is a struct, not a class
+	* src/components/ogre/EmberEntity.cpp: don't try to remove the eris bounding box since this will lead to a crash when exiting the app
+	* src/components/ogre/GUIManager.cpp:
+		* changed all fprintf to S_LOG_* calls
+		* take screenshots with the Print screen key, not F8 anymore
+
 2005-09-12  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/model/Model.cpp: update attached objects position even when not animated, else when a non-animated model moved the attached entites wouldn't move with it
