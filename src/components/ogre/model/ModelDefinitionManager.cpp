@@ -31,10 +31,10 @@
 #include "XMLModelDefinitionSerializer.h"
 
 
+template<> EmberOgre::ModelDefinitionManager* Ember::Singleton<EmberOgre::ModelDefinitionManager>::ms_Singleton = 0;
 namespace EmberOgre
 {
     //-----------------------------------------------------------------------
-    template<> ModelDefinitionManager* Ember::Singleton<ModelDefinitionManager>::ms_Singleton = 0;
 /*    ModelDefinitionManager* ModelDefinitionManager::getSingletonPtr(void)
     {
         return ms_Singleton;

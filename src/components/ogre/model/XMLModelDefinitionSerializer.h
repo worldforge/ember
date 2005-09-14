@@ -28,7 +28,7 @@
 // Includes
 
 #include <Ogre.h>
-#include <ModelDefinition.h>
+#include "ModelDefinition.h"
 #include "framework/tinyxml/tinyxml.h"
 
 // Namespaces

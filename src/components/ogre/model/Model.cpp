@@ -97,8 +97,7 @@ void ParticleSystemBinding::scaleValue(Ogre::Real scaler)
 Ogre::String Model::msMovableType = "Model";
 
 Model::Model(const std::string& name)
-: MovableObject::MovableObject()
-, mName(name)
+: mName(name)
 , mScale(0)
 , mRotation(0)
 , mSkeletonInstance(0)
@@ -108,6 +107,7 @@ Model::Model(const std::string& name)
 }
 Model::~Model()
 {
+	mSubmodels.clear();
 }
 
 void Model::reset()
@@ -796,6 +796,9 @@ void Model::addQueryFlags(unsigned long flags)
 
 void Model::removeQueryFlags(unsigned long flags)
 {
+	//for now, only return. This is because this is often called at shutdown, when the entities already have been destroyed
+	//and we don't want segfaults
+	return;
 	MovableObject::removeQueryFlags(flags);
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
@@ -810,6 +813,10 @@ void Model::removeQueryFlags(unsigned long flags)
 /** Overridden from MovableObject */
 void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 {
+	//HACK to prevent segfault upon exit
+	//if (!parent) {
+	//	return;
+	//}
 	MovableObject::_notifyAttached(parent, isTagPoint);
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();

@@ -22,9 +22,9 @@
 -------------------------------------------------------------------------------
 */
 // Includes
-#include <XMLModelDefinitionSerializer.h>
-#include <ModelDefinition.h>
-#include <Model.h>
+#include "XMLModelDefinitionSerializer.h"
+#include "ModelDefinition.h"
+#include "Model.h"
 
 #include "ModelDefinitionManager.h"
 
@@ -52,7 +52,7 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 		return;
 	}
 	
-	Ember::TiXmlElement* elem;
+//	Ember::TiXmlElement* elem;
 
 
 	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();

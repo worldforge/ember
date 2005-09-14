@@ -1,5 +1,14 @@
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/model/Model.cpp: 
+		* no need to call the parent in the constructor
+		* make it not segfault a exit. we have to investigate if there's a possibility for a memory leak here
+	* src/components/ogre/model/ModelDefinitionManager.cpp: MSVC wants to know exact what namespace to look in
+	* src/components/ogre/model/ModelDefinitionManager.h: include local copy
+	
+
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/carpenter/BluePrint.cpp: removed unneeded variable
 	* src/components/ogre/environment/Foliage.cpp: MSVC wants to know exact what namespace to look in
 	* src/components/ogre/environment/FoliageArea.cpp: Better error output
