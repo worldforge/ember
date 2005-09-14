@@ -76,7 +76,12 @@ bool Quit::No_Click(const CEGUI::EventArgs& args)
 
 void Quit::EmberOgre_RequestQuit() 
 {
-	softquit();
+	//if the window system twice requests a quit, do it
+	if (mMainWindow->isVisible()) {
+		EmberOgre::getSingleton().shutdown();
+	} else {
+		softquit();
+	}
 }
 
 void Quit::softquit()

@@ -156,12 +156,14 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 		
 		Ember::EmberServices::getInstance()->getServerService()->takeCharacter(*id);
 	}
+	return true;
 }
 
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {
 		
 	Ember::EmberServices::getInstance()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description);
+	return true;
 }
 
 bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
@@ -173,6 +175,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 		mNewChar.type = type;
 	}
 	updateNewCharacter();
+	return true;
 }
 bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args)
 {
@@ -180,6 +183,7 @@ bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args)
 	mNewChar.gender = selected->getText().c_str();
 	
 	updateNewCharacter();
+	return true;
 }
 bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args)
 {
@@ -187,12 +191,14 @@ bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args)
 	mNewChar.name = name;
 	updateNewCharacter();
 
+	return true;
 }
 bool ServerWidget::Description_TextChanged(const CEGUI::EventArgs& args)
 {
 	std::string description = mNewCharDescription->getText().c_str();
 	mNewChar.description = description;
 	updateNewCharacter();
+	return true;
 }
 
 void ServerWidget::updateNewCharacter()
@@ -213,6 +219,7 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 	
 	mAccount->login(std::string(name.c_str()), std::string(password.c_str()));
 
+	return true;
 }
 
 bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
@@ -224,6 +231,7 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 	CEGUI::String password = passwordBox->getText();
 	
 	mAccount->createAccount(std::string(name.c_str()),std::string(name.c_str()),std::string(password.c_str()));
+	return true;
 }
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) 

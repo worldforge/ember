@@ -106,11 +106,13 @@ bool GiveWidget::Give_Click(const CEGUI::EventArgs& args)
 		Ember::EmberServices::getInstance()->getServerService()->place(entity, mTargetEntity);
 		item = mListBox->getNextSelected(item);
 	}
+	return true;
 }
 
 bool GiveWidget::Cancel_Click(const CEGUI::EventArgs& args)
 {
 	mMainWindow->setVisible(false);
+	return true;
 }
 
 void GiveWidget::handleAction(const std::string& action, EmberEntity* entity) {

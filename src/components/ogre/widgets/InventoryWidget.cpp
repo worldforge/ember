@@ -111,6 +111,7 @@ bool InventoryWidget::Drop_Click(const CEGUI::EventArgs& args)
 		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
 		Ember::EmberServices::getInstance()->getServerService()->drop(entity, Ogre2Atlas_Vector3(o_pos));
 	}
+	return true;
 }
 
 bool InventoryWidget::Wield_Click(const CEGUI::EventArgs& args)
@@ -120,6 +121,7 @@ bool InventoryWidget::Wield_Click(const CEGUI::EventArgs& args)
 		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
 		Ember::EmberServices::getInstance()->getServerService()->wield(entity);
 	}
+	return true;
 }
 
 

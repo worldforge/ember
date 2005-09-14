@@ -50,6 +50,7 @@ ServerBrowserWidget::~ServerBrowserWidget()
 bool ServerBrowserWidget::ManualServerName_TextAcceptedEvent(const CEGUI::EventArgs& args)
 {
 	doConnect();
+	return true;
 }
 // bool ServerBrowserWidget::ManualServerName_KeyUp(const CEGUI::EventArgs& e)
 // {

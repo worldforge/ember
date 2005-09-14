@@ -5,7 +5,7 @@ namespace EmberOgre {
 
 // template<> WidgetLoader WidgetLoaderHolder<ConsoleWidget>::loader("ConsoleWidget", &createWidgetInstance);
 
-ConsoleWidget::ConsoleWidget() : Widget::Widget(), mSpeedOfWindow(0.4)
+ConsoleWidget::ConsoleWidget() : mSpeedOfWindow(0.4)
 {
 
 }

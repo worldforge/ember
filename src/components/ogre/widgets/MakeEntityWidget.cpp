@@ -48,6 +48,9 @@
 #include <elements/CEGUIPushButton.h> 
 #include "framework/ConsoleBackend.h"
 
+#include "../TerrainGenerator.h"
+#include <Mercator/Area.h>
+
 namespace EmberOgre {
 
 /*template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);*/
@@ -62,6 +65,7 @@ MakeEntityWidget::MakeEntityWidget()
 
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEENTITY,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(MAKE,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand("testarea",this);
 
 }
 
@@ -208,6 +212,23 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 		if (typeinfo) {
 			createEntityOfType(typeinfo);
 		}
+	} else if (command == "testarea") {
+			Mercator::Area* area = new Mercator::Area(7, false);
+		WFMath::Polygon<2> poly;
+
+		float  points[] = { -26,-62, -36,-31, -26,-14, 2,-1, 22, 40, 132,122, 140,127, 144.5, 146.5, 169, 153, 169,155, 142.5,148.5, 138,129, 130,124, 18,40, -2, 0, -28,-12, -38,-29, -29,-62 };
+	//	float  points[] = { -26,-62, -36,-31, -26,-14, 2,-1, 22, 40 };
+		for (int i = 0; i < 36; i += 2) {
+			WFMath::Point<2> wpt(points[i], points[i + 1]);
+			poly.addCorner(poly.numCorners(), wpt);
+		}
+		if (poly.numCorners()) {
+    		area->setShape(poly);
+			
+		}
+
+		EmberOgre::getSingleton().getTerrainGenerator()->addArea(area); 
+
 	} else {
 		Widget::runCommand(command, args);
 	}
@@ -224,7 +245,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 		createEntityOfType(typeinfo);
 		
 	}
-	
+	return true;
 //	Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
 }
 

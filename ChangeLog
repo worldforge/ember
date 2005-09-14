@@ -1,5 +1,21 @@
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ConsoleWidget.cpp: no need to call the parent in the constructor
+	* src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/GiveWidget.cpp, src/components/ogre/widgets/ServerBrowserWidget.cpp, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/JesusEdit.cpp  : MSVC demands that a value is returned
+	* src/components/ogre/widgets/IngameChatWidget.cpp: replace dynamic_cast with static_cast
+	* src/components/ogre/widgets/MakeEntityWidget.cpp: 
+		* MSVC demands that a value is returned
+		* added a very, very hacky "/testarea" command which creates an Area for testing purposes
+	* src/components/ogre/widgets/MeshPreview.cpp: make sure that hide and show commands are sent to the base class
+	* src/components/ogre/widgets/Quit.cpp: 
+		* if the main window twice requests a quit op, do it instantly. This allows for the user to easily quit the app.
+	* src/components/ogre/widgets/Widget.*: 
+		* MSVC demands that a value is returned
+		* use defined unsinged int instead of uint
+
+
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/EmberPagingLandScapeData2D_HeightField.cpp:
 		* default to a sane number
 		* get the max height from the Mercator::Terrain

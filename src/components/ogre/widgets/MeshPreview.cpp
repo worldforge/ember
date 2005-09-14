@@ -54,7 +54,6 @@ void MeshPreview::buildWidget()
 {
 
 	loadMainSheet("MeshPreview.widget", "MeshPreview/");
-	mMainWindow->setVisible(false);
 	registerConsoleVisibilityToggleCommand("meshpreview");
 	enableCloseButton();
 	
@@ -76,7 +75,7 @@ void MeshPreview::buildWidget()
 
 	mNameOfMesh = static_cast<CEGUI::Editbox*>(getWindow("MeshName"));
 	mCreatedMeshes = static_cast<CEGUI::Listbox*>(getWindow("CreatedMeshes"));
-	
+	hide();
 // 	loadAllAvailableMeshes();
 
 
@@ -112,7 +111,7 @@ void MeshPreview::removeMesh(size_t index)
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
 	EmberOgre::getSingleton().getSceneManager()->removeEntity(entity);
 	EntityStore::iterator I = mEntities.begin();
-	for (int i = 0; i < index; ++i) {
+	for (size_t i = 0; i < index; ++i) {
 		++I;
 	}
 	mEntities.erase(I);
@@ -193,6 +192,8 @@ void MeshPreview::runCommand(const std::string &command, const std::string &args
 			createMesh(meshName);
 		}
 	
+	} else {
+		Widget::runCommand(command, args);
 	}
 }
 
@@ -203,6 +204,7 @@ bool MeshPreview::Scale_ValueChanged(const CEGUI::EventArgs& args)
 		float newScale = mScaleSlider->getCurrentValue();
 		node->setScale(newScale, newScale, newScale);
 	}
+	return true;
 }
 
 Ogre::SceneNode* MeshPreview::getActiveSceneNode()

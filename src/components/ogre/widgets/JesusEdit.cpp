@@ -167,6 +167,7 @@ bool JesusEdit::SwitchMode_Click(const CEGUI::EventArgs& args)
 		mGuiManager->popMousePicker();
 	}
 	mInJesusMode = !mInJesusMode;
+	return true;
 }
 
 void JesusEdit::pickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs&)
@@ -452,6 +453,7 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 	}
 	removeBindings();
 	loadConstruction(mCurrentConstruction);
+	return true;
 }
 
 bool JesusEdit::Remove_Click( const CEGUI::EventArgs & args )
@@ -462,6 +464,7 @@ bool JesusEdit::Remove_Click( const CEGUI::EventArgs & args )
 		removeBindings();
 		loadConstruction(mCurrentConstruction);
 	}
+	return true;
 }
 
 const Carpenter::BuildingBlockSpec * JesusEdit::getNewBuildingBlockSpec( ) const
@@ -509,6 +512,7 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 	item->setText(item->getText() + " (" + ss.str() + ")");
 
 	updateCreateButton();
+	return true;
 }
 
 Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint* blueprint)

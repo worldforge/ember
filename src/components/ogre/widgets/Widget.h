@@ -243,7 +243,7 @@ class ColoredListItem : public CEGUI::ListboxTextItem
 {
 public:
 	ColoredListItem(const CEGUI::String& text); 
-	ColoredListItem(const CEGUI::String& text, uint item_id, void *item_data);
+	ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 };
 
 

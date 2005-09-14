@@ -30,7 +30,7 @@ namespace EmberOgre
 		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	}
 	
-	ColoredListItem::ColoredListItem(const CEGUI::String& text, uint item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
+	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
 	{
 		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	}
@@ -154,6 +154,7 @@ namespace EmberOgre
 	bool Widget::MainWindow_CloseClick(const CEGUI::EventArgs& args)
 	{
 		hide();
+		return true;
 	}
 	
 	void Widget::enableCloseButton()

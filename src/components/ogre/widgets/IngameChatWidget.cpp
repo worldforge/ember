@@ -96,12 +96,12 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 {
 	//don't show anything if it's the avatar
 	//TODO: make this better
-	AvatarEmberEntity* avatarEntity = dynamic_cast<AvatarEmberEntity*>(entity);
+	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
 	if (avatarEntity) {
 		return;
 	}
 	
-	EmberPhysicalEntity* physicalEntity = dynamic_cast<EmberPhysicalEntity*>(entity);
+	EmberPhysicalEntity* physicalEntity = static_cast<EmberPhysicalEntity*>(entity);
 
 	if (physicalEntity) {
 		CEGUI::Window* chatWindow;
@@ -184,7 +184,7 @@ void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 
 bool EmberOgre::IngameChatWidget::ActiveChatWindow::buttonResponse_Click(const CEGUI::EventArgs& args)
 {
-	const CEGUI::MouseEventArgs *mouseArgs = dynamic_cast<const CEGUI::MouseEventArgs*>(&args);
+	const CEGUI::MouseEventArgs *mouseArgs = static_cast<const CEGUI::MouseEventArgs*>(&args);
 	if (mouseArgs) {
 		const CEGUI::String text = mouseArgs->window->getText();
 		EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->say(std::string(text.c_str()) );
