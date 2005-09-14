@@ -28,6 +28,10 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#ifdef __WIN32__
+#include <direct.h>
+#endif
+
 namespace EmberOgre {
 
 XMLJesusSerializer::XMLJesusSerializer(Jesus* jesus)
@@ -55,8 +59,6 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 		return false;
 	}
 	
-	Ember::TiXmlElement* elem;
-
 
 	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
 
@@ -261,8 +263,6 @@ bool XMLJesusSerializer::loadBuildingBlockSpecDefinition(const std::string& file
 		return false;
 	}
 	
-	Ember::TiXmlElement* elem;
-
 
 	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
 
@@ -308,8 +308,6 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(std::string filename)
 		return 0;
 	}
 	
-	Ember::TiXmlElement* elem;
-
 
 	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
 	
@@ -419,8 +417,13 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		int ret;
 		ret = stat( dir.c_str(), &tagStat );
 		if (ret == -1) {
+#ifdef __WIN32__
+			mkdir((Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "carpenter").c_str());
+			mkdir(dir.c_str());
+#else 
 			mkdir((Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "carpenter").c_str(), S_IRWXU);
 			mkdir(dir.c_str(), S_IRWXU);
+#endif
 		}
 	
 	

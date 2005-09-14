@@ -148,7 +148,9 @@ void FoliageArea::build()
 	assert(mStaticGeom);
 	try {
 		mStaticGeom->build();
-	} catch (Ogre::Exception& e) {}
+	} catch (Ogre::Exception& e) {
+		S_LOG_FAILURE("Got error when building static geometry for foliage. Expection: " << e.getFullDescription());
+	}
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 

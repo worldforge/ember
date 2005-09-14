@@ -49,7 +49,7 @@ void JesusMousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,con
 	std::vector<Ogre::RaySceneQueryResultEntry> result = camera->pickObject(x, y, exclude, test);
 	if (result.size()) {
 		Ogre::UserDefinedObject* object = (*result.begin()).movable->getUserObject();
-		JesusPickerObject* pickerObject = dynamic_cast<JesusPickerObject*>(object);
+		JesusPickerObject* pickerObject = static_cast<JesusPickerObject*>(object);
 		if (pickerObject) {
 			if (pickerObject->getModelBlock()) {
 				onEventPickedModelBlock(pickerObject->getModelBlock(), args);

@@ -31,6 +31,7 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/TerrainGenerator.h"
 
+template<> EmberOgre::Foliage* Ember::Singleton<EmberOgre::Foliage>::ms_Singleton = 0;
 
 namespace EmberOgre {
 
@@ -40,7 +41,6 @@ namespace EmberOgre {
 #define GRASS_MATERIAL "Examples/GrassBlades"
 #define OFFSET_PARAM 999
 
-template<> Foliage* Ember::Singleton<Foliage>::ms_Singleton = 0;
 
 
 Foliage::Foliage( Ogre::SceneManager* sceneMgr)

@@ -1,5 +1,15 @@
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/carpenter/BluePrint.cpp: removed unneeded variable
+	* src/components/ogre/environment/Foliage.cpp: MSVC wants to know exact what namespace to look in
+	* src/components/ogre/environment/FoliageArea.cpp: Better error output
+	* src/components/ogre/jesus/JesusMousePicker.cpp: replace dynamic_cast with static_cast
+	* src/components/ogre/jesus/XMLJesisSerializer.cpp: 
+		* removed unused variables
+		* added MSVC specific code
+
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/GUIManager.h: include CEGUIBase.h since MSVC needed it
 	* src/components/ogre/TerrainArea.*: added method for setting the Mercator::Area
 	* src/components/ogre/TerrainGenerator.cpp: 
