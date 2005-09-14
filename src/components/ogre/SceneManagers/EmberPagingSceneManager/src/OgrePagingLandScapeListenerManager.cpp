@@ -20,11 +20,14 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------*/
-#define NON_CLIENT_BUILD 1
-#include <OGRESingleton.h>
 
-#include "OgrePagingLandScapeListenerManager.h"    
-template<> Ogre::PagingLandscapeListenerManager* Ogre::Singleton<Ogre::PagingLandscapeListenerManager>::ms_Singleton = 0;namespace Ogre 
+#define NON_CLIENT_BUILD 1
+#include <OgreSingleton.h>
+
+#include "OgrePagingLandScapeListenerManager.h"    
+
+template<> Ogre::PagingLandscapeListenerManager* Ogre::Singleton<Ogre::PagingLandscapeListenerManager>::ms_Singleton = 0;
+namespace Ogre 
 {
     //-----------------------------------------------------------------------
 

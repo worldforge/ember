@@ -1,5 +1,9 @@
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/OgrePagingLandScapeListenerManager.cpp: fixed typo
+
+2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/ConsoleWidget.cpp: no need to call the parent in the constructor
 	* src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/GiveWidget.cpp, src/components/ogre/widgets/ServerBrowserWidget.cpp, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/JesusEdit.cpp  : MSVC demands that a value is returned
 	* src/components/ogre/widgets/IngameChatWidget.cpp: replace dynamic_cast with static_cast
