@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.101  2005-09-11 22:08:44  erik
+ *      Revision 1.102  2005-09-18 23:57:03  erik
+ *      2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* don't support sigc < 2.0 any more
+ *      		* changed the name and function of the setting for dynamic tree generation; now assume that pregenerated trees will be used unless else specified
+ *
+ *      Revision 1.101  2005/09/11 22:08:44  erik
  *      2005-09-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* ember: added some debug output and
@@ -1221,7 +1228,7 @@ void EmberOgre::setupResources(void)
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
 	try {
 	
-		if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
+		if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) { 
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
 		} else {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
@@ -1335,7 +1342,7 @@ void EmberOgre::preloadMedia(void)
 // 	}
 	
 	//only autogenerate trees if we're not using the pregenerated ones
- 	if (!(configSrv->itemExists("tree", "usepregeneratedtrees") && ((bool)configSrv->getValue("tree", "usepregeneratedtrees")))) { 
+ 	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) { 
 		Tree tree;
 		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);

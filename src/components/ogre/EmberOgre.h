@@ -24,7 +24,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.50  2005-07-25 19:07:40  erik
+ *      Revision 1.51  2005-09-18 23:57:03  erik
+ *      2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*
+ *      		* don't support sigc < 2.0 any more
+ *      		* changed the name and function of the setting for dynamic tree generation; now assume that pregenerated trees will be used unless else specified
+ *
+ *      Revision 1.50  2005/07/25 19:07:40  erik
  *      2005-07-25  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/component/ogre/GUIManager.*
@@ -439,15 +446,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include sigc header files
 // ------------------------------
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
 #include <sigc++/object.h>
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
+
 
 #include "framework/Singleton.h"
 
