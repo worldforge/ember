@@ -26,16 +26,21 @@
 #include "framework/prefix.h"
 
 #include <iostream>
+#include "framework/ConsoleBackend.h"
+#include "framework/Tokeniser.h"
 
 using namespace std;
 
 namespace Ember
 {
 
+    const std::string ConfigService::SETVALUE("set_value");
+    const std::string ConfigService::GETVALUE("get_value");
+
     ConfigService::ConfigService() : Service()
     {
-	setName("Configuration Service");
-	setDescription("Service for management of Ember user-defined configuration");
+		setName("Configuration Service");
+		setDescription("Service for management of Ember user-defined configuration");
     	setStatusText("Configuration Service status OK.");
     }
 
@@ -53,6 +58,9 @@ namespace Ember
 
     Service::Status ConfigService::start()
     {
+		updatedConfig_connection = varconf::Config::inst()->sigv.connect(SigC::slot(*this, &ConfigService::updatedConfig));
+		configError_connection = varconf::Config::inst()->sige.connect(SigC::slot(*this, &ConfigService::configError));
+		registerConsoleCommands();
 		setRunning(true);
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
 		return Service::OK;
@@ -60,29 +68,91 @@ namespace Ember
 
     void ConfigService::stop(int code)
     {
-	setRunning(false);
-	return;
+    	updatedConfig_connection.disconnect();
+    	configError_connection.disconnect();
+		deregisterConsoleCommands();
+		setRunning(false);
+		return;
     }
 
+    void ConfigService::deregisterConsoleCommands()
+    {
+		Ember::ConsoleBackend::getMainConsole()->deregisterCommand(SETVALUE);
+		Ember::ConsoleBackend::getMainConsole()->deregisterCommand(GETVALUE);
+	}
+    
+    void ConfigService::registerConsoleCommands()
+    {
+		Ember::ConsoleBackend::getMainConsole()->registerCommand(SETVALUE, this);
+		Ember::ConsoleBackend::getMainConsole()->registerCommand(GETVALUE, this);
+	}
+	
     bool ConfigService::itemExists(const std::string& section, const std::string& key) const
     {
-	return varconf::Config::inst()->find(section, key);
+		return varconf::Config::inst()->find(section, key);
     }
 
     bool ConfigService::deleteItem(const std::string& section, const std::string& key)
     {
-	return varconf::Config::inst()->erase(section, key);
+		return varconf::Config::inst()->erase(section, key);
     }
 
     bool ConfigService::loadSavedConfig(const std::string& filename)
     {
-	return varconf::Config::inst()->readFromFile(filename);
+		return varconf::Config::inst()->readFromFile(filename);
     }
 
     bool ConfigService::saveConfig(const std::string& filename)
     {
-	return varconf::Config::inst()->writeToFile(filename);
+		return varconf::Config::inst()->writeToFile(filename);
     }
+	
+	void ConfigService::runCommand(const std::string &command, const std::string &args)
+	{
+		if(command == SETVALUE)
+		{
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
+			std::string section(tokeniser.nextToken());
+			std::string key(tokeniser.nextToken());
+			std::string value(tokeniser.remainingTokens());
+			
+			if (section == "" || key == "" || value == "") {
+				Ember::ConsoleBackend::getMainConsole()->pushMessage("Usage: set_value <section> <key> <value>");
+			} else {
+				setValue(section, key, value);
+			}
+		
+		}
+		else if(command == GETVALUE)
+		{
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
+			std::string section(tokeniser.nextToken());
+			std::string key(tokeniser.nextToken());
+			
+			if (section == "" || key == "") {
+				Ember::ConsoleBackend::getMainConsole()->pushMessage("Usage: get_value <section> <key>");
+			} else {
+				if (!itemExists(section, key)) {
+					Ember::ConsoleBackend::getMainConsole()->pushMessage("No such value.");
+				} else {
+					varconf::Variable value = getValue(section, key);
+					Ember::ConsoleBackend::getMainConsole()->pushMessage(std::string("Value: ") + static_cast<std::string>(value));
+				}
+			}
+		}
+	}
+	
+    void ConfigService::updatedConfig(const std::string& section, const std::string& key)
+    {
+    	EventChangedConfigItem.emit(section, key);
+    }
+   
+	void ConfigService::configError(const std::string& error)
+	{
+		S_LOG_FAILURE(std::string(error));
+	}
 	
 	const std::string ConfigService::getHomeDirectory() const
 	{

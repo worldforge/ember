@@ -21,8 +21,16 @@
 #define CONFIGSERVICE_H
 
 #include <framework/Service.h>
+#include <framework/ConsoleObject.h>
 #include <string>
 #include <varconf/varconf.h>
+
+// ------------------------------
+// Include sigc header files
+// ------------------------------
+#include <sigc++/object.h>
+#include <sigc++/connection.h>
+
 
 namespace Ember {
 
@@ -35,7 +43,7 @@ namespace Ember {
      * @see Ember::Service
      * @see varconf
      */
-class ConfigService: public Service
+class ConfigService: public Service, public Ember::ConsoleObject, virtual public SigC::Object
 {
     private:
     //----------------------------------------------------------------------
@@ -43,8 +51,27 @@ class ConfigService: public Service
     //----------------------------------------------------------------------
 
 
+    void registerConsoleCommands();
+    void deregisterConsoleCommands();
+    
+    /**
+     * just a facade for the underlying varconf::Config::sigv
+     * @param  the section of the item
+     * @param  the key of the item
+     */
+    void updatedConfig(const std::string& section, const std::string& key);
+	sigc::connection updatedConfig_connection;
+	
+    void configError(const std::string& error);
+	sigc::connection configError_connection;
+	
+
     protected:
     public:
+    
+    static const std::string SETVALUE;
+    static const std::string GETVALUE;
+    
     //----------------------------------------------------------------------
     // Constructors & Destructor
     //----------------------------------------------------------------------
@@ -88,6 +115,14 @@ class ConfigService: public Service
     //----------------------------------------------------------------------
     // Methods
     //----------------------------------------------------------------------
+
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
 
     /**
      * Starts ConfigService.  Returns status.
@@ -161,7 +196,13 @@ class ConfigService: public Service
 	 */
 	const std::string ConfigService::getSharedMediaDirectory() const;
 
-
+	/**
+	*	Emitted when a config item is changed.
+	*	@param the section of the config item
+	*	@param the key of the config item
+	*/
+	SigC::Signal2<void, const std::string&, const std::string&> EventChangedConfigItem;
+	
 
 }; //ConfigService
 

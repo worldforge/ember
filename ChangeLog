@@ -1,5 +1,11 @@
 2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/services/config/ConfigService.*:
+		* added get_value and set_value, which allows for accessing and changing config values from the console. 
+		* added signal for changed config values
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/config/ember.conf: removed old, old config file
 
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
