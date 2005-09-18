@@ -56,8 +56,8 @@ ConsoleObjectImpl & ConsoleObjectImpl::getSingleton(void)
 ConsoleObjectImpl::ConsoleObjectImpl(void)
 {
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
+// 	Ember::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
+// 	Ember::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(FULLSCREEN,this);
 }
 ConsoleObjectImpl::~ConsoleObjectImpl()
@@ -71,14 +71,14 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
 	if(command == QUIT) {
 		Ember::ConsoleBackend::getMainConsole()->pushMessage("Bye");
 		quit();
-	} else if(command == ADDMEDIA) {
+/*	} else if(command == ADDMEDIA) {
 	    // Split string
         Ember::Tokeniser tokeniser = Ember::Tokeniser();
         tokeniser.initTokens(args);
         std::string modelName = tokeniser.nextToken();
         std::string id = tokeniser.nextToken();
 		Ogre::Vector3 position = Ogre::Vector3(0,0,0);
-        MediaDeployer::getSingleton().addMedia(modelName,id,position);
+        MediaDeployer::getSingleton().addMedia(modelName,id,position);*/
 	} else if (command == FULLSCREEN){
 		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
 		
