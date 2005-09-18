@@ -1,5 +1,11 @@
 2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.conf: 
+		* added values for the fog colour
+		* changed the name and function of the setting for dynamic tree generation; now assume that pregenerated trees will be used unless else specified
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/services/config/ConfigService.*:
 		* added get_value and set_value, which allows for accessing and changing config values from the console. 
 		* added signal for changed config values
