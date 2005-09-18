@@ -1,3 +1,7 @@
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ember.conf: removed old, old config file
+
 2005-09-14  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/OgrePagingLandScapeListenerManager.cpp: fixed typo
