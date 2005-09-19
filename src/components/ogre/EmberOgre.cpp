@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.102  2005-09-18 23:57:03  erik
+ *      Revision 1.103  2005-09-19 21:38:59  erik
+ *      2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	*  src/components/ogre/EmberOgre.*: added a couple of signals for signalling when different sub systems have been created or initialized
+ *
+ *      Revision 1.102  2005/09/18 23:57:03  erik
  *      2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*
@@ -1069,6 +1074,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
  	S_LOG_INFO( "TRACE - END PRELOAD");
 	
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
+	EventGUIManagerCreated.emit(*mGUIManager);
     
 	
 
@@ -1078,11 +1084,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	mAvatar = new Avatar();
 	
 	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager);
+	EventAvatarControllerCreated.emit(*mAvatarController);
 	
 	mTerrainGenerator = new TerrainGenerator();
+	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
 	mMotionManager = new MotionManager();
 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
-	
+	EventMotionManagerCreated.emit(*mMotionManager);
 	
 //	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
@@ -1095,10 +1103,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 
 	mGUIManager->initialize();
+	EventGUIManagerInitialized.emit(*mGUIManager);
 	
 	// Create the scene
     createScene();
-
+	EventSceneCreated.emit();
+	
+	//this should be in a separate class, a separate plugin even
 	setupJesus();
     
 	return true;
@@ -1196,6 +1207,15 @@ void EmberOgre::checkForConfigFiles()
 		sharePath = sharePath + "/ember/plugins.cfg";
 		std::ifstream  IN (sharePath.c_str());
 		std::ofstream  OUT ("plugins.cfg"); 
+		OUT << IN.rdbuf();
+	}
+	ret = stat( "terrain.cfg", &tagStat );
+	if (ret == -1) {
+		//copy conf file from shared
+		std::string sharePath(ETCDIR);
+		sharePath = sharePath + "/ember/terrain.cfg";
+		std::ifstream  IN (sharePath.c_str());
+		std::ofstream  OUT ("terrain.cfg"); 
 		OUT << IN.rdbuf();
 	}
 }
