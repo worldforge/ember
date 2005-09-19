@@ -1,5 +1,17 @@
 #include "LoggingService.h"
 
+// Include system headers here
+#include <string>
+#include <list>
+#include <stdio.h>
+#include <stdarg.h>
+#include <ctime>
+//#include <varargs.h> //TODO: Needed by unix?
+
+#include <sigc++/object_slot.h>
+
+
+
 Ember::LoggingService* Ember::LoggingService::theInstance = NULL;
 
 Ember::Service::Status Ember::LoggingService::start ()
