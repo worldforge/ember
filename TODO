@@ -32,3 +32,5 @@ TODO LIST
 * add a widget for creating and editing atlas type definition. There's already example code in cyphesis.
 * add widget for editing and creating entity media definitions. It should be possible from within Ember to create a whole new media type definition and save it. 
 
+* refactor EmberOgre into smaller subcomponents
+* refactor platform specific code into separate classes sharing a common interface, instead of using #ifdefs
