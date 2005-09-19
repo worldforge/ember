@@ -1,5 +1,24 @@
 2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/environment/Sky.*: set up hooks to ConfigService and look for changes to the fog
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/TerrainGenerator.cpp: if no valid height is available, return 0
+	*  src/components/ogre/WorldEmberEntity.cpp: get the position from the Eris::Entity instead of the Ogre::SceneNode
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.*
+		* don't support sigc < 2.0 any more
+		* changed the name and function of the setting for dynamic tree generation; now assume that pregenerated trees will be used unless else specified
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/ConsoleObjectImpl.cpp: removed references to add_media since it's not used any more
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf: 
 		* added values for the fog colour
 		* changed the name and function of the setting for dynamic tree generation; now assume that pregenerated trees will be used unless else specified

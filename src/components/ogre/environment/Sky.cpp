@@ -26,6 +26,7 @@
 #include "services/config/ConfigService.h"
 #include "../EmberOgre.h"
 #include "../TerrainGenerator.h"
+#include "framework/Tokeniser.h"
 
 //#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
 
@@ -37,17 +38,61 @@ Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
   sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
 
-  
+  updateFogValuesFromConfig();
+  ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &Sky::ConfigService_EventChangedConfigItem));
+
+
+}
+
+
+
+Sky::~Sky()
+{
+	ConfigService_EventChangedConfigItem_connection.disconnect();
+}
+
+void Sky::updateFogValuesFromConfig()
+{
 	Ogre::ColourValue fadeColour(0.9,0.9,0.9);
-	double fogstartDistance = 96; //default for fog
-	double fogmaxDistance = 256; //default for fog gradient endind (i.e. where the fog is at 100%)
+	float fogstartDistance = 96; //default for fog
+	float fogmaxDistance = 256; //default for fog gradient endind (i.e. where the fog is at 100%)
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
-		fogstartDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart");
+		fogstartDistance = static_cast<double>(Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart"));
 	}
 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogmax")) {
-		fogmaxDistance = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogmax");
+		fogmaxDistance = static_cast<double>(Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogmax"));
 	}
-	sceneMgr->setFog( Ogre::FOG_LINEAR, fadeColour, .001, fogstartDistance, fogmaxDistance);
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogcolour")) {
+		varconf::Variable var = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogcolour");
+		std::string stringValue(var);
+		
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(stringValue);
+		std::string r = tokeniser.nextToken();
+		std::string b = tokeniser.nextToken();
+		std::string g = tokeniser.nextToken();
+		
+		if (r != "" && b != "" && g != "") {
+			fadeColour = Ogre::ColourValue(Ogre::StringConverter::parseReal(r), Ogre::StringConverter::parseReal(g), Ogre::StringConverter::parseReal(b));
+		}
+	}
+	
+	setFogValues(fogstartDistance, fogmaxDistance, fadeColour);
+}
+
+void Sky::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+{
+	if (section == "graphics") {
+		if (key == "fogstart" || key == "fogcolour" || key == "fogmax") {
+			updateFogValuesFromConfig();
+		}
+	}
+}
+
+void Sky::setFogValues(float start, float end, Ogre::ColourValue colour) 
+{
+	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
+	sceneMgr->setFog( Ogre::FOG_LINEAR, colour, .001, start, end);
 	
 //	EmberOgre::getSingleton().getTerrainGenerator()->getTerrainOptions().fogEnd = fogendDistance * fogendDistance;
 
@@ -80,11 +125,6 @@ Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 		}
 	} catch (...) {}
 
-}
-
-
-Sky::~Sky()
-{
 }
 
 

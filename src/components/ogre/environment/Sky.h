@@ -25,16 +25,31 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
+// ------------------------------
+// Include sigc header files
+// ------------------------------
+#include <sigc++/object.h>
+#include <sigc++/connection.h>
+
+#include <OgreColourValue.h>
+
 namespace EmberOgre {
 
 /**
 @author Erik Hjortsberg
 */
-class Sky{
+class Sky:  virtual public SigC::Object
+{
 public:
     Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
 
     ~Sky();
+	void updateFogValuesFromConfig();
+private:
+	
+	void setFogValues(float start, float end, Ogre::ColourValue colour);
+	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	sigc::connection ConfigService_EventChangedConfigItem_connection;
 
 };
 
