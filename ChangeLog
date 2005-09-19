@@ -1,5 +1,25 @@
 2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/environment/Sky.cpp, src/components/ogre/widgets/DebugWidget.cpp, src/components/ogre/widgets/Performance.cpp, src/components/ogre/widgets/Widget.h: cleaned up the sigc++ usage
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/AvatarController.*: catch the pressing of the F6 button instead of just checking for it being pressed, much better
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/EmberOgre.*: added a couple of signals for signalling when different sub systems have been created or initialized
+	
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/logging/LoggingService.*: cleaned up the sigc++ usage
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: added some more items
+
+2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/environment/Sky.*: set up hooks to ConfigService and look for changes to the fog
 
 2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>

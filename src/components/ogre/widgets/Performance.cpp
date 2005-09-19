@@ -28,7 +28,7 @@
 #include "../EmberOgre.h"
 //#include <OgreRenderTarget.h> 
 #include <numeric>
-
+#include <sigc++/object_slot.h>
 namespace EmberOgre {
 
 // template<> WidgetLoader WidgetLoaderHolder<Performance>::loader("Performance", &createWidgetInstance);

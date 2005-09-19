@@ -28,7 +28,10 @@
 #include "../TerrainGenerator.h"
 #include "framework/Tokeniser.h"
 
-//#include "../EmberSceneManager/include/EmberTerrainSceneManager.h"
+
+
+#include <sigc++/object_slot.h>
+
 
 
 

@@ -9,6 +9,7 @@
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 
+#include <sigc++/object_slot.h>
 namespace EmberOgre {
 
 /*template<> WidgetLoader WidgetLoaderHolder<DebugWidget>::loader("DebugWidget", &createWidgetInstance);*/
