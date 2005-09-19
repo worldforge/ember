@@ -122,7 +122,10 @@ void TerrainGenerator::loadTerrainOptions()
 	// Go through all sections & settings in the file
 	//Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 	//
-	//std::string first;	//std::string second;	//std::string pair;	//Ogre::String secName, typeName, archName;
+	//std::string first;
+	//std::string second;
+	//std::string pair;
+	//Ogre::String secName, typeName, archName;
 	//while (seci.hasMoreElements())
 	//{
 	//	secName = seci.peekNextKey();
@@ -135,7 +138,9 @@ void TerrainGenerator::loadTerrainOptions()
 	//		pair = first + "=" + second;
 	//	}
 	//}
-		Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
+	
+
+	Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
 	
 	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 
@@ -446,9 +451,12 @@ float TerrainGenerator::getHeight(const TerrainPosition& point) const
 	float height = 0;
 	WFMath::Vector<3> vector;
 	
-	mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
+	bool success = mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
+	if (success) {
+		return height;
+	} 
 
-	return height;
+	return 0;
 	
 }
 

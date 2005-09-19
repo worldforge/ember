@@ -91,7 +91,7 @@ void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const e
 	} else {
 		//get the height from Mercator through the TerrainGenerator
 		assert(mTerrainGenerator);
-		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+		TerrainPosition pos(entity->getPredictedPos().x(), entity->getPredictedPos().y());
 		float height = mTerrainGenerator->getHeight(pos);
 		sceneNode->setPosition(position.x, height,position.z);
 	}
