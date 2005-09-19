@@ -70,6 +70,9 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mKeyCodeForRightMovement = SDLK_d;
 	mFreeFlyingCameraNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	detachCamera();
+	
+	EmberOgre::getSingleton().EventGUIManagerInitialized.connect(SigC::slot(*this, &AvatarController::EmberOgre_GUIManagerInitialized));
+	
 }
 AvatarController::~AvatarController()
 {}
@@ -109,8 +112,22 @@ void AvatarController::attachCamera()
 	//mAvatarCamera->setMode(AvatarCamera::MODE_FIRST_PERSON);
 }
 
+void  AvatarController::input_KeyReleased(const SDL_keysym& keysym, bool inGuiMode)
+{
+	if (keysym.sym == SDLK_F6) {
+		if (mIsAttached) {
+			detachCamera();
+		} else {
+			attachCamera();
+		}
+	}
+}
 
-
+void AvatarController::EmberOgre_GUIManagerInitialized(GUIManager& manager)
+{
+	//just bind the relevant input events
+	manager.getInput()->KeyReleased.connect(SigC::slot(*this, &AvatarController::input_KeyReleased));
+}
 
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 {
@@ -138,13 +155,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 
 	movementForFrame = AvatarControllerMovement();
 	
-	if (mGUIManager->getInput()->isKeyDown(SDLK_F6)) {
-		if (mIsAttached) {
-			detachCamera();
-		} else {
-			attachCamera();
-		}
-	}
+
 	if (mGUIManager->isInMovementKeysMode() && mGUIManager->getInput()) {
 //		movementForFrame.movementDirection = Ogre::Vector3::ZERO;
 //		movementForFrame.isRunning = false;

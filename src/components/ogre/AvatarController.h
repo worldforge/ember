@@ -26,6 +26,7 @@
 #include <OgreStringConverter.h>
 
 #include <SDL.h>
+#include <sigc++/object.h>
 
 
 
@@ -70,7 +71,7 @@ struct AvatarControllerMovement
 };
 
 class AvatarController
-: public Ogre::FrameListener
+: public Ogre::FrameListener, virtual public SigC::Object
 {
 public:
     
@@ -135,6 +136,18 @@ protected:
 	Ogre::SceneNode* mFreeFlyingCameraNode;
 	bool mIsAttached;
 	
+	
+	/**
+	 *    Catch keypresses from the input system and detach/reattach the camera to the avatar.
+	 * @param keysym 
+	 * @param inGuiMode 
+	 */
+	void input_KeyReleased(const SDL_keysym& keysym, bool inGuiMode);
+	
+	/**
+	*    Wait with the binding of the input system until the GUIManager has been fully initialized. That's what this method is for.
+	*/
+	void AvatarController::EmberOgre_GUIManagerInitialized(GUIManager& manager);
     
 		
 };
