@@ -15,7 +15,8 @@
 			</Window>
 			<Window Type="TaharezLook/Slider" Name="Zoom">
 				<Property Name="Position" Value="x:0.9 y:0.05" /> 
-				<Property Name="Size" Value="w:0.1 h:0.9" /> 
+				<Property Name="Size" Value="w:0.05 h:0.9" /> 
+				<Property Name="Tooltip" Value="Drag the slider to zoom." />
 			</Window>
 			
 		</Window>	

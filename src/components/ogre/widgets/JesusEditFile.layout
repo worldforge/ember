@@ -14,6 +14,7 @@
 				<Property Name="AbsoluteSize" Value="w:150 h:300" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
+				<Property Name="Tooltip" Value="The existing saved blueprints." />
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Load">
 				<Property Name="Enabled" Value="False" /> 
@@ -21,6 +22,7 @@
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Load" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Loads the selected blueprint." />
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Save">
 				<Property Name="Enabled" Value="False" /> 
@@ -28,10 +30,12 @@
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Save" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Saves a new blueprint." />
 			</Window>
 			<Window Type="TaharezLook/Editbox" Name="NewName">
 				<Property Name="AbsolutePosition" Value="x:160 y:310" /> 
 				<Property Name="AbsoluteSize" Value="w:150 h:25" /> 
+				<Property Name="Tooltip" Value="Enter the name of the blueprint to be saved." />
 			</Window>
 		</Window>
 	</Window>

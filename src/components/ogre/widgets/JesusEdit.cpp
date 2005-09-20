@@ -102,7 +102,7 @@ void JesusEdit::buildWidget()
 	BIND_CEGUI_EVENT(mCurrentBlocksList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::CurrentBlocksList_SelectionChanged)
 	
 	
-	mCurrentPointsList = static_cast<CEGUI::Listbox*>(getWindow("urrentPoints"));
+	mCurrentPointsList = static_cast<CEGUI::Listbox*>(getWindow("CurrentPoints"));
 	BIND_CEGUI_EVENT(mCurrentPointsList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::CurrentPointsList_SelectionChanged)
 	BIND_CEGUI_EVENT(mCurrentPointsList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::CurrentPointsList_SelectionChanged)
 	
@@ -517,19 +517,21 @@ bool JesusEdit::Bind_Click( const CEGUI::EventArgs & args )
 
 Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint* blueprint)
 {
-	Ogre::SceneNode*  avatarNode = EmberOgre::getSingleton().getAvatar()->getAvatarSceneNode();
+	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
 	//create a new node on the same "level" as the avatar
-	Ogre::SceneNode* node = avatarNode->getParentSceneNode()->createChildSceneNode();
+	Ogre::SceneNode* node =  EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	
 	Construction* construction = new Construction(blueprint, mJesus, node);
 	construction->buildFromBluePrint(blueprint);
 	
 	//place the node in front of the avatar
-	Ogre::Vector3 o_vector(5,0,0);
-	Ogre::Vector3 o_pos = avatarNode->getPosition() + (avatarNode->getOrientation() * o_vector);
+	Ogre::Vector3 o_vector(0,0,-5);
+	Ogre::Vector3 o_pos = camera->getPosition() + (camera->getOrientation(false) * o_vector);
 	node->setPosition(o_pos);
-	node->setOrientation(avatarNode->getOrientation());
+	
+	//for now, don't rotate the construction, there are some bugs
+	//node->setOrientation(camera->getOrientation());
 
 	return construction;
 

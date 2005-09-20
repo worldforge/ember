@@ -16,24 +16,28 @@
 				<Property Name="Size" Value="w:0.45 h:0.4" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
+				<Property Name="Tooltip" Value="A list of all blocks in the current construction." />
 			</Window>
 			<Window Type="TaharezLook/Listbox" Name="NewBlockPoints">
 				<Property Name="Position" Value="x:0.5 y:0.45" /> 
 				<Property Name="Size" Value="w:0.45 h:0.4" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
+				<Property Name="Tooltip" Value="A list of all available block points in the new block." />
 			</Window>
 			<Window Type="TaharezLook/Listbox" Name="CurrentPoints">
 				<Property Name="Position" Value="x:0.5 y:0.0" /> 
 				<Property Name="Size" Value="w:0.45 h:0.4" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
+				<Property Name="Tooltip" Value="A list of all available block points in the current selected block." />
 			</Window>
 			<Window Type="TaharezLook/Listbox" Name="AvailableBlocks">
 				<Property Name="Position" Value="x:0 y:0.45" /> 
 				<Property Name="Size" Value="w:0.45 h:0.35" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
+				<Property Name="Tooltip" Value="A list of all available blocks." />
 			</Window>
 
 			<Window Type="TaharezLook/Button" Name="Bind">
@@ -42,6 +46,7 @@
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Bind" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Bind two compatible block points together." />
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Remove">
 				<Property Name="Enabled" Value="False" /> 
@@ -49,16 +54,19 @@
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Remove" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Remove a block from the construction." />
 			</Window>			
 			<Window Type="TaharezLook/Button" Name="CreateNew">
 				<Property Name="Position" Value="x:0.4 y:0.9" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Create New" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Creates a new construction." />
 			</Window>
 			<Window Type="TaharezLook/Editbox" Name="NewName">
 				<Property Name="Position" Value="x:0.6 y:0.9" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
+				<Property Name="Tooltip" Value="Name of the new block (can be empty)." />
 			</Window>
 			<Window Type="TaharezLook/Button" Name="Create">
 				<Property Name="Position" Value="x:0.8 y:0.9" /> 
@@ -66,6 +74,7 @@
 				<Property Name="Text" Value="Create" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Enabled" Value="False" /> 
+				<Property Name="Tooltip" Value="Adds a block to the construction." />
 			</Window>
 			
 			
@@ -76,12 +85,14 @@
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Switch mode" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Switches between normal mouse picking mode and block picking mode." />
 			</Window>
 			<Window Type="TaharezLook/Button" Name="File">
 				<Property Name="Position" Value="x:0.0 y:0.8" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="File" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Tooltip" Value="Show the file dialog." />
 			</Window>
 		
 		</Window>
