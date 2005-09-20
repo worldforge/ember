@@ -1,5 +1,9 @@
 2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  ember.conf: set better looking fog values and added option for the fog colour
+
+2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/TerrainGenerator.cpp: if there is no world, abort the world creation; else there would be a segfault
 
 2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
