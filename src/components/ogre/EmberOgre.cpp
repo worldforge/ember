@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.103  2005-09-19 21:38:59  erik
+ *      Revision 1.104  2005-09-20 22:43:48  erik
+ *      2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp:
+ *      		* fixed the setup of Jesus so it now looks in the right places
+ *      		* turn the light bright on upon startup, so preview meshes and Carpenter constructions can be seen better
+ *
+ *      Revision 1.103  2005/09/19 21:38:59  erik
  *      2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	*  src/components/ogre/EmberOgre.*: added a couple of signals for signalling when different sub systems have been created or initialized
@@ -1382,7 +1389,7 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::setupJesus()
 {
-	const std::string datadir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory();
+	const std::string datadir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory();
 
 	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
 	mJesus = new Jesus(carpenter);
@@ -1392,7 +1399,7 @@ void EmberOgre::setupJesus()
 	struct dirent *ep;
 	std::string dir;
 	//load all blockspecs
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/carpenter/blockspec";
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/carpenter/blockspec";
 	dp = opendir (dir.c_str());
 	if (dp != 0)
 	{
@@ -1406,7 +1413,7 @@ void EmberOgre::setupJesus()
 	}
 	
 	//load all buildingblockspecs
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/carpenter/modelblockspecs";
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/carpenter/modelblockspecs";
 	dp = opendir (dir.c_str());
 	if (dp != 0)
 	{
@@ -1420,7 +1427,7 @@ void EmberOgre::setupJesus()
 	}
 	
 	//load all modelmappings
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/jesus/modelmappings";
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/jesus/modelmappings";
 	dp = opendir (dir.c_str());
 	if (dp != 0)
 	{
@@ -1435,7 +1442,7 @@ void EmberOgre::setupJesus()
 	
 	
 	//load all global blueprints
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "/carpenter/blueprints";
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/carpenter/blueprints";
 	dp = opendir (dir.c_str());
 	if (dp != 0)
 	{
@@ -1508,7 +1515,7 @@ void EmberOgre::createScene(void)
         node->scale(0.1,0.1,0.1);
         node->yaw(90);
 */
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 	
 	
 	

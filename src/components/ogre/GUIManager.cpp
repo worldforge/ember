@@ -166,7 +166,7 @@ void GUIManager::initialize()
 		createWidget("ServerBrowserWidget");
 		createWidget("InspectWidget");
 		createWidget("MakeEntityWidget");
-		//createWidget("JesusEdit");
+		createWidget("JesusEdit");
 		createWidget("ServerWidget");
 		createWidget("GiveWidget");
 		createWidget("EntityPickerWidget");
