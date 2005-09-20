@@ -1,3 +1,29 @@
+2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/TerrainGenerator.cpp: if there is no world, abort the world creation; else there would be a segfault
+
+2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp: 
+		* fixed the setup of Jesus so it now looks in the right places
+		* turn the light bright on upon startup, so preview meshes and Carpenter constructions can be seen better
+
+2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.*, src/components/ogre/AvatarController.*:: added a getPosition method and made some fixes to the getOrientation method so it works even when the camera is detached
+
+2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/JesusEdit.cpp:
+		* fixed typo bug
+		* don't try to rotate the newly created construction since there are some bugs with the alignment of the blocks
+	* src/components/ogre/widgets/JesusEditFile.widget, src/components/ogre/widgets/JesusEditPreview.widget, src/components/ogre/widgets/JesusEdit.widget: added tooltips
+
+
+2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/modelmappings/general.modelmapping.xml: don't use the "wall" model for now since it has no mesh (it's hidden)
+
 2005-09-19  Erik Hjortsberg  <erik@katastrof.nu>
 
 	*  src/components/ogre/environment/Sky.cpp, src/components/ogre/widgets/DebugWidget.cpp, src/components/ogre/widgets/Performance.cpp, src/components/ogre/widgets/Widget.h: cleaned up the sigc++ usage

@@ -339,6 +339,10 @@ void TerrainGenerator::prepareAllSegments()
 	int totalNumberOfPagesY = static_cast<int>( worldSizeY / (getPageSize() - 1));
 	int pageOffsetY = totalNumberOfPagesY / 2;
 	
+	//if the world is in effect non-existant, quit here
+	if (totalNumberOfPagesX == 0 && totalNumberOfPagesY == 0) {
+		return;
+	}
 	
 	Ogre::PagingLandScapeOptions::getSingleton().world_height = totalNumberOfPagesY;
 	Ogre::PagingLandScapeOptions::getSingleton().world_width = totalNumberOfPagesX;
