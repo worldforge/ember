@@ -127,6 +127,22 @@ void AvatarCamera::setMode(Mode mode)
 	
 }
 
+Ogre::Quaternion AvatarCamera::getOrientation(bool onlyHorizontal) const {
+	if (!onlyHorizontal) {
+		return getCamera()->getWorldOrientation();
+	} else {
+		Quaternion quat = getCamera()->getWorldOrientation();
+		quat.x = 0;
+		quat.z = 0;
+		return quat;
+	}
+}
+
+Ogre::Vector3 AvatarCamera::getPosition() const
+{
+	return mCamera->getWorldPosition();
+}
+
 void AvatarCamera::attach(Ogre::SceneNode* toNode) {
 	mIsAttached = true;
 	assert(mAvatarCameraRootNode);

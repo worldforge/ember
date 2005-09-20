@@ -83,7 +83,7 @@ public:
 	/**
 	 * returns the current degrees of pitch from the cameras initial position
 	 */
-	Ogre::Degree getPitch()
+	Ogre::Degree getPitch() const
 	{
 		return degreePitch;
 	}
@@ -91,7 +91,7 @@ public:
 	/**
 	 * returns the current degrees of yaw from the cameras initial position
 	 */
-	Ogre::Degree getYaw()
+	Ogre::Degree getYaw() const
 	{
 		return degreeYaw;
 	}
@@ -102,17 +102,21 @@ public:
 	virtual Ogre::Camera* getCamera()  {
 		return mCamera;	
 	}
+	virtual Ogre::Camera* getCamera() const {
+		return mCamera;	
+	}
 	
 	/**
 	 * Returns the current camera orientation in the world
 	 */
-	virtual Ogre::Quaternion getOrientaion(bool onlyHorizontal = true) const {
-		if (!onlyHorizontal) {
-			return mAvatarCameraNode->getWorldOrientation();
-		} else {
-			return mAvatarCameraPitchNode->getWorldOrientation();
-		}
-	}
+	virtual Ogre::Quaternion getOrientation(bool onlyHorizontal = true) const;
+	
+	
+	/**
+	 *    Returns the position of the camera in the world.
+	 * @return 
+	 */
+	Ogre::Vector3 AvatarCamera::getPosition() const;
 	
 	
 	void setMode(Mode mode);

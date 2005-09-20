@@ -181,7 +181,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 			scaler = 10;
 		}
 		Ogre::Vector3 correctDirection(movementForFrame.movementDirection.z, movementForFrame.movementDirection.y, -movementForFrame.movementDirection.x);
-		mFreeFlyingCameraNode->translate(mAvatarCamera->getOrientaion(false) * (correctDirection * movementForFrame.timeSlice * scaler));
+		mFreeFlyingCameraNode->translate(mAvatarCamera->getOrientation(false) * (correctDirection * movementForFrame.timeSlice * scaler));
 
 	}
 	mPreviousMovementForFrame = movementForFrame;
