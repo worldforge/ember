@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <modelmappings>
-  <modelmapping model="wall" blocktype="wall/24/timber" />
-  <modelmapping model="wall" blocktype="wall/12/timber" />
-  <modelmapping model="wall" blocktype="wall/6/timber" />
+  <modelmapping model="wall__" blocktype="wall/24/timber" />
+  <modelmapping model="wall__" blocktype="wall/12/timber" />
+  <modelmapping model="wall__" blocktype="wall/6/timber" />
   <modelmapping model="wall_3" blocktype="wall/3/timber" />
   <modelmapping model="wall_3" blocktype="wall/3/timber_" />
   <modelmapping model="column_3" blocktype="column/3/timber" />
