@@ -42,6 +42,7 @@
 #include <elements/CEGUIRadioButton.h>
 #include <elements/CEGUIComboDropList.h> 
 #include <elements/CEGUICombobox.h> 
+#include <elements/CEGUITabControl.h> 
 
 
 namespace EmberOgre {
@@ -135,13 +136,25 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	Eris::CharacterMap::iterator I = cm.begin();
 	Eris::CharacterMap::iterator I_end = cm.end();
 	
-	for(;I != I_end; ++I) {
-		const Atlas::Objects::Entity::GameEntity entity = (*I).second;
-		const Atlas::Message::Element nameElement = entity->getAttr("name");
-		ColoredListItem* item = new ColoredListItem(nameElement.asString());
-		std::string* id = new std::string(entity->getId());
-		item->setUserData(id);
-		mCharacterList->addItem(item);
+	if (I == I_end) {
+	//if the user has no previous characters, show the create character tab
+	
+		CEGUI::TabControl* tabControl =  static_cast<CEGUI::TabControl*>(getWindow("CharacterTabControl"));
+		if (tabControl) {
+			//try {
+				tabControl->setSelectedTab(getPrefix() + "CreateCharacterPanel");
+			//} catch (...) {};
+		}
+	} else {
+	
+		for(;I != I_end; ++I) {
+			const Atlas::Objects::Entity::GameEntity entity = (*I).second;
+			const Atlas::Message::Element nameElement = entity->getAttr("name");
+			ColoredListItem* item = new ColoredListItem(nameElement.asString());
+			std::string* id = new std::string(entity->getId());
+			item->setUserData(id);
+			mCharacterList->addItem(item);
+		}
 	}
 	
 }
