@@ -22,16 +22,19 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#include  <tinyxml/tinyxml.h>
+#include  "tinyxml.h"
 
 #ifndef TIXML_USE_STL
 
+#ifdef __WIN32__
+#define strcasecmp(a,b) stricmp(a,b)
+#endif
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include  <tinyxml/tinystr.h>
+#include  "tinystr.h"
 namespace Ember {
 // TiXmlString constructor, based on a C string
 TiXmlString::TiXmlString (const char* instring)

@@ -22,7 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#include  <tinyxml/tinyxml.h>
+#include  "tinyxml.h"
 #include <ctype.h>
 #include <stddef.h>
 
@@ -496,7 +496,11 @@ const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXml
 	// Now try to match it.
 	for( i=0; i<NUM_ENTITY; ++i )
 	{
+#ifdef __WIN32__
+		if ( strnicmp( entity[i].str, p, entity[i].strLength ) == 0 )
+#else
 		if ( strncasecmp( entity[i].str, p, entity[i].strLength ) == 0 )
+#endif
 		{
 			assert( strlen( entity[i].str ) == entity[i].strLength );
 			*value = entity[i].chr;
@@ -931,7 +935,7 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 			// We should be at a "<", regardless.
 			if ( !in->good() ) return;
 			assert( in->peek() == '<' );
-			int tagIndex = tag->length();
+			size_t tagIndex = tag->length();
 
 			bool closingTag = false;
 			bool firstCharFound = false;

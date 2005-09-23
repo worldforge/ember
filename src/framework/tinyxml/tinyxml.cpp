@@ -23,7 +23,7 @@ distribution.
 */
 
 #include <ctype.h>
-#include  <tinyxml/tinyxml.h>
+#include  "tinyxml.h"
 
 #ifdef TIXML_USE_STL
 #include <sstream>
@@ -989,7 +989,7 @@ bool TiXmlDocument::LoadFile( Ogre::DataStreamPtr stream ,TiXmlEncoding encoding
 	// Delete the existing data:
 	Clear();
 
-	long length = stream->size();
+	size_t length = stream->size();
 
 	if ( length )
 	{
@@ -999,13 +999,15 @@ bool TiXmlDocument::LoadFile( Ogre::DataStreamPtr stream ,TiXmlEncoding encoding
 		TIXML_STRING data;
 		data.reserve( length );
 
-		const int BUF_SIZE = length;
-		char buf[BUF_SIZE];
+		const size_t BUF_SIZE = length;
+		char *buf = new char[BUF_SIZE];
 
 		while( stream->read( buf, BUF_SIZE ) )
 		{
-			data += buf;
+			//got segfaults when doing "data += buf;", so switched to this
+			data.append(buf, BUF_SIZE);
 		}
+		delete[] buf; 
 
 		Parse( data.c_str(), 0, encoding );
 
