@@ -1,3 +1,29 @@
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.cpp: fixes for Apple and Win32
+	* src/components/ogre/TerrainShader.cpp: initialize the material to null, do'h
+	* src/components/ogre/EmberOgre.cpp:
+		* a lot of changes to make it work on win32 systems. Should not affect linux, but more testing needs to be done.
+		* now pass the log output from both ember and eris on to the ogre log system, ending up in Ogre.log
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* ember.bat: batch file for getting the latest media and starting ember
+	* src/components/ogre/WorldEmberEntity.cpp: reverted back to previous behaviour since it's more correct: the adjustement of the entity should be in reference to the ogre scene node, since the eris representation might lag behind the client side motion prediction mechanism
+	* src/components/ogre/environment/meshtree/TStem.cpp: fixes for MSVC
+	* ember.vcproj, ember.sln: updated the project files
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/tinyxml/tinyxml.cpp, src/framework/tinyxml/tinystr.cpp, src/framework/tinyxml/tinyxmlerror.cpp, src/framework/tinyxml/tinyxmlparser.cpp: made various adjustements which makes it compile on MSVC
+	* src/framework/float_cast.h: provides lrint functionality on platforms with outdated C libs, such as win32. Thanks to Erik de Castro Lopo
+	* src/framework/osdir.h: provides platform independent directory browsing support. It works, but isn't that full-featured. And it's a shame it doesn't use the STL syntax for iteration. Thanks Bart Vanhauwaert
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp: return true since the signature expects it
+	* src/components/ogre/widget/HelpWidget.xml: updated the help text
+
 2005-09-23  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/services/EmberServices.cpp: don't include the MetaServerService
