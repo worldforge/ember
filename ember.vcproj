@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
-	Name="dime"
-	ProjectGUID="{A560C41D-7306-42AA-AEFA-1CD1712BDB01}"
-	SccProjectName=""
-	SccLocalPath=""
-	Keyword="MFCProj">
+	Version="7.10"
+	Name="ember"
+	ProjectGUID="{91D8B5C8-34A3-4F28-ABC3-5C3D942D4328}"
+	RootNamespace="ember"
+	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -14,52 +13,36 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\bin"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			UseOfMFC="2"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\src\,."
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WIN32__;_WIN32"
+				AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7&quot;;C:\OgreSDK\include;C:\OgreSDK\Dependencies\include;C:\OgreSDK\include\CEGUI;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\Include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogrenew\Dependencies\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WIN32__;_WIN32;PLUGIN_PAGINGLANDSCAPE2_EXPORTS;OGRE_PLATFORM=OGRE_PLATFORM_WIN32;OGREOPCODE_EXPORTS"
+				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Debug/dime.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"
-				ForcedIncludeFiles="mscprag.h"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libsigcd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
-				OutputFile=".\bin/dime.exe"
+				AdditionalDependencies="CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreMain_d.lib mercator.lib eris.lib atlas.lib wfmath.lib varconf.lib sigc-2.0d.lib skstream.lib SDL.lib SDLMain.lib DeVil.lib ILU.lib ILUT.lib ALut.lib OpenAL32.lib WS2_32.Lib WSock32.Lib shlwapi.lib"
+				OutputFile="$(OutDir)/ember.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD; LIBCMT; MSVCRT.LIB; MSVCRTD.LIB"
+				AdditionalLibraryDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\libs&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.4\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15\MSVC_Net2003\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.3\ogrenew\OgreMain\lib\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.3\ogrenew\Dependencies\lib\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.3\ogrenew\Samples\Common\CEGUIRenderer\lib&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\bin/dime.pdb"
-				SubSystem="2"/>
+				AssemblyDebug="1"
+				ProgramDatabaseFile="$(OutDir)/ember.pdb"/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\bin/dime.tlb"/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -67,184 +50,61 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;_DEBUG"
-				Culture="1031"/>
+				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release_intermediate"
 			ConfigurationType="1"
-			UseOfMFC="2"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".\src\,."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WIN32__;_WIN32"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				OptimizeForProcessor="2"
+				OptimizeForWindowsApplication="TRUE"
+				AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\cegui_mk2-0.4.0\cegui_mk2\include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.4\ogrenew\Samples\Common\CEGUIRenderer\include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7&quot;;C:\OgreSDK1.0.4\include;C:\OgreSDK\Dependencies\include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\Include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogrenew\Dependencies\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WIN32__;_WIN32;PLUGIN_PAGINGLANDSCAPE2_EXPORTS;OGRE_PLATFORM=OGRE_PLATFORM_WIN32;OGREOPCODE_EXPORTS"
 				StringPooling="TRUE"
+				MinimalRebuild="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Release/dime.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"
-				ForcedIncludeFiles="mscprag.h"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="sdlmain.lib sdl.lib freetype206MT.lib eris.lib atlas.lib skstream.lib wfmath.lib varconf.lib wsock32.lib"
-				OutputFile="bin_release/dime.exe"
+				AdditionalDependencies="CEGUIBase.lib OgreGUIRenderer.lib OgreMain.lib eris.lib atlas.lib wfmath.lib varconf.lib sigc-2.0.lib skstream.lib mercator.lib SDL.lib SDLMain.lib DeVil.lib ILU.lib ILUT.lib ALut.lib OpenAL32.lib WS2_32.Lib WSock32.Lib shlwapi.lib"
+				OutputFile="$(OutDir)/ember.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD; LIBCMT; MSVCRT.LIB; MSVCRTD.LIB"
-				ProgramDatabaseFile=".\Release/dime.pdb"
-				SubSystem="2"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Release/dime.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;NDEBUG"
-				Culture="1031"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-		</Configuration>
-		<Configuration
-			Name="Debug CppUnit|Win32"
-			OutputDirectory=".\Debug_CppUnit"
-			IntermediateDirectory=".\Debug_CppUnit"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories=".\src\,."
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;USE_CPP_UNIT;__WIN32__;_WIN32;CPPUNIT_DONT_USE_TYPEINFO;_REENTRANT"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Debug_CppUnit/dime.pch"
-				AssemblerListingLocation=".\Debug_CppUnit/"
-				ObjectFile=".\Debug_CppUnit/"
-				ProgramDataBaseFileName=".\Debug_CppUnit/"
-				BrowseInformation="1"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"
-				ForcedIncludeFiles="mscprag.h"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libsigcd.lib cppunitd.lib sdl_image.lib sdlmain.lib sdl.lib freetype206MT.lib eris_d.lib atlas_d.lib skstream_d.lib wfmath_d.lib varconf_d.lib wsock32.lib"
-				OutputFile="bin/dime.exe"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD.LIB; LIBCMTD.LIB"
+				AdditionalLibraryDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\cegui_mk2-0.4.0\cegui_mk2\lib&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.4\ogrenew\Samples\Common\CEGUIRenderer\lib&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\libs&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.4\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15\MSVC_Net2003\Release&quot;;C:\OgreSDK1.0.4\lib;C:\OgreSDK\Dependencies\lib\Release;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogrenew\Dependencies\lib\Release&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug_CppUnit/dime.pdb"
-				SubSystem="2"/>
+				AssemblyDebug="1"
+				SubSystem="2"
+				OptimizeReferences="1"
+				EnableCOMDATFolding="1"
+				OptimizeForWindows98="1"
+				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Debug_CppUnit/dime.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;_DEBUG"
-				Culture="1031"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-		</Configuration>
-		<Configuration
-			Name="Release CppUnit|Win32"
-			OutputDirectory=".\Release_CppUnit"
-			IntermediateDirectory=".\Release_CppUnit"
-			ConfigurationType="1"
-			UseOfMFC="2"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".\src\,."
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;USE_CPP_UNIT;__WIN32__;_WIN32"
-				StringPooling="TRUE"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Release_CppUnit/dime.pch"
-				AssemblerListingLocation=".\Release_CppUnit/"
-				ObjectFile=".\Release_CppUnit/"
-				ProgramDataBaseFileName=".\Release_CppUnit/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"
-				ForcedIncludeFiles="mscprag.h"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="cppunit.lib sdlmain.lib sdl.lib freetype206MT.lib eris.lib atlas.lib skstream.lib wfmath.lib varconf.lib wsock32.lib"
-				OutputFile="bin_release/dime.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD; LIBCMT; MSVCRT.LIB; MSVCRTD.LIB"
-				ProgramDatabaseFile=".\Release_CppUnit/dime.pdb"
-				SubSystem="2"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Release_CppUnit/dime.tlb"/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -252,345 +112,1945 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;NDEBUG"
-				Culture="1031"/>
+				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
-			Name="Quellcodedateien"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\src\main\Application.cpp">
-			</File>
-			<File
-				RelativePath="src\services\datamodel\BoolProvider.cpp">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\DataObject.cpp">
-			</File>
-			<File
-				RelativePath=".\src\main\Dime.cpp">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\EventGenerator.cpp">
-			</File>
-			<File
-				RelativePath=".\src\services\input\InputDevice.cpp">
-			</File>
-			<File
-				RelativePath="src\main\StateManager.cpp">
+				RelativePath=".\stdafx.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
 			</File>
 			<Filter
-				Name="Widgets"
+				Name="components"
 				Filter="">
-				<File
-					RelativePath=".\src\services\gui\Button.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\Label.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\Panel.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\TextBox.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\Widget.cpp">
-				</File>
+				<Filter
+					Name="ogre"
+					Filter="">
+					<File
+						RelativePath=".\src\components\ogre\Avatar.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\Avatar.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\AvatarCamera.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\AvatarCamera.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\AvatarController.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\AvatarController.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\AvatarEmberEntity.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\AvatarEmberEntity.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\ConsoleObjectImpl.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\ConsoleObjectImpl.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEntity.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEntity.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEntityFactory.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEntityFactory.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEntityUserObject.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEntityUserObject.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEventProcessor.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberEventProcessor.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberOgre.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberOgre.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberOgrePrerequisites.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberPhysicalEntity.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\EmberPhysicalEntity.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\FreeCameraController.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\FreeCameraController.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\GUIManager.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\GUIManager.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MathConverter.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MediaDeployer.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MediaDeployer.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MotionManager.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MotionManager.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MousePicker.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\MousePicker.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\PersonEmberEntity.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\PersonEmberEntity.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainArea.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainArea.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainGenerator.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainGenerator.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainPage.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainPage.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainShader.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\TerrainShader.h">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\WorldEmberEntity.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\WorldEmberEntity.h">
+					</File>
+					<Filter
+						Name="carpenter"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\carpenter\BluePrint.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\carpenter\Carpenter.cpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="environment"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\environment\Foliage.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\environment\FoliageArea.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\environment\Sky.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\environment\Sun.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\environment\Tree.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\environment\Water.cpp">
+						</File>
+						<Filter
+							Name="meshtree"
+							Filter="">
+							<File
+								RelativePath=".\src\components\ogre\environment\meshtree\MeshTree.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\environment\meshtree\TParameters.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\environment\meshtree\TStem.cpp">
+							</File>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="input"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\input\Input.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\input\Input.h">
+						</File>
+					</Filter>
+					<Filter
+						Name="jesus"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\jesus\Jesus.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\jesus\JesusMousePicker.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\jesus\JesusPickerObject.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\jesus\XMLJesusSerializer.cpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="model"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\model\Model.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ModelDefinition.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ModelDefinitionManager.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\SubModel.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\SubModelPart.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\XMLModelDefinitionSerializer.cpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="ogreopcode"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\src\OgreCollisionContext.cpp">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\src\OgreCollisionManager.cpp">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\src\OgreCollisionShape.cpp">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\src\OgreOpcodeDebugObject.cpp">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
+							</FileConfiguration>
+						</File>
+						<Filter
+							Name="opcode"
+							Filter="">
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_AABBCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_AABBTree.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BaseModel.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BoxPruning.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Collider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Common.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_HybridModel.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_LSSCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_MeshInterface.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Model.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_OBBCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_OptimizedTree.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Picking.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_PlanesCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_RayCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SphereCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SweepAndPrune.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TreeBuilders.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TreeCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_VolumeCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\Opcode.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\StdAfx.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+								</FileConfiguration>
+							</File>
+							<Filter
+								Name="Ice"
+								Filter="">
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceAABB.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceContainer.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceHPoint.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceIndexedTriangle.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceMatrix3x3.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceMatrix4x4.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceOBB.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IcePlane.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IcePoint.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceRandom.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceRay.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceRevisitedRadix.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceSegment.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceTriangle.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\ogreopcode\opcode\Ice\IceUtils.cpp">
+									<FileConfiguration
+										Name="Debug|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32">
+										<Tool
+											Name="VCCLCompilerTool"
+											AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\opcode&quot;"/>
+									</FileConfiguration>
+								</File>
+							</Filter>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="SceneManagers"
+						Filter="">
+						<Filter
+							Name="EmberPagingSceneManager"
+							Filter="">
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\DRGNURBSSurface.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\DRGNURBSSurface.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberPagingLandScapeData2D_HeightField.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\EmberPagingLandScapeData2D_HeightField.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberPagingLandScapeTexture.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\EmberPagingLandScapeTexture.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberPagingSceneManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\EmberPagingSceneManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\filetutils.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\fileutils.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeCamera.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeCamera.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_HeightField.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_HeightField.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_HeightFieldN.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_HeightFieldN.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_HeightFieldNTC.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_HeightFieldNTC.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_HeightFieldRaw.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_HeightFieldRaw.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_HeightFieldRawTC.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_HeightFieldRawTC.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_HeightFieldTC.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_HeightFieldTC.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2D_Spline.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2D_Spline.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeData2DManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeData2DManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeHorizon.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeHorizon.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeIndexBuffer.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeIndexBuffer.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeIntersectionSceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeListener.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeListenerManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeListenerManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctree.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeCamera.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeCamera.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeIntersectionSceneQuery.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeIntersectionSceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeNode.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeNode.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeRaySceneQuery.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeRaySceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeSceneManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeSceneManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOctreeSphereSceneQuery.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOctreeSphereSceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOgreOctree.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeOptions.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeOptions.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapePage.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapePage.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapePageManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapePageManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapePageRenderable.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapePageRenderable.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapePrerequisites.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeQueue.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeRaySceneQuery.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeRaySceneQuery.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeRenderable.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeRenderable.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeRenderableManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeRenderableManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeSceneManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeSceneManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeSceneManagerDll.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_BaseTexture.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_BaseTexture.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_BaseTexture2.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_BaseTexture2.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Image.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Image.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_InstantBaseTexture.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_InstantBaseTexture.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_InstantBaseTextureEdit.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_InstantBaseTextureEdit.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting2.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting2.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting2Edit.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting2Edit.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting3.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting3.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting4.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting4.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting5.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting5.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting6.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting6.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting7.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting7.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTexture_Splatting7Edit.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTexture_Splatting7Edit.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTextureManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTextureManager.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTile.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTile.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTileInfo.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeTileManager.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										AdditionalIncludeDirectories="../include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\SceneManagers\EmberPagingSceneManager\include&quot;"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include\OgrePagingLandScapeTileManager.h">
+							</File>
+						</Filter>
+						<Filter
+							Name="EmberSceneManager"
+							Filter="">
+						</Filter>
+					</Filter>
+					<Filter
+						Name="widgets"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\widgets\ChatWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ChatWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ChatWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ConsoleWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ConsoleWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ConsoleWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\DebugWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\DebugWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\DebugWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\EntityPickerWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\EntityPickerWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\GiveWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\GiveWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\GiveWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Help.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Help.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\HelpWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IconBase.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IconBase.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IngameChatWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IngameChatWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IngameChatWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IngameEventsWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\IngameEventsWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\InspectWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\InspectWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\InspectWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\InventoryWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\InventoryWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\InventoryWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\JesusEdit.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\JesusEdit.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\JesusEdit.widget">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\JesusEditFile.widget">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\JesusEditPreview.widget">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\MakeEntityWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\MakeEntityWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\MakeEntityWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\MeshPreview.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\MeshPreview.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\MeshPreview.widget">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Performance.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Performance.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Performance.widget">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Quit.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Quit.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Quit.widget">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ServerBrowserWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ServerBrowserWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ServerBrowserWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ServerWidget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ServerWidget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\ServerWidget.xml">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\StatusIconBar.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\StatusIconBar.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Widget.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\Widget.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\WidgetDefinitions.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\widgets\WidgetDefinitions.h">
+						</File>
+					</Filter>
+				</Filter>
 			</Filter>
 			<Filter
-				Name="Renderers"
+				Name="framework"
 				Filter="">
 				<File
-					RelativePath=".\src\services\font\Font.cpp">
+					RelativePath=".\src\framework\ConsoleBackend.cpp">
 				</File>
 				<File
-					RelativePath=".\src\services\font\FontRenderer.cpp">
+					RelativePath=".\src\framework\float_cast.h">
 				</File>
 				<File
-					RelativePath=".\src\services\platform\RectangleRenderer.cpp">
+					RelativePath=".\src\framework\osdir.h">
 				</File>
 				<File
-					RelativePath=".\src\services\platform\SDLDrawDevice.cpp">
+					RelativePath=".\src\framework\prefix.cpp">
 				</File>
+				<File
+					RelativePath=".\src\framework\StreamLogObserver.cpp">
+				</File>
+				<File
+					RelativePath=".\src\framework\Tokeniser.cpp">
+				</File>
+				<Filter
+					Name="tinyxml"
+					Filter="">
+					<File
+						RelativePath=".\src\framework\tinyxml\tinystr.cpp">
+					</File>
+					<File
+						RelativePath=".\src\framework\tinyxml\tinystr.h">
+					</File>
+					<File
+						RelativePath=".\src\framework\tinyxml\tinyxml.cpp">
+					</File>
+					<File
+						RelativePath=".\src\framework\tinyxml\tinyxml.h">
+					</File>
+					<File
+						RelativePath=".\src\framework\tinyxml\tinyxmlerror.cpp">
+					</File>
+					<File
+						RelativePath=".\src\framework\tinyxml\tinyxmlparser.cpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
-				Name="Services"
+				Name="services"
 				Filter="">
 				<File
-					RelativePath=".\src\services\datamodel\DataModelService.cpp">
+					RelativePath=".\src\services\EmberServices.cpp">
 				</File>
-				<File
-					RelativePath=".\src\main\DimeServices.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\font\FontService.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\GuiService.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\image\ImageService.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\logging\LoggingService.cpp">
-				</File>
-				<File
-					RelativePath="src\services\metaserver\MetaserverService.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\platform\PlatformService.cpp">
-				</File>
-				<File
-					RelativePath="src\services\server\ServerService.cpp">
-				</File>
-				<File
-					RelativePath=".\src\framework\ServiceManager.cpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="DataProviders"
-				Filter="">
-				<File
-					RelativePath=".\src\services\datamodel\DataProvider.cpp">
-				</File>
-				<File
-					RelativePath="src\services\datamodel\FloatProvider.cpp">
-				</File>
-				<File
-					RelativePath=".\src\services\datamodel\FolderProvider.cpp">
-				</File>
-				<File
-					RelativePath="src\services\datamodel\IntProvider.cpp">
-				</File>
-				<File
-					RelativePath="src\services\datamodel\LinkProvider.cpp">
-				</File>
-				<File
-					RelativePath="src\services\datamodel\StringProvider.cpp">
-				</File>
-				<File
-					RelativePath="test\TestServices.cpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="UnitTests"
-				Filter="">
-				<File
-					RelativePath=".\test\DataModelTest.cpp">
-				</File>
-				<File
-					RelativePath="test\InputServiceTest.cpp">
-				</File>
-				<File
-					RelativePath="test\StateManagerTest.cpp">
-				</File>
+				<Filter
+					Name="config"
+					Filter="">
+					<File
+						RelativePath=".\src\services\config\ConfigService.cpp">
+					</File>
+					<File
+						RelativePath=".\src\services\config\ConfigService.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="logging"
+					Filter="">
+					<File
+						RelativePath=".\src\services\logging\LoggingService.cpp">
+					</File>
+					<File
+						RelativePath=".\src\services\logging\LoggingService.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="server"
+					Filter="">
+					<File
+						RelativePath=".\src\services\server\OOGChat.cpp">
+					</File>
+					<File
+						RelativePath=".\src\services\server\ServerService.cpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="sound"
+					Filter="">
+					<File
+						RelativePath=".\src\services\sound\SoundService.cpp">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Header-Dateien"
-			Filter="h;hpp;hxx;hm;inl">
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\src\main\Application.h">
+				RelativePath=".\src\services\EmberServices.h">
 			</File>
 			<File
-				RelativePath="src\services\datamodel\BoolProvider.h">
+				RelativePath=".\Resource.h">
 			</File>
 			<File
-				RelativePath=".\src\components\cs\CSComponent.h">
+				RelativePath=".\stdafx.h">
 			</File>
-			<File
-				RelativePath=".\src\services\platform\Color.h">
-			</File>
-			<File
-				RelativePath=".\src\framework\Component.h">
-			</File>
-			<File
-				RelativePath=".\src\framework\ComponentFactory.h">
-			</File>
-			<File
-				RelativePath=".\src\services\config\ConfigService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\DataModel.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\DataModelService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\DataObject.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\DataProvider.h">
-			</File>
-			<File
-				RelativePath=".\src\main\DimeServices.h">
-			</File>
-			<File
-				RelativePath=".\src\services\platform\Dimension.h">
-			</File>
-			<File
-				RelativePath=".\src\services\platform\DrawDevice.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\Event.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\EventGenerator.h">
-			</File>
-			<File
-				RelativePath=".\src\framework\Exception.h">
-			</File>
-			<File
-				RelativePath="src\services\datamodel\FloatProvider.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\FolderProvider.h">
-			</File>
-			<File
-				RelativePath=".\src\services\font\Font.h">
-			</File>
-			<File
-				RelativePath=".\src\services\font\FontRenderer.h">
-			</File>
-			<File
-				RelativePath=".\src\services\font\FontService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\font\Glyph.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\GuiService.h">
-			</File>
-			<File
-				RelativePath="src\services\gui\theme\IconStyle.h">
-			</File>
-			<File
-				RelativePath=".\src\services\image\ImageService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\input\InputDevice.h">
-			</File>
-			<File
-				RelativePath=".\src\services\input\InputMapping.h">
-			</File>
-			<File
-				RelativePath=".\src\services\input\InputService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\IntProvider.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\KeyPressEvent.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\LineEdit.h">
-			</File>
-			<File
-				RelativePath=".\src\services\datamodel\LinkProvider.h">
-			</File>
-			<File
-				RelativePath=".\src\services\logging\LoggingService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\metaserver\MetaserverService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\MouseButtonEvent.h">
-			</File>
-			<File
-				RelativePath=".\src\services\gui\MouseMotionEvent.h">
-			</File>
-			<File
-				RelativePath=".\src\services\platform\PlatformService.h">
-			</File>
-			<File
-				RelativePath=".\src\services\platform\Rectangle.h">
-			</File>
-			<File
-				RelativePath=".\src\services\platform\RectangleRenderer.h">
-			</File>
-			<File
-				RelativePath=".\src\services\input\RepetitionDevice.h">
-			</File>
-			<File
-				RelativePath=".\src\services\platform\SDLDrawDevice.h">
-			</File>
-			<File
-				RelativePath=".\src\services\server\ServerService.h">
-			</File>
-			<File
-				RelativePath=".\src\framework\Service.h">
-			</File>
-			<File
-				RelativePath=".\src\framework\ServiceManager.h">
-			</File>
-			<File
-				RelativePath="src\services\datamodel\StringProvider.h">
-			</File>
-			<File
-				RelativePath="src\services\gui\theme\Style.h">
-			</File>
-			<File
-				RelativePath=".\src\services\test\TestService.h">
-			</File>
-			<File
-				RelativePath="test\TestServices.h">
-			</File>
-			<File
-				RelativePath="src\services\gui\theme\TextStyle.h">
-			</File>
-			<File
-				RelativePath="src\services\gui\theme\Theme.h">
-			</File>
-			<File
-				RelativePath="src\services\gui\theme\ThemeAuthor.h">
-			</File>
-			<File
-				RelativePath=".\src\mscprag.h">
-			</File>
-			<Filter
-				Name="Widgets Headers"
-				Filter="">
-				<File
-					RelativePath=".\src\services\gui\Button.h">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\Label.h">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\Panel.h">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\TextBox.h">
-				</File>
-				<File
-					RelativePath=".\src\services\gui\Widget.h">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
-			Name="Ressourcendateien"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 			<File
-				RelativePath=".\src\main\data\masonwindowback.jpg">
+				RelativePath=".\ember.ico">
 			</File>
 			<File
-				RelativePath=".\src\main\data\masonwindowback2.jpg">
+				RelativePath=".\ember.rc">
+			</File>
+			<File
+				RelativePath=".\small.ico">
 			</File>
 		</Filter>
 		<File
-			RelativePath="bin\stderr.txt">
-		</File>
-		<File
-			RelativePath="bin\stdout.txt">
+			RelativePath=".\readme.txt">
 		</File>
 	</Files>
 	<Globals>
