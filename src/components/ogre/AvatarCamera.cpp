@@ -482,7 +482,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 			
 		}
 	
-		
+		return true;		
 	}
 	
 	void AvatarCamera::runCommand(const std::string &command, const std::string &args)

@@ -18,7 +18,7 @@ The first thing you would want to do is to connect to a server. Use the server b
 Once connected, you must either create an account or log into an already existing. This is pretty straightforward. Once you've logged in, you must either choose an existing character, or create a new one. Also pretty self explanatory.
 
 ---Moving in the world---
-If you press and hold the right mouse button you enter 'movement mode'. While in 'movement mode', mouse movement will pan the camera. Use the wasd keys to move the avatar. Pressing shift will make the avatar run, though the server might not always keep up with this.
+If you press and hold the right mouse button you enter 'movement mode'. While in 'movement mode', mouse movement will pan the camera. Use the wasd keys to move the avatar. Pressing shift will make the avatar run, though the server might not always keep up with this. You can also toggle movement mode on and off by double clicking the right mouse button.
 
 ---Interacting with the world---
 Your main way of interacting with the world is by clicking with the left mouse button on world entities. This will bring up an action menu. Choose from the menu to perform the desired action.
@@ -46,14 +46,16 @@ shift : run
 
 General keys
 F12 : toggle console
-F8 : take screenshot and save to ~./ember/screenshots
+PrintScreen : take screenshot and save to ~./ember/screenshots or c:\Document and Settings\$user\Application Data\ember\screenshots
 F7 : toggle wireframe mode
+F6 : toggle free flying mode
 
 Commands:
 /quit : quits
 /connect <server> : connects to a server
 /login <name> <password> : tries to log in
 /add <name> <gender> <type> : adds a new character, for example: /add Erik male settler
+/list_commands : lists all available commands
 
 
 
