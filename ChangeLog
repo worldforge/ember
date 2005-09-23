@@ -1,5 +1,12 @@
 2005-09-23  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/EmberServices.cpp: don't include the MetaServerService
+	* src/services/config/ConfigService.h: fixed the signature of configError. gcc had no problem with implicitly converting string* to std::string, but MSVC apparently did
+	* src/services/logging/LoggingService.*: moved the inclusion of ctime to the implementation part to make the header a bit lighter
+	* src/services/server/ServerService.*: added extra checks to make sure that there is an entity attached to the avatar. Else there is a possibility a segfault might occur if the user tries to move the avatar before it's been connected to an entity (which is possible for a short, short duration)
+
+2005-09-23  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.xml
 		* added more tooltips and some more helpful texts
 		* if the logged in used has no characters yet, start by showing the "create char" tab instead of the "choose char" tab (since the list is empty anyway)

@@ -5,7 +5,6 @@
 #include <list>
 #include <stdio.h>
 #include <stdarg.h>
-#include <ctime>
 //#include <varargs.h> //TODO: Needed by unix?
 
 #include <sigc++/object_slot.h>

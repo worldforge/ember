@@ -49,6 +49,9 @@ class ConfigService: public Service, public Ember::ConsoleObject, virtual public
     //----------------------------------------------------------------------
     // Class Variables
     //----------------------------------------------------------------------
+#ifdef __WIN32__
+	std::string baseDir;
+#endif
 
 
     void registerConsoleCommands();
@@ -62,7 +65,7 @@ class ConfigService: public Service, public Ember::ConsoleObject, virtual public
     void updatedConfig(const std::string& section, const std::string& key);
 	sigc::connection updatedConfig_connection;
 	
-    void configError(const std::string& error);
+    void configError(const char* error);
 	sigc::connection configError_connection;
 	
 

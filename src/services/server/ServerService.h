@@ -23,6 +23,7 @@
 #include <framework/ConsoleObject.h>
 #include "OOGChat.h"
 
+#include <Atlas/Objects/RootOperation.h>
 #include <Eris/Connection.h>
 #include <Eris/Account.h>
 #include <Eris/Lobby.h>

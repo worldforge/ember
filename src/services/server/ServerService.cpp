@@ -499,7 +499,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 	}
   
    	void ServerService::moveToPoint(const WFMath::Point<3>& dest) {
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -521,7 +521,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  	}
 
    	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -548,7 +548,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 
 
    	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity) {
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -571,7 +571,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 
    	void ServerService::touch(Eris::Entity* entity) 
    	{
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -593,7 +593,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
    	
 	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
    	{
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -615,7 +615,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 	
 	void ServerService::place(Eris::Entity* entity, Eris::Entity* target)
    	{
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -637,7 +637,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 	
 	void ServerService::wield(Eris::Entity* entity)
    	{
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -667,7 +667,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 
 	void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos)
    	{
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
  			return;
@@ -700,7 +700,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 
    		
 	void ServerService::say(const std::string &message) {
- 		if(!myAvatar) {
+ 		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar when saying" << ENDM;
  			return;

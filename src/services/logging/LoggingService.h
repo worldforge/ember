@@ -27,6 +27,7 @@
 #include <sigc++/object.h>
 //#include <sigc++/object_slot.h>
 
+#include <ctime>
 
 
 namespace Ember

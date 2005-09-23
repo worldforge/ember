@@ -26,7 +26,7 @@
 //#include "input/InputService.h"
 //#include "gui/GuiService.h"
 #include "sound/SoundService.h"
-#include "metaserver/MetaserverService.h"
+//#include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
 
 
