@@ -29,6 +29,13 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
+#ifdef __WIN32__
+#include <Windows.h>
+
+//we need this for the PathRemoveFileSpec(...) method
+#include <shlwapi.h>
+#endif
+
 using namespace std;
 
 namespace Ember
@@ -39,8 +46,19 @@ namespace Ember
 
     ConfigService::ConfigService() : Service()
     {
-		setName("Configuration Service");
-		setDescription("Service for management of Ember user-defined configuration");
+#ifdef __WIN32__
+		char cwd[512];
+		//get the full path for the current executable
+		GetModuleFileName(0, cwd, 512);
+
+		//use this utility function for removing the file part
+		PathRemoveFileSpec(cwd);
+		baseDir = std::string(cwd) + "\\";
+#endif
+
+	setName("Configuration Service");
+	setDescription("Service for management of Ember user-defined configuration");
+
     	setStatusText("Configuration Service status OK.");
     }
 
@@ -58,8 +76,8 @@ namespace Ember
 
     Service::Status ConfigService::start()
     {
-		updatedConfig_connection = varconf::Config::inst()->sigv.connect(SigC::slot(*this, &ConfigService::updatedConfig));
 		configError_connection = varconf::Config::inst()->sige.connect(SigC::slot(*this, &ConfigService::configError));
+		updatedConfig_connection = varconf::Config::inst()->sigv.connect(SigC::slot(*this, &ConfigService::updatedConfig));
 		registerConsoleCommands();
 		setRunning(true);
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
@@ -149,15 +167,32 @@ namespace Ember
     	EventChangedConfigItem.emit(section, key);
     }
    
-	void ConfigService::configError(const std::string& error)
+	void ConfigService::configError(const char* error)
 	{
 		S_LOG_FAILURE(std::string(error));
 	}
 	
 	const std::string ConfigService::getHomeDirectory() const
 	{
-		return std::string(getenv("HOME")) + "/.ember/";
-
+		//taken from Sear
+#ifdef __WIN32__
+		std::string path = getenv("USERPROFILE");
+		if (path.empty()) {
+			const char *homedrive = getenv("HOMEDRIVE");
+			const char *homepath = getenv("HOMEPATH");
+		    
+			if (!homedrive || !homepath) {
+				std::cerr << "unable to determine homedir in Win32, using ." << std::endl;
+				return ".";
+			}
+			path = std::string(homedrive) + std::string(homepath);
+		}
+		return path + "\\Application Data\\Ember\\";
+#elif __APPLE__
+			return getAppSupportDirPath() + "/Ember/";
+#else
+				return std::string(getenv("HOME")) + "/.ember/";
+#endif
 	}
 
 	const std::string ConfigService::getSharedDataDirectory() const
@@ -165,7 +200,13 @@ namespace Ember
 		if (itemExists("paths", "sharedir")) {
 			return std::string(getValue("paths", "sharedir")) + "/";
 		} else {
+#ifdef __APPLE__
+			return getBundleResourceDirPath();
+#elif __WIN32__
+			return baseDir;
+#else
 			return BR_DATADIR("/games/ember/");
+#endif
 		}
 
 	}
@@ -175,6 +216,13 @@ namespace Ember
 		if (itemExists("paths", "datadir")) {
 			return std::string(getValue("paths", "datadir")) + "/";
 		} else {
+//#ifdef __APPLE__
+//			return getBundleResourceDirPath();
+//#elif __WIN32__
+//			return baseDir;
+//#else
+//			return BR_DATADIR("/games/ember/");
+//#endif
 			return getHomeDirectory();
 		}
 

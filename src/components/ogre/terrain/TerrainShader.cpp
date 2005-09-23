@@ -7,6 +7,7 @@ TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  cons
 , mShader(shader)
 , mTerrain(terrain)
 , mTerrainIndex(terrainIndex)
+, mMaterial(0)
 {
 
 	mTerrain->addShader(shader, mTerrainIndex);
@@ -70,7 +71,7 @@ Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, Ogre::
 //	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
     textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
-//	textureUnitStateSplat->setAlphaOperation(LBX_SOURCE1, LBS_TEXTURE, LBS_TEXTURE);
+//	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
 	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_BLEND_DIFFUSE_ALPHA, Ogre::LBS_CURRENT, Ogre::LBS_TEXTURE);
 
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();

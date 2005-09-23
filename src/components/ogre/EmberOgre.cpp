@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.104  2005-09-20 22:43:48  erik
+ *      Revision 1.105  2005-09-23 23:45:15  erik
+ *      2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/services/config/ConfigService.cpp: fixes for Apple and Win32
+ *      	* src/components/ogre/TerrainShader.cpp: initialize the material to null, do'h
+ *      	* src/components/ogre/EmberOgre.cpp:
+ *      		* a lot of changes to make it work on win32 systems. Should not affect linux, but more testing needs to be done.
+ *      		* now pass the log output from both ember and eris on to the ogre log system, ending up in Ogre.log
+ *
+ *      Revision 1.104  2005/09/20 22:43:48  erik
  *      2005-09-21  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp:
@@ -386,7 +395,7 @@ http://www.gnu.org/copyleft/lesser.txt.
  *      	* Rewrote Model handling to use a subclass of Ogre::ResourceManager
  *      	* Various fixes to get the resouce handling to work better for distributions.
  *      	* Upon startup now only a lone avatar is shown. This is for debugging and shall be removed.
- *      	* Removed bug where images were written to a non-existant directory, resulting in strange resource allocation problems. Ugly one.
+ *      	* Removed bug where images were written to a non-existant directory, resulting in strange extern template allocation problems. Ugly one.
  *      	* Various small changes to widgets.
  *
  *      Revision 1.57  2004/11/04 21:40:26  erik
@@ -826,7 +835,27 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <stddef.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <dirent.h>
+#ifdef WIN32
+	#include <tchar.h>
+	#define snprintf _snprintf
+    #include <io.h> // for _access, Win32 version of stat()
+    #include <direct.h> // for _mkdir
+//	#include <sys/stat.h>
+
+	// Necessary to get the Window Handle of the window
+	//  Ogre created, so SDL can grab its input.
+	#include <windows.h>
+	#include <SDL_getenv.h>
+	#include <SDL.h>
+	#include <SDL_syswm.h>
+
+	#include <iostream>
+	#include <fstream>
+	#include <ostream>
+#else
+	#include <dirent.h>
+	#include <SDL/SDL_image.h>
+#endif
 
 // ------------------------------
 // Include Eris header files
@@ -890,13 +919,66 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "jesus/Jesus.h"
 #include "jesus/XMLJesusSerializer.h"
 
-#include <SDL/SDL_image.h>
+#include "framework/osdir.h"
 
 
+
+template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
 namespace EmberOgre {
 
+	void assureConfigFile(std::string filename, std::string originalConfigFileDir)
+	{
+		struct stat tagStat;
+		int ret = stat( filename.c_str(), &tagStat );
+		if (ret == -1) {
+			ret = stat( (originalConfigFileDir +filename).c_str(), &tagStat );
+			if (ret == 0) {
+				//copy conf file from shared
+				std::ifstream  instream ((originalConfigFileDir + filename).c_str());
+				std::ofstream  outstream (filename.c_str()); 
+				outstream <<  instream.rdbuf();
+			}
+		}
 
+	}
+
+	class OgreLogObserver: public Ember::LoggingService::Observer
+	{
+		public:
+			OgreLogObserver(){}
+
+			virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
+									const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+			{
+				if (!Ogre::LogManager::getSingletonPtr()) {
+					return;
+				}
+				std::string stringImportance;
+				switch (importance) {
+					case Ember::LoggingService::CRITICAL:
+						stringImportance = "CRITICAL";
+						break;
+					case Ember::LoggingService::FAILURE:
+						stringImportance = "FAILURE";
+						break;
+					case Ember::LoggingService::WARNING:
+						stringImportance = "WARNING";
+						break;
+					case Ember::LoggingService::INFO:
+						stringImportance = "INFO";
+						break;
+					default:
+						stringImportance = "VERBOSE";
+						break;
+						
+
+				}
+				std::stringstream ss;
+				ss << "Ember (" << stringImportance << "): " << message << " (in file " << file << ":" << line << ")";
+				Ogre::LogManager::getSingleton().logMessage(ss.str());
+			}
+	};
 
 // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
   class CerrLogObserver: public Ember::LoggingService::Observer
@@ -954,7 +1036,6 @@ namespace EmberOgre {
 
     };
     
-template<> EmberOgre* Ember::Singleton<EmberOgre>::ms_Singleton = 0;
 
 EmberOgre::EmberOgre() :
 //mFrameListener(0),
@@ -972,7 +1053,9 @@ mEmberEntityFactory(0)
 EmberOgre::~EmberOgre()
 {
 //	mSceneMgr->shutdown();
-
+		delete mWorldView;
+		//mSceneMgr->removeAllCameras();
+//		mSceneMgr->clearScene();
 		delete mGUIManager;
 		delete mTerrainGenerator;
 		delete mMotionManager;
@@ -982,7 +1065,7 @@ EmberOgre::~EmberOgre()
 		delete mModelDefinitionManager;
 /*	if (mEmberEntityFactory)
 		delete mEmberEntityFactory;*/
-		delete mRoot;
+//		delete mRoot;
 		
 		
 		
@@ -1042,7 +1125,9 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	checkForConfigFiles();
 	
-    
+#ifdef __WIN32__
+		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+#else
 	if (loadOgrePluginsThroughBinreloc) {
 		mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
 		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
@@ -1051,6 +1136,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	} else {
 		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
 	}
+#endif
 
 	
     setupResources();
@@ -1125,6 +1211,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::configure(void)
 {
+#ifndef __WIN32__
 	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
 		//set the icon of the window
 		const char* iconPath = BR_DATADIR("/icons/worldforge/ember.png");
@@ -1132,16 +1219,94 @@ bool EmberOgre::configure(void)
 	} else {
 		std::cerr << dlerror() << "\n";
 	}
-    // Show the configuration dialog and initialise the system
-    // You can skip this and use root.restoreConfig() to load configuration
-    // settings if you were sure there are valid ones saved in ogre.cfg
+#endif
+
+
+//for non-windows systems don't show any config option
+#ifndef __WIN32__
 	bool success = mRoot->restoreConfig();
-    if(success)
+#else
+	//but do for windows. We need a better way to do this though
+	bool success = mRoot->showConfigDialog();
+#endif    
+	if(success)
     {
+		//this will only apply on DirectX
+		//it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
+		try {
+			mRoot->getRenderSystem()->setConfigOption("Video Mode", "1024 x 768 @ 32-bit colour");
+			mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
+			
+		} catch (Ogre::Exception&) 
+		{
+			//we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
+		}
+
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
         mWindow = mRoot->initialise(true, "Ember");
-        return true;
+#if __WIN32__
+	//_fpreset();
+   	_fpreset();
+	_controlfp(_PC_64, _MCW_PC);
+	_controlfp(_RC_NEAR , _MCW_RC);
+
+   // Allow SDL to use the window Ogre just created
+
+   // Old method: do not use this, because it only works
+   //  when there is 1 (one) window with this name!
+   // HWND hWnd = FindWindow(tmp, 0);
+
+   // New method: As proposed by Sinbad.
+   //  This method always works.
+   HWND hWnd;
+   mWindow->getCustomAttribute("HWND", &hWnd);
+	
+   char tmp[64];
+   // Set the SDL_WINDOWID environment variable
+   sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
+   putenv(tmp);
+
+   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
+    {
+      S_LOG_FAILURE("Couldn't initialize SDL:\n\t\t");
+      S_LOG_FAILURE(SDL_GetError());
+    }
+
+      // if width = 0 and height = 0, the window is fullscreen
+
+      // This is necessary to allow the window to move
+      //  on WIN32 systems. Without this, the window resets
+      //  to the smallest possible size after moving.
+      SDL_SetVideoMode(mWindow->getWidth(), mWindow->getHeight(), 0, 0); // first 0: BitPerPixel, 
+                                             // second 0: flags (fullscreen/...)
+                                             // neither are needed as Ogre sets these
+
+   static SDL_SysWMinfo pInfo;
+   SDL_VERSION(&pInfo.version);
+   SDL_GetWMInfo(&pInfo);
+
+   // Also, SDL keeps an internal record of the window size
+   //  and position. Because SDL does not own the window, it
+   //  missed the WM_POSCHANGED message and has no record of
+   //  either size or position. It defaults to {0, 0, 0, 0},
+   //  which is then used to trap the mouse "inside the 
+   //  window". We have to fake a window-move to allow SDL
+   //  to catch up, after which we can safely grab input.
+   RECT r;
+   GetWindowRect(pInfo.window, &r);
+   SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+   //do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
+   	_fpreset();
+	_controlfp(_PC_64, _MCW_PC);
+	_controlfp(_RC_NEAR , _MCW_RC);
+
+#endif
+
+
+		
+		return true;
     }
     else
     {
@@ -1181,50 +1346,15 @@ EmberEntity* EmberOgre::getEmberEntity(const std::string & eid) const
 
 void EmberOgre::checkForConfigFiles()
 {
- 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
-
 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
-		
+
+	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "etc/ember/");
+
 	//make sure that there are files 
-	struct stat tagStat;
-    int ret;
-	
-	ret = stat( "ogre.cfg", &tagStat );
-	if (ret == -1) {
-		//copy conf file from shared
-		std::string sharePath(ETCDIR);
-		sharePath = sharePath + "/ember/ogre.cfg";
-		std::ifstream  IN (sharePath.c_str());
-		std::ofstream  OUT ("ogre.cfg"); 
-		OUT << IN.rdbuf();
-	}
-	ret = stat( "resources.cfg", &tagStat );
-	if (ret == -1) {
-		//copy conf file from shared
-		std::string sharePath(ETCDIR);
-		sharePath = sharePath + "/ember/resources.cfg";
-		std::ifstream  IN (sharePath.c_str());
-		std::ofstream  OUT ("resources.cfg"); 
-		OUT << IN.rdbuf();
-	}
-	ret = stat( "plugins.cfg", &tagStat );
-	if (ret == -1) {
-		//copy conf file from shared
-		std::string sharePath(ETCDIR);
-		sharePath = sharePath + "/ember/plugins.cfg";
-		std::ifstream  IN (sharePath.c_str());
-		std::ofstream  OUT ("plugins.cfg"); 
-		OUT << IN.rdbuf();
-	}
-	ret = stat( "terrain.cfg", &tagStat );
-	if (ret == -1) {
-		//copy conf file from shared
-		std::string sharePath(ETCDIR);
-		sharePath = sharePath + "/ember/terrain.cfg";
-		std::ifstream  IN (sharePath.c_str());
-		std::ofstream  OUT ("terrain.cfg"); 
-		OUT << IN.rdbuf();
-	}
+	assureConfigFile("ogre.cfg", sharePath);
+	assureConfigFile("resources.cfg", sharePath);
+	assureConfigFile("plugins.cfg", sharePath);
+	assureConfigFile("terrain.cfg", sharePath);
 }
 
 void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
@@ -1260,7 +1390,7 @@ void EmberOgre::setupResources(void)
 		} else {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
 		}
-	} catch (Ogre::Exception& ex) {
+	} catch (Ogre::Exception& ) {
 		S_LOG_FAILURE("Couldn't load trees. Continuing as if nothing happened.");
 	}
 	
@@ -1307,7 +1437,7 @@ void EmberOgre::setupResources(void)
 			try {
 				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 					fullResourcePath, finalTypename, secName);
-			} catch (Ogre::Exception& ex) {
+			} catch (Ogre::Exception&) {
 				S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
 			}
 		}
@@ -1375,14 +1505,7 @@ void EmberOgre::preloadMedia(void)
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
  	}	
 
-	
-	
-// 	mModelDefinitionManager->load("malebuilder.modeldef.xml");
-// 	mModelDefinitionManager->load("settler.modeldef.xml");
-// 	mModelDefinitionManager->load("merchant.modeldef.xml");
-// 	mModelDefinitionManager->load("pig.modeldef.xml");
-// 	mModelDefinitionManager->load("fir.modeldef.xml");
-// 	mModelDefinitionManager->load("oak.modeldef.xml");
+
 
 
 }
@@ -1395,100 +1518,81 @@ void EmberOgre::setupJesus()
 	mJesus = new Jesus(carpenter);
 	XMLJesusSerializer serializer(mJesus);
 
-	DIR *dp;
-	struct dirent *ep;
 	std::string dir;
-	//load all blockspecs
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/carpenter/blockspec";
-	dp = opendir (dir.c_str());
-	if (dp != 0)
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "carpenter/blockspec";
+
+	std::string filename;
+
+	//oslink::directory needs to be destroyed before a new one can be used, regular copy constructor doesn't seem to work
+	//we could also use new/delete, but scopes works as well
 	{
-		while (ep = readdir (dp)) {
-			if (ep->d_type != 4) {
-				S_LOG_INFO( "TRACE - LOADING BLOCKSPEC: " << ep->d_name );
-				serializer.loadBlockSpec(dir + "/" + ep->d_name);
-			}
+		oslink::directory osdir(dir);
+		while (osdir) {
+			filename = osdir.next();
+			S_LOG_INFO( "TRACE - LOADING BLOCKSPEC: " << filename );
+			serializer.loadBlockSpec(dir + "/" + filename);
 		}
-		(void) closedir (dp);
 	}
-	
 	//load all buildingblockspecs
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/carpenter/modelblockspecs";
-	dp = opendir (dir.c_str());
-	if (dp != 0)
-	{
-		while (ep = readdir (dp)) {
-			if (ep->d_type != 4) {
-				S_LOG_INFO( "TRACE - LOADING BUILDINGBLOCKSPEC: " << ep->d_name);
-				serializer.loadBuildingBlockSpecDefinition(dir + "/" + ep->d_name);
-			}
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
+		{
+		oslink::directory osdir(dir);
+		while (osdir) {
+			filename = osdir.next();
+			S_LOG_INFO( "TRACE - LOADING BUILDINGBLOCKSPEC: " << filename);
+			serializer.loadBuildingBlockSpecDefinition(dir + "/" + filename);
 		}
-		(void) closedir (dp);
 	}
-	
 	//load all modelmappings
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/jesus/modelmappings";
-	dp = opendir (dir.c_str());
-	if (dp != 0)
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
 	{
-		while (ep = readdir (dp)) {
-			if (ep->d_type != 4) {
-				S_LOG_INFO( "TRACE - LOADING MODELMAPPING: " <<  ep->d_name );
-				serializer.loadModelBlockMapping(dir + "/" + ep->d_name);
-			}
+		oslink::directory osdir(dir);
+		while (osdir) {
+			filename = osdir.next();
+			S_LOG_INFO( "TRACE - LOADING MODELMAPPING: " <<  filename );
+			serializer.loadModelBlockMapping(dir + "/" + filename);
 		}
-		(void) closedir (dp);
 	}
-	
 	
 	//load all global blueprints
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "/carpenter/blueprints";
-	dp = opendir (dir.c_str());
-	if (dp != 0)
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
 	{
-		while (ep = readdir (dp)) {
-			if (ep->d_type != 4) {
-				S_LOG_INFO(  "TRACE - LOADING GLOBAL BLUEPRINT: " << ep->d_name );
-				Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + ep->d_name);
-				if (blueprint) {
-					blueprint->compile();
-					bool result = mJesus->addBluePrint(blueprint);
-					if (!result)
-					{
-						S_LOG_FAILURE( "COULD NOT ADD BLUEPRINT: " << ep->d_name);
-					}
+		oslink::directory osdir(dir);
+		while (osdir) {
+			filename = osdir.next();
+			S_LOG_INFO(  "TRACE - LOADING GLOBAL BLUEPRINT: " << filename );
+			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
+			if (blueprint) {
+				blueprint->compile();
+				bool result = mJesus->addBluePrint(blueprint);
+				if (!result)
+				{
+					S_LOG_FAILURE( "COULD NOT ADD BLUEPRINT: " << filename);
 				}
 			}
 		}
-		(void) closedir (dp);
 	}
-	
 	//load all local blueprints
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "/carpenter/blueprints";
-	dp = opendir (dir.c_str());
-	if (dp != 0)
+	dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "carpenter/blueprints";
 	{
-		while (ep = readdir (dp)) {
-			if (ep->d_name != "." && ep->d_name != "..") {
-				S_LOG_INFO( "TRACE - LOADING LOCAL BLUEPRINT: " << ep->d_name );
-				Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + ep->d_name);
-				if (blueprint) {
-					blueprint->compile();
-					bool result = mJesus->addBluePrint(blueprint);
-					if (!result)
-					{
-						S_LOG_FAILURE(  "TRACE - COULD NOT ADD BLUEPRINT: " << ep->d_name );
-					}
+		oslink::directory osdir(dir);
+		while (osdir) {
+			filename = osdir.next();
+			S_LOG_INFO( "TRACE - LOADING LOCAL BLUEPRINT: " << filename );
+			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
+			if (blueprint) {
+				blueprint->compile();
+				bool result = mJesus->addBluePrint(blueprint);
+				if (!result)
+				{
+					S_LOG_FAILURE(  "TRACE - COULD NOT ADD BLUEPRINT: " << filename );
 				}
 			}
 		}
-		(void) closedir (dp);
 	}
-	
 
 
 	EventCreatedJesus.emit(mJesus);
-
 }
 
 void EmberOgre::createScene(void)
@@ -1619,9 +1723,9 @@ void EmberOgre::initializeEmberServices(void)
 
 	// Initialize the Logging service and an error observer
 	Ember::LoggingService *logging = Ember::EmberServices::getInstance()->getLoggingService();
-// 	CerrLogObserver* obs = new CerrLogObserver();
-// 	obs->setFilter(Ember::LoggingService::VERBOSE);
-// 	logging->addObserver(obs);
+	OgreLogObserver* obs = new OgreLogObserver();
+ 	obs->setFilter(Ember::LoggingService::VERBOSE);
+ 	logging->addObserver(obs);
 
 
 	// Initialize the Configuration Service
@@ -1631,21 +1735,21 @@ void EmberOgre::initializeEmberServices(void)
     int ret;
 	ret = stat( Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
 	if (ret == -1) {
+#ifdef WIN32
+		mkdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+#else
 		mkdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str(), S_IRWXU);
+#endif
 	}
 	
 	
 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
-	
-	ret = stat( "ember.conf", &tagStat );
-	if (ret == -1) {
-		//copy conf file from shared
-		std::string sharePath(ETCDIR);
-		sharePath = sharePath + "/ember/ember.conf";
-		std::ifstream  IN (sharePath.c_str());
-		std::ofstream  OUT ("ember.conf"); 
-		OUT << IN.rdbuf();
-	}
+
+	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "etc/ember/");
+
+	//make sure that there are files 
+	assureConfigFile("ember.conf", sharePath);
+
 	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig("ember.conf");
 
 
@@ -1687,7 +1791,7 @@ void EmberOgre::initializeEmberServices(void)
 // ----------------------------------------------------------------------------
 // Main function, just boots the application object
 // ----------------------------------------------------------------------------
-#if OGRE_PLATFORM == PLATFORM_WIN32
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 
@@ -1699,6 +1803,7 @@ int main(int argc, char **argv)
 {
 	bool exit_program = false;
 	bool useBinrelocPluginsLoading = false;
+#ifndef __WIN32__
 	if (argc > 1) {
 		std::string invoked = std::string((char *)argv[0]);
 		(argv)++;
@@ -1708,7 +1813,7 @@ int main(int argc, char **argv)
 			argv++;
 			argc--;
 			if (arg == "-v" || arg == "--version") {
-				std::cout << "Ember version: " << VERSION << std::endl;
+				//std::cout << "Ember version: " << VERSION << std::endl;
 				exit_program = true;
 			} else if (arg == "-b" || arg == "--binrelocloading") {
 				useBinrelocPluginsLoading = true;
@@ -1727,8 +1832,20 @@ int main(int argc, char **argv)
 	if (exit_program) {
 		return 0;
 	}
+#else 
+ //  char tmp[64];
 
+ //  unsigned int floatSetting = _controlfp( 0, 0 );
+	//sprintf(tmp, "Original: 0x%.4x\n", floatSetting );
+ //   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+	//_fpreset();
+	//_controlfp(_PC_64, _MCW_PC);
+	//_controlfp(_RC_NEAR , _MCW_RC);
+	//floatSetting = _controlfp( 0, 0 );
+	//sprintf(tmp, "New: 0x%.4x\n", floatSetting );
+ //   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 
+#endif
 
     // Create application object
     EmberOgre::EmberOgre app;
@@ -1739,7 +1856,7 @@ int main(int argc, char **argv)
     try {
         app.go(useBinrelocPluginsLoading);
     } catch( Ogre::Exception& e ) {
-#if OGRE_PLATFORM == PLATFORM_WIN32
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
         MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
         fprintf(stderr, "An exception has occured: %s\n",
