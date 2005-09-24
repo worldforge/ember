@@ -200,6 +200,12 @@ class ConfigService: public Service, public Ember::ConsoleObject, virtual public
 	const std::string ConfigService::getSharedMediaDirectory() const;
 
 	/**
+	 *    returns the path to the shared config directory where all the original configuration files are stored
+	 * @return 
+	 */
+	const std::string ConfigService::getSharedConfigDirectory() const;
+
+	/**
 	*	Emitted when a config item is changed.
 	*	@param the section of the config item
 	*	@param the key of the config item

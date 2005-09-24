@@ -211,6 +211,17 @@ namespace Ember
 
 	}
 	
+	const std::string ConfigService::getSharedConfigDirectory() const
+	{
+#ifdef __APPLE__
+		return getSharedDataDirectory() + "etc/ember/";
+#elif __WIN32__ 
+		return getSharedDataDirectory() + "etc/ember/";
+#else
+		return BR_ETCDIR("/ember/");
+#endif
+	}
+	
 	const std::string ConfigService::getEmberDataDirectory() const
 	{
 		if (itemExists("paths", "datadir")) {

@@ -105,12 +105,13 @@ EmberServices* EmberServices::theInstance = NULL;
     return myServerService;
   }
 
-  SoundService* EmberServices::getSoundService()
-  {
-    if (mySoundService == NULL)
-      mySoundService = new Ember::SoundService();
-    return mySoundService;
-  }
+//disable the sound service for now
+//   SoundService* EmberServices::getSoundService()
+//   {
+//     if (mySoundService == NULL)
+//       mySoundService = new Ember::SoundService();
+//     return mySoundService;
+//   }
 
   EmberServices::EmberServices()
   {
