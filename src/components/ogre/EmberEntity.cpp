@@ -254,14 +254,13 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	message.append("> ");
 	message.append(msg);
 	S_LOG_INFO( "TRACE - ENTITY SAYS: [" << message << "]\n" )
-	Ember::ConsoleBackend::getMainConsole()->pushMessage("TRACE - ENTITY SPEAKS");
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
-	// Make a sound if it's the merchant speaking
+/*	// Make a sound if it's the merchant speaking
 	if(type.compare("merchant")==0) {
 		S_LOG_INFO( "THE MERCHANT IS SPEAKING" )
 		Ember::EmberServices::getInstance()->getSoundService()->playTestGYPH();
-	}
+	}*/
 	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
 }
@@ -545,6 +544,13 @@ Ogre::SceneNode* EmberEntity::getSceneNode() const
 inline EmberEntity* EmberEntity::getEmberLocation() const
 { 
 	return static_cast<EmberEntity*>(getLocation());
+}
+
+
+const Ogre::AxisAlignedBox& EmberEntity::getWorldBoundingBox(bool derive) const
+{
+	static Ogre::AxisAlignedBox boundingBox(0,0,0,0,0,0);
+	return boundingBox;
 }
 
 }

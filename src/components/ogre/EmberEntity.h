@@ -223,6 +223,13 @@ public:
 	*/
 	virtual bool getShowErisBoundingBox();
 
+	/**
+	 *    returns the world bounding box of the entity
+	 * @param derive whether to derive from attached objects too
+	 * @return 
+	 */
+	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+
 protected: 
 
 

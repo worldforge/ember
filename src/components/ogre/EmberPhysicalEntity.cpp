@@ -454,6 +454,12 @@ void EmberPhysicalEntity::onBboxChanged()
 	scaleNode();
 }
 
+const Ogre::AxisAlignedBox& EmberPhysicalEntity::getWorldBoundingBox(bool derive) const
+{
+	return getModel()->getWorldBoundingBox(true);
+}
+
+
 
 /*
 void EmberPhysicalEntity::handleTalk(const std::string &msg)

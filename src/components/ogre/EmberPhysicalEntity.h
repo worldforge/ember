@@ -97,6 +97,8 @@ public:
 	 */
 	EmberEntity* getEntityAttachedToPoint(const std::string attachPoint);
 
+	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+
 protected: 
 
 	
