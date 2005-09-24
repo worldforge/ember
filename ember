@@ -64,6 +64,12 @@ homedata=$HOME/.ember
 
 WFUT_JAR=WFUT.jar
 
+# Create dir if required 
+if [ ! -d $homedata ] ; then
+	echo "Created ~/.ember to store all game data."
+	mkdir $homedata
+fi
+
 # Determine if java executable exists in path
 JAVA=`which java`
 if [ -x $JAVA ] ; then
@@ -74,11 +80,6 @@ if [ -x $JAVA ] ; then
     if [ -e $datadir/$WFUT_JAR ] ; then
       # Install into home dir 
       echo "Installing Updater"
-
-      # Create dir if required 
-      if [ ! -d $homedata ] ; then
-        mkdir $homedata
-      fi
 
       # Copy WFUT to home dir
       cp $datadir/$WFUT_JAR $homedata
@@ -98,7 +99,8 @@ if [ -x $JAVA ] ; then
   		
 
   # Run Updater if it exists
-  if [ -e $homedata/$WFUT_JAR ] ; then
+#it should exist
+#  if [ -e $homedata/$WFUT_JAR ] ; then
     # Store Current dir
     CUR_DIR=`pwd`
     # We need to change here so updater knows where to find / store data
@@ -107,9 +109,10 @@ if [ -x $JAVA ] ; then
     $JAVA -jar $WFUT_JAR update ember-media
     # Restore dir
     cd $CUR_DIR
-  fi
+#  fi
 else
-  echo "Java not found in path. Updater cannot be run."
+  echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
+  exit
 fi
 
 LD_LIBRARY=$prefix/lib/ember
@@ -119,5 +122,6 @@ export LD_LIBRARY_PATH
 
 # Execute real ember binary
 echo "Starting Ember...."
-$bindir/ember.bin --binrelocloading
+#we have to do the LD_PRELOAD thing, because else at least I get an error: libnvidia-tls.so.1: cannot handle TLS data /ehj
+LD_PRELOAD=libGL.so.1 $bindir/ember.bin --binrelocloading
 

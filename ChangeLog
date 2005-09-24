@@ -1,5 +1,9 @@
 2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember: updates to work around a bug with nvidia-tls and some other small fixes
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/scripts/terrain.cfg: moved it to src/components/ogre instead
 	* media/models/arrow.mesh: updated the arrow
 
