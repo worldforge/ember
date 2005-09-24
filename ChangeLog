@@ -1,5 +1,10 @@
 2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/scripts/terrain.cfg: moved it to src/components/ogre instead
+	* media/models/arrow.mesh: updated the arrow
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/widget/JesusEdit.*: disable overlays for the preview viewpoint instead of using a RenderListener, which was a inefficient way
 	*  src/components/ogre/widget/IngameChatWidget.*: made some improvements to the widget, it now works with all kinds of entities, but won't show anything for the Avatar. Also made the graphical presentation a bit better.
 	* ember.png: added jayr's updated image
