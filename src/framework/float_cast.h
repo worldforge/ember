@@ -38,14 +38,16 @@
 #ifndef FLOAT_CAST_H
 #define FLOAT_CAST_H
 
-//#include "config.h"
+#ifndef HAVE_CONFIG_H
+#include "config.h"
+#endif  
 
 /*	The presence of the required functions are detected during the configure
 **	process and the values HAVE_LRINT and HAVE_LRINTF are set accordingly in
 **	the config.h file.
 */
 
-#if (HAVE_LRINT && HAVE_LRINTF)
+#if (HAVE_MATH_H)
 
 	/*	These defines enable functionality introduced with the 1999 ISO C
 	**	standard. They must be defined before the inclusion of math.h to
