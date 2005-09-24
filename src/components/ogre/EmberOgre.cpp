@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.105  2005-09-23 23:45:15  erik
+ *      Revision 1.106  2005-09-24 16:33:27  erik
+ *      2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp: use the new methods in ConfigService for getting the shared config directory
+ *
+ *      Revision 1.105  2005/09/23 23:45:15  erik
  *      2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/services/config/ConfigService.cpp: fixes for Apple and Win32
@@ -1246,7 +1251,7 @@ bool EmberOgre::configure(void)
         // Here we choose to let the system create a default rendering window by passing 'true'
         mWindow = mRoot->initialise(true, "Ember");
 #if __WIN32__
-	//_fpreset();
+   //do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
    	_fpreset();
 	_controlfp(_PC_64, _MCW_PC);
 	_controlfp(_RC_NEAR , _MCW_RC);
@@ -1348,7 +1353,7 @@ void EmberOgre::checkForConfigFiles()
 {
 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
 
-	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "etc/ember/");
+	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedConfigDirectory());
 
 	//make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
@@ -1745,7 +1750,7 @@ void EmberOgre::initializeEmberServices(void)
 	
 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
 
-	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "etc/ember/");
+	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedConfigDirectory());
 
 	//make sure that there are files 
 	assureConfigFile("ember.conf", sharePath);
