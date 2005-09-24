@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(src/config.h)
 
 AC_LIBTOOL_DLOPEN
 
@@ -41,6 +41,8 @@ AC_LANG_PUSH([C])
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(stdlib.h)
+AC_CHECK_HEADERS(math.h)
+dnl Test for <math.h> header file
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -52,6 +54,14 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memset select])
+
+#AC_CHECK_FUNC(lrintf,[
+#  AC_DEFINE(HAVE_LRINTF, 1, [whether lrintf() is available])
+#])
+
+#AC_CHECK_FUNC(lrint,[
+#  AC_DEFINE(HAVE_LRINT, 1, [whether lrint() is available])
+#])
 
 #taken from Sear
 STATIC_LIBSTDCPP=
