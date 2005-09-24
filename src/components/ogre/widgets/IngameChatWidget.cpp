@@ -26,10 +26,11 @@
 #include "Widget.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
-#include "../model/Model.h"
+//#include "../EmberPhysicalEntity.h"
+//#include "../model/Model.h"
 
 #include <CEGUIWindowManager.h>
+#include <CEGUIExceptions.h>
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
@@ -42,12 +43,13 @@
 #include "../Avatar.h"
 
 #include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
-#include "../PersonEmberEntity.h"
-#include "../AvatarEmberEntity.h"
+ #include "../EmberPhysicalEntity.h"
+ #include "../PersonEmberEntity.h"
+ #include "../AvatarEmberEntity.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/server/ServerService.h"
 
 
 
@@ -95,31 +97,28 @@ void IngameChatWidget::buildWidget()
 void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
 {
 	//don't show anything if it's the avatar
-	//TODO: make this better
-	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
-	if (avatarEntity) {
+	AvatarEmberEntity* avatarEntity = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+	if (avatarEntity == entity) {
 		return;
 	}
 	
-	EmberPhysicalEntity* physicalEntity = static_cast<EmberPhysicalEntity*>(entity);
 
-	if (physicalEntity) {
-		CEGUI::Window* chatWindow;
-		ActiveChatWindowMap::iterator I = mActiveChatWindows.find(entity->getId());
-		if (I == mActiveChatWindows.end()) {
-			//there is no chat window for this entity, let's create one
-			chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
-			getMainSheet()->addChildWindow(chatWindow);
-			
-			ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, physicalEntity, mWindowManager);
-			
-			mActiveChatWindows[physicalEntity->getId()] = activeWindow;
-			
-			mActiveChatWindows[physicalEntity->getId()]->updateText(line);
-		} else {
-			I->second->updateText(line);
+	CEGUI::Window* chatWindow;
+	ActiveChatWindowMap::iterator I = mActiveChatWindows.find(entity->getId());
+	if (I == mActiveChatWindows.end()) {
+		//there is no chat window for this entity, let's create one
+		chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
+		getMainSheet()->addChildWindow(chatWindow);
+		
+		ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, entity, mWindowManager);
+		
+		mActiveChatWindows[entity->getId()] = activeWindow;
+		
+		mActiveChatWindows[entity->getId()]->updateText(line);
+	} else {
+		I->second->updateText(line);
 /*			chatWindow = I->second.window;*/
-		}
+	}
 		
 		//chatWindow->setAlpha(1.0f);
 		
@@ -128,7 +127,6 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 		//chatWindow->moveToBack();
 		
 		
-	}
 
 }
 
@@ -147,7 +145,10 @@ void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 		ActiveChatWindow* window = I->second;
 		window->frameStarted(event );
 
-		Ogre::Vector3 entityWorldCoords = window->getEntity()->getModel()->getWorldBoundingBox(true).getCenter();
+	
+		Ogre::Vector3 entityWorldCoords = window->getEntity()->getWorldBoundingBox(true).getCenter();
+		
+		//Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 		Ogre::Vector3 cameraCoords = EmberOgre::getSingletonPtr()->getMainCamera()->getCamera()->getDerivedPosition();
 		Ogre::Vector3 diff = entityWorldCoords - cameraCoords;
 		
@@ -187,7 +188,7 @@ bool EmberOgre::IngameChatWidget::ActiveChatWindow::buttonResponse_Click(const C
 	const CEGUI::MouseEventArgs *mouseArgs = static_cast<const CEGUI::MouseEventArgs*>(&args);
 	if (mouseArgs) {
 		const CEGUI::String text = mouseArgs->window->getText();
-		EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getErisAvatar()->say(std::string(text.c_str()) );
+		Ember::EmberServices::getInstance()->getServerService()->say(std::string(text.c_str()));
 	}
 //	removeMenu();
 	return true;
@@ -222,6 +223,11 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 		int i = 0;
 		std::stringstream ss;
 		
+		float heightSize = 1.0f;
+		if (responses.size() > 0) {
+			heightSize = 1.0f / responses.size();
+		}
+		
 		for (;I != I_end; ++I)
 		{
 			std::stringstream ss_;
@@ -232,8 +238,8 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 			
 			BIND_CEGUI_EVENT(responseText, CEGUI::ButtonBase::EventMouseButtonUp,IngameChatWidget::ActiveChatWindow::buttonResponse_Click );
 			responseText->setText(*I);
-			responseText->setSize(CEGUI::Size(1.0f, 0.3f));
-			responseText->setPosition(CEGUI::Point(0.0f, i * 0.3f));
+			responseText->setSize(CEGUI::Size(1.0f, heightSize));
+			responseText->setPosition(CEGUI::Point(0.0f, i * heightSize));
 			responseText->setInheritsAlpha(true);	
 			responseText->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
 			responseText->setFrameEnabled(false);
@@ -250,9 +256,17 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 
 }
 
-EmberOgre::IngameChatWidget::ActiveChatWindow::ActiveChatWindow( CEGUI::Window * window, EmberPhysicalEntity * entity, CEGUI::WindowManager * windowManager )
+EmberOgre::IngameChatWidget::ActiveChatWindow::ActiveChatWindow( CEGUI::Window * window, EmberEntity * entity, CEGUI::WindowManager * windowManager )
  : mWindow(window), mEntity(entity), mWindowManager(windowManager), mElapsedTimeSinceLastUpdate(0.0f)
 {
+	try {
+		CEGUI::Window* nameWidget = static_cast<CEGUI::Window*>(mWindow->getChild(std::string("IngameChatWidget/") + mEntity->getId() + "/" + "EntityName"));
+		nameWidget->setText(entity->getName());
+	} catch (CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Could not get widget EntityName. Exception: " << ex.getMessage().c_str());
+	}
+	
+	
 	placeWindowOnEntity();
 }
 
@@ -266,16 +280,16 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::placeWindowOnEntity()
 {
 	//make sure that the window stays on the entity
 	Ogre::Vector3 screenCoords;
-/*	Ogre::Vector3 entityWorldCoords = entity->getSceneNode()->_getWorldAABB().getCenter();
 	
-	Ogre::Vector3 entityWorldCoords = entity->getSceneNode()->getWorldPosition();*/
-//	entity->_update();
-	Ogre::Vector3 entityWorldCoords = mEntity->getModel()->getWorldBoundingBox(true).getCenter();
+	bool result = false;
+	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingBox(true).getCenter();
+	entityWorldCoords.y = getEntity()->getWorldBoundingBox(true).getMaximum().y;
 	//check what the new position is in screen coords
-	bool result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
+	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
+	
 	if (result) {
 		mWindow->setVisible(true);
-		mWindow->setPosition(CEGUI::Point(screenCoords.x - (mWindow->getWidth() * 0.5), screenCoords.y - (mWindow->getHeight() * 0.5)));
+		mWindow->setPosition(CEGUI::Point(screenCoords.x - (mWindow->getWidth() * 0.5), screenCoords.y  - (mWindow->getHeight() * 0.5)));
 	} else {
 		mWindow->setVisible(false);
 	}
@@ -289,7 +303,7 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::frameStarted( const Ogre::Fr
 
 }
 
-EmberOgre::EmberPhysicalEntity * EmberOgre::IngameChatWidget::ActiveChatWindow::getEntity( )
+EmberOgre::EmberEntity * EmberOgre::IngameChatWidget::ActiveChatWindow::getEntity( )
 {
 	return mEntity;
 }

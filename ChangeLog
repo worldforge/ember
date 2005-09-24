@@ -1,5 +1,40 @@
 2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/widget/JesusEdit.*: disable overlays for the preview viewpoint instead of using a RenderListener, which was a inefficient way
+	*  src/components/ogre/widget/IngameChatWidget.*: made some improvements to the widget, it now works with all kinds of entities, but won't show anything for the Avatar. Also made the graphical presentation a bit better.
+	* ember.png: added jayr's updated image
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/meshtree/Makefile.am: make sure config.h is included
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp: use the new methods in ConfigService for getting the shared config directory
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*:
+		* disable the debug sound from the merchant
+		* added a method for getting the Ogre Bounding box for the entity
+	* src/components/ogre/EmberPhysicalEntity.*:
+		* implement getWorldBoundingBox which returns the bounding box from the attached to the Model
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/float_cast.h: check for HAVE_MATH_H instead of HAVE_LRINT, since I couldn't get the latter to work (autoconf didn't want to define it). Don't know how portable this is though...
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: put the config.h file in the src dir
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/EmberServices.cpp: temporarily disable the sound service until we get it working as it should
+	* src/services/config/ConfigService.*: added method for getting the shared configuration directory
+
+2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/config/ConfigService.cpp: fixes for Apple and Win32
 	* src/components/ogre/TerrainShader.cpp: initialize the material to null, do'h
 	* src/components/ogre/EmberOgre.cpp:

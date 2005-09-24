@@ -50,7 +50,7 @@ class IngameChatWidget : public Widget {
 			/**
 			
 			*/
-			ActiveChatWindow(CEGUI::Window* window, EmberPhysicalEntity* entity, CEGUI::WindowManager* windowManager);
+			ActiveChatWindow(CEGUI::Window* window, EmberEntity* entity, CEGUI::WindowManager* windowManager);
 			
 			~ActiveChatWindow();
 
@@ -70,7 +70,7 @@ class IngameChatWidget : public Widget {
 			
 			gets the entity the window belongs to
 			*/
-			EmberPhysicalEntity* getEntity();
+			EmberEntity* getEntity();
 			
 			CEGUI::Window* getWindow();
 			
@@ -88,7 +88,7 @@ class IngameChatWidget : public Widget {
 			
 			CEGUI::Window* mWindow;
 			float mElapsedTimeSinceLastUpdate;
-			EmberPhysicalEntity* mEntity;
+			EmberEntity* mEntity;
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
 			

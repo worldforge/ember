@@ -68,21 +68,6 @@ class JesusEdit;
 @author Erik Hjortsberg
 */
 
-class JesusEditPreviewRenderListener : public Ogre::RenderTargetListener
-{
-protected:
-	GUIManager* mGuiManager;
-
-public:
-
-	JesusEditPreviewRenderListener(GUIManager* guiManager) : mGuiManager(guiManager) {}
-
-    void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
-
-    void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
-	
-
-};
 
 class JesusEditPreview
 {
@@ -124,7 +109,6 @@ protected:
 	Ogre::SceneNode* mEntityNode;
 	Ogre::Camera* mCamera;
 	//Model* mModel;
-	JesusEditPreviewRenderListener* mListener;
 	Carpenter::BluePrint* mBlueprint;
 	
 	Carpenter::BuildingBlock* mBlock;

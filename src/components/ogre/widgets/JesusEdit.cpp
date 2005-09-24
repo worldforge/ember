@@ -648,13 +648,10 @@ void JesusEditPreview::createPreviewTexture()
 	mRenderTexture->removeAllViewports();
 	mRenderTexture->setActive(false);
 	
-	//add a listener, because we want to hide some things when rendering this
-	//for instance, we don't want to render the CEGUI
-	mListener = new JesusEditPreviewRenderListener(mGuiManager);
-	mRenderTexture->addListener(mListener);
 	//make sure the camera renders into this new texture
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
-
+	//don't show the CEGUI
+	v->setOverlaysEnabled(false);
 	//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
 	
@@ -677,20 +674,6 @@ void JesusEditPreview::createPreviewTexture()
 
 }
 
-void JesusEditPreviewRenderListener::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
-{
-	//hide the gui and the cursor
-	mGuiManager->getMainSheet()->setVisible(false);
-	CEGUI::MouseCursor::getSingleton().hide();
-
-}
-void JesusEditPreviewRenderListener::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
-{
-	//show the gui and the cursor again
-	mGuiManager->getMainSheet()->setVisible(true);
-	CEGUI::MouseCursor::getSingleton().show();
-
-}
 
 JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus* jesus) : mJesusEdit(jesusEdit), mJesus(jesus)
 {
