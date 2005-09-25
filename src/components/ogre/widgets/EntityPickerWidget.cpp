@@ -144,6 +144,8 @@ void EntityPickerWidget::buildWidget()
 	mMenuWindow->addChildWindow(mUseButton);
 	mButtonSet.insert(mUseButton);	
 		
+		
+	GUIManager::getSingleton().getInput()->EventMouseButtonReleased.connect(SigC::slot(*this, &EntityPickerWidget::input_MouseButtonReleased));
 
 }
 
@@ -282,5 +284,15 @@ void EntityPickerWidget::removeMenu()
 	mMainWindow->setEnabled(false);
 	mMainWindow->setVisible(false);
 }
+
+void EntityPickerWidget::input_MouseButtonReleased(Input::MouseButton button, bool isInGuiMode)
+{
+	//only show the menu while the left mouse button is pressed
+	if (button == Input::MouseButtonLeft) {
+		removeMenu();
+	}
+}
+
+
 
 };

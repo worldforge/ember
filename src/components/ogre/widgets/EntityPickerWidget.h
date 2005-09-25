@@ -28,6 +28,9 @@
 #include <CEGUIEvent.h> 
 
 #include "../MousePicker.h"
+
+#include "../input/Input.h"
+
 namespace EmberOgre {
 
 class Widget;
@@ -39,7 +42,7 @@ struct EntityPickResult;
 /**
 @author Erik Hjortsberg
 
-This widget will pop up when a EmberEntity is picked
+This widget will pop up when a EmberEntity is picked. It will disappear when the left mouse button is released.
 */
 class EntityPickerWidget : public Widget {
 public:
@@ -79,6 +82,7 @@ protected:
 	void removeMenu();
 	void showMenu(CEGUI::Point position);
 
+	void input_MouseButtonReleased(Input::MouseButton button, bool isInGuiMode);
 };
 
 };

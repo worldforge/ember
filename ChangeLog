@@ -1,3 +1,40 @@
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widget/EntityPickerWidget.*: changed the behaviour of the menu after a suggestion from lakin. It now is only shown while the left mouse button is pressed. Much nicer!
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/buildingelements.modeldel.xml: added a definition for the block_house, although now both the block_house and the house are incorrect
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/model/Model.*: be sure to clean up particle systems upon deletion, else there will be some resource leaks
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/input/Input.*: 
+		* added events for mouse buttons pressed and released
+		* renamed all events to be prefixed by Event
+	* src/components/ogre/GUIManager:*:
+		* added a /screenshot console command
+		* use new event names in Input
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarCamera.cpp:
+		* use new event names in Input
+		
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/resources.cfg: get the modeldefinitions from the user instead of the shared data, so it can be updated through WFUT
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/float_cast.h: check for the config.h instead of checking for it's absence, doh!
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* autopackage/default.apspec.in: tweaked the autopackage by adding some dependencies. This should perhaps be better than statically linking them... We'll have to do some more tests though.
+	* ember: give the user some input before downloading the media
+
 2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember: updates to work around a bug with nvidia-tls and some other small fixes
