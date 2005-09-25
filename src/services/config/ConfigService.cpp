@@ -139,6 +139,7 @@ namespace Ember
 				Ember::ConsoleBackend::getMainConsole()->pushMessage("Usage: set_value <section> <key> <value>");
 			} else {
 				setValue(section, key, value);
+				Ember::ConsoleBackend::getMainConsole()->pushMessage("New value set, section: " +  section + " key: " + key + " value: " + value);
 			}
 		
 		}

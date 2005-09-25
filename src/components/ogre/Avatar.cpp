@@ -28,6 +28,7 @@
 #include "EmberOgrePrerequisites.h"
 
 #include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
 #include "services/EmberServices.h"
 
 
@@ -48,6 +49,7 @@
 
 #include "Avatar.h"
 
+
 namespace EmberOgre {
 
 
@@ -56,7 +58,7 @@ Avatar::Avatar()
 : mErisAvatarEntity(0)
 {
 	mTimeSinceLastServerMessage = 0;
-	mMinIntervalOfRotationChanges = 1; //seconds
+	setMinIntervalOfRotationChanges(1000); //milliseconds
 	mAccumulatedHorizontalRotation = 0;
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
@@ -71,11 +73,23 @@ Avatar::Avatar()
 	createAvatar();
 
 	Ogre::Root::getSingleton().addFrameListener(this);
+	
+	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &Avatar::ConfigService_EventChangedConfigItem));
+	
+	//update values from the config
+	updateFromConfig();
 
 }
 
 Avatar::~Avatar()
 {
+	ConfigService_EventChangedConfigItem_connection.disconnect();
+
+}
+
+void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds) 
+{
+	mMinIntervalOfRotationChanges = milliseconds;
 }
 
 void Avatar::createAvatar()
@@ -256,7 +270,7 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 //		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
 
 	} else {
-		mTimeSinceLastServerMessage += timeSlice;
+		mTimeSinceLastServerMessage += timeSlice * 1000;
 		//fprintf(stderr, "TRACE - DONT SEND MOVE OPS TO SERVER\n");
 	}
 
@@ -377,6 +391,25 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 
 }
+
+void Avatar::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+{
+	if (section == "general") {
+		if (key == "avatarrotationupdatefrequency" ) {
+			updateFromConfig();
+		}
+	}
+}
+
+void Avatar::updateFromConfig()
+{
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("general", "avatarrotationupdatefrequency")) {
+		double frequency = static_cast<double>(Ember::EmberServices::getInstance()->getConfigService()->getValue("general", "avatarrotationupdatefrequency"));
+		setMinIntervalOfRotationChanges(static_cast<Ogre::Real>(frequency));
+	}
+
+}
+
 
 // void Avatar::touch(EmberEntity* entity)
 // {

@@ -1,5 +1,10 @@
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.conf, src/components/ogre/Avatar.*: added config option for setting the interval between updates to the server. Need to do some tweaking to make sure the player movement is smooth enough while not swamping the server with update commands.
+	* src/services/config/ConfigService.cpp: write info to the console when changing config values
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widget/EntityPickerWidget.*: changed the behaviour of the menu after a suggestion from lakin. It now is only shown while the left mouse button is pressed. Much nicer!
 
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>

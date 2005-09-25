@@ -108,6 +108,15 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 	void setAvatarController(AvatarController* avatarController);
 	
 	AvatarEmberEntity* getAvatarEmberEntity();
+	
+	
+	/**
+	 *    sets the minimum interval to wait before sending new rotation changes to the server
+	 *    this is not done instantly to prevent swamping of data to the server
+	 *    set this lower if you experience too jerky game play
+	 * @param milliseconds 
+	 */
+	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
 	SigC::Signal1<void, EmberEntity* > EventAddedEntityToInventory;
 	SigC::Signal1<void, EmberEntity* > EventRemovedEntityFromInventory;
@@ -229,6 +238,20 @@ protected:
 
 	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
 	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
+	
+	
+	/**
+	 *    catch changes to the configuration
+	 * @param section 
+	 * @param key 
+	 */
+	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	sigc::connection ConfigService_EventChangedConfigItem_connection;
+
+	/**
+	*	updates values from the configuration
+	*/
+	void Avatar::updateFromConfig();
 
 	
 }; //End of class declaration
