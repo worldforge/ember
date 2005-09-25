@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.106  2005-09-24 16:33:27  erik
+ *      Revision 1.107  2005-09-25 16:24:39  erik
+ *      2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/environment/FoliageArea.*,: don't return bool on frame update
+ *      	* src/components/ogre/EmberOgre.cpp: don't delete ModelDefinitionManager. hopefully this will lead to no segfaults at application exit, but it's a mess
+ *
+ *      Revision 1.106  2005/09/24 16:33:27  erik
  *      2005-09-24  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp: use the new methods in ConfigService for getting the shared config directory
@@ -1067,7 +1073,7 @@ EmberOgre::~EmberOgre()
 /*	if (mAvatar)
 		delete mAvatar;*/
 		delete mAvatarController;
-		delete mModelDefinitionManager;
+//		delete mModelDefinitionManager;
 /*	if (mEmberEntityFactory)
 		delete mEmberEntityFactory;*/
 //		delete mRoot;

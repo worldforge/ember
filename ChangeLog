@@ -1,5 +1,10 @@
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/environment/FoliageArea.*,: don't return bool on frame update
+	* src/components/ogre/EmberOgre.cpp: don't delete ModelDefinitionManager. hopefully this will lead to no segfaults at application exit, but it's a mess
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.bat: removed citation marks
 	* src/components/ogre/widgets/EntityPickerWidget.*: fixed the signature for the event, something which strangely enough compiles and runs without problem (not even a warning) on gcc, but with MSVC compiles without warning but crashes at runtime, with a useless stack trace. Oh well.
 

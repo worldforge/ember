@@ -164,7 +164,7 @@ void FoliageArea::build()
 }
 
 
-bool FoliageArea::frameStarted(const Ogre::Real & timeElapsed)
+void FoliageArea::frameStarted(const Ogre::Real & timeElapsed)
 {	
 	//don't wave if we're not visible, not entirely sure that this won't look strange, I don't think so
 	if (mVisible) {

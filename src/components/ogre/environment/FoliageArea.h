@@ -50,7 +50,7 @@ public:
 	 */
 	void setVisible(bool visible);
 
-	bool frameStarted(const Ogre::Real & timeElapsed);
+	void frameStarted(const Ogre::Real & timeElapsed);
 	
 	void placeGrass(const std::string& type, const TerrainPosition& position);
 	void placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale);
