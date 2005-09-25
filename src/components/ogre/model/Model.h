@@ -100,6 +100,7 @@ class ParticleSystem
 {
 public:
 	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem);
+	ParticleSystem::~ParticleSystem();
 	Ogre::ParticleSystem* getOgreParticleSystem();
 	
 	/**
@@ -272,6 +273,12 @@ protected:
 	 */
 	void Model::resetSubmodels();
 	
+	
+	
+	/**
+	 *    Clears all the particles
+	 */
+	void Model::resetParticles();
 	
 	/**
 	 *    Resets the whole model.

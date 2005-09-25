@@ -107,6 +107,7 @@ Model::Model(const std::string& name)
 }
 Model::~Model()
 {
+	reset();
 	mSubmodels.clear();
 }
 
@@ -114,6 +115,7 @@ void Model::reset()
 {
 //	resetAnimations();
 	resetSubmodels();
+	resetParticles();	
 
 }
 
@@ -434,6 +436,17 @@ void Model::resetSubmodels()
 	mSubmodels.clear();
 }
 
+void Model::resetParticles()
+{
+	ParticleSystemSet::const_iterator I = mParticleSystems.begin();
+	ParticleSystemSet::const_iterator I_end = mParticleSystems.end();
+	for (; I != I_end; ++I) {
+ 		ParticleSystem* system = *I;
+ 		delete system;
+	}
+	mParticleSystems.clear();
+	mAllParticleSystemBindings.clear();
+}
 
 void Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
@@ -836,6 +849,23 @@ ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem) :
 {
 	assert(ogreParticleSystem);
 }
+
+ParticleSystem::~ParticleSystem()
+{
+	//make sure all bindings are removed
+	ParticleSystemBindingsPtrSet::const_iterator I = mBindings.begin();
+	ParticleSystemBindingsPtrSet::const_iterator I_end = mBindings.end();
+	for (; I != I_end; ++I) {
+		ParticleSystemBinding* binding = *I;
+		delete binding;
+	}
+	mBindings.clear();
+	
+	//and then destroy the system to save resources
+	Ogre::ParticleSystemManager::getSingleton().destroySystem(mOgreParticleSystem);
+	
+}
+
 
 ParticleSystemBindingsPtrSet& ParticleSystem::getBindings( )
 {
