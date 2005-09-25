@@ -1,5 +1,15 @@
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/envronment/FoliageArea.*, src/components/ogre/envronment/Foliage.cpp: 
+		* added the Ogre::Framelistener to the Foliage class, since you basically can't detach a frame listerner while inside a frameStarted event
+		* added methods for destroying FoliageAreas to the Foliage class
+		* cleaned up the creation and handling of FoliageAreas a bit
+	* src/components/ogre/TerrainGenerator.*:  watch for changes to the config file, more specifically graphics:foliage, and create or remove foliage from the TerrainPages accordingly
+	* src/components/ogre/TerrainPage.*: added methods for preparing, showing, hiding and destroying foliage areas
+	* src/components/ogre/Avatar.h: remove the class name in the specification
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* autopackage/default.apspec.in: the require keyword requires an interface version, even if it's ignored
 
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>

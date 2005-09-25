@@ -29,8 +29,13 @@ namespace EmberOgre {
 class Foliage;
 /**
 @author Erik Hjortsberg
+Represents an area of foliage, normally mapped to one TerrainPage.
+Don't create this class directly, instead use the Foliage class.
+
+Start by placing the foliage through the placeGrass methods.
+Once that's done, call the build method, which will create the static geometry. Once build has been called, calls to placeGrass won't do anything unless build is called again.
 */
-class FoliageArea : public Ogre::FrameListener {
+class FoliageArea  {
 public:
     FoliageArea();
 
@@ -38,16 +43,23 @@ public:
 
 	void init(Foliage* foliage, Ogre::SceneManager* sceneManager, const std::string& name);
 
-	bool frameStarted(const Ogre::FrameEvent & evt);
 	
-	//generates and compiles the undervegetation
-	//this might take a while
-	void generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent);
+	/**
+	 *    sets the visibility of the area
+	 * @param visible 
+	 */
 	void setVisible(bool visible);
 
+	bool frameStarted(const Ogre::Real & timeElapsed);
 	
 	void placeGrass(const std::string& type, const TerrainPosition& position);
 	void placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale);
+	
+	
+	/**
+	 * generates and compiles the undervegetation 
+	 * this might take a while
+	 */
 	void build();
 	
 	
@@ -60,11 +72,11 @@ protected:
 	
 	Ogre::SceneManager* mSceneMgr;
 
-	void waveGrass(Ogre::Real timeElapsed);
 	Foliage* mFoliage;
 
 	bool mVisible;
 
+	void waveGrass(Ogre::Real timeElapsed);
 
 	TerrainPosition mExtentMin, mExtentMax;
 

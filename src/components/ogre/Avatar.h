@@ -251,7 +251,7 @@ protected:
 	/**
 	*	updates values from the configuration
 	*/
-	void Avatar::updateFromConfig();
+	void updateFromConfig();
 
 	
 }; //End of class declaration

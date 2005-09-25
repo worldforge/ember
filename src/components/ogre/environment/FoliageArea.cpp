@@ -36,7 +36,11 @@ namespace EmberOgre {
 	Ogre::Real FoliageArea::mXinc = Ogre::Math::PI * 0.004;
 	Ogre::Real FoliageArea::mZinc = Ogre::Math::PI * 0.0055;
 
-FoliageArea::FoliageArea()
+FoliageArea::FoliageArea() :
+mFoliage(0),
+mSceneMgr(0), 
+mStaticGeom(0), 
+mVisible(false)
 {
 	Ogre::Real mXpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
 	Ogre::Real mZpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
@@ -45,56 +49,62 @@ FoliageArea::FoliageArea()
 
 FoliageArea::~FoliageArea()
 {
+	if (mStaticGeom) {
+		mSceneMgr->removeStaticGeometry(mStaticGeom);
+	}
 }
 
 void FoliageArea::setVisible(bool visible)
 {
 	mVisible = visible;
+	if (mStaticGeom) {
+		mStaticGeom->setVisible(visible);
+	}
 	//mGround->getSceneNode()->setVisible(mVisible);
 }
 
-	void FoliageArea::waveGrass(Ogre::Real timeElapsed)
+void FoliageArea::waveGrass(Ogre::Real timeElapsed)
+{
+
+	mXpos += mXinc * timeElapsed;
+	mZpos += mZinc * timeElapsed;
+
+	// Update vertex program parameters by binding a value to each renderable
+	static Ogre::Vector4 offset(0,0,0,0);
+
+	Ogre::StaticGeometry::RegionIterator rit =  mStaticGeom->getRegionIterator();
+	while (rit.hasMoreElements())
 	{
+		Ogre::StaticGeometry::Region* reg = rit.getNext();
 
-		mXpos += mXinc * timeElapsed;
-		mZpos += mZinc * timeElapsed;
+		// a little randomness
+		mXpos += reg->getCentre().x * 0.000001;
+		mZpos += reg->getCentre().z * 0.000001;
+		offset.x = Ogre::Math::Sin(mXpos);
+		offset.z = Ogre::Math::Sin(mZpos);
 
-		// Update vertex program parameters by binding a value to each renderable
-		static Ogre::Vector4 offset(0,0,0,0);
-
-		Ogre::StaticGeometry::RegionIterator rit =  mStaticGeom->getRegionIterator();
-		while (rit.hasMoreElements())
+		Ogre::StaticGeometry::Region::LODIterator lodit = reg->getLODIterator();
+		while (lodit.hasMoreElements())
 		{
-			Ogre::StaticGeometry::Region* reg = rit.getNext();
-
-			// a little randomness
-			mXpos += reg->getCentre().x * 0.000001;
-			mZpos += reg->getCentre().z * 0.000001;
-			offset.x = Ogre::Math::Sin(mXpos);
-			offset.z = Ogre::Math::Sin(mZpos);
-
-			Ogre::StaticGeometry::Region::LODIterator lodit = reg->getLODIterator();
-			while (lodit.hasMoreElements())
+			Ogre::StaticGeometry::LODBucket* lod = lodit.getNext();
+			Ogre::StaticGeometry::LODBucket::MaterialIterator matit = 
+				lod->getMaterialIterator();
+			while (matit.hasMoreElements())
 			{
-				Ogre::StaticGeometry::LODBucket* lod = lodit.getNext();
-				Ogre::StaticGeometry::LODBucket::MaterialIterator matit = 
-					lod->getMaterialIterator();
-				while (matit.hasMoreElements())
+				Ogre::StaticGeometry::MaterialBucket* mat = matit.getNext();
+				Ogre::StaticGeometry::MaterialBucket::GeometryIterator geomit = 
+					mat->getGeometryIterator();
+				while (geomit.hasMoreElements())
 				{
-					Ogre::StaticGeometry::MaterialBucket* mat = matit.getNext();
-					Ogre::StaticGeometry::MaterialBucket::GeometryIterator geomit = 
-						mat->getGeometryIterator();
-					while (geomit.hasMoreElements())
-					{
-						Ogre::StaticGeometry::GeometryBucket* geom = geomit.getNext();
-						geom->setCustomParameter(OFFSET_PARAM, offset);
+					Ogre::StaticGeometry::GeometryBucket* geom = geomit.getNext();
+					geom->setCustomParameter(OFFSET_PARAM, offset);
 
-					}
 				}
 			}
 		}
-
 	}
+
+}
 
 	
 	
@@ -111,8 +121,6 @@ void FoliageArea::init(Foliage* foliage, Ogre::SceneManager* sceneManager, const
 	mStaticGeom->setRenderingDistance(34);
 
 	mStaticGeom->setRenderQueueGroup(Ogre::RENDER_QUEUE_7);
-
-	
 }
 
 
@@ -148,128 +156,20 @@ void FoliageArea::build()
 	assert(mStaticGeom);
 	try {
 		mStaticGeom->build();
+		setVisible(true);
+		
 	} catch (Ogre::Exception& e) {
 		S_LOG_FAILURE("Got error when building static geometry for foliage. Expection: " << e.getFullDescription());
 	}
-	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-//This is all very quick and messy, to be replaced by something better in the future
-void FoliageArea::generateUnderVegetation(TerrainPosition minExtent, TerrainPosition maxExtent)
-{
-/*	mExtentMin = minExtent;
-	mExtentMax = maxExtent;
 
-	Ogre::Vector3 startPosition = Atlas2Ogre(minExtent);
-	Ogre::Vector3 endPosition = Atlas2Ogre(maxExtent);
-
-
-
-
-
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
-	int submeshSize = (int)configSrv->getValue("foliage", "submeshsize");
-	double grassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
-	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
-	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
-	
-	
-
-	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
-
-	//we need to calculate the center of the foliage patch
-	//Ogre::Vector3 center((endPosition.x + startPosition.x) * 0.5,0,(startPosition.z + endPosition.z) * 0.5);
-	
-	double spaceBetween = grassSpacing;
-	
-	for (double i = startPosition.x; i < endPosition.x; i = i + spaceBetween) {
-		for (double j = endPosition.z; j < startPosition.z; j = j + spaceBetween) {
-			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-			Ogre::Real random = Ogre::Math::UnitRandom();
-			Ogre::String typeOfGrass;
-			Ogre::Entity* currentEnt;
-			if (random > 0.95) {
-				currentEnt = mFoliage->getEntity(1);
-			} else if (random > 0.9) {
-				currentEnt = mFoliage->getEntity(2);
-			} else if (random > 0.85) {
-				currentEnt = mFoliage->getEntity(3);
-			} else {
-				currentEnt = mFoliage->getEntity(4);
-			}
-			currentEnt = mFoliage->getEntity(0);
-			
-			//currentEnt = e;
-
-			TerrainPosition atlas_pos = Ogre2Atlas_TerrainPosition(Ogre::Vector3(xPos,0, zPos));
-			Ogre::Vector3 pos(xPos, terrain->getHeight(atlas_pos), zPos);
-
-			Ogre::Quaternion orientation;
-			orientation.FromAngleAxis(
-				Ogre::Degree(Ogre::Math::RangeRandom(0, 359)),
-				Ogre::Vector3::UNIT_Y);
-			Ogre::Vector3 scale(
-				1, Ogre::Math::RangeRandom(0.85, 1.15), 1);
-			mStaticGeom->addEntity(currentEnt, pos, orientation, scale);
-			//std::cout << "Added entity at: " << pos;
-			
-		}
-	}*/
-	
-// 	spaceBetween = bushSpacing;
-// 	for (double i = startPosition.x; i < endPosition.x; i = i + spaceBetween) {
-// 		for (double j = endPosition.z; j < startPosition.z; j = j + spaceBetween) {
-// 			Ogre::Real xPos = i + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-// 			Ogre::Real zPos = j + Ogre::Math::RangeRandom(-spaceBetween, spaceBetween);
-// 			Ogre::Real random = Ogre::Math::UnitRandom();
-// 			Ogre::String typeOfGrass;
-// 			if (random > 0.9) {
-// 				typeOfGrass = "heartblood";
-// 			} else if (random > 0.8) {
-// 				typeOfGrass = "teardrops";
-// 			} else if (random > 0.5) {
-// 				typeOfGrass = "thingrass";
-// 			} else {
-// 				typeOfGrass = "bittergrass";
-// 			}
-// 			GroundCover::InstanceData* instance = mGround->add(std::string("environment/field/patch_01/") + typeOfGrass + "/normal.mesh" , std::string("environment/field/patch_01/") + typeOfGrass + "/low.mesh");
-// 			TerrainPosition pos = Ogre2Atlas_TerrainPosition(Ogre::Vector3(xPos,0, zPos));
-// 			instance->vPos = Ogre::Vector3(xPos, terrain->getHeight(pos), zPos);
-// 			Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE * Ogre::Math::RangeRandom(0.8f, 1.0f);
-// 			//make the patches a bit smaller
-// 			instance->vScale = scale * 0.5;
-// 			Ogre::Quaternion rotation;
-// 			rotation.FromAngleAxis((Ogre::Degree)Ogre::Math::RangeRandom(0.0f, 360.0f), Ogre::Vector3::UNIT_Y);
-// 			instance->qOrient = rotation;
-// 		}
-// 	}
-
-	mStaticGeom->build();
-/*	mGround->setCullParameters(cullDistance, cullDistance, 120);
-	mGround->compile();
-	mGround->update(mCamera);*/
-	
-	
-/*	Ogre::SceneNode* groundNode = mGround->getSceneNode();
-	
-	EmberOgre::getSingleton().getWorldSceneNode()->addChild(groundNode);
-	
-	
-*/
-	Ogre::Root::getSingleton().addFrameListener(this);
-		
-}
-
-bool FoliageArea::frameStarted(const Ogre::FrameEvent & evt)
+bool FoliageArea::frameStarted(const Ogre::Real & timeElapsed)
 {	
-	waveGrass(evt.timeSinceLastFrame);
-
-	return true;
-/*	if (mVisible) {
-	}*/
-	return true;
-
+	//don't wave if we're not visible, not entirely sure that this won't look strange, I don't think so
+	if (mVisible) {
+		waveGrass(timeElapsed);
+	}
 
 }
 

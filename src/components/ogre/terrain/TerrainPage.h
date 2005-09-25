@@ -120,9 +120,26 @@ public:
 	Ogre::MaterialPtr getMaterial() const;
 	
 	/**
-	 *    creates the foliage for this page
+	 *    creates a new foliage for this page, but does not show it yet
 	 */
-	void createFoliage(TerrainShader* grassShader);
+	void prepareFoliage();
+	
+	/**
+	 *    shows the foliage for this page, if no foliage exists it's created
+	 */
+	void showFoliage();
+	
+	
+	/**
+	 *    hides the foliage for this page, but does not destroy it
+	 */
+	void hideFoliage();
+	
+	
+	/**
+	 *    destroys the foliage for this page
+	 */
+	void destroyFoliage();
 	
 	/**
 	 *    this adds a shader to the page, meaning that it will be used in rendering 
@@ -135,6 +152,7 @@ public:
 	void populateSurfaces();
 	
 	int getPageSize() const ;
+	
 	
 	
 private:

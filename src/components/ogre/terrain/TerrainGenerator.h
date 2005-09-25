@@ -40,6 +40,8 @@
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 
+#include <sigc++/object.h>
+#include <sigc++/connection.h>
 
 
 namespace Ogre
@@ -70,7 +72,7 @@ struct TerrainDefPoint
  * It works closely with EmberTerrainPageSource.
  * 
  */
-class TerrainGenerator :  public Ogre::FrameListener
+class TerrainGenerator :  public Ogre::FrameListener, virtual public SigC::Object
 {
 public:
 
@@ -153,6 +155,12 @@ public:
 // 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
 	
 	int getPageSize() const;
+	
+	/**
+	 *    gets the shader used for determining where to place foliage
+	 * @return 
+	 */
+	TerrainShader* getFoliageShader() const;
 
 
 protected:
@@ -221,7 +229,25 @@ protected:
 	
 	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
-	//EmberTerrainPageSource* mTerrainPageSource;
+	/**
+	 *    returns whether the foliage should be shown or not
+	 *    note that if the GPU doesn't support the required shaders, this will return false even though it's set in the config
+	 * @return 
+	 */
+	bool isFoliageShown() const;
+	
+	/**
+	 *    Iterates through all TerrainPages and shows or hides the foliage.
+	 */
+	void updateFoliageVisibilty();
+
+	/**
+	 *    catch changes to the configuration
+	 * @param section 
+	 * @param key 
+	 */
+	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	sigc::connection ConfigService_EventChangedConfigItem_connection;
 };
 }
 

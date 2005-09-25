@@ -58,6 +58,8 @@
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 
+//#include "framework/Exception.h"
+
 //#include <fenv.h>
 
 namespace EmberOgre {
@@ -433,11 +435,42 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 
 }
 
-
-void EmberOgre::TerrainPage::createFoliage(TerrainShader* grassShader)
+void EmberOgre::TerrainPage::showFoliage()
 {
 	if (!mFoliageArea) {
+		prepareFoliage();
+	}
+	mFoliageArea->setVisible(true);
+	
+}
+
+void EmberOgre::TerrainPage::hideFoliage()
+{
+	if (!mFoliageArea) {
+		return;
+	}
+	mFoliageArea->setVisible(false);
+}
+
+void EmberOgre::TerrainPage::destroyFoliage()
+{
+	if (!mFoliageArea) {
+		return;
+	}
+	Foliage::getSingleton().destroyArea(mFoliageArea);
+	mFoliageArea = 0;
+}
+
+
+
+void EmberOgre::TerrainPage::prepareFoliage()
+{
+	TerrainShader* grassShader = mGenerator->getFoliageShader();
+	
+	if (!mFoliageArea) {
 		mFoliageArea = Foliage::getSingleton().createArea();
+	} else {
+		return;
 	}
 	double grassSpacing = Foliage::getSingleton().getGrassSpacing();
 	
@@ -489,7 +522,8 @@ void EmberOgre::TerrainPage::createFoliage(TerrainShader* grassShader)
 		}
 	}
 	mFoliageArea->build();
-	
+	mFoliageArea->setVisible(false);
+
 	
 }
 

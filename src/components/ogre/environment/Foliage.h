@@ -34,15 +34,30 @@ class FoliageArea;
 /**
 @author Erik Hjortsberg
 */
-class Foliage : public Ember::Singleton<Foliage>
+class Foliage : public Ember::Singleton<Foliage>, public Ogre::FrameListener
 {
 
 public:
+
+	typedef std::list<FoliageArea*> FoliageAreaStore;
     Foliage( Ogre::SceneManager* mSceneMgr);
 
     ~Foliage();
 	
+	/**
+	 *    Creates a new Foliage area, ready to be populated
+	 * @return 
+	 */
 	FoliageArea* createArea();	
+	
+	
+	/**
+	 *    destroys a foliage area
+	 * @param area 
+	 */
+	void destroyArea(FoliageArea* area);
+
+	bool frameStarted(const Ogre::FrameEvent & evt);
 
 	Ogre::Entity* getEntity(const std::string& name);
 	
@@ -52,7 +67,7 @@ protected:
 	std::map<const std::string, Ogre::Entity* > mEntities;
 
 	//GroundCover* mGround;
-	std::list<FoliageArea*> mFoliageAreas;
+	FoliageAreaStore mFoliageAreas;
 
 	void createGrassMesh();
 	

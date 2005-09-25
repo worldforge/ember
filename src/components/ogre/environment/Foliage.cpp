@@ -81,6 +81,7 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 // 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
 // 	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
 
+	Ogre::Root::getSingleton().addFrameListener(this);
 
 }
 
@@ -109,6 +110,16 @@ FoliageArea* Foliage::createArea()
 	return area;
 }
 
+void Foliage::destroyArea(FoliageArea* area)
+{
+	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
+		if (*I == area) {
+			mFoliageAreas.erase(I);
+			break;
+		}
+	}
+ 	delete area;
+}
 
 void Foliage::createGrassMesh()
 {
@@ -219,8 +230,14 @@ void Foliage::createGrassMesh()
 }
 
 
+bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
+{	
+	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
+		(*I)->frameStarted(evt.timeSinceLastFrame);
+	}
+	return true;
 
-
+}
 
 
 

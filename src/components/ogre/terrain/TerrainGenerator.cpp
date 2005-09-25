@@ -95,12 +95,16 @@ TerrainGenerator::TerrainGenerator()
 
   //  EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
 	Ogre::Root::getSingleton().addFrameListener(this);
+	
+	ConfigService_EventChangedConfigItem_connection = configSrv->EventChangedConfigItem.connect(SigC::slot(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
+	
 
 }
 
 TerrainGenerator::~TerrainGenerator()
 {
 	delete mTerrain;
+	ConfigService_EventChangedConfigItem_connection.disconnect();
 	//delete mTerrainPageSource;
 	
 }
@@ -412,11 +416,7 @@ TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogrePosition)
 TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 {
 	
-	bool showFoliage = false;
-	
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
-		showFoliage = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage");
-	}	
+	bool showFoliage = isFoliageShown();
 	
 	
 	//since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
@@ -436,7 +436,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	
 	page->generateTerrainMaterials();
 	if (showFoliage && mGrassShader) {
-		page->createFoliage(mGrassShader);
+		page->showFoliage();
 	}
 
 		
@@ -445,7 +445,36 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	
 }
 
+void TerrainGenerator::updateFoliageVisibilty()
+{
+	bool showFoliage = isFoliageShown();
+	
+	PageStore::iterator I = mPages.begin();
+	for(;I != mPages.end(); ++I) {
+		if (showFoliage) {
+			I->second->showFoliage();
+		} else {
+			I->second->destroyFoliage();
+		}
+	}
+}
 
+void TerrainGenerator::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+{
+	if (section == "graphics") {
+		if (key == "foliage") {
+			updateFoliageVisibilty();
+		}
+	}
+}
+
+bool TerrainGenerator::isFoliageShown() const
+{
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
+		return static_cast<bool>(Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage"));
+	}	
+	return false;
+}
 
 
 
@@ -630,6 +659,11 @@ const TerrainPosition TerrainGenerator::getMax( ) const
 const TerrainPosition TerrainGenerator::getMin( ) const
 {
 	return TerrainPosition(mXmin * 64, mYmin * 64);
+}
+
+TerrainShader* TerrainGenerator::getFoliageShader() const
+{
+	return mGrassShader;
 }
 
 }
