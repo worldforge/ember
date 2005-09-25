@@ -1,5 +1,10 @@
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.bat: removed citation marks
+	* src/components/ogre/widgets/EntityPickerWidget.*: fixed the signature for the event, something which strangely enough compiles and runs without problem (not even a warning) on gcc, but with MSVC compiles without warning but crashes at runtime, with a useless stack trace. Oh well.
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/envronment/FoliageArea.*, src/components/ogre/envronment/Foliage.cpp: 
 		* added the Ogre::Framelistener to the Foliage class, since you basically can't detach a frame listerner while inside a frameStarted event
 		* added methods for destroying FoliageAreas to the Foliage class

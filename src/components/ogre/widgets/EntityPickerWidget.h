@@ -82,7 +82,7 @@ protected:
 	void removeMenu();
 	void showMenu(CEGUI::Point position);
 
-	void input_MouseButtonReleased(Input::MouseButton button, bool isInGuiMode);
+	void input_MouseButtonReleased(const Input::MouseButton& button, bool isInGuiMode);
 };
 
 };
