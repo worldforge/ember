@@ -1,5 +1,9 @@
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* autopackage/default.apspec.in: the require keyword requires an interface version, even if it's ignored
+
+2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf, src/components/ogre/Avatar.*: added config option for setting the interval between updates to the server. Need to do some tweaking to make sure the player movement is smooth enough while not swamping the server with update commands.
 	* src/services/config/ConfigService.cpp: write info to the console when changing config values
 
