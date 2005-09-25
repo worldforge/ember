@@ -131,6 +131,16 @@
 		</submodels>
 	</model>
 	
+	<model name="block_house"  usescaleof="depth">
+		<submodels>
+			<submodel mesh="junkyard/models/blockhouse/blockhouse.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
 	
 
 	<model name="roof">
