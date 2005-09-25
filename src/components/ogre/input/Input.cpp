@@ -201,6 +201,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 			
 			//SDL_WM_GrabInput(SDL_GRAB_ON);
 			mInGUIMode = false;
+			EventMouseButtonPressed.emit(MouseButtonRight, mInGUIMode);
 			
 		}
 	} else if (mMouseState & SDL_BUTTON_RMASK) {
@@ -217,6 +218,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		}
 		mTimeSinceLastRightMouseClick = 0;
 		mInGUIMode = true;
+		EventMouseButtonReleased.emit(MouseButtonRight, mInGUIMode);
 	} 
 	
 	//if in locked movement mode, override the mInGUIMode setting
@@ -230,10 +232,12 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		if (!(mMouseState & SDL_BUTTON_LMASK)) {
 			//left mouse button pressed
 			mGuiSystem->injectMouseButtonDown(CEGUI::LeftButton);
+			EventMouseButtonPressed.emit(MouseButtonLeft, mInGUIMode);
 		}
 	} else if (mMouseState & SDL_BUTTON_LMASK) {
 		//left mouse button released
 		mGuiSystem->injectMouseButtonUp(CEGUI::LeftButton);
+		EventMouseButtonReleased.emit(MouseButtonLeft, mInGUIMode);
 
 	}
 	
@@ -241,11 +245,12 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		if (!(mMouseState & SDL_BUTTON_MMASK)) {
 			//middle mouse button pressed
 			mGuiSystem->injectMouseButtonDown(CEGUI::MiddleButton);
-			
+			EventMouseButtonPressed.emit(MouseButtonMiddle, mInGUIMode);
 		}
 	} else if (mMouseState & SDL_BUTTON_MMASK) {
 		//middle mouse button released
 		mGuiSystem->injectMouseButtonUp(CEGUI::MiddleButton);
+		EventMouseButtonReleased.emit(MouseButtonMiddle, mInGUIMode);
 	}
 	
 	mMouseState = mouseState;
@@ -272,7 +277,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		motion.yRelativeMovementInPixels = mMouseY - mouseY;
 		motion.timeSinceLastMovement = evt.timeSinceLastFrame;
 		
-		MouseMoved.emit(motion, mInGUIMode);
+		EventMouseMoved.emit(motion, mInGUIMode);
 		
 		
 		//if we're in gui mode, we'll just send the mouse movement on to CEGUI
@@ -293,6 +298,8 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	mMouseY = mouseY;
 
 }
+
+
 
 void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 {
@@ -356,7 +363,7 @@ void Input::keyPressed (const SDL_KeyboardEvent &keyEvent)
 		}
 	
 	}
-	KeyPressed(keyEvent.keysym, mInGUIMode);
+	EventKeyPressed(keyEvent.keysym, mInGUIMode);
 	
 }
 
@@ -403,7 +410,7 @@ void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 		
 		mGuiSystem->injectKeyUp(mKeyMap[keyEvent.keysym.sym]);
 	} 
-	KeyReleased(keyEvent.keysym, mInGUIMode);
+	EventKeyReleased(keyEvent.keysym, mInGUIMode);
 
 
 }

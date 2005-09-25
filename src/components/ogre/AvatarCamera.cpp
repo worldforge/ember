@@ -69,7 +69,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	setAvatarNode(avatarNode);
 	
 	if (mGUIManager && mGUIManager->getInput()) {
-		mGUIManager->getInput()->MouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
+		mGUIManager->getInput()->EventMouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
 	}
 
 	

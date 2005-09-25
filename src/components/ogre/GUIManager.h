@@ -41,6 +41,8 @@
 #include <SDL.h>
 #include <stack>
 
+#include "framework/ConsoleObject.h"
+
 namespace EmberOgre {
 
 class EmberEntity;
@@ -60,7 +62,8 @@ class Input;
 class GUIManager : 
 public Ember::Singleton<GUIManager>, 
 Ogre::FrameListener,
-virtual public SigC::Object
+virtual public SigC::Object,
+public Ember::ConsoleObject
 {
 public:
 
@@ -73,6 +76,7 @@ public:
 		IM_GUI = 2
 	};
 
+	static const std::string SCREENSHOT;
 
 
 	GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr);
@@ -144,6 +148,14 @@ public:
 	MousePicker* popMousePicker();
 	
 	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
+
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
 protected:
 
 	CEGUI::Window* mSheet;
@@ -184,8 +196,12 @@ protected:
 	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 	
-	//takes a screen shot and writes it to disk
-	const std::string takeScreenshot();
+	
+	/**
+	 * takes a screen shot and writes it to disk 
+	 */
+	void takeScreenshot();
+	const std::string _takeScreenshot();
 
 	InputMode mPreviousInputMode;
 	

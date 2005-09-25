@@ -53,6 +53,8 @@ TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
 
 TYPEDEF_STL_SET(SDLKey, KeysSet);
 
+
+
 /**
 struct for a mouse movement
 */
@@ -92,7 +94,14 @@ class Input
 : virtual public SigC::Object
 {
 public:
-    Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer);
+	enum MouseButton
+	{
+		MouseButtonLeft,
+		MouseButtonRight,
+		MouseButtonMiddle
+	};
+	
+   Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer);
 
     ~Input();
 	
@@ -107,13 +116,13 @@ public:
 	@parameter the key event
 	@parameter true if ember is in gui mode
 	*/
- 	SigC::Signal2<void, const SDL_keysym&, bool> KeyPressed;
+ 	SigC::Signal2<void, const SDL_keysym&, bool> EventKeyPressed;
 	
 	/**emitted when a key has been released in movement mode
 	@parameter the key event
 	@parameter true if ember is in gui mode
 	*/
- 	SigC::Signal2<void, const SDL_keysym&, bool> KeyReleased;
+ 	SigC::Signal2<void, const SDL_keysym&, bool> EventKeyReleased;
 	
 	/**emitted when the mouse has moved
 	note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
@@ -121,7 +130,22 @@ public:
 	@parameter the mouse motion
 	@parameter true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseMotion&, bool> MouseMoved;
+	SigC::Signal2<void, const MouseMotion&, bool> EventMouseMoved;
+	
+	
+	/**
+		emitted when a mouse button is pressed
+		@parameter the mouse button
+		@parameter true if ember is in gui mode
+	*/
+	SigC::Signal2<void, const MouseButton&, bool> EventMouseButtonPressed;
+	
+	/**
+		emitted when a mouse button is released
+		@parameter the mouse button
+		@parameter true if ember is in gui mode
+	*/
+	SigC::Signal2<void, const MouseButton&, bool> EventMouseButtonReleased;
 	
 	/**
 	 * returns true if the supplied key is down 

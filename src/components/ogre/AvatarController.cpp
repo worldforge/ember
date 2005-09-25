@@ -126,7 +126,7 @@ void  AvatarController::input_KeyReleased(const SDL_keysym& keysym, bool inGuiMo
 void AvatarController::EmberOgre_GUIManagerInitialized(GUIManager& manager)
 {
 	//just bind the relevant input events
-	manager.getInput()->KeyReleased.connect(SigC::slot(*this, &AvatarController::input_KeyReleased));
+	manager.getInput()->EventKeyReleased.connect(SigC::slot(*this, &AvatarController::input_KeyReleased));
 }
 
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)

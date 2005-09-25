@@ -50,6 +50,7 @@ template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Si
 
 namespace EmberOgre {
 
+const std::string GUIManager::SCREENSHOT("screenshot");
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window), mInput(0)
@@ -113,7 +114,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		pushMousePicker(picker);
 		
 		mInput = new Input(mGuiSystem, mGuiRenderer);
-		mInput->KeyPressed.connect(SigC::slot(*this, &GUIManager::pressedKey));
+		mInput->EventKeyPressed.connect(SigC::slot(*this, &GUIManager::pressedKey));
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
 	
@@ -180,6 +181,8 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
 	}
 	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(SCREENSHOT,this);
+
 }
 
 Widget* GUIManager::createWidget(const std::string& name)
@@ -255,7 +258,7 @@ void GUIManager::addWidget(Widget* widget)
 }
 
 
-const std::string GUIManager::takeScreenshot() 
+const std::string GUIManager::_takeScreenshot() 
 {
 	// retrieve current time
 	time_t rawtime;
@@ -313,7 +316,7 @@ const std::string GUIManager::takeScreenshot()
 	
 	// take screenshot
 	mWindow->writeContentsToFile(dir + filename.str());
-	return filename.str();
+	return dir + filename.str();
 }
 
 
@@ -395,6 +398,15 @@ const bool GUIManager::isInGUIMode() const {
 	return mInput && mInput->isInGUIMode(); 
 }
 
+void GUIManager::takeScreenshot()
+{
+	std::string result = _takeScreenshot();
+	result = "Wrote image: " + result;
+	setDebugText(result);
+	S_LOG_INFO(result);
+	Ember::ConsoleBackend::getMainConsole()->pushMessage(result);
+}
+
 
 void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 {
@@ -409,7 +421,7 @@ void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 		//take screenshot		
 		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )
 		{
-			setDebugText("Wrote image: " +takeScreenshot());
+			takeScreenshot();
 		}
 		
 		//switch render mode
@@ -434,6 +446,13 @@ void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
 
 
 
+void GUIManager::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == SCREENSHOT) {
+		//just take a screen shot
+		takeScreenshot();
+	}
+}
 
 void GUIManager::pushMousePicker( MousePicker * mousePicker )
 {
