@@ -34,8 +34,16 @@ $source_dir/*
 EOF
 
 [Prepare]
-#require @libsdl.org/sdl 1.2
-#require @gnu.org/libstdc++ 3
+require @freetype.org/freetype 6
+require @gnu.org/libstdc++ 4
+require @libsdl.org/sdl 1.2
+require @libsdl.org/sdl_image 1.2
+#require @libsigc.sourceforge.net/libsigc
+require @opengl.org/opengl 1.4
+require @opengl.org/glu 1.3
+require @zlib.org/zlib
+require @libpng.org/libpng 3
+require @jig.org/libjpeg
 
 
 [Install]

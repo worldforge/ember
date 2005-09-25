@@ -106,6 +106,7 @@ if [ -x $JAVA ] ; then
     # We need to change here so updater knows where to find / store data
     cd $homedata
     # Update
+    echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
     $JAVA -jar $WFUT_JAR update ember-media
     # Restore dir
     cd $CUR_DIR
