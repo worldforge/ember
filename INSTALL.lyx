@@ -40,14 +40,14 @@ Ember currently depends on the following libraries:
 
 Ogre 3d library
 \newline 
-Version: 0.15.2
+Version: 1.0.4
 \newline 
 http://www.ogre3d.org
 \layout Itemize
 
 CEGUI gui system
 \newline 
-Version: 0.1.0
+Version: 0.4.0
 \newline 
 http://www.cegui.org.uk
 \layout Itemize
@@ -61,7 +61,7 @@ http://www.libsdl.org
 
 libsigc++ 
 \newline 
-Version: 2.0 or 1.2.0 
+Version: 2.0
 \newline 
 http://libsigc.sourceforge.net/
 \layout Itemize
@@ -78,13 +78,6 @@ Varconf config files handling
 Version: 0.6.2
 \newline 
 http://www.worldforge.org/dev/eng/libraries/varconf
-\layout Itemize
-
-Xerces-C++ xml handling library
-\newline 
-Version: 2.5.0
-\newline 
-http://xml.apache.org/xerces-c/
 \layout Itemize
 
 OpenAL sound library
@@ -120,14 +113,6 @@ make
 \layout Standard
 
 make install
-\layout Standard
-
-In order for Ember to run you also need media files.
- These can (as of now, 2005-01-22) be downloaded from http://purple.worldforge.org
-/~erik/ember/media/.
- Unpack the archive to $prefix/share/ember/data.
- In the future we plan to use WFUT for the Ember media, or perhaps a media
- server.
 \layout Section
 
 Troubleshooting

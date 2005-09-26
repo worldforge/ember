@@ -14,47 +14,28 @@ In the upper part of the window is the console. It has
 two modes, full or small. In small mode, which is the 
 default, only the input strip is shown. I full mode the 
 console occupies half of the screen. Use F12 to switch 
-console modes. Some commands which can be entered in 
-the console:
+console modes. The console is used for both talking in 
+the world and executing commands. If you've used IRC 
+before you'll find it quite similiar. All commands are 
+prefixed by "/". Use the command "/list_commands" to get a 
+list of all available commands. If you just enter text 
+normally in the console, your character will say what 
+you've entered in the world.
 
-* /connect <server>
-  Tries to connect to the server.
-
-* /login <name> <password>
-  Tries to log in with the name and password.
-
-* /create <name> <password>
-  Creates a new account on the server.
-
-* /add <name> <gender> <type> <description>
-  Adds a new Avatar to the server. As of now 
-  (2005-01-27) cyphesis doesn't support that many 
-  different types of Avatars, go with "settler".
-  Some examples:
-  /add Erik male settler Soon on top of the world.
-  /add Eeva female settler Likes swines.
-
-* /quit
-
-The first view you'll get is the server browser. Press 
-"refresh" to get it all the registered servers from the 
-meta server. Select a server and click on "connect" to 
-connect to it. You can also enter an address in the 
-text box if you don't find your server in the server list.
-
-Once connected you'll have to either log in using an 
-existing account or create a new. For now there's no 
-GUI for account creation, you'll have to use the console.
-
-After successful account creation or log in, you will 
-have to either choose an existing avatar or create a 
-new. As with the account creation you'll have to use 
-the console for avatar creation.
+Use the server browser to connect to a server. Once 
+connected, you'll have to create a new account. Enter 
+an account name and a password and press "create". After 
+you're logged in with an account, you'll have to create 
+an avatar in the world. An account can have many 
+avatars. Choose a name, a type, a sex and optionally a 
+description.
 
  Moving around in the world
 
 Once in the world you'll be presented to a third person 
-view of your avatar. The default mode is GUI mode. 
+view of your avatar. The default mode is GUI mode. In 
+GUI mode you can interact with the different GUI 
+widgets and moving your mouse will move the cursor. 
 Press the right mouse button to switch to movement 
 mode. When in movement mode, the mouse is used to pan 
 around the world. The avatar will change direction to 
@@ -63,30 +44,13 @@ the world. Pressing shift will make the avatar run.
 
 When in gui mode, the gui behaves pretty much like a 
 standard gui. Double click on window headers to make 
-them roll up and down. As of now (2005-01-22) there's 
-no mechanism to hide windows, though this will probably 
-make it into a future version.
+them roll up and down. 
 
 Click on an entity in the world (a tree, a NPC) to show 
 the mouse picker menu. Most options here are pretty 
-self explanatory. Some things needs to be said about "use"
- though.
-
- Wielding and using stuff
-
-The support for wielding and using stuff is supported 
-by cyphesis but is not finalized. Thus, this will 
-change in the future. However, this is how it works 
-right now. You can wield something which is your 
-inventory. This can be used on entities in the world by 
-clicking on them and choosing "use" from the menu.
-
-One thing that can be done is wielding an axe and use 
-it to chop down trees. There are not that many axes in 
-the world, but you can use the entity creator to create 
-some. 
-
-You can also use a cleaver to chop meat from pigs.
+self explanatory. If you have something wielded, like 
+an axe or a shovel, you also get an option to use the 
+wielded object with the picked entity.
 
  Talking to people
 
@@ -138,13 +102,6 @@ Other notable libraries used:
   but much like SDL OpenAL is geared towards providing 
   platform agnostic sound support. Then again, FMOD 
   might be interesting. 
-
-* XercesC (http://xml.apache.org/xerces-c/) is used for 
-  xml handling. This i a rather cumberstone library, 
-  but since CEGUI already uses it there's no problem 
-  including it. Should CEGUI move to another lib there 
-  should however be no big problems with moving to 
-  another lib. Requires some recoding though.
 
 See the doc directory and 
 http://www.worldforge.org/dev/eng/clients/ember/ for 

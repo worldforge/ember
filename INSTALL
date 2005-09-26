@@ -7,11 +7,11 @@ Ember Installation Instructions
 Ember currently depends on the following libraries:
 
 * Ogre 3d library
-  Version: 0.15.2
+  Version: 1.0.4
   http://www.ogre3d.org
 
 * CEGUI gui system
-  Version: 0.1.0
+  Version: 0.4.0
   http://www.cegui.org.uk
 
 * SDL Simple DirectMedia Layer 
@@ -19,7 +19,7 @@ Ember currently depends on the following libraries:
   http://www.libsdl.org
 
 * libsigc++ 
-  Version: 2.0 or 1.2.0 
+  Version: 2.0
   http://libsigc.sourceforge.net/
 
 * Eris client side session layer 
@@ -29,10 +29,6 @@ Ember currently depends on the following libraries:
 * Varconf config files handling 
   Version: 0.6.2
   http://www.worldforge.org/dev/eng/libraries/varconf
-
-* Xerces-C++ xml handling library
-  Version: 2.5.0
-  http://xml.apache.org/xerces-c/
 
 * OpenAL sound library
   Version: 0.0.7 (?)
@@ -55,13 +51,6 @@ execute the following (usual) commands:
 make
 
 make install
-
-In order for Ember to run you also need media files. 
-These can (as of now, 2005-01-22) be downloaded from 
-http://purple.worldforge.org/~erik/ember/media/. Unpack 
-the archive to $prefix/share/ember/data. In the future 
-we plan to use WFUT for the Ember media, or perhaps a 
-media server.
 
  Troubleshooting
 
