@@ -70,12 +70,13 @@ void ServerBrowserWidget::buildWidget()
 
 	mServerList = static_cast<CEGUI::MultiColumnList*>(getWindow("ServerList"));
 
-	mServerList->addColumn((CEGUI::utf8*)"Server Name", 0, 0.2f);
-	mServerList->addColumn((CEGUI::utf8*)"Address", 1, 0.2f);
-	mServerList->addColumn((CEGUI::utf8*)"Ping", 2, 0.1f);
-	mServerList->addColumn((CEGUI::utf8*)"Clients", 3, 0.1f);
-	mServerList->addColumn((CEGUI::utf8*)"Ruleset", 4, 0.2f);
-	mServerList->addColumn((CEGUI::utf8*)"Server type", 5, 0.2f);
+	mServerList->addColumn((CEGUI::utf8*)"Server Name", mServerList->getColumnCount(), 0.25f);
+	mServerList->addColumn((CEGUI::utf8*)"Ping", mServerList->getColumnCount(), 0.1f);
+	mServerList->addColumn((CEGUI::utf8*)"Clients", mServerList->getColumnCount(), 0.1f);
+	mServerList->addColumn((CEGUI::utf8*)"Ruleset", mServerList->getColumnCount(), 0.1f);
+	mServerList->addColumn((CEGUI::utf8*)"Server type", mServerList->getColumnCount(), 0.15f);
+	mServerList->addColumn((CEGUI::utf8*)"Version", mServerList->getColumnCount(), 0.1f);
+	mServerList->addColumn((CEGUI::utf8*)"Address", mServerList->getColumnCount(), 0.2f);
 	mServerList->setSelectionMode(CEGUI::MultiColumnList::RowSingle);
 	
 	BIND_CEGUI_EVENT(mServerList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerBrowserWidget::ServerList_DoubleClick);
@@ -213,15 +214,16 @@ void ServerBrowserWidget::receivedServerInfo(const Eris::ServerInfo& sInfo)
 	
 	
 	mServerList->setItem(item, 0, rowNumber);
-	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getHostname())), 1, rowNumber);
 	std::stringstream ss_ping;
 	ss_ping << sInfo.getPing();
-	mServerList->setItem(new ColoredListItem(CEGUI::String(ss_ping.str())), 2, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(ss_ping.str())), 1, rowNumber);
 	std::stringstream ss_clientNum;
 	ss_clientNum << sInfo.getNumClients();
-	mServerList->setItem(new ColoredListItem(CEGUI::String(ss_clientNum.str())), 3 ,rowNumber);
-	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getRuleset())), 4, rowNumber);
-	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getServer())), 5, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(ss_clientNum.str())), 2 ,rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getRuleset())), 3, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getServer())), 4, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getVersion())), 5, rowNumber);
+	mServerList->setItem(new ColoredListItem(CEGUI::String(sInfo.getHostname())), 6, rowNumber);
 	
 	
 	

@@ -1,5 +1,9 @@
 2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ServerBrowserWidget.*: show the version of server running
+
+2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* INSTALL, INSTALL.lyx, NEWS, README, README.lyx: updated documentation
 	* Makefile.am: install docs etc. in share/doc/ember-$VERSION
 
