@@ -1,5 +1,10 @@
 2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/ServerBrowserWidget.*: oops, bugfix from the previous commit
+	* src/components/ogre/modeldefinitions/buildingelements.modeldef.xml: new house made by ChienNoir and exported by Munin added
+
+2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/ServerBrowserWidget.*: show the version of server running
 
 2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>

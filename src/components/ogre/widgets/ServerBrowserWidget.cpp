@@ -163,7 +163,7 @@ void ServerBrowserWidget::connectWithColumnList()
 	
 	/*	uint selectedRowIndex = mServerList->getFirstSelectionRow();*/
 		if (selectedRowIndex != -1) {
-			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 1));
+			CEGUI::ListboxItem* selectedItem = mServerList->getItemAtGridReference(CEGUI::MCLGridRef(selectedRowIndex, 6));
 			if (selectedItem) {
 				serverName = std::string(selectedItem->getText().c_str());
 			}
