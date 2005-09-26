@@ -1,0 +1,56 @@
+// Basic hardware skinning using four indexed weights per vertex 
+ vertex_program HardwareSkinningFourWeightsFullHANIM cg 
+ { 
+    source Animation.cg 
+    entry_point hardwareSkinningFourWeightsFullHANIM_vp 
+    profiles vs_2_0 arbvp1 
+    includes_skeletal_animation true 
+ } 
+ 
+ 
+ vertex_program Field/GrassWaverVp cg
+{
+	source Grass.cg
+	entry_point grass_vp
+	profiles vs_1_1 arbvp1
+}
+
+vertex_program Field/GrassFaderVp cg
+{
+	source Grass.cg
+	entry_point grassfader_vp
+	profiles vs_1_1 arbvp1
+}
+
+// Bump map with Parallax offset vertex program, support for this is required 
+vertex_program Examples/OffsetMappingVP cg 
+{ 
+   source OffsetMapping.cg 
+   entry_point main_vp 
+   profiles vs_1_1 arbvp1 
+} 
+
+// Bump map with parallax fragment program 
+fragment_program Examples/OffsetMappingFP cg
+{ 
+   source OffsetMapping.cg
+   entry_point main_fp
+   profiles ps_2_0 arbfp1
+} 
+
+// Bump map with parallax fragment program and splatting
+//fragment_program Examples/OffsetMappingSplatFP cg
+//{ 
+//   source OffsetMapping.cg
+//   entry_point mainsplat_fp
+//   profiles ps_2_0 arbfp1
+//} 
+
+
+// Bump map with parallax fragment program 
+fragment_program Examples/OffsetMappingPS asm 
+{ 
+   source OffsetMapping_specular.asm 
+   // sorry, only for ps_1_4 and above:) 
+   syntax ps_1_4 
+} 

@@ -1,3 +1,9 @@
+2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/programs/Common.program: definition of the most commonly used shader programs
+	* media/materials/scripts/environment.material: removed program which wouldn't run on DX9 and caused crashes
+	* ember: open up a xterm window for WFUT so the user can see why nothing appears to be happening when running ember for the firs time
+
 2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/FoliageArea.*,: don't return bool on frame update

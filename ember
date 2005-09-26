@@ -107,7 +107,7 @@ if [ -x $JAVA ] ; then
     cd $homedata
     # Update
     echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
-    $JAVA -jar $WFUT_JAR update ember-media
+    xterm -T "Downloading media..." -e $JAVA -jar $WFUT_JAR update ember-media
     # Restore dir
     cd $CUR_DIR
 #  fi
