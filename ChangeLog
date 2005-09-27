@@ -1,3 +1,7 @@
+2005-09-27  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember: don't overwrite the existing LD_LIBRARY_PATH values since it's just plain stupid
+
 2005-09-26  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/ServerBrowserWidget.*: oops, bugfix from the previous commit

@@ -116,8 +116,8 @@ else
   exit
 fi
 
-LD_LIBRARY=$prefix/lib/ember
-LD_LIBRARY_PATH=$LD_LIBRARY
+LD_LIBRARY=$prefix/lib/ember:$LD_LIBRARY
+LD_LIBRARY_PATH=$prefix/lib/ember:$LD_LIBRARY_PATH
 export LD_LIBRARY
 export LD_LIBRARY_PATH
 
