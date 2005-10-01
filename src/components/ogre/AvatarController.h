@@ -98,9 +98,20 @@ public:
 	
 	AvatarCamera* getAvatarCamera() const;
 
+	/**
+	 *    Detaches the camera from the avatar and attaches it to the free flying node.
+	 */
 	void detachCamera();
+	
+	/**
+	 *    Attaches the camera to the avatar.
+	 */
 	void attachCamera();
 	
+	/**
+	 *    Gets the current movement for this frame.
+	 * @return 
+	 */
 	const AvatarControllerMovement& getCurrentMovement() const;
 
 

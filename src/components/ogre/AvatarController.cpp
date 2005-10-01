@@ -69,6 +69,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mKeyCodeForLeftMovement = SDLK_a;
 	mKeyCodeForRightMovement = SDLK_d;
 	mFreeFlyingCameraNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	mFreeFlyingCameraNode->setPosition(0,30,0);
 	detachCamera();
 	
 	EmberOgre::getSingleton().EventGUIManagerInitialized.connect(SigC::slot(*this, &AvatarController::EmberOgre_GUIManagerInitialized));

@@ -139,7 +139,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	}
 	std::stringstream ss;
 	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")";
-	S_LOG_INFO( ss.str());
+	S_LOG_VERBOSE( ss.str());
 	
 	if (hasAttr("area")) {
 		mTerrainArea.init();
@@ -155,7 +155,7 @@ void EmberEntity::createSceneNode()
 {
 	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container == 0) {
-		S_LOG_INFO( "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" )
+		S_LOG_VERBOSE( "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" )
 
 		//mSceneManager->createSceneNode(getId());
 		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode(getId()));
@@ -253,7 +253,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
-	S_LOG_INFO( "TRACE - ENTITY SAYS: [" << message << "]\n" )
+	S_LOG_VERBOSE( "TRACE - ENTITY SAYS: [" << message << "]\n" )
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 /*	// Make a sound if it's the merchant speaking
@@ -348,7 +348,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	if (getLocation() == oldLocation)
 	{
-		S_LOG_INFO( "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" );
+		S_LOG_WARNING( "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" );
 		return Eris::Entity::onLocationChanged(oldLocation);
 	
 	}
@@ -373,7 +373,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			
 				// add to the new entity
 				newLocationEntity->getSceneNode()->addChild(getSceneNode());
-				S_LOG_INFO( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
+				S_LOG_VERBOSE( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
 				if (getPosition().isValid()) {
 					getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
 					adjustHeightPosition();
@@ -384,14 +384,14 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 		} else {
 			//add to the world
-			S_LOG_INFO( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
+			S_LOG_VERBOSE( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
 	//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 		}		
 		
 		checkVisibility(isVisible());
 		std::stringstream ss;
 		ss << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " <<  getOrientation();                                                      
-		S_LOG_INFO( ss.str() )
+		S_LOG_VERBOSE( ss.str() )
 	
 		//we adjust the entity so it retains it's former position in the world
 		Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
@@ -418,7 +418,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)
 	std::string name = act->getName();
 	
 	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
-	S_LOG_INFO( std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
+	S_LOG_VERBOSE( std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
 }
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
