@@ -22,6 +22,16 @@
 namespace CEGUI
 {
 	class WindowManager;
+	class Listbox;
+	class ListboxItem;
+	class ListboxTextItem;
+	class Slider;
+	class Editbox;
+	class PushButton;
+	class MultiLineEditbox;
+	class Combobox;
+	class RadioButton;
+
 }
 
 namespace EmberOgre {
@@ -241,6 +251,7 @@ class ColoredListItem : public CEGUI::ListboxTextItem
 {
 public:
 	ColoredListItem(const CEGUI::String& text); 
+	ColoredListItem(const CEGUI::String& text, unsigned int item_id);
 	ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 };
 

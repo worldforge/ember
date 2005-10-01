@@ -1,3 +1,24 @@
+2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/JesusEdit.*, src/components/ogre/widgets/Widget.*: rearranged the inclusion of CEGUI headers a bit to make it cleaner
+	* src/components/ogre/widgets/MeshPreview.*: added ability to turn animations on and off
+
+2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmbeOgre.cpp,  src/components/ogre/model/XMLModelDefinitionSerializer.cpp: moved some INFO log calls to VERBOSE log calls instead
+	* src/components/ogre/input/Input.h: cleaned up SigC includes
+
+2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarController.cpp: start the camera 30 meters above the ground to avoid it being below ground. A better way would of course be to check the height of the terrain.
+	* src/components/ogre/AvatarController.h: added comments
+	* src/components/ogre/EmberEntity.cpp: moved some INFO log calls to VERBOSE log calls instead
+	
+
+2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* framework/Exception.h: make it actually compile
+
 2005-09-27  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember: don't overwrite the existing LD_LIBRARY_PATH values since it's just plain stupid

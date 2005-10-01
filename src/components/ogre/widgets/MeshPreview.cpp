@@ -35,13 +35,140 @@
 #include <elements/CEGUIPushButton.h> 
 #include <elements/CEGUISlider.h> 
 
+#include "framework/Exception.h"
+
 namespace EmberOgre {
+
+
+MeshPreviewHandler::MeshPreviewHandler() : mEntityCounter(0)
+{
+}
+
+size_t MeshPreviewHandler::createInstance(const std::string& meshName)
+{
+	Ogre::Entity* entity = 0;
+	try {
+		entity = EmberOgre::getSingleton().getSceneManager()->createEntity(std::string("meshPreview_" + mEntityCounter++ ), meshName);
+	} catch (const Ogre::Exception&) {
+		return 0;
+	}
+	if (!entity) {
+		return 0;
+	}
+	
+	
+	Ogre::SceneNode* node = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+	
+	//place it five meters in front of the camera
+	Ogre::Vector3 o_vector(0,0,-5);
+	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+	Ogre::Vector3 o_pos = camera->getWorldPosition() + (camera->getWorldOrientation() * o_vector);
+	node->setPosition(o_pos);
+	
+	node->attachObject(entity);
+	MeshPreviewMeshInstance instance(entity);
+	mInstances.push_back(instance);
+	//mEntities.push_back(entity);
+	//createdNewEntity(entity, node);
+	EventCreatedInstance.emit(mInstances.size() - 1);
+	return mInstances.size();
+	
+	
+	
+}
+
+void MeshPreviewHandler::removeInstance(size_t index)
+{
+	if (index > mInstances.size() - 1) {
+		return;
+	}
+	EventRemoveInstance.emit(index);
+	MeshPreviewMeshInstance instance = getInstance(index);
+	Ogre::Entity* entity = instance.getEntity();
+	Ogre::SceneNode* node = entity->getParentSceneNode();
+	node->detachObject(entity->getName());
+	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
+	EmberOgre::getSingleton().getSceneManager()->removeEntity(entity);
+	InstanceStore::iterator I = mInstances.begin();
+	for (size_t i = 0; i < index; ++i) {
+		++I;
+	}
+	mInstances.erase(I);
+	
+	
+}
+ 	
+void MeshPreviewHandler::updateAnimation(Ogre::Real elapsedTime)
+{
+	InstanceStore::iterator I = mInstances.begin();
+	for (;I != mInstances.end(); ++I) {
+		I->updateAnimation(elapsedTime);
+	}
+}
+
+
+MeshPreviewMeshInstance& MeshPreviewHandler::getInstance(size_t position) 
+{
+	if (mInstances.size() < position) {
+		throw Ember::Exception("Not that many instances in the store.");
+	}
+	return mInstances[position];
+}
+
+
+
+MeshPreviewMeshInstance::MeshPreviewMeshInstance(Ogre::Entity* entity): mEntity(entity)
+{
+}
+
+void MeshPreviewMeshInstance::startAnimation(std::string name)
+{
+	Ogre::AnimationState* state = mEntity->getAnimationState(name);
+	if (state == 0) { 
+		return;
+	}
+	state->setEnabled(true);
+	mActiveAnimations[name] = state;
+	
+}
+
+void MeshPreviewMeshInstance::stopAnimation(std::string name)
+{
+	AnimationStore::iterator I = mActiveAnimations.find(name);
+	if (I == mActiveAnimations.end()) {
+		return;
+	}
+	mActiveAnimations.erase(I);
+	
+}
+
+void MeshPreviewMeshInstance::updateAnimation(Ogre::Real elapsedTime)
+{
+	AnimationStore::iterator I = mActiveAnimations.begin();
+	for (;I != mActiveAnimations.end(); ++I) {
+		I->second->addTime(elapsedTime);
+	}
+}
+
+
+Ogre::Entity* MeshPreviewMeshInstance::getEntity() const
+{
+	return mEntity;
+}
+
+Ogre::SceneNode* MeshPreviewMeshInstance::getSceneNode() const
+{
+	return getEntity()->getParentSceneNode();
+}
+
 
 const std::string MeshPreview::CREATEMESH("createmesh");
 
-MeshPreview::MeshPreview() : mEntityCounter(0)
+MeshPreview::MeshPreview() 
 {
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEMESH,this);
+	mHandler.EventCreatedInstance.connect(SigC::slot(*this, &MeshPreview::createdNewEntity));
+	mHandler.EventRemoveInstance.connect(SigC::slot(*this, &MeshPreview::removedEntity));
 
 }
 
@@ -71,10 +198,13 @@ void MeshPreview::buildWidget()
 	mScaleSlider = static_cast<CEGUI::Slider*>(getWindow("Scale"));
 	BIND_CEGUI_EVENT(mScaleSlider, CEGUI::Slider::EventValueChanged, MeshPreview::Scale_ValueChanged);
 
-	
 
 	mNameOfMesh = static_cast<CEGUI::Editbox*>(getWindow("MeshName"));
 	mCreatedMeshes = static_cast<CEGUI::Listbox*>(getWindow("CreatedMeshes"));
+	BIND_CEGUI_EVENT(mCreatedMeshes, CEGUI::Listbox::EventSelectionChanged, MeshPreview::createdMeshes_EventSelectionChanged);
+	
+	mAnimations = static_cast<CEGUI::Listbox*>(getWindow("Animations"));
+	
 	hide();
 // 	loadAllAvailableMeshes();
 
@@ -82,10 +212,16 @@ void MeshPreview::buildWidget()
 
 }
 
+void MeshPreview::frameStarted(const Ogre::FrameEvent& evt)
+{
+	mHandler.updateAnimation(evt.timeSinceLastFrame);
+}
+
+
 bool MeshPreview::createButton_Click(const CEGUI::EventArgs& args)
 {
 	if (mNameOfMesh->getText() != "") {
-		createMesh(mNameOfMesh->getText().c_str());
+		mHandler.createInstance(mNameOfMesh->getText().c_str());
 	}
 	return true;
 }
@@ -95,91 +231,56 @@ bool MeshPreview::removeButton_Click(const CEGUI::EventArgs& args)
 	CEGUI::ListboxItem* item = mCreatedMeshes->getFirstSelectedItem();
 	if (item) {
 		size_t index = mCreatedMeshes->getItemIndex(item);
-		removeMesh(index);
+		mHandler.removeInstance(index);
 	}
 	return true;
 }
 
-void MeshPreview::removeMesh(size_t index)
-{
-	if (index > mEntities.size() - 1) {
-		return;
-	}
-	Ogre::Entity* entity = mEntities[index];
-	Ogre::SceneNode* node = entity->getParentSceneNode();
-	node->detachObject(entity->getName());
-	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
-	EmberOgre::getSingleton().getSceneManager()->removeEntity(entity);
-	EntityStore::iterator I = mEntities.begin();
-	for (size_t i = 0; i < index; ++i) {
-		++I;
-	}
-	mEntities.erase(I);
-	removedEntity(index);
-	
-	
-}
 
-void MeshPreview::createMesh(const std::string& meshName)
+
+
+
+
+
+void MeshPreview::createdNewEntity(size_t index)
 {
-	Ogre::Entity* entity = 0;
 	try {
-		entity = EmberOgre::getSingleton().getSceneManager()->createEntity(std::string("meshPreview_" + mEntityCounter++ ), meshName);
-	} catch (const Ogre::Exception&) {
+		MeshPreviewMeshInstance instance = mHandler.getInstance(index);
+		Ogre::Entity* entity = instance.getEntity();
+		CEGUI::String name(entity->getMesh()->getName());
+	//	CEGUI::ListboxItem* item = new ColoredListItem(name, 0, index);
+		CEGUI::ListboxItem* item = new ColoredListItem(name, index);
+		mCreatedMeshes->addItem(item);
+		
+		fillAnimationList(instance);
+	} catch (Ember::Exception&)
+	{
 		return;
 	}
-	if (!entity) {
-		return;
-	}
-	
-	
-	Ogre::SceneNode* node = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-	
-	//place it five meters in front of the camera
-	Ogre::Vector3 o_vector(0,0,-5);
-	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	Ogre::Vector3 o_pos = camera->getWorldPosition() + (camera->getWorldOrientation() * o_vector);
-	node->setPosition(o_pos);
-	
-	node->attachObject(entity);
-	mEntities.push_back(entity);
-	createdNewEntity(entity, node);
-	
-	
-	
-}
-
-// void MeshPreview::loadAllAvailableMeshes()
-// {
-// 	Ogre::StringVectorPtr names = Ogre::ResourceGroupManager::getSingleton().findResourceNames(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "*.mesh");
-// 	for (Ogre::StringVector::iterator I = names->begin(); I != names->end(); ++I) {
-// //		Ogre::String name = *I;
-// //		Ogre::StringUtil::trim(name, false);
-// //		if (Ogre::StringUtil::endsWith(name, ".mesh", true)) {
-// 			addMeshToAvailableMeshesList(*I);
-// //		}
-// 	}
-// 
-// }
-// 
-// void MeshPreview::addMeshToAvailableMeshesList(const std::string& name) {
-// 	CEGUI::ListboxItem* item = new ColoredListItem(name, 0, 0);
-// 	mAvailableMeshes->addItem(item);
-// }
-
-void MeshPreview::createdNewEntity(Ogre::Entity* entity, Ogre::SceneNode* sceneNode)
-{
-	CEGUI::String name(entity->getMesh()->getName());
-	CEGUI::ListboxItem* item = new ColoredListItem(name, 0, sceneNode);
-	mCreatedMeshes->addItem(item);
 
 }
 
 void MeshPreview::removedEntity(size_t index)
 {
+//	MeshPreviewMeshInstance instance = mHandler.getInstance(index);
 	CEGUI::ListboxItem* item = mCreatedMeshes->getListboxItemFromIndex(index);
-	mCreatedMeshes->removeItem(item);
+	if (item) {
+		mCreatedMeshes->removeItem(item);
+	}
 
+}
+		
+void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
+{
+	mAnimations->resetList();
+	Ogre::AnimationStateSet* states = instance.getEntity()->getAllAnimationStates();
+	if (states != 0) {
+		uint i = 0;
+		for (Ogre::AnimationStateSet::iterator I = states->begin(); I != states->end(); ++I) {
+			CEGUI::ListboxItem* item = new ColoredListItem(I->first, i++);
+			mAnimations->addItem(item);
+		}
+	}
 }
 
 void MeshPreview::runCommand(const std::string &command, const std::string &args)
@@ -189,7 +290,7 @@ void MeshPreview::runCommand(const std::string &command, const std::string &args
 		tokeniser.initTokens(args);
 		std::string meshName = tokeniser.nextToken();
 		if (meshName != "") {
-			createMesh(meshName);
+			mHandler.createInstance(meshName);
 		}
 	
 	} else {
@@ -211,9 +312,38 @@ Ogre::SceneNode* MeshPreview::getActiveSceneNode()
 {
 	CEGUI::ListboxItem* item = mCreatedMeshes->getFirstSelectedItem();
 	if (item) {
-		return static_cast<Ogre::SceneNode*>(item->getUserData());
+		size_t index = mCreatedMeshes->getItemIndex(item);
+/*		size_t index = item->getUserData(); */
+		try {
+			const MeshPreviewMeshInstance instance = mHandler.getInstance(index);
+			return instance.getSceneNode();
+		} catch (Ember::Exception&) {
+			return 0;
+		}
 	}
 	return 0;
+}
+
+MeshPreviewMeshInstance& MeshPreview::getActiveInstance()
+{
+	CEGUI::ListboxItem* item = mCreatedMeshes->getFirstSelectedItem();
+	if (item) {
+		size_t index = mCreatedMeshes->getItemIndex(item);
+/*		size_t index = item->getUserData(); */
+		return mHandler.getInstance(index);
+	} 
+	throw Ember::Exception("No selected item.");
+}
+
+bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& args)
+{
+	try {
+		MeshPreviewMeshInstance instance = getActiveInstance();
+		fillAnimationList(instance);
+	} catch (Ember::Exception&) {
+	}
+	return true;
+
 }
 
 

@@ -30,6 +30,11 @@ namespace EmberOgre
 		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	}
 	
+	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id) : ListboxTextItem(text, item_id)
+	{
+		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	}
+	
 	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
 	{
 		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");

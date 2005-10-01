@@ -33,6 +33,10 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUIImagesetManager.h> 
 #include <CEGUIImageset.h> 
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxItem.h> 
+#include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIEditbox.h>
 
 #include "../EmberOgre.h"
 #include "../AvatarCamera.h"
