@@ -43,7 +43,7 @@
 
 namespace Ember 
 {
-
+class Exception;
 /**
  *	The default way to throw exceptions is to use one of the following macros.
  */
