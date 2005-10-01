@@ -137,7 +137,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 
 void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mSubModelNode)
 {
-	S_LOG_INFO( "Read Submodels" );
+	S_LOG_VERBOSE( "Read Submodels" );
 	const char* tmp = 0;
 	Ember::TiXmlElement* elem;
 	bool notfound = true;
@@ -152,7 +152,7 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 		if (tmp)
 		{
 			subModelDef.Mesh = tmp;
-			S_LOG_INFO( " Add submodel  : "+ subModelDef.Mesh );
+			S_LOG_VERBOSE( " Add submodel  : "+ subModelDef.Mesh );
 			try 
 			{
 				//preload
@@ -198,7 +198,7 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode,Mode
 		tmp =  partElem->Attribute("name");
 		if (tmp)
 			partDef.Name = tmp;
-		S_LOG_INFO( "  Add part  : "+ partDef.Name );
+		S_LOG_VERBOSE( "  Add part  : "+ partDef.Name );
 
 		// show
 		tmp =  partElem->Attribute("show");
@@ -235,7 +235,7 @@ void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntN
 		tmp =  seElem->Attribute("name");
 		if (tmp)
 			subEntityDef.SubEntity = tmp;
-		S_LOG_INFO( "   Add sub entity  : "+ subEntityDef.SubEntity  );
+		S_LOG_VERBOSE( "   Add sub entity  : "+ subEntityDef.SubEntity  );
 
 		//material
 		tmp =  seElem->Attribute("material");
@@ -273,7 +273,7 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 		tmp =  animElem->Attribute("name");
 		if (tmp)
 			actionDef.Name = tmp;
-		S_LOG_INFO( " Add action  : "+ actionDef.Name  );
+		S_LOG_VERBOSE( " Add action  : "+ actionDef.Name  );
 
 		elem = animElem->FirstChildElement("animationparts");
 		if (elem)
@@ -319,7 +319,7 @@ void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnim
 		tmp =  apElem->Attribute("name");
 		if (tmp)
 			animDef.Name = tmp;
-		S_LOG_INFO( "  Add animation  : "+ animDef.Name );
+		S_LOG_VERBOSE( "  Add animation  : "+ animDef.Name );
 
 		// weight
 		tmp =  apElem->Attribute("weight");
@@ -354,7 +354,7 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 		tmp =  apElem->Attribute("name");
 		if (tmp)
 			attachPointDef.Name = tmp;
-		S_LOG_INFO( "  Add attachpoint  : "+ attachPointDef.Name );
+		S_LOG_VERBOSE( "  Add attachpoint  : "+ attachPointDef.Name );
 
 		// weight
 		tmp =  apElem->Attribute("bone");
@@ -385,7 +385,7 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 		tmp =  apElem->Attribute("script");
 		if (tmp)
 			def.Script = tmp;
-		S_LOG_INFO( "  Add particlescript  : "+ def.Script );
+		S_LOG_VERBOSE( "  Add particlescript  : "+ def.Script );
 
 		elem = apElem->FirstChildElement("Bindings");
 		if (elem)
@@ -420,7 +420,7 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 		else
 			continue;
 		
-		S_LOG_INFO( "  Add binding between "+ binding.EmitterVar + " and " + binding.AtlasAttribute + "." );
+		S_LOG_VERBOSE( "  Add binding between "+ binding.EmitterVar + " and " + binding.AtlasAttribute + "." );
 
 
 		def.Bindings.push_back(binding);

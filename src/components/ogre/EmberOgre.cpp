@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.107  2005-09-25 16:24:39  erik
+ *      Revision 1.108  2005-10-01 20:45:41  erik
+ *      2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmbeOgre.cpp,  src/components/ogre/model/XMLModelDefinitionSerializer.cpp: moved some INFO log calls to VERBOSE log calls instead
+ *      	* src/components/ogre/input/Input.h: cleaned up SigC includes
+ *
+ *      Revision 1.107  2005/09/25 16:24:39  erik
  *      2005-09-25  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/environment/FoliageArea.*,: don't return bool on frame update
@@ -1540,7 +1546,7 @@ void EmberOgre::setupJesus()
 		oslink::directory osdir(dir);
 		while (osdir) {
 			filename = osdir.next();
-			S_LOG_INFO( "TRACE - LOADING BLOCKSPEC: " << filename );
+			S_LOG_VERBOSE( "Loading blockspec: " << filename );
 			serializer.loadBlockSpec(dir + "/" + filename);
 		}
 	}
@@ -1550,7 +1556,7 @@ void EmberOgre::setupJesus()
 		oslink::directory osdir(dir);
 		while (osdir) {
 			filename = osdir.next();
-			S_LOG_INFO( "TRACE - LOADING BUILDINGBLOCKSPEC: " << filename);
+			S_LOG_VERBOSE( "Loading buildingblockspecC: " << filename);
 			serializer.loadBuildingBlockSpecDefinition(dir + "/" + filename);
 		}
 	}
@@ -1560,7 +1566,7 @@ void EmberOgre::setupJesus()
 		oslink::directory osdir(dir);
 		while (osdir) {
 			filename = osdir.next();
-			S_LOG_INFO( "TRACE - LOADING MODELMAPPING: " <<  filename );
+			S_LOG_VERBOSE( "Loading modelmapping: " <<  filename );
 			serializer.loadModelBlockMapping(dir + "/" + filename);
 		}
 	}
@@ -1571,14 +1577,14 @@ void EmberOgre::setupJesus()
 		oslink::directory osdir(dir);
 		while (osdir) {
 			filename = osdir.next();
-			S_LOG_INFO(  "TRACE - LOADING GLOBAL BLUEPRINT: " << filename );
+			S_LOG_VERBOSE(  "Loading blueprint: " << filename );
 			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
 			if (blueprint) {
 				blueprint->compile();
 				bool result = mJesus->addBluePrint(blueprint);
 				if (!result)
 				{
-					S_LOG_FAILURE( "COULD NOT ADD BLUEPRINT: " << filename);
+					S_LOG_FAILURE( "Could not add blueprint: " << filename);
 				}
 			}
 		}
@@ -1589,14 +1595,14 @@ void EmberOgre::setupJesus()
 		oslink::directory osdir(dir);
 		while (osdir) {
 			filename = osdir.next();
-			S_LOG_INFO( "TRACE - LOADING LOCAL BLUEPRINT: " << filename );
+			S_LOG_VERBOSE( "Loading local blueprint: " << filename );
 			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
 			if (blueprint) {
 				blueprint->compile();
 				bool result = mJesus->addBluePrint(blueprint);
 				if (!result)
 				{
-					S_LOG_FAILURE(  "TRACE - COULD NOT ADD BLUEPRINT: " << filename );
+					S_LOG_FAILURE(  "Could not add blueprint: " << filename );
 				}
 			}
 		}
