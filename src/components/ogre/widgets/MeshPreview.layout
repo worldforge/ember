@@ -67,7 +67,7 @@
 				<Property Name="Enabled" Value="False" /> 
 			</Window>
 			<Window Type="TaharezLook/StaticText" Name="AnimationsText">
-				<Property Name="AbsolutePosition" Value="x:180 y:30" /> 
+				<Property Name="AbsolutePosition" Value="x:190 y:30" /> 
 				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
 				<Property Name="Text" Value="Animations" /> 
 				<Property Name="InheritsAlpha" Value="False" /> 
@@ -75,10 +75,24 @@
 				<Property Name="BackgroundEnabled" Value="False" /> 
 			</Window>
 			<Window Type="TaharezLook/Listbox" Name="Animations">
-				<Property Name="AbsolutePosition" Value="x:180 y:60" /> 
-				<Property Name="AbsoluteSize" Value="w:180 h:100" /> 
+				<Property Name="AbsolutePosition" Value="x:190 y:60" /> 
+				<Property Name="AbsoluteSize" Value="w:150 h:100" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
+			</Window>
+			<Window Type="TaharezLook/Button" Name="PlayAnimation">
+				<Property Name="AbsolutePosition" Value="x:350 y:60" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
+				<Property Name="Text" Value="Play/Pause" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Enabled" Value="False" /> 
+			</Window>
+			<Window Type="TaharezLook/Button" Name="ResetAnimation">
+				<Property Name="AbsolutePosition" Value="x:350 y:90" /> 
+				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
+				<Property Name="Text" Value="Reset" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+				<Property Name="Enabled" Value="False" /> 
 			</Window>
 			<Window Type="TaharezLook/Listbox" Name="AllMeshes">
 				<Property Name="AbsolutePosition" Value="x:200 y:60" /> 

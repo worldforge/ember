@@ -121,18 +121,19 @@ MeshPreviewMeshInstance::MeshPreviewMeshInstance(Ogre::Entity* entity): mEntity(
 {
 }
 
-void MeshPreviewMeshInstance::startAnimation(std::string name)
+void MeshPreviewMeshInstance::startAnimation(const std::string& name)
 {
 	Ogre::AnimationState* state = mEntity->getAnimationState(name);
+	state->setLoop(true);
 	if (state == 0) { 
 		return;
 	}
 	state->setEnabled(true);
-	mActiveAnimations[name] = state;
+	mActiveAnimations.insert(AnimationStore::value_type(name, state));
 	
 }
 
-void MeshPreviewMeshInstance::stopAnimation(std::string name)
+void MeshPreviewMeshInstance::stopAnimation(const std::string& name)
 {
 	AnimationStore::iterator I = mActiveAnimations.find(name);
 	if (I == mActiveAnimations.end()) {
@@ -142,14 +143,53 @@ void MeshPreviewMeshInstance::stopAnimation(std::string name)
 	
 }
 
+void MeshPreviewMeshInstance::toggleAnimation(const std::string& name)
+{
+	if (mActiveAnimations.find(name) != mActiveAnimations.end()) {
+		stopAnimation(name);
+	} else {
+		startAnimation(name);
+	}
+}
+
+void MeshPreviewMeshInstance::resetAnimations()
+{
+	Ogre::AnimationStateSet* states = getEntity()->getAllAnimationStates();
+	if (states != 0) {
+		for (Ogre::AnimationStateSet::iterator I = states->begin(); I != states->end(); ++I) {
+			I->second.setEnabled(false);
+		}
+	}
+
+	mActiveAnimations.clear();
+	getEntity()->getSkeleton()->reset();
+	
+}
+
 void MeshPreviewMeshInstance::updateAnimation(Ogre::Real elapsedTime)
 {
+//	S_LOG_INFO("Updating animations. Size: " << mActiveAnimations.size());
 	AnimationStore::iterator I = mActiveAnimations.begin();
 	for (;I != mActiveAnimations.end(); ++I) {
+//		S_LOG_INFO("Updating " << I->second->getAnimationName() << " with: " << elapsedTime);
 		I->second->addTime(elapsedTime);
 	}
 }
 
+bool MeshPreviewMeshInstance::isAnimationPlaying(const std::string& name)
+{
+	return mActiveAnimations.find(name) != mActiveAnimations.end();
+}
+
+bool MeshPreviewMeshInstance::isAnimationEnabled(const std::string& name)
+{
+	Ogre::AnimationState* state = mEntity->getAnimationState(name);
+	if (state == 0) { 
+		return false;
+	}
+	return state->getEnabled();
+	
+}
 
 Ogre::Entity* MeshPreviewMeshInstance::getEntity() const
 {
@@ -193,6 +233,9 @@ void MeshPreview::buildWidget()
 	button  = static_cast<CEGUI::PushButton*>(getWindow("Remove"));
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, MeshPreview::removeButton_Click);
 	
+	CEGUI::Window* meshNameBox = getWindow("MeshName");
+	BIND_CEGUI_EVENT(meshNameBox, CEGUI::Editbox::EventTextAccepted, MeshPreview::createButton_Click)
+	
 	
 	
 	mScaleSlider = static_cast<CEGUI::Slider*>(getWindow("Scale"));
@@ -204,6 +247,13 @@ void MeshPreview::buildWidget()
 	BIND_CEGUI_EVENT(mCreatedMeshes, CEGUI::Listbox::EventSelectionChanged, MeshPreview::createdMeshes_EventSelectionChanged);
 	
 	mAnimations = static_cast<CEGUI::Listbox*>(getWindow("Animations"));
+	
+	mPlayAnimation = static_cast<CEGUI::PushButton*>(getWindow("PlayAnimation"));
+	BIND_CEGUI_EVENT(mPlayAnimation, CEGUI::ButtonBase::EventMouseClick, MeshPreview::playAnimation_MouseClick);
+	
+	CEGUI::Window* resetButton = getWindow("ResetAnimation");
+	BIND_CEGUI_EVENT(resetButton, CEGUI::ButtonBase::EventMouseClick, MeshPreview::resetAnimation_MouseClick);
+	
 	
 	hide();
 // 	loadAllAvailableMeshes();
@@ -237,7 +287,34 @@ bool MeshPreview::removeButton_Click(const CEGUI::EventArgs& args)
 }
 
 
+bool MeshPreview::playAnimation_MouseClick(const CEGUI::EventArgs& args)
+{
+	try {
+		MeshPreviewMeshInstance& instance = getActiveInstance();
+		CEGUI::ListboxItem* item = mAnimations->getFirstSelectedItem();
+		if (item) {
+			std::string animationName = mAnimationNames[item->getID()];
+			instance.toggleAnimation(animationName);
+		}
+		fillAnimationList(instance);
+	} catch (Ember::Exception&) {
+		return true;
+	}
+	return true;
+}
 
+bool MeshPreview::resetAnimation_MouseClick(const CEGUI::EventArgs& args)
+{
+	try {
+		MeshPreviewMeshInstance& instance = getActiveInstance();
+		instance.resetAnimations();
+		fillAnimationList(instance);
+	} catch (Ember::Exception&) {
+		return true;
+	}
+	
+	return true;
+}
 
 
 
@@ -252,7 +329,6 @@ void MeshPreview::createdNewEntity(size_t index)
 		CEGUI::ListboxItem* item = new ColoredListItem(name, index);
 		mCreatedMeshes->addItem(item);
 		
-		fillAnimationList(instance);
 	} catch (Ember::Exception&)
 	{
 		return;
@@ -273,12 +349,21 @@ void MeshPreview::removedEntity(size_t index)
 void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
 {
 	mAnimations->resetList();
+	mAnimationNames.clear();
 	Ogre::AnimationStateSet* states = instance.getEntity()->getAllAnimationStates();
 	if (states != 0) {
 		uint i = 0;
 		for (Ogre::AnimationStateSet::iterator I = states->begin(); I != states->end(); ++I) {
-			CEGUI::ListboxItem* item = new ColoredListItem(I->first, i++);
+			mAnimationNames.push_back(I->first);
+			std::string name(I->first);
+			if (instance.isAnimationPlaying(I->first)) {
+				name += " (playing)";
+			} else if (instance.isAnimationEnabled(I->first)) {
+				name += " (paused)";
+			}
+			CEGUI::ListboxItem* item = new ColoredListItem(name, i++);
 			mAnimations->addItem(item);
+//			instance.startAnimation(I->first);
 		}
 	}
 }
@@ -330,6 +415,7 @@ MeshPreviewMeshInstance& MeshPreview::getActiveInstance()
 	if (item) {
 		size_t index = mCreatedMeshes->getItemIndex(item);
 /*		size_t index = item->getUserData(); */
+	
 		return mHandler.getInstance(index);
 	} 
 	throw Ember::Exception("No selected item.");
@@ -338,7 +424,7 @@ MeshPreviewMeshInstance& MeshPreview::getActiveInstance()
 bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& args)
 {
 	try {
-		MeshPreviewMeshInstance instance = getActiveInstance();
+		MeshPreviewMeshInstance& instance = getActiveInstance();
 		fillAnimationList(instance);
 	} catch (Ember::Exception&) {
 	}

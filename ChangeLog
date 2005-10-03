@@ -1,3 +1,20 @@
+2005-10-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/widgets/MeshPreview.*: added more functionality, mainly dealing with playing and pausing animations
+	*  src/components/ogre/widgets/ChatWidget.xml: point out that it's Chat _Output_
+
+2005-10-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/Exception.h: make getError const, since it really is
+
+2005-10-03  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/services/logging/LogginService.h: fixed S_LOG_CRITICAL
+	* src/components/ogre/EmberOgre.cpp: 
+		* log critical errors to the critical log
+		* hook the logobserver up to the ConfigService so it reacts on changes to the config 
+	* ember.conf: added key for the logging level
+
 2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/JesusEdit.*, src/components/ogre/widgets/Widget.*: rearranged the inclusion of CEGUI headers a bit to make it cleaner

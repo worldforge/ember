@@ -5,7 +5,7 @@
 		<Property Name="AbsolutePosition" Value="x:0 y:25" /> 
 		<Property Name="Size" Value="w:0.3 h:0.25" /> 
 		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Chat" />
+		<Property Name="Text" Value="Chat output" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.02 y:0.1" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
