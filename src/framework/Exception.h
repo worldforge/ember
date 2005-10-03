@@ -137,7 +137,7 @@ public:
 	/**
 	 * Returns the error that caused the exception
 	 */
-    std::string getError()
+    const std::string& getError() const
     {
 		return myError;
     }
