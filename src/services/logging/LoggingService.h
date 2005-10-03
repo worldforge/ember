@@ -54,7 +54,7 @@ namespace Ember
 #define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::INFO) << message << ENDM;
 #define S_LOG_WARNING(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::WARNING) << message << ENDM;
 #define S_LOG_FAILURE(message)Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::FAILURE) << message << ENDM;
-#define S_LOG_CRITICAL(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService:CRITICAL) << message << ENDM;
+#define S_LOG_CRITICAL(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::CRITICAL) << message << ENDM;
 
 
 //#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;

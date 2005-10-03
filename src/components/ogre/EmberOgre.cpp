@@ -23,7 +23,16 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.108  2005-10-01 20:45:41  erik
+ *      Revision 1.109  2005-10-03 19:16:54  erik
+ *      2005-10-03  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/framework/services/logging/LogginService.h: fixed S_LOG_CRITICAL
+ *      	* src/components/ogre/EmberOgre.cpp:
+ *      		* log critical errors to the critical log
+ *      		* hook the logobserver up to the ConfigService so it reacts on changes to the config
+ *      	* ember.conf: added key for the logging level
+ *
+ *      Revision 1.108  2005/10/01 20:45:41  erik
  *      2005-10-01  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmbeOgre.cpp,  src/components/ogre/model/XMLModelDefinitionSerializer.cpp: moved some INFO log calls to VERBOSE log calls instead
@@ -938,6 +947,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "framework/osdir.h"
 
+#include "framework/Exception.h"
 
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
@@ -960,10 +970,23 @@ namespace EmberOgre {
 
 	}
 
-	class OgreLogObserver: public Ember::LoggingService::Observer
+
+	/**
+	A log observer which writes to the Ogre log system.
+	*/
+	class OgreLogObserver: public Ember::LoggingService::Observer, virtual public SigC::Object
 	{
 		public:
-			OgreLogObserver(){}
+			OgreLogObserver()
+			{
+				ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
+			
+			}
+			
+			~OgreLogObserver()
+			{
+				ConfigService_EventChangedConfigItem_connection.disconnect();
+			}
 
 			virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
 									const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
@@ -995,67 +1018,108 @@ namespace EmberOgre {
 				ss << "Ember (" << stringImportance << "): " << message << " (in file " << file << ":" << line << ")";
 				Ogre::LogManager::getSingleton().logMessage(ss.str());
 			}
+			
+		protected:
+			
+			/**
+			 * Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
+			 */
+			void updateFromConfig()
+			{
+				if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("general", "logginglevel")) {
+					std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getInstance()->getConfigService()->getValue("general", "logginglevel"));
+					Ember::LoggingService::MessageImportance importance;
+					if (loggingLevel == "verbose") {
+						importance = Ember::LoggingService::VERBOSE;
+					} else if (loggingLevel == "info") {
+						importance = Ember::LoggingService::INFO;
+					} else if (loggingLevel == "warning") {
+						importance = Ember::LoggingService::WARNING;
+					} else if (loggingLevel == "failure") {
+						importance = Ember::LoggingService::FAILURE;
+					} else if (loggingLevel == "critical") {
+						importance = Ember::LoggingService::CRITICAL;
+					}
+					setFilter(importance);
+				}
+			}
+			
+			sigc::connection ConfigService_EventChangedConfigItem_connection;
+			
+			/**
+			 *          React on changes to the config.
+			 * @param section 
+			 * @param key 
+			 */
+			void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+			{
+				if (section == "general") {
+					if (key == "logginglevel") {
+						updateFromConfig();
+					}
+				}
+			}
+			
 	};
 
-// TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
-  class CerrLogObserver: public Ember::LoggingService::Observer
-    {
-    public:
-        CerrLogObserver()
-        {
-        }
-
-        virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
-                                  const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
-        {
-            tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
-		
-	    std::cerr.fill('0');
-            std::cerr << "[";
-	    std::cerr.width(2);
-	    std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
-	    std::cerr.width(2);
-	    std::cerr << ctm->tm_mon+1 << "-";
-	    std::cerr.width(2);
-	    std::cerr << ctm->tm_mday << " ";
-	    std::cerr.width(2);
-	    std::cerr << ctm->tm_hour << ":";
-	    std::cerr.width(2);
-	    std::cerr <<  ctm->tm_min << ":";
-	    std::cerr.width(2);
-	    std::cerr << ctm->tm_sec << "] ";
-	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
-
-            if(importance == Ember::LoggingService::CRITICAL)
-                {
-                    std::cerr << "CRITICAL";
-                }
-            else  if(importance == Ember::LoggingService::FAILURE)
-                {
-                    std::cerr << "FAILURE";
-                }
-            else if(importance == Ember::LoggingService::WARNING)
-                {
-                    std::cerr << "WARNING";
-                }
-            else if(importance == Ember::LoggingService::INFO)
-                {
-                    std::cerr << "INFO";
-                }
-	    else
-                {
-                    std::cerr << "VERBOSE";
-                }
-            std::cerr << ") " <<message << std::endl;
-        }
-
-    private:
-
-    };
+// // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
+//   class CerrLogObserver: public Ember::LoggingService::Observer
+//     {
+//     public:
+//         CerrLogObserver()
+//         {
+//         }
+// 
+//         virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
+//                                   const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+//         {
+//             tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+// 		
+// 	    std::cerr.fill('0');
+//             std::cerr << "[";
+// 	    std::cerr.width(2);
+// 	    std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
+// 	    std::cerr.width(2);
+// 	    std::cerr << ctm->tm_mon+1 << "-";
+// 	    std::cerr.width(2);
+// 	    std::cerr << ctm->tm_mday << " ";
+// 	    std::cerr.width(2);
+// 	    std::cerr << ctm->tm_hour << ":";
+// 	    std::cerr.width(2);
+// 	    std::cerr <<  ctm->tm_min << ":";
+// 	    std::cerr.width(2);
+// 	    std::cerr << ctm->tm_sec << "] ";
+// 	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
+// 
+//             if(importance == Ember::LoggingService::CRITICAL)
+//                 {
+//                     std::cerr << "CRITICAL";
+//                 }
+//             else  if(importance == Ember::LoggingService::FAILURE)
+//                 {
+//                     std::cerr << "FAILURE";
+//                 }
+//             else if(importance == Ember::LoggingService::WARNING)
+//                 {
+//                     std::cerr << "WARNING";
+//                 }
+//             else if(importance == Ember::LoggingService::INFO)
+//                 {
+//                     std::cerr << "INFO";
+//                 }
+// 	    else
+//                 {
+//                     std::cerr << "VERBOSE";
+//                 }
+//             std::cerr << ") " <<message << std::endl;
+//         }
+// 
+//     private:
+// 
+//     };
     
 
 EmberOgre::EmberOgre() :
-//mFrameListener(0),
 mRoot(0),
 mKeepOnRunning(true),
 mWorldView(0),
@@ -1095,12 +1159,14 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 	EventStartErisPoll.emit();
 	try {
 		Eris::PollDefault::poll(1);
-	} catch (Ogre::Exception& ex) {
-		std::cerr << ex.getFullDescription();
+	} catch (const Ember::Exception& ex) {
+		S_LOG_CRITICAL(ex.getError());
+		throw ex;
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_CRITICAL(ex.getFullDescription());
 		throw ex;
 	} catch (const std::runtime_error& ex)
 	{
-		int i = 0;
 		throw ex;
 	}
 	if (mWorldView)
@@ -1741,7 +1807,8 @@ void EmberOgre::initializeEmberServices(void)
 	// Initialize the Logging service and an error observer
 	Ember::LoggingService *logging = Ember::EmberServices::getInstance()->getLoggingService();
 	OgreLogObserver* obs = new OgreLogObserver();
- 	obs->setFilter(Ember::LoggingService::VERBOSE);
+	//default to INFO, though this can be changed by the config file
+ 	obs->setFilter(Ember::LoggingService::INFO);
  	logging->addObserver(obs);
 
 
