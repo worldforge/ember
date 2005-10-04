@@ -253,7 +253,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
-	S_LOG_VERBOSE( "TRACE - ENTITY SAYS: [" << message << "]\n" )
+	S_LOG_VERBOSE( "Entity says: [" << message << "]\n" )
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 /*	// Make a sound if it's the merchant speaking

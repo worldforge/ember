@@ -156,7 +156,7 @@ bool Model::createFromDefn()
 
 	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels = _masterModel->mSubModels.begin();
 	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels_end = _masterModel->mSubModels.end();
-	S_LOG_INFO("Number of submodels: " << _masterModel->mSubModels.size()); 
+	S_LOG_VERBOSE("Number of submodels: " << _masterModel->mSubModels.size()); 
 	
 	for (; I_subModels != I_subModels_end; ++I_subModels) 
 	{

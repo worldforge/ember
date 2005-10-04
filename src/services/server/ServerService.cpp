@@ -256,7 +256,7 @@ namespace Ember
 
 void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & info)
 {
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Character Info"<< ENDM;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got Character Info"<< ENDM;
 	ConsoleBackend::getMainConsole()->pushMessage("Got character info");
 	
 	GotCharacterInfo.emit(info);
@@ -436,9 +436,9 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 		} else if (command==TOUCH) {
 			// TODO: make this switch call the touch method
 			// TODO: polish this rough check
-			fprintf(stderr, "TRACE - TOUCHING\n");
+			S_LOG_VERBOSE("Touching");
 			if(!myAvatar) {
-				fprintf(stderr, "TRACE - NO AVATAR\n");
+				S_LOG_WARNING("No avatar.");
 				return;
 			}
 	
@@ -462,13 +462,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 			msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
 			ConsoleBackend::getMainConsole()->pushMessage(msg);
 			
-			fprintf(stderr, "TRACE - CREATING CHARACTER - SERVERSERVICE\n");
+			S_LOG_INFO("Creating character.");
 			Atlas::Objects::Entity::GameEntity character;
 			character->setParentsAsList(Atlas::Message::ListType(1,type));
 			character->setName(name);
 			character->setAttr("sex", sex);
 			character->setAttr("description", description);
-			fprintf(stderr, "TRACE - ATTRs SET - GONNA CREATE THE CHAR\n");
 			try {
 				myAccount->createCharacter(character);
 			} 
@@ -482,7 +481,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
 				return false;
 			}
-			fprintf(stderr, "TRACE - DONE\n");
+			S_LOG_INFO("Done creating character.");
 			if (myAvatar) {
 				GotAvatar.emit(myAvatar);
 				myView = myAvatar->getView();
@@ -711,7 +710,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 			std::string msg;
 			msg = "Saying: [" + message + "]. ";
 			ConsoleBackend::getMainConsole()->pushMessage(msg);
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << msg << ENDM;
+			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << msg << ENDM;
  		}
  		catch (Eris::BaseException except)
  		{

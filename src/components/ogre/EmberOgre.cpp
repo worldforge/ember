@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.109  2005-10-03 19:16:54  erik
+ *      Revision 1.110  2005-10-04 22:48:56  erik
+ *      2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.cpp, src/services/server/ServerService.cpp, src/components/ogre/EmberEntity.cpp. src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/model/Model.cpp: cleaned up the logging calls
+ *
+ *      Revision 1.109  2005/10/03 19:16:54  erik
  *      2005-10-03  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/framework/services/logging/LogginService.h: fixed S_LOG_CRITICAL
@@ -1245,9 +1250,9 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 // 	//add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
- 	S_LOG_INFO( "TRACE - BEGIN PRELOAD");
+ 	S_LOG_INFO( "Begin preload.");
  	preloadMedia();
- 	S_LOG_INFO( "TRACE - END PRELOAD");
+ 	S_LOG_INFO( "End preload.");
 	
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
 	EventGUIManagerCreated.emit(*mGUIManager);
@@ -1530,7 +1535,7 @@ void EmberOgre::setupResources(void)
 	
 //     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
 	
-	S_LOG_INFO(  "TRACE - ADDED MEDIA PATHS");
+	S_LOG_INFO(  "Added media paths.");
 	
 }
 

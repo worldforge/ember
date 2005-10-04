@@ -89,7 +89,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Game
     	emberEntity = avatarEntity;
  
     } else if (!isPhysical) {
-		fprintf(stderr, "TRACE - CREATE IMMATERIAL ENTITY\n");
+    	S_LOG_VERBOSE("Creating immaterial entity.");
 
     	//we don't want this to have any Ogre::Entity
 		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
@@ -104,7 +104,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Game
  
     }
 
-	fprintf(stderr, "TRACE - ENTITY ADDED TO THE GAMEVIEW\n");
+	S_LOG_VERBOSE("Entity added to game view.");
 	return emberEntity;
 }
 
