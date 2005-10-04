@@ -32,9 +32,10 @@ namespace EmberOgre {
 Input::Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer)
 : mGuiSystem(system)
 , mGuiRenderer(renderer)
+, mCurrentInputMode(IM_GUI)
 /*, mMouseMotionListener(0)*/
-, mInGUIMode(true)
-, mInLockedMovementMode(false)
+// , mInGUIMode(true)
+// , mInLockedMovementMode(false)
 , mTimeSinceLastRightMouseClick(1000)
 {
 	SDL_ShowCursor(0);
@@ -173,16 +174,16 @@ void Input::processInput(const Ogre::FrameEvent& evt)
     SDL_PumpEvents();
 }
 
-inline bool Input::getIsInLockedMovementMode()
-{
-	return mInLockedMovementMode;
-
-}
-
-inline void Input::setIsInLockedMovementMode(bool value)
-{
-	mInLockedMovementMode = value;
-}
+// inline bool Input::getIsInLockedMovementMode()
+// {
+// 	return mInLockedMovementMode;
+// 
+// }
+// 
+// inline void Input::setIsInLockedMovementMode(bool value)
+// {
+// 	mInLockedMovementMode = value;
+// }
 
 
 void Input::pollMouse(const Ogre::FrameEvent& evt)
@@ -200,8 +201,8 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 			//if the right mouse button is pressed, switch from gui mode
 			
 			//SDL_WM_GrabInput(SDL_GRAB_ON);
-			mInGUIMode = false;
-			EventMouseButtonPressed.emit(MouseButtonRight, mInGUIMode);
+			toggleInputMode();
+			EventMouseButtonPressed.emit(MouseButtonRight, mCurrentInputMode);
 			
 		}
 	} else if (mMouseState & SDL_BUTTON_RMASK) {
@@ -213,18 +214,19 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 /*			std::stringstream ss;
 			ss << "mouse: " << mTimeSinceLastRightMouseClick << "\n";
 			fprintf(stderr, ss.str().c_str());*/
-			setIsInLockedMovementMode(!getIsInLockedMovementMode());
+			toggleInputMode();
+//			setIsInLockedMovementMode(!getIsInLockedMovementMode());
 			
 		}
 		mTimeSinceLastRightMouseClick = 0;
-		mInGUIMode = true;
-		EventMouseButtonReleased.emit(MouseButtonRight, mInGUIMode);
+		toggleInputMode();
+		EventMouseButtonReleased.emit(MouseButtonRight, mCurrentInputMode);
 	} 
 	
 	//if in locked movement mode, override the mInGUIMode setting
-	if (getIsInLockedMovementMode()) {
+/*	if (getIsInLockedMovementMode()) {
 		mInGUIMode = false;
-	}
+	}*/
 	
 	
 	
@@ -232,12 +234,12 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		if (!(mMouseState & SDL_BUTTON_LMASK)) {
 			//left mouse button pressed
 			mGuiSystem->injectMouseButtonDown(CEGUI::LeftButton);
-			EventMouseButtonPressed.emit(MouseButtonLeft, mInGUIMode);
+			EventMouseButtonPressed.emit(MouseButtonLeft, mCurrentInputMode);
 		}
 	} else if (mMouseState & SDL_BUTTON_LMASK) {
 		//left mouse button released
 		mGuiSystem->injectMouseButtonUp(CEGUI::LeftButton);
-		EventMouseButtonReleased.emit(MouseButtonLeft, mInGUIMode);
+		EventMouseButtonReleased.emit(MouseButtonLeft, mCurrentInputMode);
 
 	}
 	
@@ -245,12 +247,12 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		if (!(mMouseState & SDL_BUTTON_MMASK)) {
 			//middle mouse button pressed
 			mGuiSystem->injectMouseButtonDown(CEGUI::MiddleButton);
-			EventMouseButtonPressed.emit(MouseButtonMiddle, mInGUIMode);
+			EventMouseButtonPressed.emit(MouseButtonMiddle, mCurrentInputMode);
 		}
 	} else if (mMouseState & SDL_BUTTON_MMASK) {
 		//middle mouse button released
 		mGuiSystem->injectMouseButtonUp(CEGUI::MiddleButton);
-		EventMouseButtonReleased.emit(MouseButtonMiddle, mInGUIMode);
+		EventMouseButtonReleased.emit(MouseButtonMiddle, mCurrentInputMode);
 	}
 	
 	mMouseState = mouseState;
@@ -277,11 +279,10 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		motion.yRelativeMovementInPixels = mMouseY - mouseY;
 		motion.timeSinceLastMovement = evt.timeSinceLastFrame;
 		
-		EventMouseMoved.emit(motion, mInGUIMode);
-		
+		EventMouseMoved.emit(motion, mCurrentInputMode);
 		
 		//if we're in gui mode, we'll just send the mouse movement on to CEGUI
-		if (mInGUIMode) {
+		if (mCurrentInputMode == IM_GUI) {
 			
 			CEGUI::MouseCursor::getSingleton().setPosition(CEGUI::Point((mouseX), (mouseY))); 
 			mGuiSystem->injectMouseMove(0.0f, 0.0f);
@@ -352,7 +353,7 @@ const bool Input::isKeyDown(const SDLKey &key) const
 
 void Input::keyPressed (const SDL_KeyboardEvent &keyEvent)
 {
-	if (mInGUIMode) {
+	if (mCurrentInputMode == IM_GUI) {
 		// do event injection
 		// key down
 		mGuiSystem->injectKeyDown(mKeyMap[keyEvent.keysym.sym]);
@@ -363,7 +364,7 @@ void Input::keyPressed (const SDL_KeyboardEvent &keyEvent)
 		}
 	
 	}
-	EventKeyPressed(keyEvent.keysym, mInGUIMode);
+	EventKeyPressed(keyEvent.keysym, mCurrentInputMode);
 	
 }
 
@@ -375,7 +376,7 @@ void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 
 //NOTE: We have to change the way KeyReleased and KeyPressed works.
 //they should always be emitted, with a flag which tells if we're in gui mode or not
-	if (mInGUIMode) {
+	if (mCurrentInputMode == IM_GUI) {
 		//toggle the console
 		//we've put it here because we wan't the console to always be available
 /*		if(keyEvent.keysym.sym == SDLK_F12)
@@ -410,9 +411,35 @@ void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 		
 		mGuiSystem->injectKeyUp(mKeyMap[keyEvent.keysym.sym]);
 	} 
-	EventKeyReleased(keyEvent.keysym, mInGUIMode);
+	EventKeyReleased(keyEvent.keysym, mCurrentInputMode);
 
 
+}
+
+
+void Input::setInputMode(InputMode mode)
+{
+	mCurrentInputMode = mode;
+	EventChangedInputMode.emit(mode);
+}
+	
+Input::InputMode Input::getInputMode() const
+{
+	return mCurrentInputMode;
+}
+	
+	
+Input::InputMode Input::toggleInputMode()
+{
+	if (mCurrentInputMode == IM_GUI)
+	{
+		setInputMode(IM_MOVEMENT);
+		return IM_MOVEMENT;
+	} else {
+		setInputMode(IM_GUI);
+		return IM_GUI;
+	}		
+		
 }
 
 // Input::pollEvents()

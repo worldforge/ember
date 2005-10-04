@@ -99,6 +99,22 @@ public:
 		MouseButtonMiddle
 	};
 	
+	/**
+	Describes different input modes.
+	*/
+	enum InputMode
+	{
+		/**
+		In gui mode, the mouse will move the cursor and allow interaction with the GUI system
+		*/
+		IM_GUI,
+		
+		/**
+		In movement mode, the mouse will move the camera and the keys will move the player. Interaction with the gui is not possible.
+		*/
+		IM_MOVEMENT
+	};
+	
    Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer);
 
     ~Input();
@@ -111,39 +127,45 @@ public:
 	void processInput(const Ogre::FrameEvent& evt);
 	
 	/**emitted when a key has been pressed in movement mode
-	@parameter the key event
-	@parameter true if ember is in gui mode
+	@param the key event
+	@param true if ember is in gui mode
 	*/
- 	SigC::Signal2<void, const SDL_keysym&, bool> EventKeyPressed;
+ 	SigC::Signal2<void, const SDL_keysym&, InputMode> EventKeyPressed;
 	
 	/**emitted when a key has been released in movement mode
-	@parameter the key event
-	@parameter true if ember is in gui mode
+	@param the key event
+	@param true if ember is in gui mode
 	*/
- 	SigC::Signal2<void, const SDL_keysym&, bool> EventKeyReleased;
+ 	SigC::Signal2<void, const SDL_keysym&, InputMode> EventKeyReleased;
 	
 	/**emitted when the mouse has moved
 	note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
 	although the relative position will have changed
-	@parameter the mouse motion
-	@parameter true if ember is in gui mode
+	@param the mouse motion
+	@param true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseMotion&, bool> EventMouseMoved;
+	SigC::Signal2<void, const MouseMotion&, InputMode> EventMouseMoved;
 	
 	
 	/**
 		emitted when a mouse button is pressed
-		@parameter the mouse button
-		@parameter true if ember is in gui mode
+		@param the mouse button
+		@param true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseButton&, bool> EventMouseButtonPressed;
+	SigC::Signal2<void, const MouseButton&, InputMode> EventMouseButtonPressed;
 	
 	/**
 		emitted when a mouse button is released
-		@parameter the mouse button
-		@parameter true if ember is in gui mode
+		@param the mouse button
+		@param true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseButton&, bool> EventMouseButtonReleased;
+	SigC::Signal2<void, const MouseButton&, InputMode> EventMouseButtonReleased;
+	
+	/**
+		Emitted when the input mode has been changed.
+		@param the new input mode
+	*/
+	SigC::Signal1<void, InputMode> EventChangedInputMode;
 	
 	/**
 	 * returns true if the supplied key is down 
@@ -158,25 +180,48 @@ public:
 	 *    returns true if we're in gui mode
 	 * @return 
 	 */
-	const bool isInGUIMode() const { return mInGUIMode; }
+// 	const bool isInGUIMode() const { return mInGUIMode; }
 	
+	/**
+	 *    Sets the new input mode.
+	 * @param mode 
+	 */
+	void setInputMode(InputMode mode);
+	
+	/**
+	 *    Gets the current input mode.
+	 * @return 
+	 */
+	InputMode getInputMode() const;
+	
+	
+	/**
+	 *    Toggles between different input modes, returning the new mode.
+	 * @return the new input mode
+	 */
+	InputMode toggleInputMode();
 	
 	/**
 	 *    Sets whether or not to use the "locked" moevment mode, in which the input system always will be in movement mode, even though the right mouse button isn't pressed.
 	 * @param  
 	 */
-	void setIsInLockedMovementMode(bool value);
+// 	void setIsInLockedMovementMode(bool value);
 	
 	/**
 	 *    Returns whether or not we're in the "locked" movement mode, in which the input system always will be in movement mode, even though the right mouse button isn't pressed.
 	 * @return 
 	 */
-	bool getIsInLockedMovementMode();
+// 	bool getIsInLockedMovementMode();
 	
 	
 protected:
 	CEGUI::System *mGuiSystem;
 	CEGUI::OgreCEGUIRenderer *mGuiRenderer;
+	
+	/**
+	The current input mode.
+	*/
+	InputMode mCurrentInputMode;
 	
 	/**
 	 * polls all input for the mouse
@@ -215,7 +260,7 @@ protected:
 	the last positions of the mouse 
 	*/
 	int mMouseY, mMouseX;
-	bool mInGUIMode;
+// 	bool mInGUIMode;
 	
 	/**
 	the amount of time since the last right mouse click
@@ -226,7 +271,7 @@ protected:
 	/**
 	if true, we're in "locked" movement mode, no matter if the right mouse button is pressed or not
 	*/
-	bool mInLockedMovementMode;
+// 	bool mInLockedMovementMode;
 	
 };
 
