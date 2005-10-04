@@ -1,3 +1,20 @@
+2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widget/StatusIconBar.*: when the input mode or movement mode changes, also change the mouse cursor image. Let's see how this falls out.
+
+2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp: cleaned up the logging calls
+	* src/components/ogre/AvatarCamera.*, src/components/ogre/AvatarController.*, src/components/ogre/GUIManager.*: adjust for the changes in Input.cpp
+
+2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/input/Input.*: simplified the input modes so it's easier to toggle between them
+
+2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/services/server/ServerService.cpp, src/components/ogre/EmberEntity.cpp. src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/model/Model.cpp: cleaned up the logging calls
+
 2005-10-03  Erik Hjortsberg  <erik@katastrof.nu>
 
 	*  src/components/ogre/widgets/MeshPreview.*: added more functionality, mainly dealing with playing and pausing animations

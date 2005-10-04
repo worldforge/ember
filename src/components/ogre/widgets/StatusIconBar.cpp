@@ -34,7 +34,7 @@
 
 namespace EmberOgre {
 
-StatusIconBar::StatusIconBar()
+StatusIconBar::StatusIconBar() : mOriginalCursorImage(0)
 {
 }
 
@@ -79,7 +79,7 @@ void StatusIconBar::buildWidget()
 	mMovementModeIcon->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(100, 700));
 	mMovementModeIcon->getButton()->setTooltipText("This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.");
 	
-	mGuiManager->EventInputModeChanged.connect(SigC::slot(*this, &StatusIconBar::GUIManager_InputModeChanged));
+	mGuiManager->getInput()->EventChangedInputMode.connect(SigC::slot(*this, &StatusIconBar::Input_InputModeChanged));
 	EmberOgre::getSingleton().getAvatarController()->EventMovementModeChanged.connect(SigC::slot(*this, &StatusIconBar::AvatarController_MovementModeChanged));
 	
 	
@@ -114,10 +114,14 @@ bool StatusIconBar::close_MouseClick(const CEGUI::EventArgs& args)
 	return true;
 }
 
-void StatusIconBar::GUIManager_InputModeChanged(GUIManager::InputMode mode) {
+void StatusIconBar::Input_InputModeChanged(Input::InputMode mode) {
 	mCurrentMode = mode;
-	if (mode == GUIManager::IM_GUI) {
+	if (mode == Input::IM_GUI) {
 		mMovementModeIcon->setForeground(mMovementImage_gui);
+		if (mOriginalCursorImage) {
+			CEGUI::MouseCursor::getSingleton().setImage(mOriginalCursorImage);
+			mOriginalCursorImage = 0;
+		}
 	} else {
 		checkMovementMode();
 	}
@@ -127,7 +131,7 @@ void StatusIconBar::GUIManager_InputModeChanged(GUIManager::InputMode mode) {
 
 void StatusIconBar::AvatarController_MovementModeChanged(AvatarMovementMode::Mode mode)
 {
-	if (mCurrentMode == GUIManager::IM_MOVEMENT) {
+	if (mCurrentMode == Input::IM_MOVEMENT) {
 		checkMovementMode();
 	}
 
@@ -135,10 +139,16 @@ void StatusIconBar::AvatarController_MovementModeChanged(AvatarMovementMode::Mod
 	
 void StatusIconBar::checkMovementMode()
 {
+	if (mOriginalCursorImage == 0) {
+		mOriginalCursorImage = CEGUI::MouseCursor::getSingleton().getImage();
+	}
+	
 	if (EmberOgre::getSingleton().getAvatarController()->getCurrentMovement().mode == AvatarMovementMode::MM_RUN) {
 		mMovementModeIcon->setForeground(mMovementImage_run);
+		CEGUI::MouseCursor::getSingleton().setImage(mMovementImage_run);
 	} else {
 		mMovementModeIcon->setForeground(mMovementImage_walk);
+		CEGUI::MouseCursor::getSingleton().setImage(mMovementImage_walk);
 	}
 }
 

@@ -25,6 +25,7 @@
 
 #include "Widget.h"
 #include "../GUIManager.h"
+#include "../input/Input.h"
 #include "../AvatarController.h"
 
 namespace EmberOgre {
@@ -50,12 +51,14 @@ protected:
 	const CEGUI::Image* mMovementImage_run;
 	const CEGUI::Image* mMovementImage_gui;
 	
-	void GUIManager_InputModeChanged(GUIManager::InputMode mode);
+	void Input_InputModeChanged(Input::InputMode mode);
 	void AvatarController_MovementModeChanged(AvatarMovementMode::Mode mode);
 	
-	GUIManager::InputMode mCurrentMode;
+	Input::InputMode mCurrentMode;
 	
 	void checkMovementMode();
+	
+	const CEGUI::Image* mOriginalCursorImage;
 };
 
 }
