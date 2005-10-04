@@ -69,7 +69,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	setAvatarNode(avatarNode);
 	
 	if (mGUIManager && mGUIManager->getInput()) {
-		mGUIManager->getInput()->EventMouseMoved.connect(SigC::slot(*this, &AvatarCamera::mouseMoved));
+		mGUIManager->getInput()->EventMouseMoved.connect(SigC::slot(*this, &AvatarCamera::Input_MouseMoved));
 	}
 
 	
@@ -205,10 +205,10 @@ void AvatarCamera::yaw(Ogre::Degree degrees)
 	
 }
 
-void AvatarCamera::mouseMoved(const MouseMotion& motion, bool isInGuimode)
+void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode)
 /*(int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement)*/
 {
-	if (!isInGuimode) {
+	if (mode == Input::IM_MOVEMENT) {
 		Ogre::Degree diffX(mDegreeOfYawPerSecond * motion.xRelativeMovement);
 		Ogre::Degree diffY(mDegreeOfPitchPerSecond * motion.yRelativeMovement);
 	

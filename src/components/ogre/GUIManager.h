@@ -54,6 +54,7 @@ class ConsoleWidget;
 class MousePicker;
 class EmberEventProcessor;
 class Input;
+class AvatarEmberEntity;
 
 
 /**
@@ -70,11 +71,11 @@ public:
 	/**
 	The mode of input.
 	*/
-	enum InputMode
-	{
-		IM_MOVEMENT = 1,
-		IM_GUI = 2
-	};
+// 	enum InputMode
+// 	{
+// 		IM_MOVEMENT = 1,
+// 		IM_GUI = 2
+// 	};
 
 	static const std::string SCREENSHOT;
 
@@ -90,7 +91,7 @@ public:
 	/**
 	Emitted when the input mode changes between gui and movment mode.
 	*/
-	SigC::Signal1<void, InputMode> EventInputModeChanged;
+// 	SigC::Signal1<void, InputMode> EventInputModeChanged;
 
 	
 	void removeWidget(Widget* widget);
@@ -203,7 +204,14 @@ protected:
 	void takeScreenshot();
 	const std::string _takeScreenshot();
 
-	InputMode mPreviousInputMode;
+	
+	/**
+	 *    hooked to EmberOgre::EventCreatedAvatarEntity, switches the input mode to movement mode
+	 * @param entity 
+	 */
+	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
+
+// 	InputMode mPreviousInputMode;
 	
 
 };

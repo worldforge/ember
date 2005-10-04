@@ -40,6 +40,7 @@
 
 #include "framework/ConsoleObject.h"
 // #include "jesus/JesusMousePicker.h"
+#include "input/Input.h"
 
 namespace EmberOgre {
 
@@ -137,7 +138,6 @@ public:
 	*/
 	SigC::Signal1<void, Ogre::Real> EventChangedCameraDistance;
 	
-	void mouseMoved(const MouseMotion& motion, bool isInGuimode);
 // 	int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement);
 
 // 	void mouseMoved (Ogre::MouseEvent *e);
@@ -224,6 +224,8 @@ protected:
 	
 	//in meters how far we can pick objects
 	Ogre::Real mClosestPickingDistance;
+
+	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
 
 };
 

@@ -237,7 +237,7 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 		//we are already moving
 		//let's see if we've changed speed or direction or even stopped
 		if (!newMovementState.isMoving) {
-			S_LOG_INFO( "TRACE - STOPPED");
+			S_LOG_VERBOSE( "Avatar stopped moving.");
 			//we have stopped; we must alert the server
 			sendToServer = true;
 			//plus stop the animation of the avatar
@@ -258,7 +258,7 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 	
 	
 	if (sendToServer) {
-		S_LOG_INFO("TRACE - SEND MOVE OPS TO SERVER");
+		S_LOG_VERBOSE("Sending move op to server.");
 		mMovementStateAtBeginningOfMovement = newMovementState;
 		mMovementStateAtLastServerMessage = newMovementState;
 		mTimeSinceLastServerMessage = 0;

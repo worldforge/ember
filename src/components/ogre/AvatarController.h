@@ -28,6 +28,8 @@
 #include <SDL.h>
 #include <sigc++/object.h>
 
+#include "input/Input.h"
+
 
 
 namespace EmberOgre {
@@ -153,7 +155,7 @@ protected:
 	 * @param keysym 
 	 * @param inGuiMode 
 	 */
-	void input_KeyReleased(const SDL_keysym& keysym, bool inGuiMode);
+	void input_KeyReleased(const SDL_keysym& keysym, Input::InputMode mode);
 	
 	/**
 	*    Wait with the binding of the input system until the GUIManager has been fully initialized. That's what this method is for.

@@ -113,7 +113,7 @@ void AvatarController::attachCamera()
 	//mAvatarCamera->setMode(AvatarCamera::MODE_FIRST_PERSON);
 }
 
-void  AvatarController::input_KeyReleased(const SDL_keysym& keysym, bool inGuiMode)
+void  AvatarController::input_KeyReleased(const SDL_keysym& keysym, Input::InputMode mode)
 {
 	if (keysym.sym == SDLK_F6) {
 		if (mIsAttached) {

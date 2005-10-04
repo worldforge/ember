@@ -39,6 +39,13 @@
 
 #include "widgets/WidgetDefinitions.h"
 
+#include "EmberEntity.h"
+#include "EmberPhysicalEntity.h"
+#include "PersonEmberEntity.h"
+#include "AvatarEmberEntity.h"
+
+
+
 #include <SDL.h>
 
 #ifdef __WIN32__
@@ -115,6 +122,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mInput = new Input(mGuiSystem, mGuiRenderer);
 		mInput->EventKeyPressed.connect(SigC::slot(*this, &GUIManager::pressedKey));
+		mInput->setInputMode(Input::IM_GUI);
+		
+		//connect to the creation of the avatar, since we want to switch to movement mode when that happens
+		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
 	
@@ -328,17 +339,17 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	
 	mInput->processInput(evt);
 
-	if (mPreviousInputMode == IM_GUI) {
-		if (!mInput->isInGUIMode()) {
-			EventInputModeChanged.emit(IM_MOVEMENT);
-			mPreviousInputMode = IM_MOVEMENT;
-		}
-	} else {
-		if (mInput->isInGUIMode()) {
-			EventInputModeChanged.emit(IM_GUI);
-			mPreviousInputMode = IM_GUI;
-		}
-	}
+// 	if (mPreviousInputMode == IM_GUI) {
+// 		if (!mInput->getInputMode()) {
+// 			EventInputModeChanged.emit(IM_MOVEMENT);
+// 			mPreviousInputMode = IM_MOVEMENT;
+// 		}
+// 	} else {
+// 		if (mInput->isInGUIMode()) {
+// 			EventInputModeChanged.emit(IM_GUI);
+// 			mPreviousInputMode = IM_GUI;
+// 		}
+// 	}
 	
 	
 	
@@ -395,7 +406,7 @@ const bool GUIManager::isInMovementKeysMode() const {
 }
 
 const bool GUIManager::isInGUIMode() const { 
-	return mInput && mInput->isInGUIMode(); 
+	return mInput && (mInput->getInputMode() == Input::IM_GUI); 
 }
 
 void GUIManager::takeScreenshot()
@@ -465,6 +476,12 @@ MousePicker * GUIManager::popMousePicker()
 	if (mMousePickers.size() > 1) 
 		mMousePickers.pop();
 	return mMousePickers.top();
+}
+
+void GUIManager::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
+{
+	//switch to movement mode, since it appears most people don't know how to change from gui mode
+	getInput()->setInputMode(Input::IM_MOVEMENT);
 }
 
 
