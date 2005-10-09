@@ -48,6 +48,8 @@
 
 #include "AvatarCamera.h"
 
+#include <sigc++/object_slot.h>
+
 #ifdef WIN32
 	#include <tchar.h>
 	#define snprintf _snprintf

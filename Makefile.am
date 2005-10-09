@@ -3,6 +3,7 @@ SUBDIRS = src
 EXTRA_DIST = run
 
 bin_SCRIPTS = ember
+dist_bin_SCRIPTS = ember
 
 confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ember.conf configfile

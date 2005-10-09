@@ -1,3 +1,55 @@
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.conf: added setting for inverting the mouse
+	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/environment/Sun.h: cleaned up the SigC headers
+	* Makefile.am: include the ember script in the dist
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/model/ModelDefinition.*, src/components/ogre/model/XMLModelDefinitionSerializer.*: added ability to transform a mesh
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.*: changed how the request-for-quit functionality works. If a request for quit signal is emitted and not handled, the application will quit instantly. 
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp: cleaned up logging
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.*: added option for inverting the mouse in the y axis, use the ember.conf setting input:invertcamera. Or use the run time console command /set_value input invertcamera true
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.*: added a /toggleinputmode console command
+	* src/components/ogre/widgets/Help.*: after getting connected to the world, show a small help blurb about how the input system works
+	* src/components/ogre/widgets/StatusIconBar.* clicking the movement icon will now switch movement modes
+	* src/components/ogre/widgets/Quit.*: make sure that soft quit requests are marked as handled
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeSceneManager.cpp: removed reference to not used class
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	*  src/components/ogre/input/Input.cpp
+		* initialize mouse state to 0
+		* only act on mouse movements if the window has mouse focus
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/cegui/datafiles/fonts/Font.xsd, src/components/ogre/cegui/datafiles/imagesets/Imageset.xsd, src/components/ogre/cegui/datafiles/layouts/GUILayout.xsd, src/components/ogre/cegui/datafiles/schemes/GUIScheme.xsd: upgraded to new schemas to go with CEGUI 0.4.0
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/Makefile.am: include missing files for dist
+	* src/services/logging/LoggingService.*: rearranged the include directives since freebsd appeared to have some trouble with the current setup.
+
+2005-10-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: removed references to old SceneManager and disabled openal for now
+
 2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widget/StatusIconBar.*: when the input mode or movement mode changes, also change the mouse cursor image. Let's see how this falls out.
@@ -5224,6 +5276,20 @@ BIG GAP HERE DUE TO DEVELOPER LAZINESS sorry!
 2002-01-12 17:51  zzorn
 
 	* doc/template_header.h: Adding coding style / template header
+	document
+
+2002-01-12 16:43  nikal
+
+	* src/main/: Makefile, application.cpp, application.h, dime.cpp:
+	adding the skeleton Application and a basic int main()
+
+2002-01-12 13:54  zzorn
+
+	* README: Adding initial README for dime
+
+l README for dime
+
+ate header
 	document
 
 2002-01-12 16:43  nikal
