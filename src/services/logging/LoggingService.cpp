@@ -4,7 +4,6 @@
 #include <string>
 #include <list>
 #include <stdio.h>
-#include <stdarg.h>
 //#include <varargs.h> //TODO: Needed by unix?
 
 #include <sigc++/object_slot.h>
@@ -196,6 +195,14 @@ operator<< (const HexNumber & intHexToAdd)
     return *this;
 }
 
+// Ember::LoggingService & Ember::LoggingService::
+// operator<< (const double doubleToAdd)
+// {
+//     char buffer[NUMBER_BUFFER_SIZE];
+//     sprintf (buffer, "%e", doubleToAdd);
+//     myMessage += buffer;
+//     return *this;
+// }
 
 
 void Ember::LoggingService::operator<< (const EndMessageEnum endMessage)

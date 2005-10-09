@@ -28,6 +28,7 @@
 //#include <sigc++/object_slot.h>
 
 #include <ctime>
+#include <stdarg.h>
 
 
 namespace Ember
@@ -465,6 +466,8 @@ namespace Ember
         LoggingService & operator<< (const int intToAdd);
 
         LoggingService & operator<< (const HexNumber & intHexToAdd);
+        
+//         LoggingService & operator<< (const double doubleToAdd);
 
         /**
 	 * By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
