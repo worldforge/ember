@@ -74,8 +74,9 @@ bool Quit::No_Click(const CEGUI::EventArgs& args)
 }
 
 
-void Quit::EmberOgre_RequestQuit() 
+void Quit::EmberOgre_RequestQuit(bool& handled) 
 {
+	handled = true;
 	//if the window system twice requests a quit, do it
 	if (mMainWindow->isVisible()) {
 		EmberOgre::getSingleton().shutdown();

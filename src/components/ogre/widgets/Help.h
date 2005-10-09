@@ -31,6 +31,7 @@
 namespace EmberOgre {
 class GUIManager;
 class Widget;
+class AvatarEmberEntity;
 
 /**
 @author Erik Hjortsberg
@@ -44,6 +45,12 @@ public:
 	virtual void buildWidget();
 	virtual void runCommand(const std::string &command, const std::string &args);
 
+	/**
+	 *    Called each frame.
+	 * @param evt 
+	 */
+	virtual void frameStarted(const Ogre::FrameEvent& evt);
+
 	static const std::string HELP;
 	
 protected:
@@ -51,6 +58,16 @@ protected:
 	void show();
 
 	void hide();
+	
+	Ogre::Real mTimeUntilShowBlurb, mTimeBlurbShown, mTimeToShowBlurb;
+	
+	CEGUI::StaticText* mBlurb;
+
+	/**
+	 *    hooked to EmberOgre::EventCreatedAvatarEntity, show a help blurb about the movement mode
+	 * @param entity 
+	 */
+	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
 
 };
 

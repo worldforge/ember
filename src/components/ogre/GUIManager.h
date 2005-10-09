@@ -78,6 +78,7 @@ public:
 // 	};
 
 	static const std::string SCREENSHOT;
+	static const std::string TOGGLEINPUTMODE;
 
 
 	GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr);

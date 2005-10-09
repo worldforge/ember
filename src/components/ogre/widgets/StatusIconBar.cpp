@@ -79,6 +79,8 @@ void StatusIconBar::buildWidget()
 	mMovementModeIcon->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(100, 700));
 	mMovementModeIcon->getButton()->setTooltipText("This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.");
 	
+	BIND_CEGUI_EVENT(mMovementModeIcon->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::movement_MouseClick);
+	
 	mGuiManager->getInput()->EventChangedInputMode.connect(SigC::slot(*this, &StatusIconBar::Input_InputModeChanged));
 	EmberOgre::getSingleton().getAvatarController()->EventMovementModeChanged.connect(SigC::slot(*this, &StatusIconBar::AvatarController_MovementModeChanged));
 	
@@ -111,6 +113,12 @@ bool StatusIconBar::help_MouseClick(const CEGUI::EventArgs& args)
 bool StatusIconBar::close_MouseClick(const CEGUI::EventArgs& args)
 {
 	Ember::ConsoleBackend::getMainConsole()->runCommand("/softquit");
+	return true;
+}
+
+bool StatusIconBar::movement_MouseClick(const CEGUI::EventArgs& args)
+{
+	mGuiManager->getInput()->toggleInputMode();
 	return true;
 }
 

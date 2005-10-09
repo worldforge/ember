@@ -47,7 +47,7 @@ protected:
 	bool Yes_Click(const CEGUI::EventArgs& args);
 	bool No_Click(const CEGUI::EventArgs& args);
 	
-	void EmberOgre_RequestQuit();
+	void EmberOgre_RequestQuit(bool& handled);
 	
 	void softquit();
 

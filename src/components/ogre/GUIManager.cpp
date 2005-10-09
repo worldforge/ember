@@ -58,6 +58,8 @@ template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Si
 namespace EmberOgre {
 
 const std::string GUIManager::SCREENSHOT("screenshot");
+const std::string GUIManager::TOGGLEINPUTMODE("toggleinputmode");
+
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window), mInput(0)
@@ -462,6 +464,8 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 	if(command == SCREENSHOT) {
 		//just take a screen shot
 		takeScreenshot();
+	} else if (command == TOGGLEINPUTMODE) {
+		mInput->toggleInputMode();
 	}
 }
 

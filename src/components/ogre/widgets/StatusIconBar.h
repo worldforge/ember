@@ -44,6 +44,7 @@ protected:
 
 	bool help_MouseClick(const CEGUI::EventArgs& args);
 	bool close_MouseClick(const CEGUI::EventArgs& args);
+	bool movement_MouseClick(const CEGUI::EventArgs& args);
 
 
 	IconBase* mMovementModeIcon;
