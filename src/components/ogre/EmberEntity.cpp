@@ -131,14 +131,14 @@ void EmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 	
 	// set the Ogre node position and orientation based on Atlas data
 	if (getPosition().isValid()) {
-		getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
+		getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
 		adjustHeightPosition();
 	}
 	if (getOrientation().isValid()) {
 		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	}
 	std::stringstream ss;
-	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPosition().x() << "," << getPosition().y() << "," << getPosition().x() << ")";
+	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 	S_LOG_VERBOSE( ss.str());
 	
 	if (hasAttr("area")) {
@@ -155,7 +155,7 @@ void EmberEntity::createSceneNode()
 {
 	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container == 0) {
-		S_LOG_VERBOSE( "ENTITY CREATED IN LIMBO: "<< this->getId() << " (" << this->getName() << ") \n" )
+		S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ") \n" )
 
 		//mSceneManager->createSceneNode(getId());
 		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode(getId()));
@@ -321,12 +321,12 @@ float EmberEntity::getHeightPositionForContainedNode(const TerrainPosition& posi
 	//send it upwards until we get a an entity which knows how to set the height
 	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container) {
-		TerrainPosition derivedPosition(getPosition().x() + position.x(), getPosition().y() + position.y());
+		TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
 		height = container->getHeightPositionForContainedNode(derivedPosition, entity);
 	}
 	
 	//adjust the height after our own height
-	height -= getPosition().z();
+	height -= getPredictedPos().z();
 	return height;
 	
 }
@@ -338,7 +338,7 @@ void EmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity
 
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	Ogre::Vector3 position = sceneNode->getPosition();
-	sceneNode->setPosition(position.x, getHeightPositionForContainedNode(TerrainPosition(entity->getPosition().x(), entity->getPosition().y()), entity), position.z);
+	sceneNode->setPosition(position.x, getHeightPositionForContainedNode(TerrainPosition(entity->getPredictedPos().x(), entity->getPredictedPos().y()), entity), position.z);
 	
 }
 
@@ -348,7 +348,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	if (getLocation() == oldLocation)
 	{
-		S_LOG_WARNING( "SAME NEW LOCATION AS OLD FOR ENTITY: " << this->getId() << " (" << this->getName() << ")" );
+		S_LOG_WARNING( "Same new location as old for entity: " << this->getId() << " (" << this->getName() << ")" );
 		return Eris::Entity::onLocationChanged(oldLocation);
 	
 	}
@@ -373,25 +373,28 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			
 				// add to the new entity
 				newLocationEntity->getSceneNode()->addChild(getSceneNode());
-				S_LOG_VERBOSE( "ENTITY: " << this->getId() << " (" << this->getName() << ") RELOCATED TO: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
+				S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
 				if (getPosition().isValid()) {
-					getSceneNode()->setPosition(Atlas2Ogre(getPosition()));
+					getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
 					adjustHeightPosition();
+					std::stringstream ss;
+					ss << getPredictedPos();
+					S_LOG_VERBOSE("New position for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
 				}
 				if (getOrientation().isValid()) {
 					getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+					std::stringstream ss;
+					ss << getOrientation();
+					S_LOG_VERBOSE("New orientation for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
 				}
 	
 		} else {
 			//add to the world
-			S_LOG_VERBOSE( "ENTITY RELOCATED TO LIMBO: "<< this->getId() << " (" << this->getName() << ")" );
+			S_LOG_VERBOSE( "Entity relocated to limbo: "<< this->getId() << " (" << this->getName() << ")" );
 	//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 		}		
 		
 		checkVisibility(isVisible());
-		std::stringstream ss;
-		ss << "ENTITY HAS POSITION: " << getPosition() << " AND ORIENTATION: " <<  getOrientation();                                                      
-		S_LOG_VERBOSE( ss.str() )
 	
 		//we adjust the entity so it retains it's former position in the world
 		Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
@@ -418,12 +421,13 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)
 	std::string name = act->getName();
 	
 	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
-	S_LOG_VERBOSE( std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
+	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
 }
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 {
-	GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") imaginary: "+act->getName());
+	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << act->getName());
+	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") imaginary: "+act->getName());
 }
 
 
@@ -508,7 +512,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 		model->create("placeholder");
 		boundingBoxNode->attachObject(model);*/
 		
-		boundingBoxNode->setPosition(Atlas2Ogre(getPosition()));
+		boundingBoxNode->setPosition(Atlas2Ogre(getPredictedPos()));
 		boundingBoxNode->setOrientation(Atlas2Ogre(getOrientation()));
 	}
 	mErisEntityBoundingBox->setVisible(show);
