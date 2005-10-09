@@ -131,6 +131,11 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	if (elem)
 		readParticleSystems(modelDef, elem);
 		
+	elem = modelNode->FirstChildElement("translate");
+	if (elem)
+	{
+		modelDef->mTranslate = fillVector3FromElement(elem);
+	}
 }
 
 
@@ -428,5 +433,20 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 
 }
 
+Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlElement* elem)
+{
+	Ogre::Real x=0.0f, y=0.0f, z=0.0f;
+	if (elem->Attribute("x")) {
+		x = atof(elem->Attribute("x"));
+	}
+	if (elem->Attribute("y")) {
+		x = atof(elem->Attribute("y"));
+	}
+	if (elem->Attribute("z")) {
+		x = atof(elem->Attribute("z"));
+	}
+	
+	return Ogre::Vector3(x,y,z);
+}
 
 } //end namespace

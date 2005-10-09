@@ -58,6 +58,8 @@ private:
 	void readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode);
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode);
 
+	Ogre::Vector3 fillVector3FromElement(Ember::TiXmlElement* elem);
+
 };
 
 }

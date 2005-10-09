@@ -84,6 +84,8 @@ public:
 	inline Ogre::Real getScale() const { return mScale; }
 	inline const UseScaleOf getUseScaleOf() const { return mUseScaleOf; }
 	
+	const Ogre::Vector3& getTranslate() const;
+	
 protected:
 	inline void setValid(bool valid) { mIsValid = valid; }
 
@@ -166,6 +168,11 @@ private:
 	Ogre::Real mScale;
 	Ogre::Real mRotation;
 	const Ogre::String mPath;
+	
+	/**
+	How, if any, to transform the model from the base position.
+	*/
+	Ogre::Vector3 mTranslate;
 	
 	bool mIsValid;
 	

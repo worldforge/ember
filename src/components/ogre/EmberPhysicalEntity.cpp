@@ -129,6 +129,9 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 		scaleNode();
 	}
 	getSceneNode()->addChild(getScaleNode());
+	
+	//transform the scale node according to the transform defined in the model
+	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
 
 	
 /*	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), 0, 0);
