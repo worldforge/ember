@@ -41,7 +41,8 @@
 #include "OgrePagingLandScapeTileManager.h"
 #include "OgrePagingLandScapeRenderable.h"
 #include "OgrePagingLandScapeRenderableManager.h"
-#include "OgrePagingLandScapeIntersectionSceneQuery.h"
+//this is apparently not used, won't compile on MSVC anyway
+//#include "OgrePagingLandScapeIntersectionSceneQuery.h"
 #include "OgrePagingLandScapeRaySceneQuery.h"
 #include "OgrePagingLandScapeCamera.h"
 
