@@ -28,15 +28,12 @@
 
 #include "EmberOgrePrerequisites.h"
 
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
 #include <sigc++/object.h>
-#include <sigc++/signal.h>
+#include <sigc++/connection.h>
+/*#include <sigc++/signal.h>
 #include <sigc++/slot.h>
 #include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
+#include <sigc++/object_slot.h>*/
 
 #include "framework/ConsoleObject.h"
 // #include "jesus/JesusMousePicker.h"
@@ -196,7 +193,12 @@ protected:
 	
 	bool mIsAttached;
 	
-	/*
+	/**
+	If true, the camera is inverted in the y axis.
+	*/
+	bool mInvertCamera;
+	
+	/**
 	 * creates all nodes needed and the camera 
 	 */
 	void createNodesAndCamera();
@@ -226,6 +228,11 @@ protected:
 	Ogre::Real mClosestPickingDistance;
 
 	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
+
+	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	sigc::connection ConfigService_EventChangedConfigItem_connection;
+	
+	void updateValuesFromConfig();
 
 };
 

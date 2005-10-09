@@ -62,7 +62,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mDegreeOfPitchPerSecond(50),
 	mDegreeOfYawPerSecond(50),
 	mClosestPickingDistance(10000),
-	mAvatarNode(0)
+	mAvatarNode(0),
+	mInvertCamera(false)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesAndCamera();
@@ -79,11 +80,15 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETCAMERADISTANCE,this);
 
-	 
+	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
+	
+	updateValuesFromConfig();
 }
 
 AvatarCamera::~AvatarCamera()
-{}
+{
+	ConfigService_EventChangedConfigItem_connection.disconnect();
+}
 
 void AvatarCamera::createNodesAndCamera()
 {
@@ -184,6 +189,9 @@ void AvatarCamera::setCameraDistance(Ogre::Real distance)
 
 void AvatarCamera::pitch(Ogre::Degree degrees)
 {
+	if (mInvertCamera) {
+		degrees -= degrees * 2;
+	}
 	if (mMode == MODE_THIRD_PERSON) {
 		degreePitch += degrees;
 		mAvatarCameraPitchNode->pitch(degrees);
@@ -499,6 +507,22 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 		}
 	}
 	
+void AvatarCamera::updateValuesFromConfig()
+{
+	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "invertcamera")) {
+		mInvertCamera = static_cast<bool>(Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "invertcamera"));
+	}
+	
+}
+	
+void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+{
+	if (section == "input") {
+		if (key == "invertcamera") {
+			updateValuesFromConfig();
+		}
+	}
+}
 
 }
 
