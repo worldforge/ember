@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.110  2005-10-04 22:48:56  erik
+ *      Revision 1.111  2005-10-09 23:28:16  erik
+ *      2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberOgre.*: changed how the request-for-quit functionality works. If a request for quit signal is emitted and not handled, the application will quit instantly.
+ *
+ *      Revision 1.110  2005/10/04 22:48:56  erik
  *      2005-10-05  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.cpp, src/services/server/ServerService.cpp, src/components/ogre/EmberEntity.cpp. src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/model/Model.cpp: cleaned up the logging calls
@@ -1203,6 +1208,19 @@ void EmberOgre::shutdown()
 	mKeepOnRunning = false;
 }
 
+void EmberOgre::requestQuit()
+{
+	bool handled = false;
+	EventRequestQuit.emit(handled);
+	//check it was handled
+	if (!handled) {
+		//it's not handled, quit now
+		shutdown();
+	}
+
+}
+
+
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
@@ -1803,6 +1821,7 @@ AvatarController* EmberOgre::getAvatarController() const
 {
 	return mAvatarController;
 }
+
 
 
 void EmberOgre::initializeEmberServices(void)

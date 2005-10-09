@@ -150,7 +150,7 @@ public:
 	/**
 	 * Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
 	 */ 
-	SigC::Signal0<void> EventRequestQuit;
+	SigC::Signal1<void, bool&> EventRequestQuit;
 	
 	/**
 	Emitted before the eris polling is started
@@ -208,6 +208,12 @@ public:
 	SigC::Signal0<void> EventSceneCreated;
 	
 	EmberEntity* getEntity(const std::string & id) const;
+	
+	/**
+	 *    Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
+	 However, if there is no widget etc. handling the request, the application will instantly quit.
+	 */
+	void requestQuit();
 
 
 
