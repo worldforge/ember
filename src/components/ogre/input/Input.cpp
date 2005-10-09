@@ -33,6 +33,7 @@ Input::Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer)
 : mGuiSystem(system)
 , mGuiRenderer(renderer)
 , mCurrentInputMode(IM_GUI)
+, mMouseState(0)
 /*, mMouseMotionListener(0)*/
 // , mInGUIMode(true)
 // , mInLockedMovementMode(false)
@@ -260,43 +261,48 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	
 	
 	//has the mouse moved?
-	if (mMouseX != mouseX || mMouseY != mouseY)
-	{
-
-		//we'll calculate the mouse movement difference and send the values to those
-		//listening to the MouseMoved event
-		Ogre::Real diffX, diffY;
-		Ogre::Real width = mGuiRenderer->getWidth();
-		Ogre::Real height = mGuiRenderer->getHeight();
-		diffX =  (mMouseX - mouseX) / width;
-		diffY = (mMouseY - mouseY) / height;
-		MouseMotion motion;
-		motion.xPosition = mouseX;
-		motion.yPosition = mouseY;
-		motion.xRelativeMovement = diffX;
-		motion.yRelativeMovement = diffY;
-		motion.xRelativeMovementInPixels = mMouseX - mouseX;
-		motion.yRelativeMovementInPixels = mMouseY - mouseY;
-		motion.timeSinceLastMovement = evt.timeSinceLastFrame;
-		
-		EventMouseMoved.emit(motion, mCurrentInputMode);
-		
-		//if we're in gui mode, we'll just send the mouse movement on to CEGUI
-		if (mCurrentInputMode == IM_GUI) {
-			
-			CEGUI::MouseCursor::getSingleton().setPosition(CEGUI::Point((mouseX), (mouseY))); 
-			mGuiSystem->injectMouseMove(0.0f, 0.0f);
-			
-		} else {
-			//keep the cursor in place while in non-gui mode
-			mouseX = mMouseX;
-			mouseY = mMouseY;
-			SDL_WarpMouse(mMouseX, mMouseY);
-		}
+//	S_LOG_INFO("x: " << mMouseX << " x1: " << mouseX << " y: " << mMouseY << " y1: " << mouseY);
+	Uint8 appState = SDL_GetAppState();
+//	S_LOG_INFO((appState & SDL_APPMOUSEFOCUS));
+	if (appState & SDL_APPMOUSEFOCUS) {
+		if (mMouseX != mouseX || mMouseY != mouseY)
+		{
 	
+			//we'll calculate the mouse movement difference and send the values to those
+			//listening to the MouseMoved event
+			Ogre::Real diffX, diffY;
+			Ogre::Real width = mGuiRenderer->getWidth();
+			Ogre::Real height = mGuiRenderer->getHeight();
+			diffX =  (mMouseX - mouseX) / width;
+			diffY = (mMouseY - mouseY) / height;
+			MouseMotion motion;
+			motion.xPosition = mouseX;
+			motion.yPosition = mouseY;
+			motion.xRelativeMovement = diffX;
+			motion.yRelativeMovement = diffY;
+			motion.xRelativeMovementInPixels = mMouseX - mouseX;
+			motion.yRelativeMovementInPixels = mMouseY - mouseY;
+			motion.timeSinceLastMovement = evt.timeSinceLastFrame;
+			
+			EventMouseMoved.emit(motion, mCurrentInputMode);
+			
+			//if we're in gui mode, we'll just send the mouse movement on to CEGUI
+			if (mCurrentInputMode == IM_GUI) {
+				
+				CEGUI::MouseCursor::getSingleton().setPosition(CEGUI::Point((mouseX), (mouseY))); 
+				mGuiSystem->injectMouseMove(0.0f, 0.0f);
+				mMouseX = mouseX;
+				mMouseY = mouseY;
+				
+			} else {
+				//keep the cursor in place while in non-gui mode
+	/*			mouseX = mMouseX;
+				mouseY = mMouseY;*/
+				SDL_WarpMouse(mMouseX, mMouseY);
+			}
+		
+		}
 	}
-	mMouseX = mouseX;
-	mMouseY = mouseY;
 
 }
 
@@ -313,7 +319,7 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 				keyChanged(event.key);
 				break;
 			case SDL_QUIT:
-				EmberOgre::getSingleton().EventRequestQuit.emit();
+				EmberOgre::getSingleton().requestQuit();
 				break;
 			}
 			
