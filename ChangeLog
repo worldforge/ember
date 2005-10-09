@@ -1,5 +1,11 @@
 2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/config/ConfigService.cpp: on win32, use the APPDATA environment variable to get the Application Data path
+	* src/components/ogre/ogreopcode/opcode/Makefile.am: include headers in dist
+	* src/components/ogre/Makefile.am: removed old unused files
+
+2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf: added setting for inverting the mouse
 	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/environment/Sun.h: cleaned up the SigC headers
 	* Makefile.am: include the ember script in the dist

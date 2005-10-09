@@ -177,7 +177,7 @@ namespace Ember
 	{
 		//taken from Sear
 #ifdef __WIN32__
-		std::string path = getenv("USERPROFILE");
+		std::string path = getenv("APPDATA");
 		if (path.empty()) {
 			const char *homedrive = getenv("HOMEDRIVE");
 			const char *homepath = getenv("HOMEPATH");
@@ -188,7 +188,7 @@ namespace Ember
 			}
 			path = std::string(homedrive) + std::string(homepath);
 		}
-		return path + "\\Application Data\\Ember\\";
+		return path + "\\Ember\\";
 #elif __APPLE__
 			return getAppSupportDirPath() + "/Ember/";
 #else
