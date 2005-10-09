@@ -114,10 +114,11 @@ AC_MSG_RESULT([
 
 AC_LANG_PUSH(C)
 
-AC_CHECK_LIB(openal,
-	alutInit ,,
-	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
-	)
+//disable this for now
+#AC_CHECK_LIB(openal,
+#	alutInit ,,
+#	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
+#	)
 
 
 
@@ -236,8 +237,8 @@ PKG_CHECK_MODULES(OGRE, OGRE >= $OGRE_VERSION,
 
 # Check for CEGUI
 #uncomment this when Ogre includes the CEGUI-OGRE.pc file again (should be the next release after 1.0.0)
-#PKG_CHECK_MODULES(CEGUI, CEGUI-OGRE >= 0.2,
-PKG_CHECK_MODULES(CEGUI-OGRE, CEGUI-OGRE >= 1.0,
+#PKG_CHECK_MODULES(CEGUI, CEGUI_OGRE >= 0.2,
+PKG_CHECK_MODULES(CEGUI-OGRE, CEGUI-OGRE >= $OGRE_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_OGRE_LIBS"
@@ -402,9 +403,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
-		 src/components/ogre/SceneManagers/EmberSceneManager/Makefile
-		 src/components/ogre/SceneManagers/EmberSceneManager/src/Makefile
-		 src/components/ogre/SceneManagers/EmberSceneManager/include/Makefile
 ])
 
 #		 src/tests/Makefile
