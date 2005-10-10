@@ -1,3 +1,11 @@
+2005-10-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.bat: added some notion about the size of the download
+	* src/components/ogre/GUIManager.*, src/components/ogre/widgets/EntityPicker.*: fixed the signatures of methods recieving MouseMoved events from Input; MSVC want it to be perfect
+	* src/components/ogre/widgets/JesusEdit.cpp: use the correct type of parameter when creating new constructions
+	* src/components/ogre/model/Model.cpp: reset all particle systems in dtor, but for now disable complete destructions since it will cause a segfault later on
+
+
 2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/services/config/ConfigService.cpp: on win32, use the APPDATA environment variable to get the Application Data path

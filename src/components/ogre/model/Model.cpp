@@ -107,7 +107,8 @@ Model::Model(const std::string& name)
 }
 Model::~Model()
 {
-	reset();
+//	reset();
+	resetParticles();	
 	mSubmodels.clear();
 }
 

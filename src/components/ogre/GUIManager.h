@@ -43,6 +43,8 @@
 
 #include "framework/ConsoleObject.h"
 
+#include "input/Input.h"
+
 namespace EmberOgre {
 
 class EmberEntity;
@@ -102,7 +104,6 @@ public:
 
 	CEGUI::Window* getMainSheet();
 	
-	void pressedKey(const SDL_keysym& key, bool isInGuimode);
 	
 	void initialize();
 	
@@ -213,6 +214,7 @@ protected:
 	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
 
 // 	InputMode mPreviousInputMode;
+	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
 	
 
 };

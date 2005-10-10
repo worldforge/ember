@@ -421,7 +421,7 @@ void GUIManager::takeScreenshot()
 }
 
 
-void GUIManager::pressedKey(const SDL_keysym& key, bool isInGuimode)
+void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 {
  		//toggle the console
  		//we've put it here because we wan't the console to always be available

@@ -527,7 +527,7 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 	Ogre::SceneNode* node =  EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	
 	Construction* construction = new Construction(blueprint, mJesus, node);
-	construction->buildFromBluePrint(blueprint);
+	construction->buildFromBluePrint(true);
 	
 	//place the node in front of the avatar
 	Ogre::Vector3 o_vector(0,0,-5);

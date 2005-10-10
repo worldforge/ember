@@ -285,7 +285,7 @@ void EntityPickerWidget::removeMenu()
 	mMainWindow->setVisible(false);
 }
 
-void EntityPickerWidget::input_MouseButtonReleased(const Input::MouseButton& button, bool isInGuiMode)
+void EntityPickerWidget::input_MouseButtonReleased(const Input::MouseButton& button, Input::InputMode mode)
 {
 	//only show the menu while the left mouse button is pressed
 	if (button == Input::MouseButtonLeft) {
