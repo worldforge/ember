@@ -1,5 +1,10 @@
 2005-10-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/model/XMLModelDefinitionsSerializer.cpp: fixed an error when parsing Vector3
+	* src/components/ogre/modeldefinitions/item.modeldef.xml: add a translation offset to the trowel so it sticks up a bit from the ground
+
+2005-10-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.bat: added some notion about the size of the download
 	* src/components/ogre/GUIManager.*, src/components/ogre/widgets/EntityPicker.*: fixed the signatures of methods recieving MouseMoved events from Input; MSVC want it to be perfect
 	* src/components/ogre/widgets/JesusEdit.cpp: use the correct type of parameter when creating new constructions

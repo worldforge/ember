@@ -440,10 +440,10 @@ Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlE
 		x = atof(elem->Attribute("x"));
 	}
 	if (elem->Attribute("y")) {
-		x = atof(elem->Attribute("y"));
+		y = atof(elem->Attribute("y"));
 	}
 	if (elem->Attribute("z")) {
-		x = atof(elem->Attribute("z"));
+		z = atof(elem->Attribute("z"));
 	}
 	
 	return Ogre::Vector3(x,y,z);
