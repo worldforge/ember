@@ -1,5 +1,9 @@
 2005-10-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* configure.ac: bump version to 0.3.3
+
+2005-10-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/model/XMLModelDefinitionsSerializer.cpp: fixed an error when parsing Vector3
 	* src/components/ogre/modeldefinitions/item.modeldef.xml: add a translation offset to the trowel so it sticks up a bit from the ground
 
