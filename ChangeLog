@@ -1,3 +1,7 @@
+2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.bat: use the APPDATA environment variable since it works on all locales
+
 2005-10-11  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* configure.ac: bump version to 0.3.3
