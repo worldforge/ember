@@ -1,3 +1,7 @@
+2005-10-13  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* acinclude:m4, src/services/config/ConfigService.*, src/services/config/Makefile.am, src/framework/binreloc.*, src/framework/Makefile.am, src/framework/prefix.*, src/components/ogre/EmberOgre.cpp, src/components/ogre/Makefile.am: upgraded to binreloc 2.0
+
 2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* configure.ac: added nostdinc, tar-bzip2 and check-news to get cleaner builds

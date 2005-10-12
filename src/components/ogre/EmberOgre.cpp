@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.112  2005-10-12 21:08:06  erik
+ *      Revision 1.113  2005-10-12 23:28:31  erik
+ *      2005-10-13  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* acinclude:m4, src/services/config/ConfigService.*, src/services/config/Makefile.am, src/framework/binreloc.*, src/framework/Makefile.am, src/framework/prefix.*, src/components/ogre/EmberOgre.cpp, src/components/ogre/Makefile.am: upgraded to binreloc 2.0
+ *
+ *      Revision 1.112  2005/10/12 21:08:06  erik
  *      2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/EmberEntityUserObject.h, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberPhysicalEntity.cpp: adapt to updated OgreOpcode
@@ -914,7 +919,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/sound/SoundService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
-#include "framework/prefix.h" //this is needed for binreloc functionality
+#include "framework/binreloc.h" //this is needed for binreloc functionality
 
 
 // ------------------------------
@@ -1240,10 +1245,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
 #else
 	if (loadOgrePluginsThroughBinreloc) {
+		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
+		std::string libDir(br_libdir);
+		free(br_libdir);
 		mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
-		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_CgProgramManager.so"));
-		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/Plugin_ParticleFX.so"));
-		mRoot->loadPlugin(BR_LIBDIR("/ember/OGRE/RenderSystem_GL.so"));
+		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_CgProgramManager.so");
+		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_ParticleFX.so");
+		mRoot->loadPlugin(libDir + "/ember/OGRE/RenderSystem_GL.so");
 	} else {
 		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
 	}
@@ -1325,7 +1333,10 @@ bool EmberOgre::configure(void)
 #ifndef __WIN32__
 	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
 		//set the icon of the window
-		const char* iconPath = BR_DATADIR("/icons/worldforge/ember.png");
+		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
+		
+		const char* iconPath = br_strcat(br_datadir,"/icons/worldforge/ember.png");
+		free(br_datadir);
 		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
 	} else {
 		std::cerr << dlerror() << "\n";

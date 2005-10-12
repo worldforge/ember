@@ -53,6 +53,8 @@ class ConfigService: public Service, public Ember::ConsoleObject, virtual public
 	std::string baseDir;
 #endif
 
+	std::string sharedDataDir;
+	std::string etcDir;
 
     void registerConsoleCommands();
     void deregisterConsoleCommands();

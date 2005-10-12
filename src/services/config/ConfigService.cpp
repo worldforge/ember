@@ -23,7 +23,7 @@
 
 #include "ConfigService.h"
 #include "services/logging/LoggingService.h"
-#include "framework/prefix.h"
+#include "framework/binreloc.h"
 
 #include <iostream>
 #include "framework/ConsoleBackend.h"
@@ -35,6 +35,7 @@
 //we need this for the PathRemoveFileSpec(...) method
 #include <shlwapi.h>
 #endif
+
 
 using namespace std;
 
@@ -54,6 +55,24 @@ namespace Ember
 		//use this utility function for removing the file part
 		PathRemoveFileSpec(cwd);
 		baseDir = std::string(cwd) + "\\";
+#endif
+
+#ifdef ENABLE_BINRELOC
+    BrInitError error;
+
+    if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
+        printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
+        printf ("Will fallback to hardcoded default path.\n");
+    }	
+	
+	char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
+	sharedDataDir = std::string(br_datadir) + "/games/ember/";
+	free(br_datadir);
+	
+	char* br_etcdir = br_find_etc_dir(br_strcat(PREFIX, "/etc"));
+	etcDir = std::string(br_etcdir) + "/ember/";
+	free(br_etcdir);
+   
 #endif
 
 	setName("Configuration Service");
@@ -206,7 +225,7 @@ namespace Ember
 #elif __WIN32__
 			return baseDir;
 #else
-			return BR_DATADIR("/games/ember/");
+			return sharedDataDir;
 #endif
 		}
 
@@ -219,7 +238,7 @@ namespace Ember
 #elif __WIN32__ 
 		return getSharedDataDirectory() + "etc/ember/";
 #else
-		return BR_ETCDIR("/ember/");
+		return etcDir;
 #endif
 	}
 	
