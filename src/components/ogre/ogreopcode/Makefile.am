@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src -I$(srcdir)/opcode -I$(srcdir)/include -I$(srcdir)
+INCLUDES = -I$(top_srcdir)/src -I$(srcdir)/opcode -I$(srcdir)/include -I$(srcdir)  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_HEADERS = include/OgreCollisionContext.h include/OgreCollisionManager.h \
 	include/OgreCollisionObject.h include/OgreCollisionReporter.h include/OgreCollisionShape.h include/OgreCollisionTypes.h \

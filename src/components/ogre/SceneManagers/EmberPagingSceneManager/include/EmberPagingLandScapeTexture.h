@@ -24,7 +24,7 @@
 #ifndef EMBERPAGINGLANDSCAPETEXTURE_H
 #define EMBERPAGINGLANDSCAPETEXTURE_H
 
-#include "EmberOgrePrerequisites.h"
+#include "../../../EmberOgrePrerequisites.h"
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeTexture.h"
 

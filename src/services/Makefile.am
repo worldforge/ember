@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src
+INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
 SUBDIRS = config logging metaserver server sound 
 # removed subdirs: gui platform datamodel  input image font test

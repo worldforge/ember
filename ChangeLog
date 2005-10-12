@@ -1,5 +1,10 @@
 2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* configure.ac: added nostdinc, tar-bzip2 and check-news to get cleaner builds
+	* all Makefile.am: update to adapt to nostdinc
+
+2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/EmberEntityUserObject.h, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberPhysicalEntity.cpp: adapt to updated OgreOpcode
 
 2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>

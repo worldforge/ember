@@ -6,7 +6,8 @@ AC_CONFIG_SRCDIR(src)
 # Detect the canonical host and target build environment.
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news])
+#AM_INIT_AUTOMAKE([dist-bzip2 check-news tar-pax])
 AM_CONFIG_HEADER(src/config.h)
 
 AC_LIBTOOL_DLOPEN

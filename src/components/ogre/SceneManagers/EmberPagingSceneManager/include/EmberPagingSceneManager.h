@@ -24,7 +24,7 @@
 #ifndef EMBERPAGINGSCENEMANAGER_H
 #define EMBERPAGINGSCENEMANAGER_H
 
-#include "EmberOgrePrerequisites.h"
+#include "../../../EmberOgrePrerequisites.h"
 #include "OgrePagingLandScapeSceneManager.h"
 
 
