@@ -2,11 +2,13 @@
 ///  @file OgreOpcode.h
 ///  @brief Main include file for clients.
 ///
-///  @author jacmoe @date 31-05-2005
+///  @author The OgreOpcode Team @date 31-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public

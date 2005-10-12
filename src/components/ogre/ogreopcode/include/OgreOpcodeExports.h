@@ -1,13 +1,14 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 /// @file OgreOpcodeExports.h
 /// @brief Export macros and common stuff.
 ///
-/// @author jacmoe @date 31-05-2005
+/// @author The OgreOpcode Team @date 31-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 /// This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 /// OgreOpcode is free software; you can redistribute it and/or
 /// modify it under the terms of the GNU Lesser General Public
@@ -27,16 +28,12 @@
 #ifndef __OgreOpcodeExports_h__
 #define __OgreOpcodeExports_h__
 
+#pragma warning( disable: 4267 )  // conversion from 'size_t' to whatever
 
 #include <Ogre.h>
-#include "OgreNoMemoryMacros.h"
-#include "../opcode/Opcode.h"
-#include "OgreMemoryMacros.h"
-#include "OgrePrerequisites.h"
+#include <OgrePrerequisites.h>
 
 using namespace Ogre;
-
-//#include <cassert>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #	if defined( OGREOPCODE_EXPORTS )
@@ -50,4 +47,3 @@ using namespace Ogre;
 
 
 #endif // __OgreOpcodeExports_h__
-/// @endcond

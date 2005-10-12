@@ -164,7 +164,7 @@ bool AABBTreeNode::Subdivide(AABBTreeBuilder* builder)
 	if(builder->mSettings.mRules & SPLIT_LARGEST_AXIS)
 	{
 		// Find the largest axis to split along
-		Point Extents;	mBV.GetExtents(Extents);	// Box extents
+		IceMaths::Point Extents;	mBV.GetExtents(Extents);	// Box extents
 		udword Axis	= Extents.LargestAxis();		// Index of largest axis
 
 		// Split along the axis
@@ -176,7 +176,7 @@ bool AABBTreeNode::Subdivide(AABBTreeBuilder* builder)
 	else if(builder->mSettings.mRules & SPLIT_SPLATTER_POINTS)
 	{
 		// Compute the means
-		Point Means(0.0f, 0.0f, 0.0f);
+		IceMaths::Point Means(0.0f, 0.0f, 0.0f);
 		for(udword i=0;i<mNbPrimitives;i++)
 		{
 			udword Index = mNodePrimitives[i];
@@ -187,7 +187,7 @@ bool AABBTreeNode::Subdivide(AABBTreeBuilder* builder)
 		Means/=float(mNbPrimitives);
 
 		// Compute variances
-		Point Vars(0.0f, 0.0f, 0.0f);
+		IceMaths::Point Vars(0.0f, 0.0f, 0.0f);
 		for(udword i=0;i<mNbPrimitives;i++)
 		{
 			udword Index = mNodePrimitives[i];
@@ -234,7 +234,7 @@ bool AABBTreeNode::Subdivide(AABBTreeBuilder* builder)
 		// Test largest, then middle, then smallest axis...
 
 		// Sort axis
-		Point Extents;	mBV.GetExtents(Extents);	// Box extents
+		IceMaths::Point Extents;	mBV.GetExtents(Extents);	// Box extents
 		udword SortedAxis[] = { 0, 1, 2 };
 		float* Keys = (float*)&Extents.x;
 		for(udword j=0;j<3;j++)
@@ -519,8 +519,8 @@ bool AABBTree::Refit2(AABBTreeBuilder* builder)
 	ASSERT(mPool);
 
 	// Bottom-up update
-	Point Min,Max;
-	Point Min_,Max_;
+	IceMaths::Point Min,Max;
+	IceMaths::Point Min_,Max_;
 	udword Index = mTotalNbNodes;
 	while(Index--)
 	{
@@ -528,7 +528,7 @@ bool AABBTree::Refit2(AABBTreeBuilder* builder)
 
 		if(Current.IsLeaf())
 		{
-			builder->ComputeGlobalBox(Current.GetPrimitives(), Current.GetNbPrimitives(), *(AABB*)Current.GetAABB());
+			builder->ComputeGlobalBox(Current.GetPrimitives(), Current.GetNbPrimitives(), *(IceMaths::AABB*)Current.GetAABB());
 		}
 		else
 		{
@@ -541,7 +541,7 @@ bool AABBTree::Refit2(AABBTreeBuilder* builder)
 			Min.Min(Min_);
 			Max.Max(Max_);
 
-			((AABB*)Current.GetAABB())->SetMinMax(Min, Max);
+			((IceMaths::AABB*)Current.GetAABB())->SetMinMax(Min, Max);
 		}
 	}
 	return true;

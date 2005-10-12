@@ -17,13 +17,13 @@
 /// - @ref collide_create_context
 /// - @ref collide_app_objects
 ///
-/// @subsection collide_create_server Create Collision Server
+/// @subsection collide_create_server Create Collision Manager
 ///
-/// The collision server must be created prior to using the collision
+/// The collision manager must be created prior to using the collision
 /// detection system.
 ///
 /// @code
-///     new CollisionManager();
+///     new CollisionManager(mSceneMgr);
 /// @endcode
 ///
 ///
@@ -83,9 +83,7 @@
 ///
 /// @code
 ///     CollisionContext *collideContext;
-///
 ///     ...
-///
 ///     collideContext = CollisionManager::getSingletonPtr()->GetDefaultContext();
 /// @endcode
 ///
@@ -101,32 +99,16 @@
 ///    - Create an CollisionObject
 ///    - Add the collision object to the CollisionContext
 ///
-/// In C++, initializing a vehicle from the previous examples might
-/// look like:
-///
 /// @code
-///     CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("vehicle");
-///
-///     collideShape->Load(fileServer, "data:vehicle/collide.n3d");
-///
-///     CollisionObject *collideObject = collideContext->NewObject();
-///     collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass(this->GetName()));
+///     Entity* ogreCar = mSceneMgr->createEntity("Car", "car.mesh");
+///     ...
+///     CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("fancycar");
+///     collideShape->Load(ogreCar);
+///     collideObject = collideContext->NewObject();
+///     collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass("vehicle"));
 ///     collideObject->SetShape(collideShape);
-///
 ///     collideContext->AddObject(collideObject);
 /// @endcode
-///
-/// While simply setting the radius on the CollisionObject is possible with
-/// CollisionObject::SetRadius(), this is not recommended.  Doing so will
-/// not provide enough data for the more precise collision types and will
-/// prevent ray picking from working correctly on that object.
-///
-/// You may use CollisionObject::SetClientData() and
-/// CollisionObject::GetClientData() to store a pointer to your application
-/// specific object that is associated with the CollisionObject.  This lets
-/// you easily determine which object in your application is involved in
-/// a collision given an CollisionObject from an CollisionPair (see @ref
-/// collide_handling_collisions).
 ///
 /// @section collide_handling_collisions Handling and Responding to Collisions
 ///
@@ -134,15 +116,16 @@
 /// between collision objects in context.
 ///
 /// @code
-///     while(gameTrigger())
+///     bool frameStarted(const FrameEvent& evt)
 ///     {
-///         ...
-///         collideContext->Collide();
+///        ...
+///        collideContext->Collide();
+///        ...
 ///     }
 /// @endcode
 ///
 /// You can retrieve the number of collisions and description of a contact
-/// between two nCollideObjects with the given nCollidiObject by calling
+/// between two CollideObjects with the given CollisionObject by calling
 /// CollisionContext::GetCollissions():
 ///
 /// @code
@@ -174,14 +157,5 @@
 ///         // other process
 ///         ...
 ///     }
-/// @endcode
-///
-///
-/// When an object is destroyed, it must remove itself from the collision
-/// system.
-///
-/// @code
-///     collideContext->RemObject(collideObject);
-///     collideContext->ReleaseObject(collideObject);
 /// @endcode
 ///

@@ -1,42 +1,42 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreHash.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 30-05-2005
-///  
+///  @author The OgreOpcode Team @date 30-05-2005
+///
 ///////////////////////////////////////////////////////////////////////////////
-///  
+///
 ///  This file is part of OgreOpcode.
-///  
+///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
 ///  version 2.1 of the License, or (at your option) any later version.
-///  
+///
 ///  OgreOpcode is distributed in the hope that it will be useful,
 ///  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ///  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  Lesser General Public License for more details.
-///  
+///
 ///  You should have received a copy of the GNU Lesser General Public
 ///  License along with OgreOpcode; if not, write to the Free Software
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-///  
+///
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef __OgreHash_h__
 #define __OgreHash_h__
 
-#include <Ogre.h>
 #include "OgreOpcodeExports.h"
 #include "OgreNodes.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    namespace Details
    {
       /// Implements a simple string hash table.
-      class nHashTable 
+      class nHashTable
       {
       public:
          /// constructor
@@ -56,7 +56,7 @@ namespace Ogre
       //------------------------------------------------------------------------------
       /**
       */
-      inline 
+      inline
          nHashTable::nHashTable(int size)
       {
          this->htable_size = size;
@@ -74,22 +74,22 @@ namespace Ogre
       //------------------------------------------------------------------------------
       /**
       */
-      static 
-         inline 
+      static
+         inline
          int hash(const char *str, int htable_size)
       {
          int i = 0;
          int j = 1;
          char c;
-         while ((c = *str++)) i += ((uchar)c) * j++; 
+         while ((c = *str++)) i += ((uchar)c) * j++;
          return (i % htable_size);
       }
 
       //------------------------------------------------------------------------------
       /**
       */
-      inline 
-         void 
+      inline
+         void
          nHashTable::Add(nStrNode* n)
       {
          int h_index = hash(n->GetName(), this->htable_size);
@@ -99,7 +99,7 @@ namespace Ogre
       //------------------------------------------------------------------------------
       /**
       */
-      inline 
+      inline
          nStrNode*
          nHashTable::Find(const char* str) const
       {
@@ -108,7 +108,7 @@ namespace Ogre
       }
 
       /// A node element in a nHashList.
-      class nHashNode : public nNode 
+      class nHashNode : public nNode
       {
       public:
          /// default constructor
@@ -160,7 +160,7 @@ namespace Ogre
       /**
       */
       inline
-         void 
+         void
          nHashNode::SetHashTable(nHashTable* t)
       {
          // t can be 0!
@@ -213,24 +213,24 @@ namespace Ogre
       /**
       */
       inline
-         void 
-         nHashNode::SetName(const char* name) 
+         void
+         nHashNode::SetName(const char* name)
       {
-         if (this->IsLinked()) 
+         if (this->IsLinked())
          {
             assert(this->h_table);
             this->str_node.Remove();
             this->str_node.SetName(name);
             this->h_table->Add(&(this->str_node));
-         } 
-         else 
+         }
+         else
          {
             this->str_node.SetName(name);
          }
       }
-      
+
       /// A doubly linked list of named nodes with fast hashtable based search.
-      class nHashList : public nList 
+      class nHashList : public nList
       {
       public:
          // default constructor
@@ -253,7 +253,7 @@ namespace Ogre
          nHashNode* Find(const char* name) const;
 
       private:
-         enum 
+         enum
          {
             N_DEFAULT_HASHSIZE = 16,
          };
@@ -304,7 +304,7 @@ namespace Ogre
       /**
       */
       inline
-         void 
+         void
          nHashList::AddHead(nHashNode* n)
       {
          assert(n);
@@ -334,7 +334,7 @@ namespace Ogre
          nHashList::RemHead()
       {
          nHashNode *n = (nHashNode *) nList::RemHead();
-         if (n) 
+         if (n)
          {
             n->str_node.Remove();
             n->SetHashTable(0);
@@ -350,7 +350,7 @@ namespace Ogre
          nHashList::RemTail()
       {
          nHashNode *n = (nHashNode *) nList::RemTail();
-         if (n) 
+         if (n)
          {
             n->str_node.Remove();
             n->SetHashTable(0);
@@ -366,18 +366,17 @@ namespace Ogre
          nHashList::Find(const char *name) const
       {
          nStrNode *sn = this->h_table.Find(name);
-         if (sn) 
+         if (sn)
          {
             return (nHashNode *) sn->GetPtr();
          }
-         else    
+         else
          {
             return 0;
          }
       }
 
    } // namespace Details
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreHash_h__
-/// @endcond

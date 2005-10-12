@@ -72,7 +72,7 @@
 }
 
 //! TO BE DOCUMENTED
-BOOL CoplanarTriTri(const Point& n, const Point& v0, const Point& v1, const Point& v2, const Point& u0, const Point& u1, const Point& u2)
+BOOL CoplanarTriTri(const IceMaths::Point& n, const IceMaths::Point& v0, const IceMaths::Point& v1, const IceMaths::Point& v2, const IceMaths::Point& u0, const IceMaths::Point& u1, const IceMaths::Point& u2)
 {
 	float A[3];
 	short i0,i1;
@@ -176,15 +176,15 @@ BOOL CoplanarTriTri(const Point& n, const Point& v0, const Point& v1, const Poin
  *	\return		true if triangles overlap
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL AABBTreeCollider::TriTriOverlap(const Point& V0, const Point& V1, const Point& V2, const Point& U0, const Point& U1, const Point& U2)
+inline_ BOOL AABBTreeCollider::TriTriOverlap(const IceMaths::Point& V0, const IceMaths::Point& V1, const IceMaths::Point& V2, const IceMaths::Point& U0, const IceMaths::Point& U1, const IceMaths::Point& U2)
 {
 	// Stats
 	mNbPrimPrimTests++;
 
 	// Compute plane equation of triangle(V0,V1,V2)
-	Point E1 = V1 - V0;
-	Point E2 = V2 - V0;
-	const Point N1 = E1 ^ E2;
+	IceMaths::Point E1 = V1 - V0;
+	IceMaths::Point E2 = V2 - V0;
+	const IceMaths::Point N1 = E1 ^ E2;
 	const float d1 =-N1 | V0;
 	// Plane equation 1: N1.X+d1=0
 
@@ -208,7 +208,7 @@ inline_ BOOL AABBTreeCollider::TriTriOverlap(const Point& V0, const Point& V1, c
 	// Compute plane of triangle (U0,U1,U2)
 	E1 = U1 - U0;
 	E2 = U2 - U0;
-	const Point N2 = E1 ^ E2;
+   const IceMaths::Point N2 = E1 ^ E2;
 	const float d2=-N2 | U0;
 	// plane equation 2: N2.X+d2=0
 
@@ -230,7 +230,7 @@ inline_ BOOL AABBTreeCollider::TriTriOverlap(const Point& V0, const Point& V1, c
 		return FALSE;				// no intersection occurs
 
 	// Compute direction of intersection line
-	const Point D = N1^N2;
+	const IceMaths::Point D = N1^N2;
 
 	// Compute and index to the largest component of D
 	float max=fabsf(D[0]);

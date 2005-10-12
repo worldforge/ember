@@ -2,11 +2,13 @@
 ///  @file OgreCollisionReporter.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 29-05-2005
+///  @author The OgreOpcode Team @date 29-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -26,14 +28,14 @@
 #ifndef __OgreCollisionReporter_h__
 #define __OgreCollisionReporter_h__
 
-#include <Ogre.h>
-#include "OgreKeyArray.h"
 #include "OgreOpcodeExports.h"
+#include <set>
+#include <map>
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
 
-namespace Ogre
+namespace OgreOpcode
 {
    class CollisionObject;
    
@@ -47,6 +49,9 @@ namespace Ogre
       Vector3 contact; ///< the point of contact 
       Vector3 co1_normal; ///< co1's collision plane normal
       Vector3 co2_normal; ///< co2's collision plane normal
+      unsigned int numBVBVTests;
+      unsigned int numBVPrimTests;
+      unsigned int numPrimPrimTests;
    };
 
    /// Collect and manage CollisionPair%s.
@@ -55,126 +60,155 @@ namespace Ogre
    /// the CollisionContext avoid redundant checks.
    class _OgreOpcode_Export CollisionReporter
    {
-      enum
-      {
-         MAX_REPORTS_PER_OBJECT = 256,
-      };
+      static const int max_reports_per_object = 256;
+      
+      typedef std::set<unsigned int> UIntSet;
+      typedef std::map<unsigned int, CollisionPair> CollPairMap;
+      UIntSet test_pairs;
+      CollPairMap coll_pairs;
+      CollisionPair *report_array[max_reports_per_object];
 
-      nKeyArray<CollisionPair> coll_pairs;
-      CollisionPair *report_array[MAX_REPORTS_PER_OBJECT];
+   public:
+      // Misc stats
+      unsigned int mTotalObjObjTests;
+      unsigned int mTotalBVBVTests;
+      unsigned int mTotalBVPrimTests;
+      unsigned int mTotalPrimPrimTests;
 
    private:
 
       // Merge the 2 object id's into 1 32 bit id,
       // order them, so that any combination of 2 id's
       // results in the same merged id. Return true
-      // a swap happend (because other attributes
+      // a swap happened (because other attributes
       // may have to be swapped as well).
-      bool get_merged_id(int id1, int id2, int& mrg)
-      {
-         if (id1 > id2)
-         {
-            mrg = ((id2 & 0xffff)<<16) | (id1 & 0xffff);
-            return true;
-         } else
-         {
-            mrg = ((id1 & 0xffff)<<16) | (id2 & 0xffff);
-            return false;
-         }
-      };
+     bool get_merged_id(int id1, int id2, unsigned int& mrg)
+     {
+       if (id1 > id2)
+       {
+         mrg = ((id2 & 0xffff)<<16) | (id1 & 0xffff);
+         return true;
+       } else
+       {
+         mrg = ((id1 & 0xffff)<<16) | (id2 & 0xffff);
+         return false;
+       }
+     };
    public:
-      CollisionReporter(void)
-         : coll_pairs(128,128)
+      CollisionReporter()
       {}
       
-      /// initialize nKeyArray for new collision frame
-      void BeginFrame(void)
+      /// initialize data for new collision frame
+      void BeginFrame()
       {
-         this->coll_pairs.Clear();
-         memset(this->report_array,0,sizeof(this->report_array));
+         test_pairs.clear();
+         coll_pairs.clear();
+         memset(report_array,0,sizeof(report_array));
+         mTotalObjObjTests=0;
+         mTotalBVBVTests=0;
+         mTotalBVPrimTests=0;
+         mTotalPrimPrimTests=0;
       };
 
       /// check if a collision has already been reported
-      bool CollissionExists(int id1, int id2)
+      bool CollisionExists(int id1, int id2)
       {
          // generate the merged 32 bit id, and query key array
          // for the collision
-         int key;
-         this->get_merged_id(id1,id2,key);
-         CollisionPair *cr;
-         if (this->coll_pairs.FindPtr(key,cr))
-         {
-            return true;
-         } else
-         {
-            return false;
-         }
+         unsigned int key;
+         get_merged_id(id1,id2,key);
+         return ( coll_pairs.find(key)!= coll_pairs.end() );
       };
 
       /// add a new collision 
-      void AddCollission(CollisionPair& cr, int id1, int id2)
+      void AddCollision(CollisionPair& cr, int id1, int id2)
       {
          // generate the merged 32 bit id and add collision report
-         int key;
-         this->get_merged_id(id1,id2,key);
-         this->coll_pairs.Add(key,cr);
+         unsigned int key;
+         get_merged_id(id1,id2,key);
+         // Add check for existence in debug mode??
+         coll_pairs.insert(CollPairMap::value_type(key, cr));
+      };
+
+      /// check if a collision has already been tested for
+      bool CollisionTested(int id1, int id2)
+      {
+        // generate the merged 32 bit id, and query key array
+        // for the collision
+        unsigned int key;
+        get_merged_id(id1,id2,key);
+        return (test_pairs.find(key)!=test_pairs.end());
+      };
+
+      /// Register that a test has been performed already
+      void AddCollisionTest(int id1, int id2)
+      {
+        // generate the merged 32 bit id and add record
+        unsigned int key;
+        get_merged_id(id1,id2,key);
+        test_pairs.insert(key);
       };
 
       /// end a collision frame
-      void EndFrame(void) { };
+      void EndFrame() { };
 
       /// get overall number of collisions recorded
-      int GetNumCollissions(void)
+      int GetNumCollisions()
       {
-         return this->coll_pairs.Size();
+         return coll_pairs.size();
+      };
+
+      /// get overall number of tests performed
+      int GetNumCollisionTests()
+      {
+        return test_pairs.size();
       };
 
       /// report collisions for a specific object.
       /// returns number of collisions and pointer to an array of collision report
       /// pointers into the nKeyArray.
-      int GetCollissions(CollisionObject *co, CollisionPair **& cr_ptr)
+      int GetCollisions(CollisionObject *co, CollisionPair **& cr_ptr)
       {
          // fill report array with all collisions which this
          // object is involved in.
          assert(co);
          int num_reports = 0;
-         int i;
-         int num = this->coll_pairs.Size();
+         int num = coll_pairs.size();
 
-         if (num > MAX_REPORTS_PER_OBJECT)
+         if (num > max_reports_per_object)
          {
-            num = MAX_REPORTS_PER_OBJECT;
+            num = max_reports_per_object;
          }
-
-         for (i = 0; i < num; i++) 
+         CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
+         for (; icp!=iend; ++icp)
          {
-            CollisionPair *cr = &(this->coll_pairs.GetElementAt(i));
-            if ((cr->co1 == co) || (cr->co2 == co)) 
-            {
-               this->report_array[num_reports++] = cr;
-            }
+           CollisionPair &cp = icp->second;
+           if ((cp.co1 == co) || (cp.co2 == co)) 
+           {
+             report_array[num_reports++] = &cp;
+           }
          }
-         cr_ptr = this->report_array;
+         cr_ptr = report_array;
          return num_reports;
       }
 
       /// get all recorded collisions.
-      int GetAllCollissions(CollisionPair **& cr_ptr) 
+      int GetAllCollisions(CollisionPair **& cr_ptr) 
       {
-         int num = this->coll_pairs.Size();
+         int num = coll_pairs.size();
          int i;
 
-         if (num > MAX_REPORTS_PER_OBJECT)
+         if (num > max_reports_per_object)
          {
-            num = MAX_REPORTS_PER_OBJECT;
+            num = max_reports_per_object;
          }
 
-         for (i = 0; i < num; i++) 
+         CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
+         for (i=0; icp!=iend; ++icp)
          {
-            CollisionPair *cr = &(this->coll_pairs.GetElementAt(i));
-            this->report_array[i] = cr;
+            report_array[i++] = &icp->second;
          }
-         cr_ptr = this->report_array;
+         cr_ptr = report_array;
          return num;
       }
 
@@ -182,32 +216,32 @@ namespace Ogre
       /// @param  v       [in] origin coordinate
       /// @param  crPtr   [out] pointer to collide report pointer array
       /// @return         number of entries in collide report pointer array (0 or 1)
-      int GetClosestCollission(const Vector3& v, CollisionPair **& crPtr)
+      int GetClosestCollision(const Vector3& v, CollisionPair **& crPtr)
       {
-         int num = this->coll_pairs.Size();
+         int num = coll_pairs.size();
          if (0 == num)
          {
             crPtr = 0;
             return 0;
          }
 
-         int i;
          Vector3 distVec;
-         CollisionPair* minPtr = &(this->coll_pairs.GetElementAt(0));
-         float minDist = Vector3(minPtr->contact - v).length();
-         for (i = 1; i < num; i++)
+         CollisionPair* minPtr = &coll_pairs.begin()->second;
+         float minDist = Vector3(minPtr->contact - v).squaredLength();
+         CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
+         for (; icp!=iend; ++icp)
          {
-            CollisionPair* curPtr = &(this->coll_pairs.GetElementAt(i));
-            distVec = curPtr->contact - v;
-            Real dist = distVec.length();
-            if (dist < minDist)
-            {
-               minDist = dist;
-               minPtr  = curPtr;
-            }
+           CollisionPair* curPtr = &icp->second;
+           distVec = curPtr->contact - v;
+           Real dist = distVec.squaredLength();
+           if (dist < minDist)
+           {
+             minDist = dist;
+             minPtr  = curPtr;
+           }
          }
-         this->report_array[0] = minPtr;
-         crPtr = this->report_array;
+         report_array[0] = minPtr;
+         crPtr = report_array;
          return 1;
       }
    };

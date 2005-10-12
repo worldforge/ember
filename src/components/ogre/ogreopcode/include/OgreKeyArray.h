@@ -1,44 +1,45 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreKeyArray.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 30-05-2005
-///  
+///  @author The OgreOpcode Team @date 30-05-2005
+///
 ///////////////////////////////////////////////////////////////////////////////
-///  
+///
 ///  This file is part of OgreOpcode.
-///  
+///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
 ///  version 2.1 of the License, or (at your option) any later version.
-///  
+///
 ///  OgreOpcode is distributed in the hope that it will be useful,
 ///  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ///  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  Lesser General Public License for more details.
-///  
+///
 ///  You should have received a copy of the GNU Lesser General Public
 ///  License along with OgreOpcode; if not, write to the Free Software
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-///  
+///
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef __OgreKeyArray_h__
 #define __OgreKeyArray_h__
 #include "OgreOpcodeExports.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    namespace Details
    {
       /// Implements growable array of key-pointer pairs. The array is kept sorted for fast bsearch() by key.
-      template<class TYPE> class nKeyArray 
+      template<class TYPE> class nKeyArray
       {
       public:
          /// constructor for non-growable array
          nKeyArray(int num);
-         /// constructor for growable array    
+         /// constructor for growable array
          nKeyArray(int num, int grow);
          /// destructor
          ~nKeyArray();
@@ -79,7 +80,7 @@ namespace Ogre
          int maxElms;
          int growElms;
          nKAElement* curElm;
-         nKAElement* elmArray;    
+         nKAElement* elmArray;
       };
 
       //------------------------------------------------------------------------------
@@ -130,40 +131,40 @@ namespace Ogre
          nKAElement* lo = &(this->elmArray[0]);
          nKAElement* hi = &(this->elmArray[num-1]);
          nKAElement* mid;
-         while (lo <= hi) 
+         while (lo <= hi)
          {
-            if ((half = num/2)) 
+            if ((half = num/2))
             {
                mid = lo + ((num & 1) ? half : (half - 1));
                int diff = key - mid->key;
-               if (diff < 0) 
+               if (diff < 0)
                {
                   hi = mid - 1;
                   num = num & 1 ? half : half-1;
-               } 
-               else if (diff > 0) 
+               }
+               else if (diff > 0)
                {
                   lo = mid + 1;
                   num = half;
-               } 
+               }
                else
                {
                   return mid;
                }
-            } 
-            else if (num) 
+            }
+            else if (num)
             {
                int diff = key - lo->key;
-               if (diff) 
+               if (diff)
                {
                   return 0;
                }
-               else      
+               else
                {
                   return lo;
                }
-            } 
-            else 
+            }
+            else
             {
                break;
             }
@@ -203,9 +204,9 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         nKeyArray<TYPE>::~nKeyArray() 
+         nKeyArray<TYPE>::~nKeyArray()
       {
-         if (this->elmArray) 
+         if (this->elmArray)
          {
             delete[] this->elmArray;
          }
@@ -215,11 +216,11 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         void 
-         nKeyArray<TYPE>::Add(int key, const TYPE& e) 
+         void
+         nKeyArray<TYPE>::Add(int key, const TYPE& e)
       {
          // need to grow array?
-         if (this->numElms == this->maxElms) 
+         if (this->numElms == this->maxElms)
          {
             assert(this->growElms > 0);
             this->grow();
@@ -227,15 +228,15 @@ namespace Ogre
 
          // insert key into array, keep array sorted by key
          int i;
-         for (i = 0; i < this->numElms; i++) 
+         for (i = 0; i < this->numElms; i++)
          {
             nKAElement* kae = &(this->elmArray[i]);
-            if (key < kae->key) 
+            if (key < kae->key)
             {
                // insert in front of 'e'
                nKAElement* kaeSucc = kae + 1;
                int numMove = this->numElms - i;
-               if (numMove > 0) 
+               if (numMove > 0)
                {
                   memmove(kaeSucc, kae, numMove * sizeof(nKAElement));
                }
@@ -257,28 +258,28 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         bool 
-         nKeyArray<TYPE>::Find(int key, TYPE& e) 
+         bool
+         nKeyArray<TYPE>::Find(int key, TYPE& e)
       {
-         if (this->numElms == 0) 
+         if (this->numElms == 0)
          {
             return false;
          }
-         if (this->curElm && (this->curElm->key == key)) 
+         if (this->curElm && (this->curElm->key == key))
          {
             e = this->curElm->elm;
             return true;
-         } 
-         else 
+         }
+         else
          {
             nKAElement* p = this->bsearch(key);
-            if (p) 
+            if (p)
             {
                this->curElm = p;
                e = this->curElm->elm;
                return true;
-            } 
-            else 
+            }
+            else
             {
                return false;
             }
@@ -289,28 +290,28 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         bool 
-         nKeyArray<TYPE>::FindPtr(int key, TYPE*& e) 
+         bool
+         nKeyArray<TYPE>::FindPtr(int key, TYPE*& e)
       {
-         if (this->numElms == 0) 
+         if (this->numElms == 0)
          {
             return false;
          }
-         if (this->curElm && (this->curElm->key == key)) 
+         if (this->curElm && (this->curElm->key == key))
          {
             e = &(this->curElm->elm);
             return true;
-         } 
-         else 
+         }
+         else
          {
             nKAElement* p = this->bsearch(key);
-            if (p) 
+            if (p)
             {
                this->curElm = p;
                e = &(this->curElm->elm);
                return true;
-            } 
-            else 
+            }
+            else
             {
                return false;
             }
@@ -321,18 +322,18 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         void 
-         nKeyArray<TYPE>::Rem(int key) 
+         void
+         nKeyArray<TYPE>::Rem(int key)
       {
          nKAElement* e = this->bsearch(key);
-         if (e) 
+         if (e)
          {
             this->curElm = NULL;
             this->numElms--;
             nKAElement* eSucc = e + 1;
             int i = e - this->elmArray;
             int numMove = this->numElms - i;
-            if (numMove > 0) 
+            if (numMove > 0)
             {
                memmove(e, eSucc, numMove * sizeof(nKAElement));
             }
@@ -343,8 +344,8 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         void 
-         nKeyArray<TYPE>::RemByIndex(int index) 
+         void
+         nKeyArray<TYPE>::RemByIndex(int index)
       {
          assert((index >= 0) && (index < this->numElms));
          nKAElement* e = &(this->elmArray[index]);
@@ -352,7 +353,7 @@ namespace Ogre
          this->curElm = 0;
          this->numElms--;
          int numMove = this->numElms - index;
-         if (numMove > 0) 
+         if (numMove > 0)
          {
             memmove(e, eSucc, numMove * sizeof(nKAElement));
          }
@@ -362,7 +363,7 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         int 
+         int
          nKeyArray<TYPE>::Size() const
       {
          return this->numElms;
@@ -372,7 +373,7 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         TYPE& 
+         TYPE&
          nKeyArray<TYPE>::GetElementAt(int index) const
       {
          assert((index >= 0) && (index < this->numElms));
@@ -383,7 +384,7 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         int 
+         int
          nKeyArray<TYPE>::GetKeyAt(int index) const
       {
          assert((index >= 0) && (index < this->numElms));
@@ -394,15 +395,14 @@ namespace Ogre
       /**
       */
       template<class TYPE>
-         void 
-         nKeyArray<TYPE>::Clear() 
+         void
+         nKeyArray<TYPE>::Clear()
       {
          this->numElms = 0;
          this->curElm = 0;
       }
 
    } // namespace Details
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreKeyArray_h__
-/// @endcond

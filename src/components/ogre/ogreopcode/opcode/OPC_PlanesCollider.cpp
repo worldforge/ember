@@ -99,7 +99,7 @@ const char* PlanesCollider::ValidateSettings()
  *	\return		true if success
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool PlanesCollider::Collide(PlanesCache& cache, const Plane* planes, udword nb_planes, const Model& model, const Matrix4x4* worldm)
+bool PlanesCollider::Collide(PlanesCache& cache, const IceMaths::Plane* planes, udword nb_planes, const Model& model, const IceMaths::Matrix4x4* worldm)
 {
 	// Checkings
 	if(!Setup(&model))	return false;
@@ -172,7 +172,7 @@ bool PlanesCollider::Collide(PlanesCache& cache, const Plane* planes, udword nb_
  *	\return		TRUE if we can return immediately
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-BOOL PlanesCollider::InitQuery(PlanesCache& cache, const Plane* planes, udword nb_planes, const Matrix4x4* worldm)
+BOOL PlanesCollider::InitQuery(PlanesCache& cache, const IceMaths::Plane* planes, udword nb_planes, const IceMaths::Matrix4x4* worldm)
 {
 	// 1) Call the base method
 	VolumeCollider::InitQuery();
@@ -181,17 +181,17 @@ BOOL PlanesCollider::InitQuery(PlanesCache& cache, const Plane* planes, udword n
 	if(nb_planes>mNbPlanes)
 	{
 		DELETEARRAY(mPlanes);
-		mPlanes = new Plane[nb_planes];
+		mPlanes = new IceMaths::Plane[nb_planes];
 	}
 	mNbPlanes = nb_planes;
 
 	if(worldm)
 	{
 		// Matrix normalization & scaling stripping
-		Matrix4x4 normWorldm;
+		IceMaths::Matrix4x4 normWorldm;
 		NormalizePRSMatrix( normWorldm, mLocalScale, *worldm );
 
-		Matrix4x4 InvWorldM;
+		IceMaths::Matrix4x4 InvWorldM;
 		InvertPRMatrix(InvWorldM, normWorldm);
 
 //		for(udword i=0;i<nb_planes;i++)	mPlanes[i] = planes[i] * InvWorldM;
@@ -200,7 +200,7 @@ BOOL PlanesCollider::InitQuery(PlanesCache& cache, const Plane* planes, udword n
 	else
 	{
 		mLocalScale.Set(1.0,1.0,1.0);
-		CopyMemory(mPlanes, planes, nb_planes*sizeof(Plane));
+		CopyMemory(mPlanes, planes, nb_planes*sizeof(IceMaths::Plane));
 	}
 
 	// 3) Setup destination pointer
@@ -341,8 +341,8 @@ void PlanesCollider::_Collide(const AABBQuantizedNode* node, udword clip_mask)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Test the box against the planes. If the box is completely culled, so are its children, hence we exit.
 	udword OutClipMask;
@@ -375,8 +375,8 @@ void PlanesCollider::_CollideNoPrimitiveTest(const AABBQuantizedNode* node, udwo
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Test the box against the planes. If the box is completely culled, so are its children, hence we exit.
 	udword OutClipMask;
@@ -457,8 +457,8 @@ void PlanesCollider::_Collide(const AABBQuantizedNoLeafNode* node, udword clip_m
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Test the box against the planes. If the box is completely culled, so are its children, hence we exit.
 	udword OutClipMask;
@@ -486,8 +486,8 @@ void PlanesCollider::_CollideNoPrimitiveTest(const AABBQuantizedNoLeafNode* node
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Test the box against the planes. If the box is completely culled, so are its children, hence we exit.
 	udword OutClipMask;
@@ -529,7 +529,7 @@ HybridPlanesCollider::~HybridPlanesCollider()
 {
 }
 
-bool HybridPlanesCollider::Collide(PlanesCache& cache, const Plane* planes, udword nb_planes, const HybridModel& model, const Matrix4x4* worldm)
+bool HybridPlanesCollider::Collide(PlanesCache& cache, const IceMaths::Plane* planes, udword nb_planes, const HybridModel& model, const IceMaths::Matrix4x4* worldm)
 {
 	// We don't want primitive tests here!
 	mFlags |= OPC_NO_PRIMITIVE_TESTS;

@@ -120,7 +120,7 @@
 
 using namespace Opcode;
 
-Point MeshInterface::VertexCache[3];
+IceMaths::Point MeshInterface::VertexCache[3];
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -135,8 +135,8 @@ MeshInterface::MeshInterface() :
 	mTris			(null),
 	mVerts			(null),
 	#ifdef OPC_USE_STRIDE
-	mTriStride		(sizeof(IndexedTriangle)),
-	mVertexStride	(sizeof(Point)),
+	mTriStride		(sizeof(IceMaths::IndexedTriangle)),
+	mVertexStride	(sizeof(IceMaths::Point)),
 	#endif
 #endif
 	mNbTris			(0),
@@ -229,7 +229,7 @@ bool MeshInterface::SetCallback(RequestCallback callback, void* user_data)
  *	\return		true if success
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool MeshInterface::SetPointers(const IndexedTriangle* tris, const Point* verts)
+bool MeshInterface::SetPointers(const IceMaths::IndexedTriangle* tris, const IceMaths::Point* verts)
 {
 	if(!tris || !verts)	return SetIceError("MeshInterface::SetPointers: pointer is null", null);
 
@@ -248,8 +248,8 @@ bool MeshInterface::SetPointers(const IndexedTriangle* tris, const Point* verts)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool MeshInterface::SetStrides(udword tri_stride, udword vertex_stride)
 {
-	if(tri_stride<sizeof(IndexedTriangle))	return SetIceError("MeshInterface::SetStrides: invalid triangle stride", null);
-	if(vertex_stride<sizeof(Point))			return SetIceError("MeshInterface::SetStrides: invalid vertex stride", null);
+	if(tri_stride<sizeof(IceMaths::IndexedTriangle))	return SetIceError("MeshInterface::SetStrides: invalid triangle stride", null);
+	if(vertex_stride<sizeof(IceMaths::Point))			return SetIceError("MeshInterface::SetStrides: invalid vertex stride", null);
 
 	mTriStride		= tri_stride;
 	mVertexStride	= vertex_stride;
@@ -276,24 +276,24 @@ bool MeshInterface::RemapClient(udword nb_indices, const udword* permutation) co
 	// We can't really do that using callbacks
 	return false;
 #else
-	IndexedTriangle* Tmp = new IndexedTriangle[mNbTris];
+	IceMaths::IndexedTriangle* Tmp = new IceMaths::IndexedTriangle[mNbTris];
 	CHECKALLOC(Tmp);
 
 	#ifdef OPC_USE_STRIDE
 	udword Stride = mTriStride;
 	#else
-	udword Stride = sizeof(IndexedTriangle);
+	udword Stride = sizeof(IceMaths::IndexedTriangle);
 	#endif
 
 	for(udword i=0;i<mNbTris;i++)
 	{
-		const IndexedTriangle* T = (const IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
+		const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
 		Tmp[i] = *T;
 	}
 
 	for(udword i=0;i<mNbTris;i++)
 	{
-		IndexedTriangle* T = (IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
+		IceMaths::IndexedTriangle* T = (IceMaths::IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
 		*T = Tmp[permutation[i]];
 	}
 

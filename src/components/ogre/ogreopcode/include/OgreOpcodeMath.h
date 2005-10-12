@@ -1,13 +1,14 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeMath.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 31-05-2005
+///  @author The OgreOpcode Team @date 31-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -27,10 +28,9 @@
 #ifndef __OgreOpcodeMath_h__
 #define __OgreOpcodeMath_h__
 
-#include <Ogre.h>
 #include "OgreOpcodeExports.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    namespace Details
    {
@@ -112,7 +112,7 @@ namespace Ogre
          //--- get the face normal of the triangle ---------------------------------
          Vector3 normal(void) const
          {
-            Vector3 cross(e0*e1);
+            Vector3 cross = e0.crossProduct(e1);
             cross.normalise();
             return cross;
          };
@@ -151,7 +151,7 @@ namespace Ogre
             // the plane normal.  If the angle between the line direction and normal
             // is small, then the line is effectively parallel to the triangle.
             const Real fTolerance = 1e-04f;
-            Vector3 norm(e0*e1);
+            Vector3 norm = e0.crossProduct(e1);
             Real fDenominator = norm.dotProduct(line.m);
             //Real fLLenSqr     = line.m % line.m;
             //Real fNLenSqr     = norm % norm;
@@ -207,7 +207,7 @@ namespace Ogre
             // the plane normal.  If the angle between the line direction and normal
             // is small, then the line is effectively parallel to the triangle.
             const Real fTolerance = 1e-04f;
-            Vector3 norm(e0*e1);
+            Vector3 norm = e0.crossProduct(e1);
             Real fDenominator = norm.dotProduct(line.m);
             Real fLLenSqr     = line.m.dotProduct(line.m);
             Real fNLenSqr     = norm.dotProduct(norm);
@@ -670,4 +670,3 @@ namespace Ogre
    }
 }
 #endif // __OgreOpcodeMath_h__
-/// @endcond

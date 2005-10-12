@@ -67,4 +67,4 @@
 		#include "Ice/IceSegment.h"
 		#include "Ice/IceLSS.h"
 	}
-	using namespace IceMaths;
+	//using namespace IceMaths;

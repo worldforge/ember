@@ -23,5 +23,3 @@ libOpcode_a_SOURCES = OPC_AABBCollider.cpp OPC_AABBTree.cpp \
 	OPC_Settings.h OPC_SphereAABBOverlap.h OPC_SphereCollider.h OPC_SphereTriOverlap.h \
 	OPC_SweepAndPrune.h OPC_TreeBuilders.h OPC_TreeCollider.h OPC_TriBoxOverlap.h \
 	OPC_TriTriOverlap.h OPC_VolumeCollider.h Stdafx.h
-
-

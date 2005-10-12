@@ -91,7 +91,7 @@ void ReleasePruningSorters()
  *	\return		true if success.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Opcode::BipartiteBoxPruning(udword nb0, const AABB** array0, udword nb1, const AABB** array1, Pairs& pairs, const Axes& axes)
+bool Opcode::BipartiteBoxPruning(udword nb0, const IceMaths::AABB** array0, udword nb1, const IceMaths::AABB** array1, Pairs& pairs, const IceMaths::Axes& axes)
 {
 	// Checkings
 	if(!nb0 || !array0 || !nb1 || !array1)	return false;
@@ -185,7 +185,7 @@ bool Opcode::BipartiteBoxPruning(udword nb0, const AABB** array0, udword nb1, co
  *	\return		true if success.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Opcode::CompleteBoxPruning(udword nb, const AABB** array, Pairs& pairs, const Axes& axes)
+bool Opcode::CompleteBoxPruning(udword nb, const IceMaths::AABB** array, Pairs& pairs, const IceMaths::Axes& axes)
 {
 	// Checkings
 	if(!nb || !array)	return false;
@@ -325,7 +325,7 @@ PosList[nb++] = MAX_FLOAT;
  *	\return		true if success.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Opcode::BruteForceBipartiteBoxTest(udword nb0, const AABB** array0, udword nb1, const AABB** array1, Pairs& pairs)
+bool Opcode::BruteForceBipartiteBoxTest(udword nb0, const IceMaths::AABB** array0, udword nb1, const IceMaths::AABB** array1, Pairs& pairs)
 {
 	// Checkings
 	if(!nb0 || !array0 || !nb1 || !array1)	return false;
@@ -350,7 +350,7 @@ bool Opcode::BruteForceBipartiteBoxTest(udword nb0, const AABB** array0, udword 
  *	\return		true if success.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Opcode::BruteForceCompleteBoxTest(udword nb, const AABB** array, Pairs& pairs)
+bool Opcode::BruteForceCompleteBoxTest(udword nb, const IceMaths::AABB** array, Pairs& pairs)
 {
 	// Checkings
 	if(!nb || !array)	return false;

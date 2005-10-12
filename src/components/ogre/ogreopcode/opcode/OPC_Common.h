@@ -33,14 +33,14 @@
 		//! Constructor
 		inline_				CollisionAABB()						{}
 		//! Constructor
-		inline_				CollisionAABB(const AABB& b)		{ b.GetCenter(mCenter);	b.GetExtents(mExtents);	}
+      inline_				CollisionAABB(const IceMaths::AABB& b)		{ b.GetCenter(mCenter);	b.GetExtents(mExtents);	}
 		//! Destructor
 		inline_				~CollisionAABB()					{}
 
 		//! Get min point of the box
-		inline_	void		GetMin(Point& min)		const		{ min = mCenter - mExtents;					}
+		inline_	void		GetMin(IceMaths::Point& min)		const		{ min = mCenter - mExtents;					}
 		//! Get max point of the box
-		inline_	void		GetMax(Point& max)		const		{ max = mCenter + mExtents;					}
+		inline_	void		GetMax(IceMaths::Point& max)		const		{ max = mCenter + mExtents;					}
 
 		//! Get component of the box's min point along a given axis
 		inline_	float		GetMin(udword axis)		const		{ return mCenter[axis] - mExtents[axis];	}
@@ -54,7 +54,7 @@
 		 *	\param		max			[in] the max point
 		 */
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		inline_	void		SetMinMax(const Point& min, const Point& max)		{ mCenter = (max + min)*0.5f; mExtents = (max - min)*0.5f;		}
+		inline_	void		SetMinMax(const IceMaths::Point& min, const IceMaths::Point& max)		{ mCenter = (max + min)*0.5f; mExtents = (max - min)*0.5f;		}
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/**
@@ -74,8 +74,8 @@
 								return TRUE;
 							}
 
-				Point		mCenter;				//!< Box center
-				Point		mExtents;				//!< Box extents
+				IceMaths::Point		mCenter;				//!< Box center
+				IceMaths::Point		mExtents;				//!< Box extents
 	};
 
 	class OPCODE_API QuantizedAABB
@@ -91,7 +91,7 @@
 	};
 
 	//! Quickly rotates & translates a vector
-	inline_ void TransformPoint(Point& dest, const Point& source, const Matrix3x3& rot, const Point& trans)
+	inline_ void TransformPoint(IceMaths::Point& dest, const IceMaths::Point& source, const IceMaths::Matrix3x3& rot, const IceMaths::Point& trans)
 	{
 		dest.x = trans.x + source.x * rot.m[0][0] + source.y * rot.m[1][0] + source.z * rot.m[2][0];
 		dest.y = trans.y + source.x * rot.m[0][1] + source.y * rot.m[1][1] + source.z * rot.m[2][1];

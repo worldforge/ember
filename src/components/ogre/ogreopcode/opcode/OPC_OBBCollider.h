@@ -30,7 +30,7 @@
 					}
 
 		// Cached faces signature
-		OBB				FatBox;		//!< Box used when performing the query resulting in cached faces
+		IceMaths::OBB				FatBox;		//!< Box used when performing the query resulting in cached faces
 		// User settings
 		float			FatCoeff;	//!< extents multiplier used to create a fat box
 	};
@@ -58,7 +58,7 @@
 		 *	\warning	SCALE NOT SUPPORTED IN OBB MATRIX. The obb's matrix must contain rotation & translation parts only.
 		 */
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-							bool			Collide(OBBCache& cache, const OBB& box, const Model& model, const Matrix4x4* worldb=null, const Matrix4x4* worldm=null);
+							bool			Collide(OBBCache& cache, const IceMaths::OBB& box, const Model& model, const IceMaths::Matrix4x4* worldb=null, const IceMaths::Matrix4x4* worldm=null);
 
 		// Settings
 
@@ -82,17 +82,17 @@
 
 		protected:
 		// Precomputed data
-							Matrix3x3		mAR;				//!< Absolute rotation matrix
-							Matrix3x3		mRModelToBox;		//!< Rotation from model space to obb space
-							Matrix3x3		mRBoxToModel;		//!< Rotation from obb space to model space
-							Point			mTModelToBox;		//!< Translation from model space to obb space
-							Point			mTBoxToModel;		//!< Translation from obb space to model space
+							IceMaths::Matrix3x3		mAR;				//!< Absolute rotation matrix
+							IceMaths::Matrix3x3		mRModelToBox;		//!< Rotation from model space to obb space
+							IceMaths::Matrix3x3		mRBoxToModel;		//!< Rotation from obb space to model space
+							IceMaths::Point			mTModelToBox;		//!< Translation from model space to obb space
+							IceMaths::Point			mTBoxToModel;		//!< Translation from obb space to model space
 
-							Matrix3x3		mSRModelToBox;		//!< Scale and Rotation from model space to obb space
+							IceMaths::Matrix3x3		mSRModelToBox;		//!< Scale and Rotation from model space to obb space
 
-							Point			mBoxExtents;
-							Point			mB0;				//!< - mTModelToBox + mBoxExtents
-							Point			mB1;				//!< - mTModelToBox - mBoxExtents
+							IceMaths::Point			mBoxExtents;
+							IceMaths::Point			mB0;				//!< - mTModelToBox + mBoxExtents
+							IceMaths::Point			mB1;				//!< - mTModelToBox - mBoxExtents
 
 							float			mBBx1;
 							float			mBBy1;
@@ -109,7 +109,7 @@
 							float			mBB_9;
 
 		// Leaf description
-							Point			mLeafVerts[3];		//!< Triangle vertices
+							IceMaths::Point			mLeafVerts[3];		//!< Triangle vertices
 		// Settings
 							bool			mFullBoxBoxTest;	//!< Perform full BV-BV tests (true) or SAT-lite tests (false)
 		// Internal methods
@@ -122,11 +122,11 @@
 							void			_CollideNoPrimitiveTest(const AABBQuantizedNode* node);
 							void			_CollideNoPrimitiveTest(const AABBQuantizedNoLeafNode* node);
 			// Overlap tests
-		inline_				BOOL			OBBContainsBox(const Point& bc, const Point& be);
-		inline_				BOOL			BoxBoxOverlap(const Point& extents, const Point& center);
+		inline_				BOOL			OBBContainsBox(const IceMaths::Point& bc, const IceMaths::Point& be);
+		inline_				BOOL			BoxBoxOverlap(const IceMaths::Point& extents, const IceMaths::Point& center);
 		inline_				BOOL			TriBoxOverlap();
 			// Init methods
-							BOOL			InitQuery(OBBCache& cache, const OBB& box, const Matrix4x4* worldb=null, const Matrix4x4* worldm=null);
+							BOOL			InitQuery(OBBCache& cache, const IceMaths::OBB& box, const IceMaths::Matrix4x4* worldb=null, const IceMaths::Matrix4x4* worldm=null);
 	};
 
 	class OPCODE_API HybridOBBCollider : public OBBCollider
@@ -136,7 +136,7 @@
 											HybridOBBCollider();
 		virtual								~HybridOBBCollider();
 
-							bool			Collide(OBBCache& cache, const OBB& box, const HybridModel& model, const Matrix4x4* worldb=null, const Matrix4x4* worldm=null);
+							bool			Collide(OBBCache& cache, const IceMaths::OBB& box, const HybridModel& model, const IceMaths::Matrix4x4* worldb=null, const IceMaths::Matrix4x4* worldm=null);
 		protected:
 							Container		mTouchedBoxes;
 	};

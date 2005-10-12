@@ -68,8 +68,8 @@
 								SweepAndPrune();
 								~SweepAndPrune();
 
-				bool			Init(udword nb_objects, const AABB** boxes);
-				bool			UpdateObject(udword i, const AABB& box);
+				bool			Init(udword nb_objects, const IceMaths::AABB** boxes);
+				bool			UpdateObject(udword i, const IceMaths::AABB& box);
 
 				void			GetPairs(Pairs& pairs)								const;
 				void			GetPairs(PairCallback callback, void* user_data)	const;

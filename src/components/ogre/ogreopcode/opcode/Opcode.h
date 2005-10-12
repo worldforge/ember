@@ -44,16 +44,16 @@
 // Compilation messages
 #ifdef _MSC_VER
 	#if defined(OPCODE_EXPORTS)
-		// #pragma message("Compiling OPCODE")
+		 #pragma message("Compiling OPCODE")
 	#elif !defined(OPCODE_EXPORTS)
-		// #pragma message("Using OPCODE")
+		 #pragma message("Using OPCODE")
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Automatic linking
 		#ifndef BAN_OPCODE_AUTOLINK
 			#ifdef _DEBUG
-				//#pragma comment(lib, "Opcode_D.lib")
+				#pragma comment(lib, "Opcode_D.lib")
 			#else
-				//#pragma comment(lib, "Opcode.lib")
+				#pragma comment(lib, "Opcode.lib")
 			#endif
 		#endif
 	#endif
@@ -61,14 +61,18 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Preprocessor
-#ifndef ICE_NO_DLL
-	#ifdef OPCODE_EXPORTS
-		#define OPCODE_API// __declspec(dllexport)
+#ifdef _MSC_VER
+	#ifndef ICE_NO_DLL
+		#ifdef OPCODE_EXPORTS
+			#define OPCODE_API __declspec(dllexport)
+		#else
+			#define OPCODE_API __declspec(dllimport)
+		#endif
 	#else
-		#define OPCODE_API// __declspec(dllimport)
+		#define OPCODE_API
 	#endif
 #else
-		#define OPCODE_API
+	#define OPCODE_API
 #endif
 
 	#include "OPC_IceHook.h"

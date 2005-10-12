@@ -92,10 +92,10 @@
 		// Touched primitives
 							Container*		mTouchedPrimitives;	//!< List of touched primitives
 		// Precompured scale cache
-							Point			mLocalScale;		//!< Collision model's local scale (stripped off from its matrix)
+							IceMaths::Point			mLocalScale;		//!< Collision model's local scale (stripped off from its matrix)
 		// Dequantization coeffs
-							Point			mCenterCoeff;
-							Point			mExtentsCoeff;
+							IceMaths::Point			mCenterCoeff;
+							IceMaths::Point			mExtentsCoeff;
 		// Stats
 							udword			mNbVolumeBVTests;	//!< Number of Volume-BV tests
 							udword			mNbVolumePrimTests;	//!< Number of Volume-Primitive tests

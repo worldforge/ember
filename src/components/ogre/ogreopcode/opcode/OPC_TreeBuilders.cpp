@@ -63,7 +63,7 @@ using namespace Opcode;
  *	\return		true if success
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool AABBTreeOfAABBsBuilder::ComputeGlobalBox(const udword* primitives, udword nb_prims, AABB& global_box) const
+bool AABBTreeOfAABBsBuilder::ComputeGlobalBox(const udword* primitives, udword nb_prims, IceMaths::AABB& global_box) const
 {
 	// Checkings
 	if(!primitives || !nb_prims)	return false;
@@ -104,14 +104,14 @@ float AABBTreeOfAABBsBuilder::GetSplittingValue(udword index, udword axis) const
  *	\return		true if success
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool AABBTreeOfTrianglesBuilder::ComputeGlobalBox(const udword* primitives, udword nb_prims, AABB& global_box) const
+bool AABBTreeOfTrianglesBuilder::ComputeGlobalBox(const udword* primitives, udword nb_prims, IceMaths::AABB& global_box) const
 {
 	// Checkings
 	if(!primitives || !nb_prims)	return false;
 
 	// Initialize global box
-	Point Min(MAX_FLOAT, MAX_FLOAT, MAX_FLOAT);
-	Point Max(MIN_FLOAT, MIN_FLOAT, MIN_FLOAT);
+	IceMaths::Point Min(MAX_FLOAT, MAX_FLOAT, MAX_FLOAT);
+	IceMaths::Point Max(MIN_FLOAT, MIN_FLOAT, MIN_FLOAT);
 
 	// Loop through triangles
 	VertexPointers VP;
@@ -167,7 +167,7 @@ float AABBTreeOfTrianglesBuilder::GetSplittingValue(udword index, udword axis) c
  *	\return		splitting value
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float AABBTreeOfTrianglesBuilder::GetSplittingValue(const udword* primitives, udword nb_prims, const AABB& global_box, udword axis)	const
+float AABBTreeOfTrianglesBuilder::GetSplittingValue(const udword* primitives, udword nb_prims, const IceMaths::AABB& global_box, udword axis)	const
 {
 	if(mSettings.mRules&SPLIT_GEOM_CENTER)
 	{
@@ -197,7 +197,7 @@ float AABBTreeOfTrianglesBuilder::GetSplittingValue(const udword* primitives, ud
  *	\return		true if success
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool AABBTreeOfVerticesBuilder::ComputeGlobalBox(const udword* primitives, udword nb_prims, AABB& global_box) const
+bool AABBTreeOfVerticesBuilder::ComputeGlobalBox(const udword* primitives, udword nb_prims, IceMaths::AABB& global_box) const
 {
 	// Checkings
 	if(!primitives || !nb_prims)	return false;
@@ -238,7 +238,7 @@ float AABBTreeOfVerticesBuilder::GetSplittingValue(udword index, udword axis) co
  *	\return		splitting value
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float AABBTreeOfVerticesBuilder::GetSplittingValue(const udword* primitives, udword nb_prims, const AABB& global_box, udword axis)	const
+float AABBTreeOfVerticesBuilder::GetSplittingValue(const udword* primitives, udword nb_prims, const IceMaths::AABB& global_box, udword axis)	const
 {
 	if(mSettings.mRules&SPLIT_GEOM_CENTER)
 	{

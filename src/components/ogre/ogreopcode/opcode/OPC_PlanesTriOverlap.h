@@ -11,7 +11,7 @@ inline_ BOOL PlanesCollider::PlanesTriOverlap(udword in_clip_mask)
 	// Stats
 	mNbVolumePrimTests++;
 
-	const Plane* p = mPlanes;
+	const IceMaths::Plane* p = mPlanes;
 	udword Mask = 1;
 
 	while(Mask<=in_clip_mask)

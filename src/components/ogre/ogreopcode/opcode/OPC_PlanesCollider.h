@@ -49,17 +49,17 @@
 		 *	\return		true if success
 		 */
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-							bool			Collide(PlanesCache& cache, const Plane* planes, udword nb_planes, const Model& model, const Matrix4x4* worldm=null);
+							bool			Collide(PlanesCache& cache, const IceMaths::Plane* planes, udword nb_planes, const Model& model, const IceMaths::Matrix4x4* worldm=null);
 
 		// Mutant box-with-planes collision queries
-		inline_				bool			Collide(PlanesCache& cache, const OBB& box, const Model& model, const Matrix4x4* worldb=null, const Matrix4x4* worldm=null)
+		inline_				bool			Collide(PlanesCache& cache, const IceMaths::OBB& box, const Model& model, const IceMaths::Matrix4x4* worldb=null, const IceMaths::Matrix4x4* worldm=null)
 											{
-												Plane PL[6];
+												IceMaths::Plane PL[6];
 
 												if(worldb)
 												{
 													// Create a new OBB in world space
-													OBB WorldBox;
+													IceMaths::OBB WorldBox;
 													box.Rotate(*worldb, WorldBox);
 													// Compute planes from the sides of the box
 													WorldBox.ComputePlanes(PL);
@@ -86,7 +86,7 @@
 		protected:
 		// Planes in model space
 							udword			mNbPlanes;
-							Plane*			mPlanes;
+							IceMaths::Plane*			mPlanes;
 		// Leaf description
 							VertexPointers	mVP;
 		// Internal methods
@@ -99,10 +99,10 @@
 							void			_CollideNoPrimitiveTest(const AABBQuantizedNode* node, udword clip_mask);
 							void			_CollideNoPrimitiveTest(const AABBQuantizedNoLeafNode* node, udword clip_mask);
 			// Overlap tests
-		inline_				BOOL			PlanesAABBOverlap(const Point& center, const Point& extents, udword& out_clip_mask, udword in_clip_mask);
+		inline_				BOOL			PlanesAABBOverlap(const IceMaths::Point& center, const IceMaths::Point& extents, udword& out_clip_mask, udword in_clip_mask);
 		inline_				BOOL			PlanesTriOverlap(udword in_clip_mask);
 			// Init methods
-							BOOL			InitQuery(PlanesCache& cache, const Plane* planes, udword nb_planes, const Matrix4x4* worldm=null);
+							BOOL			InitQuery(PlanesCache& cache, const IceMaths::Plane* planes, udword nb_planes, const IceMaths::Matrix4x4* worldm=null);
 	};
 
 	class OPCODE_API HybridPlanesCollider : public PlanesCollider
@@ -112,7 +112,7 @@
 											HybridPlanesCollider();
 		virtual								~HybridPlanesCollider();
 
-							bool			Collide(PlanesCache& cache, const Plane* planes, udword nb_planes, const HybridModel& model, const Matrix4x4* worldm=null);
+							bool			Collide(PlanesCache& cache, const IceMaths::Plane* planes, udword nb_planes, const HybridModel& model, const IceMaths::Matrix4x4* worldm=null);
 		protected:
 							Container		mTouchedBoxes;
 	};

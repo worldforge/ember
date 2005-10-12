@@ -284,7 +284,7 @@ bool AABBCollider::Collide(AABBCache& cache, const CollisionAABB& box, const AAB
  *	\return		true if the AABB contains the whole box
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL AABBCollider::AABBContainsBox(const Point& bc, const Point& be)
+inline_ BOOL AABBCollider::AABBContainsBox(const IceMaths::Point& bc, const IceMaths::Point& be)
 {
 	if(mMin.x > bc.x - be.x)	return FALSE;
 	if(mMin.y > bc.y - be.y)	return FALSE;
@@ -370,8 +370,8 @@ void AABBCollider::_Collide(const AABBQuantizedNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform AABB-AABB overlap test
 	if(!AABBAABBOverlap(Extents, Center))	return;
@@ -402,8 +402,8 @@ void AABBCollider::_CollideNoPrimitiveTest(const AABBQuantizedNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform AABB-AABB overlap test
 	if(!AABBAABBOverlap(Extents, Center))	return;
@@ -478,8 +478,8 @@ void AABBCollider::_Collide(const AABBQuantizedNoLeafNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform AABB-AABB overlap test
 	if(!AABBAABBOverlap(Extents, Center))	return;
@@ -505,8 +505,8 @@ void AABBCollider::_CollideNoPrimitiveTest(const AABBQuantizedNoLeafNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform AABB-AABB overlap test
 	if(!AABBAABBOverlap(Extents, Center))	return;
@@ -531,7 +531,7 @@ void AABBCollider::_CollideNoPrimitiveTest(const AABBQuantizedNoLeafNode* node)
 void AABBCollider::_Collide(const AABBTreeNode* node)
 {
 	// Perform AABB-AABB overlap test
-	Point Center, Extents;
+	IceMaths::Point Center, Extents;
 	node->GetAABB()->GetCenter(Center);
 	node->GetAABB()->GetExtents(Extents);
 	if(!AABBAABBOverlap(Center, Extents))	return;

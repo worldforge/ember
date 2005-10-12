@@ -6,14 +6,14 @@
  *	\return		TRUE on overlap
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL SphereCollider::SphereAABBOverlap(const Point& center_, const Point& extents_)
+inline_ BOOL SphereCollider::SphereAABBOverlap(const IceMaths::Point& center_, const IceMaths::Point& extents_)
 { 
 	// Stats
 	mNbVolumeBVTests++;
 
 	// Applies the model's local scale
-	const Point  center = center_ *mLocalScale;
-	const Point extents = extents_*mLocalScale;
+	const IceMaths::Point  center = center_ *mLocalScale;
+	const IceMaths::Point extents = extents_*mLocalScale;
 
 	float d = 0.0f;
 

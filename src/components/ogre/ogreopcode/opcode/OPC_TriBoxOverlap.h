@@ -8,9 +8,9 @@
 	if(x2>max) max=x2;
 
 //! TO BE DOCUMENTED
-inline_ BOOL planeBoxOverlap(const Point& normal, const float d, const Point& maxbox)
+inline_ BOOL planeBoxOverlap(const IceMaths::Point& normal, const float d, const IceMaths::Point& maxbox)
 {
-	Point vmin, vmax;
+	IceMaths::Point vmin, vmax;
 	for(udword q=0;q<=2;q++)
 	{
 		if(normal[q]>0.0f)	{ vmin[q]=-maxbox[q]; vmax[q]=maxbox[q]; }
@@ -93,7 +93,7 @@ inline_ BOOL planeBoxOverlap(const Point& normal, const float d, const Point& ma
 	AXISTEST_Y02(e1.z, e1.x, fez1, fex1);			\
 	AXISTEST_Z0(e1.y, e1.x, fey1, fex1);			\
 													\
-	const Point e2 = mLeafVerts[0] - mLeafVerts[2];	\
+	const IceMaths::Point e2 = mLeafVerts[0] - mLeafVerts[2];	\
 	const float fey2 = fabsf(e2.y);					\
 	const float fez2 = fabsf(e2.z);					\
 	AXISTEST_X2(e2.z, e2.y, fez2, fey2);			\
@@ -115,7 +115,7 @@ inline_ BOOL planeBoxOverlap(const Point& normal, const float d, const Point& ma
  *	\return		true if triangle & box overlap
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL AABBTreeCollider::TriBoxOverlap(const Point& center, const Point& extents)
+inline_ BOOL AABBTreeCollider::TriBoxOverlap(const IceMaths::Point& center, const IceMaths::Point& extents)
 {
 	// Stats
 	mNbBVPrimTests++;
@@ -129,7 +129,7 @@ inline_ BOOL AABBTreeCollider::TriBoxOverlap(const Point& center, const Point& e
 	//    this gives 3x3=9 more tests 
 
 	// move everything so that the boxcenter is in (0,0,0) 
-	Point v0, v1, v2;
+   IceMaths::Point v0, v1, v2;
 	v0.x = mLeafVerts[0].x - center.x;
 	v1.x = mLeafVerts[1].x - center.x;
 	v2.x = mLeafVerts[2].x - center.x;
@@ -180,9 +180,9 @@ inline_ BOOL AABBTreeCollider::TriBoxOverlap(const Point& center, const Point& e
 	// 2) Test if the box intersects the plane of the triangle
 	// compute plane equation of triangle: normal*x+d=0
 	// ### could be precomputed since we use the same leaf triangle several times
-	const Point e0 = v1 - v0;
-	const Point e1 = v2 - v1;
-	const Point normal = e0 ^ e1;
+	const IceMaths::Point e0 = v1 - v0;
+	const IceMaths::Point e1 = v2 - v1;
+	const IceMaths::Point normal = e0 ^ e1;
 	const float d = -normal|v0;
 	if(!planeBoxOverlap(normal, d, extents)) return FALSE;
 
@@ -201,10 +201,10 @@ inline_ BOOL OBBCollider::TriBoxOverlap()
 	mNbVolumePrimTests++;
 
 	// Hook
-	const Point& extents = mBoxExtents;
-	const Point& v0 = mLeafVerts[0];
-	const Point& v1 = mLeafVerts[1];
-	const Point& v2 = mLeafVerts[2];
+	const IceMaths::Point& extents = mBoxExtents;
+	const IceMaths::Point& v0 = mLeafVerts[0];
+	const IceMaths::Point& v1 = mLeafVerts[1];
+	const IceMaths::Point& v2 = mLeafVerts[2];
 
 	// use separating axis theorem to test overlap between triangle and box 
 	// need to test for overlap in these directions: 
@@ -242,9 +242,9 @@ inline_ BOOL OBBCollider::TriBoxOverlap()
 	// 2) Test if the box intersects the plane of the triangle
 	// compute plane equation of triangle: normal*x+d=0
 	// ### could be precomputed since we use the same leaf triangle several times
-	const Point e0 = v1 - v0;
-	const Point e1 = v2 - v1;
-	const Point normal = e0 ^ e1;
+	const IceMaths::Point e0 = v1 - v0;
+	const IceMaths::Point e1 = v2 - v1;
+	const IceMaths::Point normal = e0 ^ e1;
 	const float d = -normal|v0;
 	if(!planeBoxOverlap(normal, d, mBoxExtents)) return FALSE;
 
@@ -262,8 +262,8 @@ inline_ BOOL AABBCollider::TriBoxOverlap()
 	mNbVolumePrimTests++;
 
 	// Hook
-	const Point& center		= mBox.mCenter;
-	const Point& extents	= mBox.mExtents;
+	const IceMaths::Point& center		= mBox.mCenter;
+	const IceMaths::Point& extents	= mBox.mExtents;
 
 	// use separating axis theorem to test overlap between triangle and box 
 	// need to test for overlap in these directions: 
@@ -274,7 +274,7 @@ inline_ BOOL AABBCollider::TriBoxOverlap()
 	//    this gives 3x3=9 more tests 
 
 	// move everything so that the boxcenter is in (0,0,0) 
-	Point v0, v1, v2;
+	IceMaths::Point v0, v1, v2;
 	v0.x = mLeafVerts[0].x - center.x;
 	v1.x = mLeafVerts[1].x - center.x;
 	v2.x = mLeafVerts[2].x - center.x;
@@ -325,9 +325,9 @@ inline_ BOOL AABBCollider::TriBoxOverlap()
 	// 2) Test if the box intersects the plane of the triangle
 	// compute plane equation of triangle: normal*x+d=0
 	// ### could be precomputed since we use the same leaf triangle several times
-	const Point e0 = v1 - v0;
-	const Point e1 = v2 - v1;
-	const Point normal = e0 ^ e1;
+	const IceMaths::Point e0 = v1 - v0;
+	const IceMaths::Point e1 = v2 - v1;
+	const IceMaths::Point normal = e0 ^ e1;
 	const float d = -normal|v0;
 	if(!planeBoxOverlap(normal, d, extents)) return FALSE;
 

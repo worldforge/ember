@@ -80,9 +80,9 @@
 		 *	\return		true if success
 		 */
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-							bool			Collide(const Ray& world_ray, const Model& model, const Matrix4x4* world=null, udword* cache=null);
+							bool			Collide(const IceMaths::Ray& world_ray, const Model& model, const IceMaths::Matrix4x4* world=null, udword* cache=null);
 		//
-							bool			Collide(const Ray& world_ray, const AABBTree* tree, Container& box_indices);
+							bool			Collide(const IceMaths::Ray& world_ray, const AABBTree* tree, Container& box_indices);
 		// Settings
 
 #ifndef OPC_RAYHIT_CALLBACK
@@ -176,12 +176,12 @@
 
 		protected:
 		// Ray in local space
-							Point			mOrigin;			//!< Ray origin
-							Point			mDir;				//!< Ray direction (normalized)
-							Point			mFDir;				//!< fabsf(mDir)
-							Point			mData, mData2;
+							IceMaths::Point			mOrigin;			//!< Ray origin
+							IceMaths::Point			mDir;				//!< Ray direction (normalized)
+							IceMaths::Point			mFDir;				//!< fabsf(mDir)
+							IceMaths::Point			mData, mData2;
 		// Model scaling
-							Point			mLocalScale;		//!< Model's local scale
+							IceMaths::Point			mLocalScale;		//!< Model's local scale
 		// Stabbed faces
 							CollisionFace	mStabbedFace;		//!< Current stabbed face
 #ifdef OPC_RAYHIT_CALLBACK
@@ -196,8 +196,8 @@
 		// In-out test
 							udword			mNbIntersections;	//!< Number of valid intersections
 		// Dequantization coeffs
-							Point			mCenterCoeff;
-							Point			mExtentsCoeff;
+							IceMaths::Point			mCenterCoeff;
+							IceMaths::Point			mExtentsCoeff;
 		// Settings
 							float			mMaxDist;			//!< Valid segment on the ray
 #ifndef OPC_RAYHIT_CALLBACK
@@ -216,11 +216,11 @@
 							void			_RayStab(const AABBQuantizedNoLeafNode* node);
 							void			_RayStab(const AABBTreeNode* node, Container& box_indices);
 			// Overlap tests
-		inline_				BOOL			RayAABBOverlap(const Point& center, const Point& extents);
-		inline_				BOOL			SegmentAABBOverlap(const Point& center, const Point& extents);
-		inline_				BOOL			RayTriOverlap(const Point& vert0, const Point& vert1, const Point& vert2);
+		inline_				BOOL			RayAABBOverlap(const IceMaths::Point& center, const IceMaths::Point& extents);
+		inline_				BOOL			SegmentAABBOverlap(const IceMaths::Point& center, const IceMaths::Point& extents);
+		inline_				BOOL			RayTriOverlap(const IceMaths::Point& vert0, const IceMaths::Point& vert1, const IceMaths::Point& vert2);
 			// Init methods
-							BOOL			InitQuery(const Ray& world_ray, const Matrix4x4* world=null, udword* face_id=null);
+							BOOL			InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matrix4x4* world=null, udword* face_id=null);
 	};
 
 #endif // __OPC_RAYCOLLIDER_H__

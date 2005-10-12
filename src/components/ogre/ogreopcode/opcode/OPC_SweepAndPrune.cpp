@@ -409,7 +409,7 @@ void SweepAndPrune::GetPairs(PairCallback callback, void* user_data) const
 	mPairs.DumpPairs(callback, user_data);
 }
 
-bool SweepAndPrune::Init(udword nb_objects, const AABB** boxes)
+bool SweepAndPrune::Init(udword nb_objects, const IceMaths::AABB** boxes)
 {
 	// 1) Create sorted lists
 	mNbObjects = nb_objects;
@@ -467,7 +467,7 @@ bool SweepAndPrune::Init(udword nb_objects, const AABB** boxes)
 
 	{
 		Pairs P;
-		CompleteBoxPruning(nb_objects, boxes, P, Axes(AXES_XZY));
+		CompleteBoxPruning(nb_objects, boxes, P, IceMaths::Axes(IceMaths::AXES_XZY));
 		for(udword i=0;i<P.GetNbPairs();i++)
 		{
 			const Pair* PP = P.GetPair(i);
@@ -519,7 +519,7 @@ bool SweepAndPrune::CheckListsIntegrity()
 	return true;
 }
 
-inline_ BOOL Intersect(const AABB& a, const SAP_Box& b)
+inline_ BOOL Intersect(const IceMaths::AABB& a, const SAP_Box& b)
 {
 	if(b.Max[0]->Value < a.GetMin(0) || a.GetMax(0) < b.Min[0]->Value
 	|| b.Max[1]->Value < a.GetMin(1) || a.GetMax(1) < b.Min[1]->Value
@@ -530,7 +530,7 @@ inline_ BOOL Intersect(const AABB& a, const SAP_Box& b)
 
 
 
-bool SweepAndPrune::UpdateObject(udword i, const AABB& box)
+bool SweepAndPrune::UpdateObject(udword i, const IceMaths::AABB& box)
 {
 	for(udword Axis=0;Axis<3;Axis++)
 	{

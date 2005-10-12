@@ -2,11 +2,13 @@
 ///  @file OgreCollisionManager.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 29-05-2005
+///  @author The OgreOpcode Team @date 29-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -27,20 +29,19 @@
 #define __OgreCollisionManager_h__
 
 #include "OgreOpcodeExports.h"
-#include <Ogre.h>
 #include "OgreCollisionTypes.h"
 #include "OgreNodes.h"
 #include "OgreCollisionContext.h"
 #include "OgreCollisionShape.h"
+#include "../opcode/Opcode.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
-/// Main %Ogre namespace
-namespace Ogre
+/// Main %OgreOpcode namespace
+namespace OgreOpcode
 {
    typedef int CollisionClass;
    
-   /// @cond DO_NOT_DOCUMENT
    namespace Details
    {
       /// Linked list of Collision class types.
@@ -55,11 +56,10 @@ namespace Ogre
 
          CollisionClass GetCollClass(void)
          {
-            return this->coll_class;
+            return coll_class;
          };
       };
    }
-   /// @endcond
    
    /// Collision manager.
    /// The CollisionManager object serves as factory object of the
@@ -73,9 +73,13 @@ namespace Ogre
       Opcode::AABBTreeCollider opcTreeCollider;
       Opcode::RayCollider      opcRayCollider;
       Opcode::SphereCollider   opcSphereCollider;
+      Opcode::PlanesCollider   opcPlanesCollider;
+      Opcode::LSSCollider      opcLSSCollider;
       Opcode::BVTCache         opcTreeCache;
       Opcode::CollisionFaces   opcFaceCache;
       Opcode::SphereCache      opcSphereCache;
+      Opcode::PlanesCache      opcPlanesCache;
+      Opcode::LSSCache         opcLSSCache;
    protected:
       int unique_id;
       nList context_list;
@@ -119,34 +123,34 @@ namespace Ogre
       {
 
          // check for CollClass override cases
-         if ((cc1 == COLLCLASS_ALWAYS_IGNORE) || (cc2 == COLLCLASS_ALWAYS_IGNORE))
+         if ((cc1 == COLLTYPE_ALWAYS_IGNORE) || (cc2 == COLLTYPE_ALWAYS_IGNORE))
          {
             return COLLTYPE_IGNORE;
          }
-         else if ((cc1 == COLLCLASS_ALWAYS_QUICK) || (cc2 == COLLCLASS_ALWAYS_QUICK))
+         else if ((cc1 == COLLTYPE_ALWAYS_QUICK) || (cc2 == COLLTYPE_ALWAYS_QUICK))
          {
             return COLLTYPE_QUICK;
          }
-         else if ((cc1 == COLLCLASS_ALWAYS_CONTACT) || (cc2 == COLLCLASS_ALWAYS_CONTACT))
+         else if ((cc1 == COLLTYPE_ALWAYS_CONTACT) || (cc2 == COLLTYPE_ALWAYS_CONTACT))
          {
             return COLLTYPE_CONTACT;
          }
-         else if ((cc1 == COLLCLASS_ALWAYS_EXACT) || (cc2 == COLLCLASS_ALWAYS_EXACT))
+         else if ((cc1 == COLLTYPE_ALWAYS_EXACT) || (cc2 == COLLTYPE_ALWAYS_EXACT))
          {
             return COLLTYPE_EXACT;
          }
-         assert(this->colltype_table);
+         assert(colltype_table);
          assert((cc1 >= 0) && (cc2 >= 0));
-         assert(int(cc1) < this->num_coll_classes);
-         assert(int(cc2) < this->num_coll_classes);
+         assert(int(cc1) < num_coll_classes);
+         assert(int(cc2) < num_coll_classes);
 
-         int index = (int(cc1)*this->num_coll_classes) + int(cc2);
-         return this->colltype_table[index];
+         int index = (int(cc1)*num_coll_classes) + int(cc2);
+         return colltype_table[index];
       };
    protected:
       char *getResourceID(const char *, char *, int);
    };
 
-}; // namespace Ogre
+}; // namespace OgreOpcode
 
 #endif // __OgreCollisionManager_h__

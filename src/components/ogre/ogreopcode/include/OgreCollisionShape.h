@@ -2,12 +2,14 @@
 ///  @file OgreCollisionShape.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 29-05-2005
+///  @author The OgreOpcode Team @date 29-05-2005
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
 ///  This file is part of OgreOpcode.
 ///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -27,16 +29,15 @@
 # define __OgreCollisionShape_h__
 
 #include "OgreOpcodeExports.h"
-# include <Ogre.h>
 
 #include "OgreHash.h"
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
+#include "../opcode/Opcode.h"
 
-using namespace Ogre::Details;
-using namespace Ogre::Debug;
+using namespace OgreOpcode::Details;
 
-namespace Ogre
+namespace OgreOpcode
 {
    class CollisionPair;
 
@@ -65,23 +66,38 @@ namespace Ogre
       /// has object been initialized?
       bool IsInitialized();
       /// get radius of collide mesh
-      float GetRadius();
-      /// begin defining collide mesh
-      virtual void Begin(int numVertices, int numTriangles);
-      /// set vertex in collide mesh
-      virtual void SetVertex(int index, Vector3& v);
-      /// set triangle in collide mesh
-      virtual void SetTriangle(int index, int v0Index, int v1Index, int v2Index);
-      /// finish defining the geometry
-      virtual void End();
-      /// load collide geometry from mesh
+      virtual Real GetRadius() const;
+      /// load collide geometry from mesh, and build a collision tree
       virtual bool Load(Entity* ent);
-/*    /// load collide geometry from file
-      virtual bool Load(const char* filename);*/
+      /// Retrieve current vertex data from mesh and refit collision tree.
+      /// This is an O(n) operation in the number of vertices in the mesh.
+      virtual bool Refit();
+      /// Reload the collision geometry from mesh, rebuild collision tree from scratch. 
+      /// Potentially very slow. Only necessary if the mesh has drastically changed,
+      /// like topology changing deformations, or a change in the number of tris.
+      /// In most cases RefitToMesh() is sufficient, and much faster.
+      /// Under usual circumstances there is no need to call this method.
+      virtual bool Rebuild();
+      /// Refits the collision tree to the currently cached vertex data.
+      /// This is an O(n) operation in the number of vertices in the mesh.
+      /// This is an advanced method.  It assumes that the user is manually 
+      /// updating both the CollisionShape's cached data and the actual mesh
+      /// hardware buffers.  Mostly useful for implementing something like 
+      /// deformable body physics.
+      virtual bool _RefitToCachedData();
+      /// Rebuild collision tree from scratch using currently cached vertex data
+      /// This is potentially quite slow.  Only necessary if the mesh has drastically changed,
+      /// like topology changing deformations, or a change in the number of tris.
+      /// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
+      /// This is an advanced method.  It assumes that the user is manually 
+      /// updating both the CollisionShape's cached data and the actual mesh
+      /// hardware buffers.  Mostly useful for implementing something like
+      /// deformable body physics.
+      virtual bool _RebuildFromCachedData();
       /// perform collision with other CollisionShape
       virtual bool Collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
       /// perform collision with line
-      virtual bool LineCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
+      virtual bool RayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
       /// perform a sphere check
       virtual bool SphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Sphere& ball, CollisionPair& collPair);
       /// visualize the collide shape
@@ -90,30 +106,34 @@ namespace Ogre
       void setDebug(bool debug);
       /// return entity
       Entity* getEntity();
-   private:
-      /// Extract vertex information from an Ogre mesh.
-      /// @param [in]       mesh const Mesh *const     The mesh to extract.
-      /// @param [in, out]  vertex_count size_t &    Returns the vertex count.
-      /// @param [in, out]  vertices Vector3 *&    Returns an array of vertices.
-      /// @param [in, out]  index_count size_t &    Returns the index count.
-      /// @param [in, out]  indices unsigned long *&    Returns an array of indices.
-      /// @param [in]       position const Vector3 & [=Vector3::ZERO]    The position of the mesh, optional.
-      /// @param [in]       orient const Quaternion & [=Quaternion::IDENTITY]    The orientation of the mesh, optional.
-      /// @param [in]       scale const Vector3 & [=Vector3::UNIT_SCALE]    The scale of the mesh, optional.
-      void getMeshInformation( const Ogre::Mesh* const mesh, size_t &vertex_count,
-         Ogre::Vector3* &vertices,
-         size_t &index_count, unsigned long* &indices,
-         const Ogre::Vector3 &position = Vector3::ZERO,
-         const Ogre::Quaternion &orient = Quaternion::IDENTITY,
-         const Ogre::Vector3 &scale = Vector3::UNIT_SCALE);
+      const Entity* getEntity() const;
 
-      // triangle coordinate callback function
-      //static void collCallback(size_t triangleIndex, VertexPointers& triangle, void * userData);
+      /// return current center in world space
+      Vector3 getCenter() const;
+      /// return current center in object space
+      Vector3 getLocalCenter() const;
+      /// return current world space AABB min and max
+      void getMinMax(Vector3& bMin, Vector3& bMax) const; 
+      /// return current object space AABB min and max
+      void getLocalMinMax(Vector3& bMin, Vector3& bMax) const; 
+
+   private:
+      /// Count up the total number of vertices and indices in the Ogre mesh
+      void countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count);
+      /// Convert ogre Mesh to simple float and int arrays
+      void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData=0, size_t index_count=0);
       /// get tri coords from tri index
       void GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2);
       /// visualize the AABBTree of the opcode model
       void VisualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node);
+      /// visualize the AABBTree of the opcode model (for no leaf trees)
+      void VisualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node);
+      void _prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc);
 
+      void calculateSize();
+
+      float   mRadius;
+      
       Opcode::BVTCache*         opcTreeCache;
       Opcode::CollisionFaces*   opcFaceCache;
 
@@ -121,13 +141,12 @@ namespace Ogre
       Opcode::Model opcModel;
       int numVertices;
       int numFaces;
-      float* vertexData;
-      int*   faceData;
+      float* mVertexBuf;
+      int*   mFaceBuf;
       Entity* mEntity;
 
       bool isInitialized;
       int refCount;
-      float radius;
 
       /// prevent default construction
       CollisionShape();
@@ -166,11 +185,20 @@ namespace Ogre
       return isInitialized;
    }
 
-   inline
-   float
-   CollisionShape::GetRadius()
+   inline Entity* CollisionShape::getEntity()
    {
-      return this->radius;
+     return mEntity;
+   }
+   inline const Entity* CollisionShape::getEntity() const
+   {
+     return mEntity;
+   }
+
+   inline
+   Real
+   CollisionShape::GetRadius() const
+   {
+      return mRadius;
    }
 
    /// Extract triangle coordinates from triangle index.
@@ -178,15 +206,15 @@ namespace Ogre
       void
       CollisionShape::GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
    {
-      int* indexPtr = &(this->faceData[3 * index]);
-      float* vp0 = &(this->vertexData[3 * indexPtr[0]]);
-      float* vp1 = &(this->vertexData[3 * indexPtr[1]]);
-      float* vp2 = &(this->vertexData[3 * indexPtr[2]]);
+      int* indexPtr = &(mFaceBuf[3 * index]);
+      float* vp0 = &(mVertexBuf[3 * indexPtr[0]]);
+      float* vp1 = &(mVertexBuf[3 * indexPtr[1]]);
+      float* vp2 = &(mVertexBuf[3 * indexPtr[2]]);
       v0 = Vector3(vp0[0], vp0[1], vp0[2]);
       v1 = Vector3(vp1[0], vp1[1], vp1[2]);
       v2 = Vector3(vp2[0], vp2[1], vp2[2]);
    }
    
-}; // namespace Ogre
+}; // namespace OgreOpcode
 
 #endif // __OgreCollisionEntity_h__

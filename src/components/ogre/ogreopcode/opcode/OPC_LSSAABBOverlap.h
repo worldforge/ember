@@ -2,10 +2,10 @@
 // Following code from Magic-Software (http://www.magic-software.com/)
 // A bit modified for Opcode
 
-inline_ float OPC_PointAABBSqrDist(const Point& point, const Point& center, const Point& extents)
+inline_ float OPC_PointAABBSqrDist(const IceMaths::Point& point, const IceMaths::Point& center, const IceMaths::Point& extents)
 {
 	// Compute coordinates of point in box coordinate system
-	Point Closest = point - center;
+	IceMaths::Point Closest = point - center;
 
 	float SqrDistance = 0.0f;
 
@@ -44,9 +44,9 @@ inline_ float OPC_PointAABBSqrDist(const Point& point, const Point& center, cons
 	return SqrDistance;
 }
 
-static void Face(int i0, int i1, int i2, Point& rkPnt, const Point& rkDir, const Point& extents, const Point& rkPmE, float* pfLParam, float& rfSqrDistance)
+static void Face(int i0, int i1, int i2, IceMaths::Point& rkPnt, const IceMaths::Point& rkDir, const IceMaths::Point& extents, const IceMaths::Point& rkPmE, float* pfLParam, float& rfSqrDistance)
 {
-    Point kPpE;
+    IceMaths::Point kPpE;
     float fLSqr, fInv, fTmp, fParam, fT, fDelta;
 
     kPpE[i1] = rkPnt[i1] + extents[i1];
@@ -244,9 +244,9 @@ static void Face(int i0, int i1, int i2, Point& rkPnt, const Point& rkDir, const
     }
 }
 
-static void CaseNoZeros(Point& rkPnt, const Point& rkDir, const Point& extents, float* pfLParam, float& rfSqrDistance)
+static void CaseNoZeros(IceMaths::Point& rkPnt, const IceMaths::Point& rkDir, const IceMaths::Point& extents, float* pfLParam, float& rfSqrDistance)
 {
-    Point kPmE(rkPnt.x - extents.x, rkPnt.y - extents.y, rkPnt.z - extents.z);
+    IceMaths::Point kPmE(rkPnt.x - extents.x, rkPnt.y - extents.y, rkPnt.z - extents.z);
 
     float fProdDxPy, fProdDyPx, fProdDzPx, fProdDxPz, fProdDzPy, fProdDyPz;
 
@@ -284,7 +284,7 @@ static void CaseNoZeros(Point& rkPnt, const Point& rkDir, const Point& extents, 
     }
 }
 
-static void Case0(int i0, int i1, int i2, Point& rkPnt, const Point& rkDir, const Point& extents, float* pfLParam, float& rfSqrDistance)
+static void Case0(int i0, int i1, int i2, IceMaths::Point& rkPnt, const IceMaths::Point& rkDir, const IceMaths::Point& extents, float* pfLParam, float& rfSqrDistance)
 {
     float fPmE0 = rkPnt[i0] - extents[i0];
     float fPmE1 = rkPnt[i1] - extents[i1];
@@ -361,7 +361,7 @@ static void Case0(int i0, int i1, int i2, Point& rkPnt, const Point& rkDir, cons
     }
 }
 
-static void Case00(int i0, int i1, int i2, Point& rkPnt, const Point& rkDir, const Point& extents, float* pfLParam, float& rfSqrDistance)
+static void Case00(int i0, int i1, int i2, IceMaths::Point& rkPnt, const IceMaths::Point& rkDir, const IceMaths::Point& extents, float* pfLParam, float& rfSqrDistance)
 {
     float fDelta;
 
@@ -397,7 +397,7 @@ static void Case00(int i0, int i1, int i2, Point& rkPnt, const Point& rkDir, con
     }
 }
 
-static void Case000(Point& rkPnt, const Point& extents, float& rfSqrDistance)
+static void Case000(IceMaths::Point& rkPnt, const IceMaths::Point& extents, float& rfSqrDistance)
 {
     float fDelta;
 
@@ -441,12 +441,12 @@ static void Case000(Point& rkPnt, const Point& extents, float& rfSqrDistance)
     }
 }
 
-static float SqrDistance(const Ray& rkLine, const Point& center, const Point& extents, float* pfLParam)
+static float SqrDistance(const IceMaths::Ray& rkLine, const IceMaths::Point& center, const IceMaths::Point& extents, float* pfLParam)
 {
     // compute coordinates of line in box coordinate system
-    Point kDiff = rkLine.mOrig - center;
-    Point kPnt = kDiff;
-    Point kDir = rkLine.mDir;
+    IceMaths::Point kDiff = rkLine.mOrig - center;
+    IceMaths::Point kPnt = kDiff;
+    IceMaths::Point kDir = rkLine.mDir;
 
     // Apply reflections so that direction vector has nonnegative components.
     bool bReflect[3];
@@ -499,10 +499,10 @@ static float SqrDistance(const Ray& rkLine, const Point& center, const Point& ex
     return fSqrDistance;
 }
 
-inline_ float OPC_SegmentOBBSqrDist(const Segment& segment, const Point& c0, const Point& e0)
+inline_ float OPC_SegmentOBBSqrDist(const IceMaths::Segment& segment, const IceMaths::Point& c0, const IceMaths::Point& e0)
 {
 	float fLP;
-	float fSqrDistance = SqrDistance(Ray(segment.GetOrigin(), segment.ComputeDirection()), c0, e0, &fLP);
+	float fSqrDistance = SqrDistance(IceMaths::Ray(segment.GetOrigin(), segment.ComputeDirection()), c0, e0, &fLP);
 	if(fLP>=0.0f)
 	{
 		if(fLP<=1.0f)	return fSqrDistance;
@@ -511,11 +511,11 @@ inline_ float OPC_SegmentOBBSqrDist(const Segment& segment, const Point& c0, con
 	else				return OPC_PointAABBSqrDist(segment.mP0, c0, e0);
 }
 
-inline_ BOOL LSSCollider::LSSAABBOverlap(const Point& center_, const Point& extents_)
+inline_ BOOL LSSCollider::LSSAABBOverlap(const IceMaths::Point& center_, const IceMaths::Point& extents_)
 {
 	// applies the model's local scale
-	const Point& center  = center_ * mLocalScale ;
-	const Point& extents = extents_* mLocalScale;
+	const IceMaths::Point& center  = center_ * mLocalScale ;
+	const IceMaths::Point& extents = extents_* mLocalScale;
 	// Stats
 	mNbVolumeBVTests++;
 

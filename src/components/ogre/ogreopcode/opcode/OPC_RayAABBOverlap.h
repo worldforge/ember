@@ -12,11 +12,11 @@
  *	\return		true on overlap
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL RayCollider::SegmentAABBOverlap(const Point& center_, const Point& extents_)
+inline_ BOOL RayCollider::SegmentAABBOverlap(const IceMaths::Point& center_, const IceMaths::Point& extents_)
 {
 	// Applies model's local scale
-	const Point center = center_  * mLocalScale;
-	const Point extents = extents_* mLocalScale;
+	const IceMaths::Point center = center_  * mLocalScale;
+	const IceMaths::Point extents = extents_* mLocalScale;
 
 	// Stats
 	mNbRayBVTests++;
@@ -41,11 +41,11 @@ inline_ BOOL RayCollider::SegmentAABBOverlap(const Point& center_, const Point& 
  *	\return		true on overlap
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL RayCollider::RayAABBOverlap(const Point& center_, const Point& extents_)
+inline_ BOOL RayCollider::RayAABBOverlap(const IceMaths::Point& center_, const IceMaths::Point& extents_)
 {
 	// Applies the model's local scale
-	const Point center  = center_ *mLocalScale;
-	const Point extents = extents_*mLocalScale;
+	const IceMaths::Point center  = center_ *mLocalScale;
+	const IceMaths::Point extents = extents_*mLocalScale;
 
 	// Stats
 	mNbRayBVTests++;

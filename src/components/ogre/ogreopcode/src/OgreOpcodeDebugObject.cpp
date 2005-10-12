@@ -1,13 +1,13 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.cpp
 ///  @brief <TODO: insert file description here>
-///
-///  @author jacmoe @date 28-05-2005
-///  
+///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
+///  @author The OgreOpcode Team @date 28-05-2005
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -26,16 +26,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeDebugObject.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
-   namespace Debug
+   namespace Details
    {
 
       bool DebugLines::_materials_created = false;
 
       DebugLines::DebugLines()
       {
-	      mRenderOp.vertexData = new Ogre::VertexData();
+	      mRenderOp.vertexData = new VertexData();
          _drawn = false;
 
 	      if(!_materials_created)
@@ -58,7 +58,7 @@ namespace Ogre
 
 		      _materials_created = true;
 	      }
-	      this->setMaterial("OgreOdeDebugLines/Enabled");
+	      setMaterial("OgreOdeDebugLines/Enabled");
       }
 
       void DebugLines::clear()
@@ -69,7 +69,7 @@ namespace Ogre
 		      _points.clear();
 		      delete mRenderOp.vertexData;
 
-		      mRenderOp.vertexData = new Ogre::VertexData();
+		      mRenderOp.vertexData = new VertexData();
 	      }
       }
 
@@ -92,8 +92,8 @@ namespace Ogre
          mRenderOp.operationType = RenderOperation::OT_LINE_LIST;
          mRenderOp.useIndexes = false;
 
-         Ogre::VertexDeclaration *decl = mRenderOp.vertexData->vertexDeclaration;
-         Ogre::VertexBufferBinding *bind = mRenderOp.vertexData->vertexBufferBinding;
+         VertexDeclaration *decl = mRenderOp.vertexData->vertexDeclaration;
+         VertexBufferBinding *bind = mRenderOp.vertexData->vertexBufferBinding;
 
          decl->addElement(0, 0, VET_FLOAT3, VES_POSITION);
 
@@ -577,7 +577,6 @@ namespace Ogre
       {
       }
 
-   } // namespace Debug
+   } // namespace Details
 
-} // namespace Ogre
-/// @endcond
+} // namespace OgreOpcode

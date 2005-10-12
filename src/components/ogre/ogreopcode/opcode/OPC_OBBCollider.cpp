@@ -101,7 +101,7 @@ const char* OBBCollider::ValidateSettings()
  *	\warning	SCALE NOT SUPPORTED IN THE BOX WORLD MATRIX. The matrix must contain rotation & translation parts only.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool OBBCollider::Collide(OBBCache& cache, const OBB& box, const Model& model, const Matrix4x4* worldb, const Matrix4x4* worldm)
+bool OBBCollider::Collide(OBBCache& cache, const IceMaths::OBB& box, const Model& model, const IceMaths::Matrix4x4* worldb, const IceMaths::Matrix4x4* worldm)
 {
 	// Checkings
 	if(!Setup(&model))	return false;
@@ -174,7 +174,7 @@ bool OBBCollider::Collide(OBBCache& cache, const OBB& box, const Model& model, c
  *	\warning	SCALE NOT SUPPORTED IN OBB WORLD MATRIX. The matrix must contain rotation & translation parts only.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-BOOL OBBCollider::InitQuery(OBBCache& cache, const OBB& box, const Matrix4x4* worldb, const Matrix4x4* worldm)
+BOOL OBBCollider::InitQuery(OBBCache& cache, const IceMaths::OBB& box, const IceMaths::Matrix4x4* worldb, const IceMaths::Matrix4x4* worldm)
 {
 	// 1) Call the base method
 	VolumeCollider::InitQuery();
@@ -182,11 +182,11 @@ BOOL OBBCollider::InitQuery(OBBCache& cache, const OBB& box, const Matrix4x4* wo
 	// 2) Compute obb in world space
 	mBoxExtents = box.mExtents;
 
-	Matrix4x4 WorldB;
+	IceMaths::Matrix4x4 WorldB;
 
 	if(worldb)
 	{
-		WorldB = Matrix4x4( box.mRot * Matrix3x3(*worldb) );
+		WorldB = IceMaths::Matrix4x4( box.mRot * IceMaths::Matrix3x3(*worldb) );
 		WorldB.SetTrans(box.mCenter * *worldb);
 	}
 	else
@@ -196,21 +196,21 @@ BOOL OBBCollider::InitQuery(OBBCache& cache, const OBB& box, const Matrix4x4* wo
 	}
 
 	// Setup matrices
-	Matrix4x4 InvWorldB;
+	IceMaths::Matrix4x4 InvWorldB;
 	InvertPRMatrix(InvWorldB, WorldB);
 
 	if(worldm)
 	{
 		// Matrix normalization & scaling stripping
-		Matrix4x4 normWorldM;
+		IceMaths::Matrix4x4 normWorldM;
 		NormalizePRSMatrix( normWorldM, mLocalScale, *worldm );
 		
 		// uses the PR part of the world matrix
-		Matrix4x4 InvWorldM;
+		IceMaths::Matrix4x4 InvWorldM;
 		InvertPRMatrix(InvWorldM, normWorldM);
 
-		Matrix4x4 WorldBtoM = WorldB * InvWorldM;
-		Matrix4x4 WorldMtoB = normWorldM * InvWorldB;
+		IceMaths::Matrix4x4 WorldBtoM = WorldB * InvWorldM;
+		IceMaths::Matrix4x4 WorldMtoB = normWorldM * InvWorldB;
 		mSRModelToBox = *worldm * InvWorldB; // for scales
 
 		mRModelToBox = WorldMtoB;		WorldMtoB.GetTrans(mTModelToBox);
@@ -272,7 +272,7 @@ BOOL OBBCollider::InitQuery(OBBCache& cache, const OBB& box, const Matrix4x4* wo
 		else
 		{
 			// ### rewrite this
-			OBB TestBox(mTBoxToModel, mBoxExtents, mRBoxToModel);
+			IceMaths::OBB TestBox(mTBoxToModel, mBoxExtents, mRBoxToModel);
 
 			// We're interested in all contacts =>test the new real box N(ew) against the previous fat box P(revious):
 			if(IsCacheValid(cache) && TestBox.IsInside(cache.FatBox))
@@ -350,11 +350,11 @@ BOOL OBBCollider::InitQuery(OBBCache& cache, const OBB& box, const Matrix4x4* wo
  *	\return		true if the OBB contains the whole box
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL OBBCollider::OBBContainsBox(const Point& bc_, const Point& be_)
+inline_ BOOL OBBCollider::OBBContainsBox(const IceMaths::Point& bc_, const IceMaths::Point& be_)
 {
 	// Applies the model's local scale
-	const Point bc = bc_ * mLocalScale;
-	const Point be = be_ * mLocalScale;
+	const IceMaths::Point bc = bc_ * mLocalScale;
+	const IceMaths::Point be = be_ * mLocalScale;
 
 	// I assume if all 8 box vertices are inside the OBB, so does the whole box.
 	// Sounds ok but maybe there's a better way?
@@ -477,8 +477,8 @@ void OBBCollider::_Collide(const AABBQuantizedNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform OBB-AABB overlap test
 	if(!BoxBoxOverlap(Extents, Center))	return;
@@ -509,8 +509,8 @@ void OBBCollider::_CollideNoPrimitiveTest(const AABBQuantizedNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform OBB-AABB overlap test
 	if(!BoxBoxOverlap(Extents, Center))	return;
@@ -585,8 +585,8 @@ void OBBCollider::_Collide(const AABBQuantizedNoLeafNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform OBB-AABB overlap test
 	if(!BoxBoxOverlap(Extents, Center))	return;
@@ -612,8 +612,8 @@ void OBBCollider::_CollideNoPrimitiveTest(const AABBQuantizedNoLeafNode* node)
 {
 	// Dequantize box
 	const QuantizedAABB& Box = node->mAABB;
-	const Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
-	const Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
+	const IceMaths::Point Center(float(Box.mCenter[0]) * mCenterCoeff.x, float(Box.mCenter[1]) * mCenterCoeff.y, float(Box.mCenter[2]) * mCenterCoeff.z);
+	const IceMaths::Point Extents(float(Box.mExtents[0]) * mExtentsCoeff.x, float(Box.mExtents[1]) * mExtentsCoeff.y, float(Box.mExtents[2]) * mExtentsCoeff.z);
 
 	// Perform OBB-AABB overlap test
 	if(!BoxBoxOverlap(Extents, Center))	return;
@@ -652,7 +652,7 @@ HybridOBBCollider::~HybridOBBCollider()
 {
 }
 
-bool HybridOBBCollider::Collide(OBBCache& cache, const OBB& box, const HybridModel& model, const Matrix4x4* worldb, const Matrix4x4* worldm)
+bool HybridOBBCollider::Collide(OBBCache& cache, const IceMaths::OBB& box, const HybridModel& model, const IceMaths::Matrix4x4* worldb, const IceMaths::Matrix4x4* worldm)
 {
 	// We don't want primitive tests here!
 	mFlags |= OPC_NO_PRIMITIVE_TESTS;

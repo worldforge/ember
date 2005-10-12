@@ -22,16 +22,16 @@
 
 	struct VertexPointers
 	{
-		const Point*	Vertex[3];
+		const IceMaths::Point*	Vertex[3];
 
-		bool BackfaceCulling(const Point& source)
+		bool BackfaceCulling(const IceMaths::Point& source)
 		{
-			const Point& p0 = *Vertex[0];
-			const Point& p1 = *Vertex[1];
-			const Point& p2 = *Vertex[2];
+			const IceMaths::Point& p0 = *Vertex[0];
+			const IceMaths::Point& p1 = *Vertex[1];
+			const IceMaths::Point& p2 = *Vertex[2];
 
 			// Compute normal direction
-			Point Normal = (p2 - p1)^(p0 - p1);
+			IceMaths::Point Normal = (p2 - p1)^(p0 - p1);
 
 			// Backface culling
 			return (Normal | (source - p0)) >= 0.0f;
@@ -87,9 +87,9 @@
 		 *	\return		true if success
 		 */
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-						bool				SetPointers(const IndexedTriangle* tris, const Point* verts);
-		inline_	const	IndexedTriangle*	GetTris()			const	{ return mTris;			}
-		inline_	const	Point*				GetVerts()			const	{ return mVerts;		}
+						bool				SetPointers(const IceMaths::IndexedTriangle* tris, const IceMaths::Point* verts);
+		inline_	const	IceMaths::IndexedTriangle*	GetTris()			const	{ return mTris;			}
+		inline_	const	IceMaths::Point*				GetVerts()			const	{ return mVerts;		}
 
 	#ifdef OPC_USE_STRIDE
 		// Strides settings
@@ -102,7 +102,7 @@
 		 *	\return		true if success
 		 */
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-						bool				SetStrides(udword tri_stride=sizeof(IndexedTriangle), udword vertex_stride=sizeof(Point));
+						bool				SetStrides(udword tri_stride=sizeof(IceMaths::IndexedTriangle), udword vertex_stride=sizeof(IceMaths::Point));
 		inline_			udword				GetTriStride()		const	{ return mTriStride;	}
 		inline_			udword				GetVertexStride()	const	{ return mVertexStride;	}
 	#endif
@@ -121,12 +121,12 @@
 												(mObjCallback)(index, vp, mUserData);
 #else
 	#ifdef OPC_USE_STRIDE
-												const IndexedTriangle* T = (const IndexedTriangle*)(((ubyte*)mTris) + index * mTriStride);
+												const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + index * mTriStride);
 
 												if (Single){
-													vp.Vertex[0] = (const Point*)(((ubyte*)mVerts) + T->mVRef[0] * mVertexStride);
-													vp.Vertex[1] = (const Point*)(((ubyte*)mVerts) + T->mVRef[1] * mVertexStride);
-													vp.Vertex[2] = (const Point*)(((ubyte*)mVerts) + T->mVRef[2] * mVertexStride);
+													vp.Vertex[0] = (const IceMaths::Point*)(((ubyte*)mVerts) + T->mVRef[0] * mVertexStride);
+													vp.Vertex[1] = (const IceMaths::Point*)(((ubyte*)mVerts) + T->mVRef[1] * mVertexStride);
+													vp.Vertex[2] = (const IceMaths::Point*)(((ubyte*)mVerts) + T->mVRef[2] * mVertexStride);
 												}
 												else{
 													for (int i = 0; i < 3; i++){
@@ -183,8 +183,8 @@
 						RequestCallback		mObjCallback;		//!< Object callback
 #else
 		// User pointers
-				const	IndexedTriangle*	mTris;				//!< Array of indexed triangles
-				const	Point*				mVerts;				//!< Array of vertices
+				const	IceMaths::IndexedTriangle*	mTris;				//!< Array of indexed triangles
+				const	IceMaths::Point*				mVerts;				//!< Array of vertices
 	#ifdef OPC_USE_STRIDE
 						udword				mTriStride;			//!< Possible triangle stride in bytes [Opcode 1.3]
 						udword				mVertexStride;		//!< Possible vertex stride in bytes [Opcode 1.3]
@@ -192,7 +192,7 @@
 		public:
 						bool Single;							//!< Use single or double precision vertices
 		private:
-						static Point VertexCache[3];
+						static IceMaths::Point VertexCache[3];
 #endif
 	};
 

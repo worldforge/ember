@@ -37,7 +37,7 @@
 		inline_	bool				IsLeaf()		const	{ return !GetPos();						}					\
 																														\
 		/* Stats */																										\
-		inline_	udword				GetNodeSize()	const	{ return SIZEOFOBJECT;					}					\
+		inline_	udword				GetNodeSize()	const	{ return sizeof(*this);					}					\
 		protected:																										\
 		/* Tree-independent data */																						\
 		/* Following data always belong to the BV-tree, regardless of what the tree actually contains.*/				\
@@ -62,7 +62,7 @@
 		inline_	bool				IsLeaf()		const	{ return !GetPos();						}					\
 																														\
 		/* Stats */																										\
-		inline_	udword				GetNodeSize()	const	{ return SIZEOFOBJECT;					}					\
+		inline_	udword				GetNodeSize()	const	{ return sizeof(*this);					}					\
 		protected:																										\
 		/* Tree-independent data */																						\
 		/* Following data always belong to the BV-tree, regardless of what the tree actually contains.*/				\
@@ -76,7 +76,28 @@
 
 	class OPCODE_API AABBTreeNode
 	{
-									IMPLEMENT_TREE(AABBTreeNode, AABB)
+//									IMPLEMENT_TREE(AABBTreeNode, IceMaths::AABB)
+   public:
+      /* Constructor / Destructor */
+      AABBTreeNode();
+      ~AABBTreeNode();
+      /* Data access */
+      inline_	const IceMaths::AABB*		GetAABB()	const	{ return &mBV;							}
+      /* Clear the last bit */
+      inline_	const AABBTreeNode*	GetPos()		const	{ return (const AABBTreeNode*)(mPos&~1);	}
+      inline_	const AABBTreeNode*	GetNeg()		const	{ const AABBTreeNode* P = GetPos(); return P ? P+1 : null;}
+
+      /* We don't need to test both nodes since we can't have one without the other	*/
+      inline_	bool				IsLeaf()		const	{ return !GetPos();						}
+
+      /* Stats */
+      inline_	udword				GetNodeSize()	const	{ return sizeof(*this);					}
+   protected:
+   /* Tree-independent data */
+   /* Following data always belong to the BV-tree, regardless of what the tree actually contains.*/
+   /* Whatever happens we need the two children and the enclosing volume.*/
+   IceMaths::AABB				mBV;		/* Global bounding-volume enclosing all the node-related primitives */
+   size_t				mPos;		/* "Positive" & "Negative" children */
 		public:
 		// Data access
 		inline_	const udword*		GetPrimitives()		const	{ return mNodePrimitives;	}

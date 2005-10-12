@@ -2,11 +2,13 @@
 ///  @file OgreCollisionTypes.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 30-05-2005
+///  @author The OgreOpcode Team @date 30-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -26,7 +28,7 @@
 #ifndef __OgreCollisionTypes_h__
 #define __OgreCollisionTypes_h__
 
-namespace Ogre
+namespace OgreOpcode
 {
 
    /// Define the collision types for collision queries.
@@ -39,12 +41,12 @@ namespace Ogre
    };
 
    /// special case values for the CollClass check.
-   enum CollClassType
+   enum CollisionTypeOverride
    {
-      COLLCLASS_ALWAYS_IGNORE  = -1,
-      COLLCLASS_ALWAYS_QUICK   = -2,
-      COLLCLASS_ALWAYS_CONTACT = -3,
-      COLLCLASS_ALWAYS_EXACT   = -4,
+      COLLTYPE_ALWAYS_IGNORE  = -1,
+      COLLTYPE_ALWAYS_QUICK   = -2,
+      COLLTYPE_ALWAYS_CONTACT = -3,
+      COLLTYPE_ALWAYS_EXACT   = -4,
    };
 
 }

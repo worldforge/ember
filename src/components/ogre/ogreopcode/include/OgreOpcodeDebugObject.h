@@ -1,15 +1,13 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.h
 ///  @brief <TODO: insert file description here>
-///
-///  @remarks <TODO: insert remarks here>
-///
-///  @author jacmoe @date 29-05-2005
-///  
+///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
+///  @author The OgreOpcode Team @date 29-05-2005
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -30,11 +28,10 @@
 #define __OgreOpcodeDebugObject_h__
 
 #include "OgreOpcodeExports.h"
-# include "Ogre.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
-   namespace Debug
+   namespace Details
    {
       /// %Debug visualization line class.
       class _OgreOpcode_Export DebugLines : public Ogre::SimpleRenderable
@@ -134,9 +131,8 @@ namespace Ogre
 		   virtual ~RayDebugObject();
 	   };
    
-   } // namespace Debug
+   } // namespace Details
 
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreOpcodeDebugObject_h__
-/// @endcond

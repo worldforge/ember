@@ -138,7 +138,7 @@ void HybridModel::Release()
 		}
 
 		udword			mNbLeaves;
-		AABB*			mLeaves;
+		IceMaths::AABB*			mLeaves;
 		LeafTriangles*	mTriangles;
 		const udword*	mBase;
 	};
@@ -232,7 +232,7 @@ bool HybridModel::Build(const OPCODECREATE& create)
 	}
 
 	// Allocate our structures
-	Data.mLeaves = new AABB[Data.mNbLeaves];		CHECKALLOC(Data.mLeaves);
+	Data.mLeaves = new IceMaths::AABB[Data.mNbLeaves];		CHECKALLOC(Data.mLeaves);
 	mTriangles = new LeafTriangles[Data.mNbLeaves];	CHECKALLOC(mTriangles);
 
 	// Walk the tree again & setup leaf data
@@ -309,7 +309,7 @@ udword HybridModel::GetUsedBytes() const
 	return UsedBytes;
 }
 
-inline_ void ComputeMinMax(Point& min, Point& max, const VertexPointers& vp)
+inline_ void ComputeMinMax(IceMaths::Point& min, IceMaths::Point& max, const VertexPointers& vp)
 {
 	// Compute triangle's AABB = a leaf box
 #ifdef OPC_USE_FCOMI	// a 15% speedup on my machine, not much
@@ -352,8 +352,8 @@ bool HybridModel::Refit()
 
 	// Bottom-up update
 	VertexPointers VP;
-	Point Min,Max;
-	Point Min_,Max_;
+	IceMaths::Point Min,Max;
+	IceMaths::Point Min_,Max_;
 	udword Index = mTree->GetNbNodes();
 	AABBNoLeafNode* Nodes = (AABBNoLeafNode*)((AABBNoLeafTree*)mTree)->GetNodes();
 	while(Index--)
@@ -367,7 +367,7 @@ bool HybridModel::Refit()
 			Min.SetPlusInfinity();
 			Max.SetMinusInfinity();
 
-			Point TmpMin, TmpMax;
+			IceMaths::Point TmpMin, TmpMax;
 
 			// Each leaf box has a set of triangles
 			udword NbTris = CurrentLeaf.GetNbTriangles();
@@ -412,7 +412,7 @@ bool HybridModel::Refit()
 			Min_.SetPlusInfinity();
 			Max_.SetMinusInfinity();
 
-			Point TmpMin, TmpMax;
+			IceMaths::Point TmpMin, TmpMax;
 
 			// Each leaf box has a set of triangles
 			udword NbTris = CurrentLeaf.GetNbTriangles();

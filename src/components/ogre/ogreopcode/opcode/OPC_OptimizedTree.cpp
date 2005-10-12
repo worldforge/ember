@@ -348,7 +348,7 @@ bool AABBNoLeafTree::Build(AABBTree* tree)
 	return true;
 }
 
-inline_ void ComputeMinMax(Point& min, Point& max, const VertexPointers& vp)
+inline_ void ComputeMinMax(IceMaths::Point& min, IceMaths::Point& max, const VertexPointers& vp)
 {
 	// Compute triangle's AABB = a leaf box
 #ifdef OPC_USE_FCOMI	// a 15% speedup on my machine, not much
@@ -384,8 +384,8 @@ bool AABBNoLeafTree::Refit(const MeshInterface* mesh_interface)
 
 	// Bottom-up update
 	VertexPointers VP;
-	Point Min,Max;
-	Point Min_,Max_;
+	IceMaths::Point Min,Max;
+	IceMaths::Point Min_,Max_;
 	udword Index = mNbNodes;
 	while(Index--)
 	{
@@ -476,8 +476,8 @@ bool AABBNoLeafTree::Walk(GenericWalkingCallback callback, void* user_data) cons
 // a single extents. While extents would be the biggest, the center wouldn't.
 #define FIND_MAX_VALUES																			\
 	/* Get max values */																		\
-	Point CMax(MIN_FLOAT, MIN_FLOAT, MIN_FLOAT);												\
-	Point EMax(MIN_FLOAT, MIN_FLOAT, MIN_FLOAT);												\
+	IceMaths::Point CMax(MIN_FLOAT, MIN_FLOAT, MIN_FLOAT);												\
+	IceMaths::Point EMax(MIN_FLOAT, MIN_FLOAT, MIN_FLOAT);												\
 	for(udword i=0;i<mNbNodes;i++)																\
 	{																							\
 		if(fabsf(Nodes[i].mAABB.mCenter.x)>CMax.x)	CMax.x = fabsf(Nodes[i].mAABB.mCenter.x);	\
@@ -494,7 +494,7 @@ bool AABBNoLeafTree::Walk(GenericWalkingCallback callback, void* user_data) cons
 	if(!gFixQuantized) nbe++;												\
 																			\
 	/* Compute quantization coeffs */										\
-	Point CQuantCoeff, EQuantCoeff;											\
+	IceMaths::Point CQuantCoeff, EQuantCoeff;											\
 	CQuantCoeff.x = CMax.x!=0.0f ? float((1<<nbc)-1)/CMax.x : 0.0f;			\
 	CQuantCoeff.y = CMax.y!=0.0f ? float((1<<nbc)-1)/CMax.y : 0.0f;			\
 	CQuantCoeff.z = CMax.z!=0.0f ? float((1<<nbc)-1)/CMax.z : 0.0f;			\
@@ -521,8 +521,8 @@ bool AABBNoLeafTree::Walk(GenericWalkingCallback callback, void* user_data) cons
 	if(gFixQuantized)																\
 	{																				\
 		/* Make sure the quantized box is still valid */							\
-		Point Max = Nodes[i].mAABB.mCenter + Nodes[i].mAABB.mExtents;				\
-		Point Min = Nodes[i].mAABB.mCenter - Nodes[i].mAABB.mExtents;				\
+		IceMaths::Point Max = Nodes[i].mAABB.mCenter + Nodes[i].mAABB.mExtents;				\
+		IceMaths::Point Min = Nodes[i].mAABB.mCenter - Nodes[i].mAABB.mExtents;				\
 		/* For each axis */															\
 		for(udword j=0;j<3;j++)														\
 		{	/* Dequantize the box center */											\
