@@ -156,15 +156,15 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
 
 void EmberPhysicalEntity::connectEntities()
 {
-	Ogre::CollisionContext* collideContext = Ogre::CollisionManager::getSingletonPtr()->GetDefaultContext();
+	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->GetDefaultContext();
 	const Model::SubModelSet submodels = getModel()->getSubmodels();
 	EmberEntityUserObject::CollisionObjectStore collisionObjects;
 	for (Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{
 		std::string collideShapeName = std::string("entity_") + (*I)->getEntity()->getName();
-		Ogre::CollisionShape *collideShape = Ogre::CollisionManager::getSingletonPtr()->NewShape(collideShapeName.c_str());
+		OgreOpcode::CollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->NewShape(collideShapeName.c_str());
 		collideShape->Load((*I)->getEntity());
-		Ogre::CollisionObject* collideObject = collideContext->NewObject();
+		OgreOpcode::CollisionObject* collideObject = collideContext->NewObject();
 		collideObject->SetShape(collideShape);
 		
 		collideContext->AddObject(collideObject);

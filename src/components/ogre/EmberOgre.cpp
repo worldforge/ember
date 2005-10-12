@@ -23,7 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.111  2005-10-09 23:28:16  erik
+ *      Revision 1.112  2005-10-12 21:08:06  erik
+ *      2005-10-12  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/EmberEntityUserObject.h, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberPhysicalEntity.cpp: adapt to updated OgreOpcode
+ *
+ *      Revision 1.111  2005/10/09 23:28:16  erik
  *      2005-10-10  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberOgre.*: changed how the request-for-quit functionality works. If a request for quit signal is emitted and not handled, the application will quit instantly.
@@ -1252,7 +1257,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
     chooseSceneManager();
 	
-	new Ogre::CollisionManager(mSceneMgr);
+	new OgreOpcode::CollisionManager(mSceneMgr);
 	
 	mModelDefinitionManager->setSceneManager(mSceneMgr);
 

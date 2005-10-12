@@ -34,9 +34,9 @@
 #include "jesus/JesusPickerObject.h"
 
 #include "EmberEntityUserObject.h"
+#include "ogreopcode/include/OgreCollisionObject.h"
 #include "ogreopcode/include/OgreCollisionManager.h"
 #include "ogreopcode/include/OgreCollisionShape.h"
-#include "ogreopcode/include/OgreCollisionObject.h"
 #include "model/Model.h"
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
@@ -403,10 +403,10 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 					EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
 					//only do opcode detection if there's a CollisionObject
 					for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
-						Ogre::CollisionShape* collisionShape = (*I)->GetShape();
-						Ogre::CollisionPair pick_result;
+						OgreOpcode::CollisionShape* collisionShape = (*I)->GetShape();
+						OgreOpcode::CollisionPair pick_result;
 						
-						isColliding = collisionShape->LineCheck(Ogre::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
+						isColliding = collisionShape->RayCheck(OgreOpcode::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
 						if (isColliding) {
 							Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
 							pickedDistance = distance.length(); 

@@ -25,10 +25,14 @@
 
 #include "EmberOgrePrerequisites.h"
 
+namespace OgreOpcode
+{
+	class CollisionObject;
+};
+
 namespace Ogre
 {
 	class Entity;
-	class CollisionObject;
 };
 
 namespace EmberOgre {
@@ -43,7 +47,7 @@ class EmberEntityUserObject : public Ogre::UserDefinedObject
 public:
 
 	static const std::string s_TypeName;
-	typedef std::vector<Ogre::CollisionObject*> CollisionObjectStore;
+	typedef std::vector<OgreOpcode::CollisionObject*> CollisionObjectStore;
 	
     EmberEntityUserObject(EmberEntity* emberEntity , Model* model, CollisionObjectStore collisionObject);
 
