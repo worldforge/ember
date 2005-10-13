@@ -273,6 +273,10 @@ protected:
 	*/
 // 	bool mInLockedMovementMode;
 	
+	/**
+	 *    gets the text in the clipboard and pastes it to the gui system
+	 */
+	void pasteFromClipboard();
 };
 
 };

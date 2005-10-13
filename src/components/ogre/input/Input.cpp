@@ -24,6 +24,8 @@
 #include <OgreCEGUIRenderer.h>
 #include "../EmberOgre.h"
 
+#include "framework/scrap.h"
+
 namespace EmberOgre {
 
 
@@ -158,6 +160,10 @@ Input::Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer)
 	mNonCharKeys.insert(SDLK_RETURN);
 	mNonCharKeys.insert(SDLK_DELETE);
 
+	//must initialize the clipboard support
+	if ( init_scrap() < 0 ) {
+		S_LOG_FAILURE("Couldn't init clipboard: %s\n" << SDL_GetError());
+	}
 	
 }
 
@@ -321,7 +327,7 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 			case SDL_QUIT:
 				EmberOgre::getSingleton().requestQuit();
 				break;
-			}
+ 			}
 			
 			
         }
@@ -340,14 +346,32 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
      
 }
 
+void Input::pasteFromClipboard()
+{
+	static char *scrap = NULL;
+	int scraplen;
+
+	get_scrap(T('T','E','X','T'), &scraplen, &scrap);
+	for (int i = 0; i < scraplen; ++i) {
+		mGuiSystem->injectChar(scrap[i]);
+	}
+}
+
 void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 {
-	if (keyEvent.type == SDL_KEYDOWN) {
-		mKeysPressed.insert(keyEvent.keysym.sym);
-		keyPressed(keyEvent);
+	//catch paste key presses
+	if ((keyEvent.keysym.mod == KMOD_CTRL || keyEvent.keysym.mod == KMOD_LCTRL || keyEvent.keysym.mod == KMOD_RCTRL) && keyEvent.keysym.sym == SDLK_v) {
+		if (keyEvent.type == SDL_KEYDOWN) {
+			pasteFromClipboard();
+		}
 	} else {
-		mKeysPressed.erase(keyEvent.keysym.sym);
-		keyReleased(keyEvent);
+		if (keyEvent.type == SDL_KEYDOWN) {
+			mKeysPressed.insert(keyEvent.keysym.sym);
+			keyPressed(keyEvent);
+		} else {
+			mKeysPressed.erase(keyEvent.keysym.sym);
+			keyReleased(keyEvent);
+		}
 	}
 	
 }

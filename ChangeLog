@@ -1,3 +1,7 @@
+2005-10-14  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/Makefile.am, src/framework/scrap.*, src/components/ogre/input/Input.*: added support for paste operations from the system clipboard
+
 2005-10-13  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* acinclude:m4, src/services/config/ConfigService.*, src/services/config/Makefile.am, src/framework/binreloc.*, src/framework/Makefile.am, src/framework/prefix.*, src/components/ogre/EmberOgre.cpp, src/components/ogre/Makefile.am: upgraded to binreloc 2.0
