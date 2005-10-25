@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
-SUBDIRS = config logging metaserver server sound 
+SUBDIRS = config logging metaserver server sound scripting
 # removed subdirs: gui platform datamodel  input image font test
 noinst_LIBRARIES = libServices.a
 
@@ -10,4 +10,4 @@ noinst_LIBRARIES = libServices.a
 #servicetest_SOURCES = ServiceTest.cpp
 #servicetest_CXXFLAGS = -I$(srcdir)/..
 #servicetest_LDFLAGS = test/libTestService.a config/libConfigService.a metaserver/libMetaserverService.a #image/libImageService.a logging/libLoggingService.a ../framework/libFramework.a
-libServices_a_SOURCES =  EmberServices.cpp EmberServices.h
+libServices_a_SOURCES = EmberServices.cpp EmberServices.h 

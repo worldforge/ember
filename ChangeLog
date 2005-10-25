@@ -1,5 +1,9 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/Makefile.am, src/services/scripting/Makefile.am, src/services/scripting/ScriptingService.*: new sevice for scripting
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* configure.ac: bumped version number, added switch for lua, increased required versions of the WF libs
 
 2005-10-14  Erik Hjortsberg  <erik@katastrof.nu>
