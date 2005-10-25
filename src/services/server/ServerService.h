@@ -165,7 +165,7 @@ class ServerService : public Service, public ConsoleObject,
 	SigC::Signal1<void, Eris::Account*> GotAccount;
 	SigC::Signal1<void, Eris::Account *> LoginSuccess;
 	SigC::Signal1<void, Eris::Account *> LoginFailure;
-	SigC::Signal1<void, const Atlas::Objects::Entity::GameEntity &> GotCharacterInfo;
+	SigC::Signal1<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
 	SigC::Signal1<void, Eris::Account *> GotAllCharacters;
 
 
@@ -191,7 +191,7 @@ class ServerService : public Service, public ConsoleObject,
 
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
-    void gotCharacterInfo(const Atlas::Objects::Entity::GameEntity &);
+    void gotCharacterInfo(const Atlas::Objects::Entity::RootEntity &);
 
     void gotAllCharacters();
 

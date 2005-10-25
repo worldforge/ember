@@ -1,5 +1,11 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/ServerService.*: 
+		* adapted to changes in new release of Eris
+		* use the Avatar methods for wielding and using
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/font, src/services/platform: removed obsolete code. This is replaced by the ogre code.
 
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>

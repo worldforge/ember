@@ -254,7 +254,7 @@ namespace Ember
     ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
   }
 
-void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & info)
+void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
 	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got Character Info"<< ENDM;
 	ConsoleBackend::getMainConsole()->pushMessage("Got character info");
@@ -463,7 +463,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
 			ConsoleBackend::getMainConsole()->pushMessage(msg);
 			
 			S_LOG_INFO("Creating character.");
-			Atlas::Objects::Entity::GameEntity character;
+			Atlas::Objects::Entity::RootEntity character;
 			character->setParentsAsList(Atlas::Message::ListType(1,type));
 			character->setName(name);
 			character->setAttr("sex", sex);
@@ -642,14 +642,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
  		try {
-/*			Atlas::Objects::Operation::Action wieldOp;
-			wieldOp->setParents(std::list<std::string>(1, "wield"));*/
-			Atlas::Objects::Operation::Wield wieldOp;
-			wieldOp->setFrom(myAvatar->getEntity()->getId());
-			Atlas::Objects::Entity::GameEntity what;
-			what->setId(entity->getId());
-    		wieldOp->setArgs1(what);
-    		getConnection()->send(wieldOp);
+ 			myAvatar->wield(entity);
 			
  		}
  		catch (Eris::BaseException except)
@@ -672,18 +665,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::GameEntity & 
  			return;
  		}
  		try {
- 			Atlas::Objects::Operation::Use useOp;
-			useOp->setFrom(myAvatar->getEntity()->getId());
-			Atlas::Objects::Entity::GameEntity what;
-			if (entity->getLocation()) {
-				what->setLoc(entity->getLocation()->getId());
-			}
-			what->setId(entity->getId());
-			Atlas::Message::Element apos(pos.toAtlas());
-			what->setPosAsList(apos.asList());
-    		useOp->setArgs1(what);
-    		getConnection()->send(useOp);
-			//myAvatar->place(entity, target);
+ 			myAvatar->useOn(entity, pos);
  		}
  		catch (Eris::BaseException except)
  		{
