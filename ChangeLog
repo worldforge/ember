@@ -1,3 +1,7 @@
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: bumped version number, added switch for lua, increased required versions of the WF libs
+
 2005-10-14  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/framework/Makefile.am, src/framework/scrap.*, src/components/ogre/input/Input.*: added support for paste operations from the system clipboard

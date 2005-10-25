@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.3.3, clients@worldforge.org)
+AC_INIT(Ember, 0.3.4, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -115,7 +115,7 @@ AC_MSG_RESULT([
 
 AC_LANG_PUSH(C)
 
-//disable this for now
+#disable this for now
 #AC_CHECK_LIB(openal,
 #	alutInit ,,
 #	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
@@ -204,6 +204,7 @@ AC_CHECK_LIB(ILU, iluFlipImage,
 
 )
 
+#AC_DEFINE(LIBSIGC_DISABLE_DEPRECATED, 1, [Don't use deprecated sigc methods.])
 
 # Check for the Boost shared_ptr.hpp shared pointer header
 #AC_CHECK_HEADER(boost/shared_ptr.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
@@ -251,6 +252,25 @@ PKG_CHECK_MODULES(CEGUI-OGRE, CEGUI-OGRE >= $OGRE_VERSION,
 #remove this when Ogre includes the CEGUI-OGRE.pc file again
 LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
+
+AC_ARG_ENABLE(use_lua,
+  [  --enable-lua	enable lua scripting [default=no]],
+  [
+    if test "$enableval" = "yes"; then
+      use_lua="true"
+      LDFLAGS="$LDFLAGS -lCEGUILuaScriptModule -lCEGUIluatoluapp"
+    else
+      use_lua="false"
+    fi
+  ],[
+    use_lua="false"
+  ]
+)
+AM_CONDITIONAL(USE_LUA, test x"$use_lua" = xtrue)
+
+
+
+
 #CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 
 #SDL_VERSION=1.2.0
@@ -258,8 +278,8 @@ LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.7 \
- varconf-1.0 >= 0.6.2 mercator-0.2 >= 0.2.3 atlascpp-0.6 >= 0.5.96],
+PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.9 \
+ varconf-1.0 >= 0.6.2 mercator-0.2 >= 0.2.4 atlascpp-0.6 >= 0.5.98],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
@@ -383,12 +403,14 @@ AC_CONFIG_FILES([Makefile
 		 src/services/metaserver/Makefile
 		 src/services/server/Makefile
 		 src/services/sound/Makefile
+		 src/services/scripting/Makefile
 		 ember.dox
 		 ember.spec
 		 ember-media.spec
 		 autopackage/default.apspec
 		 make_dist_media.sh
 		 src/extensions/Makefile
+		 src/components/ogre/scripting/Makefile
 		 src/components/ogre/ogreopcode/opcode/Makefile
 		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/Makefile
