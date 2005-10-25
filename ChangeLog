@@ -1,5 +1,9 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/font, src/services/platform: removed obsolete code. This is replaced by the ogre code.
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/Makefile.am, src/services/scripting/Makefile.am, src/services/scripting/ScriptingService.*: new sevice for scripting
 
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
