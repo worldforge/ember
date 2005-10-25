@@ -1,0 +1,12 @@
+
+class AvatarEmberEntity: public PersonEmberEntity {
+	Avatar* getAvatar();
+	
+	/**
+	 * returns the Ogre::SceneNode which represents the avatar
+	 */
+	Ogre::SceneNode* getAvatarSceneNode();
+	
+
+};
+

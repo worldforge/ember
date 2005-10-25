@@ -1,5 +1,9 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/scripting/*: scripting module, provides lua bindings for the main Ember system through tolua++. Very much unfinished right now, and thus disabled.
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/ServerService.*: 
 		* adapted to changes in new release of Eris
 		* use the Avatar methods for wielding and using

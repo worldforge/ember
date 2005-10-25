@@ -1,0 +1,14 @@
+namespace sigc
+{
+
+	class signal<T>
+	{
+	TEMPLATE_BIND(T, void)
+		void connect(const sigc::signal<T>::slot_type& slot_);
+	};
+/*	class signal1
+	{
+		void connect(const sigc::slot_type& slot_);
+	};
+*/
+}

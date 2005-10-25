@@ -1,0 +1,105 @@
+$#include "../carpenter/Carpenter.h"
+
+namespace Carpenter {
+
+
+
+class AttachPair;
+class AttachPoint;
+class BlockSpec;
+class BuildingBlock;
+class BuildingBlockSpec;
+class BuildingBlockSpecDefinition;
+class BuildingBlockBinding;
+class BuildingBlockBindingDefinition;
+class BuildingBlockDefinition;
+class BluePrint;
+
+
+class AttachPoint
+{
+	AttachPoint(const std::string& mName, WFMath::Point<3> position, WFMath::Vector<3> normal);
+	 const std::string& getName() const ;
+	 const WFMath::Vector<3>& getNormal() const;
+	 const WFMath::Point<3>& getPosition() const ;
+
+	const AttachPair* getAttachPair() const ;
+	const AttachPoint* getSibling() const;
+};
+
+class AttachPair
+{
+	const AttachPoint* getAttachPoint(const std::string & name) const;
+	
+	AttachPair(const std::string& name, const std::string& type, AttachPoint point1, AttachPoint point2);
+	
+	 const AttachPoint& getPoint1() const;
+	 const AttachPoint& getPoint2() const;
+	 const std::string& getName() const;
+	 const std::string& getType() const;
+	
+};
+
+class BlockSpec
+{
+	typedef std::map<const std::string, Carpenter::AttachPair> AttachPairStore;
+	 const std::string& getName() const;
+	 const WFMath::AxisBox<3>& getBoundingBox() const ;
+	const AttachPair* getAttachPairForPoint(AttachPoint* point) const;
+	const AttachPair* getAttachPair(const std::string & name) const;
+	
+	bool addAttachPair(AttachPair* pair);
+	void setBoundingBox(WFMath::AxisBox<3> bbox);
+	
+	const std::vector<const Carpenter::AttachPoint*> getAllPoints() const;
+	
+	
+};
+
+class BuildingBlockSpecDefinition
+{
+	BuildingBlockSpecDefinition();
+	std::string mName;
+	std::string mBlockSpecName;
+};
+
+
+class BuildingBlockSpec
+{
+	BuildingBlockSpec();
+	const BuildingBlockSpecDefinition& getDefinition() const;
+	const BlockSpec*  getBlockSpec() const;
+	 const std::string& getName() const ;
+};
+
+
+
+
+
+
+
+
+
+
+class Carpenter{
+    Carpenter();
+
+    ~Carpenter();
+	
+	BluePrint* createBlueprint(std::string name);
+	
+	BuildingBlockSpec* getBuildingBlockSpec(const std::string& name);
+	
+	BlockSpec* createBlockSpec(std::string name);
+	BuildingBlockSpec* createBuildingBlockSpec(BuildingBlockSpecDefinition definition);
+	
+	const std::map<const std::string , BlockSpec >* getBlockSpecs() const ;
+	const std::map<const std::string , BuildingBlockSpec >* getBuildingBlockSpecs() const ;
+	const std::map<const std::string , BluePrint>* getBluePrints() const ;
+
+
+};
+
+}
+
+

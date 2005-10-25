@@ -1,0 +1,39 @@
+
+struct AvatarMovementState
+{
+public:
+	bool isMoving;
+	bool isRunning;
+	Ogre::Vector3 velocity;
+	Ogre::Quaternion orientation;
+};
+	
+class Avatar 
+{
+
+
+	Ogre::Camera* getAvatar1pCamera(void);
+	Ogre::Camera* getAvatar3pCamera(void);
+	Ogre::Camera* getAvatarTopCamera(void);
+	
+	AvatarCamera* getAvatarCamera() const;
+	
+	Ogre::SceneNode* getAvatarSceneNode() const;
+
+	
+	void setAvatarController(AvatarController* avatarController);
+	
+	AvatarEmberEntity* getAvatarEmberEntity();
+	
+	
+	/**
+	 *    sets the minimum interval to wait before sending new rotation changes to the server
+	 *    this is not done instantly to prevent swamping of data to the server
+	 *    set this lower if you experience too jerky game play
+	 * @param milliseconds 
+	 */
+	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
+
+	sigc::signal<void, EmberOgre::EmberEntity* > EventAddedEntityToInventory;
+	sigc::signal<void, EmberOgre::EmberEntity* > EventRemovedEntityFromInventory;
+};
