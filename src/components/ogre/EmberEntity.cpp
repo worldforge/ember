@@ -95,7 +95,6 @@ EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* 
 :
 mSceneManager(sceneManager)
 , mIsInitialized(false)
-, mView(vw)
 , Eris::Entity(id, ty, vw) 
 , mTerrainArea(this)
 , mIsInMotionManager(false)
@@ -145,7 +144,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 		mTerrainArea.init();
 		addArea(&mTerrainArea);
 	}
-	
+		
 	mIsInitialized = true;
 	
 }
@@ -268,7 +267,6 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 
 void EmberEntity::onSoundAction( const Atlas::Objects::Operation::RootOperation & op )
 {
-	int i = 0;
 }
 
 
@@ -457,33 +455,38 @@ void EmberEntity::addArea(TerrainArea* area)
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
     if (str == "mode") {
-        std::string mode = v.asString();
-		MovementMode newMode;
-        if (mode.empty()) {
-			newMode = MM_DEFAULT;
-        } else if (mode == MODE_STANDING) {
-			newMode = MM_STANDING;
-        } else if (mode == MODE_RUNNING) {
-			newMode = MM_RUNNING;
-        } else if (mode == MODE_WALKING) {
-			newMode = MM_WALKING;
-        } else if (mode == MODE_SWIMMING) {
-			newMode = MM_SWIMMING;
-		} else if (mode == MODE_FLOATING) {
-			newMode = MM_FLOATING;
-		} else if (mode == MODE_FIXED) {
-			newMode = MM_FIXED;
-        } else {
-			newMode = MM_DEFAULT;
-		}
-		
-		onModeChanged(newMode);
+    	parseModeChange(v);
 	} else if (str == "bbox") {
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
 	}
 	Entity::onAttrChanged(str, v);
+}
+
+void EmberEntity::parseModeChange(const Atlas::Message::Element& v)
+{
+	const std::string& mode = v.asString();
+	MovementMode newMode;
+	if (mode.empty()) {
+		newMode = MM_DEFAULT;
+	} else if (mode == MODE_STANDING) {
+		newMode = MM_STANDING;
+	} else if (mode == MODE_RUNNING) {
+		newMode = MM_RUNNING;
+	} else if (mode == MODE_WALKING) {
+		newMode = MM_WALKING;
+	} else if (mode == MODE_SWIMMING) {
+		newMode = MM_SWIMMING;
+	} else if (mode == MODE_FLOATING) {
+		newMode = MM_FLOATING;
+	} else if (mode == MODE_FIXED) {
+		newMode = MM_FIXED;
+	} else {
+		newMode = MM_DEFAULT;
+	}
+	
+	onModeChanged(newMode);
 }
 
 void EmberEntity::onModeChanged(MovementMode newMode)

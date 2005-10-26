@@ -303,8 +303,6 @@ protected:
 	
 	Ogre::SceneManager* mSceneManager;
 	
-	Eris::View* mView;
-	
 	/**
 	If there's a terrainarea belonging to this entity, that's stored here.
 	TODO: check if we can save some memory by using a pointer?
@@ -316,6 +314,14 @@ protected:
 	the mode the entity is in, like walking, running, swimming etc.
 	*/
 	MovementMode mMovementMode;
+
+
+	/**
+	 *    parses the current mode from the submitted element, which should be taken from the "mode" attribute
+	 *    this method will in turn call onModeChanged if the mode is changed
+	 * @param v 
+	 */
+	void parseModeChange(const Atlas::Message::Element& v);
 
 };
 

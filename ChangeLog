@@ -1,5 +1,9 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberEntity.*, src/components/ogre/EmberPhysicalEntity.*: since mode changes are now emitted from within the init method, adjust the code a bit
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/WorldEmberEntity.*, src/components/ogre/PersonEmberEntity.*, src/components/ogre/EmberPhysicalEntity.*, src/components/ogre/AvatarEmberEntity.* src/components/ogre/EmberEntity.*: adapt to changes in Eris with regards to GameEntity being replaced with RootEntity
 	* src/components/ogre/EmberEntityFactory.*
 		* adapt to changes in Eris with regards to GameEntity being replaced with RootEntity

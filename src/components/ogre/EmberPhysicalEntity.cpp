@@ -118,6 +118,7 @@ void EmberPhysicalEntity::setVisible(bool visible)
 
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
+	onModeChanged(EmberEntity::MM_DEFAULT);
 	EmberEntity::init(ge);
 	getModel()->setQueryFlags(EmberEntity::CM_ENTITY);
 
@@ -151,7 +152,6 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
 	}
 
-	onModeChanged(EmberEntity::MM_DEFAULT);
 }
 
 void EmberPhysicalEntity::connectEntities()
