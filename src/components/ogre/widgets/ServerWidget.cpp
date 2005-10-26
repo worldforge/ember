@@ -85,8 +85,8 @@ void ServerWidget::buildWidget()
 	
 	
 	//NOTE: hardcoded! we should get the values from the server somehow
-	CEGUI::ListboxItem* item = new ColoredListItem("settler", 0, 0);
-	mTypesList->addItem(item);
+// 	CEGUI::ListboxItem* item = new ColoredListItem("settler", 0, 0);
+// 	mTypesList->addItem(item);
 
 	
 	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
@@ -103,10 +103,10 @@ void ServerWidget::buildWidget()
 	
 	
 		
-	Ember::EmberServices::getInstance()->getServerService()->GotAccount.connect(SigC::slot(*this, &ServerWidget::createdAccount));
-	Ember::EmberServices::getInstance()->getServerService()->LoginSuccess.connect(SigC::slot(*this, &ServerWidget::loginSuccess));
-	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &ServerWidget::gotAvatar));
-	Ember::EmberServices::getInstance()->getServerService()->GotAllCharacters.connect(SigC::slot(*this, &ServerWidget::gotAllCharacters));
+	Ember::EmberServices::getInstance()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
+	Ember::EmberServices::getInstance()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
+	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
+	Ember::EmberServices::getInstance()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
 	
 	mMainWindow->setVisible(false);
 
@@ -127,7 +127,18 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	getWindow("LoginPanel")->setVisible(false);
 	getWindow("CharacterTabControl")->setVisible(true);
 	account->refreshCharacterInfo();
+	fillAllowedCharacterTypes(account);
 	
+}
+
+void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
+{
+	const std::vector< std::string >& characters = account->getCharacterTypes();
+	
+	for(std::vector< std::string >::const_iterator I = characters.begin(); I != characters.end(); ++I) {
+		CEGUI::ListboxItem* item = new ColoredListItem(*I, 0, 0);
+		mTypesList->addItem(item);
+	}
 }
 
 void ServerWidget::gotAllCharacters(Eris::Account* account) 
@@ -148,7 +159,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	} else {
 	
 		for(;I != I_end; ++I) {
-			const Atlas::Objects::Entity::GameEntity entity = (*I).second;
+			const Atlas::Objects::Entity::RootEntity entity = (*I).second;
 			const Atlas::Message::Element nameElement = entity->getAttr("name");
 			ColoredListItem* item = new ColoredListItem(nameElement.asString());
 			std::string* id = new std::string(entity->getId());

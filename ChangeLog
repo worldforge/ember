@@ -1,5 +1,11 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/Performance.cpp: Show the amount of queued sight ops as a value of lag
+	* src/components/ogre/widgets/ServerWidget.*: get the list of available avatar types from eris
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Makefile.am: place the widget layouts in a place more consistent with how cegui wants it
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/WorldEmberEntity.cpp: use the getView method from the Eris::Entity base class instead
 	* src/components/ogre/TerrainGenerator.*, src/components/ogre/MousePicker.h, src/components/ogre/GUIManager.*, src/components/ogre/EmberOgre.*, src/components/ogre/Avatar.*, src/components/ogre/AvatarController.*, src/components/ogre/AvatarCamera.*, src/components/ogre/widgets/ChatWidget.cpp, src/components/ogre/widgets/ConsoleWidget.*, src/components/ogre/widgets/EntityPickerWidget.cpp, src/components/ogre/widgets/GiveWidget.cpp, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MeshPreview.h, src/components/ogre/widgets/Quit.cpp, src/components/ogre/widgets/ServerBrowserWidget.cpp, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/Widget.h
 		*   use the sigc 2.0 methods, which allows us to use the very nice sigc::trackable class and doesn't require all classes to inherit from SigC::Object

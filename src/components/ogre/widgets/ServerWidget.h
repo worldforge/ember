@@ -92,6 +92,12 @@ protected:
 	void updateNewCharacter();
 	
 	
+	/**
+	 *    Fills the drop down list with available character types from the server.
+	 * @param account 
+	 */
+	void fillAllowedCharacterTypes(Eris::Account* account);
+	
 
 
 

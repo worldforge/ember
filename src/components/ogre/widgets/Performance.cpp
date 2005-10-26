@@ -29,6 +29,9 @@
 //#include <OgreRenderTarget.h> 
 #include <numeric>
 #include <sigc++/object_slot.h>
+
+#include <Eris/View.h>
+
 namespace EmberOgre {
 
 // template<> WidgetLoader WidgetLoaderHolder<Performance>::loader("Performance", &createWidgetInstance);
@@ -49,8 +52,8 @@ void Performance::buildWidget()
 	
 	mMainText = static_cast<CEGUI::MultiLineEditbox*>(getWindow("TextBox"));
 	
-	EmberOgre::getSingleton().EventStartErisPoll.connect(SigC::slot(*this, &Performance::startErisPolling));
-	EmberOgre::getSingleton().EventEndErisPoll.connect(SigC::slot(*this, &Performance::endErisPolling));
+	EmberOgre::getSingleton().EventStartErisPoll.connect(sigc::mem_fun(*this, &Performance::startErisPolling));
+	EmberOgre::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &Performance::endErisPolling));
 	
 	
 	registerConsoleVisibilityToggleCommand("performance");
@@ -67,6 +70,9 @@ void Performance::frameStarted(const Ogre::FrameEvent& evt)
 		ss << "Current FPS: " << stats.lastFPS << "\n";
 		ss << "Average FPS: " << stats.avgFPS << "\n";
 		ss << "Triangle count: " << stats.triangleCount << "\n";
+		if (EmberOgre::getSingleton().getMainView() != 0) {
+			ss << "Lag: " << EmberOgre::getSingleton().getMainView()->lookQueueSize() << "\n";
+		}
 		//ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n";
 	
 		mMainText->setText(ss.str());
