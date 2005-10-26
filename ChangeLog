@@ -1,5 +1,9 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/extensions/Atlas/Operations/Use.*, src/extensions/Atlas/Operations/Wield.*: removed obsolete code, these are now in Atlas
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/cs, src/components/debug: removed obsolete code
 
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
