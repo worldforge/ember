@@ -1,5 +1,5 @@
 SUBDIRS = environment model SceneManagers modeldefinitions input widgets \
-			carpenter jesus ogreopcode
+				carpenter jesus ogreopcode scripting
 
 #gamesdir = $(bindir)/games
 bin_PROGRAMS = ember.bin
@@ -47,8 +47,14 @@ else
 EMBER_EXT_LIBS = $(EMBER_LIBS)
 endif
 
+if USE_LUA
+SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/liblua_scripting.a 
+else
+SCRIPT_LIBS =
+endif
 
-ember_bin_LDADD =  $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
+
+ember_bin_LDADD = $(SCRIPT_LIBS) $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
@@ -62,16 +68,17 @@ ember_bin_LDADD =  $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
 
 
 ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp 	MediaDeployer.cpp \
-		AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp 	MotionManager.cpp \
-		AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp 	Avatar.h \
-		MathConverter.h ConsoleObjectImpl.h MediaDeployer.h 	AvatarController.h \
-		environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h 	TerrainShader.h \
-		GUIManager.h MousePicker.h EmberEntityFactory.cpp EmberEntityFactory.h \
-			EmberEntity.h EmberEventProcessor.cpp EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
-			EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
-			AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
-			WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp TerrainPage.h TerrainArea.cpp \
-		TerrainArea.h  EmberEntityUserObject.cpp
+			AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp 	MotionManager.cpp \
+			AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp 	Avatar.h \
+			MathConverter.h ConsoleObjectImpl.h MediaDeployer.h 	AvatarController.h \
+			environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h 	TerrainShader.h \
+			GUIManager.h MousePicker.h EmberEntityFactory.cpp EmberEntityFactory.h \
+				EmberEntity.h EmberEventProcessor.cpp EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
+				EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
+				AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
+				WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp TerrainPage.h TerrainArea.cpp \
+			TerrainArea.h EmberEntityUserObject.cpp 
+			# GUIScriptManager.cpp
 
 
 
@@ -86,6 +93,7 @@ ceguifontsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/fonts
 ceguiimagesetsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/imagesets
 ceguilayoutsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/layouts
 ceguischemesdir = $(datadir)/games/ember/media/gui/cegui/datafiles/schemes
+ceguiconfigdir = $(datadir)/games/ember/media/gui/cegui/datafiles/configs
 ceguischemadir = $(datadir)/games/ember/media/gui
 
 
@@ -93,7 +101,8 @@ dist_ceguifonts_DATA = cegui/datafiles/fonts/Font.xsd cegui/datafiles/fonts/taho
 dist_ceguiimagesets_DATA = cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/imagesets/TaharezLook.imageset  cegui/datafiles/imagesets/TaharezLookMouse.imageset cegui/datafiles/imagesets/WindowsLook.imageset cegui/datafiles/imagesets/iconset_standard.imageset cegui/datafiles/imagesets/iconset_mason.imageset
 dist_ceguilayouts_DATA = cegui/datafiles/layouts/GUILayout.xsd
 dist_ceguischemes_DATA = cegui/datafiles/schemes/TaharezLook.scheme cegui/datafiles/schemes/TaharezLookWidgetAliases.scheme cegui/datafiles/schemes/TaharezLookWidgets.scheme cegui/datafiles/schemes/WindowsLook.scheme cegui/datafiles/schemes/WindowsLookWidgets.scheme cegui/datafiles/schemes/GUIScheme.xsd
-dist_ceguischema_DATA = cegui/datafiles/layouts/GUILayout.xsd cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/fonts/Font.xsd cegui/datafiles/schemes/GUIScheme.xsd
+dist_ceguiconfig_DATA = cegui/datafiles/configs/cegui.config
+dist_ceguischema_DATA = cegui/datafiles/layouts/GUILayout.xsd cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/fonts/Font.xsd cegui/datafiles/schemes/GUIScheme.xsd cegui/datafiles/configs/CEGUIConfig.xsd
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
@@ -101,4 +110,5 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS =  EmberEntityUserObject.h
+noinst_HEADERS = EmberEntityUserObject.h 
+# GUIScriptManager.h

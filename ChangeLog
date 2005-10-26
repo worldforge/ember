@@ -1,5 +1,10 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/Makefile.am: also install cegui config files
+	* src/components/ogre/cegui/datafiles/cegui.config,  src/components/ogre/cegui/datafiles/CEGUIConfig.xsd: some basic config files
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/Performance.cpp: Show the amount of queued sight ops as a value of lag
 	* src/components/ogre/widgets/ServerWidget.*: get the list of available avatar types from eris
 	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Makefile.am: place the widget layouts in a place more consistent with how cegui wants it
