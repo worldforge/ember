@@ -74,7 +74,7 @@ protected:
 	//virtual void setVisible(bool vis);	
 	//virtual void setContainer(Eris::Entity *pr);
 	//virtual void onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation);
-	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
 
 
 	Avatar* mAvatar;

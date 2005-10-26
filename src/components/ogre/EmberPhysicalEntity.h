@@ -165,7 +165,7 @@ protected:
 
 	//virtual void onVisibilityChanged( bool vis);
 
-	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
 
 
 	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;

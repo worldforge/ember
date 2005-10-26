@@ -59,7 +59,7 @@ EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris:
 	Ember::ServerService* serverService = Ember::EmberServices::getInstance()->getServerService();
 	loadTypeInfo();
 	
-	serverService->GotAvatar.connect(SigC::slot(*this, &EmberEntityFactory::setAvatar));
+	serverService->GotAvatar.connect(sigc::mem_fun(*this, &EmberEntityFactory::setAvatar));
 	
 }
 
@@ -69,7 +69,7 @@ EmberEntityFactory::~EmberEntityFactory()
 {}
 
 /// create whatever entity the client desires
-Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View* w)
+Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 	
 //	Ember::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
@@ -108,7 +108,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Game
 	return emberEntity;
 }
 
-AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world)
+AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
 {
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
@@ -138,13 +138,13 @@ AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::
 /// Accept is called by the world to test if this factory can instantiate the specified object
 /** Accept is called when an entity must be constructed; this will be called every time
 an object is created, so avoid lengthy processing if possible. */
-bool EmberEntityFactory::accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type)
+bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type)
 {
 	return true;
 }
 
 
-Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::GameEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
+Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
 	assert(!mWorldEntity);
 	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), mTerrainGenerator);
       // Extract base points and send to terrain        
@@ -164,7 +164,7 @@ WorldEmberEntity* EmberEntityFactory::getWorld() const
 void EmberEntityFactory::setAvatar(Eris::Avatar* avatar)
 {
 	mAvatar = avatar;	
-	mAvatar->GotCharacterEntity.connect(SigC::slot(*this, &EmberEntityFactory::gotAvatarCharacter));
+	mAvatar->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
 }
 
 void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
@@ -191,7 +191,7 @@ void EmberEntityFactory::buildTerrainAroundAvatar()
 
 
 
-EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
+EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
 	
 	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
 	Ogre::String id = ge->getId();

@@ -32,7 +32,7 @@ EmberPhysicalEntity(id, ty, vw, sceneManager, nodeWithModel)
 PersonEmberEntity::~PersonEmberEntity()
 {}
 
-void PersonEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void PersonEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
 	EmberPhysicalEntity::init(ge);
 //	mModel->setQueryFlags(EmberEntity::CM_PERSONS);

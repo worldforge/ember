@@ -1,5 +1,12 @@
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/WorldEmberEntity.*, src/components/ogre/PersonEmberEntity.*, src/components/ogre/EmberPhysicalEntity.*, src/components/ogre/AvatarEmberEntity.* src/components/ogre/EmberEntity.*: adapt to changes in Eris with regards to GameEntity being replaced with RootEntity
+	* src/components/ogre/EmberEntityFactory.*
+		* adapt to changes in Eris with regards to GameEntity being replaced with RootEntity
+		* use the sigc 2.0 methods, which allows us to use the very nice sigc::trackable class and doesn't require all classes to inherit from SigC::Object
+
+2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/extensions/Atlas/Operations/Use.*, src/extensions/Atlas/Operations/Wield.*: removed obsolete code, these are now in Atlas
 
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>

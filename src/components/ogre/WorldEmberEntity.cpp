@@ -52,7 +52,7 @@ EmberEntity(id, ty, vw, sceneManager)
 WorldEmberEntity::~WorldEmberEntity()
 {}
 
-void WorldEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
 	Eris::Entity::init(ge);
 	mTerrainGenerator->initTerrain(this, mView);

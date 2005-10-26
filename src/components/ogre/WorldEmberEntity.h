@@ -41,7 +41,7 @@ public:
 protected:
 	TerrainGenerator* mTerrainGenerator;
 	
-	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
 
 	virtual void onMoved();
 	virtual void onTalk(const Atlas::Objects::Root& obj);

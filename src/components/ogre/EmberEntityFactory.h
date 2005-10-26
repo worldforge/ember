@@ -35,16 +35,16 @@
 
 //#include <OgreMemoryMacros.h>
 	
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
-
+// #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+// #include <sigc++/signal_system.h>
+// #else
+// #include <sigc++/object.h>
+// #include <sigc++/signal.h>
+// #include <sigc++/slot.h>
+// #include <sigc++/bind.h>
+// #include <sigc++/object_slot.h>
+// #endif
+#include <sigc++/trackable.h>
 //#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 namespace EmberOgre {
@@ -63,7 +63,9 @@ class WorldEmberEntity;
  * @see Eris::Factory
  * 
  */
-class EmberEntityFactory : public Eris::Factory, virtual public SigC::Object
+class EmberEntityFactory : 
+public Eris::Factory, 
+public sigc::trackable
 {
 public:
 	
@@ -79,10 +81,10 @@ public:
     /** Accept is called when an entity must be constructed; this will be called every time
     an object is created, so avoid lengthy processing if possible. */
 
-    virtual bool accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type);
+    virtual bool accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type);
 
     /// create whatever entity the client desires
-    virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View* w);
+    virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w);
     
     /** retrieve this factory's priority level; higher priority factories
     get first chance to process a recieved Atlas entity. The default implementation
@@ -95,11 +97,6 @@ public:
 	WorldEmberEntity* getWorld() const;
 
 
-/*	//virtual bool Accept(const Atlas::Message::Element &o) = 0;
-	virtual bool accept(const Atlas::Objects::Entity::GameEntity &ge, Eris::View *world);
-
-	/// create whatever entity the client desires
-	virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::GameEntity &ge, Eris::View *world);*/
 
 
 
@@ -108,9 +105,9 @@ protected:
 
 	void buildTerrainAroundAvatar();
 
-	Eris::Entity* createWorld(const Atlas::Objects::Entity::GameEntity & ge,Eris::TypeInfo* type, Eris::View *world);
-	EmberPhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
-	AvatarEmberEntity* createAvatarEntity(const Atlas::Objects::Entity::GameEntity &ge, Eris::TypeInfo* type, Eris::View *world);
+	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge,Eris::TypeInfo* type, Eris::View *world);
+	EmberPhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
+	AvatarEmberEntity* createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 
 	/*
 	 * loads data about the different entity types, such as which ones are persons

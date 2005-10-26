@@ -39,7 +39,7 @@ mAvatar(0), mErisAvatar(erisAvatar)
 AvatarEmberEntity::~AvatarEmberEntity()
 {}
 
-void AvatarEmberEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
 	PersonEmberEntity::init(ge);
 	mModel->setQueryFlags(EmberEntity::CM_AVATAR);

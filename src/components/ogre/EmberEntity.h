@@ -287,7 +287,7 @@ protected:
 	override from eris
 	this is called by eris just after the entity has been put into the world
 	*/
-	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
 
 	virtual void checkVisibility(bool vis);
 

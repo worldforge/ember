@@ -116,7 +116,7 @@ void EmberPhysicalEntity::setVisible(bool visible)
 	//getModel()->setVisible(visible);
 }
 
-void EmberPhysicalEntity::init(const Atlas::Objects::Entity::GameEntity &ge)
+void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
 	EmberEntity::init(ge);
 	getModel()->setQueryFlags(EmberEntity::CM_ENTITY);

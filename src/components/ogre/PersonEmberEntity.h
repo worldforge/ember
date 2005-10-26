@@ -32,7 +32,7 @@ public:
 	virtual bool allowVisibilityOfMember(EmberEntity* entity);
 	
 protected:
-	virtual void init(const Atlas::Objects::Entity::GameEntity &ge);
+	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
 
 
 };
