@@ -98,7 +98,7 @@ TerrainGenerator::TerrainGenerator()
   //  EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
-	ConfigService_EventChangedConfigItem_connection = configSrv->EventChangedConfigItem.connect(SigC::slot(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
+	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
 	
 
 }
@@ -106,7 +106,6 @@ TerrainGenerator::TerrainGenerator()
 TerrainGenerator::~TerrainGenerator()
 {
 	delete mTerrain;
-	ConfigService_EventChangedConfigItem_connection.disconnect();
 	//delete mTerrainPageSource;
 	
 }

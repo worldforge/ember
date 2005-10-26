@@ -59,7 +59,7 @@ void GiveWidget::buildWidget()
 	
 	mListBox = static_cast<CEGUI::Listbox*>(getWindow("ListBox"));
 	
-	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &GiveWidget::createdAvatarEmberEntity));
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GiveWidget::createdAvatarEmberEntity));
 	
 	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(getWindow("Give"));
 	BIND_CEGUI_EVENT(giveButton, CEGUI::ButtonBase::EventMouseClick, GiveWidget::Give_Click)
@@ -67,7 +67,7 @@ void GiveWidget::buildWidget()
 	CEGUI::PushButton* cancelButton = static_cast<CEGUI::PushButton*>(getWindow("Cancel"));
 	BIND_CEGUI_EVENT(cancelButton, CEGUI::ButtonBase::EventMouseClick, GiveWidget::Cancel_Click)
 
-	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &GiveWidget::handleAction));
+	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &GiveWidget::handleAction));
 	
 	
 	
@@ -76,8 +76,8 @@ void GiveWidget::buildWidget()
 void GiveWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 {
 	//mMainWindow->setVisible(true);
-	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &GiveWidget::addedEntity));
-	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &GiveWidget::removedEntity));
+	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(sigc::mem_fun(*this, &GiveWidget::addedEntity));
+	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(sigc::mem_fun(*this, &GiveWidget::removedEntity));
 
 }
 void GiveWidget::addedEntity(EmberEntity* dimeEntity) {

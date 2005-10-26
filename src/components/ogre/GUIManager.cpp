@@ -44,6 +44,8 @@
 #include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 
+//#include "GUIScriptManager.h"
+
 
 
 #include <SDL.h>
@@ -69,20 +71,24 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 	WidgetDefinitions w;
 	
 	try {
-	
+		
 		S_LOG_INFO("STARTING CEGUI");
-		
-		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
-		mGuiSystem = new CEGUI::System(mGuiRenderer); 
-		
-		mWindowManager = &CEGUI::WindowManager::getSingleton();
-
-
+	
 		Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
 		chdir(configSrv->getEmberDataDirectory().c_str());
 		
 		//use a macro from CEGUIFactoryModule
 		DYNLIB_LOAD( "libCEGUITaharezLook.so");
+		
+		
+		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
+/*		mScriptManager = new GUIScriptManager();
+		mGuiSystem = new CEGUI::System(mGuiRenderer, &mScriptManager->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); */
+		mGuiSystem = new CEGUI::System(mGuiRenderer); 
+		
+		mWindowManager = &CEGUI::WindowManager::getSingleton();
+
+
 //		fprintf(stderr, dlerror());
 		try {	
 //			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
@@ -123,13 +129,20 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		pushMousePicker(picker);
 		
 		mInput = new Input(mGuiSystem, mGuiRenderer);
-		mInput->EventKeyPressed.connect(SigC::slot(*this, &GUIManager::pressedKey));
+		mInput->EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		mInput->setInputMode(Input::IM_GUI);
 		
 		//connect to the creation of the avatar, since we want to switch to movement mode when that happens
-		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
+		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
+		
+/*		try {
+			mScriptManager->executeScript("cegui/datafiles/lua_scripts/demo8.lua");
+		} catch (Ogre::Exception& ex)
+		{
+			S_LOG_FAILURE("Error when loading test script. Error message: " << ex.getFullDescription());
+		}*/
 	
 	} catch (CEGUI::Exception&) {
 		S_LOG_FAILURE("GUIManager - error when creating gui.");

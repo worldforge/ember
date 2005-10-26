@@ -61,7 +61,7 @@ void InventoryWidget::buildWidget()
 	mListBox = static_cast<CEGUI::Listbox*>(getWindow("ListBox"));
 // 	getMainSheet()->addChildWindow(mMainWindow); 
 	
-	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &InventoryWidget::createdAvatarEmberEntity));
 	
 	CEGUI::PushButton* dropButton = static_cast<CEGUI::PushButton*>(getWindow("Drop"));
 	BIND_CEGUI_EVENT(dropButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Drop_Click)
@@ -78,8 +78,8 @@ void InventoryWidget::buildWidget()
 void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 {
 	mMainWindow->setVisible(true);
-	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(SigC::slot(*this, &InventoryWidget::addedEntity));
-	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(SigC::slot(*this, &InventoryWidget::removedEntity));
+	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(sigc::mem_fun(*this, &InventoryWidget::addedEntity));
+	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(sigc::mem_fun(*this, &InventoryWidget::removedEntity));
 	registerConsoleVisibilityToggleCommand("inventory");
 
 }

@@ -90,7 +90,7 @@ void IngameChatWidget::buildWidget()
 //	mChatTextBox = static_cast<CEGUI::MultiLineEditbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"Chat/TextBox"));
 	getMainSheet()->addChildWindow(mMainWindow); */
 	
-	mGuiManager->AppendIGChatLine.connect(SigC::slot(*this, &IngameChatWidget::appendIGChatLine));
+	mGuiManager->AppendIGChatLine.connect(sigc::mem_fun(*this, &IngameChatWidget::appendIGChatLine));
 
 }
 

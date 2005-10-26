@@ -121,9 +121,9 @@ void JesusEdit::buildWidget()
 	
 	
 	//bind external events
-	mMousePicker.EventPickedModelBlock.connect(SigC::slot(*this, &JesusEdit::pickedModelBlock));
-	mMousePicker.EventPickedAttachPointNode.connect(SigC::slot(*this, &JesusEdit::pickedAttachPointNode));
-	EmberOgre::getSingleton().EventCreatedJesus.connect(SigC::slot(*this, &JesusEdit::createdJesus));
+	mMousePicker.EventPickedModelBlock.connect(sigc::mem_fun(*this, &JesusEdit::pickedModelBlock));
+	mMousePicker.EventPickedAttachPointNode.connect(sigc::mem_fun(*this, &JesusEdit::pickedAttachPointNode));
+	EmberOgre::getSingleton().EventCreatedJesus.connect(sigc::mem_fun(*this, &JesusEdit::createdJesus));
 	
 	getMainSheet()->addChildWindow(mMainWindow); 
 //	getMainSheet()->addChildWindow(mPreviewWindow); 

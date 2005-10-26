@@ -12,7 +12,7 @@ class Widget;
 * The main console. This behaves like most game consoles such as quake etc.
 * Switch between opened and closed through the method toggleActive()
 */
-class ConsoleWidget : public Widget, virtual public SigC::Object
+class ConsoleWidget : public Widget
 {
 public:
 

@@ -59,8 +59,8 @@ EntityPickerWidget::~EntityPickerWidget()
 void EntityPickerWidget::buildWidget()
 {
 	mMousePicker = mGuiManager->getMousePicker();
-	mMousePicker->EventPickedEntity.connect(SigC::slot(*this, &EntityPickerWidget::pickedEntity));
-	mMousePicker->EventPickedNothing.connect(SigC::slot(*this, &EntityPickerWidget::pickedNothing));
+	mMousePicker->EventPickedEntity.connect(sigc::mem_fun(*this, &EntityPickerWidget::pickedEntity));
+	mMousePicker->EventPickedNothing.connect(sigc::mem_fun(*this, &EntityPickerWidget::pickedNothing));
 
 	mMainWindow = mWindowManager->createWindow("DefaultGUISheet", (CEGUI::utf8*)"EntityPickerWidget/MainWindow");
 	mMainWindow->setPosition(CEGUI::Point(0.25, 0.25f));
@@ -145,7 +145,7 @@ void EntityPickerWidget::buildWidget()
 	mButtonSet.insert(mUseButton);	
 		
 		
-	GUIManager::getSingleton().getInput()->EventMouseButtonReleased.connect(SigC::slot(*this, &EntityPickerWidget::input_MouseButtonReleased));
+	GUIManager::getSingleton().getInput()->EventMouseButtonReleased.connect(sigc::mem_fun(*this, &EntityPickerWidget::input_MouseButtonReleased));
 
 }
 

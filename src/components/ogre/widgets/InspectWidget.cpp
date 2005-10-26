@@ -75,12 +75,12 @@ InspectWidget::InspectWidget() : mCurrentEntity(0)
 {
 
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(INSPECT,this);
-	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &InspectWidget::Server_GotView));
+	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
 
 void InspectWidget::Server_GotView(Eris::View* view)
 {
-	view->EntityDeleted.connect(SigC::slot(*this, &InspectWidget::View_EntityDeleted));
+	view->EntityDeleted.connect(sigc::mem_fun(*this, &InspectWidget::View_EntityDeleted));
 }
 
 void InspectWidget::View_EntityDeleted(Eris::Entity* entity)
@@ -103,7 +103,7 @@ void InspectWidget::buildWidget()
 	mInfo = static_cast<CEGUI::StaticText*>(getWindow("EntityInfo"));
 	
 	
-	mGuiManager->EventEntityAction.connect(SigC::slot(*this, &InspectWidget::handleAction));
+	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
 	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"));

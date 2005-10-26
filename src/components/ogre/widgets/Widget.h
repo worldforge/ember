@@ -9,7 +9,7 @@
 
 
 
-#include <sigc++/object.h>
+#include <sigc++/trackable.h>
 //#include <sigc++/signal.h>
 //#include <sigc++/slot.h>
 //#include <sigc++/bind.h>
@@ -84,7 +84,9 @@ When creating a new Widget class, make sure you also add it to WidgetDefinitions
 @see WidgetDefinitions
 
 */
-class Widget : virtual public SigC::Object, public Ember::ConsoleObject
+class Widget : 
+public sigc::trackable,
+public Ember::ConsoleObject
 {
 public:
 

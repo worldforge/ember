@@ -25,7 +25,7 @@
 
 #include "Widget.h"
 
-#include <sigc++/slot.h>
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 
@@ -40,7 +40,7 @@ typedef std::vector<MeshPreviewMeshInstance> InstanceStore;
 /**
 Class for handling the preview of meshes. This will keep track of all the meshes that are previewed.
 */
-class MeshPreviewHandler : SigC::Object
+class MeshPreviewHandler 
 {
 public:
 	MeshPreviewHandler();
@@ -71,12 +71,12 @@ public:
 	/**
 	Emitted when an instance has been created.
 	*/
- 	SigC::Signal1<void, size_t> EventCreatedInstance;
+ 	sigc::signal<void, size_t> EventCreatedInstance;
  	
  	/**
  	Emitted when an instance has been removed.
  	*/
- 	SigC::Signal1<void, size_t> EventRemoveInstance;
+ 	sigc::signal<void, size_t> EventRemoveInstance;
  	
  	/**
  	Call this each fram to update the animations of all meshes.

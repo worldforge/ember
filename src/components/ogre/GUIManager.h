@@ -25,15 +25,17 @@
 #include <CEGUIBase.h>
 #include <OgreCEGUIRenderer.h>
 
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
+// #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+// #include <sigc++/signal_system.h>
+// #else
+// #include <sigc++/object.h>
+// #include <sigc++/signal.h>
+// #include <sigc++/slot.h>
+// #include <sigc++/bind.h>
+// #include <sigc++/object_slot.h>
+// #endif
+
+#include <sigc++/trackable.h>
 
 #include <OgreKeyEvent.h> 
 #include "framework/Singleton.h"
@@ -57,6 +59,7 @@ class MousePicker;
 class EmberEventProcessor;
 class Input;
 class AvatarEmberEntity;
+class GUIScriptManager;
 
 
 /**
@@ -65,7 +68,7 @@ class AvatarEmberEntity;
 class GUIManager : 
 public Ember::Singleton<GUIManager>, 
 Ogre::FrameListener,
-virtual public SigC::Object,
+public sigc::trackable,
 public Ember::ConsoleObject
 {
 public:
@@ -86,10 +89,10 @@ public:
 	GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr);
 	virtual ~GUIManager();
 	
-	SigC::Signal2<void, const std::string&, EmberEntity*> AppendIGChatLine;
-	SigC::Signal2<void, const std::string&, EmberEntity*> AppendOOGChatLine;
+	sigc::signal<void, const std::string&, EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const std::string&, EmberEntity*> AppendOOGChatLine;
 	
-	SigC::Signal2<void, const std::string&, EmberEntity*> EventEntityAction;
+	sigc::signal<void, const std::string&, EmberEntity*> EventEntityAction;
 	
 	/**
 	Emitted when the input mode changes between gui and movment mode.
@@ -216,6 +219,7 @@ protected:
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
 	
+// 	GUIScriptManager* mScriptManager;
 
 };
 }

@@ -46,7 +46,7 @@ void Quit::buildWidget()
 	
 	loadMainSheet("Quit.widget", "Quit/");
 	
-	EmberOgre::getSingleton().EventRequestQuit.connect(SigC::slot(*this, &Quit::EmberOgre_RequestQuit));
+	EmberOgre::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
 	
 	CEGUI::PushButton* yesButton = static_cast<CEGUI::PushButton*>(getWindow("YesButton"));
 	CEGUI::PushButton* noButton = static_cast<CEGUI::PushButton*>(getWindow("NoButton"));

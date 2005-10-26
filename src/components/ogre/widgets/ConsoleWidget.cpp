@@ -16,7 +16,7 @@ ConsoleWidget::~ConsoleWidget()
 void ConsoleWidget::buildWidget()
 {
 	myBackend = Ember::ConsoleBackend::getMainConsole();
-	myBackend->GotMessage.connect(SigC::slot(*this, &ConsoleWidget::pushMessage));
+	myBackend->GotMessage.connect(sigc::mem_fun(*this, &ConsoleWidget::pushMessage));
 	mState = CS_CLOSED;
 	
 	loadMainSheet("ConsoleWidget.xml", "Console/");

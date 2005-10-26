@@ -70,7 +70,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	setAvatarNode(avatarNode);
 	
 	if (mGUIManager && mGUIManager->getInput()) {
-		mGUIManager->getInput()->EventMouseMoved.connect(SigC::slot(*this, &AvatarCamera::Input_MouseMoved));
+		mGUIManager->getInput()->EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
 	}
 
 	
@@ -80,14 +80,13 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETCAMERADISTANCE,this);
 
-	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
+	Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
 	
 	updateValuesFromConfig();
 }
 
 AvatarCamera::~AvatarCamera()
 {
-	ConfigService_EventChangedConfigItem_connection.disconnect();
 }
 
 void AvatarCamera::createNodesAndCamera()

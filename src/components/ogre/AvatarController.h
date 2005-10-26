@@ -26,7 +26,8 @@
 #include <OgreStringConverter.h>
 
 #include <SDL.h>
-#include <sigc++/object.h>
+// #include <sigc++/object.h>
+#include <sigc++/trackable.h>
 
 #include "input/Input.h"
 
@@ -73,7 +74,8 @@ struct AvatarControllerMovement
 };
 
 class AvatarController
-: public Ogre::FrameListener, virtual public SigC::Object
+: public Ogre::FrameListener, 
+public sigc::trackable
 {
 public:
     
@@ -92,7 +94,7 @@ public:
 	/**
 	Emitted when the movement mode changes between run and walk.
 	*/
-	SigC::Signal1<void, AvatarMovementMode::Mode> EventMovementModeChanged;
+	sigc::signal<void, AvatarMovementMode::Mode> EventMovementModeChanged;
 
 	
 

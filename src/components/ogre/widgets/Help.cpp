@@ -72,7 +72,7 @@ void Help::buildWidget()
 	}
 
 	//connect to the creation of the avatar, since we want to show a help blurb about the movement
-	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &Help::EmberOgre_CreatedAvatarEntity));
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &Help::EmberOgre_CreatedAvatarEntity));
 
 }
 

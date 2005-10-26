@@ -81,8 +81,8 @@ void StatusIconBar::buildWidget()
 	
 	BIND_CEGUI_EVENT(mMovementModeIcon->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::movement_MouseClick);
 	
-	mGuiManager->getInput()->EventChangedInputMode.connect(SigC::slot(*this, &StatusIconBar::Input_InputModeChanged));
-	EmberOgre::getSingleton().getAvatarController()->EventMovementModeChanged.connect(SigC::slot(*this, &StatusIconBar::AvatarController_MovementModeChanged));
+	mGuiManager->getInput()->EventChangedInputMode.connect(sigc::mem_fun(*this, &StatusIconBar::Input_InputModeChanged));
+	EmberOgre::getSingleton().getAvatarController()->EventMovementModeChanged.connect(sigc::mem_fun(*this, &StatusIconBar::AvatarController_MovementModeChanged));
 	
 	
 /*	

@@ -23,15 +23,8 @@
 #ifndef DIMEOGREMOUSEPICKER_H
 #define DIMEOGREMOUSEPICKER_H
 
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
 #include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
+
 
 
 #include "EmberOgrePrerequisites.h"
@@ -57,7 +50,8 @@ struct MousePickerArgs
 /**
 @author Erik Hjortsberg
 */
-class MousePicker : virtual public SigC::Object{
+class MousePicker 
+{
 public:
     MousePicker();
 
@@ -67,8 +61,8 @@ public:
 
 
 
-	SigC::Signal2<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
-	SigC::Signal1<void, const MousePickerArgs&> EventPickedNothing;
+	sigc::signal<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
+	sigc::signal<void, const MousePickerArgs&> EventPickedNothing;
 	
 	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntityResult.entity; }
 

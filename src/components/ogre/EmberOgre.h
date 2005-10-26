@@ -30,7 +30,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include sigc header files
 // ------------------------------
-#include <sigc++/object.h>
+#include <sigc++/trackable.h>
 
 
 #include "framework/Singleton.h"
@@ -91,7 +91,9 @@ class EmberEntity;
 The main class of ember. This functions as a hub for almost all subsystems. (Perhaps this should be refactored?)
 
 */
-class EmberOgre : public Ember::Singleton<EmberOgre>, virtual public SigC::Object, public Ogre::FrameListener
+class EmberOgre : public Ember::Singleton<EmberOgre>, 
+public sigc::trackable,
+public Ogre::FrameListener
 {
 public:
  
@@ -144,23 +146,23 @@ public:
 	inline Ogre::RenderWindow* getRenderWindow() const { return mWindow; }
 	
 	
-	SigC::Signal1<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
-	SigC::Signal1<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
-	SigC::Signal1<void, Jesus*> EventCreatedJesus;
+	sigc::signal<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
+	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
+	sigc::signal<void, Jesus*> EventCreatedJesus;
 	/**
 	 * Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
 	 */ 
-	SigC::Signal1<void, bool&> EventRequestQuit;
+	sigc::signal<void, bool&> EventRequestQuit;
 	
 	/**
 	Emitted before the eris polling is started
 	*/
-	SigC::Signal0<void> EventStartErisPoll;
+	sigc::signal<void> EventStartErisPoll;
 	
 	/**
 	Emitted after the eris polling has finished
 	*/
-	SigC::Signal0<void> EventEndErisPoll;
+	sigc::signal<void> EventEndErisPoll;
 	
 	/**
 	 * returns the scenenode of the world entity
@@ -180,32 +182,32 @@ public:
 	/**
 	Emitted after the GUIManager has been created, but not yet initialized
 	*/
-	SigC::Signal1<void, GUIManager&> EventGUIManagerCreated;
+	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
 	/**
 	Emitted after the GUIManager has been initilized
 	*/
-	SigC::Signal1<void, GUIManager&> EventGUIManagerInitialized;
+	sigc::signal<void, GUIManager&> EventGUIManagerInitialized;
 	
 	/**
 	Emitted after the Motion has been created
 	*/
-	SigC::Signal1<void, MotionManager&> EventMotionManagerCreated;
+	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
 	
 	
 	/**
 	Emitted after the TerrainGenerator has been created
 	*/
-	SigC::Signal1<void, TerrainGenerator&> EventTerrainGeneratorCreated;
+	sigc::signal<void, TerrainGenerator&> EventTerrainGeneratorCreated;
 	
 	/**
 	Emitted after the AvatarController has been created
 	*/
-	SigC::Signal1<void, AvatarController&> EventAvatarControllerCreated;
+	sigc::signal<void, AvatarController&> EventAvatarControllerCreated;
 	
 	/**
 	Emitted after the base Ogre scene has been created
 	*/
-	SigC::Signal0<void> EventSceneCreated;
+	sigc::signal<void> EventSceneCreated;
 	
 	EmberEntity* getEntity(const std::string & id) const;
 	

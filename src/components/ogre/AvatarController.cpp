@@ -72,7 +72,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mFreeFlyingCameraNode->setPosition(0,30,0);
 	detachCamera();
 	
-	EmberOgre::getSingleton().EventGUIManagerInitialized.connect(SigC::slot(*this, &AvatarController::EmberOgre_GUIManagerInitialized));
+	EmberOgre::getSingleton().EventGUIManagerInitialized.connect(sigc::mem_fun(*this, &AvatarController::EmberOgre_GUIManagerInitialized));
 	
 }
 AvatarController::~AvatarController()
@@ -127,7 +127,7 @@ void  AvatarController::input_KeyReleased(const SDL_keysym& keysym, Input::Input
 void AvatarController::EmberOgre_GUIManagerInitialized(GUIManager& manager)
 {
 	//just bind the relevant input events
-	manager.getInput()->EventKeyReleased.connect(SigC::slot(*this, &AvatarController::input_KeyReleased));
+	manager.getInput()->EventKeyReleased.connect(sigc::mem_fun(*this, &AvatarController::input_KeyReleased));
 }
 
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)

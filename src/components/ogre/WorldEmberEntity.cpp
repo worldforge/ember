@@ -55,7 +55,7 @@ WorldEmberEntity::~WorldEmberEntity()
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
 	Eris::Entity::init(ge);
-	mTerrainGenerator->initTerrain(this, mView);
+	mTerrainGenerator->initTerrain(this, getView());
 	
 	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 	

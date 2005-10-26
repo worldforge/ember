@@ -43,8 +43,8 @@ void ChatWidget::buildWidget()
 	
 	mChatTextBox = static_cast<CEGUI::MultiLineEditbox*>(getWindow("TextBox"));
 	
-	mGuiManager->AppendIGChatLine.connect(SigC::slot(*this, &ChatWidget::appendIGChatLine));
-	mGuiManager->AppendOOGChatLine.connect(SigC::slot(*this, &ChatWidget::appendOOGChatLine));
+	mGuiManager->AppendIGChatLine.connect(sigc::mem_fun(*this, &ChatWidget::appendIGChatLine));
+	mGuiManager->AppendOOGChatLine.connect(sigc::mem_fun(*this, &ChatWidget::appendOOGChatLine));
 	
 	registerConsoleVisibilityToggleCommand("chat");
 	enableCloseButton();

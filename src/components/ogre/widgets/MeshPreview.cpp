@@ -207,8 +207,8 @@ const std::string MeshPreview::CREATEMESH("createmesh");
 MeshPreview::MeshPreview() 
 {
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEMESH,this);
-	mHandler.EventCreatedInstance.connect(SigC::slot(*this, &MeshPreview::createdNewEntity));
-	mHandler.EventRemoveInstance.connect(SigC::slot(*this, &MeshPreview::removedEntity));
+	mHandler.EventCreatedInstance.connect(sigc::mem_fun(*this, &MeshPreview::createdNewEntity));
+	mHandler.EventRemoveInstance.connect(sigc::mem_fun(*this, &MeshPreview::removedEntity));
 
 }
 

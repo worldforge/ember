@@ -31,8 +31,10 @@
 	#include <Eris/PollDefault.h>
 	#include <Eris/Log.h>
 	#include <Eris/TypeInfo.h>
+
+#include <sigc++/trackable.h>
 	
-	#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
+/*	#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 	#include <sigc++/signal_system.h>
 	#else
 	#include <sigc++/object.h>
@@ -40,7 +42,7 @@
 	#include <sigc++/slot.h>
 	#include <sigc++/bind.h>
 	#include <sigc++/object_slot.h>
-	#endif
+	#endif*/
 //#include <OgreMemoryMacros.h>
 
 #include <OgrePredefinedControllers.h> 
@@ -72,7 +74,9 @@ public:
  * If it's a movement it has to be animated.
  * 
  */
-class Avatar : virtual public SigC::Object, public Ogre::FrameListener
+class Avatar : 
+public sigc::trackable, 
+public Ogre::FrameListener
 {
 	friend class AvatarController;
 	friend class AvatarEmberEntity;
@@ -118,8 +122,8 @@ class Avatar : virtual public SigC::Object, public Ogre::FrameListener
 	 */
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
-	SigC::Signal1<void, EmberEntity* > EventAddedEntityToInventory;
-	SigC::Signal1<void, EmberEntity* > EventRemovedEntityFromInventory;
+	sigc::signal<void, EmberEntity* > EventAddedEntityToInventory;
+	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
 // 	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
 // 	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 

@@ -28,8 +28,10 @@
 
 #include "EmberOgrePrerequisites.h"
 
-#include <sigc++/object.h>
-#include <sigc++/connection.h>
+#include <sigc++/trackable.h>
+
+/*#include <sigc++/object.h>
+#include <sigc++/connection.h>*/
 /*#include <sigc++/signal.h>
 #include <sigc++/slot.h>
 #include <sigc++/bind.h>
@@ -50,7 +52,10 @@ struct EntityPickResult;
 
 
 class AvatarCamera 
-:virtual public SigC::Object , public Ember::ConsoleObject
+:
+public sigc::trackable,
+//virtual public SigC::Object , 
+public Ember::ConsoleObject
 //: public Ogre::FrameListener 
 {
 public:
@@ -127,13 +132,13 @@ public:
 	/**
 	* emitted when the camra moves
 	*/
-	SigC::Signal1<void, Ogre::Camera*> MovedCamera;
+	sigc::signal<void, Ogre::Camera*> MovedCamera;
 	
 	/**
 	* emitted when the distance between the camera and the avatar has changed
     * @param Ogre::Real the new distance
 	*/
-	SigC::Signal1<void, Ogre::Real> EventChangedCameraDistance;
+	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
 	
 // 	int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement);
 
@@ -230,7 +235,6 @@ protected:
 	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
 
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-	sigc::connection ConfigService_EventChangedConfigItem_connection;
 	
 	void updateValuesFromConfig();
 

@@ -92,7 +92,7 @@ void ServerBrowserWidget::buildWidget()
 	CEGUI::Window* manualNameWindow = getWindow("ManualServerName");
 	BIND_CEGUI_EVENT(manualNameWindow, CEGUI::Editbox::EventTextAccepted, ServerBrowserWidget::ManualServerName_TextAcceptedEvent)
 	
-	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &ServerBrowserWidget::connectedToServer));
+	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerBrowserWidget::connectedToServer));
 
 	//set up the connection	
 	connectToServer();
@@ -187,9 +187,9 @@ void ServerBrowserWidget::connectToServer()
 	
     metaServer = new Eris::Meta(metaserverHostname, 10);
 //    metaServer->GotServerCount.connect(SigC::slot(*this, &ServerBrowserWidget::gotServerCount));
-    metaServer->Failure.connect(SigC::slot(*this, &ServerBrowserWidget::gotFailure));
-    metaServer->ReceivedServerInfo.connect(SigC::slot(*this, &ServerBrowserWidget::receivedServerInfo));
-    metaServer->CompletedServerList.connect(SigC::slot(*this, &ServerBrowserWidget::completedServerList));
+    metaServer->Failure.connect(sigc::mem_fun(*this, &ServerBrowserWidget::gotFailure));
+    metaServer->ReceivedServerInfo.connect(sigc::mem_fun(*this, &ServerBrowserWidget::receivedServerInfo));
+    metaServer->CompletedServerList.connect(sigc::mem_fun(*this, &ServerBrowserWidget::completedServerList));
 }
 
 	

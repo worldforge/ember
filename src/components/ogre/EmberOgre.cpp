@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.113  2005-10-12 23:28:31  erik
+ *      Revision 1.114  2005-10-26 21:44:55  erik
+ *      2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/WorldEmberEntity.cpp: use the getView method from the Eris::Entity base class instead
+ *      	* src/components/ogre/TerrainGenerator.*, src/components/ogre/MousePicker.h, src/components/ogre/GUIManager.*, src/components/ogre/EmberOgre.*, src/components/ogre/Avatar.*, src/components/ogre/AvatarController.*, src/components/ogre/AvatarCamera.*, src/components/ogre/widgets/ChatWidget.cpp, src/components/ogre/widgets/ConsoleWidget.*, src/components/ogre/widgets/EntityPickerWidget.cpp, src/components/ogre/widgets/GiveWidget.cpp, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MeshPreview.h, src/components/ogre/widgets/Quit.cpp, src/components/ogre/widgets/ServerBrowserWidget.cpp, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/Widget.h
+ *      		*   use the sigc 2.0 methods, which allows us to use the very nice sigc::trackable class and doesn't require all classes to inherit from SigC::Object
+ *
+ *      Revision 1.113  2005/10/12 23:28:31  erik
  *      2005-10-13  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* acinclude:m4, src/services/config/ConfigService.*, src/services/config/Makefile.am, src/framework/binreloc.*, src/framework/Makefile.am, src/framework/prefix.*, src/components/ogre/EmberOgre.cpp, src/components/ogre/Makefile.am: upgraded to binreloc 2.0
@@ -994,18 +1001,19 @@ namespace EmberOgre {
 	/**
 	A log observer which writes to the Ogre log system.
 	*/
-	class OgreLogObserver: public Ember::LoggingService::Observer, virtual public SigC::Object
+	class OgreLogObserver: public Ember::LoggingService::Observer, 
+	public sigc::trackable
 	{
 		public:
 			OgreLogObserver()
 			{
-				ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
+				Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
 			
 			}
 			
 			~OgreLogObserver()
 			{
-				ConfigService_EventChangedConfigItem_connection.disconnect();
+				
 			}
 
 			virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
@@ -1064,7 +1072,6 @@ namespace EmberOgre {
 				}
 			}
 			
-			sigc::connection ConfigService_EventChangedConfigItem_connection;
 			
 			/**
 			 *          React on changes to the config.
@@ -1771,7 +1778,7 @@ EmberEntity* EmberOgre::getEntity(const std::string & id) const
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
 {
 	mEmberEntityFactory = new EmberEntityFactory(mTerrainGenerator, connection->getTypeService());
-	EventCreatedAvatarEntity.connect(SigC::slot(*mAvatar, &Avatar::createdAvatarEmberEntity));
+	EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
 
@@ -1902,8 +1909,8 @@ void EmberOgre::initializeEmberServices(void)
 // 	Ember::EmberServices::getInstance()->getMetaserverService()->start();
 
 	// Initialize the Server Service
-	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &EmberOgre::connectedToServer));
-	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(SigC::slot(*this, &EmberOgre::connectViewSignals));
+	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
+	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::connectViewSignals));
 	
 	Ember::EmberServices::getInstance()->getServerService()->start();
 #endif

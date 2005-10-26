@@ -74,7 +74,7 @@ Avatar::Avatar()
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
-	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &Avatar::ConfigService_EventChangedConfigItem));
+	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
 	
 	//update values from the config
 	updateFromConfig();

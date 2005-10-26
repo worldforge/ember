@@ -40,8 +40,9 @@
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 
-#include <sigc++/object.h>
-#include <sigc++/connection.h>
+/*#include <sigc++/object.h>
+#include <sigc++/connection.h>*/
+#include <sigc++/trackable.h>
 
 
 namespace Ogre
@@ -72,7 +73,8 @@ struct TerrainDefPoint
  * It works closely with EmberTerrainPageSource.
  * 
  */
-class TerrainGenerator :  public Ogre::FrameListener, virtual public SigC::Object
+class TerrainGenerator :  public Ogre::FrameListener, 
+public sigc::trackable
 {
 public:
 
@@ -247,7 +249,6 @@ protected:
 	 * @param key 
 	 */
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-	sigc::connection ConfigService_EventChangedConfigItem_connection;
 };
 }
 

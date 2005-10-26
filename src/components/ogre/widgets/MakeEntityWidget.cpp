@@ -91,8 +91,8 @@ void MakeEntityWidget::buildWidget()
 	
 	
 
-	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(SigC::slot(*this, &MakeEntityWidget::connectedToServer));
-	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(SigC::slot(*this, &MakeEntityWidget::gotAvatar));
+	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
+	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
 
 	//getMainSheet()->addChildWindow(mMainWindow); 
 
@@ -140,7 +140,7 @@ void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
 {
 	mConn = conn;
  	Eris::TypeService* typeservice = conn->getTypeService();
- 	typeservice->BoundType.connect(SigC::slot(*this, &MakeEntityWidget::boundAType));
+ 	typeservice->BoundType.connect(sigc::mem_fun(*this, &MakeEntityWidget::boundAType));
 
 }
 
@@ -171,33 +171,47 @@ void MakeEntityWidget::addToList(Eris::TypeInfo* typeInfo, int level)
 
 void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 {
-	std::stringstream levelindicator;
-	Eris::TypeInfo* parentType;
-	if (typeInfo->getParents().size()) {
-		parentType = *typeInfo->getParents().begin();
-		while (parentType) {
-			levelindicator << "-";
-			if (parentType->getParents().size()) {
-				parentType = *parentType->getParents().begin();
-			} else {
-				parentType = 0;
+	//make sure only entities inheriting from game_entity are shown
+	static Eris::TypeInfo* gameEntityType = 0;
+	if (typeInfo->getName() == "game_entity") {
+		gameEntityType = typeInfo;
+		if (typeInfo->hasUnresolvedChildren())
+			typeInfo->resolveChildren();
+		return;
+	}
+	
+	if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
+		std::stringstream levelindicator;
+		Eris::TypeInfo* parentType;
+		if (typeInfo->getParents().size()) {
+			parentType = *typeInfo->getParents().begin();
+			while (parentType) {
+				//break before we hit the game_entity parent
+				if (parentType == gameEntityType) {
+					break;
+				}
+				levelindicator << "-";
+				if (parentType->getParents().size()) {
+					parentType = *parentType->getParents().begin();
+				} else {
+					parentType = 0;
+				}
 			}
 		}
-	}
-	
-	CEGUI::ListboxTextItem* item = new ColoredListItem(levelindicator.str() + typeInfo->getName());
-	item->setUserData(typeInfo);
-	mTypes[typeInfo] = item;
-	
-	if (mTypes.size() == 0) {
-		mTypeList->addItem(item);
-	} else {
-		CEGUI::ListboxItem* parentListItem = mTypes[*typeInfo->getParents().begin()];
-		mTypeList->insertItem(item, parentListItem);
-	}
-	if (typeInfo->hasUnresolvedChildren())
-		typeInfo->resolveChildren();
-	
+		
+		CEGUI::ListboxTextItem* item = new ColoredListItem(levelindicator.str() + typeInfo->getName());
+		item->setUserData(typeInfo);
+		mTypes[typeInfo] = item;
+		
+		if (mTypes.size() == 0) {
+			mTypeList->addItem(item);
+		} else {
+			CEGUI::ListboxItem* parentListItem = mTypes[*typeInfo->getParents().begin()];
+			mTypeList->insertItem(item, parentListItem);
+		}
+		if (typeInfo->hasUnresolvedChildren())
+			typeInfo->resolveChildren();
+	}	
 	
 	//item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	
@@ -277,7 +291,9 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	
 	c->setArgsAsList(Atlas::Message::ListType(1, msg));
 	mConn->send(c);
-	std::cout << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << std::endl;
+	std::stringstream ss;
+	ss << pos;
+	S_LOG_INFO("Try to create entity of type " << typeinfo->getName() << " at position " << ss.str() );
 
 }
 

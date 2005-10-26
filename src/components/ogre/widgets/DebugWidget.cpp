@@ -30,7 +30,7 @@ void DebugWidget::buildWidget()
 	BIND_CEGUI_EVENT(mLoglevelDroplist, CEGUI::Combobox::EventListSelectionAccepted, DebugWidget::loglevel_SelectionChanged);
 	
 	
-	Eris::Logged.connect(SigC::slot(*this, &DebugWidget::recieveLog));
+	Eris::Logged.connect(sigc::mem_fun(*this, &DebugWidget::recieveLog));
 	
 	registerConsoleVisibilityToggleCommand("debug");
 	enableCloseButton();
