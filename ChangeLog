@@ -1,3 +1,7 @@
+2005-10-27  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Sky.*, src/components/ogre/environment/Sun.h, src/components/ogre/input/Input.h, src/components/ogre/JesusMousePicker.h: use the sigc 2.0 methods, which allows us to use the very nice sigc::trackable class and doesn't require all classes to inherit from SigC::Object
+
 2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/Makefile.am: also install cegui config files

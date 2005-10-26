@@ -42,7 +42,7 @@ Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
   sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
 
   updateFogValuesFromConfig();
-  ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(SigC::slot(*this, &Sky::ConfigService_EventChangedConfigItem));
+  Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
 
 
 }
@@ -51,7 +51,6 @@ Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 
 Sky::~Sky()
 {
-	ConfigService_EventChangedConfigItem_connection.disconnect();
 }
 
 void Sky::updateFogValuesFromConfig()

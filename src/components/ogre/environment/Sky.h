@@ -28,8 +28,9 @@
 // ------------------------------
 // Include sigc header files
 // ------------------------------
-#include <sigc++/object.h>
-#include <sigc++/connection.h>
+// #include <sigc++/object.h>
+// #include <sigc++/connection.h>
+#include <sigc++/trackable.h>
 
 #include <OgreColourValue.h>
 
@@ -38,7 +39,7 @@ namespace EmberOgre {
 /**
 @author Erik Hjortsberg
 */
-class Sky:  virtual public SigC::Object
+class Sky:  public sigc::trackable
 {
 public:
     Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
@@ -49,7 +50,6 @@ private:
 	
 	void setFogValues(float start, float end, Ogre::ColourValue colour);
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-	sigc::connection ConfigService_EventChangedConfigItem_connection;
 
 };
 

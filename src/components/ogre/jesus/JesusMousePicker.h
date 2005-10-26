@@ -44,8 +44,8 @@ public:
 
 	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
 
-	SigC::Signal2<void, ModelBlock*, const MousePickerArgs&> EventPickedModelBlock;
-	SigC::Signal2<void, AttachPointNode*, const MousePickerArgs&> EventPickedAttachPointNode;
+	sigc::signal<void, ModelBlock*, const MousePickerArgs&> EventPickedModelBlock;
+	sigc::signal<void, AttachPointNode*, const MousePickerArgs&> EventPickedAttachPointNode;
 
 	
 protected:

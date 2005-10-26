@@ -89,7 +89,7 @@ We use SDL for now. Perhaps in the future we'll add support for other input mech
 Note that while keyboard input is buffered, mouse input is not.
 */
 class Input
-: virtual public SigC::Object
+//: virtual public SigC::Object
 {
 public:
 	enum MouseButton
@@ -130,13 +130,13 @@ public:
 	@param the key event
 	@param true if ember is in gui mode
 	*/
- 	SigC::Signal2<void, const SDL_keysym&, InputMode> EventKeyPressed;
+ 	sigc::signal<void, const SDL_keysym&, InputMode> EventKeyPressed;
 	
 	/**emitted when a key has been released in movement mode
 	@param the key event
 	@param true if ember is in gui mode
 	*/
- 	SigC::Signal2<void, const SDL_keysym&, InputMode> EventKeyReleased;
+ 	sigc::signal<void, const SDL_keysym&, InputMode> EventKeyReleased;
 	
 	/**emitted when the mouse has moved
 	note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
@@ -144,7 +144,7 @@ public:
 	@param the mouse motion
 	@param true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseMotion&, InputMode> EventMouseMoved;
+	sigc::signal<void, const MouseMotion&, InputMode> EventMouseMoved;
 	
 	
 	/**
@@ -152,20 +152,20 @@ public:
 		@param the mouse button
 		@param true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseButton&, InputMode> EventMouseButtonPressed;
+	sigc::signal<void, const MouseButton&, InputMode> EventMouseButtonPressed;
 	
 	/**
 		emitted when a mouse button is released
 		@param the mouse button
 		@param true if ember is in gui mode
 	*/
-	SigC::Signal2<void, const MouseButton&, InputMode> EventMouseButtonReleased;
+	sigc::signal<void, const MouseButton&, InputMode> EventMouseButtonReleased;
 	
 	/**
 		Emitted when the input mode has been changed.
 		@param the new input mode
 	*/
-	SigC::Signal1<void, InputMode> EventChangedInputMode;
+	sigc::signal<void, InputMode> EventChangedInputMode;
 	
 	/**
 	 * returns true if the supplied key is down 

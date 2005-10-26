@@ -25,8 +25,8 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
-#include <sigc++/object.h>
-// #include <sigc++/signal.h>
+
+#include <sigc++/signal.h>
 // #include <sigc++/slot.h>
 // #include <sigc++/bind.h>
 // #include <sigc++/object_slot.h>
@@ -39,7 +39,7 @@ namespace EmberOgre {
 /**
 @author Erik Hjortsberg
 */
-class Sun : virtual public SigC::Object, public Ember::ConsoleObject
+class Sun : public Ember::ConsoleObject
 {
 public:
     Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
@@ -56,17 +56,17 @@ public:
 	/**
 	* emitted when the sun changes position
 	*/
-	SigC::Signal2<void, Sun*, Ogre::Vector3> EventUpdatedSunPosition;
+	sigc::signal<void, Sun*, Ogre::Vector3> EventUpdatedSunPosition;
 	
 	/**
 	* emitted when the sun changes colour
 	*/
-	SigC::Signal2<void, Sun*, Ogre::ColourValue> EventUpdatedSunColour;
+	sigc::signal<void, Sun*, Ogre::ColourValue> EventUpdatedSunColour;
 	
 	/**
 	* emitted when the world ambient light is changed
 	*/
-	SigC::Signal2<void, Sun*, Ogre::ColourValue> EventUpdatedAmbientLight;
+	sigc::signal<void, Sun*, Ogre::ColourValue> EventUpdatedAmbientLight;
 	
 	static const std::string SETSUNPOSITION;
 	static const std::string SETSUNCOLOUR;
