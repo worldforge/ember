@@ -501,6 +501,12 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 	getInput()->setInputMode(Input::IM_MOVEMENT);
 }
 
+const std::string& GUIManager::getLayoutDir() const
+{
+	static std::string dir("cegui/datafiles/layouts/");
+	return dir;
+}
+
 
 
 }

@@ -544,7 +544,7 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 : mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(0.5), mMaxCameraDistance(40)
 {
-	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(getLayoutDir() + "JesusEditPreview.widget", "JesusEditPreview/");
+	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.widget", "JesusEditPreview/");
 	
 	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -681,7 +681,7 @@ void JesusEditPreview::createPreviewTexture()
 
 JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus* jesus) : mJesusEdit(jesusEdit), mJesus(jesus)
 {
-	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(getLayoutDir() + "JesusEditFile.widget", "JesusEditFile/");
+	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(guiManager->getLayoutDir() + "JesusEditFile.widget", "JesusEditFile/");
 
 	mBluePrintList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Blueprints"));
 /*	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventSelectionChanged, JesusEditFile::BluePrintList_SelectionChanged)

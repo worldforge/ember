@@ -141,7 +141,6 @@ public:
 	CEGUI::Window* getWindow(const std::string& windowName);
 	
 	
-	const std::string& getLayoutDir() const;
 	
 protected:
 

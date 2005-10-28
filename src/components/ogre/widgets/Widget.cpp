@@ -64,11 +64,6 @@ namespace EmberOgre
 	void Widget::buildWidget()
 	{}
 
-	const std::string& Widget::getLayoutDir() const
-	{
-		static std::string dir("cegui/datafiles/layouts/");
-		return dir;
-	}
 
 
 	CEGUI::Window* Widget::getMainSheet() { 
@@ -79,7 +74,7 @@ namespace EmberOgre
 	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) { 
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
-		mMainWindow = mWindowManager->loadWindowLayout(dir + filename, prefix);
+		mMainWindow = mWindowManager->loadWindowLayout(mGuiManager->getLayoutDir() + filename, prefix);
 		if (mMainWindow) {
 			getMainSheet()->addChildWindow(mMainWindow); 
 		}

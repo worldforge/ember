@@ -162,6 +162,13 @@ public:
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
+
+	/**
+	 *    returns the path to the directory where all layouts are stored
+	 * @return 
+	 */
+	const std::string& getLayoutDir() const;
+
 protected:
 
 	CEGUI::Window* mSheet;
