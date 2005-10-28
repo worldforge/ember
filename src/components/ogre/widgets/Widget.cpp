@@ -64,6 +64,13 @@ namespace EmberOgre
 	void Widget::buildWidget()
 	{}
 
+	const std::string& Widget::getLayoutDir() const
+	{
+		static std::string dir("cegui/datafiles/layouts/");
+		return dir;
+	}
+
+
 	CEGUI::Window* Widget::getMainSheet() { 
 		return mGuiManager->getMainSheet(); 
 	}
@@ -72,7 +79,7 @@ namespace EmberOgre
 	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) { 
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
-		mMainWindow = mWindowManager->loadWindowLayout(std::string("cegui/datafiles/layouts/") + filename, prefix);
+		mMainWindow = mWindowManager->loadWindowLayout(dir + filename, prefix);
 		if (mMainWindow) {
 			getMainSheet()->addChildWindow(mMainWindow); 
 		}
@@ -165,7 +172,7 @@ namespace EmberOgre
 	void Widget::enableCloseButton()
 	{
 		assert(mMainWindow);
-		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventCloseClicked, Widget::MainWindow_CloseClick)
+		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventCloseClicked, Widget::MainWindow_CloseClick);
 	}
 	
 

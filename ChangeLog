@@ -1,3 +1,9 @@
+2005-10-28  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/binreloc.c: include config.h
+	* src/components/ogre/widgets/Widget.*, src/components/ogre/widgets/JesusEdit.cpp: added method for getting the path to the layout files	
+	* src/components/ogre/Makefile.am: cleaned up the file
+
 2005-10-27  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/Sky.*, src/components/ogre/environment/Sun.h, src/components/ogre/input/Input.h, src/components/ogre/JesusMousePicker.h: use the sigc 2.0 methods, which allows us to use the very nice sigc::trackable class and doesn't require all classes to inherit from SigC::Object

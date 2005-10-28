@@ -147,14 +147,14 @@ void JesusEdit::show()
 			mMainWindow->setVisible(true);
 		if (mPreview) 
 			mPreview->setVisible(true);
-		S_LOG_INFO("Showing builder window.");
+		S_LOG_VERBOSE("Showing builder window.");
 	} else {
 		S_LOG_FAILURE("Can't show builder window before the main Jesus object is loaded.");
 	}
 }
 void JesusEdit::hide()
 {
-	S_LOG_INFO("Hiding builder window.");
+	S_LOG_VERBOSE("Hiding builder window.");
 	if (mMainWindow) 
 		mMainWindow->setVisible(false);
 	if (mPreview) 
@@ -544,7 +544,7 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 : mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(0.5), mMaxCameraDistance(40)
 {
-	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditPreview.widget", "JesusEditPreview/");
+	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(getLayoutDir() + "JesusEditPreview.widget", "JesusEditPreview/");
 	
 	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
 	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -681,7 +681,7 @@ void JesusEditPreview::createPreviewTexture()
 
 JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus* jesus) : mJesusEdit(jesusEdit), mJesus(jesus)
 {
-	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/JesusEditFile.widget", "JesusEditFile/");
+	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(getLayoutDir() + "JesusEditFile.widget", "JesusEditFile/");
 
 	mBluePrintList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Blueprints"));
 /*	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventSelectionChanged, JesusEditFile::BluePrintList_SelectionChanged)
