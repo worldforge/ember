@@ -397,6 +397,15 @@ void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
 			mCurrentMovementAction->getAnimations()->addTime(timeSlice);
 		}
 	}
+	
+	for (ActionStore::iterator I = mActiveActions.begin() ; I != mActiveActions.end(); ++I) {
+		if ((*I)->getAnimations()->hasCompleted()) {
+			(*I)->getAnimations()->setEnabled(false);
+			mActiveActions.erase(I);
+		} else {
+			(*I)->getAnimations()->addTime(timeSlice);
+		}
+	}
 }
 
 void EmberPhysicalEntity::setMoving(bool moving)
@@ -462,6 +471,30 @@ const Ogre::AxisAlignedBox& EmberPhysicalEntity::getWorldBoundingBox(bool derive
 	return getModel()->getWorldBoundingBox(true);
 }
 
+void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::Action& act)
+{
+	
+/*	std::string allattribs;
+	
+	//Atlas::Objects::BaseObjectData::const_iterator I = act->begin();
+	std::list< std::string >::const_iterator I = act->getParents().begin();
+
+	for (; I != act->getParents().end(); ++I) 
+	{
+		//const Atlas::Message::Element e = (const Atlas::Message::Element)(*I).second;
+		allattribs.append((*I) + " : ");
+	
+	}*/
+	
+	std::string name = act->getName();
+	
+	Action* newAction = mModel->getAction(name);
+	if (newAction) {
+		MotionManager::getSingleton().addAnimatedEntity(this);
+		mCurrentMovementAction->getAnimations()->setEnabled(true);
+	}
+
+}
 
 
 /*

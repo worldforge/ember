@@ -1,5 +1,9 @@
 2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
 
+	*  src/components/ogre/EmberPhysicalEntity.*, src/components/ogre/model/Model.*: reneabled the playing of animations at actions
+
+2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/Widget.*, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/GUIManager.* : moved the layout path method to GUIManager	
 
 2005-10-28  Erik Hjortsberg  <erik@katastrof.nu>

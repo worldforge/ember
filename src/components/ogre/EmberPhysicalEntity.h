@@ -35,6 +35,8 @@ namespace EmberOgre {
 class EmberEntity;
 class Model;
 class Action;
+
+typedef std::list<Action*> ActionStore;
 	
 /**
  * Represents a Ember entity with a physical representation in the world.
@@ -117,6 +119,8 @@ protected:
 
 	Action* mCurrentMovementAction;
 
+	ActionStore mActiveActions;
+
 	/**
 	If the entity is attached to another entity, this is the model to which it is attached to.
 	This will be 0 if the entity isn't attached.
@@ -135,6 +139,7 @@ protected:
 	void attachEntity(const std::string & attachPoint, const std::string & entityId);
 
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+    virtual void onAction(const Atlas::Objects::Operation::Action& act);
 
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
 	AttachedEntitiesStore mAttachedEntities;	

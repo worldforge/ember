@@ -57,6 +57,11 @@ public:
 	void addTime(Ogre::Real timeSlice);
 	void addAnimationPart(AnimationPart part);
 	void setEnabled(bool state);
+	/**
+	 *    returns true if all animation parts have been played 
+	 * @return 
+	 */
+	bool hasCompleted() const;
 	
 protected:
 	AnimationPartSet mAnimations;

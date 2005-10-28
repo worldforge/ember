@@ -54,6 +54,18 @@ void AnimationSet::setEnabled(bool state)
 	}
 }
 
+bool AnimationSet::hasCompleted() const
+{
+	AnimationPartSet::const_iterator I = mAnimations.begin();
+	for (; I != mAnimations.end(); ++I) {
+		if (I->state->getTimePosition() < I->state->getLength()) {
+			return false;
+		}
+	}
+	return true;
+}
+
+
 ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, const std::string& emitterVal, const std::string& variableName) :
 mParticleSystem(parentSystem)
 , mEmitterVal(emitterVal)
