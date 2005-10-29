@@ -1,5 +1,10 @@
 2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/input/Input.cpp: fix the check for control keys, so that pasting works. Preferrably, we would like to catch some kind of "paste" event from the WM, but I haven't had time to look into it proper.
+	* NEWS: update the news
+
+2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
+
 	*  src/components/ogre/EmberPhysicalEntity.*, src/components/ogre/model/Model.*: reneabled the playing of animations at actions
 
 2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>

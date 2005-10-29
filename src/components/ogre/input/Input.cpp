@@ -360,7 +360,7 @@ void Input::pasteFromClipboard()
 void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 {
 	//catch paste key presses
-	if ((keyEvent.keysym.mod == KMOD_CTRL || keyEvent.keysym.mod == KMOD_LCTRL || keyEvent.keysym.mod == KMOD_RCTRL) && keyEvent.keysym.sym == SDLK_v) {
+	if ((keyEvent.keysym.mod & KMOD_CTRL || keyEvent.keysym.mod & KMOD_LCTRL || keyEvent.keysym.mod & KMOD_RCTRL) && keyEvent.keysym.sym == SDLK_v) {
 		if (keyEvent.type == SDL_KEYDOWN) {
 			pasteFromClipboard();
 		}
