@@ -1,5 +1,9 @@
 2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/Makefile.am: skip the installation of lua and layout files for now, since there are none, and it makes uninstall throw an error
+
+2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/input/Input.cpp: fix the check for control keys, so that pasting works. Preferrably, we would like to catch some kind of "paste" event from the WM, but I haven't had time to look into it proper.
 	* NEWS: update the news
 
