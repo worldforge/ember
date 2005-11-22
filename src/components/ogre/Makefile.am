@@ -77,8 +77,7 @@ ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp 	MediaDeployer.cpp \
 				EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
 				AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
 				WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp TerrainPage.h TerrainArea.cpp \
-			TerrainArea.h EmberEntityUserObject.cpp \
-#GUIScriptManager.cpp
+			TerrainArea.h EmberEntityUserObject.cpp 
 
 
 

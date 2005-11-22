@@ -1,3 +1,7 @@
+2005-11-22  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Makefile.am: removed erronous line, thanks to Lennart Sauerbeck for helping me find it
+
 2005-10-29  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/Makefile.am: skip the installation of lua and layout files for now, since there are none, and it makes uninstall throw an error
