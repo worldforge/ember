@@ -402,7 +402,6 @@ AC_CONFIG_FILES([Makefile
 		 src/services/logging/Makefile
 		 src/services/metaserver/Makefile
 		 src/services/server/Makefile
-		 src/services/sound/Makefile
 		 src/services/scripting/Makefile
 		 ember.dox
 		 ember.spec

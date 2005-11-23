@@ -1,3 +1,9 @@
+2005-11-23 Miguel Guzmán <aglanor(at)gmail(dot)com>
+
+	*  configure.ac src/components/ogre/Makefile.am
+	src/services/Makefile.am: removed compilation of SoundService, is
+	completely disabled at this moment.
+
 2005-11-22  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/Makefile.am: removed erronous line, thanks to Lennart Sauerbeck for helping me find it

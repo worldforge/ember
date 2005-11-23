@@ -55,7 +55,7 @@ endif
 
 
 ember_bin_LDADD = $(SCRIPT_LIBS) $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
-	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
+	$(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
