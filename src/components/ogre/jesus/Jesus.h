@@ -52,7 +52,10 @@ namespace EmberOgre {
 
 TYPEDEF_STL_MAP(const std::string, Ogre::ColourValue, AttachPointColourValueMap);
 
-class Model;
+namespace Model {
+	class Model;
+}
+
 class ModelBlock;
 class Construction;
 
@@ -86,7 +89,7 @@ class Jesus{
 	 * @param modelName 
 	 * @return A Model instance or 0
 	 */
-	Model* createModelForBlockType(const std::string& blockType,  const std::string& modelName);
+	Model::Model* createModelForBlockType(const std::string& blockType,  const std::string& modelName);
 	
 	
 	/**
@@ -193,9 +196,9 @@ A mapping between a Carpenter::BuildingBlock and an Ember::Model.
 class ModelBlock
 {
 public:
-	ModelBlock(Ogre::SceneNode* baseNode, const Carpenter::BuildingBlock* buildingBlock,  Model* model, Construction* construction);
+	ModelBlock(Ogre::SceneNode* baseNode, const Carpenter::BuildingBlock* buildingBlock,  Model::Model* model, Construction* construction);
 	~ModelBlock();
-	void selectAttachPointNode(AttachPointNode* selectedNode);
+	//void selectAttachPointNode(AttachPointNode* selectedNode);
 	
 	inline const Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
 	inline Construction* getConstruction() const { return mConstruction; }
@@ -205,11 +208,11 @@ public:
 	
 	std::vector<AttachPointNode*> getAttachPointNodes() const;
 	
-	const Model* getModel() const { return mModel;}
+	const Model::Model* getModel() const { return mModel;}
 	const Ogre::SceneNode* getNode() const { return mNode;}
 protected:
 	const Carpenter::BuildingBlock* mBuildingBlock;
-	Model* mModel;
+	Model::Model* mModel;
 	
 	std::vector<AttachPointNode*> mAttachPointNodes;
 	Ogre::SceneNode *mNode, *mModelNode;

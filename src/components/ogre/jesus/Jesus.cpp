@@ -159,7 +159,7 @@ ModelBlock* Construction::createModelBlock(const Carpenter::BuildingBlock* build
 {
 	std::string blockSpecName = buildingBlock->getBuildingBlockSpec()->getName();
 	
-	Model* model = mJesus->createModelForBlockType(blockSpecName, mBaseNode->getName() + buildingBlock->getName());
+	Model::Model* model = mJesus->createModelForBlockType(blockSpecName, mBaseNode->getName() + buildingBlock->getName());
 	ModelBlock* modelBlock = new ModelBlock(mBaseNode, buildingBlock, model, this);
 	
 	if (createAttachPointNodes) 
@@ -200,13 +200,13 @@ std::vector<AttachPointNode*> ModelBlock::getAttachPointNodes() const
 }
 
 
-Model* Jesus::createModelForBlockType(const std::string& blockType, const std::string& modelName)
+Model::Model* Jesus::createModelForBlockType(const std::string& blockType, const std::string& modelName)
 {
 	std::map<std::string, std::string>::iterator I = mModelMappings.find(blockType);
 	if (I == mModelMappings.end()) {
 		return 0;
 	}
-	Model* aModel = new Model(modelName);
+	Model::Model* aModel = new Model::Model(modelName);
 	aModel->create(I->second);
 	return aModel;
 //	return Model::Create(I->second + ".modeldef.xml", modelName);
@@ -232,7 +232,7 @@ ModelBlock::~ModelBlock()
 }
 
 
-ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock* buildingBlock, Model* model, Construction* construction)
+ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock* buildingBlock, Model::Model* model, Construction* construction)
 : mBuildingBlock(buildingBlock), mModel(model), mConstruction(construction), mModelNode(0)
 {
 	
