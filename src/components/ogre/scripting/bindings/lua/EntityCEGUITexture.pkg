@@ -1,0 +1,128 @@
+//
+// C++ Interface: EntityCEGUITexture
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+
+
+
+namespace EmberOgre {
+
+
+/**
+@author Erik Hjortsberg
+
+Useful class for rendering a single scene node to a CEGUI texture.
+
+*/
+class EntityCEGUITexture{
+    
+    /**
+     * Constructor.
+     * @param imageSetName The name of the imageset.
+     * @param width The width of the image created.
+     * @param height The height of the image created.
+     * @return 
+     */
+    EntityCEGUITexture(const std::string& imageSetName, int width, int height);
+
+    ~EntityCEGUITexture();
+    
+    /**
+     * Gets the scene node which is being rendered.
+     * @return 
+     */
+    Ogre::SceneNode* getSceneNode() const;
+    
+    
+    /**
+     * Gets the rendered image.
+     * @return 
+     */
+    const CEGUI::Image* getImage() const;
+    
+    
+    /**
+     * Gets the camera used for rendering.
+     * @return 
+     */
+    Ogre::Camera* getCamera() const;
+    
+    /**
+     * Sets whether the rendering should be active or not.
+     * @param active 
+     */
+    void setActive(bool active);
+    
+    
+private:
+
+	/**
+	The rendered image.
+	*/
+	const CEGUI::Image* mImage;
+	
+	/**
+	The main imageset, though only one image will be defined for it.
+	*/
+	CEGUI::Imageset* mImageSet;
+	
+	/**
+	 *    Creates the imageset and image and sets up the rendering.
+	 * @param imageSetName 
+	 */
+	void createImage(const std::string& imageSetName);
+	
+	/**
+	Width and height of the image.
+	*/
+	int mWidth, mHeight;
+	
+	/**
+	The rendertexture used.
+	*/
+	Ogre::RenderTexture* mRenderTexture;
+	
+	/**
+	 *    Creates the ogre camera.
+	 * @param imageSetName 
+	 */
+	void createCamera(const std::string& imageSetName);
+	
+	/**
+	The node to which the camera is attached.
+	*/
+	Ogre::SceneNode* mCameraNode;
+	
+	/**
+	The node to which the rendered entities are attched.
+	*/
+	Ogre::SceneNode* mEntityNode;
+	
+	/**
+	The camera used.
+	*/
+	Ogre::Camera* mCamera;
+
+};
+
+}
+
+#endif

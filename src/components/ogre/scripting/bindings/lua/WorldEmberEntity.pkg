@@ -1,0 +1,6 @@
+namespace EmberOgre {
+
+class WorldEmberEntity : public EmberEntity {
+
+};
+}

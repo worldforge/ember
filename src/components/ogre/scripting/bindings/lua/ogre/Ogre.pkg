@@ -1,0 +1,17 @@
+$#include "required.h"
+
+
+$pfile "OgreRenderTarget.pkg"
+$pfile "OgreRenderWindow.pkg"
+$pfile "OgreIteratorWrappers.pkg"
+$pfile "OgreResource.pkg"
+$pfile "OgreResourceManager.pkg"
+$pfile "OgreMaterialManager.pkg"
+$pfile "OgreMaterial.pkg"
+$pfile "OgreSubEntity.pkg"
+$pfile "OgreMeshManager.pkg"
+$pfile "OgreMesh.pkg"
+
+
+
+

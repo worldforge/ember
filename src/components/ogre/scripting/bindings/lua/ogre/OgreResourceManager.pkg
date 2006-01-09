@@ -1,0 +1,177 @@
+
+namespace Ogre {
+
+    /** Defines a generic resource handler.
+    @remarks
+        A resource manager is responsible for managing a pool of
+        resources of a particular type. It must index them, look
+        them up, load and destroy them. It may also need to stay within
+        a defined memory budget, and temporaily unload some resources
+        if it needs to to stay within this budget.
+    @par
+        Resource managers use a priority system to determine what can
+        be unloaded, and a Least Recently Used (LRU) policy within
+        resources of the same priority.
+	@par
+		Resources can be loaded using the generalised load interface,
+		and they can be unloaded and removed. In addition, each 
+		subclass of ResourceManager will likely define custom 'load' methods
+		which take explicit parameters depending on the kind of resource
+		being created.
+	@note
+		Resources can be loaded and unloaded through the Resource class, 
+		but they can only be removed (and thus eventually destroyed) using
+		their parent ResourceManager.
+    @note
+        If OGRE_THREAD_SUPPORT is 1, this class is thread-safe.
+    */
+	class ResourceManager
+    {
+
+        /** Creates a new blank resource, but does not immediately load it.
+        @remarks
+            Resource managers handle disparate types of resources, so if you want
+			to get at the detailed interface of this resource, you'll have to 
+			cast the result to the subclass you know you're creating. 
+		@param name The unique name of the resource
+		@param group The name of the resource group to attach this new resource to
+		@param isManual Is this resource manually loaded? If so, you should really
+			populate the loader parameter in order that the load process
+			can call the loader back when loading is required. 
+		@param loader Pointer to a ManualLoader implementation which will be called
+			when the Resource wishes to load (should be supplied if you set
+			isManual to true). You can in fact leave this parameter null 
+			if you wish, but the Resource will never be able to reload if 
+			anything ever causes it to unload. Therefore provision of a proper
+			ManualLoader instance is strongly recommended.
+        @param createParams If any parameters are required to create an instance,
+            they should be supplied here as name / value pairs
+        */
+//        ResourcePtr create(const std::string& name, const std::string& group, 
+//            bool isManual = false, ManualResourceLoader* loader = 0, 
+ //           const NameValuePairList* createParams = 0);
+        Ogre::ResourcePtr create(const std::string& name, const std::string& group);
+
+		/** Caused all currently loaded resources to be reloaded.
+		@remarks
+			All resources currently being held in this manager which are also
+			marked as currently loaded will be unloaded, then loaded again.
+		*/
+		void reloadAll(void);
+
+		/** Remove a single resource.
+		@remarks
+			Removes a single resource, meaning it will be removed from the list
+			of valid resources in this manager, also causing it to be unloaded. 
+		@note
+			The word 'Destroy' is not used here, since
+			if any other pointers are referring to this resource, it will persist
+			until they have finished with it; however to all intents and purposes
+			it no longer exists and will likely get destroyed imminently.
+        @note
+            If you do have shared pointers to resources hanging around after the 
+            ResourceManager is destroyed, you may get problems on destruction of
+            these resources if they were relying on the manager (especially if
+            it is a plugin). If you find you get problems on shutdown in the
+            destruction of resources, try making sure you release all your
+            shared pointers before you shutdown OGRE.
+		*/
+		void remove(Ogre::ResourcePtr& r);
+
+        /** Remove a single resource by name.
+		@remarks
+			Removes a single resource, meaning it will be removed from the list
+			of valid resources in this manager, also causing it to be unloaded. 
+		@note
+			The word 'Destroy' is not used here, since
+			if any other pointers are referring to this resource, it will persist
+			until they have finished with it; however to all intents and purposes
+			it no longer exists and will likely get destroyed imminently.
+        @note
+            If you do have shared pointers to resources hanging around after the 
+            ResourceManager is destroyed, you may get problems on destruction of
+            these resources if they were relying on the manager (especially if
+            it is a plugin). If you find you get problems on shutdown in the
+            destruction of resources, try making sure you release all your
+            shared pointers before you shutdown OGRE.
+		*/
+		void remove(const std::string& name);
+		
+		/** Remove a single resource by handle.
+		@remarks
+			Removes a single resource, meaning it will be removed from the list
+			of valid resources in this manager, also causing it to be unloaded. 
+		@note
+			The word 'Destroy' is not used here, since
+			if any other pointers are referring to this resource, it will persist
+			until they have finished with it; however to all intents and purposes
+			it no longer exists and will likely get destroyed imminently.
+        @note
+            If you do have shared pointers to resources hanging around after the 
+            ResourceManager is destroyed, you may get problems on destruction of
+            these resources if they were relying on the manager (especially if
+            it is a plugin). If you find you get problems on shutdown in the
+            destruction of resources, try making sure you release all your
+            shared pointers before you shutdown OGRE.
+		*/
+		//void remove(ResourceHandle handle);
+		/** Removes all resources.
+		@note
+			The word 'Destroy' is not used here, since
+			if any other pointers are referring to these resources, they will persist
+			until they have been finished with; however to all intents and purposes
+			the resources no longer exist and will get destroyed imminently.
+        @note
+            If you do have shared pointers to resources hanging around after the 
+            ResourceManager is destroyed, you may get problems on destruction of
+            these resources if they were relying on the manager (especially if
+            it is a plugin). If you find you get problems on shutdown in the
+            destruction of resources, try making sure you release all your
+            shared pointers before you shutdown OGRE.
+        */
+        //void removeAll(void);
+
+        /** Retrieves a pointer to a resource by name, or null if the resource does not exist.
+        */
+        Ogre::ResourcePtr getByName(const std::string& name);
+        /** Retrieves a pointer to a resource by handle, or null if the resource does not exist.
+        */
+        //Ogre::ResourcePtr getByHandle(ResourceHandle handle);
+		
+		/// Returns whether the named resource exists in this manager
+		bool resourceExists(const std::string& name);
+		
+		/// Returns whether a resource with the given handle exists in this manager
+		//bool resourceExists(Ogre::ResourceHandle handle);
+
+
+		/** Generic load method, used to create a Resource specific to this 
+			ResourceManager without using one of the specialised 'load' methods
+			(containing per-Resource-type parameters).
+		@param name The name of the Resource
+		@param group The resource group to which this resource will belong
+		@param isManual Is the resource to be manually loaded? If so, you should
+			provide a value for the loader parameter
+		@param loader The manual loader which is to perform the required actions
+			when this resource is loaded; only applicable when you specify true
+			for the previous parameter
+        @param loadParams Optional pointer to a list of name/value pairs 
+            containing loading parameters for this type of resource.
+		*/
+// 		Ogre::ResourcePtr load(const std::string& name, 
+//             const std::string& group, bool isManual = false, 
+// 			Ogre::ManualResourceLoader* loader = 0, const NameValuePairList* loadParams = 0);
+
+
+		/** Gets a string identifying the type of resource this manager handles. */
+		//const String& getResourceType(void) const { return mResourceType; }
+
+	Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> getResourceIterator(void);
+
+    
+
+    };
+
+}
+
+#endif

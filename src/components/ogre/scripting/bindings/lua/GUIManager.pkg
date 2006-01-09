@@ -1,0 +1,61 @@
+
+namespace EmberOgre {
+
+class GUIManager 
+{
+	//from Singleton
+	static GUIManager& getSingleton( void );
+
+	static const std::string SCREENSHOT;
+	static const std::string TOGGLEINPUTMODE;
+
+	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> AppendOOGChatLine;
+	
+	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> EventEntityAction;
+	
+	sigc::signal<void, float> EventFrameStarted;
+	
+
+	
+	void removeWidget(Widget* widget);
+	void addWidget(Widget* widget);
+
+	void EmitEntityAction(const std::string& action, EmberOgre::EmberEntity* entity);
+
+	CEGUI::Window* getMainSheet();
+	
+	
+	void setDebugText(const std::string& text);
+
+	const bool isInGUIMode() const;
+	
+	
+	const bool isInMovementKeysMode() const;
+	
+	inline MousePicker* getMousePicker();
+	
+	Input* getInput() const;
+	
+	void pushMousePicker(MousePicker* mousePicker);
+	
+	MousePicker* popMousePicker();
+	
+//	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
+	
+	/**
+	 *    Creates a new Widget
+	 * @return 
+	 */
+	Widget* createWidget();
+	
+	/**
+	 *    creates a widget 
+	 *    @see WidgetLoader
+	 * @param name the type of widget to create
+	 * @return 
+	 */
+	Widget* createWidget(const std::string& name);
+
+};
+}

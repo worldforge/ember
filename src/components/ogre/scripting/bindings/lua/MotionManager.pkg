@@ -1,0 +1,19 @@
+namespace EmberOgre {
+
+class MotionManager  {
+	//from Singleton
+	static MotionManager& getSingleton( void );
+	
+	void addEntity(EmberEntity* entity);
+	void removeEntity(EmberEntity* entity);
+	
+	void addAnimation(Ogre::AnimationState* animationState);
+	void removeAnimation(Ogre::AnimationState* animationState);
+	void pauseAnimation(Ogre::AnimationState* animationState);
+	void unpauseAnimation(Ogre::AnimationState* animationState);
+	
+	void addAnimatedEntity(EmberPhysicalEntity* entity);
+	void removeAnimatedEntity(EmberPhysicalEntity* entity);	
+	
+};
+}

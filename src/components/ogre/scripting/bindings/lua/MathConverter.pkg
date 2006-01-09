@@ -1,0 +1,25 @@
+
+namespace EmberOgre {
+
+typedef WFMath::Point<2> TerrainPosition;
+
+
+
+
+Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p);
+
+WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p);
+
+TerrainPosition Ogre2Atlas(const Ogre::Vector2& p) ;
+
+TerrainPosition Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p);
+WFMath::Vector<3> Ogre2Atlas_Vector3(const Ogre::Vector3& p);
+
+Ogre::Vector3 Atlas2Ogre(const WFMath::Point<3>& p);
+Ogre::Vector3 Atlas2Ogre(const WFMath::Vector<3>& v);
+
+Ogre::Quaternion Atlas2Ogre(const WFMath::Quaternion& aq);
+WFMath::Quaternion Ogre2Atlas(const Ogre::Quaternion& aq);
+
+}
+

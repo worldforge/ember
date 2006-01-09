@@ -1,0 +1,8 @@
+namespace EmberOgre {
+class EmberEntityFactory 
+{
+
+	WorldEmberEntity* getWorld() const;
+
+};
+}

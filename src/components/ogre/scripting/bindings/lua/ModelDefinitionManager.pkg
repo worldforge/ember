@@ -1,0 +1,30 @@
+
+namespace EmberOgre {
+namespace Model {
+/**
+@author Erik Hjortsberg
+*/
+class ModelDefinitionManager : public Ogre;;ResourceManager
+{
+public:
+	
+	static ModelDefinitionManager& getSingleton();
+	
+	
+	const EmberOgre::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
+
+	void exportScript(EmberOgre::Model::ModelDefnPtr definition);
+
+    EmberOgre::Model::ModelDefnPtr create(const std::string& name, const std::string& group);
+	void remove(const std::string& name);
+	EmberOgre::Model::ModelDefnPtr getByName(const std::string& name);
+	bool resourceExists(const std::string& name);
+
+	Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> getResourceIterator(void);
+
+};
+
+
+}
+};
+

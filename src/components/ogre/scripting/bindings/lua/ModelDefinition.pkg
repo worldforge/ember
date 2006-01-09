@@ -1,0 +1,124 @@
+namespace EmberOgre {
+namespace Model {
+
+typedef std::vector<EmberOgre::Model::SubModelDefinition*> SubModelDefinitionsStore;
+typedef std::vector<EmberOgre::Model::PartDefinition*> PartDefinitionsStore;
+typedef std::vector<EmberOgre::Model::SubEntityDefinition*> SubEntityDefinitionsStore;
+
+
+class SubEntityDefinition
+{
+	const std::string& getSubEntityName() const;
+	//void setSubEntityName(const std::string&);
+	unsigned int getSubEntityIndex() const;
+
+	const std::string& getMaterialName() const;
+	void setMaterialName(const std::string& materialName);
+	EmberOgre::Model::PartDefinition& getPartDefinition();
+
+};	
+
+
+class PartDefinition
+{
+	void setName(const std::string& name);
+	const std::string& getName() const;
+	
+	void setShow(bool show);
+	bool getShow() const;
+	
+	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition(const std::string& subEntityName);
+	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
+	std::vector<EmberOgre::Model::SubEntityDefinition*> getSubEntityDefinitions();
+	void removeSubEntityDefinition(EmberOgre::Model::SubEntityDefinition* def);
+	EmberOgre::Model::SubModelDefinition& getSubModelDefinition();
+	
+};
+
+
+class SubModelDefinition
+{
+	
+	const std::string& getMeshName() const;
+	
+	EmberOgre::Model::PartDefinition* createPartDefinition(const std::string& partname);
+	std::vector<EmberOgre::Model::PartDefinition*> getPartDefinitions();
+	void removePartDefinition(EmberOgre::Model::PartDefinition* def);
+	EmberOgre::Model::ModelDefinition& getModelDefinition();
+};
+
+
+class ModelDefinition : public Ogre::Resource {
+
+	/**
+	whether to use a certain axis for scaling
+	for example, if you use a model of a human you probably want to scale according to the height
+	this might mean that width and depths aren't correct though
+	*/
+	enum UseScaleOf {
+		MODEL_ALL = 0,
+		MODEL_NONE = 1,
+		MODEL_WIDTH = 2,
+		MODEL_DEPTH = 3,
+		MODEL_HEIGHT = 4
+	};
+
+	/**
+	A struct for simple bindings between areas and materials/textures.
+	*/
+	struct AreaDefinition
+	{
+		int Id;
+		std::string TextureName;
+		std::string MaterialName;
+	};
+	
+ 
+    bool isValid(void);
+	void setValid(bool valid);
+
+	
+	/**
+	 *    Gets the amount of scale that needs to be applied to derived Models.
+	 * @return 
+	 */
+	Ogre::Real getScale();
+	
+	/**
+	 *    Gets how derived Models needs to be scaled.
+	 Defaults to "ALL"
+	 * @return 
+	 */
+	const EmberOgre::Model::ModelDefinition::UseScaleOf getUseScaleOf() const;
+	
+	/**
+	 *    Gets an optional translation vector which should be applied to derived Models.
+	 * @return 
+	 */
+	const Ogre::Vector3& getTranslate() const;
+	
+	/**
+	 *	Whether contained entities should be shown or not.
+	 Defaults to true.
+	 * @return true if contained entities should be shown, else false
+	 */
+	bool getShowContained() const;
+	
+	EmberOgre::Model::SubModelDefinition* createSubModelDefinition(const std::string& meshname);
+	std::vector<EmberOgre::Model::SubModelDefinition*> getSubModelDefinitions();
+	void removeSubModelDefinition(EmberOgre::Model::SubModelDefinition* def);
+	
+	
+	
+};
+
+class ModelDefnPtr
+{
+	EmberOgre::Model::ModelDefinition* get();
+};
+
+typedef EmberOgre::Model::ModelDefnPtr ModelDefinitionPtr;
+
+};
+}
+#endif

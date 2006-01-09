@@ -1,0 +1,13 @@
+namespace EmberOgre {
+
+class AvatarEmberEntity: public EmberPhysicalEntity {
+	Avatar* getAvatar();
+	
+	/**
+	 * returns the Ogre::SceneNode which represents the avatar
+	 */
+	Ogre::SceneNode* getAvatarSceneNode();
+	
+
+};
+}

@@ -1,0 +1,58 @@
+namespace std {
+class vector {
+
+        TEMPLATE_BIND(T, std::string, EmberOgre::Model::SubModelDefinition*, EmberOgre::Model::PartDefinition*, EmberOgre::Model::SubEntityDefinition*)
+
+        void clear();
+        int size() const;
+
+        const T& operator[](int index) const;
+        T& operator[](int index);
+        void push_back(T val);
+
+        vector();
+        ~vector();
+};
+
+// class set {
+// 
+// //        TEMPLATE_BIND(T, Ogre::SubEntity*, EmberOgre::Model::SubModel*)
+//         TEMPLATE_BIND(T, Ogre::SubEntity*)
+// 
+//         void clear();
+//         int size() const;
+// 
+//         const T& operator[](int index) const;
+//         T& operator[](int index);
+//         void push_back(T val);
+// 
+//         set();
+//         ~set();
+// };
+
+// class map {
+// 
+//         TEMPLATE_BIND(T T1, std::string EmberOgre::Model::SubModelPart*)
+// 
+//         void clear();
+//         int size() const;
+// 
+//         const T& operator[] @ gett(T1 index) const;
+//         T& operator[] @ gett(T1  index);
+//         //void push_back(T val);
+// 
+//         map();
+//         ~map();
+// };
+
+// class map {
+// 
+//         TEMPLATE_BIND(K V, std::string EmberOgre::Model::SubModelPart*)
+// 
+//         V get_element(K key);
+//         void set_element(K key, V value);
+// 
+//         map();
+//         ~map();
+// };
+}

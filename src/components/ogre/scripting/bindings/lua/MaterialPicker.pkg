@@ -1,0 +1,17 @@
+
+namespace EmberOgre {
+
+/**
+@author Erik Hjortsberg
+*/
+class MaterialPicker{
+public:
+    MaterialPicker();
+
+    ~MaterialPicker();
+    
+    std::vector<std::string> getAllMaterialNames();
+
+};
+
+}

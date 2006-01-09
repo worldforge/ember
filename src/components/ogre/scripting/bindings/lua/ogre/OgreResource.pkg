@@ -1,0 +1,137 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of OGRE
+    (Object-oriented Graphics Rendering Engine)
+For the latest info, see http://www.ogre3d.org/
+
+Copyright (c) 2000-2005 The OGRE Team
+Also see acknowledgements in Readme.html
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+-----------------------------------------------------------------------------
+*/
+
+namespace Ogre {
+
+
+	/** Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
+        @remarks
+            Resources are data objects that must be loaded and managed throughout
+			an application. A resource might be a mesh, a texture, or any other
+			piece of data - the key thing is that they must be identified by 
+			a name which is unique, must be loaded only once,
+			must be managed efficiently in terms of retrieval, and they may
+			also be unloadable to free memory up when they have not been used for
+			a while and the memory budget is under stress.
+		@par
+			All Resource instances must be a member of a resource group; see
+			ResourceGroupManager for full details.
+        @par
+            Subclasses must implement:
+			<ol>
+			<li>A constructor, overriding the same parameters as the constructor
+			    defined by this class. Subclasses are not allowed to define
+				constructors with other parameters; other settings must be
+				settable through accessor methods before loading.</li>
+            <li>The loadImpl() and unloadImpl() methods - mSize must be set 
+				after loadImpl()</li>
+			<li>StringInterface ParamCommand and ParamDictionary setups
+			    in order to allow setting of core parameters (prior to load)
+				through a generic interface.</li>
+			</ol>
+    */
+	class Resource 
+    {
+
+		/** Standard constructor.
+		@param creator Pointer to the ResourceManager that is creating this resource
+		@param name The unique name of the resource
+		@param group The name of the resource group to which this resource belongs
+		@param isManual Is this resource manually loaded? If so, you should really
+			populate the loader parameter in order that the load process
+			can call the loader back when loading is required. 
+		@param loader Pointer to a ManualResourceLoader implementation which will be called
+			when the Resource wishes to load (should be supplied if you set
+			isManual to true). You can in fact leave this parameter null 
+			if you wish, but the Resource will never be able to reload if 
+			anything ever causes it to unload. Therefore provision of a proper
+			ManualResourceLoader instance is strongly recommended.
+		*/
+
+        /** Loads the resource, if it is not already.
+		@remarks
+			If the resource is loaded from a file, loading is automatic. If not,
+			if for example this resource gained it's data from procedural calls
+			rather than loading from a file, then this resource will not reload 
+			on it's own
+			
+        */
+        virtual void load(void);
+
+		/** Reloads the resource, if it is already loaded.
+		@remarks
+			Calls unload() and then load() again, if the resource is already
+			loaded. If it is not loaded already, then nothing happens.
+		*/
+		virtual void reload(void);
+
+        /** Is this resource manually loaded?
+		*/
+		bool isManuallyLoaded(void) const;
+
+		/** Unloads the resource; this is not permanent, the resource can be
+			reloaded later if required.
+        */
+		virtual void unload(void);
+
+        /** Retrieves info about the size of the resource.
+        */
+        uint getSize(void) const;
+
+        /** 'Touches' the resource to indicate it has been used.
+        */
+        virtual void touch(void);
+
+        /** Gets resource name.
+        */
+        const std::string& getName(void) const;
+
+//         ResourceHandle getHandle(void) const
+//         {
+//             return mHandle;
+//         }
+
+        /** Returns true if the Resource has been loaded, false otherwise.
+        */
+        bool isLoaded(void) const;
+
+		/// Gets the group which this resource is a member of
+		const std::string& getGroup(void);
+
+		/// Gets the manager which created this resource
+// 		ResourceManager* getCreator(void) { return mCreator; }
+		/** Get the origin of this resource, e.g. a script file name.
+		@remarks
+			This property will only contain something if the creator of
+			this resource chose to populate it. Script loaders are advised
+			to populate it.
+		*/
+		const std::string& getOrigin(void) const;
+
+    };
+
+}
+
+#endif

@@ -1,0 +1,52 @@
+namespace EmberOgre {
+class EmberEntity : public Eris::Entity {
+	enum ClickMasks
+	{
+		CM_AVATAR = 1<<9,
+		CM_ENTITY = 1<<10,
+		CM_NATURE = 1<<11,
+		CM_UNDEFINED = 1<<12
+	};
+	
+	enum MovementMode
+	{
+		MM_DEFAULT = 0,
+		MM_STANDING = 1,
+		MM_FLOATING = 2,
+		MM_PROJECTILE = 3,
+		MM_SWIMMING = 4,
+		MM_WALKING = 5,
+		MM_RUNNING = 6,
+		MM_FIXED = 7  
+	};
+
+	Ogre::SceneNode* getSceneNode() const;
+	
+	bool hasSuggestedResponses() const;
+	
+	std::vector<std::string> getSuggestedResponses() const;
+	
+	virtual void setVisible(bool visible);
+	
+	EmberEntity* getEmberLocation() const;
+	
+	inline bool isInitialized() const;
+
+	inline MovementMode getMovementMode() const;
+	
+	
+	virtual void showOgreBoundingBox(bool show);
+	
+	virtual void showErisBoundingBox(bool show);
+
+	virtual bool getShowOgreBoundingBox();
+	
+	virtual bool getShowErisBoundingBox();
+
+	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+	
+	std::vector<std::string> getDefaultUseOperators();
+	
+
+};
+}

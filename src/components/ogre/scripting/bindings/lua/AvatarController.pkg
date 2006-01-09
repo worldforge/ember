@@ -1,0 +1,63 @@
+namespace EmberOgre {
+
+/**
+The movement mode of the avatar, run or walk.
+*/
+class AvatarMovementMode {
+public:	
+	enum Mode
+	{
+		MM_WALK = 0,
+		MM_RUN = 1
+	};
+};
+	
+	
+/**
+Used for sending the current desired movement to the actual avatar.
+*/
+struct AvatarControllerMovement
+{
+	AvatarControllerMovement();
+	
+	float rotationDegHoriz;
+	float rotationDegVert;
+	Ogre::Real timeSlice;
+	Ogre::Vector3 movementDirection;
+	AvatarMovementMode::Mode mode;
+	bool isMoving; 
+	Ogre::Quaternion cameraOrientation;
+};
+
+class AvatarController
+{
+ 
+	/**
+	Emitted when the movement mode changes between run and walk.
+	*/
+	sigc::signal<void, AvatarMovementMode::Mode> EventMovementModeChanged;
+
+	
+
+	AvatarCamera* getAvatarCamera() const;
+
+	/**
+	 *    Detaches the camera from the avatar and attaches it to the free flying node.
+	 */
+	void detachCamera();
+	
+	/**
+	 *    Attaches the camera to the avatar.
+	 */
+	void attachCamera();
+	
+	/**
+	 *    Gets the current movement for this frame.
+	 * @return 
+	 */
+	const AvatarControllerMovement& getCurrentMovement() const;
+
+
+};
+
+}

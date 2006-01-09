@@ -1,0 +1,28 @@
+
+namespace EmberOgre {
+
+
+
+/**
+@author Erik Hjortsberg
+*/
+class ModelRenderer{
+public:
+//	static void OneShotRender(CEGUI::StaticImage* image);
+
+    ModelRenderer(CEGUI::StaticImage* image);
+
+    ~ModelRenderer();
+    
+    void showModel(const std::string& modelName);
+    
+    EmberOgre::Model::Model* getModel();
+    void showFullModel();
+    
+    void setCameraDistance(float distance);
+    float getCameraDistance();
+
+};
+
+}
+

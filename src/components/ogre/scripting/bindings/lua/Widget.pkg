@@ -1,0 +1,114 @@
+namespace EmberOgre {
+
+
+/**
+Because CEGUI::Listbox can't hold const objects in its
+*/
+/**
+template<typename T> class ConstWrapper
+{
+public:
+	ConstWrapper(T value) : mValue(value) {}
+	T mValue;
+};
+*/
+
+/**
+	A standard ListboxTextItem, with the exeption that the selection will be colored.
+*/
+class ColoredListItem : public CEGUI::ListboxTextItem
+{
+	ColoredListItem(std::string text); 
+	ColoredListItem(std::string text, unsigned int item_id);
+	ColoredListItem(std::string text, unsigned int item_id, void *item_data);
+};
+
+
+/** 
+
+Base class for all widgets.
+Put all widget set up code in the buildWidget() method.
+
+
+NOTE: Perhaps we should provide another base class for widgets that have a single movable window?
+
+
+When creating a new Widget class, make sure you also add it to WidgetDefinitions.
+@see WidgetDefinitions
+
+*/
+class Widget 
+{
+public:
+//	static CEGUI::ListItem* createColoredListItem(const CEGUI::String& text); 
+//	static CEGUI::ListItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id);
+//	static CEGUI::ListItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+	~Widget();
+
+	/**
+	 *    Show the widget.
+	 */
+	virtual void show();
+	
+	/**
+	 *    Hides the widget.
+	 */
+	virtual void hide();
+	
+	/**
+	 *    Get's the window with the supplied name from the WindowManager. Note that you shouldn't supply the prefix (as defined in loadMainSheet) since that will be added by the method.
+	 * @param windowName The name of the window, without the suffix.
+	 * @return A valid Window pointer of 0.
+	 */
+	CEGUI::Window* getWindow(const std::string& windowName);
+	
+	
+	/**
+	 *    Call this method upon creation of the widget (for example in buildWidget) to enable the close button and wire it to the correct methods.
+	 */
+	void enableCloseButton();
+	
+	/**
+	 *    Call this method upon creation of the widget (for example in buildWidget) to register show and hide commands with the console.
+	 *    The command you choose will be prefixed by "show_" and "hide_". So if you have a widget which shows a map and you call this method with the
+	 *    parameter "map" the commands "show_map" and "hide_map" will be registered with the console.
+	 * @param commandSuffix a string to be prefixed by "show_" and "hide_"
+	 */
+	void registerConsoleVisibilityToggleCommand(const std::string & commandSuffix);
+	
+	/**
+	accessor to the main sheet of the gui system
+	*/
+	CEGUI::Window* getMainSheet();
+
+	/**
+	 *    Accessor to the main window of the widget.
+	 * @return 
+	 */
+	CEGUI::Window* getMainWindow();
+	
+	/**
+	 *    Loads a widget definition from a file and sets the main sheet
+	 * @param filename The name of the file to load
+	 * @param prefix The prefix to use
+	 * @return 
+	 */
+	CEGUI::Window* loadMainSheet(const std::string& filename, const std::string& prefix);
+	
+	/**
+	 *    Gets the prefix used in the widget definition
+	 * @return 
+	 */
+	const std::string& getPrefix() const;
+
+	
+};
+
+
+
+
+
+
+}
+
+

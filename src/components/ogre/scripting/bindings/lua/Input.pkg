@@ -1,0 +1,126 @@
+namespace EmberOgre {
+
+struct MouseMotion
+{
+	/**
+	the position of the mouse
+	*/
+	int xPosition; 
+	int yPosition;
+	/**
+	the relative movement measures as percentage of the totoal with of the window
+	*/
+	Ogre::Real xRelativeMovement; 
+	Ogre::Real yRelativeMovement;
+	
+	/**
+	the relative movement in pixels	
+	*/
+	int xRelativeMovementInPixels; 
+	int yRelativeMovementInPixels;
+	Ogre::Real timeSinceLastMovement;
+};
+
+
+class Input
+{
+	enum MouseButton
+	{
+		MouseButtonLeft,
+		MouseButtonRight,
+		MouseButtonMiddle
+	};
+	
+	/**
+	Describes different input modes.
+	*/
+	enum InputMode
+	{
+		/**
+		In gui mode, the mouse will move the cursor and allow interaction with the GUI system
+		*/
+		IM_GUI,
+		
+		/**
+		In movement mode, the mouse will move the camera and the keys will move the player. Interaction with the gui is not possible.
+		*/
+		IM_MOVEMENT
+	};
+	
+
+
+	/**emitted when a key has been pressed in movement mode
+	@param the key event
+	@param true if ember is in gui mode
+	*/
+ 	sigc::signal<void, const SDL_keysym&, EmberOgre::Input::InputMode> EventKeyPressed;
+	
+	/**emitted when a key has been released in movement mode
+	@param the key event
+	@param true if ember is in gui mode
+	*/
+ 	sigc::signal<void, const SDL_keysym&, EmberOgre::Input::InputMode> EventKeyReleased;
+	
+	/**emitted when the mouse has moved
+	note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
+	although the relative position will have changed
+	@param the mouse motion
+	@param true if ember is in gui mode
+	*/
+	sigc::signal<void, const EmberOgre::MouseMotion&, EmberOgre::Input::InputMode> EventMouseMoved;
+	
+	
+	/**
+		emitted when a mouse button is pressed
+		@param the mouse button
+		@param true if ember is in gui mode
+	*/
+	sigc::signal<void, EmberOgre::Input::MouseButton, EmberOgre::Input::InputMode> EventMouseButtonPressed;
+	
+	/**
+		emitted when a mouse button is released
+		@param the mouse button
+		@param true if ember is in gui mode
+	*/
+	sigc::signal<void, EmberOgre::Input::MouseButton, EmberOgre::Input::InputMode> EventMouseButtonReleased;
+	
+	/**
+		Emitted when the input mode has been changed.
+		@param the new input mode
+	*/
+	sigc::signal<void, EmberOgre::Input::InputMode> EventChangedInputMode;
+	
+	/**
+	 * returns true if the supplied key is down 
+	 * @param  
+	 * @return 
+	 */
+	const bool isKeyDown(const SDLKey&) const;
+
+	
+	
+	
+	/**
+	 *    Sets the new input mode.
+	 * @param mode 
+	 */
+	void setInputMode(InputMode mode);
+	
+	/**
+	 *    Gets the current input mode.
+	 * @return 
+	 */
+	InputMode getInputMode() const;
+	
+	
+	/**
+	 *    Toggles between different input modes, returning the new mode.
+	 * @return the new input mode
+	 */
+	InputMode toggleInputMode();
+
+	
+};
+
+}
+

@@ -1,0 +1,101 @@
+$#include "required.h"
+
+
+$pfile "Carpenter.pkg"
+
+
+$pfile "AvatarCamera.pkg"
+$pfile "AvatarController.pkg"
+$pfile "Avatar.pkg"
+$pfile "EmberEntityFactory.pkg"
+
+$pfile "EmberEntity.pkg"
+$pfile "EmberPhysicalEntity.pkg"
+$pfile "AvatarEmberEntity.pkg"
+$pfile "WorldEmberEntity.pkg"
+
+$pfile "GUIManager.pkg"
+$pfile "MousePicker.pkg"
+$pfile "TerrainArea.pkg"
+$pfile "MotionManager.pkg"
+
+$pfile "Widget.pkg"
+$pfile "Model.pkg"
+$pfile "ModelDefinition.pkg"
+$pfile "Input.pkg"
+$pfile "Jesus.pkg"
+
+$pfile "MathConverter.pkg"
+
+$pfile "ModelRenderer.pkg"
+$pfile "MaterialPicker.pkg"
+
+$pfile "ModelDefinitionManager.pkg"
+
+$pfile "stdlib.pkg"
+
+//$pfile "EntityCEGUITexture.pkg"
+
+//$pfile "LuaConnector.pkg"
+
+
+
+
+namespace EmberOgre {
+class EmberOgre 
+{
+	static EmberOgre& getSingleton( void );
+
+	Avatar* getAvatar() const;
+	//Ogre::SceneManager* getSceneManager() const;
+	//TerrainGenerator* getTerrainGenerator() const;
+	MotionManager* getMotionManager() const;
+	//Ogre::Root* getOgreRoot() const;
+	EmberEntityFactory* getEntityFactory() const;
+	AvatarCamera* getMainCamera() const;
+	AvatarController* getAvatarController() const;
+	
+	EmberEntity* getEmberEntity(const std::string & eid) const;
+	
+	Eris::View*  getMainView();
+	
+	Jesus* getJesus() const;
+	
+	Ogre::RenderWindow* getRenderWindow() const;
+	
+	
+	sigc::signal<void, EmberOgre::EmberEntityFactory*> EventCreatedEmberEntityFactory;
+	sigc::signal<void, EmberOgre::AvatarEmberEntity*> EventCreatedAvatarEntity;
+	sigc::signal<void, EmberOgre::Jesus*> EventCreatedJesus;
+	sigc::signal<void, bool&> EventRequestQuit;
+	
+	sigc::signal<void> EventStartErisPoll;
+	
+	sigc::signal<void> EventEndErisPoll;
+	
+	Ogre::SceneNode* getWorldSceneNode() const;
+	
+	
+	Ogre::SceneNode* getRootSceneNode() const;
+	
+	
+	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerCreated;
+	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerInitialized;
+	
+	sigc::signal<void, EmberOgre::MotionManager&> EventMotionManagerCreated;
+	
+	
+	sigc::signal<void, EmberOgre::TerrainGenerator&> EventTerrainGeneratorCreated;
+	
+	sigc::signal<void, EmberOgre::AvatarController&> EventAvatarControllerCreated;
+	
+	sigc::signal<void> EventSceneCreated;
+	
+	EmberEntity* getEntity(const std::string & id) const;
+	
+	void requestQuit();
+
+
+};
+
+}
