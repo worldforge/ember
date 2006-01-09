@@ -1,0 +1,23 @@
+namespace EmberOgre {
+
+class LuaConnector{
+	void connect(const std::string& luaMethod);
+
+    LuaConnector(sigc::signal<void, const std::string&, EmberOgre::EmberEntity*>& signal);
+    LuaConnector(sigc::signal<void, Eris::Connection*>& signal);
+	LuaConnector(SigC::Signal1<void, const Eris::ServerInfo&>& signal);
+	LuaConnector(sigc::signal<void, float>& signal);
+ 	LuaConnector(sigc::signal<void, const EmberOgre::EntityPickResult&, const EmberOgre::MousePickerArgs&>& signal);
+	LuaConnector(sigc::signal<void, const EmberOgre::MousePickerArgs&>& signal);
+	LuaConnector(sigc::signal<void, EmberOgre::Input::MouseButton, EmberOgre::Input::InputMode>& signal);
+	LuaConnector(sigc::signal<void, EmberOgre::EmberEntityFactory*>& signal);
+	LuaConnector(sigc::signal<void, EmberOgre::AvatarEmberEntity*>& signal);
+	LuaConnector(sigc::signal<void, EmberOgre::Jesus*>& signal);
+	LuaConnector(sigc::signal<void, EmberOgre::EmberEntity*>& signal);
+ 	LuaConnector(sigc::signal<void, const std::string&>& signal);
+ 	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
+
+
+};
+
+}

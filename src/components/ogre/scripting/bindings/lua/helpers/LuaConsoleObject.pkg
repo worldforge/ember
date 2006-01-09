@@ -1,0 +1,10 @@
+namespace EmberOgre {
+
+class LuaConsoleObject 
+{
+    LuaConsoleObject(const std::string& command, const std::string& luaMethod);
+
+    ~LuaConsoleObject();
+
+};
+}
