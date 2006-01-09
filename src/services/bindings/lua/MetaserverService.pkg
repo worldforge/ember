@@ -1,0 +1,14 @@
+
+
+namespace Ember {
+
+
+class MetaserverService
+{
+
+
+    Eris::Meta& getMetaServer() const;
+
+
+};
+}

@@ -1,0 +1,51 @@
+
+
+
+namespace Ember {
+
+
+class ServerService 
+{
+    bool isConnected() const;
+
+    bool connect(const std::string& host, short port = 6767);
+
+//    void reconnect();
+
+    void disconnect();
+	
+    void takeCharacter(const std::string &id);
+
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description);
+
+
+      
+	void moveToPoint(const WFMath::Point<3>& dest); 
+	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
+	void moveInDirection(const WFMath::Vector<3>& velocity);
+	void say(const std::string &message);
+	void touch(Eris::Entity* entity);
+	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
+	void place(Eris::Entity* entity, Eris::Entity* target);
+	void wield(Eris::Entity* entity);
+	void take(Eris::Entity* entity);
+	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
+	//void use(Eris::Entity* entity);
+
+    //----------------------------------------------------------------------
+	// Signals
+	sigc::signal<void, Eris::Avatar*> GotAvatar;
+	sigc::signal<void, Eris::View*> GotView;
+	sigc::signal<void, Eris::Connection*> GotConnection;
+	sigc::signal<void, Eris::Account*> GotAccount;
+	sigc::signal<void, Eris::Account *> LoginSuccess;
+	sigc::signal<void, Eris::Account *> LoginFailure;
+	sigc::signal<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
+	sigc::signal<void, Eris::Account *> GotAllCharacters;
+
+
+    //----------------------------------------------------------------------
+    // Callbacks from Eris
+
+};
+}

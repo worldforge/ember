@@ -1,0 +1,57 @@
+$#include "required.h"
+
+
+$#include "services/EmberServices.h"
+$#include "services/logging/LoggingService.h"
+$#include "services/server/ServerService.h"
+$#include "services/config/ConfigService.h"
+$#include "services/metaserver/MetaserverService.h"
+$#include "services/scripting/ScriptingService.h"
+//$#include "services/sound/SoundService.h"
+
+
+$pfile "LoggingService.pkg";
+$pfile "ConfigService.pkg";
+$pfile "MetaserverService.pkg";
+$pfile "ServerService.pkg";
+$pfile "ScriptingService.pkg";
+//  class SoundService;
+
+namespace Ember {
+
+
+class EmberServices
+{
+	static EmberServices& getSingleton();
+
+
+    /**
+     * Returns an instance of the LoggingService
+     */
+    Ember::LoggingService *getLoggingService();
+
+    /**
+     * Returns an instance of the ConfigService
+     */
+    Ember::ConfigService *getConfigService();
+
+    /**
+     * Returns an instance of the MetaserverService
+     */
+     Ember::MetaserverService *getMetaserverService();
+
+    /**
+     * Returns an instance of the ServerService
+     */
+    Ember::ServerService *getServerService();
+
+    /**
+     * Returns an instance of the SoundService
+     */
+//    Ember::SoundService *getSoundService();
+    
+    Ember::ScriptingService *getScriptingService();
+
+
+};
+}

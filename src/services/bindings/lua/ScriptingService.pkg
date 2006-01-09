@@ -1,0 +1,60 @@
+
+
+namespace Ember {
+
+/**
+@author Erik Hjortsberg
+
+This service provides scripting support.
+In order to use it, an instance implementing IScriptingProvider must be created and registered with the service.
+Scripts are then loaded through call to the method loadScript(...). Scripts can also be loaded through the console command /loadscript <path>
+*/
+class ScriptingService 
+{
+    /**
+    Console command for loading scripts.
+    */
+     static const std::string LOADSCRIPT;
+	
+	/**
+	 *    Registers a new scripting provider.
+	 * @param provider 
+	 */
+	void registerScriptingProvider(Ember::IScriptingProvider* provider);
+	
+	/**
+	 *    Loads a new script, if there is an registered scripting provider which will be able to load it.
+	 * @param script 
+	 */
+	void loadScript(const std::string& script);
+	
+	/**
+	 *    Executes the supplied code directly into the provider with the supplied name.
+	 * @param scriptCode 
+	 * @param scriptType 
+	 */
+	void executeCode(const std::string& scriptCode, const std::string& scriptType);
+	
+	/**
+	 *    The EventScriptError signal will be emitted when there is an error in a script.
+	 * @return 
+	 */
+	sigc::signal<void, const std::string&>& getEventScriptError();
+	
+	/**
+	 *    Returns the provider with the specified name, or 0 if no can be found.
+	 * @param providerName 
+	 * @return 
+	 */
+	Ember::IScriptingProvider* getProviderFor(const std::string &providerName);
+	
+	/**
+	 *    Returns a list of the names of all registered scripting providers.
+	 * @return 
+	 */
+	std::vector<std::string> getProviderNames();
+	
+
+};
+
+}

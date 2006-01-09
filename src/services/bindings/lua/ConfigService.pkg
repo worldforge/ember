@@ -1,0 +1,112 @@
+
+
+namespace Ember {
+
+
+class ConfigService
+{
+
+    static const std::string SETVALUE;
+    static const std::string GETVALUE;
+
+    //----------------------------------------------------------------------
+    // Getters & Setters
+    //----------------------------------------------------------------------
+
+    /**
+     * Returns value stored in key in appropriate section.
+     *
+     * @param Section of config space to look in.
+     * @param Key to return value of.
+     */
+    varconf::Variable getValue(const std::string& section, const std::string& key) const;
+
+    /**
+     * Sets value of key in appropriate section.
+     *
+     * @param Section of config space to look in.
+     * @param Key to store value in.
+     * @param Value to store.
+     */
+    void setValue(const std::string& section, const std::string& key, const varconf::Variable& value);
+
+    //----------------------------------------------------------------------
+    // Methods
+    //----------------------------------------------------------------------
+
+    /**
+     * Returns true if the key exists in the section given.
+     *
+     * @param Section of config space to look in.
+     * @param Key to look for.
+     */
+    bool itemExists(const std::string& section, const std::string& key) const;
+
+    /**
+     * Returns true if the key exists in the section give but is successfully
+     * removed.
+     * 
+     * @param Section of config space to look in.
+     * @param Key to remove.
+     */
+    bool deleteItem(const std::string& section, const std::string& key);
+
+    /**
+     * Loads config space from given file.
+     *
+     * @param Name of file to read from.
+     */
+    bool loadSavedConfig(const std::string& filename);
+
+    /**
+     * Saves config space to given file.
+     *
+     * @param Name of file to save to.
+     */
+    bool saveConfig(const std::string& filename);
+	
+	
+	/**
+	* returns the path to the home directory, where all configuration is stored
+	*/
+	const std::string getHomeDirectory() const;
+	
+	/**
+	* returns the path to the shared data directory, where common media is
+	*/
+	const std::string getSharedDataDirectory() const;
+	
+	/**
+	* returns the path to the ember data directory, where ember media is
+	*/
+	const std::string getEmberDataDirectory() const;
+	
+	/**
+	 *    returns the path to the media directory specific to a user, which would normally be ~/.ember/ember-media
+	 * @return 
+	 */
+	const std::string getUserMediaDirectory() const;
+	
+	/**
+	 *    returns the path to the media directory shared between users, which would normally be $prefix/games/ember/media
+	 * @return 
+	 */
+	const std::string getSharedMediaDirectory() const;
+
+	/**
+	 *    returns the path to the shared config directory where all the original configuration files are stored
+	 * @return 
+	 */
+	const std::string getSharedConfigDirectory() const;
+
+	/**
+	*	Emitted when a config item is changed.
+	*	@param the section of the config item
+	*	@param the key of the config item
+	*/
+	sigc::signal<void, const std::string&, const std::string&> EventChangedConfigItem;
+	
+
+}; //ConfigService
+
+}
