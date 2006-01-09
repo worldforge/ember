@@ -1,0 +1,64 @@
+namespace Ember {
+
+/**
+ * Backend storage class for Console's.
+ *
+ * More detailed description of the class, it's purpose, what it does,
+ * how to use it and so on.
+ *
+ * A short piece of example code demonstarting how this class it is used,
+ * and in what context, is encouraged.
+ *
+ * @author Martin Pollard aka Xmp
+ *
+ * NOTE: You can also specify the author for individual methods
+ * if different persons have created them.
+ * It is also possible to have multiple @author tags for a method.
+ * Only add yourself as an @author if you have done serious work
+ * on a class/method, and can help fixing bugs in it, etc.
+ * If you just fixed a bug or added a short code snipplet you
+ * don't need to add yourself.
+ *
+ * @see Ember::Console
+ * @see Ember::ConsoleObject
+ *
+ */
+
+class ConsoleBackend 
+{
+
+    //----------------------------------------------------------------------
+    // Getters
+
+    /**
+     * Gets an instance of the main Ember console
+     */
+    static Ember::ConsoleBackend* getMainConsole();
+
+    /**
+     * This is the method the determines what object the pass the command onto
+	 * 
+     * @param command the command string to process
+     */ 
+    void runCommand(const std::string &command);
+	
+    /**
+     * Add a message to the console message queue.
+     * message is the message string
+     */ 
+    void pushMessage(const std::string &message);
+
+    /**
+     * This is the ConsoleObject method.
+     * command is the command to run
+     * args is the commands arguments
+     */ 
+    void runCommand(const std::string &command, const std::string &args);
+    
+
+
+}; // End of ConsoleBackend
+
+} // End of Ember namespace
+
+

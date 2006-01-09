@@ -1,0 +1,78 @@
+
+namespace Ember {
+
+/**
+ * Short sentence with a general description of the class, ending in period.
+ *
+ * More detailed description of the class, it's purpose, what it does,
+ * how to use it and so on.
+ *
+ * A short piece of example code demonstarting how this class it is used,
+ * and in what context, is encouraged.
+ *
+ * @author Martin Pollard (Xmp) aka Xmp
+ *
+ * NOTE: You can also specify the author for individual methods
+ * if different persons have created them.
+ * It is also possible to have multiple @author tags for a method.
+ * Only add yourself as an @author if you have done serious work
+ * on a class/method, and can help fixing bugs in it, etc.
+ * If you just fixed a bug or added a short code snipplet you
+ * don't need to add yourself.
+ *
+ * @see OtherSubsystem::AnOtherRelatedClass
+ *
+ * NOTE: Add other related classes here, doxygen will create links to them.
+ */
+
+class Tokeniser
+{
+
+    //======================================================================
+    // Public Methods
+    //======================================================================
+    public:
+
+    //----------------------------------------------------------------------
+    // Constructors
+
+    /**
+     * Creates a new Tokeniser using default values.
+     */
+     Tokeniser()
+     {
+     }
+
+
+
+
+    //----------------------------------------------------------------------
+    // Destructor
+
+    /**
+     * Deletes a Tokeniser instance.
+     */
+    virtual ~Tokeniser ();
+
+
+    //----------------------------------------------------------------------
+    // Getters
+
+    // Example of a getter method:
+
+
+    //----------------------------------------------------------------------
+    // Setters
+
+
+    //----------------------------------------------------------------------
+    // Other public methods
+    // NOTE: Group related public methods together and create a separator comment like above for them.
+    void initTokens(const std::string &tokens);
+    std::string nextToken();
+    std::string remainingTokens();
+
+
+}; // End of Tokeniser
+
+} // End of Ember namespace
