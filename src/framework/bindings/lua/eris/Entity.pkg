@@ -1,0 +1,118 @@
+$#include <Eris/Entity.h>
+
+
+namespace Eris {
+class Entity {
+
+    typedef std::map<std::string, Atlas::Message::Element> AttrMap;
+
+    unsigned int numContained() const;
+
+
+//    const Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
+
+//    bool hasAttr(const std::string &p) const;
+
+    typedef SigC::Slot2<void, const std::string&, const Atlas::Message::Element&> AttrChangedSlot;
+
+    /** setup an observer so that the specified slot is fired when the
+    named attribue's value changes */
+    SigC::Connection observe(const std::string& attr, const AttrChangedSlot& aslot);
+
+// accesors
+    /// retrieve the unique entity ID
+    const std::string& getId() const;
+    
+    const std::string& getName() const;
+	
+    float getStamp() const;
+
+    Eris::TypeInfo* getType() const;
+    
+    
+    Eris::Entity* getLocation() const;
+	
+    WFMath::Point<3> getPosition() const;
+    
+    const AttrMap& getAttributes() const;
+    
+    bool isMoving() const;
+        
+    WFMath::Point<3> getPredictedPos() const;
+    
+    WFMath::Vector<3> getPredictedVelocity() const;   
+    
+    WFMath::Point<3> getViewPosition() const;
+
+    WFMath::Quaternion getViewOrientation() const;
+	
+	const WFMath::Vector< 3 > & getVelocity(void) const;
+	
+	const WFMath::Quaternion & getOrientation(void) const;
+	
+	const WFMath::AxisBox< 3 > & getBBox(void) const;
+
+    bool hasBBox() const;
+    
+    bool hasChild(const std::string& eid) const;
+    
+    bool isVisible() const;
+
+    
+	
+    SigC::Signal1<void, Entity*> ChildAdded;
+    SigC::Signal1<void, Entity*> ChildRemoved;
+    
+    SigC::Signal1<void, Entity*> LocationChanged;
+
+    /** Emitted when one or more attributes change. The arguments are the
+    Entity which changed, and a set of attribute IDs which were modified. */
+    SigC::Signal1<void, const Eris::StringSet&> Changed;
+
+    /** Emitted when then entity's position, orientation or velocity change.
+    Argument is the entity that moved, so you can bind the same slot to
+    multiple entities if desired. */
+    SigC::Signal0<void> Moved;
+
+    /** Emitted when an entity starts or stops moving (as determined by the
+    'inMotion' method. */
+    SigC::Signal1<void, bool> Moving;
+
+    /**
+	 * @brief Emitted with the entity speaks.
+	 * 
+	 * The argument contains attributes that make up the content of the Say
+	 * operation.
+	 * - Attribute "say" which is of type string and contains the text that
+	 *   this entity said.
+	 * - Attrubute "responses" which is a list of strings. When conversing
+	 *   with NPCs this list is used to give the client a clue about
+	 *   possible answers the NPCs understand.
+	 **/
+    SigC::Signal1< void, const Atlas::Objects::Root & > Say;
+	
+    /**
+    Emitted when this entity emits an imgainary operation (also known as
+    an emote. This is used for debugging, but not much else. 
+    */
+    SigC::Signal1<void, const std::string&> Emote;
+    
+    /**
+    Emitted when this entity performs an action. The argument to the
+    action is passed as the signal argument. For examples of action
+    arguments, see some documentation that probably isn't written yet.
+    */
+    SigC::Signal1<void, const Atlas::Objects::Operation::RootOperation&> Acted;
+    
+    /**
+    Emitted when this entity performs an action which causes a noise. This
+    may happen alongside the sight of the action, or not, depending on the
+    distance to the entity and so on.
+    */
+    SigC::Signal1<void, const Atlas::Objects::Root&> Noise;
+    
+    SigC::Signal1<void, bool> VisibilityChanged;
+        
+
+};
+}

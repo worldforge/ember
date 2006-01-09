@@ -1,0 +1,43 @@
+$#include <Eris/TypeInfo.h>
+
+namespace Eris {	
+
+
+typedef std::set<Eris::TypeInfo*> TypeInfoSet;
+
+
+class TypeInfo 
+{
+
+    /** Test whether this type inherits (directly or indirectly) from the specific class. If this
+    type is not bound, this may return false-negatives. */
+    bool isA(Eris::TypeInfo* ti);
+
+    /** Check the bound flag for this node; if false then recursivley check parents
+    until an authorative is found */
+    bool isBound() const;
+
+    /**
+    Test if there are child types of the type, which have not yet been retrieved
+    from the server.
+    */
+    bool hasUnresolvedChildren() const;
+    
+    /**
+    Retrive all child types from the server.
+    This will log an error and do nothing if no unresolved children exist.
+    */
+    void resolveChildren();
+    
+
+// accessors
+    /// the unique type name (matches the Atlas type)
+    const std::string& getName() const;
+    
+    const Eris::TypeInfoSet & getChildren() const;
+
+    const Eris::TypeInfoSet & getParents() const;
+
+};
+
+}

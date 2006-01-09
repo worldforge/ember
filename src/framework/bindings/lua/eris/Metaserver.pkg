@@ -1,0 +1,57 @@
+$#include <Eris/Metaserver.h>
+
+
+namespace Eris {
+class Meta 
+{
+public:
+
+    
+    /** Return the total number of game servers the meta server knows about. */
+    unsigned int getGameServerCount() const;
+
+    /** Retrive one of the servers. Note the ServerInfo object may be invalid
+    if the server has not yet been queried, or has timedout or otherwise
+    failed to answer the query. */
+    const Eris::ServerInfo& getInfoForServer(unsigned int index) const;
+
+    /// Query a specific game server; emits a signal when complete
+    void queryServerByIndex(unsigned int index);
+
+    /** Refresh the entire server list. This will clear the current list,
+    ask the meta-server for each game server, and then issue a query
+    against every returned server. This process can take a large amount
+    of real-time as the number of game servers increases. Completion
+    of the entire refresh is indicated by the 'CompletedServerList' signal.
+    */
+    void refresh();
+
+    /** Cancel outstanding refresh / queries. This is primarily intended for
+    use with 'Refresh', which might takes several minutes to complete. Note
+    that 'CompletedServerList' is not emitted following cancellation. 
+    */
+    void cancel();
+
+// signals
+	
+    /// Emitted when information about a server is received
+    SigC::Signal1<void, const Eris::ServerInfo&> ReceivedServerInfo;
+
+    /**
+    Emitted once the complete list of servers has been retrived from
+    the metaserver. Argument is the total number of servers in the list
+    */
+    SigC::Signal1<void, int> CompletedServerList;
+    
+    /// Emitted when the entire server list has been refreshed
+    SigC::Signal0<void> AllQueriesDone;
+
+    /**
+    Indicates a failure (usually network related) has occurred.
+    The server list will be cleared, and the status set to INVALID. 
+    */
+    SigC::Signal1<void, const std::string&> Failure;
+        
+
+};
+}

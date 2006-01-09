@@ -1,0 +1,6 @@
+$#include <Eris/Account.h>
+
+namespace Eris {
+class Account {
+};
+}

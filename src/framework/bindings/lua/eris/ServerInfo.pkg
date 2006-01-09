@@ -1,0 +1,54 @@
+$#include <Eris/ServerInfo.h>
+
+
+namespace Eris {
+class ServerInfo
+{
+    
+    typedef enum {
+        INVALID,
+        QUERYING,
+        VALID,
+        TIMEOUT ///< server query timed out
+    } Status;
+    
+	// bookmark / favourites functionality 	
+
+// accessors
+    Status getStatus() const;
+    
+    /** retrive the hostname (or dotted-decimal IP) of the server. For multi-server worlds, this will be
+    a name that resolves to a machine capable of accepting the initial LOGIN, and hence should not need
+    special handling. */
+    const std::string& getHostname() const;
+
+    /// retrieve the human-readable name of the server (e.g 'Bob's Mason Server')
+    const std::string& getServername() const;
+    
+    /// retrieve a human-readable name of the ruleset (e.g. 'mason' or 'circe')
+    const std::string& getRuleset() const;
+    
+    /// the server program name, i.e 'stage' or 'cyphesis'
+    const std::string& getServer() const;
+
+    /// the server program version, as a free text string
+    const std::string& getVersion() const;
+
+    /// the server program build-date, as a free text string
+    const std::string& getBuildDate() const;
+    
+    /// the number of clients currently connected to the server
+    int getNumClients() const;
+
+    /** the round-trip time to the server. The meaning of this when multi-server worlds exist needs to
+    be considered.
+    \task Verify the accuracy of the ping estimation, since it is currently very poor */
+    int getPing() const;
+
+    /// the server's uptime in seconds
+    double getUptime() const;
+
+
+
+};
+}

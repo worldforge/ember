@@ -1,0 +1,25 @@
+namespace Eris
+{
+
+
+/** View encapsulates the set of entities currently visible to an Avatar,
+ as well as those that have recently been seen. It recieves visibility-affecting
+ ops from the IGRouter, and uses them to update it's state and emit signals.
+ It makes it's best effort to be correct event when edge cases happen (eg,
+ entities being destroyed or disappearing very soon after appearance, and
+ before the initial SIGHT is recived)
+ */
+class View 
+{
+//    Avatar* getAvatar() const;
+
+    /**
+    Retrieve the current look queue size, for debugging / statistics purposes.
+    Eg, this could be displayed as a bar-chart on screen in a client (optionally)
+    */
+    unsigned int lookQueueSize() const;
+};
+
+} // of namespace Eris
+
+
