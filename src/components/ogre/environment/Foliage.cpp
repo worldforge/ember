@@ -75,7 +75,7 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 	catch (Ogre::Exception& e) {}
 	
 	
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	//mSubmeshSize = (int)configSrv->getValue("foliage", "submeshsize");
 	mGrassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
 // 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");

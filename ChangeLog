@@ -1,3 +1,75 @@
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Foliage.cpp|Sky.cpp|Water.cpp: use getSingletonPtr instead of the deprecated getInstance
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/carpenter/Carpenter.h: removed signature of missing method, since it's not used anyway
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.*, src/services/logging/LoggingService.*: moved from sigc 1.2 to sigc 2.0
+	* src/services/metaserver/MetaServerService.*:
+		* moved from sigc 1.2 to sigc 2.0
+		* use the S_LOG_* methods for logging
+		* cleaned up the coder
+	* src/services/scripting/ScriptingService.*: 
+		* added support for scripting providers, which will take care of the actual execution of the scripts, thus allowing many different script languages
+		* added methods for loading scripts and executing script code
+	* src/services/server/ServerService.*:
+		* moved from sigc 1.2 to sigc 2.0
+		* added method for taking other entities
+	* src/services/sound/SoundService.cpp: use getSingletonPtr instead of the deprecated getInstance
+	* src/services/EmberServices.cpp: 
+		* inherit from Singleton and remove the getInstance method
+		* added accessor for the ScriptingService
+	* src/services/Makefile.am: added the scripting directory
+
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/bindings/*: added lua bindings for the services
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/ConsoleBackend.h: moved from sigc 1.2 to sigc 2.0
+	* src/framework/Singleton.h: include cassert for successfull compilation
+	* src/framework/IScriptingProvider.h: added an interface which scripting providers must implement
+	* src/framework/StramLogObserver.h: updated comments to use getSingletonPtr instead of the deprecated getInstance
+	* src/framework/Makefile.am: added the IScriptingProvider interface and the script bindings
+
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/bindings/Makefile.am: build the lua bindings
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/bindings/lua/*: added lua bindings for the framework functionality
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/bindings/lua/eris/*: added lua bindings for some Eris functionality
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/LuaScriptingProvider.*: added a scripting provider for Lua
+	* src/components/ogre/scripting/Makefile.am: added the Lua scripting provider and restructured the files
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.*: added a utility class which allows sigc signals to be recieved directly by lua functions.
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.*: added a utility class which allows console commands to be directly mapped to lua functions
+	* src/components/ogre/scripting/bindings/lua/helpers/*.pkg|lua_Helpers.cpp|required.h: provide bindings for lua
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/*, src/components/ogre/scripting/bindings/lua/ogre/*: added bindings for some Ogre functionality and extended the Ember bindings
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/*.pkg, src/components/ogre/scripting/lua_EmberOgre.*: moved the bindings file tosrc/components/ogre/scripting/bindings/lua 
+
 2005-11-23 Miguel Guzmán <aglanor(at)gmail(dot)com>
 
 	*  configure.ac src/components/ogre/Makefile.am

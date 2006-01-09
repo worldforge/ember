@@ -42,7 +42,7 @@ Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
   sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
 
   updateFogValuesFromConfig();
-  Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
+  Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
 
 
 }
@@ -58,14 +58,14 @@ void Sky::updateFogValuesFromConfig()
 	Ogre::ColourValue fadeColour(0.9,0.9,0.9);
 	float fogstartDistance = 96; //default for fog
 	float fogmaxDistance = 256; //default for fog gradient endind (i.e. where the fog is at 100%)
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogstart")) {
-		fogstartDistance = static_cast<double>(Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogstart"));
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fogstart")) {
+		fogstartDistance = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fogstart"));
 	}
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogmax")) {
-		fogmaxDistance = static_cast<double>(Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogmax"));
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fogmax")) {
+		fogmaxDistance = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fogmax"));
 	}
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "fogcolour")) {
-		varconf::Variable var = Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "fogcolour");
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fogcolour")) {
+		varconf::Variable var = Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fogcolour");
 		std::string stringValue(var);
 		
 		Ember::Tokeniser tokeniser;
