@@ -25,13 +25,154 @@
 #define EMBEROGREMODELDEFINITION_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-
+#include <ext/hash_map>
 
 namespace EmberOgre {
+namespace Model {
 
 
-class ModelDefinition;
 class Model;
+class PartDefinition;
+class SubModelDefinition;
+class ModelDefinition;
+class SubEntityDefinition;
+
+class ActionDefinition;
+struct SoundDefinition;
+struct AnimationDefinition;
+class AttachPointDefinition;
+
+typedef std::map<std::string, Model*> ModelInstanceStore;
+
+typedef std::vector<SubModelDefinition*> SubModelDefinitionsStore;
+typedef std::vector<PartDefinition*> PartDefinitionsStore;
+typedef std::vector<SubEntityDefinition*> SubEntityDefinitionsStore;
+typedef std::vector<AnimationDefinition*> AnimationDefinitionsStore;
+typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
+typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
+typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
+
+class SubEntityDefinition
+{
+friend class PartDefinition;
+public:
+	const std::string& getSubEntityName() const;
+	unsigned int getSubEntityIndex() const;
+	//void setSubEntityName(const std::string&);
+
+	const std::string& getMaterialName() const;
+	void setMaterialName(const std::string& materialName);
+	
+	PartDefinition& getPartDefinition();
+
+private:
+	SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef);
+	SubEntityDefinition(unsigned int subEntityIndex, PartDefinition& partdef);
+	std::string mSubEntityName;
+	std::string mMaterialName;
+	unsigned int mSubEntityIndex;
+	PartDefinition& mPartDef;
+};	
+
+
+class PartDefinition
+{
+friend class SubModelDefinition;
+public:
+	~PartDefinition();
+
+	void setName(const std::string& name);
+	const std::string& getName() const;
+	
+	void setShow(bool show);
+	bool getShow() const;
+	
+	SubEntityDefinition* createSubEntityDefinition(const std::string& subEntityName);
+	SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
+	const SubEntityDefinitionsStore& getSubEntityDefinitions();
+	void removeSubEntityDefinition(SubEntityDefinition* def);
+	
+	SubModelDefinition& getSubModelDefinition();
+	
+private:
+	PartDefinition(const std::string& name, SubModelDefinition& subModelDef);
+	std::string mName;
+	bool mShow;
+	SubEntityDefinitionsStore mSubEntities;
+	SubModelDefinition& mSubModelDef;
+};
+
+
+class SubModelDefinition
+{
+friend class ModelDefinition;
+public: 
+	~SubModelDefinition();
+	
+	const std::string& getMeshName() const;
+	
+	PartDefinition* createPartDefinition(const std::string& partname);
+	const PartDefinitionsStore& getPartDefinitions();
+	void removePartDefinition(PartDefinition* def);
+	
+	ModelDefinition& getModelDefinition();
+	
+private:
+	SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef);
+	std::string mMeshName;
+	PartDefinitionsStore mParts;
+	ModelDefinition& mModelDef;
+};
+
+
+
+struct AttachPointDefinition
+{
+	std::string Name;
+	std::string BoneName;
+};
+
+struct AnimationDefinition
+{
+	std::string Name;
+	Ogre::Real Weight;
+};
+
+struct SoundDefinition
+{
+	std::string Name;
+	bool Repeat;
+	Ogre::Real Volume;
+};
+
+class ActionDefinition
+{
+friend class ModelDefinition;
+public:
+	~ActionDefinition();
+	
+	AnimationDefinition* createAnimationDefinition(const std::string& name, Ogre::Real weight);
+	const AnimationDefinitionsStore& getAnimationDefinitions();
+	void removeAnimationDefinition(AnimationDefinition* def);
+
+	SoundDefinition* createSoundDefinition(const std::string& name, bool repeat, Ogre::Real volume);
+	const SoundDefinitionsStore& getSoundDefinitions();
+	void removeSoundDefinition(SoundDefinition* def);
+	
+	const std::string& getName() const;
+	Ogre::Real getAnimationSpeed() const { return mAnimationSpeed; }
+	void setAnimationSpeed(Ogre::Real speed) { mAnimationSpeed = speed; }
+
+private:
+	ActionDefinition(const std::string& name);
+	
+	
+	std::string mName;
+	AnimationDefinitionsStore mAnimations;
+	SoundDefinitionsStore mSounds;
+	Ogre::Real mAnimationSpeed;
+};
+
 
 /**
 @author Erik Hjortsberg
@@ -56,6 +197,9 @@ public:
 		MODEL_HEIGHT = 4
 	};
 
+	/**
+	A struct for simple bindings between areas and materials/textures.
+	*/
 	struct AreaDefinition
 	{
 		int Id;
@@ -71,6 +215,7 @@ public:
     virtual ~ModelDefinition();
 
     bool isValid(void);
+	inline void setValid(bool valid) { mIsValid = valid; }
 
 	//Ogre resource virtual functions
  	void loadImpl(void);
@@ -81,14 +226,49 @@ public:
 
 	//Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
 	
+	/**
+	 *    Gets the amount of scale that needs to be applied to derived Models.
+	 * @return 
+	 */
 	inline Ogre::Real getScale() const { return mScale; }
+	
+	/**
+	 *    Gets how derived Models needs to be scaled.
+	 Defaults to "ALL"
+	 * @return 
+	 */
 	inline const UseScaleOf getUseScaleOf() const { return mUseScaleOf; }
 	
+	/**
+	 *    Gets an optional translation vector which should be applied to derived Models.
+	 * @return 
+	 */
 	const Ogre::Vector3& getTranslate() const;
 	
-protected:
-	inline void setValid(bool valid) { mIsValid = valid; }
+	/**
+	 *	Whether contained entities should be shown or not.
+	 Defaults to true.
+	 * @return true if contained entities should be shown, else false
+	 */
+	bool getShowContained() const;
+	
+	/**
+	 *    Returns a vector defining how much, if ever, contained entities should be offset.
+	 *    If they shouldn't, a void pointer will be returned.
+	 * @return A offset vector or null.
+	 */
+	Ogre::Vector3* getContentOffset() const { return mContentOffset; }
+	
+	SubModelDefinition* createSubModelDefinition(const std::string& meshname);
+	const SubModelDefinitionsStore& getSubModelDefinitions();
+	void removeSubModelDefinition(SubModelDefinition* def);
+	
+	ActionDefinition* createActionDefinition(const std::string& actionname);
+	const ActionDefinitionsStore& getActionDefinitions();
+	void removeActionDefinition(ActionDefinition* def);
 
+	template <typename T, typename T1>
+	static void removeDefinition(T* def, T1& store);
 
 private:
 
@@ -109,59 +289,33 @@ private:
 
 	typedef std::vector<ParticleSystemDefinition> ParticleSystemSet;
 
-	struct AttachPointDefinition
-	{
-		std::string Name;
-		std::string BoneName;
-	};
-
-	struct AnimationDefinition
-	{
-		std::string Name;
-		Ogre::Real Weight;
-	};
-	
-	struct SoundDefinition
-	{
-		std::string Name;
-		bool Repeat;
-		Ogre::Real volume;
-	};
-	
-	struct ActionDefinition
-	{
-		std::string Name;
-		std::list<AnimationDefinition> Animations;
-		std::list<SoundDefinition> Sounds;
-	};
-	
-	
-	struct SubEntityDefinition
-	{
-		std::string SubEntity;
-		std::string Material;
-		
-	};	
-	struct PartDefinition
-	{
-		std::string Name;
-		bool Show;
-		std::list<SubEntityDefinition> SubEntities;
-	};
-	struct SubModelDefinition
-	{
-		std::string Mesh;
-		std::list<PartDefinition> Parts;
-	};
-	
 
 	
 	
-	std::vector<SubModelDefinition> mSubModels;
-	std::vector<ActionDefinition> mActions;
+	/**
+	 *    Adds a model instance to the internal store of instances. This method should be called from the class Model when a new Model is created.
+	 * @param  
+	 */
+	void addModelInstance(Model*);
+	/**
+	 *    Removed a model instance from the internal store of instances. This method should be called from the class Model when a new Model is removed.
+	 * @param  
+	 */
+	void removeModelInstance(Model*);
+	
+	/**
+	A store of all model instances of this definition.
+	This can be used to update all instances at once.
+	*/
+	ModelInstanceStore mModelInstances;
+
+	
+
+	
+	SubModelDefinitionsStore mSubModels;
+	ActionDefinitionsStore mActions;
 	ParticleSystemSet mParticleSystems;
 	
-	typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
 	AttachPointDefinitionStore mAttachPoints;
 	
 	UseScaleOf mUseScaleOf;
@@ -170,7 +324,19 @@ private:
 	const Ogre::String mPath;
 	
 	/**
+	Defines how much contained entities should be offset. Null if not.
+	*/
+	Ogre::Vector3* mContentOffset;
+	
+	/**
+	Whether contained entities should be shown or not.
+	Defaults to true.
+	*/
+	bool mShowContained;
+	
+	/**
 	How, if any, to transform the model from the base position.
+	Defaults to a zeroed vector.
 	*/
 	Ogre::Vector3 mTranslate;
 	
@@ -225,5 +391,5 @@ public:
 typedef ModelDefnPtr ModelDefinitionPtr;
 
 };
-
+}
 #endif
