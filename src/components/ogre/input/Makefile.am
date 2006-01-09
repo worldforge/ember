@@ -4,3 +4,4 @@ METASOURCES = AUTO
 noinst_LIBRARIES = libInput.a
 libInput_a_SOURCES = Input.cpp Input.h
 
+noinst_HEADERS = IInputAdapter.h

@@ -24,32 +24,17 @@
 #define EMBEROGREINPUT_H
 
 #include "../EmberOgrePrerequisites.h"
-#include <CEGUISystem.h>
-#include <CEGUIEventArgs.h>
-#include <CEGUIInputEvent.h> 
-
-
-/*#include <sigc++/object.h>
-#include <sigc++/signal.h>*/
 #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
-// #include <sigc++/object_slot.h>
-
-
-//#include <SDL_keysym.h>
 #include <SDL.h>
 
-namespace CEGUI {
-class System;
-class OgreCEGUIRenderer;
 
-}
 
 namespace EmberOgre {
 
-TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
+class IInputAdapter;
 
 TYPEDEF_STL_SET(SDLKey, KeysSet);
+TYPEDEF_STL_LIST(IInputAdapter*, IInputAdapterStore);
 
 
 
@@ -64,7 +49,7 @@ struct MouseMotion
 	int xPosition; 
 	int yPosition;
 	/**
-	the relative movement measures as percentage of the totoal with of the window
+	the relative movement measures as percentage of the total with of the window
 	*/
 	Ogre::Real xRelativeMovement; 
 	Ogre::Real yRelativeMovement;
@@ -89,7 +74,6 @@ We use SDL for now. Perhaps in the future we'll add support for other input mech
 Note that while keyboard input is buffered, mouse input is not.
 */
 class Input
-//: virtual public SigC::Object
 {
 public:
 	enum MouseButton
@@ -115,7 +99,7 @@ public:
 		IM_MOVEMENT
 	};
 	
-   Input(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer);
+   Input(float screenWidth, float screenHeight);
 
     ~Input();
 	
@@ -130,13 +114,13 @@ public:
 	@param the key event
 	@param true if ember is in gui mode
 	*/
- 	sigc::signal<void, const SDL_keysym&, InputMode> EventKeyPressed;
+ 	sigc::signal<void, const SDL_keysym&, Input::InputMode> EventKeyPressed;
 	
 	/**emitted when a key has been released in movement mode
 	@param the key event
 	@param true if ember is in gui mode
 	*/
- 	sigc::signal<void, const SDL_keysym&, InputMode> EventKeyReleased;
+ 	sigc::signal<void, const SDL_keysym&, Input::InputMode> EventKeyReleased;
 	
 	/**emitted when the mouse has moved
 	note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
@@ -152,14 +136,14 @@ public:
 		@param the mouse button
 		@param true if ember is in gui mode
 	*/
-	sigc::signal<void, const MouseButton&, InputMode> EventMouseButtonPressed;
+	sigc::signal<void, MouseButton, InputMode> EventMouseButtonPressed;
 	
 	/**
 		emitted when a mouse button is released
 		@param the mouse button
 		@param true if ember is in gui mode
 	*/
-	sigc::signal<void, const MouseButton&, InputMode> EventMouseButtonReleased;
+	sigc::signal<void, MouseButton, InputMode> EventMouseButtonReleased;
 	
 	/**
 		Emitted when the input mode has been changed.
@@ -176,12 +160,7 @@ public:
 
 	
 	
-	/**
-	 *    returns true if we're in gui mode
-	 * @return 
-	 */
-// 	const bool isInGUIMode() const { return mInGUIMode; }
-	
+
 	/**
 	 *    Sets the new input mode.
 	 * @param mode 
@@ -201,22 +180,23 @@ public:
 	 */
 	InputMode toggleInputMode();
 	
-	/**
-	 *    Sets whether or not to use the "locked" moevment mode, in which the input system always will be in movement mode, even though the right mouse button isn't pressed.
-	 * @param  
-	 */
-// 	void setIsInLockedMovementMode(bool value);
 	
 	/**
-	 *    Returns whether or not we're in the "locked" movement mode, in which the input system always will be in movement mode, even though the right mouse button isn't pressed.
-	 * @return 
+	 *    Adds an adaptor to which input event will be sent. Note that event will be sent to adapters added later first, allowing them to decide whether events should be sent to previous added adapters. This allows later added adapters to override current behaviour.
+	 * @param adaptor 
 	 */
-// 	bool getIsInLockedMovementMode();
+	void addAdapter(IInputAdapter* adapter);
 	
+	
+	/**
+	 *    Removed an adaptor from the list of adaptors.
+	 * @param adaptor 
+	 */
+	void removeAdapter(IInputAdapter* adapter);
+	
+
 	
 protected:
-	CEGUI::System *mGuiSystem;
-	CEGUI::OgreCEGUIRenderer *mGuiRenderer;
 	
 	/**
 	The current input mode.
@@ -235,11 +215,7 @@ protected:
 	void keyPressed(const SDL_KeyboardEvent &keyEvent);
 	void keyReleased(const SDL_KeyboardEvent &keyEvent);
 
-	/**
-	mapping of SDL-keys to CEGUI keys
-	*/
-	SDLKeyMap mKeyMap;
-	
+
 	/**
 	keys which should not be injected as chars, ie. enter, backspace etc.
 	*/
@@ -260,7 +236,6 @@ protected:
 	the last positions of the mouse 
 	*/
 	int mMouseY, mMouseX;
-// 	bool mInGUIMode;
 	
 	/**
 	the amount of time since the last right mouse click
@@ -268,15 +243,21 @@ protected:
 	*/
 	Ogre::Real mTimeSinceLastRightMouseClick;
 	
-	/**
-	if true, we're in "locked" movement mode, no matter if the right mouse button is pressed or not
-	*/
-// 	bool mInLockedMovementMode;
-	
+
 	/**
 	 *    gets the text in the clipboard and pastes it to the gui system
 	 */
 	void pasteFromClipboard();
+	
+	/**
+		A store of adapters to which input event will be sent.
+	*/
+	IInputAdapterStore mAdapters;
+	
+	/**
+		The dimensions of the window.
+	*/
+	float mScreenWidth, mScreenHeight;
 };
 
 };
