@@ -19,8 +19,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _DIME_SINGLETON_H__
-#define _DIME_SINGLETON_H__
+#ifndef _EMBER_SINGLETON_H__
+#define _EMBER_SINGLETON_H__
+
+#include <cassert>
 
 namespace Ember {
 

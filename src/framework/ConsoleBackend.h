@@ -67,7 +67,6 @@ namespace Ember {
  */
 
 class ConsoleBackend : public ConsoleObject
-,  virtual public SigC::Object
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -297,7 +296,7 @@ class ConsoleBackend : public ConsoleObject
      * This event is raised every time a message is pushed to the console.
      * If True is returned, the message won't be saved in myConsoleMessages 
      */ 
-    SigC::Signal1<bool, const std::string&> GotMessage;
+    sigc::signal<bool, const std::string&> GotMessage;
 
     //======================================================================
     // Protected Methods

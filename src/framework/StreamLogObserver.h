@@ -35,7 +35,7 @@ namespace Ember {
  * This log observer takes an arbitrary ostream at it's creation
  * and logs all messages sent to it to this stream.
  * 
- * LoggingService *logging = EmberServices::getInstance()->getLoggingService();
+ * LoggingService *logging = EmberServices::getSingletonPtr()->getLoggingService();
  * //Create log observer that prints everything to cerr
  * StreamLogObserver* obs = new StreamLogObserver(std::cerr);
  * obs->setFilter(LoggingService::VERBOSE);
