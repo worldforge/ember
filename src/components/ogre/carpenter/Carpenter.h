@@ -117,7 +117,6 @@ public:
 	typedef std::map<const std::string, AttachPair> AttachPairStore;
 	inline const std::string& getName() const { return mName; }
 	inline const WFMath::AxisBox<3>& getBoundingBox() const { return mBoundingBox; }
-	const AttachPair* getAttachPairForPoint(AttachPoint* point) const;
 	const AttachPair* getAttachPair(const std::string & name) const;
 	
 	bool addAttachPair(AttachPair* pair);
