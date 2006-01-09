@@ -21,12 +21,8 @@
 
 // Current project
 #include "services/logging/LoggingService.h"
-#if 0
-//#include "services/datamodel/DataModelService.h"
-#include "services/datamodel/IntProvider.h"
-#include "services/datamodel/DataObject.h"
-#include "services/datamodel/FloatProvider.h"
-#endif
+#include "services/config/ConfigService.h"
+#include "services/EmberServices.h"
 #include "framework/ConsoleBackend.h"
 
 // System headers
@@ -36,13 +32,9 @@
 #include <sstream>
 
 // Libraries we are using
-#include <sigc++/object.h>
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/handle_system.h>
-#include <sigc++/signal_system.h>
-#else
+
 #include <sigc++/signal.h>
-#endif
+
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 
@@ -61,14 +53,13 @@ namespace Ember
   const char * const MetaserverService::META_LIST = "meta_list";
 
   /* ctor */
-  MetaserverService::MetaserverService()
+  MetaserverService::MetaserverService() :mMetaserver(0)
   {
     setName("Metaserver Service");
     setDescription("Service for Metaserver session");
     // TODO(zzorn, 2002-01-19): Set the status of the service to OK.
     //        setStatus( Service::Status::OK );
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
-    msrv = NULL;
     ConsoleBackend::getMainConsole()->registerCommand(META_LIST,this);
     ConsoleBackend::getMainConsole()->registerCommand(META_REFRESH,this);
     ConsoleBackend::getMainConsole()->registerCommand(META_ABORT,this);
@@ -77,7 +68,7 @@ namespace Ember
   /* dtor */
   MetaserverService::~MetaserverService()
   {
-    delete msrv;
+    delete mMetaserver;
   }
 
   /* Method for starting this service 	*/
@@ -86,29 +77,29 @@ namespace Ember
     setStatus(Service::OK);
     setRunning( true );
 
-    std::string metaserver = "metaserver.worldforge.org";
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
-    msrv = new Eris::Meta(metaserver, 10);
-    msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
-    msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
-    msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
-    listed = false;
-
-#if 0
-    PDataObject root = DataObject::getRoot();
-    PDataObject servers = root->addChild("servers");        
-    servers->addChild("metaserver", 
-		      new StringProvider(metaserver, "Metaserver used to retrieve server infos."));	
-
-    // @todo: Add time stamp servers->addChild("Update",
-    // new TimeProvider(
-
-    PDataObject list = servers->addChild("list"); 
-    list->setDescription("List of all servers found.");
+	std::string metaserverHostname;
+	if (configSrv->itemExists("servers", "metaserver")) {
+		metaserverHostname = std::string(configSrv->getValue("servers", "metaserver"));
+	} else {
+		metaserverHostname = "metaserver.worldforge.org";
+	}
+	
+    mMetaserver = new Eris::Meta(metaserverHostname, 10);
+    mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
+    mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
+    mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));
+   
     
-    myStateDMP = new StringProvider("Listing servers.", "State of MetaserverService");
-    servers->addChild("state", myStateDMP);
-#endif
+//     std::string metaserver = "metaserver.worldforge.org";
+// 
+//     msrv = new Eris::Meta(metaserver, 10);
+//     msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
+//     msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
+//     msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
+//     listed = false;
+
 
     return Service::OK;
   }
@@ -118,69 +109,31 @@ namespace Ember
   {
     setStatus(Service::OK);
     setRunning( false );
-#if 0
-    PDataObject servers = DataObject::getRoot("/servers");
-    servers->remove(); //HINT: This also frees myStateDMP
-#endif
   }
 
     
   void MetaserverService::gotFailure(const string& msg)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Meta-server error: " << msg << ENDM;
-#if 0
-    myStateDMP->setValue("Failure: " + msg);
-#endif
+  	S_LOG_WARNING("Got Meta-server error: " << msg);
   }
     
   void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo)
   {
-#if 0
-    PDataObject list = DataObject::getRoot("/servers/list");
 
-    PDataObject entry = list->addChild();
-
-    entry->addChild("host", new StringProvider(sInfo.getHostname(), 
-			"Hostname or dotted-decimal IP of the server"));
-    entry->addChild("name", new StringProvider(sInfo.getServername(), 
-			"Human readable name of the server (set by the operator)"));
-    entry->addChild("ruleset", new StringProvider(sInfo.getRuleset(), 
-			"The game system this server is running (e.g. 'Acorn')"));
-    entry->addChild("server", new StringProvider(sInfo.getRuleset(), 
-			"Server program (e.g. 'Cyphesis' or 'Stage')"));
-    entry->addChild("clients", new IntProvider(sInfo.getNumClients(), 
-			"Number of clients connected to the server"));
-    entry->addChild("ping", new IntProvider(sInfo.getPing(),
-			"Estimated round-trip-time (ping) in milliseconds"));
-    entry->addChild("uptime", new FloatProvider(sInfo.getUptime(),
-			"Server uptime in seconds"));
-#endif
-
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got serverinfo:\n\r"
+    S_LOG_INFO("Got serverinfo:\n\r"
       << "Hostname: " <<sInfo.getHostname()
       << "\n\rServerName: "<<sInfo.getServername()
       << "\n\rRuleset: "<<sInfo.getRuleset()
       << "\n\rServer Type: "<<sInfo.getServer()
       << "\n\rClients: "<<sInfo.getNumClients()
       << " Ping: "<< sInfo.getPing()
-      << " Uptime: "<< (int)sInfo.getUptime()
-      << ENDM;
-
-    return;
+      << " Uptime: "<< (int)sInfo.getUptime());
   }
 
   void MetaserverService::completedServerList(int count)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Server List completed." << ENDM;
-    listed = true;
-
-#if 0
-    myStateDMP->setValue("Server list completed.");
-#endif
-
-    // waiting for James to implement this
+    S_LOG_INFO("Server List completed.");
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << count << ENDM;
-    //Eris::Serverlist whatever;
 	
     stringstream out;
     out << "Listing hostnames..." << endl;
@@ -188,29 +141,31 @@ namespace Ember
     for(int i = 0; i < count; i++)
       {	
 	//HINT: Always use .c_str() for compatibility to MSVC
-	Eris::ServerInfo inf = msrv->getInfoForServer(i);
+	Eris::ServerInfo inf = mMetaserver->getInfoForServer(i);
 	
 
 	out << "Hostname: " << inf.getHostname().c_str() << endl;
       }
 
-#if 0 // not new sstream
-    out << ends;
-#endif
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << out.str() << ENDM;
+    S_LOG_INFO( out.str());
 
-    return;
   }
+
+Eris::Meta& MetaserverService::getMetaServer() const
+{
+	return *mMetaserver;
+}
+
 
   void MetaserverService::runCommand(const std::string &command, const std::string &args)
   {
-    if (!msrv) return;
+    if (!mMetaserver) return;
     if (command == META_LIST){
     } else if (command == META_ABORT) {
-      msrv->cancel();
+      mMetaserver->cancel();
     } else if (command == META_REFRESH) {
-      msrv->refresh();
+      mMetaserver->refresh();
     }
 
     return;

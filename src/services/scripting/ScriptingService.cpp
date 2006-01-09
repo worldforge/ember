@@ -22,15 +22,16 @@
 //
 #include "ScriptingService.h"
 
-// include Lua libs and tolua++
-extern "C" {
-#include <lualib.h>
-#include <lauxlib.h>
-}
 
-#include <tolua++.h>
+#include "services/logging/LoggingService.h"
+#include "framework/IScriptingProvider.h"
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
+#include "framework/Exception.h"
 
 namespace Ember {
+     
+const std::string  ScriptingService::LOADSCRIPT("loadscript");
 
 ScriptingService::ScriptingService()
 {
@@ -43,6 +44,105 @@ ScriptingService::~ScriptingService()
 
 Service::Status ScriptingService::start()
 {
+    ConsoleBackend::getMainConsole()->registerCommand(LOADSCRIPT,this);
+}
+
+void ScriptingService::loadScript(const std::string& script)
+{
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	{
+		//check if the provider will load the script
+		if (I->second->willLoadScript(script)) {
+			S_LOG_INFO("Loading script: " + script);
+			try {
+				I->second->loadScript(script);
+			} catch (const Ember::Exception& ex) {
+				S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.getError());
+				scriptError(ex.getError());
+			} catch (...) {
+				S_LOG_WARNING("Got unknown script error when loading the script " << script);
+				scriptError("Unknown error loading script " + script );
+			}
+			return;
+		}
+	}
+	S_LOG_FAILURE("Could not find a scripting provider which will load the script " << script << ".");
+}
+
+void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType)
+{
+	ProviderStore::iterator I = mProviders.find(scriptType);
+	if (I == mProviders.end()) {
+		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
+	} else {
+		try {
+			I->second->executeScript(scriptCode);
+		} catch (const Ember::Exception& ex) {
+			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
+			scriptError(ex.getError());
+		} catch (...) {
+			S_LOG_WARNING("Got unknown script error when executing the script " << scriptCode);
+			scriptError("Unknown error executing script.");
+		}
+	}
+}
+
+
+sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError() 
+{
+	return mEventScriptError;
+}
+
+void ScriptingService::registerScriptingProvider(IScriptingProvider* provider)
+{
+	if (mProviders.find(provider->getName()) != mProviders.end()) {
+		S_LOG_FAILURE("Could not add alreay existing scripting provider with name " + provider->getName());
+	} else {
+		mProviders[provider->getName()] = provider;
+		provider->_registerWithService(this);
+		S_LOG_INFO("Registered scripting provider " << provider->getName());
+	}
+}
+
+void ScriptingService::scriptError(const std::string& error)
+{
+	//S_LOG_WARNING(error);
+	mEventScriptError.emit(error);
+}
+
+IScriptingProvider* ScriptingService::getProviderFor(const std::string &providerName)
+{
+	ProviderStore::iterator I = mProviders.find(providerName);
+	if (I != mProviders.end())
+	{
+		return I->second;
+	}
+	return 0;
+}
+
+void ScriptingService::runCommand(const std::string &command, const std::string &args)
+{
+    if (command == LOADSCRIPT){
+ 		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string script = tokeniser.nextToken();
+		if (script != "") {
+			loadScript(script);
+		}
+    }
+
+    return;
+}
+
+std::vector<std::string> ScriptingService::getProviderNames()
+{
+	std::vector<std::string> names;
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	{
+		names.push_back(I->second->getName());
+	}
+	return names;
+	
 }
 
 }

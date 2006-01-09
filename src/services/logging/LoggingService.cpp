@@ -231,7 +231,7 @@ Ember::LoggingService::LoggingService () : Service()
 
     //Hook up to Eris's logging Service
     Eris::Logged.
-        connect (SigC::slot (*this, &LoggingService::erisLogReceiver));
+        connect (sigc::mem_fun (*this, &LoggingService::erisLogReceiver));
 }
 
 void Ember::LoggingService::erisLogReceiver (Eris::LogLevel level,

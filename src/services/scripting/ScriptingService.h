@@ -26,19 +26,98 @@
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
 
+#include <sigc++/signal.h>
+#include <map>
+#include <vector>
+
 namespace Ember {
 
 /**
 @author Erik Hjortsberg
+
+This service provides scripting support.
+In order to use it, an instance implementing IScriptingProvider must be created and registered with the service.
+Scripts are then loaded through call to the method loadScript(...). Scripts can also be loaded through the console command /loadscript <path>
 */
 class ScriptingService : public Service, public ConsoleObject
 {
+friend class IScriptingProvider;
 public:
+    
+    /**
+    Console command for loading scripts.
+    */
+     static const std::string LOADSCRIPT;
+    
     ScriptingService();
 
     ~ScriptingService();
 
 	virtual Service::Status start();
+	
+	
+	/**
+	 *    Registers a new scripting provider.
+	 * @param provider 
+	 */
+	void registerScriptingProvider(IScriptingProvider* provider);
+	
+	/**
+	 *    Loads a new script, if there is an registered scripting provider which will be able to load it.
+	 * @param script 
+	 */
+	void loadScript(const std::string& script);
+	
+	/**
+	 *    Executes the supplied code directly into the provider with the supplied name.
+	 * @param scriptCode 
+	 * @param scriptType 
+	 */
+	void executeCode(const std::string& scriptCode, const std::string& scriptType);
+	
+	/**
+	 *    The EventScriptError signal will be emitted when there is an error in a script.
+	 * @return 
+	 */
+	sigc::signal<void, const std::string&>& getEventScriptError();
+	
+	/**
+	 *    Implement ConsoleObject method.
+	 * @param command 
+	 * @param args 
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
+	
+	/**
+	 *    Returns the provider with the specified name, or 0 if no can be found.
+	 * @param providerName 
+	 * @return 
+	 */
+	IScriptingProvider* getProviderFor(const std::string &providerName);
+	
+	/**
+	 *    Returns a list of the names of all registered scripting providers.
+	 * @return 
+	 */
+	std::vector<std::string> getProviderNames();
+	
+	
+private:
+
+	/**
+	 *    Call this method when there's an error in a script. This will emit the mEventScriptError signal.
+	 * @param error 
+	 */
+	void scriptError(const std::string& error);
+	
+	typedef std::map<std::string, IScriptingProvider*> ProviderStore;
+	
+	/**
+	A map of all scripting providers.
+	*/
+	ProviderStore mProviders;
+	
+	sigc::signal<void, const std::string&> mEventScriptError;
 
 };
 

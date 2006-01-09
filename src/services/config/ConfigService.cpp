@@ -95,8 +95,8 @@ namespace Ember
 
     Service::Status ConfigService::start()
     {
-		configError_connection = varconf::Config::inst()->sige.connect(SigC::slot(*this, &ConfigService::configError));
-		updatedConfig_connection = varconf::Config::inst()->sigv.connect(SigC::slot(*this, &ConfigService::updatedConfig));
+		varconf::Config::inst()->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+		varconf::Config::inst()->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
 		registerConsoleCommands();
 		setRunning(true);
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
@@ -105,8 +105,6 @@ namespace Ember
 
     void ConfigService::stop(int code)
     {
-    	updatedConfig_connection.disconnect();
-    	configError_connection.disconnect();
 		deregisterConsoleCommands();
 		setRunning(false);
 		return;

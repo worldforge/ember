@@ -19,6 +19,7 @@
 #ifndef DIME_SERVICES_H
 #define DIME_SERVICES_H
 
+#include "framework/Singleton.h"
 
 
 namespace Ember {
@@ -32,6 +33,7 @@ namespace Ember {
   class ServerService;
   class SoundService;
   class TestService;
+  class ScriptingService;
 
 /**
  * This is a singleton class that is used to access instances of all the
@@ -52,8 +54,7 @@ namespace Ember {
  *
  * @author Hans Häggström
  */
-class EmberServices
-
+class EmberServices : public Ember::Singleton<EmberServices>
 {
     //======================================================================
     // Inner Classes
@@ -101,7 +102,7 @@ class EmberServices
     /**
      * The instance of the MetaserverService
      */
-//     Ember::MetaserverService *myMetaserverService;
+     Ember::MetaserverService *myMetaserverService;
 
     /**
      * The instance of the ServerService
@@ -112,17 +113,16 @@ class EmberServices
      * The instance of the SoundService
      */
     Ember::SoundService *mySoundService;
+    
+    Ember::ScriptingService * myScriptingService;
 
-    /**
-     * The EmberServices singleton instance.
-     */
-    static EmberServices *theInstance;
 
     //======================================================================
     // Public Methods
     //======================================================================
     public:
 
+    EmberServices();
 
     //----------------------------------------------------------------------
     // Destructor
@@ -133,15 +133,6 @@ class EmberServices
     virtual ~EmberServices();
     
 
-
-    //----------------------------------------------------------------------
-    // Singleton
-
-    /**
-     * Returns the EmberServices instance.
-     */
-    static EmberServices *getInstance();
-    
 
 
     //----------------------------------------------------------------------
@@ -176,7 +167,7 @@ class EmberServices
     /**
      * Returns an instance of the MetaserverService
      */
-//     Ember::MetaserverService *getMetaserverService();
+     Ember::MetaserverService *getMetaserverService();
 
     /**
      * Returns an instance of the ServerService
@@ -187,6 +178,8 @@ class EmberServices
      * Returns an instance of the SoundService
      */
     Ember::SoundService *getSoundService();
+    
+    Ember::ScriptingService *getScriptingService();
 
     //----------------------------------------------------------------------
     // Setters
@@ -212,10 +205,6 @@ class EmberServices
     //======================================================================
     private:
 
-    /**
-     * The constructor is private, and only used to create the singleton instance.
-     */
-    EmberServices();
 
 
     /**

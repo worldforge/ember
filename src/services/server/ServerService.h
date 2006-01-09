@@ -50,8 +50,7 @@ namespace Ember {
  * @see Ember::MetaserverService
  * @see Ember::ConsoleObject
  */
-class ServerService : public Service, public ConsoleObject,
-  virtual public SigC::Object
+class ServerService : public Service, public ConsoleObject, public sigc::trackable
 {
     //======================================================================
     // Private Variables
@@ -154,19 +153,20 @@ class ServerService : public Service, public ConsoleObject,
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
 	void place(Eris::Entity* entity, Eris::Entity* target);
 	void wield(Eris::Entity* entity);
+	void take(Eris::Entity* entity);
 	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
 	//void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
 	// Signals
-	SigC::Signal1<void, Eris::Avatar*> GotAvatar;
-	SigC::Signal1<void, Eris::View*> GotView;
-	SigC::Signal1<void, Eris::Connection*> GotConnection;
-	SigC::Signal1<void, Eris::Account*> GotAccount;
-	SigC::Signal1<void, Eris::Account *> LoginSuccess;
-	SigC::Signal1<void, Eris::Account *> LoginFailure;
-	SigC::Signal1<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
-	SigC::Signal1<void, Eris::Account *> GotAllCharacters;
+	sigc::signal<void, Eris::Avatar*> GotAvatar;
+	sigc::signal<void, Eris::View*> GotView;
+	sigc::signal<void, Eris::Connection*> GotConnection;
+	sigc::signal<void, Eris::Account*> GotAccount;
+	sigc::signal<void, Eris::Account *> LoginSuccess;
+	sigc::signal<void, Eris::Account *> LoginFailure;
+	sigc::signal<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
+	sigc::signal<void, Eris::Account *> GotAllCharacters;
 
 
     //----------------------------------------------------------------------

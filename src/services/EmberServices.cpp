@@ -26,34 +26,28 @@
 //#include "input/InputService.h"
 //#include "gui/GuiService.h"
 #include "sound/SoundService.h"
-//#include "metaserver/MetaserverService.h"
+#include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
+#include "scripting/ScriptingService.h"
 
 
 #include "EmberServices.h"
 
 namespace Ember{
 
-EmberServices* EmberServices::theInstance = NULL;
+template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = 0;
+
 
   EmberServices::~EmberServices()
   {
     // TODO: Free any allocated resources here.
     delete myConfigService;
     //delete myGuiService;
-//     delete myMetaserverService;
+     delete myMetaserverService;
     delete myServerService;
+    delete myScriptingService;
   }
 
-  EmberServices* EmberServices::getInstance()
-  {
-    if( !theInstance )
-      {
-	theInstance = new EmberServices();
-      }
-    
-    return theInstance;
-  }
 
   TestService* EmberServices::getTestService()
   {
@@ -91,12 +85,12 @@ EmberServices* EmberServices::theInstance = NULL;
     return myGuiService;
   }
 */
-// /*  MetaserverService* EmberServices::getMetaserverService()
-//   {
-//     if (myMetaserverService == NULL)
-//       myMetaserverService = new Ember::MetaserverService();
-//     return myMetaserverService;
-//   }*/
+  MetaserverService* EmberServices::getMetaserverService()
+  {
+    if (myMetaserverService == NULL)
+      myMetaserverService = new Ember::MetaserverService();
+    return myMetaserverService;
+  }
   
   ServerService* EmberServices::getServerService()
   {
@@ -113,13 +107,21 @@ EmberServices* EmberServices::theInstance = NULL;
 //     return mySoundService;
 //   }
 
+  ScriptingService* EmberServices::getScriptingService()
+  {
+    if (myScriptingService == NULL)
+      myScriptingService = new Ember::ScriptingService();
+    return myScriptingService;
+  }
+
   EmberServices::EmberServices()
   {
     myConfigService = NULL;
     //myGuiService = NULL;
-//     myMetaserverService = NULL;
+     myMetaserverService = NULL;
     myServerService = NULL;
     mySoundService = NULL;
+    myScriptingService = NULL;
   }
 
 }

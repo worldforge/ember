@@ -122,11 +122,11 @@ namespace Ember
 		myConn = new Eris::Connection("ember",myHost, port, false);
 		
 		// Bind signals
-		myConn->Failure.connect(SigC::slot(*this, &ServerService::gotFailure));
-		myConn->Connected.connect(SigC::slot(*this, &ServerService::connected));
-		myConn->Disconnected.connect(SigC::slot(*this, &ServerService::disconnected));
-		myConn->Disconnecting.connect(SigC::slot(*this, &ServerService::disconnecting));
-		myConn->StatusChanged.connect(SigC::slot(*this, &ServerService::statusChanged));
+		myConn->Failure.connect(sigc::mem_fun(*this, &ServerService::gotFailure));
+		myConn->Connected.connect(sigc::mem_fun(*this, &ServerService::connected));
+		myConn->Disconnected.connect(sigc::mem_fun(*this, &ServerService::disconnected));
+		myConn->Disconnecting.connect(sigc::mem_fun(*this, &ServerService::disconnecting));
+		myConn->StatusChanged.connect(sigc::mem_fun(*this, &ServerService::statusChanged));
 		//myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
       // If the connection fails here an errnumber is returned
       int errorno = myConn->connect();
@@ -209,12 +209,12 @@ namespace Ember
 
     // Set up the player object
     myAccount=new Eris::Account(myConn);
-    myAccount->GotCharacterInfo.connect(SigC::slot(*this,&ServerService::gotCharacterInfo));
-    myAccount->GotAllCharacters.connect(SigC::slot(*this,&ServerService::gotAllCharacters));
-    myAccount->LoginFailure.connect(SigC::slot(*this,&ServerService::loginFailure));
-    myAccount->LoginSuccess.connect(SigC::slot(*this,&ServerService::loginSuccess));
-    myAccount->LogoutComplete.connect(SigC::slot(*this,&ServerService::logoutComplete));
-	myAccount->AvatarSuccess.connect(SigC::slot(*this,&ServerService::gotAvatarSuccess));
+    myAccount->GotCharacterInfo.connect(sigc::mem_fun(*this,&ServerService::gotCharacterInfo));
+    myAccount->GotAllCharacters.connect(sigc::mem_fun(*this,&ServerService::gotAllCharacters));
+    myAccount->LoginFailure.connect(sigc::mem_fun(*this,&ServerService::loginFailure));
+    myAccount->LoginSuccess.connect(sigc::mem_fun(*this,&ServerService::loginSuccess));
+    myAccount->LogoutComplete.connect(sigc::mem_fun(*this,&ServerService::logoutComplete));
+	myAccount->AvatarSuccess.connect(sigc::mem_fun(*this,&ServerService::gotAvatarSuccess));
 	
 	GotAccount.emit(myAccount);
     // Init OOGChat controller
@@ -589,7 +589,30 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  			return;
  		}
    	}   		
-   	
+ 	
+ 	
+   	void ServerService::take(Eris::Entity* entity) 
+   	{
+ 		if(!myAvatar || !myAvatar->getEntity()) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->take(entity);
+ 		}
+ 		catch (Eris::BaseException except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on touching: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (std::runtime_error except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on touching: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   		
+  	
 	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
    	{
  		if(!myAvatar || !myAvatar->getEntity()) {

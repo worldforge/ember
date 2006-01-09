@@ -140,7 +140,7 @@ namespace Ember
 
 		TestPlatform();  // a test to determine the current platform (win, unix, ...)
 		
-		soundsDirPath = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() 
+		soundsDirPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberDataDirectory() 
 			+ "media/sounds/";
 		S_LOG_INFO( "Sound Media Path: [" << soundsDirPath << "]" )
 

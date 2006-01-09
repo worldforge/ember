@@ -28,8 +28,8 @@
 // ------------------------------
 // Include sigc header files
 // ------------------------------
-#include <sigc++/object.h>
-#include <sigc++/connection.h>
+//#include <sigc++/object.h>
+//#include <sigc++/connection.h>
 
 
 namespace Ember {
@@ -43,7 +43,7 @@ namespace Ember {
      * @see Ember::Service
      * @see varconf
      */
-class ConfigService: public Service, public Ember::ConsoleObject, virtual public SigC::Object
+class ConfigService: public Service, public Ember::ConsoleObject, public sigc::trackable
 {
     private:
     //----------------------------------------------------------------------
@@ -65,10 +65,8 @@ class ConfigService: public Service, public Ember::ConsoleObject, virtual public
      * @param  the key of the item
      */
     void updatedConfig(const std::string& section, const std::string& key);
-	sigc::connection updatedConfig_connection;
 	
     void configError(const char* error);
-	sigc::connection configError_connection;
 	
 
     protected:
@@ -212,7 +210,7 @@ class ConfigService: public Service, public Ember::ConsoleObject, virtual public
 	*	@param the section of the config item
 	*	@param the key of the config item
 	*/
-	SigC::Signal2<void, const std::string&, const std::string&> EventChangedConfigItem;
+	sigc::signal<void, const std::string&, const std::string&> EventChangedConfigItem;
 	
 
 }; //ConfigService

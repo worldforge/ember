@@ -118,7 +118,7 @@ namespace Ember
  * @author Tim Enderling
  */
 
-    class LoggingService:public Service, virtual public SigC::Object
+    class LoggingService:public Service, public sigc::trackable
     {
         //======================================================================
         // Public Constants and enums

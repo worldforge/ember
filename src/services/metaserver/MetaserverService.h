@@ -40,21 +40,21 @@ namespace Ember {
  * @see Ember::ServerService
  * @see Ember::ConsoleObject
  */
-class MetaserverService: public Service,
-  public ConsoleObject, virtual public SigC::Object
+class MetaserverService: public Service, public sigc::trackable,
+  public ConsoleObject
 {
     //======================================================================
     // Private Variables
     //======================================================================
     private:
 
-    Eris::Meta * msrv;
-    Eris::ServerList serverlist;
-    bool listed;
-    //StringProvider * myStateDMP;
-    static const char * const META_REFRESH;
-    static const char * const META_ABORT;
-    static const char * const META_LIST;
+    Eris::Meta* mMetaserver;
+//     Eris::ServerList serverlist;
+//     bool listed;
+//     //StringProvider * myStateDMP;
+     static const char * const META_REFRESH;
+     static const char * const META_ABORT;
+     static const char * const META_LIST;
 
 
 		
@@ -73,12 +73,15 @@ class MetaserverService: public Service,
     //----------------------------------------------------------------------
     // Getters & Setters
 
+    Eris::Meta& getMetaServer() const;
+    
     //----------------------------------------------------------------------
     // Methods
 	
     Service::Status start();
 
     void stop(int code) ;
+    
 	
 	
     void gotFailure(const std::string& msg);
