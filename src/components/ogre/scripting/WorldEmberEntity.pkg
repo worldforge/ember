@@ -1,4 +1,0 @@
-
-class WorldEmberEntity : public EmberEntity {
-
-};

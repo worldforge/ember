@@ -1,6 +1,0 @@
-class EmberEntityFactory : public Eris::Factory
-{
-
-	WorldEmberEntity* getWorld() const;
-
-};
