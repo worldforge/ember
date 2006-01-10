@@ -42,12 +42,21 @@ struct EntityPickResult
 	Ogre::Real distance;
 };
 
+/**
+Mouse picking info from the windowing system.
+*/
 struct MousePickerArgs
 {
+	/**
+	The x and y coords in local window space.
+	*/
 	float windowX, windowY;
 };
 
 /**
+Class used for picking stuff in the world.
+Since we sometimes want different picking behaviour (sometimes we want to pick building blocks, sometimes we want to pick entities) it's possible to create derived classes and register them with the GUIManager.
+
 @author Erik Hjortsberg
 */
 class MousePicker 
@@ -57,6 +66,12 @@ public:
 
     ~MousePicker();
 
+	/**
+	 *    Try to pick something at the specified coordinates
+	 * @param x 
+	 * @param y 
+	 * @param args 
+	 */
 	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
 
 

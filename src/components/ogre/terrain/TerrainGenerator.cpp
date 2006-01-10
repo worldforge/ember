@@ -70,7 +70,7 @@ TerrainGenerator::TerrainGenerator()
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
 
   
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	
 	
@@ -118,7 +118,7 @@ const Mercator::Terrain& TerrainGenerator::getTerrain() const
 
 void TerrainGenerator::loadTerrainOptions()
 {
- 	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+ 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 	
 	//Ogre::ConfigFile cf;
  //   cf.load("terrain.cfg");
@@ -192,7 +192,7 @@ void TerrainGenerator::addArea(Mercator::Area* area)
 	mTerrain->addArea(area);
 	if (!mAreaShaders.count(area->getLayer())) {
 		TerrainShader* shader;
-		const ModelDefinition::AreaDefinition* areaDef = ModelDefinitionManager::getSingleton().getAreaDefinition(area->getLayer());
+		const Model::ModelDefinition::AreaDefinition* areaDef = Model::ModelDefinitionManager::getSingleton().getAreaDefinition(area->getLayer());
 		if (areaDef) {
 			if (areaDef->MaterialName != "") {
 				Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(areaDef->MaterialName));
@@ -471,8 +471,8 @@ void TerrainGenerator::ConfigService_EventChangedConfigItem(const std::string& s
 
 bool TerrainGenerator::isFoliageShown() const
 {
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
-		return static_cast<bool>(Ember::EmberServices::getInstance()->getConfigService()->getValue("graphics", "foliage"));
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
+		return static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "foliage"));
 	}	
 	return false;
 }

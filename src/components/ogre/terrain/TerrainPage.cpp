@@ -196,7 +196,7 @@ Ogre::MaterialPtr TerrainPage::getMaterial() const
 
 unsigned int TerrainPage::getAlphaMapScale() const
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	if (configSrv->itemExists("terrain", "alphamapscale")) {
 		int value = (int)configSrv->getValue("terrain", "alphamapscale");
 		//make sure it can't go below 1
@@ -501,7 +501,7 @@ void EmberOgre::TerrainPage::prepareFoliage()
 				//first check if this is a good spot for grass (the more "green", the greater chance of grass
 				//then check with grassChanceThreshold if we should do grass
 				unsigned char cover = (*surface)(x, y, 0);
-				unsigned char coverChance = (unsigned char) Ogre::Math::RangeRandom(0, 255);
+				unsigned char coverChance = static_cast<unsigned char>( Ogre::Math::RangeRandom(0, 255));
 				if (cover > coverChance) {
 					Ogre::Real grassChance = Ogre::Math::UnitRandom();
 					if (grassChanceThreshold > grassChance) {
@@ -509,12 +509,11 @@ void EmberOgre::TerrainPage::prepareFoliage()
 						Ogre::Real x_offset = Ogre::Math::RangeRandom(-1, 1);
 						Ogre::Real y_offset = Ogre::Math::RangeRandom(-1, 1);
 						TerrainPosition position(worldUnitsStartOfPage.x() + (I->pos.x() * 64) + x + x_offset, worldUnitsStartOfPage.y() + (I->pos.y() * 64) + y + y_offset);
+						const Ogre::Vector3 scale(1, Ogre::Math::RangeRandom(0.5, 0.8), 1);
 						if (Ogre::Math::UnitRandom() > 0.95) {
-							const Ogre::Vector3 scale(1, Ogre::Math::RangeRandom(0.5, 0.8), 1);
-
 							mFoliageArea->placeGrass("heartblood", position, scale);
 						} else {
-							mFoliageArea->placeGrass("bittergrass", position);
+							mFoliageArea->placeGrass("bittergrass", position, scale);
 						}
 					}
 				}

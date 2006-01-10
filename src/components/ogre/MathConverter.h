@@ -11,7 +11,18 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.16  2005-09-07 15:39:42  erik
+ *      Revision 1.17  2006-01-10 01:17:08  erik
+ *      2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/MathConverter.h: make most methods accept const references instead of just doing a copy, should bring some speed up
+ *      	* src/components/ogre/MotionManager.h: cosmetic code changes
+ *      	* src/components/ogre/MousePicker.h: added more code comments
+ *      	* src/components/ogre/TerrainGenerator.h: use getSingletonPtr instead of the deprecated getInstance
+ *      	* src/components/ogre/TerrainPage.cpp:
+ *      		* use getSingletonPtr instead of the deprecated getInstance
+ *      		* randomize the size of the grass tufts a bit
+ *
+ *      Revision 1.16  2005/09/07 15:39:42  erik
  *      2005-09-07  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/MotionManager.cpp: MSVC wants to know exact what namespace to look in
@@ -282,7 +293,7 @@ typedef WFMath::Point<2> TerrainPosition;
 /*inline Ogre::Vector3 Atlas2Ogre(TerrainPosition& p) {
 	return Ogre::Vector3(p.x(),0,-p.y());
 }*/
-inline Ogre::Vector3 Atlas2Ogre(TerrainPosition p) {
+inline Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p) {
 	return Ogre::Vector3(p.x(),0,-p.y());
 }
 
@@ -293,19 +304,19 @@ inline Ogre::Vector3 Atlas2Ogre(TerrainPosition p) {
 /*inline WFMath::Vector<3> Ogre2Atlas_Vector3(Ogre::Vector3& p) {
 	return WFMath::Vector<3>(p.x,-p.z,p.y);
 }*/
-inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3 p) {
+inline WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p) {
 	return WFMath::Point<3>(p.x,-p.z,p.y);
 }
 
-inline TerrainPosition Ogre2Atlas(Ogre::Vector2 p) {
+inline TerrainPosition Ogre2Atlas(const Ogre::Vector2& p) {
 	return TerrainPosition(p.x,-p.y);
 }
 
-inline TerrainPosition Ogre2Atlas_TerrainPosition(Ogre::Vector3 p) {
+inline TerrainPosition Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p) {
 	return TerrainPosition(p.x,-p.z);
 }
 
-inline WFMath::Vector<3> Ogre2Atlas_Vector3(Ogre::Vector3 p) {
+inline WFMath::Vector<3> Ogre2Atlas_Vector3(const Ogre::Vector3& p) {
 	return WFMath::Vector<3>(p.x,-p.z,p.y);
 }
 
@@ -313,7 +324,7 @@ inline WFMath::Vector<3> Ogre2Atlas_Vector3(Ogre::Vector3 p) {
 // 	return Ogre::Vector3(p.x(),p.z(),-p.y());
 // }
 
-inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3> p){
+inline Ogre::Vector3 Atlas2Ogre(const WFMath::Point<3>& p){
 	return Ogre::Vector3(p.x(),p.z(),-p.y());
 }
 
@@ -321,7 +332,7 @@ inline Ogre::Vector3 Atlas2Ogre(WFMath::Point<3> p){
 // 	return Ogre::Vector3(v.x(),v.z(),-v.y());
 // }
 
-inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3> v){
+inline Ogre::Vector3 Atlas2Ogre(const WFMath::Vector<3>& v){
 	return Ogre::Vector3(v.x(),v.z(),-v.y());
 }
 
@@ -332,7 +343,7 @@ inline Ogre::Vector3 Atlas2Ogre(WFMath::Vector<3> v){
 // 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 // }
 
-inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
+inline Ogre::Quaternion Atlas2Ogre(const WFMath::Quaternion& aq){
 	if (!aq.isValid()) {
 		return Ogre::Quaternion::IDENTITY;
 	}
@@ -343,17 +354,11 @@ inline Ogre::Quaternion Atlas2Ogre(WFMath::Quaternion aq){
 // inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion& aq){
 // 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
 // }
-inline WFMath::Quaternion Ogre2Atlas(Ogre::Quaternion aq){
+inline WFMath::Quaternion Ogre2Atlas(const Ogre::Quaternion& aq){
 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
 }
 
 
-//these methods are obsolete
-// #define OGRE2WF(x) x 
-// #define WF2OGRE(x) x
-// #define OGRE2WF_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
-// #define WF2OGRE_VECTOR3(x,y,z) (Ogre::Vector3(x, y, z))
-// #define OGRESCALER Ogre::Vector3(1,1,1)
 
 }
 
