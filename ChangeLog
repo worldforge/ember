@@ -1,3 +1,7 @@
+2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ServerBrowser.lua|ServerBrowser.layout: fixed the method recieving ServerInfo objects
+
 2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/scripting/LuaScriptingProvider.h: with CEGUI 0.4.0 LuaScriptingModule.h has been changed to CEGUILua.h

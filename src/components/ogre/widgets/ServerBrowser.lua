@@ -101,7 +101,7 @@ function ServerBrowser_ServerList_DoubleClick(args)
 	ServerBrowser_connectWithColumnList()
 end
 
-function ServerBrowser_receivedServerInfo(sInfo)
+function ServerBrowser_MetaServer_ReceivedServerInfo(sInfo)
 	--we got some server info, add it to the server list
 
 	--mGuiManager->setDebugText("Got server info.");
@@ -109,19 +109,38 @@ function ServerBrowser_receivedServerInfo(sInfo)
 	local rowNumber = ServerBrowser.serverList:getRowCount()
 	ServerBrowser.serverList:addRow()
 	
-	local item = CEGUI.ColoredListItem:new_local(sInfo:getServername())
+	local item = EmberOgre.ColoredListItem:new_local(sInfo:getServername())
 --	item->setUserData(&sInfo);
 	
 	
+	item = tolua.cast(item, "CEGUI::ListboxItem")
 	ServerBrowser.serverList:setItem(item, 0, rowNumber)
-	local ss_ping = sInfo.getPing()
+	local ss_ping = sInfo:getPing()
 	local ss_clientNum = sInfo:getNumClients()
-	ServerBrowser.serverList:setItem(CEGUI.ColoredListItem(ss_ping, 1, rowNumber))
-	ServerBrowser.serverList:setItem(CEGUI.ColoredListItem(ss_clientNum, 2 ,rowNumber))
-	ServerBrowser.serverList:setItem(CEGUI.ColoredListItem(sInfo.getRuleset(), 3, rowNumber))
-	ServerBrowser.serverList:setItem(CEGUI.ColoredListItem(sInfo.getServer(), 4, rowNumber))
-	ServerBrowser.serverList:setItem(CEGUI.ColoredListItem(sInfo.getVersion(), 5, rowNumber))
-	ServerBrowser.serverList:setItem(CEGUI.ColoredListItem(sInfo.getHostname(), 6, rowNumber))
+	
+	item = EmberOgre.ColoredListItem:new_local(ss_ping)
+	item = tolua.cast(item, "CEGUI::ListboxItem")
+	ServerBrowser.serverList:setItem(item, 1, rowNumber)
+	
+	item = EmberOgre.ColoredListItem:new_local(ss_clientNum)
+	item = tolua.cast(item, "CEGUI::ListboxItem")
+	ServerBrowser.serverList:setItem(item, 2 ,rowNumber)
+	
+	item = EmberOgre.ColoredListItem:new_local(sInfo:getRuleset())
+	item = tolua.cast(item, "CEGUI::ListboxItem")
+	ServerBrowser.serverList:setItem(item, 3, rowNumber)
+	
+	item = EmberOgre.ColoredListItem:new_local(sInfo:getServer())
+	item = tolua.cast(item, "CEGUI::ListboxItem")
+	ServerBrowser.serverList:setItem(item, 4, rowNumber)
+	
+	item = EmberOgre.ColoredListItem:new_local(sInfo:getVersion())
+	item = tolua.cast(item, "CEGUI::ListboxItem")
+	ServerBrowser.serverList:setItem(item, 5, rowNumber)
+	
+	item = EmberOgre.ColoredListItem:new_local(sInfo:getHostname())
+	item = tolua.cast(item, "CEGUI::ListboxItem")
+	ServerBrowser.serverList:setItem(item, 6, rowNumber)
 	
 	
 	
