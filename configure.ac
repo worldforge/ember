@@ -1,13 +1,13 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.3.4, clients@worldforge.org)
+AC_INIT(Ember, 0.3.5, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
 # Detect the canonical host and target build environment.
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news])
-#AM_INIT_AUTOMAKE([dist-bzip2 check-news tar-pax])
+#AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 check-news])
+AM_INIT_AUTOMAKE([nostdinc dist-bzip2])
 AM_CONFIG_HEADER(src/config.h)
 
 AC_LIBTOOL_DLOPEN
@@ -257,16 +257,17 @@ AC_ARG_ENABLE(use_lua,
   [  --enable-lua	enable lua scripting [default=no]],
   [
     if test "$enableval" = "yes"; then
-      use_lua="true"
+      lua_use="true"
       LDFLAGS="$LDFLAGS -lCEGUILuaScriptModule -lCEGUIluatoluapp"
     else
-      use_lua="false"
+      lua_use="false"
     fi
   ],[
-    use_lua="false"
+    lua_use="false"
   ]
 )
-AM_CONDITIONAL(USE_LUA, test x"$use_lua" = xtrue)
+AM_CONDITIONAL(USE_LUA, test x"$lua_use" = xtrue)
+LDFLAGS="$LDFLAGS -lCEGUILuaScriptModule -lCEGUIluatoluapp"
 
 
 
@@ -397,12 +398,17 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 src/components/Makefile
 		 src/framework/Makefile
+		 src/framework/bindings/Makefile
+		 src/framework/bindings/lua/Makefile
+		 src/framework/bindings/lua/eris/Makefile
 		 src/services/Makefile
 		 src/services/config/Makefile
 		 src/services/logging/Makefile
 		 src/services/metaserver/Makefile
 		 src/services/server/Makefile
 		 src/services/scripting/Makefile
+		 src/services/bindings/Makefile
+		 src/services/bindings/lua/Makefile
 		 ember.dox
 		 ember.spec
 		 ember-media.spec
@@ -410,6 +416,10 @@ AC_CONFIG_FILES([Makefile
 		 make_dist_media.sh
 		 src/extensions/Makefile
 		 src/components/ogre/scripting/Makefile
+		 src/components/ogre/scripting/bindings/Makefile
+		 src/components/ogre/scripting/bindings/lua/Makefile
+		 src/components/ogre/scripting/bindings/lua/ogre/Makefile
+		 src/components/ogre/scripting/bindings/lua/helpers/Makefile
 		 src/components/ogre/ogreopcode/opcode/Makefile
 		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/Makefile

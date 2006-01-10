@@ -1,3 +1,165 @@
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.conf: increase the frequency for server updates
+	* configure.ac:
+		* bump the version number
+		* check for lua
+		* added new build targets
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/MathConverter.h: make most methods accept const references instead of just doing a copy, should bring some speed up
+	* src/components/ogre/MotionManager.h: cosmetic code changes
+	* src/components/ogre/MousePicker.h: added more code comments
+	* src/components/ogre/TerrainGenerator.h: use getSingletonPtr instead of the deprecated getInstance
+	* src/components/ogre/TerrainPage.cpp:
+		* use getSingletonPtr instead of the deprecated getInstance
+		* randomize the size of the grass tufts a bit
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUICEGUIAdapter.*: added an input adapter for CEGUI. This will take care of routing input to the CEGUI system.
+	* src/components/ogre/GUIManager.*:
+		* use getSingletonPtr instead of the deprecated getInstance
+		* integrate with the scripting system
+		* register a new GUICEGUIAdapter instance with the input system
+		* removed loading and references to obsolete C++ widgets since they've been replaced with lua versions
+		* better handling of CEGUI errors
+		* allow caps-lock to toggle movement mode, although it doesn't seem to catch all pressings
+		* added more comments
+	* src/components/ogre/Makefile.am:updated for new files and scripting bindings
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityFactory.*:
+		* use getSingletonPtr instead of the deprecated getInstance
+		* removed PersonEmberEntity
+		* adapt to the model classes being moved into the Model namespace
+	* src/components/ogre/EmberEntityUserObject.*: adapt to the model classes being moved into the Model namespace
+	* src/components/ogre/EmberOgre.*:
+		* added MetaServerService and ScrtiptingService
+		* use getSingletonPtr instead of the deprecated getInstance
+		* better exception catching
+		* added a concept of "user media directory", which will mirror the shared media directory (which is updated from the server), but will allow the user to add it's own media which will override the shared media.
+		* load all resources recursive. This adds some overhead to startup, but allows us to search for resources later on
+		* adapt to the model classes being moved into the Model namespace
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.*:
+		* changed the adjustHeightPosition to adjustPosition, which will adjust the complete position, not just the height
+		* use getSingletonPtr instead of the deprecated getInstance
+		* added method for getting the default use operators for this particular entity
+	* src/components/ogre/AvatarEmberEntity.*: removed PersonEmberEntity and instead inherit from EmberPhysicalEntity
+	* src/components/ogre/EmberPhysicalEntity.*:
+		* added more comments
+		* adapt to the model classes being moved into the Model namespace
+		* made the wield methods more generic
+		* when running, actually use the running action
+		* get the offset for contained nodes from the model definition
+		* get whether contained items should be shown or not from the model definition
+	* src/components/ogre/WorldEmberEntity.*:
+		* update to use the adjustPosition methods instead of the adjustHeightPosition methods
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.*: 
+		* use getSingletonPtr instead of the deprecated getInstance
+		* removed some inline keywords which seemed to confuse some compilers and linkers
+	* src/components/ogre/AvatarController.cpp: removed PersonEmberEntity	
+	* src/components/ogre/Avatar.*:
+		* removed PersonEmberEntity
+		* use getSingletonPtr instead of the deprecated getInstance
+		* adjust to changes in EmberEntity of how entitie's positions are adjusted
+		* removed obsolete methods
+		* update to reflect the change from Model to Model::Model
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/fileutils.cpp: include the mroe recent stdlib.h instead of malloc.h 
+	* src/components/ogre/widgets/Bootstrap.lua: added lua script which will load all other scripts
+	* src/components/ogre/widgets/Chat.lua|Chat.layout|Debug.lua|Debug.layout|EntityPicker.lua|EntityPicker.layout|Give.lua|Give.layout|Performance.lua|Performance.layout|ServerBrowser.lua|ServerBrowser.layout: converted widgets from C++ to lua
+	* src/components/ogre/widgets/EntityCEGUITexture.*: added class for easy rendering of an Entity to a CEGUI texture.This is useful for stuff like previews and inventories.
+	* src/components/ogre/widgets/Help.cpp|IngameChatWidget.cpp|MakeEntityWidget.cpp: 
+		* removed PersonEmberEntity
+		* use getSingletonPtr instead of the deprecated getInstance
+	* src/components/ogre/widgets/InspectWidget.cpp|InventoryWidget.cpp: use getSingletonPtr instead of the deprecated getInstance
+	* src/components/ogre/widgets/JesusEdit.*: 
+		* removed PersonEmberEntity	
+		* use EntityCEGUITexture instead of handling the rendering itself
+	* src/components/ogre/widgets/Makefile.am: added new files
+	* src/components/ogre/widgets/ModelEdit.lua|ModelEdit.layout: added new widget for editing ModelDefinitions
+	* src/components/ogre/widgets/ModelRenderer: added utility class for allowing easy rendering, though EntityCEGUITexture, of a Model instance
+	* src/components/ogre/widgets/ScriptEdit.lua|ScriptEdit.layout: added widget for editing scripts, running code and inspecting values
+	* src/components/ogre/widgets/WidgetDefinitions.cpp: removed obsolete classes, since they've been replaced by lua implementations
+	* src/components/ogre/widgets/Widget.*: since instances of Widget will be used from scripts instead of being extended into subclasses, make a lot of methods that previously were protected public, and refactor to adjust for the changes
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/trees/pregenerated/trees.modeldef.xml: adjusted the scaling of the oak to better fit with the eris bbox
+	* src/components/ogre/modeldefinitions/*.modeldef.xml: updated media definitions
+	* src/components/ogre/modeldefinitions/modeldefinition.xsd: updated the modeldefinition format
+
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinitionManager.*:
+		* put it under the namespace Model
+		* added method for exporting model definitions	
+	* src/components/ogre/model/SubModel.*:
+		* put it under the namespace Model
+		* make it clean up after itself, instead of letting the Model do it
+		* simplified the creation of new SubModelParts
+	* src/components/ogre/model/SubModelPart.*:
+		* put it under the namespace Model
+		* added comments
+	* src/components/ogre/model/XMLModelDefinitionSerializer.*:
+		* put it under the namespace Model
+		* parse "showContained" which defines whether contained entities should be shown or not
+		* parse "contentoffset" which defines how, if any, contained entities should be offset
+		* parse "speed" of Animation which sets the speed of the animation
+		* adapt to the refactoring of ModelDefinition and it's parts
+		* added methods for exporting definitions to xml file
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Action.*|AnimationSet.*|ParticleSystem.*|ParticleSystemBindings.*|Makefile.am: refactored code from Model.* to separate files
+	* src/components/ogre/model/Model.*:
+		* put it under the namespace Model
+		* moved code to Action.*, AnimationSet.*, ParticeSystem.* and ParticeSystemBindings.*
+		* added better logging
+		* added a reload method which will reload the model from the definition
+		* refactored the way the model is created to be more straight forward, instead of using a lot of temporary arrays and lists
+		* allow submeshes to be defined though their index as well as their optional name
+		* added abilty to set the speed of animations
+		* added method for accessing a SubModel at a certain index
+		* allow many parts with the same name
+		* added a default constructor which will create a model with an autogenerated name
+	* src/components/ogre/model/ModelDefinition.*:
+		* put it under the namespace Model
+		* added a bool value for determine whether contained entities should be shown or not
+		* allow the definitions to keep track of all Model instances using them
+		* refactored how parts of the definitions are represented. Instead of simple structs they are now classes with methods for updating values and adding subparts.
+		* make it possible to define an offset which will be applied to all positions of contained items
+
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/Jesus.*: updated for the change from Model to Model::Model
+	* src/components/ogre/jesus/XMLJesusSerializer.cpp: use getSingletonPtr instead of the deprecated getInstance
+
+2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/input/IInputAdapter.h: added interface for a input adapter. Instances of this will recieve input events if they are registered with the Input object.
+	* src/components/ogre/input/Input.*: 
+		* moved the CEGUI stuff to src/components/ogre/GUICEGUIAdapter.*
+		* cleaned up the code and removed obsolete parts
+		* added support for many input adapters. Input will be sent to the last registered input adapter first, allowing it to either block the message or allow it to be sent to other adapters
+	* src/components/ogre/input/Makefile.am: added the IInputAdapter.h file
+
+
+|Sky.cpp|Water.cpp: use getSingletonPtr instead of the deprecated getInstance
+
 2006-01-09  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/Foliage.cpp|Sky.cpp|Water.cpp: use getSingletonPtr instead of the deprecated getInstance
