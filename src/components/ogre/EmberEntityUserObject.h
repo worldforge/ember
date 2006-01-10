@@ -37,30 +37,66 @@ namespace Ogre
 
 namespace EmberOgre {
 
-class Model;
+namespace Model {
+	class Model;
+}
 class EmberEntity;
 /**
 @author Erik Hjortsberg
+
+Instances of this class can be attached to scene nodes in the ogre system. They will allow for the Ember system to be accessed directly from Ogre, without having to do lookups.
+This is generally mostly used for mouse picking and collision handling.
+
 */
 class EmberEntityUserObject : public Ogre::UserDefinedObject
 {
 public:
 
+	/**
+	The type of UserDefinedObject
+	*/
 	static const std::string s_TypeName;
 	typedef std::vector<OgreOpcode::CollisionObject*> CollisionObjectStore;
 	
-    EmberEntityUserObject(EmberEntity* emberEntity , Model* model, CollisionObjectStore collisionObject);
+    /**
+     * Constructor. 
+     * @param emberEntity A valid EmberEntity instance.
+     * @param model A valid Model instance.
+     * @param collisionObject A valid vector of collision objects.
+     * @return 
+     */
+    EmberEntityUserObject(EmberEntity* emberEntity , Model::Model* model, CollisionObjectStore collisionObject);
 
     ~EmberEntityUserObject();
 	
+	/**
+	 *    Gets the EmberEntity contained.
+	 * @return 
+	 */
 	EmberEntity* getEmberEntity() const;
-	Model* getModel() const ;
+	
+	/**
+	 *    Gets the Model instance.
+	 * @return 
+	 */
+	Model::Model* getModel() const ;
+	
+	/**
+	 *    Gets a pointer to a vector of CollisionObjects. This can be used for checking collisions.
+	 * @return 
+	 */
 	CollisionObjectStore* getCollisionObjects() { return &mCollisionObjects; }
+	
+	/**
+	 *    Overloaded method for getting the type name of this instance.
+	 * @param  
+	 * @return 
+	 */
 	virtual const Ogre::String & getTypeName (void) const;
 
 private:
 	EmberEntity*  mEmberEntity;
-	 Model*   mModel;
+	Model::Model*   mModel;
 	CollisionObjectStore   mCollisionObjects;
 
 };

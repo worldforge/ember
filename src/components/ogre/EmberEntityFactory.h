@@ -21,31 +21,21 @@
 #include "EmberOgrePrerequisites.h"
 
 //#include <OgreNoMemoryMacros.h>
+#include <Eris/Factory.h>
 
-	#include <Eris/Entity.h>
-	#include <Eris/View.h>
-	#include <Eris/PollDefault.h>
-	#include <Eris/Log.h>
-	#include <Eris/TypeInfo.h>
-	#include <Eris/Factory.h>
-	#include <Eris/Connection.h>
 	
-	#include <Atlas/Objects/Entity.h>
-	
+#include <Atlas/Objects/Entity.h>
 
-//#include <OgreMemoryMacros.h>
-	
-// #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-// #include <sigc++/signal_system.h>
-// #else
-// #include <sigc++/object.h>
-// #include <sigc++/signal.h>
-// #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
-// #include <sigc++/object_slot.h>
-// #endif
 #include <sigc++/trackable.h>
-//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+
+namespace Eris
+{
+	class Entity;
+	class View;
+	class TypeService;
+	class TypeInfo;
+	class Avatar;
+}
 
 namespace EmberOgre {
 

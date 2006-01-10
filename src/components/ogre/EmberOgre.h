@@ -51,6 +51,10 @@ class BluePrint;
 
 namespace EmberOgre {
 
+namespace Model {
+	class ModelDefinitionManager;
+}
+
 class CameraRotator;
 
 class CameraFrameListener;
@@ -74,8 +78,6 @@ class MotionManager;
 class InputManager;
 
 class GUIManager;
-
-class ModelDefinitionManager;
 
 class Jesus;
 
@@ -299,7 +301,7 @@ protected:
 	
 	MotionManager* mMotionManager;
 	GUIManager* mGUIManager;  
-	ModelDefinitionManager* mModelDefinitionManager;
+	Model::ModelDefinitionManager* mModelDefinitionManager;
 	
 	/**
 	when this is fale the app will exit

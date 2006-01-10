@@ -19,9 +19,15 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include "EmberOgrePrerequisites.h"
+
 #include "EmberEntityFactory.h"
 
+#include <Eris/Entity.h>
+#include <Eris/View.h>
+// #include <Eris/PollDefault.h>
+// #include <Eris/Log.h>
+#include <Eris/TypeInfo.h>
+// #include <Eris/Connection.h>
 
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
@@ -30,7 +36,7 @@
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
+//#include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 #include "EmberOgre.h"
 
@@ -43,6 +49,7 @@
 #include "framework/ConsoleBackend.h"
 #include "TerrainGenerator.h"
 
+#include "Avatar.h"
 
 
 
@@ -56,7 +63,7 @@ EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris:
 , mWorldEntity(0)
 {
 	mTerrainType = mTypeService->getTypeByName("world");
-	Ember::ServerService* serverService = Ember::EmberServices::getInstance()->getServerService();
+	Ember::ServerService* serverService = Ember::EmberServices::getSingletonPtr()->getServerService();
 	loadTypeInfo();
 	
 	serverService->GotAvatar.connect(sigc::mem_fun(*this, &EmberEntityFactory::setAvatar));
@@ -113,7 +120,7 @@ AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::
 	Ogre::String id = ge->getId();
 	id += "_scaleNode";
 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id));
-	Model* model = new Model(ge->getId());
+	Model::Model* model = new Model::Model(ge->getId());
 	model->create("settler");
 /*	Model* model = Model::Create("settler.modeldef.xml", );*/
 	//Model* model = new Model(mSceneManager, ge->getId());
@@ -170,6 +177,8 @@ void EmberEntityFactory::setAvatar(Eris::Avatar* avatar)
 void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 {
 	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
+	EmberOgre::getSingleton().getAvatar()->createdAvatarEmberEntity(avatarEntity);
+	//avatarEntity->setAvatar(mAvatar);
    	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
 }
 	
@@ -203,7 +212,7 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 
 	std::string typeName = mTypeService->getTypeForAtlas(ge)->getName();
 	
-	Model* model = new Model(ge->getId());
+	Model::Model* model = new Model::Model(ge->getId());
 	bool result = model->create(typeName);
 
 	//try to open the model definition file
@@ -220,11 +229,11 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 	scaleNode->attachObject(model);
 
 	EmberPhysicalEntity* entity;
-	if (mPersonSet.find(typeName) != mPersonSet.end()) {
+/*	if (mPersonSet.find(typeName) != mPersonSet.end()) {
 		entity = new PersonEmberEntity(ge->getId(), type,  world, EmberOgre::getSingleton().getSceneManager(), scaleNode);
-	} else {
+	} else {*/
 		entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), scaleNode);
-	}
+// 	}
 	return entity;
 	
 	
@@ -235,12 +244,12 @@ void EmberEntityFactory::loadTypeInfo()
 {
 //TODO: put this in a separate xml file or something
 
-	mPersonSet.insert("settler");
-	mPersonSet.insert("merchant");
-	mPersonSet.insert("mercenary");
-	mPersonSet.insert("butcher");
-	mPersonSet.insert("marshall");
-	
+// 	mPersonSet.insert("settler");
+// 	mPersonSet.insert("merchant");
+// 	mPersonSet.insert("mercenary");
+// 	mPersonSet.insert("butcher");
+// 	mPersonSet.insert("marshall");
+// 	
 
 		
 }

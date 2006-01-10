@@ -23,7 +23,23 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.114  2005-10-26 21:44:55  erik
+ *      Revision 1.115  2006-01-10 01:03:27  erik
+ *      2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/EmberEntityFactory.*:
+ *      		* use getSingletonPtr instead of the deprecated getInstance
+ *      		* removed PersonEmberEntity
+ *      		* adapt to the model classes being moved into the Model namespace
+ *      	* src/components/ogre/EmberEntityUserObject.*: adapt to the model classes being moved into the Model namespace
+ *      	* src/components/ogre/EmberOgre.*:
+ *      		* added MetaServerService and ScrtiptingService
+ *      		* use getSingletonPtr instead of the deprecated getInstance
+ *      		* better exception catching
+ *      		* added a concept of "user media directory", which will mirror the shared media directory (which is updated from the server), but will allow the user to add it's own media which will override the shared media.
+ *      		* load all resources recursive. This adds some overhead to startup, but allows us to search for resources later on
+ *      		* adapt to the model classes being moved into the Model namespace
+ *
+ *      Revision 1.114  2005/10/26 21:44:55  erik
  *      2005-10-26  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/WorldEmberEntity.cpp: use the getView method from the Eris::Entity base class instead
@@ -923,7 +939,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
+#include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
+#include "services/scripting/ScriptingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/binreloc.h" //this is needed for binreloc functionality
@@ -1007,7 +1025,7 @@ namespace EmberOgre {
 		public:
 			OgreLogObserver()
 			{
-				Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
+				Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
 			
 			}
 			
@@ -1054,8 +1072,8 @@ namespace EmberOgre {
 			 */
 			void updateFromConfig()
 			{
-				if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("general", "logginglevel")) {
-					std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getInstance()->getConfigService()->getValue("general", "logginglevel"));
+				if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "logginglevel")) {
+					std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "logginglevel"));
 					Ember::LoggingService::MessageImportance importance;
 					if (loggingLevel == "verbose") {
 						importance = Ember::LoggingService::VERBOSE;
@@ -1192,9 +1210,16 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_CRITICAL(ex.getFullDescription());
 		throw ex;
+/*	} catch (const CEGUI::Exception& ex) {
+		S_LOG_CRITICAL(ex.getMessage());
+		throw ex;*/
 	} catch (const std::runtime_error& ex)
 	{
+		S_LOG_CRITICAL("Got unknown exception, shutting down.");
 		throw ex;
+	} catch (...)
+	{
+		S_LOG_CRITICAL("Got unknown exception,");
 	}
 	if (mWorldView)
 		mWorldView->update();
@@ -1213,7 +1238,25 @@ void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 		return;
 
 // 	try {
+	try {
 		mRoot->startRendering();
+	} catch (const Ember::Exception& ex) {
+		S_LOG_CRITICAL(ex.getError());
+		throw ex;
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_CRITICAL(ex.getFullDescription());
+		throw ex;
+/*	} catch (const CEGUI::Exception& ex) {
+		S_LOG_CRITICAL(ex.getMessage());
+		throw ex;*/
+	} catch (const std::runtime_error& ex)
+	{
+		S_LOG_CRITICAL("Got unknown exception, shutting down.");
+		throw ex;
+	} catch (...)
+	{
+		S_LOG_CRITICAL("Got unknown exception,");
+	}
 // 	} catch (Ogre::Exception e) {
 // 		std::cerr << "Error in Ogre: !\n";
 // 	}
@@ -1244,7 +1287,7 @@ void EmberOgre::requestQuit()
 bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 {
 	
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	checkForConfigFiles();
 	
@@ -1475,9 +1518,9 @@ EmberEntity* EmberOgre::getEmberEntity(const std::string & eid) const
 
 void EmberOgre::checkForConfigFiles()
 {
-	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
-	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedConfigDirectory());
+	std::string sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
 	//make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
@@ -1488,8 +1531,8 @@ void EmberOgre::checkForConfigFiles()
 
 void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
 {
-// 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists(section, variableName)) {
-// 		std::string value =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue(section, variableName)) + "/";
+// 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists(section, variableName)) {
+// 		std::string value =  Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue(section, variableName)) + "/";
 // 		manager->addArchiveEx(value, type);
 // 	} else {
 // 		//throw new Exception(std::string("Could not find setting: ") + variableName + " in section " + section + ".");
@@ -1500,16 +1543,16 @@ void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, st
 /// Method which will define the source of resources (other than current folder)
 void EmberOgre::setupResources(void)
 {
- 	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+ 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
-	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 		
 
 	
-	std::string userMediaPath = Ember::EmberServices::getInstance()->getConfigService()->getUserMediaDirectory();
-	std::string sharedMediaPath = Ember::EmberServices::getInstance()->getConfigService()->getSharedMediaDirectory();
+	std::string userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
+	std::string sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
 	
-	mModelDefinitionManager = new ModelDefinitionManager();
+	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
 	try {
@@ -1524,8 +1567,8 @@ void EmberOgre::setupResources(void)
 	}
 	
 // /*	std::string modeldefspath = "modeldefinitions/";
-// 	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("ogre", "modeldefinitionpath")) {
-// 		modeldefspath =  Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getInstance()->getConfigService()->getValue("ogre", "modeldefinitionpath")) + "/";
+// 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("ogre", "modeldefinitionpath")) {
+// 		modeldefspath =  Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("ogre", "modeldefinitionpath")) + "/";
 // 	} 
 // 	mModelDefinitionManager->addArchiveEx(modeldefspath, "FileSystem");*/
 // 	
@@ -1544,37 +1587,71 @@ void EmberOgre::setupResources(void)
 
     
 	// Go through all sections & settings in the file
-	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-	
-	Ogre::String secName, typeName, archName, fullResourcePath;
-	std::string finalTypename;
-	while (seci.hasMoreElements())
+	//first do user media, then ember media, allowing the user to override ember-media
 	{
-		secName = seci.peekNextKey();
-		Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-		Ogre::ConfigFile::SettingsMultiMap::iterator i;
-		for (i = settings->begin(); i != settings->end(); ++i)
+		std::string userOwnMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/";
+	
+		Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+		
+		Ogre::String secName, typeName, archName, fullResourcePath;
+		std::string finalTypename;
+		while (seci.hasMoreElements())
 		{
-			typeName = i->first;
-			archName = i->second;
-			if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-				fullResourcePath = sharedMediaPath + archName;
-			} else {
-				fullResourcePath = userMediaPath + archName;
+			secName = seci.peekNextKey();
+			Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+			Ogre::ConfigFile::SettingsMultiMap::iterator i;
+			for (i = settings->begin(); i != settings->end(); ++i)
+			{
+				typeName = i->first;
+				archName = i->second;
+				if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
+					//ship shared
+				} else {
+					fullResourcePath = userOwnMediaPath + archName;
+					finalTypename = typeName.substr(0, typeName.find("["));
+					try {
+						Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+							fullResourcePath, finalTypename, secName, true);
+					} catch (Ogre::Exception&) {
+						S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
+					}
+				}
 			}
-			finalTypename = typeName.substr(0, typeName.find("["));
-			try {
-				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-					fullResourcePath, finalTypename, secName);
-			} catch (Ogre::Exception&) {
-				S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
+		}
+	}
+	
+	{
+		Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+		
+		Ogre::String secName, typeName, archName, fullResourcePath;
+		std::string finalTypename;
+		while (seci.hasMoreElements())
+		{
+			secName = seci.peekNextKey();
+			Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+			Ogre::ConfigFile::SettingsMultiMap::iterator i;
+			for (i = settings->begin(); i != settings->end(); ++i)
+			{
+				typeName = i->first;
+				archName = i->second;
+				if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
+					fullResourcePath = sharedMediaPath + archName;
+				} else {
+					fullResourcePath = userMediaPath + archName;
+				}
+				finalTypename = typeName.substr(0, typeName.find("["));
+				try {
+					Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+						fullResourcePath, finalTypename, secName, true);
+				} catch (Ogre::Exception&) {
+					S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
+				}
 			}
 		}
 	}
 	
 	
-	
-//     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
+//     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
 	
 	S_LOG_INFO(  "Added media paths.");
 	
@@ -1586,7 +1663,7 @@ void EmberOgre::preloadMedia(void)
 {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	
 
 	std::vector<std::string> shaderTextures;
@@ -1608,7 +1685,7 @@ void EmberOgre::preloadMedia(void)
 // 	DIR *dp;
 // 	struct dirent *ep;
 // 	
-// 	std::string modeldefDir = Ember::EmberServices::getInstance()->getConfigService()->getEmberDataDirectory() + "media/modeldefinitions";
+// 	std::string modeldefDir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberDataDirectory() + "media/modeldefinitions";
 // 	dp = opendir (modeldefDir.c_str());
 // 	if (dp != NULL)
 // 	{
@@ -1641,14 +1718,14 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::setupJesus()
 {
-	const std::string datadir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory();
+	const std::string datadir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory();
 
 	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
 	mJesus = new Jesus(carpenter);
 	XMLJesusSerializer serializer(mJesus);
 
 	std::string dir;
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "carpenter/blockspec";
+	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/blockspec";
 
 	std::string filename;
 
@@ -1663,7 +1740,7 @@ void EmberOgre::setupJesus()
 		}
 	}
 	//load all buildingblockspecs
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
+	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
 		{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -1673,7 +1750,7 @@ void EmberOgre::setupJesus()
 		}
 	}
 	//load all modelmappings
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
+	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
 	{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -1684,7 +1761,7 @@ void EmberOgre::setupJesus()
 	}
 	
 	//load all global blueprints
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
+	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
 	{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -1702,7 +1779,7 @@ void EmberOgre::setupJesus()
 		}
 	}
 	//load all local blueprints
-	dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "carpenter/blueprints";
+	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "carpenter/blueprints";
 	{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -1778,7 +1855,7 @@ EmberEntity* EmberOgre::getEntity(const std::string & id) const
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
 {
 	mEmberEntityFactory = new EmberEntityFactory(mTerrainGenerator, connection->getTypeService());
-	EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
+	//EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
 
@@ -1852,7 +1929,8 @@ void EmberOgre::initializeEmberServices(void)
 	// Initialize Ember services
 
 	// Initialize the Logging service and an error observer
-	Ember::LoggingService *logging = Ember::EmberServices::getInstance()->getLoggingService();
+	new Ember::EmberServices();
+	Ember::LoggingService *logging = Ember::EmberServices::getSingletonPtr()->getLoggingService();
 	OgreLogObserver* obs = new OgreLogObserver();
 	//default to INFO, though this can be changed by the config file
  	obs->setFilter(Ember::LoggingService::INFO);
@@ -1860,28 +1938,28 @@ void EmberOgre::initializeEmberServices(void)
 
 
 	// Initialize the Configuration Service
-	Ember::EmberServices::getInstance()->getConfigService()->start();
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
 	// Change working directory
 	struct stat tagStat;
     int ret;
-	ret = stat( Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
+	ret = stat( Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
 	if (ret == -1) {
 #ifdef WIN32
-		mkdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+		mkdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 #else
-		mkdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str(), S_IRWXU);
+		mkdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str(), S_IRWXU);
 #endif
 	}
 	
 	
-	chdir(Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory().c_str());
+	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
-	std::string sharePath(Ember::EmberServices::getInstance()->getConfigService()->getSharedConfigDirectory());
+	std::string sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
 	//make sure that there are files 
 	assureConfigFile("ember.conf", sharePath);
 
-	Ember::EmberServices::getInstance()->getConfigService()->loadSavedConfig("ember.conf");
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->loadSavedConfig("ember.conf");
 
 
 
@@ -1893,27 +1971,29 @@ void EmberOgre::initializeEmberServices(void)
 //	  fclose(temp);
 //#endif
 	// Initialize the SoundService
-	//Ember::EmberServices::getInstance()->getSoundService()->start();
+	//Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
 //#ifndef WIN32
 //	}
 //#endif
 
 
 	// Initialize and start the Metaserver Service.
-#if defined( _MSC_VER ) && ( _MSC_VER < 1300 )
-	// GNDN: MSVC < version 7 is broken
-#else
 	// Set Eris Logging Level
 	Eris::setLogLevel(Eris::LOG_DEBUG);
 
-// 	Ember::EmberServices::getInstance()->getMetaserverService()->start();
-
-	// Initialize the Server Service
-	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
-	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::connectViewSignals));
+ 	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->start();
+	//hoho, we get linking errors if we don't do some calls to the service
+	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->getMetaServer();
 	
-	Ember::EmberServices::getInstance()->getServerService()->start();
-#endif
+	// Initialize the Server Service
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::connectViewSignals));
+	
+	Ember::EmberServices::getSingletonPtr()->getServerService()->start();
+
+ 	Ember::EmberServices::getSingletonPtr()->getScriptingService()->start();
+
+
 
 }
 
