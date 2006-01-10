@@ -32,6 +32,7 @@
 
 namespace Ember {
 
+class IScriptingProvider;	
 /**
 @author Erik Hjortsberg
 
