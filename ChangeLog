@@ -1,5 +1,16 @@
 2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/scripting/LuaScriptingProvider.h: with CEGUI 0.4.0 LuaScriptingModule.h has been changed to CEGUILua.h
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Makefile.am|WidgetDefinitions.cpp: removed reference to GiveWidget.cpp and MaterialPicker, cleaned up obsolete code
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg|lua_EmberOgre.cpp|requried.h: updated bindings
+	* src/services/metaserver/MetaserverService.cpp: removed crashing code
+	* src/components/ogre/GUIManager.cpp: cleaned up code
+
+2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf: increase the frequency for server updates
 	* configure.ac:
 		* bump the version number

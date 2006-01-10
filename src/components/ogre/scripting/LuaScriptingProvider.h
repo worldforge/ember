@@ -26,7 +26,7 @@
 #include "framework/IScriptingProvider.h"
 
 #include <CEGUIScriptModule.h>
-#include <LuaScriptModule.h>
+#include <CEGUILua.h>
 
 namespace Ember
 {
