@@ -47,37 +47,30 @@ else
 EMBER_EXT_LIBS = $(EMBER_LIBS)
 endif
 
-if USE_LUA
-SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/liblua_scripting.a 
-else
-SCRIPT_LIBS =
-endif
+
+#if USE_LUA
+#SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/liblua_scripting.a 
+#else
+SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.a $(top_builddir)/src/services/bindings/lua/liblua_EmberServices.a $(top_builddir)/src/framework/bindings/lua/liblua_Framework.a  $(top_builddir)/src/framework/bindings/lua/eris/liblua_Eris.a $(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.a $(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a
+#endif
 
 
-ember_bin_LDADD = $(SCRIPT_LIBS) $(top_builddir)/src/components/ogre/widgets/libWidgets.a \
-	$(top_builddir)/src/services/logging/libLoggingService.a \
+ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $(SCRIPT_LIBS) \
+	$(top_builddir)/src/components/ogre/widgets/libWidgets.a \
+	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a \
-	$(top_builddir)/src/components/ogre/jesus/libJesus.a  \
+	$(top_builddir)/src/components/ogre/jesus/libJesus.a \
+	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
 	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
 	$(top_builddir)/src/services/libServices.a $(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.a \
 	$(top_builddir)/src/components/ogre/ogreopcode/opcode/libOpcode.a $(EMBER_EXT_LIBS)
 
 
-ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp 	MediaDeployer.cpp \
-			AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp 	MotionManager.cpp \
-			AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp 	Avatar.h \
-			MathConverter.h ConsoleObjectImpl.h MediaDeployer.h 	AvatarController.h \
-			environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h 	TerrainShader.h \
-			GUIManager.h MousePicker.h EmberEntityFactory.cpp EmberEntityFactory.h \
-				EmberEntity.h EmberEventProcessor.cpp EmberEventProcessor.h EmberOgre.cpp EmberOgre.h \
-				EmberPhysicalEntity.cpp EmberPhysicalEntity.h EmberEntity.cpp EmberOgrePrerequisites.h \
-				AvatarEmberEntity.cpp AvatarEmberEntity.h PersonEmberEntity.cpp PersonEmberEntity.h \
-				WorldEmberEntity.cpp WorldEmberEntity.h TerrainPage.cpp TerrainPage.h TerrainArea.cpp \
-			TerrainArea.h EmberEntityUserObject.cpp 
+ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp MotionManager.cpp AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp EmberEntityFactory.cpp  EmberEventProcessor.cpp EmberOgre.cpp  EmberPhysicalEntity.cpp EmberEntity.cpp AvatarEmberEntity.cpp WorldEmberEntity.cpp TerrainPage.cpp TerrainArea.cpp EmberEntityUserObject.cpp GUICEGUIAdapter.cpp
 
 
 
@@ -109,5 +102,5 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = EmberEntityUserObject.h 
-#GUIScriptManager.h
+noinst_HEADERS = EmberEventProcessor.h EmberOgre.h WorldEmberEntity.h TerrainPage.h TerrainArea.h AvatarEmberEntity.h EmberPhysicalEntity.h EmberOgrePrerequisites.h EmberEntityFactory.h EmberEntity.h Avatar.h environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h TerrainShader.h MathConverter.h ConsoleObjectImpl.h AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h GUICEGUIAdapter.h
+	

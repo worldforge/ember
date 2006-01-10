@@ -18,6 +18,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/scripting/ScriptingService.h"
 
 #include "EmberOgrePrerequisites.h"
 #include "GUIManager.h"
@@ -41,12 +42,15 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
+// #include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 
+#include "framework/IScriptingProvider.h"
+
 //#include "GUIScriptManager.h"
+#include "components/ogre/scripting/LuaScriptingProvider.h"
 
-
+#include "GUICEGUIAdapter.h"
 
 #include <SDL.h>
 
@@ -74,17 +78,28 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		S_LOG_INFO("STARTING CEGUI");
 	
-		Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+		Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 		chdir(configSrv->getEmberDataDirectory().c_str());
 		
 		//use a macro from CEGUIFactoryModule
 		DYNLIB_LOAD( "libCEGUITaharezLook.so");
 		
+		Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
+		
 		
 		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
-/*		mScriptManager = new GUIScriptManager();
-		mGuiSystem = new CEGUI::System(mGuiRenderer, &mScriptManager->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); */
-		mGuiSystem = new CEGUI::System(mGuiRenderer); 
+//		mScriptManager = new GUIScriptManager();
+		Ember::IScriptingProvider* provider;
+		provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
+		if (provider != 0) {
+			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
+			mGuiSystem = new CEGUI::System(mGuiRenderer, & luaScriptProvider->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
+		
+		} else {
+			mGuiSystem = new CEGUI::System(mGuiRenderer); 
+		}
+		//mGuiSystem = new CEGUI::System(mGuiRenderer, &mScriptManager->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
+//		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
@@ -127,22 +142,20 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 		MousePicker* picker = new MousePicker();
 		pushMousePicker(picker);
-		
-		mInput = new Input(mGuiSystem, mGuiRenderer);
+					
+		mInput = new Input(mGuiRenderer->getWidth(), mGuiRenderer->getHeight());
 		mInput->EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		mInput->setInputMode(Input::IM_GUI);
+		
+		//add adapter for CEGUI
+		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
+		mInput->addAdapter(mCEGUIAdapter);
 		
 		//connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
 		
-/*		try {
-			mScriptManager->executeScript("cegui/datafiles/lua_scripts/demo8.lua");
-		} catch (Ogre::Exception& ex)
-		{
-			S_LOG_FAILURE("Error when loading test script. Error message: " << ex.getFullDescription());
-		}*/
 	
 	} catch (CEGUI::Exception&) {
 		S_LOG_FAILURE("GUIManager - error when creating gui.");
@@ -167,7 +180,7 @@ GUIManager::~GUIManager()
 
 void GUIManager::initialize()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
 		mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"DebugText");
@@ -181,22 +194,32 @@ void GUIManager::initialize()
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
 	
 
+		//the console and quit widgets are not lua scripts, and should be loaded explicit
 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
-		createWidget("Quit");
+//		createWidget("Quit");
 		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
+		try {
+		//load the bootstrap script which will load all other scripts
+			Ember::EmberServices::getSingleton().getScriptingService()->loadScript("cegui/datafiles/lua_scripts/Bootstrap.lua");
+		} catch (Ogre::Exception& ex)
+		{
+			S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << ex.getFullDescription());
+		}
+		
 		createWidget("StatusIconBar");
 		createWidget("IngameChatWidget");
-		createWidget("DebugWidget");
-		createWidget("Performance");
-		createWidget("ChatWidget");
+		//createWidget("DebugWidget");
+		//createWidget("Performance");
+
+//		createWidget("ChatWidget");
 		createWidget("InventoryWidget");
-		createWidget("ServerBrowserWidget");
+		//createWidget("ServerBrowserWidget");
 		createWidget("InspectWidget");
 		createWidget("MakeEntityWidget");
 		createWidget("JesusEdit");
 		createWidget("ServerWidget");
-		createWidget("GiveWidget");
-		createWidget("EntityPickerWidget");
+		//createWidget("GiveWidget");
+		//createWidget("EntityPickerWidget");
 		createWidget("Help");
 		createWidget("MeshPreview");
 
@@ -209,6 +232,17 @@ void GUIManager::initialize()
 	
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SCREENSHOT,this);
 
+}
+
+void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity)
+{
+	EventEntityAction.emit(action, entity);
+}
+
+
+Widget* GUIManager::createWidget()
+{
+	return createWidget("Widget");
 }
 
 Widget* GUIManager::createWidget(const std::string& name)
@@ -328,7 +362,7 @@ const std::string GUIManager::_takeScreenshot()
 	filename << sec << ".png";
 
 	//make sure the directory exists
-	const std::string dir = Ember::EmberServices::getInstance()->getConfigService()->getHomeDirectory() + "/screenshots/";
+	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
 	struct stat tagStat;
 	int ret;
 	ret = stat( dir.c_str(), &tagStat );
@@ -349,8 +383,12 @@ const std::string GUIManager::_takeScreenshot()
 
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 {
-		
-	CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+	try {	
+		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+	}
+
 	
 	mInput->processInput(evt);
 
@@ -374,9 +412,14 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	
 	for (; I != I_end; ++I) {
 		Widget* aWidget = *I;
-		aWidget->frameStarted(evt);
+		try {
+			aWidget->frameStarted(evt);
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		}
 	}
 	
+	EventFrameStarted.emit(evt.timeSinceLastFrame);
 	
 	return true;
 
@@ -448,6 +491,12 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )
 		{
 			takeScreenshot();
+		}
+		
+		///allow caps lock to toggle input mode
+		if (key.sym == SDLK_CAPSLOCK) 
+		{
+			mInput->toggleInputMode();
 		}
 		
 		//switch render mode

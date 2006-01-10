@@ -25,16 +25,6 @@
 #include <CEGUIBase.h>
 #include <OgreCEGUIRenderer.h>
 
-// #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-// #include <sigc++/signal_system.h>
-// #else
-// #include <sigc++/object.h>
-// #include <sigc++/signal.h>
-// #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
-// #include <sigc++/object_slot.h>
-// #endif
-
 #include <sigc++/trackable.h>
 
 #include <OgreKeyEvent.h> 
@@ -53,13 +43,12 @@ class EmberEntity;
 class TerrainGenerator;
 class CEGUI::Window;
 class Widget;
-/*class ServerBrowserWidget;*/
 class ConsoleWidget;
 class MousePicker;
 class EmberEventProcessor;
 class Input;
 class AvatarEmberEntity;
-class GUIScriptManager;
+class GUICEGUIAdapter;
 
 
 /**
@@ -73,14 +62,6 @@ public Ember::ConsoleObject
 {
 public:
 
-	/**
-	The mode of input.
-	*/
-// 	enum InputMode
-// 	{
-// 		IM_MOVEMENT = 1,
-// 		IM_GUI = 2
-// 	};
 
 	static const std::string SCREENSHOT;
 	static const std::string TOGGLEINPUTMODE;
@@ -95,19 +76,46 @@ public:
 	sigc::signal<void, const std::string&, EmberEntity*> EventEntityAction;
 	
 	/**
-	Emitted when the input mode changes between gui and movment mode.
+	Emitted every frame.
 	*/
-// 	SigC::Signal1<void, InputMode> EventInputModeChanged;
-
+	sigc::signal<void, float> EventFrameStarted;
 	
+	/**
+	 *    Emits an action for a certain entity.
+	 *    An action could be something like "touch" or "inspect".
+	 * @param action 
+	 */
+	void EmitEntityAction(const std::string& action, EmberEntity* entity);
+	
+	/**
+	 *    Removed a widget from the system.
+	 * @param widget 
+	 */
 	void removeWidget(Widget* widget);
+	
+	/**
+	 *    Adds a new widget to the system. This means it will recieve FrameStarted events.
+	 * @param widget 
+	 */
 	void addWidget(Widget* widget);
 
+	/**
+	 *    Called by Ogre each frame.
+	 * @param evt 
+	 * @return 
+	 */
 	bool frameStarted(const Ogre::FrameEvent& evt);
 
+	/**
+	 *    Gets the root sheet of the CEGUI windowing system.
+	 * @return 
+	 */
 	CEGUI::Window* getMainSheet();
 	
 	
+	/**
+	 *    Called by EmberOgre at initialization.
+	 */
 	void initialize();
 	
 	
@@ -131,6 +139,10 @@ public:
 	 */
 	const bool isInMovementKeysMode() const;
 	
+	/**
+	 *    Gets the currently active MousePicker instance.
+	 * @return 
+	 */
 	inline MousePicker* getMousePicker() { return  mMousePickers.top(); }
 	
 	
@@ -168,6 +180,20 @@ public:
 	 * @return 
 	 */
 	const std::string& getLayoutDir() const;
+	
+	/**
+	 *    Creates a new Widget
+	 * @return 
+	 */
+	Widget* createWidget();
+	
+	/**
+	 *    creates a widget 
+	 *    @see WidgetLoader
+	 * @param name the type of widget to create
+	 * @return 
+	 */
+	Widget* createWidget(const std::string& name);
 
 protected:
 
@@ -189,13 +215,6 @@ protected:
 	std::set<Widget*> mWidgets;
 	
 	
-	/**
-	 *    creates a widget 
-	 *    @see WidgetLoader
-	 * @param name the type of widget to create
-	 * @return 
-	 */
-	Widget* createWidget(const std::string& name);
 
 	
 
@@ -225,6 +244,11 @@ protected:
 
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
+	
+	/**
+	Adapter for CEGUI which will send input events to CEGUI
+	*/
+	GUICEGUIAdapter* mCEGUIAdapter;
 	
 // 	GUIScriptManager* mScriptManager;
 
