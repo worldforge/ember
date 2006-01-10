@@ -6,6 +6,7 @@
 #include <OgreMovableObject.h>
 
 namespace EmberOgre {
+namespace Model {
 
 class SubModel;
 class Model;
@@ -37,5 +38,5 @@ protected:
 };
 
 }
-
+}
 #endif // SUBMODELPART_H

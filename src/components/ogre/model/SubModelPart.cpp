@@ -3,12 +3,15 @@
 #include "SubModel.h"
 
 namespace EmberOgre {
+namespace Model {
 
 SubModelPart::SubModelPart(std::string name)
 : mName(name)
 {}
 SubModelPart::~SubModelPart()
-{}
+{
+	//no need to try to delete the Ogre::Subentities in the mSubEntities store, since Ogre will take care of this
+}
 
 
 bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity)
@@ -51,4 +54,4 @@ const SubModelPart::SubEntitySet& SubModelPart::getSubentities() const
 }
 
 }
-
+}

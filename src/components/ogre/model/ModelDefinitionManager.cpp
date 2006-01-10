@@ -31,9 +31,11 @@
 #include "XMLModelDefinitionSerializer.h"
 
 
-template<> EmberOgre::ModelDefinitionManager* Ember::Singleton<EmberOgre::ModelDefinitionManager>::ms_Singleton = 0;
+template<> EmberOgre::Model::ModelDefinitionManager* Ember::Singleton<EmberOgre::Model::ModelDefinitionManager>::ms_Singleton = 0;
 namespace EmberOgre
 {
+namespace Model {
+
     //-----------------------------------------------------------------------
 /*    ModelDefinitionManager* ModelDefinitionManager::getSingletonPtr(void)
     {
@@ -100,6 +102,12 @@ void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogr
 	serializer.parseScript(stream, groupName);
 }
 
+void ModelDefinitionManager::exportScript(ModelDefnPtr definition)
+{
+    XMLModelDefinitionSerializer serializer;
+	serializer.exportScript(definition, definition->getName() + ".modeldef");
+}
+
 Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
     const Ogre::NameValuePairList* createParams)
@@ -107,4 +115,5 @@ Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogr
      return new ModelDefinition(this, name, handle, group, isManual, loader);
 }
 
+}
 }

@@ -20,8 +20,10 @@
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
+#include "ModelDefinitionManager.h"
 
 namespace EmberOgre {
+namespace Model {
 
 SubModel::SubModel(Ogre::Entity* entity) :
 mEntity(entity)
@@ -34,7 +36,14 @@ mEntity(entity)
 	
 }
 SubModel::~SubModel()
-{}
+{
+	for (SubModelPartMap::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
+		delete I->second;
+	}
+	Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+	sceneManager->removeEntity(mEntity);
+	
+}
 
 std::map<std::string, SubModelPart*>* SubModel::getSubModelPartMap()
 {
@@ -42,34 +51,41 @@ std::map<std::string, SubModelPart*>* SubModel::getSubModelPartMap()
 	
 }
 
-
-void SubModel::createSubModelParts(SubModelPartMapping* submodelPartMapping)
+SubModelPart* SubModel::createSubModelPart(const std::string& name)
 {
-	SubModelPartMapping::const_iterator I = submodelPartMapping->begin();
-	SubModelPartMapping::const_iterator I_end = submodelPartMapping->end();
-	
-	for (;I != I_end; ++I) {
-		std::string partname = I->first;
-		SubModelPart* part = new SubModelPart(partname);
-		std::set<std::string>::const_iterator J = I->second.begin();
-		std::set<std::string>::const_iterator J_end = I->second.end();
-		if (J == J_end) {
-			//if the set is empty add all subentities
-			unsigned int numSubEntities = mEntity->getNumSubEntities();
-			for (unsigned int i = 0;i < numSubEntities; ++i) {
-				part->addSubEntity(mEntity->getSubEntity(i));
-			}
-		} else {
-			for (;J != J_end; ++J) {
-				part->addSubEntity(mEntity->getSubEntity(*J));
-			}
-		}
-		mSubModelParts.insert(SubModelPartMap::value_type(partname, part));
-		
-	}
-	
+	SubModelPart* part = new SubModelPart(name);
+	mSubModelParts.insert(SubModelPartMap::value_type(name, part));
+	return part;
 	
 }
+
+// void SubModel::createSubModelParts(SubModelPartMapping* submodelPartMapping)
+// {
+// 	SubModelPartMapping::const_iterator I = submodelPartMapping->begin();
+// 	SubModelPartMapping::const_iterator I_end = submodelPartMapping->end();
+// 	
+// 	for (;I != I_end; ++I) {
+// 		std::string partname = I->first;
+// 		SubModelPart* part = new SubModelPart(partname);
+// 		std::set<std::string>::const_iterator J = I->second.begin();
+// 		std::set<std::string>::const_iterator J_end = I->second.end();
+// 		if (J == J_end) {
+// 			//if the set is empty add all subentities
+// 			unsigned int numSubEntities = mEntity->getNumSubEntities();
+// 			for (unsigned int i = 0;i < numSubEntities; ++i) {
+// 				part->addSubEntity(mEntity->getSubEntity(i));
+// 			}
+// 		} else {
+// 			for (;J != J_end; ++J) {
+// 				part->addSubEntity(mEntity->getSubEntity(*J));
+// 			}
+// 		}
+// 		mSubModelParts.insert(SubModelPartMap::value_type(partname, part));
+// 		
+// 	}
+// 	
+// 	
+// }
 
 Ogre::Entity* SubModel::getEntity() const
 {
@@ -92,4 +108,5 @@ bool SubModel::removeEntity(Ogre::Entity* entity)
 }
 */
 
+}
 }

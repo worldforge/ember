@@ -23,6 +23,7 @@
 #include <OgreMovableObject.h>
 
 namespace EmberOgre {
+namespace Model {
 
 class Model;
 class SubModelPart;
@@ -37,7 +38,8 @@ public:
 	SubModel(Ogre::Entity* entity);
 	virtual ~SubModel();
 	
-	void createSubModelParts(SubModelPartMapping* submodelPartMapping);
+	//void createSubModelParts(SubModelPartMapping* submodelPartMapping);
+	SubModelPart* createSubModelPart(const std::string& name);
 	
 	SubModelPartMap* getSubModelPartMap();
 
@@ -56,6 +58,7 @@ protected:
 //	Ogre::SceneNode* mNode;	
 };
 
+}
 }
 
 #endif // SUBMODEL_H

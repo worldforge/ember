@@ -33,6 +33,7 @@
 
 // Namespaces
 namespace EmberOgre { 
+namespace Model {
 
 // Classes
 class XMLModelDefinitionSerializer
@@ -43,6 +44,8 @@ public :
 
 	void importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pmModelDef);
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	
+	void exportScript(ModelDefinitionPtr modelDef, const std::string& filename);
 
 private:
 	//Ember::TiXmlDocument* _XMLDoc;
@@ -50,17 +53,22 @@ private:
 
 	void readModel(ModelDefinitionPtr modelDef, Ember::TiXmlElement* modelNode);
 	void readSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mSubModelNode);
-	void readParts(Ember::TiXmlElement* mPartNode,ModelDefinition::SubModelDefinition& subModel);
-	void readSubEntities(Ember::TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part);
+	void readParts(Ember::TiXmlElement* mPartNode, SubModelDefinition* def);
+	void readSubEntities(Ember::TiXmlElement* mSubEntNode, PartDefinition* def);
 	void readActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimNode);
-	void readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action);
+	void readAnimationParts(Ember::TiXmlElement* mAnimPartNode, ActionDefinition* action);
 	void readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode);
 	void readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode);
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode);
 
 	Ogre::Vector3 fillVector3FromElement(Ember::TiXmlElement* elem);
 
+
+	void exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
+	void exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
+
 };
 
+}
 }
 #endif

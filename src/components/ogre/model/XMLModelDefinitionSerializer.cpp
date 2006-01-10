@@ -28,8 +28,13 @@
 
 #include "ModelDefinitionManager.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 // Namespaces
 namespace EmberOgre {
+namespace Model {
+
 // Variables
 
 // Functions
@@ -92,9 +97,15 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		modelDef->mScale=Ogre::StringConverter::parseReal(tmp);
 	
 	//rotation
+	///TODO: change this into a better system, perhaps using quaternions, instead of like now just rotating around the y-axis
 	tmp =  modelNode->Attribute("rotation");
 	if (tmp)
 		modelDef->mRotation = Ogre::StringConverter::parseReal(tmp);
+	
+	//showcontained
+	tmp =  modelNode->Attribute("showcontained");
+	if (tmp)
+		modelDef->mShowContained = Ogre::StringConverter::parseBool(tmp);
 
 	//usescaleof
 	tmp =  modelNode->Attribute("usescaleof");
@@ -136,6 +147,14 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	{
 		modelDef->mTranslate = fillVector3FromElement(elem);
 	}
+	
+	elem = modelNode->FirstChildElement("contentoffset");
+	if (elem)
+	{
+		Ogre::Vector3 offset = fillVector3FromElement(elem);
+		Ogre::Vector3* offsetPtr = new Ogre::Vector3(offset);
+		modelDef->mContentOffset = offsetPtr;
+	}
 }
 
 
@@ -150,14 +169,14 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 	for (Ember::TiXmlElement* smElem = mSubModelNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
     {
-		ModelDefinition::SubModelDefinition subModelDef;
 		notfound = false;
 
 		tmp =  smElem->Attribute("mesh");
 		if (tmp)
 		{
-			subModelDef.Mesh = tmp;
-			S_LOG_VERBOSE( " Add submodel  : "+ subModelDef.Mesh );
+			SubModelDefinition* subModelDef = modelDef->createSubModelDefinition(tmp);
+			
+			S_LOG_VERBOSE( " Add submodel  : "+ subModelDef->getMeshName() );
 			try 
 			{
 				//preload
@@ -169,14 +188,14 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 
 				elem = smElem->FirstChildElement("parts");
 				if (elem)
-					readParts(elem,subModelDef);
+					readParts(elem, subModelDef);
 
-				modelDef->mSubModels.push_back(subModelDef);
+//				modelDef->mSubModels.push_back(subModelDef);
 
 			} 
 			catch (Ogre::Exception e) 
 			{
-				S_LOG_FAILURE("Load error : "+ subModelDef.Mesh);
+				S_LOG_FAILURE("Load error : " << tmp);
 			}
 		}
 	}
@@ -187,7 +206,7 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 	}
 }
 
-void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode,ModelDefinition::SubModelDefinition& subModel)
+void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode, SubModelDefinition* def)
 {
 	Ember::TiXmlElement* elem;
 	const char* tmp = 0;
@@ -196,26 +215,29 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode,Mode
 	for (Ember::TiXmlElement* partElem = mPartNode->FirstChildElement();
             partElem != 0; partElem = partElem->NextSiblingElement())
 	{
-		ModelDefinition::PartDefinition partDef;
-		notfound = false;
 
 		// name
 		tmp =  partElem->Attribute("name");
-		if (tmp)
-			partDef.Name = tmp;
-		S_LOG_VERBOSE( "  Add part  : "+ partDef.Name );
-
-		// show
-		tmp =  partElem->Attribute("show");
-		if (tmp)
-			partDef.Show = Ogre::StringConverter::parseBool(tmp);
-
-
-		elem = partElem->FirstChildElement("subentities");
-		if (elem)
-			readSubEntities(elem,partDef);
-
-		subModel.Parts.push_back(partDef);
+		if (tmp) {
+			notfound = false;
+		
+			PartDefinition* partDef = def->createPartDefinition(tmp);
+			
+			S_LOG_VERBOSE( "  Add part  : "+ partDef->getName() );
+	
+			// show
+			tmp =  partElem->Attribute("show");
+			if (tmp)
+				partDef->setShow(Ogre::StringConverter::parseBool(tmp));
+	
+	
+			elem = partElem->FirstChildElement("subentities");
+			if (elem)
+				readSubEntities(elem, partDef);
+	
+		} else {
+			S_LOG_FAILURE( "A name must be specified for each part." );
+		}
 	}
 
 	if(notfound)
@@ -224,7 +246,7 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode,Mode
 	}
 }
 
-void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntNode,ModelDefinition::PartDefinition& part)
+void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntNode, PartDefinition* def)
 {
 
 	const char* tmp = 0;
@@ -233,27 +255,36 @@ void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntN
 	for (Ember::TiXmlElement* seElem = mSubEntNode->FirstChildElement();
             seElem != 0; seElem = seElem->NextSiblingElement())
 	{
-		ModelDefinition::SubEntityDefinition subEntityDef;
-		notfound = false;
-
+		SubEntityDefinition* subEntityDef = 0;
 		// name
-		tmp =  seElem->Attribute("name");
-		if (tmp)
-			subEntityDef.SubEntity = tmp;
-		S_LOG_VERBOSE( "   Add sub entity  : "+ subEntityDef.SubEntity  );
-
-		//material
-		tmp =  seElem->Attribute("material");
-		if (tmp)
-		{
-			subEntityDef.Material = tmp;
-			//preload subEntityDef.Material
-			Ogre::MaterialManager::getSingleton().load( subEntityDef.Material, 
-							Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-
+		tmp =  seElem->Attribute("index");
+		if (tmp) {
+				notfound = false;
+				subEntityDef = def->createSubEntityDefinition(Ogre::StringConverter::parseInt(tmp));
+				S_LOG_VERBOSE( "   Add sub entity with index: "+ subEntityDef->getSubEntityIndex());
+		} else {
+			tmp =  seElem->Attribute("name");
+			if (tmp) {
+				notfound = false;
+				subEntityDef = def->createSubEntityDefinition(tmp);
+				S_LOG_VERBOSE( "   Add sub entity: "+ subEntityDef->getSubEntityName());
+			}
 		}
+		if (!notfound) {
+			//material
+			tmp =  seElem->Attribute("material");
+			if (tmp)
+			{
+				subEntityDef->setMaterialName(tmp);
+				//preload subEntityDef.Material
+				//Ogre::MaterialManager::getSingleton().load( subEntityDef.Material, 
+								//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	
+			}
 
-		part.SubEntities.push_back(subEntityDef);
+		} else {
+			S_LOG_FAILURE( "A subentity name or index must be specified for each subentity." );
+		}
 	}
 
 	if(notfound)
@@ -272,34 +303,39 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 	for (Ember::TiXmlElement* animElem = mAnimNode->FirstChildElement();
             animElem != 0; animElem = animElem->NextSiblingElement())
 	{
-		ModelDefinition::ActionDefinition actionDef;
 		notfound=false;
 
 		tmp =  animElem->Attribute("name");
-		if (tmp)
-			actionDef.Name = tmp;
-		S_LOG_VERBOSE( " Add action  : "+ actionDef.Name  );
+		if (tmp) {
+			ActionDefinition* actionDef = modelDef->createActionDefinition(tmp);
+			S_LOG_VERBOSE( " Add action  : "<< tmp  );
 
-		elem = animElem->FirstChildElement("animationparts");
-		if (elem)
-			readAnimationParts(elem,actionDef);
-		
-		elem = animElem->FirstChildElement("sound");
-		if (elem) {
-			//only attach one sound to each action
-			ModelDefinition::SoundDefinition soundDef;
-			tmp =  animElem->Attribute("name");
-			if (tmp) { 
-				soundDef.Name = tmp;
-				tmp =  animElem->Attribute("repeat");
+			elem = animElem->FirstChildElement("animationparts");
+			if (elem)
+				readAnimationParts(elem,actionDef);
+			
+			elem = animElem->FirstChildElement("sound");
+			if (elem) {
+				//only attach one sound to each action
+				std::string name;
+				bool repeat = false;
+				Ogre::Real volume = 1.0f;
+				tmp =  animElem->Attribute("name");
 				if (tmp) { 
-					soundDef.Repeat = Ogre::StringConverter::parseBool(tmp);
+					name = tmp;
+					tmp =  animElem->Attribute("repeat");
+					if (tmp) { 
+						repeat = Ogre::StringConverter::parseBool(tmp);
+					}
+					tmp =  animElem->Attribute("volume");
+					if (tmp) { 
+						volume = Ogre::StringConverter::parseReal(tmp);
+					}
+					actionDef->createSoundDefinition(name, repeat, volume);
 				}
-				actionDef.Sounds.push_back(soundDef);
 			}
 		}
 
-		modelDef->mActions.push_back(actionDef);
 	}
 
 	if(notfound)
@@ -309,30 +345,37 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 
 }
 
-void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ModelDefinition::ActionDefinition& action)
+void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ActionDefinition* action)
 {
 	const char* tmp = 0;
 	bool nopartfound = true;
+	
+	tmp =  mAnimPartNode->Attribute("speed");
+	if (tmp) { 
+		action->setAnimationSpeed(Ogre::StringConverter::parseReal(tmp));
+	}
 
 	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
-		ModelDefinition::AnimationDefinition animDef;
+		std::string name;
+		Ogre::Real weight = 1.0f;
 		nopartfound = false;
 
 		// name
 		tmp =  apElem->Attribute("name");
-		if (tmp)
-			animDef.Name = tmp;
-		S_LOG_VERBOSE( "  Add animation  : "+ animDef.Name );
+		if (tmp) {
+			name = tmp;
+			S_LOG_VERBOSE( "  Add animation  : "+ name );
+		}
+	
 
 		// weight
 		tmp =  apElem->Attribute("weight");
 		if (tmp)
-			animDef.Weight = Ogre::StringConverter::parseReal(tmp);
+			weight = Ogre::StringConverter::parseReal(tmp);
 
-
-		action.Animations.push_back(animDef);
+		action->createAnimationDefinition(name, weight);
 	}
 
 	if(nopartfound)
@@ -344,7 +387,7 @@ void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnim
 
 void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode)
 {
-	ModelDefinition::AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
+	AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
 	
 	const char* tmp = 0;
 	bool nopartfound = true;
@@ -352,7 +395,7 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
-		ModelDefinition::AttachPointDefinition attachPointDef;
+		AttachPointDefinition attachPointDef;
 		nopartfound = false;
 
 		// name
@@ -449,4 +492,150 @@ Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlE
 	return Ogre::Vector3(x,y,z);
 }
 
+void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& filename)
+{
+	if (filename == "") {
+		return;
+	}
+
+	Ember::TiXmlDocument _XMLDoc;
+	
+	try
+	{
+		//make sure the directory exists
+		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/modeldefinitions/";
+		struct stat tagStat;
+		int ret;
+		ret = stat( dir.c_str(), &tagStat );
+		if (ret == -1) {
+			S_LOG_INFO("Creating directory " << dir);
+#ifdef __WIN32__
+			mkdir(dir.c_str());
+#else 
+			mkdir(dir.c_str(), S_IRWXU);
+#endif
+		}
+		
+		Ember::TiXmlElement elem("models");
+		Ember::TiXmlElement modelElem("model");
+		modelElem.SetAttribute("name", modelDef->getName().c_str());
+		
+		std::string useScaleOf;
+		switch (modelDef->getUseScaleOf()) {
+			case ModelDefinition::MODEL_ALL:
+				useScaleOf = "all";
+				break;
+			case ModelDefinition::MODEL_DEPTH:
+				useScaleOf = "depth";
+				break;
+			case ModelDefinition::MODEL_HEIGHT:
+				useScaleOf = "height";
+				break;
+			case ModelDefinition::MODEL_NONE:
+				useScaleOf = "none";
+				break;
+			case ModelDefinition::MODEL_WIDTH:
+				useScaleOf = "width";
+				break;
+		}
+		modelElem.SetAttribute("usescaleof", useScaleOf.c_str());
+		
+		modelElem.SetAttribute("showcontained", modelDef->getShowContained() ? "true" : "false");
+		
+		
+		//start with submodels
+		exportSubModels(modelDef, modelElem);
+		
+		//now do actions
+		exportActions(modelDef, modelElem);
+		
+		
+		
+		elem.InsertEndChild(modelElem);
+		
+		_XMLDoc.InsertEndChild(elem);
+		_XMLDoc.SaveFile((dir + filename).c_str());
+		S_LOG_INFO("Saved file " << (dir + filename));
+	}
+	catch (...)
+	{
+		S_LOG_FAILURE("An error occurred saving the modeldefinition for "<< modelDef->getName() << "." );
+	}
+		
+
+}
+
+void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+{
+	Ember::TiXmlElement actionsElem("actions");
+	
+	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
+		Ember::TiXmlElement actionElem("action");
+		actionElem.SetAttribute("name", (*I)->getName().c_str());
+		
+		if ((*I)->getAnimationDefinitions().size() > 0) {
+			Ember::TiXmlElement animationsElem("animationparts");
+			for (AnimationDefinitionsStore::const_iterator J = (*I)->getAnimationDefinitions().begin(); J != (*I)->getAnimationDefinitions().end(); ++J) {
+				Ember::TiXmlElement animationElem("animationpart");
+				animationElem.SetAttribute("name", (*J)->Name.c_str());
+				animationElem.SetDoubleAttribute("weight", (*J)->Weight);
+				
+				animationsElem.InsertEndChild(animationElem);
+			}
+			actionElem.InsertEndChild(animationsElem);
+		}
+		
+		//for now, only allow one sound
+		if ((*I)->getSoundDefinitions().size() > 0) {
+			SoundDefinition* def = *(*I)->getSoundDefinitions().begin();
+			Ember::TiXmlElement soundElem("sound");
+			soundElem.SetAttribute("name", def->Name.c_str());
+			soundElem.SetAttribute("repeat", def->Repeat);
+			soundElem.SetDoubleAttribute("volume", def->Volume);
+			actionElem.InsertEndChild(soundElem);
+		}
+		actionsElem.InsertEndChild(actionElem);
+	}
+	modelElem.InsertEndChild(actionsElem);
+}
+
+void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+{
+	Ember::TiXmlElement submodelsElem("submodels");
+	
+	for (SubModelDefinitionsStore::const_iterator I = modelDef->getSubModelDefinitions().begin(); I != modelDef->getSubModelDefinitions().end(); ++I) {
+		Ember::TiXmlElement submodelElem("submodel");
+		submodelElem.SetAttribute("mesh", (*I)->getMeshName().c_str());
+		Ember::TiXmlElement partsElem("parts");
+		
+		for (PartDefinitionsStore::const_iterator J = (*I)->getPartDefinitions().begin(); J != (*I)->getPartDefinitions().end(); ++J) {
+			Ember::TiXmlElement partElem("part");
+			partElem.SetAttribute("name", (*J)->getName().c_str());
+			partElem.SetAttribute("show", (*J)->getShow() ? "true" : "false");
+			
+			if ((*J)->getSubEntityDefinitions().size() > 0) {
+				Ember::TiXmlElement subentitiesElem("subentities");
+				for (SubEntityDefinitionsStore::const_iterator K = (*J)->getSubEntityDefinitions().begin(); K != (*J)->getSubEntityDefinitions().end(); ++K) {
+					Ember::TiXmlElement subentityElem("subentity");
+					if ((*K)->getSubEntityName() != "") {
+						subentityElem.SetAttribute("name", (*K)->getSubEntityName().c_str());
+					} else {
+						subentityElem.SetAttribute("index", (*K)->getSubEntityIndex());
+					}
+					if ((*K)->getMaterialName() != "") {
+						subentityElem.SetAttribute("material", (*K)->getMaterialName().c_str());
+					}
+					subentitiesElem.InsertEndChild(subentityElem);
+				}
+				partElem.InsertEndChild(subentitiesElem);
+			}
+			partsElem.InsertEndChild(partElem);
+		}
+		submodelsElem.InsertEndChild(partsElem);
+	}
+	modelElem.InsertEndChild(submodelsElem);
+
+}
+
 } //end namespace
+}

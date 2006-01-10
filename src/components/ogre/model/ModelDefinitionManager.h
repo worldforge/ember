@@ -29,6 +29,7 @@
 #include "ModelDefinition.h"
 
 namespace EmberOgre {
+namespace Model {
 
 /**
 @author Erik Hjortsberg
@@ -45,6 +46,8 @@ public:
 	inline void setSceneManager(Ogre::SceneManager* sceneManager) { mSceneManager = sceneManager; }
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 	
+	void exportScript(ModelDefnPtr definition);
+	
 	const ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
 protected:
 
@@ -60,7 +63,7 @@ protected:
 };
 
 
-
+}
 };
 
 #endif
