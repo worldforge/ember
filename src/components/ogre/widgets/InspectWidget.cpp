@@ -75,7 +75,7 @@ InspectWidget::InspectWidget() : mCurrentEntity(0)
 {
 
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(INSPECT,this);
-	Ember::EmberServices::getInstance()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
 
 void InspectWidget::Server_GotView(Eris::View* view)

@@ -1,0 +1,84 @@
+<?xml version="1.0" ?> 
+<GUILayout> 
+	<Window Type="DefaultGUISheet" Name="MainWindow">
+		<Property Name="Position" Value="x:0.25 y:0.25" /> 
+		<Property Name="Size" Value="w:0.15 h:0.2" /> 
+		<Property Name="Alpha" Value="0.5" /> 
+		<Property Name="Visible" Value="false" />
+		<Property Name="Enabled" Value="false" />
+		<Property Name="AlwaysOnTop" Value="true" />
+		
+		<Window Type="TaharezLook/StaticText" Name="EntityName">
+			<Property Name="Position" Value="x:0 y:0" /> 
+			<Property Name="Size" Value="w:1 h:0.3" /> 
+			<Property Name="InheritsAlpha" Value="true" /> 
+			<Property Name="FrameEnabled" Value="false" /> 
+			<Property Name="HorzFormatting" Value="HorzCentred" /> 
+		</Window>
+		
+		<Window Type="DefaultGUISheet" Name="Menu">
+			<Property Name="Position" Value="x:0 y:0.3" /> 
+			<Property Name="Size" Value="w:1 h:0.7" /> 
+			<Property Name="InheritsAlpha" Value="true" /> 
+			
+			<Window Type="TaharezLook/Button" Name="TouchButton">
+				<Property Name="Position" Value="x:0 y:0" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
+				<Property Name="Text" Value="Touch" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>		
+			
+			<Window Type="TaharezLook/Button" Name="TakeButton">
+				<Property Name="Position" Value="x:0 y:0.2" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
+				<Property Name="Text" Value="Take" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>		
+		
+			<Window Type="TaharezLook/Button" Name="GiveButton">
+				<Property Name="Position" Value="x:0 y:0.4" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
+				<Property Name="Text" Value="Give" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>		
+		
+			<Window Type="TaharezLook/Button" Name="InspectButton">
+				<Property Name="Position" Value="x:0 y:0.6" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
+				<Property Name="Text" Value="Inspect" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>		
+		
+			<Window Type="TaharezLook/Button" Name="UseButton">
+				<Property Name="Position" Value="x:0 y:0.8" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
+				<Property Name="Text" Value="Use" /> 
+				<Property Name="InheritsAlpha" Value="True" /> 
+			</Window>		
+		
+		</Window>
+	</Window>
+ </GUILayout> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

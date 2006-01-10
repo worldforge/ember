@@ -90,6 +90,11 @@ public Ember::ConsoleObject
 {
 public:
 
+	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text); 
+	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id);
+	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+	
+	
 	Widget();
 	virtual ~Widget();
 	
@@ -141,23 +146,10 @@ public:
 	CEGUI::Window* getWindow(const std::string& windowName);
 	
 	
-	
-protected:
-
-	
 	/**
 	 *    Call this method upon creation of the widget (for example in buildWidget) to enable the close button and wire it to the correct methods.
 	 */
 	void enableCloseButton();
-
-	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
-
-	/**
-	*    The suffixed used by registerConsoleVisibilityToggleCommand
-	* @see registerConsoleVisibilityToggleCommand
-	*/
-	std::string mCommandSuffix;
-	
 	
 	/**
 	 *    Call this method upon creation of the widget (for example in buildWidget) to register show and hide commands with the console.
@@ -168,20 +160,16 @@ protected:
 	void registerConsoleVisibilityToggleCommand(const std::string & commandSuffix);
 	
 	/**
-	*     The main window for the widget.
-	*/
-	CEGUI::Window* mMainWindow;
-
-	GUIManager* mGuiManager;
-	
-	/**
 	accessor to the main sheet of the gui system
 	*/
 	CEGUI::Window* getMainSheet();
+	
+	/**
+	 *    Accessor to the main window of the widget.
+	 * @return 
+	 */
+	CEGUI::Window* getMainWindow();
 
-	CEGUI::WindowManager* mWindowManager;
-	
-	
 	/**
 	 *    Loads a widget definition from a file and sets the main sheet
 	 * @param filename The name of the file to load
@@ -195,6 +183,32 @@ protected:
 	 * @return 
 	 */
 	inline const std::string& getPrefix() const { return mPrefix;}
+
+protected:
+
+	
+
+	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
+
+	/**
+	*    The suffixed used by registerConsoleVisibilityToggleCommand
+	* @see registerConsoleVisibilityToggleCommand
+	*/
+	std::string mCommandSuffix;
+	
+	
+	
+	/**
+	*     The main window for the widget.
+	*/
+	CEGUI::Window* mMainWindow;
+
+	GUIManager* mGuiManager;
+	
+
+	CEGUI::WindowManager* mWindowManager;
+	
+	
 	
 private:
 	std::string mPrefix;

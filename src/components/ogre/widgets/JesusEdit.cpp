@@ -43,11 +43,13 @@
 #include "../Avatar.h"
 #include "../EmberEntity.h"
 #include "../EmberPhysicalEntity.h"
-#include "../PersonEmberEntity.h"
+// #include "../PersonEmberEntity.h"
 #include "../AvatarEmberEntity.h"
 #include "../model/Model.h"
 #include "framework/ConsoleBackend.h"
 #include "../jesus/XMLJesusSerializer.h"
+
+#include "EntityCEGUITexture.h"
 
 namespace EmberOgre {
 
@@ -546,16 +548,7 @@ JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.widget", "JesusEditPreview/");
 	
-	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
-	mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
-	mEntityNode->setPosition(Ogre::Vector3(100000,100000,100000));
-	
-
-	//make the cameranode a child of the main entity node
-	mCameraNode = mEntityNode->createChildSceneNode();
-	mCameraNode->setPosition(Ogre::Vector3(0,5,-20));
 	guiManager->getMainSheet()->addChildWindow(mPreviewWindow);
-	createCamera();
 	createPreviewTexture();
 	setVisible(false);
 }
@@ -569,7 +562,7 @@ JesusEditPreview::~JesusEditPreview()
 void JesusEditPreview::setVisible(bool visible)
 {
 	mPreviewWindow->setVisible(visible);
-	mRenderTexture->setActive(visible);
+	mTexture->setActive(visible);
 }
 
 void JesusEditPreview::showBuildingBlock(const std::string & spec)
@@ -583,7 +576,7 @@ void JesusEditPreview::showBuildingBlock(const std::string & spec)
 	//delete mModelBlock;
 
 	mBlueprint = new Carpenter::BluePrint("preview", mJesus->getCarpenter());
-	mConstruction = new Construction(mBlueprint, mJesus, mEntityNode);
+	mConstruction = new Construction(mBlueprint, mJesus, mTexture->getSceneNode());
 	
 	Carpenter::BuildingBlockDefinition def;
 	def.mName = "preview";
@@ -599,9 +592,9 @@ void JesusEditPreview::showBuildingBlock(const std::string & spec)
 void JesusEditPreview::setZoom(float value)
 {
 	Ogre::Real newDistance = (mMaxCameraDistance * mMinCameraDistance) * value;
-	Ogre::Vector3 position = mCameraNode->getPosition();
+	Ogre::Vector3 position = mTexture->getCamera()->getPosition();
 	position.z = -newDistance;
-	mCameraNode->setPosition(position);
+	mTexture->getCamera()->setPosition(position);
 }
 
 bool JesusEditPreview::Zoom_ValueChanged(const CEGUI::EventArgs& args)
@@ -610,16 +603,6 @@ bool JesusEditPreview::Zoom_ValueChanged(const CEGUI::EventArgs& args)
 	return true;
 }
 
-void JesusEditPreview::createCamera()
-{	
-	mCamera = EmberOgre::getSingleton().getSceneManager()->createCamera("JesusPreviewCamera");
-
-	//track the node containing the model
-	mCamera->setAutoTracking(true, mEntityNode);
-	mCamera->setNearClipDistance(0.01);
-	mCamera->setFarClipDistance(100);
-	mCameraNode->attachObject(mCamera);
-}
 
 void JesusEditPreview::selectAttachPoint(const Carpenter::AttachPoint* point)
 {
@@ -645,36 +628,13 @@ void JesusEditPreview::selectAttachPoint(const Carpenter::AttachPoint* point)
 
 void JesusEditPreview::createPreviewTexture()
 {
-
-
-	//first, create a RenderTexture to which the Ogre renderer should render the image
-	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "JesusEditPreview", 256, 256 );
-	mRenderTexture->removeAllViewports();
-	mRenderTexture->setActive(false);
-	
-	//make sure the camera renders into this new texture
-	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
-	//don't show the CEGUI
-	v->setOverlaysEnabled(false);
-	//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
-	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
-	
-	//create a CEGUI texture from our Ogre texture
-	CEGUI::Texture* ceguiTexture = mGuiManager->getGuiRenderer()->createTexture(texPtr);
-	
-	//we need a imageset in order to create GUI elements from the ceguiTexture
-	CEGUI::Imageset* imageSet = CEGUI::ImagesetManager::getSingleton().createImageset("JesusEditPreview", ceguiTexture);
-	
-	//we only want one element: the whole texture
-	imageSet->defineImage("full", CEGUI::Rect(0,0,256,256), CEGUI::Point(0,0));
-	
-	
 	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Image"));
+	mTexture = new EntityCEGUITexture(imageWidget->getName().c_str(), 256, 256);
+	imageWidget->setImage(mTexture->getImage());
+
 	
 	mZoomSlider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Zoom"));
 	BIND_CEGUI_EVENT(mZoomSlider, CEGUI::Slider::EventValueChanged, JesusEditPreview::Zoom_ValueChanged);
-	//assign our image element to the StaticImage widget
-	imageWidget->setImage(&imageSet->getImage("full"));
 
 }
 

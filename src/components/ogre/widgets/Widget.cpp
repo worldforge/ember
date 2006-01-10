@@ -40,8 +40,29 @@ namespace EmberOgre
 		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	}
 
+	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text)
+	{
+		return new ColoredListItem(text);
+	}
 	
-	Widget::Widget()
+	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text, unsigned int item_id)
+	{
+		return new ColoredListItem(text, item_id);
+	}
+	
+	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
+	{
+		return new ColoredListItem(text, item_id, item_data);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	Widget::Widget() : mMainWindow(0), mCommandSuffix("")
 	{
 	}
 	
@@ -54,6 +75,12 @@ namespace EmberOgre
 	
 	Widget::~Widget()
 	{
+		if (mCommandSuffix != "") {
+			Ember::ConsoleBackend::getMainConsole()->deregisterCommand("show_" + mCommandSuffix);
+		}
+		if (mMainWindow) {
+			CEGUI::WindowManager::getSingleton().destroyWindow(mMainWindow);
+		}
 		mGuiManager->removeWidget(this);
 	}
 	
@@ -102,6 +129,7 @@ namespace EmberOgre
 		if (GetFactories().find(name) == GetFactories().end()) {
 			return 0;
 		}
+		
 		Widget* widget = GetFactories()[name]();
 		return widget;
 	}
@@ -169,6 +197,11 @@ namespace EmberOgre
 		assert(mMainWindow);
 		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventCloseClicked, Widget::MainWindow_CloseClick);
 	}
-	
+		
+	CEGUI::Window* Widget::getMainWindow()
+	{
+		return mMainWindow;
+	}
+
 
 }

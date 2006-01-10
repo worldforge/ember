@@ -35,7 +35,7 @@
 
 #include "../EmberEntity.h"
 #include "../EmberPhysicalEntity.h"
-#include "../PersonEmberEntity.h"
+// #include "../PersonEmberEntity.h"
 #include "../AvatarEmberEntity.h"
 #include "../EmberOgre.h"
 
@@ -65,7 +65,7 @@ void Help::buildWidget()
 	
 	enableCloseButton();
 	
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	if (configSrv->itemExists("general", "startuphelp") && !((bool)configSrv->getValue("general", "startuphelp"))) {
 		mMainWindow->setVisible(false);

@@ -35,7 +35,7 @@
 
 #include "../EmberEntity.h"
 #include "../EmberPhysicalEntity.h"
-#include "../PersonEmberEntity.h"
+// #include "../PersonEmberEntity.h"
 #include "../AvatarEmberEntity.h"
 
 #include "MakeEntityWidget.h"
@@ -78,8 +78,6 @@ void MakeEntityWidget::buildWidget()
 {
 
 	loadMainSheet("MakeEntityWidget.xml", "MakeEntity/");
-	//mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/MakeEntityWidget.xml", "MakeEntity/");
-	//mMainWindow->setVisible(false);
 	
 	mTypeList = static_cast<CEGUI::Listbox*>(getWindow("TypeList"));
 	mName = static_cast<CEGUI::Editbox*>(getWindow("Name"));
@@ -91,10 +89,9 @@ void MakeEntityWidget::buildWidget()
 	
 	
 
-	Ember::EmberServices::getInstance()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
-	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
 
-	//getMainSheet()->addChildWindow(mMainWindow); 
 
 	registerConsoleVisibilityToggleCommand("entitycreator");
 	enableCloseButton();

@@ -103,10 +103,10 @@ void ServerWidget::buildWidget()
 	
 	
 		
-	Ember::EmberServices::getInstance()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
-	Ember::EmberServices::getInstance()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
-	Ember::EmberServices::getInstance()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
-	Ember::EmberServices::getInstance()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
 	
 	mMainWindow->setVisible(false);
 
@@ -178,7 +178,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 	
 		std::string* id = static_cast<std::string*>(item->getUserData());
 		
-		Ember::EmberServices::getInstance()->getServerService()->takeCharacter(*id);
+		Ember::EmberServices::getSingletonPtr()->getServerService()->takeCharacter(*id);
 	}
 	return true;
 }
@@ -186,7 +186,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {
 		
-	Ember::EmberServices::getInstance()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description);
+	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description);
 	return true;
 }
 

@@ -27,7 +27,7 @@
 
 #include "../EmberEntity.h"
 #include "../EmberPhysicalEntity.h"
-#include "../PersonEmberEntity.h"
+// #include "../PersonEmberEntity.h"
 #include "../AvatarEmberEntity.h"
 #include "../EmberEntityFactory.h"
 #include "../EmberOgre.h"
@@ -54,12 +54,9 @@ void InventoryWidget::buildWidget()
 	
 
 	loadMainSheet("InventoryWidget.xml", "Inventory/");
-/*	mMainWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/InventoryWidget.xml", "Inventory/");*/
 	mMainWindow->setVisible(false);
-//	mMainWindow->setAlwaysOnTop(true);
 	
 	mListBox = static_cast<CEGUI::Listbox*>(getWindow("ListBox"));
-// 	getMainSheet()->addChildWindow(mMainWindow); 
 	
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &InventoryWidget::createdAvatarEmberEntity));
 	
@@ -109,7 +106,7 @@ bool InventoryWidget::Drop_Click(const CEGUI::EventArgs& args)
 		Ogre::Vector3 o_pos = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getSceneNode()->getOrientation() * o_vector;
 
 		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
-		Ember::EmberServices::getInstance()->getServerService()->drop(entity, Ogre2Atlas_Vector3(o_pos));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->drop(entity, Ogre2Atlas_Vector3(o_pos));
 	}
 	return true;
 }
@@ -119,7 +116,7 @@ bool InventoryWidget::Wield_Click(const CEGUI::EventArgs& args)
 	CEGUI::ListboxItem* item = mListBox->getFirstSelectedItem();
 	if (item) {
 		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
-		Ember::EmberServices::getInstance()->getServerService()->wield(entity);
+		Ember::EmberServices::getSingletonPtr()->getServerService()->wield(entity);
 	}
 	return true;
 }

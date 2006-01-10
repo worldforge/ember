@@ -23,10 +23,10 @@
 
 #include "WidgetDefinitions.h"
 
-#include "ServerBrowserWidget.h"
+// #include "ServerBrowserWidget.h"
 #include "ServerWidget.h"
-#include "ChatWidget.h"
-#include "EntityPickerWidget.h"
+// #include "ChatWidget.h"
+// #include "EntityPickerWidget.h"
 #include "InventoryWidget.h"
 #include "InspectWidget.h"
 #include "MakeEntityWidget.h"
@@ -34,7 +34,7 @@
 #include "DebugWidget.h"
 #include "IngameChatWidget.h"
 #include "ConsoleWidget.h"
-#include "Performance.h"
+// #include "Performance.h"
 #include "JesusEdit.h"
 #include "Help.h"
 #include "Quit.h"
@@ -48,10 +48,11 @@ namespace EmberOgre
 
 WidgetDefinitions::WidgetDefinitions()
 {
-	WidgetLoader::registerWidget("ServerBrowserWidget", &WidgetLoader::createWidgetInstance<ServerBrowserWidget>);
+	WidgetLoader::registerWidget("Widget", &WidgetLoader::createWidgetInstance<Widget>);
+// 	WidgetLoader::registerWidget("ServerBrowserWidget", &WidgetLoader::createWidgetInstance<ServerBrowserWidget>);
 	WidgetLoader::registerWidget("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
-	WidgetLoader::registerWidget("ChatWidget", &WidgetLoader::createWidgetInstance<ChatWidget>);
-	WidgetLoader::registerWidget("EntityPickerWidget", &WidgetLoader::createWidgetInstance<EntityPickerWidget>);
+// 	WidgetLoader::registerWidget("ChatWidget", &WidgetLoader::createWidgetInstance<ChatWidget>);
+// 	WidgetLoader::registerWidget("EntityPickerWidget", &WidgetLoader::createWidgetInstance<EntityPickerWidget>);
 	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<InventoryWidget>);
 	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
@@ -59,7 +60,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("DebugWidget", &WidgetLoader::createWidgetInstance<DebugWidget>);
 	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<IngameChatWidget>);
 	WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);
-	WidgetLoader::registerWidget("Performance", &WidgetLoader::createWidgetInstance<Performance>);
+// 	WidgetLoader::registerWidget("Performance", &WidgetLoader::createWidgetInstance<Performance>);
 	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidget("Quit", &WidgetLoader::createWidgetInstance<Quit>);

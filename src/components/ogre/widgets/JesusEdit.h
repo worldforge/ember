@@ -36,6 +36,8 @@
 #include "framework/ConsoleObject.h"
 
 
+
+
 namespace Carpenter
 {
 class AttachPair;
@@ -54,15 +56,18 @@ class Carpenter;
 
 namespace EmberOgre {
 
+namespace Model {
+	class Model;
+}
+
 class JesusMousePicker;
 class ModelBlock;
 class AttachPointNode;
 class Construction;
 class Jesus;
-class Model;
 class JesusEdit;
 
-
+class EntityCEGUITexture;
 
 /**
 @author Erik Hjortsberg
@@ -130,6 +135,8 @@ protected:
 	AttachPointNode* mSelectedAttachPointNode;
 	
 	Ogre::RenderTexture* mRenderTexture;
+	
+	EntityCEGUITexture* mTexture;
 };
 
 class JesusEditFile

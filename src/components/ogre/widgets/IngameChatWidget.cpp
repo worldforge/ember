@@ -44,7 +44,7 @@
 
 #include "../EmberEntity.h"
  #include "../EmberPhysicalEntity.h"
- #include "../PersonEmberEntity.h"
+//  #include "../PersonEmberEntity.h"
  #include "../AvatarEmberEntity.h"
 
 #include "services/EmberServices.h"
@@ -66,7 +66,7 @@ IngameChatWidget::~IngameChatWidget()
 
 void IngameChatWidget::buildWidget()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getInstance()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	if (configSrv->itemExists("ingamechatwidget", "timeshown")) {
 		timeShown = (double)configSrv->getValue("ingamechatwidget", "timeshown");
 	} else {
@@ -107,7 +107,7 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 	ActiveChatWindowMap::iterator I = mActiveChatWindows.find(entity->getId());
 	if (I == mActiveChatWindows.end()) {
 		//there is no chat window for this entity, let's create one
-		chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"cegui/widgets/IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
+		chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
 		getMainSheet()->addChildWindow(chatWindow);
 		
 		ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, entity, mWindowManager);
@@ -117,16 +117,7 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 		mActiveChatWindows[entity->getId()]->updateText(line);
 	} else {
 		I->second->updateText(line);
-/*			chatWindow = I->second.window;*/
 	}
-		
-		//chatWindow->setAlpha(1.0f);
-		
-		//TODO: make this better
-		//cegui seems to crash when calling it
-		//chatWindow->moveToBack();
-		
-		
 
 }
 
@@ -188,7 +179,7 @@ bool EmberOgre::IngameChatWidget::ActiveChatWindow::buttonResponse_Click(const C
 	const CEGUI::MouseEventArgs *mouseArgs = static_cast<const CEGUI::MouseEventArgs*>(&args);
 	if (mouseArgs) {
 		const CEGUI::String text = mouseArgs->window->getText();
-		Ember::EmberServices::getInstance()->getServerService()->say(std::string(text.c_str()));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
 	}
 //	removeMenu();
 	return true;

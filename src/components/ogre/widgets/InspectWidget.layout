@@ -22,10 +22,8 @@
 			<Window Type="TaharezLook/Listbox" Name="ChildList">
 				<Property Name="Position" Value="x:0 y:0.6" /> 
 				<Property Name="Size" Value="w:0.95 h:0.2" /> 
-				<Property Name="Text" Value="Contains" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Alpha" Value="0.6" /> 
-				<Property Name="ReadOnly" Value="true" /> 
 			</Window>
 			<Window Type="TaharezLook/Button" Name="ShowOgreBoundingBox">
 				<Property Name="Position" Value="x:0.0 y:0.8" /> 
