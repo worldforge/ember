@@ -135,20 +135,20 @@ namespace Ember
     S_LOG_INFO("Server List completed.");
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << count << ENDM;
 	
-    stringstream out;
-    out << "Listing hostnames..." << endl;
-		
-    for(int i = 0; i < count; i++)
-      {	
-	//HINT: Always use .c_str() for compatibility to MSVC
-	Eris::ServerInfo inf = mMetaserver->getInfoForServer(i);
-	
-
-	out << "Hostname: " << inf.getHostname().c_str() << endl;
-      }
-
-
-    S_LOG_INFO( out.str());
+//     stringstream out;
+//     out << "Listing hostnames..." << endl;
+// 		
+//     for(int i = 0; i < count; i++)
+//       {	
+// 	//HINT: Always use .c_str() for compatibility to MSVC
+// 	Eris::ServerInfo inf = mMetaserver->getInfoForServer(i);
+// 	
+// 
+// 	out << "Hostname: " << inf.getHostname().c_str() << endl;
+//       }
+// 
+// 
+//     S_LOG_INFO( out.str());
 
   }
 

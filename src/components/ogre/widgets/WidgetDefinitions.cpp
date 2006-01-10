@@ -30,7 +30,7 @@
 #include "InventoryWidget.h"
 #include "InspectWidget.h"
 #include "MakeEntityWidget.h"
-#include "GiveWidget.h"
+//#include "GiveWidget.h"
 #include "DebugWidget.h"
 #include "IngameChatWidget.h"
 #include "ConsoleWidget.h"
@@ -56,7 +56,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<InventoryWidget>);
 	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
-	WidgetLoader::registerWidget("GiveWidget", &WidgetLoader::createWidgetInstance<GiveWidget>);
+	//WidgetLoader::registerWidget("GiveWidget", &WidgetLoader::createWidgetInstance<GiveWidget>);
 	WidgetLoader::registerWidget("DebugWidget", &WidgetLoader::createWidgetInstance<DebugWidget>);
 	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<IngameChatWidget>);
 	WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);

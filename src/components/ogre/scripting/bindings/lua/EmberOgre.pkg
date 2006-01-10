@@ -28,7 +28,7 @@ $pfile "Jesus.pkg"
 $pfile "MathConverter.pkg"
 
 $pfile "ModelRenderer.pkg"
-$pfile "MaterialPicker.pkg"
+//$pfile "MaterialPicker.pkg"
 
 $pfile "ModelDefinitionManager.pkg"
 

@@ -20,7 +20,7 @@
 #include "EmberPhysicalEntity.h"
 #include "model/Model.h"
 
-#include "PersonEmberEntity.h"
+// #include "PersonEmberEntity.h"
 namespace EmberOgre {
 
 PersonEmberEntity::PersonEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 

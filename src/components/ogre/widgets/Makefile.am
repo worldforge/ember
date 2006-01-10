@@ -24,14 +24,13 @@ uninstall-local:
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_LIBRARIES = libWidgets.a
-libWidgets_a_SOURCES = Widget.cpp Widget.h 							ConsoleWidget.cpp \
-				ConsoleWidget.h DebugWidget.cpp DebugWidget.h 									GiveWidget.cpp GiveWidget.h \
-		IngameChatWidget.cpp IngameChatWidget.h 									IngameEventsWidget.cpp IngameEventsWidget.h \
-		InspectWidget.cpp InspectWidget.h 									InventoryWidget.cpp InventoryWidget.h \
-		MakeEntityWidget.cpp MakeEntityWidget.h 									ServerWidget.cpp ServerWidget.h 		 \
-									WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp 			IconBase.cpp StatusIconBar.cpp \
-		MeshPreview.cpp MaterialPicker.cpp EntityCEGUITexture.cpp ModelRenderer.cpp
+libWidgets_a_SOURCES = Widget.cpp ConsoleWidget.cpp DebugWidget.cpp IngameChatWidget.cpp \
+InspectWidget.cpp InventoryWidget.cpp MakeEntityWidget.cpp ServerWidget.cpp \
+WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp IconBase.cpp StatusIconBar.cpp \
+MeshPreview.cpp EntityCEGUITexture.cpp ModelRenderer.cpp
 #TerrainEdit.cpp Map.cpp
 noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h Quit.h IconBase.h \
-				StatusIconBar.h MeshPreview.h MaterialPicker.h EntityCEGUITexture.h ModelRenderer.h
+StatusIconBar.h MeshPreview.h EntityCEGUITexture.h ModelRenderer.h \
+MakeEntityWidget.h ConsoleWidget.h Widget.h DebugWidget.h IngameChatWidget.h \
+InspectWidget.h ServerWidget.h InventoryWidget.h
 #TerrainEdit.h Map.h

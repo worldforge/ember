@@ -208,18 +208,11 @@ void GUIManager::initialize()
 		
 		createWidget("StatusIconBar");
 		createWidget("IngameChatWidget");
-		//createWidget("DebugWidget");
-		//createWidget("Performance");
-
-//		createWidget("ChatWidget");
 		createWidget("InventoryWidget");
-		//createWidget("ServerBrowserWidget");
 		createWidget("InspectWidget");
 		createWidget("MakeEntityWidget");
 		createWidget("JesusEdit");
 		createWidget("ServerWidget");
-		//createWidget("GiveWidget");
-		//createWidget("EntityPickerWidget");
 		createWidget("Help");
 		createWidget("MeshPreview");
 

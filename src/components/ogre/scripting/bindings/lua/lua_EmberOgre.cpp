@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sun Jan  8 22:47:11 2006.
+** Generated automatically by tolua++-1.0.6 on Tue Jan 10 21:40:53 2006.
 */
 
 #ifndef __cplusplus
@@ -166,13 +166,6 @@ static int tolua_collect_EmberOgre__Widget (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_EmberOgre__MaterialPicker (lua_State* tolua_S)
-{
- EmberOgre::MaterialPicker* self = (EmberOgre::MaterialPicker*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
 static int tolua_collect_EmberOgre__AvatarControllerMovement (lua_State* tolua_S)
 {
  EmberOgre::AvatarControllerMovement* self = (EmberOgre::AvatarControllerMovement*) tolua_tousertype(tolua_S,1,0);
@@ -293,29 +286,28 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::SubEntityDefinition*>");
  tolua_usertype(tolua_S,"sigc::signal<void,Ogre::Camera*>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::AttachPointNode*>");
  tolua_usertype(tolua_S,"Ogre::Resource");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
- tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::EntityPickResult&,const EmberOgre::MousePickerArgs&>");
- tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
+ tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::MouseMotion&,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"EmberOgre::Model::Action");
- tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
+ tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
+ tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"Eris::View");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
- tolua_usertype(tolua_S,"Ogre;;ResourceManager");
  tolua_usertype(tolua_S,"EmberOgre::ModelBlock");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>");
- tolua_usertype(tolua_S,"EmberOgre::MaterialPicker");
+ tolua_usertype(tolua_S,"Ogre;;ResourceManager");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
  tolua_usertype(tolua_S,"Ogre::Camera");
  tolua_usertype(tolua_S,"Mercator::Area");
@@ -9045,123 +9037,6 @@ static int tolua_EmberOgre_EmberOgre_ModelRenderer_getCameraDistance00(lua_State
 #endif
 }
 
-/* method: new of class  EmberOgre::MaterialPicker */
-static int tolua_EmberOgre_EmberOgre_MaterialPicker_new00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertable(tolua_S,1,"EmberOgre::MaterialPicker",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
- {
-  EmberOgre::MaterialPicker* tolua_ret = (EmberOgre::MaterialPicker*)  new EmberOgre::MaterialPicker();
- tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::MaterialPicker");
- }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: new_local of class  EmberOgre::MaterialPicker */
-static int tolua_EmberOgre_EmberOgre_MaterialPicker_new00_local(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertable(tolua_S,1,"EmberOgre::MaterialPicker",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
- {
-  EmberOgre::MaterialPicker* tolua_ret = (EmberOgre::MaterialPicker*)  new EmberOgre::MaterialPicker();
- tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::MaterialPicker");
- }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: delete of class  EmberOgre::MaterialPicker */
-static int tolua_EmberOgre_EmberOgre_MaterialPicker_delete00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::MaterialPicker",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::MaterialPicker* self = (EmberOgre::MaterialPicker*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
-#endif
- delete self;
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: getAllMaterialNames of class  EmberOgre::MaterialPicker */
-static int tolua_EmberOgre_EmberOgre_MaterialPicker_getAllMaterialNames00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::MaterialPicker",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::MaterialPicker* self = (EmberOgre::MaterialPicker*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAllMaterialNames'",NULL);
-#endif
- {
-  std::vector<std::string> tolua_ret = (std::vector<std::string>)  self->getAllMaterialNames();
- {
-#ifdef __cplusplus
- void* tolua_obj = new std::vector<std::string>(tolua_ret);
- tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::vector<std::string>");
-#else
- void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::vector<std::string>));
- tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::vector<std::string>");
-#endif
- }
- }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getAllMaterialNames'.",&tolua_err);
- return 0;
-#endif
-}
-
 /* method: getSingleton of class  EmberOgre::Model::ModelDefinitionManager */
 static int tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getSingleton00(lua_State* tolua_S)
 {
@@ -11863,21 +11738,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"showFullModel",tolua_EmberOgre_EmberOgre_ModelRenderer_showFullModel00);
  tolua_function(tolua_S,"setCameraDistance",tolua_EmberOgre_EmberOgre_ModelRenderer_setCameraDistance00);
  tolua_function(tolua_S,"getCameraDistance",tolua_EmberOgre_EmberOgre_ModelRenderer_getCameraDistance00);
- tolua_endmodule(tolua_S);
- tolua_endmodule(tolua_S);
- tolua_module(tolua_S,"EmberOgre",0);
- tolua_beginmodule(tolua_S,"EmberOgre");
-#ifdef __cplusplus
- tolua_cclass(tolua_S,"MaterialPicker","EmberOgre::MaterialPicker","",tolua_collect_EmberOgre__MaterialPicker);
-#else
- tolua_cclass(tolua_S,"MaterialPicker","EmberOgre::MaterialPicker","",NULL);
-#endif
- tolua_beginmodule(tolua_S,"MaterialPicker");
- tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_MaterialPicker_new00);
- tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_MaterialPicker_new00_local);
- tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_MaterialPicker_new00_local);
- tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_MaterialPicker_delete00);
- tolua_function(tolua_S,"getAllMaterialNames",tolua_EmberOgre_EmberOgre_MaterialPicker_getAllMaterialNames00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);
