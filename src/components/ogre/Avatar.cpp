@@ -35,7 +35,7 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
+//#include "PersonEmberEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
 //#include "MotionManager.h"
@@ -74,7 +74,7 @@ Avatar::Avatar()
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
-	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
+	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
 	
 	//update values from the config
 	updateFromConfig();
@@ -179,6 +179,7 @@ void Avatar::updateFrame(AvatarControllerMovement& movement)
 	//this next method will however send send stuff to the server
 	attemptMove(movement);
 	
+	//TODO: make sure this only is called if there was movement
 	adjustAvatarToNewPosition(&movement);
 	
 	/*
@@ -265,9 +266,9 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 		
 
 		//for now we'll only send velocity
-		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(newMovementState.orientation * newMovementState.velocity), Ogre2Atlas(newMovementState.orientation));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(newMovementState.orientation * newMovementState.velocity), Ogre2Atlas(newMovementState.orientation));
 
-//		Ember::EmberServices::getInstance()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
+//		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
 
 	} else {
 		mTimeSinceLastServerMessage += timeSlice * 1000;
@@ -284,10 +285,9 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 
 void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
 {
-	//get the new coordinates of the avatar and check with mercator to adjust for
-	//height
+	///allow the eris entity to adjust to the containing node
 	if (mErisAvatarEntity) {
-		mErisAvatarEntity->adjustHeightPosition();
+		mErisAvatarEntity->adjustPosition();
 	}
 //	MotionManager::getSingleton().adjustHeightPositionForNode(mAvatarNode);
 }
@@ -403,8 +403,8 @@ void Avatar::ConfigService_EventChangedConfigItem(const std::string& section, co
 
 void Avatar::updateFromConfig()
 {
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("general", "avatarrotationupdatefrequency")) {
-		double frequency = static_cast<double>(Ember::EmberServices::getInstance()->getConfigService()->getValue("general", "avatarrotationupdatefrequency"));
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "avatarrotationupdatefrequency")) {
+		double frequency = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "avatarrotationupdatefrequency"));
 		setMinIntervalOfRotationChanges(static_cast<Ogre::Real>(frequency));
 	}
 
@@ -413,7 +413,7 @@ void Avatar::updateFromConfig()
 
 // void Avatar::touch(EmberEntity* entity)
 // {
-// 	Ember::EmberServices::getInstance()->getServerService()->touch(entity);
+// 	Ember::EmberServices::getSingletonPtr()->getServerService()->touch(entity);
 // }
 
 /*

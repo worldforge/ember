@@ -51,12 +51,16 @@
 
 
 namespace EmberOgre {
+
+namespace Model {
+	class Model;
+}
+
 class EmberEntity;
 class AvatarCamera;
 class AvatarController;
 class AvatarEmberEntity;
 struct AvatarControllerMovement;
-class Model;
 
 struct AvatarMovementState
 {
@@ -86,10 +90,7 @@ public Ogre::FrameListener
 	Avatar();
 	~Avatar();
 
-	Ogre::Camera* getAvatar1pCamera(void);
-	Ogre::Camera* getAvatar3pCamera(void);
-	Ogre::Camera* getAvatarTopCamera(void);
-	
+
 	AvatarCamera* getAvatarCamera() const;
 	
 	Ogre::SceneNode* getAvatarSceneNode() const
@@ -214,7 +215,7 @@ protected:
 	/*
 	 * The main avatar entity
 	 */
-	Model* mAvatarModel;
+	Model::Model* mAvatarModel;
 	
 	/* 
 	 * The main avatar scenenode

@@ -74,13 +74,13 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	}
 
 	
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
-		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "cameradegreespersecond");
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
+		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
 	}
 	
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETCAMERADISTANCE,this);
 
-	Ember::EmberServices::getInstance()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
 	
 	updateValuesFromConfig();
 }
@@ -447,12 +447,12 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 		return true; 
 	}
 
-	inline void AvatarCamera::setClosestPickingDistance(Ogre::Real distance)
+	void AvatarCamera::setClosestPickingDistance(Ogre::Real distance)
 	{
 		mClosestPickingDistance = distance; 
 	}
 	
-	inline Ogre::Real AvatarCamera::getClosestPickingDistance() 
+	Ogre::Real AvatarCamera::getClosestPickingDistance() 
 	{ 
 		return mClosestPickingDistance; 
 	}
@@ -508,8 +508,8 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	
 void AvatarCamera::updateValuesFromConfig()
 {
-	if (Ember::EmberServices::getInstance()->getConfigService()->itemExists("input", "invertcamera")) {
-		mInvertCamera = static_cast<bool>(Ember::EmberServices::getInstance()->getConfigService()->getValue("input", "invertcamera"));
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "invertcamera")) {
+		mInvertCamera = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "invertcamera"));
 	}
 	
 }

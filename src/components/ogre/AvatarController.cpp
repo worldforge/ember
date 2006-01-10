@@ -23,7 +23,7 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
+//#include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 #include "AvatarCamera.h"
 #include "GUIManager.h"

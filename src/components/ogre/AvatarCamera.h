@@ -54,9 +54,7 @@ struct EntityPickResult;
 class AvatarCamera 
 :
 public sigc::trackable,
-//virtual public SigC::Object , 
 public Ember::ConsoleObject
-//: public Ogre::FrameListener 
 {
 public:
 
@@ -148,8 +146,8 @@ public:
 	EntityPickResult pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
 	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
-	inline void setClosestPickingDistance(Ogre::Real distance);
-	inline Ogre::Real getClosestPickingDistance();
+	void setClosestPickingDistance(Ogre::Real distance);
+	Ogre::Real getClosestPickingDistance();
 
 	// worldToScreenPos 
 	// 

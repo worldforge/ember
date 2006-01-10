@@ -23,7 +23,8 @@
 #   define STAT(A,S)    _stat(A,S)
 #else //_LINUX _APPLE
 
-#   include <malloc.h>
+#include <stdlib.h>
+//#   include <malloc.h>
 #   include <unistd.h>
 #   include <sys/param.h>
 
