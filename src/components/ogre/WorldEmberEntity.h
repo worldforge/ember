@@ -35,10 +35,10 @@ public:
 	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
 	virtual ~WorldEmberEntity();
 
-	virtual void adjustHeightPositionForContainedNode(EmberEntity* const entity);
-	virtual float getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity);
+	virtual void adjustPositionForContainedNode(EmberEntity* const entity);
 
 protected:
+	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	TerrainGenerator* mTerrainGenerator;
 	
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);

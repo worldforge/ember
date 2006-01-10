@@ -71,7 +71,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 	
 }
 
-void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity)
+void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 {
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	Ogre::Vector3 position = sceneNode->getPosition();
@@ -79,7 +79,7 @@ void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const e
 	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
 	} else if (entity->getMovementMode() == EmberEntity::MM_SWIMMING) {
-	//if it's swimming, make sure that it's between the sea bottom and the surface
+	///if it's swimming, make sure that it's between the sea bottom and the surface
 		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
 		float height = mTerrainGenerator->getHeight(pos);
 		if (position.y < height) {
@@ -89,19 +89,25 @@ void WorldEmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const e
 		}
 		
 	} else {
-		//get the height from Mercator through the TerrainGenerator
-		assert(mTerrainGenerator);
+		///get the height from Mercator through the TerrainGenerator
+/*		assert(mTerrainGenerator);
 //		TerrainPosition pos(entity->getPredictedPos().x(), entity->getPredictedPos().y());
 		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
-		float height = mTerrainGenerator->getHeight(pos);
-		sceneNode->setPosition(position.x, height,position.z);
+		float height = mTerrainGenerator->getHeight(pos);*/
+		EmberEntity::adjustPositionForContainedNode(entity);
+		//sceneNode->setPosition(getOffsetForContainedNode(position, entity));
 	}
 
 }
 
-float WorldEmberEntity::getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity)
+Ogre::Vector3 WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
 {
-	return mTerrainGenerator->getHeight(position);
+	assert(mTerrainGenerator);
+	Ogre::Vector3 offset = Ogre::Vector3::ZERO;
+	float height = mTerrainGenerator->getHeight(Ogre2Atlas_TerrainPosition(localPosition));
+	offset.y = height - localPosition.y;
+	return offset;
+	//return mTerrainGenerator->getHeight(position);
 
 }
 

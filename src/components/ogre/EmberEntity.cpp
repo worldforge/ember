@@ -31,6 +31,8 @@
 #include <OgreWireBoundingBox.h>
 #include <Mercator/Area.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/View.h>
 
 
 
@@ -131,7 +133,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 	// set the Ogre node position and orientation based on Atlas data
 	if (getPosition().isValid()) {
 		getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
-		adjustHeightPosition();
+		adjustPosition();
 	}
 	if (getOrientation().isValid()) {
 		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
@@ -175,7 +177,7 @@ void EmberEntity::createSceneNode()
 void EmberEntity::updateMotion(Ogre::Real timeSlice)
 {
 	getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
-	adjustHeightPosition();
+	adjustPosition();
 	
 	//if there's a debug bounding box for the eris entity, update it's position
 	if (mErisEntityBoundingBox) {
@@ -258,7 +260,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
 /*	// Make a sound if it's the merchant speaking
 	if(type.compare("merchant")==0) {
 		S_LOG_INFO( "THE MERCHANT IS SPEAKING" )
-		Ember::EmberServices::getInstance()->getSoundService()->playTestGYPH();
+		Ember::EmberServices::getSingletonPtr()->getSoundService()->playTestGYPH();
 	}*/
 	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
@@ -301,48 +303,48 @@ void EmberEntity::setVisible(bool visible)
 }
 
 
-void EmberEntity::adjustHeightPosition()
+void EmberEntity::adjustPosition()
 {
 	if (mMovementMode == MM_FIXED) {
 
 	} else {
-		EmberEntity* container = static_cast<EmberEntity*>(getLocation());
+		EmberEntity* container = getEmberLocation();
 		if (container) {
-			container->adjustHeightPositionForContainedNode(this);
+			container->adjustPositionForContainedNode(this);
 		}
 	}	
 }
 
-float EmberEntity::getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity)
+Ogre::Vector3 EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
 {
-	float height = 0;
-	//send it upwards until we get a an entity which knows how to set the height
-	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
+	Ogre::Vector3 offset = Ogre::Vector3::ZERO;
+	///send it upwards until we get a an entity which knows how to set the position (we'll in most cases end up in the world which will adjust the height a bit
+	EmberEntity* container = getEmberLocation();
 	if (container) {
-		TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
-		height = container->getHeightPositionForContainedNode(derivedPosition, entity);
+		//TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
+		offset = container->getOffsetForContainedNode(localPosition + getSceneNode()->getPosition(), entity);
 	}
 	
-	//adjust the height after our own height
-	height -= getPredictedPos().z();
-	return height;
+	///adjust the height after our own height
+	//newPosition.y -= getSceneNode()->getPosition().y;
+	return offset;
 	
 }
 
 
 
-void EmberEntity::adjustHeightPositionForContainedNode(EmberEntity* const entity) 
+void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity) 
 {
 
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	Ogre::Vector3 position = sceneNode->getPosition();
-	sceneNode->setPosition(position.x, getHeightPositionForContainedNode(TerrainPosition(entity->getPredictedPos().x(), entity->getPredictedPos().y()), entity), position.z);
+	//Ogre::Vector3 position = sceneNode->getPosition();
+	Ogre::Vector3 offset = getOffsetForContainedNode(sceneNode->getPosition(), entity);
+	sceneNode->translate(offset);
 	
 }
 
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
-//	return Eris::Entity::onLocationChanged(oldLocation, newLocation);
 	
 	if (getLocation() == oldLocation)
 	{
@@ -352,15 +354,15 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	}
 	Eris::Entity::onLocationChanged(oldLocation);
 	
-	//if we're attached to something, detach from it
+	///if we're attached to something, detach from it
 	detachFromModel();
 
 	if (!getLocation()) {
 		return;	
 	} else {
-		EmberEntity* newLocationEntity = static_cast<EmberEntity*>(getLocation());
+		EmberEntity* newLocationEntity = getEmberLocation();
 		
-		Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+		const Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
 		
 		if (getSceneNode()->getParentSceneNode()) {
 			//detach from our current object
@@ -373,8 +375,9 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 				newLocationEntity->getSceneNode()->addChild(getSceneNode());
 				S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
 				if (getPosition().isValid()) {
+					///note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated
 					getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
-					adjustHeightPosition();
+					adjustPosition();
 					std::stringstream ss;
 					ss << getPredictedPos();
 					S_LOG_VERBOSE("New position for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
@@ -387,16 +390,20 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 				}
 	
 		} else {
-			//add to the world
+			///the entity has no current parent, and should be placed in limbo (hopefully a more correct parent will be submitted in a future LocationChanged event
 			S_LOG_VERBOSE( "Entity relocated to limbo: "<< this->getId() << " (" << this->getName() << ")" );
 	//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 		}		
 		
 		checkVisibility(isVisible());
 	
-		//we adjust the entity so it retains it's former position in the world
-		Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
-		getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+		///we'll adjust the entity so it retains it's former position in the world, but only for moving entities
+		///since else we'll get a "gap" when we're waiting on updated positions from the server
+		///this isn't optimal
+		if (isMoving()) {
+			const Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
+			getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+		}
 	}
 	
 }
@@ -492,7 +499,7 @@ void EmberEntity::parseModeChange(const Atlas::Message::Element& v)
 void EmberEntity::onModeChanged(MovementMode newMode)
 {
 	if (newMode == MM_FIXED) {
-		adjustHeightPosition();
+		adjustPosition();
 	}
 	mMovementMode = newMode;
 }
@@ -548,7 +555,7 @@ Ogre::SceneNode* EmberEntity::getSceneNode() const
 	return mOgreNode;	
 }
 
-inline EmberEntity* EmberEntity::getEmberLocation() const
+EmberEntity* EmberEntity::getEmberLocation() const
 { 
 	return static_cast<EmberEntity*>(getLocation());
 }
@@ -559,6 +566,27 @@ const Ogre::AxisAlignedBox& EmberEntity::getWorldBoundingBox(bool derive) const
 	static Ogre::AxisAlignedBox boundingBox(0,0,0,0,0,0);
 	return boundingBox;
 }
+
+std::vector<std::string> EmberEntity::getDefaultUseOperators()
+{
+	std::vector<std::string> operators;
+	
+	const Eris::Entity::AttrMap::const_iterator I_attribute = this->getAttributes().find("operations");
+	if (I_attribute != this->getAttributes().end()) {
+		Atlas::Message::Element operations = I_attribute->second;
+		if (operations.isList()) {
+			const Atlas::Message::ListType & plist = operations.asList();
+			Atlas::Message::ListType::const_iterator J = plist.begin();
+			for (; J != plist.end(); ++J) {
+				if (J->isString()) {
+					operators.push_back(J->asString());
+				}
+			}				
+		}
+	} 
+	return operators;
+}
+
 
 }
 

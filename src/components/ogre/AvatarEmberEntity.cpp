@@ -19,7 +19,7 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "PersonEmberEntity.h"
+// #include "PersonEmberEntity.h"
 #include "framework/ConsoleBackend.h"
 #include "Avatar.h"
 #include "GUIManager.h"
@@ -27,12 +27,15 @@
 #include "AvatarEmberEntity.h"
 #include "EmberOgre.h"
 
+#include <Eris/Entity.h>
+#include <Eris/Avatar.h>
+
 namespace EmberOgre {
 
 
 AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar) : 
 mAvatar(0), mErisAvatar(erisAvatar)
-,PersonEmberEntity(id, type, vw, sceneManager, nodeWithModel)
+,EmberPhysicalEntity(id, type, vw, sceneManager, nodeWithModel)
 {
 }
 
@@ -41,7 +44,7 @@ AvatarEmberEntity::~AvatarEmberEntity()
 
 void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 {
-	PersonEmberEntity::init(ge);
+	EmberPhysicalEntity::init(ge);
 	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
 	
 

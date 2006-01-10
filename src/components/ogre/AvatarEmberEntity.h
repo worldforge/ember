@@ -20,23 +20,29 @@
 #ifndef AVATARDIMEENTITY_H
 #define AVATARDIMEENTITY_H
 
-#include <Eris/Entity.h>
-#include <Eris/Avatar.h>
+namespace Eris
+{
+	class Entity;
+	class Avatar;
+}
 
 namespace EmberOgre {
+
+namespace Model {
+	class Model;
+}
 
 class EmberPhysicalEntity;
 class EmberEntity;
 class Avatar;
-class Model;
-class PersonEmberEntity;
+// class PersonEmberEntity;
 
 /**
  * This is the main player avatar. We want this one to behave a little different
  * than the other game entities, thus it has it's own subclass.
  * 
  */
-class AvatarEmberEntity: public PersonEmberEntity {
+class AvatarEmberEntity: public EmberPhysicalEntity {
 public:
 
 	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);

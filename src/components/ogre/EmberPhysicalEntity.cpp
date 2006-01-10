@@ -25,6 +25,7 @@
 #include "EmberEntityFactory.h"
 #include "model/Model.h"
 #include "model/SubModel.h"
+#include "model/ParticleSystemBinding.h"
 
 
 #include "EmberEntity.h"
@@ -54,7 +55,7 @@ mModelMarkedToAttachTo(0),
 EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0)
 {
-	mModel = static_cast<Model*>(getScaleNode()->getAttachedObject(0));
+	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
 	
 	if (getModel()->getRotation()) {
 		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
@@ -131,7 +132,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 	}
 	getSceneNode()->addChild(getScaleNode());
 	
-	//transform the scale node according to the transform defined in the model
+	//translate the scale node according to the translate defined in the model
 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
 
 	
@@ -147,7 +148,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 	}
 
 	//NOTE: for now, add all particle systems. we will want to add some visibility flag or something in the future
-	for (ParticleSystemSet::iterator I = mModel->getParticleSystems().begin(); I != mModel->getParticleSystems().end(); ++I) 
+	for (Model::ParticleSystemSet::iterator I = mModel->getParticleSystems().begin(); I != mModel->getParticleSystems().end(); ++I) 
 	{
 		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
 	}
@@ -157,9 +158,9 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
 void EmberPhysicalEntity::connectEntities()
 {
 	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->GetDefaultContext();
-	const Model::SubModelSet submodels = getModel()->getSubmodels();
+	const Model::Model::SubModelSet submodels = getModel()->getSubmodels();
 	EmberEntityUserObject::CollisionObjectStore collisionObjects;
-	for (Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
+	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{
 		std::string collideShapeName = std::string("entity_") + (*I)->getEntity()->getName();
 		OgreOpcode::CollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->NewShape(collideShapeName.c_str());
@@ -184,7 +185,7 @@ void EmberPhysicalEntity::connectEntities()
 }
 
 
-void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model* model)
+void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::Model* model)
 {
 	//if we're not initialized, delay attachment until after init
 	if (!isInitialized()) {
@@ -215,34 +216,37 @@ void EmberPhysicalEntity::showOgreBoundingBox(bool show)
 	getScaleNode()->showBoundingBox(show);
 }
 
-// void EmberPhysicalEntity::showErisBoundingBox(bool show)
-// {
-// }
 
 bool EmberPhysicalEntity::getShowOgreBoundingBox()
 {
 	return getScaleNode()->getShowBoundingBox();
 }
 
-// bool EmberPhysicalEntity::getShowErisBoundingBox()
-// {
-// }
+Model::Model* EmberPhysicalEntity::getModel() const
+{
+	return mModel;	
+}
 
+void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas::Message::Element& idElement)
+{
+	S_LOG_VERBOSE("Set " << wieldName << " to " << idElement.asString());
+	const std::string id = idElement.asString();
+	if (id.empty()) {
+		detachEntity(wieldName);
+	} else {
+		//detach first
+		detachEntity(wieldName);
+		attachEntity(wieldName, id);
+	}
+
+}
 
 void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
 	EmberEntity::onAttrChanged(str, v);
 	
-	if (str == "right_hand_wield") {
-		std::cout << "set right_hand_wield to " << v.asString() << std::endl;
-		std::string id = v.asString();
-		if (id.empty()) {
-			detachEntity("right_hand_wield");
-		//m_attached.erase("right_hand_wield");
-		} else {
-			//detach first
-			detachEntity("right_hand_wield");
-			attachEntity("right_hand_wield", id);
-		}
+	///this is kind of a hack, but it allows characters to wield other entities in their hands
+	if (str == "right_hand_wield" || str == "left_hand_wield") {
+		processWield(str, v);
 		return;		
 	}
 // 	if (str == "bbox") {
@@ -251,8 +255,8 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 
 	//check if the changed attribute should affect any particle systems
 	if (mModel->hasParticles()) {
-		ParticleSystemBindingsPtrSet bindings = mModel->getAllParticleSystemBindings();
-		for (ParticleSystemBindingsPtrSet::iterator I = bindings.begin(); I != bindings.end(); ++I) {
+		Model::ParticleSystemBindingsPtrSet bindings = mModel->getAllParticleSystemBindings();
+		for (Model::ParticleSystemBindingsPtrSet::iterator I = bindings.begin(); I != bindings.end(); ++I) {
 			if ((*I)->getVariableName() == str && v.isNum()) {
 				(*I)->scaleValue(v.asNum());
 			}
@@ -270,14 +274,14 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 		if (newMode == EmberEntity::MM_WALKING) {
 			actionName = ACTION_WALK;
 		} else if (newMode == EmberEntity::MM_RUNNING) {
-			actionName = ACTION_WALK;
+			actionName = ACTION_RUN;
 		} else if (newMode == EmberEntity::MM_SWIMMING) {
 			actionName = ACTION_SWIM;
 		} else {
 			actionName = ACTION_STAND;
 		}
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
-			Action* newAction = mModel->getAction(actionName);
+			Model::Action* newAction = mModel->getAction(actionName);
 			mCurrentMovementAction = newAction;
 			if (newAction) {
 				MotionManager::getSingleton().addAnimatedEntity(this);
@@ -336,20 +340,20 @@ void EmberPhysicalEntity::scaleNode() {
 		
 		
 		switch (getModel()->getUseScaleOf()) {
-			case ModelDefinition::MODEL_HEIGHT:
+			case Model::ModelDefinition::MODEL_HEIGHT:
 				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
 				break;
-			case ModelDefinition::MODEL_WIDTH:
+			case Model::ModelDefinition::MODEL_WIDTH:
 				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
 				break;
-			case ModelDefinition::MODEL_DEPTH:
+			case Model::ModelDefinition::MODEL_DEPTH:
 				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
 				break;
-			case ModelDefinition::MODEL_NONE:
+			case Model::ModelDefinition::MODEL_NONE:
 				scaleX = scaleY = scaleZ = 1;
 				break;
 				
-			case ModelDefinition::MODEL_ALL:
+			case Model::ModelDefinition::MODEL_ALL:
 			default:				
 				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
 				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
@@ -378,6 +382,18 @@ void EmberPhysicalEntity::scaleNode() {
 	}
 
 		
+}
+
+Ogre::Vector3 EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity)
+{
+	///if the model has an offset specified, use that, else just send to the base class
+	Ogre::Vector3* offset = getModel()->getDefinition()->getContentOffset();
+	if (offset != 0) {
+		return *offset;
+	} else {
+		return EmberEntity::getOffsetForContainedNode(position, entity);
+	}
+	
 }
 
 
@@ -488,7 +504,7 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::Action& act)
 	
 	std::string name = act->getName();
 	
-	Action* newAction = mModel->getAction(name);
+	Model::Action* newAction = mModel->getAction(name);
 	if (newAction) {
 		MotionManager::getSingleton().addAnimatedEntity(this);
 		mCurrentMovementAction->getAnimations()->setEnabled(true);
@@ -496,6 +512,9 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::Action& act)
 
 }
 
+bool EmberPhysicalEntity::allowVisibilityOfMember(EmberEntity* entity) {
+	return mModel->getDefinition()->getShowContained();
+}
 
 /*
 void EmberPhysicalEntity::handleTalk(const std::string &msg)

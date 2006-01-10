@@ -27,21 +27,17 @@
 	#include <Atlas/Objects/Operation.h>
 	
 	#include <Eris/Entity.h>
-	#include <Eris/View.h>
 	//#include <Eris/PollDefault.h>
 	//#include <Eris/Log.h>
 	//#include <Eris/TypeInfo.h>
 //#include <OgreMemoryMacros.h>
 
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
+// #include <sigc++/object.h>
+// #include <sigc++/signal.h>
+// #include <sigc++/slot.h>
+// #include <sigc++/bind.h>
+// #include <sigc++/object_slot.h>
+
 
 
 #include <OgreException.h>
@@ -71,18 +67,27 @@ namespace Mercator
 	class Area;
 }
 
+namespace Eris
+{
+	class View;
+}
+
 namespace EmberOgre {
+
+namespace Model {
+	class Model;
+}
+
 class EmberEntityFactory;
-class Model;
 //class TerrainArea;
 
-/*
+/**
  * A representation of an Eris::Entity, ie. a world entity.
  * Note that most entities in the game world will be of type EmberPhysicalEntity
  * as they will have some sort of physical representation.
  * For things such as boundaries and weather, this is a nice class.
  */
-class EmberEntity : public Ogre::UserDefinedObject, public Eris::Entity {
+class EmberEntity : public Eris::Entity, public Ogre::UserDefinedObject {
 	friend class EmberEntityFactory;
 public:
 
@@ -120,21 +125,20 @@ public:
 	
 
 	/**
-	 * Called by contained entites to determine how they snap to the ground.
+	 * Called by contained entites to determine how they should be adjusted, for example snap to the ground.
 	 * For instance a house entitiy containing a player entity.
 	 * This should of course be extended to a more dynamic physics simulation
 	 * in the future
 	 */
-	virtual void adjustHeightPositionForContainedNode(EmberEntity* const entity);
+	virtual void adjustPositionForContainedNode(EmberEntity* const entity);
 
-	virtual float getHeightPositionForContainedNode(const TerrainPosition& position, EmberEntity* const entity);
-	
+
 	/**
 	 * Adjust the height of the entity so that it "snaps" to the ground.
 	 * This is most often done by making a call to the containing node's
-	 * adjustHeightPositionForContainedNode method.
+	 * adjustPositionForContainedNode method.
 	 */
-	virtual void adjustHeightPosition(); 
+	virtual void adjustPosition(); 
 	
 	/**
 	 * return the scenenode to which this entity belongs
@@ -176,7 +180,7 @@ public:
 	/**
 	attaches the entity to another entity (or in reality another Model)
 	*/
-	virtual void attachToPointOnModel(const std::string& point, Model* model) {};
+	virtual void attachToPointOnModel(const std::string& point, Model::Model* model) {};
 	
 	/**
 	detaches the entity from another entity (or in reality another Model)
@@ -229,10 +233,19 @@ public:
 	 * @return 
 	 */
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+	
+	std::vector<std::string> getDefaultUseOperators();
 
 protected: 
 
 
+	/**
+	 *    Gets the position of a contained node.
+	 * @param position 
+	 * @param entity 
+	 * @return 
+	 */
+	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	
 
 	/**

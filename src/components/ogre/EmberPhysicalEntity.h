@@ -32,11 +32,14 @@
 
 namespace EmberOgre {
 
-class EmberEntity;
-class Model;
-class Action;
+namespace Model {
+	class Model;
+	class Action;
+};
 
-typedef std::list<Action*> ActionStore;
+class EmberEntity;
+
+typedef std::list<Model::Action*> ActionStore;
 	
 /**
  * Represents a Ember entity with a physical representation in the world.
@@ -62,12 +65,9 @@ public:
 	/**
 	 * return the Model of this object
 	 */
-	inline Model* EmberPhysicalEntity::getModel() const
-	{
-		return mModel;	
-	}
+	Model::Model* getModel() const;
 
-	inline Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
+	Ogre::SceneNode* getScaleNode() const
 	{
 		return mScaleNode;
 	}	
@@ -78,7 +78,7 @@ public:
 	
 	virtual void setVisible(bool visible);
 
-	virtual void attachToPointOnModel(const std::string& point, Model* model);
+	virtual void attachToPointOnModel(const std::string& point, Model::Model* model);
 	virtual void detachFromModel();
 	
 	virtual void updateMotion(Ogre::Real timeSlice);
@@ -101,8 +101,17 @@ public:
 
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 
+
+	/**
+	 * Called by a contained member to see if the member is allowed to be shown.
+	 * This can be reimplemented in a subclass such as AvatarEmberEntity to 
+	 * disallow things that belongs to a characters inventory to be shown.
+	 */
+	virtual bool allowVisibilityOfMember(EmberEntity* entity);
+
 protected: 
 
+	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	
 	/**
 	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
@@ -115,19 +124,30 @@ protected:
 	 */
 	virtual void onBboxChanged();
 	
+	/**
+	 *    Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
+	 * @param newMode 
+	 */
 	virtual void onModeChanged(MovementMode newMode);
 
-	Action* mCurrentMovementAction;
+	/**
+	The current movement action of the entity, for example a walk action or a run action.
+	*/
+	Model::Action* mCurrentMovementAction;
 
+	/**
+	All the active actions, except the movement action (since it's stored in mCurrentMovementAction). 
+	These actions will be updated each frame.
+	*/
 	ActionStore mActiveActions;
 
 	/**
 	If the entity is attached to another entity, this is the model to which it is attached to.
 	This will be 0 if the entity isn't attached.
 	*/
-	Model* mModelAttachedTo;
+	Model::Model* mModelAttachedTo;
 	
-	Model* mModelMarkedToAttachTo;
+	Model::Model* mModelMarkedToAttachTo;
 	std::string mAttachPointMarkedToAttachTo;
 
 	virtual void onChildAdded(Entity *e);
@@ -135,44 +155,61 @@ protected:
 
 	
 
+	/**
+	 *    Detaches an entity which is already wielded.
+	 * @param entityId 
+	 */
 	void detachEntity(const std::string & entityId);
+	
+	/**
+	 *    Attaches an entity to a certain attach point
+	 * @param attachPoint the name of the attachpoint to attach to
+	 * @param entityId the id of the entity to attach to
+	 */
 	void attachEntity(const std::string & attachPoint, const std::string & entityId);
+	
+	/**
+	 *    Process wield ops, which means wielding and unwielding entities. This methos will in turn call the appropriate attachEntity and detachEntity methods.
+	 * @param wieldName the attachpoint to update
+	 * @param idElement the id of the entity to wield
+	 */
+	void processWield(const std::string& wieldName, const Atlas::Message::Element& idElement);
 
+	/**
+	 *    Overridden from Eris::Entity
+	 * @param str 
+	 * @param v 
+	 */
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+    /**
+	 *    Overridden from Eris::Entity
+     * @param act 
+     */
     virtual void onAction(const Atlas::Objects::Operation::Action& act);
 
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
+	/**
+	A store of all attached entities, indexed by their id.
+	*/
 	AttachedEntitiesStore mAttachedEntities;	
 
 //	virtual void onMoved();
+	/**
+	 *    Overridden from Eris::Entity
+	 * @param moving 
+	 */
 	virtual void setMoving(bool moving);
 
-
-//	virtual void handleTalk(const std::string &msg);
-// not needed as we have handleMove() virtual void setPosition(const WFMath::Point<3>& pt);
-	/// update the container of this entity (may be NULL)
-//	virtual void setContainer(Entity *pr);
-	
-//	virtual void setContents(const Atlas::Message::Element::ListType &contents);
-	
-	/// add a contained entity to this object (sets container)
-	//virtual void addMember(Entity *e);
-	
-	/// remove an contained entity
-	/** remove a contained entity; throws InvalidOperation if not found. Note
-	that the container of e is <i>not<i/> reset */
-	//virtual void rmvMember(Entity *e);
-	
-	/** called by View in response to Appearance/Disappearance messages : note that
-	after a disappearance (vis = false), the server will not send any futher messages to the
-	entity. At some point, invisible entities get flushed by Eris using an LRU scheme. */
-	//virtual void setVisible(bool vis);
-
-	//virtual void onVisibilityChanged( bool vis);
-
+	/**
+	 *    Overridden from Eris::Entity
+	 * @param ge 
+	 */
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
 
 
+	/**
+	The default size of the ogre bounding box, before any scaling is done.
+	*/
 	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;
 
 
@@ -181,17 +218,13 @@ protected:
 	 */
 	virtual void scaleNode();
 	
-	void setNodes();
+	//void setNodes();
 	
-	/**
-	 * The main Ogre::Entity
-	 */
-//	Ogre::MovableObject* mOgreEntity;
-	
+
 	/**
 	 * The model of the entity
 	 */
-	 Model* mModel;
+	 Model::Model* mModel;
 	
 	/**
 	 * We need to scale the Ogre::Entity, because the underlying media is not
