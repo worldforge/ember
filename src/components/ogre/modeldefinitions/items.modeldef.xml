@@ -146,6 +146,8 @@
 	</model>			
 	
 	<model name="stall" usescaleof="none" scale="1" rotation="-90">
+		<!-- we want contained items to lay on the table of the stall -->
+		<contentoffset y="0.8" />
 		<submodels>
 			<submodel mesh="3d_objects/items/canvas/models/marketstall/marketstall_canvas_1.mesh" >
 				<parts>
@@ -283,8 +285,26 @@
 			</submodel>
 		</submodels>
 	</model>	
-
 	
+	<model name="deed" usescaleof="none" scale="0.5" >
+		<submodels>
+			<submodel mesh="3d_objects/items/sheet/models/curly_document/curly_document.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="pickaxe" usescaleof="none" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/pickaxe/pickaxe.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
 	
 	
 	

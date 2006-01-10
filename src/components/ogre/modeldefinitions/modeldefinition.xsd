@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-  
-    <xsd:element name="Model">
-	    <xsd:complexType>
-			<xsd:attribute name="Rotation" type="xsd:string" use="optional"/> 
-			<xsd:attribute name="UseScaleOf" type="xsd:string" use="optional"/> 
-			<xsd:attribute name="Scale" type="xsd:string" use="optional"/> 
+	<xsd:element name="Model">
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:string" use="required"/> 
+			<xsd:attribute name="rotation" type="xsd:string" use="optional"/> 
+			<xsd:attribute name="usescaleof" type="usescaleofEnum" use="optional"/> 
+			<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
+			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"/> 
+			<xsd:attribute name="contentoffset" type="xsd:string" use="optional"/> 
 			<xsd:element name="SubModels">
 				<xsd:complexType>
 					<xsd:sequence>
@@ -72,6 +74,14 @@
 					</xsd:sequence>					
 				</xsd:complexType>
 			</xsd:element>	
- 		</xsd:complexType>
-    </xsd:element>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:simpleType name="usescaleofEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="height" />
+			<xsd:enumeration value="width" />
+			<xsd:enumeration value="depth" />
+			<xsd:enumeration value="none" />
+		</xsd:restriction>
+	</xsd:simpleType>
 </xsd:schema>

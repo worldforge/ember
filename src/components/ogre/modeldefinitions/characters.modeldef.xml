@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="settler_" usescaleof="height" >
+	<model name="settler_" usescaleof="height" showcontained="false">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/alpha_male.mesh" >
 				<parts>
@@ -61,7 +61,7 @@
 		</attachpoints>
 	</model>	
 
-	<model name="settler" usescaleof="height" >
+	<model name="settler" usescaleof="height"  showcontained="false">
 		<submodels>
 			<submodel mesh="Alpha_Male.mesh" >
 				<parts>
@@ -155,6 +155,12 @@
 				</AnimationParts>
 				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
 			</Action>
+			<Action name="__movement_run">
+				<AnimationParts speed="1.5">
+					<animationpart name="Walk" weight="1" />
+				</AnimationParts>
+				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
+			</Action>
 			<Action name="__movement_swim">
 				<AnimationParts>
 					<animationpart name="Walk" weight="1" />
@@ -166,7 +172,7 @@
 		</attachpoints>
 	</model>		
 
-	<model name="settler_____" usescaleof="height" >
+	<model name="settler_____" usescaleof="height"  showcontained="false">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/Alpha_Male.mesh" >
 				<parts>
@@ -272,7 +278,7 @@
 	</model>		
 	
 	
-	<model name="settler_working" usescaleof="height" >
+	<model name="settler_working" usescaleof="height"  showcontained="false">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/AlphaMaleMesh.001.mesh" >
 				<parts>
@@ -377,7 +383,7 @@
 		</attachpoints>
 	</model>		
 		
-	<model name="butcher" usescaleof="height" >
+	<model name="butcher" usescaleof="height" showcontained="false" >
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -434,7 +440,7 @@
 		</attachpoints>
 	</model>
 
-	<model name="marshall" usescaleof="height" >
+	<model name="marshall" usescaleof="height" showcontained="false" >
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -492,7 +498,7 @@
 	</model>
 
 
-	<model name="mercenary" usescaleof="height" >
+	<model name="mercenary" usescaleof="height" showcontained="false" >
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -550,7 +556,7 @@
 	</model>
 	
 	
-	<model name="merchant"  usescaleof="height" >
+	<model name="merchant"  usescaleof="height" showcontained="false" >
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
