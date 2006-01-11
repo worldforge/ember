@@ -99,13 +99,12 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
     return myServerService;
   }
 
-//disable the sound service for now
-//   SoundService* EmberServices::getSoundService()
-//   {
-//     if (mySoundService == NULL)
-//       mySoundService = new Ember::SoundService();
-//     return mySoundService;
-//   }
+	SoundService* EmberServices::getSoundService()
+	{
+		if (mySoundService == NULL)
+		mySoundService = new Ember::SoundService();
+		return mySoundService;
+	}
 
   ScriptingService* EmberServices::getScriptingService()
   {

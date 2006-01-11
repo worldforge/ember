@@ -148,7 +148,7 @@ namespace Ember
 		gyphPath << soundsDirPath << "gyph.wav";
 		S_LOG_INFO(
 			"Loading sound: [" << gyphPath.str() << "]")
-		alutLoadWAV(gyphPath.str().c_str(),&data,&format,&size,&bits,&freq);
+		//alutLoadWAV(gyphPath.str().c_str(),&data,&format,&size,&bits,&freq);
 		// Load WAV file  // Should be LoadWAV, platform independant
 
 		if(alGetError() != AL_NO_ERROR)
@@ -424,13 +424,13 @@ namespace Ember
 		std::stringstream gruntPath;
 		gruntPath << soundsDirPath << "pig_grunt.wav";
 		S_LOG_INFO( "Loading sound: [" << gruntPath.str() << "]" )
-		alutLoadWAV(gruntPath.str().c_str(),&data,&format,&size,&bits,&freq);
+		//alutLoadWAV(gruntPath.str().c_str(),&data,&format,&size,&bits,&freq);
 		
 		// Connect WAV to buffer
-		alBufferData(worldBuffers[1],format,data,size,freq);
+		//alBufferData(worldBuffers[1],format,data,size,freq);
 		
 		// Play
-		alSourcePlay(worldSources[1]);
+		//alSourcePlay(worldSources[1]);
 		
 		// Check errors
 		int error = alGetError();

@@ -1,6 +1,18 @@
+2006-01-11  Miguel Guzman  <aglanor@gmail.com>
+
+	* configure.ac: check for OpenAL 0.0.8, create the Makefile of the sound service
+	* src/services/EmberServices.cpp: getter for SoundService
+	* src/services/Makefile.am: include sound service as a subdir
+	* src/services/sound/Makefile.am: added SoundService.h as a non-installable header
+	* src/services/sound/SoundService.cpp: updated code to compile with latest OpenAL (still is non-functional)
+
 2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/ServerBrowser.lua|ServerBrowser.layout: fixed the method recieving ServerInfo objects
+
+2006-01-10  Miguel Guzman  <aglanor@gmail.com>
+
+	* src/components/ogre/scripting/ScriptingService.h: gcc 4.0 needs an explicit forward declaration in addition to the declaration of a friend class.
 
 2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
 

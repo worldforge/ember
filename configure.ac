@@ -269,7 +269,16 @@ AC_ARG_ENABLE(use_lua,
 AM_CONDITIONAL(USE_LUA, test x"$lua_use" = xtrue)
 LDFLAGS="$LDFLAGS -lCEGUILuaScriptModule -lCEGUIluatoluapp"
 
-
+# Check for OpenAL
+OPENAL_VERSION=0.0.8
+PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $OPENAL_CFLAGS"
+		LDFLAGS="$LDFLAGS $OPENAL_LIBS"
+	],
+	[
+		AC_MSG_ERROR(Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+	])
 
 
 #CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
@@ -407,6 +416,7 @@ AC_CONFIG_FILES([Makefile
 		 src/services/metaserver/Makefile
 		 src/services/server/Makefile
 		 src/services/scripting/Makefile
+		 src/services/sound/Makefile
 		 src/services/bindings/Makefile
 		 src/services/bindings/lua/Makefile
 		 ember.dox
