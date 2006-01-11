@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.115  2006-01-10 01:03:27  erik
+ *      Revision 1.116  2006-01-11 22:23:09  erik
+ *      2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* Ember.kdevelop: updated kdevelop project file
+ *      	* ember.conf: added options for setting recursive resource scanning (needed by authoring, but takes some time at startup)
+ *      	* src/components/ogre/EmberOgre.cpp: added support for the recursive resource scanning option in ember.conf
+ *
+ *      Revision 1.115  2006/01/10 01:03:27  erik
  *      2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/EmberEntityFactory.*:
@@ -1544,6 +1551,14 @@ void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, st
 void EmberOgre::setupResources(void)
 {
  	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	bool loadRecursive = false;
+	
+	///check from the config if we should load media recursively
+	///this is needed for most authoring, since it allows us to find all meshes before they are loaded
+	if (configSrv->itemExists("general", "loadmediarecursive")) { 
+			loadRecursive = (bool)configSrv->getValue("general", "loadmediarecursive");
+	}
+	
 
 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 		
@@ -1611,7 +1626,7 @@ void EmberOgre::setupResources(void)
 					finalTypename = typeName.substr(0, typeName.find("["));
 					try {
 						Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-							fullResourcePath, finalTypename, secName, true);
+							fullResourcePath, finalTypename, secName, loadRecursive);
 					} catch (Ogre::Exception&) {
 						S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
 					}
@@ -1642,7 +1657,7 @@ void EmberOgre::setupResources(void)
 				finalTypename = typeName.substr(0, typeName.find("["));
 				try {
 					Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-						fullResourcePath, finalTypename, secName, true);
+						fullResourcePath, finalTypename, secName, loadRecursive);
 				} catch (Ogre::Exception&) {
 					S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
 				}
