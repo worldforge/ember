@@ -56,7 +56,7 @@ SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_
 
 
 ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $(SCRIPT_LIBS) \
-	$(top_builddir)/src/components/ogre/widgets/libWidgets.a \
+	$(top_builddir)/src/components/ogre/widgets/libWidgets.a $(top_builddir)/src/services/libServices.a \
 	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
@@ -66,7 +66,7 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
 	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
-	$(top_builddir)/src/services/libServices.a $(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.a \
+	$(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.a \
 	$(top_builddir)/src/components/ogre/ogreopcode/opcode/libOpcode.a $(EMBER_EXT_LIBS)
 
 
