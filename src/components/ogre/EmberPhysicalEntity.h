@@ -204,7 +204,7 @@ protected:
 	 *    Overridden from Eris::Entity
 	 * @param ge 
 	 */
-	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
+    virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
 
 	/**

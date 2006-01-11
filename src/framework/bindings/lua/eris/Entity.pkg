@@ -60,23 +60,29 @@ class Entity {
 
     
 	
-    SigC::Signal1<void, Entity*> ChildAdded;
-    SigC::Signal1<void, Entity*> ChildRemoved;
+// Signals
+    sigc::signal<void, Eris::Entity*> ChildAdded;
+    sigc::signal<void, Eris::Entity*> ChildRemoved;
     
-    SigC::Signal1<void, Entity*> LocationChanged;
+    /// Signal that the entity's container changed
+    /** emitted when our location changes. First argument is the entity,
+    second is the old location. The new location can be found via getLocation.
+    Note either the old or new location might be NULL.
+    */
+    sigc::signal<void, Eris::Entity*> LocationChanged;
 
     /** Emitted when one or more attributes change. The arguments are the
     Entity which changed, and a set of attribute IDs which were modified. */
-    SigC::Signal1<void, const Eris::StringSet&> Changed;
+    sigc::signal<void, const Eris::StringSet&> Changed;
 
     /** Emitted when then entity's position, orientation or velocity change.
     Argument is the entity that moved, so you can bind the same slot to
     multiple entities if desired. */
-    SigC::Signal0<void> Moved;
+    sigc::signal<void> Moved;
 
     /** Emitted when an entity starts or stops moving (as determined by the
     'inMotion' method. */
-    SigC::Signal1<void, bool> Moving;
+    sigc::signal<void, bool> Moving;
 
     /**
 	 * @brief Emitted with the entity speaks.
@@ -89,30 +95,37 @@ class Entity {
 	 *   with NPCs this list is used to give the client a clue about
 	 *   possible answers the NPCs understand.
 	 **/
-    SigC::Signal1< void, const Atlas::Objects::Root & > Say;
+    sigc::signal< void, const Atlas::Objects::Root & > Say;
 	
     /**
     Emitted when this entity emits an imgainary operation (also known as
     an emote. This is used for debugging, but not much else. 
     */
-    SigC::Signal1<void, const std::string&> Emote;
+    sigc::signal<void, const std::string&> Emote;
     
     /**
     Emitted when this entity performs an action. The argument to the
     action is passed as the signal argument. For examples of action
     arguments, see some documentation that probably isn't written yet.
     */
-    SigC::Signal1<void, const Atlas::Objects::Operation::RootOperation&> Acted;
+    sigc::signal<void, const Atlas::Objects::Operation::RootOperation&> Acted;
     
     /**
     Emitted when this entity performs an action which causes a noise. This
     may happen alongside the sight of the action, or not, depending on the
     distance to the entity and so on.
     */
-    SigC::Signal1<void, const Atlas::Objects::Root&> Noise;
+    sigc::signal<void, const Atlas::Objects::Root&> Noise;
     
-    SigC::Signal1<void, bool> VisibilityChanged;
-        
+    sigc::signal<void, bool> VisibilityChanged;
+    
+    /**
+    Emitted prior to deletion. Note that entity instances may be deleted for
+    different reasons - passing out of the view, being deleted on the server,
+    or during disconnection. This signal is emitted regardless.
+    */
+    sigc::signal<void> BeingDeleted;    
+    
 
 };
 }

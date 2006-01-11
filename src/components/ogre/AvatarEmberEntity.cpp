@@ -42,9 +42,9 @@ mAvatar(0), mErisAvatar(erisAvatar)
 AvatarEmberEntity::~AvatarEmberEntity()
 {}
 
-void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
+void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	EmberPhysicalEntity::init(ge);
+	EmberPhysicalEntity::init(ge, fromCreateOp);
 	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
 	
 

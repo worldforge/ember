@@ -117,10 +117,10 @@ void EmberPhysicalEntity::setVisible(bool visible)
 	//getModel()->setVisible(visible);
 }
 
-void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
+void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	onModeChanged(EmberEntity::MM_DEFAULT);
-	EmberEntity::init(ge);
+	EmberEntity::init(ge, fromCreateOp);
 	getModel()->setQueryFlags(EmberEntity::CM_ENTITY);
 
 /*	assert(mOgreNode);

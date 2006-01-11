@@ -688,7 +688,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  			return;
  		}
  		try {
- 			myAvatar->useOn(entity, pos);
+ 			myAvatar->useOn(entity, pos, "");
  		}
  		catch (Eris::BaseException except)
  		{

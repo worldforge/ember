@@ -125,9 +125,9 @@ EmberEntity::~EmberEntity()
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
 
-void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
+void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	Eris::Entity::init(ge);
+	Eris::Entity::init(ge, fromCreateOp);
 	
 	
 	// set the Ogre node position and orientation based on Atlas data
@@ -222,7 +222,7 @@ void EmberEntity::setMoving(bool moving)
 
 }
 
-void EmberEntity::onTalk(const Atlas::Objects::Root& talkArgs)
+void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 {
 	
     if (!talkArgs->hasAttr("say")) {

@@ -41,10 +41,12 @@ protected:
 	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	TerrainGenerator* mTerrainGenerator;
 	
-	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
+    virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
 	virtual void onMoved();
-	virtual void onTalk(const Atlas::Objects::Root& obj);
+	
+	
+// 	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);

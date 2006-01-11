@@ -52,9 +52,9 @@ EmberEntity(id, ty, vw, sceneManager)
 WorldEmberEntity::~WorldEmberEntity()
 {}
 
-void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge)
+void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	Eris::Entity::init(ge);
+	EmberEntity::init(ge, fromCreateOp);
 	mTerrainGenerator->initTerrain(this, getView());
 	
 	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
@@ -115,10 +115,10 @@ Ogre::Vector3 WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vector3& l
  void WorldEmberEntity::onMoved(){
  	Eris::Entity::onMoved();
  }
- void WorldEmberEntity::onTalk(const Atlas::Objects::Root& obj)
- {
- 	Eris::Entity::onTalk(obj);
- }
+//  void WorldEmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talk)
+//  {
+//  	Eris::Entity::onTalk(talk);
+//  }
 //	virtual void setContainer(Entity *pr);
  void WorldEmberEntity::onVisibilityChanged(bool vis)
  {

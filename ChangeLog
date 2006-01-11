@@ -1,5 +1,17 @@
 2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/framework/bindings/lua/eris/Entity.pkg|lua_Eris.cpp: updated bindings to eris 1.3.10
+	* src/services/server/ServerService.cpp, src/components/ogre/AvatarEmberEntity.*|EmberEntity.*|EmberPhysicalEntity.*|WorldEmberEntity.*: updated to eris 1.3.10
+	
+
+2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* Ember.kdevelop: updated kdevelop project file
+	* ember.conf: added options for setting recursive resource scanning (needed by authoring, but takes some time at startup)
+	* src/components/ogre/EmberOgre.cpp: added support for the recursive resource scanning option in ember.conf
+
+2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
+
 	* configure.ac: require eris 1.3.10	
 
 2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>

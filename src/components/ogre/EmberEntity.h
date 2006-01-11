@@ -265,7 +265,7 @@ protected:
 	 */
 	virtual void onMoved();
 	virtual void setMoving(bool moving);
-	virtual void onTalk(const Atlas::Objects::Root& obj);
+	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
@@ -300,7 +300,7 @@ protected:
 	override from eris
 	this is called by eris just after the entity has been put into the world
 	*/
-	virtual void init(const Atlas::Objects::Entity::RootEntity &ge);
+    virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
 	virtual void checkVisibility(bool vis);
 
