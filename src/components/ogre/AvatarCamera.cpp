@@ -91,15 +91,15 @@ AvatarCamera::~AvatarCamera()
 
 void AvatarCamera::createNodesAndCamera()
 {
-	mAvatarCameraRootNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode("AvatarCameraRootNode"));
+	mAvatarCameraRootNode = mSceneManager->createSceneNode("AvatarCameraRootNode");
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
 	//rotate to sync with WF world
     mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
 
-	mAvatarCameraPitchNode = static_cast<Ogre::SceneNode*>(mAvatarCameraRootNode->createChild("AvatarCameraPitchNode"));
+	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode("AvatarCameraPitchNode");
 	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
-	mAvatarCameraNode = static_cast<Ogre::SceneNode*>(mAvatarCameraPitchNode->createChild("AvatarCameraNode"));
+	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode("AvatarCameraNode");
 	setCameraDistance(10);
 	
 	mCamera = mSceneManager->createCamera("AvatarCamera");

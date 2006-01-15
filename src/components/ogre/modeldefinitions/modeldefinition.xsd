@@ -59,6 +59,7 @@
 						<xsd:element name="Action">
 							<xsd:complexType>
 								<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+								<xsd:attribute name="speed" type="xsd:float" use="optional"/> 
 								<xsd:element name="ActionsParts">
 									<xsd:complexType>
 										<xsd:sequence>					

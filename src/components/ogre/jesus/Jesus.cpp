@@ -214,11 +214,9 @@ Model::Model* Jesus::createModelForBlockType(const std::string& blockType, const
 
 ModelBlock::~ModelBlock()
 {
-	EmberOgre::getSingleton().getSceneManager()->removeBillboardSet(mPointBillBoardSet);
-	mNode->getParent()->removeChild(mNode);
-	EmberOgre::getSingleton().getSceneManager()->destroySceneNode (mNode->getName());
+	mNode->getCreator()->removeBillboardSet(mPointBillBoardSet);
 	if (mModelNode) 
-		EmberOgre::getSingleton().getSceneManager()->destroySceneNode (mModelNode->getName());
+		mNode->getCreator()->destroySceneNode (mModelNode->getName());
 		
 	delete mModel;
 		
@@ -227,6 +225,8 @@ ModelBlock::~ModelBlock()
 	for(; I != I_end; ++I) {
  		delete *I;
 	}
+	mNode->getParent()->removeChild(mNode);
+	mNode->getCreator()->destroySceneNode (mNode->getName());
 
 	
 }
@@ -240,7 +240,7 @@ ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock
 	mNode = baseNode->createChildSceneNode(Atlas2Ogre(buildingBlock->getPosition()), Atlas2Ogre(buildingBlock->getOrientation()));
 	
 	
-	mPointBillBoardSet = EmberOgre::getSingleton().getSceneManager()->createBillboardSet( std::string("__construction_") + construction->getBluePrint()->getName() + "_" + buildingBlock->getName() + "_billboardset__" + mNode->getName());
+	mPointBillBoardSet = mNode->getCreator()->createBillboardSet( std::string("__construction_") + construction->getBluePrint()->getName() + "_" + buildingBlock->getName() + "_billboardset__" + mNode->getName());
 	mPointBillBoardSet->setDefaultDimensions(1, 1);
 	mPointBillBoardSet->setMaterialName("carpenter/flare");
 	mPointBillBoardSet->setVisible(false);

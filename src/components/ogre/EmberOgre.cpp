@@ -23,7 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.116  2006-01-11 22:23:09  erik
+ *      Revision 1.117  2006-01-15 11:47:44  erik
+ *      2006-01-15  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *          * src/components/ogre/modeldefinitions/modeldefinition.xsd: update to bring to sync with the latest ModelDefinion.h
+ *          * src/components/ogre/jesus/Jesus.cpp: make sure all scenemanager happens through the referred nodes, since the scene manager involved might not be the system default (for example when used from EntityCEGUITexture
+ *          * src/components/ogre/AvatarCamera.cpp: removed unneeded casts
+ *          * src/components/ogre/EmberOgre.cpp: typo fix
+ *
+ *      Revision 1.116  2006/01/11 22:23:09  erik
  *      2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* Ember.kdevelop: updated kdevelop project file
@@ -1620,7 +1628,7 @@ void EmberOgre::setupResources(void)
 				typeName = i->first;
 				archName = i->second;
 				if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-					//ship shared
+					//skip shared
 				} else {
 					fullResourcePath = userOwnMediaPath + archName;
 					finalTypename = typeName.substr(0, typeName.find("["));
