@@ -280,6 +280,18 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 		AC_MSG_ERROR(Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
 
+# Check for FreeALUT
+FREEALUT_VERSION=1.0.0
+PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $FREEALUT_CFLAGS"
+		LDFLAGS="$LDFLAGS $FREEALUT_LIBS"
+	],
+	[
+		AC_MSG_ERROR(Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+	])
+
+
 
 #CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 

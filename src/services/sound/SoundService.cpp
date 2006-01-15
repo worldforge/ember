@@ -67,6 +67,10 @@ namespace Ember
 	Service::Status SoundService::start()
 	{
 
+		S_LOG_INFO("Sound Service starting");
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- SOUND SERVICE STARTING ***" << std::endl;
+	std::cout << "************************************" << std::endl;
 		ALfloat listenerPos[3]={0.0,0.0,0.0};	// listener position
 		ALfloat listenerVel[3]={0.0,0.0,0.0};	// listener velocity
 		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};	// listener orientation
@@ -76,6 +80,10 @@ namespace Ember
 		data=NULL;
 
 		// Initialize OpenAL
+		S_LOG_VERBOSE("Initializing OpenAL");
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- INITIALIZING OPENAL ***" << std::endl;
+	std::cout << "************************************" << std::endl;
 		alutInit(NULL,0);
 		if(alGetError() != AL_NO_ERROR)
 		{
@@ -101,6 +109,10 @@ namespace Ember
 			return Service::FAILURE;
 		}*/
 
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- GENERATING BUFFERS ***" << std::endl;
+	std::cout << "************************************" << std::endl;
+		S_LOG_VERBOSE("Generating Buffers");
 		alGenBuffers(NUM_WORLD_BUFFERS,worldBuffers);
 		for (int i=0;i<NUM_WORLD_BUFFERS;i++)
 		{
@@ -127,6 +139,10 @@ namespace Ember
 			return Service::FAILURE;
 		}*/
 
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- CREATING SOURCES ***" << std::endl;
+	std::cout << "************************************" << std::endl;
+		S_LOG_VERBOSE("Creating Sources");
 		alGenSources(NUM_WORLD_SOURCES,worldSources);
 		for (int i=0;i<NUM_WORLD_SOURCES;i++)
 		{
@@ -137,7 +153,7 @@ namespace Ember
 			}
 		}
 
-
+		/*
 		TestPlatform();  // a test to determine the current platform (win, unix, ...)
 		
 		soundsDirPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberDataDirectory() 
@@ -177,7 +193,8 @@ namespace Ember
 		} else {
 			S_LOG_INFO( "WAV connected to buffer"  )
 		}
-
+		*/
+/*
 
 	free (data);  // should be UnloadWAV, platform independant
 
@@ -261,7 +278,7 @@ namespace Ember
 		} else {
 			S_LOG_INFO( "Buffer attached OK" )
 		}
-
+*/
 
 		/*
 		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
@@ -309,6 +326,10 @@ namespace Ember
 */
 
 		// Register service commands with the console
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- REGISTERING CONSOLE COMMANDS ***" << std::endl;
+	std::cout << "************************************" << std::endl;
+		S_LOG_VERBOSE("Registering Sound Service commands");
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYSOUND,this);
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYMUSIC,this);
 
@@ -317,16 +338,19 @@ namespace Ember
 		setStatus(Service::OK);
 		setStatusText("Sound Service status OK.");
 
-		S_LOG_INFO( " initialized" )
+		S_LOG_INFO("Sound Service initialized");
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- SOUND SERVICE INITIALIZED ***" << std::endl;
+	std::cout << "************************************" << std::endl;
 		return Service::OK;
 
   }
 
-	/* Interface method for stopping this service 	*/
+	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
 	{
 		alSourceStop(worldSources[0]);
-		alutExit();		// Finalize OpenAL
+		alutExit();			// Finalize OpenAL
 		setStatus(Service::OK);
 		setRunning( false );
 	}
@@ -335,12 +359,20 @@ namespace Ember
 	{
 		if(command == PLAYSOUND)
 		{
-			alSourcePlay(worldSources[0]);
+			//alSourcePlay(worldSources[0]);
+/*
 			int error = alGetError();
 			if(error != AL_NO_ERROR)
 			{
 				S_LOG_FAILURE("Error playing sound: " << error)
 			}
+*/
+		ALuint helloBuffer, helloSource;
+		helloBuffer = alutCreateBufferHelloWorld();
+		alGenSources(1, &helloSource);
+		alSourcei(helloSource, AL_BUFFER, helloBuffer);
+		alSourcePlay(helloSource);
+		alutSleep(1); //???
 
 		}
 		else if(command == PLAYMUSIC)

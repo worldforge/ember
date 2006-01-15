@@ -1,3 +1,9 @@
+2006-01-15  Miguel Guzman  <aglanor@gmail.com>
+
+	* configure.ac: added check for freealut 1.0.0
+	* src/components/ogre/EmberOgre.cpp: added traces to std::cout since it can't log to the OgreLogObserver until Ogre has started
+	* src/services/sound/SoundService.cpp: added playing of a "Hello World" sound when the command "/playsound" is invoked
+
 2006-01-15  Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/widgets/EntityCEGUITexture.*:

@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.117  2006-01-15 11:47:44  erik
+ *      Revision 1.118  2006-01-15 15:32:23  aglanor
+ *      2006-01-15  Miguel Guzman  <aglanor@gmail.com>
+ *
+ *      	* configure.ac: added check for freealut 1.0.0
+ *      	* src/components/ogre/EmberOgre.cpp: added traces to std::cout since it can't log to the OgreLogObserver until Ogre has started
+ *      	* src/services/sound/SoundService.cpp: added playing of a "Hello World" sound when the command "/playsound" is invoked
+ *
+ *      Revision 1.117  2006/01/15 11:47:44  erik
  *      2006-01-15  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *          * src/components/ogre/modeldefinitions/modeldefinition.xsd: update to bring to sync with the latest ModelDefinion.h
@@ -1950,6 +1957,7 @@ AvatarController* EmberOgre::getAvatarController() const
 void EmberOgre::initializeEmberServices(void)
 {
 	// Initialize Ember services
+	S_LOG_INFO( "Initializing Ember Services");
 
 	// Initialize the Logging service and an error observer
 	new Ember::EmberServices();
@@ -1964,7 +1972,7 @@ void EmberOgre::initializeEmberServices(void)
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
 	// Change working directory
 	struct stat tagStat;
-    int ret;
+	int ret;
 	ret = stat( Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
 	if (ret == -1) {
 #ifdef WIN32
@@ -1986,22 +1994,36 @@ void EmberOgre::initializeEmberServices(void)
 
 
 
-	// Initialize the Sound Service
-//#ifndef WIN32
+	//Initialize the Sound Service
+	S_LOG_INFO( "Initializing Sound Service");
+
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- CHECKING SOUND SERVICE " << std::endl;
+	std::cout << "************************************" << std::endl;
+#ifndef WIN32
 	// Test that /dev/dsp is availible
-//	FILE *temp = fopen("/dev/dsp","w");
-//	if (temp) {
-//	  fclose(temp);
-//#endif
+	FILE *temp = fopen("/dev/dsp","w");
+	if (temp) {
+	  fclose(temp);
+#endif
 	// Initialize the SoundService
-	//Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
-//#ifndef WIN32
-//	}
-//#endif
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- INITIALIZING SOUND SERVICE" << std::endl;
+	std::cout << "************************************" << std::endl;
+	S_LOG_INFO("************** TEST LOG ****************");
+	Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- SOUND SERVICE INITIALIZED" << std::endl;
+	std::cout << "************************************" << std::endl;
+#ifndef WIN32
+	}
+#endif
 
 
 	// Initialize and start the Metaserver Service.
 	// Set Eris Logging Level
+	S_LOG_INFO("Initializing MetaServer Service");
+
 	Eris::setLogLevel(Eris::LOG_DEBUG);
 
  	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->start();
@@ -2009,13 +2031,14 @@ void EmberOgre::initializeEmberServices(void)
 	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->getMetaServer();
 	
 	// Initialize the Server Service
+	S_LOG_INFO("Initializing Server Service");
+
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::connectViewSignals));
 	
 	Ember::EmberServices::getSingletonPtr()->getServerService()->start();
 
  	Ember::EmberServices::getSingletonPtr()->getScriptingService()->start();
-
 
 
 }
@@ -2085,7 +2108,13 @@ int main(int argc, char **argv)
     EmberOgre::EmberOgre app;
 
 	// Initialize all Ember services needed for this application
+	std::cout << "*************************************" << std::endl;
+	std::cout << "TRACE --- INITIALIZING EMBER SERVICES" << std::endl;
+	std::cout << "*************************************" << std::endl;
 	app.initializeEmberServices();
+	std::cout << "************************************" << std::endl;
+	std::cout << "TRACE --- EMBER SERVICES INITIALIZED" << std::endl;
+	std::cout << "************************************" << std::endl;
 
     try {
         app.go(useBinrelocPluginsLoading);
