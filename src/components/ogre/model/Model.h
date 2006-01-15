@@ -262,6 +262,12 @@ protected:
 
 	static Ogre::String msMovableType;
 	
+	/**
+	if the model has a skeleton, it can be shared between many different entities
+	this denotes the "owning" entity
+	*/
+	Ogre::Entity* mSkeletonOwnerEntity;
+	
 	
 	/**
 	all actions belonging to the model

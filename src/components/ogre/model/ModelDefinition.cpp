@@ -99,12 +99,33 @@ const Ogre::Vector3& ModelDefinition::getTranslate() const
 	return mTranslate;
 }
 	
+void  ModelDefinition::setTranslate(const Ogre::Vector3 translate)
+{
+	mTranslate = translate;
+}
+	
 	
 bool ModelDefinition::getShowContained() const
 {
 	return mShowContained;
 }
 
+void ModelDefinition::getShowContained(bool show)
+{
+	mShowContained = show;
+}
+
+	
+Ogre::Real ModelDefinition::getRotation() const
+{
+	return mRotation;
+}
+
+void ModelDefinition::setRotation(Ogre::Real rotation)
+{
+	mRotation = rotation;
+}
+	
 SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname)
 {
 	SubModelDefinition* def = new SubModelDefinition(meshname, *this);

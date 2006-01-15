@@ -53,6 +53,7 @@ ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0)
     mLoadOrder = 300.0f;
     mResourceType = "ModelDefinition";
         
+	mScriptPatterns.push_back("*.modeldef");
 	mScriptPatterns.push_back("*.modeldef.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
@@ -66,6 +67,20 @@ ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0)
 ModelDefinitionManager::~ModelDefinitionManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+}
+
+Ogre::ResourcePtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group, 
+bool isManual, Ogre::ManualResourceLoader* loader, 
+const Ogre::NameValuePairList* createParams)
+{
+	Ogre::ResourcePtr ret = getByName(name);
+    if (ret.isNull())
+    {
+    	return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
+    }
+    S_LOG_FAILURE("ModelDefinition with name " << name << " already exists.");
+    return ret;
+
 }
 
 void ModelDefinitionManager::loadAreas() {
@@ -113,6 +128,13 @@ Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogr
     const Ogre::NameValuePairList* createParams)
 {
      return new ModelDefinition(this, name, handle, group, isManual, loader);
+}
+
+std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
+{
+	//std::vector<std::string> meshes;
+	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
+	return *meshesVector;
 }
 
 }

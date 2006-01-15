@@ -45,7 +45,8 @@ Model::Model()
 : mScale(0)
 , mRotation(0)
 , mSkeletonInstance(0)
-, mAnimationStateSet(0)
+// , mAnimationStateSet(0)
+, mSkeletonOwnerEntity(0)
 {
 	std::stringstream ss;
 	ss << "__AutogenModel_" << msAutoGenId++;
@@ -58,7 +59,8 @@ Model::Model(const std::string& name)
 , mScale(0)
 , mRotation(0)
 , mSkeletonInstance(0)
-, mAnimationStateSet(0)
+// , mAnimationStateSet(0)
+, mSkeletonOwnerEntity(0)
 {
  mVisible = true;
 }
@@ -73,14 +75,20 @@ void Model::reset()
 //	resetAnimations();
 	resetSubmodels();
 	resetParticles();	
+	mScale = 0;
+	mRotation = 0;
+	mSkeletonInstance = 0;
+// , mAnimationStateSet(0)
+	mSkeletonOwnerEntity = 0;
 
 }
 
 void Model::reload()
 {
 //	resetAnimations();
-	resetSubmodels();
-	resetParticles();	
+/*	resetSubmodels();
+	resetParticles();	*/
+	reset();
 	createFromDefn();
 	//if we are attached, we have to nofify the new entities, else they won't appear in the scene
 	if (mParentNode != 0) {
@@ -304,13 +312,14 @@ ParticleSystemSet& Model::getParticleSystems()
 
 bool Model::addSubmodel(SubModel* submodel)
 {
-	if (mSubmodels.size()) {
-		SubModel* existingSubmodel = *(mSubmodels.begin());
-		if (existingSubmodel->getEntity()->getSkeleton()) {
-			submodel->getEntity()->shareSkeletonInstanceWith(existingSubmodel->getEntity());
+	///if the submodel has a skeleton, check if it should be shared with existing models
+	if (submodel->getEntity()->getSkeleton()) {
+		if (mSkeletonOwnerEntity != 0) {
+			submodel->getEntity()->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
+		} else {
+			mSkeletonOwnerEntity = submodel->getEntity();
+// 			mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 		}
-	} else {
-		mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 	}
 	mSubmodels.insert(submodel);
 	SubModel::SubModelPartMap* submodelMap = submodel->getSubModelPartMap();
@@ -544,8 +553,11 @@ bool Model::hasAttachPoint(const std::string& attachPoint) const
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 {
 	if (mSubmodels.size()) {
-		SubModel* submodel = *(mSubmodels.begin());
-		return submodel->getEntity()->getAnimationState(name);
+		if (mSkeletonOwnerEntity) {
+			return mSkeletonOwnerEntity->getAnimationState(name);
+		} else {
+			return 0;
+		}
 	}
 	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
 	
@@ -554,8 +566,11 @@ Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 Ogre::AnimationStateSet* Model::getAllAnimationStates()
 {
 	if (mSubmodels.size()) {
-		SubModel* submodel = *(mSubmodels.begin());
-		return submodel->getEntity()->getAllAnimationStates();
+		if (mSkeletonOwnerEntity) {
+			return mSkeletonOwnerEntity->getAllAnimationStates();
+		} else {
+			return 0;
+		}
 	}
 	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
 	
@@ -565,8 +580,11 @@ Ogre::AnimationStateSet* Model::getAllAnimationStates()
 Ogre::SkeletonInstance * Model::getSkeleton ()
 {
 	if (mSubmodels.size()) {
-		SubModel* submodel = *(mSubmodels.begin());
-		return submodel->getEntity()->getSkeleton();
+		if (mSkeletonOwnerEntity) {
+			return mSkeletonOwnerEntity->getSkeleton();
+		} else {
+			return 0;
+		}
 	}
 	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
 }
@@ -579,8 +597,7 @@ void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObjec
 void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition, const Ogre::Vector3 &scale)
 {
 	if (mSubmodels.size()) {
-		SubModel* submodel = *(mSubmodels.begin());
-		Ogre::Entity* entity = submodel->getEntity();
+		Ogre::Entity* entity = mSkeletonOwnerEntity;
 		
 		Ogre::SkeletonInstance* skeletonInstance = getSkeleton();
 
@@ -825,7 +842,7 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
 			for( ; child_itr != child_itr_end; child_itr++)
 			{
-				//make sure to do _update here, else attached entities won't be updated if no animation is playing
+				///make sure to do _update here, else attached entities won't be updated if no animation is playing
 				(*child_itr).second->getParentNode()->_update(true, true);
 				if ((*child_itr).second->isVisible())
 					(*child_itr).second->_updateRenderQueue(queue);

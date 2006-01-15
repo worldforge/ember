@@ -202,7 +202,7 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 
 	if(notfound)
 	{
-		S_LOG_FAILURE( "No submodel found !!");
+		S_LOG_VERBOSE( "No submodel found !!");
 	}
 }
 
@@ -242,7 +242,7 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode, Sub
 
 	if(notfound)
 	{
-		S_LOG_FAILURE( "No part found !!" );
+		S_LOG_VERBOSE( "No part found !!" );
 	}
 }
 
@@ -289,7 +289,7 @@ void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntN
 
 	if(notfound)
 	{
-		S_LOG_FAILURE( "No sub entity found !!" );
+		S_LOG_VERBOSE( "No sub entity found !!" );
 	}
 }
 
@@ -340,7 +340,7 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 
 	if(notfound)
 	{
-		S_LOG_FAILURE( "No actions found !!" );
+		S_LOG_VERBOSE( "No actions found !!" );
 	}
 
 }
@@ -380,7 +380,7 @@ void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnim
 
 	if(nopartfound)
 	{
-		S_LOG_FAILURE( "  No anim parts found !!" );
+		S_LOG_VERBOSE( "  No anim parts found !!" );
 	}
 }
 
@@ -492,6 +492,14 @@ Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlE
 	return Ogre::Vector3(x,y,z);
 }
 
+
+void XMLModelDefinitionSerializer::fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector)
+{
+	elem.SetAttribute("x", vector.x);
+	elem.SetAttribute("y", vector.x);
+	elem.SetAttribute("z", vector.x);
+}
+
 void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& filename)
 {
 	if (filename == "") {
@@ -540,7 +548,23 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		}
 		modelElem.SetAttribute("usescaleof", useScaleOf.c_str());
 		
+		if (modelDef->getScale() != 0) {
+			modelElem.SetAttribute("scale", modelDef->getScale());
+		}
+		
 		modelElem.SetAttribute("showcontained", modelDef->getShowContained() ? "true" : "false");
+		
+		if (modelDef->getContentOffset() != 0) {
+			Ember::TiXmlElement contentOffset("contentoffset");
+			fillElementFromVector3(contentOffset, *modelDef->getContentOffset());
+			modelElem.InsertEndChild(contentOffset);
+		}
+		
+		Ember::TiXmlElement translate("translate");
+		fillElementFromVector3(translate, modelDef->getTranslate());
+		modelElem.InsertEndChild(translate);
+		
+		
 		
 		
 		//start with submodels
@@ -572,6 +596,7 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Em
 	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
 		Ember::TiXmlElement actionElem("action");
 		actionElem.SetAttribute("name", (*I)->getName().c_str());
+		actionElem.SetDoubleAttribute("speed", (*I)->getAnimationSpeed());
 		
 		if ((*I)->getAnimationDefinitions().size() > 0) {
 			Ember::TiXmlElement animationsElem("animationparts");
@@ -631,7 +656,8 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 			}
 			partsElem.InsertEndChild(partElem);
 		}
-		submodelsElem.InsertEndChild(partsElem);
+		submodelElem.InsertEndChild(partsElem);
+		submodelsElem.InsertEndChild(submodelElem);
 	}
 	modelElem.InsertEndChild(submodelsElem);
 

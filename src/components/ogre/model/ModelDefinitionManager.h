@@ -41,6 +41,10 @@ public:
     /// Constructor
     ModelDefinitionManager();
     ~ModelDefinitionManager();
+    
+virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
+bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
+const Ogre::NameValuePairList* createParams = 0);
 	
 	inline Ogre::SceneManager* getSceneManager() const { return mSceneManager; }
 	inline void setSceneManager(Ogre::SceneManager* sceneManager) { mSceneManager = sceneManager; }
@@ -49,6 +53,8 @@ public:
 	void exportScript(ModelDefnPtr definition);
 	
 	const ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
+	
+	std::vector<std::string> getAllMeshes() const;
 protected:
 
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 

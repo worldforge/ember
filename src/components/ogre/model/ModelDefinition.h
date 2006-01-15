@@ -231,6 +231,7 @@ public:
 	 * @return 
 	 */
 	inline Ogre::Real getScale() const { return mScale; }
+	inline void setScale(Ogre::Real scale) { mScale = scale; }
 	
 	/**
 	 *    Gets how derived Models needs to be scaled.
@@ -238,12 +239,14 @@ public:
 	 * @return 
 	 */
 	inline const UseScaleOf getUseScaleOf() const { return mUseScaleOf; }
+	inline void setUseScaleOf(const UseScaleOf useScale)  { mUseScaleOf = useScale; }
 	
 	/**
 	 *    Gets an optional translation vector which should be applied to derived Models.
 	 * @return 
 	 */
 	const Ogre::Vector3& getTranslate() const;
+	void setTranslate(const Ogre::Vector3 translate);
 	
 	/**
 	 *	Whether contained entities should be shown or not.
@@ -251,6 +254,7 @@ public:
 	 * @return true if contained entities should be shown, else false
 	 */
 	bool getShowContained() const;
+	void getShowContained(bool show);
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.
@@ -258,6 +262,15 @@ public:
 	 * @return A offset vector or null.
 	 */
 	Ogre::Vector3* getContentOffset() const { return mContentOffset; }
+	void setContentOffset(Ogre::Vector3* offset) { mContentOffset = offset; }
+	
+	/**
+	 *    Accessor for the rotation around the Z-axis that should be applied to the model upon creation
+	 NOTE: this should probably be replaced with a Quaternion
+	 * @return 
+	 */
+	Ogre::Real getRotation() const;
+	void setRotation(Ogre::Real rotation);
 	
 	SubModelDefinition* createSubModelDefinition(const std::string& meshname);
 	const SubModelDefinitionsStore& getSubModelDefinitions();
