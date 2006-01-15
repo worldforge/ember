@@ -44,7 +44,8 @@ namespace Model {
 Useful class for rendering a single scene node to a CEGUI texture.
 
 */
-class EntityCEGUITexture 
+class EntityCEGUITexture
+//  : public RenderTargetListener
 {
 public:
     
@@ -80,17 +81,50 @@ public:
     Ogre::Camera* getCamera() const;
     
     /**
+     * Gets the default distance of the camera from the base, most likely somewhere where the whole scene is shown
+     * @return 
+     */
+    Ogre::Real getDefaultCameraDistance() const {return mDefaultCameraDistance;}
+    
+    /**
      * Sets whether the rendering should be active or not.
      * @param active 
      */
     void setActive(bool active);
     
-    void showFull();
+    /**
+     * Adjusts the camera distance so that the full scene is shown
+     */
+    void showFull(const Ogre::MovableObject* object);
+    
+    
+	/**
+	 *    After you've changed the target of the camera, i.e. the object attached to the base SceneNode,
+	      the camera has to be repositioned. Make sure to always call this method after updating the scene.
+	 */
+	void repositionCamera();
+	
+	void pitch(Ogre::Degree degrees);
+	void yaw(Ogre::Degree degrees);
+    
+	void setCameraDistance(Ogre::Real distance);
     
     
     
     
 private:
+
+	Ogre::Light* mMainLight;
+
+	/**
+	Since we don't want this to be shown in the "real" world, we'll use our own scene manager
+	*/
+	Ogre::SceneManager mSceneManager;
+
+	/**
+	The default distance of the camera from the base, most likely somewhere where the whole scene is shown
+	*/
+	Ogre::Real mDefaultCameraDistance;
 
 	/**
 	The rendered image.
@@ -127,7 +161,7 @@ private:
 	/**
 	The node to which the camera is attached.
 	*/
-	Ogre::SceneNode* mCameraNode;
+	Ogre::SceneNode *mCameraNode, *mCameraPitchNode;
 	
 	/**
 	The node to which the rendered entities are attched.

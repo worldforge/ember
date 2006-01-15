@@ -1,3 +1,34 @@
+2006-01-15  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/EntityCEGUITexture.*:
+        * make it use its own scene manager, thus completely separating it from all other scenes
+        * mount the camera on a yawing and pitching mount
+        * cleaned up the code, the camera mount code should perhaps be separated, together with the AvatarCamera code, inte a CameraMount class
+     * src/components/ogre/widgets/JesusEdit.cpp|ModelRendere.cpp: update to changes in EntityCEGUITexture
+     * src/components/ogre/widgets/ModelEdit.layout: updated layout
+     * src/components/ogre/widgets/ModelEdit.lua: added more functonality for authoring, allow save
+     * src/components/ogre/scripting/bindings/lua/*: updated bindings
+
+2006-01-15  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/modeldefinitions/modeldefinition.xsd: update to bring to sync with the latest ModelDefinion.h
+    * src/components/ogre/jesus/Jesus.cpp: make sure all scenemanager happens through the referred nodes, since the scene manager involved might not be the system default (for example when used from EntityCEGUITexture
+    * src/components/ogre/AvatarCamera.cpp: removed unneeded casts
+    * src/components/ogre/EmberOgre.cpp: typo fix
+
+2006-01-15  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/model/Model.*: fixed unstable handling of models with multiple meshes where not all meshes have skeletons
+    * src/components/ogre/model/ModelDefinition.*: added complete getters and setters for scale, useScaleOf, translae, showContained, contentOffset and rotation
+    * src/components/ogre/model/ModelDefinitionManager.*:
+        * accept both *.modeldef.xml and *.modeldef
+        * allow creation of existing resources without throwing an exception, just return the existing resource
+        * added method for getting a list of the names of all available meshes
+    * src/components/ogre/model/XMLModelDefinitionSerializer.*:
+        * log missing tags as "verbose" instead of "failure"
+        * make sure all properties are exported
+        * fixed export bugs
+
 2006-01-11  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/framework/bindings/lua/eris/Entity.pkg|lua_Eris.cpp: updated bindings to eris 1.3.10

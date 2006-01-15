@@ -67,6 +67,7 @@ void ModelRenderer::setModel(Model::Model* model)
 	
 	node->detachAllObjects();
 	node->attachObject(model);
+	mTexture->repositionCamera();
 	
 }
 
@@ -89,15 +90,17 @@ void ModelRenderer::showModel(const std::string& modelName)
 void ModelRenderer::showFullModel()
 {
 //	if (mModel) {
-		mTexture->showFull();
+		mTexture->showFull(mModel);
 //	}
 }
 
 void ModelRenderer::setCameraDistance(float distance)
 {
-	Ogre::Vector3 position = mTexture->getCamera()->getPosition();
-	position.z = -distance;
-	mTexture->getCamera()->setPosition(position);
+	
+	mTexture->setCameraDistance(mTexture->getDefaultCameraDistance() * distance);
+/*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
+	position.z *= distance;
+	mTexture->getCamera()->setPosition(position);*/
 }
 
 float ModelRenderer::getCameraDistance()
@@ -131,7 +134,9 @@ bool ModelRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse
 {
 	///rotate the modelnode
 	Ogre::SceneNode* node = mTexture->getSceneNode();
-	node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)(motion.xRelativeMovement * 180));
+	mTexture->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+	mTexture->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+//	node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)(motion.xRelativeMovement * 180));
 	///we don't want to move the cursor
 	freezeMouse = true;
 	return false;

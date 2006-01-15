@@ -35,33 +35,42 @@
 
 namespace EmberOgre {
 
+
+
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
 : mWidth(width), mHeight(height), mCamera(0), mRootNode(0)
 {
-	//this might perhaps be doable in a better way. For now we just position the preview node far, far away
-	mRootNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
-	mRootNode->setPosition(Ogre::Vector3(100000,100000,100000));
+	mRootNode = mSceneManager.getRootSceneNode();
+	
 	
 	mEntityNode = mRootNode->createChildSceneNode();
 
-	//make the cameranode a child of the main entity node
+	///make the cameranode a child of the main entity node
 	mCameraNode = mRootNode->createChildSceneNode();
-	mCameraNode->setPosition(Ogre::Vector3(0,5,-20));
+    ///we need to rotate to make it look at the base when we later change the distance
+    mCameraNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
+	
+	mCameraPitchNode = mCameraNode->createChildSceneNode();
+	
 	createCamera(imageSetName);
 	createImage(imageSetName);
 	//setVisible(false);
-
+	mMainLight = mSceneManager.createLight("MainLight");
+  	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
+	mSceneManager.setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	mCameraPitchNode->attachObject(mMainLight);
 }
 
 
 EntityCEGUITexture::~EntityCEGUITexture()
 {
 	if (mCamera) {
-		EmberOgre::getSingleton().getSceneManager()->removeCamera(mCamera);
+		mSceneManager.removeCamera(mCamera);
 	}
 	if (mRootNode) {
 		mRootNode->removeAndDestroyAllChildren();
-		EmberOgre::getSingleton().getSceneManager()->destroySceneNode(mRootNode->getName());
+		mSceneManager.destroySceneNode(mRootNode->getName());
 	}
 }
 
@@ -85,16 +94,39 @@ void EntityCEGUITexture::setActive(bool active)
 	mRenderTexture->setActive(active);
 }
 
+void EntityCEGUITexture::repositionCamera()
+{
+	mEntityNode->_update(true, true);
+	Ogre::AxisAlignedBox bbox = mEntityNode->_getWorldAABB();
+	Ogre::Vector3 center = bbox.getCenter();
+	Ogre::Vector3 localCenter =  center - mRootNode->getPosition();
+	mCameraNode->setPosition(localCenter);
+}
 
 void EntityCEGUITexture::createCamera(const std::string& imageSetName)
 {	
-	mCamera = EmberOgre::getSingleton().getSceneManager()->createCamera(imageSetName + "_EntityCEGUITextureCamera");
+	mCamera = mSceneManager.createCamera(imageSetName + "_EntityCEGUITextureCamera");
 
-	//track the node containing the model
-	mCamera->setAutoTracking(true, mEntityNode);
-	mCamera->setNearClipDistance(0.01);
-	mCamera->setFarClipDistance(500);
-	mCameraNode->attachObject(mCamera);
+	mCameraPitchNode->attachObject(mCamera);
+}
+
+void EntityCEGUITexture::pitch(Ogre::Degree degrees)
+{
+	mCameraPitchNode->pitch(degrees);
+}
+void EntityCEGUITexture::yaw(Ogre::Degree degrees)
+{
+	mCameraNode->yaw(degrees);
+}
+
+void EntityCEGUITexture::setCameraDistance(Ogre::Real distance)
+{
+	if (distance != 0) {
+		mCamera->setNearClipDistance(Ogre::Math::Abs(distance) / 100);
+		mCamera->setFarClipDistance((Ogre::Math::Abs(distance) * 2));
+	}
+	Ogre::Vector3 pos(0,0,distance);
+	mCamera->setPosition(pos);
 }
 
 void EntityCEGUITexture::createImage(const std::string& imageSetName)
@@ -104,50 +136,61 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	if (mWidth == 0 || mHeight == 0) {
 		throw Ember::Exception("Height and width of the image can't be 0.");
 	}
-	//first, create a RenderTexture to which the Ogre renderer should render the image
+	///first, create a RenderTexture to which the Ogre renderer should render the image
 	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture(imageSetName + "_EntityCEGUITextureRenderTexture", mWidth, mHeight );
 	mRenderTexture->removeAllViewports();
 	mRenderTexture->setActive(false);
 	
-	//make sure the camera renders into this new texture
+	///make sure the camera renders into this new texture
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
 	v->setBackgroundColour(Ogre::ColourValue(0,0,0,0));
-	//don't show the CEGUI
+	///don't show the CEGUI
 	v->setOverlaysEnabled(false);
-	//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
+	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
 	
-	//create a CEGUI texture from our Ogre texture
+	///create a CEGUI texture from our Ogre texture
 	CEGUI::Texture* ceguiTexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(texPtr);
 	
-	//we need a imageset in order to create GUI elements from the ceguiTexture
+	///we need a imageset in order to create GUI elements from the ceguiTexture
 	mImageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName + "_EntityCEGUITextureImageset", ceguiTexture);
 	
-	//we only want one element: the whole texture
+	///we only want one element: the whole texture
 	mImageSet->defineImage("full", CEGUI::Rect(0,0,mWidth,mHeight), CEGUI::Point(0,0));
 	
-	//assign our image element to the StaticImage widget
+	///assign our image element to the StaticImage widget
 	mImage = &mImageSet->getImage("full");
 	
 
 }
 
-void EntityCEGUITexture::showFull()
+void EntityCEGUITexture::showFull(const Ogre::MovableObject* object)
 {
-	mCamera->setAutoTracking(false);
 	mEntityNode->_update(true, true);
-	Ogre::AxisAlignedBox bbox = mEntityNode->_getWorldAABB();
+	Ogre::Real distance = object->getBoundingRadius() / Ogre::Math::Tan(mCamera->getFOVy() / 2);
+	///we can't have a distance of 0
+	if (distance == 0) {
+		distance = 1;
+	}
+	Ogre::Real distanceNudge = distance / 100;
+	distance += distanceNudge;
+	
+	mDefaultCameraDistance = distance;
+	
+	setCameraDistance(distance);
+
+/*		Ogre::Vector3 position = Ogre::Vector3::ZERO;
+		
+		position.y = position.y;
+		position.x = position.x;
+		position.z = distance;
+		mDefaultCameraPosition = position;
+		mCamera->setPosition(position);*/
+	
+/*	Ogre::AxisAlignedBox bbox = mEntityNode->_getWorldAABB();
 	Ogre::Vector3 center = bbox.getCenter();
 	
-	Ogre::Vector3 position = mCameraNode->getPosition();
-	
-	Ogre::Vector3 localPosition = center - mRootNode->getPosition();
-	
-	position.y = localPosition.y;
-	position.x = localPosition.x;
-	position.z = -(bbox.getMaximum().z - center.z) * 2;
-	mCameraNode->setPosition(position);
-	mCamera->lookAt(center);
+	mCamera->lookAt(center);*/
 	
 	
 	
@@ -158,6 +201,8 @@ void EntityCEGUITexture::showFull()
 	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);*/
 	
 }
+
+
 
 
 

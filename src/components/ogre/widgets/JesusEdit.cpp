@@ -586,15 +586,19 @@ void JesusEditPreview::showBuildingBlock(const std::string & spec)
 	mModelBlock = mConstruction->createModelBlock(mBlock, true);
 	mModelBlock->select();
 	
+	mTexture->repositionCamera();
+	mTexture->showFull(mModelBlock->getModel());
+	
 
 }
 
 void JesusEditPreview::setZoom(float value)
 {
-	Ogre::Real newDistance = (mMaxCameraDistance * mMinCameraDistance) * value;
+	mTexture->setCameraDistance(mTexture->getDefaultCameraDistance() * value);
+/*	Ogre::Real newDistance = (mMaxCameraDistance * mMinCameraDistance) * value;
 	Ogre::Vector3 position = mTexture->getCamera()->getPosition();
 	position.z = -newDistance;
-	mTexture->getCamera()->setPosition(position);
+	mTexture->getCamera()->setPosition(position);*/
 }
 
 bool JesusEditPreview::Zoom_ValueChanged(const CEGUI::EventArgs& args)

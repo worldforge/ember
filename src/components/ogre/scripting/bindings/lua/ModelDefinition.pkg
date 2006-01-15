@@ -8,12 +8,12 @@ typedef std::vector<EmberOgre::Model::SubEntityDefinition*> SubEntityDefinitions
 
 class SubEntityDefinition
 {
-	const std::string& getSubEntityName() const;
-	//void setSubEntityName(const std::string&);
-	unsigned int getSubEntityIndex() const;
+	 std::string& getSubEntityName() ;
+	//void setSubEntityName( std::string&);
+	unsigned int getSubEntityIndex() ;
 
-	const std::string& getMaterialName() const;
-	void setMaterialName(const std::string& materialName);
+	 std::string& getMaterialName() ;
+	void setMaterialName( std::string& materialName);
 	EmberOgre::Model::PartDefinition& getPartDefinition();
 
 };	
@@ -21,13 +21,13 @@ class SubEntityDefinition
 
 class PartDefinition
 {
-	void setName(const std::string& name);
-	const std::string& getName() const;
+	void setName( std::string& name);
+	 std::string& getName() ;
 	
 	void setShow(bool show);
-	bool getShow() const;
+	bool getShow() ;
 	
-	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition(const std::string& subEntityName);
+	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition( std::string& subEntityName);
 	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
 	std::vector<EmberOgre::Model::SubEntityDefinition*> getSubEntityDefinitions();
 	void removeSubEntityDefinition(EmberOgre::Model::SubEntityDefinition* def);
@@ -39,9 +39,9 @@ class PartDefinition
 class SubModelDefinition
 {
 	
-	const std::string& getMeshName() const;
+	 std::string& getMeshName() ;
 	
-	EmberOgre::Model::PartDefinition* createPartDefinition(const std::string& partname);
+	EmberOgre::Model::PartDefinition* createPartDefinition( std::string& partname);
 	std::vector<EmberOgre::Model::PartDefinition*> getPartDefinitions();
 	void removePartDefinition(EmberOgre::Model::PartDefinition* def);
 	EmberOgre::Model::ModelDefinition& getModelDefinition();
@@ -82,32 +82,55 @@ class ModelDefinition : public Ogre::Resource {
 	 *    Gets the amount of scale that needs to be applied to derived Models.
 	 * @return 
 	 */
-	Ogre::Real getScale();
+	inline float getScale();
+	inline void setScale(float scale);
 	
 	/**
 	 *    Gets how derived Models needs to be scaled.
 	 Defaults to "ALL"
 	 * @return 
 	 */
-	const EmberOgre::Model::ModelDefinition::UseScaleOf getUseScaleOf() const;
+	inline  EmberOgre::Model::ModelDefinition::UseScaleOf getUseScaleOf();
+	inline void setUseScaleOf( EmberOgre::Model::ModelDefinition::UseScaleOf useScale);
 	
 	/**
 	 *    Gets an optional translation vector which should be applied to derived Models.
 	 * @return 
 	 */
-	const Ogre::Vector3& getTranslate() const;
+	 Ogre::Vector3& getTranslate();
+	void setTranslate( Ogre::Vector3 translate);
 	
 	/**
 	 *	Whether contained entities should be shown or not.
 	 Defaults to true.
 	 * @return true if contained entities should be shown, else false
 	 */
-	bool getShowContained() const;
+	bool getShowContained();
+	void getShowContained(bool show);
 	
-	EmberOgre::Model::SubModelDefinition* createSubModelDefinition(const std::string& meshname);
-	std::vector<EmberOgre::Model::SubModelDefinition*> getSubModelDefinitions();
+	/**
+	 *    Returns a vector defining how much, if ever, contained entities should be offset.
+	 *    If they shouldn't, a void pointer will be returned.
+	 * @return A offset vector or null.
+	 */
+	Ogre::Vector3* getContentOffset() ;
+	void setContentOffset(Ogre::Vector3* offset);
+	
+	/**
+	 *    Accessor for the rotation around the Z-axis that should be applied to the model upon creation
+	 NOTE: this should probably be replaced with a Quaternion
+	 * @return 
+	 */
+	float getRotation() ;
+	void setRotation(float rotation);
+	
+	EmberOgre::Model::SubModelDefinition* createSubModelDefinition(std::string& meshname);
+	std::vector<EmberOgre::Model::SubModelDefinition*>& getSubModelDefinitions();
 	void removeSubModelDefinition(EmberOgre::Model::SubModelDefinition* def);
 	
+	EmberOgre::Model::ActionDefinition* createActionDefinition(std::string& actionname);
+	std::vector<EmberOgre::Model::ActionDefinition*>& getActionDefinitions();
+	void removeActionDefinition(EmberOgre::Model::ActionDefinition* def);
 	
 	
 };

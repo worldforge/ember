@@ -142,6 +142,12 @@ namespace Ogre {
         */
 //         static MaterialManager* getSingletonPtr(void);
 
+
+		Ogre::MaterialPtr load(const std::string& name, 
+             const std::string& group);
+		Ogre::MaterialPtr getByName(const std::string& name);
+		Ogre::MaterialPtr create(const std::string& name, const std::string& group);
+
     };
 
 }
