@@ -185,7 +185,7 @@ protected:
 	 *    Overridden from Eris::Entity
      * @param act 
      */
-    virtual void onAction(const Atlas::Objects::Operation::Action& act);
+    virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
 
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
 	/**

@@ -269,7 +269,7 @@ protected:
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
-    virtual void onAction(const Atlas::Objects::Operation::Action& act);
+    virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
     virtual void onImaginary(const Atlas::Objects::Root& act);
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
 	

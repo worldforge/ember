@@ -224,16 +224,24 @@ void EmberEntity::setMoving(bool moving)
 
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 {
+	const std::vector<Atlas::Objects::Root>& args = talkArgs->getArgs();
+	if (args.empty()) {
+        Eris::Entity::onTalk(talkArgs);
+		return;
+	}
+		
+	Atlas::Objects::Root talk = args.front();
 	
-    if (!talkArgs->hasAttr("say")) {
+	
+    if (!talk->hasAttr("say")) {
         Eris::Entity::onTalk(talkArgs);
 		return;
     }
 	
 	mSuggestedResponses.clear();
-	if (talkArgs->hasAttr("responses")) {
-		if (talkArgs->getAttr("responses").isList()) {
-			const Atlas::Message::ListType & responseList = talkArgs->getAttr("responses").asList();
+	if (talk->hasAttr("responses")) {
+		if (talk->getAttr("responses").isList()) {
+			const Atlas::Message::ListType & responseList = talk->getAttr("responses").asList();
 			Atlas::Message::ListType::const_iterator I = responseList.begin();
 			for(; I != responseList.end(); ++I) {
 				mSuggestedResponses.push_back(I->asString());
@@ -242,7 +250,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 		}
 	}
 	
-	std::string msg = talkArgs->getAttr("say").asString();
+	std::string msg = talk->getAttr("say").asString();
     
 
 
@@ -408,7 +416,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 }
 
-void EmberEntity::onAction(const Atlas::Objects::Operation::Action& act)
+void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
 	
 /*	std::string allattribs;

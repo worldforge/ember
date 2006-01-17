@@ -1,3 +1,22 @@
+2006-01-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberEntity.*|EmberPhysicalEntity.*:
+        * made onTalk work since the signature been changed
+        * fixed the signature of onAction
+
+2006-01-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/EntityCEGUITexture.cpp: fixed a problem with too short far clipping distance
+    * src/components/ogre/widgets/IngameChatWidget.cpp: use buttons for the suggested responses instead of just static text boxes
+    * src/components/ogre/widgets/ModelEdit.layout|ModelEdit.lua:
+        * added removal of submodels
+        * better display of the properties of Models
+
+
+2006-01-17  Erik Hjortsberg  <erik@katastrof.nu>
+
+     * src/components/ogre/scripting/bindings/lua/*: updated bindings
+
 2006-01-15  Miguel Guzman  <aglanor@gmail.com>
 
 	* configure.ac: added check for freealut 1.0.0
