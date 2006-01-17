@@ -178,7 +178,8 @@ bool EmberOgre::IngameChatWidget::ActiveChatWindow::buttonResponse_Click(const C
 {
 	const CEGUI::MouseEventArgs *mouseArgs = static_cast<const CEGUI::MouseEventArgs*>(&args);
 	if (mouseArgs) {
-		const CEGUI::String text = mouseArgs->window->getText();
+		///each button contains a static text window, which is the one containg the actual text
+		const CEGUI::String text = mouseArgs->window->getChild(0)->getText();
 		Ember::EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
 	}
 //	removeMenu();
@@ -187,7 +188,7 @@ bool EmberOgre::IngameChatWidget::ActiveChatWindow::buttonResponse_Click(const C
 
 void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::string & line )
 {
-
+	
 	CEGUI::StaticText* textWidget = static_cast<CEGUI::StaticText*>(mWindow->getChild(std::string("IngameChatWidget/") + mEntity->getId() + "/Text"));
 	textWidget->setText(line);
 	mElapsedTimeSinceLastUpdate = 0;
@@ -223,23 +224,33 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 		{
 			std::stringstream ss_;
 			ss_ << i;
-			CEGUI::StaticText* responseText = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", std::string("IngameChatWidget/") + mEntity->getId() + "/Response/" + ss_.str()));
+			CEGUI::PushButton* responseTextButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow("TaharezLook/Button", std::string("IngameChatWidget/") + mEntity->getId() + "/Response/" + ss_.str()));
+			CEGUI::StaticText* responseText = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow("TaharezLook/StaticText", std::string("IngameChatWidget/") + mEntity->getId() + "/ResponseText/" + ss_.str()));
 			
 			
 			
-			BIND_CEGUI_EVENT(responseText, CEGUI::ButtonBase::EventMouseButtonUp,IngameChatWidget::ActiveChatWindow::buttonResponse_Click );
+			BIND_CEGUI_EVENT(responseTextButton, CEGUI::ButtonBase::EventMouseClick,IngameChatWidget::ActiveChatWindow::buttonResponse_Click );
 			responseText->setText(*I);
-			responseText->setSize(CEGUI::Size(1.0f, heightSize));
-			responseText->setPosition(CEGUI::Point(0.0f, i * heightSize));
-			responseText->setInheritsAlpha(true);	
+			responseText->setSize(CEGUI::Size(0.8f, 0.9f));
+			responseText->setPosition(CEGUI::Point(0.1f, 0.05f));
 			responseText->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
-			responseText->setFrameEnabled(false);
-			responseWidget->addChildWindow(responseText);
-			mResponseTextWidgets.push_back(responseText);
+ 			responseText->setFrameEnabled(false);
+ 			responseText->setBackgroundEnabled(false);
+			responseText->setInheritsAlpha(true);	
+			
+			responseTextButton->setSize(CEGUI::Size(1.0f, heightSize));
+			responseTextButton->setPosition(CEGUI::Point(0.0f, i * heightSize));
+			responseTextButton->setInheritsAlpha(true);	
+			///hide the button
+			//responseTextButton->setAlpha(0.0f);	
+			responseTextButton->addChildWindow(responseText);
+			responseTextButton->setTooltipText(*I);
+			responseWidget->addChildWindow(responseTextButton);
+			mResponseTextWidgets.push_back(responseTextButton);
 			
 			++i;
 			
-			ss << *I << "\n";
+// 			ss << *I << "\n";
 		}
 		//responseWidget->setText(ss.str());
 		

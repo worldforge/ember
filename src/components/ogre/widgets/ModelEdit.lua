@@ -181,10 +181,10 @@ function ModelEdit_updateModelInfo()
 	ModelEdit.widget:getWindow("ModelName_Text"):setText("Name: " .. ModelEdit.definition:getName())
 	ModelEdit.widget:getWindow("ModelScale"):setText(ModelEdit.definition:getScale())
 	ModelEdit.widget:getWindow("ModelRotation"):setText(ModelEdit.definition:getRotation())
-	local translateWindow = ModelEdit.widget:getWindow("ModelContainedOffset")
+	ModelEdit_fillWindowsFromVector("ModelContainedOffset", ModelEdit.definition:getContentOffset())
+	ModelEdit_fillWindowsFromVector("ModelTranslate", ModelEdit.definition:getTranslate())
+	
 	local showContent = ModelEdit.widget:getWindow("ModelShowContent")
-	translateVector = ModelEdit.definition:getTranslate();
-	translateWindow:setText(translateVector.x .. " " .. translateVector.y .. " " ..translateVector.z)
 	
 	showContent = CEGUI.toCheckbox(showContent)
 	showContent:setSelected(ModelEdit.definition:getShowContained())
@@ -192,6 +192,34 @@ function ModelEdit_updateModelInfo()
 	ModelEdit.scaleTypes:clearAllSelections()
 	ModelEdit.scaleTypes:setItemSelectState(ModelEdit.definition:getUseScaleOf(), true)
 end
+
+function ModelEdit_fillWindowsFromVector(windowNamePrefix, vector)
+		local xWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_x");
+		local yWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_y");
+		local zWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_z");
+	if vector ~= nil then
+		xWindow:setText(vector.x)
+		yWindow:setText(vector.y)
+		zWindow:setText(vector.z)
+	else 
+		xWindow:setText("")
+		yWindow:setText("")
+		zWindow:setText("")
+	end
+	
+end
+
+function ModelEdit_fillVectorFromWindows(windowNamePrefix, vector)
+	local xWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_x");
+	local yWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_y");
+	local zWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_z");
+	
+	vector.x = tonumber(xWindow:getText())
+	vector.y = tonumber(xWindow:getText())
+	vector.z = tonumber(xWindow:getText())
+	
+end
+
 
 function ModelEdit_models_SelectionChanged(args)
 	local item = ModelEdit.models:getFirstSelectedItem()
@@ -304,6 +332,17 @@ function ModelEdit_AddSubmodelButton_MouseClick(args)
 
 end
 
+function ModelEdit_RemoveSubmodelButton_MouseClick(args)
+
+	local submodel = ModelEdit_getSelectedSubModel()
+	ModelEdit.definition:removeSubModelDefinition(submodel)
+		
+	ModelEdit_reloadModel()
+	ModelEdit_updateModelContentList()
+	
+end
+
+
 function ModelEdit_addPart_MouseClick(args)
 	local editbox = ModelEdit.widget:getWindow("NewPartName")
 	local name = editbox:getText()
@@ -355,6 +394,8 @@ function ModelEdit_NewModelOk_MouseClick(args)
 	end
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(false)
 end
+
+
 
 function ModelEdit_modelinfoMeshlist_SelectionChanged()
 	--local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
@@ -583,6 +624,7 @@ function ModelEdit_buildWidget()
 	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("MouseClick", "ModelEdit_SaveModelButton_MouseClick")
 	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("MouseClick", "ModelEdit_NewModelOk_MouseClick")
 	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("MouseClick", "ModelEdit_NewModelCancel_MouseClick")
+	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit_RemoveSubmodelButton_MouseClick")
 	
 
 	ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")

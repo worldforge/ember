@@ -123,7 +123,7 @@ void EntityCEGUITexture::setCameraDistance(Ogre::Real distance)
 {
 	if (distance != 0) {
 		mCamera->setNearClipDistance(Ogre::Math::Abs(distance) / 100);
-		mCamera->setFarClipDistance((Ogre::Math::Abs(distance) * 2));
+		mCamera->setFarClipDistance((Ogre::Math::Abs(distance) + mDefaultCameraDistance));
 	}
 	Ogre::Vector3 pos(0,0,distance);
 	mCamera->setPosition(pos);
