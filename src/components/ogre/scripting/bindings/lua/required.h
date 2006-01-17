@@ -24,6 +24,7 @@
 #include "components/ogre/TerrainGenerator.h"
 
 #include "components/ogre/model/Model.h"
+#include "components/ogre/model/SubModel.h"
 
 #include "components/ogre/widgets/Widget.h"
 

@@ -12,7 +12,7 @@ $pfile "OgreSubEntity.pkg"
 $pfile "OgreMeshManager.pkg"
 $pfile "OgreMesh.pkg"
 $pfile "OgreVector3.pkg"
-
+$pfile "OgreEntity.pkg"
 
 
 

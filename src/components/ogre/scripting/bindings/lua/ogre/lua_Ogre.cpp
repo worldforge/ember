@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.6 on Sun Jan 15 01:52:08 2006.
+** Generated automatically by tolua++-1.0.6 on Sun Jan 15 16:10:21 2006.
 */
 
 #ifndef __cplusplus
@@ -53,6 +53,13 @@ static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
  return 0;
 }
 
+static int tolua_collect_uint (lua_State* tolua_S)
+{
+ uint* self = (uint*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
 static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__key_type (lua_State* tolua_S)
 {
  Ogre::ResourceManager::ResourceHandleMap::key_type* self = (Ogre::ResourceManager::ResourceHandleMap::key_type*) tolua_tousertype(tolua_S,1,0);
@@ -74,9 +81,9 @@ static int tolua_collect_Ogre__Quaternion (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_uint (lua_State* tolua_S)
+static int tolua_collect_Ogre__AxisAlignedBox (lua_State* tolua_S)
 {
- uint* self = (uint*) tolua_tousertype(tolua_S,1,0);
+ Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -95,18 +102,25 @@ static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
  tolua_usertype(tolua_S,"Ogre::Mesh");
+ tolua_usertype(tolua_S,"Ogre::AnimationState");
+ tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
+ tolua_usertype(tolua_S,"Ogre::SceneDetailLevel");
  tolua_usertype(tolua_S,"Ogre::Resource");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::key_type");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
+ tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"ushort");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"Ogre::MeshPtr");
  tolua_usertype(tolua_S,"Ogre::ResourcePtr");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
+ tolua_usertype(tolua_S,"Ogre::MovableObject");
  tolua_usertype(tolua_S,"Ogre::Material");
  tolua_usertype(tolua_S,"Ogre::MaterialManager");
+ tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"Ogre::Vector3");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::MeshManager");
@@ -3333,6 +3347,1186 @@ static int tolua_get_Ogre__Vector3_UNIT_SCALE(lua_State* tolua_S)
  return 1;
 }
 
+/* method: getMesh of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getMesh00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMesh'",NULL);
+#endif
+ {
+  Ogre::MeshPtr& tolua_ret = (Ogre::MeshPtr&)  self->getMesh();
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::MeshPtr");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMesh'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getSubEntity of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getSubEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int index = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSubEntity'",NULL);
+#endif
+ {
+  Ogre::SubEntity* tolua_ret = (Ogre::SubEntity*)  self->getSubEntity(index);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SubEntity");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSubEntity'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getSubEntity of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getSubEntity01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string name = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSubEntity'",NULL);
+#endif
+ {
+  Ogre::SubEntity* tolua_ret = (Ogre::SubEntity*)  self->getSubEntity(name);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SubEntity");
+ tolua_pushcppstring(tolua_S,(const char*)name);
+ }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Entity_getSubEntity00(tolua_S);
+}
+
+/* method: getNumSubEntities of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getNumSubEntities00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNumSubEntities'",NULL);
+#endif
+ {
+  unsigned int tolua_ret = (unsigned int)  self->getNumSubEntities();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNumSubEntities'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: clone of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_clone00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string newName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clone'",NULL);
+#endif
+ {
+  Ogre::Entity* tolua_ret = (Ogre::Entity*)  self->clone(newName);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Entity");
+ tolua_pushcppstring(tolua_S,(const char*)newName);
+ }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'clone'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setMaterialName of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setMaterialName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string name = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaterialName'",NULL);
+#endif
+ {
+  self->setMaterialName(name);
+ tolua_pushcppstring(tolua_S,(const char*)name);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaterialName'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getBoundingBox of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getBoundingBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBoundingBox'",NULL);
+#endif
+ {
+  const Ogre::AxisAlignedBox& tolua_ret = (const Ogre::AxisAlignedBox&)  self->getBoundingBox();
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::AxisAlignedBox");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getBoundingBox'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getChildObjectsBoundingBox of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getChildObjectsBoundingBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getChildObjectsBoundingBox'",NULL);
+#endif
+ {
+  Ogre::AxisAlignedBox tolua_ret = (Ogre::AxisAlignedBox)  self->getChildObjectsBoundingBox();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::AxisAlignedBox(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::AxisAlignedBox");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::AxisAlignedBox));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::AxisAlignedBox");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getChildObjectsBoundingBox'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getName of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'",NULL);
+#endif
+ {
+  const std::string tolua_ret = (const std::string)  self->getName();
+ tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getName'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getMovableType of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getMovableType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMovableType'",NULL);
+#endif
+ {
+  const std::string tolua_ret = (const std::string)  self->getMovableType();
+ tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMovableType'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getAnimationState of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getAnimationState00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string name = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAnimationState'",NULL);
+#endif
+ {
+  Ogre::AnimationState* tolua_ret = (Ogre::AnimationState*)  self->getAnimationState(name);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::AnimationState");
+ tolua_pushcppstring(tolua_S,(const char*)name);
+ }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAnimationState'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setDisplaySkeleton of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setDisplaySkeleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool display = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDisplaySkeleton'",NULL);
+#endif
+ {
+  self->setDisplaySkeleton(display);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDisplaySkeleton'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getDisplaySkeleton of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getDisplaySkeleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDisplaySkeleton'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->getDisplaySkeleton();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDisplaySkeleton'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setMeshLodBias of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setMeshLodBias00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  float factor = ((float)  tolua_tonumber(tolua_S,2,0));
+  unsigned short maxDetailIndex = ((unsigned short)  tolua_tonumber(tolua_S,3,0));
+  unsigned short minDetailIndex = ((unsigned short)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMeshLodBias'",NULL);
+#endif
+ {
+  self->setMeshLodBias(factor,maxDetailIndex,minDetailIndex);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMeshLodBias'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setMaterialLodBias of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setMaterialLodBias00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  float factor = ((float)  tolua_tonumber(tolua_S,2,0));
+  unsigned short maxDetailIndex = ((unsigned short)  tolua_tonumber(tolua_S,3,0));
+  unsigned short minDetailIndex = ((unsigned short)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaterialLodBias'",NULL);
+#endif
+ {
+  self->setMaterialLodBias(factor,maxDetailIndex,minDetailIndex);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaterialLodBias'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setRenderDetail of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setRenderDetail00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::SceneDetailLevel",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::SceneDetailLevel renderDetail = *((Ogre::SceneDetailLevel*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRenderDetail'",NULL);
+#endif
+ {
+  self->setRenderDetail(renderDetail);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRenderDetail'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setRenderDetailOverrideable of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setRenderDetailOverrideable00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool renderDetailOverrideable = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRenderDetailOverrideable'",NULL);
+#endif
+ {
+  self->setRenderDetailOverrideable(renderDetailOverrideable);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRenderDetailOverrideable'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: attachObjectToBone of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_attachObjectToBone00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"Ogre::MovableObject",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string boneName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  Ogre::MovableObject* pMovable = ((Ogre::MovableObject*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Quaternion* offsetOrientation = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,4,0));
+  const Ogre::Vector3* offsetPosition = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'attachObjectToBone'",NULL);
+#endif
+ {
+  self->attachObjectToBone(boneName,pMovable,*offsetOrientation,*offsetPosition);
+ tolua_pushcppstring(tolua_S,(const char*)boneName);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'attachObjectToBone'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: detachObjectFromBone of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_detachObjectFromBone00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string movableName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'detachObjectFromBone'",NULL);
+#endif
+ {
+  Ogre::MovableObject* tolua_ret = (Ogre::MovableObject*)  self->detachObjectFromBone(movableName);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::MovableObject");
+ tolua_pushcppstring(tolua_S,(const char*)movableName);
+ }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'detachObjectFromBone'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: detachObjectFromBone of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_detachObjectFromBone01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::MovableObject",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::MovableObject* obj = ((Ogre::MovableObject*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'detachObjectFromBone'",NULL);
+#endif
+ {
+  self->detachObjectFromBone(obj);
+ }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Entity_detachObjectFromBone00(tolua_S);
+}
+
+/* method: detachAllObjectsFromBone of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_detachAllObjectsFromBone00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'detachAllObjectsFromBone'",NULL);
+#endif
+ {
+  self->detachAllObjectsFromBone();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'detachAllObjectsFromBone'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getBoundingRadius of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getBoundingRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBoundingRadius'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->getBoundingRadius();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getBoundingRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getWorldBoundingBox of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getWorldBoundingBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool derive = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldBoundingBox'",NULL);
+#endif
+ {
+  const Ogre::AxisAlignedBox& tolua_ret = (const Ogre::AxisAlignedBox&)  self->getWorldBoundingBox(derive);
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::AxisAlignedBox");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getWorldBoundingBox'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getWorldBoundingSphere of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getWorldBoundingSphere00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool derive = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldBoundingSphere'",NULL);
+#endif
+ {
+  const Ogre::Sphere& tolua_ret = (const Ogre::Sphere&)  self->getWorldBoundingSphere(derive);
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Sphere");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getWorldBoundingSphere'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setNormaliseNormals of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_setNormaliseNormals00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool normalise = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNormaliseNormals'",NULL);
+#endif
+ {
+  self->setNormaliseNormals(normalise);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setNormaliseNormals'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getNormaliseNormals of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getNormaliseNormals00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNormaliseNormals'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->getNormaliseNormals();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNormaliseNormals'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: hasSkeleton of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_hasSkeleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasSkeleton'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->hasSkeleton();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasSkeleton'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getSkeleton of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getSkeleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSkeleton'",NULL);
+#endif
+ {
+  Ogre::SkeletonInstance* tolua_ret = (Ogre::SkeletonInstance*)  self->getSkeleton();
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SkeletonInstance");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSkeleton'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: isHardwareSkinningEnabled of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_isHardwareSkinningEnabled00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isHardwareSkinningEnabled'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->isHardwareSkinningEnabled();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isHardwareSkinningEnabled'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getSoftwareSkinningRequests of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getSoftwareSkinningRequests00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSoftwareSkinningRequests'",NULL);
+#endif
+ {
+  int tolua_ret = (int)  self->getSoftwareSkinningRequests();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSoftwareSkinningRequests'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getSoftwareSkinningNormalsRequests of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_getSoftwareSkinningNormalsRequests00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSoftwareSkinningNormalsRequests'",NULL);
+#endif
+ {
+  int tolua_ret = (int)  self->getSoftwareSkinningNormalsRequests();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSoftwareSkinningNormalsRequests'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: addSoftwareSkinningRequest of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_addSoftwareSkinningRequest00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool normalsAlso = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addSoftwareSkinningRequest'",NULL);
+#endif
+ {
+  self->addSoftwareSkinningRequest(normalsAlso);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addSoftwareSkinningRequest'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: removeSoftwareSkinningRequest of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_removeSoftwareSkinningRequest00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  bool normalsAlso = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeSoftwareSkinningRequest'",NULL);
+#endif
+ {
+  self->removeSoftwareSkinningRequest(normalsAlso);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeSoftwareSkinningRequest'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: shareSkeletonInstanceWith of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_shareSkeletonInstanceWith00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Entity* entity = ((Ogre::Entity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'shareSkeletonInstanceWith'",NULL);
+#endif
+ {
+  self->shareSkeletonInstanceWith(entity);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'shareSkeletonInstanceWith'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: stopSharingSkeletonInstance of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_stopSharingSkeletonInstance00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'stopSharingSkeletonInstance'",NULL);
+#endif
+ {
+  self->stopSharingSkeletonInstance();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'stopSharingSkeletonInstance'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: sharesSkeletonInstance of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_sharesSkeletonInstance00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'sharesSkeletonInstance'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->sharesSkeletonInstance();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'sharesSkeletonInstance'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: refreshAvailableAnimationState of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity_refreshAvailableAnimationState00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'refreshAvailableAnimationState'",NULL);
+#endif
+ {
+  self->refreshAvailableAnimationState();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'refreshAvailableAnimationState'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: _updateAnimation of class  Ogre::Entity */
+static int tolua_Ogre_Ogre_Entity__updateAnimation00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function '_updateAnimation'",NULL);
+#endif
+ {
+  self->_updateAnimation();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '_updateAnimation'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* Open function */
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
 {
@@ -3546,6 +4740,50 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
  tolua_variable(tolua_S,"NEGATIVE_UNIT_Y",tolua_get_Ogre__Vector3_NEGATIVE_UNIT_Y,NULL);
  tolua_variable(tolua_S,"NEGATIVE_UNIT_Z",tolua_get_Ogre__Vector3_NEGATIVE_UNIT_Z,NULL);
  tolua_variable(tolua_S,"UNIT_SCALE",tolua_get_Ogre__Vector3_UNIT_SCALE,NULL);
+ tolua_endmodule(tolua_S);
+ tolua_endmodule(tolua_S);
+ tolua_module(tolua_S,"Ogre",0);
+ tolua_beginmodule(tolua_S,"Ogre");
+ tolua_cclass(tolua_S,"Entity","Ogre::Entity","",NULL);
+ tolua_beginmodule(tolua_S,"Entity");
+ tolua_function(tolua_S,"getMesh",tolua_Ogre_Ogre_Entity_getMesh00);
+ tolua_function(tolua_S,"getSubEntity",tolua_Ogre_Ogre_Entity_getSubEntity00);
+ tolua_function(tolua_S,"getSubEntity",tolua_Ogre_Ogre_Entity_getSubEntity01);
+ tolua_function(tolua_S,"getNumSubEntities",tolua_Ogre_Ogre_Entity_getNumSubEntities00);
+ tolua_function(tolua_S,"clone",tolua_Ogre_Ogre_Entity_clone00);
+ tolua_function(tolua_S,"setMaterialName",tolua_Ogre_Ogre_Entity_setMaterialName00);
+ tolua_function(tolua_S,"getBoundingBox",tolua_Ogre_Ogre_Entity_getBoundingBox00);
+ tolua_function(tolua_S,"getChildObjectsBoundingBox",tolua_Ogre_Ogre_Entity_getChildObjectsBoundingBox00);
+ tolua_function(tolua_S,"getName",tolua_Ogre_Ogre_Entity_getName00);
+ tolua_function(tolua_S,"getMovableType",tolua_Ogre_Ogre_Entity_getMovableType00);
+ tolua_function(tolua_S,"getAnimationState",tolua_Ogre_Ogre_Entity_getAnimationState00);
+ tolua_function(tolua_S,"setDisplaySkeleton",tolua_Ogre_Ogre_Entity_setDisplaySkeleton00);
+ tolua_function(tolua_S,"getDisplaySkeleton",tolua_Ogre_Ogre_Entity_getDisplaySkeleton00);
+ tolua_function(tolua_S,"setMeshLodBias",tolua_Ogre_Ogre_Entity_setMeshLodBias00);
+ tolua_function(tolua_S,"setMaterialLodBias",tolua_Ogre_Ogre_Entity_setMaterialLodBias00);
+ tolua_function(tolua_S,"setRenderDetail",tolua_Ogre_Ogre_Entity_setRenderDetail00);
+ tolua_function(tolua_S,"setRenderDetailOverrideable",tolua_Ogre_Ogre_Entity_setRenderDetailOverrideable00);
+ tolua_function(tolua_S,"attachObjectToBone",tolua_Ogre_Ogre_Entity_attachObjectToBone00);
+ tolua_function(tolua_S,"detachObjectFromBone",tolua_Ogre_Ogre_Entity_detachObjectFromBone00);
+ tolua_function(tolua_S,"detachObjectFromBone",tolua_Ogre_Ogre_Entity_detachObjectFromBone01);
+ tolua_function(tolua_S,"detachAllObjectsFromBone",tolua_Ogre_Ogre_Entity_detachAllObjectsFromBone00);
+ tolua_function(tolua_S,"getBoundingRadius",tolua_Ogre_Ogre_Entity_getBoundingRadius00);
+ tolua_function(tolua_S,"getWorldBoundingBox",tolua_Ogre_Ogre_Entity_getWorldBoundingBox00);
+ tolua_function(tolua_S,"getWorldBoundingSphere",tolua_Ogre_Ogre_Entity_getWorldBoundingSphere00);
+ tolua_function(tolua_S,"setNormaliseNormals",tolua_Ogre_Ogre_Entity_setNormaliseNormals00);
+ tolua_function(tolua_S,"getNormaliseNormals",tolua_Ogre_Ogre_Entity_getNormaliseNormals00);
+ tolua_function(tolua_S,"hasSkeleton",tolua_Ogre_Ogre_Entity_hasSkeleton00);
+ tolua_function(tolua_S,"getSkeleton",tolua_Ogre_Ogre_Entity_getSkeleton00);
+ tolua_function(tolua_S,"isHardwareSkinningEnabled",tolua_Ogre_Ogre_Entity_isHardwareSkinningEnabled00);
+ tolua_function(tolua_S,"getSoftwareSkinningRequests",tolua_Ogre_Ogre_Entity_getSoftwareSkinningRequests00);
+ tolua_function(tolua_S,"getSoftwareSkinningNormalsRequests",tolua_Ogre_Ogre_Entity_getSoftwareSkinningNormalsRequests00);
+ tolua_function(tolua_S,"addSoftwareSkinningRequest",tolua_Ogre_Ogre_Entity_addSoftwareSkinningRequest00);
+ tolua_function(tolua_S,"removeSoftwareSkinningRequest",tolua_Ogre_Ogre_Entity_removeSoftwareSkinningRequest00);
+ tolua_function(tolua_S,"shareSkeletonInstanceWith",tolua_Ogre_Ogre_Entity_shareSkeletonInstanceWith00);
+ tolua_function(tolua_S,"stopSharingSkeletonInstance",tolua_Ogre_Ogre_Entity_stopSharingSkeletonInstance00);
+ tolua_function(tolua_S,"sharesSkeletonInstance",tolua_Ogre_Ogre_Entity_sharesSkeletonInstance00);
+ tolua_function(tolua_S,"refreshAvailableAnimationState",tolua_Ogre_Ogre_Entity_refreshAvailableAnimationState00);
+ tolua_function(tolua_S,"_updateAnimation",tolua_Ogre_Ogre_Entity__updateAnimation00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

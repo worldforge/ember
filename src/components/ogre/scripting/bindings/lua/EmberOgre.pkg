@@ -21,6 +21,7 @@ $pfile "MotionManager.pkg"
 
 $pfile "Widget.pkg"
 $pfile "Model.pkg"
+$pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
 $pfile "Input.pkg"
 $pfile "Jesus.pkg"
