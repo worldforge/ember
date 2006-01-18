@@ -23,12 +23,13 @@
 #include "EmberEntity.h"
 #include "EmberEntityFactory.h"
 #include "WorldEmberEntity.h"
-
+#include "MathConverter.h"
 
 //#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/sound/SoundService.h"
 
 #include "MousePicker.h"
 #include "jesus/JesusPickerObject.h"
@@ -68,6 +69,10 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 {
 	createNodesAndCamera();
 	setAvatarNode(avatarNode);
+
+	// Register this as a frame listener
+	Ogre::Root::getSingleton().addFrameListener(this);
+
 	
 	if (mGUIManager && mGUIManager->getInput()) {
 		mGUIManager->getInput()->EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
@@ -511,7 +516,6 @@ void AvatarCamera::updateValuesFromConfig()
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "invertcamera")) {
 		mInvertCamera = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "invertcamera"));
 	}
-	
 }
 	
 void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
@@ -521,6 +525,17 @@ void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& secti
 			updateValuesFromConfig();
 		}
 	}
+}
+
+bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
+{
+	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
+	{
+		mySoundService->updateListenerPosition(
+			Ogre2Atlas(mCamera->getPosition()),
+			Ogre2Atlas(mCamera->getOrientation()));
+	}
+	return true;
 }
 
 }

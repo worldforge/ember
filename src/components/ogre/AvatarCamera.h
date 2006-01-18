@@ -54,7 +54,8 @@ struct EntityPickResult;
 class AvatarCamera 
 :
 public sigc::trackable,
-public Ember::ConsoleObject
+public Ember::ConsoleObject,
+public Ogre::FrameListener
 {
 public:
 
@@ -189,6 +190,12 @@ public:
 	 * @param distance the new distance
 	 */
 	void setCameraDistance(Ogre::Real distance);
+	
+	/**
+	 * Methods from Ogre::FrameListener
+	 */
+	bool frameStarted(const Ogre::FrameEvent& event);
+	//bool frameEnded(const Ogre::FrameEvent& event);
 	
 protected:
 

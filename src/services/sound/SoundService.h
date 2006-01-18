@@ -28,6 +28,11 @@ class Service;
 //I only break my own rules for very good reasons
 #include "framework/ConsoleObject.h"
 
+#include <AL/altypes.h>
+#include <wfmath/point.h>
+#include <wfmath/vector.h>
+#include <wfmath/quaternion.h>
+
 namespace Ember {
 
 /**
@@ -53,20 +58,20 @@ class SoundService: public Service, public ConsoleObject
 	/** System source - this source will play system sounds, 
 	like user input request or program error. 
 	Will always remain in the same relative position to the listener. */
-	static unsigned int systemSource;
+	ALuint systemSource;
 	/** System buffer - buffer used to load system sounds files */
-	static unsigned int systemBuffer;
+	ALuint systemBuffer;
 	/** Music source - this source will play background music. 
 	Will always remain in the same relative position to the listener. */
-	static unsigned int musicSource;
+	ALuint musicSource;
 	/** Music buffer - buffer used to load background music files */
-	static unsigned int musicBuffer;
+	ALuint musicBuffer;
 	/** World sources - array of sources to play world sounds. 
 	They will be placed in 3D space. 
 	This field may change depending on the data model */
-	unsigned int worldSources[NUM_WORLD_SOURCES];
+	ALuint worldSources[NUM_WORLD_SOURCES];
 	/** Wold buffers - array of buffers for loading world sounds */
-	unsigned int worldBuffers[NUM_WORLD_BUFFERS];
+	ALuint worldBuffers[NUM_WORLD_BUFFERS];
 
 
 	std::string soundsDirPath;
@@ -108,6 +113,10 @@ class SoundService: public Service, public ConsoleObject
 	void playTestGYPH(void);
 	void playTestGrunt(void);
 	
+	void SoundService::updateListenerPosition(
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation);
+
 	// List of SoundService's console commands
 	static const char * const PLAYSOUND;
 	static const char * const PLAYMUSIC;

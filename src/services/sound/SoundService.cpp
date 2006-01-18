@@ -93,26 +93,32 @@ namespace Ember
 			S_LOG_INFO( "AL initiated"  )
 		}
 
+		// set listener initial parameters
+		alListenerfv(AL_POSITION,listenerPos);
+		alListenerfv(AL_VELOCITY,listenerVel);
+		alListenerfv(AL_ORIENTATION,listenerOri);
+
 		// Generate buffers
-		/*
-		if (!alGenBuffers(1,&systemBuffer)) return Service::FAILURE;
-		if (!alIsBuffer(systemBuffer)
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- GENERATING BUFFERS ***" << std::endl;
+		std::cout << "************************************" << std::endl;
+		S_LOG_VERBOSE("Generating Buffers");
+
+		alGenBuffers(1,&systemBuffer);
+		if (!alIsBuffer(systemBuffer))
 		{
 			S_LOG_FAILURE("Error creating system buffer")
 			return Service::FAILURE;
 		}
-*//*
-		//alGenBuffers(1,&musicBuffer);
-		if (!alIsBuffer(musicBuffer)
+
+		alGenBuffers(1,&musicBuffer);
+		if (!alIsBuffer(musicBuffer))
 		{
 			S_LOG_FAILURE("Error creating music buffer")
 			return Service::FAILURE;
-		}*/
+		}
 
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- GENERATING BUFFERS ***" << std::endl;
-	std::cout << "************************************" << std::endl;
-		S_LOG_VERBOSE("Generating Buffers");
+
 		alGenBuffers(NUM_WORLD_BUFFERS,worldBuffers);
 		for (int i=0;i<NUM_WORLD_BUFFERS;i++)
 		{
@@ -123,26 +129,27 @@ namespace Ember
 			}
 		}
 
-		/*
+		
 		// Generate sources
-		alGenSources(1,systemSource);
-		if (!alIsSource(systemSource)
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- GENERATING SOURCES ***" << std::endl;
+		std::cout << "************************************" << std::endl;
+
+		S_LOG_VERBOSE("Generating Sources");
+		alGenSources(1,&systemSource);
+		if (!alIsSource(systemSource))
 		{
 			S_LOG_FAILURE("Error creating system source")
 			return Service::FAILURE;
 		}
 
 		alGenSources(1,&musicSource);
-		if (!alIsSource(musicSource)
+		if (!alIsSource(musicSource))
 		{
 			S_LOG_FAILURE("Error creating music source")
 			return Service::FAILURE;
-		}*/
+		}
 
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- CREATING SOURCES ***" << std::endl;
-	std::cout << "************************************" << std::endl;
-		S_LOG_VERBOSE("Creating Sources");
 		alGenSources(NUM_WORLD_SOURCES,worldSources);
 		for (int i=0;i<NUM_WORLD_SOURCES;i++)
 		{
@@ -200,10 +207,7 @@ namespace Ember
 
 	//	 UnloadWAV();
 
-		// set listener initial parameters
-		alListenerfv(AL_POSITION,listenerPos);			// position
-		alListenerfv(AL_VELOCITY,listenerVel);			// velocity
-		alListenerfv(AL_ORIENTATION,listenerOri);		// orientation
+
 
 		int error = alGetError();
 		if(error != AL_NO_ERROR)
@@ -367,12 +371,11 @@ namespace Ember
 				S_LOG_FAILURE("Error playing sound: " << error)
 			}
 */
-		ALuint helloBuffer, helloSource;
-		helloBuffer = alutCreateBufferHelloWorld();
-		alGenSources(1, &helloSource);
-		alSourcei(helloSource, AL_BUFFER, helloBuffer);
-		alSourcePlay(helloSource);
-		alutSleep(1); //???
+		systemBuffer = alutCreateBufferHelloWorld();
+		
+		alSourcei(systemSource, AL_BUFFER, systemBuffer);
+		alSourcePlay(systemSource);
+		alutSleep(1); //??? WHAT IS THIS FOR???
 
 		}
 		else if(command == PLAYMUSIC)
@@ -473,6 +476,18 @@ namespace Ember
 			S_LOG_FAILURE( "Error playing sound: " << errorStr )
 		}
 	}
-	
+
+	void SoundService::updateListenerPosition(
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation) {
+
+		ALfloat listenerPos[3]={position.x(),position.y(),position.z()};
+		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
+
+		// set listener initial parameters
+		alListenerfv(AL_POSITION,listenerPos);
+		//alListenerfv(AL_ORIENTATION,listenerOri);
+	}
+
 
 } // namespace Ember
