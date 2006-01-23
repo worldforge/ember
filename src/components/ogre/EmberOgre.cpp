@@ -23,7 +23,21 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.118  2006-01-15 15:32:23  aglanor
+ *      Revision 1.119  2006-01-23 23:36:54  erik
+ *      2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *          * src/services/config/ConfigService.cpp: adapt paths so they will work better on win32
+ *          * ember.conf: fixed the name of "logginglevel" (not "loggingmode")
+ *          * ember.vcproj: updated to work with cvs, though some paths still need to be fixed
+ *          * EmberOgre.cpp:
+ *              * better exception reporting and handling
+ *              * since there was some problems with building the SoundManager on windows, disable calls to it for now on that platform
+ *          * src/components/ogre/widgets/EntityCEGUITexture.cpp: added more verbose logging
+ *          * src/components/ogre/widgets/GUIManager.cpp: reactivate the quit widget
+ *          * src/components/ogre/model/NodelDefinition.h: removed unneeded reference to hash_map
+ *          * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeIntersectionSceneQuery.cpp: removed code that won't compile and isn't used anyway
+ *
+ *      Revision 1.118  2006/01/15 15:32:23  aglanor
  *      2006-01-15  Miguel Guzman  <aglanor@gmail.com>
  *
  *      	* configure.ac: added check for freealut 1.0.0
@@ -962,7 +976,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
-#include "services/sound/SoundService.h"
+//#include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
@@ -1235,13 +1249,13 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 /*	} catch (const CEGUI::Exception& ex) {
 		S_LOG_CRITICAL(ex.getMessage());
 		throw ex;*/
-	} catch (const std::runtime_error& ex)
+	} catch (const std::exception& ex)
 	{
-		S_LOG_CRITICAL("Got unknown exception, shutting down.");
+		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
 		throw ex;
 	} catch (...)
 	{
-		S_LOG_CRITICAL("Got unknown exception,");
+		S_LOG_CRITICAL("Got unknown exception.");
 	}
 	if (mWorldView)
 		mWorldView->update();
@@ -1273,7 +1287,7 @@ void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 		throw ex;*/
 	} catch (const std::runtime_error& ex)
 	{
-		S_LOG_CRITICAL("Got unknown exception, shutting down.");
+		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
 		throw ex;
 	} catch (...)
 	{
@@ -2006,15 +2020,17 @@ void EmberOgre::initializeEmberServices(void)
 	if (temp) {
 	  fclose(temp);
 #endif
+#ifndef WIN32
 	// Initialize the SoundService
 	std::cout << "************************************" << std::endl;
 	std::cout << "TRACE --- INITIALIZING SOUND SERVICE" << std::endl;
 	std::cout << "************************************" << std::endl;
 	S_LOG_INFO("************** TEST LOG ****************");
-	Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
+	//Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
 	std::cout << "************************************" << std::endl;
 	std::cout << "TRACE --- SOUND SERVICE INITIALIZED" << std::endl;
 	std::cout << "************************************" << std::endl;
+#endif
 #ifndef WIN32
 	}
 #endif

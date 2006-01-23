@@ -59,8 +59,8 @@ void PagingLandScapeIntersectionSceneQuery::execute(IntersectionSceneQueryListen
 			const AxisAlignedBox& box = a->second->getWorldBoundingBox();
 			std::list<RenderOperation> opList;
 
-            
-            PagingLandScapePageManager::getSingleton().getPagingLandScapeRenderOpsInBox (box, opList);
+            			//this does not compile, had to disable it
+            //PagingLandScapePageManager::getSingleton().getPagingLandScapeRenderOpsInBox (box, opList);
 					
 
 			std::list<RenderOperation>::iterator i, iend;

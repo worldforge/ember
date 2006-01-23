@@ -259,12 +259,12 @@ namespace Ember
 
 	const std::string ConfigService::getUserMediaDirectory() const
 	{
-		return getEmberDataDirectory() + "/ember-media/";
+		return getEmberDataDirectory() + "ember-media/";
 	}
 	
 	const std::string ConfigService::getSharedMediaDirectory() const
 	{
-		return getSharedDataDirectory() + "/media/";
+		return getSharedDataDirectory() + "media/";
 	}
 
 } // namespace Ember

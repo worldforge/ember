@@ -196,7 +196,7 @@ void GUIManager::initialize()
 
 		//the console and quit widgets are not lua scripts, and should be loaded explicit
 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
-//		createWidget("Quit");
+		createWidget("Quit");
 		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 		try {
 		//load the bootstrap script which will load all other scripts

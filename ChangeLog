@@ -1,3 +1,16 @@
+2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/config/ConfigService.cpp: adapt paths so they will work better on win32
+    * ember.conf: fixed the name of "logginglevel" (not "loggingmode")
+    * ember.vcproj: updated to work with cvs, though some paths still need to be fixed
+    * EmberOgre.cpp: 
+        * better exception reporting and handling
+        * since there was some problems with building the SoundManager on windows, disable calls to it for now on that platform
+    * src/components/ogre/widgets/EntityCEGUITexture.cpp: added more verbose logging
+    * src/components/ogre/widgets/GUIManager.cpp: reactivate the quit widget
+    * src/components/ogre/model/NodelDefinition.h: removed unneeded reference to hash_map
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeIntersectionSceneQuery.cpp: removed code that won't compile and isn't used anyway
+
 2006-01-23  Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/component/ogre/widgets/EntityCEGUITexture.h: more comments

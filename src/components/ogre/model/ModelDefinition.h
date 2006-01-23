@@ -25,7 +25,7 @@
 #define EMBEROGREMODELDEFINITION_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <ext/hash_map>
+//#include <ext/hash_map>
 
 namespace EmberOgre {
 namespace Model {

@@ -20,8 +20,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7&quot;;C:\OgreSDK\include;C:\OgreSDK\Dependencies\include;C:\OgreSDK\include\CEGUI;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\Include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogrenew\Dependencies\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WIN32__;_WIN32;PLUGIN_PAGINGLANDSCAPE2_EXPORTS;OGRE_PLATFORM=OGRE_PLATFORM_WIN32;OGREOPCODE_EXPORTS"
+				AdditionalIncludeDirectories=".\src;.\src\components\ogre;&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\ScriptingModules\CEGUILua\lua_and_tolua++\include&quot;;&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\ScriptingModules\CEGUILua\LuaScriptModule\include&quot;;&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\include&quot;;..\..\..\..\ogre\v1.0.5\ogrenew\Samples\Common\CEGUIRenderer\include;&quot;..\..\..\..\libsigc++-2.0.15&quot;;&quot;..\..\libs\wfmath-0.3.4&quot;;&quot;..\..\libs\varconf-0.6.3&quot;;&quot;..\..\libs\skstream-0.3.5&quot;;&quot;..\..\libs\mercator-0.2.4&quot;;&quot;..\..\libs\Atlas-C++-0.6.0rc2&quot;;&quot;..\..\libs\eris-1.3.10&quot;;C:\Ogre\OgreSDK1.0.5\include;C:\OgreSDK\Dependencies\include;&quot;..\..\..\..\freealut-1.0.0-bin\include&quot;;&quot;..\..\..\..\OpenAL 1.1 SDK\include&quot;;..\..\..\..\ogrenew\Dependencies\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WIN32__;_WIN32;PLUGIN_PAGINGLANDSCAPE2_EXPORTS;OGRE_PLATFORM=OGRE_PLATFORM_WIN32;OGREOPCODE_EXPORTS;OPCODE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -34,10 +34,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreMain_d.lib mercator.lib eris.lib atlas.lib wfmath.lib varconf.lib sigc-2.0d.lib skstream.lib SDL.lib SDLMain.lib DeVil.lib ILU.lib ILUT.lib ALut.lib OpenAL32.lib WS2_32.Lib WSock32.Lib shlwapi.lib"
+				AdditionalDependencies="CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreMain_d.lib mercator.lib eris.lib atlas.lib wfmath.lib varconf.lib sigc-2.0d.lib skstream.lib SDL.lib SDLMain.lib DeVil.lib ILU.lib ILUT.lib alut.lib OpenAL32.lib WS2_32.Lib WSock32.Lib shlwapi.lib lua_and_tolua++_d.lib CEGUILua_d.lib"
 				OutputFile="$(OutDir)/ember.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\libs&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.4\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15\MSVC_Net2003\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.3\ogrenew\OgreMain\lib\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.3\ogrenew\Dependencies\lib\Debug&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.3\ogrenew\Samples\Common\CEGUIRenderer\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\lib&quot;;..\..\..\..\ogre\v1.0.5\ogrenew\Samples\Common\CEGUIRenderer\lib;&quot;..\..\..\..\OpenAL 1.1 SDK\libs\Win32&quot;;&quot;..\..\libs\wfmath-0.3.4\$(ConfigurationName)&quot;;&quot;..\..\libs\mercator-0.2.4\$(ConfigurationName)&quot;;&quot;..\..\libs\Atlas-C++-0.6.0rc2\$(ConfigurationName)&quot;;&quot;..\..\libs\eris-1.3.10\$(ConfigurationName)&quot;;&quot;..\..\libs\varconf-0.6.3\$(ConfigurationName)&quot;;&quot;..\..\libs\skstream-0.3.5\$(ConfigurationName)&quot;;&quot;..\..\..\..\libsigc++-2.0.15\MSVC_Net2003\$(ConfigurationName)&quot;;C:\Ogre\OgreSDK1.0.5\lib;&quot;C:\OgreSDK\Dependencies\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\ogrenew\Dependencies\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\freealut-1.0.0-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)/ember.pdb"/>
@@ -77,8 +77,8 @@
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\cegui_mk2-0.4.0\cegui_mk2\include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.4\ogrenew\Samples\Common\CEGUIRenderer\include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.3&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7&quot;;C:\OgreSDK1.0.4\include;C:\OgreSDK\Dependencies\include;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\Include&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogrenew\Dependencies\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WIN32__;_WIN32;PLUGIN_PAGINGLANDSCAPE2_EXPORTS;OGRE_PLATFORM=OGRE_PLATFORM_WIN32;OGREOPCODE_EXPORTS"
+				AdditionalIncludeDirectories=".\src;.\src\components\ogre;&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\ScriptingModules\CEGUILua\lua_and_tolua++\include&quot;;&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\ScriptingModules\CEGUILua\LuaScriptModule\include&quot;;&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\include&quot;;..\..\..\..\ogre\v1.0.5\ogrenew\Samples\Common\CEGUIRenderer\include;&quot;..\..\..\..\libsigc++-2.0.15&quot;;&quot;..\..\libs\wfmath-0.3.4&quot;;&quot;..\..\libs\varconf-0.6.3&quot;;&quot;..\..\libs\skstream-0.3.5&quot;;&quot;..\..\libs\mercator-0.2.4&quot;;&quot;..\..\libs\Atlas-C++-0.6.0rc2&quot;;&quot;..\..\libs\eris-1.3.10&quot;;C:\Ogre\OgreSDK1.0.5\include;C:\OgreSDK\Dependencies\include;&quot;..\..\..\..\freealut-1.0.0-bin\include&quot;;&quot;..\..\..\..\OpenAL 1.1 SDK\include&quot;;..\..\..\..\ogrenew\Dependencies\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WIN32__;_WIN32;PLUGIN_PAGINGLANDSCAPE2_EXPORTS;OGRE_PLATFORM=OGRE_PLATFORM_WIN32;OGREOPCODE_EXPORTS;ICE_NO_DLL"
 				StringPooling="TRUE"
 				MinimalRebuild="TRUE"
 				RuntimeLibrary="2"
@@ -92,10 +92,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CEGUIBase.lib OgreGUIRenderer.lib OgreMain.lib eris.lib atlas.lib wfmath.lib varconf.lib sigc-2.0.lib skstream.lib mercator.lib SDL.lib SDLMain.lib DeVil.lib ILU.lib ILUT.lib ALut.lib OpenAL32.lib WS2_32.Lib WSock32.Lib shlwapi.lib"
+				AdditionalDependencies="CEGUIBase.lib OgreGUIRenderer.lib OgreMain.lib eris.lib atlas.lib wfmath.lib varconf.lib sigc-2.0.lib skstream.lib mercator.lib SDL.lib SDLMain.lib DeVil.lib ILU.lib ILUT.lib ALut.lib OpenAL32.lib WS2_32.Lib WSock32.Lib shlwapi.lib CEGUILua.lib lua_and_tolua++.lib"
 				OutputFile="$(OutDir)/ember.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\cegui_mk2-0.4.0\cegui_mk2\lib&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogre\v1.0.4\ogrenew\Samples\Common\CEGUIRenderer\lib&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\OpenAL 1.0 Software Development Kit\libs&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\wfmath-0.3.4\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\mercator-0.2.4\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\Atlas-C++-0.5.96\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\eris-1.3.7\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\varconf-0.6.3\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\libs\skstream-0.3.3\Release&quot;;&quot;C:\Documents and Settings\ehj\Desktop\wf\libsigc++-2.0.15\MSVC_Net2003\Release&quot;;C:\OgreSDK1.0.4\lib;C:\OgreSDK\Dependencies\lib\Release;&quot;C:\Documents and Settings\ehj\Desktop\wf\ogrenew\Dependencies\lib\Release&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\cegui_mk2-0.4.0\cegui_mk2\lib&quot;;..\..\..\..\ogre\v1.0.5\ogrenew\Samples\Common\CEGUIRenderer\lib;&quot;..\..\..\..\OpenAL 1.1 SDK\libs\Win32&quot;;&quot;..\..\libs\wfmath-0.3.4\$(ConfigurationName)&quot;;&quot;..\..\libs\mercator-0.2.4\$(ConfigurationName)&quot;;&quot;..\..\libs\Atlas-C++-0.6.0rc2\$(ConfigurationName)&quot;;&quot;..\..\libs\eris-1.3.10\$(ConfigurationName)&quot;;&quot;..\..\libs\varconf-0.6.3\$(ConfigurationName)&quot;;&quot;..\..\libs\skstream-0.3.5\$(ConfigurationName)&quot;;&quot;..\..\..\..\libsigc++-2.0.15\MSVC_Net2003\$(ConfigurationName)&quot;;C:\Ogre\OgreSDK1.0.5\lib;&quot;C:\OgreSDK\Dependencies\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\ogrenew\Dependencies\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\freealut-1.0.0-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				AssemblyDebug="1"
 				SubSystem="2"
@@ -229,6 +229,12 @@
 						RelativePath=".\src\components\ogre\FreeCameraController.h">
 					</File>
 					<File
+						RelativePath=".\src\components\ogre\GUICEGUIAdapter.cpp">
+					</File>
+					<File
+						RelativePath=".\src\components\ogre\GUICEGUIAdapter.h">
+					</File>
+					<File
 						RelativePath=".\src\components\ogre\GUIManager.cpp">
 					</File>
 					<File
@@ -254,12 +260,6 @@
 					</File>
 					<File
 						RelativePath=".\src\components\ogre\MousePicker.h">
-					</File>
-					<File
-						RelativePath=".\src\components\ogre\PersonEmberEntity.cpp">
-					</File>
-					<File
-						RelativePath=".\src\components\ogre\PersonEmberEntity.h">
 					</File>
 					<File
 						RelativePath=".\src\components\ogre\TerrainArea.cpp">
@@ -366,22 +366,64 @@
 						Name="model"
 						Filter="">
 						<File
+							RelativePath=".\src\components\ogre\model\Action.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\Action.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\AnimationSet.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\AnimationSet.h">
+						</File>
+						<File
 							RelativePath=".\src\components\ogre\model\Model.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\Model.h">
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\model\ModelDefinition.cpp">
 						</File>
 						<File
+							RelativePath=".\src\components\ogre\model\ModelDefinition.h">
+						</File>
+						<File
 							RelativePath=".\src\components\ogre\model\ModelDefinitionManager.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ModelDefinitionManager.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ParticleSystem.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ParticleSystem.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ParticleSystemBinding.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\ParticleSystemBinding.h">
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\model\SubModel.cpp">
 						</File>
 						<File
+							RelativePath=".\src\components\ogre\model\SubModel.h">
+						</File>
+						<File
 							RelativePath=".\src\components\ogre\model\SubModelPart.cpp">
 						</File>
 						<File
+							RelativePath=".\src\components\ogre\model\SubModelPart.h">
+						</File>
+						<File
 							RelativePath=".\src\components\ogre\model\XMLModelDefinitionSerializer.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\model\XMLModelDefinitionSerializer.h">
 						</File>
 					</Filter>
 					<Filter
@@ -403,6 +445,9 @@
 							</FileConfiguration>
 						</File>
 						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreCollisionContext.h">
+						</File>
+						<File
 							RelativePath=".\src\components\ogre\ogreopcode\src\OgreCollisionManager.cpp">
 							<FileConfiguration
 								Name="Debug|Win32">
@@ -416,6 +461,15 @@
 									Name="VCCLCompilerTool"
 									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
 							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreCollisionManager.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreCollisionObject.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreCollisionReporter.h">
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\ogreopcode\src\OgreCollisionShape.cpp">
@@ -433,6 +487,24 @@
 							</FileConfiguration>
 						</File>
 						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreCollisionShape.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreCollisionTypes.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreHash.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreKeyArray.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreNodes.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreOpcode.h">
+						</File>
+						<File
 							RelativePath=".\src\components\ogre\ogreopcode\src\OgreOpcodeDebugObject.cpp">
 							<FileConfiguration
 								Name="Debug|Win32">
@@ -447,6 +519,15 @@
 									AdditionalIncludeDirectories="&quot;C:\Documents and Settings\ehj\Desktop\wf\from_cvs\forge\clients\ember\src\components\ogre\ogreopcode\include&quot;"/>
 							</FileConfiguration>
 						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreOpcodeDebugObject.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreOpcodeExports.h">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\ogreopcode\include\OgreOpcodeMath.h">
+						</File>
 						<Filter
 							Name="opcode"
 							Filter="">
@@ -454,64 +535,172 @@
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_AABBCollider.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_AABBCollider.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_AABBTree.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_AABBTree.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BaseModel.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BaseModel.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BoxBoxOverlap.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BoxPruning.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_BoxPruning.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Collider.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Collider.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Common.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Common.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_HybridModel.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_HybridModel.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_IceHook.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_LSSAABBOverlap.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_LSSCollider.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_LSSCollider.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_LSSTriOverlap.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_MeshInterface.cpp">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCLCompilerTool"
+										PreprocessorDefinitions="OPCODE_EXPORTS"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_MeshInterface.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Model.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Model.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_OBBCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_OBBCollider.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_OptimizedTree.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_OptimizedTree.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Picking.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Picking.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_PlanesAABBOverlap.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_PlanesCollider.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_PlanesCollider.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_PlanesTriOverlap.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_RayAABBOverlap.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_RayCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_RayCollider.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_RayTriOverlap.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_Settings.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SphereAABBOverlap.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SphereCollider.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SphereCollider.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SphereTriOverlap.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SweepAndPrune.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_SweepAndPrune.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TreeBuilders.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TreeBuilders.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TreeCollider.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TreeCollider.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TriBoxOverlap.h">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_TriTriOverlap.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_VolumeCollider.cpp">
 							</File>
 							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\OPC_VolumeCollider.h">
+							</File>
+							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\Opcode.cpp">
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\Opcode.h">
 							</File>
 							<File
 								RelativePath=".\src\components\ogre\ogreopcode\opcode\StdAfx.cpp">
@@ -521,6 +710,9 @@
 										Name="VCCLCompilerTool"
 										ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\src\components\ogre\ogreopcode\opcode\Stdafx.h">
 							</File>
 							<Filter
 								Name="Ice"
@@ -1780,19 +1972,10 @@
 							RelativePath=".\src\components\ogre\widgets\DebugWidget.xml">
 						</File>
 						<File
-							RelativePath=".\src\components\ogre\widgets\EntityPickerWidget.cpp">
+							RelativePath=".\src\components\ogre\widgets\EntityCEGUITexture.cpp">
 						</File>
 						<File
-							RelativePath=".\src\components\ogre\widgets\EntityPickerWidget.h">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\GiveWidget.cpp">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\GiveWidget.h">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\GiveWidget.xml">
+							RelativePath=".\src\components\ogre\widgets\EntityCEGUITexture.h">
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\widgets\Help.cpp">
@@ -1876,13 +2059,10 @@
 							RelativePath=".\src\components\ogre\widgets\MeshPreview.widget">
 						</File>
 						<File
-							RelativePath=".\src\components\ogre\widgets\Performance.cpp">
+							RelativePath=".\src\components\ogre\widgets\ModelRenderer.cpp">
 						</File>
 						<File
-							RelativePath=".\src\components\ogre\widgets\Performance.h">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\Performance.widget">
+							RelativePath=".\src\components\ogre\widgets\ModelRenderer.h">
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\widgets\Quit.cpp">
@@ -1892,15 +2072,6 @@
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\widgets\Quit.widget">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\ServerBrowserWidget.cpp">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\ServerBrowserWidget.h">
-						</File>
-						<File
-							RelativePath=".\src\components\ogre\widgets\ServerBrowserWidget.xml">
 						</File>
 						<File
 							RelativePath=".\src\components\ogre\widgets\ServerWidget.cpp">
@@ -1930,25 +2101,102 @@
 							RelativePath=".\src\components\ogre\widgets\WidgetDefinitions.h">
 						</File>
 					</Filter>
+					<Filter
+						Name="scripting"
+						Filter="">
+						<File
+							RelativePath=".\src\components\ogre\scripting\LuaScriptingProvider.cpp">
+						</File>
+						<File
+							RelativePath=".\src\components\ogre\scripting\LuaScriptingProvider.h">
+						</File>
+						<Filter
+							Name="bindings"
+							Filter="">
+							<Filter
+								Name="lua"
+								Filter="">
+								<File
+									RelativePath=".\src\components\ogre\scripting\bindings\lua\lua_EmberOgre.cpp">
+								</File>
+								<File
+									RelativePath=".\src\components\ogre\scripting\bindings\lua\required.h">
+								</File>
+								<Filter
+									Name="ogre"
+									Filter="">
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\ogre\lua_Ogre.cpp">
+									</File>
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\ogre\required.h">
+									</File>
+								</Filter>
+								<Filter
+									Name="helpers"
+									Filter="">
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\helpers\lua_Helpers.cpp">
+									</File>
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\helpers\LuaConnector.cpp">
+									</File>
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\helpers\LuaConnector.h">
+									</File>
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\helpers\LuaConsoleObject.cpp">
+									</File>
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\helpers\LuaConsoleObject.h">
+									</File>
+									<File
+										RelativePath=".\src\components\ogre\scripting\bindings\lua\helpers\required.h">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="framework"
 				Filter="">
 				<File
+					RelativePath=".\src\framework\binreloc.c">
+				</File>
+				<File
 					RelativePath=".\src\framework\ConsoleBackend.cpp">
+				</File>
+				<File
+					RelativePath=".\src\framework\ConsoleBackend.h">
 				</File>
 				<File
 					RelativePath=".\src\framework\float_cast.h">
 				</File>
 				<File
+					RelativePath=".\src\framework\IScriptingProvider.cpp">
+				</File>
+				<File
+					RelativePath=".\src\framework\IScriptingProvider.h">
+				</File>
+				<File
 					RelativePath=".\src\framework\osdir.h">
 				</File>
 				<File
-					RelativePath=".\src\framework\prefix.cpp">
+					RelativePath=".\src\framework\scrap.c">
+				</File>
+				<File
+					RelativePath=".\src\framework\scrap.h">
+				</File>
+				<File
+					RelativePath=".\src\framework\Singleton.h">
 				</File>
 				<File
 					RelativePath=".\src\framework\StreamLogObserver.cpp">
+				</File>
+				<File
+					RelativePath=".\src\framework\StreamLogObserver.h">
 				</File>
 				<File
 					RelativePath=".\src\framework\Tokeniser.cpp">
@@ -1974,6 +2222,30 @@
 					<File
 						RelativePath=".\src\framework\tinyxml\tinyxmlparser.cpp">
 					</File>
+				</Filter>
+				<Filter
+					Name="bindings"
+					Filter="">
+					<Filter
+						Name="lua"
+						Filter="">
+						<File
+							RelativePath=".\src\framework\bindings\lua\lua_Framework.cpp">
+						</File>
+						<File
+							RelativePath=".\src\framework\bindings\lua\required.h">
+						</File>
+						<Filter
+							Name="eris"
+							Filter="">
+							<File
+								RelativePath=".\src\framework\bindings\lua\eris\lua_Eris.cpp">
+							</File>
+							<File
+								RelativePath=".\src\framework\bindings\lua\eris\required.h">
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -2016,7 +2288,41 @@
 					Name="sound"
 					Filter="">
 					<File
-						RelativePath=".\src\services\sound\SoundService.cpp">
+						RelativePath=".\src\services\sound\SoundService.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="scripting"
+					Filter="">
+					<File
+						RelativePath=".\src\services\scripting\ScriptingService.cpp">
+					</File>
+					<File
+						RelativePath=".\src\services\scripting\ScriptingService.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="bindings"
+					Filter="">
+					<Filter
+						Name="lua"
+						Filter="">
+						<File
+							RelativePath=".\src\services\bindings\lua\lua_EmberServices.cpp">
+						</File>
+						<File
+							RelativePath=".\src\services\bindings\lua\required.h">
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="metaserver"
+					Filter="">
+					<File
+						RelativePath=".\src\services\metaserver\MetaserverService.cpp">
+					</File>
+					<File
+						RelativePath=".\src\services\metaserver\MetaserverService.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -2048,6 +2354,30 @@
 			<File
 				RelativePath=".\small.ico">
 			</File>
+			<Filter
+				Name="etc"
+				Filter="">
+				<File
+					RelativePath=".\ember.conf"
+					DeploymentContent="TRUE">
+				</File>
+				<File
+					RelativePath=".\src\components\ogre\ogre.cfg"
+					DeploymentContent="TRUE">
+				</File>
+				<File
+					RelativePath=".\src\components\ogre\plugins.cfg"
+					DeploymentContent="TRUE">
+				</File>
+				<File
+					RelativePath=".\src\components\ogre\resources.cfg"
+					DeploymentContent="TRUE">
+				</File>
+				<File
+					RelativePath=".\src\components\ogre\terrain.cfg"
+					DeploymentContent="TRUE">
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\readme.txt">

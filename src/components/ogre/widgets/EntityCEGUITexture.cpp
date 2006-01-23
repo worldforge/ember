@@ -137,22 +137,28 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 		throw Ember::Exception("Height and width of the image can't be 0.");
 	}
 	///first, create a RenderTexture to which the Ogre renderer should render the image
+	S_LOG_VERBOSE("Creating new rendertexture " << (imageSetName + "_EntityCEGUITextureRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
 	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture(imageSetName + "_EntityCEGUITextureRenderTexture", mWidth, mHeight );
+	S_LOG_VERBOSE("Removing viewports.");
 	mRenderTexture->removeAllViewports();
 	mRenderTexture->setActive(false);
 	
 	///make sure the camera renders into this new texture
+	S_LOG_VERBOSE("Adding camera.");
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
 	v->setBackgroundColour(Ogre::ColourValue(0,0,0,0));
 	///don't show the CEGUI
 	v->setOverlaysEnabled(false);
 	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
+	S_LOG_VERBOSE("Creating new Ogre texture with name " << mRenderTexture->getName());
 	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
 	
 	///create a CEGUI texture from our Ogre texture
+	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
 	CEGUI::Texture* ceguiTexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(texPtr);
 	
 	///we need a imageset in order to create GUI elements from the ceguiTexture
+	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
 	mImageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName + "_EntityCEGUITextureImageset", ceguiTexture);
 	
 	///we only want one element: the whole texture
