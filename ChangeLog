@@ -1,3 +1,7 @@
+2006-01-23  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/component/ogre/widgets/EntityCEGUITexture.h: more comments
+
 2006-01-18  Miguel Guzman  <aglanor@gmail.com>
     * src/services/sound/SoundService.*:
         * added a method to update the listener position

@@ -104,9 +104,23 @@ public:
 	 */
 	void repositionCamera();
 	
+	
+	/**
+	 *    Pitches the camera.
+	 * @param degrees The amount of degrees to pitch.
+	 */
 	void pitch(Ogre::Degree degrees);
+	
+	/**
+	 *    Yaws the camera.
+	 * @param degrees The amount of degree to yaw.
+	 */
 	void yaw(Ogre::Degree degrees);
     
+	/**
+	 * Sets the relative camera distance. Note that this is adjusted after calling repositionCamera(). A value of 1.0 indicates the most optimal distance for showing the complete mesh.
+	 * @param distance 
+	 */
 	void setCameraDistance(Ogre::Real distance);
     
     
@@ -114,6 +128,9 @@ public:
     
 private:
 
+	/**
+	Main light for the scene, places a bit to the right 
+	*/
 	Ogre::Light* mMainLight;
 
 	/**
