@@ -1,5 +1,11 @@
 2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/scripting/bindings/lua/ogre/required.h: added some needed defintions of basic types that msvc didn't get
+    * src/services/scripting/ScriptingService.cpp: added missing return value
+    * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: modified for win32, make sure the directory where the modeldefinitions are stored really exists
+
+2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/services/config/ConfigService.cpp: adapt paths so they will work better on win32
     * ember.conf: fixed the name of "logginglevel" (not "loggingmode")
     * ember.vcproj: updated to work with cvs, though some paths still need to be fixed

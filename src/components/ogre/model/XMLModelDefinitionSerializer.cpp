@@ -31,6 +31,25 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#ifdef WIN32
+	#include <tchar.h>
+	#define snprintf _snprintf
+    #include <io.h> // for _access, Win32 version of stat()
+    #include <direct.h> // for _mkdir
+//	#include <sys/stat.h>
+
+	// Necessary to get the Window Handle of the window
+	//  Ogre created, so SDL can grab its input.
+	//#include <windows.h>
+	//#include <SDL_getenv.h>
+	//#include <SDL.h>
+	//#include <SDL_syswm.h>
+
+	//#include <iostream>
+	//#include <fstream>
+	//#include <ostream>
+#endif
+
 // Namespaces
 namespace EmberOgre {
 namespace Model {
@@ -511,9 +530,23 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 	try
 	{
 		//make sure the directory exists
-		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/modeldefinitions/";
+		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "user-media";
 		struct stat tagStat;
 		int ret;
+		ret = stat( dir.c_str(), &tagStat );
+		if (ret == -1) {
+			S_LOG_INFO("Creating directory " << dir);
+#ifdef __WIN32__
+			mkdir(dir.c_str());
+#else 
+			mkdir(dir.c_str(), S_IRWXU);
+#endif
+		}
+
+
+
+
+		dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "user-media/modeldefinitions/";
 		ret = stat( dir.c_str(), &tagStat );
 		if (ret == -1) {
 			S_LOG_INFO("Creating directory " << dir);

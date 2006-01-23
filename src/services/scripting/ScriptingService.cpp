@@ -45,6 +45,7 @@ ScriptingService::~ScriptingService()
 Service::Status ScriptingService::start()
 {
     ConsoleBackend::getMainConsole()->registerCommand(LOADSCRIPT,this);
+	return Service::Status::OK;
 }
 
 void ScriptingService::loadScript(const std::string& script)
