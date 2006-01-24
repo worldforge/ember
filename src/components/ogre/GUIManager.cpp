@@ -111,18 +111,18 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			
 			try {
 				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-			} catch (CEGUI::Exception&) {
+			} catch (const CEGUI::Exception&) {
 				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.");
 			}
 			try {
 				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
 //				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
-			} catch (CEGUI::Exception&) {
+			} catch (const CEGUI::Exception&) {
 				S_LOG_FAILURE("CEGUI - could not set default font.");
 			}
 		
 		
-		} catch (CEGUI::Exception&) {
+		} catch (const CEGUI::Exception&) {
 			S_LOG_FAILURE("CEGUI - could not create default scheme.");
 		}
 		
@@ -157,7 +157,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		Ogre::Root::getSingleton().addFrameListener(this);
 		
 	
-	} catch (CEGUI::Exception&) {
+	} catch (const CEGUI::Exception&) {
 		S_LOG_FAILURE("GUIManager - error when creating gui.");
 	
 	}
@@ -201,7 +201,7 @@ void GUIManager::initialize()
 		try {
 		//load the bootstrap script which will load all other scripts
 			Ember::EmberServices::getSingleton().getScriptingService()->loadScript("cegui/datafiles/lua_scripts/Bootstrap.lua");
-		} catch (Ogre::Exception& ex)
+		} catch (const Ogre::Exception& ex)
 		{
 			S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << ex.getFullDescription());
 		}
@@ -216,10 +216,10 @@ void GUIManager::initialize()
 		createWidget("Help");
 		createWidget("MeshPreview");
 
-	} catch (std::exception& e) {
+	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());
 
-	} catch (CEGUI::Exception& e) {
+	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
 	}
 	
@@ -252,10 +252,10 @@ Widget* GUIManager::createWidget(const std::string& name)
 		widget->buildWidget();
 		addWidget(widget);
 		S_LOG_INFO(  "Successfully loaded widget " << name );
-	} catch (std::exception& e) {
+	} catch (const std::exception& e) {
 		S_LOG_FAILURE(  "Error when loading widget " << name );
 		return 0;
-	} catch (CEGUI::Exception& e) {
+	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE(  "Error when loading widget " << name );
 		return 0;
 	}

@@ -107,7 +107,7 @@ const CEGUI::Image* IconBase::loadImageFromImageset(const std::string & imageset
 		try {
 			std::string imagesetFileName = "cegui/datafiles/imagesets/" + imagesetName + ".imageset";
 			imageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imagesetFileName);
-		} catch (Ogre::Exception&) {
+		} catch (const Ogre::Exception&) {
 			return 0;
 		}
 	} else {

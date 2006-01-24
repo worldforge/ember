@@ -264,7 +264,7 @@ EmberOgre::IngameChatWidget::ActiveChatWindow::ActiveChatWindow( CEGUI::Window *
 	try {
 		CEGUI::Window* nameWidget = static_cast<CEGUI::Window*>(mWindow->getChild(std::string("IngameChatWidget/") + mEntity->getId() + "/" + "EntityName"));
 		nameWidget->setText(entity->getName());
-	} catch (CEGUI::Exception& ex) {
+	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Could not get widget EntityName. Exception: " << ex.getMessage().c_str());
 	}
 	

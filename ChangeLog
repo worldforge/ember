@@ -1,5 +1,10 @@
 2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/EmberOgre.cpp, src/components/ogre/GUIManager.cpp,  src/components/ogre/TerrainPage.cpp, src/components/ogre/carpenter/BluePrint.cpp, src/components/ogre/environment/Foliage.cpp,  src/components/ogre/environment/FoliageArea.cpp,  src/components/ogre/model/Model.cpp,  src/components/ogre/model/XMLModelDefinitionSerializer.cpp,  src/components/ogre/widgets/IconBase.cpp,  src/components/ogre/widgets/IngameChatWidget.cpp,  src/components/ogre/widgets/MeshPreview.cpp,  src/services/server/ServerService.cpp: catch exceptions as const
+    * src/services/scripting/ScriptingService.cpp: better error output
+
+2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/scripting/bindings/lua/ogre/required.h: added some needed defintions of basic types that msvc didn't get
     * src/services/scripting/ScriptingService.cpp: added missing return value
     * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: modified for win32, make sure the directory where the modeldefinitions are stored really exists

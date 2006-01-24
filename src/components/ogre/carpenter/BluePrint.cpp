@@ -351,7 +351,7 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 	neededRotation.identity();
 	try {
 		neededRotation.rotation(unboundPointNormal, boundPointNormal);
-	} catch (WFMath::ColinearVectors<3> &) {
+	} catch (const WFMath::ColinearVectors<3> &) {
 			//colinear eh? we need to flip the block
 			
 			//use one of the point normals for flipping
@@ -375,7 +375,7 @@ void BluePrint::placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingB
 		//neededRotation.inverse();
 		
 
-	} catch (WFMath::ColinearVectors<3> &) 
+	} catch (const WFMath::ColinearVectors<3> &) 
 	{	
 		//colinear eh? we need to flip the block
 		

@@ -102,7 +102,7 @@ bool Model::create(const std::string& modelType)
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
 		_masterModel= ModelDefinitionManager::instance().load(modelType, groupName);
-	} catch (Ogre::Exception& ex) {
+	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName);
 		return false;
 	}
@@ -206,7 +206,7 @@ bool Model::createFromDefn()
 			}
 			addSubmodel(submodel);
 		} 
-		catch (Ogre::Exception& e) 
+		catch (const Ogre::Exception& e) 
 		{
 			//std::cerr << "Error when loading the submodel " << entityName << ".\n";
 			std::string desc = e.getFullDescription();
@@ -252,7 +252,7 @@ void Model::createActions()
 						animPart.state = state;
 						animPart.weight = (*I_anims)->Weight;
 						action.getAnimations()->addAnimationPart(animPart);
-					} catch (Ogre::Exception& ex) {
+					} catch (const Ogre::Exception& ex) {
 						S_LOG_FAILURE("Error when loading animation: " + (*I_anims)->Name + ".\n" + ex.getFullDescription() );
 					}
 				}
@@ -275,7 +275,7 @@ void Model::createParticles()
 		Ogre::ParticleSystem* ogreParticleSystem;
 		try {		
 			 ogreParticleSystem = Ogre::ParticleSystemManager::getSingleton().createSystem(name, I_particlesys->Script);
-		} catch (Ogre::Exception& ex) {
+		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Could not create particle system: " + name);
 			std::cerr << ex.getFullDescription() + "\n";
 			continue;

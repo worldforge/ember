@@ -57,22 +57,22 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 		entity = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
 		mEntities["heartblood"] = entity;
 	} 
-	catch (Ogre::Exception& e) {}
+	catch (const Ogre::Exception& e) {}
 	try {
 		entity = mSceneMgr->createEntity("environment/field/teardrops", "environment/field/small_plant/teardrops/normal.mesh");
 		mEntities["teardrops"] = entity;
 	} 
-	catch (Ogre::Exception& e) {}
+	catch (const Ogre::Exception& e) {}
 	try {
 		entity = mSceneMgr->createEntity("environment/field/thingrass", "environment/field/small_plant/thingrass/normal.mesh");
 		mEntities["thingrass"] = entity;
 	} 
-	catch (Ogre::Exception& e) {}
+	catch (const Ogre::Exception& e) {}
 	try {
 		entity = mSceneMgr->createEntity("environment/field/bittergrass", "3d_objects/plants/tussock/models/small_plant/simplegrass.mesh");
 		mEntities["bittergrass"] = entity;
 	} 
-	catch (Ogre::Exception& e) {}
+	catch (const Ogre::Exception& e) {}
 	
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();

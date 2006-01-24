@@ -135,7 +135,7 @@ namespace Ember
 			return false;
 		}
     }
-    catch (Eris::BaseException except)
+    catch (const Eris::BaseException& except)
     {
         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on connect:" << except._msg << ENDM;
         return false;
@@ -157,7 +157,7 @@ namespace Ember
 // 		const std::string host = myConn->get
 //         myConn->reconnect();
 //       }
-//     catch (Eris::BaseException except)
+//     catch (const Eris::BaseException& except)
 //     {
 //         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect:" << except._msg << ENDM;
 //         return;
@@ -176,7 +176,7 @@ namespace Ember
     try {
       myConn->disconnect();
       }
-    catch (Eris::BaseException except)
+    catch (const Eris::BaseException& except)
     {
         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on disconnect:" << except._msg << ENDM;
         return;
@@ -360,12 +360,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			try {
 				myAccount->createAccount(uname,realname,password);
 			} 
-			catch (Eris::BaseException except)
+			catch (const Eris::BaseException& except)
 			{
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on account creation: " << except._msg << ENDM;
 				return;
 			}
-			catch (std::runtime_error except)
+			catch (const std::runtime_error& except)
 			{
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on account creation: " << except.what() << ENDM;
 				return;
@@ -471,12 +471,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			try {
 				myAccount->createCharacter(character);
 			} 
-			catch (Eris::BaseException except)
+			catch (const Eris::BaseException& except)
 			{
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
 				return false;
 			}
-			catch (std::runtime_error except)
+			catch (const std::runtime_error& except)
 			{
 				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
 				return false;
@@ -506,12 +506,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->moveToPoint(dest);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
  			return;
@@ -533,12 +533,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->moveInDirection(velocity, orientation);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
  			return;
@@ -555,12 +555,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->moveInDirection(velocity);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
  			return;
@@ -578,12 +578,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->touch(entity);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on touching: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on touching: " << except.what() << ENDM;
  			return;
@@ -601,12 +601,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->take(entity);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on touching: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on touching: " << except.what() << ENDM;
  			return;
@@ -623,12 +623,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->drop(entity, offset);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on dropping: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on dropping: " << except.what() << ENDM;
  			return;
@@ -645,12 +645,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->place(entity, target);
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on dropping: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on dropping: " << except.what() << ENDM;
  			return;
@@ -668,12 +668,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  			myAvatar->wield(entity);
 			
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on wielding: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on wielding: " << except.what() << ENDM;
  			return;
@@ -690,12 +690,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		try {
  			myAvatar->useOn(entity, pos, "");
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on using: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on using: " << except.what() << ENDM;
  			return;
@@ -717,13 +717,13 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			ConsoleBackend::getMainConsole()->pushMessage(msg);
 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << msg << ENDM;
  		}
- 		catch (Eris::BaseException except)
+ 		catch (const Eris::BaseException& except)
  		{
 			/// _key_map.insert(InputKeyMap::value_type(SDLK_SLASH, KC_SLASH)); at SDLInput ctor
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on say: " << except._msg << ENDM;
  			return;
  		}
- 		catch (std::runtime_error except)
+ 		catch (const std::runtime_error& except)
  		{
  			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on say: " << except.what() << ENDM;
  			return;

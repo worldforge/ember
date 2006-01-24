@@ -23,7 +23,13 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.119  2006-01-23 23:36:54  erik
+ *      Revision 1.120  2006-01-24 19:33:12  erik
+ *      2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *          * src/components/ogre/EmberOgre.cpp, src/components/ogre/GUIManager.cpp,  src/components/ogre/TerrainPage.cpp, src/components/ogre/carpenter/BluePrint.cpp, src/components/ogre/environment/Foliage.cpp,  src/components/ogre/environment/FoliageArea.cpp,  src/components/ogre/model/Model.cpp,  src/components/ogre/model/XMLModelDefinitionSerializer.cpp,  src/components/ogre/widgets/IconBase.cpp,  src/components/ogre/widgets/IngameChatWidget.cpp,  src/components/ogre/widgets/MeshPreview.cpp,  src/services/server/ServerService.cpp: catch exceptions as const
+ *          * src/services/scripting/ScriptingService.cpp: better error output
+ *
+ *      Revision 1.119  2006/01/23 23:36:54  erik
  *      2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *          * src/services/config/ConfigService.cpp: adapt paths so they will work better on win32
@@ -1445,7 +1451,7 @@ bool EmberOgre::configure(void)
 			mRoot->getRenderSystem()->setConfigOption("Video Mode", "1024 x 768 @ 32-bit colour");
 			mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
 			
-		} catch (Ogre::Exception&) 
+		} catch (const Ogre::Exception&) 
 		{
 			//we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
 		}
@@ -1606,7 +1612,7 @@ void EmberOgre::setupResources(void)
 		} else {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
 		}
-	} catch (Ogre::Exception& ) {
+	} catch (const Ogre::Exception& ) {
 		S_LOG_FAILURE("Couldn't load trees. Continuing as if nothing happened.");
 	}
 	
@@ -1656,7 +1662,7 @@ void EmberOgre::setupResources(void)
 					try {
 						Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 							fullResourcePath, finalTypename, secName, loadRecursive);
-					} catch (Ogre::Exception&) {
+					} catch (const Ogre::Exception&) {
 						S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
 					}
 				}
@@ -1687,7 +1693,7 @@ void EmberOgre::setupResources(void)
 				try {
 					Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 						fullResourcePath, finalTypename, secName, loadRecursive);
-				} catch (Ogre::Exception&) {
+				} catch (const Ogre::Exception&) {
 					S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
 				}
 			}
@@ -1719,7 +1725,7 @@ void EmberOgre::preloadMedia(void)
 	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
 		try {
 			Ogre::TextureManager::getSingleton().load(*I, "General");
-		} catch (Ogre::Exception e) {
+		} catch (const Ogre::Exception& e) {
 			S_LOG_FAILURE( "Error when loading texture " << *I )
 		}
 	}	
@@ -2134,7 +2140,7 @@ int main(int argc, char **argv)
 
     try {
         app.go(useBinrelocPluginsLoading);
-    } catch( Ogre::Exception& e ) {
+    } catch(const Ogre::Exception& e ) {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
         MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else

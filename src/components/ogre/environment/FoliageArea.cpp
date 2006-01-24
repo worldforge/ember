@@ -158,7 +158,7 @@ void FoliageArea::build()
 		mStaticGeom->build();
 		setVisible(true);
 		
-	} catch (Ogre::Exception& e) {
+	} catch (const Ogre::Exception& e) {
 		S_LOG_FAILURE("Got error when building static geometry for foliage. Expection: " << e.getFullDescription());
 	}
 }

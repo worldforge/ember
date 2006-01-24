@@ -45,7 +45,7 @@ ScriptingService::~ScriptingService()
 Service::Status ScriptingService::start()
 {
     ConsoleBackend::getMainConsole()->registerCommand(LOADSCRIPT,this);
-	return Service::Status::OK;
+	return Service::OK;
 }
 
 void ScriptingService::loadScript(const std::string& script)
@@ -54,12 +54,15 @@ void ScriptingService::loadScript(const std::string& script)
 	{
 		//check if the provider will load the script
 		if (I->second->willLoadScript(script)) {
-			S_LOG_INFO("Loading script: " + script);
+			S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName() );
 			try {
 				I->second->loadScript(script);
 			} catch (const Ember::Exception& ex) {
 				S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.getError());
 				scriptError(ex.getError());
+			} catch (const std::exception& ex) {
+				S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.what());
+				scriptError(ex.what());
 			} catch (...) {
 				S_LOG_WARNING("Got unknown script error when loading the script " << script);
 				scriptError("Unknown error loading script " + script );
@@ -81,6 +84,9 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 		} catch (const Ember::Exception& ex) {
 			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
 			scriptError(ex.getError());
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.what());
+			scriptError(ex.what());
 		} catch (...) {
 			S_LOG_WARNING("Got unknown script error when executing the script " << scriptCode);
 			scriptError("Unknown error executing script.");

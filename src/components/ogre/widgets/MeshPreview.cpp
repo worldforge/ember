@@ -297,7 +297,7 @@ bool MeshPreview::playAnimation_MouseClick(const CEGUI::EventArgs& args)
 			instance.toggleAnimation(animationName);
 		}
 		fillAnimationList(instance);
-	} catch (Ember::Exception&) {
+	} catch (const Ember::Exception&) {
 		return true;
 	}
 	return true;
@@ -309,7 +309,7 @@ bool MeshPreview::resetAnimation_MouseClick(const CEGUI::EventArgs& args)
 		MeshPreviewMeshInstance& instance = getActiveInstance();
 		instance.resetAnimations();
 		fillAnimationList(instance);
-	} catch (Ember::Exception&) {
+	} catch (const Ember::Exception&) {
 		return true;
 	}
 	
@@ -329,7 +329,7 @@ void MeshPreview::createdNewEntity(size_t index)
 		CEGUI::ListboxItem* item = new ColoredListItem(name, index);
 		mCreatedMeshes->addItem(item);
 		
-	} catch (Ember::Exception&)
+	} catch (const Ember::Exception&)
 	{
 		return;
 	}
@@ -402,7 +402,7 @@ Ogre::SceneNode* MeshPreview::getActiveSceneNode()
 		try {
 			const MeshPreviewMeshInstance instance = mHandler.getInstance(index);
 			return instance.getSceneNode();
-		} catch (Ember::Exception&) {
+		} catch (const Ember::Exception&) {
 			return 0;
 		}
 	}
@@ -426,7 +426,7 @@ bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& ar
 	try {
 		MeshPreviewMeshInstance& instance = getActiveInstance();
 		fillAnimationList(instance);
-	} catch (Ember::Exception&) {
+	} catch (const Ember::Exception&) {
 	}
 	return true;
 

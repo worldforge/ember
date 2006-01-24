@@ -705,7 +705,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		
 		//add vertex shader for fog	
 		pass->setVertexProgram("fog_linear_vp");
-	} catch (Ogre::Exception&) {
+	} catch (const Ogre::Exception&) {
 		//if there was some kind of error, go with the simple technique
 		S_LOG_INFO("Falling back to simple technique.");
 		generateTerrainTechniqueSimple(technique);

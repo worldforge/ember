@@ -96,7 +96,7 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 			ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
 			readModel(modelDef, smElem);
 			modelDef->setValid(true);
-		} catch (Ogre::Exception& ex) {
+		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE(ex.getFullDescription());
 			std::cerr << ex.getFullDescription();
 		}
@@ -212,7 +212,7 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 //				modelDef->mSubModels.push_back(subModelDef);
 
 			} 
-			catch (Ogre::Exception e) 
+			catch (const Ogre::Exception& e) 
 			{
 				S_LOG_FAILURE("Load error : " << tmp);
 			}
