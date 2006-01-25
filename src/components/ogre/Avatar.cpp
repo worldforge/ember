@@ -35,7 +35,6 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-//#include "PersonEmberEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
 //#include "MotionManager.h"
@@ -63,7 +62,7 @@ Avatar::Avatar()
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
 
-	mWalkSpeed = 3;
+	mWalkSpeed = 2.5;
 	mRunSpeed = 5; //5 seems to be the max speed in cyphesis
 
 

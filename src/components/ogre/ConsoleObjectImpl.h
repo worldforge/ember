@@ -20,16 +20,16 @@
 #ifndef __EmberOgre_ConsoleObjectImpl_H__
 #define __EmberOgre_ConsoleObjectImpl_H__
 
-#include <framework/ConsoleObject.h>
+#include "framework/ConsoleObject.h"
+#include "framework/Singleton.h"
 
 namespace EmberOgre {
-class ConsoleObjectImpl: public Ember::ConsoleObject
+class ConsoleObjectImpl: public Ember::ConsoleObject, public Ember::Singleton<ConsoleObjectImpl>
 {
 	public:
 
+	ConsoleObjectImpl(void);
 	~ConsoleObjectImpl();
-
-	static ConsoleObjectImpl & getSingleton(void);
 
 	/**
 	 * Receive commands from console
@@ -38,12 +38,6 @@ class ConsoleObjectImpl: public Ember::ConsoleObject
 
 	private:
 
-	ConsoleObjectImpl(void);
-
-	/**
-	 * Instance variable for singleton console object implementation.
-	 */
-    static ConsoleObjectImpl* _consoleObjectImplInstance;
 
 
 	void quit();

@@ -294,7 +294,7 @@ protected:
 	/**
 	 * Creates the main scene node which holds the entity.
 	 */
-	void EmberEntity::createSceneNode();
+	void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager);
 	
 	/**
 	override from eris
@@ -314,7 +314,7 @@ protected:
 	 */
 	Ogre::SceneNode* mOgreNode;
 	
-	Ogre::SceneManager* mSceneManager;
+	Ogre::SceneManager* getSceneManager();
 	
 	/**
 	If there's a terrainarea belonging to this entity, that's stored here.

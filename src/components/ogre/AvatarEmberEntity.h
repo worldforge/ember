@@ -35,7 +35,6 @@ namespace Model {
 class EmberPhysicalEntity;
 class EmberEntity;
 class Avatar;
-// class PersonEmberEntity;
 
 /**
  * This is the main player avatar. We want this one to behave a little different

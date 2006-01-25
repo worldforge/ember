@@ -95,14 +95,13 @@ const char * const EmberEntity::MODE_FIXED = "fixed";
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
-mSceneManager(sceneManager)
-, mIsInitialized(false)
+mIsInitialized(false)
 , Eris::Entity(id, ty, vw) 
 , mTerrainArea(this)
 , mIsInMotionManager(false)
 , mErisEntityBoundingBox(0)
 {
-	createSceneNode();
+	createSceneNode(sceneManager);
 }
 
 EmberEntity::~EmberEntity()
@@ -152,25 +151,17 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 }
 
 
-void EmberEntity::createSceneNode()
+void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
 {
 	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container == 0) {
 		S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ") \n" )
 
-		//mSceneManager->createSceneNode(getId());
-		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->createSceneNode(getId()));
-//		mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getId()));
+		mOgreNode = sceneManager->createSceneNode(getId());
 		
 	} else {
 		Ogre::SceneNode * node = container->getSceneNode();
-		//node->createChild(getId());
-		mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getId()));
-/*		if (node) {
-			mOgreNode = static_cast<Ogre::SceneNode*>(node->createChild(getId()));
-		} else {
-			mOgreNode = static_cast<Ogre::SceneNode*>(mSceneManager->getRootSceneNode()->createChild(getId()));
-		}*/
+		mOgreNode = node->createChildSceneNode(getId());
 	}		
 }
 
@@ -593,6 +584,12 @@ std::vector<std::string> EmberEntity::getDefaultUseOperators()
 		}
 	} 
 	return operators;
+}
+
+Ogre::SceneManager* EmberEntity::getSceneManager()
+{
+	assert(mOgreNode);
+	return mOgreNode->getCreator();
 }
 
 

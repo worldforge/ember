@@ -98,11 +98,6 @@ protected:
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge,Eris::TypeInfo* type, Eris::View *world);
 	EmberPhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 	AvatarEmberEntity* createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
-
-	/*
-	 * loads data about the different entity types, such as which ones are persons
-	 */
-	void loadTypeInfo();
 	
 	void setAvatar(Eris::Avatar* avatar);
 	void gotAvatarCharacter(Eris::Entity* entity);

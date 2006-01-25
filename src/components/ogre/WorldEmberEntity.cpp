@@ -43,7 +43,7 @@ mFoliage(0),
 EmberEntity(id, ty, vw, sceneManager)
 {
 	//getSceneNode()->setOrientation(Ogre::Quaternion::IDENTITY);
-	mSceneManager->getRootSceneNode()->addChild(getSceneNode());
+	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 	//mOgreNode = mSceneManager->getRootSceneNode();
 	//mSceneManager->getRootSceneNode()->addChild(mOgreNode);
 //	this->mModel->setQueryFlag(EmberEntity::CM_TERRAIN);

@@ -1,3 +1,11 @@
+2006-01-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/Avatar.cpp: set the walking speed to 2.5 meters per second, to fit with cyphesis
+    * src/components/ogre/AvatarEmberEntity.h: removed reference to PersonEmberEntity
+    * src/components/ogre/ConsoleObjectImpl.*, src/components/ogre/EmberOgre.cpp: use the Singleton baseclass
+    * src/components/ogre/EmberEntity.*, src/components/ogre/WorldEmberEntity.cpp: no need to hold a reference to the SceneManager since it's available through the SceneNode
+    * src/components/ogre/EmberEntityFactory.*: the creation of PhysicalEntityEntity and AvatarEmberEntity shouldn't be so different
+
 2006-01-24  Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgre.cpp, src/components/ogre/GUIManager.cpp,  src/components/ogre/TerrainPage.cpp, src/components/ogre/carpenter/BluePrint.cpp, src/components/ogre/environment/Foliage.cpp,  src/components/ogre/environment/FoliageArea.cpp,  src/components/ogre/model/Model.cpp,  src/components/ogre/model/XMLModelDefinitionSerializer.cpp,  src/components/ogre/widgets/IconBase.cpp,  src/components/ogre/widgets/IngameChatWidget.cpp,  src/components/ogre/widgets/MeshPreview.cpp,  src/services/server/ServerService.cpp: catch exceptions as const

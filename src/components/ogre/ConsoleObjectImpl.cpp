@@ -36,6 +36,8 @@
 #include "EmberOgre.h"
 #include <SDL.h>
 
+template<> EmberOgre::ConsoleObjectImpl* Ember::Singleton<EmberOgre::ConsoleObjectImpl>::ms_Singleton = 0;
+
 namespace EmberOgre {
 
 // List of Ogre's console commands
@@ -44,14 +46,6 @@ const char * const ConsoleObjectImpl::ADDMEDIA	= "addmedia";
 const char * const ConsoleObjectImpl::MOVEMEDIA	= "movemedia";
 const std::string ConsoleObjectImpl::FULLSCREEN	= "fullscreen";
 
-ConsoleObjectImpl* ConsoleObjectImpl::_consoleObjectImplInstance = 0;
-
-ConsoleObjectImpl & ConsoleObjectImpl::getSingleton(void)
-{
-	if(_consoleObjectImplInstance == 0)
-		_consoleObjectImplInstance = new ConsoleObjectImpl;
-	return *_consoleObjectImplInstance;
-}
 
 ConsoleObjectImpl::ConsoleObjectImpl(void)
 {
