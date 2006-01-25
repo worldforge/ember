@@ -36,6 +36,7 @@
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIStaticText.h> 
+#include <elements/CEGUIStaticImage.h> 
 #include <elements/CEGUIPushButton.h> 
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIMultiLineEditbox.h>
@@ -44,6 +45,7 @@
 #include <elements/CEGUICombobox.h> 
 #include <elements/CEGUITabControl.h> 
 
+#include "ModelRenderer.h"
 
 namespace EmberOgre {
 
@@ -89,6 +91,7 @@ void ServerWidget::buildWidget()
 // 	mTypesList->addItem(item);
 
 	
+	
 	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
 	CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Female"));
 	
@@ -110,7 +113,7 @@ void ServerWidget::buildWidget()
 	
 	mMainWindow->setVisible(false);
 
-	
+	createPreviewTexture();
 //	getMainSheet()->addChildWindow(mMainWindow); 
 
 }
@@ -197,6 +200,12 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 	
 		std::string type = item->getText().c_str();
 		mNewChar.type = type;
+		
+		///update the model preview window
+		mModelPreviewRenderer->showModel(type);
+		mModelPreviewRenderer->showFullModel();
+		///we want to zoom in a little
+		mModelPreviewRenderer->setCameraDistance(0.7);
 	}
 	updateNewCharacter();
 	return true;
@@ -265,6 +274,12 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 	delete this;*/
 }
 
+void ServerWidget::createPreviewTexture()
+{
+	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(getWindow("CreateCharacterPanel/Image"));
+	mModelPreviewRenderer = new ModelRenderer(imageWidget);
+
+}
 
 
 };

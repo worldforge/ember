@@ -50,6 +50,7 @@ public:
 
 class GUIManager;
 class Widget;
+class ModelRenderer;
 /**
 @author Erik Hjortsberg
 */
@@ -98,9 +99,17 @@ protected:
 	 */
 	void fillAllowedCharacterTypes(Eris::Account* account);
 	
-
-
-
+	/**
+	A preview renderer for creating new characters
+	*/
+	ModelRenderer* mModelPreviewRenderer;
+	
+	/**
+	 *    Set up the preview renderer.
+	 */
+	void createPreviewTexture();
+	
+	
 };
 
 };

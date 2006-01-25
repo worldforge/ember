@@ -1,5 +1,16 @@
 2006-01-25  Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/widgets/EntityCEGUITexture.cpp: 
+        * added more logging
+        * make sure the texture created is in multiples of 2
+    *src/components/ogre/widgets/ServerWidget.*, src/components/ogre/widgets/ServerWidget.xml: added a preview of the character to be created
+
+2006-01-25  Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/scripting/Makefile.am, src/components/ogre/scripting/bindings/lua/Makefile.am, src/components/ogre/scripting/bindings/lua/helpers/Makefile.am, src/components/ogre/scripting/bindings/lua/ogre/Makefile.am, src/framework/bindings/lua/Makefile.am, src/framework/bindings/lua/eris/Makefile.am, src/services/bindings/lua/Makefile.am: build the libraries as noinstall
+    * src/components/ogre/cegui/datafiles/imagesets/TaharezLook.imageset, src/components/ogre/cegui/datafiles/imagesets/WindowsLook.imageset: update for 0.4.1
+2006-01-25  Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/Avatar.cpp: set the walking speed to 2.5 meters per second, to fit with cyphesis
     * src/components/ogre/AvatarEmberEntity.h: removed reference to PersonEmberEntity
     * src/components/ogre/ConsoleObjectImpl.*, src/components/ogre/EmberOgre.cpp: use the Singleton baseclass

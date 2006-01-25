@@ -140,7 +140,7 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
 					<Window Type="TaharezLook/Editbox" Name="CreateCharacterPanel/NameEdit">
-						<Property Name="AbsolutePosition" Value="x:100 y:0" /> 
+						<Property Name="AbsolutePosition" Value="x:90 y:0" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
@@ -156,7 +156,7 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
 					<Window Type="TaharezLook/Combobox" Name="CreateCharacterPanel/Type">
-						<Property Name="AbsolutePosition" Value="x:100 y:30" /> 
+						<Property Name="AbsolutePosition" Value="x:90 y:30" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:200" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="ReadOnly" Value="true" /> 
@@ -171,14 +171,14 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
 					<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Male">
-						<Property Name="AbsolutePosition" Value="x:100 y:60" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="AbsolutePosition" Value="x:90 y:60" /> 
+						<Property Name="AbsoluteSize" Value="w:60 h:20" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="Text" Value="Male" /> 
 					</Window>
 					<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Female">
-						<Property Name="AbsolutePosition" Value="x:200 y:60" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
+						<Property Name="AbsolutePosition" Value="x:145 y:60" /> 
+						<Property Name="AbsoluteSize" Value="w:60 h:20" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="Text" Value="Female" /> 
 						
@@ -192,21 +192,26 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
 					<Window Type="TaharezLook/MultiLineEditbox" Name="CreateCharacterPanel/Description">
-						<Property Name="AbsolutePosition" Value="x:100 y:90" /> 
-						<Property Name="AbsoluteSize" Value="w:250 h:100" /> 
+						<Property Name="AbsolutePosition" Value="x:5 y:115" /> 
+						<Property Name="AbsoluteSize" Value="w:200 h:100" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="Tooltip" Value="A short description of the character." /> 
 					</Window>
 					
 					
 					<Window Type="TaharezLook/Button" Name="CreateCharacterPanel/CreateButton">
-						<Property Name="AbsolutePosition" Value="x:100 y:200" /> 
+						<Property Name="AbsolutePosition" Value="x:100 y:225" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="Create" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="Tooltip" Value="Create a new character." /> 
 						
 					</Window>
+					<Window Type="TaharezLook/StaticImage" Name="CreateCharacterPanel/Image">
+						<Property Name="AbsolutePosition" Value="x:210 y:5" /> 
+						<Property Name="AbsoluteSize" Value="w:150 h:250" /> 
+					</Window>				
+				
 				</Window>
 			</Window>
 		</Window>

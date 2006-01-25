@@ -40,6 +40,8 @@ namespace EmberOgre {
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
 : mWidth(width), mHeight(height), mCamera(0), mRootNode(0)
 {
+	S_LOG_VERBOSE("Creating new EntityCEGUITexture for imageset " << imageSetName  << " with w:" << mWidth << " h:" << mHeight);
+
 	mRootNode = mSceneManager.getRootSceneNode();
 	
 	
@@ -132,10 +134,25 @@ void EntityCEGUITexture::setCameraDistance(Ogre::Real distance)
 void EntityCEGUITexture::createImage(const std::string& imageSetName)
 {
 
-
 	if (mWidth == 0 || mHeight == 0) {
 		throw Ember::Exception("Height and width of the image can't be 0.");
 	}
+	
+	Ogre::Real aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
+	
+	///the width and height needs to be multipes of 2
+	///perhaps there's a better way to do this? bitwise shifts?
+	int finalWidth = 1, finalHeight = 1;
+	while (finalWidth < mWidth) {
+		finalWidth *= 2;
+	}
+	while (finalHeight < mHeight) {
+		finalHeight *= 2;
+	}
+	mWidth = finalWidth;
+	mHeight = finalHeight;
+	
+	
 	///first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (imageSetName + "_EntityCEGUITextureRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
 	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture(imageSetName + "_EntityCEGUITextureRenderTexture", mWidth, mHeight );
@@ -143,6 +160,9 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	mRenderTexture->removeAllViewports();
 	mRenderTexture->setActive(false);
 	
+	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
+	mCamera->setAspectRatio(aspectRatio);
+
 	///make sure the camera renders into this new texture
 	S_LOG_VERBOSE("Adding camera.");
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
