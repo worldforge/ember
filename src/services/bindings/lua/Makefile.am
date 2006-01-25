@@ -3,6 +3,6 @@ METASOURCES = AUTO
 
 #if USE_LUA
 #liblua_scripting_a_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
-lib_LIBRARIES = liblua_EmberServices.a
+noinst_LIBRARIES = liblua_EmberServices.a
 liblua_EmberServices_a_SOURCES = lua_EmberServices.cpp 
 #endif
