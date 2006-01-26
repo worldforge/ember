@@ -203,7 +203,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 		
 		///update the model preview window
 		mModelPreviewRenderer->showModel(type);
-		mModelPreviewRenderer->showFullModel();
+		//mModelPreviewRenderer->showFull();
 		///we want to zoom in a little
 		mModelPreviewRenderer->setCameraDistance(0.7);
 	}

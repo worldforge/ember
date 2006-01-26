@@ -155,7 +155,7 @@ end
 
 function ModelEdit_showPreview(definitionName)
 	ModelEdit.renderer:showModel(definitionName)
-	ModelEdit.renderer:showFullModel()
+	--ModelEdit.renderer:showFullModel()
 
 end
 
@@ -396,10 +396,13 @@ function ModelEdit_NewModelOk_MouseClick(args)
 end
 
 
+function ModelEdit_previewMesh(meshname)
+	ModelEdit.submeshRenderer:showEntity(meshname)
+end
 
 function ModelEdit_modelinfoMeshlist_SelectionChanged()
-	--local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
-	--ModelEdit_previewMesh(item:getText())
+	local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
+	ModelEdit_previewMesh(item:getText())
 
 end
 
@@ -650,6 +653,15 @@ function ModelEdit_buildWidget()
 	
 		
 	ModelEdit.renderer = EmberOgre.ModelRenderer:new(ModelEdit.renderImage)
+	
+	local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
+	subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
+	ModelEdit.subMeshPartRenderer = EmberOgre.OgreEntityRenderer:new(subMeshPreviewImage)
+	
+	local meshPreviewImage = ModelEdit.widget:getWindow("MeshPreviewImage")
+	meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
+	ModelEdit.submeshRenderer = EmberOgre.OgreEntityRenderer:new(meshPreviewImage)
+	
 	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.ModelRenderer:new(ModelEdit.contentparts.modelInfo.renderImage)
 	
 	ModelEdit.zoomSlider  = ModelEdit.widget:getWindow("Zoom")

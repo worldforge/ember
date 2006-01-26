@@ -1,5 +1,13 @@
 2006-01-26 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/widgets/ServerWidget.cpp: no need to call showFull since it's done automatically by default
+    * src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: 
+        * removed the zoom slider for the mesh preview
+        * added preview for meshes and submesh selection
+    * src/components/ogre/scripting/bindings/lua/*: updated bindings
+
+2006-01-26 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/widgets/MovableObjectRenderer.*, src/components/ogre/widgets/OgreEntityRenderer.*, src/components/ogre/widgets/ModelRenderer.*, src/components/ogre/widgets/Makefile.am: refactored ModelRenderer into the base class MovableObjectRenderer and added the subclass OgreEntityRenderer, which allows a single Ogre::Entity to be rendered and mouse controlled, just as the ModelRenderer
 
 2006-01-26  Miguel Guzman  <aglanor@gmail.com>

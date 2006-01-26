@@ -28,6 +28,9 @@ $pfile "Jesus.pkg"
 
 $pfile "MathConverter.pkg"
 
+
+$pfile "MovableObjectRenderer.pkg"
+$pfile "OgreEntityRenderer.pkg"
 $pfile "ModelRenderer.pkg"
 //$pfile "MaterialPicker.pkg"
 

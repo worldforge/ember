@@ -209,11 +209,11 @@
 					<Property Name="UnifiedAreaRect" Value="{{0.463087,0.000000},{0.201645,0.000000},{0.656145,0.000000},{0.855863,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
-				<Window Type="TaharezLook/Slider" Name="MeshPreviewZoom" >
+<!--				<Window Type="TaharezLook/Slider" Name="MeshPreviewZoom" >
 					<Property Name="Tooltip" Value="Drag the slider to zoom." />
 					<Property Name="UnifiedAreaRect" Value="{{0.671672,0.000000},{0.203364,0.000000},{0.686937,0.000000},{0.800383,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
-				</Window>
+				</Window> -->
 				<Window Type="TaharezLook/Button" Name="SaveModelButton" >
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseArrow" />
 					<Property Name="Text" Value="Save" />
@@ -322,6 +322,7 @@
 					<Property Name="MaxEditTextLength" Value="1073741823" />
 					<Property Name="NormalEditTextColour" Value="FFFFFFFF" />
 					<Property Name="SelectedEditTextColour" Value="FF000000" />
+					<Property Name="ReadOnly" Value="true" /> 
 					<Property Name="UnifiedAreaRect" Value="{{0.825260,0.000000},{0.441214,0.000000},{0.974369,0.000000},{0.691214,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>

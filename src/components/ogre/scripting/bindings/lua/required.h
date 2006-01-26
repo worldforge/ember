@@ -34,7 +34,10 @@
 
 #include "components/ogre/MathConverter.h"
 
+#include "components/ogre/widgets/MovableObjectRenderer.h"
+#include "components/ogre/widgets/OgreEntityRenderer.h"
 #include "components/ogre/widgets/ModelRenderer.h"
+
 //#include "components/ogre/widgets/MaterialPicker.h"
 
 #include "components/ogre/model/Model.h"
