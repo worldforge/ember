@@ -23,10 +23,8 @@
 #ifndef EMBEROGREMODELRENDERER_H
 #define EMBEROGREMODELRENDERER_H
 
-#include "components/ogre/EmberOgrePrerequisites.h"
-#include "../input/IInputAdapter.h"
 
-#include <CEGUIEvent.h> 
+#include "MovableObjectRenderer.h"
 
 namespace CEGUI
 {
@@ -40,15 +38,13 @@ namespace Model {
 	class Model;
 }
 
-class EntityCEGUITexture;
-
 /**
 
 Renders a single Model to a CEGUI texture. Useful for stuff like inventory or preview of models.
 
 @author Erik Hjortsberg
 */
-class ModelRenderer : public IInputAdapter
+class ModelRenderer : public MovableObjectRenderer
 {
 public:
 
@@ -79,84 +75,22 @@ public:
      */
     Model::Model* getModel();
     
-    /**
-     * Adapts the position of the camera so that the whole Model is shown.
-     */
-    void showFullModel();
     
-    /**
-     * Sets the distance of the camera from the Model.
-     * @param distance 
-     */
-    void setCameraDistance(float distance);
-    
-    /**
-     * Gets the distance of the camera from the Model.
-     * @return 
-     */
-    float getCameraDistance();
-    
-    
-    /**
-     * Returns whether input catching (and also rotation of the model) is allowed.
-     * Defaults to true.
-     * @return 
-     */
-    bool getIsInputCatchingAllowed() const;
-    
-    /**
-     * Sets whether input catching (and also rotation of the model) is allowed.
-     * @param allowed 
-     */
-    void setIsInputCatchingAllowed(bool allowed);
-    
-/**
----------Methods implemented from IInputAdapter
-@see IInputAdapter
-*/
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(char character);
-	virtual bool injectKeyDown(const SDLKey& key);
-	virtual bool injectKeyUp(const SDLKey& key);
-    
-private:
 
-	/**
-	 *    Catches input and allows for rotation of the Model
-	 *    @see releaseInput
-	 */
-	void catchInput();
-	
-	/**
-	 *    Releases input caught with catchInput
-	 *    @see catchInput
-	 */
-	void releaseInput();
-	
-	
-	/**
-	 *    When the mouse button is pressed over the image, catch input and allow for rotation of the model. When the mouse button is releases, also release input.
-	 * @param args 
-	 * @return 
-	 */
-	bool image_MouseButtonDown(const CEGUI::EventArgs& args);
-	
+    
+    
+protected:
+
     /**
      * Sets the Model which should be rendered.
      * @param model 
      * @return 
      */
     void setModel(Model::Model* model);
-	
-	CEGUI::StaticImage* mImage;
+
     Model::Model* mModel;
-    EntityCEGUITexture* mTexture;
-    /**
-    If true, the input will be caught when the user clicks on the image, allowing for rotation of the model.
-    */
-    bool mIsInputCatchingAllowed;
+
+	virtual Ogre::MovableObject* getMovableObject();
 
 };
 

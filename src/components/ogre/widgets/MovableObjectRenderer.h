@@ -1,0 +1,143 @@
+//
+// C++ Interface: MovableObjectRenderer
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+#ifndef EMBEROGREMOVABLEOBJECTRENDERER_H
+#define EMBEROGREMOVABLEOBJECTRENDERER_H
+
+#include <CEGUIEvent.h> 
+
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include "../input/IInputAdapter.h"
+
+namespace EmberOgre {
+
+class EntityCEGUITexture;
+
+/**
+Class used for rendering a single Ogre::MovableObject to a EntityCEGUITexture
+
+@author Erik Hjortsberg
+*/
+class MovableObjectRenderer : public IInputAdapter
+{
+public:
+    MovableObjectRenderer(CEGUI::StaticImage* image);
+
+    ~MovableObjectRenderer();
+    
+    /**
+     * Adapts the position of the camera so that the whole scene is shown.
+     */
+    void showFull();
+    
+    /**
+     * Sets the distance of the camera from the Model.
+     * @param distance 
+     */
+    void setCameraDistance(float distance);
+    
+    /**
+     * Gets the distance of the camera from the Model.
+     * @return 
+     */
+    float getCameraDistance();
+    
+    
+    /**
+     * Returns whether input catching (and also rotation of the model) is allowed.
+     * Defaults to true.
+     * @return 
+     */
+    bool getIsInputCatchingAllowed() const;
+    
+    /**
+     * Sets whether input catching (and also rotation of the model) is allowed.
+     * @param allowed 
+     */
+    void setIsInputCatchingAllowed(bool allowed);
+    
+    /**
+     * Gets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
+     * Defaults to true.
+     * @return 
+     */
+    void setAutoShowFull(bool showFull);
+    
+    /**
+     * Sets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
+     * @return 
+     */
+    bool getAutoShowFull() const;
+
+/**
+---------Methods implemented from IInputAdapter
+@see IInputAdapter
+*/
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectChar(char character);
+	virtual bool injectKeyDown(const SDLKey& key);
+	virtual bool injectKeyUp(const SDLKey& key);
+
+protected:
+
+	/**
+	 *    Catches input and allows for rotation of the Model
+	 *    @see releaseInput
+	 */
+	void catchInput();
+	
+	/**
+	 *    Releases input caught with catchInput
+	 *    @see catchInput
+	 */
+	void releaseInput();
+	
+	
+	/**CEGUI::StaticImage* image
+	 *    When the mouse button is pressed over the image, catch input and allow for rotation of the model. When the mouse button is releases, also release input.
+	 * @param args 
+	 * @return 
+	 */
+	bool image_MouseButtonDown(const CEGUI::EventArgs& args);
+	
+    EntityCEGUITexture* mTexture;
+    /**
+    If true, the input will be caught when the user clicks on the image, allowing for rotation of the model.
+    */
+    bool mIsInputCatchingAllowed;
+
+	/**
+	used to decide if the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
+	*/
+	bool mAutoShowFull;
+	
+	CEGUI::StaticImage* mImage;
+	
+	virtual Ogre::MovableObject* getMovableObject() = 0;
+
+};
+
+}
+
+#endif

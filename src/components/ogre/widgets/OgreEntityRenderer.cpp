@@ -1,10 +1,10 @@
 //
-// C++ Implementation: ModelRenderer
+// C++ Implementation: OgreEntityRenderer
 //
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,72 +20,56 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#include "ModelRenderer.h"
-
+#include "OgreEntityRenderer.h"
 #include "EntityCEGUITexture.h"
 
 #include <elements/CEGUIStaticImage.h>
 
-#include "components/ogre/model/Model.h"
-#include "framework/Exception.h"
-
-// #include "Widget.h"
-// #include "../GUIManager.h"
-
-
 namespace EmberOgre {
 
-ModelRenderer::ModelRenderer(CEGUI::StaticImage* image) 
-: mModel(0), MovableObjectRenderer(image)
+OgreEntityRenderer::OgreEntityRenderer(CEGUI::StaticImage* image) : mEntity(0), MovableObjectRenderer(image)
 {
-
 }
 
 
-ModelRenderer::~ModelRenderer()
+OgreEntityRenderer::~OgreEntityRenderer()
 {
-
 }
 
-void ModelRenderer::setModel(Model::Model* model)
+Ogre::Entity* OgreEntityRenderer::getEntity()
+{
+	return mEntity;
+}
+
+void OgreEntityRenderer::showEntity(const std::string& mesh)
+{
+	if (mEntity) {
+		mTexture->getSceneNode()->getCreator()->removeEntity(mEntity);
+	}
+	std::string meshName(mTexture->getImage()->getName().c_str());
+	meshName += "_entity";
+	mEntity =  mTexture->getSceneNode()->getCreator()->createEntity(meshName , mesh);
+	setEntity(mEntity);
+	mTexture->setActive(true);
+}
+
+
+Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
+{
+	return mEntity;
+}
+
+void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 {
 	Ogre::SceneNode* node = mTexture->getSceneNode();
 	
 	node->detachAllObjects();
-	node->attachObject(model);
+	node->attachObject(entity);
 	mTexture->repositionCamera();
 	if (mAutoShowFull) {
 		showFull();
 	}
 	
 }
-
-Model::Model* ModelRenderer::getModel()
-{
-	return mModel;
-}
-    
-void ModelRenderer::showModel(const std::string& modelName)
-{
-	if (mModel) {
-		delete mModel;
-	}
-	mModel = new Model::Model();
-	mModel->create(modelName);
-	setModel(mModel);
-	mTexture->setActive(true);
-}
-
-
-Ogre::MovableObject* ModelRenderer::getMovableObject()
-{
-	return mModel;
-}
-
-
-
-
-
-
 
 }
