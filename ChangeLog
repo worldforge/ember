@@ -11,6 +11,12 @@
     * src/components/ogre/widgets/MovableObjectRenderer.*, src/components/ogre/widgets/OgreEntityRenderer.*, src/components/ogre/widgets/ModelRenderer.*, src/components/ogre/widgets/Makefile.am: refactored ModelRenderer into the base class MovableObjectRenderer and added the subclass OgreEntityRenderer, which allows a single Ogre::Entity to be rendered and mouse controlled, just as the ModelRenderer
 
 2006-01-26  Miguel Guzman  <aglanor@gmail.com>
+    * src/components/ogre/EmberOgre.cpp:
+        re-enabled sound service
+    * src/services/sound/SoundService.*:
+        added a worldTempSource, which will play the sounds of the world one at a time, until we come up with a proper logic to handle a series of sources with regards to priority, distance etc. The worldTempSource can play at the same time that the systemSource, you can for instance talk to the marshall Gorun Iksa at the same time you run the command "/playsound" and you'll hear both. Also, the worldSource is atenuated with the distance.
+
+2006-01-26  Miguel Guzman  <aglanor@gmail.com>
     * src/services/sound/SoundService.*:
         * cleaned up playTestSound() code and command call
         * added playTalk() to play a sound when entities talk

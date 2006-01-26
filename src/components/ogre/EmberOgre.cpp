@@ -23,7 +23,14 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.122  2006-01-26 23:04:09  aglanor
+ *      Revision 1.123  2006-01-26 23:55:47  aglanor
+ *      2006-01-26  Miguel Guzman  <aglanor@gmail.com>
+ *          * src/components/ogre/EmberOgre.cpp:
+ *              re-enabled sound service
+ *          * src/services/sound/SoundService.*:
+ *              added a worldTempSource, which will play the sounds of the world one at a time, until we come up with a proper logic to handle a series of sources with regards to priority, distance etc. The worldTempSource can play at the same time that the systemSource, you can for instance talk to the marshall Gorun Iksa at the same time you run the command "/playsound" and you'll hear both. Also, the worldSource is atenuated with the distance.
+ *
+ *      Revision 1.122  2006/01/26 23:04:09  aglanor
  *      2006-01-26  Miguel Guzman  <aglanor@gmail.com>
  *          * src/services/sound/SoundService.*:
  *              * cleaned up playTestSound() code and command call
@@ -1003,7 +1010,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
-//#include "services/sound/SoundService.h"
+#include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
@@ -2053,7 +2060,7 @@ void EmberOgre::initializeEmberServices(void)
 	std::cout << "TRACE --- INITIALIZING SOUND SERVICE" << std::endl;
 	std::cout << "************************************" << std::endl;
 	S_LOG_INFO("************** TEST LOG ****************");
-	//Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
+	Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
 	std::cout << "************************************" << std::endl;
 	std::cout << "TRACE --- SOUND SERVICE INITIALIZED" << std::endl;
 	std::cout << "************************************" << std::endl;

@@ -124,6 +124,13 @@ namespace Ember
 			return Service::FAILURE;
 		}
 
+		alGenBuffers(1,&worldTempBuffer);
+		if (!alIsBuffer(worldTempBuffer))
+		{
+			S_LOG_FAILURE("Error creating worldTemp buffer")
+			return Service::FAILURE;
+		}
+
 
 		alGenBuffers(NUM_WORLD_BUFFERS,worldBuffers);
 		for (int i=0;i<NUM_WORLD_BUFFERS;i++)
@@ -156,6 +163,13 @@ namespace Ember
 			return Service::FAILURE;
 		}
 
+		alGenSources(1,&worldTempSource);
+		if (!alIsSource(worldTempSource))
+		{
+			S_LOG_FAILURE("Error creating worldTemp source")
+			return Service::FAILURE;
+		}
+
 		alGenSources(NUM_WORLD_SOURCES,worldSources);
 		for (int i=0;i<NUM_WORLD_SOURCES;i++)
 		{
@@ -167,61 +181,12 @@ namespace Ember
 		}
 
 		/*
-		TestPlatform();  // a test to determine the current platform (win, unix, ...)
-		
 		soundsDirPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberDataDirectory() 
 			+ "media/sounds/";
 		S_LOG_INFO( "Sound Media Path: [" << soundsDirPath << "]" )
-
-		std::stringstream gyphPath;
-		gyphPath << soundsDirPath << "gyph.wav";
-		S_LOG_INFO(
-			"Loading sound: [" << gyphPath.str() << "]")
-		//alutLoadWAV(gyphPath.str().c_str(),&data,&format,&size,&bits,&freq);
-		// Load WAV file  // Should be LoadWAV, platform independant
-
-		if(alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error loading wav" )
-			return Service::FAILURE;
-		} else {
-			S_LOG_INFO( "WAV file loaded"  )
-		}
-
-
-		S_LOG_INFO( "Loaded WAV file? let's check"  )
-		S_LOG_INFO( "format: " << format )
-		S_LOG_INFO( "size: " << size )
-		S_LOG_INFO( "bits: " << bits )
-		S_LOG_INFO( "freq: " << freq )
-
-		// Connect WAV to buffer
-		alBufferData(worldBuffers[0],format,data,size,freq);
-		
-
-		if(alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error connecting wav to buffer" )
-			return Service::FAILURE;
-		} else {
-			S_LOG_INFO( "WAV connected to buffer"  )
-		}
 		*/
-/*
 
-	free (data);  // should be UnloadWAV, platform independant
-
-	//	 UnloadWAV();
-
-
-
-		int error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error in listener parameters: " << error )
-		} else {
-			S_LOG_INFO( "Listener Parameters OK" )
-		}
+		/*
 
 		alSourcef(worldSources[0],AL_PITCH,1.0f);	// source Frequency
 
@@ -243,8 +208,6 @@ namespace Ember
 			S_LOG_INFO( "Source parameter gain OK" )
 		}
 
-
-
 		alSourcefv(worldSources[0],AL_POSITION,sourcePos);	// source position
 
 		error = alGetError();
@@ -254,8 +217,6 @@ namespace Ember
 		} else {
 			S_LOG_INFO( "Source parameter position OK" )
 		}
-
-
 
 		alSourcefv(worldSources[0],AL_VELOCITY,sourceVel);	// source velocity
 		error = alGetError();
@@ -277,68 +238,12 @@ namespace Ember
 			S_LOG_INFO( "Source parameter looping OK" )
 		}
 
-
-
-		alSourcei(worldSources[0],AL_BUFFER,worldBuffers[0]);		// link the source to the buffer
-
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error attaching buffer to source: " << error )
-		} else {
-			S_LOG_INFO( "Buffer attached OK" )
-		}
-*/
-
-		/*
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) 
-			<< "Press 1 to play sound, 2 to stop, 3 to go on with Ember." )
-		*/
-
-
-// This code is not useful anymore. Kept in order to use it as base for other methods, but will be removed. Do not uncomment, it does not work anymore. Use /playsound console command instead.
-/*
-		char a; bool loop = true;
-	do {
-		cin >> a;
-		S_LOG_INFO("a: " << a)
- 		switch (a)
-		{
-			case '1':
-
-				S_LOG_INFO("playing")
-				break;
-			case '2':
-				alSourceStop(worldSources[0]);
-				S_LOG_INFO("stopping")
-				break;
-			case '3':
-				loop = false;
-				break;
-		}
-			error = alGetError();
-			if(error != AL_NO_ERROR)
-			{
-				S_LOG_FAILURE("Error: " << error)
-			}
-
-	} while (loop);
-
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Error playing wav: " << error)
-
-			return Service::FAILURE;
-		}
-
-	alSourceStop(worldSources[0]);
 */
 
 		// Register service commands with the console
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- REGISTERING CONSOLE COMMANDS ***" << std::endl;
-	std::cout << "************************************" << std::endl;
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- REGISTERING CONSOLE COMMANDS ***" << std::endl;
+		std::cout << "************************************" << std::endl;
 		S_LOG_VERBOSE("Registering Sound Service commands");
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYSOUND,this);
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYMUSIC,this);
@@ -349,9 +254,9 @@ namespace Ember
 		setStatusText("Sound Service status OK.");
 
 		S_LOG_INFO("Sound Service initialized");
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- SOUND SERVICE INITIALIZED ***" << std::endl;
-	std::cout << "************************************" << std::endl;
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- SOUND SERVICE INITIALIZED ***" << std::endl;
+		std::cout << "************************************" << std::endl;
 		return Service::OK;
 
   }
@@ -482,6 +387,11 @@ namespace Ember
 		// set listener initial parameters
 		alListenerfv(AL_POSITION,listenerPosition);
 		//alListenerfv(AL_ORIENTATION,listenerOri);
+
+		// update the System and Music Source, 
+		// because they will always be with the listener
+		// TODO: WRONG! do this with relative position (0,0,0) to the listener
+		//alSourcefv(systemSource,AL_POSITION,listenerPosition);
 	}
 
 /*
@@ -527,13 +437,13 @@ namespace Ember
 		const WFMath::Quaternion& orientation) {
 
 		// TODO: this should not be the systemSource, but a world source
-		ALfloat systemSourcePosition[3]={position.x(),position.y(),position.z()};	
-		alSourcefv(systemSource,AL_POSITION,systemSourcePosition);
+		ALfloat worldTempSourcePosition[3]={position.x(),position.y(),position.z()};	
+		alSourcefv(worldTempSource,AL_POSITION,worldTempSourcePosition);
 
 		S_LOG_INFO( "Playing talk: " << message );
-		systemBuffer = alutCreateBufferHelloWorld();
-		alSourcei(systemSource, AL_BUFFER, systemBuffer);
-		alSourcePlay(systemSource);
+		worldTempBuffer = alutCreateBufferHelloWorld();
+		alSourcei(worldTempSource, AL_BUFFER, worldTempBuffer);
+		alSourcePlay(worldTempSource);
 	}
 
 
