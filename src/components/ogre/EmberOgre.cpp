@@ -23,7 +23,19 @@ http://www.gnu.org/copyleft/lesser.txt.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.121  2006-01-25 21:18:36  erik
+ *      Revision 1.122  2006-01-26 23:04:09  aglanor
+ *      2006-01-26  Miguel Guzman  <aglanor@gmail.com>
+ *          * src/services/sound/SoundService.*:
+ *              * cleaned up playTestSound() code and command call
+ *              * added playTalk() to play a sound when entities talk
+ *          * src/components/ogre/EmberEntity.cpp:
+ *              * invoke SoundService->playTalk() at onTalk()
+ *          * src/components/ogre/Avatar.cpp:
+ *              * added some code to handle an avatar source (non-functional)
+ *          * src/components/ogre/EmberOgre.cpp
+ *              * print an error if /dev/dsp can't be opened, on non-win32 systems
+ *
+ *      Revision 1.121  2006/01/25 21:18:36  erik
  *      2006-01-25  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *          * src/components/ogre/Avatar.cpp: set the walking speed to 2.5 meters per second, to fit with cyphesis
@@ -2047,6 +2059,10 @@ void EmberOgre::initializeEmberServices(void)
 	std::cout << "************************************" << std::endl;
 #endif
 #ifndef WIN32
+	} else {
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- ERROR: /dev/dsp NOT AVAILABLE" << std::endl;
+		std::cout << "************************************" << std::endl;
 	}
 #endif
 

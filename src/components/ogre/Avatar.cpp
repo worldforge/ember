@@ -27,9 +27,11 @@
 
 #include "EmberOgrePrerequisites.h"
 
+#include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
-#include "services/EmberServices.h"
+#include "services/sound/SoundService.h"
+
 
 
 
@@ -360,7 +362,16 @@ void Avatar::movedInWorld()
 	{
 		mAvatarNode->setPosition(Atlas2Ogre(mErisAvatarEntity->getPosition()));
 	}
-	
+
+/*
+	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
+	{
+		mySoundService->updateAvatarSourcePosition(
+			mErisAvatarEntity->getPosition(),
+			mErisAvatarEntity>getOrientation());
+		mySoundService->playAvatarSound();
+	}
+*/
 }
 
 

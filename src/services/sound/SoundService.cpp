@@ -81,16 +81,22 @@ namespace Ember
 
 		// Initialize OpenAL
 		S_LOG_VERBOSE("Initializing OpenAL");
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- INITIALIZING OPENAL ***" << std::endl;
-	std::cout << "************************************" << std::endl;
-		alutInit(NULL,0);
-		if(alGetError() != AL_NO_ERROR)
-		{
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- INITIALIZING OPENAL ***" << std::endl;
+		std::cout << "************************************" << std::endl;
+
+		if(!alutInit(NULL,0)) {
 			S_LOG_FAILURE( "Error initiatin AL" )
+			std::cout << "***************************************" << std::endl;
+			std::cout << "TRACE --- ERROR INITIALIZING OPENAL ***" << std::endl;
+			std::cout << alutGetErrorString(alutGetError()) << "***" << std::endl;
+			std::cout << "***************************************" << std::endl;
 			return Service::FAILURE;
 		} else {
 			S_LOG_INFO( "AL initiated"  )
+			std::cout << "************************************" << std::endl;
+			std::cout << "TRACE --- OPENAL initialized ***" << std::endl;
+			std::cout << "************************************" << std::endl;
 		}
 
 		// set listener initial parameters
@@ -363,23 +369,12 @@ namespace Ember
 	{
 		if(command == PLAYSOUND)
 		{
-			//alSourcePlay(worldSources[0]);
-/*
-			int error = alGetError();
-			if(error != AL_NO_ERROR)
-			{
-				S_LOG_FAILURE("Error playing sound: " << error)
-			}
-*/
-		systemBuffer = alutCreateBufferHelloWorld();
-		
-		alSourcei(systemSource, AL_BUFFER, systemBuffer);
-		alSourcePlay(systemSource);
-		alutSleep(1); //??? WHAT IS THIS FOR???
+			playTestSound();
 
 		}
 		else if(command == PLAYMUSIC)
 		{
+			// TODO: play test music here
 			S_LOG_INFO(getName() << " I should be playing music")
 		}
 	}
@@ -444,7 +439,7 @@ namespace Ember
 
 
 	}
-
+/*
 	void SoundService::playTestGYPH(void) {
 		alSourcePlay(worldSources[0]);
 		int error = alGetError();
@@ -453,7 +448,7 @@ namespace Ember
 			S_LOG_FAILURE("Error playing sound: " << error)
 		}
 	}
-
+*/
 	void SoundService::playTestGrunt(void) {
 	
 		std::stringstream gruntPath;
@@ -481,12 +476,64 @@ namespace Ember
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation) {
 
-		ALfloat listenerPos[3]={position.x(),position.y(),position.z()};
+		ALfloat listenerPosition[3]={position.x(),position.y(),position.z()};
 		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
 
 		// set listener initial parameters
-		alListenerfv(AL_POSITION,listenerPos);
+		alListenerfv(AL_POSITION,listenerPosition);
 		//alListenerfv(AL_ORIENTATION,listenerOri);
+	}
+
+/*
+	void SoundService::updateSourcePosition(
+		const int sourceId,
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation) {
+
+		ALfloat sourcePosition[3]={position.x(),position.y(),position.z()};
+		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
+
+		// set listener initial parameters
+		alSourcefv(AL_POSITION,sourcePosition);
+		//alListenerfv(AL_ORIENTATION,listenerOri);
+	}
+*/
+
+	void SoundService::updateAvatarSourcePosition(
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation) {
+
+		ALfloat avatarSourcePosition[3]={position.x(),position.y(),position.z()};
+		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
+
+		alSourcefv(avatarSource,AL_POSITION,avatarSourcePosition);
+		//alListenerfv(AL_ORIENTATION,listenerOri);
+	}
+
+	void SoundService::playTestSound() {
+		systemBuffer = alutCreateBufferHelloWorld();
+		alSourcei(systemSource, AL_BUFFER, systemBuffer);
+		alSourcePlay(systemSource);
+	}
+
+	void SoundService::playAvatarSound() {
+		avatarBuffer = alutCreateBufferHelloWorld();
+		alSourcei(avatarSource, AL_BUFFER, avatarBuffer);
+		alSourcePlay(avatarSource);
+	}
+
+	void SoundService::playTalk(std::string message,
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation) {
+
+		// TODO: this should not be the systemSource, but a world source
+		ALfloat systemSourcePosition[3]={position.x(),position.y(),position.z()};	
+		alSourcefv(systemSource,AL_POSITION,systemSourcePosition);
+
+		S_LOG_INFO( "Playing talk: " << message );
+		systemBuffer = alutCreateBufferHelloWorld();
+		alSourcei(systemSource, AL_BUFFER, systemBuffer);
+		alSourcePlay(systemSource);
 	}
 
 

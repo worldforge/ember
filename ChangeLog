@@ -1,3 +1,14 @@
+2006-01-26  Miguel Guzman  <aglanor@gmail.com>
+    * src/services/sound/SoundService.*:
+        * cleaned up playTestSound() code and command call
+        * added playTalk() to play a sound when entities talk
+    * src/components/ogre/EmberEntity.cpp:
+        * invoke SoundService->playTalk() at onTalk()
+    * src/components/ogre/Avatar.cpp:
+        * added some code to handle an avatar source (non-functional)
+    * src/components/ogre/EmberOgre.cpp
+        * print an error if /dev/dsp can't be opened, on non-win32 systems
+
 2006-01-25  Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/widgets/EntityCEGUITexture.cpp: 
@@ -46,6 +57,7 @@
     * src/component/ogre/widgets/EntityCEGUITexture.h: more comments
 
 2006-01-18  Miguel Guzman  <aglanor@gmail.com>
+
     * src/services/sound/SoundService.*:
         * added a method to update the listener position
     * src/components/ogre/AvatarCamera.*:

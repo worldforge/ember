@@ -254,13 +254,14 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	message.append("> ");
 	message.append(msg);
 	S_LOG_VERBOSE( "Entity says: [" << message << "]\n" )
+
 	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
-/*	// Make a sound if it's the merchant speaking
-	if(type.compare("merchant")==0) {
-		S_LOG_INFO( "THE MERCHANT IS SPEAKING" )
-		Ember::EmberServices::getSingletonPtr()->getSoundService()->playTestGYPH();
-	}*/
+
+	// Make a sound in OpenAL
+	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
+		getPosition(),getOrientation());
+
 	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
 }

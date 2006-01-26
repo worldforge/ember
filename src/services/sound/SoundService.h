@@ -66,6 +66,13 @@ class SoundService: public Service, public ConsoleObject
 	ALuint musicSource;
 	/** Music buffer - buffer used to load background music files */
 	ALuint musicBuffer;
+	/** Avatar source - this source will play avatar sounds, 
+	which are more important than the same sounds for other entities
+	Example: avatar footsteps vs other people's footsteps
+	*/
+	ALuint avatarSource;
+	/** Avatar buffer - buffer used to load avatar sounds files */
+	ALuint avatarBuffer;
 	/** World sources - array of sources to play world sounds. 
 	They will be placed in 3D space. 
 	This field may change depending on the data model */
@@ -110,10 +117,26 @@ class SoundService: public Service, public ConsoleObject
 
 	void TestPlatform(void);
 
-	void playTestGYPH(void);
+	//void playTestGYPH(void);
 	void playTestGrunt(void);
 	
 	void SoundService::updateListenerPosition(
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation);
+
+	/*
+	void SoundService::updateSourcePosition(
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation);
+	*/
+
+	void SoundService::updateAvatarSourcePosition(
+		const WFMath::Point<3>& position,
+		const WFMath::Quaternion& orientation);
+
+	void SoundService::playTestSound();
+	void SoundService::playAvatarSound();
+	void SoundService::playTalk(std::string message,
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
 
