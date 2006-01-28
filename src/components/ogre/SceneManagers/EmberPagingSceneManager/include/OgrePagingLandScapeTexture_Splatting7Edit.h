@@ -15,8 +15,8 @@ OgrePagingLandScapeTexture_Splatting7Edit.h  -  description
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTURE7Edit_SPLATTING_H
-#define PAGINGLANDSCAPETEXTURE7Edit_SPLATTING_H
+#ifndef PAGINGLandScapeTEXTURE7Edit_SPLATTING_H
+#define PAGINGLandScapeTEXTURE7Edit_SPLATTING_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -25,33 +25,33 @@ namespace Ogre
     class PagingLandScapeTexture_Splatting7Edit : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Splatting7Edit( void );
+	        PagingLandScapeTexture_Splatting7Edit(void);
 
-            virtual void setPagesize( void ){_setPagesize();};
-            virtual void clearData( void ){_clearData();};
+            virtual void setPagesize(void){_setPagesize();};
+            virtual void clearData(void){_clearData();};
             
-            static void _setPagesize( void );
-            static void _clearData( void );
+            static void _setPagesize(void);
+            static void _clearData(void);
 
                
             virtual String getName(){return String ("Splatting7Edit");};
-            virtual const uint getNumChannels ( void ) const {return 3;};
+            virtual const uint getNumChannels (void) const {return 3;};
 
             virtual void paint (const uint x, const uint z, 
                         const Real paintForce, const uint mPaintChannel);
 
-	        virtual ~PagingLandScapeTexture_Splatting7Edit( void );
+	        virtual ~PagingLandScapeTexture_Splatting7Edit(void);
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
-	        virtual void _loadMaterial( void );
-        	virtual void update( void );
-            virtual void _unloadMaterial( void );
+	        virtual void _loadMaterial(void);
+        	virtual void update(void);
+            virtual void _unloadMaterial(void);
 
         private :
-            void LoadAlphaMap( const String &filename, const uint channel );
+            void LoadAlphaMap(const String &filename, const uint channel);
 
             Image mImages[3];            
 	        //! Pointer to ogre texture

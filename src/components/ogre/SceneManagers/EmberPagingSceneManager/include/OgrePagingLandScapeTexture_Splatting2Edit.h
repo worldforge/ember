@@ -25,33 +25,33 @@ namespace Ogre
     class PagingLandScapeTexture_Splatting2Edit : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Splatting2Edit( void );
+	        PagingLandScapeTexture_Splatting2Edit(void);
             virtual String getName(){return String("Splatting2Edit");}
 
-            virtual void setPagesize( void ){_setPagesize();};
-            virtual void clearData( void ){_clearData();};
+            virtual void setPagesize(void){_setPagesize();};
+            virtual void clearData(void){_clearData();};
             
-            static void _setPagesize( void );
-            static void _clearData( void );
+            static void _setPagesize(void);
+            static void _clearData(void);
 
-	        virtual ~PagingLandScapeTexture_Splatting2Edit( void );
+	        virtual ~PagingLandScapeTexture_Splatting2Edit(void);
 
-            virtual const uint getNumChannels ( void ) const {return 4;};
+            virtual const uint getNumChannels (void) const {return 4;};
 
             virtual void paint (const uint x, const uint z, 
                         const Real paintForce, const uint mPaintChannel);
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
 
         protected:
-	        virtual void _loadMaterial( void);
-        	virtual void update( void );
-            virtual void _unloadMaterial( void );
+	        virtual void _loadMaterial(void);
+        	virtual void update(void);
+            virtual void _unloadMaterial(void);
     
         private:
-            void LoadAlphaMap( const String& filename, const uint channel );
+            void LoadAlphaMap(const String& filename, const uint channel);
 
             Image mImages[4];            
 	        //! Pointer to ogre texture

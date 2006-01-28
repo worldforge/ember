@@ -29,19 +29,19 @@ namespace Ogre
     class PagingLandScapeData2D_HeightFieldRaw: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_HeightFieldRaw( void );
+	        PagingLandScapeData2D_HeightFieldRaw(void);
             virtual String getName(){return String("HeightFieldRaw");}
-	        virtual ~PagingLandScapeData2D_HeightFieldRaw( void );
+	        virtual ~PagingLandScapeData2D_HeightFieldRaw(void);
 
-            virtual const Real getShadow( const Real mX, const Real mZ, const bool& positive );
+            virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive);
 
-	        virtual PagingLandScapeData2D* newPage( );;
+	        virtual PagingLandScapeData2D* newPage();;
 
         protected:
-            virtual void _save( void );
-	        virtual bool _load( const uint x, const uint z );
-	        virtual void _load( void );
-	        virtual void _unload( void );
+            virtual void _save(void);
+	        virtual bool _load(const uint x, const uint z);
+	        virtual void _load(void);
+	        virtual void _unload(void);
 
         private:
             Image * mShadow;

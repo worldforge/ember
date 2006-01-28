@@ -15,8 +15,8 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPERAYSCENEQUERY_H
-#define PAGINGLANDSCAPERAYSCENEQUERY_H
+#ifndef PAGINGLandScapeRAYSCENEQUERY_H
+#define PAGINGLandScapeRAYSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeOctreeRaySceneQuery.h"
@@ -24,7 +24,7 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 namespace Ogre
 {
 
-	enum
+	typedef enum RaySceneQueryFlags
 	{
 		// Height will return the height at the origin
 		// Distance will always be 0
@@ -44,16 +44,16 @@ namespace Ogre
 		// Different resolution scales.  It defaults to 1 unit
 		// resolution.  2x resolution tests every 0.5 units
 		// 4x tests every 0.25 and 8x every 0.125
-		RSQ_8xRes        = 1<<4,
-		RSQ_4xRes        = 1<<5,
-		RSQ_2xRes        = 1<<6,
-		RSQ_1xRes        = 1<<7,
+		//RSQ_8xRes        = 1<<4, // removed to get only 8 flags.
+		RSQ_4xRes        = 1<<4,
+		RSQ_2xRes        = 1<<5,
+		RSQ_1xRes        = 1<<6,
 
 		// Height will return the height at the origin
 		// Distance will always be 0
         // without interpolation = Much faster but
         // wrong between points.
-        RSQ_Height_no_interpolation =  1<<8,
+        RSQ_Height_no_interpolation =  1<<7,
 	};
 
 	/** PagingLandScape's specialisation of RaySceneQuery.
@@ -62,23 +62,23 @@ namespace Ogre
 	*/
 	class PagingLandScapeRaySceneQuery : public PagingLandScapeOctreeRaySceneQuery
 	{
-   
+
 	    public:
-		    PagingLandScapeRaySceneQuery( SceneManager* creator ) : PagingLandScapeOctreeRaySceneQuery( creator )
-		    { 
-			    mSupportedWorldFragments.insert( SceneQuery::WFT_SINGLE_INTERSECTION );
+		    PagingLandScapeRaySceneQuery(SceneManager* creator) : PagingLandScapeOctreeRaySceneQuery(creator)
+		    {
+			    mSupportedWorldFragments.insert(SceneQuery::WFT_SINGLE_INTERSECTION);
                 //mLastResult = new RaySceneQueryResult();
 		    }
 
-//		    virtual ~PagingLandScapeRaySceneQuery( void )
+//		    virtual ~PagingLandScapeRaySceneQuery(void)
 //		    {
-//			    clearFragmentList( );
+//			    clearFragmentList();
 //                //delete mLastResult;
 //                //mLastResult = 0;
 //		    }
 
 		    /** See RaySceneQuery. */
-		    void execute( RaySceneQueryListener * listener );
+		    void execute(RaySceneQueryListener * listener);
             /** Executes the query, returning the results back in one list.
             @remarks
                 This method executes the scene query as configured, gathers the results
@@ -91,26 +91,26 @@ namespace Ogre
 
             //void clearResults(void);
 
-	    protected: 
+	    protected:
 		    //JEFF
 		    //PagingLandScapeTile* getNonDividedTile(PagingLandScapeTile* tile, const Vector3& origin);
-		    inline Vector3 getHeightAt( const Vector3& origin ) const;
+		    inline Vector3 getHeightAt(const Vector3& origin) const;
 
 		    //std::vector< SceneQuery::WorldFragment* > fragmentList;
-		    
-//			void clearFragmentList( void )
+
+//			void clearFragmentList(void)
 //		    {
-//			    std::vector< SceneQuery::WorldFragment* >::iterator cur, end = fragmentList.end( );
-//			    for ( cur = fragmentList.begin( ); cur < end; ++cur )
+//			    std::vector< SceneQuery::WorldFragment* >::iterator cur, end = fragmentList.end();
+//			    for (cur = fragmentList.begin(); cur < end; ++cur)
 //			    {
-//				    SceneQuery::WorldFragment* frag = ( *cur );
-//				    if ( frag )
+//				    SceneQuery::WorldFragment* frag = (*cur);
+//				    if (frag)
 //				    {
 //					    delete frag;
 //					    frag = 0;
 //				    }
 //			    }
-//			    fragmentList.clear( ); 
+//			    fragmentList.clear();
 //		    }
 
 	    private:

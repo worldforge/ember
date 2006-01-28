@@ -15,12 +15,14 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEOPTIONS_H
-#define PAGINGLANDSCAPEOPTIONS_H
+#ifndef PAGINGLandScapeOPTIONS_H
+#define PAGINGLandScapeOPTIONS_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSingleton.h"
 #include "OgreStringVector.h"
+#include "OgreConfigFile.h"
+#include "OgreMaterial.h"
 
 namespace Ogre
 {
@@ -31,66 +33,65 @@ namespace Ogre
     class PagingLandScapeOptions : public Singleton< PagingLandScapeOptions >
     {
         public:
-	        PagingLandScapeOptions( void );
+	        PagingLandScapeOptions(void);
 
-	        ~PagingLandScapeOptions( void );
+	        ~PagingLandScapeOptions(void);
 
-            void init(  );
+            void init();
+            void setDefault();
 
-	        void load( const String& filename );
-            void loadMap( const String& mapName );
-            void loadMapOptions( const String& mapName );
-            void insertMap( const String& mapName );
+	        void load(DataStreamPtr& stream);
+            void load(const String &filename);
 
-            LandscapeFileNames* getLandscapeFileNames( void )
+            void loadMap(const String& mapName);
+            void loadMapOptions(const String& mapName);
+            void insertMap(const String& mapName);
+
+            LandScapeFileNames* getLandScapeFileNames(void)
 			{
 				return &mMapList;
 			};
 
-	        bool setOption( const String& strKey, const void* pValue );
-	        bool getOption( const String& strKey, void* pDestValue );
+	        bool setOption(const String& strKey, const void* pValue);
+	        bool getOption(const String& strKey, void* pDestValue);
 
-	        bool hasOption( const String& strKey ) const ; 
+	        bool hasOption(const String& strKey) const ; 
 
-	        bool getOptionValues( const String & key, StringVector &refValueList );
-            bool getOptionKeys( StringVector &refKeys );
+	        bool getOptionValues(const String & key, StringVector &refValueList);
+            bool getOptionKeys(StringVector &refKeys);
 
-            void getAvgColors( void );
+            void getAvgColors(void);
 
-            LandscapeFileNames& getMapList( void );
+            LandScapeFileNames& getMapList(void);
 
-            const String& getPreviousMapName( void ) const;
-            const String& getNextMapName( void ) const;
-            const String& getCurrentMapName( void ) const; 
+            const String& getPreviousMapName(void) const;
+            const String& getNextMapName(void) const;
+            const String& getCurrentMapName(void) const; 
 
-            void setCurrentMapName( const String& mapName );
+            void setCurrentMapName(const String& mapName);
 
-            const String& getCurrentTextureFormat( void ) const;
-            void setTextureFormat( const String& format );
+            const String& getCurrentTextureFormat(void) const;
+            void setTextureFormat(const String& format);
 
-            void setPrimaryCamera( PagingLandScapeCamera* cam );
-            void calculateCFactor( void );
+            void setPrimaryCamera(PagingLandScapeCamera* cam);
+            void calculateCFactor(void);
 
-	        static PagingLandScapeOptions& getSingleton( void );
-	        static PagingLandScapeOptions* getSingletonPtr( void );
+	        static PagingLandScapeOptions& getSingleton(void);
+	        static PagingLandScapeOptions* getSingletonPtr(void);
 
 	        String data2DFormat;
 	        String textureFormat;
 
-	        String landscape_filename;
-            String landscape_extension;
-            String landscape_export_extension;
+	        String LandScape_filename;
+            String LandScape_extension;
+	        String LandScape_export_filename;
+            String LandScape_export_extension;
 
             String image_filename;
             bool ImageNameLoad;
 
 
             // MAP TOOL OPTIONS
-            String Splat_Filename_0;
-            String Splat_Filename_1;
-            String Splat_Filename_2;
-            String Splat_Filename_3;
-
             String OutDirectory;
             String TextureExtension;
 
@@ -127,7 +128,7 @@ namespace Ogre
             Real    Amb;
             Real    Diff;
 
-            int     Blur;
+            uint     Blur;
             // end of MAP TOOL OPTIONS
 
 	        uint maxValue;						//Compression range for the TC height field
@@ -156,6 +157,7 @@ namespace Ogre
 
 	        Vector3 scale;
 
+	        Material::LodDistanceList lodMaterialDistanceList; //Distance for the material LOD change
 	        Real distanceLOD;					//Distance for the LOD change
 	        Real LOD_factor;
 
@@ -169,8 +171,11 @@ namespace Ogre
 
 	        uint num_renderables_loading;		//Max number of renderable to load in a single Frame.
             uint maxRenderLevel;
-	        ColourValue matColor[4];
-	        Real matHeight[4];
+
+			uint NumMatHeightSplat;
+			std::vector <ColourValue>	matColor;
+			std::vector <Real>			matHeight;
+			std::vector<String>			SplatDetailMapNames;
 
             bool VertexCompression;
 
@@ -195,13 +200,14 @@ namespace Ogre
             //used to get screen height...
             // should find another way...
             PagingLandScapeCamera* primaryCamera;
+
             /// At what point (parametric) should LOD morphing start
             Real lodMorphStart;
             bool lodMorph;
-            size_t maxPixelError;
+            uint maxPixelError;
             Real CFactor;
-            // MapSplitter Tool
 
+            // MapSplitter Tool
             uint RawHeight;
             uint RawWidth;
                
@@ -220,6 +226,8 @@ namespace Ogre
 
             /// ResourceGroupName
             String groupName;
+            String cfgGroupName;
+            
 	        bool lit;
 	        bool normals;
 	        bool colored;
@@ -231,13 +239,41 @@ namespace Ogre
 
             bool BigImage;
             bool VisMap;
+			bool MaxLodUnderCam;
+
+            Real TextureStretchFactor;
+
+			uint RenderableLoadInterval;
+			uint PageLoadInterval;
+
+			uint TileInvisibleUnloadFrames;
+			uint PageInvisibleUnloadFrames;
+
+			uint NumSplatMapToSplit;
+			std::vector<String> SplatMapNames;
+
+            uint NumTextureFormatSupported;
+            std::vector<String> TextureFormatSupported;
+
+
+			Vector3 BaseCameraViewpoint;
+			Vector3 Baselookat;
+			
+            void setUint (uint &u, const String &ValuetoGet);
+            void setBool (bool &b, const String &ValuetoGet);
+            void setReal (Real &r,const String &ValuetoGet);
+            void setString (String &s, const String &ValuetoGet);
+
+            String mResourceFilesystem;
+            String mResourceZip;
 
         private:
-	        ColourValue _getAvgColor( const String& tex ) const;
+	        ColourValue _getAvgColor(const String& tex) const;
             String mCurrentMap;
-            LandscapeFileNames mMapList;
+            LandScapeFileNames mMapList;
             StringVector mTextureFormats;
             bool isInit;
+            ConfigFile *mConfig;
     };
 
 }

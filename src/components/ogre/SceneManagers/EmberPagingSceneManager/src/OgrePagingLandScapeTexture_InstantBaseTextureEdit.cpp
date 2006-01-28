@@ -36,27 +36,6 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 namespace Ogre
 {
-    //static void MakeRGBPixel (RGBPixel &p, uchar pr,uchar pg, uchar pb)
-    //{ 
-    //    p.r = pr;
-    //    p.g = pg;
-    //    p.b = pb;
-    //};
-    static void MakeRGBPixel (RGBPixel &p, Real pr,Real pg,Real pb)
-    { 
-        const uchar Bscale = 255;
-        p.r = static_cast <uchar> (pr * Bscale);
-        p.g = static_cast <uchar> (pg * Bscale);
-        p.b = static_cast <uchar> (pb * Bscale);
-    };
-    //static void MakeRGBPixel (RGBPixel &p, ulong input)
-    //{        
-    //    p.r = input >> 24;
-    //    p.g = input >> 16;
-    //    p.b = input >> 8;
-        //p.a = input;
-    //};
-
     uint PagingLandScapeTexture_InstantBaseTextureEdit::mPageSize = 0;
     Real PagingLandScapeTexture_InstantBaseTextureEdit::heights[4];
     Real PagingLandScapeTexture_InstantBaseTextureEdit::dividers[4];
@@ -96,14 +75,17 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture* PagingLandScapeTexture_InstantBaseTextureEdit::newTexture( )
+    PagingLandScapeTexture* PagingLandScapeTexture_InstantBaseTextureEdit::newTexture()
     {
         return new PagingLandScapeTexture_InstantBaseTextureEdit();
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_InstantBaseTextureEdit::TextureRenderCapabilitesFullfilled()
     {
-        return true;
+		if (PagingLandScapeOptions::getSingleton().NumMatHeightSplat > 3)
+			return true;
+		else
+			return false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureEdit::_clearData ()
@@ -124,7 +106,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
         {
-            const String filename  = PagingLandScapeOptions::getSingleton().landscape_filename;
+            const String filename  = PagingLandScapeOptions::getSingleton().LandScape_filename;
             const String extname   = PagingLandScapeOptions::getSingleton().TextureExtension;
             const String groupName = PagingLandScapeOptions::getSingleton().groupName;
 
@@ -201,7 +183,7 @@ namespace Ogre
 	            mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName (finalTexName);
 
                 mMaterial->load();
-	            mMaterial->setLightingEnabled( PagingLandScapeOptions::getSingleton().lit );
+	            mMaterial->setLightingEnabled(PagingLandScapeOptions::getSingleton().lit);
             }
             else
                 _LoadTexture(finalTexName, groupName);
@@ -244,7 +226,7 @@ namespace Ogre
         if (isDeformed)
         {
             rect = mDeformRect;
-            data = PagingLandScapeData2DManager::getSingleton().getData2d(mDataX, mDataZ);
+            data = PagingLandScapeData2DManager::getSingleton().getData2D(mDataX, mDataZ);
 //            rect = data->getDeformationRectangle ();
             if (rect.getWidth() && rect.getHeight ())
             {
@@ -252,6 +234,7 @@ namespace Ogre
                 rect.bottom += 1;
 
                 // Do here some alpha map modification based on deformation
+
                computeInstantBase(data, rect);
             }
         }
@@ -273,7 +256,7 @@ namespace Ogre
             }
         } // if (mIsRectModified)
 
-        // Upload any changes (deformation or )
+        // Upload any changes (deformation or)
         if (rect.getWidth() && rect.getHeight ())
         {
             const PixelBox srcBox = mImage.getPixelBox().getSubVolume(rect);	
@@ -320,7 +303,7 @@ namespace Ogre
         adjustDeformationRectangle(x, z);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBase ( 
+    void PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBase (
         PagingLandScapeData2D *data, const Image::Box &rect) const
     {       
         uchar * const BaseData = mBaseData;
@@ -336,7 +319,7 @@ namespace Ogre
         size_t curr_image_pos = rect.top*mPageSize*3 + rect.left*3;
         const size_t image_width = (mPageSize - (rect.right - rect.left))*3;
 
-    const uchar bScale = 255;
+		const uchar bScale = 255;
         for (size_t k = rect.top; k < rect.bottom; ++k)
         {
 		    for (size_t i = rect.left; i < rect.right; ++i)
@@ -384,68 +367,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBaselight () const
     {
-                   // Create the base image
-
-        //double rotationAmount = 2 * Math::PI / 16.0f;
-        //rotationAmount = 4 * rotationAmount;
-        //Real LightAngle = rotationAmount;
-        //    Vector3 LightDir (1.0f,
-        //                      Math::Cos (rotationAmount),
-        //	                  0.0f);
-        //LightDir.normalise ();
-
-//(Real)Math::Sin(0.7f * 300.0f) * 1.55f;
-        //1.531; //all shadow
-        //0.49; //all shadow
-
-//        Vector3 LightDir(0,
-//	                    (Real) Math::Cos(LightAngle),
-//	                    (Real) Math::Sin(LightAngle));
-
-//        Vector3 LightDir = PagingLandScapeOptions::getSingleton().Sun;
-//        Real LightAngle = PagingLandScapeOptions::getSingleton().SunAngle;
-//
-//        bool positive; 
-//        if (LightAngle >= 0) 
-//        {
-//		    positive = true;
-//		    LightAngle = 1.0f - LightAngle;
-//	    } 
-//        else 
-//        {
-//		    positive = false;
-//		    LightAngle = 1.0f + LightAngle;
-//	    }
-//
-//        const bool b_shadowed = PagingLandScapeOptions::getSingleton().vertex_shadowed;
-
-//                if (0)
-//                {  
-//                    const Real Horizon = data->getShadow (i, k, positive);
-//	                
-//                    Real intensity;
-//                    if (LightAngle < Horizon) 
-//                    {                            
-//					    intensity = 1.0f - (-5.0f * (LightAngle - Horizon));
-//                        if (intensity > 0.0f) 
-//                        {
-//                            // if Vertex is at least partially lighted
-//                            //intensity *= LightDir.dotProduct (norm); 
-//                            intensity *= 1.0f;
-//					    }
-//                        else
-//                            intensity = 0.0f; // totally in shadow                             
-//                    }
-//                    else                            
-//                        // if Vertex is lighted
-//                        intensity = 1.0f;
-//                        //intensity = LightDir.dotProduct (norm); 
-//
-//                    //intensity = intensity * 0.5f + 0.5f;
-//                    RGBA_precalc = RGBA_precalc * std::min(std::max(intensity, 0.0f), 1.0f);  
-//                    
-//                }
-
+               
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureEdit::_unloadMaterial()
@@ -453,7 +375,7 @@ namespace Ogre
         assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTextureEdit::::_unloadMaterial");    
         if (mIsModified)
         { 
-            const String fname = PagingLandScapeOptions::getSingleton().landscape_filename + 
+            const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + 
                                 ".Base." + 
                                 StringConverter::toString(mDataZ) + 
                                 String(".") + 

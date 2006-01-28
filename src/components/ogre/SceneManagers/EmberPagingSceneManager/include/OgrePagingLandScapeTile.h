@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETILE_H
-#define PAGINGLANDSCAPETILE_H
+#ifndef PAGINGLandScapeTILE_H
+#define PAGINGLandScapeTILE_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeTileInfo.h"
@@ -24,10 +24,10 @@
 namespace Ogre
 {
 
-class PagingLandScapeTile 
+class _OgrePagingLandScapeExport PagingLandScapeTile 
 {
 public:
-    PagingLandScapeTileInfo* getInfo( void ) 
+    PagingLandScapeTileInfo* getInfo(void) 
     {
         return &mInfo;
     };
@@ -35,18 +35,18 @@ public:
     /** Sets the appropriate neighbor for this TerrainRenderable.  Neighbors are necessary
     to know when to bridge between LODs.
     */
-    void _setNeighbor( Neighbor n, PagingLandScapeTile* t );
+    void _setNeighbor(Neighbor n, PagingLandScapeTile* t);
 
     /** Returns the neighbor TerrainRenderable.
     */
-    PagingLandScapeTile* _getNeighbor( Neighbor n )
+    PagingLandScapeTile* _getNeighbor(Neighbor n)
     {
         return mNeighbors[ n ];
     };
 
     /** intersectSegment 
     @remarks
-        Intersect mainly with Landscape
+        Intersect mainly with LandScape
     @param start 
         beginning of the segment 
     @param end 
@@ -54,52 +54,55 @@ public:
     @param result 
         where it intersects with terrain
     */
-    bool intersectSegment( const Vector3& start, const Vector3& dir, Vector3* result );
+    bool intersectSegmentFromAbove(const Vector3& start, const Vector3& dir, Vector3* result);
+	bool intersectSegmentFromBelow(const Vector3& start, const Vector3& dir, Vector3* result);
 
     /** updateTerrain 
     @remarks
         Make the Tile reload its vertices and normals 
         (upon a modification of the height data)
     */
-    void updateTerrain( void );
+    void updateTerrain(void);
   
-    PagingLandScapeRenderable* getRenderable( void )
+    PagingLandScapeRenderable* getRenderable(void)
     {
         return mRenderable;    
     }
 
-    void _linkRenderableNeighbor( void );
-    void _updateLod( void );
+    void _linkRenderableNeighbor(void);
+    void _updateLod(void);
 
-	PagingLandScapeTile( void );
+	PagingLandScapeTile(void);
 
-	~PagingLandScapeTile( void );
+	~PagingLandScapeTile(void);
 
-	void init( SceneNode* PageNode, const int tableX, const int tableZ, const int tileX, const int tileZ );
-    void load( void );
-    void unload( void );
-	void uninit( void );
+	void init(SceneNode* PageNode, const int tableX, const int tableZ, const int tileX, const int tileZ);
+    void load(void);
+    void unload(void);
+	void uninit(void);
 
-	void _Notify( const Vector3& pos, PagingLandScapeCamera* Cam );
+	void _Notify(const Vector3& pos, PagingLandScapeCamera* Cam);
 
-    SceneNode* getTileNode( void )
-	{
-		return mTileSceneNode;
-	};
-
-    bool isLoaded( void )
+    bool isLoaded(void)
 	{
 		return mLoaded;
 	};
 
-    void setInUse( bool InUse );
+    void setInUse(bool InUse);
 
-    bool isVisible( void )
+    bool isVisible(void)
 	{
 		return mVisible;
 	}
 
-    void setRenderQueueGroup( RenderQueueGroupID qid );
+    void setRenderQueueGroup(RenderQueueGroupID qid);
+
+	SceneNode *getSceneNode(){return mTileSceneNode;};
+	const AxisAlignedBox &getWorldBbox() const {return mWorldBounds;};
+	const Vector3 &getCenter(void) const {return mWorldPosition;};
+
+	void PagingLandScapeTile::touch ();
+	const bool PagingLandScapeTile::touched ();
 
 protected:
 	//movable object variables
@@ -115,11 +118,13 @@ protected:
 	PagingLandScapeRenderable* mRenderable;
 
 	SceneNode* mTileSceneNode;
+    SceneNode* mParentSceneNode;
 
     PagingLandScapeTile* mNeighbors[4];
 
 	PagingLandScapeTileInfo mInfo;
-    bool mVisible;
+	bool mVisible;
+	uint mTimePreLoaded;
 
 };
 

@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEDATA2D_HEIGHTFIELD_H
-#define PAGINGLANDSCAPEDATA2D_HEIGHTFIELD_H
+#ifndef PAGINGLandScapeDATA2D_HEIGHTFIELD_H
+#define PAGINGLandScapeDATA2D_HEIGHTFIELD_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -31,30 +31,33 @@ namespace Ogre
 class PagingLandScapeData2D_HeightField: public PagingLandScapeData2D
 {
 public:
-	PagingLandScapeData2D_HeightField( void );
+	PagingLandScapeData2D_HeightField(void);
             virtual String getName(){return String("HeightField");}
-	virtual ~PagingLandScapeData2D_HeightField( void );
+	virtual ~PagingLandScapeData2D_HeightField(void);
 
-    virtual const Vector3 getNormal( const Real mX, const Real mZ );
-    virtual const ColourValue getBase( const Real mX, const Real mZ );
-    virtual const ColourValue getCoverage( const Real mX, const Real mZ );
-    virtual const Real getShadow( const Real mX, const Real mZ, const bool& positive );
+    virtual const Vector3 getNormal(const Real mX, const Real mZ);
+    virtual const ColourValue getBase(const Real mX, const Real mZ);
+    virtual const ColourValue getCoverage(const Real mX, const Real mZ);
+    virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive);
 
 	virtual PagingLandScapeData2D* newPage();
 protected:
 
-    virtual void _save( void );
-	virtual bool _load( const uint x, const uint z );
-	virtual void _load( void );
-	virtual void _unload( void );
+    virtual void _save(void);
+	virtual bool _load(const uint x, const uint z);
+	virtual void _load(void);
+	virtual void _unload(void);
 
 private:
+    double PagingLandScapeData2D_HeightField::getScale() const;
+
 	Image* mImage;
     Image* mBase;
     Image* mShadow;
     Image* mCoverage;
 
-    size_t mBpp;// should be 4 bytes (mImage is RGBA)
+    /// should be 4 bytes (mImage is RGBA)
+    size_t mBpp;
 };
 
 }

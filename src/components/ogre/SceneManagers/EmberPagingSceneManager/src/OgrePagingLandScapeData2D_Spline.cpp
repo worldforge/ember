@@ -1,7 +1,7 @@
 /********************************************************************************
 	OgrePagingLandScapeData2D_Spline.cpp
 	*****************************************************************************
-	A NURBS-based heightfield generator for use with the paginglandscapeplugin
+	A NURBS-based heightfield generator for use with the pagingLandScapeplugin
 	
 	Note that it could easily be adapted for use as a general NURBS surface
 	generator.
@@ -33,7 +33,7 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-	PagingLandScapeData2D* PagingLandScapeData2D_Spline::newPage( )
+	PagingLandScapeData2D* PagingLandScapeData2D_Spline::newPage()
     {
        return new PagingLandScapeData2D_Spline();
     }
@@ -58,7 +58,7 @@ namespace Ogre
         
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_Spline::_load(const  uint mX, const uint mZ )
+    bool PagingLandScapeData2D_Spline::_load(const  uint mX, const uint mZ)
     {
 		int resolution	= PagingLandScapeOptions::getSingleton().PageSize;
 		mSize		    = resolution;
@@ -114,7 +114,7 @@ namespace Ogre
         Real scale = PagingLandScapeOptions::getSingleton().scale.y; 
         mMaxheight = 0.0f;
         uint k;
-        for (k = 0; k < mMaxArrayPos;  k ++ )
+        for (k = 0; k < mMaxArrayPos;  k ++)
         {  
             Real h =  static_cast<Real> (mSurface->getData(k).y * scale); 
             mHeightData[k] = h;

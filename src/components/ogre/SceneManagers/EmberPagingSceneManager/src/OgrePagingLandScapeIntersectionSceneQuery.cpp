@@ -1,79 +1,80 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of OGRE
+(Object-oriented Graphics Rendering Engine)
+For the latest info, see http://www.ogre3d.org/
+ 
+Copyright  2000-2005 The OGRE Team
+Also see acknowledgements in Readme.html
+ 
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+ 
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ 
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+-----------------------------------------------------------------------------
+*/
 /***************************************************************************
-	OgrePagingLandScapeIntersectionSceneQuery.cpp  -  description
-  -------------------
-  begin                : Fri Aug 08 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
-  email                : spoke2@supercable.es && tuan.kuranes@free.fr
+OgrePagingLandScapeIntersectionSceneQuery.cpp  -  description
+-------------------
+begin                : Tues July 20, 2004
+copyright            : (C) 2004by Jon Anderson
+email                : janders@users.sf.net
+ 
+ 
+ 
 ***************************************************************************/
-
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU Lesser General Public License as        *
-*   published by the Free Software Foundation; either version 2 of the    *
-*   License, or (at your option) any later version.                       *
-*                                                                         *
-***************************************************************************/
-
-#include "OgreEntity.h"
-
-#include "OgreVector3.h"
-#include "OgreColourValue.h"
-
-#include "OgreSceneManager.h"
-#include "OgreCamera.h"
-
-#include "OgrePagingLandScapeOptions.h"
 
 #include "OgrePagingLandScapeSceneManager.h"
-
-#include "OgrePagingLandScapeData2DManager.h"
-
-#include "OgrePagingLandScapeRaySceneQuery.h"
 #include "OgrePagingLandScapeIntersectionSceneQuery.h"
-#include "OgrePagingLandScapeCamera.h"
-#include "OgrePagingLandScapePageManager.h"
-#include "OgrePagingLandScapePage.h"
+
+#include "OgrePagingLandScapeOctreeSceneManager.h"
+#include "OgrePagingLandScapeOctreeIntersectionSceneQuery.h"
+
+#include "OgreEntity.h"
+#include "OgreRoot.h"
 
 namespace Ogre
 {
 
-//----------------------------------------------------------------------------
-void PagingLandScapeIntersectionSceneQuery::execute(IntersectionSceneQueryListener* listener)
+//---------------------------------------------------------------------
+PagingLandScapeIntersectionSceneQuery::PagingLandScapeIntersectionSceneQuery(SceneManager* creator)
+	: PagingLandScapeOctreeIntersectionSceneQuery(creator)
 {
-	// Do movables to movables as before
-	DefaultIntersectionSceneQuery::execute(listener);
-	SceneQuery::WorldFragment frag;
-
-	// Do entities to world
-	SceneManager::EntityList::const_iterator a, theEnd;
-	PagingLandScapeSceneManager *sceneMgr = static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr);
-	theEnd = sceneMgr->getEntities().end();
-	for (a = sceneMgr->getEntities().begin();
-        a != theEnd; 
-        ++a)
-	{
-		// Apply mask 
-		if ( a->second->getQueryFlags() & mQueryMask)
-		{
-			const AxisAlignedBox& box = a->second->getWorldBoundingBox();
-			std::list<RenderOperation> opList;
-
-            			//this does not compile, had to disable it
-            //PagingLandScapePageManager::getSingleton().getPagingLandScapeRenderOpsInBox (box, opList);
-					
-
-			std::list<RenderOperation>::iterator i, iend;
-			iend = opList.end();
-			for (i = opList.begin(); i != iend; ++i)
-			{
-				frag.fragmentType = SceneQuery::WFT_RENDER_OPERATION;
-				frag.renderOp = &(*i);
-				listener->queryResult(a->second, &frag);
-			}
-		}
-	}
+    // Add bounds fragment type
+    mSupportedWorldFragments.insert(SceneQuery::WFT_SINGLE_INTERSECTION);
+    mSupportedWorldFragments.insert(SceneQuery::WFT_PLANE_BOUNDED_REGION);
 }
 
-} // namespace Ogre
+//---------------------------------------------------------------------
+PagingLandScapeIntersectionSceneQuery::~PagingLandScapeIntersectionSceneQuery(void)
+{
+}
 
+//---------------------------------------------------------------------
+void PagingLandScapeIntersectionSceneQuery::execute(IntersectionSceneQueryListener* listener)
+{
+	if(mWorldFragmentType == SceneQuery::WFT_SINGLE_INTERSECTION)
+    {
+		PagingLandScapeOctreeIntersectionSceneQuery::execute(listener);
+    }
+    else if (mWorldFragmentType ==  SceneQuery::WFT_PLANE_BOUNDED_REGION)
+    {
+        // We want the whole bounded volume
+//        assert((*bi)->fragment.fragmentType == SceneQuery::WFT_PLANE_BOUNDED_REGION);
+//        if (!listener->queryResult(const_cast<WorldFragment*>(&(brush->fragment)), 
+//            result.second + traceDistance))
+//			return false; 
+
+    }
+}
+
+}

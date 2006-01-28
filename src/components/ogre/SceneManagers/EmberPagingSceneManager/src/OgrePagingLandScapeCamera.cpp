@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright  2000-2004 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -43,8 +43,8 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    PagingLandScapeCamera::PagingLandScapeCamera( const String& name, SceneManager* sm ) : PagingLandScapeOctreeCamera( name, sm ),
-        
+    PagingLandScapeCamera::PagingLandScapeCamera(const String& name, SceneManager* sm) : 
+        PagingLandScapeOctreeCamera(name, sm),
 
         mCurrentCameraPageX(0), 
         mCurrentCameraPageZ(0),
@@ -58,10 +58,11 @@ namespace Ogre
         mPreFinX(0),
         mPreIniZ(0),
         mPreFinZ(0),
-	    mLastCameraPos (Vector3(std::numeric_limits<Real>::min (), 
+	    mLastCameraPos (Vector3(std::numeric_limits<Real>::max (), 
                                 0.0f, 
-                                std::numeric_limits<Real>::min ()))
+                                std::numeric_limits<Real>::max ()))
     {
+        // initialized after the Camera::Camera().
         mLastViewport = 0;
     }
     //-----------------------------------------------------------------------
@@ -97,8 +98,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeCamera::updatePaging (const uint x, const uint z)
     {
-        // We must load the next visible landscape pages, 
-        // check the landscape boundaries	
+        // We must load the next visible LandScape pages, 
+        // check the LandScape boundaries	
 
         mCurrentCameraPageX = x;
         mCurrentCameraPageZ = z;
@@ -119,7 +120,7 @@ namespace Ogre
             mIniX = 0;
             lx -= x - adjpages;
         }
-        if (lx + adjpages < w )
+        if (lx + adjpages < w)
         {
             mFinX = lx + adjpages;
         }
@@ -139,7 +140,7 @@ namespace Ogre
             mIniZ = 0;
             lz -= z - adjpages;
         }
-        if (lz + adjpages < h )
+        if (lz + adjpages < h)
         {
             mFinZ = lz + adjpages;
         }
@@ -160,7 +161,7 @@ namespace Ogre
             mPreIniX = 0;
             lx -= x - prepages;
         }
-        if (x + prepages < w )
+        if (x + prepages < w)
         {
             mPreFinX = x + prepages;
         }
@@ -180,7 +181,7 @@ namespace Ogre
             mPreIniZ = 0;
             lz -= z - prepages;
         }
-        if (lz + prepages < h )
+        if (lz + prepages < h)
         {
             mPreFinZ = lz + prepages;
         }
@@ -192,10 +193,10 @@ namespace Ogre
         //(static_cast <PagingLandScapeSceneManager*> (getSceneManager())->resize());
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeCamera::getVisibility( const AxisAlignedBox &bound ) const
+    bool PagingLandScapeCamera::getVisibility(const AxisAlignedBox &bound) const
     {
         // Null boxes always invisible
-        if ( bound.isNull() )
+        if (bound.isNull())
             return false;
 
         // Make any pending updates to the calculated frustum
@@ -217,7 +218,7 @@ namespace Ogre
 
         bool all_inside = true;
         const bool infinite_far_clip = (mFarDist == 0);
-        for ( unsigned int plane = 0; plane < 6; ++plane )
+        for (unsigned int plane = 0; plane < 6; ++plane)
         {
 
             const unsigned int currPlane = planes[ plane ];
@@ -227,18 +228,19 @@ namespace Ogre
 
             bool all_outside = true;
             const Plane &frustumPlane = mFrustumPlanes[ currPlane ];
-            for ( unsigned int corner = 0; corner < 8; ++corner )
+            for (unsigned int corner = 0; corner < 8; ++corner)
             {
-                const Real distance = frustumPlane.getDistance( pCorners[ corners[ corner ] ] );
+                const Real distance = frustumPlane.getDistance(pCorners[ corners[ corner ] ]);
 
-                all_outside = all_outside && ( distance < 0 );
-                all_inside = all_inside && ( distance >= 0 );
+                const bool isDistanceNegative = (distance < 0);
+                all_outside = all_outside && isDistanceNegative;
+                all_inside = all_inside && !isDistanceNegative;
 
-                if ( !all_outside && !all_inside )
+                if (!all_outside && !all_inside)
                     break;
             }
 
-            if ( all_outside )
+            if (all_outside)
                 return false;
         }
         return true;

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPERENDERABLEMANAGER_H
-#define PAGINGLANDSCAPERENDERABLEMANAGER_H
+#ifndef PAGINGLandScapeRENDERABLEMANAGER_H
+#define PAGINGLandScapeRENDERABLEMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSingleton.h"
@@ -36,67 +36,65 @@ namespace Ogre
 	        /** Initializes the PagingLandScapeRenderableManager with the 
             * given options and allocate the necessary memory.
 	        */
-	        PagingLandScapeRenderableManager( void );
+	        PagingLandScapeRenderableManager(void);
 
-	        virtual ~PagingLandScapeRenderableManager( void );
+	        virtual ~PagingLandScapeRenderableManager(void);
 
 	        /** Retrieve a free renderable.
 	        */
-	        PagingLandScapeRenderable* getRenderable( void );
+	        PagingLandScapeRenderable* getRenderable(void);
 
 	        /** Make a renderable free.
 	        */
-	        void freeRenderable( PagingLandScapeRenderable* rend );
+	        void freeRenderable(PagingLandScapeRenderable* rend);
 
 	        /** Set this renderable to be loaded
 	        */
-            void queueRenderableLoading( PagingLandScapeTile* tile );
+            void queueRenderableLoading(PagingLandScapeTile* tile);
 
 	        /** Set this renderable to be unloaded
 	        */
-            void unqueueRenderable( PagingLandScapeTile* tile );
+            void unqueueRenderable(PagingLandScapeTile* tile);
 
 	        /** Load a set of renderables
 	        */
-	        bool executeRenderableLoading( void );
+	        bool executeRenderableLoading(const Vector3 &Cameraposition);
 
-	        uint numRenderables( void ) const;
-	        int numFree( void ) const;
-	        int numLoading( void ) const;
+	        uint numRenderables(void) const;
+	        int numFree(void) const;
+	        int numLoading(void) const;
 
-            void InitTextureCoordinatesBuffers( void );
-            void freeTextureCoordinatesBuffers( void );
-            HardwareVertexBufferSharedPtr getTextureCoordinatesBuffers( const uint tilex, const uint tilez );
-            void setTextureCoordinatesBuffers( const uint tilex, const uint tilez, const HardwareVertexBufferSharedPtr& data );
+            void InitTextureCoordinatesBuffers(void);
+            void freeTextureCoordinatesBuffers(void);
+            HardwareVertexBufferSharedPtr getTextureCoordinatesBuffers(const uint tilex, const uint tilez);
+            void setTextureCoordinatesBuffers(const uint tilex, const uint tilez, const HardwareVertexBufferSharedPtr& data);
 
-            int PagingLandScapeRenderableManager::numVisibles( void ) 
+            int PagingLandScapeRenderableManager::numVisibles(void) 
             {
                 return mRenderablesVisibles;
             };
-            void resetVisibles( void )
+            void resetVisibles(void)
 			{
 				mRenderablesVisibles = 0;
 			};
-            void addVisible( void )
+            void addVisible(void)
 			{
 				++mRenderablesVisibles;
 			};
 
-            PagingLandScapeIndexBuffer* getIndexBuffers( void )
-			{
-				return mIndexes;
-			}
-	        static PagingLandScapeRenderableManager& getSingleton( void );
+	        static PagingLandScapeRenderableManager& getSingleton(void);
 
-	        static PagingLandScapeRenderableManager* getSingletonPtr( void );
+	        static PagingLandScapeRenderableManager* getSingletonPtr(void);
 
-            void load( void );
-            void clear( void );
+            void load(void);
+            void clear(void);
+
+			/// unload some Tiles/renderables if no more in use 
+			void processTileUnload();
 
         protected:
-	        void _addBatch( const uint num );
+	        void _addBatch(const uint num);
 
-	        PagingLandScapeIndexBuffer* mIndexes;
 
 	        PagingLandScapeRenderableVector mRenderables;
 
@@ -106,15 +104,15 @@ namespace Ogre
 		        This avoid the plug-in to load a lot of renderables in a single Frame, 
                 dropping the FPS.
 	        */
-            PagingLandScapeQueue< PagingLandScapeTile > mTilesLoadQueue;
+            PagingLandScapeQueue< PagingLandScapeTile > mTilesLoadRenderableQueue;
 
             uint mRenderablesVisibles;
-	        uint mNumRenderables;
-            uint mPageSize; 
-            uint mTileSize;
-        
-            HardwareTextureBuffersCol mTexBuffs; 
+	        uint mNumRenderables; 
+            uint mNumRenderablesIncrement;
+            uint mNumRenderableLoading;
 
+			uint mRenderableLoadInterval;
+			int  mLoadInterval;
     };
 
 }

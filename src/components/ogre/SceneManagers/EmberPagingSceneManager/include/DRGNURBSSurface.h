@@ -43,15 +43,15 @@
 
 #define SIMD_SIZE 1
 
-#define ALIGNED_NEW( s, t ) new t[s];
-#define ALIGNED_DELETE( x ) do { if( (x) ) { delete x; x = NULL; } } while (0)
-#define SAFE_RELEASE( x ) do { if( (x) ) { x->Release(); x = NULL; } } while (0)
-#define SAFE_DELETE( x ) do { if( (x) ) { delete x; x = NULL;} } while (0)
+#define ALIGNED_NEW(s, t) new t[s];
+#define ALIGNED_DELETE(x) do { if((x)) { delete x; x = NULL; } } while (0)
+#define SAFE_RELEASE(x) do { if((x)) { x->Release(); x = NULL; } } while (0)
+#define SAFE_DELETE(x) do { if((x)) { delete x; x = NULL;} } while (0)
 
 // Some handy-dandy macros
 //
-#define CLAMP_UPPER( x ) if ( x>1.0f ) { x = 1.0f; }
-#define CLAMP_LOWER( x ) if ( x<0.0f ) { x = 0.0f; }
+#define CLAMP_UPPER(x) if (x>1.0f) { x = 1.0f; }
+#define CLAMP_LOWER(x) if (x<0.0f) { x = 0.0f; }
 
 struct Point4D
 {
@@ -96,25 +96,25 @@ private:
 
 	splinePoint* m_pVertices;
 
-	void Cleanup( void );
-	float ComputeCoefficient( float* fKnots, int iInterval, int i, int p, int k );
-	void ComputeBasisCoefficients( void );
-	void EvaluateBasisFunctions( void );
+	void Cleanup(void);
+	float ComputeCoefficient(float* fKnots, int iInterval, int i, int p, int k);
+	void ComputeBasisCoefficients(void);
+	void EvaluateBasisFunctions(void);
 
 public:
-	CDRGNURBSSurface( void );
-	virtual ~CDRGNURBSSurface( void );
+	CDRGNURBSSurface(void);
+	virtual ~CDRGNURBSSurface(void);
 
-	bool Init( int uDegree, int	vDegree, int uControlPoints, int vControlPoints,
+	bool Init(int uDegree, int	vDegree, int uControlPoints, int vControlPoints,
                 Point4D* pControlPoints, float* pUKnots, float* pVKnots, 
-                int iDefaultUTessellations = 10, int iDefaultVTessellations = 10 );
+                int iDefaultUTessellations = 10, int iDefaultVTessellations = 10);
 				
-	void UpdateControlPoints( Point4D* pControlPoints );
+	void UpdateControlPoints(Point4D* pControlPoints);
 
-	splinePoint getData( int index );
-	virtual void SetTessellations( int iUTessellations, int iVTessellations );
-	virtual void TessellateSurface( void );
-	virtual int GetTriangleCount( void );
+	splinePoint getData(int index);
+	virtual void SetTessellations(int iUTessellations, int iVTessellations);
+	virtual void TessellateSurface(void);
+	virtual int GetTriangleCount(void);
 
 };
 

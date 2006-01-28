@@ -35,22 +35,35 @@ namespace Ogre
 
     // static unload
     //params->clearAutoConstants()
-
-
+                                           
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture* PagingLandScapeTexture_Splatting5::newTexture( )
+    void PagingLandScapeTexture_Splatting5::_setPagesize(void)
+    {
+        PagingLandScapeOptions::getSingleton().normals = true;
+    }                    
+    //-----------------------------------------------------------------------
+    void PagingLandScapeTexture_Splatting5::_clearData(void)
+    {
+       
+    }     
+    //-----------------------------------------------------------------------
+    PagingLandScapeTexture* PagingLandScapeTexture_Splatting5::newTexture()
     {
         return new PagingLandScapeTexture_Splatting5();
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting5::TextureRenderCapabilitesFullfilled()
-    {
-        if (PagingLandScapeOptions::getSingleton().hasFragmentShader2)
-        {
-            PagingLandScapeOptions::getSingleton().normals = true;
-            return true;
-        }
-        return false;
+    {                      
+		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            
+		if (opt->NumMatHeightSplat < 3)
+			return false;
+        if (opt->numTextureUnits < 4)
+            return false;  
+        if (!opt->hasFragmentShader)
+            return false;    
+            
+        return true;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_Splatting5::PagingLandScapeTexture_Splatting5() : PagingLandScapeTexture()
@@ -65,29 +78,25 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting5::_loadMaterial()
     {
-	    if (mMaterial.isNull() )
-	    {
+	    if (mMaterial.isNull())
+	    {       
+			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            
             // Create a new texture using the base image
             const String commonName = StringConverter::toString(mDataZ) + String(".") + StringConverter::toString(mDataX);
-            //const String prefilename = PagingLandScapeOptions::getSingleton().landscape_filename;
-            //const String postfilename = commonName + "." + PagingLandScapeOptions::getSingleton().TextureExtension;
+            //const String prefilename = opt->LandScape_filename;
+            //const String postfilename = commonName + "." + opt->TextureExtension;
 
-
-            String Materialname;
-            if (PagingLandScapeOptions::getSingleton().VertexCompression)
+            if (opt->VertexCompression)
             {
                 mMaterial = (MaterialManager::getSingleton().getByName("SplattingMaterial5Decompress"));
 
 
                 GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-	            params->setNamedConstant("splatSettings", Vector4(PagingLandScapeOptions::getSingleton().matHeight[1], 
-                                                                    PagingLandScapeOptions::getSingleton().matHeight[2], 
-                                                                    PagingLandScapeOptions::getSingleton().maxValue, 
+	            params->setNamedConstant("splatSettings", Vector4(opt->matHeight[1], 
+                                                                  opt->matHeight[2], 
+                                                                  opt->maxValue, 
                                                                     0.0));
-    //            params->setNamedConstant("compressionSettings", Vector4(PagingLandScapeOptions::getSingleton().scale.x * PagingLandScapeOptions::getSingleton().PageSize, 
-    //                                                                PagingLandScapeOptions::getSingleton().scale.y / 65535, 
-    //                                                                PagingLandScapeOptions::getSingleton().scale.z * PagingLandScapeOptions::getSingleton().PageSize, 
-    //                                                                0.0));
                 // Check to see if custom param is already there
                 GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
                 bool found = false;
@@ -112,20 +121,20 @@ namespace Ogre
 
 
                 GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-	            params->setNamedConstant("splatSettings", Vector4(PagingLandScapeOptions::getSingleton().matHeight[1], 
-                                                                    PagingLandScapeOptions::getSingleton().matHeight[2], 
-                                                                    PagingLandScapeOptions::getSingleton().maxValue, 
-                                                                    0.0));
+	            params->setNamedConstant("splatSettings", Vector4(opt->matHeight[1], 
+                                                                  opt->matHeight[2], 
+                                                                  opt->maxValue, 
+                                                                  0.0));
                     
-            }
-
-            //  should really be done only once...
-    //        GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-    //	    params->setNamedConstant("configSettings", Vector4(PagingLandScapeOptions::getSingleton().matHeight[0], 
-    //                                                            PagingLandScapeOptions::getSingleton().matHeight[1], 
-    //                                                            PagingLandScapeOptions::getSingleton().maxValue, 
-    //                                                            0.0));
-
+            }     
+            Pass * const p = mMaterial->getTechnique(0)->getPass(0); 
+            const uint numSplats = opt->NumMatHeightSplat;
+            uint splat_pass = 0; 
+            while  (splat_pass < numSplats)
+            {
+                p->getTextureUnitState(splat_pass)->setTextureName(opt->SplatDetailMapNames[splat_pass]);
+                splat_pass++;
+            }       
             // Now that we have all the resources in place, we load the material
             mMaterial->load(); 
 	    }

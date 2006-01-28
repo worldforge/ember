@@ -31,22 +31,22 @@ namespace Ogre
 class PagingLandScapeData2D_HeightFieldN: public PagingLandScapeData2D
 {
     public:
-	    PagingLandScapeData2D_HeightFieldN( void );
+	    PagingLandScapeData2D_HeightFieldN(void);
             virtual String getName(){return String("HeightFieldN");}
-	    virtual ~PagingLandScapeData2D_HeightFieldN( void );
+	    virtual ~PagingLandScapeData2D_HeightFieldN(void);
 
-        virtual const Vector3 getNormal( const Real mX, const Real mZ );
-        virtual const ColourValue getBase( const Real mX, const Real mZ );
-        virtual const ColourValue getCoverage( const Real mX, const Real mZ);
-        virtual const Real getShadow( const Real mX, const Real mZ, const bool& positive );
+        virtual const Vector3 getNormal(const Real mX, const Real mZ);
+        virtual const ColourValue getBase(const Real mX, const Real mZ);
+        virtual const ColourValue getCoverage(const Real mX, const Real mZ);
+        virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive);
 
 	    virtual PagingLandScapeData2D* newPage();
 
     protected:
-        virtual void _save( void );
-	    virtual bool _load( const uint x, const uint z );
-	    virtual void _load( void );
-	    virtual void _unload( void );
+        virtual void _save(void);
+	    virtual bool _load(const uint x, const uint z);
+	    virtual void _load(void);
+	    virtual void _unload(void);
 
     private:
 	    Image* mImage;

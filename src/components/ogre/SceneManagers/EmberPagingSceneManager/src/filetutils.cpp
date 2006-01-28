@@ -7,6 +7,7 @@
 *                                                                         *
 ***************************************************************************/
 
+
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -23,8 +24,11 @@
 #   define STAT(A,S)    _stat(A,S)
 #else //_LINUX _APPLE
 
-#include <stdlib.h>
-//#   include <malloc.h>
+#ifdef _APPLE
+#   include <malloc/malloc.h>
+#else 
+#   include <malloc.h>	
+#endif
 #   include <unistd.h>
 #   include <sys/param.h>
 
@@ -36,12 +40,35 @@
 #   define STAT(A,S)    stat(A,S)
 #endif  //_LINUX _APPLE
 
+//-----------------------------------------------------------------------
 static char* GetCurrDir()
 {
     // GETCWD MALLOCS A BUFFER. REMEMBER TO FREE IT.
     return GETCWD(0,0);;
 }
 
+#ifdef __cplusplus
+extern "C" { 
+#endif
+
+//-----------------------------------------------------------------------
+bool DirExists(const char *Dirname)
+{
+    STRUCT_STAT st;
+
+    if (STAT(Dirname, &st))
+    {
+        // doesn't exist; must create it
+        return false;
+    }
+    if (S_ISDIR(st.st_mode) == 0) 
+    {
+        // it's not a dir, must create a dir        
+        return false;
+    }
+    return true;
+}
+//-----------------------------------------------------------------------
 char * ChangeToDir (const char *Dirname)
 {
     STRUCT_STAT st;
@@ -71,3 +98,7 @@ void RetablishDir(char *oldDirname)
         free (oldDirname);
     }
 }
+
+#ifdef __cplusplus
+}/* end extern C definitions */ 
+#endif

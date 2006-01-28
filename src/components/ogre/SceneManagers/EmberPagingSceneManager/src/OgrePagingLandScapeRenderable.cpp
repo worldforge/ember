@@ -36,7 +36,10 @@
 
 #include "OgrePagingLandScapeRenderable.h"
 #include "OgrePagingLandScapeRenderableManager.h"
+
+//caches
 #include "OgrePagingLandScapeIndexBuffer.h"
+#include "OgrePagingLandScapeTextureCoordinatesManager.h"
 
 #include "OgrePagingLandScapeTile.h"
 #include "OgrePagingLandScapeTileInfo.h"
@@ -61,7 +64,7 @@ namespace Ogre
     String PagingLandScapeRenderable::mType = "PagingLandScapeRenderable";
 
     //-----------------------------------------------------------------------
-        //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     PagingLandScapeRenderable::PagingLandScapeRenderable() : Renderable(), MovableObject(),
         mCurrVertexes (0),
         mCurrIndexes (0),
@@ -82,10 +85,13 @@ namespace Ogre
     {
 	    // No shadow projection
         MovableObject::mCastShadows = false;
-        // Default query flags to top bit so users can exclude it if they wish
-        MovableObject::mQueryFlags = SceneManager::WORLD_GEOMETRY_QUERY_MASK;
 
-        for ( uint i = 0; i < 4; i++ )
+        // Default query flags to top bit so users can exclude it if they wish
+        //MovableObject::mQueryFlags = SceneManager::WORLD_GEOMETRY_TYPE_MASK;
+        MovableObject::setRenderQueueGroup(
+            PagingLandScapePageManager::getSingleton().getRenderQueueGroupID());
+
+        for (uint i = 0; i < 4; i++)
             mNeighbors[ i ] = 0;
 
         // Setup render op
@@ -149,19 +155,19 @@ namespace Ogre
            //decl->addElement(DELTA_BINDING, 0, VET_SHORT1, VES_TEXTURE_COORDINATES, 1);
            //decl->addElement(DELTA_BINDING, 0, VET_SHORT2, VES_TEXTURE_COORDINATES, 1);
 
-
-            for (uint k = 0; k < maxmip; k++ )
+            for (uint k = 0; k < maxmip; k++)
             {
                assert (mDeltaBuffers[k].isNull());
                mDeltaBuffers[k]  = createDeltaBuffer(); 
             }
-
             // NB binding is not set here, it is set when deriving the LOD 
         }
-
 	    //No need to set the indexData since it is shared from LandScapeIndexBuffer class
-	 
-        mMinLevelDistSqr = new Real[ mOpt->maxRenderLevel ];
+		mMinLevelDistSqr = new Real[ mOpt->maxRenderLevel ];
+        mCustomGpuParameters = Vector4(mOpt->ScaledPageSizeX,
+										mOpt->ScaledHeightY, 
+										mOpt->ScaledPageSizeZ, 
+										mLODMorphFactor);
     }
     //-----------------------------------------------------------------------
     PagingLandScapeRenderable::~PagingLandScapeRenderable()
@@ -174,7 +180,7 @@ namespace Ogre
     }
 
     //------------------------------------------------------------------------
-    void  PagingLandScapeRenderable::uninit( )
+    void  PagingLandScapeRenderable::uninit()
     {
         if (mIsLoaded)
             unload ();
@@ -186,129 +192,60 @@ namespace Ogre
         mVisible = false;
 	    mInUse = false;
         mMaterial.setNull();
+        mLightListDirty = true;
     }
     //-----------------------------------------------------------------------
-    void  PagingLandScapeRenderable::init( PagingLandScapeTileInfo* info )
+    void  PagingLandScapeRenderable::init(PagingLandScapeTileInfo* info)
     {
+        mLightListDirty = true;
 	    mInfo = info;
 	    mInUse = true;
         mName = StringConverter::toString(mInfo->pageX) + "." + 
-                StringConverter::toString(mInfo->pageX) + "." + 
+                StringConverter::toString(mInfo->pageZ) + "." + 
                 StringConverter::toString(mInfo->tileX) + "." + 
                 StringConverter::toString(mInfo->tileZ) + "Rend";
 
-	    VertexDeclaration* decl = mCurrVertexes->vertexDeclaration;
-	    VertexBufferBinding* bind = mCurrVertexes->vertexBufferBinding;
-
-        // make sure buffer isn't binded to another texture coordinate buffer
-        if (decl->findElementBySemantic (VES_TEXTURE_COORDINATES, 0) != 0)
-        { 
-            decl->removeElement(VES_TEXTURE_COORDINATES, 0);
-            bind->unsetBinding (TEXTURE_BINDING);
-        }
-        VertexElementType t = VET_FLOAT2;
-        //VertexElementType t = VET_SHORT2;
-
-        // Bind to an existing texture coordinate buffer if it exists
-        // or create a new one for this (x,y) combination tile position. 
-        //(texture coordinate buffer are shared across buffers)
-        decl->addElement(TEXTURE_BINDING, 0, t, VES_TEXTURE_COORDINATES, 0);
-     
-
-        HardwareVertexBufferSharedPtr vbuf =  
-            PagingLandScapeRenderableManager::getSingleton().getTextureCoordinatesBuffers(
-                                                                    info->tileX, 
-                                                                    info->tileZ);
-
-        if (vbuf.isNull())
-        {
-            vbuf = HardwareBufferManager::getSingleton ().createVertexBuffer(
-                                    VertexElement::getTypeSize (t), 
-                                    mCurrVertexes->vertexCount,
-                                    HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-
-	        bind->setBinding(TEXTURE_BINDING, vbuf);
-
-	        loadTextureCoordinates();
-            PagingLandScapeRenderableManager::getSingleton().setTextureCoordinatesBuffers(
-                                    info->tileX, 
-                                    info->tileZ,
-                                    vbuf);
-        }
-	    else
-            bind->setBinding(TEXTURE_BINDING, vbuf);
-
         mForcedMaxLod = false;
+        mUpperDistance = static_cast<Ogre::uint>(mOpt->renderable_factor);
 
+		//we can int texcoord buffer as it's data independant.
+		VertexDeclaration   * const decl = mCurrVertexes->vertexDeclaration;
+		VertexBufferBinding * const bind = mCurrVertexes->vertexBufferBinding;
 
-        MovableObject::setRenderQueueGroup(PagingLandScapePageManager::getSingleton().getRenderQueueGroupID());
-    }
+		// make sure buffer isn't binded to another texture coordinate buffer
+		if (decl->findElementBySemantic (VES_TEXTURE_COORDINATES, 0) != 0)
+		{ 
+			decl->removeElement(VES_TEXTURE_COORDINATES, 0);
+			bind->unsetBinding (TEXTURE_BINDING);
+		}
 
-    //-----------------------------------------------------------------------
-    void PagingLandScapeRenderable::loadTextureCoordinates()
-    { 
-        assert (mInfo);
+		// Bind to an existing texture coordinate buffer if it exists
+		// or create a new one for this (x,y) combination tile position. 
+		//(texture coordinate buffer are shared across buffers)
+		const VertexElementType t = VET_FLOAT2;
+		//const VertexElementType t = VET_SHORT2;
+		decl->addElement(TEXTURE_BINDING, 0, t, VES_TEXTURE_COORDINATES, 0);
 
-        VertexDeclaration* decl = mCurrVertexes->vertexDeclaration;
-        VertexBufferBinding* bind = mCurrVertexes->vertexBufferBinding;
-
-
-        const VertexElement* texelem = decl->findElementBySemantic(VES_TEXTURE_COORDINATES, 0);
-        
-        HardwareVertexBufferSharedPtr vColors = bind->getBuffer(TEXTURE_BINDING);
-        uchar* pSecond = static_cast<uchar*> (vColors->lock(HardwareBuffer::HBL_DISCARD));
-                   
-
-        // Calculate the offset in the data
-        const uint tileSize = mOpt->TileSize;
-	    const uint offSetX = mInfo->tileX * (tileSize - 1);
-	    const uint offSetZ = mInfo->tileZ * (tileSize - 1);
-	    const uint endx = offSetX + tileSize;
-	    const uint endz = offSetZ + tileSize;
-
-	    const Real Aux1 =  1.0 / mOpt->PageSize;
-        Real K_Tex2DataPos = offSetZ * Aux1;
-        for (uint k = offSetZ; k < endz; k ++ )
-        {
-            double K_Tex1DataPos = offSetX * Aux1;
-		    for (uint i = offSetX; i < endx; i ++ )
-            {
-                // textures
-    //            ushort *pTex;
-    //            texelem->baseVertexPointerToElement(pSecond, &pTex);
-
-    //            *pTex++ = static_cast<ushort> (K_Tex1DataPos * 65535);
-    //            *pTex++ = static_cast<ushort> (K_Tex2DataPos * 65535);
-              
-                Real *pTex;
-                texelem->baseVertexPointerToElement(pSecond, &pTex);
-
-                assert (K_Tex1DataPos >= 0.0f && K_Tex1DataPos <= 1.0f);
-                assert (K_Tex2DataPos >= 0.0f && K_Tex2DataPos <= 1.0f);
-
-                *pTex++ = static_cast <Real> (K_Tex1DataPos);	
-                *pTex = static_cast <Real> (K_Tex2DataPos);
-
-
-                K_Tex1DataPos += Aux1;
-                pSecond += vColors->getVertexSize ();
-              
-            }
-            K_Tex2DataPos += Aux1;
-	    }
-        vColors->unlock();   
+		bind->setBinding(TEXTURE_BINDING, 
+			PagingLandScapeTextureCoordinatesManager::getSingleton().getBuffer(
+			info->tileX, 
+			info->tileZ));
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeRenderable::load()
     {
-	    assert ( mInfo );
-        if ( !mInUse )
-	    {
-		    return true;
-	    }
+	    assert (mInfo);
+        if (!mInUse)
+		{
+			// if not in use, do not load.
+			if (mIsLoaded)
+				return true;
+			else
+				return false;
+		}
         // case renderable was queued before page was unloaded
         // when loaded, page exists no more.
-        PagingLandScapeData2D *data = PagingLandScapeData2DManager::getSingleton().getData2d(mInfo->pageX, mInfo->pageZ);
+        PagingLandScapeData2D *data = PagingLandScapeData2DManager::getSingleton().getData2D(mInfo->pageX, mInfo->pageZ);
         // Page could be unloaded since renderable queued...
         if (data == 0 || !data->isLoaded())
             return false;
@@ -318,8 +255,8 @@ namespace Ogre
 
         const bool b_lit = mOpt->normals;
 
-        const bool b_colored = mOpt->colored;
         const bool b_coverage = mOpt->coverage_vertex_color;
+        const bool b_colored = mOpt->colored;
 
         const Real scale_x = mOpt->scale.x;
         const Real scale_z = mOpt->scale.z;
@@ -333,8 +270,9 @@ namespace Ogre
             colorelem= decl->findElementBySemantic(VES_DIFFUSE);
       
         const VertexElement* normelem;
-        if ( b_lit )
+        if (b_lit)
             normelem = decl->findElementBySemantic(VES_NORMAL);
+
 
         // Calculate the offset in the data 
         Real min, max;
@@ -381,7 +319,7 @@ namespace Ogre
         const double inv_scale = 65535.0 / mOpt->scale.y; 
 
         const uint pageSize = mOpt->PageSize;
-        const Real * const mheightField = mHeightfield;
+        const Real * const ogre_restrict mheightField = mHeightfield;
         const bool vs = PagingLandScapeOptions::getSingleton ().VertexCompression;
 
         HardwareVertexBufferSharedPtr vVertices = bind->getBuffer(MAIN_BINDING);       
@@ -395,12 +333,12 @@ namespace Ogre
         // initial up-down shift and left-right shift
         const Real * const heightField = mheightField + offSetZ * pageSize;
         uint K_heightFieldPos = 0;
-        for (uint k = offSetZ; k < endz; k ++ )
+        for (uint k = offSetZ; k < endz; k ++)
         {
             // This allow to reuse the variables in the loop
             const Real k_pos = k * scale_z;
             uchar *pMainLocal = pMain;
-		    for (uint i = offSetX; i < endx; i ++ )
+		    for (uint i = offSetX; i < endx; i ++)
             {
                 const Real height =  heightField[ i + K_heightFieldPos ];
 
@@ -426,12 +364,12 @@ namespace Ogre
                 }
                 
             // normals
-			    if ( b_lit )
+			    if (b_lit)
                 {				
                     Real *pNorm;
                     normelem->baseVertexPointerToElement(pMainLocal, &pNorm);
 
-                    const Vector3 norm = data->getNormal (i, k );
+                    const Vector3 norm = data->getNormal (i, k);
 				    *pNorm++ = norm.x;
 				    *pNorm++ = norm.y;
 				    *pNorm = norm.z;
@@ -443,16 +381,16 @@ namespace Ogre
 
                     if (b_coverage)
                     {
-                        RGBA_precalc = data->getCoverage (i, k );
+                        RGBA_precalc = data->getCoverage (i, k);
                         Real a1;
-                        if (RGBA_precalc.a < 1.0f)
+                        const Real a2 = 1.0f - RGBA_precalc.a;
+                        if (a2 != 0.0f)
                         {
-                            a1 = RGBA_precalc.g  / ( 1 - RGBA_precalc.a );
+                            a1 = RGBA_precalc.r  /  a2 ;
                         }        
                         else
                             a1 = 0.0f;
 
-                        const Real a2 = 1.0f - a1;
 
                         RGBA_precalc.r = a1;
                         RGBA_precalc.g = a1;
@@ -493,27 +431,21 @@ namespace Ogre
        
 
        
-        assert (mParentNode);
-
-        mCenter = mBounds.getCenter()  + mParentNode->getWorldPosition();
-	    mWorldBoundingSphere.setCenter( mCenter);
-	    mWorldBoundingSphere.setRadius( mBounds.getMaximum().length() );
-        mParentNode->needUpdate();
          
         if (mOpt->VisMap)
             PagingLandScapeHorizon::getSingleton ().registerMinMaxHeightTile (mInfo, min, max);
        
-        _calculateMinLevelDist2( mOpt->CFactor );
+        _calculateMinLevelDist2(mOpt->CFactor);
       
         if (!mIsLoaded)
         {
-            PagingLandscapeListenerManager::getSingleton().fireTileLoaded (mInfo->pageX, mInfo->pageZ,
+            PagingLandScapeListenerManager::getSingleton().fireTileLoaded (mInfo->pageX, mInfo->pageZ,
 	                                                                mInfo->tileX, mInfo->tileZ, getWorldBoundingBox());
             mIsLoaded = true;
         }
         else if (mNeedReload) 
         {
-            PagingLandscapeListenerManager::getSingleton().fireTileDeformed (mInfo->pageX, mInfo->pageZ,
+            PagingLandScapeListenerManager::getSingleton().fireTileDeformed (mInfo->pageX, mInfo->pageZ,
 	                                                                mInfo->tileX, mInfo->tileZ, getWorldBoundingBox());        
             mNeedReload = false;               
         }
@@ -521,7 +453,10 @@ namespace Ogre
         mRect.right = 0;
         mRect.top = 0;
         mRect.bottom = 0;
-        mIsRectModified = false;
+		mIsRectModified = false;
+		mVisible = false;
+		mChangedRenderLevel = false;
+		mIndex = 0;
         return true;
     }
 
@@ -529,7 +464,7 @@ namespace Ogre
     void PagingLandScapeRenderable::unload()
     {
         assert (mIsLoaded && mInfo);       
-        PagingLandscapeListenerManager::getSingleton().fireTileUnloaded (mInfo->pageX, mInfo->pageZ,
+        PagingLandScapeListenerManager::getSingleton().fireTileUnloaded (mInfo->pageX, mInfo->pageZ,
 	                                                            mInfo->tileX, mInfo->tileZ, getWorldBoundingBox());
         if (mNeighbors[SOUTH])
             mNeighbors[SOUTH]->_setNeighbor (NORTH, 0);
@@ -539,17 +474,17 @@ namespace Ogre
             mNeighbors[EAST]->_setNeighbor (WEST, 0);
         if (mNeighbors[WEST])
             mNeighbors[WEST]->_setNeighbor (EAST, 0);
-        for (uint i = 0; i < 4; i++ )
+        for (uint i = 0; i < 4; i++)
         {
             mNeighbors[i] = 0;
         }       
-        if (mParentNode)
+        assert (mParentNode);
         {
-            SceneNode *s = static_cast <SceneNode*>(mParentNode);
-            s->detachObject(mName);
-            s->needUpdate();
+            SceneNode * const s = static_cast <SceneNode*>(mParentNode);
+            s->detachObject (mName);
+            s->needUpdate ();
         }
-        PagingLandScapeRenderableManager::getSingleton().freeRenderable( this );
+        PagingLandScapeRenderableManager::getSingleton().freeRenderable(this);
         mInUse = false;
         mIsLoaded = false;
         mInfo = 0;
@@ -564,171 +499,166 @@ namespace Ogre
         mIsRectModified = false;   
     }  
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderable::_notifyCurrentCamera( Camera* cam )
+    void PagingLandScapeRenderable::_notifyCurrentCamera(Camera* cam)
     {
 	    if (mInUse && mIsLoaded)
         {
-            PagingLandScapeCamera* plscam = static_cast<PagingLandScapeCamera*> (cam);
-            if (plscam->getVisibility (MovableObject::getWorldBoundingBox()))
+            //if (plscam->getVisibility (MovableObject::getWorldBoundingBox()))
             {
-
-                // if some deformation
-                if (mNeedReload)
-                {
-                    // if between deformation and now, tile have been unloaded
-                    if (!load ())
+                // NB use squared length rather than real depth to avoid square root
+                const Vector3 cpos = cam -> getDerivedPosition();
+                const Vector3 center = getWorldPosition();
+                // make sure we're not being drawn if too far
+                //mBeyondFarDistance = mUpperDistance < (center - Vector3 (cpos.x, 125, cpos.z)).squaredLength();
+                //if (!mBeyondFarDistance)
+                {               	          
+                    const AxisAlignedBox& aabb = getWorldBoundingBox(true);
+                    Vector3 diff(0, 0, 0);
+                    diff.makeFloor(cpos - aabb.getMinimum());
+                    diff.makeCeil(cpos - aabb.getMaximum());
+                    const Real L = (center - cpos).squaredLength();
+                    int oldRenderLevel = mRenderLevel;
+                    // if some deformation
+                    if (mNeedReload)
                     {
-                        mVisible = false;
-                        return;
-                    }
-                }
-                // Horizon occlusion. (needs data to be loaded or reloaded)                
-                if (mOpt->VisMap)
-                {
-                    if(!PagingLandScapeHorizon::getSingleton ().IsTileVisible(plscam, mInfo))
-                    {
-                        mVisible = false;
-                        return;
-                    }
-                }
-                if (mForcedMaxLod)
-                {
-                    mRenderLevel = 0;
-                    mMaterialLODIndex = 0;
-                }
-                else
-                {                
-                    const Real L = PagingLandScapeRenderable::getSquaredViewDepth(cam);
-                    
-                    // Now adjust it by the camera bias
-                    mDistanceToCam = L;
-                    //L = L * cam->getLodBias ();
-
-	                // Material LOD
-	                if ( mMaterial->getNumLodLevels() > 1 )
-		                mMaterialLODIndex = mMaterial->getLodIndexSquaredDepth(L);
-            	    
-                    
-	                //bool changeLOD = false;
-                    // Check if we need to decrease the LOD
-        //            const Real factor = mOpt->LOD_factor;
-        //            Real curr_lod =  factor * (1 + mRenderLevel);
-        //	        bool changeLOD = false;
-        //            if (d < curr_lod)
-        //	        {		
-        //                if (mRenderLevel)
-        //                {
-        //                    mRenderLevel--;
-        //                    curr_lod -= factor;
-        //                    changeLOD = true;
-        //                }
-        //            }
-        //	        else if (mRenderLevel < mOpt->maxRenderLevel &&
-        //                    d >= (curr_lod * 2))
-        //            {
-        //                    curr_lod += factor;
-        //                    mRenderLevel++;
-        //                    changeLOD = true;
-        //            }
-
-                    mRenderLevel = -1;
-                    const int maxMipmap = static_cast <int> (mOpt->maxRenderLevel);
-                    for ( int i = 0; i < maxMipmap; i++ )
-                    {
-                        if ( mMinLevelDistSqr[ i ] > L )
+                        // if between deformation and now, tile have been unloaded
+                        if (!load ())
                         {
-                            mRenderLevel = i - 1;
-                            break;
+                            mVisible = false;
+                            return;
                         }
                     }
-                    if ( mRenderLevel < 0 )
-                        mRenderLevel = maxMipmap - 1;
-                            
-                    // Get the next LOD level down
-                    if (mOpt->lodMorph)
+                    // Horizon occlusion. (needs data to be loaded or reloaded)                
+                    if (mOpt->VisMap)
                     {
+                        PagingLandScapeCamera* plscam = static_cast<PagingLandScapeCamera*> (cam);
+                        if(!PagingLandScapeHorizon::getSingleton ().IsTileVisible(plscam, mInfo))
+                        {
+                            mVisible = false;
+                            return;
+                        }
+                    }
+                    if (mForcedMaxLod)
+                    {
+                        mRenderLevel = 0;
+                        mMaterialLODIndex = 0;
+                    }
+                    else
+                    {                                
+                        // Now adjust it by the camera bias
+                        mDistanceToCam = L * cam->getLodBias ();
+
+	                    // Material LOD
+	                    if (!mMaterial.isNull() && mMaterial->getNumLodLevels() > 1)
+		                    mMaterialLODIndex = mMaterial->getLodIndexSquaredDepth (L); 
+                        mRenderLevel = -1;
+                        const int maxMipmap = static_cast <int> (mOpt->maxRenderLevel);
+                        for (int i = 0; i < maxMipmap; i++)
+                        {
+                            if (mMinLevelDistSqr[ i ] > L)
+                            {
+                                mRenderLevel = i - 1;
+                                break;
+                            }
+                        }
+                        if (mRenderLevel < 0)
+                            mRenderLevel = maxMipmap - 1;
+                                
                         // Get the next LOD level down
-                        const int nextLevel = mNextLevelDown[mRenderLevel];                
-                        if (nextLevel == 0)
+                        if (mOpt->lodMorph)
                         {
-                            // No next level, so never morph
-                            mLODMorphFactor = 0.0f;
-                        }
-                        else
-                        {
-                            // Set the morph such that the morph happens in the last 0.25 of
-                            // the distance range
-                            const Real range = mMinLevelDistSqr[nextLevel] - mMinLevelDistSqr[mRenderLevel];
-                            if (range)
+                            // Get the next LOD level down
+                            const int nextLevel = mNextLevelDown[mRenderLevel];                
+                            if (nextLevel == 0)
                             {
-                                const Real percent = (L - mMinLevelDistSqr[mRenderLevel]) / range;
-                                // scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
-                                const Real rescale = 1.0f / (1.0f - mOpt->lodMorphStart);
-                                mLODMorphFactor = std::max((percent - mOpt->lodMorphStart) * rescale, 
-						                                    static_cast<Real>(0.0f));
-                                assert (mLODMorphFactor <= 1.0f);
-                            }
-                            else
-                            {
-                                // Identical ranges
+                                // No next level, so never morph
                                 mLODMorphFactor = 0.0f;
-                            }                
-                        }
-                        // Bind the correct delta buffer if it has changed
-                        // nextLevel - 1 since the first entry is for LOD 1 (since LOD 0 never needs it)
-                        if (mLastNextLevel != nextLevel)
-                        {   
-                            assert (mDeltaBuffers);
-                            
-                            if (nextLevel > 1)
-                            {
-                                mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING, 
-                                    mDeltaBuffers[nextLevel - 1]);
+                                mCustomGpuParameters.w = mLODMorphFactor;
                             }
                             else
                             {
-                                // bind dummy (in case bindings checked)
-                                mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING, 
-                                    mDeltaBuffers[0]);
+                                // Set the morph such that the morph happens in the last 0.25 of
+                                // the distance range
+                                const Real range = mMinLevelDistSqr[nextLevel] - mMinLevelDistSqr[mRenderLevel];
+                                if (range)
+                                {
+                                    const Real percent = (L - mMinLevelDistSqr[mRenderLevel]) / range;
+                                    // scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
+                                    const Real rescale = 1.0f / (1.0f - mOpt->lodMorphStart);
+                                    mLODMorphFactor = std::max((percent - mOpt->lodMorphStart) * rescale, 
+						                                        static_cast<Real>(0.0f));
+                                    mCustomGpuParameters.w = mLODMorphFactor;
+                                    assert (mLODMorphFactor <= 1.0f);
+                                }
+                                else
+                                {
+                                    // Identical ranges
+                                    mLODMorphFactor = 0.0f;
+                                    mCustomGpuParameters.w = mLODMorphFactor;
+                                }                
                             }
+                            // Bind the correct delta buffer if it has changed
+                            // nextLevel - 1 since the first entry is for LOD 1 (since LOD 0 never needs it)
+                            if (mLastNextLevel != nextLevel)
+                            {   
+                                assert (mDeltaBuffers);
+                                
+                                if (nextLevel > 1)
+                                {
+                                    mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING, 
+                                        mDeltaBuffers[nextLevel - 1]);
+                                }
+                                else
+                                {
+                                    // bind dummy (in case bindings checked)
+                                    mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING, 
+                                        mDeltaBuffers[0]);
+                                }
+                            }
+                            mLastNextLevel = nextLevel;
                         }
-                        mLastNextLevel = nextLevel;
                     }
+                    //// If we change LOD update self and neighbor
+                    if (oldRenderLevel != mRenderLevel || mCurrIndexes == 0)
+                    {
+						update ();
+                        for (uint i = 0; i < 4; i++)
+                        {
+						   PagingLandScapeRenderable * const r = mNeighbors[i];
+                           if (r && r->isLoaded ()&& r->isVisible())
+                               r->update ();
+                      }         
+                    }
+					mVisible = true;
+                    return;
                 }
-                // If we change LOD update self and neighbor
-                //if (changeLOD || mCurrIndexes == 0)
-                //{
-                //    update ();
-                //    for (uint i = 0; i < 4; i++)
-                //    {
-                //        if (mNeighbors[i] && mNeighbors[i]->isLoaded ())
-                //            mNeighbors[i] -> update ();
-                //   }         
-                //}
-                mVisible = true;
-                return;
             }
         }
         mVisible = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderable::update()
-    {
-        mCurrIndexes = getIndexData();
+	{
+		mChangedRenderLevel = true;
     }
     //-----------------------------------------------------------------------
     IndexData* PagingLandScapeRenderable::getIndexData(void)
     {
-        return PagingLandScapeIndexBuffer::getSingleton().getIndexData( mRenderLevel , 
-                                                                        mNeighbors);
+		assert (PagingLandScapeIndexBufferManager::getSingletonPtr());
+        return PagingLandScapeIndexBufferManager::getSingleton().getIndexData(mRenderLevel, 
+																		mNeighbors);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderable::_updateRenderQueue( RenderQueue* queue )
+    void PagingLandScapeRenderable::_updateRenderQueue(RenderQueue* queue)
     {   
+       // Notify need to calculate light list when our sending to render queue
+       mLightListDirty = true;
+     
        assert (mInUse &&  mParentNode && mIsLoaded && mVisible);
-
         PagingLandScapeRenderableManager::getSingleton().addVisible ();
-        queue -> addRenderable( this );
+
+        //MovableObject::_updateRenderQueue(queue);
+        queue->addRenderable(this);
         
     }
     //-----------------------------------------------------------------------
@@ -743,8 +673,16 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     const LightList& PagingLandScapeRenderable::getLights(void) const
-    {
-        return MovableObject::getParentSceneNode()->findLights(this->getBoundingRadius());
+    {         
+        if (mLightListDirty)
+        {
+            getParentSceneNode()->getCreator()->_populateLightList(
+                            mCenter, 
+                            this->getBoundingRadius(), 
+                            mLightList);
+            mLightListDirty = false;
+         }
+        return mLightList;
     }
     //-----------------------------------------------------------------------
     Real PagingLandScapeRenderable::getSquaredViewDepth(const Camera* cam) const
@@ -760,27 +698,28 @@ namespace Ogre
 	    return mWorldBoundingSphere.getRadius();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderable::getRenderOperation( RenderOperation& op )
+    void PagingLandScapeRenderable::getRenderOperation(RenderOperation& op)
     {
-        assert (mIsLoaded && mInUse && mVisible && mParentNode);
-       
+        assert (mIsLoaded);
+        assert (mInUse);
+        assert (mVisible);
+        assert (mParentNode);
+
         //setup indexes for vertices and uvs...
         op.useIndexes = true;
         op.operationType = RenderOperation::OT_TRIANGLE_LIST;
         op.vertexData = mCurrVertexes;
 
-        assert (PagingLandScapeRenderableManager::getSingletonPtr() &&
-            PagingLandScapeIndexBuffer::getSingletonPtr() &&
-            PagingLandScapeRenderableManager::getSingleton().getIndexBuffers() &&
-            PagingLandScapeIndexBuffer::getSingletonPtr() ==
-            PagingLandScapeRenderableManager::getSingleton().getIndexBuffers());
-
-        op.indexData = PagingLandScapeIndexBuffer::getSingleton().getIndexData( mRenderLevel, 
-                                                                        mNeighbors);
- 
+		if (mChangedRenderLevel)
+		{
+			mIndex = getIndexData();
+			mChangedRenderLevel = false;
+		} 
+		assert (mIndex);
+		op.indexData = mIndex;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderable::getWorldTransforms( Matrix4* xform ) const
+    void PagingLandScapeRenderable::getWorldTransforms(Matrix4* xform) const
     {
         *xform = mParentNode->_getFullTransform();
     }
@@ -795,12 +734,12 @@ namespace Ogre
         return mCenter;
     }
     //-----------------------------------------------------------------------
-    void  PagingLandScapeRenderable::setMaterial( const MaterialPtr &mat )
+    void  PagingLandScapeRenderable::setMaterial(const MaterialPtr &mat)
     {
         mMaterial = mat;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderable::_calculateMinLevelDist2( const Real C )
+    void PagingLandScapeRenderable::_calculateMinLevelDist2(const Real C)
     {
         //level 0 has no delta.
         assert (mMinLevelDistSqr);
@@ -840,7 +779,8 @@ namespace Ogre
         const int pageSize = static_cast <int> (mOpt->PageSize);
 
 
-        const size_t blendWeights = 2;
+		const size_t blendWeights = 2;
+		//const size_t blendWeights = 1;
         assert (IntervallModifiedZ * tilesize > 0);
 
         // until we found a way to upload part of the data.
@@ -854,17 +794,17 @@ namespace Ogre
         //Real *BaseHeight = 0;
         int i, j;
 
-        const Real * const heightField = mHeightfield + offSetZ * pageSize;  
+        const Real * const ogre_restrict heightField = mHeightfield + offSetZ * pageSize;  
         if (lodMorph)// &&  mIsRectModified))
         {
             BaseHeight = new ushort [size];
             //BaseHeight = new Real [size];
             K_heightFieldPos = 0;
             int k = 0;
-            for ( j = offSetZ; j < endz; j ++ )
+            for (j = offSetZ; j < endz; j ++)
             {
 // should change if we're just refilling a part to whole tile (only if using discard, tough)
-                for ( i = offSetX; i < endx; i ++ )
+                for (i = offSetX; i < endx; i ++)
                 {
                     // Save height    
                     assert (k < static_cast<int> (size));
@@ -890,8 +830,8 @@ namespace Ogre
 
 
         Plane t1, t2;
-
-        for ( int level = 1; level < maxMip; level++ )
+        const Real Csqr = C * C;
+        for (int level = 1; level < maxMip; level++)
         {
            ushort *pDeltaInit = 0;
              //Real *pDeltaInit = 0;
@@ -925,12 +865,13 @@ namespace Ogre
             K_heightFieldPos = 0;
             const int ZShift  = step * pageSize;
 
-            for ( j = offSetZ; j < tilesizeMinusstepZ; j += step )
+            for (j = offSetZ; j < tilesizeMinusstepZ; j += step)
             {
-                for ( i = offSetX; i < tilesizeMinusstepX; i += step )
+                for (i = offSetX; i < tilesizeMinusstepX; i += step)
                 {
-					bool isInValidVertex;
-                    {
+                	//added for Ember
+                   bool isInValidVertex;
+                   {
                         const Vector3 v1(i,        heightField[ i +        K_heightFieldPos ],         j);
                         const Vector3 v2(i + step, heightField[ i + step + K_heightFieldPos ],         j);
                         const Vector3 v3(i,        heightField[ i +        K_heightFieldPos + ZShift], j + step);
@@ -938,72 +879,68 @@ namespace Ogre
 
                         t1.redefine(v1, v3, v2);
                         t2.redefine(v2, v3, v4);
-						//only update the distance if none of the heights are 0.0
-						//this is to allow for invalid Mercator::Segments without messing up the tricount
-						//the reason is that mercator defines the height of all invald segments to 0.0
-						//if such a segment was to be next to a normal segment, the delta would be way to high, 
-						//resulting in a tile which was always in LOD 0
-						isInValidVertex = v1.y == 0.0 || v2.y == 0.0 || v3.y == 0.0 || v4.y == 0.0;
-					}
-					
+                        //only update the distance if none of the heights are 0.0
+                        //this is to allow for invalid Mercator::Segments without messing up the tricount
+                        //the reason is that mercator defines the height of all invald segments to 0.0
+                        //if such a segment was to be next to a normal segment, the delta would be way to high, 
+                        //resulting in a tile which was always in LOD 0
+                        isInValidVertex = v1.y == 0.0 || v2.y == 0.0 || v3.y == 0.0 || v4.y == 0.0;
+                   }
 
-					if (!isInValidVertex) {
+                    if (!isInValidVertex) {
 						// include the bottommost row of vertices if this is the last row
 						const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
-						for ( int z = 0; z <= zubound; z++ )
+						for (int z = 0; z <= zubound; z++)
 						{
-							// include the rightmost col of vertices if this is the last col
-							const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
-							for ( int x = 0; x <= xubound; x++ )
+							const int fulldetailz = j + z;
+							const Real zpct = z * invStep;
+							const bool isFullDetailZ = (fulldetailz % step == 0);
+							const int zPageSize = z * pageSize;
 							{
-								const int fulldetailx = i + x;
-								const int fulldetailz = j + z;
-	
-	
-								if ( fulldetailx % step == 0 && 
-									fulldetailz % step == 0 )
+								// include the rightmost col of vertices if this is the last col
+								const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
+								for (int x = 0; x <= xubound; x++)
 								{
-									// Skip, this one is a vertex at this level
-									continue;
-								}
+									const int fulldetailx = i + x;
 	
-								const Real zpct = z * invStep;
-								const Real xpct = x * invStep;
+									if (isFullDetailZ && 
+										fulldetailx % step == 0)
+									{
+										// Skip, this one is a vertex at this level
+										continue;
+									}
+									const Real xpct = x * invStep;
 	
-								//interpolated height                           
-								Real interp_h;
-								// Determine which triangle we're on 
-								if (xpct + zpct <= 1.0f)
-								{
-									// Solve for x/z
-									interp_h = 
-										(-(t1.normal.x * fulldetailx)
-										- t1.normal.z * fulldetailz
-										- t1.d) / t1.normal.y;
-								}
-								else
-								{
-									// Second triangle
-									interp_h = 
-										(-(t2.normal.x * fulldetailx)
-										- t2.normal.z * fulldetailz
-										- t2.d) / t2.normal.y;
-								} 
+									//interpolated height                           
+									Real interp_h;
+									// Determine which triangle we're on 
+									if (xpct + zpct <= 1.0f)
+									{
+										// Solve for x/z
+										interp_h = 
+											(-(t1.normal.x * fulldetailx)
+											- t1.normal.z * fulldetailz
+											- t1.d) / t1.normal.y;
+									}
+									else
+									{
+										// Second triangle
+										interp_h = 
+											(-(t2.normal.x * fulldetailx)
+											- t2.normal.z * fulldetailz
+											- t2.d) / t2.normal.y;
+									} 
 	
-								assert  ((fulldetailx + K_heightFieldPos + z * pageSize) < (pageSize*pageSize));
+									assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
 	
-								const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + z * pageSize];
+									const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
 	
-								const Real delta = interp_h - actual_h;
-								//don't include spurious deltas
-								//we'll assume that the terrain is moderately regular, so if there's a sharp height difference, it's spurious and shouldn't be included the calculation
-								//7 meters should be enough (test against it squared)
-								if (delta * delta < 49) {
-									const Real D2 = delta * delta * C * C;
-		
-									if ( mMinLevelDistSqr[ level ] < D2 )
+									const Real delta = interp_h - actual_h;
+									const Real D2 = delta * delta * Csqr;
+	
+									if (mMinLevelDistSqr[ level ] < D2)
 										mMinLevelDistSqr[ level ] = D2;
-		
+	
 									// Should be save height difference?
 									// Don't morph along edges
 									if (lodMorph)
@@ -1013,40 +950,39 @@ namespace Ogre
 										{
 											const int tileposx = fulldetailx - offSetX;
 											const int tileposy = fulldetailz - offSetZ;
-		
+	
 											if (tileposx != 0  && tileposx != (tilesize - 1) && 
 												tileposy != 0  && tileposy != (tilesize - 1))
 											{         
-		
+	
 												assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
-		
+	
 												pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
 													static_cast<short>                                     
 													((interp_h  * inv_scale) - 32768); 
-		//                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-		//                                            interp_h; 
+												//                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+												//                                            interp_h; 
 											}
 										}
 									}
 								}
+	
 							}
 						}
-                    }
+					}
                 }       
                 K_heightFieldPos += pageSize * step;
             }
 
             // Unlock morph deltas if required
             if (lodMorph)
-            {
                 mDeltaBuffers[level - 1]->unlock();
-            }
         }
         // delete Height Data cache and Buffer initial value.
         delete[] BaseHeight;
 
         // Post validate the whole set
-        for ( i = 1; i < maxMip; i++ )
+        for (i = 1; i < maxMip; i++)
         {
 
             // Make sure no LOD transition within the tile
@@ -1060,10 +996,8 @@ namespace Ogre
             */
 
             //make sure the levels are increasing...
-            if ( mMinLevelDistSqr[ i ] < mMinLevelDistSqr[ i - 1 ] )
-            {
+            if (mMinLevelDistSqr[ i ] < mMinLevelDistSqr[ i - 1 ])
                 mMinLevelDistSqr[ i ] = mMinLevelDistSqr[ i - 1 ];
-            }
         }
 
         // Now reverse traverse the list setting the 'next level down'
@@ -1088,9 +1022,7 @@ namespace Ogre
                     lastDist = mMinLevelDistSqr[i];
                 }
             }
-
         }
-
     }
     //-----------------------------------------------------------------------
     HardwareVertexBufferSharedPtr PagingLandScapeRenderable::createDeltaBuffer(void) const
@@ -1099,7 +1031,7 @@ namespace Ogre
         HardwareVertexBufferSharedPtr buf = 
             HardwareBufferManager::getSingleton().createVertexBuffer(
             VertexElement::getTypeSize(VET_SHORT2), 
-           // VertexElement::getTypeSize(VET_SHORT1), 
+            //VertexElement::getTypeSize(VET_SHORT1), 
             //VertexElement::getTypeSize(VET_FLOAT1), 
             mOpt->TileSize * mOpt->TileSize,
             HardwareBuffer::HBU_STATIC_WRITE_ONLY);
@@ -1109,13 +1041,13 @@ namespace Ogre
 
     }
     //-----------------------------------------------------------------------
-    Real PagingLandScapeRenderable::_vertex( const int x, const int z, const int n ) const
+    Real PagingLandScapeRenderable::_vertex(const int x, const int z, const int n) const
     {
         const uint tilesize = mOpt->TileSize - 1;
         switch (n)
         {
             case 0:
-                return ((mInfo->tileX *  tilesize) + x )* mOpt->scale.x;
+                return ((mInfo->tileX *  tilesize) + x)* mOpt->scale.x;
             case 1:
                 return mHeightfield[((mInfo->tileX * tilesize) +  x) + 
                     ((mInfo->tileZ * tilesize) +  z) * mOpt->PageSize ];
@@ -1134,11 +1066,7 @@ namespace Ogre
         {
             // Update morph LOD factor
             //params->setConstant(constantEntry.index, mLODMorphFactor);
-            params->setNamedConstant("compressionSettings", 
-                Vector4(mOpt->ScaledPageSizeX,
-                        mOpt->ScaledHeightY, 
-                        mOpt->ScaledPageSizeZ, 
-                        mLODMorphFactor));
+            params->setNamedConstant("compressionSettings", mCustomGpuParameters);
         }
         else
         {
@@ -1175,4 +1103,80 @@ namespace Ogre
             mNeedReload = true;
         }
     }
+		   
+
+	//-----------------------------------------------------------------------
+	void PagingLandScapeRenderable::_notifyAttached(Node* parent, bool isTagPoint)
+	{
+		MovableObject::_notifyAttached(parent, isTagPoint);
+		if (parent)
+		{
+			assert (mIsLoaded);
+			mCenter = mBounds.getCenter()  + mParentNode->getWorldPosition();
+			mWorldBoundingSphere.setCenter(mCenter);
+			mWorldBoundingSphere.setRadius((mBounds.getMaximum() - mBounds.getMinimum()).length() / 2);
+			mParentNode->needUpdate();
+		}
+	}
+
+	Vector3 PagingLandScapeRenderable::_getvertex(const int x, const int z) const
+	{
+		const uint tilesize = mOpt->TileSize - 1;
+		const uint pSize = mOpt->PageSize -1;
+		Vector3 vertex;
+		    
+		vertex.x = (mInfo->tileX *  tilesize) + x;
+		
+		vertex.z = (mInfo->tileZ * tilesize) + z;
+
+		vertex.y =  mHeightfield[static_cast<unsigned int>(vertex.x + (vertex.z *mOpt->PageSize) )];
+		
+		vertex.x += mInfo->pageX * pSize - mOpt->maxUnScaledX;
+		vertex.z += mInfo->pageZ * pSize - mOpt->maxUnScaledZ;
+
+		vertex.x *= mOpt->scale.x;
+		vertex.z *= mOpt->scale.z;
+		return vertex;
+	} 
+
+	/**
+	 * This returns the actual Polygon assignments for this renderable at the given renderLevel
+	 * @param renderlevel LODLevel to get the Index data at
+	 * @return the queried IndexData
+	 */
+	IndexData* PagingLandScapeRenderable::getRawIndexData(const int renderlevel)
+	{
+		return PagingLandScapeIndexBufferManager::getSingleton().getRawIndexes( renderlevel);
+	} 
+
+	/**
+	 * Returns the Vertices for this renderable in world space
+	 * @param pVerts >Pre-allocated< buffer to hold the vertices. The number of Vertices can be
+	 *				retrieved by a call to getVertexCount
+	 * @note no checking is done on the array whatsoever
+	 */
+	void PagingLandScapeRenderable::getRawVertexData(Vector3* pVerts)
+	{
+		// pVerts should be pre-allocated to tilesize*tilesize
+		// using getVertexCount()
+		const uint tilesize = mOpt->TileSize -1 ;
+		
+		Vector3 *vert = pVerts;
+		for (uint i=0; i<=tilesize; ++i)
+		{
+			for (uint j=0; j<=tilesize; ++j)
+			{
+				*vert++=  _getvertex(i, j);
+			}
+		}
+	} 
+
+	/**
+	 * Returns the number of this Renderable's vertices
+	 * @return the number of this Renderable's vertices
+	 */
+	const uint PagingLandScapeRenderable::getVertexCount()
+	{
+		return  mOpt->TileSize * mOpt->TileSize  ;
+	} 
 } //namespace

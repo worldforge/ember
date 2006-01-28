@@ -46,232 +46,215 @@ namespace Ogre
     }
     PagingLandScapeRenderableManager& PagingLandScapeRenderableManager::getSingleton(void)
     {  
-	    assert( ms_Singleton );  return ( *ms_Singleton );  
+	    assert(ms_Singleton);  return (*ms_Singleton);  
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeRenderableManager::PagingLandScapeRenderableManager( ) :
+    PagingLandScapeRenderableManager::PagingLandScapeRenderableManager() :
         mNumRenderables (0),
-        mPageSize (0) ,
-        mTileSize (0)
+		mRenderableLoadInterval (0),
+		mLoadInterval(0),
+        mNumRenderableLoading(0)
     {
         PagingLandScapeRenderable::mOpt = PagingLandScapeOptions::getSingletonPtr();
-        mIndexes = new PagingLandScapeIndexBuffer();
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeRenderableManager::~PagingLandScapeRenderableManager( )
+    PagingLandScapeRenderableManager::~PagingLandScapeRenderableManager()
     {
-        PagingLandScapeRenderableManager::freeTextureCoordinatesBuffers ();
-        delete mIndexes;
+        
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::clear()
     {
-
-        if (!mTilesLoadQueue.empty ())
+        if (!mTilesLoadRenderableQueue.empty ())
         {
-            PagingLandScapeTile *t = mTilesLoadQueue.pop();
+            PagingLandScapeTile *t = mTilesLoadRenderableQueue.pop();
             while (t)
             {
                 t->uninit ();
-                t = mTilesLoadQueue.pop ();
+                t = mTilesLoadRenderableQueue.pop ();
             }
-            mTilesLoadQueue.clear ();
+            assert (mTilesLoadRenderableQueue.empty ());
         }
-
-
-        // If renderables change over maps (+- lit, normals, etc...)
-        std::for_each(mRenderables.begin (), 
-                        mRenderables.end (),  
-                        delete_object());
+        // If Renderables change over maps (+- lit, normals, etc...)
+        std::for_each (mRenderables.begin (), 
+                       mRenderables.end (),  
+                       delete_object());
         mRenderables.clear();
         mQueue.clear();
+        mNumRenderables = 0;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::load()
-    {
+    {        
+        PagingLandScapeOptions *opt = PagingLandScapeOptions::getSingletonPtr();  
+
+        mNumRenderableLoading = opt->num_renderables_loading;
+        mNumRenderablesIncrement = opt->num_renderables_increment;
+        mRenderableLoadInterval = opt->RenderableLoadInterval;
+
+        const uint nRend = opt->num_renderables;
         
-        const uint nRend = PagingLandScapeOptions::getSingleton().num_renderables;
         if (mNumRenderables < nRend)
         {
             _addBatch (nRend - mNumRenderables);
         }
-//        else if (mNumRenderables > nRend)
-//        {
-//            for (uint i = nRend; i < mNumRenderables; i++)
-//	        {
-//                PagingLandScapeRenderable *r = mRenderables[i];
-//                mQueue.remove (r);
-//                delete r;
-//	        }
-//            mNumRenderables = nRend;
-//            mRenderables.resize (nRend);
-//        }
-
-        const uint pSize = PagingLandScapeOptions::getSingleton().PageSize;
-        const uint tSize = PagingLandScapeOptions::getSingleton().TileSize;
-        if (mPageSize != pSize || 
-            mTileSize != tSize)
-        {            
-
-            mPageSize = PagingLandScapeOptions::getSingleton().PageSize;
-            mTileSize = PagingLandScapeOptions::getSingleton().TileSize;
-
-            freeTextureCoordinatesBuffers ();
-            mPageSize = pSize;
-            InitTextureCoordinatesBuffers();
-        }
-        mIndexes->load();       
+		mTilesLoadRenderableQueue.clear();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::InitTextureCoordinatesBuffers()
+    PagingLandScapeRenderable *PagingLandScapeRenderableManager::getRenderable()
     {
-        const uint NumTiles = PagingLandScapeOptions::getSingleton().NumTiles;
-
-        mTexBuffs.reserve (NumTiles);
-        mTexBuffs.resize (NumTiles);
-	    for (uint  i = 0; i < NumTiles; ++i )
-	    {
-            mTexBuffs[i].reserve (NumTiles);
-            mTexBuffs[i].resize (NumTiles);
-	    }
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::freeTextureCoordinatesBuffers()
-    {
-        // Unload the Tiles
-        if (!mTexBuffs.empty())
+	    if (mQueue.empty ())
         {
-            HardwareTextureBuffersCol::iterator iend = mTexBuffs.end();
-            for (HardwareTextureBuffersCol::iterator i = mTexBuffs.begin(); 
-                i != iend; 
-                ++i)
+            // unload some Tiles/renderables no more used to free some space.
+            processTileUnload ();
+
+
+            //for (uint i = 0; i < mNumRenderables; ++i)
+            //{
+            //    assert (mRenderables[i]->isLoaded ());
+            //}
+            for (uint i = 0; i < mNumRenderables; ++i)
             {
-        //         std::for_each( i->begin (), 
-        //                        i->end (),  
-        //                        delete_object());
+                //assert (mRenderables[i]->isInUse ());
+                if (!mRenderables[i]->isInUse () && !mRenderables[i]->isLoaded ())
+                    mQueue.push(mRenderables[i]);
+            }
+            
 
-                i->clear();   
-            } 
-	        mTexBuffs.clear();    
-        }
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::setTextureCoordinatesBuffers(const uint tilex, 
-                                                                        const uint tilez,
-                                                                        const HardwareVertexBufferSharedPtr &data)
-    {
-        assert (tilex < PagingLandScapeOptions::getSingleton().NumTiles && 
-                tilez < PagingLandScapeOptions::getSingleton().NumTiles);
 
-        mTexBuffs [tilex][tilez] = data;
-    }
-    //-----------------------------------------------------------------------
-    HardwareVertexBufferSharedPtr PagingLandScapeRenderableManager::getTextureCoordinatesBuffers(
-        const uint tilex, 
-        const uint tilez)
-    {
-        assert (tilex < PagingLandScapeOptions::getSingleton().NumTiles && 
-                tilez < PagingLandScapeOptions::getSingleton().NumTiles);
-
-        return mTexBuffs [tilex][tilez];
-    }
-    //-----------------------------------------------------------------------
-    PagingLandScapeRenderable *PagingLandScapeRenderableManager::getRenderable( )
-    {
-	    if ( mQueue.empty() )
-	    {
-		    // We don´t have more renderables, so we are going to add more
-		    _addBatch(PagingLandScapeOptions::getSingleton().num_renderables_increment);
-		    // Increment the next batch by a 10%
-		    PagingLandScapeOptions::getSingleton().num_renderables_increment += static_cast<uint> (PagingLandScapeOptions::getSingleton().num_renderables_increment * 0.1f);
+            if (mQueue.empty ())
+            {
+		        // We do not have any more free Renderables
+                // we need to allocate more
+		        _addBatch (mNumRenderablesIncrement);
+		        // Increment the next batch by a 10%
+		        mNumRenderablesIncrement += static_cast<uint> (mNumRenderablesIncrement * 0.1f);
+            }
 	    }
-	    return mQueue.pop( );
+	    return mQueue.pop ();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::freeRenderable( PagingLandScapeRenderable *rend )
+    void PagingLandScapeRenderableManager::freeRenderable(PagingLandScapeRenderable *rend)
     {
-	    mQueue.push( rend );
+	    mQueue.push (rend);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::queueRenderableLoading( PagingLandScapeTile *tile )
-    {
-        mTilesLoadQueue.push( tile );
+    void PagingLandScapeRenderableManager::queueRenderableLoading(PagingLandScapeTile *tile)
+	{
+		assert (tile);  
+		assert (tile->isLoaded ());  
+		assert (tile->getRenderable ()); 
+        assert (!tile->getRenderable ()->isLoaded ());   
+        assert (tile->getRenderable ()->isInUse ());  
+        mTilesLoadRenderableQueue.push (tile);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::unqueueRenderable ( PagingLandScapeTile *tile )
+    void PagingLandScapeRenderableManager::unqueueRenderable (PagingLandScapeTile *tile)
     {
-        mTilesLoadQueue.remove ( tile );
-    }
+        mTilesLoadRenderableQueue.remove (tile);
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapeRenderableManager::processTileUnload()
+	{
+		if (mTilesLoadRenderableQueue.empty())
+			return;
+
+		PagingLandScapeTile *tile;
+		for (PagingLandScapeQueue<PagingLandScapeTile>::MsgQueType::iterator itq = mTilesLoadRenderableQueue.begin(); 
+			itq != mTilesLoadRenderableQueue.end();)
+		{
+			tile = *itq;
+			assert (tile != 0);
+			assert (tile->isLoaded ());       
+			assert (tile->getRenderable () != 0 && tile->getSceneNode() != 0);
+			assert (!tile->getRenderable ()->isLoaded ()); 
+
+			if (!tile->getRenderable ()->isInUse ())
+			{
+                tile->unload (); 
+				itq = mTilesLoadRenderableQueue.erase (itq);
+			}
+			else
+			{
+				++itq;
+			}
+		}
+	}
     //-----------------------------------------------------------------------
-    bool PagingLandScapeRenderableManager::executeRenderableLoading(void)
+    bool PagingLandScapeRenderableManager::executeRenderableLoading(const Vector3 &Cameraposition)
     {
-        if (mTilesLoadQueue.empty())
+        if (mTilesLoadRenderableQueue.empty())
             return true;	
         else
         { 
-            const uint k = PagingLandScapeOptions::getSingleton ().num_renderables_loading;
-            for (uint i = 0; i < k; i++ )
-            {
-                PagingLandScapeTile* tile = mTilesLoadQueue.pop ();
+			if (mLoadInterval-- < 0)
+			{
+				const uint queueSize = mTilesLoadRenderableQueue.getSize () ;
+				mTilesLoadRenderableQueue.sortNearest(Cameraposition);
+                const uint k = mNumRenderableLoading > queueSize ? queueSize : mNumRenderableLoading;
+				for (uint i = 0; i < k; i++)
+				{
+					
+					PagingLandScapeTile * const tile = mTilesLoadRenderableQueue.pop ();
+					// no more in queues.
+					assert (tile != 0);
+					assert (tile->isLoaded ());     
+					PagingLandScapeRenderable * const rend = tile->getRenderable ();
 
-                // no more in queues.
-                if (tile == 0)
-                    return true;
-
-                assert (tile->isLoaded ());           
-                           
-                PagingLandScapeRenderable* rend = tile->getRenderable();
-
-                assert (!rend->isLoaded ());      
-                SceneNode * tileSceneNode = tile->getTileNode ();
-
-                assert (rend != 0 && tileSceneNode != 0);
-
-                tileSceneNode->attachObject( rend );
-                // renderables need to be attached (BBox compute)
-                if (rend->load())
-                {
-                    tile->_linkRenderableNeighbor ();
-                }
-                else
-                {
-                    // renderable have been unloaded since.
-                    tile->unload ();
-                }
-                tileSceneNode->needUpdate();
-            }
+					assert (rend != 0);
+					assert (!rend->isLoaded ());      
+					SceneNode * const tileSceneNode = tile->getSceneNode ();
+					assert (tileSceneNode != 0);
+					
+					// if renderable can be loaded 
+					if (rend->load ())
+					{
+						tileSceneNode->attachObject (rend);
+						tile->_linkRenderableNeighbor ();
+					}
+					else
+					{	
+						// (no data yet.) empty tile.
+						tile->unload ();
+					}
+					tileSceneNode->needUpdate ();
+				}
+				mLoadInterval = mRenderableLoadInterval;
+			}
         }
         return false;
     }
 
     //-----------------------------------------------------------------------
-    uint PagingLandScapeRenderableManager::numRenderables( void ) const
+    uint PagingLandScapeRenderableManager::numRenderables(void) const
     {
 	    return mNumRenderables;
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapeRenderableManager::numFree( void ) const
+    int PagingLandScapeRenderableManager::numFree(void) const
     {
-	    return mQueue.getSize( );
+	    return mQueue.getSize();
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapeRenderableManager::numLoading( void ) const
+    int PagingLandScapeRenderableManager::numLoading(void) const
     {
-	    return mTilesLoadQueue.getSize( );
+	    return mTilesLoadRenderableQueue.getSize();
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::_addBatch(const uint num)
     {
 	    mNumRenderables += num;
         mRenderables.reserve (mNumRenderables);
-	    for (uint i = 0; i < num; i++ )
+	    for (uint i = 0; i < num; i++)
 	    {
 		    PagingLandScapeRenderable* rend = new PagingLandScapeRenderable();
 		    mRenderables.push_back(rend);
-		    mQueue.push( rend );
+		    mQueue.push(rend);
 	    }
+        #ifdef _DEBUG
+            std::cout << "Renderables addBatch : " << mRenderables.size() << "\n";
+        #endif _DEBUG
     }
-
 } //namespace

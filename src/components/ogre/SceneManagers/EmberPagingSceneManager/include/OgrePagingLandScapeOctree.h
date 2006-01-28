@@ -32,11 +32,13 @@ email                : janders@users.sf.net
 Enhancements 2003 - 2004 (C) The OGRE Team
 ***************************************************************************/
 
-#ifndef PagingLandScapeOctree_H
-#define PagingLandScapeOctree_H
+#ifndef __PagingLandScapeOctree_H
+#define __PagingLandScapeOctree_H
 
-#include <OgreAxisAlignedBox.h>
-#include <OgreWireBoundingBox.h>
+#include "OgreAxisAlignedBox.h"
+#include "OgrePagingLandScapeOcclusionElement.h"
+
+#include "OgrePagingLandScapeOcclusionTraversal.h"
 
 #include <list>
 
@@ -56,106 +58,177 @@ namespace Ogre
 		fit completely into a child, with no splitting necessary.
 	*/
 
-	class PagingLandScapeOctree
+    class PagingLandScapeOctree : public OcclusionElement
 	{
-	public:
-	    PagingLandScapeOctree( PagingLandScapeOctree* p );
-		~PagingLandScapeOctree( void );
 
-		/** Adds an PagingLandScapeOctree scene node to this PagingLandScapeOctree level.
-		@remarks
-			This is called by the PagingLandScapeOctreeSceneManager after
-			it has determined the correct PagingLandScapeOctree to insert the node into.
-		*/
-		void _addNode( PagingLandScapeOctreeNode* nod );
+	    public:
+	        PagingLandScapeOctree(PagingLandScapeOctree* p);
+		    ~PagingLandScapeOctree(void);
 
-	    /** Removes an PagingLandScapeOctree scene node to this PagingLandScapeOctree level.
-	    */
-	    void _removeNode( PagingLandScapeOctreeNode* nod );
+		    /** Adds an PagingLandScapeOctree scene node to this PagingLandScapeOctree level.
+		    @remarks
+			    This is called by the PagingLandScapeOctreeSceneManager after
+			    it has determined the correct PagingLandScapeOctree to insert the node into.
+		    */
+		    void _addNode(PagingLandScapeOctreeNode* nod);
 
-		/** Returns the number of scene nodes attached to this PagingLandScapeOctree
-		*/
-		int numNodes( void ) const
-		{
-	        return mNumNodes;
-	    };
+	        /** Removes an PagingLandScapeOctree scene node to this PagingLandScapeOctree level.
+	        */
+	        void _removeNode(PagingLandScapeOctreeNode* nod);
 
-		/** The bounding box of the PagingLandScapeOctree
-		@remarks
-			This is used for octant index determination and rendering, but not culling
-		*/
-		AxisAlignedBox mBox;
-		WireBoundingBox* mWireBoundingBox;
-    
-		/** creates the wire frame bounding box for this octant
-		*/
-		WireBoundingBox* getWireBoundingBox( void );
+		    /** Returns the number of scene nodes attached to this PagingLandScapeOctree
+		    */
+		    int numNodes(void) const
+		    {
+	            return mNumNodes;
+	        };
 
-		/** Vector containing the dimensions of this PagingLandScapeOctree / 2
-		*/
-		Vector3 mHalfSize;
+	
+        
+		    /** creates the wire frame bounding box for this octant
+		    */
+		    WireBoundingBox* getWireBoundingBox(void);
 
-		/** 3D array of children of this PagingLandScapeOctree.
-		@remarks
-			Children are dynamically created as needed when nodes are inserted in the PagingLandScapeOctree.
-			If, later, the all the nodes are removed from the child, it is still kept around.
-		*/
-		PagingLandScapeOctree* mChildren[ 2 ][ 2 ][ 2 ];
+		    /** creates the opaque Cull bounding box (bbox*2) for this octant
+		    */
+		    OcclusionBoundingBox* getOcclusionBoundingBox();
 
-		/** Determines if this PagingLandScapeOctree is twice as big as the given box.
-		@remarks
-			This method is used by the PagingLandScapeOctreeSceneManager to determine if the given
-			box will fit into a child of this PagingLandScapeOctree.
-		*/
-		bool _isTwiceSize( const AxisAlignedBox& box ) const;
 
-		/**  Returns the appropriate indexes for the child of this PagingLandScapeOctree into which the box will fit.
-		@remarks
-			This is used by the PagingLandScapeOctreeSceneManager to determine which child to traverse next when
-			finding the appropriate PagingLandScapeOctree to insert the box.  Since it is a loose PagingLandScapeOctree, only the
-		center of the box is checked to determine the octant.
-		*/
-		void _getChildIndexes( const AxisAlignedBox&, int &x, int &y, int &z ) const;
+		    /** 3D array of children of this PagingLandScapeOctree.
+		    @remarks
+			    Children are dynamically created as needed when nodes are inserted in the PagingLandScapeOctree.
+			    If, later, the all the nodes are removed from the child, it is still kept around.
+		    */
+		    PagingLandScapeOctree* mChildren[ 2 ][ 2 ][ 2 ];
 
-		/** Creates the AxisAlignedBox used for culling this PagingLandScapeOctree.
-		@remarks
-			Since it's a loose PagingLandScapeOctree, the culling bounds can be different than the actual bounds of the PagingLandScapeOctree.
-		*/
-		void _getCullBounds( AxisAlignedBox* bound ) const;
+		    /** Determines if this PagingLandScapeOctree is twice as big as the given box.
+		    @remarks
+			    This method is used by the PagingLandScapeOctreeSceneManager to determine if the given
+			    box will fit into a child of this PagingLandScapeOctree.
+		    */
+		    bool _isTwiceSize(const AxisAlignedBox& box) const;
 
-		/** Public list of SceneNodes attached to this particular PagingLandScapeOctree
-		*/
-		NodeList mNodes;
+            /** Determines if this PagingLandScapeOctree is twice as big as the given box.
+		    @remarks
+			    This method is used by the PagingLandScapeOctreeSceneManager to determine if the given
+			    box will fit into a child of this PagingLandScapeOctree.
+		    */
+		    bool _isTwiceCullSize(const AxisAlignedBox& box) const;
 
-	protected:
+            bool _isNotCrossingAxes(const AxisAlignedBox& box) const;
 
-		/** Increments the overall node count of this PagingLandScapeOctree and all it's parents
-	    */
-	    inline void _ref( void )
-		{
-	        ++mNumNodes;
-			if ( mParent != 0 )
-			{
-				mParent->_ref( );
-			}
-		};
+		    /**  Returns the appropriate indexes for the child of this PagingLandScapeOctree into which the box will fit.
+		    @remarks
+			    This is used by the PagingLandScapeOctreeSceneManager to determine which child to traverse next when
+			    finding the appropriate PagingLandScapeOctree to insert the box.  Since it is a loose PagingLandScapeOctree, only the
+		    center of the box is checked to determine the octant.
+		    */
+		    PagingLandScapeOctree* _getChildWhereBoxFits(const AxisAlignedBox& bx, PagingLandScapeOctreeSceneManager *scn);
+            /**  Returns the appropriate indexes for the child of this PagingLandScapeOctree into which the box will fit.
+		    @remarks
+			    This is used by the PagingLandScapeOctreeSceneManager to determine which child to traverse next when
+			    finding the appropriate PagingLandScapeOctree to insert the box.  Since it is a loose PagingLandScapeOctree, only the
+		    center of the box is checked to determine the octant.
+		    */
+            PagingLandScapeOctree *_getCullChildWhereBoxFits(const AxisAlignedBox& bx, PagingLandScapeOctreeSceneManager *scn);
+		    /** Creates the AxisAlignedBox used for culling this PagingLandScapeOctree.
+		    @remarks
+			    Since it's a loose PagingLandScapeOctree, the culling bounds can be different than the actual bounds of the PagingLandScapeOctree.
+		    */
+		    void _getCullBounds(AxisAlignedBox* bound) const;
 
-		/** Decrements the overall node count of this PagingLandScapeOctree and all it's parents
-		*/
-		inline void _unref( void )
-		{
-	        --mNumNodes;
-			if ( mParent != 0 )
-			{
-				mParent->_unref( );
-			}
-		};
+		    /** Public list of SceneNodes attached to this particular PagingLandScapeOctree
+		    */
+		    NodeList mNodes;
+		    NodeList mMovingNodes;
+		    NodeList mStaticNodes;
 
-		///number of SceneNodes in this PagingLandScapeOctree and all it's children.
-		int mNumNodes;
+            virtual OcclusionElement* getParent () {return mParent;};  
 
-		///parent PagingLandScapeOctree
-		PagingLandScapeOctree* mParent;
+            virtual bool isLeaf() const {return false;};
+            
+            virtual void traversal(Traversal &tr) 
+            {   
+                tr.onTree (*this);
+            };
+            virtual void traversal(const TraversalConst &tr)
+            {  
+                tr.onTree(*this);
+            };
+            virtual void traversal(const ConstTraversalConst &tr) const
+            {   
+                tr.onTree (*this);
+            };
+
+            // check if need to traverse it.
+            bool hasChildren() const
+            {
+                return (mNumNodes != 0);
+            };
+
+            void setBoundingBox(const Vector3 &min,  const Vector3 &max);
+
+            #ifdef _VISIBILITYDEBUG
+                void setDebugCorners(PagingLandScapeOctreeSceneManager *scnMgr);
+            #endif //_VISIBILITYDEBUG    
+
+            virtual const AxisAlignedBox getCullBoundingBox() const 
+            {        
+                 return mCullBox;
+            };
+            const AxisAlignedBox& getBoundingBox() const{return mBox;};
+            virtual const Vector3 &getHalfSize()  const {return mHalfSize;};
+            virtual const Vector3 &getCullHalfSize()  const {return mCullHalfSize;};
+
+            virtual bool isOccluder () const  { return true; }
+
+	    protected:
+
+	        /** The bounding box of the PagingLandScapeOctree
+		    @remarks
+			    This is used for octant index determination and rendering, but not culling
+		    */
+		    AxisAlignedBox mBox;
+		    /// Octree double size bounding box
+		    AxisAlignedBox mCullBox;
+		    WireBoundingBox* mWireBoundingBox;
+		    /** Vector containing the dimensions of this PagingLandScapeOctree 
+		    */
+		    Vector3 mHalfSize;
+		    /** Vector containing the dimensions of this PagingLandScapeOctree / 2
+		    */
+		    Vector3 mCullHalfSize;
+
+
+		    /** Increments the overall node count of this PagingLandScapeOctree and all it's parents
+	        */
+	        inline void _ref(void)
+		    {
+	            ++mNumNodes;
+			    if (mParent != 0)
+			    {
+				    mParent->_ref();
+			    }
+		    };
+
+		    /** Decrements the overall node count of this PagingLandScapeOctree and all it's parents
+		    */
+		    inline void _unref(void)
+		    {
+	            --mNumNodes;
+			    if (mParent != 0)
+			    {
+				    mParent->_unref();
+			    }
+		    };
+
+		    ///number of SceneNodes in this PagingLandScapeOctree and all it's children.
+		    int mNumNodes;
+
+		    ///parent PagingLandScapeOctree
+		    PagingLandScapeOctree* mParent;
+
+            OcclusionBoundingBox* mOcclusionBoundingBox;
 	};
 
 }

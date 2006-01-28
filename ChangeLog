@@ -1,3 +1,7 @@
+2006-01-28 Erik Hjortsberg  <erik@katastrof.nu>
+    
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/*: updated to latest release of the PagingSceneManager. This includes some of the updates we had to do ourselves to make it work better with Ember.
+
 2006-01-26  Miguel Guzman  <aglanor@gmail.com>
     * src/services/sound/SoundService.*:
         * removed the temporary world source, added getWorldSourceIndexForPlaying() to retrieve the next world source & buffer that will be used to play a world sound.

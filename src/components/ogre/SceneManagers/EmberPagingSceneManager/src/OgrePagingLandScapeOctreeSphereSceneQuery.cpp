@@ -33,42 +33,42 @@ email                : janders@users.sf.net
  
 ***************************************************************************/
 
-#include <OgrePagingLandScapeOctreeSphereSceneQuery.h>
-#include <OgrePagingLandScapeOctreeSceneManager.h>
-#include <OgreEntity.h>
+#include "OgrePagingLandScapeOctreeSphereSceneQuery.h"
+#include "OgrePagingLandScapeOctreeSceneManager.h"
+#include "OgreEntity.h"
 
 namespace Ogre
 {
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreeSphereSceneQuery::PagingLandScapeOctreeSphereSceneQuery( SceneManager* creator )
-	: DefaultSphereSceneQuery( creator )
+PagingLandScapeOctreeSphereSceneQuery::PagingLandScapeOctreeSphereSceneQuery(SceneManager* creator)
+	: DefaultSphereSceneQuery(creator)
 {
 }
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreeSphereSceneQuery::~PagingLandScapeOctreeSphereSceneQuery( void )
+PagingLandScapeOctreeSphereSceneQuery::~PagingLandScapeOctreeSphereSceneQuery(void)
 {
 }
 
 //---------------------------------------------------------------------
-void PagingLandScapeOctreeSphereSceneQuery::execute( SceneQueryListener* listener )
+void PagingLandScapeOctreeSphereSceneQuery::execute(SceneQueryListener* listener)
 {
     std::list < SceneNode* > list;
     //find the nodes that intersect the AAB
-    static_cast< PagingLandScapeOctreeSceneManager* >( mParentSceneMgr )->findNodesIn( mSphere, list, 0 );
+    static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(mSphere, list, 0);
 
     //grab all moveables from the node that intersect...
-    std::list< SceneNode* >::iterator it = list.begin( );
-    while(  it != list.end( ) )
+    std::list< SceneNode* >::iterator it = list.begin();
+    while(it != list.end())
     {
-        SceneNode::ObjectIterator oit = ( *it )->getAttachedObjectIterator( );
-        while ( oit.hasMoreElements( ) )
+        SceneNode::ObjectIterator oit = (*it)->getAttachedObjectIterator();
+        while (oit.hasMoreElements())
         {
-            MovableObject* m = oit.getNext( );
-            if ( ( m->getQueryFlags( ) & mQueryMask ) && m->isInScene( ) && mSphere.intersects( m->getWorldBoundingBox( ) ) )
+            MovableObject* m = oit.getNext();
+            if ((m->getQueryFlags() & mQueryMask) && m->isInScene() && mSphere.intersects(m->getWorldBoundingBox()))
             {
-                listener->queryResult( m );
+                listener->queryResult(m);
             }
         }
         ++it;

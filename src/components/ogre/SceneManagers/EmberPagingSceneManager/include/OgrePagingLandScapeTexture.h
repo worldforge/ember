@@ -15,49 +15,56 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTURE_H
-#define PAGINGLANDSCAPETEXTURE_H
+#ifndef PAGINGLandScapeTEXTURE_H
+#define PAGINGLandScapeTEXTURE_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
 namespace Ogre
 {
+
+#		define SAND  0
+#		define GRASS 1
+#		define ROCK  2
+#		define SNOW  3
+
+
     /**
     * A simple class for encapsulating Texture generation.
     */
     class PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture( void );
+	        PagingLandScapeTexture(void);
 
-	        virtual ~PagingLandScapeTexture( void );
+	        virtual ~PagingLandScapeTexture(void);
 
-	        virtual void load( uint mX, uint mZ );
-            virtual void update( void ) {};
-	        virtual void unload( void );
+	        virtual void load(uint mX, uint mZ);
+            virtual void update(void) {};
+	        virtual void unload(void);
 
-            virtual void setPagesize( void ){};
-            virtual void clearData( void ){};
+            virtual void setPagesize(void){};
+            virtual void clearData(void){};
 
-	        virtual String getName ( void ) = 0;
+	        virtual String getName (void) = 0;
 
-	        virtual PagingLandScapeTexture *newTexture( ) = 0;
+	        virtual PagingLandScapeTexture *newTexture() = 0;
             virtual bool TextureRenderCapabilitesFullfilled() 
             {
                 return true;
             };
 
-            virtual const uint getNumChannels ( void ) const {return mNumChannel;};
+            virtual const uint getNumChannels (void) const {return mNumChannel;};
 
-            bool getCastsShadows( void ) const {return false;}
+            bool getCastsShadows(void) const {return false;}
 
-	        bool isLoaded( void ) const;
+	        bool isLoaded(void) const;
 
-            void setNeedUpdate( void );
-            void updated( void );
-            bool needUpdate( void ) const;
+            void setNeedUpdate(void);
+            void updated(void);
+            bool needUpdate(void) const;
 
-	        const MaterialPtr& getMaterial( void ) const;
+	        const MaterialPtr& getMaterial(void) const;
 
             virtual void paint (const uint x, const uint z, 
                         const Real paintForce, const ColourValue &mPaintColor){};
@@ -70,10 +77,21 @@ namespace Ogre
 
             void adjustDeformationRectangle(uint x, uint z);
             void adjustPaintRectangle(uint x, uint z);
-        protected:
-	        virtual void _loadMaterial( void ) = 0;
+            
+            virtual void lightUpdate(){};
 
-            virtual void _unloadMaterial( void ){};
+			void getCoordinates(uint& X, uint& Z)
+			{
+				X = mDataX;
+				Z = mDataZ;
+			};
+			inline bool isCoord(const uint x, const uint z){return (mDataX == x && mDataZ == z);};
+
+
+        protected:
+	        virtual void _loadMaterial(void) = 0;
+
+            virtual void _unloadMaterial(void){};
 
 	        bool mIsLoaded;
             bool mIsModified;
@@ -87,6 +105,7 @@ namespace Ogre
             bool        mIsPaintRectModified;
             Image::Box  mDeformRect;
             bool        mIsDeformRectModified;
+
     };
 }
 

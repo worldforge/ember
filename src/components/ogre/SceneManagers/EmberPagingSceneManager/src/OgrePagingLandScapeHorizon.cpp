@@ -48,11 +48,11 @@ namespace Ogre
     }
     PagingLandScapeHorizon& PagingLandScapeHorizon::getSingleton(void)
     {  
-	    assert( ms_Singleton );  return ( *ms_Singleton );  
+	    assert(ms_Singleton);  return (*ms_Singleton);  
     }
 
     //-----------------------------------------------------------------------
-    PagingLandScapeHorizon::PagingLandScapeHorizon( const PagingLandScapeOptions &options )
+    PagingLandScapeHorizon::PagingLandScapeHorizon(const PagingLandScapeOptions &options)
     {
         mPageWidth = options.world_width;
         mPageHeight = options.world_height;
@@ -131,18 +131,21 @@ namespace Ogre
         if (mVisibilityMaterial.isNull())
         {        
             const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
-            const String filename = opt->landscape_filename;
+            const String filename = opt->LandScape_filename;
             const String name = filename +
                 "Visibility";
             mVisibilityMaterial = MaterialManager::getSingleton().getByName (name);
             if (mVisibilityMaterial.isNull())
             {
                 mVisibilityMaterial = MaterialManager::getSingleton().create (name, 
-                                                            opt->groupName);
+                                                                              opt->groupName);
 
                 TextureUnitState *tu0 = mVisibilityMaterial->getTechnique (0)->
                                         getPass (0)->createTextureUnitState ();
 
+                TextureManager::getSingleton().load (filename + ".Small." + 
+                                                     opt->TextureExtension, 
+                                                     opt->groupName);   
                 tu0->setTextureName (filename + ".Small." + 
                                      opt->TextureExtension);
 
@@ -156,13 +159,9 @@ namespace Ogre
 
                 const size_t s = mTileWidth * mTileHeight * 4;
                 uchar *TexData = new uchar [s];
-                memset (TexData, 0, s* sizeof(uchar));
-
-		        DataStreamPtr dc (new MemoryDataStream (TexData, s, true));
-
-		        // Assign the texture to the alpha map
-		        
-		        mVisImage.loadRawData(dc, mTileWidth, mTileHeight, PF_BYTE_RGBA);
+                memset (TexData, 0, s * sizeof(uchar));
+		        // Assign the texture to the alpha map		        
+		        mVisImage.loadDynamicImage(TexData, mTileWidth, mTileHeight, 1, PF_BYTE_RGBA, true);
                 mVisData = mVisImage.getData();
                 const String texname = filename + ".Visibility";
                 mVisTex = TextureManager::getSingleton().loadImage(texname, 
@@ -170,20 +169,16 @@ namespace Ogre
                                         mVisImage, 
                                         TEX_TYPE_2D, 0, 1.0f);
                 TextureUnitState *tu1 = mVisibilityMaterial->getTechnique (0)->
-                                        getPass (0)->createTextureUnitState( texname);
+                                        getPass (0)->createTextureUnitState(texname);
                 tu1->setTextureAddressingMode (TextureUnitState::TAM_CLAMP);
             }
             else
             {
                 const size_t s = mTileWidth * mTileHeight * 4;
                 uchar *TexData = new uchar [s];
-                memset (TexData, 0, s* sizeof(uchar));
-
-		        DataStreamPtr dc (new MemoryDataStream (TexData, s, true));
-
+                memset (TexData, 0, s * sizeof(uchar));
 		        // Assign the texture to the alpha map
-		        
-		        mVisImage.loadRawData(dc, mTileWidth, mTileHeight, PF_BYTE_RGBA);
+		        mVisImage.loadDynamicImage(TexData, mTileWidth, mTileHeight, 1, PF_BYTE_RGBA, true);
                 mVisData = mVisImage.getData();
                 mVisTex = TextureManager::getSingleton().getByName (filename + ".Visibility");
             }
@@ -239,7 +234,7 @@ namespace Ogre
     void PagingLandScapeHorizon::registerMinMaxHeightTile (const PagingLandScapeTileInfo *info,
                                                         const Real minHeight, const Real maxHeight)        
     {   
-       const size_t tilePos = ( info->pageX*mNumTilesPage + info->tileX
+       const size_t tilePos = (info->pageX*mNumTilesPage + info->tileX
            + ((info->pageZ*mNumTilesPage)  + info->tileZ) * mTileWidth); 
 
        assert (tilePos < mTileWidth*mTileHeight);
@@ -287,7 +282,7 @@ namespace Ogre
         const Real RdestTileZ = destinfo->pageZ*mNumTilesPage + destinfo->tileZ;
        
         // test if there is potential occluders
-        if (fabs (RsrcTileX - RsrcTileZ) < 2 && fabs (RsrcTileZ - RdestTileZ) < 2)
+        if (fabs (RsrcTileX - RdestTileX) < 2.0f && fabs (RsrcTileZ - RdestTileZ) < 2.0f)
             return true;
 
         const size_t pos = static_cast <size_t> (RdestTileX + RdestTileZ*mTileWidth);
@@ -307,9 +302,9 @@ namespace Ogre
         const Real x = dest.x - src.x;
         const Real z = dest.z - src.z;
         /*normalise only on x and z*/
-        const Real fLength = Math::Sqrt( x * x + z * z );
+        const Real fLength = Math::Sqrt(x * x + z * z);
         // Will also work for zero-sized vectors, but will change nothing
-        if ( fLength < 1e-08 )
+        if (fLength < 1e-08)
             return true;
 
         const Real fInvLength = 1.0 / fLength;
@@ -323,16 +318,15 @@ namespace Ogre
         Vector3 currpos = src + direction; // fetch new tile
 
         /* For each heightmap location in the ray */ 
-        while ( currpos.x >= 0 &&
+        while (currpos.x >= 0 &&
                 currpos.z >= 0 &&
                 currpos.x < mapWidth &&
-                currpos.z < mapHeight )
+                currpos.z < mapHeight)
         {
             const size_t posx = static_cast <size_t> (currpos.x + 0.5f);
             const size_t posz = static_cast <size_t> (currpos.z + 0.5f);
             if (posx == dest.x && posz == dest.z)
                 break;
-            
 
             Real curry = currpos.y;
             currpos = currpos + direction;  // fetch new tile

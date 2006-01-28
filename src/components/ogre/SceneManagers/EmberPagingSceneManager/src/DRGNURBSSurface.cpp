@@ -70,9 +70,9 @@ CDRGNURBSSurface::CDRGNURBSSurface()
 // Free up anything we've allocated
 //
 // -----------------------------------------------------------------------
-void CDRGNURBSSurface::Cleanup( void )
+void CDRGNURBSSurface::Cleanup(void)
 {
-	ALIGNED_DELETE( m_pControlPoints);
+	ALIGNED_DELETE(m_pControlPoints);
 	ALIGNED_DELETE(m_UKnots);
 	ALIGNED_DELETE(m_VKnots);
 	ALIGNED_DELETE(m_UBasisCoefficients);
@@ -84,8 +84,8 @@ void CDRGNURBSSurface::Cleanup( void )
 	ALIGNED_DELETE(m_UTemp);
 	ALIGNED_DELETE(m_dUTemp);
 	ALIGNED_DELETE(m_pVertices);
-	SAFE_DELETE( m_TessUKnotSpan );
-	SAFE_DELETE( m_TessVKnotSpan );
+	SAFE_DELETE(m_TessUKnotSpan);
+	SAFE_DELETE(m_TessVKnotSpan);
 }
 
 CDRGNURBSSurface::~CDRGNURBSSurface()
@@ -136,31 +136,31 @@ bool CDRGNURBSSurface::Init(int	uDegree,
 	//
 	// Allocate some memory for the control points, knots, and basis stuff
 	//
-	m_pControlPoints = ALIGNED_NEW( m_iUControlPoints * m_iVControlPoints, Point4D );
-	m_UKnots = ALIGNED_NEW( m_iUKnots, float );
-	m_VKnots = ALIGNED_NEW( m_iVKnots, float );
+	m_pControlPoints = ALIGNED_NEW(m_iUControlPoints * m_iVControlPoints, Point4D);
+	m_UKnots = ALIGNED_NEW(m_iUKnots, float);
+	m_VKnots = ALIGNED_NEW(m_iVKnots, float);
 
 	// For each span in the knot vector, there will be m_iUOrder (and m_iVOrder)
 	// Basis polynomials that are non-zero.  Each of those polynomials will
 	// have m_iUOrder coefficients, hence m_iUBasisSpans * m_iUOrder * m_iUOrder
-	m_UBasisCoefficients = ALIGNED_NEW( m_iUOrder * m_iUOrder * m_iUBasisSpans, float );
-	m_VBasisCoefficients = ALIGNED_NEW( m_iVOrder * m_iVOrder * m_iVBasisSpans, float );
-	m_UTemp = ALIGNED_NEW( m_iVOrder, Point4D );
-	m_dUTemp = ALIGNED_NEW( m_iVOrder, Point4D );
+	m_UBasisCoefficients = ALIGNED_NEW(m_iUOrder * m_iUOrder * m_iUBasisSpans, float);
+	m_VBasisCoefficients = ALIGNED_NEW(m_iVOrder * m_iVOrder * m_iVBasisSpans, float);
+	m_UTemp = ALIGNED_NEW(m_iVOrder, Point4D);
+	m_dUTemp = ALIGNED_NEW(m_iVOrder, Point4D);
 
 	//
 	// Copy the incoming data to the internal structures.  If the incoming control
 	// points are NOT stored as pre-weighted points, then you'll need to loop over
 	// the points and multiply x, y, and z by the w value (so that the actual,
-	// stored control point is {x*w, y*w, z*w, w} )
+	// stored control point is {x*w, y*w, z*w, w})
 	//
-	memcpy( m_pControlPoints, pControlPoints, m_iUControlPoints * m_iVControlPoints * sizeof( Point4D ) );
-	memcpy( m_UKnots, pUKnots, m_iUKnots * sizeof( float ) );
-	memcpy( m_VKnots, pVKnots, m_iVKnots * sizeof( float ) );
+	memcpy(m_pControlPoints, pControlPoints, m_iUControlPoints * m_iVControlPoints * sizeof(Point4D));
+	memcpy(m_UKnots, pUKnots, m_iUKnots * sizeof(float));
+	memcpy(m_VKnots, pVKnots, m_iVKnots * sizeof(float));
 
 	ComputeBasisCoefficients();
 
-	SetTessellations( iDefaultUTessellations, iDefaultVTessellations );
+	SetTessellations(iDefaultUTessellations, iDefaultVTessellations);
 
 	return true;
 }
@@ -170,10 +170,10 @@ bool CDRGNURBSSurface::Init(int	uDegree,
 // Change the number of tessellations used to render the object
 //
 // -----------------------------------------------------------------------
-void CDRGNURBSSurface::SetTessellations( int iUTessellations, int iVTessellations )
+void CDRGNURBSSurface::SetTessellations(int iUTessellations, int iVTessellations)
 {
-	if( (iUTessellations != m_iUTessellations) ||
-		(iVTessellations != m_iVTessellations) )
+	if((iUTessellations != m_iUTessellations) ||
+		(iVTessellations != m_iVTessellations))
 	{
 		m_iUTessellations = iUTessellations;
 		m_iVTessellations = iVTessellations;
@@ -181,28 +181,28 @@ void CDRGNURBSSurface::SetTessellations( int iUTessellations, int iVTessellation
 		//
 		// Free anything we've already allocated
 		//
-		ALIGNED_DELETE( m_UBasis );
-		ALIGNED_DELETE(m_VBasis );
-		ALIGNED_DELETE(m_dUBasis );
-		ALIGNED_DELETE(m_dVBasis );
-		SAFE_DELETE( m_TessUKnotSpan );
-		SAFE_DELETE( m_TessVKnotSpan );
+		ALIGNED_DELETE(m_UBasis);
+		ALIGNED_DELETE(m_VBasis);
+		ALIGNED_DELETE(m_dUBasis);
+		ALIGNED_DELETE(m_dVBasis);
+		SAFE_DELETE(m_TessUKnotSpan);
+		SAFE_DELETE(m_TessVKnotSpan);
 
 		//
 		// Allocate memory for the basis functions, etc
 		//
-		m_UBasis = ALIGNED_NEW( m_iUOrder * SIMD_SIZE * (m_iUTessellations+1), float );
-		m_VBasis = ALIGNED_NEW( m_iVOrder * SIMD_SIZE * (m_iVTessellations+1), float );
-		m_dUBasis = ALIGNED_NEW( m_iUOrder * SIMD_SIZE * (m_iUTessellations+1), float );
-		m_dVBasis = ALIGNED_NEW( m_iVOrder * SIMD_SIZE * (m_iVTessellations+1), float );
+		m_UBasis = ALIGNED_NEW(m_iUOrder * SIMD_SIZE * (m_iUTessellations+1), float);
+		m_VBasis = ALIGNED_NEW(m_iVOrder * SIMD_SIZE * (m_iVTessellations+1), float);
+		m_dUBasis = ALIGNED_NEW(m_iUOrder * SIMD_SIZE * (m_iUTessellations+1), float);
+		m_dVBasis = ALIGNED_NEW(m_iVOrder * SIMD_SIZE * (m_iVTessellations+1), float);
 
 		m_TessUKnotSpan = new int[ m_iUTessellations+1 ];
 		m_TessVKnotSpan = new int[ m_iVTessellations+1 ];
 
-		ALIGNED_DELETE( m_pVertices );
+		ALIGNED_DELETE(m_pVertices);
 		
 		int iVertices = ((iUTessellations+1) * (iVTessellations+1)); //2 * (iVTessellations + 1);
-		m_pVertices = ALIGNED_NEW( iVertices, splinePoint );
+		m_pVertices = ALIGNED_NEW(iVertices, splinePoint);
 
 		//
 		// Re-evaluate the basis functions
@@ -212,7 +212,7 @@ void CDRGNURBSSurface::SetTessellations( int iUTessellations, int iVTessellation
 }
 
 // -----------------------------------------------------------------------
-// float CDRGNURBSSurface::ComputeCoefficient( float *fKnots, int iInterval, int i, int p, int k )
+// float CDRGNURBSSurface::ComputeCoefficient(float *fKnots, int iInterval, int i, int p, int k)
 //
 //
 // Determines the polynomial coefficients from the knot vector
@@ -258,47 +258,47 @@ void CDRGNURBSSurface::SetTessellations( int iUTessellations, int iVTessellation
 // knot span, i, that we're computing the coefficients for.
 // The next two functions compute those coefficients for the various intervals
 // -----------------------------------------------------------------------
-float CDRGNURBSSurface::ComputeCoefficient( float *fKnots, int iInterval, int i, int p, int k )
+float CDRGNURBSSurface::ComputeCoefficient(float *fKnots, int iInterval, int i, int p, int k)
 {
     float fResult = 0.0f;
 
-    if( p == 0 )
+    if(p == 0)
     {
-        if( i == iInterval )
+        if(i == iInterval)
             fResult = 1.0f;
     }
-    else if( k == 0 )
+    else if(k == 0)
     {
-        if( fKnots[i+p] != fKnots[i])
-            fResult -= fKnots[i] * ComputeCoefficient( fKnots, iInterval, i, p-1, 0 ) / (fKnots[i+p] - fKnots[i]);
-        if( fKnots[i+p+1] != fKnots[i+1] )
-            fResult += fKnots[i+p+1] * ComputeCoefficient( fKnots, iInterval, i+1, p-1, 0 ) / (fKnots[i+p+1] - fKnots[i+1]);
+        if(fKnots[i+p] != fKnots[i])
+            fResult -= fKnots[i] * ComputeCoefficient(fKnots, iInterval, i, p-1, 0) / (fKnots[i+p] - fKnots[i]);
+        if(fKnots[i+p+1] != fKnots[i+1])
+            fResult += fKnots[i+p+1] * ComputeCoefficient(fKnots, iInterval, i+1, p-1, 0) / (fKnots[i+p+1] - fKnots[i+1]);
     }
-    else if( k == p )
+    else if(k == p)
     {
-        if( fKnots[i+p] != fKnots[i] )
-            fResult += ComputeCoefficient( fKnots, iInterval, i, p-1, p-1 ) / (fKnots[i+p] - fKnots[i]);
-        if( fKnots[i+p+1] != fKnots[i+1] )
-            fResult -= ComputeCoefficient( fKnots, iInterval, i+1, p-1, p-1 ) / (fKnots[i+p+1] - fKnots[i+1]);
+        if(fKnots[i+p] != fKnots[i])
+            fResult += ComputeCoefficient(fKnots, iInterval, i, p-1, p-1) / (fKnots[i+p] - fKnots[i]);
+        if(fKnots[i+p+1] != fKnots[i+1])
+            fResult -= ComputeCoefficient(fKnots, iInterval, i+1, p-1, p-1) / (fKnots[i+p+1] - fKnots[i+1]);
     }
-    else if( k > p )
+    else if(k > p)
     {
         fResult = 0.0f;
     }
     else
     {
 		float C1, C2;
-        if( fKnots[i+p] != fKnots[i] )
+        if(fKnots[i+p] != fKnots[i])
         {
-            C1 = ComputeCoefficient( fKnots, iInterval, i, p-1, k-1 );
-            C2 = ComputeCoefficient( fKnots, iInterval, i, p-1, k );
-            fResult += (C1 - fKnots[i] * C2 ) / (fKnots[i+p] - fKnots[i] );
+            C1 = ComputeCoefficient(fKnots, iInterval, i, p-1, k-1);
+            C2 = ComputeCoefficient(fKnots, iInterval, i, p-1, k);
+            fResult += (C1 - fKnots[i] * C2) / (fKnots[i+p] - fKnots[i]);
         }
-        if( fKnots[i+p+1] != fKnots[i+1] )
+        if(fKnots[i+p+1] != fKnots[i+1])
         {
-            C1 = ComputeCoefficient( fKnots, iInterval, i+1, p-1, k-1 );
-            C2 = ComputeCoefficient( fKnots, iInterval, i+1, p-1, k );
-            fResult -= (C1 - fKnots[i+p+1] * C2 ) / (fKnots[i+p+1] - fKnots[i+1] );
+            C1 = ComputeCoefficient(fKnots, iInterval, i+1, p-1, k-1);
+            C2 = ComputeCoefficient(fKnots, iInterval, i+1, p-1, k);
+            fResult -= (C1 - fKnots[i+p+1] * C2) / (fKnots[i+p+1] - fKnots[i+1]);
         }
 
     }
@@ -308,11 +308,11 @@ float CDRGNURBSSurface::ComputeCoefficient( float *fKnots, int iInterval, int i,
 
 
 // -----------------------------------------------------------------------
-// void CDRGNURBSSurface::ComputeBasisCoefficients( void )
+// void CDRGNURBSSurface::ComputeBasisCoefficients(void)
 //
 // See the comment from the function above, ComputeCoefficient()
 // -----------------------------------------------------------------------
-void CDRGNURBSSurface::ComputeBasisCoefficients( void )
+void CDRGNURBSSurface::ComputeBasisCoefficients(void)
 {
 	int i, j, k;
 
@@ -321,26 +321,26 @@ void CDRGNURBSSurface::ComputeBasisCoefficients( void )
 	// for m_iUOrder polynomials each having m_iUOrder coefficients
 	//
 
-	for( i=0; i<m_iUBasisSpans; i++)
+	for(i=0; i<m_iUBasisSpans; i++)
 	{
-		for( j=0; j<m_iUOrder; j++)
+		for(j=0; j<m_iUOrder; j++)
 		{
-			for( k=0; k<m_iUOrder; k++)
+			for(k=0; k<m_iUOrder; k++)
 			{
 				m_UBasisCoefficients[ (i * m_iUOrder + j) * m_iUOrder + k ] =
-					ComputeCoefficient( m_UKnots, i + m_iUDegree, i + j, m_iUDegree, k );
+					ComputeCoefficient(m_UKnots, i + m_iUDegree, i + j, m_iUDegree, k);
 			}
 		}
 	}
 
-	for( i=0; i<m_iVBasisSpans; i++)
+	for(i=0; i<m_iVBasisSpans; i++)
 	{
-		for( j=0; j<m_iVOrder; j++)
+		for(j=0; j<m_iVOrder; j++)
 		{
-			for( k=0; k<m_iVOrder; k++)
+			for(k=0; k<m_iVOrder; k++)
 			{
 				m_VBasisCoefficients[ (i * m_iVOrder + j) * m_iVOrder + k ] =
-					ComputeCoefficient( m_VKnots, i + m_iVDegree, i + j, m_iVDegree, k );
+					ComputeCoefficient(m_VKnots, i + m_iVDegree, i + j, m_iVDegree, k);
 			}
 		}
 	}
@@ -348,12 +348,12 @@ void CDRGNURBSSurface::ComputeBasisCoefficients( void )
 }
 
 // -----------------------------------------------------------------------
-// void CDRGNURBSSurface::EvaluateBasisFunctions( void )
+// void CDRGNURBSSurface::EvaluateBasisFunctions(void)
 //
 // Evaluate the polynomials for the basis functions and store the results.
 // First derivatives are calculated as well.
 // -----------------------------------------------------------------------
-void CDRGNURBSSurface::EvaluateBasisFunctions( void )
+void CDRGNURBSSurface::EvaluateBasisFunctions(void)
 {
 	int i, j, k, idx;
 	float u, uinc;
@@ -366,9 +366,9 @@ void CDRGNURBSSurface::EvaluateBasisFunctions( void )
 	u = m_UKnots[idx+m_iUDegree];
 	uinc = (m_UKnots[m_iUKnots-m_iUOrder] - m_UKnots[m_iUDegree])/(m_iUTessellations);
 
-	for( i=0; i<=m_iUTessellations; i++ )
+	for(i=0; i<=m_iUTessellations; i++)
 	{
-		while( (idx < m_iUKnots - m_iUDegree*2 - 2) && (u >= m_UKnots[idx+m_iUDegree+1] ) )
+		while((idx < m_iUKnots - m_iUDegree*2 - 2) && (u >= m_UKnots[idx+m_iUDegree+1]))
 			idx++;
 
 		m_TessUKnotSpan[i] = idx+m_iUDegree;
@@ -376,15 +376,15 @@ void CDRGNURBSSurface::EvaluateBasisFunctions( void )
 		//
 		// Evaluate using Horner's method 
 		//
-		for( j=0; j<m_iUOrder; j++)
+		for(j=0; j<m_iUOrder; j++)
 		{
 			m_UBasis[(i*m_iUOrder+j) * SIMD_SIZE] = m_UBasisCoefficients[ (idx * m_iUOrder + j) * m_iUOrder + m_iUDegree ];
 			m_dUBasis[(i*m_iUOrder+j) * SIMD_SIZE] = m_UBasis[(i*m_iUOrder+j) * SIMD_SIZE] * m_iUDegree;
-			for( k=m_iUDegree-1; k>=0; k-- )
+			for(k=m_iUDegree-1; k>=0; k--)
 			{
 				m_UBasis[(i*m_iUOrder+j)*SIMD_SIZE] = m_UBasis[ (i*m_iUOrder+j)*SIMD_SIZE ] * u + 
 					m_UBasisCoefficients[ (idx * m_iUOrder + j) * m_iUOrder + k ];
-				if( k>0)
+				if(k>0)
 				{
 					m_dUBasis[(i*m_iUOrder+j)*SIMD_SIZE] = m_dUBasis[(i * m_iUOrder+j)*SIMD_SIZE] * u + 
 						m_UBasisCoefficients[ (idx * m_iUOrder + j) * m_iUOrder + k ] * k;
@@ -406,9 +406,9 @@ void CDRGNURBSSurface::EvaluateBasisFunctions( void )
 	v = m_VKnots[idx+m_iVDegree];
 	vinc = (m_VKnots[m_iVKnots-m_iVOrder] - m_VKnots[m_iVDegree])/(m_iVTessellations);
 
-	for( i=0; i<=m_iVTessellations; i++ )
+	for(i=0; i<=m_iVTessellations; i++)
 	{
-		while( (idx < m_iVKnots - m_iVDegree*2 - 2) && (v >= m_VKnots[idx+m_iVDegree+1] ) )
+		while((idx < m_iVKnots - m_iVDegree*2 - 2) && (v >= m_VKnots[idx+m_iVDegree+1]))
 			idx++;
 
 		m_TessVKnotSpan[i] = idx+m_iVDegree;
@@ -416,15 +416,15 @@ void CDRGNURBSSurface::EvaluateBasisFunctions( void )
 		//
 		// Evaluate using Horner's method 
 		//
-		for( j=0; j<m_iVOrder; j++)
+		for(j=0; j<m_iVOrder; j++)
 		{
 			m_VBasis[(i*m_iVOrder+j)*SIMD_SIZE] = m_VBasisCoefficients[ (idx * m_iVOrder + j) * m_iVOrder + m_iVDegree ];
 			m_dVBasis[(i*m_iVOrder+j)*SIMD_SIZE] = m_VBasis[(i*m_iVOrder+j)*SIMD_SIZE] * m_iVDegree;
-			for( k=m_iVDegree-1; k>=0; k-- )
+			for(k=m_iVDegree-1; k>=0; k--)
 			{
 				m_VBasis[(i*m_iVOrder+j)*SIMD_SIZE] = m_VBasis[ (i*m_iVOrder+j)*SIMD_SIZE ] * v + 
 					m_VBasisCoefficients[ (idx * m_iVOrder + j) * m_iVOrder + k ];
-				if( k>0)
+				if(k>0)
 				{
 					m_dVBasis[(i*m_iVOrder+j)*SIMD_SIZE] = m_dVBasis[(i * m_iVOrder+j)*SIMD_SIZE] * v + 
 						m_VBasisCoefficients[ (idx * m_iVOrder + j) * m_iVOrder + k ] * k;
@@ -455,14 +455,14 @@ void CDRGNURBSSurface::TessellateSurface()
 	float VBasis, dVBasis;
 	int idx, uidx;
 
-	if( (m_iUTessellations == 0) || (m_iVTessellations == 0) )
+	if((m_iUTessellations == 0) || (m_iVTessellations == 0))
 		return;
 
 	iVertices = 2 * (m_iVTessellations + 1);
 
 	// Step over the U and V coordinates and generate triangle strips to render
 	//
-	for( u=0; u<=m_iUTessellations; u++ )
+	for(u=0; u<=m_iUTessellations; u++)
 	{
 		// What's the current knot span in the U direction?
 		uKnot = m_TessUKnotSpan[u];
@@ -472,10 +472,10 @@ void CDRGNURBSSurface::TessellateSurface()
 		vKnot = -1;
 
 		// Create one row of vertices
-		for( v=0; v<=m_iVTessellations; v++)
+		for(v=0; v<=m_iVTessellations; v++)
 		{
 			idx = u * m_iUTessellations + v;
-			if( vKnot != m_TessVKnotSpan[v] )
+			if(vKnot != m_TessVKnotSpan[v])
 			{
 				vKnot = m_TessVKnotSpan[v];
 				//
@@ -484,7 +484,7 @@ void CDRGNURBSSurface::TessellateSurface()
 				// the control points (times the weights because the control points have
 				// the weights factored in).
 				//
-				for( k=0; k<=m_iVDegree; k++)
+				for(k=0; k<=m_iVDegree; k++)
 				{
 					iCPOffset = (uKnot - m_iUDegree) * m_iVControlPoints + (vKnot - m_iVDegree);
 					UTemp[k].x = m_UBasis[uidx] * pControlPoints[ iCPOffset + k ].x;
@@ -496,7 +496,7 @@ void CDRGNURBSSurface::TessellateSurface()
 					dUTemp[k].z = m_dUBasis[uidx] * pControlPoints[ iCPOffset + k ].z;
 					dUTemp[k].w = m_dUBasis[uidx] * pControlPoints[ iCPOffset + k ].w;
 
-					for( l=1; l<=m_iUDegree; l++ )
+					for(l=1; l<=m_iUDegree; l++)
 					{
 						iCPOffset += m_iVControlPoints;
 						UTemp[k].x += m_UBasis[uidx+l * SIMD_SIZE] * pControlPoints[ iCPOffset + k].x;
@@ -518,7 +518,7 @@ void CDRGNURBSSurface::TessellateSurface()
 			Pw.y = VBasis * UTemp[0].y;
 			Pw.z = VBasis * UTemp[0].z;
 			Pw.w = VBasis * UTemp[0].w;
-			for( k=1; k<=m_iVDegree; k++ )
+			for(k=1; k<=m_iVDegree; k++)
 			{
 				VBasis = m_VBasis[ (v * m_iVOrder + k)*SIMD_SIZE ];
 				dVBasis = m_dVBasis[ (v * m_iVOrder + k)*SIMD_SIZE ];
@@ -565,9 +565,9 @@ int CDRGNURBSSurface::GetTriangleCount()
 // control points as where used when the surface was initialized.
 //
 // -----------------------------------------------------------------------
-void CDRGNURBSSurface::UpdateControlPoints( Point4D *pControlPoints )
+void CDRGNURBSSurface::UpdateControlPoints(Point4D *pControlPoints)
 {
-	memcpy( m_pControlPoints, pControlPoints, m_iUControlPoints * m_iVControlPoints * sizeof( Point4D ) );
+	memcpy(m_pControlPoints, pControlPoints, m_iUControlPoints * m_iVControlPoints * sizeof(Point4D));
 }
 
 

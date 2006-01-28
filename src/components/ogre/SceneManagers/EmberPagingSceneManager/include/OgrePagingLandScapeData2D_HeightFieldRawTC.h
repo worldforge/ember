@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEDATA2D_HEIGHTFIELDRawTC_H
-#define PAGINGLANDSCAPEDATA2D_HEIGHTFIELDRawTC_H
+#ifndef PAGINGLandScapeDATA2D_HEIGHTFIELDRawTC_H
+#define PAGINGLandScapeDATA2D_HEIGHTFIELDRawTC_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -28,26 +28,26 @@ namespace Ogre
     class PagingLandScapeData2D_HeightFieldRawTC: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_HeightFieldRawTC( void );
+	        PagingLandScapeData2D_HeightFieldRawTC(void);
             virtual String getName(){return String("HeightFieldRawTC");}
 
-	        virtual ~PagingLandScapeData2D_HeightFieldRawTC( void );
+	        virtual ~PagingLandScapeData2D_HeightFieldRawTC(void);
 
-            virtual const Vector3 getNormalAt( const Real mX, const Real mZ );
-            virtual const ColourValue getBase( const Real mX, const Real mZ );
-            virtual const ColourValue getCoverage( const Real mX, const Real mZ );
-	        virtual PagingLandScapeData2D* newPage( );;
+            virtual const Vector3 getNormalAt(const Real mX, const Real mZ);
+            virtual const ColourValue getBase(const Real mX, const Real mZ);
+            virtual const ColourValue getCoverage(const Real mX, const Real mZ);
+	        virtual PagingLandScapeData2D* newPage();;
 
 
         protected:
-            virtual void _save( void );
-	        virtual bool _load( const uint x, const uint z );
-            virtual void _load( void );
-	        virtual void _unload( void );
+            virtual void _save(void);
+	        virtual bool _load(const uint x, const uint z);
+            virtual void _load(void);
+	        virtual void _unload(void);
 
         private:
-            inline Real _decodeRawTC( const Real encoded ) const;
-            inline ushort _encodeRawTC( const Real decoded ) const;    
+            inline Real _decodeRawTC(const Real encoded) const;
+            inline ushort _encodeRawTC(const Real decoded) const;    
 
 	        Real input_max, input_min;
 	        Image* mImage;

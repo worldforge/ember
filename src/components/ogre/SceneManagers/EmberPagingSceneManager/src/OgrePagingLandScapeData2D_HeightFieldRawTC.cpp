@@ -38,7 +38,7 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldRawTC::newPage( )
+	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldRawTC::newPage()
     {
        return new PagingLandScapeData2D_HeightFieldRawTC();
     }
@@ -74,11 +74,11 @@ namespace Ogre
         #ifndef _LOADEDNORM
             return PagingLandScapeData2D::getNormal(x,z);
         #else
-            if ( mImage )
+            if (mImage)
             {
-                uint Pos = static_cast<uint> (( z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
-                if ( mMax > Pos )
+                if (mMax > Pos)
                 {
                     const Real normalscale = 1.0f / 127.0f;
                     return Vector3 (((Real)(mImage->getData()[Pos + 0]) - 128.0f) * normalscale,
@@ -104,7 +104,7 @@ namespace Ogre
         const double divider = 65535.0 / PagingLandScapeOptions::getSingleton().scale.y;
         
         uint j = 0;
-        for (uint i = 0; i < mXDimension*mZDimension; i++ )
+        for (uint i = 0; i < mXDimension*mZDimension; i++)
         {             
             ushort syn = static_cast <ushort>  (_encodeRawTC (mHeightData[i]) * divider);
             #if OGRE_ENDIAN == ENDIAN_BIG
@@ -116,10 +116,10 @@ namespace Ogre
             #endif
             j += 2;            
         }
-        const String fname = PagingLandScapeOptions::getSingleton().landscape_filename + "." +
-                                    StringConverter::toString( mPageZ ) + "." +
-			                        StringConverter::toString( mPageX ) + ".";
-        const String extname = PagingLandScapeOptions::getSingleton().landscape_extension;
+        const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + "." +
+                                    StringConverter::toString(mPageZ) + "." +
+			                        StringConverter::toString(mPageX) + ".";
+        const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
 
 
        FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
@@ -151,24 +151,24 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldRawTC::_load( const uint mX, const uint mZ )
+    bool PagingLandScapeData2D_HeightFieldRawTC::_load(const uint mX, const uint mZ)
     {
         // Load data
         //mRawData.clear();
 
-        const String strFileName = PagingLandScapeOptions::getSingleton().landscape_filename + "." + 
-                            StringConverter::toString( mZ ) + "." +
-			                StringConverter::toString( mX ) + ".";
+        const String strFileName = PagingLandScapeOptions::getSingleton().LandScape_filename + "." + 
+                            StringConverter::toString(mZ) + "." +
+			                StringConverter::toString(mX) + ".";
 
             
         String finalName = strFileName + 
                         "modif." + 
-                        PagingLandScapeOptions::getSingleton().landscape_extension;
+                        PagingLandScapeOptions::getSingleton().LandScape_extension;
         if (!(PagingLandScapeOptions::getSingleton().Deformable && 
             ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,finalName)))
         {    
             finalName = strFileName + 
-                PagingLandScapeOptions::getSingleton().landscape_extension;   
+                PagingLandScapeOptions::getSingleton().LandScape_extension;   
             if (!ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,finalName))
             { 
                 LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + finalName, 
@@ -209,7 +209,7 @@ namespace Ogre
 
         mMaxheight = 0.0f;
         uint j = 0;
-        for (uint i = 0; i < mMax - 1;  i += mBpp )
+        for (uint i = 0; i < mMax - 1;  i += mBpp)
         {                  
             #if OGRE_ENDIAN == ENDIAN_BIG
                         ushort val = *pSrc++ <<8;
@@ -226,22 +226,22 @@ namespace Ogre
 //            if (PagingLandScapeOptions::getSingleton().vertex_shadowed)
 //            {
 //                mShadow = new Image();
-//                mShadow -> load( PagingLandScapeOptions::getSingleton().landscape_filename +
+//                mShadow->load(PagingLandScapeOptions::getSingleton().LandScape_filename +
 //                                ".HS." +
-//                                StringConverter::toString( mZ ) + "." +
-//                                StringConverter::toString( mX ) + "." +
+//                                StringConverter::toString(mZ) + "." +
+//                                StringConverter::toString(mX) + "." +
 //                                "png");
-//                                //PagingLandScapeOptions::getSingleton().landscape_extension );
+//                                //PagingLandScapeOptions::getSingleton().LandScape_extension);
 //            }
         return true;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2D_HeightFieldRawTC::_load( )
+    void PagingLandScapeData2D_HeightFieldRawTC::_load()
     {
         // Load data
-        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(PagingLandScapeOptions::getSingleton().landscape_filename +
+        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(PagingLandScapeOptions::getSingleton().LandScape_filename +
                     "." + 
-                    PagingLandScapeOptions::getSingleton().landscape_extension, 
+                    PagingLandScapeOptions::getSingleton().LandScape_extension, 
                     PagingLandScapeOptions::getSingleton().groupName);
 
         // Validate size
@@ -286,9 +286,9 @@ namespace Ogre
         uint dest_pos = 0;
         //for some reason water is 65035 in SRTM files...
         const bool srtm_water = PagingLandScapeOptions::getSingleton().SRTM_water;
-        for (uint i = 0; i < sourceHeight; ++i )
+        for (uint i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j )
+            for (uint j = 0; j < sourceWidth; ++j)
             {
                 #if OGRE_ENDIAN == ENDIAN_BIG
                             ushort val = *pSrc++ <<8;

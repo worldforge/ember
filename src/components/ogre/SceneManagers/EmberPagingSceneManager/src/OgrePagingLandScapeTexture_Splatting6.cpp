@@ -31,29 +31,34 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 
 
 namespace Ogre
-{   
+{ 
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting6::_setPagesize( void )
+    void PagingLandScapeTexture_Splatting6::_setPagesize(void)
     {
         PagingLandScapeOptions::getSingleton().VertexCompression = false;
         PagingLandScapeOptions::getSingleton().lodMorph = false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting6::_clearData( void )
+    void PagingLandScapeTexture_Splatting6::_clearData(void)
     {
     
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture* PagingLandScapeTexture_Splatting6::newTexture( )
+    PagingLandScapeTexture* PagingLandScapeTexture_Splatting6::newTexture()
     {
         return new PagingLandScapeTexture_Splatting6();
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting6::TextureRenderCapabilitesFullfilled()
-    {
-        if (PagingLandScapeOptions::getSingleton().numTextureUnits > 1)
-            return true;
-        return false;
+    {                                          
+		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		
+		if (opt->NumMatHeightSplat < 3)
+			return false;
+        if (opt->numTextureUnits < 2)
+            return false;
+            
+        return true;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_Splatting6::PagingLandScapeTexture_Splatting6() : PagingLandScapeTexture()
@@ -71,11 +76,11 @@ namespace Ogre
         {
             Image Imageloader;
             const String group = PagingLandScapeOptions::getSingleton().groupName;
-            Imageloader.load (filename, group);
-            const size_t psize = PagingLandScapeOptions::getSingleton().PageSize - 1;
+            Imageloader.load (filename, group);            
             Image ImageConvertertoAlphaFormat;
             ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), 
-                psize, psize, 1, PF_A8, false);
+                                                    Imageloader.getWidth(), 
+                                                    Imageloader.getHeight(),  1, PF_A8, false);
 
             TextureManager::getSingleton().loadImage (filename, 
                                                     group,
@@ -85,69 +90,68 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting6::_loadMaterial()
     {
-	    if (mMaterial.isNull() )
+	    if (mMaterial.isNull())
 	    {
+
+			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            
             // Create a new texture using the base image
-            const String filename = PagingLandScapeOptions::getSingleton().landscape_filename;
-            const String commonName = StringConverter::toString(mDataZ) + 
+            const String filename (opt->LandScape_filename);
+            const String commonName (StringConverter::toString(mDataZ) + 
                                         String(".") +
-                                        StringConverter::toString(mDataX);
-            const String matname = String("SplattingMaterial6.") + commonName + filename;
+                                        StringConverter::toString(mDataX));
+            const String matname (String("SplattingMaterial6.") + commonName + filename);
             mMaterial = MaterialManager::getSingleton().getByName(matname);
-            if (mMaterial.isNull() )
+            if (mMaterial.isNull())
 	        {
                 mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial6");
+                assert (!mMaterial.isNull());
                 mMaterial = mMaterial->clone(matname);
           
-                const String extname = PagingLandScapeOptions::getSingleton().TextureExtension;
-                const String alphamapname = ".Alpha.";
-
-
+                const String extname (opt->TextureExtension);
+                const String endName ("." + commonName + "." + extname);
+                Technique * const t = mMaterial->getTechnique(0);
                 
-                String texname = filename + ".Base." +
-                commonName + "." + extname;
-                // assign this texture to the material
-                //mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
+                String texname (filename + ".Base" + endName);
+                // assign the base texture to the material     
+                TextureManager::getSingleton().load (texname, opt->groupName);           
+                t->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
+                //distant texture.
                 mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
                 
-                // Create a new texture using the 1st alpha map
-                texname = filename + alphamapname + "0." +
-                    commonName + "." + extname;   
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
+                //assign the light texture
+                texname = filename + ".Light" + endName;
+                TextureManager::getSingleton().load (texname, opt->groupName);    
+                t->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
+                mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
 
-                // Create a new texture using the 2nd alpha map
-                texname = filename + alphamapname + "1." +
-                    commonName + "." + extname;   
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(1)->getTextureUnitState(1)->setTextureName(texname);
-
-                // Create a new texture using the 3rd alpha map
-                texname = filename + alphamapname + "2." +
-                    commonName + "." + extname;   
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(2)->getTextureUnitState(1)->setTextureName(texname);
-
-                // Create a new texture using the 4th alpha map
-                texname = filename + alphamapname + "3." +
-                    commonName + "." + extname;   
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(3)->getTextureUnitState(1)->setTextureName(texname);
-
-
-                //texname = filename + ".L." +
-                    //commonName + "." + extname;
-
-                //mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
-                //mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
-
+                
+                mMaterial->setLodLevels(opt->lodMaterialDistanceList);
+                
+                const String alphamapBeginname = filename + ".Alpha."; 
+                
+                const uint numSplats = opt->NumMatHeightSplat;
+                uint splat_pass = 0; 
+                while  (splat_pass < numSplats)
+                {            
+                    // Create a new texture using the alpha map
+                    texname = alphamapBeginname 
+                            + StringConverter::toString(splat_pass) 
+                            + endName; 
+                    LoadAlphaMap (texname);
+                    
+                    // assign this texture to the material
+                    t->getPass(splat_pass)->getTextureUnitState(1)->setTextureName(texname);
+                    // assign the splat material
+                    t->getPass(splat_pass)->getTextureUnitState(0)->setTextureName(opt->SplatDetailMapNames[splat_pass]); 
+                    
+                    splat_pass++;
+                }     
+                
                 // Now that we have all the resources in place, we load the material
+                mMaterial->setLodLevels(opt->lodMaterialDistanceList);
+	            mMaterial->setLightingEnabled(false);
                 mMaterial->load();
-	            mMaterial->setLightingEnabled( PagingLandScapeOptions::getSingleton().lit );
             }
 	    }
     }

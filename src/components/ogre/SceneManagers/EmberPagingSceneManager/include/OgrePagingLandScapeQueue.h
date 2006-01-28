@@ -21,19 +21,71 @@
 #include <queue>
 #include <list>
 
+#include "Ogre.h"
+#include "OgreSceneNode.h"
+#include "OgreVector3.h"
+
+
 namespace Ogre 
 {
+	//-----------------------------------------------------------------------
+	inline Real vectorToBoxDistance(const AxisAlignedBox &bbox, const Vector3& point)
+	{
+		const Vector3 &boxMin = bbox.getMinimum ();
+		const Vector3 halfSize ((bbox.getMaximum () - boxMin) * 0.5);
+		// work in the box's coordinate system
+		const Vector3 kDiff (point - (halfSize + boxMin));
+		// compute squared distance and closest point on box
+		Real fSqrDistance (0.0);
+		for (uint i = 0; i < 3; i++)
+		{
+			const Real kClosest = kDiff[i];
+			const Real khalfSize = halfSize[i];
+			if (kClosest < -khalfSize)
+			{
+				const Real fDelta = kClosest + khalfSize;
+				fSqrDistance += fDelta * fDelta;
+			}
+			else if (kClosest > khalfSize)
+			{
+				const Real fDelta = kClosest - khalfSize;
+				fSqrDistance += fDelta * fDelta;
+			}
+		}
+		return fSqrDistance;
+	}
+	//-----------------------------------------------------------------------
+	template <class T>
+	class  distanceToBoxSort
+	{
+	public:
+		//-----------------------------------------------------------------------
+		distanceToBoxSort(const Vector3 &camPos) : mCamPos(camPos)
+		{};
+		//-----------------------------------------------------------------------
+		bool operator()(T* x, T* y)
+		{ 
+			
+			return (x->getCenter() - mCamPos).squaredLength() <
+					(y->getCenter() - mCamPos).squaredLength();
 
+			//return vectorToBoxDistance (x->getWorldBbox(), mCamPos) <
+			//		vectorToBoxDistance (y->getWorldBbox(), mCamPos);
+		}
+	private:
+		const Vector3 mCamPos;
+	};
+	//-----------------------------------------------------------------------
 	/** This class holds classes T given to it by the plugin in a FIFO queue. */
     template<class T>
     class PagingLandScapeQueue
     {
 	
-           //typedef std::queue<T *, std::list<T *> > MsgQueType;
-           typedef std::list<T *>  MsgQueType;
-
         public:
 	
+           //typedef std::queue<T *, std::list<T *> > MsgQueType;
+			typedef std::list<T *>  MsgQueType;
+
             //-----------------------------------------------------------------------
             PagingLandScapeQueue( )
             {
@@ -41,37 +93,73 @@ namespace Ogre
             //-----------------------------------------------------------------------
             virtual ~PagingLandScapeQueue( )
             {
-//	            while ( !mQueue.empty ()  )
-//	            { 
-//                   // Queue is not empty so get a pointer to the
-//                   // first message in the queue
-//		            T* tmp = mQueue.front( );
-//                    // Now remove the pointer from the message queue
-//		            mQueue.pop( );                   
-//	            }
                 mQueue.clear ();
-            };
-            void clear ()
+			};
+			//-----------------------------------------------------------------------
+			void clear ()
             {
                 mQueue.clear ();
             };
             //-----------------------------------------------------------------------
             void push( T* e )
             {
+				assert ( std::find(mQueue.begin(), mQueue.end(), e) == mQueue.end());
                 // Insert the element at the end of the queue
-		mQueue.push_back ( e );
-            };
+				mQueue.push_back ( e );
+			};
+			//-----------------------------------------------------------------------
+			typename MsgQueType::iterator begin()
+			{
+				return mQueue.begin ();
+			};
+			//-----------------------------------------------------------------------
+			typename MsgQueType::iterator end()
+			{
+				return mQueue.end ();
+			};
+			//-----------------------------------------------------------------------
+			typename MsgQueType::iterator erase(typename MsgQueType::iterator it)
+			{
+				return mQueue.erase (it);
+			};
             //-----------------------------------------------------------------------
-            void remove(T* e)
+            void remove (T* e)
             {
 	            mQueue.remove (e);
-            };
+			};
+			//-----------------------------------------------------------------------
+			void sortNearest(const Vector3 &pos)
+			{
+				mQueue.sort (distanceToBoxSort <T>(pos));
+			};
+			//-----------------------------------------------------------------------
+			T *find_nearest(const Vector3 &pos)
+			{
+				T *p = 0;
+				Real mindist = std::numeric_limits<Real>::max ();
+				typename MsgQueType::iterator q, qend = mQueue.end ();
+				for (q = mQueue.begin (); 
+					q != qend; 
+					++q)
+				{
+					const Real res = (pos - (*q)->getCenter()).squaredLength();
+					//const Real res = vectorToBoxDistance ((*q)->getSceneNode()->_getWorldAABB(), pos);					
+					if (res < mindist)
+					{
+						mindist = res;
+						p = (*q);
+					}
+				}
+				if (p)
+					mQueue.remove (p);
+				return p;
+			};
             //-----------------------------------------------------------------------
             T *find_nearest(const uint x, const uint z)
             {
                 T *p = 0;
                 uint mindist = -1;
-		typename MsgQueType::iterator q, qend = mQueue.end ();
+				typename MsgQueType::iterator q, qend = mQueue.end ();
                 for (q = mQueue.begin (); 
                         q != qend; 
                         ++q)
@@ -79,7 +167,7 @@ namespace Ogre
                     uint lx, lz;
                     (*q)->getCoordinates(lx, lz);
 
-                    uint res = abs (static_cast <int> (lx - x)) + abs (static_cast <int> (lz - z));
+                    const uint res = abs (static_cast <int> (lx - x)) + abs (static_cast <int> (lz - z));
                     if (res < mindist)
                     {
                         mindist = res;
@@ -103,7 +191,7 @@ namespace Ogre
                         uint lx, lz;
                         (*q)->getCoordinates(lx, lz);
 
-                        uint res = abs (lx - x) + abs (lz - z);
+                        const uint res = abs (lx - x) + abs (lz - z);
                         if (res > maxdist)
                         {
                             maxdist = res;
@@ -115,18 +203,6 @@ namespace Ogre
                    mQueue.remove (p);
                 return p;
             }; 
-//            //-----------------------------------------------------------------------
-//            void update(PagingLandScapePageManager *pm)
-//            {
-//                MsgQueType::iterator lend = mQueue.end ();
-//                for (MsgQueType::iterator l = mQueue.begin (); 
-//                    l != lend; 
-//                    ++l)
-//                {
-//                    if ((*l)->touched ())
-//                        pm->removeFromQueues (*l);         
-//                }    
-//            };
             //-----------------------------------------------------------------------
             T* pop( )
             {

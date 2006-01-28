@@ -28,37 +28,37 @@ namespace Ogre
     {
         public:
 
-	        PagingLandScapeTexture_InstantBaseTextureEdit( void );        	
-	        virtual ~PagingLandScapeTexture_InstantBaseTextureEdit( void );
+	        PagingLandScapeTexture_InstantBaseTextureEdit(void);        	
+	        virtual ~PagingLandScapeTexture_InstantBaseTextureEdit(void);
 
             virtual String getName(){return String("InstantBaseTextureEdit");}
 
-            virtual void setPagesize( void ){_setPagesize();};
-            virtual void clearData( void ){_clearData();};
+            virtual void setPagesize(void){_setPagesize();};
+            virtual void clearData(void){_clearData();};
             
-            static void _setPagesize( void );
-            static void _clearData( void );
+            static void _setPagesize(void);
+            static void _clearData(void);
             
-            virtual const uint getNumChannels ( void ) const {return 1;};
+            virtual const uint getNumChannels (void) const {return 1;};
             virtual void paint (const uint x, const uint z, 
                 const Real paintForce, const ColourValue &mPaintColor);  
 
             virtual void deformheight (const uint x, const uint z, 
                         const Real paintForce);
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
 
-	        virtual void _loadMaterial( void );
-        	virtual void update( void );
-	        virtual void _unloadMaterial( void );
+	        virtual void _loadMaterial(void);
+        	virtual void update(void);
+	        virtual void _unloadMaterial(void);
 
         private :
-            void _LoadTexture( const String& TexName, const String& groupName );
-            void computeInstantBase( PagingLandScapeData2D* data, const Image::Box& rect ) const;    
-            void computeInstantBaselight( void ) const;
+            void _LoadTexture(const String& TexName, const String& groupName);
+            void computeInstantBase(PagingLandScapeData2D* data, const Image::Box& rect) const;    
+            void computeInstantBaselight(void) const;
 
 
             HardwarePixelBufferSharedPtr mBuffer;

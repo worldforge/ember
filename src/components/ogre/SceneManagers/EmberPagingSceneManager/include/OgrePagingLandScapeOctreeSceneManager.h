@@ -41,204 +41,246 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <list>
 #include <algorithm>
 
+#include "OgrePagingLandScapePrerequisites.h"
+
 #include "OgrePagingLandScapeOctree.h"
+#include "OgrePagingLandScapeOcclusion.h"
+#include "OgreRenderable.h"
 
 
 namespace Ogre
 {
 
-class PagingLandScapeOctreeNode;
+    class PagingLandScapeOctreeNode;
 
-class PagingLandScapeOctreeCamera;
-class PagingLandScapeOctreeIntersectionSceneQuery;
-class PagingLandScapeOctreeRaySceneQuery;
-class PagingLandScapeOctreeSphereSceneQuery;
-class PagingLandScapeOctreeAxisAlignedBoxSceneQuery;
-class PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery;
-
-
-typedef std::list < WireBoundingBox* > BoxList;
-typedef std::list < unsigned long > ColorList;
-//typedef std::list < SceneNode* > SceneNodeList;
+    class PagingLandScapeOctreeCamera;
+    class PagingLandScapeOctreeIntersectionSceneQuery;
+    class PagingLandScapeOctreeRaySceneQuery;
+    class PagingLandScapeOctreeSphereSceneQuery;
+    class PagingLandScapeOctreeAxisAlignedBoxSceneQuery;
+    class PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery;
 
 
-/** Specialized SceneManager that divides the geometry into an PagingLandScapeOctree in order to facilitate spatial queries.
-@remarks
-For debugging purposes, a special "CullCamera" can be defined.  To use it, call setUseCallCamera( true ),
-and create a camera named "CullCamera".  All culling will be performed using that camera, instead of the viewport
-camera, allowing you to fly around and examine culling.
-*/
 
-class PagingLandScapeOctreeSceneManager : public SceneManager
-{
-    friend class PagingLandScapeOctreeIntersectionSceneQuery;
-    friend class PagingLandScapeOctreeRaySceneQuery;
-    friend class PagingLandScapeOctreeSphereSceneQuery;
-    friend class PagingLandScapeOctreeAxisAlignedBoxSceneQuery;
-    friend class PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery;
+    //typedef std::list < WireBoundingBox* > BoxList;
+    //typedef std::list < OcclusionBoundingBox* > BoxList;
 
-public:
-    static int intersect_call;
-    /** Standard Constructor.  Initializes the PagingLandScapeOctree to -500,-500,-500 to 500,500,500 with unlimited depth. */
-    PagingLandScapeOctreeSceneManager( void );
-    /** Standard Constructor */
-    PagingLandScapeOctreeSceneManager( AxisAlignedBox& box, int max_depth );
-    /** Standard desctructor */
-    virtual ~PagingLandScapeOctreeSceneManager( void );
+    //typedef std::list < unsigned long > ColorList;
+    //typedef std::list < SceneNode* > SceneNodeList;
 
-    /** Initializes the manager to the given box and depth.
-    */
-    void init( const AxisAlignedBox& box, int d );
 
-    /** Creates a specialized PagingLandScapeOctreeNode */
-    virtual	SceneNode* createSceneNode( void );
-    /** Creates a specialized PagingLandScapeOctreeNode */
-    virtual SceneNode* createSceneNode( const String& name );
-    /** Creates a specialized PagingLandScapeOctreeCamera */
-    virtual Camera* createCamera( const String& name );
-
-    /** Deletes a scene node */
-    virtual void destroySceneNode( const String& name );
-
-    /** Does nothing more */
-    virtual void _updateSceneGraph( Camera* cam );
-
-    /** Recurses through the PagingLandScapeOctree determining which nodes are visible. */
-    virtual void _findVisibleObjects( Camera* cam, bool onlyShadowCasters );
-
-    /** Alerts each un-culled object, notifying it that it will be drawn.
-     * Useful for doing calculations only on nodes that will be drawn, prior
-     * to drawing them...
-     */
-    virtual void _alertVisibleObjects( void );
-
-    /** Walks through the PagingLandScapeOctree, adding any visible objects to the render queue.
+    /** Specialized SceneManager that divides the geometry into an PagingLandScapeOctree in order to facilitate spatial queries.
     @remarks
-	    If any octant in the PagingLandScapeOctree if completely within the the view frustum,
-	    all sub-children are automatically added with no visibility tests.
+    For debugging purposes, a special "CullCamera" can be defined.  To use it, call setUseCallCamera(true),
+    and create a camera named "CullCamera".  All culling will be performed using that camera, instead of the viewport
+    camera, allowing you to fly around and examine culling.
     */
-    void walkPagingLandScapeOctree( PagingLandScapeOctreeCamera * camera, RenderQueue * const queue,
-                                     PagingLandScapeOctree * const octant, const bool foundvisible, const bool onlyShadowCasters );
 
-    /** Checks the given PagingLandScapeOctreeNode, and determines if it needs to be moved
-    * to a different octant.
-    */
-    void _updatePagingLandScapeOctreeNode( PagingLandScapeOctreeNode* nod );
-    
-	/** Removes the given PagingLandScapeOctree node */
-    void _removePagingLandScapeOctreeNode( PagingLandScapeOctreeNode* nod ) const;
-    
-	/** Adds the PagingLandScapeOctree Node, starting at the given PagingLandScapeOctree, and recursing at max to the specified depth.
-    */
-    void _addPagingLandScapeOctreeNode( PagingLandScapeOctreeNode* ocnod, PagingLandScapeOctree* PagingLandScapeOctree, int depth = 0 );
-
-    /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the box into the given list.
-    It ignores the exclude scene node.
-    */
-    void findNodesIn( const AxisAlignedBox& box, std::list < SceneNode* > &list, 
-        const SceneNode* const exclude = 0 );
-
-    /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the sphere into the given list.
-    It ignores the exclude scene node.
-    */
-    void findNodesIn( const Sphere& sphere, std::list < SceneNode* > &list, 
-        const SceneNode* const exclude = 0 );
-
-    /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the volume into the given list.
-      It ignores the exclude scene node.
-      */
-    void findNodesIn( const PlaneBoundedVolume& volume, std::list < SceneNode* > &list, 
-        const SceneNode* const exclude=0 );
-
-    /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the ray into the given list.
-      It ignores the exclude scene node.
-      */
-    void findNodesIn( const Ray& ray, std::list < SceneNode* > &list, 
-        const SceneNode* const exclude=0 );
-
-    /** Sets the box visibility flag */
-    void setShowBoxes( bool b )
+    class PagingLandScapeOctreeSceneManager : public SceneManager
     {
-        mShowBoxes = b;
-    };
+        friend class PagingLandScapeOctreeIntersectionSceneQuery;
+        friend class PagingLandScapeOctreeRaySceneQuery;
+        friend class PagingLandScapeOctreeSphereSceneQuery;
+        friend class PagingLandScapeOctreeAxisAlignedBoxSceneQuery;
+        friend class PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery;
 
-    /** Sets the cull camera flag */
-    void setUseCullCamera( bool b )
-    {
-        mCullCamera = b;
-    };
+    public:
+        static int intersect_call;
+        /** Standard Constructor.  Initializes the PagingLandScapeOctree to -500,-500,-500 to 500,500,500 with unlimited depth. */
+        PagingLandScapeOctreeSceneManager(void);
+        /** Standard Constructor */
+        PagingLandScapeOctreeSceneManager(AxisAlignedBox& box, int max_depth);
+        /** Standard desctructor */
+        virtual ~PagingLandScapeOctreeSceneManager(void);
 
-    void setLoosePagingLandScapeOctree( bool b )
-    {
-        mLoose = b;
-    };
+        /** Initializes the manager to the given box and depth.
+        */
+        void init(const AxisAlignedBox& box, int d);
 
+        /** Creates a specialized PagingLandScapeOctreeNode */
+        virtual	SceneNode* createSceneNode(void);
+        /** Creates a specialized PagingLandScapeOctreeNode */
+        virtual SceneNode* createSceneNode(const String& name);
+        /** Creates a specialized PagingLandScapeOctreeCamera */
+        virtual Camera* createCamera(const String& name);
+        virtual void removeCamera(Camera *cam);
+        virtual void removeCamera(const String& name);
+        virtual void removeAllCameras(void);
 
-    /** Resizes the PagingLandScapeOctree to the given size */
-    void resize( const AxisAlignedBox& box );
-    void resize( const AxisAlignedBox &box, const int depth );
+        void addCamera(Camera *cam);
 
-    /** Sets the given option for the SceneManager
-               @remarks
-        Options are:
-        "Size", AxisAlignedBox *;
-        "CullCamera", bool *;
-        "Depth", int *;
-        "ShowPagingLandScapeOctree", bool *;
-    */
+        /** Deletes a scene node */
+        virtual void destroySceneNode(const String& name);
 
-    virtual bool setOption( const String& key, const void* value );
+        /** Does nothing more */
+        virtual void _updateSceneGraph(Camera* cam);
 
-    /** Gets the given option for the Scene Manager.
+        /** Recurses through the PagingLandScapeOctree determining which nodes are visible. */
+        virtual void _findVisibleObjects(Camera* cam, bool onlyShadowCasters);
+
+        /** Alerts each un-culled object, notifying it that it will be drawn.
+        * Useful for doing calculations only on nodes that will be drawn, prior
+        * to drawing them...
+        */
+        //virtual void _alertVisibleObjects(void);
+
+        /** Walks through the PagingLandScapeOctree, adding any visible objects to the render queue.
         @remarks
-        See setOption
-    */
-    virtual bool getOption( const String& key, void* value );
+	        If any octant in the PagingLandScapeOctree if completely within the the view frustum,
+	        all sub-children are automatically added with no visibility tests.
+        */
+        void walkPagingLandScapeOctree(PagingLandScapeOctreeCamera * camera, RenderQueue * const queue,
+                                        PagingLandScapeOctree * const octant, const bool foundvisible, const bool onlyShadowCasters);
 
-    bool getOptionValues( const String& key, StringVector& refValueList );
-    bool getOptionKeys( StringVector& refKeys );
-    /** Overridden from SceneManager */
-    void clearScene( void );
+        /** Checks the given PagingLandScapeOctreeNode, and determines if it needs to be moved
+        * to a different octant.
+        */
+        void _updatePagingLandScapeOctreeNode(PagingLandScapeOctreeNode* nod);
+        
+	    /** Removes the given PagingLandScapeOctree node */
+        void _removePagingLandScapeOctreeNode(PagingLandScapeOctreeNode* nod);
+        
+	    /** Adds the PagingLandScapeOctree Node, starting at the given PagingLandScapeOctree, and recursing at max to the specified depth.
+        */
+        void _addPagingLandScapeOctreeNode(PagingLandScapeOctreeNode* ocnod, PagingLandScapeOctree* PagingLandScapeOctree, int depth = 0);
 
-    AxisAlignedBoxSceneQuery* PagingLandScapeOctreeSceneManager::createAABBQuery( const AxisAlignedBox& box, unsigned long mask );
-    SphereSceneQuery* PagingLandScapeOctreeSceneManager::createSphereQuery( const Sphere& sphere, unsigned long mask );
-    PlaneBoundedVolumeListSceneQuery* createPlaneBoundedVolumeQuery( const PlaneBoundedVolumeList& volumes, unsigned long mask );
-    RaySceneQuery* createRayQuery( const Ray& ray, unsigned long mask );
-    IntersectionSceneQuery* createIntersectionQuery( unsigned long mask );
+	    /** Adds the PagingLandScapeOctree Node, starting at the given PagingLandScapeOctree, and recursing at max to the specified depth.
+        */
+        void _addPagingLandScapeOctreeMovableNode(PagingLandScapeOctreeNode* ocnod, PagingLandScapeOctree* PagingLandScapeOctree, int depth = 0);
 
-protected:
-    NodeList mVisible;
+	    /** Adds the PagingLandScapeOctree Node, starting at the given PagingLandScapeOctree, and recursing at max to the specified depth.
+        */
+        void _addPagingLandScapeOctreeStaticNode(PagingLandScapeOctreeNode* ocnod, PagingLandScapeOctree* PagingLandScapeOctree, int depth = 0);
 
-    /// The root PagingLandScapeOctree
-    PagingLandScapeOctree* mPagingLandScapeOctree;
+        /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the box into the given list.
+        It ignores the exclude scene node.
+        */
+        void findNodesIn(const AxisAlignedBox& box, std::list < SceneNode* > &list, 
+            const SceneNode* const exclude = 0);
 
-    /// list of boxes to be rendered
-    BoxList mBoxes;
+        /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the sphere into the given list.
+        It ignores the exclude scene node.
+        */
+        void findNodesIn(const Sphere& sphere, std::list < SceneNode* > &list, 
+            const SceneNode* const exclude = 0);
 
-    /// number of rendered objects
-    int mNumObjects;
+        /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the volume into the given list.
+        It ignores the exclude scene node.
+        */
+        void findNodesIn(const PlaneBoundedVolume& volume, std::list < SceneNode* > &list, 
+            const SceneNode* const exclude=0);
 
-    /// max depth for the tree.
-    int mMaxDepth;
-    /// Size of the PagingLandScapeOctree
-    AxisAlignedBox mBox;
+        /** Recurses the PagingLandScapeOctree, adding any nodes intersecting with the ray into the given list.
+        It ignores the exclude scene node.
+        */
+        void findNodesIn(const Ray& ray, std::list < SceneNode* > &list, 
+            const SceneNode* const exclude=0);
 
-    /// box visibility flag
-    bool mShowBoxes;
+        /** Sets the box visibility flag */
+        void setShowBoxes(bool b)
+        {
+            #ifdef _VISIBILITYDEBUG
+                    mShowBoxes = b;
+            #endif //_VISIBILITYDEBUG
+        };
 
-    /// cull camera flag
-    bool mCullCamera;
+        /** Sets the cull camera flag */
+        void setUseCullCamera(bool b)
+        {
+            #ifdef _VISIBILITYDEBUG
+                    mCullCamera = b;
+            #endif //_VISIBILITYDEBUG
+        };
 
-    bool mLoose;
+        /** Resizes the PagingLandScapeOctree to the given size */
+        void resize(const AxisAlignedBox& box);
+        void resize(const AxisAlignedBox &box, const int depth);
 
-    Real mCorners[ 24 ];
+        /** Sets the given option for the SceneManager
+                @remarks
+            Options are:
+            "Size", AxisAlignedBox *;
+            "CullCamera", bool *;
+            "Depth", int *;
+            "ShowPagingLandScapeOctree", bool *;
+        */
 
-    static unsigned long mColors[ 8 ];
-    static unsigned short mIndexes[ 24 ];
+        virtual bool setOption(const String& key, const void* value);
 
-    Matrix4 mScaleFactor;
+        /** Gets the given option for the Scene Manager.
+            @remarks
+            See setOption
+        */
+        virtual bool getOption(const String& key, void* value);
 
-};
+        bool getOptionValues(const String& key, StringVector& refValueList);
+        bool getOptionKeys(StringVector& refKeys);
+        /** Overridden from SceneManager */
+        void clearScene(void);
+
+        AxisAlignedBoxSceneQuery* createAABBQuery(const AxisAlignedBox& box, unsigned long mask);
+        SphereSceneQuery* createSphereQuery(const Sphere& sphere, unsigned long mask);
+        PlaneBoundedVolumeListSceneQuery* createPlaneBoundedVolumeQuery(const PlaneBoundedVolumeList& volumes, unsigned long mask);
+        RaySceneQuery* createRayQuery(const Ray& ray, unsigned long mask);
+        IntersectionSceneQuery* createIntersectionQuery(unsigned long mask);
+
+        void directRenderSingleQueue(RenderQueue *queue);
+        void directRenderSingleObject(Renderable *mo);
+
+        void addVisible(MovableObject *mo);
+
+        const AxisAlignedBox &getBoundingBox()const {return mBox;};
+
+        void registeredNodeInCamera(OcclusionElement *on);
+		void unregisteredNodeInCamera(OcclusionElement *on);
+
+        void registerCamera (PagingLandScapeOctreeCamera *c);
+		void unregisterCamera(PagingLandScapeOctreeCamera *c);
+
+    protected:
+
+        /// The root PagingLandScapeOctree
+        PagingLandScapeOctree* mPagingLandScapeOctree;
+
+        typedef std::map<unsigned int, MovableObjectList * > VisiblesPerCam;
+        VisiblesPerCam mVisibles;
+        MovableObjectList * mCamInProgressVisibles;
+        SceneDetailLevel mCamDetail;
+
+        /// number of rendered objects
+        int mNumObjects;
+
+        /// max depth for the tree.
+        int mMaxDepth;
+
+        /// Size of the PagingLandScapeOctree
+        AxisAlignedBox mBox;
+
+
+        // OCCLUSION 
+        Occlusion mOcclusion;
+
+        //DEBUG  INFO
+        #ifdef _VISIBILITYDEBUG
+            /// box visibility flag
+            bool mShowBoxes;
+            /// list of boxes to be rendered
+            MovableObjectList mBoxes;
+            /// cull camera flag
+            bool mCullCamera;
+            /// cull camera flag
+            bool mCullDebug;
+        #endif //_VISIBILITYDEBUG
+
+
+		PagingLandScapeOctreeCamera *mCurrentOptionCamera;
+
+        RenderTexture     *mOcclusionDepth;
+        Camera            *mOcclusionCamera;
+
+        void enableHardwareOcclusionTests();
+        void disableHardwareOcclusionTests();
+    };
 
 }
 

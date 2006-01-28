@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETILEMANAGER_H
-#define PAGINGLANDSCAPETILEMANAGER_H
+#ifndef PAGINGLandScapeTILEMANAGER_H
+#define PAGINGLandScapeTILEMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSingleton.h"
@@ -31,33 +31,33 @@ namespace Ogre
     {
         public:
 
-	        PagingLandScapeTileManager( void );
+	        PagingLandScapeTileManager(void);
 
-	        virtual ~PagingLandScapeTileManager( void );
+	        virtual ~PagingLandScapeTileManager(void);
 
 	        /** Retrieve a free tile.
 	        */
-	        PagingLandScapeTile* getTile( void );
+	        PagingLandScapeTile* getTile(void);
 
 	        /** Make a tile free.
 	        */
-	        void freeTile( PagingLandScapeTile* tile );
+	        void freeTile(PagingLandScapeTile* tile);
 
-            void reset( void );
+            void reset(void);
 
-	        uint numTiles( void ) const;
+	        uint numTiles(void) const;
 
-	        int numFree( void ) const;
+	        int numFree(void) const;
 
-	        static PagingLandScapeTileManager& getSingleton( void );
+	        static PagingLandScapeTileManager& getSingleton(void);
 
-	        static PagingLandScapeTileManager* getSingletonPtr( void );
+	        static PagingLandScapeTileManager* getSingletonPtr(void);
 
-            void load( void );
-            void clear( void );
+            void load(void);
+            void clear(void);
 
         protected:
-	        void _addBatch( const uint num );
+	        void _addBatch(const uint num);
 
 	        PagingLandScapeTileRow mTiles;
 

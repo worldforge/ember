@@ -34,7 +34,7 @@ email                : janders@users.sf.net
 #define PagingLandScapeOctreeAxisAlignedBoxSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include <OgreSceneManager.h>
+#include "OgreSceneManager.h"
 
 namespace Ogre
 {
@@ -43,12 +43,12 @@ namespace Ogre
 class _OgrePagingLandScapeExport PagingLandScapeOctreeAxisAlignedBoxSceneQuery : public DefaultAxisAlignedBoxSceneQuery
 {
 public:
-    PagingLandScapeOctreeAxisAlignedBoxSceneQuery( SceneManager* creator );
-    virtual ~PagingLandScapeOctreeAxisAlignedBoxSceneQuery( void );
+    PagingLandScapeOctreeAxisAlignedBoxSceneQuery(SceneManager* creator);
+    virtual ~PagingLandScapeOctreeAxisAlignedBoxSceneQuery(void);
 
     /** See RayScenQuery. */
 	/** Finds any entities that intersect the AAB for the query. */
-    void execute( SceneQueryListener* listener );
+    void execute(SceneQueryListener* listener);
 };
 
 }

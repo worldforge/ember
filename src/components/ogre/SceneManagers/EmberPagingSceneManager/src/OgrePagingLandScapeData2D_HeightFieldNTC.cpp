@@ -37,7 +37,7 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldNTC::newPage( )
+	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldNTC::newPage()
     {
        return new PagingLandScapeData2D_HeightFieldNTC();
     }
@@ -73,11 +73,11 @@ namespace Ogre
         #ifndef _LOADEDNORM
             return PagingLandScapeData2D::getNormal(x,z);
         #else
-            if ( mImage )
+            if (mImage)
             {
-                uint Pos = static_cast<uint> (( z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
-                if ( mMax > Pos )
+                if (mMax > Pos)
                 {
                     const Real normalscale = 1.0f / 127.0f;
                     return Vector3 (((Real)(mImage->getData()[Pos + 0]) - 128.0f) * normalscale,
@@ -105,14 +105,14 @@ namespace Ogre
             uchar *img = mImage->getData();
             uint j = 0;
             const uint bpp = static_cast <uint> (mBpp);
-            for (uint i = 0; i < mMax - 1;  i += bpp )
+            for (uint i = 0; i < mMax - 1;  i += bpp)
             {
                 img[ i + (mBpp - 1)] =  uchar (_encodeTC(mHeightData[j++]) * scale);               
             }
-            const String fname = PagingLandScapeOptions::getSingleton().landscape_filename + ".HN." + 
-                                        StringConverter::toString( mPageZ ) + "." +
-			                            StringConverter::toString( mPageX ) + ".";
-            const String extname = PagingLandScapeOptions::getSingleton().landscape_extension;
+            const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + ".HN." + 
+                                        StringConverter::toString(mPageZ) + "." +
+			                            StringConverter::toString(mPageX) + ".";
+            const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
 
 
         FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
@@ -131,21 +131,21 @@ namespace Ogre
       
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldNTC::_load( const uint mX, const uint mZ )
+    bool PagingLandScapeData2D_HeightFieldNTC::_load(const uint mX, const uint mZ)
     { 
-        const String strFileName = PagingLandScapeOptions::getSingleton().landscape_filename + ".HN." + 
-                            StringConverter::toString( mZ ) + "." +
-			                StringConverter::toString( mX ) + ".";
+        const String strFileName = PagingLandScapeOptions::getSingleton().LandScape_filename + ".HN." + 
+                            StringConverter::toString(mZ) + "." +
+			                StringConverter::toString(mX) + ".";
 
         String finalName = strFileName + 
                         "modif." + 
-                        PagingLandScapeOptions::getSingleton().landscape_extension;
+                        PagingLandScapeOptions::getSingleton().LandScape_extension;
         if (!(PagingLandScapeOptions::getSingleton().Deformable && 
             ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,
             finalName)))
         {
             finalName = strFileName + 
-                PagingLandScapeOptions::getSingleton().landscape_extension;  
+                PagingLandScapeOptions::getSingleton().LandScape_extension;  
             if (!ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,
                 finalName))
             { 
@@ -159,25 +159,25 @@ namespace Ogre
         mImage->load (finalName,  PagingLandScapeOptions::getSingleton().groupName); 
         
         //check to make sure it's 2^n + 1 size.
-        if ( mImage -> getWidth() != mImage->getHeight() ||	!_checkSize( mImage->getWidth() ) )
+        if (mImage->getWidth() != mImage->getHeight() ||	!_checkSize(mImage->getWidth()))
         {
             String err = "Error: Invalid heightmap size : " +
-                StringConverter::toString( static_cast <uint> (mImage->getWidth()) ) +
-                "," + StringConverter::toString( static_cast <uint> (mImage->getHeight()) ) +
+                StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
+                "," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
                 ". Should be 2^n+1, 2^n+1";
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightField::_load" );
+            OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightField::_load");
         }
 
         mBpp = PixelUtil::getNumElemBytes (mImage->getFormat ());
-        if ( mBpp != 4 )
+        if (mBpp != 4)
         {
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error: Image is not a RGBA image.(4 bytes, 32 bits)", 
-                "PagingLandScapeData2D_HeightField::_load" );
+            OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Error: Image is not a RGBA image.(4 bytes, 32 bits)", 
+                "PagingLandScapeData2D_HeightField::_load");
         }
 
-        if ( mSize != mImage->getWidth() )
+        if (mSize != mImage->getWidth())
         {
-            OGRE_EXCEPT ( Exception::ERR_INVALIDPARAMS, "Error: Declared World size <> Height Map Size.", "PagingLandScapeData2D_HeightField::_load" );
+            OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, "Error: Declared World size <> Height Map Size.", "PagingLandScapeData2D_HeightField::_load");
         }
 
         mXDimension = mImage->getWidth();
@@ -192,39 +192,39 @@ namespace Ogre
         uchar *data = mImage->getData();
         mMaxheight = 0.0f;
         const uint bpp = static_cast <uint> (mBpp);
-        for (uint i = 0; i < mMax - 1;  i += bpp )
+        for (uint i = 0; i < mMax - 1;  i += bpp)
             {  
                 const Real h = _decodeTC(data[ i + (mBpp - 1)] * divider)* scale;
-                mMaxheight = std::max ( h, mMaxheight);
+                mMaxheight = std::max (h, mMaxheight);
                 mHeightData[j++] = h;
             }
         return true;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2D_HeightFieldNTC::_load( )
+    void PagingLandScapeData2D_HeightFieldNTC::_load()
     {
 	   
 		    mImage = new Image();
 
-		    mImage -> load( PagingLandScapeOptions::getSingleton().landscape_filename + 
-                "." + PagingLandScapeOptions::getSingleton().landscape_extension, 
+		    mImage->load(PagingLandScapeOptions::getSingleton().LandScape_filename + 
+                "." + PagingLandScapeOptions::getSingleton().LandScape_extension, 
                     PagingLandScapeOptions::getSingleton().groupName);
 
 		    //check to make sure it's 2^n size.
-		    if ( !_checkSize( mImage->getHeight() ) ||	!_checkSize( mImage->getWidth() ) )
+		    if (!_checkSize(mImage->getHeight()) ||	!_checkSize(mImage->getWidth()))
 		    {
 			    String err = "Error: Invalid heightmap size : " +
-				    StringConverter::toString( static_cast <uint> (mImage->getWidth() )) +
-				    "," + StringConverter::toString( static_cast <uint> (mImage->getHeight()) ) +
+				    StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
+				    "," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
 				    ". Should be 2^n, 2^n";
-			    OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightFieldNTC::_load" );
+			    OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightFieldNTC::_load");
 		    }
 
             mBpp = PixelUtil::getNumElemBytes (mImage->getFormat ());
             if (mBpp != 1)
 		    {
-			    OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error: Image is not a grayscale image.(1 byte, 8 bits)", 
-                    "PagingLandScapeData2D_HeightFieldNTC::_load" );
+			    OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Error: Image is not a grayscale image.(1 byte, 8 bits)", 
+                    "PagingLandScapeData2D_HeightFieldNTC::_load");
 		    }
 
             mSize = static_cast <uint> (mImage->getWidth());
@@ -238,10 +238,10 @@ namespace Ogre
             uchar *data = mImage->getData();
             mMaxheight = 0.0f;
             const uint bpp = static_cast <uint> (mBpp);
-            for (uint i = 0; i < mMax - 1;  i += bpp )
+            for (uint i = 0; i < mMax - 1;  i += bpp)
             {  
                 const Real h = _decodeTC(data[ i + (mBpp - 1)] * divider)* scale;
-                mMaxheight = std::max ( h, mMaxheight);
+                mMaxheight = std::max (h, mMaxheight);
                 mHeightData[j++] = h;
             }
 	    

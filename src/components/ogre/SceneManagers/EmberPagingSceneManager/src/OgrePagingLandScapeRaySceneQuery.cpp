@@ -55,14 +55,13 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
         dir == Vector3::NEGATIVE_UNIT_Y)
     {
         noTerrainQuery = false;
-        if (mask & RSQ_Height || mask & RSQ_Height_no_interpolation)
-            noSpecializedQueries = false;
+        //noSpecializedQueries = false;
 
         Real height;
         if (mask & RSQ_Height_no_interpolation)
             height = PagingLandScapeData2DManager::getSingleton().getWorldHeight(origin.x, origin.z);
         else
-            height = PagingLandScapeData2DManager::getSingleton().getRealWorldHeight(origin.x, origin.z);
+            height = PagingLandScapeData2DManager::getSingleton().getInterpolatedWorldHeight(origin.x, origin.z);
 
         worldFrag.singleIntersection.x = origin.x;
         worldFrag.singleIntersection.z = origin.z;
@@ -76,7 +75,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
     else if (mask & RSQ_FirstTerrain)
     {
         noTerrainQuery = false;
-        noSpecializedQueries = false;
+        //noSpecializedQueries = false;
 
         Real resFactor = 1.0f;
 		// Only bother if the non-default mask has been set
@@ -90,10 +89,10 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
             {
 				resFactor = 0.25f;
 			} 
-            else if(mask & RSQ_8xRes) 
-            {
-				resFactor = 0.125f;
-			}
+			//if(mask & RSQ_8xRes) 
+            //{
+			//	resFactor = 0.125f;
+			//}
 		}
         if (static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr)->intersectSegmentTerrain(
                         origin, dir*resFactor, 
@@ -103,13 +102,12 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
             //if (!listener->queryResult(&worldFrag,  0))
 			//		    return;
             listener->queryResult(&worldFrag,  0);
-            return;
         }
     }  
     else if((mask & RSQ_AllTerrain))
 	{
         noTerrainQuery = false;
-        noSpecializedQueries = false;
+        //noSpecializedQueries = false;
 
        	Real resFactor = 1.0f;
 		// Only bother if the non-default mask has been set
@@ -123,10 +121,10 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
             {
 				resFactor = 0.25f;
 			} 
-            else if(mask & RSQ_8xRes) 
-            {
-				resFactor = 0.125f;
-			}
+            //else if(mask & RSQ_8xRes) 
+            //{
+			//	resFactor = 0.125f;
+			//}
 		}
 
 
@@ -141,7 +139,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 	    Real dist = 0.0f;
 
         // while ray is inside or ray is outside but raydir going inside
-        while ( (ray.y < 0 && raydir.y > 0) || 
+        while ((ray.y < 0 && raydir.y > 0) || 
                 (ray.y > maxHeight    && raydir.y < 0) || 
                 (ray.x < -MaxTerrainX && raydir.x > 0) || 
                 (ray.x > MaxTerrainX  && raydir.x < 0) || 
@@ -162,7 +160,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
                     frag->singleIntersection = land;
                     			
                     if (!listener->queryResult(frag,  dist))
-					            return;
+					    break;
                 }
             }
         } 
@@ -180,7 +178,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
     {
         if (noTerrainQuery)
         {
-            mask |= RSQ_AllTerrain;
+            mask = RSQ_AllTerrain;
             // Check for terrain contacts
             PagingLandScapeRaySceneQuery::execute(listener);
             mask = 0;
@@ -193,7 +191,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 Vector3 PagingLandScapeRaySceneQuery::getHeightAt(const Vector3& origin) const
 {
 
-	return Vector3(origin.x, PagingLandScapeData2DManager::getSingleton().getRealWorldHeight(origin.x, origin.z), origin.z);
+	return Vector3(origin.x, PagingLandScapeData2DManager::getSingleton().getInterpolatedWorldHeight(origin.x, origin.z), origin.z);
 
 }
 

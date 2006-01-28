@@ -41,21 +41,21 @@ PagingLandScapeTileManager* PagingLandScapeTileManager::getSingletonPtr(void)
 }
 PagingLandScapeTileManager& PagingLandScapeTileManager::getSingleton(void)
 {  
-	assert( ms_Singleton );  return ( *ms_Singleton );  
+	assert(ms_Singleton);  return (*ms_Singleton);  
 }
 
 //-----------------------------------------------------------------------
-PagingLandScapeTileManager::PagingLandScapeTileManager( )
+PagingLandScapeTileManager::PagingLandScapeTileManager()
 {	
 	mNumTiles = 0;
 	// Add the requested initial number
-	_addBatch(PagingLandScapeOptions::getSingleton().num_tiles);
+	//_addBatch(PagingLandScapeOptions::getSingleton().num_tiles);
 }
 //-----------------------------------------------------------------------
-PagingLandScapeTileManager::~PagingLandScapeTileManager( )
+PagingLandScapeTileManager::~PagingLandScapeTileManager()
 {
     assert (mTiles.size() == mNumTiles);
-    std::for_each( mTiles.begin(), 
+    std::for_each(mTiles.begin(), 
              mTiles.end(),  
               delete_object()); 
 	// destroy tiles
@@ -65,7 +65,7 @@ PagingLandScapeTileManager::~PagingLandScapeTileManager( )
 //-----------------------------------------------------------------------
 void PagingLandScapeTileManager::clear()
 {
-    assert ( mTiles.size() == (uint) mQueue.getSize() && 
+    assert (mTiles.size() == (uint) mQueue.getSize() && 
              mTiles.size() == mNumTiles);
 }
 //-----------------------------------------------------------------------
@@ -76,6 +76,7 @@ void PagingLandScapeTileManager::load()
     {
         _addBatch (nTile - mNumTiles);
     }
+	assert (!mTiles.empty());
 //    else if (mNumTiles > nTile)
 //    {
 //        for (uint i = nTile; i < mNumTiles; i++)
@@ -89,47 +90,42 @@ void PagingLandScapeTileManager::load()
 //    }
 }
 //-----------------------------------------------------------------------
-PagingLandScapeTile *PagingLandScapeTileManager::getTile( )
+PagingLandScapeTile *PagingLandScapeTileManager::getTile()
 {
-	if ( mQueue.empty() )
+	if (mQueue.empty())
 	{
-		// We don´t have more renderables, so we are going to add more
+		// We do not have more tiles, so we need to allocate more
 		_addBatch(PagingLandScapeOptions::getSingleton().num_tiles_increment);
 		// Increment the next batch by a 10%
 		//PagingLandScapeOptions::getSingleton().num_tiles_increment += static_cast<uint> (PagingLandScapeOptions::getSingleton().num_tiles_increment * 0.1f);
 	}
-	return mQueue.pop( );
+	return mQueue.pop();
 }
-
 //-----------------------------------------------------------------------
-void PagingLandScapeTileManager::freeTile( PagingLandScapeTile *tile )
+void PagingLandScapeTileManager::freeTile(PagingLandScapeTile *tile)
 {
-	mQueue.push( tile );
+	mQueue.push (tile);
 }
-
 //-----------------------------------------------------------------------
-uint PagingLandScapeTileManager::numTiles( void ) const
+uint PagingLandScapeTileManager::numTiles(void) const
 {
 	return mNumTiles;
 }
-
 //-----------------------------------------------------------------------
-int PagingLandScapeTileManager::numFree( ) const
+int PagingLandScapeTileManager::numFree() const
 {
-	return mQueue.getSize( );
+	return mQueue.getSize();
 }
-
 //-----------------------------------------------------------------------
 void PagingLandScapeTileManager::_addBatch(const uint num)
 {
 	mNumTiles += num;
     mTiles.reserve (mNumTiles);
-	for ( uint i = 0; i < num; i++ )
+	for (uint i = 0; i < num; i++)
 	{
-		PagingLandScapeTile* tile = new PagingLandScapeTile( );
-		mTiles.push_back(tile);
-		mQueue.push( tile );
+		PagingLandScapeTile* tile = new PagingLandScapeTile();
+		mTiles.push_back (tile);
+		mQueue.push (tile);
 	}
 }
-
 } //namespace

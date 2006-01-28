@@ -32,27 +32,145 @@ email                : janders@users.sf.net
 Enhancements 2003 - 2004 (C) The OGRE Team
 
 ***************************************************************************/
-#include <OgreMath.h>
-#include <OgreAxisAlignedBox.h>
-#include <OgreRoot.h>
+#include "OgreMath.h"
+#include "OgreAxisAlignedBox.h"
+#include "OgreRoot.h"
+#include "OgreViewport.h"
+#include "OgreRenderSystem.h"
 
-#include <OgrePagingLandScapeOctreeCamera.h>
+#include "OgrePagingLandScapeOctreeCamera.h"
+#include "OgrePagingLandScapeOctreeSceneManager.h"
 
 namespace Ogre
 {
-    PagingLandScapeOctreeCamera::PagingLandScapeOctreeCamera( const String& name, SceneManager* sm ) : Camera( name, sm )
+    unsigned int PagingLandScapeOctreeCamera::s_camId = 0;
+    //-----------------------------------------------------------------------
+    PagingLandScapeOctreeCamera::PagingLandScapeOctreeCamera(const String& name, SceneManager* sm) : 
+            Camera(name, sm),
+            mVisFacesLastCHCRender(0),
+            isOcclusionSystemRegistered (false),
+            mOcclusionMode (VIEW_FRUSTUM_DIRECT),
+            mFrameId(0),
+            mFrameSceneId(0)
     {
-                                                                          
+       mUniqueIdentification = s_camId++;      
     }
-
+    //-----------------------------------------------------------------------
     PagingLandScapeOctreeCamera::~PagingLandScapeOctreeCamera()
     {
+    } 
+    //-----------------------------------------------------------------------
+    bool PagingLandScapeOctreeCamera::nextFrame(const unsigned int framesSceneId)
+    {
+        if  (framesSceneId != mFrameSceneId)
+        {  
+            // change frame Id counter 
+            //that identify current frame.
+            mFrameSceneId = framesSceneId;
+            mFrameId += 1;
+            return true;
+        }
+        return false;
     }
-
-    PagingLandScapeOctreeCamera::Visibility PagingLandScapeOctreeCamera::getVisibility( const AxisAlignedBox &bound ) const 
+    //----------------------------------------------------------------------- 
+    bool PagingLandScapeOctreeCamera::isRegisteredInOcclusionSystem() const
+    {
+        return isOcclusionSystemRegistered;
+    }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctreeCamera::setRegisteredInOcclusionSystem(const bool registered)
+    {
+        isOcclusionSystemRegistered = registered;
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapeOctreeCamera::changeOcclusionMode(culling_modes nextOcclusionMode)
+	{
+		if (nextOcclusionMode != mOcclusionMode) 
+		{
+			if (nextOcclusionMode == VIEW_FRUSTUM_DIRECT)
+			{
+				if (mLastViewport)
+					mLastViewport->setClearEveryFrame (true);
+			}
+			else
+			{            
+				if (!Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(RSC_HWOCCLUSION))
+				{
+					OGRE_EXCEPT(1, 
+						"Your card does not support HWOCCLUSION ", 
+						"PagingLandScapeOctreeCamera::setNextOcclusionMode");
+				}
+				if (mLastViewport)
+					mLastViewport->setClearEveryFrame (false); 
+			}
+			
+			if (needRegistrationInOcclusionSystem() && !isRegisteredInOcclusionSystem()) 
+			{
+				static_cast <PagingLandScapeOctreeSceneManager *> (getSceneManager ())->registerCamera(this);
+				setRegisteredInOcclusionSystem (true);				
+			}
+			else if (!needRegistrationInOcclusionSystem() && isRegisteredInOcclusionSystem())
+			{	
+				static_cast <PagingLandScapeOctreeSceneManager *> (getSceneManager ())->unregisterCamera(this);
+				setRegisteredInOcclusionSystem (false);
+			}
+			mOcclusionMode = nextOcclusionMode;
+		}
+	}
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctreeCamera::setNextOcclusionMode()
+    {
+        culling_modes nextOcclusionMode = static_cast <culling_modes> ((mOcclusionMode + 1) % NUM_CULLING_MODE);
+        
+        changeOcclusionMode (nextOcclusionMode);
+	}
+	//-----------------------------------------------------------------------
+	bool PagingLandScapeOctreeCamera::needRegistrationInOcclusionSystem() const
+	{
+		#ifdef _VISIBILITYDEBUG	
+			return true;
+		#endif //_VISIBILITYDEBUG   
+		
+		if (mOcclusionMode == CHC || 
+			mOcclusionMode == CHC_CONSERVATIVE)
+			return true;
+		else
+			return false;
+	};
+	//-----------------------------------------------------------------------
+	void PagingLandScapeOctreeCamera::setOcclusionMode(culling_modes occlusionMode) 
+	{
+		changeOcclusionMode (occlusionMode);
+	};
+	//-----------------------------------------------------------------------
+	void PagingLandScapeOctreeCamera::setOcclusionModeAsString(const String &cullingModeAsString) 
+	{
+		culling_modes cullingmode (VIEW_FRUSTUM_DIRECT);
+		if (cullingModeAsString == "VIEW_FRUSTUM_DIRECT")
+			cullingmode = VIEW_FRUSTUM_DIRECT;
+		else if (cullingModeAsString == "CHC")
+			cullingmode = CHC;
+		else if (cullingModeAsString == "CHC_CONSERVATIVE")
+			cullingmode = CHC_CONSERVATIVE;
+		setOcclusionMode(cullingmode);	
+	};
+	//-----------------------------------------------------------------------
+	String PagingLandScapeOctreeCamera::getOcclusionModeAsString() const
+	{
+		switch (getOcclusionMode())
+		{
+		case CHC: return String("CHC");
+		case CHC_CONSERVATIVE: return String("CHC_CONSERVATIVE");
+		case VIEW_FRUSTUM_DIRECT:
+		default:
+			return String("VIEW_FRUSTUM_DIRECT");
+		} 
+	}
+    //-----------------------------------------------------------------------
+    PagingLandScapeOctreeCamera::Visibility PagingLandScapeOctreeCamera::getVisibility(const AxisAlignedBox &bound) const 
     {
         // Null boxes always invisible
-        if ( bound.isNull() )
+        if (bound.isNull())
             return NONE;
 
         // Make any pending updates to the calculated frustum
@@ -68,16 +186,16 @@ namespace Ogre
 
         static unsigned int corners[ 8 ] = {0, 4, 3, 5, 2, 6, 1, 7};
 
-        static unsigned int planes[ 6 ] = {FRUSTUM_PLANE_TOP, FRUSTUM_PLANE_BOTTOM,
-                        FRUSTUM_PLANE_LEFT, FRUSTUM_PLANE_RIGHT,
-                        FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_NEAR };
+        static unsigned int planes[ 6 ] = 
+                        {FRUSTUM_PLANE_TOP, FRUSTUM_PLANE_BOTTOM,
+                         FRUSTUM_PLANE_LEFT, FRUSTUM_PLANE_RIGHT,
+                         FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_NEAR };
 
         bool all_inside = true;
 
         const bool infinite_far_clip = (mFarDist == 0);
-        for ( int plane = 0; plane < 6; ++plane )
+        for (unsigned int plane = 0; plane < 6; ++plane)
         {
-
             const unsigned int currPlane = planes[ plane ];
 
             // Skip far plane if infinite view frustum
@@ -86,22 +204,22 @@ namespace Ogre
 
             bool all_outside = true;
             const Plane &frustumPlane = mFrustumPlanes[ currPlane ];
-            for ( unsigned int corner = 0; corner < 8; ++corner )
+            for (unsigned int corner = 0; corner < 8; ++corner)
             {
-                const Real distance = frustumPlane.getDistance( pCorners[ corners[ corner ] ] );
+                const Real distance = frustumPlane.getDistance(pCorners[ corners[ corner ] ]);
                
-                all_outside = all_outside && ( distance < 0 );
-                all_inside = all_inside && ( distance >= 0 );
+                all_outside = all_outside && (distance < 0);
+                all_inside = all_inside && (distance >= 0);
 
-                if ( !all_outside && !all_inside )
+                if (!all_outside && !all_inside)
                     break;
             }
 
-            if ( all_outside )
+            if (all_outside)
                 return NONE;
         }
 
-        if ( all_inside )
+        if (all_inside)
             return FULL;
         else
             return PARTIAL;

@@ -34,7 +34,7 @@ email                : janders@users.sf.net
 #define PagingLandScapeOctreePlaneBoundedVolumeListSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include <OgreSceneManager.h>
+#include "OgreSceneManager.h"
 
 namespace Ogre
 {
@@ -43,11 +43,11 @@ namespace Ogre
 class _OgrePagingLandScapeExport PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery : public DefaultPlaneBoundedVolumeListSceneQuery
 {
 public:
-    PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery( SceneManager* creator );
-    virtual ~PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery( void );
+    PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(SceneManager* creator);
+    virtual ~PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(void);
 
     /** See SceneQuery. */
-    void execute( SceneQueryListener* listener );
+    void execute(SceneQueryListener* listener);
 };
 
 }

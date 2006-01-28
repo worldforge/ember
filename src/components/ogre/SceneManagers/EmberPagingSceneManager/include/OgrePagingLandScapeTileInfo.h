@@ -15,8 +15,8 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETILEINFO_H
-#define PAGINGLANDSCAPETILEINFO_H
+#ifndef PAGINGLandScapeTILEINFO_H
+#define PAGINGLandScapeTILEINFO_H
 
 namespace Ogre
 {

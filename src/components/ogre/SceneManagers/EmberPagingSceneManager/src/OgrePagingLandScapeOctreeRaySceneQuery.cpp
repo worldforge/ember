@@ -33,46 +33,46 @@ email                : janders@users.sf.net
  
 ***************************************************************************/
 
-#include <OgrePagingLandScapeOctreeRaySceneQuery.h>
-#include <OgrePagingLandScapeOctreeSceneManager.h>
-#include <OgreEntity.h>
+#include "OgrePagingLandScapeOctreeRaySceneQuery.h"
+#include "OgrePagingLandScapeOctreeSceneManager.h"
+#include "OgreEntity.h"
 
 namespace Ogre
 {
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreeRaySceneQuery::PagingLandScapeOctreeRaySceneQuery( SceneManager* creator )
-	: DefaultRaySceneQuery( creator )
+PagingLandScapeOctreeRaySceneQuery::PagingLandScapeOctreeRaySceneQuery(SceneManager* creator)
+	: DefaultRaySceneQuery(creator)
 {
 }
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreeRaySceneQuery::~PagingLandScapeOctreeRaySceneQuery( void )
+PagingLandScapeOctreeRaySceneQuery::~PagingLandScapeOctreeRaySceneQuery(void)
 {
 }
 
 //---------------------------------------------------------------------
-void PagingLandScapeOctreeRaySceneQuery::execute( RaySceneQueryListener* listener )
+void PagingLandScapeOctreeRaySceneQuery::execute(RaySceneQueryListener* listener)
 {
     std::list < SceneNode* > list;
     //find the nodes that intersect the AAB
-    static_cast< PagingLandScapeOctreeSceneManager* >( mParentSceneMgr )->findNodesIn( mRay, list, 0 );
+    static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(mRay, list, 0);
 
     //grab all movables from the node that intersect...
-    std::list < SceneNode* >::iterator it = list.begin( );
-    while ( it != list.end( ) )
+    std::list < SceneNode* >::iterator it = list.begin();
+    while (it != list.end())
     {
-        SceneNode::ObjectIterator oit = ( *it )->getAttachedObjectIterator( );
-        while ( oit.hasMoreElements( ) )
+        SceneNode::ObjectIterator oit = (*it)->getAttachedObjectIterator();
+        while (oit.hasMoreElements())
         {
-            MovableObject* m = oit.getNext( );
-            if ( ( m->getQueryFlags( ) & mQueryMask ) && m->isInScene( ) )
+            MovableObject* m = oit.getNext();
+            if ((m->getQueryFlags() & mQueryMask) && m->isInScene())
             {
-                std::pair< bool, Real > result = mRay.intersects( m->getWorldBoundingBox( ) );
+                std::pair< bool, Real > result = mRay.intersects(m->getWorldBoundingBox());
 
-                if ( result.first )
+                if (result.first)
                 {
-                    listener->queryResult( m, result.second );
+                    listener->queryResult(m, result.second);
                 }
             }
         }

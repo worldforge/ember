@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTUREMANAGER_H
-#define PAGINGLANDSCAPETEXTUREMANAGER_H
+#ifndef PAGINGLandScapeTEXTUREMANAGER_H
+#define PAGINGLandScapeTEXTUREMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSingleton.h"
@@ -28,32 +28,31 @@ namespace Ogre
     {
         public:
 
-	        PagingLandScapeTextureManager( void );
+	        PagingLandScapeTextureManager(void);
 
-	        virtual ~PagingLandScapeTextureManager( void );
+	        virtual ~PagingLandScapeTextureManager(void);
 
-            void load( void );
-            void clear( void );
-            void WorldDimensionChange( void );
-            PagingLandScapeTexture* allocateTexture( ) const;
-            void reset( void );
+            void load(void);
+            void clear(void);
+            void WorldDimensionChange(void);
+            PagingLandScapeTexture* allocateTexture() const;
+            void reset(void);
 
-	        void load( const uint texX, const uint texZ );
+	        void load(const uint texX, const uint texZ);
+            void reload(const uint dataX, const uint dataZ);
+	        void unload(const uint texX, const uint texZ);
 
-	        void unload( const uint texX, const uint texZ );
+         	bool isLoaded(const uint texX, const uint texZ);
 
-         	bool isLoaded( const uint texX, const uint texZ );
 
-            PagingLandScapeTexture* getTexture( const uint texX, const uint texZ );
+	        const MaterialPtr& getMaterial(const uint texX, const uint texZ);
 
-	        const MaterialPtr& getMaterial( const uint texX, const uint texZ ) const;
+	        static PagingLandScapeTextureManager& getSingleton(void);
 
-	        static PagingLandScapeTextureManager& getSingleton( void );
+	        static PagingLandScapeTextureManager* getSingletonPtr(void);
 
-	        static PagingLandScapeTextureManager* getSingletonPtr( void );
-
-            MaterialPtr getMapMaterial( void );
-            void setMapMaterial( void );
+            MaterialPtr getMapMaterial(void);
+            void setMapMaterial(void);
 
             void setPaintChannel (const uint channel){mPaintChannel = channel;};
             void setPaintColor (const ColourValue &color){mPaintColor = color;};
@@ -70,6 +69,11 @@ namespace Ogre
                 mTextureTypeMap.push_back(source);
             }
 
+			PagingLandScapeTexture* getTexture(const uint i, const uint j,
+				const bool alwaysReturn = true);
+			PagingLandScapeTexture* getNewTexture(const uint i, const uint j);
+			void releaseTexture (PagingLandScapeTexture*p );
+
         protected:
             PagingLandScapeOptions*     mOptions;
 
@@ -81,7 +85,7 @@ namespace Ogre
 
             uint                        mTexturePageSize;
      
-	        PagingLandScapeTexturePages mTexture;
+	        //PagingLandScapeTexturePages mTexture;
 
             MaterialPtr                 mMapMaterial;
 
@@ -92,7 +96,11 @@ namespace Ogre
 
         PagingLandScapeTextureMap mTextureTypeMap;
         /// The currently active page Data2d source
-        PagingLandScapeTexture* mActiveTextureType;
+		PagingLandScapeTexture* mActiveTextureType;
+
+		PagingLandScapeTextureList mActiveTextures;
+		PagingLandScapeTextureList mFreeTextures;
+		PagingLandScapeTextureArray mTexturePool;
     };
 
 } //namespace

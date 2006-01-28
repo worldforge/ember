@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEDATA2D_H
-#define PAGINGLANDSCAPEDATA2D_H
+#ifndef PAGINGLandScapeDATA2D_H
+#define PAGINGLandScapeDATA2D_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -28,21 +28,21 @@ namespace Ogre
     class PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D( void );
+	        PagingLandScapeData2D(void);
 
-	        virtual ~PagingLandScapeData2D( void );
+	        virtual ~PagingLandScapeData2D(void);
 
-	        virtual PagingLandScapeData2D* newPage( ) = 0;
+	        virtual PagingLandScapeData2D* newPage() = 0;
 
             virtual String getName()= 0;
-	        virtual bool load( const uint mX, const uint mZ );
+	        virtual bool load(const uint mX, const uint mZ);
 
-            virtual void load( void );
+            virtual void load(void);
 
-	        virtual void init( void );
-	        virtual void uninit( void );
+	        virtual void init(void);
+	        virtual void uninit(void);
 
-	        virtual void unload( void );
+	        virtual void unload(void);
 
 #ifndef _MAPSPLITTER
             /**
@@ -55,7 +55,7 @@ namespace Ogre
             *        Give some info on tile to 
             *       help coordinate system change
             */
-            const bool DeformHeight( const Vector3& deformationPoint, Real &modificationHeight );
+            const bool DeformHeight(const Vector3& deformationPoint, Real &modificationHeight);
 
             /**
             *
@@ -67,11 +67,11 @@ namespace Ogre
             * \param &modificationHeight 
             *        What modification do to terrain
             */
-            const bool DeformHeight( const uint x, const uint z, Real &modificationHeight );
+            const bool DeformHeight(const uint x, const uint z, Real &modificationHeight);
 
 
-            void setHeight( const uint x, const uint z, const Real h );
-            bool setHeight( const uint x, const uint z, const uint Pos, const Real h );
+            void setHeight(const uint x, const uint z, const Real h);
+            bool setHeight(const uint x, const uint z, const uint Pos, const Real h);
              /**
             *
             *    get smallest rectangle containing all deformation
@@ -80,7 +80,7 @@ namespace Ogre
             * \return Box struct describing rectangle
             *        
             */
-            Image::Box getDeformationRectangle( void );
+            Image::Box getDeformationRectangle(void);
 
             /**
             *
@@ -90,95 +90,103 @@ namespace Ogre
             * \param &z 
             *       z Position on 2d height grid
             */
-            void adjustDeformationRectangle( const uint x, const uint z );
+            void adjustDeformationRectangle(const uint x, const uint z);
 
             /**
             *
             *    Reset Deformation rectangle
             */
-            void resetDeformationRectangle( void );
+            void resetDeformationRectangle(void);
 #endif // _MAPSPLITTER
 
-            virtual const Vector3 getNormal( const Real mX, const Real mZ );
-            virtual const ColourValue getBase( const Real mX, const Real mZ )
+            virtual const Vector3 getNormal(const Real mX, const Real mZ);
+            virtual const ColourValue getBase(const Real mX, const Real mZ) const 
             {
 				return ColourValue::White;
 			};
 
-            virtual const ColourValue getCoverage( const Real mX, const Real mZ )
+            virtual const ColourValue getCoverage(const Real mX, const Real mZ) const 
             {
 				return ColourValue::White;
 			};
 
-            virtual const Real getShadow( const Real mX, const Real mZ, const bool& positive )
+            virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive) const 
             {
 				return 0.0f;
 			};
 
-            const Real getHeightAbsolute( const Real x, const Real z );
+            const Real getHeightAbsolute(const Real x, const Real z);
 
-            inline const Real getHeight( const Real x, const Real z )
+            inline const Real getHeight(const Real x, const Real z) const 
             {
-                assert( z < mSize && x < mSize );
-                assert( mHeightData );                
-                const uint Pos = static_cast< uint > ( z * mSize + x );
-                assert( mMaxArrayPos > Pos );
+                assert (z < mSize && x < mSize);
+                assert (mHeightData);                
+                const uint Pos = static_cast< uint > (z * mSize + x);
+                assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];    
             };
 
-            inline const Real getHeight( const uint x, const uint z )
+            inline const Real getHeight(const uint x, const uint z) const 
             {
-                assert( mHeightData );
-                assert( z < mSize && x < mSize );
+                assert (mHeightData);
+                assert (z < mSize && x < mSize);
                 const uint Pos = z * mSize + x;
-                assert( mMaxArrayPos > Pos );
+                assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];  
             };
 
-            inline const Real getHeight( const int x, const int z )
+            inline const Real getHeight(const int x, const int z) const 
             {
-                assert( mHeightData );
-                assert( static_cast< uint >( z ) < mSize && static_cast< uint >( x ) < mSize );
-                const uint Pos = static_cast< uint >( z * mSize + x );
-                assert( mMaxArrayPos > Pos );
+                assert (mHeightData);
+                assert (static_cast< uint >(z) < mSize && static_cast< uint >(x) < mSize);
+                const uint Pos = static_cast< uint >(z * mSize + x);
+                assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ]; 
             };
             
-            inline const Real getMaxHeight( void )
+            inline const Real getMaxHeight(void) const 
 			{
 				return mMaxheight;
 			};
 
-            Real* getHeightData( void )
+            Real* getHeightData(void)
 			{
 				return mHeightData;
 			};
 
-	        bool isLoaded( void );
+			bool isLoaded(void) const  {return mIsLoaded;};
 
-            void computePowerof2PlusOneSize( void );
+            void computePowerof2PlusOneSize(void);
             
-			virtual size_t getXDimension( void )
+			virtual size_t getXDimension(void) const 
 			{
 				return mXDimension;
 			};
 
-            virtual size_t getZDimension( void )
+            virtual size_t getZDimension(void) const 
 			{
 				return mZDimension;
 			};
 
-            virtual size_t getSize( void )
+            virtual size_t getSize(void) const 
 			{
 				return mSize;
 			};
 
+			void getCoordinates(uint& X, uint& Z) const 
+			{
+				X = mPageX;
+				Z = mPageZ;
+			};
+			inline bool isCoord(const uint x, const uint z) const {return (mPageX == x && mPageZ == z);};
+
+
         protected:
-            virtual void _save( void ) = 0;
-            virtual bool _load( const uint x, const uint z ) = 0;
-	        virtual void _load( void ) = 0;
-	        virtual void _unload( void ) = 0;
-            bool _checkSize( const size_t s );
+            virtual void _save(void) = 0;
+            virtual bool _load(const uint x, const uint z) = 0;
+	        virtual void _load(void) = 0;
+	        virtual void _unload(void) = 0;
+            bool _checkSize(const size_t s);
 
             //  computed Height Data  (scaled)
             Real *mHeightData;

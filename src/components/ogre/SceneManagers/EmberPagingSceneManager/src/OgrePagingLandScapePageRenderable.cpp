@@ -57,8 +57,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapePageRenderable::PagingLandScapePageRenderable(const String& name, const uint pageX, const uint pageZ, 
         const AxisAlignedBox &bounds) :
-        Renderable(), MovableObject(),
-            mName(name),
+        Renderable(),
             mX(pageX),
             mZ(pageZ),
             mBounds(bounds),
@@ -67,12 +66,14 @@ namespace Ogre
     {
 	    // No shadow projection
         MovableObject::mCastShadows = false;
+        // Default query flags to top bit so users can exclude it if they wish
+        //MovableObject::mQueryFlags = SceneManager::WORLD_GEOMETRY_QUERY_MASK;
 
         // Setup render op
 	    mCurrIndexes = new IndexData();
 
         const uint Numtiles = PagingLandScapeOptions::getSingleton().NumTiles + 1;
-        const size_t new_length = ( (Numtiles - 1) * (Numtiles - 1) * 2 * 2 * 2 );
+        const size_t new_length = ((Numtiles - 1) * (Numtiles - 1) * 2 * 2 * 2);
         mCurrIndexes->indexCount = new_length;
         mCurrIndexes->indexStart = 0;
         mCurrIndexes->indexBuffer = 
@@ -137,7 +138,7 @@ namespace Ogre
 
         const uint Numtiles = PagingLandScapeOptions::getSingleton().NumTiles + 1;
 
-        const Real invpagesizeX = 1.0f / ((Numtiles - 1) * PagingLandScapeOptions::getSingleton().world_width );
+        const Real invpagesizeX = 1.0f / ((Numtiles - 1) * PagingLandScapeOptions::getSingleton().world_width);
         const Real invpagesizeZ = 1.0f / ((Numtiles  - 1)*  PagingLandScapeOptions::getSingleton().world_height);
 
         const Real texOffsetX = mX * (Numtiles  - 1) * invpagesizeX;
@@ -147,13 +148,13 @@ namespace Ogre
         const Real scale_x = mOpt->scale.x * (mOpt->TileSize - 1);
         const Real scale_z = mOpt->scale.z * (mOpt->TileSize - 1);
         uint i, j;
-        for (j = 0; j < Numtiles ; j ++ )
+        for (j = 0; j < Numtiles ; j ++)
         {
             // This allow to reuse the variables in the loop
             const Real h_pos = j * scale_z;
             const Real Tex_pos = texOffsetZ + j  * invpagesizeZ;
 
-		    for (i = 0; i < Numtiles; i ++ )
+		    for (i = 0; i < Numtiles; i ++)
             {
                 // vertices are relative to the scene node
                
@@ -184,9 +185,9 @@ namespace Ogre
                                             HardwareBuffer::HBL_DISCARD));
         uint height_count = 0;
         uint NumIndexes = 0;
-        for (j = 0; j < Numtiles - 1; j ++ )
+        for (j = 0; j < Numtiles - 1; j ++)
         {
-		    for (i = 0; i < Numtiles - 1; i ++ )
+		    for (i = 0; i < Numtiles - 1; i ++)
             {
                 // Indexes
                 *pIdx++ = static_cast<ushort> (i        + height_count);            NumIndexes++;                
@@ -220,31 +221,30 @@ namespace Ogre
 
         assert (mParentNode);
         mCenter = mBounds.getCenter()  + mParentNode->getWorldPosition();
-	    mWorldBoundingSphere.setCenter( mCenter);
-	    mWorldBoundingSphere.setRadius( mBounds.getMaximum().length() );
+	    mWorldBoundingSphere.setCenter(mCenter);
+	    mWorldBoundingSphere.setRadius(mBounds.getMaximum().length());
 
         mParentNode->needUpdate();
 
-        // Default query flags to top bit so users can exclude it if they wish
-        mQueryFlags = SceneManager::WORLD_GEOMETRY_QUERY_MASK;
 
         MovableObject::setRenderQueueGroup(PagingLandScapePageManager::getSingleton().getRenderQueueGroupID());
 
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageRenderable::_notifyCurrentCamera( Camera* cam )
+    void PagingLandScapePageRenderable::_notifyCurrentCamera(Camera* cam)
     {
 	    if (static_cast<PagingLandScapeCamera*> (cam)->getVisibility (mBounds))
         {
            mVisible = true;
+           //MovableObject::_notifyCurrentCamera(cam);
         }
         else
            mVisible = false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageRenderable::_updateRenderQueue( RenderQueue* queue )
+    void PagingLandScapePageRenderable::_updateRenderQueue(RenderQueue* queue)
     {    	
-        queue -> addRenderable( this );
+        queue->addRenderable(this);
     }
     //-----------------------------------------------------------------------
     Technique* PagingLandScapePageRenderable::getTechnique(void) const
@@ -270,7 +270,7 @@ namespace Ogre
 	    return mWorldBoundingSphere.getRadius();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageRenderable::getRenderOperation( RenderOperation& op )
+    void PagingLandScapePageRenderable::getRenderOperation(RenderOperation& op)
     {
         //setup indexes for vertices and uvs...
         op.useIndexes = true;
@@ -280,7 +280,7 @@ namespace Ogre
 
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageRenderable::getWorldTransforms( Matrix4* xform ) const
+    void PagingLandScapePageRenderable::getWorldTransforms(Matrix4* xform) const
     {
         *xform = mParentNode->_getFullTransform();
     }
@@ -295,7 +295,7 @@ namespace Ogre
         return mCenter;
     }
     //-----------------------------------------------------------------------
-    void  PagingLandScapePageRenderable::setMaterial( const MaterialPtr &mat )
+    void  PagingLandScapePageRenderable::setMaterial(const MaterialPtr &mat)
     {
         mMaterial = mat;
     }

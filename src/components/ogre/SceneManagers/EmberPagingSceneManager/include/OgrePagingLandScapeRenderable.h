@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPERENDERABLE_H
-#define PAGINGLANDSCAPERENDERABLE_H
+#ifndef PAGINGLandScapeRENDERABLE_H
+#define PAGINGLandScapeRENDERABLE_H
 
 
 #include "OgrePagingLandScapePrerequisites.h"
@@ -25,10 +25,10 @@
 namespace Ogre
 {
     
-    /** Represents a landscape tile in terms of vertexes.
+    /** Represents a LandScape tile in terms of vertexes.
 	@remarks
 	A LandScapeRenderable represents a tile used to render a
-	block of landscape using the procedural terrain approach for LOD.
+	block of LandScape using the procedural terrain approach for LOD.
     */
     class PagingLandScapeRenderable : public Renderable, public MovableObject
     {
@@ -37,83 +37,83 @@ namespace Ogre
 		/** Sets the appropriate neighbor for this TerrainRenderable.  Neighbors are necessary
 				to know when to bridge between LODs.
 		*/
-		void _setNeighbor( Neighbor n, PagingLandScapeRenderable* t )
+		void _setNeighbor(Neighbor n, PagingLandScapeRenderable* t)
 		{
 			mNeighbors[ n ] = t;
 		};
 		
 		/** Returns the neighbor TerrainRenderable.
 		*/
-		PagingLandScapeRenderable* _getNeighbor( Neighbor n )
+		PagingLandScapeRenderable* _getNeighbor(Neighbor n) const 
 		{
 			return mNeighbors[ n ];
 		}
 		
+		/** Returns RenderLevel of current TerrainRenderable.
+		*/
+		int getRenderLevel() const 
+		{
+			return mRenderLevel < 0 ? 0 : mRenderLevel;
+		}
+		
 		/// The current LOD level
 		int mRenderLevel;   
+
 		// if a neighbour changes its RenderLevel.
 		// get a new Index buffer.
 		void update();
 		
 		/**	Initializes the LandScapeRenderable with the given options and the starting coordinates of this block.
 		*/
-		PagingLandScapeRenderable( void );
+		PagingLandScapeRenderable(void);
 		
-		~PagingLandScapeRenderable( void );
+		~PagingLandScapeRenderable(void);
 		
-		void init( PagingLandScapeTileInfo* info );
-		void uninit( void);
+		void init(PagingLandScapeTileInfo* info);
+		void uninit(void);
 		
-		bool load( void );
+		bool load(void);
 		
-		void loadTextureCoordinates( void );
-		
-		void setNeedUpdate( void )
+		void setNeedUpdate(void)
 		{
 			mNeedReload = true;
 		};
 		void adjustDeformationRectangle(uint x, uint z);
 
-		void unload( void );
+		void unload(void);
 		
-		void setMaterial( const MaterialPtr& mat );
+		void setMaterial(const MaterialPtr& mat);
 		
-		const bool isLoaded( void )
+		const bool isLoaded(void)
 		{
+			assert ((mIsLoaded && mParentNode) || (!mIsLoaded && mParentNode == 0) );
 			return mIsLoaded;
 		};
 		
-		const Real getMaxHeight( void )
+		const Real getMaxHeight(void)
 		{
-			return ( mBounds.getMaximum( ) ).y;
+			return (mBounds.getMaximum()).y;
 		};
 		
-		void setInUse( bool inUse );
+		void setInUse(bool inUse);
 		
 		static PagingLandScapeOptions* mOpt;
 		
 		/////////Movable overridden object methods
 		
 		/** Updates the level of detail to be used for rendering this TerrainRenderable based on the passed in Camera */
-		virtual void _notifyCurrentCamera( Camera* cam );
+		virtual void _notifyCurrentCamera(Camera* cam);
 		
-		virtual void _updateRenderQueue( RenderQueue* queue );
-		
-		
-		/** Returns the name of the TerrainRenderable */
-		virtual const String& getName( void ) const
-		{
-			return mName;
-		};
+		virtual void _updateRenderQueue(RenderQueue* queue);
 		
 		/** Returns the type of the movable. */
-		virtual const String& getMovableType( void ) const
+		virtual const String& getMovableType(void) const
 		{
 			return mType;
 		};
 		
 		/** Returns the bounding box of this TerrainRenderable */
-		const AxisAlignedBox& getBoundingBox( void ) const
+		const AxisAlignedBox& getBoundingBox(void) const
 		{
 			return mBounds;
 		};
@@ -125,33 +125,48 @@ namespace Ogre
 		Each TerrainRenderable has a block of vertices that represent the terrain.  Index arrays are dynamically
 		created for mipmap level, and then cached.
 		*/
-		virtual void getRenderOperation( RenderOperation& rend );
+		virtual void getRenderOperation(RenderOperation& rend);
 		
-		virtual const MaterialPtr& getMaterial( void ) const
+		virtual const MaterialPtr& getMaterial(void) const
 		{
 			return mMaterial;
 		};
 		
-		virtual void getWorldTransforms( Matrix4* xform ) const;
+		virtual void getWorldTransforms(Matrix4* xform) const;
 		
-		virtual const Quaternion& getWorldOrientation( void ) const;
-		virtual const Vector3& getWorldPosition( void ) const;
+		virtual const Quaternion& getWorldOrientation(void) const;
+		virtual const Vector3& getWorldPosition(void) const;
 		
 		/** @copydoc Renderable::getLights */
-		const LightList& getLights( void ) const;
+		const LightList& getLights(void) const;
 		
-		virtual Technique* getTechnique( void ) const;
+		virtual Technique* getTechnique(void) const;
 		
-		virtual Real getSquaredViewDepth( const Camera* cam ) const;
+		virtual Real getSquaredViewDepth(const Camera* cam) const;
 		
-		virtual Real getBoundingRadius( void ) const;
+		virtual Real getBoundingRadius(void) const;
 		
 		/// Overridden from Renderable to allow the morph LOD entry to be set
-		void _updateCustomGpuParameter( const GpuProgramParameters::AutoConstantEntry& constantEntry, GpuProgramParameters* params ) const;
+		void _updateCustomGpuParameter(const GpuProgramParameters::AutoConstantEntry& constantEntry, GpuProgramParameters* params) const;
 	
         void setMaxLod (const bool setmaxlod) {mForcedMaxLod = setmaxlod;};
 
+		const String& getName(void) const {return mName;};
+		/** Internal method called to notify the object that it has been attached to a node.
+		*/
+		virtual void _notifyAttached(Node* parent, bool isTagPoint = false);
+
+		bool isInUse() const {return mInUse;};
+
+		IndexData* getRawIndexData(const int renderlevel);
+		void getRawVertexData(Vector3* pVerts);
+		const uint PagingLandScapeRenderable::getVertexCount();
+
 	protected:	
+		String mName;
+		uint mUpperDistance;
+		uint mBeyondFarDistance;
+
 		VertexData* mCurrVertexes;
 		IndexData* mCurrIndexes;
 		
@@ -159,8 +174,6 @@ namespace Ogre
 		AxisAlignedBox mBounds;
 		/// The center point of this tile
 		Vector3 mCenter;
-		/// Name of this renderable
-		String mName;
 		/// The MovableObject type
 		static String mType;
 		/// Current material used by this tile
@@ -168,10 +181,11 @@ namespace Ogre
 		
 		/// Connection to tiles four neighbors
 		PagingLandScapeRenderable* mNeighbors [ 4 ];
+
 		/// Gets the index data for this tile based on current settings
-		IndexData* getIndexData( void );
+		IndexData* getIndexData(void);
 		
-		//unsigned short *mIndex;
+		IndexData*mIndex;
 		unsigned int mNumIndex;
 		
 		bool mInUse;
@@ -185,7 +199,7 @@ namespace Ogre
 		
 		// Morph
 		/** Returns the  vertex coord for the given coordinates */
-		inline Real _vertex( const int x, const int z, const int n ) const;
+		inline Real _vertex(const int x, const int z, const int n) const;
 		Real* mHeightfield;
 		/// The previous 'next' LOD level down, for frame coherency
 		int mLastNextLevel; 
@@ -204,14 +218,26 @@ namespace Ogre
 		// distance between center renderable and camera.
 		Real mDistanceToCam;
 		
-		void _calculateMinLevelDist2( const Real C );
+		void _calculateMinLevelDist2(const Real C);
 		/// Create a blank delta buffer for use in morphing
-		HardwareVertexBufferSharedPtr createDeltaBuffer( void ) const;
+		HardwareVertexBufferSharedPtr createDeltaBuffer(void) const;
+		
+		// did LOD level changes this frame 
+		bool mChangedRenderLevel;
+
+		Vector3 _getvertex(const int x, const int z) const;
 
         private :            
+
             Image::Box mRect;
             bool        mIsRectModified;
             bool        mForcedMaxLod;
+            Vector4     mCustomGpuParameters;
+            
+            /// Whether light list need to re-calculate
+            mutable bool mLightListDirty;
+            /// Cached light list
+            mutable LightList mLightList;
 	};
 }
 

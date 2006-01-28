@@ -34,7 +34,7 @@ email                : janders@users.sf.net
 #define PagingLandScapeOctreeIntersectionSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include <OgreSceneManager.h>
+#include "OgreSceneManager.h"
 
 namespace Ogre
 {
@@ -43,11 +43,11 @@ namespace Ogre
 class _OgrePagingLandScapeExport PagingLandScapeOctreeIntersectionSceneQuery : public DefaultIntersectionSceneQuery
 {
 public:
-    PagingLandScapeOctreeIntersectionSceneQuery( SceneManager* creator );
-    virtual ~PagingLandScapeOctreeIntersectionSceneQuery( void );
+    PagingLandScapeOctreeIntersectionSceneQuery(SceneManager* creator);
+    virtual ~PagingLandScapeOctreeIntersectionSceneQuery(void);
 
     /** See IntersectionSceneQuery. */
-    void execute( IntersectionSceneQueryListener* listener );
+    void execute(IntersectionSceneQueryListener* listener);
 };
 
 }

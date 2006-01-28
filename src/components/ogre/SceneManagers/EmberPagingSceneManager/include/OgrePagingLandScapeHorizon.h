@@ -25,14 +25,14 @@ namespace Ogre
     class PagingLandScapeHorizon: public Singleton< PagingLandScapeHorizon >
     {
         public:
-	       PagingLandScapeHorizon( const PagingLandScapeOptions& options );
-           ~PagingLandScapeHorizon( void );
+	       PagingLandScapeHorizon(const PagingLandScapeOptions& options);
+           ~PagingLandScapeHorizon(void);
    
-            void registerMinMaxHeightPage( const uint pageX, const uint pageZ, const Real minHeight, const Real maxHeight );
+            void registerMinMaxHeightPage(const uint pageX, const uint pageZ, const Real minHeight, const Real maxHeight);
 
-            void registerMinMaxHeightTile( const PagingLandScapeTileInfo* info, const Real minHeight, const Real maxHeight );
+            void registerMinMaxHeightTile(const PagingLandScapeTileInfo* info, const Real minHeight, const Real maxHeight);
 
-            bool IsPageVisible( const PagingLandScapeCamera* cam, const uint destpageX, const uint destpageZ );
+            bool IsPageVisible(const PagingLandScapeCamera* cam, const uint destpageX, const uint destpageZ);
 
             /**
              *
@@ -40,22 +40,22 @@ namespace Ogre
              * \param *destinfo info on the tile we want to test visibility on,
              * \return 
              */
-            bool IsTileVisible( const PagingLandScapeCamera* cam, const PagingLandScapeTileInfo* destinfo );
+            bool IsTileVisible(const PagingLandScapeCamera* cam, const PagingLandScapeTileInfo* destinfo);
 
-	        static PagingLandScapeHorizon& getSingleton( void );
+	        static PagingLandScapeHorizon& getSingleton(void);
 
-	        static PagingLandScapeHorizon* getSingletonPtr( void );
+	        static PagingLandScapeHorizon* getSingletonPtr(void);
 
-            MaterialPtr getVisibilityMaterial( void );
+            MaterialPtr getVisibilityMaterial(void);
 
-            void AddVisibleTile( const uint Tilex, const uint Tilez, const bool visible );
-            void AddVisibleTile( const PagingLandScapeTileInfo* info, const bool visible );
+            void AddVisibleTile(const uint Tilex, const uint Tilez, const bool visible);
+            void AddVisibleTile(const PagingLandScapeTileInfo* info, const bool visible);
         
-            void update( void );
-            void prepare( const PagingLandScapeCamera* cam );
+            void update(void);
+            void prepare(const PagingLandScapeCamera* cam);
 
         private :
-             bool calcVis( const Vector3& src, const Vector3& dest, const Real* const heightMap, const uint mapWidth, const uint mapHeight );
+             bool calcVis(const Vector3& src, const Vector3& dest, const Real* const heightMap, const uint mapWidth, const uint mapHeight);
 
               Real* mMaxPageHeights;
               Real* mMinPageHeights;

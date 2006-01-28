@@ -8,7 +8,7 @@ libEmberPagingSceneManager_a_SOURCES = \
 						filetutils.cpp \
 						OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.cpp \
 						OgrePagingLandScapeOctreeCamera.cpp \
-						OgrePagingLandScapeOgreOctree.cpp \
+						OgrePagingLandScapeOctree.cpp \
 						OgrePagingLandScapeOctreeIntersectionSceneQuery.cpp \
 						OgrePagingLandScapeOctreeNode.cpp \
 						OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.cpp \
@@ -23,6 +23,7 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeData2D_HeightFieldRaw.cpp \
 						OgrePagingLandScapeData2D_HeightFieldRawTC.cpp \
 						OgrePagingLandScapeData2D_HeightFieldTC.cpp \
+						OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.cpp \
 						OgrePagingLandScapeData2DManager.cpp \
 						OgrePagingLandScapeData2D_Spline.cpp \
 						OgrePagingLandScapeHorizon.cpp \
@@ -35,6 +36,7 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeRaySceneQuery.cpp \
 						OgrePagingLandScapeRenderable.cpp \
 						OgrePagingLandScapeRenderableManager.cpp \
+						OgrePagingLandScapeTextureCoordinatesManager.cpp \
 						OgrePagingLandScapeSceneManager.cpp \
 						OgrePagingLandScapeSceneManagerDll.cpp \
 						OgrePagingLandScapeTexture_BaseTexture2.cpp \
@@ -42,6 +44,7 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeTexture.cpp \
 						OgrePagingLandScapeTexture_Image.cpp \
 						OgrePagingLandScapeTexture_InstantBaseTexture.cpp \
+						OgrePagingLandScapeTexture_InstantBaseTextureShadowed.cpp \
 						OgrePagingLandScapeTexture_InstantBaseTextureEdit.cpp \
 						OgrePagingLandScapeTextureManager.cpp \
 						OgrePagingLandScapeTexture_Splatting2.cpp \
@@ -52,9 +55,22 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeTexture_Splatting6.cpp \
 						OgrePagingLandScapeTexture_Splatting7.cpp \
 						OgrePagingLandScapeTexture_Splatting7Edit.cpp \
+						OgrePagingLandScapeTexture_SplattingShader.cpp \
 						OgrePagingLandScapeTexture_Splatting.cpp \
 						OgrePagingLandScapeTile.cpp \
 						OgrePagingLandScapeTileManager.cpp \
+						OgrePagingLandScapeOcclusion.cpp \
+						OgrePagingLandScapeOcclusionElement.cpp \
+						OgrePagingLandScapeOcclusionCameraTraversal.cpp \
+						OgrePagingLandScapeOcclusionTraversal.cpp \
+						OgrePagingLandScapeOcclusionCHCTraversal.cpp \
+						OgrePagingLandScapeOcclusionSWTraversal.cpp \
+						OgrePagingLandScapeOcclusionDebugTraversal.cpp \
+						OgrePagingLandScapeOcclusionVFTraversal.cpp \
+						OgreDebugRectangle2D.cpp \
+						OgreOcclusionBoundingBox.cpp \
+						OgrePagingLandScapeOcclusionQuerySet.cpp \
+						\
 						EmberPagingSceneManager.cpp \
 						EmberPagingLandScapeData2D_HeightField.cpp \
 						EmberPagingLandScapeTexture.cpp

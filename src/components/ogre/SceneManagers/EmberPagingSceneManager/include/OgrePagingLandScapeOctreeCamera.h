@@ -35,9 +35,11 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #ifndef PagingLandScapeOctreeCAMERA_H
 #define PagingLandScapeOctreeCAMERA_H
 
-#include <OgreCamera.h>
-#include <OgreHardwareBufferManager.h>
-#include <OgreSimpleRenderable.h>
+#include "OgreCamera.h"
+#include "OgreHardwareBufferManager.h"
+#include "OgreSimpleRenderable.h"
+
+#include "OgrePagingLandScapePrerequisites.h"
 
 /**
 *@author Jon Anderson
@@ -59,24 +61,60 @@ namespace Ogre
 
 	class PagingLandScapeOctreeCamera : public Camera
 	{
+
     public:
 
-        /** Visibility types */
-        enum Visibility
-        {
-            NONE,
-            PARTIAL,
-            FULL
-        };
+            /** Visibility types */
+            enum Visibility
+            {
+                NONE,
+                PARTIAL,
+                FULL
+            };
 
-        /* Standard Constructor */
-        PagingLandScapeOctreeCamera( const String& name, SceneManager* sm );
-        /* Standard destructor */
-        virtual ~PagingLandScapeOctreeCamera( void );
+            /* Standard Constructor */
+            PagingLandScapeOctreeCamera(const String& name, SceneManager* sm);
+            /* Standard destructor */
+            virtual ~PagingLandScapeOctreeCamera(void);
 
-        /** Returns the visibility of the box
-        */
-        PagingLandScapeOctreeCamera::Visibility getVisibility( const AxisAlignedBox& bound ) const;
+            /** Returns the visibility of the box
+            */
+            Visibility getVisibility(const AxisAlignedBox& bound) const;
+
+            bool isRegisteredInOcclusionSystem() const;
+            void setRegisteredInOcclusionSystem(const bool registered);
+
+            void setNextOcclusionMode();
+            culling_modes getOcclusionMode() const {return mOcclusionMode;};
+			bool needRegistrationInOcclusionSystem() const;
+			void setOcclusionMode(culling_modes occlusionMode);
+
+			void setOcclusionModeAsString(const String &cullingModeAsString);
+			String getOcclusionModeAsString() const;
+			
+            unsigned int getId()const {return mUniqueIdentification;}
+            unsigned int getFrameId()const {return mFrameId;}
+            bool nextFrame(const unsigned int framesSceneId);
+
+			void _addCHCRenderedFaces(unsigned int numfaces)
+			{
+				mVisFacesLastCHCRender = numfaces;
+			}
+
+	private:
+		void changeOcclusionMode(culling_modes nextOcclusionMode);
+
+		unsigned int mVisFacesLastCHCRender;
+        bool isOcclusionSystemRegistered;
+        unsigned int mUniqueIdentification;
+        culling_modes mOcclusionMode;
+        
+        /// last rendered frame
+        unsigned int mFrameId;
+        unsigned int mFrameSceneId;
+
+        static unsigned int s_camId;
+            
 	};
 
 }

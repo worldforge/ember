@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEDATA2D_HEIGHTFIELDNTC_H
-#define PAGINGLANDSCAPEDATA2D_HEIGHTFIELDNTC_H
+#ifndef PAGINGLandScapeDATA2D_HEIGHTFIELDNTC_H
+#define PAGINGLandScapeDATA2D_HEIGHTFIELDNTC_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -30,30 +30,30 @@ namespace Ogre
     class PagingLandScapeData2D_HeightFieldNTC: public PagingLandScapeData2D
     {
 	public:
-	        PagingLandScapeData2D_HeightFieldNTC( void );
+	        PagingLandScapeData2D_HeightFieldNTC(void);
             virtual String getName(){return String("HeightFieldNTC");}
 
-	        ~PagingLandScapeData2D_HeightFieldNTC( void );
+	        ~PagingLandScapeData2D_HeightFieldNTC(void);
 
 
-            virtual const Vector3 getNormalAt( const Real mX, const Real mZ );
-            virtual const ColourValue getBase( const Real mX, const Real mZ );
-            virtual const ColourValue getCoverage( const Real mX, const Real mZ );
+            virtual const Vector3 getNormalAt(const Real mX, const Real mZ);
+            virtual const ColourValue getBase(const Real mX, const Real mZ);
+            virtual const ColourValue getCoverage(const Real mX, const Real mZ);
 
-	        virtual PagingLandScapeData2D* newPage( );;
+	        virtual PagingLandScapeData2D* newPage();;
 
         protected:
-            virtual void _save( void );
+            virtual void _save(void);
 
-	        virtual bool _load( const uint x, const uint z );
+	        virtual bool _load(const uint x, const uint z);
 
-            virtual void _load( void );
+            virtual void _load(void);
 
-	        virtual void _unload( void );
+	        virtual void _unload(void);
 
         private:
-            inline Real _decodeTC( const Real encoded ) const;
-            inline uchar _encodeTC( const Real decoded ) const;
+            inline Real _decodeTC(const Real encoded) const;
+            inline uchar _encodeTC(const Real decoded) const;
 
 	        Real input_max, input_min;
 

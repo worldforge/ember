@@ -16,8 +16,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEDATA2D_SPLINE_H
-#define PAGINGLANDSCAPEDATA2D_SPLINE_H
+#ifndef PAGINGLandScapeDATA2D_SPLINE_H
+#define PAGINGLandScapeDATA2D_SPLINE_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -33,21 +33,21 @@ namespace Ogre
     class PagingLandScapeData2D_Spline: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_Spline( void );
+	        PagingLandScapeData2D_Spline(void);
 
-	        ~PagingLandScapeData2D_Spline( void );
+	        ~PagingLandScapeData2D_Spline(void);
 
-	        virtual PagingLandScapeData2D* newPage( );
+	        virtual PagingLandScapeData2D* newPage();
             virtual String getName(){return String("Spline");}
 
         protected:
-            virtual void _save( void );
+            virtual void _save(void);
 
-	        virtual bool _load( const uint x, const uint z );
+	        virtual bool _load(const uint x, const uint z);
 
-	        virtual void _load( void );
+	        virtual void _load(void);
 
-	        virtual void _unload( void );
+	        virtual void _unload(void);
 
         private:
 	        int degree;

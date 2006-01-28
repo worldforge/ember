@@ -15,8 +15,8 @@ OgrePagingLandScapeTexture_Splatting.h  -  description
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTURE_SPLATTING2_H
-#define PAGINGLANDSCAPETEXTURE_SPLATTING2_H
+#ifndef PAGINGLandScapeTEXTURE_SPLATTING2_H
+#define PAGINGLandScapeTEXTURE_SPLATTING2_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -25,28 +25,28 @@ namespace Ogre
     class PagingLandScapeTexture_Splatting2 : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Splatting2( void );
+	        PagingLandScapeTexture_Splatting2(void);
             virtual String getName(){return String("Splatting2");}
 
-            virtual void setPagesize( void ){_setPagesize();};
-            virtual void clearData( void ){_clearData();};
+            virtual void setPagesize(void){_setPagesize();};
+            virtual void clearData(void){_clearData();};
             
-            static void _setPagesize( void );
-            static void _clearData( void );
+            static void _setPagesize(void);
+            static void _clearData(void);
 
-	        virtual ~PagingLandScapeTexture_Splatting2( void );
+	        virtual ~PagingLandScapeTexture_Splatting2(void);
 
-            virtual const uint getNumChannels ( void ) const {return 0;};
+            virtual const uint getNumChannels (void) const {return 0;};
 
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
-	        virtual void _loadMaterial( void);
+	        virtual void _loadMaterial(void);
 
         private:
-            void LoadAlphaMap( const String& filename ) const;
+            void LoadAlphaMap(const String& filename) const;
 
     };
 }

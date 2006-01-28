@@ -29,10 +29,13 @@
 #include "OgrePagingLandScapeTexture_Image.h"
 
 #include "OgrePagingLandScapeTexture_InstantBaseTexture.h"
+#include "OgrePagingLandScapeTexture_InstantBaseTextureShadowed.h"
 #include "OgrePagingLandScapeTexture_InstantBaseTextureEdit.h"
 
 #include "OgrePagingLandScapeTexture_BaseTexture.h"
 #include "OgrePagingLandScapeTexture_BaseTexture2.h"
+
+#include "OgrePagingLandScapeTexture_None.h"
 
 #include "OgrePagingLandScapeTexture_Splatting.h"
 #include "OgrePagingLandScapeTexture_Splatting2.h"
@@ -40,6 +43,7 @@
 #include "OgrePagingLandScapeTexture_Splatting3.h"
 #include "OgrePagingLandScapeTexture_Splatting4.h"
 #include "OgrePagingLandScapeTexture_Splatting5.h"
+#include "OgrePagingLandScapeTexture_SplattingShader.h"
 #include "OgrePagingLandScapeTexture_Splatting6.h"
 #include "OgrePagingLandScapeTexture_Splatting7.h"
 #include "OgrePagingLandScapeTexture_Splatting7Edit.h"
@@ -57,11 +61,11 @@ namespace Ogre
     }
     PagingLandScapeTextureManager& PagingLandScapeTextureManager::getSingleton(void)
     {  
-	    assert( ms_Singleton );  return ( *ms_Singleton );  
+	    assert(ms_Singleton);  return (*ms_Singleton);  
     }
 
     //-----------------------------------------------------------------------
-    PagingLandScapeTextureManager::PagingLandScapeTextureManager( ) :
+    PagingLandScapeTextureManager::PagingLandScapeTextureManager() :
         mOptions (PagingLandScapeOptions::getSingletonPtr()),
          mTextureType (0),
          mTextureFormat (""),
@@ -74,10 +78,14 @@ namespace Ogre
             // Add default texture Types.
             registerTextureType (new PagingLandScapeTexture_Image());
 
+            registerTextureType (new PagingLandScapeTexture_InstantBaseTextureShadowed());
+            registerTextureType (new PagingLandScapeTexture_SplattingShader());
+
             registerTextureType (new PagingLandScapeTexture_InstantBaseTexture());
             registerTextureType (new PagingLandScapeTexture_InstantBaseTextureEdit());
             registerTextureType (new PagingLandScapeTexture_BaseTexture());
             registerTextureType (new PagingLandScapeTexture_BaseTexture2());
+            registerTextureType (new PagingLandScapeTexture_None());
 
             registerTextureType (new PagingLandScapeTexture_Splatting());
             registerTextureType (new PagingLandScapeTexture_Splatting2());
@@ -88,6 +96,7 @@ namespace Ogre
             registerTextureType (new PagingLandScapeTexture_Splatting6());  
             registerTextureType (new PagingLandScapeTexture_Splatting7());
             registerTextureType (new PagingLandScapeTexture_Splatting7Edit()); 
+            
         
     }
     //-----------------------------------------------------------------------
@@ -99,17 +108,20 @@ namespace Ogre
         if (nextTextureType == numTextureTypes)
             nextTextureType = 0;
         uint numLoop = 0;
-        while (!mTextureTypeMap[nextTextureType]->TextureRenderCapabilitesFullfilled())
-        {
+        while (!mTextureTypeMap[nextTextureType]->TextureRenderCapabilitesFullfilled() 
+            || mOptions->TextureFormatSupported.end() == std::find(mOptions->TextureFormatSupported.begin(),
+                                                                    mOptions->TextureFormatSupported.end(), 
+                                                                    mTextureTypeMap[nextTextureType]->getName ()))
+        { 
             nextTextureType ++ ;
             if (nextTextureType == numTextureTypes)
                 nextTextureType = 0;
             numLoop++;
             if (numLoop == numTextureTypes)
             {
-                OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, 
+                OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
                         "Cannot find a TextureMode  supported by current hardware!  (shaders/num texture units...)",
-		                " getNextTextureFormat " );           
+		                " getNextTextureFormat ");           
             }
         }
         return mTextureTypeMap[nextTextureType]->getName();
@@ -121,8 +133,9 @@ namespace Ogre
         return mTextureTypeMap[mTextureType]->getName();;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTextureManager::~PagingLandScapeTextureManager( )
-    {
+    PagingLandScapeTextureManager::~PagingLandScapeTextureManager()
+	{
+		reset ();
         // for all in map delete.
         PagingLandScapeTextureMap::iterator i = mTextureTypeMap.begin();
         while (i != mTextureTypeMap.end())
@@ -130,32 +143,90 @@ namespace Ogre
             delete (*i);
             ++i;
         }
-        PagingLandScapeTextureManager::reset ();
     }   
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::reset()
-    {
-        PagingLandScapeTexturePages::iterator iend = mTexture.end();
-        for (PagingLandScapeTexturePages::iterator i = mTexture.begin(); 
-            i != iend; ++i)
-        {
-             std::for_each( i->begin (), 
-                            i->end (),  
-                            delete_object());
+	{
+		if (!mActiveTextures.empty())
+		{
+			std::for_each (mActiveTextures.begin(), mActiveTextures.end(), 
+				std::mem_fun (&PagingLandScapeTexture::unload));
 
-            i->clear ();        
-        }
-       mTexture.clear();
+			// Insert actives into free list
+			mFreeTextures.insert (mFreeTextures.end(), mActiveTextures.begin(), mActiveTextures.end());
+			// Remove all active instances
+			mActiveTextures.clear(); 
+		}
+
+		// could save a delete if texture type is the same... ?
+		if (!mTexturePool.empty())
+		{
+			std::for_each(mTexturePool.begin(), mTexturePool.end(), delete_object());
+			mTexturePool.clear();
+			mFreeTextures.clear();
+		}
        mWidth = 0; 
        mHeight = 0;
-    }  
+	}  
+	//-----------------------------------------------------------------------
+	PagingLandScapeTexture *PagingLandScapeTextureManager::getNewTexture(const uint x, const uint z)
+	{
+		PagingLandScapeTexture *newTexture;
+		if (mFreeTextures.empty())
+		{
+			const size_t pool_size = mTexturePool.size ();			
+			const size_t new_pool_size = (pool_size == 0)  ? 9 : pool_size * 2;
+			mTexturePool.reserve(new_pool_size);
+			mTexturePool.resize(new_pool_size);
+
+			// Create new pages
+			for (size_t i = pool_size; i < new_pool_size; ++i)
+			{
+				newTexture = allocateTexture();
+				mTexturePool[i] = newTexture;
+				mFreeTextures.push_back (newTexture);
+			}
+		}
+
+		newTexture = mFreeTextures.front ();
+		mFreeTextures.pop_front ();
+		mActiveTextures.push_back (newTexture); 
+
+		newTexture->load(x, z);
+
+		return newTexture;
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapeTextureManager::releaseTexture(PagingLandScapeTexture *p)
+	{
+		mActiveTextures.remove (p);
+		mFreeTextures.push_back (p);
+	}
+	//-----------------------------------------------------------------------
+	PagingLandScapeTexture *PagingLandScapeTextureManager::getTexture(const uint x, const uint z,
+		const bool alwaysReturn)
+	{
+		if (x < mWidth && z < mHeight)
+		{
+			PagingLandScapeTextureList::iterator l, lend = mActiveTextures.end();
+			for (l = mActiveTextures.begin(); l != lend; ++l)
+			{
+				if ((*l)->isCoord(x, z))
+					return (*l);
+			}
+			if (alwaysReturn)
+				return getNewTexture(x, z);
+		}
+		assert (!alwaysReturn);
+		return 0;
+	}
     //-----------------------------------------------------------------------
     PagingLandScapeTexture *PagingLandScapeTextureManager::allocateTexture() const
     {
        return mTextureTypeMap[mTextureType]->newTexture();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTextureManager::load (  )
+    void PagingLandScapeTextureManager::load ()
     {        
 
         if (mOptions->textureFormat != mTextureFormat)
@@ -170,34 +241,52 @@ namespace Ogre
                 const String &modeName = mTextureTypeMap[i]->getName ();
                 if (modeName == mTextureFormat)
                 {
-                    mTextureType = i;
+					if (!mTextureTypeMap[i]->TextureRenderCapabilitesFullfilled())
+					{
+						mTextureFormat = getNextTextureFormat();// not supported, find first supported.
+						for (uint k = 0; k != numTextureTypes; ++k)
+						{
+							const String &newmodeName = mTextureTypeMap[k]->getName ();
+							if (newmodeName == mTextureFormat)
+							{
+								mTextureType = k;
+								i = k;
+								break;
+							}
+						}
+					}
+					else
+					{
+						mTextureType = i;
+					}
                     break;
                 }
             }
             if (i == numTextureTypes)
             {
-                OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, 
+                OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
                         "TextureMode not supplied or wrong (check case) !",
-		                " PagingLandScapeTextureManager::load " );
+		                " PagingLandScapeTextureManager::load ");
             }
             if (!mTextureTypeMap[mTextureType]->TextureRenderCapabilitesFullfilled())
             {
-                OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, 
+                OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
                         "TextureMode not supported by current hardware!  (shaders/num texture units...)",
-		                " PagingLandScapeTextureManager::load " );
+		                " PagingLandScapeTextureManager::load ");
             }
             mTexturePageSize = mOptions->PageSize - 1;
         }
 
-        // static member init. 
+        // static member init.      
         mTextureTypeMap[mTextureType]->setPagesize();
 
         WorldDimensionChange();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTextureManager::clear (  )
+    void PagingLandScapeTextureManager::clear ()
     {
-        // static member de-init. 
+       // static member de-init. 
+	   assert (!mTextureTypeMap.empty() && mTextureTypeMap[mTextureType]);
        mTextureTypeMap[mTextureType]->clearData();
        mMapMaterial.setNull();
     }
@@ -207,160 +296,28 @@ namespace Ogre
         const uint newWidth = mOptions->world_width; 
         const uint newHeight = mOptions->world_height;    
 
-        if (newWidth != mWidth || newHeight != mHeight)
-        {
-            uint i,k;
-            if (newWidth < mWidth )
-            {
-                for (i = newWidth; i <  mWidth; ++i)
-	            {
-                    PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                    for (k = 0; k < mHeight; k++ )
-		            {
-                        delete ((*li)[ k ]);
-		            }            
-                    li->clear();
-	            }
-                mTexture.reserve (newWidth);
-                mTexture.resize (newWidth);
+		reset();
 
-
-                if (newHeight < mHeight )
-                { 
-                    // clear pages
-                    for (i = 0; i < newWidth; i++ )
-	                {
-                        PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                        for (k = newHeight; k < mHeight; ++k)
-	                    {
-                            delete (*li)[ k ];
-	                    }
-                        li->reserve(newHeight);
-                        li->resize(newHeight);
-                    }
-                }
-                else if (newHeight > mHeight )
-                {
-                    // add pages
-                    for (i = 0; i < newWidth; i++ )
-	                {
-                        PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                        li->reserve(newHeight);
-                        li->resize(newHeight);
-	                    for (k = mHeight; k < newHeight; k++ )
-		                {
-			                (*li)[ k ] = allocateTexture ();
-		                }
-	                }
-                }
-            }
-            else if (newWidth > mWidth )
-            {
-                mTexture.reserve (newWidth);
-                mTexture.resize (newWidth);
-
-                if (newHeight < mHeight )
-                { 
-                    // clear pages
-                    for (i = 0; i < mWidth; i++ )
-	                {
-                        PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                        for (k = newHeight; k < mHeight; ++k)
-	                    {
-                            delete (*li)[ k ];
-	                    }
-                        li->reserve(newHeight);
-                        li->resize(newHeight);
-                    }
-                }
-                else if (newHeight > mHeight )
-                {
-                    // add pages
-                    for (i = 0; i < mWidth; i++ )
-	                {
-                        PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                        li->reserve(newHeight);
-                        li->resize(newHeight);
-	                    for (k = mHeight; k < newHeight; k++ )
-		                {
-			                (*li)[ k ] = allocateTexture ();
-		                }
-	                }
-                }
-
-                // add pages
-	            for (i = mWidth; i < newWidth; i++ )
-	            {
-                    mTexture[ i ].reserve (newHeight);
-                    mTexture[ i ].resize (newHeight);
-	            }
-                for (i = mWidth; i < newWidth; i++ )
-	            {
-                    PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                    li->reserve(newHeight);
-                    li->resize(newHeight);
-	                for (k = 0; k < newHeight; k++ )
-		            {
-                        (*li)[ k ] = allocateTexture ();
-		            }
-	            }
-            }
-            else if (newHeight < mHeight )
-            { 
-                for (i = 0; i < newWidth; i++ )
-	            {
-                    PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                    for (k = newHeight; k < mHeight; ++k)
-	                {
-                        delete (*li)[ k ];
-	                }
-                    li->reserve(newHeight);
-                    li->resize(newHeight);
-                }
-            }
-            else if (newHeight > mHeight )
-            {
-                for (i = 0; i < newWidth; i++ )
-	            {
-                    PagingLandScapeTextureRow  *li = &mTexture[ i ];
-                    li->reserve(newHeight);
-                    li->resize(newHeight);
-	                for (k = mHeight; k < newHeight; ++k )
-		            {    
-                        (*li)[ k ] = allocateTexture ();
-		            }
-	            }
-            }
-            mWidth = newWidth; 
-            mHeight = newHeight;    
-//            for (i = 0; i < newWidth; i++ )
-//            {
-//                PagingLandScapeTextureRow  *li = &mTexture[ i ];
-//                for (k = 0; k < newHeight; k++ )
-//                {		
-//                    PagingLandScapeTexture *p = (*li)[ k ];
-//                    
-//                }
-//            }
-        }
+        mWidth = newWidth; 
+        mHeight = newHeight;  
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::setMapMaterial()
     {
-       const String mapName =  String("Small") + 
-                PagingLandScapeOptions::getSingleton().image_filename;
+    	PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+       const String mapName =  String("Small") + opt->image_filename;
         mMapMaterial = MaterialManager::getSingleton().getByName (mapName);
         if (mMapMaterial.isNull())
         {
             MaterialPtr matTemplate = MaterialManager::getSingleton().
                             getByName (String ("PagingLandScape.Small.Template"));
             mMapMaterial = matTemplate ->clone (mapName);
-            
-	        mMapMaterial->getTechnique(0)->getPass(0)->
-                                getTextureUnitState(0)->setTextureName (
-                                PagingLandScapeOptions::getSingleton().image_filename
+            const String texname(opt->image_filename
                                 + ".Small." + 
-                                PagingLandScapeOptions::getSingleton().TextureExtension);
+                                opt->TextureExtension);
+            TextureManager::getSingleton().load (texname, opt->groupName);   
+	        mMapMaterial->getTechnique(0)->getPass(0)->
+                                getTextureUnitState(0)->setTextureName (texname);
             mMapMaterial->load();
         }
       } 
@@ -370,42 +327,52 @@ namespace Ogre
         return mMapMaterial;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTextureManager::load( const uint texX, const uint texZ )
+    void PagingLandScapeTextureManager::load(const uint texX, const uint texZ)
     {
-	    PagingLandScapeTexture* tex = mTexture[ texX ][ texZ ];
-	    if ( !tex->isLoaded() )
+	    PagingLandScapeTexture* tex = getTexture (texX , texZ);
+	    if (!tex->isLoaded ())
         {
-		    tex->load( texX, texZ );
+		    tex->load (texX, texZ);
 	    }
     }   
     //-----------------------------------------------------------------------
-    void PagingLandScapeTextureManager::unload( const uint texX, const uint texZ )
+    void PagingLandScapeTextureManager::unload(const uint texX, const uint texZ)
     {
-	    PagingLandScapeTexture* tex = mTexture[ texX ][ texZ ];
-	    if ( tex->isLoaded() )
+	    PagingLandScapeTexture* tex = getTexture (texX , texZ, false);
+	    if (tex && tex->isLoaded ())
 	    {
-		    tex->unload();
+		    tex->unload ();
+			releaseTexture (tex);
 	    }
     }
     //-----------------------------------------------------------------------
-     PagingLandScapeTexture* PagingLandScapeTextureManager::getTexture (const uint texX, const uint texZ)
+    void PagingLandScapeTextureManager::reload(const uint texX, const uint texZ)
     {
-	    PagingLandScapeTexture* tex = mTexture[ texX ][ texZ ];
-        if ( tex->isLoaded() )
-	    {
-		    return tex;
-	    }
-        return 0;
+        PagingLandScapeTexture* tex = getTexture (texX , texZ);
+	    tex->unload();
+	    tex->load(texX, texZ);
+        const uint tsize =  mOptions->TileSize;
+        const uint psize =  mOptions->PageSize;
+        for (uint z = 0; z <= psize ; z += tsize)
+        {
+            for (uint x = 0; x <= psize ; x += tsize)
+            {                       
+	            tex->adjustDeformationRectangle (x, z);
+            }
+        }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTextureManager::isLoaded( const uint texX, const uint texZ )
+    bool PagingLandScapeTextureManager::isLoaded(const uint texX, const uint texZ)
     {
-	    return mTexture[ texX ][ texZ ]->isLoaded();
+		const PagingLandScapeTexture * const tex = getTexture (texX , texZ, false);
+	    return tex && tex->isLoaded();
     }
     //-----------------------------------------------------------------------
-    const MaterialPtr&  PagingLandScapeTextureManager::getMaterial( const uint texX, const uint texZ ) const
-    {
-	    return mTexture[ texX ][ texZ ]->getMaterial();
+    const MaterialPtr&  PagingLandScapeTextureManager::getMaterial(const uint texX, const uint texZ)
+	{
+		PagingLandScapeTexture * const tex = getTexture (texX , texZ, false);
+		assert (tex);
+		return tex->getMaterial();
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::paint (const Vector3 &currpoint, const Real paintForce, 
@@ -422,9 +389,8 @@ namespace Ogre
                                             - pZ * pSize
                                             + mOptions->maxUnScaledZ);
 
-        PagingLandScapeTexture* tex = mTexture[ pX ][ pZ ];
-        assert (tex);
-        if ( tex->isLoaded() )
+        PagingLandScapeTexture* tex = getTexture (pX , pZ, false);
+        if (tex && tex->isLoaded())
         {
             const uint tSize = pSize - 1;
             const bool rightlimit = (x >= tSize);
@@ -455,8 +421,8 @@ namespace Ogre
                 if (down)
                 {               
                     //  lower left corner 
-                    tex = mTexture[ pX - 1 ][ pZ - 1 ];
-                    if ( tex->isLoaded() )
+                    tex = getTexture (pX - 1 , pZ - 1, false);
+                    if (tex && tex->isLoaded())
                     {
                         if (isAlpha)
                             tex->paint (tSize, tSize, paintForce, mPaintChannel);
@@ -466,9 +432,9 @@ namespace Ogre
                 }
                 else if (up)
                 {
-                    //  upper left corner 
-                    tex = mTexture[ pX - 1 ][ pZ  + 1 ];
-                    if ( tex->isLoaded() )
+					//  upper left corner 
+					tex = getTexture (pX - 1 , pZ + 1, false);
+					if (tex && tex->isLoaded())
                     {
                         if (isAlpha)
                             tex->paint (tSize, 0, paintForce, mPaintChannel);
@@ -478,9 +444,9 @@ namespace Ogre
                 } 
                 else
                 {
-                    // left only 
-                    tex = mTexture[ pX - 1 ][ pZ ];
-                    if ( tex->isLoaded() )
+					// left only 
+					tex = getTexture (pX - 1 , pZ, false);
+					if (tex && tex->isLoaded())
                     {
                         if (isAlpha)
                             tex->paint (tSize, z, paintForce, mPaintChannel);
@@ -493,9 +459,9 @@ namespace Ogre
             {
                 if (up)
                 {
-                    //  upper right corner 
-                    tex = mTexture[ pX + 1 ][ pZ  + 1 ];
-                    if ( tex->isLoaded() )
+					//  upper right corner 
+					tex = getTexture (pX + 1 , pZ + 1, false);
+					if (tex && tex->isLoaded())
                     {
                         if (isAlpha)
                             tex->paint (0, 0, paintForce, mPaintChannel);
@@ -505,9 +471,9 @@ namespace Ogre
                 }
                 else if (down)
                 {
-                    //  lower right corner 
-                    tex = mTexture[ pX + 1 ][ pZ  - 1 ];
-                    if ( tex->isLoaded() )
+					//  lower right corner 
+					tex = getTexture (pX + 1 , pZ - 1, false);
+					if (tex && tex->isLoaded())
                     {
                         if (isAlpha)
                             tex->paint (0, tSize, paintForce, mPaintChannel);
@@ -517,22 +483,22 @@ namespace Ogre
                 }  
                 else
                 {
-                    // right only
-                    tex = mTexture[ pX + 1 ][ pZ ];
-                    if ( tex->isLoaded() )
+					// right only
+					tex = getTexture (pX + 1 , pZ, false);
+					if (tex && tex->isLoaded())
                     {
                         if (isAlpha)
                             tex->paint (0, z, paintForce, mPaintChannel);
                         else
                             tex->paint (0, z, paintForce, mPaintColor);
-                    } // if ( tex->isLoaded() )   
+                    } // if (tex->isLoaded())   
                 }
             }
             else if (down)
             {        
-                //  lower  (down only)    
-                tex = mTexture[ pX ][ pZ - 1 ];
-                if ( tex->isLoaded() )
+				//  lower  (down only)    
+				tex = getTexture (pX, pZ - 1, false);
+				if (tex && tex->isLoaded())
                 {
                     if (isAlpha)
                         tex->paint (x, tSize, paintForce, mPaintChannel);
@@ -542,9 +508,9 @@ namespace Ogre
             }
             else if (up)
             {
-                // upper (up only)
-                tex = mTexture[ pX ][ pZ  + 1 ];
-                if ( tex->isLoaded() )
+				// upper (up only)
+				tex = getTexture (pX, pZ + 1, false);
+				if (tex && tex->isLoaded())
                 {
                     if (isAlpha)
                         tex->paint (x, 0, paintForce, mPaintChannel);
@@ -569,9 +535,8 @@ namespace Ogre
                                             - pZ * pSize
                                             + mOptions->maxUnScaledZ);
 
-        PagingLandScapeTexture* tex = mTexture[ pX ][ pZ ];
-        assert (tex);
-        if ( tex->isLoaded() )
+		PagingLandScapeTexture* tex = getTexture (pX , pZ, false);
+		if (tex && tex->isLoaded())
         {
             const uint tSize = pSize - 1;
             const bool rightlimit = (x >= tSize);
@@ -598,25 +563,25 @@ namespace Ogre
             {
                 if (down)
                 {               
-                    //  lower left corner 
-                    tex = mTexture[ pX - 1 ][ pZ - 1 ];
-                    if ( tex->isLoaded() )
+					//  lower left corner 
+					tex = getTexture (pX - 1 , pZ - 1, false);
+					if (tex && tex->isLoaded())
                     {
                         tex->adjustDeformationRectangle(tSize, tSize); 
                     } 
                 }
                 else if (up)
                 {
-                    //  upper left corner 
-                    tex = mTexture[ pX - 1 ][ pZ  + 1 ];
-                    if ( tex->isLoaded() )
+					//  upper left corner 
+					tex = getTexture (pX - 1 , pZ + 1, false);
+					if (tex && tex->isLoaded())
                     {
                         tex->adjustDeformationRectangle(tSize, 0); 
                     } 
                 } 
-                // left
-                tex = mTexture[ pX - 1 ][ pZ ];
-                if ( tex->isLoaded() )
+				// left
+				tex = getTexture (pX - 1 , pZ, false);
+				if (tex && tex->isLoaded())
                 {
                     tex->adjustDeformationRectangle(tSize, z); 
                 } 
@@ -625,47 +590,47 @@ namespace Ogre
             {
                 if (up)
                 {
-                    //  upper right corner 
-                    tex = mTexture[ pX + 1 ][ pZ  + 1 ];
-                    if ( tex->isLoaded() )
+					//  upper right corner 
+					tex = getTexture (pX + 1 , pZ + 1, false);
+					if (tex && tex->isLoaded())
                     {
                         tex->adjustDeformationRectangle(0, 0); 
                     } 
                 }
                 else if (down)
                 {
-                    //  lower right corner 
-                    tex = mTexture[ pX + 1 ][ pZ  - 1 ];
-                    if ( tex->isLoaded() )
+					//  lower right corner 
+					tex = getTexture (pX + 1 , pZ - 1, false);
+					if (tex && tex->isLoaded())
                     {
                         tex->adjustDeformationRectangle(0, tSize); 
                     } 
                 }  
-                // right only
-                tex = mTexture[ pX + 1 ][ pZ ];
-                if ( tex->isLoaded() )
+				// right only
+				tex = getTexture (pX + 1 , pZ, false);
+				if (tex && tex->isLoaded())
                 {
                     tex->adjustDeformationRectangle(0, z); 
                 } 
             }
             if (down)
             {        
-                //  lower  (down only)    
-                tex = mTexture[ pX ][ pZ - 1 ];
-                if ( tex->isLoaded() )
+				//  lower  (down only)    
+				tex = getTexture (pX, pZ - 1, false);
+				if (tex && tex->isLoaded())
                 {
                     tex->adjustDeformationRectangle(x, tSize); 
                 } 
             }
             else if (up)
             {
-                // upper (up only)
-                tex = mTexture[ pX ][ pZ  + 1 ];
-                if ( tex->isLoaded() )
+				// upper (up only)
+				tex = getTexture (pX, pZ + 1, false);
+				if (tex && tex->isLoaded())
                 {
                     tex->adjustDeformationRectangle(x, 0); 
                 } 
             }     
-        } // if ( tex->isLoaded() )          
+        } // if (tex->isLoaded())          
     } 
 } //namespace

@@ -33,46 +33,46 @@ email                : janders@users.sf.net
  
 ***************************************************************************/
 
-#include <OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h>
-#include <OgrePagingLandScapeOctreeSceneManager.h>
-#include <OgreEntity.h>
+#include "OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h"
+#include "OgrePagingLandScapeOctreeSceneManager.h"
+#include "OgreEntity.h"
 
 namespace Ogre
 {
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery::PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery( SceneManager* creator )
-	: DefaultPlaneBoundedVolumeListSceneQuery( creator )
+PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery::PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(SceneManager* creator)
+	: DefaultPlaneBoundedVolumeListSceneQuery(creator)
 {
 }
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery::~PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery( void )
+PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery::~PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(void)
 {
 }
 
 //---------------------------------------------------------------------
-void PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery::execute( SceneQueryListener* listener )
+void PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery::execute(SceneQueryListener* listener)
 {
     PlaneBoundedVolumeList::iterator pi, piend;
-    piend = mVolumes.end( );
-    for ( pi = mVolumes.begin( ); pi != piend; ++pi )
+    piend = mVolumes.end();
+    for (pi = mVolumes.begin(); pi != piend; ++pi)
     {
         std::list < SceneNode* > list;
         //find the nodes that intersect the AAB
-        static_cast< PagingLandScapeOctreeSceneManager* >( mParentSceneMgr )->findNodesIn( *pi, list, 0 );
+        static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(*pi, list, 0);
 
         //grab all moveables from the node that intersect...
-        std::list < SceneNode* >::iterator it = list.begin( );
-        while ( it != list.end( ) )
+        std::list < SceneNode* >::iterator it = list.begin();
+        while (it != list.end())
         {
-            SceneNode::ObjectIterator oit = ( *it )->getAttachedObjectIterator( );
-            while ( oit.hasMoreElements( ) )
+            SceneNode::ObjectIterator oit = (*it)->getAttachedObjectIterator();
+            while (oit.hasMoreElements())
             {
-                MovableObject* m = oit.getNext( );
-                if ( ( m->getQueryFlags( ) & mQueryMask ) && m->isInScene( ) &&	( *pi ).intersects( m->getWorldBoundingBox( ) ) )
+                MovableObject* m = oit.getNext();
+                if ((m->getQueryFlags() & mQueryMask) && m->isInScene() &&	(*pi).intersects(m->getWorldBoundingBox()))
                 {
-                    listener->queryResult( m );
+                    listener->queryResult(m);
                 }
             }
             ++it;

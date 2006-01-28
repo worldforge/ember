@@ -45,9 +45,7 @@ namespace Ogre
         mIsLoaded (false),
         mIsModified (false),
         mIsRectModified (false),
-        mRect (0, 0, 0, 0, 0, 1),		mMaxheight(100) 		//set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
-		//in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
-
+        mRect (0, 0, 0, 0, 0, 1)
     {
     }
     //-----------------------------------------------------------------------
@@ -65,22 +63,24 @@ namespace Ogre
         PagingLandScapeData2D::unload ();
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D::load(const uint mX, const  uint mZ)
+    bool PagingLandScapeData2D::load(const uint x, const uint z)
     {
     	if (!mIsLoaded)
-        {
-	        mPageX = static_cast<uint> (mX); 
-	        mPageZ = static_cast<uint> (mZ);
+		{
+			mIsModified = false;
+			mIsRectModified = false;
+			mRect = Image::Box (0, 0, 0, 0, 0, 1);
+
+	        mPageX = x; 
+	        mPageZ = z;
         	
 	        mSize = PagingLandScapeOptions::getSingleton().PageSize;
         	
             mShiftX = (mPageX * (mSize - 1)) - PagingLandScapeOptions::getSingleton().maxUnScaledX;
             mShiftZ = (mPageZ * (mSize - 1)) - PagingLandScapeOptions::getSingleton().maxUnScaledZ;
     	
-	        const bool isLoadable = _load (mX, mZ);
+	        const bool isLoadable = _load (x, z);
 	        mIsLoaded = true;  
-            mIsModified = false;
-            mIsRectModified = false;
             return isLoadable;
         }
         return true;        
@@ -92,7 +92,6 @@ namespace Ogre
         {
 	        _load();
 	        mIsLoaded = true;
-            mIsModified = false;
         }
     }    
     //-----------------------------------------------------------------------
@@ -106,19 +105,12 @@ namespace Ogre
             mHeightData = 0;
 	        _unload();
 	        mIsLoaded = false;
-            mIsModified = false;
-            mIsRectModified = false;
             #ifndef _MAPSPLITTER
                 resetDeformationRectangle ();
             #endif
         }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D::isLoaded()
-    {
-	    return mIsLoaded;
-    }
-     //-----------------------------------------------------------------------
     void PagingLandScapeData2D::computePowerof2PlusOneSize()
     {
 	    mSize = PagingLandScapeOptions::getSingleton().PageSize;
@@ -135,7 +127,7 @@ namespace Ogre
         mZDimension =  pagez * p2size + 1;
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D::_checkSize( const size_t s )
+    bool PagingLandScapeData2D::_checkSize(const size_t s)
     {
         // ispow2 - 1
         const int p = static_cast <uint> (s - 1); 
@@ -203,6 +195,17 @@ namespace Ogre
             mIsRectModified = true;
             mIsModified = true;
         }
+        uint tileposx = x;
+        uint tileposz = z;
+	    PagingLandScapeTile *t = 
+		PagingLandScapePageManager::getSingleton().getTilePage(tileposx, tileposz, 
+								                mPageX, mPageZ);
+	    if (t && t->isLoaded ())
+	    { 
+		    // tells what tile portion needs to be updated.
+	        PagingLandScapeRenderable * const r = t->getRenderable ();                
+		    r->adjustDeformationRectangle (tileposx, tileposz); 
+        }
     }
     //-----------------------------------------------------------------------
     const bool PagingLandScapeData2D::DeformHeight(const Vector3 &deformationPoint,
@@ -251,8 +254,8 @@ namespace Ogre
 
     }   
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D::setHeight( const uint x, const uint z,
-                                           const uint Pos, const Real h )
+    bool PagingLandScapeData2D::setHeight(const uint x, const uint z,
+                                           const uint Pos, const Real h)
     {
         if (mHeightData[Pos] != h)
         {
@@ -263,7 +266,7 @@ namespace Ogre
 		// Make position local to tiles.
 		// and return a Tile.
 	        PagingLandScapeTile *t = 
-		    PagingLandScapePageManager::getSingleton().getTilePage(tileposx, tileposz, 
+		    PagingLandScapePageManager::getSingleton().getTilePage (tileposx, tileposz, 
 									mPageX, mPageZ);
 	        if (t && t->isLoaded ())
 	        { 
@@ -365,12 +368,12 @@ namespace Ogre
        return false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2D::setHeight( const uint x, const uint z, 
-					                       const Real h  )
+    void PagingLandScapeData2D::setHeight(const uint x, const uint z, 
+					                       const Real h)
     {       
-        const uint Pos = ( z * mSize )+ x;
-        assert  (mHeightData &&  mMaxArrayPos > Pos ); 
-        setHeight( x, z, Pos, h);
+        const uint Pos = (z * mSize)+ x;
+        assert  (mHeightData &&  mMaxArrayPos > Pos); 
+        setHeight(x, z, Pos, h);
     }
 #endif //_MAPSPLITTER
     //-----------------------------------------------------------------------
@@ -412,14 +415,14 @@ namespace Ogre
 
         const size_t pageSize = mSize - 1;
 
-        // the divider make sure we do respect proportion  (height and width proportional to y )
+        // the divider make sure we do respect proportion  (height and width proportional to y)
         const Real Divider = static_cast <Real> (pageSize) / PagingLandScapeOptions::getSingleton ().scale.y;
 
         assert (mHeightData);
 
         #define  getisIn(a, b) (mHeightData[static_cast<uint> (a) + static_cast<uint> (b) * mSize])
 
-        if ( mX > 0 && mZ > 0 &&
+        if (mX > 0 && mZ > 0 &&
              mX < pageSize && mZ < pageSize)
         {
 
@@ -429,7 +432,7 @@ namespace Ogre
 
                 Vector3 result((getisIn (mX - 1 , mZ)     - getisIn (mX + 1 , mZ)) * Divider,
                                 2.0f,
-                                (getisIn (mX,      mZ - 1) - getisIn (mX     , mZ + 1 )) * Divider);
+                                (getisIn (mX,      mZ - 1) - getisIn (mX     , mZ + 1)) * Divider);
 
                 result.normalise ();
 
@@ -490,7 +493,7 @@ namespace Ogre
 
                 Vector3 result((getisOut (mX - 1 , mZ)     - getisOut (mX + 1 , mZ)) * Divider,
                                 2.0f,
-                                (getisOut (mX,      mZ - 1) - getisOut (mX     , mZ + 1 )) * Divider);
+                                (getisOut (mX,      mZ - 1) - getisOut (mX     , mZ + 1)) * Divider);
 
                 result.normalise ();
 

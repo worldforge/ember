@@ -28,15 +28,15 @@ namespace Ogre
 	        PagingLandScapeTexture_Splatting3();
             virtual String getName(){return String("Splatting3");}
 
-            virtual void setPagesize( void ){_setPagesize();};
-            virtual void clearData( void ){_clearData();};
+            virtual void setPagesize(void){_setPagesize();};
+            virtual void clearData(void){_clearData();};
             
-            static void _setPagesize( void );
-            static void _clearData( void );
+            static void _setPagesize(void);
+            static void _clearData(void);
 
 	        virtual ~PagingLandScapeTexture_Splatting3();
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
@@ -45,7 +45,7 @@ namespace Ogre
 
         private:
 
-	        void _BuildPoint(ColourValue& out, const int j, Real& alpha1, Real& alpha2, Real& alpha3, Real& alpha4 );
+	        void _BuildPoint(ColourValue& out, const int j, Real& alpha1, Real& alpha2, Real& alpha3, Real& alpha4);
 
 	        inline void _InterpolateColour(ColourValue& out, const Real percentaje, const int index1, const int index2);
 

@@ -48,22 +48,24 @@ namespace Ogre
     {
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture::load(uint mX, uint mZ)
+    void PagingLandScapeTexture::load(uint x, uint z)
     {
         if (!mIsLoaded)
         {
-	        mDataX = mX;
-	        mDataZ = mZ;
+	        mDataX = x;
+			mDataZ = z;
+
+			updated();
 	        _loadMaterial();
+
 	        mMaterial->setReceiveShadows(true);
 	        mIsLoaded = true;
             mIsModified = false; 
-            updated();
         }
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture::unload()
-    {
+	void PagingLandScapeTexture::unload()
+	{
         if (mIsLoaded)
         {
 	        _unloadMaterial();
@@ -73,8 +75,6 @@ namespace Ogre
             mMaterial.setNull();
 
 	        mIsLoaded = false;
-            mIsModified = false; 
-            updated();
         }
     }
     //-----------------------------------------------------------------------

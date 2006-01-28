@@ -39,7 +39,7 @@ email                : tuan.kuranes@free.fr
 
 namespace Ogre
 {
-    /** Specialized viewpoint from which an part of landscape can be rendered.
+    /** Specialized viewpoint from which an part of LandScape can be rendered.
 	@remarks
 	    This class contains several specializations of the Ogre::Camera class. It
 	    implements the getRenderOperation method in order to return displayable geometry
@@ -53,17 +53,17 @@ namespace Ogre
         public:
 
             /* Standard Constructor */
-            PagingLandScapeCamera( const String& name, SceneManager* sm );
+            PagingLandScapeCamera(const String& name, SceneManager* sm);
             /* Standard destructor */
-            ~PagingLandScapeCamera( void );
+            ~PagingLandScapeCamera(void);
 
             /** Returns the visibility of the box
             */
-            bool getVisibility( const AxisAlignedBox& bound ) const;
+            bool getVisibility(const AxisAlignedBox& bound) const;
 
-            void updatePaging( const uint x, const uint z );
+            void updatePaging(const uint x, const uint z);
 
-            void resetPaging( void );
+            void resetPaging(void);
 
             uint mCurrentCameraPageX; 
             uint mCurrentCameraPageZ;

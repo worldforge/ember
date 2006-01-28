@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEDATA2DMANAGER_H
-#define PAGINGLANDSCAPEDATA2DMANAGER_H
+#ifndef PAGINGLandScapeDATA2DMANAGER_H
+#define PAGINGLandScapeDATA2DMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSingleton.h"
@@ -27,41 +27,43 @@ namespace Ogre
     class PagingLandScapeData2DManager : public Singleton< PagingLandScapeData2DManager >
     {
 	public:
-        PagingLandScapeData2DManager( void );
+        PagingLandScapeData2DManager(void);
         
-        ~PagingLandScapeData2DManager( void );
+        ~PagingLandScapeData2DManager(void);
         
-        void load( void );
-        void clear( void );
-        void WorldDimensionChange( void );
-        void reset( void );
+        void load(void);
+        void clear(void);
+        void WorldDimensionChange(void);
+        void reset(void);
 
-        PagingLandScapeData2D* allocateData2D( ) const;
+        PagingLandScapeData2D* allocateData2D() const;
 
-        bool load( const uint dataX, const uint dataZ );
+        bool load(const uint dataX, const uint dataZ);
+
+        bool reload(const uint dataX, const uint dataZ);
+
+        void unload(const uint dataX, const uint dataZ);
         
-        void unload( const uint dataX, const uint dataZ );
+        bool isLoaded(const uint dataX, const uint dataZ);
         
-        bool isLoaded( const uint dataX, const uint dataZ ) const;
+        const Real getHeight(const uint dataX, const uint dataZ, const Real x, const Real z);
         
-        const Real getHeight( const uint dataX, const uint dataZ, const Real x, const Real z ) const;
+        const Real getHeight(const uint dataX, const uint dataZ, const uint x, const uint z);
         
-        const Real getHeight( const uint dataX, const uint dataZ, const uint x, const uint z ) const;
+        const Real getHeightAtPage(const uint dataX, const uint dataZ, const Real x, const Real z);
         
-        const Real getHeightAtPage( const uint dataX, const uint dataZ, const Real x, const Real z ) const;
-        
-        const Real getHeightAtPage( const uint dataX, const uint dataZ, const int x, const int z) const;
+        const Real getHeightAtPage(const uint dataX, const uint dataZ, const int x, const int z);
       
-        bool DeformHeight( const Vector3& deformationPoint, const Real modificationHeight, const PagingLandScapeTileInfo* info );
+        bool DeformHeight(const Vector3& deformationPoint, const Real modificationHeight, const PagingLandScapeTileInfo* info);
 
-//        bool addNewHeight( const Sphere newSphere );
+//        bool addNewHeight(const Sphere newSphere);
 //        
-//        bool removeNewHeight( const Sphere oldSphere );
+//        bool removeNewHeight(const Sphere oldSphere);
         
         //This function will return the max possible value of height base on the current 2D Data implementation
-        const Real getMaxHeight( const uint x, const uint z ) const;
+        const Real getMaxHeight(const uint x, const uint z);
         
-        const Real getMaxHeight( void ) const;
+        const Real getMaxHeight(void) const;
 
         /** Get the real world height at a particular position
             @remarks
@@ -76,26 +78,24 @@ namespace Ogre
             @param x  x world position
             @param z  z world position
         */
-        const Real getRealWorldHeight( const Real x, const Real z ) const;
-        const Real getRealWorldHeight( const Real x, const Real z, const PagingLandScapeTileInfo* info ) const;
-        const Real getWorldHeight(const Real x, const Real z) const;
-
-        const Real getRealPageHeight( const Real x, const Real z, const uint pageX, const uint pageZ, const uint Lod ) const;
+        const Real getInterpolatedWorldHeight(const Real x, const Real z, Real *slope = NULL);
+        const Real getWorldHeight(const Real x, const Real z);
         
-        const ColourValue getCoverageAt( const uint dataX, const uint dataZ, const Real x, const Real z );
+        const ColourValue getCoverageAt(const uint dataX, const uint dataZ, const Real x, const Real z);
 
-        const ColourValue getBaseAt( const uint dataX, const uint dataZ, const Real x, const Real z );
+        const ColourValue getBaseAt(const uint dataX, const uint dataZ, const Real x, const Real z);
         
-       const Real getShadowAt( const uint dataX, const uint dataZ, const uint x, const uint z, const bool& positive );
+       const Real getShadowAt(const uint dataX, const uint dataZ, const uint x, const uint z, const bool& positive);
 
-        const Vector3 getNormalAt( const uint dataX, const uint dataZ, const uint x, const uint z );
+       const Vector3 getNormalAt(const uint pageX, const uint pageZ, const uint x, const uint z);
+       const Real getRealWorldSlope(const Real x, const Real z);
+       const Vector3 getNormalAt(const uint pageX, const uint pageZ, const uint x, const uint z, const uint Lod);
 
-        PagingLandScapeData2D* getData2d( const uint x, const uint z );
-        void setPageManager( void );
+        void setPageManager(void);
 
-        static PagingLandScapeData2DManager& getSingleton( void );
+        static PagingLandScapeData2DManager& getSingleton(void);
         
-        static PagingLandScapeData2DManager* getSingletonPtr( void );
+        static PagingLandScapeData2DManager* getSingletonPtr(void);
         
         void registerDataType(PagingLandScapeData2D* source)
         {
@@ -104,6 +104,15 @@ namespace Ogre
 //                "PagingLandScape: Registered a new Data2DType for "
 //                "type " + typeName);
         }
+        // Walk the heightfield from location1 to location2 and find the max slope.
+        // If maxSlope > 0 and a slope of greater than maxSlopeIn is found, maxSlope is returned.
+        // This is an expensive operation, so use sparingly.
+        Real getMaxSlope(Vector3 location1, Vector3 location2, Real maxSlopeIn);
+
+		PagingLandScapeData2D* getData2D(const uint i , const uint j,
+			const bool alwaysReturn = true);
+		PagingLandScapeData2D* getNewData2D(const uint i , const uint j);
+		void releaseData2D (PagingLandScapeData2D*p );
 
     protected:
         PagingLandScapeOptions*		mOptions;
@@ -117,13 +126,17 @@ namespace Ogre
 
  
         Real mMaxHeight;
-        PagingLandScapeData2DPages  mData2D;
+        //PagingLandScapeData2DPages  mData2D;
         PagingLandScapePageManager*	mPageManager;
 
         /// Map of Data2d source type 
         PagingLandScapeData2DMap mData2DTypeMap;
         /// The currently active page Data2d source
-        PagingLandScapeData2D* mActiveData2DType;
+		PagingLandScapeData2D* mActiveData2DType;
+
+		PagingLandScapeData2DList mActiveData2Ds;
+		PagingLandScapeData2DList mFreeData2Ds;
+		PagingLandScapeData2DArray mData2DPool;
 	};
     
 } //namespace

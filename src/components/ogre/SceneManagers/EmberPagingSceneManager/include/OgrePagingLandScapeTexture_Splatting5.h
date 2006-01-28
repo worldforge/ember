@@ -15,8 +15,8 @@ OgrePagingLandScapeTexture_Splatting5.h  -  description
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTURE5_SPLATTING_H
-#define PAGINGLANDSCAPETEXTURE5_SPLATTING_H
+#ifndef PAGINGLandScapeTEXTURE5_SPLATTING_H
+#define PAGINGLandScapeTEXTURE5_SPLATTING_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeTexture.h"
@@ -27,16 +27,19 @@ namespace Ogre
     class PagingLandScapeTexture_Splatting5 : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Splatting5( void );
+	        PagingLandScapeTexture_Splatting5(void);
             virtual String getName(){return String("Splatting5");}
+                    
+            static void _setPagesize(void);
+            static void _clearData(void);
+            
+	        virtual ~PagingLandScapeTexture_Splatting5(void);
 
-	        virtual ~PagingLandScapeTexture_Splatting5( void );
-
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
-	        virtual void _loadMaterial( void );
+	        virtual void _loadMaterial(void);
 
     };
 }

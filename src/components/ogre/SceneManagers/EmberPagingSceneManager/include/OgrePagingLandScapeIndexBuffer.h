@@ -1,5 +1,5 @@
 /***************************************************************************
-  OgrePagingLandScapeIndexBuffer.h  -  description
+  OgrePagingLandScapeIndexBufferManager.h  -  description
   -------------------
   begin                : Fri Feb 28 2003
   copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPEINDEXBUFFER_H
-#define PAGINGLANDSCAPEINDEXBUFFER_H
+#ifndef PAGINGLandScapeINDEXBUFFER_H
+#define PAGINGLandScapeINDEXBUFFER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSingleton.h"
@@ -24,23 +24,23 @@
 namespace Ogre
 {
 
-    class PagingLandScapeIndexBuffer : public Singleton< PagingLandScapeIndexBuffer >
+    class PagingLandScapeIndexBufferManager : public Singleton< PagingLandScapeIndexBufferManager >
     {
         public:
 
 
-	        PagingLandScapeIndexBuffer( void );
+	        PagingLandScapeIndexBufferManager(void);
 
-	        ~PagingLandScapeIndexBuffer( void );
+	        ~PagingLandScapeIndexBufferManager(void);
 
-	        IndexData *getIndex( const int LOD );
+	        IndexData *getIndex(const int LOD);
 
             void load();
             void clear();
 
-	        static PagingLandScapeIndexBuffer& getSingleton( void );
+	        static PagingLandScapeIndexBufferManager& getSingleton(void);
 
-	        static PagingLandScapeIndexBuffer* getSingletonPtr( void );
+	        static PagingLandScapeIndexBufferManager* getSingletonPtr(void);
 
             /** Utility method to generate stitching indexes on the edge of a tile
             @param neighbor The neighbor direction to stitch
@@ -56,25 +56,28 @@ namespace Ogre
 				into (this pointer will be updated)
             @returns The number of indexes added
             */
-            uint stitchEdge( const Neighbor neighbor, const int hiLOD, const int loLOD, const bool omitFirstTri, const bool omitLastTri, void** ppIdx, const bool is32bits ) const;
+            uint stitchEdge(const Neighbor neighbor, const int hiLOD, const int loLOD, const bool omitFirstTri, const bool omitLastTri, void** ppIdx, const bool is32bits) const;
 
             /// Gets the index data for this tile based on current settings
-            IndexData* getIndexData( const int RenderLevel, PagingLandScapeRenderable** Neighbors );
+            IndexData* getIndexData(const int RenderLevel, PagingLandScapeRenderable** Neighbors);
 
             /// Internal method for generating triangle list terrain indexes
-            IndexData* generateTriListIndexes( const bool northStitch, const bool southStitch, const bool eastStitch, const bool westStitch, const int RenderLevel, PagingLandScapeRenderable** Neighbors );
+            IndexData* generateTriListIndexes(const bool northStitch, const bool southStitch, const bool eastStitch, const bool westStitch, const int RenderLevel, PagingLandScapeRenderable** Neighbors) const;
 
+			//*******************
+			//Added by Fiesch adapted from a post by tonyhnz
+			IndexData*	getRawIndexes(int renderLevel);
         protected:
 
             /** Returns the index into the height array for the given coordinates. */
-            inline ushort _index16( int x, int z ) const
+            inline ushort _index16(int x, int z) const
             {
-                return ( x + z * mTileSize );
+                return (x + z * mTileSize);
             };       
             /** Returns the index into the height array for the given coordinates. */
-            inline uint _index32( int x, int z ) const
+            inline uint _index32(int x, int z) const
             {
-                return ( x + z * mTileSize );
+                return (x + z * mTileSize);
             };       
 
             uint mTileSize;

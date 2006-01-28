@@ -40,7 +40,7 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-	PagingLandScapeData2D* PagingLandScapeData2D_HeightField::newPage( )
+	PagingLandScapeData2D* PagingLandScapeData2D_HeightField::newPage()
     {
        return new PagingLandScapeData2D_HeightField();
     }
@@ -63,10 +63,10 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightField::getBase (const Real mX, const Real mZ)
     {
-        if ( mBase != 0 )
+        if (mBase != 0)
         {
             uint Pos = static_cast<uint> ((mZ * mBase->getWidth() + mX) * 4);//4 bytes (mImage is RGBA)
-            if ( mBase->getSize () > Pos )
+            if (mBase->getSize () > Pos)
             {
                 const Real divider = 1.0f / 255;
                 return ColourValue((Real) mBase->getData()[ Pos + 0] * divider,
@@ -88,10 +88,10 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightField::getCoverage (const Real mX, const Real mZ)
     {
-        if ( mCoverage != 0 )
+        if (mCoverage != 0)
         {
             uint Pos = static_cast<uint> ((mZ * mCoverage->getWidth()  + mX) * 4);//4 bytes (mImage is RGBA)
-            if ( mCoverage->getSize () > Pos )
+            if (mCoverage->getSize () > Pos)
             {
                 const Real divider = 1.0f / 255;
                 return ColourValue((Real) mCoverage->getData()[ Pos + 0] * divider,
@@ -114,15 +114,15 @@ namespace Ogre
     const Real PagingLandScapeData2D_HeightField::getShadow (const Real mX, const Real mZ,
                                                             const bool &positive)
     {
-        if ( mShadow != 0 )
+        if (mShadow != 0)
         {
             uint Pos = static_cast<uint> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
             if (mShadow->getSize () > Pos)
             {
                 if (positive)
-                    return static_cast<Real> ( mShadow->getData()[ Pos + 0]) / 255;
+                    return static_cast<Real> (mShadow->getData()[ Pos + 0]) / 255;
                 else
-                    return static_cast<Real> ( mShadow->getData()[ Pos + 1]) / 255;
+                    return static_cast<Real> (mShadow->getData()[ Pos + 1]) / 255;
             }
             else
             {
@@ -141,11 +141,11 @@ namespace Ogre
         #ifndef _LOADEDNORM
             return PagingLandScapeData2D::getNormal(x,z);
         #else
-            if ( mImage )
+            if (mImage)
             {
-                uint Pos = static_cast<uint> (( z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
-                if ( mMax > Pos )
+                if (mMax > Pos)
                 {
                     const Real normalscale = 1.0f / 127.0f;
                     return Vector3 (((Real)(mImage->getData()[Pos + 0]) - 128.0f) * normalscale,
@@ -164,21 +164,75 @@ namespace Ogre
         #endif //_NOLOAD
     }
     //-----------------------------------------------------------------------
+    double PagingLandScapeData2D_HeightField::getScale() const
+    {        
+        double prescale;
+        switch (mBpp)
+        {
+            case 1:
+                prescale = PagingLandScapeOptions::getSingleton().scale.y / 255;
+                break;
+            case 2:
+				prescale = PagingLandScapeOptions::getSingleton().scale.y / 65535;
+                break;
+            case 3:
+				prescale = PagingLandScapeOptions::getSingleton().scale.y / 16777215;
+                break;
+            case 4:
+				prescale = PagingLandScapeOptions::getSingleton().scale.y / 16777215;
+                break;
+            default:
+                assert(0);
+                OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
+                    "unrecongnized number of bpp for data src image.", 
+                    "PagingLandScapeData2D_HeightField::getScale");
+                break;
+        }
+        return prescale;
+    }
+    //-----------------------------------------------------------------------
     void PagingLandScapeData2D_HeightField::_save()
     {
-        const Real scale = 256.0 / PagingLandScapeOptions::getSingleton().scale.y;
+        const Real scale = 1.0 / getScale();
+		const size_t bpp = mBpp;
 
-        uchar *img = mImage->getData();
-        uint j = 0;
-        for (uint i = 0; i < mMax - 1;  i ++ )
-        {
-            img[ i ] =  static_cast <uchar> (mHeightData[j++] * scale);
-        }
+		size_t j = 0;
+		uchar * ogre_restrict data = mImage->getData();
+		for (uint i = 0; i < mMaxArrayPos; i++)
+		{             
+			switch (bpp)
+			{  
+			case 1:
+				data[j] = uchar (mHeightData[i] * scale);
+			break;
+			case 2:
+			case 3:
+			case 4:
+				{
+					const ushort syn = ushort  (mHeightData[i] * scale);
+					#if OGRE_ENDIAN == ENDIAN_BIG
+						data[j] = uchar ((syn >> 8) & 0xff);
+						data[j+ 1] = uchar (syn & 0xff);
+					#else
+						data[j] = uchar (syn & 0xff);
+						data[j+ 1] = uchar ((syn >> 8) & 0xff);
+					#endif
+				}
+				break;
+			default:
+				assert(0);
+				OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
+					"unrecognized bpp image.", 
+					"PagingLandScapeData2D_HeightField::_save");
+				break;
+			}
+			j += bpp;            
+		}
 
-        const String fname = PagingLandScapeOptions::getSingleton().landscape_filename + "." +
-                                    StringConverter::toString( mPageZ ) + "." +
-			                        StringConverter::toString( mPageX ) + ".";
-        const String extname = PagingLandScapeOptions::getSingleton().landscape_extension;
+        const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + "." +
+                                    StringConverter::toString(mPageZ) + "." +
+			                        StringConverter::toString(mPageX) + ".";
+        const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
 
 
        FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
@@ -198,98 +252,119 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2D_HeightField::_load(const uint mX, const uint mZ)
     {
-        const String strFileName = PagingLandScapeOptions::getSingleton().landscape_filename + "." +
-                            StringConverter::toString( mZ ) + "." +
-			                StringConverter::toString( mX ) + ".";
-
-        String finalName = strFileName + 
-                        "modif." + 
-                        PagingLandScapeOptions::getSingleton().landscape_extension;
-        if (!(PagingLandScapeOptions::getSingleton().Deformable && 
-            ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,finalName)))
-        {    
-            finalName = strFileName + 
-                PagingLandScapeOptions::getSingleton().landscape_extension;   
-            if (!ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,finalName))
+        const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+        const String pageName = "." + StringConverter::toString(mZ) + "." +
+                                    StringConverter::toString(mX) + ".";
+        const String &fileExt = opt->LandScape_extension;
+        const String &groupName = opt->groupName;
+        const String strFileName = opt->LandScape_filename + pageName;
+        
+		mImage = new Image();
+        if (!(opt->Deformable && 
+            ResourceGroupManager::getSingleton().resourceExists(groupName, strFileName + "modif." + fileExt)))
+        {      
+            if (!ResourceGroupManager::getSingleton().resourceExists(groupName, strFileName + fileExt))
             {
-                LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + finalName, 
-                    LML_CRITICAL,
-                    true);
+                LogManager::getSingleton().logMessage(
+                                String("PLSM2 : Cannot find map named ") + strFileName + fileExt, 
+                                LML_CRITICAL,
+                                true);
                 return false;
             }
+            mImage->load (strFileName + fileExt, groupName); 
         }
-		mImage = new Image();
-        mImage->load (finalName,  PagingLandScapeOptions::getSingleton().groupName); 
+        else
+        {
+            mImage->load (strFileName + "modif." + fileExt, groupName); 
+        }
 
 		//check to make sure it's 2^n + 1 size.
-		if ( mImage -> getWidth() != mImage->getHeight() ||	!_checkSize( mImage->getWidth() ) )
+		if (mImage->getWidth() != mImage->getHeight() || 
+            !_checkSize(mImage->getWidth()))
 		{
-			String err = "Error: Invalid heightmap size : " +
-				StringConverter::toString( static_cast <uint> (mImage->getWidth()) ) +
-				"," + StringConverter::toString( static_cast <uint> (mImage->getHeight()) ) +
+			String err = "Error: Invalid height map size : " +
+				StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
+				"," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
 				". Should be 2^n+1, 2^n+1";
-			OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightField::_load" );
+			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, 
+                "PagingLandScapeData2D_HeightField::_load");
 		}
 
         mBpp = PixelUtil::getNumElemBytes (mImage->getFormat ());
-        if ( mBpp != 1 )
-        {
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error: Image is not a gray image.(1 byte, 8 bits)",
-                "PagingLandScapeData2D_HeightField::_load" );
-        }
-
-
-		if ( mSize != mImage->getWidth() )
+        const uint bpp = static_cast <uint> (mBpp);
+		if (mSize != mImage->getWidth())
 		{
-			OGRE_EXCEPT ( Exception::ERR_INVALIDPARAMS, "Error: Declared World size <> Height Map Size.", "PagingLandScapeData2D_HeightField::_load" );
+			OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
+                "Error: Declared World size <> Height Map Size.",  
+                "PagingLandScapeData2D_HeightField::_load");
 		}
 
-        if (PagingLandScapeOptions::getSingleton().coverage_vertex_color)
+        if (opt->coverage_vertex_color)
         {
             mCoverage = new Image();
-            mCoverage -> load (PagingLandScapeOptions::getSingleton().landscape_filename +
-                                    ".Coverage." +
-                                    StringConverter::toString( mZ ) + "." +
-                                    StringConverter::toString( mX ) + "." +
-                                    PagingLandScapeOptions::getSingleton().landscape_extension, PagingLandScapeOptions::getSingleton().groupName );
+            mCoverage->load (opt->LandScape_filename + ".Coverage" + pageName + fileExt, 
+                                groupName);
 
         }
-        if (PagingLandScapeOptions::getSingleton().base_vertex_color)
+        if (opt->base_vertex_color)
         {
             mBase = new Image();
-            mBase -> load( PagingLandScapeOptions::getSingleton().landscape_filename +
-                            ".Base." +
-                            StringConverter::toString( mZ ) + "." +
-                            StringConverter::toString( mX ) + "." +
-                            PagingLandScapeOptions::getSingleton().landscape_extension, PagingLandScapeOptions::getSingleton().groupName );
+            mBase->load(opt->LandScape_filename + ".Base" + pageName + fileExt, 
+                            groupName);
         }
 
-        if (PagingLandScapeOptions::getSingleton().vertex_shadowed)
+        if (opt->vertex_shadowed)
         {
             mShadow = new Image();
-            mShadow -> load( PagingLandScapeOptions::getSingleton().landscape_filename +
-                            ".HS." +
-                            StringConverter::toString( mZ ) + "." +
-                            StringConverter::toString( mX ) + "." +
-                            PagingLandScapeOptions::getSingleton().landscape_extension, PagingLandScapeOptions::getSingleton().groupName );
+            mShadow->load(opt->LandScape_filename + ".HS" + pageName + fileExt, 
+                            groupName);
         }
 
-        mMax = static_cast <uint> (mSize * mImage->getHeight());
-        mXDimension = mImage->getWidth();
-        mZDimension = mImage->getHeight();
-        mMaxArrayPos = static_cast <uint> (mSize * mImage->getHeight());
+        mXDimension = mImage->getWidth() * bpp;
+        mZDimension = mImage->getHeight() * bpp;
+        mMax = static_cast <uint> (mSize * mSize * bpp);
+        mMaxArrayPos = static_cast <uint> (mSize * mSize);
         mHeightData = new Real[mMaxArrayPos];
-        uint j = 0;
-        const double scale = PagingLandScapeOptions::getSingleton().scale.y / 256;
+
+        const double scale = getScale();
+
         mMaxheight = 0.0f;
-        const uchar *imagedata = mImage->getData();
-        const uint bpp = static_cast <uint> (mBpp);
+        const uchar * const ogre_restrict imagedata = mImage->getData();
         const uint maxminusone = mMax;
-        for (uint i = 0; i < maxminusone;  i += bpp )
+
+        Real h;
+        uint j = 0;
+        Real * const ogre_restrict heightField = mHeightData;
+        for (uint src_pos = 0; src_pos < maxminusone;  src_pos += bpp)
         {
-            const Real h =  imagedata[ i ] * scale;
-            mMaxheight = std::max ( h, mMaxheight);
-            mHeightData[j++] = h;
+            switch (bpp)
+            {
+            case 1:
+                h = imagedata[src_pos] * scale;
+                break;
+			case 2:
+			case 3:
+			case 4:
+                {
+                    #if OGRE_ENDIAN == ENDIAN_BIG
+                        ushort val = imagedata[src_pos] << 8;
+                        val += imagedata[src_pos + 1];
+                    #else
+                        ushort val = imagedata[src_pos];
+                        val += imagedata[src_pos + 1] << 8;
+                    #endif
+				    h = ((float)(val)) * scale;
+                }
+				break;
+            default:
+                assert(0);
+                OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
+                    "unrecongnized bpp image.", 
+                    "PagingLandScapeData2D_HeightField::_load");
+                break;
+            }
+            mMaxheight = std::max (h, mMaxheight);
+            heightField[j++] = h;
         }
         return true;
     }
@@ -298,14 +373,9 @@ namespace Ogre
     void PagingLandScapeData2D_HeightField::_load()
     {
 		mImage = new Image();
-        mImage->load ( PagingLandScapeOptions::getSingleton().landscape_filename +
-                "." + PagingLandScapeOptions::getSingleton().landscape_extension, PagingLandScapeOptions::getSingleton().groupName );
+        mImage->load (PagingLandScapeOptions::getSingleton().LandScape_filename +
+                "." + PagingLandScapeOptions::getSingleton().LandScape_extension, PagingLandScapeOptions::getSingleton().groupName);
         mBpp = PixelUtil::getNumElemBytes (mImage->getFormat ());
-		if (mBpp != 1)
-		{
-			OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error: Image is not a greyscale image.(1 byte, 8 bits)",
-                "PagingLandScapeData2D_HeightField::_load" );
-		}
 
         mXDimension = mImage->getWidth();
         mZDimension = mImage->getHeight();
@@ -320,22 +390,57 @@ namespace Ogre
         mMax = static_cast <uint> (mMaxArrayPos * mBpp);
         mHeightData = new Real[mMaxArrayPos];
 
-        const double scale = PagingLandScapeOptions::getSingleton().scale.y / 256;
+
+        const uint bpp = static_cast <uint> (mBpp);
+        const double scale = getScale();
+
         mMaxheight = 0.0f;
+        const uchar * ogre_restrict imagedata = mImage->getData();
+        const uint maxminusone = mMax;
         const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
-        uchar *imagedata = mImage->getData();
+
+        Real h; 
         uint dest_pos = 0;
-        for (uint i = 0; i < sourceHeight; ++i )
+        uint src_pos = 0;
+        Real * const ogre_restrict heightField = mHeightData;
+        for (uint i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j )
+            for (uint j = 0; j < sourceWidth; ++j)
             {  
-                const Real h = *imagedata++ * scale;
+                switch (bpp)
+                {
+                    case 1:
+                        h = imagedata[src_pos] * scale;
+                        break;
+					case 2:
+					case 3:
+					case 4:
+                        {
+                            #if OGRE_ENDIAN == ENDIAN_BIG
+                                ushort val = imagedata[src_pos] << 8;
+                                val += imagedata[src_pos + 1];
+                            #else
+                                ushort val = imagedata[src_pos];
+                                val += imagedata[src_pos + 1] << 8;
+                            #endif
+				            h = ((float)(val)) * scale;
+                        }
+                        break;
+                    default:
+                        assert(0);
+                        OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
+                            "unrecongnized bpp image.", 
+                            "PagingLandScapeData2D_HeightField::_load");
+                        break;
+                }
+                //DEBUG_OUTPUT ( " Bpp " << StringConverter::toString (h)  << "\n";
                 mMaxheight = std::max (h, mMaxheight);
-                mHeightData[dest_pos++] = h;
+                heightField[dest_pos++] = h;
+                src_pos += bpp;
             }
-            memset (&mHeightData[dest_pos], 0, shift_fill);
+            memset (&heightField[dest_pos], 0, shift_fill);
             dest_pos += shift_fill; 
-        }       	    
+        }
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeData2D_HeightField::_unload()

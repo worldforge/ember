@@ -15,8 +15,8 @@ OgrePagingLandScapeTexture_Splatting.h  -  description
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTURE_SPLATTING_H
-#define PAGINGLANDSCAPETEXTURE_SPLATTING_H
+#ifndef PAGINGLandScapeTEXTURE_SPLATTING_H
+#define PAGINGLandScapeTEXTURE_SPLATTING_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -25,31 +25,31 @@ namespace Ogre
     class PagingLandScapeTexture_Splatting : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Splatting( void );
+	        PagingLandScapeTexture_Splatting(void);
             virtual String getName(){return String("Splatting");}
 
-            virtual void setPagesize( void ){_setPagesize();};
-            virtual void clearData( void ){_clearData();};
+            virtual void setPagesize(void){_setPagesize();};
+            virtual void clearData(void){_clearData();};
             
-            static void _setPagesize( void );
-            static void _clearData( void );
+            static void _setPagesize(void);
+            static void _clearData(void);
 
-	        virtual ~PagingLandScapeTexture_Splatting( void );
+	        virtual ~PagingLandScapeTexture_Splatting(void);
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
 
-	        virtual void _loadMaterial( void );
+	        virtual void _loadMaterial(void);
 
         private:
 
-	        void _BuildPoint( ColourValue& out, const int j, Real& alpha1, Real& alpha2, Real& alpha3, Real& alpha4 );
+	        void _BuildPoint(const uint i, const int j, 
+	                         ColourValue& out, std::vector<Real> &alpha);
 
-	        inline void _InterpolateColour( ColourValue& out, const Real percentaje, const int index1, const int index2 );
-
-	        inline void _InterpolateAlpha( Real& alpha1, Real& alpha2, Real& alpha3, Real& alpha4, const Real percentaje, const int index1, const int index2 );
+	        inline void _InterpolateAlpha(std::vector<Real> &alpha, const Real percentaje, 
+	                                    const int index1, const int index2);
 
             bool bAlpha1NotUsed, bAlpha2NotUsed, bAlpha3NotUsed, bAlpha4NotUsed;
     };

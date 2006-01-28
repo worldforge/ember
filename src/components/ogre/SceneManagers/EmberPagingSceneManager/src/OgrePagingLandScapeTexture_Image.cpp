@@ -32,7 +32,7 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture* PagingLandScapeTexture_Image::newTexture( )
+    PagingLandScapeTexture* PagingLandScapeTexture_Image::newTexture()
     {
         return new PagingLandScapeTexture_Image();
     }
@@ -56,11 +56,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Image::_loadMaterial()
     {
-	    if ( mMaterial.isNull() )
+	    if (mMaterial.isNull())
 	    {
-            if (PagingLandScapeOptions::getSingleton().ImageNameLoad)
+			PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            if (opt->ImageNameLoad)
             {  
-                const String filename = PagingLandScapeOptions::getSingleton().image_filename;
+                const String filename = opt->image_filename;
                 const String commonName = StringConverter::toString(mDataZ) + 
                                             String(".") +
                                             StringConverter::toString(mDataX);
@@ -69,9 +70,10 @@ namespace Ogre
                 if (mMaterial.isNull())
                 {
                     MaterialPtr templateMaterial;
-                    if (PagingLandScapeOptions::getSingleton ().VertexCompression)
+                    if (opt->VertexCompression)
                     {
                         templateMaterial = MaterialManager::getSingleton().getByName(String ("PagingLandScape.Template.VertexPixelShaded"));
+                        assert (!templateMaterial.isNull());
                         mMaterial = templateMaterial->clone(matname);    
 
                         GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
@@ -101,12 +103,13 @@ namespace Ogre
                     else
                     {
                         templateMaterial = MaterialManager::getSingleton().getByName(String ("PagingLandScape.Template"));
+                        assert (!templateMaterial.isNull());
                         mMaterial = templateMaterial->clone(matname);
                     }   
           
                 }
-                const String texname = filename + "." +
-                    commonName + "." + PagingLandScapeOptions::getSingleton().TextureExtension;       
+                const String texname (filename + "." + commonName + "." + opt->TextureExtension);   
+                TextureManager::getSingleton().load (texname, opt->groupName);    
                 // assign this texture to the material
                 mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
             }
@@ -114,12 +117,12 @@ namespace Ogre
             {
                 // JEFF - all material settings configured through material script
                 mMaterial = (MaterialManager::getSingleton().getByName("PagingLandScape." +
-                    StringConverter::toString( mDataZ ) + "." + 
-                    StringConverter::toString( mDataX )));
+                    StringConverter::toString(mDataZ) + "." + 
+                    StringConverter::toString(mDataX)));
             }
                
 		    mMaterial->load(); 
-            mMaterial->setLightingEnabled( PagingLandScapeOptions::getSingleton().lit );
+            mMaterial->setLightingEnabled(opt->lit);
 	    }
     }
 

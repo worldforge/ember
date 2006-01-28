@@ -15,58 +15,86 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPESCENEMANAGER_H
-#define PAGINGLANDSCAPESCENEMANAGER_H
+#ifndef PAGINGLandScapeSCENEMANAGER_H
+#define PAGINGLandScapeSCENEMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeOctreeSceneManager.h"
+#include "OgrePagingLandScapeOptions.h"
 #include "OgreStringVector.h"
 #include "OgreSingleton.h"
-#include "OgrePagingLandScapeOptions.h"
 
 namespace Ogre
 {
 
-    /** This is a basic SceneManager for organizing PagingLandScapeRenderables into a total landscape.
+    /** This is a basic SceneManager for organizing PagingLandScapeRenderables into a total LandScape.
 	    It loads a LandScape from a .cfg file that specifies what textures/scale/mipmaps/etc to use.
     */
     class PagingLandScapeSceneManager : public PagingLandScapeOctreeSceneManager, public Singleton< PagingLandScapeSceneManager >
     {
-	    friend class PagingLandScapeIntersectionSceneQuery;
 	    friend class PagingLandScapeRaySceneQuery;
     public:
-	    PagingLandScapeSceneManager( void );
-	    ~PagingLandScapeSceneManager( void );
+	    PagingLandScapeSceneManager(void);
+	    ~PagingLandScapeSceneManager(void);
 
-	    static PagingLandScapeSceneManager& getSingleton( void );
+	    static PagingLandScapeSceneManager& getSingleton(void);
 
-	    static PagingLandScapeSceneManager* getSingletonPtr( void );
+	    static PagingLandScapeSceneManager* getSingletonPtr(void);
 
         /** Creates a specialized Camera */
-        virtual Camera * createCamera( const String &name );
-        virtual void removeCamera( Camera *cam );
-        virtual void removeCamera( const String& name );
-        virtual void removeAllCameras( void );
+        virtual Camera * createCamera(const String &name);
+        virtual void removeCamera(Camera *cam);
+        virtual void removeCamera(const String& name);
+        virtual void removeAllCameras(void);
 
-	    /** Loads the LandScape using parameters int he given configuration file.
-	    */
-	    void setWorldGeometry( const String& filename );
+	      /** Sets the source of the 'world' geometry, i.e. the large, mainly static geometry
+            making up the world e.g. rooms, LandScape etc.
+            @remarks
+                Depending on the type of SceneManager (subclasses will be specialised
+                for particular world geometry types) you have requested via the Root or
+                SceneManagerEnumerator classes, you can pass a filename to this method and it
+                will attempt to load the world-level geometry for use. If you try to load
+                an inappropriate type of world data an exception will be thrown. The default
+                SceneManager cannot handle any sort of world geometry and so will always
+                throw an exception. However subclasses like BspSceneManager can load
+                particular types of world geometry e.g. "q3dm1.bsp".
+        */
+	    virtual void setWorldGeometry(const String& filename);
+        
+        /** Sets the source of the 'world' geometry, i.e. the large, mainly 
+			static geometry making up the world e.g. rooms, LandScape etc.
+            @remarks
+                Depending on the type of SceneManager (subclasses will be 
+				specialised for particular world geometry types) you have 
+				requested via the Root or SceneManagerEnumerator classes, you 
+				can pass a stream to this method and it will attempt to load 
+				the world-level geometry for use. If the manager can only 
+				handle one input format the typeName parameter is not required.
+				The stream passed will be read (and it's state updated). 
+			@param stream Data stream containing data to load
+			@param typeName String identifying the type of world geometry
+				contained in the stream - not required if this manager only 
+				supports one type of world geometry.
+        */
+        virtual void setWorldGeometry(DataStreamPtr& stream, 
+	        const String& typeName = StringUtil::BLANK);
+
 
         /** Things that need to be allocated once 
         */
-        void InitScene( void );
+        void InitScene(void);
 
 	    /** Empties the entire scene, including all SceneNodes, Cameras, Entities and Lights etc.
 	    */
-	    void clearScene( void );
+	    void clearScene(void);
 
         /** Empties only the Terrain Scene pages, tiles, textures and so on
         */
-        void resetScene( void );
+        void resetScene(void);
 
          /** Loads the LandScape using current parameters
          */
-        void loadScene( void );
+        void loadScene(void);
 
 	    /** Method for setting a specific option of the Scene Manager. These options are usually
 		    specific for a certain implementation of the Scene Manager class, and may (and probably
@@ -81,7 +109,7 @@ namespace Ogre
 		    @par
 			    On failure, false is returned.
 	    */
-	    bool setOption( const String& strKey, const void* pValue );
+	    bool setOption(const String& strKey, const void* pValue);
 
 	    /** Method for getting the value of an implementation-specific Scene Manager option.
 		    @param
@@ -96,7 +124,7 @@ namespace Ogre
 		    @par
 			    On failiure, false is returned and pDestValue is set to NULL.
 	    */
-	    bool getOption( const String& strKey, void* pDestValue );
+	    bool getOption(const String& strKey, void* pDestValue);
 
 	    /** Method for verifying wether the scene manager has an implementation-specific
 		    option.
@@ -107,7 +135,7 @@ namespace Ogre
 		    @remarks
 			    If it does not, false is returned.
 	    */
-	    bool hasOption( const String& strKey ) const;
+	    bool hasOption(const String& strKey) const;
 
 	    /** Method for getting all possible values for a specific option. When this list is too large
 		    (i.e. the option expects, for example, a Real), the return value will be true, but the
@@ -123,7 +151,7 @@ namespace Ogre
 		    @par
 			    On failiure, false is returned.
 	    */
-	    bool getOptionValues( const String& key, StringVector& refValueList );
+	    bool getOptionValues(const String& key, StringVector& refValueList);
 
 	    /** Method for getting all the implementation-specific options of the scene manager.
 		    @param
@@ -132,7 +160,7 @@ namespace Ogre
 			    On success, true is returned.
 				On failiure, false is returned.
 	    */
-        bool getOptionKeys( StringVector &refKeys );
+        bool getOptionKeys(StringVector &refKeys);
 
 	    /** Internal method for updating the scene graph ie the tree of SceneNode instances managed by this class.
 		    @remarks
@@ -142,11 +170,11 @@ namespace Ogre
 			    to be updated even if they are not visible. Subclasses could trim this such that only potentially visible
 			    nodes are updated.
 	    */
-	    void _updateSceneGraph( Camera* cam );
+	    void _updateSceneGraph(Camera* cam);
 
 	    /** Sends visible objects found in _findVisibleObjects to the rendering engine.
 	    */
-	    //void _renderVisibleObjects( void );
+	    //void _renderVisibleObjects(void);
 
 	    /** Internal method which parses the scene to find visible objects to render.
 		    @remarks
@@ -159,7 +187,7 @@ namespace Ogre
 			    Any visible objects will be added to a rendering queue, which is indexed by material in order
 			    to ensure objects with the same material are rendered together to minimise render state changes.
 	    */
-	    //void _findVisibleObjects( Camera * cam, bool onlyShadowCasters );
+	    //void _findVisibleObjects(Camera * cam, bool onlyShadowCasters);
 
 	    /** Creates a RaySceneQuery for this scene manager. 
 		    @remarks
@@ -173,7 +201,7 @@ namespace Ogre
 		    @param mask The query mask to apply to this query; can be used to filter out
 			    certain objects; see SceneQuery for details.
 	    */
-	    RaySceneQuery* createRayQuery( const Ray& ray, unsigned long mask = 0xFFFFFFFF );
+	    RaySceneQuery* createRayQuery(const Ray& ray, unsigned long mask = 0xFFFFFFFF);
 
 	    /** Creates an IntersectionSceneQuery for this scene manager. 
 		    @remarks
@@ -186,11 +214,11 @@ namespace Ogre
 		    @param mask The query mask to apply to this query; can be used to filter out
 			    certain objects; see SceneQuery for details.
 	    */
-	    //IntersectionSceneQuery* createIntersectionQuery( unsigned long mask );
+	    //IntersectionSceneQuery* createIntersectionQuery(unsigned long mask);
 
         /** intersectSegment 
             @remarks
-                Intersect mainly with Landscape
+                Intersect mainly with LandScape
             @param start 
                 begining of the segment 
             @param end 
@@ -198,11 +226,11 @@ namespace Ogre
             @param result 
                 where it intersects with terrain
         */
-        bool intersectSegment( const Vector3& start, const Vector3& end, Vector3* result );
+        bool intersectSegment(const Vector3& start, const Vector3& end, Vector3* result);
     
         /** intersectSegment 
             @remarks
-                Intersect mainly with Landscape
+                Intersect mainly with LandScape
             @param start 
                 begining of the segment 
             @param dir 
@@ -210,31 +238,42 @@ namespace Ogre
             @param result 
                 where it intersects with terrain
         */
-        bool intersectSegmentTerrain( const Vector3& begin, const Vector3& dir, Vector3* result );
-    
+        bool intersectSegmentTerrain(const Vector3& begin, const Vector3& dir, Vector3* result);
+   
         /** deform
-        * @remarks deform only Landscape, need brush and brush scale to be set before
-        * @param &impact  where deformation take place
+        * @remarks deform only LandScape, need brush and brush scale to be set before
+        * @param &impact  where deformation take place, where BrushArray is centered
         */
-        void deform( const Vector3& impact );
-        /** deform
-        * @remarks paint only Landscape, need channel, brush and brush scale to be set before
+        void deform(const Vector3& impact);
+        /** paint
+        * @remarks paint only LandScape, need channel, brush and brush scale to be set before
         * @param impact  where painting take place
         * @param isAlpha  if we want to paint alpha or color
         */
         void paint (const Vector3 &impact, const bool isAlpha);
+        /** getAreaHeight
+        * @remarks used to fill user allocated array with values.
+        * @param impact  where array is centered
+        */
+        void getAreaHeight(const Vector3& impact); 
 	    /** Overridden from SceneManager */
-	    void setWorldGeometryRenderQueue( RenderQueueGroupID qid );
+	    void setWorldGeometryRenderQueue(RenderQueueGroupID qid);
 
-        void PagingLandScapeOctreeResize( void );
+        void PagingLandScapeOctreeResize(void);
 
-        void WorldDimensionChange( void );
+        void WorldDimensionChange(void);
+
+        _OgrePagingLandScapeExport float getHeightAt(const Real x, const Real z);
+        _OgrePagingLandScapeExport float getSlopeAt(const Real x, const Real z);
+
+        _OgrePagingLandScapeExport void  getWorldSize(Real *worldSizeX, Real *worldSizeZ);
+        _OgrePagingLandScapeExport float getMaxSlope(Vector3 location1, Vector3 location2, float maxSlopeIn);
 
     protected:
-	    EntityList& getEntities( void )
-		{
-			return mEntities;
-		}
+//	    EntityList& getEntities(void)
+//		{
+//			return mEntities;
+//		}
 
 	    /** All the plugin options are handle here.
 	    */
@@ -259,7 +298,12 @@ namespace Ogre
 		    They are created at the plugin start and destroyed at the plug in unload.
 	    */
 	    PagingLandScapeRenderableManager* mRenderableManager;
-
+		/** LandScape pages Index Buffer sharing across pages for the terrain.
+		*/
+		PagingLandScapeIndexBufferManager* mIndexesManager;
+		/** LandScape pages texture coordinates sharing across pages for the terrain.
+		*/
+		PagingLandScapeTextureCoordinatesManager* mTexCoordManager;
 	    /** LandScape pages for the terrain.
 	    */
 	    PagingLandScapePageManager* mPageManager;
@@ -270,7 +314,7 @@ namespace Ogre
 
 	    /** Dispatch scene manager events.
 	    */
-        PagingLandscapeListenerManager* mListenerManager;
+        PagingLandScapeListenerManager* mListenerManager;
 
 	    bool mNeedOptionsUpdate;
 
@@ -285,15 +329,14 @@ namespace Ogre
         Real mBrushScale;
 
         Real* mCraterArray;
-        const Real* mBrushArray;
+        Real* mBrushArray;
 
         uint mBrushArrayHeight;
         uint mBrushArrayWidth;
 
         // re-create the default Crater brush.
-        void PagingLandScapeSceneManager::resizeCrater ();  
+        void resizeCrater ();  
 
-        PagingLandscapeCameraList mPagingCameras;
     };
 
 }

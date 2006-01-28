@@ -33,27 +33,32 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2::_setPagesize( void )
+    void PagingLandScapeTexture_Splatting2::_setPagesize(void)
     {
         PagingLandScapeOptions::getSingleton().VertexCompression = false;
         PagingLandScapeOptions::getSingleton().lodMorph = false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2::_clearData( void )
+    void PagingLandScapeTexture_Splatting2::_clearData(void)
     {
     
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture* PagingLandScapeTexture_Splatting2::newTexture( )
+    PagingLandScapeTexture* PagingLandScapeTexture_Splatting2::newTexture()
     {
         return new PagingLandScapeTexture_Splatting2();
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting2::TextureRenderCapabilitesFullfilled()
-    {        
-        if (PagingLandScapeOptions::getSingleton().numTextureUnits >= 2)
-            return true;
-        return false;
+    {             
+		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		
+		if (opt->NumMatHeightSplat < 3)
+			return false;
+        if (opt->numTextureUnits < 2)
+            return false;
+            
+        return true;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_Splatting2::PagingLandScapeTexture_Splatting2() : PagingLandScapeTexture()
@@ -70,11 +75,14 @@ namespace Ogre
        if (tex.isNull())
        {
 	        Image Imageloader;
-            const String group = PagingLandScapeOptions::getSingleton().groupName;
+			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            const String group = opt->groupName;
             Imageloader.load (filename, group);
-            const size_t psize = PagingLandScapeOptions::getSingleton().PageSize - 1;
             Image ImageConvertertoAlphaFormat;
-            ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), psize, psize, 1, PF_A8, false);
+            ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), 
+                                                            Imageloader.getWidth(), 
+                                                            Imageloader.getHeight(), 
+                                                            1, PF_A8, false);
 
             TextureManager::getSingleton().loadImage (filename, 
                                                     group,
@@ -84,65 +92,56 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2::_loadMaterial()
     {
-	    if (mMaterial.isNull() )
+	    if (mMaterial.isNull())
 	    {
-
-            // Create a new texture using the base image
-            const String filename = PagingLandScapeOptions::getSingleton().landscape_filename;
-            const String commonName = StringConverter::toString(mDataZ) + 
+			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            const String filename (opt->LandScape_filename);
+            const String commonName (StringConverter::toString(mDataZ) + 
                                         String(".") +
-                                        StringConverter::toString(mDataX);
-            const String matname = String("SplattingMaterial2.") + commonName + filename;
+                                        StringConverter::toString(mDataX));
+                                        
+            const String matname (String("SplattingMaterial2.") + commonName + filename);
 		    mMaterial = MaterialManager::getSingleton().getByName(matname);
-            if (mMaterial.isNull() )
+            if (mMaterial.isNull())
 	        {
-                const String extname = PagingLandScapeOptions::getSingleton().TextureExtension;
+                const String extname (opt->getSingleton().TextureExtension);
 		        mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial2");
-                const String alphamapname = ".Alpha.";           
+                assert (!mMaterial.isNull());
                 mMaterial = mMaterial->clone(matname);
-
+                
               
                 uint passnb = 0;
 	            // assign this texture to the material
                 // Create the base image        
-                String texname= filename + ".Base." + 
-                                commonName + "." + extname;
-		        //mMaterial->getTechnique(0)->getPass(passnb++)->getTextureUnitState(0)->setTextureName(texname);
+		        const String endName ("." + commonName + "." + extname);  
+                String texname (filename + ".Base" + endName); 
+                TextureManager::getSingleton().load (texname, opt->groupName);                                   
                 mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
+                 
+                Technique * const t = mMaterial->getTechnique(0); 
+                const uint numSplats = opt->NumMatHeightSplat;
+               
                     
+                const String alphamapBeginname (filename + ".Alpha.");    
+                uint splat_pass = 0;  // if we remove a pass, splat still increases
+                while  (splat_pass < numSplats)
+                {  
+                    // Create a new texture alpha map
+                    texname = alphamapBeginname 
+                            + StringConverter::toString(splat_pass) 
+                            + endName; 
+                    LoadAlphaMap (texname);
+                    // assign this texture to the material
+                    t->getPass(splat_pass)->getTextureUnitState(1)->setTextureName(texname);
+                    t->getPass(splat_pass)->getTextureUnitState(0)->setTextureName(opt->SplatDetailMapNames[splat_pass]);
                     
-                // Create a new texture using the 1st alpha map
-                texname = filename + alphamapname + "0." + 
-                    commonName + "." + extname;
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(passnb++)->getTextureUnitState(1)->setTextureName(texname);
-                    
-                // Create a new texture using the 2nd alpha map
-                texname = filename + alphamapname + "1." + 
-                    commonName + "." + extname;
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(passnb++)->getTextureUnitState(1)->setTextureName(texname);
-                    
-                    // Create a new texture using the 3rd alpha map
-                texname = filename + alphamapname + "2." + 
-                    commonName + "." + extname;
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(passnb++)->getTextureUnitState(1)->setTextureName(texname);
-                    
-                    // Create a new texture using the 4th alpha map
-                texname = filename + alphamapname + "3." + 
-                    commonName + "." + extname;
-                LoadAlphaMap (texname);
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(passnb++)->getTextureUnitState(1)->setTextureName(texname);
-
+                    splat_pass++;
+                }
                     
 		        // Now that we have all the resources in place, we load the material
+                mMaterial->setLightingEnabled(opt->lit);
+                mMaterial->setLodLevels(opt->lodMaterialDistanceList);
 		        mMaterial->load(); 
-                mMaterial->setLightingEnabled( PagingLandScapeOptions::getSingleton().lit );
             }
 	    }
     }

@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PAGINGLANDSCAPETEXTURE_IMAGE_H
-#define PAGINGLANDSCAPETEXTURE_IMAGE_H
+#ifndef PAGINGLandScapeTEXTURE_IMAGE_H
+#define PAGINGLandScapeTEXTURE_IMAGE_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 
@@ -25,16 +25,16 @@ namespace Ogre
     class PagingLandScapeTexture_Image : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Image( void );
+	        PagingLandScapeTexture_Image(void);
             virtual String getName(){return String("Image");}
 
-	        virtual ~PagingLandScapeTexture_Image( void );
+	        virtual ~PagingLandScapeTexture_Image(void);
 
-            virtual PagingLandScapeTexture* newTexture( );
+            virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
 
         protected:
-	        virtual void _loadMaterial( void );
+	        virtual void _loadMaterial(void);
 
     };
 }

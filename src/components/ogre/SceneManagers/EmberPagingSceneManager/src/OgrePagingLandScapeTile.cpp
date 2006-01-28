@@ -41,10 +41,12 @@
 
 #include "OgrePagingLandScapePageManager.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeRenderableManager.h"
 #include "OgrePagingLandScapeRenderable.h"
 
 #include "OgrePagingLandScapeTextureManager.h"
+#include "OgrePagingLandScapeTexture.h"
 
 #include "OgrePagingLandScapeListener.h"   
 
@@ -58,25 +60,28 @@ PagingLandScapeTile::PagingLandScapeTile()
 	mRenderable = 0;
 	mInit = false;
 	mLoaded = false;
-    for ( uint i = 0; i < 4; i++ )
+    for (uint i = 0; i < 4; i++)
     {
         mNeighbors[ i ] = 0;
     }
 }
 
 //-----------------------------------------------------------------------
-PagingLandScapeTile::~PagingLandScapeTile( )
+PagingLandScapeTile::~PagingLandScapeTile()
 {
 }
 //-----------------------------------------------------------------------
-void PagingLandScapeTile::uninit( void )
+void PagingLandScapeTile::uninit(void)
 {
     if (mInit || mLoaded || mRenderable)
     {
         mInit = false;
 
         if (mLoaded)
-            unload();
+		{
+			unload ();
+			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+		}
 
         if (mNeighbors[SOUTH])
             mNeighbors[SOUTH]->_setNeighbor (NORTH, 0);
@@ -86,44 +91,51 @@ void PagingLandScapeTile::uninit( void )
             mNeighbors[EAST]->_setNeighbor (WEST, 0);
         if (mNeighbors[WEST])
             mNeighbors[WEST]->_setNeighbor (EAST, 0);
-        for ( uint i = 0; i < 4; i++ )
+
+        for (uint i = 0; i < 4; i++)
         {
             mNeighbors[ i ] = 0;
         }
-		mTileSceneNode = 0;  
-        PagingLandScapeTileManager::getSingleton().freeTile( this );
-    }
-	
-   
+
+        PagingLandScapeSceneManager::getSingleton().destroySceneNode (mTileSceneNode->getName ());
+		mTileSceneNode = 0;
+		mParentSceneNode = 0;
+        PagingLandScapeTileManager::getSingleton().freeTile(this);
+    }   
 }
 //-----------------------------------------------------------------------
-void PagingLandScapeTile::init( SceneNode *ParentSceneNode,
+void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
                                const int pageX, const int pageZ, 
-                               const int tileX, const int tileZ )
+                               const int tileX, const int tileZ)
 {
 	mInit = true;
-
 
 	mInfo.pageX = pageX;
 	mInfo.pageZ = pageZ;
 	mInfo.tileX = tileX;
 	mInfo.tileZ = tileZ;
-	// Calculate the offset from the parent for this tile
 
-    const Vector3 scale = PagingLandScapeOptions::getSingleton().scale;
-    const Real endx = PagingLandScapeOptions::getSingleton().TileSize * scale.x;
-    const Real endz = PagingLandScapeOptions::getSingleton().TileSize * scale.z;
+	// Calculate the offset from the parent for this tile
+	const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+    const Vector3 scale = opt->scale;
+    const Real endx = opt->TileSize * scale.x;
+    const Real endz = opt->TileSize * scale.z;
 	mInfo.posX = mInfo.tileX * endx;
 	mInfo.posZ = mInfo.tileZ * endz;
 
     assert (ParentSceneNode);
-    mTileSceneNode = ParentSceneNode ;
+	mParentSceneNode = ParentSceneNode;
+	const String NodeName =  "PagingLandScapeTile." 
+		+ StringConverter::toString(pageX) + "." + 
+		StringConverter::toString(pageZ)
+		+ StringConverter::toString(tileX) + "." + 
+		StringConverter::toString(tileZ);
+    mTileSceneNode = PagingLandScapeSceneManager::getSingleton().createSceneNode (NodeName + ".Node"); 
 
+    const Vector3 ParentPos = ParentSceneNode->getWorldPosition();
     const Real MaxHeight = PagingLandScapeData2DManager::getSingleton().getMaxHeight(mInfo.pageX, mInfo.pageZ);
 
     //Change Zone of this page
-
-    const Vector3 ParentPos = mTileSceneNode->getWorldPosition();
 
     //tile center position
     mWorldPosition = ParentPos + Vector3 (mInfo.posX + endx * 0.5f, 
@@ -149,7 +161,7 @@ void PagingLandScapeTile::init( SceneNode *ParentSceneNode,
 
    
 
-    for ( uint i = 0; i < 4; i++ )
+    for (uint i = 0; i < 4; i++)
     {
         mNeighbors[ i ] = 0;
     }
@@ -157,13 +169,10 @@ void PagingLandScapeTile::init( SceneNode *ParentSceneNode,
     mLoaded = false;
 }
 //-----------------------------------------------------------------------
-void PagingLandScapeTile::_setNeighbor( Neighbor n, PagingLandScapeTile *t )
+void PagingLandScapeTile::_setNeighbor(Neighbor n, PagingLandScapeTile *t)
 {
     mNeighbors[ n ] = t;
-    if (t && 
-        mLoaded &&
-        mRenderable &&
-        t->mLoaded)
+    if (t && mLoaded && mRenderable && t->mLoaded)
     {
         PagingLandScapeRenderable *r = t->getRenderable();
 
@@ -191,27 +200,37 @@ void PagingLandScapeTile::_setNeighbor( Neighbor n, PagingLandScapeTile *t )
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::_linkRenderableNeighbor()
 {
-    if (mNeighbors[SOUTH] && mNeighbors[SOUTH]->mLoaded)
+	assert (mLoaded && mRenderable);
+	PagingLandScapeRenderable *n;
+	PagingLandScapeTile *t = mNeighbors[SOUTH];
+    if (t && t->mLoaded)
     {
-        PagingLandScapeRenderable *n = mNeighbors[SOUTH]->getRenderable();
+		n = t->getRenderable();
+		assert (n);
         mRenderable->_setNeighbor (SOUTH, n);
         n->_setNeighbor (NORTH, mRenderable); 
-    }
-    if (mNeighbors[NORTH] && mNeighbors[NORTH]->mLoaded)
-    {
-        PagingLandScapeRenderable *n = mNeighbors[NORTH]->getRenderable();
+	}
+	t = mNeighbors[NORTH];
+	if (t && t->mLoaded)
+	{
+		n = t->getRenderable();
+		assert (n);
         mRenderable->_setNeighbor (NORTH, n);
         n->_setNeighbor (SOUTH, mRenderable);
-    }
-    if (mNeighbors[EAST] && mNeighbors[EAST]->mLoaded)
-    {
-        PagingLandScapeRenderable *n = mNeighbors[EAST]->getRenderable();
+	}
+	t = mNeighbors[EAST];
+	if (t && t->mLoaded)
+	{
+		n = t->getRenderable();
+		assert (n);
         mRenderable->_setNeighbor (EAST, n);
         n->_setNeighbor (WEST, mRenderable);
-    }
-    if (mNeighbors[WEST] && mNeighbors[WEST]->mLoaded)
-    {
-        PagingLandScapeRenderable *n = mNeighbors[WEST]->getRenderable();
+	}
+	t = mNeighbors[WEST];
+	if (t && t->mLoaded)
+	{
+		n = t->getRenderable();
+		assert (n);
         mRenderable->_setNeighbor (WEST, n); 
         n->_setNeighbor (EAST, mRenderable);
     }
@@ -219,7 +238,7 @@ void PagingLandScapeTile::_linkRenderableNeighbor()
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::_updateLod()
 {
-    if ( mRenderable )
+    if (mRenderable)
 	{        
       _linkRenderableNeighbor();  
 	  //mRenderable->update ();
@@ -228,77 +247,94 @@ void PagingLandScapeTile::_updateLod()
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::load()
 {
-    assert ( !mLoaded && mRenderable == 0);
-   
-    // Request a renderable
-	mRenderable = PagingLandScapeRenderableManager::getSingleton().getRenderable();
-	assert ( mRenderable );
+    assert (mInit && !mLoaded && mRenderable == 0);
 
-	mRenderable->init( &mInfo );
+    PagingLandScapeRenderableManager * const rendMgr = PagingLandScapeRenderableManager::getSingletonPtr();
+
+    // Request a renderable
+	mRenderable = rendMgr->getRenderable();
+	assert (mRenderable);
+
+	mRenderable->init (&mInfo);
 	// Set the material
-    const MaterialPtr mmat =  PagingLandScapeTextureManager::getSingleton().getMaterial( mInfo.pageX, mInfo.pageZ );
-    if (!mmat.isNull()) 
-		mRenderable->setMaterial( mmat );
-    				    
-	//Queue it for loading
-	PagingLandScapeRenderableManager::getSingleton().queueRenderableLoading( this );
+    PagingLandScapeTexture * const tex =  PagingLandScapeTextureManager::getSingleton().getTexture (mInfo.pageX, mInfo.pageZ);
+	assert (tex);
+	assert (!tex->getMaterial().isNull()) ;
+	mRenderable->setMaterial(tex->getMaterial());
+
+	mParentSceneNode->addChild (mTileSceneNode);
+	mLoaded = true;	    
+	mVisible = true;
+
+	//Queue its renderable for loading
+	rendMgr->queueRenderableLoading (this);
     PagingLandScapePageManager::getSingleton().setTerrainReady (false);
-    mLoaded = true;
-    mVisible = true;
 }
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::unload()
 {
-    assert ( mLoaded );
-	mRenderable->uninit ();
-    mTileSceneNode->needUpdate();
-    PagingLandScapeRenderableManager::getSingleton().unqueueRenderable(this);
+    assert (mLoaded);
+ 	mRenderable->uninit ();
+
 	mRenderable = 0;
     mVisible = false;
     mLoaded = false;
+
+    mParentSceneNode->removeChild (mTileSceneNode);
 }
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam)
 {
-	Ogre::Real dist = ( pos - mWorldPosition ).squaredLength();
-	Ogre::Real factor = PagingLandScapeOptions::getSingleton().renderable_factor;
-	if (( dist < factor))
-//	if (true)
+    
+	if (((pos - mWorldPosition).squaredLength() < 
+                    PagingLandScapeOptions::getSingleton().renderable_factor))
 	{    
-        if ( !mLoaded )
-        {
-//			load(); 
-             
-            if (
-                Cam->getVisibility (mWorldBoundsExt)
-                )
-            {
-                load(); 
-            }
-        }
-        else
-        {
-            mRenderable->setInUse (true);
-        }
+		if (Cam->getVisibility (mWorldBoundsExt))
+		{
+			if (!mLoaded)
+				load(); 
+			else
+				mRenderable->setInUse (true);
+			touch ();
+		}
+		else if (mLoaded && touched ())
+		{
+			unload();
+			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+		}
 	}
 	else
 	{
-		if ( mLoaded )
+		if (mLoaded)
 		{
             unload();
+			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
 		}
 	}
 }
 //-----------------------------------------------------------------------
- bool PagingLandScapeTile::intersectSegment( const Vector3 & start,
+void PagingLandScapeTile::touch ()
+{ 
+	mTimePreLoaded = PagingLandScapeOptions::getSingleton().TileInvisibleUnloadFrames;
+}
+//-----------------------------------------------------------------------
+const bool PagingLandScapeTile::touched ()        
+{ 
+	if (mTimePreLoaded == 0)
+		return true;
+	mTimePreLoaded--; 
+	return false;
+}
+//-----------------------------------------------------------------------
+ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
                                              const Vector3 & dir, 
-                                             Vector3 * result )
+                                             Vector3 * result)
 {
     Vector3 ray = start; 
     if (mWorldBounds.isNull())
     {
-        if ( result != 0 )
-            * result = Vector3( -1.0f, -1.0f, -1.0f );
+        if (result != 0)
+            * result = Vector3(-1.0f, -1.0f, -1.0f);
 
         return false;
     }
@@ -306,53 +342,68 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam
 
     //start with the next one...
     ray += dir;
-    PagingLandScapeData2D *data = PagingLandScapeData2DManager::getSingleton().getData2d (mInfo.pageX, mInfo.pageZ);
+
+   PagingLandScapeData2DManager * const dataManager = PagingLandScapeData2DManager::getSingletonPtr();
+
+    PagingLandScapeData2D *data = dataManager->getData2D (mInfo.pageX, mInfo.pageZ);
     
+    const Real leftBorder = corners[ 0 ].x;
+    const Real rightBorder = corners[ 4 ].x;
+    const Real topBorder = corners[ 0 ].z;
+    const Real bottomBorder = corners[ 4 ].z;
+
+
+
     if (data == 0)
     {
         // just go until next tile.
-        while ( ! ( ( ray.x < corners[ 0 ].x ) ||
-                    ( ray.x > corners[ 4 ].x ) ||
-                    ( ray.z < corners[ 0 ].z ) ||
-                    ( ray.z > corners[ 4 ].z ) ) )
+        while (! ((ray.x < leftBorder) ||
+                    (ray.x > rightBorder) ||
+                    (ray.z < topBorder) ||
+                    (ray.z > bottomBorder)))
         {           
             ray += dir;
         }
     }
     else
-    {
-        Real pageMax;
-        if (mRenderable && mRenderable->isLoaded ())
-            pageMax = mRenderable->getMaxHeight ();
-        else
-            pageMax = data->getMaxHeight ();
-
-        while ( ! ( ( ray.x < corners[ 0 ].x ) ||
-                    ( ray.x > corners[ 4 ].x ) ||
-                    ( ray.z < corners[ 0 ].z ) ||
-                    ( ray.z > corners[ 4 ].z ) ) )
+	{
+		const Real localMax = (mRenderable && mRenderable->isLoaded ()) ? 
+											mRenderable->getMaxHeight () 
+											: 
+											data->getMaxHeight ();
+		
+        while (! ((ray.x < leftBorder) ||
+                    (ray.x > rightBorder) ||
+                    (ray.z < topBorder) ||
+                    (ray.z > bottomBorder)))
         {
            
-            if ( ray.y <= pageMax &&  // until under the max possible for this page/tile
-                 ray.y <= data->getHeightAbsolute( ray.x, ray.z)// until under the max 
-                 )
+            if (ray.y <= localMax &&  // until under the max possible for this page/tile
+                 ray.y <= data->getHeightAbsolute(ray.x, ray.z)// until under the max 
+               )
             {
 
                 // Found intersection range 
-                // zone (ray -  dir < intersection < ray.y +  dir )
+                // zone (ray -  dir < intersection < ray.y +  dir)
                 // now do a precise check using a interpolated height getter (height between vertices)
                 ray -= dir;
-                // until under the interpolated upon current LOD max 
-                while( ray.y > PagingLandScapeData2DManager::getSingleton().getRealPageHeight( ray.x, ray.z, 
-                                                                                                mInfo.pageX, mInfo.pageZ, 
-                                                                                                0))
+                // until under the interpolated upon current LOD max      
                 {
-                    ray += dir;
+                    while (ray.y > dataManager->getInterpolatedWorldHeight(ray.x, ray.z)
+						&&
+							ray.y < localMax 
+						&&
+							ray.y > 0 
+						&&
+						! ( (ray.x < leftBorder) ||
+							(ray.x > rightBorder) ||
+							(ray.z < topBorder) ||
+							(ray.z > bottomBorder)))
+                    {
+                        ray += dir;
+                    }
                 }
-
-                ray.y = PagingLandScapeData2DManager::getSingleton().getRealPageHeight (ray.x, ray.z, 
-                                                                                        mInfo.pageX, mInfo.pageZ, 
-                                                                                        1);
+                ray.y = dataManager->getInterpolatedWorldHeight(ray.x, ray.z);
                    
                 *result = ray;
                 return true;
@@ -362,31 +413,135 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam
     }
         
 
-    if ( ray.x < corners[ 0 ].x && mNeighbors[ WEST ] != 0 && mNeighbors[ WEST ]->isLoaded())
-        return mNeighbors[ WEST ] ->intersectSegment( ray, dir, result );
-    else if ( ray.z < corners[ 0 ].z && mNeighbors[ NORTH ] != 0  && mNeighbors[ NORTH ]->isLoaded())
-        return mNeighbors[ NORTH ] ->intersectSegment( ray, dir, result );
-    else if ( ray.x > corners[ 4 ].x && mNeighbors[ EAST ] != 0  && mNeighbors[ EAST ]->isLoaded())
-        return mNeighbors[ EAST ] ->intersectSegment( ray, dir, result );
-    else if ( ray.z > corners[ 4 ].z && mNeighbors[ SOUTH ] != 0  && mNeighbors[ SOUTH ]->isLoaded())
-        return mNeighbors[ SOUTH ] ->intersectSegment( ray, dir, result );
+    if (ray.x < leftBorder && mNeighbors[ WEST ] != 0 && mNeighbors[ WEST ]->isLoaded())
+        return mNeighbors[ WEST ] ->intersectSegmentFromAbove(ray, dir, result);
+    else if (ray.z < topBorder && mNeighbors[ NORTH ] != 0  && mNeighbors[ NORTH ]->isLoaded())
+        return mNeighbors[ NORTH ] ->intersectSegmentFromAbove(ray, dir, result);
+    else if (ray.x > rightBorder && mNeighbors[ EAST ] != 0  && mNeighbors[ EAST ]->isLoaded())
+        return mNeighbors[ EAST ] ->intersectSegmentFromAbove(ray, dir, result);
+    else if (ray.z > bottomBorder && mNeighbors[ SOUTH ] != 0  && mNeighbors[ SOUTH ]->isLoaded())
+        return mNeighbors[ SOUTH ] ->intersectSegmentFromAbove(ray, dir, result);
     else
     {
-        if ( result != 0 )
-            * result = Vector3( -1.0f, -1.0f, -1.0f );
+        if (result != 0)
+            * result = Vector3(-1.0f, -1.0f, -1.0f);
 
         return false;
     }
 } 
 //-----------------------------------------------------------------------
+bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
+													const Vector3 & dir, 
+													Vector3 * result)
+{
+	Vector3 ray = start; 
+	if (mWorldBounds.isNull())
+	{
+		if (result != 0)
+			* result = Vector3(-1.0f, -1.0f, -1.0f);
+
+		return false;
+	}
+	const Vector3 * corners = mWorldBounds.getAllCorners();
+
+	//start with the next one...
+	ray += dir;
+
+	PagingLandScapeData2DManager * const dataManager = PagingLandScapeData2DManager::getSingletonPtr();
+
+	PagingLandScapeData2D *data = dataManager->getData2D (mInfo.pageX, mInfo.pageZ);
+
+	const Real leftBorder = corners[ 0 ].x;
+	const Real rightBorder = corners[ 4 ].x;
+	const Real topBorder = corners[ 0 ].z;
+	const Real bottomBorder = corners[ 4 ].z;
+
+
+
+	if (data == 0)
+	{
+		// just go until next tile.
+		while (! ((ray.x < leftBorder) ||
+			(ray.x > rightBorder) ||
+			(ray.z < topBorder) ||
+			(ray.z > bottomBorder)))
+		{           
+			ray += dir;
+		}
+	}
+	else
+	{
+		const Real localMax = (mRenderable && mRenderable->isLoaded ()) ? 
+									mRenderable->getMaxHeight () 
+									: 
+									data->getMaxHeight ();
+
+		while (! ((ray.x < leftBorder) ||
+			(ray.x > rightBorder) ||
+			(ray.z < topBorder) ||
+			(ray.z > bottomBorder)))
+		{
+
+			if (ray.y >= 0 &&
+				ray.y >= data->getHeightAbsolute(ray.x, ray.z))
+			{
+
+				// Found intersection range 
+				// zone (ray -  dir < intersection < ray.y +  dir)
+				// now do a precise check using a interpolated height getter (height between vertices)
+				ray -= dir;
+				// until under the interpolated upon current LOD max   
+				{
+					while (ray.y < dataManager->getInterpolatedWorldHeight(ray.x, ray.z)
+						&&
+							ray.y < localMax 
+						&&
+							ray.y >= 0 
+						&&
+						! ( (ray.x < leftBorder) ||
+						(ray.x > rightBorder) ||
+						(ray.z < topBorder) ||
+						(ray.z > bottomBorder)))
+					{
+						ray += dir;
+					}
+				}
+				ray.y = dataManager->getInterpolatedWorldHeight (ray.x, ray.z);
+
+				*result = ray;
+				return true;
+			}          
+			ray += dir;
+		}
+	}
+
+
+	if (ray.x < leftBorder && mNeighbors[ WEST ] != 0 && mNeighbors[ WEST ]->isLoaded())
+		return mNeighbors[ WEST ] ->intersectSegmentFromBelow(ray, dir, result);
+	else if (ray.z < topBorder && mNeighbors[ NORTH ] != 0  && mNeighbors[ NORTH ]->isLoaded())
+		return mNeighbors[ NORTH ] ->intersectSegmentFromBelow(ray, dir, result);
+	else if (ray.x > rightBorder && mNeighbors[ EAST ] != 0  && mNeighbors[ EAST ]->isLoaded())
+		return mNeighbors[ EAST ] ->intersectSegmentFromBelow(ray, dir, result);
+	else if (ray.z > bottomBorder && mNeighbors[ SOUTH ] != 0  && mNeighbors[ SOUTH ]->isLoaded())
+		return mNeighbors[ SOUTH ] ->intersectSegmentFromBelow(ray, dir, result);
+	else
+	{
+		if (result != 0)
+			* result = Vector3(-1.0f, -1.0f, -1.0f);
+
+		return false;
+	}
+} 
+//-----------------------------------------------------------------------
 void PagingLandScapeTile::updateTerrain ()
 {
-     mRenderable->setNeedUpdate ();
-
+	assert (mInit && mLoaded && mRenderable);
+    mRenderable->setNeedUpdate ();
 }
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::setInUse (bool InUse)
 {
+	assert (mInit);
     if (mRenderable)
         mRenderable->setInUse (InUse);
 }
