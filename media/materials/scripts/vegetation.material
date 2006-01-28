@@ -153,6 +153,8 @@ material /global/plants/fruitable/red_beet
   {
     pass
     {
+         cull_hardware none 
+         cull_software none
  		alpha_rejection greater_equal 32
 		texture_unit
 		{
@@ -171,7 +173,9 @@ material /global/plants/fruitable/furry_orange
   {
     pass
     {
- 		alpha_rejection greater_equal 128
+          cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 128
 		texture_unit
 		{
 			texture 3d_objects/plants/fruitable/textures/furry_orange/low/fruitable.png
@@ -205,7 +209,7 @@ material /global/plants/field/heartblood
 				param_named_auto objSpaceLight light_position_object_space 0
 				param_named_auto lightColour light_diffuse_colour 0
 			}
-			alpha_rejection greater_equal 10 
+			alpha_rejection greater_equal 64 
 			scene_blend alpha_blend
 		    cull_hardware none
             cull_software none
@@ -226,7 +230,7 @@ material /global/plants/field/heartblood
           scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
- 		alpha_rejection greater_equal 128
+ 		alpha_rejection greater_equal 64
        texture_unit
 	{
 	
@@ -255,7 +259,7 @@ material /global/plants/field/bittergrass
 				param_named_auto lightColour light_diffuse_colour 0
 				param_named_auto offset custom 999
 			}
-			alpha_rejection greater_equal 10 
+			alpha_rejection greater_equal 64 
 			scene_blend alpha_blend
 		    cull_hardware none
             cull_software none
@@ -273,7 +277,7 @@ material /global/plants/field/bittergrass
           //scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
- 		alpha_rejection greater_equal 10
+ 		alpha_rejection greater_equal 64
        texture_unit
 	{
 	
@@ -301,7 +305,7 @@ material /global/plants/field/thingrass
 				param_named_auto lightColour light_diffuse_colour 0
 				param_named_auto offset custom 999
 			}
-			alpha_rejection greater_equal 128 
+			alpha_rejection greater_equal 64 
 			//scene_blend alpha_blend
 		    cull_hardware none
             cull_software none
@@ -319,7 +323,7 @@ material /global/plants/field/thingrass
           //scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
- 		alpha_rejection greater_equal 128
+ 		alpha_rejection greater_equal 64
        texture_unit
 	{
 	
@@ -347,7 +351,7 @@ material /global/plants/field/teardrops
 				param_named_auto lightColour light_diffuse_colour 0
 				param_named_auto offset custom 999
 			}
-			alpha_rejection greater_equal 128 
+			alpha_rejection greater_equal 64 
 			//scene_blend alpha_blend
 		    cull_hardware none
             cull_software none
@@ -365,7 +369,7 @@ material /global/plants/field/teardrops
           //scene_blend alpha_blend 
          cull_hardware none 
          cull_software none
-		alpha_rejection greater_equal 128
+		alpha_rejection greater_equal 64
         texture_unit
 	{
 	

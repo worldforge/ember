@@ -637,6 +637,7 @@ material carpenter/flare
                         scene_blend add
                         depth_write off
 						depth_check off
+						fog_override true
 						
                         texture_unit
                         {

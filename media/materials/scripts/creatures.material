@@ -86,7 +86,9 @@ material /global/creature/tubular/fish/scaly_brown_white
   {
     pass
     {
- 		alpha_rejection greater_equal 32 
+         cull_hardware none 
+         cull_software none
+		alpha_rejection greater_equal 32 
        texture_unit
 		{
 			texture 3d_objects/creatures/tubular/textures/scaly_brown_white/low/tubular.png
@@ -119,7 +121,9 @@ material /global/creature/chicken
   {
     pass
     {
-      texture_unit
+     cull_hardware none 
+     cull_software none
+     texture_unit
       {
         texture 3d_objects/creatures/avian/textures/redchicken/low/chickentex.png
       }

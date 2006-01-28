@@ -1,5 +1,10 @@
 2006-01-28 Erik Hjortsberg  <erik@katastrof.nu>
     
+    * media/materials/scripts/*: updated material scripts
+    * media/particle/sun.particle: added particles for a sun-effect
+
+2006-01-28 Erik Hjortsberg  <erik@katastrof.nu>
+    
     * src/components/ogre/SceneManagers/EmberPagingSceneManager/*: updated to latest release of the PagingSceneManager. This includes some of the updates we had to do ourselves to make it work better with Ember.
 
 2006-01-26  Miguel Guzman  <aglanor@gmail.com>

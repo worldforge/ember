@@ -33,3 +33,34 @@ material plants/tree/gnarly
     }
   }
 }
+
+material /global/items/cylinder/earthenware
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
+      }
+    }
+  }
+}
+
+material /global/items/cylinder/bottle_vodka
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
+      }
+    }
+  }
+}
+

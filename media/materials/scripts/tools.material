@@ -98,4 +98,34 @@ material /global/items/box/craftsman_wood/box_craftsman_wood
 }
 
 
+material /global/items/sheet/parchment/front
+{
+  technique
+  {
+    pass
+    {
+      cull_hardware none 
+      cull_software none
+      texture_unit
+      {
+        texture 3d_objects/items/sheet/textures/parchment/low/sheet_texture_small.png
+      }
+    }
+  }
+}
 
+material /global/items/sheet/parchment/back
+{
+  technique
+  {
+    pass
+    {
+      cull_hardware none 
+      cull_software none
+      texture_unit
+      {
+        texture 3d_objects/items/sheet/textures/parchment/low/sheet_back.png
+      }
+    }
+  }
+}

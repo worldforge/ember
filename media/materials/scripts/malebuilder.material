@@ -40,6 +40,7 @@ material /global/body_parts/humanoid_head/young_one
     }
 }
 
+
 material /global/body_parts/humanoid_head/worksman
 {
     technique
@@ -49,6 +50,21 @@ material /global/body_parts/humanoid_head/worksman
             texture_unit
             {
                 texture 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
+            }
+        }
+    }
+}
+
+material /global/creatures/humanoid/young_male
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+
+                texture 3d_objects/creatures/humanoid/textures/young_male/low/young_male.png
             }
         }
     }
