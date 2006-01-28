@@ -124,14 +124,6 @@ namespace Ember
 			return Service::FAILURE;
 		}
 
-		alGenBuffers(1,&worldTempBuffer);
-		if (!alIsBuffer(worldTempBuffer))
-		{
-			S_LOG_FAILURE("Error creating worldTemp buffer")
-			return Service::FAILURE;
-		}
-
-
 		alGenBuffers(NUM_WORLD_BUFFERS,worldBuffers);
 		for (int i=0;i<NUM_WORLD_BUFFERS;i++)
 		{
@@ -160,13 +152,6 @@ namespace Ember
 		if (!alIsSource(musicSource))
 		{
 			S_LOG_FAILURE("Error creating music source")
-			return Service::FAILURE;
-		}
-
-		alGenSources(1,&worldTempSource);
-		if (!alIsSource(worldTempSource))
-		{
-			S_LOG_FAILURE("Error creating worldTemp source")
 			return Service::FAILURE;
 		}
 
@@ -436,15 +421,25 @@ namespace Ember
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation) {
 
-		// TODO: this should not be the systemSource, but a world source
-		ALfloat worldTempSourcePosition[3]={position.x(),position.y(),position.z()};	
-		alSourcefv(worldTempSource,AL_POSITION,worldTempSourcePosition);
-
 		S_LOG_INFO( "Playing talk: " << message );
-		worldTempBuffer = alutCreateBufferHelloWorld();
-		alSourcei(worldTempSource, AL_BUFFER, worldTempBuffer);
-		alSourcePlay(worldTempSource);
+
+		// determine the source and buffer that will play the sound
+		int i = getWorldSourceIndexForPlaying(0);
+		ALuint worldSource = worldSources[i];
+		ALuint worldBuffer = worldBuffers[i];
+
+		// adjust position
+		// TODO: adjust orientation
+		ALfloat worldSourcePosition[3]={position.x(),position.y(),position.z()};	
+		alSourcefv(worldSource,AL_POSITION,worldSourcePosition);
+
+		worldBuffer = alutCreateBufferHelloWorld();
+		alSourcei(worldSource, AL_BUFFER, worldBuffer);
+		alSourcePlay(worldSource);
 	}
 
+	ALuint SoundService::getWorldSourceIndexForPlaying(int priority) {
+		return 0;
+	}
 
 } // namespace Ember

@@ -1,3 +1,7 @@
+2006-01-26  Miguel Guzman  <aglanor@gmail.com>
+    * src/services/sound/SoundService.*:
+        * removed the temporary world source, added getWorldSourceIndexForPlaying() to retrieve the next world source & buffer that will be used to play a world sound.
+
 2006-01-26 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/widgets/ServerWidget.cpp: no need to call showFull since it's done automatically by default

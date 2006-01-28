@@ -79,11 +79,8 @@ class SoundService: public Service, public ConsoleObject
 	ALuint worldSources[NUM_WORLD_SOURCES];
 	/** Wold buffers - array of buffers for loading world sounds */
 	ALuint worldBuffers[NUM_WORLD_BUFFERS];
-	/** World source - just one world source, temporary, until 
-	we sort out how to deal with an array of world sources */
-	ALuint worldTempSource;
-	ALuint worldTempBuffer;
 
+	ALuint getWorldSourceIndexForPlaying(int priority);
 
 	std::string soundsDirPath;
 	
