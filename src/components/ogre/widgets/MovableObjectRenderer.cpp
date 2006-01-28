@@ -34,7 +34,7 @@
 namespace EmberOgre {
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
-: mImage(image), mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true)
+: mImage(image), mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mActive(true)
 {
 	std::string name(image->getName().c_str());
 	int width = static_cast<int>(image->getPixelRect().getWidth());
@@ -45,7 +45,9 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
 		mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 		mImage->setImage(mTexture->getImage());
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
-
+		
+		/// Register this as a frame listener
+		Ogre::Root::getSingleton().addFrameListener(this);
 	} else {
 		throw Ember::Exception("Image dimension cannot be 0.");
 	}
@@ -57,6 +59,9 @@ MovableObjectRenderer::~MovableObjectRenderer()
 	if (mTexture) {
 		delete mTexture;
 	}
+	/// Register this as a frame listener
+	Ogre::Root::getSingleton().removeFrameListener(this);
+
 }
 
 bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
@@ -159,6 +164,13 @@ bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 	return true;
 }
 
+bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
+{
+//	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
+	///if the window isn't shown, don't update the render texture
+	mTexture->setActive(mActive && mImage->isVisible());
+	return true;
+}
 
 
 

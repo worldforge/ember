@@ -1,5 +1,15 @@
 2006-01-28 Erik Hjortsberg  <erik@katastrof.nu>
     
+    * src/components/State.h: removed old code
+    * src/components/ogre/TerrainGenerator.cpp, src/components/ogre/terrain.cfg: update for changes to the EmberPagingSceneManager
+    * src/components/ogre/environment/Sun.cpp: added the particle sun, needs some more fiddling though to look really good
+    * src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/OgreEntityRenderer.cpp: updated bindings
+    * src/components/ogre/widgets/MovableObjectRenderer.*: 
+        * added ability to activate and decactivate it
+        * don't render if the image isn't shown
+
+2006-01-28 Erik Hjortsberg  <erik@katastrof.nu>
+    
     * media/materials/scripts/*: updated material scripts
     * media/particle/sun.particle: added particles for a sun-effect
 

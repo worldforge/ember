@@ -147,13 +147,15 @@ void TerrainGenerator::loadTerrainOptions()
 
 	Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
 	
-	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 
 
 	sceneManager->setOption("GroupName", "General");
 	Ogre::PagingLandScapeOptions::getSingleton().groupName = "General";
+	Ogre::PagingLandScapeOptions::getSingleton().cfgGroupName = "General";
 
 	Ogre::PagingLandScapeOptions::getSingleton().loadMapOptions("terrain.cfg");	
+	
+	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 	
 	
 	//Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";

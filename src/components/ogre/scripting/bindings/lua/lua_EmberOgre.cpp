@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Thu Jan 26 00:51:40 2006.
+** Generated automatically by tolua++-1.0.6 on Sat Jan 28 19:31:19 2006.
 */
 
 #ifndef __cplusplus
@@ -9375,6 +9375,67 @@ static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_getAutoShowFull00(lua
 #endif
 }
 
+/* method: getActive of class  EmberOgre::MovableObjectRenderer */
+static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_getActive00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const EmberOgre::MovableObjectRenderer",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::MovableObjectRenderer* self = (const EmberOgre::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getActive'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->getActive();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getActive'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setActive of class  EmberOgre::MovableObjectRenderer */
+static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_setActive00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::MovableObjectRenderer",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::MovableObjectRenderer* self = (EmberOgre::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+  bool isActive = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setActive'",NULL);
+#endif
+ {
+  self->setActive(isActive);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setActive'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* method: new of class  EmberOgre::OgreEntityRenderer */
 static int tolua_EmberOgre_EmberOgre_OgreEntityRenderer_new00(lua_State* tolua_S)
 {
@@ -12419,6 +12480,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"setIsInputCatchingAllowed",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_setIsInputCatchingAllowed00);
  tolua_function(tolua_S,"setAutoShowFull",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_setAutoShowFull00);
  tolua_function(tolua_S,"getAutoShowFull",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_getAutoShowFull00);
+ tolua_function(tolua_S,"getActive",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_getActive00);
+ tolua_function(tolua_S,"setActive",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_setActive00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);

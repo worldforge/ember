@@ -41,6 +41,8 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
   mSunNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
   mSunNode->attachObject(mSun);
   
+  Ogre::ParticleSystem* sunParticle = Ogre::ParticleSystemManager::getSingleton().createSystem("Sun", "Space/Sun"); 
+  mSunNode->attachObject(sunParticle);   
   //Ogre::Entity* entity = sceneMgr->createEntity("sunentity", "Alpha_Male.mesh");
   //mSunNode->attachObject(entity);
   
