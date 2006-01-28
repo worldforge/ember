@@ -1,3 +1,7 @@
+2006-01-29 Erik Hjortsberg  <erik@katastrof.nu>
+    
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/*: added missing files for the PagingSceneManager
+
 2006-01-28 Erik Hjortsberg  <erik@katastrof.nu>
     
     * src/components/State.h: removed old code
