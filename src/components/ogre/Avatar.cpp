@@ -50,6 +50,14 @@
 
 #include "Avatar.h"
 
+#include <Eris/Entity.h>
+#include <Eris/View.h>
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#include <Eris/TypeInfo.h>
+
+#include <OgrePredefinedControllers.h> 
+
 
 namespace EmberOgre {
 
@@ -75,7 +83,7 @@ Avatar::Avatar()
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
-	ConfigService_EventChangedConfigItem_connection = Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
 	
 	//update values from the config
 	updateFromConfig();
@@ -84,7 +92,6 @@ Avatar::Avatar()
 
 Avatar::~Avatar()
 {
-	ConfigService_EventChangedConfigItem_connection.disconnect();
 
 }
 

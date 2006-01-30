@@ -48,12 +48,13 @@ AvatarControllerMovement::AvatarControllerMovement() :	rotationDegHoriz(0),
 {
 }
 
-AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager) 
+AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) 
 : mEntityUnderCursor(0) 
 , mSelectedEntity(0)
 , mGUIManager(guiManager)
 , mWindow(window)
 , mAvatarCamera(0)
+, mCamera(camera)
 {
 	
 	setAvatar(avatar);
@@ -81,7 +82,7 @@ AvatarController::~AvatarController()
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
 	if (mAvatarCamera == 0) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, EmberOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager);
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, EmberOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager, mCamera);
 	} else {
 		attachCamera();
 	}

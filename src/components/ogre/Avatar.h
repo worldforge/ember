@@ -18,36 +18,21 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// TODO: use forward declarations here
-
 #ifndef AVATAR_H
 #define AVATAR_H
 #include "EmberOgrePrerequisites.h"
 
 //#include <OgreNoMemoryMacros.h>
 
-	#include <Eris/Entity.h>
-	#include <Eris/View.h>
-	#include <Eris/PollDefault.h>
-	#include <Eris/Log.h>
-	#include <Eris/TypeInfo.h>
 
 #include <sigc++/trackable.h>
 	
-/*	#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-	#include <sigc++/signal_system.h>
-	#else
-	#include <sigc++/object.h>
-	#include <sigc++/signal.h>
-	#include <sigc++/slot.h>
-	#include <sigc++/bind.h>
-	#include <sigc++/object_slot.h>
-	#endif*/
-//#include <OgreMemoryMacros.h>
 
-#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
 
+namespace Eris {
+	class Entity;
+}
 
 
 namespace EmberOgre {
@@ -251,7 +236,6 @@ protected:
 	 * @param key 
 	 */
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-	sigc::connection ConfigService_EventChangedConfigItem_connection;
 
 	/**
 	*	updates values from the configuration

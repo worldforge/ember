@@ -83,7 +83,7 @@ public:
 
     
     
-    AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager);
+    AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera);
 
 	virtual ~AvatarController();
 
@@ -131,6 +131,7 @@ protected:
 
 	AvatarCamera* mAvatarCamera;
 	void setAvatar(Avatar* avatar);
+	Ogre::Camera* mCamera;
 
 	
 	/**

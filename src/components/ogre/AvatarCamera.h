@@ -69,7 +69,7 @@ public:
 	*/
 	static const std::string SETCAMERADISTANCE;
 	
-	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager);
+	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera);
 	virtual ~AvatarCamera();
 
 	/**
@@ -209,9 +209,9 @@ protected:
 	bool mInvertCamera;
 	
 	/**
-	 * creates all nodes needed and the camera 
+	 * creates all nodes needed for the camera 
 	 */
-	void createNodesAndCamera();
+	void createNodesForCamera();
 	
 	void createViewPort();
 	GUIManager* mGUIManager;

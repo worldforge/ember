@@ -53,7 +53,7 @@ namespace EmberOgre {
 const std::string AvatarCamera::SETCAMERADISTANCE("setcameradistance");
 
 
-AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager) :
+AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) :
 	mSceneManager(sceneManager),
 	mWindow(window),
 	mGUIManager(guiManager),
@@ -64,10 +64,11 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mDegreeOfYawPerSecond(50),
 	mClosestPickingDistance(10000),
 	mAvatarNode(0),
-	mInvertCamera(false)
+	mInvertCamera(false),
+	mCamera(camera)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
-	createNodesAndCamera();
+	createNodesForCamera();
 	setAvatarNode(avatarNode);
 
 	// Register this as a frame listener
@@ -94,7 +95,7 @@ AvatarCamera::~AvatarCamera()
 {
 }
 
-void AvatarCamera::createNodesAndCamera()
+void AvatarCamera::createNodesForCamera()
 {
 	mAvatarCameraRootNode = mSceneManager->createSceneNode("AvatarCameraRootNode");
 	//we need to adjust for the height of the avatar mesh
@@ -107,7 +108,7 @@ void AvatarCamera::createNodesAndCamera()
 	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode("AvatarCameraNode");
 	setCameraDistance(10);
 	
-	mCamera = mSceneManager->createCamera("AvatarCamera");
+//	mCamera = mSceneManager->createCamera("AvatarCamera");
 	mAvatarCameraNode->attachObject(mCamera);
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
@@ -121,7 +122,7 @@ void AvatarCamera::createNodesAndCamera()
 	
 	//create the nodes for the camera
 	setMode(MODE_THIRD_PERSON);
-	createViewPort();
+// 	createViewPort();
 }
 
 void AvatarCamera::setMode(Mode mode)
@@ -166,13 +167,13 @@ void AvatarCamera::attach(Ogre::SceneNode* toNode) {
 
 void AvatarCamera::createViewPort()
 {
-	assert(mCamera);
-	assert(!mViewPort);
-    // Create 1st person viewport, entire window
-    mViewPort = mWindow->addViewport(mCamera);
-    mViewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
-    mCamera->setAspectRatio(
-		Ogre::Real(mViewPort->getActualWidth()) / Ogre::Real(mViewPort->getActualHeight()));
+// 	assert(mCamera);
+// 	assert(!mViewPort);
+//     // Create 1st person viewport, entire window
+//     mViewPort = mWindow->addViewport(mCamera);
+//     mViewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
+//     mCamera->setAspectRatio(
+// 		Ogre::Real(mViewPort->getActualWidth()) / Ogre::Real(mViewPort->getActualHeight()));
 
 	
 }
