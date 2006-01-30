@@ -89,14 +89,17 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
 //		mScriptManager = new GUIScriptManager();
+		CEGUI::ResourceProvider* resourceProvider = mGuiRenderer->createResourceProvider();
+		resourceProvider->setDefaultResourceGroup("Gui");
+		
 		Ember::IScriptingProvider* provider;
 		provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
-			mGuiSystem = new CEGUI::System(mGuiRenderer, & luaScriptProvider->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, & luaScriptProvider->getScriptModule(), resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 		
 		} else {
-			mGuiSystem = new CEGUI::System(mGuiRenderer); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider); 
 		}
 		//mGuiSystem = new CEGUI::System(mGuiRenderer, &mScriptManager->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 //		mGuiSystem = new CEGUI::System(mGuiRenderer); 

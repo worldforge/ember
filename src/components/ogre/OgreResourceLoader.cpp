@@ -1,0 +1,157 @@
+//
+// C++ Implementation: OgreResourceLoader
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+#include "OgreResourceLoader.h"
+#include "services/EmberServices.h"
+#include "services/logging/LoggingService.h"
+#include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
+
+namespace EmberOgre {
+
+OgreResourceLoader::OgreResourceLoader() : mLoadRecursive(false)
+{
+}
+
+
+OgreResourceLoader::~OgreResourceLoader()
+{
+}
+
+void OgreResourceLoader::initialize()
+{
+ 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	
+	///check from the config if we should load media recursively
+	///this is needed for most authoring, since it allows us to find all meshes before they are loaded
+	if (configSrv->itemExists("general", "loadmediarecursive")) { 
+			mLoadRecursive = (bool)configSrv->getValue("general", "loadmediarecursive");
+	}
+    
+// 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
+    ///load the resource file
+    cf.load(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/resources.cfg");
+
+}
+
+void OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
+{
+	static const std::string& sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
+
+	try {
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+			sharedMediaPath + path, type, section, recursive);
+	} catch (const Ogre::Exception&) {
+		S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Continuing as if nothing happened.");
+	}
+
+}
+
+void OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
+{
+	static const std::string& userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
+	static const std::string& emberMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
+	
+	try {
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+			userMediaPath + path, type, section, recursive);
+	} catch (const Ogre::Exception&) {
+		///don't report anything
+	}
+	
+	///try with ember-media
+	try {
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+			emberMediaPath + path, type, section, recursive);
+	} catch (const Ogre::Exception&) {
+		S_LOG_FAILURE("Couldn't load " + emberMediaPath + path + ". Continuing as if nothing happened.");
+	}
+
+}
+
+
+void OgreResourceLoader::loadBootstrap()
+{
+	loadSection("Bootstrap");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
+    
+
+}
+
+void OgreResourceLoader::loadGui()
+{
+	loadSection("Gui");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Gui");
+}
+
+void OgreResourceLoader::loadGeneral()
+{
+	loadSection("General");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
+	loadSection("ModelDefinitions");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ModelDefinitions");
+}
+
+void OgreResourceLoader::preloadMedia()
+{
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+// 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+// 	
+// 
+// 	std::vector<std::string> shaderTextures;
+// 	
+// 	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "rock")));
+// 	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "sand")));
+// 	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "grass")));
+// 	
+// 	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
+// 		try {
+// 			Ogre::TextureManager::getSingleton().load(*I, "General");
+// 		} catch (const Ogre::Exception& e) {
+// 			S_LOG_FAILURE( "Error when loading texture " << *I )
+// 		}
+// 	}	
+}
+
+void OgreResourceLoader::loadSection(const std::string& sectionName)
+{
+	S_LOG_VERBOSE("Adding resource section " << sectionName);
+	Ogre::ConfigFile::SettingsIterator I = cf.getSettingsIterator(sectionName);
+	std::string finalTypename;
+	while (I.hasMoreElements()) {
+		//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
+		const std::string& typeName = I.peekNextKey();
+		const std::string& archName = I.peekNextValue();
+		I.moveNext();
+		finalTypename = typeName.substr(0, typeName.find("["));
+		if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
+			addSharedMedia(archName, finalTypename, sectionName, mLoadRecursive);
+		} else {
+			addUserMedia(archName, finalTypename, sectionName, mLoadRecursive);
+		}
+	}
+
+}
+
+
+}

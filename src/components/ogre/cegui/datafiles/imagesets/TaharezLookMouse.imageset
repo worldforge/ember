@@ -1,4 +1,4 @@
-<Imageset Name="TaharezLookMouse" Imagefile="gui/TaharezLook.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
+<Imageset Name="TaharezLookMouse" Imagefile="cegui/TaharezLook.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
 	<Image Name="MouseTarget" XPos="182" YPos="127" Width="17" Height="17" XOffset="-8" YOffset="-8" />
 	<Image Name="MouseArrow" XPos="138" YPos="127" Width="31" Height="25" XOffset="0" YOffset="0" />
 	<Image Name="MouseMoveCursor" XPos="201" YPos="127" Width="18" Height="18" XOffset="-8" YOffset="-8" />

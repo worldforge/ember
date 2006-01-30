@@ -37,6 +37,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 
+
 namespace Eris {
 class View;
 class Connection;
@@ -83,7 +84,7 @@ class Jesus;
 
 class EmberEntity;
 
-
+class OgreResourceLoader;
 
 
 
@@ -311,7 +312,7 @@ protected:
 	Jesus* mJesus;
 	
 	Eris::View* mWorldView;
-
+	OgreResourceLoader* mOgreResourceLoader;
 
 
 

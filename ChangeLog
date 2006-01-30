@@ -1,3 +1,42 @@
+2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberOgre.*: 
+        * use the LoadingBar to show startup progress
+        * moved resource loading to OgreResourceLoader
+    * src/components/ogre/GUIManager.cpp: use the Gui resource group for the gui
+    * src/components/ogre/OgreResourceLoader.*: class used for loading resources and setting up reource paths
+    * src/components/ogre/resources.cfg: divided the resources into more efficient groups, most notably the bootstrap
+    * TODO: updated
+    * src/components/ogre/cegui/datafiles/imagesets/TaharezLook.imageset, src/components/ogre/cegui/datafiles/imagesets/TaharezLookMouse.imageset,  src/components/ogre/cegui/datafiles/imagesets/WindowsLook.imageset,
+src/components/ogre/cegui/datafiles/imagesets/iconset_mason.imageset,  src/components/ogre/cegui/datafiles/imagesets/iconset_standard.imageset: updated paths
+
+2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/bindings/lua/ConfigService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: updated bindings
+    * src/services/config/ConfigService.*: added method for getting the user created media path
+
+2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/CameraMount.*: a camera mount for third person camera
+    * src/components/ogre/OgreLogObserver.*: Refactored the OgreLogObserver from EmberOgre into its own file
+    * src/components/ogre/model/Model.cpp: print some better output upon errors
+    * src/components/ogre/environment/Sun.cpp: better error handling when trying to create the particle sun
+
+2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/Avatar.*, src/components/ogre/AvatarCamera.*, src/components/ogre/AvatarController.*: instead of creating the camera, AvatarCamera now accepts an already existing camera, allowing us to render things before the Avatar is set up
+
+2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/OgreEntityRenderer.cpp: Catch errors when loading the entity.
+
+2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/ListHolder.*: A adaptor class for CEGUI::Listboxes which adds filtering
+    * src/components/ogre/widgets/LoadingBar.*: Shows a loading bar and a splash screen when resources are loaded
+    * src/components/ogre/widgets/Makefile.am: added new files
+    
+
 2006-01-29 Erik Hjortsberg  <erik@katastrof.nu>
     
     * src/components/ogre/SceneManagers/EmberPagingSceneManager/*: added missing files for the PagingSceneManager

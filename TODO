@@ -14,7 +14,7 @@ TODO LIST
 	* see if it's possible to use Caelum, the Ogre add in project
 
 * settings
-	* add ability to edit the settings from the console
+	* add ability to edit the settings from the console - done
 	* add widgets for editing the settings, this could in this stage just be a very crude but powerful mechanism for changing all kind of settings
 	* add a control center for easy editing of the settings
 	
@@ -25,12 +25,12 @@ TODO LIST
 * add a basepoint editor
 * add a check for nvidia cards and SGI Mesa libGL, and if so warn the user
 * show ping
-* add the players position with the debug widget
-* modify ogre so that the window manager icon can be set
+* add the players position with the debug widget - done through the inspect widget
+* modify ogre so that the window manager icon can be set - done
 * add a generic system for defining bindings between entity attributes and model attributes. Like an extension of how it's possible to currently connect an attribute to a particle system property, but much more generic. This will mean for example that the way of defining how a model is scaled will be deprecated, to be replaced by a more generic system.
 * allow dynamic placement of entities. It should be possible to drag and drop an entity into the world and see a "preview" 3d-representation (perphaps with a translucent material)
 * add a widget for creating and editing atlas type definition. There's already example code in cyphesis.
-* add widget for editing and creating entity media definitions. It should be possible from within Ember to create a whole new media type definition and save it. 
+* add widget for editing and creating entity media definitions. It should be possible from within Ember to create a whole new media type definition and save it. - done
 
 * refactor EmberOgre into smaller subcomponents
 * refactor platform specific code into separate classes sharing a common interface, instead of using #ifdefs
