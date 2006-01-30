@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.6 on Wed Nov 16 22:17:32 2005.
+** Generated automatically by tolua++-1.0.6 on Mon Jan 30 02:05:22 2006.
 */
 
 #ifndef __cplusplus
@@ -411,6 +411,36 @@ static int tolua_EmberServices_Ember_ConfigService_getEmberDataDirectory00(lua_S
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getEmberDataDirectory'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getEmberMediaDirectory of class  Ember::ConfigService */
+static int tolua_EmberServices_Ember_ConfigService_getEmberMediaDirectory00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ember::ConfigService",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ember::ConfigService* self = (const Ember::ConfigService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEmberMediaDirectory'",NULL);
+#endif
+ {
+  const std::string tolua_ret = (const std::string)  self->getEmberMediaDirectory();
+ tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getEmberMediaDirectory'.",&tolua_err);
  return 0;
 #endif
 }
@@ -1694,6 +1724,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
  tolua_function(tolua_S,"getHomeDirectory",tolua_EmberServices_Ember_ConfigService_getHomeDirectory00);
  tolua_function(tolua_S,"getSharedDataDirectory",tolua_EmberServices_Ember_ConfigService_getSharedDataDirectory00);
  tolua_function(tolua_S,"getEmberDataDirectory",tolua_EmberServices_Ember_ConfigService_getEmberDataDirectory00);
+ tolua_function(tolua_S,"getEmberMediaDirectory",tolua_EmberServices_Ember_ConfigService_getEmberMediaDirectory00);
  tolua_function(tolua_S,"getUserMediaDirectory",tolua_EmberServices_Ember_ConfigService_getUserMediaDirectory00);
  tolua_function(tolua_S,"getSharedMediaDirectory",tolua_EmberServices_Ember_ConfigService_getSharedMediaDirectory00);
  tolua_function(tolua_S,"getSharedConfigDirectory",tolua_EmberServices_Ember_ConfigService_getSharedConfigDirectory00);

@@ -175,35 +175,41 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 	/**
 	* returns the path to the home directory, where all configuration is stored
 	*/
-	const std::string getHomeDirectory() const;
+	const std::string& getHomeDirectory() const;
 	
 	/**
 	* returns the path to the shared data directory, where common media is
 	*/
-	const std::string getSharedDataDirectory() const;
+	const std::string& getSharedDataDirectory() const;
 	
 	/**
 	* returns the path to the ember data directory, where ember media is
 	*/
-	const std::string getEmberDataDirectory() const;
+	const std::string& getEmberDataDirectory() const;
 	
 	/**
-	 *    returns the path to the media directory specific to a user, which would normally be ~/.ember/ember-media
+	 *    returns the path to the media directory specific to a user, but synced with the main server, which would normally be ~/.ember/ember-media
 	 * @return 
 	 */
-	const std::string ConfigService::getUserMediaDirectory() const;
+	const std::string& getEmberMediaDirectory() const;
+	
+	/**
+	 *    returns the path to the media directory specific to a user, containing media created by the user, which would normally be ~/.ember/user-media
+	 * @return 
+	 */
+	const std::string& getUserMediaDirectory() const;
 	
 	/**
 	 *    returns the path to the media directory shared between users, which would normally be $prefix/games/ember/media
 	 * @return 
 	 */
-	const std::string ConfigService::getSharedMediaDirectory() const;
+	const std::string& getSharedMediaDirectory() const;
 
 	/**
 	 *    returns the path to the shared config directory where all the original configuration files are stored
 	 * @return 
 	 */
-	const std::string ConfigService::getSharedConfigDirectory() const;
+	const std::string& getSharedConfigDirectory() const;
 
 	/**
 	*	Emitted when a config item is changed.

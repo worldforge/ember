@@ -190,11 +190,15 @@ namespace Ember
 		S_LOG_FAILURE(std::string(error));
 	}
 	
-	const std::string ConfigService::getHomeDirectory() const
+	const std::string& ConfigService::getHomeDirectory() const
 	{
 		//taken from Sear
 #ifdef __WIN32__
-		std::string path = getenv("APPDATA");
+		static std::string finalPath;
+		if (!finalPath.empty()) {
+			return finalPath;
+		}
+		std::string path(getenv("APPDATA"));
 		if (path.empty()) {
 			const char *homedrive = getenv("HOMEDRIVE");
 			const char *homepath = getenv("HOMEPATH");
@@ -205,18 +209,22 @@ namespace Ember
 			}
 			path = std::string(homedrive) + std::string(homepath);
 		}
-		return path + "\\Ember\\";
+		finalPath = path + "\\Ember\\";
+		return finalPath;
 #elif __APPLE__
-			return getAppSupportDirPath() + "/Ember/";
+		static std::string path(getAppSupportDirPath() + "/Ember/");
+		return path;
 #else
-				return std::string(getenv("HOME")) + "/.ember/";
+		static std::string path(std::string(getenv("HOME")) + "/.ember/");
+		return path;
 #endif
 	}
 
-	const std::string ConfigService::getSharedDataDirectory() const
+	const std::string& ConfigService::getSharedDataDirectory() const
 	{
 		if (itemExists("paths", "sharedir")) {
-			return std::string(getValue("paths", "sharedir")) + "/";
+			static std::string path(static_cast<std::string>(getValue("paths", "sharedir")) + "/");
+			return path;
 		} else {
 #ifdef __APPLE__
 			return getBundleResourceDirPath();
@@ -229,21 +237,24 @@ namespace Ember
 
 	}
 	
-	const std::string ConfigService::getSharedConfigDirectory() const
+	const std::string& ConfigService::getSharedConfigDirectory() const
 	{
 #ifdef __APPLE__
-		return getSharedDataDirectory() + "etc/ember/";
+		static std::string path(getSharedDataDirectory() + "etc/ember/");
+		return path;
 #elif __WIN32__ 
-		return getSharedDataDirectory() + "etc/ember/";
+		static std::string path(getSharedDataDirectory() + "etc/ember/");
+		return path;
 #else
 		return etcDir;
 #endif
 	}
 	
-	const std::string ConfigService::getEmberDataDirectory() const
+	const std::string& ConfigService::getEmberDataDirectory() const
 	{
 		if (itemExists("paths", "datadir")) {
-			return std::string(getValue("paths", "datadir")) + "/";
+			static std::string path(static_cast<std::string>(getValue("paths", "datadir")) + "/");
+			return path;
 		} else {
 //#ifdef __APPLE__
 //			return getBundleResourceDirPath();
@@ -257,14 +268,23 @@ namespace Ember
 
 	}
 
-	const std::string ConfigService::getUserMediaDirectory() const
+	const std::string& ConfigService::getEmberMediaDirectory() const
 	{
-		return getEmberDataDirectory() + "ember-media/";
+		static std::string path(getEmberDataDirectory() + "ember-media/");
+		return path;
+	}
+
+
+	const std::string& ConfigService::getUserMediaDirectory() const
+	{
+		static std::string path(getHomeDirectory() + "user-media/");
+		return path;
 	}
 	
-	const std::string ConfigService::getSharedMediaDirectory() const
+	const std::string& ConfigService::getSharedMediaDirectory() const
 	{
-		return getSharedDataDirectory() + "media/";
+		static std::string path(getSharedDataDirectory() + "media/");
+		return path;
 	}
 
 } // namespace Ember
