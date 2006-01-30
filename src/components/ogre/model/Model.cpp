@@ -103,7 +103,7 @@ bool Model::create(const std::string& modelType)
 	try {
 		_masterModel= ModelDefinitionManager::instance().load(modelType, groupName);
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName);
+		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << ".\nMessage: " << ex.getFullDescription());
 		return false;
 	}
 	if (!_masterModel->isValid()) {

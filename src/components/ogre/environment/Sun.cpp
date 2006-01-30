@@ -36,30 +36,33 @@ const std::string Sun::SETAMBIENTLIGHT("setambientlight");
 
 Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
-  mSun = sceneMgr->createLight("SunLight");
-  mSun->setType(Ogre::Light::LT_DIRECTIONAL);
-  mSunNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-  mSunNode->attachObject(mSun);
+	mSun = sceneMgr->createLight("SunLight");
+	mSun->setType(Ogre::Light::LT_DIRECTIONAL);
+	mSunNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+	mSunNode->attachObject(mSun);
   
-  Ogre::ParticleSystem* sunParticle = Ogre::ParticleSystemManager::getSingleton().createSystem("Sun", "Space/Sun"); 
-  mSunNode->attachObject(sunParticle);   
-  //Ogre::Entity* entity = sceneMgr->createEntity("sunentity", "Alpha_Male.mesh");
-  //mSunNode->attachObject(entity);
-  
-  setSunPosition(Ogre::Vector3(-500,300,-350));
-  setSunColour(Ogre::ColourValue(1, 1, 0.7)); //yellow
-  //mSun->setSpecularColour(1, 1, 0.7); //yellow
-  mSun->setCastShadows(true);
-  mSun->setAttenuation(1000000, 1, 0, 0);
-  
-//  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
-  setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
-
-
+	try {
+		Ogre::ParticleSystem* sunParticle = Ogre::ParticleSystemManager::getSingleton().createSystem("Sun", "Space/Sun"); 
+		mSunNode->attachObject(sunParticle);   
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("Error when creating sun. Message: " << ex.getFullDescription());
+	}
+	//Ogre::Entity* entity = sceneMgr->createEntity("sunentity", "Alpha_Male.mesh");
+	//mSunNode->attachObject(entity);
+	
+	setSunPosition(Ogre::Vector3(-500,300,-350));
+	setSunColour(Ogre::ColourValue(1, 1, 0.7)); //yellow
+	//mSun->setSpecularColour(1, 1, 0.7); //yellow
+	mSun->setCastShadows(true);
+	mSun->setAttenuation(1000000, 1, 0, 0);
+	
+	//  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
+	setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+	
+	
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETSUNPOSITION,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETSUNCOLOUR,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETAMBIENTLIGHT,this);
-
 }
 
 

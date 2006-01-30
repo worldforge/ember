@@ -1,4 +1,4 @@
-SUBDIRS = environment model SceneManagers modeldefinitions input widgets \
+SUBDIRS = environment model SceneManagers input widgets \
 				carpenter jesus ogreopcode scripting
 
 #gamesdir = $(bindir)/games
@@ -70,7 +70,13 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 	$(top_builddir)/src/components/ogre/ogreopcode/opcode/libOpcode.a $(EMBER_EXT_LIBS)
 
 
-ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp environment/Water.cpp TerrainGenerator.cpp MotionManager.cpp AvatarCamera.cpp TerrainShader.cpp GUIManager.cpp MousePicker.cpp EmberEntityFactory.cpp  EmberEventProcessor.cpp EmberOgre.cpp  EmberPhysicalEntity.cpp EmberEntity.cpp AvatarEmberEntity.cpp WorldEmberEntity.cpp TerrainPage.cpp TerrainArea.cpp EmberEntityUserObject.cpp GUICEGUIAdapter.cpp
+ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
+		environment/Water.cpp TerrainGenerator.cpp MotionManager.cpp AvatarCamera.cpp \
+		TerrainShader.cpp GUIManager.cpp MousePicker.cpp EmberEntityFactory.cpp \
+		EmberEventProcessor.cpp EmberOgre.cpp EmberPhysicalEntity.cpp EmberEntity.cpp \
+		AvatarEmberEntity.cpp WorldEmberEntity.cpp TerrainPage.cpp TerrainArea.cpp \
+		EmberEntityUserObject.cpp GUICEGUIAdapter.cpp CameraMount.cpp OgreLogObserver.cpp \
+	OgreResourceLoader.cpp 
 
 
 
@@ -102,5 +108,10 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = EmberEventProcessor.h EmberOgre.h WorldEmberEntity.h TerrainPage.h TerrainArea.h AvatarEmberEntity.h EmberPhysicalEntity.h EmberOgrePrerequisites.h EmberEntityFactory.h EmberEntity.h Avatar.h environment/Water.h TerrainGenerator.h MotionManager.h AvatarCamera.h TerrainShader.h MathConverter.h ConsoleObjectImpl.h AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h GUICEGUIAdapter.h
+noinst_HEADERS = EmberEventProcessor.h EmberOgre.h WorldEmberEntity.h \
+		TerrainPage.h TerrainArea.h AvatarEmberEntity.h EmberPhysicalEntity.h \
+		EmberOgrePrerequisites.h EmberEntityFactory.h EmberEntity.h Avatar.h environment/Water.h \
+		TerrainGenerator.h MotionManager.h AvatarCamera.h TerrainShader.h MathConverter.h \
+		ConsoleObjectImpl.h AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h \
+		GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h OgreResourceLoader.h 
 	
