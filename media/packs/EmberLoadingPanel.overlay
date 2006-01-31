@@ -1,0 +1,87 @@
+// Ogre overlay scripts
+EmberCore/LoadOverlay
+{
+
+	zorder 510
+        container Panel(EmberCore/Splash)
+        {
+                metrics_mode pixels
+		vert_align center
+		horz_align center
+                left -400
+                top -300
+                width 800
+                height 400
+                material EmberCore/Splash
+        }
+	// Main panel block
+	container Panel(EmberCore/LoadPanel)
+	{
+		metrics_mode pixels
+		vert_align center
+		horz_align center
+		left -250 
+		top 100
+		width 500
+		height 80
+
+		element TextArea(EmberCore/LoadPanel/Description)
+		{
+			metrics_mode pixels
+			left 5
+			top 5
+			width 500
+			height 20
+			font_name TrebuchetMSBold
+			char_height 19
+			caption Loading, please wait...
+                        colour_top 0.94 0.68 0.43
+                        colour_bottom 0.9 0.82 0.74
+		}
+
+		container Panel(EmberCore/LoadPanel/BarBackground)
+		{
+			metrics_mode pixels
+			vert_align top
+			left 10 
+			top 25
+			width 500
+			height 50
+                        material EmberCore/ProgressBar
+                        container Panel(EmberCore/LoadPanel/Bar)
+                        {
+                                metrics_mode pixels
+                                vert_align top
+                    		horz_align left
+                                width 500
+                                height 50
+                                material EmberCore/ProgressBar/Frame
+        
+                                element Panel(EmberCore/LoadPanel/Bar/Progress)
+                                {
+                                        metrics_mode pixels
+                                        left 3
+                                        top 3
+                                        width 494
+                                        height 44
+                                        material EmberCore/Black
+                                }
+                        }
+                        element TextArea(EmberCore/LoadPanel/Comment)
+                        {
+                                metrics_mode pixels
+                                left 5
+                                top 60
+                                width 500
+                                height 20
+                                font_name TrebuchetMSBold
+                                char_height 15
+                                caption Initialising...
+                                colour_top 0.94 0.68 0.43
+                                colour_bottom 0.9 0.82 0.74
+                      }
+                }
+	}
+}
+
+

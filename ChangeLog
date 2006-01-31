@@ -1,3 +1,10 @@
+2006-01-31 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/LoadingBar.cpp: handle missing media
+    * src/components/ogre/modeldefinitions/trees.modeldef.xml, src/components/ogre/modeldefinitions/trees/dynamic/trees.modeldef.xml, src/components/ogre/modeldefinitions/trees/pregenerated/trees.modeldef.xml: removed the dynamic and pregenerated tree definitions
+    * Makefile.am: copy the bootstrap media upon installation
+    * media/packs/EmberCore.material, media/packs/EmberLoadingPanel.overlay, media/packs/OgreCore.zip, media/packs/ember_progress_bar.png, media/packs/ember_progress_bar_frame.png, media/packs/ember_splash.png: added media needed for bootstrap
+
 2006-01-30 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgre.*: 

@@ -22,6 +22,7 @@ the basic resources required for the progress bar and will be loaded automatical
 */
 #include <Ogre.h>
 #include "LoadingBar.h"
+#include "../EmberOgrePrerequisites.h"
 using namespace Ogre;
 
 /** Defines an example loading progress bar which you can use during 
@@ -34,7 +35,7 @@ using namespace Ogre;
 	SceneManager's 'special case render queues' for this, see
 	SceneManager::addSpecialCaseRenderQueue for details.
 @note 
-	This progress bar relies on you having the OgreCore.zip package already 
+	This progress bar relies on you having the OgreCore.zip and EmberCore.zip package already 
 	added to a resource group called 'Bootstrap' - this provides the basic 
 	resources required for the progress bar and will be loaded automatically.
 */
@@ -62,29 +63,32 @@ using namespace Ogre;
 		// the basic contents in the loading screen
 		ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
 
-		OverlayManager& omgr = OverlayManager::getSingleton();
-		mLoadOverlay = (Overlay*)omgr.getByName("EmberCore/LoadOverlay");
-		if (!mLoadOverlay)
-		{
+		try {
+			OverlayManager& omgr = OverlayManager::getSingleton();
+			mLoadOverlay = (Overlay*)omgr.getByName("EmberCore/LoadOverlay");
+			if (!mLoadOverlay)
+			{
 			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
-				"Cannot find loading overlay", "ExampleLoadingBar::start");
+				"Cannot find loading overlay", "LoadingBar::start");
+			}
+			mLoadOverlay->show();
+	
+			// Save links to the bar and to the loading text, for updates as we go
+			mLoadingBarElement = omgr.getOverlayElement("EmberCore/LoadPanel/Bar/Progress");
+			mLoadingCommentElement = omgr.getOverlayElement("EmberCore/LoadPanel/Comment");
+			mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
+	
+			OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
+			mProgressBarMaxSize = barContainer->getWidth();
+	// 		mProgressBarMaxLeft = barContainer->getLeft();
+			
+			//mLoadingBarElement->setWidth(300);
+	
+			// self is listener
+			ResourceGroupManager::getSingleton().addResourceGroupListener(this);
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_FAILURE("Error when creating loading bar. Message: \n" << ex.getFullDescription());
 		}
-		mLoadOverlay->show();
-
-		// Save links to the bar and to the loading text, for updates as we go
-		mLoadingBarElement = omgr.getOverlayElement("EmberCore/LoadPanel/Bar/Progress");
-		mLoadingCommentElement = omgr.getOverlayElement("EmberCore/LoadPanel/Comment");
-		mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
-
-		OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
-		mProgressBarMaxSize = barContainer->getWidth();
-// 		mProgressBarMaxLeft = barContainer->getLeft();
-		
-		//mLoadingBarElement->setWidth(300);
-
-		// self is listener
-		ResourceGroupManager::getSingleton().addResourceGroupListener(this);
-
 
 
 	}
@@ -93,24 +97,23 @@ using namespace Ogre;
 	*/
 	void LoadingBar::finish(void)
 	{
-		// hide loading screen
+		/// hide loading screen
 		mLoadOverlay->hide();
 
-		// Unregister listener
+		/// Unregister listener
 		ResourceGroupManager::getSingleton().removeResourceGroupListener(this);
 		
-		//we won't be needing the bootstrap resources for some while, so unload them
+		///we won't be needing the bootstrap resources for some while, so unload them
 		ResourceGroupManager::getSingleton().unloadResourceGroup("Bootstrap");
 
 	}
 
 
-	// ResourceGroupListener callbacks
+	/// ResourceGroupListener callbacks
 	void LoadingBar::resourceGroupScriptingStarted(const String& groupName, size_t scriptCount)
 	{
 		assert(mNumGroupsInit > 0 && "You stated you were not going to init "
 			"any groups, but you did! Divide by zero would follow...");
-		// Lets assume script loading is 70%
 		mProgressBarInc = mProgressBarMaxSize * mInitProportion / (Real)scriptCount;
 		mProgressBarInc /= mNumGroupsInit;
 		mLoadingDescriptionElement->setCaption("Parsing scripts...");
@@ -123,6 +126,7 @@ using namespace Ogre;
 	}
 	void LoadingBar::scriptParseEnded(void)
 	{
+		///make the black blocking block a little bit smaller and move it to the right
 		mLoadingBarElement->setWidth(
 			mLoadingBarElement->getWidth() - mProgressBarInc);
 		mLoadingBarElement->setLeft(mLoadingBarElement->getLeft() + mProgressBarInc);
@@ -156,10 +160,11 @@ using namespace Ogre;
 	}
 	void LoadingBar::worldGeometryStageEnded(void)
 	{
-/*		mLoadingBarElement->setWidth(
+		///make the black blocking block a little bit smaller and move it to the right
+		mLoadingBarElement->setWidth(
 			mLoadingBarElement->getWidth() - mProgressBarInc);
-		mLoadingBarElement->setLeft(1.0f - mLoadingBarElement->getWidth());
-		mWindow->update();*/
+		mLoadingBarElement->setLeft(mLoadingBarElement->getLeft() + mProgressBarInc);
+		mWindow->update();
 	}
 	void LoadingBar::resourceGroupLoadEnded(const String& groupName)
 	{

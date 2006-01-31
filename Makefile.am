@@ -17,3 +17,17 @@ dist_icon_DATA = ember.png
 
 docdir = $(datadir)/doc/ember-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS NEWS
+
+
+current = $(PWD)
+
+dist-hook:
+	mkdir -p $(distdir)
+	(cd $(top_srcdir)/media/packs; tar cf - `find . -name \*` | ( cd $(current); cd $(distdir); tar xf -))
+
+install-data-local:
+	mkdir -p $(DESTDIR)$(datadir)/games/ember/media/packs/ 
+	(cd $(top_srcdir)/media/packs; tar cf - `find . -name \*`) | (cd $(DESTDIR)$(datadir)/games/ember/media/packs; tar xf -)
+
+uninstall-local:
+	find $(DESTDIR)$(datadir)/games/ember/media/packs/ -name  \* | xargs rm
