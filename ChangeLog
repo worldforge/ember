@@ -1,3 +1,20 @@
+2006-02-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * media/materials/programs/Common.program, media/materials/programs/Example_Basic.cg, media/materials/programs/Example_BumpMapping.cg, media/materials/programs/OffsetMapping.cg: fixed compilation problems
+
+2006-02-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * ember.conf: moved the media loading options to [media] and added an option for preloading media
+    * src/components/ogre/EmberOgre.cpp: check for the preload option in ember.conf
+    * src/components/ogre/OgreResourceLoader.cpp: 
+        * look for the recursive option in [media]
+        * better exception handling when loading media
+    * src/components/ogre/resources.cfg: don't look for EmberCore.zip, instead bring in the whole pack directory
+    * src/components/ogre/widgets/ListHolder.*: added logic for filtering
+    * src/components/ogre/widgets/LoadingBar.*: put it in the namespace EmberOgre and make it increase on loading too
+    * src/components/ogre/widgets/ModelEdit.lua: use the ListHolder for filtering
+    * src/components/ogre/scripting/bindings/lua/*: updated bindings
+
 2006-01-31 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/widgets/LoadingBar.cpp: handle missing media

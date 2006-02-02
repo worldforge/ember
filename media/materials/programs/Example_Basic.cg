@@ -33,9 +33,9 @@ void hardwareSkinningOneWeight_vp(
 	out float4 colour           : COLOR,
 	// Support up to 24 bones of float3x4
 	// vs_1_1 only supports 96 params so more than this is not feasible
-	uniform float3x4   worldMatrix3x4Array[32],
+	uniform float3x4   worldMatrix3x4Array[24],
 	uniform float4x4 viewProjectionMatrix,
-	uniform float3   lightPos[2],
+	uniform float4   lightPos[2],
 	uniform float4   lightDiffuseColour[2],
 	uniform float4   ambient)
 {
@@ -45,10 +45,12 @@ void hardwareSkinningOneWeight_vp(
 	oPosition = mul(viewProjectionMatrix, blendPos);
 	// transform normal
 	float3 norm = mul((float3x3)worldMatrix3x4Array[blendIdx], normal);
-	float3 lightDir0 = normalize(lightPos[0] - blendPos);
-	float3 lightDir1 = normalize(lightPos[1] - blendPos);
+	// Lighting - support point and directional
+	float3 lightDir0 = 	normalize(
+		lightPos[0].xyz -  (blendPos.xyz * lightPos[0].w));
+	float3 lightDir1 = 	normalize(
+		lightPos[1].xyz -  (blendPos.xyz * lightPos[1].w));
 
-	
 	oUv = uv;
 	colour = ambient + 
 		(saturate(dot(lightDir0, norm)) * lightDiffuseColour[0]) + 
@@ -102,7 +104,7 @@ void hardwareSkinningFourWeights_vp(
 	// vs_1_1 only supports 96 params so more than this is not feasible
 	uniform float3x4   worldMatrix3x4Array[24],
 	uniform float4x4 viewProjectionMatrix,
-	uniform float3   lightPos[2],
+	uniform float4   lightPos[2],
 	uniform float4   lightDiffuseColour[2],
 	uniform float4   ambient)
 {
@@ -123,8 +125,11 @@ void hardwareSkinningFourWeights_vp(
 		blendWgt[i];
 	}
 	norm = normalize(norm);
-	float3 lightDir0 = normalize(lightPos[0] - blendPos);
-	float3 lightDir1 = normalize(lightPos[1] - blendPos);
+	// Lighting - support point and directional
+	float3 lightDir0 = 	normalize(
+		lightPos[0].xyz -  (blendPos.xyz * lightPos[0].w));
+	float3 lightDir1 = 	normalize(
+		lightPos[1].xyz -  (blendPos.xyz * lightPos[1].w));
 
 	
 	oUv = uv;

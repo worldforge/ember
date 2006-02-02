@@ -22,8 +22,7 @@ void main_vp(float4 position	: POSITION,
 			 out float2 oUv			 : TEXCOORD0,
 			 out float3 oTSLightDir	 : TEXCOORD1,
 			 // parameters
-			 uniform float3 lightPosition, // object space
-			 uniform float3 eyePosition,   // object space
+			 uniform float4 lightPosition, // object space
 			 uniform float4x4 worldViewProj)
 {
 	// calculate output position
@@ -34,7 +33,7 @@ void main_vp(float4 position	: POSITION,
 
 	// calculate tangent space light vector
 	// Get object space light direction
-	float3 lightDir = lightPosition - position.xyz;
+	float3 lightDir = normalize(lightPosition.xyz -  (position * lightPosition.w));
 
 	// Calculate the binormal (NB we assume both normal and tangent are
 	// already normalised)
@@ -82,7 +81,7 @@ void specular_vp(float4 position	: POSITION,
 			 	 out float3 oTSLightDir	 : TEXCOORD1,
 				 out float3 oTSHalfAngle : TEXCOORD2,
 			 	 // parameters
-			 	 uniform float3 lightPosition, // object space
+				 uniform float4 lightPosition, // object space
 			 	 uniform float3 eyePosition,   // object space
 			 	 uniform float4x4 worldViewProj)
 {
@@ -94,7 +93,7 @@ void specular_vp(float4 position	: POSITION,
 
 	// calculate tangent space light vector
 	// Get object space light direction
-	float3 lightDir = lightPosition - position.xyz;
+	float3 lightDir = normalize(lightPosition.xyz -  (position * lightPosition.w));
 
 	// Calculate the binormal (NB we assume both normal and tangent are
 	// already normalised)
@@ -148,7 +147,7 @@ void specular_fp( float2 uv			: TEXCOORD0,
 	
 
 	// Calculate dot product for diffuse
-	colour = (lightDiffuse * dot(bumpVec, lightVec)) + 
+	colour = (lightDiffuse * saturate(dot(bumpVec, lightVec))) + 
 			(lightSpecular * specFactor);
 	
 }

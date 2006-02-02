@@ -1,11 +1,11 @@
 // Basic hardware skinning using four indexed weights per vertex 
- vertex_program HardwareSkinningFourWeightsFullHANIM cg 
- { 
-    source Animation.cg 
-    entry_point hardwareSkinningFourWeightsFullHANIM_vp 
-    profiles vs_2_0 arbvp1 
-    includes_skeletal_animation true 
- } 
+ //vertex_program HardwareSkinningFourWeightsFullHANIM cg 
+ //{ 
+ //   source Animation.cg 
+ //   entry_point hardwareSkinningFourWeightsFullHANIM_vp 
+ //   profiles vs_2_0 arbvp1 
+ //   includes_skeletal_animation true 
+ //} 
  
  
  vertex_program Field/GrassWaverVp cg

@@ -17,7 +17,7 @@ void main_vp(float4 position   : POSITION,
              out float3 oEyeDir       : TEXCOORD2, // tangent space 
              out float3 oHalfAngle    : TEXCOORD3, // 
               // parameters 
-              uniform float3 lightPosition, // object space 
+              uniform float4 lightPosition, // object space 
               uniform float3 eyePosition,   // object space 
               uniform float4x4 worldViewProj) 
 {  
@@ -29,7 +29,7 @@ void main_vp(float4 position   : POSITION,
 
    // calculate tangent space light vector 
    // Get object space light direction 
-   float3 lightDir = lightPosition - position.xyz; 
+   float3 lightDir = normalize(lightPosition.xyz -  (position * lightPosition.w));
    float3 eyeDir = eyePosition - position.xyz; 
     
    // Calculate the binormal (NB we assume both normal and tangent are 
