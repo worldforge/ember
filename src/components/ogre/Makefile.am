@@ -1,5 +1,5 @@
 SUBDIRS = environment model SceneManagers input widgets \
-				carpenter jesus ogreopcode scripting
+				carpenter jesus ogreopcode scripting cegui
 
 #gamesdir = $(bindir)/games
 bin_PROGRAMS = ember.bin
@@ -78,29 +78,6 @@ ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
 		EmberEntityUserObject.cpp GUICEGUIAdapter.cpp CameraMount.cpp OgreLogObserver.cpp \
 	OgreResourceLoader.cpp 
 
-
-
-#widgetdir = $(datadir)/ember/data/media/gui/cegui/widgets/
-#dist_widget_DATA = widgets/ChatWidget.xml widgets/ConsoleWidget.xml widgets/DebugWidget.xml widgets/GiveWidget.xml widgets/InspectWidget.xml widgets/InventoryWidget.xml widgets/MakeEntityWidget.xml widgets/ServerBrowserWidget.xml widgets/ServerWidget.xml widgets/IngameChatWidget.xml widgets/HelpWidget.xml widgets/GUILayout.xsd
-
-#ceguidir = $(datadir)/ember/data/cegui/
-#dist_cegui_DATA = cegui
-
-
-ceguifontsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/fonts
-ceguiimagesetsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/imagesets
-ceguilayoutsdir = $(datadir)/games/ember/media/gui/cegui/datafiles/layouts
-ceguischemesdir = $(datadir)/games/ember/media/gui/cegui/datafiles/schemes
-ceguiconfigdir = $(datadir)/games/ember/media/gui/cegui/datafiles/configs
-ceguischemadir = $(datadir)/games/ember/media/gui
-
-
-dist_ceguifonts_DATA = cegui/datafiles/fonts/Font.xsd cegui/datafiles/fonts/tahoma-14.xml cegui/datafiles/fonts/tahoma-10.xml cegui/datafiles/fonts/tahoma-8.xml cegui/datafiles/fonts/tahoma.ttf
-dist_ceguiimagesets_DATA = cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/imagesets/TaharezLook.imageset  cegui/datafiles/imagesets/TaharezLookMouse.imageset cegui/datafiles/imagesets/WindowsLook.imageset cegui/datafiles/imagesets/iconset_standard.imageset cegui/datafiles/imagesets/iconset_mason.imageset
-dist_ceguilayouts_DATA = cegui/datafiles/layouts/GUILayout.xsd
-dist_ceguischemes_DATA = cegui/datafiles/schemes/TaharezLook.scheme cegui/datafiles/schemes/TaharezLookWidgetAliases.scheme cegui/datafiles/schemes/TaharezLookWidgets.scheme cegui/datafiles/schemes/WindowsLook.scheme cegui/datafiles/schemes/WindowsLookWidgets.scheme cegui/datafiles/schemes/GUIScheme.xsd
-dist_ceguiconfig_DATA = cegui/datafiles/configs/cegui.config
-dist_ceguischema_DATA = cegui/datafiles/layouts/GUILayout.xsd cegui/datafiles/imagesets/Imageset.xsd cegui/datafiles/fonts/Font.xsd cegui/datafiles/schemes/GUIScheme.xsd cegui/datafiles/configs/CEGUIConfig.xsd
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 

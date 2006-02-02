@@ -358,7 +358,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	mOgreResourceLoader = new OgreResourceLoader();
 	mOgreResourceLoader->initialize();
 	
-	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia");
+	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "preloadmedia");
 
 	
 //    setupResources();
@@ -629,128 +629,6 @@ void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, st
 void EmberOgre::setupResources(void)
 {
 	
-/* 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-	bool loadRecursive = false;
-	
-	///check from the config if we should load media recursively
-	///this is needed for most authoring, since it allows us to find all meshes before they are loaded
-	if (configSrv->itemExists("general", "loadmediarecursive")) { 
-			loadRecursive = (bool)configSrv->getValue("general", "loadmediarecursive");
-	}*/
-	
-	///start by setting up the 
-	
-	
-	
-
-/*	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
-		
-
-	
-	std::string userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
-	std::string sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();*/
-	
-	
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaHomePath + "modeldefinitions", "FileSystem", "modeldefinitions");
-// 	try {
-// 	
-// 		if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) { 
-// 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/dynamic", "FileSystem", "ModelDefinitions");
-// 		} else {
-// 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + "modeldefinitions/trees/pregenerated", "FileSystem", "ModelDefinitions");
-// 		}
-// 	} catch (const Ogre::Exception& ) {
-// 		S_LOG_FAILURE("Couldn't load trees. Continuing as if nothing happened.");
-// 	}
-	
-// /*	std::string modeldefspath = "modeldefinitions/";
-// 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("ogre", "modeldefinitionpath")) {
-// 		modeldefspath =  Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("ogre", "modeldefinitionpath")) + "/";
-// 	} 
-// 	mModelDefinitionManager->addArchiveEx(modeldefspath, "FileSystem");*/
-// 	
-// 	getResourceArchiveFromVarconf(mModelDefinitionManager, "modeldefinitions");
-// 	getResourceArchiveFromVarconf(Ogre::TextureManager::getSingletonPtr(), "common");
-// 	getResourceArchiveFromVarconf(Ogre::GpuProgramManager::getSingletonPtr(), "programs");
-// 	getResourceArchiveFromVarconf(Ogre::FontManager::getSingletonPtr(), "fonts");
-// 	getResourceArchiveFromVarconf(Ogre::MaterialManager::getSingletonPtr(), "materials");
-// 	getResourceArchiveFromVarconf(Ogre::TextureManager::getSingletonPtr(), "textures");
-// 	getResourceArchiveFromVarconf(Ogre::ParticleSystemManager::getSingletonPtr(), "particles");
-
-		    
-	// Load resource paths from config file
-//     Ogre::ConfigFile cf;
-//     cf.load("resources.cfg");
-// 
-//     
-// 	// Go through all sections & settings in the file
-// 	//first do user media, then ember media, allowing the user to override ember-media
-// 	{
-// 		std::string userOwnMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/";
-// 	
-// 		Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-// 		
-// 		Ogre::String secName, typeName, archName, fullResourcePath;
-// 		std::string finalTypename;
-// 		while (seci.hasMoreElements())
-// 		{
-// 			secName = seci.peekNextKey();
-// 			Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-// 			Ogre::ConfigFile::SettingsMultiMap::iterator i;
-// 			for (i = settings->begin(); i != settings->end(); ++i)
-// 			{
-// 				typeName = i->first;
-// 				archName = i->second;
-// 				if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-// 					//skip shared
-// 				} else {
-// 					fullResourcePath = userOwnMediaPath + archName;
-// 					finalTypename = typeName.substr(0, typeName.find("["));
-// 					try {
-// 						Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-// 							fullResourcePath, finalTypename, secName, loadRecursive);
-// 					} catch (const Ogre::Exception&) {
-// 						S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// 	
-// 	{
-// 		Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-// 		
-// 		Ogre::String secName, typeName, archName, fullResourcePath;
-// 		std::string finalTypename;
-// 		while (seci.hasMoreElements())
-// 		{
-// 			secName = seci.peekNextKey();
-// 			Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-// 			Ogre::ConfigFile::SettingsMultiMap::iterator i;
-// 			for (i = settings->begin(); i != settings->end(); ++i)
-// 			{
-// 				typeName = i->first;
-// 				archName = i->second;
-// 				if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-// 					fullResourcePath = sharedMediaPath + archName;
-// 				} else {
-// 					fullResourcePath = userMediaPath + archName;
-// 				}
-// 				finalTypename = typeName.substr(0, typeName.find("["));
-// 				try {
-// 					Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-// 						fullResourcePath, finalTypename, secName, loadRecursive);
-// 				} catch (const Ogre::Exception&) {
-// 					S_LOG_FAILURE("Couldn't load " + fullResourcePath + ". Continuing as if nothing happened.");
-// 				}
-// 			}
-// 		}
-// 	}
-// 	
-// 	
-// //     Ogre::ResourceManager::addCommonArchiveEx( Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "media/", "FileSystem");
-// 	
-// 	S_LOG_INFO(  "Added media paths.");
 	
 }
 

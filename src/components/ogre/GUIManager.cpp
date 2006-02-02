@@ -82,7 +82,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		chdir(configSrv->getEmberDataDirectory().c_str());
 		
 		//use a macro from CEGUIFactoryModule
-		DYNLIB_LOAD( "libCEGUITaharezLook.so");
+//		DYNLIB_LOAD( "libCEGUITaharezLook.so");
+		DYNLIB_LOAD( "libCEGUIFalagardBase.so");
 		
 		Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
 		
@@ -99,7 +100,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			mGuiSystem = new CEGUI::System(mGuiRenderer, & luaScriptProvider->getScriptModule(), resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 		
 		} else {
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 		}
 		//mGuiSystem = new CEGUI::System(mGuiRenderer, &mScriptManager->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 //		mGuiSystem = new CEGUI::System(mGuiRenderer); 
@@ -108,26 +109,26 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 
 //		fprintf(stderr, dlerror());
-		try {	
+/*		try {	
 //			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
-			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLook.scheme");
+			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLookSkin.scheme");*/
 			
 			try {
 				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
 			} catch (const CEGUI::Exception&) {
 				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.");
 			}
-			try {
-				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-10"); 
+/*			try {
+				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Vera-Sans-10"); 
 //				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
 			} catch (const CEGUI::Exception&) {
 				S_LOG_FAILURE("CEGUI - could not set default font.");
-			}
+			}*/
 		
 		
-		} catch (const CEGUI::Exception&) {
+/*		} catch (const CEGUI::Exception&) {
 			S_LOG_FAILURE("CEGUI - could not create default scheme.");
-		}
+		}*/
 		
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");

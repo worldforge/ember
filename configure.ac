@@ -445,6 +445,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/ogreopcode/opcode/Makefile
 		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/Makefile
+		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/environment/meshtree/Makefile

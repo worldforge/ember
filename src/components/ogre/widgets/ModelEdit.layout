@@ -10,7 +10,6 @@
 		<Property Name="NWSESizingCursorImage" Value="set:TaharezLook image:MouseNwSeCursor" />
 		<Property Name="Text" Value="Model Preview" />
 		<Property Name="TitlebarEnabled" Value="True" />
-		<Property Name="TitlebarFont" Value="Tahoma-12" />
 		<Property Name="UnifiedAreaRect" Value="{{0.036523,0.000000},{0.020738,0.000000},{0.936523,0.000000},{0.920738,0.000000}}" />
 		<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 		<Window Type="DefaultWindow" Name="MainInnerWindow" >
@@ -149,7 +148,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
 					<Property Name="TopFrameImage" Value="set:TaharezLook image:StaticTop" />
@@ -159,7 +158,7 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Slider" Name="SubMeshPreviewZoom" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="Tooltip" Value="Drag the slider to zoom." />
 					<Property Name="UnifiedAreaRect" Value="{{0.623512,0.000000},{0.232090,0.000000},{0.641897,0.000000},{0.811278,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
@@ -221,7 +220,7 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Checkbox" Name="ModelShowContent" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="Text" Value="Show content" />
 					<Property Name="UnifiedAreaRect" Value="{{0.701041,0.000000},{0.177159,0.000000},{0.838708,0.000000},{0.270541,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
@@ -232,7 +231,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="FrameEnabled" Value="False" />
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
@@ -244,7 +243,7 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelContainedOffset_x" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.836331,0.000000},{0.248350,0.000000},{0.872273,0.000000},{0.329569,0.000000}}" />
@@ -256,7 +255,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="FrameEnabled" Value="False" />
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
@@ -268,7 +267,7 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelRotation" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.826971,0.000000},{0.343348,0.000000},{0.974204,0.000000},{0.424566,0.000000}}" />
@@ -280,7 +279,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="FrameEnabled" Value="False" />
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
@@ -292,7 +291,7 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelScale" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.828010,0.000000},{0.528210,0.000000},{0.975244,0.000000},{0.609428,0.000000}}" />
@@ -304,7 +303,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="FrameEnabled" Value="False" />
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
@@ -317,7 +316,7 @@
 				</Window>
 				<Window Type="TaharezLook/Combobox" Name="ModelUseScaleOf" >
 					<Property Name="ActiveEditSelectionColour" Value="FF6060FF" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="InactiveEditSelectionColour" Value="FF808080" />
 					<Property Name="MaxEditTextLength" Value="1073741823" />
 					<Property Name="NormalEditTextColour" Value="FFFFFFFF" />
@@ -332,7 +331,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="FrameEnabled" Value="False" />
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
@@ -344,35 +343,35 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelContainedOffset_y" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.882096,0.000000},{0.248350,0.000000},{0.918037,0.000000},{0.329569,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelContainedOffset_z" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.926822,0.000000},{0.248350,0.000000},{0.962763,0.000000},{0.329569,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelTranslate_x" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.835292,0.000000},{0.630911,0.000000},{0.871233,0.000000},{0.712130,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelTranslate_y" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.881056,0.000000},{0.630911,0.000000},{0.916997,0.000000},{0.712130,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="ModelTranslate_z" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.926822,0.000000},{0.630911,0.000000},{0.962763,0.000000},{0.712130,0.000000}}" />
@@ -427,7 +426,7 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Button" Name="RemoveSubmodelButton" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseArrow" />
 					<Property Name="Text" Value="Remove submodel" />
 					<Property Name="UnifiedAreaRect" Value="{{0.034570,0.000000},{0.263063,0.000000},{0.377483,0.000000},{0.342580,0.000000}}" />
@@ -549,14 +548,13 @@
 			<Window Type="TaharezLook/FrameWindow" Name="NewModelWindow" >
 				<Property Name="CaptionColour" Value="00FFFFFF" />
 				<Property Name="EWSizingCursorImage" Value="set:TaharezLook image:MouseEsWeCursor" />
-				<Property Name="Font" Value="Tahoma-12" />
+				
 				<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTarget" />
 				<Property Name="NESWSizingCursorImage" Value="set:TaharezLook image:MouseNeSwCursor" />
 				<Property Name="NSSizingCursorImage" Value="set:TaharezLook image:MouseNoSoCursor" />
 				<Property Name="NWSESizingCursorImage" Value="set:TaharezLook image:MouseNwSeCursor" />
 				<Property Name="Text" Value="New Model" />
 				<Property Name="TitlebarEnabled" Value="True" />
-				<Property Name="TitlebarFont" Value="Tahoma-12" />
 				<Property Name="UnifiedAreaRect" Value="{{0.299011,0.000000},{0.297325,0.000000},{0.687443,0.000000},{0.547325,0.000000}}" />
 				<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				<Property Name="Visible" Value="False" />
@@ -565,7 +563,7 @@
 					<Property Name="BottomFrameImage" Value="set:TaharezLook image:StaticBottom" />
 					<Property Name="BottomLeftFrameImage" Value="set:TaharezLook image:StaticBottomLeft" />
 					<Property Name="BottomRightFrameImage" Value="set:TaharezLook image:StaticBottomRight" />
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="FrameEnabled" Value="False" />
 					<Property Name="LeftFrameImage" Value="set:TaharezLook image:StaticLeft" />
 					<Property Name="RightFrameImage" Value="set:TaharezLook image:StaticRight" />
@@ -577,21 +575,21 @@
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Editbox" Name="NewModelName" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MaxTextLength" Value="1073741823" />
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
 					<Property Name="UnifiedAreaRect" Value="{{0.263982,0.000000},{0.244275,0.000000},{0.835789,0.000000},{0.433206,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Button" Name="NewModelOk" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseArrow" />
 					<Property Name="Text" Value="Ok" />
 					<Property Name="UnifiedAreaRect" Value="{{0.203079,0.000000},{0.619084,0.000000},{0.420395,0.000000},{0.818193,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
 				<Window Type="TaharezLook/Button" Name="NewModelCancel" >
-					<Property Name="Font" Value="Tahoma-12" />
+					
 					<Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseArrow" />
 					<Property Name="Text" Value="Cancel" />
 					<Property Name="UnifiedAreaRect" Value="{{0.472090,0.000000},{0.603817,0.000000},{0.689407,0.000000},{0.802926,0.000000}}" />
