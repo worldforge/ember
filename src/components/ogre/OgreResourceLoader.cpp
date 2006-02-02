@@ -43,8 +43,8 @@ void OgreResourceLoader::initialize()
 	
 	///check from the config if we should load media recursively
 	///this is needed for most authoring, since it allows us to find all meshes before they are loaded
-	if (configSrv->itemExists("general", "loadmediarecursive")) { 
-			mLoadRecursive = (bool)configSrv->getValue("general", "loadmediarecursive");
+	if (configSrv->itemExists("media", "loadmediarecursive")) { 
+			mLoadRecursive = (bool)configSrv->getValue("media", "loadmediarecursive");
 	}
     
 // 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
@@ -113,7 +113,21 @@ void OgreResourceLoader::loadGeneral()
 
 void OgreResourceLoader::preloadMedia()
 {
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+	try {
+		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("General");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
+	}
+	try {
+		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Gui");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
+	}
+	try {
+		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("ModelDefinitions");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
+	}
 
 // 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 // 	

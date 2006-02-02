@@ -37,6 +37,7 @@
 #include "components/ogre/widgets/MovableObjectRenderer.h"
 #include "components/ogre/widgets/OgreEntityRenderer.h"
 #include "components/ogre/widgets/ModelRenderer.h"
+#include "components/ogre/widgets/ListHolder.h"
 
 //#include "components/ogre/widgets/MaterialPicker.h"
 

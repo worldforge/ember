@@ -358,6 +358,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	mOgreResourceLoader = new OgreResourceLoader();
 	mOgreResourceLoader->initialize();
 	
+	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia");
+
 	
 //    setupResources();
 
@@ -379,7 +381,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;
-	loadingBar.start(mWindow, 2, 2, 1);
+	loadingBar.start(mWindow, 3, preloadMedia ? 3 : 0, 0.7);
 	
 	// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
@@ -390,25 +392,28 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 	mModelDefinitionManager->setSceneManager(mSceneMgr);
 
-    // Set default mipmap level (NB some APIs ignore this)
+    /// Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     
-    // Set default animation mode
+    /// Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
-	//remove padding for bounding boxes
+	///remove padding for bounding boxes
     Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);    
 	
 	mOgreResourceLoader->loadGui();
 	mOgreResourceLoader->loadGeneral();
 	
-// 	//add ourself as a frame listener
+	///add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
- 	S_LOG_INFO( "Begin preload.");
- 	mOgreResourceLoader->preloadMedia();
- 	S_LOG_INFO( "End preload.");
-	
+	///should media be preloaded?
+	if (preloadMedia)
+	{ 
+		S_LOG_INFO( "Begin preload.");
+		mOgreResourceLoader->preloadMedia();
+		S_LOG_INFO( "End preload.");
+	}	
 	mGUIManager = new GUIManager(mWindow, mSceneMgr);
 	EventGUIManagerCreated.emit(*mGUIManager);
     

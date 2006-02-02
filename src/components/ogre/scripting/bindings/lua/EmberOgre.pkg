@@ -32,6 +32,7 @@ $pfile "MathConverter.pkg"
 $pfile "MovableObjectRenderer.pkg"
 $pfile "OgreEntityRenderer.pkg"
 $pfile "ModelRenderer.pkg"
+$pfile "ListHolder.pkg"
 //$pfile "MaterialPicker.pkg"
 
 $pfile "ModelDefinitionManager.pkg"

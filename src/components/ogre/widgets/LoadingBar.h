@@ -26,6 +26,7 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include <Ogre.h>
 
+namespace EmberOgre {
 
 /** Defines an example loading progress bar which you can use during 
 	startup, level changes etc to display loading progress. 
@@ -91,5 +92,7 @@ public:
 	void resourceGroupLoadEnded(const Ogre::String & groupName);
 
 };
+
+}
 
 #endif

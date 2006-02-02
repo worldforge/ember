@@ -24,6 +24,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include "LoadingBar.h"
 #include "../EmberOgrePrerequisites.h"
 using namespace Ogre;
+namespace EmberOgre {
 
 /** Defines an example loading progress bar which you can use during 
 	startup, level changes etc to display loading progress. 
@@ -152,6 +153,11 @@ using namespace Ogre;
 	}
 	void LoadingBar::resourceLoadEnded(void)
 	{
+		///make the black blocking block a little bit smaller and move it to the right
+		mLoadingBarElement->setWidth(
+			mLoadingBarElement->getWidth() - mProgressBarInc);
+		mLoadingBarElement->setLeft(mLoadingBarElement->getLeft() + mProgressBarInc);
+		mWindow->update();
 	}
 	void LoadingBar::worldGeometryStageStarted(const String& description)
 	{
@@ -169,5 +175,5 @@ using namespace Ogre;
 	void LoadingBar::resourceGroupLoadEnded(const String& groupName)
 	{
 	}
-
+}
 

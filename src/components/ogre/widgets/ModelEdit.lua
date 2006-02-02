@@ -48,7 +48,7 @@ function ModelEdit_reloadModel()
 end
 
 function ModelEdit_fillMaterialList()
-	ModelEdit.contentparts.submeshInfo.materiallist:resetList()
+	ModelEdit.contentparts.submeshInfo.listholder:resetList()
 	materialDefMgr = Ogre.MaterialManager:getSingleton()
 	local I = materialDefMgr:getResourceIterator()
 	local i = 0
@@ -58,7 +58,7 @@ function ModelEdit_fillMaterialList()
 		local material = materialDef:get()
 		local name = material:getName()
 		local item = EmberOgre.ColoredListItem:new(name, i)
-		ModelEdit.contentparts.submeshInfo.materiallist:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.contentparts.submeshInfo.listholder:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
 		i = i + 1
 	end
 end
@@ -160,7 +160,7 @@ function ModelEdit_showPreview(definitionName)
 end
 
 function ModelEdit_fillModellist()
-	ModelEdit.models:resetList()
+	ModelEdit.modelslistholder:resetList()
 	ModelEdit.models:clearAllSelections()
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	local I = modelDefMgr:getResourceIterator()
@@ -171,7 +171,7 @@ function ModelEdit_fillModellist()
 		local model = modelPtr:get()
 		local name = model:getName()
 		local item = EmberOgre.ColoredListItem:new(name, i)
-		ModelEdit.models:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.modelslistholder:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
 		i = i + 1
 	end
 
@@ -595,6 +595,9 @@ function ModelEdit_buildWidget()
 	ModelEdit.models = ModelEdit.widget:getWindow("Models")
 	ModelEdit.models = CEGUI.toListbox(ModelEdit.models)
 	ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit_models_SelectionChanged")
+	ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
+	ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
+	ModelEdit.modelslistholder = EmberOgre.ListHolder:new(ModelEdit.models, ModelEdit.modelsfilter)
 	
 	
 
@@ -615,6 +618,10 @@ function ModelEdit_buildWidget()
 	ModelEdit.contentparts.submeshInfo.materiallist = ModelEdit.widget:getWindow("Materials")
 	ModelEdit.contentparts.submeshInfo.materiallist = CEGUI.toListbox(ModelEdit.contentparts.submeshInfo.materiallist)
 	ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit_submeshinfomaterials_SelectionChanged")
+	ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
+	ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
+	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.ListHolder:new(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
+	
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("MouseClick", "ModelEdit_submeshinforemovesubmesh_MouseClick")
 	
@@ -728,6 +735,8 @@ ModelEdit_buildWidget()
 --submodel2 = def:createSubModelDefinition("3d_objects/items/building_primitives/models/2_room_house/2_room_house.mesh")
 --part2 = submodel:createPartDefinition("main")
 --part2:setShow(true)
+
+
 
 
 
