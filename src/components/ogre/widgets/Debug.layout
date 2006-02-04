@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0 y:0.3" /> 
 		<Property Name="AbsoluteSize" Value="w:300 h:150" /> 
 		<Property Name="Alpha" Value="0.6" /> 
@@ -12,14 +12,14 @@
 			<Property Name="AbsoluteSize" Value="w:290 h:115" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 		
-			<Window Type="TaharezLook/Combobox" Name="LogLevelDropList">
+			<Window Type="EmberLook/Combobox" Name="LogLevelDropList">
 				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
 				<Property Name="AbsoluteSize" Value="w:100 h:85" /> 
 				<Property Name="InheritsAlpha" Value="False" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="Text" Value="Loglevel" /> 
 			</Window>
-			<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
+			<Window Type="EmberLook/MultiLineEditbox" Name="TextBox">
 				<Property Name="AbsolutePosition" Value="x:0 y:30" /> 
 				<Property Name="AbsoluteSize" Value="w:290 h:85" /> 
 				<Property Name="Text" Value="" /> 

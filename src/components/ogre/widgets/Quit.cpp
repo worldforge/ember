@@ -90,6 +90,12 @@ void Quit::softquit()
 	mMainWindow->activate();
 	mMainWindow->moveToFront();
 	mMainWindow->setVisible(true);
+	//mMainWindow->setModalState(true);
+}
+
+void Quit::hide()
+{
+	//mMainWindow->setModalState(false);
 }
 
 

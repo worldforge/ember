@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="SizingEnabled" Value="false" /> 
 		<Property Name="Position" Value="x:0.2 y:0.1" /> 
 		<Property Name="AbsoluteSize" Value="w:400 h:500" /> 
@@ -11,7 +11,7 @@
 			<Property Name="Position" Value="x:0.02 y:0.02" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/StaticText" Name="Info">
+			<Window Type="EmberLook/StaticText" Name="Info">
 				<Property Name="Position" Value="x:0 y:0.05" /> 
 				<Property Name="Size" Value="w:1 h:0.15" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
@@ -19,14 +19,14 @@
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 				<Property Name="Text" Value="Server info" /> 
 			</Window>
-			<Window Type="TaharezLook/StaticText" Name="LoginPanel">
+			<Window Type="EmberLook/StaticText" Name="LoginPanel">
 				<Property Name="Position" Value="x:0.02 y:0.25" /> 
 				<Property Name="Size" Value="w:.96 h:0.75" /> 
 				<Property Name="Text" Value="Login" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
-				<Window Type="TaharezLook/StaticText" Name="LoginPanel/NameText">
+				<Window Type="EmberLook/StaticText" Name="LoginPanel/NameText">
 					<Property Name="AbsolutePosition" Value="x:30 y:40" /> 
 					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Name:" /> 
@@ -34,14 +34,14 @@
 					<Property Name="FrameEnabled" Value="False" /> 
 					<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
-				<Window Type="TaharezLook/Editbox" Name="LoginPanel/NameEdit">
+				<Window Type="EmberLook/Editbox" Name="LoginPanel/NameEdit">
 					<Property Name="AbsolutePosition" Value="x:30 y:70" /> 
 					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
 
-				<Window Type="TaharezLook/StaticText" Name="LoginPanel/PasswordText">
+				<Window Type="EmberLook/StaticText" Name="LoginPanel/PasswordText">
 					<Property Name="AbsolutePosition" Value="x:30 y:100" /> 
 					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Password:" /> 
@@ -49,7 +49,7 @@
 					<Property Name="FrameEnabled" Value="False" /> 
 					<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
-				<Window Type="TaharezLook/Editbox" Name="LoginPanel/PasswordEdit">
+				<Window Type="EmberLook/Editbox" Name="LoginPanel/PasswordEdit">
 					<Property Name="AbsolutePosition" Value="x:30.0 y:130" /> 
 					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="" /> 
@@ -57,7 +57,7 @@
 					<Property Name="InheritsAlpha" Value="True" /> 
 				</Window>
 								
-				<Window Type="TaharezLook/StaticText" Name="LoginPanel/HelpText">
+				<Window Type="EmberLook/StaticText" Name="LoginPanel/HelpText">
 					<Property Name="AbsolutePosition" Value="x:30 y:200" /> 
 					<Property Name="AbsoluteSize" Value="w:300 h:150" /> 
 					<Property Name="Text" Value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.
@@ -71,14 +71,14 @@ If you already have an account, proceed with a normal login." />
 					
 				</Window>
 				
-				<Window Type="TaharezLook/Button" Name="LoginPanel/Login">
+				<Window Type="EmberLook/Button" Name="LoginPanel/Login">
 					<Property Name="AbsolutePosition" Value="x:30 y:160" /> 
 					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Login" /> 
 					<Property Name="InheritsAlpha" Value="True" /> 
 					<Property Name="Tooltip" Value="Login with an already existing account." /> 
 				</Window>
-				<Window Type="TaharezLook/Button" Name="LoginPanel/CreateAcc">
+				<Window Type="EmberLook/Button" Name="LoginPanel/CreateAcc">
 					<Property Name="AbsolutePosition" Value="x:140 y:160" /> 
 					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 					<Property Name="Text" Value="Create" /> 
@@ -91,7 +91,7 @@ If you already have an account, proceed with a normal login." />
 			
 			
 
-			<Window Type="TaharezLook/TabControl" Name="CharacterTabControl">
+			<Window Type="EmberLook/TabControl" Name="CharacterTabControl">
 				<Property Name="Position" Value="x:0 y:0.25" /> 
 				<Property Name="Size" Value="w:1 h:0.7" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
@@ -102,19 +102,19 @@ If you already have an account, proceed with a normal login." />
 					<Property Name="Text" Value="Choose" /> 
 					<Property Name="InheritsAlpha" Value="false" /> 
 					<Property Name="Visible" Value="true" /> 
-					<Window Type="TaharezLook/Listbox" Name="ChooseCharacterPanel/CharacterList">
+					<Window Type="EmberLook/Listbox" Name="ChooseCharacterPanel/CharacterList">
 						<Property Name="Position" Value="x:0 y:0.05" /> 
 						<Property Name="Size" Value="w:0.5 h:0.7" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 					</Window>
-					<Window Type="TaharezLook/Button" Name="ChooseCharacterPanel/Choose">
+					<Window Type="EmberLook/Button" Name="ChooseCharacterPanel/Choose">
 						<Property Name="Position" Value="x:0.4 y:0.8" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="MaximumSize" Value="w:1 h:1" /> 
 						<Property Name="Text" Value="Choose" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 					</Window>
-					<Window Type="TaharezLook/StaticText" Name="ChooseCharacterPanel/HelpText">
+					<Window Type="EmberLook/StaticText" Name="ChooseCharacterPanel/HelpText">
 						<Property Name="Position" Value="x:0.55 y:0.05" /> 
 						<Property Name="Size" Value="w:0.4 h:0.5" /> 
 						<Property Name="Text" Value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character." /> 
@@ -131,7 +131,7 @@ If you already have an account, proceed with a normal login." />
 					<Property Name="Size" Value="w:1 h:1" /> 
 					<Property Name="Text" Value="Create" /> 
 					<Property Name="InheritsAlpha" Value="false" /> 
-					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/NameText">
+					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/NameText">
 						<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="Name:" /> 
@@ -139,7 +139,7 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="FrameEnabled" Value="False" /> 
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
-					<Window Type="TaharezLook/Editbox" Name="CreateCharacterPanel/NameEdit">
+					<Window Type="EmberLook/Editbox" Name="CreateCharacterPanel/NameEdit">
 						<Property Name="AbsolutePosition" Value="x:90 y:0" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="" /> 
@@ -147,7 +147,7 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="Tooltip" Value="The name of the character." /> 
 					</Window>
 					
-					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/TypeText">
+					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/TypeText">
 						<Property Name="AbsolutePosition" Value="x:0 y:30" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="Type:" /> 
@@ -155,14 +155,14 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="FrameEnabled" Value="False" /> 
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
-					<Window Type="TaharezLook/Combobox" Name="CreateCharacterPanel/Type">
+					<Window Type="EmberLook/Combobox" Name="CreateCharacterPanel/Type">
 						<Property Name="AbsolutePosition" Value="x:90 y:30" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:200" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="ReadOnly" Value="true" /> 
 						<Property Name="Tooltip" Value="The type of character to create." /> 
 					</Window>
-					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/GenderText">
+					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/GenderText">
 						<Property Name="AbsolutePosition" Value="x:0 y:60" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="Gender:" /> 
@@ -170,20 +170,20 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="FrameEnabled" Value="False" /> 
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
-					<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Male">
+					<Window Type="EmberLook/RadioButton" Name="CreateCharacterPanel/Gender/Male">
 						<Property Name="AbsolutePosition" Value="x:90 y:60" /> 
 						<Property Name="AbsoluteSize" Value="w:60 h:20" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="Text" Value="Male" /> 
 					</Window>
-					<Window Type="TaharezLook/RadioButton" Name="CreateCharacterPanel/Gender/Female">
+					<Window Type="EmberLook/RadioButton" Name="CreateCharacterPanel/Gender/Female">
 						<Property Name="AbsolutePosition" Value="x:145 y:60" /> 
 						<Property Name="AbsoluteSize" Value="w:60 h:20" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
 						<Property Name="Text" Value="Female" /> 
 						
 					</Window>
-					<Window Type="TaharezLook/StaticText" Name="CreateCharacterPanel/DescriptionText">
+					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/DescriptionText">
 						<Property Name="AbsolutePosition" Value="x:0 y:90" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="Description:" /> 
@@ -191,7 +191,7 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="FrameEnabled" Value="False" /> 
 						<Property Name="BackgroundEnabled" Value="False" /> 
 					</Window>
-					<Window Type="TaharezLook/MultiLineEditbox" Name="CreateCharacterPanel/Description">
+					<Window Type="EmberLook/MultiLineEditbox" Name="CreateCharacterPanel/Description">
 						<Property Name="AbsolutePosition" Value="x:5 y:115" /> 
 						<Property Name="AbsoluteSize" Value="w:200 h:100" /> 
 						<Property Name="InheritsAlpha" Value="True" /> 
@@ -199,7 +199,7 @@ If you already have an account, proceed with a normal login." />
 					</Window>
 					
 					
-					<Window Type="TaharezLook/Button" Name="CreateCharacterPanel/CreateButton">
+					<Window Type="EmberLook/Button" Name="CreateCharacterPanel/CreateButton">
 						<Property Name="AbsolutePosition" Value="x:100 y:225" /> 
 						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
 						<Property Name="Text" Value="Create" /> 
@@ -207,7 +207,7 @@ If you already have an account, proceed with a normal login." />
 						<Property Name="Tooltip" Value="Create a new character." /> 
 						
 					</Window>
-					<Window Type="TaharezLook/StaticImage" Name="CreateCharacterPanel/Image">
+					<Window Type="EmberLook/StaticImage" Name="CreateCharacterPanel/Image">
 						<Property Name="AbsolutePosition" Value="x:210 y:5" /> 
 						<Property Name="AbsoluteSize" Value="w:150 h:250" /> 
 					</Window>				

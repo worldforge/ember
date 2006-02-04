@@ -1,41 +1,41 @@
 <?xml version="1.0" ?>
 <GUILayout>
-		<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+		<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 			<Property Name="UnifiedAreaRect" Value="{{0.005,0.000000},{0.1,0.000000},{0.995,0.000000},{0.9,0.000000}}" />
-			<Window Type="TaharezLook/StaticText" Name="ScriptText_Text">
+			<Window Type="EmberLook/StaticText" Name="ScriptText_Text">
 				<Property Name="FrameEnabled" Value="False" />
 				<Property Name="Text" Value="Script:" />
 				<Property Name="UnifiedAreaRect" Value="{{0.031159,0},{0.0,25},{0.0,70},{0.0,50}}" />
 				<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
-			<Window Type="TaharezLook/Button" Name="ClearScriptTextButton">
+			<Window Type="EmberLook/Button" Name="ClearScriptTextButton">
 				<Property Name="Text" Value="Clear" />
 				<Property Name="UnifiedAreaRect" Value="{{0,70},{0.0,25},{0.0,175},{0.0,50}}" />
 				</Window>
 			
 			
-			<Window Type="TaharezLook/MultiLineEditbox" Name="ScriptText">
+			<Window Type="EmberLook/MultiLineEditbox" Name="ScriptText">
 				<Property Name="UnifiedAreaRect" Value="{{0.024294,0.000000},{0,55},{0.964044,0.000000},{0.6,0.000000}}" />
 				</Window>
-			<Window Type="TaharezLook/Button" Name="ExecuteButton">
+			<Window Type="EmberLook/Button" Name="ExecuteButton">
 				<Property Name="Text" Value="Execute" />
 				<Property Name="UnifiedAreaRect" Value="{{0.030778,0.000000},{0.893723,0.000000},{0.230778,0.000000},{0.893723,25}}" />
 				</Window>
-			<Window Type="TaharezLook/Combobox" Name="ScriptType">
+			<Window Type="EmberLook/Combobox" Name="ScriptType">
 				<Property Name="AbsoluteRect" Value="l:287.000000 t:435.000000 r:425.000000 b:596.000000" />
 				<Property Name="RelativeRect" Value="l:0.415482 t:0.893085 r:0.615483 b:1.223404" />
 				<Property Name="UnifiedAreaRect" Value="{{0.415482,0.000000},{0.893085,0.000000},{0.615483,0.000000},{1.223404,0.000000}}" />
 				</Window>
-			<Window Type="TaharezLook/Button" Name="InspectButton">
+			<Window Type="EmberLook/Button" Name="InspectButton">
 				<Property Name="RelativePosition" Value="x:0.65 y:0.9" /> 
 				<Property Name="Text" Value="Inspect" />
 				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
 				</Window>
-			<Window Type="TaharezLook/StaticText" Name="InspectText">
+			<Window Type="EmberLook/StaticText" Name="InspectText">
 				<Property Name="RelativePosition" Value="x:0.65 y:0.95" /> 
 				<Property Name="RelativeSize" Value="w:0.33 h:0.045" /> 
 				</Window>
-			<Window Type="TaharezLook/StaticText" Name="ScriptTypeText">
+			<Window Type="EmberLook/StaticText" Name="ScriptTypeText">
 				<Property Name="FrameEnabled" Value="False" />
 				<Property Name="Text" Value="Script type" />
 				<Property Name="UnifiedAreaRect" Value="{{0.243503,0.000000},{0.885000,0.000000},{0.407970,0.000000},{0.975958,0.000000}}" />
@@ -43,17 +43,17 @@
 				</Window>
 			
 			
-			<Window Type="TaharezLook/StaticText" Name="Output_Text">
+			<Window Type="EmberLook/StaticText" Name="Output_Text">
 				<Property Name="FrameEnabled" Value="False" />
 				<Property Name="Text" Value="Output:" />
 				<Property Name="UnifiedAreaRect" Value="{{0.031159,0},{0.7,-30},{0.0,70},{0.7,-5}}" />
 				<Property Name="BackgroundEnabled" Value="False" /> 
 				</Window>
-			<Window Type="TaharezLook/Button" Name="ClearOutputButton">
+			<Window Type="EmberLook/Button" Name="ClearOutputButton">
 				<Property Name="Text" Value="Clear" />
 				<Property Name="UnifiedAreaRect" Value="{{0,70},{0.7,-30},{0.0,175},{0.7,-5}}" />
 				</Window>			
-			<Window Type="TaharezLook/MultiLineEditbox" Name="Output">
+			<Window Type="EmberLook/MultiLineEditbox" Name="Output">
 				<Property Name="UnifiedAreaRect" Value="{{0.031159,0},{0.7,0.000000},{0.963044,0.000000},{0.870923,0.000000}}" />
 				</Window>
 			</Window>

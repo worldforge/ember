@@ -224,8 +224,8 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 		{
 			std::stringstream ss_;
 			ss_ << i;
-			CEGUI::PushButton* responseTextButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow("TaharezLook/Button", std::string("IngameChatWidget/") + mEntity->getId() + "/Response/" + ss_.str()));
-			CEGUI::StaticText* responseText = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow("TaharezLook/StaticText", std::string("IngameChatWidget/") + mEntity->getId() + "/ResponseText/" + ss_.str()));
+			CEGUI::PushButton* responseTextButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow(GUIManager::getSingleton().getDefaultScheme() + "/Button", std::string("IngameChatWidget/") + mEntity->getId() + "/Response/" + ss_.str()));
+			CEGUI::StaticText* responseText = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", std::string("IngameChatWidget/") + mEntity->getId() + "/ResponseText/" + ss_.str()));
 			
 			
 			
@@ -236,7 +236,11 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 			responseText->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
  			responseText->setFrameEnabled(false);
  			responseText->setBackgroundEnabled(false);
-			responseText->setInheritsAlpha(true);	
+			responseText->setInheritsAlpha(true);
+			///we need to disable and deactivate it so it won't recieve any input (input should go to the button instead)
+			responseText->deactivate();
+			responseText->disable();
+			
 			
 			responseTextButton->setSize(CEGUI::Size(1.0f, heightSize));
 			responseTextButton->setPosition(CEGUI::Point(0.0f, i * heightSize));

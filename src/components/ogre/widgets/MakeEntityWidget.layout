@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.0 y:0.5" /> 
 		<Property Name="Size" Value="w:0.2 h:0.4" /> 
 		<Property Name="Alpha" Value="0.6" /> 
@@ -11,12 +11,12 @@
 			<Property Name="Position" Value="x:0.02 y:0.05" /> 
 			<Property Name="Size" Value="w:0.96 h:0.90" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/Listbox" Name="TypeList">
+			<Window Type="EmberLook/Listbox" Name="TypeList">
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:0.9 h:0.8" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 			</Window>
-			<Window Type="TaharezLook/StaticText" Name="NameText">
+			<Window Type="EmberLook/StaticText" Name="NameText">
 				<Property Name="Position" Value="x:0.0 y:0.8" /> 
 				<Property Name="Size" Value="w:0.4 h:0.05" /> 
 				<Property Name="Text" Value="Name:" /> 
@@ -24,12 +24,12 @@
 				<Property Name="FrameEnabled" Value="False" /> 
 				<Property Name="BackgroundEnabled" Value="False" /> 
 			</Window>
-			<Window Type="TaharezLook/Editbox" Name="Name">
+			<Window Type="EmberLook/Editbox" Name="Name">
 				<Property Name="Position" Value="x:0.5 y:0.8" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="CreateButton">
+			<Window Type="EmberLook/Button" Name="CreateButton">
 				<Property Name="Position" Value="x:0.0 y:0.9" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Create" /> 

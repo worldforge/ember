@@ -40,6 +40,7 @@
 #include "../EmberOgre.h"
 
 #include <CEGUIWindowManager.h>
+#include <CEGUIExceptions.h>
 
 namespace EmberOgre {
 
@@ -107,19 +108,23 @@ void Help::runCommand(const std::string &command, const std::string &args)
 
 void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 {
-	mBlurb = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"Help/Blurb"));
-	mBlurb->setSize(CEGUI::Size(0.3f, 0.1f));
-	mBlurb->setPosition(CEGUI::Point(0.35f, 0.3f));
-	mBlurb->setFrameEnabled(false);
-//	mBlurb->setInheritAlpha(true);
-	//mEntityName->setBackgroundEnabled(false);
-	mBlurb->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
-	mBlurb->setText("Press and hold right mouse button to switch between MOVEMENT and INPUT MODE.\nDouble right click to toggle on and off.");
-	
-	
-	getMainSheet()->addChildWindow(mBlurb);
-	mBlurb->setVisible(false);
-	mTimeBlurbShown = 0;
+	try {
+		mBlurb = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"Help/Blurb"));
+		mBlurb->setSize(CEGUI::Size(0.3f, 0.1f));
+		mBlurb->setPosition(CEGUI::Point(0.35f, 0.3f));
+		mBlurb->setFrameEnabled(false);
+	//	mBlurb->setInheritAlpha(true);
+		//mEntityName->setBackgroundEnabled(false);
+		mBlurb->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
+		mBlurb->setText("Press and hold right mouse button to switch between MOVEMENT and INPUT MODE.\nDouble right click to toggle on and off.");
+		
+		
+		getMainSheet()->addChildWindow(mBlurb);
+		mBlurb->setVisible(false);
+		mTimeBlurbShown = 0;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating help blurb. Message:\n" << ex.getMessage().c_str());
+	}
 	
 }
 

@@ -148,7 +148,7 @@ void MakeEntityWidget::addToList(Eris::TypeInfo* typeInfo, int level)
 		levelindicator << "-";
 	}
 	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(levelindicator.str() + typeInfo->getName());
-	item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	item->setSelectionBrushImage(getDefaultScheme(), (CEGUI::utf8*)"MultiListSelectionBrush");
 	item->setUserData(typeInfo);
 	mTypeList->addItem(item);
 	
@@ -210,7 +210,7 @@ void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 			typeInfo->resolveChildren();
 	}	
 	
-	//item->setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+	//item->setSelectionBrushImage((CEGUI::utf8*)"EmberLook", (CEGUI::utf8*)"MultiListSelectionBrush");
 	
 }
 

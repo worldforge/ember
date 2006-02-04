@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.55 y:0.025" /> 
 		<Property Name="AbsoluteSize" Value="w:400 h:400" /> 
 		<Property Name="Alpha" Value="0.6" /> 
@@ -9,14 +9,14 @@
 			<Property Name="Position" Value="x:0.05 y:0.1" /> 
 			<Property Name="Size" Value="w:0.95 h:0.9" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/Listbox" Name="Blueprints">
+			<Window Type="EmberLook/Listbox" Name="Blueprints">
 				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
 				<Property Name="AbsoluteSize" Value="w:150 h:300" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="SelectionMode" Value="RowSingle" /> 
 				<Property Name="Tooltip" Value="The existing saved blueprints." />
 			</Window>
-			<Window Type="TaharezLook/Button" Name="Load">
+			<Window Type="EmberLook/Button" Name="Load">
 				<Property Name="Enabled" Value="False" /> 
 				<Property Name="AbsolutePosition" Value="x:0 y:310" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
@@ -24,7 +24,7 @@
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Tooltip" Value="Loads the selected blueprint." />
 			</Window>
-			<Window Type="TaharezLook/Button" Name="Save">
+			<Window Type="EmberLook/Button" Name="Save">
 				<Property Name="Enabled" Value="False" /> 
 				<Property Name="AbsolutePosition" Value="x:80 y:310" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
@@ -32,7 +32,7 @@
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Tooltip" Value="Saves a new blueprint." />
 			</Window>
-			<Window Type="TaharezLook/Editbox" Name="NewName">
+			<Window Type="EmberLook/Editbox" Name="NewName">
 				<Property Name="AbsolutePosition" Value="x:160 y:310" /> 
 				<Property Name="AbsoluteSize" Value="w:150 h:25" /> 
 				<Property Name="Tooltip" Value="Enter the name of the blueprint to be saved." />

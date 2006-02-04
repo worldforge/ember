@@ -183,12 +183,35 @@ public:
 	 * @return 
 	 */
 	inline const std::string& getPrefix() const { return mPrefix;}
+	
+	/**
+	 *    Gets whether the window when being activated should become fully opaque, to return to it's preset alpha value when being deactivated.
+	 Defaults to true.
+	 * @return 
+	 */
+	bool getIsActiveWindowOpaque() const;
+	/**
+	 *    Sets whether the window when being activated should become fully opaque, to return to it's preset alpha value when being deactivated.
+	 Defaults to true.
+	 * @param isOpaque 
+	 */
+	void setIsActiveWindowOpaque(bool isOpaque);
+	
+	/**
+	 *    Gets the name of the default scheme used (such as "EmberLook" or "EmberLook")
+	 * @return 
+	 */
+	const std::string& getDefaultScheme() const;
+	
 
 protected:
 
 	
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
+
+	bool MainWindow_Activated(const CEGUI::EventArgs& args);
+	bool MainWindow_Deactivated(const CEGUI::EventArgs& args);
 
 	/**
 	*    The suffixed used by registerConsoleVisibilityToggleCommand
@@ -208,7 +231,15 @@ protected:
 
 	CEGUI::WindowManager* mWindowManager;
 	
+	/**
+	The original alpha value of the window.
+	*/
+	float mOriginalWindowAlpha;
 	
+	/**
+	If true, when activated the window will become fully opaque.
+	*/
+	bool mActiveWindowIsOpaque;
 	
 private:
 	std::string mPrefix;
@@ -271,6 +302,8 @@ public:
 	ColoredListItem(const CEGUI::String& text); 
 	ColoredListItem(const CEGUI::String& text, unsigned int item_id);
 	ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+private:
+	void setColours();
 };
 
 

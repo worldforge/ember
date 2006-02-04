@@ -1,13 +1,13 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="AbsolutePosition" Value="x:90 y:50" /> 
 		<Property Name="AbsoluteSize" Value="w:800 h:600" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Help" />
 		<Property Name="Visible" Value="true" />
-		<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
+		<Window Type="EmberLook/MultiLineEditbox" Name="TextBox">
 			<Property Name="AbsolutePosition" Value="x:10 y:30" /> 
 			<Property Name="AbsoluteSize" Value="w:780 h:560" /> 
 			<Property Name="Text" Value="Welcome to ember.

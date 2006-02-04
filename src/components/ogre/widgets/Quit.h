@@ -42,6 +42,12 @@ public:
 
 	static const std::string SOFTQUIT;
 	
+	
+	/**
+	 *    overloaded to remove the modal state
+	 */
+	virtual void hide();
+	
 protected:
 	
 	bool Yes_Click(const CEGUI::EventArgs& args);

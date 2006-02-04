@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="SizingEnabled" Value="false" /> 
 		<Property Name="Position" Value="x:0.15 y:0.2" /> 
 		<Property Name="AbsoluteSize" Value="w:600 h:500" /> 
@@ -11,7 +11,7 @@
 			<Property Name="AbsolutePosition" Value="x:5 y:30" /> 
 			<Property Name="AbsoluteSize" Value="w:590 h:465" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/MultiColumnList" Name="ServerList">
+			<Window Type="EmberLook/MultiColumnList" Name="ServerList">
 				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
 				<Property Name="AbsoluteSize" Value="w:590 h:420" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
@@ -24,18 +24,18 @@
 				<Property Name="ColumnHeader" Value="text:Version width:0.1 id:5" />
 				<Property Name="ColumnHeader" Value="text:Address width:0.2 id:6" />
 			</Window>
-			<Window Type="TaharezLook/Editbox" Name="ManualServerName">
+			<Window Type="EmberLook/Editbox" Name="ManualServerName">
 				<Property Name="Text" Value="" /> 
 				<Property Name="AbsolutePosition" Value="x:0 y:425" /> 
 				<Property Name="AbsoluteSize" Value="w:150 h:25" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="Refresh">
+			<Window Type="EmberLook/Button" Name="Refresh">
 				<Property Name="AbsolutePosition" Value="x:400 y:425" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Refresh" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="Connect">
+			<Window Type="EmberLook/Button" Name="Connect">
 				<Property Name="AbsolutePosition" Value="x:480 y:425" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Connect" /> 

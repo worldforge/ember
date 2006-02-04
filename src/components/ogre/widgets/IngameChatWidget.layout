@@ -4,22 +4,22 @@
 		<Property Name="Size" Value="w:0.3 h:0.15" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		
-		<Window Type="TaharezLook/StaticText" Name="Text">
+		<Window Type="EmberLook/StaticText" Name="Text">
 			<Property Name="Position" Value="x:0 y:0.15" /> 
 			<Property Name="Size" Value="w:0.4 h:0.85" /> 
 			<Property Name="InheritsAlpha" Value="true" /> 
 			<Property Name="HorzFormatting" Value="WordWrapLeftAligned" /> 
 			<Property Name="VertFormatting" Value="TopAligned" /> 
-			<Property Name="FrameEnabled" Value="False" /> 
+			<Property Name="FrameEnabled" Value="True" /> 
 		</Window>
-		<Window Type="TaharezLook/StaticText" Name="EntityName">
+		<Window Type="EmberLook/StaticText" Name="EntityName">
 			<Property Name="Position" Value="x:0s y:0" /> 
 			<Property Name="Size" Value="w:1 h:0.15" /> 
 			<Property Name="InheritsAlpha" Value="true" /> 
 			<Property Name="HorzFormatting" Value="WordWrapCentred" /> 
 			<Property Name="VertFormatting" Value="TopAligned" /> 
-			<Property Name="FrameEnabled" Value="False" /> 
-			<Property Name="BackgroundEnabled" Value="False" /> 
+			<Property Name="FrameEnabled" Value="True" /> 
+			<Property Name="BackgroundEnabled" Value="True" /> 
 		</Window>
 		<Window Type="DefaultGUISheet" Name="ResponseList">
 			<Property Name="Position" Value="x:0.6 y:0.15" /> 

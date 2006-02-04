@@ -27,17 +27,27 @@ namespace EmberOgre
 
 	ColoredListItem::ColoredListItem(const CEGUI::String& text) : ListboxTextItem(text)
 	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+		setColours();
 	}
 	
 	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id) : ListboxTextItem(text, item_id)
 	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+		setColours();
 	}
 	
 	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
 	{
-		setSelectionBrushImage((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MultiListSelectionBrush");
+		setColours();
+	}
+	
+	void ColoredListItem::setColours()
+	{
+ 		setSelectionColours(CEGUI::colour(50,50,50));
+		setTextColours(CEGUI::colour(0,0,0));
+		try {
+			setSelectionBrushImage((CEGUI::utf8*)"EmberLook", (CEGUI::utf8*)"SelectionBrush");
+		} catch (...) {}
+	
 	}
 
 	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text)
@@ -62,7 +72,7 @@ namespace EmberOgre
 	
 	
 	
-	Widget::Widget() : mMainWindow(0), mCommandSuffix("")
+	Widget::Widget() : mMainWindow(0), mCommandSuffix(""), mActiveWindowIsOpaque(true)
 	{
 	}
 	
@@ -102,8 +112,11 @@ namespace EmberOgre
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
 		mMainWindow = mWindowManager->loadWindowLayout(mGuiManager->getLayoutDir() + filename, prefix);
+		mOriginalWindowAlpha = mMainWindow->getAlpha();
 		if (mMainWindow) {
 			getMainSheet()->addChildWindow(mMainWindow); 
+			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
+			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
 		}
 		return mMainWindow;
 	}
@@ -202,6 +215,37 @@ namespace EmberOgre
 	{
 		return mMainWindow;
 	}
+	
+	bool Widget::MainWindow_Activated(const CEGUI::EventArgs& args)
+	{
+		if (mMainWindow && mActiveWindowIsOpaque) {
+			mMainWindow->setAlpha(1.0);
+			
+		}
+		return true;
+	}
+	
+	bool Widget::MainWindow_Deactivated(const CEGUI::EventArgs& args)
+	{
+		if (mMainWindow && mActiveWindowIsOpaque) {
+			mMainWindow->setAlpha(mOriginalWindowAlpha);
+		}
+		return true;
+	}
 
+	bool Widget::getIsActiveWindowOpaque() const
+	{
+		return mActiveWindowIsOpaque;
+	}
+	
+	void Widget::setIsActiveWindowOpaque(bool isOpaque)
+	{
+		mActiveWindowIsOpaque = isOpaque;
+	}
+
+	const std::string& Widget::getDefaultScheme() const
+	{
+		return mGuiManager->getDefaultScheme();
+	}
 
 }

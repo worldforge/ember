@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="Position" Value="x:0.7 y:0.5" /> 
 		<Property Name="Size" Value="w:0.3 h:0.2" /> 
 		<Property Name="Alpha" Value="0.6" /> 
@@ -9,11 +9,11 @@
 			<Property Name="AbsolutePosition" Value="x:5 y:5" /> 
 			<Property Name="Size" Value="w:0.98 h:0.9" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="TaharezLook/StaticImage" Name="Image">
+			<Window Type="EmberLook/StaticImage" Name="Image">
 				<Property Name="Position" Value="x:0.0 y:0.0" /> 
 				<Property Name="Size" Value="w:0.9 h:0.9" /> 
 			</Window>
-			<Window Type="TaharezLook/Slider" Name="Zoom">
+			<Window Type="EmberLook/VerticalSlider" Name="Zoom">
 				<Property Name="Position" Value="x:0.9 y:0.05" /> 
 				<Property Name="Size" Value="w:0.05 h:0.9" /> 
 				<Property Name="Tooltip" Value="Drag the slider to zoom." />

@@ -1,17 +1,18 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="SizingEnabled" Value="false" /> 
 		<Property Name="AbsolutePosition" Value="x:400 y:400" /> 
 		<Property Name="AbsoluteSize" Value="w:250 h:150" /> 
-		<Property Name="Alpha" Value="0.6" /> 
+		<Property Name="Alpha" Value="1.0" /> 
 		<Property Name="Text" Value="Quit?" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
 			<Property Name="Position" Value="x:0.02 y:0.02" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 		
-			<Window Type="TaharezLook/StaticText" Name="Text">
+			<Window Type="EmberLook/StaticText" Name="Text">
+				<Property Name="BackgroundEnabled" Value="False" />
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:0.95 h:0.6" /> 
 				<Property Name="Text" Value="A quitter, eh?" /> 
@@ -20,13 +21,13 @@
 				<Property Name="HorzFormatting" Value="WordWrapMiddleAligned" /> 
 				<Property Name="FrameEnabled" Value="False" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="YesButton">
+			<Window Type="EmberLook/Button" Name="YesButton">
 				<Property Name="Position" Value="x:0.1 y:0.8" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="Yes" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="NoButton">
+			<Window Type="EmberLook/Button" Name="NoButton">
 				<Property Name="Position" Value="x:0.6 y:0.8" /> 
 				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
 				<Property Name="Text" Value="No" /> 

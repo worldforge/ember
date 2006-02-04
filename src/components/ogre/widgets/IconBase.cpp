@@ -42,7 +42,7 @@ IconBase::IconBase(const std::string& name, const CEGUI::Image* background, cons
 //	mContainer->setBackgroundEnabled(false);
 //	mContainer->setBackgroundColours(CEGUI::colour(1,1,1,0));
 
-	mButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Button", "icons/" + name + "/button"));
+	mButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().createWindow(EmberOgre::GUIManager::getSingleton().getDefaultScheme() + "/Button", "icons/" + name + "/button"));
 	mButton->setSize(CEGUI::Relative, CEGUI::Size(1, 1));
 	mButton->setPosition(CEGUI::Point(0.0f, 0.0f));
 	mButton->setStandardImageryEnabled(false);

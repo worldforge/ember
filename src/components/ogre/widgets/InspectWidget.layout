@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
 
-	<Window Type="TaharezLook/FrameWindow" Name="Mainwindow">
+	<Window Type="EmberLook/FrameWindow" Name="Mainwindow">
 		<Property Name="AbsolutePosition" Value="x:820 y:25" /> 
 		<Property Name="Size" Value="w:0.2 h:0.2" /> 
 		<Property Name="Alpha" Value="0.6" /> 
@@ -11,7 +11,7 @@
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 			
-			<Window Type="TaharezLook/StaticText" Name="EntityInfo">
+			<Window Type="EmberLook/StaticText" Name="EntityInfo">
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:0.95 h:0.6" /> 
 				<Property Name="Text" Value="" /> 
@@ -19,19 +19,19 @@
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 			</Window>
-			<Window Type="TaharezLook/Listbox" Name="ChildList">
+			<Window Type="EmberLook/Listbox" Name="ChildList">
 				<Property Name="Position" Value="x:0 y:0.6" /> 
 				<Property Name="Size" Value="w:0.95 h:0.2" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Alpha" Value="0.6" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="ShowOgreBoundingBox">
+			<Window Type="EmberLook/Button" Name="ShowOgreBoundingBox">
 				<Property Name="Position" Value="x:0.0 y:0.8" /> 
 				<Property Name="Size" Value="w:0.5 h:0.2" /> 
 				<Property Name="Text" Value="Ogre bbox" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
-			<Window Type="TaharezLook/Button" Name="ShowErisBoundingBox">
+			<Window Type="EmberLook/Button" Name="ShowErisBoundingBox">
 				<Property Name="Position" Value="x:0.5 y:0.8" /> 
 				<Property Name="Size" Value="w:0.5 h:0.2" /> 
 				<Property Name="Text" Value="Eris bbox" /> 

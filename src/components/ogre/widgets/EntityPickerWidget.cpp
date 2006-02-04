@@ -77,7 +77,7 @@ void EntityPickerWidget::buildWidget()
 	mMainWindow->addChildWindow(mMenuWindow);
 	
 	
-	mEntityName = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"EntityPickerWidget/EntityName"));
+	mEntityName = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"EntityPickerWidget/EntityName"));
 	mEntityName->setSize(CEGUI::Size(1.0f, 0.3f));
 	mEntityName->setPosition(CEGUI::Point(0.0f, 0.0f));
 	mEntityName->setInheritsAlpha(true);	
@@ -96,7 +96,7 @@ void EntityPickerWidget::buildWidget()
 	getMainSheet()->addChildWindow(mMainWindow);
 	
 
-	CEGUI::PushButton* touchButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/TouchButton"));
+	CEGUI::PushButton* touchButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow(getDefaultScheme() +"/Button", (CEGUI::utf8*)"EntityPickerWidget/TouchButton"));
 	
 	BIND_CEGUI_EVENT(touchButton, CEGUI::ButtonBase::EventMouseButtonUp,EntityPickerWidget::buttonTouch_Click );
 	touchButton->setText((CEGUI::utf8*)"Touch");
@@ -107,7 +107,7 @@ void EntityPickerWidget::buildWidget()
 	mButtonSet.insert(touchButton);
 	
 
-	CEGUI::PushButton* takeButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/TakeButton"));
+	CEGUI::PushButton* takeButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow(getDefaultScheme() +"/Button", (CEGUI::utf8*)"EntityPickerWidget/TakeButton"));
 	BIND_CEGUI_EVENT(takeButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonTake_Click);
 	takeButton->setText((CEGUI::utf8*)"Take");
 	takeButton->setSize(CEGUI::Size(1.0f, 0.2f));
@@ -117,7 +117,7 @@ void EntityPickerWidget::buildWidget()
 	mButtonSet.insert(takeButton);	
 	
 	
-	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/GiveButton"));
+	CEGUI::PushButton* giveButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow(getDefaultScheme() +"/Button", (CEGUI::utf8*)"EntityPickerWidget/GiveButton"));
 	BIND_CEGUI_EVENT(giveButton, CEGUI::ButtonBase::EventMouseButtonUp,EntityPickerWidget::buttonGive_Click );
 	giveButton->setText((CEGUI::utf8*)"Give");
 	giveButton->setSize(CEGUI::Size(1.0f, 0.2f));
@@ -126,7 +126,7 @@ void EntityPickerWidget::buildWidget()
 	mMenuWindow->addChildWindow(giveButton);
 	mButtonSet.insert(giveButton);	
 	
-	CEGUI::PushButton* inspectButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/InspectButton"));
+	CEGUI::PushButton* inspectButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow(getDefaultScheme() +"/Button", (CEGUI::utf8*)"EntityPickerWidget/InspectButton"));
 	BIND_CEGUI_EVENT(inspectButton, CEGUI::ButtonBase::EventMouseButtonUp,EntityPickerWidget::buttonInspect_Click );
 	inspectButton->setText((CEGUI::utf8*)"Inspect");
 	inspectButton->setSize(CEGUI::Size(1.0f, 0.2f));
@@ -135,7 +135,7 @@ void EntityPickerWidget::buildWidget()
 	mMenuWindow->addChildWindow(inspectButton);
 	mButtonSet.insert(inspectButton);	
 
-	mUseButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"EntityPickerWidget/UseButton"));
+	mUseButton = static_cast<CEGUI::PushButton*>(mWindowManager->createWindow(getDefaultScheme() +"/Button", (CEGUI::utf8*)"EntityPickerWidget/UseButton"));
 	BIND_CEGUI_EVENT(mUseButton, CEGUI::ButtonBase::EventMouseButtonUp, EntityPickerWidget::buttonUse_Click);
 	mUseButton->setText((CEGUI::utf8*)"Use");
 	mUseButton->setSize(CEGUI::Size(1.0f, 0.2f));

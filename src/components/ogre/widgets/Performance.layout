@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <GUILayout> 
-	<Window Type="TaharezLook/FrameWindow" Name="MainWindow">
+	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 		<Property Name="SizingEnabled" Value="false" /> 
 		<Property Name="AbsolutePosition" Value="x:300 y:35" /> 
 		<Property Name="Size" Value="w:0.2 h:0.1" /> 
@@ -11,7 +11,7 @@
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 		
-			<Window Type="TaharezLook/MultiLineEditbox" Name="TextBox">
+			<Window Type="EmberLook/MultiLineEditbox" Name="TextBox">
 				<Property Name="Position" Value="x:0 y:0" /> 
 				<Property Name="Size" Value="w:1 h:1" /> 
 				<Property Name="Text" Value="" /> 
