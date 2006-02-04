@@ -1,5 +1,9 @@
 2006-02-04 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/cegui/Makefile.am: added missing makefile
+
+2006-02-04 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/widgets/Widget.*: added functionality for making the window opaque while it's active
     * src/components/ogre/widgets/Chat.layout, src/components/ogre/widgets/Chat.lua, src/components/ogre/widgets/ChatWidget.xml, src/components/ogre/widgets/ConsoleWidget.xml, src/components/ogre/widgets/Debug.layout, src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPickerWidget.cpp, src/components/ogre/widgets/Give.layout, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/HelpWidget.xml, src/components/ogre/widgets/IconBase.cpp, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.xml, src/components/ogre/widgets/InspectWidget.xml, src/components/ogre/widgets/InventoryWidget.xml, src/components/ogre/widgets/JesusEdit.widget, src/components/ogre/widgets/JesusEditFile.widget, src/components/ogre/widgets/JesusEditPreview.widget, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.xml, src/components/ogre/widgets/MeshPreview.widget, src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/Performance.layout, src/components/ogre/widgets/Performance.widget, src/components/ogre/widgets/Quit.cpp, src/components/ogre/widgets/Quit.h, src/components/ogre/widgets/Quit.widget, src/components/ogre/widgets/ScriptEdit.layout, src/components/ogre/widgets/ServerBrowser.layout, src/components/ogre/widgets/ServerWidget.xml: use the EmberLook scheme
         
