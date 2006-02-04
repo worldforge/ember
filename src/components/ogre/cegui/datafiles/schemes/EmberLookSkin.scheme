@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="EmberLookSkin">
+	<Font Name="Vera-Sans-14" Filename="cegui/datafiles/fonts/vera-sans-14.xml" />
+	<Font Name="Vera-Sans-10" Filename="cegui/datafiles/fonts/vera-sans-10.xml" />
+	<Font Name="Vera-Sans-8" Filename="cegui/datafiles/fonts/vera-sans-8.xml" />
+	<Imageset Name="EmberLook" Filename="cegui/datafiles/imagesets/EmberLook.imageset" />
+	<LookNFeel Filename="cegui/datafiles/looknfeel/EmberLook.looknfeel" />
+	<WindowSet Filename="CEGUIFalagardBase" />
+	<FalagardMapping WindowType="EmberLook/Button" TargetType="Falagard/Button" LookNFeel="EmberLook/Button" />
+	<FalagardMapping WindowType="EmberLook/Checkbox" TargetType="Falagard/Checkbox" LookNFeel="EmberLook/Checkbox" />
+	<FalagardMapping WindowType="EmberLook/ComboDropList" TargetType="Falagard/ComboDropList" LookNFeel="EmberLook/ComboDropList" />
+	<FalagardMapping WindowType="EmberLook/Combobox" TargetType="Falagard/Combobox" LookNFeel="EmberLook/Combobox" />
+	<FalagardMapping WindowType="EmberLook/Editbox" TargetType="Falagard/Editbox" LookNFeel="EmberLook/Editbox" />
+	<FalagardMapping WindowType="EmberLook/FrameWindow" TargetType="Falagard/FrameWindow" LookNFeel="EmberLook/FrameWindow" />
+	<FalagardMapping WindowType="EmberLook/HorizontalScrollbar" TargetType="Falagard/Scrollbar" LookNFeel="EmberLook/HorizontalScrollbar" />
+	<FalagardMapping WindowType="EmberLook/HorizontalScrollbarThumb" TargetType="Falagard/Thumb" LookNFeel="EmberLook/HorizontalScrollbarThumb" />
+	<FalagardMapping WindowType="EmberLook/IconButton" TargetType="Falagard/Button" LookNFeel="EmberLook/IconButton" />
+	<FalagardMapping WindowType="EmberLook/ListHeader" TargetType="Falagard/ListHeader" LookNFeel="EmberLook/ListHeader" />
+	<FalagardMapping WindowType="EmberLook/ListHeaderSegment" TargetType="Falagard/ListHeaderSegment" LookNFeel="EmberLook/ListHeaderSegment" />
+	<FalagardMapping WindowType="EmberLook/Listbox" TargetType="Falagard/Listbox" LookNFeel="EmberLook/Listbox" />
+	<FalagardMapping WindowType="EmberLook/Menubar" TargetType="Falagard/Menubar" LookNFeel="EmberLook/Menubar" />
+	<FalagardMapping WindowType="EmberLook/MenuItem" TargetType="Falagard/MenuItem" LookNFeel="EmberLook/MenuItem" />
+	<FalagardMapping WindowType="EmberLook/MultiColumnList" TargetType="Falagard/MultiColumnList" LookNFeel="EmberLook/MultiColumnList" />
+	<FalagardMapping WindowType="EmberLook/MultiLineEditbox" TargetType="Falagard/MultiLineEditbox" LookNFeel="EmberLook/MultiLineEditbox" />
+	<FalagardMapping WindowType="EmberLook/PopupMenu" TargetType="Falagard/PopupMenu" LookNFeel="EmberLook/PopupMenu" />
+	<FalagardMapping WindowType="EmberLook/ProgressBar" TargetType="Falagard/ProgressBar" LookNFeel="EmberLook/ProgressBar" />
+	<FalagardMapping WindowType="EmberLook/RadioButton" TargetType="Falagard/RadioButton" LookNFeel="EmberLook/RadioButton" />
+	<FalagardMapping WindowType="EmberLook/ScrollablePane" TargetType="Falagard/ScrollablePane" LookNFeel="EmberLook/ScrollablePane" />
+	<FalagardMapping WindowType="EmberLook/Slider" TargetType="Falagard/Slider" LookNFeel="EmberLook/Slider" />
+	<FalagardMapping WindowType="EmberLook/SliderThumb" TargetType="Falagard/Thumb" LookNFeel="EmberLook/SliderThumb" />
+	<FalagardMapping WindowType="EmberLook/VerticalSlider" TargetType="Falagard/Slider" LookNFeel="EmberLook/VerticalSlider" />
+	<FalagardMapping WindowType="EmberLook/VerticalSliderThumb" TargetType="Falagard/Thumb" LookNFeel="EmberLook/VerticalSliderThumb" />
+	<FalagardMapping WindowType="EmberLook/Spinner" TargetType="Falagard/Spinner" LookNFeel="EmberLook/Spinner" />
+	<FalagardMapping WindowType="EmberLook/StaticImage" TargetType="Falagard/StaticImage" LookNFeel="EmberLook/StaticImage" />
+	<FalagardMapping WindowType="EmberLook/StaticText" TargetType="Falagard/StaticText" LookNFeel="EmberLook/StaticText" />
+	<FalagardMapping WindowType="EmberLook/CloseButton" TargetType="Falagard/SystemButton" LookNFeel="EmberLook/CloseButton" />
+	<FalagardMapping WindowType="EmberLook/TabButton" TargetType="Falagard/TabButton" LookNFeel="EmberLook/TabButton" />
+	<FalagardMapping WindowType="EmberLook/TabControl" TargetType="Falagard/TabControl" LookNFeel="EmberLook/TabControl" />
+	<FalagardMapping WindowType="EmberLook/TabPane" TargetType="Falagard/TabPane" LookNFeel="EmberLook/TabPane" />
+	<FalagardMapping WindowType="EmberLook/Titlebar" TargetType="Falagard/Titlebar" LookNFeel="EmberLook/Titlebar" />
+	<FalagardMapping WindowType="EmberLook/Tooltip" TargetType="Falagard/Tooltip" LookNFeel="EmberLook/Tooltip" />
+	<FalagardMapping WindowType="EmberLook/VerticalScrollbar" TargetType="Falagard/Scrollbar" LookNFeel="EmberLook/VerticalScrollbar" />
+	<FalagardMapping WindowType="EmberLook/VerticalScrollbarThumb" TargetType="Falagard/Thumb" LookNFeel="EmberLook/VerticalScrollbarThumb" />
+</GUIScheme>
