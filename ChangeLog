@@ -1,3 +1,7 @@
+2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * configure.ac: bump to version 0.4.0
+
 2006-02-04 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/widgets/ChatWidget.cpp, src/components/ogre/widgets/ChatWidget.h, src/components/ogre/widgets/ChatWidget.xml, src/components/ogre/widgets/DebugWidget.cpp, src/components/ogre/widgets/DebugWidget.h, src/components/ogre/widgets/DebugWidget.xml, src/components/ogre/widgets/EntityPickerWidget.cpp, src/components/ogre/widgets/EntityPickerWidget.h, src/components/ogre/widgets/GiveWidget.cpp, src/components/ogre/widgets/GiveWidget.h, src/components/ogre/widgets/GiveWidget.xml, src/components/ogre/widgets/Performance.cpp, src/components/ogre/widgets/Performance.h, src/components/ogre/widgets/Performance.widget, src/components/ogre/widgets/ServerBrowserWidget.cpp, src/components/ogre/widgets/ServerBrowserWidget.h, src/components/ogre/widgets/ServerBrowserWidget.xml, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/WidgetDefinitions.cpp: Removed obsolete files
