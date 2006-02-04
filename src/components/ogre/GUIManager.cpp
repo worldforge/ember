@@ -76,13 +76,14 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 	
 	try {
 		
-		S_LOG_INFO("STARTING CEGUI");
+		S_LOG_INFO("Starting CEGUI");
+		mDefaultScheme = "EmberLook";
+		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 	
 		Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 		chdir(configSrv->getEmberDataDirectory().c_str());
 		
 		//use a macro from CEGUIFactoryModule
-//		DYNLIB_LOAD( "libCEGUITaharezLook.so");
 		DYNLIB_LOAD( "libCEGUIFalagardBase.so");
 		
 		Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
@@ -102,33 +103,16 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		} else {
 			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 		}
-		//mGuiSystem = new CEGUI::System(mGuiRenderer, &mScriptManager->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
-//		mGuiSystem = new CEGUI::System(mGuiRenderer); 
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 
-//		fprintf(stderr, dlerror());
-/*		try {	
-//			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/DAoC.scheme");
-			CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"cegui/datafiles/schemes/TaharezLookSkin.scheme");*/
 			
 			try {
-				mGuiSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+				mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), (CEGUI::utf8*)"MouseArrow");
 			} catch (const CEGUI::Exception&) {
-				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme (TaharezLook) is available.");
+				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available.");
 			}
-/*			try {
-				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Vera-Sans-10"); 
-//				mGuiSystem->setDefaultFont((CEGUI::utf8*)"Tahoma-8"); 
-			} catch (const CEGUI::Exception&) {
-				S_LOG_FAILURE("CEGUI - could not set default font.");
-			}*/
-		
-		
-/*		} catch (const CEGUI::Exception&) {
-			S_LOG_FAILURE("CEGUI - could not create default scheme.");
-		}*/
 		
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
@@ -140,9 +124,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 			
 		//set a default tool tip
-		CEGUI::System::getSingleton().setTooltip("TaharezLook/Tooltip");
+		CEGUI::System::getSingleton().setTooltip(getDefaultScheme() + "/Tooltip");
 		
-		S_LOG_INFO("CEGUI - SYSTEM SET UP");
+		S_LOG_INFO("CEGUI system set up");
 
 		MousePicker* picker = new MousePicker();
 		pushMousePicker(picker);
@@ -187,7 +171,7 @@ void GUIManager::initialize()
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
-		mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"DebugText");
+		mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"DebugText");
 		mSheet->addChildWindow(mDebugText);
 		mDebugText->setMaximumSize(CEGUI::Size(1.0f, 0.1f));
 		mDebugText->setPosition(CEGUI::Point(0.0f, 0.93f));
@@ -228,6 +212,10 @@ void GUIManager::initialize()
 	}
 	
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(SCREENSHOT,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(TOGGLEINPUTMODE,this);
+	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand("reloadgui",this);
+	
 
 }
 
@@ -267,24 +255,6 @@ Widget* GUIManager::createWidget(const std::string& name)
 }
 
 
-// bool GUIManager::confirm(const std::string & text)
-// {
-// 	CEGUI::Window window = mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/FrameWindow", (CEGUI::utf8*)"ConfirmBox");
-// 	
-// 	CEGUI::PushButton yesButton = (CEGUI::PushButton*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"ConfirmBox/Yes");
-// 	yesButton->setText("Yes");
-// 	yes
-// 	CEGUI::PushButton noButton = (CEGUI::PushButton*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/Button", (CEGUI::utf8*)"ConfirmBox/No");
-// 	CEGUI::StaticText text = (CEGUI::PushButton*)mWindowManager->createWindow((CEGUI::utf8*)"TaharezLook/StaticText", (CEGUI::utf8*)"ConfirmBox/Text");
-// 	
-// 	
-// 	window->addChildWindow(yesButton);
-// 	window->addChildWindow(noButton);
-// 	window->addChildWindow(text);
-// 	mSheet->addChildWindow(window);
-// 	
-// }
-
 void GUIManager::setDebugText(const std::string& text)
 {
 	if (mDebugText)
@@ -299,7 +269,7 @@ Input* GUIManager::getInput() const
 }
 
 
-CEGUI::Window* GUIManager::getMainSheet() 
+CEGUI::Window* GUIManager::getMainSheet() const
 { 
 	return mSheet; 
 }
@@ -525,6 +495,12 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 		takeScreenshot();
 	} else if (command == TOGGLEINPUTMODE) {
 		mInput->toggleInputMode();
+	} else if (command == "reloadgui") {
+		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
+		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png");
+		if (!resource.isNull()) {
+			resource->reload();
+		}
 	}
 }
 
@@ -553,7 +529,10 @@ const std::string& GUIManager::getLayoutDir() const
 	return dir;
 }
 
-
+const std::string& GUIManager::getDefaultScheme() const
+{
+	return mDefaultScheme;
+}
 
 }
 

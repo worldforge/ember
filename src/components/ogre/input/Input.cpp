@@ -65,7 +65,7 @@ mCurrentInputMode(IM_GUI)
 
 	//must initialize the clipboard support
 	if ( init_scrap() < 0 ) {
-		S_LOG_FAILURE("Couldn't init clipboard: %s\n" << SDL_GetError());
+		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
 	}
 	
 	
@@ -94,6 +94,14 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	mouseState = SDL_GetMouseState( &mouseX, &mouseY );
 	
 	mTimeSinceLastRightMouseClick += evt.timeSinceLastFrame;
+	
+	if (mouseState & SDL_BUTTON_WHEELUP) {
+		EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
+	}
+	if (mouseState & SDL_BUTTON_WHEELDOWN) {
+		EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
+	}
+
 	if (mouseState & SDL_BUTTON_RMASK) {
 		if (!(mMouseState & SDL_BUTTON_RMASK)) {
 			//right mouse button pressed

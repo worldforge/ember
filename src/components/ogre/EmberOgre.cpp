@@ -263,6 +263,10 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 	{
 		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
 		throw ex;
+	} catch (const std::string& ex)
+	{
+		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+		throw ex;
 	} catch (...)
 	{
 		S_LOG_CRITICAL("Got unknown exception.");
@@ -381,7 +385,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;
-	loadingBar.start(mWindow, 3, preloadMedia ? 3 : 0, 0.7);
+	loadingBar.start(mWindow, 3, (preloadMedia ? 3 : 0), (preloadMedia ? 0.7 : 1.0));
 	
 	// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();

@@ -110,7 +110,7 @@ public:
 	 *    Gets the root sheet of the CEGUI windowing system.
 	 * @return 
 	 */
-	CEGUI::Window* getMainSheet();
+	CEGUI::Window* getMainSheet() const;
 	
 	
 	/**
@@ -195,6 +195,11 @@ public:
 	 */
 	Widget* createWidget(const std::string& name);
 
+	/**
+	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
+	 * @return 
+	 */
+	const std::string& getDefaultScheme() const;
 protected:
 
 	CEGUI::Window* mSheet;
@@ -207,6 +212,8 @@ protected:
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreCEGUIRenderer* mGuiRenderer;
+	
+	std::string mDefaultScheme;
 
 	
 	/**

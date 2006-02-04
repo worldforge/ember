@@ -57,5 +57,11 @@ class GUIManager
 	 */
 	Widget* createWidget(const std::string& name);
 
+	/**
+	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
+	 * @return 
+	 */
+	const std::string& getDefaultScheme() const;
+
 };
 }

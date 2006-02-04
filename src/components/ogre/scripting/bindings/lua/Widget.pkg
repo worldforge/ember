@@ -101,6 +101,24 @@ public:
 	 */
 	const std::string& getPrefix() const;
 
+	/**
+	 *    Gets whether the window when being activated should become fully opaque, to return to it's preset alpha value when being deactivated.
+	 Defaults to true.
+	 * @return 
+	 */
+	bool getIsActiveWindowOpaque() const;
+	/**
+	 *    Sets whether the window when being activated should become fully opaque, to return to it's preset alpha value when being deactivated.
+	 Defaults to true.
+	 * @param isOpaque 
+	 */
+	void setIsActiveWindowOpaque(bool isOpaque);
+	
+	/**
+	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
+	 * @return 
+	 */
+	const std::string& getDefaultScheme() const;
 	
 };
 

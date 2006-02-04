@@ -149,10 +149,10 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 	CEGUI::MouseButton ceguiButton;
 	if (button == Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
-	} else if(button == Input::MouseButtonMiddle) {
-		ceguiButton = CEGUI::MiddleButton;
 	} else if(button == Input::MouseButtonRight) {
 		ceguiButton = CEGUI::RightButton;
+	} else if(button == Input::MouseButtonMiddle) {
+		ceguiButton = CEGUI::MiddleButton;
 	} else {
 		return true;
 	}
@@ -170,10 +170,24 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	CEGUI::MouseButton ceguiButton;
 	if (button == Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
-	} else if(button == Input::MouseButtonMiddle) {
-		ceguiButton = CEGUI::MiddleButton;
 	} else if(button == Input::MouseButtonRight) {
 		ceguiButton = CEGUI::RightButton;
+	} else if(button == Input::MouseButtonMiddle) {
+		ceguiButton = CEGUI::MiddleButton;
+	} else if(button == Input::MouseWheelDown) {
+		try {
+			mGuiSystem->injectMouseWheelChange(-1.0);
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		}
+		return true;
+	} else if(button == Input::MouseWheelUp) {
+		try {
+			mGuiSystem->injectMouseWheelChange(1.0);
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		}
+		return true;
 	} else {
 		return true;
 	}

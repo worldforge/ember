@@ -80,7 +80,9 @@ public:
 	{
 		MouseButtonLeft,
 		MouseButtonRight,
-		MouseButtonMiddle
+		MouseButtonMiddle,
+		MouseWheelUp,
+		MouseWheelDown,
 	};
 	
 	/**
