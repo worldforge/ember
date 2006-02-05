@@ -110,8 +110,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			
 			try {
 				mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), (CEGUI::utf8*)"MouseArrow");
-			} catch (const CEGUI::Exception&) {
+			} catch (const CEGUI::Exception& ex) {
 				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available.");
+				throw ex;
 			}
 		
 		
@@ -145,8 +146,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		Ogre::Root::getSingleton().addFrameListener(this);
 		
 	
-	} catch (const CEGUI::Exception&) {
+	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui.");
+		throw ex;
 	
 	}
 
@@ -184,7 +186,18 @@ void GUIManager::initialize()
 
 		//the console and quit widgets are not lua scripts, and should be loaded explicit
 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
+		if (!mConsoleWidget) {
+			throw Ember::Exception("Could not create console widget.");
+		}
 		createWidget("Quit");
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());
+		throw e;
+	} catch (const CEGUI::Exception& e) {
+		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
+		throw e;
+	}
+	try {
 		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 		try {
 		//load the bootstrap script which will load all other scripts

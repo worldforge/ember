@@ -1,5 +1,10 @@
 2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/EmberOgrePrerequisites.h: Added inclusion of Exception.h
+    * src/components/ogre/EmberOgre.cpp, src/components/ogre/GUIManager.cpp: If the loading of the gui or the loading of the console fails, exit the app since that could lead to problems in shutting down ember if the user is running it full screen.
+
+2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/cegui/Makefile.am: install Falagard.xsd to the gui root, as it's needed by xerces
     * src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel: fixed some validation problems
 

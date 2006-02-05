@@ -32,6 +32,7 @@
 ///S_LOG_INFO("some info")
 #include "services/logging/LoggingService.h"
 
+#include "framework/Exception.h"
 
 
 

@@ -418,8 +418,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		mOgreResourceLoader->preloadMedia();
 		S_LOG_INFO( "End preload.");
 	}	
-	mGUIManager = new GUIManager(mWindow, mSceneMgr);
-	EventGUIManagerCreated.emit(*mGUIManager);
+	try {
+		mGUIManager = new GUIManager(mWindow, mSceneMgr);
+		EventGUIManagerCreated.emit(*mGUIManager);
+	} catch (...) {
+		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+		return false;
+	}
     
 	
 
@@ -446,9 +451,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
 
-
-	mGUIManager->initialize();
-	EventGUIManagerInitialized.emit(*mGUIManager);
+	try {
+		mGUIManager->initialize();
+		EventGUIManagerInitialized.emit(*mGUIManager);
+	} catch (...) {
+		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+		return false;
+	}
 	
 	// Create the scene
     createScene();
