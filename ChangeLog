@@ -1,5 +1,9 @@
 2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * ember: fixed some problems with testing of java and xterm
+
+2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
+
     * configure.ac: bump to version 0.4.0
 
 2006-02-04 Erik Hjortsberg  <erik@katastrof.nu>

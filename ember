@@ -71,8 +71,8 @@ if [ ! -d $homedata ] ; then
 fi
 
 # Determine if java executable exists in path
-JAVA=`which java`
-if [ -x $JAVA ] ; then
+JAVA=`which java`;
+if [ $JAVA ] ; then
 
   # See if Updater exists in home dir
   if [ ! -e $homedata/$WFUT_JAR ] ; then
@@ -107,7 +107,12 @@ if [ -x $JAVA ] ; then
     cd $homedata
     # Update
     echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
-    xterm -T "Downloading media..." -e $JAVA -jar $WFUT_JAR update ember-media
+    XTERM=`which xterm`
+	if [ $XTERM ] ; then
+    	xterm -T "Downloading media..." -e $JAVA -jar $WFUT_JAR update ember-media
+    else
+    	$JAVA -jar $WFUT_JAR update ember-media
+    fi
     # Restore dir
     cd $CUR_DIR
 #  fi
