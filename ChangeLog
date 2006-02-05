@@ -1,5 +1,10 @@
 2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/cegui/Makefile.am: install Falagard.xsd to the gui root, as it's needed by xerces
+    * src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel: fixed some validation problems
+
+2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
+
     * ember: fixed some problems with testing of java and xterm
 
 2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>

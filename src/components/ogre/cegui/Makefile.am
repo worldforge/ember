@@ -18,4 +18,4 @@ dist_ceguilayouts_DATA = datafiles/layouts/GUILayout.xsd
 dist_ceguischemes_DATA = datafiles/schemes/TaharezLook.scheme datafiles/schemes/TaharezLookWidgetAliases.scheme datafiles/schemes/TaharezLookSkin.scheme datafiles/schemes/WindowsLook.scheme datafiles/schemes/WindowsLookSkin.scheme datafiles/schemes/GUIScheme.xsd datafiles/schemes/EmberLookSkin.scheme
 dist_ceguiconfig_DATA = datafiles/configs/cegui.config
 dist_ceguilooknfeel_DATA = datafiles/looknfeel/TaharezLook.looknfeel datafiles/looknfeel/Vanilla.looknfeel datafiles/looknfeel/WindowsLook.looknfeel datafiles/looknfeel/EmberLook.looknfeel
-dist_ceguischema_DATA = datafiles/layouts/GUILayout.xsd datafiles/imagesets/Imageset.xsd datafiles/fonts/Font.xsd datafiles/schemes/GUIScheme.xsd datafiles/configs/CEGUIConfig.xsd
+dist_ceguischema_DATA = datafiles/layouts/GUILayout.xsd datafiles/imagesets/Imageset.xsd datafiles/fonts/Font.xsd datafiles/schemes/GUIScheme.xsd datafiles/configs/CEGUIConfig.xsd datafiles/looknfeel/Falagard.xsd

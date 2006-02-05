@@ -700,7 +700,6 @@
 					<Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
 					<Dim type="Height" ><UnifiedDim scale="1" type="Height" /></Dim>
 				</Area>
-				<Colours topLeft="fffff8db" topRight="fffff8db" bottomLeft="fffff8db" bottomRight="fffff8db" />
 				<Image type="TopLeftCorner" imageset="EmberLook" image="EditFrameTopLeft" />
 				<Image type="TopRightCorner" imageset="EmberLook" image="EditFrameTopRight" />
 				<Image type="BottomLeftCorner" imageset="EmberLook" image="EditFrameBottomLeft" />
@@ -1308,7 +1307,6 @@
 					<Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
 					<Dim type="Height" ><UnifiedDim scale="1" type="Height" /></Dim>
 				</Area>
-				<Colours topLeft="fffff8db" topRight="fffff8db" bottomLeft="fffff8db" bottomRight="fffff8db" />
 				<Image type="TopLeftCorner" imageset="EmberLook" image="StaticFrameTopLeft" />
 				<Image type="TopRightCorner" imageset="EmberLook" image="StaticFrameTopRight" />
 				<Image type="BottomLeftCorner" imageset="EmberLook" image="StaticFrameBottomLeft" />
@@ -3154,13 +3152,6 @@
 		<ImagerySection name="track">
 			<FrameComponent>
 				<Area>
-					<Dim type="LeftEdge" >
-						<ImageDim imageset="EmberLook" image="VerticalSliderThumbNormal" dimension="Width">
-							<DimOperator op="Multiply">
-								<AbsoluteDim value="0.5" />
-							</DimOperator>
-						</ImageDim>
-					</Dim>
 					<Dim type="TopEdge" >
 						<ImageDim imageset="EmberLook" image="VerticalSliderThumbNormal" dimension="Height">
 							<DimOperator op="Multiply">
@@ -3179,18 +3170,10 @@
 							</DimOperator>
 						</UnifiedDim>
 					</Dim>
-					<Dim type="RightEdge" >
-						<UnifiedDim scale="1.0" type="RightEdge">
-							<DimOperator op="Subtract">
-								<ImageDim imageset="EmberLook" image="VerticalSliderThumbNormal" dimension="Width">
-									<DimOperator op="Multiply">
-										<AbsoluteDim value="0.5" />
-									</DimOperator>
-								</ImageDim>
-							</DimOperator>
-						</UnifiedDim>
+					<Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+					<Dim type="Width" >
+						<ImageDim imageset="EmberLook" image="VerticalSliderThumbNormal" dimension="Width" />
 					</Dim>
-					<Dim type="Height" ><UnifiedDim scale="1.0" type="Height" /></Dim>
 				</Area>
 				<Image type="TopEdge" imageset="EmberLook" image="VerticalSliderTrackTop" />
 				<Image type="BottomEdge" imageset="EmberLook" image="VerticalSliderTrackBottom" />
