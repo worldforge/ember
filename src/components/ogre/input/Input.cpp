@@ -95,10 +95,10 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	
 	mTimeSinceLastRightMouseClick += evt.timeSinceLastFrame;
 	
-	if (mouseState & SDL_BUTTON_WHEELUP) {
+	if (mouseState & SDL_BUTTON(SDL_BUTTON_WHEELUP)) {
 		EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
 	}
-	if (mouseState & SDL_BUTTON_WHEELDOWN) {
+	if (mouseState & SDL_BUTTON(SDL_BUTTON_WHEELDOWN)) {
 		EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
 	}
 
@@ -116,12 +116,12 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 		//right mouse button released
 		
 		//if there's two right mouse clicks withing 0.25 seconds from each others, it's a double click
-		if (mTimeSinceLastRightMouseClick < 0.25) {
+/*		if (mTimeSinceLastRightMouseClick < 0.25) {
 			toggleInputMode();
 			
-		}
+		}*/
 		mTimeSinceLastRightMouseClick = 0;
-		toggleInputMode();
+		//toggleInputMode();
 		EventMouseButtonReleased.emit(MouseButtonRight, mCurrentInputMode);
 	} 
 	
