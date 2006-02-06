@@ -18,7 +18,8 @@ The first thing you would want to do is to connect to a server. Use the server b
 Once connected, you must either create an account or log into an already existing. This is pretty straightforward. Once you've logged in, you must either choose an existing character, or create a new one. Also pretty self explanatory.
 
 ---Moving in the world---
-If you press and hold the right mouse button you enter 'movement mode'. While in 'movement mode', mouse movement will pan the camera. Use the wasd keys to move the avatar. Pressing shift will make the avatar run, though the server might not always keep up with this. You can also toggle movement mode on and off by double clicking the right mouse button.
+When you enter the world, you'll switch from 'gui mode' to 'movement mode'. You can at any time switch between these two modes with a right click on the mouse.
+Use the 'wasd' keys to move the avatar. Pressing shift will make the avatar run, though the server might not always keep up with this.
 
 ---Interacting with the world---
 Your main way of interacting with the world is by clicking with the left mouse button on world entities. This will bring up an action menu. Choose from the menu to perform the desired action.
@@ -29,7 +30,7 @@ Your main way of interacting with the world is by clicking with the left mouse b
 * Use : Tries to use the currently wielded entity on the selected entity. Try to use an axe with a tree, or a cleaver with a pig.
 
 ---Inventory---
-The inventory can be brought up by the command '/show_inventory'. You can drop or wield items in your inventory. Wielding means that that entity will be used when performing the 'Use' action on another entity.
+Down to the right is your inventory. You can drop or wield items in your inventory. Wielding means that that entity will be used when performing the 'Use' action on another entity.
 
 --- Console ---
 At the top of the screen is the console. It can be expanded and shrunk by pressing F12. The console serves two purposes: it allows you to say things in the world, and it allows you to enter commands to the client. All commands are prefixed by '/', for example '/hide_chat' and '/show_chat'. Enter '/list_commands' for a list of all commands.
@@ -52,9 +53,9 @@ F6 : toggle free flying mode
 
 Commands:
 /quit : quits
-/connect <server> : connects to a server
-/login <name> <password> : tries to log in
-/add <name> <gender> <type> : adds a new character, for example: /add Erik male settler
+/connect &lt;server> : connects to a server
+/login &lt;name> &lt;password> : tries to log in
+/add &lt;name> &lt;gender> &lt;type> : adds a new character, for example: /add Erik male settler
 /list_commands : lists all available commands
 
 

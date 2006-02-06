@@ -157,9 +157,15 @@ void MovableObjectRenderer::releaseInput()
 
 bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 {
-	///only catch input if it's allowed
-	if (getIsInputCatchingAllowed()) {
-		catchInput();
+	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	if (mouseArgs.button == CEGUI::LeftButton) {
+		///only catch input if it's allowed
+		if (getIsInputCatchingAllowed()) {
+			catchInput();
+		}
+	}
+	if (mouseArgs.wheelChange != 0.0f) {
+		setCameraDistance(getCameraDistance() + mouseArgs.wheelChange);
 	}
 	return true;
 }

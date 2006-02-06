@@ -50,17 +50,17 @@ namespace EmberOgre
 	
 	}
 
-	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text)
+	CEGUI::ListboxItem* ColoredListItem::createColoredListItem(const CEGUI::String& text)
 	{
 		return new ColoredListItem(text);
 	}
 	
-	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text, unsigned int item_id)
+	CEGUI::ListboxItem* ColoredListItem::createColoredListItem(const CEGUI::String& text, unsigned int item_id)
 	{
 		return new ColoredListItem(text, item_id);
 	}
 	
-	CEGUI::ListboxItem* Widget::createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
+	CEGUI::ListboxItem* ColoredListItem::createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
 	{
 		return new ColoredListItem(text, item_id, item_data);
 	}
@@ -71,8 +71,9 @@ namespace EmberOgre
 	
 	
 	
+	const std::string Widget::DEFAULT_TAB_GROUP("default");
 	
-	Widget::Widget() : mMainWindow(0), mCommandSuffix(""), mActiveWindowIsOpaque(true)
+	Widget::Widget() : mMainWindow(0), mCommandSuffix(""), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0)
 	{
 	}
 	
@@ -247,5 +248,62 @@ namespace EmberOgre
 	{
 		return mGuiManager->getDefaultScheme();
 	}
+	
+	
+	
+	bool Widget::TabbableWindow_KeyUp(const CEGUI::EventArgs& args)
+	{
+		const CEGUI::KeyEventArgs& keyEventArgs = static_cast<const CEGUI::KeyEventArgs&>(args);
+		if (keyEventArgs.scancode == CEGUI::Key::Tab)
+		{
+			///find the window in the list of tabbable windows
+			CEGUI::Window* activeWindow = mMainWindow->getActiveChild();
+			if (activeWindow) {
+//				WindowMap::iterator I = std::find(mTabOrder.begin(), mTabOrder.end(), activeWindow);
+				WindowMap::iterator I = mTabOrder.find(activeWindow);
+				if (I != mTabOrder.end()) {
+					I->second->activate();
+				}
+			}
+		}
+		return true;
+	}
+	
+	void Widget::addTabbableWindow(CEGUI::Window* window)
+	{
+		if (!mFirstTabWindow) {
+			mFirstTabWindow = window;
+		}
+		if (mLastTabWindow) {
+			mTabOrder.insert(WindowMap::value_type(mLastTabWindow, window));
+		}
+		mLastTabWindow = window;
+		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyUp, Widget::TabbableWindow_KeyUp);
+	}
+	
+	void Widget::closeTabGroup()
+	{
+		if (mLastTabWindow && mFirstTabWindow) {
+			mTabOrder.insert(WindowMap::value_type(mLastTabWindow, mFirstTabWindow));
+		}
+		mFirstTabWindow = 0;
+		mLastTabWindow = 0;
+	}
+	
+// 	void addTabbableWindow(CEGUI::Window* window, const std::string& tabGroup)
+// 	{
+// 		WindowStore* store;
+// 		WindowStoreMap::iterator I = mTabOrders.find(tabGroup);
+// 		if (I == mTabOrders.end()) {
+// 			/could not find group, lets create it
+// 			store = new WindowStore();
+// 			mTabOrders.insert(WindowStoreMap::value_type(tabGroup, store));
+// 		} else {
+// 			store = I->second;
+// 		}
+// 		store->push_back(window);
+// 		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyUp, Widget::TabbableWindow_KeyUp);
+// 	}
+	
 
 }

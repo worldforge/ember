@@ -90,9 +90,7 @@ public Ember::ConsoleObject
 {
 public:
 
-	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text); 
-	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id);
-	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+	static const std::string DEFAULT_TAB_GROUP;
 	
 	
 	Widget();
@@ -203,6 +201,18 @@ public:
 	 */
 	const std::string& getDefaultScheme() const;
 	
+	
+	/**
+	 *    Adds a window to the tab order. Remember to call closeTabGroup() to close the tab group.
+	 * @param window 
+	 */
+	void addTabbableWindow(CEGUI::Window* window);
+	
+	
+	/**
+	 *    Closes the current tab so that the last window connects to the first window.
+	 */
+	void closeTabGroup();
 
 protected:
 
@@ -240,6 +250,13 @@ protected:
 	If true, when activated the window will become fully opaque.
 	*/
 	bool mActiveWindowIsOpaque;
+	
+	typedef std::map<CEGUI::Window*, CEGUI::Window*> WindowMap;
+	WindowMap mTabOrder;
+	CEGUI::Window *mFirstTabWindow, *mLastTabWindow;
+		
+	bool TabbableWindow_KeyUp(const CEGUI::EventArgs& args);
+	
 	
 private:
 	std::string mPrefix;
@@ -302,6 +319,11 @@ public:
 	ColoredListItem(const CEGUI::String& text); 
 	ColoredListItem(const CEGUI::String& text, unsigned int item_id);
 	ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+
+	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text); 
+	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id);
+	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+
 private:
 	void setColours();
 };

@@ -81,6 +81,7 @@ void ServerWidget::buildWidget()
 	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
 	
 	
+	
 	mNewCharName = static_cast<CEGUI::Editbox*>(getWindow("CreateCharacterPanel/NameEdit"));
 	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
 	mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
@@ -110,6 +111,19 @@ void ServerWidget::buildWidget()
 	Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
+	
+	addTabbableWindow(getWindow("LoginPanel/NameEdit"));
+	addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
+/*	addTabbableWindow(login);
+	addTabbableWindow(createAcc);*/
+	closeTabGroup();
+	
+	addTabbableWindow(mNewCharName);
+// 	addTabbableWindow(mTypesList);
+/*	addTabbableWindow(mGenderRadioButton);
+	addTabbableWindow(femaleRadioButton);*/
+	addTabbableWindow(mNewCharDescription);
+	closeTabGroup();
 	
 	mMainWindow->setVisible(false);
 
@@ -288,3 +302,4 @@ bool EmberOgre::NewCharacter::isValid( ) const
 {
 	return name != "" && gender != "" && type != "";
 }
+

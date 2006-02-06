@@ -116,7 +116,7 @@ void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 	//	mBlurb->setInheritAlpha(true);
 		//mEntityName->setBackgroundEnabled(false);
 		mBlurb->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
-		mBlurb->setText("Press and hold right mouse button to switch between MOVEMENT and INPUT MODE.\nDouble right click to toggle on and off.");
+		mBlurb->setText("Click right mouse button to switch between MOVEMENT and INPUT MODE.");
 		
 		
 		getMainSheet()->addChildWindow(mBlurb);

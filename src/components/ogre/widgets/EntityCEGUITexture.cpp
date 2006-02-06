@@ -166,6 +166,7 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	///make sure the camera renders into this new texture
 	S_LOG_VERBOSE("Adding camera.");
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
+	///transparent background
 	v->setBackgroundColour(Ogre::ColourValue(0,0,0,0));
 	///don't show the CEGUI
 	v->setOverlaysEnabled(false);
