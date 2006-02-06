@@ -46,7 +46,7 @@ function Give_addedEntity(entity)
 	local item = EmberOgre.ColoredListItem:new(name, entity:getId(), entity)
 	Give.listboxMap[entity] = item
 	--we need to cast it down
-	Give.listbox:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+	Give.listbox:addItem(item)
 end
 
 function Give_removedEntity(entity) 

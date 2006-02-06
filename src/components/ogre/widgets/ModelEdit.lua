@@ -58,7 +58,7 @@ function ModelEdit_fillMaterialList()
 		local material = materialDef:get()
 		local name = material:getName()
 		local item = EmberOgre.ColoredListItem:new(name, i)
-		ModelEdit.contentparts.submeshInfo.listholder:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.contentparts.submeshInfo.listholder:addItem(item)
 		i = i + 1
 	end
 end
@@ -70,7 +70,7 @@ function ModelEdit_fillMeshList()
 	for i = 0, meshes:size() - 1 do
 		local name = meshes[i]
 		local item = EmberOgre.ColoredListItem:new(name, i)
-		ModelEdit.contentparts.modelInfo.meshlist:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.contentparts.modelInfo.meshlist:addItem(item)
 		
 	end	
 end
@@ -93,7 +93,7 @@ function ModelEdit_fillSubMeshList(part)
 	local i = 0
 	while i < numberOfSubmeshes do
 		local item = EmberOgre.ColoredListItem:new(i, i)
-		list:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		list:addItem(item)
 		i = i + 1
 	end	
 end
@@ -118,7 +118,7 @@ function ModelEdit_updateSubmodelsList()
 	for val = 0, submodels:size() - 1 do
 		local name = submodels[val]:getMeshName()
 		local item = EmberOgre.ColoredListItem:new(name, val)
-		ModelEdit.submodels:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.submodels:addItem(item)
 	end	
 end
 
@@ -130,7 +130,7 @@ function ModelEdit_updatePartsList(submodel)
 		for val = 0, parts:size() - 1 do
 			local name = parts[val]:getName()
 			local item = EmberOgre.ColoredListItem:new(name, val)
-			ModelEdit.parts:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+			ModelEdit.parts:addItem(item)
 		end
 	end
 end
@@ -148,7 +148,7 @@ function ModelEdit_updateSubentitiesList(part)
 				name = subentities[val]:getSubEntityIndex()
 			end
 			local item = EmberOgre.ColoredListItem:new(name, val)
-			ModelEdit.subentities:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+			ModelEdit.subentities:addItem(item)
 		end
 	end
 end
@@ -171,7 +171,7 @@ function ModelEdit_fillModellist()
 		local model = modelPtr:get()
 		local name = model:getName()
 		local item = EmberOgre.ColoredListItem:new(name, i)
-		ModelEdit.modelslistholder:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.modelslistholder:addItem(item)
 		i = i + 1
 	end
 
@@ -466,7 +466,7 @@ function ModelEdit_updateModelContentList()
 		ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 		
 		local item = EmberOgre.ColoredListItem:new(name, table.getn(ModelEdit.modelContentsItems))
-		ModelEdit.modelcontents:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ModelEdit.modelcontents:addItem(item)
 		
 		--add all parts
 		if submodel ~= nil then
@@ -483,7 +483,7 @@ function ModelEdit_updateModelContentList()
 				
 				--prefix parts with "-"
 				local item = EmberOgre.ColoredListItem:new(" - " .. name, table.getn(ModelEdit.modelContentsItems))
-				ModelEdit.modelcontents:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+				ModelEdit.modelcontents:addItem(item)
 			
 				if part ~= nil then
 					local subentities = part:getSubEntityDefinitions()
@@ -503,7 +503,7 @@ function ModelEdit_updateModelContentList()
 						
 						--prefix subentities with " -- "
 						local item = EmberOgre.ColoredListItem:new(" -- " .. name, table.getn(ModelEdit.modelContentsItems))
-						ModelEdit.modelcontents:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+						ModelEdit.modelcontents:addItem(item)
 					end
 				end
 			
@@ -694,15 +694,15 @@ function ModelEdit_fillScaleTypesList()
 	ModelEdit.scaleTypes = CEGUI.toCombobox( ModelEdit.scaleTypes)
 	
 	local item = EmberOgre.ColoredListItem:new("all", 0)
-	ModelEdit.scaleTypes:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+	ModelEdit.scaleTypes:addItem(item)
 	local item = EmberOgre.ColoredListItem:new("none", 1)
-	ModelEdit.scaleTypes:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+	ModelEdit.scaleTypes:addItem(item)
 	local item = EmberOgre.ColoredListItem:new("width", 2)
-	ModelEdit.scaleTypes:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+	ModelEdit.scaleTypes:addItem(item)
 	local item = EmberOgre.ColoredListItem:new("depth", 3)
-	ModelEdit.scaleTypes:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+	ModelEdit.scaleTypes:addItem(item)
 	local item = EmberOgre.ColoredListItem:new("height", 4)
-	ModelEdit.scaleTypes:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+	ModelEdit.scaleTypes:addItem(item)
 	
 	ModelEdit.scaleTypes:subscribeEvent("ListSelectionChanged", "ModelEdit_ModelUseScaleOf_SelectionChanged")
 

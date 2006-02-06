@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sat Feb  4 19:33:08 2006.
+** Generated automatically by tolua++-1.0.6 on Mon Feb  6 01:22:52 2006.
 */
 
 #ifndef __cplusplus
@@ -19,9 +19,9 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_WFMath__Point_3_ (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Model__ModelDefnPtr (lua_State* tolua_S)
 {
- WFMath::Point<3>* self = (WFMath::Point<3>*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Model::ModelDefnPtr* self = (EmberOgre::Model::ModelDefnPtr*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -33,9 +33,9 @@ static int tolua_collect_EmberOgre__Jesus (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_EmberOgre__AttachPointNode (lua_State* tolua_S)
+static int tolua_collect_WFMath__Vector_3_ (lua_State* tolua_S)
 {
- EmberOgre::AttachPointNode* self = (EmberOgre::AttachPointNode*) tolua_tousertype(tolua_S,1,0);
+ WFMath::Vector<3>* self = (WFMath::Vector<3>*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -85,13 +85,6 @@ static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 static int tolua_collect_EmberOgre__ListHolder (lua_State* tolua_S)
 {
  EmberOgre::ListHolder* self = (EmberOgre::ListHolder*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
-static int tolua_collect_EmberOgre__ColoredListItem (lua_State* tolua_S)
-{
- EmberOgre::ColoredListItem* self = (EmberOgre::ColoredListItem*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -208,9 +201,9 @@ static int tolua_collect_EmberOgre__ModelRenderer (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_EmberOgre__Model__ModelDefnPtr (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__AttachPointNode (lua_State* tolua_S)
 {
- EmberOgre::Model::ModelDefnPtr* self = (EmberOgre::Model::ModelDefnPtr*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::AttachPointNode* self = (EmberOgre::AttachPointNode*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -229,9 +222,9 @@ static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_WFMath__Vector_3_ (lua_State* tolua_S)
+static int tolua_collect_WFMath__Point_3_ (lua_State* tolua_S)
 {
- WFMath::Vector<3>* self = (WFMath::Vector<3>*) tolua_tousertype(tolua_S,1,0);
+ WFMath::Point<3>* self = (WFMath::Point<3>*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -243,9 +236,9 @@ static int tolua_collect_Carpenter__AttachPoint (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_EmberOgre__ModelBlock (lua_State* tolua_S)
+static int tolua_collect_std__vector_const_Carpenter__AttachPoint__ (lua_State* tolua_S)
 {
- EmberOgre::ModelBlock* self = (EmberOgre::ModelBlock*) tolua_tousertype(tolua_S,1,0);
+ std::vector<const Carpenter::AttachPoint*>* self = (std::vector<const Carpenter::AttachPoint*>*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -257,9 +250,9 @@ static int tolua_collect_Carpenter__Carpenter (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_std__vector_const_Carpenter__AttachPoint__ (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__ModelBlock (lua_State* tolua_S)
 {
- std::vector<const Carpenter::AttachPoint*>* self = (std::vector<const Carpenter::AttachPoint*>*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::ModelBlock* self = (EmberOgre::ModelBlock*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -298,15 +291,15 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::GUIManager&>");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
- tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
- tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
+ tolua_usertype(tolua_S,"CEGUI::ListboxItem");
+ tolua_usertype(tolua_S,"Ogre::BillboardSet");
  tolua_usertype(tolua_S,"EmberOgre::AvatarController");
  tolua_usertype(tolua_S,"EmberOgre::Model::Model");
  tolua_usertype(tolua_S,"EmberOgre::MousePickerArgs");
  tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BluePrint>");
  tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::SubEntityDefinition*>");
- tolua_usertype(tolua_S,"EmberOgre::Jesus");
+ tolua_usertype(tolua_S,"SDLKey");
  tolua_usertype(tolua_S,"sigc::signal<void,Ogre::Camera*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::AttachPointNode*>");
@@ -323,43 +316,43 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
- tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"CEGUI::Editbox");
  tolua_usertype(tolua_S,"CEGUI::Listbox");
  tolua_usertype(tolua_S,"EmberOgre::ModelRenderer");
  tolua_usertype(tolua_S,"WFMath::Point<3>");
+ tolua_usertype(tolua_S,"EmberOgre::OgreEntityRenderer");
  tolua_usertype(tolua_S,"EmberOgre::ModelBlock");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>");
- tolua_usertype(tolua_S,"EmberOgre::OgreEntityRenderer");
  tolua_usertype(tolua_S,"EmberOgre::MovableObjectRenderer");
+ tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Camera");
  tolua_usertype(tolua_S,"Mercator::Area");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
- tolua_usertype(tolua_S,"WFMath::Quaternion");
- tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
  tolua_usertype(tolua_S,"Ogre::Vector2");
- tolua_usertype(tolua_S,"EmberOgre::LightWibbler");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubModel");
+ tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
  tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
- tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"Ogre::ColourValue");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubModel");
+ tolua_usertype(tolua_S,"EmberOgre::Widget");
+ tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
- tolua_usertype(tolua_S,"Ogre::BillboardSet");
  tolua_usertype(tolua_S,"EmberOgre::AttachPointNode");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
  tolua_usertype(tolua_S,"Ogre::Billboard");
- tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
  tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
+ tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
+ tolua_usertype(tolua_S,"EmberOgre::LightWibbler");
  tolua_usertype(tolua_S,"WFMath::Point<2>");
  tolua_usertype(tolua_S,"std::vector<const Carpenter::AttachPoint*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::ModelBlock*>");
  tolua_usertype(tolua_S,"sigc::signal<void,float>");
- tolua_usertype(tolua_S,"Ogre::ColourValue");
+ tolua_usertype(tolua_S,"EmberOgre::Jesus");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Input");
- tolua_usertype(tolua_S,"SDLKey");
- tolua_usertype(tolua_S,"EmberOgre::ColoredListItem");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"EmberOgre::ColoredListItem");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockDefinition");
  tolua_usertype(tolua_S,"CEGUI::ListboxTextItem");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
@@ -381,7 +374,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Avatar");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
- tolua_usertype(tolua_S,"EmberOgre::Widget");
+ tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"EmberOgre::AvatarMovementMode");
  tolua_usertype(tolua_S,"sigc::signal<void,Ogre::Real>");
  tolua_usertype(tolua_S,"Eris::Entity");
@@ -4746,7 +4739,7 @@ static int tolua_EmberOgre_EmberOgre_MotionManager_removeAnimatedEntity00(lua_St
 #endif
 }
 
-/* method: new of class  EmberOgre::ColoredListItem */
+/* method: createColoredListItem of class  EmberOgre::ColoredListItem */
 static int tolua_EmberOgre_EmberOgre_ColoredListItem_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
@@ -4760,13 +4753,14 @@ static int tolua_EmberOgre_EmberOgre_ColoredListItem_new00(lua_State* tolua_S)
  else
 #endif
  {
-  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
  {
-  EmberOgre::ColoredListItem* tolua_ret = (EmberOgre::ColoredListItem*)  new EmberOgre::ColoredListItem(text);
- tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::ColoredListItem");
+  CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::ColoredListItem::createColoredListItem(text);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
+ tolua_pushcppstring(tolua_S,(const char*)text);
  }
  }
- return 1;
+ return 2;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
@@ -4774,35 +4768,7 @@ static int tolua_EmberOgre_EmberOgre_ColoredListItem_new00(lua_State* tolua_S)
 #endif
 }
 
-/* method: new_local of class  EmberOgre::ColoredListItem */
-static int tolua_EmberOgre_EmberOgre_ColoredListItem_new00_local(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertable(tolua_S,1,"EmberOgre::ColoredListItem",0,&tolua_err) ||
- !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
- {
-  EmberOgre::ColoredListItem* tolua_ret = (EmberOgre::ColoredListItem*)  new EmberOgre::ColoredListItem(text);
- tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::ColoredListItem");
- }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: new of class  EmberOgre::ColoredListItem */
+/* method: createColoredListItem of class  EmberOgre::ColoredListItem */
 static int tolua_EmberOgre_EmberOgre_ColoredListItem_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
@@ -4815,44 +4781,20 @@ static int tolua_EmberOgre_EmberOgre_ColoredListItem_new01(lua_State* tolua_S)
  goto tolua_lerror;
  else
  {
-  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
   unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
  {
-  EmberOgre::ColoredListItem* tolua_ret = (EmberOgre::ColoredListItem*)  new EmberOgre::ColoredListItem(text,item_id);
- tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::ColoredListItem");
+  CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::ColoredListItem::createColoredListItem(text,item_id);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
+ tolua_pushcppstring(tolua_S,(const char*)text);
  }
  }
- return 1;
+ return 2;
 tolua_lerror:
  return tolua_EmberOgre_EmberOgre_ColoredListItem_new00(tolua_S);
 }
 
-/* method: new_local of class  EmberOgre::ColoredListItem */
-static int tolua_EmberOgre_EmberOgre_ColoredListItem_new01_local(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
- !tolua_isusertable(tolua_S,1,"EmberOgre::ColoredListItem",0,&tolua_err) ||
- !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
- !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
- goto tolua_lerror;
- else
- {
-  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
-  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
- {
-  EmberOgre::ColoredListItem* tolua_ret = (EmberOgre::ColoredListItem*)  new EmberOgre::ColoredListItem(text,item_id);
- tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::ColoredListItem");
- }
- }
- return 1;
-tolua_lerror:
- return tolua_EmberOgre_EmberOgre_ColoredListItem_new00_local(tolua_S);
-}
-
-/* method: new of class  EmberOgre::ColoredListItem */
+/* method: createColoredListItem of class  EmberOgre::ColoredListItem */
 static int tolua_EmberOgre_EmberOgre_ColoredListItem_new02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
@@ -4866,44 +4808,18 @@ static int tolua_EmberOgre_EmberOgre_ColoredListItem_new02(lua_State* tolua_S)
  goto tolua_lerror;
  else
  {
-  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
   unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
   void* item_data = ((void*)  tolua_touserdata(tolua_S,4,0));
  {
-  EmberOgre::ColoredListItem* tolua_ret = (EmberOgre::ColoredListItem*)  new EmberOgre::ColoredListItem(text,item_id,item_data);
- tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::ColoredListItem");
+  CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::ColoredListItem::createColoredListItem(text,item_id,item_data);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
+ tolua_pushcppstring(tolua_S,(const char*)text);
  }
  }
- return 1;
+ return 2;
 tolua_lerror:
  return tolua_EmberOgre_EmberOgre_ColoredListItem_new01(tolua_S);
-}
-
-/* method: new_local of class  EmberOgre::ColoredListItem */
-static int tolua_EmberOgre_EmberOgre_ColoredListItem_new02_local(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
- !tolua_isusertable(tolua_S,1,"EmberOgre::ColoredListItem",0,&tolua_err) ||
- !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
- !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
- !tolua_isuserdata(tolua_S,4,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,5,&tolua_err)
- )
- goto tolua_lerror;
- else
- {
-  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
-  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
-  void* item_data = ((void*)  tolua_touserdata(tolua_S,4,0));
- {
-  EmberOgre::ColoredListItem* tolua_ret = (EmberOgre::ColoredListItem*)  new EmberOgre::ColoredListItem(text,item_id,item_data);
- tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::ColoredListItem");
- }
- }
- return 1;
-tolua_lerror:
- return tolua_EmberOgre_EmberOgre_ColoredListItem_new01_local(tolua_S);
 }
 
 /* method: delete of class  EmberOgre::Widget */
@@ -5298,6 +5214,66 @@ static int tolua_EmberOgre_EmberOgre_Widget_getDefaultScheme00(lua_State* tolua_
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getDefaultScheme'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: addTabbableWindow of class  EmberOgre::Widget */
+static int tolua_EmberOgre_EmberOgre_Widget_addTabbableWindow00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::Widget",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"CEGUI::Window",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Widget* self = (EmberOgre::Widget*)  tolua_tousertype(tolua_S,1,0);
+  CEGUI::Window* window = ((CEGUI::Window*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addTabbableWindow'",NULL);
+#endif
+ {
+  self->addTabbableWindow(window);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addTabbableWindow'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: closeTabGroup of class  EmberOgre::Widget */
+static int tolua_EmberOgre_EmberOgre_Widget_closeTabGroup00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::Widget",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Widget* self = (EmberOgre::Widget*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'closeTabGroup'",NULL);
+#endif
+ {
+  self->closeTabGroup();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'closeTabGroup'.",&tolua_err);
  return 0;
 #endif
 }
@@ -12525,21 +12501,11 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);
  tolua_beginmodule(tolua_S,"EmberOgre");
-#ifdef __cplusplus
- tolua_cclass(tolua_S,"ColoredListItem","EmberOgre::ColoredListItem","CEGUI::ListboxTextItem",tolua_collect_EmberOgre__ColoredListItem);
-#else
  tolua_cclass(tolua_S,"ColoredListItem","EmberOgre::ColoredListItem","CEGUI::ListboxTextItem",NULL);
-#endif
  tolua_beginmodule(tolua_S,"ColoredListItem");
  tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_ColoredListItem_new00);
- tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_ColoredListItem_new00_local);
- tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_ColoredListItem_new00_local);
  tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_ColoredListItem_new01);
- tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_ColoredListItem_new01_local);
- tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_ColoredListItem_new01_local);
  tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_ColoredListItem_new02);
- tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_ColoredListItem_new02_local);
- tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_ColoredListItem_new02_local);
  tolua_endmodule(tolua_S);
 #ifdef __cplusplus
  tolua_cclass(tolua_S,"Widget","EmberOgre::Widget","",tolua_collect_EmberOgre__Widget);
@@ -12560,6 +12526,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"getIsActiveWindowOpaque",tolua_EmberOgre_EmberOgre_Widget_getIsActiveWindowOpaque00);
  tolua_function(tolua_S,"setIsActiveWindowOpaque",tolua_EmberOgre_EmberOgre_Widget_setIsActiveWindowOpaque00);
  tolua_function(tolua_S,"getDefaultScheme",tolua_EmberOgre_EmberOgre_Widget_getDefaultScheme00);
+ tolua_function(tolua_S,"addTabbableWindow",tolua_EmberOgre_EmberOgre_Widget_addTabbableWindow00);
+ tolua_function(tolua_S,"closeTabGroup",tolua_EmberOgre_EmberOgre_Widget_closeTabGroup00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);

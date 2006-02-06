@@ -109,37 +109,30 @@ function ServerBrowser_MetaServer_ReceivedServerInfo(sInfo)
 	local rowNumber = ServerBrowser.serverList:getRowCount()
 	ServerBrowser.serverList:addRow()
 	
-	local item = EmberOgre.ColoredListItem:new_local(sInfo:getServername())
+	local item = EmberOgre.ColoredListItem:new(sInfo:getServername())
 --	item->setUserData(&sInfo);
 	
 	
-	item = tolua.cast(item, "CEGUI::ListboxItem")
 	ServerBrowser.serverList:setItem(item, 0, rowNumber)
 	local ss_ping = sInfo:getPing()
 	local ss_clientNum = sInfo:getNumClients()
 	
-	item = EmberOgre.ColoredListItem:new_local(ss_ping)
-	item = tolua.cast(item, "CEGUI::ListboxItem")
+	item = EmberOgre.ColoredListItem:new(ss_ping)
 	ServerBrowser.serverList:setItem(item, 1, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new_local(ss_clientNum)
-	item = tolua.cast(item, "CEGUI::ListboxItem")
+	item = EmberOgre.ColoredListItem:new(ss_clientNum)
 	ServerBrowser.serverList:setItem(item, 2 ,rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new_local(sInfo:getRuleset())
-	item = tolua.cast(item, "CEGUI::ListboxItem")
+	item = EmberOgre.ColoredListItem:new(sInfo:getRuleset())
 	ServerBrowser.serverList:setItem(item, 3, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new_local(sInfo:getServer())
-	item = tolua.cast(item, "CEGUI::ListboxItem")
+	item = EmberOgre.ColoredListItem:new(sInfo:getServer())
 	ServerBrowser.serverList:setItem(item, 4, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new_local(sInfo:getVersion())
-	item = tolua.cast(item, "CEGUI::ListboxItem")
+	item = EmberOgre.ColoredListItem:new(sInfo:getVersion())
 	ServerBrowser.serverList:setItem(item, 5, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new_local(sInfo:getHostname())
-	item = tolua.cast(item, "CEGUI::ListboxItem")
+	item = EmberOgre.ColoredListItem:new(sInfo:getHostname())
 	ServerBrowser.serverList:setItem(item, 6, rowNumber)
 	
 	

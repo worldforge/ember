@@ -1,3 +1,25 @@
+2006-02-06 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/scripting/bindings/lua/Widget.pkg,  src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+    * src/components/ogre/widgets/Give.lua, src/components/ogre/widgets/ModelEdit.lua, src/components/ogre/widgets/ScriptEdit.lua, src/components/ogre/widgets/ServerBrowser.lua: update to use the static methods in ColoredListItem
+
+2006-02-06 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/MovableObjectRenderer.cpp: fixed a bug where when pressing the middle mouse button while rotating the preview it wouldn't release the mouse
+    * src/components/ogre/widgets/HelpWidget.xml: made the xml conform better to xml standards
+    * src/components/ogre/widgets/Widget.*: 
+        * added tab order feature
+        * moved the createColoredListItem static methods from Widget to ColoredListItem
+    * src/components/ogre/widgets/Help.cpp: updated the help text
+    * src/components/ogre/widgets/ServerWidget.cpp: use the tab order
+
+
+2006-02-06 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/input/Input.cpp:
+        * fixed a problem with scroll wheel, though it doesn't seem to work anyway
+        * changed so that a single right click switches between gui mode and movement mode, instead of double click as before
+
 2006-02-05 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgrePrerequisites.h: Added inclusion of Exception.h

@@ -43,7 +43,7 @@ function ScriptEdit_buildWidget()
 	for val = 0, providerNames:size() - 1 do
 		local name = providerNames[val]
 		local item = EmberOgre.ColoredListItem:new(name, val)
-		ScriptEdit.scriptList:addItem(tolua.cast(item, "CEGUI::ListboxItem"))
+		ScriptEdit.scriptList:addItem(item)
 		--select the first item from start
 		if (val == 0) then
 			tolua.cast(item, "CEGUI::ListboxItem"):setSelected(true)

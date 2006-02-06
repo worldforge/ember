@@ -18,9 +18,13 @@ public:
 */
 class ColoredListItem : public CEGUI::ListboxTextItem
 {
-	ColoredListItem(std::string text); 
+/*	ColoredListItem(std::string text); 
 	ColoredListItem(std::string text, unsigned int item_id);
-	ColoredListItem(std::string text, unsigned int item_id, void *item_data);
+	ColoredListItem(std::string text, unsigned int item_id, void *item_data);*/
+	
+	static CEGUI::ListboxItem* createColoredListItem @ new(const std::string& text); 
+	static CEGUI::ListboxItem* createColoredListItem @ new(const std::string& text, unsigned int item_id);
+	static CEGUI::ListboxItem* createColoredListItem @ new(const std::string& text, unsigned int item_id, void *item_data);
 };
 
 
@@ -120,6 +124,17 @@ public:
 	 */
 	const std::string& getDefaultScheme() const;
 	
+	/**
+	 *    Adds a window to the tab order. Remember to call closeTabGroup() to close the tab group.
+	 * @param window 
+	 */
+	void addTabbableWindow(CEGUI::Window* window);
+	
+	
+	/**
+	 *    Closes the current tab so that the last window connects to the first window.
+	 */
+	void closeTabGroup();	
 };
 
 
