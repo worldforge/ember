@@ -127,6 +127,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "widgets/LoadingBar.h"
 
+#include "sound/OgreSoundProvider.h"
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
@@ -145,10 +146,7 @@ namespace EmberOgre {
 				outstream <<  instream.rdbuf();
 			}
 		}
-
 	}
-
-
 
 // // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
 //   class CerrLogObserver: public Ember::LoggingService::Observer
@@ -971,6 +969,7 @@ void EmberOgre::initializeEmberServices(void)
 	std::cout << "************************************" << std::endl;
 	S_LOG_INFO("************** TEST LOG ****************");
 	Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
+	Ember::EmberServices::getSingletonPtr()->getSoundService()->registerSoundProvider(new OgreSoundProvider());
 	std::cout << "************************************" << std::endl;
 	std::cout << "TRACE --- SOUND SERVICE INITIALIZED" << std::endl;
 	std::cout << "************************************" << std::endl;

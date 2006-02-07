@@ -26,6 +26,8 @@
 #include <AL/alc.h>
 #include <AL/alut.h>
 
+#include <OGRE/Ogre.h>
+
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
@@ -44,11 +46,15 @@
 #include "SoundService.h"
 
 
+
 namespace Ember
 {
     // List of SoundService's console commands
 	const char * const SoundService::PLAYSOUND = "playsound";
 	const char * const SoundService::PLAYMUSIC = "playmusic";
+	const char * const SoundService::PLAYFILE = "playfile";
+	const char * const SoundService::PLAYSPEECH = "playspeech";
+
 
 	/* ctor */
 	SoundService::SoundService()
@@ -68,9 +74,9 @@ namespace Ember
 	{
 
 		S_LOG_INFO("Sound Service starting");
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- SOUND SERVICE STARTING ***" << std::endl;
-	std::cout << "************************************" << std::endl;
+		std::cout << "************************************" << std::endl;
+		std::cout << "TRACE --- SOUND SERVICE STARTING ***" << std::endl;
+		std::cout << "************************************" << std::endl;
 		ALfloat listenerPos[3]={0.0,0.0,0.0};	// listener position
 		ALfloat listenerVel[3]={0.0,0.0,0.0};	// listener velocity
 		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};	// listener orientation
@@ -165,66 +171,6 @@ namespace Ember
 			}
 		}
 
-		/*
-		soundsDirPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberDataDirectory() 
-			+ "media/sounds/";
-		S_LOG_INFO( "Sound Media Path: [" << soundsDirPath << "]" )
-		*/
-
-		/*
-
-		alSourcef(worldSources[0],AL_PITCH,1.0f);	// source Frequency
-
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error in source parameter pitch: " << error )
-		} else {
-			S_LOG_INFO( "Source parameter pitch OK" )
-		}
-
-		alSourcef(worldSources[0],AL_GAIN,1.0f);	// source gain
-
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error in source parameter gain: " << error )
-		} else {
-			S_LOG_INFO( "Source parameter gain OK" )
-		}
-
-		alSourcefv(worldSources[0],AL_POSITION,sourcePos);	// source position
-
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error in source parameter position: " << error )
-		} else {
-			S_LOG_INFO( "Source parameter position OK" )
-		}
-
-		alSourcefv(worldSources[0],AL_VELOCITY,sourceVel);	// source velocity
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error in source parameter velocity: " << error )
-		} else {
-			S_LOG_INFO( "Source parameter velocity OK" )
-		}
-
-
-		alSourcei(worldSources[0],AL_LOOPING,AL_FALSE);		// looping play
-
-		error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE( "Error in source parameter looping: " << error )
-		} else {
-			S_LOG_INFO( "Source parameter looping OK" )
-		}
-
-*/
-
 		// Register service commands with the console
 		std::cout << "************************************" << std::endl;
 		std::cout << "TRACE --- REGISTERING CONSOLE COMMANDS ***" << std::endl;
@@ -232,6 +178,8 @@ namespace Ember
 		S_LOG_VERBOSE("Registering Sound Service commands");
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYSOUND,this);
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYMUSIC,this);
+		ConsoleBackend::getMainConsole()->registerCommand(PLAYFILE,this);
+		ConsoleBackend::getMainConsole()->registerCommand(PLAYSPEECH,this);
 
 		// Service initialized successfully
 		setRunning( true );
@@ -244,7 +192,7 @@ namespace Ember
 		std::cout << "************************************" << std::endl;
 		return Service::OK;
 
-  }
+	}
 
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
@@ -267,6 +215,22 @@ namespace Ember
 			// TODO: play test music here
 			S_LOG_INFO(getName() << " I should be playing music")
 		}
+		else if(command == PLAYFILE)
+		{
+			playSystemSound("pig_grunt.wav");
+		}
+		else if(command == PLAYSPEECH)
+		{
+			// TODO: play test music here
+			S_LOG_INFO(getName() << " I should be playing speech")
+		}
+	}
+
+	void SoundService::registerSoundProvider(ISoundProvider* provider)
+	{
+		mProvider = provider;
+		provider->_registerWithService(this);
+		S_LOG_INFO("Registered scripting provider " << provider->getName());
 	}
 
 	bool SoundService::LoadWAV(const char *fname,int buffer)
@@ -436,6 +400,42 @@ namespace Ember
 		worldBuffer = alutCreateBufferHelloWorld();
 		alSourcei(worldSource, AL_BUFFER, worldBuffer);
 		alSourcePlay(worldSource);
+	}
+
+	void SoundService::playSystemSound(std::string soundName) {
+
+		// load the sound through the sound provider
+		mProvider->loadSound(soundName);	
+
+		// play sound
+
+		/*
+		Ogre::FileInfoListPtr files =
+			Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo(
+			"General", "pig_grunt.wav");
+
+		Ogre::String filePath;
+		for(Ogre::FileInfoList::iterator it=files->begin(); it!=files->end(); ++it )
+		{
+			filePath = (*it).path;
+			//filePath.append((*it).filename);
+			S_LOG_INFO( "Found a filepath: " << filePath);
+		}
+		// TODO: this plays the last one found. Should play the first one found
+		// TODO: check error if it finds none
+
+		systemBuffer = alutCreateBufferFromFile(filePath.c_str());
+		if(systemBuffer == AL_NONE) 
+		{
+			S_LOG_FAILURE(alutGetErrorString(alutGetError()));
+		} else 
+		{
+			S_LOG_INFO("TRACE - BUFFER LOADED");
+		}
+		alSourcei(systemSource, AL_BUFFER, systemBuffer);
+		
+		alSourcePlay(systemSource);
+		*/
 	}
 
 	ALuint SoundService::getWorldSourceIndexForPlaying(int priority) {

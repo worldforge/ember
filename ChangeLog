@@ -1,3 +1,9 @@
+2006-02-07 Miguel Guzman  <aglanor@gmail.com>
+        * src/services/sound/SoundService.*: added the use of a sound provider for sound media management
+        * src/framework/ISoundProvider.h,Makefile.am: added an interface for sound providers
+        * configure.ac, src/components/ogre/sound/OgreSoundProvider.*,Makefile.am, src/components/ogre/Makefile.am: added ogre sound provider which will use ogre resources to load sound media
+        * src/components/ogre/EmberOgre.cpp: initialize the SoundService to use the OgreSoundProvider
+
 2006-02-07 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/services/config/ConfigService.cpp: load first from the shared config and then from user config

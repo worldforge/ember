@@ -24,9 +24,10 @@
 
 
 class Service;
-//class ConsoleObject;
-//I only break my own rules for very good reasons
+class ISoundProvider;
+
 #include "framework/ConsoleObject.h"
+#include "framework/ISoundProvider.h"
 
 #include <AL/altypes.h>
 #include <wfmath/point.h>
@@ -45,6 +46,9 @@ namespace Ember {
  */
 class SoundService: public Service, public ConsoleObject
 {
+
+friend class IScriptingProvider;
+
     //======================================================================
     // Private Variables
     //======================================================================
@@ -87,6 +91,10 @@ class SoundService: public Service, public ConsoleObject
 	int size,freq,bits,format;
 	void *data;
 
+	/**
+	The Sound Provider
+	*/
+	ISoundProvider* mProvider;
 
     //----------------------------------------------------------------------
     // Constructors & Destructor
@@ -112,6 +120,12 @@ class SoundService: public Service, public ConsoleObject
 
 	void runCommand(const std::string &command, const std::string &args);
 
+	/**
+	 *    Registers a new sound provider.
+	 * @param provider 
+	 */
+	void registerSoundProvider(ISoundProvider* provider);
+
 	bool LoadWAV(const char *fname,int buffer);
 
 	bool UnloadWAV(void);
@@ -121,7 +135,7 @@ class SoundService: public Service, public ConsoleObject
 	//void playTestGYPH(void);
 	void playTestGrunt(void);
 	
-	void SoundService::updateListenerPosition(
+	void updateListenerPosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
 
@@ -131,20 +145,22 @@ class SoundService: public Service, public ConsoleObject
 		const WFMath::Quaternion& orientation);
 	*/
 
-	void SoundService::updateAvatarSourcePosition(
+	void updateAvatarSourcePosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
 
-	void SoundService::playTestSound();
-	void SoundService::playAvatarSound();
-	void SoundService::playTalk(std::string message,
+	void playTestSound();
+	void playAvatarSound();
+	void playTalk(std::string message,
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
+	void playSystemSound(std::string soundFileName);
 
 	// List of SoundService's console commands
 	static const char * const PLAYSOUND;
 	static const char * const PLAYMUSIC;
-
+	static const char * const PLAYFILE;
+	static const char * const PLAYSPEECH;
 
 }; //SoundService
 
