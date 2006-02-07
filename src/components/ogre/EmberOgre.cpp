@@ -294,10 +294,14 @@ void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_CRITICAL(ex.getFullDescription());
 		throw ex;
+	} catch (const std::string& ex)
+	{
+		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+		throw ex;
 /*	} catch (const CEGUI::Exception& ex) {
 		S_LOG_CRITICAL(ex.getMessage());
 		throw ex;*/
-	} catch (const std::runtime_error& ex)
+	} catch (const std::exception& ex)
 	{
 		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
 		throw ex;

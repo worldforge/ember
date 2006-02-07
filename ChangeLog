@@ -1,3 +1,10 @@
+2006-02-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: changed info output to verbose output
+    * src/components/ogre/EmberOgre.cpp: better catching of exception
+    * src/components/ogre/GUIManager.cpp: added more error checks
+    * src/components/ogre/resources.cfg: cleaned up the file a bit
+
 2006-02-07 Miguel Guzman  <aglanor@gmail.com>
         * src/services/sound/SoundService.*: added the use of a sound provider for sound media management
         * src/framework/ISoundProvider.h,Makefile.am: added an interface for sound providers

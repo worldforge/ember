@@ -341,21 +341,32 @@ const std::string GUIManager::_takeScreenshot()
 	} 
 	filename << sec << ".png";
 
-	//make sure the directory exists
 	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
-	struct stat tagStat;
-	int ret;
-	ret = stat( dir.c_str(), &tagStat );
-	if (ret == -1) {
+	try {
+		//make sure the directory exists
+		
+		struct stat tagStat;
+		int ret;
+		ret = stat( dir.c_str(), &tagStat );
+		if (ret == -1) {
 #ifdef __WIN32__
-		mkdir(dir.c_str());
+			mkdir(dir.c_str());
 #else
-		mkdir(dir.c_str(), S_IRWXU);
+			mkdir(dir.c_str(), S_IRWXU);
 #endif
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
+		throw Ember::Exception("Error when saving screenshot. Message: " + std::string(ex.what()));
 	}
 	
-	// take screenshot
-	mWindow->writeContentsToFile(dir + filename.str());
+	try {
+		// take screenshot
+		mWindow->writeContentsToFile(dir + filename.str());
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
+		throw Ember::Exception("Error when saving screenshot. Message: " + ex.getDescription());
+	}
 	return dir + filename.str();
 }
 
@@ -449,11 +460,15 @@ const bool GUIManager::isInGUIMode() const {
 
 void GUIManager::takeScreenshot()
 {
-	std::string result = _takeScreenshot();
-	result = "Wrote image: " + result;
-	setDebugText(result);
-	S_LOG_INFO(result);
-	Ember::ConsoleBackend::getMainConsole()->pushMessage(result);
+	try {
+		std::string result = _takeScreenshot();
+		result = "Wrote image: " + result;
+		setDebugText(result);
+		S_LOG_INFO(result);
+		Ember::ConsoleBackend::getMainConsole()->pushMessage(result);
+	} catch (const Ember::Exception& ex) {
+		Ember::ConsoleBackend::getMainConsole()->pushMessage("Error when saving screenshot: " + ex.getError());
+	}
 }
 
 

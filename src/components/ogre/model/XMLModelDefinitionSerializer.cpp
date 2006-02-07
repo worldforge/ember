@@ -317,7 +317,7 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 	Ember::TiXmlElement* elem;
 	const char* tmp = 0;
 	bool notfound = true;
-	S_LOG_INFO( "Read Actions" );
+	S_LOG_VERBOSE( "Read Actions" );
 
 	for (Ember::TiXmlElement* animElem = mAnimNode->FirstChildElement();
             animElem != 0; animElem = animElem->NextSiblingElement())
