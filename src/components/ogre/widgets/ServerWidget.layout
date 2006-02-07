@@ -85,6 +85,17 @@ If you already have an account, proceed with a normal login." />
 					<Property Name="InheritsAlpha" Value="True" /> 
 					<Property Name="Tooltip" Value="Create a new account on the server." /> 
 				</Window>
+
+				<Window Type="EmberLook/StaticText" Name="LoginPanel/LoginFailure">
+					<Property Name="AbsolutePosition" Value="x:30 y:190" />
+					<Property Name="AbsoluteSize" Value="w:300 h:20" />
+					<Property Name="Text" Value="Login Failure" />
+					<Property Name="TextColours" Value="00FF0000" />
+					<Property Name="InheritsAlpha" Value="True" />
+					<Property Name="FrameEnabled" Value="False" />
+					<Property Name="BackgroundEnabled" Value="False" />
+					<Property Name="Visible" Value="False" />
+				</Window>
 			</Window>
 			
 			

@@ -164,7 +164,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	sigc::signal<void, Eris::Connection*> GotConnection;
 	sigc::signal<void, Eris::Account*> GotAccount;
 	sigc::signal<void, Eris::Account *> LoginSuccess;
-	sigc::signal<void, Eris::Account *> LoginFailure;
+	sigc::signal<void, Eris::Account *, const std::string &> LoginFailure;
 	sigc::signal<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
 	sigc::signal<void, Eris::Account *> GotAllCharacters;
 

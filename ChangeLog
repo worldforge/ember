@@ -1,5 +1,10 @@
 2006-02-07 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h, src/components/ogre/widgets/ServerWidget.xml, src/services/server/ServerService.cpp, src/services/server/ServerService.h: added patch from Lennart Sauerbeck which shows a message if the login failed
+    * src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: updated bindings
+
+2006-02-07 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: changed info output to verbose output
     * src/components/ogre/EmberOgre.cpp: better catching of exception
     * src/components/ogre/GUIManager.cpp: added more error checks

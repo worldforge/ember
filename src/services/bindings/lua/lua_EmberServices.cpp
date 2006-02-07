@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.6 on Mon Jan 30 02:05:22 2006.
+** Generated automatically by tolua++-1.0.6 on Tue Feb  7 23:45:00 2006.
 */
 
 #ifndef __cplusplus
@@ -51,14 +51,15 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ember::ServerService");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"Ember::EmberServices");
- tolua_usertype(tolua_S,"Eris::Entity");
  tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Eris::Entity");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
+ tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Avatar*>");
  tolua_usertype(tolua_S,"Ember::MetaserverService");
- tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"Ember::ScriptingService");
  tolua_usertype(tolua_S,"Ember::ConfigService");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*,const std::string&>");
  tolua_usertype(tolua_S,"WFMath::Point<3>");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*>");
  tolua_usertype(tolua_S,"Ember::LoggingService");
@@ -1236,7 +1237,7 @@ static int tolua_get_Ember__ServerService_LoginFailure(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'LoginFailure'",NULL);
 #endif
- tolua_pushusertype(tolua_S,(void*)&self->LoginFailure,"sigc::signal<void,Eris::Account*>");
+ tolua_pushusertype(tolua_S,(void*)&self->LoginFailure,"sigc::signal<void,Eris::Account*,const std::string&>");
  return 1;
 }
 
@@ -1247,10 +1248,10 @@ static int tolua_set_Ember__ServerService_LoginFailure(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'LoginFailure'",NULL);
- if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::Account*>",0,&tolua_err))
+ if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::Account*,const std::string&>",0,&tolua_err))
  tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->LoginFailure = *((sigc::signal<void,Eris::Account*>*)  tolua_tousertype(tolua_S,2,0))
+  self->LoginFailure = *((sigc::signal<void,Eris::Account*,const std::string&>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }

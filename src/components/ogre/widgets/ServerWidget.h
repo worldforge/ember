@@ -75,6 +75,26 @@ protected:
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	
 	void loginSuccess(Eris::Account* account);
+ 
+	/**
+	* Shows the error message sent from Eris if the login does not succeed.
+	*/
+	void showLoginFailure(Eris::Account* account, std::string msg);
+
+	/**
+	* Hides the login error message and moves the HelpText to it's original position.
+	*/
+	bool hideLoginFailure();
+
+	/**
+	* This function is a slot reacting on a ChangeEvent in the user name box.
+	*/
+	bool nameBox_TextChanged(const CEGUI::EventArgs& args);
+
+	/**
+	* This function is a slot reacting on a ChangeEvent in the password box.
+	*/
+	bool passwordBox_TextChanged(const CEGUI::EventArgs& args);
 	void gotAllCharacters(Eris::Account* account);
 	
 	NewCharacter mNewChar;

@@ -288,7 +288,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
     temp<<std::ends;    
 #endif
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
-	LoginFailure.emit(myAccount);
+	LoginFailure.emit(myAccount, msg);
   }
 
   void ServerService::loginSuccess(){

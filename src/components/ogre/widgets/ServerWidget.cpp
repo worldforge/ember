@@ -80,12 +80,10 @@ void ServerWidget::buildWidget()
 	BIND_CEGUI_EVENT(mCreateChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateChar_Click);
 	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
 	
-	
-	
 	mNewCharName = static_cast<CEGUI::Editbox*>(getWindow("CreateCharacterPanel/NameEdit"));
 	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
 	mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
-	
+    
 	
 	//NOTE: hardcoded! we should get the values from the server somehow
 // 	CEGUI::ListboxItem* item = new ColoredListItem("settler", 0, 0);
@@ -104,13 +102,18 @@ void ServerWidget::buildWidget()
 	
 	
 	updateNewCharacter();
-	
+
+	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+	BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
+	BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
 	
 		
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
+    Ember::EmberServices::getSingletonPtr()->getServerService()->LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
 	
 	addTabbableWindow(getWindow("LoginPanel/NameEdit"));
 	addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
@@ -146,6 +149,41 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
 	
+}
+
+void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg)
+{
+	CEGUI::StaticText* helpText = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/HelpText"));
+	helpText->setYPosition(0.6);
+
+	CEGUI::StaticText* loginFailure = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/LoginFailure"));
+	loginFailure->setText(msg);
+	loginFailure->setVisible(true);
+}
+
+bool ServerWidget::hideLoginFailure()
+{
+	CEGUI::StaticText* helpText = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/HelpText"));
+	helpText->setYPosition(0.55);
+
+	CEGUI::StaticText* loginFailure = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/LoginFailure"));
+	loginFailure->setVisible(false);
+
+	return true;
+}
+
+bool ServerWidget::passwordBox_TextChanged(const CEGUI::EventArgs& args)
+{
+	hideLoginFailure();
+
+	return true;
+}
+
+bool ServerWidget::nameBox_TextChanged(const CEGUI::EventArgs& args)
+{
+	hideLoginFailure();
+
+	return true;
 }
 
 void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
