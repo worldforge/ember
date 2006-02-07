@@ -1,3 +1,10 @@
+2006-02-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/config/ConfigService.cpp: load first from the shared config and then from user config
+    * src/components/ogre/EmberOgre.cpp, src/components/ogre/OgreResourceLoader.cpp, src/components/ogre/TerrainGenerator.cpp: don't copy terrain.cfg and resource.cfg to the user directory, instead leave them in the installation dir
+    * src/components/ogre/resources.cfg: fixed typo
+    * src/components/ogre/widgets/LoadingBar.cpp: added extra check for null values
+
 2006-02-06 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/scripting/bindings/lua/Widget.pkg,  src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings

@@ -98,8 +98,10 @@ namespace EmberOgre {
 	*/
 	void LoadingBar::finish(void)
 	{
-		/// hide loading screen
-		mLoadOverlay->hide();
+		if (mLoadOverlay) {
+			/// hide loading screen
+			mLoadOverlay->hide();
+		}
 
 		/// Unregister listener
 		ResourceGroupManager::getSingleton().removeResourceGroupListener(this);

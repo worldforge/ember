@@ -153,7 +153,7 @@ void TerrainGenerator::loadTerrainOptions()
 	Ogre::PagingLandScapeOptions::getSingleton().groupName = "General";
 	Ogre::PagingLandScapeOptions::getSingleton().cfgGroupName = "General";
 
-	Ogre::PagingLandScapeOptions::getSingleton().loadMapOptions("terrain.cfg");	
+	Ogre::PagingLandScapeOptions::getSingleton().loadMapOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/terrain.cfg");	
 	
 	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 	

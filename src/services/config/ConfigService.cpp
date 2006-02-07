@@ -134,7 +134,10 @@ namespace Ember
 
     bool ConfigService::loadSavedConfig(const std::string& filename)
     {
-		return varconf::Config::inst()->readFromFile(filename);
+    	S_LOG_INFO("Loading shared config file.");
+		bool success = varconf::Config::inst()->readFromFile(getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL);
+    	S_LOG_INFO("Loading user config file.");
+		success = varconf::Config::inst()->readFromFile(filename, varconf::USER) && success;
     }
 
     bool ConfigService::saveConfig(const std::string& filename)

@@ -49,7 +49,8 @@ void OgreResourceLoader::initialize()
     
 // 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
     ///load the resource file
-    cf.load(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/resources.cfg");
+    const std::string configPath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
+    cf.load(configPath);
 
 }
 
@@ -60,8 +61,9 @@ void OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 	try {
 		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 			sharedMediaPath + path, type, section, recursive);
-	} catch (const Ogre::Exception&) {
-		S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Continuing as if nothing happened.");
+	} catch (const Ogre::Exception& ex) {
+		const std::string& message = ex.getFullDescription();
+		S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Error: "<< message);
 	}
 
 }

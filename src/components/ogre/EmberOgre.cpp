@@ -622,9 +622,9 @@ void EmberOgre::checkForConfigFiles()
 
 	//make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
-	assureConfigFile("resources.cfg", sharePath);
+//	assureConfigFile("resources.cfg", sharePath);
 	assureConfigFile("plugins.cfg", sharePath);
-	assureConfigFile("terrain.cfg", sharePath);
+	//assureConfigFile("terrain.cfg", sharePath);
 }
 
 void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
