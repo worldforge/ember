@@ -1,3 +1,7 @@
+2006-02-13 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * ember: removed unncessary copying of the WFUT executable and cleaned it up a bit
+
 2006-02-07 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h, src/components/ogre/widgets/ServerWidget.xml, src/services/server/ServerService.cpp, src/services/server/ServerService.h: added patch from Lennart Sauerbeck which shows a message if the login failed

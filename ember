@@ -62,7 +62,7 @@ datadir=${prefix}/share/games/ember
 etcdir=${prefix}/etc/ember
 homedata=$HOME/.ember
 
-WFUT_JAR=WFUT.jar
+WFUT_JAR=$datadir/WFUT.jar
 
 # Create dir if required 
 if [ ! -d $homedata ] ; then
@@ -75,27 +75,28 @@ JAVA=`which java`;
 if [ $JAVA ] ; then
 
   # See if Updater exists in home dir
-  if [ ! -e $homedata/$WFUT_JAR ] ; then
-    # Check to see if its in the install dir
-    if [ -e $datadir/$WFUT_JAR ] ; then
-      # Install into home dir 
-      echo "Installing Updater"
+#  if [ ! -e $homedata/$WFUT_JAR ] ; then
+#    # Check to see if its in the install dir
+#    if [ -e $datadir/$WFUT_JAR ] ; then
+#      # Install into home dir 
+#      echo "Installing Updater"
 
-      # Copy WFUT to home dir
-      cp $datadir/$WFUT_JAR $homedata
+#      # Copy WFUT to home dir
+#      cp $datadir/$WFUT_JAR $homedata
 
-    fi
-  fi
+#    fi
+#  fi
 
   #make sure the configfile also is copied
-  if [ ! -e $homedata/configfile ] ; then
-     echo "No config file for WFUT found, trying to install."
-     if [ -e $etcdir/configfile ] ; then
+#  if [ ! -e $homedata/configfile ] ; then
+#     echo "No config file for WFUT found, trying to install."
+#     if [ -e $etcdir/configfile ] ; then
       # Copy WFUT to home dir
-	cp $etcdir/configfile $homedata/
-	echo "Copied config file for WFUT."
-    fi
-  fi
+	#always overwrite with the latest
+#	cp -f $etcdir/configfile $homedata/
+#	echo "Copied config file for WFUT."
+#    fi
+#  fi
   		
 
   # Run Updater if it exists
@@ -103,15 +104,16 @@ if [ $JAVA ] ; then
 #  if [ -e $homedata/$WFUT_JAR ] ; then
     # Store Current dir
     CUR_DIR=`pwd`
-    # We need to change here so updater knows where to find / store data
-    cd $homedata
+    
+    # We need to change here so updater knows where to find the configfile
+    cd $etcdir
     # Update
     echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
     XTERM=`which xterm`
 	if [ $XTERM ] ; then
-    	xterm -T "Downloading media..." -e $JAVA -jar $WFUT_JAR update ember-media
+    	xterm -T "Downloading media..." -e $JAVA -jar $WFUT_JAR dest ~/.ember/ update ember-media
     else
-    	$JAVA -jar $WFUT_JAR update ember-media
+    	$JAVA -jar $WFUT_JAR dest ~/.ember/ update ember-media
     fi
     # Restore dir
     cd $CUR_DIR
