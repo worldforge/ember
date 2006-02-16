@@ -70,6 +70,22 @@ material /global/creatures/humanoid/young_male
     }
 }
 
+material /global/creatures/humanoid/bearded_male
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+
+                texture 3d_objects/creatures/humanoid/textures/bearded_male/low/bearded_male.png
+            }
+        }
+    }
+}
+
+
 material /global/body_parts/humanoid_body/male_pink
 {
     technique

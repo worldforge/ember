@@ -48,13 +48,7 @@ if [ "$test" = "." ]; then
 fi
 prefix=${path}/..
 
-#prefix=$HOME/opt/ember_static_x86/
 echo "According to my calculations Ember should be installed in $prefix"
-
-
-
-#scriptPath=$0
-#prefix=`dirname ${scriptPath}`/..
 
 exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
@@ -74,34 +68,6 @@ fi
 JAVA=`which java`;
 if [ $JAVA ] ; then
 
-  # See if Updater exists in home dir
-#  if [ ! -e $homedata/$WFUT_JAR ] ; then
-#    # Check to see if its in the install dir
-#    if [ -e $datadir/$WFUT_JAR ] ; then
-#      # Install into home dir 
-#      echo "Installing Updater"
-
-#      # Copy WFUT to home dir
-#      cp $datadir/$WFUT_JAR $homedata
-
-#    fi
-#  fi
-
-  #make sure the configfile also is copied
-#  if [ ! -e $homedata/configfile ] ; then
-#     echo "No config file for WFUT found, trying to install."
-#     if [ -e $etcdir/configfile ] ; then
-      # Copy WFUT to home dir
-	#always overwrite with the latest
-#	cp -f $etcdir/configfile $homedata/
-#	echo "Copied config file for WFUT."
-#    fi
-#  fi
-  		
-
-  # Run Updater if it exists
-#it should exist
-#  if [ -e $homedata/$WFUT_JAR ] ; then
     # Store Current dir
     CUR_DIR=`pwd`
     
@@ -117,7 +83,6 @@ if [ $JAVA ] ; then
     fi
     # Restore dir
     cd $CUR_DIR
-#  fi
 else
   echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
   exit

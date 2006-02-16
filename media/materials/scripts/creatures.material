@@ -226,3 +226,33 @@ material /global/body_parts/skeleton/bone/skeleton
   }
 }
 
+material /global/creature/humanoid/goblin
+{
+  technique
+  {
+    pass
+    {
+        texture_unit
+		{
+			texture 3d_objects/creatures/humanoid/textures/goblin/low/goblin.png
+		}
+
+    }
+  }
+}
+
+material /global/creature/humanoid/kobold
+{
+  technique
+  {
+    pass
+    {
+        texture_unit
+		{
+			texture 3d_objects/creatures/humanoid/textures/kobold/low/kobold.png
+		}
+
+    }
+  }
+}
+

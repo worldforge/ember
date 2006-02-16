@@ -1,3 +1,9 @@
+2006-02-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * media/materials/scripts/creatures.material, media/materials/scripts/environment.material, media/materials/scripts/malebuilder.material, media/materials/scripts/goblin.material: updated materials and removed obsolete
+    * ember: removed old cruft
+
+
 2006-02-13 Erik Hjortsberg  <erik@katastrof.nu>
 
     * ember: removed unncessary copying of the WFUT executable and cleaned it up a bit
