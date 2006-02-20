@@ -68,8 +68,8 @@ void Help::buildWidget()
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
-	if (configSrv->itemExists("general", "startuphelp") && !((bool)configSrv->getValue("general", "startuphelp"))) {
-		mMainWindow->setVisible(false);
+	if (configSrv->itemExists("general", "startuphelp") && ((bool)configSrv->getValue("general", "startuphelp"))) {
+		mMainWindow->setVisible(true);
 	}
 
 	//connect to the creation of the avatar, since we want to show a help blurb about the movement

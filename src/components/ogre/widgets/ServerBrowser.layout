@@ -22,7 +22,7 @@
 				<Property Name="ColumnHeader" Value="text:Ruleset width:0.1 id:3" />
 				<Property Name="ColumnHeader" Value="text:Server type width:0.15 id:4" />
 				<Property Name="ColumnHeader" Value="text:Version width:0.1 id:5" />
-				<Property Name="ColumnHeader" Value="text:Address width:0.2 id:6" />
+				<Property Name="ColumnHeader" Value="text:Address width:0.15 id:6" />
 			</Window>
 			<Window Type="EmberLook/Editbox" Name="ManualServerName">
 				<Property Name="Text" Value="" /> 

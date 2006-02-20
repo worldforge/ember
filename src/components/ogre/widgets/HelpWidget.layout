@@ -6,7 +6,7 @@
 		<Property Name="AbsoluteSize" Value="w:800 h:600" /> 
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Help" />
-		<Property Name="Visible" Value="true" />
+		<Property Name="Visible" Value="false" />
 		<Window Type="EmberLook/MultiLineEditbox" Name="TextBox">
 			<Property Name="AbsolutePosition" Value="x:10 y:30" /> 
 			<Property Name="AbsoluteSize" Value="w:780 h:560" /> 
