@@ -163,7 +163,7 @@ namespace Ogre
             }
         }
         WorldDimensionChange();
-		mMaxHeight = mData2DTypeMap[mData2DType]->getMaxHeight ();
+		mMaxHeight = mData2DTypeMap[mData2DType]->getMaxAbsoluteHeight ();
     }    
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2DManager::reload(const uint dataX, const uint dataZ)

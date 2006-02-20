@@ -50,6 +50,11 @@ namespace Ogre
         mMaxheight = PagingLandScapeOptions::getSingleton().scale.y;
     }
 
+    //-------------------------------------------------------------------
+    const Real PagingLandScapeData2D_HeightFieldBlendNeighbor::getMaxAbsoluteHeight(void) const
+    { 
+        return PagingLandScapeOptions::getSingleton().scale.y;
+    }
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldBlendNeighbor::~PagingLandScapeData2D_HeightFieldBlendNeighbor()
     {

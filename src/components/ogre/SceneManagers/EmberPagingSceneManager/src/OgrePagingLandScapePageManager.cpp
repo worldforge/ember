@@ -713,7 +713,11 @@ namespace Ogre
 		}
        return 0;
     }
-
+    //-----------------------------------------------------------------------
+    void PagingLandScapePageManager::addLoadedPage(PagingLandScapePage *p)
+    {
+        mLoadedPages.push_back (p);
+    }
     //-----------------------------------------------------------------------
     int PagingLandScapePageManager::getLoadedPageSize(void) const
     {

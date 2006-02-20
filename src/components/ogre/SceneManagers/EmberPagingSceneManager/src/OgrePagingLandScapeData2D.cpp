@@ -226,7 +226,7 @@ namespace Ogre
                                                     const uint z,
                                                     Real &modificationHeight)
     {  
-        const uint arraypos = z * mSize + x;
+        const uint arraypos = static_cast <uint> (z * mSize + x);
         assert (mHeightData && arraypos < mMaxArrayPos);
 
         const Real maxH = PagingLandScapeData2DManager::getSingleton ().getMaxHeight();
@@ -371,7 +371,7 @@ namespace Ogre
     void PagingLandScapeData2D::setHeight(const uint x, const uint z, 
 					                       const Real h)
     {       
-        const uint Pos = (z * mSize)+ x;
+        const uint Pos = static_cast <uint> ((z * mSize)+ x);
         assert  (mHeightData &&  mMaxArrayPos > Pos); 
         setHeight(x, z, Pos, h);
     }

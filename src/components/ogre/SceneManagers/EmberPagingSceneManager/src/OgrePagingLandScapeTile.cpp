@@ -78,9 +78,9 @@ void PagingLandScapeTile::uninit(void)
         mInit = false;
 
         if (mLoaded)
-		{
-			unload ();
-			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+        {
+            PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+            unload ();
 		}
 
         if (mNeighbors[SOUTH])
@@ -134,17 +134,17 @@ void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
 
     const Vector3 ParentPos = ParentSceneNode->getWorldPosition();
     const Real MaxHeight = PagingLandScapeData2DManager::getSingleton().getMaxHeight(mInfo.pageX, mInfo.pageZ);
-
+    assert (MaxHeight > (Real)0.0);
     //Change Zone of this page
 
     //tile center position
     mWorldPosition = ParentPos + Vector3 (mInfo.posX + endx * 0.5f, 
-                                MaxHeight * 0.5f, 
-                                mInfo.posZ + endz * 0.5f);
+                                          MaxHeight * 0.5f, 
+                                          mInfo.posZ + endz * 0.5f);
 
 
     mWorldBounds.setExtents(mInfo.posX + ParentPos.x , 
-                            0, 
+                            (Real)0.0, 
                             mInfo.posZ + ParentPos.z, 
                             mInfo.posX + ParentPos.x + endx, 
                             MaxHeight, 
@@ -152,12 +152,13 @@ void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
 
 
 
-    mWorldBoundsExt.setExtents(mInfo.posX + ParentPos.x  - endx * 0.5f, 
-                                                         - MaxHeight * 0.5f, 
-                                mInfo.posZ + ParentPos.z - endz * 0.5f, 
-                                mInfo.posX + ParentPos.x + endx * 1.5f, 
-                                MaxHeight * 1.5f, 
-                                mInfo.posZ + ParentPos.z + endz * 1.5f);
+    mWorldBoundsExt.setExtents(mWorldPosition.x - endx * 1.5f, 
+                               - MaxHeight * 1.5f, 
+                               mWorldPosition.z - endz * 1.5f, 
+
+                               mWorldPosition.x + endx * 1.5f, 
+                               MaxHeight * 1.5f, 
+                               mWorldPosition.z + endz * 1.5f);
 
    
 
@@ -252,10 +253,13 @@ void PagingLandScapeTile::load()
     PagingLandScapeRenderableManager * const rendMgr = PagingLandScapeRenderableManager::getSingletonPtr();
 
     // Request a renderable
-	mRenderable = rendMgr->getRenderable();
+    mRenderable = rendMgr->getRenderable();
+
 	assert (mRenderable);
 
-	mRenderable->init (&mInfo);
+    mRenderable->init (&mInfo);
+    mRenderable->mParentTile= this;
+
 	// Set the material
     PagingLandScapeTexture * const tex =  PagingLandScapeTextureManager::getSingleton().getTexture (mInfo.pageX, mInfo.pageZ);
 	assert (tex);
@@ -268,6 +272,7 @@ void PagingLandScapeTile::load()
 
 	//Queue its renderable for loading
 	rendMgr->queueRenderableLoading (this);
+    mRenderable->mQueued = true;
     PagingLandScapePageManager::getSingleton().setTerrainReady (false);
 }
 //-----------------------------------------------------------------------
@@ -299,16 +304,16 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam
 		}
 		else if (mLoaded && touched ())
 		{
-			unload();
 			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+			unload();
 		}
 	}
 	else
 	{
 		if (mLoaded)
 		{
+            PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
             unload();
-			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
 		}
 	}
 }

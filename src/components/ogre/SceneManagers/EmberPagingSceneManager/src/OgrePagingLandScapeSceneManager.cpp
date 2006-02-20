@@ -864,7 +864,12 @@ namespace Ogre
                 // Configuration file is telling us to pre-load all pages at startup.
                 for (uint pageY = 0; pageY < mOptions.world_height; pageY++)
                     for (uint pageX = 0; pageX < mOptions.world_width; pageX++)
-                        mPageManager->getPage(pageX, pageY)->load();
+                    {
+                        PagingLandScapePage * const p = mPageManager->getPage(pageX, pageY);
+                        p->load();
+                        mPageManager->addLoadedPage(p);
+
+                    }
             }
             else if (pValue)
             {
@@ -1172,20 +1177,20 @@ namespace Ogre
 			uint requestTileX = *static_cast<uint *>((*static_cast<std::vector<void*>*>(pDestValue))[2]);
 			uint requestTileZ = *static_cast<uint *>((*static_cast<std::vector<void*>*>(pDestValue))[3]);
 			uint requestLodLevel = *static_cast<uint *>((*static_cast<std::vector<void*>*>(pDestValue))[4]);
-			Ogre::PagingLandScapePage* page = PagingLandScapePageManager::getSingleton().getPage(requestPageX,requestPageZ);
+			PagingLandScapePage* page = PagingLandScapePageManager::getSingleton().getPage(requestPageX,requestPageZ);
 			if(page)
 			{
-				Ogre::PagingLandScapeTile* tile = page->getTile(requestTileX,requestTileZ);
+				PagingLandScapeTile* tile = page->getTile(requestTileX,requestTileZ);
 				if(tile)
 				{
-					Ogre::PagingLandScapeRenderable* rend = tile->getRenderable();
+					PagingLandScapeRenderable* rend = tile->getRenderable();
 					if(rend)
 					{
-						Ogre::Vector3*	tempPointer;	//This will hold the vertexData and needs to be deleted by the caller
+						Vector3*	tempPointer;	//This will hold the vertexData and needs to be deleted by the caller
 						uint*			numPtr = new uint;
 						*numPtr = rend->getVertexCount();
 						(*static_cast<std::vector<void*>*>(pDestValue)).push_back(numPtr);
-						tempPointer = new Ogre::Vector3[*numPtr];
+                        tempPointer = new Vector3[*numPtr];
 						//warning! make sure that the allocated space for the vertices is big enough!
 						rend->getRawVertexData(tempPointer);
 						(*static_cast<std::vector<void*>*>(pDestValue)).push_back(tempPointer);

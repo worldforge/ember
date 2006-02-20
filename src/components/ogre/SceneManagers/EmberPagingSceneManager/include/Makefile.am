@@ -1,5 +1,3 @@
-INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/components/ogre
-
 noinst_HEADERS = \
 			DRGNURBSSurface.h \
 			fileutils.h \
@@ -7,6 +5,7 @@ noinst_HEADERS = \
 			OgrePagingLandScapeOctreeCamera.h \
 			OgrePagingLandScapeOctree.h \
 			OgrePagingLandScapeOctreeIntersectionSceneQuery.h \
+			OgrePagingLandScapeIntersectionSceneQuery.h \
 			OgrePagingLandScapeOctreeNode.h \
 			OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h \
 			OgrePagingLandScapeOctreeRaySceneQuery.h \
@@ -20,6 +19,7 @@ noinst_HEADERS = \
 			OgrePagingLandScapeData2D_HeightFieldRaw.h \
 			OgrePagingLandScapeData2D_HeightFieldRawTC.h \
 			OgrePagingLandScapeData2D_HeightFieldTC.h \
+			OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h \
 			OgrePagingLandScapeData2DManager.h \
 			OgrePagingLandScapeData2D_Spline.h \
 			OgrePagingLandScapeHorizon.h \
@@ -35,6 +35,7 @@ noinst_HEADERS = \
 			OgrePagingLandScapeRaySceneQuery.h \
 			OgrePagingLandScapeRenderable.h \
 			OgrePagingLandScapeRenderableManager.h \
+			OgrePagingLandScapeTextureCoordinatesManager.h \
 			OgrePagingLandScapeSceneManager.h \
 			OgrePagingLandScapeTexture_BaseTexture2.h \
 			OgrePagingLandScapeTexture_BaseTexture.h \
@@ -52,9 +53,19 @@ noinst_HEADERS = \
 			OgrePagingLandScapeTexture_Splatting7.h \
 			OgrePagingLandScapeTexture_Splatting7Edit.h \
 			OgrePagingLandScapeTexture_Splatting.h \
+			OgrePagingLandScapeTexture_None.h \
 			OgrePagingLandScapeTile.h \
 			OgrePagingLandScapeTileInfo.h \
 			OgrePagingLandScapeTileManager.h \
-			EmberPagingSceneManager.h \
-			EmberPagingLandScapeData2D_HeightField.h \
-			EmberPagingLandScapeTexture.h
+			OgrePagingLandScapeOcclusion.h \
+			OgrePagingLandScapeOcclusionElement.h \
+			OgrePagingLandScapeOcclusionVisibilityData.h \
+			OgrePagingLandScapeOcclusionCameraTraversal.h \
+			OgrePagingLandScapeOcclusionCHCTraversal.h \
+			OgrePagingLandScapeOcclusionSWTraversal.h \
+			OgrePagingLandScapeOcclusionDebugTraversal.h \
+			OgrePagingLandScapeOcclusionVFTraversal.h \
+			OgreDebugRectangle2D.h \
+			OgreOcclusionBoundingBox.h \
+			OgrePagingLandScapeOcclusionQuerySet.h \
+			OgrePagingLandScapeOcclusionSorter.h

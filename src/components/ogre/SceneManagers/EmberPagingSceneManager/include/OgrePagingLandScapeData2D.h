@@ -130,7 +130,7 @@ namespace Ogre
             {
                 assert (mHeightData);
                 assert (z < mSize && x < mSize);
-                const uint Pos = z * mSize + x;
+                const uint Pos = static_cast <uint> (z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];  
             };
@@ -148,6 +148,8 @@ namespace Ogre
 			{
 				return mMaxheight;
 			};
+            // useful to know max height before data is loaded.
+            virtual const Real getMaxAbsoluteHeight(void) const = 0;
 
             Real* getHeightData(void)
 			{

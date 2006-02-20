@@ -60,6 +60,12 @@ namespace Ogre
     {	
         PagingLandScapeData2D::unload ();
     }
+
+    //-------------------------------------------------------------------
+    const Real PagingLandScapeData2D_HeightFieldN::getMaxAbsoluteHeight(void) const
+    { 
+        return PagingLandScapeOptions::getSingleton().scale.y;
+    }
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightFieldN::getBase (const Real mX, const Real mZ)
     {

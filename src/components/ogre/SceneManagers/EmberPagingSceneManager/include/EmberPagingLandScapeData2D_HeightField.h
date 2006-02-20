@@ -48,6 +48,8 @@ namespace EmberOgre
 			virtual const Ogre::Real getShadow( const Ogre::Real mX, const Ogre::Real mZ, const bool& positive );
 
 			virtual Ogre::PagingLandScapeData2D* newPage();
+		
+			virtual const Ogre::Real getMaxAbsoluteHeight(void) const;
 		protected:
 
 			virtual void _save( void );

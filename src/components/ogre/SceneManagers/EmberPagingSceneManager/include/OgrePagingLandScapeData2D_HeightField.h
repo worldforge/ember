@@ -40,6 +40,7 @@ public:
     virtual const ColourValue getCoverage(const Real mX, const Real mZ);
     virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive);
 
+    const Real getMaxAbsoluteHeight(void) const; 
 	virtual PagingLandScapeData2D* newPage();
 protected:
 

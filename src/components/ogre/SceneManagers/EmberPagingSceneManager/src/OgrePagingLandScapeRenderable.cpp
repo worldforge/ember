@@ -167,13 +167,13 @@ namespace Ogre
         mCustomGpuParameters = Vector4(mOpt->ScaledPageSizeX,
 										mOpt->ScaledHeightY, 
 										mOpt->ScaledPageSizeZ, 
-										mLODMorphFactor);
+                                        mLODMorphFactor);
+
+        mQueued = false;mParentTile= 0;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeRenderable::~PagingLandScapeRenderable()
     {
-        uninit ();
-
 	    delete mCurrVertexes;
         delete [] mDeltaBuffers;
         delete [] mMinLevelDistSqr;
@@ -184,6 +184,10 @@ namespace Ogre
     {
         if (mIsLoaded)
             unload ();
+
+        mParentTile= 0;
+
+        PagingLandScapeRenderableManager::getSingleton().freeRenderable(this);
         mInfo = 0;
         mHeightfield = 0;
         mCurrIndexes = 0;
@@ -193,10 +197,13 @@ namespace Ogre
 	    mInUse = false;
         mMaterial.setNull();
         mLightListDirty = true;
+        mQueued = false;mParentTile= 0;
     }
     //-----------------------------------------------------------------------
     void  PagingLandScapeRenderable::init(PagingLandScapeTileInfo* info)
     {
+        mQueued = false;
+        mParentTile= 0;
         mLightListDirty = true;
 	    mInfo = info;
 	    mInUse = true;
@@ -206,7 +213,7 @@ namespace Ogre
                 StringConverter::toString(mInfo->tileZ) + "Rend";
 
         mForcedMaxLod = false;
-        mUpperDistance = static_cast<Ogre::uint>(mOpt->renderable_factor);
+        mUpperDistance = mOpt->renderable_factor;
 
 		//we can int texcoord buffer as it's data independant.
 		VertexDeclaration   * const decl = mCurrVertexes->vertexDeclaration;
@@ -238,10 +245,10 @@ namespace Ogre
         if (!mInUse)
 		{
 			// if not in use, do not load.
-			if (mIsLoaded)
-				return true;
-			else
-				return false;
+			//if (mIsLoaded)
+			//	return true;
+			//else
+			return false;
 		}
         // case renderable was queued before page was unloaded
         // when loaded, page exists no more.
@@ -309,11 +316,11 @@ namespace Ogre
             max = mBounds.getMaximum().y;
         } 
         
-	    const uint offSetX = mInfo->tileX * (tileSize - 1) + mRect.left;
-	    const uint endx = offSetX + (mRect.right - mRect.left);
+        const uint offSetX = static_cast <uint> (mInfo->tileX * (tileSize - 1) + mRect.left);
+	    const uint endx = static_cast <uint> (offSetX + (mRect.right - mRect.left));
 
-	    const uint offSetZ = mInfo->tileZ * (tileSize - 1) + mRect.top;
-        const uint endz = offSetZ + (mRect.bottom - mRect.top);
+	    const uint offSetZ = static_cast <uint> (mInfo->tileZ * (tileSize - 1) + mRect.top);
+        const uint endz = static_cast <uint> (offSetZ + (mRect.bottom - mRect.top));
 
 
         const double inv_scale = 65535.0 / mOpt->scale.y; 
@@ -484,7 +491,6 @@ namespace Ogre
             s->detachObject (mName);
             s->needUpdate ();
         }
-        PagingLandScapeRenderableManager::getSingleton().freeRenderable(this);
         mInUse = false;
         mIsLoaded = false;
         mInfo = 0;
@@ -769,10 +775,10 @@ namespace Ogre
 
         } // if (mIsRectModified) 
 
-	    const int offSetX = mInfo->tileX * (tileSize - 1) + mRect.left;
-	    const int endx = offSetX + static_cast <int> (mRect.right - mRect.left);
+        const int offSetX = static_cast <int> (mInfo->tileX * (tileSize - 1) + mRect.left);
+        const int endx = static_cast <int> (offSetX + static_cast <int> (mRect.right - mRect.left));
 
-	    const int offSetZ = mInfo->tileZ * (tileSize - 1) + mRect.top;
+	    const int offSetZ = static_cast <int> (mInfo->tileZ * (tileSize - 1) + mRect.top);
         const int IntervallModifiedZ = static_cast <int> (mRect.bottom - mRect.top);
 	    const int endz = offSetZ + IntervallModifiedZ;
 
@@ -871,7 +877,7 @@ namespace Ogre
                 {
                 	//added for Ember
                    bool isInValidVertex;
-                   {
+                    {
                         const Vector3 v1(i,        heightField[ i +        K_heightFieldPos ],         j);
                         const Vector3 v2(i + step, heightField[ i + step + K_heightFieldPos ],         j);
                         const Vector3 v3(i,        heightField[ i +        K_heightFieldPos + ZShift], j + step);
@@ -879,7 +885,7 @@ namespace Ogre
 
                         t1.redefine(v1, v3, v2);
                         t2.redefine(v2, v3, v4);
-                        //only update the distance if none of the heights are 0.0
+                         //only update the distance if none of the heights are 0.0
                         //this is to allow for invalid Mercator::Segments without messing up the tricount
                         //the reason is that mercator defines the height of all invald segments to 0.0
                         //if such a segment was to be next to a normal segment, the delta would be way to high, 
@@ -969,8 +975,8 @@ namespace Ogre
 	
 							}
 						}
-					}
-                }       
+					}       
+				}
                 K_heightFieldPos += pageSize * step;
             }
 
@@ -1166,7 +1172,7 @@ namespace Ogre
 		{
 			for (uint j=0; j<=tilesize; ++j)
 			{
-				*vert++=  _getvertex(i, j);
+				*vert++=  _getvertex(j, i);
 			}
 		}
 	} 

@@ -161,6 +161,9 @@ namespace Ogre
 		IndexData* getRawIndexData(const int renderlevel);
 		void getRawVertexData(Vector3* pVerts);
 		const uint PagingLandScapeRenderable::getVertexCount();
+        
+        bool mQueued;
+        PagingLandScapeTile *mParentTile;
 
 	protected:	
 		String mName;

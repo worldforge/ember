@@ -57,6 +57,11 @@ namespace Ogre
     {
         
     }
+    //-------------------------------------------------------------------
+    const Real PagingLandScapeData2D_Spline::getMaxAbsoluteHeight(void) const
+    { 
+        return PagingLandScapeOptions::getSingleton().scale.y;
+    }
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2D_Spline::_load(const  uint mX, const uint mZ)
     {

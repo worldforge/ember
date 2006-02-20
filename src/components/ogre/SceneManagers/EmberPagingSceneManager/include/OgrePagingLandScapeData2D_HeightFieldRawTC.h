@@ -36,7 +36,8 @@ namespace Ogre
             virtual const Vector3 getNormalAt(const Real mX, const Real mZ);
             virtual const ColourValue getBase(const Real mX, const Real mZ);
             virtual const ColourValue getCoverage(const Real mX, const Real mZ);
-	        virtual PagingLandScapeData2D* newPage();;
+            virtual PagingLandScapeData2D* newPage();;
+            const Real getMaxAbsoluteHeight(void) const; 
 
 
         protected:

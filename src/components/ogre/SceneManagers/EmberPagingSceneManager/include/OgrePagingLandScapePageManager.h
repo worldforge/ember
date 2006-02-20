@@ -56,6 +56,9 @@ namespace Ogre
 			
 			// load everything around camera just now.
             void loadNow(PagingLandScapeCamera *cam);
+            // Make sure page gets into loaded page list when loaded from outside 
+            // ie "LoadNow" getOption
+            void addLoadedPage(PagingLandScapePage *p);
 
 			/// if page is already instantiated get page at this pos,
 			/// otherwise allocate one, if alwaysReturn is set true.

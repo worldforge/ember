@@ -18,6 +18,7 @@
 
 #include "OgreRoot.h"
 #include "OgreRenderSystem.h"
+#include "OgreMaterialManager.h"
 #include "OgreGpuProgramManager.h"
 
 #include "OgrePagingLandScapeOptions.h"
@@ -108,23 +109,33 @@ namespace Ogre
         if (nextTextureType == numTextureTypes)
             nextTextureType = 0;
         uint numLoop = 0;
-        while (!mTextureTypeMap[nextTextureType]->TextureRenderCapabilitesFullfilled() 
-            || mOptions->TextureFormatSupported.end() == std::find(mOptions->TextureFormatSupported.begin(),
-                                                                    mOptions->TextureFormatSupported.end(), 
-                                                                    mTextureTypeMap[nextTextureType]->getName ()))
+        // find Next supported texture format.
+        while (numLoop != numTextureTypes)
         { 
+#ifdef _DEBUG
+            std::cout << "Trying " << mTextureTypeMap[nextTextureType]->getName () << '\n';
+#endif //_DEBUG
+            if (mTextureTypeMap[nextTextureType]->TextureRenderCapabilitesFullfilled()
+                && mOptions->TextureFormatSupported.end() != std::find(mOptions->TextureFormatSupported.begin(),
+                                                                        mOptions->TextureFormatSupported.end(), 
+                                                                        mTextureTypeMap[nextTextureType]->getName ()))
+            {
+                return mTextureTypeMap[nextTextureType]->getName();
+            }
+
             nextTextureType ++ ;
             if (nextTextureType == numTextureTypes)
                 nextTextureType = 0;
             numLoop++;
-            if (numLoop == numTextureTypes)
-            {
-                OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                        "Cannot find a TextureMode  supported by current hardware!  (shaders/num texture units...)",
-		                " getNextTextureFormat ");           
-            }
+            
         }
-        return mTextureTypeMap[nextTextureType]->getName();
+        assert (numLoop == numTextureTypes);
+        
+        OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
+            "Cannot find a TextureMode  supported by current hardware!  (shaders/num texture units...)",
+            " getNextTextureFormat ");           
+        
+        return StringUtil::BLANK;
     }
     //-----------------------------------------------------------------------
    String PagingLandScapeTextureManager::getCurrentTextureFormat()
@@ -305,7 +316,7 @@ namespace Ogre
     void PagingLandScapeTextureManager::setMapMaterial()
     {
     	PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
-       const String mapName =  String("Small") + opt->image_filename;
+        const String mapName =  String("Small") + opt->image_filename;
         mMapMaterial = MaterialManager::getSingleton().getByName (mapName);
         if (mMapMaterial.isNull())
         {

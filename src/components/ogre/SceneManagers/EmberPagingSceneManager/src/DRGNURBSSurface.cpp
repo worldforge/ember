@@ -154,7 +154,7 @@ bool CDRGNURBSSurface::Init(int	uDegree,
 	// the points and multiply x, y, and z by the w value (so that the actual,
 	// stored control point is {x*w, y*w, z*w, w})
 	//
-	memcpy(m_pControlPoints, pControlPoints, m_iUControlPoints * m_iVControlPoints * sizeof(Point4D));
+    memcpy(m_pControlPoints, pControlPoints, m_iUControlPoints * m_iVControlPoints * sizeof(Point4D));
 	memcpy(m_UKnots, pUKnots, m_iUKnots * sizeof(float));
 	memcpy(m_VKnots, pVKnots, m_iVKnots * sizeof(float));
 

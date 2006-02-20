@@ -67,8 +67,8 @@ namespace Ogre {
         // Bind buffer
         bind->setBinding(POSITION_BINDING, vbuf);
 
-        SimpleRenderable::setBoundingBox(AxisAlignedBox(-1000 * Ogre::Vector3::UNIT_SCALE, 
-                                            1000 * Ogre::Vector3::UNIT_SCALE));
+        SimpleRenderable::setBoundingBox(AxisAlignedBox(-1000 * Vector3::UNIT_SCALE, 
+                                            1000 * Vector3::UNIT_SCALE));
 
         SimpleRenderable::setRenderQueueGroup (RENDER_QUEUE_OVERLAY); 
         

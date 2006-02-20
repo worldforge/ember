@@ -244,7 +244,7 @@ namespace Ogre
         const size_t psize = PagingLandScapeOptions::getSingleton().PageSize - 1;
         assert ((x + z*  psize < psize*psize) && "PagingLandScapeTexture_Splatting2Edit::paint()");
 
-        const uint curr_image_pos = x + z * psize;
+        const uint curr_image_pos = static_cast <uint> (x + z * psize);
         const  uchar previousValue = BaseData[ curr_image_pos ];
         const  uchar newValue = static_cast <uchar> (255 * blend + previousValue * invBlend);
 

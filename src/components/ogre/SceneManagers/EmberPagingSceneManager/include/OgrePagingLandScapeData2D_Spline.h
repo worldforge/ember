@@ -39,6 +39,7 @@ namespace Ogre
 
 	        virtual PagingLandScapeData2D* newPage();
             virtual String getName(){return String("Spline");}
+            const Real getMaxAbsoluteHeight(void) const; 
 
         protected:
             virtual void _save(void);

@@ -40,7 +40,8 @@ class PagingLandScapeData2D_HeightFieldN: public PagingLandScapeData2D
         virtual const ColourValue getCoverage(const Real mX, const Real mZ);
         virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive);
 
-	    virtual PagingLandScapeData2D* newPage();
+        virtual PagingLandScapeData2D* newPage();
+        const Real getMaxAbsoluteHeight(void) const;
 
     protected:
         virtual void _save(void);

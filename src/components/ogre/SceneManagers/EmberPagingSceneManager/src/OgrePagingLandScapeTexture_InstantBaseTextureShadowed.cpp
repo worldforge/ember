@@ -411,7 +411,7 @@ namespace Ogre
         for (size_t k = textureRect.top; k < textureRect.bottom; ++k)
         {
             const uint k_terrain = (uint)(k * inv_scale);
-            const uint curr_row = k_terrain*heightfiledsize;
+            const uint curr_row = static_cast <uint> (k_terrain*heightfiledsize);
 		    for (size_t i = textureRect.left; i < textureRect.right; ++i)
             {             
                 const uint i_terrain = (uint)(i * inv_scale);
@@ -535,7 +535,7 @@ namespace Ogre
             uint curr_image_posX = 0;
             for(uint nX = 0; nX < mTextureSize; nX++)
             {            
-                const uint nVert = curr_rowY + curr_image_posX  + offsetneg; 
+                const uint nVert = static_cast <uint> (curr_rowY + curr_image_posX  + offsetneg);
                 const Real hAngle = HorizonAngle[nVert] * uchardivider;
                 if (hAngle < LightAngle) 
                 {           

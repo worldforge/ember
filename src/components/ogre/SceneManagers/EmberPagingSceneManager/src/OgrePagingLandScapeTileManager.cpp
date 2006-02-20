@@ -104,6 +104,7 @@ PagingLandScapeTile *PagingLandScapeTileManager::getTile()
 //-----------------------------------------------------------------------
 void PagingLandScapeTileManager::freeTile(PagingLandScapeTile *tile)
 {
+    assert (!tile->isLoaded () && tile->getRenderable () == 0);
 	mQueue.push (tile);
 }
 //-----------------------------------------------------------------------

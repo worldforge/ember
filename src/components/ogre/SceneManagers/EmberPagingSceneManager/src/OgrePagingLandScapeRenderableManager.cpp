@@ -108,17 +108,23 @@ namespace Ogre
             // unload some Tiles/renderables no more used to free some space.
             processTileUnload ();
 
+            //#ifdef _DEBUG
+                //for (uint i = 0; i < mNumRenderables; ++i)
+                //{
+                //    assert (mRenderables[i]->isLoaded ());
+                //}
+                for (uint i = 0; i < mNumRenderables; ++i)
+                {
+                    //assert (mRenderables[i]->isInUse ());
+                    if (!mRenderables[i]->isInUse () && !mRenderables[i]->isLoaded ())
+                    {
+                        PagingLandScapeRenderable *r = mRenderables[i];
 
-            //for (uint i = 0; i < mNumRenderables; ++i)
-            //{
-            //    assert (mRenderables[i]->isLoaded ());
-            //}
-            for (uint i = 0; i < mNumRenderables; ++i)
-            {
-                //assert (mRenderables[i]->isInUse ());
-                if (!mRenderables[i]->isInUse () && !mRenderables[i]->isLoaded ())
-                    mQueue.push(mRenderables[i]);
-            }
+                        //assert(0);
+                        mQueue.push(mRenderables[i]);                        
+                    }
+                }
+            //#endif //_DEBUGz
             
 
 
@@ -146,12 +152,15 @@ namespace Ogre
 		assert (tile->getRenderable ()); 
         assert (!tile->getRenderable ()->isLoaded ());   
         assert (tile->getRenderable ()->isInUse ());  
+        tile->getRenderable ()->mQueued = true;
         mTilesLoadRenderableQueue.push (tile);
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::unqueueRenderable (PagingLandScapeTile *tile)
     {
         mTilesLoadRenderableQueue.remove (tile);
+        assert (tile->getRenderable ());
+        tile->getRenderable ()->mQueued = false;
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapeRenderableManager::processTileUnload()
@@ -170,7 +179,9 @@ namespace Ogre
 			assert (!tile->getRenderable ()->isLoaded ()); 
 
 			if (!tile->getRenderable ()->isInUse ())
-			{
+            {
+                assert (tile->getRenderable ());
+                tile->getRenderable ()->mQueued = false;
                 tile->unload (); 
 				itq = mTilesLoadRenderableQueue.erase (itq);
 			}
@@ -205,7 +216,9 @@ namespace Ogre
 					assert (!rend->isLoaded ());      
 					SceneNode * const tileSceneNode = tile->getSceneNode ();
 					assert (tileSceneNode != 0);
-					
+
+                    rend->mQueued = false;
+
 					// if renderable can be loaded 
 					if (rend->load ())
 					{

@@ -138,8 +138,9 @@ namespace Ogre
 
          
         mBoundsExt.setExtents(mIniX - factorX * 1.5f, 
-                               - MaxHeight * 0.5f, 
+                               - MaxHeight * 1.5f, 
                                mIniZ - factorZ * 1.5f,
+
                                mIniX + factorX * 1.5f, 
                                MaxHeight * 1.5f , 
                                mIniZ + factorZ * 1.5f);
@@ -504,11 +505,11 @@ namespace Ogre
      
             PagingLandScapeListenerManager::getSingleton().firePageUnloaded(mTableX, mTableZ, 
                 PagingLandScapeData2DManager::getSingleton().getData2D(mTableX, mTableZ)->getHeightData(),
-            mBounds);
+                mBounds);
+            assert (mPageNode);
+            assert (mPageNode->getParent () == 0);
 
 		}
-		assert (mPageNode);
-		assert (mPageNode->getParent () == 0);
     }
     //-----------------------------------------------------------------------
     void PagingLandScapePage::unloadTexture()

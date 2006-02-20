@@ -474,8 +474,7 @@ namespace Ogre
 
 	    // Set up the options For a Map
 	    ConfigFile config;
-//	    config.load (mapName, cfgGroupName, String("="), true);
-	    config.load (mapName);
+	    config.load (mapName, cfgGroupName, String("="), true);
         mConfig = &config;
 
 
@@ -752,8 +751,11 @@ namespace Ogre
         setBool (Deformable, "Deformable");
 
         //Morphing
-        setBool (lodMorph, "VertexProgramMorph");
-        setReal (lodMorphStart, "LODMorphStart");
+        if (maxRenderLevel > 1)
+        {
+            setBool (lodMorph, "VertexProgramMorph");
+            setReal (lodMorphStart, "LODMorphStart");
+        }            
         setUint (maxPixelError, "MaxPixelError");
 
 

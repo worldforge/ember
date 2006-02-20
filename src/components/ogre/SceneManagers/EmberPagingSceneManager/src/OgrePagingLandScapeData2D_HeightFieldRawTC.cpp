@@ -51,6 +51,11 @@ namespace Ogre
         input_min = 0.0f;
         mMaxheight = _decodeRawTC (1.0f) * PagingLandScapeOptions::getSingleton().scale.y;
     }
+    //-------------------------------------------------------------------
+    const Real PagingLandScapeData2D_HeightFieldRawTC::getMaxAbsoluteHeight(void) const
+    { 
+        return _decodeRawTC (1.0f) * PagingLandScapeOptions::getSingleton().scale.y;
+    }
 
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldRawTC::~PagingLandScapeData2D_HeightFieldRawTC()

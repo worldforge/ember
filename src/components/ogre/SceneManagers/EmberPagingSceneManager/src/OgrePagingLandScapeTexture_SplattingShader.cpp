@@ -86,7 +86,7 @@ namespace Ogre
             if (mMaterial.isNull())
 	        {                
                 MaterialPtr ClassMaterial = MaterialManager::getSingleton().getByName(MatClassName);
-                assert (!mMaterial.isNull());
+                assert (!ClassMaterial.isNull());
                 mMaterial = ClassMaterial->clone(matname);
                    
                 Pass * const p = mMaterial->getTechnique(0)->getPass(0); 
