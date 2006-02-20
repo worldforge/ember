@@ -23,7 +23,7 @@
 
 #include "ConfigService.h"
 #include "services/logging/LoggingService.h"
-#include "framework/binreloc.h"
+// #include "framework/binreloc.h"
 
 #include <iostream>
 #include "framework/ConsoleBackend.h"
@@ -57,29 +57,19 @@ namespace Ember
 		baseDir = std::string(cwd) + "\\";
 #endif
 
-#ifdef ENABLE_BINRELOC
-    BrInitError error;
+		setPrefix(PREFIX);
 
-    if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
-        printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
-        printf ("Will fallback to hardcoded default path.\n");
-    }	
-	
-	char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
-	sharedDataDir = std::string(br_datadir) + "/games/ember/";
-	free(br_datadir);
-	
-	char* br_etcdir = br_find_etc_dir(br_strcat(PREFIX, "/etc"));
-	etcDir = std::string(br_etcdir) + "/ember/";
-	free(br_etcdir);
-   
-#endif
-
-	setName("Configuration Service");
-	setDescription("Service for management of Ember user-defined configuration");
+		setName("Configuration Service");
+		setDescription("Service for management of Ember user-defined configuration");
 
     	setStatusText("Configuration Service status OK.");
     }
+
+	void ConfigService::setPrefix(const std::string& prefix)
+	{
+		mSharedDataDir = prefix + "/share/games/ember/";
+		mEtcDir = prefix + "/etc/ember/";
+	}
 
     varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key) const
     {
@@ -234,7 +224,7 @@ namespace Ember
 #elif __WIN32__
 			return baseDir;
 #else
-			return sharedDataDir;
+			return mSharedDataDir;
 #endif
 		}
 
@@ -249,7 +239,7 @@ namespace Ember
 		static std::string path(getSharedDataDirectory() + "etc/ember/");
 		return path;
 #else
-		return etcDir;
+		return mEtcDir;
 #endif
 	}
 	

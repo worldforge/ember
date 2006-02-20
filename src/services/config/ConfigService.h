@@ -53,8 +53,8 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 	std::string baseDir;
 #endif
 
-	std::string sharedDataDir;
-	std::string etcDir;
+	std::string mSharedDataDir;
+	std::string mEtcDir;
 
     void registerConsoleCommands();
     void deregisterConsoleCommands();
@@ -218,6 +218,11 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 	*/
 	sigc::signal<void, const std::string&, const std::string&> EventChangedConfigItem;
 	
+	/**
+	 * Sets the prefix for all the configuration and resources. Call this before other services have initialized.
+	 * @param prefix 
+	 */
+	void setPrefix(const std::string& prefix);
 
 }; //ConfigService
 
