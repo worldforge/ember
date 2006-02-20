@@ -514,9 +514,9 @@ Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlE
 
 void XMLModelDefinitionSerializer::fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector)
 {
-	elem.SetAttribute("x", vector.x);
-	elem.SetAttribute("y", vector.x);
-	elem.SetAttribute("z", vector.x);
+	elem.SetDoubleAttribute("x", vector.x);
+	elem.SetDoubleAttribute("y", vector.x);
+	elem.SetDoubleAttribute("z", vector.x);
 }
 
 void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& filename)
@@ -582,7 +582,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		modelElem.SetAttribute("usescaleof", useScaleOf.c_str());
 		
 		if (modelDef->getScale() != 0) {
-			modelElem.SetAttribute("scale", modelDef->getScale());
+			modelElem.SetDoubleAttribute("scale", modelDef->getScale());
 		}
 		
 		modelElem.SetAttribute("showcontained", modelDef->getShowContained() ? "true" : "false");
