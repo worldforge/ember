@@ -163,6 +163,10 @@ void AvatarCamera::attach(Ogre::SceneNode* toNode) {
 	
 	setCameraDistance(10);
 	mAvatarCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
+	mAvatarCameraNode->_update(true, true);
+	std::stringstream ss;
+	ss << "Attached camera to node: " << toNode->getName() <<". New position: " << mCamera->getWorldPosition() << " New orientation: " << mCamera->getWorldOrientation();
+	S_LOG_VERBOSE(ss.str());
 }
 
 void AvatarCamera::createViewPort()
