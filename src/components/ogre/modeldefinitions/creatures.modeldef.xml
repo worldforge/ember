@@ -327,6 +327,83 @@
 		</submodels>
 	</model>	
 	
+	<model name="goblin" usescaleof="height" showcontained="true">
+		<translate x="0" y="0" z="0" />
+		<submodels>
+			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/creature/humanoid/goblin" />
+							<subentity index="1" material="/global/creature/humanoid/goblin" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="__movement_idle">
+				<AnimationParts>
+					<animationpart name="idle" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_walk">
+				<AnimationParts>
+					<animationpart name="walk" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_run">
+				<AnimationParts>
+					<animationpart name="run" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="taunt">
+				<AnimationParts>
+					<animationpart name="taunt" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+		
+	</model>
+
+	<model name="kobold" usescaleof="height" showcontained="true">
+		<translate x="0" y="0" z="0" />
+		<submodels>
+			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/creature/humanoid/kobold" />
+							<subentity index="1" material="/global/creature/humanoid/kobold" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="__movement_idle">
+				<AnimationParts>
+					<animationpart name="idle" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_walk">
+				<AnimationParts>
+					<animationpart name="walk" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_run">
+				<AnimationParts>
+					<animationpart name="run" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="taunt">
+				<AnimationParts>
+					<animationpart name="taunt" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+		
+	</model>
 	
 	
 </models>
