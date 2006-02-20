@@ -57,15 +57,24 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	EmberEntity::init(ge, fromCreateOp);
 	mTerrainGenerator->initTerrain(this, getView());
 	
+	///create the sun
 	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 	
+	///create the water
 	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+	
+	///create the sky
 	mSky = new Sky(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
 	
-	//mOgreNode = mSceneManager->getRootSceneNode();
+	///create the foliage
 	mFoliage = new Foliage(EmberOgre::getSingleton().getSceneManager());
+	
+	///prepare all the segments in advance
 	mTerrainGenerator->prepareAllSegments();
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
+	
+	///set the position to always 0, 0, 0
+	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
 
 	
@@ -79,7 +88,7 @@ void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
 	} else if (entity->getMovementMode() == EmberEntity::MM_SWIMMING) {
-	///if it's swimming, make sure that it's between the sea bottom and the surface
+		///if it's swimming, make sure that it's between the sea bottom and the surface
 		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
 		float height = mTerrainGenerator->getHeight(pos);
 		if (position.y < height) {
