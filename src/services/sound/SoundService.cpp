@@ -26,8 +26,6 @@
 #include <AL/alc.h>
 #include <AL/alut.h>
 
-#include <OGRE/Ogre.h>
-
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
