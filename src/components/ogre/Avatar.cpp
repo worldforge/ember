@@ -179,23 +179,18 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 void Avatar::updateFrame(AvatarControllerMovement& movement)
 {
 	
-	//for now we'll just rotate without notifying the server
-	//except when moving!
+	///for now we'll just rotate without notifying the server
+	///except when moving!
 	attemptRotate(movement);
 	
 	
-	//this next method will however send send stuff to the server
+	///this next method will however send send stuff to the server
 	attemptMove(movement);
 	
-	//TODO: make sure this only is called if there was movement
-	adjustAvatarToNewPosition(&movement);
-	
-	/*
-	//for now we'll just rotate without notifying the server
-	attemptRotate(movement.rotationDegHoriz, movement.rotationDegVert, movement.timeSlice);
-	//this next method will however send send stuff to the server
-	attemptMove(movement.movementDirection, movement.isRunning, movement.timeSlice);
-	*/
+	///only adjust if there is actual movement. If we adjust when there's only rotation we'll get a strange jerky effect (some bug I guess)
+	if (movement.isMoving) {
+		adjustAvatarToNewPosition(&movement);
+	}
 	
 }
 
