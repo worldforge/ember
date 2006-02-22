@@ -686,6 +686,7 @@ function ModelEdit_buildWidget()
 	
 	ModelEdit.widget:registerConsoleVisibilityToggleCommand("modelEdit")
 	ModelEdit.widget:enableCloseButton()
+	ModelEdit.widget:hide()
 
 end
 

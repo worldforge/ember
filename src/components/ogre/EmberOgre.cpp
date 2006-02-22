@@ -120,6 +120,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "jesus/XMLJesusSerializer.h"
 
 #include "framework/osdir.h"
+#include "framework/binreloc.h"
 
 #include "framework/Exception.h"
 #include "OgreLogObserver.h"
@@ -215,7 +216,7 @@ mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
 mEmberEntityFactory(0), 
-mOgreResourceLoader(0)
+mOgreResourceLoader(0), mPollEris(true)
 {}
 
 EmberOgre::~EmberOgre()
@@ -245,34 +246,35 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
-	EventStartErisPoll.emit();
-	try {
-		Eris::PollDefault::poll(1);
-	} catch (const Ember::Exception& ex) {
-		S_LOG_CRITICAL(ex.getError());
-		throw ex;
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_CRITICAL(ex.getFullDescription());
-		throw ex;
-/*	} catch (const CEGUI::Exception& ex) {
-		S_LOG_CRITICAL(ex.getMessage());
-		throw ex;*/
-	} catch (const std::exception& ex)
-	{
-		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-		throw ex;
-	} catch (const std::string& ex)
-	{
-		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-		throw ex;
-	} catch (...)
-	{
-		S_LOG_CRITICAL("Got unknown exception.");
+	if (mPollEris) {
+		EventStartErisPoll.emit();
+		try {
+			Eris::PollDefault::poll(1);
+		} catch (const Ember::Exception& ex) {
+			S_LOG_CRITICAL(ex.getError());
+			throw ex;
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_CRITICAL(ex.getFullDescription());
+			throw ex;
+	/*	} catch (const CEGUI::Exception& ex) {
+			S_LOG_CRITICAL(ex.getMessage());
+			throw ex;*/
+		} catch (const std::exception& ex)
+		{
+			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
+			throw ex;
+		} catch (const std::string& ex)
+		{
+			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+			throw ex;
+		} catch (...)
+		{
+			S_LOG_CRITICAL("Got unknown exception.");
+		}
+		if (mWorldView)
+			mWorldView->update();
+		EventEndErisPoll.emit();
 	}
-	if (mWorldView)
-		mWorldView->update();
-	EventEndErisPoll.emit();
-	
 	
 	if (!mKeepOnRunning)
 		S_LOG_INFO( "Shutting down Ember.");
@@ -280,9 +282,9 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 }
 
 
-void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
+void EmberOgre::go(bool loadOgrePluginsThroughBinreloc, const std::string& prefix)
 {
-	if (!setup(loadOgrePluginsThroughBinreloc))
+	if (!setup(loadOgrePluginsThroughBinreloc, prefix))
 		return;
 
 // 	try {
@@ -336,10 +338,30 @@ void EmberOgre::requestQuit()
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
-bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
+bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc, const std::string& prefix)
 {
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+
+#ifdef ENABLE_BINRELOC
+    if (prefix == "") {
+		BrInitError error;
+	
+		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
+			printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
+			printf ("Will fallback to hardcoded default path.\n");
+		}	
+		
+		char* br_prefixdir = br_find_prefix(PREFIX);
+		const std::string prefixDir(br_prefixdir);
+		free(br_prefixdir);
+		configSrv->setPrefix(prefixDir);	
+	} else {
+		configSrv->setPrefix(prefix);	
+	}
+   
+#endif
+
 
 	checkForConfigFiles();
 	
@@ -361,13 +383,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
+	///why is this a pointer? Well, it's only because we want to keep the number of include headers in the EmberOgre.h file down
 	mOgreResourceLoader = new OgreResourceLoader();
 	mOgreResourceLoader->initialize();
 	
+	///check if we should preload the media
 	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "preloadmedia");
 
-	
-//    setupResources();
 
     bool carryOn = configure();
     if (!carryOn) return false;
@@ -378,22 +400,23 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
     chooseSceneManager();
 	
-	Ogre::Camera* camera = mSceneMgr->createCamera("AvatarCamera");
-    
+	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
+	Ogre::Camera* camera = mSceneMgr->createCamera("MainCamera");
     Ogre::Viewport* viewPort = mWindow->addViewport(camera);
+    ///set the background colour to black
     viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
-    camera->setAspectRatio(
-		Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+    camera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;
-	loadingBar.start(mWindow, 3, (preloadMedia ? 3 : 0), (preloadMedia ? 0.7 : 1.0));
+	loadingBar.start(mWindow, 2, (preloadMedia ? 2 : 0),  1.0);
 	
-	// Turn off rendering of everything except overlays
+	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
 	mSceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_OVERLAY);
 	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_INCLUDE);
 	
+	///create the collision manager
 	new OgreOpcode::CollisionManager(mSceneMgr);
 	
 	mModelDefinitionManager->setSceneManager(mSceneMgr);
@@ -912,6 +935,15 @@ AvatarController* EmberOgre::getAvatarController() const
 	return mAvatarController;
 }
 
+void EmberOgre::setErisPolling(bool doPoll)
+{
+	mPollEris = doPoll;
+}
+
+bool EmberOgre::getErisPolling() const
+{
+	return mPollEris;
+}
 
 
 void EmberOgre::initializeEmberServices(void)
@@ -1027,6 +1059,7 @@ int main(int argc, char **argv)
 {
 	bool exit_program = false;
 	bool useBinrelocPluginsLoading = false;
+	std::string prefix("");
 #ifndef __WIN32__
 	if (argc > 1) {
 		std::string invoked = std::string((char *)argv[0]);
@@ -1047,8 +1080,16 @@ int main(int argc, char **argv)
 				std::cout << "-v, --version - display version info" << std::endl;
 				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg" << std::endl;
 				exit_program = true;
-			} else {
-		//        std::cout << "Unknown arument: " << arg << std::endl;
+			} else if (arg == "-p" || arg == "--prefix") {
+				if (!argc) {
+					std::cout << "You didn't supply a prefix.";
+					exit_program = true;
+				} else {
+					prefix = std::string((char *)argv[0]);
+					argv++;
+					argc--;
+				}
+				
 			}
 		}
 	}
@@ -1084,7 +1125,7 @@ int main(int argc, char **argv)
 	std::cout << "************************************" << std::endl;
 
     try {
-        app.go(useBinrelocPluginsLoading);
+        app.go(useBinrelocPluginsLoading, prefix);
     } catch(const Ogre::Exception& e ) {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
         MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);

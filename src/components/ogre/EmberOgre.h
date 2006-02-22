@@ -113,7 +113,7 @@ public:
      * starts the main app
      * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      */
-    virtual void go(bool loadOgrePluginsThroughBinreloc = false);
+    virtual void go(bool loadOgrePluginsThroughBinreloc = false, const std::string& prefix = "");
 	void shutdown();
 
 	/**
@@ -220,7 +220,17 @@ public:
 	 */
 	void requestQuit();
 
+	/**
+	 *    Sets whether eris should be polled each frame. Defaults to true.
+	 * @param doPoll 
+	 */
+	void setErisPolling(bool doPoll);
 
+	/**
+	 *    Gets whether eris should be polled each frame.
+	 * @return 
+	 */
+	bool getErisPolling() const;
 
 protected:
 
@@ -249,7 +259,7 @@ protected:
      * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      * @return 
      */
-    virtual bool setup(bool loadOgrePluginsThroughBinreloc = false);
+    virtual bool setup(bool loadOgrePluginsThroughBinreloc = false, const std::string& prefix = "");
   
 	
 	/**
@@ -312,8 +322,17 @@ protected:
 	Jesus* mJesus;
 	
 	Eris::View* mWorldView;
+	
+	/**
+	All resources are loaded through this.
+	Why a pointer? Well, just to keep the required include headers in EmberOgre.h down.
+	*/
 	OgreResourceLoader* mOgreResourceLoader;
 
+	/**
+	Controls whether eris should be polled at each frame update.
+	*/
+	bool mPollEris;
 
 
 };

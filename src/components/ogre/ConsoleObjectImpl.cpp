@@ -53,6 +53,8 @@ ConsoleObjectImpl::ConsoleObjectImpl(void)
 // 	Ember::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
 // 	Ember::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand(FULLSCREEN,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand("switcheris",this);
+	
 }
 ConsoleObjectImpl::~ConsoleObjectImpl()
 {
@@ -76,6 +78,8 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
 	} else if (command == FULLSCREEN){
 		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
 		
+	} else if (command == "switcheris"){
+		EmberOgre::getSingleton().setErisPolling(!EmberOgre::getSingleton().getErisPolling());
 	} else {
 		Ember::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
 	}

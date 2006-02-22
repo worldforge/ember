@@ -1,3 +1,54 @@
+2006-02-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberOgre.*:
+         * activate binreloc here
+         * allow disabling of Eris polling
+    * src/components/ogre/ConsoleObjectImpl.cpp: added command for turning eris polling on and off
+    * src/components/ogre/widgets/ModelEdit.lua: default to not showing the model editor
+    * ember,conf: don't show help on startup
+
+2006-02-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/sound/SoundService.cpp: removed reference to Ogre
+
+2006-02-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/Avatar.cpp: only adjust the position for the avatar if it has moved, not if there's only been rotation
+
+2006-02-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberEntity.cpp: adjust the position from the Eris position, not the current ogre position, since this will for some entities with set offsets for contained items result in these items being constantly moved
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/WorldEmberEntity.cpp: always put the world at the center of the world
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/AvatarCamera.cpp: added some verbose logging output
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/Help.cpp: only show the help if it's specified in the config file
+    * src/components/ogre/widgets/HelpWidget.xml: default to hiding the help
+    * src/components/ogre/widgets/ServerBrowser.layout: remove the scroll bars from the table
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/modeldefinitions/creatures.modeldef.xml: added goblin and kobold
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: made sure all real values really are exported as real values
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightFieldN.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightFieldNTC.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightFieldRaw.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightFieldRawTC.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightFieldTC.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_Spline.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOcclusionVisibilityData.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapePageManager.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRenderable.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/DRGNURBSSurface.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgreDebugRectangle2D.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2DManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightField.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightFieldN.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightFieldNTC.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightFieldRaw.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightFieldRawTC.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_HeightFieldTC.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2D_Spline.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOptions.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapePage.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapePageManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRenderable.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRenderableManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeSceneManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTextureManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTexture_InstantBaseTextureShadowed.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTexture_Splatting2Edit.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTexture_Splatting7Edit.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTexture_SplattingShader.cpp  ,src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTile.cpp ,src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTileManager.cpp: updated to latest version of the PLSM
+
+2006-02-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/config/ConfigService.cpp: moved the binreloc functionality out from here and into EmberOgre
+
 2006-02-16 Erik Hjortsberg  <erik@katastrof.nu>
 
     * media/materials/scripts/creatures.material, media/materials/scripts/environment.material, media/materials/scripts/malebuilder.material, media/materials/scripts/goblin.material: updated materials and removed obsolete
