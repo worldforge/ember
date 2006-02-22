@@ -339,7 +339,9 @@ void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	//Ogre::Vector3 position = sceneNode->getPosition();
 	Ogre::Vector3 offset = getOffsetForContainedNode(sceneNode->getPosition(), entity);
-	sceneNode->translate(offset);
+	if (offset != Ogre::Vector3::ZERO) {
+		sceneNode->setPosition(Atlas2Ogre( entity->getPredictedPos() ) + offset);
+	}
 	
 }
 
