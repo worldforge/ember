@@ -1,3 +1,8 @@
+2006-02-23 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/config/ConfigService.cpp: added some more logging
+    * src/components/ogre/EmberOgre.cpp: don't copy the ember.conf file to the user's home directory if it's not there
+
 2006-02-22 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgre.*:

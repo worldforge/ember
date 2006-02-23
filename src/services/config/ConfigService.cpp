@@ -124,10 +124,14 @@ namespace Ember
 
     bool ConfigService::loadSavedConfig(const std::string& filename)
     {
-    	S_LOG_INFO("Loading shared config file.");
+		//S_LOG_INFO("Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << ".");
+		///logging won't work here since we've not yet set up the logging system (since we right now use ogre for our logging; to be changed), so we'll use the std::out
+		std::cout << "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." << std::endl;
 		bool success = varconf::Config::inst()->readFromFile(getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL);
-    	S_LOG_INFO("Loading user config file.");
-		success = varconf::Config::inst()->readFromFile(filename, varconf::USER) && success;
+		std::cout << "Loading user config file from "<< getHomeDirectory() + "/" + filename <<"." << std::endl;
+    	//S_LOG_INFO("Loading user config file from "<< getHomeDirectory() + "/" + filename <<".");
+		success = varconf::Config::inst()->readFromFile(getHomeDirectory() + "/" + filename, varconf::USER) || success;
+		return success;
     }
 
     bool ConfigService::saveConfig(const std::string& filename)

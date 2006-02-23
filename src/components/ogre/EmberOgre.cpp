@@ -643,7 +643,7 @@ void EmberOgre::checkForConfigFiles()
 {
 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
-	std::string sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
+	const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
 	//make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
@@ -977,10 +977,10 @@ void EmberOgre::initializeEmberServices(void)
 	
 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
-	std::string sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
+	const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
 	//make sure that there are files 
-	assureConfigFile("ember.conf", sharePath);
+	//assureConfigFile("ember.conf", sharePath);
 
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->loadSavedConfig("ember.conf");
 
