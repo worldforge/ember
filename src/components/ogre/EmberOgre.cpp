@@ -282,9 +282,9 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 }
 
 
-void EmberOgre::go(bool loadOgrePluginsThroughBinreloc, const std::string& prefix)
+void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 {
-	if (!setup(loadOgrePluginsThroughBinreloc, prefix))
+	if (!setup(loadOgrePluginsThroughBinreloc))
 		return;
 
 // 	try {
@@ -338,30 +338,10 @@ void EmberOgre::requestQuit()
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
-bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc, const std::string& prefix)
+bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 {
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-
-#ifdef ENABLE_BINRELOC
-    if (prefix == "") {
-		BrInitError error;
-	
-		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
-			printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
-			printf ("Will fallback to hardcoded default path.\n");
-		}	
-		
-		char* br_prefixdir = br_find_prefix(PREFIX);
-		const std::string prefixDir(br_prefixdir);
-		free(br_prefixdir);
-		configSrv->setPrefix(prefixDir);	
-	} else {
-		configSrv->setPrefix(prefix);	
-	}
-   
-#endif
-
 
 	checkForConfigFiles();
 	
@@ -946,7 +926,7 @@ bool EmberOgre::getErisPolling() const
 }
 
 
-void EmberOgre::initializeEmberServices(void)
+void EmberOgre::initializeEmberServices(const std::string& prefix)
 {
 	// Initialize Ember services
 	S_LOG_INFO( "Initializing Ember Services");
@@ -962,6 +942,8 @@ void EmberOgre::initializeEmberServices(void)
 
 	// Initialize the Configuration Service
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->setPrefix(prefix);
+	
 	// Change working directory
 	struct stat tagStat;
 	int ret;
@@ -1058,7 +1040,7 @@ int main(int argc, char **argv)
 #endif
 {
 	bool exit_program = false;
-	bool useBinrelocPluginsLoading = false;
+	bool useBinreloc = false;
 	std::string prefix("");
 #ifndef __WIN32__
 	if (argc > 1) {
@@ -1073,7 +1055,7 @@ int main(int argc, char **argv)
 				//std::cout << "Ember version: " << VERSION << std::endl;
 				exit_program = true;
 			} else if (arg == "-b" || arg == "--binrelocloading") {
-				useBinrelocPluginsLoading = true;
+				useBinreloc = true;
 			} else if (arg == "-h" || arg == "--help") {
 				std::cout << invoked << " {options}" << std::endl;
 				std::cout << "-h, --help    - display this message" << std::endl;
@@ -1097,6 +1079,27 @@ int main(int argc, char **argv)
 	if (exit_program) {
 		return 0;
 	}
+	
+#ifdef ENABLE_BINRELOC
+    if (prefix == "" && useBinreloc) {
+		BrInitError error;
+	
+		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
+			printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
+			printf ("Will fallback to hardcoded default path.\n");
+		}	
+		
+		char* br_prefixdir = br_find_prefix(PREFIX);
+		const std::string prefixDir(br_prefixdir);
+		free(br_prefixdir);
+		prefix = prefixDir;
+	}
+   
+#endif
+	if (prefix == "") {
+		prefix = PREFIX;
+	}
+	
 #else 
  //  char tmp[64];
 
@@ -1119,13 +1122,13 @@ int main(int argc, char **argv)
 	std::cout << "*************************************" << std::endl;
 	std::cout << "TRACE --- INITIALIZING EMBER SERVICES" << std::endl;
 	std::cout << "*************************************" << std::endl;
-	app.initializeEmberServices();
+	app.initializeEmberServices(prefix);
 	std::cout << "************************************" << std::endl;
 	std::cout << "TRACE --- EMBER SERVICES INITIALIZED" << std::endl;
 	std::cout << "************************************" << std::endl;
 
     try {
-        app.go(useBinrelocPluginsLoading, prefix);
+        app.go(useBinreloc);
     } catch(const Ogre::Exception& e ) {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
         MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);

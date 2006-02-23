@@ -113,14 +113,14 @@ public:
      * starts the main app
      * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      */
-    virtual void go(bool loadOgrePluginsThroughBinreloc = false, const std::string& prefix = "");
+    virtual void go(bool loadOgrePluginsThroughBinreloc = false);
 	void shutdown();
 
 	/**
 	 * Initialize all Ember services needed for this application
-	 * @param  
+	 * @param  the prefix for the application, not appliable if running under win32
 	 */
-	void initializeEmberServices(void);
+	void initializeEmberServices(const std::string& prefix);
 
 	void connectViewSignals(Eris::View* world);
 	void connectedToServer(Eris::Connection* connection);
@@ -259,7 +259,7 @@ protected:
      * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      * @return 
      */
-    virtual bool setup(bool loadOgrePluginsThroughBinreloc = false, const std::string& prefix = "");
+    virtual bool setup(bool loadOgrePluginsThroughBinreloc = false);
   
 	
 	/**

@@ -1,3 +1,7 @@
+2006-02-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberOgre.*: cleaned up binreloc loading
+
 2006-02-23 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/services/config/ConfigService.cpp: added some more logging
