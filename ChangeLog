@@ -1,3 +1,23 @@
+2006-02-25 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberOgre.cpp: fixed a problem where the loading bar didn't really show the correct progress
+    * src/components/ogre/EmberPhysicalEntity.cpp: make sure nonrunning animations are not active
+
+2006-02-25 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/TerrainPage.cpp, src/components/ogre/TerrainShader.cpp, src/components/ogre/TerrainShader.h:
+        * added more debug output and more comments
+        * changed the scaling a bit, though it's still only an interim solution
+        * fiddled a bit with more efficient techniques, though they are not activated yet
+
+2006-02-25 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h, src/components/ogre/widgets/ServerWidget.xml: show server information
+
+2006-02-25 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/Help.cpp: fixed a problem where the blurb might be displayed twice and thus crash
+
 2006-02-24 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgre.*: cleaned up binreloc loading

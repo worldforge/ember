@@ -281,6 +281,11 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 			actionName = ACTION_STAND;
 		}
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
+			///first disable the current action
+			if (mCurrentMovementAction) {
+				mCurrentMovementAction->getAnimations()->setEnabled(false);
+			}
+			
 			Model::Action* newAction = mModel->getAction(actionName);
 			mCurrentMovementAction = newAction;
 			if (newAction) {

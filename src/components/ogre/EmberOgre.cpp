@@ -389,7 +389,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;
-	loadingBar.start(mWindow, 2, (preloadMedia ? 2 : 0),  1.0);
+	loadingBar.start(mWindow, 2, (preloadMedia ? 2 : 0),  0.7);
 	
 	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
