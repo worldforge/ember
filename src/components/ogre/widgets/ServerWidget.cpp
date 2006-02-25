@@ -109,6 +109,7 @@ void ServerWidget::buildWidget()
 	BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
 	
 		
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
@@ -128,18 +129,52 @@ void ServerWidget::buildWidget()
 	addTabbableWindow(mNewCharDescription);
 	closeTabGroup();
 	
-	mMainWindow->setVisible(false);
+	hide();
 
 	createPreviewTexture();
 //	getMainSheet()->addChildWindow(mMainWindow); 
 
 }
 
+void ServerWidget::connection_GotServerInfo()
+{
+	showServerInfo();
+}
+
+void ServerWidget::connection_GotConnection(Eris::Connection* connection)
+{
+	connection->GotServerInfo.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo));
+	connection->refreshServerInfo();
+}
+
+
 void ServerWidget::createdAccount(Eris::Account* account) 
 {
+
 	mAccount = account;
-	mMainWindow->setVisible(true);
+	show();
 	mMainWindow->moveToFront();
+}
+
+void ServerWidget::showServerInfo()
+{
+	try {
+		CEGUI::Window* info = getWindow("Info");
+		assert(mAccount);
+		Eris::ServerInfo sInfo;
+		mAccount->getConnection()->getServerInfo(sInfo);
+		std::stringstream ss;
+		ss << "Server name: " << sInfo.getServername() << "\n";
+		ss << "Ruleset: " << sInfo.getRuleset() << "\n";
+		ss << "Server type: " << sInfo.getServer() << " (v. "<< sInfo.getVersion() << ")\n";
+		ss << "Ping: " << sInfo.getPing() << "\n";
+		ss << "Uptime: " << static_cast<int>(sInfo.getUptime() / (60*60*24)) << " days\n";
+		ss << "Number of clients: " << sInfo.getNumClients() << "\n";
+		info->setText(ss.str());
+	} catch (...) {
+		S_LOG_WARNING("Error when getting the server info window.");
+		return;
+	}
 }
 
 void ServerWidget::loginSuccess(Eris::Account* account) 
@@ -321,7 +356,7 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) 
 {
-	mMainWindow->setVisible(false);
+	hide();
 /*	mGuiManager->removeWidget(this);
 	delete this;*/
 }

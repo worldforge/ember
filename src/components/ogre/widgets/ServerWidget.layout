@@ -8,12 +8,12 @@
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Server" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="Position" Value="x:0.02 y:0.02" /> 
+			<Property Name="Position" Value="x:0.02 y:0.04" /> 
 			<Property Name="Size" Value="w:0.96 h:0.96" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 			<Window Type="EmberLook/StaticText" Name="Info">
-				<Property Name="Position" Value="x:0 y:0.05" /> 
-				<Property Name="Size" Value="w:1 h:0.15" /> 
+				<Property Name="Position" Value="x:0 y:0" /> 
+				<Property Name="Size" Value="w:1 h:0.2" /> 
 				<Property Name="InheritsAlpha" Value="false" /> 
 				<Property Name="ReadOnly" Value="true" /> 
 				<Property Name="VertFormatting" Value="TopAligned" /> 

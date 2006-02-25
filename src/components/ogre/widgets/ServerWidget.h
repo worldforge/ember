@@ -129,6 +129,17 @@ protected:
 	 */
 	void createPreviewTexture();
 	
+	/**
+	 *    Consume Eris::Connection::GotServerInfo signals.
+	 */
+	void connection_GotServerInfo();
+	
+	void connection_GotConnection(Eris::Connection* connection);
+	
+	/**
+	 *    Shows server info.
+	 */
+	void showServerInfo();
 	
 };
 
