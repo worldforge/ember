@@ -32,18 +32,18 @@ namespace EmberOgre {
 class TerrainShader{
 public:
 
-	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const Ogre::String textureName, Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const Ogre::String& textureName, Mercator::Shader* shader);
 	TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre::MaterialPtr material, Mercator::Shader* shader);
 	virtual ~TerrainShader();
 	
 	Mercator::Shader* getShader() const;
-	const Ogre::String getTextureName() const;
+	const Ogre::String& getTextureName() const;
 
 	/*
 	 * Adds a texture unit with a splatting alpha texture to the supplied pass.
 	 * Use this when you're using many texture units in the same pass
 	 */
-	void addTextureUnitsToPass(Ogre::Pass* pass, Ogre::String splatTextureName);
+	void addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName);
 
 	/*
 	 * Adds a pass with a splatting alpha texture to the supplied technique.
@@ -51,12 +51,12 @@ public:
 	 * addTextureUnitsToPass(...) but works on card with a low number of
 	 * TextureUnits.
 	 */
-	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, Ogre::String splatTextureName);
+	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, const Ogre::String& splatTextureName);
 	
 	inline int getTerrainIndex() const { return mTerrainIndex;}
 
-	void addMaterialToTechnique(Ogre::Technique*  technique, Ogre::String splatTextureName);
-	void addSplatToTechnique(Ogre::Technique*  technique, Ogre::String splatTextureName);
+	void addMaterialToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName);
+	void addSplatToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName);
 	
 	
 	/**
@@ -72,6 +72,8 @@ protected:
 	Mercator::Terrain* mTerrain;
 	int mTerrainIndex;
 	Ogre::MaterialPtr mMaterial;
+	
+	Ogre::ushort mNumberOfTextureUnitsOnCard;
 };
 
 }

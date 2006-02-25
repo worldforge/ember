@@ -197,8 +197,8 @@ Ogre::MaterialPtr TerrainPage::getMaterial() const
 unsigned int TerrainPage::getAlphaMapScale() const
 {
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-	if (configSrv->itemExists("terrain", "alphamapscale")) {
-		int value = (int)configSrv->getValue("terrain", "alphamapscale");
+	if (configSrv->itemExists("terrain", "scalealphamap")) {
+		int value = (int)configSrv->getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1
 		return std::min(1, value);
 	} else {
@@ -529,7 +529,7 @@ void EmberOgre::TerrainPage::prepareFoliage()
 void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
 {
 	mUsedShaders.push_back(shader);
-	//if the material already has been created, add the shader instantly, else wait until the generateTerrainMaterials method is called
+	///if the material already has been created, add the shader instantly, else wait until the generateTerrainMaterials method is called
 	if (!mMaterial.isNull()) {
 //		populateSurfaces();
 		addShaderToSimpleTechnique(mMaterial->getTechnique(0), shader);
@@ -641,7 +641,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 	Ogre::TextureUnitState * splatTextureUnitState = pass->createTextureUnitState();
 	splatTextureUnitState->setTextureName("atlassplat.png");
 	splatTextureUnitState->setTextureCoordSet(1);
-	splatTextureUnitState->setTextureScale(0.01, 0.01);
+	splatTextureUnitState->setTextureScale(0.025, 0.025);
     splatTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
 	
@@ -688,7 +688,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* technique)
 { 
  
-	S_LOG_INFO("Entered generateTerrainTechniqueComplex.");
+	S_LOG_VERBOSE("Entered generateTerrainTechniqueComplex.");
 	Ogre::Pass* pass = technique->getPass(0);
 	//pass->setLightingEnabled(false);
 	
@@ -880,7 +880,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
 
 void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* technique)
 {
-	S_LOG_INFO("Entered generateTerrainTechniqueSimple.");
+	S_LOG_VERBOSE("Entered generateTerrainTechniqueSimple.");
 
 	Mercator::Segment* segment = mGenerator->getTerrain().getSegment((int)mPosition.x(), (int)mPosition.y());
  
@@ -903,6 +903,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 // 	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
  
 	Ogre::Pass* pass = technique->getPass(0);
+	//pass->setSelfIllumination(Ogre::ColourValue(0.5f,0.5f,0.5f));	
 	//pass->setLightingEnabled(false);
 	//pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	
@@ -912,9 +913,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 
 //	pass->setShininess(20);
 //	pass->setSpecular(1,1,1,1);
-//granite layer
+	///add the first layer of the terrain, no alpha or anything
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-	textureUnitState->setTextureScale(0.01, 0.01);
+	textureUnitState->setTextureScale(0.025, 0.025);
 	textureUnitState->setTextureName((*shadersIterator)->getTextureName());
     textureUnitState->setTextureCoordSet(0);
 	
@@ -1011,7 +1012,7 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 {
 	Mercator::Surface* surface;
 	
-	//check if at least one surface instersects, else continue
+	///check if at least one surface intersects, else continue
 	bool intersects = false;
 //	for(std::vector<std::list<Mercator::Surface*>::iterator>::iterator I = surfaceListIterators.begin(); I != surfaceListIterators.end(); ++I) {
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
@@ -1026,7 +1027,7 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 	Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, false);
 
 	
-	//we need an unique name for our alpha texture
+	///we need an unique name for our alpha texture
 	std::stringstream splatTextureNameSS;
 	splatTextureNameSS << mMaterialName << "_" << shader->getTerrainIndex();
 	const Ogre::String splatTextureName(splatTextureNameSS.str());
@@ -1039,7 +1040,7 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 		if (surface && surface->isValid()) {
 		
 			int alphaChannel = 0;
-			//use only one channel
+			///use only one channel
 			fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
 
 		}
