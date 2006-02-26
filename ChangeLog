@@ -1,3 +1,11 @@
+2006-02-26 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/environment/Sun.cpp: disable the sun particle effect for now
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: make sure that the max height is never 0
+    * src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberPhysicalEntity.cpp: fixed the parsing of the name of the action
+    * src/components/ogre/EmberOgre.cpp: don't try to clean up since it will apparently only result in tears and segfaults, instead let the application clean up itself
+    * src/components/ogre/terrain.cfg: increase the number of shown renderables
+    
 2006-02-25 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgre.cpp: fixed a problem where the loading bar didn't really show the correct progress

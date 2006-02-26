@@ -507,7 +507,20 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperatio
 	
 	}*/
 	
-	std::string name = act->getName();
+	const std::list<std::string> &p = act->getParents();
+	std::list<std::string>::const_iterator I = p.begin();
+	
+	if (I == p.end()) return;
+	
+	const std::string& name = *I;
+	
+	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
+/*	if (debug) {
+	printf("Entity %s (%s) received action: %s\n", getName().c_str(), getId().c_str(), a.c_str());
+	}*/
+	
+	
+//	const std::string& name = act->getName();
 	
 	Model::Action* newAction = mModel->getAction(name);
 	if (newAction) {

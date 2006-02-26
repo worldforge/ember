@@ -413,19 +413,13 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
 	
-/*	std::string allattribs;
-	
-	//Atlas::Objects::BaseObjectData::const_iterator I = act->begin();
-	std::list< std::string >::const_iterator I = act->getParents().begin();
 
-	for (; I != act->getParents().end(); ++I) 
-	{
-		//const Atlas::Message::Element e = (const Atlas::Message::Element)(*I).second;
-		allattribs.append((*I) + " : ");
+	const std::list<std::string> &p = act->getParents();
+	std::list<std::string>::const_iterator I = p.begin();
 	
-	}*/
+	if (I == p.end()) return;
 	
-	std::string name = act->getName();
+	const std::string& name = *I;
 	
 	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
 	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
@@ -433,7 +427,14 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 {
-	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << act->getName());
+	const std::list<std::string> &p = act->getParents();
+	std::list<std::string>::const_iterator I = p.begin();
+	
+	if (I == p.end()) return;
+	
+	const std::string& name = *I;
+		
+	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << name);
 	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") imaginary: "+act->getName());
 }
 

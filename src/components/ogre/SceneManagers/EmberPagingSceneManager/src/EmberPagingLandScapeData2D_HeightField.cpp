@@ -43,7 +43,7 @@ EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField()
 {
 	//set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
 	//in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
-	mMaxheight = 100;
+	mMaxheight = 1;
 }
 	
 bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Ogre::uint z )
@@ -63,8 +63,8 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 		mTerrainPage->createHeightData(mHeightData);
 	
 		
-		
-		mMaxheight = mTerrainPage->getMaxHeight();
+		///make sure it's not 0
+		mMaxheight = std::max<float>(mTerrainPage->getMaxHeight(), 1.0f);
 		mMax = static_cast <unsigned int> (mSize * mTerrainPage->getMaxHeight());
 		mXDimension = terrainGenerator->getPageSize();
 		mZDimension = terrainGenerator->getPageSize();

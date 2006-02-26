@@ -221,7 +221,7 @@ mOgreResourceLoader(0), mPollEris(true)
 
 EmberOgre::~EmberOgre()
 {
-	delete mOgreResourceLoader;
+/*	delete mOgreResourceLoader;
 //	mSceneMgr->shutdown();
 		delete mWorldView;
 		//mSceneMgr->removeAllCameras();
@@ -229,9 +229,9 @@ EmberOgre::~EmberOgre()
 		delete mGUIManager;
 		delete mTerrainGenerator;
 		delete mMotionManager;
-/*	if (mAvatar)
-		delete mAvatar;*/
-		delete mAvatarController;
+//	if (mAvatar)
+//		delete mAvatar;
+		delete mAvatarController;*/
 //		delete mModelDefinitionManager;
 /*	if (mEmberEntityFactory)
 		delete mEmberEntityFactory;*/
