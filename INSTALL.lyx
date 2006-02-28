@@ -68,14 +68,14 @@ http://libsigc.sourceforge.net/
 
 Eris client side session layer 
 \newline 
-Version: 1.3
+Version: 1.3.10
 \newline 
 http://www.worldforge.org/dev/eng/libraries/eris
 \layout Itemize
 
 Varconf config files handling 
 \newline 
-Version: 0.6.2
+Version: 0.6.4
 \newline 
 http://www.worldforge.org/dev/eng/libraries/varconf
 \layout Itemize

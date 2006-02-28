@@ -314,8 +314,8 @@ function ModelEdit_AddSubmodelButton_MouseClick(args)
 		--we need to get hold of a mesh instance
 		local manager = Ogre.MeshManager:getSingleton()
 		local name = submodel:getMeshName()
-		meshPtr = manager:load(name, "General")
-		mesh = meshPtr:get()
+		local meshPtr = manager:load(name, "General")
+		local mesh = meshPtr:get()
 		
 		if mesh ~= nil then
 			--for now, since we don't have any good method for getting the submodel names yet we'll just use the index numbers
@@ -327,6 +327,8 @@ function ModelEdit_AddSubmodelButton_MouseClick(args)
 		
 		
 		ModelEdit_reloadModel()
+		--update the renderer so that the camera is repositioned and the complete model is shown
+		ModelEdit.renderer:showModel(ModelEdit.definition:getName())
 		ModelEdit_updateModelContentList()
 	end
 
@@ -393,6 +395,9 @@ function ModelEdit_NewModelOk_MouseClick(args)
 		ModelEdit.models:ensureItemIsVisible(item)	
 	end
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(false)
+	ModelEdit_loadModelDefinition(item:getText())
+	ModelEdit_reloadModel()
+	ModelEdit_updateModelContentList()
 end
 
 

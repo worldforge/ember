@@ -1,3 +1,11 @@
+2006-02-28 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * configure.ac: updated the requirements
+    * INSTALL.lyx: updated install instructions
+    * run: removed obsolete file
+    * src/components/ogre/EmberEntity.cpp, src/components/ogre/MotionManager.cpp: fixed a bug where a moving entity which got deleted caused a segfault
+    * src/components/ogre/widgets/ModelEdit.lua: fixed a bug where the preview wasn't updated when adding new submodels
+
 2006-02-27 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/WidgetInfo.h: removed obsolete file
