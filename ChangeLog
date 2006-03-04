@@ -1,3 +1,8 @@
+2006-03-04 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/CONTROLS: updated controls
+    * src/components/ogre/MotionManager.cpp: don't send update methods to removed entities since they will often be deleted when this happens, resulting in segfaults
+
 2006-02-28 Erik Hjortsberg  <erik@katastrof.nu>
 
     * configure.ac: updated the requirements

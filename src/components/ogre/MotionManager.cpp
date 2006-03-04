@@ -109,7 +109,7 @@ void MotionManager::addEntity(EmberEntity* entity)
 void MotionManager::removeEntity(EmberEntity* entity) 
 {
 	mMotionSet.erase(entity);
-	entity->updateMotion(0);
+//	entity->updateMotion(0);
 }
 
 
