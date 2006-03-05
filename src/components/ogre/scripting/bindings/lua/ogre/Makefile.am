@@ -5,4 +5,5 @@ METASOURCES = AUTO
 #liblua_scripting_a_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
 noinst_LIBRARIES = liblua_Ogre.a
 liblua_Ogre_a_SOURCES = lua_Ogre.cpp 
+noinst_HEADERS = required.h
 #endif

@@ -5,4 +5,5 @@ METASOURCES = AUTO
 #liblua_scripting_a_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
 noinst_LIBRARIES = liblua_Eris.a
 liblua_Eris_a_SOURCES = lua_Eris.cpp 
+noinst_HEADERS = required.h
 #endif

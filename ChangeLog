@@ -1,3 +1,10 @@
+2006-03-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * configure.ac: corrected the usage of PKG_CHECK_MODULES for checking for CEGUI-OGRE
+    * Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile.am, src/components/ogre/scripting/bindings/lua/Makefile.am, src/components/ogre/scripting/bindings/lua/helpers/Makefile.am, src/components/ogre/scripting/bindings/lua/ogre/Makefile.am, src/components/ogre/widgets/Makefile.am, src/framework/bindings/lua/Makefile.am, src/framework/bindings/lua/eris/Makefile.am, src/services/bindings/lua/Makefile.am,src/services/server/Makefile.am: distcheck fixes
+    * media/Makefile.am, media/packs/Makefile.am, media/packs/EmberCore.zip, src/components/ogre/resources.cfg: include EmberCore.zip in the installed data
+    * NEWS: updated
+
 2006-03-04 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/CONTROLS: updated controls

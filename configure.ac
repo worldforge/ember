@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_SYSTEM
 
 #AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 check-news])
-AM_INIT_AUTOMAKE([nostdinc dist-bzip2])
+AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2])
 AM_CONFIG_HEADER(src/config.h)
 
 AC_LIBTOOL_DLOPEN
@@ -228,7 +228,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.4,
 
 # Check for OGRE
 OGRE_VERSION=1.0.4
-PKG_CHECK_MODULES(OGRE, OGRE >= $OGRE_VERSION,
+PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
@@ -237,20 +237,9 @@ PKG_CHECK_MODULES(OGRE, OGRE >= $OGRE_VERSION,
 		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://www.ogre3d.org to get the latest, or check config.log to see why the tests failed, and fix it.)
 	])
 
-# Check for CEGUI
-#uncomment this when Ogre includes the CEGUI-OGRE.pc file again (should be the next release after 1.0.0)
-#PKG_CHECK_MODULES(CEGUI, CEGUI_OGRE >= 0.2,
-PKG_CHECK_MODULES(CEGUI-OGRE, CEGUI-OGRE >= $OGRE_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $CEGUI_OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $CEGUI_OGRE_LIBS"
-	],
-	[
-		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
-	])
 
 #remove this when Ogre includes the CEGUI-OGRE.pc file again
-LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
+#LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 
 
 AC_ARG_ENABLE(use_lua,
@@ -448,7 +437,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
-		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
@@ -459,6 +447,8 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
+		 media/Makefile
+		 media/packs/Makefile
 ])
 
 #		 src/tests/Makefile

@@ -1,6 +1,5 @@
 INCLUDES = -I$(top_srcdir)/src
-SUBDIRS = src
-EXTRA_DIST = run
+SUBDIRS = src media
 
 bin_SCRIPTS = ember
 dist_bin_SCRIPTS = ember
@@ -19,15 +18,3 @@ docdir = $(datadir)/doc/ember-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS NEWS
 
 
-current = $(PWD)
-
-dist-hook:
-	mkdir -p $(distdir)
-	(cd $(top_srcdir)/media/packs; tar cf - `find . -name \*` | ( cd $(current); cd $(distdir); tar xf -))
-
-install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/games/ember/media/packs/ 
-	(cd $(top_srcdir)/media/packs; tar cf - `find . -name \*`) | (cd $(DESTDIR)$(datadir)/games/ember/media/packs; tar xf -)
-
-uninstall-local:
-	find $(DESTDIR)$(datadir)/games/ember/media/packs/ -name  \* | xargs rm
