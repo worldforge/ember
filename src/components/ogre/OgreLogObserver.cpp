@@ -111,6 +111,25 @@ void OgreLogObserver::ConfigService_EventChangedConfigItem(const std::string& se
 	}
 }
 			
+			
+void OgreLogObserver::write( const Ogre::String& name,
+							const Ogre::String& message, 
+							Ogre::LogMessageLevel lml, 
+							bool maskDebug )
+{
+	switch (lml) {
+		case Ogre::LML_TRIVIAL:
+			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::VERBOSE,  message.c_str());
+			break;
+		case Ogre::LML_NORMAL:
+			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::INFO,  message.c_str());
+			break;
+		case Ogre::LML_CRITICAL:
+			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::FAILURE,  message.c_str());
+			break;
+	}
+}
+			
 
 
 

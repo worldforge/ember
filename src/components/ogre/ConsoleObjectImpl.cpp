@@ -29,7 +29,6 @@
 
 // local headers
 #include "ConsoleObjectImpl.h"
-#include "MediaDeployer.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 

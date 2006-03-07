@@ -32,7 +32,7 @@ namespace EmberOgre {
 A log observer which writes to the Ogre log system.
 */
 class OgreLogObserver: public Ember::LoggingService::Observer, 
-public sigc::trackable
+public sigc::trackable, public Ogre::LogListener
 {
 	public:
 		OgreLogObserver();
@@ -41,6 +41,11 @@ public sigc::trackable
 
 		virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
 								const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp);
+								
+		virtual void write( const Ogre::String& name,
+							const Ogre::String& message, 
+							Ogre::LogMessageLevel lml = Ogre::LML_NORMAL, 
+							bool maskDebug = false );
 		
 	protected:
 		
@@ -56,6 +61,7 @@ public sigc::trackable
 			* @param key 
 			*/
 		void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+		
 		
 };
 
