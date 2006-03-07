@@ -58,12 +58,14 @@ void OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 {
 	static const std::string& sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
 
-	try {
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-			sharedMediaPath + path, type, section, recursive);
-	} catch (const Ogre::Exception& ex) {
-		const std::string& message = ex.getFullDescription();
-		S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Error: "<< message);
+	if (isExistingDir(sharedMediaPath + path)) {
+		try {
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+				sharedMediaPath + path, type, section, recursive);
+		} catch (const Ogre::Exception& ex) {
+			const std::string& message = ex.getFullDescription();
+			S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Error: "<< message);
+		}
 	}
 
 }
@@ -73,21 +75,24 @@ void OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	static const std::string& userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
 	static const std::string& emberMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
 	
-	try {
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-			userMediaPath + path, type, section, recursive);
-	} catch (const Ogre::Exception&) {
-		///don't report anything
+	if (isExistingDir(userMediaPath + path)) {
+		try {
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+				userMediaPath + path, type, section, recursive);
+		} catch (const Ogre::Exception&) {
+			///don't report anything
+		}
 	}
 	
 	///try with ember-media
-	try {
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-			emberMediaPath + path, type, section, recursive);
-	} catch (const Ogre::Exception&) {
-		S_LOG_FAILURE("Couldn't load " + emberMediaPath + path + ". Continuing as if nothing happened.");
+	if (isExistingDir(emberMediaPath + path)) {
+		try {
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+				emberMediaPath + path, type, section, recursive);
+		} catch (const Ogre::Exception&) {
+			S_LOG_FAILURE("Couldn't load " + emberMediaPath + path + ". Continuing as if nothing happened.");
+		}
 	}
-
 }
 
 
@@ -167,6 +172,12 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		}
 	}
 
+}
+
+bool OgreResourceLoader::isExistingDir(const std::string& path) const
+{
+	struct stat tagStat;
+	return -1 != stat( path.c_str(), &tagStat );
 }
 
 
