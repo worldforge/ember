@@ -83,13 +83,13 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 {
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	Ogre::Vector3 position = sceneNode->getPosition();
+	const Ogre::Vector3& position = sceneNode->getPosition();
 	
 	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
 	} else if (entity->getMovementMode() == EmberEntity::MM_SWIMMING) {
 		///if it's swimming, make sure that it's between the sea bottom and the surface
-		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+		const TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
 		float height = mTerrainGenerator->getHeight(pos);
 		if (position.y < height) {
 			sceneNode->setPosition(position.x, height,position.z);
@@ -109,10 +109,11 @@ void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 
 }
 
-Ogre::Vector3 WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
+const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
 {
 	assert(mTerrainGenerator);
-	Ogre::Vector3 offset = Ogre::Vector3::ZERO;
+	///NOTE: won't work with threading!
+	static Ogre::Vector3 offset = Ogre::Vector3::ZERO;
 	float height = mTerrainGenerator->getHeight(Ogre2Atlas_TerrainPosition(localPosition));
 	offset.y = height - localPosition.y;
 	return offset;

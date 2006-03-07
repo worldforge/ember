@@ -97,7 +97,7 @@ public:
 	 * @param attachPoint 
 	 * @return a pointer to the EmberEntity, or 0 if none found
 	 */
-	EmberEntity* getEntityAttachedToPoint(const std::string attachPoint);
+	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
 
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 
@@ -111,7 +111,7 @@ public:
 
 protected: 
 
-	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
+	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	
 	/**
 	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system

@@ -137,18 +137,19 @@ void AvatarCamera::setMode(Mode mode)
 	
 }
 
-Ogre::Quaternion AvatarCamera::getOrientation(bool onlyHorizontal) const {
+const Ogre::Quaternion& AvatarCamera::getOrientation(bool onlyHorizontal) const {
 	if (!onlyHorizontal) {
 		return getCamera()->getWorldOrientation();
 	} else {
-		Quaternion quat = getCamera()->getWorldOrientation();
+		static Ogre::Quaternion quat;
+		quat = getCamera()->getWorldOrientation();
 		quat.x = 0;
 		quat.z = 0;
 		return quat;
 	}
 }
 
-Ogre::Vector3 AvatarCamera::getPosition() const
+const Ogre::Vector3& AvatarCamera::getPosition() const
 {
 	return mCamera->getWorldPosition();
 }
@@ -277,7 +278,7 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 	
 	raySceneQuery->setSortByDistance(true);
 	raySceneQuery->execute(); 
-	Ogre::RaySceneQueryResult result = raySceneQuery->getLastResults(); 
+	Ogre::RaySceneQueryResult& result = raySceneQuery->getLastResults(); 
 	   
 	//T *closestObject = *ptrClosestObject; 
 	Ogre::Real closestDistance = mClosestPickingDistance;
@@ -294,21 +295,20 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 		for ( ; 
 			rayIterator != rayIterator_end; 
 			rayIterator++ ) {
-			//only pick entities that have a userobject attached
+			///only pick entities that have a userobject attached
 
 			Ogre::MovableObject* movable = ( *rayIterator ).movable;
 			
 // 			if (movable && movable->getUserObject() != 0 && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
 			if (movable && movable->isVisible() && movable->getUserObject()) {
-				//check that it's not in the exclude list
-				bool isNotInInclude = true;
-				for (std::vector<Ogre::UserDefinedObject*>::iterator exclude_I = excludeStart; exclude_I != excludeEnd; ++exclude_I) {
-					if (*exclude_I == movable->getUserObject()) {
-						isNotInInclude = true;
-					}
+				///check that it's not in the exclude list
+				bool isExcluded = false;
+				std::vector<Ogre::UserDefinedObject*>::iterator excluded = std::find(excludeStart, excludeEnd, movable->getUserObject());
+				if (excluded != excludeEnd) {
+					isExcluded = true;
 				}
 				
-				if (isNotInInclude) {
+				if (!isExcluded) {
 					if ( ( *rayIterator ).distance < mClosestPickingDistance ) { 
 						finalResult.push_back(*rayIterator);
 					}
@@ -323,7 +323,8 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 	} else { 
 		S_LOG_INFO("Picked an entity.");
 	} 		
-	
+	///this must be destroyed by the scene manager
+	EmberOgre::getSingleton().getSceneManager()->destroyQuery(raySceneQuery);
 	return finalResult;
 	
 }
@@ -366,7 +367,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	raySceneQueryEntities->execute(); 
 	
 	//first check the terrain picking
-	Ogre::RaySceneQueryResult queryResult = raySceneQueryTerrain->getLastResults(); 
+	Ogre::RaySceneQueryResult& queryResult = raySceneQueryTerrain->getLastResults(); 
 	
 	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator = queryResult.begin( ); 
 	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end = queryResult.end( );
@@ -436,11 +437,13 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 		} 
 	}
 
+	///this must be destroyed by the scene manager
+	EmberOgre::getSingleton().getSceneManager()->destroyQuery(raySceneQueryEntities);
  
 	return result;
 }
 
-	bool AvatarCamera::worldToScreen(Ogre::Vector3& worldPos, Ogre::Vector3& screenPos) 
+	bool AvatarCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos) 
 	{ 
 		Ogre::Vector3 hcsPosition = mCamera->getProjectionMatrix() * (mCamera->getViewMatrix() * worldPos); 
 	

@@ -85,7 +85,7 @@ public:
 	/**
 	 * returns the current degrees of pitch from the cameras initial position
 	 */
-	Ogre::Degree getPitch() const
+	const Ogre::Degree& getPitch() const
 	{
 		return degreePitch;
 	}
@@ -93,7 +93,7 @@ public:
 	/**
 	 * returns the current degrees of yaw from the cameras initial position
 	 */
-	Ogre::Degree getYaw() const
+	const Ogre::Degree& getYaw() const
 	{
 		return degreeYaw;
 	}
@@ -111,14 +111,14 @@ public:
 	/**
 	 * Returns the current camera orientation in the world
 	 */
-	virtual Ogre::Quaternion getOrientation(bool onlyHorizontal = true) const;
+	virtual const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const;
 	
 	
 	/**
 	 *    Returns the position of the camera in the world.
 	 * @return 
 	 */
-	Ogre::Vector3 AvatarCamera::getPosition() const;
+	const Ogre::Vector3& getPosition() const;
 	
 	
 	void setMode(Mode mode);
@@ -156,7 +156,7 @@ public:
 	// second Vector2 
 	// returns false if the worldPos is off screen 
 	// 
-	bool worldToScreen(Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
+	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
 	
 	/**
 	 *    picks a point in the terrain

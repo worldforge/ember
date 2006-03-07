@@ -38,7 +38,7 @@ public:
 	virtual void adjustPositionForContainedNode(EmberEntity* const entity);
 
 protected:
-	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
+	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	TerrainGenerator* mTerrainGenerator;
 	
     virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);

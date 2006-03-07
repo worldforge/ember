@@ -72,6 +72,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 {
 
+	///we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w;
 	
 	try {
@@ -421,7 +422,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-	S_LOG_INFO("CEGUI - MAIN SHEET CAPTURING INPUT");
+	S_LOG_VERBOSE("Main sheet is capturing input");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 	if (aWindow) {
 		aWindow->releaseInput();
@@ -431,13 +432,11 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 	//mSheet->captureInput();
 
 	if (getMousePicker()) {
-		CEGUI::Point position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
-		Ogre::Real x = position.d_x;
-		Ogre::Real y = position.d_y;
+		const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
 		MousePickerArgs pickerArgs;
 		pickerArgs.windowX = mouseArgs.position.d_x;
 		pickerArgs.windowY = mouseArgs.position.d_y;
-		getMousePicker()->doMousePicking(x, y, pickerArgs);
+		getMousePicker()->doMousePicking(position.d_x, position.d_y, pickerArgs);
 	}
 
 
@@ -446,7 +445,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 
 bool GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
 {
-	S_LOG_INFO("CEGUI - MAIN SHEET RELEASE INPUT");
+	S_LOG_VERBOSE("Main sheet lost input");
 	return true;
 }
 
@@ -461,9 +460,8 @@ const bool GUIManager::isInGUIMode() const {
 void GUIManager::takeScreenshot()
 {
 	try {
-		std::string result = _takeScreenshot();
-		result = "Wrote image: " + result;
-		setDebugText(result);
+		const std::string& result = _takeScreenshot();
+		setDebugText("Wrote image: " + result);
 		S_LOG_INFO(result);
 		Ember::ConsoleBackend::getMainConsole()->pushMessage(result);
 	} catch (const Ember::Exception& ex) {
@@ -539,7 +537,7 @@ void GUIManager::pushMousePicker( MousePicker * mousePicker )
 
 MousePicker * GUIManager::popMousePicker()
 {
-	//only pop if there's more than one registered picker
+	///only pop if there's more than one registered picker
 	if (mMousePickers.size() > 1) 
 		mMousePickers.pop();
 	return mMousePickers.top();
@@ -547,7 +545,7 @@ MousePicker * GUIManager::popMousePicker()
 
 void GUIManager::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 {
-	//switch to movement mode, since it appears most people don't know how to change from gui mode
+	///switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput()->setInputMode(Input::IM_MOVEMENT);
 }
 

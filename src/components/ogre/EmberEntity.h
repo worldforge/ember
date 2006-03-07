@@ -161,7 +161,7 @@ public:
 	/**
 	* returns a list of all suggested responses
 	*/
-	std::vector<std::string> getSuggestedResponses() const;
+	const std::vector< std::string >& getSuggestedResponses() const;
 	
 	
 	/**
@@ -245,7 +245,7 @@ protected:
 	 * @param entity 
 	 * @return 
 	 */
-	virtual Ogre::Vector3 getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
+	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	
 
 	/**

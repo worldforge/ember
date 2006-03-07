@@ -56,13 +56,11 @@ EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0)
 {
 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
-	
 	if (getModel()->getRotation()) {
 		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
 	}
-	
-	mDefaultOgreBoundingBox = getModel()->getWorldBoundingBox(true);
-	
+	///make a copy of the original bbox
+	mDefaultOgreBoundingBox = mModel->getWorldBoundingBox(true);
 
 //	loadAnimationsFromModel();
 }
@@ -76,8 +74,8 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 		parent->removeAndDestroyChild(getScaleNode()->getName());
 	}
 	
-	//make sure it's not in the MotionManager
-	//TODO: keep a marker in the entity so we don't need to call this for all entities
+	///make sure it's not in the MotionManager
+	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeAnimatedEntity(this);
 
 /*
@@ -90,7 +88,7 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	*/
 }
 
-EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string attachPoint)
+EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& attachPoint)
 {
 	//first check with the attach points
 	std::string entityId;
@@ -158,11 +156,11 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 void EmberPhysicalEntity::connectEntities()
 {
 	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->GetDefaultContext();
-	const Model::Model::SubModelSet submodels = getModel()->getSubmodels();
+	const Model::Model::SubModelSet& submodels = getModel()->getSubmodels();
 	EmberEntityUserObject::CollisionObjectStore collisionObjects;
 	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{
-		std::string collideShapeName = std::string("entity_") + (*I)->getEntity()->getName();
+		std::string collideShapeName(std::string("entity_") + (*I)->getEntity()->getName());
 		OgreOpcode::CollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->NewShape(collideShapeName.c_str());
 		collideShape->Load((*I)->getEntity());
 		OgreOpcode::CollisionObject* collideObject = collideContext->NewObject();
@@ -230,7 +228,7 @@ Model::Model* EmberPhysicalEntity::getModel() const
 void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas::Message::Element& idElement)
 {
 	S_LOG_VERBOSE("Set " << wieldName << " to " << idElement.asString());
-	const std::string id = idElement.asString();
+	const std::string& id = idElement.asString();
 	if (id.empty()) {
 		detachEntity(wieldName);
 	} else {
@@ -255,8 +253,8 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 
 	//check if the changed attribute should affect any particle systems
 	if (mModel->hasParticles()) {
-		Model::ParticleSystemBindingsPtrSet bindings = mModel->getAllParticleSystemBindings();
-		for (Model::ParticleSystemBindingsPtrSet::iterator I = bindings.begin(); I != bindings.end(); ++I) {
+		const Model::ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
+		for (Model::ParticleSystemBindingsPtrSet::const_iterator I = bindings.begin(); I != bindings.end(); ++I) {
 			if ((*I)->getVariableName() == str && v.isNum()) {
 				(*I)->scaleValue(v.asNum());
 			}
@@ -329,14 +327,14 @@ void EmberPhysicalEntity::onChildRemoved(Entity *e)
 
 void EmberPhysicalEntity::scaleNode() {
 		
-	const Ogre::Vector3 ogreMax = mDefaultOgreBoundingBox.getMaximum();
-	const Ogre::Vector3 ogreMin = mDefaultOgreBoundingBox.getMinimum();
+	const Ogre::Vector3& ogreMax = mDefaultOgreBoundingBox.getMaximum();
+	const Ogre::Vector3& ogreMin = mDefaultOgreBoundingBox.getMinimum();
 	
 	if (hasBBox()) {
 
-		const WFMath::AxisBox<3> wfBoundingBox = getBBox();	
-		const WFMath::Point<3> wfMax = wfBoundingBox.highCorner();
-		const WFMath::Point<3> wfMin = wfBoundingBox.lowCorner();
+		const WFMath::AxisBox<3>& wfBoundingBox = getBBox();	
+		const WFMath::Point<3>& wfMax = wfBoundingBox.highCorner();
+		const WFMath::Point<3>& wfMin = wfBoundingBox.lowCorner();
 		
 		Ogre::Real scaleX;		
 		Ogre::Real scaleY;		
@@ -389,10 +387,10 @@ void EmberPhysicalEntity::scaleNode() {
 		
 }
 
-Ogre::Vector3 EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity)
+const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity)
 {
 	///if the model has an offset specified, use that, else just send to the base class
-	Ogre::Vector3* offset = getModel()->getDefinition()->getContentOffset();
+	const Ogre::Vector3* offset = getModel()->getDefinition()->getContentOffset();
 	if (offset != 0) {
 		return *offset;
 	} else {

@@ -728,8 +728,7 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	if (mVisible) {
 	 	for (; I != I_end; ++I) {
-			SubModel* submodel = *I;
-			submodel->getEntity()->_notifyCurrentCamera(cam);		
+			(*I)->getEntity()->_notifyCurrentCamera(cam);		
 		}
 		
 		// Notify any child objects
@@ -737,7 +736,7 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 		Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
 		for( ; child_itr != child_itr_end; child_itr++)
 		{
-			(*child_itr).second->_notifyCurrentCamera(cam);
+			child_itr->second->_notifyCurrentCamera(cam);
 		}
 	}
 	
@@ -750,9 +749,7 @@ void Model::setUserObject (Ogre::UserDefinedObject *obj)
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
- 		SubModel* submodel = *I;
-		Ogre::Entity* entity = submodel->getEntity();
-		entity->setUserObject(obj);
+		(*I)->getEntity()->setUserObject(obj);
 	}
 }
 
@@ -763,8 +760,7 @@ void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		SubModel* submodel = *I;
-		submodel->getEntity()->setRenderQueueGroup(queueID);
+		(*I)->getEntity()->setRenderQueueGroup(queueID);
 	}
 		
 }
@@ -779,9 +775,7 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
 	for( ; child_itr != child_itr_end; child_itr++)
 	{
-		SubModel* submodel = *child_itr;
-             
-		mFull_aa_box.merge(submodel->getEntity()->getBoundingBox());
+		mFull_aa_box.merge((*child_itr)->getEntity()->getBoundingBox());
 	}
 
 	return mFull_aa_box;
@@ -798,9 +792,7 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 
 	for( ; child_itr != child_itr_end; child_itr++)
 	{
-		SubModel* submodel = *child_itr;
-
- 		mWorldFull_aa_box.merge(submodel->getEntity()->getWorldBoundingBox(derive));
+ 		mWorldFull_aa_box.merge((*child_itr)->getEntity()->getWorldBoundingBox(derive));
 	}
 	 
 	return mWorldFull_aa_box;
@@ -808,14 +800,12 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 
 Ogre::Real Model::getBoundingRadius() const
 {
-	Ogre::Real rad = 0;
+	Ogre::Real rad(0);
 	SubModelSet::const_iterator child_itr = mSubmodels.begin();
 	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
 	for( ; child_itr != child_itr_end; child_itr++)
 	{
-		SubModel* submodel = *child_itr;
-		Ogre::Real newRad = submodel->getEntity()->getBoundingRadius();
-        rad = std::max(rad, newRad);
+        rad = std::max<Ogre::Real>(rad, (*child_itr)->getEntity()->getBoundingRadius());
 	}
     return rad;
 
@@ -832,8 +822,7 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 		SubModelSet::const_iterator I = mSubmodels.begin();
 		SubModelSet::const_iterator I_end = mSubmodels.end();
 		for (; I != I_end; ++I) {
-			SubModel* submodel = *I;
-			submodel->getEntity()->_updateRenderQueue(queue);
+			(*I)->getEntity()->_updateRenderQueue(queue);
 		}
 		
 		if (getSkeleton() != 0) {
@@ -843,9 +832,9 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 			for( ; child_itr != child_itr_end; child_itr++)
 			{
 				///make sure to do _update here, else attached entities won't be updated if no animation is playing
-				(*child_itr).second->getParentNode()->_update(true, true);
-				if ((*child_itr).second->isVisible())
-					(*child_itr).second->_updateRenderQueue(queue);
+				child_itr->second->getParentNode()->_update(true, true);
+				if (child_itr->second->isVisible())
+					child_itr->second->_updateRenderQueue(queue);
 			}
 		}
 		
@@ -873,8 +862,7 @@ void Model::setQueryFlags(unsigned long flags)
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		SubModel* submodel = *I;
-		submodel->getEntity()->setQueryFlags(flags);
+		(*I)->getEntity()->setQueryFlags(flags);
 	}
 }
 
@@ -884,8 +872,7 @@ void Model::addQueryFlags(unsigned long flags)
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		SubModel* submodel = *I;
-		submodel->getEntity()->addQueryFlags(flags);
+		(*I)->getEntity()->addQueryFlags(flags);
 	}
 	
 }
@@ -900,8 +887,7 @@ void Model::removeQueryFlags(unsigned long flags)
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		SubModel* submodel = *I;
-		submodel->getEntity()->removeQueryFlags(flags);
+		(*I)->getEntity()->removeQueryFlags(flags);
 	}
 	
 }
@@ -918,8 +904,7 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		SubModel* submodel = *I;
-		submodel->getEntity()->_notifyAttached(parent, isTagPoint);
+		(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
 	}
 }
 

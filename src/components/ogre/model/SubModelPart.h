@@ -28,7 +28,7 @@ public:
  	void show();
  	void hide();
  	
- 	const std::string getName() const;
+ 	const std::string& getName() const;
 	
 	const SubEntitySet& getSubentities() const;
 

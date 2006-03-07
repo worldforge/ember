@@ -187,7 +187,7 @@ void EmberEntity::updateMotion(Ogre::Real timeSlice)
 void EmberEntity::onMoved()
 {
 	Eris::Entity::onMoved();
-	WFMath::Quaternion orient = getOrientation();
+	const WFMath::Quaternion& orient = getOrientation();
 	getSceneNode()->setOrientation(Atlas2Ogre(orient));
 	updateMotion(0);
 }
@@ -252,7 +252,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	std::string message = "<";
 	message.append(getName());
 	message.append(",");
-	const std::string type = getType()->getName(); // Eris type as a string
+	const std::string& type = getType()->getName(); // Eris type as a string
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
@@ -318,19 +318,17 @@ void EmberEntity::adjustPosition()
 	}	
 }
 
-Ogre::Vector3 EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
+const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
 {
-	Ogre::Vector3 offset = Ogre::Vector3::ZERO;
 	///send it upwards until we get a an entity which knows how to set the position (we'll in most cases end up in the world which will adjust the height a bit
 	EmberEntity* container = getEmberLocation();
 	if (container) {
 		//TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
-		offset = container->getOffsetForContainedNode(localPosition + getSceneNode()->getPosition(), entity);
+		return container->getOffsetForContainedNode(localPosition + getSceneNode()->getPosition(), entity);
+	} else {
+		return Ogre::Vector3::ZERO;
 	}
 	
-	///adjust the height after our own height
-	//newPosition.y -= getSceneNode()->getPosition().y;
-	return offset;
 	
 }
 
@@ -341,7 +339,7 @@ void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	//Ogre::Vector3 position = sceneNode->getPosition();
-	Ogre::Vector3 offset = getOffsetForContainedNode(sceneNode->getPosition(), entity);
+	const Ogre::Vector3& offset = getOffsetForContainedNode(sceneNode->getPosition(), entity);
 	if (offset != Ogre::Vector3::ZERO) {
 		sceneNode->setPosition(Atlas2Ogre( entity->getPredictedPos() ) + offset);
 	}
@@ -406,7 +404,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		///since else we'll get a "gap" when we're waiting on updated positions from the server
 		///this isn't optimal
 		if (isMoving()) {
-			const Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
+			const Ogre::Vector3& newWorldPosition = getSceneNode()->getWorldPosition();
 			getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 		}
 	}
@@ -446,7 +444,7 @@ bool EmberEntity::allowVisibilityOfMember(EmberEntity* entity) {
 	return true;
 }
 
-std::vector< std::string > EmberEntity::getSuggestedResponses( ) const
+const std::vector< std::string >& EmberEntity::getSuggestedResponses( ) const
 {
 	return mSuggestedResponses;
 }

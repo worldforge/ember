@@ -312,13 +312,15 @@ void Avatar::attemptRotate(AvatarControllerMovement& movement)
 	if (!movement.isMoving && fabs(getAvatarCamera()->getYaw().valueDegrees()) > mThresholdDegreesOfYawForAvatarRotation) {
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
 		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
-		getAvatarCamera()->yaw(-getAvatarCamera()->getYaw());
+		Ogre::Degree yaw = getAvatarCamera()->getYaw();
+		getAvatarCamera()->yaw(-yaw);
 //		mAccumulatedHorizontalRotation = 0;
 	} else if (isOkayToSendRotationMovementChangeToServer() && (getAvatarCamera()->getYaw().valueDegrees())) {
 		// rotate the Avatar Node only in X position (no vertical rotation)
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
 		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
-		getAvatarCamera()->yaw(-getAvatarCamera()->getYaw());
+		Ogre::Degree yaw = getAvatarCamera()->getYaw();
+		getAvatarCamera()->yaw(-yaw);
 
 //		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
 //		mAccumulatedHorizontalRotation = 0;

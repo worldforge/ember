@@ -25,7 +25,7 @@ bool SubModelPart::removeSubEntity(Ogre::SubEntity* subentity)
 	return true;
 }
 
-const std::string SubModelPart::getName() const
+const std::string& SubModelPart::getName() const
 {
 	return mName;	
 }
