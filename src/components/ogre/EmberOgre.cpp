@@ -121,6 +121,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "framework/osdir.h"
 #include "framework/binreloc.h"
+#include "framework/StreamLogObserver.h"
 
 #include "framework/Exception.h"
 #include "OgreLogObserver.h"
@@ -134,14 +135,14 @@ template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Sing
 
 namespace EmberOgre {
 
-	void assureConfigFile(std::string filename, std::string originalConfigFileDir)
+	void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
 	{
 		struct stat tagStat;
 		int ret = stat( filename.c_str(), &tagStat );
 		if (ret == -1) {
 			ret = stat( (originalConfigFileDir +filename).c_str(), &tagStat );
 			if (ret == 0) {
-				//copy conf file from shared
+				///copy conf file from shared
 				std::ifstream  instream ((originalConfigFileDir + filename).c_str());
 				std::ofstream  outstream (filename.c_str()); 
 				outstream <<  instream.rdbuf();
@@ -216,7 +217,7 @@ mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
 mEmberEntityFactory(0), 
-mOgreResourceLoader(0), mPollEris(true)
+mOgreResourceLoader(0), mPollEris(true), mLogObserver(0)
 {}
 
 EmberOgre::~EmberOgre()
@@ -361,6 +362,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	}
 #endif
 
+// 	
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
 	///why is this a pointer? Well, it's only because we want to keep the number of include headers in the EmberOgre.h file down
@@ -428,7 +430,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		EventGUIManagerCreated.emit(*mGUIManager);
 	} catch (...) {
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		return false;
+		throw Ogre::Exception(0, "Could not load gui, aborting. Make sure that all media got downloaded (currently this requires java 1.4+.", "EmberOgre.cpp");
 	}
     
 	
@@ -461,17 +463,17 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		EventGUIManagerInitialized.emit(*mGUIManager);
 	} catch (...) {
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		return false;
+		throw Ogre::Exception(0, "Could not load gui, aborting. Make sure that all media got downloaded (currently this requires java 1.4+.", "EmberOgre.cpp");
 	}
 	
-	// Create the scene
+	/// Create the scene
     createScene();
 	EventSceneCreated.emit();
 	
-	//this should be in a separate class, a separate plugin even
+	///this should be in a separate class, a separate plugin even
 	setupJesus();
 	
-	// Back to full rendering
+	/// Back to full rendering
  	mSceneMgr->clearSpecialCaseRenderQueues();
  	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_EXCLUDE);
 
@@ -625,23 +627,12 @@ void EmberOgre::checkForConfigFiles()
 
 	const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
-	//make sure that there are files 
+	///make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
-//	assureConfigFile("resources.cfg", sharePath);
 	assureConfigFile("plugins.cfg", sharePath);
-	//assureConfigFile("terrain.cfg", sharePath);
 }
 
-void EmberOgre::getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section, std::string type)
-{
-// 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists(section, variableName)) {
-// 		std::string value =  Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + std::string(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue(section, variableName)) + "/";
-// 		manager->addArchiveEx(value, type);
-// 	} else {
-// 		//throw new Exception(std::string("Could not find setting: ") + variableName + " in section " + section + ".");
-// 	}
 
-} 
 
 /// Method which will define the source of resources (other than current folder)
 void EmberOgre::setupResources(void)
@@ -669,33 +660,9 @@ void EmberOgre::preloadMedia(void)
 		try {
 			Ogre::TextureManager::getSingleton().load(*I, "General");
 		} catch (const Ogre::Exception& e) {
-			S_LOG_FAILURE( "Error when loading texture " << *I )
+			S_LOG_FAILURE( "Error when loading texture " << *I );
 		}
 	}	
-	  
-	
-	//TODO: use C++ io methods
-// 	DIR *dp;
-// 	struct dirent *ep;
-// 	
-// 	std::string modeldefDir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberDataDirectory() + "media/modeldefinitions";
-// 	dp = opendir (modeldefDir.c_str());
-// 	if (dp != NULL)
-// 	{
-// 		while (ep = readdir (dp)) {
-// 			std::string filename(ep->d_name);
-// 			if (ep->d_name != "." && ep->d_name != ".." && filename.find(".modeldef")) {
-// 				try {
-// 					S_LOG_INFO(  "TRACE - PRELOADING: "<< ep->d_name);
-// 					ModelDefinitionPtr modeldef = mModelDefinitionManager->load(ep->d_name, "modeldefinitions");
-// 				} catch (Ogre::Exception ex)
-// 				{
-// 					S_LOG_FAILURE( "TRACE - ERROR PRELOADING: " <<ep->d_name );
-// 				}
-// 			}
-// 		}
-// 		(void) closedir (dp);
-// 	}
 	
 	//only autogenerate trees if we're not using the pregenerated ones
  	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) { 
@@ -717,8 +684,7 @@ void EmberOgre::setupJesus()
 	mJesus = new Jesus(carpenter);
 	XMLJesusSerializer serializer(mJesus);
 
-	std::string dir;
-	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/blockspec";
+	std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/blockspec");
 
 	std::string filename;
 
@@ -928,16 +894,27 @@ bool EmberOgre::getErisPolling() const
 
 void EmberOgre::initializeEmberServices(const std::string& prefix)
 {
-	// Initialize Ember services
-	S_LOG_INFO( "Initializing Ember Services");
+	/// Initialize Ember services
+	std::cout << "Initializing Ember services" << std::endl;
 
-	// Initialize the Logging service and an error observer
+	/// Initialize the Logging service and an error observer
 	new Ember::EmberServices();
 	Ember::LoggingService *logging = Ember::EmberServices::getSingletonPtr()->getLoggingService();
-	OgreLogObserver* obs = new OgreLogObserver();
-	//default to INFO, though this can be changed by the config file
- 	obs->setFilter(Ember::LoggingService::INFO);
- 	logging->addObserver(obs);
+	mLogObserver = new OgreLogObserver();
+	///default to INFO, though this can be changed by the config file
+ 	mLogObserver->setFilter(Ember::LoggingService::INFO);
+ 	///if we do this we will override the automatic creation of a LogManager and 
+ 	new Ogre::LogManager();
+ 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
+ 	Ogre::LogManager::getSingleton().addListener(mLogObserver);
+ 	
+	///output all logging to ember.log
+	std::string filename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/ember.log");
+	static std::ofstream outstream(filename.c_str());
+	mStreamLogObserver = new Ember::StreamLogObserver(outstream);
+	logging->addObserver(mStreamLogObserver);
+ 	
+	//logging->addObserver(mLogObserver);
 
 
 	// Initialize the Configuration Service
@@ -969,43 +946,16 @@ void EmberOgre::initializeEmberServices(const std::string& prefix)
 
 
 	//Initialize the Sound Service
-	S_LOG_INFO( "Initializing Sound Service");
 
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- CHECKING SOUND SERVICE " << std::endl;
-	std::cout << "************************************" << std::endl;
-#ifndef WIN32
-	// Test that /dev/dsp is availible
-	FILE *temp = fopen("/dev/dsp","w");
-	if (temp) {
-	  fclose(temp);
-#endif
-#ifndef WIN32
 	// Initialize the SoundService
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- INITIALIZING SOUND SERVICE" << std::endl;
-	std::cout << "************************************" << std::endl;
-	S_LOG_INFO("************** TEST LOG ****************");
-	Ember::EmberServices::getSingletonPtr()->getSoundService()->start();
-	Ember::EmberServices::getSingletonPtr()->getSoundService()->registerSoundProvider(new OgreSoundProvider());
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- SOUND SERVICE INITIALIZED" << std::endl;
-	std::cout << "************************************" << std::endl;
-#endif
-#ifndef WIN32
-	} else {
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- ERROR: /dev/dsp NOT AVAILABLE" << std::endl;
-		std::cout << "************************************" << std::endl;
+	if (Ember::EmberServices::getSingletonPtr()->getSoundService()->start() == Ember::Service::OK) {
+		Ember::EmberServices::getSingletonPtr()->getSoundService()->registerSoundProvider(new OgreSoundProvider());
 	}
-#endif
 
 
 	// Initialize and start the Metaserver Service.
 	// Set Eris Logging Level
 	S_LOG_INFO("Initializing MetaServer Service");
-
-	Eris::setLogLevel(Eris::LOG_DEBUG);
 
  	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->start();
 	//hoho, we get linking errors if we don't do some calls to the service
@@ -1077,6 +1027,7 @@ int main(int argc, char **argv)
 	}
 
 	if (exit_program) {
+		chdir("~/.ember");
 		return 0;
 	}
 	
@@ -1115,17 +1066,11 @@ int main(int argc, char **argv)
 
 #endif
 
-    // Create application object
+    /// Create application object
     EmberOgre::EmberOgre app;
 
-	// Initialize all Ember services needed for this application
-	std::cout << "*************************************" << std::endl;
-	std::cout << "TRACE --- INITIALIZING EMBER SERVICES" << std::endl;
-	std::cout << "*************************************" << std::endl;
+	/// Initialize all Ember services needed for this application
 	app.initializeEmberServices(prefix);
-	std::cout << "************************************" << std::endl;
-	std::cout << "TRACE --- EMBER SERVICES INITIALIZED" << std::endl;
-	std::cout << "************************************" << std::endl;
 
     try {
         app.go(useBinreloc);
@@ -1139,6 +1084,7 @@ int main(int argc, char **argv)
     }
 
 
+    chdir("~/.ember");
     return 0;
 }
 

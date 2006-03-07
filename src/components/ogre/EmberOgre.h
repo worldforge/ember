@@ -49,6 +49,11 @@ class Carpenter;
 class BluePrint;
 }
 
+namespace Ember
+{
+class StreamLogObserver;
+}
+
 
 namespace EmberOgre {
 
@@ -85,6 +90,8 @@ class Jesus;
 class EmberEntity;
 
 class OgreResourceLoader;
+
+class OgreLogObserver;
 
 
 
@@ -294,8 +301,6 @@ protected:
 	 */
 	void preloadMedia(void);
 
-	void getResourceArchiveFromVarconf(Ogre::ResourceManager* manager, std::string variableName, std::string section = "media", std::string type = "FileSystem");
-
 	/**
 	
 	makes sure that there are files in ~/.ember
@@ -334,7 +339,13 @@ protected:
 	*/
 	bool mPollEris;
 
-
+	/**
+	The main log observer used for all logging.
+	*/
+	OgreLogObserver* mLogObserver;
+	
+	Ember::StreamLogObserver* mStreamLogObserver;
+	
 };
 
 }
