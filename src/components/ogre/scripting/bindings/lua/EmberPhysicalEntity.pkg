@@ -22,7 +22,7 @@ class EmberPhysicalEntity : public EmberEntity{
 
 	virtual bool getShowOgreBoundingBox();
 	
-	EmberEntity* getEntityAttachedToPoint(const std::string attachPoint);
+	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
 
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 

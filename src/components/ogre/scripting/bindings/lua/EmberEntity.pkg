@@ -24,7 +24,7 @@ class EmberEntity : public Eris::Entity {
 	
 	bool hasSuggestedResponses() const;
 	
-	std::vector<std::string> getSuggestedResponses() const;
+	const std::vector< std::string >& getSuggestedResponses() const;
 	
 	virtual void setVisible(bool visible);
 	

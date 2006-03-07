@@ -1,3 +1,35 @@
+2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/scripting/bindings/lua/AvatarCamera.pkg, src/components/ogre/scripting/bindings/lua/EmberEntity.pkg, src/components/ogre/scripting/bindings/lua/EmberPhysicalEntity.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h, src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h, src/components/ogre/Avatar.cpp, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/model/Model.cpp, src/components/ogre/model/SubModelPart.cpp, src/components/ogre/model/SubModelPart.h, src/components/ogre/GUIManager.cpp: cleaned up value passing to in most places be by reference instead of by value
+
+2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: 
+        * cleaned up old coder
+        * change the way logging is done. The default now is to log to the file ~/.ember/ember.log, with ogre log messages passing being sent to Ember, instead of the other way around. This means that we can do logging earlier and also have better control over it.
+
+2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/OgreLogObserver.cpp, src/components/ogre/OgreLogObserver.h: added the ability to also filter from Ogre to Ember
+    * src/components/ogre/ConsoleObjectImpl.cpp: removed obsolete reference to MediaDeployer
+    
+2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreResourceLoader.*: test for existance of direcotories before trying to load them
+	
+2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/logging/LoggingService.h: increase the size of the message buffer
+    * src/services/sound/SoundService.cpp: 
+        * moved tests from EmberOgre to here
+        * use the logging service for logging
+    * src/services/config/ConfigService.cpp: use the logging service for logging
+    * src/framework/StreamLogObserver.cpp: cleaned up the log output
+
 2006-03-05 Erik Hjortsberg  <erik@katastrof.nu>
 
     * configure.ac: corrected the usage of PKG_CHECK_MODULES for checking for CEGUI-OGRE

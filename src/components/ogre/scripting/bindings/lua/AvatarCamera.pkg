@@ -28,34 +28,38 @@ public:
 	/**
 	 * returns the current degrees of pitch from the cameras initial position
 	 */
-	Ogre::Degree getPitch() const;
+	const Ogre::Degree& getPitch() const;
 	
 	/**
 	 * returns the current degrees of yaw from the cameras initial position
 	 */
-	Ogre::Degree getYaw() const;
+	const Ogre::Degree& getYaw() const;
 	
 	/**
 	 * returns a pointer to the Ogre::Camera instance 
 	 */
-	virtual Ogre::Camera* getCamera();
-	virtual Ogre::Camera* getCamera() const;
+	Ogre::Camera* getCamera();
+	Ogre::Camera* getCamera() const;
 	
 	/**
 	 * Returns the current camera orientation in the world
 	 */
-	virtual Ogre::Quaternion getOrientation(bool onlyHorizontal = true) const;
+	const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const;
 	
 	
 	/**
 	 *    Returns the position of the camera in the world.
 	 * @return 
 	 */
-	Ogre::Vector3 getPosition() const;
+	const Ogre::Vector3& getPosition() const;
 	
 	
 	void setMode(Mode mode);
 	
+	/**
+	 * sets the node to which the camera is attached
+	 */
+	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
 	
 	/**
 	* emitted when the camra moves
@@ -66,19 +70,30 @@ public:
 	* emitted when the distance between the camera and the avatar has changed
     * @param Ogre::Real the new distance
 	*/
-	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
+	sigc::signal<void, float> EventChangedCameraDistance;
 	
-	void setClosestPickingDistance(Ogre::Real distance);
-	Ogre::Real getClosestPickingDistance();
+
+	EmberOgre::EntityPickResult pickAnEntity(float mouseX, float mouseY);
+	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(float mouseX, float mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
+
+	void setClosestPickingDistance(float distance);
+	float getClosestPickingDistance();
+
+	// worldToScreenPos 
+	// 
+	// returns true if the worldPos is on screen, putting the screen pos into the x & y of the 
+	// second Vector2 
+	// returns false if the worldPos is off screen 
+	// 
+	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
 
 	void attach(Ogre::SceneNode* toNode);
-	
 	
 	/**
 	 *    Sets the distance from the camera to the avatar.
 	 * @param distance the new distance
 	 */
-	void setCameraDistance(Ogre::Real distance);
+	void setCameraDistance(float distance);
 	
 };
 
