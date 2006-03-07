@@ -72,9 +72,17 @@ namespace Ember
 	{
 
 		S_LOG_INFO("Sound Service starting");
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- SOUND SERVICE STARTING ***" << std::endl;
-		std::cout << "************************************" << std::endl;
+		
+	#ifndef WIN32
+		// Test that /dev/dsp is availible
+		FILE *temp = fopen("/dev/dsp","w");
+		if (temp) {
+			fclose(temp);
+		} else {
+			return Service::FAILURE;
+		}
+	#endif
+		
 		ALfloat listenerPos[3]={0.0,0.0,0.0};	// listener position
 		ALfloat listenerVel[3]={0.0,0.0,0.0};	// listener velocity
 		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};	// listener orientation
@@ -85,22 +93,12 @@ namespace Ember
 
 		// Initialize OpenAL
 		S_LOG_VERBOSE("Initializing OpenAL");
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- INITIALIZING OPENAL ***" << std::endl;
-		std::cout << "************************************" << std::endl;
 
 		if(!alutInit(NULL,0)) {
-			S_LOG_FAILURE( "Error initiatin AL" )
-			std::cout << "***************************************" << std::endl;
-			std::cout << "TRACE --- ERROR INITIALIZING OPENAL ***" << std::endl;
-			std::cout << alutGetErrorString(alutGetError()) << "***" << std::endl;
-			std::cout << "***************************************" << std::endl;
+			S_LOG_FAILURE( "Error initiatin AL: " << alutGetErrorString(alutGetError()) );
 			return Service::FAILURE;
 		} else {
-			S_LOG_INFO( "AL initiated"  )
-			std::cout << "************************************" << std::endl;
-			std::cout << "TRACE --- OPENAL initialized ***" << std::endl;
-			std::cout << "************************************" << std::endl;
+			S_LOG_INFO( "AL initiated"  );
 		}
 
 		// set listener initial parameters
@@ -117,14 +115,14 @@ namespace Ember
 		alGenBuffers(1,&systemBuffer);
 		if (!alIsBuffer(systemBuffer))
 		{
-			S_LOG_FAILURE("Error creating system buffer")
+			S_LOG_FAILURE("Error creating system buffer");
 			return Service::FAILURE;
 		}
 
 		alGenBuffers(1,&musicBuffer);
 		if (!alIsBuffer(musicBuffer))
 		{
-			S_LOG_FAILURE("Error creating music buffer")
+			S_LOG_FAILURE("Error creating music buffer");
 			return Service::FAILURE;
 		}
 
@@ -133,29 +131,26 @@ namespace Ember
 		{
 			if (!alIsBuffer(worldBuffers[i]))
 			{
-				S_LOG_FAILURE( "Error creating world buffers" )
+				S_LOG_FAILURE( "Error creating world buffers" );
 				return Service::FAILURE;
 			}
 		}
 
 		
 		// Generate sources
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- GENERATING SOURCES ***" << std::endl;
-		std::cout << "************************************" << std::endl;
 
 		S_LOG_VERBOSE("Generating Sources");
 		alGenSources(1,&systemSource);
 		if (!alIsSource(systemSource))
 		{
-			S_LOG_FAILURE("Error creating system source")
+			S_LOG_FAILURE("Error creating system source");
 			return Service::FAILURE;
 		}
 
 		alGenSources(1,&musicSource);
 		if (!alIsSource(musicSource))
 		{
-			S_LOG_FAILURE("Error creating music source")
+			S_LOG_FAILURE("Error creating music source");
 			return Service::FAILURE;
 		}
 
@@ -170,9 +165,6 @@ namespace Ember
 		}
 
 		// Register service commands with the console
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- REGISTERING CONSOLE COMMANDS ***" << std::endl;
-		std::cout << "************************************" << std::endl;
 		S_LOG_VERBOSE("Registering Sound Service commands");
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYSOUND,this);
 		ConsoleBackend::getMainConsole()->registerCommand(PLAYMUSIC,this);
@@ -185,9 +177,6 @@ namespace Ember
 		setStatusText("Sound Service status OK.");
 
 		S_LOG_INFO("Sound Service initialized");
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- SOUND SERVICE INITIALIZED ***" << std::endl;
-		std::cout << "************************************" << std::endl;
 		return Service::OK;
 
 	}

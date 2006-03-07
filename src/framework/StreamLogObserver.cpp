@@ -58,22 +58,15 @@ namespace Ember {
                                                  const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
     {
         tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
-            
+        
         myOut.fill('0');
         myOut << "[";
-        myOut.width(2);		
-        myOut << (ctm->tm_year/*+1900*/)%100 << "-";
-        myOut.width(2);					
-        myOut << ctm->tm_mon+1 << "-";
-        myOut.width(2);			
-        myOut << ctm->tm_mday << " ";
         myOut.width(2);
         myOut << ctm->tm_hour << ":";
         myOut.width(2);
         myOut <<  ctm->tm_min << ":";
         myOut.width(2);			
         myOut << ctm->tm_sec << "] ";			
-        myOut  << "[File: " << file << ", Line #:" <<  line << "] (";
 
         if(importance == Ember::LoggingService::CRITICAL)
             {
@@ -95,7 +88,7 @@ namespace Ember {
             {
                 myOut << "VERBOSE";
             }
-        myOut << ") " <<message << std::endl;
+        myOut << " " << message << " [File: " << file << ", Line #:" <<  line << "]" << std::endl;
 
     }
 }; //end namespace Ember

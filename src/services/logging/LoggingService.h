@@ -62,7 +62,7 @@ namespace Ember
 	
 //TODO: Sorry, but innerclass didn't work properly
     const int NUMBER_BUFFER_SIZE = 24;
-    const int MESSAGE_BUFFER_SIZE = 1024;
+    const int MESSAGE_BUFFER_SIZE = 4096;
 
 /**
  * Easy-to-deal-with logging class.
