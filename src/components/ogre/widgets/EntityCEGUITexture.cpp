@@ -193,39 +193,21 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 
 void EntityCEGUITexture::showFull(const Ogre::MovableObject* object)
 {
-	mEntityNode->_update(true, true);
-	Ogre::Real distance = object->getBoundingRadius() / Ogre::Math::Tan(mCamera->getFOVy() / 2);
-	///we can't have a distance of 0
-	if (distance == 0) {
-		distance = 1;
-	}
-	Ogre::Real distanceNudge = distance / 100;
-	distance += distanceNudge;
-	
-	mDefaultCameraDistance = distance;
-	
-	setCameraDistance(distance);
-
-/*		Ogre::Vector3 position = Ogre::Vector3::ZERO;
+	///only do this if there's an active object
+	if (object) {
+		mEntityNode->_update(true, true);
+		Ogre::Real distance = object->getBoundingRadius() / Ogre::Math::Tan(mCamera->getFOVy() / 2);
+		///we can't have a distance of 0
+		if (distance == 0) {
+			distance = 1;
+		}
+		Ogre::Real distanceNudge = distance / 100;
+		distance += distanceNudge;
 		
-		position.y = position.y;
-		position.x = position.x;
-		position.z = distance;
-		mDefaultCameraPosition = position;
-		mCamera->setPosition(position);*/
-	
-/*	Ogre::AxisAlignedBox bbox = mEntityNode->_getWorldAABB();
-	Ogre::Vector3 center = bbox.getCenter();
-	
-	mCamera->lookAt(center);*/
-	
-	
-	
-	
-/*	Ogre::Vector3 screenCoords;
-	bool result = false;
-	//check what the new position is in screen coords
-	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);*/
+		mDefaultCameraDistance = distance;
+		
+		setCameraDistance(distance);
+	}
 	
 }
 

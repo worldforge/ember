@@ -1,3 +1,7 @@
+2006-03-13 Erik Hjortsberg  <erik@katastrof.nu>
+
+   * src/components/ogre/widgets/EntityCEGUITexture.cpp: fixed a segfault bug
+
 2006-03-07 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/scripting/bindings/lua/AvatarCamera.pkg, src/components/ogre/scripting/bindings/lua/EmberEntity.pkg, src/components/ogre/scripting/bindings/lua/EmberPhysicalEntity.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
