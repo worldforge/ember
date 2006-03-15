@@ -48,7 +48,7 @@ namespace Model {
     //-----------------------------------------------------------------------
 
 
-ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0)
+ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0), mShowModels(true)
 {
     mLoadOrder = 300.0f;
     mResourceType = "ModelDefinition";
@@ -130,12 +130,23 @@ Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogr
      return new ModelDefinition(this, name, handle, group, isManual, loader);
 }
 
-std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
+const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 {
 	//std::vector<std::string> meshes;
-	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
+	const Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
 	return *meshesVector;
 }
+
+bool ModelDefinitionManager::getShowModels() const
+{
+	return mShowModels;
+}
+
+void ModelDefinitionManager::setShowModels(bool show)
+{
+	mShowModels = show;
+}
+
 
 }
 }

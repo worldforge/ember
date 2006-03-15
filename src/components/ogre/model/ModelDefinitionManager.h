@@ -50,11 +50,38 @@ const Ogre::NameValuePairList* createParams = 0);
 	inline void setSceneManager(Ogre::SceneManager* sceneManager) { mSceneManager = sceneManager; }
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 	
+	/**
+	 *    Exports a modeldefinition to a file.
+	 * @param definition 
+	 */
 	void exportScript(ModelDefnPtr definition);
 	
+	/**
+	 *    Gets the AreaDefinition for a certain layer.
+	 *    TODO: this should be moved out from here and to a better place
+	 * @param layer 
+	 * @return 
+	 */
 	const ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
 	
-	std::vector<std::string> getAllMeshes() const;
+	/**
+	 *    Gets a vector of all mesh names.
+	 * @return 
+	 */
+	const std::vector<std::string> getAllMeshes() const;
+	
+	/**
+	 *    Returns whether models should be shown.
+	 * @return 
+	 */
+	bool getShowModels() const;
+	
+	/**
+	 *    Sets whether models should be shown.
+	 * @param show 
+	 */
+	void setShowModels(bool show);
+	
 protected:
 
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
@@ -65,6 +92,10 @@ protected:
 	typedef std::map<int, ModelDefinition::AreaDefinition> AreaDefinitionStore;
 	AreaDefinitionStore mAreaDefinitions;
 	void loadAreas();
+	/**
+	Determines whether models should be shown.
+	*/
+	bool mShowModels;
 
 };
 

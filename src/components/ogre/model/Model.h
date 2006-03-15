@@ -21,10 +21,10 @@
 #define MODEL_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <OgreEntity.h>
-#include <OgreMovableObject.h>
+/*#include <OgreEntity.h>
+#include <OgreMovableObject.h>*/
 #include "ModelDefinition.h"
-#include "Action.h"
+// #include "Action.h"
 #include "ParticleSystem.h"
 
 namespace EmberOgre {
@@ -35,6 +35,7 @@ class SubModelPart;
 class ModelDefinition;
 class ParticleSystemBinding;
 class ParticleSystem;
+class Action;
 
 typedef std::vector<ParticleSystem*> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;

@@ -724,22 +724,24 @@ void Model::detachAllObjectsImpl(void)
 */
 void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 {
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	if (mVisible) {
-	 	for (; I != I_end; ++I) {
-			(*I)->getEntity()->_notifyCurrentCamera(cam);		
+	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
+	if (mVisible && ModelDefinitionManager::getSingleton().getShowModels()) {
+		SubModelSet::const_iterator I = mSubmodels.begin();
+		SubModelSet::const_iterator I_end = mSubmodels.end();
+		if (mVisible) {
+			for (; I != I_end; ++I) {
+				(*I)->getEntity()->_notifyCurrentCamera(cam);		
+			}
+			
+			// Notify any child objects
+			Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
+			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
+			for( ; child_itr != child_itr_end; child_itr++)
+			{
+				child_itr->second->_notifyCurrentCamera(cam);
+			}
 		}
-		
-		// Notify any child objects
-		Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
-		Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-		for( ; child_itr != child_itr_end; child_itr++)
-		{
-			child_itr->second->_notifyCurrentCamera(cam);
-		}
-	}
-	
+	}	
 	
 }
 
@@ -818,7 +820,8 @@ Ogre::Real Model::getBoundingRadius() const
 */
 void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
-	if (mVisible) {
+	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
+	if (mVisible && ModelDefinitionManager::getSingleton().getShowModels()) {
 		SubModelSet::const_iterator I = mSubmodels.begin();
 		SubModelSet::const_iterator I_end = mSubmodels.end();
 		for (; I != I_end; ++I) {
