@@ -43,8 +43,7 @@ ParticleSystem::~ParticleSystem()
 	ParticleSystemBindingsPtrSet::const_iterator I = mBindings.begin();
 	ParticleSystemBindingsPtrSet::const_iterator I_end = mBindings.end();
 	for (; I != I_end; ++I) {
-		ParticleSystemBinding* binding = *I;
-		delete binding;
+		delete *I;
 	}
 	mBindings.clear();
 	

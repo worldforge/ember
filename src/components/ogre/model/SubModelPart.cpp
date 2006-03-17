@@ -34,8 +34,7 @@ void SubModelPart::show()
 {
 	SubEntitySet::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
-		Ogre::SubEntity* subEntity = *I;
-		subEntity->setVisible(true);
+		(*I)->setVisible(true);
 	}	
 }
 
@@ -43,8 +42,7 @@ void SubModelPart::hide()
 {
 	SubEntitySet::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
-		Ogre::SubEntity* subEntity = *I;
-		subEntity->setVisible(false);
+		(*I)->setVisible(false);
 	}	
 }
 

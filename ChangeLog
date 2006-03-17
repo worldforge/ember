@@ -1,3 +1,14 @@
+2006-03-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/model/ParticleSystem.cpp, src/components/ogre/model/SubModelPart.cpp: cleaned up some old code
+
+2006-03-15 Erik Hjortsberg  <erik@katastrof.nu>
+	
+    * src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/ModelDefinitionManager.h: added option to deactivate rendering of Models
+    *src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: 
+       *added comments
+       * check with ModelDefinitionManager if we should show ourselves
+
 2006-03-13 Erik Hjortsberg  <erik@katastrof.nu>
 
    * src/components/ogre/widgets/EntityCEGUITexture.cpp: fixed a segfault bug
