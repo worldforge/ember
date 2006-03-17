@@ -112,7 +112,7 @@ float TerrainPage::getMaxHeight()
 {
 	float max = 0;
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-		max = std::max(max, I->segment->getMax());
+		max = std::max<float>(max, I->segment->getMax());
 	}
 	return max;
 }
@@ -121,7 +121,7 @@ float TerrainPage::getMinHeight()
 {
 	float min = 0;
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-		min = std::min(min, I->segment->getMin());
+		min = std::min<float>(min, I->segment->getMin());
 	}
 	return min;
 }
@@ -162,10 +162,9 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 // 	generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	
 	//and if the user so wants, we'll add some debug materials
-// 	if (getTerrainOptions().debuglod) {
-// 		generateTerrainTechniqueDebug();
-// 	}
-
+/*	if (getTerrainOptions().debuglod) {
+		generateTerrainTechniqueDebug();
+	}*/
 		
 	mMaterial->load();
 	
@@ -200,7 +199,7 @@ unsigned int TerrainPage::getAlphaMapScale() const
 	if (configSrv->itemExists("terrain", "scalealphamap")) {
 		int value = (int)configSrv->getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1
-		return std::min(1, value);
+		return std::min<int>(1, value);
 	} else {
 		return 1;
 	}
@@ -865,7 +864,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
  
 void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
 {
-/*	for (int i = 1; i < getTerrainOptions().maxGeoMipMapLevel; ++i) {
+	for (int i = 1; i < 5; ++i) {
 		Ogre::Technique *tech = mMaterial->createTechnique();
 		tech->setLodIndex(i);
 		
@@ -875,7 +874,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
 		textureUnitState->setTextureName(ss.str());
 		textureUnitState->setTextureCoordSet(0);
 	
-	}*/
+	}
 }
 
 void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* technique)

@@ -26,6 +26,7 @@
 #include "model/Model.h"
 #include "model/SubModel.h"
 #include "model/ParticleSystemBinding.h"
+#include "model/Action.h"
 
 
 #include "EmberEntity.h"

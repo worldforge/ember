@@ -114,17 +114,18 @@ const Real EmberPagingLandScapeData2D_HeightField::getShadow (const Real mX, con
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_save()
 {
+	S_LOG_VERBOSE("Saving terrain page.");
 }
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_load()
 {
- 	    
+	S_LOG_VERBOSE("Loading terrain page.");
 }
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
-
+	S_LOG_VERBOSE("Unloading terrain page.");
 }
 
 const Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight(void) const

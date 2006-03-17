@@ -21,7 +21,24 @@ public:
 	bool resourceExists(const std::string& name);
 
 	Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> getResourceIterator(void);
-	std::vector<std::string> getAllMeshes();
+	
+	/**
+	 *    Gets a vector of all mesh names.
+	 * @return 
+	 */
+	const std::vector<std::string> getAllMeshes() const;
+	
+	/**
+	 *    Returns whether models should be shown.
+	 * @return 
+	 */
+	bool getShowModels() const;
+	
+	/**
+	 *    Sets whether models should be shown.
+	 * @param show 
+	 */
+	void setShowModels(bool show);
 };
 
 

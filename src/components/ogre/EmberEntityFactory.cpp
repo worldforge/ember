@@ -52,6 +52,7 @@
 
 namespace EmberOgre {
 
+const std::string EmberEntityFactory::SHOWMODELS("showmodels");
 
 EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
 : mTerrainGenerator(terrainGenerator)
@@ -62,6 +63,8 @@ EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris:
 	Ember::ServerService* serverService = Ember::EmberServices::getSingletonPtr()->getServerService();
 	
 	serverService->GotAvatar.connect(sigc::mem_fun(*this, &EmberEntityFactory::setAvatar));
+	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(SHOWMODELS,this);
 	
 }
 
@@ -224,6 +227,23 @@ get first chance to process a recieved Atlas entity. The default implementation
 returns one. */
 int EmberEntityFactory::priority() {
 	return 10;
+}
+
+void EmberEntityFactory::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == SHOWMODELS)
+	{
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string value = tokeniser.nextToken();
+		if (value == "true") {
+			S_LOG_INFO("Showing models.");
+			Model::ModelDefinitionManager::getSingleton().setShowModels(true);
+		} else if (value == "false") {
+			S_LOG_INFO("Hiding models.");
+			Model::ModelDefinitionManager::getSingleton().setShowModels(false);
+		}
+	}
 }
 
 }

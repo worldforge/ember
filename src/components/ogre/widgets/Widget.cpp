@@ -3,27 +3,22 @@
 #include "../GUIManager.h"
 #include <CEGUIWindow.h>
 
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
-#endif
+
+// #include <sigc++/object.h>
+// #include <sigc++/signal.h>
+// #include <sigc++/slot.h>
+// #include <sigc++/bind.h>
+// #include <sigc++/object_slot.h>
+
 
 #include <elements/CEGUIFrameWindow.h>
 #include <CEGUIWindowManager.h>
 
 #include "framework/ConsoleBackend.h"
 
-//#include "ServerBrowserWidget.h"
 
 namespace EmberOgre
 {
-// 	class ServerBrowserWidget;
-// 	WidgetLoader loader("ServerBrowserWidget", &WidgetLoader::createWidgetInstance<ServerBrowserWidget>);
 
 	ColoredListItem::ColoredListItem(const CEGUI::String& text) : ListboxTextItem(text)
 	{

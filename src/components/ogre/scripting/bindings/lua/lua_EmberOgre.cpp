@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Tue Mar  7 22:10:16 2006.
+** Generated automatically by tolua++-1.0.6 on Fri Mar 17 17:49:28 2006.
 */
 
 #ifndef __cplusplus
@@ -10442,26 +10442,26 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getAllMeshes00
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelDefinitionManager",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelDefinitionManager",0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
  goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::Model::ModelDefinitionManager* self = (EmberOgre::Model::ModelDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Model::ModelDefinitionManager* self = (const EmberOgre::Model::ModelDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAllMeshes'",NULL);
 #endif
  {
-  std::vector<std::string> tolua_ret = (std::vector<std::string>)  self->getAllMeshes();
+  const std::vector<std::string> tolua_ret = (const std::vector<std::string>)  self->getAllMeshes();
  {
 #ifdef __cplusplus
  void* tolua_obj = new std::vector<std::string>(tolua_ret);
- tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::vector<std::string>");
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const std::vector<std::string>");
 #else
- void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::vector<std::string>));
- tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::vector<std::string>");
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(const std::vector<std::string>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const std::vector<std::string>");
 #endif
  }
  }
@@ -10470,6 +10470,67 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getAllMeshes00
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getAllMeshes'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getShowModels of class  EmberOgre::Model::ModelDefinitionManager */
+static int tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getShowModels00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelDefinitionManager",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelDefinitionManager* self = (const EmberOgre::Model::ModelDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShowModels'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->getShowModels();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getShowModels'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setShowModels of class  EmberOgre::Model::ModelDefinitionManager */
+static int tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_setShowModels00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelDefinitionManager",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Model::ModelDefinitionManager* self = (EmberOgre::Model::ModelDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+  bool show = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setShowModels'",NULL);
+#endif
+ {
+  self->setShowModels(show);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setShowModels'.",&tolua_err);
  return 0;
 #endif
 }
@@ -12986,6 +13047,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"resourceExists",tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_resourceExists00);
  tolua_function(tolua_S,"getResourceIterator",tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getResourceIterator00);
  tolua_function(tolua_S,"getAllMeshes",tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getAllMeshes00);
+ tolua_function(tolua_S,"getShowModels",tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_getShowModels00);
+ tolua_function(tolua_S,"setShowModels",tolua_EmberOgre_EmberOgre_Model_ModelDefinitionManager_setShowModels00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

@@ -1,3 +1,11 @@
+2006-03-17 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: added some log output
+    * src/components/ogre/scripting/bindings/lua/ModelDefinitionManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+    * src/components/ogre/widgets/Widget.cpp, src/components/ogre/AvatarCamera.cpp, src/components/ogre/EmberPhysicalEntity.cpp: cleaned code
+    * src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h: added commend for turning the showing of modles on and off
+    * src/components/ogre/TerrainPage.cpp: properly use std::max and std::min
+
 2006-03-16 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/model/ParticleSystem.cpp, src/components/ogre/model/SubModelPart.cpp: cleaned up some old code

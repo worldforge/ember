@@ -28,6 +28,7 @@
 
 #include <sigc++/trackable.h>
 
+#include "framework/ConsoleObject.h"
 namespace Eris
 {
 	class Entity;
@@ -55,11 +56,17 @@ class WorldEmberEntity;
  */
 class EmberEntityFactory : 
 public Eris::Factory, 
-public sigc::trackable
+public sigc::trackable,
+public Ember::ConsoleObject
 {
 public:
 	
 
+	/**
+	Command for setting whether models should be shown or not.
+	*/
+	static const std::string SHOWMODELS;
+	
 	typedef std::set<Ogre::String> StringSet;
 	
 
@@ -88,6 +95,12 @@ public:
 
 
 
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
 
 
     

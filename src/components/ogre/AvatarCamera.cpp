@@ -505,19 +505,19 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 		return true;		
 	}
 	
-	void AvatarCamera::runCommand(const std::string &command, const std::string &args)
+void AvatarCamera::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == SETCAMERADISTANCE)
 	{
-		if(command == SETCAMERADISTANCE)
-		{
-			Ember::Tokeniser tokeniser;
-			tokeniser.initTokens(args);
-			std::string distance = tokeniser.nextToken();
-			if (distance != "") {
-				float fDistance = Ogre::StringConverter::parseReal(distance);
-				setCameraDistance(fDistance);
-			}
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string distance = tokeniser.nextToken();
+		if (distance != "") {
+			float fDistance = Ogre::StringConverter::parseReal(distance);
+			setCameraDistance(fDistance);
 		}
 	}
+}
 	
 void AvatarCamera::updateValuesFromConfig()
 {
