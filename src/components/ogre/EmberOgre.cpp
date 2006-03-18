@@ -121,7 +121,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "framework/osdir.h"
 #include "framework/binreloc.h"
-#include "framework/StreamLogObserver.h"
 
 #include "framework/Exception.h"
 #include "OgreLogObserver.h"
@@ -900,28 +899,28 @@ void EmberOgre::initializeEmberServices(const std::string& prefix)
 	/// Initialize the Logging service and an error observer
 	new Ember::EmberServices();
 	Ember::LoggingService *logging = Ember::EmberServices::getSingletonPtr()->getLoggingService();
-	mLogObserver = new OgreLogObserver();
+	
+	///output all logging to ember.log
+	std::string filename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/ember.log");
+	static std::ofstream outstream(filename.c_str());
+	mLogObserver = new OgreLogObserver(outstream);
+	logging->addObserver(mLogObserver);
+	
 	///default to INFO, though this can be changed by the config file
  	mLogObserver->setFilter(Ember::LoggingService::INFO);
- 	///if we do this we will override the automatic creation of a LogManager and 
+ 	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
  	new Ogre::LogManager();
  	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
  	Ogre::LogManager::getSingleton().addListener(mLogObserver);
  	
-	///output all logging to ember.log
-	std::string filename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/ember.log");
-	static std::ofstream outstream(filename.c_str());
-	mStreamLogObserver = new Ember::StreamLogObserver(outstream);
-	logging->addObserver(mStreamLogObserver);
  	
-	//logging->addObserver(mLogObserver);
 
 
-	// Initialize the Configuration Service
+	/// Initialize the Configuration Service
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->setPrefix(prefix);
 	
-	// Change working directory
+	/// Change working directory
 	struct stat tagStat;
 	int ret;
 	ret = stat( Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
@@ -938,30 +937,25 @@ void EmberOgre::initializeEmberServices(const std::string& prefix)
 
 	const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
-	//make sure that there are files 
-	//assureConfigFile("ember.conf", sharePath);
+	///make sure that there are files 
+	///assureConfigFile("ember.conf", sharePath);
 
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->loadSavedConfig("ember.conf");
 
-
-
-	//Initialize the Sound Service
-
-	// Initialize the SoundService
+	/// Initialize the SoundService
 	if (Ember::EmberServices::getSingletonPtr()->getSoundService()->start() == Ember::Service::OK) {
 		Ember::EmberServices::getSingletonPtr()->getSoundService()->registerSoundProvider(new OgreSoundProvider());
 	}
 
 
-	// Initialize and start the Metaserver Service.
-	// Set Eris Logging Level
+	/// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing MetaServer Service");
 
  	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->start();
-	//hoho, we get linking errors if we don't do some calls to the service
+	///hoho, we get linking errors if we don't do some calls to the service
 	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->getMetaServer();
 	
-	// Initialize the Server Service
+	/// Initialize the Server Service
 	S_LOG_INFO("Initializing Server Service");
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
@@ -976,9 +970,9 @@ void EmberOgre::initializeEmberServices(const std::string& prefix)
 
 }
 
-// ----------------------------------------------------------------------------
-// Main function, just boots the application object
-// ----------------------------------------------------------------------------
+/**
+* Main function, just boots the application object
+*/
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"

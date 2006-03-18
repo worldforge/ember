@@ -1,3 +1,9 @@
+2006-03-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/sound/SoundService.cpp: removed excessive logging
+    * src/components/ogre/EmberOgre.cpp, src/components/ogre/OgreLogObserver.cpp, src/components/ogre/OgreLogObserver.h: fixed the logging
+    * src/components/ogre/GUICEGUIAdapter.cpp, src/components/ogre/GUICEGUIAdapter.h: added more to the cutnpase functionality 
+
 2006-03-17 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: added some log output

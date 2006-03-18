@@ -107,9 +107,6 @@ namespace Ember
 		alListenerfv(AL_ORIENTATION,listenerOri);
 
 		// Generate buffers
-		std::cout << "************************************" << std::endl;
-		std::cout << "TRACE --- GENERATING BUFFERS ***" << std::endl;
-		std::cout << "************************************" << std::endl;
 		S_LOG_VERBOSE("Generating Buffers");
 
 		alGenBuffers(1,&systemBuffer);

@@ -24,6 +24,7 @@
 #define EMBEROGREOGRELOGOBSERVER_H
 
 #include "EmberOgrePrerequisites.h"
+#include "framework/StreamLogObserver.h"
 
 namespace EmberOgre {
 
@@ -31,21 +32,19 @@ namespace EmberOgre {
 @author Erik Hjortsberg
 A log observer which writes to the Ogre log system.
 */
-class OgreLogObserver: public Ember::LoggingService::Observer, 
+class OgreLogObserver: public Ember::StreamLogObserver, 
 public sigc::trackable, public Ogre::LogListener
 {
 	public:
-		OgreLogObserver();
-		
+		/**
+		* Creates a new OgreLogObserver using default values.
+		*/
+		OgreLogObserver(std::ostream &out);
 		~OgreLogObserver();
-
-		virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
-								const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp);
-								
-		virtual void write( const Ogre::String& name,
-							const Ogre::String& message, 
-							Ogre::LogMessageLevel lml = Ogre::LML_NORMAL, 
-							bool maskDebug = false );
+	virtual void write( const Ogre::String& name,
+		const Ogre::String& message, 
+		Ogre::LogMessageLevel lml = Ogre::LML_NORMAL, 
+		bool maskDebug = false );
 		
 	protected:
 		

@@ -76,6 +76,11 @@ private:
 	*/
 	SDLKeyMap mKeyMap;
 
+	bool MultiLineEditbox_selectionChangedHandler(const CEGUI::EventArgs& args);
+	bool Editbox_selectionChangedHandler(const CEGUI::EventArgs& args);
+	
+	const CEGUI::String* mSelectedText;
+	int mSelectionStart, mSelectionEnd;
 };
 
 }

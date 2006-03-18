@@ -30,7 +30,9 @@
 
 namespace EmberOgre {
 
-OgreLogObserver::OgreLogObserver()
+
+
+OgreLogObserver::OgreLogObserver(std::ostream &out) : Ember::StreamLogObserver(out)
 {
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
 
@@ -40,38 +42,6 @@ OgreLogObserver::~OgreLogObserver()
 {
 	
 }
-
-void OgreLogObserver::onNewMessage(const std::string & message, const std::string & file, const int & line,
-						const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
-{
-	if (!Ogre::LogManager::getSingletonPtr()) {
-		return;
-	}
-	std::string stringImportance;
-	switch (importance) {
-		case Ember::LoggingService::CRITICAL:
-			stringImportance = "CRITICAL";
-			break;
-		case Ember::LoggingService::FAILURE:
-			stringImportance = "FAILURE";
-			break;
-		case Ember::LoggingService::WARNING:
-			stringImportance = "WARNING";
-			break;
-		case Ember::LoggingService::INFO:
-			stringImportance = "INFO";
-			break;
-		default:
-			stringImportance = "VERBOSE";
-			break;
-			
-
-	}
-	std::stringstream ss;
-	ss << "Ember (" << stringImportance << "): " << message << " (in file " << file << ":" << line << ")";
-	Ogre::LogManager::getSingleton().logMessage(ss.str());
-}
-
 
 /**
 	* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical

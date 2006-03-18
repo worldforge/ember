@@ -23,12 +23,16 @@
 #include "GUICEGUIAdapter.h"
 
 #include <CEGUIExceptions.h>
+#include <CEGUIGlobalEventSet.h>
+#include <elements/CEGUIEditbox.h> 
+#include <elements/CEGUIMultiLineEditbox.h>
 
 namespace EmberOgre {
 
 GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer): 
 mGuiSystem(system)
 , mGuiRenderer(renderer)
+, mSelectedText(0)
 {
 
 	//lookup table for sdl scancodes and CEGUI keys
@@ -126,12 +130,54 @@ mGuiSystem(system)
 	mKeyMap[SDLK_F12] = CEGUI::Key::F12;
 	
 	
+	
+	///set up the capturing of text selected event for the copy-and-paste functionality
+	
+//window->subscribeEvent(event, CEGUI::Event::Subscriber(&method, this));
+	
+	CEGUI::GlobalEventSet::getSingleton().subscribeEvent("MultiLineEditbox/TextSelectionChanged", CEGUI::Event::Subscriber(&GUICEGUIAdapter::MultiLineEditbox_selectionChangedHandler, this));
+	CEGUI::GlobalEventSet::getSingleton().subscribeEvent("Editbox/TextSelectionChanged", CEGUI::Event::Subscriber(&GUICEGUIAdapter::Editbox_selectionChangedHandler, this));
+	//CEGUI::GlobalEventSet::getSingleton().subscribeEvent("Editbox/TextSelectionChanged", &GUICEGUIAdapter::selectionChangedHandler);
+	
+	
+	
 }
 
 
 GUICEGUIAdapter::~GUICEGUIAdapter()
 {
 }
+
+bool GUICEGUIAdapter::MultiLineEditbox_selectionChangedHandler(const CEGUI::EventArgs& args)
+{
+	CEGUI::MultiLineEditbox* editbox = static_cast<CEGUI::MultiLineEditbox*>(mGuiSystem->getGUISheet()->getActiveChild());
+	mSelectedText = &editbox->getText();
+	mSelectionStart = editbox->getSelectionStartIndex();
+	mSelectionEnd = editbox->getSelectionEndIndex();
+/*	const CEGUI::String& text = editbox->getText();
+	if (editbox->getSelectionLength() > 0) {
+		std::string selection = text.substr(editbox->getSelectionStartIndex(), editbox->getSelectionEndIndex()).c_str();
+		S_LOG_VERBOSE("Selected text: " << selection);
+	}*/
+	S_LOG_VERBOSE("Selected text.");
+	
+	return true;
+}
+
+bool GUICEGUIAdapter::Editbox_selectionChangedHandler(const CEGUI::EventArgs& args)
+{
+	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(mGuiSystem->getGUISheet()->getActiveChild());
+	mSelectedText = &editbox->getText();
+	mSelectionStart = editbox->getSelectionStartIndex();
+	mSelectionEnd = editbox->getSelectionEndIndex();
+	S_LOG_VERBOSE("Selected text.");
+	return true;
+}
+
+// bool GUICEGUIAdapter::selectionChangedHandler(const CEGUI::EventArgs& args)
+// {
+// 	S_LOG_VERBOSE("");
+// }
 
 bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
