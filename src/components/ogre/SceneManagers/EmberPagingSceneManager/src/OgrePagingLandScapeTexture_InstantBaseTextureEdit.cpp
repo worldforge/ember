@@ -26,8 +26,10 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 #include "OgreTechnique.h"
 #include "OgrePass.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_InstantBaseTextureEdit.h"
 #include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeData2D.h"
@@ -44,19 +46,19 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureEdit::_setPagesize ()
     {
-        mPageSize = PagingLandScapeOptions::getSingleton().PageSize - 1;
+        mPageSize = mParent->getOptions()->PageSize - 1;
         
-        colors[0] = PagingLandScapeOptions::getSingleton().matColor[0];
-        colors[1] = PagingLandScapeOptions::getSingleton().matColor[1];
-        colors[2] = PagingLandScapeOptions::getSingleton().matColor[2];
-        colors[3] = PagingLandScapeOptions::getSingleton().matColor[3];
+        colors[0] = mParent->getOptions()->matColor[0];
+        colors[1] = mParent->getOptions()->matColor[1];
+        colors[2] = mParent->getOptions()->matColor[2];
+        colors[3] = mParent->getOptions()->matColor[3];
 
         //  slope[] ??
 
         heights[0] = 0.0f;
-        heights[1] = PagingLandScapeOptions::getSingleton().matHeight[1];
-        heights[2] = PagingLandScapeOptions::getSingleton().matHeight[2];
-        heights[3] = PagingLandScapeData2DManager::getSingleton().getMaxHeight ();
+        heights[1] = mParent->getOptions()->matHeight[1];
+        heights[2] = mParent->getOptions()->matHeight[2];
+        heights[3] = mParent->getSceneManager()->getData2DManager()->getMaxHeight ();
 
         dividers[0] = 1.0f;
         if (heights[1] > 0)
@@ -77,12 +79,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_InstantBaseTextureEdit::newTexture()
     {
-        return new PagingLandScapeTexture_InstantBaseTextureEdit();
+        return new PagingLandScapeTexture_InstantBaseTextureEdit(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_InstantBaseTextureEdit::TextureRenderCapabilitesFullfilled()
     {
-		if (PagingLandScapeOptions::getSingleton().NumMatHeightSplat > 3)
+		if (mParent->getOptions()->NumMatHeightSplat > 3)
 			return true;
 		else
 			return false;
@@ -93,7 +95,7 @@ namespace Ogre
 		  
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_InstantBaseTextureEdit::PagingLandScapeTexture_InstantBaseTextureEdit() : PagingLandScapeTexture()
+    PagingLandScapeTexture_InstantBaseTextureEdit::PagingLandScapeTexture_InstantBaseTextureEdit(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
     //-----------------------------------------------------------------------
@@ -106,9 +108,9 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
         {
-            const String filename  = PagingLandScapeOptions::getSingleton().LandScape_filename;
-            const String extname   = PagingLandScapeOptions::getSingleton().TextureExtension;
-            const String groupName = PagingLandScapeOptions::getSingleton().groupName;
+            const String filename  = mParent->getOptions()->LandScape_filename;
+            const String extname   = mParent->getOptions()->TextureExtension;
+            const String groupName = mParent->getOptions()->groupName;
 
             const String commonName = StringConverter::toString(mDataZ) + 
                                         String(".") +
@@ -117,7 +119,7 @@ namespace Ogre
             const String texname = filename + ".Base." + commonName + ".";
 
             String finalTexName;
-            if (PagingLandScapeOptions::getSingleton().Deformable &&
+            if (mParent->getOptions()->Deformable &&
                 ResourceGroupManager::getSingleton().resourceExists(groupName, 
                                                 texname + "modif." +extname))
             {
@@ -139,7 +141,7 @@ namespace Ogre
             if (mMaterial.isNull())
             {
                 MaterialPtr templateMaterial;
-                if (PagingLandScapeOptions::getSingleton ().VertexCompression)
+                if (mParent->getOptions()->VertexCompression)
                 {
                     templateMaterial = MaterialManager::getSingleton().getByName(String ("InstantBaseMaterialVertexPixelShaded"));
                     
@@ -148,9 +150,9 @@ namespace Ogre
 
                     GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
     	            
-//                    params->setNamedConstant("FogSettings", Vector4(PagingLandScapeOptions::getSingleton().scale.x * PagingLandScapeOptions::getSingleton().PageSize,
-//                                                                    PagingLandScapeOptions::getSingleton().scale.y / 65535, 
-//                                                                    PagingLandScapeOptions::getSingleton().scale.z * PagingLandScapeOptions::getSingleton().PageSize, 
+//                    params->setNamedConstant("FogSettings", Vector4(mParent->getOptions()->scale.x * mParent->getOptions()->PageSize,
+//                                                                    mParent->getOptions()->scale.y / 65535, 
+//                                                                    mParent->getOptions()->scale.z * mParent->getOptions()->PageSize, 
 //                                                                    0.0f));
                      // Check to see if custom param is already there
                     GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
@@ -183,7 +185,7 @@ namespace Ogre
 	            mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName (finalTexName);
 
                 mMaterial->load();
-	            mMaterial->setLightingEnabled(PagingLandScapeOptions::getSingleton().lit);
+	            mMaterial->setLightingEnabled(mParent->getOptions()->lit);
             }
             else
                 _LoadTexture(finalTexName, groupName);
@@ -226,7 +228,7 @@ namespace Ogre
         if (isDeformed)
         {
             rect = mDeformRect;
-            data = PagingLandScapeData2DManager::getSingleton().getData2D(mDataX, mDataZ);
+            data = mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ);
 //            rect = data->getDeformationRectangle ();
             if (rect.getWidth() && rect.getHeight ())
             {
@@ -375,16 +377,16 @@ namespace Ogre
         assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTextureEdit::::_unloadMaterial");    
         if (mIsModified)
         { 
-            const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + 
+            const String fname = mParent->getOptions()->LandScape_filename + 
                                 ".Base." + 
                                 StringConverter::toString(mDataZ) + 
                                 String(".") + 
                                 StringConverter::toString(mDataX) + ".";
-            const String extname = PagingLandScapeOptions::getSingleton().TextureExtension;
+            const String extname = mParent->getOptions()->TextureExtension;
 
 
             FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-                    PagingLandScapeOptions::getSingleton().groupName, 
+                    mParent->getOptions()->groupName, 
                     fname + extname);
             FileInfoList::iterator it = finfo->begin();
 

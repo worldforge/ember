@@ -43,25 +43,10 @@ namespace Ogre
                 return mNeighbors[ n ];
             };
 
-            PagingLandScapeTile* getTile(const uint i , const uint j) const
-            {
-                if (mIsLoaded)
-				{
-					assert (!mTiles.empty());
-
-					assert (i < PagingLandScapeOptions::getSingleton().NumTiles);
-					assert (j < PagingLandScapeOptions::getSingleton().NumTiles);
-
-					assert (i < mTiles.size());
-					assert (j < mTiles[i].size());
-
-                    return mTiles[i][j];
-				}
-                return 0;
-            }
+            PagingLandScapeTile* getTile(const uint i , const uint j) const;
 
             PagingLandScapeTile* getTile(const Vector3& pos);
-	        PagingLandScapePage();
+	        PagingLandScapePage(PagingLandScapePageManager *pageMgr);
 
 	        virtual ~PagingLandScapePage(void);
 
@@ -83,13 +68,13 @@ namespace Ogre
 	        /** Loads the LandScape texture using parameters int he given in the constructor. */
             void loadTexture(void);
 
-	        /** Unloads the LandScape texture, but doesnt destroy the LandScape data. */
+	        /** Unloads the LandScape texture, but doesn´t destroy the LandScape data. */
             void unloadTexture(void);
 
-	        /** Unloads the LandScape data, but doesnt destroy the LandScape page. */
+	        /** Unloads the LandScape data, but doesn´t destroy the LandScape page. */
 	        void unload(void);
 
-	        /** Post Unloads the LandScape data, but doesnt destroy the LandScape page. */
+	        /** Post Unloads the LandScape data, but doesn´t destroy the LandScape page. */
 	        void postUnload(void);
             
 	        void unsetLoading(void)
@@ -163,6 +148,7 @@ namespace Ogre
 				Z = mTableZ;
 			};
 
+
 	        bool mIsLoading;
 	        bool mIsPreLoading;
             bool mIsTextureLoading;
@@ -220,7 +206,8 @@ namespace Ogre
             uint mTimePreLoaded;
 
 			PageState pageState;
-			PageQueuingState pageQueingState;
+            PageQueuingState pageQueingState;
+            PagingLandScapePageManager *mParent;
     };
 
 }

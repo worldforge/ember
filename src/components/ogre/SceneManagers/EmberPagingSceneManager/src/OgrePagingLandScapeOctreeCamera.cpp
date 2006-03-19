@@ -94,7 +94,7 @@ namespace Ogre
 			}
 			else
 			{            
-				if (!Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(RSC_HWOCCLUSION))
+				if (!getSceneManager ()->getDestinationRenderSystem ()->getCapabilities()->hasCapability(RSC_HWOCCLUSION))
 				{
 					OGRE_EXCEPT(1, 
 						"Your card does not support HWOCCLUSION ", 

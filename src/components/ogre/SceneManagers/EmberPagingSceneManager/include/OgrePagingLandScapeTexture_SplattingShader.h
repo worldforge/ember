@@ -27,7 +27,7 @@ namespace Ogre
     class PagingLandScapeTexture_SplattingShader : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_SplattingShader(void);
+	        PagingLandScapeTexture_SplattingShader(PagingLandScapeTextureManager *textureMgr);
             virtual String getName(){return String("SplattingShader");}
 
 	        virtual ~PagingLandScapeTexture_SplattingShader(void);

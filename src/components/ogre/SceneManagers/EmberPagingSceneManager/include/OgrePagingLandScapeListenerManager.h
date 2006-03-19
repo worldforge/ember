@@ -34,10 +34,10 @@ namespace Ogre
 	/** Simple manager class to hold onto a list of page source listeners 
 	across all sources.
 	*/
-	class _OgrePagingLandScapeExport PagingLandScapeListenerManager : public Singleton< PagingLandScapeListenerManager >
+	class _OgrePagingLandScapeExport PagingLandScapeListenerManager 
 	{
 	public:
-		PagingLandScapeListenerManager(void);
+		PagingLandScapeListenerManager(PagingLandScapeSceneManager * scnMgr);
 		~PagingLandScapeListenerManager(void);
 
 		/** Register a class which will be called back whenever a new page is
@@ -89,13 +89,7 @@ namespace Ogre
 		/// Fire event
 		void fireTerrainReady(void);
 
-		/** Override standard Singleton retrieval.
-		*/
-		static PagingLandScapeListenerManager& getSingleton(void);
-		/** Override standard Singleton retrieval.
-		*/
-		static PagingLandScapeListenerManager* getSingletonPtr(void);	
-
+	
         bool setOption(const String& strKey, const void* pValue);
 
 		/** Register a delegate method which will be called back whenever terrain is ready (no more queued objects.)

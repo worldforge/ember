@@ -65,17 +65,17 @@ namespace Ogre {
         // Bind buffer
         bind->setBinding(POSITION_BINDING, vbuf);
 
-        this->setRenderDetailOverrideable (false);
-        Renderable::getRenderDetail ();
+        this->setPolygonModeOverrideable (false);
+        //Renderable::getPolygonMode ();
 
         // set basic white material
         this->setMaterial("BaseWhiteNoLightNoDepthCheckWrite");
 	}
     //-----------------------------------------------------------------------
-    SceneDetailLevel OcclusionBoundingBox:: getRenderDetail() const 
+    PolygonMode OcclusionBoundingBox:: getRenderDetail() const 
     {
-        //return SDL_WIREFRAME;
-        return SDL_SOLID;
+        //return PM_WIREFRAME;
+        return PM_SOLID;
     } 
 
     //-----------------------------------------------------------------------

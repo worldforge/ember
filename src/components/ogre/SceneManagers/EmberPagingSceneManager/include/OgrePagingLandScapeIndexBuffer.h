@@ -19,17 +19,16 @@
 #define PAGINGLandScapeINDEXBUFFER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
 
 namespace Ogre
 {
 
-    class PagingLandScapeIndexBufferManager : public Singleton< PagingLandScapeIndexBufferManager >
+    class PagingLandScapeIndexBufferManager
     {
         public:
 
 
-	        PagingLandScapeIndexBufferManager(void);
+	        PagingLandScapeIndexBufferManager(PagingLandScapeSceneManager * scnMgr);
 
 	        ~PagingLandScapeIndexBufferManager(void);
 
@@ -38,9 +37,6 @@ namespace Ogre
             void load();
             void clear();
 
-	        static PagingLandScapeIndexBufferManager& getSingleton(void);
-
-	        static PagingLandScapeIndexBufferManager* getSingletonPtr(void);
 
             /** Utility method to generate stitching indexes on the edge of a tile
             @param neighbor The neighbor direction to stitch
@@ -67,7 +63,11 @@ namespace Ogre
 			//*******************
 			//Added by Fiesch adapted from a post by tonyhnz
 			IndexData*	getRawIndexes(int renderLevel);
+
+            PagingLandScapeSceneManager *getSceneManager(){return mScnMgr;}
         protected:
+
+            PagingLandScapeSceneManager *mScnMgr;
 
             /** Returns the index into the height array for the given coordinates. */
             inline ushort _index16(int x, int z) const

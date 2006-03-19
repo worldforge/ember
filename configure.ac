@@ -227,7 +227,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.4,
 	])
 
 # Check for OGRE
-OGRE_VERSION=1.0.4
+OGRE_VERSION=1.2.0
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
@@ -364,8 +364,8 @@ AC_ARG_ENABLE(gprof,[  --enable-gprof     Add flags for gprof [default=no]],
 ], [ac_use_gprof_code="no"])
 
 if test "$ac_use_gprof_code" = "yes"; then
-      CFLAGS="$CFLAGS -pg -g -a"
-      CXXFLAGS="$CXXFLAGS -pg -g -a"
+      CFLAGS="$CFLAGS -pg -g"
+      CXXFLAGS="$CXXFLAGS -pg -g"
 fi
 
 

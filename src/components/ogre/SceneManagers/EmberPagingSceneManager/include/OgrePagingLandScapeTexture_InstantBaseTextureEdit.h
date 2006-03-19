@@ -28,7 +28,7 @@ namespace Ogre
     {
         public:
 
-	        PagingLandScapeTexture_InstantBaseTextureEdit(void);        	
+	        PagingLandScapeTexture_InstantBaseTextureEdit(PagingLandScapeTextureManager *textureMgr);        	
 	        virtual ~PagingLandScapeTexture_InstantBaseTextureEdit(void);
 
             virtual String getName(){return String("InstantBaseTextureEdit");}
@@ -36,8 +36,8 @@ namespace Ogre
             virtual void setPagesize(void){_setPagesize();};
             virtual void clearData(void){_clearData();};
             
-            static void _setPagesize(void);
-            static void _clearData(void);
+            void _setPagesize(void);
+            void _clearData(void);
             
             virtual const uint getNumChannels (void) const {return 1;};
             virtual void paint (const uint x, const uint z, 

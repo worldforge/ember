@@ -19,7 +19,6 @@
 #define PAGINGLandScapeOPTIONS_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
 #include "OgreStringVector.h"
 #include "OgreConfigFile.h"
 #include "OgreMaterial.h"
@@ -30,10 +29,10 @@ namespace Ogre
     * A simple class for encapsulating parameters passed in when initializing *
     * a LandScapeRenderable
     */
-    class PagingLandScapeOptions : public Singleton< PagingLandScapeOptions >
+    class PagingLandScapeOptions
     {
         public:
-	        PagingLandScapeOptions(void);
+	        PagingLandScapeOptions(PagingLandScapeSceneManager * scnMgr);
 
 	        ~PagingLandScapeOptions(void);
 
@@ -75,9 +74,6 @@ namespace Ogre
 
             void setPrimaryCamera(PagingLandScapeCamera* cam);
             void calculateCFactor(void);
-
-	        static PagingLandScapeOptions& getSingleton(void);
-	        static PagingLandScapeOptions* getSingletonPtr(void);
 
 	        String data2DFormat;
 	        String textureFormat;
@@ -264,10 +260,12 @@ namespace Ogre
             void setReal (Real &r,const String &ValuetoGet);
             void setString (String &s, const String &ValuetoGet);
 
-            String mResourceFilesystem;
-            String mResourceZip;
+            StringVector mResourceFilesystem;
+            StringVector mResourceZip;
 
+            PagingLandScapeSceneManager *mScnMgr;
         private:
+
 	        ColourValue _getAvgColor(const String& tex) const;
             String mCurrentMap;
             LandScapeFileNames mMapList;

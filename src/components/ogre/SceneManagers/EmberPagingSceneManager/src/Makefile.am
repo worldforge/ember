@@ -1,6 +1,5 @@
 INCLUDES = $(STLPORT_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/components/ogre  -I$(top_builddir)/src -I$(top_srcdir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/include 
 
-
 noinst_LIBRARIES = libEmberPagingSceneManager.a
 
 libEmberPagingSceneManager_a_SOURCES = \
@@ -74,3 +73,4 @@ libEmberPagingSceneManager_a_SOURCES = \
 						EmberPagingSceneManager.cpp \
 						EmberPagingLandScapeData2D_HeightField.cpp \
 						EmberPagingLandScapeTexture.cpp
+

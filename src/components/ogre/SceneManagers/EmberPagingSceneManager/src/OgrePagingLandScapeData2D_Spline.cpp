@@ -25,6 +25,7 @@
 #include "OgreColourValue.h"
 
 #include "OgrePagingLandScapeData2D.h"
+#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeOptions.h"
 
 #include "OgrePagingLandScapeData2D_Spline.h"
@@ -35,15 +36,15 @@ namespace Ogre
     //-----------------------------------------------------------------------
 	PagingLandScapeData2D* PagingLandScapeData2D_Spline::newPage()
     {
-       return new PagingLandScapeData2D_Spline();
+       return new PagingLandScapeData2D_Spline(mParent);
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeData2D_Spline::PagingLandScapeData2D_Spline()
-    : PagingLandScapeData2D(),
+    PagingLandScapeData2D_Spline::PagingLandScapeData2D_Spline(PagingLandScapeData2DManager *dataMgr)
+    : PagingLandScapeData2D(dataMgr),
         mSurface (0),
         mPoints (0)
     {
-        mMaxheight = 256.0f * PagingLandScapeOptions::getSingleton().scale.y;
+        mMaxheight = 256.0f * mParent->getOptions()->scale.y;
     }
 
     //-----------------------------------------------------------------------
@@ -60,12 +61,12 @@ namespace Ogre
     //-------------------------------------------------------------------
     const Real PagingLandScapeData2D_Spline::getMaxAbsoluteHeight(void) const
     { 
-        return PagingLandScapeOptions::getSingleton().scale.y;
+        return mParent->getOptions()->scale.y;
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2D_Spline::_load(const  uint mX, const uint mZ)
     {
-		int resolution	= PagingLandScapeOptions::getSingleton().PageSize;
+		int resolution	= mParent->getOptions()->PageSize;
 		mSize		    = resolution;
 		mMax			= static_cast <uint> (mSize * mSize);
 		int pCount		= 50;
@@ -116,7 +117,7 @@ namespace Ogre
         mZDimension = mSize;
         mMaxArrayPos = resolution * resolution;
         mHeightData = new Real[mMaxArrayPos];
-        Real scale = PagingLandScapeOptions::getSingleton().scale.y; 
+        Real scale = mParent->getOptions()->scale.y; 
         mMaxheight = 0.0f;
         uint k;
         for (k = 0; k < mMaxArrayPos;  k ++)

@@ -25,6 +25,7 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 #include "OgrePass.h"
 
 #include "OgrePagingLandScapeOptions.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_SplattingShader.h"
 
 
@@ -40,12 +41,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_SplattingShader::newTexture()
     {
-        return new PagingLandScapeTexture_SplattingShader();
+        return new PagingLandScapeTexture_SplattingShader(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_SplattingShader::TextureRenderCapabilitesFullfilled()
     {      
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
             
 		if (opt->NumMatHeightSplat < 3)
 			return false;
@@ -57,7 +58,8 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_SplattingShader::PagingLandScapeTexture_SplattingShader() : PagingLandScapeTexture()
+    PagingLandScapeTexture_SplattingShader::PagingLandScapeTexture_SplattingShader(PagingLandScapeTextureManager *textureMgr) : 
+        PagingLandScapeTexture(textureMgr)
     {
 
     }
@@ -71,7 +73,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {     
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             
             // Create a new texture using the base image
             const String filename = opt->LandScape_filename;

@@ -25,6 +25,8 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 #include "OgrePass.h"
 
 #include "OgrePagingLandScapeOptions.h"
+#include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Splatting5.h"
 
 
@@ -39,7 +41,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting5::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().normals = true;
+        mParent->getOptions()->normals = true;
     }                    
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting5::_clearData(void)
@@ -49,12 +51,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting5::newTexture()
     {
-        return new PagingLandScapeTexture_Splatting5();
+        return new PagingLandScapeTexture_Splatting5(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting5::TextureRenderCapabilitesFullfilled()
     {                      
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
             
 		if (opt->NumMatHeightSplat < 3)
 			return false;
@@ -66,7 +68,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting5::PagingLandScapeTexture_Splatting5() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Splatting5::PagingLandScapeTexture_Splatting5(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
 
     }
@@ -80,7 +82,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {       
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             
             // Create a new texture using the base image
             const String commonName = StringConverter::toString(mDataZ) + String(".") + StringConverter::toString(mDataX);

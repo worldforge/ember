@@ -21,6 +21,7 @@
 #include "OgreMaterialManager.h"
 #include "OgreGpuProgramManager.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTextureManager.h"
 
@@ -53,21 +54,10 @@
 
 namespace Ogre
 {
-
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeTextureManager* Singleton<PagingLandScapeTextureManager>::ms_Singleton = 0;
-    PagingLandScapeTextureManager* PagingLandScapeTextureManager::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    PagingLandScapeTextureManager& PagingLandScapeTextureManager::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-
-    //-----------------------------------------------------------------------
-    PagingLandScapeTextureManager::PagingLandScapeTextureManager() :
-        mOptions (PagingLandScapeOptions::getSingletonPtr()),
+    PagingLandScapeTextureManager::PagingLandScapeTextureManager(PagingLandScapeSceneManager * scnMgr) :
+        mSceneManager(scnMgr),
+        mOptions (scnMgr->getOptions()),
          mTextureType (0),
          mTextureFormat (""),
         mWidth (0),
@@ -77,26 +67,26 @@ namespace Ogre
         mPaintColor(ColourValue::White)
     {    
             // Add default texture Types.
-            registerTextureType (new PagingLandScapeTexture_Image());
+            registerTextureType (new PagingLandScapeTexture_Image(this));
 
-            registerTextureType (new PagingLandScapeTexture_InstantBaseTextureShadowed());
-            registerTextureType (new PagingLandScapeTexture_SplattingShader());
+            registerTextureType (new PagingLandScapeTexture_InstantBaseTextureShadowed(this));
+            registerTextureType (new PagingLandScapeTexture_SplattingShader(this));
 
-            registerTextureType (new PagingLandScapeTexture_InstantBaseTexture());
-            registerTextureType (new PagingLandScapeTexture_InstantBaseTextureEdit());
-            registerTextureType (new PagingLandScapeTexture_BaseTexture());
-            registerTextureType (new PagingLandScapeTexture_BaseTexture2());
-            registerTextureType (new PagingLandScapeTexture_None());
+            registerTextureType (new PagingLandScapeTexture_InstantBaseTexture(this));
+            registerTextureType (new PagingLandScapeTexture_InstantBaseTextureEdit(this));
+            registerTextureType (new PagingLandScapeTexture_BaseTexture(this));
+            registerTextureType (new PagingLandScapeTexture_BaseTexture2(this));
+            registerTextureType (new PagingLandScapeTexture_None(this));
 
-            registerTextureType (new PagingLandScapeTexture_Splatting());
-            registerTextureType (new PagingLandScapeTexture_Splatting2());
-            registerTextureType (new PagingLandScapeTexture_Splatting2Edit()); 
-            registerTextureType (new PagingLandScapeTexture_Splatting3());
-            registerTextureType (new PagingLandScapeTexture_Splatting4());   
-            registerTextureType (new PagingLandScapeTexture_Splatting5());
-            registerTextureType (new PagingLandScapeTexture_Splatting6());  
-            registerTextureType (new PagingLandScapeTexture_Splatting7());
-            registerTextureType (new PagingLandScapeTexture_Splatting7Edit()); 
+            registerTextureType (new PagingLandScapeTexture_Splatting(this));
+            registerTextureType (new PagingLandScapeTexture_Splatting2(this));
+            registerTextureType (new PagingLandScapeTexture_Splatting2Edit(this)); 
+            registerTextureType (new PagingLandScapeTexture_Splatting3(this));
+            registerTextureType (new PagingLandScapeTexture_Splatting4(this));   
+            registerTextureType (new PagingLandScapeTexture_Splatting5(this));
+            registerTextureType (new PagingLandScapeTexture_Splatting6(this));  
+            registerTextureType (new PagingLandScapeTexture_Splatting7(this));
+            registerTextureType (new PagingLandScapeTexture_Splatting7Edit(this)); 
             
         
     }
@@ -315,7 +305,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::setMapMaterial()
     {
-    	PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+    	PagingLandScapeOptions * const opt = mOptions;
         const String mapName =  String("Small") + opt->image_filename;
         mMapMaterial = MaterialManager::getSingleton().getByName (mapName);
         if (mMapMaterial.isNull())

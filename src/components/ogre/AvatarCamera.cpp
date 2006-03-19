@@ -283,8 +283,8 @@ std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real 
 	//T *closestObject = *ptrClosestObject; 
 	Ogre::Real closestDistance = mClosestPickingDistance;
 	 
-	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator; 
-	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end; 
+	Ogre::RaySceneQueryResult::iterator rayIterator; 
+	Ogre::RaySceneQueryResult::iterator rayIterator_end; 
 	
 	std::vector<Ogre::UserDefinedObject*>::iterator excludeStart = exclude.begin();
 	std::vector<Ogre::UserDefinedObject*>::iterator excludeEnd = exclude.end();
@@ -369,8 +369,8 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	//first check the terrain picking
 	Ogre::RaySceneQueryResult& queryResult = raySceneQueryTerrain->getLastResults(); 
 	
-	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator = queryResult.begin( ); 
-	std::list< Ogre::RaySceneQueryResultEntry >::iterator rayIterator_end = queryResult.end( );
+	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( ); 
+	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end( );
 	if (rayIterator != rayIterator_end) {
 		//only need to check the first result since we're using RSQ_FirstTerrain for the terrain picking
 		if (rayIterator->worldFragment) {

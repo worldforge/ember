@@ -29,7 +29,8 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture::PagingLandScapeTexture() :
+    PagingLandScapeTexture::PagingLandScapeTexture(PagingLandScapeTextureManager *textureMgr) :
+        mParent(textureMgr),
 	    mIsLoaded (false),
         mIsModified (false),
 	    mDataX (0),
@@ -46,6 +47,11 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture::~PagingLandScapeTexture()
     {
+    }
+    //-----------------------------------------------------------------------
+    const String &PagingLandScapeTexture::getMaterialName()
+    {
+        return mMaterial->getName ();
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture::load(uint x, uint z)

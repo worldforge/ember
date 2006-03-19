@@ -19,19 +19,17 @@
 #define PAGINGLandScapeTILEMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
-
 #include "OgrePagingLandScapeQueue.h"
 
 namespace Ogre
 {
 
 
-    class PagingLandScapeTileManager : public Singleton< PagingLandScapeTileManager >
+    class PagingLandScapeTileManager 
     {
         public:
 
-	        PagingLandScapeTileManager(void);
+	        PagingLandScapeTileManager(PagingLandScapeSceneManager * scnMgr);
 
 	        virtual ~PagingLandScapeTileManager(void);
 
@@ -49,14 +47,17 @@ namespace Ogre
 
 	        int numFree(void) const;
 
-	        static PagingLandScapeTileManager& getSingleton(void);
-
-	        static PagingLandScapeTileManager* getSingletonPtr(void);
 
             void load(void);
             void clear(void);
 
-        protected:
+            PagingLandScapeOptions*		getOptions(){return mOptions;}
+            PagingLandScapeSceneManager* getSceneManager(){return mSceneManager;}
+    protected:
+
+            PagingLandScapeOptions*		mOptions;
+            PagingLandScapeSceneManager *mSceneManager;
+
 	        void _addBatch(const uint num);
 
 	        PagingLandScapeTileRow mTiles;

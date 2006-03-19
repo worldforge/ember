@@ -25,14 +25,14 @@ namespace Ogre
     class PagingLandScapeTexture_BaseTexture : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_BaseTexture(void);
+	        PagingLandScapeTexture_BaseTexture(PagingLandScapeTextureManager *textureMgr);
             virtual String getName(){return String("BaseTexture");}
         	
             virtual void setPagesize(void){_setPagesize();};
             virtual void clearData(void){_clearData();};
             
-            static void _setPagesize(void);
-            static void _clearData(void);
+            void _setPagesize(void);
+            void _clearData(void);
 
 	        virtual ~PagingLandScapeTexture_BaseTexture(void);
 

@@ -22,10 +22,10 @@
 
 namespace Ogre
 {
-    class PagingLandScapeHorizon: public Singleton< PagingLandScapeHorizon >
+    class PagingLandScapeHorizon
     {
         public:
-	       PagingLandScapeHorizon(const PagingLandScapeOptions& options);
+	       PagingLandScapeHorizon(const PagingLandScapeOptions *options);
            ~PagingLandScapeHorizon(void);
    
             void registerMinMaxHeightPage(const uint pageX, const uint pageZ, const Real minHeight, const Real maxHeight);
@@ -42,9 +42,6 @@ namespace Ogre
              */
             bool IsTileVisible(const PagingLandScapeCamera* cam, const PagingLandScapeTileInfo* destinfo);
 
-	        static PagingLandScapeHorizon& getSingleton(void);
-
-	        static PagingLandScapeHorizon* getSingletonPtr(void);
 
             MaterialPtr getVisibilityMaterial(void);
 
@@ -55,6 +52,9 @@ namespace Ogre
             void prepare(const PagingLandScapeCamera* cam);
 
         private :
+
+            PagingLandScapeOptions*		mOptions;
+
              bool calcVis(const Vector3& src, const Vector3& dest, const Real* const heightMap, const uint mapWidth, const uint mapHeight);
 
               Real* mMaxPageHeights;

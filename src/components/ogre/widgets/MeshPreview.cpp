@@ -88,7 +88,7 @@ void MeshPreviewHandler::removeInstance(size_t index)
 	Ogre::SceneNode* node = entity->getParentSceneNode();
 	node->detachObject(entity->getName());
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
-	EmberOgre::getSingleton().getSceneManager()->removeEntity(entity);
+	EmberOgre::getSingleton().getSceneManager()->destroyEntity(entity);
 	InstanceStore::iterator I = mInstances.begin();
 	for (size_t i = 0; i < index; ++i) {
 		++I;
@@ -156,8 +156,9 @@ void MeshPreviewMeshInstance::resetAnimations()
 {
 	Ogre::AnimationStateSet* states = getEntity()->getAllAnimationStates();
 	if (states != 0) {
-		for (Ogre::AnimationStateSet::iterator I = states->begin(); I != states->end(); ++I) {
-			I->second.setEnabled(false);
+		Ogre::AnimationStateIterator I = states->getAnimationStateIterator ();
+		while (I.hasMoreElements()) {
+			I.getNext()->setEnabled(false);
 		}
 	}
 
@@ -353,12 +354,14 @@ void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
 	Ogre::AnimationStateSet* states = instance.getEntity()->getAllAnimationStates();
 	if (states != 0) {
 		uint i = 0;
-		for (Ogre::AnimationStateSet::iterator I = states->begin(); I != states->end(); ++I) {
-			mAnimationNames.push_back(I->first);
-			std::string name(I->first);
-			if (instance.isAnimationPlaying(I->first)) {
+		Ogre::AnimationStateIterator I = states->getAnimationStateIterator ();
+		while (I.hasMoreElements()) {
+			Ogre::AnimationState* state = I.getNext();
+			mAnimationNames.push_back(state->getAnimationName());
+			std::string name(state->getAnimationName());
+			if (instance.isAnimationPlaying(state->getAnimationName())) {
 				name += " (playing)";
-			} else if (instance.isAnimationEnabled(I->first)) {
+			} else if (instance.isAnimationEnabled(state->getAnimationName())) {
 				name += " (paused)";
 			}
 			CEGUI::ListboxItem* item = new ColoredListItem(name, i++);

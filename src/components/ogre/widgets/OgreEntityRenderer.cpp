@@ -44,7 +44,7 @@ Ogre::Entity* OgreEntityRenderer::getEntity()
 void OgreEntityRenderer::showEntity(const std::string& mesh)
 {
 	if (mEntity) {
-		mTexture->getSceneNode()->getCreator()->removeEntity(mEntity);
+		mTexture->getSceneNode()->getCreator()->destroyEntity(mEntity);
 	}
 	std::string meshName(mTexture->getImage()->getName().c_str());
 	meshName += "_entity";

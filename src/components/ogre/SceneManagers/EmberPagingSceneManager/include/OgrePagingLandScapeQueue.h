@@ -158,7 +158,7 @@ namespace Ogre
             T *find_nearest(const uint x, const uint z)
             {
                 T *p = 0;
-                uint mindist = -1;
+                uint mindist = 0;
 				typename MsgQueType::iterator q, qend = mQueue.end ();
                 for (q = mQueue.begin (); 
                         q != qend; 

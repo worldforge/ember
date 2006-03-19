@@ -27,6 +27,7 @@
 #include "OgreException.h"
 
 #include "OgrePagingLandScapeData2D.h"
+#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeOptions.h"
 
 #include "OgrePagingLandScapeData2D_HeightFieldRawTC.h"
@@ -40,21 +41,21 @@ namespace Ogre
     //-----------------------------------------------------------------------
 	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldRawTC::newPage()
     {
-       return new PagingLandScapeData2D_HeightFieldRawTC();
+       return new PagingLandScapeData2D_HeightFieldRawTC(mParent);
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeData2D_HeightFieldRawTC::PagingLandScapeData2D_HeightFieldRawTC()
-    : PagingLandScapeData2D()
+    PagingLandScapeData2D_HeightFieldRawTC::PagingLandScapeData2D_HeightFieldRawTC(PagingLandScapeData2DManager *dataMgr)
+    : PagingLandScapeData2D(dataMgr)
     {
 	    mImage = 0;
 	    input_max =  3000.0f;
         input_min = 0.0f;
-        mMaxheight = _decodeRawTC (1.0f) * PagingLandScapeOptions::getSingleton().scale.y;
+        mMaxheight = _decodeRawTC (1.0f) * mParent->getOptions()->scale.y;
     }
     //-------------------------------------------------------------------
     const Real PagingLandScapeData2D_HeightFieldRawTC::getMaxAbsoluteHeight(void) const
     { 
-        return _decodeRawTC (1.0f) * PagingLandScapeOptions::getSingleton().scale.y;
+        return _decodeRawTC (1.0f) * mParent->getOptions()->scale.y;
     }
 
     //-----------------------------------------------------------------------
@@ -106,7 +107,7 @@ namespace Ogre
     {
         uchar *data = new uchar[ mXDimension * mZDimension * 2 ];   
 
-        const double divider = 65535.0 / PagingLandScapeOptions::getSingleton().scale.y;
+        const double divider = 65535.0 / mParent->getOptions()->scale.y;
         
         uint j = 0;
         for (uint i = 0; i < mXDimension*mZDimension; i++)
@@ -121,14 +122,14 @@ namespace Ogre
             #endif
             j += 2;            
         }
-        const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + "." +
+        const String fname = mParent->getOptions()->LandScape_filename + "." +
                                     StringConverter::toString(mPageZ) + "." +
 			                        StringConverter::toString(mPageX) + ".";
-        const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
+        const String extname = mParent->getOptions()->LandScape_extension;
 
 
        FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-             PagingLandScapeOptions::getSingleton().groupName, 
+             mParent->getOptions()->groupName, 
              fname + extname);
        FileInfoList::iterator it = finfo->begin();
        if (it != finfo->end())
@@ -161,20 +162,20 @@ namespace Ogre
         // Load data
         //mRawData.clear();
 
-        const String strFileName = PagingLandScapeOptions::getSingleton().LandScape_filename + "." + 
+        const String strFileName = mParent->getOptions()->LandScape_filename + "." + 
                             StringConverter::toString(mZ) + "." +
 			                StringConverter::toString(mX) + ".";
 
             
         String finalName = strFileName + 
                         "modif." + 
-                        PagingLandScapeOptions::getSingleton().LandScape_extension;
-        if (!(PagingLandScapeOptions::getSingleton().Deformable && 
-            ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,finalName)))
+                        mParent->getOptions()->LandScape_extension;
+        if (!(mParent->getOptions()->Deformable && 
+            ResourceGroupManager::getSingleton().resourceExists(mParent->getOptions()->groupName,finalName)))
         {    
             finalName = strFileName + 
-                PagingLandScapeOptions::getSingleton().LandScape_extension;   
-            if (!ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,finalName))
+                mParent->getOptions()->LandScape_extension;   
+            if (!ResourceGroupManager::getSingleton().resourceExists(mParent->getOptions()->groupName,finalName))
             { 
                 LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + finalName, 
                     LML_CRITICAL,
@@ -184,7 +185,7 @@ namespace Ogre
         }
         DataStreamPtr RawData;
         RawData = ResourceGroupManager::getSingleton().openResource(finalName, 
-                    PagingLandScapeOptions::getSingleton().groupName);
+                    mParent->getOptions()->groupName);
         
         // Validate size
         // Image size comes from setting (since RAW is not self-describing)
@@ -206,7 +207,7 @@ namespace Ogre
         mHeightData = new Real[mMaxArrayPos];            
 
         const Real divider = 1.0f / 65535.0f;
-        const Real scale  = PagingLandScapeOptions::getSingleton().scale.y;
+        const Real scale  = mParent->getOptions()->scale.y;
         
         MemoryDataStream dc (RawData, 
 				                true);
@@ -228,15 +229,15 @@ namespace Ogre
             mHeightData[j++] = h;
         }
     
-//            if (PagingLandScapeOptions::getSingleton().vertex_shadowed)
+//            if (mParent->getOptions()->vertex_shadowed)
 //            {
 //                mShadow = new Image();
-//                mShadow->load(PagingLandScapeOptions::getSingleton().LandScape_filename +
+//                mShadow->load(mParent->getOptions()->LandScape_filename +
 //                                ".HS." +
 //                                StringConverter::toString(mZ) + "." +
 //                                StringConverter::toString(mX) + "." +
 //                                "png");
-//                                //PagingLandScapeOptions::getSingleton().LandScape_extension);
+//                                //mParent->getOptions()->LandScape_extension);
 //            }
         return true;
     }
@@ -244,17 +245,17 @@ namespace Ogre
     void PagingLandScapeData2D_HeightFieldRawTC::_load()
     {
         // Load data
-        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(PagingLandScapeOptions::getSingleton().LandScape_filename +
+        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(mParent->getOptions()->LandScape_filename +
                     "." + 
-                    PagingLandScapeOptions::getSingleton().LandScape_extension, 
-                    PagingLandScapeOptions::getSingleton().groupName);
+                    mParent->getOptions()->LandScape_extension, 
+                    mParent->getOptions()->groupName);
 
         // Validate size
         // Image size comes from setting (since RAW is not self-describing)
         // here 16 bits Raw file
 
-        mXDimension = PagingLandScapeOptions::getSingleton().RawWidth;
-        mZDimension = PagingLandScapeOptions::getSingleton().RawHeight;
+        mXDimension = mParent->getOptions()->RawWidth;
+        mZDimension = mParent->getOptions()->RawHeight;
 
         mBpp = 2;
         
@@ -286,11 +287,11 @@ namespace Ogre
         const uchar *pSrc = dc.getPtr ();     
 
         const Real divider = 1.0f / 65535.0f;
-        const Real scale  = PagingLandScapeOptions::getSingleton().scale.y;
+        const Real scale  = mParent->getOptions()->scale.y;
         const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
         uint dest_pos = 0;
         //for some reason water is 65035 in SRTM files...
-        const bool srtm_water = PagingLandScapeOptions::getSingleton().SRTM_water;
+        const bool srtm_water = mParent->getOptions()->SRTM_water;
         for (uint i = 0; i < sourceHeight; ++i)
         {
             for (uint j = 0; j < sourceWidth; ++j)

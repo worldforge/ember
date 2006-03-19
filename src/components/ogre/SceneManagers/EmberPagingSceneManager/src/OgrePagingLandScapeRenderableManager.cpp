@@ -26,6 +26,7 @@
 
 #include "OgreSimpleRenderable.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeCamera.h"
 
@@ -39,23 +40,14 @@
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeRenderableManager* Singleton<PagingLandScapeRenderableManager>::ms_Singleton = 0;
-    PagingLandScapeRenderableManager* PagingLandScapeRenderableManager::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    PagingLandScapeRenderableManager& PagingLandScapeRenderableManager::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-    //-----------------------------------------------------------------------
-    PagingLandScapeRenderableManager::PagingLandScapeRenderableManager() :
+    PagingLandScapeRenderableManager::PagingLandScapeRenderableManager(PagingLandScapeSceneManager * scnMgr):
+        mSceneManager(scnMgr),
+        mOptions(scnMgr->getOptions ()), 
         mNumRenderables (0),
 		mRenderableLoadInterval (0),
 		mLoadInterval(0),
         mNumRenderableLoading(0)
     {
-        PagingLandScapeRenderable::mOpt = PagingLandScapeOptions::getSingletonPtr();
     }
     //-----------------------------------------------------------------------
     PagingLandScapeRenderableManager::~PagingLandScapeRenderableManager()
@@ -86,7 +78,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::load()
     {        
-        PagingLandScapeOptions *opt = PagingLandScapeOptions::getSingletonPtr();  
+        PagingLandScapeOptions *opt = mOptions;  
 
         mNumRenderableLoading = opt->num_renderables_loading;
         mNumRenderablesIncrement = opt->num_renderables_increment;
@@ -159,8 +151,8 @@ namespace Ogre
     void PagingLandScapeRenderableManager::unqueueRenderable (PagingLandScapeTile *tile)
     {
         mTilesLoadRenderableQueue.remove (tile);
-        assert (tile->getRenderable ());
-        tile->getRenderable ()->mQueued = false;
+        //assert (tile->getRenderable ());
+        //tile->getRenderable ()->mQueued = false;
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapeRenderableManager::processTileUnload()
@@ -262,7 +254,7 @@ namespace Ogre
         mRenderables.reserve (mNumRenderables);
 	    for (uint i = 0; i < num; i++)
 	    {
-		    PagingLandScapeRenderable* rend = new PagingLandScapeRenderable();
+		    PagingLandScapeRenderable* rend = new PagingLandScapeRenderable(this);
 		    mRenderables.push_back(rend);
 		    mQueue.push(rend);
 	    }

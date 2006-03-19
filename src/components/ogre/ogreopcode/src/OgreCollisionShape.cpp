@@ -201,11 +201,11 @@ namespace OgreOpcode
    //------------------------------------------------------------------------
    CollisionShape::~CollisionShape()
    {
-#ifndef NO_BAXISSIMO_OGRE_ENTITY_PATCH
-      if (mEntity && mEntity->hasSkeleton()) {
-        mEntity->removeSoftwareSkinningRequest(false);
-      }
-#endif
+// #ifndef NO_BAXISSIMO_OGRE_ENTITY_PATCH
+//       if (mEntity && mEntity->hasSkeleton()) {
+//         mEntity->destroySoftwareSkinningRequest(false);
+//       }
+// #endif
       assert(0 == refCount);
       delete[] mVertexBuf;
       delete[] mFaceBuf;
@@ -746,7 +746,7 @@ namespace OgreOpcode
    void CollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
    {
       Mesh * mesh = entity->getMesh().getPointer();
-      bool hwSkinning = entity->isHardwareSkinningEnabled();
+      bool hwSkinning = entity->isHardwareAnimationEnabled();
       bool added_shared = false;
       index_count  = 0;
       vertex_count = 0;
@@ -822,7 +822,7 @@ namespace OgreOpcode
            //----------------------------------------------------------------
            const VertexData * vertex_data;
            if(useSoftwareBlendingVertices)
-             vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
+             vertex_data = useSharedVertices ? entity->_getSkelAnimVertexData() : entity->getSubEntity(i)->_getSkelAnimVertexData();
            else
              vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
@@ -977,7 +977,7 @@ namespace OgreOpcode
 
 #ifndef NO_BAXISSIMO_OGRE_ENTITY_PATCH
       if (mEntity->hasSkeleton()) {
-        mEntity->addSoftwareSkinningRequest(false);
+        mEntity->addSoftwareAnimationRequest(false);
       }
 #endif
 

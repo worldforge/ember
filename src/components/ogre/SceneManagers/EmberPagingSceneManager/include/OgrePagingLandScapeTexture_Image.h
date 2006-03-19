@@ -25,7 +25,7 @@ namespace Ogre
     class PagingLandScapeTexture_Image : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Image(void);
+	        PagingLandScapeTexture_Image(PagingLandScapeTextureManager *textureMgr);
             virtual String getName(){return String("Image");}
 
 	        virtual ~PagingLandScapeTexture_Image(void);

@@ -136,7 +136,7 @@ private:
 	/**
 	Since we don't want this to be shown in the "real" world, we'll use our own scene manager
 	*/
-	Ogre::SceneManager mSceneManager;
+	Ogre::SceneManager* mSceneManager;
 
 	/**
 	The default distance of the camera from the base, most likely somewhere where the whole scene is shown

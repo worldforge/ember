@@ -72,7 +72,7 @@ public:
     void _linkRenderableNeighbor(void);
     void _updateLod(void);
 
-	PagingLandScapeTile(void);
+	PagingLandScapeTile(PagingLandScapeTileManager *pageMgr);
 
 	~PagingLandScapeTile(void);
 
@@ -126,6 +126,7 @@ protected:
 	bool mVisible;
 	uint mTimePreLoaded;
 
+    PagingLandScapeTileManager *mParent;
 };
 
 } //namespace

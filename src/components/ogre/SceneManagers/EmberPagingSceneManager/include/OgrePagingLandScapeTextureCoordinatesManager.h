@@ -19,7 +19,6 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 #define PAGINGLandScapeTextureCoordinatesMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
 
 namespace Ogre
 {
@@ -27,28 +26,27 @@ namespace Ogre
 	@remarks
 	This class is used as a store of PagingLandScapeTexturecoordinatesBuffer shared between Page 
 	*/
-	class PagingLandScapeTextureCoordinatesManager : public Singleton< PagingLandScapeTextureCoordinatesManager >
+	class PagingLandScapeTextureCoordinatesManager 
 	{
 	public:
 		/** Initializes the PagingLandScapeTextureCoordinatesManager with the 
 		* given options and allocate the necessary memory.
 		*/
-		PagingLandScapeTextureCoordinatesManager(void);
+		PagingLandScapeTextureCoordinatesManager(PagingLandScapeSceneManager * scnMgr);
 		virtual ~PagingLandScapeTextureCoordinatesManager(void);
-		static PagingLandScapeTextureCoordinatesManager& getSingleton(void);
-		static PagingLandScapeTextureCoordinatesManager* getSingletonPtr(void);
-
 		void load(void);
 		void clear(void);
 
 		HardwareVertexBufferSharedPtr getBuffer(const uint tilex, const uint tilez);
 
-	protected:
+        PagingLandScapeOptions*		getOptions(){return mOptions;}
+    protected:
 
+        PagingLandScapeOptions*		mOptions;
+       
 		uint mPageSize; 
 		uint mTileSize;
 		
-		PagingLandScapeOptions *mOption;
 		HardwareTextureBuffersCol mTexBuffs; 
 	};
 

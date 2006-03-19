@@ -45,9 +45,9 @@ namespace Ogre
         RenderSystem * const renderSys = Ogre::Root::getSingleton().getRenderSystem();
         // Free pool items
         for (QueryPool::iterator i = mQueryPool.begin(); i != mQueryPool.end(); ++i)
-        {
-            //renderSys->destroyHardwareOcclusionQuery(*i);
-            delete (*i);
+        {   
+            renderSys->destroyHardwareOcclusionQuery(*i);
+            //delete (*i);
         }
         mQueryPool.clear();
     }

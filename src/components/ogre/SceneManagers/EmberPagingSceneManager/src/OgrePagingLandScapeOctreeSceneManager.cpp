@@ -301,8 +301,32 @@ namespace Ogre
 
 
     }
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    const String PagingLandScapeOctreeSceneManagerFactory::FACTORY_TYPE_NAME = "PagingLandScapeOctreeSceneManager";
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctreeSceneManagerFactory::initMetaData(void) const
+    {
+       mMetaData.typeName = FACTORY_TYPE_NAME;
+       mMetaData.description = "Scene manager organising the scene on the basis of an octree, possibly using occlusion culling.";
+       mMetaData.sceneTypeMask = ST_EXTERIOR_REAL_FAR; // support all types
+       mMetaData.worldGeometrySupported = false;
+    }
+    //-----------------------------------------------------------------------
+    SceneManager* PagingLandScapeOctreeSceneManagerFactory::createInstance(
+        const String& instanceName)
+    {
+        return new PagingLandScapeOctreeSceneManager(instanceName);
+    }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctreeSceneManagerFactory::destroyInstance(SceneManager* instance)
+    {
+        delete instance;
+    }
     //---------------------------------------------------------------------
-    PagingLandScapeOctreeSceneManager::PagingLandScapeOctreeSceneManager() : SceneManager(),
+    PagingLandScapeOctreeSceneManager::PagingLandScapeOctreeSceneManager(const String& name): 
+        SceneManager(name),
 		mPagingLandScapeOctree(0),
 		mCurrentOptionCamera(0)
     {
@@ -311,10 +335,16 @@ namespace Ogre
         init(b, depth);
     }
     //---------------------------------------------------------------------
-    PagingLandScapeOctreeSceneManager::PagingLandScapeOctreeSceneManager(AxisAlignedBox &box, int max_depth) : SceneManager(),
+    PagingLandScapeOctreeSceneManager::PagingLandScapeOctreeSceneManager(const String& name, AxisAlignedBox &box, int max_depth) : 
+        SceneManager(name),
         mPagingLandScapeOctree(0)
     {
         init(box, max_depth);
+    }
+    //---------------------------------------------------------------------
+    const String& PagingLandScapeOctreeSceneManager::getTypeName(void) const
+    {
+     	return PagingLandScapeOctreeSceneManagerFactory::FACTORY_TYPE_NAME;
     }
     //---------------------------------------------------------------------
     void PagingLandScapeOctreeSceneManager::init(const AxisAlignedBox &box, int depth)
@@ -418,23 +448,23 @@ namespace Ogre
 			c = 0;
 	}
     //-----------------------------------------------------------------------
-    void PagingLandScapeOctreeSceneManager::removeCamera(Camera *cam)
+    void PagingLandScapeOctreeSceneManager::destroyCamera(Camera *cam)
     {
         unregisterCamera (static_cast <PagingLandScapeOctreeCamera *> (cam));
-        SceneManager::removeCamera(cam);
+        SceneManager::destroyCamera(cam);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOctreeSceneManager::removeCamera(const String& name)
+    void PagingLandScapeOctreeSceneManager::destroyCamera(const String& name)
     {
 		// Find in list
        CameraList::iterator i = mCameras.find(name);
        if (i != mCameras.end())
 	   {
-          removeCamera (i->second);
+          destroyCamera (i->second);
        }                  
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOctreeSceneManager::removeAllCameras(void)
+    void PagingLandScapeOctreeSceneManager::destroyAllCameras(void)
     {
 		CameraList::iterator i = mCameras.begin();
 		for (; i != mCameras.end(); ++i)
@@ -644,11 +674,11 @@ namespace Ogre
         Camera * const c_cam = mCameraInProgress;
 
         // make sure we always occlude in SOLID MODE
-		mCamDetail =  c_cam->getDetailLevel ();
-		if (mCamDetail != SDL_SOLID)
+		mCamDetail =  c_cam->getPolygonMode ();
+		if (mCamDetail != PM_SOLID)
 		{			
 			mOcclusion.setIfNotSolidScene	(true);
-			c_cam->setDetailLevel (SDL_SOLID);
+			c_cam->setPolygonMode (PM_SOLID);
 		}
 		else 
 		{
@@ -744,8 +774,8 @@ namespace Ogre
         Camera * const c_cam = mCameraInProgress;
 
 		// make sure we restore previous detail level.
-		if (mCamDetail != SDL_SOLID)
-			c_cam->setDetailLevel (mCamDetail);
+		if (mCamDetail != PM_SOLID)
+			c_cam->setPolygonMode (mCamDetail);
 
 		assert (c_cam->getViewport ());
         #ifdef HWOCCLUSIONRTT
@@ -757,7 +787,7 @@ namespace Ogre
                 mDestRenderSystem->_endFrame();
 		#endif //HWOCCLUSIONRTT
 
-		if (mCamDetail != SDL_SOLID)
+		if (mCamDetail != PM_SOLID)
 		{
 			mDestRenderSystem->clearFrameBuffer (FBT_DEPTH | FBT_COLOUR, 
 												c_cam->getViewport ()->getBackgroundColour (),//color
@@ -984,8 +1014,11 @@ namespace Ogre
     {   
           const Camera * const c_cam = mCameraInProgress;
           mDestRenderSystem->_setWorldMatrix(Matrix4::IDENTITY);
+//        mDestRenderSystem->_setViewMatrix(c_cam->getViewMatrix());
+//        mDestRenderSystem->_setProjectionMatrix(c_cam->getProjectionMatrix());
 
-        setPass(r->getMaterial()->getBestTechnique()->getPass(0));
+		mDestRenderSystem->setCurrentPassIterationCount(1);
+        _setPass(r->getMaterial()->getBestTechnique()->getPass(0));
         useRenderableViewProjMode (r);
 
         RenderOperation ro;

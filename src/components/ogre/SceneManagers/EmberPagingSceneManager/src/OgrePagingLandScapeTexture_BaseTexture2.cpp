@@ -26,6 +26,7 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_BaseTexture2.h"
 #include "OgrePagingLandScapeData2DManager.h"
 
@@ -35,8 +36,8 @@ namespace Ogre
   //-----------------------------------------------------------------------
     void PagingLandScapeTexture_BaseTexture2::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_BaseTexture2::_clearData(void)
@@ -46,7 +47,7 @@ namespace Ogre
 //-----------------------------------------------------------------------
 PagingLandScapeTexture* PagingLandScapeTexture_BaseTexture2::newTexture()
 {
-    return new PagingLandScapeTexture_BaseTexture2();
+    return new PagingLandScapeTexture_BaseTexture2(mParent);
 }
 //-----------------------------------------------------------------------
 bool PagingLandScapeTexture_BaseTexture2::TextureRenderCapabilitesFullfilled()
@@ -54,7 +55,7 @@ bool PagingLandScapeTexture_BaseTexture2::TextureRenderCapabilitesFullfilled()
     return true;
 }
 //-----------------------------------------------------------------------
-PagingLandScapeTexture_BaseTexture2::PagingLandScapeTexture_BaseTexture2() : PagingLandScapeTexture()
+PagingLandScapeTexture_BaseTexture2::PagingLandScapeTexture_BaseTexture2(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
 {
 }
 
@@ -69,7 +70,7 @@ void PagingLandScapeTexture_BaseTexture2::_loadMaterial()
 	
 	if (mMaterial.isNull())
     {
-		PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		PagingLandScapeOptions * const opt = mParent->getOptions();
         const String filename = opt->LandScape_filename;
         const String commonName = StringConverter::toString(mDataZ) + 
             String(".") +

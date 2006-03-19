@@ -48,6 +48,8 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
     bool noSpecializedQueries = true;
     bool noTerrainQuery = true;
 
+    PagingLandScapeSceneManager* mSceneMgr = static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr);
+
     // Exclusive Specialized Queries
     // Straight up / down?
     if ((mask & RSQ_Height) || (mask & RSQ_Height_no_interpolation) ||
@@ -59,9 +61,9 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 
         Real height;
         if (mask & RSQ_Height_no_interpolation)
-            height = PagingLandScapeData2DManager::getSingleton().getWorldHeight(origin.x, origin.z);
+            height = mSceneMgr->getData2DManager()->getWorldHeight(origin.x, origin.z);
         else
-            height = PagingLandScapeData2DManager::getSingleton().getInterpolatedWorldHeight(origin.x, origin.z);
+            height = mSceneMgr->getData2DManager()->getInterpolatedWorldHeight(origin.x, origin.z);
 
         worldFrag.singleIntersection.x = origin.x;
         worldFrag.singleIntersection.z = origin.z;
@@ -94,7 +96,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 			//	resFactor = 0.125f;
 			//}
 		}
-        if (static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr)->intersectSegmentTerrain(
+        if (mSceneMgr->intersectSegmentTerrain(
                         origin, dir*resFactor, 
                         &worldFrag.singleIntersection))
         {
@@ -131,9 +133,9 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
         const Vector3 raydir (mRay.getDirection());
         const Vector3 raymove (raydir * resFactor);
         const Real distmove = 1 * resFactor;
-        const Real maxHeight = PagingLandScapeData2DManager::getSingleton().getMaxHeight ();
-        const Real MaxTerrainX = PagingLandScapeOptions::getSingleton().maxScaledX;
-        const Real MaxTerrainZ = PagingLandScapeOptions::getSingleton().maxScaledZ;
+        const Real maxHeight = mSceneMgr->getData2DManager()->getMaxHeight ();
+        const Real MaxTerrainX = mSceneMgr->getOptions()->maxScaledX;
+        const Real MaxTerrainZ = mSceneMgr->getOptions()->maxScaledZ;
 
         Vector3 ray (mRay.getOrigin());
 	    Real dist = 0.0f;
@@ -191,7 +193,8 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 Vector3 PagingLandScapeRaySceneQuery::getHeightAt(const Vector3& origin) const
 {
 
-	return Vector3(origin.x, PagingLandScapeData2DManager::getSingleton().getInterpolatedWorldHeight(origin.x, origin.z), origin.z);
+    PagingLandScapeSceneManager * mSceneMgr = static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr);
+	return Vector3(origin.x, mSceneMgr->getData2DManager()->getInterpolatedWorldHeight(origin.x, origin.z), origin.z);
 
 }
 

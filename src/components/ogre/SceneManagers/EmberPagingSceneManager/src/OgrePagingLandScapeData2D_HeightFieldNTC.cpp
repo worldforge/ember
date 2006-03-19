@@ -26,6 +26,7 @@
 #include "OgreException.h"
 
 #include "OgrePagingLandScapeData2D.h"
+#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeOptions.h"
 
 #include "OgrePagingLandScapeData2D_HeightFieldNTC.h"
@@ -39,22 +40,22 @@ namespace Ogre
     //-----------------------------------------------------------------------
 	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldNTC::newPage()
     {
-       return new PagingLandScapeData2D_HeightFieldNTC();
+       return new PagingLandScapeData2D_HeightFieldNTC(mParent);
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeData2D_HeightFieldNTC::PagingLandScapeData2D_HeightFieldNTC()
-    : PagingLandScapeData2D()
+    PagingLandScapeData2D_HeightFieldNTC::PagingLandScapeData2D_HeightFieldNTC(PagingLandScapeData2DManager *dataMgr)
+    : PagingLandScapeData2D(dataMgr)
     {
 	    mImage = 0;
 	    input_max = 3000.0f;
         input_min = 0.0f;
-        mMaxheight = _decodeTC (1.0f) * PagingLandScapeOptions::getSingleton().scale.y;
+        mMaxheight = _decodeTC (1.0f) * mParent->getOptions()->scale.y;
     }
 
     //-------------------------------------------------------------------
     const Real PagingLandScapeData2D_HeightFieldNTC::getMaxAbsoluteHeight(void) const
     { 
-        return _decodeTC (1.0f) * PagingLandScapeOptions::getSingleton().scale.y;
+        return _decodeTC (1.0f) * mParent->getOptions()->scale.y;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldNTC::~PagingLandScapeData2D_HeightFieldNTC()
@@ -105,7 +106,7 @@ namespace Ogre
     void PagingLandScapeData2D_HeightFieldNTC::_save()
     {
        
-            const Real scale = 1.0f  / PagingLandScapeOptions::getSingleton().scale.y;
+            const Real scale = 1.0f  / mParent->getOptions()->scale.y;
            
             uchar *img = mImage->getData();
             uint j = 0;
@@ -114,14 +115,14 @@ namespace Ogre
             {
                 img[ i + (mBpp - 1)] =  uchar (_encodeTC(mHeightData[j++]) * scale);               
             }
-            const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + ".HN." + 
+            const String fname = mParent->getOptions()->LandScape_filename + ".HN." + 
                                         StringConverter::toString(mPageZ) + "." +
 			                            StringConverter::toString(mPageX) + ".";
-            const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
+            const String extname = mParent->getOptions()->LandScape_extension;
 
 
         FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-                PagingLandScapeOptions::getSingleton().groupName, 
+                mParent->getOptions()->groupName, 
                 fname + extname);
         FileInfoList::iterator it = finfo->begin();
         if (it != finfo->end())
@@ -138,20 +139,20 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2D_HeightFieldNTC::_load(const uint mX, const uint mZ)
     { 
-        const String strFileName = PagingLandScapeOptions::getSingleton().LandScape_filename + ".HN." + 
+        const String strFileName = mParent->getOptions()->LandScape_filename + ".HN." + 
                             StringConverter::toString(mZ) + "." +
 			                StringConverter::toString(mX) + ".";
 
         String finalName = strFileName + 
                         "modif." + 
-                        PagingLandScapeOptions::getSingleton().LandScape_extension;
-        if (!(PagingLandScapeOptions::getSingleton().Deformable && 
-            ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,
+                        mParent->getOptions()->LandScape_extension;
+        if (!(mParent->getOptions()->Deformable && 
+            ResourceGroupManager::getSingleton().resourceExists(mParent->getOptions()->groupName,
             finalName)))
         {
             finalName = strFileName + 
-                PagingLandScapeOptions::getSingleton().LandScape_extension;  
-            if (!ResourceGroupManager::getSingleton().resourceExists(PagingLandScapeOptions::getSingleton().groupName,
+                mParent->getOptions()->LandScape_extension;  
+            if (!ResourceGroupManager::getSingleton().resourceExists(mParent->getOptions()->groupName,
                 finalName))
             { 
                 LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + finalName, 
@@ -161,7 +162,7 @@ namespace Ogre
             }
         }
         mImage = new Image();
-        mImage->load (finalName,  PagingLandScapeOptions::getSingleton().groupName); 
+        mImage->load (finalName,  mParent->getOptions()->groupName); 
         
         //check to make sure it's 2^n + 1 size.
         if (mImage->getWidth() != mImage->getHeight() ||	!_checkSize(mImage->getWidth()))
@@ -193,7 +194,7 @@ namespace Ogre
         mHeightData = new Real[mMaxArrayPos];
         uint j = 0;
         const double divider = 1.0 / 255;
-        const Real scale  = PagingLandScapeOptions::getSingleton().scale.y;
+        const Real scale  = mParent->getOptions()->scale.y;
         uchar *data = mImage->getData();
         mMaxheight = 0.0f;
         const uint bpp = static_cast <uint> (mBpp);
@@ -211,9 +212,9 @@ namespace Ogre
 	   
 		    mImage = new Image();
 
-		    mImage->load(PagingLandScapeOptions::getSingleton().LandScape_filename + 
-                "." + PagingLandScapeOptions::getSingleton().LandScape_extension, 
-                    PagingLandScapeOptions::getSingleton().groupName);
+		    mImage->load(mParent->getOptions()->LandScape_filename + 
+                "." + mParent->getOptions()->LandScape_extension, 
+                    mParent->getOptions()->groupName);
 
 		    //check to make sure it's 2^n size.
 		    if (!_checkSize(mImage->getHeight()) ||	!_checkSize(mImage->getWidth()))
@@ -239,7 +240,7 @@ namespace Ogre
             mHeightData = new Real[mMaxArrayPos];
             uint j = 0;
             const double divider = 1.0 / 255;
-            const Real scale  = PagingLandScapeOptions::getSingleton().scale.y;
+            const Real scale  = mParent->getOptions()->scale.y;
             uchar *data = mImage->getData();
             mMaxheight = 0.0f;
             const uint bpp = static_cast <uint> (mBpp);

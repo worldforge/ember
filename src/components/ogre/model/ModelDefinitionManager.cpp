@@ -27,6 +27,7 @@
 
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
+#include "Model.h"
 
 #include "XMLModelDefinitionSerializer.h"
 
@@ -60,6 +61,11 @@ ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0), mShowModels
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 	
 	loadAreas();
+	
+	///register factories
+	ModelFactory* modelFactory = new ModelFactory();
+	Ogre::Root::getSingleton().addMovableObjectFactory(modelFactory);
+	
 }
 
 

@@ -30,7 +30,7 @@ namespace EmberOgre
 {
 	
 
-	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture( void )
+	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture( Ogre::PagingLandScapeTextureManager *textureMgr ): Ogre::PagingLandScapeTexture(textureMgr)
 	{
 	}
 	
@@ -50,7 +50,7 @@ namespace EmberOgre
 
 	Ogre::PagingLandScapeTexture* EmberPagingLandScapeTexture::newTexture( )
 	{
-		return new EmberPagingLandScapeTexture();
+		return new EmberPagingLandScapeTexture(mParent);
 	}
 	
 	bool EmberPagingLandScapeTexture::TextureRenderCapabilitesFullfilled()
@@ -72,6 +72,7 @@ namespace EmberOgre
 
 	void EmberPagingLandScapeTexture::_unloadMaterial()
 	{
+		S_LOG_VERBOSE("Unloading terrain material.");
 	}
 	
 	

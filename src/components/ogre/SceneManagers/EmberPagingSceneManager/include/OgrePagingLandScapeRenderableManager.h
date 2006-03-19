@@ -19,7 +19,6 @@
 #define PAGINGLandScapeRENDERABLEMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
 #include "OgrePagingLandScapeQueue.h"
 #include "OgrePagingLandScapeIndexBuffer.h"
 
@@ -30,13 +29,13 @@ namespace Ogre
 		    This class is used as a store of PagingLandScapeRenderables and the are reference and dereference in order to not being created and
 		    destroyed every time the plug-in need to change the LOD.
     */
-    class PagingLandScapeRenderableManager : public Singleton< PagingLandScapeRenderableManager >
+    class PagingLandScapeRenderableManager
     {
         public:
 	        /** Initializes the PagingLandScapeRenderableManager with the 
             * given options and allocate the necessary memory.
 	        */
-	        PagingLandScapeRenderableManager(void);
+            PagingLandScapeRenderableManager (PagingLandScapeSceneManager * scnMgr);
 
 	        virtual ~PagingLandScapeRenderableManager(void);
 
@@ -82,9 +81,6 @@ namespace Ogre
 				++mRenderablesVisibles;
 			};
 
-	        static PagingLandScapeRenderableManager& getSingleton(void);
-
-	        static PagingLandScapeRenderableManager* getSingletonPtr(void);
 
             void load(void);
             void clear(void);
@@ -92,7 +88,14 @@ namespace Ogre
 			/// unload some Tiles/renderables if no more in use 
 			void processTileUnload();
 
-        protected:
+            PagingLandScapeOptions*		getOptions(){return mOptions;}
+            PagingLandScapeSceneManager* getSceneManager(){return mSceneManager;}
+    protected:
+
+            PagingLandScapeOptions*		mOptions;
+            PagingLandScapeSceneManager *mSceneManager;
+
+
 	        void _addBatch(const uint num);
 
 

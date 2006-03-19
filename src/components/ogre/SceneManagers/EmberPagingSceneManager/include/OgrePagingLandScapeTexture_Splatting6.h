@@ -25,14 +25,14 @@ namespace Ogre
     class PagingLandScapeTexture_Splatting6 : public PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture_Splatting6(void);
+	        PagingLandScapeTexture_Splatting6(PagingLandScapeTextureManager *textureMgr);
             virtual String getName(){return String("Splatting6");}
 
             virtual void setPagesize(void){_setPagesize();};
             virtual void clearData(void){_clearData();};
             
-            static void _setPagesize(void);
-            static void _clearData(void);
+            void _setPagesize(void);
+            void _clearData(void);
 
 	        virtual ~PagingLandScapeTexture_Splatting6(void);
 

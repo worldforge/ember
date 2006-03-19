@@ -23,8 +23,10 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 #include "OgreTechnique.h"
 #include "OgrePass.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Splatting.h"
 #include "OgrePagingLandScapeData2DManager.h"
 
@@ -34,8 +36,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting::_clearData(void)
@@ -45,12 +47,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting::newTexture()
     {
-        return new PagingLandScapeTexture_Splatting();
+        return new PagingLandScapeTexture_Splatting(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting::TextureRenderCapabilitesFullfilled()
     {              
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
             
 		if (opt->NumMatHeightSplat < 3)
 			return false;
@@ -60,7 +62,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting::PagingLandScapeTexture_Splatting() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Splatting::PagingLandScapeTexture_Splatting(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
     //-----------------------------------------------------------------------
@@ -72,7 +74,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             const String filename (opt->LandScape_filename);
             const String commonName (StringConverter::toString(mDataZ) + 
                                         String(".") +
@@ -246,7 +248,7 @@ namespace Ogre
     void PagingLandScapeTexture_Splatting::_BuildPoint( const uint x, const int z,
                                                     ColourValue& out, std::vector<Real> &alpha)
     {
-        PagingLandScapeData2DManager * const dataPageManager = PagingLandScapeData2DManager::getSingletonPtr();
+        PagingLandScapeData2DManager * const dataPageManager = mParent->getSceneManager()->getData2DManager();
                 	
 	    // Ask for the current height value and the 8 surrounding values
 	                       
@@ -265,7 +267,7 @@ namespace Ogre
 		};
 	    // Weight(pt1 , pt2) = 1 - DistanceSquared(pt1,pt2) / (1.75)^2
              
-        const PagingLandScapeOptions *  const  options = PagingLandScapeOptions::getSingletonPtr();
+        const PagingLandScapeOptions *  const  options = mParent->getOptions();
         
 	    //The slope test
 	    const Real dx = options->scale.x;

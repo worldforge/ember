@@ -20,6 +20,8 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 #include "OgreSphere.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
+
 #include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeData2D.h"
 #include "OgrePagingLandScapeOptions.h"
@@ -40,7 +42,8 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 namespace Ogre
 {
-    PagingLandScapeData2D::PagingLandScapeData2D():
+    PagingLandScapeData2D::PagingLandScapeData2D(PagingLandScapeData2DManager *pageMgr):
+        mParent(pageMgr),
         mHeightData (0),
         mIsLoaded (false),
         mIsModified (false),
@@ -74,10 +77,10 @@ namespace Ogre
 	        mPageX = x; 
 	        mPageZ = z;
         	
-	        mSize = PagingLandScapeOptions::getSingleton().PageSize;
+	        mSize = mParent->getOptions()->PageSize;
         	
-            mShiftX = (mPageX * (mSize - 1)) - PagingLandScapeOptions::getSingleton().maxUnScaledX;
-            mShiftZ = (mPageZ * (mSize - 1)) - PagingLandScapeOptions::getSingleton().maxUnScaledZ;
+            mShiftX = (mPageX * (mSize - 1)) - mParent->getOptions()->maxUnScaledX;
+            mShiftZ = (mPageZ * (mSize - 1)) - mParent->getOptions()->maxUnScaledZ;
     	
 	        const bool isLoadable = _load (x, z);
 	        mIsLoaded = true;  
@@ -113,7 +116,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeData2D::computePowerof2PlusOneSize()
     {
-	    mSize = PagingLandScapeOptions::getSingleton().PageSize;
+	    mSize = mParent->getOptions()->PageSize;
         const size_t p2size = mSize - 1;
 
         size_t pagex = mXDimension / p2size;
@@ -137,7 +140,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const Real PagingLandScapeData2D::getHeightAbsolute(const Real x, const Real z)
     {   
-        const Vector3 scale = PagingLandScapeOptions::getSingleton().scale;
+        const Vector3 scale = mParent->getOptions()->scale;
 	
         // adjust x and z to be local to page
         const int i_x = static_cast<int> (x / scale.x - mShiftX);
@@ -198,7 +201,7 @@ namespace Ogre
         uint tileposx = x;
         uint tileposz = z;
 	    PagingLandScapeTile *t = 
-		PagingLandScapePageManager::getSingleton().getTilePage(tileposx, tileposz, 
+            mParent->getSceneManager()->getPageManager()->getTilePage(tileposx, tileposz, 
 								                mPageX, mPageZ);
 	    if (t && t->isLoaded ())
 	    { 
@@ -229,7 +232,7 @@ namespace Ogre
         const uint arraypos = static_cast <uint> (z * mSize + x);
         assert (mHeightData && arraypos < mMaxArrayPos);
 
-        const Real maxH = PagingLandScapeData2DManager::getSingleton ().getMaxHeight();
+        const Real maxH = mParent->getMaxHeight();
         const Real newH = mHeightData[arraypos] - modificationHeight;
 
         bool did_modif = false;
@@ -263,10 +266,10 @@ namespace Ogre
 
 		    uint tileposx = x;
 		    uint tileposz = z;
-		// Make position local to tiles.
-		// and return a Tile.
+		    // Make position local to tiles.
+		    // and return a Tile.
 	        PagingLandScapeTile *t = 
-		    PagingLandScapePageManager::getSingleton().getTilePage (tileposx, tileposz, 
+		    mParent->getSceneManager()->getPageManager()->getTilePage (tileposx, tileposz, 
 									mPageX, mPageZ);
 	        if (t && t->isLoaded ())
 	        { 
@@ -274,8 +277,8 @@ namespace Ogre
 	            PagingLandScapeRenderable * const r = t->getRenderable ();                
 		        r->adjustDeformationRectangle (tileposx, tileposz); 
         		
-		        const uint tSize = PagingLandScapeOptions::getSingleton ().TileSize - 1;
-		        const uint NumTiles = PagingLandScapeOptions::getSingleton ().NumTiles;
+		        const uint tSize = mParent->getOptions()->TileSize - 1;
+		        const uint NumTiles = mParent->getOptions()->NumTiles;
 
                 const PagingLandScapeTileInfo * const info =  t->getInfo();
                 const uint tX = info->tileX;
@@ -416,7 +419,7 @@ namespace Ogre
         const size_t pageSize = mSize - 1;
 
         // the divider make sure we do respect proportion  (height and width proportional to y)
-        const Real Divider = static_cast <Real> (pageSize) / PagingLandScapeOptions::getSingleton ().scale.y;
+        const Real Divider = static_cast <Real> (pageSize) / mParent->getOptions()->scale.y;
 
         assert (mHeightData);
 

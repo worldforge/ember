@@ -35,7 +35,7 @@ namespace Ogre
     class PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture(void);
+	        PagingLandScapeTexture(PagingLandScapeTextureManager *pageMgr);
 
 	        virtual ~PagingLandScapeTexture(void);
 
@@ -87,7 +87,7 @@ namespace Ogre
 			};
 			inline bool isCoord(const uint x, const uint z){return (mDataX == x && mDataZ == z);};
 
-
+            const String &getMaterialName();
         protected:
 	        virtual void _loadMaterial(void) = 0;
 
@@ -105,6 +105,7 @@ namespace Ogre
             bool        mIsPaintRectModified;
             Image::Box  mDeformRect;
             bool        mIsDeformRectModified;
+            PagingLandScapeTextureManager *mParent;
 
     };
 }

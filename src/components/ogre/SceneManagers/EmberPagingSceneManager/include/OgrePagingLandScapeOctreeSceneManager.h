@@ -51,6 +51,20 @@ http://www.gnu.org/copyleft/lesser.txt.
 namespace Ogre
 {
 
+    /// Factory for OctreeSceneManager
+    class PagingLandScapeOctreeSceneManagerFactory : public SceneManagerFactory
+    {
+    protected:
+        void initMetaData(void) const;
+    public:
+        PagingLandScapeOctreeSceneManagerFactory() {}
+        ~PagingLandScapeOctreeSceneManagerFactory() {}
+        /// Factory type name
+        static const String FACTORY_TYPE_NAME;
+        SceneManager* createInstance(const String& instanceName);
+        void destroyInstance(SceneManager* instance);
+    };
+
     class PagingLandScapeOctreeNode;
 
     class PagingLandScapeOctreeCamera;
@@ -87,11 +101,15 @@ namespace Ogre
     public:
         static int intersect_call;
         /** Standard Constructor.  Initializes the PagingLandScapeOctree to -500,-500,-500 to 500,500,500 with unlimited depth. */
-        PagingLandScapeOctreeSceneManager(void);
+        PagingLandScapeOctreeSceneManager(const String &name);
         /** Standard Constructor */
-        PagingLandScapeOctreeSceneManager(AxisAlignedBox& box, int max_depth);
-        /** Standard desctructor */
+        PagingLandScapeOctreeSceneManager(const String &name, AxisAlignedBox& box, int max_depth);
+        /** Standard destructor */
         virtual ~PagingLandScapeOctreeSceneManager(void);
+
+        void shutdown();
+        /// @copydoc SceneManager::getTypeName
+        const String& getTypeName(void) const;
 
         /** Initializes the manager to the given box and depth.
         */
@@ -103,9 +121,9 @@ namespace Ogre
         virtual SceneNode* createSceneNode(const String& name);
         /** Creates a specialized PagingLandScapeOctreeCamera */
         virtual Camera* createCamera(const String& name);
-        virtual void removeCamera(Camera *cam);
-        virtual void removeCamera(const String& name);
-        virtual void removeAllCameras(void);
+        virtual void destroyCamera(Camera *cam);
+        virtual void destroyCamera(const String& name);
+        virtual void destroyAllCameras(void);
 
         void addCamera(Camera *cam);
 
@@ -245,7 +263,7 @@ namespace Ogre
         typedef std::map<unsigned int, MovableObjectList * > VisiblesPerCam;
         VisiblesPerCam mVisibles;
         MovableObjectList * mCamInProgressVisibles;
-        SceneDetailLevel mCamDetail;
+        PolygonMode mCamDetail;
 
         /// number of rendered objects
         int mNumObjects;

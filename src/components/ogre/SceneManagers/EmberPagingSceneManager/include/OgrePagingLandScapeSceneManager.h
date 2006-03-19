@@ -22,30 +22,45 @@
 #include "OgrePagingLandScapeOctreeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgreStringVector.h"
-#include "OgreSingleton.h"
 
 namespace Ogre
 {
+    
+     /// Factory for OctreeSceneManager
+     class PagingLandScapeSceneManagerFactory : public SceneManagerFactory
+     {
+     protected:
+     	void initMetaData(void) const;
+     public:
+     	PagingLandScapeSceneManagerFactory() {}
+     	~PagingLandScapeSceneManagerFactory() {}
+     	/// Factory type name
+       	static const String FACTORY_TYPE_NAME;
+     	SceneManager* createInstance(const String& instanceName);
+     	void destroyInstance(SceneManager* instance);
+     };
+     
+
 
     /** This is a basic SceneManager for organizing PagingLandScapeRenderables into a total LandScape.
 	    It loads a LandScape from a .cfg file that specifies what textures/scale/mipmaps/etc to use.
     */
-    class PagingLandScapeSceneManager : public PagingLandScapeOctreeSceneManager, public Singleton< PagingLandScapeSceneManager >
+    class PagingLandScapeSceneManager : public PagingLandScapeOctreeSceneManager
     {
 	    friend class PagingLandScapeRaySceneQuery;
     public:
-	    PagingLandScapeSceneManager(void);
+	    PagingLandScapeSceneManager(const String &name);
 	    ~PagingLandScapeSceneManager(void);
 
-	    static PagingLandScapeSceneManager& getSingleton(void);
-
-	    static PagingLandScapeSceneManager* getSingletonPtr(void);
+        void shutdown();
+        /// @copydoc SceneManager::getTypeName
+        const String& getTypeName(void) const;
 
         /** Creates a specialized Camera */
         virtual Camera * createCamera(const String &name);
-        virtual void removeCamera(Camera *cam);
-        virtual void removeCamera(const String& name);
-        virtual void removeAllCameras(void);
+        virtual void destroyCamera(Camera *cam);
+        virtual void destroyCamera(const String& name);
+        virtual void destroyAllCameras(void);
 
 	      /** Sets the source of the 'world' geometry, i.e. the large, mainly static geometry
             making up the world e.g. rooms, LandScape etc.
@@ -269,6 +284,64 @@ namespace Ogre
         _OgrePagingLandScapeExport void  getWorldSize(Real *worldSizeX, Real *worldSizeZ);
         _OgrePagingLandScapeExport float getMaxSlope(Vector3 location1, Vector3 location2, float maxSlopeIn);
 
+        PagingLandScapeOptions                 * getOptions()
+        {
+            assert(mOptions);
+            return mOptions;
+        }
+
+        PagingLandScapeHorizon                  * getHorizon()
+        {
+            assert(mHorizon);
+            return mHorizon;
+        }
+        PagingLandScapeTileManager              * getTileManager()
+        {
+            assert(mTileManager);
+            return mTileManager;
+        }
+        PagingLandScapePageManager              * getPageManager()
+        {
+            assert(mPageManager);
+            return mPageManager;
+        }
+        PagingLandScapeData2DManager            * getData2DManager()
+        {
+            assert(mData2DManager);
+            return mData2DManager;
+        }
+        PagingLandScapeListenerManager          * getListenerManager()
+        {
+            assert(mListenerManager);
+            return mListenerManager;
+        }
+        PagingLandScapeTextureManager           * getTextureManager()
+        {
+            assert(mTextureManager);
+            return mTextureManager;
+        }
+        PagingLandScapeIndexBufferManager       * getIndexesManager()
+        {
+            assert(mIndexesManager);
+            return mIndexesManager;
+        }
+        PagingLandScapeRenderableManager        * getRenderableManager()
+        {
+            assert(mRenderableManager);
+            return mRenderableManager;
+        }
+        PagingLandScapeTextureCoordinatesManager* getTextureCoordinatesManager()
+        {
+            assert(mTexCoordManager);
+            return mTexCoordManager;
+        }
+        PagingLandScapeIndexBufferManager* getIndexBufferManager()
+        {
+            assert(mIndexesManager);
+            return mIndexesManager;
+        }
+        
+
     protected:
 //	    EntityList& getEntities(void)
 //		{
@@ -277,7 +350,7 @@ namespace Ogre
 
 	    /** All the plugin options are handle here.
 	    */
-	    PagingLandScapeOptions mOptions;
+	    PagingLandScapeOptions* mOptions;
 
 	    /** LandScape 2D Data manager.
 		    This class encapsulate the 2d data loading and unloading

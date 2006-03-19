@@ -50,7 +50,7 @@ mVisible(false)
 FoliageArea::~FoliageArea()
 {
 	if (mStaticGeom) {
-		mSceneMgr->removeStaticGeometry(mStaticGeom);
+		mSceneMgr->destroyStaticGeometry(mStaticGeom);
 	}
 }
 

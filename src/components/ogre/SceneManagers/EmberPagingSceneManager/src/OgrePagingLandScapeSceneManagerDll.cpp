@@ -24,15 +24,20 @@
 
 namespace Ogre
 {
-    PagingLandScapeSceneManager* PagingLandScapePlugin;
+    PagingLandScapeSceneManagerFactory* PagingLandScapePlugin;
 
     extern "C" void _OgrePagingLandScapeExport dllStartPlugin(void)
     {
 	    // Create new scene manager
-	    PagingLandScapePlugin = new PagingLandScapeSceneManager();
+	    PagingLandScapePlugin = new PagingLandScapeSceneManagerFactory();
 
 	    // Register
-	    Root::getSingleton().setSceneManager(ST_EXTERIOR_REAL_FAR, PagingLandScapePlugin);
+	    Root::getSingleton().addSceneManagerFactory(PagingLandScapePlugin);
+    }
+
+    extern "C" void _OgrePagingLandScapeExport dllShutdownPlugin(void)
+    {	
+        Root::getSingleton().removeSceneManagerFactory(PagingLandScapePlugin);
     }
 
     extern "C" void _OgrePagingLandScapeExport dllStopPlugin(void)

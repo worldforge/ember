@@ -25,6 +25,7 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Image.h"
 
 
@@ -34,17 +35,17 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Image::newTexture()
     {
-        return new PagingLandScapeTexture_Image();
+        return new PagingLandScapeTexture_Image(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Image::TextureRenderCapabilitesFullfilled()
     {                
-        if (PagingLandScapeOptions::getSingleton().ImageNameLoad)
+        if (mParent->getOptions()->ImageNameLoad)
             return true;
         return false;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Image::PagingLandScapeTexture_Image() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Image::PagingLandScapeTexture_Image(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
 
@@ -58,7 +59,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {
-			PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			PagingLandScapeOptions * const opt = mParent->getOptions();
             if (opt->ImageNameLoad)
             {  
                 const String filename = opt->image_filename;
@@ -78,9 +79,9 @@ namespace Ogre
 
                         GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
     	                
-    //                    params->setNamedConstant("compressionSettings", Vector4(PagingLandScapeOptions::getSingleton().scale.x * PagingLandScapeOptions::getSingleton().PageSize, 
-    //                                                                        PagingLandScapeOptions::getSingleton().scale.y / 65535, 
-    //                                                                        PagingLandScapeOptions::getSingleton().scale.z * PagingLandScapeOptions::getSingleton().PageSize, 
+    //                    params->setNamedConstant("compressionSettings", Vector4(mParent->getOptions()->scale.x * mParent->getOptions()->PageSize, 
+    //                                                                        mParent->getOptions()->scale.y / 65535, 
+    //                                                                        mParent->getOptions()->scale.z * mParent->getOptions()->PageSize, 
     //                                                                        0.0));
                         // Check to see if custom param is already there
                         GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();

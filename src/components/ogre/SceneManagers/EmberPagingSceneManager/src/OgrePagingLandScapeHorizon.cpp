@@ -41,23 +41,12 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeHorizon* Singleton<PagingLandScapeHorizon>::ms_Singleton = 0;
-    PagingLandScapeHorizon* PagingLandScapeHorizon::getSingletonPtr(void)
+    PagingLandScapeHorizon::PagingLandScapeHorizon(const PagingLandScapeOptions *options)
     {
-	    return ms_Singleton;
-    }
-    PagingLandScapeHorizon& PagingLandScapeHorizon::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
+        mPageWidth = options->world_width;
+        mPageHeight = options->world_height;
 
-    //-----------------------------------------------------------------------
-    PagingLandScapeHorizon::PagingLandScapeHorizon(const PagingLandScapeOptions &options)
-    {
-        mPageWidth = options.world_width;
-        mPageHeight = options.world_height;
-
-        mNumTilesPage = options.NumTiles;
+        mNumTilesPage = options->NumTiles;
 
         mTileWidth = mPageWidth * mNumTilesPage;
         mTileHeight = mPageHeight * mNumTilesPage;
@@ -130,7 +119,7 @@ namespace Ogre
     {
         if (mVisibilityMaterial.isNull())
         {        
-            const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+            const PagingLandScapeOptions * const opt = mOptions;
             const String filename = opt->LandScape_filename;
             const String name = filename +
                 "Visibility";

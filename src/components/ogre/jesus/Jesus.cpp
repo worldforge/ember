@@ -214,7 +214,7 @@ Model::Model* Jesus::createModelForBlockType(const std::string& blockType, const
 
 ModelBlock::~ModelBlock()
 {
-	mNode->getCreator()->removeBillboardSet(mPointBillBoardSet);
+	mNode->getCreator()->destroyBillboardSet(mPointBillBoardSet);
 	if (mModelNode) 
 		mNode->getCreator()->destroySceneNode (mModelNode->getName());
 		

@@ -56,19 +56,29 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeSceneManager* Singleton<PagingLandScapeSceneManager>::ms_Singleton = 0;
-    PagingLandScapeSceneManager* PagingLandScapeSceneManager::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    PagingLandScapeSceneManager& PagingLandScapeSceneManager::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-
+    const String PagingLandScapeSceneManagerFactory::FACTORY_TYPE_NAME = "PagingLandScapeSceneManager";
     //-----------------------------------------------------------------------
-    PagingLandScapeSceneManager::PagingLandScapeSceneManager() : 
-        PagingLandScapeOctreeSceneManager(),
+    void PagingLandScapeSceneManagerFactory::initMetaData(void) const
+    {
+ 	   mMetaData.typeName = FACTORY_TYPE_NAME;
+ 	   mMetaData.description = "Scene manager organising the scene on the basis of an octree, and paging heightmap when needed.";
+ 	   mMetaData.sceneTypeMask = ST_EXTERIOR_REAL_FAR; // support all types
+ 	   mMetaData.worldGeometrySupported = false;
+    }
+    //-----------------------------------------------------------------------
+    SceneManager* PagingLandScapeSceneManagerFactory::createInstance(
+ 	   const String& instanceName)
+    {
+ 	   return new PagingLandScapeSceneManager(instanceName);
+    }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeSceneManagerFactory::destroyInstance(SceneManager* instance)
+    {
+ 	   delete instance;
+    }
+    //-----------------------------------------------------------------------
+    PagingLandScapeSceneManager::PagingLandScapeSceneManager(const String& name) : 
+            PagingLandScapeOctreeSceneManager(name),
             mData2DManager (0),
 	        mTextureManager (0),
 	        mTileManager (0),
@@ -89,19 +99,24 @@ namespace Ogre
             mBrushArray (0), mCraterArray(0),
             mBrushArrayHeight (0),
             mBrushArrayWidth (0),
-            mListenerManager(0)
+            mListenerManager(0),
+            mOptions(0)
     {
 	    //showBoundingBoxes(true);
 	    //setDisplaySceneNodes(true);	
     }
-
+    //-------------------------------------------------------------------------
+    const String& PagingLandScapeSceneManager::getTypeName(void) const
+    {
+     	return PagingLandScapeSceneManagerFactory::FACTORY_TYPE_NAME;
+    }
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::PagingLandScapeOctreeResize()
     {	    
-        const Real x = mOptions.maxScaledX;
+        const Real x = mOptions->maxScaledX;
         assert (mData2DManager);
         const Real y = mData2DManager->getMaxHeight () * 4;
-        const Real z = mOptions.maxScaledZ;
+        const Real z = mOptions->maxScaledZ;
         PagingLandScapeOctreeSceneManager::resize(AxisAlignedBox(-x , 0, -z, x, y, z), 64);
     }
     //-----------------------------------------------------------------------
@@ -116,29 +131,46 @@ namespace Ogre
         mData2DManager->WorldDimensionChange();
         mTextureManager->WorldDimensionChange();
     }
+    //-------------------------------------------------------------------------
+    void PagingLandScapeSceneManager::shutdown(void)
+    {      
+        clearScene();
+
+        delete mOptions;
+        mOptions = 0;
+
+        delete mData2DManager;
+        mData2DManager = 0;
+        delete mTextureManager;
+        mTextureManager = 0;
+        delete mPageManager;
+        mPageManager = 0;
+
+        delete mListenerManager;
+        mListenerManager = 0;
+        delete mTileManager;
+        mTileManager = 0;
+        delete mRenderableManager;
+        mRenderableManager = 0;
+
+        delete mIndexesManager;
+        mIndexesManager = 0;
+        delete mTexCoordManager;
+        mTexCoordManager = 0;
+
+        delete[] mCraterArray;
+        mCraterArray = 0;
+    }
     //-----------------------------------------------------------------------
     PagingLandScapeSceneManager::~PagingLandScapeSceneManager()
     {
-        Root::getSingleton().removeFrameListener (mPageManager);
-
-        delete mData2DManager;
-        delete mTextureManager;
-        delete mPageManager;
-
-	    delete mListenerManager;
-		delete mTileManager;
-		delete mRenderableManager;
-
-		delete mIndexesManager;
-		delete mTexCoordManager;
-
-        delete[] mCraterArray;
+        shutdown();
     } 
     //-------------------------------------------------------------------------
     void PagingLandScapeSceneManager::setWorldGeometry(DataStreamPtr& stream, const String& typeName)
     {
 		if (!mListenerManager)
-	        mListenerManager = new PagingLandScapeListenerManager();
+	        mListenerManager = new PagingLandScapeListenerManager(this);
         // Clear out any existing world resources (if not default)
         if (ResourceGroupManager::getSingleton().getWorldResourceGroupName() != 
             ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)
@@ -149,8 +181,10 @@ namespace Ogre
 
         if (mWorldGeomIsSetup)
 		    clearScene();
+        if (!mOptions)
+            mOptions = new PagingLandScapeOptions(this);
 	    // Load the configuration file
-	    mOptions.load(stream);       
+	    mOptions->load(stream);       
         InitScene ();
 	    loadScene ();
     }
@@ -183,27 +217,26 @@ namespace Ogre
         // Only initialized once
         // not to loose use listeners
         if (!mListenerManager)
-	        mListenerManager = new PagingLandScapeListenerManager();
+	        mListenerManager = new PagingLandScapeListenerManager(this);
 	    if (!mTileManager)
-	        mTileManager = new PagingLandScapeTileManager();        
+	        mTileManager = new PagingLandScapeTileManager(this);        
         if (!mData2DManager)
-	        mData2DManager = new PagingLandScapeData2DManager();        //
+	        mData2DManager = new PagingLandScapeData2DManager(this, mOptions);        //
         if (!mTextureManager)
-            mTextureManager = new PagingLandScapeTextureManager();
+            mTextureManager = new PagingLandScapeTextureManager(this);
 		if (!mIndexesManager)
-			mIndexesManager = new PagingLandScapeIndexBufferManager();
+			mIndexesManager = new PagingLandScapeIndexBufferManager(this);
 		if (!mTexCoordManager)
-			mTexCoordManager = new PagingLandScapeTextureCoordinatesManager();  
+			mTexCoordManager = new PagingLandScapeTextureCoordinatesManager(this);  
 	    if (!mRenderableManager)
-	        mRenderableManager = new PagingLandScapeRenderableManager(); 
+	        mRenderableManager = new PagingLandScapeRenderableManager(this); 
         if (!mCraterArray)
 			resizeCrater(); 
 		if (!mPageManager)
 		{
-			mPageManager = new PagingLandScapePageManager();
+			mPageManager = new PagingLandScapePageManager(this);
 			mPageManager->setWorldGeometryRenderQueue (static_cast<Ogre::RenderQueueGroupID>(SceneManager::getWorldGeometryRenderQueue()));
-			Root::getSingleton().addFrameListener(mPageManager);
-			mData2DManager->setPageManager();
+			mData2DManager->setPageManager(this);
 		}
     }
     //-----------------------------------------------------------------------
@@ -211,15 +244,21 @@ namespace Ogre
     { 
         if (!mWorldGeomIsSetup)
 	    {
+            // listen to frames to update queues independently of cam numbers.
+            Root::getSingleton().addFrameListener(mPageManager);
+
             mTileManager->load();
 	        mData2DManager->load();
 	        mTextureManager->load();
-			mRenderableManager->load();
 			mIndexesManager->load();
 			mTexCoordManager->load();
-            if (mOptions.VisMap)
+            if (mOptions->VisMap)
+            {
+                assert (!mHorizon);
                 mHorizon = new PagingLandScapeHorizon(mOptions);
-	        mPageManager->load();
+            }
+            mPageManager->load();
+            mRenderableManager->load();
 
             // reset camera paging
             // register existing camera in node
@@ -252,12 +291,13 @@ namespace Ogre
     void PagingLandScapeSceneManager::resetScene(void)
     {
 	    if (mWorldGeomIsSetup)
-	    {
-		    // Delete the Managers
+        {
+            Root::getSingleton().removeFrameListener (mPageManager);
+		    // clear the Managers
 		    mPageManager->clear();
 		    mTextureManager->clear();
 		    mData2DManager->clear();
-            if (mOptions.VisMap)
+            if (mHorizon)
             {
 	            delete mHorizon;
                 mHorizon = 0;
@@ -291,9 +331,9 @@ namespace Ogre
             {             
                 if (mWorldGeomIsSetup)
                 {
-				    mOptions.calculateCFactor (); 
+				    mOptions->calculateCFactor (); 
 				    assert (mPageManager);
-                    if (mOptions.BigImage)
+                    if (mOptions->BigImage)
                     {
                         assert (mTextureManager);
 
@@ -357,9 +397,9 @@ namespace Ogre
             // we're outside LandScape
             #ifndef _STRICT_LandScape
                 // if you want to be able to intersect from a point outside the canvas
-                //const int pageSize = mOptions.PageSize - 1;
-                const Real W = mOptions.maxScaledX;
-                const Real H = mOptions.maxScaledZ;
+                //const int pageSize = mOptions->PageSize - 1;
+                const Real W = mOptions->maxScaledX;
+                const Real H = mOptions->maxScaledZ;
                 const Real maxHeight = mData2DManager->getMaxHeight ();
                 
                 // while ray is outside but raydir going inside
@@ -404,9 +444,9 @@ namespace Ogre
         }      
         else
         {
-            //    dir.x = dir.x * mOptions.scale.x;
-            //    dir.y = dir.y * mOptions.scale.y;
-			//    dir.z = dir.z * mOptions.scale.z;
+            //    dir.x = dir.x * mOptions->scale.x;
+            //    dir.y = dir.y * mOptions->scale.y;
+			//    dir.z = dir.z * mOptions->scale.z;
 
 			if (raystart.y >= mData2DManager->getInterpolatedWorldHeight(raystart.x, raystart.z))
 			{
@@ -441,7 +481,7 @@ namespace Ogre
 
         // (goes through each X value)
         uint array_indx = 0;
-        const Real scaler = mOptions.scale.y / radius;
+        const Real scaler = mOptions->scale.y / radius;
         for (int Zcurr = Zmin; Zcurr < Zmax; Zcurr++)
         {
             const Real Precalc = radiussquare - (Zcurr * Zcurr);
@@ -469,13 +509,13 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::paint (const Vector3 &impact, const bool isAlpha)
     {
-        const int X = static_cast<int> (impact.x / mOptions.scale.x);
-        const int Z = static_cast<int> (impact.z / mOptions.scale.z);
+        const int X = static_cast<int> (impact.x / mOptions->scale.x);
+        const int Z = static_cast<int> (impact.z / mOptions->scale.z);
         
-        //const int pageSize = mOptions.PageSize - 1;
+        //const int pageSize = mOptions->PageSize - 1;
         
-        const int W =  static_cast<int> (mOptions.maxUnScaledX);
-        const int H =  static_cast<int> (mOptions.maxUnScaledZ);
+        const int W =  static_cast<int> (mOptions->maxUnScaledX);
+        const int H =  static_cast<int> (mOptions->maxUnScaledZ);
 
         if (X < -W || X > W || Z < -H || Z > H)
             return;
@@ -518,7 +558,7 @@ namespace Ogre
         // Main loop to draw the circle on the height map 
         // (goes through each X value)
         uint array_indx = zshift*brushW;
-        const Real invMaxy = 1.0f / mOptions.scale.y;
+        const Real invMaxy = 1.0f / mOptions->scale.y;
         for (int Zcurr = Zmin; Zcurr < Zmax; Zcurr++)
         {                
             // For each of those Z values, calculate the new Y value
@@ -555,15 +595,15 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::deform (const Vector3 &impact)
     {
-        if (mOptions.Deformable)
+        if (mOptions->Deformable)
         {
-            const int X = static_cast<int> (impact.x / mOptions.scale.x);
-            const int Z = static_cast<int> (impact.z / mOptions.scale.z);
+            const int X = static_cast<int> (impact.x / mOptions->scale.x);
+            const int Z = static_cast<int> (impact.z / mOptions->scale.z);
             
-            //const int pageSize = mOptions.PageSize - 1;
+            //const int pageSize = mOptions->PageSize - 1;
             
-            const int W =  static_cast<int> (mOptions.maxUnScaledX);
-            const int H =  static_cast<int> (mOptions.maxUnScaledZ);
+            const int W =  static_cast<int> (mOptions->maxUnScaledX);
+            const int H =  static_cast<int> (mOptions->maxUnScaledZ);
 
             if (X < -W || X > W || Z < -H || Z > H)
                 return;
@@ -634,18 +674,18 @@ namespace Ogre
                 } // for (int Xcurr = Xmin; Xcurr < Xmax; Xcurr++)
                 array_indx += brushW;
             } // for (int Zcurr = Zmin; Zcurr < Zmax; Zcurr++) 
-        } // if (mOptions.Deformable)
+        } // if (mOptions->Deformable)
     } 
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::getAreaHeight (const Vector3 &impact)
     {
-        const int X = static_cast<int> (impact.x / mOptions.scale.x);
-        const int Z = static_cast<int> (impact.z / mOptions.scale.z);
+        const int X = static_cast<int> (impact.x / mOptions->scale.x);
+        const int Z = static_cast<int> (impact.z / mOptions->scale.z);
         
-        //const int pageSize = mOptions.PageSize - 1;
+        //const int pageSize = mOptions->PageSize - 1;
         
-        const int W =  static_cast<int> (mOptions.maxUnScaledX);
-        const int H =  static_cast<int> (mOptions.maxUnScaledZ);
+        const int W =  static_cast<int> (mOptions->maxUnScaledX);
+        const int H =  static_cast<int> (mOptions->maxUnScaledZ);
 
         if (X < -W || X > W || Z < -H || Z > H)
             return;
@@ -685,7 +725,7 @@ namespace Ogre
         if (Zmax + Z > H)
             Zmax = H - Z;
 
-        const uint pSize = mOptions.PageSize - 1;
+        const uint pSize = mOptions->PageSize - 1;
         // Main loop to draw the circle on the height map 
         // (goes through each X value)
         uint array_indx = zshift*brushW;
@@ -734,7 +774,12 @@ namespace Ogre
             if (mListenerManager->setOption (strKey, pValue))
 				return true;
         } 
-    
+
+        if (StringUtil::startsWith(strKey, "pause", true))
+        {
+            mPageManager->setEnabled( ! *(const_cast < bool * > (static_cast < const bool * >(pValue))));
+        } 
+
         // deformation and painting
         if (strKey == "BrushArray")
 	    {
@@ -804,8 +849,8 @@ namespace Ogre
 	    {
             const String CurrentMapName = *static_cast < const String * > (pValue);
             PagingLandScapeSceneManager::resetScene();
-            mOptions.setCurrentMapName (CurrentMapName);
-	        mOptions.loadMap(CurrentMapName);    
+            mOptions->setCurrentMapName (CurrentMapName);
+	        mOptions->loadMap(CurrentMapName);    
 	        PagingLandScapeSceneManager::loadScene ();
 
 		    return true;
@@ -813,19 +858,19 @@ namespace Ogre
         if (strKey == "InsertNewMap")
 	    {
             const String CurrentMapName = *static_cast < const String * > (pValue);
-	        mOptions.insertMap(CurrentMapName);    
+	        mOptions->insertMap(CurrentMapName);    
 		    return true;
 	    }
         // TextureFormat changes
         if (strKey == "CurrentTextureFormat")
 	    {
 	        // Load the selected Map
-            const String CurrentMapName = mOptions.getCurrentMapName ();
+            const String CurrentMapName = mOptions->getCurrentMapName ();
             PagingLandScapeSceneManager::resetScene ();
             // get Original Map Option (not modified by texture changes)
-	        mOptions.loadMap(CurrentMapName);
+	        mOptions->loadMap(CurrentMapName);
             // Override File TextureFormat
-            mOptions.setTextureFormat (*static_cast < const String * > (pValue));
+            mOptions->setTextureFormat (*static_cast < const String * > (pValue));
             PagingLandScapeSceneManager::loadScene ();
 		    return true;
 	    }
@@ -859,11 +904,11 @@ namespace Ogre
         if (strKey == "LoadNow")
 		{
             assert (mPageManager);
-		    if (mOptions.max_preload_pages == mOptions.NumPages)
+		    if (mOptions->max_preload_pages == mOptions->NumPages)
             {
                 // Configuration file is telling us to pre-load all pages at startup.
-                for (uint pageY = 0; pageY < mOptions.world_height; pageY++)
-                    for (uint pageX = 0; pageX < mOptions.world_width; pageX++)
+                for (uint pageY = 0; pageY < mOptions->world_height; pageY++)
+                    for (uint pageX = 0; pageX < mOptions->world_width; pageX++)
                     {
                         PagingLandScapePage * const p = mPageManager->getPage(pageX, pageY);
                         p->load();
@@ -874,11 +919,11 @@ namespace Ogre
             else if (pValue)
             {
 			    PagingLandScapeCamera *cam = const_cast <PagingLandScapeCamera *> (static_cast < const PagingLandScapeCamera * > (pValue));
-                mPageManager->loadNow (mOptions.primaryCamera);
+                mPageManager->loadNow (mOptions->primaryCamera);
             }                
         }
         
-		if (mOptions.setOption(strKey, pValue) == true)
+		if (mOptions->setOption(strKey, pValue) == true)
         {
             return true;
         }       
@@ -895,17 +940,22 @@ namespace Ogre
     bool PagingLandScapeSceneManager::getOption(const String& strKey, void* pDestValue)
     {
 
+        if (StringUtil::startsWith(strKey, "pause", true))
+        {
+           * (static_cast < bool * > (pDestValue)) = !mPageManager->isEnabled();
+        } 
+
         // heightfield data an pos info
         if (strKey == "MapBoundaries")
 	    {
             AxisAlignedBox *box = static_cast < AxisAlignedBox * > (pDestValue);
             
-            box->setExtents(-mOptions.maxScaledX,
+            box->setExtents(-mOptions->maxScaledX,
                             0,
-                            -mOptions.maxScaledZ,
-                            mOptions.maxScaledX,
-                            mOptions.scale.y,
-                            mOptions.maxScaledZ);
+                            -mOptions->maxScaledZ,
+                            mOptions->maxScaledX,
+                            mOptions->scale.y,
+                            mOptions->maxScaledZ);
 		    return true;
             
         }
@@ -977,22 +1027,22 @@ namespace Ogre
         // Map Info
         if (strKey == "NextMap")
 	    {		    
-           * static_cast < String * > (pDestValue) =  mOptions.getNextMapName();
+           * static_cast < String * > (pDestValue) =  mOptions->getNextMapName();
 		    return true;
 	    }
         if (strKey == "PreviousMap")
 	    {
-           * static_cast < String * > (pDestValue) =  mOptions.getPreviousMapName();		    
+           * static_cast < String * > (pDestValue) =  mOptions->getPreviousMapName();		    
 		    return true;
 	    }
         if (strKey == "CurrentMap")
 	    {
-           * static_cast < String * > (pDestValue) =  mOptions.getCurrentMapName();
+           * static_cast < String * > (pDestValue) =  mOptions->getCurrentMapName();
 		    return true;
 	    }
         if (strKey == "CurrentMapFileName")
 	    {
-           * static_cast < String * > (pDestValue) =  mOptions.LandScape_filename;
+           * static_cast < String * > (pDestValue) =  mOptions->LandScape_filename;
 		    return true;
 	    }
 
@@ -1177,7 +1227,7 @@ namespace Ogre
 			uint requestTileX = *static_cast<uint *>((*static_cast<std::vector<void*>*>(pDestValue))[2]);
 			uint requestTileZ = *static_cast<uint *>((*static_cast<std::vector<void*>*>(pDestValue))[3]);
 			uint requestLodLevel = *static_cast<uint *>((*static_cast<std::vector<void*>*>(pDestValue))[4]);
-			PagingLandScapePage* page = PagingLandScapePageManager::getSingleton().getPage(requestPageX,requestPageZ);
+			PagingLandScapePage* page = mPageManager->getPage(requestPageX,requestPageZ);
 			if(page)
 			{
 				PagingLandScapeTile* tile = page->getTile(requestTileX,requestTileZ);
@@ -1201,8 +1251,15 @@ namespace Ogre
 			}
 			return false;
 		}
+        if (strKey == "getMaterialPageName")
+        {
+            Vector3 *pos = static_cast < Vector3 * > (pDestValue);
+            mPageManager->getGlobalToPage (pos->x, pos->z);
+            * static_cast < String * > (pDestValue) = mTextureManager->getTexture(pos->x, pos->z, false)->getMaterialName();
+            return true;
+        }
 		//end of addition
-        if (mOptions.getOption(strKey, pDestValue) == false)
+        if (mOptions->getOption(strKey, pDestValue) == false)
         {
             return PagingLandScapeOctreeSceneManager::getOption (strKey, pDestValue);
         }
@@ -1270,7 +1327,7 @@ namespace Ogre
 			return true;
 	    }
 		//end of addition
-        if (mOptions.hasOption(strKey) == false)
+        if (mOptions->hasOption(strKey) == false)
         {
             return PagingLandScapeOctreeSceneManager::hasOption (strKey);
         }
@@ -1336,7 +1393,7 @@ namespace Ogre
 //		    return true;
 //	    }
     
-        if (mOptions.getOptionValues(key, refValueList) == false)
+        if (mOptions->getOptionValues(key, refValueList) == false)
         {
             return PagingLandScapeOctreeSceneManager::getOptionValues (key, refValueList);
         }
@@ -1360,7 +1417,7 @@ namespace Ogre
 	    refKeys.push_back("PageLoadQueue");
 	    refKeys.push_back("PageUnloadQueue");
 	    refKeys.push_back("PagePostUnloadQueue");
-        mOptions.getOptionKeys(refKeys);
+        mOptions->getOptionKeys(refKeys);
         return PagingLandScapeOctreeSceneManager::getOptionKeys (refKeys);
     }
 	//-------------------------------------------------------------------------
@@ -1384,9 +1441,10 @@ namespace Ogre
         mCameras.insert(CameraList::value_type(name, c));
         PagingLandScapeOctreeSceneManager::addCamera (c);
         // Check if we need to set the camera
-        if (!mOptions.primaryCamera)
+        assert (mOptions);
+        if (!mOptions->primaryCamera)
         {
-            mOptions.setPrimaryCamera (static_cast <PagingLandScapeCamera*> (c));
+            mOptions->setPrimaryCamera (static_cast <PagingLandScapeCamera*> (c));
         }
 		//default values
 		float tmp;
@@ -1404,53 +1462,53 @@ namespace Ogre
         return c;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::removeCamera(Camera *cam)
+    void PagingLandScapeSceneManager::destroyCamera(Camera *cam)
 	{ 
-		if (mOptions.primaryCamera && cam->getName() == mOptions.primaryCamera->getName())
+		if (mOptions->primaryCamera && cam->getName() == mOptions->primaryCamera->getName())
 		{
-			mOptions.setPrimaryCamera (0);
+			mOptions->setPrimaryCamera (0);
 		}
-        PagingLandScapeOctreeSceneManager::removeCamera(cam);
+        PagingLandScapeOctreeSceneManager::destroyCamera(cam);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::removeCamera(const String& name)
+    void PagingLandScapeSceneManager::destroyCamera(const String& name)
 	{
-		if (mOptions.primaryCamera && name == mOptions.primaryCamera->getName())
+		if (mOptions->primaryCamera && name == mOptions->primaryCamera->getName())
 		{
-			mOptions.setPrimaryCamera (0);
+			mOptions->setPrimaryCamera (0);
 		}
-        PagingLandScapeOctreeSceneManager::removeCamera(name);
+        PagingLandScapeOctreeSceneManager::destroyCamera(name);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::removeAllCameras(void)
+    void PagingLandScapeSceneManager::destroyAllCameras(void)
 	{
-		mOptions.setPrimaryCamera (0);
-        PagingLandScapeOctreeSceneManager::removeAllCameras();
+		mOptions->setPrimaryCamera (0);
+        PagingLandScapeOctreeSceneManager::destroyAllCameras();
     } 
     //-----------------------------------------------------------------------
     float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getHeightAt(const Real x, const Real z)
     {
-      return PagingLandScapeData2DManager::getSingleton().getInterpolatedWorldHeight(x, z);
+      return mData2DManager->getInterpolatedWorldHeight(x, z);
     }
     //-----------------------------------------------------------------------
     float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getSlopeAt(const Real x, const Real z)
     {
     Real slope;
-//      return PagingLandScapeData2DManager::getSingleton().getRealWorldSlope(x, z);
-    PagingLandScapeData2DManager::getSingleton().getInterpolatedWorldHeight(x, z, &slope);
+//      return mData2DManager->getRealWorldSlope(x, z);
+    mData2DManager->getInterpolatedWorldHeight(x, z, &slope);
     return slope;
     }
     //-----------------------------------------------------------------------
     void _OgrePagingLandScapeExport PagingLandScapeSceneManager::getWorldSize(float *worldSizeX, float *worldSizeZ)
    {
-      *worldSizeX = mOptions.maxScaledX * 2.0f;
-      *worldSizeZ = mOptions.maxScaledZ * 2.0f;
-//      *worldSizeX = (float)mOptions.world_width * mOptions.scale.x;
-//      *worldSizeZ = (float)mOptions.world_height * mOptions.scale.z;
+      *worldSizeX = mOptions->maxScaledX * 2.0f;
+      *worldSizeZ = mOptions->maxScaledZ * 2.0f;
+//      *worldSizeX = (float)mOptions->world_width * mOptions->scale.x;
+//      *worldSizeZ = (float)mOptions->world_height * mOptions->scale.z;
    }
    //-----------------------------------------------------------------------
    float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getMaxSlope(Vector3 location1, Vector3 location2, float maxSlopeIn)
    {
-      return PagingLandScapeData2DManager::getSingleton().getMaxSlope(location1, location2, maxSlopeIn);
+      return mData2DManager->getMaxSlope(location1, location2, maxSlopeIn);
    }
 } //namespace

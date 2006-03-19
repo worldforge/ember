@@ -27,12 +27,12 @@
 
 namespace Ogre
 {
-    class _OgrePagingLandScapeExport PagingLandScapePageManager : public FrameListener, public Singleton< PagingLandScapePageManager >
+    class _OgrePagingLandScapeExport PagingLandScapePageManager : public FrameListener
     {
         public:
 	        
 			///ctor
-			PagingLandScapePageManager(void);
+			PagingLandScapePageManager(PagingLandScapeSceneManager * scnMgr);
 			///dtor
 	        ~PagingLandScapePageManager(void);
 
@@ -149,9 +149,6 @@ namespace Ogre
 				mTerrainReady = isready;
 			};
 
-			static PagingLandScapePageManager& getSingleton(void);
-
-			static PagingLandScapePageManager* getSingletonPtr(void);
 
 			void removeFromQueues(PagingLandScapePage* p);
 
@@ -193,7 +190,19 @@ namespace Ogre
 			int getUnloadedPagesSize(void) const;
 
             RenderQueueGroupID getPageRenderQueue(){return mRenderQueueGroupID;};
+
+            PagingLandScapeOptions*		getOptions(){return mOptions;}
+            PagingLandScapeSceneManager* getSceneManager(){return mSceneManager;}
+
+            bool isEnabled ()const {return mEnabled;}
+            void setEnabled (const bool enabled){mEnabled = enabled;}
+
         protected:
+
+            PagingLandScapeOptions*		mOptions;
+            PagingLandScapeSceneManager *mSceneManager;
+
+
 
 			void processUnloadQueues();
 			void processLoadQueues();
@@ -203,7 +212,6 @@ namespace Ogre
 			void makePageLoadedNow(PagingLandScapePage* p);
             PagingLandScapePage* find_nearest(const Vector3& pos, const uint x, const uint z, PagingLandScapePageList& mQueue) const;
 
-            PagingLandScapeOptions*           mOptions;
             PagingLandScapeData2DManager*     mData2d;
             PagingLandScapeTextureManager*    mTexture;
             PagingLandScapeRenderableManager* mRenderablesMgr;
@@ -240,6 +248,10 @@ namespace Ogre
 			uint mPageLoadInterval;
 
             RenderQueueGroupID mRenderQueueGroupID;
+
+            //if not queued to be removed from frame listener
+            //or SM is in paused State
+            bool mEnabled;
 	};
 
 }

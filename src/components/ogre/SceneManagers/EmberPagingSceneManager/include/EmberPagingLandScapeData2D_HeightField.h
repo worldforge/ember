@@ -38,7 +38,7 @@ namespace EmberOgre
 	class EmberPagingLandScapeData2D_HeightField: public Ogre::PagingLandScapeData2D
 	{
 		public:
-			EmberPagingLandScapeData2D_HeightField( void );
+			EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager *pageMgr);
 			virtual Ogre::String getName(){return Ogre::String("EmberHeightField");}
 			virtual ~EmberPagingLandScapeData2D_HeightField( void ) {};
 

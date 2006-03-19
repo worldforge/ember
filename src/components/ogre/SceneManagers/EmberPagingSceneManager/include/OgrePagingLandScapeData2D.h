@@ -28,7 +28,7 @@ namespace Ogre
     class PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D(void);
+	        PagingLandScapeData2D(PagingLandScapeData2DManager *pageMgr);
 
 	        virtual ~PagingLandScapeData2D(void);
 
@@ -223,6 +223,7 @@ namespace Ogre
             Real mShiftX;
             // coordinate shift based on page number
             Real mShiftZ;
+            PagingLandScapeData2DManager *mParent;
 
         private :
             Image::Box mRect;

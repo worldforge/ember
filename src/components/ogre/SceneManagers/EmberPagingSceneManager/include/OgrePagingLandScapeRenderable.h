@@ -65,7 +65,7 @@ namespace Ogre
 		
 		/**	Initializes the LandScapeRenderable with the given options and the starting coordinates of this block.
 		*/
-		PagingLandScapeRenderable(void);
+		PagingLandScapeRenderable(PagingLandScapeRenderableManager *renderableMgr);
 		
 		~PagingLandScapeRenderable(void);
 		
@@ -95,9 +95,7 @@ namespace Ogre
 			return (mBounds.getMaximum()).y;
 		};
 		
-		void setInUse(bool inUse);
-		
-		static PagingLandScapeOptions* mOpt;
+		void setInUse(bool inUse);		
 		
 		/////////Movable overridden object methods
 		
@@ -151,7 +149,9 @@ namespace Ogre
 	
         void setMaxLod (const bool setmaxlod) {mForcedMaxLod = setmaxlod;};
 
-		const String& getName(void) const {return mName;};
+		/// @see MovableObject
+		uint32 getTypeFlags(void) const;
+
 		/** Internal method called to notify the object that it has been attached to a node.
 		*/
 		virtual void _notifyAttached(Node* parent, bool isTagPoint = false);
@@ -166,9 +166,6 @@ namespace Ogre
         PagingLandScapeTile *mParentTile;
 
 	protected:	
-		String mName;
-		uint mUpperDistance;
-		uint mBeyondFarDistance;
 
 		VertexData* mCurrVertexes;
 		IndexData* mCurrIndexes;
@@ -230,7 +227,9 @@ namespace Ogre
 
 		Vector3 _getvertex(const int x, const int z) const;
 
-        private :            
+        PagingLandScapeRenderableManager *mParent;
+
+    private :            
 
             Image::Box mRect;
             bool        mIsRectModified;

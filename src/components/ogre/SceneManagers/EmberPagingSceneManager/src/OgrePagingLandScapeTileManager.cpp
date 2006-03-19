@@ -24,6 +24,7 @@
 
 #include "OgreCamera.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeCamera.h"
@@ -34,22 +35,13 @@ namespace Ogre
 {
 
 //-----------------------------------------------------------------------
-template<> PagingLandScapeTileManager* Singleton<PagingLandScapeTileManager>::ms_Singleton = 0;
-PagingLandScapeTileManager* PagingLandScapeTileManager::getSingletonPtr(void)
-{
-	return ms_Singleton;
-}
-PagingLandScapeTileManager& PagingLandScapeTileManager::getSingleton(void)
-{  
-	assert(ms_Singleton);  return (*ms_Singleton);  
-}
-
-//-----------------------------------------------------------------------
-PagingLandScapeTileManager::PagingLandScapeTileManager()
+    PagingLandScapeTileManager::PagingLandScapeTileManager(PagingLandScapeSceneManager * scnMgr):
+        mSceneManager(scnMgr),
+        mOptions(scnMgr->getOptions ())
 {	
 	mNumTiles = 0;
 	// Add the requested initial number
-	//_addBatch(PagingLandScapeOptions::getSingleton().num_tiles);
+	//_addBatch(mParent->getOptions()->num_tiles);
 }
 //-----------------------------------------------------------------------
 PagingLandScapeTileManager::~PagingLandScapeTileManager()
@@ -71,12 +63,12 @@ void PagingLandScapeTileManager::clear()
 //-----------------------------------------------------------------------
 void PagingLandScapeTileManager::load()
 {
-    const uint nTile = PagingLandScapeOptions::getSingleton().num_tiles;
+    const uint nTile = mOptions->num_tiles;
     if (mNumTiles < nTile)
     {
         _addBatch (nTile - mNumTiles);
     }
-	assert (!mTiles.empty());
+	assert (mOptions->num_tiles <= mTiles.size());
 //    else if (mNumTiles > nTile)
 //    {
 //        for (uint i = nTile; i < mNumTiles; i++)
@@ -95,9 +87,9 @@ PagingLandScapeTile *PagingLandScapeTileManager::getTile()
 	if (mQueue.empty())
 	{
 		// We do not have more tiles, so we need to allocate more
-		_addBatch(PagingLandScapeOptions::getSingleton().num_tiles_increment);
+		_addBatch(mOptions->num_tiles_increment);
 		// Increment the next batch by a 10%
-		//PagingLandScapeOptions::getSingleton().num_tiles_increment += static_cast<uint> (PagingLandScapeOptions::getSingleton().num_tiles_increment * 0.1f);
+		//mParent->getOptions()->num_tiles_increment += static_cast<uint> (mParent->getOptions()->num_tiles_increment * 0.1f);
 	}
 	return mQueue.pop();
 }
@@ -124,7 +116,7 @@ void PagingLandScapeTileManager::_addBatch(const uint num)
     mTiles.reserve (mNumTiles);
 	for (uint i = 0; i < num; i++)
 	{
-		PagingLandScapeTile* tile = new PagingLandScapeTile();
+		PagingLandScapeTile* tile = new PagingLandScapeTile(this);
 		mTiles.push_back (tile);
 		mQueue.push (tile);
 	}

@@ -493,14 +493,15 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 		}
 		
 		//switch render mode
+		//TODO: move this into AvatarCamera and hook it up with a console command instead
 		if(key.sym == SDLK_F7)
 		{
 			setDebugText("Switching rendermode.");
 			Ogre::Camera* ogreCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-			if (ogreCamera->getDetailLevel() == Ogre::SDL_SOLID) {
-				ogreCamera->setDetailLevel(Ogre::SDL_WIREFRAME);
+			if (ogreCamera->getPolygonMode() == Ogre::PM_SOLID) {
+				ogreCamera->setPolygonMode(Ogre::PM_WIREFRAME);
 			} else {
-				ogreCamera->setDetailLevel(Ogre::SDL_SOLID);
+				ogreCamera->setPolygonMode(Ogre::PM_SOLID);
 			}
 		}
 		

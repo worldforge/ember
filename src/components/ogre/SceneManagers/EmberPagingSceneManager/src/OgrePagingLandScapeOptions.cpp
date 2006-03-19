@@ -41,18 +41,8 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeOptions* Singleton<PagingLandScapeOptions>::ms_Singleton = 0;
-    PagingLandScapeOptions* PagingLandScapeOptions::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    PagingLandScapeOptions& PagingLandScapeOptions::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-
-    //-----------------------------------------------------------------------
-    PagingLandScapeOptions::PagingLandScapeOptions()
+    PagingLandScapeOptions::PagingLandScapeOptions(PagingLandScapeSceneManager * scnMgr):
+        mScnMgr(scnMgr)
     {
       primaryCamera = 0;
       isInit = false;
@@ -168,8 +158,8 @@ namespace Ogre
         lodMaterialDistanceList.clear();
         lodMaterialDistanceList.push_back (80000.0f);
 
-        mResourceFilesystem = StringUtil::BLANK;
-        mResourceZip = StringUtil::BLANK;
+        mResourceFilesystem.clear ();
+        mResourceZip.clear();
 #ifdef _MAPSPLITTER
 
         Blur = 0.0f;
@@ -305,7 +295,7 @@ namespace Ogre
         }
         mCurrentMap = i->second; 
    
-		if (!mBatchMode)
+        if (!mBatchMode && !StringUtil::startsWith(mCurrentMap, "none", true))
 			loadMap(mCurrentMap);
 		mMapList.erase (i);
     }
@@ -384,14 +374,19 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::loadMap(const String& mapName)
     {
-        if (mResourceFilesystem != StringUtil::BLANK)
+        std::vector<Ogre::String>::iterator itFileSystem = mResourceFilesystem.begin();
+        for(; itFileSystem != mResourceFilesystem.end(); ++itFileSystem) 
+        {
             ResourceGroupManager::getSingleton().removeResourceLocation(
-                                            mResourceFilesystem, groupName);
-        if (mResourceZip != StringUtil::BLANK)
+                *itFileSystem, groupName);
+        }
+        std::vector<Ogre::String>::iterator itZip = mResourceZip.begin();
+        for(; itZip != mResourceZip.end(); ++itZip) 
+        {
             ResourceGroupManager::getSingleton().removeResourceLocation(
-                                            mResourceZip, groupName);
+                *itZip, groupName);
+        }
     
-  
         LandScapeFileNames::iterator i = mMapList.find(mapName);
         if (i == mMapList.end())
         {
@@ -536,29 +531,39 @@ namespace Ogre
         setString (LandScape_filename, "LandScapeFileName");
 
         //add Resource Group to Ogre if needed.
-        mResourceFilesystem = config.getSetting ("FileSystem");
-        if (mResourceFilesystem != StringUtil::BLANK)
+        StringVector mResourceFilesystem =  config.getMultiSetting("FileSystem");
+        std::vector<Ogre::String>::iterator itFileSystem = mResourceFilesystem.begin();
+        for(; itFileSystem != mResourceFilesystem.end(); ++itFileSystem) 
         {
-            if (StringUtil::endsWith  (mResourceFilesystem, "landscapefilename", true))
+            String resourceFileSystem = *itFileSystem;
+            if (StringUtil::endsWith  (resourceFileSystem, "landscapefilename", true))
             {
                 String BasePath, FilePath;
-                StringUtil::splitFilename(mResourceFilesystem, BasePath, FilePath);
-                mResourceFilesystem = FilePath + LandScape_filename;
+                StringUtil::splitFilename(resourceFileSystem, BasePath, FilePath);
+                resourceFileSystem = FilePath + LandScape_filename;
             }
-            if (StringUtil::endsWith  (mResourceFilesystem, "landscapeexportfilename", true))
+            else if (StringUtil::endsWith  (resourceFileSystem, "landscapeexportfilename", true))
             {
                 String BasePath, FilePath;
-                StringUtil::splitFilename(mResourceFilesystem, BasePath, FilePath);
-                mResourceFilesystem = FilePath + LandScape_export_filename;
+                StringUtil::splitFilename(resourceFileSystem, BasePath, FilePath);
+                resourceFileSystem = FilePath + LandScape_export_filename;
             }
             ResourceGroupManager::getSingleton().addResourceLocation(
-            mResourceFilesystem, "FileSystem", groupName);
+                resourceFileSystem, "FileSystem", groupName);
         }
-        mResourceZip =  config.getSetting ("Zip");
-        if (mResourceZip != StringUtil::BLANK)
+
+
+        StringVector mResourceZip =  config.getMultiSetting("Zip");
+        std::vector<Ogre::String>::iterator itZip = mResourceZip.begin();
+        for(; itZip != mResourceZip.end(); ++itZip) 
         {
-            ResourceGroupManager::getSingleton().addResourceLocation(
-                mResourceZip, "Zip", groupName);
+            String resourceZip  = *itZip;
+
+            if (resourceZip != StringUtil::BLANK)
+            {
+                ResourceGroupManager::getSingleton().addResourceLocation(
+                    resourceZip, "Zip", groupName);
+            }
         }
 
 	    setString (LandScape_filename, "LandScapeFileName");
@@ -894,6 +899,11 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeOptions::setOption(const String& strKey, const void* pValue)
     {
+        if (strKey == "MaxLodUnderCam")
+        {
+            MaxLodUnderCam = * static_cast < const bool * > (pValue); 
+            return true;
+        }
 	    if (strKey == "VisibleRenderables")
 	    {
 		    visible_renderables = * static_cast < const int * > (pValue);

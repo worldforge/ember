@@ -33,7 +33,7 @@ namespace Ogre
     class PagingLandScapeData2D_Spline: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_Spline(void);
+	        PagingLandScapeData2D_Spline(PagingLandScapeData2DManager *dataMgr);
 
 	        ~PagingLandScapeData2D_Spline(void);
 

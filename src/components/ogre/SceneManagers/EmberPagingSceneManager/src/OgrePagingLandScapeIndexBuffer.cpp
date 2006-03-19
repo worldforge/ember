@@ -1,5 +1,5 @@
 /***************************************************************************
-  OgrePagingLandScapeIndexBuffer.cpp  -  description
+  OgrePagingLandScapeIndexBufferManager.cpp  -  description
   -------------------
   begin                : Fri Feb 28 2003
   copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
@@ -22,6 +22,7 @@
 
 #include "OgreSimpleRenderable.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeRenderable.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeIndexBuffer.h"
@@ -29,19 +30,8 @@
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeIndexBufferManager* Singleton<PagingLandScapeIndexBufferManager>::ms_Singleton = 0;
-    PagingLandScapeIndexBufferManager* PagingLandScapeIndexBufferManager::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    //-----------------------------------------------------------------------
-    PagingLandScapeIndexBufferManager& PagingLandScapeIndexBufferManager::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-
-    //-----------------------------------------------------------------------
-    PagingLandScapeIndexBufferManager::PagingLandScapeIndexBufferManager() :
+    PagingLandScapeIndexBufferManager::PagingLandScapeIndexBufferManager(PagingLandScapeSceneManager * scnMgr):
+        mScnMgr(scnMgr),
         mTileSize (0),
         mNumIndexes (0)
     {
@@ -55,8 +45,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeIndexBufferManager::load()
     {
-        const uint tileSize = PagingLandScapeOptions::getSingleton().TileSize;
-        const uint numIndexes = PagingLandScapeOptions::getSingleton().maxRenderLevel + 1;
+        const uint tileSize = mScnMgr->getOptions()->TileSize;
+        const uint numIndexes = mScnMgr->getOptions()->maxRenderLevel + 1;
         
         if (tileSize != mTileSize || numIndexes != mNumIndexes)
         {
@@ -580,36 +570,37 @@ namespace Ogre
 	IndexData *PagingLandScapeIndexBufferManager::getRawIndexes(int renderLevel)
 	{
 		// no stitching is done
-	// used to expose terrain vertex data
+	    // used to expose terrain vertex data
 
-	if (renderLevel >= static_cast <int> (mNumIndexes))
-		renderLevel = static_cast <int> (mNumIndexes)-1;
+	    if (renderLevel >= static_cast <int> (mNumIndexes))
+		    renderLevel = static_cast <int> (mNumIndexes)-1;
 
-	if (renderLevel < 0)
-		renderLevel =0 ;
+	    if (renderLevel < 0)
+		    renderLevel =0 ;
 
-	const uint stitchFlags = 0;
+	    const uint stitchFlags = 0;
 
-	assert (mLevelIndex.size() > (uint)renderLevel);
+	    assert (mLevelIndex.size() > (uint)renderLevel);
 
-	IndexMap::iterator ii = mLevelIndex[ renderLevel ]->find( stitchFlags );
-	if ( ii == mLevelIndex[ renderLevel ]->end())
-	{
-		// Create
-		IndexData* indexData = generateTriListIndexes(   false,
-									false,
-									false,
-									false,
-									renderLevel,
-									0);
-		mLevelIndex[ renderLevel ]->insert(
-			IndexMap::value_type(stitchFlags, indexData));
-	      
-		return indexData;
-	}
-	else
-	{
-		return  ii->second;
-	}
+	    IndexMap::iterator ii = mLevelIndex[ renderLevel ]->find( stitchFlags );
+	    if ( ii == mLevelIndex[ renderLevel ]->end())
+	    {
+		    // Create
+		    IndexData* indexData = generateTriListIndexes(   false,
+									    false,
+									    false,
+									    false,
+									    renderLevel,
+									    0);
+		    mLevelIndex[ renderLevel ]->insert(
+			    IndexMap::value_type(stitchFlags, indexData));
+    	      
+		    return indexData;
+	    }
+	    else
+	    {
+		    return  ii->second;
+	    }
 	} 
 } //namespace
+

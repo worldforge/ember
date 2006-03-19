@@ -26,8 +26,10 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 #include "OgreTechnique.h"
 #include "OgrePass.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_InstantBaseTexture.h"
 #include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeData2D.h"
@@ -46,7 +48,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTexture::_setPagesize ()
     {
-		PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		PagingLandScapeOptions * const opt = mParent->getOptions();
         mPageSize = opt->PageSize - 1;
         const Real Texturescale = opt->TextureStretchFactor;
         const uint textureSize = mPageSize * Texturescale;
@@ -72,7 +74,7 @@ namespace Ogre
         //  slope[] ??
 
         if (numColors  && heights[numColors - 1] == 0.0f) 
-			heights[numColors - 1] = PagingLandScapeData2DManager::getSingleton().getMaxHeight ();
+			heights[numColors - 1] = mParent->getSceneManager()->getData2DManager()->getMaxHeight ();
 
 		dividers.reserve (numColors);
 		dividers.resize (numColors);
@@ -92,12 +94,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_InstantBaseTexture::newTexture()
     {
-        return new PagingLandScapeTexture_InstantBaseTexture();
+        return new PagingLandScapeTexture_InstantBaseTexture(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_InstantBaseTexture::TextureRenderCapabilitesFullfilled()
     {        
-		if (PagingLandScapeOptions::getSingleton().NumMatHeightSplat > 3)
+		if (mParent->getOptions()->NumMatHeightSplat > 3)
 			return true;
 		else
 			return false;
@@ -109,7 +111,7 @@ namespace Ogre
 		mImage.loadDynamicImage (0, 0, 0, PF_BYTE_RGB);    
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_InstantBaseTexture::PagingLandScapeTexture_InstantBaseTexture() : PagingLandScapeTexture()
+    PagingLandScapeTexture_InstantBaseTexture::PagingLandScapeTexture_InstantBaseTexture(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
     //-----------------------------------------------------------------------
@@ -122,7 +124,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 		{
-			PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			PagingLandScapeOptions * const opt = mParent->getOptions();
 			const String filename  = opt->LandScape_filename;
             const String extname   = opt->TextureExtension;
             const String groupName = opt->groupName;
@@ -159,9 +161,9 @@ namespace Ogre
 
                     GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
     	            
-//                    params->setNamedConstant("FogSettings", Vector4(PagingLandScapeOptions::getSingleton().scale.x * PagingLandScapeOptions::getSingleton().PageSize,
-//                                                                    PagingLandScapeOptions::getSingleton().scale.y / 65535, 
-//                                                                    PagingLandScapeOptions::getSingleton().scale.z * PagingLandScapeOptions::getSingleton().PageSize, 
+//                    params->setNamedConstant("FogSettings", Vector4(mParent->getOptions()->scale.x * mParent->getOptions()->PageSize,
+//                                                                    mParent->getOptions()->scale.y / 65535, 
+//                                                                    mParent->getOptions()->scale.z * mParent->getOptions()->PageSize, 
 //                                                                    0.0f));
                      // Check to see if custom param is already there
                     GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
@@ -241,12 +243,12 @@ namespace Ogre
         if (mIsDeformRectModified)
         {
             dataRect = mDeformRect;
-            data = PagingLandScapeData2DManager::getSingleton().getData2D(mDataX, mDataZ);
+            data = mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ);
 //            rect = data->getDeformationRectangle ();
             if (dataRect.getWidth() && dataRect.getHeight ())
             {
 
-                const Real textureScale = PagingLandScapeOptions::getSingleton().TextureStretchFactor;
+                const Real textureScale = mParent->getOptions()->TextureStretchFactor;
 
                 texturerect.left = dataRect.left * textureScale;
                 texturerect.top  = dataRect.top * textureScale;
@@ -276,7 +278,7 @@ namespace Ogre
                 dataRect.right += 1;
                 dataRect.bottom += 1;
 
-                const Real textureScale = PagingLandScapeOptions::getSingleton().TextureStretchFactor;
+                const Real textureScale = mParent->getOptions()->TextureStretchFactor;
 
                 texturerect.left = dataRect.left * textureScale;
                 texturerect.right = dataRect.right * textureScale;
@@ -321,7 +323,7 @@ namespace Ogre
         assert ((x + z*  mPageSize < mPageSize*mPageSize) && "PagingLandScapeTexture_InstantBaseTexture::paint()");
         adjustPaintRectangle(x, z);
 
-        const Real textureScale = PagingLandScapeOptions::getSingleton().TextureStretchFactor;
+        const Real textureScale = mParent->getOptions()->TextureStretchFactor;
 
         const uint textureX = x * textureScale;
         const uint textureZ = z * textureScale;
@@ -357,7 +359,7 @@ namespace Ogre
         const size_t heightfiledsize = mPageSize + 1;
         size_t curr_row = dataRect.top * heightfiledsize;
 
-        const Real textureScale = PagingLandScapeOptions::getSingleton().TextureStretchFactor;
+        const Real textureScale = mParent->getOptions()->TextureStretchFactor;
 
         const uint Bpp = 3;
         const uchar bScale = 255;
@@ -422,10 +424,10 @@ namespace Ogre
         assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTexture::::_unloadMaterial");    
         if (mIsModified)
 		{ 
-			PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			PagingLandScapeOptions * const opt = mParent->getOptions();
 			const Real Texturescale = opt->TextureStretchFactor;
             const Image::Box datarect (0, 0, 0, mPageSize*Texturescale, mPageSize*Texturescale, 1);
-            computeInstantBase(PagingLandScapeData2DManager::getSingleton().getData2D(mDataX, mDataZ), 
+            computeInstantBase(mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ), 
                 datarect, 
                 mImage.getPixelBox());
 

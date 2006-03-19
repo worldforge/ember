@@ -26,8 +26,10 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 #include "OgreTechnique.h"
 #include "OgrePass.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_BaseTexture.h"
 #include "OgrePagingLandScapeData2DManager.h"
 
@@ -37,8 +39,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_BaseTexture::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_BaseTexture::_clearData(void)
@@ -48,18 +50,18 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_BaseTexture::newTexture()
     {
-        return new PagingLandScapeTexture_BaseTexture();
+        return new PagingLandScapeTexture_BaseTexture(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_BaseTexture::TextureRenderCapabilitesFullfilled()
     {        
-		if (PagingLandScapeOptions::getSingleton().NumMatHeightSplat > 3)
+		if (mParent->getOptions()->NumMatHeightSplat > 3)
 			return true;
 		else
 			return false;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_BaseTexture::PagingLandScapeTexture_BaseTexture() : PagingLandScapeTexture()
+    PagingLandScapeTexture_BaseTexture::PagingLandScapeTexture_BaseTexture(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
 
@@ -73,7 +75,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {    		
-			PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			PagingLandScapeOptions * const opt = mParent->getOptions();
             const String filename = opt->LandScape_filename;
             const String commonName = StringConverter::toString(mDataZ) + 
                                         String(".") +
@@ -134,8 +136,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     uchar *PagingLandScapeTexture_BaseTexture::_BuildBaseTexture() const
     {
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
-	    PagingLandScapeData2DManager * const dataMgr = PagingLandScapeData2DManager::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
+	    PagingLandScapeData2DManager * const dataMgr = mParent->getSceneManager()->getData2DManager();
 
 	    const Real dx = opt->scale.x;
 	    const Real dz = opt->scale.z;

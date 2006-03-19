@@ -317,6 +317,23 @@ protected:
 	//void enableAnimation(const std::string& nameOfAnimation,bool enable);
 };
 
+
+	/** Factory object for creating Model instances */
+	class  ModelFactory : public Ogre::MovableObjectFactory
+	{
+	protected:
+		Ogre::MovableObject* createInstanceImpl( const Ogre::String& name, const Ogre::NameValuePairList* params);
+	public:
+		ModelFactory() {}
+		~ModelFactory() {}
+
+		static Ogre::String FACTORY_TYPE_NAME;
+
+		const Ogre::String& getType(void) const;
+		void destroyInstance( Ogre::MovableObject* obj);  
+
+	};
+
 }
 }
 #endif // MODEL_H

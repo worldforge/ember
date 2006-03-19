@@ -38,11 +38,13 @@ namespace EmberOgre {
 
 
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
-: mWidth(width), mHeight(height), mCamera(0), mRootNode(0)
+: mWidth(width), mHeight(height), mCamera(0), mRootNode(0), mSceneManager(0)
 {
+
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, imageSetName + "_sceneManager");
 	S_LOG_VERBOSE("Creating new EntityCEGUITexture for imageset " << imageSetName  << " with w:" << mWidth << " h:" << mHeight);
 
-	mRootNode = mSceneManager.getRootSceneNode();
+	mRootNode = mSceneManager->getRootSceneNode();
 	
 	
 	mEntityNode = mRootNode->createChildSceneNode();
@@ -57,10 +59,10 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 	createCamera(imageSetName);
 	createImage(imageSetName);
 	//setVisible(false);
-	mMainLight = mSceneManager.createLight("MainLight");
+	mMainLight = mSceneManager->createLight("MainLight");
   	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
 	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
-	mSceneManager.setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 	mCameraPitchNode->attachObject(mMainLight);
 }
 
@@ -68,12 +70,13 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 EntityCEGUITexture::~EntityCEGUITexture()
 {
 	if (mCamera) {
-		mSceneManager.removeCamera(mCamera);
+		mSceneManager->destroyCamera(mCamera);
 	}
 	if (mRootNode) {
 		mRootNode->removeAndDestroyAllChildren();
-		mSceneManager.destroySceneNode(mRootNode->getName());
+		mSceneManager->destroySceneNode(mRootNode->getName());
 	}
+	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
 Ogre::SceneNode* EntityCEGUITexture::getSceneNode() const
@@ -107,7 +110,7 @@ void EntityCEGUITexture::repositionCamera()
 
 void EntityCEGUITexture::createCamera(const std::string& imageSetName)
 {	
-	mCamera = mSceneManager.createCamera(imageSetName + "_EntityCEGUITextureCamera");
+	mCamera = mSceneManager->createCamera(imageSetName + "_EntityCEGUITextureCamera");
 
 	mCameraPitchNode->attachObject(mCamera);
 }
@@ -159,7 +162,7 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	S_LOG_VERBOSE("Removing viewports.");
 	mRenderTexture->removeAllViewports();
 	mRenderTexture->setActive(false);
-	
+	mRenderTexture->setAutoUpdated(false);
 	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
 	mCamera->setAspectRatio(aspectRatio);
 

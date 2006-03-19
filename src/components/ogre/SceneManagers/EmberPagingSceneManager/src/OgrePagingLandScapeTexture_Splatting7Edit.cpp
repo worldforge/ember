@@ -24,8 +24,11 @@ OgrePagingLandScapeTexture_Splatting7Edit.cpp  -  description
 #include "OgreTechnique.h"
 #include "OgrePass.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
+
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Splatting7Edit.h"
 
 
@@ -39,8 +42,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting7Edit::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting7Edit::_clearData(void)
@@ -50,12 +53,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting7Edit::newTexture()
     {
-        return new PagingLandScapeTexture_Splatting7Edit();
+        return new PagingLandScapeTexture_Splatting7Edit(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting7Edit::TextureRenderCapabilitesFullfilled()
     {                   
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		
 		if (opt->NumMatHeightSplat < 2)
 			return false;
@@ -65,7 +68,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting7Edit::PagingLandScapeTexture_Splatting7Edit() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Splatting7Edit::PagingLandScapeTexture_Splatting7Edit(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
 
@@ -82,7 +85,7 @@ namespace Ogre
             if (mTextures[channel].isNull())
             {
 	            Image Imageloader;
-                const String group = PagingLandScapeOptions::getSingleton().groupName;
+                const String group = mParent->getOptions()->groupName;
                 Imageloader.load (filename, group);
                 const size_t size = Imageloader.getWidth()*Imageloader.getHeight();
                 uchar *data = new uchar [size];
@@ -106,7 +109,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {              
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             
             // Create a new texture using the base image
             const String filename = opt->LandScape_filename;
@@ -197,7 +200,7 @@ namespace Ogre
         if (isDeformed)
         {
             rect = mDeformRect;
-            data = PagingLandScapeData2DManager::getSingleton().getData2D(mDataX, mDataZ);
+            data = mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ);
 //            rect = data->getDeformationRectangle ();
             if (rect.getWidth() && rect.getHeight ())
             {
@@ -264,7 +267,7 @@ namespace Ogre
         const Real invBlend = 1.0f - blend;
     
     
-        const size_t psize = PagingLandScapeOptions::getSingleton().PageSize - 1;
+        const size_t psize = mParent->getOptions()->PageSize - 1;
         assert ((x + z*  psize < psize*psize) && "PagingLandScapeTexture_Splatting2Edit::paint()");
 
         const uint curr_image_pos = static_cast <uint> (x + z * psize);
@@ -306,14 +309,14 @@ namespace Ogre
          
         if (mIsModified)
         {
-            const String Alphafname = PagingLandScapeOptions::getSingleton().LandScape_filename + 
+            const String Alphafname = mParent->getOptions()->LandScape_filename + 
                                         ".Alpha.";
 
             const String PageNumberName = String(".") + StringConverter::toString(mDataZ) + 
                                                 String(".") + 
                                         StringConverter::toString(mDataX) + 
                                         String(".");
-            const String extname = PagingLandScapeOptions::getSingleton().TextureExtension;
+            const String extname = mParent->getOptions()->TextureExtension;
 
             for (uint i = 0; i < 3; i++)
             {
@@ -323,7 +326,7 @@ namespace Ogre
                     const String fname = Alphafname + StringConverter::toString(i) + PageNumberName;
 
                     FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-                            PagingLandScapeOptions::getSingleton().groupName, 
+                            mParent->getOptions()->groupName, 
                             fname + extname);
                     FileInfoList::iterator it = finfo->begin();
                     if (it != finfo->end())

@@ -23,6 +23,7 @@
 #include "OgreCamera.h"
 
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeCamera.h"
 #include "OgrePagingLandScapePage.h"
@@ -40,25 +41,13 @@
 
 namespace Ogre
 {
-
     //-----------------------------------------------------------------------
-    template<> PagingLandScapePageManager* Singleton<PagingLandScapePageManager>::ms_Singleton = 0;
-    PagingLandScapePageManager* PagingLandScapePageManager::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    PagingLandScapePageManager& PagingLandScapePageManager::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-
-    //-----------------------------------------------------------------------
-    PagingLandScapePageManager::PagingLandScapePageManager(void) :
-    
-        mOptions(PagingLandScapeOptions::getSingletonPtr()),
-        mData2d(PagingLandScapeData2DManager::getSingletonPtr()),
-        mTexture(PagingLandScapeTextureManager::getSingletonPtr()),
-        mRenderablesMgr(PagingLandScapeRenderableManager::getSingletonPtr()),
+    PagingLandScapePageManager::PagingLandScapePageManager(PagingLandScapeSceneManager * scnMgr) :
+        mSceneManager(scnMgr),
+        mOptions(scnMgr->getOptions()),
+        mData2d(scnMgr->getData2DManager()),
+        mTexture(scnMgr->getTextureManager()),
+        mRenderablesMgr(scnMgr->getRenderableManager()),
         mWidth(0),
         mHeight(0),
         mNextQueueFrameCount(0),
@@ -68,11 +57,9 @@ namespace Ogre
         mTimePreLoaded(0),
         mRenderQueueGroupID (RENDER_QUEUE_WORLD_GEOMETRY_2),
 		mPageLoadInterval (mOptions->PageLoadInterval),
-		mOnFrame(false)
-
+		mOnFrame(false),
+        mEnabled(false)
     {
-		PagingLandScapePageRenderable::mOpt = mOptions;
-
 		mPagePool.clear();
 		mActivePages.clear();
 		mFreePages.clear();
@@ -112,11 +99,13 @@ namespace Ogre
         mWidth = 0;
         mHeight = 0;
 		mOnFrame = false;
+        mEnabled = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapePageManager::load(void)
     {
         WorldDimensionChange ();
+        mEnabled = true;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapePageManager::clear(void)
@@ -154,20 +143,26 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapePageManager::frameStarted(const FrameEvent& evt)
     {
-        --mTimePreLoaded;
-        if (mOptions->VisMap)
-			PagingLandScapeHorizon::getSingleton().prepare(static_cast< PagingLandScapeCamera* >(mOptions->primaryCamera));
-        mRenderablesMgr->resetVisibles();
-        mOnFrame = false;
+        if (mEnabled)//if not queued to be removed from framelistener or Paused
+        {
+            --mTimePreLoaded;
+            if (mOptions->VisMap)
+            {
+                mSceneManager->getHorizon ()->prepare(static_cast< PagingLandScapeCamera* >(mOptions->primaryCamera));
+            }
+            mRenderablesMgr->resetVisibles();
+            mOnFrame = false;
+        }
         return true;
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapePageManager::frameEnded(const FrameEvent& evt)
     {
-        // If This Frame has seen any Camera,
+        // mOnFrame If This Frame has seen any Camera,
         // We won't unload anything.
         // since un-focusing rendering may make this method unload all renderables.
-        if (!mOnFrame)
+        // mEnabled sm paused or frame listener queued for deletion
+        if (!mOnFrame || !mEnabled)
             return true;
 
 		// unload some pages if no more in use
@@ -177,12 +172,12 @@ namespace Ogre
             mPageLoadQueue.empty() && 
             mPageTextureloadQueue.empty())
         {
-            PagingLandScapeListenerManager::getSingleton().fireTerrainReady();// no more to load
+            mSceneManager->getListenerManager()->fireTerrainReady();// no more to load
 			mTerrainReady = true;
         }
 
         if (mOptions->VisMap)
-            PagingLandScapeHorizon::getSingleton().update();
+            mSceneManager->getHorizon()->update();
         return true;
     }
 	//-----------------------------------------------------------------------
@@ -202,7 +197,7 @@ namespace Ogre
 			// Create new pages
 			for (size_t i = pool_size; i < new_pool_size; ++i)
 			{
-				p = new PagingLandScapePage ();
+				p = new PagingLandScapePage (this);
 				mPagePool[i] = p;
 				mFreePages.push_back (p);
 			}
@@ -613,8 +608,8 @@ namespace Ogre
 			{
 			    //	We to Load nearest page in non-empty queue
 				PagingLandScapePage *p = mPageLoadQueue.find_nearest (pos);
-				assert (!p->mIsTextureLoading && !p->mIsPreLoading);
-				assert (p && !p->isLoaded ());
+                assert (p && !p->isLoaded ());
+                assert (!p->mIsTextureLoading && !p->mIsPreLoading);
 				p->load ();
 
 				p->mIsLoading = false;   
@@ -624,10 +619,10 @@ namespace Ogre
 			}
 			else if (!mPageTextureloadQueue.empty ())
 			{
-			    //	We TextureLoad nearest page in non-empty queue
+                //	We TextureLoad nearest page in non-empty queue
 				PagingLandScapePage *p = mPageTextureloadQueue.find_nearest (pos);
-			    assert (!p->mIsLoading && !p->mIsPreLoading);
-				assert (p && !p->isTextureLoaded());
+                assert (p && !p->isTextureLoaded());
+                assert (!p->mIsLoading && !p->mIsPreLoading);
 				p->loadTexture ();
 
 				p->mIsTextureLoading = false;   
@@ -641,8 +636,8 @@ namespace Ogre
 			{
 			    //	We PreLoad nearest page in non-empty queue
 				PagingLandScapePage *p = mPagePreloadQueue.find_nearest (pos);
-		        assert (!p->mIsLoading && !p->mIsTextureLoading);
-				assert (p && !p->isPreLoaded());
+                assert (p && !p->isPreLoaded());
+                assert (!p->mIsLoading && !p->mIsTextureLoading);
 				p->preload ();
 
 				p->mIsPreLoading = false;

@@ -31,7 +31,7 @@ namespace Ogre
     class PagingLandScapeData2D_HeightFieldTC: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_HeightFieldTC(void);
+	        PagingLandScapeData2D_HeightFieldTC(PagingLandScapeData2DManager *dataMgr);
 
 	        virtual ~PagingLandScapeData2D_HeightFieldTC(void);
             virtual String getName(){return String("HeightFieldTC");}

@@ -59,7 +59,7 @@ namespace Ogre
 		OcclusionBoundingBox();
 		~OcclusionBoundingBox();
 
-        virtual SceneDetailLevel getRenderDetail() const;
+        virtual PolygonMode getRenderDetail() const;
 
         /** Builds the wireframe line list.
             @param

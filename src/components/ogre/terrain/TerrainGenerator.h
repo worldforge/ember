@@ -44,7 +44,7 @@
 #include <sigc++/connection.h>*/
 #include <sigc++/trackable.h>
 
-
+#include "framework/ConsoleObject.h"
 namespace Ogre
 {
 	class TerrainOptions;
@@ -55,6 +55,8 @@ namespace EmberOgre {
 class TerrainShader;
 
 class TerrainPage;
+
+class EmberPagingSceneManager;
 
 struct TerrainDefPoint
 {
@@ -74,7 +76,7 @@ struct TerrainDefPoint
  * 
  */
 class TerrainGenerator :  public Ogre::FrameListener, 
-public sigc::trackable
+public sigc::trackable, public Ember::ConsoleObject
 {
 public:
 
@@ -109,7 +111,7 @@ public:
 	 * Prepares all segments aquired from Mercator. Note that this can be very,
 	 * very expensive if there's a lot of terrain defined.
 	 */
-	void TerrainGenerator::prepareAllSegments();
+	void prepareAllSegments();
 	
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
@@ -134,7 +136,7 @@ public:
 	 *	(note that this is different from Mercator segments, which always are of size 64)
 	 * @return 
 	 */
-	int getSegmentSize() const;
+	int getSegmentSize();
 	
 	
 	/**
@@ -153,10 +155,8 @@ public:
 	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition);
 	
 
-// 	GroundCover* mGround;
-// 	void generateUnderVegetation(long segmentXStart, long segmentZStart, long numberOfSegments);
-	
-	int getPageSize() const;
+
+	int getPageSize() ;
 	
 	/**
 	 *    gets the shader used for determining where to place foliage
@@ -164,7 +164,16 @@ public:
 	 */
 	TerrainShader* getFoliageShader() const;
 
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
 
+	EmberPagingSceneManager* getEmberSceneManager();
+	const EmberPagingSceneManager* getEmberSceneManager() const;
+	
 protected:
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
   	AreaShaderstore mAreaShaders;

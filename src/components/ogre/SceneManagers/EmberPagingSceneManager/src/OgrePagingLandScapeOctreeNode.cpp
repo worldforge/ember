@@ -160,8 +160,8 @@ namespace Ogre
         if (getShowBoundingBox() || mCreator->getShowBoundingBoxes()) 
             _addBoundingBoxToQueue(queue);
             
-        //         if ( mCreator->  getDisplaySceneNodes())
-        //             queue -> addRenderable( this );
+        if ( mCreator->getDisplaySceneNodes())
+            queue -> addRenderable( this );
 
     }
     //-----------------------------------------------------------------------

@@ -27,6 +27,7 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Splatting2.h"
 
 
@@ -35,8 +36,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2::_clearData(void)
@@ -46,12 +47,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting2::newTexture()
     {
-        return new PagingLandScapeTexture_Splatting2();
+        return new PagingLandScapeTexture_Splatting2(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting2::TextureRenderCapabilitesFullfilled()
     {             
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		
 		if (opt->NumMatHeightSplat < 3)
 			return false;
@@ -61,7 +62,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting2::PagingLandScapeTexture_Splatting2() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Splatting2::PagingLandScapeTexture_Splatting2(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
     //-----------------------------------------------------------------------
@@ -71,11 +72,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2::LoadAlphaMap(const String &filename) const
     {
+      
        TexturePtr tex = TextureManager::getSingleton().getByName (filename);
        if (tex.isNull())
        {
 	        Image Imageloader;
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             const String group = opt->groupName;
             Imageloader.load (filename, group);
             Image ImageConvertertoAlphaFormat;
@@ -88,13 +90,14 @@ namespace Ogre
                                                     group,
                                                     ImageConvertertoAlphaFormat);
        }
+       
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2::_loadMaterial()
     {
 	    if (mMaterial.isNull())
 	    {
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             const String filename (opt->LandScape_filename);
             const String commonName (StringConverter::toString(mDataZ) + 
                                         String(".") +
@@ -104,7 +107,7 @@ namespace Ogre
 		    mMaterial = MaterialManager::getSingleton().getByName(matname);
             if (mMaterial.isNull())
 	        {
-                const String extname (opt->getSingleton().TextureExtension);
+                const String extname (opt->TextureExtension);
 		        mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial2");
                 assert (!mMaterial.isNull());
                 mMaterial = mMaterial->clone(matname);
@@ -130,9 +133,10 @@ namespace Ogre
                     texname = alphamapBeginname 
                             + StringConverter::toString(splat_pass) 
                             + endName; 
-                    LoadAlphaMap (texname);
+                    //LoadAlphaMap (texname);
                     // assign this texture to the material
-                    t->getPass(splat_pass)->getTextureUnitState(1)->setTextureName(texname);
+                    //TextureManager::getSingleton().load (texname,  opt->groupName, TEX_TYPE_2D, -1, 1.0f, true);
+                    t->getPass(splat_pass)->getTextureUnitState(1)->setTextureName(texname);//, TEX_TYPE_2D, -1, true);
                     t->getPass(splat_pass)->getTextureUnitState(0)->setTextureName(opt->SplatDetailMapNames[splat_pass]);
                     
                     splat_pass++;

@@ -19,16 +19,15 @@
 #define PAGINGLandScapeTEXTUREMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
 
 namespace Ogre
 {
 
-    class PagingLandScapeTextureManager : public Singleton< PagingLandScapeTextureManager >
+    class PagingLandScapeTextureManager
     {
         public:
 
-	        PagingLandScapeTextureManager(void);
+	        PagingLandScapeTextureManager(PagingLandScapeSceneManager * scnMgr);
 
 	        virtual ~PagingLandScapeTextureManager(void);
 
@@ -47,9 +46,6 @@ namespace Ogre
 
 	        const MaterialPtr& getMaterial(const uint texX, const uint texZ);
 
-	        static PagingLandScapeTextureManager& getSingleton(void);
-
-	        static PagingLandScapeTextureManager* getSingletonPtr(void);
 
             MaterialPtr getMapMaterial(void);
             void setMapMaterial(void);
@@ -74,8 +70,12 @@ namespace Ogre
 			PagingLandScapeTexture* getNewTexture(const uint i, const uint j);
 			void releaseTexture (PagingLandScapeTexture*p );
 
-        protected:
-            PagingLandScapeOptions*     mOptions;
+            PagingLandScapeSceneManager *getSceneManager(){return mSceneManager;}
+            PagingLandScapeOptions*		getOptions(){return mOptions;}
+    protected:
+            PagingLandScapeSceneManager *mSceneManager;
+            PagingLandScapeOptions*		mOptions;
+
 
             uint                        mTextureType;
             String                      mTextureFormat;

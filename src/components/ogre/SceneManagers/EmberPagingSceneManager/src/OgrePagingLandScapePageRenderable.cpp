@@ -30,6 +30,7 @@
 
 #include "OgreSimpleRenderable.h"
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeCamera.h"
 
@@ -55,9 +56,11 @@ namespace Ogre
     String PagingLandScapePageRenderable::mType = "PagingLandScapePageBillBoard";
 
     //-----------------------------------------------------------------------
-    PagingLandScapePageRenderable::PagingLandScapePageRenderable(const String& name, const uint pageX, const uint pageZ, 
+    PagingLandScapePageRenderable::PagingLandScapePageRenderable(PagingLandScapePageManager *pageMgr, const String& name, const uint pageX, const uint pageZ, 
         const AxisAlignedBox &bounds) :
-        Renderable(),
+        Renderable(), 
+            MovableObject(name),
+            mParent(pageMgr),
             mX(pageX),
             mZ(pageZ),
             mBounds(bounds),
@@ -72,7 +75,7 @@ namespace Ogre
         // Setup render op
 	    mCurrIndexes = new IndexData();
 
-        const uint Numtiles = PagingLandScapeOptions::getSingleton().NumTiles + 1;
+        const uint Numtiles = mParent->getOptions()->NumTiles + 1;
         const size_t new_length = ((Numtiles - 1) * (Numtiles - 1) * 2 * 2 * 2);
         mCurrIndexes->indexCount = new_length;
         mCurrIndexes->indexStart = 0;
@@ -136,10 +139,10 @@ namespace Ogre
         HardwareVertexBufferSharedPtr vVertices = bind->getBuffer(MAIN_BINDING);             
         uchar* pMain = static_cast<uchar*>(vVertices->lock(HardwareBuffer::HBL_DISCARD));
 
-        const uint Numtiles = PagingLandScapeOptions::getSingleton().NumTiles + 1;
+        const uint Numtiles = mParent->getOptions()->NumTiles + 1;
 
-        const Real invpagesizeX = 1.0f / ((Numtiles - 1) * PagingLandScapeOptions::getSingleton().world_width);
-        const Real invpagesizeZ = 1.0f / ((Numtiles  - 1)*  PagingLandScapeOptions::getSingleton().world_height);
+        const Real invpagesizeX = 1.0f / ((Numtiles - 1) * mParent->getOptions()->world_width);
+        const Real invpagesizeZ = 1.0f / ((Numtiles  - 1)*  mParent->getOptions()->world_height);
 
         const Real texOffsetX = mX * (Numtiles  - 1) * invpagesizeX;
         const Real texOffsetZ = mZ * (Numtiles  - 1) * invpagesizeZ;
@@ -208,7 +211,7 @@ namespace Ogre
 
 
         const Real max = 
-            PagingLandScapeData2DManager::getSingleton().getMaxHeight(mX, 
+            mParent->getSceneManager()->getData2DManager()->getMaxHeight(mX, 
                                                                       mZ);
        
 	    // Calculate the bounding box for this renderable
@@ -227,7 +230,7 @@ namespace Ogre
         mParentNode->needUpdate();
 
 
-        MovableObject::setRenderQueueGroup(PagingLandScapePageManager::getSingleton().getRenderQueueGroupID());
+        MovableObject::setRenderQueueGroup(mParent->getSceneManager()->getPageManager()->getRenderQueueGroupID());
 
     }
     //-----------------------------------------------------------------------
@@ -236,7 +239,7 @@ namespace Ogre
 	    if (static_cast<PagingLandScapeCamera*> (cam)->getVisibility (mBounds))
         {
            mVisible = true;
-           //MovableObject::_notifyCurrentCamera(cam);
+           MovableObject::_notifyCurrentCamera(cam);
         }
         else
            mVisible = false;
@@ -299,4 +302,10 @@ namespace Ogre
     {
         mMaterial = mat;
     }
+	//-----------------------------------------------------------------------
+	uint32 PagingLandScapePageRenderable::getTypeFlags(void) const
+	{
+		// return world flag
+		return SceneManager::WORLD_GEOMETRY_TYPE_MASK;
+	}
 } //namespace

@@ -29,7 +29,7 @@ namespace Ogre
     class PagingLandScapeData2D_HeightFieldBlendNeighbor: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_HeightFieldBlendNeighbor(void);
+	        PagingLandScapeData2D_HeightFieldBlendNeighbor(PagingLandScapeData2DManager *dataMgr);
             virtual String getName(){return String("HeightFieldBlendNeighbor");}
 	        virtual ~PagingLandScapeData2D_HeightFieldBlendNeighbor(void);
 

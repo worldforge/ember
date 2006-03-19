@@ -48,7 +48,7 @@ ParticleSystem::~ParticleSystem()
 	mBindings.clear();
 	
 	//and then destroy the system to save resources
-	Ogre::ParticleSystemManager::getSingleton().destroySystem(mOgreParticleSystem);
+	mOgreParticleSystem->_getManager()->destroyParticleSystem(mOgreParticleSystem);
 	
 }
 

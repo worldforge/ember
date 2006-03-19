@@ -48,7 +48,8 @@
 
 namespace Ogre
 {
-	PagingLandScapePage::PagingLandScapePage() :
+    PagingLandScapePage::PagingLandScapePage(PagingLandScapePageManager *pageMgr) :
+        mParent (pageMgr),
 		mIsLoading (false),
 		mIsPreLoading (false),
 		mIsTextureLoading (false),
@@ -95,10 +96,10 @@ namespace Ogre
 			+ StringConverter::toString(mTableX) + "." + 
 			StringConverter::toString(mTableZ);
 		
-		mPageNode = PagingLandScapeSceneManager::getSingleton().createSceneNode (NodeName + ".Node");     
+        mPageNode = mParent->getSceneManager()->createSceneNode (NodeName + ".Node");     
 
 
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
         mNumTiles = opt->NumTiles;
 
 	    const uint size = opt->PageSize - 1;
@@ -118,7 +119,7 @@ namespace Ogre
 
 	    const Real EndX = mIniX + factorX;
 	    const Real EndZ = mIniZ + factorZ;
-	    const Real MaxHeight = PagingLandScapeData2DManager::getSingleton().getMaxHeight(mTableX, mTableZ);
+        const Real MaxHeight = mParent->getSceneManager()->getData2DManager()->getMaxHeight(mTableX, mTableZ);
         const Real chgfactor = opt->change_factor;
 
 	    mBounds.setExtents(mIniX , 
@@ -151,14 +152,15 @@ namespace Ogre
 
 		if (opt->BigImage)
 		{
-			mRenderable = new PagingLandScapePageRenderable(mPageNode->getName () + "rend", 
+			mRenderable = new PagingLandScapePageRenderable(mParent,
+                mPageNode->getName () + "rend", 
 				mTableX, mTableZ,
 				mBounds);
 			mPageNode->attachObject(mRenderable);
 			mRenderable->load ();
 		}
 
-		PagingLandScapePageManager * const pageMgr = PagingLandScapePageManager::getSingletonPtr();
+		PagingLandScapePageManager * const pageMgr = mParent;
 		PagingLandScapePage *n;
 		n = pageMgr->getPage (tableX, tableZ + 1, false);
 		_setNeighbor(SOUTH, n);
@@ -190,7 +192,7 @@ namespace Ogre
 		postUnload ();  
 		assert (mTiles.empty());
 
-		if (PagingLandScapeOptions::getSingleton().BigImage)
+		if (mParent->getOptions()->BigImage)
         {
 		    mPageNode->detachObject (mRenderable->getName());
             delete mRenderable;
@@ -198,7 +200,7 @@ namespace Ogre
 
 		assert (mPageNode);
 		mPageNode->removeAndDestroyAllChildren ();
-        PagingLandScapeSceneManager::getSingleton().destroySceneNode (mPageNode->getName ());
+        mParent->getSceneManager()->destroySceneNode (mPageNode->getName ());
         mPageNode = 0;
        
 
@@ -336,15 +338,15 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapePage::setMapMaterial()
     {    
-        if (PagingLandScapeOptions::getSingleton().BigImage)
+        if (mParent->getOptions()->BigImage)
         {
-            mRenderable->setMaterial (PagingLandScapeTextureManager::getSingleton().getMapMaterial());
+            mRenderable->setMaterial (mParent->getSceneManager()->getTextureManager()->getMapMaterial());
         }
     }
     //-----------------------------------------------------------------------
     void PagingLandScapePage::touch ()
     { 
-        mTimePreLoaded = PagingLandScapeOptions::getSingleton().PageInvisibleUnloadFrames;
+        mTimePreLoaded = mParent->getOptions()->PageInvisibleUnloadFrames;
     }
     //-----------------------------------------------------------------------
     const bool PagingLandScapePage::touched ()        
@@ -362,12 +364,12 @@ namespace Ogre
 	    if (mIsPreLoaded)
 		    return;
 
-	    mIsLoadable = PagingLandScapeData2DManager::getSingleton().load (mTableX, mTableZ);
+        mIsLoadable = mParent->getSceneManager()->getData2DManager()->load (mTableX, mTableZ);
 
 	    mIsPreLoaded = true;
 
-        PagingLandScapeListenerManager::getSingleton().firePagePreloaded(mTableX, mTableZ, 
-            PagingLandScapeData2DManager::getSingleton().getData2D(mTableX, mTableZ)->getHeightData(),
+        mParent->getSceneManager()->getListenerManager()->firePagePreloaded(mTableX, mTableZ, 
+            mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
             mBounds);
     }
     //-----------------------------------------------------------------------
@@ -379,7 +381,7 @@ namespace Ogre
         if (!mIsTextureLoaded) 
         {
             if (mIsLoadable)
-                PagingLandScapeTextureManager::getSingleton().load(mTableX, mTableZ);
+                mParent->getSceneManager()->getTextureManager()->load(mTableX, mTableZ);
             mIsTextureLoaded = true;
         }
     }
@@ -413,7 +415,7 @@ namespace Ogre
 	        } 
 
 			PagingLandScapeTile *tile;
-			PagingLandScapeTileManager * const tileMgr = PagingLandScapeTileManager::getSingletonPtr ();
+            PagingLandScapeTileManager * const tileMgr = mParent->getSceneManager()->getTileManager();
 	        for (i = 0; i < numTiles; ++i)
 	        {
 	            for (j = 0; j < numTiles; ++j)
@@ -444,7 +446,7 @@ namespace Ogre
 		        }
 			}
 
-			PagingLandScapePageManager * const pageMgr = PagingLandScapePageManager::getSingletonPtr();
+			PagingLandScapePageManager * const pageMgr = mParent;
 			PagingLandScapePage *n;
 
 			n = pageMgr->getPage (mTableX, mTableZ + 1, false);
@@ -469,8 +471,8 @@ namespace Ogre
 
         }
         
-        PagingLandScapeListenerManager::getSingleton().firePageLoaded(mTableX, mTableZ, 
-            PagingLandScapeData2DManager::getSingleton().getData2D(mTableX, mTableZ)->getHeightData(),
+        mParent->getSceneManager()->getListenerManager()->firePageLoaded(mTableX, mTableZ, 
+            mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
             mBounds);
     }
 
@@ -503,8 +505,8 @@ namespace Ogre
 
             mIsLoaded = false;       
      
-            PagingLandScapeListenerManager::getSingleton().firePageUnloaded(mTableX, mTableZ, 
-                PagingLandScapeData2DManager::getSingleton().getData2D(mTableX, mTableZ)->getHeightData(),
+            mParent->getSceneManager()->getListenerManager()->firePageUnloaded(mTableX, mTableZ, 
+                mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
                 mBounds);
             assert (mPageNode);
             assert (mPageNode->getParent () == 0);
@@ -518,7 +520,7 @@ namespace Ogre
         if (mIsTextureLoaded) 
         {
             if (mIsLoadable)
-                PagingLandScapeTextureManager::getSingleton().unload(mTableX, mTableZ);
+                mParent->getSceneManager()->getTextureManager()->unload(mTableX, mTableZ);
             mIsTextureLoaded = false;
         }
     }
@@ -531,9 +533,9 @@ namespace Ogre
 		    mIsPreLoaded = false;
 
             if (mIsLoadable)
-		        PagingLandScapeData2DManager::getSingleton().unload(mTableX, mTableZ);
+		        mParent->getSceneManager()->getData2DManager()->unload(mTableX, mTableZ);
 
-            PagingLandScapeListenerManager::getSingleton().firePagePostunloaded (mTableX, mTableZ);
+            mParent->getSceneManager()->getListenerManager()->firePagePostunloaded (mTableX, mTableZ);
 	    }
     }
 
@@ -568,10 +570,10 @@ namespace Ogre
             if (!mVisible)
 			{
                 if (!mPageNode->getParent ())
-                    PagingLandScapeSceneManager::getSingleton().getRootSceneNode()->addChild (mPageNode);
+                    mParent->getSceneManager()->getRootSceneNode()->addChild (mPageNode);
 
-                PagingLandScapeListenerManager::getSingleton().firePageShow (mTableX, mTableZ, 
-                    PagingLandScapeData2DManager::getSingleton().getData2D(mTableX, mTableZ)->getHeightData(),
+                mParent->getSceneManager()->getListenerManager()->firePageShow (mTableX, mTableZ, 
+                    mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
             mBounds);
                 
                 if (mIsLoadable)
@@ -592,10 +594,10 @@ namespace Ogre
         else if (mVisible)
         {
             if (mPageNode->getParent ())
-                PagingLandScapeSceneManager::getSingleton().getRootSceneNode()->removeChild (mPageNode->getName ());
+                mParent->getSceneManager()->getRootSceneNode()->removeChild (mPageNode->getName ());
 
-            PagingLandScapeListenerManager::getSingleton().firePageHide (mTableX, mTableZ, 
-                    PagingLandScapeData2DManager::getSingleton().getData2D(mTableX, mTableZ)->getHeightData(),
+            mParent->getSceneManager()->getListenerManager()->firePageHide (mTableX, mTableZ, 
+                    mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
 					mBounds);
             if (mIsLoadable)
             {
@@ -650,8 +652,8 @@ namespace Ogre
     {
         if (mIsLoaded && mIsLoadable)
         {
-            const uint x =  static_cast<uint> (pos.x / PagingLandScapeOptions::getSingleton().scale.x / (PagingLandScapeOptions::getSingleton().TileSize));
-            const uint z =  static_cast<uint> (pos.z / PagingLandScapeOptions::getSingleton().scale.z / (PagingLandScapeOptions::getSingleton().TileSize));
+            const uint x =  static_cast<uint> (pos.x / mParent->getOptions()->scale.x / (mParent->getOptions()->TileSize));
+            const uint z =  static_cast<uint> (pos.z / mParent->getOptions()->scale.z / (mParent->getOptions()->TileSize));
 
             assert (mTiles[x][z] && mTiles[x][z]-> isLoaded ());
             return mTiles[x][z];
@@ -693,5 +695,23 @@ namespace Ogre
 			    }
 		    }
         }
-	}
+    }
+    //-------------------------------------------------------------------------
+    PagingLandScapeTile* PagingLandScapePage::getTile(const uint i , const uint j) const
+    {
+        if (mIsLoaded)
+        {
+            assert (!mTiles.empty());
+
+            assert (i < mParent->getOptions()->NumTiles);
+            assert (j < mParent->getOptions()->NumTiles);
+
+            assert (i < mTiles.size());
+            assert (j < mTiles[i].size());
+
+            return mTiles[i][j];
+        }
+        return 0;
+    }
+
 } //namespace

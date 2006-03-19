@@ -19,15 +19,15 @@
 #define PAGINGLandScapeDATA2DMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
 
 namespace Ogre
 {
 
-    class PagingLandScapeData2DManager : public Singleton< PagingLandScapeData2DManager >
+    class PagingLandScapeData2DManager
     {
 	public:
-        PagingLandScapeData2DManager(void);
+        PagingLandScapeData2DManager(PagingLandScapeSceneManager * scnMgr,
+                                    PagingLandScapeOptions * opt );
         
         ~PagingLandScapeData2DManager(void);
         
@@ -91,11 +91,8 @@ namespace Ogre
        const Real getRealWorldSlope(const Real x, const Real z);
        const Vector3 getNormalAt(const uint pageX, const uint pageZ, const uint x, const uint z, const uint Lod);
 
-        void setPageManager(void);
+        void setPageManager(PagingLandScapeSceneManager *scnMgr);
 
-        static PagingLandScapeData2DManager& getSingleton(void);
-        
-        static PagingLandScapeData2DManager* getSingletonPtr(void);
         
         void registerDataType(PagingLandScapeData2D* source)
         {
@@ -114,7 +111,10 @@ namespace Ogre
 		PagingLandScapeData2D* getNewData2D(const uint i , const uint j);
 		void releaseData2D (PagingLandScapeData2D*p );
 
+        PagingLandScapeOptions*		getOptions(){return mOptions;}
+        PagingLandScapeSceneManager *getSceneManager(){return mScnMgr;}
     protected:
+        PagingLandScapeSceneManager * mScnMgr;
         PagingLandScapeOptions*		mOptions;
 
 

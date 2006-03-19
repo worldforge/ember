@@ -23,23 +23,12 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 #include "OgrePagingLandScapeListenerManager.h"    
+#include "OgrePagingLandScapeSceneManager.h"    
 
 namespace Ogre 
 {
-    //-----------------------------------------------------------------------
-    template<> PagingLandScapeListenerManager* Singleton<PagingLandScapeListenerManager>::ms_Singleton = 0;
-    PagingLandScapeListenerManager* PagingLandScapeListenerManager::getSingletonPtr(void)
-    {
-        return ms_Singleton;
-	}
 	//-------------------------------------------------------------------------
-	PagingLandScapeListenerManager& PagingLandScapeListenerManager::getSingleton(void)
-    {  
-        assert(ms_Singleton);  
-		return (*ms_Singleton);  
-	}
-	//-------------------------------------------------------------------------
-	PagingLandScapeListenerManager::PagingLandScapeListenerManager(void)
+    PagingLandScapeListenerManager::PagingLandScapeListenerManager(PagingLandScapeSceneManager * scnMgr)
 	{
 	};
 	//-------------------------------------------------------------------------

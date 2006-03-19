@@ -36,7 +36,7 @@ namespace Ogre
 
 	        /**	Initializes the LandScapeRenderable with the given options and the starting coordinates of this block.
 	        */
-	        PagingLandScapePageRenderable(const String& name, const uint pageX, const uint pageZ, const AxisAlignedBox& bounds);
+	        PagingLandScapePageRenderable(PagingLandScapePageManager *pageMgr, const String& name, const uint pageX, const uint pageZ, const AxisAlignedBox& bounds);
 
 	        virtual ~PagingLandScapePageRenderable(void);
 	  
@@ -48,8 +48,6 @@ namespace Ogre
 			{
 				return (mBounds.getMaximum()).y;
 			};
-
-			const String& getName(void) const {return mName;};
 
 	        static PagingLandScapeOptions* mOpt;
 
@@ -104,8 +102,8 @@ namespace Ogre
 		    uint32 getTypeFlags(void) const;
 
         protected:
-
-		   String mName;
+            
+           PagingLandScapePageManager *mParent;
 
            VertexData* mCurrVertexes;
            IndexData* mCurrIndexes;

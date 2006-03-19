@@ -26,6 +26,7 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Splatting6.h"
 
 
@@ -35,8 +36,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting6::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting6::_clearData(void)
@@ -46,12 +47,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting6::newTexture()
     {
-        return new PagingLandScapeTexture_Splatting6();
+        return new PagingLandScapeTexture_Splatting6(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting6::TextureRenderCapabilitesFullfilled()
     {                                          
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		
 		if (opt->NumMatHeightSplat < 3)
 			return false;
@@ -61,7 +62,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting6::PagingLandScapeTexture_Splatting6() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Splatting6::PagingLandScapeTexture_Splatting6(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
     //-----------------------------------------------------------------------
@@ -75,7 +76,7 @@ namespace Ogre
         if (tex.isNull())
         {
             Image Imageloader;
-            const String group = PagingLandScapeOptions::getSingleton().groupName;
+            const String group = mParent->getOptions()->groupName;
             Imageloader.load (filename, group);            
             Image ImageConvertertoAlphaFormat;
             ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), 
@@ -93,7 +94,7 @@ namespace Ogre
 	    if (mMaterial.isNull())
 	    {
 
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
             
             // Create a new texture using the base image
             const String filename (opt->LandScape_filename);

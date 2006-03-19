@@ -64,21 +64,10 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    template<> PagingLandScapeData2DManager* Singleton<PagingLandScapeData2DManager>::ms_Singleton = 0;
-    //-----------------------------------------------------------------------
-    PagingLandScapeData2DManager* PagingLandScapeData2DManager::getSingletonPtr(void)
-    {
-	    return ms_Singleton;
-    }
-    //-----------------------------------------------------------------------
-    PagingLandScapeData2DManager& PagingLandScapeData2DManager::getSingleton(void)
-    {  
-	    assert(ms_Singleton);  return (*ms_Singleton);  
-    }
-
-    //-----------------------------------------------------------------------
-    PagingLandScapeData2DManager::PagingLandScapeData2DManager() :
-        mOptions (PagingLandScapeOptions::getSingletonPtr()),
+    PagingLandScapeData2DManager::PagingLandScapeData2DManager(PagingLandScapeSceneManager * scnMgr,
+                                                               PagingLandScapeOptions * opt ) :
+        mScnMgr(scnMgr),
+        mOptions (opt),
         mData2DType (0),
         mData2DFormat (""),
         mWidth (0),
@@ -87,14 +76,16 @@ namespace Ogre
         mPageManager (0)
     {
         // Add default texture Types.
-        registerDataType (new PagingLandScapeData2D_HeightField ());
-        registerDataType (new PagingLandScapeData2D_HeightFieldN());
-        registerDataType (new PagingLandScapeData2D_HeightFieldRaw());
-        registerDataType (new PagingLandScapeData2D_HeightFieldTC());
-        registerDataType (new PagingLandScapeData2D_HeightFieldNTC());
-        registerDataType (new PagingLandScapeData2D_HeightFieldRawTC());
-        registerDataType (new PagingLandScapeData2D_HeightFieldBlendNeighbor());
-        registerDataType (new PagingLandScapeData2D_Spline());
+        registerDataType (new PagingLandScapeData2D_HeightField (this));
+        registerDataType (new PagingLandScapeData2D_HeightFieldRaw(this));
+        registerDataType (new PagingLandScapeData2D_HeightFieldTC(this));
+#ifndef _MAPSPLITTER
+        registerDataType (new PagingLandScapeData2D_HeightFieldN(this));
+        registerDataType (new PagingLandScapeData2D_HeightFieldRawTC(this));
+        registerDataType (new PagingLandScapeData2D_HeightFieldNTC(this));
+        registerDataType (new PagingLandScapeData2D_HeightFieldBlendNeighbor(this));
+#endif //_MAPSPLITTER
+        registerDataType (new PagingLandScapeData2D_Spline(this));
     }
     //-----------------------------------------------------------------------
     PagingLandScapeData2D *PagingLandScapeData2DManager::allocateData2D() const
@@ -168,6 +159,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2DManager::reload(const uint dataX, const uint dataZ)
     {
+#ifndef _MAPSPLITTER
         PagingLandScapeData2D* data = getData2D (dataX, dataZ);
 	
 		data->unload();
@@ -182,6 +174,9 @@ namespace Ogre
 			}
 		}
 		return ret;
+#else //_MAPSPLITTER
+        return true;
+#endif //_MAPSPLITTER
 	}
 	//-----------------------------------------------------------------------
 	PagingLandScapeData2D *PagingLandScapeData2DManager::getNewData2D(const uint x, const uint z)
@@ -251,9 +246,9 @@ namespace Ogre
         mHeight = newHeight;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2DManager::setPageManager ()
+    void PagingLandScapeData2DManager::setPageManager (PagingLandScapeSceneManager *scnMgr)
     {
-        mPageManager = PagingLandScapePageManager::getSingletonPtr();
+        mPageManager = scnMgr->getPageManager();
     }        
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2DManager::load(const uint dataX, const uint dataZ)
@@ -402,6 +397,7 @@ namespace Ogre
                                                     const Real modificationHeight,
                                                     const PagingLandScapeTileInfo* info)
     {
+#ifndef _MAPSPLITTER
         const uint pX = info->pageX;
         const uint pZ = info->pageZ;
         const uint pSize = mOptions->PageSize - 1;
@@ -508,12 +504,16 @@ namespace Ogre
             } // if (data->DeformHeight (x, z, heightResult))
         } // if (data->isLoaded())
         return false;
+#else //_MAPSPLITTER
+        return true;
+#endif //_MAPSPLITTER
     }
 
     //-----------------------------------------------------------------------
     const Real PagingLandScapeData2DManager::getInterpolatedWorldHeight (const Real x, const Real z, Real *slope)
     {
 
+#ifndef _MAPSPLITTER
       Real heightValue;
 
 		//#define _DEBUGPOS
@@ -535,7 +535,7 @@ namespace Ogre
         const int pageNumberZ = (value < 0 ) ? 0 : (value >= maxPageZ ? maxPageZ - 1: value); 
         		
 
-		const PagingLandScapePage * const page = PagingLandScapePageManager::getSingleton().getPage (pageNumberX, pageNumberZ, false);		
+		const PagingLandScapePage * const page = mScnMgr->getPageManager()->getPage (pageNumberX, pageNumberZ, false);		
         if (! (page && page->isPreLoaded()))
             return 0.0f;
             
@@ -698,7 +698,7 @@ namespace Ogre
 						c2d = Vector2 (bottom_right_x + currentLodStep,	bottom_right_z + neighbour_currentLodStep);
 						
 						// biggest Middle tri
-						if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+						if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							// all other smalls tri up to middle
 							// but omit first triangle
@@ -710,7 +710,7 @@ namespace Ogre
 							
 							int step = 1;
 							while (step < halfsuperstep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -749,7 +749,7 @@ namespace Ogre
 						c2d = Vector2 (bottom_right_x,					bottom_right_z + neighbour_currentLodStep);
 						
 						// biggest Middle tri
-						if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+						if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							//all other small tri
 							
@@ -766,7 +766,7 @@ namespace Ogre
 							c2d.y += neighbour_currentLodStep;
 							
 							while (step < neighbour_currentLodStep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -803,7 +803,7 @@ namespace Ogre
 						c2d = Vector2 (bottom_right_x + neighbour_currentLodStep,	bottom_right_z);
 					
 						// biggest Middle tri
-						if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+						if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							//all other small tri
 							
@@ -814,7 +814,7 @@ namespace Ogre
 							b2d = Vector2 (bottom_right_x + currentLodStep,	bottom_right_z + currentLodStep);
 							c2d = Vector2 (bottom_right_x,					bottom_right_z);
 							while (step < halfsuperstep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -827,7 +827,7 @@ namespace Ogre
 								c2d.x += neighbour_currentLodStep;
 								
 								while (step < neighbour_currentLodStep &&
-										!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+										!Math::pointInTri2D (pos, a2d, b2d, c2d))
 								{
 									step += currentLodStep;
 								
@@ -862,7 +862,7 @@ namespace Ogre
 						c2d = Vector2 (bottom_right_x + currentLodStep,	bottom_right_z + neighbour_currentLodStep);
 						
 						// biggest Middle tri
-						if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+						if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							// all other smalls tri up to middle
 							// but omit first triangle
@@ -874,7 +874,7 @@ namespace Ogre
 							
 							int step = 1;
 							while (step < halfsuperstep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -913,7 +913,7 @@ namespace Ogre
 						c2d = Vector2 (bottom_right_x,					bottom_right_z + neighbour_currentLodStep);
 						
 						// biggest Middle tri
-						if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+						if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							//all other small tri
 							
@@ -930,7 +930,7 @@ namespace Ogre
 							c2d.y += neighbour_currentLodStep;
 							
 							while (step < neighbour_currentLodStep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -967,7 +967,7 @@ namespace Ogre
 						c2d = Vector2 (bottom_right_x + neighbour_currentLodStep,	bottom_right_z + currentLodStep);
 					
 						// biggest Middle tri
-						if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+						if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							//all other small tri
 							
@@ -979,7 +979,7 @@ namespace Ogre
 							c2d = Vector2 (bottom_right_x,					bottom_right_z + currentLodStep);
 							
 							while (step < halfsuperstep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -992,7 +992,7 @@ namespace Ogre
 								c2d.x += neighbour_currentLodStep;
 								
 								while (step < neighbour_currentLodStep &&
-										!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+										!Math::pointInTri2D (pos, a2d, b2d, c2d))
 								{
 									step += currentLodStep;
 								
@@ -1023,7 +1023,7 @@ namespace Ogre
 					c2d = Vector2 (bottom_right_x + currentLodStep,		bottom_right_z + neighbour_currentLodStep);
 					
 					// biggest Middle tri
-					if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+					if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 					{
 						//all other small tri
 						a2d = Vector2 (bottom_right_x,					bottom_right_z);
@@ -1032,7 +1032,7 @@ namespace Ogre
 						
 						int step = 0;
 						while (step < halfsuperstep &&
-								!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+								!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							step += currentLodStep;
 							
@@ -1045,7 +1045,7 @@ namespace Ogre
 							c2d.y += neighbour_currentLodStep;
 						
 							while (step < neighbour_currentLodStep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -1075,7 +1075,7 @@ namespace Ogre
 					c2d = Vector2 (bottom_right_x,					bottom_right_z + neighbour_currentLodStep);
 					
 					// biggest Middle tri
-					if (!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+					if (!Math::pointInTri2D (pos, a2d, b2d, c2d))
 					{
 						//all other small tri
 						
@@ -1086,7 +1086,7 @@ namespace Ogre
 						
 						int step = 0;
 						while (step < halfsuperstep &&
-								!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+								!Math::pointInTri2D (pos, a2d, b2d, c2d))
 						{
 							step += currentLodStep;
 							
@@ -1099,7 +1099,7 @@ namespace Ogre
 							c2d.y += neighbour_currentLodStep;
 						
 							while (step < neighbour_currentLodStep &&
-									!Math::pointInTri2D (pos.x, pos.y, a2d.x, a2d.y, b2d.x, b2d.y, c2d.x, c2d.y))
+									!Math::pointInTri2D (pos, a2d, b2d, c2d))
 							{
 								step += currentLodStep;
 								
@@ -1176,9 +1176,7 @@ namespace Ogre
 					
 				
 				const Ray triIntersect (Vector3(localPageX, getMaxHeight(), localPageZ), Vector3::NEGATIVE_UNIT_Y);
-				
-				std::pair<bool, Real> res = Math::intersects(triIntersect, Plane(a, b, c));
-				//std::pair<bool, Real> res = Math::intersects(triIntersect, a, b, c, true, true);	
+				std::pair<bool, Real> res = Math::intersects(triIntersect, a, b, c, true, true);	
 				if (res.first)
 					heightValue = getMaxHeight() - res.second;
 				else
@@ -1210,7 +1208,7 @@ namespace Ogre
 			}
 		}
 		
-		// no stitching, easy life... 
+		// no stitching, easy life...
 		//
 		//   TL-----TR 1.0
 		//   |     / |
@@ -1371,10 +1369,14 @@ namespace Ogre
              return y1 * x_pct + y2 * (1-x_pct);
          } 
 
+#else //_MAPSPLITTER
+        return 0.0f;
+#endif //_MAPSPLITTER
     }
     //-----------------------------------------------------------------------
     const Real PagingLandScapeData2DManager::getWorldHeight(const Real x, const Real z)
     {
+#ifndef _MAPSPLITTER
 	    // figure out which page the point is on
         uint pageX, pageZ;
         if (mPageManager->getPageIndices(x, z, pageX, pageZ, false))
@@ -1395,6 +1397,8 @@ namespace Ogre
                 return getHeightAtPage (pageX, pageZ, static_cast<int> (localX), static_cast<int> (localZ));   
             }
         }
+
+#endif //_MAPSPLITTER
         return 0.0f;
     }
     //-----------------------------------------------------------------------
@@ -1633,7 +1637,7 @@ namespace Ogre
                 // Fast SOBEL filter
 
                 // the divider make sure we do respect proportion  (height and width proportional to y)
-                const Real Divider = static_cast <Real> (mOptions->PageSize - 1) / PagingLandScapeOptions::getSingleton ().scale.y;
+                const Real Divider = static_cast <Real> (mOptions->PageSize - 1) / mOptions->scale.y;
 
                 #define  gH(a, b) (getHeightAtPage(dataX, dataZ, static_cast<int> (a), static_cast<int> (b)))
 
@@ -1656,6 +1660,7 @@ namespace Ogre
     //----------------------------------------------------------------------------
     const Real PagingLandScapeData2DManager::getRealWorldSlope(const Real x, const Real z)
     {
+#ifndef _MAPSPLITTER
         // figure out which page the point is on
         const Vector3 pos(x, 0, z);
         uint pageX, pageZ;
@@ -1680,6 +1685,7 @@ namespace Ogre
                     return slope;
             }
         }
+#endif //_MAPSPLITTER
         return 0.0f;
     }
 

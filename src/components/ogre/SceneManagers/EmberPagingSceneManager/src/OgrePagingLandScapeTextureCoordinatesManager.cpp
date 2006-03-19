@@ -15,26 +15,17 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 *                                                                         *
 ***************************************************************************/
 
+#include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTextureCoordinatesManager.h"
 
 namespace Ogre
 {
 	//-----------------------------------------------------------------------
-	template<> PagingLandScapeTextureCoordinatesManager* Singleton<PagingLandScapeTextureCoordinatesManager>::ms_Singleton = 0;
-	PagingLandScapeTextureCoordinatesManager* PagingLandScapeTextureCoordinatesManager::getSingletonPtr(void)
-	{
-		return ms_Singleton;
-	}
-	PagingLandScapeTextureCoordinatesManager& PagingLandScapeTextureCoordinatesManager::getSingleton(void)
-	{  
-		assert(ms_Singleton);  return (*ms_Singleton);  
-	}
-	//-----------------------------------------------------------------------
-	PagingLandScapeTextureCoordinatesManager::PagingLandScapeTextureCoordinatesManager() :	
+	PagingLandScapeTextureCoordinatesManager::PagingLandScapeTextureCoordinatesManager(PagingLandScapeSceneManager * scnMgr) :	
 		mPageSize (0),
-		mTileSize (0),
-		mOption (0)
+        mTileSize (0),
+		mOptions (scnMgr->getOptions())
 	{
 	}
 	//-----------------------------------------------------------------------
@@ -65,9 +56,8 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapeTextureCoordinatesManager::load()
 	{
-		mOption = PagingLandScapeOptions::getSingletonPtr();
-		const uint pSize = mOption->PageSize;
-		const uint tSize = mOption->TileSize;
+		const uint pSize = mOptions->PageSize;
+		const uint tSize = mOptions->TileSize;
 		if (mPageSize != pSize || 
 			mTileSize != tSize)
 		{     
@@ -75,7 +65,7 @@ namespace Ogre
 
 			mPageSize = pSize;
 			mTileSize = tSize;
-			const uint NumTiles = mOption->NumTiles;
+			const uint NumTiles = mOptions->NumTiles;
 
 			mTexBuffs.reserve (NumTiles);
 			mTexBuffs.resize (NumTiles);
@@ -91,12 +81,12 @@ namespace Ogre
 		const uint tilex, 
 		const uint tilez)
 	{
-		assert (tilex < mOption->NumTiles && 
-				tilez < mOption->NumTiles);
+		assert (tilex < mOptions->NumTiles && 
+				tilez < mOptions->NumTiles);
 
 		if (mTexBuffs [tilex][tilez].isNull ())
 		{
-			const uint tileSize = mOption->TileSize;
+			const uint tileSize = mOptions->TileSize;
 
 			const VertexElementType t = VET_FLOAT2;
 			//const VertexElementType t = VET_SHORT2;
@@ -116,7 +106,7 @@ namespace Ogre
 			const uint endx = offSetX + tileSize;
 			const uint endz = offSetZ + tileSize;
 
-			const Real Aux1 =  1.0 / (mOption->PageSize - 1);
+			const Real Aux1 =  1.0 / (mOptions->PageSize - 1);
 			Real K_Tex2DataPos = offSetZ * Aux1;
 			for (uint k = offSetZ; k < endz; k ++)
 			{

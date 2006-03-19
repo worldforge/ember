@@ -26,6 +26,7 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTexture_Splatting3.h"
 
 
@@ -34,10 +35,10 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting3::_setPagesize(void)
     {
-        PagingLandScapeOptions::getSingleton().VertexCompression = false;
-        PagingLandScapeOptions::getSingleton().lodMorph = false;
-        PagingLandScapeOptions::getSingleton().coverage_vertex_color = true;
-        PagingLandScapeOptions::getSingleton().colored = true;
+        mParent->getOptions()->VertexCompression = false;
+        mParent->getOptions()->lodMorph = false;
+        mParent->getOptions()->coverage_vertex_color = true;
+        mParent->getOptions()->colored = true;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting3::_clearData(void)
@@ -47,12 +48,12 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting3::newTexture()
     {
-        return new PagingLandScapeTexture_Splatting3();
+        return new PagingLandScapeTexture_Splatting3(mParent);
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTexture_Splatting3::TextureRenderCapabilitesFullfilled()
     {                                                           
-		const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		
 		if (opt->NumMatHeightSplat < 3)
 			return false; 
@@ -64,7 +65,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting3::PagingLandScapeTexture_Splatting3() : PagingLandScapeTexture()
+    PagingLandScapeTexture_Splatting3::PagingLandScapeTexture_Splatting3(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
     {
     }
     //-----------------------------------------------------------------------
@@ -76,7 +77,7 @@ namespace Ogre
     {
 	    if (mMaterial.isNull())
 	    {
-			const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+			const PagingLandScapeOptions * const opt = mParent->getOptions();
            
             // Create a new texture using the base image
             // Create a new texture using the base image

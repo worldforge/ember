@@ -29,17 +29,61 @@
 #include "OgrePagingLandScapeOptions.h"
 #include "EmberPagingLandScapeData2D_HeightField.h"
 #include "EmberPagingLandScapeTexture.h"
+#include "model/Model.h"
 
 namespace EmberOgre {
 
+    const Ogre::String EmberPagingSceneManagerFactory::FACTORY_TYPE_NAME = "EmberPagingSceneManager";
+    //-----------------------------------------------------------------------
+    void EmberPagingSceneManagerFactory::initMetaData(void) const
+    {
+ 	   mMetaData.typeName = FACTORY_TYPE_NAME;
+ 	   mMetaData.description = "Uses the PagingLandscapeSceneManager.";
+ 	   mMetaData.sceneTypeMask = Ogre::ST_EXTERIOR_REAL_FAR; // support all types
+ 	   mMetaData.worldGeometrySupported = false;
+    }
+    //-----------------------------------------------------------------------
+    Ogre::SceneManager* EmberPagingSceneManagerFactory::createInstance(
+ 	   const Ogre::String& instanceName)
+    {
+ 	   return new EmberPagingSceneManager(instanceName);
+    }
+    //-----------------------------------------------------------------------
+    void EmberPagingSceneManagerFactory::destroyInstance(Ogre::SceneManager* instance)
+    {
+ 	   delete instance;
+    }    
+    
+    
+    EmberPagingSceneManager::EmberPagingSceneManager(const Ogre::String &name): PagingLandScapeSceneManager(name)
+    {
+        if (!mOptions)
+            mOptions = new Ogre::PagingLandScapeOptions(this);
+    }
+    
+    
     //-----------------------------------------------------------------------
     void EmberPagingSceneManager::InitScene ()
 	{        
 		PagingLandScapeSceneManager::InitScene ();
 		
-		Ogre::PagingLandScapeData2DManager::getSingleton().registerDataType (new EmberPagingLandScapeData2D_HeightField ());
-		Ogre::PagingLandScapeTextureManager::getSingleton().registerTextureType (new EmberPagingLandScapeTexture ());
+		getData2DManager()->registerDataType (new EmberPagingLandScapeData2D_HeightField (getData2DManager()));
+		getTextureManager()->registerTextureType (new EmberPagingLandScapeTexture (getTextureManager()));
 
 	}
+	
+	Model::Model* EmberPagingSceneManager::createModel(
+									const Ogre::String& modelName,
+									const Ogre::String& modelDefinitionName )
+	{
+		// delegate to factory implementation
+		Ogre::NameValuePairList params;
+		params["modeldefinition"] = modelDefinitionName;
+		return static_cast<Model::Model*>(
+			createMovableObject(modelName, Model::ModelFactory::FACTORY_TYPE_NAME, 
+				&params));
+	
+	}
+	
 }
 

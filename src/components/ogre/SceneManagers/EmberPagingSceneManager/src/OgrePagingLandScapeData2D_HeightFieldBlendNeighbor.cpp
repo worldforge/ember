@@ -28,6 +28,7 @@
 #include "OgreException.h"
 
 #include "OgrePagingLandScapeData2D.h"
+#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeOptions.h"
 
 #include "OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h"
@@ -40,20 +41,20 @@ namespace Ogre
     //-----------------------------------------------------------------------
 	PagingLandScapeData2D* PagingLandScapeData2D_HeightFieldBlendNeighbor::newPage()
     {
-       return new PagingLandScapeData2D_HeightFieldBlendNeighbor();
+       return new PagingLandScapeData2D_HeightFieldBlendNeighbor(mParent);
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeData2D_HeightFieldBlendNeighbor::PagingLandScapeData2D_HeightFieldBlendNeighbor()
-    : PagingLandScapeData2D()
+    PagingLandScapeData2D_HeightFieldBlendNeighbor::PagingLandScapeData2D_HeightFieldBlendNeighbor(PagingLandScapeData2DManager *dataMgr)
+    : PagingLandScapeData2D(dataMgr)
     {
         mShadow = 0;
-        mMaxheight = PagingLandScapeOptions::getSingleton().scale.y;
+        mMaxheight = mParent->getOptions()->scale.y;
     }
 
     //-------------------------------------------------------------------
     const Real PagingLandScapeData2D_HeightFieldBlendNeighbor::getMaxAbsoluteHeight(void) const
     { 
-        return PagingLandScapeOptions::getSingleton().scale.y;
+        return mParent->getOptions()->scale.y;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldBlendNeighbor::~PagingLandScapeData2D_HeightFieldBlendNeighbor()
@@ -92,7 +93,7 @@ namespace Ogre
 		return;
         uchar *data = new uchar[ mXDimension * mZDimension * 2 ];   
 
-        const double divider = 65535.0 / PagingLandScapeOptions::getSingleton().scale.y;
+        const double divider = 65535.0 / mParent->getOptions()->scale.y;
         
         uint j = 0;
         for (uint i = 0; i < mMaxArrayPos; i++)
@@ -108,14 +109,14 @@ namespace Ogre
             j += 2;            
         }
 
-        const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + "." +
+        const String fname = mParent->getOptions()->LandScape_filename + "." +
                                     StringConverter::toString(mPageZ) + "." +
 			                        StringConverter::toString(mPageX) + ".";
-        const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
+        const String extname = mParent->getOptions()->LandScape_extension;
 
 
         FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-                PagingLandScapeOptions::getSingleton().groupName, 
+                mParent->getOptions()->groupName, 
                 fname + extname);
         FileInfoList::iterator it = finfo->begin();
         if (it != finfo->end())
@@ -145,7 +146,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2D_HeightFieldBlendNeighbor::_load(const uint mX, const uint mZ)
     {
-        const PagingLandScapeOptions *Options = PagingLandScapeOptions::getSingletonPtr();
+        const PagingLandScapeOptions *Options = mParent->getOptions();
         const String fileName = Options->LandScape_filename;
         const String ext      = Options->LandScape_extension;
         const String extModif = "modif." + ext;
@@ -227,7 +228,7 @@ namespace Ogre
         }
         //DataStreamPtr RawData;
         //RawData = ResourceGroupManager::getSingleton().openResource(finalName, 
-                    //PagingLandScapeOptions::getSingleton().groupName);
+                    //mParent->getOptions()->groupName);
       
         // Validate size
         // Image size comes from setting (since RAW is not self-describing)
@@ -336,7 +337,7 @@ namespace Ogre
             mShadow = new Image();
             mShadow->load(fileName +  ".HS" + pageExtZ    + pageExtX + "png", 
                             Options->groupName);
-                            //PagingLandScapeOptions::getSingleton().LandScape_extension);
+                            //mParent->getOptions()->LandScape_extension);
         }
         return true;
     }
@@ -345,17 +346,17 @@ namespace Ogre
     void PagingLandScapeData2D_HeightFieldBlendNeighbor::_load()
     {
         // Load data
-        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(PagingLandScapeOptions::getSingleton().LandScape_filename +
+        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(mParent->getOptions()->LandScape_filename +
                     "." + 
-                    PagingLandScapeOptions::getSingleton().LandScape_extension, 
-                    PagingLandScapeOptions::getSingleton().groupName);
+                    mParent->getOptions()->LandScape_extension, 
+                    mParent->getOptions()->groupName);
 
         // Validate size
         // Image size comes from setting (since RAW is not self-describing)
         // here 16 bits Raw file
 
-        mXDimension = PagingLandScapeOptions::getSingleton().RawWidth;
-        mZDimension = PagingLandScapeOptions::getSingleton().RawHeight;
+        mXDimension = mParent->getOptions()->RawWidth;
+        mZDimension = mParent->getOptions()->RawHeight;
 
         mBpp = 2;
         
@@ -378,7 +379,7 @@ namespace Ogre
 		mMax = static_cast<uint> (numBytes) + 1;
 
         mHeightData = new Real[mMaxArrayPos];
-        const double scale = (1.0f / 65535.0f) * PagingLandScapeOptions::getSingleton().scale.y;
+        const double scale = (1.0f / 65535.0f) * mParent->getOptions()->scale.y;
         mMaxheight = 0.0f;
 
 
@@ -389,7 +390,7 @@ namespace Ogre
         const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
         uint dest_pos = 0;
         //for some reason water is 65035 in SRTM files...
-        const bool srtm_water = PagingLandScapeOptions::getSingleton().SRTM_water;
+        const bool srtm_water = mParent->getOptions()->SRTM_water;
         for (uint i = 0; i < sourceHeight; ++i)
         {
             for (uint j = 0; j < sourceWidth; ++j)

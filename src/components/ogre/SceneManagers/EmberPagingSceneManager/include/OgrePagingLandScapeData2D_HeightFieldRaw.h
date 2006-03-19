@@ -29,7 +29,7 @@ namespace Ogre
     class PagingLandScapeData2D_HeightFieldRaw: public PagingLandScapeData2D
     {
         public:
-	        PagingLandScapeData2D_HeightFieldRaw(void);
+	        PagingLandScapeData2D_HeightFieldRaw(PagingLandScapeData2DManager *dataMgr);
             virtual String getName(){return String("HeightFieldRaw");}
 	        virtual ~PagingLandScapeData2D_HeightFieldRaw(void);
 

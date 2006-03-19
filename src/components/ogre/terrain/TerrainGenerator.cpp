@@ -56,6 +56,7 @@
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 #endif
+#include "framework/ConsoleBackend.h"
 
 using namespace Ogre;
 namespace EmberOgre {
@@ -100,6 +101,7 @@ TerrainGenerator::TerrainGenerator()
 	
 	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
 	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand("exportterrainmaterial",this);
 
 }
 
@@ -144,28 +146,39 @@ void TerrainGenerator::loadTerrainOptions()
 	//	}
 	//}
 	
+	Ogre::PagingLandScapeSceneManager* sceneManager = getEmberSceneManager();
 
-	Ogre::PagingLandScapeSceneManager* sceneManager = PagingLandScapeSceneManager::getSingletonPtr();
 	
 
 
 	sceneManager->setOption("GroupName", "General");
-	Ogre::PagingLandScapeOptions::getSingleton().groupName = "General";
-	Ogre::PagingLandScapeOptions::getSingleton().cfgGroupName = "General";
+	sceneManager->getOptions()->groupName = "General";
+	sceneManager->getOptions()->cfgGroupName = "General";
 
-	Ogre::PagingLandScapeOptions::getSingleton().loadMapOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/terrain.cfg");	
+	sceneManager->getOptions()->loadMapOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/terrain.cfg");	
 	
 	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
 	
 	
 	//Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";
-	Ogre::PagingLandScapeOptions::getSingleton().setTextureFormat("EmberTexture");
+	sceneManager->getOptions()->setTextureFormat("EmberTexture");
 
+}
+
+EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager()
+{
+	return static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
+}
+
+const EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager() const
+{
+	return static_cast<const EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
 }
 
 TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Mercator::Shader* mercatorShader)
 {
 	int index = mShaderMap.size();
+	S_LOG_VERBOSE("Creating new shader for texture " << textureName <<" with index " << index);
     TerrainShader* shader = new TerrainShader(mTerrain, index, textureName, mercatorShader);
 
 	mBaseShaders.push_back(shader);
@@ -176,6 +189,7 @@ TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Me
 TerrainShader* TerrainGenerator::createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader)
 {
 	int index = mShaderMap.size();
+	S_LOG_VERBOSE("Creating new shader for material " << material->getName() <<" with index " << index);
     TerrainShader* shader = new TerrainShader(mTerrain, index, material, mercatorShader);
 
 	mBaseShaders.push_back(shader);
@@ -190,12 +204,18 @@ void TerrainGenerator::addArea(Mercator::Area* area)
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
-
+	return;
+	std::stringstream ss;
+	ss << area->bbox();
+	S_LOG_VERBOSE("Adding area to terrain with dimensions: " << ss.str());
 	mTerrain->addArea(area);
 	if (!mAreaShaders.count(area->getLayer())) {
+		S_LOG_VERBOSE("Shader does not exists, creating new.");
 		TerrainShader* shader;
+		///try to get the materialdefinition for this kind of area
 		const Model::ModelDefinition::AreaDefinition* areaDef = Model::ModelDefinitionManager::getSingleton().getAreaDefinition(area->getLayer());
 		if (areaDef) {
+			///is there a material or should we use a texture only?
 			if (areaDef->MaterialName != "") {
 				Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(areaDef->MaterialName));
 				if (!material.isNull()) {
@@ -211,6 +231,8 @@ void TerrainGenerator::addArea(Mercator::Area* area)
 		}
 	}
 	if (mAreaShaders.count(area->getLayer())) {
+		///mark the shader for update
+		///we'll not update immediately, we try to batch many area updates and then only update once per frame
 		markShaderForUpdate(mAreaShaders[area->getLayer()]);
 	}
 }
@@ -277,12 +299,12 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 	
 }
 
-int TerrainGenerator::getPageSize() const
+int TerrainGenerator::getPageSize() 
 {
-	return Ogre::PagingLandScapeOptions::getSingleton().PageSize;
+	return getEmberSceneManager()->getOptions()->PageSize;
 }
 
-int TerrainGenerator::getSegmentSize() const
+int TerrainGenerator::getSegmentSize() 
 {
 	return getPageSize() - 1;
 }
@@ -337,7 +359,8 @@ void TerrainGenerator::prepareAllSegments()
 // 	}
 	
 	
-	Ogre::PagingLandScapeSceneManager * sceneManager = Ogre::PagingLandScapeSceneManager::getSingletonPtr();
+	Ogre::PagingLandScapeSceneManager * sceneManager = getEmberSceneManager();
+	Ogre::PagingLandScapeOptions* options = getEmberSceneManager()->getOptions();
 	
 	double worldSizeX = getMax().x() - getMin().x();
 	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
@@ -351,16 +374,16 @@ void TerrainGenerator::prepareAllSegments()
 		return;
 	}
 	
-	Ogre::PagingLandScapeOptions::getSingleton().world_height = totalNumberOfPagesY;
-	Ogre::PagingLandScapeOptions::getSingleton().world_width = totalNumberOfPagesX;
+	options->world_height = totalNumberOfPagesY;
+	options->world_width = totalNumberOfPagesX;
 	
 	//update the options
-	Ogre::PagingLandScapeOptions::getSingleton().NumPages = static_cast<Ogre::uint> (static_cast <Ogre::Real> (Ogre::PagingLandScapeOptions::getSingleton().world_height * Ogre::PagingLandScapeOptions::getSingleton().world_width));
-	Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledZ = Ogre::PagingLandScapeOptions::getSingleton().world_height * (Ogre::PagingLandScapeOptions::getSingleton().PageSize - 1) * 0.5f;
-	Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledX = Ogre::PagingLandScapeOptions::getSingleton().world_width  * (Ogre::PagingLandScapeOptions::getSingleton().PageSize - 1) * 0.5f;
+	options->NumPages = static_cast<Ogre::uint> (static_cast <Ogre::Real> (options->world_height * options->world_width));
+	options->maxUnScaledZ = options->world_height * (options->PageSize - 1) * 0.5f;
+	options->maxUnScaledX = options->world_width  * (options->PageSize - 1) * 0.5f;
 
-	Ogre::PagingLandScapeOptions::getSingleton().maxScaledZ = Ogre::PagingLandScapeOptions::getSingleton().scale.z * Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledZ;
-	Ogre::PagingLandScapeOptions::getSingleton().maxScaledX = Ogre::PagingLandScapeOptions::getSingleton().scale.x * Ogre::PagingLandScapeOptions::getSingleton().maxUnScaledX;
+	options->maxScaledZ = options->scale.z * options->maxUnScaledZ;
+	options->maxScaledX = options->scale.x * options->maxUnScaledX;
 
 		
 	sceneManager->loadScene();
@@ -669,6 +692,22 @@ TerrainShader* TerrainGenerator::getFoliageShader() const
 	return mGrassShader;
 }
 
+
+
+void TerrainGenerator::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == "exportterrainmaterial") {
+	//disable for now
+/*		try {
+			Ogre::MaterialPtr materialPtr = mTerrainPages.begin()->second.begin()->second->getMaterial();
+			Ogre::MaterialSerializer serializer;
+			serializer.exportMaterial(materialPtr, "/home/erik/.ember/terrain.material");
+		} catch (Ogre::Exception& ex) 
+		{
+			S_LOG_FAILURE(ex.getFullDescription());
+		}*/
+	} 
+}
 }
 
 

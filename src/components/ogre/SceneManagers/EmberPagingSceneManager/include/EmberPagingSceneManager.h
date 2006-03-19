@@ -26,20 +26,36 @@
 
 #include "../../../EmberOgrePrerequisites.h"
 #include "OgrePagingLandScapeSceneManager.h"
+// #include "OgrePagingLandScapeOptions.h"
 
-
-class TerrainGenerator;
 
 namespace EmberOgre {
 
+class TerrainGenerator;
 
-/*
- * This is a specialization of Ogre::TerrainSceneManager.
- * Basically, some sort of paging has been added.
- * I'm not sure if we're going to use this, or some other plugin
- * such as paginglandscape, instead.
+namespace Model {
+class Model;
+}
+
+
+     /// Factory for OctreeSceneManager
+     class EmberPagingSceneManagerFactory : public Ogre::SceneManagerFactory
+     {
+     protected:
+     	void initMetaData(void) const;
+     public:
+     	EmberPagingSceneManagerFactory() {}
+     	~EmberPagingSceneManagerFactory() {}
+     	/// Factory type name
+       	static const Ogre::String FACTORY_TYPE_NAME;
+     	Ogre::SceneManager* createInstance(const Ogre::String& instanceName);
+     	void destroyInstance(Ogre::SceneManager* instance);
+     };
+
+/**
+ * This is a specialization of Ogre::PagingLandScapeSceneManager.
  * 
- * @see Ogre::TerrainSceneManager
+ * @see Ogre::PagingLandScapeSceneManager
  */
 class EmberPagingSceneManager  : public Ogre::PagingLandScapeSceneManager  {
 public:
@@ -49,6 +65,8 @@ public:
         /** Things that need to be allocated once 
 		 */
 	void InitScene( void );
+
+    EmberPagingSceneManager(const Ogre::String &name);
 
 // 	EmberTerrainSceneManager();
 // 	virtual ~EmberTerrainSceneManager();
@@ -71,6 +89,24 @@ public:
 	
 	void setWorldGeometry( const Ogre::String& filename );
 	void setWorldGeometry(  Ogre::TerrainOptions& options );*/
+	
+	
+ /*       const Ogre::PagingLandScapeOptions * getOptions() const
+        {
+            assert(mOptions);
+            return mOptions;
+        }*/
+	
+	
+	/**
+	 *    Utility method for creating a new Model.
+	 * @param modelName the id of the model
+	 * @param modelDefinitionName the name of the model defition from which the model should be created
+	 * @return 
+	 */
+	Model::Model* EmberPagingSceneManager::createModel(
+									const Ogre::String& modelName,
+									const Ogre::String& modelDefinitionName );
 	
 protected:
 

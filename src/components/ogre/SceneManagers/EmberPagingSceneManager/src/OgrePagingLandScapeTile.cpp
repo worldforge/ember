@@ -54,7 +54,8 @@ namespace Ogre
 {
 
 //-----------------------------------------------------------------------
-PagingLandScapeTile::PagingLandScapeTile()
+    PagingLandScapeTile::PagingLandScapeTile(PagingLandScapeTileManager *tileMgr) :
+    mParent(tileMgr)
 {
 	mTileSceneNode = 0;
 	mRenderable = 0;
@@ -79,7 +80,7 @@ void PagingLandScapeTile::uninit(void)
 
         if (mLoaded)
         {
-            PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+            mParent->getSceneManager()->getRenderableManager()->unqueueRenderable (this);
             unload ();
 		}
 
@@ -97,10 +98,10 @@ void PagingLandScapeTile::uninit(void)
             mNeighbors[ i ] = 0;
         }
 
-        PagingLandScapeSceneManager::getSingleton().destroySceneNode (mTileSceneNode->getName ());
+        mParent->getSceneManager()->destroySceneNode (mTileSceneNode->getName ());
 		mTileSceneNode = 0;
 		mParentSceneNode = 0;
-        PagingLandScapeTileManager::getSingleton().freeTile(this);
+        mParent->freeTile(this);
     }   
 }
 //-----------------------------------------------------------------------
@@ -116,7 +117,7 @@ void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
 	mInfo.tileZ = tileZ;
 
 	// Calculate the offset from the parent for this tile
-	const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+    const PagingLandScapeOptions * const opt = mParent->getOptions();
     const Vector3 scale = opt->scale;
     const Real endx = opt->TileSize * scale.x;
     const Real endz = opt->TileSize * scale.z;
@@ -130,11 +131,11 @@ void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
 		StringConverter::toString(pageZ)
 		+ StringConverter::toString(tileX) + "." + 
 		StringConverter::toString(tileZ);
-    mTileSceneNode = PagingLandScapeSceneManager::getSingleton().createSceneNode (NodeName + ".Node"); 
+    mTileSceneNode = mParent->getSceneManager()->createSceneNode (NodeName + ".Node"); 
 
     const Vector3 ParentPos = ParentSceneNode->getWorldPosition();
-    const Real MaxHeight = PagingLandScapeData2DManager::getSingleton().getMaxHeight(mInfo.pageX, mInfo.pageZ);
-    assert (MaxHeight > (Real)0.0);
+    const Real MaxHeight = mParent->getSceneManager()->getData2DManager()->getMaxHeight(mInfo.pageX, mInfo.pageZ);
+    assert (MaxHeight >= (Real)0.0f);
     //Change Zone of this page
 
     //tile center position
@@ -250,7 +251,7 @@ void PagingLandScapeTile::load()
 {
     assert (mInit && !mLoaded && mRenderable == 0);
 
-    PagingLandScapeRenderableManager * const rendMgr = PagingLandScapeRenderableManager::getSingletonPtr();
+    PagingLandScapeRenderableManager * const rendMgr = mParent->getSceneManager()->getRenderableManager();
 
     // Request a renderable
     mRenderable = rendMgr->getRenderable();
@@ -261,7 +262,7 @@ void PagingLandScapeTile::load()
     mRenderable->mParentTile= this;
 
 	// Set the material
-    PagingLandScapeTexture * const tex =  PagingLandScapeTextureManager::getSingleton().getTexture (mInfo.pageX, mInfo.pageZ);
+    PagingLandScapeTexture * const tex =  mParent->getSceneManager()->getTextureManager()->getTexture (mInfo.pageX, mInfo.pageZ);
 	assert (tex);
 	assert (!tex->getMaterial().isNull()) ;
 	mRenderable->setMaterial(tex->getMaterial());
@@ -273,7 +274,7 @@ void PagingLandScapeTile::load()
 	//Queue its renderable for loading
 	rendMgr->queueRenderableLoading (this);
     mRenderable->mQueued = true;
-    PagingLandScapePageManager::getSingleton().setTerrainReady (false);
+    mParent->getSceneManager()->getPageManager()->setTerrainReady (false);
 }
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::unload()
@@ -292,7 +293,7 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam
 {
     
 	if (((pos - mWorldPosition).squaredLength() < 
-                    PagingLandScapeOptions::getSingleton().renderable_factor))
+                    mParent->getOptions()->renderable_factor))
 	{    
 		if (Cam->getVisibility (mWorldBoundsExt))
 		{
@@ -304,15 +305,15 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam
 		}
 		else if (mLoaded && touched ())
 		{
-			PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
-			unload();
+            mParent->getSceneManager()->getRenderableManager()->unqueueRenderable (this);
+            unload(); 
 		}
 	}
 	else
 	{
 		if (mLoaded)
 		{
-            PagingLandScapeRenderableManager::getSingleton().unqueueRenderable (this);
+            mParent->getSceneManager()->getRenderableManager()->unqueueRenderable (this);
             unload();
 		}
 	}
@@ -320,7 +321,7 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::touch ()
 { 
-	mTimePreLoaded = PagingLandScapeOptions::getSingleton().TileInvisibleUnloadFrames;
+	mTimePreLoaded = mParent->getOptions()->TileInvisibleUnloadFrames;
 }
 //-----------------------------------------------------------------------
 const bool PagingLandScapeTile::touched ()        
@@ -348,7 +349,7 @@ const bool PagingLandScapeTile::touched ()
     //start with the next one...
     ray += dir;
 
-   PagingLandScapeData2DManager * const dataManager = PagingLandScapeData2DManager::getSingletonPtr();
+   PagingLandScapeData2DManager * const dataManager = mParent->getSceneManager()->getData2DManager();
 
     PagingLandScapeData2D *data = dataManager->getData2D (mInfo.pageX, mInfo.pageZ);
     
@@ -452,7 +453,7 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 	//start with the next one...
 	ray += dir;
 
-	PagingLandScapeData2DManager * const dataManager = PagingLandScapeData2DManager::getSingletonPtr();
+	PagingLandScapeData2DManager * const dataManager = mParent->getSceneManager()->getData2DManager();
 
 	PagingLandScapeData2D *data = dataManager->getData2D (mInfo.pageX, mInfo.pageZ);
 

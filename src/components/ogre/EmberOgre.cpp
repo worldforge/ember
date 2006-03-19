@@ -375,6 +375,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
     bool carryOn = configure();
     if (!carryOn) return false;
 	
+
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mOgreResourceLoader->loadBootstrap();
     
@@ -484,18 +485,18 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::configure(void)
 {
-#ifndef __WIN32__
-	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
-		//set the icon of the window
-		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
-		
-		const char* iconPath = br_strcat(br_datadir,"/icons/worldforge/ember.png");
-		free(br_datadir);
-		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
-	} else {
-		std::cerr << dlerror() << "\n";
-	}
-#endif
+// #ifndef __WIN32__
+// 	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
+// 		//set the icon of the window
+// 		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
+// 		
+// 		const char* iconPath = br_strcat(br_datadir,"/icons/worldforge/ember.png");
+// 		free(br_datadir);
+// 		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
+// 	} else {
+// 		std::cerr << dlerror() << "\n";
+// 	}
+// #endif
 
 
 //for non-windows systems don't show any config option
@@ -551,7 +552,7 @@ bool EmberOgre::configure(void)
 
       // if width = 0 and height = 0, the window is fullscreen
 
-      // This is necessary to allow the window to move
+      // This is necessary to allow the window to move1
       //  on WIN32 systems. Without this, the window resets
       //  to the smallest possible size after moving.
       SDL_SetVideoMode(mWindow->getWidth(), mWindow->getHeight(), 0, 0); // first 0: BitPerPixel, 
@@ -592,11 +593,14 @@ bool EmberOgre::configure(void)
 
 void EmberOgre::chooseSceneManager(void)
 {
+    // Create new scene manager
+    EmberPagingSceneManagerFactory* sceneManagerFactory = new EmberPagingSceneManagerFactory();
+
+    // Register
+    Ogre::Root::getSingleton().addSceneManagerFactory(sceneManagerFactory);
 	
-	EmberPagingSceneManager* sceneManager = new EmberPagingSceneManager();
-	mRoot->setSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, sceneManager);
-	mSceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_REAL_FAR));
-	sceneManager->InitScene();
+	mSceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->createSceneManager(ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
+	mSceneMgr->InitScene();
 	
  
 //     // We first register our own scenemanager

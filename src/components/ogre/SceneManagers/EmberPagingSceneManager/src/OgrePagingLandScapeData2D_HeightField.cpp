@@ -42,22 +42,22 @@ namespace Ogre
     //-----------------------------------------------------------------------
 	PagingLandScapeData2D* PagingLandScapeData2D_HeightField::newPage()
     {
-       return new PagingLandScapeData2D_HeightField();
+       return new PagingLandScapeData2D_HeightField(mParent);
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeData2D_HeightField::PagingLandScapeData2D_HeightField()
-    : PagingLandScapeData2D()
+    PagingLandScapeData2D_HeightField::PagingLandScapeData2D_HeightField(PagingLandScapeData2DManager *dataMgr): 
+    PagingLandScapeData2D(dataMgr)
     {
         mImage = 0;
         mCoverage = 0;
         mBase = 0;
         mShadow = 0;
-        mMaxheight = PagingLandScapeOptions::getSingleton().scale.y;
+        mMaxheight = mParent->getOptions()->scale.y;
     }
     //-------------------------------------------------------------------
     const Real PagingLandScapeData2D_HeightField::getMaxAbsoluteHeight(void) const
     { 
-        return PagingLandScapeOptions::getSingleton().scale.y;
+        return mParent->getOptions()->scale.y;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightField::~PagingLandScapeData2D_HeightField()
@@ -174,16 +174,16 @@ namespace Ogre
         switch (mBpp)
         {
             case 1:
-                prescale = PagingLandScapeOptions::getSingleton().scale.y / 255;
+                prescale = mParent->getOptions()->scale.y / 255;
                 break;
             case 2:
-				prescale = PagingLandScapeOptions::getSingleton().scale.y / 65535;
+				prescale = mParent->getOptions()->scale.y / 65535;
                 break;
             case 3:
-				prescale = PagingLandScapeOptions::getSingleton().scale.y / 16777215;
+				prescale = mParent->getOptions()->scale.y / 16777215;
                 break;
             case 4:
-				prescale = PagingLandScapeOptions::getSingleton().scale.y / 16777215;
+				prescale = mParent->getOptions()->scale.y / 16777215;
                 break;
             default:
                 assert(0);
@@ -233,14 +233,14 @@ namespace Ogre
 			j += bpp;            
 		}
 
-        const String fname = PagingLandScapeOptions::getSingleton().LandScape_filename + "." +
+        const String fname = mParent->getOptions()->LandScape_filename + "." +
                                     StringConverter::toString(mPageZ) + "." +
 			                        StringConverter::toString(mPageX) + ".";
-        const String extname = PagingLandScapeOptions::getSingleton().LandScape_extension;
+        const String extname = mParent->getOptions()->LandScape_extension;
 
 
        FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-             PagingLandScapeOptions::getSingleton().groupName, 
+             mParent->getOptions()->groupName, 
              fname + extname);
        FileInfoList::iterator it = finfo->begin();
        if (it != finfo->end())
@@ -256,7 +256,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2D_HeightField::_load(const uint mX, const uint mZ)
     {
-        const PagingLandScapeOptions * const opt = PagingLandScapeOptions::getSingletonPtr();
+        const PagingLandScapeOptions * const opt = mParent->getOptions();
         const String pageName = "." + StringConverter::toString(mZ) + "." +
                                     StringConverter::toString(mX) + ".";
         const String &fileExt = opt->LandScape_extension;
@@ -377,8 +377,8 @@ namespace Ogre
     void PagingLandScapeData2D_HeightField::_load()
     {
 		mImage = new Image();
-        mImage->load (PagingLandScapeOptions::getSingleton().LandScape_filename +
-                "." + PagingLandScapeOptions::getSingleton().LandScape_extension, PagingLandScapeOptions::getSingleton().groupName);
+        mImage->load (mParent->getOptions()->LandScape_filename +
+                "." + mParent->getOptions()->LandScape_extension, mParent->getOptions()->groupName);
         mBpp = PixelUtil::getNumElemBytes (mImage->getFormat ());
 
         mXDimension = mImage->getWidth();

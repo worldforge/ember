@@ -245,7 +245,7 @@ void Model::createActions()
 			AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin();
 			AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
 			for (;I_anims != I_anims_end; ++I_anims) {
-				if (getSkeleton() && getAllAnimationStates() && getAllAnimationStates()->find((*I_anims)->Name) != getAllAnimationStates()->end()) {
+				if (getSkeleton() && getAllAnimationStates() && getAllAnimationStates()->getAnimationState((*I_anims)->Name)) {
 					AnimationPart animPart;
 					try {
 						Ogre::AnimationState* state = getAnimationState((*I_anims)->Name);
@@ -274,7 +274,7 @@ void Model::createParticles()
 		std::string name(mName + "/particle" + I_particlesys->Script);
 		Ogre::ParticleSystem* ogreParticleSystem;
 		try {		
-			 ogreParticleSystem = Ogre::ParticleSystemManager::getSingleton().createSystem(name, I_particlesys->Script);
+			 ogreParticleSystem = ModelDefinitionManager::instance().getSceneManager()->createParticleSystem(name, I_particlesys->Script);
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Could not create particle system: " + name);
 			std::cerr << ex.getFullDescription() + "\n";
@@ -910,6 +910,45 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 		(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
 	}
 }
+
+	
+	
+	
+	
+Ogre::String ModelFactory::FACTORY_TYPE_NAME = "Model";
+//-----------------------------------------------------------------------
+const Ogre::String& ModelFactory::getType(void) const
+{
+	return FACTORY_TYPE_NAME;
+}
+//-----------------------------------------------------------------------
+Ogre::MovableObject* ModelFactory::createInstanceImpl( const Ogre::String& name,
+	const Ogre::NameValuePairList* params)
+{
+
+	// must have mesh parameter
+	if (params != 0)
+	{
+		Ogre::NameValuePairList::const_iterator ni = params->find("modeldefinition");
+		if (ni != params->end())
+		{
+			Model* model = new Model(name);
+			model->create(ni->second);
+			return model;
+		}
+
+	}
+	OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,
+		"'modeldefinition' parameter required when constructing a Model.",
+		"ModelFactory::createInstance");
+
+}
+//-----------------------------------------------------------------------
+void ModelFactory::destroyInstance( Ogre::MovableObject* obj)
+{
+	delete obj;
+}
+
 
 
 }
