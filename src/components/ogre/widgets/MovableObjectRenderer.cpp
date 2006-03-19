@@ -44,6 +44,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
 		///most models are rotated away from the camera, so as a convenience we'll rotate the node
 		mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 		mImage->setImage(mTexture->getImage());
+		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
 		
 		/// Register this as a frame listener

@@ -38,7 +38,7 @@ namespace EmberOgre {
 
 
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
-: mWidth(width), mHeight(height), mCamera(0), mRootNode(0), mSceneManager(0)
+: mWidth(width), mHeight(height), mCamera(0), mRootNode(0), mSceneManager(0), mRenderTexture(0)
 {
 
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, imageSetName + "_sceneManager");
@@ -96,7 +96,9 @@ Ogre::Camera* EntityCEGUITexture::getCamera() const
 
 void EntityCEGUITexture::setActive(bool active)
 {
-	mRenderTexture->setActive(active);
+	if (mRenderTexture) {
+		mRenderTexture->setActive(active);
+	}
 }
 
 void EntityCEGUITexture::repositionCamera()
@@ -158,14 +160,22 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	
 	///first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (imageSetName + "_EntityCEGUITextureRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
-	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture(imageSetName + "_EntityCEGUITextureRenderTexture", mWidth, mHeight );
+	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().createManual(imageSetName + "_EntityCEGUITextureRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET);
+	if (texPtr.isNull()) {
+		S_LOG_WARNING("Could not create a texture.");
+		return;
+	}
+	
+	
+	mRenderTexture = texPtr->getBuffer()->getRenderTarget();
+	
+// 	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture(imageSetName + "_EntityCEGUITextureRenderTexture", mWidth, mHeight );
 	S_LOG_VERBOSE("Removing viewports.");
 	mRenderTexture->removeAllViewports();
+	///initially deactivate it until setActive(true) is called
 	mRenderTexture->setActive(false);
-	mRenderTexture->setAutoUpdated(false);
 	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
 	mCamera->setAspectRatio(aspectRatio);
-
 	///make sure the camera renders into this new texture
 	S_LOG_VERBOSE("Adding camera.");
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
@@ -174,8 +184,8 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	///don't show the CEGUI
 	v->setOverlaysEnabled(false);
 	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
-	S_LOG_VERBOSE("Creating new Ogre texture with name " << mRenderTexture->getName());
-	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
+// 	S_LOG_VERBOSE("Creating new Ogre texture with name " << mRenderTexture->getName());
+// 	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
 	
 	///create a CEGUI texture from our Ogre texture
 	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
@@ -187,7 +197,7 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	
 	///we only want one element: the whole texture
 	mImageSet->defineImage("full", CEGUI::Rect(0,0,mWidth,mHeight), CEGUI::Point(0,0));
-	
+
 	///assign our image element to the StaticImage widget
 	mImage = &mImageSet->getImage("full");
 	
