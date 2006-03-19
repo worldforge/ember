@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -141,8 +146,7 @@ MeshInterface::MeshInterface() :
 #endif
 	mNbTris			(0),
 	mNbVerts		(0),
-
-	Single(true)
+	mMIType         (MESH_TRIANGLE)
 {
 }
 
@@ -167,7 +171,14 @@ bool MeshInterface::IsValid() const
 #ifdef OPC_USE_CALLBACKS
 	if(!mObjCallback)			return false;
 #else
-	if(!mTris || !mVerts)		return false;
+	//if(!mTris || !mVerts)		return false;
+	// TODO: Perform a more complete check for every type of mesh interface: triangles, terrain, etc.
+	//		 (By now, just checking vertices - it would be nice if this method returns an error message!)
+	if(!mVerts)
+	{
+		//DEBUG: "There is no vertices in the model"
+		return false;
+	}
 #endif
 	return true;
 }
@@ -231,7 +242,11 @@ bool MeshInterface::SetCallback(RequestCallback callback, void* user_data)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool MeshInterface::SetPointers(const IceMaths::IndexedTriangle* tris, const IceMaths::Point* verts)
 {
-	if(!tris || !verts)	return SetIceError("MeshInterface::SetPointers: pointer is null", null);
+	//if(!tris || !verts)	return SetIceError("MeshInterface::SetPointers: pointer is null", null);
+	
+	// TODO: Perform a more complete check for every type of mesh interface: triangles, terrain, etc.
+	//		 (By now, just checking vertices - it would be nice if this method returns an error message!)
+	if(!verts)	return SetIceError("MeshInterface::SetPointers: pointer is null", null);
 
 	mTris	= tris;
 	mVerts	= verts;
@@ -276,28 +291,31 @@ bool MeshInterface::RemapClient(udword nb_indices, const udword* permutation) co
 	// We can't really do that using callbacks
 	return false;
 #else
-	IceMaths::IndexedTriangle* Tmp = new IceMaths::IndexedTriangle[mNbTris];
-	CHECKALLOC(Tmp);
-
-	#ifdef OPC_USE_STRIDE
-	udword Stride = mTriStride;
-	#else
-	udword Stride = sizeof(IceMaths::IndexedTriangle);
-	#endif
-
-	for(udword i=0;i<mNbTris;i++)
+	if( mTris )
 	{
-		const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
-		Tmp[i] = *T;
-	}
+		IceMaths::IndexedTriangle* Tmp = new IceMaths::IndexedTriangle[mNbTris];
+		CHECKALLOC(Tmp);
 
-	for(udword i=0;i<mNbTris;i++)
-	{
-		IceMaths::IndexedTriangle* T = (IceMaths::IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
-		*T = Tmp[permutation[i]];
-	}
+		#ifdef OPC_USE_STRIDE
+		udword Stride = mTriStride;
+		#else
+		udword Stride = sizeof(IceMaths::IndexedTriangle);
+		#endif
 
-	DELETEARRAY(Tmp);
+		for(udword i=0;i<mNbTris;i++)
+		{
+			const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
+			Tmp[i] = *T;
+		}
+
+		for(udword i=0;i<mNbTris;i++)
+		{
+			IceMaths::IndexedTriangle* T = (IceMaths::IndexedTriangle*)(((ubyte*)mTris) + i * Stride);
+			*T = Tmp[permutation[i]];
+		}
+
+		DELETEARRAY(Tmp);
+	}
 #endif
 	return true;
 }

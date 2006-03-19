@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,7 +29,7 @@
 	{
 					LSSCache()
 					{
-                  Previous.mP0 = IceMaths::Point(0.0f, 0.0f, 0.0f);
+						Previous.mP0 = IceMaths::Point(0.0f, 0.0f, 0.0f);
 						Previous.mP1 = IceMaths::Point(0.0f, 0.0f, 0.0f);
 						Previous.mRadius = 0.0f;
 						FatCoeff = 1.1f;

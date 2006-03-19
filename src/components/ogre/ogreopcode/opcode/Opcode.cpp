@@ -34,11 +34,43 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precompiled Header
 #include "Stdafx.h"
+#include <fstream>
+#include <iostream>
+std::ofstream gFile;
+
+#include <cstdarg>
+
+void Opcode_Log (const char* msg, ...)
+{
+	va_list args;
+	va_start (args, msg);
+    char mesg[256];
+	sprintf(mesg, msg, args);
+	gFile << mesg;
+	gFile.flush();
+	va_end (args);
+}
+
+bool Opcode_Err (const char* msg, ...)
+{
+	va_list args;
+	va_start (args, msg);
+	// Although it's called "..._Err", Opcode also reports less-than-fatal
+	// messages through it
+	
+    char mesg[256];
+	sprintf(mesg, msg, args);
+	gFile << mesg;
+	gFile.flush();
+	va_end (args);
+	return false;
+}
 
 bool Opcode::InitOpcode()
 {
+	gFile.open("opcode.log");
 	Log("// Initializing OPCODE\n\n");
-//	LogAPIInfo();
+	//LogAPIInfo();
 	return true;
 }
 

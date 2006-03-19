@@ -35,9 +35,12 @@
 #include "Stdafx.h"
 
 using namespace Opcode;
+using namespace IceMaths;
 
 #include "OPC_SphereAABBOverlap.h"
 #include "OPC_SphereTriOverlap.h"
+
+
 
 #define SET_CONTACT(prim_index, flag)									\
 	/* Set contact status */											\

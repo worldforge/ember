@@ -30,8 +30,8 @@
 
 #pragma warning( disable: 4267 )  // conversion from 'size_t' to whatever
 
-#include <Ogre.h>
-#include <OgrePrerequisites.h>
+#include "Ogre.h"
+#include "OgrePrerequisites.h"
 
 using namespace Ogre;
 

@@ -235,7 +235,7 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
 		Eris::Entity* child = entity->getContained(i);
 		CEGUI::String name(child->getType()->getName() + " ("+ child->getId() +" : "+child->getName()+")");
-		mChildList->addItem(new CEGUI::ListboxTextItem(name));
+		mChildList->addItem(ColoredListItem::createColoredListItem(name));
 	}
 	
 	

@@ -31,6 +31,7 @@
 #include "Stdafx.h"
 
 using namespace Opcode;
+using namespace IceMaths;
 
 #include "OPC_BoxBoxOverlap.h"
 #include "OPC_TriBoxOverlap.h"
@@ -186,8 +187,16 @@ BOOL OBBCollider::InitQuery(OBBCache& cache, const IceMaths::OBB& box, const Ice
 
 	if(worldb)
 	{
-		WorldB = IceMaths::Matrix4x4( box.mRot * IceMaths::Matrix3x3(*worldb) );
-		WorldB.SetTrans(box.mCenter * *worldb);
+		// normalizes world matrix and gets scale
+		Point obbScale;
+		Matrix4x4 normWorldB;
+		NormalizePRSMatrix( normWorldB, obbScale, *worldb );
+
+		WorldB = Matrix4x4( box.mRot * Matrix3x3(normWorldB) );
+
+		// note that scale is pre-applied to center and extents
+		WorldB.SetTrans((box.mCenter*obbScale) * normWorldB);
+		mBoxExtents *= obbScale;
 	}
 	else
 	{

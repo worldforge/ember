@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,6 +55,19 @@
 	typedef void	(*RequestCallback)	(udword triangle_index, VertexPointers& triangle, void* user_data);
 #endif
 
+	/// Enumerates mesh types
+    enum MeshInterfaceType
+	{
+		/// Terrain mesh
+		MESH_TERRAIN,
+		/// Simple, triangle mesh
+		MESH_TRIANGLE,
+		/// Triangle strip
+		MESH_TRIANGLE_STRIP,
+		/// Triangle fan
+		MESH_TRIANGLE_FAN
+	};
+
 	class OPCODE_API MeshInterface
 	{
 		public:
@@ -57,10 +75,13 @@
 											MeshInterface();
 											~MeshInterface();
 		// Common settings
+		inline_			MeshInterfaceType   GetInterfaceType()	const	{ return mMIType;	}
 		inline_			udword				GetNbTriangles()	const	{ return mNbTris;	}
 		inline_			udword				GetNbVertices()		const	{ return mNbVerts;	}
+		inline_			udword				GetNbRows()			const	{ return 1 + mNbTris/(2*(mNbVerts-1));	}
 		inline_			void				SetNbTriangles(udword nb)	{ mNbTris = nb;		}
-		inline_			void				SetNbVertices(udword nb)	{ mNbVerts = nb;	}
+		inline_			void				SetNbVertices(udword nb)	{ mNbVerts = nb;	}		
+		inline_			void				SetInterfaceType(MeshInterfaceType mit)	{ mMIType = mit;	}
 
 #ifdef OPC_USE_CALLBACKS
 		// Callback settings
@@ -118,31 +139,240 @@
 		inline_			void				GetTriangle(VertexPointers& vp, udword index)	const
 											{
 #ifdef OPC_USE_CALLBACKS
+												// if we are using callbacks there is nothing to do!
 												(mObjCallback)(index, vp, mUserData);
 #else
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// START OF STRIDE CODE!
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	#ifdef OPC_USE_STRIDE
-												const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + index * mTriStride);
 
-												if (Single){
-													vp.Vertex[0] = (const IceMaths::Point*)(((ubyte*)mVerts) + T->mVRef[0] * mVertexStride);
-													vp.Vertex[1] = (const IceMaths::Point*)(((ubyte*)mVerts) + T->mVRef[1] * mVertexStride);
-													vp.Vertex[2] = (const IceMaths::Point*)(((ubyte*)mVerts) + T->mVRef[2] * mVertexStride);
-												}
-												else{
-													for (int i = 0; i < 3; i++){
-														const double* v = (const double*)(((ubyte*)mVerts) + T->mVRef[i] * mVertexStride);
+		
+		#ifndef OPC_DOUBLE_PRECISION
+			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (using strides)
+			#define OPC_UNPACK_VERTEX(K, ind )		\
+				vp.Vertex[K] = (const IceMaths::Point*)(((ubyte*)mVerts) + (ind) * mVertexStride);
+		#else
+			//! UTILITY macro for shorter code when using double-precision vertices 
+			#define OPC_COPY_VERTEX(K)				\
+					VertexCache[K].x = (float)v[0];	\
+					VertexCache[K].x = (float)v[1];	\
+					VertexCache[K].x = (float)v[2];	\
+					vp.Vertex[K] = &VertexCache[K];
 
-														VertexCache[i].x = (float)v[0];
-														VertexCache[i].y = (float)v[1];
-														VertexCache[i].z = (float)v[2];
-														vp.Vertex[i] = &VertexCache[i];
-													}
+			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (using strides)
+			#define OPC_UNPACK_VERTEX(K, ind )		\
+			{										\
+				const double* v = (const double*)(((ubyte*)mVerts) + (ind) * mVertexStride);
+				OPC_COPY_VERTEX(K)
+			}
+		#endif
+			
+											switch( mMIType )
+											{
+											case MESH_TRIANGLE:
+												if(mTris)
+												{
+													const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)( ((ubyte*)mTris) + index * mTriStride);
+												
+													OPC_UNPACK_VERTEX(0, T->mVRef[0] )
+													OPC_UNPACK_VERTEX(1, T->mVRef[1] )
+													OPC_UNPACK_VERTEX(2, T->mVRef[2] )						
+												
+												}else
+												{
+													// suppport for non-indexed meshes
+													index *= 3;
+						
+													OPC_UNPACK_VERTEX(0, index   )
+													OPC_UNPACK_VERTEX(1, index+1 )
+													OPC_UNPACK_VERTEX(2, index+2 )
+												}//else
+											break;
+											case MESH_TRIANGLE_STRIP:
+												if(mTris)
+												{
+													const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + index * mTriStride);
+
+													// unpack indexed double-precision tri-trip
+													OPC_UNPACK_VERTEX(0, T->mVRef[0]  )
+													OPC_UNPACK_VERTEX(1, T->mVRef[index%2 ? 2 : 1] )
+													OPC_UNPACK_VERTEX(2, T->mVRef[index%2 ? 1 : 2])
 												}
+												else
+												{
+													// unpack non-indexed double-precision tri-trip
+													OPC_UNPACK_VERTEX(0, index )
+													OPC_UNPACK_VERTEX(1, (index%2 ? index+2 : index+1)  )
+													OPC_UNPACK_VERTEX(2, (index%2 ? index+1 : index+2)  )
+												}
+											break;
+
+											case MESH_TRIANGLE_FAN:
+												if(mTris)
+												{
+													const IceMaths::IndexedTriangle* T = (const IceMaths::IndexedTriangle*)(((ubyte*)mTris) + index * mTriStride);
+													//const udword* inds = (const udword*)mTris;
+					
+													// unpack indexed double-precision tri-fan
+													OPC_UNPACK_VERTEX(0, mTris[0].mVRef[0] )
+													OPC_UNPACK_VERTEX(1, (T->mVRef[1]) )
+													OPC_UNPACK_VERTEX(2, (T->mVRef[2]) )
+												}
+												else
+												{
+													// unpack non-indexed double-precision tri-trip
+													OPC_UNPACK_VERTEX(0, 0		 )
+													OPC_UNPACK_VERTEX(1, index+1 )
+													OPC_UNPACK_VERTEX(2, index+2 )
+												}
+											break;
+
+											case MESH_TERRAIN:													
+												// NOTE: Terrain models are always non-indexed, so indices won't be used here.
+												//		 What we do is compute indices. We introduce a little overhead, but using
+												//		 integer operations... shall we test performance??
+												{
+													udword trisPerRow = ((mNbVerts-1)<<1);
+
+													udword row  = index / trisPerRow;
+													udword coll = index % trisPerRow;
+													udword i0 = row*mNbVerts + (coll>>1);
+
+													// here we use a lookup table for a good tesselation
+													udword lookup[4][3] =
+													{																
+															{0,mNbVerts+1,1},		// case 0
+															{0,mNbVerts,mNbVerts+1},// case 1
+															{mNbVerts,mNbVerts+1,1},// case 2
+															{0,mNbVerts,1}			// case 3	
+													};
+
+													// compute key into lookup table
+													udword key = (row%2) ? (coll%2) | ((i0%2)<<1) : (3- ((coll%2) | ((i0%2)<<1)));
+													
+													// unpack terrain mesh here
+													OPC_UNPACK_VERTEX(0, (i0 + lookup[key][0]) )
+													OPC_UNPACK_VERTEX(1, (i0 + lookup[key][1]) )
+													OPC_UNPACK_VERTEX(2, (i0 + lookup[key][2]) )
+												}
+											break;
+											}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// END OF STRIDE CODE!
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	#else
-												const IndexedTriangle* T = &mTris[index];
-												vp.Vertex[0] = &mVerts[T->mVRef[0]];
-												vp.Vertex[1] = &mVerts[T->mVRef[1]];
-												vp.Vertex[2] = &mVerts[T->mVRef[2]];
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// START OF NON-STRIDE CODE!
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		#ifndef OPC_DOUBLE_PRECISION
+			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (not using strides)
+			#define OPC_UNPACK_VERTEX(K, ind )												 \
+				vp.Vertex[K] = &mVerts[ind];
+		#else
+			//! UTILITY macro for shorter code when using double-precision vertices 
+			#define OPC_COPY_VERTEX(K)				\
+					VertexCache[K].x = (float)v[0];	\
+					VertexCache[K].x = (float)v[1];	\
+					VertexCache[K].x = (float)v[2];	\
+					vp.Vertex[K] = &VertexCache[K];
+
+			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (not using strides)
+			#define OPC_UNPACK_VERTEX(K, ind )												 \
+			{																				 \
+				const double* v = (const double*)(((ubyte*)mVerts) + (ind) * 3*sizeof(double));\
+				OPC_COPY_VERTEX(K)															 \
+			}
+		#endif
+												switch( mMIType )
+												{
+												case MESH_TRIANGLE:
+													if(mTris)
+													{
+														const IndexedTriangle* T = &mTris[index];
+
+														OPC_UNPACK_VERTEX(0,T->mVRef[0])
+														OPC_UNPACK_VERTEX(1,T->mVRef[1])
+														OPC_UNPACK_VERTEX(2,T->mVRef[2])
+													}else
+													{// support for non-indexed meshes
+														index *= 3;						
+														
+														OPC_UNPACK_VERTEX(0,index  )
+														OPC_UNPACK_VERTEX(1,index+1)
+														OPC_UNPACK_VERTEX(2,index+2)
+													}
+												break;
+												case MESH_TRIANGLE_STRIP:
+													if(mTris)
+													{
+														const udword* inds = (const udword*)mTris;
+						
+														// unpack indexed double-precision tri-trip
+														OPC_UNPACK_VERTEX(0,inds[index]  )
+														OPC_UNPACK_VERTEX(1,inds[index%2 ? index+2 : index+1])
+														OPC_UNPACK_VERTEX(2,inds[index%2 ? index+1 : index+2])
+                                                     }
+													else
+													{
+						
+														// unpack non-indexed double-precision tri-trip
+														OPC_UNPACK_VERTEX(0, index )
+														OPC_UNPACK_VERTEX(1, (index%2 ? index+2 : index+1)  )
+														OPC_UNPACK_VERTEX(2, (index%2 ? index+1 : index+2)  )
+                                                    }
+												break;
+
+												case MESH_TRIANGLE_FAN:
+													if(mTris)
+													{
+														const udword* inds = (const udword*)mTris;
+                                                        
+														// unpack indexed double-precision tri-fan
+														OPC_UNPACK_VERTEX(0, inds[0] )
+														OPC_UNPACK_VERTEX(1, inds[index+1] )
+														OPC_UNPACK_VERTEX(2, inds[index+2] )
+													}
+													else
+													{
+														// unpack non-indexed double-precision tri-trip
+														OPC_UNPACK_VERTEX(0, 0 )
+														OPC_UNPACK_VERTEX(1, (index+1) )
+														OPC_UNPACK_VERTEX(2, (index+2) )
+													}
+												break;
+
+												case MESH_TERRAIN:													
+													// NOTE: Terrain models are always non-indexed, so indices won't be used here.
+													//		 What we do is compute indices. We introduce a little overhead, but using
+													//		 integer operations... shall we test performance??
+													{
+														udword trisPerRow = ((mNbVerts-1)<<1);
+
+														udword row  = index / trisPerRow;
+														udword coll = index % trisPerRow;
+														udword i0 = row*mNbVerts + (coll>>1);
+
+														// here we use a lookup table for a good tesselation
+														udword lookup[4][3] =
+														{																
+																{0,mNbVerts+1,1},		// case 0
+																{0,mNbVerts,mNbVerts+1},// case 1
+																{mNbVerts,mNbVerts+1,1},// case 2
+																{0,mNbVerts,1}			// case 3	
+														};
+
+														// compute key into lookup table
+														udword key = (row%2) ? (coll%2) | ((i0%2)<<1) : (3- ((coll%2) | ((i0%2)<<1)));
+                                                        
+														// unpack terrain mesh here
+														OPC_UNPACK_VERTEX(0, (i0 + lookup[key][0]) )
+														OPC_UNPACK_VERTEX(1, (i0 + lookup[key][1]) )
+														OPC_UNPACK_VERTEX(2, (i0 + lookup[key][2]) )
+													}
+												break;												
+												}
 	#endif
 #endif
 											}
@@ -176,7 +406,9 @@
 		private:
 
 						udword				mNbTris;			//!< Number of triangles in the input model
-						udword				mNbVerts;			//!< Number of vertices in the input model
+						udword				mNbVerts;			//!< Number of vertices in the input model (if this model is a terrain one, this holds the number of vertices per row)
+						
+						MeshInterfaceType   mMIType;			//!< Mesh interface type
 #ifdef OPC_USE_CALLBACKS
 		// User callback
 						void*				mUserData;			//!< User-defined data sent to callback
@@ -184,13 +416,12 @@
 #else
 		// User pointers
 				const	IceMaths::IndexedTriangle*	mTris;				//!< Array of indexed triangles
-				const	IceMaths::Point*				mVerts;				//!< Array of vertices
+				const	IceMaths::Point*			mVerts;				//!< Array of vertices
 	#ifdef OPC_USE_STRIDE
 						udword				mTriStride;			//!< Possible triangle stride in bytes [Opcode 1.3]
 						udword				mVertexStride;		//!< Possible vertex stride in bytes [Opcode 1.3]
 	#endif
-		public:
-						bool Single;							//!< Use single or double precision vertices
+
 		private:
 						static IceMaths::Point VertexCache[3];
 #endif

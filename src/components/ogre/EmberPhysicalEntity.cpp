@@ -156,30 +156,32 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 
 void EmberPhysicalEntity::connectEntities()
 {
-	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->GetDefaultContext();
-	const Model::Model::SubModelSet& submodels = getModel()->getSubmodels();
-	EmberEntityUserObject::CollisionObjectStore collisionObjects;
-	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
-	{
-		std::string collideShapeName(std::string("entity_") + (*I)->getEntity()->getName());
-		OgreOpcode::CollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->NewShape(collideShapeName.c_str());
-		collideShape->Load((*I)->getEntity());
-		OgreOpcode::CollisionObject* collideObject = collideContext->NewObject();
-		collideObject->SetShape(collideShape);
+	if (!getModel()->getUserObject()) {
+		OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
+		const Model::Model::SubModelSet& submodels = getModel()->getSubmodels();
+		EmberEntityUserObject::CollisionObjectStore collisionObjects;
+		for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
+		{
+			std::string collideShapeName(std::string("entity_") + (*I)->getEntity()->getName());
+			OgreOpcode::MeshCollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->createMeshCollisionShape(collideShapeName.c_str());
+			collideShape->load((*I)->getEntity());
+			OgreOpcode::CollisionObject* collideObject = collideContext->newObject(collideShapeName);
+			collideObject->setShape(collideShape);
+			
+			collideContext->addObject(collideObject);
+			
+			collisionObjects.push_back(collideObject);
+// 			collideObject->setDebug(true, false, false, false);
+	/*		collideShape->setDebug(true);
+			collideShape->visualize();*/
+	/*	
+			EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), (*I)->getEntity(), 0);
+			(*I)->getEntity()->setUserObject(userObject);*/
 		
-		collideContext->AddObject(collideObject);
-		
-		collisionObjects.push_back(collideObject);
-		//collideShape->setDebug(true);
-		//collideShape->Visualize();
-/*	
-		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), (*I)->getEntity(), 0);
-		(*I)->getEntity()->setUserObject(userObject);*/
-	
+		}
+		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionObjects);
+		getModel()->setUserObject(userObject);
 	}
-	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionObjects);
-	getModel()->setUserObject(userObject);
-
 
 }
 

@@ -93,6 +93,8 @@ public:
 	 * @return 
 	 */
 	virtual const Ogre::String & getTypeName (void) const;
+	
+	void refit();
 
 private:
 	EmberEntity*  mEmberEntity;

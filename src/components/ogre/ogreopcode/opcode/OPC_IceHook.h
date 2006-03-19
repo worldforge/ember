@@ -25,8 +25,14 @@
 	#endif
 	#define ICE_COMPILE_TIME_ASSERT(exp)	extern char ICE_Dummy[ (exp) ? 1 : -1 ]
 
-	#define	Log				{}
-	#define	SetIceError(a,b)	false
+	extern void Opcode_Log (const char* msg, ...);
+	extern bool Opcode_Err (const char* msg, ...);
+
+	#define	Log			Opcode_Log
+	#define	SetIceError		Opcode_Err
+//	#define	Log				{}
+//	#define	SetIceError(a,b)	false
+
 	#define	EC_OUTOFMEMORY	"Out of memory"
 
 	#include "Ice/IcePreprocessor.h"

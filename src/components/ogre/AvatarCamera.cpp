@@ -349,7 +349,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	Ogre::MovableObject* pickedMovable;
 	
 	
-	// Start a new ray query 
+	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 
 	
@@ -366,13 +366,13 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	raySceneQueryTerrain->execute(); 
 	raySceneQueryEntities->execute(); 
 	
-	//first check the terrain picking
+	///first check the terrain picking
 	Ogre::RaySceneQueryResult& queryResult = raySceneQueryTerrain->getLastResults(); 
 	
 	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( ); 
 	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end( );
 	if (rayIterator != rayIterator_end) {
-		//only need to check the first result since we're using RSQ_FirstTerrain for the terrain picking
+		///only need to check the first result since we're using RSQ_FirstTerrain for the terrain picking
 		if (rayIterator->worldFragment) {
 			SceneQuery::WorldFragment* wf = rayIterator->worldFragment;
 			pickedPosition = wf->singleIntersection;
@@ -385,6 +385,9 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 				closestDistance = pickedDistance; 
 				result.entity = pickedEntity;
 				result.position = pickedPosition;
+				std::stringstream ss;
+				ss << pickedPosition;
+				S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << pickedDistance);
 				result.distance = pickedDistance;
 			}
 					
@@ -399,7 +402,7 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 	if (rayIterator != rayIterator_end) {
 		for ( ; rayIterator != rayIterator_end; rayIterator++ ) {
 
-			//check if it's a world fragment (i.e. the terrain) of if it has a MovableObject* attached to it
+			///check if it's a world fragment (i.e. the terrain) of if it has a MovableObject* attached to it
 			
 			pickedMovable = rayIterator->movable;
 			
@@ -408,20 +411,24 @@ EntityPickResult AvatarCamera::pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY
 				if ( rayIterator->distance < closestDistance ) { 
 					bool isColliding = false;
 					closestObject = pickedMovable; 
-					EmberEntityUserObject* aUserObject = static_cast<EmberEntityUserObject*>(pickedMovable->getUserObject());
-					
-					EmberEntityUserObject::CollisionObjectStore* collisionObjects = aUserObject->getCollisionObjects();
-					//only do opcode detection if there's a CollisionObject
+					EmberEntityUserObject* anUserObject = static_cast<EmberEntityUserObject*>(pickedMovable->getUserObject());
+					///refit the opcode mesh to adjust for changes in the mesh (for example animations)
+					anUserObject->refit();
+					EmberEntityUserObject::CollisionObjectStore* collisionObjects = anUserObject->getCollisionObjects();
+					///only do opcode detection if there's a CollisionObject
 					for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end() && !isColliding; ++I) {
-						OgreOpcode::CollisionShape* collisionShape = (*I)->GetShape();
+						OgreOpcode::ICollisionShape* collisionShape = (*I)->getShape();
 						OgreOpcode::CollisionPair pick_result;
 						
-						isColliding = collisionShape->RayCheck(OgreOpcode::COLLTYPE_QUICK,aUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
+						isColliding = collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK,anUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, mClosestPickingDistance, pick_result);
 						if (isColliding) {
-							Vector3 distance = cameraRay.getOrigin() - pick_result.contact ; 
-							pickedDistance = distance.length(); 
-							pickedEntity = aUserObject->getEmberEntity();
+							pickedDistance = pick_result.distance; 
+							pickedEntity = anUserObject->getEmberEntity();
 							pickedPosition = pick_result.contact;
+							std::stringstream ss;
+							ss << pickedPosition;
+							S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << pickedDistance);
+							
 						}
 					}
 				}

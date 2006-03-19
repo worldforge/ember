@@ -877,7 +877,9 @@ namespace Ogre
             {
                 for (i = offSetX; i < tilesizeMinusstepX; i += step)
                 {
-                    {
+                 	//added for Ember
+                   bool isInValidVertex;
+                   {
                         const Vector3 v1(i,        heightField[ i +        K_heightFieldPos ],         j);
                         const Vector3 v2(i + step, heightField[ i + step + K_heightFieldPos ],         j);
                         const Vector3 v3(i,        heightField[ i +        K_heightFieldPos + ZShift], j + step);
@@ -885,89 +887,97 @@ namespace Ogre
 
                         t1.redefine(v1, v3, v2);
                         t2.redefine(v2, v3, v4);
-                    }
+                          //only update the distance if none of the heights are 0.0
+                        //this is to allow for invalid Mercator::Segments without messing up the tricount
+                        //the reason is that mercator defines the height of all invald segments to 0.0
+                        //if such a segment was to be next to a normal segment, the delta would be way to high, 
+                        //resulting in a tile which was always in LOD 0
+                        isInValidVertex = v1.y == 0.0 || v2.y == 0.0 || v3.y == 0.0 || v4.y == 0.0;
+                   }
 
-                    // include the bottommost row of vertices if this is the last row
-                    const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
-                    for (int z = 0; z <= zubound; z++)
-                    {
-                        const int fulldetailz = j + z;
-                        const Real zpct = z * invStep;
-                        const bool isFullDetailZ = (fulldetailz % step == 0);
-                        const int zPageSize = z * pageSize;
-                        {
-                            // include the rightmost col of vertices if this is the last col
-                            const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
-                            for (int x = 0; x <= xubound; x++)
-                            {
-                                const int fulldetailx = i + x;
-
-                                if (isFullDetailZ && 
-                                    fulldetailx % step == 0)
-                                {
-                                    // Skip, this one is a vertex at this level
-                                    continue;
-                                }
-                                const Real xpct = x * invStep;
-
-                                //interpolated height                           
-                                Real interp_h;
-                                // Determine which triangle we're on 
-                                if (xpct + zpct <= 1.0f)
-                                {
-                                    // Solve for x/z
-                                    interp_h = 
-                                        (-(t1.normal.x * fulldetailx)
-                                        - t1.normal.z * fulldetailz
-                                        - t1.d) / t1.normal.y;
-                                }
-                                else
-                                {
-                                    // Second triangle
-                                    interp_h = 
-                                        (-(t2.normal.x * fulldetailx)
-                                        - t2.normal.z * fulldetailz
-                                        - t2.d) / t2.normal.y;
-                                } 
-
-                                assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
-
-                                const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
-
-                                const Real delta = interp_h - actual_h;
-                                const Real D2 = delta * delta * Csqr;
-
-                                if (mMinLevelDistSqr[ level ] < D2)
-                                    mMinLevelDistSqr[ level ] = D2;
-
-                                // Should be save height difference?
-                                // Don't morph along edges
-                                if (lodMorph)
-                                {   
-                                    // Save height difference                    
-                                    if (delta != 0.0f)
-                                    {
-                                        const int tileposx = fulldetailx - offSetX;
-                                        const int tileposy = fulldetailz - offSetZ;
-
-                                        if (tileposx != 0  && tileposx != (tilesize - 1) && 
-                                            tileposy != 0  && tileposy != (tilesize - 1))
-                                        {         
-
-                                            assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
-
-                                            pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-                                                static_cast<short>                                     
-                                                ((interp_h  * inv_scale) - 32768); 
-                                            //                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-                                            //                                            interp_h; 
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
+						if (!isInValidVertex) {
+					// include the bottommost row of vertices if this is the last row
+						const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
+						for (int z = 0; z <= zubound; z++)
+						{
+							const int fulldetailz = j + z;
+							const Real zpct = z * invStep;
+							const bool isFullDetailZ = (fulldetailz % step == 0);
+							const int zPageSize = z * pageSize;
+							{
+								// include the rightmost col of vertices if this is the last col
+								const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
+								for (int x = 0; x <= xubound; x++)
+								{
+									const int fulldetailx = i + x;
+	
+									if (isFullDetailZ && 
+										fulldetailx % step == 0)
+									{
+										// Skip, this one is a vertex at this level
+										continue;
+									}
+									const Real xpct = x * invStep;
+	
+									//interpolated height                           
+									Real interp_h;
+									// Determine which triangle we're on 
+									if (xpct + zpct <= 1.0f)
+									{
+										// Solve for x/z
+										interp_h = 
+											(-(t1.normal.x * fulldetailx)
+											- t1.normal.z * fulldetailz
+											- t1.d) / t1.normal.y;
+									}
+									else
+									{
+										// Second triangle
+										interp_h = 
+											(-(t2.normal.x * fulldetailx)
+											- t2.normal.z * fulldetailz
+											- t2.d) / t2.normal.y;
+									} 
+	
+									assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
+	
+									const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
+	
+									const Real delta = interp_h - actual_h;
+									const Real D2 = delta * delta * Csqr;
+	
+									if (mMinLevelDistSqr[ level ] < D2)
+										mMinLevelDistSqr[ level ] = D2;
+	
+									// Should be save height difference?
+									// Don't morph along edges
+									if (lodMorph)
+									{   
+										// Save height difference                    
+										if (delta != 0.0f)
+										{
+											const int tileposx = fulldetailx - offSetX;
+											const int tileposy = fulldetailz - offSetZ;
+	
+											if (tileposx != 0  && tileposx != (tilesize - 1) && 
+												tileposy != 0  && tileposy != (tilesize - 1))
+											{         
+	
+												assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
+	
+												pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+													static_cast<short>                                     
+													((interp_h  * inv_scale) - 32768); 
+												//                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+												//                                            interp_h; 
+											}
+										}
+									}
+								}
+	
+							}
+						}
+					}
                 }       
                 K_heightFieldPos += pageSize * step;
             }

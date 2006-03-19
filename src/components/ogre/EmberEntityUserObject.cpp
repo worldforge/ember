@@ -45,6 +45,21 @@ mCollisionObjects(collisionObjects)
 
 EmberEntityUserObject::~EmberEntityUserObject()
 {
+	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
+	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
+	{
+		collideContext->removeObject(*I);
+		OgreOpcode::CollisionManager::getSingleton().destroyShape((*I)->getShape());
+		delete *I;
+	}
+}
+
+void EmberEntityUserObject::refit()
+{
+	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
+	{
+		(*I)->refit();;
+	}
 }
 
 EmberEntity*  EmberEntityUserObject::getEmberEntity() const

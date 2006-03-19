@@ -25,6 +25,10 @@
 	#if defined(_MSC_VER)
 		// #pragma message("Compiling with VC++...")
 		#define COMPILER_VISUAL_CPP
+	
+		// disable annoying warnings
+		#pragma warning (disable : 4267) // data type conversion: size_t to BOOL, size_t to udword, etc)
+
 	#else
 		// don't issue pragmas on unknown platforms
 		// #pragma message("Compiling with unknown compiler...")

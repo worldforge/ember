@@ -7,8 +7,8 @@
 		<Property Name="Alpha" Value="0.6" /> 
 		<Property Name="Text" Value="Inspect" />
 		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="Position" Value="x:0.02 y:0.05" /> 
-			<Property Name="Size" Value="w:0.96 h:0.96" /> 
+			<Property Name="UnifiedPosition" Value="{{0,0},{0,15}}" />
+			<Property Name="UnifiedSize" Value="{{1.0,0},{1.0,-15}}" />
 			<Property Name="InheritsAlpha" Value="True" /> 
 			
 			<Window Type="EmberLook/StaticText" Name="EntityInfo">
@@ -20,20 +20,20 @@
 				<Property Name="VertFormatting" Value="TopAligned" /> 
 			</Window>
 			<Window Type="EmberLook/Listbox" Name="ChildList">
-				<Property Name="Position" Value="x:0 y:0.6" /> 
-				<Property Name="Size" Value="w:0.95 h:0.2" /> 
+				<Property Name="UnifiedPosition" Value="{{0,0},{0.6,0}}" />
+				<Property Name="UnifiedSize" Value="{{1.0,0},{0.4,-25}}" />
 				<Property Name="InheritsAlpha" Value="True" /> 
 				<Property Name="Alpha" Value="0.6" /> 
 			</Window>
 			<Window Type="EmberLook/Button" Name="ShowOgreBoundingBox">
-				<Property Name="Position" Value="x:0.0 y:0.8" /> 
-				<Property Name="Size" Value="w:0.5 h:0.2" /> 
+				<Property Name="UnifiedPosition" Value="{{0,0},{1.0,-25}}" />
+				<Property Name="UnifiedSize" Value="{{0.5,0},{0,25}}" />
 				<Property Name="Text" Value="Ogre bbox" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>
 			<Window Type="EmberLook/Button" Name="ShowErisBoundingBox">
-				<Property Name="Position" Value="x:0.5 y:0.8" /> 
-				<Property Name="Size" Value="w:0.5 h:0.2" /> 
+				<Property Name="UnifiedPosition" Value="{{0.5,0},{1.0,-25}}" />
+				<Property Name="UnifiedSize" Value="{{0.5,0},{0,25}}" />
 				<Property Name="Text" Value="Eris bbox" /> 
 				<Property Name="InheritsAlpha" Value="True" /> 
 			</Window>

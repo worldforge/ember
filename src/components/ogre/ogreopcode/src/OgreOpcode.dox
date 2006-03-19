@@ -11,13 +11,13 @@
 ///
 /// @section collide_initialization Initialization and Setup
 ///
-/// - @ref collide_create_server
+/// - @ref collide_create_manager
 /// - @ref collide_define_classes
 /// - @ref collide_define_types
 /// - @ref collide_create_context
 /// - @ref collide_app_objects
 ///
-/// @subsection collide_create_server Create Collision Manager
+/// @subsection collide_create_manager Create Collision Manager
 ///
 /// The collision manager must be created prior to using the collision
 /// detection system.
@@ -35,11 +35,11 @@
 /// and @c "bullet" classes.
 ///
 /// @code
-///     CollisionManager::getSingletonPtr()->BeginCollClasses();
-///     CollisionManager::getSingletonPtr()->AddCollClass("vehicle");
-///     CollisionManager::getSingletonPtr()->AddCollClass("powerup");
-///     CollisionManager::getSingletonPtr()->AddCollClass("bullet");
-///     CollisionManager::getSingletonPtr()->EndCollClasses();
+///     CollisionManager::getSingletonPtr()->beginCollClasses();
+///     CollisionManager::getSingletonPtr()->addCollClass("vehicle");
+///     CollisionManager::getSingletonPtr()->addCollClass("powerup");
+///     CollisionManager::getSingletonPtr()->addCollClass("bullet");
+///     CollisionManager::getSingletonPtr()->andCollClasses();
 /// @endcode
 ///
 ///
@@ -63,14 +63,14 @@
 /// ignore other powerups and bullets.  Bullets ignore other bullets.
 ///
 /// @code
-///     CollisionManager::getSingletonPtr()->BeginCollTypes()
-///     CollisionManager::getSingletonPtr()->AddCollType("vehicle", "vehicle", COLLTYPE_EXACT);
-///     CollisionManager::getSingletonPtr()->AddCollType("vehicle", "powerup", COLLTYPE_QUICK);
-///     CollisionManager::getSingletonPtr()->AddCollType("vehicle", "bullet", COLLTYPE_EXACT);
-///     CollisionManager::getSingletonPtr()->AddCollType("powerup", "powerup", COLLTYPE_IGNORE);
-///     CollisionManager::getSingletonPtr()->AddCollType("powerup", "bullet", COLLTYPE_IGNORE);
-///     CollisionManager::getSingletonPtr()->AddCollType("bullet", "bullet", COLLTYPE_IGNORE);
-///     CollisionManager::getSingletonPtr()->EndCollTypes()
+///     CollisionManager::getSingletonPtr()->beginCollTypes()
+///     CollisionManager::getSingletonPtr()->addCollType("vehicle", "vehicle", COLLTYPE_EXACT);
+///     CollisionManager::getSingletonPtr()->addCollType("vehicle", "powerup", COLLTYPE_QUICK);
+///     CollisionManager::getSingletonPtr()->addCollType("vehicle", "bullet", COLLTYPE_EXACT);
+///     CollisionManager::getSingletonPtr()->addCollType("powerup", "powerup", COLLTYPE_IGNORE);
+///     CollisionManager::getSingletonPtr()->addCollType("powerup", "bullet", COLLTYPE_IGNORE);
+///     CollisionManager::getSingletonPtr()->addCollType("bullet", "bullet", COLLTYPE_IGNORE);
+///     CollisionManager::getSingletonPtr()->endCollTypes()
 /// @endcode
 ///
 ///
@@ -84,7 +84,7 @@
 /// @code
 ///     CollisionContext *collideContext;
 ///     ...
-///     collideContext = CollisionManager::getSingletonPtr()->GetDefaultContext();
+///     collideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
 /// @endcode
 ///
 /// @subsection collide_app_objects Setting Up Application Objects
@@ -94,44 +94,44 @@
 ///
 /// To do this, you need to do the following things:
 ///
-///    - Create an CollisionShape
+///    - Create a CollisionShape
 ///    - Load the collision geometry
-///    - Create an CollisionObject
+///    - Create a CollisionObject
 ///    - Add the collision object to the CollisionContext
 ///
 /// @code
 ///     Entity* ogreCar = mSceneMgr->createEntity("Car", "car.mesh");
 ///     ...
-///     CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("fancycar");
-///     collideShape->Load(ogreCar);
-///     collideObject = collideContext->NewObject();
-///     collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass("vehicle"));
-///     collideObject->SetShape(collideShape);
-///     collideContext->AddObject(collideObject);
+///     CollisionShape *collideShape = CollisionManager::getSingletonPtr()->newShape("fancycar");
+///     collideShape->load(ogreCar);
+///     collideObject = collideContext->newObject();
+///     collideObject->setCollClass(CollisionManager::getSingletonPtr()->queryCollClass("vehicle"));
+///     collideObject->setShape(collideShape);
+///     collideContext->addObject(collideObject);
 /// @endcode
 ///
 /// @section collide_handling_collisions Handling and Responding to Collisions
 ///
-/// Call CollisionContext::Collide() in your game loop to compute contacts
+/// Call CollisionContext::collide() in your game loop to compute contacts
 /// between collision objects in context.
 ///
 /// @code
 ///     bool frameStarted(const FrameEvent& evt)
 ///     {
 ///        ...
-///        collideContext->Collide();
+///        collideContext->collide();
 ///        ...
 ///     }
 /// @endcode
 ///
 /// You can retrieve the number of collisions and description of a contact
 /// between two CollideObjects with the given CollisionObject by calling
-/// CollisionContext::GetCollissions():
+/// CollisionContext::getCollissions():
 ///
 /// @code
 ///     CollisionPair **collisionReport;
 ///
-///     int num_collide = collideContext->GetCollissions(collideObject, collisionReport);
+///     int num_collide = collideContext->getCollissions(collideObject, collisionReport);
 ///     if (num_collide)
 ///     {
 ///         CollisionObject* col1 = collisionReport->col1;
@@ -145,14 +145,14 @@
 /// You can also retrieve the collision info from CollisionObject::GetCollissions():
 ///
 /// @code
-///     CollisionObject* collideObject = myEntity->GetCollideObject();
+///     CollisionObject* collideObject = myEntity->getCollideObject();
 ///
 ///     CollisionPair *collisionPair;
 ///
-///     int num_collide = collideObject->GetNumCollissions();
+///     int num_collide = collideObject->getNumCollissions();
 ///     if (collideObject && num_collide)
 ///     {
-///         collideObject->GetCollissions (collisionPair);
+///         collideObject->getCollissions (collisionPair);
 ///
 ///         // other process
 ///         ...

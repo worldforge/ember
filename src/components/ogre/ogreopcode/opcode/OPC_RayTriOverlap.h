@@ -13,22 +13,32 @@
  *	\return		true on overlap. mStabbedFace is filled with relevant info.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const IceMaths::Point& vert1_, const IceMaths::Point& vert2_)
-{
+
+// just check the method's declaration
+#if defined(OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP)
+
+ inline_ BOOL RayCollider::RayTriOverlap(const Point& vert0_, const Point& vert1_, const Point& vert2_)
+ {
 	// Applies model's local scale
 	const IceMaths::Point& vert0 = vert0_*mLocalScale;
 	const IceMaths::Point& vert1 = vert1_*mLocalScale;
 	const IceMaths::Point& vert2 = vert2_*mLocalScale;
 
+#else
+
+ inline_ BOOL RayCollider::RayTriOverlap(const Point& vert0, const Point& vert1, const Point& vert2)
+ {
+
+#endif
 	// Stats
 	mNbRayPrimTests++;
 
 	// Find vectors for two edges sharing vert0
-	IceMaths::Point edge1 = vert1 - vert0;
-	IceMaths::Point edge2 = vert2 - vert0;
+	Point edge1 = vert1 - vert0;
+	Point edge2 = vert2 - vert0;
 
 	// Begin calculating determinant - also used to calculate U parameter
-	IceMaths::Point pvec = mDir^edge2;
+	Point pvec = mDir^edge2;
 
 	// If determinant is near zero, ray lies in plane of triangle
 	float det = edge1|pvec;
@@ -39,7 +49,7 @@ inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const Ice
 		// From here, det is > 0. So we can use integer cmp.
 
 		// Calculate distance from vert0 to ray origin
-		IceMaths::Point tvec = mOrigin - vert0;
+		Point tvec = mOrigin - vert0;
 
 		// Calculate U parameter and test bounds
 		mStabbedFace.mU = tvec|pvec;
@@ -47,7 +57,7 @@ inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const Ice
 		if(IS_NEGATIVE_FLOAT(mStabbedFace.mU) || IR(mStabbedFace.mU)>IR(det))		return FALSE;
 
 		// Prepare to test V parameter
-		IceMaths::Point qvec = tvec^edge1;
+		Point qvec = tvec^edge1;
 
 		// Calculate V parameter and test bounds
 		mStabbedFace.mV = mDir|qvec;
@@ -71,7 +81,7 @@ inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const Ice
 		float OneOverDet = 1.0f / det;
 
 		// Calculate distance from vert0 to ray origin
-		IceMaths::Point tvec = mOrigin - vert0;
+		Point tvec = mOrigin - vert0;
 
 		// Calculate U parameter and test bounds
 		mStabbedFace.mU = (tvec|pvec) * OneOverDet;
@@ -79,7 +89,7 @@ inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const Ice
 		if(IS_NEGATIVE_FLOAT(mStabbedFace.mU) || IR(mStabbedFace.mU)>IEEE_1_0)		return FALSE;
 
 		// prepare to test V parameter
-		IceMaths::Point qvec = tvec^edge1;
+		Point qvec = tvec^edge1;
 
 		// Calculate V parameter and test bounds
 		mStabbedFace.mV = (mDir|qvec) * OneOverDet;

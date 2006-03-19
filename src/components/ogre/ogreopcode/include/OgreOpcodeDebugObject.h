@@ -28,110 +28,111 @@
 #define __OgreOpcodeDebugObject_h__
 
 #include "OgreOpcodeExports.h"
+# include "Ogre.h"
 
 namespace OgreOpcode
 {
-   namespace Details
-   {
-      /// %Debug visualization line class.
-      class _OgreOpcode_Export DebugLines : public Ogre::SimpleRenderable
-	   {
-	   public:
-		   DebugLines(void);
-		   ~DebugLines(void);
+	namespace Details
+	{
+		/// %Debug visualization line class.
+		class _OgreOpcode_Export DebugLines : public Ogre::SimpleRenderable
+		{
+		public:
+			DebugLines(void);
+			~DebugLines(void);
 
-		   void addLine(const Vector3 &start,const Vector3 &end)
-		   {
-			   clear();
+			void addLine(const Vector3 &start,const Vector3 &end)
+			{
+				clear();
 
-			   _points.push_back(start);
-			   _points.push_back(end);
-		   }
-		   void addLine(Real start_x,Real start_y,Real start_z,Real end_x,Real end_y,Real end_z)
-		   {
-			   addLine(Vector3(start_x,start_y,start_z),Vector3(end_x,end_y,end_z));
-		   }
-		   void draw();
-		   void clear();
+				_points.push_back(start);
+				_points.push_back(end);
+			}
+			void addLine(Real start_x,Real start_y,Real start_z,Real end_x,Real end_y,Real end_z)
+			{
+				addLine(Vector3(start_x,start_y,start_z),Vector3(end_x,end_y,end_z));
+			}
+			void draw();
+			void clear();
 
-		   Real getSquaredViewDepth(const Camera *cam) const;
-		   Real getBoundingRadius(void) const;
+			Real getSquaredViewDepth(const Camera *cam) const;
+			Real getBoundingRadius(void) const;
 
-	   protected:
+		protected:
 
-		   std::vector<Vector3> _points;
-		   bool _drawn;
+			std::vector<Vector3> _points;
+			bool _drawn;
 
-		   static bool _materials_created;
-	   };
+			static bool _materials_created;
+		};
 
-      /// %Debug visualization object class.
-      class _OgreOpcode_Export DebugObject : public DebugLines
-	   {
-	   public:
-		   enum Mode
-		   {
-			   Mode_Unknown,
-			   Mode_Enabled,
-			   Mode_Disabled,
-			   Mode_Static
-		   };
+		/// %Debug visualization object class.
+		class _OgreOpcode_Export DebugObject : public DebugLines
+		{
+		public:
+			enum Mode
+			{
+				Mode_Unknown,
+				Mode_Enabled,
+				Mode_Disabled,
+				Mode_Static
+			};
 
-	   public:
-         DebugObject(DebugObject::Mode mode = DebugObject::Mode_Enabled);
-		   virtual ~DebugObject();
+		public:
+			DebugObject(DebugObject::Mode mode = DebugObject::Mode_Enabled);
+			virtual ~DebugObject();
 
-		   void setMode(DebugObject::Mode mode);
+			void setMode(DebugObject::Mode mode);
 
-	   protected:
-		   DebugObject::Mode _mode;
-	   };
+		protected:
+			DebugObject::Mode _mode;
+		};
 
-      /// %Debug object to visualize a box.
-      class _OgreOpcode_Export BoxDebugObject : public DebugObject
-	   {
-	   public:
-		   BoxDebugObject(const Vector3& size);
-		   virtual ~BoxDebugObject();
-	   };
+		/// %Debug object to visualize a box.
+		class _OgreOpcode_Export BoxDebugObject : public DebugObject
+		{
+		public:
+			BoxDebugObject(const Vector3& size);
+			virtual ~BoxDebugObject();
+		};
 
-      /// %Debug object to visualize a sphere.
-      class _OgreOpcode_Export SphereDebugObject : public DebugObject
-	   {
-	   public:
-		   SphereDebugObject(Real radius);
-		   virtual ~SphereDebugObject();
-	   };
+		/// %Debug object to visualize a sphere.
+		class _OgreOpcode_Export SphereDebugObject : public DebugObject
+		{
+		public:
+			SphereDebugObject(Real radius);
+			virtual ~SphereDebugObject();
+		};
 
-      /// %Debug object to visualize a capsule.
-      class _OgreOpcode_Export CapsuleDebugObject : public DebugObject
-	   {
-	   public:
-		   CapsuleDebugObject(Real radius,Real length);
-		   virtual ~CapsuleDebugObject();
-	   };
+		/// %Debug object to visualize a capsule.
+		class _OgreOpcode_Export CapsuleDebugObject : public DebugObject
+		{
+		public:
+			CapsuleDebugObject(Real radius,Real length);
+			virtual ~CapsuleDebugObject();
+		};
 
-      /// %Debug object to visualize a mesh.
-      class _OgreOpcode_Export TriangleMeshDebugObject : public DebugObject
-	   {
-	   public:
-		   TriangleMeshDebugObject(int vertex_count);
-		   virtual ~TriangleMeshDebugObject();
+		/// %Debug object to visualize a mesh.
+		class _OgreOpcode_Export TriangleMeshDebugObject : public DebugObject
+		{
+		public:
+			TriangleMeshDebugObject(int vertex_count);
+			virtual ~TriangleMeshDebugObject();
 
-		   void beginDefinition();
-		   void setVertex(int index,const Vector3& vertex);
-		   void endDefinition();
-	   };
+			void beginDefinition();
+			void setVertex(int index,const Vector3& vertex);
+			void endDefinition();
+		};
 
-      /// %Debug object to visualize a ray.
-      class _OgreOpcode_Export RayDebugObject : public DebugObject
-	   {
-	   public:
-		   RayDebugObject(const Vector3& start,const Vector3& direction,Real length);
-		   virtual ~RayDebugObject();
-	   };
-   
-   } // namespace Details
+		/// %Debug object to visualize a ray.
+		class _OgreOpcode_Export RayDebugObject : public DebugObject
+		{
+		public:
+			RayDebugObject(const Vector3& start,const Vector3& direction,Real length);
+			virtual ~RayDebugObject();
+		};
+
+	} // namespace Details
 
 } // namespace OgreOpcode
 

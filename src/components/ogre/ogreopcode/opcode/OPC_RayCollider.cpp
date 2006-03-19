@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -115,6 +120,12 @@
 #include "Stdafx.h"
 
 using namespace Opcode;
+using namespace IceMaths;
+
+// When this macro is set, the overlap tests considers an scaling on AABBs/tris.
+// This means that the ray/line is not entirely in the model's local space when collision
+// tests take places.
+// #define OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
 
 #include "OPC_RayAABBOverlap.h"
 #include "OPC_RayTriOverlap.h"
@@ -264,7 +275,17 @@ bool RayCollider::Collide(const IceMaths::Ray& world_ray, const Model& model, co
 	if(!Setup(&model))	return false;
 
 	// Init collision query
-	if(InitQuery(world_ray, world, cache))	return true;
+	float maxDistanceBkp = mMaxDist;	
+	Point originBkp = mOrigin;
+	Point dirBkp = mDir;
+
+	if(InitQuery(world_ray, world, cache))
+	{
+		mMaxDist = maxDistanceBkp;
+		mDir = dirBkp;
+		mOrigin = originBkp;
+		return true;
+	}
 
 	if(!model.HasLeafNodes())
 	{
@@ -313,6 +334,11 @@ bool RayCollider::Collide(const IceMaths::Ray& world_ray, const Model& model, co
 		}
 	}
 
+        // reverts max distance, etc
+	mMaxDist = maxDistanceBkp;
+	mDir = dirBkp;
+	mOrigin = originBkp;
+
 	// Update cache if needed
 	UPDATE_CACHE
 	return true;
@@ -336,9 +362,11 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 {
 	// Reset stats & contact status
 	Collider::InitQuery();
+
 	mNbRayBVTests		= 0;
 	mNbRayPrimTests		= 0;
 	mNbIntersections	= 0;
+
 #ifndef OPC_RAYHIT_CALLBACK
 	if(mStabbedFaces)	mStabbedFaces->Reset();
 #endif
@@ -348,6 +376,7 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 	if(world)
 	{
 		// Matrix normalization & scaling stripping
+		// (notice that mLocalScale scale is being used here again in order to make code work with scale before intersection tests and line transform)
 		IceMaths::Matrix4x4 normWorldm;
 		NormalizePRSMatrix( normWorldm, mLocalScale, *world );
 		
@@ -358,10 +387,20 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 		IceMaths::Matrix4x4 World;
 		InvertPRMatrix(World, normWorldm);
 		mOrigin = world_ray.mOrig * World;
+
+// Do we have to transform the ray into the model's local space??
+#if !defined(OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP)
+		
+                // BRAND NEW code: The intersection tests does not need normalized directions
+                //                 It worked fine in my engine (Gilvan)
+                mDir    /= mLocalScale;
+		mOrigin /= mLocalScale;
+#endif
+
 	}
 	else
 	{
-		mLocalScale.Set(1.0,1.0,1.0);
+          	mLocalScale.Set(1.0f,1.0f,1.0f);
 		mDir	= world_ray.mDir;
 		mOrigin	= world_ray.mOrig;
 	}

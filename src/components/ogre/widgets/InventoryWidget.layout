@@ -9,18 +9,18 @@
 		
 		<Window Type="EmberLook/Listbox" Name="ListBox">
 			<Property Name="Position" Value="x:0 y:0.05" /> 
-			<Property Name="Size" Value="w:1 h:0.75" /> 
+			<Property Name="UnifiedSize" Value="{{1.0,0},{0.95,-25}}" />
 			<Property Name="InheritsAlpha" Value="false" /> 
 		</Window>
 		<Window Type="EmberLook/Button" Name="Drop">
-			<Property Name="Position" Value="x:0.5 y:0.8" /> 
-			<Property Name="Size" Value="w:0.5 h:0.2" /> 
+			<Property Name="UnifiedPosition" Value="{{0.5,0},{1.0,-25}}" />
+			<Property Name="UnifiedSize" Value="{{0.5,0},{0,25}}" />
 			<Property Name="Text" Value="Drop" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 		</Window>
 		<Window Type="EmberLook/Button" Name="Wield">
-			<Property Name="Position" Value="x:0.0 y:0.8" /> 
-			<Property Name="Size" Value="w:0.5 h:0.2" /> 
+			<Property Name="UnifiedPosition" Value="{{0,0},{1.0,-25}}" />
+			<Property Name="UnifiedSize" Value="{{0.5,0},{0,25}}" />
 			<Property Name="Text" Value="Wield" /> 
 			<Property Name="InheritsAlpha" Value="True" /> 
 		</Window>

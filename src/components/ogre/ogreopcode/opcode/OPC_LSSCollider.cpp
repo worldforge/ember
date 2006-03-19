@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -182,11 +187,11 @@ BOOL LSSCollider::InitQuery(LSSCache& cache, const IceMaths::LSS& lss, const Ice
 	{
 		// Matrix normalization & scaling stripping
 		IceMaths::Matrix4x4 normWorldm;
-		NormalizePRSMatrix( normWorldm, mLocalScale, *worldm );
+		IceMaths::NormalizePRSMatrix( normWorldm, mLocalScale, *worldm );
 		
 		// Invert model matrix
 		IceMaths::Matrix4x4 InvWorldM;
-		InvertPRMatrix(InvWorldM, normWorldm); 
+		IceMaths::InvertPRMatrix(InvWorldM, normWorldm); 
 
 		mSeg.mP0 *= InvWorldM;
 		mSeg.mP1 *= InvWorldM;
