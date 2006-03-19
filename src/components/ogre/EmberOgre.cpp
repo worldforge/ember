@@ -485,18 +485,18 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::configure(void)
 {
-// #ifndef __WIN32__
-// 	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
-// 		//set the icon of the window
-// 		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
-// 		
-// 		const char* iconPath = br_strcat(br_datadir,"/icons/worldforge/ember.png");
-// 		free(br_datadir);
-// 		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
-// 	} else {
-// 		std::cerr << dlerror() << "\n";
-// 	}
-// #endif
+#ifndef __WIN32__
+	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
+		//set the icon of the window
+		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
+		
+		const char* iconPath = br_strcat(br_datadir,"/icons/worldforge/ember.png");
+		free(br_datadir);
+		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
+	} else {
+		std::cerr << dlerror() << "\n";
+	}
+#endif
 
 
 //for non-windows systems don't show any config option

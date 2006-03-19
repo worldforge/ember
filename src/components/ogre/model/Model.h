@@ -21,10 +21,7 @@
 #define MODEL_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-/*#include <OgreEntity.h>
-#include <OgreMovableObject.h>*/
 #include "ModelDefinition.h"
-// #include "Action.h"
 #include "ParticleSystem.h"
 
 namespace EmberOgre {
@@ -50,12 +47,11 @@ typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
  * A model is typically instanciated from a modeldef.xml file through the use
  * of createFromXML(...)
  */
- 
- 
 class Model : public Ogre::MovableObject
 {
 
 friend class ModelDefinition;
+friend class ModelFactory;
 
 public:
 	
@@ -154,7 +150,7 @@ public:
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
 	Ogre::AnimationStateSet* getAllAnimationStates();
 	Ogre::SkeletonInstance * getSkeleton ();
-	void attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
+	Ogre::TagPoint* attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	Ogre::MovableObject * detachObjectFromBone (const Ogre::String &movableName);
 	void detachAllObjectsFromBone(void);
 	
@@ -211,8 +207,9 @@ public:
 	 */
 	inline ModelDefnPtr getDefinition() const { return _masterModel; }
 	
-	void attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
-	void attachObjectToAttachPoint(const Ogre::String &boneName, Ogre::MovableObject *pMovable,  const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
+	
+	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
+	Ogre::TagPoint* attachObjectToAttachPoint(const Ogre::String &boneName, Ogre::MovableObject *pMovable,  const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	//void attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 	
 	bool hasAttachPoint(const std::string& attachPoint) const; 
@@ -249,17 +246,8 @@ protected:
 	
 	Ogre::Entity::ChildObjectList mChildObjectList;
 	
-	void attachObjectImpl(Ogre::MovableObject *pObject, Ogre::TagPoint *pAttachingPoint);
-	void detachObjectImpl(MovableObject* pObject);
-	void detachAllObjectsImpl(void);
-	
 	mutable Ogre::AxisAlignedBox mFull_aa_box;
 	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
-
-// 	//set of all animations currently running
-// 	std::set< std::string > mRunningAnimations;
-// 	//set of all animation currently paused
-// 	std::set< std::string > mPausedAnimations;
 
 	static Ogre::String msMovableType;
 	

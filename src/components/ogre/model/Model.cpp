@@ -245,7 +245,7 @@ void Model::createActions()
 			AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin();
 			AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
 			for (;I_anims != I_anims_end; ++I_anims) {
-				if (getSkeleton() && getAllAnimationStates() && getAllAnimationStates()->getAnimationState((*I_anims)->Name)) {
+				if (getSkeleton() && getAllAnimationStates() && getAllAnimationStates()->hasAnimationState((*I_anims)->Name)) {
 					AnimationPart animPart;
 					try {
 						Ogre::AnimationState* state = getAnimationState((*I_anims)->Name);
@@ -524,18 +524,15 @@ void Model::resetParticles()
 	mAllParticleSystemBindings.clear();
 }
 
-void Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
+Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
-	std::string boneName;
 	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I < _masterModel->mAttachPoints.end();  ++I) {
 		if (I->Name == attachPointName) {
-			boneName = I->BoneName;
-			break;
+			const std::string& boneName = I->BoneName;
+			return attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, scale);
 		}
 	}
-	if (boneName != "") {
-		attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, scale);
-	}
+	return 0;
 }
 
 bool Model::hasAttachPoint(const std::string& attachPoint) const
@@ -589,94 +586,44 @@ Ogre::SkeletonInstance * Model::getSkeleton ()
 	Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
 }
 
-void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
+Ogre::TagPoint* Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
-	attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, Ogre::Vector3::UNIT_SCALE);
+	return attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, Ogre::Vector3::UNIT_SCALE);
 }
 
-void Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition, const Ogre::Vector3 &scale)
+Ogre::TagPoint* Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition, const Ogre::Vector3 &scale)
 {
 	if (mSubmodels.size()) {
 		Ogre::Entity* entity = mSkeletonOwnerEntity;
 		
-		Ogre::SkeletonInstance* skeletonInstance = getSkeleton();
-
-        if (mChildObjectList.find(pMovable->getName()) != mChildObjectList.end())
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
-                "An object with the name " + pMovable->getName() + " already attached",
-                "Entity::attachObjectToBone");
-        }
-        if(pMovable->isAttached())
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Object already attached to a sceneNode or a Bone", 
-                "Entity::attachObjectToBone");
-        }
-        if (!entity->hasSkeleton())
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "This entity's mesh has no skeleton to attach object to.", 
-                "Entity::attachObjectToBone");
-        }
-        Ogre::Bone* bone = skeletonInstance->getBone(boneName);
-        if (!bone)
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Cannot locate bone named " + boneName, 
-                "Entity::attachObjectToBone");
-        }
-
-        Ogre::TagPoint *tp = skeletonInstance->createTagPointOnBone(
-            bone, offsetOrientation, offsetPosition);
-        tp->setParentEntity(entity);
-        tp->setChildObject(pMovable);
+		Ogre::TagPoint* tagPoint = entity->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
+        
         if (mParentNode) {
         	//since we're using inherit scale on the tagpoint, divide by the parent's scale now, so it evens out later on when the TagPoint is scaled in TagPoint::_updateFromParent(
         	Ogre::Vector3 parentScale = mParentNode->_getDerivedScale();
-			tp->setScale(scale / parentScale);
+			tagPoint->setScale(scale / parentScale);
 		} else {
 			//no parent node, this is not good...
-			tp->setScale(scale);	
+			tagPoint->setScale(scale);	
 		}
-		//tp->setInheritScale(false);
+		return tagPoint;
 
-        attachObjectImpl(pMovable, tp);
-
-		tp->_updateFromParent();
-		
-        // Trigger update of bounding box if necessary
-        if (mParentNode)
-            mParentNode->needUpdate();
 	} else {
 		Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
 	}	
 }
 
-//-----------------------------------------------------------------------
-void Model::attachObjectImpl(Ogre::MovableObject *pObject, Ogre::TagPoint *pAttachingPoint)
-{
-	assert(mChildObjectList.find(pObject->getName()) == mChildObjectList.end());
-	mChildObjectList[pObject->getName()] = pObject;
-	pObject->_notifyAttached(pAttachingPoint, true);
-}
 
 
 Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableName)
 {
-	Ogre::Entity::ChildObjectList::iterator i = mChildObjectList.find(movableName);
 
-	if (i == mChildObjectList.end())
-	{
-		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No child object entry found named " + movableName, 
-			"Entity::detachObjectFromBone");
-	}
-	MovableObject *obj = i->second;
-	detachObjectImpl(obj);
-	mChildObjectList.erase(i);
+	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+		return mSkeletonOwnerEntity->detachObjectFromBone(movableName);
 
-	// Trigger update of bounding box if necessary
-	if (mParentNode)
-		mParentNode->needUpdate();
-
-	return obj;
+	} else {
+		Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");		
+	}	
 	
 }
 
@@ -684,37 +631,13 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 //-----------------------------------------------------------------------
 void Model::detachAllObjectsFromBone(void)
 {
-	detachAllObjectsImpl();
+	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+		return mSkeletonOwnerEntity->detachAllObjectsFromBone();
 
-	// Trigger update of bounding box if necessary
-	if (mParentNode)
-		mParentNode->needUpdate();
+	} else {
+		Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachAllObjectsFromBone");		
+	}	
 }
-//-----------------------------------------------------------------------
-void Model::detachObjectImpl(MovableObject* pObject)
-{
-	Ogre::TagPoint* tp = static_cast<Ogre::TagPoint*>(pObject->getParentNode());
-
-	// free the TagPoint so we can reuse it later
-	getSkeleton()->freeTagPoint(tp);
-
-	pObject->_notifyAttached((Ogre::TagPoint*)0);
-}
-//-----------------------------------------------------------------------
-void Model::detachAllObjectsImpl(void)
-{
-	Ogre::Entity::ChildObjectList::const_iterator i, iend;
-	iend = mChildObjectList.end();
-	for (i = mChildObjectList.begin(); i != iend; ++i)
-	{
-		detachObjectImpl(i->second);
-	}
-	mChildObjectList.clear();
-}
-
-
-
-
 
 
 
@@ -885,7 +808,7 @@ void Model::removeQueryFlags(unsigned long flags)
 {
 	//for now, only return. This is because this is often called at shutdown, when the entities already have been destroyed
 	//and we don't want segfaults
-	return;
+//	return;
 	MovableObject::removeQueryFlags(flags);
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();

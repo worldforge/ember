@@ -1,5 +1,9 @@
 2006-03-19 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: since attachObjectToBone now returns a TagPoint* we can discard our own implementation and use the Ogre one
+
+2006-03-19 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/EmberOgre.cpp: reactivated setting of the window icon
     * src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/MovableObjectRenderer.cpp: fixed the implementation to work with Ogre 1.2, without causing segfaults
     
