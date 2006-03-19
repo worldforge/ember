@@ -1,5 +1,19 @@
 2006-03-19 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/scripting/bindings/lua/AvatarCamera.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: added method for turning composite effects on and off
+
+2006-03-19 Erik Hjortsberg  <erik@katastrof.nu>
+
+    *  src/components/ogre/EmberEntityUserObject.cpp, src/components/ogre/EmberEntityUserObject.h: upon deletion, clean up the collision objects
+    * src/components/ogre/AvatarCamera.cpp: use the distance property of the CollisionPair, which will make picking work again
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRenderable.cpp: reactivated the hack for uninitialized mercator terrain
+    * src/components/ogre/ogreopcode/Makefile.am, src/components/ogre/ogreopcode/include/OgreCollisionContext.h, src/components/ogre/ogreopcode/include/OgreCollisionManager.h, src/components/ogre/ogreopcode/include/OgreCollisionObject.h,src/components/ogre/ogreopcode/include/OgreCollisionReporter.h,src/componentsogre/ogreopcode/include/OgreCollisionShape.h, src/components/ogre/ogreopcode/include/OgreCollisionTypes.hsrc/components/ogre/ogreopcode/include/OgreNodes.h,src/components/ogre/ogreopcoe/include/OgreOpcode.h, src/components/ogre/ogreopcode/include/OgreOpcodeDebugObject.h,src/components/ogre/ogreopcode/include/OgreOpcodeExports.h,src/components/ore/ogreopcode/include/OgreOpcodeMath.h, src/components/ogre/ogreopcode/opcode/Makefile.am,src/components/ogre/ogreopcode/opcode/OPC_BaseModel.cpp,src/components/ogre/ogreopcode/ocode/OPC_HybridModel.cpp, src/components/ogre/ogreopcode/opcode/OPC_IceHook.h, src/components/ogre/ogreopcode/opcode/OPC_LSSCollider.cpp,src/components/ogre/ogreopcode/opcode/OPC_LSSCollider.h,src/components/ogre/ogrepcode/opcode/OPC_MeshInterface.cpp, src/components/ogre/ogreopcode/opcode/OPC_MeshInterface.h,src/components/ogre/ogreopcode/opcode/OPC_Model.h,src/components/ogre/ogreopcodeopcode/OPC_OBBCollider.cpp, src/components/ogre/ogreopcode/opcode/OPC_PlanesCollider.cpp,src/components/ogre/ogreopcode/opcode/OPC_PlanesCollider.h,src/components/ogr/ogreopcode/opcode/OPC_RayAABBOverlap.h, src/components/ogre/ogreopcode/opcode/OPC_RayCollider.cpp,src/components/ogre/ogreopcode/opcode/OPC_RayCollider.h,src/components/ogre/ogrepcode/opcode/OPC_RayTriOverlap.h, src/components/ogre/ogreopcode/opcode/OPC_Settings.h, src/components/ogre/ogreopcode/opcode/OPC_SphereCollider.cpp, src/components/ogre/ogreopcode/opcode/OPC_TreeCollider.cpp, src/components/ogre/ogreopcode/opcode/OPC_TreeCollider.h, src/components/ogre/ogreopcode/opcode/OPC_VolumeCollider.cpp, src/components/ogre/ogreopcode/opcode/Opcode.cpp, src/components/ogre/ogreopcode/opcode/Ice/IcePreprocessor.h, src/components/ogre/ogreopcode/opcode/Ice/IceUtils.h, src/components/ogre/ogreopcode/src/OgreCollisionContext.cpp, src/components/ogre/ogreopcode/src/OgreCollisionManager.cpp, src/components/ogre/ogreopcode/src/OgreCollisionShape.cpp, src/components/ogre/ogreopcode/src/OgreOpcode.dox, src/components/ogre/ogreopcode/src/OgreOpcodeDebugObject.cpp: updated to newer version of OgreOpcode with better support for Ogre 1.2
+    * src/components/ogre/EmberPhysicalEntity.cpp: adapt to new Opcode
+    * src/components/ogre/widgets/InspectWidget.cpp: use the coloured list items
+    * src/components/ogre/widgets/InspectWidget.xml, src/components/ogre/widgets/InventoryWidget.xml: modified the layout
+
+2006-03-19 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: since attachObjectToBone now returns a TagPoint* we can discard our own implementation and use the Ogre one
 
 2006-03-19 Erik Hjortsberg  <erik@katastrof.nu>

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Fri Mar 17 17:49:28 2006.
+** Generated automatically by tolua++-1.0.6 on Sun Mar 19 21:13:21 2006.
 */
 
 #ifndef __cplusplus
@@ -2180,6 +2180,40 @@ static int tolua_EmberOgre_EmberOgre_AvatarCamera_setCameraDistance00(lua_State*
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setCameraDistance'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: enableCompositor of class  EmberOgre::AvatarCamera */
+static int tolua_EmberOgre_EmberOgre_AvatarCamera_enableCompositor00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::AvatarCamera",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::AvatarCamera* self = (EmberOgre::AvatarCamera*)  tolua_tousertype(tolua_S,1,0);
+  const std::string compositorName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  bool enable = ((bool)  tolua_toboolean(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'enableCompositor'",NULL);
+#endif
+ {
+  self->enableCompositor(compositorName,enable);
+ tolua_pushcppstring(tolua_S,(const char*)compositorName);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'enableCompositor'.",&tolua_err);
  return 0;
 #endif
 }
@@ -12468,6 +12502,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"worldToScreen",tolua_EmberOgre_EmberOgre_AvatarCamera_worldToScreen00);
  tolua_function(tolua_S,"attach",tolua_EmberOgre_EmberOgre_AvatarCamera_attach00);
  tolua_function(tolua_S,"setCameraDistance",tolua_EmberOgre_EmberOgre_AvatarCamera_setCameraDistance00);
+ tolua_function(tolua_S,"enableCompositor",tolua_EmberOgre_EmberOgre_AvatarCamera_enableCompositor00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);

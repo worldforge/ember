@@ -95,6 +95,13 @@ public:
 	 */
 	void setCameraDistance(float distance);
 	
+	/**
+	 *    Enables and disables a compositor by name.
+	 * @param compositorName 
+	 * @param enable 
+	 */
+	void enableCompositor(const std::string& compositorName, bool enable);
+
 };
 
 }

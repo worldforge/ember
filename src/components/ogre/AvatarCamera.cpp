@@ -69,6 +69,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
+	createViewPort();
 	setAvatarNode(avatarNode);
 
 	// Register this as a frame listener
@@ -170,8 +171,21 @@ void AvatarCamera::attach(Ogre::SceneNode* toNode) {
 	S_LOG_VERBOSE(ss.str());
 }
 
+
+void AvatarCamera::enableCompositor(const std::string& compositorName, bool enable)
+{
+	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
+		Ogre::CompositorManager::getSingleton().addCompositor(mWindow->getViewport(0), compositorName);
+	}
+	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow->getViewport(0), compositorName, enable);
+}
+
 void AvatarCamera::createViewPort()
 {
+
+//	Ogre::CompositorManager::getSingleton().addCompositor(mWindow->getViewport(0), "Bloom");
+// 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow->getViewport(0), "Bloom", true);
+
 // 	assert(mCamera);
 // 	assert(!mViewPort);
 //     // Create 1st person viewport, entire window

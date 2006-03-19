@@ -197,7 +197,18 @@ public:
 	bool frameStarted(const Ogre::FrameEvent& event);
 	//bool frameEnded(const Ogre::FrameEvent& event);
 	
+	/**
+	 *    Enables and disables a compositor by name.
+	 * @param compositorName 
+	 * @param enable 
+	 */
+	void enableCompositor(const std::string& compositorName, bool enable);
+	
 protected:
+
+	typedef std::vector<std::string> CompositorNameStore;
+	
+	CompositorNameStore mLoadedCompositors;
 
 	Mode mMode;
 	
