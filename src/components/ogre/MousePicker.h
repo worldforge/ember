@@ -26,32 +26,11 @@
 #include <sigc++/signal.h>
 
 
-
+#include "IWorldPickListener.h"
 #include "EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 
-class EmberEntity;
-/**
- * Struct used for returning the result of a mouse pick.
- */
-struct EntityPickResult
-{
-	EmberEntity* entity;
-	Ogre::Vector3 position;
-	Ogre::Real distance;
-};
-
-/**
-Mouse picking info from the windowing system.
-*/
-struct MousePickerArgs
-{
-	/**
-	The x and y coords in local window space.
-	*/
-	float windowX, windowY;
-};
 
 /**
 Class used for picking stuff in the world.
@@ -76,25 +55,24 @@ public:
 
 
 
-	sigc::signal<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
-	sigc::signal<void, const MousePickerArgs&> EventPickedNothing;
+// 	sigc::signal<void, const MousePickerArgs&> EventPickedNothing;
 	
-	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntityResult.entity; }
+// 	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntityResult.entity; }
 
 	
 protected:
 
-	virtual void onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args);
-	virtual void onEventPickedNothing(const MousePickerArgs& args);
+// 	virtual void onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args);
+// 	virtual void onEventPickedNothing(const MousePickerArgs& args);
 
 	
 
 
 	//the currently selected entity
-    EmberEntity* mEntityUnderCursor;
+//     EmberEntity* mEntityUnderCursor;
 	
 	//the last clicked entity
-	EntityPickResult mLastPickedEntityResult;
+// 	EntityPickResult mLastPickedEntityResult;
 };
 
 }

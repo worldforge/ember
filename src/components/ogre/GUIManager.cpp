@@ -59,6 +59,8 @@
 #include <direct.h>
 #endif
 
+#include "EntityWorldPickListener.h"
+
 template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Singleton = 0;
 
 namespace EmberOgre {
@@ -130,18 +132,24 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 		S_LOG_INFO("CEGUI system set up");
 
-		MousePicker* picker = new MousePicker();
-		pushMousePicker(picker);
-					
+		mPicker = new MousePicker();
+		
+		///create a new entity world pick listener which listens for event
+		///TODO: should this really be here?
+		mEntityWorldPickListener = new EntityWorldPickListener();
+		
+		///don't connect it yet since there's no AvatarCamera yet, wait until that's created
+		EmberOgre::getSingleton().EventAvatarControllerCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_AvatarControllerCreated));
+		
 		mInput = new Input(mGuiRenderer->getWidth(), mGuiRenderer->getHeight());
 		mInput->EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		mInput->setInputMode(Input::IM_GUI);
 		
-		//add adapter for CEGUI
+		///add adapter for CEGUI
 		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
 		mInput->addAdapter(mCEGUIAdapter);
 		
-		//connect to the creation of the avatar, since we want to switch to movement mode when that happens
+		///connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		
 		Ogre::Root::getSingleton().addFrameListener(this);
@@ -431,12 +439,12 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 	//mSheet->activate();
 	//mSheet->captureInput();
 
-	if (getMousePicker()) {
+	if (mPicker) {
 		const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
 		MousePickerArgs pickerArgs;
 		pickerArgs.windowX = mouseArgs.position.d_x;
 		pickerArgs.windowY = mouseArgs.position.d_y;
-		getMousePicker()->doMousePicking(position.d_x, position.d_y, pickerArgs);
+		mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
 	}
 
 
@@ -531,23 +539,28 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 	}
 }
 
-void GUIManager::pushMousePicker( MousePicker * mousePicker )
-{
-	mMousePickers.push(mousePicker);
-}
+// void GUIManager::pushMousePicker( MousePicker * mousePicker )
+// {
+// 	mMousePickers.push(mousePicker);
+// }
 
-MousePicker * GUIManager::popMousePicker()
-{
-	///only pop if there's more than one registered picker
-	if (mMousePickers.size() > 1) 
-		mMousePickers.pop();
-	return mMousePickers.top();
-}
+// MousePicker * GUIManager::popMousePicker()
+// {
+// 	///only pop if there's more than one registered picker
+// 	if (mMousePickers.size() > 1) 
+// 		mMousePickers.pop();
+// 	return mMousePickers.top();
+// }
 
 void GUIManager::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 {
 	///switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput()->setInputMode(Input::IM_MOVEMENT);
+}
+
+void GUIManager::EmberOgre_AvatarControllerCreated(AvatarController& controller)
+{
+	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mEntityWorldPickListener);
 }
 
 const std::string& GUIManager::getLayoutDir() const
@@ -560,6 +573,12 @@ const std::string& GUIManager::getDefaultScheme() const
 {
 	return mDefaultScheme;
 }
+
+EntityWorldPickListener* GUIManager::getEntityPickListener() const
+{
+	return mEntityWorldPickListener;
+}
+
 
 }
 

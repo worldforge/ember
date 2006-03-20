@@ -11,9 +11,9 @@ EntityPicker.widget = guiManager:createWidget()
 
 function EntityPicker_buildWidget()
 
-	local mousePicker = guiManager:getMousePicker()
-    EmberOgre.LuaConnector:new(mousePicker.EventPickedEntity):connect("EntityPicker_pickedEntity")
-    EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker_pickedNothing")
+	local entityPickListener = guiManager:getEntityPickListener()
+    EmberOgre.LuaConnector:new(entityPickListener.EventPickedEntity):connect("EntityPicker_pickedEntity")
+    --EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker_pickedNothing")
     
     EntityPicker.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
 
@@ -42,7 +42,9 @@ function EntityPicker_showMenu(position)
 end
 
 function EntityPicker_pickedEntity(result, args)
-
+	debug(args)
+	debug(args.windowY)
+	
 	EntityPicker.entity = result.entity
 	EntityPicker.position = result.position
 	local point = CEGUI.Point:new_local(args.windowX, args.windowY)
@@ -79,11 +81,11 @@ function EntityPicker_checkUse()
 	end
 end
 
-function EntityPicker_pickedNothing(args)
-	if EntityPicker.widget:getMainWindow():isVisible() then
-		EntityPickerWidget_removeMenu()
-	end
-end
+--function EntityPicker_pickedNothing(args)
+--	if EntityPicker.widget:getMainWindow():isVisible() then
+--		EntityPickerWidget_removeMenu()
+--	end
+--end
 
 function EntityPicker_buttonTouch_Click(args)
 	--print("Type: ", tolua.type(EntityPicker.position))

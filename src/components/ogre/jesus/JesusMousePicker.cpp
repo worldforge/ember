@@ -42,24 +42,24 @@ void JesusMousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,con
 	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
 	
-	JesusPickerObject* pickerObject = 0;
-	std::vector<Ogre::UserDefinedObject*> exclude;
-	unsigned long test = Jesus::CM_MODELBLOCK;
-	test |= Jesus::CM_ATTACHPOINT;
-	std::vector<Ogre::RaySceneQueryResultEntry> result = camera->pickObject(x, y, exclude, test);
-	if (result.size()) {
-		Ogre::UserDefinedObject* object = (*result.begin()).movable->getUserObject();
-		JesusPickerObject* pickerObject = static_cast<JesusPickerObject*>(object);
-		if (pickerObject) {
-			if (pickerObject->getModelBlock()) {
-				onEventPickedModelBlock(pickerObject->getModelBlock(), args);
-			} else {
-				onEventPickedAttachPointNode(pickerObject->getPointNode(), args);
-			}
-		}
-	} else {
-		onEventPickedNothing(args);
-	}
+// 	JesusPickerObject* pickerObject = 0;
+// 	std::vector<Ogre::UserDefinedObject*> exclude;
+// 	unsigned long test = Jesus::CM_MODELBLOCK;
+// 	test |= Jesus::CM_ATTACHPOINT;
+// 	std::vector<Ogre::RaySceneQueryResultEntry> result = camera->pickObject(x, y, exclude, test);
+// 	if (result.size()) {
+// 		Ogre::UserDefinedObject* object = (*result.begin()).movable->getUserObject();
+// 		JesusPickerObject* pickerObject = static_cast<JesusPickerObject*>(object);
+// 		if (pickerObject) {
+// 			if (pickerObject->getModelBlock()) {
+// 				onEventPickedModelBlock(pickerObject->getModelBlock(), args);
+// 			} else {
+// 				onEventPickedAttachPointNode(pickerObject->getPointNode(), args);
+// 			}
+// 		}
+// 	} else {
+// 		onEventPickedNothing(args);
+// 	}
 	
 }
 

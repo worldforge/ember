@@ -48,27 +48,27 @@ void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const Mo
 	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
 	
-	EntityPickResult result = camera->pickAnEntity(x, y);
-	if (result.entity) {
+	camera->pickInWorld(x, y, args);
+/*	if (result.entity) {
 		mLastPickedEntityResult = result;
 		onEventPickedEntity(mLastPickedEntityResult, args);
 	} else {
 		onEventPickedNothing(args);
-	}
+	}*/
 	
 }
 
 
 
-void MousePicker::onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args)
-{
-	EventPickedEntity.emit(result, args);
-}
-
-void MousePicker::onEventPickedNothing(const MousePickerArgs& args)
-{
-	EventPickedNothing.emit(args);
-}
+// void MousePicker::onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args)
+// {
+// 	EventPickedEntity.emit(result, args);
+// }
+// 
+// void MousePicker::onEventPickedNothing(const MousePickerArgs& args)
+// {
+// 	EventPickedNothing.emit(args);
+// }
 
 
 

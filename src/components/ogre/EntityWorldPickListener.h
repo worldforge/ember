@@ -1,0 +1,62 @@
+//
+// C++ Interface: EntityWorldPickListener
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+#ifndef EMBEROGREENTITYWORLDPICKLISTENER_H
+#define EMBEROGREENTITYWORLDPICKLISTENER_H
+
+#include "EmberOgrePrerequisites.h"
+#include "IWorldPickListener.h"
+
+
+namespace EmberOgre {
+
+
+class EmberEntity;
+/**
+ * Struct used for returning the result of a mouse pick.
+ */
+struct EntityPickResult
+{
+	EmberEntity* entity;
+	Ogre::Vector3 position;
+	Ogre::Real distance;
+};
+
+/**
+	@author Erik Hjortsberg <erik@katastrof.nu>
+*/
+class EntityWorldPickListener : public IWorldPickListener
+{
+public:
+    EntityWorldPickListener();
+
+    ~EntityWorldPickListener();
+
+	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
+
+	sigc::signal<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
+	
+};
+
+}
+
+#endif

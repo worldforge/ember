@@ -72,12 +72,13 @@ public:
 	*/
 	sigc::signal<void, float> EventChangedCameraDistance;
 	
+	void pickInWorld(float mouseX, float mouseY, const EmberOgre::MousePickerArgs& args);
 
-	EmberOgre::EntityPickResult pickAnEntity(float mouseX, float mouseY);
-	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(float mouseX, float mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
+//	EmberOgre::EntityPickResult pickAnEntity(float mouseX, float mouseY);
+//	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(float mouseX, float mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
-	void setClosestPickingDistance(float distance);
-	float getClosestPickingDistance();
+//	void setClosestPickingDistance(float distance);
+//	float getClosestPickingDistance();
 
 	// worldToScreenPos 
 	// 
@@ -101,6 +102,8 @@ public:
 	 * @param enable 
 	 */
 	void enableCompositor(const std::string& compositorName, bool enable);
+	
+	
 
 };
 

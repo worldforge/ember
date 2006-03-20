@@ -45,6 +45,9 @@
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 
+#include "components/ogre/IWorldPickListener.h"
+#include "components/ogre/EntityWorldPickListener.h"
+
 //#include "components/ogre/scripting/LuaConnector.h"
 //#include "LuaConnector.h"
 

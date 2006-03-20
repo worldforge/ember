@@ -49,7 +49,8 @@ class EmberEventProcessor;
 class Input;
 class AvatarEmberEntity;
 class GUICEGUIAdapter;
-
+class EntityWorldPickListener;
+class AvatarController;
 
 /**
  * This class will be responsible for all the GUI related things
@@ -156,14 +157,14 @@ public:
 	 *    Pushes a new mouse picker onto the stack, "pushing down" the current mouse picker.
 	 * @param mousePicker 
 	 */
-	void pushMousePicker(MousePicker* mousePicker);
+// 	void pushMousePicker(MousePicker* mousePicker);
 	
 	/**
 	 *    Pops the current mouse picker from the stack and returns the next in line.
 	 *    It's not possible to empty the stack. If there's only one picker left, no popping will be done, and the last picker will be returned.
 	 * @return 
 	 */
-	MousePicker* popMousePicker();
+// 	MousePicker* popMousePicker();
 	
 	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
 
@@ -200,7 +201,14 @@ public:
 	 * @return 
 	 */
 	const std::string& getDefaultScheme() const;
+	
+	EntityWorldPickListener* getEntityPickListener() const;
+	
 protected:
+
+	MousePicker* mPicker;
+
+	EntityWorldPickListener* mEntityWorldPickListener;
 
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
@@ -248,6 +256,13 @@ protected:
 	 * @param entity 
 	 */
 	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
+	
+	
+	/**
+	 *    hooked to EmberOgre::EventAvatarControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera
+	 * @param controller 
+	 */
+	void EmberOgre_AvatarControllerCreated(AvatarController& controller);
 
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);

@@ -15,7 +15,7 @@ $pfile "AvatarEmberEntity.pkg"
 $pfile "WorldEmberEntity.pkg"
 
 $pfile "GUIManager.pkg"
-$pfile "MousePicker.pkg"
+//$pfile "MousePicker.pkg"
 $pfile "TerrainArea.pkg"
 $pfile "MotionManager.pkg"
 
@@ -35,9 +35,14 @@ $pfile "ModelRenderer.pkg"
 $pfile "ListHolder.pkg"
 //$pfile "MaterialPicker.pkg"
 
+//$pfile "IWorldPickListener.pkg"
+$pfile "EntityWorldPickListener.pkg"
+
 $pfile "ModelDefinitionManager.pkg"
 
 $pfile "stdlib.pkg"
+
+
 
 //$pfile "EntityCEGUITexture.pkg"
 

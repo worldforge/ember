@@ -30,16 +30,11 @@
 
 #include <sigc++/trackable.h>
 
-/*#include <sigc++/object.h>
-#include <sigc++/connection.h>*/
-/*#include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>*/
 
 #include "framework/ConsoleObject.h"
-// #include "jesus/JesusMousePicker.h"
+
 #include "input/Input.h"
+#include <stack>
 
 namespace EmberOgre {
 
@@ -49,7 +44,8 @@ class GUIManager;
 class EmberEntity;
 struct MouseMotion;
 struct EntityPickResult;
-
+class IWorldPickListener;
+class MousePickerArgs;
 
 class AvatarCamera 
 :
@@ -144,8 +140,10 @@ public:
 // 	void mouseMoved (Ogre::MouseEvent *e);
 // 	void mouseDragged (Ogre::MouseEvent *e) {};
 
-	EntityPickResult pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
-	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
+	void pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& args);
+	
+// 	EntityPickResult pickAnEntity(Ogre::Real mouseX, Ogre::Real mouseY);
+// 	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
 	void setClosestPickingDistance(Ogre::Real distance);
 	Ogre::Real getClosestPickingDistance();
@@ -165,7 +163,7 @@ public:
 	 * @param resultVector 
 	 * @return true if the picking was successful
 	 */
-	bool pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector);
+// 	bool pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector);
 	
 	void attach(Ogre::SceneNode* toNode);
 	
@@ -204,8 +202,14 @@ public:
 	 */
 	void enableCompositor(const std::string& compositorName, bool enable);
 	
+	
+	void pushWorldPickListener(IWorldPickListener* worldPickListener);
+	
 protected:
 
+	typedef std::deque<IWorldPickListener*> WorldPickListenersStore;
+	WorldPickListenersStore mPickListeners;
+		
 	typedef std::vector<std::string> CompositorNameStore;
 	
 	CompositorNameStore mLoadedCompositors;

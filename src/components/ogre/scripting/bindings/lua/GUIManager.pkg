@@ -33,13 +33,13 @@ class GUIManager
 	
 	const bool isInMovementKeysMode() const;
 	
-	inline MousePicker* getMousePicker();
+	//inline MousePicker* getMousePicker();
 	
 	Input* getInput() const;
 	
-	void pushMousePicker(MousePicker* mousePicker);
+	//void pushMousePicker(MousePicker* mousePicker);
 	
-	MousePicker* popMousePicker();
+//	MousePicker* popMousePicker();
 	
 //	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
 	
@@ -62,6 +62,8 @@ class GUIManager
 	 * @return 
 	 */
 	const std::string& getDefaultScheme() const;
+
+	EmberOgre::EntityWorldPickListener* getEntityPickListener() const;
 
 };
 }

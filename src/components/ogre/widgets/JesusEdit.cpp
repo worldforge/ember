@@ -167,11 +167,13 @@ void JesusEdit::hide()
 
 bool JesusEdit::SwitchMode_Click(const CEGUI::EventArgs& args)
 {
-	if (!mInJesusMode) {
+//TODO: this should use a IWorldPickListener instead
+
+/*	if (!mInJesusMode) {
 		mGuiManager->pushMousePicker(&mMousePicker);
 	} else {
 		mGuiManager->popMousePicker();
-	}
+	}*/
 	mInJesusMode = !mInJesusMode;
 	return true;
 }

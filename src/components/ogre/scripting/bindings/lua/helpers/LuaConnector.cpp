@@ -31,6 +31,7 @@
 #include "components/ogre/AvatarEmberEntity.h"
 // 
 #include "components/ogre/MousePicker.h"
+#include "components/ogre/EntityWorldPickListener.h"
 // #include "../EmberEntityFactory.h"
 // #include "../jesus/Jesus.h"
 
