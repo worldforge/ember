@@ -1,5 +1,9 @@
 2006-04-01 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: allow for updates to the height data
+
+2006-04-01 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRaySceneQuery.cpp: include the distance in the result so it can be sorted
 
 2006-03-20 Erik Hjortsberg  <erik@katastrof.nu>

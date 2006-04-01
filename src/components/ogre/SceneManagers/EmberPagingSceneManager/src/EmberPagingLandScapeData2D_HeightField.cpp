@@ -51,9 +51,10 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 /*	mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
 	mMax = static_cast <uint> (mMaxArrayPos * mBpp);
 	mHeightData = new Real[mMaxArrayPos];*/
+	assert(!mTerrainPage);
 	TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
-	if (!mTerrainPage) 
-	{
+/*	if (!mTerrainPage) 
+	{*/
 		mMaxArrayPos = terrainGenerator->getPageSize() * terrainGenerator->getPageSize();
 		mHeightData = new Real[mMaxArrayPos];
 		mTerrainPage = terrainGenerator->getTerrainPage(Ogre::Vector2(x,z));
@@ -69,10 +70,10 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 		mXDimension = terrainGenerator->getPageSize();
 		mZDimension = terrainGenerator->getPageSize();
 		return true;
-	} 
+// 	}
 
 	
-	return true;
+// 	return true;
 		   
 }
 
@@ -126,6 +127,7 @@ void EmberPagingLandScapeData2D_HeightField::_load()
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
 	S_LOG_VERBOSE("Unloading terrain page.");
+	mTerrainPage = 0;
 }
 
 const Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight(void) const
