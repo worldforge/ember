@@ -1,3 +1,7 @@
+2006-04-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	*src/components/ogre/ogreopcode/include/IOgreCollisionShape.h, src/components/ogre/ogreopcode/include/OgreBoxCollisionShape.h, src/components/ogre/ogreopcode/include/OgreOpcodeUtils.h, src/components/ogre/ogreopcode/include/OgreOrientedBox.h, src/components/ogre/ogreopcode/include/OgrePtrCollisionShape.h, src/components/ogre/ogreopcode/include/OgreSphereMeshCollisionShape.h, src/components/ogre/ogreopcode/include/OgreTriangle.h, src/components/ogre/ogreopcode/opcode/OPC_RayCollider.cpp, src/components/ogre/ogreopcode/opcode/OPC_TriTriOverlapGilvan.h, src/components/ogre/ogreopcode/opcode/Ice/IceMatrix4x4.cpp, src/components/ogre/ogreopcode/opcode/Ice/IceMatrix4x4.h, src/components/ogre/ogreopcode/src/IOgreCollisionShape.cpp, src/components/ogre/ogreopcode/src/OgreBoxCollisionShape.cpp, src/components/ogre/ogreopcode/src/OgrePtrCollisionShape.cpp, src/components/ogre/ogreopcode/src/OgreSphereMeshCollisionShape.cpp: added missing files
+
 2006-04-01 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: allow for updates to the height data

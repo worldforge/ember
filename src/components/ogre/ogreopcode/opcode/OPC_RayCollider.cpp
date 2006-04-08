@@ -375,28 +375,39 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 	// The (Origin/Dir) form is needed for the ray-triangle test anyway (even for segment tests)
 	if(world)
 	{
-		// Matrix normalization & scaling stripping
-		// (notice that mLocalScale scale is being used here again in order to make code work with scale before intersection tests and line transform)
-		IceMaths::Matrix4x4 normWorldm;
+#ifdef OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+		// Matrix normalization & scaling stripping		
+		Matrix4x4 normWorldm;
 		NormalizePRSMatrix( normWorldm, mLocalScale, *world );
 		
 		// Invert model matrix
-		IceMaths::Matrix3x3 InvWorld = normWorldm;
+		Matrix3x3 InvWorld = normWorldm;
 		mDir = InvWorld * world_ray.mDir;
 
-		IceMaths::Matrix4x4 World;
+		Matrix4x4 World;
 		InvertPRMatrix(World, normWorldm);
 		mOrigin = world_ray.mOrig * World;
+#else
+		// Now we are a much better code to get the ray in local space.
+		// Some notes about this new code:
+		//	- faster, because we don't need to compute square roots anymore;
+		//  - faster yet, because the number of divisions is even smaller now;
+		//  - the intersection tests are robust enough to handle rays with non-unit direction vectors;
+		//  - matrices are less subject to FPU errors, because I don't like square root;
+		//	 (it seems to introduce errors, because it cuts number precision by a half when
+		//	  stripping the matrix scale off)
+		//  - the code is shorter and easier to maintain;  :P
+		#pragma message(" >> Using new code for ray collision")		
 
-// Do we have to transform the ray into the model's local space??
-#if !defined(OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP)
-		
-                // BRAND NEW code: The intersection tests does not need normalized directions
-                //                 It worked fine in my engine (Gilvan)
-                mDir    /= mLocalScale;
-		mOrigin /= mLocalScale;
+		// first, invert the world matrix and transform the ray's origin
+		Matrix4x4 World;
+		InvertPRSMatrix(World, *world);
+		mOrigin = world_ray.mOrig * World;
+
+		// second, transform the ray's direction
+		Matrix3x3 InvWorld = World;
+		mDir = world_ray.mDir * InvWorld;
 #endif
-
 	}
 	else
 	{

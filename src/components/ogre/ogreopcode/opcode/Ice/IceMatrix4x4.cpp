@@ -76,6 +76,46 @@ ICEMATHS_API void IceMaths::InvertPRMatrix(Matrix4x4& dest, const Matrix4x4& src
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
+ *	Inverts a PRS matrix. (which only contains a scale, a rotation and a translation, in this order)
+ *	This is faster and less subject to FPU errors than the generic inversion code.
+ *
+ *	\relates	Matrix4x4
+ *	\fn			InvertPRSMatrix(Matrix4x4& dest, const Matrix4x4& src)
+ *	\param		dest	[out] destination matrix
+ *	\param		src		[in] source matrix
+ */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ICEMATHS_API void IceMaths::InvertPRSMatrix(Matrix4x4& dest, const Matrix4x4& src)
+{
+	// first, inverts the rotation part.
+	float invS2 = 1.0f/(src.m[0][0]*src.m[0][0] + src.m[0][1]*src.m[0][1] + src.m[0][2]*src.m[0][2]);
+	dest.m[0][0] = invS2*src.m[0][0];
+	dest.m[1][0] = invS2*src.m[0][1];
+	dest.m[2][0] = invS2*src.m[0][2];
+
+	invS2 = 1.0f/(src.m[1][0]*src.m[1][0] + src.m[1][1]*src.m[1][1] + src.m[1][2]*src.m[1][2]);
+	dest.m[0][1] = invS2*src.m[1][0];
+	dest.m[1][1] = invS2*src.m[1][1];
+	dest.m[2][1] = invS2*src.m[1][2];
+
+	invS2 = 1.0f/(src.m[2][0]*src.m[2][0] + src.m[2][1]*src.m[2][1] + src.m[2][2]*src.m[2][2]);
+	dest.m[0][2] = invS2*src.m[2][0];
+	dest.m[1][2] = invS2*src.m[2][1];
+	dest.m[2][2] = invS2*src.m[2][2];
+
+	// then, inverts the translation part
+	dest.m[3][0] = -(dest[0][0]*src.m[3][0] + dest[1][0]*src.m[3][1] + dest[2][0]*src.m[3][2]);
+	dest.m[3][1] = -(dest[0][1]*src.m[3][0] + dest[1][1]*src.m[3][1] + dest[2][1]*src.m[3][2]);
+	dest.m[3][2] = -(dest[0][2]*src.m[3][0] + dest[1][2]*src.m[3][1] + dest[2][2]*src.m[3][2]);
+
+
+	// fills last column
+	dest.m[0][3] = dest.m[1][3] = dest.m[2][3] = 0.0;
+	dest.m[3][3] = 1.0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
  *	Normalizes a PRS matrix. (which only contains a scale, a rotation and a translation)
  *	This is faster and less subject to FPU errors than the generic inversion code.
  *

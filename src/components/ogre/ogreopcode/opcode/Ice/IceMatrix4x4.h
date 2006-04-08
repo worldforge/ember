@@ -451,6 +451,7 @@
 	}
 
 	ICEMATHS_API void InvertPRMatrix(Matrix4x4& dest, const Matrix4x4& src);
+	ICEMATHS_API void InvertPRSMatrix(Matrix4x4& dest, const Matrix4x4& src);
 	ICEMATHS_API void NormalizePRSMatrix(Matrix4x4& dest, Point& scale, const Matrix4x4& src);
 
 #endif // __ICEMATRIX4X4_H__
