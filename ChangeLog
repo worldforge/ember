@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/services/server/ServerService.h: cleaned up sigc includes
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: override the MovableObject::IsVisible() method to take into account the system wide visibility flag for all Models
 
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
