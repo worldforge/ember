@@ -61,9 +61,9 @@ class EmberPagingSceneManager;
 struct TerrainDefPoint
 {
 	public:
-		TerrainDefPoint(float x, float y, double terrainHeight) : position(x,y), height(terrainHeight) {}
+		TerrainDefPoint(float x, float y, float terrainHeight) : position(x,y), height(terrainHeight) {}
 	TerrainPosition position;
-	double height;
+	float height;
 };
 
 /**
@@ -141,7 +141,7 @@ public:
 	 */
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
 	
-	bool createTerrain(const TerrainDefPointStore& terrainPoints);
+	bool updateTerrain(const TerrainDefPointStore& terrainPoints);
 
 	/**
 	 * Return true if there is a valid piece of terrain at the supplied segment indices.
@@ -236,6 +236,12 @@ public:
 	void buildHeightmap();
 	
 	const TerrainInfo& getTerrainInfo() const;
+	
+	/**
+	Emitted when the size of the world has changed.
+	*/
+	sigc::signal<void> EventWorldSizeChanged;
+
 	
 protected:
 

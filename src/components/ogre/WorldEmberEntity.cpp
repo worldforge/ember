@@ -55,7 +55,7 @@ WorldEmberEntity::~WorldEmberEntity()
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	EmberEntity::init(ge, fromCreateOp);
-	mTerrainGenerator->initTerrain(this, getView());
+	//mTerrainGenerator->initTerrain(this, getView());
 	
 	///create the sun
 	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
@@ -77,6 +77,122 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
 	
+}
+
+void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
+{
+	///check for terrain updates
+    if (str == "terrain") {
+    	updateTerrain(v);
+	}
+	Entity::onAttrChanged(str, v);
+}
+
+void WorldEmberEntity::updateTerrain(const Atlas::Message::Element& terrain)
+{
+	//_fpreset();
+    if (!terrain.isMap()) {
+		S_LOG_FAILURE( "Terrain is not a map" );
+    }
+    const Atlas::Message::MapType & tmap = terrain.asMap();
+    Atlas::Message::MapType::const_iterator I = tmap.find("points");
+    int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
+    if (I == tmap.end()) {
+		S_LOG_FAILURE( "No terrain points" );
+    }
+
+	TerrainGenerator::TerrainDefPointStore pointStore;
+	if (I->second.isList()) {
+        // Legacy support for old list format.
+        const Atlas::Message::ListType & plist = I->second.asList();
+        Atlas::Message::ListType::const_iterator J = plist.begin();
+        for(; J != plist.end(); ++J) {
+            if (!J->isList()) {
+				S_LOG_INFO( "Non list in points" );
+                continue;
+            }
+            const Atlas::Message::ListType & point = J->asList();
+            if (point.size() != 3) {
+				S_LOG_INFO( "point without 3 nums" );
+                continue;
+            }
+            //int x = (int)point[0].asNum();
+            //int y = (int)point[1].asNum();
+
+			TerrainDefPoint defPoint((int)point[0].asNum(),(int)point[1].asNum(),(int)point[3].asNum());
+			pointStore.push_back(defPoint);
+			//mTerrain->setBasePoint(x,y,point[2].asNum());
+        }
+    } else if (I->second.isMap()) {
+
+        const Atlas::Message::MapType & plist = I->second.asMap();
+        Atlas::Message::MapType::const_iterator J = plist.begin();
+        for(; J != plist.end(); ++J) {
+            if (!J->second.isList()) {
+				S_LOG_INFO( "Non list in points" );
+                continue;
+            }
+            const Atlas::Message::ListType & point = J->second.asList();
+            if (point.size() != 3) {
+				S_LOG_INFO( "point without 3 nums" );
+                continue;
+            }
+            int x = (int)point[0].asNum();
+            int y = (int)point[1].asNum();
+            float z = point[2].asNum();
+			TerrainDefPoint defPoint(x,y,z);
+			pointStore.push_back(defPoint);
+
+			
+			
+/*	        Mercator::BasePoint bp;
+            if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
+				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
+                continue;
+            }
+            xmin = std::min(xmin, x);
+            xmax = std::max(xmax, x);
+            ymin = std::min(ymin, y);
+            ymax = std::max(ymax, y);
+            bp.height() = z;
+            // FIXME Sort out roughness and falloff, and generally
+            // verify this code is the same as that in Terrain layer
+            mTerrain->setBasePoint(x, y, bp);*/
+            
+        }
+	
+	
+/*        const Atlas::Message::MapType & plist = I->second.asMap();
+        Atlas::Message::MapType::const_iterator J = plist.begin();
+        for(; J != plist.end(); ++J) {
+            if (!J->second.isList()) {
+                std::cout << "Non list in points" << std::endl << std::flush;
+                continue;
+            }
+            const Atlas::Message::ListType & point = J->second.asList();
+            if (point.size() != 3) {
+                std::cout << "point without 3 nums" << std::endl << std::flush;
+                continue;
+            }
+            int x = (int)point[0].asNum();
+            int y = (int)point[1].asNum();
+            xmin = std::min(xmin, x);
+            xmax = std::max(xmax, x);
+            ymin = std::min(ymin, y);
+            ymax = std::max(ymax, y);
+          //  m_terrain.setBasePoint(x, y, point[2].asNum());
+			mTerrain->setBasePoint(x,y,point[2].asNum());
+//System::instance()->getGraphics()->getTerrainRenderer()->m_terrain.setBasePoint(x,y,point[2].asNum());
+//System::Instance()->getGraphics(x,y,point[2].asNum());
+        }*/
+
+      
+
+    } else {
+		S_LOG_FAILURE( "Terrain is the wrong type" );
+        return;
+    }
+	mTerrainGenerator->updateTerrain(pointStore);
 }
 
 void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)

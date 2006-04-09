@@ -156,8 +156,8 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
 		S_LOG_INFO("Try to create a complex material.");
-		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
-//		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
+//		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
+		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	} else {
 	//and as a fallback for older gfx cards we'll supply a technique which doesn't
 		S_LOG_INFO("Try to create a simple material.");

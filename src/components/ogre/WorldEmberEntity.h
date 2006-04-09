@@ -46,6 +46,7 @@ protected:
 
 	virtual void onMoved();
 	
+	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 // 	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
 //	virtual void setContainer(Entity *pr);
@@ -53,6 +54,12 @@ protected:
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
 
 	void addArea(TerrainArea* area);
+	
+	/**
+	 *    Extracts terrain updates from the element and updates the terrain.
+	 * @param v 
+	 */
+	void updateTerrain(const Atlas::Message::Element& terrain);
 	
 		
 	Foliage* mFoliage;

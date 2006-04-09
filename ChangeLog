@@ -1,5 +1,16 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/TerrainEditor.cpp, src/components/ogre/TerrainEditor.h: 
+    	* mark moved base points
+    	* use the updateTerrain method of the TerrainGenerator
+    * src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainGenerator.h: refactored how the terrain is generated a bit, to better allow for updating the terrain
+    * src/components/ogre/TerrainPage.cpp: force simple terrain material since the complex one doesn't really work yet
+    * src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: 
+         * look for the "terrain" attribute being changed
+         * refactored how the terrain is generated to better allow for updated terrain
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/ogreopcode/opcode/Makefile.am: fixed bad commit
 
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>

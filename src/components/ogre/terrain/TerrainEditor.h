@@ -98,6 +98,15 @@ public:
 	*/
 	sigc::signal<void> EventUpdatedPosition;
 	
+	/**
+	 *    Marks the entity as "moved"
+	 */
+	void markAsMoved();
+
+	/**
+	 *    Resets the marking of the entity to the normal material (instead of the "moved" marking)
+	 */
+	void resetMarking();
 	
 	
 private:
@@ -210,6 +219,8 @@ public:
 	 * @param alsoCommit if true, the action will also be committed
 	 */
 	void createAction(bool alsoCommit);	
+	
+	BasePointUserObject* getUserObject(const TerrainPosition& terrainIndex);
 
 /**
 ---------Methods implemented from IInputAdapter
@@ -223,6 +234,10 @@ public:
 	virtual bool injectKeyUp(const SDLKey& key);
 	    
 private:
+
+	typedef std::map<std::string, BasePointUserObject*> BasePointUserObjectStore;
+	
+	BasePointUserObjectStore mBasePointUserObjects;
 
 	BasePointPickListener mPickListener;
 

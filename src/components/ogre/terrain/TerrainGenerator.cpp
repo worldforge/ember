@@ -335,7 +335,7 @@ void TerrainGenerator::prepareAllSegments()
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
 
-	buildHeightmap();
+	//buildHeightmap();
 	
 // 	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
 // 	int xNumberOfPages = (int)ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
@@ -435,7 +435,7 @@ TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPositi
 	
 	TerrainPosition pageIndexPos(static_cast<int>((worldPosition.x() + xRemainder)/ (getPageSize() - 1)), static_cast<int>((worldPosition.y() + yRemainder) / (getPageSize() - 1)));
 	
-	return mTerrainPages[pageIndexPos.x()][pageIndexPos.y()];
+	return mTerrainPages[static_cast<int>(pageIndexPos.x())][static_cast<int>(pageIndexPos.y())];
 	/*	double worldSizeX = getMax().x() - getMin().x();
 	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
 	int pageOffsetX = totalNumberOfPagesX / 2;
@@ -452,8 +452,7 @@ TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosi
 	
 	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.pageOffsetX, ogreIndexPosition.y - mTerrainInfo.pageOffsetY);
 	
-	TerrainPosition pos;
-	pos = Ogre2Atlas(adjustedOgrePos);
+	TerrainPosition pos(Ogre2Atlas(adjustedOgrePos));
 	
 	int x = static_cast<int>(pos.x());
 	int y = static_cast<int>(pos.y());
@@ -620,7 +619,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 
 			
 			
-	        Mercator::BasePoint bp;
+/*	        Mercator::BasePoint bp;
             if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
 				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
                 continue;
@@ -632,7 +631,7 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
             bp.height() = z;
             // FIXME Sort out roughness and falloff, and generally
             // verify this code is the same as that in Terrain layer
-            mTerrain->setBasePoint(x, y, bp);
+            mTerrain->setBasePoint(x, y, bp);*/
             
         }
 	
@@ -667,12 +666,12 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 		S_LOG_FAILURE( "Terrain is the wrong type" );
         return false;
     }
-	//createTerrain(pointStore);
-    mXmin = xmin;
+	updateTerrain(pointStore);
+/*    mXmin = xmin;
     mXmax = xmax;
     mYmin = ymin;
-    mYmax = ymax;
-    mSegments = &mTerrain->getTerrain();
+    mYmax = ymax;*/
+//     mSegments = &mTerrain->getTerrain();
 	
 
 
@@ -681,24 +680,38 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
     return true;
 }
 
-bool TerrainGenerator::createTerrain(const TerrainDefPointStore& terrainPoints)
+bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
+	int Xmin = mXmin;
+	int Xmax = mXmax;
+	int Ymin = mYmin;
+	int Ymax = mYmax;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
         Mercator::BasePoint bp;
-        if (mTerrain->getBasePoint(I->position.x(), I->position.y(), bp) && (I->height == bp.height())) {
-			S_LOG_INFO( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");
+        if (mTerrain->getBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp) && (I->height == bp.height())) {
+			S_LOG_VERBOSE( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");
             continue;
         }
-        mXmin = std::min(mXmin, static_cast<int>(I->position.x()));
-        mXmax = std::max(mXmax, static_cast<int>(I->position.x()));
-        mYmin = std::min(mYmin, static_cast<int>(I->position.y()));
-        mYmax = std::max(mYmax, static_cast<int>(I->position.y()));
+        mXmin = std::min<int>(mXmin, static_cast<int>(I->position.x()));
+        mXmax = std::max<int>(mXmax, static_cast<int>(I->position.x()));
+        mYmin = std::min<int>(mYmin, static_cast<int>(I->position.y()));
+        mYmax = std::max<int>(mYmax, static_cast<int>(I->position.y()));
         bp.height() = I->height;
         // FIXME Sort out roughness and falloff, and generally
         // verify this code is the same as that in Terrain layer
-        mTerrain->setBasePoint(I->position.x(), I->position.y(), bp);
+        mTerrain->setBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp);
 
 	}
+    mSegments = &mTerrain->getTerrain();
+	
+	buildHeightmap();
+	
+	///check if the size of the world has been changed
+	if (Xmin != mXmin || Xmax != mXmax || Ymin != mYmin || Ymax != mYmax) {
+		EventWorldSizeChanged.emit();
+	}
+	
+	
 	return true;
 }
 

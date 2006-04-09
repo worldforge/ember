@@ -82,11 +82,20 @@ float BasePointUserObject::getHeight() const
 void BasePointUserObject::translate(Ogre::Real verticalMovement)
 {
 	getBasePointMarkerNode()->translate(Ogre::Vector3(0,verticalMovement,0));
+	markAsMoved();
 	EventUpdatedPosition();
 }
+void BasePointUserObject::markAsMoved()
+{
+	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
+	entity->setMaterialName("BasePointMarkerMovedMaterial");
+}
 
-
-
+void BasePointUserObject::resetMarking()
+{
+	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
+	entity->setMaterialName("BasePointMarkerMaterial");
+}
 
 BasePointPickListener::BasePointPickListener(TerrainEditor* terrainEditor) : mTerrainEditor(terrainEditor)
 {
@@ -124,12 +133,23 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 
 TerrainEditor::TerrainEditor() : mPickListener(this), mCurrentUserObject(0),mOverlayNode(0), mVisible(false)
 {
+	///create a material which will be used for base points (this will be blue)
 	if (!Ogre::MaterialManager::getSingleton().resourceExists("BasePointMarkerMaterial")) {
 		Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create("BasePointMarkerMaterial", "General"));
 		
 		material->setDiffuse(0,0,1,1);
 		material->setAmbient(0,0,1);
 		material->setSelfIllumination(0,0,1);
+		//material->setLightingEnabled(false);
+		material->setFog(true);
+	}
+	///create a material which will be used for base points that have been moved (this will be red)
+	if (!Ogre::MaterialManager::getSingleton().resourceExists("BasePointMarkerMovedMaterial")) {
+		Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create("BasePointMarkerMovedMaterial", "General"));
+		
+		material->setDiffuse(1,0,0,1);
+		material->setAmbient(1,0,0);
+		material->setSelfIllumination(1,0,0);
 		//material->setLightingEnabled(false);
 		material->setFog(true);
 	}
@@ -187,16 +207,35 @@ void TerrainEditor::createOverlay()
 				std::stringstream ss;
 				ss << "basepointmarker" << x << "_" << y;
 				Ogre::Entity* entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss.str(), "fireball.mesh");
+				///start out with a normal material
 				entity->setMaterialName("BasePointMarkerMaterial");
 				entity->setRenderingDistance(300);
 				basepointNode->attachObject(entity);
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
+				
+				
+				///store the base point user object
+				std::stringstream ss_;
+				ss_ << x << "_" << y;
+				mBasePointUserObjects[ss_.str()] = userObject;
 			}
 		}
 		///register the pick listener
 		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(&mPickListener);
 	}
+}
+
+BasePointUserObject* TerrainEditor::getUserObject(const TerrainPosition& terrainIndex)
+{
+	std::stringstream ss;
+	ss << terrainIndex.x() << "_" << terrainIndex.y();
+	BasePointUserObjectStore::iterator I = mBasePointUserObjects.find(ss.str());
+	if (I != mBasePointUserObjects.end()) {
+		return I->second;
+	}
+	return 0;
+
 }
 
 BasePointUserObject* TerrainEditor::getCurrentBasePointUserObject() const
@@ -326,6 +365,7 @@ void TerrainEditor::sendChangesToServer()
 			point[1] = (Atlas::Message::FloatType)(I->second.y());
 			point[2] = (Atlas::Message::FloatType)(bp.height());
 			
+			
 		}
 		
 	
@@ -334,6 +374,17 @@ void TerrainEditor::sendChangesToServer()
 		s->setFrom(EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
 	
 		Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
+		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
+			
+		///also reset the marking for the base points
+		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
+			BasePointUserObject* userObject = getUserObject(I->second);
+			if (userObject) {
+				userObject->resetMarking();
+			}
+		}
+		///clear all actions
+		mActions.clear();
 	}catch (const std::exception& ex)
 	{
 		S_LOG_FAILURE("Could not send terrain to server. Message: " << ex.what());
@@ -346,6 +397,8 @@ void TerrainEditor::sendChangesToServer()
 
 void TerrainEditor::commitAction(const TerrainEditAction& action)
 {
+	TerrainGenerator::TerrainDefPointStore pointStore;
+	
 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
 	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainGenerator()->getEmberSceneManager();
@@ -353,11 +406,15 @@ void TerrainEditor::commitAction(const TerrainEditAction& action)
 	for(TerrainEditAction::MovementStore::const_iterator I = action.getMovements().begin(); I != action.getMovements().end(); ++I)
 	{
 		Mercator::BasePoint bp;
-		WFMath::CoordType basepointX = I->getPosition().x();
-		WFMath::CoordType basepointY = I->getPosition().y();
+		int basepointX = static_cast<int>(I->getPosition().x());
+		int basepointY = static_cast<int>(I->getPosition().y());
 		EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getBasePoint(basepointX,basepointY, bp);
         bp.height() = bp.height() + I->getVerticalMovement();
-		EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().setBasePoint(basepointX, basepointY, bp);
+		//EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().setBasePoint(basepointX, basepointY, bp);
+		
+		TerrainDefPoint defPoint(basepointX, basepointY,bp.height());
+		pointStore.push_back(defPoint);
+		
 		
 		Ogre::Vector3 markerPos = Atlas2Ogre(I->getPosition());
 		
@@ -383,7 +440,8 @@ void TerrainEditor::commitAction(const TerrainEditAction& action)
 			}
 		}
 	}
-	EmberOgre::getSingleton().getTerrainGenerator()->buildHeightmap();
+	EmberOgre::getSingleton().getTerrainGenerator()->updateTerrain(pointStore);
+	
 	
 	///reload all shader textures of the affected pages
 	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
