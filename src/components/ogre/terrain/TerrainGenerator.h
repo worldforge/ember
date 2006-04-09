@@ -66,6 +66,15 @@ struct TerrainDefPoint
 	double height;
 };
 
+/**
+Struct holding information about the terrain.
+*/
+struct TerrainInfo
+{
+	double worldSizeX, worldSizeY;
+	int totalNumberOfPagesX, totalNumberOfPagesY;
+	int pageOffsetX, pageOffsetY;
+};
 
 /**
  * This class takes care of generating terrain for Ogre's scenemanager.
@@ -101,9 +110,13 @@ public:
 	virtual ~TerrainGenerator();
 
 	
+	/**
+	 *    At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
+	 * @param evt 
+	 * @return 
+	 */
 	virtual bool frameStarted(const Ogre::FrameEvent & evt);
 	
-	Ogre::SceneNode* generateTerrain();
     void setBasePoint(int x, int y, float z) {mTerrain->setBasePoint(x,y,z);}
 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
 
@@ -113,7 +126,19 @@ public:
 	 */
 	void prepareAllSegments();
 	
+	/**
+	 *    Returns the height at the specified position in the world.
+	 * @param atPosition 
+	 * @return 
+	 */
 	virtual float getHeight(const TerrainPosition& atPosition) const;
+	
+	/**
+	 *    Sets up the terrain. Call this only once.
+	 * @param we 
+	 * @param world 
+	 * @return 
+	 */
 	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
 	
 	bool createTerrain(const TerrainDefPointStore& terrainPoints);
@@ -126,9 +151,21 @@ public:
 	
 	//const Ogre::TerrainOptions& getTerrainOptions() const;
 
-	const Mercator::Terrain& getTerrain() const;
+	/**
+	 *    Provides access to the underlying Mercator::Terrain object.
+	 * @return 
+	 */
+	Mercator::Terrain& getTerrain();
 	
+	/**
+	 *    Gets the max boundaries of the terrain.
+	 * @return 
+	 */
 	const TerrainPosition getMax() const;
+	/**
+	 *    Gets the min boundaries of the terrain.
+	 * @return 
+	 */
 	const TerrainPosition getMin() const;
 	
 	/**
@@ -148,14 +185,25 @@ public:
 //	TerrainPage* getTerrainPage(uint x, uint z);
 	
 	/**
-	 *    Returns a TerrainPage. If there is no yet existing, a new one is created.
+	 *    Returns a TerrainPage. 
+	 *    If createIfMissing is true and there is no yet existing, a new one is created.
 	 * @param ogrePosition 
 	 * @return 
 	 */
-	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition);
+	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition, bool createIfMissing = true);
 	
+	/**
+	 *    Gets the page at the specified position in the worl. If no page can be found, a null pointer is returned.
+	 * @param worldPosition 
+	 * @return 
+	 */
+	TerrainPage* getTerrainPage(const TerrainPosition& worldPosition);
 
 
+	/**
+	 * Gets the size of one page in world units
+	 * @return 
+	 */
 	int getPageSize() ;
 	
 	/**
@@ -171,10 +219,31 @@ public:
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
+	/**
+	 *    Accessor for the scene manager.
+	 * @return 
+	 */
 	EmberPagingSceneManager* getEmberSceneManager();
+	/**
+	 *    Accessor for the scene manager.
+	 * @return 
+	 */
 	const EmberPagingSceneManager* getEmberSceneManager() const;
 	
+	/**
+	 *    Rebuilds the height map, effectively regenerating the terrain
+	 */
+	void buildHeightmap();
+	
+	const TerrainInfo& getTerrainInfo() const;
+	
 protected:
+
+	/**
+	Information about the world, such as size and number of pages.
+	*/
+	TerrainInfo mTerrainInfo;
+
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
   	AreaShaderstore mAreaShaders;
 
@@ -192,6 +261,9 @@ protected:
 	typedef std::map<std::string, Ogre::Material*> MaterialStore;
 	MaterialStore materialStore;
 	Mercator::Terrain* mTerrain;
+	
+	Ogre::Real mHeightMax, mHeightMin;
+
 	
 	
 	//static TerrainGenerator* _instance;
