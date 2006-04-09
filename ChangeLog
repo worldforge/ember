@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/widgets/TerrainEditor.layout, src/components/ogre/widgets/TerrainEditor.lua: added widgets for terrain editing
+    
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/TerrainPage.cpp, src/components/ogre/TerrainPage.h: 
          * added method for updating all shader textures
          * modified the alpha blitting method to better align with the world
