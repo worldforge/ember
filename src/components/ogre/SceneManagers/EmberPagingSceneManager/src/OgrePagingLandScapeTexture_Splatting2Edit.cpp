@@ -38,11 +38,43 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 
 namespace Ogre
 {
+    uint PagingLandScapeTexture_Splatting2Edit::mPageSize = 0;
+    Real PagingLandScapeTexture_Splatting2Edit::heights[4];
+    Real PagingLandScapeTexture_Splatting2Edit::dividers[4];
+    ColourValue PagingLandScapeTexture_Splatting2Edit::colors[4];
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2Edit::_setPagesize(void)
     {
         mParent->getOptions()->VertexCompression = false;
         mParent->getOptions()->lodMorph = false;
+
+        mPageSize = mParent->getOptions()->PageSize - 1;
+
+        colors[0] = mParent->getOptions()->matColor[0];
+        colors[1] = mParent->getOptions()->matColor[1];
+        colors[2] = mParent->getOptions()->matColor[2];
+        colors[3] = mParent->getOptions()->matColor[3];
+
+        //  slope[] ??
+
+        heights[0] = 0.0f;
+        heights[1] = mParent->getOptions()->matHeight[1];
+        heights[2] = mParent->getOptions()->matHeight[2];
+        heights[3] = mParent->getSceneManager()->getData2DManager()->getMaxHeight ();
+
+        dividers[0] = 1.0f;
+        if (heights[1] > 0)
+            dividers[1] = 1.0f / heights[1];
+        else 
+            dividers[1] = 0.0f;
+        if ((heights[2]  - heights[1]) > 0)
+            dividers[2] = 1.0f / (heights[2]  - heights[1]);
+        else 
+            dividers[1] = 0.0f;
+        if ((heights[3]  - heights[2]) > 0)
+            dividers[3] = 1.0f / (heights[3]  - heights[2]);
+        else 
+            dividers[1] = 0.0f;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2Edit::_clearData(void)
@@ -84,7 +116,7 @@ namespace Ogre
             {
 	            Image Imageloader;
                 const String group = mParent->getOptions()->groupName;
-                Imageloader.load (filename, group);
+                Imageloader.load(filename, group);
                 const size_t size = Imageloader.getWidth()*Imageloader.getHeight();
                 uchar *data = new uchar [size];
                 memcpy (data, Imageloader.getData(), size*sizeof(uchar));
@@ -160,74 +192,77 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2Edit::update()
+    void PagingLandScapeTexture_Splatting2Edit::upload(const Image::Box& textureRect)
     {    
         assert (!mMaterial.isNull() && "PagingLandScapeTexture_Splatting2Edit::update()");
 
-        // at least deformed once, so need to save texture if asked by user (option)
-        mIsModified = true; 
-
-        
-        Image::Box rect (0, 0, 0, 0, 0, 1);
-
-        // computes deformation
-        PagingLandScapeData2D *data;
-        const bool isDeformed = mIsDeformRectModified;
-        if (isDeformed)
+        for (uint i = 0; i < 4; i++)
         {
-            rect = mDeformRect;
-            data = mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ);
-//            rect = data->getDeformationRectangle ();
-            if (rect.getWidth() && rect.getHeight ())
+            if (isChannelNeedUpdate[i])
             {
-                rect.right += 1;
-                rect.bottom += 1;
+                const PixelBox srcBox = mImages[i].getPixelBox().getSubVolume(textureRect);	
+                const PixelBox lock = mBuffers[i]->lock(textureRect, HardwareBuffer::HBL_DISCARD); 
+                PixelUtil::bulkPixelConversion(srcBox, lock); 
+                mBuffers[i]->unlock();  	
 
-                // Do here some alpha map modification based on deformation
-                // see computeInstantBase(data, rect); of instant base texture.
+                isChannelNeedUpdate[i] = false;
+                isChannelModified[i] = true;
             }
         }
-        // try to upload only the smallest rectangle containing modification
-        if (mIsPaintRectModified)
+
+    }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeTexture_Splatting2Edit::computePoint(const uint imagePos,
+        const Real height, 
+        const Real slope)
+    {       
+        const uint curr_image_pos = imagePos;//bpp
+
+        Real alpha[4];   
+
+        uint indx = 1;
+        const uint numHeights = mParent->getOptions()->NumMatHeightSplat;
+        while (height >= heights[indx] && indx < numHeights)
+            indx++;                                
+
+        const uint bScale = 255;
+        const uint up_indx = indx;
+        const uint down_indx = indx - 1;
+        const Real interpol = (height  - heights[down_indx]) * dividers[up_indx];  
+
+        //ColourValue color;
+        for (uint ialpha = 0; ialpha < 4; ialpha++) 
+        {    
+            alpha[ialpha] = 0.0f;
+        }
+
+        if (slope < 0.05f)// speed-up as it's invisible
         {
-            if (isDeformed)
-            {
-                rect.left = std::min (mPaintRect.left, rect.left);
-                rect.right = std::max (mPaintRect.right, rect.right);
-                rect.top =  std::min (mPaintRect.top, rect.top);
-                rect.bottom = std::max (mPaintRect.bottom, rect.bottom);
-            } // if (mNeedUpdate)
-            else
-            {
-                rect = mPaintRect;
-                rect.right += 1;
-                rect.bottom += 1;
-            }
-        } // if (mIsRectModified)
+            const Real B = (1.0f - interpol);
+            const Real C = interpol;
 
-        // Upload any changes (deformation or)
-        if (rect.getWidth() && rect.getHeight ())
+            alpha[indx - 1] = B;
+            alpha[indx] = C; 
+        }
+        else 
         {
+            const Real A = (1.0f - slope);
+            const Real B = A * (1.0f - interpol);
+            const Real C = A * interpol;
+            const Real D = slope;
 
-            for (uint i = 0; i < 4; i++)
-            {
-                if (isChannelNeedUpdate[i])
-                {
-                    const PixelBox srcBox = mImages[i].getPixelBox().getSubVolume(rect);	
-                    const PixelBox lock = mBuffers[i]->lock(rect, HardwareBuffer::HBL_DISCARD); 
-                    PixelUtil::bulkPixelConversion(srcBox, lock); 
-                    mBuffers[i]->unlock();  	
+            alpha[indx - 1] = B;
+            alpha[indx] = C; 
 
-                    isChannelNeedUpdate[i] = false;
-                    isChannelModified[i] = true;
-                }
-            }
-        } // if (rect.getWidth() && rect.getHeight ())
+            alpha[ 2 ] = alpha[ 2 ] + slope;
+            alpha[ 2 ] = alpha[ 2 ] > 1.0f ? 1.0f : alpha[ 2 ];
+        }
 
-        if (isDeformed)
-            data->resetDeformationRectangle ();
-
-        PagingLandScapeTexture::updated ();
+        for (uint isplat = 0; isplat < 4; isplat++) 
+        {    
+            assert(mImages[isplat].getData());
+            mImages[isplat].getData()[curr_image_pos] = static_cast <uchar> (alpha[isplat]*bScale);
+        }
     }
     //-----------------------------------------------------------------------
     void  PagingLandScapeTexture_Splatting2Edit::paint (const uint x, const uint z, 
@@ -246,7 +281,8 @@ namespace Ogre
         const size_t psize = mParent->getOptions()->PageSize - 1;
         assert ((x + z*  psize < psize*psize) && "PagingLandScapeTexture_Splatting2Edit::paint()");
 
-        const uint curr_image_pos = static_cast <uint> (x + z * psize);
+        const Real textureScale = mParent->getOptions ()->TextureStretchFactor;
+        const uint curr_image_pos = static_cast <uint> (x*textureScale + z * psize*textureScale);
         const  uchar previousValue = BaseData[ curr_image_pos ];
         const  uchar newValue = static_cast <uchar> (255 * blend + previousValue * invBlend);
 

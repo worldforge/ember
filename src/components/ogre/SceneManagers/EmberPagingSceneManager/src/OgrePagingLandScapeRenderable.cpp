@@ -172,7 +172,8 @@ namespace Ogre
 										mParent->getOptions ()->ScaledPageSizeZ, 
                                         mLODMorphFactor);
 
-        mQueued = false;mParentTile= 0;
+        mQueued = false;
+        mParentTile = 0;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeRenderable::~PagingLandScapeRenderable()
@@ -188,7 +189,7 @@ namespace Ogre
         if (mIsLoaded)
             unload ();
 
-        mParentTile= 0;
+        mParentTile = 0;
 
         mParent->freeRenderable(this);
         mInfo = 0;
@@ -200,13 +201,14 @@ namespace Ogre
 	    mInUse = false;
         mMaterial.setNull();
         mLightListDirty = true;
-        mQueued = false;mParentTile= 0;
+        mQueued = false;
+        mParentTile = 0;
     }
     //-----------------------------------------------------------------------
     void  PagingLandScapeRenderable::init(PagingLandScapeTileInfo* info)
     {
         mQueued = false;
-        mParentTile= 0;
+        mParentTile = 0;
         mLightListDirty = true;
 	    mInfo = info;
 	    mInUse = true;
@@ -526,7 +528,7 @@ namespace Ogre
                     diff.makeFloor(cpos - aabb.getMinimum());
                     diff.makeCeil(cpos - aabb.getMaximum());
                     const Real L = (center - cpos).squaredLength();
-                    int oldRenderLevel = mRenderLevel;
+                    const int oldRenderLevel = mRenderLevel;
                     // if some deformation
                     if (mNeedReload)
                     {
@@ -558,7 +560,9 @@ namespace Ogre
                         mDistanceToCam = L * cam->getLodBias ();
 
 	                    // Material LOD
-	                    if (!mMaterial.isNull() && mMaterial->getNumLodLevels(0) > 1)
+	                    if (!mMaterial.isNull() 
+                            && mMaterial->getNumLodLevels(MaterialManager::getSingleton()._getActiveSchemeIndex()) > 1
+                            )
 		                    mMaterialLODIndex = mMaterial->getLodIndexSquaredDepth (L); 
                         mRenderLevel = -1;
                         const int maxMipmap = static_cast <int> (mParent->getOptions ()->maxRenderLevel);
@@ -631,12 +635,6 @@ namespace Ogre
                     if (oldRenderLevel != mRenderLevel || mCurrIndexes == 0)
                     {
 						update ();
-                        for (uint i = 0; i < 4; i++)
-                        {
-						   PagingLandScapeRenderable * const r = mNeighbors[i];
-                           if (r && r->isLoaded ()&& r->isVisible())
-                               r->update ();
-                      }         
                     }
 					mVisible = true;
                     return;
@@ -648,26 +646,26 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderable::update()
 	{
-		mChangedRenderLevel = true;
-    }
-    //-----------------------------------------------------------------------
-    IndexData* PagingLandScapeRenderable::getIndexData(void)
-    {
-        return mParent->getSceneManager()->getIndexBufferManager()->getIndexData(mRenderLevel, 
-																		mNeighbors);
+        mChangedRenderLevel = true;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderable::_updateRenderQueue(RenderQueue* queue)
     {   
        // Notify need to calculate light list when our sending to render queue
        mLightListDirty = true;
-     
        assert (mInUse &&  mParentNode && mIsLoaded && mVisible);
-        mParent->addVisible ();
+       mParent->addVisible ();
 
-        //MovableObject::_updateRenderQueue(queue);
-        queue->addRenderable(this);
-        
+       if (mChangedRenderLevel)
+       {
+           for (uint i = 0; i < 4; i++)
+           {
+               PagingLandScapeRenderable * const r = mNeighbors[i];
+               if (r && r->isLoaded () && r->isVisible ())
+                   r->update ();
+           }
+       }
+       queue->addRenderable(this);        
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderable::setInUse (bool InUse)
@@ -718,11 +716,12 @@ namespace Ogre
         op.operationType = RenderOperation::OT_TRIANGLE_LIST;
         op.vertexData = mCurrVertexes;
 
-		if (mChangedRenderLevel)
-		{
-			mIndex = getIndexData();
-			mChangedRenderLevel = false;
-		} 
+        if (mChangedRenderLevel)
+        {
+            mIndex = mParent->getSceneManager()->getIndexBufferManager()->getIndexData(mRenderLevel, 
+                mNeighbors);
+            mChangedRenderLevel = false;
+        }         
 		assert (mIndex);
 		op.indexData = mIndex;
     }
@@ -877,9 +876,9 @@ namespace Ogre
             {
                 for (i = offSetX; i < tilesizeMinusstepX; i += step)
                 {
-                 	//added for Ember
+                    //added for Ember
                    bool isInValidVertex;
-                   {
+                    {
                         const Vector3 v1(i,        heightField[ i +        K_heightFieldPos ],         j);
                         const Vector3 v2(i + step, heightField[ i + step + K_heightFieldPos ],         j);
                         const Vector3 v3(i,        heightField[ i +        K_heightFieldPos + ZShift], j + step);
@@ -887,97 +886,97 @@ namespace Ogre
 
                         t1.redefine(v1, v3, v2);
                         t2.redefine(v2, v3, v4);
-                          //only update the distance if none of the heights are 0.0
+                        //only update the distance if none of the heights are 0.0
                         //this is to allow for invalid Mercator::Segments without messing up the tricount
                         //the reason is that mercator defines the height of all invald segments to 0.0
                         //if such a segment was to be next to a normal segment, the delta would be way to high, 
                         //resulting in a tile which was always in LOD 0
                         isInValidVertex = v1.y == 0.0 || v2.y == 0.0 || v3.y == 0.0 || v4.y == 0.0;
-                   }
+                    }
 
-						if (!isInValidVertex) {
-					// include the bottommost row of vertices if this is the last row
-						const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
-						for (int z = 0; z <= zubound; z++)
-						{
-							const int fulldetailz = j + z;
-							const Real zpct = z * invStep;
-							const bool isFullDetailZ = (fulldetailz % step == 0);
-							const int zPageSize = z * pageSize;
-							{
-								// include the rightmost col of vertices if this is the last col
-								const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
-								for (int x = 0; x <= xubound; x++)
-								{
-									const int fulldetailx = i + x;
-	
-									if (isFullDetailZ && 
-										fulldetailx % step == 0)
-									{
-										// Skip, this one is a vertex at this level
-										continue;
-									}
-									const Real xpct = x * invStep;
-	
-									//interpolated height                           
-									Real interp_h;
-									// Determine which triangle we're on 
-									if (xpct + zpct <= 1.0f)
-									{
-										// Solve for x/z
-										interp_h = 
-											(-(t1.normal.x * fulldetailx)
-											- t1.normal.z * fulldetailz
-											- t1.d) / t1.normal.y;
-									}
-									else
-									{
-										// Second triangle
-										interp_h = 
-											(-(t2.normal.x * fulldetailx)
-											- t2.normal.z * fulldetailz
-											- t2.d) / t2.normal.y;
-									} 
-	
-									assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
-	
-									const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
-	
-									const Real delta = interp_h - actual_h;
-									const Real D2 = delta * delta * Csqr;
-	
-									if (mMinLevelDistSqr[ level ] < D2)
-										mMinLevelDistSqr[ level ] = D2;
-	
-									// Should be save height difference?
-									// Don't morph along edges
-									if (lodMorph)
-									{   
-										// Save height difference                    
-										if (delta != 0.0f)
-										{
-											const int tileposx = fulldetailx - offSetX;
-											const int tileposy = fulldetailz - offSetZ;
-	
-											if (tileposx != 0  && tileposx != (tilesize - 1) && 
-												tileposy != 0  && tileposy != (tilesize - 1))
-											{         
-	
-												assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
-	
-												pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-													static_cast<short>                                     
-													((interp_h  * inv_scale) - 32768); 
-												//                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-												//                                            interp_h; 
-											}
-										}
-									}
-								}
-	
-							}
-						}
-					}
+                    if (!isInValidVertex) {
+                    // include the bottommost row of vertices if this is the last row
+                    const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
+                    for (int z = 0; z <= zubound; z++)
+                    {
+                        const int fulldetailz = j + z;
+                        const Real zpct = z * invStep;
+                        const bool isFullDetailZ = (fulldetailz % step == 0);
+                        const int zPageSize = z * pageSize;
+                        {
+                            // include the rightmost col of vertices if this is the last col
+                            const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
+                            for (int x = 0; x <= xubound; x++)
+                            {
+                                const int fulldetailx = i + x;
+
+                                if (isFullDetailZ && 
+                                    fulldetailx % step == 0)
+                                {
+                                    // Skip, this one is a vertex at this level
+                                    continue;
+                                }
+                                const Real xpct = x * invStep;
+
+                                //interpolated height                           
+                                Real interp_h;
+                                // Determine which triangle we're on 
+                                if (xpct + zpct <= 1.0f)
+                                {
+                                    // Solve for x/z
+                                    interp_h = 
+                                        (-(t1.normal.x * fulldetailx)
+                                        - t1.normal.z * fulldetailz
+                                        - t1.d) / t1.normal.y;
+                                }
+                                else
+                                {
+                                    // Second triangle
+                                    interp_h = 
+                                        (-(t2.normal.x * fulldetailx)
+                                        - t2.normal.z * fulldetailz
+                                        - t2.d) / t2.normal.y;
+                                } 
+
+                                assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
+
+                                const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
+
+                                const Real delta = interp_h - actual_h;
+                                const Real D2 = delta * delta * Csqr;
+
+                                if (mMinLevelDistSqr[ level ] < D2)
+                                    mMinLevelDistSqr[ level ] = D2;
+
+                                // Should be save height difference?
+                                // Don't morph along edges
+                                if (lodMorph)
+                                {   
+                                    // Save height difference                    
+                                    if (delta != 0.0f)
+                                    {
+                                        const int tileposx = fulldetailx - offSetX;
+                                        const int tileposy = fulldetailz - offSetZ;
+
+                                        if (tileposx != 0  && tileposx != (tilesize - 1) && 
+                                            tileposy != 0  && tileposy != (tilesize - 1))
+                                        {         
+
+                                            assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
+
+                                            pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+                                                static_cast<short>                                     
+                                                ((interp_h  * inv_scale) - 32768); 
+                                            //                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+                                            //                                            interp_h; 
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        }
+                    }
                 }       
                 K_heightFieldPos += pageSize * step;
             }
@@ -1130,8 +1129,8 @@ namespace Ogre
 			mWorldBoundingSphere.setRadius((mBounds.getMaximum() - mBounds.getMinimum()).length() / 2);
 			mParentNode->needUpdate();
 		}
-	}
-
+    }
+    //-----------------------------------------------------------------------
 	Vector3 PagingLandScapeRenderable::_getvertex(const int x, const int z) const
 	{
 		const uint tilesize = mParent->getOptions ()->TileSize - 1;
@@ -1175,11 +1174,16 @@ namespace Ogre
 		const uint tilesize = mParent->getOptions ()->TileSize -1 ;
 		
 		Vector3 *vert = pVerts;
+		Vector3 snPosition = mParent->getOptions ()->position;
+		Vector3 tmpVertex;
+		
 		for (uint i=0; i<=tilesize; ++i)
 		{
 			for (uint j=0; j<=tilesize; ++j)
 			{
-				*vert++=  _getvertex(j, i);
+				tmpVertex = _getvertex(j, i);
+				tmpVertex += snPosition; // translate current vertex relatively parent SN position
+				*vert++=  tmpVertex;
 			}
 		}
 	} 

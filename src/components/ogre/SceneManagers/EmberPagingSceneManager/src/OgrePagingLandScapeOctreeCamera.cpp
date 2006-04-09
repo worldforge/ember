@@ -54,6 +54,7 @@ namespace Ogre
             mFrameSceneId(0)
     {
        mUniqueIdentification = s_camId++;      
+       updateRegistrationInOcclusionSystem ();
     }
     //-----------------------------------------------------------------------
     PagingLandScapeOctreeCamera::~PagingLandScapeOctreeCamera()
@@ -90,7 +91,7 @@ namespace Ogre
 			if (nextOcclusionMode == VIEW_FRUSTUM_DIRECT)
 			{
 				if (mLastViewport)
-					mLastViewport->setClearEveryFrame (true);
+					mLastViewport->setClearEveryFrame (true);                
 			}
 			else
 			{            
@@ -103,20 +104,25 @@ namespace Ogre
 				if (mLastViewport)
 					mLastViewport->setClearEveryFrame (false); 
 			}
-			
-			if (needRegistrationInOcclusionSystem() && !isRegisteredInOcclusionSystem()) 
-			{
-				static_cast <PagingLandScapeOctreeSceneManager *> (getSceneManager ())->registerCamera(this);
-				setRegisteredInOcclusionSystem (true);				
-			}
-			else if (!needRegistrationInOcclusionSystem() && isRegisteredInOcclusionSystem())
-			{	
-				static_cast <PagingLandScapeOctreeSceneManager *> (getSceneManager ())->unregisterCamera(this);
-				setRegisteredInOcclusionSystem (false);
-			}
-			mOcclusionMode = nextOcclusionMode;
+
+            mOcclusionMode = nextOcclusionMode;
+			updateRegistrationInOcclusionSystem();
 		}
-	}
+    }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctreeCamera::updateRegistrationInOcclusionSystem()
+    {
+        if (needRegistrationInOcclusionSystem() && !isRegisteredInOcclusionSystem()) 
+        {
+            static_cast <PagingLandScapeOctreeSceneManager *> (getSceneManager ())->registerCamera(this);
+            setRegisteredInOcclusionSystem (true);				
+        }
+        else if (!needRegistrationInOcclusionSystem() && isRegisteredInOcclusionSystem())
+        {	
+            static_cast <PagingLandScapeOctreeSceneManager *> (getSceneManager ())->unregisterCamera(this);
+            setRegisteredInOcclusionSystem (false);
+        }
+    }
     //-----------------------------------------------------------------------
     void PagingLandScapeOctreeCamera::setNextOcclusionMode()
     {

@@ -93,29 +93,16 @@ namespace Ogre
             {
                 mMaterial = (MaterialManager::getSingleton().getByName("SplattingMaterial5Decompress"));
 
-
-                GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
+                Pass *p = mMaterial->getTechnique(0)->getPass(0);
+                GpuProgramParametersSharedPtr params = p->getVertexProgramParameters();
+                
 	            params->setNamedConstant("splatSettings", Vector4(opt->matHeight[1], 
                                                                   opt->matHeight[2], 
                                                                   opt->maxValue, 
                                                                     0.0));
-                // Check to see if custom param is already there
-                GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
-                bool found = false;
-                while (aci.hasMoreElements())
-                {
-                    const GpuProgramParameters::AutoConstantEntry& ace = aci.getNext();
-                    if (ace.paramType == GpuProgramParameters::ACT_CUSTOM && 
-                        ace.data == MORPH_CUSTOM_PARAM_ID)
-                    {
-                        found = true;
-                    }
-                }
-                if (!found)
-                {                        
-                    params->setNamedAutoConstant("compressionSettings", 
-                        GpuProgramParameters::ACT_CUSTOM, MORPH_CUSTOM_PARAM_ID);                       
-                }
+                
+                bindCompressionSettings (params);
+                bindCompressionSettings (p->getShadowReceiverVertexProgramParameters());
             }
             else
             {

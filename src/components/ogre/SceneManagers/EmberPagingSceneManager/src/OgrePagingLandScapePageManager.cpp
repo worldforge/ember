@@ -674,7 +674,8 @@ namespace Ogre
     {
         if (mCurrentcam)
 		{
-	        return mCurrentcam->mCurrentCameraPageX;
+
+            return mCurrentcam->mCurrentCameraPageX;
 		}
         return 0;
     }

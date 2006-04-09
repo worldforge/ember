@@ -35,12 +35,14 @@ namespace Ogre
     class PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture(PagingLandScapeTextureManager *pageMgr);
+	        PagingLandScapeTexture(PagingLandScapeTextureManager *pageMgr, bool supportModif = false);
 
 	        virtual ~PagingLandScapeTexture(void);
 
+            void bindCompressionSettings(GpuProgramParametersSharedPtr params);
+
 	        virtual void load(uint mX, uint mZ);
-            virtual void update(void) {};
+            virtual void update(void);
 	        virtual void unload(void);
 
             virtual void setPagesize(void){};
@@ -73,7 +75,7 @@ namespace Ogre
                         const Real paintForce, const uint mPaintChannel){};
 
             virtual void deformheight (const uint x, const uint z, 
-                        const Real paintForce){};
+                        const Real paintForce);
 
             void adjustDeformationRectangle(uint x, uint z);
             void adjustPaintRectangle(uint x, uint z);
@@ -88,10 +90,32 @@ namespace Ogre
 			inline bool isCoord(const uint x, const uint z){return (mDataX == x && mDataZ == z);};
 
             const String &getMaterialName();
-        protected:
-	        virtual void _loadMaterial(void) = 0;
 
+        protected:
+
+	        virtual void _loadMaterial(void) = 0;
             virtual void _unloadMaterial(void){};
+
+            virtual void compute(PagingLandScapeData2D* data, 
+                                const Image::Box& dataRect,
+                                const Image::Box& textureRect);
+
+
+            virtual void computePoint(const size_t imagePos,
+                                      const Real height, 
+                                      const Real slope) 
+            {
+                // if texture mode doesn't support dynamic modif
+            }; 
+
+            virtual void upload(const Image::Box& textureRect) 
+            {
+                // if texture mode doesn't support dynamic modif
+            }; 
+
+
+            bool mSupportModif;
+
 
 	        bool mIsLoaded;
             bool mIsModified;

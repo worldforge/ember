@@ -124,12 +124,16 @@ namespace Ogre
 	    if (!mIsInSceneGraph) 
             return false;
 
+        // Object Bounding Box Center
         const Vector3 center = mWorldAABB.getMaximum().midPoint(mWorldAABB.getMinimum());
 
+        // Min and Max of Octree BBox
         const Vector3 &bmin = box.getMinimum();
         const Vector3 &bmax = box.getMaximum();
 
-        return (bmax > center && bmin < center);
+        // Object Bbox center is IN Octree BBox ?
+        return (bmax.x >= center.x && bmax.y >= center.y && bmax.z >= center.z &&
+                bmin.x <= center.x && bmin.y <= center.y && bmin.z <= center.z);
 
     }
     //-----------------------------------------------------------------------

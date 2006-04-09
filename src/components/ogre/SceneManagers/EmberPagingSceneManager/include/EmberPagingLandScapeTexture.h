@@ -35,7 +35,7 @@ class EmberPagingLandScapeTexture : public Ogre::PagingLandScapeTexture
 {
 
 public:
-	EmberPagingLandScapeTexture( Ogre::PagingLandScapeTextureManager *pageMgr );
+	EmberPagingLandScapeTexture( Ogre::PagingLandScapeTextureManager *pageMgr, bool supportModif = false );
 	virtual ~EmberPagingLandScapeTexture( void );
 	
 	virtual Ogre::String getName(){return Ogre::String("EmberTexture");}

@@ -95,7 +95,7 @@ namespace Ogre
 	    LOD_factor = 10;
 
         scale = Vector3::UNIT_SCALE;
-
+	position = Vector3::ZERO;
 
 	    num_renderables = 64;
 	    num_renderables_increment = 64;
@@ -497,6 +497,10 @@ namespace Ogre
         setReal (scale.y, "ScaleY");
         setReal (scale.z, "ScaleZ");
 
+	setReal( position.x, "PositionX");
+	setReal( position.y, "PositionY");
+	setReal( position.z, "PositionZ");
+	
 		// secret tweak helping joining tile using vertex compression
 		// leads to texture distortion at page breaks otherwise.
 		const double scalemodif = static_cast <double> (PageSize - 1) / PageSize;
@@ -999,6 +1003,16 @@ namespace Ogre
 	    }
 
 
+        if (strKey == "MaxAdjacentPages")
+        {
+            max_adjacent_pages = * static_cast < const uint * > (pValue);
+            return true;
+        }
+        if (strKey == "MaxPreloadedPages")
+        {
+            max_preload_pages = * static_cast < const uint * > (pValue);
+            return true;
+        }
 	    return false;
     }
        
@@ -1058,6 +1072,21 @@ namespace Ogre
 		    * static_cast < Real * > (pDestValue) = scale.z;
 		    return true;
 	    }	
+    	    if (strKey == "PositionX")
+	    {
+		    * static_cast < Real * > (pDestValue) = position.x;
+		    return true;
+	    }
+	    if (strKey == "PositionY")
+	    {
+		    * static_cast < Real * > (pDestValue) = position.y;
+		    return true;
+	    }
+	    if (strKey == "PositionZ")
+	    {
+		    * static_cast < Real * > (pDestValue) = position.z;
+		    return true;
+	    }	
     
         if (strKey == "TextureNameLayer0")
 	    {
@@ -1096,7 +1125,18 @@ namespace Ogre
 	    {
 			* static_cast < Vector3 * > (pDestValue) =  Baselookat;
 		    return true;
-	    }
+        }
+
+        if (strKey == "MaxAdjacentPages")
+        {
+            * static_cast < uint * > (pDestValue) =  max_adjacent_pages;
+            return true;
+        }
+        if (strKey == "MaxPreloadedPages")
+        {
+            * static_cast < uint * > (pDestValue) =  max_preload_pages;
+            return true;
+        }
 	    return false;
     }
 
@@ -1141,6 +1181,18 @@ namespace Ogre
 		    return true;
 	    }
 	    if (strKey == "ScaleZ")
+	    {
+		    return true;
+	    }
+	    if (strKey == "PositionX")
+	    {
+		    return true;
+	    }
+	    if (strKey == "PositionY")
+	    {
+		    return true;
+	    }
+	    if (strKey == "PositionZ")
 	    {
 		    return true;
 	    }
@@ -1217,6 +1269,9 @@ namespace Ogre
 	    refKeys.push_back("ScaleX");
 	    refKeys.push_back("ScaleY");
 	    refKeys.push_back("ScaleZ");
+	    refKeys.push_back("PositionX");
+	    refKeys.push_back("PositionY");
+	    refKeys.push_back("PositionZ");
 	    return true;
     }
     //-----------------------------------------------------------------------

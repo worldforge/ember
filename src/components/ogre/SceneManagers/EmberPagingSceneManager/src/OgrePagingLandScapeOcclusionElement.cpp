@@ -38,7 +38,9 @@ namespace Ogre
     //---------------------------------------------------------------------
     VisibilityData *OcclusionElement::getNodeData(PagingLandScapeOctreeCamera *cam)
     {
-        assert (nodeDataPerCam.find(cam->getId()) != nodeDataPerCam.end());
+        if (nodeDataPerCam.find(cam->getId()) == nodeDataPerCam.end())
+            nodeDataPerCam[cam->getId()] = new VisibilityData();
+        //assert (nodeDataPerCam.find(cam->getId()) != nodeDataPerCam.end());
         return nodeDataPerCam[cam->getId()];
     }
     //---------------------------------------------------------------------

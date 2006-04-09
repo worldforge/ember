@@ -76,30 +76,9 @@ namespace Ogre
                         templateMaterial = MaterialManager::getSingleton().getByName(String ("PagingLandScape.Template.VertexPixelShaded"));
                         assert (!templateMaterial.isNull());
                         mMaterial = templateMaterial->clone(matname);    
-
-                        GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-    	                
-    //                    params->setNamedConstant("compressionSettings", Vector4(mParent->getOptions()->scale.x * mParent->getOptions()->PageSize, 
-    //                                                                        mParent->getOptions()->scale.y / 65535, 
-    //                                                                        mParent->getOptions()->scale.z * mParent->getOptions()->PageSize, 
-    //                                                                        0.0));
-                        // Check to see if custom param is already there
-                        GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
-                        bool found = false;
-                        while (aci.hasMoreElements())
-                        {
-                            const GpuProgramParameters::AutoConstantEntry& ace = aci.getNext();
-                            if (ace.paramType == GpuProgramParameters::ACT_CUSTOM && 
-                                ace.data == MORPH_CUSTOM_PARAM_ID)
-                            {
-                                found = true;
-                            }
-                        }
-                        if (!found)
-                        {                        
-                            params->setNamedAutoConstant("compressionSettings", 
-                                GpuProgramParameters::ACT_CUSTOM, MORPH_CUSTOM_PARAM_ID);                       
-                        }
+                        Pass *p = mMaterial->getTechnique(0)->getPass(0);
+                        bindCompressionSettings (p->getVertexProgramParameters());
+                        bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
                     }
                     else
                     {

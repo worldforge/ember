@@ -56,6 +56,7 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeTexture_Splatting7Edit.cpp \
 						OgrePagingLandScapeTexture_SplattingShader.cpp \
 						OgrePagingLandScapeTexture_Splatting.cpp \
+						OgrePagingLandScapeTexture_SplattingShaderEdit.cpp \
 						OgrePagingLandScapeTile.cpp \
 						OgrePagingLandScapeTileManager.cpp \
 						OgrePagingLandScapeOcclusion.cpp \

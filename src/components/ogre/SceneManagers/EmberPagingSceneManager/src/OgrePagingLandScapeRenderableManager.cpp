@@ -260,6 +260,6 @@ namespace Ogre
 	    }
         #ifdef _DEBUG
             std::cout << "Renderables addBatch : " << mRenderables.size() << "\n";
-        #endif _DEBUG
+        #endif
     }
 } //namespace

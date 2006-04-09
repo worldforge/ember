@@ -151,8 +151,10 @@ namespace Ogre
 	        Real visible_renderables;			//Numbers of visible renderables surrounding the camera
 	        Real renderable_factor;				//Determines the distance of loading and unloading of renderables in renderable numbers
 
-	        Vector3 scale;
-
+		Vector3 position;				//Startup position of the terrain surface
+		
+		Vector3 scale;
+		
 	        Material::LodDistanceList lodMaterialDistanceList; //Distance for the material LOD change
 	        Real distanceLOD;					//Distance for the LOD change
 	        Real LOD_factor;

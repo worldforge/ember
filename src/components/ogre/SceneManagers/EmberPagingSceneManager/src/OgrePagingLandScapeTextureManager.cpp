@@ -46,6 +46,7 @@
 #include "OgrePagingLandScapeTexture_Splatting4.h"
 #include "OgrePagingLandScapeTexture_Splatting5.h"
 #include "OgrePagingLandScapeTexture_SplattingShader.h"
+#include "OgrePagingLandScapeTexture_SplattingShaderEdit.h"
 #include "OgrePagingLandScapeTexture_Splatting6.h"
 #include "OgrePagingLandScapeTexture_Splatting7.h"
 #include "OgrePagingLandScapeTexture_Splatting7Edit.h"
@@ -71,6 +72,7 @@ namespace Ogre
 
             registerTextureType (new PagingLandScapeTexture_InstantBaseTextureShadowed(this));
             registerTextureType (new PagingLandScapeTexture_SplattingShader(this));
+            registerTextureType (new PagingLandScapeTexture_SplattingShaderEdit(this));
 
             registerTextureType (new PagingLandScapeTexture_InstantBaseTexture(this));
             registerTextureType (new PagingLandScapeTexture_InstantBaseTextureEdit(this));

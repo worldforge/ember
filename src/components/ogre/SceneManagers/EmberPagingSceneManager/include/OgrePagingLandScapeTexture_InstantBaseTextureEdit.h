@@ -43,8 +43,6 @@ namespace Ogre
             virtual void paint (const uint x, const uint z, 
                 const Real paintForce, const ColourValue &mPaintColor);  
 
-            virtual void deformheight (const uint x, const uint z, 
-                        const Real paintForce);
 
             virtual PagingLandScapeTexture* newTexture();
             virtual bool TextureRenderCapabilitesFullfilled(); 
@@ -52,12 +50,17 @@ namespace Ogre
         protected:
 
 	        virtual void _loadMaterial(void);
-        	virtual void update(void);
 	        virtual void _unloadMaterial(void);
 
-        private :
+            void computePoint(const uint imagePos,
+                const Real height, 
+                const Real slope);
+
+            void upload(const Image::Box &textureRect);
+
+    private :
             void _LoadTexture(const String& TexName, const String& groupName);
-            void computeInstantBase(PagingLandScapeData2D* data, const Image::Box& rect) const;    
+
             void computeInstantBaselight(void) const;
 
 

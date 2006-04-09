@@ -69,6 +69,7 @@ OgrePagingLandScapeTexture_Splatting7Edit.h \
 OgrePagingLandScapeTexture_Splatting7.h \
 OgrePagingLandScapeTexture_Splatting.h \
 OgrePagingLandScapeTexture_SplattingShader.h \
+OgrePagingLandScapeTexture_SplattingShaderEdit.h \
 OgrePagingLandScapeTile.h \
 OgrePagingLandScapeTileInfo.h \
 OgrePagingLandScapeTileManager.h \

@@ -37,7 +37,7 @@ namespace Ogre
                                 bool onlyshadowcaster,
                                 RenderQueue *q)
     {
-        bool newframe = false;
+        bool newframe = true;
 
         mCurrentRenderQueue = q; 
         mOnlyShadowCaster = onlyshadowcaster;
@@ -114,7 +114,7 @@ namespace Ogre
 
         if (!moToRender->empty())
         {
-            HardwareOcclusionQuery *query =  mQueryPool.getQuery();
+            HardwareOcclusionQuery *query =  mQueryPool.getPoolable();
             vis->query = query;
 
             // create the render Queue.
@@ -130,6 +130,8 @@ namespace Ogre
 				mScnMngr->directRenderSingleQueue (&*mCurrentRenderQueue);
 	        query->endOcclusionQuery ();
 
+            moToRender->clear();
+
             return true;
         }
         return false;
@@ -143,7 +145,7 @@ namespace Ogre
 
         VisibilityData * const vis =  n.getNodeData (mCurrentCam);
         assert (vis->query == 0);
-        HardwareOcclusionQuery *query =  mQueryPool.getQuery();
+        HardwareOcclusionQuery *query =  mQueryPool.getPoolable();
         vis->query = query;
 
         query->beginOcclusionQuery();  
@@ -162,7 +164,7 @@ namespace Ogre
         VisibilityData * const vis =  node.getNodeData (mCurrentCam);
         vis->query->pullOcclusionQuery (&visiblePixels);
 
-        mQueryPool.removeQuery (vis->query);
+        mQueryPool.removePoolable (vis->query);
         vis->query = 0;
 
 		if (visiblePixels > mVisibilityTreshold) 
@@ -246,7 +248,7 @@ namespace Ogre
                 uint visiblePixels = 0;
 			    //this one wait if result not available
                 vis->query->pullOcclusionQuery(&visiblePixels);
-                mQueryPool.removeQuery(vis->query);
+                mQueryPool.removePoolable(vis->query);
                 vis->query = 0;
 			    if(visiblePixels > visibilityTreshold) 
                 {
@@ -371,7 +373,7 @@ namespace Ogre
                 uint visiblePixels = 0;
 			    //this one wait if result not available
                 vis->query->pullOcclusionQuery(&visiblePixels);
-                mQueryPool.removeQuery(vis->query);
+                mQueryPool.removePoolable(vis->query);
                 vis->query = 0;
 			    if(visiblePixels > visibilityTreshold) 
                 {

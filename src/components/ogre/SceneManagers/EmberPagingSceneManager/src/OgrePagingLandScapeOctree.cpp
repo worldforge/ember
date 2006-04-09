@@ -36,6 +36,7 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #include "OgreWireBoundingBox.h"
 #include "OgreOcclusionBoundingBox.h"
 
+#include "OgrePagingLandScapeOctreeSceneManager.h"
 #include "OgrePagingLandScapeOctree.h"
 #include "OgrePagingLandScapeOctreeNode.h"
 #include "OgreDebugRectangle2D.h"
@@ -43,14 +44,14 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    PagingLandScapeOctree::PagingLandScapeOctree(PagingLandScapeOctree * parent) : 
+    PagingLandScapeOctree::PagingLandScapeOctree() : 
         OcclusionElement(),
 
             mWireBoundingBox(0),
             mOcclusionBoundingBox(0),
             mHalfSize(Vector3::ZERO),
             mNumNodes (0),
-            mParent (parent)
+            mParent (0)
     {
         //initialize all children to null.
         for (uint i = 0; i < 2; i++)
@@ -63,22 +64,47 @@ namespace Ogre
                 }
             }
         }
-
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeOctree::~PagingLandScapeOctree()
+    void PagingLandScapeOctree::reset()
     {
         //initialize all children to null.
+        PagingLandScapeOctree *o;
         for (uint i = 0; i < 2; i++)
         {
             for (uint j = 0; j < 2; j++)
             {
                 for (uint k = 0; k < 2; k++)
                 {
-                    delete mChildren[ i ][ j ][ k ];
+                    o =  mChildren[ i ][ j ][ k ];
+                    if (o)
+                    {
+                        mSceneMgr->deleteOctree (mChildren[ i ][ j ][ k ]);
+                        mChildren[ i ][ j ][ k ] = 0;
+                    }
                 }
             }
         }
+        mSceneMgr = 0;
+        mParent = 0;  
+        mNumNodes = 0;
+    }
+    //-----------------------------------------------------------------------
+    PagingLandScapeOctree::~PagingLandScapeOctree()
+    {
+        //initialize all children to null.
+#ifdef _DEBUG
+        for (uint i = 0; i < 2; i++)
+        {
+            for (uint j = 0; j < 2; j++)
+            {
+                for (uint k = 0; k < 2; k++)
+                {
+                    assert (mChildren[ i ][ j ][ k ] == 0);
+                }
+            }
+        }
+#endif //_DEBUG
 
         delete mWireBoundingBox;
         delete mOcclusionBoundingBox;
@@ -193,7 +219,9 @@ namespace Ogre
                 max.z = octantMax.z;
             }
 
-            PagingLandScapeOctree *newChild = new PagingLandScapeOctree(this);
+            PagingLandScapeOctree *newChild = scn->getNewOctree();
+            newChild->setParent (this);
+            newChild->setSceneManager(scn);
             newChild ->setBoundingBox(min, max);
             scn->registeredNodeInCamera (newChild);
             #ifdef _VISIBILITYDEBUG   
@@ -217,7 +245,10 @@ namespace Ogre
         const Vector3 octCenter = octantMin + mHalfSize;   
 
         const Vector3 ncenter = box.getMaximum().midPoint(box.getMinimum());
-        
+
+        assert (octantMax.x >= ncenter.x && octantMax.y >= ncenter.y && octantMax.z >= ncenter.z &&
+                octantMin.x <= ncenter.x && octantMin.y <= ncenter.y && octantMin.z <= ncenter.z);
+
         unsigned int x;
         if (ncenter.x > octCenter.x)
             x = 1;
@@ -273,8 +304,19 @@ namespace Ogre
                 max.z = octantMax.z;
             }
 
-            PagingLandScapeOctree *newChild = new PagingLandScapeOctree(this);
-            newChild ->setBoundingBox(min, max);
+#ifdef _DEBUG
+            std::cout << "new Child\n";
+#endif _DEBUG
+
+            PagingLandScapeOctree *newChild = scn->getNewOctree();
+            newChild->setParent (this);
+            newChild->setSceneManager(scn);
+            newChild->setBoundingBox(min, max);
+
+            assert (max.x >= ncenter.x && max.y >= ncenter.y && max.z >= ncenter.z &&
+                    min.x <= ncenter.x && min.y <= ncenter.y && min.z <= ncenter.z);
+          
+
             scn->registeredNodeInCamera (newChild);
             #ifdef _VISIBILITYDEBUG   
                 newChild ->setDebugCorners(scn);
@@ -312,9 +354,11 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeOctree::_removeNode(PagingLandScapeOctreeNode * n)
-	{  
+    {  
+        assert (!mNodes.empty());
+
 		NodeList::iterator it;
-		
+       
 		it = std::find (mNodes.begin (), mNodes.end (), n); 
 		if (it != mNodes.end ()) 
 			mNodes.erase (it);
@@ -332,10 +376,38 @@ namespace Ogre
 				mMovingNodes.erase (it);
         }
         n->setOctant(0);
-
         //update total counts.
-        _unref();
+        _unref(mNumNodes == 1);
     }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctree::_unref(const bool removeChildren)
+    {
+        --mNumNodes;
+        if (removeChildren)
+        {
+            //remove null children
+            PagingLandScapeOctree *child;
+            for (uint i = 0; i < 2; i++)
+            {
+                for (uint j = 0; j < 2; j++)
+                {
+                    for (uint k = 0; k < 2; k++)
+                    {
+                        child = mChildren[ i ][ j ][ k ];
+                        if (child && !child->hasChildren())
+                        {
+                            mSceneMgr->deleteOctree(child);
+                            mChildren[ i ][ j ][ k ] = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (mParent != 0)
+        {
+            mParent->_unref(mNumNodes == 0);
+        }
+    };
     //-----------------------------------------------------------------------
     void PagingLandScapeOctree::_getCullBounds(AxisAlignedBox *b) const
     {
@@ -368,7 +440,17 @@ namespace Ogre
         }
         return mOcclusionBoundingBox;     
     }
-    #ifdef _VISIBILITYDEBUG
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctree::setParent(PagingLandScapeOctree * parent)
+    {
+        mParent = parent;
+    }
+    //-----------------------------------------------------------------------
+    void PagingLandScapeOctree::setSceneManager(PagingLandScapeOctreeSceneManager * scn)
+    {
+        mSceneMgr = scn;
+    }
+#ifdef _VISIBILITYDEBUG
         //-----------------------------------------------------------------------
         void PagingLandScapeOctree::setDebugCorners(PagingLandScapeOctreeSceneManager *scnMgr)
         {
@@ -409,5 +491,5 @@ namespace Ogre
                                 (1.0f - toScreenDivider) + bottom);
             }
         } 
-    #endif //_VISIBILITYDEBUG    
+#endif //_VISIBILITYDEBUG    
 }

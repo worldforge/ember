@@ -30,7 +30,7 @@ namespace EmberOgre
 {
 	
 
-	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture( Ogre::PagingLandScapeTextureManager *textureMgr ): Ogre::PagingLandScapeTexture(textureMgr)
+	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture( Ogre::PagingLandScapeTextureManager *textureMgr, bool supportModif ): Ogre::PagingLandScapeTexture(textureMgr, supportModif)
 	{
 	}
 	

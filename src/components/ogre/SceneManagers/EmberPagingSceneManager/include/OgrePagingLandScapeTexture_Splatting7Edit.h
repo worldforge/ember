@@ -47,18 +47,28 @@ namespace Ogre
 
         protected:
 	        virtual void _loadMaterial(void);
-        	virtual void update(void);
             virtual void _unloadMaterial(void);
+
+            void computePoint(const uint imagePos,
+                const Real height, 
+                const Real slope);
+            void upload(const Image::Box& textureRect);
 
         private :
             void LoadAlphaMap(const String &filename, const uint channel);
-
+            
             Image mImages[3];            
 	        //! Pointer to ogre texture
             TexturePtr mTextures[3];
             HardwarePixelBufferSharedPtr mBuffers[3];
             bool isChannelNeedUpdate[3];
             bool isChannelModified[3];
+
+            static uint mPageSize;
+            static Real heights[4];
+            static Real dividers[4];
+            static ColourValue colors[4];
+            //static ColourValue colors[4];
     };
 }
 

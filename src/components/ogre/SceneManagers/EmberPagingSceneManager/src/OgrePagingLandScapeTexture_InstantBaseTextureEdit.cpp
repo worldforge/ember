@@ -95,7 +95,9 @@ namespace Ogre
 		  
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_InstantBaseTextureEdit::PagingLandScapeTexture_InstantBaseTextureEdit(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_InstantBaseTextureEdit::PagingLandScapeTexture_InstantBaseTextureEdit(PagingLandScapeTextureManager *textureMgr)
+        : 
+        PagingLandScapeTexture(textureMgr, true)
     {
     }
     //-----------------------------------------------------------------------
@@ -188,7 +190,9 @@ namespace Ogre
 	            mMaterial->setLightingEnabled(mParent->getOptions()->lit);
             }
             else
+            {
                 _LoadTexture(finalTexName, groupName);
+            }
            
         }
     }
@@ -210,67 +214,17 @@ namespace Ogre
         mBuffer = mTexture->getBuffer ();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureEdit::update()
+    void PagingLandScapeTexture_InstantBaseTextureEdit::upload(const Image::Box &textureRect)
     {    
         assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTextureEdit::update()");
         assert (!mTexture.isNull() && "PagingLandScapeTexture_InstantBaseTextureEdit::update()");
         assert (!mBuffer.isNull() && "PagingLandScapeTexture_InstantBaseTextureEdit::update()");
 
-        // at least deformed once, so need to save texture if asked by user (option)
-        mIsModified = true; 
-
-        
-        Image::Box rect (0, 0, 0, 0, 0, 1);
-    
-        // computes deformation
-        PagingLandScapeData2D *data;
-        const bool isDeformed = mIsDeformRectModified;
-        if (isDeformed)
-        {
-            rect = mDeformRect;
-            data = mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ);
-//            rect = data->getDeformationRectangle ();
-            if (rect.getWidth() && rect.getHeight ())
-            {
-                rect.right += 1;
-                rect.bottom += 1;
-
-                // Do here some alpha map modification based on deformation
-
-               computeInstantBase(data, rect);
-            }
-        }
-        // try to upload only the smallest rectangle containing modification
-        if (mIsPaintRectModified)
-        {
-            if (isDeformed)
-            {
-                rect.left = std::min (mPaintRect.left, rect.left);
-                rect.right = std::max (mPaintRect.right, rect.right);
-                rect.top =  std::min (mPaintRect.top, rect.top);
-                rect.bottom = std::max (mPaintRect.bottom, rect.bottom);
-            } // if (mNeedUpdate)
-            else
-            {
-                rect = mPaintRect;
-                rect.right += 1;
-                rect.bottom += 1;
-            }
-        } // if (mIsRectModified)
-
-        // Upload any changes (deformation or)
-        if (rect.getWidth() && rect.getHeight ())
-        {
-            const PixelBox srcBox = mImage.getPixelBox().getSubVolume(rect);	
-            const PixelBox lock = mBuffer->lock(rect, HardwareBuffer::HBL_DISCARD); 
-            PixelUtil::bulkPixelConversion(srcBox, lock); 
-            mBuffer->unlock();  	
-        } // if (rect.getWidth() && rect.getHeight ())
-
-        if (isDeformed)
-            data->resetDeformationRectangle ();
-
-        PagingLandScapeTexture::updated ();
+        const PixelBox srcBox = mImage.getPixelBox().getSubVolume(textureRect);	
+        const PixelBox lock = mBuffer->lock(textureRect, HardwareBuffer::HBL_DISCARD); 
+        PixelUtil::bulkPixelConversion(srcBox, lock); 
+        mBuffer->unlock();  	
+      
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureEdit::paint (const uint x, const uint z, 
@@ -287,8 +241,10 @@ namespace Ogre
     
         assert ((x + z*  mPageSize < mPageSize*mPageSize) && "PagingLandScapeTexture_InstantBaseTextureEdit::paint()");
 
-        const uint curr_image_pos = x * 3+ z * mPageSize * 3;//x * 3 + z * mPageSize * 3;
-    const uchar bScale = 255;
+        const Real textureScale = mParent->getOptions ()->TextureStretchFactor;        
+        const uint curr_image_pos = x * 3*textureScale+ z * mPageSize * 3*textureScale;//x * 3 + z * mPageSize * 3;
+        const uchar bScale = 255;
+
         BaseData[ curr_image_pos ]    = 
             static_cast <uchar> (bScale * mPaintColor.r * blend + BaseData[ curr_image_pos ] * invBlend);
         BaseData[ curr_image_pos + 1] = 
@@ -298,73 +254,47 @@ namespace Ogre
         adjustPaintRectangle(x, z);
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureEdit::deformheight (const uint x, 
-                                                                const uint z, 
-                                                                const Real paintForce)
-    {
-        adjustDeformationRectangle(x, z);
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBase (
-        PagingLandScapeData2D *data, const Image::Box &rect) const
+    void PagingLandScapeTexture_InstantBaseTextureEdit::computePoint(
+        const uint imagePos,
+        const Real height, 
+        const Real slope)
     {       
         uchar * const BaseData = mBaseData;
-	    const Real * const mHeightData = data->getHeightData ();
-
         assert (BaseData && "PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBase()");
-        assert (mHeightData && "PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBase()");
+        const uint curr_image_pos = imagePos*3;//Bpp
 
+        uint indx = 1;
+        const uint numHeights = mParent->getOptions()->NumMatHeightSplat;
+        while (height >= heights[indx] && indx < numHeights)
+            indx++;                                
 
-        const size_t heightfiledsize = mPageSize + 1;
-        size_t curr_row = rect.top * heightfiledsize;
-
-        size_t curr_image_pos = rect.top*mPageSize*3 + rect.left*3;
-        const size_t image_width = (mPageSize - (rect.right - rect.left))*3;
-
-		const uchar bScale = 255;
-        for (size_t k = rect.top; k < rect.bottom; ++k)
+        const uint bScale = 255;
+        const uint up_indx = indx;
+        const uint down_indx = indx - 1;
+        const Real interpol = (height  - heights[down_indx]) * dividers[up_indx];  
+         
+        if (slope < 0.05f)// speed-up as it's invisible
         {
-		    for (size_t i = rect.left; i < rect.right; ++i)
-            {               
-                const Real height =  mHeightData[ i + curr_row ];
-                uint indx = 1;
-                while (height >= heights[indx])
-                    indx++;                                
+            const Real B = (1.0f - interpol);
+            const Real C = interpol;
 
-                const uint up_indx = indx;
-                const uint down_indx = indx - 1;
-                const Real interpol = (height  - heights[down_indx]) * dividers[up_indx];  
-                //slope of current point (the y value of the normal)
-                const Real Slope = 1.0f - data->getNormal (i, k).y; 
-
-                assert (i < mPageSize && k < mPageSize && "PagingLandScapeTexture_InstantBaseTextureEdit::computeinstantbase()");
-                if (Slope < 0.05f)// speed-up as it's invisible
-                {
-                    const Real B = (1.0f - interpol);
-                    const Real C = interpol;
-
-                    // RGB = colors[indx - 1] * B + colors[indx] * C;
-                    BaseData[ curr_image_pos ]    = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C)* bScale);
-                    BaseData[ curr_image_pos + 1] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C)* bScale);
-                    BaseData[ curr_image_pos + 2] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C)* bScale);
-                }
-                else 
-                {
-                    const Real A = (1.0f - Slope);
-                    const Real B = A * (1.0f - interpol);
-                    const Real C = A * interpol;
-                    const Real D = Slope;
-                   
-                    // RGB = colors[indx - 1] * B + colors[indx] * C + colors[2] * D;                    
-                    BaseData[ curr_image_pos ]     = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C + colors[2].r * D)* bScale);
-                    BaseData[ curr_image_pos + 1 ] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C + colors[2].g * D)* bScale);
-                    BaseData[ curr_image_pos + 2 ] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C + colors[2].b * D)* bScale);
-                }
-                curr_image_pos += 3;
-            }
-            curr_row += heightfiledsize;
-            curr_image_pos += image_width;
-        }           
+            // RGB = colors[indx - 1] * B + colors[indx] * C;
+            BaseData[ curr_image_pos ]    = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C)* bScale);
+            BaseData[ curr_image_pos + 1] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C)* bScale);
+            BaseData[ curr_image_pos + 2] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C)* bScale);
+        }
+        else 
+        {
+            const Real A = (1.0f - slope);
+            const Real B = A * (1.0f - interpol);
+            const Real C = A * interpol;
+            const Real D = slope;
+           
+            // RGB = colors[indx - 1] * B + colors[indx] * C + colors[2] * D;                    
+            BaseData[ curr_image_pos ]     = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C + colors[2].r * D)* bScale);
+            BaseData[ curr_image_pos + 1 ] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C + colors[2].g * D)* bScale);
+            BaseData[ curr_image_pos + 2 ] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C + colors[2].b * D)* bScale);
+        }
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureEdit::computeInstantBaselight () const

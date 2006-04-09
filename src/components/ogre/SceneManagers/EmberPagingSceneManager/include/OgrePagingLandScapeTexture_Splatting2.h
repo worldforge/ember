@@ -45,8 +45,6 @@ namespace Ogre
         protected:
 	        virtual void _loadMaterial(void);
 
-        private:
-            void LoadAlphaMap(const String& filename) const;
 
     };
 }

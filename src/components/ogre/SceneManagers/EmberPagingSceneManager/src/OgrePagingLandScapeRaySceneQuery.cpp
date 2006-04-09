@@ -68,7 +68,9 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
         worldFrag.singleIntersection.x = origin.x;
         worldFrag.singleIntersection.z = origin.z;
         worldFrag.singleIntersection.y = height;
-
+	
+	worldFrag.singleIntersection += mSceneMgr->getOptions()->position; //consider terrain offset
+	
         //if (!listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length()))					
         //if (!listener->queryResult(&worldFrag,  0))
 		//			return;

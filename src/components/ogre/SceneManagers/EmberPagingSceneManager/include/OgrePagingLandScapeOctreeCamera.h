@@ -83,6 +83,8 @@ namespace Ogre
 
             bool isRegisteredInOcclusionSystem() const;
             void setRegisteredInOcclusionSystem(const bool registered);
+            
+            void updateRegistrationInOcclusionSystem();
 
             void setNextOcclusionMode();
             culling_modes getOcclusionMode() const {return mOcclusionMode;};

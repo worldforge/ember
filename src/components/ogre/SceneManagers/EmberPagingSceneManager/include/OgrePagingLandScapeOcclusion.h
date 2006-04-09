@@ -21,7 +21,10 @@ namespace Ogre
 
         public:
             Occlusion(unsigned  int visibilityThsd = 0);
-	      
+            ~Occlusion()
+            {
+                mQueryPool.deletePool ();
+            }
 	        //this is the algorithm from the paper
 	        void CHCtraversal(PagingLandScapeOctree *octree);
             void CHCtraversalConservative (PagingLandScapeOctree *octree);
@@ -59,7 +62,8 @@ namespace Ogre
             void initQueryPool()
             {
                 if (mIsQueryPoolNotInitiated)
-                {
+                {   
+                    mQueryPool.setRenderSystem ();
                     mQueryPool.setAutoextend (true);
                     mQueryPool.setPoolSize (300);
                     mIsQueryPoolNotInitiated = false;

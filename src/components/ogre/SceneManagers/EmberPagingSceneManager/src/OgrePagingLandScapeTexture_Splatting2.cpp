@@ -70,29 +70,6 @@ namespace Ogre
     {
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2::LoadAlphaMap(const String &filename) const
-    {
-      
-       TexturePtr tex = TextureManager::getSingleton().getByName (filename);
-       if (tex.isNull())
-       {
-	        Image Imageloader;
-			const PagingLandScapeOptions * const opt = mParent->getOptions();
-            const String group = opt->groupName;
-            Imageloader.load (filename, group);
-            Image ImageConvertertoAlphaFormat;
-            ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), 
-                                                            Imageloader.getWidth(), 
-                                                            Imageloader.getHeight(), 
-                                                            1, PF_A8, false);
-
-            TextureManager::getSingleton().loadImage (filename, 
-                                                    group,
-                                                    ImageConvertertoAlphaFormat);
-       }
-       
-    }
-    //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting2::_loadMaterial()
     {
 	    if (mMaterial.isNull())

@@ -53,40 +53,40 @@ namespace Ogre
 		*/
 		void removeListener(PagingLandScapeListener* pl);
 
-		/// Fire event
+		/// Fire event when Heightmap page Loaded Event
 		void firePagePreloaded(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when Loaded is when page is textured and loaded in GPU.
 		void firePageLoaded(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when Loaded is when page is untextured and unloaded in GPU.
 		void firePageUnloaded(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when Heightmap page is unloaded
 		void firePagePostunloaded(const size_t pagex, const size_t pagez);
 
-		/// Fire event
+		/// Fire event when page is visible
 		void firePageShow(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when page is no more visible
 		void firePageHide(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		///  Fire event when tile is Loaded in GPU
 		void fireTileLoaded(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when tile is unLoaded in GPU
 		void fireTileUnloaded(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when tile is deformed 
 		void fireTileDeformed(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when tile is visible 
 		void fireTileShow(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		///  Fire event when tile is invisible 
 		void fireTileHide(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox);
 
-		/// Fire event
+		/// Fire event when all tiles and page needed are loaded
 		void fireTerrainReady(void);
 
 	

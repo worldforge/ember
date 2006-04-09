@@ -35,9 +35,9 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 #ifndef __PagingLandScapeOctree_H
 #define __PagingLandScapeOctree_H
 
+
 #include "OgreAxisAlignedBox.h"
 #include "OgrePagingLandScapeOcclusionElement.h"
-
 #include "OgrePagingLandScapeOcclusionTraversal.h"
 
 #include <list>
@@ -62,8 +62,13 @@ namespace Ogre
 	{
 
 	    public:
-	        PagingLandScapeOctree(PagingLandScapeOctree* p);
-		    ~PagingLandScapeOctree(void);
+            PagingLandScapeOctree();
+            ~PagingLandScapeOctree(void);
+
+            void reset();
+
+            void setParent(PagingLandScapeOctree * parent);
+            void setSceneManager(PagingLandScapeOctreeSceneManager * scn);
 
 		    /** Adds an PagingLandScapeOctree scene node to this PagingLandScapeOctree level.
 		    @remarks
@@ -78,7 +83,7 @@ namespace Ogre
 
 		    /** Returns the number of scene nodes attached to this PagingLandScapeOctree
 		    */
-		    int numNodes(void) const
+		    size_t numNodes(void) const
 		    {
 	            return mNumNodes;
 	        };
@@ -213,21 +218,13 @@ namespace Ogre
 
 		    /** Decrements the overall node count of this PagingLandScapeOctree and all it's parents
 		    */
-		    inline void _unref(void)
-		    {
-	            --mNumNodes;
-			    if (mParent != 0)
-			    {
-				    mParent->_unref();
-			    }
-		    };
+		    void _unref(const bool removeChildren);
 
 		    ///number of SceneNodes in this PagingLandScapeOctree and all it's children.
-		    int mNumNodes;
-
+            size_t mNumNodes;
 		    ///parent PagingLandScapeOctree
 		    PagingLandScapeOctree* mParent;
-
+            PagingLandScapeOctreeSceneManager *mSceneMgr;
             OcclusionBoundingBox* mOcclusionBoundingBox;
 	};
 

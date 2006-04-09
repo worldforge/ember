@@ -103,7 +103,9 @@ namespace Ogre
 		mImage.loadDynamicImage (0, 0, 0, PF_BYTE_RGB);    
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_InstantBaseTextureShadowed::PagingLandScapeTexture_InstantBaseTextureShadowed(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_InstantBaseTextureShadowed::PagingLandScapeTexture_InstantBaseTextureShadowed(PagingLandScapeTextureManager *textureMgr) 
+        :
+        PagingLandScapeTexture(textureMgr, true)
     {
     }
     //-----------------------------------------------------------------------
@@ -145,43 +147,23 @@ namespace Ogre
             if (mMaterial.isNull())
             {
                 MaterialPtr templateMaterial;
-                if (opt->VertexCompression)
+                if (opt->VertexCompression && opt->hasFragmentShader)
                 {
                     templateMaterial = MaterialManager::getSingleton ().
                         getByName (String ("InstantBaseMaterialVertexPixelShadedShadowed"));
                     
-		            // Create a new texture using the base image
-		            mMaterial = templateMaterial->clone(matname, true, groupName);    
+	                // Create a new texture using the base image
+	                mMaterial = templateMaterial->clone(matname, true, groupName);    
 
-                    GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-    	            
-//                    params->setNamedConstant("FogSettings", Vector4(opt->scale.x * opt->PageSize,
-//                                                                    opt->scale.y / 65535, 
-//                                                                    opt->scale.z * opt->PageSize, 
-//                                                                    0.0f));
-                     // Check to see if custom parameter is already there
-                    GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
-                    bool found = false;
-                    while (aci.hasMoreElements())
-                    {
-                        const GpuProgramParameters::AutoConstantEntry& ace = aci.getNext();
-                        if (ace.paramType == GpuProgramParameters::ACT_CUSTOM && 
-                            ace.data == MORPH_CUSTOM_PARAM_ID)
-                        {
-                            found = true;
-                        }
-                    }
-                    if (!found)
-                    {                        
-                        params->setNamedAutoConstant("compressionSettings", 
-                            GpuProgramParameters::ACT_CUSTOM, MORPH_CUSTOM_PARAM_ID);                       
-                    }
+                    Pass *p = mMaterial->getTechnique(0)->getPass(0);
+                    bindCompressionSettings (p->getVertexProgramParameters());
+                    bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
 
 
                     const String texname (filename +  ".HSP." + commonName + "." + extname);   
                     TextureManager::getSingleton().load (texname, groupName);  
-	                mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName (texname);
-                    mPositiveShadow = true;
+                    mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName (texname);
+                    mPositiveShadow = true;                   
                 }
                 else
                 {
@@ -253,97 +235,29 @@ namespace Ogre
         mBuffer = mTexture->getBuffer ();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::update()
+    void PagingLandScapeTexture_InstantBaseTextureShadowed::upload(const Image::Box &textureRect)
     {    
         assert (mImage.getData() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
         assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
         assert (!mTexture.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
         assert (!mBuffer.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
 
-        // at least deformed once, so need to save texture if asked by user (option)
-        mIsModified = true; 
+     
+        const PixelBox srcBox = mImage.getPixelBox().getSubVolume(textureRect);	
+        const PixelBox lock = mBuffer->lock(textureRect, HardwareBuffer::HBL_DISCARD); 
+        PixelUtil::bulkPixelConversion(srcBox, lock); 
+        mBuffer->unlock();  
 
-        
-        Image::Box dataRect (0, 0, 0, 0, 0, 1);
-        Image::Box texturerect (0, 0, 0, 0, 0, 1);
-
-        // computes deformation
-        PagingLandScapeData2D *data;
-        if (mIsDeformRectModified)
-        {
-            dataRect = mDeformRect;
-            data = mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ);
-//            rect = data->getDeformationRectangle ();
-            if (dataRect.getWidth() && dataRect.getHeight ())
-            {
-                const Real textureScale = mParent->getOptions()->TextureStretchFactor;
-                texturerect.left = dataRect.left * textureScale;
-                texturerect.right = dataRect.right *  textureScale;
-                texturerect.top  = dataRect.top *  textureScale;
-                texturerect.bottom = dataRect.bottom *  textureScale;
-
-                dataRect.right += 1;
-                dataRect.bottom += 1;
-
-                texturerect.right += 1;
-                texturerect.bottom += 1;
-
-                computeInstantBase(data, dataRect, texturerect);
-            }
-        }
-        // try to upload only the smallest rectangle containing modification
-        if (mIsPaintRectModified)
-        {
-            if (mIsDeformRectModified)
-            {
-                dataRect.left = std::min (mPaintRect.left, dataRect.left);
-                dataRect.right = std::max (mPaintRect.right, dataRect.right);
-                dataRect.top =  std::min (mPaintRect.top, dataRect.top);
-                dataRect.bottom = std::max (mPaintRect.bottom, dataRect.bottom);
-
-            } // if (mNeedUpdate)
-            else
-            {
-                dataRect = mPaintRect;
-
-                const Real textureScale = mParent->getOptions()->TextureStretchFactor;
-                
-                texturerect.left = dataRect.left *  textureScale;
-                texturerect.right = dataRect.right *  textureScale;
-                texturerect.top  = dataRect.top *  textureScale;
-                texturerect.bottom = dataRect.bottom *  textureScale;
-
-                dataRect.right += 1;
-                dataRect.bottom += 1;
-
-                texturerect.right += 1;
-                texturerect.bottom += 1;
-            }
-        } // if (mIsRectModified)
-
-
-        // Upload any changes (deformation or)
-        if (texturerect.getWidth() && texturerect.getHeight ())
-        {
-            const PixelBox srcBox = mImage.getPixelBox().getSubVolume(texturerect);	
-            const PixelBox lock = mBuffer->lock(texturerect, HardwareBuffer::HBL_DISCARD); 
-            PixelUtil::bulkPixelConversion(srcBox, lock); 
-            mBuffer->unlock();  
-
-            #ifdef _Missed_Spot                
-                        // debug can help finding missed spot.
-                        const PixelBox srcBox = mImage.getPixelBox();	
-                        const uint mTextureSize = mPageSize * mParent->getOptions()->TextureStretchFactor;
-                        const Image::Box rect (0, 0, 0, mTextureSize, mTextureSize, 1);
-                        const PixelBox lock = mBuffer->lock (rect ,HardwareBuffer::HBL_DISCARD); 
-                        PixelUtil::bulkPixelConversion(srcBox, lock); 
-                        mBuffer->unlock();
-            #endif //_Missed_Spot
-        } 
-
-        if (mIsDeformRectModified)
-            data->resetDeformationRectangle ();
-        PagingLandScapeTexture::updated ();
+        #ifdef _Missed_Spot                
+                    // debug can help finding missed spot.
+                    const PixelBox srcBox = mImage.getPixelBox();	
+                    const uint mTextureSize = mPageSize * mParent->getOptions()->TextureStretchFactor;
+                    const Image::Box rect (0, 0, 0, mTextureSize, mTextureSize, 1);
+                    const PixelBox lock = mBuffer->lock (rect ,HardwareBuffer::HBL_DISCARD); 
+                    PixelUtil::bulkPixelConversion(srcBox, lock); 
+                    mBuffer->unlock();
+        #endif //_Missed_Spot
+       
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureShadowed::paint (const uint x, const uint z, 
@@ -383,87 +297,53 @@ namespace Ogre
             static_cast <uchar> (bScale * mPaintColor.b * blend + BaseData[ curr_image_pos + 2] * invBlend);    
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::deformheight (const uint x, 
-                                                                const uint z, 
-                                                                const Real paintForce)
-    {
-        adjustDeformationRectangle(x, z);
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::computeInstantBase (
-        PagingLandScapeData2D *data, const Image::Box &dataRect, const Image::Box &textureRect) const
+    void PagingLandScapeTexture_InstantBaseTextureShadowed::computePoint(
+        const uint imagePos,
+        const Real height, 
+        const Real slope)
     {       
-        uchar * const ogre_restrict BaseData = mImage.getData();
-	    const Real * const ogre_restrict mHeightData = data->getHeightData ();
-
+        uchar * const ogre_restrict BaseData = mImage.getData();	    
         assert (BaseData && "PagingLandScapeTexture_InstantBaseTextureShadowed::computeInstantBase()");
-        assert (mHeightData && "PagingLandScapeTexture_InstantBaseTextureShadowed::computeInstantBase()");
+        const uint curr_image_pos = imagePos*3;//Bpp
 
-
-        const size_t heightfiledsize = mPageSize + 1;
-
-        const Real textureScale = mParent->getOptions()->TextureStretchFactor;
-
-        const uint textureSize = mPageSize * textureScale;
-        size_t curr_image_pos = textureRect.top*textureSize*3 + textureRect.left*3;
-        const size_t image_width = (textureSize - (textureRect.right - textureRect.left))*3;
-
-        const Real inv_scale = 1 / textureScale;
-        const uchar bScale = 255;
-        for (size_t k = textureRect.top; k < textureRect.bottom; ++k)
+        uint indx = 1;
+        const uint numHeights = mParent->getOptions()->NumMatHeightSplat;
+        while (height >= heights[indx] && indx < numHeights)
+            indx++;                                
+    
+        const uint bScale = 255;
+        const uint up_indx = indx;
+        const uint down_indx = indx - 1;
+        const Real interpol = (height  - heights[down_indx]) * dividers[up_indx];  
+               
+        if (slope < 0.05f)// speed-up as it's invisible
         {
-            const uint k_terrain = (uint)(k * inv_scale);
-            const uint curr_row = static_cast <uint> (k_terrain*heightfiledsize);
-		    for (size_t i = textureRect.left; i < textureRect.right; ++i)
-            {             
-                const uint i_terrain = (uint)(i * inv_scale);
+            const Real B = (1.0f - interpol);
+            const Real C = interpol;
 
-                const Real height =  mHeightData[ i_terrain + curr_row ];
-
-                uint indx = 1;
-                while (height >= heights[indx])
-                    indx++;                                
-
-                const uint up_indx = indx;
-                const uint down_indx = indx - 1;
-                const Real interpol = (height  - heights[down_indx]) * dividers[up_indx];  
-                //slope of current point (the y value of the normal)
-                const Real Slope = 1.0f - data->getNormal (i_terrain, k_terrain).y; 
-
-                assert (i < textureSize && k < textureSize && "PagingLandScapeTexture_InstantBaseTextureShadowed::computeinstantbase()");
-                const uint mul = 255;
-                if (Slope < 0.05f)// speed-up as it's invisible
-                {
-                    const Real B = (1.0f - interpol);
-                    const Real C = interpol;
-
-                    // RGB = colors[indx - 1] * B + colors[indx] * C;
-                    BaseData[ curr_image_pos ]    = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C)* bScale);
-                    BaseData[ curr_image_pos + 1] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C)* bScale);
-                    BaseData[ curr_image_pos + 2] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C)* bScale);
-                }
-                else 
-                {
-                    const Real A = (1.0f - Slope);
-                    const Real B = A * (1.0f - interpol);
-                    const Real C = A * interpol;
-                    const Real D = Slope;
-                   
-                    // RGB = colors[indx - 1] * B + colors[indx] * C + colors[2] * D;                    
-                    BaseData[ curr_image_pos ]     = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C + colors[2].r * D)* bScale);
-                    BaseData[ curr_image_pos + 1 ] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C + colors[2].g * D)* bScale);
-                    BaseData[ curr_image_pos + 2 ] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C + colors[2].b * D)* bScale);
-                }
-                curr_image_pos += 3;
-            }
-            curr_image_pos += image_width;
-        }           
+            // RGB = colors[indx - 1] * B + colors[indx] * C;
+            BaseData[ curr_image_pos ]    = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C)* bScale);
+            BaseData[ curr_image_pos + 1] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C)* bScale);
+            BaseData[ curr_image_pos + 2] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C)* bScale);
+        }
+        else 
+        {
+            const Real A = (1.0f - slope);
+            const Real B = A * (1.0f - interpol);
+            const Real C = A * interpol;
+            const Real D = slope;
+           
+            // RGB = colors[indx - 1] * B + colors[indx] * C + colors[2] * D;                    
+            BaseData[ curr_image_pos ]     = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C + colors[2].r * D)* bScale);
+            BaseData[ curr_image_pos + 1 ] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C + colors[2].g * D)* bScale);
+            BaseData[ curr_image_pos + 2 ] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C + colors[2].b * D)* bScale);
+        }
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTexture_InstantBaseTextureShadowed::lightUpdate()
     {
 		PagingLandScapeOptions * const opt = mParent->getOptions();
-        if (opt->VertexCompression)
+        if (opt->VertexCompression && opt->hasFragmentShader)
         {
             const Real SunAngle = opt->SunAngle;
             const Vector3 SunDir = opt->Sun;
@@ -580,9 +460,9 @@ namespace Ogre
 		    PagingLandScapeOptions * const opt = mParent->getOptions();
             const Real Texturescale = opt->TextureStretchFactor;
             const Image::Box datarect (0, 0, 0, mPageSize*Texturescale, mPageSize*Texturescale, 1);
-            computeInstantBase(mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ), 
-                datarect, 
-                mImage.getPixelBox());
+            compute(mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ), 
+                    datarect, 
+                    mImage.getPixelBox());
 
             const String fname = opt->LandScape_filename + 
                                 ".Base." + 

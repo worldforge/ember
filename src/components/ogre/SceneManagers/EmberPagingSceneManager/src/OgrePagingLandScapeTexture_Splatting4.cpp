@@ -70,27 +70,6 @@ namespace Ogre
     {
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting4::LoadAlphaMap(const String &filename) const
-    {
-       TexturePtr tex = TextureManager::getSingleton().getByName (filename);
-       if (tex.isNull())
-       {
-
-	        Image Imageloader;
-            const String group = mParent->getOptions()->groupName;
-            Imageloader.load (filename, group);
-            Image ImageConvertertoAlphaFormat;
-            ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), 
-                                                    Imageloader.getWidth(), 
-                                                    Imageloader.getHeight(), 
-                                                     1, PF_A8, false);
-
-            TextureManager::getSingleton().loadImage (filename, 
-                                                    group,
-                                                    ImageConvertertoAlphaFormat);
-       }
-    }
-    //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting4::_loadMaterial()
     {
 	    if (mMaterial.isNull())
@@ -137,9 +116,7 @@ namespace Ogre
                     // Create a new texture using the alpha map
                     texname = alphamapBeginname 
                             + StringConverter::toString(splat_pass) 
-                            + endName; 
-                    LoadAlphaMap (texname);
-                    
+                            + endName;                     
                     // assign this texture to the material
                     t->getPass(splat_pass + 1)->getTextureUnitState(1)->setTextureName(texname);
                     // assign the splat material

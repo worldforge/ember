@@ -63,7 +63,7 @@ namespace Ogre
  	   mMetaData.typeName = FACTORY_TYPE_NAME;
  	   mMetaData.description = "Scene manager organising the scene on the basis of an octree, and paging heightmap when needed.";
  	   mMetaData.sceneTypeMask = ST_EXTERIOR_REAL_FAR; // support all types
- 	   mMetaData.worldGeometrySupported = false;
+ 	   mMetaData.worldGeometrySupported = true;
     }
     //-----------------------------------------------------------------------
     SceneManager* PagingLandScapeSceneManagerFactory::createInstance(
@@ -117,7 +117,7 @@ namespace Ogre
         assert (mData2DManager);
         const Real y = mData2DManager->getMaxHeight () * 4;
         const Real z = mOptions->maxScaledZ;
-        PagingLandScapeOctreeSceneManager::resize(AxisAlignedBox(-x , 0, -z, x, y, z), 64);
+        PagingLandScapeOctreeSceneManager::resize(AxisAlignedBox(-x , 0, -z, x, y, z));
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::WorldDimensionChange()
@@ -904,7 +904,7 @@ namespace Ogre
         if (strKey == "LoadNow")
 		{
             assert (mPageManager);
-		    if (mOptions->max_preload_pages == mOptions->NumPages)
+		    if (mOptions->max_preload_pages*mOptions->max_preload_pages >= mOptions->NumPages)
             {
                 // Configuration file is telling us to pre-load all pages at startup.
                 for (uint pageY = 0; pageY < mOptions->world_height; pageY++)

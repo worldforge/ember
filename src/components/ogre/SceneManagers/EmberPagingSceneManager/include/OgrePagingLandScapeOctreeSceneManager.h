@@ -47,6 +47,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgrePagingLandScapeOcclusion.h"
 #include "OgreRenderable.h"
 
+#include "OgrePagingLandScapePoolSet.h"
 
 namespace Ogre
 {
@@ -74,6 +75,20 @@ namespace Ogre
     class PagingLandScapeOctreeAxisAlignedBoxSceneQuery;
     class PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery;
 
+    /** A collection of pre-allocated octrees
+    */
+    class OctreeSet : public PoolSet<PagingLandScapeOctree> 
+    {
+    protected:
+        virtual PagingLandScapeOctree* allocate ()
+        {
+            return new PagingLandScapeOctree();
+        }
+        virtual void deallocate (PagingLandScapeOctree *p)
+        {
+            delete p;
+        }
+    };
 
 
     //typedef std::list < WireBoundingBox* > BoxList;
@@ -107,6 +122,16 @@ namespace Ogre
         /** Standard destructor */
         virtual ~PagingLandScapeOctreeSceneManager(void);
 
+       inline PagingLandScapeOctree * getNewOctree()
+        {
+            return mOctreeSet.getPoolable();
+        }
+        inline void deleteOctree(PagingLandScapeOctree * p)
+        {
+            p->reset ();
+            mOctreeSet.removePoolable (p);
+        }
+        
         void shutdown();
         /// @copydoc SceneManager::getTypeName
         const String& getTypeName(void) const;
@@ -264,6 +289,7 @@ namespace Ogre
         VisiblesPerCam mVisibles;
         MovableObjectList * mCamInProgressVisibles;
         PolygonMode mCamDetail;
+        bool mCamClear;
 
         /// number of rendered objects
         int mNumObjects;
@@ -298,7 +324,10 @@ namespace Ogre
 
         void enableHardwareOcclusionTests();
         void disableHardwareOcclusionTests();
+
+        OctreeSet mOctreeSet;
     };
+
 
 }
 

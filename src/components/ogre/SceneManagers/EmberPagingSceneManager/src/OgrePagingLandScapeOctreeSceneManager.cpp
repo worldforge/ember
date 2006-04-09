@@ -330,6 +330,7 @@ namespace Ogre
 		mPagingLandScapeOctree(0),
 		mCurrentOptionCamera(0)
     {
+        mOctreeSet.setPoolSize (64);
         AxisAlignedBox b(-10000, -10000, -10000, 10000, 10000, 10000);
         int depth = 8; 
         init(b, depth);
@@ -358,10 +359,12 @@ namespace Ogre
 	    mSceneRoot->_notifyRootNode();
         // -- End changes by Steve
 
-        delete mPagingLandScapeOctree;
 
-        mPagingLandScapeOctree = new PagingLandScapeOctree(0);
-
+        if (mPagingLandScapeOctree)
+                deleteOctree (mPagingLandScapeOctree);
+        mPagingLandScapeOctree = mOctreeSet.getPoolable();
+        assert (mPagingLandScapeOctree);
+        mPagingLandScapeOctree->setSceneManager (this);
 
         mMaxDepth = depth;
         mBox = box;
@@ -391,7 +394,8 @@ namespace Ogre
         */ 
         // --End Changes by Steve
 
-        delete mPagingLandScapeOctree;
+        if (mPagingLandScapeOctree)
+            deleteOctree (mPagingLandScapeOctree);
 
         VisiblesPerCam::iterator i = mVisibles.begin ();
         while (i != mVisibles.end())
@@ -400,6 +404,7 @@ namespace Ogre
            ++i;
         }
         mVisibles.clear();
+        mOctreeSet.deletePool ();
     }
     //---------------------------------------------------------------------
     Camera * PagingLandScapeOctreeSceneManager::createCamera(const String &name)
@@ -547,7 +552,9 @@ namespace Ogre
 		unregisteredNodeInCamera (n);
     }
     //---------------------------------------------------------------------
-    void PagingLandScapeOctreeSceneManager::_addPagingLandScapeOctreeMovableNode(PagingLandScapeOctreeNode * n, PagingLandScapeOctree *octant, int depth)
+    void PagingLandScapeOctreeSceneManager::_addPagingLandScapeOctreeMovableNode(PagingLandScapeOctreeNode * n, 
+                                                                                 PagingLandScapeOctree *octant, 
+                                                                                 int depth)
     {
         const AxisAlignedBox bx = n->_getWorldAABB();
 
@@ -561,14 +568,23 @@ namespace Ogre
         }
         else
         {  
-            #ifdef _VISIBILITYDEBUG   
-                n ->setDebugCorners(this);
-            #endif //_VISIBILITYDEBUG    
+                #ifdef _VISIBILITYDEBUG   
+                    n ->setDebugCorners(this);
+                #endif //_VISIBILITYDEBUG    
+
+                #ifdef _DEBUG
+                    std::cout << "Depth Placement " 
+                        << StringConverter::toString (depth) 
+                        << " \n";
+                #endif _DEBUG
+
             octant->_addNode(n);
         }
     }
     //---------------------------------------------------------------------
-    void PagingLandScapeOctreeSceneManager::_addPagingLandScapeOctreeStaticNode(PagingLandScapeOctreeNode * n, PagingLandScapeOctree *octant, int depth)
+    void PagingLandScapeOctreeSceneManager::_addPagingLandScapeOctreeStaticNode(PagingLandScapeOctreeNode * n, 
+                                                                                PagingLandScapeOctree *octant, 
+                                                                                int depth)
     {
         const AxisAlignedBox bx = n->_getWorldAABB();
 
@@ -711,8 +727,8 @@ namespace Ogre
                 v->setClearEveryFrame(false);
                 v->setBackgroundColour(ColourValue::Black);
 
-                #define RENDERCOLOR
-                #ifdef RENDERCOLOR
+#define RENDERCOLOR
+#ifdef RENDERCOLOR
                     MaterialPtr mat = MaterialManager::getSingleton().create (
                                         "OcclusionDepthTextureMat",
                                         ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -729,7 +745,7 @@ namespace Ogre
 
                     //OcclusionDepthOverlay->setScale (0.5f, 0.5f);
                     OcclusionDepthPanel->setPosition (0.8, 0.8);
-                #endif //RENDERCOLOR
+#endif //RENDERCOLOR
 
                 mOcclusionCamera->setNearClipDistance(c_cam->getNearClipDistance());
                 mOcclusionCamera->setFarClipDistance(c_cam->getFarClipDistance());
@@ -755,6 +771,7 @@ namespace Ogre
             mOcclusionCamera->getViewport ()->getBackgroundColour ());
 
         #else //HWOCCLUSIONRTT
+
 			assert (c_cam->getViewport());
             mDestRenderSystem->_setViewport(c_cam->getViewport());
             mDestRenderSystem->clearFrameBuffer (FBT_DEPTH | FBT_COLOUR, 
@@ -771,17 +788,13 @@ namespace Ogre
     //---------------------------------------------------------------------
     void PagingLandScapeOctreeSceneManager::disableHardwareOcclusionTests()
     {
-        Camera * const c_cam = mCameraInProgress;
-
-		// make sure we restore previous detail level.
-		if (mCamDetail != PM_SOLID)
-			c_cam->setPolygonMode (mCamDetail);
-
-		assert (c_cam->getViewport ());
+        PagingLandScapeOctreeCamera * const octreeCam = static_cast <PagingLandScapeOctreeCamera *> (mCameraInProgress);
+       	
+		assert (octreeCam->getViewport ());
         #ifdef HWOCCLUSIONRTT
 
                 mDestRenderSystem->_endFrame();
-                mDestRenderSystem->_setViewport(c_cam->getViewport ());
+                mDestRenderSystem->_setViewport(octreeCam->getViewport ());
 
         #else //HWOCCLUSIONRTT
                 mDestRenderSystem->_endFrame();
@@ -790,13 +803,15 @@ namespace Ogre
 		if (mCamDetail != PM_SOLID)
 		{
 			mDestRenderSystem->clearFrameBuffer (FBT_DEPTH | FBT_COLOUR, 
-												c_cam->getViewport ()->getBackgroundColour (),//color
+												octreeCam->getViewport ()->getBackgroundColour (),//color
 												1.0f,//depth
 												0);//stencil
-		}
+		}	
+        
+        // make sure we restore previous detail level.
+        octreeCam->setPolygonMode (mCamDetail);
 
 		// Notify camera or vis faces
-		PagingLandScapeOctreeCamera * const octreeCam = static_cast <PagingLandScapeOctreeCamera *> (c_cam);
 		octreeCam->_addCHCRenderedFaces(mDestRenderSystem->_getFaceCount());
 	}
     //---------------------------------------------------------------------
@@ -812,11 +827,13 @@ namespace Ogre
         assert (mCamInProgressVisibles);
 
         #ifdef _VISIBILITYDEBUG
-            //if (!octreeCam->isRegisteredInOcclusionSystem())
-            //{
-            //    mPagingLandScapeOctree->traversal(RegisterCameraTraversal(octreeCam));
-            //    octreeCam->setRegisteredInOcclusionSystem(true);
-            //}
+            /*
+                if (!octreeCam->isRegisteredInOcclusionSystem())
+                {
+                    mPagingLandScapeOctree->traversal(RegisterCameraTraversal(octreeCam));
+                    octreeCam->setRegisteredInOcclusionSystem(true);
+                }
+            */
             mBoxes.clear();
             if (mCullCamera)
             {
@@ -1492,10 +1509,13 @@ namespace Ogre
 
         _findNodes(mPagingLandScapeOctree->getBoundingBox (), nodes, 0, true, mPagingLandScapeOctree);
 
-        delete mPagingLandScapeOctree;
+        if (mPagingLandScapeOctree)
+            deleteOctree (mPagingLandScapeOctree);
 
         mBox = box;
-        mPagingLandScapeOctree = new PagingLandScapeOctree(0);       
+        mPagingLandScapeOctree = mOctreeSet.getPoolable();
+        assert (mPagingLandScapeOctree);       
+        mPagingLandScapeOctree->setSceneManager (this);
         mPagingLandScapeOctree ->setBoundingBox (box.getMinimum(), box.getMaximum());       
 		registeredNodeInCamera (mPagingLandScapeOctree); 
         

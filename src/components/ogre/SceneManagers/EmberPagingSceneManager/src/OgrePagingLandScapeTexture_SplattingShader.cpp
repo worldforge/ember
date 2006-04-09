@@ -94,24 +94,8 @@ namespace Ogre
                 Pass * const p = mMaterial->getTechnique(0)->getPass(0); 
                 if (compressed)
                 {
-                    GpuProgramParametersSharedPtr params = p->getVertexProgramParameters();
-                    // Check to see if custom param is already there
-                    GpuProgramParameters::AutoConstantIterator aci = params->getAutoConstantIterator();
-                    bool found = false;
-                    while (aci.hasMoreElements())
-                    {
-                        const GpuProgramParameters::AutoConstantEntry& ace = aci.getNext();
-                        if (ace.paramType == GpuProgramParameters::ACT_CUSTOM && 
-                            ace.data == MORPH_CUSTOM_PARAM_ID)
-                        {
-                            found = true;
-                        }
-                    }
-                    if (!found)
-                    {                        
-                        params->setNamedAutoConstant("compressionSettings", 
-                            GpuProgramParameters::ACT_CUSTOM, MORPH_CUSTOM_PARAM_ID);                       
-                    }
+                    bindCompressionSettings (p->getVertexProgramParameters());
+                    bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
                 }
                 const String texname (filename + ".Coverage." + postfilename);
                 TextureManager::getSingleton().load (texname, opt->groupName);    

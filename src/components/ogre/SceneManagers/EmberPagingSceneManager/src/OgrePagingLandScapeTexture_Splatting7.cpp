@@ -71,25 +71,6 @@ namespace Ogre
     {
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting7::LoadAlphaMap(const String &filename) const
-    {
-        TexturePtr tex = TextureManager::getSingleton().getByName (filename);
-        if (tex.isNull())
-        {
-	        Image Imageloader;
-            const String group = mParent->getOptions()->groupName;
-            Imageloader.load (filename, group); 
-            Image ImageConvertertoAlphaFormat;
-            ImageConvertertoAlphaFormat.loadDynamicImage(Imageloader.getData(), 
-                                                    Imageloader.getWidth(), 
-                                                    Imageloader.getHeight(), 1, PF_A8, false);
-
-            TextureManager::getSingleton().loadImage (filename, 
-                                                    group,
-                                                    ImageConvertertoAlphaFormat);
-        }
-    }
-    //-----------------------------------------------------------------------
     void PagingLandScapeTexture_Splatting7::_loadMaterial()
     {
 	    if (mMaterial.isNull())
@@ -130,9 +111,7 @@ namespace Ogre
                 // Create a new texture using the alpha map
                 texname = alphamapBeginname 
                         + StringConverter::toString(alpha_pass) 
-                        + alphamapEndname; 
-                LoadAlphaMap (texname);
-                
+                        + alphamapEndname;                 
                 // assign the splat material                               
                 p->getTextureUnitState(splat_pass++)->setTextureName(opt->SplatDetailMapNames[alpha_pass++]);
                 // assign this texture to the material
@@ -144,9 +123,7 @@ namespace Ogre
                     // Create a new texture using the alpha map
                     texname = alphamapBeginname 
                             + StringConverter::toString(alpha_pass) 
-                            + alphamapEndname; 
-                    LoadAlphaMap (texname);
-                    
+                            + alphamapEndname;                     
                     // assign this texture to the material
                     p->getTextureUnitState(splat_pass++)->setTextureName(texname);
                     // assign the splat material
