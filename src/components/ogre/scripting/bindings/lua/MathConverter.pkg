@@ -1,7 +1,23 @@
 
 namespace EmberOgre {
 
-typedef WFMath::Point<2> TerrainPosition;
+class TerrainPosition
+{
+	bool isValid() const;
+	EmberOgre::TerrainPosition& setToOrigin();
+	
+  /// access the first component of a point
+  float x() const;
+  /// access the first component of a point
+  float& x();
+  /// access the second component of a point
+  float y() const;
+  /// access the second component of a point
+  float& y();
+
+
+};
+//typedef WFMath::Point<2> TerrainPosition;
 
 
 

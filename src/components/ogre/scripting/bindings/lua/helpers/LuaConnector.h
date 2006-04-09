@@ -46,7 +46,8 @@ class MousePickerArgs;
 class EmberEntityFactory;
 class AvatarEmberEntity;
 class Jesus;
-
+class BasePointUserObject;
+class TerrainEditAction;
 
 typedef std::vector<std::string> LuaTypeStore;
 
@@ -166,6 +167,10 @@ public:
 	LuaConnector(sigc::signal<void, EmberEntity*>& signal);
  	LuaConnector(sigc::signal<void, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
+ 	LuaConnector(sigc::signal<void, BasePointUserObject*>& signal);
+ 	LuaConnector(sigc::signal<void, TerrainEditAction*>& signal);
+   
+   
    
     ~LuaConnector();
     

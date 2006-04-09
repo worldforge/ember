@@ -22,6 +22,7 @@
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/GUIManager.h"
 #include "components/ogre/TerrainGenerator.h"
+#include "components/ogre/TerrainEditor.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/SubModel.h"

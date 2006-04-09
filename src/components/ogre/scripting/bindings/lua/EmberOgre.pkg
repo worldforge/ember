@@ -17,6 +17,7 @@ $pfile "WorldEmberEntity.pkg"
 $pfile "GUIManager.pkg"
 //$pfile "MousePicker.pkg"
 $pfile "TerrainArea.pkg"
+$pfile "TerrainEditor.pkg"
 $pfile "MotionManager.pkg"
 
 $pfile "Widget.pkg"

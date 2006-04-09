@@ -361,4 +361,19 @@ LuaConnector::LuaConnector(sigc::signal<void, const std::string&, const std::str
 	mConnector = new LuaConnectors::ConnectorTwo<const std::string&, const std::string&>(signal, luaTypes);
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, BasePointUserObject*>& signal)
+{
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("EmberOgre::BasePointUserObject");
+	mConnector = new LuaConnectors::ConnectorOne<BasePointUserObject*>(signal, luaTypes);
+}
+
+LuaConnector::LuaConnector(sigc::signal<void, TerrainEditAction*>& signal)
+{
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("EmberOgre::TerrainEditAction");
+	mConnector = new LuaConnectors::ConnectorOne<TerrainEditAction*>(signal, luaTypes);
+}
+
+
 };
