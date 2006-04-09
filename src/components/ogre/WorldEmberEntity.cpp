@@ -76,7 +76,6 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	///set the position to always 0, 0, 0
 	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
-	mTerrainEditor.showOverlay();
 	
 }
 

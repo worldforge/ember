@@ -19,7 +19,6 @@
 #ifndef WORLDDIMEENTITY_H
 #define WORLDDIMEENTITY_H
 
-#include "TerrainEditor.h"
 
 namespace EmberOgre {
 
@@ -55,7 +54,6 @@ protected:
 
 	void addArea(TerrainArea* area);
 	
-	TerrainEditor mTerrainEditor;
 		
 	Foliage* mFoliage;
 	Water* mWater;

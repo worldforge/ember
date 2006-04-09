@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: removed temporary references to TerrainEditor
+    
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/services/server/ServerService.h: cleaned up sigc includes
 
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
