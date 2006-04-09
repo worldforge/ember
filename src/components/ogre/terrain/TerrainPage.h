@@ -117,7 +117,7 @@ public:
 	 *    The material used for the page
 	 * @return 
 	 */
-	Ogre::MaterialPtr getMaterial() const;
+	Ogre::MaterialPtr getMaterial();
 	
 	/**
 	 *    creates a new foliage for this page, but does not show it yet
@@ -147,8 +147,18 @@ public:
 	 */
 	void addShader(TerrainShader* shader);
 	
+	/**
+	 *    Updates the shader texture for the specific shader
+	 * @param shader 
+	 */
 	void updateShaderTexture(TerrainShader* shader);
 	
+	/**
+	 *    Updates all the shader textures of the page.
+	 *    You should usually call this after you've made a change to the terrain and already have called populateSurfaces()
+	 */
+	void updateAllShaderTextures();
+
 	void populateSurfaces();
 	
 	int getPageSize() const ;

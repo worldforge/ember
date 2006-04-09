@@ -1,5 +1,11 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/TerrainPage.cpp, src/components/ogre/TerrainPage.h: 
+         * added method for updating all shader textures
+         * modified the alpha blitting method to better align with the world
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/AvatarCamera.cpp: fixed a bug with the picking, also make sure that the result is sorted by distance
 
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>

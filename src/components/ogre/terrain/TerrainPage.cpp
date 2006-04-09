@@ -132,18 +132,22 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	//Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 
-		
-	//create a name for out material
-	S_LOG_INFO("Creating a material for the terrain.");
-	Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
-	std::stringstream materialNameSS;
-	materialNameSS << "EmberTerrain_Segment";
-	materialNameSS << "_" << mPosition.x() << "_" << mPosition.y();
-	mMaterialName = materialNameSS.str();
-		
-
-	//create the actual material
-	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(mMaterialName, "General"));
+	if (mMaterial.isNull()) {
+	
+		//create a name for out material
+		S_LOG_INFO("Creating a material for the terrain.");
+		Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
+		std::stringstream materialNameSS;
+		materialNameSS << "EmberTerrain_Segment";
+		materialNameSS << "_" << mPosition.x() << "_" << mPosition.y();
+		mMaterialName = materialNameSS.str();
+	
+		//create the actual material
+		mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(mMaterialName, "General"));
+	} else {
+		mMaterial->removeAllTechniques();
+		mMaterial->createTechnique();
+	}
 
 	//we'll use at least two different techniques
 	//for modern GPU's we'll use a technique which uses fragment shaders
@@ -152,8 +156,8 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 	) {
 		//generateTerrainTechniqueComplexAtlas(mMaterial->getTechnique(0));
 		S_LOG_INFO("Try to create a complex material.");
-//		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
-		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
+		generateTerrainTechniqueComplex(mMaterial->getTechnique(0));
+//		generateTerrainTechniqueSimple(mMaterial->getTechnique(0));
 	} else {
 	//and as a fallback for older gfx cards we'll supply a technique which doesn't
 		S_LOG_INFO("Try to create a simple material.");
@@ -188,8 +192,9 @@ const TerrainPosition& TerrainPage::getWFPosition() const
 }
 
 
-Ogre::MaterialPtr TerrainPage::getMaterial() const
+Ogre::MaterialPtr TerrainPage::getMaterial()
 {
+//	generateTerrainMaterials();
 	return mMaterial;
 }
 
@@ -331,7 +336,7 @@ void TerrainPage::printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const
 	
 	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
 	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
-	pCodec->codeToFile(dataChunk, Ogre::String("c:\\img/") + name + "." + extension, temp);
+	pCodec->codeToFile(dataChunk, Ogre::String("/home/erik/.ember/") + name + "." + extension, temp);
 	
 }
 
@@ -373,7 +378,7 @@ void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsign
 	
 //	wfImagePtr += 65;
 	
-    Ogre::uchar* tempPtr = end + channel;
+    Ogre::uchar* tempPtr = end + channel + numberOfChannels;
     for (i = 0; i < width; ++i) {
 	    tempPtr -= (width * numberOfChannels);
 		for (j = 0; j < width; ++j) {
@@ -772,7 +777,6 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	
 	Ogre::MemoryDataStream* finalChunk = new Ogre::MemoryDataStream(imagePointer, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel, false);
 	
-
 	
 	
 		  
@@ -824,6 +828,9 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		
 	}
 	
+	
+	//printTextureToImage(Ogre::MemoryDataStreamPtr(new Ogre::MemoryDataStream(*finalChunk, true)), splatTextureName, pixelFormat, getAlphaTextureSize(), getAlphaTextureSize());
+	
 	ilBindImage(ImageName);
 /*	char name[100];
 	strcpy(name, (std::string("/home/erik/") + splatTextureName + std::string(".png")).c_str());
@@ -844,6 +851,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 	}
 		
 	Ogre::DataStreamPtr dataStreamPtr(finalChunk);
+	
 
 	
 	
@@ -946,6 +954,15 @@ void EmberOgre::TerrainPage::populateSurfaces()
 //	fesetround(FE_DOWNWARD);
 }
 
+void EmberOgre::TerrainPage::updateAllShaderTextures()
+{
+	std::list<TerrainShader*>::iterator I = mUsedShaders.begin();
+	///skip the first texture, since it's the ground, and doesn't have an alpha texture
+	++I;
+	for (; I != mUsedShaders.end(); ++I) {
+		updateShaderTexture(*I);
+	}
+}
 
 void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 {
