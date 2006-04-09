@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/AvatarCamera.cpp: fixed a bug with the picking, also make sure that the result is sorted by distance
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/EntityWorldPickListener.cpp: use the distance specified in the picking result instead of regenerating it
 
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>

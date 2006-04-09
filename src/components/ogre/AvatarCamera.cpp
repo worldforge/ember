@@ -376,8 +376,10 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	queryMask |= EmberEntity::CM_NATURE;
 	queryMask |= EmberEntity::CM_UNDEFINED;
 	queryMask |= Ogre::RSQ_FirstTerrain;
+	//queryMask |= Ogre::RSQ_AllTerrain;
 	
 	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay, queryMask); 
+	raySceneQuery->setSortByDistance(true);
 
 	raySceneQuery->execute(); 
 //	raySceneQueryEntities->execute(); 
@@ -412,18 +414,18 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	   
 	//now check the entity picking
 	Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults(); 
+	bool continuePicking = true;
 			
 	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( ); 
 	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end( );
 	if (rayIterator != rayIterator_end) {
-		for ( ; rayIterator != rayIterator_end; rayIterator++ ) {
+		for ( ; rayIterator != rayIterator_end && continuePicking; rayIterator++ ) {
 
 			///check if it's a world fragment (i.e. the terrain) of if it has a MovableObject* attached to it
 			
 // 			pickedMovable = rayIterator->movable;
 			
 //			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && (pickedMovable->getQueryFlags() & ~EmberEntity::CM_AVATAR) && pickedMovable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
-			bool continuePicking = true;
 // 			if (pickedMovable && pickedMovable->isVisible() && pickedMovable->getUserObject() != 0) {
 				for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
 					(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
