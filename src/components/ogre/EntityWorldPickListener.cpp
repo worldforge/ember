@@ -52,11 +52,9 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 		EntityPickResult result;
 		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
 			
-		Ogre::Vector3 distance = cameraRay.getOrigin() -  wf->singleIntersection; 
-		
 		result.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
 		result.position = wf->singleIntersection;
-		result.distance = distance.length(); 
+		result.distance = entry.distance; 
 		std::stringstream ss;
 		ss << wf->singleIntersection;
 		S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << result.distance);

@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/EntityWorldPickListener.cpp: use the distance specified in the picking result instead of regenerating it
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainGenerator.h: modifications to better allow for regeneration of the terrain
 
 2006-04-08 Erik Hjortsberg  <erik@katastrof.nu>
