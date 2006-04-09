@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/ogreopcode/opcode/Makefile.am: fixed bad commit
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/MathConverter.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: updated bindings
 
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
