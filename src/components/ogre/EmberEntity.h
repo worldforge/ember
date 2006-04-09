@@ -294,7 +294,7 @@ protected:
 	/**
 	 * Creates the main scene node which holds the entity.
 	 */
-	void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager);
+	void createSceneNode(Ogre::SceneManager* sceneManager);
 	
 	/**
 	override from eris

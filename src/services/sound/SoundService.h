@@ -29,7 +29,9 @@ class ISoundProvider;
 #include "framework/ConsoleObject.h"
 #include "framework/ISoundProvider.h"
 
-#include <AL/altypes.h>
+//#include <AL/altypes.h>
+//Might need a proper preprocessor to handle different versions
+#include<AL/al.h>
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>

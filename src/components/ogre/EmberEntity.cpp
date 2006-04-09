@@ -50,17 +50,17 @@ namespace Ogre {
 	{
 		public:
 	
-		void OOBBWireBoundingBox::getWorldTransforms( Matrix4* xform ) const
+		void getWorldTransforms( Matrix4* xform ) const
 		{
 			SimpleRenderable::getWorldTransforms(xform);
 		}
 		//-----------------------------------------------------------------------
-		const Quaternion& OOBBWireBoundingBox::getWorldOrientation(void) const
+		const Quaternion& getWorldOrientation(void) const
 		{
 			return SimpleRenderable::getWorldOrientation();
 		}
 		//-----------------------------------------------------------------------
-		const Vector3& OOBBWireBoundingBox::getWorldPosition(void) const
+		const Vector3& getWorldPosition(void) const
 		{
 			return SimpleRenderable::getWorldPosition();
 		}				

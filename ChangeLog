@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/Avatar.h, src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.h, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRenderable.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRenderableManager.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTile.h, src/components/ogre/environment/Tree.h, src/components/ogre/model/ParticleSystem.h, src/framework/Tokeniser.h, src/services/logging/LoggingService.h, src/services/sound/SoundService.h: cleaned up method signatures, thanks to Vinicius Santos <vininim@gmail.com>
+
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/widgets/TerrainEditor.layout, src/components/ogre/widgets/TerrainEditor.lua: added widgets for terrain editing
     
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>

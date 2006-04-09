@@ -40,7 +40,7 @@ class ParticleSystem
 {
 public:
 	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem);
-	ParticleSystem::~ParticleSystem();
+	~ParticleSystem();
 	Ogre::ParticleSystem* getOgreParticleSystem();
 	
 	/**

@@ -164,7 +164,7 @@ namespace Ember
         {
           public:
 
-            Observer::Observer ()
+            Observer ()
             {
                 myFilter = INFO;        //No filtering assumed
             }

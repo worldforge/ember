@@ -68,7 +68,7 @@ namespace Ogre
             HardwareVertexBufferSharedPtr getTextureCoordinatesBuffers(const uint tilex, const uint tilez);
             void setTextureCoordinatesBuffers(const uint tilex, const uint tilez, const HardwareVertexBufferSharedPtr& data);
 
-            int PagingLandScapeRenderableManager::numVisibles(void) 
+            int numVisibles(void) 
             {
                 return mRenderablesVisibles;
             };

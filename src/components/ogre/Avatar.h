@@ -122,7 +122,7 @@ protected:
 	 * be extended to also include stuff as positioning the avatars feet
 	 * right
 	 */
-	void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement);
+	void adjustAvatarToNewPosition(AvatarControllerMovement* movement);
 	
 	/**
 	 * This method will determine if it's ok to send a small movement change, such as

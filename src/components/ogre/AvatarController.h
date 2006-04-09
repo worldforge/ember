@@ -163,7 +163,7 @@ protected:
 	/**
 	*    Wait with the binding of the input system until the GUIManager has been fully initialized. That's what this method is for.
 	*/
-	void AvatarController::EmberOgre_GUIManagerInitialized(GUIManager& manager);
+	void EmberOgre_GUIManagerInitialized(GUIManager& manager);
     
 		
 };

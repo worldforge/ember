@@ -101,8 +101,8 @@ public:
 	const AxisAlignedBox &getWorldBbox() const {return mWorldBounds;};
 	const Vector3 &getCenter(void) const {return mWorldPosition;};
 
-	void PagingLandScapeTile::touch ();
-	const bool PagingLandScapeTile::touched ();
+	void touch ();
+	const bool touched ();
 
 protected:
 	//movable object variables

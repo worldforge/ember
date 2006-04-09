@@ -34,7 +34,7 @@ public:
 
     ~Tree();
 	
-	void Tree::makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type);
+	void makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type);
 
 };
 

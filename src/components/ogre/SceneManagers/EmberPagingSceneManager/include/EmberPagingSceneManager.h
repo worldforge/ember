@@ -104,7 +104,7 @@ public:
 	 * @param modelDefinitionName the name of the model defition from which the model should be created
 	 * @return 
 	 */
-	Model::Model* EmberPagingSceneManager::createModel(
+	Model::Model* createModel(
 									const Ogre::String& modelName,
 									const Ogre::String& modelDefinitionName );
 	

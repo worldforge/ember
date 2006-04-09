@@ -160,7 +160,7 @@ namespace Ogre
 
 		IndexData* getRawIndexData(const int renderlevel);
 		void getRawVertexData(Vector3* pVerts);
-		const uint PagingLandScapeRenderable::getVertexCount();
+		const uint getVertexCount();
         
         bool mQueued;
         PagingLandScapeTile *mParentTile;
@@ -181,9 +181,6 @@ namespace Ogre
 		
 		/// Connection to tiles four neighbors
 		PagingLandScapeRenderable* mNeighbors [ 4 ];
-
-		/// Gets the index data for this tile based on current settings
-		IndexData* getIndexData(void);
 		
 		IndexData*mIndex;
 		unsigned int mNumIndex;
