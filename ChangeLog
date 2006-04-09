@@ -1,5 +1,9 @@
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/TerrainEditor.cpp, src/components/ogre/TerrainEditor.h: added more terrain editing functionality
+    
+2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: removed temporary references to TerrainEditor
     
 2006-04-09 Erik Hjortsberg  <erik@katastrof.nu>
