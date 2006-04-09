@@ -597,16 +597,17 @@ Ogre::TagPoint* Model::attachObjectToBone (const Ogre::String &boneName, Ogre::M
 		Ogre::Entity* entity = mSkeletonOwnerEntity;
 		
 		Ogre::TagPoint* tagPoint = entity->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
-        
-        if (mParentNode) {
-        	//since we're using inherit scale on the tagpoint, divide by the parent's scale now, so it evens out later on when the TagPoint is scaled in TagPoint::_updateFromParent(
-        	Ogre::Vector3 parentScale = mParentNode->_getDerivedScale();
+	
+		if (mParentNode) {
+			//since we're using inherit scale on the tagpoint, divide by the parent's scale now, so it evens out later on when the TagPoint is scaled in TagPoint::_updateFromParent(
+			Ogre::Vector3 parentScale = mParentNode->_getDerivedScale();
 			tagPoint->setScale(scale / parentScale);
 		} else {
 			//no parent node, this is not good...
 			tagPoint->setScale(scale);	
 		}
 		return tagPoint;
+
 
 	} else {
 		Ogre::Exception(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
@@ -647,8 +648,7 @@ void Model::detachAllObjectsFromBone(void)
 */
 void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 {
-	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
-	if (mVisible && ModelDefinitionManager::getSingleton().getShowModels()) {
+	if (isVisible()) {
 		SubModelSet::const_iterator I = mSubmodels.begin();
 		SubModelSet::const_iterator I_end = mSubmodels.end();
 		if (mVisible) {
@@ -744,7 +744,7 @@ Ogre::Real Model::getBoundingRadius() const
 void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
 	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
-	if (mVisible && ModelDefinitionManager::getSingleton().getShowModels()) {
+	if (isVisible()) {
 		SubModelSet::const_iterator I = mSubmodels.begin();
 		SubModelSet::const_iterator I_end = mSubmodels.end();
 		for (; I != I_end; ++I) {
@@ -822,10 +822,6 @@ void Model::removeQueryFlags(unsigned long flags)
 /** Overridden from MovableObject */
 void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 {
-	//HACK to prevent segfault upon exit
-	//if (!parent) {
-	//	return;
-	//}
 	MovableObject::_notifyAttached(parent, isTagPoint);
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
@@ -834,7 +830,12 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 	}
 }
 
-	
+bool Model::isVisible (void) const
+{
+	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
+	return Ogre::MovableObject::isVisible() && ModelDefinitionManager::getSingleton().getShowModels();
+}
+
 	
 	
 	

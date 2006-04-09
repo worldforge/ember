@@ -200,6 +200,8 @@ public:
         /** Overridden from MovableObject */
         virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);	
 		
+        /** Overridden from MovableObject */
+		virtual bool   isVisible (void) const;
 		
 	/**
 	 *    returns a pointer to the defintion of the Model
