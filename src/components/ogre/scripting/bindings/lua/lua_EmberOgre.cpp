@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sun Apr  2 23:50:48 2006.
+** Generated automatically by tolua++-1.0.6 on Tue Apr 11 23:00:06 2006.
 */
 
 #ifndef __cplusplus
@@ -4872,6 +4872,66 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00(lua_State* tol
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'createAction'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: undoLastAction of class  EmberOgre::TerrainEditor */
+static int tolua_EmberOgre_EmberOgre_TerrainEditor_undoLastAction00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'undoLastAction'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->undoLastAction();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'undoLastAction'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: redoAction of class  EmberOgre::TerrainEditor */
+static int tolua_EmberOgre_EmberOgre_TerrainEditor_redoAction00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'redoAction'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->redoAction();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'redoAction'.",&tolua_err);
  return 0;
 #endif
 }
@@ -13303,6 +13363,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"getCurrentBasePointUserObject",tolua_EmberOgre_EmberOgre_TerrainEditor_getCurrentBasePointUserObject00);
  tolua_function(tolua_S,"sendChangesToServer",tolua_EmberOgre_EmberOgre_TerrainEditor_sendChangesToServer00);
  tolua_function(tolua_S,"createAction",tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00);
+ tolua_function(tolua_S,"undoLastAction",tolua_EmberOgre_EmberOgre_TerrainEditor_undoLastAction00);
+ tolua_function(tolua_S,"redoAction",tolua_EmberOgre_EmberOgre_TerrainEditor_redoAction00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);

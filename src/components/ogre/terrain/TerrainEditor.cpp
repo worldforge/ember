@@ -85,6 +85,15 @@ void BasePointUserObject::translate(Ogre::Real verticalMovement)
 	markAsMoved();
 	EventUpdatedPosition();
 }
+
+void BasePointUserObject::setHeight(Ogre::Real height)
+{
+	Ogre::Vector3 position = getBasePointMarkerNode()->getPosition();
+	getBasePointMarkerNode()->setPosition(position.x, height, position.z);
+	markAsMoved();
+	EventUpdatedPosition();
+}
+
 void BasePointUserObject::markAsMoved()
 {
 	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
@@ -319,6 +328,11 @@ void TerrainEditor::createAction(bool alsoCommit)
 			action.getMovements().push_back(movement);
 			
 			mActions.push_back(action);
+			
+			///when a new action is created the undo list must be emptied
+			mUndoneActions.clear();
+
+			
 			EventActionCreated(&action);
 			
 			if (alsoCommit)
@@ -395,7 +409,35 @@ void TerrainEditor::sendChangesToServer()
 
 }
 
-void TerrainEditor::commitAction(const TerrainEditAction& action)
+bool TerrainEditor::undoLastAction()
+{
+	if (mActions.size() > 0) {
+		TerrainEditAction action = mActions.back();
+		///remove the last action from the list of active actions
+		mActions.pop_back();
+		///add the action to the list of undone actions
+		mUndoneActions.push_front(action);
+		///actually undo the action
+		commitAction(action, true);
+		return true;
+	}
+	return false;
+	
+}
+
+bool TerrainEditor::redoAction()
+{
+	if (mUndoneActions.size()) {
+		TerrainEditAction action = mUndoneActions.front();
+		mUndoneActions.pop_front();
+		mActions.push_back(action);
+		commitAction(action);
+	}
+	return false;
+}
+
+
+void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 {
 	TerrainGenerator::TerrainDefPointStore pointStore;
 	
@@ -409,7 +451,8 @@ void TerrainEditor::commitAction(const TerrainEditAction& action)
 		int basepointX = static_cast<int>(I->getPosition().x());
 		int basepointY = static_cast<int>(I->getPosition().y());
 		EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getBasePoint(basepointX,basepointY, bp);
-        bp.height() = bp.height() + I->getVerticalMovement();
+		///check if we should do a reverse action (which is done when an action is undone)
+        bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
 		//EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().setBasePoint(basepointX, basepointY, bp);
 		
 		TerrainDefPoint defPoint(basepointX, basepointY,bp.height());
@@ -439,6 +482,13 @@ void TerrainEditor::commitAction(const TerrainEditAction& action)
 				}
 			}
 		}
+		
+		///make sure the marker node is updated
+		BasePointUserObject* userObject = getUserObject(I->getPosition());
+		if (userObject) {
+			userObject->setHeight(bp.height());
+		}
+
 	}
 	EmberOgre::getSingleton().getTerrainGenerator()->updateTerrain(pointStore);
 	

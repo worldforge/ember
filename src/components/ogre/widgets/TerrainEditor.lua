@@ -25,6 +25,14 @@ function TerrainEditor_HeightSpinner_ValueChanged(args)
 	end
 end
 
+function TerrainEditor_UndoButton_Click(args)
+	TerrainEditor.editor:undoLastAction()
+end
+
+function TerrainEditor_RedoButton_Click(args)
+	TerrainEditor.editor:redoAction()
+end
+
 function TerrainEditor_ShowOverlayButton_Click(args)
 
 	if TerrainEditor.editor:isOverlayShown() then
@@ -60,6 +68,11 @@ function TerrainEditor_buildWidget()
 	TerrainEditor.showOverlayButton = TerrainEditor.widget:getWindow("ShowOverlayButton")
 	TerrainEditor.showOverlayButton = CEGUI.toPushButton(TerrainEditor.showOverlayButton)
 	TerrainEditor.showOverlayButton:subscribeEvent("MouseClick", "TerrainEditor_ShowOverlayButton_Click")
+	
+	--hook up the undo and redo buttons
+	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("MouseClick", "TerrainEditor_UndoButton_Click")
+	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("MouseClick", "TerrainEditor_RedoButton_Click")
+	
 	
 	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("MouseClick", "TerrainEditor_SendToServerButton_Click")
 	

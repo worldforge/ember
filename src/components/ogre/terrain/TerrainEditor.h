@@ -83,6 +83,13 @@ public:
 	 */
 	float getHeight() const;
 	
+	
+	/**
+	 *    Sets a new height.
+	 * @param height 
+	 */
+	void setHeight(Ogre::Real height);
+	
 	Ogre::SceneNode* getBasePointMarkerNode() const;
 	
 	const TerrainPosition& getPosition() const;
@@ -194,7 +201,7 @@ public:
 	void pickedBasePoint(BasePointUserObject* userObject);
     
     
-    void commitAction(const TerrainEditAction& action);
+    void commitAction(const TerrainEditAction& action, bool reverse = false);
     
     sigc::signal<void, BasePointUserObject*> EventPickedBasePoint;
     sigc::signal<void, const TerrainEditAction*> EventActionCreated;
@@ -221,6 +228,18 @@ public:
 	void createAction(bool alsoCommit);	
 	
 	BasePointUserObject* getUserObject(const TerrainPosition& terrainIndex);
+	
+	/**
+	 *    Undoes the last action, if there are any.
+	 * @return true if there was an action to undo, false if else
+	 */
+	bool undoLastAction();
+	
+	/**
+	 *    Redoes an action that was undone.
+	 * @return true if there was an already undone action that could be redone, else false
+	 */
+	bool redoAction();
 
 /**
 ---------Methods implemented from IInputAdapter
@@ -247,6 +266,7 @@ private:
 	BasePointUserObject* mCurrentUserObject;
 	typedef std::list<TerrainEditAction> ActionStore;
 	ActionStore mActions;
+	ActionStore mUndoneActions;
 	Ogre::SceneNode* mOverlayNode;
 	
 	bool mVisible;

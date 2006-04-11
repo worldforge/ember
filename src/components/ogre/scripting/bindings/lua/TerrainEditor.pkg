@@ -1,0 +1,155 @@
+//
+// C++ Interface: TerrainEditor
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+
+
+
+
+namespace EmberOgre {
+
+
+
+class BasePointUserObject
+{
+public: 
+	
+	const Mercator::BasePoint& getBasePoint() const;
+	
+	Ogre::SceneNode* getBasePointMarkerNode() const;
+	
+	const EmberOgre::TerrainPosition& getPosition() const;
+	
+	/**
+	 *    Gets the current height of the base point.
+	 * @return 
+	 */
+	float getHeight() const;
+		
+	/**
+	 *    Updated the vertical position of the base point.
+	 * @param verticalMovement 
+	 */
+	void translate(float verticalMovement);
+	
+	/**
+	Emitted when the position of the base point has been updated
+	*/
+	sigc::signal<void> EventUpdatedPosition;
+	
+
+};
+
+
+class TerrainEditAction
+{
+public:
+
+typedef std::vector<EmberOgre::TerrainEditBasePointMovement> MovementStore;
+const MovementStore& getMovements() const;
+MovementStore& getMovements();
+
+
+};
+
+class TerrainEditBasePointMovement
+{
+
+float getVerticalMovement() const;
+const EmberOgre::TerrainPosition& getPosition() const;
+
+};
+
+/**
+	@author Erik Hjortsberg <erik@katastrof.nu>
+*/
+class TerrainEditor
+{
+public:
+    TerrainEditor();
+
+    ~TerrainEditor();
+    
+    /**
+     * Shows the overlay.
+     */
+    void showOverlay();
+    /**
+     * Hides the overlay.
+     */
+    void hideOverlay();
+    
+	/**
+	 * Creates the overlay.
+	 */
+	void createOverlay();
+	
+	/**
+	 *    Returns true if the overlay is currently shown.
+	 * @return 
+	 */
+	bool isOverlayShown() const;
+	
+    
+    
+    void commitAction(const EmberOgre::TerrainEditAction& action);
+    
+    sigc::signal<void, EmberOgre::BasePointUserObject*> EventPickedBasePoint;
+    sigc::signal<void, const EmberOgre::TerrainEditAction*> EventActionCreated;
+    
+	/**
+	Emitted when the position of the selected base point has been updated
+	*/
+	sigc::signal<void, EmberOgre::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
+   
+
+	
+	/**
+	 *    returns the currently selected base point user object, if any
+	 * @return 
+	 */
+	EmberOgre::BasePointUserObject* getCurrentBasePointUserObject() const;
+    
+    void sendChangesToServer();
+
+	/**
+	 *    Creates a new action from the current movement. Will only create an action if actual movement has occurred.
+	 * @param alsoCommit if true, the action will also be committed
+	 */
+	void createAction(bool alsoCommit);	
+	
+	/**
+	 *    Undoes the last action, if there are any.
+	 * @return true if there was an action to undo, false if else
+	 */
+	bool undoLastAction();
+	
+	/**
+	 *    Redoes an action that was undone.
+	 * @return true if there was an already undone action that could be redone, else false
+	 */
+	bool redoAction();
+	
+};
+
+}
+
+#endif
