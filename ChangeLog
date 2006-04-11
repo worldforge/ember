@@ -1,5 +1,9 @@
 2006-04-11 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/Makefile.am, src/components/ogre/EmberEventProcessor.cpp, src/components/ogre/EmberEventProcessor.h: removed obsolete file
+
+2006-04-11 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/widgets/TerrainEditor.lua, src/components/ogre/TerrainEditor.cpp, src/components/ogre/TerrainEditor.h: added undo and redo feature
     * src/components/ogre/scripting/bindings/lua/EntityWorldPickListener.pkg, src/components/ogre/scripting/bindings/lua/ListHolder.pkg, src/components/ogre/scripting/bindings/lua/TerrainEditor.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
 

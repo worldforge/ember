@@ -33,7 +33,6 @@
 #include "widgets/ConsoleWidget.h"
 #include "MousePicker.h"
 
-#include "EmberEventProcessor.h"
 #include "AvatarCamera.h"
 #include "EmberOgre.h"
 #include "input/Input.h"

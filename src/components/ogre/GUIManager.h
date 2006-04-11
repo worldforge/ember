@@ -45,7 +45,6 @@ class CEGUI::Window;
 class Widget;
 class ConsoleWidget;
 class MousePicker;
-class EmberEventProcessor;
 class Input;
 class AvatarEmberEntity;
 class GUICEGUIAdapter;
@@ -215,7 +214,6 @@ protected:
 	CEGUI::StaticText* mDebugText;
 	
 	ConsoleWidget* mConsoleWidget;
-	//EmberEventProcessor* mEventProcessor;
 	Input *mInput;
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
