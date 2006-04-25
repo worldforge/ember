@@ -1,10 +1,7 @@
------------------------------------------
--- Start of handler functions
------------------------------------------
+--This script is the first one loaded. It's responsible for setting up utility objects, defining some utility functions and loading all scripts that should be loaded at start up
 
------------------------------------------
--- Script Entry Point
------------------------------------------
+
+--set up some commonly used objects, these will be available to all scripts
 guiSystem = CEGUI.System:getSingleton()
 windowManager = CEGUI.WindowManager:getSingleton()
 root = guiSystem:getGUISheet()
@@ -15,6 +12,7 @@ emberServices = Ember.EmberServices:getSingleton()
 scriptingService = emberServices:getScriptingService()
 console = Ember.ConsoleBackend:getMainConsole()
 
+--loads a lua script
 function loadScript(scriptname)
 	--load all lua files
 	--they all reside in the same directory
@@ -24,6 +22,7 @@ function loadScript(scriptname)
 
 end
 
+--simple debug method, prints the string representation of the object to the console
 function debug(object)
 	console:pushMessage(tostring(object))
 end
