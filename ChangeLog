@@ -1,3 +1,7 @@
+2006-04-25 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: added ability to set a different home directory than the default
+
 2006-04-11 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/Makefile.am, src/components/ogre/EmberEventProcessor.cpp, src/components/ogre/EmberEventProcessor.h: removed obsolete file

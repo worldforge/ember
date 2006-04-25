@@ -45,7 +45,7 @@ namespace Ember
     const std::string ConfigService::SETVALUE("set_value");
     const std::string ConfigService::GETVALUE("get_value");
 
-    ConfigService::ConfigService() : Service()
+    ConfigService::ConfigService() : Service(), mHomeDir("")
     {
 #ifdef __WIN32__
 		char cwd[512];
@@ -70,6 +70,12 @@ namespace Ember
 		mSharedDataDir = prefix + "/share/games/ember/";
 		mEtcDir = prefix + "/etc/ember/";
 	}
+	
+	void ConfigService::setHomeDirectory(const std::string& path)
+	{
+		mHomeDir = path;
+	}
+	
 
     varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key) const
     {
@@ -89,7 +95,8 @@ namespace Ember
 		varconf::Config::inst()->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
 		registerConsoleCommands();
 		setRunning(true);
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
+		///can't do this since we must be the first thing initialized
+		//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
 		return Service::OK;
     }
 
@@ -186,32 +193,37 @@ namespace Ember
 	
 	const std::string& ConfigService::getHomeDirectory() const
 	{
+		///check if the home directory is set, and if so use the setting. If else, fall back to the default path.
+		if (mHomeDir != "") {
+			return mHomeDir;
+		} else {
 		//taken from Sear
 #ifdef __WIN32__
-		static std::string finalPath;
-		if (!finalPath.empty()) {
-			return finalPath;
-		}
-		std::string path(getenv("APPDATA"));
-		if (path.empty()) {
-			const char *homedrive = getenv("HOMEDRIVE");
-			const char *homepath = getenv("HOMEPATH");
-		    
-			if (!homedrive || !homepath) {
-				std::cerr << "unable to determine homedir in Win32, using ." << std::endl;
-				return ".";
+			static std::string finalPath;
+			if (!finalPath.empty()) {
+				return finalPath;
 			}
-			path = std::string(homedrive) + std::string(homepath);
-		}
-		finalPath = path + "\\Ember\\";
-		return finalPath;
+			std::string path(getenv("APPDATA"));
+			if (path.empty()) {
+				const char *homedrive = getenv("HOMEDRIVE");
+				const char *homepath = getenv("HOMEPATH");
+				
+				if (!homedrive || !homepath) {
+					std::cerr << "unable to determine homedir in Win32, using ." << std::endl;
+					return ".";
+				}
+				path = std::string(homedrive) + std::string(homepath);
+			}
+			finalPath = path + "\\Ember\\";
+			return finalPath;
 #elif __APPLE__
-		static std::string path(getAppSupportDirPath() + "/Ember/");
-		return path;
+			static std::string path(getAppSupportDirPath() + "/Ember/");
+			return path;
 #else
-		static std::string path(std::string(getenv("HOME")) + "/.ember/");
-		return path;
+			static std::string path(std::string(getenv("HOME")) + "/.ember/");
+			return path;
 #endif
+		}
 	}
 
 	const std::string& ConfigService::getSharedDataDirectory() const
@@ -234,10 +246,10 @@ namespace Ember
 	const std::string& ConfigService::getSharedConfigDirectory() const
 	{
 #ifdef __APPLE__
-		static std::string path(getSharedDataDirectory() + "etc/ember/");
+		static std::string path(getSharedDataDirectory() + "/etc/ember/");
 		return path;
 #elif __WIN32__ 
-		static std::string path(getSharedDataDirectory() + "etc/ember/");
+		static std::string path(getSharedDataDirectory() + "/etc/ember/");
 		return path;
 #else
 		return mEtcDir;
@@ -264,20 +276,20 @@ namespace Ember
 
 	const std::string& ConfigService::getEmberMediaDirectory() const
 	{
-		static std::string path(getEmberDataDirectory() + "ember-media/");
+		static std::string path(getEmberDataDirectory() + "/ember-media/");
 		return path;
 	}
 
 
 	const std::string& ConfigService::getUserMediaDirectory() const
 	{
-		static std::string path(getHomeDirectory() + "user-media/");
+		static std::string path(getHomeDirectory() + "/user-media/");
 		return path;
 	}
 	
 	const std::string& ConfigService::getSharedMediaDirectory() const
 	{
-		static std::string path(getSharedDataDirectory() + "media/");
+		static std::string path(getSharedDataDirectory() + "/media/");
 		return path;
 	}
 

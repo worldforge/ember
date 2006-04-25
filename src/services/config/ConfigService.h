@@ -55,6 +55,11 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 
 	std::string mSharedDataDir;
 	std::string mEtcDir;
+	
+	/**
+	The home directory. If this is not set, the default one will be used. See getHomeDirectory()
+	*/
+	std::string mHomeDir;
 
     void registerConsoleCommands();
     void deregisterConsoleCommands();
@@ -223,6 +228,12 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 	 * @param prefix 
 	 */
 	void setPrefix(const std::string& prefix);
+	
+	/**
+	 *    Sets the home directory, i.e. where all configuration and media is stored. If this is not set, a default directory will be user (~/.ember on *NIX systems)
+	 * @param path 
+	 */
+	void setHomeDirectory(const std::string& path);
 
 }; //ConfigService
 
