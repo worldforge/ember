@@ -895,14 +895,21 @@ bool EmberOgre::getErisPolling() const
 }
 
 
-void EmberOgre::initializeEmberServices(const std::string& prefix)
+void EmberOgre::initializeEmberServices(const std::string& prefix, const std::string& homeDir)
 {
 	/// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
 
-	/// Initialize the Logging service and an error observer
 	new Ember::EmberServices();
 	Ember::LoggingService *logging = Ember::EmberServices::getSingletonPtr()->getLoggingService();
+	
+	/// Initialize the Configuration Service
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->setPrefix(prefix);
+	if (homeDir != "") {
+		Ember::EmberServices::getSingletonPtr()->getConfigService()->setHomeDirectory(homeDir);
+		std::cout << "Setting home directory to " << homeDir << std::endl;
+	}
 	
 	///output all logging to ember.log
 	std::string filename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/ember.log");
@@ -920,9 +927,6 @@ void EmberOgre::initializeEmberServices(const std::string& prefix)
  	
 
 
-	/// Initialize the Configuration Service
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->setPrefix(prefix);
 	
 	/// Change working directory
 	struct stat tagStat;
@@ -990,6 +994,7 @@ int main(int argc, char **argv)
 	bool exit_program = false;
 	bool useBinreloc = false;
 	std::string prefix("");
+	std::string homeDir("");
 #ifndef __WIN32__
 	if (argc > 1) {
 		std::string invoked = std::string((char *)argv[0]);
@@ -1008,7 +1013,9 @@ int main(int argc, char **argv)
 				std::cout << invoked << " {options}" << std::endl;
 				std::cout << "-h, --help    - display this message" << std::endl;
 				std::cout << "-v, --version - display version info" << std::endl;
-				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg" << std::endl;
+				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg (only valid on *NIX systems)" << std::endl;
+				std::cout << "--home <path>- sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
+				std::cout << "-p <path>, --prefix <path> - sets the prefix to something else than the one set at compilation (only valid on *NIX systems)" << std::endl;
 				exit_program = true;
 			} else if (arg == "-p" || arg == "--prefix") {
 				if (!argc) {
@@ -1020,12 +1027,26 @@ int main(int argc, char **argv)
 					argc--;
 				}
 				
+			} else if (arg == "--home") {
+				if (!argc) {
+					std::cout << "You didn't supply a home directory.";
+					exit_program = true;
+				} else {
+					homeDir = std::string((char *)argv[0]);
+					argv++;
+					argc--;
+				}
+				
 			}
 		}
 	}
 
 	if (exit_program) {
-		chdir("~/.ember");
+		if (homeDir != "") {
+			chdir(homeDir.c_str());
+		} else {
+			chdir("~/.ember");
+		}
 		return 0;
 	}
 	
@@ -1068,7 +1089,7 @@ int main(int argc, char **argv)
     EmberOgre::EmberOgre app;
 
 	/// Initialize all Ember services needed for this application
-	app.initializeEmberServices(prefix);
+	app.initializeEmberServices(prefix, homeDir);
 
     try {
         app.go(useBinreloc);
@@ -1082,7 +1103,11 @@ int main(int argc, char **argv)
     }
 
 
-    chdir("~/.ember");
+		if (homeDir != "") {
+			chdir(homeDir.c_str());
+		} else {
+			chdir("~/.ember");
+		}
     return 0;
 }
 

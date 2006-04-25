@@ -1,5 +1,13 @@
 2006-04-25 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: allow the home directory of ember to be set on the command line
+
+2006-04-25 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/Bootstrap.lua: added comments
+
+2006-04-25 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: added ability to set a different home directory than the default
 
 2006-04-11 Erik Hjortsberg  <erik@katastrof.nu>

@@ -126,8 +126,9 @@ public:
 	/**
 	 * Initialize all Ember services needed for this application
 	 * @param  the prefix for the application, not appliable if running under win32
+	 * @param  the an alternative home directory. If the default should be used, send an empty string.
 	 */
-	void initializeEmberServices(const std::string& prefix);
+	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
 	void connectViewSignals(Eris::View* world);
 	void connectedToServer(Eris::Connection* connection);
