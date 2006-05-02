@@ -371,7 +371,7 @@ void TerrainEditor::sendChangesToServer()
 			Mercator::BasePoint bp;
 			WFMath::CoordType basepointX = I->second.x();
 			WFMath::CoordType basepointY = I->second.y();
-			EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getBasePoint(basepointX,basepointY, bp);
+			EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getBasePoint(static_cast<int>(basepointX),static_cast<int>(basepointY), bp);
 			
 			Atlas::Message::ListType & point =
 					(pointMap[I->first] = Atlas::Message::ListType(3)).asList();
@@ -399,10 +399,10 @@ void TerrainEditor::sendChangesToServer()
 		}
 		///clear all actions
 		mActions.clear();
-	}catch (const std::exception& ex)
+	}catch (const Atlas::Exception& ex)
 	{
 		S_LOG_FAILURE("Could not send terrain to server. Message: " << ex.what());
-	}catch (const Atlas::Exception& ex)
+	}catch (const std::exception& ex)
 	{
 		S_LOG_FAILURE("Could not send terrain to server. Message: " << ex.what());
 	}
@@ -523,7 +523,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 	}
 	
 	///TODO: this shouldn't be necessary
-	sceneMgr->getPageManager()->load();
+//	sceneMgr->getPageManager()->load();
 	
 
 }
