@@ -1,5 +1,9 @@
 2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.conf: use the ground texture from 3d_objects
+	
+2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: make sure that paths are correctly separated
     
 2006-04-25 Erik Hjortsberg  <erik@katastrof.nu>
