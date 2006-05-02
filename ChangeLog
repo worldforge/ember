@@ -1,5 +1,9 @@
 2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/ogre.cfg: update the config to work with Ogre 1.2
+
+2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.conf: use the ground texture from 3d_objects
 	
 2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
