@@ -530,7 +530,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 	try
 	{
 		//make sure the directory exists
-		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "user-media";
+		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media";
 		struct stat tagStat;
 		int ret;
 		ret = stat( dir.c_str(), &tagStat );
@@ -546,7 +546,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 
 
-		dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "user-media/modeldefinitions/";
+		dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/modeldefinitions/";
 		ret = stat( dir.c_str(), &tagStat );
 		if (ret == -1) {
 			S_LOG_INFO("Creating directory " << dir);

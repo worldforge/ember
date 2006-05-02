@@ -1,3 +1,7 @@
+2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/model/XMLModelDefinitionSerializer.cpp: make sure that paths are correctly separated
+    
 2006-04-25 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: allow the home directory of ember to be set on the command line
