@@ -1,5 +1,10 @@
 2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.h: allow models to be arbitrarily rotated, instead of just around the z-axis. The format allows for either radians or degrees to be specified.
+    * src/components/ogre/modeldefinitions/buildingelements.modeldef.xml, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/modeldefinition.xsd, src/components/ogre/modeldefinitions/trees.modeldef.xml: modified the rotation specification
+
+2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/TerrainEditor.cpp: added some nice casts, rearranged some exception catching
 
 2006-05-02 Erik Hjortsberg  <erik@katastrof.nu>

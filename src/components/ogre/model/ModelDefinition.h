@@ -269,8 +269,13 @@ public:
 	 NOTE: this should probably be replaced with a Quaternion
 	 * @return 
 	 */
-	Ogre::Real getRotation() const;
-	void setRotation(Ogre::Real rotation);
+/*	Ogre::Real getRotation() const;
+	void setRotation(Ogre::Real rotation);*/
+	
+	const Ogre::Quaternion& getRotation() const;
+	void setRotation(const Ogre::Quaternion rotation);
+	
+	
 	
 	SubModelDefinition* createSubModelDefinition(const std::string& meshname);
 	const SubModelDefinitionsStore& getSubModelDefinitions();
@@ -333,7 +338,7 @@ private:
 	
 	UseScaleOf mUseScaleOf;
 	Ogre::Real mScale;
-	Ogre::Real mRotation;
+	Ogre::Quaternion mRotation;
 	const Ogre::String mPath;
 	
 	/**

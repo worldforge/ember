@@ -64,6 +64,8 @@ private:
 	Ogre::Vector3 fillVector3FromElement(Ember::TiXmlElement* elem);
 	void fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector);
 
+	Ogre::Quaternion fillQuaternionFromElement(Ember::TiXmlElement* elem);
+	void fillElementFromQuaternion(Ember::TiXmlElement& elem, Ogre::Quaternion quaternion);
 
 	void exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
 	void exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);

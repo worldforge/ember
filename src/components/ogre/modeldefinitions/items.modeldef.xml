@@ -73,6 +73,7 @@
 	</model>			
 	
 	<model name="sty" usescaleof="width" rotation="-180">
+		<rotation x="0" y="1" z="0" degrees="-180" />
 		<submodels>
 			<submodel mesh="3d_objects/items/building_element/models/wooden_fence/pig-sty.mesh" >
 			<parts>
@@ -146,6 +147,7 @@
 	</model>			
 	
 	<model name="stall" usescaleof="none" scale="1" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
 		<!-- we want contained items to lay on the table of the stall -->
 		<contentoffset y="0.8" />
 		<submodels>
@@ -173,6 +175,7 @@
 	</model>			
 	
 	<model name="jetty" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/jetty/jetty.mesh" >
 				<parts>
@@ -214,6 +217,7 @@
 	</model>			
 	
 	<model name="mausoleum" usescaleof="height" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="3d_objects/items/building/models/mausoleum/mausoleum.mesh" >
 				<parts>
@@ -244,6 +248,7 @@
 	</model>			
 	
 	<model name="tower" usescaleof="width" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="junkyard/models/broken_tower/Tower01.mesh" >
 				<parts>

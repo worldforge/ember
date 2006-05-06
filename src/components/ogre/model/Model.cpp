@@ -43,7 +43,7 @@ unsigned long Model::msAutoGenId = 0;
 
 Model::Model()
 : mScale(0)
-, mRotation(0)
+, mRotation(Ogre::Quaternion::IDENTITY)
 , mSkeletonInstance(0)
 // , mAnimationStateSet(0)
 , mSkeletonOwnerEntity(0)
@@ -57,7 +57,7 @@ Model::Model()
 Model::Model(const std::string& name)
 : mName(name)
 , mScale(0)
-, mRotation(0)
+, mRotation(Ogre::Quaternion::IDENTITY)
 , mSkeletonInstance(0)
 // , mAnimationStateSet(0)
 , mSkeletonOwnerEntity(0)
@@ -76,7 +76,7 @@ void Model::reset()
 	resetSubmodels();
 	resetParticles();	
 	mScale = 0;
-	mRotation = 0;
+	mRotation = Ogre::Quaternion::IDENTITY;
 	mSkeletonInstance = 0;
 // , mAnimationStateSet(0)
 	mSkeletonOwnerEntity = 0;
@@ -411,7 +411,7 @@ const Ogre::Real Model::getScale() const
 	return mScale;
 }
 
-const Ogre::Real Model::getRotation() const
+const Ogre::Quaternion& Model::getRotation() const
 {
 	return mRotation;
 }

@@ -112,6 +112,7 @@
 	</model>
 	
 	<model name="butcher_house" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/butchers_house/butchers_house.mesh" >
 			<parts>
@@ -122,6 +123,7 @@
 	</model>
 	
 	<model name="house3"  usescaleof="depth" rotation="-90" scale="1.1">
+		<rotation x="0" y="1" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="3d_objects/items/building_primitives/models/2_room_house/2_room_house.mesh" >
 				<parts>

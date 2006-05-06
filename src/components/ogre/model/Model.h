@@ -119,10 +119,9 @@ public:
 	const Ogre::Real getScale() const;
 
 	/**
-	 * if defined in the modeldef, returns an amount of degrees by which the node containing 
-	 * the model can be rotated
+	 * Defines how much the model should be rotated.
 	 */
-	const Ogre::Real getRotation() const;
+	const Ogre::Quaternion& getRotation() const;
 	
 	/**
 	 * if defined in the modeldef, returns an axis by which the model can be scaled
@@ -294,7 +293,7 @@ protected:
 	/**
 	how much the model should be rotated around the Y-axis from it's initial position
 	*/
-	Ogre::Real mRotation;
+	Ogre::Quaternion mRotation;
 	
 	
 	/**

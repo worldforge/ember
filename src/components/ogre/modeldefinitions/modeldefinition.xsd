@@ -8,6 +8,14 @@
 			<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
 			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"/> 
 			<xsd:attribute name="contentoffset" type="xsd:string" use="optional"/> 
+			<xsd:element name="rotation" use="optional">
+				<xsd:attribute name="x" type="xsd:string" use="required"/> 
+				<xsd:attribute name="y" type="xsd:string" use="required"/> 
+				<xsd:attribute name="z" type="xsd:string" use="required"/> 
+				<!-- how do we specify that at least one of the following must be present, but not both? -->
+				<xsd:attribute name="degrees" type="xsd:float" use="optional"/> 
+				<xsd:attribute name="radians" type="xsd:boolean" use="optional"/> 
+			</xsd:element>
 			<xsd:element name="SubModels">
 				<xsd:complexType>
 					<xsd:sequence>

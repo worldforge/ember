@@ -34,7 +34,7 @@ namespace Model {
 
 ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) 
-    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(0), mIsValid(false), mTranslate(0,0,0), mShowContained(true), mContentOffset(0)
+    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(Ogre::Quaternion::IDENTITY), mIsValid(false), mTranslate(0,0,0), mShowContained(true), mContentOffset(0)
 {
     if (createParamDictionary("ModelDefinition"))
     {
@@ -116,7 +116,18 @@ void ModelDefinition::getShowContained(bool show)
 }
 
 	
-Ogre::Real ModelDefinition::getRotation() const
+
+const Ogre::Quaternion& ModelDefinition::getRotation() const
+{
+	return mRotation;
+}
+
+void ModelDefinition::setRotation(const Ogre::Quaternion rotation)
+{
+	mRotation = rotation;
+}
+
+/*Ogre::Real ModelDefinition::getRotation() const
 {
 	return mRotation;
 }
@@ -124,7 +135,7 @@ Ogre::Real ModelDefinition::getRotation() const
 void ModelDefinition::setRotation(Ogre::Real rotation)
 {
 	mRotation = rotation;
-}
+}*/
 	
 SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname)
 {
@@ -218,6 +229,7 @@ const std::string& SubModelDefinition::getMeshName() const
 {
 	return mMeshName;
 }
+
 
 PartDefinition* SubModelDefinition::createPartDefinition(const std::string& partname)
 {

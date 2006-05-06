@@ -38,12 +38,6 @@
     #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
 
-	// Necessary to get the Window Handle of the window
-	//  Ogre created, so SDL can grab its input.
-	//#include <windows.h>
-	//#include <SDL_getenv.h>
-	//#include <SDL.h>
-	//#include <SDL_syswm.h>
 
 	//#include <iostream>
 	//#include <fstream>
@@ -72,13 +66,10 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 	bool success = _XMLDoc.LoadFile(stream); //load from data stream
 	
 	if (!success) {
-		S_LOG_FAILURE("Failed to load modeldefinition file!");
+		S_LOG_FAILURE("Failed to load modeldefinition file '"+ stream->getName() +"'!");
 		return;
 	}
 	
-//	Ember::TiXmlElement* elem;
-
-
 	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
 
 	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
@@ -115,11 +106,11 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	if (tmp)
 		modelDef->mScale=Ogre::StringConverter::parseReal(tmp);
 	
-	//rotation
+/*	//rotation
 	///TODO: change this into a better system, perhaps using quaternions, instead of like now just rotating around the y-axis
 	tmp =  modelNode->Attribute("rotation");
 	if (tmp)
-		modelDef->mRotation = Ogre::StringConverter::parseReal(tmp);
+		modelDef->mRotation = Ogre::StringConverter::parseReal(tmp);*/
 	
 	//showcontained
 	tmp =  modelNode->Attribute("showcontained");
@@ -167,6 +158,12 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		modelDef->mTranslate = fillVector3FromElement(elem);
 	}
 	
+	elem = modelNode->FirstChildElement("rotation");
+	if (elem)
+	{
+		modelDef->setRotation(fillQuaternionFromElement(elem));
+	}
+
 	elem = modelNode->FirstChildElement("contentoffset");
 	if (elem)
 	{
@@ -519,6 +516,33 @@ void XMLModelDefinitionSerializer::fillElementFromVector3(Ember::TiXmlElement& e
 	elem.SetDoubleAttribute("z", vector.x);
 }
 
+Ogre::Quaternion XMLModelDefinitionSerializer::fillQuaternionFromElement(Ember::TiXmlElement* elem)
+{
+	Ogre::Vector3 vector = fillVector3FromElement(elem);
+	Ogre::Degree degrees;
+	///first check if degrees is specified, but also allow for radians to be specified
+	if (elem->Attribute("degrees")) {
+		degrees = atof(elem->Attribute("degrees"));
+	} else if (elem->Attribute("radians")) {
+		degrees = Ogre::Radian(atof(elem->Attribute("radians")));
+	}
+	Ogre::Quaternion q;
+	q.FromAngleAxis(degrees, vector);
+	return q;
+	
+}
+
+void XMLModelDefinitionSerializer::fillElementFromQuaternion(Ember::TiXmlElement& elem, Ogre::Quaternion quaternion)
+{
+	///split the quaternion into an axis and a degree (our format allows us to store the angle element as a radian too, but I prefer degrees)
+	Ogre::Degree degrees;
+	Ogre::Vector3 axis;
+	quaternion.ToAngleAxis( degrees, axis);
+	fillElementFromVector3(elem, axis);
+	elem.SetDoubleAttribute("degrees", degrees.valueDegrees());
+}
+
+
 void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& filename)
 {
 	if (filename == "") {
@@ -597,6 +621,9 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		fillElementFromVector3(translate, modelDef->getTranslate());
 		modelElem.InsertEndChild(translate);
 		
+		Ember::TiXmlElement rotation("rotation");
+		fillElementFromQuaternion(rotation, modelDef->getRotation());
+		modelElem.InsertEndChild(rotation);
 		
 		
 		

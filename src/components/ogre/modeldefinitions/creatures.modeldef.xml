@@ -88,6 +88,7 @@
 	</model>
 	
 	<model name="chicken" rotation="90" showcontained="false" >
+		<rotation x="0" y="1" z="0" degrees="90" />
 		<submodels>
 			<submodel mesh="3d_objects/creatures/avian/models/chicken/chicken.mesh">
 				<parts>
@@ -327,7 +328,7 @@
 		</submodels>
 	</model>	
 	
-	<model name="goblin" usescaleof="height" showcontained="true">
+	<model name="goblin" usescaleof="height" showcontained="false">
 		<translate x="0" y="0" z="0" />
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
@@ -363,10 +364,13 @@
 				</AnimationParts>
 			</Action>
 		</Actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RightHand" />
+		</attachpoints>
 		
 	</model>
 
-	<model name="kobold" usescaleof="height" showcontained="true">
+	<model name="kobold" usescaleof="height" showcontained="false">
 		<translate x="0" y="0" z="0" />
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
@@ -402,6 +406,9 @@
 				</AnimationParts>
 			</Action>
 		</Actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RightHand" />
+		</attachpoints>
 		
 	</model>
 	
