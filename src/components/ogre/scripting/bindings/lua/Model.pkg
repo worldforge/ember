@@ -67,7 +67,7 @@ class Model
 	 * if defined in the modeldef, returns an amount of degrees by which the node containing 
 	 * the model can be rotated
 	 */
-	const Ogre::Real getRotation() const;
+	const Ogre::Quaternion& getRotation() const;
 	
 	/**
 	 * if defined in the modeldef, returns an axis by which the model can be scaled

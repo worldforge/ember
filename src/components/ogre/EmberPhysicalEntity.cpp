@@ -57,9 +57,10 @@ EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0)
 {
 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
-	if (getModel()->getRotation()) {
+	getScaleNode()->rotate(getModel()->getRotation());
+/*	if (getModel()->getRotation()) {
 		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
-	}
+	}*/
 	///make a copy of the original bbox
 	mDefaultOgreBoundingBox = mModel->getWorldBoundingBox(true);
 

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Tue Apr 11 23:00:06 2006.
+** Generated automatically by tolua++-1.0.6 on Wed May  3 00:27:24 2006.
 */
 
 #ifndef __cplusplus
@@ -6186,16 +6186,8 @@ static int tolua_EmberOgre_EmberOgre_Model_Model_getRotation00(lua_State* tolua_
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRotation'",NULL);
 #endif
  {
-  const Ogre::Real tolua_ret = (const Ogre::Real)  self->getRotation();
- {
-#ifdef __cplusplus
- void* tolua_obj = new Ogre::Real(tolua_ret);
- tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const Ogre::Real");
-#else
- void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(const Ogre::Real));
- tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const Ogre::Real");
-#endif
- }
+  const Ogre::Quaternion& tolua_ret = (const Ogre::Quaternion&)  self->getRotation();
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Quaternion");
  }
  }
  return 1;
@@ -7470,20 +7462,20 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelDefinition_getRotation00(lua_Sta
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelDefinition",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelDefinition",0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
  goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::Model::ModelDefinition* self = (EmberOgre::Model::ModelDefinition*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Model::ModelDefinition* self = (const EmberOgre::Model::ModelDefinition*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRotation'",NULL);
 #endif
  {
-  float tolua_ret = (float)  self->getRotation();
- tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  const Ogre::Quaternion& tolua_ret = (const Ogre::Quaternion&)  self->getRotation();
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Quaternion");
  }
  }
  return 1;
@@ -7501,7 +7493,7 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelDefinition_setRotation00(lua_Sta
  tolua_Error tolua_err;
  if (
  !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelDefinition",0,&tolua_err) ||
- !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
  goto tolua_lerror;
@@ -7509,7 +7501,7 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelDefinition_setRotation00(lua_Sta
 #endif
  {
   EmberOgre::Model::ModelDefinition* self = (EmberOgre::Model::ModelDefinition*)  tolua_tousertype(tolua_S,1,0);
-  float rotation = ((float)  tolua_tonumber(tolua_S,2,0));
+  const Ogre::Quaternion rotation = *((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRotation'",NULL);
 #endif

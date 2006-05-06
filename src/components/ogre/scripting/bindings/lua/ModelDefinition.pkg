@@ -121,8 +121,8 @@ class ModelDefinition : public Ogre::Resource {
 	 NOTE: this should probably be replaced with a Quaternion
 	 * @return 
 	 */
-	float getRotation() ;
-	void setRotation(float rotation);
+	const Ogre::Quaternion& getRotation() const;
+	void setRotation(const Ogre::Quaternion rotation);
 	
 	EmberOgre::Model::SubModelDefinition* createSubModelDefinition(std::string& meshname);
 	std::vector<EmberOgre::Model::SubModelDefinition*>& getSubModelDefinitions();
