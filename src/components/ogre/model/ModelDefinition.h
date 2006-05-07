@@ -215,14 +215,14 @@ public:
     virtual ~ModelDefinition();
 
     bool isValid(void);
-	inline void setValid(bool valid) { mIsValid = valid; }
+	inline void setValid(bool valid);
 
 	//Ogre resource virtual functions
  	void loadImpl(void);
 
  	void unloadImpl(void);
 
-	size_t calculateSize(void) const { return 0; }
+	inline size_t calculateSize(void) const;
 
 	//Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
 	
@@ -230,16 +230,16 @@ public:
 	 *    Gets the amount of scale that needs to be applied to derived Models.
 	 * @return 
 	 */
-	inline Ogre::Real getScale() const { return mScale; }
-	inline void setScale(Ogre::Real scale) { mScale = scale; }
+	inline Ogre::Real getScale() const;
+	inline void setScale(Ogre::Real scale);
 	
 	/**
 	 *    Gets how derived Models needs to be scaled.
 	 Defaults to "ALL"
 	 * @return 
 	 */
-	inline const UseScaleOf getUseScaleOf() const { return mUseScaleOf; }
-	inline void setUseScaleOf(const UseScaleOf useScale)  { mUseScaleOf = useScale; }
+	inline const UseScaleOf getUseScaleOf() const;
+	inline void setUseScaleOf(const UseScaleOf useScale);
 	
 	/**
 	 *    Gets an optional translation vector which should be applied to derived Models.
@@ -258,21 +258,21 @@ public:
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.
-	 *    If they shouldn't, a void pointer will be returned.
-	 * @return A offset vector or null.
+	 *    If they shouldn't, Ogre::Vector3::ZERO will be returned.
+	 * @return A offset vector.
 	 */
-	Ogre::Vector3* getContentOffset() const { return mContentOffset; }
-	void setContentOffset(Ogre::Vector3* offset) { mContentOffset = offset; }
+	inline const Ogre::Vector3& getContentOffset() const;
+	inline void setContentOffset(const Ogre::Vector3&);
 	
 	/**
-	 *    Accessor for the rotation around the Z-axis that should be applied to the model upon creation
-	 NOTE: this should probably be replaced with a Quaternion
+	 *    Gets the rotation of the model.
 	 * @return 
 	 */
-/*	Ogre::Real getRotation() const;
-	void setRotation(Ogre::Real rotation);*/
-	
 	const Ogre::Quaternion& getRotation() const;
+	/**
+	 *    Sets the rotation of the model.
+	 * @param rotation 
+	 */
 	void setRotation(const Ogre::Quaternion rotation);
 	
 	
@@ -287,6 +287,12 @@ public:
 
 	template <typename T, typename T1>
 	static void removeDefinition(T* def, T1& store);
+	
+	
+	/**
+	 *    Reloads all the Model instances that uses this definition.
+	 */
+	void reloadAllInstances();
 
 private:
 
@@ -342,9 +348,9 @@ private:
 	const Ogre::String mPath;
 	
 	/**
-	Defines how much contained entities should be offset. Null if not.
+	Defines how much contained entities should be offset. ZERO if not.
 	*/
-	Ogre::Vector3* mContentOffset;
+	Ogre::Vector3 mContentOffset;
 	
 	/**
 	Whether contained entities should be shown or not.
@@ -408,6 +414,47 @@ public:
 
 typedef ModelDefnPtr ModelDefinitionPtr;
 
-};
+
+///implementations
+
+const Ogre::Vector3& ModelDefinition::getContentOffset() const 
+{
+	return mContentOffset; 
+}
+void ModelDefinition::setContentOffset(const Ogre::Vector3& offset) 
+{ 
+	mContentOffset = offset; 
+}
+
+void ModelDefinition::setValid(bool valid) 
+{
+	mIsValid = valid; 
+}
+
+size_t ModelDefinition::calculateSize(void) const 
+{
+	//TODO:implement this
+	return 0; 
+}
+
+Ogre::Real ModelDefinition::getScale() const 
+{
+	return mScale; 
+}
+void ModelDefinition::setScale(Ogre::Real scale) 
+{
+	mScale = scale; 
+}
+
+const ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const 
+{
+	return mUseScaleOf; 
+}
+void ModelDefinition::setUseScaleOf(const UseScaleOf useScale)  
+{
+	mUseScaleOf = useScale; 
+}
+
+}
 }
 #endif

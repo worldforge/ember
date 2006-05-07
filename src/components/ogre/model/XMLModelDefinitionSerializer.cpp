@@ -168,8 +168,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	if (elem)
 	{
 		Ogre::Vector3 offset = fillVector3FromElement(elem);
-		Ogre::Vector3* offsetPtr = new Ogre::Vector3(offset);
-		modelDef->mContentOffset = offsetPtr;
+		modelDef->setContentOffset(offset);
 	}
 }
 
@@ -611,9 +610,9 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		
 		modelElem.SetAttribute("showcontained", modelDef->getShowContained() ? "true" : "false");
 		
-		if (modelDef->getContentOffset() != 0) {
+		if (modelDef->getContentOffset() != Ogre::Vector3::ZERO) {
 			Ember::TiXmlElement contentOffset("contentoffset");
-			fillElementFromVector3(contentOffset, *modelDef->getContentOffset());
+			fillElementFromVector3(contentOffset, modelDef->getContentOffset());
 			modelElem.InsertEndChild(contentOffset);
 		}
 		

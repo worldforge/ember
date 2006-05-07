@@ -42,12 +42,12 @@ public:
     ModelDefinitionManager();
     ~ModelDefinitionManager();
     
-virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
-bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
-const Ogre::NameValuePairList* createParams = 0);
+	virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
+		bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
+		const Ogre::NameValuePairList* createParams = 0);
 	
-	inline Ogre::SceneManager* getSceneManager() const { return mSceneManager; }
-	inline void setSceneManager(Ogre::SceneManager* sceneManager) { mSceneManager = sceneManager; }
+	inline Ogre::SceneManager* getSceneManager() const;
+	inline void setSceneManager(Ogre::SceneManager* sceneManager);
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 	
 	/**
@@ -99,6 +99,16 @@ protected:
 
 };
 
+///inline implementations
+	Ogre::SceneManager* ModelDefinitionManager::getSceneManager() const 
+	{ 
+		return mSceneManager; 
+	}
+	
+	void ModelDefinitionManager::setSceneManager(Ogre::SceneManager* sceneManager) 
+	{ 
+		mSceneManager = sceneManager; 
+	}
 
 }
 };

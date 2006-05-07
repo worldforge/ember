@@ -34,7 +34,7 @@ namespace Model {
 
 ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) 
-    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(Ogre::Quaternion::IDENTITY), mIsValid(false), mTranslate(0,0,0), mShowContained(true), mContentOffset(0)
+    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(Ogre::Quaternion::IDENTITY), mIsValid(false), mTranslate(0,0,0), mShowContained(true), mContentOffset(Ogre::Vector3::ZERO)
 {
     if (createParamDictionary("ModelDefinition"))
     {
@@ -50,7 +50,7 @@ ModelDefinition::~ModelDefinition()
 	for (ActionDefinitionsStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
 		delete *I;
 	}
-	delete(mContentOffset);
+//	delete(mContentOffset);
     // have to call this here reather than in Resource destructor
     // since calling virtual methods in base destructors causes crash
     unload(); 
@@ -127,15 +127,14 @@ void ModelDefinition::setRotation(const Ogre::Quaternion rotation)
 	mRotation = rotation;
 }
 
-/*Ogre::Real ModelDefinition::getRotation() const
+void ModelDefinition::reloadAllInstances()
 {
-	return mRotation;
+	for (ModelInstanceStore::iterator I = mModelInstances.begin(); I != mModelInstances.end(); ++I) {
+		I->second->reload();
+	}
+//	std::for_each(mModelInstances.begin(), mModelInstances.end(), std::mem_fun(&EmberOgre::Model::Model::reload));
 }
 
-void ModelDefinition::setRotation(Ogre::Real rotation)
-{
-	mRotation = rotation;
-}*/
 	
 SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname)
 {

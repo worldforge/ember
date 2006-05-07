@@ -68,6 +68,9 @@ Model::~Model()
 {
 	reset();
 	resetParticles();	
+	if (!_masterModel.isNull()) {
+		_masterModel->removeModelInstance(this);
+	}
 }
 
 void Model::reset()
@@ -98,7 +101,12 @@ void Model::reload()
 
 bool Model::create(const std::string& modelType)
 {
-	const Ogre::String groupName = "ModelDefinitions";
+	if (!_masterModel.isNull() && _masterModel->isValid()) {
+		S_LOG_WARNING("Trying to call create('" + modelType +  "') on a Model instance that already have been created as a '" + _masterModel->getName() + "'.");
+		return false;
+	}
+
+	static const Ogre::String groupName("ModelDefinitions");
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
 		_masterModel= ModelDefinitionManager::instance().load(modelType, groupName);
@@ -112,6 +120,7 @@ bool Model::create(const std::string& modelType)
 	}
 	else
 	{
+		_masterModel->addModelInstance(this);
 		bool success =  createFromDefn();
 		if (!success) {
 			reset();
