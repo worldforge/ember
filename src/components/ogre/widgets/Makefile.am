@@ -25,15 +25,15 @@ uninstall-local:
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_LIBRARIES = libWidgets.a
-libWidgets_a_SOURCES = Widget.cpp ConsoleWidget.cpp  \
-			IngameChatWidget.cpp InspectWidget.cpp InventoryWidget.cpp MakeEntityWidget.cpp \
-			ServerWidget.cpp WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp IconBase.cpp \
-			StatusIconBar.cpp MeshPreview.cpp EntityCEGUITexture.cpp ModelRenderer.cpp \
-			MovableObjectRenderer.cpp OgreEntityRenderer.cpp ListHolder.cpp LoadingBar.cpp
+libWidgets_a_SOURCES = Widget.cpp ConsoleWidget.cpp 			IngameChatWidget.cpp \
+	InspectWidget.cpp InventoryWidget.cpp MakeEntityWidget.cpp 			ServerWidget.cpp \
+	WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp IconBase.cpp 			StatusIconBar.cpp \
+	MeshPreview.cpp EntityCEGUITexture.cpp ModelRenderer.cpp 			MovableObjectRenderer.cpp \
+	OgreEntityRenderer.cpp ListHolder.cpp LoadingBar.cpp QuaternionAdapter.cpp Vector3Adapter.cpp
 #TerrainEdit.cpp Map.cpp
 noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h Quit.h IconBase.h \
-			StatusIconBar.h MeshPreview.h EntityCEGUITexture.h ModelRenderer.h MakeEntityWidget.h \
-			ConsoleWidget.h Widget.h IngameChatWidget.h InspectWidget.h \
-			ServerWidget.h InventoryWidget.h MovableObjectRenderer.h OgreEntityRenderer.h \
-		ListHolder.h LoadingBar.h
+				StatusIconBar.h MeshPreview.h EntityCEGUITexture.h ModelRenderer.h MakeEntityWidget.h \
+				ConsoleWidget.h Widget.h IngameChatWidget.h InspectWidget.h 			ServerWidget.h \
+	InventoryWidget.h MovableObjectRenderer.h OgreEntityRenderer.h 		ListHolder.h \
+	LoadingBar.h QuaternionAdapter.h Vector3Adapter.h
 #TerrainEdit.h Map.h
