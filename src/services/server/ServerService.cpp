@@ -702,6 +702,50 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  		}
    	}   		
 
+	void ServerService::useStop()
+   	{
+ 		if(!myAvatar || !myAvatar->getEntity()) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->useStop();
+ 		}
+ 		catch (const Eris::BaseException& except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on stopping using: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (const std::runtime_error& except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on stopping using: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   
+   		
+   		
+	void ServerService::attack(Eris::Entity* entity)
+   	{
+ 		if(!myAvatar || !myAvatar->getEntity()) {
+ 			// TODO: redesign so that this doesn't happen
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
+ 			return;
+ 		}
+ 		try {
+ 			myAvatar->attack(entity);
+ 		}
+ 		catch (const Eris::BaseException& except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on attack: " << except._msg << ENDM;
+ 			return;
+ 		}
+ 		catch (const std::runtime_error& except)
+ 		{
+ 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on attack: " << except.what() << ENDM;
+ 			return;
+ 		}
+   	}   
    		
 	void ServerService::say(const std::string &message) {
  		if(!myAvatar || !myAvatar->getEntity()) {

@@ -152,6 +152,8 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	void wield(Eris::Entity* entity);
 	void take(Eris::Entity* entity);
 	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
+	void useStop();
+	void attack(Eris::Entity* entity);
 	//void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------

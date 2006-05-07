@@ -31,6 +31,8 @@ class ServerService
 	void take(Eris::Entity* entity);
 	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
 	//void use(Eris::Entity* entity);
+	void useStop();
+	void attack(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
 	// Signals

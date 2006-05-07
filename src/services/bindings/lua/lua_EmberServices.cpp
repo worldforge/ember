@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.6 on Tue Feb  7 23:45:00 2006.
+** Generated automatically by tolua++-1.0.6 on Sun May  7 15:07:59 2006.
 */
 
 #ifndef __cplusplus
@@ -1100,6 +1100,66 @@ tolua_lerror:
  return tolua_EmberServices_Ember_ServerService_use00(tolua_S);
 }
 
+/* method: useStop of class  Ember::ServerService */
+static int tolua_EmberServices_Ember_ServerService_useStop00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'useStop'",NULL);
+#endif
+ {
+  self->useStop();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'useStop'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: attack of class  Ember::ServerService */
+static int tolua_EmberServices_Ember_ServerService_attack00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'attack'",NULL);
+#endif
+ {
+  self->attack(entity);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'attack'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* get function: GotAvatar of class  Ember::ServerService */
 static int tolua_get_Ember__ServerService_GotAvatar(lua_State* tolua_S)
 {
@@ -1759,6 +1819,8 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
  tolua_function(tolua_S,"take",tolua_EmberServices_Ember_ServerService_take00);
  tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use00);
  tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use01);
+ tolua_function(tolua_S,"useStop",tolua_EmberServices_Ember_ServerService_useStop00);
+ tolua_function(tolua_S,"attack",tolua_EmberServices_Ember_ServerService_attack00);
  tolua_variable(tolua_S,"GotAvatar",tolua_get_Ember__ServerService_GotAvatar,tolua_set_Ember__ServerService_GotAvatar);
  tolua_variable(tolua_S,"GotView",tolua_get_Ember__ServerService_GotView,tolua_set_Ember__ServerService_GotView);
  tolua_variable(tolua_S,"GotConnection",tolua_get_Ember__ServerService_GotConnection,tolua_set_Ember__ServerService_GotConnection);
