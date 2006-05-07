@@ -36,6 +36,7 @@
 // #include "../jesus/Jesus.h"
 
 
+#include <Eris/Task.h>
 
 #include <CEGUIExceptions.h>
 
@@ -285,6 +286,10 @@ void LuaConnector::connect(const std::string& luaMethod)
 
 
 
+LuaConnector::LuaConnector(sigc::signal<void>& signal)
+{
+	mConnector = new LuaConnectors::ConnectorZero(signal);
+}
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, EmberEntity*> & signal)
 {
@@ -392,10 +397,13 @@ LuaConnector::LuaConnector(sigc::signal<void, TerrainEditAction*>& signal)
 	mConnector = new LuaConnectors::ConnectorOne<TerrainEditAction*>(signal, luaTypes);
 }
 
-LuaConnector::LuaConnector(sigc::signal<void>& signal)
+LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 {
-	mConnector = new LuaConnectors::ConnectorZero(signal);
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("Eris::Task");
+	mConnector = new LuaConnectors::ConnectorOne<Eris::Task*>(signal, luaTypes);
 }
+
 
 
 };

@@ -3,6 +3,7 @@ namespace EmberOgre {
 class LuaConnector{
 	void connect(const std::string& luaMethod);
 
+ 	LuaConnector(sigc::signal<void>& signal);
     LuaConnector(sigc::signal<void, const std::string&, EmberOgre::EmberEntity*>& signal);
     LuaConnector(sigc::signal<void, Eris::Connection*>& signal);
 	LuaConnector(SigC::Signal1<void, const Eris::ServerInfo&>& signal);
@@ -18,7 +19,7 @@ class LuaConnector{
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::BasePointUserObject*>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::TerrainEditAction*>& signal);
- 	LuaConnector(sigc::signal<void>& signal);
+ 	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
 
 
 };

@@ -37,6 +37,7 @@ class Connection;
 class Account;
 class View;
 class ServerInfo;
+class Task;
 }
 
 namespace EmberOgre {
@@ -148,6 +149,21 @@ template <typename T0, typename T1, typename T2, typename T3>
 
 /**
 @author Erik Hjortsberg
+
+Class used for connecting sigc signals to lua. Acts as an adapter for the signals, recieving them from the c++ environment and sending them to the lua environment.
+
+To use them in lua, use code like this:
+<code>
+	--connect the lua method "lua_foo" to the event "EventFoo" of the object "emitter" and keeps a reference to the adapter in the variable "fooConnector"
+	local emitter = EmberOgre.Emitter:new()
+	fooConnector = EmberOgre.LuaConnector:new_local(emitter.EventFoo):connect("lua_foo")
+	
+	function lua_foo()
+		--do something here
+	end
+
+</code>
+
 */
 class LuaConnector{
 public:
@@ -170,6 +186,7 @@ public:
 	static void pushValue(const Input::InputMode& theValue, const std::string& luaTypename);
 	
 	
+ 	LuaConnector(sigc::signal<void>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, Eris::Connection*>& signal);
 	LuaConnector(SigC::Signal1<void, const Eris::ServerInfo&>& signal);
@@ -185,7 +202,7 @@ public:
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, BasePointUserObject*>& signal);
  	LuaConnector(sigc::signal<void, TerrainEditAction*>& signal);
- 	LuaConnector(sigc::signal<void>& signal);
+ 	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
    
    
    
