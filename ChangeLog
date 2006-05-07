@@ -1,5 +1,28 @@
 2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
 
+    * src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/stdlib.pkg: updated bindings
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/Tasks.layout, src/components/ogre/widgets/Tasks.lua: added a task windows which shows the current task
+    * src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ScriptEdit.layout, src/components/ogre/widgets/TerrainEditor.layout: small layout fixes
+    * src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: added frame started event
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+	
+    * src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: added connection bindings for Eris::Task and updated comments
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/Eris.pkg, src/framework/bindings/lua/eris/Task.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp, src/framework/bindings/lua/eris/required.h: added bindings for Task and updated Entity definitions for Eris cvs
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/services/server/ServerService.cpp, src/services/server/ServerService.h: added methods for attacking and stopping the current task
+    * src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: updated bindings
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
     * src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: added more edit options and a button for reloading existing models, though rotation and translation will only be updated for newly created entities currently
 
 2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>

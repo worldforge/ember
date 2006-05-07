@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sun May  7 03:32:04 2006.
+** Generated automatically by tolua++-1.0.6 on Sun May  7 12:07:30 2006.
 */
 
 #ifndef __cplusplus
@@ -159,13 +159,6 @@ static int tolua_collect_EmberOgre__Widget (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_EmberOgre__OgreEntityRenderer (lua_State* tolua_S)
-{
- EmberOgre::OgreEntityRenderer* self = (EmberOgre::OgreEntityRenderer*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
 static int tolua_collect_std__vector_const_Carpenter__AttachPoint__ (lua_State* tolua_S)
 {
  std::vector<const Carpenter::AttachPoint*>* self = (std::vector<const Carpenter::AttachPoint*>*) tolua_tousertype(tolua_S,1,0);
@@ -173,9 +166,23 @@ static int tolua_collect_std__vector_const_Carpenter__AttachPoint__ (lua_State* 
  return 0;
 }
 
+static int tolua_collect_EmberOgre__OgreEntityRenderer (lua_State* tolua_S)
+{
+ EmberOgre::OgreEntityRenderer* self = (EmberOgre::OgreEntityRenderer*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
 static int tolua_collect_EmberOgre__Gui__Vector3Adapter (lua_State* tolua_S)
 {
  EmberOgre::Gui::Vector3Adapter* self = (EmberOgre::Gui::Vector3Adapter*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_EmberOgre__ModelRenderer (lua_State* tolua_S)
+{
+ EmberOgre::ModelRenderer* self = (EmberOgre::ModelRenderer*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -201,9 +208,9 @@ static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_EmberOgre__ModelRenderer (lua_State* tolua_S)
+static int tolua_collect_std__vector_Eris__Task__ (lua_State* tolua_S)
 {
- EmberOgre::ModelRenderer* self = (EmberOgre::ModelRenderer*) tolua_tousertype(tolua_S,1,0);
+ std::vector<Eris::Task*>* self = (std::vector<Eris::Task*>*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -318,7 +325,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Input");
  tolua_usertype(tolua_S,"SDLKey");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlock");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockBindingDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinition");
  tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BuildingBlockSpec>");
@@ -330,6 +337,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"CEGUI::Window");
  tolua_usertype(tolua_S,"EmberOgre::AvatarMovementMode");
  tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"std::vector<Eris::Task*>");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntityFactory");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::TerrainEditAction*>");
  tolua_usertype(tolua_S,"Ogre::Vector3");
@@ -360,58 +368,59 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Jesus");
  tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
- tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
+ tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlock");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
  tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
- tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"Carpenter::AttachPair");
  tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
+ tolua_usertype(tolua_S,"Carpenter::AttachPair");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
- tolua_usertype(tolua_S,"EmberOgre::TerrainArea");
+ tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"EmberOgre::ColoredListItem");
- tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
  tolua_usertype(tolua_S,"Eris::View");
+ tolua_usertype(tolua_S,"EmberOgre::TerrainArea");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockDefinition");
  tolua_usertype(tolua_S,"CEGUI::ListboxTextItem");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
+ tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Gui::QuaternionAdapter");
  tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
- tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
+ tolua_usertype(tolua_S,"EmberOgre::TerrainEditAction");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
+ tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
  tolua_usertype(tolua_S,"EmberOgre::BasePointUserObject");
  tolua_usertype(tolua_S,"Ogre;;ResourceManager");
- tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
  tolua_usertype(tolua_S,"EmberOgre::TerrainEditBasePointMovement");
- tolua_usertype(tolua_S,"sigc::signal<void>");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
  tolua_usertype(tolua_S,"Ogre::Real");
+ tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"CEGUI::Listbox");
  tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
  tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Vector2");
+ tolua_usertype(tolua_S,"Eris::Task");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
  tolua_usertype(tolua_S,"Ogre::BillboardSet");
+ tolua_usertype(tolua_S,"EmberOgre::MotionManager");
  tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
  tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
- tolua_usertype(tolua_S,"EmberOgre::MotionManager");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
- tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
  tolua_usertype(tolua_S,"EmberOgre::WorldEmberEntity");
- tolua_usertype(tolua_S,"Ogre::Entity");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
  tolua_usertype(tolua_S,"Carpenter::AttachPoint");
  tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
+ tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"EmberOgre::Widget");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
- tolua_usertype(tolua_S,"EmberOgre::TerrainEditAction");
 }
 
 /* method: new of class  Carpenter::AttachPoint */
@@ -12291,6 +12300,265 @@ static int tolua_EmberOgre_std_vector_EmberOgre__Model__SubEntityDefinition___de
 #endif
 }
 
+/* method: clear of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task___clear00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  std::vector<Eris::Task*>* self = (std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clear'",NULL);
+#endif
+ {
+  self->clear();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'clear'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: size of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task___size00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const std::vector<Eris::Task*>* self = (const std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'",NULL);
+#endif
+ {
+  int tolua_ret = (int)  self->size();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'size'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator[] of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task____geti00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const std::vector<Eris::Task*>* self = (const std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+  int index = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator[]'",NULL);
+#endif
+ {
+  const Eris::Task* tolua_ret = (const Eris::Task*)  self->operator[](index);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"const Eris::Task");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.geti'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator&[] of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task____seti00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"Eris::Task",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  std::vector<Eris::Task*>* self = (std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+  int index = ((int)  tolua_tonumber(tolua_S,2,0));
+  Eris::Task* tolua_value = ((Eris::Task*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator&[]'",NULL);
+#endif
+ self->operator[](index) =  tolua_value;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.seti'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator[] of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task____geti01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  std::vector<Eris::Task*>* self = (std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+  int index = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator[]'",NULL);
+#endif
+ {
+  Eris::Task* tolua_ret = (Eris::Task*)  self->operator[](index);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::Task");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberOgre_std_vector_Eris__Task____geti00(tolua_S);
+}
+
+/* method: push_back of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task___push_back00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Eris::Task",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  std::vector<Eris::Task*>* self = (std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Task* val = ((Eris::Task*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'push_back'",NULL);
+#endif
+ {
+  self->push_back(val);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'push_back'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task___new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+ {
+  std::vector<Eris::Task*>* tolua_ret = (std::vector<Eris::Task*>*)  new std::vector<Eris::Task*>();
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"std::vector<Eris::Task*>");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new_local of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task___new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+ {
+  std::vector<Eris::Task*>* tolua_ret = (std::vector<Eris::Task*>*)  new std::vector<Eris::Task*>();
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"std::vector<Eris::Task*>");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: delete of class  std::vector<Eris::Task*> */
+static int tolua_EmberOgre_std_vector_Eris__Task___delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"std::vector<Eris::Task*>",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  std::vector<Eris::Task*>* self = (std::vector<Eris::Task*>*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+ delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* method: new of class  EmberOgre::Gui::Vector3Adapter */
 static int tolua_EmberOgre_EmberOgre_Gui_Vector3Adapter_new00(lua_State* tolua_S)
 {
@@ -14488,6 +14756,23 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"new_local",tolua_EmberOgre_std_vector_EmberOgre__Model__SubEntityDefinition___new00_local);
  tolua_function(tolua_S,".call",tolua_EmberOgre_std_vector_EmberOgre__Model__SubEntityDefinition___new00_local);
  tolua_function(tolua_S,"delete",tolua_EmberOgre_std_vector_EmberOgre__Model__SubEntityDefinition___delete00);
+ tolua_endmodule(tolua_S);
+#ifdef __cplusplus
+ tolua_cclass(tolua_S,"vector_Eris__Task__","std::vector<Eris::Task*>","",tolua_collect_std__vector_Eris__Task__);
+#else
+ tolua_cclass(tolua_S,"vector_Eris__Task__","std::vector<Eris::Task*>","",NULL);
+#endif
+ tolua_beginmodule(tolua_S,"vector_Eris__Task__");
+ tolua_function(tolua_S,"clear",tolua_EmberOgre_std_vector_Eris__Task___clear00);
+ tolua_function(tolua_S,"size",tolua_EmberOgre_std_vector_Eris__Task___size00);
+ tolua_function(tolua_S,".geti",tolua_EmberOgre_std_vector_Eris__Task____geti00);
+ tolua_function(tolua_S,".seti",tolua_EmberOgre_std_vector_Eris__Task____seti00);
+ tolua_function(tolua_S,".geti",tolua_EmberOgre_std_vector_Eris__Task____geti01);
+ tolua_function(tolua_S,"push_back",tolua_EmberOgre_std_vector_Eris__Task___push_back00);
+ tolua_function(tolua_S,"new",tolua_EmberOgre_std_vector_Eris__Task___new00);
+ tolua_function(tolua_S,"new_local",tolua_EmberOgre_std_vector_Eris__Task___new00_local);
+ tolua_function(tolua_S,".call",tolua_EmberOgre_std_vector_Eris__Task___new00_local);
+ tolua_function(tolua_S,"delete",tolua_EmberOgre_std_vector_Eris__Task___delete00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);
