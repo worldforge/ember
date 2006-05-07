@@ -1,0 +1,27 @@
+namespace Eris
+{
+
+class Task
+{
+    const std::string& name() const;
+    
+    /**
+    Return the current progress of the task. Value will always be in the
+    range [0..1]
+    */
+    double progress() const;
+    
+    /**
+    */
+    bool isComplete() const;
+    
+    sigc::signal<void> Completed;
+    
+    sigc::signal<void> Cancelled;
+    
+    sigc::signal<void> Progressed;
+
+};
+
+}
+

@@ -13,11 +13,11 @@ class Entity {
 
 //    bool hasAttr(const std::string &p) const;
 
-    typedef SigC::Slot2<void, const std::string&, const Atlas::Message::Element&> AttrChangedSlot;
+    typedef sigc::slot<void, const std::string&, const Atlas::Message::Element&> AttrChangedSlot;
 
     /** setup an observer so that the specified slot is fired when the
     named attribue's value changes */
-    SigC::Connection observe(const std::string& attr, const AttrChangedSlot& aslot);
+    sigc::connection observe(const std::string& attr, const AttrChangedSlot& aslot);
 
 // accesors
     /// retrieve the unique entity ID
@@ -126,6 +126,10 @@ class Entity {
     */
     sigc::signal<void> BeingDeleted;    
     
+    sigc::signal<void, Eris::Task*> TaskAdded;
+    sigc::signal<void, Eris::Task*> TaskRemoved;
+
+    const std::vector<Eris::Task*>& getTasks() const;
 
 };
 }
