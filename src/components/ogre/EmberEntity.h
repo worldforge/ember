@@ -190,12 +190,12 @@ public:
 	/**
 	if this is true, init(...) has been called and the entity been set up
 	*/
-	inline bool isInitialized() const { return mIsInitialized; }
+	inline bool isInitialized() const;
 
 	/**
 	the mode the entity is in, like walking, running, swimming etc.
 	*/
-	inline MovementMode getMovementMode() const { return mMovementMode; }
+	inline MovementMode getMovementMode() const;
 	
 	/**
 	Call this method once per frame to update the motion of the entity
@@ -234,6 +234,11 @@ public:
 	 */
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 	
+	/**
+	 *    Returns a list of the default use operators that can be used with this entity.
+	 For example, an axe would have a list of operators such as "chop" and "sharpen".
+	 * @return 
+	 */
 	std::vector<std::string> getDefaultUseOperators();
 
 protected: 
@@ -337,6 +342,19 @@ protected:
 	void parseModeChange(const Atlas::Message::Element& v);
 
 };
+
+
+///inline implementations
+	bool EmberEntity::isInitialized() const 
+	{ 
+		return mIsInitialized; 
+	}
+
+	EmberEntity::MovementMode EmberEntity::getMovementMode() const 
+	{ 
+		return mMovementMode; 
+	}
+
 
 }
 

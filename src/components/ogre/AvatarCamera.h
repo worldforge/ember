@@ -81,28 +81,18 @@ public:
 	/**
 	 * returns the current degrees of pitch from the cameras initial position
 	 */
-	const Ogre::Degree& getPitch() const
-	{
-		return degreePitch;
-	}
+	inline const Ogre::Degree& getPitch() const;
 	
 	/**
 	 * returns the current degrees of yaw from the cameras initial position
 	 */
-	const Ogre::Degree& getYaw() const
-	{
-		return degreeYaw;
-	}
+	inline const Ogre::Degree& getYaw() const;
 	
 	/**
 	 * returns a pointer to the Ogre::Camera instance 
 	 */
-	virtual Ogre::Camera* getCamera()  {
-		return mCamera;	
-	}
-	virtual Ogre::Camera* getCamera() const {
-		return mCamera;	
-	}
+	inline Ogre::Camera* getCamera();
+	inline Ogre::Camera* getCamera() const;
 	
 	/**
 	 * Returns the current camera orientation in the world
@@ -148,23 +138,19 @@ public:
 	void setClosestPickingDistance(Ogre::Real distance);
 	Ogre::Real getClosestPickingDistance();
 
-	// worldToScreenPos 
-	// 
-	// returns true if the worldPos is on screen, putting the screen pos into the x & y of the 
-	// second Vector2 
-	// returns false if the worldPos is off screen 
-	// 
+	/**
+	 * returns true if the worldPos is on screen, putting the screen pos into the x & y of the second Vector3 
+	 * returns false if the worldPos is off screen 
+	 * @param worldPos 
+	 * @param screenPos 
+	 * @return 
+	 */
 	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
 	
 	/**
-	 *    picks a point in the terrain
-	 * @param mouseX
-	 * @param mouseY 
-	 * @param resultVector 
-	 * @return true if the picking was successful
+	 *    Attaches the camera to the specified scene node.
+	 * @param toNode 
 	 */
-// 	bool pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector);
-	
 	void attach(Ogre::SceneNode* toNode);
 	
 	/**
@@ -173,7 +159,6 @@ public:
 	 */
 	bool adjustForTerrain();
 	
-
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -203,6 +188,10 @@ public:
 	void enableCompositor(const std::string& compositorName, bool enable);
 	
 	
+	/**
+	 *    Adds a new world pick listener to the queue of listeners.
+	 * @param worldPickListener 
+	 */
 	void pushWorldPickListener(IWorldPickListener* worldPickListener);
 	
 protected:
@@ -259,6 +248,26 @@ protected:
 	void updateValuesFromConfig();
 
 };
+
+
+///inline implementations
+
+	const Ogre::Degree& AvatarCamera::getPitch() const
+	{
+		return degreePitch;
+	}
+	
+	const Ogre::Degree& AvatarCamera::getYaw() const
+	{
+		return degreeYaw;
+	}
+	
+	Ogre::Camera* AvatarCamera::getCamera()  {
+		return mCamera;	
+	}
+	Ogre::Camera* AvatarCamera::getCamera() const {
+		return mCamera;	
+	}
 
 }
 

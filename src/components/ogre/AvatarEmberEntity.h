@@ -53,15 +53,19 @@ public:
 	/**
 	 * used by the main application to set the EmberOgre::Avatar connected to this instance 
 	 */
-	void setAvatar(Avatar* avatar) {mAvatar = avatar;}
-	Avatar* getAvatar() {return mAvatar;}
+	inline void setAvatar(Avatar* avatar);
+	inline Avatar* getAvatar();
 	
 	/**
 	 * returns the Ogre::SceneNode which represents the avatar
 	 */
 	Ogre::SceneNode* getAvatarSceneNode();
 	
-	inline Eris::Avatar* getErisAvatar() { return mErisAvatar;	}
+	/**
+	 *    Returns the Eris Avatar instance.
+	 * @return 
+	 */
+	inline Eris::Avatar* getErisAvatar();
 
 
 
@@ -85,6 +89,20 @@ protected:
 	Avatar* mAvatar;
 	Eris::Avatar* mErisAvatar;
 };
+
+///inline implementations
+	void AvatarEmberEntity::setAvatar(Avatar* avatar) 
+	{
+		mAvatar = avatar;
+	}
+	Avatar* AvatarEmberEntity::getAvatar() 
+	{
+		return mAvatar;
+	}
+	Eris::Avatar* AvatarEmberEntity::getErisAvatar() 
+	{
+		return mErisAvatar;	
+	}
 
 }
 
