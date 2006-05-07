@@ -45,6 +45,11 @@ namespace EmberOgre {
 
 namespace LuaConnectors {
 
+ConnectorBase::ConnectorBase()
+{
+}
+
+
 ConnectorBase::ConnectorBase(const LuaTypeStore& luaTypeNames)
 : mLuaTypeNames(luaTypeNames)
 {
@@ -116,6 +121,12 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 }
 
 
+
+ConnectorZero::ConnectorZero(sigc::signal<void>& signal) :  ConnectorBase(), mSignal(signal)
+{
+	mSignal.connect(sigc::mem_fun(*this, &ConnectorZero::signal_recieve));
+}
+
 template <typename T0> 
 ConnectorOne<T0>::ConnectorOne(sigc::signal<void, T0>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
@@ -145,6 +156,12 @@ template <typename T0, typename T1, typename T2, typename T3>
 ConnectorFour<T0, T1, T2, T3>::ConnectorFour(sigc::signal<void, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
 	mSignal.connect(sigc::mem_fun(*this, &ConnectorFour<T0, T1, T2, T3>::signal_recieve));
+}
+
+
+void ConnectorZero::signal_recieve()
+{
+	callLuaMethod(Empty(), Empty(), Empty(), Empty());
 }
 
 template <typename T0>
@@ -373,6 +390,11 @@ LuaConnector::LuaConnector(sigc::signal<void, TerrainEditAction*>& signal)
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::TerrainEditAction");
 	mConnector = new LuaConnectors::ConnectorOne<TerrainEditAction*>(signal, luaTypes);
+}
+
+LuaConnector::LuaConnector(sigc::signal<void>& signal)
+{
+	mConnector = new LuaConnectors::ConnectorZero(signal);
 }
 
 

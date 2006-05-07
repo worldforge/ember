@@ -25,6 +25,7 @@
 
 #include "tolua++.h"
 #include <sigc++/signal.h>
+#include <sigc++/trackable.h>
 #include <string>
 #include <vector>
 
@@ -63,10 +64,12 @@ namespace LuaConnectors {
 		Empty() {}
 	};
 	
-	class ConnectorBase
+	class ConnectorBase 
+	: public sigc::trackable
 	{
 		public:
 			void connect(const std::string & luaMethod);
+			ConnectorBase();
 			ConnectorBase(const LuaTypeStore& luaTypeNames);
 			template <typename T0, typename T1, typename T2, typename T3> void callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
 			//void callLuaMethod(const std::string& t0, const std::string& t1, LuaConnectors::Empty t2, LuaConnectors::Empty t3) ;
@@ -75,6 +78,19 @@ namespace LuaConnectors {
 			unsigned int mNumberOfArguments;
 			std::vector<std::string> mLuaTypeNames;
 	};
+
+	class ConnectorZero : public ConnectorBase
+	{
+		public:
+			ConnectorZero(sigc::signal<void>& signal);
+			ConnectorZero(SigC::Signal0<void>& signal);
+			
+		private:
+			sigc::signal<void> mSignal;
+			SigC::Signal0<void> mSignal_old;
+			void signal_recieve();
+	};
+
 
 template <typename T0>
 	class ConnectorOne : public ConnectorBase
@@ -169,6 +185,7 @@ public:
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, BasePointUserObject*>& signal);
  	LuaConnector(sigc::signal<void, TerrainEditAction*>& signal);
+ 	LuaConnector(sigc::signal<void>& signal);
    
    
    
