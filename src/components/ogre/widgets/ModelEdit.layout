@@ -3,7 +3,7 @@
 	<Window Type="EmberLook/FrameWindow" Name="MainWindoww" >
 		<Property Name="Alpha" Value="0.900000" />
 		<Property Name="CaptionColour" Value="00FFFFFF" />
-		<Property Name="Text" Value="Model Preview" />
+		<Property Name="Text" Value="Model editor" />
 		<Property Name="TitlebarEnabled" Value="True" />
 		<Property Name="UnifiedAreaRect" Value="{{0.036523,0.000000},{0.020738,10},{0.936523,0.000000},{0.920738,10}}" />
 		<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />

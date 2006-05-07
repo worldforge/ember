@@ -36,6 +36,7 @@ loadScript("EntityPicker.lua")
 loadScript("Give.lua")
 loadScript("ScriptEdit.lua")
 loadScript("ModelEdit.lua")
+loadScript("Tasks.lua")
 
 
 

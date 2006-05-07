@@ -8,11 +8,15 @@
 			<Property Name="Text" Value="Selected basepoint:" />
 			<Property Name="UnifiedAreaRect" Value="{{0.069504,0.000000},{0.058539,0.000000},{0.957800,0.000000},{0.108379,0.000000}}" />
 			<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+			<Property Name="BackgroundEnabled" Value="False" />
+			<Property Name="FrameEnabled" Value="False" />
 		</Window>
 		<Window Type="EmberLook/StaticText" Name="HeightText" >
 			<Property Name="Text" Value="Height:" />
 			<Property Name="UnifiedAreaRect" Value="{{0.081560,0.000000},{0.120731,0.000000},{0.331560,0.000000},{0.167395,0.000000}}" />
 			<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+			<Property Name="BackgroundEnabled" Value="False" />
+			<Property Name="FrameEnabled" Value="False" />
 		</Window>
 		<Window Type="EmberLook/Editbox" Name="Height" >
 			<Property Name="UnifiedAreaRect" Value="{{0.365957,0.000000},{0.122240,0.000000},{0.815957,0.000000},{0.165727,0.000000}}" />

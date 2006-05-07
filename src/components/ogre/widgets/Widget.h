@@ -213,6 +213,11 @@ public:
 	 *    Closes the current tab so that the last window connects to the first window.
 	 */
 	void closeTabGroup();
+	
+	/**
+	 * Emitted each time a frame is started.
+	*/
+	sigc::signal<void, float> EventFrameStarted;
 
 protected:
 

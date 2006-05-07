@@ -92,6 +92,7 @@ namespace EmberOgre
 	
 	void Widget::frameStarted(const Ogre::FrameEvent& evt)
 	{
+		EventFrameStarted.emit(evt.timeSinceLastFrame);
 	}
 	
 	void Widget::buildWidget()

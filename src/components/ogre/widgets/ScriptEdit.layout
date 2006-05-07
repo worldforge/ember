@@ -2,6 +2,7 @@
 <GUILayout>
 		<Window Type="EmberLook/FrameWindow" Name="MainWindow">
 			<Property Name="UnifiedAreaRect" Value="{{0.005,0.000000},{0.1,0.000000},{0.995,0.000000},{0.9,0.000000}}" />
+			<Property Name="Text" Value="Script editor" />
 			<Window Type="EmberLook/StaticText" Name="ScriptText_Text">
 				<Property Name="FrameEnabled" Value="False" />
 				<Property Name="Text" Value="Script:" />
