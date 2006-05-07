@@ -180,9 +180,12 @@ end
 function ModelEdit_updateModelInfo()
 	ModelEdit.widget:getWindow("ModelName_Text"):setText("Name: " .. ModelEdit.definition:getName())
 	ModelEdit.widget:getWindow("ModelScale"):setText(ModelEdit.definition:getScale())
-	ModelEdit.widget:getWindow("ModelRotation"):setText(ModelEdit.definition:getRotation())
-	ModelEdit_fillWindowsFromVector("ModelContainedOffset", ModelEdit.definition:getContentOffset())
-	ModelEdit_fillWindowsFromVector("ModelTranslate", ModelEdit.definition:getTranslate())
+	--ModelEdit.widget:getWindow("ModelRotation"):setText(ModelEdit.definition:getRotation())
+	ModelEdit.rotationAdapter:updateGui(ModelEdit.definition:getRotation());
+	ModelEdit.translateAdapter:updateGui(ModelEdit.definition:getTranslate());
+	ModelEdit.containedOffsetAdapter:updateGui(ModelEdit.definition:getContentOffset());
+--	ModelEdit_fillWindowsFromVector("ModelContainedOffset", ModelEdit.definition:getContentOffset())
+--	ModelEdit_fillWindowsFromVector("ModelTranslate", ModelEdit.definition:getTranslate())
 	
 	local showContent = ModelEdit.widget:getWindow("ModelShowContent")
 	
@@ -192,6 +195,20 @@ function ModelEdit_updateModelInfo()
 	ModelEdit.scaleTypes:clearAllSelections()
 	ModelEdit.scaleTypes:setItemSelectState(ModelEdit.definition:getUseScaleOf(), true)
 end
+
+function ModelEdit_translateAdapter_update()
+	ModelEdit.definition:setTranslate(ModelEdit.translateAdapter:getValue())
+end
+
+function ModelEdit_containedOffsetAdapter_update()
+	ModelEdit.definition:setContentOffset(ModelEdit.containedOffsetAdapter:getValue())
+end
+
+function ModelEdit_rotationAdapter_update()
+	ModelEdit.definition:setRotation(ModelEdit.rotationAdapter:getValue())
+end
+
+
 
 function ModelEdit_fillWindowsFromVector(windowNamePrefix, vector)
 		local xWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_x");
@@ -332,6 +349,11 @@ function ModelEdit_AddSubmodelButton_MouseClick(args)
 		ModelEdit_updateModelContentList()
 	end
 
+end
+
+function ModelEdit_ReloadInstancesButton_MouseClick(args)
+	--reload all model instances
+	ModelEdit.definition:reloadAllInstances()
 end
 
 function ModelEdit_RemoveSubmodelButton_MouseClick(args)
@@ -604,7 +626,28 @@ function ModelEdit_buildWidget()
 	ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
 	ModelEdit.modelslistholder = EmberOgre.ListHolder:new(ModelEdit.models, ModelEdit.modelsfilter)
 	
+	local xW = ModelEdit.widget:getWindow("ModelTranslate_x")
+	local yW = ModelEdit.widget:getWindow("ModelTranslate_y")
+	local zW = ModelEdit.widget:getWindow("ModelTranslate_z")
+	ModelEdit.translateAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
+	EmberOgre.LuaConnector:new(ModelEdit.translateAdapter.EventValueChanged):connect("ModelEdit_translateAdapter_update")
 	
+	local xW = ModelEdit.widget:getWindow("ModelContainedOffset_x")
+	local yW = ModelEdit.widget:getWindow("ModelContainedOffset_y")
+	local zW = ModelEdit.widget:getWindow("ModelContainedOffset_z")
+	ModelEdit.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
+	EmberOgre.LuaConnector:new(ModelEdit.containedOffsetAdapter.EventValueChanged):connect("ModelEdit_containedOffsetAdapter_update")
+
+	local xW = ModelEdit.widget:getWindow("ModelRotation_x")
+	local yW = ModelEdit.widget:getWindow("ModelRotation_y")
+	local zW = ModelEdit.widget:getWindow("ModelRotation_z")
+	local degreeW = ModelEdit.widget:getWindow("ModelRotation_degrees")
+	ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
+	EmberOgre.LuaConnector:new(ModelEdit.containedOffsetAdapter.EventValueChanged):connect("ModelEdit_rotationAdapter_update")
+
+
+
+
 
 	ModelEdit.contentparts = {}
 	ModelEdit.contentparts.partInfo = ModelEdit.widget:getWindow("PartInfo")
@@ -640,6 +683,7 @@ function ModelEdit_buildWidget()
 	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("MouseClick", "ModelEdit_NewModelOk_MouseClick")
 	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("MouseClick", "ModelEdit_NewModelCancel_MouseClick")
 	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit_RemoveSubmodelButton_MouseClick")
+	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("MouseClick", "ModelEdit_ReloadInstancesButton_MouseClick")
 	
 
 	ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")

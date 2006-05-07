@@ -169,13 +169,32 @@
 					<Property Name="UnifiedAreaRect" Value="{{0.702949,0.000000},{0.342575,0.000000},{0.833568,0.000000},{0.422004,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
-				<Window Type="EmberLook/Editbox" Name="ModelRotation" >
-					
-					<Property Name="MaxTextLength" Value="1073741823" />
-					
-					<Property Name="UnifiedAreaRect" Value="{{0.826971,0.000000},{0.343348,0.000000},{0.974204,0.000000},{0.424566,0.000000}}" />
+				
+				
+				<Window Type="EmberLook/Editbox" Name="ModelRotation_degrees" >
+					<Property Name="UnifiedPosition" Value="{{0.826971,0.000000},{0.342575,0.000000}}" />
+					<Property Name="UnifiedSize" Value="{{0.04,0.000000},{0.08,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
-				</Window>
+				</Window>				
+				<Window Type="EmberLook/Editbox" Name="ModelRotation_x" >
+					<Property Name="UnifiedPosition" Value="{{0.881056,0.000000},{0.342575,0.000000}}" />
+					<Property Name="UnifiedSize" Value="{{0.04,0.000000},{0.08,0.000000}}" />
+					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+				</Window>				
+				<Window Type="EmberLook/Editbox" Name="ModelRotation_y" >
+					<Property Name="UnifiedPosition" Value="{{0.926822,0.000000},{0.342575,0.000000}}" />
+					<Property Name="UnifiedSize" Value="{{0.04,0.000000},{0.08,0.000000}}" />
+					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+				</Window>				
+				<Window Type="EmberLook/Editbox" Name="ModelRotation_z" >
+					<Property Name="UnifiedPosition" Value="{{0.9725,0.000000},{0.342575,0.000000}}" />
+					<Property Name="UnifiedSize" Value="{{0.04,0.000000},{0.08,0.000000}}" />
+					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+				</Window>				
+				
+				
+				
+				
 				<Window Type="EmberLook/StaticText" Name="ModelUseScaleOf_text" >
 					<Property Name="BackgroundEnabled" Value="False" />
 					<Property Name="FrameEnabled" Value="False" />
@@ -250,6 +269,13 @@
 					<Property Name="UnifiedAreaRect" Value="{{0.926822,0.000000},{0.630911,0.000000},{0.962763,0.000000},{0.712130,0.000000}}" />
 					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
 				</Window>
+				
+				<Window Type="EmberLook/Button" Name="ReloadInstancesButton" >
+					<Property Name="Text" Value="Reload models" />
+					<Property Name="UnifiedAreaRect" Value="{{0.703990,0.000000},{0.73,0.000000},{0.834608,0.000000},{0.82,0.000000}}" />
+					<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+				</Window>
+				
 			</Window>
 			<Window Type="DefaultWindow" Name="SubModelInfo" >
 				<Property Name="UnifiedAreaRect" Value="{{0.028257,0.000000},{0.477314,0.000000},{0.477429,0.000000},{0.972837,0.000000}}" />

@@ -1,3 +1,41 @@
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: added more edit options and a button for reloading existing models, though rotation and translation will only be updated for newly created entities currently
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/ModelDefinition.pkg, src/components/ogre/scripting/bindings/lua/QuaternionAdapter.pkg, src/components/ogre/scripting/bindings/lua/Vector3Adapter.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreMath.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreQuaternion.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: updated bindings
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/resources.cfg: load the directory base_scripts first, which contains scripts that other scripts depend on (new in ogre 1.2)
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarEmberEntity.h, src/components/ogre/EmberEntity.h: cleaned up headers
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/EmberPhysicalEntity.cpp: adapt to rotation being changed from pointer to value
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/Makefile.am: added files
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/model/Model.cpp, src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.h:
+        * activated the registering of model instances in the definition
+        * make rotation a value instead of a pointer
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/widgets/QuaternionAdapter.cpp, src/components/ogre/widgets/QuaternionAdapter.h, src/components/ogre/widgets/Vector3Adapter.cpp, src/components/ogre/widgets/Vector3Adapter.h: created adapters for vectors and quaternions which binds together gui elements and ogre values
+
+2006-05-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+    * src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: Added connection to signals with zero arguments
+
 2006-05-06 Erik Hjortsberg  <erik@katastrof.nu>
 
     * src/components/ogre/EmberPhysicalEntity.cpp: update to changes in rotations
