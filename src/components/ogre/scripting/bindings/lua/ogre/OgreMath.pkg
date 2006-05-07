@@ -1,0 +1,510 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of OGRE
+    (Object-oriented Graphics Rendering Engine)
+For the latest info, see http://www.ogre3d.org/
+
+Copyright (c) 2000-2005 The OGRE Team
+Also see acknowledgements in Readme.html
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+-----------------------------------------------------------------------------
+*/
+
+
+namespace Ogre
+{
+    /** Wrapper class which indicates a given angle value is in Radians.
+    @remarks
+        Radian values are interchangeable with Degree values, and conversions
+        will be done automatically between them.
+    */
+	class Radian
+	{
+
+
+		explicit Radian ( float r=0 );
+		Radian ( const Degree& d );
+// 		const Ogre::Radian& operator = ( const float& f ) { mRad = f; return *this; }
+// 		const Ogre::Radian& operator = ( const Ogre::Radian& r ) { mRad = r.mRad; return *this; }
+// 		const Ogre::Radian& operator = ( const Degree& d );
+
+		float valueDegrees() const; // see bottom of this file
+		float valueRadians() const;
+		float valueAngleUnits() const;
+
+		Ogre::Radian operator + ( const Ogre::Radian& r ) const;
+		Ogre::Radian operator + ( const Degree& d ) const;
+/*		Ogre::Radian& operator += ( const Ogre::Radian& r );
+		Ogre::Radian& operator += ( const Degree& d );*/
+		Ogre::Radian operator - () ;
+		Ogre::Radian operator - ( const Ogre::Radian& r ) const ;
+		Ogre::Radian operator - ( const Degree& d ) const;
+/*		Ogre::Radian& operator -= ( const Ogre::Radian& r );
+		Ogre::Radian& operator -= ( const Degree& d );*/
+		Ogre::Radian operator * ( float f ) const;
+        Ogre::Radian operator * ( const Ogre::Radian& f ) const;
+/*		Ogre::Radian& operator *= ( float f );*/
+		Ogre::Radian operator / ( float f ) const;
+// 		Ogre::Radian& operator /= ( float f );
+
+		bool operator <  ( const Ogre::Radian& r ) const ;
+		bool operator <= ( const Ogre::Radian& r ) const ;
+		bool operator == ( const Ogre::Radian& r ) const;
+// 		bool operator != ( const Ogre::Radian& r ) const { return mRad != r.mRad; }
+/*		bool operator >= ( const Ogre::Radian& r ) const ;
+		bool operator >  ( const Ogre::Radian& r ) const ;*/
+		
+	 Radian ( const Ogre::Degree& d );
+// 	 const Ogre::Radian& operator = ( const Ogre::Degree& d ) ;
+	 Ogre::Radian operator + ( const Ogre::Degree& d ) const;
+// 	 Ogre::Radian& operator += ( const Ogre::Degree& d );
+	 Ogre::Radian operator - ( const Ogre::Degree& d ) const ;
+// 	 Ogre::Radian& operator -= ( const Ogre::Degree& d ) ;
+		
+	};
+
+    /** Wrapper class which indicates a given angle value is in Ogre::Degrees.
+    @remarks
+        Ogre::Degree values are interchangeable with Ogre::Radian values, and conversions
+        will be done automatically between them.
+    */
+	class Degree
+	{
+		Degree ( float d=0 ) ;
+		Degree ( const Ogre::Radian& r ) ;
+// 		const Ogre::Degree& operator = ( const float& f );
+// 		const Ogre::Degree& operator = ( const Ogre::Degree& d ) ;
+// 		const Ogre::Degree& operator = ( const Ogre::Radian& r );
+
+		float valueDegrees() const;
+		float valueRadians() const; // see bottom of this file
+		float valueAngleUnits() const;
+
+		Ogre::Degree operator + ( const Ogre::Degree& d ) const ;
+		Ogre::Degree operator + ( const Ogre::Radian& r ) const ;
+/*		Ogre::Degree& operator += ( const Ogre::Degree& d ) ;
+		Ogre::Degree& operator += ( const Ogre::Radian& r ) ;*/
+		Ogre::Degree operator - () { return Ogre::Degree(-mDeg); }
+		Ogre::Degree operator - ( const Ogre::Degree& d ) const ;
+		Ogre::Degree operator - ( const Ogre::Radian& r ) const ;
+/*		Ogre::Degree& operator -= ( const Ogre::Degree& d );
+		Ogre::Degree& operator -= ( const Ogre::Radian& r );*/
+		Ogre::Degree operator * ( float f ) const ;
+        Ogre::Degree operator * ( const Ogre::Degree& f ) const ;
+/*		Ogre::Degree& operator *= ( float f );*/
+		Ogre::Degree operator / ( float f ) const;
+// 		Ogre::Degree& operator /= ( float f );
+
+		bool operator <  ( const Ogre::Degree& d ) const ;
+		bool operator <= ( const Ogre::Degree& d ) const ;
+		bool operator == ( const Ogre::Degree& d ) const ;
+// 		bool operator != ( const Ogre::Degree& d ) const ;
+/*		bool operator >= ( const Ogre::Degree& d ) const ;
+		bool operator >  ( const Ogre::Degree& d ) const ;*/
+	};
+
+    /** Wrapper class which identifies a value as the currently default angle 
+        type, as defined by Math::setAngleUnit.
+    @remarks
+        Angle values will be automatically converted between radians and degrees,
+        as appropriate.
+    */
+// 	class Angle
+// 	{
+// 		explicit Angle ( float angle );
+// 		operator Ogre::Radian();
+// 		operator Ogre::Degree();
+// 	};
+
+	// these functions could not be defined within the class definition of class
+	// Ogre::Radian because they required class Ogre::Degree to be defined
+
+    /** Class to provide access to common mathematical functions.
+        @remarks
+            Most of the maths functions are aliased versions of the C runtime
+            library functions. They are aliased here to provide future
+            optimisation opportunities, either from faster RTLs or custom
+            math approximations.
+        @note
+            <br>This is based on MgcMath.h from
+            <a href="http://www.geometrictools.com/">Wild Magic</a>.
+    */
+    class Math 
+    {
+       /** The angular units used by the API. This functionality is now deprecated in favor
+	       of discreet angular unit types ( see Ogre::Degree and Ogre::Radian above ). The only place
+		   this functionality is actually still used is when parsing files. Search for
+		   usage of the Angle class for those instances
+       */
+       enum AngleUnit
+       {
+           AU_DEGREE,
+           AU_RADIAN
+       };
+
+        /** Default constructor.
+            @param
+                trigTableSize Optional parameter to set the size of the
+                tables used to implement Sin, Cos, Tan
+        */
+        Math(unsigned int trigTableSize = 4096);
+
+        /** Default destructor.
+        */
+        ~Math();
+
+		static  int IAbs (int iValue) ;
+		static  int ICeil (float fValue) ;
+		static  int IFloor (float fValue) ;
+        static int ISign (int iValue);
+
+		static  float Abs (float fValue) ;
+		static  Ogre::Degree Abs (const Ogre::Degree& dValue) ;
+		static  Ogre::Radian Abs (const Ogre::Radian& rValue) ;
+		static Ogre::Radian ACos (float fValue);
+		static Ogre::Radian ASin (float fValue);
+		static  Ogre::Radian ATan (float fValue) ;
+		static  Ogre::Radian ATan2 (float fY, float fX) ;
+		static  float Ceil (float fValue) ;
+
+        /** Cosine function.
+            @param
+                fValue Angle in radians
+            @param
+                useTables If true, uses lookup tables rather than
+                calculation - faster but less accurate.
+        */
+        static  float Cos (const Ogre::Radian& fValue, bool useTables = false) ;
+        /** Cosine function.
+            @param
+                fValue Angle in radians
+            @param
+                useTables If true, uses lookup tables rather than
+                calculation - faster but less accurate.
+        */
+        static  float Cos (float fValue, bool useTables = false);
+
+		static  float Exp (float fValue);
+
+		static  float Floor (float fValue) ;
+
+		static  float Log (float fValue);
+
+		static  float Pow (float fBase, float fExponent);
+
+        static float Sign (float fValue);
+		static  Ogre::Radian Sign ( const Ogre::Radian& rValue );
+		static  Ogre::Degree Sign ( const Ogre::Degree& dValue );
+
+        /** Sine function.
+            @param
+                fValue Angle in radians
+            @param
+                useTables If true, uses lookup tables rather than
+                calculation - faster but less accurate.
+        */
+        static  float Sin (const Ogre::Radian& fValue, bool useTables = false) ;
+        /** Sine function.
+            @param
+                fValue Angle in radians
+            @param
+                useTables If true, uses lookup tables rather than
+                calculation - faster but less accurate.
+        */
+        static  float Sin (float fValue, bool useTables = false);
+
+		static  float Sqr (float fValue) ;
+
+		static  float Sqrt (float fValue);
+
+        static  Ogre::Radian Sqrt (const Ogre::Radian& fValue);
+
+        static  Ogre::Degree Sqrt (const Ogre::Degree& fValue);
+
+        /** Inverse square root i.e. 1 / Sqrt(x), good for vector
+            normalisation.
+        */
+		static float InvSqrt(float fValue);
+
+        static float UnitRandom ();  // in [0,1]
+
+        static float RangeRandom (float fLow, float fHigh);  // in [fLow,fHigh]
+
+        static float SymmetricRandom ();  // in [-1,1]
+
+        /** Tangent function.
+            @param
+                fValue Angle in radians
+            @param
+                useTables If true, uses lookup tables rather than
+                calculation - faster but less accurate.
+        */
+		static  float Tan (const Ogre::Radian& fValue, bool useTables = false) ;
+        /** Tangent function.
+            @param
+                fValue Angle in radians
+            @param
+                useTables If true, uses lookup tables rather than
+                calculation - faster but less accurate.
+        */
+		static  float Tan (float fValue, bool useTables = false);
+
+		static  float DegreesToRadians(float degrees);
+        static  float RadiansToDegrees(float radians) ;
+
+       /** These functions used to set the assumed angle units (radians or degrees) 
+            expected when using the Angle type.
+       @par
+            You can set this directly after creating a new Root, and also before/after resource creation,
+            depending on whether you want the change to affect resource files.
+       */
+       static void setAngleUnit(Ogre::Math::AngleUnit unit);
+       /** Get the unit being used for angles. */
+       static Ogre::Math::AngleUnit getAngleUnit(void);
+
+       /** Convert from the current AngleUnit to radians. */
+       static float AngleUnitsToRadians(float units);
+       /** Convert from radians to the current AngleUnit . */
+       static float RadiansToAngleUnits(float radians);
+       /** Convert from the current AngleUnit to degrees. */
+       static float AngleUnitsToDegrees(float units);
+       /** Convert from degrees to the current AngleUnit. */
+       static float DegreesToAngleUnits(float degrees);
+
+       /** Checks whether a given point is inside a triangle, in a
+            2-dimensional (Cartesian) space.
+            @remarks
+                The vertices of the triangle must be given in either
+                trigonometrical (anticlockwise) or inverse trigonometrical
+                (clockwise) order.
+            @param
+                p The point.
+            @param
+                a The triangle's first vertex.
+            @param
+                b The triangle's second vertex.
+            @param
+                c The triangle's third vertex.
+            @returns
+                If the point resides in the triangle, <b>true</b> is
+                returned.
+            @par
+                If the point is outside the triangle, <b>false</b> is
+                returned.
+        */
+        static bool pointInTri2D(const Ogre::Vector2& p, const Ogre::Vector2& a, 
+			const Ogre::Vector2& b, const Ogre::Vector2& c);
+
+       /** Checks whether a given 3D point is inside a triangle.
+       @remarks
+            The vertices of the triangle must be given in either
+            trigonometrical (anticlockwise) or inverse trigonometrical
+            (clockwise) order, and the point must be guaranteed to be in the
+			same plane as the triangle
+        @param
+            p The point.
+        @param
+            a The triangle's first vertex.
+        @param
+            b The triangle's second vertex.
+        @param
+            c The triangle's third vertex.
+		@param 
+			normal The triangle plane's normal (passed in rather than calculated
+				on demand since the callermay already have it)
+        @returns
+            If the point resides in the triangle, <b>true</b> is
+            returned.
+        @par
+            If the point is outside the triangle, <b>false</b> is
+            returned.
+        */
+        static bool pointInTri3D(const Ogre::Vector3& p, const Ogre::Vector3& a, 
+			const Ogre::Vector3& b, const Ogre::Vector3& c, const Ogre::Vector3& normal);
+        /** Ogre::Ray / plane intersection, returns boolean result and distance. */
+        static std::pair<bool, float> intersects(const Ogre::Ray& ray, const Ogre::Plane& plane);
+
+        /** Ogre::Ray / sphere intersection, returns boolean result and distance. */
+        static std::pair<bool, float> intersects(const Ogre::Ray& ray, const Ogre::Sphere& sphere, 
+            bool discardInside = true);
+        
+        /** Ogre::Ray / box intersection, returns boolean result and distance. */
+        static std::pair<bool, float> intersects(const Ogre::Ray& ray, const Ogre::AxisAlignedBox& box);
+
+        /** Ogre::Ray / box intersection, returns boolean result and two intersection distance.
+        @param
+            ray The ray.
+        @param
+            box The box.
+        @param
+            d1 A real pointer to retrieve the near intersection distance
+                from the ray origin, maybe <b>null</b> which means don't care
+                about the near intersection distance.
+        @param
+            d2 A real pointer to retrieve the far intersection distance
+                from the ray origin, maybe <b>null</b> which means don't care
+                about the far intersection distance.
+        @returns
+            If the ray is intersects the box, <b>true</b> is returned, and
+            the near intersection distance is return by <i>d1</i>, the
+            far intersection distance is return by <i>d2</i>. Guarantee
+            <b>0</b> <= <i>d1</i> <= <i>d2</i>.
+        @par
+            If the ray isn't intersects the box, <b>false</b> is returned, and
+            <i>d1</i> and <i>d2</i> is unmodified.
+        */
+        static bool intersects(const Ogre::Ray& ray, const Ogre::AxisAlignedBox& box,
+            float* d1, float* d2);
+
+        /** Ogre::Ray / triangle intersection, returns boolean result and distance.
+        @param
+            ray The ray.
+        @param
+            a The triangle's first vertex.
+        @param
+            b The triangle's second vertex.
+        @param
+            c The triangle's third vertex.
+		@param 
+			normal The triangle plane's normal (passed in rather than calculated
+				on demand since the callermay already have it), doesn't need
+                normalised since we don't care.
+        @param
+            positiveSide Intersect with "positive side" of the triangle
+        @param
+            negativeSide Intersect with "negative side" of the triangle
+        @returns
+            If the ray is intersects the triangle, a pair of <b>true</b> and the
+            distance between intersection point and ray origin returned.
+        @par
+            If the ray isn't intersects the triangle, a pair of <b>false</b> and
+            <b>0</b> returned.
+        */
+        static std::pair<bool, float> intersects(const Ogre::Ray& ray, const Ogre::Vector3& a,
+            const Ogre::Vector3& b, const Ogre::Vector3& c, const Ogre::Vector3& normal,
+            bool positiveSide = true, bool negativeSide = true);
+
+        /** Ogre::Ray / triangle intersection, returns boolean result and distance.
+        @param
+            ray The ray.
+        @param
+            a The triangle's first vertex.
+        @param
+            b The triangle's second vertex.
+        @param
+            c The triangle's third vertex.
+        @param
+            positiveSide Intersect with "positive side" of the triangle
+        @param
+            negativeSide Intersect with "negative side" of the triangle
+        @returns
+            If the ray is intersects the triangle, a pair of <b>true</b> and the
+            distance between intersection point and ray origin returned.
+        @par
+            If the ray isn't intersects the triangle, a pair of <b>false</b> and
+            <b>0</b> returned.
+        */
+        static std::pair<bool, float> intersects(const Ogre::Ray& ray, const Ogre::Vector3& a,
+            const Ogre::Vector3& b, const Ogre::Vector3& c,
+            bool positiveSide = true, bool negativeSide = true);
+
+        /** Ogre::Sphere / box intersection test. */
+        static bool intersects(const Ogre::Sphere& sphere, const Ogre::AxisAlignedBox& box);
+
+        /** Ogre::Plane / box intersection test. */
+        static bool intersects(const Ogre::Plane& plane, const Ogre::AxisAlignedBox& box);
+
+        /** Ogre::Ray / convex plane list intersection test. 
+        @param ray The ray to test with
+        @param plaeList List of planes which form a convex volume
+        @param normalIsOutside Does the normal point outside the volume
+        */
+        static std::pair<bool, float> intersects(
+            const Ogre::Ray& ray, const std::vector<Ogre::Plane>& planeList, 
+            bool normalIsOutside);
+        /** Ogre::Ray / convex plane list intersection test. 
+        @param ray The ray to test with
+        @param plaeList List of planes which form a convex volume
+        @param normalIsOutside Does the normal point outside the volume
+        */
+        static std::pair<bool, float> intersects(
+            const Ogre::Ray& ray, const std::list<Ogre::Plane>& planeList, 
+            bool normalIsOutside);
+
+        /** Ogre::Sphere / plane intersection test. 
+        @remarks NB just do a plane.getDistance(sphere.getCenter()) for more detail!
+        */
+        static bool intersects(const Ogre::Sphere& sphere, const Ogre::Plane& plane);
+
+        /** Compare 2 reals, using tolerance for inaccuracies.
+        */
+        static bool RealEqual(float a, float b,
+            float tolerance = std::numeric_limits<float>::epsilon());
+
+        /** Calculates the tangent space vector for a given set of positions / texture coords. */
+        static Ogre::Vector3 calculateTangentSpaceVector(
+            const Ogre::Vector3& position1, const Ogre::Vector3& position2, const Ogre::Vector3& position3,
+            float u1, float v1, float u2, float v2, float u3, float v3);
+
+        /** Build a reflection matrix for the passed in plane. */
+        static Ogre::Matrix4 buildReflectionMatrix(const Ogre::Plane& p);
+        /** Calculate a face normal, including the w component which is the offset from the origin. */
+        static Ogre::Vector4 calculateFaceNormal(const Ogre::Vector3& v1, const Ogre::Vector3& v2, const Ogre::Vector3& v3);
+        /** Calculate a face normal, no w-information. */
+        static Ogre::Vector3 calculateBasicFaceNormal(const Ogre::Vector3& v1, const Ogre::Vector3& v2, const Ogre::Vector3& v3);
+        /** Calculate a face normal without normalize, including the w component which is the offset from the origin. */
+        static Ogre::Vector4 calculateFaceNormalWithoutNormalize(const Ogre::Vector3& v1, const Ogre::Vector3& v2, const Ogre::Vector3& v3);
+        /** Calculate a face normal without normalize, no w-information. */
+        static Ogre::Vector3 calculateBasicFaceNormalWithoutNormalize(const Ogre::Vector3& v1, const Ogre::Vector3& v2, const Ogre::Vector3& v3);
+
+		/** Generates a value based on the gaussian (normal) distribution function
+			with the given offset and scale parameters.
+		*/
+		static float gaussianDistribution(float x, float offset = 0.0f, float scale = 1.0f);
+
+        static const float POS_INFINITY;
+        static const float NEG_INFINITY;
+        static const float PI;
+        static const float TWO_PI;
+        static const float HALF_PI;
+		static const float fDeg2Rad;
+		static const float fRad2Deg;
+
+    };
+
+	// these functions must be defined down here, because they rely on the
+	// angle unit conversion functions in class Math:
+
+// 	 float Radian::valueDegrees() const;
+// 	 float Radian::valueAngleUnits() const;
+// 
+// 	 float Degree::valueRadians() const;
+// 
+// 	 float Degree::valueAngleUnits() const;
+
+// 	 Angle::operator Radian();
+// 
+// 	 Angle::operator Degree();
+
+// 	 Ogre::Radian operator * ( float a, const Ogre::Radian& b );
+// 
+// 	 Ogre::Radian operator / ( float a, const Ogre::Radian& b );
+// 
+// 	 Ogre::Degree operator * ( float a, const Ogre::Degree& b );
+// 
+// 	 Ogre::Degree operator / ( float a, const Ogre::Degree& b );
+
+}

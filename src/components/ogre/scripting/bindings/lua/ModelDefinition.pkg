@@ -98,7 +98,7 @@ class ModelDefinition : public Ogre::Resource {
 	 * @return 
 	 */
 	 Ogre::Vector3& getTranslate();
-	void setTranslate( Ogre::Vector3 translate);
+	void setTranslate(const Ogre::Vector3 translate);
 	
 	/**
 	 *	Whether contained entities should be shown or not.
@@ -110,11 +110,11 @@ class ModelDefinition : public Ogre::Resource {
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.
-	 *    If they shouldn't, a void pointer will be returned.
-	 * @return A offset vector or null.
+	 *    If they shouldn't, Ogre::Vector3::ZERO will be returned.
+	 * @return A offset vectorl.
 	 */
-	Ogre::Vector3* getContentOffset() ;
-	void setContentOffset(Ogre::Vector3* offset);
+	const Ogre::Vector3& getContentOffset() const;
+	void setContentOffset(const Ogre::Vector3&);
 	
 	/**
 	 *    Accessor for the rotation around the Z-axis that should be applied to the model upon creation
@@ -132,6 +132,11 @@ class ModelDefinition : public Ogre::Resource {
 	std::vector<EmberOgre::Model::ActionDefinition*>& getActionDefinitions();
 	void removeActionDefinition(EmberOgre::Model::ActionDefinition* def);
 	
+	/**
+	 *    Reloads all the Model instances that uses this definition.
+	 */
+	void reloadAllInstances();
+
 	
 };
 

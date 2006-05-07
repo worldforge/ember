@@ -1,0 +1,163 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of OGRE
+    (Object-oriented Graphics Rendering Engine)
+For the latest info, see http://www.ogre3d.org/
+
+Copyright (c) 2000-2005 The OGRE Team
+Also see acknowledgements in Readme.html
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+-----------------------------------------------------------------------------
+*/
+// NOTE THAT THIS FILE IS BASED ON MATERIAL FROM:
+
+// Magic Software, Inc.
+// http://www.geometrictools.com/
+// Copyright (c) 2000, All Rights Reserved
+//
+// Source code from Magic Software is supplied under the terms of a license
+// agreement and may not be copied or disclosed except in accordance with the
+// terms of that agreement.  The various license agreements may be found at
+// the Magic Software web site.  This file is subject to the license
+//
+// FREE SOURCE CODE
+// http://www.geometrictools.com/License/WildMagic3License.pdf
+
+
+
+namespace Ogre {
+
+    /** Implementation of a Ogre::Quaternion, i.e. a rotation around an axis.
+    */
+    class  Quaternion
+    {
+         Quaternion (
+            float fW ,
+            float fX , float fY , float fZ );
+         Quaternion (const Ogre::Quaternion& rkQ);
+        
+        /// Construct a quaternion from a rotation matrix
+        Quaternion(const Ogre::Matrix3& rot);
+        /// Construct a quaternion from an angle/axis
+         Quaternion(const Ogre::Radian& rfAngle, const Vector3& rkAxis);
+//          Quaternion(const float& rfAngle, const Ogre::Vector3& rkAxis);
+        /// Construct a quaternion from 3 orthonormal local axes
+         Quaternion(const Ogre::Vector3& xaxis, const Ogre::Vector3& yaxis, const Ogre::Vector3& zaxis);
+        /// Construct a quaternion from 3 orthonormal local axes
+         //Quaternion(const Vector3* akAxis);
+		/// Construct a quaternion from 4 manual w/x/y/z values
+		 //Quaternion(float* valptr);
+
+        void FromRotationMatrix (const Ogre::Matrix3& kRot);
+        void ToRotationMatrix (Ogre::Matrix3& kRot) const;
+        void FromAngleAxis (const Ogre::Radian& rfAngle, const Ogre::Vector3& rkAxis);
+        void ToAngleAxis (Ogre::Radian& rfAngle, Ogre::Vector3& rkAxis) const;
+         void ToAngleAxis (Ogre::Degree& dAngle, Ogre::Vector3& rkAxis) const ;
+//          void FromAngleAxis (const float& rfAngle, const Ogre::Vector3& rkAxis);
+//          void ToAngleAxis (float& rfAngle, Ogre::Vector3& rkAxis) const;
+        void FromAxes (const Ogre::Vector3* akAxis);
+        void FromAxes (const Ogre::Vector3& xAxis, const Ogre::Vector3& yAxis, const Ogre::Vector3& zAxis);
+        void ToAxes (Ogre::Vector3* akAxis) const;
+        void ToAxes (Ogre::Vector3& xAxis, Ogre::Vector3& yAxis, Ogre::Vector3& zAxis) const;
+        /// Get the local x-axis
+        Ogre::Vector3 xAxis(void) const;
+        /// Get the local y-axis
+        Ogre::Vector3 yAxis(void) const;
+        /// Get the local z-axis
+        Ogre::Vector3 zAxis(void) const;
+
+//          Ogre::Quaternion& operator= (const Ogre::Quaternion& rkQ)
+// 		{
+// 			w = rkQ.w;
+// 			x = rkQ.x;
+// 			y = rkQ.y;
+// 			z = rkQ.z;
+// 			return *this;
+// 		}
+        Ogre::Quaternion operator+ (const Ogre::Quaternion& rkQ) const;
+        Ogre::Quaternion operator- (const Ogre::Quaternion& rkQ) const;
+        Ogre::Quaternion operator* (const Ogre::Quaternion& rkQ) const;
+        Ogre::Quaternion operator* (float fScalar) const;
+//          Ogre::Quaternion operator* (float fScalar,
+//             const Ogre::Quaternion& rkQ);
+        Ogre::Quaternion operator- () const;
+         bool operator== (const Ogre::Quaternion& rhs) const;
+//          bool operator!= (const Ogre::Quaternion& rhs) const;
+        // functions of a quaternion
+        float Dot (const Ogre::Quaternion& rkQ) const;  // dot product
+        float Norm () const;  // squared-length
+        /// Normalises this quaternion, and returns the previous length
+        float normalise(void); 
+        Ogre::Quaternion Inverse () const;  // apply to non-zero quaternion
+        Ogre::Quaternion UnitInverse () const;  // apply to unit-length quaternion
+        Ogre::Quaternion Exp () const;
+        Ogre::Quaternion Log () const;
+
+        // rotation of a vector by a quaternion
+        Ogre::Vector3 operator* (const Vector3& rkVector) const;
+
+   		/// Calculate the local roll element of this quaternion
+		 Ogre::Radian getRoll(void) const;
+   		/// Calculate the local pitch element of this quaternion
+		 Ogre::Radian getPitch(void) const;
+   		/// Calculate the local yaw element of this quaternion
+		 Ogre::Radian getYaw(void) const;		
+		/// Equality with tolerance (tolerance is max angle difference)
+		bool equals(const Ogre::Quaternion& rhs, const  Ogre::Radian& tolerance) const;
+		
+	    // spherical linear interpolation
+        static Ogre::Quaternion Slerp (float fT, const Ogre::Quaternion& rkP,
+            const Ogre::Quaternion& rkQ, bool shortestPath = false);
+
+        static Ogre::Quaternion SlerpExtraSpins (float fT,
+            const Ogre::Quaternion& rkP, const Ogre::Quaternion& rkQ,
+            int iExtraSpins);
+
+        // setup for spherical quadratic interpolation
+        static void Intermediate (const Ogre::Quaternion& rkQ0,
+            const Ogre::Quaternion& rkQ1, const Ogre::Quaternion& rkQ2,
+            Ogre::Quaternion& rka, Ogre::Quaternion& rkB);
+
+        // spherical quadratic interpolation
+        static Ogre::Quaternion Squad (float fT, const Ogre::Quaternion& rkP,
+            const Ogre::Quaternion& rkA, const Ogre::Quaternion& rkB,
+            const Ogre::Quaternion& rkQ, bool shortestPath = false);
+
+        // normalised linear interpolation - faster but less accurate (non-constant rotation velocity)
+        static Ogre::Quaternion nlerp(float fT, const Ogre::Quaternion& rkP, 
+            const Ogre::Quaternion& rkQ, bool shortestPath = false);
+
+        // cutoff for sine near zero
+        static const float ms_fEpsilon;
+
+        // special values
+        static const Ogre::Quaternion ZERO;
+        static const Ogre::Quaternion IDENTITY;
+
+
+				float w, x, y, z;
+
+
+
+
+    };
+
+}
+
+
+
+
+#endif 

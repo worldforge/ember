@@ -39,6 +39,8 @@
 #include "components/ogre/widgets/OgreEntityRenderer.h"
 #include "components/ogre/widgets/ModelRenderer.h"
 #include "components/ogre/widgets/ListHolder.h"
+#include "components/ogre/widgets/Vector3Adapter.h"
+#include "components/ogre/widgets/QuaternionAdapter.h"
 
 //#include "components/ogre/widgets/MaterialPicker.h"
 

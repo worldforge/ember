@@ -45,6 +45,11 @@ $pfile "stdlib.pkg"
 
 
 
+$pfile "Vector3Adapter.pkg"
+$pfile "QuaternionAdapter.pkg"
+
+
+
 //$pfile "EntityCEGUITexture.pkg"
 
 //$pfile "LuaConnector.pkg"

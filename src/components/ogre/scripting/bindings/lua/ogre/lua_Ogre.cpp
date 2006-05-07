@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.6 on Sat Mar 18 16:03:09 2006.
+** Generated automatically by tolua++-1.0.6 on Sat May  6 21:49:19 2006.
 */
 
 #ifndef __cplusplus
@@ -18,30 +18,9 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_ushort (lua_State* tolua_S)
+static int tolua_collect_Ogre__Math (lua_State* tolua_S)
 {
- ushort* self = (ushort*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
-static int tolua_collect_Ogre__MeshPtr (lua_State* tolua_S)
-{
- Ogre::MeshPtr* self = (Ogre::MeshPtr*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
-static int tolua_collect_Ogre__ResourcePtr (lua_State* tolua_S)
-{
- Ogre::ResourcePtr* self = (Ogre::ResourcePtr*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
-static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__mapped_type (lua_State* tolua_S)
-{
- Ogre::ResourceManager::ResourceHandleMap::mapped_type* self = (Ogre::ResourceManager::ResourceHandleMap::mapped_type*) tolua_tousertype(tolua_S,1,0);
+ Ogre::Math* self = (Ogre::Math*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -53,16 +32,9 @@ static int tolua_collect_Ogre__MapIterator_Ogre__Entity__ChildObjectList_ (lua_S
  return 0;
 }
 
-static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
+static int tolua_collect_Ogre__Radian (lua_State* tolua_S)
 {
- Ogre::Vector3* self = (Ogre::Vector3*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
-static int tolua_collect_uint (lua_State* tolua_S)
-{
- uint* self = (uint*) tolua_tousertype(tolua_S,1,0);
+ Ogre::Radian* self = (Ogre::Radian*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -70,13 +42,6 @@ static int tolua_collect_uint (lua_State* tolua_S)
 static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__key_type (lua_State* tolua_S)
 {
  Ogre::ResourceManager::ResourceHandleMap::key_type* self = (Ogre::ResourceManager::ResourceHandleMap::key_type*) tolua_tousertype(tolua_S,1,0);
- delete self;
- return 0;
-}
-
-static int tolua_collect_Ogre__MapIterator_Ogre__ResourceManager__ResourceHandleMap_ (lua_State* tolua_S)
-{
- Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*) tolua_tousertype(tolua_S,1,0);
  delete self;
  return 0;
 }
@@ -101,43 +66,131 @@ static int tolua_collect_Ogre__MaterialPtr (lua_State* tolua_S)
  delete self;
  return 0;
 }
+
+static int tolua_collect_ushort (lua_State* tolua_S)
+{
+ ushort* self = (ushort*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__Degree (lua_State* tolua_S)
+{
+ Ogre::Degree* self = (Ogre::Degree*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__ResourcePtr (lua_State* tolua_S)
+{
+ Ogre::ResourcePtr* self = (Ogre::ResourcePtr*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_std__pair_bool_float_ (lua_State* tolua_S)
+{
+ std::pair<bool,float>* self = (std::pair<bool,float>*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
+{
+ Ogre::Vector3* self = (Ogre::Vector3*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__MeshPtr (lua_State* tolua_S)
+{
+ Ogre::MeshPtr* self = (Ogre::MeshPtr*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__mapped_type (lua_State* tolua_S)
+{
+ Ogre::ResourceManager::ResourceHandleMap::mapped_type* self = (Ogre::ResourceManager::ResourceHandleMap::mapped_type*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_uint (lua_State* tolua_S)
+{
+ uint* self = (uint*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__Vector4 (lua_State* tolua_S)
+{
+ Ogre::Vector4* self = (Ogre::Vector4*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__Matrix4 (lua_State* tolua_S)
+{
+ Ogre::Matrix4* self = (Ogre::Matrix4*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
+
+static int tolua_collect_Ogre__MapIterator_Ogre__ResourceManager__ResourceHandleMap_ (lua_State* tolua_S)
+{
+ Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*) tolua_tousertype(tolua_S,1,0);
+ delete self;
+ return 0;
+}
 #endif
 
 
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
- tolua_usertype(tolua_S,"Ogre::Mesh");
- tolua_usertype(tolua_S,"Ogre::AnimationState");
- tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
- tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
- tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
- tolua_usertype(tolua_S,"Ogre::Sphere");
- tolua_usertype(tolua_S,"Ogre::TagPoint");
- tolua_usertype(tolua_S,"Ogre::Resource");
+ tolua_usertype(tolua_S,"Ogre::Vector2");
+ tolua_usertype(tolua_S,"Ogre::RenderTarget");
+ tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::key_type");
+ tolua_usertype(tolua_S,"Ogre::Vector4");
+ tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"Ogre::Degree");
+ tolua_usertype(tolua_S,"Ogre::Material");
+ tolua_usertype(tolua_S,"Ogre::MaterialManager");
+ tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
+ tolua_usertype(tolua_S,"Ogre::SubEntity");
+ tolua_usertype(tolua_S,"Ogre::Matrix3");
+ tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
+ tolua_usertype(tolua_S,"Ogre::Math");
+ tolua_usertype(tolua_S,"Ogre::Plane");
+ tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
+ tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
+ tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
+ tolua_usertype(tolua_S,"Ogre::Resource");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
+ tolua_usertype(tolua_S,"Ogre::Matrix4");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
- tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
  tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"ushort");
- tolua_usertype(tolua_S,"Ogre::MeshManager");
+ tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"Ogre::MeshPtr");
  tolua_usertype(tolua_S,"Ogre::ResourcePtr");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
- tolua_usertype(tolua_S,"Ogre::MovableObject");
- tolua_usertype(tolua_S,"Ogre::Material");
- tolua_usertype(tolua_S,"Ogre::MaterialManager");
+ tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
+ tolua_usertype(tolua_S,"Ogre::TagPoint");
+ tolua_usertype(tolua_S,"Ogre::Mesh");
  tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"Ogre::Vector3");
- tolua_usertype(tolua_S,"Ogre::Radian");
+ tolua_usertype(tolua_S,"std::pair<bool,float>");
  tolua_usertype(tolua_S,"Ogre::AnimationStateSet");
  tolua_usertype(tolua_S,"uint");
- tolua_usertype(tolua_S,"Ogre::SubEntity");
- tolua_usertype(tolua_S,"Ogre::RenderTarget");
- tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
+ tolua_usertype(tolua_S,"Ogre::MovableObject");
+ tolua_usertype(tolua_S,"Ogre::Ray");
+ tolua_usertype(tolua_S,"Ogre::MeshManager");
 }
 
 /* get function: lastFPS of class  FrameStats */
@@ -3357,6 +3410,5028 @@ static int tolua_get_Ogre__Vector3_UNIT_SCALE(lua_State* tolua_S)
  return 1;
 }
 
+/* method: new of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fW = ((float)  tolua_tonumber(tolua_S,2,0));
+  float fX = ((float)  tolua_tonumber(tolua_S,3,0));
+  float fY = ((float)  tolua_tonumber(tolua_S,4,0));
+  float fZ = ((float)  tolua_tonumber(tolua_S,5,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(fW,fX,fY,fZ);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new_local of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fW = ((float)  tolua_tonumber(tolua_S,2,0));
+  float fX = ((float)  tolua_tonumber(tolua_S,3,0));
+  float fY = ((float)  tolua_tonumber(tolua_S,4,0));
+  float fZ = ((float)  tolua_tonumber(tolua_S,5,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(fW,fX,fY,fZ);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*rkQ);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new00(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*rkQ);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new00_local(tolua_S);
+}
+
+/* method: new of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Matrix3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Matrix3* rot = ((const Ogre::Matrix3*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*rot);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new01(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new02_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Matrix3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Matrix3* rot = ((const Ogre::Matrix3*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*rot);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new01_local(tolua_S);
+}
+
+/* method: new of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* rfAngle = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* rkAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*rfAngle,*rkAxis);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new02(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new03_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* rfAngle = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* rkAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*rfAngle,*rkAxis);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new02_local(tolua_S);
+}
+
+/* method: new of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new04(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Vector3* xaxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* yaxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* zaxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*xaxis,*yaxis,*zaxis);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new03(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_new04_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Vector3* xaxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* yaxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* zaxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+ {
+  Ogre::Quaternion* tolua_ret = (Ogre::Quaternion*)  new Ogre::Quaternion(*xaxis,*yaxis,*zaxis);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Quaternion");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_new03_local(tolua_S);
+}
+
+/* method: FromRotationMatrix of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_FromRotationMatrix00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Matrix3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Matrix3* kRot = ((const Ogre::Matrix3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'FromRotationMatrix'",NULL);
+#endif
+ {
+  self->FromRotationMatrix(*kRot);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'FromRotationMatrix'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ToRotationMatrix of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_ToRotationMatrix00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Matrix3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Matrix3* kRot = ((Ogre::Matrix3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToRotationMatrix'",NULL);
+#endif
+ {
+  self->ToRotationMatrix(*kRot);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ToRotationMatrix'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: FromAngleAxis of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_FromAngleAxis00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* rfAngle = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* rkAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'FromAngleAxis'",NULL);
+#endif
+ {
+  self->FromAngleAxis(*rfAngle,*rkAxis);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'FromAngleAxis'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ToAngleAxis of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_ToAngleAxis00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Radian* rfAngle = ((Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  Ogre::Vector3* rkAxis = ((Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToAngleAxis'",NULL);
+#endif
+ {
+  self->ToAngleAxis(*rfAngle,*rkAxis);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ToAngleAxis'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ToAngleAxis of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_ToAngleAxis01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Degree* dAngle = ((Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+  Ogre::Vector3* rkAxis = ((Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToAngleAxis'",NULL);
+#endif
+ {
+  self->ToAngleAxis(*dAngle,*rkAxis);
+ }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_ToAngleAxis00(tolua_S);
+}
+
+/* method: FromAxes of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_FromAxes00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* akAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'FromAxes'",NULL);
+#endif
+ {
+  self->FromAxes(akAxis);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'FromAxes'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: FromAxes of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_FromAxes01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* xAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* yAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* zAxis = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'FromAxes'",NULL);
+#endif
+ {
+  self->FromAxes(*xAxis,*yAxis,*zAxis);
+ }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_FromAxes00(tolua_S);
+}
+
+/* method: ToAxes of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_ToAxes00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Vector3* akAxis = ((Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToAxes'",NULL);
+#endif
+ {
+  self->ToAxes(akAxis);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ToAxes'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ToAxes of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_ToAxes01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Vector3* xAxis = ((Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  Ogre::Vector3* yAxis = ((Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  Ogre::Vector3* zAxis = ((Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToAxes'",NULL);
+#endif
+ {
+  self->ToAxes(*xAxis,*yAxis,*zAxis);
+ }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion_ToAxes00(tolua_S);
+}
+
+/* method: xAxis of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_xAxis00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'xAxis'",NULL);
+#endif
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->xAxis();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'xAxis'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: yAxis of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_yAxis00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'yAxis'",NULL);
+#endif
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->yAxis();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'yAxis'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: zAxis of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_zAxis00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'zAxis'",NULL);
+#endif
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->zAxis();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'zAxis'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator+ of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__add00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->operator+(*rkQ);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.add'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator- of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__sub00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->operator-(*rkQ);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.sub'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator* of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__mul00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->operator*(*rkQ);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.mul'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator* of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__mul01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  float fScalar = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->operator*(fScalar);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion__mul00(tolua_S);
+}
+
+/* method: operator- of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__sub01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->operator-();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion__sub00(tolua_S);
+}
+
+/* method: operator== of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__eq00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Quaternion* rhs = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator=='",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator==(*rhs);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.eq'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Dot of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Dot00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Dot'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->Dot(*rkQ);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Dot'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Norm of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Norm00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Norm'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->Norm();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Norm'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: normalise of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_normalise00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'normalise'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->normalise();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'normalise'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Inverse of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Inverse00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Inverse'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->Inverse();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Inverse'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: UnitInverse of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_UnitInverse00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'UnitInverse'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->UnitInverse();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'UnitInverse'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Exp of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Exp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Exp'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->Exp();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Exp'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Log of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Log00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Log'",NULL);
+#endif
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  self->Log();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Log'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator* of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion__mul02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* rkVector = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->operator*(*rkVector);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Quaternion__mul01(tolua_S);
+}
+
+/* method: getRoll of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_getRoll00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRoll'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->getRoll();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getRoll'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getPitch of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_getPitch00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPitch'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->getPitch();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPitch'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getYaw of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_getYaw00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getYaw'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->getYaw();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getYaw'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: equals of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_equals00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* self = (const Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Quaternion* rhs = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Radian* tolerance = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'equals'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->equals(*rhs,*tolerance);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'equals'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Slerp of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Slerp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,5,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fT = ((float)  tolua_tonumber(tolua_S,2,0));
+  const Ogre::Quaternion* rkP = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,4,0));
+  bool shortestPath = ((bool)  tolua_toboolean(tolua_S,5,false));
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  Ogre::Quaternion::Slerp(fT,*rkP,*rkQ,shortestPath);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Slerp'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: SlerpExtraSpins of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_SlerpExtraSpins00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fT = ((float)  tolua_tonumber(tolua_S,2,0));
+  const Ogre::Quaternion* rkP = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,4,0));
+  int iExtraSpins = ((int)  tolua_tonumber(tolua_S,5,0));
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  Ogre::Quaternion::SlerpExtraSpins(fT,*rkP,*rkQ,iExtraSpins);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SlerpExtraSpins'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Intermediate of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Intermediate00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,6,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Quaternion* rkQ0 = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Quaternion* rkQ1 = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Quaternion* rkQ2 = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,4,0));
+  Ogre::Quaternion* rka = ((Ogre::Quaternion*)  tolua_tousertype(tolua_S,5,0));
+  Ogre::Quaternion* rkB = ((Ogre::Quaternion*)  tolua_tousertype(tolua_S,6,0));
+ {
+  Ogre::Quaternion::Intermediate(*rkQ0,*rkQ1,*rkQ2,*rka,*rkB);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Intermediate'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Squad of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_Squad00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,6,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fT = ((float)  tolua_tonumber(tolua_S,2,0));
+  const Ogre::Quaternion* rkP = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Quaternion* rkA = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,4,0));
+  const Ogre::Quaternion* rkB = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,5,0));
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,6,0));
+  bool shortestPath = ((bool)  tolua_toboolean(tolua_S,7,false));
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  Ogre::Quaternion::Squad(fT,*rkP,*rkA,*rkB,*rkQ,shortestPath);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Squad'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: nlerp of class  Ogre::Quaternion */
+static int tolua_Ogre_Ogre_Quaternion_nlerp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Quaternion",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,5,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fT = ((float)  tolua_tonumber(tolua_S,2,0));
+  const Ogre::Quaternion* rkP = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Quaternion* rkQ = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,4,0));
+  bool shortestPath = ((bool)  tolua_toboolean(tolua_S,5,false));
+ {
+  Ogre::Quaternion tolua_ret = (Ogre::Quaternion)  Ogre::Quaternion::nlerp(fT,*rkP,*rkQ,shortestPath);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Quaternion(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Quaternion));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Quaternion");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'nlerp'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* get function: ms_fEpsilon of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_ms_fEpsilon(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Quaternion::ms_fEpsilon);
+ return 1;
+}
+
+/* get function: ZERO of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_ZERO(lua_State* tolua_S)
+{
+ tolua_pushusertype(tolua_S,(void*)&Ogre::Quaternion::ZERO,"const Ogre::Quaternion");
+ return 1;
+}
+
+/* get function: IDENTITY of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_IDENTITY(lua_State* tolua_S)
+{
+ tolua_pushusertype(tolua_S,(void*)&Ogre::Quaternion::IDENTITY,"const Ogre::Quaternion");
+ return 1;
+}
+
+/* get function: w of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_w(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'w'",NULL);
+#endif
+ tolua_pushnumber(tolua_S,(lua_Number)self->w);
+ return 1;
+}
+
+/* set function: w of class  Ogre::Quaternion */
+static int tolua_set_Ogre__Quaternion_w(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'w'",NULL);
+ if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+ tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->w = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+
+/* get function: x of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_x(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'x'",NULL);
+#endif
+ tolua_pushnumber(tolua_S,(lua_Number)self->x);
+ return 1;
+}
+
+/* set function: x of class  Ogre::Quaternion */
+static int tolua_set_Ogre__Quaternion_x(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'x'",NULL);
+ if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+ tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->x = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+
+/* get function: y of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_y(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'y'",NULL);
+#endif
+ tolua_pushnumber(tolua_S,(lua_Number)self->y);
+ return 1;
+}
+
+/* set function: y of class  Ogre::Quaternion */
+static int tolua_set_Ogre__Quaternion_y(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'y'",NULL);
+ if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+ tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->y = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+
+/* get function: z of class  Ogre::Quaternion */
+static int tolua_get_Ogre__Quaternion_z(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'z'",NULL);
+#endif
+ tolua_pushnumber(tolua_S,(lua_Number)self->z);
+ return 1;
+}
+
+/* set function: z of class  Ogre::Quaternion */
+static int tolua_set_Ogre__Quaternion_z(lua_State* tolua_S)
+{
+  Ogre::Quaternion* self = (Ogre::Quaternion*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'z'",NULL);
+ if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+ tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->z = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+
+/* method: new of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float r = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(r);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Radian");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new_local of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float r = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(r);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Radian");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(*d);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Radian");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian_new00(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(*d);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Radian");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian_new00_local(tolua_S);
+}
+
+/* method: valueDegrees of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_valueDegrees00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueDegrees'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->valueDegrees();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueDegrees'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: valueRadians of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_valueRadians00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueRadians'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->valueRadians();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueRadians'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: valueAngleUnits of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_valueAngleUnits00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueAngleUnits'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->valueAngleUnits();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueAngleUnits'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator+ of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__add00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator+(*r);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.add'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator+ of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__add01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator+(*d);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian__add00(tolua_S);
+}
+
+/* method: operator- of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__sub00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Radian* self = (Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator-();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.sub'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator- of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__sub01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator-(*r);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian__sub00(tolua_S);
+}
+
+/* method: operator- of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__sub02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator-(*d);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian__sub01(tolua_S);
+}
+
+/* method: operator* of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__mul00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  float f = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator*(f);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.mul'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator* of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__mul01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* f = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator*(*f);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian__mul00(tolua_S);
+}
+
+/* method: operator/ of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__div00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  float f = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator/'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator/(f);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.div'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator< of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__lt00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator<'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator<(*r);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.lt'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator<= of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__le00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator<='",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator<=(*r);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.le'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator== of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__eq00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator=='",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator==(*r);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.eq'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(*d);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Radian");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian_new01(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian_new02_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(*d);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Radian");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian_new01_local(tolua_S);
+}
+
+/* method: operator+ of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__add02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator+(*d);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian__add01(tolua_S);
+}
+
+/* method: operator- of class  Ogre::Radian */
+static int tolua_Ogre_Ogre_Radian__sub03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator-(*d);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Radian__sub02(tolua_S);
+}
+
+/* method: new of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float d = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Degree* tolua_ret = (Ogre::Degree*)  new Ogre::Degree(d);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Degree");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new_local of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float d = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Degree* tolua_ret = (Ogre::Degree*)  new Ogre::Degree(d);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Degree");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Degree* tolua_ret = (Ogre::Degree*)  new Ogre::Degree(*r);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Degree");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Degree_new00(tolua_S);
+}
+
+/* method: new_local of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Degree* tolua_ret = (Ogre::Degree*)  new Ogre::Degree(*r);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Degree");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Degree_new00_local(tolua_S);
+}
+
+/* method: valueDegrees of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_valueDegrees00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueDegrees'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->valueDegrees();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueDegrees'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: valueRadians of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_valueRadians00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueRadians'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->valueRadians();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueRadians'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: valueAngleUnits of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree_valueAngleUnits00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueAngleUnits'",NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->valueAngleUnits();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueAngleUnits'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator+ of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__add00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator+(*d);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.add'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator+ of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__add01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator+(*r);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Degree__add00(tolua_S);
+}
+
+/* method: operator- of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__sub00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Degree* self = (Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator-();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.sub'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator- of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__sub01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator-(*d);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Degree__sub00(tolua_S);
+}
+
+/* method: operator- of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__sub02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Radian* r = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator-(*r);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Degree__sub01(tolua_S);
+}
+
+/* method: operator* of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__mul00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  float f = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator*(f);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.mul'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator* of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__mul01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* f = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator*(*f);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Degree__mul00(tolua_S);
+}
+
+/* method: operator/ of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__div00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  float f = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator/'",NULL);
+#endif
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  self->operator/(f);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.div'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator< of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__lt00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator<'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator<(*d);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.lt'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator<= of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__le00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator<='",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator<=(*d);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.le'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: operator== of class  Ogre::Degree */
+static int tolua_Ogre_Ogre_Degree__eq00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Degree* self = (const Ogre::Degree*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator=='",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->operator==(*d);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.eq'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  unsigned int trigTableSize = ((unsigned int)  tolua_tonumber(tolua_S,2,4096));
+ {
+  Ogre::Math* tolua_ret = (Ogre::Math*)  new Ogre::Math(trigTableSize);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Math");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: new_local of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  unsigned int trigTableSize = ((unsigned int)  tolua_tonumber(tolua_S,2,4096));
+ {
+  Ogre::Math* tolua_ret = (Ogre::Math*)  new Ogre::Math(trigTableSize);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Math");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: delete of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Math* self = (Ogre::Math*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+ delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: IAbs of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_IAbs00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  int iValue = ((int)  tolua_tonumber(tolua_S,2,0));
+ {
+  int tolua_ret = (int)  Ogre::Math::IAbs(iValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'IAbs'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ICeil of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_ICeil00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  int tolua_ret = (int)  Ogre::Math::ICeil(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ICeil'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: IFloor of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_IFloor00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  int tolua_ret = (int)  Ogre::Math::IFloor(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'IFloor'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ISign of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_ISign00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  int iValue = ((int)  tolua_tonumber(tolua_S,2,0));
+ {
+  int tolua_ret = (int)  Ogre::Math::ISign(iValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ISign'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Abs of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Abs00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Abs(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Abs'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Abs of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Abs01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* dValue = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  Ogre::Math::Abs(*dValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Abs00(tolua_S);
+}
+
+/* method: Abs of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Abs02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* rValue = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::Abs(*rValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Abs01(tolua_S);
+}
+
+/* method: ACos of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_ACos00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::ACos(fValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ACos'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ASin of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_ASin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::ASin(fValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ASin'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ATan of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_ATan00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::ATan(fValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ATan'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: ATan2 of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_ATan200(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fY = ((float)  tolua_tonumber(tolua_S,2,0));
+  float fX = ((float)  tolua_tonumber(tolua_S,3,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::ATan2(fY,fX);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ATan2'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Ceil of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Ceil00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Ceil(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Ceil'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Cos of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Cos00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* fValue = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  bool useTables = ((bool)  tolua_toboolean(tolua_S,3,false));
+ {
+  float tolua_ret = (float)  Ogre::Math::Cos(*fValue,useTables);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Cos'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Cos of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Cos01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+  bool useTables = ((bool)  tolua_toboolean(tolua_S,3,false));
+ {
+  float tolua_ret = (float)  Ogre::Math::Cos(fValue,useTables);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Cos00(tolua_S);
+}
+
+/* method: Exp of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Exp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Exp(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Exp'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Floor of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Floor00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Floor(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Floor'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Log of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Log00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Log(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Log'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Pow of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Pow00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fBase = ((float)  tolua_tonumber(tolua_S,2,0));
+  float fExponent = ((float)  tolua_tonumber(tolua_S,3,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Pow(fBase,fExponent);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Pow'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Sign of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sign00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Sign(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Sign'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Sign of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sign01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* rValue = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::Sign(*rValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Sign00(tolua_S);
+}
+
+/* method: Sign of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sign02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* dValue = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  Ogre::Math::Sign(*dValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Sign01(tolua_S);
+}
+
+/* method: Sin of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* fValue = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  bool useTables = ((bool)  tolua_toboolean(tolua_S,3,false));
+ {
+  float tolua_ret = (float)  Ogre::Math::Sin(*fValue,useTables);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Sin'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Sin of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sin01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+  bool useTables = ((bool)  tolua_toboolean(tolua_S,3,false));
+ {
+  float tolua_ret = (float)  Ogre::Math::Sin(fValue,useTables);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Sin00(tolua_S);
+}
+
+/* method: Sqr of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sqr00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Sqr(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Sqr'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Sqrt of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sqrt00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::Sqrt(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Sqrt'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Sqrt of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sqrt01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Radian* fValue = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Radian tolua_ret = (Ogre::Radian)  Ogre::Math::Sqrt(*fValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Radian(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Sqrt00(tolua_S);
+}
+
+/* method: Sqrt of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Sqrt02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Degree* fValue = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Degree tolua_ret = (Ogre::Degree)  Ogre::Math::Sqrt(*fValue);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Degree(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Degree));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Degree");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Sqrt01(tolua_S);
+}
+
+/* method: InvSqrt of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_InvSqrt00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::InvSqrt(fValue);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'InvSqrt'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: UnitRandom of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_UnitRandom00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+ {
+  float tolua_ret = (float)  Ogre::Math::UnitRandom();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'UnitRandom'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: RangeRandom of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_RangeRandom00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float fLow = ((float)  tolua_tonumber(tolua_S,2,0));
+  float fHigh = ((float)  tolua_tonumber(tolua_S,3,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::RangeRandom(fLow,fHigh);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RangeRandom'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: SymmetricRandom of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_SymmetricRandom00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+ {
+  float tolua_ret = (float)  Ogre::Math::SymmetricRandom();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SymmetricRandom'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Tan of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Tan00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Radian",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Radian* fValue = ((const Ogre::Radian*)  tolua_tousertype(tolua_S,2,0));
+  bool useTables = ((bool)  tolua_toboolean(tolua_S,3,false));
+ {
+  float tolua_ret = (float)  Ogre::Math::Tan(*fValue,useTables);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Tan'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: Tan of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_Tan01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  float fValue = ((float)  tolua_tonumber(tolua_S,2,0));
+  bool useTables = ((bool)  tolua_toboolean(tolua_S,3,false));
+ {
+  float tolua_ret = (float)  Ogre::Math::Tan(fValue,useTables);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_Tan00(tolua_S);
+}
+
+/* method: DegreesToRadians of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_DegreesToRadians00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float degrees = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::DegreesToRadians(degrees);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'DegreesToRadians'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: RadiansToDegrees of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_RadiansToDegrees00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float radians = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::RadiansToDegrees(radians);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RadiansToDegrees'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: setAngleUnit of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_setAngleUnit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Math::AngleUnit unit = ((Ogre::Math::AngleUnit) (int)  tolua_tonumber(tolua_S,2,0));
+ {
+  Ogre::Math::setAngleUnit(unit);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAngleUnit'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getAngleUnit of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_getAngleUnit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+ {
+  Ogre::Math::AngleUnit tolua_ret = (Ogre::Math::AngleUnit)  Ogre::Math::getAngleUnit();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAngleUnit'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: AngleUnitsToRadians of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_AngleUnitsToRadians00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float units = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::AngleUnitsToRadians(units);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'AngleUnitsToRadians'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: RadiansToAngleUnits of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_RadiansToAngleUnits00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float radians = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::RadiansToAngleUnits(radians);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RadiansToAngleUnits'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: AngleUnitsToDegrees of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_AngleUnitsToDegrees00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float units = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::AngleUnitsToDegrees(units);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'AngleUnitsToDegrees'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: DegreesToAngleUnits of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_DegreesToAngleUnits00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float degrees = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  float tolua_ret = (float)  Ogre::Math::DegreesToAngleUnits(degrees);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'DegreesToAngleUnits'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: pointInTri2D of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_pointInTri2D00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector2",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector2",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector2",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"const Ogre::Vector2",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector2* p = ((const Ogre::Vector2*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector2* a = ((const Ogre::Vector2*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector2* b = ((const Ogre::Vector2*)  tolua_tousertype(tolua_S,4,0));
+  const Ogre::Vector2* c = ((const Ogre::Vector2*)  tolua_tousertype(tolua_S,5,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::pointInTri2D(*p,*a,*b,*c);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'pointInTri2D'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: pointInTri3D of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_pointInTri3D00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,6,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* p = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* a = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* b = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+  const Ogre::Vector3* c = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,5,0));
+  const Ogre::Vector3* normal = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,6,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::pointInTri3D(*p,*a,*b,*c,*normal);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'pointInTri3D'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Plane",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Plane* plane = ((const Ogre::Plane*)  tolua_tousertype(tolua_S,3,0));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*plane);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'intersects'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Sphere",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,4,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Sphere* sphere = ((const Ogre::Sphere*)  tolua_tousertype(tolua_S,3,0));
+  bool discardInside = ((bool)  tolua_toboolean(tolua_S,4,true));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*sphere,discardInside);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects00(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::AxisAlignedBox* box = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,3,0));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*box);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects01(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::AxisAlignedBox* box = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,3,0));
+  float d1 = ((float)  tolua_tonumber(tolua_S,4,0));
+  float d2 = ((float)  tolua_tonumber(tolua_S,5,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::intersects(*ray,*box,&d1,&d2);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ tolua_pushnumber(tolua_S,(lua_Number)d1);
+ tolua_pushnumber(tolua_S,(lua_Number)d2);
+ }
+ }
+ return 3;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects02(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects04(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,6,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+ !tolua_isboolean(tolua_S,8,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,9,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* a = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* b = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+  const Ogre::Vector3* c = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,5,0));
+  const Ogre::Vector3* normal = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,6,0));
+  bool positiveSide = ((bool)  tolua_toboolean(tolua_S,7,true));
+  bool negativeSide = ((bool)  tolua_toboolean(tolua_S,8,true));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*a,*b,*c,*normal,positiveSide,negativeSide);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects03(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects05(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,6,1,&tolua_err) ||
+ !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* a = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* b = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+  const Ogre::Vector3* c = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,5,0));
+  bool positiveSide = ((bool)  tolua_toboolean(tolua_S,6,true));
+  bool negativeSide = ((bool)  tolua_toboolean(tolua_S,7,true));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*a,*b,*c,positiveSide,negativeSide);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects04(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects06(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Sphere",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Sphere* sphere = ((const Ogre::Sphere*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::AxisAlignedBox* box = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,3,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::intersects(*sphere,*box);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects05(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects07(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Plane",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Plane* plane = ((const Ogre::Plane*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::AxisAlignedBox* box = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,3,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::intersects(*plane,*box);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects06(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects08(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const std::vector<Ogre::Plane>",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const std::vector<Ogre::Plane>* planeList = ((const std::vector<Ogre::Plane>*)  tolua_tousertype(tolua_S,3,0));
+  bool normalIsOutside = ((bool)  tolua_toboolean(tolua_S,4,0));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*planeList,normalIsOutside);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects07(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects09(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const std::list<Ogre::Plane>",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
+  const std::list<Ogre::Plane>* planeList = ((const std::list<Ogre::Plane>*)  tolua_tousertype(tolua_S,3,0));
+  bool normalIsOutside = ((bool)  tolua_toboolean(tolua_S,4,0));
+ {
+  std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*planeList,normalIsOutside);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new std::pair<bool,float>(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::pair<bool,float>));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::pair<bool,float>");
+#endif
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects08(tolua_S);
+}
+
+/* method: intersects of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_intersects10(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Sphere",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Plane",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const Ogre::Sphere* sphere = ((const Ogre::Sphere*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Plane* plane = ((const Ogre::Plane*)  tolua_tousertype(tolua_S,3,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::intersects(*sphere,*plane);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_intersects09(tolua_S);
+}
+
+/* method: RealEqual of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_RealEqual00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float a = ((float)  tolua_tonumber(tolua_S,2,0));
+  float b = ((float)  tolua_tonumber(tolua_S,3,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::RealEqual(a,b);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RealEqual'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: RealEqual of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_RealEqual01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  float a = ((float)  tolua_tonumber(tolua_S,2,0));
+  float b = ((float)  tolua_tonumber(tolua_S,3,0));
+  float tolerance = ((float)  tolua_tonumber(tolua_S,4,0));
+ {
+  bool tolua_ret = (bool)  Ogre::Math::RealEqual(a,b,tolerance);
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_Math_RealEqual00(tolua_S);
+}
+
+/* method: calculateTangentSpaceVector of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_calculateTangentSpaceVector00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,8,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,10,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,11,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* position1 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* position2 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* position3 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+  float u1 = ((float)  tolua_tonumber(tolua_S,5,0));
+  float v1 = ((float)  tolua_tonumber(tolua_S,6,0));
+  float u2 = ((float)  tolua_tonumber(tolua_S,7,0));
+  float v2 = ((float)  tolua_tonumber(tolua_S,8,0));
+  float u3 = ((float)  tolua_tonumber(tolua_S,9,0));
+  float v3 = ((float)  tolua_tonumber(tolua_S,10,0));
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  Ogre::Math::calculateTangentSpaceVector(*position1,*position2,*position3,u1,v1,u2,v2,u3,v3);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'calculateTangentSpaceVector'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: buildReflectionMatrix of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_buildReflectionMatrix00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Plane",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Plane* p = ((const Ogre::Plane*)  tolua_tousertype(tolua_S,2,0));
+ {
+  Ogre::Matrix4 tolua_ret = (Ogre::Matrix4)  Ogre::Math::buildReflectionMatrix(*p);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Matrix4(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Matrix4");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Matrix4));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Matrix4");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'buildReflectionMatrix'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: calculateFaceNormal of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_calculateFaceNormal00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* v1 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* v2 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* v3 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+ {
+  Ogre::Vector4 tolua_ret = (Ogre::Vector4)  Ogre::Math::calculateFaceNormal(*v1,*v2,*v3);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector4(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector4");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector4));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector4");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'calculateFaceNormal'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: calculateBasicFaceNormal of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_calculateBasicFaceNormal00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* v1 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* v2 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* v3 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  Ogre::Math::calculateBasicFaceNormal(*v1,*v2,*v3);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'calculateBasicFaceNormal'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: calculateFaceNormalWithoutNormalize of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_calculateFaceNormalWithoutNormalize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* v1 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* v2 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* v3 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+ {
+  Ogre::Vector4 tolua_ret = (Ogre::Vector4)  Ogre::Math::calculateFaceNormalWithoutNormalize(*v1,*v2,*v3);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector4(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector4");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector4));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector4");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'calculateFaceNormalWithoutNormalize'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: calculateBasicFaceNormalWithoutNormalize of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_calculateBasicFaceNormalWithoutNormalize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,4,"const Ogre::Vector3",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* v1 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* v2 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::Vector3* v3 = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,4,0));
+ {
+  Ogre::Vector3 tolua_ret = (Ogre::Vector3)  Ogre::Math::calculateBasicFaceNormalWithoutNormalize(*v1,*v2,*v3);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = new Ogre::Vector3(tolua_ret);
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+ tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'calculateBasicFaceNormalWithoutNormalize'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: gaussianDistribution of class  Ogre::Math */
+static int tolua_Ogre_Ogre_Math_gaussianDistribution00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float offset = ((float)  tolua_tonumber(tolua_S,3,0.0f));
+  float scale = ((float)  tolua_tonumber(tolua_S,4,1.0f));
+ {
+  float tolua_ret = (float)  Ogre::Math::gaussianDistribution(x,offset,scale);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'gaussianDistribution'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* get function: POS_INFINITY of class  Ogre::Math */
+static int tolua_get_Ogre__Math_POS_INFINITY(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::POS_INFINITY);
+ return 1;
+}
+
+/* get function: NEG_INFINITY of class  Ogre::Math */
+static int tolua_get_Ogre__Math_NEG_INFINITY(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::NEG_INFINITY);
+ return 1;
+}
+
+/* get function: PI of class  Ogre::Math */
+static int tolua_get_Ogre__Math_PI(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::PI);
+ return 1;
+}
+
+/* get function: TWO_PI of class  Ogre::Math */
+static int tolua_get_Ogre__Math_TWO_PI(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::TWO_PI);
+ return 1;
+}
+
+/* get function: HALF_PI of class  Ogre::Math */
+static int tolua_get_Ogre__Math_HALF_PI(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::HALF_PI);
+ return 1;
+}
+
+/* get function: fDeg2Rad of class  Ogre::Math */
+static int tolua_get_Ogre__Math_fDeg2Rad(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::fDeg2Rad);
+ return 1;
+}
+
+/* get function: fRad2Deg of class  Ogre::Math */
+static int tolua_get_Ogre__Math_fRad2Deg(lua_State* tolua_S)
+{
+ tolua_pushnumber(tolua_S,(lua_Number)Ogre::Math::fRad2Deg);
+ return 1;
+}
+
 /* method: getMesh of class  Ogre::Entity */
 static int tolua_Ogre_Ogre_Entity_getMesh00(lua_State* tolua_S)
 {
@@ -5154,6 +10229,218 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
  tolua_variable(tolua_S,"NEGATIVE_UNIT_Y",tolua_get_Ogre__Vector3_NEGATIVE_UNIT_Y,NULL);
  tolua_variable(tolua_S,"NEGATIVE_UNIT_Z",tolua_get_Ogre__Vector3_NEGATIVE_UNIT_Z,NULL);
  tolua_variable(tolua_S,"UNIT_SCALE",tolua_get_Ogre__Vector3_UNIT_SCALE,NULL);
+ tolua_endmodule(tolua_S);
+ tolua_endmodule(tolua_S);
+ tolua_module(tolua_S,"Ogre",0);
+ tolua_beginmodule(tolua_S,"Ogre");
+#ifdef __cplusplus
+ tolua_cclass(tolua_S,"Quaternion","Ogre::Quaternion","",tolua_collect_Ogre__Quaternion);
+#else
+ tolua_cclass(tolua_S,"Quaternion","Ogre::Quaternion","",NULL);
+#endif
+ tolua_beginmodule(tolua_S,"Quaternion");
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Quaternion_new00);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Quaternion_new00_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Quaternion_new00_local);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Quaternion_new01);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Quaternion_new01_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Quaternion_new01_local);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Quaternion_new02);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Quaternion_new02_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Quaternion_new02_local);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Quaternion_new03);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Quaternion_new03_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Quaternion_new03_local);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Quaternion_new04);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Quaternion_new04_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Quaternion_new04_local);
+ tolua_function(tolua_S,"FromRotationMatrix",tolua_Ogre_Ogre_Quaternion_FromRotationMatrix00);
+ tolua_function(tolua_S,"ToRotationMatrix",tolua_Ogre_Ogre_Quaternion_ToRotationMatrix00);
+ tolua_function(tolua_S,"FromAngleAxis",tolua_Ogre_Ogre_Quaternion_FromAngleAxis00);
+ tolua_function(tolua_S,"ToAngleAxis",tolua_Ogre_Ogre_Quaternion_ToAngleAxis00);
+ tolua_function(tolua_S,"ToAngleAxis",tolua_Ogre_Ogre_Quaternion_ToAngleAxis01);
+ tolua_function(tolua_S,"FromAxes",tolua_Ogre_Ogre_Quaternion_FromAxes00);
+ tolua_function(tolua_S,"FromAxes",tolua_Ogre_Ogre_Quaternion_FromAxes01);
+ tolua_function(tolua_S,"ToAxes",tolua_Ogre_Ogre_Quaternion_ToAxes00);
+ tolua_function(tolua_S,"ToAxes",tolua_Ogre_Ogre_Quaternion_ToAxes01);
+ tolua_function(tolua_S,"xAxis",tolua_Ogre_Ogre_Quaternion_xAxis00);
+ tolua_function(tolua_S,"yAxis",tolua_Ogre_Ogre_Quaternion_yAxis00);
+ tolua_function(tolua_S,"zAxis",tolua_Ogre_Ogre_Quaternion_zAxis00);
+ tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Quaternion__add00);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Quaternion__sub00);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Quaternion__mul00);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Quaternion__mul01);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Quaternion__sub01);
+ tolua_function(tolua_S,".eq",tolua_Ogre_Ogre_Quaternion__eq00);
+ tolua_function(tolua_S,"Dot",tolua_Ogre_Ogre_Quaternion_Dot00);
+ tolua_function(tolua_S,"Norm",tolua_Ogre_Ogre_Quaternion_Norm00);
+ tolua_function(tolua_S,"normalise",tolua_Ogre_Ogre_Quaternion_normalise00);
+ tolua_function(tolua_S,"Inverse",tolua_Ogre_Ogre_Quaternion_Inverse00);
+ tolua_function(tolua_S,"UnitInverse",tolua_Ogre_Ogre_Quaternion_UnitInverse00);
+ tolua_function(tolua_S,"Exp",tolua_Ogre_Ogre_Quaternion_Exp00);
+ tolua_function(tolua_S,"Log",tolua_Ogre_Ogre_Quaternion_Log00);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Quaternion__mul02);
+ tolua_function(tolua_S,"getRoll",tolua_Ogre_Ogre_Quaternion_getRoll00);
+ tolua_function(tolua_S,"getPitch",tolua_Ogre_Ogre_Quaternion_getPitch00);
+ tolua_function(tolua_S,"getYaw",tolua_Ogre_Ogre_Quaternion_getYaw00);
+ tolua_function(tolua_S,"equals",tolua_Ogre_Ogre_Quaternion_equals00);
+ tolua_function(tolua_S,"Slerp",tolua_Ogre_Ogre_Quaternion_Slerp00);
+ tolua_function(tolua_S,"SlerpExtraSpins",tolua_Ogre_Ogre_Quaternion_SlerpExtraSpins00);
+ tolua_function(tolua_S,"Intermediate",tolua_Ogre_Ogre_Quaternion_Intermediate00);
+ tolua_function(tolua_S,"Squad",tolua_Ogre_Ogre_Quaternion_Squad00);
+ tolua_function(tolua_S,"nlerp",tolua_Ogre_Ogre_Quaternion_nlerp00);
+ tolua_variable(tolua_S,"ms_fEpsilon",tolua_get_Ogre__Quaternion_ms_fEpsilon,NULL);
+ tolua_variable(tolua_S,"ZERO",tolua_get_Ogre__Quaternion_ZERO,NULL);
+ tolua_variable(tolua_S,"IDENTITY",tolua_get_Ogre__Quaternion_IDENTITY,NULL);
+ tolua_variable(tolua_S,"w",tolua_get_Ogre__Quaternion_w,tolua_set_Ogre__Quaternion_w);
+ tolua_variable(tolua_S,"x",tolua_get_Ogre__Quaternion_x,tolua_set_Ogre__Quaternion_x);
+ tolua_variable(tolua_S,"y",tolua_get_Ogre__Quaternion_y,tolua_set_Ogre__Quaternion_y);
+ tolua_variable(tolua_S,"z",tolua_get_Ogre__Quaternion_z,tolua_set_Ogre__Quaternion_z);
+ tolua_endmodule(tolua_S);
+ tolua_endmodule(tolua_S);
+ tolua_module(tolua_S,"Ogre",0);
+ tolua_beginmodule(tolua_S,"Ogre");
+#ifdef __cplusplus
+ tolua_cclass(tolua_S,"Radian","Ogre::Radian","",tolua_collect_Ogre__Radian);
+#else
+ tolua_cclass(tolua_S,"Radian","Ogre::Radian","",NULL);
+#endif
+ tolua_beginmodule(tolua_S,"Radian");
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Radian_new00);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Radian_new00_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Radian_new00_local);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Radian_new01);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Radian_new01_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Radian_new01_local);
+ tolua_function(tolua_S,"valueDegrees",tolua_Ogre_Ogre_Radian_valueDegrees00);
+ tolua_function(tolua_S,"valueRadians",tolua_Ogre_Ogre_Radian_valueRadians00);
+ tolua_function(tolua_S,"valueAngleUnits",tolua_Ogre_Ogre_Radian_valueAngleUnits00);
+ tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Radian__add00);
+ tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Radian__add01);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Radian__sub00);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Radian__sub01);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Radian__sub02);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Radian__mul00);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Radian__mul01);
+ tolua_function(tolua_S,".div",tolua_Ogre_Ogre_Radian__div00);
+ tolua_function(tolua_S,".lt",tolua_Ogre_Ogre_Radian__lt00);
+ tolua_function(tolua_S,".le",tolua_Ogre_Ogre_Radian__le00);
+ tolua_function(tolua_S,".eq",tolua_Ogre_Ogre_Radian__eq00);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Radian_new02);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Radian_new02_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Radian_new02_local);
+ tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Radian__add02);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Radian__sub03);
+ tolua_endmodule(tolua_S);
+#ifdef __cplusplus
+ tolua_cclass(tolua_S,"Degree","Ogre::Degree","",tolua_collect_Ogre__Degree);
+#else
+ tolua_cclass(tolua_S,"Degree","Ogre::Degree","",NULL);
+#endif
+ tolua_beginmodule(tolua_S,"Degree");
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Degree_new00);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Degree_new00_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Degree_new00_local);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Degree_new01);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Degree_new01_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Degree_new01_local);
+ tolua_function(tolua_S,"valueDegrees",tolua_Ogre_Ogre_Degree_valueDegrees00);
+ tolua_function(tolua_S,"valueRadians",tolua_Ogre_Ogre_Degree_valueRadians00);
+ tolua_function(tolua_S,"valueAngleUnits",tolua_Ogre_Ogre_Degree_valueAngleUnits00);
+ tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Degree__add00);
+ tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Degree__add01);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Degree__sub00);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Degree__sub01);
+ tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Degree__sub02);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Degree__mul00);
+ tolua_function(tolua_S,".mul",tolua_Ogre_Ogre_Degree__mul01);
+ tolua_function(tolua_S,".div",tolua_Ogre_Ogre_Degree__div00);
+ tolua_function(tolua_S,".lt",tolua_Ogre_Ogre_Degree__lt00);
+ tolua_function(tolua_S,".le",tolua_Ogre_Ogre_Degree__le00);
+ tolua_function(tolua_S,".eq",tolua_Ogre_Ogre_Degree__eq00);
+ tolua_endmodule(tolua_S);
+#ifdef __cplusplus
+ tolua_cclass(tolua_S,"Math","Ogre::Math","",tolua_collect_Ogre__Math);
+#else
+ tolua_cclass(tolua_S,"Math","Ogre::Math","",NULL);
+#endif
+ tolua_beginmodule(tolua_S,"Math");
+ tolua_constant(tolua_S,"AU_DEGREE",Ogre::Math::AU_DEGREE);
+ tolua_constant(tolua_S,"AU_RADIAN",Ogre::Math::AU_RADIAN);
+ tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Math_new00);
+ tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Math_new00_local);
+ tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Math_new00_local);
+ tolua_function(tolua_S,"delete",tolua_Ogre_Ogre_Math_delete00);
+ tolua_function(tolua_S,"IAbs",tolua_Ogre_Ogre_Math_IAbs00);
+ tolua_function(tolua_S,"ICeil",tolua_Ogre_Ogre_Math_ICeil00);
+ tolua_function(tolua_S,"IFloor",tolua_Ogre_Ogre_Math_IFloor00);
+ tolua_function(tolua_S,"ISign",tolua_Ogre_Ogre_Math_ISign00);
+ tolua_function(tolua_S,"Abs",tolua_Ogre_Ogre_Math_Abs00);
+ tolua_function(tolua_S,"Abs",tolua_Ogre_Ogre_Math_Abs01);
+ tolua_function(tolua_S,"Abs",tolua_Ogre_Ogre_Math_Abs02);
+ tolua_function(tolua_S,"ACos",tolua_Ogre_Ogre_Math_ACos00);
+ tolua_function(tolua_S,"ASin",tolua_Ogre_Ogre_Math_ASin00);
+ tolua_function(tolua_S,"ATan",tolua_Ogre_Ogre_Math_ATan00);
+ tolua_function(tolua_S,"ATan2",tolua_Ogre_Ogre_Math_ATan200);
+ tolua_function(tolua_S,"Ceil",tolua_Ogre_Ogre_Math_Ceil00);
+ tolua_function(tolua_S,"Cos",tolua_Ogre_Ogre_Math_Cos00);
+ tolua_function(tolua_S,"Cos",tolua_Ogre_Ogre_Math_Cos01);
+ tolua_function(tolua_S,"Exp",tolua_Ogre_Ogre_Math_Exp00);
+ tolua_function(tolua_S,"Floor",tolua_Ogre_Ogre_Math_Floor00);
+ tolua_function(tolua_S,"Log",tolua_Ogre_Ogre_Math_Log00);
+ tolua_function(tolua_S,"Pow",tolua_Ogre_Ogre_Math_Pow00);
+ tolua_function(tolua_S,"Sign",tolua_Ogre_Ogre_Math_Sign00);
+ tolua_function(tolua_S,"Sign",tolua_Ogre_Ogre_Math_Sign01);
+ tolua_function(tolua_S,"Sign",tolua_Ogre_Ogre_Math_Sign02);
+ tolua_function(tolua_S,"Sin",tolua_Ogre_Ogre_Math_Sin00);
+ tolua_function(tolua_S,"Sin",tolua_Ogre_Ogre_Math_Sin01);
+ tolua_function(tolua_S,"Sqr",tolua_Ogre_Ogre_Math_Sqr00);
+ tolua_function(tolua_S,"Sqrt",tolua_Ogre_Ogre_Math_Sqrt00);
+ tolua_function(tolua_S,"Sqrt",tolua_Ogre_Ogre_Math_Sqrt01);
+ tolua_function(tolua_S,"Sqrt",tolua_Ogre_Ogre_Math_Sqrt02);
+ tolua_function(tolua_S,"InvSqrt",tolua_Ogre_Ogre_Math_InvSqrt00);
+ tolua_function(tolua_S,"UnitRandom",tolua_Ogre_Ogre_Math_UnitRandom00);
+ tolua_function(tolua_S,"RangeRandom",tolua_Ogre_Ogre_Math_RangeRandom00);
+ tolua_function(tolua_S,"SymmetricRandom",tolua_Ogre_Ogre_Math_SymmetricRandom00);
+ tolua_function(tolua_S,"Tan",tolua_Ogre_Ogre_Math_Tan00);
+ tolua_function(tolua_S,"Tan",tolua_Ogre_Ogre_Math_Tan01);
+ tolua_function(tolua_S,"DegreesToRadians",tolua_Ogre_Ogre_Math_DegreesToRadians00);
+ tolua_function(tolua_S,"RadiansToDegrees",tolua_Ogre_Ogre_Math_RadiansToDegrees00);
+ tolua_function(tolua_S,"setAngleUnit",tolua_Ogre_Ogre_Math_setAngleUnit00);
+ tolua_function(tolua_S,"getAngleUnit",tolua_Ogre_Ogre_Math_getAngleUnit00);
+ tolua_function(tolua_S,"AngleUnitsToRadians",tolua_Ogre_Ogre_Math_AngleUnitsToRadians00);
+ tolua_function(tolua_S,"RadiansToAngleUnits",tolua_Ogre_Ogre_Math_RadiansToAngleUnits00);
+ tolua_function(tolua_S,"AngleUnitsToDegrees",tolua_Ogre_Ogre_Math_AngleUnitsToDegrees00);
+ tolua_function(tolua_S,"DegreesToAngleUnits",tolua_Ogre_Ogre_Math_DegreesToAngleUnits00);
+ tolua_function(tolua_S,"pointInTri2D",tolua_Ogre_Ogre_Math_pointInTri2D00);
+ tolua_function(tolua_S,"pointInTri3D",tolua_Ogre_Ogre_Math_pointInTri3D00);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects00);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects01);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects02);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects03);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects04);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects05);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects06);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects07);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects08);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects09);
+ tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_Math_intersects10);
+ tolua_function(tolua_S,"RealEqual",tolua_Ogre_Ogre_Math_RealEqual00);
+ tolua_function(tolua_S,"RealEqual",tolua_Ogre_Ogre_Math_RealEqual01);
+ tolua_function(tolua_S,"calculateTangentSpaceVector",tolua_Ogre_Ogre_Math_calculateTangentSpaceVector00);
+ tolua_function(tolua_S,"buildReflectionMatrix",tolua_Ogre_Ogre_Math_buildReflectionMatrix00);
+ tolua_function(tolua_S,"calculateFaceNormal",tolua_Ogre_Ogre_Math_calculateFaceNormal00);
+ tolua_function(tolua_S,"calculateBasicFaceNormal",tolua_Ogre_Ogre_Math_calculateBasicFaceNormal00);
+ tolua_function(tolua_S,"calculateFaceNormalWithoutNormalize",tolua_Ogre_Ogre_Math_calculateFaceNormalWithoutNormalize00);
+ tolua_function(tolua_S,"calculateBasicFaceNormalWithoutNormalize",tolua_Ogre_Ogre_Math_calculateBasicFaceNormalWithoutNormalize00);
+ tolua_function(tolua_S,"gaussianDistribution",tolua_Ogre_Ogre_Math_gaussianDistribution00);
+ tolua_variable(tolua_S,"POS_INFINITY",tolua_get_Ogre__Math_POS_INFINITY,NULL);
+ tolua_variable(tolua_S,"NEG_INFINITY",tolua_get_Ogre__Math_NEG_INFINITY,NULL);
+ tolua_variable(tolua_S,"PI",tolua_get_Ogre__Math_PI,NULL);
+ tolua_variable(tolua_S,"TWO_PI",tolua_get_Ogre__Math_TWO_PI,NULL);
+ tolua_variable(tolua_S,"HALF_PI",tolua_get_Ogre__Math_HALF_PI,NULL);
+ tolua_variable(tolua_S,"fDeg2Rad",tolua_get_Ogre__Math_fDeg2Rad,NULL);
+ tolua_variable(tolua_S,"fRad2Deg",tolua_get_Ogre__Math_fRad2Deg,NULL);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"Ogre",0);
