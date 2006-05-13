@@ -9,7 +9,8 @@ Tasks.currentTask = nil
 --end
 
 function Tasks_Progressed()
-	Tasks.progressBar:setProgress(Tasks.currentTask.progress)
+	console:pushMessage(Tasks.currentTask:progress())
+	Tasks.progressBar:setProgress(Tasks.currentTask:progress())
 end
 
 function Tasks_Cancelled()
@@ -33,9 +34,12 @@ function Tasks_SetCurrentTask(task)
 	Tasks.currentTask = task
 	Tasks.nameWindow:setText("Task name: " .. task:name())
 	--set up bindings
-	Tasks.progressAdapter = EmberOgre.LuaConnector:new_local(task.Progressed):connect("Tasks_Progressed")
-	Tasks.cancelledAdapter = EmberOgre.LuaConnector:new_local(task.Cancelled):connect("Tasks_Cancelled")
-	Tasks.completedAdapter = EmberOgre.LuaConnector:new_local(task.Completed):connect("Tasks_Completed")
+	Tasks.progressAdapter = EmberOgre.LuaConnector:new_local(task.Progressed)
+	Tasks.progressAdapter:connect("Tasks_Progressed")
+	Tasks.cancelledAdapter = EmberOgre.LuaConnector:new_local(task.Cancelled)
+	Tasks.cancelledAdapter:connect("Tasks_Cancelled")
+	Tasks.completedAdapter = EmberOgre.LuaConnector:new_local(task.Completed)
+	Tasks.completedAdapter:connect("Tasks_Completed")
 	Tasks.widget:show()
 end
 

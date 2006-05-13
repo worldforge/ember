@@ -42,8 +42,8 @@ function EntityPicker_showMenu(position)
 end
 
 function EntityPicker_pickedEntity(result, args)
-	debug(args)
-	debug(args.windowY)
+--	debug(args)
+--	debug(args.windowY)
 	
 	EntityPicker.entity = result.entity
 	EntityPicker.position = result.position
