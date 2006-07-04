@@ -1,3 +1,7 @@
+2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberSceneManager: removed obsolete scene manager
+
 2006-07-04 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/Avatar.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntityUserObject.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgrePrerequisites.h, src/components/ogre/EmberPhysicalEntity.h, src/components/ogre/GUICEGUIAdapter.h, src/components/ogre/GUIManager.cpp, src/components/ogre/jesus/XMLJesusSerializer.h, src/components/ogre/model/AnimationSet.h, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/ModelDefinitionManager.h, src/components/ogre/model/ParticleSystem.h, src/components/ogre/model/ParticleSystemBinding.h, src/components/ogre/model/SubModel.cpp, src/components/ogre/model/SubModelPart.cpp, src/components/ogre/model/SubModelPart.h, src/components/ogre/model/XMLModelDefinitionSerializer.h, src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/bindings/lua/ogre/required.h, src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/LoadingBar.h: rearranged headers, mainly by using OgreIncludes.h so that we have better control of the inclusion of Ogre
