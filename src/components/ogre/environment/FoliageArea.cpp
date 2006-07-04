@@ -126,8 +126,9 @@ void FoliageArea::init(Foliage* foliage, Ogre::SceneManager* sceneManager, const
 
 void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& position)
 {
+	float scaleFactor = Ogre::Math::RangeRandom(1.85, 2.15);
 	const Ogre::Vector3 scale(
-		1, Ogre::Math::RangeRandom(0.85, 1.15), 1);
+		scaleFactor, scaleFactor, scaleFactor);
 	placeGrass(type, position, scale);
 }
 

@@ -16,7 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "EmberOgrePrerequisites.h"
+#include "EmberEntity.h"
+
 #include "framework/Service.h"
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"
@@ -24,7 +25,6 @@
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
-#include "EmberEntity.h"
 #include "TerrainArea.h"
 
 #include "EmberOgre.h"

@@ -23,7 +23,6 @@
 //
 
 //perhaps this will make it build in debug mode without getting memory manager compile errors...
-#include "components/ogre/EmberOgrePrerequisites.h"
 
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"

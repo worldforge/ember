@@ -23,7 +23,7 @@
 #ifndef EMBEROGREGUICEGUIADAPTER_H
 #define EMBEROGREGUICEGUIADAPTER_H
 
-
+#include "EmberOgrePrerequisites.h"
 #include <CEGUISystem.h>
 #include <CEGUIEventArgs.h>
 #include <CEGUIInputEvent.h> 

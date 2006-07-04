@@ -16,12 +16,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "GUIManager.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/scripting/ScriptingService.h"
 
-#include "EmberOgrePrerequisites.h"
-#include "GUIManager.h"
 #include <CEGUIWindowManager.h>
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>

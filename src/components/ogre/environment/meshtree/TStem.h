@@ -1,7 +1,7 @@
 #ifndef __TStem_H__
 #define __TStem_H__
 
-#include <Ogre.h>
+#include "../../OgreIncludes.h"
 #include "TTypes.h"
 
 #define FLARE_RESOLUTION 10

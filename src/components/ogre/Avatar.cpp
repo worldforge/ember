@@ -17,50 +17,32 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-//TODO: reorder headers, etc
 
+#include "Avatar.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 #include <typeinfo>
 
-#include "EmberOgrePrerequisites.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
-#include "services/sound/SoundService.h"
-
-
+// #include "services/sound/SoundService.h"
 
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
-//#include "MotionManager.h"
 
 #include "AvatarEmberEntity.h"
 #include "model/Model.h"
 #include "model/SubModel.h"
 #include "EmberOgre.h"
 
-#include "GUIManager.h"
-
-#include "Avatar.h"
-
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
-
-#include <OgrePredefinedControllers.h> 
-
-
 namespace EmberOgre {
-
 
 
 Avatar::Avatar()  
@@ -73,11 +55,11 @@ Avatar::Avatar()
 
 
 	mWalkSpeed = 2.5;
-	mRunSpeed = 5; //5 seems to be the max speed in cyphesis
+	mRunSpeed = 5; ///5 seems to be the max speed in cyphesis
 
 
-	// Create the Avatar tree of nodes, with a base entity
-	// and attach all the needed cameras
+	/// Create the Avatar tree of nodes, with a base entity
+	/// and attach all the needed cameras
 	
 	createAvatar();
 
@@ -85,7 +67,7 @@ Avatar::Avatar()
 	
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
 	
-	//update values from the config
+	///update values from the config
 	updateFromConfig();
 
 }
@@ -139,11 +121,6 @@ void Avatar::createAvatar()
 
 bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 {
-// 	if (mErisAvatarEntity) {
-// 		std::stringstream ss;
-// 		ss << "X: " << mErisAvatarEntity->getPredictedPos().x() << " Y: " << mErisAvatarEntity->getPredictedPos().y();
-// 		GUIManager::getSingleton().setDebugText(ss.str());
-// 	}
 
 	if (mEntitiesToBeAddedToInventory.size() > 0) {
 		std::set<Eris::Entity*>::iterator I = mEntitiesToBeAddedToInventory.begin();
@@ -203,8 +180,8 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 	Ogre::Vector3 rawVelocity = move * speed;
 	
 	
-	//first we'll register the current state in newMovementState and compare to mCurrentMovementState
-	//that way we'll only send stuff to the server if our movement changes
+	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
+	///that way we'll only send stuff to the server if our movement changes
 	AvatarMovementState newMovementState;
 	newMovementState.orientation = mAvatarNode->getOrientation();
 	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
@@ -226,9 +203,6 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 			//let's send the movement command to the server
 			sendToServer = true;		
 
-			//we'll also start the animation of the avatar's movement animation
-//			mAvatarModel->startAnimation("walk");
-			//fprintf(stderr, "TRACE - AVATAR START WALKING ANIMATION\n");
 		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
 			//we have rotated since last server update
 			//let's see if it's ok to send server message
@@ -244,22 +218,12 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 			S_LOG_VERBOSE( "Avatar stopped moving.");
 			//we have stopped; we must alert the server
 			sendToServer = true;
-			//plus stop the animation of the avatar
-//			mAvatarModel->stopAnimation("walk");
 		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
 			//either the speed or the direction has changed
 			sendToServer = true;
 		}
 	}
 		
-	
-/*	if (mErisAvatarEntity) {
-		std::stringstream ss;
-		
- 		ss << newMovementState.orientation * newMovementState.velocity << "  ---  " << WFMath::Vector<3>(mErisAvatarEntity->getPredictedVelocity()).rotate((mErisAvatarEntity->getOrientation().inverse()));
-		GUIManager::getSingleton().setDebugText(ss.str());
-	}	*/
-	
 	
 	if (sendToServer) {
 		S_LOG_VERBOSE("Sending move op to server.");
@@ -275,7 +239,6 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 
 	} else {
 		mTimeSinceLastServerMessage += timeSlice * 1000;
-		//fprintf(stderr, "TRACE - DONT SEND MOVE OPS TO SERVER\n");
 	}
 
 	if (newMovementState.isMoving) {
@@ -326,16 +289,6 @@ void Avatar::attemptRotate(AvatarControllerMovement& movement)
 //		mAccumulatedHorizontalRotation = 0;
 	}
 
-	// pitch the 1p Camera
-	//mAvatar1pCameraNode->yaw(degHoriz);
-	// TODO: rotate 3p cam and rotate *back* top camera
-
-	// Rotate top camera *back*
-	// The mini-map will always be in the same position
-	// (Up is North)
-	// TODO: study why do I need twice the angle!
-	//mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
-	//mAvatarTopCameraNode->rotate(Ogre::Vector3::UNIT_Y,-degHoriz);
 }
 
 bool Avatar::isOkayToSendRotationMovementChangeToServer()

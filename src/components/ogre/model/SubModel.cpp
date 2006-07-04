@@ -16,9 +16,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-#include "Model.h"
 #include "SubModel.h"
+#include "Model.h"
+
 #include "SubModelPart.h"
 #include "ModelDefinitionManager.h"
 

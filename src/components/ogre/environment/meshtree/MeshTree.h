@@ -1,7 +1,7 @@
 #ifndef __MeshTree_H__
 #define __MeshTree_H__
 
-#include <Ogre.h>
+#include "../../OgreIncludes.h"
 #include "TTypes.h"
 #include "TStem.h"
 #include "TParameters.h"

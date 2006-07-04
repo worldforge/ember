@@ -20,10 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#include "EmberEntityUserObject.h"
 #include "ogreopcode/include/OgreCollisionObject.h"
 #include "EmberEntity.h"
 #include "model/Model.h"
-#include "EmberEntityUserObject.h"
 
 
 namespace EmberOgre {

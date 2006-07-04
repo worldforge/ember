@@ -24,6 +24,8 @@
 #ifndef EMBEROGREMODELMANAGER_H
 #define EMBEROGREMODELMANAGER_H
 
+#include "components/ogre/EmberOgrePrerequisites.h"
+
 #include <OgreResourceManager.h>
 #include "framework/Singleton.h"
 #include "ModelDefinition.h"

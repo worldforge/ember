@@ -19,11 +19,13 @@
 #ifndef __EmberPrerequisites_H__
 #define __EmberPrerequisites_H__
 
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <Ogre.h>
+#include "OgreIncludes.h"
+
 #include "MathConverter.h"
 
 ///include the Logging service, since we want logging available from most classes

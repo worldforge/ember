@@ -23,7 +23,7 @@
 #ifndef EMBEROGREPARTICLESYSTEMBINDING_H
 #define EMBEROGREPARTICLESYSTEMBINDING_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include <string>
 
 namespace EmberOgre {

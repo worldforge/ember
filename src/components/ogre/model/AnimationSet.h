@@ -22,7 +22,7 @@
 //
 #ifndef EMBEROGREANIMATIONSET_H
 #define EMBEROGREANIMATIONSET_H
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 namespace Model {

@@ -19,14 +19,10 @@
 #ifndef AVATARCONTROLLER_H
 #define AVATARCONTROLLER_H
 
-//include Ogre stuff
 #include "EmberOgrePrerequisites.h"
-//#include <OgreFrameListener.h>
-#include <OgreInput.h>
-#include <OgreStringConverter.h>
+
 
 #include <SDL.h>
-// #include <sigc++/object.h>
 #include <sigc++/trackable.h>
 
 #include "input/Input.h"

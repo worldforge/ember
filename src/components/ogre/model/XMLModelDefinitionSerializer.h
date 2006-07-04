@@ -27,7 +27,8 @@
 
 // Includes
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
+
 #include "ModelDefinition.h"
 #include "framework/tinyxml/tinyxml.h"
 

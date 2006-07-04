@@ -23,6 +23,7 @@
 #ifndef EMBEROGREXMLJESUSSERIALIZER_H
 #define EMBEROGREXMLJESUSSERIALIZER_H
 
+#include "../OgreIncludes.h"
 #include "framework/tinyxml/tinyxml.h"
 
 namespace Carpenter

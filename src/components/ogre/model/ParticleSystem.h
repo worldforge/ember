@@ -23,7 +23,7 @@
 #ifndef EMBEROGREPARTICLESYSTEM_H
 #define EMBEROGREPARTICLESYSTEM_H
 
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
 #include <vector>
 
 namespace EmberOgre {

@@ -20,9 +20,10 @@
 #ifndef DIMEPHYSICALENTITY_H
 #define DIMEPHYSICALENTITY_H
 
+#include "EmberOgrePrerequisites.h"
+
 #include <Atlas/Objects/Entity.h>
 
-#include "EmberOgrePrerequisites.h"
 #include <OgreException.h>
 #include <Eris/Entity.h>
 #include <Eris/View.h>

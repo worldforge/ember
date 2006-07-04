@@ -21,7 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Sun.h"
-#include "components/ogre/MathConverter.h"
+
 #include "framework/Tokeniser.h"
 
 #include "framework/ConsoleBackend.h"

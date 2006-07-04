@@ -20,9 +20,8 @@ IMPORTANT: Note that this progress bar relies on you having the OgreCore.zip
 package already added to a resource group called 'Bootstrap' - this provides
 the basic resources required for the progress bar and will be loaded automatically.
 */
-#include <Ogre.h>
 #include "LoadingBar.h"
-#include "../EmberOgrePrerequisites.h"
+
 using namespace Ogre;
 namespace EmberOgre {
 

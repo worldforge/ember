@@ -24,7 +24,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #ifndef EMBEROGRELOADERBAR_H
 #define EMBEROGRELOADERBAR_H
 
-#include <Ogre.h>
+#include "../EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
 

@@ -1,4 +1,4 @@
-#include <Ogre.h>
+#include "../../../../OgreIncludes.h"
 #include <OgreResourceManager.h>
 
 #define ushort unsigned short 

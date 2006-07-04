@@ -21,18 +21,16 @@
 
 #include "AvatarController.h"
 
+
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-//#include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 #include "AvatarCamera.h"
 #include "GUIManager.h"
-#include "OgreStringConverter.h"
 #include "Avatar.h"
 #include "EmberOgre.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 
-//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include "input/Input.h"
 

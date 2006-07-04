@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#include "LuaScriptingProvider.h"
 #include "../EmberOgrePrerequisites.h"
+#include "LuaScriptingProvider.h"
 
 #include "tolua++.h"
 #include "bindings/lua/helpers/LuaConnector.h"
