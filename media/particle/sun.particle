@@ -2,7 +2,7 @@
 
  Space/Sun 
  { 
-     material        carpenter/flare
+     material        /global/environment/sun/flare
      particle_width  20 
      particle_height 20 
      cull_each       false 

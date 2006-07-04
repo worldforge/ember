@@ -1,5 +1,9 @@
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/particle/sun.particle: fixed material
+	
+2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/scripts/buildings.material, media/materials/scripts/environment.material, media/materials/scripts/vegetation.material, media/materials/splatting/alpha_splat.material, media/materials/splatting/shadersplat.material, media/materials/textures/smokecolors.png: updated media
 
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
