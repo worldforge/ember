@@ -1,5 +1,9 @@
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/items.modeldef.xml: updated model definitions
+
+2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainEditor.cpp: we need to reload the pages after loading them
 	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainShader.cpp: rearranged headers, mainly by using OgreIncludes.h so that we have better control of the inclusion of Ogre
 

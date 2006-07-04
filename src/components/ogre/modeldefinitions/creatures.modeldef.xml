@@ -64,7 +64,17 @@
 			</Action>
 			<Action name="__movement_run">
 				<AnimationParts>
-					<animationpart name="Run" weight="1" />
+					<animationpart name="Run2" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="eat">
+				<AnimationParts>
+					<animationpart name="Eat3" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="jump">
+				<AnimationParts>
+					<animationpart name="Jump" weight="1" />
 				</AnimationParts>
 			</Action>
 		</Actions>
@@ -107,6 +117,12 @@
 				<AnimationParts>
 					<animationpart name="WingFold" weight="0.5" />
 					<animationpart name="Walk" weight="0.5" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_run">
+				<AnimationParts>
+					<animationpart name="WingFold" weight="0.5" />
+					<animationpart name="Run" weight="0.5" />
 				</AnimationParts>
 			</Action>
 		</Actions>
@@ -159,6 +175,7 @@
 	</model>	
 	
 	<model name="cow" usescaleof="height" showcontained="false">
+		<rotation x="1" y="0" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="3d_objects/creatures/quadruped_v2/models/cow/Cow.mesh" >
 			<parts>

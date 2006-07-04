@@ -12,6 +12,7 @@
 	</model>
 
 	<model name="barrel" usescaleof="height"  >
+		<translate x="0.000000" y="1.000000" z="0.000000" />
 		<submodels>
 			<submodel mesh="3d_objects/items/cylinder/models/barrel/cylinder_barrel_closed.mesh" >
 			<parts>
@@ -260,6 +261,7 @@
 	
 	
 	<model name="gallows">
+		<rotation x="1" y="0" z="0" degrees="-90" />
 		<submodels>
 			<submodel mesh="junkyard/models/gallows/gallows.mesh" >
 				<parts>

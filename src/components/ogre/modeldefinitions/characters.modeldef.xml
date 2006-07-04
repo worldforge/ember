@@ -166,6 +166,26 @@
 					<animationpart name="Walk" weight="1" />
 				</AnimationParts>
 			</Action>
+			<Action name="chop">
+				<AnimationParts>
+					<animationpart name="Bow" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="sharpen">
+				<AnimationParts>
+					<animationpart name="Bow" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="sharpen">
+				<AnimationParts>
+					<animationpart name="Bow" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="cut">
+				<AnimationParts>
+					<animationpart name="Bow" weight="1" />
+				</AnimationParts>
+			</Action>
 		</Actions>
 		<attachpoints>
 			<attachpoint name="right_hand_wield" bone="RightHand" />
