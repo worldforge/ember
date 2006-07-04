@@ -1,5 +1,10 @@
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainEditor.cpp: we need to reload the pages after loading them
+	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainShader.cpp: rearranged headers, mainly by using OgreIncludes.h so that we have better control of the inclusion of Ogre
+
+2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/SceneManagers/EmberSceneManager: removed obsolete scene manager
 
 2006-07-04 Erik Hjortsberg  <erik@katastrof.nu>

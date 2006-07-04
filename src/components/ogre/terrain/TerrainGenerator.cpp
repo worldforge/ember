@@ -15,13 +15,15 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#include "TerrainGenerator.h"
+
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 
 #include "EmberOgre.h"
 
-#include "EmberOgrePrerequisites.h"
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
@@ -40,7 +42,6 @@
 
 //#include "environment/GroundCover.h"
 
-#include "TerrainGenerator.h"
 #include "TerrainPage.h"
 #include <Mercator/Area.h>
 #include "model/ModelDefinition.h"

@@ -523,7 +523,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 	}
 	
 	///TODO: this shouldn't be necessary
-//	sceneMgr->getPageManager()->load();
+	sceneMgr->getPageManager()->load();
 	
 
 }
