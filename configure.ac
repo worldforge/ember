@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.4.0, clients@worldforge.org)
+AC_INIT(Ember, 0.4.1, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -206,14 +206,6 @@ AC_CHECK_LIB(ILU, iluFlipImage,
 
 #AC_DEFINE(LIBSIGC_DISABLE_DEPRECATED, 1, [Don't use deprecated sigc methods.])
 
-# Check for the Boost shared_ptr.hpp shared pointer header
-#AC_CHECK_HEADER(boost/shared_ptr.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
-#	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
-
-#Check for the Boost bind header
-#AC_CHECK_HEADER(boost/bind.hpp, AC_DEFINE(HAVE_LIBBOOST,1,Boost), 
-#	AC_MSG_ERROR(The Boost C++ libraries are required to build Ember. They're available from www.boost.org))
-
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
@@ -227,7 +219,8 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.4,
 	])
 
 # Check for OGRE
-OGRE_VERSION=1.2.0
+# (version 1.2.0 would work, but since there's an optimization issue with gcc 4.1 which causes a segfault with code involved in software skinning we'll just avoid the issue of users getting random crashes by requiring 1.2.1)
+OGRE_VERSION=1.2.1
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
@@ -240,7 +233,7 @@ PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 
 #remove this when Ogre includes the CEGUI-OGRE.pc file again
 #LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
-
+AC_DEFINE(__MemoryManager_H__, 1, [disable Ogre memory manager])
 
 AC_ARG_ENABLE(use_lua,
   [  --enable-lua	enable lua scripting [default=no]],
@@ -289,7 +282,7 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, [eris-1.3 = 1.3.10 \
+PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.11 \
  varconf-1.0 >= 0.6.4 mercator-0.2 >= 0.2.4 atlascpp-0.6 >= 0.5.98],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
@@ -450,17 +443,6 @@ AC_CONFIG_FILES([Makefile
 		 media/Makefile
 		 media/packs/Makefile
 ])
-
-#		 src/tests/Makefile
-#		 src/components/text/Makefile
-#		 src/services/input/Makefile
-#		 src/services/image/Makefile
-#		 src/services/font/Makefile
-#		 src/services/gui/Makefile
-#		 src/services/gui/widget/Makefile
-#		 src/services/platform/Makefile
-#		 src/components/debug/Makefile
-#		 src/services/test/Makefile
 
 AC_OUTPUT
 
