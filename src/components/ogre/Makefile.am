@@ -87,11 +87,11 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = EmberOgre.h WorldEmberEntity.h \
-				TerrainPage.h TerrainArea.h AvatarEmberEntity.h EmberPhysicalEntity.h \
-				EmberOgrePrerequisites.h EmberEntityFactory.h EmberEntity.h Avatar.h environment/Water.h \
-				TerrainGenerator.h MotionManager.h AvatarCamera.h TerrainShader.h MathConverter.h \
-				ConsoleObjectImpl.h AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h \
-				GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h OgreResourceLoader.h TerrainEditor.h \
-	IWorldPickListener.h EntityWorldPickListener.h
+noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				TerrainPage.h TerrainArea.h \
+	AvatarEmberEntity.h EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h \
+	EmberEntity.h Avatar.h environment/Water.h 				TerrainGenerator.h MotionManager.h \
+	AvatarCamera.h TerrainShader.h MathConverter.h 				ConsoleObjectImpl.h \
+	AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h \
+					GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h OgreResourceLoader.h TerrainEditor.h \
+		IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h
 	
