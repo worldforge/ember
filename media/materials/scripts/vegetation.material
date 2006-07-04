@@ -259,13 +259,13 @@ material /global/plants/field/bittergrass
 				param_named_auto lightColour light_diffuse_colour 0
 				param_named_auto offset custom 999
 			}
-			alpha_rejection greater_equal 64 
-			scene_blend alpha_blend
+			alpha_rejection greater_equal 64
+			//scene_blend alpha_blend
 		    cull_hardware none
             cull_software none
             texture_unit
             {
-				texture 3d_objects/plants/field/textures/bittergrass/low/field_1_.png
+				texture 3d_objects/plants/field/textures/bittergrass/field_1_.png
             }
         }
     }
@@ -288,6 +288,7 @@ material /global/plants/field/bittergrass
   }
 
 }
+
 
 
 material /global/plants/field/thingrass
@@ -380,51 +381,3 @@ material /global/plants/field/teardrops
   }
 
 }
-
-
-material Examples/GrassBlades
-{
-	// Vertex program waving grass
-    technique
-    {
-        pass
-        {
-			vertex_program_ref Field/GrassWaverVp
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-				param_named_auto ambient ambient_light_colour
-				param_named_auto objSpaceLight light_position_object_space 0
-				param_named_auto lightColour light_diffuse_colour 0
-				param_named_auto offset custom 999
-			}
-			alpha_rejection greater 150 
-			//scene_blend alpha_blend
-		    cull_hardware none
-            cull_software none
-            texture_unit
-            {
-                texture gras_02.png 
-            }
-        }
-    }
-
-	// Non-vertex program technique (no waving)
-	technique
-    {
-        pass
-        {
-			alpha_rejection greater 150 
-			//scene_blend alpha_blend
-		    cull_hardware none
-            cull_software none
-            texture_unit
-            {
-                texture gras_02.png 
-            }
-        }
-    }
-}
-
-
-
-
