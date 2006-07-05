@@ -1,5 +1,9 @@
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberOgre.cpp: added some version info
+
+2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/particle/sun.particle: fixed material
 	
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>

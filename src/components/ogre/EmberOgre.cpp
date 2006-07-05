@@ -1006,7 +1006,7 @@ int main(int argc, char **argv)
 			argv++;
 			argc--;
 			if (arg == "-v" || arg == "--version") {
-				//std::cout << "Ember version: " << VERSION << std::endl;
+				std::cout << "Ember version: " << VERSION << std::endl;
 				exit_program = true;
 			} else if (arg == "-b" || arg == "--binrelocloading") {
 				useBinreloc = true;
@@ -1088,6 +1088,8 @@ int main(int argc, char **argv)
 
     /// Create application object
     EmberOgre::EmberOgre app;
+    
+    std::cout << "Starting Ember version " << VERSION << std::endl;
 
 	/// Initialize all Ember services needed for this application
 	app.initializeEmberServices(prefix, homeDir);
