@@ -1,5 +1,14 @@
 2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* Makefile.am, WFUT.jar: Added a copy of WFUT.jar so that people don't need to go hunting for it.
+	
+2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/services/config/ConfigService.cpp: append the version info to the media directory
+	* src/services/server/ServerService.cpp: send the version info when connecting
+
+2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* ember.in, ember, configure.ac: 
 		* remove the ember script and instead use the ember.in which will set the correct media path based on the version
 		* cleaned up the script and adapted to a newer version of WFUT.jar

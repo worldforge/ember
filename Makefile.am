@@ -1,11 +1,14 @@
 INCLUDES = -I$(top_srcdir)/src
 SUBDIRS = src media
 
+wfutdir = $(datadir)/games/ember/
+dist_wfut_DATA = WFUT.jar
+
 bin_SCRIPTS = ember
 dist_bin_SCRIPTS = ember
 
 confdir = $(sysconfdir)/ember/
-dist_conf_DATA = ember.conf configfile
+dist_conf_DATA = ember.conf
 
 
 appdir = $(datadir)/applications
