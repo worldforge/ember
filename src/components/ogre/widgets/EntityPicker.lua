@@ -1,3 +1,14 @@
+-----------------------------------------
+--Widget which is shown when an entity is picked. Basically it's a menu which allows the user to perform actions on the entity.
+
+
+--TODO: 
+-- * allow for movement
+-- * perhaps implement it as a pie menu with some nice icons?
+-- * allow for more than the default action to be shown
+-----------------------------------------
+
+
 local EntityPicker = {}
 
 --local EntityPicker.mainWindow
@@ -63,6 +74,7 @@ end
 
 function EntityPicker_checkUse()
 	--try to find the default operation for the wielded entity
+	--TODO: right now it only shows the default operations, we want to show all possible too
 	local defaultOp = ""
 	local wieldedEntity = emberOgre:getAvatar():getAvatarEmberEntity():getEntityAttachedToPoint("right_hand_wield")
 	if wieldedEntity then

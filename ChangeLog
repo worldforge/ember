@@ -1,5 +1,10 @@
 2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/EmberOgre.cpp: Write version info to the log.
+	* src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/Chat.lua, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/Give.lua: added comments
+	
+2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* Makefile.am, WFUT.jar: Added a copy of WFUT.jar so that people don't need to go hunting for it.
 	
 2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>

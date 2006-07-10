@@ -915,6 +915,10 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 	///output all logging to ember.log
 	std::string filename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/ember.log");
 	static std::ofstream outstream(filename.c_str());
+	
+	///write to the log the version number
+	outstream << "Ember version " << VERSION << std::endl;
+	
 	mLogObserver = new OgreLogObserver(outstream);
 	logging->addObserver(mLogObserver);
 	
@@ -926,7 +930,6 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
  	Ogre::LogManager::getSingleton().addListener(mLogObserver);
  	
  	
-
 
 	
 	/// Change working directory

@@ -1,13 +1,12 @@
------------------------------------------
--- Start of handler functions
------------------------------------------
+----------------------------------------------------
+--A simple chat widget. It currently only shows chat output, input is handled by the console (is this wise?).
+----------------------------------------------------
 
------------------------------------------
--- Script Entry Point
------------------------------------------
+
 Chat = {}
 Chat.widget = guiManager:createWidget()
 
+--Set up the widget.
 function Chat_buildWidget()
 	Chat.widget:loadMainSheet("Chat.layout", "Chat/")
 	Chat.widget:registerConsoleVisibilityToggleCommand("chat")
@@ -16,7 +15,7 @@ function Chat_buildWidget()
 	EmberOgre.LuaConnector:new(guiManager.AppendIGChatLine):connect("Chat_appendIGChatLine")
 	EmberOgre.LuaConnector:new(guiManager.AppendOOGChatLine):connect("Chat_appendIGChatLine")
 	
-	--let's hide it to beging with
+	--let's hide it to begin with
 	Chat.widget:hide()
 	--and show if when the avatar has been created (though this disallows out of game chat)
 	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Chat_createdAvatarEmberEntity")

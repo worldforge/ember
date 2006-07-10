@@ -1,9 +1,7 @@
 -----------------------------------------
--- Start of handler functions
------------------------------------------
 
------------------------------------------
--- Script Entry Point
+--A widget for giving something from the inventory to someone. Right now just shows a list of stuff that can be given. This will need to be extended to something much nicer. Perhaps even something which interacts with other inventory widgets.
+
 -----------------------------------------
 Give = {}
 Give.listbox = nil
