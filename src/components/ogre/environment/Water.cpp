@@ -138,10 +138,10 @@ public:
 			"WaterPlane",
 			"environment",
 			waterPlane,
-			1000, 1000,
+			10000, 10000,
 			5, 5,
 			true, 1, 
-			100, 100,
+			1000, 1000,
 			Ogre::Vector3::UNIT_Z
 		);
 		

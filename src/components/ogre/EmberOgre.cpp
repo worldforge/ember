@@ -571,6 +571,11 @@ bool EmberOgre::configure(void)
 #endif
 
 #ifndef __WIN32__
+if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
+
+	throw Ember::Exception("SDL was not initiliazed. The most probable cause for this is that you're using an version of Ogre that is set up to use the GLX backend instead of the SDL backend.");
+}
+
 	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
 		///set the icon of the window
 		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));

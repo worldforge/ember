@@ -243,7 +243,7 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 
 void Input::pasteFromClipboard()
 {
-	static char *scrap = NULL;
+	static char *scrap = 0;
 	int scraplen;
 
 	get_scrap(T('T','E','X','T'), &scraplen, &scrap);
