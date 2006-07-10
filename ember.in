@@ -54,7 +54,15 @@ exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
 datadir=${prefix}/share/games/ember
 etcdir=${prefix}/etc/ember
+
 homedata=$HOME/.ember
+case "$1" in
+--home)
+  # Try to run requested program, and just exit if it succeeds.
+  shift
+  homedata="$@"
+  ;;
+esac
 
 WFUT_JAR=$datadir/WFUT.jar
 MEDIA_CHANNEL="ember-media-@VERSION@"
@@ -62,8 +70,8 @@ SERVER=http://amber.worldforge.org/WFUT/
 
 # Create dir if required 
 if [ ! -d $homedata ] ; then
-	echo "Created ~/.ember to store all game data."
-	mkdir $homedata
+	echo "Created $homedata to store all game data."
+	mkdir -p $homedata
 fi
 
 # Determine if java executable exists in path
@@ -74,9 +82,9 @@ if [ $JAVA ] ; then
     echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
     XTERM=`which xterm`
 	if [ $XTERM ] ; then
-    	xterm -T "Downloading media..." -DserverRoot=$SERVER -e $JAVA -jar $WFUT_JAR dest ~/.ember/ update $MEDIA_CHANNEL
+    	xterm -T "Downloading media..." -e $JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
     else
-    	$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest ~/.ember/ update $MEDIA_CHANNEL
+    	$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
     fi
 else
   echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
@@ -91,5 +99,5 @@ export LD_LIBRARY_PATH
 # Execute real ember binary
 echo "Starting Ember...."
 #we have to do the LD_PRELOAD thing, because else at least I get an error: libnvidia-tls.so.1: cannot handle TLS data /ehj
-LD_PRELOAD=libGL.so.1 $bindir/ember.bin --binrelocloading
+LD_PRELOAD=libGL.so.1 $bindir/ember.bin --binrelocloading --home $homedata
 

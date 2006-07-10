@@ -1,5 +1,10 @@
 2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.in: updated media handling
+	* TODO: updates
+
+2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* media/materials/base_scripts/base.material, media/materials/programs/All_In_Wonder.cg, media/materials/programs/All_In_Wonder.program, media/materials/scripts/buildings.material, media/materials/scripts/malebuilder.material, media/materials/scripts/tools.material: updated materials to use inheritance in Ogre 1.2+
 
 2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>

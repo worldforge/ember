@@ -34,3 +34,4 @@ TODO LIST
 
 * refactor EmberOgre into smaller subcomponents
 * refactor platform specific code into separate classes sharing a common interface, instead of using #ifdefs
+* upgrade all material scripts to use the inheritance in 1.2+
