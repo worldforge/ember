@@ -16,6 +16,10 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
@@ -119,7 +123,7 @@ namespace Ember
 		// singleton instance up.  Do _not_ use Connection::Instance()
 		// this does not create a new connection.
 		// We are connected without debuging enabled thus the false
-		myConn = new Eris::Connection("ember",myHost, port, false);
+		myConn = new Eris::Connection(std::string("Ember ") + VERSION,myHost, port, false);
 		
 		// Bind signals
 		myConn->Failure.connect(sigc::mem_fun(*this, &ServerService::gotFailure));

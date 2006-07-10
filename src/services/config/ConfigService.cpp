@@ -276,7 +276,7 @@ namespace Ember
 
 	const std::string& ConfigService::getEmberMediaDirectory() const
 	{
-		static std::string path(getEmberDataDirectory() + "/ember-media/");
+		static std::string path(getEmberDataDirectory() + "/ember-media-" + VERSION + "/");
 		return path;
 	}
 
