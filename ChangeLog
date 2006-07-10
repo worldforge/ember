@@ -1,5 +1,9 @@
 2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/base_scripts/base.material, media/materials/programs/All_In_Wonder.cg, media/materials/programs/All_In_Wonder.program, media/materials/scripts/buildings.material, media/materials/scripts/malebuilder.material, media/materials/scripts/tools.material: updated materials to use inheritance in Ogre 1.2+
+
+2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.cpp: Write version info to the log.
 	* src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/Chat.lua, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/Give.lua: added comments
 	

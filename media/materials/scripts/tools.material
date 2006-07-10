@@ -1,131 +1,63 @@
-material Items/Tool/Head
+material Items/Tool/Head : /base/simple
 {
-  receive_shadows on
-  technique
+  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
+  technique General
   {
-    pass
+    pass Main
     {
-      //diffuse 0.427451 0.290196 0.000000
       specular 0.449020 0.449020 0.449020 50.000000
       emissive 0.000000 0.000000 0.000000
-      texture_unit
-      {
-        texture 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
-      }
     }
   }
 }
 
-material Items/Tool/Handle
+material Items/Tool/Handle : /base/simple
 {
-  receive_shadows on
-  technique
+  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
+  technique General
   {
-    pass
+    pass Main
     {
-      //diffuse 0.427451 0.290196 0.000000
       specular 0.449020 0.449020 0.449020 50.000000
       emissive 0.000000 0.000000 0.000000
-      texture_unit
-      {
-        texture 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
-      }
     }
   }
 }
 
-material /global/items/tool/settler_tools/head
+material /global/items/tool/settler_tools/head : /base/simple/nonculled
 {
-  receive_shadows on
-  technique
+  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
+  technique General
   {
-    pass
+    pass Main
     {
-      cull_hardware none
-      cull_software none
       specular 0.449020 0.449020 0.449020 50.000000
-      texture_unit
-      {
-        texture 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
-      }
     }
   }
 }
 
-material /global/items/tool/settler_tools/handle
+material /global/items/tool/settler_tools/handle : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
-      }
-    }
-  }
+  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
 }
 
-material /global/items/saddle/brownleather
+material /global/items/saddle/brownleather : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/saddle/textures/brownleather/brownleathersaddle_256.png
-      }
-    }
-  }
+  set_texture_alias DiffuseMap 3d_objects/items/saddle/textures/brownleather/brownleathersaddle_256.png
 }
 
-material /global/items/box/craftsman_wood/box_craftsman_wood
+material /global/items/box/craftsman_wood/box_craftsman_wood : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/box/textures/craftsman_wood/box_craftsman_wood.png
-      }
-    }
-  }
+  set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/box_craftsman_wood.png
 }
 
-
-material /global/items/sheet/parchment/front
+material /global/items/sheet/parchment/front : /base/simple/nonculled
 {
-  technique
-  {
-    pass
-    {
-      cull_hardware none 
-      cull_software none
-      texture_unit
-      {
-        texture 3d_objects/items/sheet/textures/parchment/low/sheet_texture_small.png
-      }
-    }
-  }
+  set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/low/sheet_texture_small.png
 }
 
-material /global/items/sheet/parchment/back
+material /global/items/sheet/parchment/back : /base/simple/nonculled
 {
-  technique
-  {
-    pass
-    {
-      cull_hardware none 
-      cull_software none
-      texture_unit
-      {
-        texture 3d_objects/items/sheet/textures/parchment/low/sheet_back.png
-      }
-    }
-  }
+  set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/low/sheet_back.png
 }
+

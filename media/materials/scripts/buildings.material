@@ -1,6 +1,3 @@
-
-
-
 material /global/building_primitives/rough_timber/column
 {
   // receive_shadows on
@@ -628,6 +625,7 @@ material /global/items/building/castle/curtainwall/curtain_wall_straw : /base/si
 material /global/items/building/castle/curtainwall/curtain_wall_shale : /base/simple
 {
   set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_shale_diffuse.png
+//    set_texture_alias NormalHeightMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_shale_NM.png
 }
 
 material /global/items/building/castle/roof/straw_roof : /base/simple

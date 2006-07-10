@@ -1,0 +1,42 @@
+vertex_program WonderShader_Lim3_Fast_Vert cg
+{
+	source All_In_Wonder.cg
+
+	default_params
+	{
+		param_named_auto lightPosition0 light_position_object_space 0
+		param_named_auto lightPosition1 light_position_object_space 1
+		//param_named_auto lightPosition2 light_position_object_space 2
+		param_named_auto eyePosition camera_position_object_space
+		param_named_auto worldviewproj worldviewproj_matrix
+
+	}
+
+	entry_point WonderShader_Lim3_Fast_Vert 
+	profiles vs_1_1 arbvp1
+}
+
+fragment_program WonderShader_Lim3_Fast_Frag cg
+{
+	source All_In_Wonder.cg
+
+	default_params
+	{
+		param_named_auto lightDiffuse0 light_diffuse_colour 0
+		param_named_auto lightDiffuse1 light_diffuse_colour 1
+		//param_named_auto lightDiffuse2 light_diffuse_colour 2
+
+		param_named_auto lightSpecular0 light_specular_colour 0
+		param_named_auto lightSpecular1 light_specular_colour 1
+		//param_named_auto lightSpecular2 light_specular_colour 2
+
+		param_named_auto atten0 light_attenuation 0
+		param_named_auto atten1 light_attenuation 1
+		//param_named_auto atten2 light_attenuation 2
+		
+//  		param_named_auto ambient ambient_light_colour
+	}
+
+	entry_point WonderShader_Lim3_Fast_Frag 
+	profiles ps_2_0 arbfp1
+}

@@ -1,195 +1,69 @@
-material /global/body_parts/eyes/blue_eye_01
+material /global/body_parts/eyes/blue_eye_01 : /base/simple
 {
-   technique
-    {
-        pass
-        {
-            texture_unit
-            {
-                texture 3d_objects/body_parts/eyes/textures/blue_eye_01/low/eye.png
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/body_parts/eyes/textures/blue_eye_01/low/eye.png
 }
 
-material /global/body_parts/hair/plain
+material /global/body_parts/hair/plain : /base/simple
 {
-    technique
-    {
-        pass
-        {
-            texture_unit
-            {
-                texture 3d_objects/body_parts/hair/textures/plain/low/hair.png
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/body_parts/hair/textures/plain/low/hair.png
 }
 
-material /global/body_parts/humanoid_head/young_one
+material /global/body_parts/humanoid_head/young_one : /base/simple
 {
-    technique
-    {
-        pass
-        {
-            texture_unit
-            {
-                texture 3d_objects/body_parts/humanoid_head/textures/young_one/low/head.png
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_head/textures/young_one/low/head.png
+}
+
+material /global/body_parts/humanoid_head/worksman : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
 }
 
 
-material /global/body_parts/humanoid_head/worksman
+material /global/creatures/humanoid/young_male : /base/simple
 {
-    technique
-    {
-        pass
-        {
-            texture_unit
-            {
-                texture 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/young_male/low/young_male.png
 }
 
-material /global/creatures/humanoid/young_male
+material /global/creatures/humanoid/bearded_male : /base/simple
 {
-    technique
-    {
-        pass
-        {
-            texture_unit
-            {
-
-                texture 3d_objects/creatures/humanoid/textures/young_male/low/young_male.png
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/bearded_male/low/bearded_male.png
 }
 
-material /global/creatures/humanoid/bearded_male
+material /global/body_parts/humanoid_body/male_pink : /base/simple
 {
-    technique
-    {
-        pass
-        {
-            texture_unit
-            {
-
-                texture 3d_objects/creatures/humanoid/textures/bearded_male/low/bearded_male.png
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
 }
 
-
-material /global/body_parts/humanoid_body/male_pink
+material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides : /base/simple
 {
-    technique
+  set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
+  technique General
+  {
+    pass Main
     {
-        pass
-        {
-	
-           texture_unit
-            {
-                texture 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
-            }
-        }
+     alpha_rejection greater_equal 128
     }
+  }
 }
 
-material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides
+material /global/clothes/dress/ragged : /base/simple/nonculled/alphablended
 {
-    technique
-    {
-      pass
-        {
-          //scene_blend alpha_blend 
-         //cull_hardware none 
-         //cull_software none
- 		alpha_rejection greater_equal 128
-          texture_unit
-            {
-                texture 3d_objects/clothes/footwear/textures/leather_shoes_wrapped_cotton_sides/low/footwear.png 
-            }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/ragged/low/dress.png
 }
 
-
-
-material /global/clothes/dress/ragged
+material /global/clothes/dress/sun : /base/simple/nonculled/alphablended
 {
-    technique
-    {
-        pass
-        {
-           cull_hardware none 
-           cull_software none
-          scene_blend alpha_blend 
-		alpha_rejection greater_equal 128            
-           texture_unit
-            {
-                texture 3d_objects/clothes/dress/textures/ragged/low/dress.png
-	    }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/sun/low/dress.png
 }
 
-material /global/clothes/dress/sun
+material /global/clothes/dress/dark_rags : /base/simple/nonculled/alphablended
 {
-    technique
-    {
-        pass
-        {
-           cull_hardware none 
-           cull_software none
-          scene_blend alpha_blend 
- 		alpha_rejection greater_equal 128            
-          texture_unit
-            {
-                texture 3d_objects/clothes/dress/textures/sun/low/dress.png
-	    }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/dark_rags/low/dress.png
 }
 
-material /global/clothes/dress/dark_rags
+material /global/clothes/dress/fine : /base/simple/nonculled/alphablended
 {
-    technique
-    {
-        pass
-        {
-           cull_hardware none 
-           cull_software none
-          scene_blend alpha_blend 
-		alpha_rejection greater_equal 128            
-           texture_unit
-            {
-                texture 3d_objects/clothes/dress/textures/dark_rags/low/dress.png
-	    }
-        }
-    }
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/fine/low/dress.png
 }
 
-material /global/clothes/dress/fine
-{
-    technique
-    {
-        pass
-        {
-           cull_hardware none 
-           cull_software none
-          scene_blend alpha_blend 
-		alpha_rejection greater_equal 128            
-           texture_unit
-            {
-                texture 3d_objects/clothes/dress/textures/fine/low/dress.png
-	    }
-        }
-    }
-}
 
