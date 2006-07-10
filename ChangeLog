@@ -1,3 +1,13 @@
+2006-07-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.in, ember, configure.ac: 
+		* remove the ember script and instead use the ember.in which will set the correct media path based on the version
+		* cleaned up the script and adapted to a newer version of WFUT.jar
+	* configfile: removed it since we now specify the server at the command line
+	* ember.bat: updated for new version of WFUT.jar and new channel
+	* ember.conf: added version info
+	* ember.spec.in: updated, don't know if it will work though, we'll use autopackage mainly. I'll test it when i have time, if it doesn't work it's ok to yell at me for it.
+	
 2006-07-05 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/services/gui, src/services/image: removed obsolete code

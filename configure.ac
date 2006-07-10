@@ -414,6 +414,7 @@ AC_CONFIG_FILES([Makefile
 		 src/services/bindings/Makefile
 		 src/services/bindings/lua/Makefile
 		 ember.dox
+		 ember
 		 ember.spec
 		 ember-media.spec
 		 autopackage/default.apspec

@@ -57,6 +57,8 @@ etcdir=${prefix}/etc/ember
 homedata=$HOME/.ember
 
 WFUT_JAR=$datadir/WFUT.jar
+MEDIA_CHANNEL="ember-media-@VERSION@"
+SERVER=http://amber.worldforge.org/WFUT/
 
 # Create dir if required 
 if [ ! -d $homedata ] ; then
@@ -68,21 +70,14 @@ fi
 JAVA=`which java`;
 if [ $JAVA ] ; then
 
-    # Store Current dir
-    CUR_DIR=`pwd`
-    
-    # We need to change here so updater knows where to find the configfile
-    cd $etcdir
     # Update
     echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
     XTERM=`which xterm`
 	if [ $XTERM ] ; then
-    	xterm -T "Downloading media..." -e $JAVA -jar $WFUT_JAR dest ~/.ember/ update ember-media
+    	xterm -T "Downloading media..." -DserverRoot=$SERVER -e $JAVA -jar $WFUT_JAR dest ~/.ember/ update $MEDIA_CHANNEL
     else
-    	$JAVA -jar $WFUT_JAR dest ~/.ember/ update ember-media
+    	$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest ~/.ember/ update $MEDIA_CHANNEL
     fi
-    # Restore dir
-    cd $CUR_DIR
 else
   echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
   exit

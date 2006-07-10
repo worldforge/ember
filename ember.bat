@@ -5,6 +5,6 @@ rem 	goto :EOF
 rem )
 set OLDDIR=%CD%
 echo Updating media from the server, this might take a while if you have a slow connection (circa 30Mb).
-java -jar "WFUT.jar" dest "%APPDATA%\\Ember" update ember-media
+java -DserverRoot=http://amber.worldforge.org/WFUT/ -jar "WFUT.jar" dest "%APPDATA%\\Ember" update ember-media-0.4.1
 ember.exe
 cd %OLDDIR%

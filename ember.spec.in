@@ -1,6 +1,6 @@
 %define name @PACKAGE@
 %define version @VERSION@
-%define release 1.mdk.wf
+%define release 1.mdv.wf
 
 Summary: Ember - a client for Worldforge
 Name: %{name}
@@ -12,7 +12,7 @@ License: GPL
 Group: Amusements/Games
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Prefix: %{_prefix}
-Requires: eris >= 1.3.5 mercator >= 0.2.2 varconf OGRE >= 1.0.0 CEGUI >= 0.2.0 libxerces-c25 SDL >= 1.2  Atlas-C++ >= 0.5.95
+Requires: eris >= 1.3.11 mercator >= 0.2.4 varconf >= 0.6.4 OGRE >= 1.2.1 CEGUI >= 0.4.0 SDL >= 1.2  Atlas-C++ >= 0.5.98
 #BuildRequires: Atlas-C++-devel >= 0.5.91 eris-devel mercator-devel varconf-devel OGRE-devel boost-devel CEGUI-devel libxerces-c25-devel
 
 %description
