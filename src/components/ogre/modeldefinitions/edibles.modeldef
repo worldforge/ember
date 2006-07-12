@@ -1,0 +1,60 @@
+<models>
+	<model name="ham" usescaleof="none" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/ham/food_ham.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	<model name="trowel" usescaleof="none" scale="1" >
+		<translate y="0.1" />
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/trowel/trowel.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+	
+	<model name="pickaxe" usescaleof="none" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/pickaxe/pickaxe.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
+	<model name="bread">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="breadslice" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_slize.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="bread_cut">
+		<submodels>
+			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_cut.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+</models> 

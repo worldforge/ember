@@ -1,16 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="axe"  scale="1" >
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/axe/Axe.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-
 	<model name="barrel" usescaleof="height"  >
 		<translate x="0.000000" y="1.000000" z="0.000000" />
 		<submodels>
@@ -21,80 +11,6 @@
 			</submodel>
 		</submodels>
 	</model>
-
-	<model name="campfire">
-		<submodels>
-			<submodel mesh="3d_objects/items/fire/models/campfire/campfire.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-
-	<model name="hammer" >
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/hammer/hammer.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-
-	
-	<model name="scythe" usescaleof="none" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/scythe/scythe.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
-	<model name="spade" usescaleof="none" scale="1" >
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
-	<model name="shovel" usescaleof="none" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/spade/spade.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="sty" usescaleof="width" rotation="-180">
-		<rotation x="0" y="1" z="0" degrees="-180" />
-		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/wooden_fence/pig-sty.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-
-	
-	
-	<model name="table" usescaleof="height"  >
-		<submodels>
-			<submodel mesh="3d_objects/items/furniture/models/table/simple_table.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>			
 
 
 	<model name="coin" usescaleof="none" scale="5"  >
@@ -107,86 +23,7 @@
 		</submodels>
 	</model>			
 	
-	<model name="bucksaw" usescaleof="height">
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/bucksaw/bucksaw.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
 
-	<model name="bread">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="breadslice" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_slize.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="bread_cut">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_cut.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="stall" usescaleof="none" scale="1" rotation="-90">
-		<rotation x="0" y="1" z="0" degrees="-90" />
-		<!-- we want contained items to lay on the table of the stall -->
-		<contentoffset y="0.8" />
-		<submodels>
-			<submodel mesh="3d_objects/items/canvas/models/marketstall/marketstall_canvas_1.mesh" >
-				<parts>
-					<part name="canvas" show="true" />
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
-				<parts>
-					<part name="frame" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>		
-		
-	<model name="boat" usescaleof="depth" >
-		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/goatboat/goatboat.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="jetty" rotation="-90">
-		<rotation x="0" y="1" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/jetty/jetty.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	
 	<model name="gravestone_simple" usescaleof="height" >
 		<submodels>
 			<submodel mesh="roundedgrave.mesh">
@@ -217,26 +54,7 @@
 		</submodels>
 	</model>			
 	
-	<model name="mausoleum" usescaleof="height" rotation="-90">
-		<rotation x="0" y="1" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="3d_objects/items/building/models/mausoleum/mausoleum.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
 	
-	<model name="tinderbox" usescaleof="height">
-		<submodels>
-			<submodel mesh="3d_objects/items/box/models/tinderbox/tinderbox.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
 	
 	<model name="torch" usescaleof="none" scale="1">
 		<submodels>
@@ -248,51 +66,6 @@
 		</submodels>
 	</model>			
 	
-	<model name="tower" usescaleof="width" rotation="-90">
-		<rotation x="0" y="1" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="junkyard/models/broken_tower/Tower01.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	
-	<model name="gallows">
-		<rotation x="1" y="0" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="junkyard/models/gallows/gallows.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	
-	<model name="ham" usescaleof="none" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/ham/food_ham.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
-	<model name="trowel" usescaleof="none" scale="1" >
-		<translate y="0.1" />
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/trowel/trowel.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
 	<model name="deed" usescaleof="none" scale="0.5" >
 		<submodels>
 			<submodel mesh="3d_objects/items/sheet/models/curly_document/curly_document.mesh">
@@ -303,17 +76,22 @@
 		</submodels>
 	</model>	
 	
-	<model name="pickaxe" usescaleof="none" scale="1">
+	<model name="bottle" usescaleof="all" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/pickaxe/pickaxe.mesh">
+			<submodel mesh="3d_objects/items/cylinder/models/bottle/simple_bottle.mesh">
 				<parts>
-					<part name="main" show="true" />
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/items/cylinder/earthenware" />
+							<subentity index="1" material="/global/items/cylinder/earthenware" />
+						</subentities>
+					</part>
 				</parts>
 			</submodel>
 		</submodels>
+		<actions />
 	</model>
-	
-	
-	
-	
+
 </models>

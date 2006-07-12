@@ -1,0 +1,115 @@
+<models>
+    <model name="palissade" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/tree/models/palissade/palissade_timber.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/tree/oak" />
+                            <subentity index="1" material="/global/plants/tree/oak" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="palissade_earth" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/environment/ground/models/palissade/palissade_earth.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/environment/ground/straw_and_mud" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="stake" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/tree/models/sharpened_log/sharpened_log.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/tree/oak" />
+                            <subentity index="1" material="/global/plants/tree/oak" />
+                            <subentity index="2" material="/global/plants/tree/oak" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+	<model name="sty" usescaleof="width" rotation="-180">
+		<rotation x="0" y="1" z="0" degrees="-180" />
+		<submodels>
+			<submodel mesh="3d_objects/items/building_element/models/wooden_fence/pig-sty.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+	<model name="stall" usescaleof="none" scale="1" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
+		<!-- we want contained items to lay on the table of the stall -->
+		<contentoffset y="0.8" />
+		<submodels>
+			<submodel mesh="3d_objects/items/canvas/models/marketstall/marketstall_canvas_1.mesh" >
+				<parts>
+					<part name="canvas" show="true" />
+				</parts>
+			</submodel>
+			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
+				<parts>
+					<part name="frame" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>		
+	<model name="jetty" rotation="-90">
+		<rotation x="0" y="1" z="0" degrees="-90" />
+		<submodels>
+			<submodel mesh="3d_objects/items/building_primitives/models/jetty/jetty.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	<model name="campfire">
+		<submodels>
+			<submodel mesh="3d_objects/items/fire/models/campfire/campfire.mesh">
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>
+    <model name="choppingblock" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/building_primitives/models/chopping_block/chopping_block.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                            <subentity index="1" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+</models>

@@ -1,0 +1,130 @@
+<models>
+    <model name="chair" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/furniture/models/chair/chair.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="door" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/building/models/castle/house/door.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="long_table" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/furniture/models/table/long_table.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/furniture/avalon" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="shelf_table" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/furniture/models/table/shelf_table.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="simple_shelf" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/furniture/models/shelf/simple_shelf.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="stool" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/furniture/models/stool/stool.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/furniture/avalon" />
+                            <subentity index="1" material="/global/items/furniture/avalon" />
+                            <subentity index="2" material="/global/items/furniture/avalon" />
+                            <subentity index="3" material="/global/items/furniture/avalon" />
+                            <subentity index="4" material="/global/items/furniture/avalon" />
+                            <subentity index="5" material="/global/items/furniture/avalon" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="bed" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/bbhouse/avalon_bed.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/canvas/blue_green_stripes/main" />
+                            <subentity index="1" material="/global/items/furniture/avalon" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+	<model name="table" usescaleof="height"  >
+		<submodels>
+			<submodel mesh="3d_objects/items/furniture/models/table/simple_table.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+	</model>			
+</models>
+ 

@@ -39,6 +39,39 @@
 			</submodel>
 		</submodels>
 	</model>	
-	
-	
+	<model name="oak_stump" usescaleof="all" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+		<submodels>
+			<submodel mesh="3d_objects/plants/tree/models/oak_static/old_oak_stump.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/plants/tree/oak" />
+							<subentity index="1" material="/global/plants/tree/oak" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<actions />
+	</model>	
+	<model name="oak_chopped" usescaleof="all" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+		<submodels>
+			<submodel mesh="3d_objects/plants/tree/models/oak_static/old_oak_chopped.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/plants/tree/oak" />
+							<subentity index="1" material="/global/plants/tree/oak" />
+							<subentity index="2" material="/global/plants/tree/oak" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<actions />
+    </model>	
 </models>

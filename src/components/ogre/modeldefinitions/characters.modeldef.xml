@@ -61,6 +61,64 @@
 		</attachpoints>
 	</model>	
 
+	<model name="settler_male" usescaleof="height" scale="1.2" showcontained="false">
+			<translate x="0.000000" y="0.000000" z="0.000000" />
+			<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+			<submodels>
+				<submodel mesh="male.mesh">
+					<parts>
+						<part name="main" show="true">
+							<subentities>
+								<subentity index="0" material="/global/creature/humanoid/male" />
+							</subentities>
+						</part>
+					</parts>
+				</submodel>
+			</submodels>
+			<Actions>
+				<Action name="__movement_walk">
+					<AnimationParts>
+						<animationpart name="male_walk" weight="1" />
+					</AnimationParts>
+					<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
+				</Action>
+				<Action name="__movement_run">
+					<AnimationParts speed="1.5">
+						<animationpart name="male_run" weight="1" />
+					</AnimationParts>
+					<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
+				</Action>
+				<Action name="__movement_swim">
+					<AnimationParts>
+						<animationpart name="male_walk" weight="1" />
+					</AnimationParts>
+				</Action>
+				<Action name="chop">
+					<AnimationParts>
+						<animationpart name="male_couch" weight="1" />
+					</AnimationParts>
+				</Action>
+				<Action name="sharpen">
+					<AnimationParts>
+						<animationpart name="male_couch" weight="1" />
+					</AnimationParts>
+				</Action>
+				<Action name="sharpen">
+					<AnimationParts>
+						<animationpart name="male_couch" weight="1" />
+					</AnimationParts>
+				</Action>
+				<Action name="cut">
+					<AnimationParts>
+						<animationpart name="male_couch" weight="1" />
+					</AnimationParts>
+				</Action>
+			</Actions>
+			<attachpoints>
+				<attachpoint name="right_hand_wield" bone="RIndex1" />
+			</attachpoints>
+		</model>
+	
 	<model name="settler" usescaleof="height"  showcontained="false">
 		<submodels>
 			<submodel mesh="Alpha_Male.mesh" >

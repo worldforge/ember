@@ -1,0 +1,75 @@
+<models>
+    <model name="cart1" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/vehicle/cart/models/cart.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/wood_weathered/flat" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="cart2" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/vehicle/cart/models/cart2.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/wood_weathered/flat" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="cart3" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/vehicle/cart/models/cart3.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/wood_weathered/flat" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+    <model name="cart4" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/vehicle/cart/models/cart4.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/wood_weathered/flat" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+	<model name="boat" usescaleof="depth" >
+		<submodels>
+			<submodel mesh="3d_objects/items/building_primitives/models/goatboat/goatboat.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+<models> 
