@@ -23,39 +23,6 @@
 		</submodels>
 	</model>			
 	
-
-	<model name="gravestone_simple" usescaleof="height" >
-		<submodels>
-			<submodel mesh="roundedgrave.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-			
-	<model name="gravestone_stylish" usescaleof="height" >
-		<submodels>
-			<submodel mesh="stylishgrave.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="gravestone_rounded" usescaleof="height" >
-		<submodels>
-			<submodel mesh="roundedgrave.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	
-	
 	<model name="torch" usescaleof="none" scale="1">
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/torch/torch.mesh" >

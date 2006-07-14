@@ -112,4 +112,80 @@
         </submodels>
         <actions />
     </model>
+    
+	<model name="gravestone_simple" usescaleof="height" >
+		<submodels>
+			<submodel mesh="simplegrave.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>	
+			
+	<model name="gravestone_stylish" usescaleof="height" >
+		<submodels>
+			<submodel mesh="stylishgrave.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>			
+	
+	<model name="gravestone_rounded" usescaleof="height" >
+		<submodels>
+			<submodel mesh="roundedgrave.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>		    
+
+	<model name="gravestone" usescaleof="height" >
+		<submodels>
+			<submodel mesh="simplegrave.mesh" >
+				<parts>
+					<part name="simple" show="true" group="main" />
+				</parts>
+			</submodel>
+			<submodel mesh="roundedgrave.mesh">
+				<parts>
+					<part name="rounded" show="false" group="main" />
+				</parts>
+			</submodel>
+			<submodel mesh="stylishgrave.mesh" >
+				<parts>
+					<part name="main" show="false" group="main" />
+				</parts>
+			</submodel>
+		</submodels>
+        <entitymapping entities="gravestone">
+        	<configurations>
+        	
+				<configuration name="simple">
+					<match property="style">
+						<equals>simple</equals>
+					</match>
+					<partaction part="simple" show="true" />
+				</configuration>
+				
+				<configuration name="rounded">
+					<match property="style">
+						<equals>rounded</equals>
+					</match>
+					<partaction part="rounded" show="true" />
+				</configuration>
+        	
+				<configuration name="stylish">
+					<match property="style">
+						<equals>rounded</equals>
+					</match>
+					<partaction part="stylish" show="true" />
+				</configuration>
+        	</configurations>
+        </entitymapping>
+	</model>	
+
 </models>
