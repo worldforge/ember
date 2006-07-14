@@ -438,40 +438,7 @@ material /global/building_element/rough_stone/floor/north_south
   }
 }
 
-material /global/items/canvas/red_white_stripes/main
-{
-  technique
-  {
-    pass
-    {
-		alpha_rejection greater_equal 10 
-	    cull_hardware none
-        cull_software none
-      texture_unit
-      {
-        texture 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_main.png
-      }
-    }
-  }
-}
 
-material /global/items/canvas/red_white_stripes/details
-{
-  technique
-  {
-    pass
-    {
-		alpha_rejection greater_equal 10 
-	    cull_hardware none
-        cull_software none
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_details.png
-      }
-    }
-  }
-}
 
 material /global/items/building/mausoleum/wall
 {
@@ -614,33 +581,33 @@ material /global/items/building/mausoleum/bordure
 
 material /global/items/building/castle/floors/tile_floor : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/floors/tile_floor.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/floors/low/tile_floor.png
 }
 
 material /global/items/building/castle/curtainwall/curtain_wall_straw : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_straw_diffuse.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/low/curtain_wall_straw_diffuse.png
 }
 
 material /global/items/building/castle/curtainwall/curtain_wall_shale : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_shale_diffuse.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/low/curtain_wall_shale_diffuse.png
 //    set_texture_alias NormalHeightMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_shale_NM.png
 }
 
 material /global/items/building/castle/roof/straw_roof : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/straw_roof-rough_1024x512.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/low/straw_roof-rough_1024x512.png
 }
 
 material /global/items/building/castle/roof/shale_roof : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/shale_roof.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/low/shale_roof.png
 }
 
 material /global/items/building/castle/inner_walls/inner_walls : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/inner_walls/inner_walls.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/inner_walls/low/inner_walls.png
 }
 
 material /global/items/building/castle/foundation/outer_walls : /base/simple
@@ -649,6 +616,96 @@ material /global/items/building/castle/foundation/outer_walls : /base/simple
 }
 
 
+material /global/items/wood_weathered/boards : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/boards.png
+}
+
+material /global/items/wood_weathered/end : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/end.png
+}
+
+material /global/items/wood_weathered/flat : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/flat.png
+}
+
+material /global/items/wood_weathered/horizontal_panel : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/horizontal_panel.png
+}
+
+material /global/items/wood_weathered/panel : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/panel.png
+}
+
+material /global/items/wood_weathered/sides : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/sides.png
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// material /global/items/building/castle/foundation
+// {
+// 	technique
+// 	{
+// 		pass
+// 		{
+// 			texture_unit 
+// 			{
+// 				texture 3d_objects/items/building/textures/castle/foundation/cobblestone_tile.png
+// 			}
+// 		}
+// 		pass 
+// 		{
+// 			scene_blend alpha_blend
+// 			texture_unit
+// 			{
+// 				texture 3d_objects/items/building/textures/castle/foundation/dirt.png
+// 				tex_address_mode mirror
+// 				scale 0.01 0.01
+// 			}
+// 			texture_unit
+// 			{
+// 				// Grass Alpha map
+// 				texture 3d_objects/items/building/textures/castle/foundation/dirt_alpha_1.png
+// 				tex_address_mode clamp
+// 				colour_op_ex blend_texture_alpha  src_current src_texture
+// 			}
+// 		}
+// 		pass
+// 		{
+// 			// Grass Pass
+// 			scene_blend alpha_blend
+// 			texture_unit
+// 			{
+// 				// Grass Splat
+// 				texture 3d_objects/items/building/textures/castle/foundation/grass_tile.png
+// 				tex_address_mode mirror
+// 				scale 0.01 0.01
+// 			}
+// 			texture_unit
+// 			{
+// 				// Grass Alpha map
+// 				texture 3d_objects/items/building/textures/castle/foundation/grass_alpha.png
+// 				tex_address_mode clamp
+// 				colour_op_ex blend_texture_alpha  src_current src_texture
+// 			}
+// 		}
+// 	}
+// }
 
 
 

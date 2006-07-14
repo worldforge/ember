@@ -1,17 +1,84 @@
-material /global/items/furniture/avalon
+material /global/items/furniture/avalon : /base/simple
 {
-  receive_shadows on
-  technique
+  set_texture_alias DiffuseMap 3d_objects/items/furniture/textures/avalon/low/avalon.png
+  technique General
   {
-    pass
+    pass Main
     {
-      //diffuse 0.800000 0.800000 0.800000
       specular 0.500000 0.500000 0.500000 50.000000
-      //emissive 0.000000 0.000000 0.000000
-      texture_unit
-      {
-        texture 3d_objects/items/furniture/textures/avalon/low/avalon.png
-      }
+    }
+  }
+  
+}
+
+material /global/items/canvas/red_white_stripes/main : /base/simple/nonculled
+{
+  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_main.png
+  technique General
+  {
+    pass Main
+    {
+		alpha_rejection greater_equal 10 
+    }
+  }
+}
+
+material /global/items/canvas/red_white_stripes/details : /base/simple/nonculled
+{
+  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_details.png
+  technique General
+  {
+    pass Main
+    {
+		alpha_rejection greater_equal 10 
+    }
+  }
+}
+
+material /global/items/canvas/blue_green_stripes/main : /base/simple/nonculled
+{
+  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_main.png
+  technique General
+  {
+    pass Main
+    {
+		alpha_rejection greater_equal 10 
+    }
+  }
+}
+
+material /global/items/canvas/blue_green_stripes/details : /base/simple/nonculled
+{
+  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_details.png
+  technique General
+  {
+    pass Main
+    {
+		alpha_rejection greater_equal 10 
+    }
+  }
+}
+
+material /global/items/canvas/red/main : /base/simple/nonculled
+{
+  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_canvas/low/red_canvas_main_512.png
+  technique General
+  {
+    pass Main
+    {
+		alpha_rejection greater_equal 10 
+    }
+  }
+}
+
+material /global/items/canvas/red/details : /base/simple/nonculled
+{
+  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_canvas/low/red_canvas_details_512.png
+  technique General
+  {
+    pass Main
+    {
+		alpha_rejection greater_equal 10 
     }
   }
 }

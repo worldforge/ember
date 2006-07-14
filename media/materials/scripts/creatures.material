@@ -256,3 +256,19 @@ material /global/creature/humanoid/kobold
   }
 }
 
+material /global/creature/humanoid/male_chain : /base/simple
+{
+	set_texture_alias DiffuseMap male_chain.png
+}
+
+material /global/creature/humanoid/male_cloth : /base/simple
+{
+	set_texture_alias DiffuseMap male_cloth.png
+}
+
+material /global/creature/humanoid/male_armor : /base/simple
+{
+	set_texture_alias DiffuseMap male_armor.png
+}
+
+

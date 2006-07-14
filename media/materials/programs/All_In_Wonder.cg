@@ -213,8 +213,8 @@
    #define DIFFUSE_TEXTURE 1
 
    #define AT_LEAST_PERPIXEL 1
-   #define AT_LEAST_NORMAL_MAPPING 1
-   #define OFFSET_MAPPING 1
+   #define AT_LEAST_NORMAL_MAPPING 0
+   #define OFFSET_MAPPING 0
 
    #define AMBIENT 1
    #define DIFFUSE 1

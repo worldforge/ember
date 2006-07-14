@@ -65,7 +65,7 @@ material /base/normalmap
 
 				param_named scaleBias float4 0.04 -0.02 1 0 
 
- 				param_named ambient float4 0.0 0.0 0.1 1.0
+ 				param_named ambient float4 0.1 0.1 0.1 1.0
 			}
 			
 			// Base bump map
