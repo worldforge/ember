@@ -269,21 +269,6 @@ protected:
      */
     virtual bool setup(bool loadOgrePluginsThroughBinreloc = false);
   
-	
-	/**
-	 * Configures the application - returns false if the user chooses to abandon configuration.
-	 * @param  
-	 * @return 
-	 */
-	virtual bool configure(void);
-
-    /**
-     * chooses and sets up the correct scene manager
-     * @param  
-     */
-    virtual void chooseSceneManager(void);
-
-
 	/**
 	 *    Creates the basic scene with a single avatar, just for testing purpose.
 	 * NOTE: remove this when going final
@@ -308,11 +293,7 @@ protected:
 	*/
 	void checkForConfigFiles();
 
-    /**
-	 Method which will define the source of resources (other than current folder)
-	 */
-    virtual void setupResources(void);
-    
+   
 //    EmberTerrainPageSource* mPageSource;
 	TerrainGenerator* mTerrainGenerator;
 	
@@ -329,12 +310,6 @@ protected:
 	
 	Eris::View* mWorldView;
 	
-	/**
-	All resources are loaded through this.
-	Why a pointer? Well, just to keep the required include headers in EmberOgre.h down.
-	*/
-	OgreResourceLoader* mOgreResourceLoader;
-
 	/**
 	Controls whether eris should be polled at each frame update.
 	*/

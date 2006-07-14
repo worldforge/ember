@@ -1,3 +1,9 @@
+2006-07-15 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: moved ogre setup functionality to OgreSetup
+	* src/components/ogre/Makefile.am, src/components/ogre/OgreSetup.cpp, src/components/ogre/OgreSetup.h: On *NIX platforms, check if either the GLX or the SDL platform is active, and adapt so that Ember will work with either
+	* src/components/ogre/OgreResourceLoader.cpp: add some information about the number of model definitions
+
 2006-07-12 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/edibles.modeldef, src/components/ogre/modeldefinitions/furniture.modeldef, src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/outdoor_structures.modeldef, src/components/ogre/modeldefinitions/tools.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml, src/components/ogre/modeldefinitions/vehicles.modeldef: updated model definitions

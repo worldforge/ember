@@ -25,6 +25,7 @@
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
+#include "model/ModelDefinitionManager.h"
 
 namespace EmberOgre {
 
@@ -116,6 +117,16 @@ void OgreResourceLoader::loadGeneral()
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 	loadSection("ModelDefinitions");
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ModelDefinitions");
+	
+	///out of pure interest we'll print out how many modeldefinitions we've loaded
+	Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
+	int count = 0;
+	while (I.hasMoreElements()) {
+		I.moveNext();
+		++count;
+	}
+	
+	S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
 }
 
 void OgreResourceLoader::preloadMedia()
@@ -135,6 +146,7 @@ void OgreResourceLoader::preloadMedia()
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
 	}
+
 
 // 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 // 	

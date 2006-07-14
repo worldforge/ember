@@ -23,6 +23,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 -----------------------------------------------------------------------------
 */
+//	#include <SDL/SDL.h>
+// 	#include <SDL/SDL_syswm.h>
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -33,6 +36,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <stddef.h>
 #include <stdio.h>
 #include <sys/types.h>
+
 #ifdef WIN32
 	#include <tchar.h>
 	#define snprintf _snprintf
@@ -42,20 +46,21 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 	// Necessary to get the Window Handle of the window
 	//  Ogre created, so SDL can grab its input.
-	#include <windows.h>
-	#include <SDL_getenv.h>
-	#include <SDL.h>
-	#include <SDL_syswm.h>
+// 	#include <windows.h>
+// 	#include <SDL_getenv.h>
+// 	#include <SDL.h>
+// 	#include <SDL_syswm.h>
 
 	#include <iostream>
 	#include <fstream>
 	#include <ostream>
 #else
 	#include <dirent.h>
-	#include <SDL/SDL_image.h>
+// 	#include <SDL_syswm.h>
 #endif
 
 #include "EmberOgrePrerequisites.h"
+// 	#include <SDL/SDL_image.h>
 
 // ------------------------------
 // Include Eris header files
@@ -130,6 +135,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "widgets/LoadingBar.h"
 
 #include "sound/OgreSoundProvider.h"
+
+#include "OgreSetup.h"
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
@@ -216,8 +223,7 @@ mTerrainGenerator(0),
 mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
-mEmberEntityFactory(0), 
-mOgreResourceLoader(0), mPollEris(true), mLogObserver(0)
+mEmberEntityFactory(0), mPollEris(true), mLogObserver(0)
 {}
 
 EmberOgre::~EmberOgre()
@@ -327,9 +333,9 @@ void EmberOgre::requestQuit()
 {
 	bool handled = false;
 	EventRequestQuit.emit(handled);
-	//check it was handled
+	///check it was handled (for example if the gui wants to show a confirmation window)
 	if (!handled) {
-		//it's not handled, quit now
+		///it's not handled, quit now
 		shutdown();
 	}
 
@@ -346,42 +352,37 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	checkForConfigFiles();
 	
-#ifdef __WIN32__
-		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
-#else
-	if (loadOgrePluginsThroughBinreloc) {
-		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
-		std::string libDir(br_libdir);
-		free(br_libdir);
-		mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
-		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_CgProgramManager.so");
-		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_ParticleFX.so");
-		mRoot->loadPlugin(libDir + "/ember/OGRE/RenderSystem_GL.so");
-	} else {
-		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+	///Create a setup object through which we will start up Ogre.
+	OgreSetup ogreSetup;
+	
+	///We need a root object.
+	mRoot = ogreSetup.createOgreSystem(loadOgrePluginsThroughBinreloc);
+	
+	if (!mRoot) {
+		throw Ember::Exception("There was a problem setting up the Ogre environment, aborting.");
 	}
-#endif
 
-// 	
+	///Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
-	///why is this a pointer? Well, it's only because we want to keep the number of include headers in the EmberOgre.h file down
-	mOgreResourceLoader = new OgreResourceLoader();
-	mOgreResourceLoader->initialize();
+	///Create a resource loader which loads all the resources we need.
+	OgreResourceLoader ogreResourceLoader;
+	ogreResourceLoader.initialize();
 	
 	///check if we should preload the media
 	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "preloadmedia");
 
 
-    bool carryOn = configure();
+    bool carryOn = ogreSetup.configure();
     if (!carryOn) return false;
+    mWindow = ogreSetup.getRenderWindow();
 	
 
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
-	mOgreResourceLoader->loadBootstrap();
+	ogreResourceLoader.loadBootstrap();
     
 
-    chooseSceneManager();
+    mSceneMgr = ogreSetup.chooseSceneManager();
 	
 	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	Ogre::Camera* camera = mSceneMgr->createCamera("MainCamera");
@@ -402,6 +403,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///create the collision manager
 	new OgreOpcode::CollisionManager(mSceneMgr);
 	
+	///register the scene manager with the modeldefiniton manager
 	mModelDefinitionManager->setSceneManager(mSceneMgr);
 
     /// Set default mipmap level (NB some APIs ignore this)
@@ -413,8 +415,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///remove padding for bounding boxes
     Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);    
 	
-	mOgreResourceLoader->loadGui();
-	mOgreResourceLoader->loadGeneral();
+	ogreResourceLoader.loadGui();
+	ogreResourceLoader.loadGeneral();
 	
 	///add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -423,7 +425,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	if (preloadMedia)
 	{ 
 		S_LOG_INFO( "Begin preload.");
-		mOgreResourceLoader->preloadMedia();
+		ogreResourceLoader.preloadMedia();
 		S_LOG_INFO( "End preload.");
 	}	
 	try {
@@ -483,145 +485,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	return true;
   
 }
-/** Configures the application - returns false if the user chooses to abandon configuration. */
-bool EmberOgre::configure(void)
-{
 
-
-
-//for non-windows systems don't show any config option
-#ifndef __WIN32__
-	bool success = mRoot->restoreConfig();
-#else
-	//but do for windows. We need a better way to do this though
-	bool success = mRoot->showConfigDialog();
-#endif    
-	if(success)
-    {
-		//this will only apply on DirectX
-		//it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
-		try {
-			mRoot->getRenderSystem()->setConfigOption("Video Mode", "1024 x 768 @ 32-bit colour");
-			mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
-			
-		} catch (const Ogre::Exception&) 
-		{
-			//we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
-		}
-
-        // If returned true, user clicked OK so initialise
-        // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "Ember");
-#if __WIN32__
-   //do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
-   	_fpreset();
-	_controlfp(_PC_64, _MCW_PC);
-	_controlfp(_RC_NEAR , _MCW_RC);
-
-   // Allow SDL to use the window Ogre just created
-
-   // Old method: do not use this, because it only works
-   //  when there is 1 (one) window with this name!
-   // HWND hWnd = FindWindow(tmp, 0);
-
-   // New method: As proposed by Sinbad.
-   //  This method always works.
-   HWND hWnd;
-   mWindow->getCustomAttribute("HWND", &hWnd);
-	
-   char tmp[64];
-   // Set the SDL_WINDOWID environment variable
-   sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
-   putenv(tmp);
-
-   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
-    {
-      S_LOG_FAILURE("Couldn't initialize SDL:\n\t\t");
-      S_LOG_FAILURE(SDL_GetError());
-    }
-
-      // if width = 0 and height = 0, the window is fullscreen
-
-      // This is necessary to allow the window to move1
-      //  on WIN32 systems. Without this, the window resets
-      //  to the smallest possible size after moving.
-      SDL_SetVideoMode(mWindow->getWidth(), mWindow->getHeight(), 0, 0); // first 0: BitPerPixel, 
-                                             // second 0: flags (fullscreen/...)
-                                             // neither are needed as Ogre sets these
-
-   static SDL_SysWMinfo pInfo;
-   SDL_VERSION(&pInfo.version);
-   SDL_GetWMInfo(&pInfo);
-
-   // Also, SDL keeps an internal record of the window size
-   //  and position. Because SDL does not own the window, it
-   //  missed the WM_POSCHANGED message and has no record of
-   //  either size or position. It defaults to {0, 0, 0, 0},
-   //  which is then used to trap the mouse "inside the 
-   //  window". We have to fake a window-move to allow SDL
-   //  to catch up, after which we can safely grab input.
-   RECT r;
-   GetWindowRect(pInfo.window, &r);
-   SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-   ///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
-   	_fpreset();
-	_controlfp(_PC_64, _MCW_PC);
-	_controlfp(_RC_NEAR , _MCW_RC);
-#endif
-
-#ifndef __WIN32__
-if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
-
-	throw Ember::Exception("SDL was not initiliazed. The most probable cause for this is that you're using an version of Ogre that is set up to use the GLX backend instead of the SDL backend.");
-}
-
-	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
-		///set the icon of the window
-		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));
-		
-		const char* iconPath = br_strcat(br_datadir,"/icons/worldforge/ember.png");
-		free(br_datadir);
-		SDL_WM_SetIcon(IMG_Load(iconPath), 0);
-	} else {
-		std::cerr << dlerror() << "\n";
-	}
-#endif
-
-		
-		return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-void EmberOgre::chooseSceneManager(void)
-{
-    // Create new scene manager
-    EmberPagingSceneManagerFactory* sceneManagerFactory = new EmberPagingSceneManagerFactory();
-
-    // Register
-    Ogre::Root::getSingleton().addSceneManagerFactory(sceneManagerFactory);
-	
-	mSceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->createSceneManager(ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
-	mSceneMgr->InitScene();
-	
- 
-//     // We first register our own scenemanager
-//     EmberTerrainSceneManager* sceneManager = new EmberTerrainSceneManager();
-//     mRoot->setSceneManager(Ogre::ST_EXTERIOR_FAR, sceneManager);
-//     //And then request it
-//     mSceneMgr = static_cast<EmberTerrainSceneManager*>(mRoot->getSceneManager(Ogre::ST_EXTERIOR_FAR));
-//     
-//     EmberTerrainSceneManager* mEmberTerr = dynamic_cast<EmberTerrainSceneManager*>(mSceneMgr);
-//     assert(mEmberTerr);
-
-   //mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
-   
-    
-}
 
 EmberEntity* EmberOgre::getEmberEntity(const std::string & eid) const
 {
@@ -640,16 +504,6 @@ void EmberOgre::checkForConfigFiles()
 	assureConfigFile("ogre.cfg", sharePath);
 	assureConfigFile("plugins.cfg", sharePath);
 }
-
-
-
-/// Method which will define the source of resources (other than current folder)
-void EmberOgre::setupResources(void)
-{
-	
-	
-}
-
 
 
 void EmberOgre::preloadMedia(void)
@@ -771,41 +625,10 @@ void EmberOgre::setupJesus()
 
 void EmberOgre::createScene(void)
 {
-/*  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
- mSceneMgr->setAmbientLight(Ogre::ColourValue(0, 0, 0));
-  mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
-  mSceneMgr->setShowDebugShadows(true);
-//  mSceneMgr->setShadowFarDistance(2000);
- 	mSceneMgr->showBoundingBoxes(true);
- */
-  // Create a light
-  
 
-
-/*  
-        Ogre::SceneNode* node;
-        node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-        Ogre::Entity* mAthene = mSceneMgr->createEntity( "athene", "athene.mesh" );
-        //mAnimState = pEnt->getAnimationState("Walk");
-        //mAnimState->setEnabled(true);
-        node->attachObject( mAthene );
-        node->translate(0, 10, 0);
-        node->scale(0.1,0.1,0.1);
-        node->yaw(90);
-*/
+	///initially, while in the "void", we'll use a clear ambient light
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-	
-	
-	
-	
 
-  // create a Skydome
-//  mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
-
-  
-         
-	 
-	
 }
 
 void EmberOgre::connectViewSignals(Eris::View* world)
@@ -816,6 +639,7 @@ void EmberOgre::connectViewSignals(Eris::View* world)
 
 EmberEntity* EmberOgre::getEntity(const std::string & id) const
 {
+	///this of course relies upon all entities being created by our factory
 	return static_cast<EmberEntity*>(mWorldView->getEntity(id));
 }
 
