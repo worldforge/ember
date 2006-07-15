@@ -75,6 +75,7 @@ OgrePagingLandScapeTileInfo.h \
 OgrePagingLandScapeTileManager.h \
 OgrePagingLandScapeCamera.h \
 OgrePagingLandScapeOctreeCamera.h \
+OgrePagingLandScapePoolSet.h \
 \
 EmberPagingLandScapeData2D_HeightField.h \
 EmberPagingLandScapeTexture.h \
