@@ -182,7 +182,9 @@
 					<match property="style">
 						<equals>rounded</equals>
 					</match>
-					<partaction part="stylish" show="true" />
+					<actions>
+						<partaction part="stylish" show="true" />
+					</actions>
 				</configuration>
         	</configurations>
         </entitymapping>

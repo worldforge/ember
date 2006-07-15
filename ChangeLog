@@ -1,5 +1,9 @@
 2006-07-15 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile.am: added missing .h file
+
+2006-07-15 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/outdoor_structures.modeldef: updated modeldefinitions, also now with experimental definitions with entity mappings.
 	* src/components/ogre/widgets/InspectWidget.cpp: also show scalar velocity
 	* make_dist_media.sh.in: updated to also include textures referenced by texture_alias
