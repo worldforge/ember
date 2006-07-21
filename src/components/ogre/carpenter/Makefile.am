@@ -5,11 +5,11 @@ dist-hook:
 	(cd $(top_srcdir)/src/components/ogre/carpenter; tar cf - `find . -name \*.xml` | ( cd $(current); cd $(distdir); tar xf -))
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/games/ember/carpenter 
-	(cd $(top_srcdir)/src/components/ogre/carpenter; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/games/ember/carpenter/; tar xf -)
+	mkdir -p $(DESTDIR)$(datadir)/ember/carpenter 
+	(cd $(top_srcdir)/src/components/ogre/carpenter; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/ember/carpenter/; tar xf -)
 
 uninstall-local:
-	find $(DESTDIR)$(datadir)/games/ember/carpenter/ -name  \*.xml | xargs rm
+	find $(DESTDIR)$(datadir)/ember/carpenter/ -name  \*.xml | xargs rm
 
 
 

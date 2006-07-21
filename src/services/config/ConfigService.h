@@ -205,7 +205,7 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 	const std::string& getUserMediaDirectory() const;
 	
 	/**
-	 *    returns the path to the media directory shared between users, which would normally be $prefix/games/ember/media
+	 *    returns the path to the media directory shared between users, which would normally be $prefix/ember/media
 	 * @return 
 	 */
 	const std::string& getSharedMediaDirectory() const;

@@ -9,6 +9,6 @@ libFramework_a_SOURCES = Tokeniser.cpp ConsoleBackend.cpp StreamLogObserver.cpp 
 	tinyxml/tinyxmlparser.cpp scrap.c 
 
 noinst_HEADERS = osdir.h float_cast.h scrap.h tinyxml/tinyxml.h \
-	TemplateEntityListener.h Tokeniser.h StreamLogObserver.h ComponentFactory.h Component.h \
-	ConsoleBackend.h ConsoleObject.h Exception.h Service.h ServiceManager.h Singleton.h \
-	binreloc.h tinyxml/tinystr.h IScriptingProvider.h ISoundProvider.h
+		TemplateEntityListener.h Tokeniser.h StreamLogObserver.h ComponentFactory.h Component.h \
+		ConsoleBackend.h ConsoleObject.h Exception.h Service.h ServiceManager.h Singleton.h \
+		binreloc.h tinyxml/tinystr.h IScriptingProvider.h ISoundProvider.h IGameView.h

@@ -1,7 +1,7 @@
 INCLUDES = -I$(top_srcdir)/src
 SUBDIRS = src media
 
-wfutdir = $(datadir)/games/ember/
+wfutdir = $(datadir)/ember/
 dist_wfut_DATA = WFUT.jar
 
 bin_SCRIPTS = ember

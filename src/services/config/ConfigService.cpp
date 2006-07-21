@@ -67,7 +67,7 @@ namespace Ember
 
 	void ConfigService::setPrefix(const std::string& prefix)
 	{
-		mSharedDataDir = prefix + "/share/games/ember/";
+		mSharedDataDir = prefix + "/share/ember/";
 		mEtcDir = prefix + "/etc/ember/";
 	}
 	

@@ -1,3 +1,7 @@
+2006-07-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* Makefile.am, media/packs/Makefile.am, src/components/ogre/carpenter/Makefile.am, src/components/ogre/cegui/Makefile.am, src/components/ogre/jesus/Makefile.am, src/components/ogre/modeldefinitions/Makefile.am, src/components/ogre/widgets/Makefile.am, src/framework/Makefile.am, src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: instead of placing data in DATADIR/games, throw out the "games" part since this is something that each distribution would want to decide where to put the data, and by defining the --datadir at configure time they can
+
 2006-07-15 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile.am: added missing .h file

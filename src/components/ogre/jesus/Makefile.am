@@ -5,11 +5,11 @@ dist-hook:
 	(cd $(top_srcdir)/src/components/ogre/jesus; tar cf - `find . -name \*.xml` | ( cd $(current); cd $(distdir); tar xf -))
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/games/ember/jesus 
-	(cd $(top_srcdir)/src/components/ogre/jesus; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/games/ember/jesus; tar xf -)
+	mkdir -p $(DESTDIR)$(datadir)/ember/jesus 
+	(cd $(top_srcdir)/src/components/ogre/jesus; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/ember/jesus; tar xf -)
 
 uninstall-local:
-	find $(DESTDIR)$(datadir)/games/ember/jesus/ -name  \*.xml | xargs rm -f
+	find $(DESTDIR)$(datadir)/ember/jesus/ -name  \*.xml | xargs rm -f
 
 
 
