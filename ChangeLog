@@ -1,3 +1,21 @@
+2006-07-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.conf: default to showing more fog
+
+2006-07-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreSetup.cpp: try to catch an error if the Cg plugin can't be loaded, and then just continue (since it not being there won't break anything)
+	
+2006-07-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/vehicles.modeldef: fixed non-parseable characters (though I never found out exactly what it was)
+	
+2006-07-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/creatures.material: added male materials
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/SubModelPart.cpp, src/components/ogre/model/SubModelPart.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp: changed the way submodel parts are stored so that it's now possible to define many parts using the same submesh but with different materials (such as "pants/green" and "pants/yellow"). This was intended in the original design, but was never fully implemented. Also added some better debug output. Next thing to do is to add support for "groups", so that parts that are mutually exclusive can be grouped together.
+	* src/components/ogre/jesus/XMLJesusSerializer.cpp: better error output
+
 2006-07-22 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* Makefile.am, media/packs/Makefile.am, src/components/ogre/carpenter/Makefile.am, src/components/ogre/cegui/Makefile.am, src/components/ogre/jesus/Makefile.am, src/components/ogre/modeldefinitions/Makefile.am, src/components/ogre/widgets/Makefile.am, src/framework/Makefile.am, src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: instead of placing data in DATADIR/games, throw out the "games" part since this is something that each distribution would want to decide where to put the data, and by defining the --datadir at configure time they can
