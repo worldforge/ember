@@ -53,7 +53,11 @@ Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 		std::string libDir(br_libdir);
 		free(br_libdir);
 		mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
-		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_CgProgramManager.so");
+		try {
+			mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_CgProgramManager.so");
+		} catch (...) {
+			S_LOG_WARNING("Could not load the Cg program manager plugin. This won't crash Ember, but will disable Cg shaders.");
+		}
 		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_ParticleFX.so");
 		mRoot->loadPlugin(libDir + "/ember/OGRE/RenderSystem_GL.so");
 	} else {
