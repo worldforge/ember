@@ -55,7 +55,12 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
-		S_LOG_FAILURE("Failed to load modeldefinition file!");
+		std::string errorDesc = _XMLDoc.ErrorDesc();
+		int errorLine =  _XMLDoc.ErrorRow();
+		int errorColumn =  _XMLDoc.ErrorCol();
+		std::stringstream ss;
+		ss << "Failed to load load model block mapping file '" << filename << "'! Error at column: " << errorColumn << " line: " << errorLine << ". Error message: " << errorDesc;
+		S_LOG_FAILURE(ss.str());
 		return false;
 	}
 	
@@ -114,7 +119,12 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
-		S_LOG_FAILURE("Failed to load modeldefinition file!");
+		std::string errorDesc = _XMLDoc.ErrorDesc();
+		int errorLine =  _XMLDoc.ErrorRow();
+		int errorColumn =  _XMLDoc.ErrorCol();
+		std::stringstream ss;
+		ss << "Failed to load load block spec file '" << filename << "'! Error at column: " << errorColumn << " line: " << errorLine << ". Error message: " << errorDesc;
+		S_LOG_FAILURE(ss.str());
 		return false;
 	}
 	

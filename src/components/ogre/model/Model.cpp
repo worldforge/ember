@@ -195,7 +195,7 @@ bool Model::createFromDefn()
 							//no name specified, use the index instead
 							subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
 						}
-						part->addSubEntity(subEntity);
+						part->addSubEntity(subEntity, *I_subEntities);
 						
 						if ((*I_subEntities)->getMaterialName() != "") {
 							subEntity->setMaterialName((*I_subEntities)->getMaterialName());
@@ -205,7 +205,7 @@ bool Model::createFromDefn()
 					//if no subentities are defined, add all subentities
 					unsigned int numSubEntities = entity->getNumSubEntities();
 					for (unsigned int i = 0;i < numSubEntities; ++i) {
-						part->addSubEntity(entity->getSubEntity(i));
+						part->addSubEntity(entity->getSubEntity(i), 0);
 					}
 				}
 				

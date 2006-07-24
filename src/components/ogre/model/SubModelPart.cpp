@@ -37,15 +37,24 @@ SubModelPart::~SubModelPart()
 }
 
 
-bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity)
+bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition)
 {
-	mSubEntities.insert(subentity);	
+	SubModelPartEntity modelPartEntity;
+	modelPartEntity.Definition = definition;
+	modelPartEntity.SubEntity = subentity;
+	mSubEntities.push_back(modelPartEntity);	
 	return true;
 }
 bool SubModelPart::removeSubEntity(Ogre::SubEntity* subentity)
 {
-	mSubEntities.erase(subentity);	
-	return true;
+	for (SubModelPartEntityStore::iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I)
+	{
+		if (I->SubEntity == subentity) {
+			mSubEntities.erase(I);
+			return true;
+		}
+	}
+	return false;
 }
 
 const std::string& SubModelPart::getName() const
@@ -55,21 +64,25 @@ const std::string& SubModelPart::getName() const
 
 void SubModelPart::show()
 {
-	SubEntitySet::const_iterator I;
+	SubModelPartEntityStore::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
-		(*I)->setVisible(true);
+		if (I->Definition) {
+			I->SubEntity->setMaterialName(I->Definition->getMaterialName());	
+		}
+//		
+		I->SubEntity->setVisible(true);
 	}	
 }
 
 void SubModelPart::hide()
 {
-	SubEntitySet::const_iterator I;
+	SubModelPartEntityStore::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
-		(*I)->setVisible(false);
+		I->SubEntity->setVisible(false);
 	}	
 }
 
-const SubModelPart::SubEntitySet& SubModelPart::getSubentities() const
+const SubModelPart::SubModelPartEntityStore& SubModelPart::getSubentities() const
 {
 	return mSubEntities;
 }

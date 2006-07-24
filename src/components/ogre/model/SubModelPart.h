@@ -34,18 +34,27 @@ namespace Model {
 class SubModel;
 class Model;
 class ModelDefinition;
+class SubEntityDefinition;
+
+struct SubModelPartEntity
+{
+public:
+	SubEntityDefinition* Definition;
+	Ogre::SubEntity* SubEntity;
+};
 
 
 class SubModelPart{
 friend class ModelDefinition;
 public:
 	typedef std::set<Ogre::SubEntity*> SubEntitySet;
+	typedef std::vector<SubModelPartEntity> SubModelPartEntityStore;
 
 	SubModelPart(std::string name);
 	virtual ~SubModelPart();
 
 
-	bool addSubEntity(Ogre::SubEntity* subentity);
+	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition);
  	bool removeSubEntity(Ogre::SubEntity* subentity);
  	
  	void show();
@@ -53,11 +62,11 @@ public:
  	
  	const std::string& getName() const;
 	
-	const SubEntitySet& getSubentities() const;
+	const SubModelPartEntityStore& getSubentities() const;
 
 protected:
 	std::string mName;
-	SubEntitySet mSubEntities;
+	SubModelPartEntityStore mSubEntities;
 };
 
 }

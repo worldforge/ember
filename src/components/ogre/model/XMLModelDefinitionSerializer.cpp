@@ -66,7 +66,12 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 	bool success = _XMLDoc.LoadFile(stream); //load from data stream
 	
 	if (!success) {
-		S_LOG_FAILURE("Failed to load modeldefinition file '"+ stream->getName() +"'!");
+		std::string errorDesc = _XMLDoc.ErrorDesc();
+		int errorLine =  _XMLDoc.ErrorRow();
+		int errorColumn =  _XMLDoc.ErrorCol();
+		std::stringstream ss;
+		ss << "Failed to load modeldefinition file '" << stream->getName() << "'! Error at column: " << errorColumn << " line: " << errorLine << ". Error message: " << errorDesc;
+		S_LOG_FAILURE(ss.str());
 		return;
 	}
 	
