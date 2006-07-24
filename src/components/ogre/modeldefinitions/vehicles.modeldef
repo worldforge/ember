@@ -1,9 +1,9 @@
 <models>
-    <model name="cart1" usescaleof="all" showcontained="true">
+	<model name="cart1" usescaleof="all" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/vehicle/cart/models/cart.mesh">
+            <submodel mesh="3d_objects/items/vehicle/cart/models/cart1.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -15,7 +15,7 @@
         </submodels>
         <actions />
     </model>
-    <model name="cart2" usescaleof="all" showcontained="true">
+	<model name="cart2" usescaleof="all" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
         <submodels>
@@ -72,4 +72,4 @@
 			</submodel>
 		</submodels>
 	</model>			
-<models> 
+</models>
