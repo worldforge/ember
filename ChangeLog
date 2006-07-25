@@ -1,3 +1,8 @@
+2006-07-26 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/framework/IGameView.h: added missing file
+	* ember.in: removed "games"
+	
 2006-07-24 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember.conf: default to showing more fog

@@ -52,7 +52,7 @@ echo "According to my calculations Ember should be installed in $prefix"
 
 exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
-datadir=${prefix}/share/games/ember
+datadir=${prefix}/share/ember
 etcdir=${prefix}/etc/ember
 
 homedata=$HOME/.ember
