@@ -467,8 +467,9 @@ namespace Ember
 
         LoggingService & operator<< (const HexNumber & intHexToAdd);
         
-//         LoggingService & operator<< (const double doubleToAdd);
+         LoggingService & operator<< (const double doubleToAdd);
 
+         LoggingService & operator<< (const size_t sizetToAdd);
         /**
 	 * By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
 	 * sending it.

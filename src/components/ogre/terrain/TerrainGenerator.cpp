@@ -64,7 +64,7 @@ namespace EmberOgre {
 
 
 TerrainGenerator::TerrainGenerator()
-: mGrassShader(0)
+: mGrassShader(0), mXmax(0), mXmin(0), mYmax(0), mYmin(0), hasTerrainInfo(false)
 {
 	//new Foliage(EmberOgre::getSingleton().getSceneManager());
 	
@@ -619,7 +619,6 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 			pointStore.push_back(defPoint);
 
 			
-			
 /*	        Mercator::BasePoint bp;
             if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
 				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
@@ -688,6 +687,15 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	int Ymin = mYmin;
 	int Ymax = mYmax;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
+		///if we don't have any info from before, initialize the min and max values now
+		if (!hasTerrainInfo) {
+			mXmin = static_cast<int>(I->position.x());
+			mXmax = static_cast<int>(I->position.x());
+			mYmin = static_cast<int>(I->position.y());
+			mYmax = static_cast<int>(I->position.y());
+			hasTerrainInfo = true;
+		}
+		
         Mercator::BasePoint bp;
         if (mTerrain->getBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp) && (I->height == bp.height())) {
 			S_LOG_VERBOSE( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");

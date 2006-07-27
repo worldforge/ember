@@ -195,14 +195,23 @@ operator<< (const HexNumber & intHexToAdd)
     return *this;
 }
 
-// Ember::LoggingService & Ember::LoggingService::
-// operator<< (const double doubleToAdd)
-// {
-//     char buffer[NUMBER_BUFFER_SIZE];
-//     sprintf (buffer, "%e", doubleToAdd);
-//     myMessage += buffer;
-//     return *this;
-// }
+Ember::LoggingService & Ember::LoggingService::
+operator<< (const double doubleToAdd)
+{
+	std::stringstream ss;
+	ss << doubleToAdd;
+    myMessage += ss.str();
+    return *this;
+}
+
+Ember::LoggingService & Ember::LoggingService::
+operator<< (const size_t sizetToAdd)
+{
+	std::stringstream ss;
+	ss << sizetToAdd;
+    myMessage += ss.str();
+    return *this;
+}
 
 
 void Ember::LoggingService::operator<< (const EndMessageEnum endMessage)

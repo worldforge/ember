@@ -1,3 +1,9 @@
+2006-07-28 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/logging/LoggingService.cpp, src/services/logging/LoggingService.h: added logging of doubles and size_t values
+	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainGenerator.h: make more sure the world is initialized to more sane values
+	* src/components/ogre/TerrainShader.cpp: more correct logging
+
 2006-07-26 Erik Hjortsberg  <erik@katastrof.nu>
 	
 	* src/framework/IGameView.h: added missing file

@@ -287,6 +287,10 @@ protected:
 	
 	void loadTerrainOptions();
 	
+	/**
+	true if we have some kind of terrain info, i.e. if mX* and mY* are valid
+	*/
+	bool hasTerrainInfo;
 	//Ogre::TerrainOptions mOptions;
 	
 	
