@@ -9,20 +9,21 @@
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
+    <description/>
     <secondaryLanguages/>
     <versioncontrol>kdevcvsservice</versioncontrol>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
       <activetarget>src/Ember</activetarget>
-      <useconfiguration>static</useconfiguration>
+      <useconfiguration>optimized</useconfiguration>
     </general>
     <run>
       <mainprogram>src/components/ogre/ember.bin</mainprogram>
       <directoryradio>executable</directoryradio>
       <customdirectory>/home/erik/code/worldforge/forge_cvs/clients/ember/src/components/ogre/</customdirectory>
-      <programargs></programargs>
+      <programargs>--prefix $HOME/opt/worldforge --binrelocloading__ --home $HOME/ember/home</programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -38,15 +39,15 @@
         <f77compiler>kdevpghpfoptions</f77compiler>
         <cxxflags>-O2 -g0</cxxflags>
         <envvars/>
-        <configargs>--prefix=$HOME/opt/worldforge</configargs>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <configargs>--prefix=$HOME/opt/worldforge --enable-lua=yes --enable-final=yes</configargs>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </optimized>
       <debug>
         <configargs>--enable-debug=full --prefix=$HOME/opt/worldforge --enable-lua=yes</configargs>
@@ -55,15 +56,17 @@
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpghpfoptions</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
-        <envvars/>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <envvars>
+          <envvar value="/home/erik/opt/ogre_v1.2rc1/lib/pkgconfig:$PKG_CONFIG_PATH" name="_PKG_CONFIG_PATH" />
+        </envvars>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </debug>
       <default>
         <envvars/>
@@ -86,36 +89,53 @@
         <envvars/>
         <configargs>--enable-static-build=yes --prefix=$HOME/opt/ember_static --enable-debug=full</configargs>
         <builddir>debug_static</builddir>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpghpfoptions</f77compiler>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
         <cxxflags>-O0 -g3</cxxflags>
-        <f77flags></f77flags>
+        <f77flags/>
       </debug_static>
       <static>
         <envvars/>
         <configargs>--enable-static-build=yes --prefix=$HOME/opt/ember_static </configargs>
         <builddir>static</builddir>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpghpfoptions</f77compiler>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
         <cxxflags>-O2 -g0</cxxflags>
-        <f77flags></f77flags>
+        <f77flags/>
       </static>
+      <profile>
+        <envvars/>
+        <configargs>--prefix=$HOME/opt/worldforge --enable-lua=yes --enable-gprof</configargs>
+        <builddir>profile</builddir>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpghpfoptions</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags/>
+        <f77flags/>
+      </profile>
     </configurations>
     <make>
       <envvars>
@@ -125,18 +145,19 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
+      <runmultiplejobs>false</runmultiplejobs>
     </make>
   </kdevautoproject>
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs></programargs>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <programargs>--prefix $HOME/opt/worldforge --binrelocloading__  --home $HOME/ember/home</programargs>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -232,13 +253,25 @@
       <inlineGet>true</inlineGet>
       <inlineSet>true</inlineSet>
     </creategettersetter>
+    <qt>
+      <used>false</used>
+      <version>3</version>
+      <root>/usr/lib/qt3/</root>
+    </qt>
+    <splitheadersource>
+      <enabled>true</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
   </kdevcppsupport>
   <kdevfileview>
     <groups>
       <group pattern="src/components/ogre/widgets/*.widget" name="Widgets" />
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
-      <hidepatterns>*.o,*.lo,CVS,*~,*CVS*, Entries</hidepatterns>
+      <hidepatterns>*.o,*.lo,CVS,*~,*CVS*,Entries,Root,Repository,Makefile.in</hidepatterns>
       <showvcsfields>false</showvcsfields>
       <hidenonprojectfiles>false</hidenonprojectfiles>
     </tree>
@@ -251,13 +284,14 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem></docsystem>
-      <docurl></docurl>
-      <usermanualurl></usermanualurl>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>ember.ctags</customTagfilePath>
+    <activeTagsFiles/>
   </ctagspart>
 </kdevelop>

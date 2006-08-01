@@ -55,6 +55,12 @@ bindir=${exec_prefix}/bin
 datadir=${prefix}/share/ember
 etcdir=${prefix}/etc/ember
 
+LD_LIBRARY=$prefix/lib/ember:$LD_LIBRARY
+LD_LIBRARY_PATH=$prefix/lib/ember:$LD_LIBRARY_PATH
+export LD_LIBRARY
+export LD_LIBRARY_PATH
+
+
 homedata=$HOME/.ember
 case "$1" in
 --home)
@@ -64,37 +70,46 @@ case "$1" in
   ;;
 esac
 
+WFUT_BIN=$bindir/wfut-ember-bin
 WFUT_JAR=$datadir/WFUT.jar
 MEDIA_CHANNEL="ember-media-@VERSION@"
 SERVER=http://amber.worldforge.org/WFUT/
 
 # Create dir if required 
 if [ ! -d $homedata ] ; then
-	echo "Created $homedata to store all game data."
+	echo "Creating $homedata to store all game data."
 	mkdir -p $homedata
 fi
 
-# Determine if java executable exists in path
-JAVA=`which java`;
-if [ $JAVA ] ; then
+#Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
+echo @VERSION@ > $homedata/latest_version
 
-    # Update
-    echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
-    XTERM=`which xterm`
+XTERM=`which xterm`
+
+#the precompiled wfut is preferrable if available
+if test -x $WFUT_BIN; then
+	echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
 	if [ $XTERM ] ; then
-    	xterm -T "Downloading media..." -e $JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
-    else
-    	$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
-    fi
-else
-  echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
-  exit
+		xterm -T "Downloading media..." -e $WFUT_BIN dest $homedata update $MEDIA_CHANNEL
+	else
+		$WFUT_BIN dest $homedata update $MEDIA_CHANNEL
+	fi
+else 
+	# Determine if java executable exists in path
+	JAVA=`which java`;
+	if [ $JAVA ] ; then
+		# Update
+		echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
+		if [ $XTERM ] ; then
+			xterm -T "Downloading media..." -e $JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
+		else
+			$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
+		fi
+	else
+	echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
+	exit
+	fi
 fi
-
-LD_LIBRARY=$prefix/lib/ember:$LD_LIBRARY
-LD_LIBRARY_PATH=$prefix/lib/ember:$LD_LIBRARY_PATH
-export LD_LIBRARY
-export LD_LIBRARY_PATH
 
 # Execute real ember binary
 echo "Starting Ember...."
