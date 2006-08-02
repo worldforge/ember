@@ -66,10 +66,13 @@ void SubModelPart::show()
 {
 	SubModelPartEntityStore::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
-		if (I->Definition) {
+		if (I->Definition && I->Definition->getMaterialName() != "") {
 			I->SubEntity->setMaterialName(I->Definition->getMaterialName());	
+		} else {
+			///if no material name is set in the ModelDefinition, use the default one from the mesh
+			I->SubEntity->setMaterialName(I->SubEntity->getSubMesh()->getMaterialName());
 		}
-//		
+		
 		I->SubEntity->setVisible(true);
 	}	
 }
