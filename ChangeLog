@@ -1,3 +1,19 @@
+2006-08-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.in: added comments
+
+2006-08-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.cpp: better error logging
+
+2006-08-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp: Don't use ~ for the home directory, instead use getenv().
+
+2006-08-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/SubModelPart.cpp: Fixed issue with no material defined in the modeldef.
+
 2006-08-01 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember.bin: 
