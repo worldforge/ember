@@ -23,8 +23,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 -----------------------------------------------------------------------------
 */
-//	#include <SDL/SDL.h>
-// 	#include <SDL/SDL_syswm.h>
 
 
 #ifdef HAVE_CONFIG_H
@@ -56,11 +54,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 	#include <ostream>
 #else
 	#include <dirent.h>
-// 	#include <SDL_syswm.h>
 #endif
 
 #include "EmberOgrePrerequisites.h"
-// 	#include <SDL/SDL_image.h>
 
 // ------------------------------
 // Include Eris header files
@@ -878,7 +874,7 @@ int main(int argc, char **argv)
 		if (homeDir != "") {
 			chdir(homeDir.c_str());
 		} else {
-			chdir("~/.ember");
+			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
 		}
 		return 0;
 	}
@@ -941,7 +937,7 @@ int main(int argc, char **argv)
 		if (homeDir != "") {
 			chdir(homeDir.c_str());
 		} else {
-			chdir("~/.ember");
+			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
 		}
     return 0;
 }
