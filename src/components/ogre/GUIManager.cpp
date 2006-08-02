@@ -109,12 +109,12 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 
 			
-			try {
-				mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), (CEGUI::utf8*)"MouseArrow");
-			} catch (const CEGUI::Exception& ex) {
-				S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available.");
-				throw ex;
-			}
+		try {
+			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), (CEGUI::utf8*)"MouseArrow");
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
+			throw Ember::Exception(ex.getMessage().c_str());
+		}
 		
 		
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
@@ -154,8 +154,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		
 	
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("GUIManager - error when creating gui.");
-		throw ex;
+		S_LOG_FAILURE("GUIManager - error when creating gui. Message: " << ex.getMessage().c_str());
+		throw Ember::Exception(ex.getMessage().c_str());
 	
 	}
 
