@@ -1,5 +1,9 @@
 2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* ember.conf: added key bindings
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/EmberOgre.cpp: call the correct initialize method
 	* src/components/ogre/AvatarCamera.cpp: cleaned up code
 
