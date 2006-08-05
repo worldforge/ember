@@ -24,15 +24,10 @@
 #include "Tokeniser.h"
 
 // Included custom library headers
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
-#include <sigc++/object.h>
+
 #include <sigc++/signal.h>
-#include <sigc++/slot.h>
-#include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
-#endif
+
 // Included system headers
 #include <deque>
 #include <list>
