@@ -26,19 +26,17 @@
 
 namespace Ember {
 
-ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject *object) : mCommand(command), mObject(object)
-{
-	if (Ember::ConsoleBackend::getMainConsole()) {
-		Ember::ConsoleBackend::getMainConsole()->registerCommand(mCommand, object);
-	} else {
-		S_LOG_WARNING("Could not register command "<< command << " since there was no console backend.");
-	}
-}
 
-ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description) : mCommand(command), mObject(object), mDescription(description)
+ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description) : mCommand(command), mObject(object), mDescription(description), mInverseCommand("")
 {
+	if (mCommand.size() > 0 && mCommand[0] == '+') {
+		mInverseCommand = std::string("-") + std::string(mCommand).erase(0, 1);
+	}
 	if (Ember::ConsoleBackend::getMainConsole()) {
 		Ember::ConsoleBackend::getMainConsole()->registerCommand(mCommand, object);
+		if (mInverseCommand != "") {
+			Ember::ConsoleBackend::getMainConsole()->registerCommand(mInverseCommand, object);
+		}
 	} else {
 		S_LOG_WARNING("Could not register command "<< command << " since there was no console backend.");
 	}

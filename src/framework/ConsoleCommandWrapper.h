@@ -35,13 +35,6 @@ class ConsoleObject;
 class ConsoleCommandWrapper {
 public:
 
-    /**
-     * Constructor.
-     * @param command The console command.
-     * @param object The object instance.
-     * @return 
-     */
-    ConsoleCommandWrapper(std::string command, ConsoleObject *object);
     
     /**
      * Constructor.
@@ -50,7 +43,7 @@ public:
      * @param description Description of the command.
      * @return 
      */
-    ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description);
+    ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description = "");
 
     ~ConsoleCommandWrapper();
     
@@ -59,6 +52,8 @@ public:
      * @return 
      */
     inline const std::string& getCommand() const;
+    
+    inline const std::string& getInverseCommand() const;
     
     /**
      * Gets the description of the command.
@@ -71,12 +66,14 @@ public:
 private:
 
 	std::string mCommand;
+	std::string mInverseCommand;
 	std::string mDescription;
 	ConsoleObject* mObject;
 };
     
     
 const std::string& ConsoleCommandWrapper::getCommand() const {return mCommand;}
+const std::string& ConsoleCommandWrapper::getInverseCommand() const {return mInverseCommand;}
 const std::string& ConsoleCommandWrapper::getDescription() const {return mDescription;}
 bool ConsoleCommandWrapper::operator==( const std::string& command) const { return command == mCommand; }
 
