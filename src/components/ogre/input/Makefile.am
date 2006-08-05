@@ -2,6 +2,6 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 METASOURCES = AUTO
 
 noinst_LIBRARIES = libInput.a
-libInput_a_SOURCES = Input.cpp Input.h
+libInput_a_SOURCES = Input.cpp Input.h InputCommandMapper.cpp
 
-noinst_HEADERS = IInputAdapter.h
+noinst_HEADERS = IInputAdapter.h InputCommandMapper.h

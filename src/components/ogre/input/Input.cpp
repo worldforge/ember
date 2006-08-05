@@ -30,17 +30,12 @@ namespace EmberOgre {
 
 
 
-Input::Input(float screenWidth, float screenHeight)
+Input::Input()
 :
 mCurrentInputMode(IM_GUI)
 , mMouseState(0)
 , mTimeSinceLastRightMouseClick(1000)
-, mScreenWidth(screenWidth)
-, mScreenHeight(screenHeight)
 {
-	SDL_ShowCursor(0);
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	
 	
 	//we don't want to send a injectChar to the gui for some keys, put them here
@@ -63,10 +58,6 @@ mCurrentInputMode(IM_GUI)
 	mNonCharKeys.insert(SDLK_DELETE);
 
 
-	//must initialize the clipboard support
-	if ( init_scrap() < 0 ) {
-		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
-	}
 	
 	
 }
@@ -76,6 +67,25 @@ Input::~Input()
 {
 
 }
+
+void Input::initialize()
+{
+	SDL_ShowCursor(0);
+	SDL_EnableUNICODE(1);
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+	
+	///must initialize the clipboard support
+	if ( init_scrap() < 0 ) {
+		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
+	}
+}
+
+void Input::setGeometry(int width, int height)
+{
+	mScreenWidth = width;
+	mScreenHeight = height;
+}
+
 
 void Input::processInput(const Ogre::FrameEvent& evt)
 {

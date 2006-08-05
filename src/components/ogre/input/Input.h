@@ -101,10 +101,11 @@ public:
 		IM_MOVEMENT
 	};
 	
-   Input(float screenWidth, float screenHeight);
+   Input();
 
     ~Input();
 	
+	void initialize();
 
 	/**
 	 * starts processing all input for a frame
@@ -162,6 +163,12 @@ public:
 
 	
 	
+	/**
+	 *    Sets the window geometry. Call this whenever the size of the window has changed.
+	 * @param width 
+	 * @param heigh 
+	 */
+	void setGeometry(int width, int heigh);
 
 	/**
 	 *    Sets the new input mode.
