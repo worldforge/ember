@@ -68,7 +68,7 @@ const std::string GUIManager::TOGGLEINPUTMODE("toggleinputmode");
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
-: mWindow(window), mGuiCommandMapper("gui", "key_bindings_key")
+: mWindow(window), mGuiCommandMapper("gui", "key_bindings_gui")
 
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
