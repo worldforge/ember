@@ -77,8 +77,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	
-	if (mGUIManager && mGUIManager->getInput()) {
-		mGUIManager->getInput()->EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
+	if (mGUIManager) {
+		mGUIManager->getInput().EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
 	}
 
 	

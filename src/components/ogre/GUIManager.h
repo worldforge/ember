@@ -36,6 +36,7 @@
 #include "framework/ConsoleObject.h"
 
 #include "input/Input.h"
+#include "input/InputCommandMapper.h"
 
 namespace EmberOgre {
 
@@ -150,7 +151,7 @@ public:
 	 *    accessor for the Input instance object
 	 * @return 
 	 */
-	Input* getInput() const;
+	Input& getInput() const;
 	
 	/**
 	 *    Pushes a new mouse picker onto the stack, "pushing down" the current mouse picker.
@@ -205,6 +206,8 @@ public:
 	
 protected:
 
+	InputCommandMapper mGuiCommandMapper;
+
 	MousePicker* mPicker;
 
 	EntityWorldPickListener* mEntityWorldPickListener;
@@ -214,7 +217,7 @@ protected:
 	CEGUI::StaticText* mDebugText;
 	
 	ConsoleWidget* mConsoleWidget;
-	Input *mInput;
+	
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreCEGUIRenderer* mGuiRenderer;

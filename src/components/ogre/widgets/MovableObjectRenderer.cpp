@@ -148,12 +148,12 @@ float MovableObjectRenderer::getCameraDistance()
 
 void MovableObjectRenderer::catchInput()
 {
-	GUIManager::getSingleton().getInput()->addAdapter(this);
+	GUIManager::getSingleton().getInput().addAdapter(this);
 }
 
 void MovableObjectRenderer::releaseInput()
 {
-	GUIManager::getSingleton().getInput()->removeAdapter(this);
+	GUIManager::getSingleton().getInput().removeAdapter(this);
 }
 
 bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)

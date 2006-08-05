@@ -81,7 +81,7 @@ void StatusIconBar::buildWidget()
 	
 	BIND_CEGUI_EVENT(mMovementModeIcon->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::movement_MouseClick);
 	
-	mGuiManager->getInput()->EventChangedInputMode.connect(sigc::mem_fun(*this, &StatusIconBar::Input_InputModeChanged));
+	EmberOgre::getSingleton().getInput().EventChangedInputMode.connect(sigc::mem_fun(*this, &StatusIconBar::Input_InputModeChanged));
 	EmberOgre::getSingleton().getAvatarController()->EventMovementModeChanged.connect(sigc::mem_fun(*this, &StatusIconBar::AvatarController_MovementModeChanged));
 	
 	
@@ -118,7 +118,7 @@ bool StatusIconBar::close_MouseClick(const CEGUI::EventArgs& args)
 
 bool StatusIconBar::movement_MouseClick(const CEGUI::EventArgs& args)
 {
-	mGuiManager->getInput()->toggleInputMode();
+	mGuiManager->getInput().toggleInputMode();
 	return true;
 }
 

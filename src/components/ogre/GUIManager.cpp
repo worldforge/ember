@@ -68,7 +68,7 @@ const std::string GUIManager::TOGGLEINPUTMODE("toggleinputmode");
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
-: mWindow(window), mInput(0)
+: mWindow(window), mGuiCommandMapper("gui", "key_bindings_key")
 
 {
 
@@ -139,13 +139,14 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		///don't connect it yet since there's no AvatarCamera yet, wait until that's created
 		EmberOgre::getSingleton().EventAvatarControllerCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_AvatarControllerCreated));
 		
-		mInput = new Input(mGuiRenderer->getWidth(), mGuiRenderer->getHeight());
-		mInput->EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
-		mInput->setInputMode(Input::IM_GUI);
+		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
+		getInput().setInputMode(Input::IM_GUI);
 		
 		///add adapter for CEGUI
 		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
-		mInput->addAdapter(mCEGUIAdapter);
+		getInput().addAdapter(mCEGUIAdapter);
+		
+		mGuiCommandMapper.bindToInput(getInput());
 		
 		///connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
@@ -164,7 +165,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 GUIManager::~GUIManager()
 {
-	delete mInput;
 	
 	//can't delete this one since cegui will then throw a segfault
 /*	delete mGuiSystem;
@@ -283,9 +283,9 @@ void GUIManager::setDebugText(const std::string& text)
 	}
 }
 
-Input* GUIManager::getInput() const
+Input& GUIManager::getInput() const
 {
-	return mInput;
+	return EmberOgre::getSingleton().getInput();
 }
 
 
@@ -386,10 +386,6 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
-
-	
-	mInput->processInput(evt);
-
 // 	if (mPreviousInputMode == IM_GUI) {
 // 		if (!mInput->getInputMode()) {
 // 			EventInputModeChanged.emit(IM_MOVEMENT);
@@ -460,7 +456,7 @@ const bool GUIManager::isInMovementKeysMode() const {
 }
 
 const bool GUIManager::isInGUIMode() const { 
-	return mInput && (mInput->getInputMode() == Input::IM_GUI); 
+	return getInput().getInputMode() == Input::IM_GUI; 
 }
 
 void GUIManager::takeScreenshot()
@@ -495,7 +491,7 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 		///allow caps lock to toggle input mode
 		if (key.sym == SDLK_CAPSLOCK) 
 		{
-			mInput->toggleInputMode();
+			getInput().toggleInputMode();
 		}
 		
 		//switch render mode
@@ -527,7 +523,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 		//just take a screen shot
 		takeScreenshot();
 	} else if (command == TOGGLEINPUTMODE) {
-		mInput->toggleInputMode();
+		getInput().toggleInputMode();
 	} else if (command == "reloadgui") {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
 		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png");
@@ -553,7 +549,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 void GUIManager::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 {
 	///switch to movement mode, since it appears most people don't know how to change from gui mode
-	getInput()->setInputMode(Input::IM_MOVEMENT);
+	getInput().setInputMode(Input::IM_MOVEMENT);
 }
 
 void GUIManager::EmberOgre_AvatarControllerCreated(AvatarController& controller)

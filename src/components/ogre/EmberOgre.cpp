@@ -219,7 +219,7 @@ mTerrainGenerator(0),
 mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
-mEmberEntityFactory(0), mPollEris(true), mLogObserver(0)
+mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general")
 {}
 
 EmberOgre::~EmberOgre()
@@ -249,6 +249,9 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
+
+	mInput.processInput(evt);
+
 	if (mPollEris) {
 		EventStartErisPoll.emit();
 		try {
@@ -386,6 +389,17 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
     ///set the background colour to black
     viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
     camera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+    
+    ///The input object must know the resoluton of the screen
+    unsigned int height, width, depth;
+    int top, left;
+    mWindow->getMetrics(width, height, depth, left, top);
+    mInput.initialize();
+	mInput.setGeometry(width, height);
+	
+	///bind general commands
+	mGeneralCommandMapper.readFromConfigSection("key_bindings_general");
+	mGeneralCommandMapper.bindToInput(mInput);
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;
@@ -456,6 +470,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
+	
 
 	try {
 		mGUIManager->initialize();

@@ -203,7 +203,7 @@ bool OgreSetup::configure(void)
 		mRenderWindow = mRoot->initialise(true, "Ember");
 	}
 
-	///we'll use 
+	///we'll use libSDL_image to load the icon
 	if (dlopen("libSDL_image-1.2.so.0", RTLD_NOW)) {
 		///set the icon of the window
 		char* br_datadir = br_find_data_dir(br_strcat(PREFIX, "/share"));

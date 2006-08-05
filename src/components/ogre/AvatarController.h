@@ -26,6 +26,7 @@
 #include <sigc++/trackable.h>
 
 #include "input/Input.h"
+#include "input/InputCommandMapper.h"
 
 
 
@@ -117,12 +118,14 @@ public:
 
 protected:
 
+	InputCommandMapper mMovementCommandMapper;
+	
 	Ogre::RenderWindow* mWindow;
 	
 	GUIManager* mGUIManager;
 
 
-	void checkMovementKeys(const Ogre::FrameEvent & event, const Input* input);
+	void checkMovementKeys(const Ogre::FrameEvent & event, const Input& input);
 
 
 	AvatarCamera* mAvatarCamera;
@@ -155,11 +158,6 @@ protected:
 	 * @param inGuiMode 
 	 */
 	void input_KeyReleased(const SDL_keysym& keysym, Input::InputMode mode);
-	
-	/**
-	*    Wait with the binding of the input system until the GUIManager has been fully initialized. That's what this method is for.
-	*/
-	void EmberOgre_GUIManagerInitialized(GUIManager& manager);
     
 		
 };

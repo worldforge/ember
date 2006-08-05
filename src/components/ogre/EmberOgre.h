@@ -35,7 +35,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "framework/Singleton.h"
 
-
+#include "input/InputCommandMapper.h"
 
 
 namespace Eris {
@@ -144,6 +144,7 @@ public:
 	EmberEntityFactory* getEntityFactory() const;
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
+	inline Input& getInput();
 	
 	/**
 	 * Gets the entity with the supplies id from the world.
@@ -242,6 +243,9 @@ public:
 
 protected:
 
+	InputCommandMapper mGeneralCommandMapper;
+	
+
 	/**
 	* The main user avatar
 	*/
@@ -256,7 +260,10 @@ protected:
 	EmberPagingSceneManager* mSceneMgr;
 	Ogre::RenderWindow* mWindow;
 	
-	
+	/**
+	The main input object.
+	*/
+	Input mInput;
 	
 
 	
@@ -323,6 +330,9 @@ protected:
 	Ember::StreamLogObserver* mStreamLogObserver;
 	
 };
+
+Input& EmberOgre::getInput() { return mInput;}
+
 
 }
 
