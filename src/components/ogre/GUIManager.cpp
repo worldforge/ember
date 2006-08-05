@@ -71,6 +71,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 : mWindow(window), mGuiCommandMapper("gui", "key_bindings_key")
 
 {
+	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
 
 	///we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w;
@@ -476,11 +477,11 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 {
  		//toggle the console
  		//we've put it here because we wan't the console to always be available
- 		if(key.sym == SDLK_F12 && mConsoleWidget)
-		{
-			mConsoleWidget->toggleActive();
-/*			t->buildWidget();*/
-		}
+//  		if(key.sym == SDLK_F12 && mConsoleWidget)
+// 		{
+// 			mConsoleWidget->toggleActive();
+// /*			t->buildWidget();*/
+// 		}
 
 		//take screenshot		
 		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )

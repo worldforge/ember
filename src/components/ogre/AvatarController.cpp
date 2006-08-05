@@ -55,6 +55,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mCamera(camera)
 , mMovementCommandMapper("gui", "key_bindings_key")
 {
+	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
 	
 	setAvatar(avatar);
 	
