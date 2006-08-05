@@ -27,6 +27,7 @@
 
 #include "input/Input.h"
 #include "input/InputCommandMapper.h"
+#include "framework/ConsoleObject.h"
 
 
 
@@ -72,7 +73,8 @@ struct AvatarControllerMovement
 
 class AvatarController
 : public Ogre::FrameListener, 
-public sigc::trackable
+public sigc::trackable,
+public Ember::ConsoleObject
 {
 public:
     
@@ -115,6 +117,14 @@ public:
 	 */
 	const AvatarControllerMovement& getCurrentMovement() const;
 
+	const Ember::ConsoleCommandWrapper RunToggle;
+
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
 
 protected:
 
@@ -150,15 +160,13 @@ protected:
 	
 	Ogre::SceneNode* mFreeFlyingCameraNode;
 	bool mIsAttached;
-	
-	
 	/**
-	 *    Catch keypresses from the input system and detach/reattach the camera to the avatar.
-	 * @param keysym 
-	 * @param inGuiMode 
-	 */
-	void input_KeyReleased(const SDL_keysym& keysym, Input::InputMode mode);
+	True if we're in running mode.
+	*/
+	bool mIsRunning;
+	
     
+	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
 		
 };
 

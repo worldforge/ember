@@ -1,5 +1,19 @@
 2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: Added support for "+run".
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/ConsoleCommandWrapper.cpp, src/framework/ConsoleCommandWrapper.h: Added support for "+" commands.
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/ConsoleObjectImpl.cpp, src/components/ogre/ConsoleObjectImpl.h, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/environment/Sun.cpp, src/components/ogre/environment/Sun.h, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/Help.h, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.h, src/components/ogre/widgets/MeshPreview.cpp, src/components/ogre/widgets/MeshPreview.h, src/components/ogre/widgets/Quit.cpp, src/components/ogre/widgets/Quit.h, src/framework/ConsoleCommandWrapper.h, src/framework/ConsoleObject.h, src/services/metaserver/MetaserverService.cpp, src/services/metaserver/MetaserverService.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConsoleObject.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConsoleObject.h: use the wrapper where possible
+	* src/components/ogre/scripting/bindings/lua/AvatarCamera.pkg, src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: Update bindings.
+	* src/components/ogre/TerrainEditor.cpp: Input is now passed by reference
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/ConsoleWidget.cpp, src/components/ogre/widgets/ConsoleWidget.h: use the wrapper
 
 2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>

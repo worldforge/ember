@@ -34,6 +34,9 @@
 
 #include "input/Input.h"
 
+#include "framework/Tokeniser.h"
+
+
 using namespace Ogre;
 namespace EmberOgre {
 
@@ -54,6 +57,8 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mAvatarCamera(0)
 , mCamera(camera)
 , mMovementCommandMapper("movement", "key_bindings_movement")
+, RunToggle("+run", this, "Toggle running mode.")
+, ToggleCameraAttached("/toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying.")
 {
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
 	
@@ -73,7 +78,6 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mFreeFlyingCameraNode->setPosition(0,30,0);
 	detachCamera();
 	
-	EmberOgre::getSingleton().getInput().EventKeyReleased.connect(sigc::mem_fun(*this, &AvatarController::input_KeyReleased));
 	
 	mMovementCommandMapper.bindToInput(EmberOgre::getSingleton().getInput());
 }
@@ -98,6 +102,21 @@ void AvatarController::setAvatar(Avatar* avatar)
 
 
 
+void AvatarController::runCommand(const std::string &command, const std::string &args)
+{
+	if (RunToggle == command) {
+		mIsRunning = true;
+	} else if (RunToggle.getInverseCommand() == command) {
+		mIsRunning = false;
+	} else if (ToggleCameraAttached == command)
+	{
+		if (mIsAttached) {
+			detachCamera();
+		} else {
+			attachCamera();
+		}
+	}
+}
 
 
 void AvatarController::detachCamera() 
@@ -113,17 +132,6 @@ void AvatarController::attachCamera()
 	mIsAttached = true;
 	mAvatarCamera->attach(mAvatar->getAvatarSceneNode());
 	//mAvatarCamera->setMode(AvatarCamera::MODE_FIRST_PERSON);
-}
-
-void  AvatarController::input_KeyReleased(const SDL_keysym& keysym, Input::InputMode mode)
-{
-	if (keysym.sym == SDLK_F6) {
-		if (mIsAttached) {
-			detachCamera();
-		} else {
-			attachCamera();
-		}
-	}
 }
 
 
@@ -156,7 +164,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 
 	if (mGUIManager->isInMovementKeysMode()) {
 //		movementForFrame.movementDirection = Ogre::Vector3::ZERO;
-//		movementForFrame.isRunning = false;
+//		movementForFrame.mIsRunning = false;
 //		movementForFrame.isMoving = false;	
 		
 		checkMovementKeys(event, EmberOgre::getSingleton().getInput());
@@ -194,7 +202,6 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 void AvatarController::checkMovementKeys(const FrameEvent & event, const Input& input)
 {
 		//Real timePassed = event.timeSinceLastFrame;
-		bool isRunning = input.isKeyDown(SDLK_RSHIFT) || input.isKeyDown(SDLK_LSHIFT);
 
 		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
 		bool isMovement = false; 
@@ -235,7 +242,7 @@ void AvatarController::checkMovementKeys(const FrameEvent & event, const Input& 
 			isMovement = true;
 		}
 		
-		movementForFrame.mode = isRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
+		movementForFrame.mode = mIsRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
 		movementForFrame.isMoving = isMovement;
 		if(isMovement)
 		{
