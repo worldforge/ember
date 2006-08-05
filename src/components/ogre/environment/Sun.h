@@ -27,10 +27,6 @@
 
 
 #include <sigc++/signal.h>
-// #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
-// #include <sigc++/object_slot.h>
-
 
 #include "framework/ConsoleObject.h"
 
@@ -68,9 +64,9 @@ public:
 	*/
 	sigc::signal<void, Sun*, Ogre::ColourValue> EventUpdatedAmbientLight;
 	
-	static const std::string SETSUNPOSITION;
-	static const std::string SETSUNCOLOUR;
-	static const std::string SETAMBIENTLIGHT;
+	const Ember::ConsoleCommandWrapper SetSunPosition;
+	const Ember::ConsoleCommandWrapper SetSunColour;
+	const Ember::ConsoleCommandWrapper SetAmbientLight;
 	
 	
 	/**

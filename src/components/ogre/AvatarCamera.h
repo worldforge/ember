@@ -60,11 +60,6 @@ public:
 		MODE_FIRST_PERSON = 2
 	};
 	
-	/**
-	Command for setting the distance between the camera and the avatar.
-	*/
-	static const std::string SETCAMERADISTANCE;
-	
 	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera);
 	virtual ~AvatarCamera();
 
@@ -193,6 +188,8 @@ public:
 	 * @param worldPickListener 
 	 */
 	void pushWorldPickListener(IWorldPickListener* worldPickListener);
+	
+	const Ember::ConsoleCommandWrapper SetCameraDistance;
 	
 protected:
 

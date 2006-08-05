@@ -39,21 +39,12 @@ template<> EmberOgre::ConsoleObjectImpl* Ember::Singleton<EmberOgre::ConsoleObje
 
 namespace EmberOgre {
 
-// List of Ogre's console commands
-const char * const ConsoleObjectImpl::QUIT 		= "quit";
-const char * const ConsoleObjectImpl::ADDMEDIA	= "addmedia";
-const char * const ConsoleObjectImpl::MOVEMEDIA	= "movemedia";
-const std::string ConsoleObjectImpl::FULLSCREEN	= "fullscreen";
 
-
-ConsoleObjectImpl::ConsoleObjectImpl(void)
+ConsoleObjectImpl::ConsoleObjectImpl(void) : 
+Quit("quit", this, "Quit Ember."), 
+ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), 
+ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 {
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(QUIT,this);
-// 	Ember::ConsoleBackend::getMainConsole()->registerCommand(ADDMEDIA,this);
-// 	Ember::ConsoleBackend::getMainConsole()->registerCommand(MOVEMEDIA,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(FULLSCREEN,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand("switcheris",this);
-	
 }
 ConsoleObjectImpl::~ConsoleObjectImpl()
 {
@@ -63,24 +54,14 @@ ConsoleObjectImpl::~ConsoleObjectImpl()
 
 void ConsoleObjectImpl::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == QUIT) {
+	if(command == Quit.getCommand()) {
 		Ember::ConsoleBackend::getMainConsole()->pushMessage("Bye");
 		quit();
-/*	} else if(command == ADDMEDIA) {
-	    // Split string
-        Ember::Tokeniser tokeniser = Ember::Tokeniser();
-        tokeniser.initTokens(args);
-        std::string modelName = tokeniser.nextToken();
-        std::string id = tokeniser.nextToken();
-		Ogre::Vector3 position = Ogre::Vector3(0,0,0);
-        MediaDeployer::getSingleton().addMedia(modelName,id,position);*/
-	} else if (command == FULLSCREEN){
+	} else if (ToggleFullscreen == command){
 		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
 		
-	} else if (command == "switcheris"){
+	} else if (ToggleErisPolling == command){
 		EmberOgre::getSingleton().setErisPolling(!EmberOgre::getSingleton().getErisPolling());
-	} else {
-		Ember::ConsoleBackend::getMainConsole()->pushMessage("I don't understand this command yet.");
 	}
 }
 
@@ -89,8 +70,5 @@ void ConsoleObjectImpl::quit()
 	EmberOgre::getSingleton().shutdown();
 }
 
-/*
-
-*/
 }
 

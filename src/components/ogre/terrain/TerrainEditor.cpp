@@ -304,12 +304,12 @@ bool TerrainEditor::injectKeyUp(const SDLKey& key)
 
 void TerrainEditor::catchInput()
 {
-	GUIManager::getSingleton().getInput()->addAdapter(this);
+	GUIManager::getSingleton().getInput().addAdapter(this);
 }
 
 void TerrainEditor::releaseInput()
 {
-	GUIManager::getSingleton().getInput()->removeAdapter(this);
+	GUIManager::getSingleton().getInput().removeAdapter(this);
 	
 	///react on the movement
 	createAction(true);

@@ -63,13 +63,12 @@ template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Si
 
 namespace EmberOgre {
 
-const std::string GUIManager::SCREENSHOT("screenshot");
-const std::string GUIManager::TOGGLEINPUTMODE("toggleinputmode");
-
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window), mGuiCommandMapper("gui", "key_bindings_gui")
-
+, Screenshot("screenshot", this, "Take a screenshot and write to disk.")
+, ToggleInputMode("toggleinputmode", this, "Toggle the input mode.")
+, ReloadGui("reloadgui", this, "Reloads the gui.")
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
 
@@ -232,12 +231,6 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
 	}
 	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SCREENSHOT,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(TOGGLEINPUTMODE,this);
-	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand("reloadgui",this);
-	
-
 }
 
 void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity)
@@ -520,12 +513,12 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 
 void GUIManager::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == SCREENSHOT) {
+	if(command == Screenshot.getCommand()) {
 		//just take a screen shot
 		takeScreenshot();
-	} else if (command == TOGGLEINPUTMODE) {
+	} else if (command == ToggleInputMode.getCommand()) {
 		getInput().toggleInputMode();
-	} else if (command == "reloadgui") {
+	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
 		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png");
 		if (!resource.isNull()) {

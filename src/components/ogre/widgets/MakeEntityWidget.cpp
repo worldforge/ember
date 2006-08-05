@@ -56,15 +56,10 @@ namespace EmberOgre {
 /*template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
-const char * const MakeEntityWidget::CREATEENTITY= "createentity";
-const char * const MakeEntityWidget::MAKE= "make";
-
 MakeEntityWidget::MakeEntityWidget()
- : mIsReady(false), Widget() 
+ : mIsReady(false), Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity.")
 {
 
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEENTITY,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(MAKE,this);
 	Ember::ConsoleBackend::getMainConsole()->registerCommand("testarea",this);
 
 }
@@ -216,7 +211,7 @@ void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 
 void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == CREATEENTITY || command == MAKE)
+	if(CreateEntity == command || Make == command)
 	{
 		Eris::TypeService* typeService = mConn->getTypeService();
 		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);

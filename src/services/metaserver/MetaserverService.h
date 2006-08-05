@@ -52,9 +52,9 @@ class MetaserverService: public Service, public sigc::trackable,
 //     Eris::ServerList serverlist;
 //     bool listed;
 //     //StringProvider * myStateDMP;
-     static const char * const META_REFRESH;
-     static const char * const META_ABORT;
-     static const char * const META_LIST;
+	const Ember::ConsoleCommandWrapper MetaRefresh;
+	const Ember::ConsoleCommandWrapper MetaAbort;
+// 	const Ember::ConsoleCommandWrapper MetaList;
 
 
 		

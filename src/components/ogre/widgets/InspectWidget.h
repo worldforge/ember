@@ -39,7 +39,7 @@ public:
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & evt);
 	
-	static const std::string INSPECT;
+	const Ember::ConsoleCommandWrapper Inspect;
 		
 	
 	/**

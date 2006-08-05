@@ -204,6 +204,10 @@ public:
 	
 	EntityWorldPickListener* getEntityPickListener() const;
 	
+	const Ember::ConsoleCommandWrapper Screenshot;
+	const Ember::ConsoleCommandWrapper ToggleInputMode;
+	const Ember::ConsoleCommandWrapper ReloadGui;
+	
 protected:
 
 	InputCommandMapper mGuiCommandMapper;

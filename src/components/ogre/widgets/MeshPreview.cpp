@@ -203,11 +203,9 @@ Ogre::SceneNode* MeshPreviewMeshInstance::getSceneNode() const
 }
 
 
-const std::string MeshPreview::CREATEMESH("createmesh");
 
-MeshPreview::MeshPreview() 
+MeshPreview::MeshPreview() : CreateMesh("createmesh", this, "Create a mesh.")
 {
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(CREATEMESH,this);
 	mHandler.EventCreatedInstance.connect(sigc::mem_fun(*this, &MeshPreview::createdNewEntity));
 	mHandler.EventRemoveInstance.connect(sigc::mem_fun(*this, &MeshPreview::removedEntity));
 
@@ -373,7 +371,7 @@ void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
 
 void MeshPreview::runCommand(const std::string &command, const std::string &args)
 {
-	if (command == CREATEMESH) {
+	if (CreateMesh == command) {
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string meshName = tokeniser.nextToken();

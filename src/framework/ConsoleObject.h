@@ -30,6 +30,7 @@
 
 // Included system headers
 #include <string>
+#include "framework/ConsoleCommandWrapper.h"
 
 namespace Ember {
 /**

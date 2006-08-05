@@ -11,11 +11,6 @@ public:
 	};
 	
 	/**
-	Command for setting the distance between the camera and the avatar.
-	*/
-	static const std::string SETCAMERADISTANCE;
-	
-	/**
 	 * Pitches the camera the supplied degrees
 	 */
 	virtual void pitch(Ogre::Degree degrees);

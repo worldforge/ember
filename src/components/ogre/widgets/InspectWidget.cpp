@@ -46,8 +46,6 @@
 namespace EmberOgre {
 
 
-const std::string InspectWidget::INSPECT("inspect");
-
 class Decoder : public Atlas::Message::DecoderBase {
   private:
     virtual void messageArrived(const Atlas::Message::MapType& obj) {
@@ -71,10 +69,9 @@ class Decoder : public Atlas::Message::DecoderBase {
 //WidgetLoader Widget::loader("InspectWidget", &createWidgetInstance<InspectWidget>);
 
 
-InspectWidget::InspectWidget() : mCurrentEntity(0)
+InspectWidget::InspectWidget() : mCurrentEntity(0), Inspect("inspect", this, "Inspect an entity.")
 {
 
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(INSPECT,this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
 
@@ -118,7 +115,7 @@ void InspectWidget::buildWidget()
 
 void InspectWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == INSPECT)
+	if(Inspect == command)
 	{
 		//the first argument must be a valid entity id
 		Ember::Tokeniser tokeniser;

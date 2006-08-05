@@ -44,6 +44,7 @@ public:
 
     ~LuaConsoleObject();
 
+
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
@@ -54,6 +55,7 @@ private:
 	std::string mCommand;
 	std::string mLuaMethod;
 	EmberOgre::LuaConnectors::ConnectorBase* mConnector;
+	const Ember::ConsoleCommandWrapper mCommandWrapper;
 };
 
 }

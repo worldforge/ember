@@ -43,8 +43,6 @@
 
 namespace EmberOgre {
  
-const std::string AvatarCamera::SETCAMERADISTANCE("setcameradistance");
-
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) :
 	mSceneManager(sceneManager),
@@ -58,7 +56,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mClosestPickingDistance(10000),
 	mAvatarNode(0),
 	mInvertCamera(false),
-	mCamera(camera)
+	mCamera(camera),
+	SetCameraDistance("setcameradistance", this, "Set the distance of the camera.")
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -78,8 +77,6 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
 	}
 	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETCAMERADISTANCE,this);
-
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
 	
 	updateValuesFromConfig();
@@ -536,7 +533,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	
 void AvatarCamera::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == SETCAMERADISTANCE)
+	if(SetCameraDistance == command)
 	{
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);

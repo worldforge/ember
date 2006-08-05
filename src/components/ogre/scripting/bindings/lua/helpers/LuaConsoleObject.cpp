@@ -27,9 +27,8 @@
 namespace EmberOgre {
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod):
-mCommand(command), mLuaMethod(luaMethod)
+mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this)
 {
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(command,this);
 	LuaTypeStore typenames;
 	typenames.push_back("string");
 	typenames.push_back("string");
@@ -40,7 +39,6 @@ mCommand(command), mLuaMethod(luaMethod)
 
 LuaConsoleObject::~LuaConsoleObject()
 {
-	Ember::ConsoleBackend::getMainConsole()->deregisterCommand(mCommand);
 	delete mConnector;
 }
 

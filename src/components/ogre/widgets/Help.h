@@ -51,7 +51,7 @@ public:
 	 */
 	virtual void frameStarted(const Ogre::FrameEvent& evt);
 
-	static const std::string HELP;
+	const Ember::ConsoleCommandWrapper HelpCommand;
 	
 protected:
 	

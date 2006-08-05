@@ -47,22 +47,16 @@ namespace Ember
   typedef std::list<Eris::ServerInfo> svrl;
   typedef svrl::iterator Iter;
 
-  // List of MetaserverService's console commands
-  const char * const MetaserverService::META_REFRESH = "meta_refresh";
-  const char * const MetaserverService::META_ABORT = "meta_abort";
-  const char * const MetaserverService::META_LIST = "meta_list";
-
-  /* ctor */
   MetaserverService::MetaserverService() :mMetaserver(0)
+  , MetaRefresh("meta_refresh", this, "Refresh the meta server listing.")
+  , MetaAbort("meta_abort", this, "Abort the meta server update process.")
+//   , MetaList("meta_list", this, "List all servers.")
   {
     setName("Metaserver Service");
     setDescription("Service for Metaserver session");
     // TODO(zzorn, 2002-01-19): Set the status of the service to OK.
     //        setStatus( Service::Status::OK );
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
-    ConsoleBackend::getMainConsole()->registerCommand(META_LIST,this);
-    ConsoleBackend::getMainConsole()->registerCommand(META_REFRESH,this);
-    ConsoleBackend::getMainConsole()->registerCommand(META_ABORT,this);
   }
 
   /* dtor */
@@ -161,10 +155,11 @@ Eris::Meta& MetaserverService::getMetaServer() const
   void MetaserverService::runCommand(const std::string &command, const std::string &args)
   {
     if (!mMetaserver) return;
-    if (command == META_LIST){
-    } else if (command == META_ABORT) {
+/*    if (MetaList == command){
+    } else */
+    if (MetaAbort == command) {
       mMetaserver->cancel();
-    } else if (command == META_REFRESH) {
+    } else if (MetaRefresh == command) {
       mMetaserver->refresh();
     }
 

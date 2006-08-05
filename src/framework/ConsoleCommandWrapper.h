@@ -65,6 +65,9 @@ public:
      * @return 
      */
     inline const std::string& getDescription() const;
+    
+	inline bool operator==( const std::string& command) const;
+    
 private:
 
 	std::string mCommand;
@@ -75,6 +78,7 @@ private:
     
 const std::string& ConsoleCommandWrapper::getCommand() const {return mCommand;}
 const std::string& ConsoleCommandWrapper::getDescription() const {return mDescription;}
+bool ConsoleCommandWrapper::operator==( const std::string& command) const { return command == mCommand; }
 
 
 }

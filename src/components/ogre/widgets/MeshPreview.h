@@ -188,7 +188,7 @@ public:
 	
 	virtual void buildWidget();
 	
-	static const std::string CREATEMESH;
+	const Ember::ConsoleCommandWrapper CreateMesh;
 		
 	virtual void runCommand(const std::string &command, const std::string &args);
 	

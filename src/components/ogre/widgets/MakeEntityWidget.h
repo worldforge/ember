@@ -48,8 +48,8 @@ public:
 	
 	virtual void show();
 
-	static const char * const CREATEENTITY;
-	static const char * const MAKE;
+	const Ember::ConsoleCommandWrapper CreateEntity;
+	const Ember::ConsoleCommandWrapper Make;
 		
 	virtual void runCommand(const std::string &command, const std::string &args);
 

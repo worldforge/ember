@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sat Aug  5 13:34:50 2006.
+** Generated automatically by tolua++-1.0.6 on Sat Aug  5 21:38:15 2006.
 */
 
 #ifndef __cplusplus
@@ -1600,13 +1600,6 @@ static int tolua_EmberOgre_Carpenter_Carpenter_getBluePrints00(lua_State* tolua_
  tolua_error(tolua_S,"#ferror in function 'getBluePrints'.",&tolua_err);
  return 0;
 #endif
-}
-
-/* get function: SETCAMERADISTANCE of class  EmberOgre::AvatarCamera */
-static int tolua_get_EmberOgre__AvatarCamera_SETCAMERADISTANCE(lua_State* tolua_S)
-{
- tolua_pushcppstring(tolua_S,(const char*)EmberOgre::AvatarCamera::SETCAMERADISTANCE);
- return 1;
 }
 
 /* method: pitch of class  EmberOgre::AvatarCamera */
@@ -3582,20 +3575,6 @@ static int tolua_EmberOgre_EmberOgre_GUIManager_getSingleton00(lua_State* tolua_
  tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
  return 0;
 #endif
-}
-
-/* get function: SCREENSHOT of class  EmberOgre::GUIManager */
-static int tolua_get_EmberOgre__GUIManager_SCREENSHOT(lua_State* tolua_S)
-{
- tolua_pushcppstring(tolua_S,(const char*)EmberOgre::GUIManager::SCREENSHOT);
- return 1;
-}
-
-/* get function: TOGGLEINPUTMODE of class  EmberOgre::GUIManager */
-static int tolua_get_EmberOgre__GUIManager_TOGGLEINPUTMODE(lua_State* tolua_S)
-{
- tolua_pushcppstring(tolua_S,(const char*)EmberOgre::GUIManager::TOGGLEINPUTMODE);
- return 1;
 }
 
 /* get function: AppendIGChatLine of class  EmberOgre::GUIManager */
@@ -14090,7 +14069,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_beginmodule(tolua_S,"AvatarCamera");
  tolua_constant(tolua_S,"MODE_THIRD_PERSON",EmberOgre::AvatarCamera::MODE_THIRD_PERSON);
  tolua_constant(tolua_S,"MODE_FIRST_PERSON",EmberOgre::AvatarCamera::MODE_FIRST_PERSON);
- tolua_variable(tolua_S,"SETCAMERADISTANCE",tolua_get_EmberOgre__AvatarCamera_SETCAMERADISTANCE,NULL);
  tolua_function(tolua_S,"pitch",tolua_EmberOgre_EmberOgre_AvatarCamera_pitch00);
  tolua_function(tolua_S,"yaw",tolua_EmberOgre_EmberOgre_AvatarCamera_yaw00);
  tolua_function(tolua_S,"getPitch",tolua_EmberOgre_EmberOgre_AvatarCamera_getPitch00);
@@ -14238,8 +14216,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"GUIManager","EmberOgre::GUIManager","",NULL);
  tolua_beginmodule(tolua_S,"GUIManager");
  tolua_function(tolua_S,"getSingleton",tolua_EmberOgre_EmberOgre_GUIManager_getSingleton00);
- tolua_variable(tolua_S,"SCREENSHOT",tolua_get_EmberOgre__GUIManager_SCREENSHOT,NULL);
- tolua_variable(tolua_S,"TOGGLEINPUTMODE",tolua_get_EmberOgre__GUIManager_TOGGLEINPUTMODE,NULL);
  tolua_variable(tolua_S,"AppendIGChatLine",tolua_get_EmberOgre__GUIManager_AppendIGChatLine,tolua_set_EmberOgre__GUIManager_AppendIGChatLine);
  tolua_variable(tolua_S,"AppendOOGChatLine",tolua_get_EmberOgre__GUIManager_AppendOOGChatLine,tolua_set_EmberOgre__GUIManager_AppendOOGChatLine);
  tolua_variable(tolua_S,"EventEntityAction",tolua_get_EmberOgre__GUIManager_EventEntityAction,tolua_set_EmberOgre__GUIManager_EventEntityAction);

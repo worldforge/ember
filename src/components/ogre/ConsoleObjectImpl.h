@@ -42,15 +42,11 @@ class ConsoleObjectImpl: public Ember::ConsoleObject, public Ember::Singleton<Co
 
 	void quit();
 
-	// List of Ogre's console commands
-	static const char * const QUIT;
-	static const char * const ADDMEDIA;
-	static const char * const MOVEMEDIA;
-	
-	/**
-	 * switches between full screen and normal screen
-	 */
-	static const std::string FULLSCREEN;
+	/// List of Ogre's console commands
+	const Ember::ConsoleCommandWrapper Quit;
+	const Ember::ConsoleCommandWrapper ToggleFullscreen;
+	const Ember::ConsoleCommandWrapper ToggleErisPolling;
+
 
 }; // End of class declaration
 

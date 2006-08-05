@@ -44,12 +44,10 @@
 
 namespace EmberOgre {
 
-const std::string Help::HELP("help");
 
 Help::Help()
- : mTimeUntilShowBlurb(30), mTimeBlurbShown(0), mTimeToShowBlurb(10), mBlurb(0)
+ : mTimeUntilShowBlurb(30), mTimeBlurbShown(0), mTimeToShowBlurb(10), mBlurb(0), HelpCommand("help", this, "Display the help.")
 {
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(HELP,this);
 
 }
 
@@ -97,7 +95,7 @@ void Help::hide()
 
 void Help::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == HELP)
+	if(HelpCommand == command)
 	{
 		show();
 	} else {

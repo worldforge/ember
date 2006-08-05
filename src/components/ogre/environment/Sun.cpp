@@ -29,12 +29,11 @@
 
 namespace EmberOgre {
 
-const std::string Sun::SETSUNPOSITION("setsunposition");
-const std::string Sun::SETSUNCOLOUR("setsuncolour");
-const std::string Sun::SETAMBIENTLIGHT("setambientlight");
 
-
-Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
+Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr):
+SetSunPosition("setsunposition", this, "Set the position of the sun.")
+,SetSunColour("setsuncolour", this, "Set the colour of the sun.")
+,SetAmbientLight("setambientlight", this, "Set the ambient light of the world.")
 {
 	mSun = sceneMgr->createLight("SunLight");
 	mSun->setType(Ogre::Light::LT_DIRECTIONAL);
@@ -58,10 +57,6 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 	//  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
 	setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 	
-	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETSUNPOSITION,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETSUNCOLOUR,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SETAMBIENTLIGHT,this);
 }
 
 
@@ -71,7 +66,7 @@ Sun::~Sun()
 
 void Sun::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == SETSUNPOSITION)
+	if(SetSunPosition == command)
 	{
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -85,7 +80,7 @@ void Sun::runCommand(const std::string &command, const std::string &args)
 			Ogre::Vector3 position(Ogre::StringConverter::parseReal(x),Ogre::StringConverter::parseReal(y),Ogre::StringConverter::parseReal(z));
 			setSunPosition(position);
 		}
-	} else if (command == SETSUNCOLOUR)
+	} else if (SetSunColour == command)
 	{
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -100,7 +95,7 @@ void Sun::runCommand(const std::string &command, const std::string &args)
 			setSunColour(colour);
 		}
 	
-	} else if (command == SETAMBIENTLIGHT)
+	} else if (SetAmbientLight == command)
 	{
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);

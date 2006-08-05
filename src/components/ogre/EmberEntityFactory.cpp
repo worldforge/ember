@@ -52,19 +52,18 @@
 
 namespace EmberOgre {
 
-const std::string EmberEntityFactory::SHOWMODELS("showmodels");
 
 EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
 : mTerrainGenerator(terrainGenerator)
 , mTypeService(typeService)
 , mWorldEntity(0)
+, ShowModels("showmodels", this, "Show or hide models.")
 {
 	mTerrainType = mTypeService->getTypeByName("world");
 	Ember::ServerService* serverService = Ember::EmberServices::getSingletonPtr()->getServerService();
 	
 	serverService->GotAvatar.connect(sigc::mem_fun(*this, &EmberEntityFactory::setAvatar));
 	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SHOWMODELS,this);
 	
 }
 
@@ -231,7 +230,7 @@ int EmberEntityFactory::priority() {
 
 void EmberEntityFactory::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == SHOWMODELS)
+	if(command == ShowModels.getCommand())
 	{
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);

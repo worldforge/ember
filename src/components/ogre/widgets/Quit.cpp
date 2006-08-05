@@ -28,9 +28,7 @@
 
 namespace EmberOgre {
 
-const std::string Quit::SOFTQUIT("softquit");
-
-Quit::Quit()
+Quit::Quit() : SoftQuit("softquit", this, "Display a quit confirmation window.")
 {
 }
 
@@ -41,8 +39,6 @@ Quit::~Quit()
 
 void Quit::buildWidget()
 {
-	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(SOFTQUIT,this);
 	
 	loadMainSheet("Quit.widget", "Quit/");
 	
@@ -101,7 +97,7 @@ void Quit::hide()
 
 void Quit::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == SOFTQUIT)
+	if(SoftQuit == command)
 	{
 		softquit();
 	} else {

@@ -61,22 +61,11 @@ public Ember::ConsoleObject
 {
 public:
 	
-
-	/**
-	Command for setting whether models should be shown or not.
-	*/
-	static const std::string SHOWMODELS;
-	
 	typedef std::set<Ogre::String> StringSet;
 	
 
 	EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
 	virtual ~EmberEntityFactory();
-/*
- * eris 1.3	
-	/// Accept is called by the world to test if this factory can instantiate the specified object
-    /** Accept is called when an entity must be constructed; this will be called every time
-    an object is created, so avoid lengthy processing if possible. */
 
     virtual bool accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type);
 
@@ -103,7 +92,11 @@ public:
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
 
-    
+	/**
+	Command for setting whether models should be shown or not.
+	*/
+	const Ember::ConsoleCommandWrapper ShowModels;
+
 protected:
 
 	void buildTerrainAroundAvatar();

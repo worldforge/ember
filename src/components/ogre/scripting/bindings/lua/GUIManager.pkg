@@ -6,9 +6,6 @@ class GUIManager
 	//from Singleton
 	static GUIManager& getSingleton( void );
 
-	static const std::string SCREENSHOT;
-	static const std::string TOGGLEINPUTMODE;
-
 	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> AppendIGChatLine;
 	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> AppendOOGChatLine;
 	
