@@ -25,8 +25,11 @@
 #define CONSOLEWIDGET_H
 
 #include "framework/ConsoleBackend.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include <elements/CEGUIMultiLineEditbox.h>
 #include <elements/CEGUIEditbox.h>
+
+
 namespace EmberOgre {
 	
 class Widget;
@@ -38,7 +41,6 @@ class Widget;
 class ConsoleWidget : public Widget
 {
 public:
-	static const std::string TOGGLECONSOLE;
 
 	ConsoleWidget();
 	virtual ~ConsoleWidget();
@@ -69,6 +71,8 @@ public:
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
 		
+	const Ember::ConsoleCommandWrapper ToggleConsole;
+	
 protected:
 	CEGUI::MultiLineEditbox* mConsoleTextBox;
 	CEGUI::Editbox* mInputBox;
@@ -88,6 +92,8 @@ protected:
 	std::string mCommandLine;
 	bool mTabPressed;
 	int mSelected;
+	
+	
 	
 };
 

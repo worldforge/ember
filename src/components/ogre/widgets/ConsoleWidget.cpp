@@ -27,17 +27,11 @@
 
 namespace EmberOgre {
 
-// template<> WidgetLoader WidgetLoaderHolder<ConsoleWidget>::loader("ConsoleWidget", &createWidgetInstance);
 
-const std::string ConsoleWidget::TOGGLECONSOLE("toggle_console");
-
-
-
-ConsoleWidget::ConsoleWidget() : mSpeedOfWindow(0.4)
+ConsoleWidget::ConsoleWidget() : mSpeedOfWindow(0.4), ToggleConsole("toggle_console", this, "Toggles the console.")
 {
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(TOGGLECONSOLE,this);
-
 }
+
 ConsoleWidget::~ConsoleWidget()
 {}
 
@@ -113,7 +107,7 @@ bool ConsoleWidget::pushMessage(const std::string& message)
 
 void ConsoleWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == TOGGLECONSOLE)
+	if(command == ToggleConsole.getCommand())
 	{
 		toggleActive();
 	} else {
