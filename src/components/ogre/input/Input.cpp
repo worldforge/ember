@@ -164,12 +164,6 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	
 	mTimeSinceLastRightMouseClick += evt.timeSinceLastFrame;
 	
-	if (mouseState & SDL_BUTTON(SDL_BUTTON_WHEELUP)) {
-		EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
-	}
-	if (mouseState & SDL_BUTTON(SDL_BUTTON_WHEELDOWN)) {
-		EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
-	}
 
 	if (mouseState & SDL_BUTTON_RMASK) {
 		if (!(mMouseState & SDL_BUTTON_RMASK)) {
@@ -305,6 +299,24 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 				break;
 			case SDL_QUIT:
 				EmberOgre::getSingleton().requestQuit();
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				if(event.button.button == SDL_BUTTON_WHEELUP) {
+					EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
+					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
+						if (*I) {
+							if (!(*I)->injectMouseButtonDown(Input::MouseWheelUp)) break;
+						}
+					}
+				}
+				else if(event.button.button == SDL_BUTTON_WHEELDOWN) {
+					EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
+					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
+						if (*I) {
+							if (!(*I)->injectMouseButtonDown(Input::MouseWheelDown)) break;
+						}
+					}
+				}
 				break;
 		}
 	}
