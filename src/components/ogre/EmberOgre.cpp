@@ -394,8 +394,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
     unsigned int height, width, depth;
     int top, left;
     mWindow->getMetrics(width, height, depth, left, top);
-    mInput.initialize();
-	mInput.setGeometry(width, height);
+    mInput.initialize(width, height);
 	
 	///bind general commands
 	mGeneralCommandMapper.readFromConfigSection("key_bindings_general");

@@ -21,11 +21,9 @@
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "EmberEntity.h"
-/*#include "EmberEntityFactory.h"*/
 #include "WorldEmberEntity.h"
 #include "MathConverter.h"
 
-//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -33,12 +31,6 @@
 
 #include "MousePicker.h"
 #include "jesus/JesusPickerObject.h"
-
-// #include "EmberEntityUserObject.h"
-// #include "ogreopcode/include/OgreCollisionObject.h"
-// #include "ogreopcode/include/OgreCollisionManager.h"
-// #include "ogreopcode/include/OgreCollisionShape.h"
-// #include "model/Model.h"
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
 #include "framework/Tokeniser.h"
