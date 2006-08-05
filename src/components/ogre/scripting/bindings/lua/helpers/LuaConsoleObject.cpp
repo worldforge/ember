@@ -26,8 +26,8 @@
 
 namespace EmberOgre {
 
-LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod):
-mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this)
+LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description):
+mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this, description)
 {
 	LuaTypeStore typenames;
 	typenames.push_back("string");

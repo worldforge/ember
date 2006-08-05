@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Helpers
-** Generated automatically by tolua++-1.0.6 on Sun May  7 12:27:06 2006.
+** Generated automatically by tolua++-1.0.6 on Sun Aug  6 00:56:02 2006.
 */
 
 #ifndef __cplusplus
@@ -946,6 +946,66 @@ static int tolua_Helpers_EmberOgre_LuaConsoleObject_new00_local(lua_State* tolua
 #endif
 }
 
+/* method: new of class  EmberOgre::LuaConsoleObject */
+static int tolua_Helpers_EmberOgre_LuaConsoleObject_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConsoleObject",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const std::string command = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string luaMethod = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  const std::string description = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
+ {
+  EmberOgre::LuaConsoleObject* tolua_ret = (EmberOgre::LuaConsoleObject*)  new EmberOgre::LuaConsoleObject(command,luaMethod,description);
+ tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConsoleObject");
+ tolua_pushcppstring(tolua_S,(const char*)command);
+ tolua_pushcppstring(tolua_S,(const char*)luaMethod);
+ tolua_pushcppstring(tolua_S,(const char*)description);
+ }
+ }
+ return 4;
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConsoleObject_new00(tolua_S);
+}
+
+/* method: new_local of class  EmberOgre::LuaConsoleObject */
+static int tolua_Helpers_EmberOgre_LuaConsoleObject_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConsoleObject",0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+ !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  const std::string command = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string luaMethod = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  const std::string description = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
+ {
+  EmberOgre::LuaConsoleObject* tolua_ret = (EmberOgre::LuaConsoleObject*)  new EmberOgre::LuaConsoleObject(command,luaMethod,description);
+ tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConsoleObject");
+ tolua_pushcppstring(tolua_S,(const char*)command);
+ tolua_pushcppstring(tolua_S,(const char*)luaMethod);
+ tolua_pushcppstring(tolua_S,(const char*)description);
+ }
+ }
+ return 4;
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConsoleObject_new00_local(tolua_S);
+}
+
 /* method: delete of class  EmberOgre::LuaConsoleObject */
 static int tolua_Helpers_EmberOgre_LuaConsoleObject_delete00(lua_State* tolua_S)
 {
@@ -1053,6 +1113,9 @@ TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
  tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConsoleObject_new00);
  tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConsoleObject_new00_local);
  tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConsoleObject_new00_local);
+ tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConsoleObject_new01);
+ tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConsoleObject_new01_local);
+ tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConsoleObject_new01_local);
  tolua_function(tolua_S,"delete",tolua_Helpers_EmberOgre_LuaConsoleObject_delete00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

@@ -40,7 +40,7 @@ class LuaConsoleObject : public Ember::ConsoleObject
 {
 public:
     
-    LuaConsoleObject(const std::string& command, const std::string& luaMethod);
+    LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description = "");
 
     ~LuaConsoleObject();
 

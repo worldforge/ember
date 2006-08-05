@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Framework
-** Generated automatically by tolua++-1.0.6 on Tue Nov 15 21:52:25 2005.
+** Generated automatically by tolua++-1.0.6 on Sun Aug  6 00:55:19 2006.
 */
 
 #ifndef __cplusplus
