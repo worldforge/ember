@@ -78,6 +78,14 @@ class ConsoleBackend : public ConsoleObject
     // Private Constants
     //======================================================================
     private:
+    
+	struct ConsoleObjectEntry
+	{
+		ConsoleObject* Object;
+		std::string Description;
+	};
+
+	typedef std::map<std::string, ConsoleObjectEntry> ConsoleObjectEntryStore;
 
     static const unsigned int MAX_MESSAGES;
 
@@ -97,7 +105,7 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Mapping of registered commands to associated object.
      */
-    std::map<std::string, ConsoleObject*> myRegisteredCommands;
+    ConsoleObjectEntryStore myRegisteredCommands;
 
     /**
      * Current console messages
@@ -129,36 +137,18 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Creates a new ConsoleBackend using default values.
      */
-	ConsoleBackend(void) :
-		myRegisteredCommands(std::map<std::string, ConsoleObject*>()),
-		myConsoleMessages(std::list<std::string>()),
-		mHistoryPosition(0)
-	{
-       // Register console commands
-       registerCommand(LIST_CONSOLE_COMMANDS, this);
-     }
+	ConsoleBackend(void);
 
     /**
      * Copy constructor.
      */
-    ConsoleBackend( const ConsoleBackend &source )
-    {
-        // Use assignment operator to do the copy
-        // NOTE: If you need to do custom initialization in the constructor this may not be enough.
-        *this = source;
-    }
+    ConsoleBackend( const ConsoleBackend &source );
 
 
     /**
      * Assignment operator.
      */
-    ConsoleBackend &operator= ( const ConsoleBackend &source )
-    {
-        // Copy fields from source class to this class here.
-
-        // Return this object with new value
-        return *this;
-    }
+    ConsoleBackend &operator= ( const ConsoleBackend &source );
 
 
     //----------------------------------------------------------------------
@@ -167,10 +157,7 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Deletes a ConsoleBackend instance.
      */
-    virtual ~ConsoleBackend ()
-    {
-        // TODO: Free any allocated resources here.
-    }
+    virtual ~ConsoleBackend ();
 
 
     //----------------------------------------------------------------------
@@ -179,23 +166,12 @@ class ConsoleBackend : public ConsoleObject
     /**
      * Gets an instance of the main Ember console
      */
-    static ConsoleBackend* getMainConsole()
-    {
-      if ( !theMainConsole )
-        theMainConsole = new ConsoleBackend();
-      return theMainConsole;
-    }
+    inline static ConsoleBackend* getMainConsole();
 
-    const std::list<std::string>& getConsoleMessages() const
-      {
-	return myConsoleMessages;
-      }
+    inline const std::list<std::string>& getConsoleMessages() const;
 
 	
-	size_t getHistoryPosition() const
-	{
-		return mHistoryPosition;
-	}
+	inline size_t getHistoryPosition() const;
 	
 	const std::set< std::string > & getPrefixes(const std::string & prefix) const;
 	
@@ -203,19 +179,7 @@ class ConsoleBackend : public ConsoleObject
 	 * Get the current history string.
 	 * The history position 0 is managed in the ConsoleWidget.
 	 **/
-	const std::string & getHistoryString()
-	{
-		static std::string sEmpty("");
-		
-		if(mHistoryPosition == 0)
-		{
-			return sEmpty;
-		}
-		else
-		{
-			return mHistory[mHistoryPosition - 1];
-		}
-	}
+	const std::string & getHistoryString();
 	
 	void changeHistory(size_t stHistoryIndex, const std::string & sCommand);
 
@@ -226,24 +190,12 @@ class ConsoleBackend : public ConsoleObject
 	/**
 	 * Moves the history iterator backwards (in time).
 	 **/
-	void moveBackwards(void)
-	{
-		if(mHistoryPosition < mHistory.size())
-		{
-			mHistoryPosition++;
-		}
-	}
+	void moveBackwards(void);
 	
 	/**
 	 * Moves the history iterator forwards (in time).
 	 **/
-	void moveForwards(void)
-	{
-		if(mHistoryPosition > 0)
-		{
-			mHistoryPosition--;
-		}
-	}
+	void moveForwards(void);
 
 
     //----------------------------------------------------------------------
@@ -254,7 +206,7 @@ class ConsoleBackend : public ConsoleObject
      * command is the command to register
      * object is the originating object
      */ 
-    void registerCommand(const std::string &command, ConsoleObject *object);
+    void registerCommand(const std::string &command, ConsoleObject *object, const std::string& description = "");
 
     /**
      * Deregisters a command with the console
@@ -314,6 +266,24 @@ class ConsoleBackend : public ConsoleObject
 
 
 }; // End of ConsoleBackend
+
+ConsoleBackend* ConsoleBackend::getMainConsole()
+{
+	if ( !theMainConsole )
+	theMainConsole = new ConsoleBackend();
+	return theMainConsole;
+}
+
+const std::list<std::string>& ConsoleBackend::getConsoleMessages() const
+{
+	return myConsoleMessages;
+}
+
+size_t ConsoleBackend::getHistoryPosition() const
+{
+	return mHistoryPosition;
+}
+
 
 } // End of Ember namespace
 

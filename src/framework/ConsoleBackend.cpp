@@ -32,7 +32,67 @@ namespace Ember {
 const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
 const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
-Ember::ConsoleBackend *Ember::ConsoleBackend::theMainConsole = NULL;
+Ember::ConsoleBackend *Ember::ConsoleBackend::theMainConsole = 0;
+
+ConsoleBackend::ConsoleBackend(void) :
+	myRegisteredCommands(ConsoleObjectEntryStore()),
+	myConsoleMessages(std::list<std::string>()),
+	mHistoryPosition(0)
+{
+	// Register console commands
+	registerCommand(LIST_CONSOLE_COMMANDS, this);
+}
+
+ConsoleBackend::ConsoleBackend( const ConsoleBackend &source )
+{
+	// Use assignment operator to do the copy
+	// NOTE: If you need to do custom initialization in the constructor this may not be enough.
+	*this = source;
+}
+
+ConsoleBackend& ConsoleBackend::operator= ( const ConsoleBackend &source )
+{
+	// Copy fields from source class to this class here.
+
+	// Return this object with new value
+	return *this;
+}
+
+ConsoleBackend::~ConsoleBackend ()
+{
+	// TODO: Free any allocated resources here.
+}
+
+void ConsoleBackend::moveBackwards(void)
+{
+	if(mHistoryPosition < mHistory.size())
+	{
+		mHistoryPosition++;
+	}
+}
+
+void ConsoleBackend::moveForwards(void)
+{
+	if(mHistoryPosition > 0)
+	{
+		mHistoryPosition--;
+	}
+}
+
+const std::string& ConsoleBackend::getHistoryString()
+{
+	static std::string sEmpty("");
+	
+	if(mHistoryPosition == 0)
+	{
+		return sEmpty;
+	}
+	else
+	{
+		return mHistory[mHistoryPosition - 1];
+	}
+}
+
 
 void ConsoleBackend::pushMessage(const std::string &message) {
   //only save message if onGotMessage returns true
@@ -50,12 +110,15 @@ bool ConsoleBackend::onGotMessage(const std::string &message)
 }
 
 
-void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *object)
+void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *object, const std::string& description)
 {
-LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
-
-// Assign the ConsoleObject to the command
-myRegisteredCommands[command] = object;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
+	
+	ConsoleObjectEntry entry;
+	entry.Object = object;
+	entry.Description = description;
+	// Assign the ConsoleObject to the command
+	myRegisteredCommands[command] = entry;
 	
 	// prepare the prefix map to have fast access to commands
 	for(std::string::size_type i = 1; i <= command.length(); ++i)
@@ -97,16 +160,17 @@ void ConsoleBackend::runCommand(const std::string &command)
   std::string args = tokeniser.remainingTokens();
 
   //Grab object registered to the command
-  ConsoleObject* con_obj = myRegisteredCommands[cmd];
-
+  ConsoleObjectEntryStore::iterator I = myRegisteredCommands.find(cmd);
+  
   // Print all commands to the console
   // pushMessage(command_string);
 
 	mHistory.push_front(command);
 	mHistoryPosition = 0;
   // If object exists, run the command
-	if(con_obj != 0)
-		con_obj->runCommand(cmd, args);
+	if (I != myRegisteredCommands.end() && I->second.Object != 0) {
+		I->second.Object->runCommand(cmd, args);
+	}
   else { // Else print error message
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
     pushMessage(std::string("Unknown command ") + command);
@@ -119,9 +183,9 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
 
   // This commands prints all currently registers commands to the Log File
   if (command == LIST_CONSOLE_COMMANDS) {
-    for (std::map<std::string, ConsoleObject*>::const_iterator I = myRegisteredCommands.begin(); I != myRegisteredCommands.end(); I++) {
+    for (ConsoleObjectEntryStore::const_iterator I = myRegisteredCommands.begin(); I != myRegisteredCommands.end(); I++) {
       // TODO - should we check to see if I->second is valid?
-      temp << I->first<< " ";
+      temp << I->first<< " : " << I->second.Description << std::endl;
     }
   }
 
