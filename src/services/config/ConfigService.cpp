@@ -76,6 +76,11 @@ namespace Ember
 		mHomeDir = path;
 	}
 	
+	const ConfigService::SectionMap& ConfigService::getSection(const std::string& sectionName)
+	{
+		return varconf::Config::inst()->getSection(sectionName);
+	}
+	
 
     varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key) const
     {

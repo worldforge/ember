@@ -76,7 +76,8 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
 
     protected:
     public:
-    
+ 	typedef std::map< std::string, varconf::Variable > SectionMap;
+   
     static const std::string SETVALUE;
     static const std::string GETVALUE;
     
@@ -161,6 +162,14 @@ class ConfigService: public Service, public Ember::ConsoleObject, public sigc::t
      * @param Key to remove.
      */
     bool deleteItem(const std::string& section, const std::string& key);
+    
+    
+	/**
+	 *    Returns a map of the specified section.
+	 * @param sectionName 
+	 * @return 
+	 */
+	const SectionMap& getSection(const std::string& sectionName);
 
     /**
      * Loads config space from given file.
