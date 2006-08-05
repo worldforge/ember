@@ -29,12 +29,12 @@
 namespace EmberOgre {
 
 
-InputCommandMapper::InputCommandMapper(const std::string& state) : mState(state), mEnabled(true)
+InputCommandMapper::InputCommandMapper(const std::string& state) : mState(state), mEnabled(true), mInput(0)
 {
 	initKeyMap();
 }
 
-InputCommandMapper::InputCommandMapper(const std::string& state, const std::string& configSection) : mState(state), mEnabled(true)
+InputCommandMapper::InputCommandMapper(const std::string& state, const std::string& configSection) : mState(state), mEnabled(true), mInput(0)
 {
 	initKeyMap();
 	readFromConfigSection(configSection);
@@ -42,6 +42,9 @@ InputCommandMapper::InputCommandMapper(const std::string& state, const std::stri
 
 InputCommandMapper::~InputCommandMapper()
 {
+	if (mInput) {
+		mInput->deregisterCommandMapper(this);
+	}
 }
 
 void InputCommandMapper::readFromConfigSection(const std::string& sectionName)
@@ -73,14 +76,13 @@ void InputCommandMapper::Input_EventKeyReleased(const SDL_keysym& key, Input::In
 {
 	if (mEnabled && isActiveForInputMode(inputMode)) {
 		///check if we have any key with a matching command
+		///only check for commands that start with a "+"
 		const std::string& command = getCommandForKey(key.sym);
 		if (command != "") {
 			Ember::ConsoleBackend* myBackend = Ember::ConsoleBackend::getMainConsole();
 			if (command[0] == '+') {
 				///remove the "+" and replace it with "-"
 				myBackend->runCommand("-" + std::string(command).erase(0, 1));
-			} else {
-				myBackend->runCommand(command);
 			}
 		}
 	}
@@ -90,6 +92,8 @@ void InputCommandMapper::bindToInput(Input& input)
 {
 	input.EventKeyPressed.connect(sigc::mem_fun(*this, &InputCommandMapper::Input_EventKeyPressed));
 	input.EventKeyReleased.connect(sigc::mem_fun(*this, &InputCommandMapper::Input_EventKeyReleased));
+	input.registerCommandMapper(this);
+	mInput = &input;
 }
 
 bool InputCommandMapper::isActiveForInputMode(Input::InputMode mode) const
@@ -105,11 +109,13 @@ bool InputCommandMapper::isActiveForInputMode(Input::InputMode mode) const
 
 void InputCommandMapper::bindCommand(const std::string& key, const std::string& command)
 {
+	S_LOG_INFO("Binding key " << key << " to command " << command << " for state " << getState() << ".");
 	mKeyCommands[key] = command;
 }
 
 void InputCommandMapper::unbindCommand(const std::string& key)
 {
+	S_LOG_INFO("Unbinding key " << key << " for state " << getState() << ".");
 	mKeyCommands.erase(key);
 }
 

@@ -25,8 +25,14 @@
 
 #include "framework/scrap.h"
 #include "IInputAdapter.h"
+
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
+
 namespace EmberOgre {
 
+const std::string Input::BINDCOMMAND("bind");
+const std::string Input::UNBINDCOMMAND("unbind");
 
 
 
@@ -68,7 +74,7 @@ Input::~Input()
 
 }
 
-void Input::initialize()
+void Input::initialize(int width, int height)
 {
 	SDL_ShowCursor(0);
 	SDL_EnableUNICODE(1);
@@ -78,12 +84,65 @@ void Input::initialize()
 	if ( init_scrap() < 0 ) {
 		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
 	}
+	
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(BINDCOMMAND,this);
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(UNBINDCOMMAND,this);
+	
+	setGeometry(width, height);
+	
 }
 
 void Input::setGeometry(int width, int height)
 {
 	mScreenWidth = width;
 	mScreenHeight = height;
+}
+
+void Input::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == BINDCOMMAND)
+	{
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string state("general");
+		std::string key = tokeniser.nextToken();
+		if (key != "") {
+			std::string command = tokeniser.nextToken();
+			if (command != "") {
+				if (tokeniser.nextToken() != "") {
+					state = tokeniser.nextToken();
+				}
+				InputCommandMapperStore::iterator I = mInputCommandMappers.find(state);
+				if (I != mInputCommandMappers.end()) {
+					I->second->bindCommand(key, command);
+				}
+			}
+		}
+	} else if (command == UNBINDCOMMAND) {
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string state("general");
+		std::string key = tokeniser.nextToken();
+		if (key != "") {
+			if (tokeniser.nextToken() != "") {
+				state = tokeniser.nextToken();
+			}
+			InputCommandMapperStore::iterator I = mInputCommandMappers.find(state);
+			if (I != mInputCommandMappers.end()) {
+				I->second->unbindCommand(key);
+			}
+		}
+	}
+}
+
+void Input::registerCommandMapper(InputCommandMapper* mapper)
+{
+	mInputCommandMappers[mapper->getState()] = mapper;
+}
+	
+void Input::deregisterCommandMapper(InputCommandMapper* mapper)
+{
+	mInputCommandMappers.erase(mInputCommandMappers.find(mapper->getState()));
 }
 
 

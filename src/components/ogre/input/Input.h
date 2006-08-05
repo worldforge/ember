@@ -26,12 +26,14 @@
 #include "../EmberOgrePrerequisites.h"
 #include <sigc++/slot.h>
 #include <SDL.h>
+#include "framework/ConsoleObject.h"
 
 
 
 namespace EmberOgre {
 
 class IInputAdapter;
+class InputCommandMapper;
 
 TYPEDEF_STL_SET(SDLKey, KeysSet);
 TYPEDEF_STL_LIST(IInputAdapter*, IInputAdapterStore);
@@ -73,9 +75,23 @@ We use SDL for now. Perhaps in the future we'll add support for other input mech
 
 Note that while keyboard input is buffered, mouse input is not.
 */
-class Input
+class Input : public Ember::ConsoleObject
 {
+friend class InputCommandMapper;
+
 public:
+	
+	/**
+	Command for binding keys to commands.
+	*/
+	static const std::string BINDCOMMAND;
+	
+	/**
+	Command for unbinding keys to commands.
+	*/
+	static const std::string UNBINDCOMMAND;
+	
+	
 	enum MouseButton
 	{
 		MouseButtonLeft,
@@ -105,7 +121,12 @@ public:
 
     ~Input();
 	
-	void initialize();
+	/**
+	 *    Initializes the input object. Call this before you want to recieve input.
+	 * @param width 
+	 * @param heigh 
+	 */
+	void initialize(int width, int height);
 
 	/**
 	 * starts processing all input for a frame
@@ -205,7 +226,30 @@ public:
 	
 
 	
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
 protected:
+
+	typedef std::map<std::string, InputCommandMapper*> InputCommandMapperStore;
+	
+	
+	/**
+	 *    Registers a command mapper.
+	 * @param mapper 
+	 */
+	void registerCommandMapper(InputCommandMapper* mapper);
+	
+	/**
+	 *    Deregisters a command mapper.
+	 * @param mapper 
+	 */
+	void deregisterCommandMapper(InputCommandMapper* mapper);
+	
 	
 	/**
 	The current input mode.
@@ -267,6 +311,12 @@ protected:
 		The dimensions of the window.
 	*/
 	float mScreenWidth, mScreenHeight;
+	
+	
+	/**
+	A store of InputCommandMappers with their state as the key.
+	*/
+	InputCommandMapperStore mInputCommandMappers;
 };
 
 };
