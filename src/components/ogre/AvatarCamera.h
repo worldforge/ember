@@ -190,6 +190,13 @@ public:
 	void pushWorldPickListener(IWorldPickListener* worldPickListener);
 	
 	const Ember::ConsoleCommandWrapper SetCameraDistance;
+	const Ember::ConsoleCommandWrapper ToggleRendermode;
+	const Ember::ConsoleCommandWrapper ToggleFullscreen;
+	
+	/**
+		Toggles between wireframe and solid render mode.
+	*/
+	void toggleRenderMode();
 	
 protected:
 

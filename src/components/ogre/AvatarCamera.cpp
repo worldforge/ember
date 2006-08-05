@@ -34,7 +34,7 @@
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
 #include "framework/Tokeniser.h"
-#include "framework/ConsoleBackend.h"
+// #include "framework/ConsoleBackend.h"
 
 #include "GUIManager.h"
 #include "input/Input.h"
@@ -57,7 +57,9 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mAvatarNode(0),
 	mInvertCamera(false),
 	mCamera(camera),
-	SetCameraDistance("setcameradistance", this, "Set the distance of the camera.")
+	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
+	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
+	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode.")
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -185,6 +187,17 @@ void AvatarCamera::createViewPort()
 // 		Ogre::Real(mViewPort->getActualWidth()) / Ogre::Real(mViewPort->getActualHeight()));
 
 	
+}
+		
+		
+void AvatarCamera::toggleRenderMode()
+{
+	S_LOG_INFO("Switching render mode.");
+	if (mCamera->getPolygonMode() == Ogre::PM_SOLID) {
+		mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
+	} else {
+		mCamera->setPolygonMode(Ogre::PM_SOLID);
+	}
 }
 
 void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
@@ -542,6 +555,11 @@ void AvatarCamera::runCommand(const std::string &command, const std::string &arg
 			float fDistance = Ogre::StringConverter::parseReal(distance);
 			setCameraDistance(fDistance);
 		}
+	} else if (ToggleFullscreen == command){
+		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+		
+	} else if (ToggleRendermode == command) {
+		toggleRenderMode();
 	}
 }
 	

@@ -61,27 +61,27 @@ namespace Ember
 	const char * const ServerService::TAKECHAR   = "take";
 	const char * const ServerService::LISTCHARS  = "list";
 	const char * const ServerService::SAY        = "say";
-	const char * const ServerService::TOUCH      = "touch";
+// 	const char * const ServerService::TOUCH      = "touch";
 
   /* ctor */
-  ServerService::ServerService() : myConn(NULL), myAccount(NULL),
-				   myView(NULL), myOOGChat(NULL),
-				   myConnected(false), myAvatar(NULL)
+  ServerService::ServerService() : myConn(0), myAccount(0),
+				   myView(0), myOOGChat(0),
+				   myConnected(false), myAvatar(0)
   {
     setName("Server Service");
     setDescription("Service for Server session");
 
 
-	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this);
-	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this);
-	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this);
-	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this);
-	ConsoleBackend::getMainConsole()->registerCommand(LOGOUT,this);
-	ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this);
-	ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this);
-	ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this);
-	ConsoleBackend::getMainConsole()->registerCommand(SAY,this);
-	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this);
+	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this, "Connect to a server.");
+	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this, "Disconnect from the server.");
+	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this, "Create an account on the server.");
+	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this, "Login to the connected server.");
+	ConsoleBackend::getMainConsole()->registerCommand(LOGOUT,this, "Logout from the connected server.");
+	ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this, "Create a character on the server.");
+	ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this, "List you available characters on the server.");
+	ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this, "Take control of one of your characters.");
+	ConsoleBackend::getMainConsole()->registerCommand(SAY,this, "Say something.");
+// 	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this, ");
 
 	  }
 
@@ -288,9 +288,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
     temp<< "Login Failure:"<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
-#if 0 // not new sstream
-    temp<<std::ends;    
-#endif
+
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
 	LoginFailure.emit(myAccount, msg);
   }
@@ -322,7 +320,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
   void ServerService::logoutComplete(bool clean) {
     delete myView;
-    myView = NULL;
+    myView = 0;
 
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
     ConsoleBackend::getMainConsole()->pushMessage("Logged out from server");
@@ -436,7 +434,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 		} else if (command==SAY) {
 			say(args);
 
-		// Touch Command
+/*		// Touch Command
 		} else if (command==TOUCH) {
 			// TODO: make this switch call the touch method
 			// TODO: polish this rough check
@@ -453,7 +451,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			touch->setFrom(myAvatar->getId());
 			touch->setArgsAsList(Atlas::Message::ListType(1, opargs));
 	
-			myConn->send(touch);
+			myConn->send(touch);*/
 		}	
 	}
 	

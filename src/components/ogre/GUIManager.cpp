@@ -50,7 +50,7 @@
 
 #include "GUICEGUIAdapter.h"
 
-#include <SDL.h>
+// #include <SDL.h>
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -67,7 +67,7 @@ namespace EmberOgre {
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window), mGuiCommandMapper("gui", "key_bindings_gui")
 , Screenshot("screenshot", this, "Take a screenshot and write to disk.")
-, ToggleInputMode("toggleinputmode", this, "Toggle the input mode.")
+, ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
@@ -477,35 +477,11 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 // 		}
 
 		//take screenshot		
-		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )
+/*		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )
 		{
 			takeScreenshot();
-		}
-		
-		///allow caps lock to toggle input mode
-		if (key.sym == SDLK_CAPSLOCK) 
-		{
-			getInput().toggleInputMode();
-		}
-		
-		//switch render mode
-		//TODO: move this into AvatarCamera and hook it up with a console command instead
-		if(key.sym == SDLK_F7)
-		{
-			setDebugText("Switching rendermode.");
-			Ogre::Camera* ogreCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-			if (ogreCamera->getPolygonMode() == Ogre::PM_SOLID) {
-				ogreCamera->setPolygonMode(Ogre::PM_WIREFRAME);
-			} else {
-				ogreCamera->setPolygonMode(Ogre::PM_SOLID);
-			}
-		}
-		
-		//switch between full screen
-/*		if(e->getKey() == Ogre::KC_F6)
-		{
-			mWindow->
 		}*/
+		
 
 }
 

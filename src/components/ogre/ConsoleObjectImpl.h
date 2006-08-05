@@ -44,7 +44,6 @@ class ConsoleObjectImpl: public Ember::ConsoleObject, public Ember::Singleton<Co
 
 	/// List of Ogre's console commands
 	const Ember::ConsoleCommandWrapper Quit;
-	const Ember::ConsoleCommandWrapper ToggleFullscreen;
 	const Ember::ConsoleCommandWrapper ToggleErisPolling;
 
 

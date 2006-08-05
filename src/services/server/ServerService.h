@@ -212,7 +212,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	static const char * const TAKECHAR;
 	static const char * const LISTCHARS;
 	static const char * const SAY;
-	static const char * const TOUCH;	
+// 	static const char * const TOUCH;	
 }; //ServerService
 
 } // namespace Ember

@@ -22,7 +22,7 @@
 #include "EmberOgrePrerequisites.h"
 
 
-#include <SDL.h>
+// #include <SDL.h>
 #include <sigc++/trackable.h>
 
 #include "input/Input.h"
@@ -119,6 +119,13 @@ public:
 
 	const Ember::ConsoleCommandWrapper RunToggle;
 
+	const Ember::ConsoleCommandWrapper CharacterMoveForward;
+	const Ember::ConsoleCommandWrapper CharacterMoveBackward;
+	const Ember::ConsoleCommandWrapper CharacterMoveDownwards;
+	const Ember::ConsoleCommandWrapper CharacterMoveUpwards;
+	const Ember::ConsoleCommandWrapper CharacterStrafeLeft;
+	const Ember::ConsoleCommandWrapper CharacterStrafeRight;
+
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
@@ -135,7 +142,7 @@ protected:
 	GUIManager* mGUIManager;
 
 
-	void checkMovementKeys(const Ogre::FrameEvent & event, const Input& input);
+// 	void checkMovementKeys(const Ogre::FrameEvent & event, const Input& input);
 
 
 	AvatarCamera* mAvatarCamera;
@@ -152,12 +159,7 @@ protected:
     EmberEntity* mSelectedEntity;
     
     AvatarControllerMovement movementForFrame, mPreviousMovementForFrame;
-	
-	SDLKey mKeyCodeForForwardMovement;
-	SDLKey mKeyCodeForBackwardsMovement;
-	SDLKey mKeyCodeForLeftMovement;
-	SDLKey mKeyCodeForRightMovement;
-	
+		
 	Ogre::SceneNode* mFreeFlyingCameraNode;
 	bool mIsAttached;
 	/**
@@ -165,6 +167,7 @@ protected:
 	*/
 	bool mIsRunning;
 	
+	Ogre::Vector3 mMovementDirection;
     
 	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
 		

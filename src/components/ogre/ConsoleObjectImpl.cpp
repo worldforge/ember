@@ -33,7 +33,7 @@
 #include "framework/Tokeniser.h"
 
 #include "EmberOgre.h"
-#include <SDL.h>
+// #include <SDL.h>
 
 template<> EmberOgre::ConsoleObjectImpl* Ember::Singleton<EmberOgre::ConsoleObjectImpl>::ms_Singleton = 0;
 
@@ -42,7 +42,6 @@ namespace EmberOgre {
 
 ConsoleObjectImpl::ConsoleObjectImpl(void) : 
 Quit("quit", this, "Quit Ember."), 
-ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), 
 ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 {
 }
@@ -57,9 +56,6 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
 	if(command == Quit.getCommand()) {
 		Ember::ConsoleBackend::getMainConsole()->pushMessage("Bye");
 		quit();
-	} else if (ToggleFullscreen == command){
-		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
-		
 	} else if (ToggleErisPolling == command){
 		EmberOgre::getSingleton().setErisPolling(!EmberOgre::getSingleton().getErisPolling());
 	}

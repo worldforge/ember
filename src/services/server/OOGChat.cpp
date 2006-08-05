@@ -55,24 +55,24 @@ namespace Ember {
       myLobby->Disappearance.connect(SigC::slot(*this,&OOGChat::disappearance));
 //      myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
 
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_TALK, this );
+/*      ConsoleBackend::getMainConsole()->registerCommand( CMD_TALK, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_EMOTE, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_ME, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_JOIN, this );
       ConsoleBackend::getMainConsole()->registerCommand( CMD_PART, this );
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_MSG, this );
+      ConsoleBackend::getMainConsole()->registerCommand( CMD_MSG, this );*/
     }
 
     OOGChat::~OOGChat()
     {
       // TODO: Free any allocated resources here.
       // Deregister our console commands
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_TALK );
+/*      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_TALK );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_EMOTE );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_ME );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_JOIN );
       ConsoleBackend::getMainConsole()->deregisterCommand( CMD_PART );
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_MSG );
+      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_MSG );*/
     }
 
 

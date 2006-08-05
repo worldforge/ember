@@ -58,8 +58,16 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mCamera(camera)
 , mMovementCommandMapper("movement", "key_bindings_movement")
 , RunToggle("+run", this, "Toggle running mode.")
-, ToggleCameraAttached("/toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying.")
+, ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying.")
+, CharacterMoveForward("+character_move_forward", this, "Move the avatar forward.")
+, CharacterMoveBackward("+character_move_backward", this, "Move the avatar backward.")
+, CharacterStrafeLeft("+character_strafe_left", this, "Strafe left.")
+, CharacterStrafeRight("+character_strafe_right", this, "Strafe right.")
+, CharacterMoveUpwards("+character_move_upwards", this, "Move the avatar upwards.")
+, CharacterMoveDownwards("+character_move_downwards", this, "Move the avatar downwards.")
+, mMovementDirection(Ogre::Vector3::ZERO)
 {
+
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
 	
 	setAvatar(avatar);
@@ -70,10 +78,6 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
 	
-	mKeyCodeForForwardMovement = SDLK_w;
-	mKeyCodeForBackwardsMovement = SDLK_s;
-	mKeyCodeForLeftMovement = SDLK_a;
-	mKeyCodeForRightMovement = SDLK_d;
 	mFreeFlyingCameraNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	mFreeFlyingCameraNode->setPosition(0,30,0);
 	detachCamera();
@@ -115,6 +119,30 @@ void AvatarController::runCommand(const std::string &command, const std::string 
 		} else {
 			attachCamera();
 		}
+	} else if (CharacterMoveForward == command) {
+		mMovementDirection.x = 1;
+	} else if (CharacterMoveForward.getInverseCommand() == command) {
+		mMovementDirection.x = 0;
+	} else if (CharacterMoveBackward == command) {
+		mMovementDirection.x = -1;
+	} else if (CharacterMoveBackward.getInverseCommand() == command) {
+		mMovementDirection.x = 0;
+	} else if (CharacterStrafeLeft == command) {
+		mMovementDirection.z = -1;
+	} else if (CharacterStrafeLeft.getInverseCommand() == command) {
+		mMovementDirection.z = 0;
+	} else if (CharacterStrafeRight == command) {
+		mMovementDirection.z = 1;
+	} else if (CharacterStrafeRight.getInverseCommand() == command) {
+		mMovementDirection.z = 0;
+	} else if (CharacterMoveUpwards == command) {
+		mMovementDirection.y = 1;
+	} else if (CharacterMoveUpwards.getInverseCommand() == command) {
+		mMovementDirection.y = 0;
+	} else if (CharacterMoveDownwards == command) {
+		mMovementDirection.y = -1;
+	} else if (CharacterMoveDownwards.getInverseCommand() == command) {
+		mMovementDirection.y = 0;
 	}
 }
 
@@ -161,20 +189,27 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 
 	movementForFrame = AvatarControllerMovement();
 	
+/*	if (mMovementDirection != Ogre::Vector3::ZERO) {*/
+	movementForFrame.mode = mIsRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
+	movementForFrame.isMoving = true;
+	movementForFrame.movementDirection = mMovementDirection;
+	movementForFrame.timeSlice = event.timeSinceLastFrame;
+	if (movementForFrame.mode != mPreviousMovementForFrame.mode) {
+		EventMovementModeChanged.emit(movementForFrame.mode);
+	}
+// 	} else {
+// 	}
 
-	if (mGUIManager->isInMovementKeysMode()) {
+// 	if (mGUIManager->isInMovementKeysMode()) {
 //		movementForFrame.movementDirection = Ogre::Vector3::ZERO;
 //		movementForFrame.mIsRunning = false;
 //		movementForFrame.isMoving = false;	
 		
-		checkMovementKeys(event, EmberOgre::getSingleton().getInput());
+/*		checkMovementKeys(event, EmberOgre::getSingleton().getInput());
 		
-		if (movementForFrame.mode != mPreviousMovementForFrame.mode) {
-			EventMovementModeChanged.emit(movementForFrame.mode);
-		}
 		
 		movementForFrame.timeSlice = event.timeSinceLastFrame;
-	}	
+	}	*/
 		
 	if (mIsAttached) {
 //		mAvatarCamera->adjustForTerrain();
@@ -199,59 +234,59 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 
 
 
-void AvatarController::checkMovementKeys(const FrameEvent & event, const Input& input)
-{
-		//Real timePassed = event.timeSinceLastFrame;
-
-		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
-		bool isMovement = false; 
-
-		// forwards / backwards
-		if(input.isKeyDown(mKeyCodeForForwardMovement))  // W also, and same for the rest
-		{
-			movement.x = 1; 	//scale this
-			isMovement = true;
-		}
-		else if(input.isKeyDown(mKeyCodeForBackwardsMovement))
-		{
-			movement.x = -1;		//scale
-			isMovement = true;
-		}
-
-		// strafe
-		if(input.isKeyDown(mKeyCodeForLeftMovement))
-		{
-			movement.z = -1;
-			isMovement = true;
-		}
-		else if(input.isKeyDown(mKeyCodeForRightMovement))
-		{
-			movement.z = 1;
-			isMovement = true;
-		}
-
-		// up down
-		if(input.isKeyDown(SDLK_PAGEUP))
-		{
-			movement.y = 1;
-			isMovement = true;
-		}
-		else if(input.isKeyDown(SDLK_PAGEDOWN))
-		{
-			movement.y = -1;
-			isMovement = true;
-		}
-		
-		movementForFrame.mode = mIsRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
-		movementForFrame.isMoving = isMovement;
-		if(isMovement)
-		{
-			movementForFrame.movementDirection = movement;
-			
-		} else {
-			movementForFrame.movementDirection = Ogre::Vector3::ZERO;
-		}
-}
+// void AvatarController::checkMovementKeys(const FrameEvent & event, const Input& input)
+// {
+// 		//Real timePassed = event.timeSinceLastFrame;
+// 
+// 		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
+// 		bool isMovement = false; 
+// 
+// 		// forwards / backwards
+// 		if(input.isKeyDown(mKeyCodeForForwardMovement))  // W also, and same for the rest
+// 		{
+// 			movement.x = 1; 	//scale this
+// 			isMovement = true;
+// 		}
+// 		else if(input.isKeyDown(mKeyCodeForBackwardsMovement))
+// 		{
+// 			movement.x = -1;		//scale
+// 			isMovement = true;
+// 		}
+// 
+// 		// strafe
+// 		if(input.isKeyDown(mKeyCodeForLeftMovement))
+// 		{
+// 			movement.z = -1;
+// 			isMovement = true;
+// 		}
+// 		else if(input.isKeyDown(mKeyCodeForRightMovement))
+// 		{
+// 			movement.z = 1;
+// 			isMovement = true;
+// 		}
+// 
+// 		// up down
+// 		if(input.isKeyDown(SDLK_PAGEUP))
+// 		{
+// 			movement.y = 1;
+// 			isMovement = true;
+// 		}
+// 		else if(input.isKeyDown(SDLK_PAGEDOWN))
+// 		{
+// 			movement.y = -1;
+// 			isMovement = true;
+// 		}
+// 		
+// 		movementForFrame.mode = mIsRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
+// 		movementForFrame.isMoving = isMovement;
+// 		if(isMovement)
+// 		{
+// 			movementForFrame.movementDirection = movement;
+// 			
+// 		} else {
+// 			movementForFrame.movementDirection = Ogre::Vector3::ZERO;
+// 		}
+// }
 
 const AvatarControllerMovement & AvatarController::getCurrentMovement() const
 {

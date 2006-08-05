@@ -120,8 +120,8 @@ namespace Ember
     
     void ConfigService::registerConsoleCommands()
     {
-		Ember::ConsoleBackend::getMainConsole()->registerCommand(SETVALUE, this);
-		Ember::ConsoleBackend::getMainConsole()->registerCommand(GETVALUE, this);
+		Ember::ConsoleBackend::getMainConsole()->registerCommand(SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>");
+		Ember::ConsoleBackend::getMainConsole()->registerCommand(GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>");
 	}
 	
     bool ConfigService::itemExists(const std::string& section, const std::string& key) const

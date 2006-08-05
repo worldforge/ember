@@ -165,8 +165,8 @@ namespace EmberOgre
 	void Widget::registerConsoleVisibilityToggleCommand(const std::string & commandSuffix)
 	{
 		mCommandSuffix = commandSuffix;
-		Ember::ConsoleBackend::getMainConsole()->registerCommand("show_" + commandSuffix, this);
-		Ember::ConsoleBackend::getMainConsole()->registerCommand("hide_" + commandSuffix, this);
+		Ember::ConsoleBackend::getMainConsole()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
+		Ember::ConsoleBackend::getMainConsole()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
 	
 	}
 
