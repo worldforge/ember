@@ -243,7 +243,6 @@ public:
 
 protected:
 
-	InputCommandMapper mGeneralCommandMapper;
 	
 
 	/**
@@ -265,6 +264,7 @@ protected:
 	*/
 	Input mInput;
 	
+	InputCommandMapper mGeneralCommandMapper;
 
 	
 	EmberEntityFactory* mEmberEntityFactory;
