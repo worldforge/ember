@@ -23,13 +23,19 @@
 
 #include "Widget.h"
 #include "ConsoleWidget.h"
+#include "framework/ConsoleBackend.h"
 
 namespace EmberOgre {
 
 // template<> WidgetLoader WidgetLoaderHolder<ConsoleWidget>::loader("ConsoleWidget", &createWidgetInstance);
 
+const std::string ConsoleWidget::TOGGLECONSOLE("toggle_console");
+
+
+
 ConsoleWidget::ConsoleWidget() : mSpeedOfWindow(0.4)
 {
+	Ember::ConsoleBackend::getMainConsole()->registerCommand(TOGGLECONSOLE,this);
 
 }
 ConsoleWidget::~ConsoleWidget()
@@ -104,6 +110,18 @@ bool ConsoleWidget::pushMessage(const std::string& message)
 	return true;
 
 }
+
+void ConsoleWidget::runCommand(const std::string &command, const std::string &args)
+{
+	if(command == TOGGLECONSOLE)
+	{
+		toggleActive();
+	} else {
+		Widget::runCommand(command, args);
+	}
+
+}
+
 
 // bool ConsoleWidget::consoleInputBox_TextAcceptedEvent(const CEGUI::EventArgs& args)
 // {

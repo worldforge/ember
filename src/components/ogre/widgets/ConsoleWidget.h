@@ -38,6 +38,7 @@ class Widget;
 class ConsoleWidget : public Widget
 {
 public:
+	static const std::string TOGGLECONSOLE;
 
 	ConsoleWidget();
 	virtual ~ConsoleWidget();
@@ -61,6 +62,12 @@ public:
 
 	bool pushMessage(const std::string& message);
 	
+	/**
+	 *    reimplement ConsoleObject::runCommand to catch the "inspect $entityid" command
+	 * @param command 
+	 * @param args 
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
 		
 protected:
 	CEGUI::MultiLineEditbox* mConsoleTextBox;
