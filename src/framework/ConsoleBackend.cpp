@@ -109,7 +109,7 @@ void ConsoleBackend::runCommand(const std::string &command)
 		con_obj->runCommand(cmd, args);
   else { // Else print error message
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
-    pushMessage("Unknown command");
+    pushMessage(std::string("Unknown command ") + command);
   }
 }
 
@@ -125,7 +125,7 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
     }
   }
 
-  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+  S_LOG_VERBOSE(temp.str());
   temp<< std::ends;
 
   pushMessage(temp.str());
