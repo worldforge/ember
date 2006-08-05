@@ -1,3 +1,23 @@
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: Added method for getting a whole section.
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp: use the methods for default ops found in Eris and clean up code and comments
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h,  src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/widgets/ConsoleWidget.cpp, src/components/ogre/widgets/ConsoleWidget.h, src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/StatusIconBar.cpp: moved the Input object to be handled by EmberOgre instead of GUIManager, since input is a central function that is independant of a GUI.
+
+2006-08-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h, src/components/ogre/input/InputCommandMapper.cpp, src/components/ogre/input/InputCommandMapper.h, src/components/ogre/input/Makefile.am: added support for binding commands to keys. Thanks to Simon for input on how to best do it as well as code from Sear.
+
 2006-08-02 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember.in: added comments
@@ -16,7 +36,7 @@
 
 2006-08-01 Erik Hjortsberg  <erik@katastrof.nu>
 
-	* ember.bin: 
+	* ember.in: 
 		* Add support for gcj-compiled wfut.
 		* Write the version number to a file, so that we might use if for something useful in the future
 	* .cvsignore: added "var" to ignored dirs

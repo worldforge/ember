@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sun May  7 12:07:30 2006.
+** Generated automatically by tolua++-1.0.6 on Sat Aug  5 13:34:50 2006.
 */
 
 #ifndef __cplusplus
@@ -3938,8 +3938,8 @@ static int tolua_EmberOgre_EmberOgre_GUIManager_getInput00(lua_State* tolua_S)
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInput'",NULL);
 #endif
  {
-  EmberOgre::Input* tolua_ret = (EmberOgre::Input*)  self->getInput();
- tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Input");
+  EmberOgre::Input& tolua_ret = (EmberOgre::Input&)  self->getInput();
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Input");
  }
  }
  return 1;
@@ -5772,6 +5772,32 @@ static int tolua_EmberOgre_EmberOgre_Widget_closeTabGroup00(lua_State* tolua_S)
  tolua_error(tolua_S,"#ferror in function 'closeTabGroup'.",&tolua_err);
  return 0;
 #endif
+}
+
+/* get function: EventFrameStarted of class  EmberOgre::Widget */
+static int tolua_get_EmberOgre__Widget_EventFrameStarted(lua_State* tolua_S)
+{
+  EmberOgre::Widget* self = (EmberOgre::Widget*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventFrameStarted'",NULL);
+#endif
+ tolua_pushusertype(tolua_S,(void*)&self->EventFrameStarted,"sigc::signal<void,float>");
+ return 1;
+}
+
+/* set function: EventFrameStarted of class  EmberOgre::Widget */
+static int tolua_set_EmberOgre__Widget_EventFrameStarted(lua_State* tolua_S)
+{
+  EmberOgre::Widget* self = (EmberOgre::Widget*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventFrameStarted'",NULL);
+ if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,float>",0,&tolua_err))
+ tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventFrameStarted = *((sigc::signal<void,float>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
 }
 
 /* method: new of class  EmberOgre::Model::Model */
@@ -13333,6 +13359,36 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getAvatarController00(lua_State* 
 #endif
 }
 
+/* method: getInput of class  EmberOgre::EmberOgre */
+static int tolua_EmberOgre_EmberOgre_EmberOgre_getInput00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInput'",NULL);
+#endif
+ {
+  EmberOgre::Input& tolua_ret = (EmberOgre::Input&)  self->getInput();
+ tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Input");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getInput'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* method: getEmberEntity of class  EmberOgre::EmberOgre */
 static int tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00(lua_State* tolua_S)
 {
@@ -14314,6 +14370,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"getDefaultScheme",tolua_EmberOgre_EmberOgre_Widget_getDefaultScheme00);
  tolua_function(tolua_S,"addTabbableWindow",tolua_EmberOgre_EmberOgre_Widget_addTabbableWindow00);
  tolua_function(tolua_S,"closeTabGroup",tolua_EmberOgre_EmberOgre_Widget_closeTabGroup00);
+ tolua_variable(tolua_S,"EventFrameStarted",tolua_get_EmberOgre__Widget_EventFrameStarted,tolua_set_EmberOgre__Widget_EventFrameStarted);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);
@@ -14836,6 +14893,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"getEntityFactory",tolua_EmberOgre_EmberOgre_EmberOgre_getEntityFactory00);
  tolua_function(tolua_S,"getMainCamera",tolua_EmberOgre_EmberOgre_EmberOgre_getMainCamera00);
  tolua_function(tolua_S,"getAvatarController",tolua_EmberOgre_EmberOgre_EmberOgre_getAvatarController00);
+ tolua_function(tolua_S,"getInput",tolua_EmberOgre_EmberOgre_EmberOgre_getInput00);
  tolua_function(tolua_S,"getEmberEntity",tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00);
  tolua_function(tolua_S,"getMainView",tolua_EmberOgre_EmberOgre_EmberOgre_getMainView00);
  tolua_function(tolua_S,"getJesus",tolua_EmberOgre_EmberOgre_EmberOgre_getJesus00);
