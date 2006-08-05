@@ -224,7 +224,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 		return;
 	}
 		
-	Atlas::Objects::Root talk = args.front();
+	const Atlas::Objects::Root& talk = args.front();
 	
 	
     if (!talk->hasAttr("say")) {
@@ -232,6 +232,8 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 		return;
     }
 	
+	
+	///some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses.clear();
 	if (talk->hasAttr("responses")) {
 		if (talk->getAttr("responses").isList()) {
@@ -244,7 +246,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 		}
 	}
 	
-	std::string msg = talk->getAttr("say").asString();
+	const std::string& msg = talk->getAttr("say").asString();
     
 
 
@@ -258,14 +260,14 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	message.append(msg);
 	S_LOG_VERBOSE( "Entity says: [" << message << "]\n" )
 
-	// Make the message appear in the chat box
+	/// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 
-	// Make a sound in OpenAL
+	/// Make a sound in OpenAL
 	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
 		getPosition(),getOrientation());
 
-	// Call the method of the base class (since we've overloaded it)
+	/// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
 }
 
@@ -279,16 +281,16 @@ void EmberEntity::onVisibilityChanged(bool vis)
 {
 	checkVisibility(vis);
 	Eris::Entity::onVisibilityChanged(vis);
-//	mOgreEntity->setVisible(vis);	
 }
 
 void EmberEntity::checkVisibility(bool vis)
 {
+	///since we don't want to show all entities solely by their server flags (for example, an inventory item belonging to a character might not be shown even though the server thinks it's visible) we have to some more checks before we decide whether to show this or not
 	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
 	if (container) {
-		//check with the parent first if we should show ourselves
+		///check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {
-			//don't cascade, only change the top node
+			///don't cascade, only change the top node
 			setVisible(true);	
 		} else {
 			setVisible(false);	
@@ -320,7 +322,7 @@ void EmberEntity::adjustPosition()
 
 const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
 {
-	///send it upwards until we get a an entity which knows how to set the position (we'll in most cases end up in the world which will adjust the height a bit
+	///send it upwards until we get a an entity which knows how to set the position (we'll in most cases end up in the world which will adjust the height a bit)
 	EmberEntity* container = getEmberLocation();
 	if (container) {
 		//TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
@@ -413,8 +415,6 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
-	
-
 	const std::list<std::string> &p = act->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 	
@@ -422,7 +422,6 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	
 	const std::string& name = *I;
 	
-	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") action: " + name);
 	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
 }
 
@@ -436,7 +435,6 @@ void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 	const std::string& name = *I;
 		
 	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << name);
-	//GUIManager::getSingleton().setDebugText(std::string("Entity (") + getName() + ":" + getId() + ") imaginary: "+act->getName());
 }
 
 
@@ -457,7 +455,7 @@ bool EmberEntity::hasSuggestedResponses( ) const
 
 void EmberEntity::addArea(TerrainArea* area)
 {
-//just pass it on
+///just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain)
 	if (getEmberLocation()) {
 		getEmberLocation()->addArea(area);
 	}
@@ -515,23 +513,20 @@ void EmberEntity::showOgreBoundingBox(bool show)
 
 void EmberEntity::showErisBoundingBox(bool show)
 {
+	///if there's no bounding box, create one now
+	///allowing for some lazy loading
 	if (!mErisEntityBoundingBox) {
-		//mErisEntityBoundingBox = new Ogre::WireBoundingBox();
 		mErisEntityBoundingBox = new Ogre::OOBBWireBoundingBox();
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
 		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox().highCorner()), Atlas2Ogre(getBBox().lowCorner()));
 		mErisEntityBoundingBox->setupBoundingBox(aabb);
-/*		Model* model = new Model(getName() + "fdsfs");
-		model->create("placeholder");
-		boundingBoxNode->attachObject(model);*/
 		
 		boundingBoxNode->setPosition(Atlas2Ogre(getPredictedPos()));
 		boundingBoxNode->setOrientation(Atlas2Ogre(getOrientation()));
 	}
 	mErisEntityBoundingBox->setVisible(show);
 	
-//	
 }
 
 void EmberEntity::onBboxChanged()
@@ -573,21 +568,15 @@ const Ogre::AxisAlignedBox& EmberEntity::getWorldBoundingBox(bool derive) const
 
 std::vector<std::string> EmberEntity::getDefaultUseOperators()
 {
+	///get the use operations from Eris and return them a simple vector of strings
 	std::vector<std::string> operators;
 	
-	const Eris::Entity::AttrMap::const_iterator I_attribute = this->getAttributes().find("operations");
-	if (I_attribute != this->getAttributes().end()) {
-		Atlas::Message::Element operations = I_attribute->second;
-		if (operations.isList()) {
-			const Atlas::Message::ListType & plist = operations.asList();
-			Atlas::Message::ListType::const_iterator J = plist.begin();
-			for (; J != plist.end(); ++J) {
-				if (J->isString()) {
-					operators.push_back(J->asString());
-				}
-			}				
-		}
-	} 
+	Eris::TypeInfoArray types = getUseOperations();
+	
+	for (Eris::TypeInfoArray::iterator I = types.begin(); I != types.end(); ++I) {
+		operators.push_back((*I)->getName());
+	}
+	
 	return operators;
 }
 
