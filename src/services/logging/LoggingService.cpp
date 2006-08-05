@@ -180,9 +180,10 @@ Ember::LoggingService & Ember::LoggingService::operator<< (const std::
 
 Ember::LoggingService & Ember::LoggingService::operator<< (const int intToAdd)
 {
-    char buffer[NUMBER_BUFFER_SIZE];
-    sprintf (buffer, "%d", intToAdd);
-    myMessage += buffer;
+	std::stringstream ss;
+	ss << intToAdd;
+    myMessage += ss.str();
+    
     return *this;
 }
 
