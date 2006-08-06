@@ -138,7 +138,8 @@ bool Model::createFromDefn()
 	assert(sceneManager);
 	mScale=_masterModel->mScale ;
 	mRotation = _masterModel->mRotation;
-
+	setRenderingDistance(_masterModel->getRenderingDistance());
+	
 	std::vector<std::string> showPartVector;
 
 /*	const SubModelDefinitionsStore&
@@ -158,6 +159,9 @@ bool Model::createFromDefn()
 // 				}
 // 			} 
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
+			if (_masterModel->getRenderingDistance()) {
+				entity->setRenderingDistance(_masterModel->getRenderingDistance());
+			}
 
 // 			//for convenience, if it's a new mesh, check if there's a skeleton file in the same directory
 // 			//if so, use that
@@ -657,6 +661,7 @@ void Model::detachAllObjectsFromBone(void)
 */
 void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 {
+	MovableObject::_notifyCurrentCamera(cam);
 	if (isVisible()) {
 		SubModelSet::const_iterator I = mSubmodels.begin();
 		SubModelSet::const_iterator I_end = mSubmodels.end();

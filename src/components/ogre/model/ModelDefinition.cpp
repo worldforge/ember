@@ -34,7 +34,7 @@ namespace Model {
 
 ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) 
-    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(Ogre::Quaternion::IDENTITY), mIsValid(false), mTranslate(0,0,0), mShowContained(true), mContentOffset(Ogre::Vector3::ZERO)
+    : Resource(creator, name, handle, group, isManual, loader), mScale(0), mUseScaleOf(MODEL_ALL), mRotation(Ogre::Quaternion::IDENTITY), mIsValid(false), mTranslate(0,0,0), mShowContained(true), mContentOffset(Ogre::Vector3::ZERO), mRenderingDistance(0.0f)
 {
     if (createParamDictionary("ModelDefinition"))
     {

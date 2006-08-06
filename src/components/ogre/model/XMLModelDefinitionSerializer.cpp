@@ -137,6 +137,13 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 			modelDef->mUseScaleOf = ModelDefinition::MODEL_NONE;
 	}
 	
+	tmp =  modelNode->Attribute("renderingdistance");
+	if (tmp)
+	{
+		modelDef->setRenderingDistance(Ogre::StringConverter::parseReal(tmp));
+	}
+	
+	
 	//submodels
 	elem = modelNode->FirstChildElement("submodels");
 	if (elem)
@@ -175,6 +182,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		Ogre::Vector3 offset = fillVector3FromElement(elem);
 		modelDef->setContentOffset(offset);
 	}
+	
 }
 
 
@@ -608,6 +616,10 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 				break;
 		}
 		modelElem.SetAttribute("usescaleof", useScaleOf.c_str());
+		
+		if (modelDef->getRenderingDistance() != 0.0f) {
+			modelElem.SetDoubleAttribute("renderingdistance", modelDef->getRenderingDistance());
+		}
 		
 		if (modelDef->getScale() != 0) {
 			modelElem.SetDoubleAttribute("scale", modelDef->getScale());

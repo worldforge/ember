@@ -8,6 +8,7 @@
 			<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
 			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"/> 
 			<xsd:attribute name="contentoffset" type="xsd:string" use="optional"/> 
+			<xsd:attribute name="renderingdistance" type="xsd:float" use="optional"/> 
 			<xsd:element name="rotation" use="optional">
 				<xsd:attribute name="x" type="xsd:string" use="required"/> 
 				<xsd:attribute name="y" type="xsd:string" use="required"/> 

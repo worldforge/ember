@@ -205,6 +205,7 @@ public:
 		int Id;
 		std::string TextureName;
 		std::string MaterialName;
+		float TextureScale;
 	};
 	
     //th ModelDefinition(const Ogre::String& name, const Ogre::String& path);
@@ -255,6 +256,13 @@ public:
 	 */
 	bool getShowContained() const;
 	void getShowContained(bool show);
+	
+	/**
+	 *    If set to something else than 0, all models beyond this distance won't be shown.
+	 * @return 
+	 */
+	inline float getRenderingDistance() const;
+	inline void setRenderingDistance(float distance);
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.
@@ -334,7 +342,10 @@ private:
 	ModelInstanceStore mModelInstances;
 
 	
-
+	/**
+	The minimum distance at which the model will be shown.
+	*/
+	float mRenderingDistance;
 	
 	SubModelDefinitionsStore mSubModels;
 	ActionDefinitionsStore mActions;
@@ -454,6 +465,17 @@ void ModelDefinition::setUseScaleOf(const UseScaleOf useScale)
 {
 	mUseScaleOf = useScale; 
 }
+
+float ModelDefinition::getRenderingDistance() const
+{
+	return mRenderingDistance;
+}
+
+void ModelDefinition::setRenderingDistance(float distance)
+{
+	mRenderingDistance = distance;
+}
+
 
 }
 }

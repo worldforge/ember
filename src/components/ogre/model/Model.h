@@ -132,15 +132,9 @@ public:
 	const ModelDefinition::UseScaleOf getUseScaleOf() const;
 	
 	
-	inline const SubModelPartStoreMap& getSubmodelParts() const
-	{
-		return mSubModelPartMap;
-	}
+	inline const SubModelPartStoreMap& getSubmodelParts() const;
 	
-	inline const SubModelSet& getSubmodels() const
-	{
-		return mSubmodels;
-	}
+	inline const SubModelSet& getSubmodels() const;
 	
 	//SubModel* getSubModel(const std::string& name);
 	SubModel* getSubModel(size_t index);
@@ -155,6 +149,9 @@ public:
 	
 	//inline bool isAnimated() { return mAnimationPartMap.size(); }
 
+        /** Overridden - see MovableObject.
+        */
+// 		inline virtual Ogre::Real getRenderingDistance   (   void    )    const;
 
         /** Overridden - see MovableObject.
         */
@@ -206,7 +203,7 @@ public:
 	 *    returns a pointer to the defintion of the Model
 	 * @return 
 	 */
-	inline ModelDefnPtr getDefinition() const { return _masterModel; }
+	inline ModelDefnPtr getDefinition() const;
 	
 	
 	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
@@ -305,6 +302,28 @@ protected:
 	bool createFromDefn();
 	//void enableAnimation(const std::string& nameOfAnimation,bool enable);
 };
+
+// Ogre::Real Model::getRenderingDistance   (   void    )    const
+// {
+// 	return _masterModel->getRenderingDistance();
+// }
+
+ModelDefnPtr Model::getDefinition() const { return _masterModel; }
+
+const Model::SubModelPartStoreMap& Model::getSubmodelParts() const
+{
+	return mSubModelPartMap;
+}
+
+const Model::SubModelSet& Model::getSubmodels() const
+{
+	return mSubmodels;
+}
+
+
+
+
+
 
 
 	/** Factory object for creating Model instances */
