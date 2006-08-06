@@ -1,5 +1,10 @@
 2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: moved the screenshot functionality from the GUIManager to AvatarCamera where it belongs.
+	* src/components/ogre/scripting/bindings/lua/AvatarCamera.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+	
+2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/logging/LoggingService.cpp: use stringstreams for conversions
 
 2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sat Aug  5 23:54:45 2006.
+** Generated automatically by tolua++-1.0.6 on Sun Aug  6 01:55:07 2006.
 */
 
 #ifndef __cplusplus
@@ -2145,6 +2145,35 @@ static int tolua_EmberOgre_EmberOgre_AvatarCamera_toggleRenderMode00(lua_State* 
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'toggleRenderMode'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: takeScreenshot of class  EmberOgre::AvatarCamera */
+static int tolua_EmberOgre_EmberOgre_AvatarCamera_takeScreenshot00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::AvatarCamera",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::AvatarCamera* self = (EmberOgre::AvatarCamera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'takeScreenshot'",NULL);
+#endif
+ {
+  self->takeScreenshot();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'takeScreenshot'.",&tolua_err);
  return 0;
 #endif
 }
@@ -14116,6 +14145,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"setCameraDistance",tolua_EmberOgre_EmberOgre_AvatarCamera_setCameraDistance00);
  tolua_function(tolua_S,"enableCompositor",tolua_EmberOgre_EmberOgre_AvatarCamera_enableCompositor00);
  tolua_function(tolua_S,"toggleRenderMode",tolua_EmberOgre_EmberOgre_AvatarCamera_toggleRenderMode00);
+ tolua_function(tolua_S,"takeScreenshot",tolua_EmberOgre_EmberOgre_AvatarCamera_takeScreenshot00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);

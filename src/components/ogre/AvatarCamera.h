@@ -192,11 +192,17 @@ public:
 	const Ember::ConsoleCommandWrapper SetCameraDistance;
 	const Ember::ConsoleCommandWrapper ToggleRendermode;
 	const Ember::ConsoleCommandWrapper ToggleFullscreen;
+	const Ember::ConsoleCommandWrapper Screenshot;
 	
 	/**
 		Toggles between wireframe and solid render mode.
 	*/
 	void toggleRenderMode();
+	
+	/**
+	 * takes a screen shot and writes it to disk 
+	 */
+	void takeScreenshot();
 	
 protected:
 
@@ -220,6 +226,8 @@ protected:
 	 * creates all nodes needed for the camera 
 	 */
 	void createNodesForCamera();
+	
+	const std::string _takeScreenshot();
 	
 	void createViewPort();
 	GUIManager* mGUIManager;

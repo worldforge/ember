@@ -103,6 +103,11 @@ public:
 	*/
 	void toggleRenderMode();
 	
+	/**
+	 * takes a screen shot and writes it to disk 
+	 */
+	void takeScreenshot();
+
 
 };
 

@@ -66,7 +66,6 @@ namespace EmberOgre {
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : mWindow(window), mGuiCommandMapper("gui", "key_bindings_gui")
-, Screenshot("screenshot", this, "Take a screenshot and write to disk.")
 , ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
 {
@@ -299,77 +298,7 @@ void GUIManager::addWidget(Widget* widget)
 }
 
 
-const std::string GUIManager::_takeScreenshot() 
-{
-	// retrieve current time
-	time_t rawtime;
-	struct tm* timeinfo;
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	
-	// construct filename string
-	// padding with 0 for single-digit values
-	std::stringstream filename;
-	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
-	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
-	if(month <= 9) 
-	{
-		filename << "0";	
-	}
-	filename << month;
-	int day = (*timeinfo).tm_mday;
-	if(day <= 9) 
-	{
-		filename << "0";	
-	}
-	filename << day << "_";
-	int hour = (*timeinfo).tm_hour;
-	if(hour <= 9) 
-	{
-		filename << "0"; 
-	}
-	filename << hour;
-	int min = (*timeinfo).tm_min;
-	if(min <= 9) 
-	{
-		filename << "0";	 
-	}
-	filename << min;
-	int sec = (*timeinfo).tm_sec;
-	if(sec <= 9) 
-	{
-		filename << "0";
-	} 
-	filename << sec << ".png";
 
-	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
-	try {
-		//make sure the directory exists
-		
-		struct stat tagStat;
-		int ret;
-		ret = stat( dir.c_str(), &tagStat );
-		if (ret == -1) {
-#ifdef __WIN32__
-			mkdir(dir.c_str());
-#else
-			mkdir(dir.c_str(), S_IRWXU);
-#endif
-		}
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
-		throw Ember::Exception("Error when saving screenshot. Message: " + std::string(ex.what()));
-	}
-	
-	try {
-		// take screenshot
-		mWindow->writeContentsToFile(dir + filename.str());
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
-		throw Ember::Exception("Error when saving screenshot. Message: " + ex.getDescription());
-	}
-	return dir + filename.str();
-}
 
 
 
@@ -453,46 +382,15 @@ const bool GUIManager::isInGUIMode() const {
 	return getInput().getInputMode() == Input::IM_GUI; 
 }
 
-void GUIManager::takeScreenshot()
-{
-	try {
-		const std::string& result = _takeScreenshot();
-		setDebugText("Wrote image: " + result);
-		S_LOG_INFO(result);
-		Ember::ConsoleBackend::getMainConsole()->pushMessage(result);
-	} catch (const Ember::Exception& ex) {
-		Ember::ConsoleBackend::getMainConsole()->pushMessage("Error when saving screenshot: " + ex.getError());
-	}
-}
-
-
 void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 {
- 		//toggle the console
- 		//we've put it here because we wan't the console to always be available
-//  		if(key.sym == SDLK_F12 && mConsoleWidget)
-// 		{
-// 			mConsoleWidget->toggleActive();
-// /*			t->buildWidget();*/
-// 		}
-
-		//take screenshot		
-/*		if(key.sym == SDLK_PRINT || key.sym == SDLK_SYSREQ )
-		{
-			takeScreenshot();
-		}*/
-		
-
 }
 
 
 
 void GUIManager::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == Screenshot.getCommand()) {
-		//just take a screen shot
-		takeScreenshot();
-	} else if (command == ToggleInputMode.getCommand()) {
+	if (command == ToggleInputMode.getCommand()) {
 		getInput().toggleInputMode();
 	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();

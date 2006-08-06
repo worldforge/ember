@@ -204,7 +204,6 @@ public:
 	
 	EntityWorldPickListener* getEntityPickListener() const;
 	
-	const Ember::ConsoleCommandWrapper Screenshot;
 	const Ember::ConsoleCommandWrapper ToggleInputMode;
 	const Ember::ConsoleCommandWrapper ReloadGui;
 	
@@ -249,11 +248,6 @@ protected:
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 	
 	
-	/**
-	 * takes a screen shot and writes it to disk 
-	 */
-	void takeScreenshot();
-	const std::string _takeScreenshot();
 
 	
 	/**

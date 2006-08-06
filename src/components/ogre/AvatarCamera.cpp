@@ -34,7 +34,7 @@
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
 #include "framework/Tokeniser.h"
-// #include "framework/ConsoleBackend.h"
+#include "framework/ConsoleBackend.h"
 
 #include "GUIManager.h"
 #include "input/Input.h"
@@ -59,7 +59,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mCamera(camera),
 	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
 	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
-	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode.")
+	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
+	Screenshot("screenshot", this, "Take a screenshot and write to disk.")
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -546,7 +547,10 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	
 void AvatarCamera::runCommand(const std::string &command, const std::string &args)
 {
-	if(SetCameraDistance == command)
+	if(Screenshot == command) {
+		//just take a screen shot
+		takeScreenshot();
+	} else if(SetCameraDistance == command)
 	{
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -595,6 +599,88 @@ void AvatarCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
 	mPickListeners.push_front(worldPickListener);
 }
 
+const std::string AvatarCamera::_takeScreenshot() 
+{
+	// retrieve current time
+	time_t rawtime;
+	struct tm* timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	
+	// construct filename string
+	// padding with 0 for single-digit values
+	std::stringstream filename;
+	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
+	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
+	if(month <= 9) 
+	{
+		filename << "0";	
+	}
+	filename << month;
+	int day = (*timeinfo).tm_mday;
+	if(day <= 9) 
+	{
+		filename << "0";	
+	}
+	filename << day << "_";
+	int hour = (*timeinfo).tm_hour;
+	if(hour <= 9) 
+	{
+		filename << "0"; 
+	}
+	filename << hour;
+	int min = (*timeinfo).tm_min;
+	if(min <= 9) 
+	{
+		filename << "0";	 
+	}
+	filename << min;
+	int sec = (*timeinfo).tm_sec;
+	if(sec <= 9) 
+	{
+		filename << "0";
+	} 
+	filename << sec << ".png";
+
+	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
+	try {
+		//make sure the directory exists
+		
+		struct stat tagStat;
+		int ret;
+		ret = stat( dir.c_str(), &tagStat );
+		if (ret == -1) {
+#ifdef __WIN32__
+			mkdir(dir.c_str());
+#else
+			mkdir(dir.c_str(), S_IRWXU);
+#endif
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
+		throw Ember::Exception("Error when saving screenshot. Message: " + std::string(ex.what()));
+	}
+	
+	try {
+		// take screenshot
+		mWindow->writeContentsToFile(dir + filename.str());
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
+		throw Ember::Exception("Error when saving screenshot. Message: " + ex.getDescription());
+	}
+	return dir + filename.str();
+}
+
+void AvatarCamera::takeScreenshot()
+{
+	try {
+		const std::string& result = _takeScreenshot();
+		S_LOG_INFO(result);
+		Ember::ConsoleBackend::getMainConsole()->pushMessage("Wrote image: " + result);
+	} catch (const Ember::Exception& ex) {
+		Ember::ConsoleBackend::getMainConsole()->pushMessage("Error when saving screenshot: " + ex.getError());
+	}
+}
 
 }
 
