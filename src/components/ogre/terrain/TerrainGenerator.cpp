@@ -754,14 +754,15 @@ void TerrainGenerator::runCommand(const std::string &command, const std::string 
 {
 	if(command == "exportterrainmaterial") {
 	//disable for now
-/*		try {
+		try {
 			Ogre::MaterialPtr materialPtr = mTerrainPages.begin()->second.begin()->second->getMaterial();
 			Ogre::MaterialSerializer serializer;
-			serializer.exportMaterial(materialPtr, "/home/erik/.ember/terrain.material");
+			
+			serializer.exportMaterial(materialPtr, Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/terrain.material");
 		} catch (Ogre::Exception& ex) 
 		{
 			S_LOG_FAILURE(ex.getFullDescription());
-		}*/
+		}
 	} 
 }
 }

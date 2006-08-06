@@ -1,5 +1,13 @@
 2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainShader.cpp, src/components/ogre/TerrainShader.h: Try to optimize the terrain material a bit more, though it's still too inefficient.
+
+2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/modeldefinitions/modeldefinition.xsd: support the renderDistance functionality on Ogre.
+
+2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: moved the screenshot functionality from the GUIManager to AvatarCamera where it belongs.
 	* src/components/ogre/scripting/bindings/lua/AvatarCamera.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
 	

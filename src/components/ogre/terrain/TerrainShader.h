@@ -73,7 +73,9 @@ protected:
 	int mTerrainIndex;
 	Ogre::MaterialPtr mMaterial;
 	
-	Ogre::ushort mNumberOfTextureUnitsOnCard;
+	Ogre::ushort getMaxTextureUnits() const;
+	
+	//const Model::ModelDefinition::AreaDefinition& mAreaDefinition;
 };
 
 }
