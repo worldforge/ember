@@ -1,5 +1,9 @@
 2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/services/server/ServerService.cpp: Completely disable the OOG functionality since it wasn't used anyway. And more importantly, it triggered an assertion crash in eris when creating a new character. And since (at least 1.3.11) doesn't compile away assertions in release builds this will always trigger for new players.
+	
+2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/TerrainGenerator.cpp, src/components/ogre/TerrainShader.cpp, src/components/ogre/TerrainShader.h: Try to optimize the terrain material a bit more, though it's still too inefficient.
 
 2006-08-06 Erik Hjortsberg  <erik@katastrof.nu>

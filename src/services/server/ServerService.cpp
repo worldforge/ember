@@ -222,7 +222,7 @@ namespace Ember
 	
 	GotAccount.emit(myAccount);
     // Init OOGChat controller
-    myOOGChat = new OOGChat(myAccount);
+//     myOOGChat = new OOGChat(myAccount);
     
 
     ConsoleBackend::getMainConsole()->pushMessage("Connected to Server");
