@@ -64,7 +64,6 @@ export LD_LIBRARY_PATH
 homedata=$HOME/.ember
 case "$1" in
 --home)
-  # Try to run requested program, and just exit if it succeeds.
   shift
   homedata="$@"
   ;;
@@ -79,6 +78,20 @@ SERVER=http://amber.worldforge.org/WFUT/
 if [ ! -d $homedata ] ; then
 	echo "Creating $homedata to store all game data."
 	mkdir -p $homedata
+else
+	#if an older version have been installed, move the ember.conf out of the way
+	if [ ! -e $homedata/latest_version ]; then
+		echo "Checking for old config files and moving them out of the way."
+		if [ -e $homedata/ember.conf ]; then
+			mv $homedata/ember.conf $homedata/ember.conf.old
+		fi
+		if [ -e $homedata/ogre.cfg ]; then
+			mv $homedata/ogre.cfg $homedata/ogre.cfg.old
+		fi
+		if [ -e $homedata/plugins.cfg ]; then
+			mv $homedata/plugins.cfg $homedata/plugins.cfg.old
+		fi
+	fi
 fi
 
 #Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
