@@ -1,3 +1,10 @@
+2006-08-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac, src/components/ogre/OgreSetup.cpp: removed the dependency on SDL_image, instead store the icon in compiled form
+	* ember.desktop: added Application to the categories
+	* src/components/ogre/CONTROLS: updated with a reference to ember.conf
+	* src/components/ogre/OgreResourceLoader.cpp: Catch errors when initializing groups.
+
 2006-08-07 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember.in: If an old version already has been installed, move the config files out of the way. 

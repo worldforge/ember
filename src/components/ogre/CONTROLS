@@ -1,18 +1,1 @@
-Controls for ember - OGRE
-This is a temporary file, when ember is more advanced the controls will be defined via the configuration service.
-
-MOUSE: 
-	left mouse to pick stuff
-	right mouse switches between GUI and movement mode
-	look around when not in game GUI mode
-	point & click when in game GUI mode
-
-W: walk forward
-S: walk backwards
-A: sidestep left
-D: sidestep right
-
-F6: switch between free flying camera or third person camera
-F7: switch between render modes
-prt scr: take screenshot
-F12: show debug console
+See ember.conf for the controls

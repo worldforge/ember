@@ -100,7 +100,11 @@ void OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 void OgreResourceLoader::loadBootstrap()
 {
 	loadSection("Bootstrap");
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
+	try {
+		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
+	}
     
 
 }
@@ -108,15 +112,27 @@ void OgreResourceLoader::loadBootstrap()
 void OgreResourceLoader::loadGui()
 {
 	loadSection("Gui");
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Gui");
+	try {
+		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Gui");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
+	}
 }
 
 void OgreResourceLoader::loadGeneral()
 {
 	loadSection("General");
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
+	try {
+		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
+	}
 	loadSection("ModelDefinitions");
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ModelDefinitions");
+	try {
+		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ModelDefinitions");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
+	}
 	
 	///out of pure interest we'll print out how many modeldefinitions we've loaded
 	Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
@@ -169,6 +185,8 @@ void OgreResourceLoader::preloadMedia()
 void OgreResourceLoader::loadSection(const std::string& sectionName)
 {
 	S_LOG_VERBOSE("Adding resource section " << sectionName);
+// 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup(sectionName);
+	
 	Ogre::ConfigFile::SettingsIterator I = cf.getSettingsIterator(sectionName);
 	std::string finalTypename;
 	while (I.hasMoreElements()) {
