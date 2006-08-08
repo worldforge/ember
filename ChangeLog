@@ -1,5 +1,9 @@
 2006-08-08 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* configure.ac: fixed typo
+
+2006-08-08 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/OgreSetup.cpp: removed include directive for SDL_image
 	* src/components/ogre/modeldefinitions/trees.modeldef.xml: don't render tree farther away than 200 meters, perhaps this will improve the performance a bit.
 	
