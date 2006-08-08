@@ -28,7 +28,6 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
-#include <SDL/SDL_image.h>
 #include "framework/binreloc.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 

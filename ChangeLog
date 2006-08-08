@@ -1,5 +1,10 @@
 2006-08-08 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/OgreSetup.cpp: removed include directive for SDL_image
+	* src/components/ogre/modeldefinitions/trees.modeldef.xml: don't render tree farther away than 200 meters, perhaps this will improve the performance a bit.
+	
+2006-08-08 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* configure.ac, src/components/ogre/OgreSetup.cpp: removed the dependency on SDL_image, instead store the icon in compiled form
 	* ember.desktop: added Application to the categories
 	* src/components/ogre/CONTROLS: updated with a reference to ember.conf

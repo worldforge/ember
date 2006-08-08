@@ -10,7 +10,7 @@
 		</submodels>
 	</model>
 	
-	<model name="fir" usescaleof="height" scale="2" >
+	<model name="fir" usescaleof="height" scale="2" renderingdistance="200">
 		<submodels>
 			<submodel mesh="3d_objects/plants/fir/models/fir/fir.mesh" >
 				<parts>
@@ -20,7 +20,7 @@
 		</submodels>
 	</model>
 	
-	<model name="oak" usescaleof="height" scale="2">
+	<model name="oak" usescaleof="height" scale="2" renderingdistance="200">
 		<submodels>
 			<submodel mesh="3d_objects/plants/tree/models/oak_static/old_oak.mesh" >
 				<parts>
