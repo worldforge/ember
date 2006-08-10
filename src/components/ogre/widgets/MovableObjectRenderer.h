@@ -56,7 +56,7 @@ public:
     void setCameraDistance(float distance);
     
     /**
-     * Gets the distance of the camera from the Model.
+     * Gets the distance of the camera from the Model in reltive terms with 1.0 being the optimal distance to show the full model.
      * @return 
      */
     float getCameraDistance();
@@ -129,6 +129,14 @@ protected:
 	 * @return 
 	 */
 	bool image_MouseButtonDown(const CEGUI::EventArgs& args);
+	
+	
+	/**
+	 *    Mouse wheel movements will zoom in and out.
+	 * @param args 
+	 * @return 
+	 */
+	bool image_MouseWheel(const CEGUI::EventArgs& args);
 	
     EntityCEGUITexture* mTexture;
     /**

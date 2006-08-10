@@ -46,6 +46,8 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
 		mImage->setImage(mTexture->getImage());
 		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
+		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
+		
 		
 		/// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
@@ -143,7 +145,7 @@ void MovableObjectRenderer::setCameraDistance(float distance)
 
 float MovableObjectRenderer::getCameraDistance()
 {
-	return  mTexture->getCamera()->getPosition().z;
+	return  mTexture->getCameraDistance();
 }
 
 void MovableObjectRenderer::catchInput()
@@ -156,6 +158,22 @@ void MovableObjectRenderer::releaseInput()
 	GUIManager::getSingleton().getInput().removeAdapter(this);
 }
 
+bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
+{
+	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	
+	if (mTexture) {
+		if (mouseArgs.wheelChange != 0.0f) {
+			float distance = mTexture->getCameraDistance();
+			distance += (mouseArgs.wheelChange * 0.1);
+			setCameraDistance(distance);
+		}
+	}
+	
+	return true;
+}
+
+
 bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
@@ -164,9 +182,6 @@ bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 		if (getIsInputCatchingAllowed()) {
 			catchInput();
 		}
-	}
-	if (mouseArgs.wheelChange != 0.0f) {
-		setCameraDistance(getCameraDistance() + mouseArgs.wheelChange);
 	}
 	return true;
 }

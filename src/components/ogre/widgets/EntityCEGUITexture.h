@@ -124,6 +124,12 @@ public:
 	void setCameraDistance(Ogre::Real distance);
     
     
+	/**
+	 *    Gets the relative distance. 1.0 being the most optimal distance for showing the complete mesh.
+	 * @return 
+	 */
+	float getCameraDistance() const;
+    
     
     
 private:

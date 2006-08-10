@@ -125,6 +125,15 @@ void EntityCEGUITexture::yaw(Ogre::Degree degrees)
 {
 	mCameraNode->yaw(degrees);
 }
+	
+	
+float EntityCEGUITexture::getCameraDistance() const
+{
+	if (mDefaultCameraDistance) { 
+		return mCamera->getPosition().z / mDefaultCameraDistance;
+	}
+	return mCamera->getPosition().z;
+}
 
 void EntityCEGUITexture::setCameraDistance(Ogre::Real distance)
 {
