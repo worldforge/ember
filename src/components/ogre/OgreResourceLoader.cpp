@@ -138,8 +138,8 @@ void OgreResourceLoader::loadGeneral()
 	Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
 	int count = 0;
 	while (I.hasMoreElements()) {
-		I.moveNext();
 		++count;
+		I.moveNext();
 	}
 	
 	S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
@@ -193,13 +193,14 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
 		const std::string& typeName = I.peekNextKey();
 		const std::string& archName = I.peekNextValue();
-		I.moveNext();
+		
 		finalTypename = typeName.substr(0, typeName.find("["));
 		if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
 			addSharedMedia(archName, finalTypename, sectionName, mLoadRecursive);
 		} else {
 			addUserMedia(archName, finalTypename, sectionName, mLoadRecursive);
 		}
+		I.moveNext();
 	}
 
 }

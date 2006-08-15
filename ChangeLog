@@ -1,3 +1,7 @@
+2006-08-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreResourceLoader.cpp: don't increase the iterator until needed
+
 2006-08-10 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/EntityCEGUITexture.h, src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: the mouse wheel controls zooming on object rendering textures
