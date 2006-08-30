@@ -28,6 +28,8 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#include "framework/osdir.h"
+
 #ifdef __WIN32__
 #include <direct.h>
 #endif
@@ -423,10 +425,10 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 	{
 		//make sure the directory exists
 		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/carpenter/blueprints";
-		struct stat tagStat;
-		int ret;
-		ret = stat( dir.c_str(), &tagStat );
-		if (ret == -1) {
+		
+		oslink::directory osdir(dir);
+
+		if (!osdir) {
 #ifdef __WIN32__
 			mkdir((Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "carpenter").c_str());
 			mkdir(dir.c_str());
