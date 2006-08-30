@@ -55,9 +55,9 @@ namespace Ember
 		//use this utility function for removing the file part
 		PathRemoveFileSpec(cwd);
 		baseDir = std::string(cwd) + "\\";
-#endif
-
+#else 
 		setPrefix(PREFIX);
+#endif
 
 		setName("Configuration Service");
 		setDescription("Service for management of Ember user-defined configuration");
@@ -205,6 +205,7 @@ namespace Ember
 		//taken from Sear
 #ifdef __WIN32__
 			static std::string finalPath;
+			static std::string fallbackPath(".");
 			if (!finalPath.empty()) {
 				return finalPath;
 			}
@@ -215,7 +216,7 @@ namespace Ember
 				
 				if (!homedrive || !homepath) {
 					std::cerr << "unable to determine homedir in Win32, using ." << std::endl;
-					return ".";
+					return fallbackPath;
 				}
 				path = std::string(homedrive) + std::string(homepath);
 			}
