@@ -27,7 +27,9 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-//#include "services/sound/SoundService.h"
+#ifndef WIN32
+#include "services/sound/SoundService.h"
+#endif
 
 #include "MousePicker.h"
 #include "jesus/JesusPickerObject.h"
@@ -51,6 +53,58 @@
 
 namespace EmberOgre {
  
+Recorder::Recorder(): mSequence(0), mAccruedTime(0.0f), mFramesPerSecond(20.0f)
+{
+}
+
+void Recorder::startRecording()
+{
+	Ogre::Root::getSingleton().addFrameListener(this);
+}
+void Recorder::stopRecording()
+{
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
+bool Recorder::frameStarted(const Ogre::FrameEvent& event)
+{
+	mAccruedTime += event.timeSinceLastFrame;
+	if (mAccruedTime >= (1.0f / mFramesPerSecond)) {
+		mAccruedTime = 0.0f;
+		std::stringstream filename;
+		filename << "screenshot_" << mSequence++ << ".tga";
+		const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/recordings/";
+		try {
+			//make sure the directory exists
+			
+			struct stat tagStat;
+			int ret;
+			ret = stat( dir.c_str(), &tagStat );
+			if (ret == -1) {
+			#ifdef __WIN32__
+				mkdir(dir.c_str());
+			#else
+				mkdir(dir.c_str(), S_IRWXU);
+			#endif
+			}
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
+			stopRecording();
+			return true;
+		}
+		try {
+			// take screenshot
+			EmberOgre::getSingleton().getRenderWindow()->writeContentsToFile(dir + filename.str());
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
+			stopRecording();
+			return true;
+		}
+	}
+	return true;
+}
+
+ 
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) :
 	mSceneManager(sceneManager),
@@ -68,7 +122,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
 	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
 	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
-	Screenshot("screenshot", this, "Take a screenshot and write to disk.")
+	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
+	Record("+record", this, "Record to disk.")
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -572,6 +627,10 @@ void AvatarCamera::runCommand(const std::string &command, const std::string &arg
 		
 	} else if (ToggleRendermode == command) {
 		toggleRenderMode();
+	} else if (Record == command) {
+		mRecorder.startRecording();
+	} else if (Record.getInverseCommand() == command) {
+		mRecorder.stopRecording();
 	}
 }
 	

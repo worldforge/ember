@@ -29,14 +29,14 @@
 #ifdef WIN32
 	#include <SDL.h>
 	#include <SDL_syswm.h>
+	#include "services/EmberServices.h"
+	#include "services/config/ConfigService.h"
 #else 
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
 #endif
 #include "framework/binreloc.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 
 namespace EmberOgre {
 

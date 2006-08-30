@@ -1,5 +1,10 @@
 2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/OgreSetup.cpp: fixed win32-fixes
+	* ember.conf: updated bindings
+	
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/config/ConfigService.cpp: fixes for win32
 
 2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
@@ -32,6 +37,7 @@
 
 	* src/components/ogre/OgreSetup.cpp: make it work on win32
 
+>>>>>>> 1.543
 2006-08-14 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/OgreResourceLoader.cpp: don't increase the iterator until needed

@@ -47,6 +47,22 @@ struct EntityPickResult;
 class IWorldPickListener;
 struct MousePickerArgs;
 
+class Recorder :public Ogre::FrameListener
+{
+public:
+ 	Recorder();
+	void startRecording();
+	void stopRecording();	
+	/**
+	 * Methods from Ogre::FrameListener
+	 */
+	bool frameStarted(const Ogre::FrameEvent& event);
+private:
+	int mSequence;
+	float mAccruedTime;
+	float mFramesPerSecond;
+};
+
 class AvatarCamera 
 :
 public sigc::trackable,
@@ -193,6 +209,7 @@ public:
 	const Ember::ConsoleCommandWrapper ToggleRendermode;
 	const Ember::ConsoleCommandWrapper ToggleFullscreen;
 	const Ember::ConsoleCommandWrapper Screenshot;
+	const Ember::ConsoleCommandWrapper Record;
 	
 	/**
 		Toggles between wireframe and solid render mode.
@@ -210,6 +227,8 @@ protected:
 	WorldPickListenersStore mPickListeners;
 		
 	typedef std::vector<std::string> CompositorNameStore;
+	
+	Recorder mRecorder;
 	
 	CompositorNameStore mLoadedCompositors;
 
