@@ -226,7 +226,7 @@ EmberOgre::~EmberOgre()
 {
 /*	delete mOgreResourceLoader;
 //	mSceneMgr->shutdown();
-		delete mWorldView;
+//		delete mWorldView;
 		//mSceneMgr->removeAllCameras();
 //		mSceneMgr->clearScene();
 		delete mGUIManager;
@@ -476,7 +476,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		EventGUIManagerInitialized.emit(*mGUIManager);
 	} catch (...) {
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		throw Ogre::Exception(0, "Could not load gui, aborting. Make sure that all media got downloaded (currently this requires java 1.4+.", "EmberOgre.cpp");
+		throw Ogre::Exception(0, "Could not initialize gui, aborting. Make sure that all media got downloaded (currently this requires java 1.4+.", "EmberOgre.cpp");
 	}
 	
 	/// Create the scene
@@ -512,7 +512,7 @@ void EmberOgre::checkForConfigFiles()
 
 	///make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
-	assureConfigFile("plugins.cfg", sharePath);
+	//assureConfigFile("plugins.cfg", sharePath);
 }
 
 
@@ -770,16 +770,16 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
  	
  	
 
-	
+
 	/// Change working directory
-	struct stat tagStat;
-	int ret;
-	ret = stat( Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str(), &tagStat );
-	if (ret == -1) {
+	const std::string& dirName = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory();
+	oslink::directory osdir(dirName);
+
+	if (!osdir) {
 #ifdef WIN32
-		mkdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
+		mkdir(dirName.c_str());
 #else
-		mkdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str(), S_IRWXU);
+		mkdir(dirName.c_str(), S_IRWXU);
 #endif
 	}
 	
@@ -793,11 +793,12 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->loadSavedConfig("ember.conf");
 
+#ifndef WIN32
 	/// Initialize the SoundService
 	if (Ember::EmberServices::getSingletonPtr()->getSoundService()->start() == Ember::Service::OK) {
 		Ember::EmberServices::getSingletonPtr()->getSoundService()->registerSoundProvider(new OgreSoundProvider());
 	}
-
+#endif
 
 	/// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing MetaServer Service");
@@ -948,11 +949,13 @@ int main(int argc, char **argv)
     }
 
 
+#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
 		if (homeDir != "") {
 			chdir(homeDir.c_str());
 		} else {
 			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
 		}
+#endif
     return 0;
 }
 

@@ -27,7 +27,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "services/sound/SoundService.h"
+//#include "services/sound/SoundService.h"
 
 #include "MousePicker.h"
 #include "jesus/JesusPickerObject.h"
@@ -40,6 +40,14 @@
 #include "input/Input.h"
 
 #include "IWorldPickListener.h"
+
+#include "framework/osdir.h"
+
+#ifdef __WIN32__
+#include <windows.h>
+#include <direct.h>
+#endif
+
 
 namespace EmberOgre {
  
@@ -534,7 +542,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 				
 			}
 			 else if (cameraHeight != cameraNodeHeight) {
-				Ogre::Real newHeight = std::max(terrainHeight, cameraNodeHeight);
+				Ogre::Real newHeight = std::max<int>(terrainHeight, cameraNodeHeight);
 				mCamera->move(Ogre::Vector3(0,newHeight - cameraHeight,0));
 				mCamera->lookAt(mAvatarCameraRootNode->getWorldPosition());
 				
@@ -585,12 +593,14 @@ void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& secti
 
 bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 {
+#ifndef WIN32
 	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
 	{
 		mySoundService->updateListenerPosition(
 			Ogre2Atlas(mCamera->getPosition()),
 			Ogre2Atlas(mCamera->getOrientation()));
 	}
+#endif
 	return true;
 }
 
@@ -646,10 +656,9 @@ const std::string AvatarCamera::_takeScreenshot()
 	try {
 		//make sure the directory exists
 		
-		struct stat tagStat;
-		int ret;
-		ret = stat( dir.c_str(), &tagStat );
-		if (ret == -1) {
+		oslink::directory osdir(dir);
+
+		if (!osdir) {
 #ifdef __WIN32__
 			mkdir(dir.c_str());
 #else

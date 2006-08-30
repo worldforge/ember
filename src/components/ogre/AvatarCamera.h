@@ -45,7 +45,7 @@ class EmberEntity;
 struct MouseMotion;
 struct EntityPickResult;
 class IWorldPickListener;
-class MousePickerArgs;
+struct MousePickerArgs;
 
 class AvatarCamera 
 :
