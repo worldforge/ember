@@ -26,10 +26,17 @@
 
 #include "OgreSetup.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
+#ifdef WIN32
+	#include <SDL.h>
+	#include <SDL_syswm.h>
+#else 
+	#include <SDL/SDL.h>
+	#include <SDL/SDL_syswm.h>
+#endif
 #include "framework/binreloc.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 namespace EmberOgre {
 
@@ -47,7 +54,9 @@ OgreSetup::~OgreSetup()
 Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 {
 #ifdef __WIN32__
-		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+		const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
+
+		mRoot = new Ogre::Root(sharePath + "\\plugins.cfg", "ogre.cfg", "ogre.log");
 #else
 	if (loadOgrePluginsThroughBinreloc) {
 		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
@@ -98,7 +107,7 @@ bool OgreSetup::configure(void)
 		}
 #if __WIN32__
    
-    mWindow = mRoot->initialise(true, "Ember");
+    mRenderWindow = mRoot->initialise(true, "Ember");
    
    ///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
    	_fpreset();
@@ -114,7 +123,7 @@ bool OgreSetup::configure(void)
    // New method: As proposed by Sinbad.
    //  This method always works.
    HWND hWnd;
-   mWindow->getCustomAttribute("HWND", &hWnd);
+   mRenderWindow->getCustomAttribute("HWND", &hWnd);
 	
    char tmp[64];
    // Set the SDL_WINDOWID environment variable
@@ -132,7 +141,7 @@ bool OgreSetup::configure(void)
       // This is necessary to allow the window to move1
       //  on WIN32 systems. Without this, the window resets
       //  to the smallest possible size after moving.
-      SDL_SetVideoMode(mWindow->getWidth(), mWindow->getHeight(), 0, 0); // first 0: BitPerPixel, 
+      SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel, 
                                              // second 0: flags (fullscreen/...)
                                              // neither are needed as Ogre sets these
 
