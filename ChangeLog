@@ -1,3 +1,37 @@
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.cpp: fixes for win32
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/ServerWidget.cpp: added more logging
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTextureManager.cpp: removed technique not used
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp: use the osdir class to check for existance of directories
+	* src/components/ogre/model/ModelDefinition.h: fixed struct signature
+	* src/components/ogre/model/SubModel.cpp: check for entity existance before removing
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/XMLJesusSerializer.cpp: use the osdir class to check for existance of directories
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarCamera.cpp: use the osdir class to check for existance of directories, make it work on win32
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreResourceLoader.cpp: use the osdir class to check for existance of directories
+
+2006-08-30 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreSetup.cpp: make it work on win32
+
 2006-08-14 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/OgreResourceLoader.cpp: don't increase the iterator until needed
