@@ -108,7 +108,8 @@ namespace EmberOgre
 	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) { 
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
-		mMainWindow = mWindowManager->loadWindowLayout(mGuiManager->getLayoutDir() + filename, prefix);
+		std::string finalFileName(mGuiManager->getLayoutDir() + filename);
+		mMainWindow = mWindowManager->loadWindowLayout(finalFileName, prefix);
 		mOriginalWindowAlpha = mMainWindow->getAlpha();
 		if (mMainWindow) {
 			getMainSheet()->addChildWindow(mMainWindow); 
@@ -122,7 +123,11 @@ namespace EmberOgre
 	{
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
-		return 	mWindowManager->getWindow(mPrefix + windowName);
+		CEGUI::Window* window = mWindowManager->getWindow(mPrefix + windowName);
+		if (!window) {
+			S_LOG_WARNING("The window with id " << mPrefix << windowName << " does not exist.");
+		}
+		return 	window;
 
 	}
 

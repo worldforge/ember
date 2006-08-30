@@ -364,7 +364,11 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 void ServerWidget::createPreviewTexture()
 {
 	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(getWindow("CreateCharacterPanel/Image"));
-	mModelPreviewRenderer = new ModelRenderer(imageWidget);
+	if (!imageWidget) {
+		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
+	} else {
+		mModelPreviewRenderer = new ModelRenderer(imageWidget);
+	}
 
 }
 
