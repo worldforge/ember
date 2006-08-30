@@ -44,6 +44,8 @@
 	//#include <ostream>
 #endif
 
+#include "framework/osdir.h"
+
 // Namespaces
 namespace EmberOgre {
 namespace Model {
@@ -567,10 +569,9 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 	{
 		//make sure the directory exists
 		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media";
-		struct stat tagStat;
-		int ret;
-		ret = stat( dir.c_str(), &tagStat );
-		if (ret == -1) {
+		oslink::directory osdir(dir);
+		
+		if (!osdir) {
 			S_LOG_INFO("Creating directory " << dir);
 #ifdef __WIN32__
 			mkdir(dir.c_str());
@@ -583,8 +584,9 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 
 		dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/modeldefinitions/";
-		ret = stat( dir.c_str(), &tagStat );
-		if (ret == -1) {
+		osdir = oslink::directory(dir);
+		
+		if (!osdir) {
 			S_LOG_INFO("Creating directory " << dir);
 #ifdef __WIN32__
 			mkdir(dir.c_str());

@@ -40,8 +40,10 @@ SubModel::~SubModel()
 	for (SubModelPartMap::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
 		delete I->second;
 	}
-	Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
-	sceneManager->destroyEntity(mEntity);
+	if (mEntity) {
+		Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+		sceneManager->destroyEntity(mEntity);
+	}
 	
 }
 

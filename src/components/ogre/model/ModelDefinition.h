@@ -40,7 +40,7 @@ class SubEntityDefinition;
 class ActionDefinition;
 struct SoundDefinition;
 struct AnimationDefinition;
-class AttachPointDefinition;
+struct AttachPointDefinition;
 
 typedef std::map<std::string, Model*> ModelInstanceStore;
 
