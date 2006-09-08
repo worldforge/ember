@@ -2,7 +2,7 @@
 OgrePagingLandScapeRaySceneQuery.h  -  description
 -------------------
 begin                : Fri Sep 10 2003
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 

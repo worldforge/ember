@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightFieldN.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreLogManager.h"
 #include "OgreVector3.h"
@@ -71,7 +73,7 @@ namespace Ogre
     {
         if (mBase != 0)
         {
-            uint Pos = static_cast<uint> ((mZ * mBase->getWidth() + mX) * 4);//4 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mBase->getWidth() + mX) * 4);//4 bytes (mImage is RGBA)
             if (mBase->getSize () > Pos)
             {
                 const Real divider = 1.0f / 255;
@@ -96,7 +98,7 @@ namespace Ogre
     {
         if (mCoverage != 0)
         {
-            uint Pos = static_cast<uint> ((mZ * mCoverage->getWidth()  + mX) * 4);//4 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mCoverage->getWidth()  + mX) * 4);//4 bytes (mImage is RGBA)
             if (mCoverage->getSize () > Pos)
             {
                 const Real divider = 1.0f / 255;
@@ -122,7 +124,7 @@ namespace Ogre
     {
         if (mShadow != 0)
         {
-            uint Pos = static_cast<uint> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
             if (mShadow->getSize () > Pos)
             {
                 if (positive)
@@ -149,7 +151,7 @@ namespace Ogre
         #else
             if (mImage)
             {
-                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                unsigned int Pos = static_cast<unsigned int> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
                 if (mMax > Pos)
                 {
@@ -175,9 +177,9 @@ namespace Ogre
         const Real scale = 256.0 / mParent->getOptions()->scale.y;
         
         uchar *img = mImage->getData();
-        uint j = 0;
-        const uint bpp = static_cast <uint> (mBpp);
-        for (uint i = 0; i < mMax - 1;  i += bpp)
+        unsigned int j = 0;
+        const unsigned int bpp = static_cast <unsigned int> (mBpp);
+        for (unsigned int i = 0; i < mMax - 1;  i += bpp)
         {
             img[ i + (mBpp - 1)] =  uchar (mHeightData[j++] * scale);               
         }
@@ -202,7 +204,7 @@ namespace Ogre
         }      
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldN::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightFieldN::_load(const unsigned int mX, const unsigned int mZ)
     {	    
         const String strFileName = mParent->getOptions()->LandScape_filename + ".HN." + 
                             StringConverter::toString(mZ) + "." +
@@ -234,8 +236,8 @@ namespace Ogre
 		if (mImage->getWidth() != mImage->getHeight() ||	!_checkSize(mImage->getWidth()))
 		{
 			String err = "Error: Invalid heightmap size : " +
-				StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
-				"," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
+				StringConverter::toString(static_cast <unsigned int> (mImage->getWidth())) +
+				"," + StringConverter::toString(static_cast <unsigned int> (mImage->getHeight())) +
 				". Should be 2^n+1, 2^n+1";
 			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightFieldN::_load");
 		}
@@ -252,7 +254,7 @@ namespace Ogre
 		{
 			OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, "Error: Declared World size <> Height Map Size.", "PagingLandScapeData2D_HeightFieldN::_load");
 		}
-        mMax = static_cast <uint> (mSize * mImage->getHeight() * mBpp + 1);
+        mMax = static_cast <unsigned int> (mSize * mImage->getHeight() * mBpp + 1);
 
         if (mParent->getOptions()->coverage_vertex_color)
         {
@@ -286,14 +288,14 @@ namespace Ogre
 
         mXDimension = mImage->getWidth();
         mZDimension = mImage->getHeight();
-        mMaxArrayPos = static_cast <uint> (mSize * mImage->getHeight());
+        mMaxArrayPos = static_cast <unsigned int> (mSize * mImage->getHeight());
         mHeightData = new Real[mMaxArrayPos];
-        uint j = 0;
+        unsigned int j = 0;
         const double scale = mParent->getOptions()->scale.y / 256;
         mMaxheight = 0.0f;
         uchar *imagedata = mImage->getData();
-        const uint bpp = static_cast <uint> (mBpp);
-        for (uint i = 0; i < mMax - 1;  i += bpp)
+        const unsigned int bpp = static_cast <unsigned int> (mBpp);
+        for (unsigned int i = 0; i < mMax - 1;  i += bpp)
             {
                 const Real h =  imagedata[ i + (bpp - 1)] * scale;
                 mMaxheight = std::max (h, mMaxheight);
@@ -317,13 +319,13 @@ namespace Ogre
 		    if (!_checkSize(mImage->getHeight()) ||	!_checkSize(mImage->getWidth()))
 		    {
 			    String err = "Error: Invalid heightmap size : " +
-				    StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
-				    "," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
+				    StringConverter::toString(static_cast <unsigned int> (mImage->getWidth())) +
+				    "," + StringConverter::toString(static_cast <unsigned int> (mImage->getHeight())) +
 				    ". Should be 2^n";
 			    OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightFieldN::_load");
 		    }
 
-            mBpp = static_cast <uint> (PixelUtil::getNumElemBytes (mImage->getFormat ()));
+            mBpp = static_cast <unsigned int> (PixelUtil::getNumElemBytes (mImage->getFormat ()));
 		    if (mBpp != 1)
 		    {
 			    OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Error: Image is not a greyscale image.(1 byte, 8 bits)",
@@ -333,15 +335,15 @@ namespace Ogre
             mXDimension = mImage->getWidth();
             mZDimension = mImage->getHeight();
 		    mSize = mImage->getWidth();
-            mMax = static_cast <uint> (mSize * mImage->getHeight() * mBpp);
+            mMax = static_cast <unsigned int> (mSize * mImage->getHeight() * mBpp);
 
-            mMaxArrayPos = static_cast <uint> (mSize * mImage->getHeight());
+            mMaxArrayPos = static_cast <unsigned int> (mSize * mImage->getHeight());
             mHeightData = new Real[mMaxArrayPos];
 
             const double scale = mParent->getOptions()->scale.y / 256;
             mMaxheight = 0.0f;
             uchar *imagedata = mImage->getData();
-            for (uint i = 0; i < mMax;  i ++)
+            for (unsigned int i = 0; i < mMax;  i ++)
             {
                 const Real h =  imagedata[i] * scale;
                 mMaxheight = std::max (h, mMaxheight);

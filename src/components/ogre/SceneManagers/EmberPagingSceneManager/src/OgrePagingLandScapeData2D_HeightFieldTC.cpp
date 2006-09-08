@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightFieldTC.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 
 #include "OgreLogManager.h"
@@ -61,7 +63,6 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldTC::~PagingLandScapeData2D_HeightFieldTC()
     {
-	   PagingLandScapeData2D::unload ();
     }
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightFieldTC::getBase (const Real mX, const Real mZ)
@@ -81,8 +82,8 @@ namespace Ogre
             const Real scale = 1.0f  / mParent->getOptions()->scale.y;
            
             uchar *img = mImage->getData();
-            uint j = 0;
-            for (uint i = 0; i < mMax - 1;  i ++)
+            unsigned int j = 0;
+            for (unsigned int i = 0; i < mMax - 1;  i ++)
             {
                 img[ i ] =  uchar (_encodeTC(mHeightData[j++]) * scale);               
             }
@@ -108,7 +109,7 @@ namespace Ogre
         
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldTC::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightFieldTC::_load(const unsigned int mX, const unsigned int mZ)
     {
         const String strFileName = mParent->getOptions()->LandScape_filename + "." + 
                             StringConverter::toString(mZ) + "." +
@@ -161,16 +162,16 @@ namespace Ogre
 
         mXDimension = mImage->getWidth();
         mZDimension = mImage->getHeight();
-        mMax = static_cast <uint> (mSize * mImage->getHeight() + 1);
+        mMax = static_cast <unsigned int> (mSize * mImage->getHeight() + 1);
 
         mMaxArrayPos = mMax - 1;
         mHeightData = new Real[mMaxArrayPos];
-        uint j = 0;
+        unsigned int j = 0;
         const double divider = 1.0 / 255;
         const Real scale  = mParent->getOptions()->scale.y;
         uchar *data = mImage->getData();
         mMaxheight = 0.0f;
-        for (uint i = 0; i < mMax - 1;  i++)
+        for (unsigned int i = 0; i < mMax - 1;  i++)
             {  
                 const Real h = _decodeTC(data[ i ] * divider)* scale;
                 mMaxheight = std::max (h, mMaxheight);
@@ -200,19 +201,19 @@ namespace Ogre
         computePowerof2PlusOneSize ();     
 
 		mSize = mXDimension;
-        mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
-        mMax = static_cast <uint> (mMaxArrayPos * mBpp);
+        mMaxArrayPos = static_cast <unsigned int> (mXDimension * mZDimension);
+        mMax = static_cast <unsigned int> (mMaxArrayPos * mBpp);
         mHeightData = new Real[mMaxArrayPos];
 
         const Real divider = 1.0f / 65535.0f;
         const Real scale  = mParent->getOptions()->scale.y;
         mMaxheight = 0.0f;
-        const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
+        const unsigned int shift_fill = static_cast <unsigned int> (mXDimension - sourceWidth);
         uchar *imagedata = mImage->getData();
-        uint dest_pos = 0;
-        for (uint i = 0; i < sourceHeight; ++i)
+        unsigned int dest_pos = 0;
+        for (unsigned int i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j)
+            for (unsigned int j = 0; j < sourceWidth; ++j)
             {   
                 const Real h = _decodeTC(*imagedata++ * divider)* scale;
                 mMaxheight = std::max (h, mMaxheight);

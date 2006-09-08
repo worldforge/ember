@@ -33,6 +33,9 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 
 ***************************************************************************/
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
+
 
 #include "OgreCamera.h"
 
@@ -96,7 +99,7 @@ namespace Ogre
 //        mLastCameraPos.z = dist;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeCamera::updatePaging (const uint x, const uint z)
+    void PagingLandScapeCamera::updatePaging (const unsigned int x, const unsigned int z)
     {
         // We must load the next visible LandScape pages, 
         // check the LandScape boundaries	
@@ -105,13 +108,13 @@ namespace Ogre
         mCurrentCameraPageZ = z;
         const PagingLandScapeOptions * const opt = 
             static_cast <PagingLandScapeSceneManager*> (mSceneMgr)->getOptions ();
-        const uint w = opt->world_width;
-        const uint h = opt->world_height;
-        const uint adjpages = opt->max_adjacent_pages;
-        const uint prepages = opt->max_preload_pages;
+        const unsigned int w = opt->world_width;
+        const unsigned int h = opt->world_height;
+        const unsigned int adjpages = opt->max_adjacent_pages;
+        const unsigned int prepages = opt->max_preload_pages;
 
         // Load Windowing
-        uint lx = x;
+        unsigned int lx = x;
         if (static_cast<int> (x - adjpages) >= 0)
         {
             mIniX = x - adjpages;
@@ -131,7 +134,7 @@ namespace Ogre
             mIniX = (static_cast <int> (mIniX + (w - (lx + adjpages))) > 0)? mIniX + (w - (lx + adjpages)):0;
         }
 
-        uint lz = z;
+        unsigned int lz = z;
         if (static_cast<int> (z - adjpages) >= 0)
         {
             mIniZ = z - adjpages;
@@ -194,7 +197,7 @@ namespace Ogre
         //(static_cast <PagingLandScapeSceneManager*> (getSceneManager())->resize());
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeCamera::getVisibility(const AxisAlignedBox &bound) const
+    bool PagingLandScapeCamera::isVisible(const AxisAlignedBox &bound) const
     {
         // Null boxes always invisible
         if (bound.isNull())
@@ -204,45 +207,30 @@ namespace Ogre
         Camera::updateView();
 
         // Get corners of the box
-        const Vector3 * const pCorners = bound.getAllCorners();
+        const Vector3 * ogre_restrict const pCorners = bound.getAllCorners();
 
-        // For each plane, see if all points are on the negative side
-        // If so, object is not visible.
-        // If one or more are, it's partial.
-        // If all aren't, full
-
-        static const unsigned int corners[ 8 ] = {0, 4, 3, 5, 2, 6, 1, 7};
-
-        static const unsigned int planes[ 6 ] = {FRUSTUM_PLANE_TOP, FRUSTUM_PLANE_BOTTOM,
-                                FRUSTUM_PLANE_LEFT, FRUSTUM_PLANE_RIGHT,
-                                FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_NEAR };
-
-        bool all_inside = true;
+		// For each plane, see if all points are on the negative side
+		// If so, object is not visible
         const bool infinite_far_clip = (mFarDist == 0);
         for (unsigned int plane = 0; plane < 6; ++plane)
         {
-
-            const unsigned int currPlane = planes[ plane ];
             // Skip far plane if infinite view frustum
-            if (infinite_far_clip && currPlane == FRUSTUM_PLANE_FAR)
+            if (infinite_far_clip && plane == FRUSTUM_PLANE_FAR)
                 continue;
 
-            bool all_outside = true;
-            const Plane &frustumPlane = mFrustumPlanes[ currPlane ];
-            for (unsigned int corner = 0; corner < 8; ++corner)
-            {
-                const Real distance = frustumPlane.getDistance(pCorners[ corners[ corner ] ]);
+            const Plane * ogre_restrict const frustumPlane = &mFrustumPlanes[ plane ];
 
-                const bool isDistanceNegative = (distance < 0);
-                all_outside = all_outside && isDistanceNegative;
-                all_inside = all_inside && !isDistanceNegative;
-
-                if (!all_outside && !all_inside)
-                    break;
-            }
-
-            if (all_outside)
-                return false;
+			if (frustumPlane->getSide(pCorners[0]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[1]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[2]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[3]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[4]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[5]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[6]) == Plane::NEGATIVE_SIDE &&
+				frustumPlane->getSide(pCorners[7]) == Plane::NEGATIVE_SIDE)
+			{
+				return false;
+			}
         }
         return true;
     }

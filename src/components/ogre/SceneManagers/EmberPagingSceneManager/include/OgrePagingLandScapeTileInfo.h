@@ -2,7 +2,7 @@
 OgrePagingLandScapeTileInfo.h  -  description
 -------------------
 begin                : Sat Jan 31 2004
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -20,28 +20,41 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 
 namespace Ogre
 {
+	/** This class holds the Tile info
+		@remarks
+			This will avoid to pass a lot of data to the Renderable class.
+	*/
+	class 
+	PagingLandScapeTileInfo
+	{
+		public:
+			PagingLandScapeTileInfo(const uint pageX, const uint pageZ, 
+					  const uint tileX, const uint tileZ)
+				  :
+			  mMinLevelDistSqr(0),
+				  mPageX (pageX),
+				  mPageZ (pageZ),
+				  mTileX (tileX),
+				  mTileZ (tileZ)
+			  {
+			  }
+		   ~PagingLandScapeTileInfo()
+		   {
+				delete mMinLevelDistSqr;
+		   }
 
-/** This class holds the Tile info
-	@remarks
-		This will avoid to pass a lot of data to the Renderable class.
-*/
+			//This is the Page Index in the Page Array
+			unsigned short int mPageX;
+			unsigned short int mPageZ;
+	    		
+			//This is the tile Index in the Tile Array
+			unsigned short int mTileX;
+			unsigned short int mTileZ;
 
-class PagingLandScapeTileInfo
-{
-    public:
-	    //This is the Page Index in the Page Array
-	    uint pageX;
-	    uint pageZ;
-    		
-	    //This is the tile Index in the Tile Array
-	    uint tileX;
-	    uint tileZ;
-
-	    //This is the spatial position of this Tile
-	    Real posX;
-	    Real posZ;
-};
-
+			/// List of squared distances at which LODs change
+			// costly to compute, so we cache it there.
+			std::vector<Real>* mMinLevelDistSqr;
+	};
 }
 
 #endif

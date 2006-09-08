@@ -2,7 +2,7 @@
   OgrePagingLandScapeIndexBufferManager.cpp  -  description
   -------------------
   begin                : Fri Feb 28 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreHardwareBufferManager.h"
 #include "OgreVertexIndexData.h"
@@ -45,15 +47,15 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeIndexBufferManager::load()
     {
-        const uint tileSize = mScnMgr->getOptions()->TileSize;
-        const uint numIndexes = mScnMgr->getOptions()->maxRenderLevel + 1;
+        const unsigned int tileSize = mScnMgr->getOptions()->TileSize;
+        const unsigned int numIndexes = mScnMgr->getOptions()->maxRenderLevel + 1;
         
         if (tileSize != mTileSize || numIndexes != mNumIndexes)
         {
 			// Clear
             mLevelIndex.reserve (numIndexes);
             mLevelIndex.resize (numIndexes);
-            for (uint k = 0; k < numIndexes; k++)
+            for (unsigned int k = 0; k < numIndexes; k++)
             {
                 mLevelIndex[k] = new IndexMap();
             }
@@ -67,7 +69,7 @@ namespace Ogre
 	{
 		if (!mLevelIndex.empty())
 		{
-			for (uint i = 0; i < mNumIndexes; i++)
+			for (unsigned int i = 0; i < mNumIndexes; i++)
 			{
 				delete mLevelIndex[i];
 			}
@@ -90,7 +92,7 @@ namespace Ogre
         assert (renderLevel < static_cast <int> (mNumIndexes));
         assert (renderLevel >= 0) ;
 
-        uint stitchFlags = 0;
+        unsigned int stitchFlags = 0;
 
         bool eastStitch;
         if (Neighbors[ EAST ] &&
@@ -158,7 +160,7 @@ namespace Ogre
 
 
         // Check preexisting
-        assert (mLevelIndex.size() > (uint)renderLevel);
+        assert (mLevelIndex.size() > (unsigned int)renderLevel);
         IndexMap::iterator ii = mLevelIndex[ renderLevel ]->find(stitchFlags);
         if (ii == mLevelIndex[ renderLevel ]->end())
         {
@@ -174,7 +176,7 @@ namespace Ogre
             mLevelIndex[ renderLevel ]->insert(
                 IndexMap::value_type(stitchFlags, indexData));
                 
-            //indexData->optimiseVertexCacheTriList();
+            indexData->optimiseVertexCacheTriList();
             
             return indexData;
         }
@@ -197,8 +199,8 @@ namespace Ogre
         assert (step > 0);
 
 
-        const uint tileSize = mTileSize;
-        const uint new_length = (tileSize / step) * (tileSize / step) * 2 * 2 * 2;
+        const unsigned int tileSize = mTileSize;
+        const unsigned int new_length = (tileSize / step) * (tileSize / step) * 2 * 2 * 2;
         
         IndexData* indexData = new IndexData();
         assert (indexData);
@@ -212,38 +214,38 @@ namespace Ogre
 
 
         
-        const uint north = northStitch ? step : 0;
-        const uint south = southStitch ? step : 0;
-        const uint east = eastStitch ? step : 0;
-        const uint west = westStitch ? step : 0;
+        const unsigned int north = northStitch ? step : 0;
+        const unsigned int south = southStitch ? step : 0;
+        const unsigned int east = eastStitch ? step : 0;
+        const unsigned int west = westStitch ? step : 0;
 
 
-        uint numIndexes = 0;
-        const uint step_offset = step * tileSize;
-        uint height_count = north * tileSize;
+        unsigned int numIndexes = 0;
+        const unsigned int step_offset = step * tileSize;
+        unsigned int height_count = north * tileSize;
         void *idx;
         if (is32bits)
         {
              /** Returns the index into the height array for the given coordinates. */
-            uint * ogre_restrict pIdx = static_cast<uint*>(indexData->indexBuffer->lock(0, 
+            unsigned int * ogre_restrict pIdx = static_cast<unsigned int*>(indexData->indexBuffer->lock(0, 
                                                 indexData->indexBuffer->getSizeInBytes(), 
                                                 HardwareBuffer::HBL_DISCARD));
             assert (pIdx);
-            for (uint j = north; j < tileSize - 1 - south; j += step)
+            for (unsigned int j = north; j < tileSize - 1 - south; j += step)
             {
-                for (uint i = west; i <  tileSize - 1 - east; i += step)
+                for (unsigned int i = west; i <  tileSize - 1 - east; i += step)
                 {
                     //triangles
                     assert ((i + step + height_count + step_offset) < (tileSize * tileSize));
 
 
-                    *pIdx++ = static_cast<uint> (i        + height_count);                 numIndexes++;      
-                    *pIdx++ = static_cast<uint> (i        + height_count + step_offset);   numIndexes++; 
-                    *pIdx++ = static_cast<uint> (i + step + height_count);                 numIndexes++; 
+                    *pIdx++ = static_cast<unsigned int> (i        + height_count);                 numIndexes++;      
+                    *pIdx++ = static_cast<unsigned int> (i        + height_count + step_offset);   numIndexes++; 
+                    *pIdx++ = static_cast<unsigned int> (i + step + height_count);                 numIndexes++; 
                     
-                    *pIdx++ = static_cast<uint> (i        + height_count + step_offset);   numIndexes++;    
-                    *pIdx++ = static_cast<uint> (i + step + height_count + step_offset);   numIndexes++; 
-                    *pIdx++ = static_cast<uint> (i + step + height_count);                 numIndexes++; 
+                    *pIdx++ = static_cast<unsigned int> (i        + height_count + step_offset);   numIndexes++;    
+                    *pIdx++ = static_cast<unsigned int> (i + step + height_count + step_offset);   numIndexes++; 
+                    *pIdx++ = static_cast<unsigned int> (i + step + height_count);                 numIndexes++; 
                 }
                 height_count += step_offset;
             }  
@@ -256,9 +258,9 @@ namespace Ogre
                                                 indexData->indexBuffer->getSizeInBytes(), 
                                                 HardwareBuffer::HBL_DISCARD));
             assert (pIdx);
-            for (uint j = north; j < tileSize - 1 - south; j += step)
+            for (unsigned int j = north; j < tileSize - 1 - south; j += step)
             {
-                for (uint i = west; i <  tileSize - 1 - east; i += step)
+                for (unsigned int i = west; i <  tileSize - 1 - east; i += step)
                 {
                     //triangles
                     assert ((i + step + height_count + step_offset) < ((tileSize) * (tileSize)));
@@ -333,7 +335,7 @@ namespace Ogre
         return indexData;
     }
     //-----------------------------------------------------------------------
-    uint PagingLandScapeIndexBufferManager::stitchEdge(const Neighbor neighbor, 
+    unsigned int PagingLandScapeIndexBufferManager::stitchEdge(const Neighbor neighbor, 
                                                 const int hiLOD, const int loLOD, 
                                                 const bool omitFirstTri, const bool omitLastTri, 
                                                 void** ppIdx, 
@@ -432,12 +434,12 @@ namespace Ogre
 		    break;
         };
         assert (*ppIdx);
-        uint numIndexes = 0;
+        unsigned int numIndexes = 0;
         const bool isHorizontal = horizontal;
         if (is32bits)
         {
             // Get pointer to be updated
-            uint* ogre_restrict pIdx = static_cast <uint*> (*ppIdx);
+            unsigned int* ogre_restrict pIdx = static_cast <unsigned int*> (*ppIdx);
             for (int j = startx; j != endx; j += superstep)
             {
                 int k; 
@@ -578,9 +580,9 @@ namespace Ogre
 	    if (renderLevel < 0)
 		    renderLevel =0 ;
 
-	    const uint stitchFlags = 0;
+	    const unsigned int stitchFlags = 0;
 
-	    assert (mLevelIndex.size() > (uint)renderLevel);
+	    assert (mLevelIndex.size() > (unsigned int)renderLevel);
 
 	    IndexMap::iterator ii = mLevelIndex[ renderLevel ]->find( stitchFlags );
 	    if ( ii == mLevelIndex[ renderLevel ]->end())

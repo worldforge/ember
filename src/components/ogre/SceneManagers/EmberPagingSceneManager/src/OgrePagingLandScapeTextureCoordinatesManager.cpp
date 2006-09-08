@@ -2,7 +2,7 @@
 OgrePagingLandScapeTextureCoordinatesManager.cpp  -  description
 -------------------
 begin                : Mon Jun 16 2003
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
@@ -56,8 +58,8 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapeTextureCoordinatesManager::load()
 	{
-		const uint pSize = mOptions->PageSize;
-		const uint tSize = mOptions->TileSize;
+		const unsigned int pSize = mOptions->PageSize;
+		const unsigned int tSize = mOptions->TileSize;
 		if (mPageSize != pSize || 
 			mTileSize != tSize)
 		{     
@@ -65,11 +67,11 @@ namespace Ogre
 
 			mPageSize = pSize;
 			mTileSize = tSize;
-			const uint NumTiles = mOptions->NumTiles;
+			const unsigned int NumTiles = mOptions->NumTiles;
 
 			mTexBuffs.reserve (NumTiles);
 			mTexBuffs.resize (NumTiles);
-			for (uint  i = 0; i < NumTiles; ++i)
+			for (unsigned int  i = 0; i < NumTiles; ++i)
 			{
 				mTexBuffs[i].reserve (NumTiles);
 				mTexBuffs[i].resize (NumTiles);
@@ -78,15 +80,15 @@ namespace Ogre
 	}
 	//-----------------------------------------------------------------------
 	HardwareVertexBufferSharedPtr PagingLandScapeTextureCoordinatesManager::getBuffer(
-		const uint tilex, 
-		const uint tilez)
+		const unsigned int tilex, 
+		const unsigned int tilez)
 	{
 		assert (tilex < mOptions->NumTiles && 
 				tilez < mOptions->NumTiles);
 
 		if (mTexBuffs [tilex][tilez].isNull ())
 		{
-			const uint tileSize = mOptions->TileSize;
+			const unsigned int tileSize = mOptions->TileSize;
 
 			const VertexElementType t = VET_FLOAT2;
 			//const VertexElementType t = VET_SHORT2;
@@ -101,17 +103,17 @@ namespace Ogre
 			//ushort* pSecond = static_cast<ushort*> (vbuf->lock(HardwareBuffer::HBL_DISCARD));
 
 			// Calculate the offset in the texture position
-			const uint offSetX = tilex * (tileSize - 1);
-			const uint offSetZ = tilez * (tileSize - 1);
-			const uint endx = offSetX + tileSize;
-			const uint endz = offSetZ + tileSize;
+			const unsigned int offSetX = tilex * (tileSize - 1);
+			const unsigned int offSetZ = tilez * (tileSize - 1);
+			const unsigned int endx = offSetX + tileSize;
+			const unsigned int endz = offSetZ + tileSize;
 
 			const Real Aux1 =  1.0 / (mOptions->PageSize - 1);
 			Real K_Tex2DataPos = offSetZ * Aux1;
-			for (uint k = offSetZ; k < endz; k ++)
+			for (unsigned int k = offSetZ; k < endz; k ++)
 			{
 				Real K_Tex1DataPos = offSetX * Aux1;
-				for (uint i = offSetX; i < endx; i ++)
+				for (unsigned int i = offSetX; i < endx; i ++)
 				{
 					// textures
 					//assert (K_Tex1DataPos >= 0.0f && K_Tex1DataPos <= 1.0f);

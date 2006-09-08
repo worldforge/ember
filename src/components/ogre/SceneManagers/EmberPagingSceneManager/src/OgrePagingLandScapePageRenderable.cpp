@@ -2,7 +2,7 @@
   OgrePagingLandScapePageRenderable.cpp  -  description
   -------------------
   begin                : Thu Feb 27 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 /***************************************************************************
@@ -13,6 +13,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreRoot.h"
 #include "OgreHardwareBufferManager.h"
@@ -56,7 +58,7 @@ namespace Ogre
     String PagingLandScapePageRenderable::mType = "PagingLandScapePageBillBoard";
 
     //-----------------------------------------------------------------------
-    PagingLandScapePageRenderable::PagingLandScapePageRenderable(PagingLandScapePageManager *pageMgr, const String& name, const uint pageX, const uint pageZ, 
+    PagingLandScapePageRenderable::PagingLandScapePageRenderable(PagingLandScapePageManager *pageMgr, const String& name, const unsigned int pageX, const unsigned int pageZ, 
         const AxisAlignedBox &bounds) :
         Renderable(), 
             MovableObject(name),
@@ -75,7 +77,7 @@ namespace Ogre
         // Setup render op
 	    mCurrIndexes = new IndexData();
 
-        const uint Numtiles = mParent->getOptions()->NumTiles + 1;
+        const unsigned int Numtiles = mParent->getOptions()->NumTiles + 1;
         const size_t new_length = ((Numtiles - 1) * (Numtiles - 1) * 2 * 2 * 2);
         mCurrIndexes->indexCount = new_length;
         mCurrIndexes->indexStart = 0;
@@ -139,7 +141,7 @@ namespace Ogre
         HardwareVertexBufferSharedPtr vVertices = bind->getBuffer(MAIN_BINDING);             
         uchar* pMain = static_cast<uchar*>(vVertices->lock(HardwareBuffer::HBL_DISCARD));
 
-        const uint Numtiles = mParent->getOptions()->NumTiles + 1;
+        const unsigned int Numtiles = mParent->getOptions()->NumTiles + 1;
 
         const Real invpagesizeX = 1.0f / ((Numtiles - 1) * mParent->getOptions()->world_width);
         const Real invpagesizeZ = 1.0f / ((Numtiles  - 1)*  mParent->getOptions()->world_height);
@@ -150,7 +152,7 @@ namespace Ogre
 
         const Real scale_x = mOpt->scale.x * (mOpt->TileSize - 1);
         const Real scale_z = mOpt->scale.z * (mOpt->TileSize - 1);
-        uint i, j;
+        unsigned int i, j;
         for (j = 0; j < Numtiles ; j ++)
         {
             // This allow to reuse the variables in the loop
@@ -161,19 +163,19 @@ namespace Ogre
             {
                 // vertices are relative to the scene node
                
-                Real *pPos;
+                float *pPos;
 
                 poselem->baseVertexPointerToElement(pMain, &pPos);
 
-			    *pPos++ = i * scale_x;	//X
-			    *pPos++ = 0.0f;		    //Y
-			    *pPos   = h_pos;	    //Z
+			    *pPos++ = static_cast <float> (i * scale_x);	//X
+			    *pPos++ = static_cast <float> (0.0);		    //Y
+			    *pPos   = static_cast <float> (h_pos);	    //Z
 
-                Real *pTex;
+                float *pTex;
                 texelem->baseVertexPointerToElement(pMain, &pTex);
 
-                *pTex++ = texOffsetX + i  * invpagesizeX;
-                *pTex = Tex_pos;
+                *pTex++ = static_cast <float> (texOffsetX + i  * invpagesizeX);
+                *pTex = static_cast <float> (Tex_pos);
                 
                 pMain += vVertices->getVertexSize ();
 
@@ -186,8 +188,8 @@ namespace Ogre
         ushort* pIdx = static_cast<ushort*>(mCurrIndexes->indexBuffer->lock(0, 
                                             mCurrIndexes->indexBuffer->getSizeInBytes(), 
                                             HardwareBuffer::HBL_DISCARD));
-        uint height_count = 0;
-        uint NumIndexes = 0;
+        unsigned int height_count = 0;
+        unsigned int NumIndexes = 0;
         for (j = 0; j < Numtiles - 1; j ++)
         {
 		    for (i = 0; i < Numtiles - 1; i ++)
@@ -236,7 +238,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapePageRenderable::_notifyCurrentCamera(Camera* cam)
     {
-	    if (static_cast<PagingLandScapeCamera*> (cam)->getVisibility (mBounds))
+	    if (static_cast<PagingLandScapeCamera*> (cam)->isVisible (mBounds))
         {
            mVisible = true;
            MovableObject::_notifyCurrentCamera(cam);

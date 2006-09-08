@@ -2,7 +2,7 @@
 OgrePagingLandScapeRaySceneQuery.cpp  -  description
 -------------------
 begin                : Fri Sep 10 2003
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreEntity.h"
 
@@ -36,8 +38,8 @@ namespace Ogre
 // Supplied by Praetor. Thanks a lot. ]:)
 void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener) 
 { 
-    ulong mask = getQueryMask();  
-   
+	ulong mask = getQueryMask();  
+	ulong type_mask = getQueryTypeMask();     
     
     static WorldFragment worldFrag;
     worldFrag.fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION;
@@ -52,7 +54,8 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 
     // Exclusive Specialized Queries
     // Straight up / down?
-    if ((mask & RSQ_Height) || (mask & RSQ_Height_no_interpolation) ||
+    if ((mask & RSQ_Height) || 
+		(mask & RSQ_Height_no_interpolation) ||
         dir == Vector3::UNIT_Y || 
         dir == Vector3::NEGATIVE_UNIT_Y)
     {
@@ -105,10 +108,10 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
             //if (!listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length()))					
             //if (!listener->queryResult(&worldFrag,  0))
 			//		    return;
-            listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length());
+            listener->queryResult(&worldFrag,  0);
         }
     }  
-    else if((mask & RSQ_AllTerrain))
+    else if (mask & RSQ_AllTerrain)
 	{
         noTerrainQuery = false;
         //noSpecializedQueries = false;
@@ -180,13 +183,15 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 
     if (noSpecializedQueries)
     {
+        /*
         if (noTerrainQuery)
         {
-            mask = RSQ_AllTerrain;
+            setQueryMask(mask | RSQ_AllTerrain | RSQ_Entities);
             // Check for terrain contacts
             PagingLandScapeRaySceneQuery::execute(listener);
-            mask = 0;
+            setQueryMask(mask);
         }
+        */
         // Check for entity contacts
         PagingLandScapeOctreeRaySceneQuery::execute(listener);
     }

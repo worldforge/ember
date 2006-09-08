@@ -2,7 +2,7 @@
 OgrePagingLandScapeRenderableManager.h  -  description
 -------------------
 begin                : Mon Jun 16 2003
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -37,15 +37,15 @@ namespace Ogre
 		void load(void);
 		void clear(void);
 
-		HardwareVertexBufferSharedPtr getBuffer(const uint tilex, const uint tilez);
+		HardwareVertexBufferSharedPtr getBuffer(const unsigned int tilex, const unsigned int tilez);
 
         PagingLandScapeOptions*		getOptions(){return mOptions;}
     protected:
 
         PagingLandScapeOptions*		mOptions;
        
-		uint mPageSize; 
-		uint mTileSize;
+		unsigned int mPageSize; 
+		unsigned int mTileSize;
 		
 		HardwareTextureBuffersCol mTexBuffs; 
 	};

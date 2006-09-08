@@ -2,7 +2,7 @@
 	OgrePagingLandScapeTile.h  -  description
   -------------------
   begin                : Sun Jun 08 2003
-  copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -21,15 +21,19 @@
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeTileInfo.h"
 
+#include "OgrePagingLandScapeOptions.h"
+#include "OgrePagingLandScapeTileManager.h"
+#include "OgrePagingLandScapeRenderable.h"
+
 namespace Ogre
 {
 
 class _OgrePagingLandScapeExport PagingLandScapeTile 
 {
 public:
-    PagingLandScapeTileInfo* getInfo(void) 
+    inline PagingLandScapeTileInfo* getInfo(void) 
     {
-        return &mInfo;
+        return mInfo;
     };
 
     /** Sets the appropriate neighbor for this TerrainRenderable.  Neighbors are necessary
@@ -39,7 +43,7 @@ public:
 
     /** Returns the neighbor TerrainRenderable.
     */
-    PagingLandScapeTile* _getNeighbor(Neighbor n)
+    inline PagingLandScapeTile* _getNeighbor(Neighbor n)
     {
         return mNeighbors[ n ];
     };
@@ -64,7 +68,7 @@ public:
     */
     void updateTerrain(void);
   
-    PagingLandScapeRenderable* getRenderable(void)
+    inline PagingLandScapeRenderable* getRenderable(void)
     {
         return mRenderable;    
     }
@@ -83,25 +87,52 @@ public:
 
 	void _Notify(const Vector3& pos, PagingLandScapeCamera* Cam);
 
-    bool isLoaded(void)
+    inline bool isLoaded(void)
 	{
 		return mLoaded;
 	};
+	inline bool isLoading(void)
+	{
+		return mLoading;
+	};
+	inline void setLoading(bool value)
+	{
+		mLoading = value;
+	};
 
-    void setInUse(bool InUse);
+	void PagingLandScapeTile::setInUse (bool InUse)
+	{
+		assert (mInit);
+		if (mRenderable)
+			mRenderable->setInUse (InUse);
+	}
 
-    bool isVisible(void)
+    inline bool isVisible(void)
 	{
 		return mVisible;
 	}
 
+	/// make tile visible not being unload until a certain time.
+	inline void touch ()
+	{ 
+		mTimePreLoaded = mParent->getOptions()->TileInvisibleUnloadFrames;
+	}
+
     void setRenderQueueGroup(RenderQueueGroupID qid);
 
-	SceneNode *getSceneNode(){return mTileSceneNode;};
-	const AxisAlignedBox &getWorldBbox() const {return mWorldBounds;};
-	const Vector3 &getCenter(void) const {return mWorldPosition;};
+	SceneNode *getSceneNode()
+	{
+		return mTileSceneNode;
+	};
+	const AxisAlignedBox &getWorldBbox() const 
+	{
+		return mWorldBounds;
+	};
+	const Vector3 &getCenter(void) const 
+	{
+		return mWorldPosition;
+	};
 
-	void touch ();
 	const bool touched ();
 
 protected:
@@ -114,6 +145,8 @@ protected:
 	bool mInit;
 	// if the renderable is loaded
 	bool mLoaded;	
+	// if the renderable is loading
+	bool mLoading;	
 
 	PagingLandScapeRenderable* mRenderable;
 
@@ -122,9 +155,9 @@ protected:
 
     PagingLandScapeTile* mNeighbors[4];
 
-	PagingLandScapeTileInfo mInfo;
+	PagingLandScapeTileInfo *mInfo;
 	bool mVisible;
-	uint mTimePreLoaded;
+	unsigned int mTimePreLoaded;
 
     PagingLandScapeTileManager *mParent;
 };

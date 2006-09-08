@@ -2,7 +2,7 @@
 	OgrePagingLandScapeData2D_HeightFieldRaw.h  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+  copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -30,7 +30,7 @@ namespace Ogre
     {
         public:
 	        PagingLandScapeData2D_HeightFieldRaw(PagingLandScapeData2DManager *dataMgr);
-            virtual String getName(){return String("HeightFieldRaw");}
+            virtual String getName() const{return String("HeightFieldRaw");}
 	        virtual ~PagingLandScapeData2D_HeightFieldRaw(void);
 
             virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive);
@@ -40,13 +40,13 @@ namespace Ogre
 
         protected:
             virtual void _save(void);
-	        virtual bool _load(const uint x, const uint z);
+	        virtual bool _load(const unsigned int x, const unsigned int z);
 	        virtual void _load(void);
 	        virtual void _unload(void);
 
         private:
             Image * mShadow;
-            uint mBpp;// should be 2 bytes (mImage is 16 bits)
+            unsigned int mBpp;// should be 2 bytes (mImage is 16 bits)
     };
 
 }

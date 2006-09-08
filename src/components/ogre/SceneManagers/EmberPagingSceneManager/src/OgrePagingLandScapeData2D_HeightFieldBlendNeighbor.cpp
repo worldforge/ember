@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreLogManager.h"
 #include "OgreVector3.h"
@@ -68,7 +70,7 @@ namespace Ogre
     {
         if (mShadow)
         {
-            uint Pos = static_cast<uint> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
             if (mShadow->getSize () > Pos)
             {
                 if (positive)
@@ -95,8 +97,8 @@ namespace Ogre
 
         const double divider = 65535.0 / mParent->getOptions()->scale.y;
         
-        uint j = 0;
-        for (uint i = 0; i < mMaxArrayPos; i++)
+        unsigned int j = 0;
+        for (unsigned int i = 0; i < mMaxArrayPos; i++)
         {             
             const ushort syn = ushort  (mHeightData[i] * divider);
             #if OGRE_ENDIAN == ENDIAN_BIG
@@ -120,31 +122,31 @@ namespace Ogre
                 fname + extname);
         FileInfoList::iterator it = finfo->begin();
         if (it != finfo->end())
-            {
-                //FileInfo *inf = &(*it);
-                char *olddir = ChangeToDir (const_cast< char * > (((it)->archive->getName()).c_str()));
-                //FileSystemArchive::pushDirectory()
-                
-                std::ofstream outfile;
-                String FileNameRaw;
-                
-                DataStreamPtr image_chunk(new MemoryDataStream ((void*)data,
-                            mXDimension * mZDimension * 2 * sizeof (uchar), 
-                            true)); 
+        {
+            //FileInfo *inf = &(*it);
+            char *olddir = ChangeToDir (const_cast< char * > (((it)->archive->getName()).c_str()));
+            //FileSystemArchive::pushDirectory()
+            
+            std::ofstream outfile;
+            String FileNameRaw;
+            
+            DataStreamPtr image_chunk(new MemoryDataStream ((void*)data,
+                        mXDimension * mZDimension * 2 * sizeof (uchar), 
+                        true)); 
 
-                outfile.open (const_cast< char * > ((fname + "modif." + extname).c_str()),
-                                std::ios::binary);
-                // Write out
-                outfile << image_chunk->getAsString ();
-                outfile.close ();
+            outfile.open (const_cast< char * > ((fname + "modif." + extname).c_str()),
+                            std::ios::binary);
+            // Write out
+            outfile << image_chunk->getAsString ();
+            outfile.close ();
 
 
-                //FileSystemArchive::pushDirectory();
-                RetablishDir (olddir);
-            }
+            //FileSystemArchive::pushDirectory();
+            RetablishDir (olddir);
+        }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldBlendNeighbor::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightFieldBlendNeighbor::_load(const unsigned int mX, const unsigned int mZ)
     {
         const PagingLandScapeOptions *Options = mParent->getOptions();
         const String fileName = Options->LandScape_filename;
@@ -235,15 +237,15 @@ namespace Ogre
         // here 16 bits Raw file
         mXDimension = mSize;
         mZDimension = mXDimension;
-		mBpp = (uint)PixelUtil::getNumElemBytes (tex->getFormat ());; 
-        mMaxArrayPos = static_cast <uint> (mSize * mSize);
+		mBpp = (unsigned int)PixelUtil::getNumElemBytes (tex->getFormat ());; 
+        mMaxArrayPos = static_cast <unsigned int> (mSize * mSize);
         const size_t numBytes = mMaxArrayPos * mBpp;
 
         if (tex->getWidth() != tex->getHeight() ||
 			tex->getWidth() != mSize - 1)
         {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                "Texture size (" + StringConverter::toString(static_cast<uint> (tex->getSize())) + 
+                "Texture size (" + StringConverter::toString(static_cast<unsigned int> (tex->getSize())) + 
                 ") does not agree with configuration settings.", 
                 "PagingLandScapeData2D_HeightFieldBlendNeighbor::_load");
         } 
@@ -253,17 +255,17 @@ namespace Ogre
 		uchar *pBottom = t_bottom->getData();
 		uchar *pBr = t_br->getData();
 
-		mMax = static_cast<uint> (numBytes) + 1;
+		mMax = static_cast<unsigned int> (numBytes) + 1;
         mHeightData = new Real[mMaxArrayPos];
         const double scale = (1.0 / 255) * Options->scale.y;
         mMaxheight = 0.0f;
 
-		uint j = 0;
+		unsigned int j = 0;
 		
 
-		for (uint y = 0; y < tex->getHeight(); y++)
+		for (unsigned int y = 0; y < tex->getHeight(); y++)
 		{
-			for (uint x = 0; x < tex->getWidth(); x++)
+			for (unsigned int x = 0; x < tex->getWidth(); x++)
 	        {
 				const uchar val = pSrc[ y * (mSize-1) + x];
 
@@ -291,7 +293,7 @@ namespace Ogre
 			}
 		}
 		// Generate the bottom row
-		for (uint x = 0; x < tex->getWidth(); x++)
+		for (unsigned int x = 0; x < tex->getWidth(); x++)
 		{
 			if (t_bottom->getData() == 0)
 			{
@@ -369,14 +371,14 @@ namespace Ogre
         if (RawData->size() != sourceHeight*sourceWidth*2)
         {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                "RAW size (" + StringConverter::toString(static_cast<uint> (RawData->size())) + 
+                "RAW size (" + StringConverter::toString(static_cast<unsigned int> (RawData->size())) + 
                 ") does not agree with configuration settings.", 
                 "PagingLandScapeData2D_HeightFieldBlendNeighbor::_load");
         }
     
-        mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
+        mMaxArrayPos = static_cast <unsigned int> (mXDimension * mZDimension);
         const size_t numBytes = mMaxArrayPos * mBpp;
-		mMax = static_cast<uint> (numBytes) + 1;
+		mMax = static_cast<unsigned int> (numBytes) + 1;
 
         mHeightData = new Real[mMaxArrayPos];
         const double scale = (1.0f / 65535.0f) * mParent->getOptions()->scale.y;
@@ -387,13 +389,13 @@ namespace Ogre
             true);
         const uchar *pSrc = dc.getPtr ();     
 
-        const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
-        uint dest_pos = 0;
+        const unsigned int shift_fill = static_cast <unsigned int> (mXDimension - sourceWidth);
+        unsigned int dest_pos = 0;
         //for some reason water is 65035 in SRTM files...
         const bool srtm_water = mParent->getOptions()->SRTM_water;
-        for (uint i = 0; i < sourceHeight; ++i)
+        for (unsigned int i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j)
+            for (unsigned int j = 0; j < sourceWidth; ++j)
             {
                 #if OGRE_ENDIAN == ENDIAN_BIG
                             ushort val = *pSrc++ <<8;

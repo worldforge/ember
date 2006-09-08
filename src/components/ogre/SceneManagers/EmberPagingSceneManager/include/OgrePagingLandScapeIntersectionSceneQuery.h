@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
  
-Copyright  2000-2005 The OGRE Team
+Copyright  2000-2006 The OGRE Team
 Also see acknowledgements in Readme.html
  
 This program is free software; you can redistribute it and/or modify it under
@@ -41,7 +41,8 @@ namespace Ogre
 {
 
 /** PagingLandScapeOctree implementation of IntersectionSceneQuery. */
-class _OgrePagingLandScapeExport PagingLandScapeIntersectionSceneQuery : public PagingLandScapeOctreeIntersectionSceneQuery
+class _OgrePagingLandScapeExport PagingLandScapeIntersectionSceneQuery : 
+	public PagingLandScapeOctreeIntersectionSceneQuery
 {
 public:
     PagingLandScapeIntersectionSceneQuery(SceneManager* creator);

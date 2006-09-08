@@ -1,3 +1,6 @@
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "Ogre.h"
 
 #include "OgrePagingLandScapePrerequisites.h"
@@ -159,7 +162,7 @@ namespace Ogre
     bool Occlusion::isQueryResultIsVisible(OcclusionElement& node) 
     {
 	     // check visibility result
-        uint visiblePixels = 0;
+        unsigned int visiblePixels = 0;
 		//this one wait if result not available
         VisibilityData * const vis =  node.getNodeData (mCurrentCam);
         vis->query->pullOcclusionQuery (&visiblePixels);
@@ -245,7 +248,7 @@ namespace Ogre
                 #endif //_VISIBILITYDEBUG    
 
                 // check visibility result
-                uint visiblePixels = 0;
+                unsigned int visiblePixels = 0;
 			    //this one wait if result not available
                 vis->query->pullOcclusionQuery(&visiblePixels);
                 mQueryPool.removePoolable(vis->query);
@@ -370,7 +373,7 @@ namespace Ogre
                 #endif //_VISIBILITYDEBUG    
 
                 // check visibility result
-                uint visiblePixels = 0;
+                unsigned int visiblePixels = 0;
 			    //this one wait if result not available
                 vis->query->pullOcclusionQuery(&visiblePixels);
                 mQueryPool.removePoolable(vis->query);

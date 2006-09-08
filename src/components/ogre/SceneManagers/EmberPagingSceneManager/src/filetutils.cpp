@@ -7,6 +7,10 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
+#include "OgreNoMemoryMacros.h"
+
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -54,9 +58,9 @@ extern "C" {
 //-----------------------------------------------------------------------
 bool DirExists(const char *Dirname)
 {
-    STRUCT_STAT st;
+    STRUCT_STAT st; 
 
-    if (STAT(Dirname, &st))
+    if (STAT(Dirname, &st)) 
     {
         // doesn't exist; must create it
         return false;

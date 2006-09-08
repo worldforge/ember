@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting.cpp  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 /***************************************************************************
@@ -13,6 +13,8 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
@@ -34,15 +36,10 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting::_setPagesize(void)
+	void PagingLandScapeTexture_Splatting::setOptions(void)
     {
         mParent->getOptions()->VertexCompression = false;
         mParent->getOptions()->lodMorph = false;
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting::_clearData(void)
-    {
-    
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting::newTexture()
@@ -50,7 +47,7 @@ namespace Ogre
         return new PagingLandScapeTexture_Splatting(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_Splatting::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_Splatting::isMaterialSupported()
     {              
 		const PagingLandScapeOptions * const opt = mParent->getOptions();
             
@@ -62,7 +59,9 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting::PagingLandScapeTexture_Splatting(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_Splatting::PagingLandScapeTexture_Splatting(PagingLandScapeTextureManager *textureMgr) 
+		: 
+		PagingLandScapeTexture(textureMgr, "Splatting", 4, true)
     {
     }
     //-----------------------------------------------------------------------
@@ -79,12 +78,12 @@ namespace Ogre
             const String commonName (StringConverter::toString(mDataZ) + 
                                         String(".") +
                                         StringConverter::toString(mDataX));
-            const String matname (String("SplattingMaterial.") + commonName + filename);
+            const String matname (String("Splatting.") + commonName + filename);
 		    mMaterial = MaterialManager::getSingleton().getByName(matname);
 
             if (mMaterial.isNull())
 	        {
-		        mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial");
+		        mMaterial = MaterialManager::getSingleton().getByName("Splatting");
                 assert (!mMaterial.isNull());
 		        // Create a new texture using the base image
 		        mMaterial = mMaterial->clone(matname);
@@ -94,15 +93,15 @@ namespace Ogre
                 TexturePtr tex = texMgr->getByName (Basetexname);
                 if (tex.isNull())
 	            {
-                    const uint pageSize = opt->PageSize;
-                    const uint size = pageSize * pageSize;
-                    const uint pageMemorySize = size * 4;
+                    const unsigned int pageSize = opt->PageSize;
+                    const unsigned int size = pageSize * pageSize;
+                    const unsigned int pageMemorySize = size * 4;
 
                     uchar * const ogre_restrict BaseData = new uchar [pageMemorySize];
                                      
-                    uint alpha_pass = 0;
+                    unsigned int alpha_pass = 0;
                     
-                    const uint numSplats = opt->NumMatHeightSplat;
+                    const unsigned int numSplats = opt->NumMatHeightSplat;
                     
 		            std::vector <uchar * ogre_restrict> alphaData;
 		            alphaData.reserve(numSplats);
@@ -130,13 +129,13 @@ namespace Ogre
                     
 		            ColourValue color;
                     const uchar maxuchar = 255;
-                    uint posRGB = 0;  
-                    uint posG = 0;
-		            for (uint i = 0; i < pageSize; ++i)
+                    unsigned int posRGB = 0;  
+                    unsigned int posG = 0;
+		            for (unsigned int i = 0; i < pageSize; ++i)
 		            {                             
-		                for (uint j = 0; j < pageSize; ++j)
+		                for (unsigned int j = 0; j < pageSize; ++j)
 		                {            
-                            const uint c_posRGB = posRGB;
+                            const unsigned int c_posRGB = posRGB;
                             posRGB  += 4;
                                
 			                // Generate the base texture
@@ -149,7 +148,7 @@ namespace Ogre
 			                BaseData[c_posRGB+3] = static_cast <uchar> ((1 - (alpha[0] + alpha[1] + alpha[2] + alpha[3])) * maxuchar); // Opaque
                                     
                             alpha_pass = 0; 
-                            const uint c_posG = posG;   
+                            const unsigned int c_posG = posG;   
                             posG += 1;
                             while  (alpha_pass < numSplats)
                             {  
@@ -185,8 +184,7 @@ namespace Ogre
 
 		            // assign this texture to the material
 		            
-		            // distant technique
-		            TextureManager::getSingleton().load (Basetexname, opt->groupName);    
+		            // distant technique    
 		            mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureName(Basetexname);
                     
                     // near technique
@@ -196,7 +194,7 @@ namespace Ogre
 		            const String endName ("." + commonName + filename);  
 		            const String beginName("SplattingAlpha");   
                     alpha_pass = 0;       
-                    uint splat_pass = 0;  // if we remove a pass, splat still increases
+                    unsigned int splat_pass = 0;  // if we remove a pass, splat still increases
                     while  (splat_pass < numSplats)
                     {  
                         if (!bAlphaNotUsed[splat_pass])
@@ -237,15 +235,15 @@ namespace Ogre
                     }  					  
                 }
 					
-                // Now that we have all the resources in place, we load the material
-                mMaterial->setLodLevels(opt->lodMaterialDistanceList);
-                mMaterial->setLightingEnabled(opt->lit);
-                mMaterial->load(); 
+                
+                
+                
+                 
             }
 	    }
     }   
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting::_BuildPoint( const uint x, const int z,
+    void PagingLandScapeTexture_Splatting::_BuildPoint( const unsigned int x, const int z,
                                                     ColourValue& out, std::vector<Real> &alpha)
     {
         PagingLandScapeData2DManager * const dataPageManager = mParent->getSceneManager()->getData2DManager();
@@ -303,7 +301,7 @@ namespace Ogre
         #define   _MixColour(out, color)  ((out + color) * 0.5f)    
         #define   _InterpolateColour(F, color1, color2)  (F * options->matColor[color1] + (1.0f - F) * options->matColor[color2])
 	         
-        for (uint i = 0; i < 9; i++)
+        for (unsigned int i = 0; i < 9; i++)
         {        
 		    const Real h = height[i];
 		    const Real slope = sloppy[i];

@@ -1,4 +1,6 @@
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include <stack>
 #include <queue>
 

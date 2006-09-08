@@ -2,7 +2,7 @@
   OgrePagingLandScapeIndexBufferManager.h  -  description
   -------------------
   begin                : Fri Feb 28 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -52,7 +52,7 @@ namespace Ogre
 				into (this pointer will be updated)
             @returns The number of indexes added
             */
-            uint stitchEdge(const Neighbor neighbor, const int hiLOD, const int loLOD, const bool omitFirstTri, const bool omitLastTri, void** ppIdx, const bool is32bits) const;
+            unsigned int stitchEdge(const Neighbor neighbor, const int hiLOD, const int loLOD, const bool omitFirstTri, const bool omitLastTri, void** ppIdx, const bool is32bits) const;
 
             /// Gets the index data for this tile based on current settings
             IndexData* getIndexData(const int RenderLevel, PagingLandScapeRenderable** Neighbors);
@@ -75,18 +75,18 @@ namespace Ogre
                 return (x + z * mTileSize);
             };       
             /** Returns the index into the height array for the given coordinates. */
-            inline uint _index32(int x, int z) const
+            inline unsigned int _index32(int x, int z) const
             {
                 return (x + z * mTileSize);
             };       
 
-            uint mTileSize;
+            unsigned int mTileSize;
 
             IndexArray mCache;
             /// Shared array of IndexData (reuse indexes across tiles)
             LevelArray mLevelIndex;
 	        // Store the indexes for every combination
-            uint mNumIndexes;
+            unsigned int mNumIndexes;
 
     };
 

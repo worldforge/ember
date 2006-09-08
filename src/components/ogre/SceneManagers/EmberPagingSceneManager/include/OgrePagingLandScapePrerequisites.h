@@ -2,7 +2,7 @@
   OgrePagingLandScapePrerequisites.h  -  description
   -------------------
 	begin                : Sun Oct 26 2003
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -162,12 +162,13 @@ typedef enum PageQueuingState
 
     // IndexBuffer Caching to share it across tiles and LOD
     class PagingLandScapeIndexBufferManager;
-    typedef std::map< uint, IndexData* > IndexMap;
+    typedef std::map< unsigned int, IndexData* > IndexMap;
     typedef std::vector< IndexData* > IndexArray;
     typedef std::vector< IndexMap* > LevelArray;
 
     // Renderable that constitutes tiles
     class PagingLandScapeRenderable;
+	class PagingLandScapeRenderableSet;
     class PagingLandScapeRenderableManager;
     typedef std::vector< PagingLandScapeRenderable* > PagingLandScapeRenderableVector;
 

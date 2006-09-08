@@ -2,7 +2,7 @@
 	OgrePagingLandScapeSceneManagerDll.cpp  -  description
 	-------------------
 	begin                : Mon May 12 2003
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreRoot.h"
 #include "OgreVector3.h"
@@ -28,10 +30,10 @@ namespace Ogre
 
     extern "C" void _OgrePagingLandScapeExport dllStartPlugin(void)
     {
-	    // Create new scene manager
+	    // Create new scene manager  Factory
 	    PagingLandScapePlugin = new PagingLandScapeSceneManagerFactory();
 
-	    // Register
+	    // Register  Factory
 	    Root::getSingleton().addSceneManagerFactory(PagingLandScapePlugin);
     }
 

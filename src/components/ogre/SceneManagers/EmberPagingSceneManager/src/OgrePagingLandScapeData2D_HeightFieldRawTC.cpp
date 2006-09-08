@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightFieldRawTC.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreLogManager.h"
 #include "OgreVector3.h"
@@ -61,7 +63,6 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldRawTC::~PagingLandScapeData2D_HeightFieldRawTC()
     {
-	   PagingLandScapeData2D::unload ();
     }
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightFieldRawTC::getBase (const Real mX, const Real mZ)
@@ -82,7 +83,7 @@ namespace Ogre
         #else
             if (mImage)
             {
-                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                unsigned int Pos = static_cast<unsigned int> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
                 if (mMax > Pos)
                 {
@@ -109,11 +110,11 @@ namespace Ogre
 
         const double divider = 65535.0 / mParent->getOptions()->scale.y;
         
-        uint j = 0;
-        for (uint i = 0; i < mXDimension*mZDimension; i++)
+        unsigned int j = 0;
+        for (unsigned int i = 0; i < mXDimension*mZDimension; i++)
         {             
             ushort syn = static_cast <ushort>  (_encodeRawTC (mHeightData[i]) * divider);
-            #if OGRE_ENDIAN == ENDIAN_BIG
+            #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                 data[j] = uchar ((syn >> 8) & 0xff);
 		        data[j+ 1] = uchar (syn & 0xff);
             #else
@@ -157,7 +158,7 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldRawTC::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightFieldRawTC::_load(const unsigned int mX, const unsigned int mZ)
     {
         // Load data
         //mRawData.clear();
@@ -201,9 +202,9 @@ namespace Ogre
                 ") does not agree with configuration settings.", 
                 "PagingLandScapeData2D_HeightFieldRaw::_load");
         }
-		mMax = static_cast<uint> (numBytes) + 1;
+		mMax = static_cast<unsigned int> (numBytes) + 1;
 
-        mMaxArrayPos = static_cast <uint> (mSize * mSize);
+        mMaxArrayPos = static_cast <unsigned int> (mSize * mSize);
         mHeightData = new Real[mMaxArrayPos];            
 
         const Real divider = 1.0f / 65535.0f;
@@ -214,10 +215,10 @@ namespace Ogre
         const uchar *pSrc = dc.getPtr ();     
 
         mMaxheight = 0.0f;
-        uint j = 0;
-        for (uint i = 0; i < mMax - 1;  i += mBpp)
+        unsigned int j = 0;
+        for (unsigned int i = 0; i < mMax - 1;  i += mBpp)
         {                  
-            #if OGRE_ENDIAN == ENDIAN_BIG
+            #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                         ushort val = *pSrc++ <<8;
                         val += *pSrc++;
             #else
@@ -268,14 +269,14 @@ namespace Ogre
         if (RawData->size() != sourceHeight*sourceWidth*2)
         {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                "RAW size (" + StringConverter::toString(static_cast<uint> (RawData->size())) + 
+                "RAW size (" + StringConverter::toString(static_cast<unsigned int> (RawData->size())) + 
                 ") does not agree with configuration settings.", 
                 "PagingLandScapeData2D_HeightFieldRaw::_load");
         }
     
-        mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
+        mMaxArrayPos = static_cast <unsigned int> (mXDimension * mZDimension);
         const size_t numBytes = mMaxArrayPos * mBpp;
-		mMax = static_cast<uint> (numBytes) + 1;
+		mMax = static_cast<unsigned int> (numBytes) + 1;
 
         mHeightData = new Real[mMaxArrayPos];
 
@@ -288,15 +289,15 @@ namespace Ogre
 
         const Real divider = 1.0f / 65535.0f;
         const Real scale  = mParent->getOptions()->scale.y;
-        const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
-        uint dest_pos = 0;
+        const unsigned int shift_fill = static_cast <unsigned int> (mXDimension - sourceWidth);
+        unsigned int dest_pos = 0;
         //for some reason water is 65035 in SRTM files...
         const bool srtm_water = mParent->getOptions()->SRTM_water;
-        for (uint i = 0; i < sourceHeight; ++i)
+        for (unsigned int i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j)
+            for (unsigned int j = 0; j < sourceWidth; ++j)
             {
-                #if OGRE_ENDIAN == ENDIAN_BIG
+                #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                             ushort val = *pSrc++ <<8;
                             val += *pSrc++;
                 #else

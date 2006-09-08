@@ -26,7 +26,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 PagingLandScapeCamera.h  -  description
 -------------------
 begin                : Fri Sep 27 2004
-copyright            : (C) 2005 by Tuan Kuranes
+copyright            : (C) 2006 by Tuan Kuranes
 email                : tuan.kuranes@free.fr
 
 ***************************************************************************/
@@ -59,30 +59,30 @@ namespace Ogre
 
             /** Returns the visibility of the box
             */
-            bool getVisibility(const AxisAlignedBox& bound) const;
+            bool isVisible(const AxisAlignedBox& bound) const;
 
-            void updatePaging(const uint x, const uint z);
+            void updatePaging(const unsigned int x, const unsigned int z);
 
             void resetPaging(void);
 
-            uint mCurrentCameraPageX; 
-            uint mCurrentCameraPageZ;
+            unsigned int mCurrentCameraPageX; 
+            unsigned int mCurrentCameraPageZ;
 
-            uint mCurrentCameraTileX;
-            uint mCurrentCameraTileZ;
+            unsigned int mCurrentCameraTileX;
+            unsigned int mCurrentCameraTileZ;
 
         private:
-            uint mIniX;
-            uint mFinX;
+            unsigned int mIniX;
+            unsigned int mFinX;
 
-			uint mIniZ;
-			uint mFinZ;
+			unsigned int mIniZ;
+			unsigned int mFinZ;
 
-			uint mPreIniX;
-            uint mPreFinX;
+			unsigned int mPreIniX;
+            unsigned int mPreFinX;
 
-            uint mPreIniZ;
-			uint mPreFinZ;
+            unsigned int mPreIniZ;
+			unsigned int mPreFinZ;
 
             Vector3 mLastCameraPos;
     };

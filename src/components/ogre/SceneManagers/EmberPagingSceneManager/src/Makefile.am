@@ -55,8 +55,8 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeTexture_Splatting7.cpp \
 						OgrePagingLandScapeTexture_Splatting7Edit.cpp \
 						OgrePagingLandScapeTexture_SplattingShader.cpp \
-						OgrePagingLandScapeTexture_Splatting.cpp \
 						OgrePagingLandScapeTexture_SplattingShaderEdit.cpp \
+						OgrePagingLandScapeTexture_Splatting.cpp \
 						OgrePagingLandScapeTile.cpp \
 						OgrePagingLandScapeTileManager.cpp \
 						OgrePagingLandScapeOcclusion.cpp \
@@ -74,4 +74,3 @@ libEmberPagingSceneManager_a_SOURCES = \
 						EmberPagingSceneManager.cpp \
 						EmberPagingLandScapeData2D_HeightField.cpp \
 						EmberPagingLandScapeTexture.cpp
-

@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting.cpp  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -44,7 +44,7 @@ namespace Ogre
         return new PagingLandScapeTexture_SplattingShader(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_SplattingShader::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_SplattingShader::isMaterialSupported()
     {      
 		const PagingLandScapeOptions * const opt = mParent->getOptions();
             
@@ -59,7 +59,7 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_SplattingShader::PagingLandScapeTexture_SplattingShader(PagingLandScapeTextureManager *textureMgr) : 
-        PagingLandScapeTexture(textureMgr)
+        PagingLandScapeTexture(textureMgr, "SplattingShader", 1, true)
     {
 
     }
@@ -68,53 +68,4 @@ namespace Ogre
     {
 
     }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_SplattingShader::_loadMaterial()
-    {
-	    if (mMaterial.isNull())
-	    {     
-			const PagingLandScapeOptions * const opt = mParent->getOptions();
-            
-            // Create a new texture using the base image
-            const String filename = opt->LandScape_filename;
-            const String commonName = StringConverter::toString(mDataZ) + String(".") + StringConverter::toString(mDataX);
-            const String prefilename = opt->LandScape_filename;
-            const String postfilename = commonName + "." + opt->TextureExtension;
-
-            const bool compressed = opt->VertexCompression;
-            const String MatClassName = (compressed?String("SplattingMaterialShaderDecompress"):String("SplattingMaterialShader"));
-            const String matname =  MatClassName + commonName + filename;
-            mMaterial = MaterialManager::getSingleton().getByName(matname);
-            if (mMaterial.isNull())
-	        {                
-                MaterialPtr ClassMaterial = MaterialManager::getSingleton().getByName(MatClassName);
-                assert (!ClassMaterial.isNull());
-                mMaterial = ClassMaterial->clone(matname);
-                   
-                Pass * const p = mMaterial->getTechnique(0)->getPass(0); 
-                if (compressed)
-                {
-                    bindCompressionSettings (p->getVertexProgramParameters());
-                    bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
-                }
-                const String texname (filename + ".Coverage." + postfilename);
-                TextureManager::getSingleton().load (texname, opt->groupName);    
-                p->getTextureUnitState(0)->setTextureName(texname);
-                
-                const uint numSplats = opt->NumMatHeightSplat;
-                uint splat_pass = 0; 
-                while  (splat_pass < numSplats)
-                {
-                    p->getTextureUnitState(splat_pass + 1)->setTextureName(opt->SplatDetailMapNames[splat_pass]);
-                    splat_pass++;
-                }
-            }
-            // Now that we have all the resources in place, we load the material
-           
-            mMaterial->setLodLevels(opt->lodMaterialDistanceList);
-            mMaterial->setLightingEnabled(opt->lit);
-            mMaterial->load(); 
-	    }
-    }
-
 } //namespace

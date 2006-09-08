@@ -2,7 +2,7 @@
 	OgrePagingLandScapeData2D_HeightField.h  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+  copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -32,7 +32,7 @@ class PagingLandScapeData2D_HeightField: public PagingLandScapeData2D
 {
 public:
 	PagingLandScapeData2D_HeightField(PagingLandScapeData2DManager *dataMgr);
-            virtual String getName(){return String("HeightField");}
+            virtual String getName() const{return String("HeightField");}
 	virtual ~PagingLandScapeData2D_HeightField(void);
 
     virtual const Vector3 getNormal(const Real mX, const Real mZ);
@@ -45,12 +45,13 @@ public:
 protected:
 
     virtual void _save(void);
-	virtual bool _load(const uint x, const uint z);
+	virtual bool _load(const unsigned int x, const unsigned int z);
 	virtual void _load(void);
 	virtual void _unload(void);
 
 private:
-    double getScale() const;
+	Real PagingLandScapeData2D_HeightField::getScale() const;
+	Real PagingLandScapeData2D_HeightField::getInvScale() const;
 
 	Image* mImage;
     Image* mBase;

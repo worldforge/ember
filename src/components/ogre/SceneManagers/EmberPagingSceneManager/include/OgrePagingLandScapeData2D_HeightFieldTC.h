@@ -2,7 +2,7 @@
 	OgrePagingLandScapeData2D_HeightFieldTC.h  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+  copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -34,7 +34,7 @@ namespace Ogre
 	        PagingLandScapeData2D_HeightFieldTC(PagingLandScapeData2DManager *dataMgr);
 
 	        virtual ~PagingLandScapeData2D_HeightFieldTC(void);
-            virtual String getName(){return String("HeightFieldTC");}
+            virtual String getName() const{return String("HeightFieldTC");}
 
             virtual const ColourValue getBase(const Real mX, const Real mZ);
             virtual const ColourValue getCoverage(const Real mX, const Real mZ);
@@ -44,11 +44,8 @@ namespace Ogre
 
         protected:
             virtual void _save(void);
-
-	        virtual bool _load(const uint x, const uint z);
-
+	        virtual bool _load(const unsigned int x, const unsigned int z);
             virtual void _load(void);
-
 	        virtual void _unload(void);
 
         private:

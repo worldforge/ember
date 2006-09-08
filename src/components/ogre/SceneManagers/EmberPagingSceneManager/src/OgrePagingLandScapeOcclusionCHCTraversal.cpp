@@ -1,3 +1,6 @@
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "OgrePagingLandScapeOctreeCamera.h"
 #include "OgrePagingLandScapeOctree.h"
 #include "OgrePagingLandScapeOctreeNode.h"

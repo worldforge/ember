@@ -2,7 +2,7 @@
 	OgrePagingLandScapeSceneManager.h  -  description
   -------------------
   begin                : Mon May 12 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -254,23 +254,36 @@ namespace Ogre
                 where it intersects with terrain
         */
         bool intersectSegmentTerrain(const Vector3& begin, const Vector3& dir, Vector3* result);
-   
+        /** load
+        * @remarks load heights only LandScape, need brush and brush scale to be set before
+        * @param &impact  where load take place, where BrushArray is centered
+        */
+        void setHeight (const Vector3 &impact);
         /** deform
         * @remarks deform only LandScape, need brush and brush scale to be set before
         * @param &impact  where deformation take place, where BrushArray is centered
         */
-        void deform(const Vector3& impact);
+        void deformHeight(const Vector3& impact);
         /** paint
         * @remarks paint only LandScape, need channel, brush and brush scale to be set before
         * @param impact  where painting take place
         * @param isAlpha  if we want to paint alpha or color
         */
-        void paint (const Vector3 &impact, const bool isAlpha);
+        void paint (const Vector3 &impact);
         /** getAreaHeight
         * @remarks used to fill user allocated array with values.
         * @param impact  where array is centered
         */
         void getAreaHeight(const Vector3& impact); 
+
+		/** renderBaseTextures()
+		* @remarks Performs render to texture for all pages to create base textures from
+		* splatting shader. If alternate material is specified, will use it instead of 
+		* the actual material assigned to the page. This is necessary when terrain is lit
+		* and/or compressed.
+		*/
+		void renderBaseTextures(const String& alternateMatName); 
+
 	    /** Overridden from SceneManager */
 	    void setWorldGeometryRenderQueue(RenderQueueGroupID qid);
 
@@ -284,58 +297,58 @@ namespace Ogre
         _OgrePagingLandScapeExport void  getWorldSize(Real *worldSizeX, Real *worldSizeZ);
         _OgrePagingLandScapeExport float getMaxSlope(Vector3 location1, Vector3 location2, float maxSlopeIn);
 
-        PagingLandScapeOptions                 * getOptions()
+        inline PagingLandScapeOptions                 * getOptions()
         {
             assert(mOptions);
             return mOptions;
         }
 
-        PagingLandScapeHorizon                  * getHorizon()
+        inline PagingLandScapeHorizon                  * getHorizon()
         {
             assert(mHorizon);
             return mHorizon;
         }
-        PagingLandScapeTileManager              * getTileManager()
+        inline PagingLandScapeTileManager              * getTileManager()
         {
             assert(mTileManager);
             return mTileManager;
         }
-        PagingLandScapePageManager              * getPageManager()
+        inline PagingLandScapePageManager              * getPageManager()
         {
             assert(mPageManager);
             return mPageManager;
         }
-        PagingLandScapeData2DManager            * getData2DManager()
+        inline PagingLandScapeData2DManager            * getData2DManager()
         {
             assert(mData2DManager);
             return mData2DManager;
         }
-        PagingLandScapeListenerManager          * getListenerManager()
+        inline PagingLandScapeListenerManager          * getListenerManager()
         {
             assert(mListenerManager);
             return mListenerManager;
         }
-        PagingLandScapeTextureManager           * getTextureManager()
+        inline PagingLandScapeTextureManager           * getTextureManager()
         {
             assert(mTextureManager);
             return mTextureManager;
         }
-        PagingLandScapeIndexBufferManager       * getIndexesManager()
+        inline PagingLandScapeIndexBufferManager       * getIndexesManager()
         {
             assert(mIndexesManager);
             return mIndexesManager;
         }
-        PagingLandScapeRenderableManager        * getRenderableManager()
+        inline PagingLandScapeRenderableManager        * getRenderableManager()
         {
             assert(mRenderableManager);
             return mRenderableManager;
         }
-        PagingLandScapeTextureCoordinatesManager* getTextureCoordinatesManager()
+        inline PagingLandScapeTextureCoordinatesManager* getTextureCoordinatesManager()
         {
             assert(mTexCoordManager);
             return mTexCoordManager;
         }
-        PagingLandScapeIndexBufferManager* getIndexBufferManager()
+        inline PagingLandScapeIndexBufferManager* getIndexBufferManager()
         {
             assert(mIndexesManager);
             return mIndexesManager;
@@ -398,14 +411,16 @@ namespace Ogre
         PagingLandScapeTileInfo* mImpactInfo;
         Vector3 mImpact;  
         Vector3 mBrushCenter;
-        uint mBrushSize;
+        unsigned int mBrushSize;
         Real mBrushScale;
 
         Real* mCraterArray;
         Real* mBrushArray;
 
-        uint mBrushArrayHeight;
-        uint mBrushArrayWidth;
+        unsigned int mBrushArrayHeight;
+        unsigned int mBrushArrayWidth;
+
+		bool textureFormatChanged;
 
         // re-create the default Crater brush.
         void resizeCrater ();  

@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2005 The OGRE Team
+Copyright (c) 2000-2006 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -22,6 +22,8 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreDebugRectangle2D.h"
 #ifdef _VISIBILITYDEBUG
@@ -94,7 +96,7 @@ namespace Ogre {
        
         
         const size_t vertexSize = vbuf->getVertexSize ();
-        Real *pPos;
+        float *pPos;
         RGBA *pColor;
         Root * const root = Root::getSingletonPtr();
 
@@ -106,8 +108,10 @@ namespace Ogre {
 //            *pPos++ = AX; *pPos++ =  AY; *pPos++ =  AZ; \
 //            pMain += vertexSize;
 
-    #define V3(AX, AY, AZ, ACOLOR) poselem->baseVertexPointerToElement(pMain, &pPos); \
-            *pPos++ = AX; *pPos++ =  AY; *pPos++ =  AZ; \
+#define V3(A_X, A_Y, A_Z, ACOLOR) poselem->baseVertexPointerToElement(pMain, &pPos); \
+			*pPos++ = static_cast <float> (A_X); \
+			*pPos++ = static_cast <float> (A_Y); \
+			*pPos++ = static_cast <float> (A_Z); \
             colorelem->baseVertexPointerToElement(pMain, &pColor); \
             root->convertColourValue (ACOLOR, pColor); \
             pMain += vertexSize;

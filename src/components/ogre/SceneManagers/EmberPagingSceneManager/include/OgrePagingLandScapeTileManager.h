@@ -2,7 +2,7 @@
 	OgrePagingLandScapeTileManager.h  -  description
 	-------------------
   begin                : Mon Jun 16 2003
-  copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -43,28 +43,40 @@ namespace Ogre
 
             void reset(void);
 
-	        uint numTiles(void) const;
+	        unsigned int numTiles(void) const;
 
-	        int numFree(void) const;
+	        size_t numFree(void) const;
 
 
             void load(void);
             void clear(void);
+	
+			// unload invisible tiles after option::mTileInvisibleUnloadFrames tick
+			// without being visible.
+			void updateLoadedTiles();
 
-            PagingLandScapeOptions*		getOptions(){return mOptions;}
-            PagingLandScapeSceneManager* getSceneManager(){return mSceneManager;}
+            inline PagingLandScapeOptions*		getOptions()
+			{
+				return mOptions;
+			}
+
+            inline PagingLandScapeSceneManager* getSceneManager()
+			{
+				return mSceneManager;
+			}
+
     protected:
 
             PagingLandScapeOptions*		mOptions;
             PagingLandScapeSceneManager *mSceneManager;
 
-	        void _addBatch(const uint num);
+	        void _addBatch(const unsigned int num);
 
 	        PagingLandScapeTileRow mTiles;
 
 	        PagingLandScapeQueue< PagingLandScapeTile > mQueue;
 
-	        uint mNumTiles;
+	        unsigned int mNumTiles;
 
     };
 

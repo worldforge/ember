@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2005 The OGRE Team
+Copyright (c) 2000-2006 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -32,6 +32,8 @@ email                : janders@users.sf.net
 Enhancements 2003 - 2004 (C) The OGRE Team
  
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgrePagingLandScapeOctreeSceneManager.h"
 
@@ -92,7 +94,128 @@ namespace Ogre
     };
     int PagingLandScapeOctreeSceneManager::intersect_call = 0;
     //---------------------------------------------------------------------
-    Intersection intersect(const Ray &one, const AxisAlignedBox &two)
+    Intersection intersect(const Ray &ray, const AxisAlignedBox &box)
+	{
+		if (box.isNull()) 
+			return OUTSIDE;
+
+		const Vector3& min = box.getMinimum();
+		const Vector3& max = box.getMaximum();
+		const Vector3& rayorig = ray.getOrigin();
+
+		// Check origin inside first
+		if ( rayorig > min && rayorig < max )
+			return INSIDE;
+
+		const Vector3& raydir = ray.getDirection();
+
+		Real lowt = 0.0f;
+		Real t;
+		bool hit = false;
+		Vector3 hitpoint;
+
+		// Check each face in turn, only check closest 3
+		// Min x
+		if (rayorig.x < min.x && raydir.x > 0)
+		{
+			t = (min.x - rayorig.x) / raydir.x;
+			if (t > 0)
+			{
+				// Substitute t back into ray and check bounds and dist
+				hitpoint = rayorig + raydir * t;
+				if (hitpoint.y >= min.y && hitpoint.y <= max.y &&
+					hitpoint.z >= min.z && hitpoint.z <= max.z &&
+					(!hit || t < lowt))
+				{
+					return INTERSECT;
+				}
+			}
+		}
+		// Max x
+		if (rayorig.x > max.x && raydir.x < 0)
+		{
+			t = (max.x - rayorig.x) / raydir.x;
+			if (t > 0)
+			{
+				// Substitute t back into ray and check bounds and dist
+				hitpoint = rayorig + raydir * t;
+				if (hitpoint.y >= min.y && hitpoint.y <= max.y &&
+					hitpoint.z >= min.z && hitpoint.z <= max.z &&
+					(!hit || t < lowt))
+				{
+					return INTERSECT;
+				}
+			}
+		}
+		// Min y
+		if (rayorig.y < min.y && raydir.y > 0)
+		{
+			t = (min.y - rayorig.y) / raydir.y;
+			if (t > 0)
+			{
+				// Substitute t back into ray and check bounds and dist
+				hitpoint = rayorig + raydir * t;
+				if (hitpoint.x >= min.x && hitpoint.x <= max.x &&
+					hitpoint.z >= min.z && hitpoint.z <= max.z &&
+					(!hit || t < lowt))
+				{
+					return INTERSECT;
+				}
+			}
+		}
+		// Max y
+		if (rayorig.y > max.y && raydir.y < 0)
+		{
+			t = (max.y - rayorig.y) / raydir.y;
+			if (t > 0)
+			{
+				// Substitute t back into ray and check bounds and dist
+				hitpoint = rayorig + raydir * t;
+				if (hitpoint.x >= min.x && hitpoint.x <= max.x &&
+					hitpoint.z >= min.z && hitpoint.z <= max.z &&
+					(!hit || t < lowt))
+				{
+					return INTERSECT;
+				}
+			}
+		}
+		// Min z
+		if (rayorig.z < min.z && raydir.z > 0)
+		{
+			t = (min.z - rayorig.z) / raydir.z;
+			if (t > 0)
+			{
+				// Substitute t back into ray and check bounds and dist
+				hitpoint = rayorig + raydir * t;
+				if (hitpoint.x >= min.x && hitpoint.x <= max.x &&
+					hitpoint.y >= min.y && hitpoint.y <= max.y &&
+					(!hit || t < lowt))
+				{
+					return INTERSECT;
+				}
+			}
+		}
+		// Max z
+		if (rayorig.z > max.z && raydir.z < 0)
+		{
+			t = (max.z - rayorig.z) / raydir.z;
+			if (t > 0)
+			{
+				// Substitute t back into ray and check bounds and dist
+				hitpoint = rayorig + raydir * t;
+				if (hitpoint.x >= min.x && hitpoint.x <= max.x &&
+					hitpoint.y >= min.y && hitpoint.y <= max.y &&
+					(!hit || t < lowt))
+				{
+					return INTERSECT;
+				}
+			}
+		}
+		return OUTSIDE;
+	}
+
+	//---------------------------------------------------------------------
+	Intersection intersect2(const Ray &one, const AxisAlignedBox &two)
     {
         PagingLandScapeOctreeSceneManager::intersect_call++;
 
@@ -100,32 +223,27 @@ namespace Ogre
         if (two.isNull()) 
             return OUTSIDE;
 
-
         const Vector3* const pCorners = two.getAllCorners();
         const Vector3 origin = one.getOrigin();
         const Vector3 dir = one.getDirection();
 
         Vector3 maxT (-1.0f, -1.0f, -1.0f);
 
-        int i = 0;
+        unsigned int i = 0;
         bool inside = true;
         for (i = 0; i < 3; i++)
         {
-            if(origin[i] < pCorners[0][i])
+            if (origin[i] < pCorners[0][i])
             {
                 inside = false;
                 if(dir[i] > 0)
-                {
                     maxT[i] = (pCorners[0][i] - origin[i]) / dir[i];
-                }
             }
-            else if(origin[i] > pCorners[4][i])
+            else if (origin[i] > pCorners[4][i])
             {
                 inside = false;
                 if(dir[i] < 0)
-                {
                     maxT[i] = (pCorners[4][i] - origin[i]) / dir[i];
-                }
             }
         }
 
@@ -271,7 +389,7 @@ namespace Ogre
         //find the square of the distance
         //from the sphere to the box
         Real d = 0;
-        for (uint i = 0 ; i < 3 ; i++)
+        for (unsigned int i = 0 ; i < 3 ; i++)
         {
             const Real sCenteri = scenter[ i ];
             if (sCenteri < corners[ 0 ][ i ])
@@ -950,41 +1068,6 @@ namespace Ogre
                 }
 			        break;
                     
-//                case STANDARD_WALK:
-//                    {    
-//                        // recursive heap eater old thing
-//                        walkPagingLandScapeOctree (static_cast < PagingLandScapeOctreeCamera * > (cam),
-//                                                    q,
-//                                                    mPagingLandScapeOctree, 
-//                                                    false,
-//                                                    onlyShadowCasters);
-//                         
-//                        #ifdef _VISIBILITYDEBUG
-//                        if (mCullDebug && cam->getViewport ()) 
-//									cam->getViewport ()->getTarget ()->setDebugText (
-//                                "OldWalk :" + 
-//                                StringConverter::toString(mNumObjects)
-//                                              );                        
-//                            // Show the PagingLandScapeOctree boxes & cull camera if required        
-//                            if (mShowBoxes)
-//                            {
-//                                for (MovableObjectList::iterator it = mBoxes.begin(); it != mBoxes.end(); ++it)
-//                                {
-//                                    (*it)->_updateRenderQueue(q);
-//                                }
-//                            }
-//
-//                            if (mCullCamera)
-//                            {
-//                                PagingLandScapeOctreeCamera * c = static_cast<PagingLandScapeOctreeCamera*>(SceneManager::getCamera("CullCamera"));
-//                                if (c != 0)
-//                                {
-//                                    c->_updateRenderQueue(q);               
-//                                }
-//                            }           
-//                        #endif // _VISIBILITYDEBUG
-//                    }
-//			        break;
 		        default:
                     assert (0);
 			        break;
@@ -1047,130 +1130,7 @@ namespace Ogre
     void PagingLandScapeOctreeSceneManager::registerCamera (PagingLandScapeOctreeCamera *c)
     {        
        mPagingLandScapeOctree->traversal(RegisterCameraTraversal(c));
-    }
-    //---------------------------------------------------------------------
-    void PagingLandScapeOctreeSceneManager::walkPagingLandScapeOctree(PagingLandScapeOctreeCamera * camera, RenderQueue * const queue,
-                                        PagingLandScapeOctree * const octant, const bool foundvisible, const bool onlyShadowCasters)
-    {
-        assert (octant);
-        PagingLandScapeOctreeCamera::Visibility v = PagingLandScapeOctreeCamera::NONE;
-
-        if (foundvisible)
-        {
-            v = PagingLandScapeOctreeCamera::FULL;
-        }
-        else if (octant == mPagingLandScapeOctree)
-        {
-            v = PagingLandScapeOctreeCamera::PARTIAL;
-        }
-        else
-        {
-            AxisAlignedBox box;
-            octant->_getCullBounds(&box);
-            v = camera->getVisibility(box);
-        }
-
-
-        // if the octant is visible, or if it's the root node...
-        if (v != PagingLandScapeOctreeCamera::NONE)
-        {
-            #ifdef _VISIBILITYDEBUG
-                    octant->getNodeData (camera)->viewFrustumVisible = true;
-                    octant->getNodeData (camera)->queryVisible = true;
-
-                    if (mShowBoxes)
-                    {
-                        mBoxes.push_back(octant->getWireBoundingBox());
-                        //mBoxes.push_back(octant->getOcclusionBoundingBox());
-                    }
-            #endif //_VISIBILITYDEBUG
-
-            bool vis = true;
-            //Add stuff to be rendered;
-            NodeList::iterator it = octant->mNodes.begin();
-            while (it != octant->mNodes.end())
-            {
-                PagingLandScapeOctreeNode * const sn = *it;
-
-                // if this PagingLandScapeOctree is partially visible, manually cull all
-                // scene nodes attached directly to this level.
-
-                if (v == PagingLandScapeOctreeCamera::PARTIAL)
-                    vis = camera->isVisible(sn->_getWorldAABB());
-
-                if (vis)
-                {
-                    #ifdef _VISIBILITYDEBUG
-                        sn->getNodeData (camera)->viewFrustumVisible = true;
-                        sn->getNodeData (camera)->queryVisible = true;
-                    #endif //_VISIBILITYDEBUG
-
-                    mNumObjects++;
-                    sn->_addToRenderQueue(camera, queue, onlyShadowCasters);
-
-                    //mVisible.push_back(sn);
-
-                    if (mDisplayNodes)
-                        queue->addRenderable(sn);
-
-                    // check if the scene manager or this node wants the bounding box shown.
-                    if (sn->getShowBoundingBox() || mShowBoundingBoxes)
-                        sn->_addBoundingBoxToQueue(queue);
-                }
-                #ifdef _VISIBILITYDEBUG
-                    else
-                    {  
-                        sn->getNodeData (camera)->viewFrustumVisible = false;
-                        sn->getNodeData (camera)->queryVisible = false;
-                    }
-                #endif //_VISIBILITYDEBUG
-
-                ++it;
-            } // while (it != octant->mNodes.end())
-
-            const bool isFullVis =  (v == PagingLandScapeOctreeCamera::FULL);
-            if (octant->mChildren[ 0 ][ 0 ][ 0 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 0 ][ 0 ][ 0 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 1 ][ 0 ][ 0 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 1 ][ 0 ][ 0 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 0 ][ 1 ][ 0 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 0 ][ 1 ][ 0 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 1 ][ 1 ][ 0 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 1 ][ 1 ][ 0 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 0 ][ 0 ][ 1 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 0 ][ 0 ][ 1 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 1 ][ 0 ][ 1 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 1 ][ 0 ][ 1 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 0 ][ 1 ][ 1 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 0 ][ 1 ][ 1 ], 
-                            isFullVis, onlyShadowCasters);
-
-            if (octant->mChildren[ 1 ][ 1 ][ 1 ] != 0)
-                walkPagingLandScapeOctree(camera, queue, octant->mChildren[ 1 ][ 1 ][ 1 ], 
-                            isFullVis, onlyShadowCasters);
-
-        }
-        #ifdef _VISIBILITYDEBUG
-            else
-            {  
-                octant->getNodeData (camera)->viewFrustumVisible = false;
-                octant->getNodeData (camera)->queryVisible = false;
-            }
-        #endif //_VISIBILITYDEBUG
-
-    }
+    }  
     //---------------------------------------------------------------------
      // --- non template versions
     void _findNodes(const AxisAlignedBox &t, std::list < SceneNode * > &list, 
@@ -1349,14 +1309,12 @@ namespace Ogre
 	    while (it != octant->mNodes.end())
 	    {
 		    PagingLandScapeOctreeNode * const on = (*it);
-
 		    if (on != exclude)
 		    {
 			    if (b_full)
 			    {
 				    list.push_back(on);
 			    }
-
 			    else
 			    {
 				    const Intersection nsect = intersect(t, on->_getWorldAABB());
@@ -1366,13 +1324,9 @@ namespace Ogre
 					    list.push_back(on);
 				    }
 			    }
-
 		    }
-
 		    ++it;
 	    }
-
-
 
 	    if (octant->mChildren[ 0 ][ 0 ][ 0 ] != 0)
 		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 0 ][ 0 ]);
@@ -1404,7 +1358,6 @@ namespace Ogre
                     const Ogre::SceneNode * const exclude, 
                     const bool full, PagingLandScapeOctree *octant)
     {
-
         bool isFull = full;
 	    if (!full)
 	    {
@@ -1421,60 +1374,54 @@ namespace Ogre
 
 
         const bool b_full = isFull;
-	    NodeList::iterator it = octant->mNodes.begin();
+		if (!octant->mNodes.empty ())
+		{
+			NodeList::iterator it = octant->mNodes.begin();
+			while (it != octant->mNodes.end())
+			{
+				PagingLandScapeOctreeNode * const on = (*it);
+				if (on != exclude)
+				{
+					if (b_full)
+					{
+						list.push_back(on);
+					}
+					else
+					{
+						const Intersection nsect = intersect(t, on->_getWorldAABB());
+						if (nsect != OUTSIDE)
+							list.push_back(on);
+					}
+				}
+				++it;
+			}
+		}
+		if (octant->hasChildren ())
+		{
+			if (octant->mChildren[ 0 ][ 0 ][ 0 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 0 ][ 0 ]);
 
-	    while (it != octant->mNodes.end())
-	    {
-		    PagingLandScapeOctreeNode * const on = (*it);
+			if (octant->mChildren[ 1 ][ 0 ][ 0 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 0 ][ 0 ]);
 
-		    if (on != exclude)
-		    {
-			    if (b_full)
-			    {
-				    list.push_back(on);
-			    }
+			if (octant->mChildren[ 0 ][ 1 ][ 0 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 1 ][ 0 ]);
 
-			    else
-			    {
-				    const Intersection nsect = intersect(t, on->_getWorldAABB());
+			if (octant->mChildren[ 1 ][ 1 ][ 0 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 1 ][ 0 ]);
 
-				    if (nsect != OUTSIDE)
-				    {
-					    list.push_back(on);
-				    }
-			    }
+			if (octant->mChildren[ 0 ][ 0 ][ 1 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 0 ][ 1 ]);
 
-		    }
+			if (octant->mChildren[ 1 ][ 0 ][ 1 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 0 ][ 1 ]);
 
-		    ++it;
-	    }
+			if (octant->mChildren[ 0 ][ 1 ][ 1 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 1 ][ 1 ]);
 
-
-
-	    if (octant->mChildren[ 0 ][ 0 ][ 0 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 0 ][ 0 ]);
-
-	    if (octant->mChildren[ 1 ][ 0 ][ 0 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 0 ][ 0 ]);
-
-	    if (octant->mChildren[ 0 ][ 1 ][ 0 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 1 ][ 0 ]);
-
-	    if (octant->mChildren[ 1 ][ 1 ][ 0 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 1 ][ 0 ]);
-
-	    if (octant->mChildren[ 0 ][ 0 ][ 1 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 0 ][ 1 ]);
-
-	    if (octant->mChildren[ 1 ][ 0 ][ 1 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 0 ][ 1 ]);
-
-	    if (octant->mChildren[ 0 ][ 1 ][ 1 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 0 ][ 1 ][ 1 ]);
-
-	    if (octant->mChildren[ 1 ][ 1 ][ 1 ] != 0)
-		    _findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 1 ][ 1 ]);
-
+			if (octant->mChildren[ 1 ][ 1 ][ 1 ] != 0)
+				_findNodes(t, list, exclude, b_full, octant->mChildren[ 1 ][ 1 ][ 1 ]);
+		}
     }
     //---------------------------------------------------------------------
     void PagingLandScapeOctreeSceneManager::findNodesIn(const AxisAlignedBox &box, std::list < SceneNode * > &list, const SceneNode* const exclude)

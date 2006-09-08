@@ -1,81 +1,77 @@
 noinst_HEADERS = \
-fileutils.h \
-OgrePagingLandScapeCallback.h \
-DRGNURBSSurface.h \
-OgreDebugRectangle2D.h \
-OgreOcclusionBoundingBox.h \
-OgrePagingLandScapeCallBackEvent.h \
-OgrePagingLandScapeData2D.h \
-OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h \
-OgrePagingLandScapeData2D_HeightField.h \
-OgrePagingLandScapeData2D_HeightFieldN.h \
-OgrePagingLandScapeData2D_HeightFieldNTC.h \
-OgrePagingLandScapeData2D_HeightFieldRaw.h \
-OgrePagingLandScapeData2D_HeightFieldRawTC.h \
-OgrePagingLandScapeData2D_HeightFieldTC.h \
-OgrePagingLandScapeData2DManager.h \
-OgrePagingLandScapeData2D_Spline.h \
-OgrePagingLandScapeHorizon.h \
-OgrePagingLandScapeIndexBuffer.h \
-OgrePagingLandScapeIntersectionSceneQuery.h \
-OgrePagingLandScapeListener.h \
-OgrePagingLandScapeListenerManager.h \
-OgrePagingLandScapeOcclusionCameraTraversal.h \
-OgrePagingLandScapeOcclusionCHCTraversal.h \
-OgrePagingLandScapeOcclusionDebugTraversal.h \
-OgrePagingLandScapeOcclusionElement.h \
-OgrePagingLandScapeOcclusion.h \
-OgrePagingLandScapeOcclusionQuerySet.h \
-OgrePagingLandScapeOcclusionSorter.h \
-OgrePagingLandScapeOcclusionSWTraversal.h \
-OgrePagingLandScapeOcclusionTraversal.h \
-OgrePagingLandScapeOcclusionVFTraversal.h \
-OgrePagingLandScapeOcclusionVisibilityData.h \
-OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h \
-OgrePagingLandScapeOctree.h \
-OgrePagingLandScapeOctreeIntersectionSceneQuery.h \
-OgrePagingLandScapeOctreeNode.h \
-OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h \
-OgrePagingLandScapeOctreeRaySceneQuery.h \
-OgrePagingLandScapeOctreeSceneManager.h \
-OgrePagingLandScapeOctreeSphereSceneQuery.h \
-OgrePagingLandScapeOptions.h \
-OgrePagingLandScapePage.h \
-OgrePagingLandScapePageManager.h \
-OgrePagingLandScapePageRenderable.h \
-OgrePagingLandScapePrerequisites.h \
-OgrePagingLandScapeQueue.h \
-OgrePagingLandScapeRaySceneQuery.h \
-OgrePagingLandScapeRenderable.h \
-OgrePagingLandScapeRenderableManager.h \
-OgrePagingLandScapeSceneManager.h \
-OgrePagingLandScapeTexture_BaseTexture2.h \
-OgrePagingLandScapeTexture_BaseTexture.h \
-OgrePagingLandScapeTextureCoordinatesManager.h \
-OgrePagingLandScapeTexture.h \
-OgrePagingLandScapeTexture_Image.h \
-OgrePagingLandScapeTexture_InstantBaseTextureEdit.h \
-OgrePagingLandScapeTexture_InstantBaseTexture.h \
-OgrePagingLandScapeTexture_InstantBaseTextureShadowed.h \
-OgrePagingLandScapeTextureManager.h \
-OgrePagingLandScapeTexture_None.h \
-OgrePagingLandScapeTexture_Splatting2Edit.h \
-OgrePagingLandScapeTexture_Splatting2.h \
-OgrePagingLandScapeTexture_Splatting3.h \
-OgrePagingLandScapeTexture_Splatting4.h \
-OgrePagingLandScapeTexture_Splatting5.h \
-OgrePagingLandScapeTexture_Splatting6.h \
-OgrePagingLandScapeTexture_Splatting7Edit.h \
-OgrePagingLandScapeTexture_Splatting7.h \
-OgrePagingLandScapeTexture_Splatting.h \
-OgrePagingLandScapeTexture_SplattingShader.h \
-OgrePagingLandScapeTexture_SplattingShaderEdit.h \
-OgrePagingLandScapeTile.h \
-OgrePagingLandScapeTileInfo.h \
-OgrePagingLandScapeTileManager.h \
-OgrePagingLandScapeCamera.h \
-OgrePagingLandScapeOctreeCamera.h \
-OgrePagingLandScapePoolSet.h \
+			DRGNURBSSurface.h \
+			fileutils.h \
+			OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h \
+			OgrePagingLandScapeOctreeCamera.h \
+			OgrePagingLandScapeOctree.h \
+			OgrePagingLandScapeOctreeIntersectionSceneQuery.h \
+			OgrePagingLandScapeIntersectionSceneQuery.h \
+			OgrePagingLandScapeOctreeNode.h \
+			OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h \
+			OgrePagingLandScapeOctreeRaySceneQuery.h \
+			OgrePagingLandScapeOctreeSceneManager.h \
+			OgrePagingLandScapeOctreeSphereSceneQuery.h \
+			OgrePagingLandScapeCamera.h \
+			OgrePagingLandScapeData2D.h \
+			OgrePagingLandScapeData2D_HeightField.h \
+			OgrePagingLandScapeData2D_HeightFieldN.h \
+			OgrePagingLandScapeData2D_HeightFieldNTC.h \
+			OgrePagingLandScapeData2D_HeightFieldRaw.h \
+			OgrePagingLandScapeData2D_HeightFieldRawTC.h \
+			OgrePagingLandScapeData2D_HeightFieldTC.h \
+			OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h \
+			OgrePagingLandScapeData2DManager.h \
+			OgrePagingLandScapeData2D_Spline.h \
+			OgrePagingLandScapeHorizon.h \
+			OgrePagingLandScapeIndexBuffer.h \
+			OgrePagingLandScapeListener.h \
+			OgrePagingLandScapeListenerManager.h \
+			OgrePagingLandScapeOptions.h \
+			OgrePagingLandScapePage.h \
+			OgrePagingLandScapePageManager.h \
+			OgrePagingLandScapePageRenderable.h \
+			OgrePagingLandScapePrerequisites.h \
+			OgrePagingLandScapeQueue.h \
+			OgrePagingLandScapeRaySceneQuery.h \
+			OgrePagingLandScapeRenderable.h \
+			OgrePagingLandScapeRenderableManager.h \
+			OgrePagingLandScapeTextureCoordinatesManager.h \
+			OgrePagingLandScapeSceneManager.h \
+			OgrePagingLandScapeTexture_BaseTexture2.h \
+			OgrePagingLandScapeTexture_BaseTexture.h \
+			OgrePagingLandScapeTexture.h \
+			OgrePagingLandScapeTexture_Image.h \
+			OgrePagingLandScapeTexture_InstantBaseTexture.h \
+			OgrePagingLandScapeTexture_InstantBaseTextureEdit.h \
+			OgrePagingLandScapeTextureManager.h \
+			OgrePagingLandScapeTexture_Splatting2.h \
+			OgrePagingLandScapeTexture_Splatting2Edit.h \
+			OgrePagingLandScapeTexture_Splatting3.h \
+			OgrePagingLandScapeTexture_Splatting4.h \
+			OgrePagingLandScapeTexture_Splatting5.h \
+			OgrePagingLandScapeTexture_Splatting6.h \
+			OgrePagingLandScapeTexture_Splatting7.h \
+			OgrePagingLandScapeTexture_Splatting7Edit.h \
+			OgrePagingLandScapeTexture_Splatting.h \
+			OgrePagingLandScapeTexture_SplattingShader.h \
+			OgrePagingLandScapeTexture_SplattingShaderEdit.h \
+			OgrePagingLandScapeTexture_None.h \
+			OgrePagingLandScapeTile.h \
+			OgrePagingLandScapeTileInfo.h \
+			OgrePagingLandScapeTileManager.h \
+			OgrePagingLandScapeOcclusion.h \
+			OgrePagingLandScapeOcclusionElement.h \
+			OgrePagingLandScapeOcclusionVisibilityData.h \
+			OgrePagingLandScapeOcclusionCameraTraversal.h \
+			OgrePagingLandScapeOcclusionCHCTraversal.h \
+			OgrePagingLandScapeOcclusionSWTraversal.h \
+			OgrePagingLandScapeOcclusionDebugTraversal.h \
+			OgrePagingLandScapeOcclusionVFTraversal.h \
+			OgreDebugRectangle2D.h \
+			OgreOcclusionBoundingBox.h \
+			OgrePagingLandScapeOcclusionQuerySet.h \
+			OgrePagingLandScapePoolSet.h \
+			OgrePagingLandScapeOcclusionSorter.h \
 \
 EmberPagingLandScapeData2D_HeightField.h \
 EmberPagingLandScapeTexture.h \

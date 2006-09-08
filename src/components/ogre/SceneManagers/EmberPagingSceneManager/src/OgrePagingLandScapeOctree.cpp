@@ -4,12 +4,12 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2005 The OGRE Team
+Copyright (c) 2000-2006 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
+Foundation; either version 2 of the License, or (at your option) any later__add
 version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
@@ -33,6 +33,8 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 
 ***************************************************************************/
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "OgreWireBoundingBox.h"
 #include "OgreOcclusionBoundingBox.h"
 
@@ -54,11 +56,11 @@ namespace Ogre
             mParent (0)
     {
         //initialize all children to null.
-        for (uint i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; i++)
         {
-            for (uint j = 0; j < 2; j++)
+            for (unsigned int j = 0; j < 2; j++)
             {
-                for (uint k = 0; k < 2; k++)
+                for (unsigned int k = 0; k < 2; k++)
                 {
                     mChildren[ i ][ j ][ k ] = 0;
                 }
@@ -70,11 +72,11 @@ namespace Ogre
     {
         //initialize all children to null.
         PagingLandScapeOctree *o;
-        for (uint i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; i++)
         {
-            for (uint j = 0; j < 2; j++)
+            for (unsigned int j = 0; j < 2; j++)
             {
-                for (uint k = 0; k < 2; k++)
+                for (unsigned int k = 0; k < 2; k++)
                 {
                     o =  mChildren[ i ][ j ][ k ];
                     if (o)
@@ -94,11 +96,11 @@ namespace Ogre
     {
         //initialize all children to null.
 #ifdef _DEBUG
-        for (uint i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; i++)
         {
-            for (uint j = 0; j < 2; j++)
+            for (unsigned int j = 0; j < 2; j++)
             {
-                for (uint k = 0; k < 2; k++)
+                for (unsigned int k = 0; k < 2; k++)
                 {
                     assert (mChildren[ i ][ j ][ k ] == 0);
                 }
@@ -387,11 +389,11 @@ namespace Ogre
         {
             //remove null children
             PagingLandScapeOctree *child;
-            for (uint i = 0; i < 2; i++)
+            for (unsigned int i = 0; i < 2; i++)
             {
-                for (uint j = 0; j < 2; j++)
+                for (unsigned int j = 0; j < 2; j++)
                 {
-                    for (uint k = 0; k < 2; k++)
+                    for (unsigned int k = 0; k < 2; k++)
                     {
                         child = mChildren[ i ][ j ][ k ];
                         if (child && !child->hasChildren())

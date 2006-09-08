@@ -2,7 +2,7 @@
 	OgrePagingLandScapePage.cpp  -  description
 	-------------------
 	begin                : Sat Mar 08 2003
-	copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
@@ -73,7 +75,7 @@ namespace Ogre
     {
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePage::init (const uint tableX, const uint tableZ)
+    void PagingLandScapePage::init (const unsigned int tableX, const unsigned int tableZ)
 	{ 
 		assert (!mIsLoading);
 		assert (!mIsPreLoading);
@@ -102,18 +104,18 @@ namespace Ogre
 		const PagingLandScapeOptions * const opt = mParent->getOptions();
         mNumTiles = opt->NumTiles;
 
-	    const uint size = opt->PageSize - 1;
+	    const unsigned int size = opt->PageSize - 1;
 	    // Boundaries of this page
 	    // the middle page is at world coordinates 0,0
         const Real factorX = size * opt->scale.x;
         const Real factorZ = size * opt->scale.z;
 
-	    mIniX = static_cast<Real> (static_cast<int> (mTableX + mTableX - opt->world_width)) * 0.5f * factorX ;		
-	    mIniZ = static_cast<Real> (static_cast<int> (mTableZ + mTableZ - opt->world_height)) * 0.5f * factorZ ;		
+	    mIniX = static_cast<Real> (static_cast<int> (mTableX + mTableX - opt->world_width)) * 0.5f * factorX + opt->position.x;		
+	    mIniZ = static_cast<Real> (static_cast<int> (mTableZ + mTableZ - opt->world_height)) * 0.5f * factorZ + opt->position.z;	
 
 		// Set node position
 		mPageNode->setPosition(static_cast<Real> (mIniX) , 
-			0.0f, 
+			opt->position.y, 
 			static_cast<Real> (mIniZ));
 
 		//translate page scene node to the desired position	
@@ -257,13 +259,13 @@ namespace Ogre
 			return;
 
 		assert (!thisLoaded || (thisLoaded && !mTiles.empty()));
-		const uint numTiles = mNumTiles;
+		const unsigned int numTiles = mNumTiles;
 		switch (n)
 		{
 		case EAST:
 			{
-				const uint i = numTiles - 1;
-				for (uint j = 0; j < numTiles; j++)
+				const unsigned int i = numTiles - 1;
+				for (unsigned int j = 0; j < numTiles; j++)
 				{	
 					PagingLandScapeTile *t_nextpage = 0;
 					PagingLandScapeTile *t_currpage = 0;
@@ -281,8 +283,8 @@ namespace Ogre
 			break;
 		case WEST:
 			{
-				const uint i = numTiles - 1;
-				for (uint j = 0; j < numTiles; j++)
+				const unsigned int i = numTiles - 1;
+				for (unsigned int j = 0; j < numTiles; j++)
 				{	
 					PagingLandScapeTile *t_nextpage = 0;
 					PagingLandScapeTile *t_currpage = 0;
@@ -299,8 +301,8 @@ namespace Ogre
 			break;		
 		case NORTH:
 			{
-				const uint j = numTiles - 1;
-				for (uint i = 0; i < numTiles; i++)
+				const unsigned int j = numTiles - 1;
+				for (unsigned int i = 0; i < numTiles; i++)
 				{	
 					PagingLandScapeTile *t_nextpage = 0;
 					PagingLandScapeTile *t_currpage = 0;
@@ -317,8 +319,8 @@ namespace Ogre
 			break;
 		case SOUTH:
 			{
-				const uint j = numTiles - 1;
-				for (uint i = 0; i < numTiles; i++)
+				const unsigned int j = numTiles - 1;
+				for (unsigned int i = 0; i < numTiles; i++)
 				{	
 					PagingLandScapeTile *t_nextpage = 0;
 					PagingLandScapeTile *t_currpage = 0;
@@ -400,12 +402,13 @@ namespace Ogre
 
 		assert (mTiles.empty());
 
+		mVisibletouch = 0;
 		mIsLoaded = true;
         //mPageNode->showBoundingBox (true) ;
         if (mIsLoadable)
         {
-            const uint numTiles = mNumTiles;
-            uint i, j;
+            const unsigned int numTiles = mNumTiles;
+            unsigned int i, j;
 
             mTiles.reserve (numTiles);
             mTiles.resize (numTiles);
@@ -486,6 +489,7 @@ namespace Ogre
 
 			assert (!mTiles.empty());
 
+			mVisibletouch = 0;
             if (mVisible)
                 _Show (false);
 
@@ -569,51 +573,57 @@ namespace Ogre
 		assert (mPageNode);
         if (do_show) 
         {
-            if (!mVisible)
-			{
-                if (!mPageNode->getParent ())
-                    mParent->getSceneManager()->getRootSceneNode()->addChild (mPageNode);
+            assert (!mVisible);
 
-                mParent->getSceneManager()->getListenerManager()->firePageShow (mTableX, mTableZ, 
-                    mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-            mBounds);
+            if (!mPageNode->getParent ())
+                mParent->getSceneManager()->getRootSceneNode()->addChild (mPageNode);
+
+            mParent->getSceneManager()->getListenerManager()->firePageShow (mTableX, mTableZ, 
+                mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
+			    mBounds);
                 
-                if (mIsLoadable)
+            if (mIsLoadable)
+            {
+                unsigned int i,k;
+                for (i = 0; i < mNumTiles; ++i)
                 {
-                    uint i,k;
-	                for (i = 0; i < mNumTiles; ++i)
+                    PagingLandScapeTileRow &tr = mTiles[ i ];
+                    for (k = 0; k < mNumTiles; ++k)
                     {
-                        PagingLandScapeTileRow &tr = mTiles[ i ];
-	                    for (k = 0; k < mNumTiles; ++k)
-	                    {
-                            tr[ k ]->setInUse(true);
-			            }
+                        tr[ k ]->setInUse(true);
 		            }
-                }
-                mVisible = true;
+	            }
             }
+            mVisible = true;
         }
         else if (mVisible)
         {
-            if (mPageNode->getParent ())
-                mParent->getSceneManager()->getRootSceneNode()->removeChild (mPageNode->getName ());
+			if (mVisibletouch == 0)
+			{
+				if (mPageNode->getParent ())
+					mParent->getSceneManager()->getRootSceneNode()->removeChild (mPageNode->getName ());
 
-            mParent->getSceneManager()->getListenerManager()->firePageHide (mTableX, mTableZ, 
-                    mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-					mBounds);
-            if (mIsLoadable)
-            {
-                uint i,k;
-	            for (i = 0; i < mNumTiles; ++i)
-                {
-                    PagingLandScapeTileRow &tr = mTiles[ i ];
-	                for (k = 0; k < mNumTiles; ++k)
-	                {
-                        tr[ k ]->setInUse(false);
-			        }
-		        }
-            }
-            mVisible = false;
+				mParent->getSceneManager()->getListenerManager()->firePageHide (mTableX, mTableZ, 
+						mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
+						mBounds);
+				if (mIsLoadable)
+				{
+					unsigned int i,k;
+					for (i = 0; i < mNumTiles; ++i)
+					{
+						PagingLandScapeTileRow &tr = mTiles[ i ];
+						for (k = 0; k < mNumTiles; ++k)
+						{
+							tr[ k ]->setInUse (false);
+						}
+					}
+				}
+				mVisible = false;
+			}
+			else
+			{
+				mVisibletouch--;
+			}
         }
     }
     //-----------------------------------------------------------------------
@@ -622,17 +632,18 @@ namespace Ogre
 	    if (mIsLoaded && mIsLoadable)
         {
             if (
-                Cam->getVisibility (mBoundsExt) 
+                Cam->isVisible (mBoundsExt) 
                 //&& PagingLandScapeHorizon::getSingleton ().IsPageVisible (Cam, mTableX, mTableZ)
                 
               )
-	        {                  
-                _Show (true);
-                uint i,k;
-	            for (i = 0; i < mNumTiles; i++)
+	        {         
+				if (!mVisible)
+					_Show (true);
+				mVisibletouch = 30;
+	            for (unsigned int i = 0; i < mNumTiles; i++)
 	            {
                     PagingLandScapeTileRow &tr = mTiles[ i ];
-	                for (k = 0; k < mNumTiles; k++)
+	                for (unsigned int k = 0; k < mNumTiles; k++)
                     {
                         tr[ k ]->_Notify(pos, Cam);
 			        }
@@ -654,8 +665,8 @@ namespace Ogre
     {
         if (mIsLoaded && mIsLoadable)
         {
-            const uint x =  static_cast<uint> (pos.x / mParent->getOptions()->scale.x / (mParent->getOptions()->TileSize));
-            const uint z =  static_cast<uint> (pos.z / mParent->getOptions()->scale.z / (mParent->getOptions()->TileSize));
+            const unsigned int x =  static_cast<unsigned int> (pos.x / mParent->getOptions()->scale.x / (mParent->getOptions()->TileSize));
+            const unsigned int z =  static_cast<unsigned int> (pos.z / mParent->getOptions()->scale.z / (mParent->getOptions()->TileSize));
 
             assert (mTiles[x][z] && mTiles[x][z]-> isLoaded ());
             return mTiles[x][z];
@@ -667,7 +678,7 @@ namespace Ogre
     {
         if (mIsLoaded && mIsLoadable)
         {
-            uint i,k;
+            unsigned int i,k;
 	        for (i = 0; i < mNumTiles; ++i)
             {
                 PagingLandScapeTileRow &tr = mTiles[ i ];
@@ -685,7 +696,7 @@ namespace Ogre
 	{
         if (mVisible && mIsLoadable)
         {
-            uint i,k;
+            unsigned int i,k;
 	        for (i = 0; i < mNumTiles; ++i)
             {
                 PagingLandScapeTileRow &tr = mTiles[ i ];
@@ -699,7 +710,7 @@ namespace Ogre
         }
     }
     //-------------------------------------------------------------------------
-    PagingLandScapeTile* PagingLandScapePage::getTile(const uint i , const uint j) const
+    PagingLandScapeTile* PagingLandScapePage::getTile(const unsigned int i , const unsigned int j) const
     {
         if (mIsLoaded)
         {

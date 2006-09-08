@@ -2,7 +2,7 @@
 	OgrePagingLandScapeHorizon.cpp  -  description
 	-------------------
 	begin                : Sat Mar 08 2003
-	copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,9 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
@@ -92,7 +95,7 @@ namespace Ogre
             //add camera point        
             const Real tileX = cam->mCurrentCameraPageX * mNumTilesPage + cam->mCurrentCameraTileX;
             const Real tileZ = cam->mCurrentCameraPageZ * mNumTilesPage + cam->mCurrentCameraTileZ;
-            const uint tilePos = static_cast <uint> ((tileX + tileZ * mTileWidth) * 4);
+            const unsigned int tilePos = static_cast <unsigned int> ((tileX + tileZ * mTileWidth) * 4);
             mVisData [ tilePos ]    = 0;
             mVisData [ tilePos + 1] = 0;
             mVisData [ tilePos + 2] = 255;
@@ -131,10 +134,7 @@ namespace Ogre
 
                 TextureUnitState *tu0 = mVisibilityMaterial->getTechnique (0)->
                                         getPass (0)->createTextureUnitState ();
-
-                TextureManager::getSingleton().load (filename + ".Small." + 
-                                                     opt->TextureExtension, 
-                                                     opt->groupName);   
+ 
                 tu0->setTextureName (filename + ".Small." + 
                                      opt->TextureExtension);
 
@@ -177,12 +177,12 @@ namespace Ogre
         return mVisibilityMaterial;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeHorizon::AddVisibleTile (const uint Tilex, const uint Tilez,
+    void PagingLandScapeHorizon::AddVisibleTile (const unsigned int Tilex, const unsigned int Tilez,
         const bool visible)
     {
         if (material_enabled)
         {
-            const uint tilePos = (Tilex + Tilez * mTileWidth) * 4;
+            const unsigned int tilePos = (Tilex + Tilez * mTileWidth) * 4;
             if (visible) 
             {
                 mVisData [ tilePos ]    = 0;
@@ -205,14 +205,14 @@ namespace Ogre
     {
         if (material_enabled)
         {
-            const uint TileX = info->pageX*mNumTilesPage + info->tileX;
-            const uint TileZ = info->pageZ*mNumTilesPage + info->tileZ;
+			const unsigned int TileX = info->mPageX*mNumTilesPage + info->mTileX;
+            const unsigned int TileZ = info->mPageZ*mNumTilesPage + info->mTileZ;
 
             AddVisibleTile (TileX, TileZ, visible);      
         }
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeHorizon::registerMinMaxHeightPage (const uint pageX, const uint pageZ,
+    void PagingLandScapeHorizon::registerMinMaxHeightPage (const unsigned int pageX, const unsigned int pageZ,
                                                         const Real minHeight, const Real maxHeight)
     { 
        const size_t pos = mPageWidth*mPageHeight;
@@ -223,15 +223,15 @@ namespace Ogre
     void PagingLandScapeHorizon::registerMinMaxHeightTile (const PagingLandScapeTileInfo *info,
                                                         const Real minHeight, const Real maxHeight)        
     {   
-       const size_t tilePos = (info->pageX*mNumTilesPage + info->tileX
-           + ((info->pageZ*mNumTilesPage)  + info->tileZ) * mTileWidth); 
+		const size_t tilePos = (info->mPageX*mNumTilesPage + info->mTileX
+           + ((info->mPageZ*mNumTilesPage)  + info->mTileZ) * mTileWidth); 
 
        assert (tilePos < mTileWidth*mTileHeight);
 
        mMinTileHeights[tilePos] = minHeight;
        mMaxTileHeights[tilePos] = maxHeight;
        
-       const size_t pagePos = info->pageX + info->pageZ * mPageWidth; 
+       const size_t pagePos = info->mPageX + info->mPageZ * mPageWidth; 
 
        assert (pagePos < mPageWidth*mPageHeight);
 
@@ -243,7 +243,7 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeHorizon::IsPageVisible(const PagingLandScapeCamera* cam,
-                                               const uint destpageX, const uint destpageZ)
+                                               const unsigned int destpageX, const unsigned int destpageZ)
     {
         const Real PageX = cam->mCurrentCameraPageX;
         const Real PageZ = cam->mCurrentCameraPageZ;
@@ -267,8 +267,8 @@ namespace Ogre
         const Real RsrcTileX = cam->mCurrentCameraPageX * mNumTilesPage + cam->mCurrentCameraTileX;
         const Real RsrcTileZ = cam->mCurrentCameraPageZ * mNumTilesPage + cam->mCurrentCameraTileZ;
 
-        const Real RdestTileX = destinfo->pageX*mNumTilesPage + destinfo->tileX;
-        const Real RdestTileZ = destinfo->pageZ*mNumTilesPage + destinfo->tileZ;
+		const Real RdestTileX = destinfo->mPageX*mNumTilesPage + destinfo->mTileX;
+		const Real RdestTileZ = destinfo->mPageZ*mNumTilesPage + destinfo->mTileZ;
        
         // test if there is potential occluders
         if (fabs (RsrcTileX - RdestTileX) < 2.0f && fabs (RsrcTileZ - RdestTileZ) < 2.0f)
@@ -285,7 +285,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool PagingLandScapeHorizon::calcVis(const Vector3 &src, const Vector3 &dest, 
                                          const Real * const heightMap, 
-                                         const uint mapWidth, const uint mapHeight)
+                                         const unsigned int mapWidth, const unsigned int mapHeight)
     {
         /* Make sure the ray is normalised */
         const Real x = dest.x - src.x;
@@ -324,15 +324,15 @@ namespace Ogre
             const Real h = heightMap[posx + posz*mapWidth];
             if (h > nexty && h > lasty)
             {
-                AddVisibleTile (static_cast <uint> (dest.x),
-				static_cast <uint> (dest.z),
+                AddVisibleTile (static_cast <unsigned int> (dest.x),
+				static_cast <unsigned int> (dest.z),
 						    false);
                 return false; // line of sight is occluded               
             }
             lasty = curry;           
         }
-        AddVisibleTile (static_cast <uint> (dest.x),
-			static_cast <uint> (dest.z),
+        AddVisibleTile (static_cast <unsigned int> (dest.x),
+			static_cast <unsigned int> (dest.z),
 			true);
         return true;
     }

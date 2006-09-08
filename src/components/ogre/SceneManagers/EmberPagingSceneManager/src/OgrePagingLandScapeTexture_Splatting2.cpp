@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting.cpp  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -34,15 +34,10 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2::_setPagesize(void)
+	void PagingLandScapeTexture_Splatting2::setOptions(void)
     {
         mParent->getOptions()->VertexCompression = false;
         mParent->getOptions()->lodMorph = false;
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2::_clearData(void)
-    {
-    
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting2::newTexture()
@@ -50,7 +45,7 @@ namespace Ogre
         return new PagingLandScapeTexture_Splatting2(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_Splatting2::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_Splatting2::isMaterialSupported()
     {             
 		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		
@@ -62,68 +57,12 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting2::PagingLandScapeTexture_Splatting2(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_Splatting2::PagingLandScapeTexture_Splatting2(PagingLandScapeTextureManager *textureMgr) 
+		: PagingLandScapeTexture(textureMgr, "Splatting2", 4, true)
     {
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_Splatting2::~PagingLandScapeTexture_Splatting2()
     {
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting2::_loadMaterial()
-    {
-	    if (mMaterial.isNull())
-	    {
-			const PagingLandScapeOptions * const opt = mParent->getOptions();
-            const String filename (opt->LandScape_filename);
-            const String commonName (StringConverter::toString(mDataZ) + 
-                                        String(".") +
-                                        StringConverter::toString(mDataX));
-                                        
-            const String matname (String("SplattingMaterial2.") + commonName + filename);
-		    mMaterial = MaterialManager::getSingleton().getByName(matname);
-            if (mMaterial.isNull())
-	        {
-                const String extname (opt->TextureExtension);
-		        mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial2");
-                assert (!mMaterial.isNull());
-                mMaterial = mMaterial->clone(matname);
-                
-              
-                uint passnb = 0;
-	            // assign this texture to the material
-                // Create the base image        
-		        const String endName ("." + commonName + "." + extname);  
-                String texname (filename + ".Base" + endName); 
-                TextureManager::getSingleton().load (texname, opt->groupName);                                   
-                mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
-                 
-                Technique * const t = mMaterial->getTechnique(0); 
-                const uint numSplats = opt->NumMatHeightSplat;
-               
-                    
-                const String alphamapBeginname (filename + ".Alpha.");    
-                uint splat_pass = 0;  // if we remove a pass, splat still increases
-                while  (splat_pass < numSplats)
-                {  
-                    // Create a new texture alpha map
-                    texname = alphamapBeginname 
-                            + StringConverter::toString(splat_pass) 
-                            + endName; 
-                    //LoadAlphaMap (texname);
-                    // assign this texture to the material
-                    //TextureManager::getSingleton().load (texname,  opt->groupName, TEX_TYPE_2D, -1, 1.0f, true);
-                    t->getPass(splat_pass)->getTextureUnitState(1)->setTextureName(texname);//, TEX_TYPE_2D, -1, true);
-                    t->getPass(splat_pass)->getTextureUnitState(0)->setTextureName(opt->SplatDetailMapNames[splat_pass]);
-                    
-                    splat_pass++;
-                }
-                    
-		        // Now that we have all the resources in place, we load the material
-                mMaterial->setLightingEnabled(opt->lit);
-                mMaterial->setLodLevels(opt->lodMaterialDistanceList);
-		        mMaterial->load(); 
-            }
-	    }
     }
 } //namespace

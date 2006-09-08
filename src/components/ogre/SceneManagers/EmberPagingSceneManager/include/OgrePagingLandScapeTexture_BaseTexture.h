@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_BaseTexture.h  -  description
   -------------------
   begin                : Mon Apr 26 2004
-  copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+  copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -26,22 +26,15 @@ namespace Ogre
     {
         public:
 	        PagingLandScapeTexture_BaseTexture(PagingLandScapeTextureManager *textureMgr);
-            virtual String getName(){return String("BaseTexture");}
-        	
-            virtual void setPagesize(void){_setPagesize();};
-            virtual void clearData(void){_clearData();};
-            
-            void _setPagesize(void);
-            void _clearData(void);
+             String getName() const{return String("BaseTexture");}
+        	void setOptions(void);
+	         ~PagingLandScapeTexture_BaseTexture(void);
 
-	        virtual ~PagingLandScapeTexture_BaseTexture(void);
-
-            virtual PagingLandScapeTexture* newTexture();
-            virtual bool TextureRenderCapabilitesFullfilled(); 
+             PagingLandScapeTexture* newTexture();
+             bool isMaterialSupported(); 
 
         protected:
-	        virtual void _loadMaterial(void);        	
-	        virtual void _unloadMaterial(void);
+	         void _loadMaterial(void);   
 
         private:
             Image BaseImage;

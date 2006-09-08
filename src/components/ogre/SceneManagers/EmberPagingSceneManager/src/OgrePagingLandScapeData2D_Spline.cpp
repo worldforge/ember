@@ -20,6 +20,8 @@
 *																				*
 ********************************************************************************/
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
@@ -50,8 +52,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_Spline::~PagingLandScapeData2D_Spline()
     {
-		    delete mSurface;
-		    delete[] mPoints;
+	    delete mSurface;
+	    delete[] mPoints;
     }
     //-------------------------------------------------------------------
     void PagingLandScapeData2D_Spline::_save()
@@ -64,21 +66,21 @@ namespace Ogre
         return mParent->getOptions()->scale.y;
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_Spline::_load(const  uint mX, const uint mZ)
+    bool PagingLandScapeData2D_Spline::_load(const  unsigned int mX, const unsigned int mZ)
     {
 		int resolution	= mParent->getOptions()->PageSize;
 		mSize		    = resolution;
-		mMax			= static_cast <uint> (mSize * mSize);
+		mMax			= static_cast <unsigned int> (mSize * mSize);
 		int pCount		= 50;
 		int mDegree		= 3;
 		Real MAX		= 500;
-		int tessLevel	= static_cast <uint> (mSize);
+		int tessLevel	= static_cast <unsigned int> (mSize);
 
 		srand (time(NULL));
 
 		mPoints = new Point4D[pCount * pCount];
 		const int knotVecSize = pCount + mDegree + 1;
-		Real *knots = new Real[knotVecSize];
+		float *knots = new float[knotVecSize];
 		int i;
 		for (i = 0; i < knotVecSize; i++)
 		{
@@ -119,7 +121,7 @@ namespace Ogre
         mHeightData = new Real[mMaxArrayPos];
         Real scale = mParent->getOptions()->scale.y; 
         mMaxheight = 0.0f;
-        uint k;
+        unsigned int k;
         for (k = 0; k < mMaxArrayPos;  k ++)
         {  
             Real h =  static_cast<Real> (mSurface->getData(k).y * scale); 

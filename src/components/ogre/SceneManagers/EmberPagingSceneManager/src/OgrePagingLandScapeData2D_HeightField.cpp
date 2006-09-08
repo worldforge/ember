@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightField.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreLogManager.h"
 #include "OgreVector3.h"
@@ -62,14 +64,13 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightField::~PagingLandScapeData2D_HeightField()
     {
-        PagingLandScapeData2D::unload ();
     }
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightField::getBase (const Real mX, const Real mZ)
     {
         if (mBase != 0)
         {
-            uint Pos = static_cast<uint> ((mZ * mBase->getWidth() + mX) * 4);//4 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mBase->getWidth() + mX) * 4);//4 bytes (mImage is RGBA)
             if (mBase->getSize () > Pos)
             {
                 const Real divider = 1.0f / 255;
@@ -94,7 +95,7 @@ namespace Ogre
     {
         if (mCoverage != 0)
         {
-            uint Pos = static_cast<uint> ((mZ * mCoverage->getWidth()  + mX) * 4);//4 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mCoverage->getWidth()  + mX) * 4);//4 bytes (mImage is RGBA)
             if (mCoverage->getSize () > Pos)
             {
                 const Real divider = 1.0f / 255;
@@ -120,7 +121,7 @@ namespace Ogre
     {
         if (mShadow != 0)
         {
-            uint Pos = static_cast<uint> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
             if (mShadow->getSize () > Pos)
             {
                 if (positive)
@@ -147,7 +148,7 @@ namespace Ogre
         #else
             if (mImage)
             {
-                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                unsigned int Pos = static_cast<unsigned int> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
                 if (mMax > Pos)
                 {
@@ -168,9 +169,9 @@ namespace Ogre
         #endif //_NOLOAD
     }
     //-----------------------------------------------------------------------
-    double PagingLandScapeData2D_HeightField::getScale() const
+    Real PagingLandScapeData2D_HeightField::getScale() const
     {        
-        double prescale;
+        Real prescale;
         switch (mBpp)
         {
             case 1:
@@ -186,23 +187,48 @@ namespace Ogre
 				prescale = mParent->getOptions()->scale.y / 16777215;
                 break;
             default:
-                assert(0);
                 OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
                     "unrecongnized number of bpp for data src image.", 
                     "PagingLandScapeData2D_HeightField::getScale");
                 break;
         }
         return prescale;
-    }
+	}
+	//-----------------------------------------------------------------------
+	Real PagingLandScapeData2D_HeightField::getInvScale() const
+	{        
+		Real prescale;
+		switch (mBpp)
+		{
+		case 1:
+			prescale = 255.0 / mParent->getOptions()->scale.y;
+			break;
+		case 2:
+			prescale = 65535.0 / mParent->getOptions()->scale.y;
+			break;
+		case 3:
+			prescale = 16777215.0 / mParent->getOptions()->scale.y;
+			break;
+		case 4:
+			prescale = 16777215.0 / mParent->getOptions()->scale.y;
+			break;
+		default:
+			OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
+				"unrecongnized number of bpp for data src image.", 
+				"PagingLandScapeData2D_HeightField::getScale");
+			break;
+		}
+		return prescale;
+	}
     //-----------------------------------------------------------------------
     void PagingLandScapeData2D_HeightField::_save()
     {
-        const Real scale = 1.0 / getScale();
+        const Real scale = getInvScale();
 		const size_t bpp = mBpp;
 
 		size_t j = 0;
 		uchar * ogre_restrict data = mImage->getData();
-		for (uint i = 0; i < mMaxArrayPos; i++)
+		for (unsigned int i = 0; i < mMaxArrayPos; i++)
 		{             
 			switch (bpp)
 			{  
@@ -214,7 +240,7 @@ namespace Ogre
 			case 4:
 				{
 					const ushort syn = ushort  (mHeightData[i] * scale);
-					#if OGRE_ENDIAN == ENDIAN_BIG
+					#if OGRE_ENDIAN == OGRE_ENDIAN_BIG
 						data[j] = uchar ((syn >> 8) & 0xff);
 						data[j+ 1] = uchar (syn & 0xff);
 					#else
@@ -254,7 +280,7 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightField::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightField::_load(const unsigned int mX, const unsigned int mZ)
     {
         const PagingLandScapeOptions * const opt = mParent->getOptions();
         const String pageName = "." + StringConverter::toString(mZ) + "." +
@@ -287,15 +313,15 @@ namespace Ogre
             !_checkSize(mImage->getWidth()))
 		{
 			String err = "Error: Invalid height map size : " +
-				StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
-				"," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
+				StringConverter::toString(static_cast <unsigned int> (mImage->getWidth())) +
+				"," + StringConverter::toString(static_cast <unsigned int> (mImage->getHeight())) +
 				". Should be 2^n+1, 2^n+1";
 			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, 
                 "PagingLandScapeData2D_HeightField::_load");
 		}
 
         mBpp = PixelUtil::getNumElemBytes (mImage->getFormat ());
-        const uint bpp = static_cast <uint> (mBpp);
+        const unsigned int bpp = static_cast <unsigned int> (mBpp);
 		if (mSize != mImage->getWidth())
 		{
 			OGRE_EXCEPT (Exception::ERR_INVALIDPARAMS, 
@@ -326,20 +352,20 @@ namespace Ogre
 
         mXDimension = mImage->getWidth() * bpp;
         mZDimension = mImage->getHeight() * bpp;
-        mMax = static_cast <uint> (mSize * mSize * bpp);
-        mMaxArrayPos = static_cast <uint> (mSize * mSize);
+        mMax = static_cast <unsigned int> (mSize * mSize * bpp);
+        mMaxArrayPos = static_cast <unsigned int> (mSize * mSize);
         mHeightData = new Real[mMaxArrayPos];
 
-        const double scale = getScale();
+        const Real scale = getScale();
 
         mMaxheight = 0.0f;
         const uchar * const ogre_restrict imagedata = mImage->getData();
-        const uint maxminusone = mMax;
+        const unsigned int maxminusone = mMax;
 
         Real h;
-        uint j = 0;
+        unsigned int j = 0;
         Real * const ogre_restrict heightField = mHeightData;
-        for (uint src_pos = 0; src_pos < maxminusone;  src_pos += bpp)
+        for (unsigned int src_pos = 0; src_pos < maxminusone;  src_pos += bpp)
         {
             switch (bpp)
             {
@@ -350,14 +376,14 @@ namespace Ogre
 			case 3:
 			case 4:
                 {
-                    #if OGRE_ENDIAN == ENDIAN_BIG
+                    #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                         ushort val = imagedata[src_pos] << 8;
                         val += imagedata[src_pos + 1];
                     #else
                         ushort val = imagedata[src_pos];
                         val += imagedata[src_pos + 1] << 8;
                     #endif
-				    h = ((float)(val)) * scale;
+				    h = val * scale;
                 }
 				break;
             default:
@@ -390,26 +416,26 @@ namespace Ogre
         computePowerof2PlusOneSize ();     
 
 		mSize = mXDimension;
-        mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
-        mMax = static_cast <uint> (mMaxArrayPos * mBpp);
+        mMaxArrayPos = static_cast <unsigned int> (mXDimension * mZDimension);
+        mMax = static_cast <unsigned int> (mMaxArrayPos * mBpp);
         mHeightData = new Real[mMaxArrayPos];
 
 
-        const uint bpp = static_cast <uint> (mBpp);
-        const double scale = getScale();
+        const unsigned int bpp = static_cast <unsigned int> (mBpp);
+        const Real scale = getScale();
 
         mMaxheight = 0.0f;
         const uchar * ogre_restrict imagedata = mImage->getData();
-        const uint maxminusone = mMax;
-        const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
+        const unsigned int maxminusone = mMax;
+        const unsigned int shift_fill = static_cast <unsigned int> (mXDimension - sourceWidth);
 
         Real h; 
-        uint dest_pos = 0;
-        uint src_pos = 0;
-        Real * const ogre_restrict heightField = mHeightData;
-        for (uint i = 0; i < sourceHeight; ++i)
+        unsigned int dest_pos = 0;
+        unsigned int src_pos = 0;
+		Real * const ogre_restrict heightField = mHeightData;
+        for (unsigned int i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j)
+            for (unsigned int j = 0; j < sourceWidth; ++j)
             {  
                 switch (bpp)
                 {
@@ -420,14 +446,14 @@ namespace Ogre
 					case 3:
 					case 4:
                         {
-                            #if OGRE_ENDIAN == ENDIAN_BIG
+                            #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                                 ushort val = imagedata[src_pos] << 8;
                                 val += imagedata[src_pos + 1];
                             #else
                                 ushort val = imagedata[src_pos];
                                 val += imagedata[src_pos + 1] << 8;
                             #endif
-				            h = ((float)(val)) * scale;
+				            h = val * scale;
                         }
                         break;
                     default:

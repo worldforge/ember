@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting.cpp  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -32,29 +32,18 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 
 namespace Ogre
 {
-    // static load
-    //params->setNamedConstant
-
-    // static unload
-    //params->clearAutoConstants()
-                                           
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting5::_setPagesize(void)
+    void PagingLandScapeTexture_Splatting5::setOptions(void)
     {
         mParent->getOptions()->normals = true;
-    }                    
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting5::_clearData(void)
-    {
-       
-    }     
+    }    
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting5::newTexture()
     {
         return new PagingLandScapeTexture_Splatting5(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_Splatting5::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_Splatting5::isMaterialSupported()
     {                      
 		const PagingLandScapeOptions * const opt = mParent->getOptions();
             
@@ -68,7 +57,9 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting5::PagingLandScapeTexture_Splatting5(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_Splatting5::PagingLandScapeTexture_Splatting5(PagingLandScapeTextureManager *textureMgr) 
+		: 
+		PagingLandScapeTexture(textureMgr, "Splatting5", 0, false)
     {
 
     }
@@ -77,56 +68,4 @@ namespace Ogre
     {
 
     }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting5::_loadMaterial()
-    {
-	    if (mMaterial.isNull())
-	    {       
-			const PagingLandScapeOptions * const opt = mParent->getOptions();
-            
-            // Create a new texture using the base image
-            const String commonName = StringConverter::toString(mDataZ) + String(".") + StringConverter::toString(mDataX);
-            //const String prefilename = opt->LandScape_filename;
-            //const String postfilename = commonName + "." + opt->TextureExtension;
-
-            if (opt->VertexCompression)
-            {
-                mMaterial = (MaterialManager::getSingleton().getByName("SplattingMaterial5Decompress"));
-
-                Pass *p = mMaterial->getTechnique(0)->getPass(0);
-                GpuProgramParametersSharedPtr params = p->getVertexProgramParameters();
-                
-	            params->setNamedConstant("splatSettings", Vector4(opt->matHeight[1], 
-                                                                  opt->matHeight[2], 
-                                                                  opt->maxValue, 
-                                                                    0.0));
-                
-                bindCompressionSettings (params);
-                bindCompressionSettings (p->getShadowReceiverVertexProgramParameters());
-            }
-            else
-            {
-                mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial5");
-
-
-                GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-	            params->setNamedConstant("splatSettings", Vector4(opt->matHeight[1], 
-                                                                  opt->matHeight[2], 
-                                                                  opt->maxValue, 
-                                                                  0.0));
-                    
-            }     
-            Pass * const p = mMaterial->getTechnique(0)->getPass(0); 
-            const uint numSplats = opt->NumMatHeightSplat;
-            uint splat_pass = 0; 
-            while  (splat_pass < numSplats)
-            {
-                p->getTextureUnitState(splat_pass)->setTextureName(opt->SplatDetailMapNames[splat_pass]);
-                splat_pass++;
-            }       
-            // Now that we have all the resources in place, we load the material
-            mMaterial->load(); 
-	    }
-    }
-
 } //namespace

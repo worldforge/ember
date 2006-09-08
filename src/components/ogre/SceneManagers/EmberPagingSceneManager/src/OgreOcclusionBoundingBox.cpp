@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2005 The OGRE Team
+Copyright (c) 2000-2006 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -22,6 +22,9 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "Ogre.h"
 #include "OgreOcclusionBoundingBox.h"
 
@@ -131,7 +134,7 @@ namespace Ogre {
             mRenderOp.vertexData->vertexBufferBinding->getBuffer(POSITION_BINDING);     
            
         const size_t vertexSize = vbuf->getVertexSize ();
-        Real *pPos;
+        float *pPos;
         //RGBA *pColor;
         //Root * const root = Root::getSingletonPtr();
 
@@ -142,8 +145,10 @@ namespace Ogre {
 		    //generate 8 corners of the bbox
             // RightHanded
 		
-            #define V3(AX, AY, AZ, ACOLOR) poselem->baseVertexPointerToElement(pMain, &pPos); \
-                    *pPos++ = AX; *pPos++ =  AY; *pPos++ =  AZ; \
+            #define V3(A_X, A_Y, A_Z, ACOLOR) poselem->baseVertexPointerToElement(pMain, &pPos); \
+                    *pPos++ = static_cast <float> (A_X); \
+					*pPos++ = static_cast <float> (A_Y); \
+					*pPos++ = static_cast <float> (A_Z); \
                     pMain += vertexSize;
 
 //   #define V3(AX, AY, AZ, ACOLOR) poselem->baseVertexPointerToElement(pMain, &pPos); \
@@ -152,7 +157,7 @@ namespace Ogre {
 //                    root->convertColourValue (ACOLOR, pColor); \
 //                    pMain += vertexSize;
 
-            V3(min.x, max.y, max.z, ColourValue::White) // 1 
+			V3(min.x, max.y, max.z, ColourValue::White) // 1 
             V3(min.x, min.y, max.z, ColourValue::White) // 2 
             V3(max.x, max.y, max.z, ColourValue::White) // 3 
             V3(max.x, min.y, max.z, ColourValue::White) // 4 

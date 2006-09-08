@@ -2,7 +2,7 @@
   OgrePagingLandScapeRenderable.h  -  description
   -------------------
 	begin                : Thu Feb 27 2003
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -78,7 +78,7 @@ namespace Ogre
 		{
 			mNeedReload = true;
 		};
-		void adjustDeformationRectangle(uint x, uint z);
+		void adjustDeformationRectangle(unsigned int x, unsigned int z);
 
 		void unload(void);
 		
@@ -94,8 +94,11 @@ namespace Ogre
 		{
 			return (mBounds.getMaximum()).y;
 		};
-		
-		void setInUse(bool inUse);		
+
+		inline void PagingLandScapeRenderable::setInUse (bool InUse)
+		{
+			mInUse = InUse;
+		}
 		
 		/////////Movable overridden object methods
 		
@@ -160,7 +163,7 @@ namespace Ogre
 
 		IndexData* getRawIndexData(const int renderlevel);
 		void getRawVertexData(Vector3* pVerts);
-		const uint getVertexCount();
+		const unsigned int PagingLandScapeRenderable::getVertexCount();
         
         bool mQueued;
         PagingLandScapeTile *mParentTile;
@@ -202,8 +205,9 @@ namespace Ogre
 		int mLastNextLevel; 
 		/// The morph factor between this and the next LOD level down
 		Real mLODMorphFactor;
+
 		/// List of squared distances at which LODs change
-		Real* mMinLevelDistSqr;
+		std::vector<Real>* mMinLevelDistSqr;
 		
 		/// Optional set of delta buffers, used to morph from one LOD to the next
 		HardwareVertexBufferSharedPtr* mDeltaBuffers;
@@ -214,7 +218,8 @@ namespace Ogre
 		
 		// distance between center renderable and camera.
 		Real mDistanceToCam;
-		
+
+		void fillNextLevelDown();
 		void _calculateMinLevelDist2(const Real C);
 		/// Create a blank delta buffer for use in morphing
 		HardwareVertexBufferSharedPtr createDeltaBuffer(void) const;

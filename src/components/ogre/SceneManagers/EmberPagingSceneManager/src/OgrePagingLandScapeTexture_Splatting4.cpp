@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting.cpp  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -33,15 +33,10 @@ OgrePagingLandScapeTexture_Splatting.cpp  -  description
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting4::_setPagesize(void)
+	void PagingLandScapeTexture_Splatting4::setOptions(void)
     {
         mParent->getOptions()->VertexCompression = false;
         mParent->getOptions()->lodMorph = false;
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting4::_clearData(void)
-    {
-    
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_Splatting4::newTexture()
@@ -49,7 +44,7 @@ namespace Ogre
         return new PagingLandScapeTexture_Splatting4(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_Splatting4::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_Splatting4::isMaterialSupported()
     {                                                        
 		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		
@@ -61,75 +56,14 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Splatting4::PagingLandScapeTexture_Splatting4(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_Splatting4::PagingLandScapeTexture_Splatting4(PagingLandScapeTextureManager *textureMgr) 
+		: 
+		PagingLandScapeTexture(textureMgr, "Splatting4",  5, true)
     {
     }
 
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_Splatting4::~PagingLandScapeTexture_Splatting4()
     {
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Splatting4::_loadMaterial()
-    {
-	    if (mMaterial.isNull())
-	    {
-			const PagingLandScapeOptions * const opt = mParent->getOptions();
-            
-            // Create a new texture using the base image
-            const String filename (opt->LandScape_filename);
-            const String commonName (StringConverter::toString(mDataZ) + 
-                                        String(".") +
-                                        StringConverter::toString(mDataX));
-            const String matname (String("SplattingMaterial4.") + commonName + filename);
-                                
-            mMaterial = MaterialManager::getSingleton().getByName(matname);
-            if (mMaterial.isNull())
-	        {
-                const String extname (opt->TextureExtension);
-                const String endName ("." + commonName + "." + extname);
-                
-                mMaterial = MaterialManager::getSingleton().getByName("SplattingMaterial4");
-                assert (!mMaterial.isNull());
-                mMaterial = mMaterial->clone(matname);
-
-                // loads images
-                
-                String texname (filename + ".Base" + endName);
-                Technique * const t = mMaterial->getTechnique(0);
-                    
-                TextureManager::getSingleton().load (texname, opt->groupName);    
-                t->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
-                mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
-
-                texname = filename + ".Light" + endName;
-                TextureManager::getSingleton().load (texname, opt->groupName);    
-                t->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
-                mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(1)->setTextureName(texname);
-               
-                const String alphamapBeginname = filename + ".Alpha."; 
-                
-                const uint numSplats = opt->NumMatHeightSplat;
-                uint splat_pass = 0; 
-                while  (splat_pass < numSplats)
-                {            
-                    // Create a new texture using the alpha map
-                    texname = alphamapBeginname 
-                            + StringConverter::toString(splat_pass) 
-                            + endName;                     
-                    // assign this texture to the material
-                    t->getPass(splat_pass + 1)->getTextureUnitState(1)->setTextureName(texname);
-                    // assign the splat material
-                    t->getPass(splat_pass + 1)->getTextureUnitState(0)->setTextureName(opt->SplatDetailMapNames[splat_pass]); 
-                
-                    splat_pass++;
-                }  
-               
-                // Now that we have all the resources in place, we load the material
-                mMaterial->setLodLevels(opt->lodMaterialDistanceList);
-	            mMaterial->setLightingEnabled(false);
-                mMaterial->load();
-            }
-	    }
     }
 } //namespace

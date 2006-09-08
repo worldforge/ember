@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_BaseTexture.cpp  -  description
 -------------------
 begin                : Mon Apr 26 2004
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 
 
@@ -37,15 +39,10 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_BaseTexture::_setPagesize(void)
+    void PagingLandScapeTexture_BaseTexture::setOptions(void)
     {
         mParent->getOptions()->VertexCompression = false;
         mParent->getOptions()->lodMorph = false;
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_BaseTexture::_clearData(void)
-    {
-    
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_BaseTexture::newTexture()
@@ -53,7 +50,7 @@ namespace Ogre
         return new PagingLandScapeTexture_BaseTexture(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_BaseTexture::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_BaseTexture::isMaterialSupported()
     {        
 		if (mParent->getOptions()->NumMatHeightSplat > 3)
 			return true;
@@ -61,7 +58,9 @@ namespace Ogre
 			return false;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_BaseTexture::PagingLandScapeTexture_BaseTexture(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_BaseTexture::PagingLandScapeTexture_BaseTexture(PagingLandScapeTextureManager *textureMgr) 
+		: 
+		PagingLandScapeTexture(textureMgr, "Base", 1, false)
     {
     }
 
@@ -80,13 +79,12 @@ namespace Ogre
             const String commonName = StringConverter::toString(mDataZ) + 
                                         String(".") +
                                         StringConverter::toString(mDataX);
-            const String matname = String("BaseMaterial.") + commonName + "." + filename;
+            const String matname = String("Base.") + commonName + "." + filename;
 		    mMaterial = MaterialManager::getSingleton().getByName(matname);
-
             if (mMaterial.isNull())
 	        {
 		        // Create a new texture using the base image
-		        mMaterial = MaterialManager::getSingleton().getByName("BaseMaterial");
+		        mMaterial = MaterialManager::getSingleton().getByName("Base");
                 assert (!mMaterial.isNull());
 		        mMaterial = mMaterial->clone(matname);
 
@@ -95,7 +93,7 @@ namespace Ogre
                 if (tex.isNull())
 	            {
                     
-					const uint pageSize = opt->PageSize;
+					const unsigned int pageSize = opt->PageSize;
 		            // Assign the texture to the alpha map
                     BaseImage.loadDynamicImage (_BuildBaseTexture(), 
                                                 pageSize, 
@@ -115,23 +113,15 @@ namespace Ogre
 		        // assign this texture to the material
                 assert  (mMaterial->getTechnique(0) && mMaterial->getTechnique(0)->getPass(0) && mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0));
                 assert  (mMaterial->getTechnique(1) && mMaterial->getTechnique(1)->getPass(0) && mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0));
-
-                TextureManager::getSingleton().load (texname, opt->groupName);  
+ 
 		        mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
 		        mMaterial->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
 
-                // Now that we have all the resources in place, we load the material
-		        mMaterial->load(); 
-                mMaterial->setLightingEnabled(opt->lit);
+                
+		         
+                
             }
 	    }
-    }
-
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_BaseTexture::_unloadMaterial()
-    {
-	    if (!mMaterial.isNull())
-		    mMaterial->unload();
     }
     //-----------------------------------------------------------------------
     uchar *PagingLandScapeTexture_BaseTexture::_BuildBaseTexture() const
@@ -145,7 +135,7 @@ namespace Ogre
         const Real inv_dx = 1 / dx;
         const Real inv_dz = 1 / dz;
 
-		const uint pageSize = opt->PageSize;
+		const unsigned int pageSize = opt->PageSize;
 	
 #		define  _InterpolateColour(O, F, C1, C2) \
 					((O + (F * matColor[C1] + \
@@ -163,15 +153,15 @@ namespace Ogre
 		};
 
         // This texture will be used as a base color for the terrain, it will fake the splat for distant renderables.
-        const uint size = pageSize * pageSize;
+        const unsigned int size = pageSize * pageSize;
         uchar * const ogre_restrict BaseData = new uchar [size * 3];
         const uchar maxuchar = 255;
         ColourValue out;
-        uint curr_image_pos = 0; 
-        for (uint i = 0; i < pageSize; i++)
+        unsigned int curr_image_pos = 0; 
+        for (unsigned int i = 0; i < pageSize; i++)
         {
 			const int z = i;
-            for (uint k = 0; k < pageSize; k++)
+            for (unsigned int k = 0; k < pageSize; k++)
             {
                 // Generate the base Color 
 				const int x = k;
@@ -207,7 +197,7 @@ namespace Ogre
 				// Init the colour    
 				out = ColourValue(0.0f, 0.0f, 0.0f, 0.0f);
 
-				for (uint neighbor = 0; neighbor < 9; neighbor++)
+				for (unsigned int neighbor = 0; neighbor < 9; neighbor++)
 				{    
 					const Real h = height[neighbor];
 					const Real slope = sloppy[neighbor];

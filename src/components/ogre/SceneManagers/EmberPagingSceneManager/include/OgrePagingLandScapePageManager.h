@@ -2,7 +2,7 @@
 	OgrePagingLandScapePageManager.h  -  description
 	-------------------
 	begin                : Sat May 01 2004
-	copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -62,10 +62,10 @@ namespace Ogre
 
 			/// if page is already instantiated get page at this pos,
 			/// otherwise allocate one, if alwaysReturn is set true.
-			PagingLandScapePage* getPage(const uint i , const uint j,
+			PagingLandScapePage* getPage(const unsigned int i , const unsigned int j,
 				const bool alwaysReturn = true);
 			/// Instantiate a new page from pool.
-			PagingLandScapePage* getNewPage(const uint i , const uint j);
+			PagingLandScapePage* getNewPage(const unsigned int i , const unsigned int j);
 			/// Return a page to the pool.
 			void releasePage (PagingLandScapePage*p );
 
@@ -80,18 +80,18 @@ namespace Ogre
 			/// return answer even when position is outside landscape
 			/// when alwaysAnswer is true
 			PagingLandScapeTile* getTile(const Real posx, const Real posz, 
-										 const uint pagex, const uint pagez, 
+										 const unsigned int pagex, const unsigned int pagez, 
 										 bool alwaysAnswer);
 			// get Tile at relative position but unscaled by landscape scale (in the page containing the tile page coordinate system) in space, 
 			/// return answer even when position is outside landscape
 			/// when alwaysAnswer is true
 			PagingLandScapeTile* getTileUnscaled(const Real posx, const Real posz, 
-												 const uint pagex, const uint pagez, 
+												 const unsigned int pagex, const unsigned int pagez, 
 												 bool alwaysAnswer);
 			// get Tile at relative position but unscaled by landscape scale (in the page containing the tile page coordinate system) in space, 
 			/// return answer even when position is outside landscape
 			/// when alwaysAnswer is true
-			PagingLandScapeTile* getTilePage (uint &posx, uint &posz, const uint pagex, const uint pagez);
+			PagingLandScapeTile* getTilePage (unsigned int &posx, unsigned int &posz, const unsigned int pagex, const unsigned int pagez);
 
 			void getGlobalToPage(Real& x, Real& z) const;
 			/** Get the Page indices from a position
@@ -100,7 +100,7 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getPageIndices(const Real posx, const Real posz, uint& x, uint& z, bool alwaysAnswer) const;
+			bool getPageIndices(const Real posx, const Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const;
 
 			/** Get the Page indices from a position, returning page only if position is in.
 			@param posx the world position vector but unscaled. 
@@ -108,7 +108,7 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getRealPageIndicesUnscaled(const Real posx, const Real posz, uint& x, uint& z) const; 
+			bool getRealPageIndicesUnscaled(const Real posx, const Real posz, unsigned int& x, unsigned int& z) const; 
 
 			/** Get the Page indices from a position, always returning a page.
 			@param posx the world position vector but unscaled. 
@@ -116,7 +116,7 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			void getNearestPageIndicesUnscaled(const Real posx, const Real posz, uint& x, uint& z) const; 
+			void getNearestPageIndicesUnscaled(const Real posx, const Real posz, unsigned int& x, unsigned int& z) const; 
 
 			/** Get the Tile indices from a position
 			@param posx the world position vector. 
@@ -126,7 +126,7 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getTileIndices(const Real posx, const Real posz, const uint pagex, const uint pagez, uint& x, uint& z, bool alwaysAnswer) const;
+			bool getTileIndices(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, unsigned int& x, unsigned int& z, bool alwaysAnswer) const;
 
 			/** Get the Tile indices from a position, returning tile only if position is in.
 			@param posx the world position vector but unscaled. 
@@ -134,7 +134,7 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getRealTileIndicesUnscaled(const Real posx, const Real posz, const uint pagex, const uint pagez, uint& x, uint& z) const;
+			bool getRealTileIndicesUnscaled(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, unsigned int& x, unsigned int& z) const;
 
 			/** Get the Tile indices from a position, returning tile only if position is in.
 			@param posx the world position vector but unscaled. 
@@ -142,7 +142,7 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			void getNearestTileIndicesUnscaled(const Real posx, const Real posz, const uint pagex, const uint pagez, uint& x, uint& z) const;
+			void getNearestTileIndicesUnscaled(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, unsigned int& x, unsigned int& z) const;
 
 			void setTerrainReady(bool isready)
 			{
@@ -167,13 +167,13 @@ namespace Ogre
 
 
 			/// getter
-			uint getCurrentCameraPageX(void) const;
+			unsigned int getCurrentCameraPageX(void) const;
 			/// getter
-			uint getCurrentCameraPageZ(void) const;
+			unsigned int getCurrentCameraPageZ(void) const;
 			/// getter
-			uint getCurrentCameraTileX(void) const;
+			unsigned int getCurrentCameraTileX(void) const;
 			/// getter
-            uint getCurrentCameraTileZ(void) const;
+            unsigned int getCurrentCameraTileZ(void) const;
 			/// getter
 			int getPagePreloadQueueSize(void) const;
 			/// getter
@@ -210,7 +210,7 @@ namespace Ogre
 			void queuePageNeighbors ();
 
 			void makePageLoadedNow(PagingLandScapePage* p);
-            PagingLandScapePage* find_nearest(const Vector3& pos, const uint x, const uint z, PagingLandScapePageList& mQueue) const;
+            PagingLandScapePage* find_nearest(const Vector3& pos, const unsigned int x, const unsigned int z, PagingLandScapePageList& mQueue) const;
 
             PagingLandScapeData2DManager*     mData2d;
             PagingLandScapeTextureManager*    mTexture;
@@ -232,8 +232,8 @@ namespace Ogre
 			PagingLandScapePageList mFreePages;
 			PagingLandScapePageArray mPagePool;
 
-            uint mWidth;
-            uint mHeight;
+            unsigned int mWidth;
+            unsigned int mHeight;
 
             int mNextQueueFrameCount;
             int mTimePreLoaded;
@@ -244,8 +244,8 @@ namespace Ogre
             bool mTerrainReady;
             bool mOnFrame;
 
-			uint mRenderableLoadInterval;
-			uint mPageLoadInterval;
+			unsigned int mRenderableLoadInterval;
+			unsigned int mPageLoadInterval;
 
             RenderQueueGroupID mRenderQueueGroupID;
 

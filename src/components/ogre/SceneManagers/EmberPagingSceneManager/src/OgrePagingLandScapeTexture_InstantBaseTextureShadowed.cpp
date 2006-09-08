@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_InstantBaseTextureShadowed.cpp  -  description
 -------------------
 begin                : Mon Apr 26 2004
-copyright            : (C) 2003-2005 by Jose A Milan & Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan & Tuan Kuranes
 email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -38,58 +38,14 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 namespace Ogre
 {
-
-    uint PagingLandScapeTexture_InstantBaseTextureShadowed::mPageSize = 0;
-	Image PagingLandScapeTexture_InstantBaseTextureShadowed::mImage;
-    Real PagingLandScapeTexture_InstantBaseTextureShadowed::heights[4];
-    Real PagingLandScapeTexture_InstantBaseTextureShadowed::dividers[4];
-    ColourValue PagingLandScapeTexture_InstantBaseTextureShadowed::colors[4];
-
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::_setPagesize ()
-    {
-		PagingLandScapeOptions * const opt = mParent->getOptions();
-        mPageSize = opt->PageSize - 1;
-        Real Texturescale = opt->TextureStretchFactor;
-        const uint textureSize = (uint) (mPageSize * Texturescale);
-        uchar *data = new uchar[textureSize * textureSize * 3];
-		mImage.loadDynamicImage (data, textureSize, textureSize, PF_BYTE_RGB);
-
-
-        colors[0] = opt->matColor[0];
-        colors[1] = opt->matColor[1];
-        colors[2] = opt->matColor[2];
-        colors[3] = opt->matColor[3];
-
-        //  slope[] ??
-
-        heights[0] = 0.0f;
-        heights[1] = opt->matHeight[1];
-        heights[2] = opt->matHeight[2];
-        heights[3] = mParent->getSceneManager()->getData2DManager()->getMaxHeight ();
-
-        dividers[0] = 1.0f;
-        if (heights[1] > 0)
-            dividers[1] = 1.0f / heights[1];
-        else 
-            dividers[1] = 0.0f;
-        if ((heights[2]  - heights[1]) > 0)
-            dividers[2] = 1.0f / (heights[2]  - heights[1]);
-        else 
-            dividers[1] = 0.0f;
-        if ((heights[3]  - heights[2]) > 0)
-            dividers[3] = 1.0f / (heights[3]  - heights[2]);
-        else 
-            dividers[1] = 0.0f;
-
-    }
+    
     //-----------------------------------------------------------------------
     PagingLandScapeTexture* PagingLandScapeTexture_InstantBaseTextureShadowed::newTexture()
     {
         return new PagingLandScapeTexture_InstantBaseTextureShadowed(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_InstantBaseTextureShadowed::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_InstantBaseTextureShadowed::isMaterialSupported()
     {
 		if (mParent->getOptions()->NumMatHeightSplat > 3)
 			return true;
@@ -97,16 +53,11 @@ namespace Ogre
 			return false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::_clearData ()
-    {      
-		delete [] mImage.getData ();    
-		mImage.loadDynamicImage (0, 0, 0, PF_BYTE_RGB);    
-    }
-    //-----------------------------------------------------------------------
     PagingLandScapeTexture_InstantBaseTextureShadowed::PagingLandScapeTexture_InstantBaseTextureShadowed(PagingLandScapeTextureManager *textureMgr) 
         :
-        PagingLandScapeTexture(textureMgr, true)
-    {
+		PagingLandScapeTexture(textureMgr, "InstantBaseShadowed",1, false)
+	{
+		mIsShadowed = true;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTexture_InstantBaseTextureShadowed::~PagingLandScapeTexture_InstantBaseTextureShadowed()
@@ -127,7 +78,7 @@ namespace Ogre
             const String commonName = StringConverter::toString(mDataZ) + 
                                         String(".") +
                                         StringConverter::toString(mDataX);
-            const String matname = String("InstantBaseMaterial.") + commonName + filename;
+            const String matname = String("InstantBase.") + commonName + filename;
             const String texname = filename + ".Base." + commonName + ".";
 
             String finalTexName;
@@ -150,7 +101,7 @@ namespace Ogre
                 if (opt->VertexCompression && opt->hasFragmentShader)
                 {
                     templateMaterial = MaterialManager::getSingleton ().
-                        getByName (String ("InstantBaseMaterialVertexPixelShadedShadowed"));
+                        getByName (String ("InstantBaseShadowedDecompress"));
                     
 	                // Create a new texture using the base image
 	                mMaterial = templateMaterial->clone(matname, true, groupName);    
@@ -160,14 +111,13 @@ namespace Ogre
                     bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
 
 
-                    const String texname (filename +  ".HSP." + commonName + "." + extname);   
-                    TextureManager::getSingleton().load (texname, groupName);  
+                    const String texname (filename +  ".HSP." + commonName + "." + extname);  
                     mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName (texname);
                     mPositiveShadow = true;                   
                 }
                 else
                 {
-                    templateMaterial = MaterialManager::getSingleton().getByName(String ("InstantBaseMaterialShadowed"));
+                    templateMaterial = MaterialManager::getSingleton().getByName(String ("InstantBaseShadowed"));
 
 		            // Create a new texture using the base image
 		            mMaterial = templateMaterial->clone (matname, true, groupName);
@@ -177,7 +127,7 @@ namespace Ogre
                                     commonName + "." +
                                     extname, 
                                     groupName); 
-                    const uint mTextureSize = mPageSize * opt->TextureStretchFactor;//mShadow.getHeight();
+                    const unsigned int mTextureSize = mParent->mPageSize * opt->TextureStretchFactor;//mShadow.getHeight();
                     uchar *lightdata = new uchar [mTextureSize*mTextureSize];
                     mLightImage.loadDynamicImage (lightdata, 
                                             mTextureSize, 
@@ -185,7 +135,7 @@ namespace Ogre
                                             1, 
                                             PF_L8, 
                                             true); 
-                    computeInstantBaselight();     
+                    computeLightMap();     
                     finalTexName = filename +  ".L." + commonName + "." + extname;
 					
 					// debug only save.
@@ -202,293 +152,16 @@ namespace Ogre
                 }   
                
 	            // assign this texture to the material
-                _LoadTexture(finalTexName, groupName);
+                loadColorTexture(finalTexName, 0);
 	            mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName (finalTexName);
             
-     
-              
-                mMaterial->load();
-	            mMaterial->setLightingEnabled(false);
             }
             else
             {
-                _LoadTexture(finalTexName, groupName);
+                loadColorTexture(finalTexName, 0);
             }
            
         }
     }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::_LoadTexture(const String &TexName,
-                                                                const String &groupName)
-    {  
-         // check need of Texture loading
-        if (mTexture.isNull())
-        {
-            mTexture = TextureManager::getSingleton().getByName(TexName);
-            if (mTexture.isNull())
-            {
-                mTexture = TextureManager::getSingleton().load (TexName, 
-                                            groupName, 
-                                            TEX_TYPE_2D, 7, 1.0f);
-            }
-        }
-        mBuffer = mTexture->getBuffer ();
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::upload(const Image::Box &textureRect)
-    {    
-        assert (mImage.getData() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
-        assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
-        assert (!mTexture.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
-        assert (!mBuffer.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::update()");
-
-     
-        const PixelBox srcBox = mImage.getPixelBox().getSubVolume(textureRect);	
-        const PixelBox lock = mBuffer->lock(textureRect, HardwareBuffer::HBL_DISCARD); 
-        PixelUtil::bulkPixelConversion(srcBox, lock); 
-        mBuffer->unlock();  
-
-        #ifdef _Missed_Spot                
-                    // debug can help finding missed spot.
-                    const PixelBox srcBox = mImage.getPixelBox();	
-                    const uint mTextureSize = mPageSize * mParent->getOptions()->TextureStretchFactor;
-                    const Image::Box rect (0, 0, 0, mTextureSize, mTextureSize, 1);
-                    const PixelBox lock = mBuffer->lock (rect ,HardwareBuffer::HBL_DISCARD); 
-                    PixelUtil::bulkPixelConversion(srcBox, lock); 
-                    mBuffer->unlock();
-        #endif //_Missed_Spot
-       
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::paint (const uint x, const uint z, 
-                                        const Real paintForce, const ColourValue &mPaintColor)
-    {
-        uchar * const BaseData = mImage.getData();
-
-        assert (BaseData && "PagingLandScapeTexture_InstantBaseTextureShadowed::paint()");
-
-        const Real blend = 1.0f;//;paintForce;
-        assert (paintForce >= 0.0f && paintForce <= 1.0f && "PagingLandScapeTexture_InstantBaseTextureShadowed::paint()");
-        const Real invBlend = 1.0f - blend;
     
-    
-//        Image::Box rect (x, z, x, z, 0, 1);
-//
-//        const PixelBox srcBox = mImage.getPixelBox().getSubVolume(rect);	
-//        const PixelBox lock = mBuffer->lock(rect, HardwareBuffer::HBL_DISCARD); 
-//        PixelUtil::bulkPixelConversion(srcBox, lock); 
-//        mBuffer->unlock();  	
-        assert ((x + z*  mPageSize < mPageSize*mPageSize) && "PagingLandScapeTexture_InstantBaseTextureShadowed::paint()");
-        adjustPaintRectangle(x, z);
-
-        const Real textureScale = mParent->getOptions()->TextureStretchFactor;
-
-        const uint textureX = x * textureScale;
-        const uint textureZ = z * textureScale;
-        const uint textureSize = mPageSize * textureScale;
-
-        const uchar bScale = 255;
-        const uint curr_image_pos = textureX * 3+ textureZ * textureSize * 3;//x * 3 + z * mPageSize * 3;
-        BaseData[ curr_image_pos ]    = 
-            static_cast <uchar> (bScale * mPaintColor.r * blend + BaseData[ curr_image_pos ] * invBlend);
-        BaseData[ curr_image_pos + 1] = 
-            static_cast <uchar> (bScale * mPaintColor.g * blend + BaseData[ curr_image_pos + 1] * invBlend);
-        BaseData[ curr_image_pos + 2] = 
-            static_cast <uchar> (bScale * mPaintColor.b * blend + BaseData[ curr_image_pos + 2] * invBlend);    
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::computePoint(
-        const uint imagePos,
-        const Real height, 
-        const Real slope)
-    {       
-        uchar * const ogre_restrict BaseData = mImage.getData();	    
-        assert (BaseData && "PagingLandScapeTexture_InstantBaseTextureShadowed::computeInstantBase()");
-        const uint curr_image_pos = imagePos*3;//Bpp
-
-        uint indx = 1;
-        const uint numHeights = mParent->getOptions()->NumMatHeightSplat;
-        while (height >= heights[indx] && indx < numHeights)
-            indx++;                                
-    
-        const uint bScale = 255;
-        const uint up_indx = indx;
-        const uint down_indx = indx - 1;
-        const Real interpol = (height  - heights[down_indx]) * dividers[up_indx];  
-               
-        if (slope < 0.05f)// speed-up as it's invisible
-        {
-            const Real B = (1.0f - interpol);
-            const Real C = interpol;
-
-            // RGB = colors[indx - 1] * B + colors[indx] * C;
-            BaseData[ curr_image_pos ]    = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C)* bScale);
-            BaseData[ curr_image_pos + 1] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C)* bScale);
-            BaseData[ curr_image_pos + 2] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C)* bScale);
-        }
-        else 
-        {
-            const Real A = (1.0f - slope);
-            const Real B = A * (1.0f - interpol);
-            const Real C = A * interpol;
-            const Real D = slope;
-           
-            // RGB = colors[indx - 1] * B + colors[indx] * C + colors[2] * D;                    
-            BaseData[ curr_image_pos ]     = static_cast <uchar> ((colors[down_indx].r * B + colors[up_indx].r * C + colors[2].r * D)* bScale);
-            BaseData[ curr_image_pos + 1 ] = static_cast <uchar> ((colors[down_indx].g * B + colors[up_indx].g * C + colors[2].g * D)* bScale);
-            BaseData[ curr_image_pos + 2 ] = static_cast <uchar> ((colors[down_indx].b * B + colors[up_indx].b * C + colors[2].b * D)* bScale);
-        }
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::lightUpdate()
-    {
-		PagingLandScapeOptions * const opt = mParent->getOptions();
-        if (opt->VertexCompression && opt->hasFragmentShader)
-        {
-            const Real SunAngle = opt->SunAngle;
-            const Vector3 SunDir = opt->Sun;
-            
-            const bool positiveHorizon =  (SunDir.y > 0);// Sun is west (true), east (false);
-            assert (fabs (SunAngle) < 1.1f);
-
-            const Real LightAngle =  (positiveHorizon)? SunAngle  : -SunAngle;
-            if (positiveHorizon != mPositiveShadow)
-            {
-                const String texname  (opt->LandScape_filename
-                                            +
-                                            ((positiveHorizon)? String(".HSP.") : String(".HSN."))
-                                            +
-                                            StringConverter::toString(mDataZ) + 
-                                            String(".") +
-                                            StringConverter::toString(mDataX) +  "." + 
-                                            opt->TextureExtension);
-                TextureManager::getSingleton().load (texname, opt->groupName);   
-                mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName (texname);                
-                mPositiveShadow = positiveHorizon;
-            }
-
-            GpuProgramParametersSharedPtr params = mMaterial->getTechnique(0)->getPass(0)->getFragmentProgramParameters();    	            
-            params->setNamedConstant("HorizonSettings", Vector4(SunDir.x,
-                                                                SunDir.y, 
-                                                                SunDir.z, 
-                                                                LightAngle));
-                   
-        }
-        else
-        {
-            computeInstantBaselight ();
-
-            // Upload changes         
-            const PixelBox srcBox = mLightImage.getPixelBox();	
-            const uint mTextureSize = mPageSize * opt->TextureStretchFactor;
-            const Image::Box rect (0, 0, 0, mTextureSize, mTextureSize, 1);
-            const PixelBox lock = mLightBuffer->lock (rect ,HardwareBuffer::HBL_DISCARD); 
-            PixelUtil::bulkPixelConversion(srcBox, lock); 
-            mLightBuffer->unlock();
-        }
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::computeInstantBaselight () const
-    {    
-		PagingLandScapeOptions * const opt = mParent->getOptions();
-        const Vector3 LightDir = opt->Sun;
-        const Real SunAngle = opt->SunAngle;
-            
-        const bool positiveHorizon =  (LightDir.y > 0);// Sun is west (true), east (false);
-        assert (fabs (SunAngle) < 1.1f);
-
-        const Real LightAngle =  (positiveHorizon)? SunAngle  : -SunAngle;       
-        const size_t offsetneg = (positiveHorizon)? 0: 1;
-        //const Real LightAngle = SunAngle;
-
-        
-        uint curr_rowY = 0;
-        const uchar BScale = 255;
-        const Real uchardivider = 1.0f / BScale;
-        uint curr_image_pos = 0;
-        uchar * const ogre_restrict lightmap = (uchar *) (mLightImage.getData ());
-        const uchar * const ogre_restrict HorizonAngle = mShadow.getData(); 
-        const Real textureScale = opt->TextureStretchFactor;
-
-        const uint mTextureSize = mPageSize * textureScale;
-        const uint rowpitch = mTextureSize*3;
-        for(uint nZ = 0; nZ < mTextureSize ; nZ++) 
-        {
-            uint curr_image_posX = 0;
-            for(uint nX = 0; nX < mTextureSize; nX++)
-            {            
-                const uint nVert = static_cast <uint> (curr_rowY + curr_image_posX  + offsetneg);
-                const Real hAngle = HorizonAngle[nVert] * uchardivider;
-                if (hAngle < LightAngle) 
-                {           
-                    const Real intensity =  1 - (LightAngle - hAngle);
-                    if (intensity > 0.0f) 
-                    {                       
-                        //intensity *= std::max(LightDir.dotProduct (data->getNormal (nX, nZ)), 0.0f);
-                        lightmap[curr_image_pos] = static_cast <uchar> (intensity * BScale);
-                        
-					}
-                    else
-                    {
-                        // totally in shadow    
-                        lightmap[curr_image_pos] = 0;    
-                    }
-                }
-                else             
-                {
-                    // if Vertex is lighted
-                    const Real intensity = BScale;           
-                    //const Real intensity = BScale * std::min(1.0f, LightDir.dotProduct (data->getNormal (nX, nZ))); 
-                    lightmap[curr_image_pos] = static_cast <uchar> (intensity);
-                 }               
-                // if colored light should use a rgb map..
-
-                curr_image_pos ++;
-                curr_image_posX += 3;
-            }
-            curr_rowY += rowpitch;
-        }    
-        
-    }
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_InstantBaseTextureShadowed::_unloadMaterial()
-    {
-        assert (!mMaterial.isNull() && "PagingLandScapeTexture_InstantBaseTextureShadowed::::_unloadMaterial");    
-        if (mIsModified)
-        { 
-
-		    PagingLandScapeOptions * const opt = mParent->getOptions();
-            const Real Texturescale = opt->TextureStretchFactor;
-            const Image::Box datarect (0, 0, 0, mPageSize*Texturescale, mPageSize*Texturescale, 1);
-            compute(mParent->getSceneManager()->getData2DManager()->getData2D(mDataX, mDataZ), 
-                    datarect, 
-                    mImage.getPixelBox());
-
-            const String fname = opt->LandScape_filename + 
-                                ".Base." + 
-                                StringConverter::toString(mDataZ) + 
-                                String(".") + 
-                                StringConverter::toString(mDataX) + ".";
-            const String extname = opt->TextureExtension;
-
-
-            FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-                    opt->groupName, 
-                    fname + extname);
-            FileInfoList::iterator it = finfo->begin();
-
-            if (it != finfo->end())
-            {
-                //FileInfo *inf = &(*it);
-                char *olddir = ChangeToDir (const_cast< char * > (((it)->archive->getName()).c_str()));
-                //FileSystemArchive::pushDirectory()
-                mImage.save(fname + "modif." + extname);   
-                //FileSystemArchive::pushDirectory();
-                RetablishDir (olddir);
-            }
-        }
-        // Anyway, they're surely null already, as they're freed by delete page()
-        mBuffer.setNull ();
-        mTexture.setNull ();
-  }
 } //namespace

@@ -1,4 +1,6 @@
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "OgrePagingLandScapeOcclusionTraversal.h"
 
 #include "OgrePagingLandScapeOctreeCamera.h"
@@ -14,8 +16,14 @@ namespace Ogre
     {                
         if (!node.mNodes.empty())
         {
-            //Add stuff to be rendered;
-            PagingLandScapeOctreeNodeList::const_iterator it = node.mNodes.begin();
+			//Add stuff to be rendered;
+			PagingLandScapeOctreeNodeList::const_iterator it = node.mNodes.begin();
+			PagingLandScapeOctreeNodeList::const_iterator itEnd = node.mNodes.end();
+			while (it != itEnd)
+			{
+				(*it)->traversal (*this);
+				++it;
+			}
         }
        
         PagingLandScapeOctree *n = 
@@ -51,8 +59,9 @@ namespace Ogre
         if (!node.mNodes.empty())
         {
             //Add stuff to be rendered;
-            PagingLandScapeOctreeNodeList::iterator it = node.mNodes.begin();
-            while (it != node.mNodes.end())
+			PagingLandScapeOctreeNodeList::iterator it = node.mNodes.begin();
+			PagingLandScapeOctreeNodeList::iterator itEnd = node.mNodes.end();
+			while (it != itEnd)
             {
                 (*it)->traversal(*this);
                 ++it;
@@ -92,10 +101,11 @@ namespace Ogre
         if (!node.mNodes.empty())
         {
             //Add stuff to be rendered;
-            PagingLandScapeOctreeNodeList::iterator it = node.mNodes.begin();
-            while (it != node.mNodes.end())
+			PagingLandScapeOctreeNodeList::iterator it = node.mNodes.begin();
+			PagingLandScapeOctreeNodeList::iterator itEnd = node.mNodes.end();
+            while (it != itEnd)
             {
-                (*it)->traversal(*this);
+                (*it)->traversal (*this);
                 ++it;
             }
         }
@@ -104,24 +114,31 @@ namespace Ogre
             node.mChildren[ 0 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 1 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 0 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 1 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 0 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 1 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 0 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
             n->traversal (*this);
+
         n = node.mChildren[ 1 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
             n->traversal (*this);

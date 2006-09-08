@@ -2,7 +2,7 @@
   OgrePagingLandScapePageRenderable.h  -  description
   -------------------
 	begin                : Thu Feb 27 2003
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -36,7 +36,7 @@ namespace Ogre
 
 	        /**	Initializes the LandScapeRenderable with the given options and the starting coordinates of this block.
 	        */
-	        PagingLandScapePageRenderable(PagingLandScapePageManager *pageMgr, const String& name, const uint pageX, const uint pageZ, const AxisAlignedBox& bounds);
+	        PagingLandScapePageRenderable(PagingLandScapePageManager *pageMgr, const String& name, const unsigned int pageX, const unsigned int pageZ, const AxisAlignedBox& bounds);
 
 	        virtual ~PagingLandScapePageRenderable(void);
 	  
@@ -117,8 +117,8 @@ namespace Ogre
            /// Current material used by this tile
            MaterialPtr mMaterial;    
 
-           uint mX;
-           uint mZ;
+           unsigned int mX;
+           unsigned int mZ;
 
    };
 

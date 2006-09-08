@@ -2,7 +2,7 @@
 	OgrePagingLandScapeHorizon.h  -  description
   -------------------
   begin                : Sat Mar 08 2003
-  copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -28,11 +28,11 @@ namespace Ogre
 	       PagingLandScapeHorizon(const PagingLandScapeOptions *options);
            ~PagingLandScapeHorizon(void);
    
-            void registerMinMaxHeightPage(const uint pageX, const uint pageZ, const Real minHeight, const Real maxHeight);
+            void registerMinMaxHeightPage(const unsigned int pageX, const unsigned int pageZ, const Real minHeight, const Real maxHeight);
 
             void registerMinMaxHeightTile(const PagingLandScapeTileInfo* info, const Real minHeight, const Real maxHeight);
 
-            bool IsPageVisible(const PagingLandScapeCamera* cam, const uint destpageX, const uint destpageZ);
+            bool IsPageVisible(const PagingLandScapeCamera* cam, const unsigned int destpageX, const unsigned int destpageZ);
 
             /**
              *
@@ -45,7 +45,7 @@ namespace Ogre
 
             MaterialPtr getVisibilityMaterial(void);
 
-            void AddVisibleTile(const uint Tilex, const uint Tilez, const bool visible);
+            void AddVisibleTile(const unsigned int Tilex, const unsigned int Tilez, const bool visible);
             void AddVisibleTile(const PagingLandScapeTileInfo* info, const bool visible);
         
             void update(void);
@@ -55,19 +55,19 @@ namespace Ogre
 
             PagingLandScapeOptions*		mOptions;
 
-             bool calcVis(const Vector3& src, const Vector3& dest, const Real* const heightMap, const uint mapWidth, const uint mapHeight);
+             bool calcVis(const Vector3& src, const Vector3& dest, const Real* const heightMap, const unsigned int mapWidth, const unsigned int mapHeight);
 
               Real* mMaxPageHeights;
               Real* mMinPageHeights;
-              uint mPageWidth;
-              uint mPageHeight;
+              unsigned int mPageWidth;
+              unsigned int mPageHeight;
 
-              uint mNumTilesPage;
+              unsigned int mNumTilesPage;
 
               Real* mMaxTileHeights;
               Real* mMinTileHeights;
-              uint mTileWidth;
-              uint mTileHeight;
+              unsigned int mTileWidth;
+              unsigned int mTileHeight;
 
               MaterialPtr mVisibilityMaterial;
               uchar* mVisData;

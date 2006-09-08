@@ -2,7 +2,7 @@
   OgrePagingLandScapeRenderableManager.cpp  -  description
   -------------------
   begin                : Mon Jun 16 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
@@ -39,20 +41,41 @@
 
 namespace Ogre
 {
+
+	//-----------------------------------------------------------------------
+	PagingLandScapeRenderableSet::PagingLandScapeRenderableSet():
+		PoolSet<PagingLandScapeRenderable>(),
+		mRenderableManager(0)
+	{
+	}
+	//-----------------------------------------------------------------------
+	PagingLandScapeRenderable* PagingLandScapeRenderableSet::allocate ()
+	{
+		return new PagingLandScapeRenderable(mRenderableManager);
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapeRenderableSet::deallocate (PagingLandScapeRenderable *r)
+	{
+		delete r;
+	}
     //-----------------------------------------------------------------------
     PagingLandScapeRenderableManager::PagingLandScapeRenderableManager(PagingLandScapeSceneManager * scnMgr):
         mSceneManager(scnMgr),
         mOptions(scnMgr->getOptions ()), 
-        mNumRenderables (0),
 		mRenderableLoadInterval (0),
 		mLoadInterval(0),
         mNumRenderableLoading(0)
     {
+		// auto extend ourself as we rather check 
+		//if we can found non Freed Renderables before
+		mRenderablePool.setAutoextend (false);
+		// don't Double renderables num each time... too much.
+		mRenderablePool.setExtendFactor (1.2f);
     }
     //-----------------------------------------------------------------------
     PagingLandScapeRenderableManager::~PagingLandScapeRenderableManager()
     {
-        
+		mRenderablePool.deletePool ();
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::clear()
@@ -67,92 +90,84 @@ namespace Ogre
             }
             assert (mTilesLoadRenderableQueue.empty ());
         }
-        // If Renderables change over maps (+- lit, normals, etc...)
-        std::for_each (mRenderables.begin (), 
-                       mRenderables.end (),  
-                       delete_object());
-        mRenderables.clear();
-        mQueue.clear();
-        mNumRenderables = 0;
+        // As Renderables change too much over maps (+- lit, normals, etc...)
+        mRenderablePool.deletePool ();
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::load()
-    {        
+	{        
+		mRenderablePool.setRenderableManager (this);
+
         PagingLandScapeOptions *opt = mOptions;  
 
         mNumRenderableLoading = opt->num_renderables_loading;
         mNumRenderablesIncrement = opt->num_renderables_increment;
         mRenderableLoadInterval = opt->RenderableLoadInterval;
-
-        const uint nRend = opt->num_renderables;
-        
-        if (mNumRenderables < nRend)
-        {
-            _addBatch (nRend - mNumRenderables);
-        }
+        mRenderablePool.setPoolSize (opt->num_renderables);
 		mTilesLoadRenderableQueue.clear();
     }
     //-----------------------------------------------------------------------
     PagingLandScapeRenderable *PagingLandScapeRenderableManager::getRenderable()
     {
-	    if (mQueue.empty ())
-        {
+		PagingLandScapeRenderable *r = mRenderablePool.getPoolable ();
+	    if (r == 0)
+		{
             // unload some Tiles/renderables no more used to free some space.
             processTileUnload ();
 
-            //#ifdef _DEBUG
-                //for (uint i = 0; i < mNumRenderables; ++i)
-                //{
-                //    assert (mRenderables[i]->isLoaded ());
-                //}
-                for (uint i = 0; i < mNumRenderables; ++i)
-                {
-                    //assert (mRenderables[i]->isInUse ());
-                    if (!mRenderables[i]->isInUse () && !mRenderables[i]->isLoaded ())
-                    {
-                        PagingLandScapeRenderable *r = mRenderables[i];
-
-                        //assert(0);
-                        mQueue.push(mRenderables[i]);                        
-                    }
-                }
-            //#endif //_DEBUGz
-            
-
-
-            if (mQueue.empty ())
-            {
-		        // We do not have any more free Renderables
-                // we need to allocate more
-		        _addBatch (mNumRenderablesIncrement);
-		        // Increment the next batch by a 10%
-		        mNumRenderablesIncrement += static_cast<uint> (mNumRenderablesIncrement * 0.1f);
-            }
-	    }
-	    return mQueue.pop ();
+			r = mRenderablePool.getPoolable ();
+			if (r == 0)
+			{
+				mRenderablePool.autoExtend();
+				r = mRenderablePool.getPoolable();
+			}
+		}
+		return r;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::freeRenderable(PagingLandScapeRenderable *rend)
     {
-	    mQueue.push (rend);
+		assert (rend->mParentTile == 0);
+		mRenderablePool.removePoolable(rend);
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::queueRenderableLoading(PagingLandScapeTile *tile)
 	{
 		assert (tile);  
-		assert (tile->isLoaded ());  
+
+		assert (!tile->isLoading());
 		assert (tile->getRenderable ()); 
+		assert (!tile->getRenderable ()->mQueued);
+
+		assert (tile->isLoaded ()); 
         assert (!tile->getRenderable ()->isLoaded ());   
-        assert (tile->getRenderable ()->isInUse ());  
+		assert (tile->getRenderable ()->isInUse ());
+
+		//
+		tile->setLoading(true);
         tile->getRenderable ()->mQueued = true;
+
+		//
         mTilesLoadRenderableQueue.push (tile);
+
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeRenderableManager::unqueueRenderable (PagingLandScapeTile *tile)
-    {
+	{
+ 		assert (tile->isLoading());
+		assert (tile->getRenderable ());
+		assert (tile->getRenderable ()->mQueued);
+
+		assert (tile->isLoaded ());
+		assert (!tile->getRenderable ()->isLoaded ());
+		//assert (!tile->getRenderable ()->isInUse ());
+
+		//
+		tile->setLoading (false);
+		tile->getRenderable ()->mQueued = false;
+
+		//
         mTilesLoadRenderableQueue.remove (tile);
-        //assert (tile->getRenderable ());
-        //tile->getRenderable ()->mQueued = false;
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapeRenderableManager::processTileUnload()
@@ -166,14 +181,19 @@ namespace Ogre
 		{
 			tile = *itq;
 			assert (tile != 0);
+
+			assert (tile->isLoading());
+			assert (tile->getRenderable ());
+			assert (tile->getRenderable ()->mQueued);
+
 			assert (tile->isLoaded ());       
-			assert (tile->getRenderable () != 0 && tile->getSceneNode() != 0);
+			assert (tile->getSceneNode());
 			assert (!tile->getRenderable ()->isLoaded ()); 
 
 			if (!tile->getRenderable ()->isInUse ())
             {
-                assert (tile->getRenderable ());
-                tile->getRenderable ()->mQueued = false;
+				tile->setLoading (false);
+				tile->getRenderable ()->mQueued = false;
                 tile->unload (); 
 				itq = mTilesLoadRenderableQueue.erase (itq);
 			}
@@ -187,29 +207,33 @@ namespace Ogre
     bool PagingLandScapeRenderableManager::executeRenderableLoading(const Vector3 &Cameraposition)
     {
         if (mTilesLoadRenderableQueue.empty())
+        {
             return true;	
+        }
         else
         { 
 			if (mLoadInterval-- < 0)
 			{
-				const uint queueSize = mTilesLoadRenderableQueue.getSize () ;
+				const size_t queueSize = mTilesLoadRenderableQueue.getSize () ;
 				mTilesLoadRenderableQueue.sortNearest(Cameraposition);
-                const uint k = mNumRenderableLoading > queueSize ? queueSize : mNumRenderableLoading;
-				for (uint i = 0; i < k; i++)
+                const size_t k = mNumRenderableLoading > queueSize ? queueSize : mNumRenderableLoading;
+				for (size_t i = 0; i < k; i++)
 				{
 					
 					PagingLandScapeTile * const tile = mTilesLoadRenderableQueue.pop ();
 					// no more in queues.
 					assert (tile != 0);
-					assert (tile->isLoaded ());     
+					assert (tile->isLoaded ());
+					assert (tile->isLoading());   
 					PagingLandScapeRenderable * const rend = tile->getRenderable ();
 
 					assert (rend != 0);
+					assert (rend->mParentTile == tile);
+					assert (rend->mQueued);  
 					assert (!rend->isLoaded ());      
 					SceneNode * const tileSceneNode = tile->getSceneNode ();
 					assert (tileSceneNode != 0);
 
-                    rend->mQueued = false;
 
 					// if renderable can be loaded 
 					if (rend->load ())
@@ -222,6 +246,10 @@ namespace Ogre
 						// (no data yet.) empty tile.
 						tile->unload ();
 					}
+
+					tile->setLoading(false);
+					rend->mQueued = false;
+
 					tileSceneNode->needUpdate ();
 				}
 				mLoadInterval = mRenderableLoadInterval;
@@ -231,35 +259,28 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    uint PagingLandScapeRenderableManager::numRenderables(void) const
+    size_t PagingLandScapeRenderableManager::numRenderables(void) const
     {
-	    return mNumRenderables;
+	    return static_cast< size_t > (mRenderablePool.getPoolSize());
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapeRenderableManager::numFree(void) const
+    size_t PagingLandScapeRenderableManager::numFree(void) const
     {
-	    return mQueue.getSize();
+	    return mRenderablePool.getPoolSize() - mRenderablePool.getActivePoolablesSize ();
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapeRenderableManager::numLoading(void) const
+    size_t PagingLandScapeRenderableManager::numLoading(void) const
     {
 	    return mTilesLoadRenderableQueue.getSize();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeRenderableManager::_addBatch(const uint num)
+    void PagingLandScapeRenderableManager::_addBatch(const unsigned int num)
     {
-	    mNumRenderables += num;
-        mRenderables.reserve (mNumRenderables);
-	    for (uint i = 0; i < num; i++)
-	    {
-		    PagingLandScapeRenderable* rend = new PagingLandScapeRenderable(this);
-		    mRenderables.push_back(rend);
-		    mQueue.push(rend);
-	    }
+		mRenderablePool.setPoolSize (mRenderablePool.getPoolSize() + num);
         #ifdef _DEBUG
-            std::cout << "Renderables addBatch : " << mRenderables.size() << "\n";
+            std::cout << "Renderables addBatch : " << mRenderablePool.getPoolSize() << "\n";
         #endif
     }
 } //namespace

@@ -34,7 +34,7 @@ namespace Ogre
                 const Vector3 kDiff (point - (halfSize + boxMin));
                 // compute squared distance and closest point on box
                 Real fSqrDistance (0.0);
-                for (uint i = 0; i < 3; i++)
+                for (unsigned int i = 0; i < 3; i++)
                 {
                     const Real kClosest = kDiff[i];
                     const Real khalfSize = halfSize[i];

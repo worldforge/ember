@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2005 The OGRE Team
+Copyright (c) 2000-2006 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -32,6 +32,9 @@ email                : janders@users.sf.net
 Enhancements 2003 - 2004 (C) The OGRE Team
 
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "OgreMath.h"
 #include "OgreAxisAlignedBox.h"
 #include "OgreRoot.h"

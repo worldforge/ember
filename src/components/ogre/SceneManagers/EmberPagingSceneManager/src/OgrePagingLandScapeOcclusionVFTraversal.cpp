@@ -1,4 +1,6 @@
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "OgrePagingLandScapeOcclusionTraversal.h"
 #include "OgrePagingLandScapeOcclusionVFTraversal.h"
 

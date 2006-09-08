@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Image.cpp  -  description
 -------------------
 begin                : Fri Apr 16 2004
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -38,14 +38,15 @@ namespace Ogre
         return new PagingLandScapeTexture_Image(mParent);
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeTexture_Image::TextureRenderCapabilitesFullfilled()
+    bool PagingLandScapeTexture_Image::isMaterialSupported()
     {                
         if (mParent->getOptions()->ImageNameLoad)
             return true;
         return false;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTexture_Image::PagingLandScapeTexture_Image(PagingLandScapeTextureManager *textureMgr) : PagingLandScapeTexture(textureMgr)
+    PagingLandScapeTexture_Image::PagingLandScapeTexture_Image(PagingLandScapeTextureManager *textureMgr) : 
+		PagingLandScapeTexture(textureMgr, "ImagePaging", 1, false)
     {
     }
 
@@ -53,58 +54,4 @@ namespace Ogre
     PagingLandScapeTexture_Image::~PagingLandScapeTexture_Image()
     {
     }
-
-    //-----------------------------------------------------------------------
-    void PagingLandScapeTexture_Image::_loadMaterial()
-    {
-	    if (mMaterial.isNull())
-	    {
-			PagingLandScapeOptions * const opt = mParent->getOptions();
-            if (opt->ImageNameLoad)
-            {  
-                const String filename = opt->image_filename;
-                const String commonName = StringConverter::toString(mDataZ) + 
-                                            String(".") +
-                                            StringConverter::toString(mDataX);
-                const String matname = String("ImageTexture.") + commonName + filename;
-                mMaterial = MaterialManager::getSingleton().getByName(matname);
-                if (mMaterial.isNull())
-                {
-                    MaterialPtr templateMaterial;
-                    if (opt->VertexCompression)
-                    {
-                        templateMaterial = MaterialManager::getSingleton().getByName(String ("PagingLandScape.Template.VertexPixelShaded"));
-                        assert (!templateMaterial.isNull());
-                        mMaterial = templateMaterial->clone(matname);    
-                        Pass *p = mMaterial->getTechnique(0)->getPass(0);
-                        bindCompressionSettings (p->getVertexProgramParameters());
-                        bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
-                    }
-                    else
-                    {
-                        templateMaterial = MaterialManager::getSingleton().getByName(String ("PagingLandScape.Template"));
-                        assert (!templateMaterial.isNull());
-                        mMaterial = templateMaterial->clone(matname);
-                    }   
-          
-                }
-                const String texname (filename + "." + commonName + "." + opt->TextureExtension);   
-                TextureManager::getSingleton().load (texname, opt->groupName);    
-                // assign this texture to the material
-                mMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName(texname);
-            }
-            else
-            {
-                // JEFF - all material settings configured through material script
-                mMaterial = (MaterialManager::getSingleton().getByName("PagingLandScape." +
-                    StringConverter::toString(mDataZ) + "." + 
-                    StringConverter::toString(mDataX)));
-            }
-               
-		    mMaterial->load(); 
-            mMaterial->setLightingEnabled(opt->lit);
-	    }
-    }
-
-
 } //namespace

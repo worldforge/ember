@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting.h  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+	copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -26,26 +26,21 @@ namespace Ogre
     {
         public:
 	        PagingLandScapeTexture_Splatting(PagingLandScapeTextureManager *textureMgr);
-            virtual String getName(){return String("Splatting");}
+             String getName() const{return String("Splatting");}
 
-            virtual void setPagesize(void){_setPagesize();};
-            virtual void clearData(void){_clearData();};
-            
-            void _setPagesize(void);
-            void _clearData(void);
+			 void setOptions(void);
+			 ~PagingLandScapeTexture_Splatting(void);
 
-	        virtual ~PagingLandScapeTexture_Splatting(void);
-
-            virtual PagingLandScapeTexture* newTexture();
-            virtual bool TextureRenderCapabilitesFullfilled(); 
+             PagingLandScapeTexture* newTexture();
+             bool isMaterialSupported(); 
 
         protected:
 
-	        virtual void _loadMaterial(void);
+	         void _loadMaterial(void);
 
         private:
 
-	        void _BuildPoint(const uint i, const int j, 
+	        void _BuildPoint(const unsigned int i, const int j, 
 	                         ColourValue& out, std::vector<Real> &alpha);
 
 	        inline void _InterpolateAlpha(std::vector<Real> &alpha, const Real percentaje, 

@@ -2,7 +2,7 @@
 	OgrePagingLandScapePageManager.cpp  -  description
 	-------------------
 	begin                : Sat May 01 2004
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,9 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
 
@@ -28,6 +31,7 @@
 #include "OgrePagingLandScapeCamera.h"
 #include "OgrePagingLandScapePage.h"
 #include "OgrePagingLandScapePageManager.h"
+#include "OgrePagingLandScapeTileManager.h"
 #include "OgrePagingLandScapeRenderableManager.h"
 #include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeTextureManager.h"
@@ -116,8 +120,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapePageManager::WorldDimensionChange(void)
     {
-        const uint newWidth = mOptions->world_width; 
-        const uint newHeight = mOptions->world_height;
+        const unsigned int newWidth = mOptions->world_width; 
+        const unsigned int newHeight = mOptions->world_height;
 
 		reset();
 
@@ -150,9 +154,8 @@ namespace Ogre
             {
                 mSceneManager->getHorizon ()->prepare(static_cast< PagingLandScapeCamera* >(mOptions->primaryCamera));
             }
-            mRenderablesMgr->resetVisibles();
-            mOnFrame = false;
-        }
+			mOnFrame = false;
+		}
         return true;
     }
     //-----------------------------------------------------------------------
@@ -178,10 +181,12 @@ namespace Ogre
 
         if (mOptions->VisMap)
             mSceneManager->getHorizon()->update();
+
+		mRenderablesMgr->resetVisibles();
         return true;
     }
 	//-----------------------------------------------------------------------
-	PagingLandScapePage *PagingLandScapePageManager::getNewPage(const uint x, const uint z)
+	PagingLandScapePage *PagingLandScapePageManager::getNewPage(const unsigned int x, const unsigned int z)
 	{
 		PagingLandScapePage *p;
 
@@ -221,7 +226,7 @@ namespace Ogre
 		mFreePages.push_back (p);
 	}
 	//-----------------------------------------------------------------------
-	PagingLandScapePage *PagingLandScapePageManager::getPage(const uint x, const uint z,
+	PagingLandScapePage *PagingLandScapePageManager::getPage(const unsigned int x, const unsigned int z,
 															 const bool alwaysReturn)
 	{
 		if (x < mWidth && z < mHeight)
@@ -247,7 +252,7 @@ namespace Ogre
 
 		const Vector3 CamPos =  cam->getDerivedPosition();
 		//gets page indices (if outside Terrain gets nearest page)
-		uint i, j;
+		unsigned int i, j;
 	    getPageIndices  (CamPos.x, CamPos.z, i, j, true);        
 		// update the camera page position
         // does modify mIniX, mFinX, mIniZ, mFinZ
@@ -270,6 +275,7 @@ namespace Ogre
 			removeFromQueues (p);      
 			
 			p->load();
+			assert ( std::find(mLoadedPages.begin(), mLoadedPages.end(), p) == mLoadedPages.end());
 			mLoadedPages.push_back (p);
 			// make sure this brutal loading doesn't impact on fps
 			mNextQueueFrameCount = mPageLoadInterval;   
@@ -289,11 +295,11 @@ namespace Ogre
 		// Notify those Page (update tile vis/ rend load on cam distance)
 		// update Page Texture if needed
 
-		const uint iniX = cam->mIniX;
-		const uint finX = cam->mFinX;
+		const unsigned int iniX = cam->mIniX;
+		const unsigned int finX = cam->mFinX;
 
-		const uint iniZ = cam->mIniZ;
-		const uint finZ = cam->mFinZ;
+		const unsigned int iniZ = cam->mIniZ;
+		const unsigned int finZ = cam->mFinZ;
 
 		PagingLandScapePage *p;
 		const bool lightchange = mOptions->lightmoved;
@@ -301,7 +307,7 @@ namespace Ogre
 		for (l = mLoadedPages.begin (); l != lend; ++l)
 		{
 			p = (*l);
-			uint x, z;
+			unsigned int x, z;
 			p->getCoordinates (x, z);
 			if ((z >= iniZ) && (z <= finZ) && (x >= iniX) && (x <= finX))
 			{
@@ -323,6 +329,9 @@ namespace Ogre
 			}
 		} 
 
+
+
+		mSceneManager->getTileManager ()->updateLoadedTiles();
 		if (lightchange)
 			mOptions->lightmoved = false;
 	}
@@ -352,22 +361,22 @@ namespace Ogre
 		// We must load the next visible LandScape pages, 
 		// check the LandScape boundaries	
 
-		const uint preIniX = cam->mPreIniX;
-		const uint preFinX = cam->mPreFinX;
+		const unsigned int preIniX = cam->mPreIniX;
+		const unsigned int preFinX = cam->mPreFinX;
 
-		const uint preIniZ = cam->mPreIniZ;
-		const uint preFinZ = cam->mPreFinZ;
+		const unsigned int preIniZ = cam->mPreIniZ;
+		const unsigned int preFinZ = cam->mPreFinZ;
 
-		const uint iniX = cam->mIniX;
-		const uint finX = cam->mFinX;
+		const unsigned int iniX = cam->mIniX;
+		const unsigned int finX = cam->mFinX;
 
-		const uint iniZ = cam->mIniZ;
-		const uint finZ = cam->mFinZ;
+		const unsigned int iniZ = cam->mIniZ;
+		const unsigned int finZ = cam->mFinZ;
 
 		PagingLandScapePage *p;
-		for (uint i = preIniX; i <= preFinX; i++)
+		for (unsigned int i = preIniX; i <= preFinX; i++)
 		{
-			for (uint j = preIniZ; j <= preFinZ; j++)
+			for (unsigned int j = preIniZ; j <= preFinZ; j++)
 			{
 				// pages here, in this zone around camera,
 				// must be at least preloading. 
@@ -425,7 +434,7 @@ namespace Ogre
 			PagingLandScapeTile * const oldTile = (oldPage && oldPage->isLoaded() ?
 													oldPage->getTile (cam->mCurrentCameraTileX, cam->mCurrentCameraTileZ) : 0);
 
-			uint i, j;
+			unsigned int i, j;
 
 			//gets page indices (if outside Terrain gets nearest page)
   			getPageIndices (pos.x, pos.z, i, j, true); 
@@ -447,22 +456,25 @@ namespace Ogre
 				PagingLandScapeTile * const t = getTile (pos.x, pos.z, i, j, true);
 				if (t && t != oldTile)
 				{
-					// reset previous tile at normal LOD mechanism.
-					if (oldTile && oldTile->isLoaded())
+					if (mOptions->MaxLodUnderCam)
 					{
-						assert (oldTile->getRenderable());
-						oldTile->getRenderable()->setMaxLod (false);
-					}    
-					// set current tile at max LOD whatever complexity it is.
-					if (mOptions->MaxLodUnderCam && t->isLoaded())
-					{
-						assert (t->getRenderable());
-						t->getRenderable()->setMaxLod (true);
-					}   
+						// reset previous tile at normal LOD mechanism.
+						if (oldTile && oldTile->isLoaded())
+						{
+							assert (oldTile->getRenderable());
+							oldTile->getRenderable()->setMaxLod (false);
+						}    
+						// set current tile at max LOD whatever complexity it is.
+						if (t->isLoaded())
+						{
+							assert (t->getRenderable());
+							t->getRenderable()->setMaxLod (true);
+						}   
+					}
 
 					PagingLandScapeTileInfo * const CurrentTileInfo  = t->getInfo();
-					cam->mCurrentCameraTileX = CurrentTileInfo->tileX;
-					cam->mCurrentCameraTileZ = CurrentTileInfo->tileZ;					
+					cam->mCurrentCameraTileX = CurrentTileInfo->mTileX;
+					cam->mCurrentCameraTileZ = CurrentTileInfo->mTileZ;					
 				}
 			}
 			// Update the last camera position
@@ -670,7 +682,7 @@ namespace Ogre
 		assert (!p->mIsLoading && !p->mIsTextureLoading && !p->mIsPreLoading);
     }
     //-----------------------------------------------------------------------
-    uint PagingLandScapePageManager::getCurrentCameraPageX(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraPageX(void) const
     {
         if (mCurrentcam)
 		{
@@ -681,7 +693,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    uint PagingLandScapePageManager::getCurrentCameraPageZ(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraPageZ(void) const
     {
         if (mCurrentcam)
 		{
@@ -691,7 +703,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    uint PagingLandScapePageManager::getCurrentCameraTileX(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraTileX(void) const
     {
         if (mCurrentcam)
 		{
@@ -701,7 +713,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    uint PagingLandScapePageManager::getCurrentCameraTileZ(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraTileZ(void) const
     {
         if (mCurrentcam)
 		{
@@ -763,7 +775,7 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapePageManager::getRealPageIndicesUnscaled(const Real posx, 
-        const Real posz, uint& x, uint& z) const
+        const Real posz, unsigned int& x, unsigned int& z) const
     {
         const Real inv_pSize = 1.0f / (mOptions->PageSize - 1);
       
@@ -778,14 +790,14 @@ namespace Ogre
 	    }
         else 
         {
-            x = static_cast< uint > (lx);
-            z = static_cast< uint > (lz);
+            x = static_cast< unsigned int > (lx);
+            z = static_cast< unsigned int > (lz);
             return true;
         }
     }
 
     //-----------------------------------------------------------------------
-    void PagingLandScapePageManager::getNearestPageIndicesUnscaled(const Real posx, const Real posz, uint& x, uint& z) const
+    void PagingLandScapePageManager::getNearestPageIndicesUnscaled(const Real posx, const Real posz, unsigned int& x, unsigned int& z) const
     {
         // adjust x and z to be local to page
         const Real inv_pSize = 1.0f / (mOptions->PageSize - 1);
@@ -799,7 +811,7 @@ namespace Ogre
 	    // make sure indices are not negative or outside range of number of pages
 	    if (lx >= w)
 	    {
-		    x = static_cast< uint >(w - 1);
+		    x = static_cast< unsigned int >(w - 1);
 	    }
         else if (lx < 0)
         {
@@ -807,12 +819,12 @@ namespace Ogre
         }
         else
 		{
-            x = static_cast< uint >(lx);
+            x = static_cast< unsigned int >(lx);
 		}
 
 	    if (lz >= h) 
 	    {
-		    z = static_cast< uint >(h - 1);
+		    z = static_cast< unsigned int >(h - 1);
 	    }
         else if (lz < 0)
         {
@@ -820,12 +832,12 @@ namespace Ogre
         }
         else
 		{
-            z = static_cast< uint >(lz);
+            z = static_cast< unsigned int >(lz);
 		}
     }
 
     //-----------------------------------------------------------------------
-    bool PagingLandScapePageManager::getPageIndices(const Real posx, const Real posz, uint& x, uint& z, bool alwaysAnswer) const
+    bool PagingLandScapePageManager::getPageIndices(const Real posx, const Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const
     {
         if (alwaysAnswer)
         {
@@ -839,8 +851,8 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapePageManager::getRealTileIndicesUnscaled(const Real posx, const Real posz, 
-                                                                const uint pagex, const uint pagez, 
-                                                                uint& x, uint& z) const
+                                                                const unsigned int pagex, const unsigned int pagez, 
+                                                                unsigned int& x, unsigned int& z) const
     {
 		// adjust x and z to be local to page
         const Real inv_tSize = 1.0f / (mOptions->TileSize - 1);
@@ -860,16 +872,16 @@ namespace Ogre
 		}
         else
         {
-            x = static_cast< uint >(tilex);
-            z = static_cast< uint >(tilez);
+            x = static_cast< unsigned int >(tilex);
+            z = static_cast< unsigned int >(tilez);
             return true;
         }
     }
 
     //-----------------------------------------------------------------------
     void PagingLandScapePageManager::getNearestTileIndicesUnscaled(const Real posx, const Real posz, 
-                                                                    const uint pagex, const uint pagez, 
-                                                                    uint& x, uint& z) const
+                                                                    const unsigned int pagex, const unsigned int pagez, 
+                                                                    unsigned int& x, unsigned int& z) const
     {
         // adjust x and z to be local to page
         const Real inv_tSize = 1.0f / (mOptions->TileSize - 1);
@@ -885,7 +897,7 @@ namespace Ogre
 
         if (tilex > tilesPerPage)
 		{
-            x = static_cast< uint >(tilesPerPage);
+            x = static_cast< unsigned int >(tilesPerPage);
 		}
         else if (tilex < 0)
 		{
@@ -893,12 +905,12 @@ namespace Ogre
 		}
         else
 		{
-            x = static_cast< uint >(tilex);
+            x = static_cast< unsigned int >(tilex);
 		}
 
         if (tilez > tilesPerPage)
 		{
-            z = static_cast< uint >(tilesPerPage);
+            z = static_cast< unsigned int >(tilesPerPage);
 		}
         else if(tilez < 0)
 		{
@@ -906,13 +918,13 @@ namespace Ogre
 		}
         else
 		{
-            z = static_cast< uint >(tilez);
+            z = static_cast< unsigned int >(tilez);
 		}
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapePageManager::getTileIndices(const Real posx, const Real posz, 
-                                                    const uint pagex, const uint pagez, 
-                                                    uint& x, uint& z, bool alwaysAnswer) const
+                                                    const unsigned int pagex, const unsigned int pagez, 
+                                                    unsigned int& x, unsigned int& z, bool alwaysAnswer) const
     {
         if (alwaysAnswer)
         {
@@ -925,9 +937,9 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTile* PagingLandScapePageManager::getTileUnscaled(const Real posx, const Real posz, const uint pagex, const uint pagez, bool alwaysAnswer)
+    PagingLandScapeTile* PagingLandScapePageManager::getTileUnscaled(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, bool alwaysAnswer)
     {
-        uint tilex, tilez;
+        unsigned int tilex, tilez;
         if (alwaysAnswer)
         {
             getNearestTileIndicesUnscaled(posx, posz, pagex, pagez, tilex, tilez);
@@ -947,7 +959,7 @@ namespace Ogre
 		return 0;
     }
     //-----------------------------------------------------------------------
-    PagingLandScapeTile* PagingLandScapePageManager::getTile(const Real posx, const Real posz, const uint pagex, const uint pagez, bool alwaysAnswer)
+    PagingLandScapeTile* PagingLandScapePageManager::getTile(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, bool alwaysAnswer)
     {
        return getTileUnscaled(posx / mOptions->scale.x, posz / mOptions->scale.z, pagex, pagez, alwaysAnswer);
     }
@@ -959,10 +971,10 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeTile* PagingLandScapePageManager::getTileUnscaled(const Real posx, const Real posz, bool alwaysAnswer)
     {
-        uint pagex, pagez;
+        unsigned int pagex, pagez;
         if (alwaysAnswer)
         {
-            uint tilex, tilez;
+            unsigned int tilex, tilez;
             getNearestPageIndicesUnscaled(posx, posz, pagex, pagez);
             getNearestTileIndicesUnscaled(posx, posz, pagex, pagez, tilex, tilez);
 			return getPage (pagex , pagez)->getTile(tilex, tilez);
@@ -971,7 +983,7 @@ namespace Ogre
         {
             if (getRealPageIndicesUnscaled(posx, posz, pagex, pagez))
             {
-                uint tilex, tilez;
+                unsigned int tilex, tilez;
                 if (getRealTileIndicesUnscaled(posx, posz, pagex, pagez, tilex, tilez))
 				{
 					PagingLandScapePage * const p = getPage (pagex , pagez, false);
@@ -983,8 +995,8 @@ namespace Ogre
 		return 0;
     }
     //-------------------------------------------------------------------------
-    PagingLandScapeTile* PagingLandScapePageManager::getTilePage (uint &posx, uint &posz, 
-                                                                  const uint pagex, const uint pagez)
+    PagingLandScapeTile* PagingLandScapePageManager::getTilePage (unsigned int &posx, unsigned int &posz, 
+                                                                  const unsigned int pagex, const unsigned int pagez)
     {        
         const Real tSize = mOptions->TileSize - 1;
         const Real inv_tSize = 1.0f / tSize;
@@ -994,10 +1006,10 @@ namespace Ogre
         const int pSize = mOptions->PageSize - 1;
         const int tilesPerPage = static_cast< int > (mOptions->NumTiles - 1);
 
-        uint x;
+        unsigned int x;
         if (tilex > tilesPerPage)
 		{
-            x = static_cast< uint >(tilesPerPage);
+            x = static_cast< unsigned int >(tilesPerPage);
 		}
         else if (tilex < 0)
 		{
@@ -1005,13 +1017,13 @@ namespace Ogre
 		}
         else
 		{
-            x = static_cast< uint >(tilex);
+            x = static_cast< unsigned int >(tilex);
 		}
 
-        uint z;
+        unsigned int z;
         if (tilez > tilesPerPage)
 		{
-            z = static_cast< uint >(tilesPerPage);
+            z = static_cast< unsigned int >(tilesPerPage);
 		}
         else if(tilez < 0)
 		{
@@ -1019,10 +1031,10 @@ namespace Ogre
 		}
         else
 		{
-            z = static_cast< uint >(tilez);
+            z = static_cast< unsigned int >(tilez);
 		}
-        posx = posx - static_cast< uint > (x * tSize);
-		posz = posz - static_cast< uint > (z * tSize);
+        posx = posx - static_cast< unsigned int > (x * tSize);
+		posz = posz - static_cast< unsigned int > (z * tSize);
 		PagingLandScapePage *p = getPage (pagex , pagez);
 		if (p)
 			return p->getTile(x, z);

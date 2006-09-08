@@ -2,7 +2,7 @@
 OgrePagingLandScapeData2D.cpp  -  description
 -------------------
 begin                : Wen Mar 06 2003
-copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
@@ -54,6 +56,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D::~PagingLandScapeData2D()
     {    
+		unload ();
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeData2D::init()
@@ -66,7 +69,7 @@ namespace Ogre
         PagingLandScapeData2D::unload ();
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D::load(const uint x, const uint z)
+    bool PagingLandScapeData2D::load(const unsigned int x, const unsigned int z)
     {
     	if (!mIsLoaded)
 		{
@@ -102,7 +105,7 @@ namespace Ogre
     {
         if (mIsLoaded)
         {
-            if (mIsModified)
+            if (mIsModified && mParent->getOptions()->saveDeformation)
                 _save ();
             delete[] mHeightData;
             mHeightData = 0;
@@ -133,7 +136,7 @@ namespace Ogre
     bool PagingLandScapeData2D::_checkSize(const size_t s)
     {
         // ispow2 - 1
-        const int p = static_cast <uint> (s - 1); 
+        const int p = static_cast <unsigned int> (s - 1); 
         // ispow2
         return ((p & (p - 1)) == 0);
     }
@@ -149,8 +152,8 @@ namespace Ogre
         // due to Real imprecision on Reals, we have to use boundaries here
         // otherwise we'll hit asserts.
         const int size =  static_cast<int> (mSize-1);
-        const uint u_x = static_cast<uint> (std::max(std::min (i_x, size), 0));
-        const uint u_z = static_cast<uint> (std::max(std::min (i_z, size), 0));
+        const unsigned int u_x = static_cast<unsigned int> (std::max(std::min (i_x, size), 0));
+        const unsigned int u_z = static_cast<unsigned int> (std::max(std::min (i_z, size), 0));
 	
         const size_t arraypos = u_z * mSize + u_x; 
         assert (mHeightData && arraypos < mMaxArrayPos);
@@ -173,7 +176,7 @@ namespace Ogre
         return mRect;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2D::adjustDeformationRectangle(const uint x, const uint z)
+    void PagingLandScapeData2D::adjustDeformationRectangle(const unsigned int x, const unsigned int z)
     {
         if (mIsRectModified)
         {
@@ -198,8 +201,8 @@ namespace Ogre
             mIsRectModified = true;
             mIsModified = true;
         }
-        uint tileposx = x;
-        uint tileposz = z;
+        unsigned int tileposx = x;
+        unsigned int tileposz = z;
 	    PagingLandScapeTile *t = 
             mParent->getSceneManager()->getPageManager()->getTilePage(tileposx, tileposz, 
 								                mPageX, mPageZ);
@@ -211,7 +214,7 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    const bool PagingLandScapeData2D::DeformHeight(const Vector3 &deformationPoint,
+    const bool PagingLandScapeData2D::deformHeight(const Vector3 &deformationPoint,
                                                    Real &modificationHeight)
     { 
         // adjust x and z to be local to page
@@ -220,16 +223,16 @@ namespace Ogre
         // due to Real imprecision on Reals, we have to use boundaries here
         // otherwise we'll hit asserts.
         const int size =  static_cast<int> (mSize-1);
-        const uint ux = static_cast<uint> (std::max(std::min (x, size), 0));
-        const uint uz = static_cast<uint> (std::max(std::min (z, size), 0));
-	    return DeformHeight(ux, uz, modificationHeight);
+        const unsigned int ux = static_cast<unsigned int> (std::max(std::min (x, size), 0));
+        const unsigned int uz = static_cast<unsigned int> (std::max(std::min (z, size), 0));
+	    return deformHeight(ux, uz, modificationHeight);
     } 
     //-----------------------------------------------------------------------
-    const bool PagingLandScapeData2D::DeformHeight(const uint x,
-                                                    const uint z,
+    const bool PagingLandScapeData2D::deformHeight(const unsigned int x,
+                                                    const unsigned int z,
                                                     Real &modificationHeight)
     {  
-        const uint arraypos = static_cast <uint> (z * mSize + x);
+        const unsigned int arraypos = static_cast <unsigned int> (z * mSize + x);
         assert (mHeightData && arraypos < mMaxArrayPos);
 
         const Real maxH = mParent->getMaxHeight();
@@ -257,15 +260,15 @@ namespace Ogre
 
     }   
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D::setHeight(const uint x, const uint z,
-                                           const uint Pos, const Real h)
+    bool PagingLandScapeData2D::setHeight(const unsigned int x, const unsigned int z,
+                                           const unsigned int Pos, const Real h)
     {
         if (mHeightData[Pos] != h)
         {
 	        mHeightData[ Pos ] = h;    
 
-		    uint tileposx = x;
-		    uint tileposz = z;
+		    unsigned int tileposx = x;
+		    unsigned int tileposz = z;
 		    // Make position local to tiles.
 		    // and return a Tile.
 	        PagingLandScapeTile *t = 
@@ -277,12 +280,12 @@ namespace Ogre
 	            PagingLandScapeRenderable * const r = t->getRenderable ();                
 		        r->adjustDeformationRectangle (tileposx, tileposz); 
         		
-		        const uint tSize = mParent->getOptions()->TileSize - 1;
-		        const uint NumTiles = mParent->getOptions()->NumTiles;
+		        const unsigned int tSize = mParent->getOptions()->TileSize - 1;
+		        const unsigned int NumTiles = mParent->getOptions()->NumTiles;
 
                 const PagingLandScapeTileInfo * const info =  t->getInfo();
-                const uint tX = info->tileX;
-                const uint tZ = info->tileZ;
+				const unsigned int tX = info->mTileX;
+                const unsigned int tZ = info->mTileZ;
 
                 // If we're on a page edge, we must duplicate the change on the 
                 // neighbour tile (if it has one...)
@@ -371,12 +374,12 @@ namespace Ogre
        return false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2D::setHeight(const uint x, const uint z, 
+    bool PagingLandScapeData2D::setHeight(const unsigned int x, const unsigned int z, 
 					                       const Real h)
     {       
-        const uint Pos = static_cast <uint> ((z * mSize)+ x);
+        const unsigned int Pos = static_cast <unsigned int> ((z * mSize)+ x);
         assert  (mHeightData &&  mMaxArrayPos > Pos); 
-        setHeight(x, z, Pos, h);
+        return setHeight(x, z, Pos, h);
     }
 #endif //_MAPSPLITTER
     //-----------------------------------------------------------------------
@@ -423,7 +426,7 @@ namespace Ogre
 
         assert (mHeightData);
 
-        #define  getisIn(a, b) (mHeightData[static_cast<uint> (a) + static_cast<uint> (b) * mSize])
+        #define  getisIn(a, b) (mHeightData[static_cast<unsigned int> (a) + static_cast<unsigned int> (b) * mSize])
 
         if (mX > 0 && mZ > 0 &&
              mX < pageSize && mZ < pageSize)
@@ -443,8 +446,8 @@ namespace Ogre
         }
         else
         {   
-            uint x = static_cast <uint> (mX);
-            uint z = static_cast <uint> (mZ);
+            unsigned int x = static_cast <unsigned int> (mX);
+            unsigned int z = static_cast <unsigned int> (mZ);
             Real a,b,c,d;
 
             if (x == 0)

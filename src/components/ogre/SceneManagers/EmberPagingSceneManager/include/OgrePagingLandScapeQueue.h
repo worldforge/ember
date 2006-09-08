@@ -37,7 +37,7 @@ namespace Ogre
 		const Vector3 kDiff (point - (halfSize + boxMin));
 		// compute squared distance and closest point on box
 		Real fSqrDistance (0.0);
-		for (uint i = 0; i < 3; i++)
+		for (unsigned int i = 0; i < 3; i++)
 		{
 			const Real kClosest = kDiff[i];
 			const Real khalfSize = halfSize[i];
@@ -155,19 +155,19 @@ namespace Ogre
 				return p;
 			};
             //-----------------------------------------------------------------------
-            T *find_nearest(const uint x, const uint z)
+            T *find_nearest(const unsigned int x, const unsigned int z)
             {
                 T *p = 0;
-                uint mindist = 0;
+                unsigned int mindist = 0;
 				typename MsgQueType::iterator q, qend = mQueue.end ();
                 for (q = mQueue.begin (); 
                         q != qend; 
                         ++q)
                 {
-                    uint lx, lz;
+                    unsigned int lx, lz;
                     (*q)->getCoordinates(lx, lz);
 
-                    const uint res = abs (static_cast <int> (lx - x)) + abs (static_cast <int> (lz - z));
+                    const unsigned int res = abs (static_cast <int> (lx - x)) + abs (static_cast <int> (lz - z));
                     if (res < mindist)
                     {
                         mindist = res;
@@ -179,19 +179,19 @@ namespace Ogre
                 return p;
             };
             //-----------------------------------------------------------------------
-            T *find_farest(const uint x, const uint z)
+            T *find_farest(const unsigned int x, const unsigned int z)
             {
                 T *p = 0;
-                uint maxdist = -1;
+                unsigned int maxdist = -1;
                 typename MsgQueType::iterator q, qend = mQueue.end ();
                  for (q = mQueue.begin (); 
                         q != qend; 
                         ++q)
                     {
-                        uint lx, lz;
+                        unsigned int lx, lz;
                         (*q)->getCoordinates(lx, lz);
 
-                        const uint res = abs (lx - x) + abs (lz - z);
+                        const unsigned int res = abs ((int)(lx - x)) + abs ((int)(lz - z));
                         if (res > maxdist)
                         {
                             maxdist = res;
@@ -219,9 +219,9 @@ namespace Ogre
 	            return tmp;
             };
             //-----------------------------------------------------------------------
-            int getSize() const
+            size_t getSize() const
             {
-	            return (int)mQueue.size ();
+	            return mQueue.size ();
             };
             //-----------------------------------------------------------------------
             bool empty() const

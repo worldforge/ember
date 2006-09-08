@@ -2,7 +2,7 @@
 OgrePagingLandScapeTexture_Splatting4.h  -  description
 	-------------------
 	begin                : Mon Apr 16 2004
-	copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+	copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
 	email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -26,22 +26,12 @@ namespace Ogre
     {
         public:
 	        PagingLandScapeTexture_Splatting6(PagingLandScapeTextureManager *textureMgr);
-            virtual String getName(){return String("Splatting6");}
+             String getName() const{return String("Splatting6");}
+			void setOptions(void);
+	         ~PagingLandScapeTexture_Splatting6(void);
 
-            virtual void setPagesize(void){_setPagesize();};
-            virtual void clearData(void){_clearData();};
-            
-            void _setPagesize(void);
-            void _clearData(void);
-
-	        virtual ~PagingLandScapeTexture_Splatting6(void);
-
-            virtual PagingLandScapeTexture* newTexture();
-            virtual bool TextureRenderCapabilitesFullfilled(); 
-
-        protected:
-	        virtual void _loadMaterial(void);
-
+             PagingLandScapeTexture* newTexture();
+             bool isMaterialSupported(); 
 
     };
 

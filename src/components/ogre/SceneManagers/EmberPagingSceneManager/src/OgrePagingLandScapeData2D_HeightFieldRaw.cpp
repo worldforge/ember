@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightFieldRaw.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreLogManager.h"
 #include "OgreVector3.h"
@@ -58,7 +60,6 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldRaw::~PagingLandScapeData2D_HeightFieldRaw()
     {
-        PagingLandScapeData2D::unload ();
     }
 
     //-----------------------------------------------------------------------
@@ -67,7 +68,7 @@ namespace Ogre
     {
         if (mShadow)
         {
-            uint Pos = static_cast<uint> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
+            unsigned int Pos = static_cast<unsigned int> ((mZ * mShadow->getWidth() + mX) * 3);//3 bytes (mImage is RGBA)
             if (mShadow->getSize () > Pos)
             {
                 if (positive)
@@ -92,11 +93,11 @@ namespace Ogre
 
         const double divider = 65535.0 / mParent->getOptions()->scale.y;
         
-        uint j = 0;
-        for (uint i = 0; i < mMaxArrayPos; i++)
+        unsigned int j = 0;
+        for (unsigned int i = 0; i < mMaxArrayPos; i++)
         {             
             const ushort syn = ushort  (mHeightData[i] * divider);
-            #if OGRE_ENDIAN == ENDIAN_BIG
+            #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                 data[j] = uchar ((syn >> 8) & 0xff);
 		        data[j+ 1] = uchar (syn & 0xff);
             #else
@@ -114,6 +115,7 @@ namespace Ogre
         FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
                 mParent->getOptions()->groupName, 
                 fname + extname);
+		//ResourceGroupManager::getSingleton().openResource ()
         FileInfoList::iterator it = finfo->begin();
         if (it != finfo->end())
             {
@@ -127,8 +129,7 @@ namespace Ogre
                 DataStreamPtr image_chunk(new MemoryDataStream ((void*)data,
                             mXDimension * mZDimension * 2 * sizeof (uchar), 
                             true)); 
-
-                outfile.open (const_cast< char * > ((fname + "modif." + extname).c_str()),
+         outfile.open (const_cast< char * > ((fname + "modif." + extname).c_str()),
                                 std::ios::binary);
                 // Write out
                 outfile << image_chunk->getAsString ();
@@ -140,7 +141,7 @@ namespace Ogre
             }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldRaw::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightFieldRaw::_load(const unsigned int mX, const unsigned int mZ)
     {
         // Load data
         const String strFileName = mParent->getOptions()->LandScape_filename + "." + 
@@ -175,16 +176,16 @@ namespace Ogre
         mXDimension = mSize;
         mZDimension = mXDimension;
         mBpp = 2;
-        mMaxArrayPos = static_cast <uint> (mSize * mSize);
+        mMaxArrayPos = static_cast <unsigned int> (mSize * mSize);
         const size_t numBytes = mMaxArrayPos * mBpp;
         if (RawData->size() != numBytes)
         {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                "RAW size (" + StringConverter::toString(static_cast<uint> (RawData->size())) + 
+                "RAW size (" + StringConverter::toString(static_cast<unsigned int> (RawData->size())) + 
                 ") does not agree with configuration settings.", 
                 "PagingLandScapeData2D_HeightFieldRaw::_load");
         }
-		mMax = static_cast<uint> (numBytes) + 1;
+		mMax = static_cast<unsigned int> (numBytes) + 1;
 
         mHeightData = new Real[mMaxArrayPos];
         const double scale = (double) mParent->getOptions()->scale.y / 65535;
@@ -194,10 +195,10 @@ namespace Ogre
 				                true);
         const uchar *pSrc = dc.getPtr ();   
 
-        uint j = 0;
-        for (uint i = 0; i < mMax - 1;  i += mBpp)
+        unsigned int j = 0;
+        for (unsigned int i = 0; i < mMax - 1;  i += mBpp)
         {
-            #if OGRE_ENDIAN == ENDIAN_BIG
+            #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                         ushort val = *pSrc++ <<8;
                         val += *pSrc++;
             #else
@@ -228,17 +229,18 @@ namespace Ogre
     void PagingLandScapeData2D_HeightFieldRaw::_load()
     {
         // Load data
-        DataStreamPtr RawData = ResourceGroupManager::getSingleton().openResource(mParent->getOptions()->LandScape_filename +
-                    "." + 
-                    mParent->getOptions()->LandScape_extension, 
-                    mParent->getOptions()->groupName);
+		const PagingLandScapeOptions * const opt =  mParent->getOptions();
+		const String mName(opt->LandScape_filename + "." + opt->LandScape_extension);
+		const String gName (opt->groupName);
+		ResourceGroupManager *rsm = ResourceGroupManager::getSingletonPtr();
+        DataStreamPtr RawData = rsm->openResource(mName, gName);
 
         // Validate size
         // Image size comes from setting (since RAW is not self-describing)
         // here 16 bits Raw file
 
-        mXDimension = mParent->getOptions()->RawWidth;
-        mZDimension = mParent->getOptions()->RawHeight;
+        mXDimension = opt->RawWidth;
+        mZDimension = opt->RawHeight;
 
         mBpp = 2;
         
@@ -251,17 +253,17 @@ namespace Ogre
         if (RawData->size() != sourceHeight*sourceWidth*2)
         {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                "RAW size (" + StringConverter::toString(static_cast<uint> (RawData->size())) + 
+                "RAW size (" + StringConverter::toString(static_cast<unsigned int> (RawData->size())) + 
                 ") does not agree with configuration settings.", 
                 "PagingLandScapeData2D_HeightFieldRaw::_load");
         }
     
-        mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
+        mMaxArrayPos = static_cast <unsigned int> (mXDimension * mZDimension);
         const size_t numBytes = mMaxArrayPos * mBpp;
-		mMax = static_cast<uint> (numBytes) + 1;
+		mMax = static_cast<unsigned int> (numBytes) + 1;
 
         mHeightData = new Real[mMaxArrayPos];
-        const Real scale = mParent->getOptions()->ScaledHeightY;
+        const Real scale = opt->ScaledHeightY;
         mMaxheight = 0.0f;
 
 
@@ -269,15 +271,15 @@ namespace Ogre
             true);
         const uchar *pSrc = dc.getPtr ();     
 
-        const uint shift_fill = static_cast <uint> (mXDimension - sourceWidth);
-        uint dest_pos = 0;
+        const unsigned int shift_fill = static_cast <unsigned int> (mXDimension - sourceWidth);
+        unsigned int dest_pos = 0;
         //for some reason water is 65035 in SRTM files...
-        const bool srtm_water = mParent->getOptions()->SRTM_water;
-        for (uint i = 0; i < sourceHeight; ++i)
+        const bool srtm_water = opt->SRTM_water;
+        for (unsigned int i = 0; i < sourceHeight; ++i)
         {
-            for (uint j = 0; j < sourceWidth; ++j)
+            for (unsigned int j = 0; j < sourceWidth; ++j)
             {
-                #if OGRE_ENDIAN == ENDIAN_BIG
+                #if OGRE_ENDIAN == OGRE_ENDIAN_BIG
                             ushort val = *pSrc++ << 8;
                             val += *pSrc++;
                 #else

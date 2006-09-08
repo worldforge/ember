@@ -30,7 +30,7 @@
 //				  * Less use of macros. Error messages should be more comprehensible.
 //				  * Added include guards
 //				  * Added FastDelegate::empty() to test if invocation is safe (Thanks Neville Franks).
-//				  * Now tested on VS 2005 Express Beta, PGI C++
+//				  * Now tested on VS 2006 Express Beta, PGI C++
 // 24-Dec-04 1.4  * Added DelegateMemento, to allow collections of disparate delegates.
 //                * <,>,<=,>= comparison operators to allow storage in ordered containers.
 //				  * Substantial reduction of code size, especially the 'Closure' class.
@@ -39,7 +39,7 @@
 //                * Now compiles without warnings on _any_ supported compiler, including BCC 5.5.1
 //				  * New syntax: FastDelegate< int (char *, double) >. 
 // 14-Feb-05 1.4.1* Now treats =0 as equivalent to .clear(), ==0 as equivalent to .empty(). (Thanks elfric).
-//				  * Now tested on Intel ICL for AMD64, VS2005 Beta for AMD64 and Itanium.
+//				  * Now tested on Intel ICL for AMD64, VS2006 Beta for AMD64 and Itanium.
 // 30-Mar-05 1.5  * Safebool idiom: "if (dg)" is now equivalent to "if (!dg.empty())"
 //				  * Fully supported by CodePlay VectorC
 //                * Bugfix for Metrowerks: empty() was buggy because a valid MFP can be 0 on MWCC!
@@ -608,7 +608,7 @@ public:
 		return memcmp(&m_pFunction, &right.m_pFunction, sizeof(m_pFunction)) < 0;
 
 	}
-	// BUGFIX (Mar 2005):
+	// BUGFIX (Mar 2006):
 	// We can't just compare m_pFunction because on Metrowerks,
 	// m_pFunction can be zero even if the delegate is not empty!
 	inline bool operator ! () const		// Is it bound to anything?

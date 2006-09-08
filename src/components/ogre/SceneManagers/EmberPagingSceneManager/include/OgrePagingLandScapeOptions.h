@@ -2,7 +2,7 @@
 	OgrePagingLandScapeOptions.h  -  description
 	-------------------
   begin                : Sun Mar 02 2003
-	copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -63,6 +63,7 @@ namespace Ogre
 
             LandScapeFileNames& getMapList(void);
 
+			const String& getMapFilename(const String &currMapName) const;
             const String& getPreviousMapName(void) const;
             const String& getNextMapName(void) const;
             const String& getCurrentMapName(void) const; 
@@ -70,7 +71,8 @@ namespace Ogre
             void setCurrentMapName(const String& mapName);
 
             const String& getCurrentTextureFormat(void) const;
-            void setTextureFormat(const String& format);
+			void setTextureFormat(const String& format);
+			void insertTextureFormat (const String &format) ;
 
             void setPrimaryCamera(PagingLandScapeCamera* cam);
             void calculateCFactor(void);
@@ -92,27 +94,20 @@ namespace Ogre
             String TextureExtension;
 
             bool Paged;
-            bool PVSMap;
             bool BaseMap;
             bool MiniMap;
-            bool RGBMaps;
             bool ColorMapSplit;
             bool ColorMapGenerate;
             bool LightMap;
             bool NormalMap;
             bool HeightMap;
             bool AlphaMaps;
-            bool ShadowMap;
-            bool HorizonMap;
             bool LitBaseMap;
             bool LitColorMapSplit;
             bool LitColorMapGenerate;
             bool InfiniteMap;
             bool CoverageMap;
-            bool ElevationMap;
             bool HeightNormalMap;
-            bool AlphaSplatRGBAMaps;
-            bool AlphaSplatLightMaps;
 
             Real HeightMapBlurFactor;
             
@@ -124,19 +119,19 @@ namespace Ogre
             Real    Amb;
             Real    Diff;
 
-            uint     Blur;
+            unsigned int     Blur;
             // end of MAP TOOL OPTIONS
 
-	        uint maxValue;						//Compression range for the TC height field
-	        uint minValue;
+	        unsigned int maxValue;						//Compression range for the TC height field
+	        unsigned int minValue;
 
-            uint TileSize;
-	        uint PageSize;						//size of the page.
-            uint NumTiles;
-            uint NumPages;
+            unsigned int TileSize;
+	        unsigned int PageSize;						//size of the page.
+            unsigned int NumTiles;
+            unsigned int NumPages;
 
-	        uint world_height;					//world page height, from 0 to height, in page number
-	        uint world_width;					//world page width, from 0 to width, in page number
+	        unsigned int world_height;					//world page height, from 0 to height, in page number
+	        unsigned int world_width;					//world page width, from 0 to width, in page number
 
 	        Real maxScaledZ;					//world page height, scaled
 	        Real maxScaledX;					//world page width, scaled
@@ -146,31 +141,30 @@ namespace Ogre
 
 
 	        Real change_factor;					//Determines the value of the change factor for loading/unloading LandScape Pages
-	        uint max_adjacent_pages;
-	        uint max_preload_pages;
+	        unsigned int max_adjacent_pages;
+	        unsigned int max_preload_pages;
 	        Real visible_renderables;			//Numbers of visible renderables surrounding the camera
 	        Real renderable_factor;				//Determines the distance of loading and unloading of renderables in renderable numbers
 
-		Vector3 position;				//Startup position of the terrain surface
-		
-		Vector3 scale;
+			Vector3 position;				//Startup position of the terrain surface			
+			Vector3 scale;
 		
 	        Material::LodDistanceList lodMaterialDistanceList; //Distance for the material LOD change
 	        Real distanceLOD;					//Distance for the LOD change
 	        Real LOD_factor;
 
 
-	        uint num_renderables;				//Max number of renderables to use.
-	        uint num_renderables_increment;		//Number of renderables to add in case we run out of renderables
-	        uint num_tiles;						//Max number of tiles to use.
-	        uint num_tiles_increment;			//Number of renderables to add in case we run out of renderables
+	        unsigned int num_renderables;				//Max number of renderables to use.
+	        unsigned int num_renderables_increment;		//Number of renderables to add in case we run out of renderables
+	        unsigned int num_tiles;						//Max number of tiles to use.
+	        unsigned int num_tiles_increment;			//Number of renderables to add in case we run out of renderables
 
 	        Real cameraThreshold;				//If the last camera position is >= the the scene is transverse again.
 
-	        uint num_renderables_loading;		//Max number of renderable to load in a single Frame.
-            uint maxRenderLevel;
+	        unsigned int num_renderables_loading;		//Max number of renderable to load in a single Frame.
+            unsigned int maxRenderLevel;
 
-			uint NumMatHeightSplat;
+			unsigned int NumMatHeightSplat;
 			std::vector <ColourValue>	matColor;
 			std::vector <Real>			matHeight;
 			std::vector<String>			SplatDetailMapNames;
@@ -180,7 +174,7 @@ namespace Ogre
             bool hasVertexShader;
             bool hasFragmentShader;
             bool hasFragmentShader2;
-            uint numTextureUnits;
+            unsigned int numTextureUnits;
             bool isRenderGL;
 
             Real ScaledPageSizeX;
@@ -193,6 +187,8 @@ namespace Ogre
             bool TextureFormatDebug;
             /// Can terrain be deformed real-time
             bool Deformable;
+            /// are deformation saved?
+            bool saveDeformation;
 
 
             //used to get screen height...
@@ -202,20 +198,20 @@ namespace Ogre
             /// At what point (parametric) should LOD morphing start
             Real lodMorphStart;
             bool lodMorph;
-            uint maxPixelError;
+            unsigned int maxPixelError;
             Real CFactor;
 
             // MapSplitter Tool
-            uint RawHeight;
-            uint RawWidth;
+            unsigned int RawHeight;
+            unsigned int RawWidth;
                
             bool isRaw;
             bool Equalize;
             bool ZHorizon;
             bool SRTM_water;
 
-            uint MiniMapHeight;
-            uint MiniMapWidth;
+            unsigned int MiniMapHeight;
+            unsigned int MiniMapWidth;
 
             // Generate one or all maps ?
             bool mBatchMode;
@@ -241,31 +237,43 @@ namespace Ogre
 
             Real TextureStretchFactor;
 
-			uint RenderableLoadInterval;
-			uint PageLoadInterval;
+			unsigned int RenderableLoadInterval;
+			unsigned int PageLoadInterval;
 
-			uint TileInvisibleUnloadFrames;
-			uint PageInvisibleUnloadFrames;
+			unsigned int TileInvisibleUnloadFrames;
+			unsigned int PageInvisibleUnloadFrames;
 
-			uint NumSplatMapToSplit;
+			unsigned int NumSplatMapToSplit;
 			std::vector<String> SplatMapNames;
 
-            uint NumTextureFormatSupported;
+            unsigned int NumTextureFormatSupported;
             std::vector<String> TextureFormatSupported;
 
+
+			bool materialPerPage;
+			bool textureModifiable;
 
 			Vector3 BaseCameraViewpoint;
 			Vector3 Baselookat;
 			
-            void setUint (uint &u, const String &ValuetoGet);
+            void setUint (unsigned int &u, const String &ValuetoGet);
             void setBool (bool &b, const String &ValuetoGet);
             void setReal (Real &r,const String &ValuetoGet);
+			void setColourValue(ColourValue &r,const String &ValuetoGet);
             void setString (String &s, const String &ValuetoGet);
 
             StringVector mResourceFilesystem;
             StringVector mResourceZip;
 
             PagingLandScapeSceneManager *mScnMgr;
+
+			void setTileInfo(PagingLandScapeTileInfo *t);
+			PagingLandScapeTileInfo *getTileInfo(const uint pageX, const uint pageZ, 
+												const uint tileX, const uint tileZ);
+			void loadMapInfo();
+			void clearTileInfo();
+			void saveMapInfo();
+
         private:
 
 	        ColourValue _getAvgColor(const String& tex) const;
@@ -273,7 +281,9 @@ namespace Ogre
             LandScapeFileNames mMapList;
             StringVector mTextureFormats;
             bool isInit;
-            ConfigFile *mConfig;
+			ConfigFile *mConfig;
+
+			std::deque<PagingLandScapeTileInfo*> mTileInfoCache;
     };
 
 }

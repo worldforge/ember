@@ -2,7 +2,7 @@
 	OgrePagingLandScapeData2D.h  -  description
   -------------------
   begin                : Wen Mar 5 2003
-  copyright            : (C) 2002-2005 by Jose A Milan & Tuan Kuranes
+  copyright            : (C) 2002-2006 by Jose A Milan & Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -34,8 +34,8 @@ namespace Ogre
 
 	        virtual PagingLandScapeData2D* newPage() = 0;
 
-            virtual String getName()= 0;
-	        virtual bool load(const uint mX, const uint mZ);
+            virtual String getName() const= 0;
+	        virtual bool load(const unsigned int mX, const unsigned int mZ);
 
             virtual void load(void);
 
@@ -55,7 +55,7 @@ namespace Ogre
             *        Give some info on tile to 
             *       help coordinate system change
             */
-            const bool DeformHeight(const Vector3& deformationPoint, Real &modificationHeight);
+            const bool deformHeight(const Vector3& deformationPoint, Real &modificationHeight);
 
             /**
             *
@@ -67,11 +67,11 @@ namespace Ogre
             * \param &modificationHeight 
             *        What modification do to terrain
             */
-            const bool DeformHeight(const uint x, const uint z, Real &modificationHeight);
+            const bool deformHeight(const unsigned int x, const unsigned int z, Real &modificationHeight);
 
 
-            void setHeight(const uint x, const uint z, const Real h);
-            bool setHeight(const uint x, const uint z, const uint Pos, const Real h);
+            bool setHeight(const unsigned int x, const unsigned int z, const Real h);
+            bool setHeight(const unsigned int x, const unsigned int z, const unsigned int Pos, const Real h);
              /**
             *
             *    get smallest rectangle containing all deformation
@@ -90,7 +90,7 @@ namespace Ogre
             * \param &z 
             *       z Position on 2d height grid
             */
-            void adjustDeformationRectangle(const uint x, const uint z);
+            void adjustDeformationRectangle(const unsigned int x, const unsigned int z);
 
             /**
             *
@@ -121,16 +121,16 @@ namespace Ogre
             {
                 assert (z < mSize && x < mSize);
                 assert (mHeightData);                
-                const uint Pos = static_cast< uint > (z * mSize + x);
+                const unsigned int Pos = static_cast< unsigned int > (z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];    
             };
 
-            inline const Real getHeight(const uint x, const uint z) const 
+            inline const Real getHeight(const unsigned int x, const unsigned int z) const 
             {
                 assert (mHeightData);
                 assert (z < mSize && x < mSize);
-                const uint Pos = static_cast <uint> (z * mSize + x);
+                const unsigned int Pos = static_cast <unsigned int> (z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];  
             };
@@ -138,8 +138,8 @@ namespace Ogre
             inline const Real getHeight(const int x, const int z) const 
             {
                 assert (mHeightData);
-                assert (static_cast< uint >(z) < mSize && static_cast< uint >(x) < mSize);
-                const uint Pos = static_cast< uint >(z * mSize + x);
+                assert (static_cast< unsigned int >(z) < mSize && static_cast< unsigned int >(x) < mSize);
+                const unsigned int Pos = static_cast< unsigned int >(z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ]; 
             };
@@ -175,17 +175,17 @@ namespace Ogre
 				return mSize;
 			};
 
-			void getCoordinates(uint& X, uint& Z) const 
+			void getCoordinates(unsigned int& X, unsigned int& Z) const 
 			{
 				X = mPageX;
 				Z = mPageZ;
 			};
-			inline bool isCoord(const uint x, const uint z) const {return (mPageX == x && mPageZ == z);};
+			inline bool isCoord(const unsigned int x, const unsigned int z) const {return (mPageX == x && mPageZ == z);};
 
 
         protected:
             virtual void _save(void) = 0;
-            virtual bool _load(const uint x, const uint z) = 0;
+            virtual bool _load(const unsigned int x, const unsigned int z) = 0;
 	        virtual void _load(void) = 0;
 	        virtual void _unload(void) = 0;
             bool _checkSize(const size_t s);
@@ -193,7 +193,7 @@ namespace Ogre
             //  computed Height Data  (scaled)
             Real *mHeightData;
             //  maximum position in Array
-            uint mMaxArrayPos;
+            unsigned int mMaxArrayPos;
             //  data side maximum size
             size_t mSize;
             //  data source width
@@ -201,7 +201,7 @@ namespace Ogre
             //  data source height
             size_t mZDimension;
             //  image data  maximum size
-            uint mMax;
+            unsigned int mMax;
             // maximum page/data2d height. (scaled)
             Real mMaxheight;
             // if data loaded or not
@@ -215,9 +215,9 @@ namespace Ogre
             bool mIsRectModified;
 
             // page number
-	        uint mPageX; 
+	        unsigned int mPageX; 
             // page number
-	        uint mPageZ;
+	        unsigned int mPageZ;
 
             // coordinate shift based on page number
             Real mShiftX;

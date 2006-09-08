@@ -2,7 +2,7 @@
   OgrePagingLandScapeData2D_HeightFieldNTC.cpp  -  description
   -------------------
   begin                : Mon Oct 13 2003
-  copyright            : (C) 2003-2005 by Jose A Milan && Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A Milan && Tuan Kuranes
   email                : spoke@supercable.es & tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreLogManager.h"
 
@@ -60,7 +62,6 @@ namespace Ogre
     //-----------------------------------------------------------------------
     PagingLandScapeData2D_HeightFieldNTC::~PagingLandScapeData2D_HeightFieldNTC()
     {
-        PagingLandScapeData2D::unload ();
     }
     //-----------------------------------------------------------------------
     const ColourValue PagingLandScapeData2D_HeightFieldNTC::getBase (const Real mX, const Real mZ)
@@ -81,7 +82,7 @@ namespace Ogre
         #else
             if (mImage)
             {
-                uint Pos = static_cast<uint> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
+                unsigned int Pos = static_cast<unsigned int> ((z * mSize  + x) * mBpp);//4 bytes (mImage is RGBA)
 
                 if (mMax > Pos)
                 {
@@ -109,9 +110,9 @@ namespace Ogre
             const Real scale = 1.0f  / mParent->getOptions()->scale.y;
            
             uchar *img = mImage->getData();
-            uint j = 0;
-            const uint bpp = static_cast <uint> (mBpp);
-            for (uint i = 0; i < mMax - 1;  i += bpp)
+            unsigned int j = 0;
+            const unsigned int bpp = static_cast <unsigned int> (mBpp);
+            for (unsigned int i = 0; i < mMax - 1;  i += bpp)
             {
                 img[ i + (mBpp - 1)] =  uchar (_encodeTC(mHeightData[j++]) * scale);               
             }
@@ -137,7 +138,7 @@ namespace Ogre
       
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2D_HeightFieldNTC::_load(const uint mX, const uint mZ)
+    bool PagingLandScapeData2D_HeightFieldNTC::_load(const unsigned int mX, const unsigned int mZ)
     { 
         const String strFileName = mParent->getOptions()->LandScape_filename + ".HN." + 
                             StringConverter::toString(mZ) + "." +
@@ -168,8 +169,8 @@ namespace Ogre
         if (mImage->getWidth() != mImage->getHeight() ||	!_checkSize(mImage->getWidth()))
         {
             String err = "Error: Invalid heightmap size : " +
-                StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
-                "," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
+                StringConverter::toString(static_cast <unsigned int> (mImage->getWidth())) +
+                "," + StringConverter::toString(static_cast <unsigned int> (mImage->getHeight())) +
                 ". Should be 2^n+1, 2^n+1";
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightField::_load");
         }
@@ -188,17 +189,17 @@ namespace Ogre
 
         mXDimension = mImage->getWidth();
         mZDimension = mImage->getHeight();
-        mMax = static_cast <uint> (mSize * mImage->getHeight() * mBpp + 1);
+        mMax = static_cast <unsigned int> (mSize * mImage->getHeight() * mBpp + 1);
 
-        mMaxArrayPos = static_cast <uint> (mSize * mImage->getHeight());
+        mMaxArrayPos = static_cast <unsigned int> (mSize * mImage->getHeight());
         mHeightData = new Real[mMaxArrayPos];
-        uint j = 0;
+        unsigned int j = 0;
         const double divider = 1.0 / 255;
         const Real scale  = mParent->getOptions()->scale.y;
         uchar *data = mImage->getData();
         mMaxheight = 0.0f;
-        const uint bpp = static_cast <uint> (mBpp);
-        for (uint i = 0; i < mMax - 1;  i += bpp)
+        const unsigned int bpp = static_cast <unsigned int> (mBpp);
+        for (unsigned int i = 0; i < mMax - 1;  i += bpp)
             {  
                 const Real h = _decodeTC(data[ i + (mBpp - 1)] * divider)* scale;
                 mMaxheight = std::max (h, mMaxheight);
@@ -220,8 +221,8 @@ namespace Ogre
 		    if (!_checkSize(mImage->getHeight()) ||	!_checkSize(mImage->getWidth()))
 		    {
 			    String err = "Error: Invalid heightmap size : " +
-				    StringConverter::toString(static_cast <uint> (mImage->getWidth())) +
-				    "," + StringConverter::toString(static_cast <uint> (mImage->getHeight())) +
+				    StringConverter::toString(static_cast <unsigned int> (mImage->getWidth())) +
+				    "," + StringConverter::toString(static_cast <unsigned int> (mImage->getHeight())) +
 				    ". Should be 2^n, 2^n";
 			    OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, err, "PagingLandScapeData2D_HeightFieldNTC::_load");
 		    }
@@ -233,18 +234,18 @@ namespace Ogre
                     "PagingLandScapeData2D_HeightFieldNTC::_load");
 		    }
 
-            mSize = static_cast <uint> (mImage->getWidth());
-            mMax = static_cast <uint> (mSize * mImage->getHeight() * mBpp + 1);
+            mSize = static_cast <unsigned int> (mImage->getWidth());
+            mMax = static_cast <unsigned int> (mSize * mImage->getHeight() * mBpp + 1);
 
-            mMaxArrayPos = static_cast <uint> (mSize * mImage->getHeight());
+            mMaxArrayPos = static_cast <unsigned int> (mSize * mImage->getHeight());
             mHeightData = new Real[mMaxArrayPos];
-            uint j = 0;
+            unsigned int j = 0;
             const double divider = 1.0 / 255;
             const Real scale  = mParent->getOptions()->scale.y;
             uchar *data = mImage->getData();
             mMaxheight = 0.0f;
-            const uint bpp = static_cast <uint> (mBpp);
-            for (uint i = 0; i < mMax - 1;  i += bpp)
+            const unsigned int bpp = static_cast <unsigned int> (mBpp);
+            for (unsigned int i = 0; i < mMax - 1;  i += bpp)
             {  
                 const Real h = _decodeTC(data[ i + (mBpp - 1)] * divider)* scale;
                 mMaxheight = std::max (h, mMaxheight);

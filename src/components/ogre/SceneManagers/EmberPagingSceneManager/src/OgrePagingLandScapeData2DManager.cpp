@@ -2,7 +2,7 @@
 	OgrePagingLandScapeData2DManager.cpp  -  description
 	-------------------
 	begin                : Mon Jun 16 2003
-	copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+	copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -14,6 +14,8 @@
 *   License, or (at your option) any later version.                       *
 *                                                                         *
 ***************************************************************************/
+
+#include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgreMath.h"
 
@@ -137,7 +139,7 @@ namespace Ogre
         {
             reset ();
             mData2DFormat = mOptions->data2DFormat; 
-            uint i = 0;
+            unsigned int i = 0;
             for (; i != mData2DTypeMap.size(); ++i)
             {
                 if (StringUtil::endsWith (mData2DTypeMap[i]->getName (), mData2DFormat, false))
@@ -157,18 +159,18 @@ namespace Ogre
 		mMaxHeight = mData2DTypeMap[mData2DType]->getMaxAbsoluteHeight ();
     }    
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2DManager::reload(const uint dataX, const uint dataZ)
+    bool PagingLandScapeData2DManager::reload(const unsigned int dataX, const unsigned int dataZ)
     {
 #ifndef _MAPSPLITTER
         PagingLandScapeData2D* data = getData2D (dataX, dataZ);
 	
 		data->unload();
 		const bool ret = data->load(dataX, dataZ);
-		const uint tsize =  mOptions->TileSize;
-		const uint psize =  mOptions->PageSize;
-		for (uint z = 0; z <= psize ; z += tsize)
+		const unsigned int tsize =  mOptions->TileSize;
+		const unsigned int psize =  mOptions->PageSize;
+		for (unsigned int z = 0; z <= psize ; z += tsize)
 		{
-			for (uint x = 0; x <= psize ; x += tsize)
+			for (unsigned int x = 0; x <= psize ; x += tsize)
 			{                       
 				data->adjustDeformationRectangle (x, z);
 			}
@@ -179,7 +181,7 @@ namespace Ogre
 #endif //_MAPSPLITTER
 	}
 	//-----------------------------------------------------------------------
-	PagingLandScapeData2D *PagingLandScapeData2DManager::getNewData2D(const uint x, const uint z)
+	PagingLandScapeData2D *PagingLandScapeData2DManager::getNewData2D(const unsigned int x, const unsigned int z)
 	{
 		PagingLandScapeData2D *newData2D;
 		if (mFreeData2Ds.empty())
@@ -213,7 +215,7 @@ namespace Ogre
 		mFreeData2Ds.push_back(p);
 	}
 	//-----------------------------------------------------------------------
-	PagingLandScapeData2D *PagingLandScapeData2DManager::getData2D(const uint x, const uint z,
+	PagingLandScapeData2D *PagingLandScapeData2DManager::getData2D(const unsigned int x, const unsigned int z,
 		const bool alwaysReturn)
 	{
 		if (x < mWidth && z < mHeight)
@@ -237,8 +239,8 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeData2DManager::WorldDimensionChange()
     {
-        const uint newWidth = mOptions->world_width; 
-        const uint newHeight = mOptions->world_height;
+        const unsigned int newWidth = mOptions->world_width; 
+        const unsigned int newHeight = mOptions->world_height;
 
 		reset();
 
@@ -251,7 +253,7 @@ namespace Ogre
         mPageManager = scnMgr->getPageManager();
     }        
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2DManager::load(const uint dataX, const uint dataZ)
+    bool PagingLandScapeData2DManager::load(const unsigned int dataX, const unsigned int dataZ)
     {
 	    PagingLandScapeData2D* data = getData2D ( dataX , dataZ );
 	    if (!data->isLoaded ())
@@ -261,7 +263,7 @@ namespace Ogre
         return true;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeData2DManager::unload(const uint dataX, const uint dataZ)
+    void PagingLandScapeData2DManager::unload(const unsigned int dataX, const unsigned int dataZ)
     {
 	    PagingLandScapeData2D* data = getData2D ( dataX , dataZ, false );
 	    if (data && data->isLoaded ())
@@ -272,14 +274,14 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2DManager::isLoaded(const uint dataX, const uint dataZ)
+    bool PagingLandScapeData2DManager::isLoaded(const unsigned int dataX, const unsigned int dataZ)
 	{
 		PagingLandScapeData2D * const data = getData2D (dataX , dataZ, false);
 		return data && data->isLoaded();
     }
     //-----------------------------------------------------------------------
-    const ColourValue PagingLandScapeData2DManager::getCoverageAt(const uint dataX,
-                                                                const uint dataZ, 
+    const ColourValue PagingLandScapeData2DManager::getCoverageAt(const unsigned int dataX,
+                                                                const unsigned int dataZ, 
                                                                 const Real x, 
                                                                 const Real z)
     {
@@ -292,8 +294,8 @@ namespace Ogre
         return ColourValue::White;
     }
     //-----------------------------------------------------------------------
-    const ColourValue PagingLandScapeData2DManager::getBaseAt(const uint dataX, 
-                                                            const uint dataZ, 
+    const ColourValue PagingLandScapeData2DManager::getBaseAt(const unsigned int dataX, 
+                                                            const unsigned int dataZ, 
                                                             const Real x, 
                                                             const Real z)
 	{
@@ -306,10 +308,10 @@ namespace Ogre
         return ColourValue::White;
     }
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getShadowAt(const uint dataX,
-                                                        const uint dataZ,
-                                                        const uint x,
-                                                        const uint z,
+    const Real PagingLandScapeData2DManager::getShadowAt(const unsigned int dataX,
+                                                        const unsigned int dataZ,
+                                                        const unsigned int x,
+                                                        const unsigned int z,
                                                         const bool &positive)
 	{
 		PagingLandScapeData2D* data = getData2D (dataX , dataZ, false);
@@ -321,8 +323,8 @@ namespace Ogre
         return 0.0f;
     }
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getHeight(const uint dataX, 
-                                                        const uint dataZ, 
+    const Real PagingLandScapeData2DManager::getHeight(const unsigned int dataX, 
+                                                        const unsigned int dataZ, 
                                                         const Real x, 
                                                         const Real z)
     {
@@ -336,10 +338,10 @@ namespace Ogre
 	    return 0.0f;
     }
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getHeight(const uint dataX, 
-                                                        const uint dataZ, 
-                                                        const uint x, 
-                                                        const uint z) 
+    const Real PagingLandScapeData2DManager::getHeight(const unsigned int dataX, 
+                                                        const unsigned int dataZ, 
+                                                        const unsigned int x, 
+                                                        const unsigned int z) 
     {
 
 		PagingLandScapeData2D* data = getData2D (dataX , dataZ, false);
@@ -353,7 +355,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
 //    bool PagingLandScapeData2DManager::addNewHeight(const Sphere newSphere)
 //    {
-//	    uint x, z;
+//	    unsigned int x, z;
 //
 //        Vector3 s = newSphere.getCenter();
 //	    // Calculate where is going to be placed the new height
@@ -367,7 +369,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
 //    bool PagingLandScapeData2DManager::removeNewHeight(const Sphere oldSphere)
 //    {
-//	    uint x, z;
+//	    unsigned int x, z;
 //        Vector3 s = oldSphere.getCenter();
 //	    // Calculate where is going to be placed the new height
 //	    PagingLandScapePageManager::getSingleton ().getPageIndices(s.x, s.z, x, z, true);
@@ -377,8 +379,8 @@ namespace Ogre
 //	    return mData2D[ x ][ z ]->removeNewHeight(oldSphere);
 //    }
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getMaxHeight(const uint x, 
-                                                        const uint z)
+    const Real PagingLandScapeData2DManager::getMaxHeight(const unsigned int x, 
+                                                        const unsigned int z)
 	{ 
 		PagingLandScapeData2D* data = getData2D (x, z, false);
 		if (data && data->isLoaded())
@@ -393,19 +395,135 @@ namespace Ogre
         return mMaxHeight;
     }   
     //-----------------------------------------------------------------------
-    bool PagingLandScapeData2DManager::DeformHeight(const Vector3 &deformationPoint,
+    bool PagingLandScapeData2DManager::setHeight(const Vector3 &deformationPoint,
+        const Real modificationHeight,
+        const PagingLandScapeTileInfo* info)
+    {
+#ifndef _MAPSPLITTER
+        const unsigned int pX = info->mPageX;
+        const unsigned int pZ = info->mPageZ;
+        const unsigned int pSize = mOptions->PageSize - 1;
+        // adjust x and z to be local to page
+        const unsigned int x = static_cast<unsigned int> (deformationPoint.x
+            - pX * pSize
+            + mOptions->maxUnScaledX);
+        const unsigned int z = static_cast<unsigned int> (deformationPoint.z
+            - pZ * pSize
+            + mOptions->maxUnScaledZ);
+
+        PagingLandScapeData2D* data = getData2D (pX , pZ, false);
+        if (data && data->isLoaded())
+        {
+            Real heightResult = modificationHeight;
+            if (data->setHeight (x, z, heightResult))
+            {
+                const unsigned int wL = mOptions->world_width;
+                const unsigned int hL = mOptions->world_height;
+
+                // If we're on a page edge, we must duplicate the change on the 
+                // neighbour page (if it has one...)
+                const bool left  = (x == 0     && pX != 0);
+                const bool right = (x == pSize && pX < wL - 1);
+                const bool down  = (z == 0     && pZ != 0);
+                const bool up    = (z == pSize && pZ < hL - 1);
+
+                assert (z <= pSize && x <= pSize);
+
+                if (left)
+                {
+                    if (down)
+                    {               
+                        //  lower left corner 
+                        data = getData2D (pX - 1, pZ - 1 , false);
+                        if (data && data->isLoaded())
+                        {
+                            data->setHeight (pSize, pSize, heightResult);
+                        } 
+                    }
+                    else if (up)
+                    {
+                        //  upper left corner 
+                        data = getData2D (pX - 1, pZ + 1 , false);
+                        if (data && data->isLoaded())
+                        {
+                            data->setHeight (pSize, 0, heightResult);
+                        } 
+                    } 
+
+                    // left
+                    data = getData2D (pX - 1, pZ, false);
+                    if (data && data->isLoaded())
+                    {
+                        data->setHeight (pSize, z, heightResult);
+                    } 
+                }
+                else if (right)
+                {
+                    if (up)
+                    {
+                        //  upper right corner 
+                        data = getData2D (pX + 1, pZ + 1 , false);
+                        if (data && data->isLoaded())
+                        {
+                            data->setHeight (0, 0, heightResult);
+                        } 
+                    }
+                    else if (down)
+                    {
+                        //  lower right corner 
+                        data = getData2D (pX + 1, pZ - 1 , false);
+                        if (data && data->isLoaded())
+                        {
+                            data->setHeight (0, pSize, heightResult);
+                        } 
+                    }  
+                    // right
+                    data = getData2D (pX + 1, pZ, false);
+                    if (data && data->isLoaded())
+                    {
+                        data->setHeight (0, z, heightResult);
+                    }  
+                }
+                if (down)
+                {        
+                    //  lower  (down only)   
+                    data = getData2D (pX, pZ - 1 , false);
+                    if (data && data->isLoaded()) 
+                    {
+                        data->setHeight (x, pSize, heightResult);
+                    } 
+                }
+                else if (up)
+                {
+                    // upper (up only)
+                    data = getData2D (pX, pZ + 1 , false);
+                    if (data && data->isLoaded())
+                    {
+                        data->setHeight (x, 0, heightResult);
+                    } 
+                }     
+                return true;
+            } // if (data->deformHeight (x, z, heightResult))
+        } // if (data->isLoaded())
+        return false;
+#else //_MAPSPLITTER
+        return true;
+#endif //_MAPSPLITTER
+    }
+    //-----------------------------------------------------------------------
+    bool PagingLandScapeData2DManager::deformHeight(const Vector3 &deformationPoint,
                                                     const Real modificationHeight,
                                                     const PagingLandScapeTileInfo* info)
     {
 #ifndef _MAPSPLITTER
-        const uint pX = info->pageX;
-        const uint pZ = info->pageZ;
-        const uint pSize = mOptions->PageSize - 1;
+		const unsigned int pX = info->mPageX;
+        const unsigned int pZ = info->mPageZ;
+        const unsigned int pSize = mOptions->PageSize - 1;
         // adjust x and z to be local to page
-        const uint x = static_cast<uint> (deformationPoint.x
+        const unsigned int x = static_cast<unsigned int> (deformationPoint.x
                                             - pX * pSize
                                             + mOptions->maxUnScaledX);
-        const uint z = static_cast<uint> (deformationPoint.z
+        const unsigned int z = static_cast<unsigned int> (deformationPoint.z
                                             - pZ * pSize
                                             + mOptions->maxUnScaledZ);
 
@@ -413,10 +531,10 @@ namespace Ogre
 		if (data && data->isLoaded())
         {
             Real heightResult = modificationHeight;
-            if (data->DeformHeight (x, z, heightResult))
+            if (data->deformHeight (x, z, heightResult))
             {
-                const uint wL = mOptions->world_width;
-                const uint hL = mOptions->world_height;
+                const unsigned int wL = mOptions->world_width;
+                const unsigned int hL = mOptions->world_height;
 
                 // If we're on a page edge, we must duplicate the change on the 
                 // neighbour page (if it has one...)
@@ -501,7 +619,7 @@ namespace Ogre
                     } 
                 }     
                 return true;
-            } // if (data->DeformHeight (x, z, heightResult))
+            } // if (data->deformHeight (x, z, heightResult))
         } // if (data->isLoaded())
         return false;
 #else //_MAPSPLITTER
@@ -510,7 +628,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getInterpolatedWorldHeight (const Real x, const Real z, Real *slope)
+    const Real PagingLandScapeData2DManager::getInterpolatedWorldHeight (const Real x, const Real z, Real *getSlopeAt)
     {
 
 #ifndef _MAPSPLITTER
@@ -544,7 +662,7 @@ namespace Ogre
         const Real localPageZ = unscaledZ - (pageNumberZ*pSize);
 
             
-		const uint tSize = mOptions->TileSize - 1;
+		const unsigned int tSize = mOptions->TileSize - 1;
         const Real inv_tSize = 1.0f / tSize;
         
         //get Tile
@@ -1182,7 +1300,7 @@ namespace Ogre
 				else
 					heightValue = 0.0f;
 
-            if (slope)
+            if (getSlopeAt)
                {
                Vector3 result;
                Vector3 vector1;
@@ -1199,9 +1317,9 @@ namespace Ogre
 //               result.z = -mOptions->scale.x * (bottom_left_y - top_left_y);
 
                result.normalise();
-               *slope = 1.0 + result.y;
-               if (fabs(*slope) < 0.001f)
-                  *slope = 0.0f;
+               *getSlopeAt = 1.0 + result.y;
+               if (fabs(*getSlopeAt) < 0.001f)
+                  *getSlopeAt = 0.0f;
                }
 
             return heightValue;
@@ -1331,17 +1449,16 @@ namespace Ogre
               if (z_pct > 0.0f)
                  x_pct = (x_pct - (1-z_pct)) / z_pct;
 
-              if (slope)
-                 {
-                 Vector3 result;
-                 result.x = ((top_right_y - top_left_y) * (-mOptions->scale.z));
-                 result.y = mOptions->scale.x * (-mOptions->scale.z);
-                 result.z = -mOptions->scale.x * (bottom_left_y - top_left_y);
+              if (getSlopeAt)
+              {
+                 Vector3 result(((top_right_y - top_left_y) * (-mOptions->scale.z)),
+                                 mOptions->scale.x * (-mOptions->scale.z),
+                                 -mOptions->scale.x * (bottom_left_y - top_left_y));
                  result.normalise();
-                 *slope = 1.0 + result.y;
-                 if (fabs(*slope) < 0.001f)
-                    *slope = 0.0f;
-                 }
+                 *getSlopeAt = 1.0 + result.y;
+                 if (fabs(*getSlopeAt) < 0.001f)
+                    *getSlopeAt = 0.0f;
+               }
 
              return y1 * x_pct + y2 * (1-x_pct);
          } // if (x_pct > 1 - z_pct)
@@ -1354,17 +1471,16 @@ namespace Ogre
              if (z_pct < 1.0f)
                  x_pct = x_pct / (1-z_pct);
 
-             if (slope)
-                {
-                Vector3 result;
-                result.x = (bottom_left_y - bottom_right_y) * mOptions->scale.z;
-                result.y = -mOptions->scale.x * mOptions->scale.z;
-                result.z = mOptions->scale.x * (top_right_y - bottom_right_y);
+             if (getSlopeAt)
+            {
+                Vector3 result((bottom_left_y - bottom_right_y) * mOptions->scale.z,
+                                -mOptions->scale.x * mOptions->scale.z,
+                                 mOptions->scale.x * (top_right_y - bottom_right_y));
                 result.normalise();
-                *slope = 1.0 + result.y;
-                if (fabs(*slope) < 0.001f)
-                   *slope = 0.0f;
-                }
+                *getSlopeAt = 1.0 + result.y;
+                if (fabs(*getSlopeAt) < 0.001f)
+                   *getSlopeAt = 0.0f;
+            }
 
              return y1 * x_pct + y2 * (1-x_pct);
          } 
@@ -1378,7 +1494,7 @@ namespace Ogre
     {
 #ifndef _MAPSPLITTER
 	    // figure out which page the point is on
-        uint pageX, pageZ;
+        unsigned int pageX, pageZ;
         if (mPageManager->getPageIndices(x, z, pageX, pageZ, false))
 		{
 			PagingLandScapeData2D *data = getData2D (pageX, pageZ, false);
@@ -1402,7 +1518,7 @@ namespace Ogre
         return 0.0f;
     }
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getHeightAtPage(const uint dataX, const uint dataZ, 
+    const Real PagingLandScapeData2DManager::getHeightAtPage(const unsigned int dataX, const unsigned int dataZ, 
                                                         const Real x, const Real z) 
     {
         PagingLandScapeData2D* data = getData2D (dataX, dataZ, false );
@@ -1493,7 +1609,7 @@ namespace Ogre
         return 0.0f;
     }
     //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2DManager::getHeightAtPage(const uint dataX, const uint dataZ, 
+    const Real PagingLandScapeData2DManager::getHeightAtPage(const unsigned int dataX, const unsigned int dataZ, 
                                                         const int x, const int z) 
     {
 		PagingLandScapeData2D* data = getData2D (dataX, dataZ, false );
@@ -1590,8 +1706,8 @@ namespace Ogre
 
 
     //-----------------------------------------------------------------------
-    const Vector3 PagingLandScapeData2DManager::getNormalAt(const uint dataX, const uint dataZ, 
-                                                            const uint x, const uint z)
+    const Vector3 PagingLandScapeData2DManager::getNormalAt(const unsigned int dataX, const unsigned int dataZ, 
+                                                            const unsigned int x, const unsigned int z)
     {
 		PagingLandScapeData2D* data = getData2D (dataX,  dataZ, false );
 		if (data && data->isLoaded())
@@ -1663,7 +1779,7 @@ namespace Ogre
 #ifndef _MAPSPLITTER
         // figure out which page the point is on
         const Vector3 pos(x, 0, z);
-        uint pageX, pageZ;
+        unsigned int pageX, pageZ;
         if (mPageManager->getPageIndices(pos.x, pos.z, pageX, pageZ, false))
         {
 
@@ -1674,7 +1790,7 @@ namespace Ogre
                 PagingLandScapeTile *t = mPageManager->getTile(pos.x, pos.z, 
                                                                 pageX, pageZ, 
                                                                 false);
-                uint Lod = 0;
+                unsigned int Lod = 0;
                 if (t && t->isLoaded())
                     Lod = t->getRenderable()->getRenderLevel();
                 const Vector3 normalVector = getNormalAt(pageX, pageZ, x, z, Lod);
@@ -1690,7 +1806,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    const Vector3 PagingLandScapeData2DManager::getNormalAt(const uint pageX, const uint pageZ, const uint x, const uint z, const uint Lod)
+    const Vector3 PagingLandScapeData2DManager::getNormalAt(const unsigned int pageX, const unsigned int pageZ, const unsigned int x, const unsigned int z, const unsigned int Lod)
     {
         Vector3  result;
 

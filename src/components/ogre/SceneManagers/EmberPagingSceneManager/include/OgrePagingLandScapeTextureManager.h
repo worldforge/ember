@@ -2,7 +2,7 @@
 	OgrePagingLandScapeTextureManager.h  -  description
 	-------------------
   begin                : Fri Apr 16 2004
-  copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -37,59 +37,85 @@ namespace Ogre
             PagingLandScapeTexture* allocateTexture() const;
             void reset(void);
 
-	        void load(const uint texX, const uint texZ);
-            void reload(const uint dataX, const uint dataZ);
-	        void unload(const uint texX, const uint texZ);
+	        void load(const unsigned int texX, const unsigned int texZ);
+            void reload(const unsigned int dataX, const unsigned int dataZ);
+	        void unload(const unsigned int texX, const unsigned int texZ);
 
-         	bool isLoaded(const uint texX, const uint texZ);
+         	bool isLoaded(const unsigned int texX, const unsigned int texZ);
 
 
-	        const MaterialPtr& getMaterial(const uint texX, const uint texZ);
+	        const MaterialPtr& getMaterial(const unsigned int texX, const unsigned int texZ);
 
 
             MaterialPtr getMapMaterial(void);
             void setMapMaterial(void);
 
-            void setPaintChannel (const uint channel){mPaintChannel = channel;};
-            void setPaintColor (const ColourValue &color){mPaintColor = color;};
-            void paint (const Vector3 &currpoint, const Real paintForce, 
-                        const PagingLandScapeTileInfo *info, const bool isAlpha);
-            void DeformHeight (const Vector3 &currpoint,
+            void setPaintChannelValues (const std::vector<Real>  *theChannelModifList)
+			{
+				channelModifList = theChannelModifList;
+			};
+			void paint (const Vector3 &currpoint, 
+				const Real paintForce, 
+				const PagingLandScapeTileInfo *info);
+
+            void deformHeight (const Vector3 &currpoint,
                                 const PagingLandScapeTileInfo *info);
   
             String getNextTextureFormat();
             String getCurrentTextureFormat();
-            
+
+			void registerTextureFormats();
+			void clearTextureFormats ();
             void registerTextureType(PagingLandScapeTexture* source)
             {
                 mTextureTypeMap.push_back(source);
             }
 
-			PagingLandScapeTexture* getTexture(const uint i, const uint j,
+			PagingLandScapeTexture* getTexture(const unsigned int i, const unsigned int j,
 				const bool alwaysReturn = true);
-			PagingLandScapeTexture* getNewTexture(const uint i, const uint j);
+			PagingLandScapeTexture* getNewTexture(const unsigned int i, const unsigned int j);
 			void releaseTexture (PagingLandScapeTexture*p );
 
-            PagingLandScapeSceneManager *getSceneManager(){return mSceneManager;}
-            PagingLandScapeOptions*		getOptions(){return mOptions;}
-    protected:
+			unsigned int getNumChannels();
+			unsigned int getNumChannelsperTexture(const size_t i);
+
+
+            inline PagingLandScapeSceneManager *getSceneManager(){return mSceneManager;}
+            inline PagingLandScapeOptions*		getOptions(){return mOptions;}
+    
+
+			unsigned int mPageSize;
+			Image mImage;
+			std::vector<Real> heights;
+			std::vector<Real> dividers;
+			std::vector<ColourValue> colors;
+
+			const std::vector<Real> *channelModifList;
+	protected:
+
+			// Common var for all textures
+			void setPageSize();
+			void clearData ();
+
+			//
+
             PagingLandScapeSceneManager *mSceneManager;
             PagingLandScapeOptions*		mOptions;
 
 
-            uint                        mTextureType;
+            unsigned int                        mTextureType;
             String                      mTextureFormat;
 
-            uint                        mWidth;
-            uint                        mHeight;
+            unsigned int                        mWidth;
+            unsigned int                        mHeight;
 
-            uint                        mTexturePageSize;
+            unsigned int                        mTexturePageSize;
      
 	        //PagingLandScapeTexturePages mTexture;
 
             MaterialPtr                 mMapMaterial;
 
-            uint                        mPaintChannel;
+            unsigned int                        mPaintChannel;
             ColourValue                 mPaintColor;
 
             

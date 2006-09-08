@@ -29,8 +29,8 @@
 namespace EmberOgre
 {
 	
-
-	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture( Ogre::PagingLandScapeTextureManager *textureMgr, bool supportModif ): Ogre::PagingLandScapeTexture(textureMgr, supportModif)
+	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager *pageMgr)
+		: Ogre::PagingLandScapeTexture(pageMgr, "EmberTexture", 4, true)
 	{
 	}
 	
@@ -53,12 +53,16 @@ namespace EmberOgre
 		return new EmberPagingLandScapeTexture(mParent);
 	}
 	
-	bool EmberPagingLandScapeTexture::TextureRenderCapabilitesFullfilled()
+	bool EmberPagingLandScapeTexture::isMaterialSupported(bool recursive)
 	{
 		//TODO: check for stuff here
 		return true;
 	}
-
+	
+	void EmberPagingLandScapeTexture::setOptions(void)
+    {
+    }
+    
 	void EmberPagingLandScapeTexture::_loadMaterial( )
 	{
 		TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();

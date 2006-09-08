@@ -28,24 +28,34 @@ namespace Ogre
     {
         public:
             PagingLandScapeTexture_None(PagingLandScapeTextureManager *textureMgr) : 
-              PagingLandScapeTexture(textureMgr)
+              PagingLandScapeTexture(textureMgr, "None", 0, false)
               { 
                   mIsLoaded = true; 
                   mIsModified = false; 
               };
-            virtual ~PagingLandScapeTexture_None(void) { };
+            ~PagingLandScapeTexture_None(void) 
+			{ 
+			};
 
-            virtual String getName() {return String("None");}
-            virtual void setPagesize(void) { };
-            virtual void clearData(void) { };
-            virtual const uint getNumChannels (void) const {return 1;};
-            virtual void deformheight (const uint x, const uint z, const Real paintForce) { };
-            virtual PagingLandScapeTexture* newTexture() { return new PagingLandScapeTexture_None(mParent); };
-            virtual void load(uint mX, uint mZ) { mDataX = mX; mDataZ = mZ; mIsLoaded = true; mIsModified = false; };
-            virtual void unload(void) { };
+            String getName() const
+			{
+				return String("None");
+			}
+            PagingLandScapeTexture* newTexture() 
+			{ 
+				return new PagingLandScapeTexture_None(mParent); 
+			};
+            void load(uint mX, uint mZ) 
+			{ 
+				mDataX = mX; 
+				mDataZ = mZ; 
+				mIsLoaded = true; 
+				mIsModified = false; 
+			};
+            void unload(void) { };
 
         protected:
-           virtual void _loadMaterial(void) { };
+           void _loadMaterial(void) { };
 
     };
 }

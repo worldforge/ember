@@ -2,7 +2,7 @@
 	OgrePagingLandScapePage.h  -  description
   -------------------
   begin                : Sat Mar 08 2003
-  copyright            : (C) 2003-2005 by Jose A. Milan and Tuan Kuranes
+  copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
 ***************************************************************************/
 
@@ -43,7 +43,7 @@ namespace Ogre
                 return mNeighbors[ n ];
             };
 
-            PagingLandScapeTile* getTile(const uint i , const uint j) const;
+            PagingLandScapeTile* getTile(const unsigned int i , const unsigned int j) const;
 
             PagingLandScapeTile* getTile(const Vector3& pos);
 	        PagingLandScapePage(PagingLandScapePageManager *pageMgr);
@@ -51,7 +51,7 @@ namespace Ogre
 	        virtual ~PagingLandScapePage(void);
 
 	        /** Whole Map changes */
-            void init(const uint tableX, const uint tableZ);
+            void init(const unsigned int tableX, const unsigned int tableZ);
 
 	        /** Release the page, but keep it reusable if Whole Map changes */
             void uninit(void);
@@ -142,7 +142,7 @@ namespace Ogre
 	        bool _Notify(const Vector3& pos, PagingLandScapeCamera* Cam);
             void _Show(const bool do_show);
 
-            void getCoordinates(uint& X, uint& Z) const 
+            void getCoordinates(unsigned int& X, unsigned int& Z) const 
 			{
 				X = mTableX;
 				Z = mTableZ;
@@ -165,7 +165,7 @@ namespace Ogre
 
             void setMapMaterial(void);
 
-			inline bool isCoord(const uint x, const uint z){return (mTableZ == z && mTableX == x);};
+			inline bool isCoord(const unsigned int x, const unsigned int z){return (mTableZ == z && mTableX == x);};
 			
 			SceneNode *getSceneNode(){return mPageNode;};
 			const AxisAlignedBox &getWorldBbox() const {return mBounds;};
@@ -183,12 +183,18 @@ namespace Ogre
             // if data needed for this page doesn't exists
             bool mIsLoadable;
 
-            bool mVisible;
+            bool mVisible; 
+			// ensure page is not flickering due to shadow passes
+			// as it unload instantly
+			// but loading is queued
+			// if not page not showed until mVisibletouch==0 it becomes invisible
+			size_t mVisibletouch;
 
-	        uint mTableX;	// Position of this Terrain Page in the Terrain Page Array
-	        uint mTableZ;
+			// Position of this Terrain Page in the Terrain Page Array
+	        unsigned int mTableX;	
+	        unsigned int mTableZ;
 
-            uint mNumTiles;
+            unsigned int mNumTiles;
 
 	        Real mIniX;	//, mEndX;	// Max and Min values of the terrain
 	        Real mIniZ;	//, mEndZ;
@@ -203,7 +209,7 @@ namespace Ogre
 
             PagingLandScapePageRenderable* mRenderable;
 
-            uint mTimePreLoaded;
+            unsigned int mTimePreLoaded;
 
 			PageState pageState;
             PageQueuingState pageQueingState;

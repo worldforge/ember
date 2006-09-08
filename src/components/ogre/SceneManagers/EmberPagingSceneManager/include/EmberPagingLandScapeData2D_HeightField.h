@@ -39,7 +39,7 @@ namespace EmberOgre
 	{
 		public:
 			EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager *pageMgr);
-			virtual Ogre::String getName(){return Ogre::String("EmberHeightField");}
+			virtual Ogre::String getName() const {return Ogre::String("EmberHeightField");}
 			virtual ~EmberPagingLandScapeData2D_HeightField( void ) {};
 
 			//virtual const Ogre::Vector3 getNormal( const Ogre::Real mX, const Ogre::Real mZ );
