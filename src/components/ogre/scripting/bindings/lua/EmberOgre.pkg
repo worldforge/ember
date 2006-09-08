@@ -112,7 +112,17 @@ class EmberOgre
 	
 	void requestQuit();
 
+	/**
+	 *    Sets whether eris should be polled each frame. Defaults to true.
+	 * @param doPoll 
+	 */
+	void setErisPolling(bool doPoll);
 
+	/**
+	 *    Gets whether eris should be polled each frame.
+	 * @return 
+	 */
+	bool getErisPolling() const;
 };
 
 }

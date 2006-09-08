@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Thu Aug 10 22:57:37 2006.
+** Generated automatically by tolua++-1.0.6 on Fri Sep  8 23:51:08 2006.
 */
 
 #ifndef __cplusplus
@@ -13983,6 +13983,67 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_requestQuit00(lua_State* tolua_S)
 #endif
 }
 
+/* method: setErisPolling of class  EmberOgre::EmberOgre */
+static int tolua_EmberOgre_EmberOgre_EmberOgre_setErisPolling00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+  bool doPoll = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setErisPolling'",NULL);
+#endif
+ {
+  self->setErisPolling(doPoll);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setErisPolling'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: getErisPolling of class  EmberOgre::EmberOgre */
+static int tolua_EmberOgre_EmberOgre_EmberOgre_getErisPolling00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberOgre",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::EmberOgre* self = (const EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getErisPolling'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->getErisPolling();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getErisPolling'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* Open function */
 TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
 {
@@ -14950,6 +15011,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_variable(tolua_S,"EventSceneCreated",tolua_get_EmberOgre__EmberOgre_EventSceneCreated,tolua_set_EmberOgre__EmberOgre_EventSceneCreated);
  tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_EmberOgre_getEntity00);
  tolua_function(tolua_S,"requestQuit",tolua_EmberOgre_EmberOgre_EmberOgre_requestQuit00);
+ tolua_function(tolua_S,"setErisPolling",tolua_EmberOgre_EmberOgre_EmberOgre_setErisPolling00);
+ tolua_function(tolua_S,"getErisPolling",tolua_EmberOgre_EmberOgre_EmberOgre_getErisPolling00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
