@@ -1,230 +1,206 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="SizingEnabled" Value="false" /> 
-		<Property Name="Position" Value="x:0.2 y:0.1" /> 
-		<Property Name="AbsoluteSize" Value="w:400 h:500" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Server" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="Position" Value="x:0.02 y:0.04" /> 
-			<Property Name="Size" Value="w:0.96 h:0.96" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="EmberLook/StaticText" Name="Info">
-				<Property Name="Position" Value="x:0 y:0" /> 
-				<Property Name="Size" Value="w:1 h:0.2" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="VertFormatting" Value="TopAligned" /> 
-				<Property Name="Text" Value="Server info" /> 
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.000000,400.000000},{0.000000,500.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.200000,0.000000},{0.100000,0.000000}}'/>
+		<Property Name='SizingEnabled' Value='false'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Server'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.960000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.020000,0.000000},{0.040000,0.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='Info'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.200000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='ReadOnly' Value='true'/>
+				<Property Name='VertFormatting' Value='TopAligned'/>
+				<Property Name='Text' Value='Server info'/>
 			</Window>
-			<Window Type="EmberLook/StaticText" Name="LoginPanel">
-				<Property Name="Position" Value="x:0.02 y:0.25" /> 
-				<Property Name="Size" Value="w:.96 h:0.75" /> 
-				<Property Name="Text" Value="Login" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="VertFormatting" Value="TopAligned" /> 
-				<Window Type="EmberLook/StaticText" Name="LoginPanel/NameText">
-					<Property Name="AbsolutePosition" Value="x:30 y:40" /> 
-					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-					<Property Name="Text" Value="Name:" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="FrameEnabled" Value="False" /> 
-					<Property Name="BackgroundEnabled" Value="False" /> 
+			<Window Type='EmberLook/StaticText' Name='LoginPanel'>
+				<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.750000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.020000,0.000000},{0.250000,0.000000}}'/>
+				<Property Name='Text' Value='Login'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='ReadOnly' Value='true'/>
+				<Property Name='VertFormatting' Value='TopAligned'/>
+				<Window Type='EmberLook/StaticText' Name='LoginPanel/NameText'>
+					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,40.000000}}'/>
+					<Property Name='Text' Value='Name:'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+					<Property Name='FrameEnabled' Value='False'/>
+					<Property Name='BackgroundEnabled' Value='False'/>
 				</Window>
-				<Window Type="EmberLook/Editbox" Name="LoginPanel/NameEdit">
-					<Property Name="AbsolutePosition" Value="x:30 y:70" /> 
-					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-					<Property Name="Text" Value="" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
+				<Window Type='EmberLook/Editbox' Name='LoginPanel/NameEdit'>
+					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,70.000000}}'/>
+					<Property Name='Text' Value=''/>
+					<Property Name='InheritsAlpha' Value='True'/>
 				</Window>
-
-				<Window Type="EmberLook/StaticText" Name="LoginPanel/PasswordText">
-					<Property Name="AbsolutePosition" Value="x:30 y:100" /> 
-					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-					<Property Name="Text" Value="Password:" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="FrameEnabled" Value="False" /> 
-					<Property Name="BackgroundEnabled" Value="False" /> 
+				<Window Type='EmberLook/StaticText' Name='LoginPanel/PasswordText'>
+					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,100.000000}}'/>
+					<Property Name='Text' Value='Password:'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+					<Property Name='FrameEnabled' Value='False'/>
+					<Property Name='BackgroundEnabled' Value='False'/>
 				</Window>
-				<Window Type="EmberLook/Editbox" Name="LoginPanel/PasswordEdit">
-					<Property Name="AbsolutePosition" Value="x:30.0 y:130" /> 
-					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-					<Property Name="Text" Value="" /> 
-					<Property Name="MaskText" Value="True" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
+				<Window Type='EmberLook/Editbox' Name='LoginPanel/PasswordEdit'>
+					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,130.000000}}'/>
+					<Property Name='Text' Value=''/>
+					<Property Name='MaskText' Value='True'/>
+					<Property Name='InheritsAlpha' Value='True'/>
 				</Window>
-								
-				<Window Type="EmberLook/StaticText" Name="LoginPanel/HelpText">
-					<Property Name="AbsolutePosition" Value="x:30 y:200" /> 
-					<Property Name="AbsoluteSize" Value="w:300 h:150" /> 
-					<Property Name="Text" Value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.
-
-If you already have an account, proceed with a normal login." /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="FrameEnabled" Value="False" /> 
-					<Property Name="BackgroundEnabled" Value="False" /> 
-					<Property Name="VertFormatting" Value="TopAligned" /> 
-					<Property Name="HorzFormatting" Value="WordWrapLeftAligned" /> 
-					
+				<Window Type='EmberLook/StaticText' Name='LoginPanel/HelpText'>
+					<Property Name='UnifiedSize' Value='{{0.000000,300.000000},{0.000000,150.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,200.000000}}'/>
+					<Property Name='Text' Value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.  If you already have an account, proceed with a normal login."/>
+					<Property Name='InheritsAlpha' Value='True'/>
+					<Property Name='FrameEnabled' Value='False'/>
+					<Property Name='BackgroundEnabled' Value='False'/>
+					<Property Name='VertFormatting' Value='TopAligned'/>
+					<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 				</Window>
-				
-				<Window Type="EmberLook/Button" Name="LoginPanel/Login">
-					<Property Name="AbsolutePosition" Value="x:30 y:160" /> 
-					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-					<Property Name="Text" Value="Login" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="Tooltip" Value="Login with an already existing account." /> 
+				<Window Type='EmberLook/Button' Name='LoginPanel/Login'>
+					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,160.000000}}'/>
+					<Property Name='Text' Value='Login'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+					<Property Name='Tooltip' Value='Login with an already existing account.'/>
 				</Window>
-				<Window Type="EmberLook/Button" Name="LoginPanel/CreateAcc">
-					<Property Name="AbsolutePosition" Value="x:140 y:160" /> 
-					<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-					<Property Name="Text" Value="Create" /> 
-					<Property Name="InheritsAlpha" Value="True" /> 
-					<Property Name="Tooltip" Value="Create a new account on the server." /> 
+				<Window Type='EmberLook/Button' Name='LoginPanel/CreateAcc'>
+					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,140.000000},{0.000000,160.000000}}'/>
+					<Property Name='Text' Value='Create'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+					<Property Name='Tooltip' Value='Create a new account on the server.'/>
 				</Window>
-
-				<Window Type="EmberLook/StaticText" Name="LoginPanel/LoginFailure">
-					<Property Name="AbsolutePosition" Value="x:30 y:190" />
-					<Property Name="AbsoluteSize" Value="w:300 h:20" />
-					<Property Name="Text" Value="Login Failure" />
-					<Property Name="TextColours" Value="00FF0000" />
-					<Property Name="InheritsAlpha" Value="True" />
-					<Property Name="FrameEnabled" Value="False" />
-					<Property Name="BackgroundEnabled" Value="False" />
-					<Property Name="Visible" Value="False" />
+				<Window Type='EmberLook/StaticText' Name='LoginPanel/LoginFailure'>
+					<Property Name='UnifiedSize' Value='{{0.000000,300.000000},{0.000000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,190.000000}}'/>
+					<Property Name='Text' Value='Login Failure'/>
+					<Property Name='TextColours' Value='00FF0000'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+					<Property Name='FrameEnabled' Value='False'/>
+					<Property Name='BackgroundEnabled' Value='False'/>
+					<Property Name='Visible' Value='False'/>
 				</Window>
 			</Window>
-			
-			
-			
-			
-
-			<Window Type="EmberLook/TabControl" Name="CharacterTabControl">
-				<Property Name="Position" Value="x:0 y:0.25" /> 
-				<Property Name="Size" Value="w:1 h:0.7" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="Visible" Value="false" /> 
-				<Window Type="DefaultGUISheet" Name="ChooseCharacterPanel">
-					<Property Name="Position" Value="x:0 y:0" /> 
-					<Property Name="Size" Value="w:1 h:1" /> 
-					<Property Name="Text" Value="Choose" /> 
-					<Property Name="InheritsAlpha" Value="false" /> 
-					<Property Name="Visible" Value="true" /> 
-					<Window Type="EmberLook/Listbox" Name="ChooseCharacterPanel/CharacterList">
-						<Property Name="Position" Value="x:0 y:0.05" /> 
-						<Property Name="Size" Value="w:0.5 h:0.7" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type='EmberLook/TabControl' Name='CharacterTabControl'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.700000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.250000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='Visible' Value='false'/>
+				<Window Type='DefaultGUISheet' Name='ChooseCharacterPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Choose'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Property Name='Visible' Value='true'/>
+					<Window Type='EmberLook/Listbox' Name='ChooseCharacterPanel/CharacterList'>
+						<Property Name='UnifiedSize' Value='{{0.500000,0.000000},{0.700000,0.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.050000,0.000000}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
-					<Window Type="EmberLook/Button" Name="ChooseCharacterPanel/Choose">
-						<Property Name="Position" Value="x:0.4 y:0.8" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="MaximumSize" Value="w:1 h:1" /> 
-						<Property Name="Text" Value="Choose" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
+					<Window Type='EmberLook/Button' Name='ChooseCharacterPanel/Choose'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.400000,0.000000},{0.800000,0.000000}}'/>
+						<Property Name='MaximumSize' Value='w:1 h:1'/>
+						<Property Name='Text' Value='Choose'/>
+						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
-					<Window Type="EmberLook/StaticText" Name="ChooseCharacterPanel/HelpText">
-						<Property Name="Position" Value="x:0.55 y:0.05" /> 
-						<Property Name="Size" Value="w:0.4 h:0.5" /> 
-						<Property Name="Text" Value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character." /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="FrameEnabled" Value="False" /> 
-						<Property Name="BackgroundEnabled" Value="False" /> 
-						<Property Name="VertFormatting" Value="TopAligned" /> 
-						<Property Name="HorzFormatting" Value="WordWrapLeftAligned" /> 
-						
-				</Window>					
+					<Window Type='EmberLook/StaticText' Name='ChooseCharacterPanel/HelpText'>
+						<Property Name='UnifiedSize' Value='{{0.400000,0.000000},{0.500000,0.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.550000,0.000000},{0.050000,0.000000}}'/>
+						<Property Name='Text' Value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character."/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='FrameEnabled' Value='False'/>
+						<Property Name='BackgroundEnabled' Value='False'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+					</Window>
 				</Window>
-				<Window Type="DefaultGUISheet" Name="CreateCharacterPanel">
-					<Property Name="Position" Value="x:0 y:0" /> 
-					<Property Name="Size" Value="w:1 h:1" /> 
-					<Property Name="Text" Value="Create" /> 
-					<Property Name="InheritsAlpha" Value="false" /> 
-					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/NameText">
-						<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="Text" Value="Name:" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="FrameEnabled" Value="False" /> 
-						<Property Name="BackgroundEnabled" Value="False" /> 
+				<Window Type='DefaultGUISheet' Name='CreateCharacterPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Create'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Window Type='EmberLook/StaticText' Name='CreateCharacterPanel/NameText'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='Text' Value='Name:'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='FrameEnabled' Value='False'/>
+						<Property Name='BackgroundEnabled' Value='False'/>
 					</Window>
-					<Window Type="EmberLook/Editbox" Name="CreateCharacterPanel/NameEdit">
-						<Property Name="AbsolutePosition" Value="x:90 y:0" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="Text" Value="" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="Tooltip" Value="The name of the character." /> 
+					<Window Type='EmberLook/Editbox' Name='CreateCharacterPanel/NameEdit'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,90.000000},{0.000000,0.000000}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='Tooltip' Value='The name of the character.'/>
 					</Window>
-					
-					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/TypeText">
-						<Property Name="AbsolutePosition" Value="x:0 y:30" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="Text" Value="Type:" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="FrameEnabled" Value="False" /> 
-						<Property Name="BackgroundEnabled" Value="False" /> 
+					<Window Type='EmberLook/StaticText' Name='CreateCharacterPanel/TypeText'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,30.000000}}'/>
+						<Property Name='Text' Value='Type:'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='FrameEnabled' Value='False'/>
+						<Property Name='BackgroundEnabled' Value='False'/>
 					</Window>
-					<Window Type="EmberLook/Combobox" Name="CreateCharacterPanel/Type">
-						<Property Name="AbsolutePosition" Value="x:90 y:30" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:200" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="ReadOnly" Value="true" /> 
-						<Property Name="Tooltip" Value="The type of character to create." /> 
+					<Window Type='EmberLook/Combobox' Name='CreateCharacterPanel/Type'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,200.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,90.000000},{0.000000,30.000000}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='ReadOnly' Value='true'/>
+						<Property Name='Tooltip' Value='The type of character to create.'/>
 					</Window>
-					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/GenderText">
-						<Property Name="AbsolutePosition" Value="x:0 y:60" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="Text" Value="Gender:" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="FrameEnabled" Value="False" /> 
-						<Property Name="BackgroundEnabled" Value="False" /> 
+					<Window Type='EmberLook/StaticText' Name='CreateCharacterPanel/GenderText'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,60.000000}}'/>
+						<Property Name='Text' Value='Gender:'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='FrameEnabled' Value='False'/>
+						<Property Name='BackgroundEnabled' Value='False'/>
 					</Window>
-					<Window Type="EmberLook/RadioButton" Name="CreateCharacterPanel/Gender/Male">
-						<Property Name="AbsolutePosition" Value="x:90 y:60" /> 
-						<Property Name="AbsoluteSize" Value="w:60 h:20" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="Text" Value="Male" /> 
+					<Window Type='EmberLook/RadioButton' Name='CreateCharacterPanel/Gender/Male'>
+						<Property Name='UnifiedSize' Value='{{0.000000,60.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,90.000000},{0.000000,60.000000}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='Text' Value='Male'/>
 					</Window>
-					<Window Type="EmberLook/RadioButton" Name="CreateCharacterPanel/Gender/Female">
-						<Property Name="AbsolutePosition" Value="x:145 y:60" /> 
-						<Property Name="AbsoluteSize" Value="w:60 h:20" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="Text" Value="Female" /> 
-						
+					<Window Type='EmberLook/RadioButton' Name='CreateCharacterPanel/Gender/Female'>
+						<Property Name='UnifiedSize' Value='{{0.000000,60.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,145.000000},{0.000000,60.000000}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='Text' Value='Female'/>
 					</Window>
-					<Window Type="EmberLook/StaticText" Name="CreateCharacterPanel/DescriptionText">
-						<Property Name="AbsolutePosition" Value="x:0 y:90" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="Text" Value="Description:" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="FrameEnabled" Value="False" /> 
-						<Property Name="BackgroundEnabled" Value="False" /> 
+					<Window Type='EmberLook/StaticText' Name='CreateCharacterPanel/DescriptionText'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,90.000000}}'/>
+						<Property Name='Text' Value='Description:'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='FrameEnabled' Value='False'/>
+						<Property Name='BackgroundEnabled' Value='False'/>
 					</Window>
-					<Window Type="EmberLook/MultiLineEditbox" Name="CreateCharacterPanel/Description">
-						<Property Name="AbsolutePosition" Value="x:5 y:115" /> 
-						<Property Name="AbsoluteSize" Value="w:200 h:100" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="Tooltip" Value="A short description of the character." /> 
+					<Window Type='EmberLook/MultiLineEditbox' Name='CreateCharacterPanel/Description'>
+						<Property Name='UnifiedSize' Value='{{0.000000,200.000000},{0.000000,100.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,115.000000}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='Tooltip' Value='A short description of the character.'/>
 					</Window>
-					
-					
-					<Window Type="EmberLook/Button" Name="CreateCharacterPanel/CreateButton">
-						<Property Name="AbsolutePosition" Value="x:100 y:225" /> 
-						<Property Name="AbsoluteSize" Value="w:100 h:20" /> 
-						<Property Name="Text" Value="Create" /> 
-						<Property Name="InheritsAlpha" Value="True" /> 
-						<Property Name="Tooltip" Value="Create a new character." /> 
-						
+					<Window Type='EmberLook/Button' Name='CreateCharacterPanel/CreateButton'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,100.000000},{0.000000,225.000000}}'/>
+						<Property Name='Text' Value='Create'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='Tooltip' Value='Create a new character.'/>
 					</Window>
-					<Window Type="EmberLook/StaticImage" Name="CreateCharacterPanel/Image">
-						<Property Name="AbsolutePosition" Value="x:210 y:5" /> 
-						<Property Name="AbsoluteSize" Value="w:150 h:250" /> 
-					</Window>				
-				
+					<Window Type='EmberLook/StaticImage' Name='CreateCharacterPanel/Image'>
+						<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,250.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,210.000000},{0.000000,5.000000}}'/>
+					</Window>
 				</Window>
 			</Window>
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

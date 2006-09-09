@@ -1,47 +1,44 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="SizingEnabled" Value="false" /> 
-		<Property Name="Position" Value="x:0.15 y:0.2" /> 
-		<Property Name="AbsoluteSize" Value="w:600 h:500" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Server browser" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="AbsolutePosition" Value="x:5 y:30" /> 
-			<Property Name="AbsoluteSize" Value="w:590 h:465" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="EmberLook/MultiColumnList" Name="ServerList">
-				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
-				<Property Name="AbsoluteSize" Value="w:590 h:420" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="ColumnHeader" Value="text:Server Name width:0.25 id:0" />
-				<Property Name="ColumnHeader" Value="text:Ping width:0.1 id:1" />
-				<Property Name="ColumnHeader" Value="text:Clients width:0.1 id:2" />
-				<Property Name="ColumnHeader" Value="text:Ruleset width:0.1 id:3" />
-				<Property Name="ColumnHeader" Value="text:Server type width:0.15 id:4" />
-				<Property Name="ColumnHeader" Value="text:Version width:0.1 id:5" />
-				<Property Name="ColumnHeader" Value="text:Address width:0.15 id:6" />
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.000000,600.000000},{0.000000,500.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.150000,0.000000},{0.200000,0.000000}}'/>
+		<Property Name='SizingEnabled' Value='false'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Server browser'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.000000,590.000000},{0.000000,465.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,30.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
+				<Property Name='UnifiedSize' Value='{{0.000000,590.000000},{0.000000,420.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='ColumnHeader' Value='text:Server Name width:0.25 id:0'/>
+				<Property Name='ColumnHeader' Value='text:Ping width:0.1 id:1'/>
+				<Property Name='ColumnHeader' Value='text:Clients width:0.1 id:2'/>
+				<Property Name='ColumnHeader' Value='text:Ruleset width:0.1 id:3'/>
+				<Property Name='ColumnHeader' Value='text:Server type width:0.15 id:4'/>
+				<Property Name='ColumnHeader' Value='text:Version width:0.1 id:5'/>
+				<Property Name='ColumnHeader' Value='text:Address width:0.15 id:6'/>
 			</Window>
-			<Window Type="EmberLook/Editbox" Name="ManualServerName">
-				<Property Name="Text" Value="" /> 
-				<Property Name="AbsolutePosition" Value="x:0 y:425" /> 
-				<Property Name="AbsoluteSize" Value="w:150 h:25" /> 
+			<Window Type='EmberLook/Editbox' Name='ManualServerName'>
+				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,425.000000}}'/>
+				<Property Name='Text' Value=''/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Refresh">
-				<Property Name="AbsolutePosition" Value="x:400 y:425" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Refresh" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type='EmberLook/Button' Name='Refresh'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,400.000000},{0.000000,425.000000}}'/>
+				<Property Name='Text' Value='Refresh'/>
+				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Connect">
-				<Property Name="AbsolutePosition" Value="x:480 y:425" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Connect" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type='EmberLook/Button' Name='Connect'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,480.000000},{0.000000,425.000000}}'/>
+				<Property Name='Text' Value='Connect'/>
+				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

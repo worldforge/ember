@@ -1,42 +1,45 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-
-	<Window Type="EmberLook/FrameWindow" Name="Mainwindow">
-		<Property Name="AbsolutePosition" Value="x:820 y:25" /> 
-		<Property Name="Size" Value="w:0.2 h:0.2" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Inspect" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="UnifiedPosition" Value="{{0,0},{0,15}}" />
-			<Property Name="UnifiedSize" Value="{{1.0,0},{1.0,-15}}" />
-			<Property Name="InheritsAlpha" Value="True" /> 
-			
-			<Window Type="EmberLook/StaticText" Name="EntityInfo">
-				<Property Name="Position" Value="x:0 y:0" /> 
-				<Property Name="Size" Value="w:0.95 h:0.6" /> 
-				<Property Name="Text" Value="" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="VertFormatting" Value="TopAligned" /> 
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+		<Property Name='UnifiedSize' Value='{{0.200000,0.000000},{0.200000,0.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,820.000000},{0.000000,25.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Inspect'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,0},{1.0,-15}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='EntityInfo'>
+				<Property Name='UnifiedSize' Value='{{0.950000,0.000000},{0.600000,0.000000}}'/>
+				<Property Name='Text' Value=''/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='ReadOnly' Value='true'/>
+				<Property Name='VertFormatting' Value='TopAligned'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="ChildList">
-				<Property Name="UnifiedPosition" Value="{{0,0},{0.6,0}}" />
-				<Property Name="UnifiedSize" Value="{{1.0,0},{0.4,-25}}" />
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Alpha" Value="0.6" /> 
+			<Window Type='EmberLook/Listbox' Name='ChildList'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0.6,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0},{0.4,-25}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Alpha' Value='0.6'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="ShowOgreBoundingBox">
-				<Property Name="UnifiedPosition" Value="{{0,0},{1.0,-25}}" />
-				<Property Name="UnifiedSize" Value="{{0.5,0},{0,25}}" />
-				<Property Name="Text" Value="Ogre bbox" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type='EmberLook/Button' Name='MoveEntity'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0.3,0},{0,25}}'/>
+				<Property Name='Text' Value='Move'/>
+				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="ShowErisBoundingBox">
-				<Property Name="UnifiedPosition" Value="{{0.5,0},{1.0,-25}}" />
-				<Property Name="UnifiedSize" Value="{{0.5,0},{0,25}}" />
-				<Property Name="Text" Value="Eris bbox" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type='EmberLook/Button' Name='ShowOgreBoundingBox'>
+				<Property Name='UnifiedPosition' Value='{{0.3,0},{1.0,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0.3,0},{0,25}}'/>
+				<Property Name='Text' Value='Ogre bbox'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='ShowErisBoundingBox'>
+				<Property Name='UnifiedPosition' Value='{{0.6,0},{1.0,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0.3,0},{0,25}}'/>
+				<Property Name='Text' Value='Eris bbox'/>
+				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

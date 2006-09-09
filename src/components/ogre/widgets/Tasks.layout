@@ -1,54 +1,30 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="UnifiedPosition" Value="{{0.00,0.000000},{0.8,0.000000}}" /> 
-		<Property Name="UnifiedSize" Value="{{0,300},{0.1,0.000000}}" /> 
-		<Property Name="Text" Value="Tasks" />
-		<Property Name="Alpha" Value="0.6" /> 
-		<Window Type="DefaultWindow" Name="MainInnerWindow" >
-				<Property Name="UnifiedPosition" Value="{{0.0,2},{0,10}}" /> 
-				<Property Name="UnifiedSize" Value="{{1,-10},{1,-2}}" /> 
-		
-				<Window Type="EmberLook/StaticText" Name="NameText" >
-					<Property Name="Text" Value="Task name:" />
-					<Property Name="UnifiedPosition" Value="{{0.0,5},{0,5}}" /> 
-					<Property Name="UnifiedSize" Value="{{0,250},{0,20}}" /> 
-					<Property Name="BackgroundEnabled" Value="False" />
-					<Property Name="FrameEnabled" Value="False" />
-				</Window>
-				<Window Type="EmberLook/ProgressBar" Name="Progress" >
-					<Property Name="Text" Value="Progress" />
-					<Property Name="UnifiedPosition" Value="{{0.0,5},{0,25}}" /> 
-					<Property Name="UnifiedSize" Value="{{0,280},{0,15}}" /> 
-				</Window>
-				<Window Type="EmberLook/Button" Name="StopButton" >
-					<Property Name="Text" Value="Stop" />
-					<Property Name="UnifiedPosition" Value="{{0.0,5},{0,42}}" /> 
-					<Property Name="UnifiedSize" Value="{{0,50},{0,20}}" /> 
-				</Window>
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedPosition' Value='{{0.00,0.000000},{0.8,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0,300},{0.1,0.000000}}'/>
+		<Property Name='Text' Value='Tasks'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,10}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-10},{1,-2}}'/>
+			<Window Type='EmberLook/StaticText' Name='NameText'>
+				<Property Name='Text' Value='Task name:'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,5}}'/>
+				<Property Name='UnifiedSize' Value='{{0,250},{0,20}}'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+			</Window>
+			<Window Type='EmberLook/ProgressBar' Name='Progress'>
+				<Property Name='Text' Value='Progress'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,25}}'/>
+				<Property Name='UnifiedSize' Value='{{0,280},{0,15}}'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='StopButton'>
+				<Property Name='Text' Value='Stop'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,42}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
+			</Window>
 		</Window>
 	</Window>
- </GUILayout> 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+</GUILayout>

@@ -1,42 +1,41 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0.55 y:0.025" /> 
-		<Property Name="AbsoluteSize" Value="w:400 h:400" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Open/Save" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="Position" Value="x:0.05 y:0.1" /> 
-			<Property Name="Size" Value="w:0.95 h:0.9" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="EmberLook/Listbox" Name="Blueprints">
-				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
-				<Property Name="AbsoluteSize" Value="w:150 h:300" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="Tooltip" Value="The existing saved blueprints." />
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.000000,400.000000},{0.000000,400.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.550000,0.000000},{0.025000,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Open/Save'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.950000,0.000000},{0.900000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.050000,0.000000},{0.100000,0.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Listbox' Name='Blueprints'>
+				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,300.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='Tooltip' Value='The existing saved blueprints.'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Load">
-				<Property Name="Enabled" Value="False" /> 
-				<Property Name="AbsolutePosition" Value="x:0 y:310" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Load" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Loads the selected blueprint." />
+			<Window Type='EmberLook/Button' Name='Load'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,310.000000}}'/>
+				<Property Name='Enabled' Value='False'/>
+				<Property Name='Text' Value='Load'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Loads the selected blueprint.'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Save">
-				<Property Name="Enabled" Value="False" /> 
-				<Property Name="AbsolutePosition" Value="x:80 y:310" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Save" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Saves a new blueprint." />
+			<Window Type='EmberLook/Button' Name='Save'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,80.000000},{0.000000,310.000000}}'/>
+				<Property Name='Enabled' Value='False'/>
+				<Property Name='Text' Value='Save'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Saves a new blueprint.'/>
 			</Window>
-			<Window Type="EmberLook/Editbox" Name="NewName">
-				<Property Name="AbsolutePosition" Value="x:160 y:310" /> 
-				<Property Name="AbsoluteSize" Value="w:150 h:25" /> 
-				<Property Name="Tooltip" Value="Enter the name of the blueprint to be saved." />
+			<Window Type='EmberLook/Editbox' Name='NewName'>
+				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,160.000000},{0.000000,310.000000}}'/>
+				<Property Name='Tooltip' Value='Enter the name of the blueprint to be saved.'/>
 			</Window>
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

@@ -1,24 +1,22 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0.7 y:0.5" /> 
-		<Property Name="Size" Value="w:0.3 h:0.2" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Builder Preview" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="AbsolutePosition" Value="x:5 y:5" /> 
-			<Property Name="Size" Value="w:0.98 h:0.9" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			<Window Type="EmberLook/StaticImage" Name="Image">
-				<Property Name="Position" Value="x:0.0 y:0.0" /> 
-				<Property Name="Size" Value="w:0.9 h:0.9" /> 
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.300000,0.000000},{0.200000,0.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.700000,0.000000},{0.500000,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Builder Preview'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.980000,0.000000},{0.900000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,5.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticImage' Name='Image'>
+				<Property Name='UnifiedSize' Value='{{0.900000,0.000000},{0.900000,0.000000}}'/>
 			</Window>
-			<Window Type="EmberLook/VerticalSlider" Name="Zoom">
-				<Property Name="Position" Value="x:0.9 y:0.05" /> 
-				<Property Name="Size" Value="w:0.05 h:0.9" /> 
-				<Property Name="Tooltip" Value="Drag the slider to zoom." />
+			<Window Type='EmberLook/VerticalSlider' Name='Zoom'>
+				<Property Name='UnifiedSize' Value='{{0.050000,0.000000},{0.900000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.900000,0.000000},{0.050000,0.000000}}'/>
+				<Property Name='Tooltip' Value='Drag the slider to zoom.'/>
 			</Window>
-			
-		</Window>	
+		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

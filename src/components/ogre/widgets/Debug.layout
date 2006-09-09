@@ -1,32 +1,28 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0 y:0.3" /> 
-		<Property Name="AbsoluteSize" Value="w:300 h:150" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Eris log" />
-		<Property Name="Visible" Value="false" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="AbsolutePosition" Value="x:5 y:30" /> 
-			<Property Name="AbsoluteSize" Value="w:290 h:115" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-		
-			<Window Type="EmberLook/Combobox" Name="LogLevelDropList">
-				<Property Name="AbsolutePosition" Value="x:0 y:0" /> 
-				<Property Name="AbsoluteSize" Value="w:100 h:85" /> 
-				<Property Name="InheritsAlpha" Value="False" /> 
-				<Property Name="ReadOnly" Value="true" /> 
-				<Property Name="Text" Value="Loglevel" /> 
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.000000,300.000000},{0.000000,150.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.300000,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Eris log'/>
+		<Property Name='Visible' Value='false'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.000000,290.000000},{0.000000,115.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,30.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Combobox' Name='LogLevelDropList'>
+				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,85.000000}}'/>
+				<Property Name='InheritsAlpha' Value='False'/>
+				<Property Name='ReadOnly' Value='true'/>
+				<Property Name='Text' Value='Loglevel'/>
 			</Window>
-			<Window Type="EmberLook/MultiLineEditbox" Name="TextBox">
-				<Property Name="AbsolutePosition" Value="x:0 y:30" /> 
-				<Property Name="AbsoluteSize" Value="w:290 h:85" /> 
-				<Property Name="Text" Value="" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="ReadOnly" Value="true" /> 
+			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
+				<Property Name='UnifiedSize' Value='{{0.000000,290.000000},{0.000000,85.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,30.000000}}'/>
+				<Property Name='Text' Value=''/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='ReadOnly' Value='true'/>
 			</Window>
-			
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

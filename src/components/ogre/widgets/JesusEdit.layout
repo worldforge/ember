@@ -1,100 +1,91 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0.55 y:0.025" /> 
-		<Property Name="Size" Value="w:0.45 h:0.5" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Builder" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="Position" Value="x:0.05 y:0.1" /> 
-			<Property Name="Size" Value="w:0.95 h:0.9" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			
-			
-			<Window Type="EmberLook/Listbox" Name="CurrentBlocks">
-				<Property Name="Position" Value="x:0 y:0.0" /> 
-				<Property Name="Size" Value="w:0.45 h:0.4" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="Tooltip" Value="A list of all blocks in the current construction." />
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.450000,0.000000},{0.500000,0.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.550000,0.000000},{0.025000,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Builder'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.950000,0.000000},{0.900000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.050000,0.000000},{0.100000,0.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Listbox' Name='CurrentBlocks'>
+				<Property Name='UnifiedSize' Value='{{0.450000,0.000000},{0.400000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='Tooltip' Value='A list of all blocks in the current construction.'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="NewBlockPoints">
-				<Property Name="Position" Value="x:0.5 y:0.45" /> 
-				<Property Name="Size" Value="w:0.45 h:0.4" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="Tooltip" Value="A list of all available block points in the new block." />
+			<Window Type='EmberLook/Listbox' Name='NewBlockPoints'>
+				<Property Name='UnifiedSize' Value='{{0.450000,0.000000},{0.400000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.500000,0.000000},{0.450000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='Tooltip' Value='A list of all available block points in the new block.'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="CurrentPoints">
-				<Property Name="Position" Value="x:0.5 y:0.0" /> 
-				<Property Name="Size" Value="w:0.45 h:0.4" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="Tooltip" Value="A list of all available block points in the current selected block." />
+			<Window Type='EmberLook/Listbox' Name='CurrentPoints'>
+				<Property Name='UnifiedSize' Value='{{0.450000,0.000000},{0.400000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.500000,0.000000},{0.000000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='Tooltip' Value='A list of all available block points in the current selected block.'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="AvailableBlocks">
-				<Property Name="Position" Value="x:0 y:0.45" /> 
-				<Property Name="Size" Value="w:0.45 h:0.35" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="Tooltip" Value="A list of all available blocks." />
+			<Window Type='EmberLook/Listbox' Name='AvailableBlocks'>
+				<Property Name='UnifiedSize' Value='{{0.450000,0.000000},{0.350000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.450000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='Tooltip' Value='A list of all available blocks.'/>
 			</Window>
-
-			<Window Type="EmberLook/Button" Name="Bind">
-				<Property Name="Enabled" Value="False" /> 
-				<Property Name="Position" Value="x:0.2 y:0.9" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Bind" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Bind two compatible block points together." />
+			<Window Type='EmberLook/Button' Name='Bind'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.200000,0.000000},{0.900000,0.000000}}'/>
+				<Property Name='Enabled' Value='False'/>
+				<Property Name='Text' Value='Bind'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Bind two compatible block points together.'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Remove">
-				<Property Name="Enabled" Value="False" /> 
-				<Property Name="Position" Value="x:0.2 y:0.8" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Remove" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Remove a block from the construction." />
-			</Window>			
-			<Window Type="EmberLook/Button" Name="CreateNew">
-				<Property Name="Position" Value="x:0.4 y:0.9" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Create New" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Creates a new construction." />
+			<Window Type='EmberLook/Button' Name='Remove'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.200000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='Enabled' Value='False'/>
+				<Property Name='Text' Value='Remove'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Remove a block from the construction.'/>
 			</Window>
-			<Window Type="EmberLook/Editbox" Name="NewName">
-				<Property Name="Position" Value="x:0.6 y:0.9" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Tooltip" Value="Name of the new block (can be empty)." />
+			<Window Type='EmberLook/Button' Name='CreateNew'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.400000,0.000000},{0.900000,0.000000}}'/>
+				<Property Name='Text' Value='Create New'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Creates a new construction.'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Create">
-				<Property Name="Position" Value="x:0.8 y:0.9" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Create" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Enabled" Value="False" /> 
-				<Property Name="Tooltip" Value="Adds a block to the construction." />
+			<Window Type='EmberLook/Editbox' Name='NewName'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.600000,0.000000},{0.900000,0.000000}}'/>
+				<Property Name='Tooltip' Value='Name of the new block (can be empty).'/>
 			</Window>
-			
-			
-			
-						
-			<Window Type="EmberLook/Button" Name="SwitchMode">
-				<Property Name="Position" Value="x:0.0 y:0.9" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Switch mode" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Switches between normal mouse picking mode and block picking mode." />
+			<Window Type='EmberLook/Button' Name='Create'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.800000,0.000000},{0.900000,0.000000}}'/>
+				<Property Name='Text' Value='Create'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Enabled' Value='False'/>
+				<Property Name='Tooltip' Value='Adds a block to the construction.'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="File">
-				<Property Name="Position" Value="x:0.0 y:0.8" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="File" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Tooltip" Value="Show the file dialog." />
+			<Window Type='EmberLook/Button' Name='SwitchMode'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.900000,0.000000}}'/>
+				<Property Name='Text' Value='Switch mode'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Switches between normal mouse picking mode and block picking mode.'/>
 			</Window>
-		
+			<Window Type='EmberLook/Button' Name='File'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='Text' Value='File'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Show the file dialog.'/>
+			</Window>
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

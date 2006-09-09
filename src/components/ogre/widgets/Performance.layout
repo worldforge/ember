@@ -1,24 +1,22 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="SizingEnabled" Value="false" /> 
-		<Property Name="AbsolutePosition" Value="x:300 y:35" /> 
-		<Property Name="Size" Value="w:0.2 h:0.1" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Performance" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="AbsolutePosition" Value="x:5 y:15" /> 
-			<Property Name="Size" Value="w:0.96 h:0.96" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-		
-			<Window Type="EmberLook/MultiLineEditbox" Name="TextBox">
-				<Property Name="Position" Value="x:0 y:0" /> 
-				<Property Name="Size" Value="w:1 h:1" /> 
-				<Property Name="Text" Value="" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Alpha" Value="0.6" /> 
-				<Property Name="ReadOnly" Value="true" /> 
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.200000,0.000000},{0.100000,0.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,300.000000},{0.000000,35.000000}}'/>
+		<Property Name='SizingEnabled' Value='false'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Performance'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.960000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,15.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				<Property Name='Text' Value=''/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Alpha' Value='0.6'/>
+				<Property Name='ReadOnly' Value='true'/>
 			</Window>
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>

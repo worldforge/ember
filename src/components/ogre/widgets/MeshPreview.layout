@@ -1,110 +1,103 @@
-<?xml version="1.0" ?> 
-<GUILayout> 
-	<Window Type="EmberLook/FrameWindow" Name="MainWindow">
-		<Property Name="Position" Value="x:0.55 y:0.025" /> 
-		<Property Name="AbsoluteSize" Value="w:450 h:250" /> 
-		<Property Name="Alpha" Value="0.6" /> 
-		<Property Name="Text" Value="Mesh preview" />
-		<Window Type="DefaultGUISheet" Name="MainInnerWindow">
-			<Property Name="AbsolutePosition" Value="x:5 y:25" /> 
-			<Property Name="Size" Value="w:0.95 h:0.9" /> 
-			<Property Name="InheritsAlpha" Value="True" /> 
-			
-			
-			<Window Type="EmberLook/StaticText" Name="NameText">
-				<Property Name="AbsolutePosition" Value="x:0.0 y:0" /> 
-				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
-				<Property Name="Text" Value="Mesh name:" /> 
-				<Property Name="InheritsAlpha" Value="False" /> 
-				<Property Name="FrameEnabled" Value="False" /> 
-				<Property Name="BackgroundEnabled" Value="False" /> 
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.000000,450.000000},{0.000000,250.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.550000,0.000000},{0.025000,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Mesh preview'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedSize' Value='{{0.950000,0.000000},{0.900000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,25.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='NameText'>
+				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
+				<Property Name='Text' Value='Mesh name:'/>
+				<Property Name='InheritsAlpha' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/Editbox" Name="MeshName">
-				<Property Name="AbsolutePosition" Value="x:100.0 y:0" /> 
-				<Property Name="AbsoluteSize" Value="w:250 h:25" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
+			<Window Type='EmberLook/Editbox' Name='MeshName'>
+				<Property Name='UnifiedSize' Value='{{0.000000,250.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,100.000000},{0.000000,0.000000}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Create">
-				<Property Name="AbsolutePosition" Value="x:355 y:0" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Create" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Enabled" Value="False" /> 
+			<Window Type='EmberLook/Button' Name='Create'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,355.000000},{0.000000,0.000000}}'/>
+				<Property Name='Text' Value='Create'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Enabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/StaticText" Name="Meshes">
-				<Property Name="AbsolutePosition" Value="x:0.0 y:30" /> 
-				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
-				<Property Name="Text" Value="Mesh name:" /> 
-				<Property Name="InheritsAlpha" Value="False" /> 
-				<Property Name="FrameEnabled" Value="False" /> 
-				<Property Name="BackgroundEnabled" Value="False" /> 
+			<Window Type='EmberLook/StaticText' Name='Meshes'>
+				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,30.000000}}'/>
+				<Property Name='Text' Value='Mesh name:'/>
+				<Property Name='InheritsAlpha' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="CreatedMeshes">
-				<Property Name="AbsolutePosition" Value="x:0 y:60" /> 
-				<Property Name="AbsoluteSize" Value="w:150 h:100" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
+			<Window Type='EmberLook/Listbox' Name='CreatedMeshes'>
+				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,100.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,60.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
 			</Window>
-			<Window Type="EmberLook/StaticText" Name="ScaleText">
-				<Property Name="AbsolutePosition" Value="x:155 y:30" /> 
-				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
-				<Property Name="Text" Value="Scale" /> 
-				<Property Name="InheritsAlpha" Value="False" /> 
-				<Property Name="FrameEnabled" Value="False" /> 
-				<Property Name="BackgroundEnabled" Value="False" /> 
+			<Window Type='EmberLook/StaticText' Name='ScaleText'>
+				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,155.000000},{0.000000,30.000000}}'/>
+				<Property Name='Text' Value='Scale'/>
+				<Property Name='InheritsAlpha' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/VerticalSlider" Name="Scale">
-				<Property Name="AbsolutePosition" Value="x:160 y:60" /> 
-				<Property Name="AbsoluteSize" Value="w:10 h:120" /> 
-				<Property Name="MaximumValue" Value="10" /> 
-				<Property Name="Value" Value="1" /> 
+			<Window Type='EmberLook/VerticalSlider' Name='Scale'>
+				<Property Name='UnifiedSize' Value='{{0.000000,10.000000},{0.000000,120.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,160.000000},{0.000000,60.000000}}'/>
+				<Property Name='MaximumValue' Value='10'/>
+				<Property Name='Value' Value='1'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="Remove">
-				<Property Name="AbsolutePosition" Value="x:0 y:165" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Remove" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Enabled" Value="False" /> 
+			<Window Type='EmberLook/Button' Name='Remove'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,165.000000}}'/>
+				<Property Name='Text' Value='Remove'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Enabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/StaticText" Name="AnimationsText">
-				<Property Name="AbsolutePosition" Value="x:190 y:30" /> 
-				<Property Name="AbsoluteSize" Value="w:100 h:25" /> 
-				<Property Name="Text" Value="Animations" /> 
-				<Property Name="InheritsAlpha" Value="False" /> 
-				<Property Name="FrameEnabled" Value="False" /> 
-				<Property Name="BackgroundEnabled" Value="False" /> 
+			<Window Type='EmberLook/StaticText' Name='AnimationsText'>
+				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,190.000000},{0.000000,30.000000}}'/>
+				<Property Name='Text' Value='Animations'/>
+				<Property Name='InheritsAlpha' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="Animations">
-				<Property Name="AbsolutePosition" Value="x:190 y:60" /> 
-				<Property Name="AbsoluteSize" Value="w:150 h:100" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
+			<Window Type='EmberLook/Listbox' Name='Animations'>
+				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,100.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,190.000000},{0.000000,60.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="PlayAnimation">
-				<Property Name="AbsolutePosition" Value="x:350 y:60" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Play/Pause" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Enabled" Value="False" /> 
+			<Window Type='EmberLook/Button' Name='PlayAnimation'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,350.000000},{0.000000,60.000000}}'/>
+				<Property Name='Text' Value='Play/Pause'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Enabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/Button" Name="ResetAnimation">
-				<Property Name="AbsolutePosition" Value="x:350 y:90" /> 
-				<Property Name="AbsoluteSize" Value="w:75 h:25" /> 
-				<Property Name="Text" Value="Reset" /> 
-				<Property Name="InheritsAlpha" Value="True" /> 
-				<Property Name="Enabled" Value="False" /> 
+			<Window Type='EmberLook/Button' Name='ResetAnimation'>
+				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,350.000000},{0.000000,90.000000}}'/>
+				<Property Name='Text' Value='Reset'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Enabled' Value='False'/>
 			</Window>
-			<Window Type="EmberLook/Listbox" Name="AllMeshes">
-				<Property Name="AbsolutePosition" Value="x:200 y:60" /> 
-				<Property Name="AbsoluteSize" Value="w:150 h:100" /> 
-				<Property Name="InheritsAlpha" Value="false" /> 
-				<Property Name="SelectionMode" Value="RowSingle" /> 
-				<Property Name="Visible" Value="false" /> 
+			<Window Type='EmberLook/Listbox' Name='AllMeshes'>
+				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,100.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,200.000000},{0.000000,60.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='SelectionMode' Value='RowSingle'/>
+				<Property Name='Visible' Value='false'/>
 			</Window>
-
-			
-
-		
 		</Window>
 	</Window>
- </GUILayout> 
+</GUILayout>
