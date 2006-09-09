@@ -108,7 +108,7 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
             //if (!listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length()))					
             //if (!listener->queryResult(&worldFrag,  0))
 			//		    return;
-            listener->queryResult(&worldFrag,  0);
+            listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length());
         }
     }  
     else if (mask & RSQ_AllTerrain)
