@@ -205,6 +205,7 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 	
 	try {
 		mGuiSystem->injectMouseButtonUp(ceguiButton);
+		return false;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
@@ -226,20 +227,21 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 		}
-		return true;
+		return false;
 	} else if(button == Input::MouseWheelUp) {
 		try {
 			mGuiSystem->injectMouseWheelChange(1.0);
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 		}
-		return true;
+		return false;
 	} else {
 		return true;
 	}
 	
 	try {
 		mGuiSystem->injectMouseButtonDown(ceguiButton);
+		return false;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
