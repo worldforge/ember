@@ -219,7 +219,7 @@ class ConsoleBackend : public ConsoleObject
 	 * 
      * @param command the command string to process
      */ 
-    void runCommand(const std::string &command);
+    void runCommand(const std::string &command, bool addToHistory = true);
 	
     /**
      * Add a message to the console message queue.

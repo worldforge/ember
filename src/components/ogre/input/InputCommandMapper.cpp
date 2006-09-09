@@ -66,7 +66,7 @@ void InputCommandMapper::Input_EventKeyPressed(const SDL_keysym& key, Input::Inp
 		const std::string& command = getCommandForKey(key.sym);
 		if (command != "") {
 			Ember::ConsoleBackend* myBackend = Ember::ConsoleBackend::getMainConsole();
-			myBackend->runCommand(command);
+			myBackend->runCommand(command, false);
 		}
 	}
 }
@@ -82,7 +82,7 @@ void InputCommandMapper::Input_EventKeyReleased(const SDL_keysym& key, Input::In
 			Ember::ConsoleBackend* myBackend = Ember::ConsoleBackend::getMainConsole();
 			if (command[0] == '+') {
 				///remove the "+" and replace it with "-"
-				myBackend->runCommand("-" + std::string(command).erase(0, 1));
+				myBackend->runCommand("-" + std::string(command).erase(0, 1), false);
 			}
 		}
 	}

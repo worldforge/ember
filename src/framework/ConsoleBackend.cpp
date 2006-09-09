@@ -112,7 +112,7 @@ bool ConsoleBackend::onGotMessage(const std::string &message)
 
 void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *object, const std::string& description)
 {
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Registering: " << command << ENDM;
+	S_LOG_INFO("Registering: " << command);
 	
 	ConsoleObjectEntry entry;
 	entry.Object = object;
@@ -129,13 +129,13 @@ void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *
 
 void ConsoleBackend::deregisterCommand(const std::string &command)
 {
-  LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Deregistering: " << command << ENDM;
+	S_LOG_INFO("Deregistering: " << command);
 
   // Delete from the map
   myRegisteredCommands.erase(myRegisteredCommands.find(command));
 }
 
-void ConsoleBackend::runCommand(const std::string &command)
+void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 {
   if (command.empty()) return; // Ignore empty string
 
@@ -146,7 +146,7 @@ void ConsoleBackend::runCommand(const std::string &command)
   if ((c != '/' && c != '+' && c != '-')) {
     // Its a speech string, so SAY it
     // FIXME /say is not always available!
-    runCommand(std::string("/say ") + command);
+    runCommand(std::string("/say ") + command, addToHistory);
     return; 
   }
 
@@ -165,8 +165,10 @@ void ConsoleBackend::runCommand(const std::string &command)
   // Print all commands to the console
   // pushMessage(command_string);
 
-	mHistory.push_front(command);
-	mHistoryPosition = 0;
+	if (addToHistory) {
+		mHistory.push_front(command);
+		mHistoryPosition = 0;
+	}
   // If object exists, run the command
 	if (I != myRegisteredCommands.end() && I->second.Object != 0) {
 		I->second.Object->runCommand(cmd, args);
