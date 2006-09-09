@@ -233,98 +233,12 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 }
 
 
-
-// void AvatarController::checkMovementKeys(const FrameEvent & event, const Input& input)
-// {
-// 		//Real timePassed = event.timeSinceLastFrame;
-// 
-// 		Ogre::Vector3 movement = Ogre::Vector3::ZERO;
-// 		bool isMovement = false; 
-// 
-// 		// forwards / backwards
-// 		if(input.isKeyDown(mKeyCodeForForwardMovement))  // W also, and same for the rest
-// 		{
-// 			movement.x = 1; 	//scale this
-// 			isMovement = true;
-// 		}
-// 		else if(input.isKeyDown(mKeyCodeForBackwardsMovement))
-// 		{
-// 			movement.x = -1;		//scale
-// 			isMovement = true;
-// 		}
-// 
-// 		// strafe
-// 		if(input.isKeyDown(mKeyCodeForLeftMovement))
-// 		{
-// 			movement.z = -1;
-// 			isMovement = true;
-// 		}
-// 		else if(input.isKeyDown(mKeyCodeForRightMovement))
-// 		{
-// 			movement.z = 1;
-// 			isMovement = true;
-// 		}
-// 
-// 		// up down
-// 		if(input.isKeyDown(SDLK_PAGEUP))
-// 		{
-// 			movement.y = 1;
-// 			isMovement = true;
-// 		}
-// 		else if(input.isKeyDown(SDLK_PAGEDOWN))
-// 		{
-// 			movement.y = -1;
-// 			isMovement = true;
-// 		}
-// 		
-// 		movementForFrame.mode = mIsRunning ? AvatarMovementMode::MM_RUN : AvatarMovementMode::MM_WALK;
-// 		movementForFrame.isMoving = isMovement;
-// 		if(isMovement)
-// 		{
-// 			movementForFrame.movementDirection = movement;
-// 			
-// 		} else {
-// 			movementForFrame.movementDirection = Ogre::Vector3::ZERO;
-// 		}
-// }
-
 const AvatarControllerMovement & AvatarController::getCurrentMovement() const
 {
 	return movementForFrame;
 }
 
 
-/*
-void AvatarController::mouseMoved(short newX, short newY, short oldX, short oldY)
-{
-	//we don't need this
-}
-
-void AvatarController::mousePressed(unsigned char button)
-{
-	if (button == 0) {
-		mMouseButton0Pressed = true;
-	} else if (button == 1) {
-		mMouseButton1Pressed = true;
-	} else {
-		mMouseButton2Pressed = true;
-	}
-		
-//	fprintf(stderr, "PRESSED A MOUSE BUTTOn\n");
-}
-
-void AvatarController::mouseReleased(unsigned char button)
-{
-	if (button == 0) {
-		mMouseButton0Pressed = false;
-	} else if (button == 1) {
-		mMouseButton1Pressed = false;
-	} else {
-		mMouseButton2Pressed = false;
-	}
-//	fprintf(stderr, "RELEASED A MOUSE BUTTOn\n");
-}
-*/
 AvatarCamera* AvatarController::getAvatarCamera() const
 {
 	return mAvatarCamera;	

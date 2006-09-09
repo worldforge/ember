@@ -597,7 +597,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 				
 			}
 			 else if (cameraHeight != cameraNodeHeight) {
-				Ogre::Real newHeight = std::max<int>(terrainHeight, cameraNodeHeight);
+				Ogre::Real newHeight = std::max<Ogre::Real>(terrainHeight, cameraNodeHeight);
 				mCamera->move(Ogre::Vector3(0,newHeight - cameraHeight,0));
 				mCamera->lookAt(mAvatarCameraRootNode->getWorldPosition());
 				
