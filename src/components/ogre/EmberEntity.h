@@ -130,7 +130,7 @@ public:
 	 * This should of course be extended to a more dynamic physics simulation
 	 * in the future
 	 */
-	virtual void adjustPositionForContainedNode(EmberEntity* const entity);
+	virtual void adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position);
 
 
 	/**
@@ -139,7 +139,8 @@ public:
 	 * adjustPositionForContainedNode method.
 	 */
 	virtual void adjustPosition(); 
-	
+	virtual void adjustPosition(const Ogre::Vector3& position);
+
 	/**
 	 * return the scenenode to which this entity belongs
 	 */
@@ -240,6 +241,12 @@ public:
 	 * @return 
 	 */
 	std::vector<std::string> getDefaultUseOperators();
+	
+	
+	/**
+	 *    Synchronizes the position and orientation of the entity with the server.
+	 */
+	void synchronizeWithServer();
 
 protected: 
 

@@ -195,10 +195,9 @@ void WorldEmberEntity::updateTerrain(const Atlas::Message::Element& terrain)
 	mTerrainGenerator->updateTerrain(pointStore);
 }
 
-void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
+void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position)
 {
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	const Ogre::Vector3& position = sceneNode->getPosition();
 	
 	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
@@ -218,7 +217,7 @@ void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity)
 //		TerrainPosition pos(entity->getPredictedPos().x(), entity->getPredictedPos().y());
 		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
 		float height = mTerrainGenerator->getHeight(pos);*/
-		EmberEntity::adjustPositionForContainedNode(entity);
+		EmberEntity::adjustPositionForContainedNode(entity, position);
 		//sceneNode->setPosition(getOffsetForContainedNode(position, entity));
 	}
 

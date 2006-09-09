@@ -131,15 +131,9 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 {
 	Eris::Entity::init(ge, fromCreateOp);
 	
+	synchronizeWithServer();
 	
 	// set the Ogre node position and orientation based on Atlas data
-	if (getPosition().isValid()) {
-		getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
-		adjustPosition();
-	}
-	if (getOrientation().isValid()) {
-		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-	}
 	std::stringstream ss;
 	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 	S_LOG_VERBOSE( ss.str());
@@ -151,6 +145,18 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 		
 	mIsInitialized = true;
 	
+}
+
+void EmberEntity::synchronizeWithServer()
+{
+	if (getPosition().isValid()) {
+		getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+		adjustPosition();
+	}
+	if (getOrientation().isValid()) {
+		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+	}
+
 }
 
 
@@ -310,12 +316,19 @@ void EmberEntity::setVisible(bool visible)
 
 void EmberEntity::adjustPosition()
 {
+	if (getPredictedPos().isValid()) {
+		adjustPosition(Atlas2Ogre( getPredictedPos() ));
+	}
+}
+
+void EmberEntity::adjustPosition(const Ogre::Vector3& position)
+{
 	if (mMovementMode == MM_FIXED) {
 
 	} else {
 		EmberEntity* container = getEmberLocation();
 		if (container) {
-			container->adjustPositionForContainedNode(this);
+			container->adjustPositionForContainedNode(this, position);
 		}
 	}	
 }
@@ -336,14 +349,14 @@ const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3&
 
 
 
-void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity) 
+void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position) 
 {
 
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
 	//Ogre::Vector3 position = sceneNode->getPosition();
-	const Ogre::Vector3& offset = getOffsetForContainedNode(sceneNode->getPosition(), entity);
+	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
 	if (offset != Ogre::Vector3::ZERO) {
-		sceneNode->setPosition(Atlas2Ogre( entity->getPredictedPos() ) + offset);
+		sceneNode->setPosition(position + offset);
 	}
 	
 }
