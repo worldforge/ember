@@ -1,3 +1,46 @@
+2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.conf: esc doesn't quit; it's too useful to reserve for cancelling game operations
+	* TODO: updates
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h: added ability to move entities
+
+2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: use the EntityMovementManager which allows for entity to be moved
+
+2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRaySceneQuery.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRenderable.cpp: reapply ember tweaks
+	
+2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUICEGUIAdapter.cpp: after sending input data to the cegui system, exit the input system, else if another adapter would be added in the same loop this adapter would recieve duplicate input events
+	
+2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: added ability to adjust the entity to an arbitrary position, not just the position of the eris entity
+
+2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarController.cpp: code cleanup
+
+2006-09-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/manipulation/EntityMoveAdapter.cpp, src/components/ogre/manipulation/EntityMoveAdapter.h, src/components/ogre/manipulation/EntityMoveManager.cpp, src/components/ogre/manipulation/EntityMoveManager.h, src/components/ogre/manipulation/EntityMover.cpp, src/components/ogre/manipulation/EntityMover.h, src/components/ogre/manipulation/IEntityMoveBridge.h, src/components/ogre/manipulation/Makefile.am, configure.ac, src/components/ogre/Makefile.am: added functionality for moving entities
+
+2006-09-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/server/ServerService.cpp, src/services/server/ServerService.h: added the option of setting the orientation of an entity when placing it. Since Eris doesn't allow for this yet in its place method we have to use low level Atlas here instead.
+
+2006-09-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/ConsoleBackend.cpp, src/framework/ConsoleBackend.h: added option to not add command to the history
+	* src/components/ogre/input/InputCommandMapper.cpp: don't add input mapped commands to the history (for example all movement commands)
+
+2006-09-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Chat.layout, src/components/ogre/widgets/ConsoleWidget.xml, src/components/ogre/widgets/Debug.layout, src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/Give.layout, src/components/ogre/widgets/HelpWidget.xml, src/components/ogre/widgets/IngameChatWidget.xml, src/components/ogre/widgets/InspectWidget.xml, src/components/ogre/widgets/InventoryWidget.xml, src/components/ogre/widgets/JesusEdit.widget, src/components/ogre/widgets/JesusEditFile.widget, src/components/ogre/widgets/JesusEditPreview.widget, src/components/ogre/widgets/MakeEntityWidget.xml, src/components/ogre/widgets/MeshPreview.widget, src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/Performance.layout, src/components/ogre/widgets/Quit.widget, src/components/ogre/widgets/ScriptEdit.layout, src/components/ogre/widgets/ServerBrowser.layout, src/components/ogre/widgets/ServerWidget.xml, src/components/ogre/widgets/Tasks.layout, src/components/ogre/widgets/TerrainEditor.layout: use only the unified coordinate system, in preparation for CEGUI 0.5.0
+
 2006-09-08 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings

@@ -109,6 +109,9 @@ void InspectWidget::buildWidget()
 	button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"));
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click);
 	
+	button = static_cast<CEGUI::PushButton*>(getWindow("MoveEntity"));
+	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::MoveEntity_Click);
+	
 		
 /*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
 }
@@ -239,6 +242,14 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	
 	
 }
+
+bool InspectWidget::MoveEntity_Click(const CEGUI::EventArgs& args)
+{
+	mGuiManager->EmitEntityAction("move", mCurrentEntity);
+
+	return true;
+}
+
 
 bool InspectWidget::ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args)
 {
