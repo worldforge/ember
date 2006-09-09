@@ -636,8 +636,13 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  			return;
  		}
    	}   		
+	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
+	{
+		///use the existing orientation
+		place(entity, target, pos, entity->getOrientation( ));
+	}
 	
-	void ServerService::place(Eris::Entity* entity, Eris::Entity* target)
+	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
    	{
  		if(!myAvatar || !myAvatar->getEntity()) {
  			// TODO: redesign so that this doesn't happen
@@ -645,7 +650,22 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
  			return;
  		}
  		try {
- 			myAvatar->place(entity, target);
+ 			/// we want to do orientation too so we can't use the Avatar::place method until that's updated
+			Atlas::Objects::Entity::Anonymous what;
+			what->setLoc(target->getId());
+			what->setPosAsList(Atlas::Message::Element(pos.toAtlas()).asList());
+			what->setAttr("orientation", orient.toAtlas());			
+			
+			what->setId(entity->getId());
+		
+			Atlas::Objects::Operation::Move moveOp;
+			moveOp->setFrom(myAvatar->getEntity()->getId());
+			moveOp->setArgs1(what);
+		
+			myConn->send(moveOp);	
+ 		
+ 		
+// 			myAvatar->place(entity, target, pos, orient);
  		}
  		catch (const Eris::BaseException& except)
  		{

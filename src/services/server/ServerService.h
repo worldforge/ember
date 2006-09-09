@@ -148,7 +148,8 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	void say(const std::string &message);
 	void touch(Eris::Entity* entity);
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
-	void place(Eris::Entity* entity, Eris::Entity* target);
+	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
+	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
 	void wield(Eris::Entity* entity);
 	void take(Eris::Entity* entity);
 	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
