@@ -1,5 +1,5 @@
-SUBDIRS = environment model SceneManagers input widgets \
-				carpenter jesus ogreopcode scripting cegui sound
+SUBDIRS = environment model SceneManagers input widgets 				carpenter jesus \
+	ogreopcode scripting cegui sound manipulation
 
 #gamesdir = $(bindir)/games
 bin_PROGRAMS = ember.bin
@@ -63,6 +63,7 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a \
 	$(top_builddir)/src/components/ogre/jesus/libJesus.a \
+	$(top_builddir)/src/components/ogre/manipulation/libmanipulation.a \
 	$(top_builddir)/src/components/ogre/sound/libSound.a \
 	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
@@ -78,7 +79,7 @@ ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
 	EmberPhysicalEntity.cpp EmberEntity.cpp 				AvatarEmberEntity.cpp WorldEmberEntity.cpp \
 	TerrainPage.cpp TerrainArea.cpp 				EmberEntityUserObject.cpp GUICEGUIAdapter.cpp \
 	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp TerrainEditor.cpp \
-	EntityWorldPickListener.cpp OgreSetup.cpp
+	EntityWorldPickListener.cpp OgreSetup.cpp 
 
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
