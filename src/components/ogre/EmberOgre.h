@@ -93,6 +93,8 @@ class OgreResourceLoader;
 
 class OgreLogObserver;
 
+class EntityMoveManager;
+
 
 
 
@@ -307,6 +309,7 @@ protected:
 	MotionManager* mMotionManager;
 	GUIManager* mGUIManager;  
 	Model::ModelDefinitionManager* mModelDefinitionManager;
+	EntityMoveManager* mMoveManager;
 	
 	/**
 	when this is fale the app will exit

@@ -91,6 +91,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "MotionManager.h"
 #include "AvatarCamera.h"
 #include "GUIManager.h"
+#include "manipulation/EntityMoveManager.h"
 
 
 #include "EmberEntity.h"
@@ -153,61 +154,6 @@ namespace EmberOgre {
 		}
 	}
 
-// // TODO: move CerrLogObserver to its own class (under Logging service, or under Framework)
-//   class CerrLogObserver: public Ember::LoggingService::Observer
-//     {
-//     public:
-//         CerrLogObserver()
-//         {
-//         }
-// 
-//         virtual void onNewMessage(const std::string & message, const std::string & file, const int & line,
-//                                   const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
-//         {
-//             tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
-// 		
-// 	    std::cerr.fill('0');
-//             std::cerr << "[";
-// 	    std::cerr.width(2);
-// 	    std::cerr << (ctm->tm_year/*+1900*/)%100 << "-";
-// 	    std::cerr.width(2);
-// 	    std::cerr << ctm->tm_mon+1 << "-";
-// 	    std::cerr.width(2);
-// 	    std::cerr << ctm->tm_mday << " ";
-// 	    std::cerr.width(2);
-// 	    std::cerr << ctm->tm_hour << ":";
-// 	    std::cerr.width(2);
-// 	    std::cerr <<  ctm->tm_min << ":";
-// 	    std::cerr.width(2);
-// 	    std::cerr << ctm->tm_sec << "] ";
-// 	    std::cerr  << "[File: " << file << ", Line #:" <<  line << "] (";
-// 
-//             if(importance == Ember::LoggingService::CRITICAL)
-//                 {
-//                     std::cerr << "CRITICAL";
-//                 }
-//             else  if(importance == Ember::LoggingService::FAILURE)
-//                 {
-//                     std::cerr << "FAILURE";
-//                 }
-//             else if(importance == Ember::LoggingService::WARNING)
-//                 {
-//                     std::cerr << "WARNING";
-//                 }
-//             else if(importance == Ember::LoggingService::INFO)
-//                 {
-//                     std::cerr << "INFO";
-//                 }
-// 	    else
-//                 {
-//                     std::cerr << "VERBOSE";
-//                 }
-//             std::cerr << ") " <<message << std::endl;
-//         }
-// 
-//     private:
-// 
-//     };
     
 
 EmberOgre::EmberOgre() :
@@ -463,6 +409,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 //	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
+	mMoveManager = new EntityMoveManager();
 
 
 
