@@ -54,6 +54,9 @@ namespace EmberOgre {
 /*template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
 
+ServerWidget::ServerWidget() : mModelPreviewRenderer(0)
+{
+}
 
 
 ServerWidget::~ServerWidget()
@@ -288,11 +291,13 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 		std::string type = item->getText().c_str();
 		mNewChar.type = type;
 		
-		///update the model preview window
-		mModelPreviewRenderer->showModel(type);
-		//mModelPreviewRenderer->showFull();
-		///we want to zoom in a little
-		mModelPreviewRenderer->setCameraDistance(0.7);
+		if (mModelPreviewRenderer) {
+			///update the model preview window
+			mModelPreviewRenderer->showModel(type);
+			//mModelPreviewRenderer->showFull();
+			///we want to zoom in a little
+			mModelPreviewRenderer->setCameraDistance(0.7);
+		}
 	}
 	updateNewCharacter();
 	return true;

@@ -58,6 +58,7 @@ class ServerWidget : public Widget
 {
 public:
 
+    ServerWidget();
     ~ServerWidget();
 	virtual void buildWidget();
 
