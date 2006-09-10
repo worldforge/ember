@@ -146,6 +146,7 @@ public:
 	EmberEntityFactory* getEntityFactory() const;
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
+	inline EntityMoveManager* getMoveManager() const;
 	inline Input& getInput();
 	
 	/**
@@ -335,6 +336,7 @@ protected:
 };
 
 Input& EmberOgre::getInput() { return mInput;}
+EntityMoveManager* EmberOgre::getMoveManager() const {return mMoveManager;}
 
 
 }
