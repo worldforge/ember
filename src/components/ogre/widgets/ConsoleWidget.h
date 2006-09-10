@@ -70,8 +70,15 @@ public:
 	 * @param args 
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
+	
+	
+	/**
+	 *    Puts the focus on the console, allowing for input.
+	 */
+	void focus();
 		
 	const Ember::ConsoleCommandWrapper ToggleConsole;
+	const Ember::ConsoleCommandWrapper ConsoleFocus;
 	
 protected:
 	CEGUI::MultiLineEditbox* mConsoleTextBox;

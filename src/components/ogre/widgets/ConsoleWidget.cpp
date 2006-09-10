@@ -28,7 +28,9 @@
 namespace EmberOgre {
 
 
-ConsoleWidget::ConsoleWidget() : mSpeedOfWindow(0.4), ToggleConsole("toggle_console", this, "Toggles the console.")
+ConsoleWidget::ConsoleWidget() : mSpeedOfWindow(0.4), 
+ToggleConsole("toggle_console", this, "Toggles the console."),
+ConsoleFocus("console_focus", this, "Put the focus on the console and allow for text to be input.")
 {
 }
 
@@ -53,6 +55,10 @@ void ConsoleWidget::buildWidget()
 	
 }
 	
+void ConsoleWidget::focus()
+{
+	mInputBox->activate();
+}
 
 void ConsoleWidget::frameStarted(const Ogre::FrameEvent & event)
 {
@@ -107,9 +113,11 @@ bool ConsoleWidget::pushMessage(const std::string& message)
 
 void ConsoleWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == ToggleConsole.getCommand())
+	if(ToggleConsole == command)
 	{
 		toggleActive();
+	} else if (ConsoleFocus == command) {
+		focus();
 	} else {
 		Widget::runCommand(command, args);
 	}
