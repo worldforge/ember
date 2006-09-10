@@ -1,6 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="birch" usescaleof="height"  >
+	<model name="birch" usescaleof="height" scale="2" renderingdistance="200" >
 		<submodels>
 			<submodel mesh="3d_objects/plants/tree/models/Straight_up_tree/Straight_up_tree.mesh" >
 				<parts>

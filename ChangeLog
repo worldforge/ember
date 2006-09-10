@@ -1,5 +1,9 @@
 2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml: updated media
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: better clean up
 
 2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
