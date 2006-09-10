@@ -34,6 +34,7 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr):
 SetSunPosition("setsunposition", this, "Set the position of the sun.")
 ,SetSunColour("setsuncolour", this, "Set the colour of the sun.")
 ,SetAmbientLight("setambientlight", this, "Set the ambient light of the world.")
+,mLensFlare(Ogre::Vector3(-500,300,-350), camera, sceneMgr)
 {
 	mSun = sceneMgr->createLight("SunLight");
 	mSun->setType(Ogre::Light::LT_DIRECTIONAL);
@@ -41,12 +42,12 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 	mSunNode->attachObject(mSun);
   
 ///disable for now
-/*	try {
-		Ogre::ParticleSystem* sunParticle = Ogre::ParticleSystemManager::getSingleton().createSystem("Sun", "Space/Sun"); 
-		mSunNode->attachObject(sunParticle);   
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Error when creating sun. Message: " << ex.getFullDescription());
-	}*/
+// 	try {
+// 		Ogre::ParticleSystem* sunParticle = sceneMgr->createParticleSystem("Sun", "Space/Sun"); 
+// 		mSunNode->attachObject(sunParticle);   
+// 	} catch (const Ogre::Exception& ex) {
+// 		S_LOG_FAILURE("Error when creating sun. Message: " << ex.getFullDescription());
+// 	}
 	
 	setSunPosition(Ogre::Vector3(-500,300,-350));
 	setSunColour(Ogre::ColourValue(1, 1, 0.7)); //yellow
@@ -57,11 +58,16 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 	//  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
 	setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 	
+	Ogre::Root::getSingleton().addFrameListener(this);
+	mLensFlare.setVisible(true);
+
 }
 
 
 Sun::~Sun()
 {
+	Ogre::Root::getSingleton().removeFrameListener(this);
+
 }
 
 void Sun::runCommand(const std::string &command, const std::string &args)
@@ -112,6 +118,14 @@ void Sun::runCommand(const std::string &command, const std::string &args)
 	
 	}
 }
+	
+bool Sun::frameEnded(const Ogre::FrameEvent & event)
+{
+	mLensFlare.update();
+	return true;
+}
+
+
 
 void Sun::setSunPosition(const Ogre::Vector3& position) {
 	//mSun->setPosition(position);
@@ -119,11 +133,14 @@ void Sun::setSunPosition(const Ogre::Vector3& position) {
 	Ogre::Vector3 dir = -mSunNode->getPosition();
 	dir.normalise();
 	mSun->setDirection(dir);
+	mLensFlare.setLightPosition(position);
 	EventUpdatedSunPosition.emit(this, position);
 }
 
 void Sun::setSunColour(const Ogre::ColourValue& colour) {
 	mSun->setDiffuseColour(colour);
+	mLensFlare.setBurstColour(colour);
+	mLensFlare.setHaloColour(colour);
 	EventUpdatedSunColour.emit(this, colour);
 }
 

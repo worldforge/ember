@@ -30,12 +30,16 @@
 
 #include "framework/ConsoleObject.h"
 
+#include "LensFlare.h"
+
 namespace EmberOgre {
 
 /**
 @author Erik Hjortsberg
 */
-class Sun : public Ember::ConsoleObject
+class Sun : 
+public Ember::ConsoleObject
+, public Ogre::FrameListener
 {
 public:
     Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
@@ -89,10 +93,14 @@ public:
 	 */
 	void setAmbientLight(const Ogre::ColourValue& colour);
 	
+	
+	virtual bool frameEnded(const Ogre::FrameEvent & event);
+	
 protected:
 	Ogre::Light* mSun;
 	
 	Ogre::SceneNode* mSunNode;
+	LensFlare mLensFlare;
 
 };
 
