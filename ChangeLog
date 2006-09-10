@@ -1,3 +1,85 @@
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: better clean up
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.h: added click mask for renderables that we don't want to be clickable
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.h: added accessor for the EntityMovementManager
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreResourceLoader.cpp: check for both a directory and a file for those instances where we're trying to load a zip file
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/StreamLogObserver.cpp: don't write file name unless in verbose mode; this will help to keep log file size down
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/osdir.h: added a more sane way of checking whether a directory exists than just to check for null pointer
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: to prevent the tabbable windows functioanlity from clashing with other mappings of the tab key, suppress further input event processing when tab i pressed
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.xml: provide better output
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ModelEdit.layout: fixed typo
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.h, src/components/ogre/widgets/MakeEntityWidget.xml: added preview texture
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ModelRenderer.cpp: added extra null checks
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h: added extra null checks
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua: added "move" to the meny
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/widgets/Mover.layout, src/components/ogre/widgets/Mover.lua, src/components/ogre/widgets/Bootstrap.lua: added a simple help text for movement operations
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ConsoleWidget.cpp, src/components/ogre/widgets/ConsoleWidget.h, ember.conf: added command for getting focus, and bind it to tab when in GUI mode
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/EntityMoveManager.pkg: updated bindings
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: reimplement setRenderingDistance to make it work with the SubModels
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/manipulation/EntityMoveAdapter.cpp, src/components/ogre/manipulation/EntityMoveAdapter.h, src/components/ogre/manipulation/EntityMoveAdjuster.cpp, src/components/ogre/manipulation/EntityMoveAdjuster.h, src/components/ogre/manipulation/EntityMoveManager.cpp, src/components/ogre/manipulation/EntityMoveManager.h, src/components/ogre/manipulation/EntityMover.cpp, src/components/ogre/manipulation/EntityMover.h, src/components/ogre/manipulation/Makefile.am: 
+		* added some signals for movement events
+		* added EntityMoveAdapter which adjusts moved entities which the server didn't allow movement for, so that they snap back to their original position
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h: added method for suppressing further processing of a current event. This is useful for letting event handling code cancel out further event handling which might be disruptive (for example the tab-support in Widget versus the tab-leads-to-console-focus functionality)
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/LensFlare.cpp, src/components/ogre/environment/LensFlare.h, src/components/ogre/environment/Makefile.am, src/components/ogre/environment/Sun.cpp, src/components/ogre/environment/Sun.h: added lens flare effect
+
 2006-09-09 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* ember.conf: esc doesn't quit; it's too useful to reserve for cancelling game operations

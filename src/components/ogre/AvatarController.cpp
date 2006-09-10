@@ -86,7 +86,9 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mMovementCommandMapper.bindToInput(EmberOgre::getSingleton().getInput());
 }
 AvatarController::~AvatarController()
-{}
+{
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
 
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {

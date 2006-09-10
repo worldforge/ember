@@ -87,7 +87,7 @@ public:
 	virtual ~AvatarController();
 
 
-	bool frameStarted(const Ogre::FrameEvent & event);
+	virtual bool frameStarted(const Ogre::FrameEvent & event);
 	
 	
 	/**
