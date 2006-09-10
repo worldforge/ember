@@ -39,6 +39,7 @@ namespace oslink
 			directory(const std::string&)		{ }
 			operator void*() const				{ return (void*)0; }
 			std::string next()					{ return ""; }
+			bool isExisting()					{return false;}
 	};
 }
 
@@ -75,6 +76,10 @@ namespace oslink
 				{
 					return willfail ? (void*)0:(void*)(-1);
 				}
+			bool isExisting()
+			{
+				return !willfail;
+			}
 			std::string next()
 				{
 					std::string prev(current);
@@ -134,6 +139,10 @@ namespace oslink
 				{
 					return willfail ? (void*)0:(void*)(-1);
 				}
+			bool isExisting()
+			{
+				return !willfail;
+			}
 			std::string next()
 				{
 					std::string prev = current;
