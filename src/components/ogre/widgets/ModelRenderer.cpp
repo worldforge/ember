@@ -52,10 +52,12 @@ void ModelRenderer::setModel(Model::Model* model)
 	Ogre::SceneNode* node = mTexture->getSceneNode();
 	
 	node->detachAllObjects();
-	node->attachObject(model);
-	mTexture->repositionCamera();
-	if (mAutoShowFull) {
-		showFull();
+	if (model) {
+		node->attachObject(model);
+		mTexture->repositionCamera();
+		if (mAutoShowFull) {
+			showFull();
+		}
 	}
 	
 }
@@ -70,10 +72,17 @@ void ModelRenderer::showModel(const std::string& modelName)
 	if (mModel) {
 		delete mModel;
 	}
-	mModel = new Model::Model();
-	mModel->create(modelName);
-	setModel(mModel);
-	mTexture->setActive(true);
+	if (modelName != "") {
+		mModel = new Model::Model();
+		mModel->create(modelName);
+		///override the rendering distance from the model; we want to always show it in the preview
+		mModel->setRenderingDistance(0);
+		setModel(mModel);
+		mTexture->setActive(true);
+	} else {
+		setModel(0);
+		mTexture->setActive(false);
+	}
 }
 
 
