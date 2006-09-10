@@ -30,17 +30,18 @@
 namespace EmberOgre {
 
 class IEntityMoveBridge;
+class EntityMoveManager;
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 	@author Lennart Sauerbeck
 
-	Provides an adapter for moving Objects in the world.
+	Provides an adapter for moving objects in the world.
 */
 class EntityMoveAdapter : public IInputAdapter {
 public:
 
-	EntityMoveAdapter();
+	EntityMoveAdapter(EntityMoveManager* manager);
 	~EntityMoveAdapter();
 
 	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
@@ -50,15 +51,34 @@ public:
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);
 
+	/**
+	 *    Attaches the adapter to the suppied IEntityMoveBridge, allowing it to be moved. This will activate the adapter.
+	 * @param bridge 
+	 */
 	void attachToBridge(IEntityMoveBridge* bridge);
+	
+	/**
+	 *    Detaches the adapter from the current bridge. This will deactive the adapter.
+	 */
 	void detach();
 
 private:
 	void removeAdapter();
 	void addAdapter();
 	
+	/**
+	 *    Cancels the current movement, returning the IEntityMoveBridge to it's original place.
+	 */
+	void cancelMovement();
+	/**
+	 *    Finalizes the current movement, sending updates for the IEntityMoveBridge to the server.
+	 */
+	void finalizeMovement();
+	
+	
 	IEntityMoveBridge* mBridge;
 	float mMovementSpeed;
+	EntityMoveManager* mManager;
 	
 };
 

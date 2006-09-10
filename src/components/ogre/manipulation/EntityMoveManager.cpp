@@ -30,10 +30,12 @@
 #include "../EmberOgre.h"
 
 
+
 namespace EmberOgre {
 
+
 EntityMoveManager::EntityMoveManager() :
-Move("move", this, "Moves an entity.")
+Move("move", this, "Moves an entity."), mMoveAdapter(this), mAdjuster(this)
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }
@@ -51,6 +53,7 @@ void EntityMoveManager::startMove(EmberEntity* entity)
 {
 	EntityMover* mover = new EntityMover(entity);
 	mMoveAdapter.attachToBridge(mover);
+	EventStartMoving.emit(entity);
 }
 
 void EntityMoveManager::runCommand(const std::string &command, const std::string &args)

@@ -44,15 +44,19 @@ const WFMath::Point<3>& EntityMover::getPosition() const
 }
 void EntityMover::setPosition(const WFMath::Point<3>& position)
 {
-	mEntity->getSceneNode()->setPosition(Atlas2Ogre(position));
-	///adjust it so that it moves according to the ground for example
-	mEntity->adjustPosition(mEntity->getSceneNode()->getPosition());
+	if (position.isValid()) {
+		mEntity->getSceneNode()->setPosition(Atlas2Ogre(position));
+		///adjust it so that it moves according to the ground for example
+		mEntity->adjustPosition(mEntity->getSceneNode()->getPosition());
+	}
 }
 void EntityMover::move(const WFMath::Vector<3> directionVector)
 {
-	mEntity->getSceneNode()->translate(Atlas2Ogre(directionVector));
-	///adjust it so that it moves according to the ground for example
-	mEntity->adjustPosition(mEntity->getSceneNode()->getPosition());
+	if (directionVector.isValid()) {
+		mEntity->getSceneNode()->translate(Atlas2Ogre(directionVector));
+		///adjust it so that it moves according to the ground for example
+		mEntity->adjustPosition(mEntity->getSceneNode()->getPosition());
+	}
 }
 void EntityMover::setRotation (int axis, WFMath::CoordType angle)
 {
@@ -66,7 +70,9 @@ void EntityMover::yaw(WFMath::CoordType angle)
 
 void EntityMover::setOrientation(const WFMath::Quaternion& rotation)
 {
-	mEntity->getSceneNode()->setOrientation(Atlas2Ogre(rotation));
+	if (rotation.isValid()) {
+		mEntity->getSceneNode()->setOrientation(Atlas2Ogre(rotation));
+	}
 }
 
 void EntityMover::finalizeMovement()

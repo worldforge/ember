@@ -27,18 +27,28 @@
 #include "../EmberOgrePrerequisites.h"
 #include "framework/ConsoleObject.h"
 #include "EntityMoveAdapter.h"
+#include "EntityMoveAdjuster.h"
 
 namespace EmberOgre {
 
 class EmberEntity;
+class EntityMoveManager;
 
-class EntityMoveManager : public Ember::ConsoleObject
+
+/**
+Responsible for allowing movement of entities in the world by the user.
+*/
+class EntityMoveManager : public Ember::ConsoleObject, public sigc::trackable
 {
 public:
 	EntityMoveManager();
 
 	const Ember::ConsoleCommandWrapper Move;
 
+	/**
+	 *    Starts moving of an entity.
+	 * @param entity 
+	 */
 	void startMove(EmberEntity* entity);
 	
 	/**
@@ -47,11 +57,40 @@ public:
 	 * @param args 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
+	
+	/**
+	* Emitted when the movement of an entity starts
+	*/
+	sigc::signal<void, EmberEntity*> EventStartMoving;
+	
+	/**
+	* Emitted when the movement of an entity has finished.
+	*/
+	sigc::signal<void> EventFinishedMoving;
+	
+	/**
+	* Emitted when the movement of an entity has been cancelled.
+	*/
+	sigc::signal<void> EventCancelledMoving;
 
 protected:
+	/**
+	Main adapter which will intercept mouse and keyboard input to allow for movement of an entity.
+	*/
 	EntityMoveAdapter mMoveAdapter;
 
+
+	/**
+	 *    Listen for entityActions from the gui ("move").
+	 * @param action 
+	 * @param entity 
+	 */
 	void GuiManager_EntityAction(const std::string& action, EmberEntity* entity);
+	
+	/**
+	Responsible for making sure that entities that cannot be moved are returned to their correct place.
+	*/
+	EntityMoveAdjuster mAdjuster;
 
 };
 

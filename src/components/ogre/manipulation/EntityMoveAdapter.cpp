@@ -23,6 +23,7 @@
 #include "EntityMoveAdapter.h"
 #include "../EmberOgre.h"
 #include "IEntityMoveBridge.h"
+#include "EntityMoveManager.h"
 #include "../AvatarCamera.h"
 #include "../GUIManager.h"
 
@@ -30,21 +31,40 @@ using namespace WFMath;
 
 namespace EmberOgre {
 
-EntityMoveAdapter::EntityMoveAdapter()
-: mMovementSpeed(10)
+EntityMoveAdapter::EntityMoveAdapter(EntityMoveManager* manager)
+: mMovementSpeed(10), mManager(manager), mBridge(0)
 {}
 
 EntityMoveAdapter::~EntityMoveAdapter()
 {}
+
+void EntityMoveAdapter::finalizeMovement()
+{
+	mBridge->finalizeMovement();
+	removeAdapter();
+	mManager->EventFinishedMoving.emit();
+}
+
+void EntityMoveAdapter::cancelMovement()
+{
+	mBridge->cancelMovement();
+	removeAdapter();
+	mManager->EventCancelledMoving.emit();
+}
 
 bool EntityMoveAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	///this will move the entity instead of the mouse
 	
 	Vector<3> direction;
+	direction.zero();
 	direction.x() = -motion.xRelativeMovement;
 	direction.y() = motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
+	///hard coded to allow the shift button to increase the speed
+	if (EmberOgre::getSingleton().getInput().isKeyDown(SDLK_RSHIFT) || EmberOgre::getSingleton().getInput().isKeyDown(SDLK_LSHIFT)) {
+		direction = direction * 5;
+	}
 	
 	///move it relative to the camera
 	direction = direction.rotate(Ogre2Atlas(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
@@ -61,9 +81,7 @@ bool EntityMoveAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
-		mBridge->finalizeMovement();
-
-		removeAdapter();
+		finalizeMovement();
 	}
 	else if(button == Input::MouseButtonRight)
 	{
@@ -114,8 +132,7 @@ bool EntityMoveAdapter::injectKeyDown(const SDLKey& key)
 bool EntityMoveAdapter::injectKeyUp(const SDLKey& key)
 {
 	if (key == SDLK_ESCAPE) {
-		mBridge->cancelMovement();
-		removeAdapter();
+		cancelMovement();
 		return false;
 	}
 	return true;
@@ -133,20 +150,6 @@ void EntityMoveAdapter::detach()
 	mBridge = 0;
 	removeAdapter();
 }
-// void EntityMoveAdapter::attachToEntity(EmberEntity* entity)
-// {
-// 	mEntity = entity;
-// 	addAdapter();
-// }
-// 
-// void EntityMoveAdapter::dettachFromEntity()
-// {
-// 	if (mEntity) {
-// 		mEntity = 0;
-// 		removeAdapter();
-// 	}
-// }
-
 
 void EntityMoveAdapter::removeAdapter()
 {
