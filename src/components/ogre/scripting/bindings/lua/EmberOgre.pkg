@@ -41,6 +41,8 @@ $pfile "EntityWorldPickListener.pkg"
 
 $pfile "ModelDefinitionManager.pkg"
 
+$pfile "EntityMoveManager.pkg"
+
 $pfile "stdlib.pkg"
 
 
@@ -70,6 +72,7 @@ class EmberOgre
 	EmberEntityFactory* getEntityFactory() const;
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
+	EntityMoveManager* getMoveManager() const;
 	Input& getInput();
 	
 	EmberEntity* getEmberEntity(const std::string & eid) const;

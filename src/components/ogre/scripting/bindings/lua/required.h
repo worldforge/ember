@@ -51,6 +51,7 @@
 #include "components/ogre/IWorldPickListener.h"
 #include "components/ogre/EntityWorldPickListener.h"
 
+#include "components/ogre/manipulation/EntityMoveManager.h"
 //#include "components/ogre/scripting/LuaConnector.h"
 //#include "LuaConnector.h"
 
