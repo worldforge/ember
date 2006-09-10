@@ -2,6 +2,8 @@
 
 #include "../GUIManager.h"
 #include <CEGUIWindow.h>
+#include "../input/Input.h"
+#include "../EmberOgre.h"
 
 
 // #include <sigc++/object.h>
@@ -252,7 +254,7 @@ namespace EmberOgre
 	
 	
 	
-	bool Widget::TabbableWindow_KeyUp(const CEGUI::EventArgs& args)
+	bool Widget::TabbableWindow_KeyDown(const CEGUI::EventArgs& args)
 	{
 		const CEGUI::KeyEventArgs& keyEventArgs = static_cast<const CEGUI::KeyEventArgs&>(args);
 		if (keyEventArgs.scancode == CEGUI::Key::Tab)
@@ -264,6 +266,9 @@ namespace EmberOgre
 				WindowMap::iterator I = mTabOrder.find(activeWindow);
 				if (I != mTabOrder.end()) {
 					I->second->activate();
+					///we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
+					EmberOgre::getSingleton().getInput().suppressFurtherHandlingOfCurrentEvent();
+					return true;
 				}
 			}
 		}
@@ -279,7 +284,7 @@ namespace EmberOgre
 			mTabOrder.insert(WindowMap::value_type(mLastTabWindow, window));
 		}
 		mLastTabWindow = window;
-		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyUp, Widget::TabbableWindow_KeyUp);
+		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyDown, Widget::TabbableWindow_KeyDown);
 	}
 	
 	void Widget::closeTabGroup()

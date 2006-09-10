@@ -260,7 +260,7 @@ protected:
 	WindowMap mTabOrder;
 	CEGUI::Window *mFirstTabWindow, *mLastTabWindow;
 		
-	bool TabbableWindow_KeyUp(const CEGUI::EventArgs& args);
+	bool TabbableWindow_KeyDown(const CEGUI::EventArgs& args);
 	
 	
 private:
