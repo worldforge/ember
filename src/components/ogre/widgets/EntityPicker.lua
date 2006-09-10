@@ -9,7 +9,7 @@
 -----------------------------------------
 
 
-local EntityPicker = {}
+EntityPicker = {}
 
 --local EntityPicker.mainWindow
 EntityPicker.menuWindow = nil
@@ -37,6 +37,7 @@ function EntityPicker_buildWidget()
 	EntityPicker.widget:getWindow("TakeButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonTake_Click")
 	EntityPicker.widget:getWindow("GiveButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonGive_Click")
 	EntityPicker.widget:getWindow("InspectButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonInspect_Click")
+	EntityPicker.widget:getWindow("MoveButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonMove_Click")
 	EntityPicker.useButton = EntityPicker.widget:getWindow("UseButton")
 	EntityPicker.useButton:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
 		
@@ -119,6 +120,11 @@ end
 
 function EntityPicker_buttonInspect_Click(args)
 	guiManager:EmitEntityAction("inspect", EntityPicker.entity)
+	EntityPickerWidget_removeMenu()
+end
+
+function EntityPicker_buttonMove_Click(args)
+	guiManager:EmitEntityAction("move", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
