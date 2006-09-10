@@ -181,6 +181,7 @@ material /global/environment/ground/ploughed_field
 		 texture_unit 
          { 
 			alpha_op_ex source1 src_texture src_texture
+			colour_op_ex source1 src_current src_current
             texture splat
             tex_coord_set 0 
 			tex_address_mode clamp
@@ -272,3 +273,47 @@ material /global/environment/sun/flare
                 }
         }
 }
+
+material /global/environment/lensflare/halo
+{
+   technique
+   {
+       pass
+       {
+           ambient 1 1 1
+           diffuse 1 1 1
+           lighting off
+           depth_write off
+			depth_check off
+           scene_blend add
+			fog_override true
+          texture_unit
+           {
+               texture lensflare6.jpg
+           }
+       }
+   }
+}
+
+
+material /global/environment/lensflare/burst
+{
+   technique
+   {
+       pass
+       {
+           ambient 1 1 1
+           diffuse 1 1 1
+           lighting off
+           depth_write off
+			depth_check off
+           scene_blend add
+			fog_override true
+          texture_unit
+           {
+               texture lensflare5.jpg
+           }
+       }
+   }
+}
+

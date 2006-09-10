@@ -264,12 +264,6 @@ material /global/clothes/dress/male_chain : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_chain/male_chain.png
 }
 
-
-material /global/clothes/dress/male_cloth : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth.png
-}
-
 material /global/clothes/dress/male_cloth/blue : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth_blue.png

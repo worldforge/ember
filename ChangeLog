@@ -1,5 +1,9 @@
 2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* media/materials/scripts/buildings.material, media/materials/scripts/creatures.material, media/materials/scripts/environment.material, media/materials/textures/lensflare5.jpg, media/materials/textures/lensflare6.jpg: updated media
+
+2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml: updated media
 
 2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>
