@@ -178,16 +178,23 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	}
 	ss << "\n";
 	
-	ss << "PredPosition: " << entity->getPredictedPos() << "\n";
-	ss << "Position: " << entity->getPosition() << "\n";
+	if (entity->getPredictedPos().isValid()) {
+		ss << "PredPosition: " << entity->getPredictedPos() << "\n";
+	}
+	if (entity->getPosition().isValid()) {
+		ss << "Position: " << entity->getPosition() << "\n";
+	}
 	WFMath::Vector<3> velocity = entity->getPredictedVelocity();
 	if (velocity.isValid()) {
 		ss << "Velocity: " << velocity << ": " << sqrt(velocity.sqrMag()) << "\n";
-	} else {
-		ss << "Velocity: 0\n";
 	}
-	ss << "Orientation: " << entity->getOrientation() << "\n";
-	ss << "Boundingbox: " << entity->getBBox() << "\n";
+	
+	if (entity->getOrientation().isValid()) {
+		ss << "Orientation: " << entity->getOrientation() << "\n";
+	}
+	if (entity->getBBox().isValid()) {
+		ss << "Boundingbox: " << entity->getBBox() << "\n";
+	}
 	
 /*	std::set<std::string> parents = entity->getInherits();
 	

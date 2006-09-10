@@ -15,6 +15,7 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>
 				<Property Name='VertFormatting' Value='TopAligned'/>
+				<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 			</Window>
 			<Window Type='EmberLook/Listbox' Name='ChildList'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0.6,0}}'/>
