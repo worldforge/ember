@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindoww'>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
 		<Property Name='Alpha' Value='0.900000'/>
 		<Property Name='CaptionColour' Value='00FFFFFF'/>
 		<Property Name='Text' Value='Model editor'/>
