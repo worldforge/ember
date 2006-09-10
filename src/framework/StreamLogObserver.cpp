@@ -69,26 +69,33 @@ namespace Ember {
         myOut << ctm->tm_sec << "] ";			
 
         if(importance == Ember::LoggingService::CRITICAL)
-            {
-                myOut << "CRITICAL";
-            }
+		{
+			myOut << "CRITICAL";
+		}
         else  if(importance == Ember::LoggingService::FAILURE)
-            {
-                myOut << "FAILURE";
-            } 
+		{
+			myOut << "FAILURE";
+		} 
         else if(importance == Ember::LoggingService::WARNING)
-            {
-                myOut << "WARNING";
-            }
+		{
+			myOut << "WARNING";
+		}
         else if(importance == Ember::LoggingService::INFO)
-            {
-                myOut << "INFO";
-            }
+		{
+			myOut << "INFO";
+		}
         else
-            {
-                myOut << "VERBOSE";
-            }
-        myOut << " " << message << " [File: " << file << ", Line #:" <<  line << "]" << std::endl;
+		{
+			myOut << "VERBOSE";
+		}
+        
+        myOut << " " << message;
+        
+        ///only write file and line number if we're in verbose mode (to make the log a little smaller in most cases
+        if (getFilter() == Ember::LoggingService::VERBOSE) {
+        	myOut << " [File: " << file << ", Line #:" <<  line << "]";
+        }
+        myOut << std::endl;
 
     }
 }; //end namespace Ember
