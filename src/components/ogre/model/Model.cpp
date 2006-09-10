@@ -222,7 +222,7 @@ bool Model::createFromDefn()
 		catch (const Ogre::Exception& e) 
 		{
 			//std::cerr << "Error when loading the submodel " << entityName << ".\n";
-			std::string desc = e.getFullDescription();
+			const std::string& desc = e.getFullDescription();
 			S_LOG_FAILURE( "Submodel load error for " + entityName + ". \nOgre error: " + e.getFullDescription());
 			return false;
 		}
@@ -266,7 +266,7 @@ void Model::createActions()
 						animPart.weight = (*I_anims)->Weight;
 						action.getAnimations()->addAnimationPart(animPart);
 					} catch (const Ogre::Exception& ex) {
-						S_LOG_FAILURE("Error when loading animation: " + (*I_anims)->Name + ".\n" + ex.getFullDescription() );
+						S_LOG_FAILURE("Error when loading animation: " << (*I_anims)->Name << ".\n" + ex.getFullDescription() );
 					}
 				}
 			}
@@ -794,6 +794,16 @@ const Ogre::String& Model::getName(void) const
 const Ogre::String& Model::getMovableType(void) const
 {
 	return msMovableType;
+}
+
+void Model::setRenderingDistance (Ogre::Real dist)
+{
+	MovableObject::setRenderingDistance(dist);
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+		(*I)->getEntity()->setRenderingDistance(dist);
+	}
 }
 
 void Model::setQueryFlags(unsigned long flags) 

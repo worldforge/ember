@@ -147,6 +147,9 @@ public:
 	Ogre::MovableObject * detachObjectFromBone (const Ogre::String &movableName);
 	void detachAllObjectsFromBone(void);
 	
+	/** @see Ogre::MovableObject::setRenderingDistance(Ogre::Real dist)
+	*/
+	virtual void setRenderingDistance (Ogre::Real dist);
 	//inline bool isAnimated() { return mAnimationPartMap.size(); }
 
         /** Overridden - see MovableObject.
