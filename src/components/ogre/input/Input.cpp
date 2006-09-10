@@ -41,6 +41,7 @@ Input::Input()
 mCurrentInputMode(IM_GUI)
 , mMouseState(0)
 , mTimeSinceLastRightMouseClick(1000)
+, mSuppressForCurrentEvent(false)
 {
 	
 	
@@ -133,6 +134,11 @@ void Input::runCommand(const std::string &command, const std::string &args)
 			}
 		}
 	}
+}
+	
+void Input::suppressFurtherHandlingOfCurrentEvent()
+{
+	mSuppressForCurrentEvent = true;
 }
 
 void Input::registerCommandMapper(InputCommandMapper* mapper)
@@ -363,22 +369,26 @@ const bool Input::isKeyDown(const SDLKey &key) const
 
 void Input::keyPressed (const SDL_KeyboardEvent &keyEvent)
 {
+	mSuppressForCurrentEvent = false;
 	if (mCurrentInputMode == IM_GUI) {
 		// do event injection
 		// key down
-		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
+		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend() && !mSuppressForCurrentEvent; ++I) {
 			if (!(*I)->injectKeyDown(keyEvent.keysym.sym)) break;
 		}
 		
 
 		// now character
 		if (mNonCharKeys.find(keyEvent.keysym.sym) == mNonCharKeys.end()) {
-			for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
+			for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend() && !mSuppressForCurrentEvent; ++I) {
 				if (!(*I)->injectChar(keyEvent.keysym.unicode)) break;
 			}
 		}
 	}
-	EventKeyPressed(keyEvent.keysym, mCurrentInputMode);
+	if (!mSuppressForCurrentEvent) {
+		EventKeyPressed(keyEvent.keysym, mCurrentInputMode);
+	}
+	mSuppressForCurrentEvent = false;
 	
 }
 
@@ -387,12 +397,16 @@ void Input::keyPressed (const SDL_KeyboardEvent &keyEvent)
 
 void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 {
+	mSuppressForCurrentEvent = false;
 	if (mCurrentInputMode == IM_GUI) {
-		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
+		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend() && !mSuppressForCurrentEvent; ++I) {
 			if (!(*I)->injectKeyUp(keyEvent.keysym.sym)) break;
 		}
 	} 
-	EventKeyReleased(keyEvent.keysym, mCurrentInputMode);
+	if (!mSuppressForCurrentEvent) {
+		EventKeyReleased(keyEvent.keysym, mCurrentInputMode);
+	}
+	mSuppressForCurrentEvent = false;
 }
 
 

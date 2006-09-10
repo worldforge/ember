@@ -232,6 +232,8 @@ public:
 	 * @param args 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
+	
+	void suppressFurtherHandlingOfCurrentEvent();
 
 protected:
 
@@ -317,6 +319,8 @@ protected:
 	A store of InputCommandMappers with their state as the key.
 	*/
 	InputCommandMapperStore mInputCommandMappers;
+	
+	bool mSuppressForCurrentEvent;
 };
 
 };
