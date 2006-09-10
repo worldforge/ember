@@ -28,6 +28,7 @@
 #include "model/ModelDefinitionManager.h"
 
 #include "framework/osdir.h"
+#include <fstream>
 
 namespace EmberOgre {
 
@@ -62,7 +63,7 @@ void OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 	static const std::string& sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
 
 	S_LOG_INFO("Looking for " << sharedMediaPath + path);
-	if (true || isExistingDir(sharedMediaPath + path)) {
+	if (isExistingDir(sharedMediaPath + path)) {
 		S_LOG_INFO("Adding dir " << sharedMediaPath + path);
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
@@ -80,7 +81,7 @@ void OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	static const std::string& userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
 	static const std::string& emberMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
 	
-	if (true || isExistingDir(userMediaPath + path)) {
+	if (isExistingDir(userMediaPath + path)) {
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				userMediaPath + path, type, section, recursive);
@@ -90,7 +91,7 @@ void OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	}
 	
 	///try with ember-media
-	if (true || isExistingDir(emberMediaPath + path)) {
+	if (isExistingDir(emberMediaPath + path)) {
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				emberMediaPath + path, type, section, recursive);
@@ -211,8 +212,15 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 
 bool OgreResourceLoader::isExistingDir(const std::string& path) const
 {
+	bool exists = false;
 	oslink::directory osdir(path);
-	return osdir ? true : false;
+	exists = osdir.isExisting();
+	if (!exists) {
+		///perhaps it's a file?
+		std::ifstream fin(path.c_str() , std::ios::in );
+		exists = !fin.fail();
+	}
+	return exists;
 }
 
 
