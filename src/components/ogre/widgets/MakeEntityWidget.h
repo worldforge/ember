@@ -23,17 +23,21 @@
 #ifndef DIMEOGREMAKEENTITYWIDGET_H
 #define DIMEOGREMAKEENTITYWIDGET_H
 
+#include "Widget.h"
 
-#include <Eris/TypeService.h>
-#include <Eris/Connection.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/Avatar.h>
-#include <Eris/View.h>
 
+
+namespace Eris
+{
+	class TypeInfo;
+	class Connection;
+	class Avatar;
+}
 
 namespace EmberOgre {
 
 class AvatarEmberEntity;
+class ModelRenderer;
 /**
 @author Erik Hjortsberg
 */
@@ -74,6 +78,11 @@ protected:
 	
 	bool createButton_Click(const CEGUI::EventArgs& args);
 	
+	bool typeList_ItemSelectionChanged(const CEGUI::EventArgs& args);
+	
+	Eris::TypeInfo* getSelectedTypeInfo();
+	
+	
 	/**
 	Loads all types into the list
 	*/
@@ -83,6 +92,13 @@ protected:
 	
 	void createEntityOfType(Eris::TypeInfo* typeinfo);
 
+	/**
+	A preview renderer for creating new models.
+	*/
+	ModelRenderer* mModelPreviewRenderer;
+
+	void createPreviewTexture();
+	void updatePreview();
 
 };
 

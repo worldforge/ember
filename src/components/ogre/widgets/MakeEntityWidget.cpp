@@ -20,13 +20,21 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+
+#include "MakeEntityWidget.h"
+
+#include <Eris/TypeService.h>
+#include <Eris/Connection.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/Avatar.h>
+#include <Eris/View.h>
+
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
 #include <wfmath/atlasconv.h>
 
-#include "Widget.h"
 #include "../EmberOgre.h"
 #include "services/logging/LoggingService.h"
 #include "../Avatar.h"
@@ -38,7 +46,7 @@
 // #include "../PersonEmberEntity.h"
 #include "../AvatarEmberEntity.h"
 
-#include "MakeEntityWidget.h"
+#include "ModelRenderer.h"
 
 #include <CEGUIWindow.h>
 #include <elements/CEGUIListbox.h> 
@@ -46,6 +54,7 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIPushButton.h> 
+#include <elements/CEGUIStaticImage.h> 
 #include "framework/ConsoleBackend.h"
 
 #include "../TerrainGenerator.h"
@@ -57,7 +66,7 @@ namespace EmberOgre {
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
 MakeEntityWidget::MakeEntityWidget()
- : mIsReady(false), Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity.")
+ : mIsReady(false), Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mModelPreviewRenderer(0)
 {
 
 	Ember::ConsoleBackend::getMainConsole()->registerCommand("testarea",this);
@@ -80,13 +89,15 @@ void MakeEntityWidget::buildWidget()
 	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("CreateButton"));
 	
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick,MakeEntityWidget::createButton_Click );
+	BIND_CEGUI_EVENT(mTypeList, CEGUI::Listbox::EventSelectionChanged ,MakeEntityWidget::typeList_ItemSelectionChanged );
 
-	
 	
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
-
+	
+	
+	createPreviewTexture();
 
 	registerConsoleVisibilityToggleCommand("entitycreator");
 	enableCloseButton();
@@ -104,7 +115,7 @@ void MakeEntityWidget::show()
 			mMainWindow->setVisible(true);
 		S_LOG_INFO("Showing entity creator window.");
 	} else {
-		S_LOG_FAILURE("Can't show entity creator window before we're and have taken an avatar.");
+		S_LOG_FAILURE("Can't show entity creator window before we have taken an avatar.");
 	}
 }
 
@@ -241,19 +252,59 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 
 }
 
+void MakeEntityWidget::updatePreview()
+{
+	if (mModelPreviewRenderer) {
+		Eris::TypeInfo* typeInfo = getSelectedTypeInfo();
+		if (typeInfo) {
+			///update the model preview window
+			mModelPreviewRenderer->showModel(typeInfo->getName());
+			//mModelPreviewRenderer->showFull();
+			///we want to zoom in a little
+			mModelPreviewRenderer->setCameraDistance(0.7);
+		} else {
+			mModelPreviewRenderer->showModel("");
+		}
+	}
+}
+
+bool MakeEntityWidget::typeList_ItemSelectionChanged(const CEGUI::EventArgs& args)
+{
+	updatePreview();
+	return true;
+}
 
 bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 {
-	//HACK: low level mucking, this should be possible through Eris
+	
+	Eris::TypeInfo* typeInfo = getSelectedTypeInfo();
+	if (typeInfo) {
+		createEntityOfType(typeInfo);
+	}
+	return true;
+}
+
+Eris::TypeInfo* MakeEntityWidget::getSelectedTypeInfo()
+{
 	CEGUI::ListboxItem* item = mTypeList->getFirstSelectedItem();
 	if (item) {
 		Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
-		createEntityOfType(typeinfo);
-		
+		return typeinfo;
 	}
-	return true;
-//	Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Try to create entity of type " << typeinfo->getName() << " at position " << pos << LoggingService::END_MESSAGE;
+	return 0;
 }
+
+void MakeEntityWidget::createPreviewTexture()
+{
+	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(getWindow("ModelPreviewImage"));
+	if (!imageWidget) {
+		S_LOG_FAILURE("Could not find ModelPreviewImage, aborting creation of preview texture.");
+	} else {
+		mModelPreviewRenderer = new ModelRenderer(imageWidget);
+	}
+
+}
+
 
 void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
