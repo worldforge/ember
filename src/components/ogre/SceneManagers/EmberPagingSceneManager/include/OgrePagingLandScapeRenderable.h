@@ -95,7 +95,7 @@ namespace Ogre
 			return (mBounds.getMaximum()).y;
 		};
 
-		inline void PagingLandScapeRenderable::setInUse (bool InUse)
+		inline void setInUse (bool InUse)
 		{
 			mInUse = InUse;
 		}
@@ -163,7 +163,7 @@ namespace Ogre
 
 		IndexData* getRawIndexData(const int renderlevel);
 		void getRawVertexData(Vector3* pVerts);
-		const unsigned int PagingLandScapeRenderable::getVertexCount();
+		const unsigned int getVertexCount();
         
         bool mQueued;
         PagingLandScapeTile *mParentTile;
