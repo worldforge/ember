@@ -1,5 +1,9 @@
 2006-09-12 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTile.h: fixed error in include
+
+2006-09-12 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRenderable.h: fixed error in include
 
 2006-09-10 Erik Hjortsberg  <erik@katastrof.nu>

@@ -100,7 +100,7 @@ public:
 		mLoading = value;
 	};
 
-	void PagingLandScapeTile::setInUse (bool InUse)
+	void setInUse (bool InUse)
 	{
 		assert (mInit);
 		if (mRenderable)
