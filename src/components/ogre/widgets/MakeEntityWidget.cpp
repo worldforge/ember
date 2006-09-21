@@ -57,7 +57,7 @@
 #include <elements/CEGUIStaticImage.h> 
 #include "framework/ConsoleBackend.h"
 
-#include "../TerrainGenerator.h"
+#include "../terrain/TerrainGenerator.h"
 #include <Mercator/Area.h>
 
 namespace EmberOgre {
@@ -311,6 +311,11 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	Atlas::Objects::Operation::Create c;
 	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
 	c->setFrom(avatar->getId());
+	///if the avatar is a "creator", i.e. and admin, we will set the TO property
+	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
+	if (avatar->getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
+		c->setTo(avatar->getId());
+	}
 	
 	Atlas::Message::MapType msg;
 	msg["loc"] = avatar->getLocation()->getId();
