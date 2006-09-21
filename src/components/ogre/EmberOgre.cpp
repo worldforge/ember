@@ -81,7 +81,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include OGRE Ember client files
 // ------------------------------
-#include "TerrainGenerator.h"
+#include "terrain/TerrainGenerator.h"
 
 
 #include "ConsoleObjectImpl.h"

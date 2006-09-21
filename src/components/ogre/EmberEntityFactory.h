@@ -116,8 +116,6 @@ protected:
 	
 	Eris::Avatar* mAvatar;
 	
-	StringSet mPersonSet;
-	
 	WorldEmberEntity *mWorldEntity;
 	
 	

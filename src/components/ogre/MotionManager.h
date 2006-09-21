@@ -38,6 +38,14 @@ class TerrainGenerator;
 class MotionManager : public Ogre::FrameListener, public Ember::Singleton<MotionManager> {
 public:
 
+	/**
+	A struct containing information about the MotionManager.
+	*/
+	struct MotionManagerInfo
+	{
+		int AnimatedEntities;
+	};
+
 	MotionManager();
 	virtual ~MotionManager();
 	//static MotionManager & getSingleton(void);
@@ -89,12 +97,19 @@ public:
 
 	void setTerrainGenerator(TerrainGenerator* generator);
 	
+	/**
+	 *    Gets info about the MotionManager.
+	 * @return 
+	 */
+	inline const MotionManagerInfo& getInfo() const;
 	
 private:
 
 	typedef std::map<std::string , EmberPhysicalEntity*> EntityStore;
 	EntityStore mAnimatedEntities;
 
+
+	MotionManagerInfo mInfo;
 // 	typedef std::set<Action*> ActionStore;
 // 	ActionStore mActions;
 
@@ -138,6 +153,13 @@ private:
 	TerrainGenerator* mTerrainGenerator;
 	
 };
+
+const MotionManager::MotionManagerInfo& MotionManager::getInfo() const
+{
+	return mInfo;
+}
+
+
 }
 
 

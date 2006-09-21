@@ -20,10 +20,9 @@
 #include "EmberPhysicalEntity.h"
 
 #include "EmberOgre.h"
-//#include "environment/GroundCover.h"
 #include "MathConverter.h"
 #include "MotionManager.h"
-#include "TerrainGenerator.h"
+#include "terrain/TerrainGenerator.h"
 
 template<> EmberOgre::MotionManager* Ember::Singleton<EmberOgre::MotionManager>::ms_Singleton = 0;
 namespace EmberOgre {
@@ -34,17 +33,6 @@ MotionManager::MotionManager()
 {}
 MotionManager::~MotionManager()
 {}
-
-/*
-MotionManager* MotionManager::_instance = 0;
-
-MotionManager & MotionManager::getSingleton(void)
-{
-	if(_instance == 0)
-		_instance = new MotionManager;
-	return *_instance;
-}
-*/
 
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)

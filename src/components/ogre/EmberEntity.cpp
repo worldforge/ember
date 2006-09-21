@@ -25,7 +25,7 @@
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
-#include "TerrainArea.h"
+#include "terrain/TerrainArea.h"
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>

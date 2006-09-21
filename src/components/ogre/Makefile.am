@@ -1,5 +1,5 @@
 SUBDIRS = environment model SceneManagers input widgets 				carpenter jesus \
-	ogreopcode scripting cegui sound manipulation
+		ogreopcode scripting cegui sound manipulation terrain
 
 #gamesdir = $(bindir)/games
 bin_PROGRAMS = ember.bin
@@ -65,6 +65,7 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 	$(top_builddir)/src/components/ogre/jesus/libJesus.a \
 	$(top_builddir)/src/components/ogre/manipulation/libmanipulation.a \
 	$(top_builddir)/src/components/ogre/sound/libSound.a \
+	$(top_builddir)/src/components/ogre/terrain/libTerrain.a \
 	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
 	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
@@ -74,11 +75,11 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 
 
 ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
-					environment/Water.cpp TerrainGenerator.cpp MotionManager.cpp AvatarCamera.cpp \
-					TerrainShader.cpp GUIManager.cpp MousePicker.cpp EmberEntityFactory.cpp 				EmberOgre.cpp \
+					environment/Water.cpp MotionManager.cpp AvatarCamera.cpp \
+					GUIManager.cpp MousePicker.cpp EmberEntityFactory.cpp 				EmberOgre.cpp \
 	EmberPhysicalEntity.cpp EmberEntity.cpp 				AvatarEmberEntity.cpp WorldEmberEntity.cpp \
-	TerrainPage.cpp TerrainArea.cpp 				EmberEntityUserObject.cpp GUICEGUIAdapter.cpp \
-	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp TerrainEditor.cpp \
+	 				EmberEntityUserObject.cpp GUICEGUIAdapter.cpp \
+	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp  \
 	EntityWorldPickListener.cpp OgreSetup.cpp 
 
 
@@ -88,11 +89,11 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				TerrainPage.h TerrainArea.h \
+noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				 \
 		AvatarEmberEntity.h EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h \
-		EmberEntity.h Avatar.h environment/Water.h 				TerrainGenerator.h MotionManager.h \
-		AvatarCamera.h TerrainShader.h MathConverter.h 				ConsoleObjectImpl.h \
+		EmberEntity.h Avatar.h environment/Water.h 				 MotionManager.h \
+		AvatarCamera.h  MathConverter.h 				ConsoleObjectImpl.h \
 		AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h \
-						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h OgreResourceLoader.h TerrainEditor.h \
+						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h OgreResourceLoader.h \
 			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h OgreSetup.h
 	

@@ -23,7 +23,7 @@
 
 #include "EmberEntity.h"
 #include "model/Model.h"
-#include "TerrainGenerator.h"
+#include "terrain/TerrainGenerator.h"
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
 #include "environment/Water.h"

@@ -41,7 +41,7 @@
 
 
 #include <OgreException.h>
-#include "TerrainArea.h"
+#include "terrain/TerrainArea.h"
 
 
 

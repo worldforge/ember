@@ -43,7 +43,7 @@
 
 
 #include "framework/ConsoleBackend.h"
-#include "TerrainGenerator.h"
+#include "terrain/TerrainGenerator.h"
 
 #include "Avatar.h"
 
