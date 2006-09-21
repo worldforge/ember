@@ -77,9 +77,11 @@ void ServerWidget::buildWidget()
 
 	mCharacterList = static_cast<CEGUI::Listbox*>(getWindow("ChooseCharacterPanel/CharacterList"));
 	CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(getWindow("ChooseCharacterPanel/Choose"));
+	mUseCreator =  static_cast<CEGUI::PushButton*>(getWindow("UseCreator"));
 	mCreateChar = static_cast<CEGUI::PushButton*>(getWindow("CreateCharacterPanel/CreateButton"));
 	
 	BIND_CEGUI_EVENT(chooseChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::Choose_Click);
+	BIND_CEGUI_EVENT(mUseCreator, CEGUI::ButtonBase::EventMouseClick, ServerWidget::UseCreator_Click);
 	BIND_CEGUI_EVENT(mCreateChar, CEGUI::ButtonBase::EventMouseClick, ServerWidget::CreateChar_Click);
 	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
 	
@@ -229,6 +231,14 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 	const std::vector< std::string >& characters = account->getCharacterTypes();
 	
 	for(std::vector< std::string >::const_iterator I = characters.begin(); I != characters.end(); ++I) {
+		
+		///if the user has access to the "creator" character, he/she can log in as this to get admin privileges
+		///thus we active our special "admin button"
+		if (*I == "creator") {
+			mUseCreator->setVisible(true);
+			mUseCreator->setEnabled(true);
+		}
+		
 		CEGUI::ListboxItem* item = new ColoredListItem(*I, 0, 0);
 		mTypesList->addItem(item);
 	}
@@ -252,8 +262,8 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	} else {
 	
 		for(;I != I_end; ++I) {
-			const Atlas::Objects::Entity::RootEntity entity = (*I).second;
-			const Atlas::Message::Element nameElement = entity->getAttr("name");
+			const Atlas::Objects::Entity::RootEntity& entity = (*I).second;
+			const Atlas::Message::Element& nameElement = entity->getAttr("name");
 			ColoredListItem* item = new ColoredListItem(nameElement.asString());
 			std::string* id = new std::string(entity->getId());
 			item->setUserData(id);
@@ -275,6 +285,14 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 	}
 	return true;
 }
+
+bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
+{
+	///create a new admin character
+	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter("Lordi", "female", "creator", "Almighty");
+	return true;
+}
+
 
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {

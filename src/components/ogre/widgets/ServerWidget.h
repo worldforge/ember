@@ -72,6 +72,7 @@ protected:
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool Choose_Click(const CEGUI::EventArgs& args);
+	bool UseCreator_Click(const CEGUI::EventArgs& args);
 	bool CreateChar_Click(const CEGUI::EventArgs& args);
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	
@@ -101,6 +102,7 @@ protected:
 	NewCharacter mNewChar;
 	
 	CEGUI::PushButton* mCreateChar;
+	CEGUI::PushButton* mUseCreator;
 	CEGUI::Editbox* mNewCharName;
 	CEGUI::MultiLineEditbox* mNewCharDescription;
 	CEGUI::Combobox* mTypesList;

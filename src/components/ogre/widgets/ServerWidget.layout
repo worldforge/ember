@@ -195,6 +195,15 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Property Name='Tooltip' Value='Create a new character.'/>
 					</Window>
+					<Window Type='EmberLook/Button' Name='UseCreator'>
+						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,100.000000},{0.000000,250.0000}}'/>
+						<Property Name='MaximumSize' Value='w:1 h:1'/>
+						<Property Name='Text' Value='Use Creator'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='Visible' Value='false'/>
+						<Property Name='Enabled' Value='false'/>
+					</Window>
 					<Window Type='EmberLook/StaticImage' Name='CreateCharacterPanel/Image'>
 						<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,250.000000}}'/>
 						<Property Name='UnifiedPosition' Value='{{0.000000,210.000000},{0.000000,5.000000}}'/>
