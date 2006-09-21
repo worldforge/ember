@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sun Sep 10 11:16:10 2006.
+** Generated automatically by tolua++-1.0.6 on Tue Sep 12 22:26:10 2006.
 */
 
 #ifndef __cplusplus
@@ -2863,6 +2863,36 @@ static int tolua_set_EmberOgre__Avatar_EventRemovedEntityFromInventory(lua_State
   self->EventRemovedEntityFromInventory = *((sigc::signal<void,EmberOgre::EmberEntity*>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
+}
+
+/* method: isAdmin of class  EmberOgre::Avatar */
+static int tolua_EmberOgre_EmberOgre_Avatar_isAdmin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"const EmberOgre::Avatar",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Avatar* self = (const EmberOgre::Avatar*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isAdmin'",NULL);
+#endif
+ {
+  bool tolua_ret = (bool)  self->isAdmin();
+ tolua_pushboolean(tolua_S,(bool)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isAdmin'.",&tolua_err);
+ return 0;
+#endif
 }
 
 /* method: getWorld of class  EmberOgre::EmberEntityFactory */
@@ -14435,6 +14465,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"setMinIntervalOfRotationChanges",tolua_EmberOgre_EmberOgre_Avatar_setMinIntervalOfRotationChanges00);
  tolua_variable(tolua_S,"EventAddedEntityToInventory",tolua_get_EmberOgre__Avatar_EventAddedEntityToInventory,tolua_set_EmberOgre__Avatar_EventAddedEntityToInventory);
  tolua_variable(tolua_S,"EventRemovedEntityFromInventory",tolua_get_EmberOgre__Avatar_EventRemovedEntityFromInventory,tolua_set_EmberOgre__Avatar_EventRemovedEntityFromInventory);
+ tolua_function(tolua_S,"isAdmin",tolua_EmberOgre_EmberOgre_Avatar_isAdmin00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);

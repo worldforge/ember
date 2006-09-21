@@ -1,3 +1,55 @@
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/Avatar.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: updated for terrain files being moved to separate directory
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/EmberOgre.cpp, src/components/ogre/Makefile.am, src/components/ogre/MotionManager.cpp, src/components/ogre/MotionManager.h, src/components/ogre/WorldEmberEntity.cpp: updated for terrain files being moved to separate directory
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/MakeEntityWidget.cpp: updated for terrain files being moved to separate directory, also check if the user is a creator when creating new entities
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/environment/Sky.cpp: updated for terrain files being moved to separate directory
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeTexture.cpp: updated for terrain files being moved to separate directory
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainArea.cpp, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainShader.h: moved to separate directory
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainEditor.cpp, src/components/ogre/terrain/TerrainEditor.h: moved to separate directory, update entity positions on entities that are on the page
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/server/ServerService.cpp: cleaned up the code and added a check for if the user is a creator, at what point the TO attribute will be forced
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/LensFlare.cpp: catch errors when getting material
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/edibles.modeldef, src/components/ogre/modeldefinitions/environment.modeldef.xml, src/components/ogre/modeldefinitions/tools.modeldef: updated definitions
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h: added flag for if the avatar is a creator
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h, src/components/ogre/widgets/ServerWidget.xml: if the user is an admin, show a button for quick admin login
+	
 2006-09-12 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTile.h: fixed error in include

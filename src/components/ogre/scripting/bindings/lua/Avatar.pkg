@@ -33,5 +33,11 @@ class Avatar
 
 	sigc::signal<void, EmberOgre::EmberEntity* > EventAddedEntityToInventory;
 	sigc::signal<void, EmberOgre::EmberEntity* > EventRemovedEntityFromInventory;
+	
+	/**
+	True if the current user have admin rights, i.e. is a "creator".
+	*/
+	inline bool isAdmin() const;
+	
 };
 }
