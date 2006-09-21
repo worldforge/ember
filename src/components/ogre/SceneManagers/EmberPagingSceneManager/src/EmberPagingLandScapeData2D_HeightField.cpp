@@ -30,8 +30,8 @@
 #include "EmberPagingSceneManager.h"
 
 #include "EmberOgre.h"
-#include "TerrainPage.h"
-#include "TerrainGenerator.h"
+#include "terrain/TerrainPage.h"
+#include "terrain/TerrainGenerator.h"
 
 
 using namespace Ogre;
