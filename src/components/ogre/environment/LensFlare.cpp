@@ -66,22 +66,24 @@ LensFlare::~LensFlare()
 void LensFlare::createLensFlare()
 {
 	Real LF_scale = 150;
-
-	// -----------------------------------------------------
-	// We create 2 sets of billboards for the lensflare
-	// -----------------------------------------------------
-	mHaloSet = mSceneMgr->createBillboardSet("halo");
-	mHaloSet->setMaterialName("/global/environment/lensflare/halo");
-	mHaloSet->setCullIndividually(true);
-	mHaloSet->setQueryFlags(EmberEntity::CM_NONPICKABLE);	// They should not be detected by rays.
-	mHaloSet->setRenderQueueGroup(RENDER_QUEUE_SKIES_LATE);
-
-	mBurstSet= mSceneMgr->createBillboardSet("burst");
-	mBurstSet->setMaterialName("/global/environment/lensflare/burst");
-	mBurstSet->setCullIndividually(true);
-	mBurstSet->setQueryFlags(EmberEntity::CM_NONPICKABLE);	
-	mBurstSet->setRenderQueueGroup(RENDER_QUEUE_SKIES_LATE);
-
+	try {
+		// -----------------------------------------------------
+		// We create 2 sets of billboards for the lensflare
+		// -----------------------------------------------------
+		mHaloSet = mSceneMgr->createBillboardSet("halo");
+		mHaloSet->setMaterialName("/global/environment/lensflare/halo");
+		mHaloSet->setCullIndividually(true);
+		mHaloSet->setQueryFlags(EmberEntity::CM_NONPICKABLE);	// They should not be detected by rays.
+		mHaloSet->setRenderQueueGroup(RENDER_QUEUE_SKIES_LATE);
+	
+		mBurstSet= mSceneMgr->createBillboardSet("burst");
+		mBurstSet->setMaterialName("/global/environment/lensflare/burst");
+		mBurstSet->setCullIndividually(true);
+		mBurstSet->setQueryFlags(EmberEntity::CM_NONPICKABLE);	
+		mBurstSet->setRenderQueueGroup(RENDER_QUEUE_SKIES_LATE);
+	} catch (const Ogre::Exception&) {
+		S_LOG_FAILURE("Couldn't load lens flare, you are probably missing the needed materials.");
+	}
 	// The node is located at the light source.
 	mNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 
