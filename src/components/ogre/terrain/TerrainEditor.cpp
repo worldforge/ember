@@ -21,24 +21,27 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "TerrainEditor.h"
-#include "EmberOgrePrerequisites.h"
-#include "EmberOgre.h"
-#include "Avatar.h"
+#include "../EmberOgrePrerequisites.h"
+#include "../EmberOgre.h"
+#include "../Avatar.h"
 #include "TerrainGenerator.h"
-#include "AvatarCamera.h"
-#include "GUIManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapePageManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTile.h"
+#include "../AvatarCamera.h"
+#include "../GUIManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapePageManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTile.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "AvatarEmberEntity.h"
+#include "../EmberEntity.h"
+#include "../WorldEmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../AvatarEmberEntity.h"
+
+#include "../EmberEntityFactory.h"
 
 
 #include "services/EmberServices.h"
@@ -521,12 +524,37 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 		(*I)->getCoordinates(x, z);
 // 		sceneMgr->getData2DManager()->reload(x,z);
 // 	}
-	
+// 	Ogre::Vector2 targetPage (X, Z);
+// 	sceneMgr->setOption("PageUpdate", &targetPage); 
+
 	///TODO: this shouldn't be necessary
 	sceneMgr->getPageManager()->load();
 	
+	
+	updateEntityPositions(pagesToUpdate);
+	
 
 }
+
+void TerrainEditor::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
+{
+	EmberEntity* entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+	if (entity) {
+		updateEntityPosition(entity, pagesToUpdate);
+	}
+}
+
+void TerrainEditor::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
+{
+	entity->adjustPosition();
+	for (int i = 0; i < entity->numContained(); ++i) {
+		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
+		updateEntityPosition(containedEntity, pagesToUpdate);
+	}
+}
+
+
+
 
 
 }

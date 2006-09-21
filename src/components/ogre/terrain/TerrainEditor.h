@@ -23,9 +23,9 @@
 #ifndef EMBEROGRETERRAINEDITOR_H
 #define EMBEROGRETERRAINEDITOR_H
 
-#include "EmberOgrePrerequisites.h"
-#include "IWorldPickListener.h"
-#include "input/IInputAdapter.h"
+#include "../EmberOgrePrerequisites.h"
+#include "../IWorldPickListener.h"
+#include "../input/IInputAdapter.h"
 #include "TerrainPage.h"
 
 
@@ -39,6 +39,7 @@ namespace EmberOgre {
 
 class TerrainEditor;
 class TerrainEditBasePointMovement;
+class EmberEntity;
 
 /**
 Allows the user to pick base points.
@@ -270,6 +271,11 @@ private:
 	Ogre::SceneNode* mOverlayNode;
 	
 	bool mVisible;
+	
+	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
+
+	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
+	
 };
 
 }
