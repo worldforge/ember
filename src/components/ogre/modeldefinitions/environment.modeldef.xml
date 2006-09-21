@@ -42,7 +42,7 @@
 		</submodels>
 	</model>	
 	
-	<model name="turnip" scale="1">
+	<model name="turnip" scale="1" renderingdistance="30" >
 		<submodels>
 			<submodel mesh="3d_objects/plants/fruitable/models/leafy_round_rooth_growth/leafy_round_rooth_growth.mesh">
 				<parts>
@@ -52,7 +52,7 @@
 		</submodels>
 	</model>	
 	
-	<model name="carrot" scale="1">
+	<model name="carrot" scale="1" renderingdistance="30">
 		<submodels>
 			<submodel mesh="3d_objects/plants/fruitable/models/leafy_long_rooth_growth/leafy_long_rooth_growth.mesh">
 				<parts>

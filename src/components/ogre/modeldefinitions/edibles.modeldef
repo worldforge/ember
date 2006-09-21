@@ -19,15 +19,6 @@
 		</submodels>
 	</model>	
 	
-	<model name="pickaxe" usescaleof="none" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/pickaxe/pickaxe.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
 	<model name="bread">
 		<submodels>
 			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread.mesh" >

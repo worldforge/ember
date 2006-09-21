@@ -66,4 +66,13 @@
 			</submodel>
 		</submodels>
 	</model>			
+	<model name="pickaxe" usescaleof="none" scale="1">
+		<submodels>
+			<submodel mesh="3d_objects/items/tool/models/pickaxe/pickaxe.mesh">
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
 </models> 
