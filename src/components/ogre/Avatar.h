@@ -113,6 +113,11 @@ public Ogre::FrameListener
 // 	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
 // 	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 
+	/**
+	True if the current user have admin rights, i.e. is a "creator".
+	*/
+	inline bool isAdmin() const;
+
 protected:
 	
 	/**
@@ -241,9 +246,19 @@ protected:
 	*	updates values from the configuration
 	*/
 	void updateFromConfig();
+	
+	/**
+	True if the current user have admin rights, i.e. is a "creator".
+	*/
+	bool mIsAdmin;
 
 	
 }; //End of class declaration
+
+bool Avatar::isAdmin() const
+{
+	return mIsAdmin;
+}
 
 }
 

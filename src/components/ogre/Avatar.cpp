@@ -332,10 +332,17 @@ void Avatar::movedInWorld()
 }
 
 
-void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
+void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 {
 	Ogre::SceneNode* oldAvatar = mAvatarNode;
 	
+	///check if the user is of type "creator" and thus an admin
+	Eris::TypeService* typeService = emberEntity->getErisAvatar()->getConnection()->getTypeService();
+	if (emberEntity->getType()->isA(typeService->getTypeByName("creator"))) {
+		mIsAdmin = true;
+	} else {
+		mIsAdmin = false;
+	}
 	
 	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
 	
@@ -345,15 +352,15 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity)
 //	mSceneMgr->getRootSceneNode()->addChild(mAvatarNode);
 	//HACK!!! DEBUG!!
 	
-	mAvatarNode = EmberEntity->getSceneNode();
-	mAvatarModel = EmberEntity->getModel();
+	mAvatarNode = emberEntity->getSceneNode();
+	mAvatarModel = emberEntity->getModel();
 
-	mErisAvatarEntity = EmberEntity;
-	EmberEntity->setAvatar(this);
+	mErisAvatarEntity = emberEntity;
+	emberEntity->setAvatar(this);
 
 	
 	
-	mAvatarController->createAvatarCameras(EmberEntity->getSceneNode());
+	mAvatarController->createAvatarCameras(emberEntity->getSceneNode());
 		
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 
