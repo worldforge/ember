@@ -437,6 +437,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/carpenter/Makefile
 		 src/components/ogre/jesus/Makefile
 		 src/components/ogre/manipulation/Makefile
+		 src/components/ogre/terrain/Makefile
 		 src/components/ogre/SceneManagers/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
