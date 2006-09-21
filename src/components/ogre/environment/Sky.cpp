@@ -25,7 +25,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "../EmberOgre.h"
-#include "../TerrainGenerator.h"
+#include "../terrain/TerrainGenerator.h"
 #include "framework/Tokeniser.h"
 
 

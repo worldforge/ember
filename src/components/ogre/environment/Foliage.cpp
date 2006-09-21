@@ -29,7 +29,7 @@
 
 //#include "GroundCover.h"
 #include "components/ogre/EmberOgre.h"
-#include "components/ogre/TerrainGenerator.h"
+#include "components/ogre/terrain/TerrainGenerator.h"
 
 template<> EmberOgre::Foliage* Ember::Singleton<EmberOgre::Foliage>::ms_Singleton = 0;
 

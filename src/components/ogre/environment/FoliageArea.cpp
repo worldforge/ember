@@ -26,7 +26,7 @@
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 #include "components/ogre/EmberOgre.h"
-#include "components/ogre/TerrainGenerator.h"
+#include "components/ogre/terrain/TerrainGenerator.h"
 #include "Foliage.h"
 
 #define OFFSET_PARAM 999
