@@ -36,6 +36,7 @@
 #include <Eris/Person.h>
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
+#include <Eris/TypeInfo.h>
 #include <Eris/Exceptions.h>
 
 
@@ -88,9 +89,9 @@ namespace Ember
   /* dtor */
   ServerService::~ServerService()
   {
-    if (myConn) delete myConn;
-    if (myAccount) delete myAccount;
-    if (myView) delete myView;
+    delete myConn;
+    delete myAccount;
+    delete myView;
   }
 	
   /* Method for starting this service 	*/
@@ -109,8 +110,10 @@ namespace Ember
     setStatus(Service::OK);
     setRunning( false );
 
-    myConn->disconnect();
-    myConnected = false;
+	if (myConn) {
+		myConn->disconnect();
+    }
+	myConnected = false;
   }
 
   /* Interface method for connecting to host */
@@ -197,17 +200,14 @@ namespace Ember
     std::ostringstream temp;
 
     temp << "Got Server error: " << msg;
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING)  << temp.str()<< ENDM;
-
-#if 0 // not new sstream
-    temp<<std::ends;
-#endif
+    S_LOG_WARNING(temp.str());
+    
     ConsoleBackend::getMainConsole()->pushMessage(temp.str());
   }
 	
   void ServerService::connected()
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Connected"<< ENDM;
+  	S_LOG_INFO("Connected");
     myConnected = true;
     GotConnection.emit(myConn);
 
@@ -230,13 +230,13 @@ namespace Ember
 
   bool ServerService::disconnecting()
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnecting"<< ENDM;
+	S_LOG_INFO("Disconnecting");
     return true;
   }
 
   void ServerService::disconnected()
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Disconnected"<< ENDM;
+	S_LOG_INFO("Disconnected");
 
     // NULL out OOGChat & player so noone gets tempted to play with an unconnected lobby/player
     delete myAccount;
@@ -249,18 +249,18 @@ namespace Ember
 
   void ServerService::statusChanged(Eris::BaseConnection::Status status)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Status Changed to: "<<status<<ENDM;
+	S_LOG_INFO("Status Changed to: "<<status);
   }
 
   void ServerService::timeout(Eris::BaseConnection::Status status)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Connection Timed Out"<< ENDM;
+	S_LOG_INFO( "Connection Timed Out");
     ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
   }
 
 void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Got Character Info"<< ENDM;
+	S_LOG_INFO("Got Character Info");
 	ConsoleBackend::getMainConsole()->pushMessage("Got character info");
 	
 	GotCharacterInfo.emit(info);
@@ -268,7 +268,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
   void ServerService::gotAllCharacters()
   {
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got All Characters"<< ENDM;
+	S_LOG_INFO("Got All Characters");
 	ConsoleBackend::getMainConsole()->pushMessage("Got all characters");
 	Eris::CharacterMap cm = myAccount->getCharacters();
 	Eris::CharacterMap::iterator i;
@@ -661,6 +661,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			Atlas::Objects::Operation::Move moveOp;
 			moveOp->setFrom(myAvatar->getEntity()->getId());
 			moveOp->setArgs1(what);
+			
+			///if the avatar is a "creator", i.e. and admin, we will set the TO property
+			///this will bypass all of the server's filtering, allowing us to place any entity, unrelated to if it's too heavy or belong to someone else
+			if (myAvatar->getEntity()->getType()->isA(myConn->getTypeService()->getTypeByName("creator"))) {
+				moveOp->setTo(entity->getId());
+			}
 		
 			myConn->send(moveOp);	
  		
