@@ -22,7 +22,7 @@
 //
 #include "TerrainArea.h"
 
-#include "EmberEntity.h"
+#include "../EmberEntity.h"
 #include <Mercator/Area.h>
 
 namespace EmberOgre {

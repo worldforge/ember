@@ -32,7 +32,7 @@
 //#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 //#include "EmberSceneManager/include/OgreTerrainRenderable.h"
 
-#include "EmberOgre.h"
+#include "../EmberOgre.h"
 
 #include <OgreRenderSystemCapabilities.h>
 
@@ -45,8 +45,8 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
-#include "environment/Foliage.h"
-#include "environment/FoliageArea.h"
+#include "../environment/Foliage.h"
+#include "../environment/FoliageArea.h"
 #include "TerrainGenerator.h"
 
 #include <Mercator/Segment.h>

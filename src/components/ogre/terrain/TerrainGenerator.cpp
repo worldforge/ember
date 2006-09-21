@@ -22,20 +22,20 @@
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 
-#include "EmberOgre.h"
+#include "../EmberOgre.h"
 
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
-#include "environment/Foliage.h"
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeSceneManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTextureManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOptions.h"
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h"
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h"
-#include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeCamera.h"
+#include "../environment/Foliage.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeSceneManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTextureManager.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOptions.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h"
+#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeCamera.h"
 
 
 
@@ -44,10 +44,10 @@
 
 #include "TerrainPage.h"
 #include <Mercator/Area.h>
-#include "model/ModelDefinition.h"
-#include "model/ModelDefinitionManager.h"
+#include "../model/ModelDefinition.h"
+#include "../model/ModelDefinitionManager.h"
 
-#include "AvatarCamera.h"
+#include "../AvatarCamera.h"
 
 #include <sigc++/object_slot.h>
 
@@ -80,7 +80,7 @@ TerrainGenerator::TerrainGenerator()
 	
     createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
  
- 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
+ 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .8f, 2.f)); // Grass
 
 
 
@@ -244,7 +244,7 @@ void TerrainGenerator::markShaderForUpdate(TerrainShader* shader)
 
 bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
 {
-	PagingLandScapeCamera * cam = static_cast<PagingLandScapeCamera *>(EmberOgre::getSingleton().getMainCamera()->getCamera());
+	//PagingLandScapeCamera * cam = static_cast<PagingLandScapeCamera *>(EmberOgre::getSingleton().getMainCamera()->getCamera());
 	
 	
 /*	std::stringstream ss;

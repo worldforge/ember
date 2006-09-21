@@ -23,7 +23,7 @@
 #ifndef EMBEROGRETERRAINPAGE_H
 #define EMBEROGRETERRAINPAGE_H
 
-#include "EmberOgrePrerequisites.h"
+#include "../EmberOgrePrerequisites.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>

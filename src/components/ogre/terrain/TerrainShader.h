@@ -19,7 +19,7 @@
 #ifndef TERRAINSHADER_H
 #define TERRAINSHADER_H
 
-#include "EmberOgrePrerequisites.h"
+#include "../EmberOgrePrerequisites.h"
 #include <Mercator/Shader.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>

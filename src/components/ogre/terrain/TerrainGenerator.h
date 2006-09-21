@@ -20,7 +20,7 @@
 #ifndef TERRAINGENERATOR_H
 #define TERRAINGENERATOR_H
 
-#include "EmberOgrePrerequisites.h"
+#include "../EmberOgrePrerequisites.h"
 #include <OgreCodec.h>
 #include <OgreImage.h>
 #include <OgreImageCodec.h>
