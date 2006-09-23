@@ -1,5 +1,9 @@
 2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/terrain/Makefile.am: added missing files
+
+2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/scripting/bindings/lua/Avatar.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
 
 2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
