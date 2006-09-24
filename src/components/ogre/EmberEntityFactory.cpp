@@ -25,6 +25,7 @@
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
+#include <Eris/Avatar.h>
 
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"

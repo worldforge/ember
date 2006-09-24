@@ -42,6 +42,9 @@
 #include "model/SubModel.h"
 #include "EmberOgre.h"
 
+#include <Eris/Avatar.h>
+#include <Eris/Connection.h>
+
 namespace EmberOgre {
 
 

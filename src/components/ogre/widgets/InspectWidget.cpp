@@ -34,6 +34,7 @@
 #include <elements/CEGUIStaticText.h> 
 
 #include <Eris/TypeInfo.h>
+#include <Eris/View.h>
 #include <elements/CEGUIPushButton.h>
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Message/DecoderBase.h>

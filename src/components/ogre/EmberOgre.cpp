@@ -62,6 +62,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // Include Eris header files
 // ------------------------------
 #include <Eris/PollDefault.h>
+#include <Eris/Connection.h>
 
 
 

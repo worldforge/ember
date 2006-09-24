@@ -36,6 +36,8 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 
+#include <Eris/Connection.h>
+
 #include "../EmberEntity.h"
 #include "../WorldEmberEntity.h"
 #include "../EmberPhysicalEntity.h"
