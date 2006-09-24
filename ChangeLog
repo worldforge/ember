@@ -1,3 +1,23 @@
+2006-09-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* TODO: updated list
+
+2006-09-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml: added definition for the creator
+
+2006-09-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainPage.cpp: fixed bug which always returned 1
+	
+2006-09-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/terrain/TerrainEditor.cpp, src/components/ogre/widgets/InspectWidget.cpp: adapted to changes to ServerService.h
+
+2006-09-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.cpp, src/services/server/IServerAdapter.h, src/services/server/Makefile.am, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h: refactored the server service to use a state pattern
+
 2006-09-21 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/terrain/Makefile.am: added missing files
