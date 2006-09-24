@@ -691,6 +691,15 @@
 		</attachpoints>
 	</model>
 	
+	<model name="creator"  usescaleof="height" showcontained="false" >
+		<submodels>
+			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>      
+			</submodel>
+		</submodels>
+	</model>
 
 	
 
