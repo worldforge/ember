@@ -21,14 +21,14 @@
 
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
-#include "OOGChat.h"
 
 #include <Atlas/Objects/RootOperation.h>
-#include <Eris/Connection.h>
-#include <Eris/Account.h>
-#include <Eris/Lobby.h>
-#include <Eris/View.h>
-#include <Eris/Avatar.h>
+#include <Eris/BaseConnection.h>
+// #include <Eris/Connection.h>
+// #include <Eris/Account.h>
+// #include <Eris/Lobby.h>
+// #include <Eris/View.h>
+// #include <Eris/Avatar.h>
 
 // #include <sigc++/object.h>
 // #include <sigc++/signal.h>
@@ -36,7 +36,20 @@
 // #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 
+#include "IServerAdapter.h"
+
+namespace Eris
+{
+	class Avatar;
+	class Connection;
+	class View;
+	class Lobby;
+	class Account;
+}
+
 namespace Ember {
+
+	class OOGChat;
 
 /**
  * Ember Server Service
@@ -113,10 +126,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 
     //----------------------------------------------------------------------
     // Getters & Setters
-    bool isConnected() const
-      {
-        return myConnected;
-      }
+    inline bool isConnected() const;
 
     //----------------------------------------------------------------------
     // Methods
@@ -137,10 +147,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 
     void runCommand(const std::string &, const std::string &);
 
-    Eris::View* getView()
-      {
-	return myView;
-      }
+    inline Eris::View* getView();
       
 	void moveToPoint(const WFMath::Point<3>& dest); 
 	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
@@ -203,18 +210,43 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
     void logoutComplete(bool);
 
 	// List of ServerService's console commands
-	static const char * const CONNECT;
-	static const char * const RECONNECT;
-	static const char * const DISCONNECT;
-	static const char * const CREATEACC;
-	static const char * const LOGIN;
-	static const char * const LOGOUT;
-	static const char * const CREATECHAR;
-	static const char * const TAKECHAR;
-	static const char * const LISTCHARS;
-	static const char * const SAY;
+	
+	const Ember::ConsoleCommandWrapper Connect;
+	//const Ember::ConsoleCommandWrapper ReConnect;
+	const Ember::ConsoleCommandWrapper DisConnect;
+	const Ember::ConsoleCommandWrapper CreateAcc;
+	const Ember::ConsoleCommandWrapper Login;
+	const Ember::ConsoleCommandWrapper Logout;
+	const Ember::ConsoleCommandWrapper CreateChar;
+	const Ember::ConsoleCommandWrapper TakeChar;
+	const Ember::ConsoleCommandWrapper ListChars;
+	const Ember::ConsoleCommandWrapper Say;
+	
+// 	static const char * const CONNECT;
+// 	static const char * const RECONNECT;
+// 	static const char * const DISCONNECT;
+// 	static const char * const CREATEACC;
+// 	static const char * const LOGIN;
+// 	static const char * const LOGOUT;
+// 	static const char * const CREATECHAR;
+// 	static const char * const TAKECHAR;
+// 	static const char * const LISTCHARS;
+// 	static const char * const SAY;
+	
+	IServerAdapter* mServerAdapter;
 // 	static const char * const TOUCH;	
 }; //ServerService
+
+bool ServerService::isConnected() const
+{
+	return myConnected;
+}
+
+inline Eris::View* ServerService::getView()
+{
+	return myView;
+}
+
 
 } // namespace Ember
 

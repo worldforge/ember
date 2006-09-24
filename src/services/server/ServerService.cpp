@@ -38,6 +38,7 @@
 #include <Eris/Entity.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Exceptions.h>
+#include <Eris/View.h>
 
 
 #include <list>
@@ -45,35 +46,51 @@
 #include <iostream>
 #include <sstream>
 
+#include "ConnectedAdapter.h"
+#include "NonConnectedAdapter.h"
 
-// HINT(Tim): cannot 'using namespace Eris;' due to problem with STLport
+#include "OOGChat.h"
+
+#include "framework/ConsoleCommandWrapper.h"
+
+
 
 namespace Ember
 {
 
 	// List of ServerService's console commands
-	const char * const ServerService::CONNECT    = "connect";
-	const char * const ServerService::RECONNECT  = "reconnect";
-	const char * const ServerService::DISCONNECT = "disconnect";
-	const char * const ServerService::CREATEACC  = "create";
-	const char * const ServerService::LOGIN      = "login";
-	const char * const ServerService::LOGOUT     = "logout";
-	const char * const ServerService::CREATECHAR = "add";
-	const char * const ServerService::TAKECHAR   = "take";
-	const char * const ServerService::LISTCHARS  = "list";
-	const char * const ServerService::SAY        = "say";
+// 	const char * const ServerService::CONNECT    = "connect";
+// 	const char * const ServerService::RECONNECT  = "reconnect";
+// 	const char * const ServerService::DISCONNECT = "disconnect";
+// 	const char * const ServerService::CREATEACC  = "create";
+// 	const char * const ServerService::LOGIN      = "login";
+// 	const char * const ServerService::LOGOUT     = "logout";
+// 	const char * const ServerService::CREATECHAR = "add";
+// 	const char * const ServerService::TAKECHAR   = "take";
+// 	const char * const ServerService::LISTCHARS  = "list";
+// 	const char * const ServerService::SAY        = "say";
 // 	const char * const ServerService::TOUCH      = "touch";
 
   /* ctor */
   ServerService::ServerService() : myConn(0), myAccount(0),
 				   myView(0), myOOGChat(0),
-				   myConnected(false), myAvatar(0)
+				   myConnected(false), myAvatar(0), mServerAdapter(new NonConnectedAdapter()),
+	Connect("connect", this, "Connect to a server."),
+	DisConnect("disconnect", this, "Disconnect from the server."),
+//	ReConnect("reconnect", this, "Reconnect to the server"),
+	CreateAcc("create", this, "Create an account on the server."),
+	Login("login", this, "Login to the connected server."),
+	Logout("logout", this, "Logout from the connected server."),
+	CreateChar("add", this, "Create a character on the server."),
+	TakeChar("take", this, "Take control of one of your characters."),
+	ListChars("list", this, "List you available characters on the server."),
+	Say("say", this, "Say something.")
   {
     setName("Server Service");
     setDescription("Service for Server session");
 
 
-	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this, "Connect to a server.");
+/*	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this, "Connect to a server.");
 	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this, "Disconnect from the server.");
 	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this, "Create an account on the server.");
 	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this, "Login to the connected server.");
@@ -81,7 +98,7 @@ namespace Ember
 	ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this, "Create a character on the server.");
 	ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this, "List you available characters on the server.");
 	ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this, "Take control of one of your characters.");
-	ConsoleBackend::getMainConsole()->registerCommand(SAY,this, "Say something.");
+	ConsoleBackend::getMainConsole()->registerCommand(SAY,this, );*/
 // 	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this, ");
 
 	  }
@@ -314,6 +331,8 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			myView = myAvatar->getView();
 			GotView.emit(myView);
 		}
+		delete mServerAdapter;
+		mServerAdapter = new ConnectedAdapter(myAvatar, myConn);
 	
 	}
 
@@ -329,7 +348,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 	void ServerService::runCommand(const std::string &command, const std::string &args)
 	{
 		// Connect command
-		if(command == CONNECT){
+		if(Connect == command){
 			// Split string into server / port pair
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
@@ -344,11 +363,11 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			connect(server, (short)atoi(port.c_str()));
 
 		// Disonnect command
-		} else if (command==DISCONNECT){
+		} else if (DisConnect == command){
 			disconnect();
 
 		// Create Account command
-		} else if (command == CREATEACC) {	
+		} else if (CreateAcc == command) {	
 			if (!myAccount) return;
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
@@ -374,7 +393,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			}      
 			
 		// Login command
-		} else if (command==LOGIN) {
+		} else if (Login == command) {
 	
 		// TODO: put this in a separate method
 			if (myAccount)
@@ -395,7 +414,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			}
 
 		// Logout command
-		} else if (command==LOGOUT) {
+		} else if (Logout == command) {
 			ConsoleBackend::getMainConsole()->pushMessage("Loggin out...");
 			if (myAccount)
 			{
@@ -403,7 +422,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			}
 		
 		// Create Character command
-		} else if (command==CREATECHAR) {
+		} else if (CreateChar == command) {
 			// Split string into name/type/sex/description
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
@@ -417,21 +436,21 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			}
 
 		// Take Character Command
-		} else if (command==TAKECHAR) {
+		} else if (TakeChar == command) {
 			if (myAccount)
 			{
 				takeCharacter(args);
 			}
 
 		// List Characters Command
-		} else if (command==LISTCHARS) {
+		} else if (ListChars == command) {
 			if (myAccount)
 			{
 				myAccount->refreshCharacterInfo();
 			}
 
 		// Say (In-Game chat) Command
-		} else if (command==SAY) {
+		} else if (Say == command) {
 			say(args);
 
 /*		// Touch Command
@@ -499,307 +518,68 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 		return true;
 	}
   
-   	void ServerService::moveToPoint(const WFMath::Point<3>& dest) {
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->moveToPoint(dest);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
- 			return;
- 		}
-
+	void ServerService::moveToPoint(const WFMath::Point<3>& dest) {
+		mServerAdapter->moveToPoint(dest);
  	}
 
-   	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		if(myAvatar->getEntity()->getLocation() == 0) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Avatar in limbo." << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->moveInDirection(velocity, orientation);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
- 			return;
- 		}
- 	}
+	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
+		mServerAdapter->moveInDirection(velocity, orientation);
+	}
 
 
-   	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity) {
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->moveInDirection(velocity);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on moving: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on moving: " << except.what() << ENDM;
- 			return;
- 		}
- 	}
+	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity) {
+		mServerAdapter->moveInDirection(velocity);
+	}
 
 
-   	void ServerService::touch(Eris::Entity* entity) 
-   	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->touch(entity);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on touching: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on touching: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   		
- 	
- 	
-   	void ServerService::take(Eris::Entity* entity) 
-   	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->take(entity);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on touching: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on touching: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   		
+	void ServerService::touch(Eris::Entity* entity) 
+	{
+		mServerAdapter->touch(entity);
+	}
+
+	void ServerService::take(Eris::Entity* entity) 
+	{
+		mServerAdapter->take(entity);
+   	}
   	
 	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
    	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->drop(entity, offset);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on dropping: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on dropping: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   		
+		mServerAdapter->drop(entity, offset);
+   	}   
+	
 	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
 	{
-		///use the existing orientation
-		place(entity, target, pos, entity->getOrientation( ));
+		mServerAdapter->place(entity, target, pos);
 	}
 	
 	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
-   	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			/// we want to do orientation too so we can't use the Avatar::place method until that's updated
-			Atlas::Objects::Entity::Anonymous what;
-			what->setLoc(target->getId());
-			what->setPosAsList(Atlas::Message::Element(pos.toAtlas()).asList());
-			what->setAttr("orientation", orient.toAtlas());			
-			
-			what->setId(entity->getId());
-		
-			Atlas::Objects::Operation::Move moveOp;
-			moveOp->setFrom(myAvatar->getEntity()->getId());
-			moveOp->setArgs1(what);
-			
-			///if the avatar is a "creator", i.e. and admin, we will set the TO property
-			///this will bypass all of the server's filtering, allowing us to place any entity, unrelated to if it's too heavy or belong to someone else
-			if (myAvatar->getEntity()->getType()->isA(myConn->getTypeService()->getTypeByName("creator"))) {
-				moveOp->setTo(entity->getId());
-			}
-		
-			myConn->send(moveOp);	
- 		
- 		
-// 			myAvatar->place(entity, target, pos, orient);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on dropping: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on dropping: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   		
+	{
+		mServerAdapter->place(entity, target, pos, orient);
+	}
 	
 	void ServerService::wield(Eris::Entity* entity)
    	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->wield(entity);
-			
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on wielding: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on wielding: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   		
+		mServerAdapter->wield(entity);
+   	}
 
 	void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos)
    	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->useOn(entity, pos, "");
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on using: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on using: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   		
+		mServerAdapter->use(entity, pos);
+   	}
 
 	void ServerService::useStop()
-   	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->useStop();
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on stopping using: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on stopping using: " << except.what() << ENDM;
- 			return;
- 		}
-   	}   
-   		
-   		
+	{
+		mServerAdapter->useStop();
+	}
+
+
 	void ServerService::attack(Eris::Entity* entity)
    	{
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->attack(entity);
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on attack: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on attack: " << except.what() << ENDM;
- 			return;
- 		}
+		mServerAdapter->attack(entity);
    	}   
-   		
+
 	void ServerService::say(const std::string &message) {
- 		if(!myAvatar || !myAvatar->getEntity()) {
- 			// TODO: redesign so that this doesn't happen
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "No Avatar when saying" << ENDM;
- 			return;
- 		}
- 		try {
- 			myAvatar->say(message);
-			
-			std::string msg;
-			msg = "Saying: [" + message + "]. ";
-			ConsoleBackend::getMainConsole()->pushMessage(msg);
-			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << msg << ENDM;
- 		}
- 		catch (const Eris::BaseException& except)
- 		{
-			/// _key_map.insert(InputKeyMap::value_type(SDLK_SLASH, KC_SLASH)); at SDLInput ctor
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on say: " << except._msg << ENDM;
- 			return;
- 		}
- 		catch (const std::runtime_error& except)
- 		{
- 			LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on say: " << except.what() << ENDM;
- 			return;
- 		}	
+		mServerAdapter->say(message);
 	}
  
 } // namespace Ember

@@ -1,0 +1,262 @@
+//
+// C++ Implementation: ConnectedAdapter
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+#include "ConnectedAdapter.h"
+#include <Eris/Connection.h>
+#include <Eris/Account.h>
+#include <Eris/Lobby.h>
+#include <Eris/View.h>
+#include <Eris/Avatar.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/Exceptions.h>
+#include <Eris/Entity.h>
+
+#include "services/logging/LoggingService.h"
+#include "framework/ConsoleBackend.h"
+
+
+namespace Ember {
+
+ConnectedAdapter::ConnectedAdapter(Eris::Avatar* avatar, Eris::Connection* connection) : mAvatar(avatar), mConnection(connection)
+{
+}
+
+
+ConnectedAdapter::~ConnectedAdapter()
+{
+}
+
+void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
+	try {
+		mAvatar->moveToPoint(dest);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING( "Got Eris error on moving: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on moving: " << except.what());
+	}
+
+}
+
+void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
+	try {
+		mAvatar->moveInDirection(velocity, orientation);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on moving: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on moving: " << except.what());
+	}
+}
+
+
+void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
+	try {
+		mAvatar->moveInDirection(velocity);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on moving: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on moving: " << except.what());
+	}
+}
+
+
+void ConnectedAdapter::touch(Eris::Entity* entity) 
+{
+	try {
+		mAvatar->touch(entity);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on touching: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on touching: " << except.what());
+	}
+}   		
+
+
+void ConnectedAdapter::take(Eris::Entity* entity) 
+{
+	try {
+		mAvatar->take(entity);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on taking: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on taking: " << except.what());
+	}
+}   		
+
+void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
+{
+	try {
+		mAvatar->drop(entity, offset);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on dropping: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on dropping: " << except.what());
+	}
+}   		
+void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
+{
+	///use the existing orientation
+	place(entity, target, pos, entity->getOrientation( ));
+}
+
+void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
+{
+	try {
+		/// we want to do orientation too so we can't use the Avatar::place method until that's updated
+		Atlas::Objects::Entity::Anonymous what;
+		what->setLoc(target->getId());
+		what->setPosAsList(Atlas::Message::Element(pos.toAtlas()).asList());
+		what->setAttr("orientation", orient.toAtlas());			
+		
+		what->setId(entity->getId());
+	
+		Atlas::Objects::Operation::Move moveOp;
+		moveOp->setFrom(mAvatar->getEntity()->getId());
+		moveOp->setArgs1(what);
+		
+		///if the avatar is a "creator", i.e. and admin, we will set the TO property
+		///this will bypass all of the server's filtering, allowing us to place any entity, unrelated to if it's too heavy or belong to someone else
+		if (mAvatar->getEntity()->getType()->isA(mConnection->getTypeService()->getTypeByName("creator"))) {
+			moveOp->setTo(entity->getId());
+		}
+	
+		mConnection->send(moveOp);	
+	
+	
+// 			mAvatar->place(entity, target, pos, orient);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on dropping: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on dropping: " << except.what());
+	}
+}   		
+
+void ConnectedAdapter::wield(Eris::Entity* entity)
+{
+	try {
+		mAvatar->wield(entity);
+		
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on wielding: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on wielding: " << except.what());
+	}
+}   		
+
+void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos)
+{
+	try {
+		mAvatar->useOn(entity, pos, "");
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on using: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on using: " << except.what());
+	}
+}   		
+
+void ConnectedAdapter::useStop()
+{
+	try {
+		mAvatar->useStop();
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on stopping using: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on stopping using: " << except.what());
+	}
+}   
+	
+	
+void ConnectedAdapter::attack(Eris::Entity* entity)
+{
+	try {
+		mAvatar->attack(entity);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on attack: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on attack: " << except.what());
+	}
+}   
+		
+void ConnectedAdapter::say(const std::string &message) 
+{
+	try {
+		mAvatar->say(message);
+		
+		std::string msg;
+		msg = "Saying: [" + message + "]. ";
+		ConsoleBackend::getMainConsole()->pushMessage(msg);
+		S_LOG_VERBOSE( msg);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on say: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on say: " << except.what());
+	}	
+}
+
+}
