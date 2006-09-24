@@ -204,7 +204,7 @@ unsigned int TerrainPage::getAlphaMapScale() const
 	if (configSrv->itemExists("terrain", "scalealphamap")) {
 		int value = (int)configSrv->getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1
-		return std::min<int>(1, value);
+		return std::max<int>(1, value);
 	} else {
 		return 1;
 	}
