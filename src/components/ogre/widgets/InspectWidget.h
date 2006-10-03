@@ -52,6 +52,13 @@ public:
 protected:
 	
 	
+	void fillChildrenList();
+	void entity_ChildAdded(Eris::Entity* entity);
+	void entity_ChildRemoved(Eris::Entity* entity);
+	void addChildToList(Eris::Entity* child);
+	
+	void disconnectFromEntity();
+	
 	/**
 	 *    Starts inspecting an entity
 	 * @param entity 
@@ -75,7 +82,7 @@ protected:
 	EmberEntity* mCurrentEntity;
 
 	void Server_GotView(Eris::View* view);
-	void View_EntityDeleted(Eris::Entity* entity);
+	void entity_BeingDeleted();
 	
 	std::string mAttributeString;
 	
@@ -86,6 +93,10 @@ protected:
 	std::string mAttributesString;
 	
 	sigc::connection mChangedConnection;
+	sigc::connection mChildAddedConnection;
+	sigc::connection mChildRemovedConnection;
+	sigc::connection mBeingDeletedConnection;
+	
 };
 
 class AttributeTextBuilder

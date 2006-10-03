@@ -1,5 +1,13 @@
 2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h: more efficient handling of updates
+
+2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/EntityPicker.layout: updated layout to tigthen it a bit
+
+2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h, src/components/ogre/widgets/InspectWidget.xml: extended the inspect widget to handle the attributes better
 
 2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>

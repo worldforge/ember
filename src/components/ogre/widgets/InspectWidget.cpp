@@ -78,16 +78,13 @@ InspectWidget::InspectWidget() : mCurrentEntity(0), Inspect("inspect", this, "In
 
 void InspectWidget::Server_GotView(Eris::View* view)
 {
-	view->EntityDeleted.connect(sigc::mem_fun(*this, &InspectWidget::View_EntityDeleted));
+//	view->EntityDeleted.connect(sigc::mem_fun(*this, &InspectWidget::View_EntityDeleted));
 }
 
-void InspectWidget::View_EntityDeleted(Eris::Entity* entity)
+void InspectWidget::entity_BeingDeleted()
 {
-	if (entity == mCurrentEntity)
-	{
-		mChangedConnection.disconnect();
-		mCurrentEntity = 0;
-	}
+	disconnectFromEntity();
+	mCurrentEntity = 0;
 }
 
 void InspectWidget::buildWidget()
@@ -148,6 +145,12 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 
 }
 
+void InspectWidget::disconnectFromEntity()
+{
+	mChangedConnection.disconnect();
+	mChildAddedConnection.disconnect();
+	mChildRemovedConnection.disconnect();
+}
 
 void InspectWidget::handleAction(const std::string& action, EmberEntity* entity) {
 
@@ -158,13 +161,21 @@ void InspectWidget::handleAction(const std::string& action, EmberEntity* entity)
 
 void InspectWidget::startInspecting(EmberEntity* entity)
 {
+	disconnectFromEntity();
+	
 	mMainWindow->setVisible(true);
 	mCurrentEntity = entity;
 	showEntityInfo(entity);
 	
-	mChangedConnection.disconnect();
 	mChangedConnection = entity->Changed.connect(sigc::mem_fun(*this, &InspectWidget::entity_Changed));
+	mChildAddedConnection = entity->ChildAdded.connect(sigc::mem_fun(*this, &InspectWidget::entity_ChildAdded));
+	mChildRemovedConnection = entity->ChildRemoved.connect(sigc::mem_fun(*this, &InspectWidget::entity_ChildRemoved));
+	mBeingDeletedConnection = entity->BeingDeleted.connect(sigc::mem_fun(*this, &InspectWidget::entity_BeingDeleted));
+	
 	updateAttributeString();
+	
+	fillChildrenList();
+
 }
 
 void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
@@ -257,19 +268,45 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	mInfo->setText(ss.str());
 	
 	
-	unsigned int numberOfChildren = entity->numContained();
+}
+
+void InspectWidget::fillChildrenList()
+{
+	unsigned int numberOfChildren = mCurrentEntity->numContained();
 	mChildList->resetList();
 	
 	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
-		Eris::Entity* child = entity->getContained(i);
-		CEGUI::String name(child->getType()->getName() + " ("+ child->getId() +" : "+child->getName()+")");
-		mChildList->addItem(ColoredListItem::createColoredListItem(name));
+		Eris::Entity* child = mCurrentEntity->getContained(i);
+		addChildToList(child);
 	}
-	
-	
-	
-	
+
 }
+
+void InspectWidget::addChildToList(Eris::Entity* child)
+{
+	CEGUI::String name(child->getType()->getName() + " ("+ child->getId() +" : "+child->getName()+")");
+	CEGUI::ListboxItem* item = ColoredListItem::createColoredListItem(name);
+	item->setUserData(child);
+	mChildList->addItem(item);
+}
+
+void InspectWidget::entity_ChildAdded(Eris::Entity* entity)
+{
+	addChildToList(entity);
+}
+
+void InspectWidget::entity_ChildRemoved(Eris::Entity* entity)
+{
+	for (unsigned int i = 0; i < mChildList->getItemCount(); ++i) {
+		CEGUI::ListboxItem* item = mChildList->getListboxItemFromIndex(i);
+		if (item->getUserData() == entity) {
+			mChildList->removeItem(item);
+			break;
+		}
+	}
+}
+
+
 
 void InspectWidget::entity_Changed(const Eris::StringSet& attributes)
 {
