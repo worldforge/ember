@@ -1,3 +1,11 @@
+2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h, src/components/ogre/widgets/InspectWidget.xml: extended the inspect widget to handle the attributes better
+
+2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* ember.bat: updated batch with changes from Elendrim
+
 2006-09-24 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* TODO: updated list

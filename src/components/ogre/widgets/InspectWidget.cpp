@@ -85,6 +85,7 @@ void InspectWidget::View_EntityDeleted(Eris::Entity* entity)
 {
 	if (entity == mCurrentEntity)
 	{
+		mChangedConnection.disconnect();
 		mCurrentEntity = 0;
 	}
 }
@@ -115,6 +116,13 @@ void InspectWidget::buildWidget()
 	
 		
 /*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
+}
+
+void InspectWidget::updateAttributeString()
+{
+	AttributeTextBuilder builder;
+	mAttributesString = builder.parseAttributes(mCurrentEntity->getAttributes());
+
 }
 
 void InspectWidget::runCommand(const std::string &command, const std::string &args)
@@ -153,6 +161,10 @@ void InspectWidget::startInspecting(EmberEntity* entity)
 	mMainWindow->setVisible(true);
 	mCurrentEntity = entity;
 	showEntityInfo(entity);
+	
+	mChangedConnection.disconnect();
+	mChangedConnection = entity->Changed.connect(sigc::mem_fun(*this, &InspectWidget::entity_Changed));
+	updateAttributeString();
 }
 
 void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
@@ -211,12 +223,20 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	
 	ss << "Attributes:\n";
 	
- 	const Eris::Entity::AttrMap attributes = entity->getAttributes();
- 	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
-		if (I->second.isString()) {
-			ss  << I->first << ": " << I->second.asString() << "\n";
-		}
- 	}
+	ss << mAttributesString;
+	
+//  	const Eris::Entity::AttrMap& attributes = entity->getAttributes();
+//  	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
+// 		if (I->second.isString()) {
+// 			ss  << I->first << ": " << I->second.asString() << "\n";
+// 		} else if (I->second.isNum()) {
+// 			ss  << I->first << ": " << I->second.asNum() << "\n";
+// 		} else if (I->second.isMap()) {
+// 			ss << I->first << " (map with "<< I->second.asMap().size() << " entries):\n";
+// 		} else if (I->second.isList()) {
+// 			ss << I->first << " (list with "<< I->second.asList().size() << " entries):\n";
+// 		}
+//  	}
 
 
 // 	Decoder bridge;
@@ -251,6 +271,12 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	
 }
 
+void InspectWidget::entity_Changed(const Eris::StringSet& attributes)
+{
+	updateAttributeString();
+}
+
+
 bool InspectWidget::MoveEntity_Click(const CEGUI::EventArgs& args)
 {
 	mGuiManager->EmitEntityAction("move", mCurrentEntity);
@@ -274,6 +300,118 @@ bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
 	}
 	return true;
 }
+
+
+
+
+
+
+AttributeTextBuilder::AttributeTextBuilder(): mLevel(0)
+{
+}
+
+std::string AttributeTextBuilder::parseAttributes(const Eris::Entity::AttrMap& map)
+{
+	for (std::map<std::string, Atlas::Message::Element>::const_iterator I = map.begin(); I != map.end(); ++I) {
+		parseElement(I->first, I->second);
+	}
+	return mMainText.str();
+}
+
+const std::stringstream& AttributeTextBuilder::getText() const
+{
+	return mMainText;
+}
+	
+void AttributeTextBuilder::pad()
+{
+	for(int i = 0; i <= mLevel; ++i) {
+		mMainText << " ";
+	}
+}
+
+void AttributeTextBuilder::parseElement(const Atlas::Message::Element& element)
+{
+	if (element.isString()) {
+		parseString(element.asString());
+	} else if (element.isNum()) {
+		parseNumber(element.asNum());
+	} else if (element.isMap()) {
+		parseMap("", element.asMap());
+	} else if (element.isList()) {
+		parseList("", element.asList());
+	}
+}
+		
+void AttributeTextBuilder::parseString(const std::string& text)
+{
+	mMainText << ", " << text;
+}
+
+void AttributeTextBuilder::parseNumber(float number)
+{
+	mMainText << ", " << number;
+
+}
+
+
+void AttributeTextBuilder::parseElement(const std::string& key, const Atlas::Message::Element& element) 
+{
+	if (key == "") {
+		parseElement(element);
+	} else {
+		if (element.isString()) {
+			parseString(key, element.asString());
+		} else if (element.isNum()) {
+			parseNumber(key, element.asNum());
+		} else if (element.isMap()) {
+			parseMap(key, element.asMap());
+		} else if (element.isList()) {
+			parseList(key, element.asList());
+		}
+	}
+
+}
+
+void AttributeTextBuilder::parseString(const std::string& key, const std::string& text)
+{
+	pad();
+	mMainText << key << ": " << text << "\n";
+}
+
+void AttributeTextBuilder::parseNumber(const std::string& key, float number)
+{
+	pad();
+	mMainText << key << ": " << number << "\n";
+}
+
+void AttributeTextBuilder::parseList(const std::string& key, const Atlas::Message::ListType& list)
+{
+	pad();
+	if (key != "") {
+		mMainText << key << ":\n";
+	}
+	mLevel++;
+	for (Atlas::Message::ListType::const_iterator I = list.begin(); I != list.end(); ++I) {
+		parseElement(*I);
+	}
+	mMainText << "\n";
+	mLevel--;
+}
+
+void AttributeTextBuilder::parseMap(const std::string& key, const Atlas::Message::MapType& map)
+{
+	pad();
+	if (key != "") {
+		mMainText << key << ":\n";
+	}
+	mLevel++;
+	for (Atlas::Message::MapType::const_iterator I = map.begin(); I != map.end(); ++I) {
+		parseElement(I->first, I->second);
+	}
+	mLevel--;
+}
+
 
 
 

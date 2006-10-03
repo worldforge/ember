@@ -76,7 +76,52 @@ protected:
 
 	void Server_GotView(Eris::View* view);
 	void View_EntityDeleted(Eris::Entity* entity);
+	
+	std::string mAttributeString;
+	
+	void updateAttributeString();
+	
+	void entity_Changed(const Eris::StringSet& attributes);
 
+	std::string mAttributesString;
+	
+	sigc::connection mChangedConnection;
+};
+
+class AttributeTextBuilder
+{
+public:
+
+	AttributeTextBuilder();
+	
+	std::string parseAttributes(const Eris::Entity::AttrMap& map);
+
+	const std::stringstream& getText() const;
+
+private:
+	EmberEntity* mEntity;
+		
+	std::stringstream mMainText;
+	int mLevel;
+		
+	void parseElement(const std::string& key, const Atlas::Message::Element& element);
+	void parseElement(const Atlas::Message::Element& element);
+		
+	void parseString(const std::string& text);
+	void parseNumber(float number);
+	
+	void parseString(const std::string& key, const std::string& text);
+	void parseNumber(const std::string& key, float number);
+	void parseList(const std::string& key, const Atlas::Message::ListType& list);
+	void parseMap(const std::string& key, const Atlas::Message::MapType& map);
+	
+	void pad();
+};
+
+class IAttributeTextHandler
+{
+public:
+	void handle(const Eris::Entity::AttrMap& attrMap);
 };
 
 };
