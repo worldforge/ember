@@ -7,14 +7,14 @@
 		<Property Name='Enabled' Value='false'/>
 		<Property Name='AlwaysOnTop' Value='true'/>
 		<Window Type='EmberLook/StaticText' Name='EntityName'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.2600000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.1600000,0.000000}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='FrameEnabled' Value='true'/>
 			<Property Name='HorzFormatting' Value='HorzCentred'/>
 		</Window>
 		<Window Type='DefaultGUISheet' Name='Menu'>
 			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.8400000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.2600000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.1600000,0.000000}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Window Type='EmberLook/Button' Name='TouchButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
