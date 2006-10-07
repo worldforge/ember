@@ -37,7 +37,7 @@ namespace Ogre
 	{
 	public:
 
-		PagingLandScapeRenderableSet::PagingLandScapeRenderableSet();
+		PagingLandScapeRenderableSet();
 		void setRenderableManager (PagingLandScapeRenderableManager *rMgr)
 		{
 			mRenderableManager = rMgr;

@@ -1,3 +1,7 @@
+2006-10-07 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRenderableManager.h: conform to correct C++
+
 2006-10-03 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h: more efficient handling of updates

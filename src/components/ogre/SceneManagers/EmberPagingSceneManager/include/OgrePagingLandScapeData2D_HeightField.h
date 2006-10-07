@@ -50,8 +50,8 @@ protected:
 	virtual void _unload(void);
 
 private:
-	Real PagingLandScapeData2D_HeightField::getScale() const;
-	Real PagingLandScapeData2D_HeightField::getInvScale() const;
+	Real getScale() const;
+	Real getInvScale() const;
 
 	Image* mImage;
     Image* mBase;
