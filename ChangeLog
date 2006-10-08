@@ -1,3 +1,7 @@
+2006-10-08 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/environment/LensFlare.cpp, src/components/ogre/environment/LensFlare.h: handle missing material
+
 2006-10-07 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRenderableManager.h: conform to correct C++

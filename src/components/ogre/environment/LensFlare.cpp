@@ -33,13 +33,14 @@ namespace EmberOgre {
 /// @param camera        The camera on which the lensflare effect will appear.
 /// @param SceneMgr      Pointer on the SceneManager.
 /* ------------------------------------------------------------------------- */
-LensFlare::LensFlare(Vector3 LightPosition, Camera* camera, SceneManager* SceneMgr)
+LensFlare::LensFlare(Vector3 LightPosition, Camera* camera, SceneManager* SceneMgr) : mNode(0)
 {
 	mSceneMgr      = SceneMgr;
 	mCamera        = camera;
 	mHidden        = true;
-	createLensFlare();
-	setLightPosition(LightPosition);
+	if (createLensFlare()) {
+		setLightPosition(LightPosition);
+	}
 }
 
 /* ------------------------------------------------------------------------- */
@@ -47,23 +48,25 @@ LensFlare::LensFlare(Vector3 LightPosition, Camera* camera, SceneManager* SceneM
 /* ------------------------------------------------------------------------- */
 LensFlare::~LensFlare()
 {
-	mNode->detachObject(mHaloSet);
-	mNode->detachObject(mBurstSet);
-	mSceneMgr->destroyBillboardSet(mHaloSet);
-	mSceneMgr->destroyBillboardSet(mBurstSet);
-	
-	Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mNode->getParent());
-	if (parent) {
-		parent->removeAndDestroyChild(mNode->getName());
-	} else {
-		mNode->getCreator()->destroySceneNode(mNode->getName());
+	if (mNode) {
+		mNode->detachObject(mHaloSet);
+		mNode->detachObject(mBurstSet);
+		mSceneMgr->destroyBillboardSet(mHaloSet);
+		mSceneMgr->destroyBillboardSet(mBurstSet);
+		
+		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mNode->getParent());
+		if (parent) {
+			parent->removeAndDestroyChild(mNode->getName());
+		} else {
+			mNode->getCreator()->destroySceneNode(mNode->getName());
+		}
 	}
 } 
 
 /* ------------------------------------------------------------------------- */
 /// this function creates and shows all the LensFlare graphical elements.
 /* ------------------------------------------------------------------------- */
-void LensFlare::createLensFlare()
+bool LensFlare::createLensFlare()
 {
 	Real LF_scale = 150;
 	try {
@@ -83,6 +86,7 @@ void LensFlare::createLensFlare()
 		mBurstSet->setRenderQueueGroup(RENDER_QUEUE_SKIES_LATE);
 	} catch (const Ogre::Exception&) {
 		S_LOG_FAILURE("Couldn't load lens flare, you are probably missing the needed materials.");
+		return false;
 	}
 	// The node is located at the light source.
 	mNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -111,6 +115,7 @@ void LensFlare::createLensFlare()
 	Billboard* LF_Burst3 = mBurstSet->createBillboard(0,0,0);
 	LF_Burst3->setDimensions(LF_scale*0.25,LF_scale*0.25);
 
+	return true;
 } 
 
 /* -------------------------------------------------------------------------- */
@@ -120,7 +125,7 @@ void LensFlare::createLensFlare()
 /* -------------------------------------------------------------------------- */
 void LensFlare::update()
 {
-	if (mHidden) return;
+	if (mHidden || !mNode) return;
 
 	/// If the Light is out of the Camera field Of View, the lensflare is hidden.
 	if (!mCamera->isVisible(mLightPosition)) 
@@ -158,9 +163,11 @@ void LensFlare::update()
 /* ------------------------------------------------------------------------- */
 void LensFlare::setVisible(bool visible)
 {
-	mHaloSet->setVisible(visible);
-	mBurstSet->setVisible(visible);
-	mHidden = !visible;
+	if (mNode) {
+		mHaloSet->setVisible(visible);
+		mBurstSet->setVisible(visible);
+		mHidden = !visible;
+	}
 }
 
 
@@ -171,7 +178,9 @@ void LensFlare::setVisible(bool visible)
 void LensFlare::setLightPosition(Vector3 pos)
 {
 	mLightPosition = pos;
-	mNode->setPosition(mLightPosition); 
+	if (mNode) {
+		mNode->setPosition(mLightPosition);
+	} 
 }
 
 
@@ -180,9 +189,11 @@ void LensFlare::setLightPosition(Vector3 pos)
 /* ------------------------------------------------------------------------- */
 void LensFlare::setBurstColour(ColourValue color)
 {
-	mBurstSet->getBillboard(0)->setColour(color);
-	mBurstSet->getBillboard(1)->setColour(color*0.8);
-	mBurstSet->getBillboard(2)->setColour(color*0.6);
+	if (mNode) {
+		mBurstSet->getBillboard(0)->setColour(color);
+		mBurstSet->getBillboard(1)->setColour(color*0.8);
+		mBurstSet->getBillboard(2)->setColour(color*0.6);
+	}
 } 
 
 /* ------------------------------------------------------------------------- */
@@ -190,9 +201,11 @@ void LensFlare::setBurstColour(ColourValue color)
 /* ------------------------------------------------------------------------- */
 void LensFlare::setHaloColour(ColourValue color)
 { 
-	mHaloSet->getBillboard(0)->setColour(color*0.8);
-	mHaloSet->getBillboard(1)->setColour(color*0.6);
- 	mHaloSet->getBillboard(2)->setColour(color);
+	if (mNode) {
+		mHaloSet->getBillboard(0)->setColour(color*0.8);
+		mHaloSet->getBillboard(1)->setColour(color*0.6);
+		mHaloSet->getBillboard(2)->setColour(color);
+	}
 }
 
 

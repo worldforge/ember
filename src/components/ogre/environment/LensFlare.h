@@ -42,7 +42,7 @@ class LensFlare
 public:
 	LensFlare(Ogre::Vector3 LightPosition, Ogre::Camera* camera, Ogre::SceneManager* SceneMgr);
 	virtual ~LensFlare();
-	void    createLensFlare();
+	bool    createLensFlare();
 	void    update();
 	void    setVisible(bool visible);
 	void    setLightPosition(Ogre::Vector3 pos);
