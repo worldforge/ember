@@ -199,9 +199,11 @@ public:
 			{
 				Viewport *v = rttTex->addViewport( mCamera );
 				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
-				mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
-				v->setOverlaysEnabled(false);
-				rttTex->addListener(mRefractionListener);
+				if (!mat.isNull()) {
+					mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
+					v->setOverlaysEnabled(false);
+					rttTex->addListener(mRefractionListener);
+				}
 			}
 			
 			
@@ -209,9 +211,11 @@ public:
 			{
 				Viewport *v = rttTex->addViewport( mCamera );
 				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
-				mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
-				v->setOverlaysEnabled(false);
-				rttTex->addListener(mReflectionListener);
+				if (!mat.isNull()) {
+					mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
+					v->setOverlaysEnabled(false);
+					rttTex->addListener(mReflectionListener);
+				}
 			}
 			
 			// Define a floor plane mesh
