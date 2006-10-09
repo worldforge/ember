@@ -9,7 +9,6 @@ Tasks.currentTask = nil
 --end
 
 function Tasks_Progressed()
-	console:pushMessage(Tasks.currentTask:progress())
 	Tasks.progressBar:setProgress(Tasks.currentTask:progress())
 end
 

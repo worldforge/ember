@@ -39,7 +39,6 @@ function Give_createdAvatarEmberEntity(avatarEntity)
 end
 
 function Give_addedEntity(entity)
-	console:pushMessage("Added entity.")
 	local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 	local item = EmberOgre.ColoredListItem:new(name, entity:getId(), entity)
 	Give.listboxMap[entity] = item
