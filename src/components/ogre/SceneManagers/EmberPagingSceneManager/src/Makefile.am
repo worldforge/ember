@@ -73,4 +73,5 @@ libEmberPagingSceneManager_a_SOURCES = \
 						\
 						EmberPagingSceneManager.cpp \
 						EmberPagingLandScapeData2D_HeightField.cpp \
-						EmberPagingLandScapeTexture.cpp
+						EmberPagingLandScapeTexture.cpp \
+						EmberPagingSceneManagerAdapter.cpp

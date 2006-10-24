@@ -75,4 +75,5 @@ noinst_HEADERS = \
 \
 EmberPagingLandScapeData2D_HeightField.h \
 EmberPagingLandScapeTexture.h \
-EmberPagingSceneManager.h
+EmberPagingSceneManager.h \
+EmberPagingSceneManagerAdapter.h
