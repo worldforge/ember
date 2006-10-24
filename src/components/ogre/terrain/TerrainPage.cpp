@@ -48,6 +48,7 @@
 #include "../environment/Foliage.h"
 #include "../environment/FoliageArea.h"
 #include "TerrainGenerator.h"
+#include "ISceneManagerAdapter.h"
 
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
@@ -67,10 +68,13 @@ namespace EmberOgre {
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mFoliageArea(0)
 {
+
+	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 			Mercator::Segment* segment = getSegment(x,y);
 			if (segment && segment->isValid()) {
+ 				//S_LOG_VERBOSE("Segment is valid.");
 				PageSegment pageSegment;
 				pageSegment.pos = TerrainPosition(x,y);
 				pageSegment.segment = segment;
@@ -80,6 +84,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 			}
 		}
 	}
+	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
 
 }
 
@@ -91,9 +96,13 @@ Mercator::Segment* TerrainPage::getSegment(int x, int y) const
 {
 	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
 	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
-	int segmentOffset = segmentsPerAxis / 2;
-	int segX = (int)((mPosition.x() * segmentsPerAxis) + x) - segmentOffset;
+	//int segmentOffset = segmentsPerAxis / 2;
+	int segmentOffset = 8;
+	int segX = (int)((mPosition.x() * segmentsPerAxis) + x);
 	int segY = (int)((mPosition.y() * segmentsPerAxis) + y) - segmentOffset;
+	
+	//S_LOG_VERBOSE("Added segment with position " << segX << ":" << segY);
+
 	return mGenerator->getTerrain().getSegment(segX, segY);
 }
 
@@ -126,6 +135,12 @@ float TerrainPage::getMinHeight()
 	return min;
 }
 
+void TerrainPage::update()
+{
+	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
+	mGenerator->getAdapter()->setOption("PageUpdate", &targetPage); 
+
+}
 
 
 Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
@@ -217,8 +232,8 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 	//since Ogre uses a different coord system than WF, we have to do some conversions here
 	TerrainPosition origPosition(mPosition);
 	//start in one of the corners...
-	origPosition[0] = (origPosition[0] * (getPageSize() - 1)) - (getPageSize() / 2) - 1;
-	origPosition[1] = (origPosition[1] * (getPageSize() - 1)) + (getPageSize() / 2);
+	origPosition[0] = (origPosition[0] * (getPageSize() - 1));
+	origPosition[1] = (origPosition[1] * (getPageSize() - 1));
 	 
 	TerrainPosition position(origPosition);
 	
@@ -1066,7 +1081,7 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 		
 	Ogre::Image* image = new Ogre::Image();
 	image->loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
-	//image->save(std::string("c:\\skit\\") + splatTextureName + "_temp" + std::string(".png"));
+	image->save(std::string("/home/erik/tempimages/") + splatTextureName + "_temp" + std::string(".png"));
 	
 //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
 //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);

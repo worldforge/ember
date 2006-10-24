@@ -28,14 +28,15 @@
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
 #include "../environment/Foliage.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeSceneManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTextureManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOptions.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeCamera.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeSceneManager.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTextureManager.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOptions.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h"
+// #include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h"
+//#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeCamera.h"
+#include "ISceneManagerAdapter.h"
 
 
 
@@ -59,14 +60,19 @@
 #endif
 #include "framework/ConsoleBackend.h"
 
+
 using namespace Ogre;
 namespace EmberOgre {
 
 
-TerrainGenerator::TerrainGenerator()
-: mGrassShader(0), mXmax(0), mXmin(0), mYmax(0), mYmin(0), hasTerrainInfo(false)
+TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
+: mGrassShader(0), hasTerrainInfo(false)
 {
+
+	registerSceneManagerAdapter( adapter);
 	//new Foliage(EmberOgre::getSingleton().getSceneManager());
+	
+	mTerrainInfo.pageIndicesSize = adapter->getPageSize();
 	
     loadTerrainOptions();
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
@@ -147,34 +153,36 @@ void TerrainGenerator::loadTerrainOptions()
 	//	}
 	//}
 	
-	Ogre::PagingLandScapeSceneManager* sceneManager = getEmberSceneManager();
+// 	Ogre::PagingLandScapeSceneManager* sceneManager = getEmberSceneManager();
 
 	
 
 
-	sceneManager->setOption("GroupName", "General");
-	sceneManager->getOptions()->groupName = "General";
-	sceneManager->getOptions()->cfgGroupName = "General";
+	getAdapter()->setResourceGroupName("General" );
 
-	sceneManager->getOptions()->loadMapOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/terrain.cfg");	
+	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/terrain.cfg");
 	
-	sceneManager->setOption("primaryCamera", EmberOgre::getSingleton().getMainCamera()->getCamera());
+	getAdapter()->setCamera( EmberOgre::getSingleton().getMainCamera()->getCamera());
 	
 	
 	//Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";
-	sceneManager->getOptions()->setTextureFormat("EmberTexture");
 
 }
 
-EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager()
+ISceneManagerAdapter* TerrainGenerator::getAdapter() const
 {
-	return static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
+	return mSceneManagerAdapter;
 }
 
-const EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager() const
-{
-	return static_cast<const EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
-}
+// // EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager()
+// // {
+// // 	return static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
+// // }
+// // 
+// // const EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager() const
+// // {
+// // 	return static_cast<const EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
+// // }
 
 TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Mercator::Shader* mercatorShader)
 {
@@ -301,7 +309,7 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 
 int TerrainGenerator::getPageSize() 
 {
-	return getEmberSceneManager()->getOptions()->PageSize;
+	return mSceneManagerAdapter->getPageSize();
 }
 
 int TerrainGenerator::getSegmentSize() 
@@ -313,12 +321,16 @@ void TerrainGenerator::buildHeightmap()
 {
 	mHeightMax = 0, mHeightMin = 0;
 	
-	//initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
+	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
+	
+	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
 	int i,j;
-	for (i = mXmin; i < mXmax; ++i) {
-		for (j = mYmin; j < mYmax; ++j) {
+	const WFMath::AxisBox<2>& segmentBbox = mTerrainInfo.getWorldSizeInSegments();
+	for (i = static_cast<int>(segmentBbox.lowCorner().x()); i < segmentBbox.highCorner().x(); ++i) {
+		for (j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
 			Mercator::Segment* segment = mTerrain->getSegment(i, j);
 			if (segment) {
+				S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
 				segment->populate();
 				segment->populateNormals();
 				segment->populateSurfaces();
@@ -328,6 +340,12 @@ void TerrainGenerator::buildHeightmap()
 		}
 	}
 }
+
+void TerrainGenerator::registerSceneManagerAdapter(ISceneManagerAdapter* adapter)
+{
+	mSceneManagerAdapter = adapter;
+}
+
 
 void TerrainGenerator::prepareAllSegments()
 {
@@ -365,46 +383,57 @@ void TerrainGenerator::prepareAllSegments()
 // 	}
 	
 	
-	Ogre::PagingLandScapeSceneManager * sceneManager = getEmberSceneManager();
-	Ogre::PagingLandScapeOptions* options = getEmberSceneManager()->getOptions();
+// // 	Ogre::PagingLandScapeSceneManager * sceneManager = getEmberSceneManager();
+// 	Ogre::PagingLandScapeOptions* options = getEmberSceneManager()->getOptions();
 	
 	///update the terrain info
-	mTerrainInfo.worldSizeX = getMax().x() - getMin().x();
-// 	mTerrainInfo.totalNumberOfPagesX = static_cast<int>( ceil(mTerrainInfo.worldSizeX / (getPageSize() - 1)));
-	mTerrainInfo.totalNumberOfPagesX = static_cast<int>( mTerrainInfo.worldSizeX / (getPageSize() - 1));
-	mTerrainInfo.pageOffsetX = mTerrainInfo.totalNumberOfPagesX / 2;
-	mTerrainInfo.worldSizeY = getMax().y() - getMin().y();
-// 	mTerrainInfo.totalNumberOfPagesY = static_cast<int>( ceil(mTerrainInfo.worldSizeY / (getPageSize() - 1)));
-	mTerrainInfo.totalNumberOfPagesY = static_cast<int>( mTerrainInfo.worldSizeY / (getPageSize() - 1));
-	mTerrainInfo.pageOffsetY = mTerrainInfo.totalNumberOfPagesY / 2;
+/*	mTerrainInfo.worldSizeX = getMax().x() - getMin().x();
+	mTerrainInfo.totalNumberOfPagesX = static_cast<int>( ceil(mTerrainInfo.worldSizeX / (getPageSize() - 1)));*/
+//	mTerrainInfo.totalNumberOfPagesX = static_cast<int>( mTerrainInfo.worldSizeX / (getPageSize() - 1));
+// 	mTerrainInfo.pageOffsetX = mTerrainInfo.totalNumberOfPagesX / 2;
+/*	mTerrainInfo.worldSizeY = getMax().y() - getMin().y();
+	mTerrainInfo.totalNumberOfPagesY = static_cast<int>( ceil(mTerrainInfo.worldSizeY / (getPageSize() - 1)));*/
+//	mTerrainInfo.totalNumberOfPagesY = static_cast<int>( mTerrainInfo.worldSizeY / (getPageSize() - 1));
+// 	mTerrainInfo.pageOffsetY = mTerrainInfo.totalNumberOfPagesY / 2;
 	
 	//if the world is in effect non-existant, quit here
-	if (mTerrainInfo.totalNumberOfPagesX == 0 && mTerrainInfo.totalNumberOfPagesY == 0) {
-		return;
-	}
+// 	if (mTerrainInfo.totalNumberOfPagesX == 0 && mTerrainInfo.totalNumberOfPagesY == 0) {
+// 		return;
+// 	}
 	
-	options->world_height = mTerrainInfo.totalNumberOfPagesY;
-	options->world_width = mTerrainInfo.totalNumberOfPagesX;
+	getAdapter()->setWorldPagesDimensions( mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY());
 	
-	//update the options
-	options->NumPages = static_cast<Ogre::uint> (static_cast <Ogre::Real> (options->world_height * options->world_width));
-	options->maxUnScaledZ = options->world_height * (options->PageSize - 1) * 0.5f;
-	options->maxUnScaledX = options->world_width  * (options->PageSize - 1) * 0.5f;
-
-	options->maxScaledZ = options->scale.z * options->maxUnScaledZ;
-	options->maxScaledX = options->scale.x * options->maxUnScaledX;
 
 		
-	sceneManager->loadScene();
-	Ogre::AxisAlignedBox worldBox(getMin().x(), mHeightMin, getMin().y(), getMax().x(), mHeightMax, getMax().y());
+	getAdapter()->loadScene();
+	const WFMath::AxisBox<2>& worldSize = mTerrainInfo.getWorldSizeInIndices();
+	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), mHeightMin, worldSize.lowCorner().y(), worldSize.highCorner().x(), mHeightMax, worldSize.highCorner().y());
 	std::stringstream ss;
 	ss << worldBox;
 	S_LOG_INFO("New size of the world: " << ss.str());
 	
-	sceneManager->resize(worldBox ,16);
+	getAdapter()->resize(worldBox ,16);
 
 	
 }
+
+// void TerrainInfo::setNewXMax(int xMax)
+// {
+// }
+// 
+// void TerrainInfo::setNewXMin(int xMin)
+// {
+// }
+// 
+// void TerrainInfo::setNewYMax(int yMax)
+// {
+// }
+// 
+// void TerrainInfo::setNewYMin(int yMin)
+// {
+// }
+
+
 
 
 
@@ -451,7 +480,7 @@ TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosi
 	//_fpreset();
 	S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
 	
-	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.pageOffsetX, ogreIndexPosition.y - mTerrainInfo.pageOffsetY);
+	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetX(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetY());
 	
 	TerrainPosition pos(Ogre2Atlas(adjustedOgrePos));
 	
@@ -680,19 +709,21 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
     return true;
 }
 
+
+
 bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
-	int Xmin = mXmin;
+/*	int Xmin = mXmin;
 	int Xmax = mXmax;
 	int Ymin = mYmin;
-	int Ymax = mYmax;
+	int Ymax = mYmax;*/
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
 		///if we don't have any info from before, initialize the min and max values now
 		if (!hasTerrainInfo) {
-			mXmin = static_cast<int>(I->position.x());
+/*			mXmin = static_cast<int>(I->position.x());
 			mXmax = static_cast<int>(I->position.x());
 			mYmin = static_cast<int>(I->position.y());
-			mYmax = static_cast<int>(I->position.y());
+			mYmax = static_cast<int>(I->position.y());*/
 			hasTerrainInfo = true;
 		}
 		
@@ -700,25 +731,36 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
         if (mTerrain->getBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp) && (I->height == bp.height())) {
 			S_LOG_VERBOSE( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");
             continue;
+        } else {
+			S_LOG_VERBOSE( "Setting base point [" << I->position.x() << "," << I->position.y() << " to height " << I->height);
         }
-        mXmin = std::min<int>(mXmin, static_cast<int>(I->position.x()));
+/*        mXmin = std::min<int>(mXmin, static_cast<int>(I->position.x()));
         mXmax = std::max<int>(mXmax, static_cast<int>(I->position.x()));
         mYmin = std::min<int>(mYmin, static_cast<int>(I->position.y()));
-        mYmax = std::max<int>(mYmax, static_cast<int>(I->position.y()));
+        mYmax = std::max<int>(mYmax, static_cast<int>(I->position.y()));*/
         bp.height() = I->height;
         // FIXME Sort out roughness and falloff, and generally
         // verify this code is the same as that in Terrain layer
         mTerrain->setBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp);
+        mTerrainInfo.setBasePoint(I->position, bp);
 
 	}
     mSegments = &mTerrain->getTerrain();
 	
 	buildHeightmap();
 	
-	///check if the size of the world has been changed
-	if (Xmin != mXmin || Xmax != mXmax || Ymin != mYmin || Ymax != mYmax) {
-		EventWorldSizeChanged.emit();
+	///for some yet undetermined reason we'll get blank segments seeminly at random in the terrain if we'll load it dynamically when requested by the scene manager, so avoid that we'll initialize everything now
+	///HACK: this is of course just a temporary fix
+	for (int i = 0; i < mTerrainInfo.getTotalNumberOfPagesX(); ++i) {
+		for (int j = 0; j < mTerrainInfo.getTotalNumberOfPagesY(); ++j) {
+			getTerrainPage(Ogre::Vector2(i, j), true);
+		}
 	}
+	
+	///check if the size of the world has been changed
+// 	if (Xmin != mXmin || Xmax != mXmax || Ymin != mYmin || Ymax != mYmax) {
+		EventWorldSizeChanged.emit();
+// 	}
 	
 	
 	return true;
@@ -735,12 +777,14 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 
 const TerrainPosition TerrainGenerator::getMax( ) const
 {
-	return TerrainPosition(mXmax * 64, mYmax * 64);
+	return mTerrainInfo.getWorldSizeInIndices().highCorner();
+// 	return TerrainPosition(mXmax * 64, mYmax * 64);
 }
 
 const TerrainPosition TerrainGenerator::getMin( ) const
 {
-	return TerrainPosition(mXmin * 64, mYmin * 64);
+	return mTerrainInfo.getWorldSizeInIndices().lowCorner();
+// 	return TerrainPosition(mXmin * 64, mYmin * 64);
 }
 
 TerrainShader* TerrainGenerator::getFoliageShader() const

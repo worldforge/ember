@@ -45,6 +45,8 @@
 #include <sigc++/trackable.h>
 
 #include "framework/ConsoleObject.h"
+
+#include "TerrainInfo.h"
 namespace Ogre
 {
 	class TerrainOptions;
@@ -58,6 +60,8 @@ class TerrainPage;
 
 class EmberPagingSceneManager;
 
+class ISceneManagerAdapter;
+
 struct TerrainDefPoint
 {
 	public:
@@ -66,15 +70,7 @@ struct TerrainDefPoint
 	float height;
 };
 
-/**
-Struct holding information about the terrain.
-*/
-struct TerrainInfo
-{
-	double worldSizeX, worldSizeY;
-	int totalNumberOfPagesX, totalNumberOfPagesY;
-	int pageOffsetX, pageOffsetY;
-};
+
 
 /**
  * This class takes care of generating terrain for Ogre's scenemanager.
@@ -106,7 +102,7 @@ public:
 	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
 	
 	
-	TerrainGenerator();
+	TerrainGenerator(ISceneManagerAdapter* adapter);
 	virtual ~TerrainGenerator();
 
 	
@@ -223,12 +219,12 @@ public:
 	 *    Accessor for the scene manager.
 	 * @return 
 	 */
-	EmberPagingSceneManager* getEmberSceneManager();
+// 	EmberPagingSceneManager* getEmberSceneManager();
 	/**
 	 *    Accessor for the scene manager.
 	 * @return 
 	 */
-	const EmberPagingSceneManager* getEmberSceneManager() const;
+// 	const EmberPagingSceneManager* getEmberSceneManager() const;
 	
 	/**
 	 *    Rebuilds the height map, effectively regenerating the terrain
@@ -241,7 +237,10 @@ public:
 	Emitted when the size of the world has changed.
 	*/
 	sigc::signal<void> EventWorldSizeChanged;
-
+	
+	
+	void registerSceneManagerAdapter(ISceneManagerAdapter* adapter);
+	ISceneManagerAdapter* getAdapter() const;
 	
 protected:
 
@@ -283,7 +282,7 @@ protected:
 	/**
 	 * the min and max indices for segments
 	 */
-	int mXmin, mXmax, mYmin, mYmax;
+// 	int mXmin, mXmax, mYmin, mYmax;
 	
 	void loadTerrainOptions();
 	
@@ -340,6 +339,8 @@ protected:
 	 * @param key 
 	 */
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	
+	ISceneManagerAdapter* mSceneManagerAdapter;
 };
 }
 

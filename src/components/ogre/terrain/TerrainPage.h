@@ -163,6 +163,8 @@ public:
 	
 	int getPageSize() const ;
 	
+	void update();
+	
 	
 	
 private:
