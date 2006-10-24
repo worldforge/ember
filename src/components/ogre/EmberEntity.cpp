@@ -100,6 +100,7 @@ mIsInitialized(false)
 , mTerrainArea(this)
 , mIsInMotionManager(false)
 , mErisEntityBoundingBox(0)
+, mOgreNode(0)
 {
 	createSceneNode(sceneManager);
 }
