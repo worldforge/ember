@@ -108,6 +108,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 //#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
 
@@ -402,7 +403,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager, camera);
 	EventAvatarControllerCreated.emit(*mAvatarController);
 	
-	mTerrainGenerator = new TerrainGenerator();
+	mTerrainGenerator = new TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
 	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
 	mMotionManager = new MotionManager();
 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
