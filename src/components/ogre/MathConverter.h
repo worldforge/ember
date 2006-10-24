@@ -11,7 +11,12 @@ See file COPYING for details.
  *  Change History (most recent first):
  *
  *      $Log$
- *      Revision 1.17  2006-01-10 01:17:08  erik
+ *      Revision 1.18  2006-10-24 21:58:14  erik
+ *      2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+ *
+ *      	* src/components/ogre/MathConverter.h: added conversion between WFMath::Vector<2> and Ogre::Vector2
+ *
+ *      Revision 1.17  2006/01/10 01:17:08  erik
  *      2006-01-10  Erik Hjortsberg  <erik@katastrof.nu>
  *
  *      	* src/components/ogre/MathConverter.h: make most methods accept const references instead of just doing a copy, should bring some speed up
@@ -295,6 +300,10 @@ typedef WFMath::Point<2> TerrainPosition;
 }*/
 inline Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p) {
 	return Ogre::Vector3(p.x(),0,-p.y());
+}
+
+inline Ogre::Vector2 Atlas2Ogre_Vector2(const TerrainPosition& p) {
+	return Ogre::Vector2(p.x(),-p.y());
 }
 
 // inline WFMath::Point<3> Ogre2Atlas(Ogre::Vector3& p) {

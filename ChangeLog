@@ -1,3 +1,43 @@
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/MathConverter.h: added conversion between WFMath::Vector<2> and Ogre::Vector2
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp: create and register an adapter when creating the terrain generator
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/EmberEntity.cpp: set the node to null at initialization
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am: added adapter for this scene manager
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainEditor.cpp: we should use the setOption method of updating the pages, though right now it just crashes
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h: changed the way the terrain is created. We now always create four pages around point 0,0. 
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainInfo.cpp, src/components/ogre/terrain/TerrainInfo.h: added class for holding terrain information and calculating page sizes etc.
+
+2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/ISceneManagerAdapter.h,src/components/ogre/terrain/Makefile.am : added interface for an adapter for a scene manager
+
+2006-10-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Give.lua,src/components/ogre/widgets/Tasks.lua: removed some debug output
+
+2006-10-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Water.cpp: handle missing resources
+	
 2006-10-08 Erik Hjortsberg  <erik@katastrof.nu>
 	
 	* src/components/ogre/environment/LensFlare.cpp, src/components/ogre/environment/LensFlare.h: handle missing material
