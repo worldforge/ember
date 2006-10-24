@@ -48,6 +48,7 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+#include "ISceneManagerAdapter.h"
 
 
 namespace EmberOgre {
@@ -448,7 +449,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 	
 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
-	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainGenerator()->getEmberSceneManager();
+// 	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainGenerator()->getEmberSceneManager();
 	TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	for(TerrainEditAction::MovementStore::const_iterator I = action.getMovements().begin(); I != action.getMovements().end(); ++I)
 	{
@@ -464,18 +465,18 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		pointStore.push_back(defPoint);
 		
 		
-		Ogre::Vector3 markerPos = Atlas2Ogre(I->getPosition());
-		
-		markerPos *= 64;
-		Ogre::PagingLandScapeTile* tile;
-		for (int i = -1; i < 2; i += 2) {
-			for (int j = -1; j < 2; j += 2) {
-				tile = sceneMgr->getPageManager()->getTile(markerPos.x + i, markerPos.z + j, false);
-				if (tile) {
-					tilesToUpdate.insert(tile);
-				}
-			}
-		}
+// 		Ogre::Vector3 markerPos = Atlas2Ogre(I->getPosition());
+// 		
+// 		markerPos *= 64;
+// 		Ogre::PagingLandScapeTile* tile;
+// 		for (int i = -1; i < 2; i += 2) {
+// 			for (int j = -1; j < 2; j += 2) {
+// 				tile = sceneMgr->getPageManager()->getTile(markerPos.x + i, markerPos.z + j, false);
+// 				if (tile) {
+// 					tilesToUpdate.insert(tile);
+// 				}
+// 			}
+// 		}
 		
 		TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
 		TerrainPage* page;
@@ -483,7 +484,12 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 			for (int j = -1; j < 2; j += 2) {
 				page = terrainGenerator->getTerrainPage(TerrainPosition(worldPosition.x() + i, worldPosition.y() + j));
 				if (page) {
-					pagesToUpdate.insert(page);
+// 					page->update();
+/*					Vector2 targetPage (X, Z);
+					
+					
+					myScnMgr::setOption("PageUpdate", &targetPage); 
+					pagesToUpdate.insert(page);*/
 				}
 			}
 		}
@@ -530,7 +536,8 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 	sceneMgr->setOption("PageUpdate", &targetPage); 
 
 	///TODO: this shouldn't be necessary
-	sceneMgr->getPageManager()->load();
+	//sceneMgr->getPageManager()->load();
+	terrainGenerator->getAdapter()->reloadAllPages();
 	
 	
 	updateEntityPositions(pagesToUpdate);
