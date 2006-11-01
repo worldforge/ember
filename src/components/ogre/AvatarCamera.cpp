@@ -709,7 +709,7 @@ const std::string AvatarCamera::_takeScreenshot()
 	{
 		filename << "0";
 	} 
-	filename << sec << ".png";
+	filename << sec << ".jpg";
 
 	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
 	try {
@@ -717,7 +717,7 @@ const std::string AvatarCamera::_takeScreenshot()
 		
 		oslink::directory osdir(dir);
 
-		if (!osdir) {
+		if (!osdir.isExisting()) {
 #ifdef __WIN32__
 			mkdir(dir.c_str());
 #else
