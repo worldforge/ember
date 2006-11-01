@@ -139,6 +139,9 @@ void OgreResourceLoader::loadGeneral()
 		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
 	}
 	
+	
+	loadAllUnloadedSections();
+
 	///out of pure interest we'll print out how many modeldefinitions we've loaded
 	Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
 	int count = 0;
@@ -207,8 +210,25 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		}
 		I.moveNext();
 	}
+	mLoadedSections.push_back(sectionName);
 
 }
+
+void OgreResourceLoader::loadAllUnloadedSections()
+{
+	S_LOG_VERBOSE("Now loading all unloaded sections.");
+	Ogre::ConfigFile::SectionIterator I = cf.getSectionIterator();
+	while (I.hasMoreElements()) {
+		const std::string& sectionName = I.peekNextKey();
+		if (std::find(mLoadedSections.begin(), mLoadedSections.end(), sectionName) == mLoadedSections.end())
+		{
+			loadSection(sectionName);
+		}
+		I.moveNext();
+	}
+	
+}
+
 
 bool OgreResourceLoader::isExistingDir(const std::string& path) const
 {

@@ -54,6 +54,10 @@ protected:
 	void addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
 	
 	bool isExistingDir(const std::string& path) const;
+	
+	void loadAllUnloadedSections();
+	
+	std::vector<std::string> mLoadedSections;
 };
 
 }
