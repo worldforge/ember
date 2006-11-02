@@ -58,29 +58,29 @@ SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_
 ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $(SCRIPT_LIBS) \
 	$(top_builddir)/src/components/ogre/widgets/libWidgets.a $(top_builddir)/src/services/libServices.a \
 	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
+	$(top_builddir)/src/components/ogre/terrain/libTerrain.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
+	$(top_builddir)/src/components/ogre/environment/caelum/libCaelum.la \
 	$(top_builddir)/src/components/ogre/input/libInput.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a \
 	$(top_builddir)/src/components/ogre/jesus/libJesus.a \
 	$(top_builddir)/src/components/ogre/manipulation/libmanipulation.a \
 	$(top_builddir)/src/components/ogre/sound/libSound.a \
-	$(top_builddir)/src/components/ogre/terrain/libTerrain.a \
 	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
-	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
+	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a $(top_builddir)/src/services/time/libTime.la  \
 	$(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.a \
 	$(top_builddir)/src/components/ogre/ogreopcode/opcode/libOpcode.a $(EMBER_EXT_LIBS) 
         
 
 
 ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
-					environment/Water.cpp MotionManager.cpp AvatarCamera.cpp \
-					GUIManager.cpp MousePicker.cpp EmberEntityFactory.cpp 				EmberOgre.cpp \
-	EmberPhysicalEntity.cpp EmberEntity.cpp 				AvatarEmberEntity.cpp WorldEmberEntity.cpp \
-	 				EmberEntityUserObject.cpp GUICEGUIAdapter.cpp \
-	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp  \
-	EntityWorldPickListener.cpp OgreSetup.cpp 
+						environment/Water.cpp MotionManager.cpp AvatarCamera.cpp 					GUIManager.cpp MousePicker.cpp \
+	EmberEntityFactory.cpp 				EmberOgre.cpp 	EmberPhysicalEntity.cpp EmberEntity.cpp \
+					AvatarEmberEntity.cpp WorldEmberEntity.cpp 	 				EmberEntityUserObject.cpp \
+	GUICEGUIAdapter.cpp 	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp \
+		EntityWorldPickListener.cpp OgreSetup.cpp Time.cpp
 
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
@@ -89,11 +89,11 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				 \
-		AvatarEmberEntity.h EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h \
-		EmberEntity.h Avatar.h environment/Water.h 				 MotionManager.h \
-		AvatarCamera.h  MathConverter.h 				ConsoleObjectImpl.h \
-		AvatarController.h GUIManager.h MousePicker.h EmberEntityUserObject.h \
-						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h OgreResourceLoader.h \
-			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h OgreSetup.h
+noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				 		AvatarEmberEntity.h \
+	EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h 		EmberEntity.h \
+	Avatar.h environment/Water.h 				 MotionManager.h 		AvatarCamera.h \
+	MathConverter.h 				ConsoleObjectImpl.h 		AvatarController.h GUIManager.h MousePicker.h \
+	EmberEntityUserObject.h 						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h \
+	OgreResourceLoader.h 			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h \
+	OgreSetup.h Time.h
 	

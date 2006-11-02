@@ -1,5 +1,31 @@
 2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/Makefile.am, configure.ac: added new libraries
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: use the new Environment class
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h:
+		* cleaned up code
+		* updated to changed environment namespace
+		* write some info about the version of ogre compiled against
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml: hide far away characters, since if they're animated they will kill the frame rate (we really need hardware animation)
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h:
+		* cleaned up code
+		* removed stupid debug code
+		* updated to changed environment namespace
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/environment/LensFlare.cpp, src/components/ogre/environment/LensFlare.h, src/components/ogre/environment/Sky.cpp, src/components/ogre/environment/Sky.h: changed the namespace to EmberOgre::Environment
 	* src/components/ogre/environment/Makefile.am: added new files
 
