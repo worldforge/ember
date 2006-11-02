@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
-SUBDIRS = config logging metaserver server scripting sound bindings
+SUBDIRS = config logging metaserver server scripting sound bindings time
 # removed subdirs: gui platform datamodel  input image font test sound
 noinst_LIBRARIES = libServices.a
 
