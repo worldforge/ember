@@ -63,6 +63,8 @@
 
 //#include <fenv.h>
 
+using namespace EmberOgre::Environment;
+
 namespace EmberOgre {
 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
@@ -351,7 +353,7 @@ void TerrainPage::printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const
 	
 	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
 	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
-	pCodec->codeToFile(dataChunk, Ogre::String("/home/erik/.ember/") + name + "." + extension, temp);
+	pCodec->codeToFile(dataChunk, Ogre::String("~/.ember/") + name + "." + extension, temp);
 	
 }
 
@@ -1081,7 +1083,7 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 		
 	Ogre::Image* image = new Ogre::Image();
 	image->loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
-	image->save(std::string("/home/erik/tempimages/") + splatTextureName + "_temp" + std::string(".png"));
+	//image->save(std::string("~/tempimages/") + splatTextureName + "_temp" + std::string(".png"));
 	
 //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
 //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);

@@ -28,20 +28,8 @@
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
 #include "../environment/Foliage.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeSceneManager.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTextureManager.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOptions.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h"
-// #include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h"
-//#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeCamera.h"
 #include "ISceneManagerAdapter.h"
 
-
-
-
-//#include "environment/GroundCover.h"
 
 #include "TerrainPage.h"
 #include <Mercator/Area.h>

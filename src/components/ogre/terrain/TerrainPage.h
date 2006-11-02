@@ -27,12 +27,8 @@
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
-// #include <Mercator/FillShader.h>
-// #include <Mercator/ThresholdShader.h>
-// #include <Mercator/DepthShader.h>
-// #include <Mercator/GrassShader.h>
 #include <Mercator/Surface.h>
-// #include <Mercator/Matrix.h>
+
 namespace Ogre
 {
 	class TerrainOptions;
@@ -42,7 +38,9 @@ namespace EmberOgre {
 
 class TerrainShader;
 class TerrainGenerator;
+namespace Environment {
 class FoliageArea;
+}
 
 TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
@@ -183,7 +181,7 @@ private:
 	*/
 	std::list<TerrainShader*> mUsedShaders;
 	
-	FoliageArea* mFoliageArea;
+	::EmberOgre::Environment::FoliageArea* mFoliageArea;
 
 	/**
 	this holds a map of the area, to be used in a map widget etc.
