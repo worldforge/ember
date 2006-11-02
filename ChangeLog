@@ -1,3 +1,7 @@
+2006-11-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/caelum/src/CaelumSystem.cpp: wait with attaching as a frame listener until we've been completely created
+
 2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/Makefile.am, configure.ac: added new libraries

@@ -10,7 +10,6 @@ CaelumSystem::CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr) {
 	mOgreRoot = root;
 	mSceneMgr = sceneMgr;
 
-	mOgreRoot->addFrameListener (this);
 
 	createSkyDomeMaterial ();
 	createStarfieldMaterial ();
@@ -28,6 +27,8 @@ CaelumSystem::CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr) {
 
 	mStarfield = 0;
 
+	///add ourselves as frame listener last, since if there's a problem here. there will be no valid object
+	mOgreRoot->addFrameListener (this);
 	LOG ("DONE");
 }
 
