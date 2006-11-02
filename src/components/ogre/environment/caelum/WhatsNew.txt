@@ -1,0 +1,9 @@
+Changes in version 0.2:
+- Fixed issues:
+  - Infinite far clipping distance
+  - Shader profiles
+  - Linux compatibility issue in the prerequisites
+  - Issue with RenderQueueGroups. Now it's possible to use Caelum AND Ogre's built-in sky elements (skydome, skybox, skyplane)
+- Added Eihort compatibility when using TextureUnitState::setTextureName()
+- Added the CaelumListener interface to receive notifications of Caelum process state for custom operations
+- Added CaelumSystem::registerAllToTarget() and unregisterAllToTarget() so that it's possible to register all the RenderTargetListeners in Caelum to a RenderTarget in a single step

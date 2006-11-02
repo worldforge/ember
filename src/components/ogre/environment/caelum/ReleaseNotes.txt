@@ -1,0 +1,3 @@
+- Read the recent changes document for a list of changes done in this version.
+- The clouds support is still in a too early stage (actually just playing with it a little to 
+  do some prototyping). You can play with it as much as you want ;)

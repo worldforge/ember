@@ -1,0 +1,6 @@
+List of contributors:
+- er: VC7.1 Eihort scripts.
+      Eihort compatibility when dealing with texture unit states and textures.
+      Infinite far clipping distance issue.
+- MWeb: Linux compatibility issue in the prerequisites.
+- gerds: Shader profiles issue.
