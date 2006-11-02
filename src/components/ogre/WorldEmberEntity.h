@@ -22,12 +22,13 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+class Environment;
+class Foliage;
+}
+
 class EmberEntity;
 class TerrainGenerator;
-class Foliage;
-class Water;
-class Sun;
-class Sky;
 
 class WorldEmberEntity : public EmberEntity {
 public:
@@ -62,10 +63,9 @@ protected:
 	void updateTerrain(const Atlas::Message::Element& terrain);
 	
 		
-	Foliage* mFoliage;
-	Water* mWater;
-	Sun* mSun;
-	Sky* mSky;
+	Environment::Foliage* mFoliage;
+	
+	Environment::Environment* mEnvironment;
 };
 
 }

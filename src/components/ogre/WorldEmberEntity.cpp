@@ -29,6 +29,8 @@
 #include "environment/Water.h"
 #include "environment/Sun.h"
 #include "environment/Sky.h"
+#include "environment/Environment.h"
+#include "environment/CaelumEnvironment.h"
 #include "EmberOgre.h"
 #include "Avatar.h"
 #include "AvatarCamera.h"
@@ -57,17 +59,10 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	EmberEntity::init(ge, fromCreateOp);
 	//mTerrainGenerator->initTerrain(this, getView());
 	
-	///create the sun
-	mSun = new Sun(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
-	
-	///create the water
-	mWater = new Water(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
-	
-	///create the sky
-	mSky = new Sky(EmberOgre::getSingleton().getMainCamera()->getCamera(), EmberOgre::getSingleton().getSceneManager());
+	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	
 	///create the foliage
-	mFoliage = new Foliage(EmberOgre::getSingleton().getSceneManager());
+ 	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
 	
 	///prepare all the segments in advance
 	mTerrainGenerator->prepareAllSegments();
@@ -76,6 +71,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	///set the position to always 0, 0, 0
 	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
+	mEnvironment->initialize();
 	
 }
 
