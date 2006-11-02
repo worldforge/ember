@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="settler_" usescaleof="height" showcontained="false">
+	<model name="settler_" usescaleof="height" showcontained="false" renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/alpha_male.mesh" >
 				<parts>
@@ -61,7 +61,7 @@
 		</attachpoints>
 	</model>	
 
-	<model name="settler_male" usescaleof="height" scale="1.2" showcontained="false">
+	<model name="settler_male" usescaleof="height" scale="1.2" showcontained="false"  renderingdistance="150">
 			<translate x="0.000000" y="0.000000" z="0.000000" />
 			<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
 			<submodels>
@@ -119,7 +119,7 @@
 			</attachpoints>
 		</model>
 	
-	<model name="settler" usescaleof="height"  showcontained="false">
+		<model name="settler" usescaleof="height"  showcontained="false" renderingdistance="150">
 		<submodels>
 			<submodel mesh="Alpha_Male.mesh" >
 				<parts>
@@ -250,7 +250,7 @@
 		</attachpoints>
 	</model>		
 
-	<model name="settler_____" usescaleof="height"  showcontained="false">
+	<model name="settler_____" usescaleof="height"  showcontained="false" renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/Alpha_Male.mesh" >
 				<parts>
@@ -356,7 +356,7 @@
 	</model>		
 	
 	
-	<model name="settler_working" usescaleof="height"  showcontained="false">
+	<model name="settler_working" usescaleof="height"  showcontained="false" renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/AlphaMaleMesh.001.mesh" >
 				<parts>
@@ -461,7 +461,7 @@
 		</attachpoints>
 	</model>		
 		
-	<model name="butcher" usescaleof="height" showcontained="false" >
+	<model name="butcher" usescaleof="height" showcontained="false"  renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -518,7 +518,7 @@
 		</attachpoints>
 	</model>
 
-	<model name="marshall" usescaleof="height" showcontained="false" >
+	<model name="marshall" usescaleof="height" showcontained="false"  renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -576,7 +576,7 @@
 	</model>
 
 
-	<model name="mercenary" usescaleof="height" showcontained="false" >
+	<model name="mercenary" usescaleof="height" showcontained="false"  renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -634,7 +634,7 @@
 	</model>
 	
 	
-	<model name="merchant"  usescaleof="height" showcontained="false" >
+	<model name="merchant"  usescaleof="height" showcontained="false"  renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
 				<parts>
@@ -691,7 +691,7 @@
 		</attachpoints>
 	</model>
 	
-	<model name="creator"  usescaleof="height" showcontained="false" >
+	<model name="creator"  usescaleof="height" showcontained="false"  renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh" >
 				<parts>
