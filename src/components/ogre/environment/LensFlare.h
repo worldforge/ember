@@ -27,6 +27,8 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+
 
 /* ------------------------------------------------------------------------- */
 /// A lens Flare effect.
@@ -40,28 +42,33 @@ light, for instance.
 class LensFlare
 {
 public:
-	LensFlare(Ogre::Vector3 LightPosition, Ogre::Camera* camera, Ogre::SceneManager* SceneMgr);
+	LensFlare(Ogre::Camera* camera, Ogre::SceneManager* SceneMgr);
 	virtual ~LensFlare();
 	bool    createLensFlare();
 	void    update();
 	void    setVisible(bool visible);
-	void    setLightPosition(Ogre::Vector3 pos);
+// 	void    setLightPosition(Ogre::Vector3 pos);
+	void	setNode(Ogre::SceneNode* node);
 	void    setHaloColour(Ogre::ColourValue color);
 	void    setBurstColour(Ogre::ColourValue color);
+	void    initialize();
 
 
 protected:
 	Ogre::SceneManager* mSceneMgr;
 	Ogre::Camera*       mCamera;
 	Ogre::ColourValue   mColour;
-	Ogre::SceneNode*    mNode;
+	//Ogre::SceneNode*    mNode;
    	Ogre::BillboardSet* mHaloSet;
   	Ogre::BillboardSet* mBurstSet;
-	Ogre::Vector3       mLightPosition;
+	//Ogre::Vector3       mLightPosition;
+	Ogre::SceneNode* 	mLightNode;
 	bool          mHidden;
+	
+	const Ogre::Vector3& getLightPosition() const;
 };
 
-
+}
 
 }
 

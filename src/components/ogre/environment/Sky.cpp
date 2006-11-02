@@ -27,26 +27,36 @@
 #include "../EmberOgre.h"
 #include "../terrain/TerrainGenerator.h"
 #include "framework/Tokeniser.h"
+#include "../AvatarCamera.h"
 
 
 
 #include <sigc++/object_slot.h>
 
+#include "CaelumSky.h"
 
 
 
 namespace EmberOgre {
 
+namespace Environment {
+
 Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
 {
+
+	createSimpleSky(camera, sceneMgr);
+
+	updateFogValuesFromConfig();
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
+}
+
+
+void Sky::createSimpleSky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr) {
   sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
 
   updateFogValuesFromConfig();
   Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
-
-
 }
-
 
 
 Sky::~Sky()
@@ -130,4 +140,6 @@ void Sky::setFogValues(float start, float end, Ogre::ColourValue colour)
 }
 
 
-};
+}
+
+}

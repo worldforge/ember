@@ -24,7 +24,10 @@
 #include "../EmberEntity.h"
 
 using namespace Ogre;
+
 namespace EmberOgre {
+
+namespace Environment {
 
 
 /* ------------------------------------------------------------------------- */
@@ -33,14 +36,11 @@ namespace EmberOgre {
 /// @param camera        The camera on which the lensflare effect will appear.
 /// @param SceneMgr      Pointer on the SceneManager.
 /* ------------------------------------------------------------------------- */
-LensFlare::LensFlare(Vector3 LightPosition, Camera* camera, SceneManager* SceneMgr) : mNode(0)
+LensFlare::LensFlare(Camera* camera, SceneManager* SceneMgr) : mLightNode(0)
 {
 	mSceneMgr      = SceneMgr;
 	mCamera        = camera;
 	mHidden        = true;
-	if (createLensFlare()) {
-		setLightPosition(LightPosition);
-	}
 }
 
 /* ------------------------------------------------------------------------- */
@@ -48,20 +48,31 @@ LensFlare::LensFlare(Vector3 LightPosition, Camera* camera, SceneManager* SceneM
 /* ------------------------------------------------------------------------- */
 LensFlare::~LensFlare()
 {
-	if (mNode) {
-		mNode->detachObject(mHaloSet);
-		mNode->detachObject(mBurstSet);
+	if (mLightNode) {
+		mLightNode->detachObject(mHaloSet);
+		mLightNode->detachObject(mBurstSet);
 		mSceneMgr->destroyBillboardSet(mHaloSet);
 		mSceneMgr->destroyBillboardSet(mBurstSet);
 		
-		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mNode->getParent());
+/*		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mNode->getParent());
 		if (parent) {
 			parent->removeAndDestroyChild(mNode->getName());
 		} else {
 			mNode->getCreator()->destroySceneNode(mNode->getName());
-		}
+		}*/
 	}
 } 
+
+void LensFlare::setNode(Ogre::SceneNode* node)
+{
+	mLightNode = node;
+}
+
+void LensFlare::initialize()
+{
+	createLensFlare();
+}
+
 
 /* ------------------------------------------------------------------------- */
 /// this function creates and shows all the LensFlare graphical elements.
@@ -89,10 +100,10 @@ bool LensFlare::createLensFlare()
 		return false;
 	}
 	// The node is located at the light source.
-	mNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//mLightNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 
-	mNode->attachObject(mBurstSet);
-	mNode->attachObject(mHaloSet);
+	mLightNode->attachObject(mBurstSet);
+	mLightNode->attachObject(mHaloSet);
 
 	// -------------------------------
 	// Creation of the Halo billboards
@@ -118,6 +129,12 @@ bool LensFlare::createLensFlare()
 	return true;
 } 
 
+const Ogre::Vector3& LensFlare::getLightPosition() const
+{
+	return mLightNode->getWorldPosition();
+}
+
+
 /* -------------------------------------------------------------------------- */
 /// This function updates the lensflare effect. 
 /** This function should be called by your frameListener.
@@ -125,23 +142,23 @@ bool LensFlare::createLensFlare()
 /* -------------------------------------------------------------------------- */
 void LensFlare::update()
 {
-	if (mHidden || !mNode) return;
+	if (mHidden || !mLightNode) return;
 
 	/// If the Light is out of the Camera field Of View, the lensflare is hidden.
-	if (!mCamera->isVisible(mLightPosition)) 
+	if (!mCamera->isVisible(getLightPosition())) 
 	{
 		mHaloSet->setVisible(false);
 		mBurstSet->setVisible(false);
 		return;
 	}
 
-	Vector3 lightToCamera = mCamera->getWorldPosition() - mLightPosition;
+	Vector3 lightToCamera = mCamera->getWorldPosition() - getLightPosition();
 	
 	Vector3 CameraVect  = lightToCamera.length() * mCamera->getDerivedDirection();
 	CameraVect += mCamera->getWorldPosition();
 
 	// The LensFlare effect takes place along this vector.
-	Vector3 LFvect = (CameraVect - mLightPosition);
+	Vector3 LFvect = (CameraVect - getLightPosition());
 
 //	LFvect += Vector3(-64,-64,0);  // sprite dimension (to be adjusted, but not necessary)
 
@@ -163,7 +180,7 @@ void LensFlare::update()
 /* ------------------------------------------------------------------------- */
 void LensFlare::setVisible(bool visible)
 {
-	if (mNode) {
+	if (mLightNode) {
 		mHaloSet->setVisible(visible);
 		mBurstSet->setVisible(visible);
 		mHidden = !visible;
@@ -175,13 +192,13 @@ void LensFlare::setVisible(bool visible)
 /// This function updates the light source position. 
 /** This function can be used if the light source is moving.*/
 /* ------------------------------------------------------------------------- */
-void LensFlare::setLightPosition(Vector3 pos)
-{
-	mLightPosition = pos;
-	if (mNode) {
-		mNode->setPosition(mLightPosition);
-	} 
-}
+// void LensFlare::setLightPosition(Vector3 pos)
+// {
+// 	mLightPosition = pos;
+// 	if (mNode) {
+// 		mNode->setPosition(mLightPosition);
+// 	} 
+// }
 
 
 /* ------------------------------------------------------------------------- */
@@ -189,7 +206,7 @@ void LensFlare::setLightPosition(Vector3 pos)
 /* ------------------------------------------------------------------------- */
 void LensFlare::setBurstColour(ColourValue color)
 {
-	if (mNode) {
+	if (mLightNode) {
 		mBurstSet->getBillboard(0)->setColour(color);
 		mBurstSet->getBillboard(1)->setColour(color*0.8);
 		mBurstSet->getBillboard(2)->setColour(color*0.6);
@@ -201,12 +218,14 @@ void LensFlare::setBurstColour(ColourValue color)
 /* ------------------------------------------------------------------------- */
 void LensFlare::setHaloColour(ColourValue color)
 { 
-	if (mNode) {
+	if (mLightNode) {
 		mHaloSet->getBillboard(0)->setColour(color*0.8);
 		mHaloSet->getBillboard(1)->setColour(color*0.6);
 		mHaloSet->getBillboard(2)->setColour(color);
 	}
 }
 
+
+}
 
 }

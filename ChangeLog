@@ -1,3 +1,36 @@
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/LensFlare.cpp, src/components/ogre/environment/LensFlare.h, src/components/ogre/environment/Sky.cpp, src/components/ogre/environment/Sky.h: changed the namespace to EmberOgre::Environment
+	* src/components/ogre/environment/Makefile.am: added new files
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h, src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/environment/FoliageArea.h, src/components/ogre/environment/Sun.cpp, src/components/ogre/environment/Sun.h, src/components/ogre/environment/Tree.cpp, src/components/ogre/environment/Tree.h, src/components/ogre/environment/Water.cpp, src/components/ogre/environment/Water.h: changed the namespace to EmberOgre::Environment
+	
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumEnvironment.h, src/components/ogre/environment/CaelumSky.cpp, src/components/ogre/environment/CaelumSky.h, src/components/ogre/environment/CaelumSun.cpp, src/components/ogre/environment/CaelumSun.h: added wrapper classes for the caelum system
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/Environment.cpp, src/components/ogre/environment/Environment.h: added a class which provides an entry point into the environment, though the actual environment implementation is delegated to implementations of the IEnvironmentProvider interface
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/caelum/Contributors.txt, src/components/ogre/environment/caelum/Makefile.am, src/components/ogre/environment/caelum/ReleaseNotes.txt, src/components/ogre/environment/caelum/WhatsNew.txt, src/components/ogre/environment/caelum/lgpl.txt, src/components/ogre/environment/caelum/include/Caelum.h, src/components/ogre/environment/caelum/include/CaelumListener.h, src/components/ogre/environment/caelum/include/CaelumPrerequisites.h, src/components/ogre/environment/caelum/include/CaelumSystem.h, src/components/ogre/environment/caelum/include/GeometryFactory.h, src/components/ogre/environment/caelum/include/SkyColourModel.h, src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/include/Starfield.h, src/components/ogre/environment/caelum/include/StoredImageSkyColourModel.h, src/components/ogre/environment/caelum/include/Sun.h, src/components/ogre/environment/caelum/src/CaelumSystem.cpp, src/components/ogre/environment/caelum/src/GeometryFactory.cpp, src/components/ogre/environment/caelum/src/SkyDome.cpp, src/components/ogre/environment/caelum/src/Starfield.cpp, src/components/ogre/environment/caelum/src/StoredImageSkyColourModel.cpp, src/components/ogre/environment/caelum/src/Sun.cpp: added Caleum, an Ogre system for providing a sky
+
+2006-11-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/Makefile.am, src/services/time/Makefile.am, src/services/time/TimeService.cpp, src/services/time/TimeService.h: added a time service, intended to provide time and calendar services
+
+2006-11-01 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreResourceLoader.cpp, src/components/ogre/OgreResourceLoader.h: make sure that all resource groups are loaded
+
+2006-11-01 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp: export as jpeg instead of png
+
 2006-10-24 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/MathConverter.h: added conversion between WFMath::Vector<2> and Ogre::Vector2

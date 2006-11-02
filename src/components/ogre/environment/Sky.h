@@ -34,7 +34,11 @@
 
 #include <OgreColourValue.h>
 
+
 namespace EmberOgre {
+
+namespace Environment {
+
 
 /**
 @author Erik Hjortsberg
@@ -42,17 +46,21 @@ namespace EmberOgre {
 class Sky:  public sigc::trackable
 {
 public:
-    Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
+    Sky(::Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
 
     ~Sky();
 	void updateFogValuesFromConfig();
 private:
+	
+	void createSimpleSky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);	
 	
 	void setFogValues(float start, float end, Ogre::ColourValue colour);
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
 
 };
 
-};
+}
+
+}
 
 #endif
