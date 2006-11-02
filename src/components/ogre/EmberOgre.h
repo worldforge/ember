@@ -154,11 +154,11 @@ public:
 	 */
 	EmberEntity* getEmberEntity(const std::string & eid) const;
 	
-	inline Eris::View* const getMainView() { return mWorldView;};
+	inline Eris::View* const getMainView();
 	
-	inline Jesus* getJesus() const { return mJesus; }
+	inline Jesus* getJesus() const;
 	
-	inline Ogre::RenderWindow* getRenderWindow() const { return mWindow; }
+	inline Ogre::RenderWindow* getRenderWindow() const;
 	
 	
 	sigc::signal<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
@@ -337,6 +337,9 @@ protected:
 
 Input& EmberOgre::getInput() { return mInput;}
 EntityMoveManager* EmberOgre::getMoveManager() const {return mMoveManager;}
+Eris::View* const EmberOgre::getMainView() { return mWorldView;}
+Jesus* EmberOgre::getJesus() const { return mJesus; }
+Ogre::RenderWindow* EmberOgre::getRenderWindow() const { return mWindow; }
 
 
 }

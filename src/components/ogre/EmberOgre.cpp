@@ -41,14 +41,7 @@ http://www.gnu.org/copyleft/lesser.txt.
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
-
-	// Necessary to get the Window Handle of the window
-	//  Ogre created, so SDL can grab its input.
-// 	#include <windows.h>
-// 	#include <SDL_getenv.h>
-// 	#include <SDL.h>
-// 	#include <SDL_syswm.h>
-
+	
 	#include <iostream>
 	#include <fstream>
 	#include <ostream>
@@ -294,6 +287,7 @@ void EmberOgre::requestQuit()
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 {
+	S_LOG_INFO("Compiled against ogre version " << OGRE_VERSION);
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
@@ -488,7 +482,7 @@ void EmberOgre::preloadMedia(void)
 	
 	//only autogenerate trees if we're not using the pregenerated ones
  	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) { 
-		Tree tree;
+		Environment::Tree tree;
 		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
  	}	
