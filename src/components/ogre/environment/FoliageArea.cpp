@@ -33,6 +33,8 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+
 	Ogre::Real FoliageArea::mXinc = Ogre::Math::PI * 0.004;
 	Ogre::Real FoliageArea::mZinc = Ogre::Math::PI * 0.0055;
 
@@ -226,5 +228,7 @@ void FoliageArea::frameStarted(const Ogre::Real & timeElapsed)
 // 
 // }
 
+
+}
 
 }

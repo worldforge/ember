@@ -27,6 +27,9 @@
 @author Erik Hjortsberg
 */
 namespace EmberOgre {
+
+namespace Environment {
+
 class TreeType;
 class Tree{
 public:
@@ -37,6 +40,8 @@ public:
 	void makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type);
 
 };
+
+}
 
 }
 

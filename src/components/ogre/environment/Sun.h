@@ -34,6 +34,8 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+
 /**
 @author Erik Hjortsberg
 */
@@ -104,6 +106,8 @@ protected:
 
 };
 
-};
+}
+
+}
 
 #endif

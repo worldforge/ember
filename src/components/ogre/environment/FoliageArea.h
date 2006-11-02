@@ -26,6 +26,8 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+
 class Foliage;
 /**
 @author Erik Hjortsberg
@@ -83,6 +85,8 @@ protected:
 	Ogre::StaticGeometry* mStaticGeom;
 
 };
+
+}
 
 }
 

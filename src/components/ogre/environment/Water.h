@@ -24,8 +24,11 @@
 #define DIMEOGREWATER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "Environment.h"
 
 namespace EmberOgre {
+
+namespace Environment {
 
 class RefractionTextureListener;
 class ReflectionTextureListener;
@@ -34,7 +37,8 @@ class ReflectionTextureListener;
 /**
 @author Erik Hjortsberg
 */
-class Water{
+class Water : public IWater
+{
 
 
 public:
@@ -56,6 +60,8 @@ protected:
 
 };
 
-};
+}
+
+}
 
 #endif

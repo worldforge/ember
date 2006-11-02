@@ -29,17 +29,28 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+
 
 Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr):
 SetSunPosition("setsunposition", this, "Set the position of the sun.")
 ,SetSunColour("setsuncolour", this, "Set the colour of the sun.")
 ,SetAmbientLight("setambientlight", this, "Set the ambient light of the world.")
-,mLensFlare(Ogre::Vector3(-500,300,-350), camera, sceneMgr)
+,mLensFlare(camera, sceneMgr)
 {
 	mSun = sceneMgr->createLight("SunLight");
 	mSun->setType(Ogre::Light::LT_DIRECTIONAL);
-	mSunNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+	
+	if (sceneMgr->hasSceneNode("SunNode")) {
+		mSunNode = sceneMgr->getSceneNode( "SunNode");
+	} else {
+		mSunNode = sceneMgr->getRootSceneNode ()->createChildSceneNode("SunNode");
+	}
+	
 	mSunNode->attachObject(mSun);
+	
+	mLensFlare.setNode(mSunNode );
+	mLensFlare.initialize();
   
 ///disable for now
 // 	try {
@@ -133,7 +144,6 @@ void Sun::setSunPosition(const Ogre::Vector3& position) {
 	Ogre::Vector3 dir = -mSunNode->getPosition();
 	dir.normalise();
 	mSun->setDirection(dir);
-	mLensFlare.setLightPosition(position);
 	EventUpdatedSunPosition.emit(this, position);
 }
 
@@ -149,4 +159,6 @@ void Sun::setAmbientLight(const Ogre::ColourValue& colour) {
 	EventUpdatedAmbientLight.emit(this, colour);
 }
 
-};
+}
+
+}

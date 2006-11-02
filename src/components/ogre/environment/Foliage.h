@@ -28,6 +28,8 @@
 
 namespace EmberOgre {
 
+namespace Environment {
+
 class FoliageArea;
 
 //class GroundCover;
@@ -81,6 +83,8 @@ protected:
 
 };
 
-};
+}
+
+}
 
 #endif

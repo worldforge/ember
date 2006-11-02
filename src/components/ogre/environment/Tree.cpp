@@ -27,6 +27,9 @@
 #include "Tree.h"
 
 namespace EmberOgre {
+
+namespace Environment {
+
 using namespace Ogre;
 
 Tree::Tree()
@@ -82,6 +85,8 @@ void Tree::makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type)
         else if (pTree->GetParameters()->GetTreeType() == TParameters::Simple)
           pTreeMesh->getSubMesh(1)->setMaterialName("CoordFrameMat");
 
+
+}
 
 }
 

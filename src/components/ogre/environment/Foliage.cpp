@@ -31,9 +31,11 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 
-template<> EmberOgre::Foliage* Ember::Singleton<EmberOgre::Foliage>::ms_Singleton = 0;
+template<> EmberOgre::Environment::Foliage* Ember::Singleton<EmberOgre::Environment::Foliage>::ms_Singleton = 0;
 
 namespace EmberOgre {
+
+namespace Environment {
 
 #define GRASS_HEIGHT 0.5
 #define GRASS_WIDTH 0.5
@@ -242,4 +244,6 @@ bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 
 
 
-};
+}
+}
+

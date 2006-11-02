@@ -32,6 +32,8 @@ using namespace Ogre;
 
 namespace EmberOgre {
 
+namespace Environment {
+
 class RefractionTextureListener : public RenderTargetListener
 {
 Entity* pPlaneEnt;
@@ -269,4 +271,6 @@ public:
 	}
 
 
-};
+}
+
+}
