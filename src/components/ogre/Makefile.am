@@ -80,7 +80,7 @@ ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
 	EmberEntityFactory.cpp 				EmberOgre.cpp 	EmberPhysicalEntity.cpp EmberEntity.cpp \
 					AvatarEmberEntity.cpp WorldEmberEntity.cpp 	 				EmberEntityUserObject.cpp \
 	GUICEGUIAdapter.cpp 	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp \
-		EntityWorldPickListener.cpp OgreSetup.cpp Time.cpp
+		EntityWorldPickListener.cpp OgreSetup.cpp 
 
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
@@ -95,5 +95,5 @@ noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				 		AvatarEmberEntity.h \
 	MathConverter.h 				ConsoleObjectImpl.h 		AvatarController.h GUIManager.h MousePicker.h \
 	EmberEntityUserObject.h 						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h \
 	OgreResourceLoader.h 			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h \
-	OgreSetup.h Time.h
+	OgreSetup.h 
 	

@@ -1,5 +1,9 @@
 2006-11-04 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/Makefile.am: removed reference to unused Time class
+
+2006-11-04 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/resources.cfg: added caelum pack 
 
 2006-11-03 Erik Hjortsberg  <erik@katastrof.nu>
