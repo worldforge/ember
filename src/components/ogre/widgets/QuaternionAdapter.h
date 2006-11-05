@@ -51,6 +51,14 @@ public:
     const Ogre::Quaternion& getOriginalValue() const;
     
     
+    /**
+    Sets the value, thus also updating the gui.
+    */
+    void setValue(const Ogre::Quaternion& quaternion);
+    
+    /**
+    Updates the gui with new values.
+    */
     void updateGui(const Ogre::Quaternion& vector);
     
     /**

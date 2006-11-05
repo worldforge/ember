@@ -43,6 +43,13 @@ QuaternionAdapter::~QuaternionAdapter()
 {
 }
 
+void QuaternionAdapter::setValue(const Ogre::Quaternion& quaternion)
+{
+	updateGui(quaternion);
+	EventValueChanged.emit();
+}
+
+
 const Ogre::Quaternion& QuaternionAdapter::getValue() const
 {
 	const Ogre::Vector3& axis = mVectorAdapter.getValue();

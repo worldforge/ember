@@ -50,6 +50,11 @@ Vector3Adapter::~Vector3Adapter()
 {
 }
 
+void Vector3Adapter::setValue(const Ogre::Vector3& vector)
+{
+	updateGui(vector);
+	EventValueChanged.emit();
+}
     
 const Ogre::Vector3& Vector3Adapter::getValue() const
 {

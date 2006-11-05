@@ -47,7 +47,15 @@ public:
     const Ogre::Vector3& getValue() const;
     const Ogre::Vector3& getOriginalValue() const;
     
-    void updateGui(const Ogre::Vector3& vector);
+     /**
+    Sets the value, thus also updating the gui.
+    */
+    void setValue(const Ogre::Vector3& vector);
+    
+     /**
+    Updates the gui with new values.
+    */
+   void updateGui(const Ogre::Vector3& vector);
     
     /**
     	Emitted when the value has been changed from a gui update.
