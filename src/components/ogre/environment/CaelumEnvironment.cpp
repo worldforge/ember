@@ -25,6 +25,7 @@
 #include "CaelumSky.h"
 #include "CaelumSun.h"
 #include "Water.h"
+#include "framework/Tokeniser.h"
 //#include "caelum/include/CaelumSystem.h"
 
 namespace EmberOgre {
@@ -55,6 +56,7 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderW
 , mSceneMgr(sceneMgr)
 , mWindow(window)
 , mCamera(camera)
+, SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
 //,mLensFlare(camera, sceneMgr)
 {
 		sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
@@ -147,6 +149,28 @@ IWater* CaelumEnvironment::getWater()
 {
 	return 0;
 }
+
+void CaelumEnvironment::setTime(int hour, int minute, int second)
+{
+	mCaelumSystem->setLocalTime (3600 * hour + 60 * minute + second);
+}
+
+void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)
+{
+	if (SetCaelumTime == command) {
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string hourString = tokeniser.nextToken();
+		std::string minuteString = tokeniser.nextToken();
+		
+		int hour = ::Ogre::StringConverter::parseInt( hourString);
+		int minute = ::Ogre::StringConverter::parseInt( minuteString);
+		setTime(hour, minute);
+		
+	}
+	
+}
+
 
 }
 

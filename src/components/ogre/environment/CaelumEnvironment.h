@@ -25,6 +25,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "Environment.h"
+#include "framework/ConsoleObject.h"
 
 namespace caelum
 {
@@ -45,7 +46,7 @@ class Water;
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class CaelumEnvironment : public IEnvironmentProvider
+class CaelumEnvironment : public IEnvironmentProvider, public Ember::ConsoleObject
 {
 public:
     CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera);
@@ -60,6 +61,17 @@ public:
 	virtual IWater* getWater();
 	
 	inline caelum::CaelumSystem* getCaelumSystem() const;	
+
+	const Ember::ConsoleCommandWrapper SetCaelumTime;
+    
+    void setTime(int hour, int minute, int second = 0);
+
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
 
 private:
 
