@@ -29,6 +29,8 @@
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>
+#include <OgreException.h>
+
 #include <Mercator/Area.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
@@ -271,8 +273,8 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 
 	/// Make a sound in OpenAL
-	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
-		getPosition(),getOrientation());
+//	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
+//		getPosition(),getOrientation());
 
 	/// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);

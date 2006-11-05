@@ -44,6 +44,7 @@
 
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
+#include <Eris/TypeInfo.h>
 
 namespace EmberOgre {
 
