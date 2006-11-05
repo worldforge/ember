@@ -71,12 +71,27 @@ bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& fre
 {
 	///rotate the modelnode
 	Ogre::SceneNode* node = mTexture->getSceneNode();
-	mTexture->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-	mTexture->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+	
+	if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_RCTRL) || GUIManager::getSingleton().getInput().isKeyDown(SDLK_LCTRL)) {
+		mTexture->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+	} else {
+		mTexture->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+		mTexture->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+	}
 //	node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)(motion.xRelativeMovement * 180));
 	///we don't want to move the cursor
 	freezeMouse = true;
 	return false;
+}
+
+Ogre::Quaternion MovableObjectRenderer::getEntityRotation()
+{
+	return mTexture->getEntityRotation();
+}
+
+void MovableObjectRenderer::resetCameraOrientation()
+{
+	mTexture->resetCameraOrientation();
 }
 
 bool MovableObjectRenderer::injectMouseButtonUp(const Input::MouseButton& button)

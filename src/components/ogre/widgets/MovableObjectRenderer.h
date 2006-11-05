@@ -108,6 +108,19 @@ public:
 	 */
 	virtual bool frameStarted(const Ogre::FrameEvent& event);
 
+
+	/**
+	 *    Gets the rotation of the entity.
+	 * @return 
+	 */
+	Ogre::Quaternion getEntityRotation();
+	
+	
+	/**
+	 *    Resets the orientation of the camera.
+	 */
+	void resetCameraOrientation();
+	
 protected:
 
 	/**
