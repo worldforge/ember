@@ -189,7 +189,7 @@ Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::stri
 	} 
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
-	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+//  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	
 	scaleNode->attachObject(model);
 	return scaleNode;

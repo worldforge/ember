@@ -22,14 +22,17 @@
 
 #include "EmberOgrePrerequisites.h"
 
-#include <Atlas/Objects/Entity.h>
+#include "EmberEntity.h"
 
-#include <OgreException.h>
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
-#include <Eris/TypeInfo.h>
+// #include <Atlas/Objects/Entity.h>
+
+/*#include <OgreException.h>*/
+//#include <Eris/Entity.h>
+// #include <Eris/View.h>
+// #include <Eris/PollDefault.h>
+// #include <Eris/Log.h>
+// #include <Eris/TypeInfo.h>
+
 
 namespace EmberOgre {
 
@@ -46,7 +49,8 @@ typedef std::list<Model::Action*> ActionStore;
  * Represents a Ember entity with a physical representation in the world.
  * This is represented by a an Ogre::Entity.
  */
-class EmberPhysicalEntity : public EmberEntity{
+class EmberPhysicalEntity : public EmberEntity
+{
 public:
 
 	static const char * const ACTION_STAND;
@@ -68,10 +72,7 @@ public:
 	 */
 	Model::Model* getModel() const;
 
-	Ogre::SceneNode* getScaleNode() const
-	{
-		return mScaleNode;
-	}	
+	inline Ogre::SceneNode* getScaleNode() const;
 	
 
 
@@ -236,7 +237,17 @@ protected:
 	 */
 	Ogre::SceneNode* mScaleNode;
 	
+	void Model_Reloaded();
+
+	void initFromModel();
+	
 };
+
+Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
+{
+	return mScaleNode;
+}	
+
 
 }
 #endif // DIMEPHYSICALENTITY_H

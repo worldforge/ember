@@ -17,6 +17,7 @@
 */
 
 #include "EmberOgrePrerequisites.h"
+#include "EmberPhysicalEntity.h"
 
 
 #include "framework/ConsoleBackend.h"
@@ -29,8 +30,7 @@
 #include "model/Action.h"
 
 
-#include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
+#include <OgreException.h>
 
 #include "EmberOgre.h"
 
@@ -38,6 +38,13 @@
 #include "ogreopcode/include/OgreCollisionManager.h"
 #include "ogreopcode/include/OgreCollisionShape.h"
 #include "ogreopcode/include/OgreCollisionObject.h"
+
+#include <Eris/Entity.h>
+#include <Eris/View.h>
+#include <Eris/PollDefault.h>
+#include <Eris/Log.h>
+#include <Eris/TypeInfo.h>
+
 
 namespace EmberOgre {
 
@@ -57,10 +64,7 @@ EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0)
 {
 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
-	getScaleNode()->rotate(getModel()->getRotation());
-/*	if (getModel()->getRotation()) {
-		getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)getModel()->getRotation());
-	}*/
+
 	///make a copy of the original bbox
 	mDefaultOgreBoundingBox = mModel->getWorldBoundingBox(true);
 
@@ -92,7 +96,7 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 
 EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& attachPoint)
 {
-	//first check with the attach points
+	///first check with the attach points
 	std::string entityId;
 	for(AttachedEntitiesStore::iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
 		if (I->second == attachPoint) {
@@ -102,7 +106,7 @@ EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& at
 	}	
 
 	if (entityId != "") {
-		//then get the entity from the world
+		///then get the entity from the world
 		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 		return entity;
 	}
@@ -127,14 +131,14 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	assert(mScaleNode);*/
 	
 	//if there is no bounding box, scaleNode hasn't been called, so do it here
-	if (!hasBBox()) {
+/*	if (!hasBBox()) {
 		scaleNode();
-	}
+	}*/
 	getSceneNode()->addChild(getScaleNode());
 	
 	//translate the scale node according to the translate defined in the model
-	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
-
+// 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
+	initFromModel();
 	
 /*	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), 0, 0);
 	getModel()->setUserObject(userObject);*/
@@ -152,6 +156,25 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	{
 		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
 	}
+	
+	getModel()->Reloaded.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Reloaded));
+
+}
+
+void EmberPhysicalEntity::initFromModel()
+{
+	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
+	///rotate node to fit with WF space
+	///perhaps this is something to put in the model spec instead?
+	getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+	getScaleNode()->rotate(getModel()->getRotation());
+	
+	scaleNode();
+	
+	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
+	///translate the scale node according to the translate defined in the model
+	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
+
 
 }
 
@@ -228,6 +251,12 @@ Model::Model* EmberPhysicalEntity::getModel() const
 {
 	return mModel;	
 }
+
+void EmberPhysicalEntity::Model_Reloaded()
+{
+	initFromModel();
+}
+
 
 void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas::Message::Element& idElement)
 {
@@ -331,6 +360,8 @@ void EmberPhysicalEntity::onChildRemoved(Entity *e)
 
 void EmberPhysicalEntity::scaleNode() {
 		
+	getScaleNode()->setScale(1, 1, 1);
+	
 	const Ogre::Vector3& ogreMax = mDefaultOgreBoundingBox.getMaximum();
 	const Ogre::Vector3& ogreMin = mDefaultOgreBoundingBox.getMinimum();
 	
