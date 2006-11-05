@@ -356,6 +356,13 @@ function ModelEdit_ReloadInstancesButton_MouseClick(args)
 	ModelEdit.definition:reloadAllInstances()
 end
 
+
+function ModelEdit_GetRotationFromPreviewButton_MouseClick(args)
+	--Get the rotation from the preview window
+
+	ModelEdit.rotationAdapter:setValue(ModelEdit.renderer:getEntityRotation())
+end
+
 function ModelEdit_RemoveSubmodelButton_MouseClick(args)
 
 	local submodel = ModelEdit_getSelectedSubModel()
@@ -643,7 +650,7 @@ function ModelEdit_buildWidget()
 	local zW = ModelEdit.widget:getWindow("ModelRotation_z")
 	local degreeW = ModelEdit.widget:getWindow("ModelRotation_degrees")
 	ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.containedOffsetAdapter.EventValueChanged):connect("ModelEdit_rotationAdapter_update")
+	EmberOgre.LuaConnector:new(ModelEdit.rotationAdapter.EventValueChanged):connect("ModelEdit_rotationAdapter_update")
 
 
 
@@ -684,6 +691,7 @@ function ModelEdit_buildWidget()
 	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("MouseClick", "ModelEdit_NewModelCancel_MouseClick")
 	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit_RemoveSubmodelButton_MouseClick")
 	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("MouseClick", "ModelEdit_ReloadInstancesButton_MouseClick")
+	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("MouseClick", "ModelEdit_GetRotationFromPreviewButton_MouseClick")
 	
 
 	ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")

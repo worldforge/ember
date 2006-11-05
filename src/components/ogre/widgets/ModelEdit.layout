@@ -240,6 +240,11 @@
 					<Property Name='UnifiedAreaRect' Value='{{0.703990,0.000000},{0.73,0.000000},{0.834608,0.000000},{0.82,0.000000}}'/>
 					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 				</Window>
+				<Window Type='EmberLook/Button' Name='GetRotationFromPreviewButton'>
+					<Property Name='Text' Value='Rot. from preview'/>
+					<Property Name='UnifiedAreaRect' Value='{{0.844608,0.000000},{0.73,0.000000},{0.975226,0.000000},{0.82,0.000000}}'/>
+					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				</Window>
 			</Window>
 			<Window Type='DefaultWindow' Name='SubModelInfo'>
 				<Property Name='UnifiedAreaRect' Value='{{0.028257,0.000000},{0.477314,0.000000},{0.477429,0.000000},{0.972837,0.000000}}'/>
