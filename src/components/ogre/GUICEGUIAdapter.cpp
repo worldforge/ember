@@ -159,7 +159,7 @@ bool GUICEGUIAdapter::MultiLineEditbox_selectionChangedHandler(const CEGUI::Even
 		std::string selection = text.substr(editbox->getSelectionStartIndex(), editbox->getSelectionEndIndex()).c_str();
 		S_LOG_VERBOSE("Selected text: " << selection);
 	}*/
-	S_LOG_VERBOSE("Selected text.");
+//	S_LOG_VERBOSE("Selected text.");
 	
 	return true;
 }
