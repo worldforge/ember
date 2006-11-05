@@ -1,259 +1,67 @@
-material /global/creature/pig/skin
+material /global/creature/pig/skin : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-        texture_unit
-		{
-			texture 3d_objects/creatures/quadruped_v2/textures/pink_pig/low/quadruped_v2.png
-		}
-
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/pink_pig/low/quadruped_v2.png
 }
 
-material /global/creature/cow
+material /global/creature/cow : /base/simple
 {
-  technique
-  {
-    pass
-    {
-        texture_unit
-		{
-			texture 3d_objects/creatures/quadruped_v2/textures/cow/cow_256.png
-		}
-
-    }
-  }
-}
-
-material /global/creature/mottled_oker
-{
-  technique
-  {
-    pass
-    {
-        texture_unit
-		{
-			texture 3d_objects/creatures/quadruped_v2/textures/mottled_oker/low/quadruped_v2.png
-		}
-
-    }
-  }
-}
-
-material /global/creature/greyhair
-{
-  technique
-  {
-    pass
-    {
-        texture_unit
-		{
-			texture 3d_objects/creatures/quadruped_v2/textures/greyhair/greyhair256.png
-		}
-
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/cow/cow_256.png
 }
 
 
-
-material /global/creature/squirrel/skin
+material /global/creature/mottled_oker : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-        texture_unit
-	{
-//		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
-		texture 3d_objects/creatures/quadruped/textures/simple_squirrel/simple_squirrel_small.png
-	}
-
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/mottled_oker/low/quadruped_v2.png
+}
+material /global/creature/greyhair : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/greyhair/greyhair256.png
 }
 
-
-material /global/creature/tubular/fish/scaly_brown_white
+material /global/creature/squirrel/skin : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-         cull_hardware none 
-         cull_software none
-		alpha_rejection greater_equal 32 
-       texture_unit
-		{
-			texture 3d_objects/creatures/tubular/textures/scaly_brown_white/low/tubular.png
-		}
-
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/simple_squirrel/simple_squirrel_small.png
+}
+material /global/creature/tubular/fish/scaly_brown_white : /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/creatures/tubular/textures/scaly_brown_white/low/tubular.png
+}
+material /global/creature/chicken : /base/simple/nonculled
+{
+	set_texture_alias DiffuseMap 3d_objects/creatures/avian/textures/redchicken/low/chickentex.png
+}
+material /global/creature/deer : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/deer/low/quadruped_v2.png
 }
 
-//material /global/creature/fish/steelhead
-//{
-//  receive_shadows on
-//  technique
-//  {
-//    pass
-//    {
-//        texture_unit
-//	{
-//		texture steelhead.png
-//	}
-//
-//    }
-//  }
-//}
-
-
-material /global/creature/chicken
+material /global/creature/dog : /base/simple
 {
-  technique
-  {
-    pass
-    {
-     cull_hardware none 
-     cull_software none
-     texture_unit
-      {
-        texture 3d_objects/creatures/avian/textures/redchicken/low/chickentex.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/white_fur/low/quadruped.png
 }
 
-material /global/creature/deer
+material /global/creature/insect/emerald : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/creatures/quadruped_v2/textures/deer/low/quadruped_v2.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/emerald/low/insect.png
 }
 
-material /global/creature/dog
+material /global/creature/insect/carrion : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/creatures/quadruped/textures/white_fur/low/quadruped.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/carrion/low/insect.png
 }
 
-material /global/creature/insect/emerald
+material /global/body_parts/skeleton/bone/skeleton : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/creatures/insect/textures/emerald/low/insect.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/body_parts/skeleton/textures/bone/skeleton.png
 }
 
-material /global/creature/insect/carrion
+material /global/creature/humanoid/goblin : /base/simple
 {
-
-//	technique
-//	{
-//		pass
-//		{
-//			vertex_program_ref HardwareSkinningFourWeightsFullHANIM
-//			{
-//				param_named_auto worldMatrix3x4Array[0] world_matrix_array_3x4
-//				param_named_auto viewProjectionMatrix viewproj_matrix
-//				param_named_auto lightPos[0] light_position 0
-//				param_named_auto lightPos[1] light_position 1
-//				param_named_auto lightDiffuseColour[0] light_diffuse_colour 0
-//				param_named_auto lightDiffuseColour[1] light_diffuse_colour 1
-//				param_named_auto ambient ambient_light_colour
-//			
-//			}
-//			texture_unit
-//			{
-//				texture 3d_objects/creatures/insect/textures/carrion/low/insect.png
-//			}
-//		}
-//	}
-
-	technique
-	{
-		pass
-		{
-			texture_unit
-			{
-				texture 3d_objects/creatures/insect/textures/carrion/low/insect.png
-			}
-		}
-	}
+	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/goblin/low/goblin.png
 }
-
-
-
-material /global/body_parts/skeleton/bone/skeleton
+material /global/creature/humanoid/kobold : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/body_parts/skeleton/textures/bone/skeleton.png
-      }
-    }
-  }
-}
-
-material /global/creature/humanoid/goblin
-{
-  technique
-  {
-    pass
-    {
-        texture_unit
-		{
-			texture 3d_objects/creatures/humanoid/textures/goblin/low/goblin.png
-		}
-
-    }
-  }
-}
-
-material /global/creature/humanoid/kobold
-{
-  technique
-  {
-    pass
-    {
-        texture_unit
-		{
-			texture 3d_objects/creatures/humanoid/textures/kobold/low/kobold.png
-		}
-
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/kobold/low/kobold.png
 }
 
 
