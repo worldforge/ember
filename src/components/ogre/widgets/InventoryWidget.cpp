@@ -33,7 +33,7 @@
 #include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "InventoryWidget.h"
-
+#include <Eris/TypeInfo.h>
 
 #include <elements/CEGUIPushButton.h>
 
