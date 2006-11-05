@@ -1,6 +1,34 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-
+	<model name="creator"  usescaleof="height" showcontained="false" >
+		<submodels>
+			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+		<Actions>
+			<Action name="__movement_idle">
+				<AnimationParts>
+					<animationpart name="innerFire.BAKED" weight="1" />
+					<animationpart name="outerFire.BAKED" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_walk">
+				<AnimationParts>
+					<animationpart name="innerFire.BAKED" weight="1" />
+					<animationpart name="outerFire.BAKED" weight="1" />
+				</AnimationParts>
+			</Action>
+			<Action name="__movement_run">
+				<AnimationParts>
+					<animationpart name="innerFire.BAKED" weight="1" />
+					<animationpart name="outerFire.BAKED" weight="1" />
+				</AnimationParts>
+			</Action>
+		</Actions>
+	</model>
 	<model name="settler_" usescaleof="height" showcontained="false" renderingdistance="150">
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_male/models/alpha_male.mesh" >
