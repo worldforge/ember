@@ -84,7 +84,7 @@ public:
      * Gets the default distance of the camera from the base, most likely somewhere where the whole scene is shown
      * @return 
      */
-    Ogre::Real getDefaultCameraDistance() const {return mDefaultCameraDistance;}
+    inline Ogre::Real getDefaultCameraDistance() const;
     
     /**
      * Sets whether the rendering should be active or not.
@@ -118,6 +118,13 @@ public:
 	void yaw(Ogre::Degree degrees);
     
 	/**
+	 *    Rolls the camera.
+	 * @param degrees The amount of degree to roll.
+	 */
+    void roll(Ogre::Degree degrees);
+
+    
+	/**
 	 * Sets the relative camera distance. Note that this is adjusted after calling repositionCamera(). A value of 1.0 indicates the most optimal distance for showing the complete mesh.
 	 * @param distance 
 	 */
@@ -129,6 +136,19 @@ public:
 	 * @return 
 	 */
 	float getCameraDistance() const;
+	
+	
+	/**
+	 *    Gets the rotation of the entity.
+	 * @return 
+	 */
+	Ogre::Quaternion getEntityRotation();
+	
+	
+	/**
+	 *    Resets the orientation of the camera.
+	 */
+	void resetCameraOrientation();
     
     
     
@@ -202,6 +222,11 @@ private:
 	Ogre::Camera* mCamera;
 
 };
+
+Ogre::Real EntityCEGUITexture::getDefaultCameraDistance() const 
+{
+	return mDefaultCameraDistance;
+}
 
 }
 

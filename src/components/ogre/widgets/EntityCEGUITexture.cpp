@@ -52,7 +52,7 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 	///make the cameranode a child of the main entity node
 	mCameraNode = mRootNode->createChildSceneNode();
     ///we need to rotate to make it look at the base when we later change the distance
-    mCameraNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
+//     mCameraNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
 	
 	mCameraPitchNode = mCameraNode->createChildSceneNode();
 	
@@ -64,6 +64,8 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
 	mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 	mCameraPitchNode->attachObject(mMainLight);
+	
+	resetCameraOrientation();
 }
 
 
@@ -125,6 +127,10 @@ void EntityCEGUITexture::yaw(Ogre::Degree degrees)
 {
 	mCameraNode->yaw(degrees);
 }
+void EntityCEGUITexture::roll(Ogre::Degree degrees)
+{
+	mCameraNode->roll(degrees);
+}
 	
 	
 float EntityCEGUITexture::getCameraDistance() const
@@ -143,6 +149,27 @@ void EntityCEGUITexture::setCameraDistance(Ogre::Real distance)
 	}
 	Ogre::Vector3 pos(0,0,distance);
 	mCamera->setPosition(pos);
+}
+
+Ogre::Quaternion EntityCEGUITexture::getEntityRotation()
+{
+	Ogre::Quaternion cameraRotation = mCamera->getDerivedOrientation();
+	
+	Ogre::Quaternion q;
+    q.FromAngleAxis((Ogre::Degree)90,Ogre::Vector3::UNIT_Y);
+
+	cameraRotation = cameraRotation * q;
+//	return cameraRotation;
+	return cameraRotation.Inverse();
+}
+
+void EntityCEGUITexture::resetCameraOrientation()
+{
+	mCameraPitchNode->setOrientation(Ogre::Quaternion::IDENTITY);
+	mCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
+    ///we need to rotate to make it look at the base when we later change the distance
+    mCameraNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
+
 }
 
 void EntityCEGUITexture::createImage(const std::string& imageSetName)
