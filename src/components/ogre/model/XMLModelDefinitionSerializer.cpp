@@ -92,8 +92,10 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 				
 		try {
 			ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
-			readModel(modelDef, smElem);
-			modelDef->setValid(true);
+			if (!modelDef.isNull()) {
+				readModel(modelDef, smElem);
+				modelDef->setValid(true);
+			}
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE(ex.getFullDescription());
 			std::cerr << ex.getFullDescription();
@@ -569,9 +571,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 	{
 		//make sure the directory exists
 		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media";
-		oslink::directory osdir(dir);
 		
-		if (!osdir) {
+		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);
 #ifdef __WIN32__
 			mkdir(dir.c_str());
@@ -584,9 +585,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 
 		dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/modeldefinitions/";
-		osdir = oslink::directory(dir);
 		
-		if (!osdir) {
+		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);
 #ifdef __WIN32__
 			mkdir(dir.c_str());
