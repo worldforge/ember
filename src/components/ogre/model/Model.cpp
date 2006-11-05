@@ -97,6 +97,7 @@ void Model::reload()
 	if (mParentNode != 0) {
 		_notifyAttached(mParentNode, mParentIsTagPoint);
 	}
+	Reloaded.emit();
 }
 
 bool Model::create(const std::string& modelType)

@@ -84,7 +84,8 @@ const Ogre::NameValuePairList* createParams)
     	return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
     }
     S_LOG_FAILURE("ModelDefinition with name " << name << " already exists.");
-    return ret;
+    return Ogre::ResourcePtr();
+//    return ret;
 
 }
 

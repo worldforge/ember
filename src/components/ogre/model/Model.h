@@ -23,6 +23,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "ModelDefinition.h"
 #include "ParticleSystem.h"
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 namespace Model {
@@ -82,6 +83,8 @@ public:
 	 */
 	Model();
 	
+	virtual ~Model();
+	
 	
 	/**
 	 * Try to create the needed meshes from the specified modeldef.
@@ -97,7 +100,12 @@ public:
 	 */
 	void reload();
 	
-	virtual ~Model();
+	
+	/**
+	* Emitted when the model is reloaded
+	*/
+	sigc::signal<void> Reloaded;
+	
 
 	bool addSubmodel(SubModel* submodel);
  	bool removeSubmodel(SubModel* submodel);
