@@ -37,6 +37,14 @@ class Vector3Adapter {
     const Ogre::Vector3& getValue() const;
     const Ogre::Vector3& getOriginalValue() const;
     
+     /**
+    Sets the value, thus also updating the gui.
+    */
+    void setValue(const Ogre::Vector3& vector);
+    
+     /**
+    Updates the gui with new values.
+    */
     void updateGui(const Ogre::Vector3& vector);
 
     /**

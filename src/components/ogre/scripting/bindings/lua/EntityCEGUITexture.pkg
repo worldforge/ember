@@ -66,60 +66,74 @@ class EntityCEGUITexture{
     Ogre::Camera* getCamera() const;
     
     /**
+     * Gets the default distance of the camera from the base, most likely somewhere where the whole scene is shown
+     * @return 
+     */
+    inline Ogre::Real getDefaultCameraDistance() const;
+    
+    /**
      * Sets whether the rendering should be active or not.
      * @param active 
      */
     void setActive(bool active);
     
+    /**
+     * Adjusts the camera distance so that the full scene is shown
+     */
+    void showFull(const Ogre::MovableObject* object);
     
-private:
+    
+	/**
+	 *    After you've changed the target of the camera, i.e. the object attached to the base SceneNode,
+	      the camera has to be repositioned. Make sure to always call this method after updating the scene.
+	 */
+	void repositionCamera();
+	
+	
+	/**
+	 *    Pitches the camera.
+	 * @param degrees The amount of degrees to pitch.
+	 */
+	void pitch(Ogre::Degree degrees);
+	
+	/**
+	 *    Yaws the camera.
+	 * @param degrees The amount of degree to yaw.
+	 */
+	void yaw(Ogre::Degree degrees);
+    
+	/**
+	 *    Rolls the camera.
+	 * @param degrees The amount of degree to roll.
+	 */
+    void roll(Ogre::Degree degrees);
 
+    
 	/**
-	The rendered image.
-	*/
-	const CEGUI::Image* mImage;
-	
-	/**
-	The main imageset, though only one image will be defined for it.
-	*/
-	CEGUI::Imageset* mImageSet;
-	
-	/**
-	 *    Creates the imageset and image and sets up the rendering.
-	 * @param imageSetName 
+	 * Sets the relative camera distance. Note that this is adjusted after calling repositionCamera(). A value of 1.0 indicates the most optimal distance for showing the complete mesh.
+	 * @param distance 
 	 */
-	void createImage(const std::string& imageSetName);
-	
+	void setCameraDistance(Ogre::Real distance);
+    
+    
 	/**
-	Width and height of the image.
-	*/
-	int mWidth, mHeight;
-	
-	/**
-	The rendertexture used.
-	*/
-	Ogre::RenderTexture* mRenderTexture;
-	
-	/**
-	 *    Creates the ogre camera.
-	 * @param imageSetName 
+	 *    Gets the relative distance. 1.0 being the most optimal distance for showing the complete mesh.
+	 * @return 
 	 */
-	void createCamera(const std::string& imageSetName);
+	float getCameraDistance() const;
+	
 	
 	/**
-	The node to which the camera is attached.
-	*/
-	Ogre::SceneNode* mCameraNode;
+	 *    Gets the rotation of the entity.
+	 * @return 
+	 */
+	Ogre::Quaternion getEntityRotation();
+	
 	
 	/**
-	The node to which the rendered entities are attched.
-	*/
-	Ogre::SceneNode* mEntityNode;
-	
-	/**
-	The camera used.
-	*/
-	Ogre::Camera* mCamera;
+	 *    Resets the orientation of the camera.
+	 */
+	void resetCameraOrientation();
 
 };
 

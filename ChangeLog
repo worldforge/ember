@@ -1,3 +1,59 @@
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/EntityCEGUITexture.pkg, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/QuaternionAdapter.pkg, src/components/ogre/scripting/bindings/lua/Vector3Adapter.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/creatures.material, media/materials/scripts/environment.material: updated materials
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp: don't reload duplicate resources, also fixed some problems with osdir
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.cpp: when the model defintion is reloaded, also emit a Reloaded signal from all of the models that uses that definition
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumEnvironment.h: added console commands for setting the time
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/InventoryWidget.cpp: cleaned up includes
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUICEGUIAdapter.cpp: removed debug logging
+	
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: when the model defintion is reloaded, make sure that all entities' rotation and scaling also are updated
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.cpp, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h: cleaned up includes, deactivated the sound test code
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: fixed a bug with the rotation code, added button which sets the rotation from the preview texture
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h: Added support for rolling. Pressing and holding Ctrl will roll instead of yawing and pitching.
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/EntityCEGUITexture.h: added methods for getting the rotation of the contained entity (not completely correct yet though). Also added a roll method.
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/QuaternionAdapter.cpp, src/components/ogre/widgets/QuaternionAdapter.h, src/components/ogre/widgets/Vector3Adapter.cpp, src/components/ogre/widgets/Vector3Adapter.h: added a setValue method for setting the value through code
+
+2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/characters.modeldef.xml: updated model definitions
+
 2006-11-04 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/Makefile.am: removed reference to unused Time class
