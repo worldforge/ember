@@ -1,3 +1,19 @@
+2006-11-06 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/creatures.modeldef.xml: updated model definitions
+
+2006-11-06 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp: fixed a bug where Vector3 weren't exported correctly
+
+2006-11-06 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/manipulation/EntityMoveAdapter.cpp: pressing shift while rotating will rotate in smaller steps
+	
+2006-11-06 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/environment/caelum/include/CaelumPrerequisites.h: removed debug code
+	
 2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/scripting/bindings/lua/EntityCEGUITexture.pkg, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/QuaternionAdapter.pkg, src/components/ogre/scripting/bindings/lua/Vector3Adapter.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
@@ -15,6 +31,7 @@
 	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ModelDefinitionManager.cpp: when the model defintion is reloaded, also emit a Reloaded signal from all of the models that uses that definition
 
 2006-11-05 Erik Hjortsberg  <erik@katastrof.nu>
+
 
 	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumEnvironment.h: added console commands for setting the time
 

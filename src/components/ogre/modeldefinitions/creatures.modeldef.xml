@@ -429,5 +429,26 @@
 		
 	</model>
 	
-	
+	<model name="horse" usescaleof="none" showcontained="true">
+		<translate x="0.000000" y="2.200000" z="0.000000" />
+		<submodels>
+			<submodel mesh="3d_objects/creatures/quadruped_v2/models/horse/Horse.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/creature/mottled_oker" />
+							<subentity index="3" material="/global/creature/mottled_oker" />
+						</subentities>
+					</part>
+					<part name="saddle" show="true">
+						<subentities>
+							<subentity index="1" material="/global/items/saddle/brownleather" />
+							<subentity index="2" material="/global/items/saddle/brownleather" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<actions />
+    </model>
 </models>
