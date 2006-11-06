@@ -109,11 +109,19 @@ bool EntityMoveAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	}
 	else if(button == Input::MouseWheelUp)
 	{
-		mBridge->yaw(10);
+		int movementDegrees = 10;
+		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
+			movementDegrees = 1;
+		}
+		mBridge->yaw(movementDegrees);
 	}
 	else if(button == Input::MouseWheelDown)
 	{
-		mBridge->yaw(-10);
+		int movementDegrees = 10;
+		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
+			movementDegrees = 1;
+		}
+		mBridge->yaw(-movementDegrees);
 	}
 
 	return false;
