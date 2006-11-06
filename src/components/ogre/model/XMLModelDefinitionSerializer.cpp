@@ -528,8 +528,8 @@ Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlE
 void XMLModelDefinitionSerializer::fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector)
 {
 	elem.SetDoubleAttribute("x", vector.x);
-	elem.SetDoubleAttribute("y", vector.x);
-	elem.SetDoubleAttribute("z", vector.x);
+	elem.SetDoubleAttribute("y", vector.y);
+	elem.SetDoubleAttribute("z", vector.z);
 }
 
 Ogre::Quaternion XMLModelDefinitionSerializer::fillQuaternionFromElement(Ember::TiXmlElement* elem)
