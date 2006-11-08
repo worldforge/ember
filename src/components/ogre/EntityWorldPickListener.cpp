@@ -68,27 +68,47 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 			///refit the opcode mesh to adjust for changes in the mesh (for example animations)
 			anUserObject->refit();
 			
-			EmberEntityUserObject::CollisionObjectStore* collisionObjects = anUserObject->getCollisionObjects();
-			
-			///only do opcode detection if there's a CollisionObject
-			for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end(); ++I) {
-				OgreOpcode::ICollisionShape* collisionShape = (*I)->getShape();
-				OgreOpcode::CollisionPair pick_result;
-				
-				if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK,anUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, 1000, pick_result)) {
+			ICollisionDetector* collisionDetector = anUserObject->getCollisionDetector();
+			if (collisionDetector) {
+				CollisionResult collisionResult;
+				collisionResult.collided = false;
+				collisionDetector->testCollision(cameraRay, collisionResult);
+				if (collisionResult.collided) {
 					EntityPickResult result;
 					result.entity = anUserObject->getEmberEntity();
-					result.position = pick_result.contact;
-					result.distance = pick_result.distance;
+					result.position = collisionResult.position;
+					result.distance = collisionResult.distance;
 					
 					std::stringstream ss;
 					ss << result.position;
 					S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << result.distance);
 					EventPickedEntity(result, mousePickerArgs);
-					continuePicking = false;
-					
+					continuePicking = false;				
 				}
 			}
+			
+			
+			
+			
+			///only do opcode detection if there's a CollisionObject
+// 			for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end(); ++I) {
+// 				OgreOpcode::ICollisionShape* collisionShape = (*I)->getShape();
+// 				OgreOpcode::CollisionPair pick_result;
+// 				
+// 				if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK,anUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, 1000, pick_result)) {
+// 					EntityPickResult result;
+// 					result.entity = anUserObject->getEmberEntity();
+// 					result.position = pick_result.contact;
+// 					result.distance = pick_result.distance;
+// 					
+// 					std::stringstream ss;
+// 					ss << result.position;
+// 					S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << result.distance);
+// 					EventPickedEntity(result, mousePickerArgs);
+// 					continuePicking = false;
+// 					
+// 				}
+// 			}
 		}
 	}
 

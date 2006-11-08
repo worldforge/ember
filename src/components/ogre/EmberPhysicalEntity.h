@@ -24,15 +24,6 @@
 
 #include "EmberEntity.h"
 
-// #include <Atlas/Objects/Entity.h>
-
-/*#include <OgreException.h>*/
-//#include <Eris/Entity.h>
-// #include <Eris/View.h>
-// #include <Eris/PollDefault.h>
-// #include <Eris/Log.h>
-// #include <Eris/TypeInfo.h>
-
 
 namespace EmberOgre {
 

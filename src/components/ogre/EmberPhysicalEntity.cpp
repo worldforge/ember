@@ -16,14 +16,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "EmberOgrePrerequisites.h"
 #include "EmberPhysicalEntity.h"
 
 
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
-#include "GUIManager.h"
-#include "EmberEntityFactory.h"
 #include "model/Model.h"
 #include "model/SubModel.h"
 #include "model/ParticleSystemBinding.h"
@@ -35,14 +32,10 @@
 #include "EmberOgre.h"
 
 #include "EmberEntityUserObject.h"
-#include "ogreopcode/include/OgreCollisionManager.h"
-#include "ogreopcode/include/OgreCollisionShape.h"
-#include "ogreopcode/include/OgreCollisionObject.h"
+#include "OpcodeCollisionDetector.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
-#include <Eris/PollDefault.h>
-#include <Eris/Log.h>
 #include <Eris/TypeInfo.h>
 
 
@@ -142,7 +135,6 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	
 /*	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), 0, 0);
 	getModel()->setUserObject(userObject);*/
-	connectEntities();
 	
 	//check if we should do delayed attachment
 	if (mModelMarkedToAttachTo) {
@@ -175,13 +167,20 @@ void EmberPhysicalEntity::initFromModel()
 	///translate the scale node according to the translate defined in the model
 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
 
+	connectEntities();
 
 }
 
 void EmberPhysicalEntity::connectEntities()
 {
-	if (!getModel()->getUserObject()) {
-		OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
+	if (getModel()->getUserObject()) {
+		delete getModel()->getUserObject();
+	}
+	ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
+	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionDetector);
+	getModel()->setUserObject(userObject);
+		
+/*		OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
 		const Model::Model::SubModelSet& submodels = getModel()->getSubmodels();
 		EmberEntityUserObject::CollisionObjectStore collisionObjects;
 		for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
@@ -196,16 +195,10 @@ void EmberPhysicalEntity::connectEntities()
 			
 			collisionObjects.push_back(collideObject);
 // 			collideObject->setDebug(true, false, false, false);
-	/*		collideShape->setDebug(true);
-			collideShape->visualize();*/
-	/*	
-			EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), (*I)->getEntity(), 0);
-			(*I)->getEntity()->setUserObject(userObject);*/
 		
-		}
-		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionObjects);
-		getModel()->setUserObject(userObject);
-	}
+		}*/
+		
+// 	}
 
 }
 

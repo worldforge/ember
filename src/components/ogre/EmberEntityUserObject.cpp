@@ -31,10 +31,11 @@ namespace EmberOgre {
 const Ogre::String EmberEntityUserObject::s_TypeName = "EmberEntityPickerObject";
 
 
-EmberEntityUserObject::EmberEntityUserObject(EmberEntity* emberEntity,  Model::Model* model,  CollisionObjectStore collisionObjects)
+EmberEntityUserObject::EmberEntityUserObject(EmberEntity* emberEntity,  Model::Model* model, ICollisionDetector* collisionDetector)
 : mModel(model),
 mEmberEntity(emberEntity),
-mCollisionObjects(collisionObjects)
+mCollisionDetector(collisionDetector)
+// mCollisionObjects(collisionObjects),
 {
 }
 
@@ -45,21 +46,25 @@ mCollisionObjects(collisionObjects)
 
 EmberEntityUserObject::~EmberEntityUserObject()
 {
-	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
+	delete mCollisionDetector;
+/*	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
 	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
 	{
 		collideContext->removeObject(*I);
 		OgreOpcode::CollisionManager::getSingleton().destroyShape((*I)->getShape());
 		delete *I;
-	}
+	}*/
 }
 
 void EmberEntityUserObject::refit()
 {
-	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
+	if (mCollisionDetector) {
+		mCollisionDetector->refit();
+	}
+/*	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
 	{
 		(*I)->refit();;
-	}
+	}*/
 }
 
 EmberEntity*  EmberEntityUserObject::getEmberEntity() const

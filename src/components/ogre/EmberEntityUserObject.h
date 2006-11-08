@@ -25,10 +25,7 @@
 
 #include "EmberOgrePrerequisites.h"
 
-namespace OgreOpcode
-{
-	class CollisionObject;
-};
+
 
 namespace Ogre
 {
@@ -41,6 +38,25 @@ namespace Model {
 	class Model;
 }
 class EmberEntity;
+
+
+struct CollisionResult
+{
+	bool collided;
+	Ogre::Vector3 position;
+	Ogre::Real distance;
+};
+
+class ICollisionDetector
+{
+public:
+	virtual ~ICollisionDetector() {};
+	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result) = 0;
+	virtual void refit() = 0;
+
+};
+
+
 /**
 @author Erik Hjortsberg
 
@@ -56,7 +72,7 @@ public:
 	The type of UserDefinedObject
 	*/
 	static const std::string s_TypeName;
-	typedef std::vector<OgreOpcode::CollisionObject*> CollisionObjectStore;
+// 	typedef std::vector<OgreOpcode::CollisionObject*> CollisionObjectStore;
 	
     /**
      * Constructor. 
@@ -65,9 +81,9 @@ public:
      * @param collisionObject A valid vector of collision objects.
      * @return 
      */
-    EmberEntityUserObject(EmberEntity* emberEntity , Model::Model* model, CollisionObjectStore collisionObject);
+    EmberEntityUserObject(EmberEntity* emberEntity, Model::Model* model, ICollisionDetector* collisionDetector);
 
-    ~EmberEntityUserObject();
+    virtual ~EmberEntityUserObject();
 	
 	/**
 	 *    Gets the EmberEntity contained.
@@ -85,7 +101,7 @@ public:
 	 *    Gets a pointer to a vector of CollisionObjects. This can be used for checking collisions.
 	 * @return 
 	 */
-	CollisionObjectStore* getCollisionObjects() { return &mCollisionObjects; }
+//	CollisionObjectStore* getCollisionObjects() { return &mCollisionObjects; }
 	
 	/**
 	 *    Overloaded method for getting the type name of this instance.
@@ -95,13 +111,21 @@ public:
 	virtual const Ogre::String & getTypeName (void) const;
 	
 	void refit();
+	
+	inline ICollisionDetector* getCollisionDetector() const;
 
 private:
 	EmberEntity*  mEmberEntity;
 	Model::Model*   mModel;
-	CollisionObjectStore   mCollisionObjects;
+	//CollisionObjectStore   mCollisionObjects;
+	ICollisionDetector* mCollisionDetector;
 
 };
+	
+ICollisionDetector* EmberEntityUserObject::getCollisionDetector() const
+{
+	return mCollisionDetector;
+}
 
 };
 
