@@ -1,3 +1,15 @@
+2006-11-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/WorldEmberEntity.cpp: cleaned up includes
+
+2006-11-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityUserObject.cpp, src/components/ogre/EmberEntityUserObject.h, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h, src/components/ogre/EntityWorldPickListener.cpp, src/components/ogre/Makefile.am, src/components/ogre/OpcodeCollisionDetector.cpp, src/components/ogre/OpcodeCollisionDetector.h: refactored the collision detection code to use an interface instead of EmberPhysicalEntity depending on Opcode directly
+
+2006-11-08 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: no need to redeclare name from MovableObject
+
 2006-11-06 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/creatures.modeldef.xml: updated model definitions

@@ -26,9 +26,9 @@
 #include "terrain/TerrainGenerator.h"
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
-#include "environment/Water.h"
+/*#include "environment/Water.h"
 #include "environment/Sun.h"
-#include "environment/Sky.h"
+#include "environment/Sky.h"*/
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
 #include "EmberOgre.h"
