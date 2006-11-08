@@ -55,12 +55,12 @@ Model::Model()
 }
 
 Model::Model(const std::string& name)
-: mName(name)
-, mScale(0)
+: mScale(0)
 , mRotation(Ogre::Quaternion::IDENTITY)
 , mSkeletonInstance(0)
 // , mAnimationStateSet(0)
 , mSkeletonOwnerEntity(0)
+, Ogre::MovableObject(name)
 {
  mVisible = true;
 }
@@ -786,10 +786,10 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 
 
 /** Overridden from MovableObject */
-const Ogre::String& Model::getName(void) const
-{
-	return mName;	
-}
+// const Ogre::String& Model::getName(void) const
+// {
+// 	return mName;	
+// }
 
 /** Overridden from MovableObject */
 const Ogre::String& Model::getMovableType(void) const

@@ -190,7 +190,7 @@ public:
         virtual void _updateRenderQueue(Ogre::RenderQueue* queue);
 
         /** Overridden from MovableObject */
-        virtual const Ogre::String& getName(void) const;
+//         virtual const Ogre::String& getName(void) const;
 
         /** Overridden from MovableObject */
         virtual const Ogre::String& getMovableType(void) const;
@@ -276,7 +276,7 @@ protected:
 	/**
 	 the name of the model
 	*/
-	std::string mName;
+// 	std::string mName;
 	
 	/**
 	modeldef this was copied from
