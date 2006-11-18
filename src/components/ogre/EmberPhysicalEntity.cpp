@@ -58,8 +58,8 @@ mCurrentMovementAction(0)
 {
 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
 
-	///make a copy of the original bbox
-	mDefaultOgreBoundingBox = mModel->getWorldBoundingBox(true);
+	///make a copy of the original bbox 	
+// 	mDefaultOgreBoundingBox = mModel->getBoundingBox();
 
 //	loadAnimationsFromModel();
 }
@@ -90,17 +90,17 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& attachPoint)
 {
 	///first check with the attach points
-	std::string entityId;
-	for(AttachedEntitiesStore::iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
+	const std::string* entityId(0);
+	for(AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
 		if (I->second == attachPoint) {
-			entityId = I->first;
+			entityId = &I->first;
 			break;
 		}
 	}	
 
-	if (entityId != "") {
+	if (entityId) {
 		///then get the entity from the world
-		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
+		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(*entityId);
 		return entity;
 	}
 	return 0;
@@ -155,6 +155,10 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 
 void EmberPhysicalEntity::initFromModel()
 {
+	
+	///make a copy of the original bbox
+	mDefaultOgreBoundingBox = mModel->getBoundingBox();
+	
 	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
@@ -474,19 +478,19 @@ void EmberPhysicalEntity::setMoving(bool moving)
 
 void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 {
-	std::string entityId;
-	for(AttachedEntitiesStore::iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
+	const std::string* entityId(0);
+	for(AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
 		if (I->second == attachPoint) {
-			entityId = I->first;
+			entityId = &I->first;
 			break;
 		}
 	}
 	
-	if (entityId != "") {
-		mAttachedEntities.erase(entityId);
-		if (hasChild(entityId)) {
+	if (entityId) {
+		mAttachedEntities.erase(*entityId);
+		if (hasChild(*entityId)) {
 			//we already have the entity, do the detachment
-			EmberEntity* entity = EmberOgre::getSingleton().getEntity(entityId);
+			EmberEntity* entity = EmberOgre::getSingleton().getEntity(*entityId);
 			if (entity) {
 				entity->detachFromModel();
 			}
