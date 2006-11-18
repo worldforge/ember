@@ -21,7 +21,7 @@
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "EmberEntity.h"
-#include "WorldEmberEntity.h"
+// #include "WorldEmberEntity.h"
 #include "MathConverter.h"
 
 
@@ -32,7 +32,7 @@
 #endif
 
 #include "MousePicker.h"
-#include "jesus/JesusPickerObject.h"
+// #include "jesus/JesusPickerObject.h"
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
 #include "framework/Tokeniser.h"
@@ -169,7 +169,7 @@ void AvatarCamera::createNodesForCamera()
 	mAvatarCameraNode->attachObject(mCamera);
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
-	mCamera->setNearClipDistance(0.1);
+	mCamera->setNearClipDistance(0.5);
 	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 	{
 		mCamera->setFarClipDistance(1000);
@@ -444,7 +444,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	queryMask |= Ogre::RSQ_FirstTerrain;
 	//queryMask |= Ogre::RSQ_AllTerrain;
 	
-	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay, queryMask); 
+	Ogre::RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay, queryMask); 
 	raySceneQuery->setSortByDistance(true);
 
 	raySceneQuery->execute(); 
@@ -503,7 +503,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 		}
 	}
 	///this must be destroyed by the scene manager
-	EmberOgre::getSingleton().getSceneManager()->destroyQuery(raySceneQuery);
+	mSceneManager->destroyQuery(raySceneQuery);
 	
 /*			
 // 				if ( rayIterator->distance < closestDistance ) { 

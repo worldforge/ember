@@ -63,6 +63,7 @@ private:
 	float mFramesPerSecond;
 };
 
+
 class AvatarCamera 
 :
 public sigc::trackable,
@@ -299,6 +300,145 @@ protected:
 	Ogre::Camera* AvatarCamera::getCamera() const {
 		return mCamera;	
 	}
+
+
+
+class ICameraMount
+{
+	/**
+	 * Pitches the camera the supplied degrees
+	 */
+	virtual void pitch(Ogre::Degree degrees) = 0;
+	
+	/**
+	 * Yaws the camera the supplied degrees
+	 */
+	virtual void yaw(Ogre::Degree degrees) = 0;
+	
+	/**
+	 * returns the current degrees of pitch from the cameras initial position
+	 */
+	virtual const Ogre::Degree& getPitch() const = 0;
+	
+	/**
+	 * returns the current degrees of yaw from the cameras initial position
+	 */
+	virtual const Ogre::Degree& getYaw() const = 0;
+	
+	/**
+	 * Returns the current camera orientation in the world
+	 */
+	virtual const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const = 0;
+	
+	/**
+	 *    Returns the position of the camera in the world.
+	 * @return 
+	 */
+	virtual const Ogre::Vector3& getPosition() const = 0;
+	
+	void setMode(AvatarCamera::Mode mode);
+
+	/**
+	 * sets the node to which the camera is attached
+	 */
+	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
+
+};
+
+class MainCamera
+{
+	/**
+	 * returns a pointer to the Ogre::Camera instance 
+	 */
+	inline Ogre::Camera* getCamera();
+	inline Ogre::Camera* getCamera() const;
+	
+	/**
+	* emitted when the camra moves
+	*/
+	sigc::signal<void, Ogre::Camera*> MovedCamera;
+	
+
+	void pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& args);
+	
+	void setClosestPickingDistance(Ogre::Real distance);
+	Ogre::Real getClosestPickingDistance();
+
+	/**
+	 * returns true if the worldPos is on screen, putting the screen pos into the x & y of the second Vector3 
+	 * returns false if the worldPos is off screen 
+	 * @param worldPos 
+	 * @param screenPos 
+	 * @return 
+	 */
+	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
+
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * Methods from Ogre::FrameListener
+	 */
+	bool frameStarted(const Ogre::FrameEvent& event);
+	
+	/**
+	 *    Enables and disables a compositor by name.
+	 * @param compositorName 
+	 * @param enable 
+	 */
+	void enableCompositor(const std::string& compositorName, bool enable);
+	
+	
+	/**
+	 *    Adds a new world pick listener to the queue of listeners.
+	 * @param worldPickListener 
+	 */
+	void pushWorldPickListener(IWorldPickListener* worldPickListener);
+	
+	const Ember::ConsoleCommandWrapper ToggleRendermode;
+	const Ember::ConsoleCommandWrapper ToggleFullscreen;
+	const Ember::ConsoleCommandWrapper Screenshot;
+	const Ember::ConsoleCommandWrapper Record;
+
+	/**
+		Toggles between wireframe and solid render mode.
+	*/
+	void toggleRenderMode();
+	
+	/**
+	 * takes a screen shot and writes it to disk 
+	 */
+	void takeScreenshot();
+
+};
+
+class AvatarCameraMount : ICameraMount
+{
+	/**
+	* emitted when the distance between the camera and the avatar has changed
+    * @param Ogre::Real the new distance
+	*/
+	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
+
+	/**
+	 *    Sets the distance from the camera to the avatar.
+	 * @param distance the new distance
+	 */
+	void setCameraDistance(Ogre::Real distance);
+
+	const Ember::ConsoleCommandWrapper SetCameraDistance;
+
+};
+
+class FreeFlyingMount : ICameraMount
+{
+};
+
+
 
 }
 
