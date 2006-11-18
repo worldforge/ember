@@ -53,7 +53,14 @@ void Sun::update (const float time) {
 	// Update the main light direction
 	if (mMainLight != 0) {
 		mMainLight->setDirection (dir);
+		///hide the sun if it's below the horizon
+		if (dir.y > 0) {
+			mMainLight->setVisible(false);
+		} else {
+			mMainLight->setVisible(true);
+		}
 	}
+
 
 	// Store the latest sun direction.
 	mSunDirection = dir.normalisedCopy ();
