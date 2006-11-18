@@ -151,6 +151,7 @@ public:
 	void resetCameraOrientation();
     
     
+    inline Ogre::SceneManager* getSceneManager() const;
     
 private:
 
@@ -227,6 +228,12 @@ Ogre::Real EntityCEGUITexture::getDefaultCameraDistance() const
 {
 	return mDefaultCameraDistance;
 }
+
+Ogre::SceneManager* EntityCEGUITexture::getSceneManager() const
+{
+	return mSceneManager;
+}
+
 
 }
 
