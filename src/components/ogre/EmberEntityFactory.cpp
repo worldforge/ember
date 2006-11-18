@@ -177,8 +177,14 @@ Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::stri
 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id + "_scaleNode"));
 
 	
-	Model::Model* model = new Model::Model(id);
-	bool result = model->create(entityType);
+	Model::Model* model = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), entityType, id);
+
+	if (!model->getDefinition()->isValid()) {
+		///add a placeholder model
+//		model->getDefinition()
+	}
+/*	bool result = true;
+//	bool result = model->create(entityType);
 
 	///try to open the model definition file
 	if (!result) 
@@ -186,7 +192,7 @@ Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::stri
 		S_LOG_FAILURE( "Could not find " << entityType << ", using placeholder.");
 		result = model->create("placeholder");
 		assert(result); ///if this fails we don't even have the placeholder and something is very wrong
-	} 
+	} */
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
 //  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);

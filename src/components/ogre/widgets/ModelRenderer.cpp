@@ -70,11 +70,12 @@ Model::Model* ModelRenderer::getModel()
 void ModelRenderer::showModel(const std::string& modelName)
 {
 	if (mModel) {
-		delete mModel;
+		mTexture->getSceneManager()->destroyMovableObject(mModel);
+		//delete mModel;
 	}
 	if (modelName != "") {
-		mModel = new Model::Model();
-		mModel->create(modelName);
+		mModel = Model::Model::createModel(mTexture->getSceneManager(), modelName);
+// 		mModel->create(modelName);
 		///override the rendering distance from the model; we want to always show it in the preview
 		mModel->setRenderingDistance(0);
 		setModel(mModel);
