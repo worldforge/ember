@@ -66,13 +66,6 @@ public:
 	typedef std::map<std::string, SubModelPartStore> SubModelPartStoreMap;
 
 
-	/**
-	 *    Creates a new Model instance with the specified name.
-	 *    Remember to call create(...) to create the actual meshes.
-	 * @param name 
-	 * @return 
-	 */
-	Model(const std::string& name);
 	
 	
 	/**
@@ -81,19 +74,14 @@ public:
 	 *    Remember to call create(...) to create the actual meshes.
 	 * @return 
 	 */
-	Model();
+// 	Model();
 	
 	virtual ~Model();
 	
 	
-	/**
-	 * Try to create the needed meshes from the specified modeldef.
-	 * Returns true if successful, else false.
-	 * @param modelType 
-	 * @return 
-	 */
-	bool create(const std::string& modelType); // create model of specific type
 
+
+	static Model* createModel(Ogre::SceneManager* sceneManager, const std::string& modelType, const std::string& name = "");
 	
 	/**
 	 *    Reloads the model from the modeldefinition.
@@ -230,6 +218,22 @@ public:
 	bool hasParticles() const;
 	
 protected:
+
+	/**
+	 *    Creates a new Model instance with the specified name.
+	 *    Remember to call create(...) to create the actual meshes.
+	 * @param name 
+	 * @return 
+	 */
+	Model(const std::string& name);
+	
+	/**
+	 * Try to create the needed meshes from the specified modeldef.
+	 * Returns true if successful, else false.
+	 * @param modelType 
+	 * @return 
+	 */
+	bool create(const std::string& modelType); // create model of specific type
 
 	static unsigned long msAutoGenId;
 	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;

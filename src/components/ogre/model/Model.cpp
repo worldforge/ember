@@ -41,18 +41,18 @@ namespace Model {
 Ogre::String Model::msMovableType = "Model";
 unsigned long Model::msAutoGenId = 0;
 
-Model::Model()
-: mScale(0)
-, mRotation(Ogre::Quaternion::IDENTITY)
-, mSkeletonInstance(0)
-// , mAnimationStateSet(0)
-, mSkeletonOwnerEntity(0)
-{
-	std::stringstream ss;
-	ss << "__AutogenModel_" << msAutoGenId++;
-	mName = ss.str();
-	mVisible = true;
-}
+// Model::Model()
+// : mScale(0)
+// , mRotation(Ogre::Quaternion::IDENTITY)
+// , mSkeletonInstance(0)
+// // , mAnimationStateSet(0)
+// , mSkeletonOwnerEntity(0)
+// {
+// 	std::stringstream ss;
+// 	ss << "__AutogenModel_" << msAutoGenId++;
+// 	mName = ss.str();
+// 	mVisible = true;
+// }
 
 Model::Model(const std::string& name)
 : mScale(0)
@@ -115,7 +115,7 @@ bool Model::create(const std::string& modelType)
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << ".\nMessage: " << ex.getFullDescription());
 		return false;
 	}
-	if (!_masterModel->isValid()) {
+	if (false && !_masterModel->isValid()) {
 		S_LOG_FAILURE("Model of type " << modelType << " from group " << groupName << " is not valid.");
 		return false;
 	}
@@ -861,6 +861,23 @@ bool Model::isVisible (void) const
 	return Ogre::MovableObject::isVisible() && ModelDefinitionManager::getSingleton().getShowModels();
 }
 
+	
+Model* Model::createModel(Ogre::SceneManager* sceneManager, const std::string& modelType, const std::string& name)
+{
+	
+	Ogre::String modelName(name);
+	if (name == "") {
+		std::stringstream ss;
+		ss << "__AutogenModel_" << Model::msAutoGenId++;
+		modelName = ss.str();
+	}
+	
+	// delegate to factory implementation
+	Ogre::NameValuePairList params;
+	params["modeldefinition"] = modelType;
+	return static_cast<Model*>(sceneManager->createMovableObject(modelName, ModelFactory::FACTORY_TYPE_NAME, &params));
+
+}
 	
 	
 	
