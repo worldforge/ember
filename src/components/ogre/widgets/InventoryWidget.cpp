@@ -74,10 +74,14 @@ void InventoryWidget::buildWidget()
 
 void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 {
-	mMainWindow->setVisible(true);
 	EmberOgre::getSingleton().getAvatar()->EventAddedEntityToInventory.connect(sigc::mem_fun(*this, &InventoryWidget::addedEntity));
 	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.connect(sigc::mem_fun(*this, &InventoryWidget::removedEntity));
 	registerConsoleVisibilityToggleCommand("inventory");
+
+///only show the inventory by default if we're not an admin
+	if (!entity->getAvatar()->isAdmin()) {
+		mMainWindow->setVisible(true);
+	}
 
 }
 void InventoryWidget::addedEntity(EmberEntity* dimeEntity) {
