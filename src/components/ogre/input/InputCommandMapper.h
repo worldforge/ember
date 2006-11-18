@@ -65,7 +65,7 @@ public:
      * At destruction the instance is also deregistered from the Input instance.
      * @return 
      */
-    ~InputCommandMapper();
+    virtual ~InputCommandMapper();
     
     /**
      * Binds a command to a key.

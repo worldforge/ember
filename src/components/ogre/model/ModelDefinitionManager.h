@@ -42,7 +42,7 @@ class ModelDefinitionManager: public Ogre::ResourceManager, public Ember::Single
 public:
     /// Constructor
     ModelDefinitionManager();
-    ~ModelDefinitionManager();
+    virtual ~ModelDefinitionManager();
     
 	virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
 		bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 

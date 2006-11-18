@@ -119,7 +119,7 @@ public:
 	
    Input();
 
-    ~Input();
+   virtual ~Input();
 	
 	/**
 	 *    Initializes the input object. Call this before you want to recieve input.

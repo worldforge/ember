@@ -41,7 +41,7 @@ class XMLModelDefinitionSerializer
 {
 public :
 	XMLModelDefinitionSerializer();
-	~XMLModelDefinitionSerializer();
+	virtual ~XMLModelDefinitionSerializer();
 
 	void importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pmModelDef);
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
