@@ -92,7 +92,23 @@ class MovableObjectRenderer
 	 */
 	void resetCameraOrientation();
 
-
+	/**
+	 *    Pitches the camera.
+	 * @param degrees The amount of degrees to pitch.
+	 */
+	void pitch(Ogre::Degree degrees);
+	
+	/**
+	 *    Yaws the camera.
+	 * @param degrees The amount of degree to yaw.
+	 */
+	void yaw(Ogre::Degree degrees);
+    
+	/**
+	 *    Rolls the camera.
+	 * @param degrees The amount of degree to roll.
+	 */
+    void roll(Ogre::Degree degrees);
 };
 
 }

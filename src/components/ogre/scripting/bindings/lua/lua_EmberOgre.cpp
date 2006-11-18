@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Fri Nov 17 00:21:02 2006.
+** Generated automatically by tolua++-1.0.6 on Sat Nov 18 18:56:18 2006.
 */
 
 #ifndef __cplusplus
@@ -10320,6 +10320,99 @@ static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_resetCameraOrientatio
 #endif
 }
 
+/* method: pitch of class  EmberOgre::MovableObjectRenderer */
+static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_pitch00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::MovableObjectRenderer",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::MovableObjectRenderer* self = (EmberOgre::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Degree degrees = *((Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'pitch'",NULL);
+#endif
+ {
+  self->pitch(degrees);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'pitch'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: yaw of class  EmberOgre::MovableObjectRenderer */
+static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_yaw00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::MovableObjectRenderer",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::MovableObjectRenderer* self = (EmberOgre::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Degree degrees = *((Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'yaw'",NULL);
+#endif
+ {
+  self->yaw(degrees);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'yaw'.",&tolua_err);
+ return 0;
+#endif
+}
+
+/* method: roll of class  EmberOgre::MovableObjectRenderer */
+static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_roll00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"EmberOgre::MovableObjectRenderer",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Degree",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::MovableObjectRenderer* self = (EmberOgre::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::Degree degrees = *((Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'roll'",NULL);
+#endif
+ {
+  self->roll(degrees);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'roll'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* method: new of class  EmberOgre::OgreEntityRenderer */
 static int tolua_EmberOgre_EmberOgre_OgreEntityRenderer_new00(lua_State* tolua_S)
 {
@@ -15011,6 +15104,9 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"setActive",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_setActive00);
  tolua_function(tolua_S,"getEntityRotation",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_getEntityRotation00);
  tolua_function(tolua_S,"resetCameraOrientation",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_resetCameraOrientation00);
+ tolua_function(tolua_S,"pitch",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_pitch00);
+ tolua_function(tolua_S,"yaw",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_yaw00);
+ tolua_function(tolua_S,"roll",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_roll00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_module(tolua_S,"EmberOgre",0);
