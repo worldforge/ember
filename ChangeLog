@@ -1,5 +1,17 @@
 2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/widgets/Bootstrap.lua: added loading of the admin control
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Admin.layout, src/components/ogre/widgets/Admin.lua: added a widget to be shown when the user logs in as an admin
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/TerrainEditor.lua: hide the overlay when the window is hidden
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
 
 2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>

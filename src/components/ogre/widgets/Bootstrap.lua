@@ -57,6 +57,7 @@ loadScript("ScriptEdit.lua")
 loadScript("ModelEdit.lua")
 loadScript("Tasks.lua")
 loadScript("Mover.lua")
+loadScript("Admin.lua")
 
 --loadScript("TerrainEditor.lua")
 
