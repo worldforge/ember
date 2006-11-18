@@ -42,7 +42,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
 	if (width != 0 && height != 0) {
 		mTexture = new EntityCEGUITexture(name, width, height);
 		///most models are rotated away from the camera, so as a convenience we'll rotate the node
-		mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
+		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 		mImage->setImage(mTexture->getImage());
 		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
@@ -93,6 +93,22 @@ void MovableObjectRenderer::resetCameraOrientation()
 {
 	mTexture->resetCameraOrientation();
 }
+
+void MovableObjectRenderer::pitch(Ogre::Degree degrees)
+{
+	mTexture->pitch(degrees);
+}
+
+void MovableObjectRenderer::yaw(Ogre::Degree degrees)
+{
+	mTexture->yaw(degrees);
+}
+
+void MovableObjectRenderer::roll(Ogre::Degree degrees)
+{
+	mTexture->roll(degrees);
+}
+
 
 bool MovableObjectRenderer::injectMouseButtonUp(const Input::MouseButton& button)
 {
