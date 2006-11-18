@@ -1,3 +1,39 @@
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/Model.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/input/Input.h, src/components/ogre/input/InputCommandMapper.h, src/components/ogre/model/ModelDefinitionManager.h, src/components/ogre/model/ParticleSystem.h, src/components/ogre/model/XMLModelDefinitionSerializer.h: mark destructors as virtual
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/EntityCEGUITexture.h: added accessor for the scene manager
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/Jesus.cpp, src/components/ogre/widgets/ModelRenderer.cpp, src/components/ogre/EmberEntityFactory.cpp: adapt to changes in Model creation
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: update the original bounding box upon model reload, avoid some string copying by comparing by ref
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp: get by ref
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h: Use the locally stored scene manager, increased the near clip distance
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: changed how models are created. Instead of creating models though "new Model", we now integrate the models into the MovableObject framwork of Ogre. This means that all models are managed by Ogre, through the use of the ModelFactory. A new Model is now created by the static method Model::createModel(...)
+
+2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/caelum/src/Sun.cpp: disable the sun if it's below the horizon 
+
 2006-11-08 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/WorldEmberEntity.cpp: cleaned up includes
