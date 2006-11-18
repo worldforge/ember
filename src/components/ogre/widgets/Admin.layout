@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.00000,500.000000},{0.00000,50.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{1.00000,-500.000000},{1.00000,-50.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Admin'/>
+		<Window Type='DefaultGUISheet' Name='InnerWindow'>
+			<Property Name='UnifiedSize' Value='{{1.00000,-8.000000},{1.00000,-20.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.00000,4.000000},{0.0000,20.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Button' Name='ModelEditor'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,70},{0,25}}'/>
+				<Property Name='Text' Value='Model editor'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='TerrainEditor'>
+				<Property Name='UnifiedPosition' Value='{{0,70},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='Text' Value='Terrain editor'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='SwitchCamera'>
+				<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+				<Property Name='Text' Value='Switch camera'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='EntityCreator'>
+				<Property Name='UnifiedPosition' Value='{{0,250},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='Text' Value='Entity creator'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='ScriptEditor'>
+				<Property Name='UnifiedPosition' Value='{{0,330},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='Text' Value='Script editor'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>
