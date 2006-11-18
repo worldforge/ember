@@ -278,6 +278,35 @@ function ModelEdit_ModelUseScaleOf_SelectionChanged(args)
 	end
 end
 
+function ModelEdit_YawLeft_MouseClick(args)
+	ModelEdit.renderer:yaw(Ogre.Degree:new_local(-45))
+end
+
+function ModelEdit_YawRight_MouseClick(args)
+	ModelEdit.renderer:yaw(Ogre.Degree:new_local(45))
+end
+
+function ModelEdit_PitchUp_MouseClick(args)
+	ModelEdit.renderer:pitch(Ogre.Degree:new_local(-45))
+end
+
+function ModelEdit_PitchDown_MouseClick(args)
+	ModelEdit.renderer:pitch(Ogre.Degree:new_local(45))
+end
+
+function ModelEdit_RollLeft_MouseClick(args)
+	ModelEdit.renderer:roll(Ogre.Degree:new_local(-45))
+end
+
+function ModelEdit_RollRight_MouseClick(args)
+	ModelEdit.renderer:roll(Ogre.Degree:new_local(45))
+end
+
+function ModelEdit_ResetOrientation_MouseClick(args)
+	ModelEdit.renderer:resetCameraOrientation()
+end
+
+
 function ModelEdit_submeshinforemovesubmesh_MouseClick(args)
 	--just remove the subentity definition from the part
 	local subentity = ModelEdit_getSelectedSubEntity()
@@ -309,6 +338,10 @@ function ModelEdit_addSubmesh_MouseClick(args)
 		ModelEdit_updateModelContentList()
 	end
 
+end
+
+function ModelEdit_ReloadModelListButton_MouseClick(args)
+	ModelEdit_fillModellist()
 end
 
 function ModelEdit_SaveModelButton_MouseClick(args)
@@ -685,6 +718,8 @@ function ModelEdit_buildWidget()
 	ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("MouseClick", "ModelEdit_addPart_MouseClick")
 	ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("MouseClick", "ModelEdit_renamePart_MouseClick")
 	ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("MouseClick", "ModelEdit_AddModelButton_MouseClick")
+	ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("MouseClick", "ModelEdit_ReloadModelListButton_MouseClick")
+	
 	ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit_AddSubmodelButton_MouseClick")
 	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("MouseClick", "ModelEdit_SaveModelButton_MouseClick")
 	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("MouseClick", "ModelEdit_NewModelOk_MouseClick")
@@ -693,6 +728,15 @@ function ModelEdit_buildWidget()
 	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("MouseClick", "ModelEdit_ReloadInstancesButton_MouseClick")
 	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("MouseClick", "ModelEdit_GetRotationFromPreviewButton_MouseClick")
 	
+	ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("MouseClick", "ModelEdit_YawLeft_MouseClick")
+	ModelEdit.widget:getWindow("YawRight"):subscribeEvent("MouseClick", "ModelEdit_YawRight_MouseClick")
+	ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("MouseClick", "ModelEdit_RollLeft_MouseClick")
+	ModelEdit.widget:getWindow("RollRight"):subscribeEvent("MouseClick", "ModelEdit_RollRight_MouseClick")
+	ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("MouseClick", "ModelEdit_PitchUp_MouseClick")
+	ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("MouseClick", "ModelEdit_PitchDown_MouseClick")
+	ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("MouseClick", "ModelEdit_ResetOrientation_MouseClick")
+
+
 
 	ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")
 	ModelEdit.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(ModelEdit.contentparts.modelInfo.renderImage)
