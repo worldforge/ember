@@ -34,18 +34,34 @@ function TerrainEditor_RedoButton_Click(args)
 end
 
 function TerrainEditor_ShowOverlayButton_Click(args)
+	TerrainEditor_ToggleOverlayVisibility()
+end
 
+--Toggles the visibility of the overlay, which is the blue movable dots
+function TerrainEditor_ToggleOverlayVisibility()
 	if TerrainEditor.editor:isOverlayShown() then
-		TerrainEditor.showOverlayButton:setText("Show overlay")
-		TerrainEditor.editor:hideOverlay()
+		TerrainEditor_HideOverlay()
 	else 
-		TerrainEditor.showOverlayButton:setText("Hide overlay")
-		TerrainEditor.editor:showOverlay()
+		TerrainEditor_ShowOverlay()
 	end
+end
+
+function TerrainEditor_HideOverlay()
+	TerrainEditor.showOverlayButton:setText("Show overlay")
+	TerrainEditor.editor:hideOverlay()
+end
+
+function TerrainEditor_ShowOverlay()
+	TerrainEditor.showOverlayButton:setText("Hide overlay")
+	TerrainEditor.editor:showOverlay()
 end
 
 function TerrainEditor_SendToServerButton_Click(args)
 	TerrainEditor.editor:sendChangesToServer()
+end
+
+function TerrainEditor_MainWindow_Hidden(args)
+	TerrainEditor_HideOverlay()
 end
 
 function TerrainEditor_buildWidget()
@@ -73,6 +89,7 @@ function TerrainEditor_buildWidget()
 	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("MouseClick", "TerrainEditor_UndoButton_Click")
 	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("MouseClick", "TerrainEditor_RedoButton_Click")
 	
+	TerrainEditor.widget:getMainWindow():subscribeEvent("Hidden", "TerrainEditor_MainWindow_Hidden")
 	
 	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("MouseClick", "TerrainEditor_SendToServerButton_Click")
 	
