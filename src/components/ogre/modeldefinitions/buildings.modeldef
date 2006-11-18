@@ -1,7 +1,7 @@
 <models>
     <model name="castlefoundation" usescaleof="all" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/building/models/castle/castle_foundation.mesh">
                 <parts>
@@ -17,7 +17,7 @@
     </model>
     <model name="castle_outer_wall" usescaleof="width" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-0.567722" y="-0.567722" z="-0.567722" degrees="120.783997" />
+        <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/building/models/castle/outerwalls/outer_walls.mesh">
                 <parts>
@@ -82,9 +82,9 @@
         </submodels>
         <actions />
     </model>
-    <model name="curtainwall" usescaleof="all" showcontained="true">
+    <model name="curtain_wall" usescaleof="all" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+        <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/building/models/castle/curtainwall/curtain_walls.mesh">
                 <parts>
@@ -117,7 +117,7 @@
     </model>
     <model name="gateway" usescaleof="width" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.917976" />
+        <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/building/models/castle/gateway/gateway.mesh">
                 <parts>
@@ -171,7 +171,7 @@
     </model>
     <model name="castle_house" usescaleof="width" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="0.714658" y="0.000000" z="-0.699474" degrees="180.000000" />
+        <rotation x="0.707107" y="-0.000000" z="0.707107" degrees="180.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/building/models/castle/house/house.mesh">
                 <parts>
@@ -195,9 +195,9 @@
         </submodels>
         <actions />
     </model>
-    <model name="inn" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
+    <model name="inn" usescaleof="width" showcontained="true">
+        <translate x="4.000000" y="0.000000" z="-2.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="inn.mesh">
                 <parts>

@@ -1,114 +1,36 @@
-material /global/building_primitives/rough_timber/column
+material /global/building_primitives/rough_timber/column : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      //specular 0.449020 0.449020 0.449020 1
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_column.png
-      }
-    }
-  }
-}
-material /global/building_primitives/rough_timber/column_end
-{
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_column_ends.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_column.png
 }
 
-
-
-
-
-
-material /global/building_primitives/rough_timber/beam
+material /global/building_primitives/rough_timber/column_end : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      //specular 0.449020 0.449020 0.449020 1
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_beam.png
-      }
-    }
-  }
-}
-material /global/building_primitives/rough_timber/beam_end
-{
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_beam_end.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/rough_timber_column_ends.png
 }
 
-material /global/building_primitives/rough_timber/wall
+material /global/building_primitives/rough_timber/beam : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      //specular 0.449020 0.449020 0.449020 1
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_wall.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_beam.png
 }
 
-material /global/building_primitives/template/wall_edges
+material /global/building_primitives/rough_timber/beam_end : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      //specular 0.449020 0.449020 0.449020 1
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/template/wall_edges.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_beam_end.png
 }
 
-material /global/building_primitives/template/floor
+material /global/building_primitives/rough_timber/wall : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      //specular 0.449020 0.449020 0.449020 1
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/template/floor.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_wall.png
+}
+
+material /global/building_primitives/template/wall_edges : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/template/wall_edges.png
+}
+
+material /global/building_primitives/template/floor : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/template/floor.png
 }
 
 material /global/building_primitives/rough_stone/floor_
@@ -349,7 +271,6 @@ material /global/building_element/timber_frame/beam_end
   {
     pass
     {
-      specular 0.449020 0.449020 0.449020 5.000000
       texture_unit
       {
         texture 3d_objects/items/building_element/textures/timber_frame/low/beam_end.png
@@ -365,7 +286,6 @@ material /global/building_element/timber_frame/beam
   {
     pass
     {
-      specular 0.449020 0.449020 0.449020 5.000000
       texture_unit
       {
         texture 3d_objects/items/building_element/textures/timber_frame/low/beam.png
