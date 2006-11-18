@@ -39,6 +39,7 @@
 
 
 #include "model/Model.h"
+#include "model/ModelDefinition.h"
 #include "model/ModelDefinitionManager.h"
 
 
@@ -179,20 +180,16 @@ Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::stri
 	
 	Model::Model* model = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), entityType, id);
 
+	///if the model definition isn't valid, use a placeholder
 	if (!model->getDefinition()->isValid()) {
-		///add a placeholder model
-//		model->getDefinition()
-	}
-/*	bool result = true;
-//	bool result = model->create(entityType);
-
-	///try to open the model definition file
-	if (!result) 
-	{
 		S_LOG_FAILURE( "Could not find " << entityType << ", using placeholder.");
-		result = model->create("placeholder");
-		assert(result); ///if this fails we don't even have the placeholder and something is very wrong
-	} */
+		///add a placeholder model
+		Model::ModelDefnPtr modelDef = model->getDefinition();
+		modelDef->createSubModelDefinition("placeholder.mesh")->createPartDefinition("main")->setShow( true);
+		modelDef->setValid( true);
+		modelDef->reloadAllInstances();
+	}
+
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
 //  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
