@@ -383,7 +383,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	} else {
 		EmberEntity* newLocationEntity = getEmberLocation();
 		
-		const Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+		const Ogre::Vector3& oldWorldPosition = getSceneNode()->getWorldPosition();
 		
 		if (getSceneNode()->getParentSceneNode()) {
 			//detach from our current object
