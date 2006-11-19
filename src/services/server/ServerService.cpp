@@ -84,24 +84,12 @@ namespace Ember
 	CreateChar("add", this, "Create a character on the server."),
 	TakeChar("take", this, "Take control of one of your characters."),
 	ListChars("list", this, "List you available characters on the server."),
-	Say("say", this, "Say something.")
+	Say("say", this, "Say something."),
+	Delete("delete", this, "Deletes an entity.")
   {
     setName("Server Service");
     setDescription("Service for Server session");
-
-
-/*	ConsoleBackend::getMainConsole()->registerCommand(CONNECT,this, "Connect to a server.");
-	ConsoleBackend::getMainConsole()->registerCommand(DISCONNECT,this, "Disconnect from the server.");
-	ConsoleBackend::getMainConsole()->registerCommand(CREATEACC,this, "Create an account on the server.");
-	ConsoleBackend::getMainConsole()->registerCommand(LOGIN,this, "Login to the connected server.");
-	ConsoleBackend::getMainConsole()->registerCommand(LOGOUT,this, "Logout from the connected server.");
-	ConsoleBackend::getMainConsole()->registerCommand(CREATECHAR,this, "Create a character on the server.");
-	ConsoleBackend::getMainConsole()->registerCommand(LISTCHARS,this, "List you available characters on the server.");
-	ConsoleBackend::getMainConsole()->registerCommand(TAKECHAR,this, "Take control of one of your characters.");
-	ConsoleBackend::getMainConsole()->registerCommand(SAY,this, );*/
-// 	ConsoleBackend::getMainConsole()->registerCommand(TOUCH,this, ");
-
-	  }
+  }
 
   /* dtor */
   ServerService::~ServerService()
@@ -452,6 +440,18 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 		// Say (In-Game chat) Command
 		} else if (Say == command) {
 			say(args);
+		} else if (Delete == command) {
+			Tokeniser tokeniser = Tokeniser();
+			tokeniser.initTokens(args);
+			std::string entityId = tokeniser.nextToken();
+			if (entityId != "") {
+				Eris::Entity* entity = getView()->getEntity(entityId );
+				if (entity) {
+					deleteEntity(entity);
+				}
+			}
+			
+			
 
 /*		// Touch Command
 		} else if (command==TOUCH) {
@@ -581,5 +581,11 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 	void ServerService::say(const std::string &message) {
 		mServerAdapter->say(message);
 	}
+	
+	void ServerService::deleteEntity(Eris::Entity* entity)
+	{
+		mServerAdapter->deleteEntity(entity);
+	}
+	
  
 } // namespace Ember

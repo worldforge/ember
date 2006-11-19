@@ -223,6 +223,30 @@ void ConnectedAdapter::useStop()
 	}
 }   
 	
+void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
+{
+	try {
+		Atlas::Objects::Entity::Anonymous what;
+		what->setId(entity->getId());
+		
+		Atlas::Objects::Operation::Delete deleteOp;
+		deleteOp->setFrom(mAvatar->getEntity()->getId());
+		deleteOp->setTo(entity->getId());
+		deleteOp->setArgs1(what);
+		
+		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
+		mConnection->send(deleteOp);	
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on deleting entity: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on deleting entity: " << except.what());
+	}
+}
+	
 	
 void ConnectedAdapter::attack(Eris::Entity* entity)
 {

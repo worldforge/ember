@@ -100,4 +100,9 @@ void NonConnectedAdapter::say(const std::string &message)
 
 }
 
+void NonConnectedAdapter::deleteEntity(Eris::Entity* entity)
+{
+}
+
+
 }

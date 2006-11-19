@@ -55,7 +55,8 @@ public:
 	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
 	virtual void useStop();
 	virtual void attack(Eris::Entity* entity);
-    
+	virtual void deleteEntity(Eris::Entity* entity);
+   
 private:
 	Eris::Avatar* mAvatar;
 	Eris::Connection* mConnection;

@@ -162,6 +162,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
 	void useStop();
 	void attack(Eris::Entity* entity);
+	void deleteEntity(Eris::Entity* entity);
 	//void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
@@ -221,6 +222,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	const Ember::ConsoleCommandWrapper TakeChar;
 	const Ember::ConsoleCommandWrapper ListChars;
 	const Ember::ConsoleCommandWrapper Say;
+	const Ember::ConsoleCommandWrapper Delete;
 	
 // 	static const char * const CONNECT;
 // 	static const char * const RECONNECT;
