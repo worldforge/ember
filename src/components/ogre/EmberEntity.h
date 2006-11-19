@@ -119,6 +119,11 @@ public:
 	static const char * const MODE_FLOATING;
 	static const char * const MODE_FIXED;
 	
+	/**
+	The material used for showing the eris bbox.
+	*/
+	static const std::string BboxMaterialName;
+
 	
 	
 	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
@@ -303,6 +308,13 @@ protected:
 	This is often different from the Ogre bounding box.
 	*/
 	Ogre::OOBBWireBoundingBox* mErisEntityBoundingBox;
+	
+	/**
+	 *    Creates the material used for the eris bboxes, if not already created.
+	 */
+	void createErisBboxMaterial();
+	
+	
 	
 	/**
 	 * Creates the main scene node which holds the entity.

@@ -1,4 +1,8 @@
-2006-11-18 Erik Hjortsberg  <erik@katastrof.nu>
+2006-11-19 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h: show the eris bbox with a yellowish material
+
+2006-11-19 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.h, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h: added a delete command which will delete entities from the world
 

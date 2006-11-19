@@ -94,6 +94,8 @@ const char * const EmberEntity::MODE_SWIMMING = "swimming";
 const char * const EmberEntity::MODE_FLOATING = "floating";
 const char * const EmberEntity::MODE_FIXED = "fixed";
 
+const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
+
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
@@ -529,10 +531,14 @@ void EmberEntity::showOgreBoundingBox(bool show)
 
 void EmberEntity::showErisBoundingBox(bool show)
 {
+
+	createErisBboxMaterial();
+	
 	///if there's no bounding box, create one now
 	///allowing for some lazy loading
 	if (!mErisEntityBoundingBox) {
 		mErisEntityBoundingBox = new Ogre::OOBBWireBoundingBox();
+		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
 		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox().highCorner()), Atlas2Ogre(getBBox().lowCorner()));
@@ -543,6 +549,17 @@ void EmberEntity::showErisBoundingBox(bool show)
 	}
 	mErisEntityBoundingBox->setVisible(show);
 	
+}
+
+void EmberEntity::createErisBboxMaterial()
+{
+	if (!Ogre::MaterialManager::getSingleton().resourceExists(BboxMaterialName)) {
+		Ogre::MaterialPtr baseYellowNoLighting = Ogre::MaterialManager::getSingleton().create(BboxMaterialName, 
+			Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME);
+// 		baseYellowNoLighting->setLightingEnabled(false);
+		baseYellowNoLighting->setAmbient(Ogre::ColourValue(1, 1, 0.7));
+		baseYellowNoLighting->setDiffuse(Ogre::ColourValue(1, 1, 0.7));
+	}
 }
 
 void EmberEntity::onBboxChanged()
