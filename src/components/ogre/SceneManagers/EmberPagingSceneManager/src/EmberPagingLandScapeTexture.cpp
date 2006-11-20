@@ -30,23 +30,13 @@ namespace EmberOgre
 {
 	
 	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager *pageMgr)
-		: Ogre::PagingLandScapeTexture(pageMgr, "EmberTexture", 4, true)
+		: Ogre::PagingLandScapeTexture(pageMgr, "EmberTexture", 1, false)
 	{
 	}
 	
 	EmberPagingLandScapeTexture::~EmberPagingLandScapeTexture( void )
 	{
 	}
-
-
-	void EmberPagingLandScapeTexture::_setPagesize( void )
-	{
-	}
-	
-	void EmberPagingLandScapeTexture::_clearData( void )
-	{
-	}
-
 
 	Ogre::PagingLandScapeTexture* EmberPagingLandScapeTexture::newTexture( )
 	{

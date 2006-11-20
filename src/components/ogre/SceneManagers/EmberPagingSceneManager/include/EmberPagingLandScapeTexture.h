@@ -39,13 +39,6 @@ public:
 	virtual ~EmberPagingLandScapeTexture( void );
 	
 	virtual Ogre::String getName() const {return Ogre::String("EmberTexture");}
-		
-	virtual void setPagesize( void ){_setPagesize();};
-	virtual void clearData( void ){_clearData();};
-		
-	static void _setPagesize( void );
-	static void _clearData( void );
-
 
 	virtual Ogre::PagingLandScapeTexture* newTexture( );
 	virtual bool isMaterialSupported(bool recursive = true); 
