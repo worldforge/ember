@@ -48,6 +48,7 @@ public:
 	virtual Ogre::SceneManager* getSceneManager() const = 0;
 	
 	virtual void reloadAllPages() = 0;
+	virtual void reloadPage(unsigned int x, unsigned int z) = 0;
 };
 
 }
