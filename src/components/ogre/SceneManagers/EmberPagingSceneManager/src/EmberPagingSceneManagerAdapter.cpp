@@ -26,6 +26,7 @@
 #include "EmberPagingSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapePageManager.h"
+#include "OgrePagingLandScapePage.h"
 
 namespace EmberOgre {
 	
@@ -105,6 +106,18 @@ namespace EmberOgre {
 	void EmberPagingSceneManagerAdapter::reloadAllPages()
 	{
 		mSceneManager->getPageManager()->load();
+	}
+
+	void EmberPagingSceneManagerAdapter::reloadPage(unsigned int x, unsigned int z)
+	{
+		Ogre::Vector2 position(x,z);
+		setOption("PageUpdate", &position);
+		Ogre::PagingLandScapePage* page=  mSceneManager->getPageManager()->getPage(x, z, false);
+		if (page) {
+//			page->reload();
+			page->unload();
+			page->load();
+		}
 	}
 
 }
