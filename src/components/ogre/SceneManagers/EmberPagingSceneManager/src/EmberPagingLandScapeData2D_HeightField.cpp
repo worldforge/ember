@@ -41,48 +41,39 @@ namespace EmberOgre
 EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager *pageMgr) 
 : Ogre::PagingLandScapeData2D(pageMgr), mTerrainPage(0)
 {
-	//set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
-	//in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
+	///set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
+	///in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
 	mMaxheight = 1;
 }
 	
 bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Ogre::uint z )
 {
-/*	mMaxArrayPos = static_cast <uint> (mXDimension * mZDimension);
-	mMax = static_cast <uint> (mMaxArrayPos * mBpp);
-	mHeightData = new Real[mMaxArrayPos];*/
 	assert(!mTerrainPage);
 	TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
-/*	if (!mTerrainPage) 
-	{*/
-		mMaxArrayPos = terrainGenerator->getPageSize() * terrainGenerator->getPageSize();
-		mHeightData = new Real[mMaxArrayPos];
-		mTerrainPage = terrainGenerator->getTerrainPage(Ogre::Vector2(x,z));
-		//should always return a TerrainPage*
-		assert(mTerrainPage);
-		
-		mTerrainPage->createHeightData(mHeightData);
+
+	mMaxArrayPos = terrainGenerator->getPageSize() * terrainGenerator->getPageSize();
+	mHeightData = new Real[mMaxArrayPos];
+	mTerrainPage = terrainGenerator->getTerrainPage(Ogre::Vector2(x,z));
+	//should always return a TerrainPage*
+	assert(mTerrainPage);
 	
-		
-		///make sure it's not 0
-		mMaxheight = std::max<float>(mTerrainPage->getMaxHeight(), 1.0f);
-		mMax = static_cast <unsigned int> (mSize * mTerrainPage->getMaxHeight());
-		mXDimension = terrainGenerator->getPageSize();
-		mZDimension = terrainGenerator->getPageSize();
-		return true;
-// 	}
+	mTerrainPage->createHeightData(mHeightData);
 
 	
-// 	return true;
-		   
+	///make sure it's not 0
+	mMaxheight = std::max<float>(mTerrainPage->getMaxHeight(), 1.0f);
+	mMax = static_cast <unsigned int> (mSize * mTerrainPage->getMaxHeight());
+	mXDimension = terrainGenerator->getPageSize();
+	mZDimension = terrainGenerator->getPageSize();
+	return true;
 }
 
 PagingLandScapeData2D* EmberPagingLandScapeData2D_HeightField::newPage( )
 {
 	return new EmberPagingLandScapeData2D_HeightField(mParent);
 }
-	
-	
+
+
 const ColourValue EmberPagingLandScapeData2D_HeightField::getBase (const Real mX, const Real mZ)
 {
 
@@ -115,18 +106,18 @@ const Real EmberPagingLandScapeData2D_HeightField::getShadow (const Real mX, con
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_save()
 {
-	S_LOG_VERBOSE("Saving terrain page.");
+	S_LOG_VERBOSE("Saving terrain page at x: " << mPageX << " z:" << mPageZ << ".");
 }
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_load()
 {
-	S_LOG_VERBOSE("Loading terrain page.");
+	S_LOG_VERBOSE("Loading (_load()) terrain page at x: " << mPageX << " z:" << mPageZ << ".");
 }
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
-	S_LOG_VERBOSE("Unloading terrain page.");
+	S_LOG_VERBOSE("Unloading terrain page at x: " << mPageX << " z:" << mPageZ << ".");
 	mTerrainPage = 0;
 }
 
