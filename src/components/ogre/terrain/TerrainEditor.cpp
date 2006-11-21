@@ -27,11 +27,6 @@
 #include "TerrainGenerator.h"
 #include "../AvatarCamera.h"
 #include "../GUIManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapePageManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2DManager.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeData2D.h"
-#include "../SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeTile.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
@@ -447,7 +442,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 {
 	TerrainGenerator::TerrainDefPointStore pointStore;
 	
-	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
+// 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
 // 	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainGenerator()->getEmberSceneManager();
 	TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
@@ -480,11 +475,13 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		
 		TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
 		TerrainPage* page;
-		for (int i = -1; i < 2; i += 2) {
-			for (int j = -1; j < 2; j += 2) {
-				page = terrainGenerator->getTerrainPage(TerrainPosition(worldPosition.x() + i, worldPosition.y() + j));
+		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
+		for (int i = -65; i < 66; i += 64) {
+			for (int j = -65; j < 66; j += 64) {
+				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
+				page = terrainGenerator->getTerrainPage(position);
 				if (page) {
-// 					page->update();
+					pagesToUpdate.insert(page);
 /*					Vector2 targetPage (X, Z);
 					
 					
@@ -501,14 +498,22 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		}
 
 	}
+	
+// 	for (TerrainGenerator::TerrainPagestore::const_iterator I = terrainGenerator->getTerrainPages().begin();I != terrainGenerator->getTerrainPages().end(); ++I) {
+// 		for (TerrainGenerator::TerrainPagecolumn::const_iterator J = I->second.begin();J != I->second.end(); ++J) {
+// 			pagesToUpdate.insert(J->second);
+// 		}
+// 	}
 	EmberOgre::getSingleton().getTerrainGenerator()->updateTerrain(pointStore);
 	
 	
 	///reload all shader textures of the affected pages
 	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+		(*I)->update();
 		(*I)->updateAllShaderTextures();
 	}
 	
+
 	
 // 	std::set<Ogre::PagingLandScapeData2D*> dataStore;
 // 	///reload all affected tiles
@@ -537,7 +542,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 
 	///TODO: this shouldn't be necessary
 	//sceneMgr->getPageManager()->load();
-	terrainGenerator->getAdapter()->reloadAllPages();
+// 	terrainGenerator->getAdapter()->reloadAllPages();
 	
 	
 	updateEntityPositions(pagesToUpdate);
