@@ -140,7 +140,11 @@ float TerrainPage::getMinHeight()
 void TerrainPage::update()
 {
 	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
-	mGenerator->getAdapter()->setOption("PageUpdate", &targetPage); 
+	
+	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator->getTerrainInfo().getPageOffsetX(), targetPage.y + mGenerator->getTerrainInfo().getPageOffsetY());
+	
+	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
+	mGenerator->getAdapter()->reloadPage(adjustedOgrePos.x, adjustedOgrePos.y); 
 
 }
 
