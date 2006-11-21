@@ -1,3 +1,39 @@
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ModelEdit.layout: fixed a problem with the caption
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/logging/LoggingService.cpp, src/services/logging/LoggingService.h: added logging of unsigned ints
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainEditor.cpp: update only affected pages
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainPage.cpp: use the adapter for updating the underlying page
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: fixed the method for getting pages from world positions, also added a accessor for the pages
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: cleaned up some code and added more logging
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeTexture.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeTexture.cpp: cleaned up the code, fixed some wrong initialization values
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp: implement method for updating a single page
+
+2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/ISceneManagerAdapter.h: added method for updating a single page
+
 2006-11-19 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h: show the eris bbox with a yellowish material
