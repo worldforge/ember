@@ -318,7 +318,7 @@ void TerrainGenerator::buildHeightmap()
 		for (j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
 			Mercator::Segment* segment = mTerrain->getSegment(i, j);
 			if (segment) {
-				S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
+				//S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
 				segment->populate();
 				segment->populateNormals();
 				segment->populateSurfaces();
@@ -448,12 +448,16 @@ TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPositi
 // 		xUnadjustedIndex /=  (getPageSize() - 1);
 // 	} 
 // 	
-// 	int xIndex = static_cast<int>((worldPosition.x() - getMin().x()) / (getPageSize() - 1));
-// 	int yIndex = static_cast<int>((worldPosition.y() - getMin().y()) / (getPageSize() - 1));
+ 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder)/ (getPageSize() - 1.0f)));
+ 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageSize() - 1.0f)));
+ 	
+/* 	std::stringstream ss;
+ 	ss << worldPosition;
+ 	S_LOG_VERBOSE("worldpos: " << ss.str() << " x:" << xIndex << " y:" << yIndex);*/
 	
-	TerrainPosition pageIndexPos(static_cast<int>((worldPosition.x() + xRemainder)/ (getPageSize() - 1)), static_cast<int>((worldPosition.y() + yRemainder) / (getPageSize() - 1)));
+	//TerrainPosition pageIndexPos(xIndex, yIndex);
 	
-	return mTerrainPages[static_cast<int>(pageIndexPos.x())][static_cast<int>(pageIndexPos.y())];
+	return mTerrainPages[xIndex][yIndex];
 	/*	double worldSizeX = getMax().x() - getMin().x();
 	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
 	int pageOffsetX = totalNumberOfPagesX / 2;
@@ -466,7 +470,7 @@ TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPositi
 TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing)
 {
 	//_fpreset();
-	S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
+	//S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
 	
 	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetX(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetY());
 	

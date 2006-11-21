@@ -242,6 +242,8 @@ public:
 	void registerSceneManagerAdapter(ISceneManagerAdapter* adapter);
 	ISceneManagerAdapter* getAdapter() const;
 	
+	inline const TerrainPagestore& getTerrainPages() const;
+	
 protected:
 
 	/**
@@ -342,6 +344,13 @@ protected:
 	
 	ISceneManagerAdapter* mSceneManagerAdapter;
 };
+
+const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() const
+{
+	return mTerrainPages;
+}
+
+
 }
 
 
