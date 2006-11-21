@@ -178,6 +178,15 @@ Ember::LoggingService & Ember::LoggingService::operator<< (const std::
     return *this;
 }
 
+Ember::LoggingService & Ember::LoggingService::operator<< (const unsigned int uintToAdd)
+{
+	std::stringstream ss;
+	ss << uintToAdd;
+    myMessage += ss.str();
+    
+    return *this;
+}
+
 Ember::LoggingService & Ember::LoggingService::operator<< (const int intToAdd)
 {
 	std::stringstream ss;

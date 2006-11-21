@@ -464,6 +464,8 @@ namespace Ember
         LoggingService & operator<< (const std::string & stringToAdd);
 
         LoggingService & operator<< (const int intToAdd);
+        
+        LoggingService & operator<< (const unsigned int uintToAdd);
 
         LoggingService & operator<< (const HexNumber & intHexToAdd);
         
