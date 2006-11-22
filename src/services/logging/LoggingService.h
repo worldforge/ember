@@ -466,12 +466,14 @@ namespace Ember
         LoggingService & operator<< (const int intToAdd);
         
         LoggingService & operator<< (const unsigned int uintToAdd);
+        
+        LoggingService & operator<< (const unsigned long ulongToAdd);
 
         LoggingService & operator<< (const HexNumber & intHexToAdd);
         
          LoggingService & operator<< (const double doubleToAdd);
 
-         LoggingService & operator<< (const size_t sizetToAdd);
+//         LoggingService & operator<< (const size_t sizetToAdd);
         /**
 	 * By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
 	 * sending it.

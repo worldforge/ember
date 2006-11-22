@@ -215,10 +215,10 @@ operator<< (const double doubleToAdd)
 }
 
 Ember::LoggingService & Ember::LoggingService::
-operator<< (const size_t sizetToAdd)
+operator<< (const unsigned long ulongToAdd)
 {
 	std::stringstream ss;
-	ss << sizetToAdd;
+	ss << ulongToAdd;
     myMessage += ss.str();
     return *this;
 }
