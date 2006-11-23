@@ -1,5 +1,9 @@
 2006-11-23 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* configure.ac: bump version
+
+2006-11-23 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/services/logging/LoggingService.cpp, src/services/logging/LoggingService.h: overload the << op with both unsigned int and unsigned long, but remove t_size, since this will make it not compile on either 32 or 64 bit systems
 
 2006-11-20 Erik Hjortsberg  <erik@katastrof.nu>
