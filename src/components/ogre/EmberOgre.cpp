@@ -187,11 +187,15 @@ EmberOgre::~EmberOgre()
 
 }
 
+bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
+{
+	mInput.processInput(evt);
+	return true;
+}
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 
-	mInput.processInput(evt);
 
 	if (mPollEris) {
 		EventStartErisPoll.emit();
@@ -699,7 +703,7 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 	static std::ofstream outstream(filename.c_str());
 	
 	///write to the log the version number
-	outstream << "Ember version " << VERSION << std::endl;
+	outstream << "Ember version " << VERSION << ", using media version " << MEDIA_VERSION << std::endl;
 	
 	mLogObserver = new OgreLogObserver(outstream);
 	logging->addObserver(mLogObserver);
