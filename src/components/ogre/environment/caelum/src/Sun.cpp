@@ -20,11 +20,17 @@ Sun::Sun (Ogre::SceneManager *sceneMgr) {
 	} else {
 		mSunNode = sceneMgr->getRootSceneNode ()->createChildSceneNode("SunNode");
 	}
-	mSunEntity = sceneMgr->createEntity ("CaelumSun", "sphere.mesh");
+	mSunEntity = sceneMgr->createEntity ("CaelumSun", "3d_objects/environment/sky/models/sphere/sphere.mesh");
 	mSunEntity->setMaterialName (SUN_MATERIAL_NAME);
 	mSunEntity->setCastShadows (false);
 	mSunEntity->setRenderQueueGroup (Ogre::RENDER_QUEUE_SKIES_EARLY + 3);
 	mSunNode->attachObject (mSunEntity);
+	mSunNode->_update(true, false);
+	if (mSunEntity->getBoundingRadius ()) {
+		///make it one unit in size
+		Ogre::Real scale = 1 / mSunEntity->getBoundingRadius ();
+		mSunNode->setScale(scale, scale, scale);
+	}
 }
 
 Sun::~Sun () {
@@ -37,8 +43,9 @@ Sun::~Sun () {
 void Sun::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
 	// TODO
 	Ogre::Camera *cam = e.source->getCamera ();
-	mSunNode->setPosition (cam->getRealPosition () + mSunDirection * -10000);
-//mNode->setScale(Ogre::Vector3::UNIT_SCALE * ((cam->getFarClipDistance () == 0 ) ? 100000 : (cam->getFarClipDistance ()-0.2)));
+	///make it so that the appears independent from the world
+	mSunNode->setPosition (cam->getRealPosition () + (-mSunDirection * 50));
+
 }
 
 void Sun::update (const float time) {

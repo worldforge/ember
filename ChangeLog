@@ -1,3 +1,24 @@
+2006-11-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/caelum/src/Sun.cpp: reposition the sun at every frame so that it will look ok in the camera, use a sphere.mesh that sits in the common media
+
+2006-11-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: use the MEDIA_VERSION variable, moved the input polling to after the frame has been drawn, in the hope that it would lead to less jerky movement 
+
+2006-11-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/services/config/ConfigService.cpp: use the MEDIA_VERSION variable
+
+2006-11-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* acinclude.m4: cleaned up
+	* ember.in: use the MEDIA_VERSION variable
+
+2006-11-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: added definitons for the media version to use
+
 2006-11-23 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* configure.ac: bump version
