@@ -71,7 +71,7 @@ esac
 
 WFUT_BIN=$bindir/wfut-ember-bin
 WFUT_JAR=$datadir/WFUT.jar
-MEDIA_CHANNEL="ember-media-@VERSION@"
+MEDIA_CHANNEL="ember-media-@MEDIA_VERSION@"
 SERVER=http://amber.worldforge.org/WFUT/
 
 # Create dir if required 

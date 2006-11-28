@@ -1,7 +1,7 @@
 dnl
 dnl AM_PATH_CPPUNIT([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl
-AC_DEFUN(AM_PATH_CPPUNIT,
+AC_DEFUN([AM_PATH_CPPUNIT],
 [
 
 AC_ARG_WITH(cppunit-prefix,[  --with-cppunit-prefix=PFX   Prefix where CppUnit is installed (optional)],
@@ -78,7 +78,7 @@ AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix w
 
 dnl worldforge check for libz, libpng, SDL and SDL_image
 dnl the flags are returned in WF_SDL_IMAGE_CFLAGS and WF_SDL_IMAGE_LIBS
-AC_DEFUN(WF_CHECK_SDL_IMAGE,[dnl
+AC_DEFUN([WF_CHECK_SDL_IMAGE],[dnl
 
 AC_LANG_PUSH([C])
 
@@ -198,7 +198,7 @@ AC_LANG_POP([C])
 dnl worldforge check for the GL library,
 dnl the -l flag is added directly to LIBS
 
-AC_DEFUN(WF_CHECK_GL_SINGLE_LIB,[dnl
+AC_DEFUN([WF_CHECK_GL_SINGLE_LIB],[dnl
 
 AC_LANG_PUSH(C)
 
