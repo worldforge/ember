@@ -13,7 +13,7 @@ namespace caelum {
 
 /** Root of the Caelum system.
 	This class is the root of the Caelum system.
-	@author Jesús Alonso Abad
+	@author JesÃºs Alonso Abad
 	@version 0.1
  */
 class DllExport CaelumSystem : public Ogre::FrameListener {
@@ -60,9 +60,9 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		float mTotalDayTime;
 
-		/** The list of sky domes.
+		/** The sky dome.
 		 */
-		std::set<SkyDome *> mSkyDomes;
+		SkyDome *mSkyDome;
 
 		/** Reference to the sky dome material.
 		 */
@@ -94,12 +94,15 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 			Registers itself in the Ogre engine and initialises the system.
 			@param root The Ogre rool.
 			@param sceneMgr The Ogre scene manager.
+			@param createSkyDome Wether if the sky dome should be created or not.
+			@param createSun Wether if the sun should be created or not.
+			@param createStarfield Wether if the starfield should be created or not.
 		 */
-		CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr);
+		CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr, bool createSkyDome = true, bool createSun = true, bool createStarfield = true);
 
 		/** Destructor.
 			Shuts down the system and detaches itself from the Ogre engine.
-			@remarks The model used in this system <u>won't be deleted here</u>.
+			@remarks The model used in this system <b>won't be deleted here</b>.
 		 */
 		~CaelumSystem ();
 
@@ -180,15 +183,52 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		bool frameStarted (const Ogre::FrameEvent &e);
 
-		/** Creates a sky dome.
+		/** Creates the sky dome, or returns the existing one if any yet.
 		 */
 		SkyDome *createSkyDome ();
 
-		/** Destroys a sky dome.
-			@remarks Remember to detach the sky dome from every viewport it is attached to!
-			@param skyDome The sky dome to be destroyed.
+		/** Returns the current sky dome.
+			@return The current sky dome.
 		 */
-		void destroySkyDome (SkyDome *skyDome);
+		SkyDome *getSkyDome () const;
+
+		/** Destroys the sky dome.
+			@remarks Remember to detach the sky dome from every viewport it is attached to before destroying it!
+		 */
+		void destroySkyDome ();
+
+
+		/** Creates the sun.
+			@return The sun.
+		 */
+		Sun *createSun ();
+
+		/** Gets the current sun.
+			@return The sun in use.
+		 */
+		Sun *getSun () const;
+
+		/** Destroys the sun.
+		 */
+		void destroySun ();
+
+		/** Create the starfield.
+			@note Returns the existing one if there's one already in use.
+			@note The old texture will be replaced by the passed one.
+			@param mapName Name of the starfield texture bitmap.
+			@return The new or current starfield.
+		 */
+		Starfield *createStarfield (const Ogre::String &mapName = "Starfield.jpg");
+
+		/** Gets the starfield.
+			@return The starfield.
+		 */
+		Starfield *getStarfield () const;
+
+		/** Destroys the current starfield.
+			@remark Remember to detach it from every viewport before deleting!
+		 */
+		void destroyStarfield ();
 
 		/** Sets the sky colour model to be used.
 			@param model The sky colour model.
@@ -204,26 +244,6 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 			@return True if Caelum manages the fog.
 		 */
 		bool isFogManaged () const;
-
-		/** Gets the current sun.
-			@return The sun in use.
-		 */
-		Sun *getSun () const;
-
-		/** Create the starfield.
-			@note Overwrites the previous starfield if there's one.
-			@param mapName Name of the starfield texture bitmap.
-		 */
-		Starfield *createStarfield (const Ogre::String &mapName);
-
-		/** Gets the starfield.
-			@return The starfield.
-		 */
-		Starfield *getStarfield () const;
-
-		/** Destroy the starfield.
-		 */
-		void destroyStarfield ();
 
 	private:
 		/** Fires the start event to all the registered listeners.
@@ -251,13 +271,25 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		void createSkyDomeMaterial ();
 
+		/** Internal method to destroy the sky dome material.
+		 */
+		void destroySkyDomeMaterial ();
+
 		/** Internal method to create the starfield material.
 		 */
 		void createStarfieldMaterial ();
 
+		/** Internal method to destroy the starfield material.
+		 */
+		void destroyStarfieldMaterial ();
+
 		/** Updates the sky dome material to match the local time.
 		 */
 		void updateSkyDomeMaterialTime ();
+
+		/** Forces an update.
+		 */
+		void forceUpdate ();
 };
 
 } // namespace caelum

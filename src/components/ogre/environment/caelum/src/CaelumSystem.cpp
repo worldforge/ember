@@ -5,51 +5,58 @@ namespace caelum {
 const Ogre::String CaelumSystem::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 const Ogre::String CaelumSystem::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial";
 
-CaelumSystem::CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr) {
+CaelumSystem::CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr, bool createSkyDome, bool createSun, bool createStarfield) 
+: mStarfield(0), mSun(0), mSkyDome(0)
+{
 	LOG ("Initialising Caelum system...");
 	mOgreRoot = root;
 	mSceneMgr = sceneMgr;
 
-
+	// Create materials
 	createSkyDomeMaterial ();
 	createStarfieldMaterial ();
 
+	// Set-up attributes
 	mUpdateRate = 0;
 	mTimeSinceLastUpdate = 0;
 
-	mTotalDayTime = 24 * 59 * 56;
+	mTotalDayTime = 86396.0; // 23h59m56s
 	mTimeScale = 1.0f;
 	mLocalTime = 0.0f;
 
 	mManageFog = false;
 
-	mSun = new Sun (sceneMgr);
+	// Create basic elements
+	if (createSkyDome)
+		this->createSkyDome ();
+	if (createSun)
+		mSun = new Sun (mSceneMgr);
+	if (createStarfield)
+		this->createStarfield ();
 
-	mStarfield = 0;
-
-	///add ourselves as frame listener last, since if there's a problem here. there will be no valid object
+	// Auto-register itself as a frame listener
 	mOgreRoot->addFrameListener (this);
+
 	LOG ("DONE");
 }
 
 CaelumSystem::~CaelumSystem () {
 	LOG ("Shutting down Caelum system...");
-	// Unregister all the listeners
+	// Remove itself as a frame listener
+	mOgreRoot->removeFrameListener (this);
+
+	// Unregister all the caelum listeners
 	mListeners.clear ();
 
-	// Remove all the sky domes
-	std::set<SkyDome *>::iterator sdIt, sdIend = mSkyDomes.end ();
-	for (sdIt = mSkyDomes.begin (); sdIt != sdIend; ++sdIt) {
-		delete *sdIt;
-	}
-	mSkyDomes.clear ();
-
+	// Destroy the elements
+	destroySkyDome ();
+	destroySun ();
 	destroyStarfield ();
 
-	delete mSun;
-	mSun = 0;
+	// Destroy the materials
+	destroyStarfieldMaterial ();
+	destroySkyDomeMaterial ();
 
-	mOgreRoot->removeFrameListener (this);
 	LOG ("DONE");
 }
 
@@ -90,7 +97,7 @@ void CaelumSystem::setUpdateRate (float rate) {
 	mUpdateRate = rate;
 
 	// Force an update when changing this
-	mTimeSinceLastUpdate = mUpdateRate + 1;
+	forceUpdate ();
 }
 
 float CaelumSystem::getUpdateRate () {
@@ -109,7 +116,7 @@ void CaelumSystem::setLocalTime (const float time) {
 	mLocalTime = time;
 
 	// Force an update when changing this
-	mTimeSinceLastUpdate = mUpdateRate + 1;
+	forceUpdate ();
 }
 
 float CaelumSystem::getLocalTime () const {
@@ -120,10 +127,10 @@ void CaelumSystem::setTotalDayTime (const float time) {
 	mTotalDayTime = time;
 
 	if (mTotalDayTime <= 0)
-		mTotalDayTime = 24 * 60 * 60 - 4;
+		mTotalDayTime = 86396;	// 23h59m56s
 
 	// Force an update when changing this
-	mTimeSinceLastUpdate = mUpdateRate + 1;
+	forceUpdate ();
 }
 
 float CaelumSystem::getTotalDayTime () const {
@@ -143,6 +150,7 @@ bool CaelumSystem::frameStarted (const Ogre::FrameEvent &e) {
 	if (!fireStartedEvent (e))
 		return false;
 
+	// Update local time
 	mLocalTime += e.timeSinceLastFrame * mTimeScale;
 	if (mLocalTime > mTotalDayTime) {
 		clampLocalTime ();
@@ -189,41 +197,44 @@ bool CaelumSystem::frameStarted (const Ogre::FrameEvent &e) {
 }
 
 SkyDome *CaelumSystem::createSkyDome () {
-	SkyDome *temp = new SkyDome (mSceneMgr);
+	if (!mSkyDome)
+		mSkyDome = new SkyDome (mSceneMgr);
 
-	mSkyDomes.insert (temp);
-
-	return temp;
+	return mSkyDome;
 }
 
-void CaelumSystem::destroySkyDome (SkyDome *skyDome) {
-	mSkyDomes.erase (skyDome);
-
-	delete skyDome;
+SkyDome *CaelumSystem::getSkyDome () const {
+	return mSkyDome;
 }
 
-void CaelumSystem::setSkyColourModel (SkyColourModel *model) {
-	mSkyColourModel = model;
-	mSkyColourModel->setSkyGradientsTextureUnitState (mSkyDomeMaterial->getTechnique (0)->getPass (0)->getTextureUnitState (0));
+void CaelumSystem::destroySkyDome () {
+	if (mSkyDome) {
+		delete mSkyDome;
+		mSkyDome = 0;
+	}
 }
 
-void CaelumSystem::setManageFog (bool manage) {
-	mManageFog = manage;
-}
+Sun *CaelumSystem::createSun () {
+	if (!mSun)
+		mSun = new Sun (mSceneMgr);
 
-bool CaelumSystem::isFogManaged () const {
-	return mManageFog;
+	return mSun;
 }
 
 Sun *CaelumSystem::getSun () const {
 	return mSun;
 }
 
-Starfield *CaelumSystem::createStarfield (const Ogre::String &mapName) {
-	if (mStarfield)
-		destroyStarfield ();
+void CaelumSystem::destroySun () {
+	if (mSun) {
+		delete mSun;
+		mSun = 0;
+	}
+}
 
-	mStarfield = new Starfield (mSceneMgr);
+Starfield *CaelumSystem::createStarfield (const Ogre::String &mapName) {
+	if (!mStarfield)
+		mStarfield = new Starfield (mSceneMgr);
 
 	// Update the starfield material
 	mStarfieldMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (mapName);
@@ -240,6 +251,19 @@ void CaelumSystem::destroyStarfield () {
 		delete mStarfield;
 		mStarfield = 0;
 	}
+}
+
+void CaelumSystem::setSkyColourModel (SkyColourModel *model) {
+	mSkyColourModel = model;
+	mSkyColourModel->setSkyGradientsTextureUnitState (mSkyDomeMaterial->getTechnique (0)->getPass (0)->getTextureUnitState (0));
+}
+
+void CaelumSystem::setManageFog (bool manage) {
+	mManageFog = manage;
+}
+
+bool CaelumSystem::isFogManaged () const {
+	return mManageFog;
 }
 
 bool CaelumSystem::fireStartedEvent (const Ogre::FrameEvent &e) {
@@ -275,10 +299,9 @@ bool CaelumSystem::fireFinishedEvent (const Ogre::FrameEvent &e) {
 std::set<Ogre::RenderTargetListener *> *CaelumSystem::collectAllRenderTargetListeners () {
 	std::set<Ogre::RenderTargetListener *> *list = new std::set<Ogre::RenderTargetListener *>();
 
-	// Insert all the domes
-	std::set<SkyDome *>::iterator sdIt, sdIend = mSkyDomes.end ();
-	for (sdIt = mSkyDomes.begin (); sdIt != sdIend; ++sdIt) {
-		list->insert (*sdIt);
+	// Insert the dome
+	if (mSkyDome) {
+		list->insert (mSkyDome);
 	}
 
 	// Insert the sun
@@ -329,7 +352,7 @@ void CaelumSystem::createSkyDomeMaterial () {
 			fp->setParameter ("profiles", "ps_2_0 arbfp1");
 			pass->setFragmentProgram ("SkyLightAbsorptionFP");
 			Ogre::GpuProgramParametersSharedPtr parameters = pass->getFragmentProgramParameters();
-			parameters->setNamedConstant("offset", 0);
+			parameters->setNamedConstant ("offset", 0);
 		}
 		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
 			Ogre::HighLevelGpuProgramPtr vp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram("SkyLightAbsorptionVP","Caelum","cg",Ogre::GPT_VERTEX_PROGRAM);
@@ -338,8 +361,8 @@ void CaelumSystem::createSkyDomeMaterial () {
 			vp->setParameter ("profiles", "vs_2_0 arbvp1");
 			pass->setVertexProgram ("SkyLightAbsorptionVP");
 			Ogre::GpuProgramParametersSharedPtr parameters = pass->getVertexProgramParameters();
-			parameters->setNamedAutoConstant("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-			parameters->setNamedConstant("sunDirection", Ogre::Vector3 (1, 0, 0));
+			parameters->setNamedAutoConstant ("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+			parameters->setNamedConstant ("sunDirection", Ogre::Vector3 (1, 0, 0));
 		}
 		LOG ("\t\tPass [OK]");
 		Ogre::TextureUnitState *tus = pass->createTextureUnitState ();
@@ -354,6 +377,15 @@ void CaelumSystem::createSkyDomeMaterial () {
 	LOG ("DONE");
 
 	mSkyDomeMaterial = mat;
+}
+
+void CaelumSystem::destroySkyDomeMaterial () {
+	LOG ("Removing sky dome material...");
+	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SKY_DOME_MATERIAL_NAME)) {
+		Ogre::MaterialManager::getSingleton ().remove (SKY_DOME_MATERIAL_NAME);
+	}
+	mSkyDomeMaterial.setNull ();
+	LOG ("DONE");
 }
 
 void CaelumSystem::createStarfieldMaterial () {
@@ -385,12 +417,25 @@ void CaelumSystem::createStarfieldMaterial () {
 	mStarfieldMaterial = mat;
 }
 
+void CaelumSystem::destroyStarfieldMaterial () {
+	LOG ("Removing starfield material...");
+	if (!Ogre::MaterialManager::getSingleton ().resourceExists (STARFIELD_MATERIAL_NAME)) {
+		Ogre::MaterialManager::getSingleton ().remove (STARFIELD_MATERIAL_NAME);
+	}
+	mStarfieldMaterial.setNull ();
+	LOG ("DONE");
+}
+
 void CaelumSystem::updateSkyDomeMaterialTime () {
 	Ogre::TextureUnitState *tus = mSkyDomeMaterial->getTechnique (0)->getPass (0)->getTextureUnitState (0);
 	tus->setTextureUScroll (mLocalTime / mTotalDayTime);
 	if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
 		mSkyDomeMaterial->getTechnique (0)->getPass (0)->getFragmentProgramParameters ()->setNamedConstant ("offset", mLocalTime / mTotalDayTime);
 	}
+}
+
+void CaelumSystem::forceUpdate () {
+	mTimeSinceLastUpdate = mUpdateRate + 1;
 }
 
 } // namespace caelum

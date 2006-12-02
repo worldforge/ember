@@ -10,7 +10,7 @@ StoredImageSkyColourModel::StoredImageSkyColourModel () {
 void StoredImageSkyColourModel::setSkyGradientsImage (const Ogre::String &gradients) {
 	if (mSkyGradientsTextureUnitState) {
 		// Dagon and Eihort compatibility
-		#if OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0)
+		#if OGRE_VERSION < ((1 << 16) | (3 << 8))
 			mSkyGradientsTextureUnitState->setTextureName (gradients, Ogre::TEX_TYPE_2D, -1, true);
 		#else
 			mSkyGradientsTextureUnitState->setTextureName (gradients, Ogre::TEX_TYPE_2D);

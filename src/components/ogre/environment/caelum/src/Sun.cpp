@@ -6,7 +6,6 @@ const Ogre::String Sun::SUN_MATERIAL_NAME = "CaelumSunMaterial";
 
 Sun::Sun (Ogre::SceneManager *sceneMgr) {
 	mInclination = Ogre::Degree (0);
-	
 	mSunColour = Ogre::ColourValue::White;
 
 	mMainLight = sceneMgr->createLight ("CaelumSun");
@@ -34,10 +33,21 @@ Sun::Sun (Ogre::SceneManager *sceneMgr) {
 }
 
 Sun::~Sun () {
-	// TODO: Destroy the sun node and entity;
+	if (mSunNode) {
+		static_cast<Ogre::SceneNode *>(mSunNode->getParent ())->removeAndDestroyChild (mSunNode->getName ());
+		mSunNode = 0;
+	}
+	if (mSunEntity) {
+		mSunEntity->_getManager ()->destroyEntity (mSunEntity);
+		mSunEntity = 0;
+	}
 
-	mMainLight->_getManager ()->destroyLight (mMainLight);
-	mMainLight = 0;
+	destroySunMaterial ();
+
+	if (mMainLight) {
+		mMainLight->_getManager ()->destroyLight (mMainLight);
+		mMainLight = 0;
+	}
 }
 
 void Sun::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
@@ -56,7 +66,7 @@ void Sun::update (const float time) {
 	// Get the inclinated light direction, according to the day time
 	Ogre::Vector3 dir = Ogre::Vector3::UNIT_Y;
 	dir = Ogre::Quaternion (Ogre::Radian (time * 2 * Ogre::Math::PI), axis) * dir;
-	
+
 	// Update the main light direction
 	if (mMainLight != 0) {
 		mMainLight->setDirection (dir);
@@ -65,7 +75,7 @@ void Sun::update (const float time) {
 			mMainLight->setVisible(false);
 		} else {
 			mMainLight->setVisible(true);
-		}
+	}
 	}
 
 
@@ -129,6 +139,15 @@ void Sun::createSunMaterial () {
 	LOG ("DONE");
 
 	mSunMaterial = mat;
+}
+
+void Sun::destroySunMaterial () {
+	LOG ("Removing sun material...");
+	if (Ogre::MaterialManager::getSingleton ().resourceExists (SUN_MATERIAL_NAME)) {
+		Ogre::MaterialManager::getSingleton ().remove (SUN_MATERIAL_NAME);
+	}
+	mSunMaterial.setNull ();
+	LOG ("DONE");
 }
 
 } // namespace caelum

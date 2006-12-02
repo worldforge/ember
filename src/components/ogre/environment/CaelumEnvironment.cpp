@@ -93,6 +93,8 @@ void CaelumEnvironment::setupWater()
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera* camera)
 {
+
+
 	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr);
 	mCaelumSystem->getSun ()->setInclination (::Ogre::Degree (13));
 
@@ -106,13 +108,14 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setFogDensity (0.01);
 
 	// Create a sky dome
-	mDome = mCaelumSystem->createSkyDome ();
+//	mDome = mCaelumSystem->createSkyDome ();
+	mDome = mCaelumSystem->getSkyDome();
 	
 	mSky = new CaelumSky(*this, mCaelumModel, mDome);
 	mSun = new CaelumSun(*this, mCaelumSystem->getSun());
 
 	// Create a starfield
-	window->addListener (mCaelumSystem->createStarfield ("Starfield.jpg"));
+//	window->addListener (mCaelumSystem->createStarfield ("Starfield.jpg"));
 	mCaelumSystem->getStarfield ()->setInclination (::Ogre::Degree (13));
 
 	// Register all to the render window
@@ -127,6 +130,10 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	mCaelumSystem->setTimeScale (1);
 	mCaelumSystem->setLocalTime (3600 * t2->tm_hour + 60 * t2->tm_min + t2->tm_sec);
 	mCaelumSystem->setUpdateRate( 1 / (24 * 60)); //update every minute
+	
+/*	sceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -100), "Altocumulus", 1000, 10, false);
+	mCaelumSystem->addListener (new CloudsUpdater ());*/
+	
 }
 	
 ISun* CaelumEnvironment::getSun()

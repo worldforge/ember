@@ -6,7 +6,7 @@
 namespace caelum {
 
 /** Starfield dome class.
-	@author Jesús Alonso Abad
+	@author JesÃºs Alonso Abad
 	@version 0.1
  */
 class DllExport Starfield : public Ogre::RenderTargetListener {
@@ -24,6 +24,10 @@ class DllExport Starfield : public Ogre::RenderTargetListener {
 		 */
 		Ogre::Degree mInclination;
 
+		/** Defines if the dome radius is automatically set or not.
+		 */
+		bool mAutoRadius;
+
 // Methods --------------------------------------------------------------------
 	public:
 		/** Constructor.
@@ -40,6 +44,12 @@ class DllExport Starfield : public Ogre::RenderTargetListener {
 			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
 		 */
 		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
+
+		/** Forces the size of the dome to a specific radius.
+			If the parameter is negative or zero, the radius is set automatically.
+			@param radius The positive radius of the dome, or a negative/zero value to let Caelum to resize it.
+		 */
+		void setSize (float radius);
 
 		/** Sets the starfield inclination.
 			@param inc The starfield inclination in degrees.

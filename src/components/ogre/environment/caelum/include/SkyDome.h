@@ -6,7 +6,7 @@
 namespace caelum {
 
 /** A sky dome element.
-	@author Jesús Alonso Abad
+	@author JesÃºs Alonso Abad
 	@version 0.1
  */
 class DllExport SkyDome  : public Ogre::RenderTargetListener {
@@ -19,6 +19,10 @@ class DllExport SkyDome  : public Ogre::RenderTargetListener {
 		/** Name of the spheric dome resource.
 		 */
 		static const Ogre::String mSphericDomeResourceName;
+
+		/** Defines if the sky dome radius is automatically set or not.
+		 */
+		bool mAutoRadius;
 
 // Methods --------------------------------------------------------------------
 	public:
@@ -36,6 +40,12 @@ class DllExport SkyDome  : public Ogre::RenderTargetListener {
 			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
 		 */
 		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
+
+		/** Forces the size of the dome to a specific radius.
+			If the parameter is negative or zero, the radius is set automatically.
+			@param radius The positive radius of the sky dome, or a negative/zero value to let Caelum to resize it.
+		 */
+		void setSize (float radius);
 };
 
 } // namespace caelum

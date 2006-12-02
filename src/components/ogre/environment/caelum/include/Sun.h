@@ -7,7 +7,7 @@ namespace caelum {
 
 /** Class representing the sun.
 	It calculates the sun light direction, position, colour...
-	@author Jesús Alonso Abad
+	@author JesÃºs Alonso Abad
 	@version 0.1
  */
 class DllExport Sun : public Ogre::RenderTargetListener {
@@ -92,7 +92,7 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 			@return The latest sun colour.
 		 */
 		Ogre::ColourValue getSunColour ();
-		
+
 		/** Gets the sun node.
 			@return The sun node.
 		 */
@@ -102,6 +102,10 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 		/** Creates the sun material.
 		 */
 		void createSunMaterial ();
+
+		/** Destroys the sun material.
+		 */
+		void destroySunMaterial ();
 };
 
 Ogre::SceneNode* Sun::getNode() const
