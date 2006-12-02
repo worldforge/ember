@@ -1,3 +1,11 @@
+2006-12-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/bindings/lua/ConsoleBackend.pkg, src/framework/bindings/lua/lua_Framework.cpp: updated bindings
+
+2006-12-02 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/caelum/include/CaelumPrerequisites.h, src/components/ogre/environment/caelum/include/CaelumSystem.h, src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/include/Starfield.h, src/components/ogre/environment/caelum/include/Sun.h, src/components/ogre/environment/caelum/src/CaelumSystem.cpp, src/components/ogre/environment/caelum/src/SkyDome.cpp, src/components/ogre/environment/caelum/src/Starfield.cpp, src/components/ogre/environment/caelum/src/StoredImageSkyColourModel.cpp, src/components/ogre/environment/caelum/src/Sun.cpp: updated caleum to latest version
+
 2006-11-27 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/caelum/src/Sun.cpp: reposition the sun at every frame so that it will look ok in the camera, use a sphere.mesh that sits in the common media

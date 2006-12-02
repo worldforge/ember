@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Framework
-** Generated automatically by tolua++-1.0.6 on Sun Aug  6 00:55:19 2006.
+** Generated automatically by tolua++-1.0.6 on Sat Dec  2 18:12:17 2006.
 */
 
 #ifndef __cplusplus
@@ -68,7 +68,8 @@ static int tolua_Framework_Ember_ConsoleBackend_runCommand00(lua_State* tolua_S)
  if (
  !tolua_isusertype(tolua_S,1,"Ember::ConsoleBackend",0,&tolua_err) ||
  !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,3,&tolua_err)
+ !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -76,11 +77,12 @@ static int tolua_Framework_Ember_ConsoleBackend_runCommand00(lua_State* tolua_S)
  {
   Ember::ConsoleBackend* self = (Ember::ConsoleBackend*)  tolua_tousertype(tolua_S,1,0);
   const std::string command = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  bool addToHistory = ((bool)  tolua_toboolean(tolua_S,3,true));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'runCommand'",NULL);
 #endif
  {
-  self->runCommand(command);
+  self->runCommand(command,addToHistory);
  tolua_pushcppstring(tolua_S,(const char*)command);
  }
  }
