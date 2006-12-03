@@ -58,9 +58,11 @@ void OgreResourceLoader::initialize()
 
 }
 
-void OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
+bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
 	static const std::string& sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
+
+	bool foundDir = false;
 
 	S_LOG_INFO("Looking for " << sharedMediaPath + path);
 	if (isExistingDir(sharedMediaPath + path)) {
@@ -68,23 +70,28 @@ void OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				sharedMediaPath + path, type, section, recursive);
+			foundDir = true;
 		} catch (const Ogre::Exception& ex) {
 			const std::string& message = ex.getFullDescription();
 			S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Error: "<< message);
 		}
 	}
-
+	
+	return foundDir;
 }
 
-void OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
+bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
 	static const std::string& userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
 	static const std::string& emberMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
+	
+	bool foundDir = false;
 	
 	if (isExistingDir(userMediaPath + path)) {
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				userMediaPath + path, type, section, recursive);
+			foundDir = true;
 		} catch (const Ogre::Exception&) {
 			///don't report anything
 		}
@@ -95,49 +102,29 @@ void OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				emberMediaPath + path, type, section, recursive);
+			foundDir = true;
 		} catch (const Ogre::Exception&) {
 			S_LOG_FAILURE("Couldn't load " + emberMediaPath + path + ". Continuing as if nothing happened.");
 		}
 	}
+	return foundDir;
 }
 
 
 void OgreResourceLoader::loadBootstrap()
 {
 	loadSection("Bootstrap");
-	try {
-		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
-	}
-    
-
 }
 
 void OgreResourceLoader::loadGui()
 {
 	loadSection("Gui");
-	try {
-		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Gui");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
-	}
 }
 
 void OgreResourceLoader::loadGeneral()
 {
 	loadSection("General");
-	try {
-		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
-	}
 	loadSection("ModelDefinitions");
-	try {
-		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ModelDefinitions");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
-	}
 	
 	
 	loadAllUnloadedSections();
@@ -192,26 +179,39 @@ void OgreResourceLoader::preloadMedia()
 
 void OgreResourceLoader::loadSection(const std::string& sectionName)
 {
-	S_LOG_VERBOSE("Adding resource section " << sectionName);
-// 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup(sectionName);
+	if (sectionName != "" && std::find(mLoadedSections.begin(), mLoadedSections.end(), sectionName) == mLoadedSections.end())
+	{
+		bool mediaAdded = false;
+
+		S_LOG_VERBOSE("Adding resource section " << sectionName);
+	// 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup(sectionName);
+		
+		Ogre::ConfigFile::SettingsIterator I = cf.getSettingsIterator(sectionName);
+		std::string finalTypename;
+		while (I.hasMoreElements()) {
+			//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
+			const std::string& typeName = I.peekNextKey();
+			const std::string& archName = I.peekNextValue();
 	
-	Ogre::ConfigFile::SettingsIterator I = cf.getSettingsIterator(sectionName);
-	std::string finalTypename;
-	while (I.hasMoreElements()) {
-		//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
-		const std::string& typeName = I.peekNextKey();
-		const std::string& archName = I.peekNextValue();
-
-		finalTypename = typeName.substr(0, typeName.find("["));
-		if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-			addSharedMedia(archName, finalTypename, sectionName, mLoadRecursive);
-		} else {
-			addUserMedia(archName, finalTypename, sectionName, mLoadRecursive);
+			finalTypename = typeName.substr(0, typeName.find("["));
+			if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
+				mediaAdded |= addSharedMedia(archName, finalTypename, sectionName, mLoadRecursive);
+			} else {
+				mediaAdded |= addUserMedia(archName, finalTypename, sectionName, mLoadRecursive);
+			}
+			I.moveNext();
 		}
-		I.moveNext();
+		mLoadedSections.push_back(sectionName);
+	
+		///only initialize the resource group if it has media
+		if (mediaAdded) {
+			try {
+				Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sectionName);
+			} catch (const Ogre::Exception& ex) {
+				S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
+			}
+		}
 	}
-	mLoadedSections.push_back(sectionName);
-
 }
 
 void OgreResourceLoader::loadAllUnloadedSections()
@@ -220,10 +220,7 @@ void OgreResourceLoader::loadAllUnloadedSections()
 	Ogre::ConfigFile::SectionIterator I = cf.getSectionIterator();
 	while (I.hasMoreElements()) {
 		const std::string& sectionName = I.peekNextKey();
-		if (std::find(mLoadedSections.begin(), mLoadedSections.end(), sectionName) == mLoadedSections.end())
-		{
-			loadSection(sectionName);
-		}
+		loadSection(sectionName);
 		I.moveNext();
 	}
 	
