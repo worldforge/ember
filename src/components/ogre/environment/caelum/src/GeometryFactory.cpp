@@ -1,4 +1,5 @@
 #include "GeometryFactory.h"
+#include "CaelumSystem.h"
 
 namespace caelum {
 
@@ -7,8 +8,10 @@ void GeometryFactory::generateSphericDome (const Ogre::String &name, const unsig
 	if (Ogre::MeshManager::getSingleton ().resourceExists (name))
 		return;
 
+	LOG ("Creating " + name + " sphere mesh resource...");
+
 	// Use the mesh manager to create the mesh
-	Ogre::MeshPtr msh = Ogre::MeshManager::getSingleton ().createManual (name, "Caelum");
+	Ogre::MeshPtr msh = Ogre::MeshManager::getSingleton ().createManual (name, RESOURCE_GROUP_NAME);
 	// Create a submesh
 	Ogre::SubMesh *sub = msh->createSubMesh ();
 
@@ -79,6 +82,8 @@ void GeometryFactory::generateSphericDome (const Ogre::String &name, const unsig
 	msh->_setBounds (Ogre::AxisAlignedBox (-1, -1, -1, 1, 1, 1), false);
 	msh->_setBoundingSphereRadius (1);
 	msh->load ();
+
+	LOG ("DONE");
 }
 
 void GeometryFactory::fillGradientsDomeBuffers (float *pVertex, unsigned short *pIndices, unsigned int segments) {

@@ -1,4 +1,5 @@
 #include "Sun.h"
+#include "CaelumSystem.h"
 
 namespace caelum {
 
@@ -34,6 +35,7 @@ Sun::Sun (Ogre::SceneManager *sceneMgr) {
 
 Sun::~Sun () {
 	if (mSunNode) {
+		mSunNode->detachObject (mSunEntity);
 		static_cast<Ogre::SceneNode *>(mSunNode->getParent ())->removeAndDestroyChild (mSunNode->getName ());
 		mSunNode = 0;
 	}
@@ -75,13 +77,12 @@ void Sun::update (const float time) {
 			mMainLight->setVisible(false);
 		} else {
 			mMainLight->setVisible(true);
-	}
+		}
 	}
 
 
 	// Store the latest sun direction.
 	mSunDirection = dir.normalisedCopy ();
-	mSunNode->setPosition (mSunDirection);
 }
 
 void Sun::setInclination (Ogre::Degree inc) {
@@ -118,7 +119,7 @@ void Sun::createSunMaterial () {
 	LOG ("Generating sun material...");
 	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SUN_MATERIAL_NAME)) {
 		LOG ("\tMaterial not found; creating...");
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (SUN_MATERIAL_NAME, "Caelum"));
+		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (SUN_MATERIAL_NAME, RESOURCE_GROUP_NAME));
 		mat->setReceiveShadows (false);
 		LOG ("\t\tMaterial [OK]");
 		Ogre::Pass *pass = mat->getTechnique (0)->getPass (0);

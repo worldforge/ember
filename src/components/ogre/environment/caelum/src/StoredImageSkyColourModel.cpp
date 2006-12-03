@@ -8,6 +8,11 @@ StoredImageSkyColourModel::StoredImageSkyColourModel () {
 }
 
 void StoredImageSkyColourModel::setSkyGradientsImage (const Ogre::String &gradients) {
+	if (mSkyGradientsImage == 0)
+		mSkyGradientsImage = new Ogre::Image ();
+
+	mSkyGradientsImage->load (gradients, RESOURCE_GROUP_NAME);
+
 	if (mSkyGradientsTextureUnitState) {
 		// Dagon and Eihort compatibility
 		#if OGRE_VERSION < ((1 << 16) | (3 << 8))
@@ -21,7 +26,7 @@ void StoredImageSkyColourModel::setSkyGradientsImage (const Ogre::String &gradie
 	setFogColoursImage (gradients);
 }
 
-Ogre::ColourValue StoredImageSkyColourModel::getFogColour (float time) {
+Ogre::ColourValue StoredImageSkyColourModel::getFogColour (float time, const Ogre::Vector3 &sunDir) {
 	if (mFogColourMap == 0) {
 		return Ogre::ColourValue::White;
 	}
@@ -30,7 +35,7 @@ Ogre::ColourValue StoredImageSkyColourModel::getFogColour (float time) {
 	}
 }
 
-float StoredImageSkyColourModel::getFogDensity (float time) {
+float StoredImageSkyColourModel::getFogDensity (float time, const Ogre::Vector3 &sunDir) {
 	if (mFogColourMap == 0) {
 		return mFogDensity;
 	}
@@ -47,10 +52,31 @@ void StoredImageSkyColourModel::setFogColoursImage (const Ogre::String &name) {
 	if (mFogColourMap == 0)
 		mFogColourMap = new Ogre::Image ();
 
-	mFogColourMap->load (name, "Caelum");
+	mFogColourMap->load (name, RESOURCE_GROUP_NAME);
 }
 
-Ogre::ColourValue StoredImageSkyColourModel::getInterpolatedColour (float x, float height, Ogre::Image *img) {
+Ogre::ColourValue StoredImageSkyColourModel::getSunColour (float time, const Ogre::Vector3 &sunDir) {
+	if (mSkyGradientsTextureUnitState == 0) {
+		return Ogre::ColourValue::White;
+	}
+	else {
+		return getInterpolatedColour (time, sunDir.y, mSkyGradientsImage);
+	}
+}
+
+bool StoredImageSkyColourModel::updateMaterial (Ogre::GpuProgramParametersSharedPtr fpp, Ogre::GpuProgramParametersSharedPtr vpp, float time, const Ogre::Vector3 &sunDir) {
+	mSkyGradientsTextureUnitState->setTextureUScroll (time);
+	if (!fpp.isNull ()) {
+		fpp->setNamedConstant ("offset", time);
+	}
+
+	return true;
+}
+
+Ogre::ColourValue StoredImageSkyColourModel::getInterpolatedColour (float x, float height, Ogre::Image *img, bool wrap) {
+	// Get the image width
+	int width = img->getWidth ();
+
 	// calculate the height
 	int y = (int )(img->getHeight () * height);
 	if (y >= img->getHeight ())
@@ -59,8 +85,8 @@ Ogre::ColourValue StoredImageSkyColourModel::getInterpolatedColour (float x, flo
 	// Get the two closest pixels
 	int curPix, auxPix;
 	float diff;
-	curPix = (int )(img->getWidth () * x);
-	diff = img->getWidth () * x - curPix;
+	curPix = (int )(width * x);
+	diff = width * x - curPix;
 	if (diff < 0) {
 		auxPix = curPix - 1;
 	}
@@ -70,8 +96,8 @@ Ogre::ColourValue StoredImageSkyColourModel::getInterpolatedColour (float x, flo
 
 	// Calculate the interpolated pixel
 	Ogre::ColourValue c1, c2, cf;
-	c1 = img->getColourAt (curPix % img->getWidth (), y, 0);
-	c2 = img->getColourAt (auxPix % img->getWidth (), y, 0);
+	c1 = img->getColourAt (wrap ? curPix % width : curPix > width ? width : curPix, y, 0);
+	c2 = img->getColourAt (wrap ? auxPix % width : auxPix > width ? width : auxPix, y, 0);
 	cf = c1 * (1 - diff) + c2 * diff;
 
 	return cf;

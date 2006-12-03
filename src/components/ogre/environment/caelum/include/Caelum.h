@@ -7,6 +7,7 @@
 #include "CaelumListener.h"
 #include "SkyColourModel.h"
 #include "StoredImageSkyColourModel.h"
+#include "StoredImageElvBasedSkyColourModel.h"
 #include "GeometryFactory.h"
 #include "SkyDome.h"
 #include "Sun.h"

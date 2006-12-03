@@ -26,4 +26,13 @@
 // Log macro
 #define LOG(msg) Ogre::LogManager::getSingleton().logMessage(msg);
 
+
+namespace caelum {
+
+/** The Caelum resources group name
+ */
+static const Ogre::String RESOURCE_GROUP_NAME = "Caelum";
+
+} // namespace caelum
+
 #endif //CAELUMPREREQUISITES_H

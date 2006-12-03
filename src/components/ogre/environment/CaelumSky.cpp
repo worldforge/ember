@@ -46,7 +46,7 @@ void CaelumSky::setDensity(float density)
 float CaelumSky::getDensity() const
 {
 	//TODO: make it get the time
-	return static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->getFogDensity (0);
+	return static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->getFogDensity (0, Ogre::Vector3::ZERO);
 }
 
 bool CaelumSky::frameEnded(const Ogre::FrameEvent & event)

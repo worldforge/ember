@@ -60,6 +60,11 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		float mTotalDayTime;
 
+		/** The relative time, as a value in the range [0, 1], meaning the relation between the current 
+				time and the total day time.
+		 */
+		float mRelativeTime;
+
 		/** The sky dome.
 		 */
 		SkyDome *mSkyDome;
@@ -244,6 +249,21 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 			@return True if Caelum manages the fog.
 		 */
 		bool isFogManaged () const;
+
+		/** Sets the new light absorption factor.
+			@param absorption The light absorption factor; a number in the range [0, 1], the lower, the less light the atmosphere will absorb.
+		 */
+		void setLightAbsorption (float absorption) const;
+
+		/** Sets the light scattering factor. 
+			@param scattering The light scattering factor; a number major than zero.
+		 */
+		void setLightScattering (float scattering) const;
+
+		/** Sets the atmosphere height factor. 
+			@param height The atmosphere height factor; a number in the range (0, 1].
+		 */
+		void setAtmosphereHeight (float height) const;
 
 	private:
 		/** Fires the start event to all the registered listeners.
