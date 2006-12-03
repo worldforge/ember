@@ -170,11 +170,16 @@ void AvatarCamera::createNodesForCamera()
 	// Look to the Avatar's head
 	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
 	mCamera->setNearClipDistance(0.5);
+	
+	///set the far clip distance high to make sure that the sky is completely shown
 	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 	{
-		mCamera->setFarClipDistance(1000);
+/*		//NOTE: this won't currently work with the sky
+		mCamera->setFarClipDistance(0);*/
+		
+		mCamera->setFarClipDistance(1000000);
 	} else {
-		mCamera->setFarClipDistance(1000);
+		mCamera->setFarClipDistance(1000000);
 	}
 	
 	//create the nodes for the camera
