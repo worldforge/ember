@@ -1,3 +1,27 @@
+2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp: activate the cloudlayer
+
+2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/CaelumSky.cpp, src/components/ogre/environment/caelum/Makefile.am, src/components/ogre/environment/caelum/include/Caelum.h, src/components/ogre/environment/caelum/include/CaelumPrerequisites.h, src/components/ogre/environment/caelum/include/CaelumSystem.h, src/components/ogre/environment/caelum/include/SkyColourModel.h, src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/include/Starfield.h, src/components/ogre/environment/caelum/include/StoredImageElvBasedSkyColourModel.h, src/components/ogre/environment/caelum/include/StoredImageSkyColourModel.h, src/components/ogre/environment/caelum/include/Sun.h, src/components/ogre/environment/caelum/src/CaelumSystem.cpp, src/components/ogre/environment/caelum/src/GeometryFactory.cpp, src/components/ogre/environment/caelum/src/StoredImageElvBasedSkyColourModel.cpp, src/components/ogre/environment/caelum/src/StoredImageSkyColourModel.cpp, src/components/ogre/environment/caelum/src/Sun.cpp: updated caelum
+
+2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp: don't write errors to std::cerr
+
+2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/jesus/XMLJesusSerializer.cpp, src/components/ogre/jesus/XMLJesusSerializer.h: try not to load invalid files
+
+2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarCamera.cpp: make the far clip plane really big so that they full sky is shown
+
+2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/OgreResourceLoader.cpp src/components/ogre/OgreResourceLoader.h: make it so that all resource groups also are initialized after they've been loaded
+
 2006-12-02 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/framework/bindings/lua/ConsoleBackend.pkg, src/framework/bindings/lua/lua_Framework.cpp: updated bindings

@@ -33,16 +33,24 @@ namespace EmberOgre {
 namespace Environment {
 
 class CloudsUpdater : public caelum::CaelumListener {
+	protected:
+		float mTime;
+
 	public:
+		CloudsUpdater () : mTime (0) { }
 		bool caelumStarted (const Ogre::FrameEvent &e, caelum::CaelumSystem *sys) {
 			Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr >(Ogre::MaterialManager::getSingleton ().getByName ("Altocumulus"));
-			if (!mat.isNull()) {
+			if (!mat.isNull ()) {
 				Ogre::Technique* tech = mat->getBestTechnique ();
 				if (tech) {
 					Ogre::Pass* pass = tech->getPass(0);
 					if (pass) {
 						pass->getVertexProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
 						pass->getFragmentProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
+						pass->getFragmentProgramParameters ()->setNamedConstant ("sunColour", sys->getSun ()->getSunColour ());
+						mTime += e.timeSinceLastFrame * sys->getTimeScale ();
+						pass->getFragmentProgramParameters ()->setNamedConstant ("time", mTime);
+						return true;
 					}
 				}
 			}
@@ -94,18 +102,20 @@ void CaelumEnvironment::setupWater()
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera* camera)
 {
 
+	mSceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -1000), "Altocumulus", 1000, 10, false, 0.1, 10, 10, caelum::RESOURCE_GROUP_NAME);
 
 	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr);
 	mCaelumSystem->getSun ()->setInclination (::Ogre::Degree (13));
 
 	// Create and configure the sky colours model to use
-	mCaelumModel = new caelum::StoredImageSkyColourModel ();
+	
+	mCaelumModel = new caelum::StoredImageElvBasedSkyColourModel ();
 	mCaelumSystem->setSkyColourModel (mCaelumModel);	// Call this before changing the gradients image!!
-	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setSkyGradientsImage ("EarthClearSky.png");
+	static_cast<caelum::StoredImageElvBasedSkyColourModel *>(mCaelumModel)->setSkyGradientsImage ("EarthClearSky2.png");
 
 	mCaelumSystem->setManageFog (true);
-	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setFogColoursImage ("EarthClearSkyFog.png");
-	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setFogDensity (0.01);
+// 	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setFogColoursImage ("EarthClearSkyFog.png");
+	static_cast<caelum::StoredImageElvBasedSkyColourModel *>(mCaelumModel)->setFogDensity (0.01);
 
 	// Create a sky dome
 //	mDome = mCaelumSystem->createSkyDome ();
@@ -128,7 +138,15 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	time_t t = time (&t);
 	struct tm *t2 = localtime (&t);
 	mCaelumSystem->setTimeScale (1);
-	mCaelumSystem->setLocalTime (3600 * t2->tm_hour + 60 * t2->tm_min + t2->tm_sec);
+	int hour = t2->tm_hour;
+	//little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
+	if (t2->tm_hour < 6) {
+		hour = 6;
+	} else if (t2->tm_hour > 16) {
+		hour = 15;
+	}
+	
+	mCaelumSystem->setLocalTime (3600 * hour + 60 * t2->tm_min + t2->tm_sec);
 	mCaelumSystem->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
 /*	sceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -100), "Altocumulus", 1000, 10, false);
