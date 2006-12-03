@@ -76,7 +76,7 @@ public:
 	 * @param filename 
 	 * @return 
 	 */
-	Carpenter::BluePrint* loadBlueprint(std::string filename);
+	Carpenter::BluePrint* loadBlueprint(const std::string& filename);
 	
 	/**
 	 *    Saves the supplied blueprint to a xml filename

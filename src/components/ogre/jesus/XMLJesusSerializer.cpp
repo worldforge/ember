@@ -49,7 +49,7 @@ XMLJesusSerializer::~XMLJesusSerializer()
 
 bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 {
-	if (filename == "") {
+	if (filename == "" || filename == "." || filename == ".." || std::ifstream(filename.c_str() , std::ios::in ).fail()) {
 		return false;
 	}
 
@@ -113,7 +113,7 @@ void XMLJesusSerializer::fillFromElement(Ember::TiXmlElement* elem, T& geometryO
 bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 {
 	
-	if (filename == "") {
+	if (filename == "" || filename == "." || filename == ".." || std::ifstream(filename.c_str() , std::ios::in ).fail()) {
 		return false;
 	}
 
@@ -263,7 +263,7 @@ void XMLJesusSerializer::readAttachPairs(Carpenter::BlockSpec *blockSpec, Ember:
 bool XMLJesusSerializer::loadBuildingBlockSpecDefinition(const std::string& filename)
 {
 	
-	if (filename == "") {
+	if (filename == "" || filename == "." || filename == ".." || std::ifstream(filename.c_str() , std::ios::in ).fail()) {
 		return false;
 	}
 
@@ -305,10 +305,9 @@ bool XMLJesusSerializer::loadBuildingBlockSpecDefinition(const std::string& file
 
 
 
-Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(std::string filename)
+Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(const std::string& filename)
 {
-
-	if (filename == "") {
+	if (filename == "" || filename == "." || filename == ".." || std::ifstream(filename.c_str() , std::ios::in ).fail()) {
 		return false;
 	}
 
@@ -412,7 +411,7 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 
 void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, const std::string& filename, const std::string& name)
 {
-	if (filename == "") {
+	if (filename == "" || filename == "." || filename == "..") {
 		return;
 	}
 
