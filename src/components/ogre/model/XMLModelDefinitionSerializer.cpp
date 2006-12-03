@@ -98,7 +98,7 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 			}
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE(ex.getFullDescription());
-			std::cerr << ex.getFullDescription();
+			//std::cerr << ex.getFullDescription();
 		}
 		
 		//modelDef->_notifyOrigin(context.filename);
