@@ -1,66 +1,19 @@
-material /global/items/cylinder/wood_boards
+material /global/items/cylinder/wood_boards : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      //diffuse 0.427451 0.290196 0.000000
-      specular 0.449020 0.449020 0.449020 50.000000
-      emissive 0.000000 0.000000 0.000000
-      texture_unit
-      {
-        texture 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
 }
 
-material plants/tree/gnarly
+material plants/tree/gnarly : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      //diffuse 0.427451 0.290196 0.000000
-      specular 0.449020 0.449020 0.449020 50.000000
-      emissive 0.000000 0.000000 0.000000
-      texture_unit
-      {
-        texture 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
 }
 
-material /global/items/cylinder/earthenware
+material /global/items/cylinder/earthenware : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
 }
 
-material /global/items/cylinder/bottle_vodka
+material /global/items/cylinder/bottle_vodka : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
 }
-

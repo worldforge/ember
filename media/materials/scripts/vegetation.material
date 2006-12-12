@@ -21,19 +21,41 @@ material /global/plants/tree/fir/branch
 }
 
 
-material /global/plants/tree/fir/bark
+material /global/plants/fruitable/acorn/matte : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-         texture_unit
+	set_texture_alias DiffuseMap 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
+}
+
+material /global/plants/mushroom/amanita : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/mushroom/textures/amanita/low/mushroom.png
+}
+
+material /global/plants/fruitable/green_apple : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fruitable/textures/green_apple/low/fruitable.png
+	technique General
 	{
-		texture 3d_objects/plants/fir/textures/common_fir/low/bark_small.png
+		pass Main
+		{
+			specular 0.898039 0.898039 0.898039 10.0
+		}
 	}
-    }
-  }
+}
+material /global/plants/fruitable/acorn/shiny : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
+	technique General
+	{
+		pass Main
+		{
+			specular 0.898039 0.898039 0.898039 10.0
+		}
+	}
+}
+material /global/plants/tree/fir/bark : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fir/textures/common_fir/low/bark_small.png
 }
 
 material /global/plants/tree/oak
@@ -71,78 +93,6 @@ material /global/environment/ground/leaf_covered
 		}
     }
   }
-}
-
-
-material /global/plants/fruitable/acorn/shiny
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-         texture_unit
-	{
-		texture 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
-	}
-     specular 0.898039 0.898039 0.898039 10.0
-
-    }
-  }
-
-
-}
-material /global/plants/fruitable/green_apple
-{
-  receive_shadows on
-  technique
-{
-    pass
-{
-         texture_unit
-{
-		texture 3d_objects/plants/fruitable/textures/green_apple/low/fruitable.png
-}
-     specular 0.898039 0.898039 0.898039 10.0
-
-}
-}
-
-
-}
-
-material /global/plants/mushroom/amanita
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-         texture_unit
-		{
-			texture 3d_objects/plants/mushroom/textures/amanita/low/mushroom.png
-		}
-    }
-  }
-}
-
-
-
-material /global/plants/fruitable/acorn/matte
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-         texture_unit
-	{
-		texture 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
-	}
-    }
-  }
-
-
 }
 
 

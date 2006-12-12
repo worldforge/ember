@@ -16,126 +16,26 @@ material /global/fire
     }
 }
 
-material /global/environment/ground/grass
+material /global/environment/stone/stone_boulder_mossy : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/environment/ground/textures/rabbithill_grass/low/ground.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/environment/stone/textures/stone_boulder_mossy/stone.png
 }
 
-
-
-material /global/environment/ground/straw_and_mud
+material /global/environment/boulder/moraf_rock : /base/simple
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/environment/ground/textures/straw_and_mud/low/ground.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/moraf_rock/low/boulder.png
 }
 
-
-
-
-material /global/environment/boulder/moraf_rock
+material /global/environment/ground/straw_and_mud : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/environment/boulder/textures/moraf_rock/low/boulder.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/straw_and_mud/low/ground.png
 }
 
-material /global/environment/stone/stone_boulder_mossy
+material /global/environment/ground/grass : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/environment/stone/textures/stone_boulder_mossy/stone.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/rabbithill_grass/low/ground.png
 }
 
-
-
-// material /global/environment/sky/forgottenland
-// {
-// 	technique
-// 	{
-// 		pass
-// 		{
-// 			lighting off
-// 			depth_write off
-// 
-// 			texture_unit
-// 			{
-// 				cubic_texture forgottenlandft.tga forgottenlandbk.tga forgottenlandlf.tga forgottenlandrf.tga forgottenlandup.tga forgottenlanddn.tga separateUV
-// 				tex_address_mode clamp
-// 			}
-// 		}
-// 	}
-// }
-
-
-// material /global/environment/sky/day_1
-// {
-// 	technique
-// 	{
-// 		pass
-// 		{
-// 			lighting off
-// 			depth_write off
-// 			fog_override true
-// 			texture_unit
-// 			{
-// 				cubic_texture 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_ft.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_bk.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_lt.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_rt.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_up.png 3d_objects/environment/sky/textures/bones_of_earth/originals/bones_of_earth_dn.png separateUV
-// 				tex_address_mode clamp
-// 			}
-// 		}
-// 	}
-// } 
-
-
-material /global/environment/sky/day
-{
-	technique
-	{
-		pass
-		{
-			lighting off
-			depth_write off
-			fog_override true
-			texture_unit
-			{
-				cubic_texture skies/waterworld09.jpg separateUV
-				tex_address_mode clamp
-			}
-		}
-	}
-} 
 
 
 material /global/environment/water/simple
@@ -161,11 +61,6 @@ material /global/environment/water/simple
 
 
 }
-
-
-
-
-
 
 //material /global/building_primitives/rough_stone/floor
 material /global/environment/ground/ploughed_field

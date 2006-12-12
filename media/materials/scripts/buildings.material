@@ -33,468 +33,151 @@ material /global/building_primitives/template/floor : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/template/floor.png
 }
 
-material /global/building_primitives/rough_stone/floor_
+material /global/building_primitives/rough_stone/floor_ : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      //specular 0.449020 0.449020 0.449020 1
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_stone/low/floor.png
-      }
-    }
-  }
-}
-material /global/building_primitives/rough_stone/wall
-{
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_stone/low/stone.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_stone/low/floor.png
 }
 
-material /global/building_primitives/rough_timber/roof_top
+material /global/building_primitives/rough_stone/wall : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_roof_top.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_stone/low/stone.png
 }
-
-material /global/building_primitives/rough_timber/roof_bottom
+material /global/building_primitives/rough_timber/roof_top : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_roof_bottom.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_roof_top.png
+}
+material /global/building_primitives/rough_timber/roof_bottom : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/rough_timber/low/rough_timber_roof_bottom.png
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-material /global/building_element/rough_stone/wall/top
+material /global/building_element/timber_rough/roof : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_top.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_rough/low/roof.png
 }
 
-material /global/building_element/rough_stone/wall/bottom
+material /global/building_element/rough_stone/wall/normal : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_bottom.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/wall_texture_small.png
 }
 
-material /global/building_element/rough_stone/wall/side
+material /global/building_element/rough_stone/wall/side : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_side.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/wall_side.png
 }
 
-material /global/building_element/rough_stone/wall/normal
+material /global/building_element/rough_stone/wall/bottom : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/wall_texture_small.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/wall_bottom.png
 }
 
-
-material /global/building_element/timber_rough/roof
+material /global/building_element/rough_stone/wall/top : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_rough/low/roof.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/wall_top.png
 }
 
-material /global/building_element/timber_rough/normal_slope_wall
+material /global/building_element/timber_frame/beam : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_rough/low/normal_slope_wall.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_frame/low/beam.png
 }
 
-material /global/building_element/timber_rough/door_element_
+material /global/building_element/timber_frame/beam_end : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_rough/low/door_element.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_frame/low/beam_end.png
 }
 
-material /global/building_element/timber_rough/corner_pillar
+material /global/building_element/timber_rough/wall : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_rough/low/corner_pillar.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_rough/wall_logs-aged_256x256.png
 }
 
-material /global/building_element/timber_rough/wall_side
+material /global/building_element/timber_rough/wall_side : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_rough/low/wall_side.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_rough/low/wall_side.png
 }
 
-material /global/building_element/timber_rough/wall
+material /global/building_element/timber_rough/corner_pillar : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_rough/wall_logs-aged_256x256.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_rough/low/corner_pillar.png
 }
 
-material /global/building_element/timber_frame/beam_end
+material /global/building_element/timber_rough/door_element_ : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_frame/low/beam_end.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_rough/low/door_element.png
 }
 
-material /global/building_element/timber_frame/beam
+material /global/building_element/timber_rough/normal_slope_wall : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/timber_frame/low/beam.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/timber_rough/low/normal_slope_wall.png
 }
 
-
-
-
-
-material /global/building_element/rough_stone/floor
+material /global/items/building/mausoleum/floor : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/floor.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/floor.jpg
 }
 
-material /global/building_element/rough_stone/ceiling
+material /global/items/building/mausoleum/dirty-st : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/ceiling.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/dirty-st.jpg
 }
 
-material /global/building_element/rough_stone/floor/east_west
+material /global/items/building/mausoleum/colonne : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/floor_east_west_side.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/colonne.jpg
 }
 
-material /global/building_element/rough_stone/floor/north_south
+material /global/items/building/mausoleum/colonne- : /base/simple
 {
-  // receive_shadows on
-  technique
-  {
-    pass
-    {
-      texture_unit
-      {
-        texture 3d_objects/items/building_element/textures/rough_stone/low/floor_north_south_side.png
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/colonne-.jpg
 }
 
-
-
-material /global/items/building/mausoleum/wall
+material /global/items/building/mausoleum/triangle : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/wall.jpg
-
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/triangle.jpg
 }
-material /global/items/building/mausoleum/triangle
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/triangle.jpg
 
-      }
-    }
-  }
+material /global/items/building/mausoleum/wall : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/wall.jpg
 }
-material /global/items/building/mausoleum/colonne-
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/colonne-.jpg
 
-      }
-    }
-  }
+material /global/building_element/rough_stone/floor/north_south : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/floor_north_south_side.png
 }
-material /global/items/building/mausoleum/colonne
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/colonne.jpg
 
-      }
-    }
-  }
+material /global/building_element/rough_stone/floor/east_west : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/floor_east_west_side.png
 }
-material /global/items/building/mausoleum/dirty-st
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/dirty-st.jpg
 
-      }
-    }
-  }
+material /global/building_element/rough_stone/ceiling : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/ceiling.png
 }
-material /global/items/building/mausoleum/floor
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/floor.jpg
 
-      }
-    }
-  }
+material /global/building_element/rough_stone/floor : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/low/floor.png
 }
-material /global/items/building/mausoleum/panel
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/panel.jpg
 
-      }
-    }
-  }
+material /global/items/building/mausoleum/bordure : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/bordure.jpg
 }
-material /global/items/building/mausoleum/roof
-{
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/roof.jpg
 
-      }
-    }
-  }
-}      
-material /global/items/building/mausoleum/bordure
+material /global/items/building/mausoleum/roof : /base/simple
 {
-  technique
-  {
-    pass
-    {
-      
-	  texture_unit
-      {
-        texture 3d_objects/items/building/models/mausoleum/bordure.jpg
-
-      }
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/roof.jpg
 }
+
+material /global/items/building/mausoleum/panel : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/panel.jpg
+}
+
 
 
 
@@ -875,17 +558,3 @@ material carpenter/flare
 //    }
 // 
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

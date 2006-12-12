@@ -1,3 +1,7 @@
+2006-12-12 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/buildings.material, media/materials/scripts/cylinder.material, media/materials/scripts/edibles.material, media/materials/scripts/environment.material, media/materials/scripts/vegetation.material: updated materials
+
 2006-12-03 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/CaelumEnvironment.cpp: activate the cloudlayer

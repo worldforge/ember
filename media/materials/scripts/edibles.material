@@ -1,30 +1,9 @@
-
-material /global/items/food/country_bread
+material /global/items/food/country_bread : /base/simple
 {
-  technique
-  {
-    pass
-    {
-         texture_unit
-		{
-		
-			texture 3d_objects/items/food/textures/country_bread/low/food.png
-		}
-
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/food/textures/country_bread/low/food.png
 }
 
-material /global/items/food/meat
+material /global/items/food/meat : /base/simple
 {
-  technique
-  {
-    pass
-    {
-         texture_unit
-		{
-			texture 3d_objects/items/food/textures/meat/low/food_meat.png
-		}
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/food/textures/meat/low/food_meat.png
 }
