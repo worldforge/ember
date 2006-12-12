@@ -25,6 +25,8 @@
 #include <elements/CEGUIPushButton.h>
 
 #include "framework/ConsoleBackend.h"
+#include "../GUIManager.h"
+#include "../input/Input.h"
 
 namespace EmberOgre {
 
@@ -86,6 +88,8 @@ void Quit::softquit()
 	mMainWindow->activate();
 	mMainWindow->moveToFront();
 	mMainWindow->setVisible(true);
+	
+	mGuiManager->getInput().setInputMode(Input::IM_GUI);
 	//mMainWindow->setModalState(true);
 }
 
