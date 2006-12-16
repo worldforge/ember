@@ -14,19 +14,9 @@ namespace caelum {
 /** Root of the Caelum system.
 	This class is the root of the Caelum system.
 	@author Jesús Alonso Abad
-	@version 0.1
  */
-class DllExport CaelumSystem : public Ogre::FrameListener {
+class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTargetListener {
 // Attributes -----------------------------------------------------------------
-	public:
-		/** Name of the dome material.
-		 */
-		static const Ogre::String SKY_DOME_MATERIAL_NAME;
-
-		/** Name of the starfield material.
-		 */
-		static const Ogre::String STARFIELD_MATERIAL_NAME;
-
 	private:
 		/** Root of the Ogre engine.
 		 */
@@ -35,6 +25,10 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		/** Scene manager.
 		 */
 		Ogre::SceneManager *mSceneMgr;
+
+		/** Flag to let Caelum manage the creation and destruction of the resource group.
+		 */
+		bool mManageResourceGroup;
 
 		/** List of listeners registered.
 		 */
@@ -69,14 +63,6 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		SkyDome *mSkyDome;
 
-		/** Reference to the sky dome material.
-		 */
-		Ogre::MaterialPtr mSkyDomeMaterial;
-
-		/** Reference to the starfield material.
-		 */
-		Ogre::MaterialPtr mStarfieldMaterial;
-
 		/** Reference to the sky colour model in use.
 		 */
 		SkyColourModel *mSkyColourModel;
@@ -99,11 +85,17 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 			Registers itself in the Ogre engine and initialises the system.
 			@param root The Ogre rool.
 			@param sceneMgr The Ogre scene manager.
-			@param createSkyDome Wether if the sky dome should be created or not.
-			@param createSun Wether if the sun should be created or not.
-			@param createStarfield Wether if the starfield should be created or not.
+			@param manageResGroup Tells the system if the resource group has been created externally (true) or if it's to be managed by the system.
+			@param resGroupName The resource group name, if it's desired to use an existing one or just a different name.
+			@param createSkyDome Whether if the sky dome should be created or not.
+			@param createSun Whether if the sun should be created or not.
+			@param createStarfield Whether if the starfield should be created or not.
 		 */
-		CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr, bool createSkyDome = true, bool createSun = true, bool createStarfield = true);
+		CaelumSystem (Ogre::Root *root, 
+										Ogre::SceneManager *sceneMgr, 
+										bool manageResGroup = true, 
+										const Ogre::String &resGroupName = RESOURCE_GROUP_NAME,
+										bool createSkyDome = true, bool createSun = true, bool createStarfield = true);
 
 		/** Destructor.
 			Shuts down the system and detaches itself from the Ogre engine.
@@ -123,15 +115,11 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		void removeListener (CaelumListener *listener);
 
-		/** Registers all the RenderTarget listeners to the given target.
-			@param target The render target.
+		/** Event trigger called just before rendering a viewport in a render target Caelum is attached to.
+			Useful to make objects follow every camera that renders a viewport in a certain render target.
+			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
 		 */
-		void registerAllToTarget (Ogre::RenderTarget *target);
-
-		/** Unregisters all the RenderTarget listeners from the given target.
-			@param target The render target.
-		 */
-		void unregisterAllFromTarget (Ogre::RenderTarget *target);
+		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
 
 		/** Sets the updating rate.
 			Allows to tell how much <b>relative daytime [0, 1]</b> can pass without being updated. 
@@ -177,11 +165,6 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 			@return The total day time in seconds.
 		 */
 		float getTotalDayTime () const;
-
-		/** Sets the sun direction.
-			@param dir The sun light direction.
-		 */
-		void setSunDirection (Ogre::Vector3 dir);
 
 		/** Updates the system.
 			@param e The frame event (contains the elapsed time since the last update).
@@ -250,21 +233,6 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		bool isFogManaged () const;
 
-		/** Sets the new light absorption factor.
-			@param absorption The light absorption factor; a number in the range [0, 1], the lower, the less light the atmosphere will absorb.
-		 */
-		void setLightAbsorption (float absorption) const;
-
-		/** Sets the light scattering factor. 
-			@param scattering The light scattering factor; a number major than zero.
-		 */
-		void setLightScattering (float scattering) const;
-
-		/** Sets the atmosphere height factor. 
-			@param height The atmosphere height factor; a number in the range (0, 1].
-		 */
-		void setAtmosphereHeight (float height) const;
-
 	private:
 		/** Fires the start event to all the registered listeners.
 			@param e The Ogre FrameEvent object passed this frame.
@@ -278,34 +246,9 @@ class DllExport CaelumSystem : public Ogre::FrameListener {
 		 */
 		bool fireFinishedEvent (const Ogre::FrameEvent &e);
 
-		/** Collects all the render target listeners in a list.
-			@return A list containing all the render target listeners.
-		 */
-		std::set<Ogre::RenderTargetListener *> *collectAllRenderTargetListeners ();
-
 		/** Clamps the local day time to the total day time range.
 		 */
 		void clampLocalTime ();
-
-		/** Internal method to create the sky dome material.
-		 */
-		void createSkyDomeMaterial ();
-
-		/** Internal method to destroy the sky dome material.
-		 */
-		void destroySkyDomeMaterial ();
-
-		/** Internal method to create the starfield material.
-		 */
-		void createStarfieldMaterial ();
-
-		/** Internal method to destroy the starfield material.
-		 */
-		void destroyStarfieldMaterial ();
-
-		/** Updates the sky dome material to match the local time.
-		 */
-		void updateSkyDomeMaterialTime ();
 
 		/** Forces an update.
 		 */

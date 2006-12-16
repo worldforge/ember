@@ -5,14 +5,17 @@
 namespace caelum {
 
 const Ogre::String Starfield::mStarfieldDomeResourceName = "CaelumStarfieldDome";
+const Ogre::String Starfield::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial";
 
 Starfield::Starfield (Ogre::SceneManager *sceneMgr) {
 	mAutoRadius = true;
 	mInclination = Ogre::Degree (0);
 
+	createStarfieldMaterial ();
+
 	GeometryFactory::generateSphericDome (mStarfieldDomeResourceName, 32, GeometryFactory::DT_STARFIELD);
 	Ogre::Entity *ent = sceneMgr->createEntity ("StarfieldDome", mStarfieldDomeResourceName);
-	ent->setMaterialName (CaelumSystem::STARFIELD_MATERIAL_NAME);
+	ent->setMaterialName (STARFIELD_MATERIAL_NAME);
 	ent->setRenderQueueGroup (Ogre::RENDER_QUEUE_SKIES_EARLY + 1);
 	ent->setCastShadows (false);
 
@@ -30,10 +33,11 @@ Starfield::~Starfield () {
 		static_cast<Ogre::SceneNode *>(mNode->getParent ())->removeAndDestroyChild (mNode->getName ());
 		mNode = 0;
 	}
+
+	destroyStarfieldMaterial ();
 }
 
-void Starfield::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
-	Ogre::Camera *cam = e.source->getCamera ();
+void Starfield::notifyCameraChanged (Ogre::Camera *cam) {
 	mNode->setPosition (cam->getRealPosition ());
 	if (mAutoRadius) {
 		if (cam->getFarClipDistance () > 0)
@@ -43,7 +47,7 @@ void Starfield::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
 	}
 }
 
-void Starfield::setSize (float radius) {
+void Starfield::setFarRadius (float radius) {
 	if (radius > 0) {
 		mNode->setScale (Ogre::Vector3::UNIT_SCALE * radius);
 		mAutoRadius = false;
@@ -63,6 +67,49 @@ void Starfield::update (const float time) {
 	orientation = orientation * Ogre::Quaternion (Ogre::Radian (time * 2 * Ogre::Math::PI), Ogre::Vector3::UNIT_Y);
 
 	mNode->setOrientation (orientation);
+}
+
+void Starfield::updateMaterial (const Ogre::String &mapName) {
+	// Update the starfield material
+	mStarfieldMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (mapName);
+}
+
+void Starfield::createStarfieldMaterial () {
+	Ogre::MaterialPtr mat;
+
+	LOG ("Generating starfield material...");
+	if (!Ogre::MaterialManager::getSingleton ().resourceExists (STARFIELD_MATERIAL_NAME)) {
+		LOG ("\tMaterial not found; creating...");
+		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (STARFIELD_MATERIAL_NAME, RESOURCE_GROUP_NAME));
+		mat->setReceiveShadows (false);
+		LOG ("\t\tMaterial [OK]");
+		Ogre::Pass *pass = mat->getTechnique (0)->getPass (0);
+		pass->setDepthCheckEnabled (false);
+		pass->setDepthWriteEnabled (false);
+		pass->setLightingEnabled (false);
+		pass->setFog (true);
+		LOG ("\t\tPass [OK]");
+		Ogre::TextureUnitState *tus = pass->createTextureUnitState ();
+		tus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_WRAP);
+		LOG ("\t\tTextureUnit [OK]");
+		mat->load ();
+		LOG ("\tDONE");
+	}
+	else {
+		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (STARFIELD_MATERIAL_NAME));
+	}
+	LOG ("DONE");
+
+	mStarfieldMaterial = mat;
+}
+
+void Starfield::destroyStarfieldMaterial () {
+	LOG ("Removing starfield material...");
+	if (!Ogre::MaterialManager::getSingleton ().resourceExists (STARFIELD_MATERIAL_NAME)) {
+		Ogre::MaterialManager::getSingleton ().remove (STARFIELD_MATERIAL_NAME);
+	}
+	mStarfieldMaterial.setNull ();
+	LOG ("DONE");
 }
 
 } // namespace caelum

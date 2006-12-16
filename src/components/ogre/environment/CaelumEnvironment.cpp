@@ -35,23 +35,21 @@ namespace Environment {
 class CloudsUpdater : public caelum::CaelumListener {
 	protected:
 		float mTime;
+		Ogre::MaterialPtr mMaterial;
 
 	public:
-		CloudsUpdater () : mTime (0) { }
+		CloudsUpdater (float time, Ogre::MaterialPtr material) : mTime (time), mMaterial(material) { }
 		bool caelumStarted (const Ogre::FrameEvent &e, caelum::CaelumSystem *sys) {
-			Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr >(Ogre::MaterialManager::getSingleton ().getByName ("Altocumulus"));
-			if (!mat.isNull ()) {
-				Ogre::Technique* tech = mat->getBestTechnique ();
-				if (tech) {
-					Ogre::Pass* pass = tech->getPass(0);
-					if (pass) {
-						pass->getVertexProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
-						pass->getFragmentProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
-						pass->getFragmentProgramParameters ()->setNamedConstant ("sunColour", sys->getSun ()->getSunColour ());
-						mTime += e.timeSinceLastFrame * sys->getTimeScale ();
-						pass->getFragmentProgramParameters ()->setNamedConstant ("time", mTime);
-						return true;
-					}
+			Ogre::Technique* tech = mMaterial->getBestTechnique ();
+			if (tech) {
+				Ogre::Pass* pass = tech->getPass(0);
+				if (pass) {
+					pass->getVertexProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
+					pass->getFragmentProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
+					pass->getFragmentProgramParameters ()->setNamedConstant ("sunColour", sys->getSun ()->getSunColour ());
+					mTime += e.timeSinceLastFrame * 30;
+					pass->getFragmentProgramParameters ()->setNamedConstant ("time", mTime);
+					return true;
 				}
 			}
 			return true;
@@ -101,11 +99,9 @@ void CaelumEnvironment::setupWater()
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera* camera)
 {
-
-	mSceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -1000), "Altocumulus", 1000, 10, false, 0.1, 10, 10, caelum::RESOURCE_GROUP_NAME);
-
-	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr);
-	mCaelumSystem->getSun ()->setInclination (::Ogre::Degree (13));
+	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, false);
+	caelum::SunPositionModel *spm = new caelum::SimpleSunPositionModel (Ogre::Degree (13));
+	mCaelumSystem->getSun ()->setSunPositionModel (spm);
 
 	// Create and configure the sky colours model to use
 	
@@ -115,24 +111,20 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 
 	mCaelumSystem->setManageFog (true);
 // 	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setFogColoursImage ("EarthClearSkyFog.png");
-	static_cast<caelum::StoredImageElvBasedSkyColourModel *>(mCaelumModel)->setFogDensity (0.01);
+	static_cast<caelum::StoredImageElvBasedSkyColourModel *>(mCaelumModel)->setFogDensity (0.005);
 
 	// Create a sky dome
 //	mDome = mCaelumSystem->createSkyDome ();
 	mDome = mCaelumSystem->getSkyDome();
 	
-	mSky = new CaelumSky(*this, mCaelumModel, mDome);
-	mSun = new CaelumSun(*this, mCaelumSystem->getSun());
 
 	// Create a starfield
 //	window->addListener (mCaelumSystem->createStarfield ("Starfield.jpg"));
 	mCaelumSystem->getStarfield ()->setInclination (::Ogre::Degree (13));
 
 	// Register all to the render window
-	mCaelumSystem->registerAllToTarget (window);
-
-	// Register our altocumulus updater
-	mCaelumSystem->addListener (new CloudsUpdater ());
+	window->addListener (mCaelumSystem);
+	
 
 	// Set some time parameters
 	time_t t = time (&t);
@@ -146,9 +138,23 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 		hour = 15;
 	}
 	
-	mCaelumSystem->setLocalTime (3600 * hour + 60 * t2->tm_min + t2->tm_sec);
+	float time = 3600 * hour + 60 * t2->tm_min + t2->tm_sec;
+	
+	mCaelumSystem->setLocalTime (time);
 	mCaelumSystem->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
+	mSky = new CaelumSky(*this, mCaelumModel, mDome);
+	mSun = new CaelumSun(*this, mCaelumSystem->getSun());
+	
+	std::string cloudMaterialName = "Cirrus";
+	Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr >(Ogre::MaterialManager::getSingleton ().getByName (cloudMaterialName));
+
+	// Register our cloud updater
+	if (!mat.isNull()) {
+		mSceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -1000), cloudMaterialName, 1000, 1, false, .1, 10, 10, caelum::RESOURCE_GROUP_NAME);
+		mCaelumSystem->addListener (new CloudsUpdater (time, mat));
+	}
+
 /*	sceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -100), "Altocumulus", 1000, 10, false);
 	mCaelumSystem->addListener (new CloudsUpdater ());*/
 	

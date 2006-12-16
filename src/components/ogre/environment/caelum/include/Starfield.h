@@ -2,14 +2,14 @@
 #define STARFIELD_H
 
 #include "CaelumPrerequisites.h"
+#include "CameraBoundElement.h"
 
 namespace caelum {
 
 /** Starfield dome class.
 	@author Jesús Alonso Abad
-	@version 0.1
  */
-class DllExport Starfield : public Ogre::RenderTargetListener {
+class DllExport Starfield : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
 	protected:
 		/** Reference to the dome node.
@@ -20,13 +20,17 @@ class DllExport Starfield : public Ogre::RenderTargetListener {
 		 */
 		static const Ogre::String mStarfieldDomeResourceName;
 
+		/** Name of the starfield material.
+		 */
+		static const Ogre::String STARFIELD_MATERIAL_NAME;
+
+		/** Reference to the starfield material.
+		 */
+		Ogre::MaterialPtr mStarfieldMaterial;
+
 		/** Inclination of the starfield.
 		 */
 		Ogre::Degree mInclination;
-
-		/** Defines if the dome radius is automatically set or not.
-		 */
-		bool mAutoRadius;
 
 // Methods --------------------------------------------------------------------
 	public:
@@ -39,17 +43,13 @@ class DllExport Starfield : public Ogre::RenderTargetListener {
 		 */
 		~Starfield ();
 
-		/** Event trigger called just before rendering a viewport in a render target this dome is attached to.
-			Useful to make the dome follow every camera that renders a viewport in a certain render target.
-			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
+		/** @copydoc CameraBoundElement::notifyCameraChanged().
 		 */
-		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
+		void notifyCameraChanged (Ogre::Camera *cam);
 
-		/** Forces the size of the dome to a specific radius.
-			If the parameter is negative or zero, the radius is set automatically.
-			@param radius The positive radius of the dome, or a negative/zero value to let Caelum to resize it.
+		/** @copydoc CameraBoundElement::setFarRadius().
 		 */
-		void setSize (float radius);
+		void setFarRadius (float radius);
 
 		/** Sets the starfield inclination.
 			@param inc The starfield inclination in degrees.
@@ -60,6 +60,20 @@ class DllExport Starfield : public Ogre::RenderTargetListener {
 			@param time Local time in [0, 1] range.
 		 */
 		void update (const float time);
+
+		/** Updates the starfield material.
+			@param mapName The new starfield texture map name.
+		 */
+		void updateMaterial (const Ogre::String &mapName);
+
+	private:
+		/** Internal method to create the starfield material.
+		 */
+		void createStarfieldMaterial ();
+
+		/** Internal method to destroy the starfield material.
+		 */
+		void destroyStarfieldMaterial ();
 };
 
 } // namespace caelum;

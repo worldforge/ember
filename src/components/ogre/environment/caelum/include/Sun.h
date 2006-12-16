@@ -2,15 +2,16 @@
 #define SUN_H
 
 #include "CaelumPrerequisites.h"
+#include "CameraBoundElement.h"
+#include "SunPositionModel.h"
 
 namespace caelum {
 
 /** Class representing the sun.
 	It calculates the sun light direction, position, colour...
 	@author Jesús Alonso Abad
-	@version 0.1
  */
-class DllExport Sun : public Ogre::RenderTargetListener {
+class DllExport Sun : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
 	public:
 		/** Name of the sun material.
@@ -18,9 +19,9 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 		static const Ogre::String SUN_MATERIAL_NAME;
 
 	private:
-		/** The sun trajectory inclination. This is similar to the earth's rotation axis inclination.
+		/** The sun positioning model.
 		 */
-		Ogre::Degree mInclination;
+		SunPositionModel *mSunPositionModel;
 
 		/** The main directional light.
 		 */
@@ -46,6 +47,10 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 		 */
 		Ogre::MaterialPtr mSunMaterial;
 
+		/** Base distance of the sun.
+		 */
+		float mRadius;
+
 // Methods --------------------------------------------------------------------
 	public:
 		/** Constructor.
@@ -54,29 +59,34 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 		Sun (Ogre::SceneManager *sceneMgr);
 
 		/** Destructor.
+			@note If a sun position model is in use, it will be deleted.
 		 */
 		~Sun ();
 
-		/** Event trigger called just before rendering a viewport in a render target this sun is attached to.
-			Useful to make the sun follow every camera that renders a viewport in a certain render target.
-			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
+		/** @copydoc CameraBoundElement::notifyCameraChanged().
 		 */
-		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
+		void notifyCameraChanged (Ogre::Camera *cam);
+
+		/** @copydoc CameraBoundElement::setFarRadius().
+		 */
+		void setFarRadius (float radius);
 
 		/** Updates the sun position according to the local time.
 			@param time The local day time.
 		 */
 		void update (const float time);
 
-		/** Changes the sun inclination.
-			@param inc The inclination in degrees.
+		/** Sets the new sun positioning model.
+			If already exists one here, it will be returned so that it can be deleted.
+			@param model The new sun positioning model to use.
+			@return The existing model or 0 if there wasn't any.
 		 */
-		void setInclination (Ogre::Degree inc);
+		SunPositionModel *setSunPositionModel (SunPositionModel *model);
 
-		/** Gets the sun inclination.
-			@return The sun inclination in degrees.
+		/** Returns the sun position model in use.
+			@return The current sun position model.
 		 */
-		Ogre::Degree getInclination () const;
+		SunPositionModel *getSunPositionModel () const;
 
 		/** Retrieves the latest sun direction.
 			@return The sun direction.
@@ -93,11 +103,6 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 		 */
 		Ogre::ColourValue getSunColour ();
 
-		/** Gets the sun node.
-			@return The sun node.
-		 */
-		inline Ogre::SceneNode* getNode() const;
-
 	private:
 		/** Creates the sun material.
 		 */
@@ -107,11 +112,6 @@ class DllExport Sun : public Ogre::RenderTargetListener {
 		 */
 		void destroySunMaterial ();
 };
-
-Ogre::SceneNode* Sun::getNode() const
-{
-	return mSunNode;
-}
 
 } // namespace caelum
 

@@ -5,7 +5,10 @@
 
 #include "CaelumSystem.h"
 #include "CaelumListener.h"
+#include "CameraBoundElement.h"
 #include "SkyColourModel.h"
+#include "SunPositionModel.h"
+#include "SimpleSunPositionModel.h"
 #include "StoredImageSkyColourModel.h"
 #include "StoredImageElvBasedSkyColourModel.h"
 #include "GeometryFactory.h"

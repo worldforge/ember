@@ -2,16 +2,18 @@
 #define SKYDOME_H
 
 #include "CaelumPrerequisites.h"
+#include "CameraBoundElement.h"
+#include "SkyColourModel.h"
+#include "Sun.h"
 
 namespace caelum {
 
 /** A sky dome element.
 	@author Jesús Alonso Abad
-	@version 0.1
  */
-class DllExport SkyDome  : public Ogre::RenderTargetListener {
+class DllExport SkyDome : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
-	private:
+	protected:
 		/** Control scene node.
 		 */
 		Ogre::SceneNode *mNode;
@@ -20,9 +22,13 @@ class DllExport SkyDome  : public Ogre::RenderTargetListener {
 		 */
 		static const Ogre::String mSphericDomeResourceName;
 
-		/** Defines if the sky dome radius is automatically set or not.
+		/** Name of the dome material.
 		 */
-		bool mAutoRadius;
+		static const Ogre::String SKY_DOME_MATERIAL_NAME;
+
+		/** Reference to the sky dome material.
+		 */
+		Ogre::MaterialPtr mSkyDomeMaterial;
 
 // Methods --------------------------------------------------------------------
 	public:
@@ -35,17 +41,54 @@ class DllExport SkyDome  : public Ogre::RenderTargetListener {
 		 */
 		~SkyDome ();
 
-		/** Event trigger called just before rendering a viewport in a render target this dome is attached to.
-			Useful to make the dome follow every camera that renders a viewport in a certain render target.
-			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
+		/** @copydoc CameraBoundElement::notifyCameraChanged().
 		 */
-		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
+		void notifyCameraChanged (Ogre::Camera *cam);
 
-		/** Forces the size of the dome to a specific radius.
-			If the parameter is negative or zero, the radius is set automatically.
-			@param radius The positive radius of the sky dome, or a negative/zero value to let Caelum to resize it.
+		/** @copydoc CameraBoundElement::setFarRadius().
 		 */
-		void setSize (float radius);
+		void setFarRadius (float radius);
+	
+		/** Sets the sun direction.
+			@param dir The sun light direction.
+		 */
+		void setSunDirection (Ogre::Vector3 dir);
+
+		/** Sets the new light absorption factor.
+			@param absorption The light absorption factor; a number in the range [0, 1], the lower, the less light the atmosphere will absorb.
+		 */
+		void setLightAbsorption (float absorption) const;
+
+		/** Sets the light scattering factor. 
+			@param scattering The light scattering factor; a number major than zero.
+		 */
+		void setLightScattering (float scattering) const;
+
+		/** Sets the atmosphere height factor. 
+			@param height The atmosphere height factor; a number in the range (0, 1].
+		 */
+		void setAtmosphereHeight (float height) const;
+
+		/** Updates the sky dome material to match the local time.
+			@param skyColourModel The sky colour model in use.
+			@param time The local time.
+			@param sun The sun.
+		 */
+		void updateSkyDomeMaterialTime (SkyColourModel *skyColourModel, float time, Sun *sun);
+
+		/** Returns the sky dome texture unit state.
+			@return The texture unit state of the sky dome material.
+		 */
+		Ogre::TextureUnitState *getTextureUnitState ();
+
+	private:
+		/** Internal method to create the sky dome material.
+		 */
+		void createSkyDomeMaterial ();
+
+		/** Internal method to destroy the sky dome material.
+		 */
+		void destroySkyDomeMaterial ();
 };
 
 } // namespace caelum

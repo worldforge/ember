@@ -6,8 +6,9 @@ namespace caelum {
 const Ogre::String Sun::SUN_MATERIAL_NAME = "CaelumSunMaterial";
 
 Sun::Sun (Ogre::SceneManager *sceneMgr) {
-	mInclination = Ogre::Degree (0);
 	mSunColour = Ogre::ColourValue::White;
+	mAutoRadius = true;
+	mSunPositionModel = 0;
 
 	mMainLight = sceneMgr->createLight ("CaelumSun");
 	mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
@@ -50,24 +51,45 @@ Sun::~Sun () {
 		mMainLight->_getManager ()->destroyLight (mMainLight);
 		mMainLight = 0;
 	}
+
+	if (mSunPositionModel) {
+		delete mSunPositionModel;
+	}
 }
 
-void Sun::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
-	// TODO
-	Ogre::Camera *cam = e.source->getCamera ();
-	///make it so that the appears independent from the world
-	mSunNode->setPosition (cam->getRealPosition () + (-mSunDirection * 50));
+void Sun::notifyCameraChanged (Ogre::Camera *cam) {
+	float sunRadius0;
+	if (mAutoRadius) {
+		if (cam->getFarClipDistance () > 0) {
+			mRadius = (cam->getFarClipDistance () - CAMERA_DISTANCE_MODIFIER) * 0.5;
+			sunRadius0 = -1;
+		}
+		else {
+			mRadius = (cam->getNearClipDistance () + CAMERA_DISTANCE_MODIFIER) * 2;
+			sunRadius0 = 1;
+		}
+	}
+	sunRadius0 *= mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
+	mSunNode->setPosition (cam->getRealPosition () - mSunDirection * (mRadius + sunRadius0));
+	mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * (mRadius + sunRadius0) * Ogre::Math::Tan (Ogre::Degree (0.01)));
+}
 
+void Sun::setFarRadius (float radius) {
+	if (radius > 0) {
+		mRadius = radius;
+		mAutoRadius = false;
+	}
+	else {
+		mAutoRadius = true;
+	}
 }
 
 void Sun::update (const float time) {
-	// Get the inclinated axis
-	Ogre::Vector3 axis = Ogre::Vector3::UNIT_Z;
-	axis = Ogre::Quaternion (mInclination, Ogre::Vector3::UNIT_X) * axis;
+	Ogre::Vector3 dir = Ogre::Vector3::NEGATIVE_UNIT_Y;
 
-	// Get the inclinated light direction, according to the day time
-	Ogre::Vector3 dir = Ogre::Vector3::UNIT_Y;
-	dir = Ogre::Quaternion (Ogre::Radian (time * 2 * Ogre::Math::PI), axis) * dir;
+	if (mSunPositionModel) {
+		dir = mSunPositionModel->update (time);
+	}
 
 	// Update the main light direction
 	if (mMainLight != 0) {
@@ -80,17 +102,20 @@ void Sun::update (const float time) {
 		}
 	}
 
-
 	// Store the latest sun direction.
-	mSunDirection = dir.normalisedCopy ();
+	mSunDirection = dir;
 }
 
-void Sun::setInclination (Ogre::Degree inc) {
-	mInclination = inc;
+SunPositionModel *Sun::setSunPositionModel (SunPositionModel *model) {
+	SunPositionModel *temp = mSunPositionModel;
+
+	mSunPositionModel = model;
+
+	return temp;
 }
 
-Ogre::Degree Sun::getInclination () const {
-	return mInclination;
+SunPositionModel *Sun::getSunPositionModel () const {
+	return mSunPositionModel;
 }
 
 Ogre::Vector3 Sun::getSunDirection () const {

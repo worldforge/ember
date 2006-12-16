@@ -21,7 +21,7 @@
    This threshold will be substracted from the far clipping distance if applicable, else it will be 
    added to the near clipping distance (ie, if infinite far clipping distance is used).
  */
-#define CAMERA_DISTANCE_MODIFIER 0.001
+#define CAMERA_DISTANCE_MODIFIER 0.1
 
 // Log macro
 #define LOG(msg) Ogre::LogManager::getSingleton().logMessage(msg);
@@ -31,7 +31,7 @@ namespace caelum {
 
 /** The Caelum resources group name
  */
-static const Ogre::String RESOURCE_GROUP_NAME = "Caelum";
+static Ogre::String RESOURCE_GROUP_NAME = "Caelum";
 
 } // namespace caelum
 

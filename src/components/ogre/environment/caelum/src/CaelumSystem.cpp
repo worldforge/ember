@@ -2,17 +2,25 @@
 
 namespace caelum {
 
-const Ogre::String CaelumSystem::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
-const Ogre::String CaelumSystem::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial";
-
-CaelumSystem::CaelumSystem (Ogre::Root *root, Ogre::SceneManager *sceneMgr, bool createSkyDome, bool createSun, bool createStarfield) {
+CaelumSystem::CaelumSystem (Ogre::Root *root, 
+															Ogre::SceneManager *sceneMgr, 
+															bool manageResGroup, 
+															const Ogre::String &resGroupName, 
+															bool createSkyDome, bool createSun, bool createStarfield) {
 	LOG ("Initialising Caelum system...");
 	mOgreRoot = root;
 	mSceneMgr = sceneMgr;
 
-	// Create materials
-	createSkyDomeMaterial ();
-	createStarfieldMaterial ();
+	RESOURCE_GROUP_NAME = resGroupName;
+
+	// Create resource group
+	if (manageResGroup) {
+		mManageResourceGroup = true;
+		Ogre::ResourceGroupManager::getSingleton ().createResourceGroup (RESOURCE_GROUP_NAME);
+		LOG (Ogre::String ("Created Caelum resource group (") + RESOURCE_GROUP_NAME + ")");
+	}
+	else
+		mManageResourceGroup = false;
 
 	// Set-up attributes
 	mUpdateRate = 0;
@@ -57,9 +65,11 @@ CaelumSystem::~CaelumSystem () {
 	destroySun ();
 	destroyStarfield ();
 
-	// Destroy the materials
-	destroyStarfieldMaterial ();
-	destroySkyDomeMaterial ();
+	// Remove resource group
+	if (mManageResourceGroup) {
+		Ogre::ResourceGroupManager::getSingleton ().destroyResourceGroup (RESOURCE_GROUP_NAME);
+		LOG ("Destroyed Caelum resource group");
+	}
 
 	LOG ("DONE");
 }
@@ -72,26 +82,20 @@ void CaelumSystem::removeListener (CaelumListener *listener) {
 	mListeners.erase (listener);
 }
 
-void CaelumSystem::registerAllToTarget (Ogre::RenderTarget *target) {
-	std::set<Ogre::RenderTargetListener *> *list = collectAllRenderTargetListeners ();
-
-	std::set<Ogre::RenderTargetListener *>::iterator it, iend = list->end ();
-	for (it = list->begin (); it != iend; ++it) {
-		target->addListener (*it);
+void CaelumSystem::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
+	Ogre::Camera *cam = e.source->getCamera ();
+	
+	if (mSkyDome) {
+		mSkyDome->notifyCameraChanged (cam);
 	}
 
-	delete list;
-}
-
-void CaelumSystem::unregisterAllFromTarget (Ogre::RenderTarget *target) {
-	std::set<Ogre::RenderTargetListener *> *list = collectAllRenderTargetListeners ();
-
-	std::set<Ogre::RenderTargetListener *>::iterator it, iend = list->end ();
-	for (it = list->begin (); it != iend; ++it) {
-		target->removeListener (*it);
+	if (mSun) {
+		mSun->notifyCameraChanged (cam);
 	}
 
-	delete list;
+	if (mStarfield) {
+		mStarfield->notifyCameraChanged (cam);
+	}
 }
 
 void CaelumSystem::setUpdateRate (float rate) {
@@ -141,14 +145,6 @@ float CaelumSystem::getTotalDayTime () const {
 	return mTotalDayTime;
 }
 
-void CaelumSystem::setSunDirection (Ogre::Vector3 dir) {
-	if (!mSkyDomeMaterial.isNull ()) {
-		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-			mSkyDomeMaterial->getTechnique (0)->getPass (0)->getVertexProgramParameters ()->setNamedConstant ("sunDirection", dir);
-		}
-	}
-}
-
 bool CaelumSystem::frameStarted (const Ogre::FrameEvent &e) {
 	// Update local time
 	mLocalTime += e.timeSinceLastFrame * mTimeScale;
@@ -179,12 +175,10 @@ bool CaelumSystem::frameStarted (const Ogre::FrameEvent &e) {
 			mStarfield->update (mRelativeTime);
 		}
 
-		updateSkyDomeMaterialTime ();
+		if (mSkyDome) {
+			mSkyDome->updateSkyDomeMaterialTime (mSkyColourModel, mRelativeTime, mSun);
 
-		if (!mSkyDomeMaterial.isNull ()) {
-			if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-				mSkyDomeMaterial->getTechnique (0)->getPass (0)->getVertexProgramParameters ()->setNamedConstant ("sunDirection", mSun->getSunDirection ());
-			}
+			mSkyDome->setSunDirection (mSun->getSunDirection ());
 		}
 
 		if (mManageFog) {
@@ -259,8 +253,7 @@ Starfield *CaelumSystem::createStarfield (const Ogre::String &mapName) {
 		LOG ("Starfield created.");
 	}
 
-	// Update the starfield material
-	mStarfieldMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (mapName);
+	mStarfield->updateMaterial (mapName);
 
 	return mStarfield;
 }
@@ -279,7 +272,11 @@ void CaelumSystem::destroyStarfield () {
 
 void CaelumSystem::setSkyColourModel (SkyColourModel *model) {
 	mSkyColourModel = model;
-	mSkyColourModel->setSkyGradientsTextureUnitState (mSkyDomeMaterial->getTechnique (0)->getPass (0)->getTextureUnitState (0));
+	if (mSkyDome) {
+		Ogre::TextureUnitState *temp = mSkyDome->getTextureUnitState ();
+		if (temp)
+			mSkyColourModel->setSkyGradientsTextureUnitState (temp);
+	}
 }
 
 void CaelumSystem::setManageFog (bool manage) {
@@ -288,43 +285,6 @@ void CaelumSystem::setManageFog (bool manage) {
 
 bool CaelumSystem::isFogManaged () const {
 	return mManageFog;
-}
-
-void CaelumSystem::setLightAbsorption (float absorption) const {
-	if (absorption > 1)
-		absorption = 1;
-	else if (absorption < 0)
-		absorption = 0;
-
-	if (!mSkyDomeMaterial.isNull ()) {
-		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-			mSkyDomeMaterial->getTechnique (0)->getPass (0)->getVertexProgramParameters ()->setNamedConstant ("lightAbsorption", absorption);
-		}
-	}
-}
-
-void CaelumSystem::setLightScattering (float scattering) const {
-	if (scattering <= 0)
-		scattering = 0.00001;
-
-	if (!mSkyDomeMaterial.isNull ()) {
-		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-			mSkyDomeMaterial->getTechnique (0)->getPass (0)->getFragmentProgramParameters ()->setNamedConstant ("lightInvScattering", 1.0f / scattering);
-		}
-	}
-}
-
-void CaelumSystem::setAtmosphereHeight (float height) const {
-	if (height <= 0)
-		height = 0.00001;
-	else if (height > 1)
-		height = 1;
-
-	if (!mSkyDomeMaterial.isNull ()) {
-		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-			mSkyDomeMaterial->getTechnique (0)->getPass (0)->getFragmentProgramParameters ()->setNamedConstant ("atmosphereInvHeight", 1.0f / height);
-		}
-	}
 }
 
 bool CaelumSystem::fireStartedEvent (const Ogre::FrameEvent &e) {
@@ -357,27 +317,6 @@ bool CaelumSystem::fireFinishedEvent (const Ogre::FrameEvent &e) {
 	return flag;
 }
 
-std::set<Ogre::RenderTargetListener *> *CaelumSystem::collectAllRenderTargetListeners () {
-	std::set<Ogre::RenderTargetListener *> *list = new std::set<Ogre::RenderTargetListener *>();
-
-	// Insert the dome
-	if (mSkyDome) {
-		list->insert (mSkyDome);
-	}
-
-	// Insert the sun
-	if (mSun) {
-		list->insert (static_cast<Ogre::RenderTargetListener *>(mSun));
-	}
-
-	// Insert the starfield
-	if (mStarfield) {
-		list->insert (mStarfield);
-	}
-
-	return list;
-}
-
 void CaelumSystem::clampLocalTime () {
 	if (mLocalTime < 0) {
 		int ratio = (int )(mTotalDayTime / -mLocalTime);
@@ -387,114 +326,6 @@ void CaelumSystem::clampLocalTime () {
 		int ratio = (int )(mTotalDayTime / mLocalTime);
 		mLocalTime -= mTotalDayTime * ratio;
 	}
-}
-
-void CaelumSystem::createSkyDomeMaterial () {
-	Ogre::MaterialPtr mat;
-
-	LOG ("Generating sky dome material...");
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SKY_DOME_MATERIAL_NAME)) {
-		LOG ("\tMaterial not found; creating...");
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (SKY_DOME_MATERIAL_NAME, RESOURCE_GROUP_NAME));
-		mat->setReceiveShadows (false);
-		LOG ("\t\tMaterial [OK]");
-		Ogre::Pass *pass = mat->getTechnique (0)->getPass (0);
-		pass->setSceneBlending (Ogre::SBT_TRANSPARENT_ALPHA);
-		pass->setDepthCheckEnabled (false);
-		pass->setDepthWriteEnabled (false);
-		pass->setLightingEnabled (false);
-		pass->setFog (true);
-		// Bind the sky light absorption shader if capable to
-		// TODO
-		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
-			Ogre::HighLevelGpuProgramPtr fp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram ("SkyLightAbsorptionFP", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_FRAGMENT_PROGRAM);
-			fp->setSourceFile ("SkyLightAbsorption.cg");
-			fp->setParameter ("entry_point", "main_fp");
-			fp->setParameter ("profiles", "ps_2_0 arbfp1");
-			pass->setFragmentProgram ("SkyLightAbsorptionFP");
-			Ogre::GpuProgramParametersSharedPtr parameters = pass->getFragmentProgramParameters();
-			parameters->setNamedConstant ("offset", 0.0f);
-//			parameters->setNamedConstant ("lightInvScattering", 3.0f);
-//			parameters->setNamedConstant ("atmosphereInvHeight", 25.0f);
-		}
-		if (mOgreRoot->getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-			Ogre::HighLevelGpuProgramPtr vp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram ("SkyLightAbsorptionVP", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_VERTEX_PROGRAM);
-			vp->setSourceFile ("SkyLightAbsorption.cg");
-			vp->setParameter ("entry_point", "main_vp");
-			vp->setParameter ("profiles", "vs_2_0 arbvp1");
-			pass->setVertexProgram ("SkyLightAbsorptionVP");
-			Ogre::GpuProgramParametersSharedPtr parameters = pass->getVertexProgramParameters();
-			parameters->setNamedAutoConstant ("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-			parameters->setNamedConstant ("sunDirection", Ogre::Vector3 (1, 0, 0));
-			parameters->setNamedConstant ("lightAbsorption", 0.3f);
-		}
-		LOG ("\t\tPass [OK]");
-		Ogre::TextureUnitState *tus = pass->createTextureUnitState ();
-		tus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_CLAMP, Ogre::TextureUnitState::TAM_CLAMP);
-		LOG ("\t\tTextureUnit [OK]");
-		mat->load ();
-		LOG ("\tDONE");
-	}
-	else {
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
-	}
-	LOG ("DONE");
-
-	mSkyDomeMaterial = mat;
-}
-
-void CaelumSystem::destroySkyDomeMaterial () {
-	LOG ("Removing sky dome material...");
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SKY_DOME_MATERIAL_NAME)) {
-		Ogre::MaterialManager::getSingleton ().remove (SKY_DOME_MATERIAL_NAME);
-	}
-	mSkyDomeMaterial.setNull ();
-	LOG ("DONE");
-}
-
-void CaelumSystem::createStarfieldMaterial () {
-	Ogre::MaterialPtr mat;
-
-	LOG ("Generating starfield material...");
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (STARFIELD_MATERIAL_NAME)) {
-		LOG ("\tMaterial not found; creating...");
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (STARFIELD_MATERIAL_NAME, RESOURCE_GROUP_NAME));
-		mat->setReceiveShadows (false);
-		LOG ("\t\tMaterial [OK]");
-		Ogre::Pass *pass = mat->getTechnique (0)->getPass (0);
-		pass->setDepthCheckEnabled (false);
-		pass->setDepthWriteEnabled (false);
-		pass->setLightingEnabled (false);
-		pass->setFog (true);
-		LOG ("\t\tPass [OK]");
-		Ogre::TextureUnitState *tus = pass->createTextureUnitState ();
-		tus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_WRAP);
-		LOG ("\t\tTextureUnit [OK]");
-		mat->load ();
-		LOG ("\tDONE");
-	}
-	else {
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (STARFIELD_MATERIAL_NAME));
-	}
-	LOG ("DONE");
-
-	mStarfieldMaterial = mat;
-}
-
-void CaelumSystem::destroyStarfieldMaterial () {
-	LOG ("Removing starfield material...");
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (STARFIELD_MATERIAL_NAME)) {
-		Ogre::MaterialManager::getSingleton ().remove (STARFIELD_MATERIAL_NAME);
-	}
-	mStarfieldMaterial.setNull ();
-	LOG ("DONE");
-}
-
-void CaelumSystem::updateSkyDomeMaterialTime () {
-	mSkyColourModel->updateMaterial (mSkyDomeMaterial->getTechnique (0)->getPass (0)->getFragmentProgramParameters (), 
-																		mSkyDomeMaterial->getTechnique (0)->getPass (0)->getVertexProgramParameters (), 
-																		mLocalTime / mTotalDayTime, 
-																		mSun ? mSun->getSunDirection () : Ogre::Vector3::UNIT_Y);
 }
 
 void CaelumSystem::forceUpdate () {
