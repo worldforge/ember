@@ -1,3 +1,7 @@
+2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* acinclude.m4: fixed GL includes
+
 2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/environment/caelum/include/SunPositionModel.h: added forgotten file

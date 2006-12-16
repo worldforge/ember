@@ -203,8 +203,9 @@ AC_DEFUN([WF_CHECK_GL_SINGLE_LIB],[dnl
 AC_LANG_PUSH(C)
 
 AC_CHECK_LIB(GL,glViewport, ,
-    AC_MSG_CHECKING(for glViewport in opengl32)
-    LIBS="$LIBS -lopengl32"
+    AC_MSG_CHECKING(for glViewport in libGL)
+    LIBS="$LIBS -lGL"
+	CXXFLAGS="$CXXFLAGS /usr/X11R6/include /usr/include"
     AC_TRY_LINK([
 	#include <GL/gl.h>
     ],[
