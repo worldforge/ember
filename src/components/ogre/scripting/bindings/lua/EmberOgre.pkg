@@ -51,6 +51,8 @@ $pfile "Vector3Adapter.pkg"
 $pfile "QuaternionAdapter.pkg"
 
 
+$pfile "OgreInfo.pkg"
+
 
 //$pfile "EntityCEGUITexture.pkg"
 
