@@ -1,3 +1,27 @@
+2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/caelum/include/SunPositionModel.h: added forgotten file
+
+2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/caelum/Makefile.am, src/components/ogre/environment/caelum/include/Caelum.h, src/components/ogre/environment/caelum/include/CaelumPrerequisites.h, src/components/ogre/environment/caelum/include/CaelumSystem.h, src/components/ogre/environment/caelum/include/SkyColourModel.h, src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/include/Starfield.h, src/components/ogre/environment/caelum/include/StoredImageElvBasedSkyColourModel.h, src/components/ogre/environment/caelum/include/StoredImageSkyColourModel.h, src/components/ogre/environment/caelum/include/Sun.h, src/components/ogre/environment/caelum/src/CaelumSystem.cpp, src/components/ogre/environment/caelum/src/SkyDome.cpp, src/components/ogre/environment/caelum/src/Starfield.cpp, src/components/ogre/environment/caelum/src/Sun.cpp, src/components/ogre/environment/caelum/include/CameraBoundElement.h, src/components/ogre/environment/caelum/include/SimpleSunPositionModel.h, src/components/ogre/environment/caelum/src/SimpleSunPositionModel.cpp: updated caelum
+	
+2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/OgreInfo.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/IndirectRenderingChecker.layout, src/components/ogre/widgets/IndirectRenderingChecker.lua: if the user is using indirect rendering, for example if Mesa is used, show a warning about this
+
+2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Makefile.am, src/components/ogre/OgreInfo.cpp, src/components/ogre/OgreInfo.h: Added class for providing some Ogre information, such as if we're using indirect rendering.
+
+2006-12-16 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* configure.ac: add checks for GL
+
 2006-12-12 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/widgets/Quit.cpp: switch to gui mode when quitting
