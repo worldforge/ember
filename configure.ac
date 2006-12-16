@@ -103,7 +103,7 @@ AM_PATH_SDL(1.2.0,
 
 #dnl don't add SDL flags yet, SDL_main confuses later checks
 
-#WF_CHECK_GL_SINGLE_LIB
+WF_CHECK_GL_SINGLE_LIB
 
 # OpenAL check
 AC_MSG_RESULT([
