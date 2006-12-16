@@ -58,6 +58,7 @@ loadScript("ModelEdit.lua")
 loadScript("Tasks.lua")
 loadScript("Mover.lua")
 loadScript("Admin.lua")
+loadScript("IndirectRenderingChecker.lua")
 
 --loadScript("TerrainEditor.lua")
 

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.00000,300.000000},{0.00000,150.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.500000,-150.000000},{0.5000,-75.000000}}'/>
+		<Property Name='Text' Value='Indirect rendering detected'/>
+		<Window Type='EmberLook/StaticText' Name='Text'>
+			<Property Name='UnifiedSize' Value='{{1.000000,-8.000000},{1.0000,-30.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.00000,4.00000},{0.000,15.000000}}'/>
+			<Property Name='BackgroundEnabled' Value='False'/>
+			<Property Name='FrameEnabled' Value='False'/>
+			<Property Name='InheritsAlpha' Value='false'/>
+			<Property Name='Text' Value="You are using indirect rendering. This means that you will get very lousy performance. The most common reason for this is that you're using non-vendor provided graphics drivers. While Ember is playable, it will run very slow. It is recommended that you upgrade your drivers to those provided by your graphics card vendor."/>
+			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+			<Property Name='VertFormatting' Value='TopAligned'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='OkButton'>
+			<Property Name='UnifiedSize' Value='{{0.00000,50.000000},{0.00000,25.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.500000,-25.000000},{1.00000,-30.000000}}'/>
+			<Property Name='Text' Value='Ok'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+		</Window>
+	</Window>
+</GUILayout>
