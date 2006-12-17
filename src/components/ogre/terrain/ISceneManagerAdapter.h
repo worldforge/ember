@@ -42,8 +42,8 @@ public:
 	virtual void resize(Ogre::AxisAlignedBox newSize, int levels) = 0;
 	virtual void loadScene() = 0;
 	
-	virtual bool setOption(const std::string& strKey, const void* pValue) = 0;
-	virtual bool getOption(const std::string& strKey, void* pDestValue) = 0;
+	virtual void setOption(const std::string& strKey, const void* pValue) = 0;
+	virtual void getOption(const std::string& strKey, void* pDestValue) = 0;
 	
 	virtual Ogre::SceneManager* getSceneManager() const = 0;
 	

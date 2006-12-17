@@ -1,5 +1,9 @@
 2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/terrain/ISceneManagerAdapter.h: correctly updated interface
+
+2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp: fixed some erronous signatures, include all needed headers
 
 2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
