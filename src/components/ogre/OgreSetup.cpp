@@ -184,8 +184,22 @@ bool OgreSetup::configure(void)
 		mRoot->initialise(false);
 		
 		SDL_Init(SDL_INIT_VIDEO);
+		atexit(SDL_Quit);
+		
 		///set the window size
-		SDL_SetVideoMode(width, height,0,0); // create an SDL window
+        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
+		
+        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+        // request good stencil size if 32-bit colour
+/*        if (colourDepth == 32)
+        {
+            SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8);
+        }*/
+		
+        if (fullscreen)
+            flags |= SDL_FULLSCREEN;
+		
+		SDL_SetVideoMode(width, height,0, flags); // create an SDL window
 	
 		SDL_WM_SetCaption("Ember","ember");
 	

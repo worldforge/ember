@@ -1,5 +1,9 @@
 2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
 
+	* src/components/ogre/OgreSetup.cpp: better handling of fullscreen and some SDL cleanup at exit
+
+2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
+
 	* src/components/ogre/terrain/ISceneManagerAdapter.h: correctly updated interface
 
 2006-12-17 Erik Hjortsberg  <erik@katastrof.nu>
