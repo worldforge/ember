@@ -60,6 +60,7 @@ noinst_HEADERS = \
 			OgrePagingLandScapeTileInfo.h \
 			OgrePagingLandScapeTileManager.h \
 			OgrePagingLandScapeOcclusion.h \
+			OgrePagingLandScapeOcclusionTraversal.h \
 			OgrePagingLandScapeOcclusionElement.h \
 			OgrePagingLandScapeOcclusionVisibilityData.h \
 			OgrePagingLandScapeOcclusionCameraTraversal.h \
@@ -72,7 +73,11 @@ noinst_HEADERS = \
 			OgrePagingLandScapeOcclusionQuerySet.h \
 			OgrePagingLandScapePoolSet.h \
 			OgrePagingLandScapeOcclusionSorter.h \
-\
+			OgrePagingLandScapePrecompiledHeaders.h \
+			OgrePagingLandScapeCallBackEvent.h \
+			OgrePagingLandScapeCallback.h \
+			OgrePagingLandScapeTexture_InstantBaseTextureShadowed.h \
+			\
 EmberPagingLandScapeData2D_HeightField.h \
 EmberPagingLandScapeTexture.h \
 EmberPagingSceneManager.h \

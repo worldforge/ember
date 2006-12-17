@@ -32,10 +32,23 @@
 namespace EmberOgre {
 
 class TerrainGenerator;
+class EmberPagingSceneManager;
 
 namespace Model {
 class Model;
 }
+
+class IPageData
+{
+	void createHeightData(Ogre::Real* heightData);
+	Ogre::MaterialPtr getMaterial();
+};
+
+
+class IPageDataProvider
+{
+	IPageData* getPageData(Ogre::Vector2 position);
+};
 
 
      /// Factory for OctreeSceneManager
@@ -107,6 +120,8 @@ public:
 	Model::Model* createModel(
 									const Ogre::String& modelName,
 									const Ogre::String& modelDefinitionName );
+									
+	void registerProvider(IPageDataProvider* provider);
 	
 protected:
 
@@ -129,6 +144,8 @@ protected:
 	float mMinX;
 	float mMinY;
 	float mMinZ;
+	
+	IPageDataProvider* mProvider;
 	
 
 private:

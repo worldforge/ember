@@ -88,12 +88,12 @@ namespace EmberOgre {
 		mSceneManager->loadScene();
 	}
 
-	bool EmberPagingSceneManagerAdapter::setOption(const std::string& strKey, const void* pValue)
+	void EmberPagingSceneManagerAdapter::setOption(const std::string& strKey, const void* pValue)
 	{
 		mSceneManager->setOption(strKey, pValue);
 	}
 	
-	bool EmberPagingSceneManagerAdapter::getOption(const std::string& strKey, void* pDestValue)
+	void EmberPagingSceneManagerAdapter::getOption(const std::string& strKey, void* pDestValue)
 	{
 		mSceneManager->getOption(strKey, pDestValue);
 	}

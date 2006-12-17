@@ -72,6 +72,11 @@ namespace EmberOgre {
 
 	}
 	
+	void EmberPagingSceneManager::registerProvider(IPageDataProvider* provider)
+	{
+		mProvider = provider;
+	}
+	
 	Model::Model* EmberPagingSceneManager::createModel(
 									const Ogre::String& modelName,
 									const Ogre::String& modelDefinitionName )
