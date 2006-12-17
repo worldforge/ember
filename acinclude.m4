@@ -202,20 +202,14 @@ AC_DEFUN([WF_CHECK_GL_SINGLE_LIB],[dnl
 
 AC_LANG_PUSH(C)
 
-AC_CHECK_LIB(GL,glViewport, ,
-    AC_MSG_CHECKING(for glViewport in libGL)
+dnl AC_MSG_CHECKING(for glViewport in libGL)
+
+AC_CHECK_LIB([GL], [glViewport],[
     LIBS="$LIBS -lGL"
-	CXXFLAGS="$CXXFLAGS /usr/X11R6/include /usr/include"
-    AC_TRY_LINK([
-	#include <GL/gl.h>
+	CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include -I/usr/include"
     ],[
-	glViewport(0, 0, 0, 0);
-    ],[
-	AC_MSG_RESULT(yes)
-    ],[
-	AC_MSG_RESULT(no)
 	AC_MSG_ERROR(Could not find OpenGL library)
-    ])
+    ]
 )
 
 AC_LANG_POP(C)
