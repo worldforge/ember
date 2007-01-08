@@ -66,8 +66,10 @@ mCurrentMovementAction(0)
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
-	delete mModel->getUserObject();
-	delete mModel;
+	if (mModel) {
+		delete mModel->getUserObject();
+		getSceneManager()->destroyMovableObject(mModel);
+	}
 	Ogre::SceneNode *parent = static_cast<Ogre::SceneNode*>(getScaleNode()->getParent());
 	if (parent) {
 		parent->removeAndDestroyChild(getScaleNode()->getName());
