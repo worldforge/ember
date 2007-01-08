@@ -60,6 +60,8 @@ protected:
 	void checkMovementMode();
 	
 	const CEGUI::Image* mOriginalCursorImage;
+	
+	std::vector<IconBase*> mIconBases;
 };
 
 }

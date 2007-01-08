@@ -41,6 +41,10 @@ StatusIconBar::StatusIconBar() : mOriginalCursorImage(0)
 
 StatusIconBar::~StatusIconBar()
 {
+	for (std::vector<IconBase*>::iterator I = mIconBases.begin(); I != mIconBases.end(); ++I) {
+		delete *I;
+	}
+	mIconBases.clear();
 }
 
 void StatusIconBar::buildWidget()
@@ -57,6 +61,7 @@ void StatusIconBar::buildWidget()
 	getMainSheet()->addChildWindow(helpIconBase->getContainer());
 	helpIconBase->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(0, 700));
 	helpIconBase->getButton()->setTooltipText("Click here to exit Ember.");
+	mIconBases.push_back(helpIconBase);
 	
 	BIND_CEGUI_EVENT(helpIconBase->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::close_MouseClick);
 	
@@ -65,6 +70,7 @@ void StatusIconBar::buildWidget()
 	getMainSheet()->addChildWindow(helpIconBase->getContainer());
 	helpIconBase->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(50, 700));
 	helpIconBase->getButton()->setTooltipText("Click here to access the help.");
+	mIconBases.push_back(helpIconBase);
 	
 	BIND_CEGUI_EVENT(helpIconBase->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::help_MouseClick);
 	
@@ -78,6 +84,7 @@ void StatusIconBar::buildWidget()
 	getMainSheet()->addChildWindow(mMovementModeIcon->getContainer());
 	mMovementModeIcon->getContainer()->setPosition(CEGUI::Absolute, CEGUI::Point(100, 700));
 	mMovementModeIcon->getButton()->setTooltipText("This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.");
+	mIconBases.push_back(mMovementModeIcon);
 	
 	BIND_CEGUI_EVENT(mMovementModeIcon->getButton(), CEGUI::ButtonBase::EventMouseClick, StatusIconBar::movement_MouseClick);
 	
