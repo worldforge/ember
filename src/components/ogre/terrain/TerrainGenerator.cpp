@@ -401,6 +401,8 @@ void TerrainGenerator::prepareAllSegments()
 	S_LOG_INFO("New size of the world: " << ss.str());
 	
 	getAdapter()->resize(worldBox ,16);
+	
+	S_LOG_INFO("Pages: X: " << mTerrainInfo.getTotalNumberOfPagesX() << " Y: " << mTerrainInfo.getTotalNumberOfPagesY() << " Total: " <<  mTerrainInfo.getTotalNumberOfPagesX() *  mTerrainInfo.getTotalNumberOfPagesY());
 
 	
 }
