@@ -999,13 +999,12 @@ bool TiXmlDocument::LoadFile( Ogre::DataStreamPtr stream ,TiXmlEncoding encoding
 		TIXML_STRING data;
 		data.reserve( length );
 
-		const size_t BUF_SIZE = length;
-		char *buf = new char[BUF_SIZE];
+		char *buf = new char[length];
 
-		while( stream->read( buf, BUF_SIZE ) )
+		while( stream->read( buf, length ) )
 		{
 			//got segfaults when doing "data += buf;", so switched to this
-			data.append(buf, BUF_SIZE);
+			data.append(buf, length);
 		}
 		delete[] buf; 
 
