@@ -65,7 +65,7 @@ namespace EmberOgre {
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
-: mWindow(window), mGuiCommandMapper("gui", "key_bindings_gui")
+: mWindow(window), mGuiRenderer(0), mGuiCommandMapper("gui", "key_bindings_gui")
 , ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
 {
