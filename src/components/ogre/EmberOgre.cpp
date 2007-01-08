@@ -160,11 +160,20 @@ mTerrainGenerator(0),
 mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
-mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general")
+mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general"),
+mWindow(0)
 {}
 
 EmberOgre::~EmberOgre()
 {
+	///start with deleting the eris world, then shut down ogre
+	delete mWorldView;
+
+	if (mWindow) {
+		mRoot->detachRenderTarget(mWindow);
+	}
+	delete mRoot;
+	
 /*	delete mOgreResourceLoader;
 //	mSceneMgr->shutdown();
 //		delete mWorldView;
