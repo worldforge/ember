@@ -66,4 +66,9 @@ material /global/clothes/dress/fine : /base/simple/nonculled/alphablended
   set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/fine/low/dress.png
 }
 
+material /global/clothes/dress/burlap : /base/simple/nonculled/alphablended
+{
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/burlap/burlap.png
+}
+
 
