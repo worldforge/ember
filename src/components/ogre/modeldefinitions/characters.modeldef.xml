@@ -147,7 +147,7 @@
 			</attachpoints>
 		</model>
 	
-		<model name="settler" usescaleof="height"  showcontained="false" renderingdistance="150">
+		<model name="settler_standard" usescaleof="height"  showcontained="false" renderingdistance="150">
 		<submodels>
 			<submodel mesh="Alpha_Male.mesh" >
 				<parts>
@@ -718,23 +718,4 @@
 			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
 		</attachpoints>
 	</model>
-	
-	<model name="creator"  usescaleof="height" showcontained="false"  renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>      
-			</submodel>
-		</submodels>
-	</model>
-
-	
-
-
-
-
-
-
-
 </models>
