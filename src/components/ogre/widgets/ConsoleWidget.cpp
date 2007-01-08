@@ -195,7 +195,7 @@ bool ConsoleWidget::consoleTextBox_KeyUp(const CEGUI::EventArgs& args)
 			{
 				const std::set< std::string > commands(myBackend->getPrefixes(sCommand));
 				
-				std::cout << sCommand << std::endl;
+				//std::cout << sCommand << std::endl;
 				if(commands.size() > 0)
 				{
 					std::set< std::string >::const_iterator iCommand(commands.begin());
