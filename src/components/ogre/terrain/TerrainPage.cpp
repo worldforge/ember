@@ -144,7 +144,7 @@ void TerrainPage::update()
 	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator->getTerrainInfo().getPageOffsetX(), targetPage.y + mGenerator->getTerrainInfo().getPageOffsetY());
 	
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-	mGenerator->getAdapter()->reloadPage(adjustedOgrePos.x, adjustedOgrePos.y); 
+	mGenerator->getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y)); 
 
 }
 
