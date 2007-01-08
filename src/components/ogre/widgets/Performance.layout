@@ -2,13 +2,12 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
 		<Property Name='UnifiedSize' Value='{{0.200000,0.000000},{0.100000,0.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,300.000000},{0.000000,35.000000}}'/>
-		<Property Name='SizingEnabled' Value='false'/>
+		<Property Name='UnifiedPosition' Value='{{0.300000,0.000000},{0.000000,25.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Performance'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.960000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,15.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>

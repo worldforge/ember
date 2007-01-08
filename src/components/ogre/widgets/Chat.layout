@@ -6,8 +6,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Chat output'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.960000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.020000,0.000000},{0.100000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>

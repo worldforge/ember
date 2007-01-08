@@ -7,8 +7,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Server browser'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedSize' Value='{{0.000000,590.000000},{0.000000,465.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,30.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
 				<Property Name='UnifiedSize' Value='{{0.000000,590.000000},{0.000000,420.000000}}'/>

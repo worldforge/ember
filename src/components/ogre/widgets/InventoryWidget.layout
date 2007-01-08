@@ -5,22 +5,27 @@
 		<Property Name='UnifiedPosition' Value='{{0.700000,0.000000},{0.700000,0.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Inventory'/>
-		<Window Type='EmberLook/Listbox' Name='ListBox'>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.050000,0.000000}}'/>
-			<Property Name='UnifiedSize' Value='{{1.0,0},{0.95,-25}}'/>
-			<Property Name='InheritsAlpha' Value='false'/>
-		</Window>
-		<Window Type='EmberLook/Button' Name='Drop'>
-			<Property Name='UnifiedPosition' Value='{{0.5,0},{1.0,-25}}'/>
-			<Property Name='UnifiedSize' Value='{{0.5,0},{0,25}}'/>
-			<Property Name='Text' Value='Drop'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-		</Window>
-		<Window Type='EmberLook/Button' Name='Wield'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
-			<Property Name='UnifiedSize' Value='{{0.5,0},{0,25}}'/>
-			<Property Name='Text' Value='Wield'/>
-			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Listbox' Name='ListBox'>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.050000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0},{0.95,-25}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Drop'>
+				<Property Name='UnifiedPosition' Value='{{0.5,0},{1.0,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0.5,0},{0,25}}'/>
+				<Property Name='Text' Value='Drop'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Wield'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0.5,0},{0,25}}'/>
+				<Property Name='Text' Value='Wield'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>

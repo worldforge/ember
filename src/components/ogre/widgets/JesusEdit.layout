@@ -6,8 +6,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Builder'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedSize' Value='{{0.950000,0.000000},{0.900000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.050000,0.000000},{0.100000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Listbox' Name='CurrentBlocks'>
 				<Property Name='UnifiedSize' Value='{{0.450000,0.000000},{0.400000,0.000000}}'/>
