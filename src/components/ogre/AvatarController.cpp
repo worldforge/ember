@@ -45,7 +45,8 @@ AvatarControllerMovement::AvatarControllerMovement() :	rotationDegHoriz(0),
 	rotationDegVert(0),
 	timeSlice(0),
 	movementDirection(Ogre::Vector3::ZERO),
-	isMoving(false)
+	isMoving(false),
+	mode(AvatarMovementMode::MM_WALK)
 {
 }
 
@@ -66,6 +67,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , CharacterMoveUpwards("+character_move_upwards", this, "Move the avatar upwards.")
 , CharacterMoveDownwards("+character_move_downwards", this, "Move the avatar downwards.")
 , mMovementDirection(Ogre::Vector3::ZERO)
+, mIsRunning(false)
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
