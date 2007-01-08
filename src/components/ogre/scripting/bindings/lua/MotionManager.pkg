@@ -2,6 +2,13 @@ namespace EmberOgre {
 
 class MotionManager  {
 	//from Singleton
+	struct MotionManagerInfo
+	{
+		int AnimatedEntities;
+		int MovingEntities;
+		int Animations;
+	};
+		
 	static MotionManager& getSingleton( void );
 	
 	void addEntity(EmberEntity* entity);
@@ -14,6 +21,12 @@ class MotionManager  {
 	
 	void addAnimatedEntity(EmberPhysicalEntity* entity);
 	void removeAnimatedEntity(EmberPhysicalEntity* entity);	
+	
+	/**
+	 *    Gets info about the MotionManager.
+	 * @return 
+	 */
+	inline const EmberOgre::MotionManager::MotionManagerInfo& getInfo() const;
 	
 };
 }
