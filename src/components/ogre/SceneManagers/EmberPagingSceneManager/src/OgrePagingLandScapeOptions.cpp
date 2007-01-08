@@ -200,7 +200,7 @@ namespace Ogre
         ZHorizon = false;
         SRTM_water = false;
         
-#endif _MAPSPLITTER
+#endif //_MAPSPLITTER
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::init()
@@ -707,9 +707,9 @@ namespace Ogre
             || HeightFieldNTC)
         {
             setUint (maxValue, "MaxValue");
-            maxValue *= scale.y;
+            maxValue *= static_cast<unsigned int>(scale.y);
             setUint (minValue, "MinValue");
-            minValue *= scale.y;
+            minValue *= static_cast<unsigned int>(scale.y);
         }
         else
         {
@@ -801,7 +801,7 @@ namespace Ogre
         if (maxRenderLevel == 100)
         {
 			maxRenderLevel = 0;
-			const unsigned int halftileSize = TileSize * 0.5f;
+			const unsigned int halftileSize = static_cast<unsigned int>(TileSize * 0.5f);
             while (static_cast<unsigned int> ((1 << maxRenderLevel)) < halftileSize )
                 maxRenderLevel++;
         }
@@ -1476,8 +1476,9 @@ namespace Ogre
 	{
 		if (!mTileInfoCache.empty())
 		{
-			assert (mCurrentMap != "");
-			saveMapInfo();
+			///don't do thses things when run in Ember
+			//assert (mCurrentMap != "");
+			//saveMapInfo();
 			std::for_each(mTileInfoCache.begin (),
 						  mTileInfoCache.end (),
 						delete_object());

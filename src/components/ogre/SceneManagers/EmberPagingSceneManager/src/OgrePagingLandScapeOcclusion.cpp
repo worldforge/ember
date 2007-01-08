@@ -31,7 +31,8 @@ namespace Ogre
     Occlusion::Occlusion(unsigned  int visibilityThsd):                
                 mVisibilityTreshold(visibilityThsd),
 				mIsQueryPoolNotInitiated(true),
-				mFrameConservativeVisibility (300)
+				mFrameConservativeVisibility (300),
+				mCurrentCam(0)
     {
     };
     //-----------------------------------------------------------------------

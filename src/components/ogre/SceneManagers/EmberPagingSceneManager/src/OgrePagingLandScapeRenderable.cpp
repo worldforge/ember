@@ -85,8 +85,8 @@ namespace Ogre
         mRenderLevel (-1),
         mIsRectModified (false),
         mRect (0, 0, 0, 0, 0, 1),
-        mForcedMaxLod (false)
-
+        mForcedMaxLod (false),
+        mNeedReload(false)
     {
 	    // No shadow projection
         MovableObject::mCastShadows = false;

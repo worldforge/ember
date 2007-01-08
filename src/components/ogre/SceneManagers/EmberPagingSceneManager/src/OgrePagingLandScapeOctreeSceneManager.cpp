@@ -694,7 +694,7 @@ namespace Ogre
                     std::cout << "Depth Placement " 
                         << StringConverter::toString (depth) 
                         << " \n";
-                #endif _DEBUG
+                #endif //_DEBUG
 
             octant->_addNode(n);
         }
