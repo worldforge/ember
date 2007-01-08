@@ -30,7 +30,13 @@ namespace EmberOgre {
 
 MotionManager::MotionManager() 
 : mControllerManager(&Ogre::ControllerManager::getSingleton())
-{}
+{
+	mInfo.MovingEntities = mMotionSet.size();
+	mInfo.AnimatedEntities = mAnimatedEntities.size();
+	mInfo.Animations = mAnimations.size();
+}
+
+
 MotionManager::~MotionManager()
 {}
 
@@ -91,12 +97,14 @@ bool MotionManager::frameEnded(const Ogre::FrameEvent& event)
 void MotionManager::addEntity(EmberEntity* entity) 
 {
 	mMotionSet.insert(entity);
+	mInfo.MovingEntities = mMotionSet.size();
 	entity->updateMotion(0);
 }
 
 void MotionManager::removeEntity(EmberEntity* entity) 
 {
 	mMotionSet.erase(entity);
+	mInfo.MovingEntities = mMotionSet.size();
 //	entity->updateMotion(0);
 }
 
@@ -105,11 +113,13 @@ void MotionManager::removeEntity(EmberEntity* entity)
 void MotionManager::addAnimatedEntity(EmberPhysicalEntity* entity)
 {
 	mAnimatedEntities[entity->getId()] = entity;
+	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 
 void MotionManager::removeAnimatedEntity(EmberPhysicalEntity* entity)
 {
 	mAnimatedEntities.erase(entity->getId());
+	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 
 
@@ -118,6 +128,7 @@ void MotionManager::addAnimation(Ogre::AnimationState* animationState)
 
 	animationState->setEnabled(true);
 	mAnimations.insert(animationState);
+	mInfo.Animations = mAnimations.size();
 
 /*
 	//check if it's not already added
@@ -164,6 +175,7 @@ void MotionManager::removeAnimation(Ogre::AnimationState* animationState)
 //		Ogre::ControllerManager::getSingleton().destroyController(I->second);
 
 	}
+	mInfo.Animations = mAnimations.size();
 	
 }
 
