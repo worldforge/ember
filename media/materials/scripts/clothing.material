@@ -1,0 +1,50 @@
+//clothes for the male
+
+material /global/clothes/dress/male_chain : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_chain/male_chain.png
+}
+
+material /global/clothes/dress/male_cloth/blue : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth_blue.png
+}
+material /global/clothes/dress/male_cloth/brown : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth_brown.png
+}
+material /global/clothes/dress/male_cloth/green : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth_green.png
+}
+material /global/clothes/dress/male_cloth/red : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth_red.png
+}
+material /global/clothes/dress/male_cloth/yellow : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_cloth/male_cloth_yellow.png
+}
+
+
+
+//armor for the male
+
+material /global/clothes/dress/male_armor/cross : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_armor/male_armor_cross.png
+}
+
+material /global/clothes/dress/male_armor/cross_blue : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_armor/male_armor_cross_blue.png
+}
+
+material /global/clothes/dress/male_armor/eagle : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_armor/male_armor_eagle.png
+}
+material /global/clothes/dress/male_armor/sun : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/male_armor/male_armor_sun.png
+}

@@ -34,41 +34,5 @@ material /global/body_parts/humanoid_body/male_pink : /base/simple
   set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
 }
 
-material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides : /base/simple
-{
-  set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png
-  technique General
-  {
-    pass Main
-    {
-     alpha_rejection greater_equal 128
-    }
-  }
-}
-
-material /global/clothes/dress/ragged : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/ragged/low/dress.png
-}
-
-material /global/clothes/dress/sun : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/sun/low/dress.png
-}
-
-material /global/clothes/dress/dark_rags : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/dark_rags/low/dress.png
-}
-
-material /global/clothes/dress/fine : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/fine/low/dress.png
-}
-
-material /global/clothes/dress/burlap : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/burlap/burlap.png
-}
 
 
