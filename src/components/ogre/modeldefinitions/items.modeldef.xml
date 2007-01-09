@@ -78,6 +78,23 @@
 		<actions />
 	</model>
 	
+	<model name="pants" usescaleof="all" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+		<submodels>
+			<submodel mesh="3d_objects/clothes/dress/models/folded/folded_pants.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<actions />
+	</model>
+	
 	<!-- temporary model for wood; we need a better model which has the grain of the planks in the top and bottom faces -->
 	<model name="wood" usescaleof="all" showcontained="true">
 		<translate x="0.000000" y="0.000000" z="0.000000" />
