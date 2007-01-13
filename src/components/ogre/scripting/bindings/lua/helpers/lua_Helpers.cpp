@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Helpers
-** Generated automatically by tolua++-1.0.6 on Sun Aug  6 00:56:02 2006.
+** Generated automatically by tolua++-1.0.6 on Sat Jan 13 14:50:03 2007.
 */
 
 #ifndef __cplusplus
@@ -46,8 +46,10 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"SigC::Signal1<void,const Eris::ServerInfo&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"Ogre::Mesh");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
+ tolua_usertype(tolua_S,"EmberOgre::OgreUtils");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Task*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainEditAction*>");
@@ -1033,6 +1035,36 @@ static int tolua_Helpers_EmberOgre_LuaConsoleObject_delete00(lua_State* tolua_S)
 #endif
 }
 
+/* method: getSubMeshName of class  EmberOgre::OgreUtils */
+static int tolua_Helpers_EmberOgre_OgreUtils_getSubMeshName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertable(tolua_S,1,"EmberOgre::OgreUtils",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"Ogre::Mesh",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Mesh* mesh = ((Ogre::Mesh*)  tolua_tousertype(tolua_S,2,0));
+  unsigned int subMeshIndex = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+ {
+  const std::string tolua_ret = (const std::string)  EmberOgre::OgreUtils::getSubMeshName(mesh,subMeshIndex);
+ tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSubMeshName'.",&tolua_err);
+ return 0;
+#endif
+}
+
 /* Open function */
 TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
 {
@@ -1117,6 +1149,13 @@ TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
  tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConsoleObject_new01_local);
  tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConsoleObject_new01_local);
  tolua_function(tolua_S,"delete",tolua_Helpers_EmberOgre_LuaConsoleObject_delete00);
+ tolua_endmodule(tolua_S);
+ tolua_endmodule(tolua_S);
+ tolua_module(tolua_S,"EmberOgre",0);
+ tolua_beginmodule(tolua_S,"EmberOgre");
+ tolua_cclass(tolua_S,"OgreUtils","EmberOgre::OgreUtils","",NULL);
+ tolua_beginmodule(tolua_S,"OgreUtils");
+ tolua_function(tolua_S,"getSubMeshName",tolua_Helpers_EmberOgre_OgreUtils_getSubMeshName00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

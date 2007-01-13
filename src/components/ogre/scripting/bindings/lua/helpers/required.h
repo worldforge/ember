@@ -33,6 +33,7 @@
 
 #include "LuaConnector.h"
 #include "LuaConsoleObject.h"
+#include "OgreUtils.h"
 //#include "LuaConnector.h"
 
 // Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
