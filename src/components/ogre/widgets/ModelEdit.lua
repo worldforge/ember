@@ -37,6 +37,7 @@ function ModelEdit_updatePartShown(part, shown)
 	if part ~= nil then
 		part:setShow(shown)
 		ModelEdit_reloadModel()
+--		ModelEdit_updateModelContentList()
 	end
 end
 
@@ -92,7 +93,7 @@ function ModelEdit_fillSubMeshList(part)
 	local numberOfSubmeshes = mesh:getNumSubMeshes()
 	local i = 0
 	while i < numberOfSubmeshes do
-		local item = EmberOgre.ColoredListItem:new(i, i)
+		local item = EmberOgre.ColoredListItem:new(EmberOgre.OgreUtils:getSubMeshName(mesh, i), i)
 		list:addItem(item)
 		i = i + 1
 	end	
@@ -514,7 +515,7 @@ end
 
 function ModelEdit_updateModelContentList()
 	ModelEdit.modelcontents:resetList()
-	ModelEdit.modelcontents:clearAllSelections()
+	--ModelEdit.modelcontents:clearAllSelections()
 	
 	ModelEdit.modelContentsItems = {}
 	
@@ -527,6 +528,13 @@ function ModelEdit_updateModelContentList()
 		local submodel = submodels[val]
 		local name = submodel:getMeshName()
 		local modelcontentItem = {}
+		
+		--we need to get hold of a mesh instance
+		local manager = Ogre.MeshManager:getSingleton()
+		local meshPtr = manager:getByName(name)
+		local mesh = meshPtr:get()
+		
+		
 		modelcontentItem.type = "submodel"
 		modelcontentItem.name = name
 		modelcontentItem.submodel = submodel
@@ -546,21 +554,24 @@ function ModelEdit_updateModelContentList()
 				modelcontentItem.type = "part"
 				modelcontentItem.name = name
 				modelcontentItem.part = part
+				
+				local partVisible = ""
+--				if part:getShow() then
+--					partVisible = " (shown)";
+--				end
+				
 				ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 				
 				--prefix parts with "-"
-				local item = EmberOgre.ColoredListItem:new(" - " .. name, table.getn(ModelEdit.modelContentsItems))
+				local item = EmberOgre.ColoredListItem:new(" - " .. name .. partVisible, table.getn(ModelEdit.modelContentsItems))
 				ModelEdit.modelcontents:addItem(item)
 			
 				if part ~= nil then
 					local subentities = part:getSubEntityDefinitions()
 					for val = 0, subentities:size() - 1 do
 						local subentity = subentities[val]
-						local name = subentity:getSubEntityName()
-						if name == "" then
-							name = subentity:getSubEntityIndex()
-						end
 						
+						local name = EmberOgre.OgreUtils:getSubMeshName(mesh, subentity:getSubEntityIndex())
 						
 						local modelcontentItem = {}
 						modelcontentItem.type = "subentity"
@@ -573,14 +584,9 @@ function ModelEdit_updateModelContentList()
 						ModelEdit.modelcontents:addItem(item)
 					end
 				end
-			
-			
 			end
 		end		
-		
 	end	
-	
-	
 end
 
 
