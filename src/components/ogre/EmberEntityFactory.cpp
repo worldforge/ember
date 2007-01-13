@@ -60,6 +60,7 @@ EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris:
 , mTypeService(typeService)
 , mWorldEntity(0)
 , ShowModels("showmodels", this, "Show or hide models.")
+, DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to the std::out. If no entity id is supplied the current avatar will be used.")
 {
 	mTerrainType = mTypeService->getTypeByName("world");
 	Ember::ServerService* serverService = Ember::EmberServices::getSingletonPtr()->getServerService();
@@ -232,6 +233,15 @@ int EmberEntityFactory::priority() {
 	return 10;
 }
 
+const void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
+{
+	EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
+	if (entity) {
+		entity->dumpAttributes(std::cout, std::cout);
+	}
+}
+
+
 void EmberEntityFactory::runCommand(const std::string &command, const std::string &args)
 {
 	if(command == ShowModels.getCommand())
@@ -246,8 +256,23 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 			S_LOG_INFO("Hiding models.");
 			Model::ModelDefinitionManager::getSingleton().setShowModels(false);
 		}
+	} else if (DumpAttributes == command) {
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string value = tokeniser.nextToken();
+		if (value == "") {
+			Eris::Entity* entity(0); 
+			if (mAvatar) {
+				dumpAttributesOfEntity(mAvatar->getEntity()->getId());
+			}
+		} else {
+			dumpAttributesOfEntity(value);
+		}
 	}
 }
+
+
+
 
 }
 

@@ -97,6 +97,19 @@ public:
 	*/
 	const Ember::ConsoleCommandWrapper ShowModels;
 
+	/**
+	Dumps the attributes of a supplied entity to the std::out.
+	*/
+	const Ember::ConsoleCommandWrapper DumpAttributes;
+
+	
+	/**
+	 *    Dumps the attributes of the entity with the supplied id to the std::out.
+	 * @param entityId 
+	 * @return 
+	 */
+	const void dumpAttributesOfEntity(const std::string& entityId) const;
+	
 protected:
 
 	void buildTerrainAroundAvatar();
