@@ -70,7 +70,7 @@ Model::Model* ModelRenderer::getModel()
 void ModelRenderer::showModel(const std::string& modelName)
 {
 	if (mModel) {
-		mTexture->getSceneManager()->destroyMovableObject(mModel);
+		mModel->_getManager()->destroyMovableObject(mModel);
 		//delete mModel;
 	}
 	if (modelName != "") {
