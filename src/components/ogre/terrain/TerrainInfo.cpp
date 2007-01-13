@@ -109,11 +109,11 @@ int TerrainInfo::getTotalNumberOfPagesY() const
 
 int TerrainInfo::getPageOffsetX() const
 {
-	return -mCalculatedPageSize.lowCorner().x();
+	return static_cast<int>(-mCalculatedPageSize.lowCorner().x());
 }
 int TerrainInfo::getPageOffsetY() const
 {
-	return -mCalculatedPageSize.lowCorner().y();
+	return static_cast<int>(-mCalculatedPageSize.lowCorner().y());
 }
 
 
