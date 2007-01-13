@@ -619,6 +619,34 @@ Ogre::SceneManager* EmberEntity::getSceneManager()
 	return mOgreNode->getCreator();
 }
 
+static void dumpElement(const std::string &prefix, const std::string &name, const Atlas::Message::Element &e, std::ostream& outstream, std::ostream& logOutstream) 
+{
+
+  if (e.isMap()) {
+    logOutstream << prefix << name << ": Dumping Map" << std::endl;
+    Atlas::Message::MapType::const_iterator itr = e.asMap().begin();
+    Atlas::Message::MapType::const_iterator end = e.asMap().end();
+    for (; itr != end; ++itr) {
+      dumpElement(prefix + "  ", itr->first, itr->second, outstream, logOutstream);
+    }
+    logOutstream << prefix << "Finished Dumping Map" << std::endl;
+  } else {
+    if (e.isString()) outstream << prefix << name << ": " << e.asString() << std::endl;
+    if (e.isNum()) outstream << prefix << name << ": " << e.asNum() << std::endl;
+  }
+}
+
+void EmberEntity::dumpAttributes(std::ostream& outstream, std::ostream& logOutstream) const 
+{
+  logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
+  const Eris::Entity::AttrMap &attribs = getAttributes();
+
+  Eris::Entity::AttrMap::const_iterator itr = attribs.begin();
+  Eris::Entity::AttrMap::const_iterator end = attribs.end();
+  for (; itr != end; ++itr) {
+    dumpElement("  ",itr->first, itr->second, outstream, logOutstream);
+  }
+}
 
 }
 

@@ -254,6 +254,9 @@ public:
 	 */
 	void synchronizeWithServer();
 
+
+	void dumpAttributes(std::ostream& outstream, std::ostream& logOutstream) const;
+
 protected: 
 
 
