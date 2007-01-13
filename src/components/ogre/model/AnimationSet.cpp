@@ -25,39 +25,113 @@
 namespace EmberOgre {
 namespace Model {
 
-AnimationSet::AnimationSet() : mSpeed(1.0) {}
 
-void AnimationSet::addAnimationPart(AnimationPart part)
+AnimationSet::AnimationSet() : mAccumulatedTime(0), mCurrentAnimationSetIndex(0), mSpeed(1.0)
 {
-	mAnimations.push_back(part);
+}
+
+AnimationSet::~AnimationSet()
+{
+/*	for (AnimationStore::iterator I = mAnimations.begin(); I != mAnimations.end(); ++I) {
+		delete *I;
+	}*/
 }
 
 void AnimationSet::addTime(Ogre::Real timeSlice)
 {
-	AnimationPartSet::iterator I = mAnimations.begin();
-	for (; I != mAnimations.end(); ++I) {
-		I->state->addTime(timeSlice * mSpeed);
+	bool discardThis;
+	addTime(timeSlice, discardThis);
+}
+
+
+void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
+{
+	if (mAnimations.size() > 0) {
+		continueAnimation = true;
+		Animation* animation = &mAnimations[mCurrentAnimationSetIndex];
+		///see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
+		if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * animation->getIterations()) {
+			animation->setEnabled(false);
+			mAccumulatedTime = 0;
+			if (mAnimations.size() > (mCurrentAnimationSetIndex + 1)) {
+				++mCurrentAnimationSetIndex;
+				continueAnimation = true;
+			} else {
+				mCurrentAnimationSetIndex = 0;
+				continueAnimation = false;
+			}
+			animation = &mAnimations[mCurrentAnimationSetIndex];
+			animation->setTime(0);
+		}
+		
+		Ogre::Real calculatedTime = timeSlice * mSpeed;
+		animation->setEnabled(true);
+		animation->addTime(calculatedTime);
+		mAccumulatedTime += calculatedTime;
+	}
+	
+}
+
+void AnimationSet::reset()
+{
+	if (mAnimations.size() > 0) {
+		Animation& animation = mAnimations[mCurrentAnimationSetIndex];
+		animation.setEnabled(false);
+	}
+	mCurrentAnimationSetIndex = 0;
+	mAccumulatedTime = 0;
+}
+	
+void AnimationSet::addAnimation(Animation animation)
+{
+	mAnimations.push_back(animation);
+}
+
+
+Animation::Animation(int iterations) : mIterationLength(0), mIterations(iterations) {}
+
+void Animation::addAnimationPart(AnimationPart part)
+{
+	mAnimationParts.push_back(part);
+	mIterationLength = std::max<Ogre::Real>(part.state->getLength(), mIterationLength);
+}
+
+void Animation::addTime(Ogre::Real timeSlice)
+{
+	AnimationPartSet::iterator I = mAnimationParts.begin();
+	for (; I != mAnimationParts.end(); ++I) {
+		I->state->addTime(timeSlice);
 	}
 }
 
-void AnimationSet::setEnabled(bool state)
+void Animation::setTime(Ogre::Real time)
 {
-	AnimationPartSet::iterator I = mAnimations.begin();
-	for (; I != mAnimations.end(); ++I) {
-		I->state->setEnabled(state);
+	AnimationPartSet::iterator I = mAnimationParts.begin();
+	for (; I != mAnimationParts.end(); ++I) {
+		I->state->setTimePosition(time);
 	}
 }
 
-bool AnimationSet::hasCompleted() const
+void Animation::setEnabled(bool state)
 {
-	AnimationPartSet::const_iterator I = mAnimations.begin();
-	for (; I != mAnimations.end(); ++I) {
-		if (I->state->getTimePosition() < I->state->getLength()) {
-			return false;
+	AnimationPartSet::iterator I = mAnimationParts.begin();
+	for (; I != mAnimationParts.end(); ++I) {
+		if (I->state->getEnabled() != state) {
+			I->state->setEnabled(state);
 		}
 	}
-	return true;
 }
+
+// bool Animation::hasCompleted() const
+// {
+// 	AnimationPartSet::const_iterator I = mAnimations.begin();
+// 	for (; I != mAnimations.end(); ++I) {
+// 		if (I->state->getTimePosition() < I->state->getLength()) {
+// 			return false;
+// 		}
+// 	}
+// 	return true;
+// }
 
 }
 }

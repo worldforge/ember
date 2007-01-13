@@ -24,6 +24,8 @@
 #define EMBEROGREANIMATIONSET_H
 #include "components/ogre/EmberOgrePrerequisites.h"
 
+// #include "ModelDefinition.h"
+
 namespace EmberOgre {
 namespace Model {
 
@@ -33,33 +35,92 @@ struct AnimationPart
 	Ogre::Real weight;
 };
 
+class Animation;
 
 typedef std::vector<AnimationPart> AnimationPartSet;
+typedef std::vector<Animation> AnimationStore;
 
 /**
 @author Erik Hjortsberg
 */
+class Animation
+{
+public:
+	Animation(int iterations);
+	void addAnimationPart(AnimationPart part);
+	void setEnabled(bool state);
+	
+	void addTime(Ogre::Real timeSlice);
+	void setTime(Ogre::Real time);
+	
+	inline int getIterations() const;
+	inline Ogre::Real getLengthOfOneIteration() const;
+protected:
+	AnimationPartSet mAnimationParts;
+	Ogre::Real mIterationLength;
+	int mIterations;
+};
+
 class AnimationSet
 {
 public:
 	AnimationSet();
+	~AnimationSet();
+	
+	/**
+	 * Adds time to the animation, thus advancing it. 
+	 * @param timeSlice The time to add in seconds. 
+	 * @param continueAnimation Upon completion, this is either true if the animation hasn't been completed yet, or false if has completed. 
+	 */
+	void addTime(Ogre::Real timeSlice, bool& continueAnimation);
+	
+	/**
+	 * Adds time to the animation, thus advancing it. 
+	 * @param timeSlice The time to add in seconds. 
+	 */
 	void addTime(Ogre::Real timeSlice);
-	void addAnimationPart(AnimationPart part);
-	void setEnabled(bool state);
+	
+	/**
+	 * Adds a single animation to this set. 
+	 * @param animation 
+	 */
+	void addAnimation(Animation animation);
+	
+	
+	/**
+	 *    Resets the animations to it's initial status, also disabling it.
+	 */
+	void reset();
+	
 	/**
 	 *    returns true if all animation parts have been played 
 	 * @return 
 	 */
-	bool hasCompleted() const;
-	
-	inline void setSpeed(Ogre::Real speed) { mSpeed = speed;}
-	inline Ogre::Real getSpeed() const { return mSpeed; }
-	
-protected:
-	AnimationPartSet mAnimations;
-	Ogre::Real mSpeed;
+// 	bool hasCompleted() const;
 
+ 	inline void setSpeed(Ogre::Real speed);
+ 	inline Ogre::Real getSpeed() const;
+
+protected:
+	Ogre::Real mAccumulatedTime;
+	size_t mCurrentAnimationSetIndex;
+	AnimationStore mAnimations;
+	Ogre::Real mSpeed;
 };
+
+void AnimationSet::setSpeed(Ogre::Real speed) { mSpeed = speed;}
+Ogre::Real AnimationSet::getSpeed() const { return mSpeed; }
+
+
+Ogre::Real Animation::getLengthOfOneIteration() const
+{
+	return mIterationLength;
+}
+
+inline int Animation::getIterations() const
+{
+	return mIterations;
+}
 
 }
 }
