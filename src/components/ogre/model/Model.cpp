@@ -38,7 +38,7 @@ namespace EmberOgre {
 namespace Model {
 
 
-Ogre::String Model::msMovableType = "Model";
+const Ogre::String Model::sMovableType = "Model";
 unsigned long Model::msAutoGenId = 0;
 
 // Model::Model()
@@ -66,7 +66,7 @@ Model::Model(const std::string& name)
 }
 Model::~Model()
 {
-	reset();
+	resetSubmodels();
 	resetParticles();	
 	if (!_masterModel.isNull()) {
 		_masterModel->removeModelInstance(this);
@@ -75,6 +75,7 @@ Model::~Model()
 
 void Model::reset()
 {
+	Resetting.emit();
 //	resetAnimations();
 	resetSubmodels();
 	resetParticles();	
@@ -122,11 +123,21 @@ bool Model::create(const std::string& modelType)
 	else
 	{
 		_masterModel->addModelInstance(this);
-		bool success =  createFromDefn();
+		return true;
+/*		bool success =  createFromDefn();
 		if (!success) {
 			reset();
 		}
-		return success;
+		return success;*/
+	}
+}
+
+void Model::_notifyManager(Ogre::SceneManager* man)
+{
+	Ogre::MovableObject::_notifyManager(man);
+	bool success =  createFromDefn();
+	if (!success) {
+		reset();
 	}
 }
 
@@ -135,7 +146,7 @@ bool Model::create(const std::string& modelType)
 bool Model::createFromDefn()
 {
 	// create instance of model from definition
-	Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+	Ogre::SceneManager* sceneManager = _getManager();
 	assert(sceneManager);
 	mScale=_masterModel->mScale ;
 	mRotation = _masterModel->mRotation;
@@ -213,6 +224,10 @@ bool Model::createFromDefn()
 						part->addSubEntity(entity->getSubEntity(i), 0);
 					}
 				}
+				if ((*I_parts)->getGroup() != "") {
+					mGroupsToPartMap[(*I_parts)->getGroup()].push_back((*I_parts)->getName());
+					mPartToGroupMap[(*I_parts)->getName()] = (*I_parts)->getGroup();
+				}
 				
 				if ((*I_parts)->getShow()) {
 					showPartVector.push_back((*I_parts)->getName());
@@ -253,22 +268,30 @@ void Model::createActions()
 		//std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
 		Action action;
 		action.setName((*I_actions)->getName());
-		action.getAnimations()->setSpeed((*I_actions)->getAnimationSpeed());
+		action.getAnimations().setSpeed((*I_actions)->getAnimationSpeed());
 		
-		if (mSubmodels.size()) {
-			AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin();
-			AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
-			for (;I_anims != I_anims_end; ++I_anims) {
-				if (getSkeleton() && getAllAnimationStates() && getAllAnimationStates()->hasAnimationState((*I_anims)->Name)) {
-					AnimationPart animPart;
-					try {
-						Ogre::AnimationState* state = getAnimationState((*I_anims)->Name);
-						animPart.state = state;
-						animPart.weight = (*I_anims)->Weight;
-						action.getAnimations()->addAnimationPart(animPart);
-					} catch (const Ogre::Exception& ex) {
-						S_LOG_FAILURE("Error when loading animation: " << (*I_anims)->Name << ".\n" + ex.getFullDescription() );
+		if (getSkeleton() && getAllAnimationStates()) {
+			if (mSubmodels.size()) {
+				AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin();
+				AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
+				for (;I_anims != I_anims_end; ++I_anims) {
+					Animation animation((*I_anims)->getIterations());
+					AnimationPartDefinitionsStore::const_iterator I_animParts = (*I_anims)->getAnimationPartDefinitions().begin();
+					AnimationPartDefinitionsStore::const_iterator I_animParts_end = (*I_anims)->getAnimationPartDefinitions().end();
+					for (;I_animParts != I_animParts_end; ++I_animParts) {
+						if (getAllAnimationStates()->hasAnimationState((*I_animParts)->Name)) {
+							AnimationPart animPart;
+							try {
+								Ogre::AnimationState* state = getAnimationState((*I_animParts)->Name);
+								animPart.state = state;
+								animPart.weight = (*I_animParts)->Weight;
+								animation.addAnimationPart(animPart);
+							} catch (const Ogre::Exception& ex) {
+								S_LOG_FAILURE("Error when loading animation: " << (*I_animParts)->Name << ".\n" + ex.getFullDescription() );
+							}
+						}
 					}
+					action.getAnimations().addAnimation(animation);
 				}
 			}
 		}
@@ -288,7 +311,7 @@ void Model::createParticles()
 		std::string name(mName + "/particle" + I_particlesys->Script);
 		Ogre::ParticleSystem* ogreParticleSystem;
 		try {		
-			 ogreParticleSystem = ModelDefinitionManager::instance().getSceneManager()->createParticleSystem(name, I_particlesys->Script);
+			 ogreParticleSystem = _getManager()->createParticleSystem(name, I_particlesys->Script);
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Could not create particle system: " + name);
 			std::cerr << ex.getFullDescription() + "\n";
@@ -346,6 +369,7 @@ bool Model::addSubmodel(SubModel* submodel)
 			store = &I_partmap->second;
 		}
 		store->push_back(I->second);
+		
 	}
 	return true;	
 }
@@ -385,10 +409,25 @@ SubModel* Model::getSubModel(size_t index)
 
 }
 
-void Model::showPart(const std::string& partName)
+void Model::showPart(const std::string& partName, bool hideOtherParts)
 {
 	SubModelPartStoreMap::iterator I_partmap = mSubModelPartMap.find(partName);
 	if (I_partmap != mSubModelPartMap.end()) {
+		if (hideOtherParts) {
+			///make sure that all other parts in the same group are hidden
+			PartGroupMap::iterator groupMatchI = mPartToGroupMap.find(partName);
+			if (groupMatchI != mPartToGroupMap.end()) {
+				PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupMatchI->second);
+				if (partBucketI != mGroupsToPartMap.end()) {
+					for (std::vector< std::string >::iterator I = partBucketI->second.begin(); I != partBucketI->second.end(); ++I) {
+						if (*I != partName) {
+							hidePart(*I);
+						}
+					}
+				}
+			}
+		}
+		
 		SubModelPartStore* store = &I_partmap->second;
 		for (SubModelPartStore::iterator I = store->begin(); I != store->end(); ++I) {
 			(*I)->show();
@@ -794,7 +833,7 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 /** Overridden from MovableObject */
 const Ogre::String& Model::getMovableType(void) const
 {
-	return msMovableType;
+	return sMovableType;
 }
 
 void Model::setRenderingDistance (Ogre::Real dist)

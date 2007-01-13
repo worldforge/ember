@@ -65,8 +65,10 @@ public:
 	typedef std::vector<SubModelPart*> SubModelPartStore;
 	typedef std::map<std::string, SubModelPartStore> SubModelPartStoreMap;
 
-
+	typedef std::map<std::string, std::vector< std::string > > PartGroupStore;
+	typedef std::map<std::string, std::string> PartGroupMap;
 	
+	static const Ogre::String sMovableType;
 	
 	/**
 	 *    Creates a new Model instance.
@@ -80,6 +82,8 @@ public:
 	
 	
 
+	/** Notify the object of it's manager (internal use only) */
+	virtual void _notifyManager(Ogre::SceneManager* man);
 
 	static Model* createModel(Ogre::SceneManager* sceneManager, const std::string& modelType, const std::string& name = "");
 	
@@ -94,6 +98,11 @@ public:
 	*/
 	sigc::signal<void> Reloaded;
 	
+	/**
+	* Emitted when the model is about to be resetted.
+	*/
+	sigc::signal<void> Resetting;
+	
 
 	bool addSubmodel(SubModel* submodel);
  	bool removeSubmodel(SubModel* submodel);
@@ -104,7 +113,7 @@ public:
 	/**
 	 * hides and shows a certain part of the model
 	 */
-	void showPart(const std::string& partName);
+	void showPart(const std::string& partName, bool hideOtherParts = true);
 	void hidePart(const std::string& partName);
 	void setVisible(bool visible);
 	
@@ -262,7 +271,6 @@ protected:
 	mutable Ogre::AxisAlignedBox mFull_aa_box;
 	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
 
-	static Ogre::String msMovableType;
 	
 	/**
 	if the model has a skeleton, it can be shared between many different entities
@@ -295,6 +303,9 @@ protected:
 	a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	*/
 	SubModelPartStoreMap mSubModelPartMap;
+	
+	PartGroupStore mGroupsToPartMap;
+	PartGroupMap mPartToGroupMap;
 	
 	Ogre::SkeletonInstance* mSkeletonInstance;
 	
