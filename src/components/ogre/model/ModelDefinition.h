@@ -39,7 +39,8 @@ class SubEntityDefinition;
 
 class ActionDefinition;
 struct SoundDefinition;
-struct AnimationDefinition;
+class AnimationDefinition;
+struct AnimationPartDefinition;
 struct AttachPointDefinition;
 
 typedef std::map<std::string, Model*> ModelInstanceStore;
@@ -48,6 +49,7 @@ typedef std::vector<SubModelDefinition*> SubModelDefinitionsStore;
 typedef std::vector<PartDefinition*> PartDefinitionsStore;
 typedef std::vector<SubEntityDefinition*> SubEntityDefinitionsStore;
 typedef std::vector<AnimationDefinition*> AnimationDefinitionsStore;
+typedef std::vector<AnimationPartDefinition*> AnimationPartDefinitionsStore;
 typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
@@ -84,6 +86,9 @@ public:
 	void setName(const std::string& name);
 	const std::string& getName() const;
 	
+	void setGroup(const std::string& group);
+	const std::string& getGroup() const;
+	
 	void setShow(bool show);
 	bool getShow() const;
 	
@@ -98,6 +103,7 @@ private:
 	PartDefinition(const std::string& name, SubModelDefinition& subModelDef);
 	std::string mName;
 	bool mShow;
+	std::string mGroup;
 	SubEntityDefinitionsStore mSubEntities;
 	SubModelDefinition& mSubModelDef;
 };
@@ -132,10 +138,29 @@ struct AttachPointDefinition
 	std::string BoneName;
 };
 
-struct AnimationDefinition
+struct AnimationPartDefinition
 {
 	std::string Name;
 	Ogre::Real Weight;
+};
+
+class AnimationDefinition
+{
+friend class ActionDefinition;
+public:
+	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight = 1);
+	const AnimationPartDefinitionsStore& getAnimationPartDefinitions();
+	void removeAnimationPartDefinition(AnimationPartDefinition* def);
+	
+	inline const std::string& getName() const;
+	inline int getIterations() const;
+	
+private:
+	AnimationDefinition(int iterations);
+	
+	AnimationPartDefinitionsStore mAnimationParts;
+	std::string mName;
+	int mIterations;
 };
 
 struct SoundDefinition
@@ -151,7 +176,7 @@ friend class ModelDefinition;
 public:
 	~ActionDefinition();
 	
-	AnimationDefinition* createAnimationDefinition(const std::string& name, Ogre::Real weight);
+	AnimationDefinition* createAnimationDefinition(int iterations = 1);
 	const AnimationDefinitionsStore& getAnimationDefinitions();
 	void removeAnimationDefinition(AnimationDefinition* def);
 
@@ -475,6 +500,11 @@ float ModelDefinition::getRenderingDistance() const
 void ModelDefinition::setRenderingDistance(float distance)
 {
 	mRenderingDistance = distance;
+}
+	
+int AnimationDefinition::getIterations() const
+{
+	return mIterations;
 }
 
 

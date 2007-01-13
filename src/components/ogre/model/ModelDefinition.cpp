@@ -284,6 +284,17 @@ const std::string& PartDefinition::getName() const
 	return mName;
 }
 
+void PartDefinition::setGroup(const std::string& group)
+{
+	mGroup = group;
+}
+
+const std::string& PartDefinition::getGroup() const
+{
+	return mGroup;
+}
+
+
 void PartDefinition::setShow(bool show)
 {
 	mShow = show;
@@ -363,6 +374,31 @@ void SubEntityDefinition::setMaterialName(const std::string& materialName)
 }
 
 
+AnimationDefinition::AnimationDefinition(int iterations) : mIterations(iterations)
+{
+}
+
+AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight)
+{
+	AnimationPartDefinition* def = new AnimationPartDefinition();
+	def->Name = ogreAnimationName;
+	def->Weight = weight;
+	mAnimationParts.push_back(def);
+	return def;
+}
+
+const AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions()
+{
+	return mAnimationParts;
+}
+
+void AnimationDefinition::removeAnimationPartDefinition(AnimationPartDefinition* def)
+{
+	ModelDefinition::removeDefinition(def, mAnimationParts);
+}
+
+
+
 
 ActionDefinition::ActionDefinition(const std::string& name) : mName(name), mAnimationSpeed(1.0)
 {
@@ -379,11 +415,9 @@ ActionDefinition::~ActionDefinition()
 
 }
 
-AnimationDefinition* ActionDefinition::createAnimationDefinition(const std::string& name, Ogre::Real weight)
+AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations)
 {
-	AnimationDefinition* def = new AnimationDefinition();
-	def->Name = name;
-	def->Weight = weight;
+	AnimationDefinition* def = new AnimationDefinition(iterations);
 	mAnimations.push_back(def);
 	return def;
 }
