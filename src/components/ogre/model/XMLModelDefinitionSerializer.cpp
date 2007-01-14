@@ -234,7 +234,7 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 
 	if(notfound)
 	{
-		S_LOG_VERBOSE( "No submodel found !!");
+		S_LOG_VERBOSE( "No submodel found.");
 	}
 }
 
@@ -262,6 +262,9 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode, Sub
 			if (tmp)
 				partDef->setShow(Ogre::StringConverter::parseBool(tmp));
 	
+			tmp =  partElem->Attribute("group");
+			if (tmp)
+				partDef->setGroup(tmp);
 	
 			elem = partElem->FirstChildElement("subentities");
 			if (elem)
@@ -274,7 +277,7 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode, Sub
 
 	if(notfound)
 	{
-		S_LOG_VERBOSE( "No part found !!" );
+		S_LOG_VERBOSE( "No part found." );
 	}
 }
 
@@ -321,7 +324,7 @@ void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntN
 
 	if(notfound)
 	{
-		S_LOG_VERBOSE( "No sub entity found !!" );
+		S_LOG_VERBOSE( "No sub entity found." );
 	}
 }
 
@@ -341,10 +344,16 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 		if (tmp) {
 			ActionDefinition* actionDef = modelDef->createActionDefinition(tmp);
 			S_LOG_VERBOSE( " Add action  : "<< tmp  );
+			
+			tmp =  animElem->Attribute("speed");
+			if (tmp) { 
+				actionDef->setAnimationSpeed(Ogre::StringConverter::parseReal(tmp));
+			}
 
-			elem = animElem->FirstChildElement("animationparts");
+
+			elem = animElem->FirstChildElement("animations");
 			if (elem)
-				readAnimationParts(elem,actionDef);
+				readAnimations(elem, actionDef);
 			
 			elem = animElem->FirstChildElement("sound");
 			if (elem) {
@@ -372,21 +381,45 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 
 	if(notfound)
 	{
-		S_LOG_VERBOSE( "No actions found !!" );
+		S_LOG_VERBOSE( "No actions found." );
 	}
 
 }
-
-void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnimPartNode,ActionDefinition* action)
+	
+void XMLModelDefinitionSerializer::readAnimations(Ember::TiXmlElement* mAnimationsNode, ActionDefinition* action)
 {
 	const char* tmp = 0;
 	bool nopartfound = true;
 	
-	tmp =  mAnimPartNode->Attribute("speed");
-	if (tmp) { 
-		action->setAnimationSpeed(Ogre::StringConverter::parseReal(tmp));
+
+	for (Ember::TiXmlElement* animElem = mAnimationsNode->FirstChildElement();
+            animElem != 0; animElem = animElem->NextSiblingElement())
+	{
+		int iterations(1);
+		nopartfound = false;
+
+		// name
+		tmp =  animElem->Attribute("iterations");
+		if (tmp) {
+			iterations = Ogre::StringConverter::parseInt(tmp);
+		}
+
+		AnimationDefinition* animDef = action->createAnimationDefinition(iterations);
+		readAnimationParts(animElem, animDef);
 	}
 
+	if(nopartfound)
+	{
+		S_LOG_VERBOSE( "  No animations found!!" );
+	}
+
+}
+
+void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnimPartNode, AnimationDefinition* animDef)
+{
+	const char* tmp = 0;
+	bool nopartfound = true;
+	
 	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
@@ -407,12 +440,12 @@ void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnim
 		if (tmp)
 			weight = Ogre::StringConverter::parseReal(tmp);
 
-		action->createAnimationDefinition(name, weight);
+		animDef->createAnimationPartDefinition(name, weight);
 	}
 
 	if(nopartfound)
 	{
-		S_LOG_VERBOSE( "  No anim parts found !!" );
+		S_LOG_VERBOSE( "   No anim parts found." );
 	}
 }
 
@@ -677,11 +710,17 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Em
 		actionElem.SetDoubleAttribute("speed", (*I)->getAnimationSpeed());
 		
 		if ((*I)->getAnimationDefinitions().size() > 0) {
-			Ember::TiXmlElement animationsElem("animationparts");
+			Ember::TiXmlElement animationsElem("animations");
 			for (AnimationDefinitionsStore::const_iterator J = (*I)->getAnimationDefinitions().begin(); J != (*I)->getAnimationDefinitions().end(); ++J) {
-				Ember::TiXmlElement animationElem("animationpart");
-				animationElem.SetAttribute("name", (*J)->Name.c_str());
-				animationElem.SetDoubleAttribute("weight", (*J)->Weight);
+				Ember::TiXmlElement animationElem("animation");
+				animationElem.SetAttribute("iterations", (*J)->getIterations());
+				
+				for (AnimationPartDefinitionsStore::const_iterator K = (*J)->getAnimationPartDefinitions().begin(); K != (*J)->getAnimationPartDefinitions().end(); ++K) {
+					Ember::TiXmlElement animationPartElem("animationpart");
+					animationPartElem.SetAttribute("name", (*K)->Name.c_str());
+					animationPartElem.SetDoubleAttribute("weight", (*K)->Weight);
+					animationElem.InsertEndChild(animationPartElem);
+				}
 				
 				animationsElem.InsertEndChild(animationElem);
 			}
@@ -714,6 +753,9 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 		for (PartDefinitionsStore::const_iterator J = (*I)->getPartDefinitions().begin(); J != (*I)->getPartDefinitions().end(); ++J) {
 			Ember::TiXmlElement partElem("part");
 			partElem.SetAttribute("name", (*J)->getName().c_str());
+			if ((*J)->getGroup() != "") {
+				partElem.SetAttribute("group", (*J)->getGroup().c_str());
+			}
 			partElem.SetAttribute("show", (*J)->getShow() ? "true" : "false");
 			
 			if ((*J)->getSubEntityDefinitions().size() > 0) {
