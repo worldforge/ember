@@ -99,7 +99,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
 			mGuiSystem = new CEGUI::System(mGuiRenderer, & luaScriptProvider->getScriptModule(), resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
-		
+			mScriptingProviders.push_back(provider);
 		} else {
 			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 		}
@@ -164,10 +164,25 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 GUIManager::~GUIManager()
 {
-	
+	S_LOG_INFO("Shutting down GUI manager.");
 	//can't delete this one since cegui will then throw a segfault
 /*	delete mGuiSystem;
 	mGuiSystem = 0;*/
+	
+	for (std::set<Widget*>::iterator I = mWidgets.begin(); I != mWidgets.end(); ++I) {
+		delete *I;
+	}
+	
+	for (std::vector<Ember::IScriptingProvider*>::iterator I = mScriptingProviders.begin(); I != mScriptingProviders.end(); ++I) {
+		delete *I;
+	}
+	
+	
+	Ogre::Root::getSingleton().removeFrameListener(this);
+	delete mCEGUIAdapter;
+	
+	delete mEntityWorldPickListener;
+	delete mPicker;
 	delete mGuiRenderer;
 	//delete mMousePicker;
 	//mMousePicker = 0;

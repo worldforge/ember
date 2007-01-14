@@ -38,6 +38,10 @@
 #include "input/Input.h"
 #include "input/InputCommandMapper.h"
 
+namespace Ember {
+class IScriptingProvider;
+}
+
 namespace EmberOgre {
 
 class EmberEntity;
@@ -233,7 +237,7 @@ protected:
 	*/
 	std::set<Widget*> mWidgets;
 	
-	
+	std::vector<Ember::IScriptingProvider*> mScriptingProviders;
 
 	
 
