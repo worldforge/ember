@@ -166,8 +166,12 @@ mWindow(0)
 
 EmberOgre::~EmberOgre()
 {
+	
 	///start with deleting the eris world, then shut down ogre
 	delete mWorldView;
+
+	delete mGUIManager;
+
 
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
