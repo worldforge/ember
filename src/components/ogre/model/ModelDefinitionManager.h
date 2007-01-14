@@ -37,7 +37,6 @@ namespace Model {
 @author Erik Hjortsberg
 */
 class ModelDefinitionManager: public Ogre::ResourceManager, public Ember::Singleton<ModelDefinitionManager>
-
 {
 public:
     /// Constructor
@@ -48,8 +47,6 @@ public:
 		bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
 		const Ogre::NameValuePairList* createParams = 0);
 	
-	inline Ogre::SceneManager* getSceneManager() const;
-	inline void setSceneManager(Ogre::SceneManager* sceneManager);
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 	
 	/**
@@ -89,7 +86,6 @@ protected:
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
         const Ogre::NameValuePairList* createParams);
-	Ogre::SceneManager* mSceneManager;
 	
 	typedef std::map<int, ModelDefinition::AreaDefinition> AreaDefinitionStore;
 	AreaDefinitionStore mAreaDefinitions;
@@ -100,17 +96,6 @@ protected:
 	bool mShowModels;
 
 };
-
-///inline implementations
-	Ogre::SceneManager* ModelDefinitionManager::getSceneManager() const 
-	{ 
-		return mSceneManager; 
-	}
-	
-	void ModelDefinitionManager::setSceneManager(Ogre::SceneManager* sceneManager) 
-	{ 
-		mSceneManager = sceneManager; 
-	}
 
 }
 };

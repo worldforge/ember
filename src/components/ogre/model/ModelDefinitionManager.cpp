@@ -48,7 +48,7 @@ namespace Model {
     //-----------------------------------------------------------------------
 
 
-ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0), mShowModels(true)
+ModelDefinitionManager::ModelDefinitionManager() :  mShowModels(true)
 {
     mLoadOrder = 300.0f;
     mResourceType = "ModelDefinition";
@@ -72,7 +72,16 @@ ModelDefinitionManager::ModelDefinitionManager() : mSceneManager(0), mShowModels
 ModelDefinitionManager::~ModelDefinitionManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
+	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness 
+	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerIterator =  Ogre::SceneManagerEnumerator::getSingleton().getSceneManagerIterator();
+	while (sceneManagerIterator.hasMoreElements()) {
+		sceneManagerIterator.getNext()->destroyAllMovableObjectsByType(Model::sMovableType);
+	}
 }
+
+
+
 
 Ogre::ResourcePtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group, 
 bool isManual, Ogre::ManualResourceLoader* loader, 
@@ -90,6 +99,8 @@ const Ogre::NameValuePairList* createParams)
 }
 
 void ModelDefinitionManager::loadAreas() {
+
+	//TODO: this is heinous and should be done in xml or anything not as dumb /ehj
 	ModelDefinition::AreaDefinition def;
 	def.Id = 6; //oak
 	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/low/ground.png";
