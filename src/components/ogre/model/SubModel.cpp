@@ -41,7 +41,7 @@ SubModel::~SubModel()
 		delete I->second;
 	}
 	if (mEntity) {
-		Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
+		Ogre::SceneManager* sceneManager = mEntity->_getManager();
 		sceneManager->destroyEntity(mEntity);
 	}
 	

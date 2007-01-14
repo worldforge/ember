@@ -38,24 +38,16 @@ public:
 	SubModel(Ogre::Entity* entity);
 	virtual ~SubModel();
 	
-	//void createSubModelParts(SubModelPartMapping* submodelPartMapping);
 	SubModelPart* createSubModelPart(const std::string& name);
 	
 	SubModelPartMap* getSubModelPartMap();
 
 	Ogre::Entity* getEntity() const;
- 
- 
- 	
 
-
-
-	
 protected:
 	Ogre::Entity* mEntity;
 	SubModelPartMap mSubModelParts;
 	
-//	Ogre::SceneNode* mNode;	
 };
 
 }
