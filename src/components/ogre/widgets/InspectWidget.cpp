@@ -111,8 +111,6 @@ void InspectWidget::buildWidget()
 	button = static_cast<CEGUI::PushButton*>(getWindow("MoveEntity"));
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::MoveEntity_Click);
 	
-		
-/*	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(SigC::slot(*this, &InventoryWidget::createdAvatarEmberEntity));*/
 }
 
 void InspectWidget::updateAttributeString()

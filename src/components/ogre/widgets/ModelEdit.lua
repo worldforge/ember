@@ -180,7 +180,7 @@ end
 
 function ModelEdit_updateModelInfo()
 	ModelEdit.widget:getWindow("ModelName_Text"):setText("Name: " .. ModelEdit.definition:getName())
-	ModelEdit.widget:getWindow("ModelScale"):setText(ModelEdit.definition:getScale())
+	ModelEdit.scaleTextbox:setText(ModelEdit.definition:getScale())
 	--ModelEdit.widget:getWindow("ModelRotation"):setText(ModelEdit.definition:getRotation())
 	ModelEdit.rotationAdapter:updateGui(ModelEdit.definition:getRotation());
 	ModelEdit.translateAdapter:updateGui(ModelEdit.definition:getTranslate());
@@ -277,6 +277,11 @@ function ModelEdit_ModelUseScaleOf_SelectionChanged(args)
 	if item ~= nil then
 		model:setUseScaleOf(item:getID())
 	end
+end
+
+function ModelEdit_ModelScale_TextChanged(args)
+	local model = ModelEdit.definition
+	model:setScale(tonumber(ModelEdit.scaleTextbox:getText()));
 end
 
 function ModelEdit_YawLeft_MouseClick(args)
@@ -782,6 +787,8 @@ function ModelEdit_buildWidget()
 	ModelEdit.zoomSlider = CEGUI.toSlider(ModelEdit.zoomSlider)
 	ModelEdit.zoomSlider:subscribeEvent("ValueChanged", "ModelEdit_zoom_ValueChanged")
 	
+	ModelEdit.scaleTextbox = ModelEdit.widget:getWindow("ModelScale")
+	ModelEdit.scaleTextbox:subscribeEvent("TextChanged", "ModelEdit_ModelScale_TextChanged")
 	
 	ModelEdit_fillMaterialList()
 	ModelEdit_fillModellist()
