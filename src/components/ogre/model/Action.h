@@ -32,9 +32,10 @@ namespace Model {
 class Action
 {
 public:
-	inline AnimationSet* getAnimations() { return &mAnimations; }
+	inline AnimationSet& getAnimations() { return mAnimations; }
 	inline void setName(const std::string& name) { mName = name; }
 	inline const std::string& getName() { return mName; }
+	
 
 protected:
 	std::string mName;
