@@ -54,7 +54,8 @@ mScaleNode(nodeWithModel),
 mModelAttachedTo(0), 
 mModelMarkedToAttachTo(0),
 EmberEntity(id, ty, vw, sceneManager),
-mCurrentMovementAction(0)
+mCurrentMovementAction(0),
+mActiveAction(0)
 {
 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
 
@@ -138,6 +139,13 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 /*	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), 0, 0);
 	getModel()->setUserObject(userObject);*/
 	
+	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similiar entities with synched animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */ 
+	Model::Action* idleaction = mModel->getAction(ACTION_STAND);
+	if (idleaction) {
+		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
+	}
+	
+	
 	//check if we should do delayed attachment
 	if (mModelMarkedToAttachTo) {
 		attachToPointOnModel(mAttachPointMarkedToAttachTo, mModelMarkedToAttachTo);
@@ -152,6 +160,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	}
 	
 	getModel()->Reloaded.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Reloaded));
+	getModel()->Resetting.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Resetting));
 
 }
 
@@ -256,6 +265,13 @@ void EmberPhysicalEntity::Model_Reloaded()
 	initFromModel();
 }
 
+void EmberPhysicalEntity::Model_Resetting()
+{
+	if (getModel()->getUserObject()) {
+		delete getModel()->getUserObject();
+	}
+	getModel()->setUserObject(0);
+}
 
 void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas::Message::Element& idElement)
 {
@@ -271,6 +287,11 @@ void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas
 
 }
 
+void EmberPhysicalEntity::processOutfit(const Atlas::Message::MapType & outfitMap)
+{
+}
+
+
 void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v) {
 	EmberEntity::onAttrChanged(str, v);
 	
@@ -278,6 +299,12 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 	if (str == "right_hand_wield" || str == "left_hand_wield") {
 		processWield(str, v);
 		return;		
+	}
+	if (str == "outfit") {
+		if (v.isMap()) {
+			const Atlas::Message::MapType & outfitMap = v.asMap();
+			int i = 0;
+		}
 	}
 // 	if (str == "bbox") {
 // 		scaleNode();
@@ -313,14 +340,14 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
 			///first disable the current action
 			if (mCurrentMovementAction) {
-				mCurrentMovementAction->getAnimations()->setEnabled(false);
+				mCurrentMovementAction->getAnimations().reset();
 			}
 			
 			Model::Action* newAction = mModel->getAction(actionName);
 			mCurrentMovementAction = newAction;
 			if (newAction) {
 				MotionManager::getSingleton().addAnimatedEntity(this);
-				mCurrentMovementAction->getAnimations()->setEnabled(true);
+//				mCurrentMovementAction->getAnimations()->setEnabled(true);
 				
 			} else {
 				MotionManager::getSingleton().removeAnimatedEntity(this);
@@ -442,21 +469,22 @@ void EmberPhysicalEntity::updateMotion(Ogre::Real timeSlice)
 
 void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
 {
-	if (mCurrentMovementAction) {
-		//check if we're walking backward
-		if (static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
-			mCurrentMovementAction->getAnimations()->addTime(-timeSlice);
-		} else {
-			mCurrentMovementAction->getAnimations()->addTime(timeSlice);
+	if (mActiveAction) {
+		bool continuePlay = false;
+		mActiveAction->getAnimations().addTime(timeSlice, continuePlay);
+		if (!continuePlay) {
+			mActiveAction->getAnimations().reset();
+			mActiveAction = 0;
 		}
-	}
-	
-	for (ActionStore::iterator I = mActiveActions.begin() ; I != mActiveActions.end(); ++I) {
-		if ((*I)->getAnimations()->hasCompleted()) {
-			(*I)->getAnimations()->setEnabled(false);
-			mActiveActions.erase(I);
-		} else {
-			(*I)->getAnimations()->addTime(timeSlice);
+	} else {
+		if (mCurrentMovementAction) {
+			bool continuePlay = false;
+			//check if we're walking backward
+			if (static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
+				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
+			} else {
+				mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
+			}
 		}
 	}
 }
@@ -555,9 +583,17 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperatio
 //	const std::string& name = act->getName();
 	
 	Model::Action* newAction = mModel->getAction(name);
+	
+	///If there's no action found, try to see if we have a "default action" defined to play instead.
+	if (!newAction) {
+		newAction = mModel->getAction("default_action");
+	}
+	
 	if (newAction) {
 		MotionManager::getSingleton().addAnimatedEntity(this);
-		mCurrentMovementAction->getAnimations()->setEnabled(true);
+		mActiveAction = newAction;
+		newAction->getAnimations().reset();
+		mCurrentMovementAction->getAnimations().reset();
 	}
 
 }

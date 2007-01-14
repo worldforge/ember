@@ -131,8 +131,10 @@ protected:
 	/**
 	All the active actions, except the movement action (since it's stored in mCurrentMovementAction). 
 	These actions will be updated each frame.
+	NOTE: we currently don't allow for multiple actions playing at the same time
 	*/
-	ActionStore mActiveActions;
+	//ActionStore mActiveActions;
+	Model::Action* mActiveAction;
 
 	/**
 	If the entity is attached to another entity, this is the model to which it is attached to.
@@ -167,6 +169,13 @@ protected:
 	 * @param idElement the id of the entity to wield
 	 */
 	void processWield(const std::string& wieldName, const Atlas::Message::Element& idElement);
+
+	
+	/**
+	 *    Processes the outfit map and updates the appearance.
+	 * @param outfitMap 
+	 */
+	void processOutfit(const Atlas::Message::MapType & outfitMap);
 
 	/**
 	 *    Overridden from Eris::Entity
@@ -229,7 +238,9 @@ protected:
 	Ogre::SceneNode* mScaleNode;
 	
 	void Model_Reloaded();
-
+	
+	void Model_Resetting();
+	
 	void initFromModel();
 	
 };
