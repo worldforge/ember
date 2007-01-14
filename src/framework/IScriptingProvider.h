@@ -36,6 +36,7 @@ class IScriptingProvider{
 public:
 	
 //	IScriptingProvider() {};
+	virtual ~IScriptingProvider(){}
 
 	/**
 	 *    Loads the script.
