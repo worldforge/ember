@@ -169,9 +169,15 @@ EmberOgre::~EmberOgre()
 	///start with deleting the eris world, then shut down ogre
 	delete mWorldView;
 
+	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
+	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
+	///by deleting the model manager we'll assure that 
+	delete mModelDefinitionManager;
+
 	if (mWindow) {
 		mRoot->detachRenderTarget(mWindow);
 	}
+	
 	delete mRoot;
 	
 /*	delete mOgreResourceLoader;
@@ -301,17 +307,17 @@ void EmberOgre::requestQuit()
 bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 {
 	S_LOG_INFO("Compiled against ogre version " << OGRE_VERSION);
-	
+
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	checkForConfigFiles();
-	
+
 	///Create a setup object through which we will start up Ogre.
 	OgreSetup ogreSetup;
-	
+
 	///We need a root object.
 	mRoot = ogreSetup.createOgreSystem(loadOgrePluginsThroughBinreloc);
-	
+
 	if (!mRoot) {
 		throw Ember::Exception("There was a problem setting up the Ogre environment, aborting.");
 	}
@@ -327,29 +333,29 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "preloadmedia");
 
 
-    bool carryOn = ogreSetup.configure();
-    if (!carryOn) return false;
-    mWindow = ogreSetup.getRenderWindow();
+	bool carryOn = ogreSetup.configure();
+	if (!carryOn) return false;
+	mWindow = ogreSetup.getRenderWindow();
 	
-
+	
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	ogreResourceLoader.loadBootstrap();
-    
-
-    mSceneMgr = ogreSetup.chooseSceneManager();
+	
+	
+	mSceneMgr = ogreSetup.chooseSceneManager();
 	
 	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	Ogre::Camera* camera = mSceneMgr->createCamera("MainCamera");
-    Ogre::Viewport* viewPort = mWindow->addViewport(camera);
-    ///set the background colour to black
-    viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
-    camera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
-    
-    ///The input object must know the resoluton of the screen
-    unsigned int height, width, depth;
-    int top, left;
-    mWindow->getMetrics(width, height, depth, left, top);
-    mInput.initialize(width, height);
+	Ogre::Viewport* viewPort = mWindow->addViewport(camera);
+	///set the background colour to black
+	viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	camera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+	
+	///The input object must know the resoluton of the screen
+	unsigned int height, width, depth;
+	int top, left;
+	mWindow->getMetrics(width, height, depth, left, top);
+	mInput.initialize(width, height);
 	
 	///bind general commands
 	mGeneralCommandMapper.readFromConfigSection("key_bindings_general");
@@ -367,17 +373,14 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///create the collision manager
 	new OgreOpcode::CollisionManager(mSceneMgr);
 	
-	///register the scene manager with the modeldefiniton manager
-	mModelDefinitionManager->setSceneManager(mSceneMgr);
-
-    /// Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-    
-    /// Set default animation mode
+	/// Set default mipmap level (NB some APIs ignore this)
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+ 
+	/// Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
 	///remove padding for bounding boxes
-    Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);    
+	Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
 	
 	ogreResourceLoader.loadGui();
 	ogreResourceLoader.loadGeneral();
@@ -432,24 +435,24 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		EventGUIManagerInitialized.emit(*mGUIManager);
 	} catch (...) {
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		throw Ogre::Exception(0, "Could not initialize gui, aborting. Make sure that all media got downloaded (currently this requires java 1.4+.", "EmberOgre.cpp");
+		throw Ogre::Exception(0, "Could not initialize gui, aborting. Make sure that all media got downloaded .", "EmberOgre.cpp");
 	}
-	
+
 	/// Create the scene
-    createScene();
+	createScene();
 	EventSceneCreated.emit();
-	
+
 	///this should be in a separate class, a separate plugin even
 	setupJesus();
-	
+
 	/// Back to full rendering
- 	mSceneMgr->clearSpecialCaseRenderQueues();
- 	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_EXCLUDE);
+	mSceneMgr->clearSpecialCaseRenderQueues();
+	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_EXCLUDE);
 
 	loadingBar.finish();
-   
+
 	return true;
-  
+
 }
 
 

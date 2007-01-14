@@ -1,3 +1,79 @@
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp: make sure the Models are destroyed before the other movable objects are
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: streamlined the animation system, so that the normal movment anim (which includes "idle") will be put on hold whenever an action is performed. Added support for a fallback action if no specific can be found (for the male it's some fiddling of the hands). Also randomize the starting position of the idle anim as to prevent all settler doing the exact same motions in synchronization. Added empty method for outfit processing. Also fixed some segfaults caused by held model being reset.
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+	
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.h: added support for the new anim system and grouping of parts
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Action.h: return animations by ref
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/SubModel.cpp, src/components/ogre/model/SubModel.h: use the correct scene manager when deleting the held entity
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/ModelDefinitionManager.h: removed the setting of a default scene manager, since that isn't compatible with the concept of multiple scene managers. Also make sure that at deletion time, all models are removed from all scene managers in the system. It's important that this happens before all Entities are deleted, since else we'll get nasty segfaults when Model's destructor tries to delete non-existing Entities.
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h: added support for groups in parts. With a group, only one part at a single time can be visible. This is useful for stuff like showing a certain shirt, and automatically hiding all other shirt parts. Also added support for the new animations definition system. Also, wait with creating the model until after we've gotten a valid scenemanager, thus making sure that we use the correct scene manager for creating our contained objects, such as the entities.
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/AnimationSet.cpp, src/components/ogre/model/AnimationSet.h: refactored how animations are played, now with support for iterations of animation sets in a sequence
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h: refactored how animations are defined. It's now possible to string together a sequence of animations sets after each other, with how many iterations each animation should run.
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h: added console command for dumoing the attributes of an entity to std::cout
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h: added a method for dumping entity attributes to a std::ostream, taken from Sear
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Performance.layout: adjusted layout
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ModelEdit.lua: use submesh names instead of only submesh indices
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/ModelRenderer.cpp: use the correct scene manager for destruction
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/terrain/TerrainInfo.cpp: proper casting
+
+2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/Helpers.pkg, src/components/ogre/scripting/bindings/lua/helpers/Makefile.am, src/components/ogre/scripting/bindings/lua/helpers/OgreUtils.cpp, src/components/ogre/scripting/bindings/lua/helpers/OgreUtils.h, src/components/ogre/scripting/bindings/lua/helpers/OgreUtils.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp, src/components/ogre/scripting/bindings/lua/helpers/required.h: Added an ogre utility class which provides some useful methods for easier access to Ogre functionality from Lua.
+
+2007-01-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/items.modeldef.xml: updated models
+
+2007-01-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/Chat.layout, src/components/ogre/widgets/Quit.widget: fixed layout and alpha values
+
+2007-01-09 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* media/materials/scripts/clothing.material, media/materials/scripts/creatures.material, media/materials/scripts/malebuilder.material: put clothing materials in their own file
+
 2007-01-08 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/scripting/bindings/lua/MotionManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
