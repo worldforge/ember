@@ -30,7 +30,12 @@ namespace EmberOgre {
 namespace Model {
 	class Model;
 	class Action;
+	namespace Mapping {
+		class ModelMapping;
+	}
 };
+
+
 
 class EmberEntity;
 
@@ -42,6 +47,7 @@ typedef std::list<Model::Action*> ActionStore;
  */
 class EmberPhysicalEntity : public EmberEntity
 {
+friend class EmberEntityModelAction;
 public:
 
 	static const char * const ACTION_STAND;
@@ -53,7 +59,7 @@ public:
 
 
 
-	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel);
+	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
 	virtual ~EmberPhysicalEntity();
 	
 	
@@ -104,6 +110,8 @@ public:
 
 protected: 
 
+	void setModel(const std::string& modelName);
+
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	
 	/**
@@ -112,6 +120,10 @@ protected:
 	 */
 	void connectEntities();
 	
+	void createModelMapping();
+	void createScaleNode();
+		
+		
 	/**
 	 *    Called when the bounding box has changed.
 	 */
@@ -242,6 +254,8 @@ protected:
 	void Model_Resetting();
 	
 	void initFromModel();
+	
+	Model::Mapping::ModelMapping* mModelMapping;
 	
 };
 

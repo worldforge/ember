@@ -44,7 +44,7 @@ class Avatar;
 class AvatarEmberEntity: public EmberPhysicalEntity {
 public:
 
-	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel, Eris::Avatar* erisAvatar);
+	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar);
 	virtual ~AvatarEmberEntity();
 	
 	

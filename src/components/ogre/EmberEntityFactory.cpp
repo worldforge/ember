@@ -41,6 +41,7 @@
 #include "model/Model.h"
 #include "model/ModelDefinition.h"
 #include "model/ModelDefinitionManager.h"
+#include "model/mapping/EmberModelMappingManager.h"
 
 
 
@@ -83,7 +84,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	Eris::Entity* emberEntity;
 /*    Eris::TypeInfoPtr type = mTypeService->getTypeForAtlas(ge);*/
 
- 	bool isPhysical = true;
+ 	bool isPhysical = Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(type) != 0;
 // 	for (NonPhysicalTypeStore::const_iterator I = mNonPhysicalTypes.begin(); I != mNonPhysicalTypes.end(); ++I) {
 // 		if (type->isA(mTypeService->getTypeByName(*I))) {
 // 			isPhysical = false;
@@ -95,15 +96,15 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
     	AvatarEmberEntity* avatarEntity = createAvatarEntity(ge, type,  w);
     	emberEntity = avatarEntity;
  
+    } else if (type->isA(mTerrainType)) {
+
+    	emberEntity = createWorld(ge, type, w);
+
     } else if (!isPhysical) {
     	S_LOG_VERBOSE("Creating immaterial entity.");
 
     	///we don't want this to have any Ogre::Entity
 		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
-
-    } else if (type->isA(mTerrainType)) {
-
-    	emberEntity = createWorld(ge, type, w);
 
     } else {
 
@@ -173,43 +174,41 @@ void EmberEntityFactory::buildTerrainAroundAvatar()
 */
 }
 
-Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::string& entityType) 
-{
-//	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
-	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id + "_scaleNode"));
-
-	
-	Model::Model* model = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), entityType, id);
-
-	///if the model definition isn't valid, use a placeholder
-	if (!model->getDefinition()->isValid()) {
-		S_LOG_FAILURE( "Could not find " << entityType << ", using placeholder.");
-		///add a placeholder model
-		Model::ModelDefnPtr modelDef = model->getDefinition();
-		modelDef->createSubModelDefinition("placeholder.mesh")->createPartDefinition("main")->setShow( true);
-		modelDef->setValid( true);
-		modelDef->reloadAllInstances();
-	}
-
-	///rotate node to fit with WF space
-	///perhaps this is something to put in the model spec instead?
-//  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-	
-	scaleNode->attachObject(model);
-	return scaleNode;
-
-}
+// Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::string& entityType) 
+// {
+// //	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
+// 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id + "_scaleNode"));
+// 
+// 	
+// 	Model::Model* model = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), entityType, id);
+// 
+// 	///if the model definition isn't valid, use a placeholder
+// 	if (!model->getDefinition()->isValid()) {
+// 		S_LOG_FAILURE( "Could not find " << entityType << ", using placeholder.");
+// 		///add a placeholder model
+// 		Model::ModelDefnPtr modelDef = model->getDefinition();
+// 		modelDef->createSubModelDefinition("placeholder.mesh")->createPartDefinition("main")->setShow( true);
+// 		modelDef->setValid( true);
+// 		modelDef->reloadAllInstances();
+// 	}
+// 
+// 	///rotate node to fit with WF space
+// 	///perhaps this is something to put in the model spec instead?
+// //  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+// 	
+// 	scaleNode->attachObject(model);
+// 	return scaleNode;
+// 
+// }
 
 
 
 EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
 	
-	const std::string& typeName = mTypeService->getTypeForAtlas(ge)->getName();
+// 	const std::string& typeName = mTypeService->getTypeForAtlas(ge)->getName();
 
-	Ogre::SceneNode* scaleNode = SetupEntityNodesAndModel(ge->getId(), typeName);
-	EmberPhysicalEntity* entity;
-	
-	entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), scaleNode);
+// 	Ogre::SceneNode* scaleNode = SetupEntityNodesAndModel(ge->getId(), typeName);
+	EmberPhysicalEntity* entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
 	
 	return entity;
 	
@@ -218,11 +217,11 @@ EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objec
 
 AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
 {
-	const std::string& typeName = mTypeService->getTypeForAtlas(ge)->getName();
+/*	const std::string& typeName = mTypeService->getTypeForAtlas(ge)->getName();
 
-	Ogre::SceneNode* scaleNode = SetupEntityNodesAndModel(ge->getId(), typeName);
+	Ogre::SceneNode* scaleNode = SetupEntityNodesAndModel(ge->getId(), typeName);*/
     	
-    return new AvatarEmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager(), scaleNode, mAvatar);
+    return new AvatarEmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager(), mAvatar);
 	
 }
 

@@ -26,6 +26,12 @@
 #include "model/ParticleSystemBinding.h"
 #include "model/Action.h"
 
+#include "model/mapping/EmberModelMappingManager.h"
+#include "model/mapping/ModelMapping.h"
+#include "model/mapping/ModelMappingManager.h"
+
+#include "EmberEntityActionCreator.h"
+
 
 #include <OgreException.h>
 
@@ -49,15 +55,17 @@ const char * const EmberPhysicalEntity::ACTION_FLOAT = "__movement_float";
 
 
 
-EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Ogre::SceneNode* nodeWithModel) : 
-mScaleNode(nodeWithModel),
+EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) : 
+mScaleNode(0),
 mModelAttachedTo(0), 
 mModelMarkedToAttachTo(0),
 EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0),
-mActiveAction(0)
+mActiveAction(0),
+mModelMapping(0),
+mModel(0)
 {
-	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
+// 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
 
 	///make a copy of the original bbox 	
 // 	mDefaultOgreBoundingBox = mModel->getBoundingBox();
@@ -67,6 +75,8 @@ mActiveAction(0)
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
+	delete mModelMapping;
+
 	if (mModel) {
 		delete mModel->getUserObject();
 		getSceneManager()->destroyMovableObject(mModel);
@@ -117,8 +127,46 @@ void EmberPhysicalEntity::setVisible(bool visible)
 	//getModel()->setVisible(visible);
 }
 
+void EmberPhysicalEntity::createScaleNode() 
+{
+	mScaleNode = mOgreNode->createChildSceneNode(getId() + "_scaleNode");
+}
+
+void EmberPhysicalEntity::setModel(const std::string& modelName) 
+{
+	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName, getId());
+
+	///if the model definition isn't valid, use a placeholder
+	if (!mModel->getDefinition()->isValid()) {
+		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
+		///add a placeholder model
+		Model::ModelDefnPtr modelDef = mModel->getDefinition();
+		modelDef->createSubModelDefinition("placeholder.mesh")->createPartDefinition("main")->setShow( true);
+		modelDef->setValid( true);
+		modelDef->reloadAllInstances();
+	}
+	///rotate node to fit with WF space
+	///perhaps this is something to put in the model spec instead?
+//  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+	
+	mScaleNode->attachObject(mModel);
+}
+
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+	///first we need to create the scale node
+	createScaleNode();
+
+	/// we need a model mapping
+	createModelMapping();
+	
+	assert(mModelMapping);
+	mModelMapping->initialize();
+	assert(mModel);
+	
+	///once we have that, we need which model to use and can create the model
+// 	createModel();
+
 	onModeChanged(EmberEntity::MM_DEFAULT);
 	EmberEntity::init(ge, fromCreateOp);
 	getModel()->setQueryFlags(EmberEntity::CM_ENTITY);
@@ -130,7 +178,6 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 /*	if (!hasBBox()) {
 		scaleNode();
 	}*/
-	getSceneNode()->addChild(getScaleNode());
 	
 	//translate the scale node according to the translate defined in the model
 // 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
@@ -161,6 +208,8 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	
 	getModel()->Reloaded.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Reloaded));
 	getModel()->Resetting.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Resetting));
+	
+	
 
 }
 
@@ -184,6 +233,13 @@ void EmberPhysicalEntity::initFromModel()
 
 	connectEntities();
 
+}
+
+void EmberPhysicalEntity::createModelMapping()
+{
+	delete mModelMapping;
+	EmberEntityActionCreator creator(*this);
+	mModelMapping = ::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(this, &creator);
 }
 
 void EmberPhysicalEntity::connectEntities()
@@ -570,32 +626,24 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperatio
 	const std::list<std::string> &p = act->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 	
-	if (I == p.end()) return;
-	
-	const std::string& name = *I;
-	
-	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
-/*	if (debug) {
-	printf("Entity %s (%s) received action: %s\n", getName().c_str(), getId().c_str(), a.c_str());
-	}*/
-	
-	
-//	const std::string& name = act->getName();
-	
-	Model::Action* newAction = mModel->getAction(name);
-	
-	///If there's no action found, try to see if we have a "default action" defined to play instead.
-	if (!newAction) {
-		newAction = mModel->getAction("default_action");
+	if (I != p.end()) {
+		const std::string& name = *I;
+		
+		Model::Action* newAction = mModel->getAction(name);
+		
+		///If there's no action found, try to see if we have a "default action" defined to play instead.
+		if (!newAction) {
+			newAction = mModel->getAction("default_action");
+		}
+		
+		if (newAction) {
+			MotionManager::getSingleton().addAnimatedEntity(this);
+			mActiveAction = newAction;
+			newAction->getAnimations().reset();
+			mCurrentMovementAction->getAnimations().reset();
+		}
 	}
-	
-	if (newAction) {
-		MotionManager::getSingleton().addAnimatedEntity(this);
-		mActiveAction = newAction;
-		newAction->getAnimations().reset();
-		mCurrentMovementAction->getAnimations().reset();
-	}
-
+	EmberEntity::onAction(act);
 }
 
 bool EmberPhysicalEntity::allowVisibilityOfMember(EmberEntity* entity) {
