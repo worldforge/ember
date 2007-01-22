@@ -1,0 +1,188 @@
+//
+// C++ Implementation: XMLModelMappingDefinitionSerializer
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+#include "XMLModelMappingDefinitionSerializer.h"
+//#include "components/ogre/EmberOgrePrerequisites.h"
+
+namespace EmberOgre {
+
+namespace Model {
+
+namespace Mapping {
+
+XMLModelMappingDefinitionSerializer::XMLModelMappingDefinitionSerializer(EmberOgre::Model::Mapping::ModelMappingManager& modelMappingManager)
+: mModelMappingManager(modelMappingManager)
+{
+}
+
+
+XMLModelMappingDefinitionSerializer::~XMLModelMappingDefinitionSerializer()
+{
+}
+
+void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlDocument)
+{
+
+	Ember::TiXmlElement* rootElem = xmlDocument.RootElement();
+
+	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
+            smElem != 0; smElem = smElem->NextSiblingElement("modelmapping"))
+    {
+		const char* tmp =  smElem->Attribute("name");
+		std::string name;
+		if (!tmp) {
+			continue;
+		} else {
+			name = tmp;
+		}
+				
+		try {
+			ModelMappingDefinition* definition = new ModelMappingDefinition();
+			definition->setName(name);
+			Ember::TiXmlElement* matchElement = smElem->FirstChildElement();
+			parseMatchElement(*definition, definition->getRoot(), matchElement);
+			mModelMappingManager.addDefinition(definition);
+		} catch (std::exception ex) {
+			//S_LOG_FAILURE(ex.what());
+		} catch (...) {
+			//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+		}
+	}
+	
+	///Check for automodelmapping elements, which allow for a quick mapping between a entity type and a model.
+	///format: <automodelmapping name="oak">
+	///or: <automodelmapping name="oak" modelname="oak_1">
+	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement("automodelmapping");
+            smElem != 0; smElem = smElem->NextSiblingElement("automodelmapping"))
+    {
+		const char* tmp =  smElem->Attribute("name");
+		std::string name;
+		if (!tmp) {
+			continue;
+		} else {
+			name = tmp;
+		}
+				
+		try {
+			ModelMappingDefinition* definition = new ModelMappingDefinition();
+			definition->setName(name);
+			definition->getRoot().setType("entitytype");
+			CaseDefinition caseDef;
+			caseDef.setType("entitytypecase");
+			caseDef.getProperties()["equals"] = name;
+			ActionDefinition actionDef;
+			actionDef.setType("display-model");
+			
+			///check if a model name is set
+			const char* tmpModelName = smElem->Attribute("modelname");
+			if (tmpModelName) {
+				actionDef.getProperties()["modelname"] = std::string(tmpModelName);
+			} else {
+				actionDef.getProperties()["modelname"] = name;
+			}
+			
+			caseDef.getActions().push_back(actionDef);
+			definition->getRoot().getCases().push_back(caseDef);
+		
+			mModelMappingManager.addDefinition(definition);
+		} catch (std::exception ex) {
+			//S_LOG_FAILURE(ex.what());
+		} catch (...) {
+			//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+		}
+	}	
+}
+
+void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefinition& definition, MatchDefinition& matchDef, Ember::TiXmlElement* element)
+{
+	std::string caseType("");
+	if (std::string(element->Value()) == std::string("entitymatch")) {
+		matchDef.setType("entitytype");
+		caseType = "entitytypecase";
+	} else if (std::string(element->Value()) == std::string("attributematch")) {
+		matchDef.setType("attribute");
+		caseType = "attributecase";
+	
+/*		const char* tmp =  smElem->Attribute("attribute");
+		matchDef.getProperties()["attribute"] = std::string(tmp);*/
+	}
+	
+	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
+            attribute != 0; attribute = attribute->Next())
+    {
+    	matchDef.getProperties()[attribute->Name()] = attribute->Value();
+	}
+	
+	if (!element->NoChildren()) {
+		for (Ember::TiXmlElement* childElement = element->FirstChildElement();
+				childElement != 0; childElement = childElement->NextSiblingElement())
+		{
+			CaseDefinition caseDef;
+			caseDef.setType(caseType);
+			parseCaseElement(definition, caseDef, childElement);
+			matchDef.getCases().push_back(caseDef);
+		}
+	}
+}
+
+void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinition& definition, CaseDefinition& caseDef, Ember::TiXmlElement* element)
+{
+	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
+            attribute != 0; attribute = attribute->Next())
+    {
+    	caseDef.getProperties()[attribute->Name()] = attribute->Value();
+	}
+	
+	
+	if (!element->NoChildren()) {
+		for (Ember::TiXmlElement* childElement = element->FirstChildElement();
+				childElement != 0; childElement = childElement->NextSiblingElement())
+		{
+			if (std::string(childElement->Value()) == std::string("action")) {
+				ActionDefinition actionDef;
+				parseActionElement(definition, actionDef, childElement);
+				caseDef.getActions().push_back(actionDef);
+			} else {
+				///we'll assume it's a match 
+				MatchDefinition matchDef;
+				parseMatchElement(definition, matchDef, childElement);
+				caseDef.getMatches().push_back(matchDef);
+			}
+		}
+	}
+}
+
+void XMLModelMappingDefinitionSerializer::parseActionElement(ModelMappingDefinition& definition, ActionDefinition& actionDef, Ember::TiXmlElement* element)
+{
+	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
+            attribute != 0; attribute = attribute->Next())
+    {
+    	actionDef.getProperties()[attribute->Name()] = attribute->Value();
+	}
+	actionDef.setType(element->Attribute("type" ));
+	
+}
+}
+
+}
+
+}
