@@ -439,8 +439,12 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	if (I == p.end()) return;
 	
 	const std::string& name = *I;
+	std::string message = getName() + " performs a " + name;
+	
+	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
 	
 	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
+	Entity::onAction(act);
 }
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
