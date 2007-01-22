@@ -110,8 +110,6 @@ public Ogre::FrameListener
 
 	sigc::signal<void, EmberEntity* > EventAddedEntityToInventory;
 	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
-// 	SigC::Signal1<void, Eris::Entity* > EventAddedEntityToInventory;
-// 	SigC::Signal1<void, Eris::Entity* > EventRemovedEntityFromInventory;
 
 	/**
 	True if the current user have admin rights, i.e. is a "creator".
