@@ -60,6 +60,7 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 	$(top_builddir)/src/services/sound/libSoundService.a $(top_builddir)/src/services/logging/libLoggingService.a \
 	$(top_builddir)/src/components/ogre/terrain/libTerrain.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/model/libModel.a \
+	$(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/ogre/environment/caelum/libCaelum.la \
@@ -76,11 +77,12 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 
 
 ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
-								environment/Water.cpp MotionManager.cpp AvatarCamera.cpp 					GUIManager.cpp MousePicker.cpp \
-			EmberEntityFactory.cpp 				EmberOgre.cpp 	EmberPhysicalEntity.cpp EmberEntity.cpp \
-							AvatarEmberEntity.cpp WorldEmberEntity.cpp 	 				EmberEntityUserObject.cpp \
-			GUICEGUIAdapter.cpp 	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp \
-				EntityWorldPickListener.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp OgreInfo.cpp
+									environment/Water.cpp MotionManager.cpp AvatarCamera.cpp 					GUIManager.cpp MousePicker.cpp \
+				EmberEntityFactory.cpp 				EmberOgre.cpp 	EmberPhysicalEntity.cpp EmberEntity.cpp \
+								AvatarEmberEntity.cpp WorldEmberEntity.cpp 	 				EmberEntityUserObject.cpp \
+				GUICEGUIAdapter.cpp 	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp \
+					EntityWorldPickListener.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp OgreInfo.cpp \
+	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EmberEntityActionCreator.cpp
 
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
@@ -90,10 +92,11 @@ dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
 noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				 		AvatarEmberEntity.h \
-			EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h 		EmberEntity.h \
-			Avatar.h environment/Water.h 				 MotionManager.h 		AvatarCamera.h \
-			MathConverter.h 				ConsoleObjectImpl.h 		AvatarController.h GUIManager.h MousePicker.h \
-			EmberEntityUserObject.h 						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h \
-			OgreResourceLoader.h 			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h \
-			OgreSetup.h OpcodeCollisionDetector.h OgreInfo.h
+				EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h 		EmberEntity.h \
+				Avatar.h environment/Water.h 				 MotionManager.h 		AvatarCamera.h \
+				MathConverter.h 				ConsoleObjectImpl.h 		AvatarController.h GUIManager.h MousePicker.h \
+				EmberEntityUserObject.h 						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h \
+				OgreResourceLoader.h 			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h \
+				OgreSetup.h OpcodeCollisionDetector.h OgreInfo.h EmberEntityModelAction.h \
+	EmberEntityPartAction.h EmberEntityActionCreator.h
 	

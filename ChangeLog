@@ -1,3 +1,52 @@
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Makefile.am, src/components/ogre/manipulation/Makefile.am, configure.ac: added new files and upped the required varconf lib version
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: added both the EmberModelMappingManager and the MaterialEditor
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/Avatar.h: removed obsolete code
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/AvatarEmberEntity.h, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: refactored how entities are created and bound to model. It's now fully using the modelmapping framework.
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/manipulation/Makefile.am, src/components/ogre/manipulation/MaterialEditor.cpp, src/components/ogre/manipulation/MaterialEditor.h: added material editor which for now allows for some basic material editing
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntity.cpp: push a message to the console when an action is performed. This might need to better formatted, right now it's "<something> performa a <action>" which isn't that great really. 
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberEntityActionCreator.cpp, src/components/ogre/EmberEntityActionCreator.h, src/components/ogre/EmberEntityModelAction.cpp, src/components/ogre/EmberEntityModelAction.h, src/components/ogre/EmberEntityPartAction.cpp, src/components/ogre/EmberEntityPartAction.h: added Ember specific model mapping action classes, which shows and hides models and parts of those models
+
+
+2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/mapping/EmberModelMappingManager.cpp, src/components/ogre/model/mapping/EmberModelMappingManager.h, src/components/ogre/model/mapping/Makefile.am, src/components/ogre/model/mapping/ModelMapping.cpp, src/components/ogre/model/mapping/ModelMapping.h, src/components/ogre/model/mapping/ModelMappingCreator.cpp, src/components/ogre/model/mapping/ModelMappingCreator.h, src/components/ogre/model/mapping/ModelMappingDefinition.cpp, src/components/ogre/model/mapping/ModelMappingDefinition.h, src/components/ogre/model/mapping/ModelMappingManager.cpp, src/components/ogre/model/mapping/ModelMappingManager.h, src/components/ogre/model/mapping/XMLModelMappingDefinitionSerializer.cpp, src/components/ogre/model/mapping/XMLModelMappingDefinitionSerializer.h: added an intial version of a rule based model mapping framework which maps entity types and entity attributes to different models and parts. Except for the EmberModelMappingManager, this is all separate from Ember. The idea is to move this into a separate lib (Eris? Ares?) once it's more stable.
+
+2007-01-15 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberOgre.cpp: delete the GUIManager at destruction
+
+2007-01-15 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: properly clean up at destruction
+
+2007-01-15 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/ModelEdit.lua: code cleanup and added support for setting the scale of models
+
+2007-01-15 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/framework/IScriptingProvider.h: added destructor
+
 2007-01-14 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/EmberOgre.cpp: make sure the Models are destroyed before the other movable objects are

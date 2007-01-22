@@ -284,7 +284,7 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.11 \
- varconf-1.0 >= 0.6.4 mercator-0.2 >= 0.2.4 atlascpp-0.6 >= 0.5.98],
+ varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.4 atlascpp-0.6 >= 0.5.98],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
@@ -437,6 +437,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/environment/caelum/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
+		 src/components/ogre/model/mapping/Makefile
 		 src/components/ogre/input/Makefile
 		 src/components/ogre/carpenter/Makefile
 		 src/components/ogre/jesus/Makefile
