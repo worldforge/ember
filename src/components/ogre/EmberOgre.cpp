@@ -104,6 +104,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
+#include "model/mapping/EmberModelMappingManager.h"
 
 // ------------------------------
 // Include Ember header files
@@ -129,6 +130,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "sound/OgreSoundProvider.h"
 
 #include "OgreSetup.h"
+
+#include "manipulation/MaterialEditor.h"
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
@@ -161,11 +164,14 @@ mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
 mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general"),
-mWindow(0)
+mWindow(0),
+mMaterialEditor(0)
 {}
 
 EmberOgre::~EmberOgre()
 {
+	
+	delete mMaterialEditor;
 	
 	///start with deleting the eris world, then shut down ogre
 	delete mWorldView;
@@ -329,6 +335,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
+	Model::Mapping::EmberModelMappingManager* modelMappingManager = new Model::Mapping::EmberModelMappingManager();
+	
 	///Create a resource loader which loads all the resources we need.
 	OgreResourceLoader ogreResourceLoader;
 	ogreResourceLoader.initialize();
@@ -452,6 +460,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	/// Back to full rendering
 	mSceneMgr->clearSpecialCaseRenderQueues();
 	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_EXCLUDE);
+
+	mMaterialEditor = new MaterialEditor();
 
 	loadingBar.finish();
 

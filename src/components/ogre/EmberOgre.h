@@ -95,7 +95,7 @@ class OgreLogObserver;
 
 class EntityMoveManager;
 
-
+class MaterialEditor;
 
 
 /** 
@@ -333,6 +333,8 @@ protected:
 	OgreLogObserver* mLogObserver;
 	
 	Ember::StreamLogObserver* mStreamLogObserver;
+	
+	MaterialEditor* mMaterialEditor;
 	
 };
 
