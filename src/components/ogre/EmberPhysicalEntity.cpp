@@ -134,6 +134,13 @@ void EmberPhysicalEntity::createScaleNode()
 
 void EmberPhysicalEntity::setModel(const std::string& modelName) 
 {
+	if (mModel) {
+		if (mModel->getDefinition()->getName() == modelName) {
+			return;
+		} else {
+			getSceneManager()->destroyMovableObject(mModel);
+		}
+	}
 	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName, getId());
 
 	///if the model definition isn't valid, use a placeholder
@@ -162,7 +169,10 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	
 	assert(mModelMapping);
 	mModelMapping->initialize();
-	assert(mModel);
+	if (!mModel) {
+		S_LOG_WARNING("Entity of type " << getType()->getName() << " have no default model, using placeholder.");
+		setModel("placeholder");
+	}
 	
 	///once we have that, we need which model to use and can create the model
 // 	createModel();
