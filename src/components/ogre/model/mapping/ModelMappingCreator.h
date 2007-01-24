@@ -36,11 +36,16 @@ namespace Model {
 
 namespace Mapping {
 
+namespace AttributeComparers {
+	class NumericComparer;
+}
+
 class ModelMappingDefinition;
 class ModelMapping;
 class IActionCreator;
 class EntityTypeMatch;
 class AttributeMatch;
+class AttributeCase;
 class CaseBase;
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -68,6 +73,10 @@ protected:
 	void addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
 
 	void addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
+
+	AttributeComparers::NumericComparer* createNumericComparer(CaseDefinition& caseDefinition);
+	void setAttributeCaseComparer(AttributeCase* aCase, AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition);
+
 
 	IActionCreator* mActionCreator;
 	Eris::Entity* mEntity;

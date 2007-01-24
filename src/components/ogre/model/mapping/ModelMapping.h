@@ -23,6 +23,9 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPING_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPING_H
 
+#include "AttributeComparers.h"
+
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -30,6 +33,7 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 
 #include <Atlas/Objects/Entity.h>
 
@@ -39,6 +43,8 @@
 
 #include <Eris/TypeInfo.h>
 #include <Eris/Entity.h>
+
+
 
 namespace Eris
 {
@@ -51,6 +57,10 @@ namespace Model {
 
 namespace Mapping {
 
+namespace AttributeComparers {
+class AttributeComparerWrapper;
+}
+
 class EntityTypeMatch;
 class EntityTypeCase;
 class AttributeCase;
@@ -59,6 +69,7 @@ class ModelMapping;
 class MatchBase;
 class Match;
 class CaseBase;
+class AttributeObserver;
 
 template <typename T>
 static void cleanVector(T& theVector) 
@@ -78,10 +89,7 @@ public:
 	virtual void activate() = 0;
 	virtual void deactivate() = 0;
 	
-	void setCase(CaseBase* ownerCase)
-	{
-		mOwnerCase = ownerCase;
-	}
+	inline void setCase(CaseBase* ownerCase);
 
 protected:
 	CaseBase* mOwnerCase;
@@ -94,6 +102,7 @@ public:
 	{
 		std::cout << "Dummy action activated." << std::endl;
 	};
+
 	virtual void deactivate() 
 	{
 		std::cout << "Dummy action deactivated." << std::endl;
@@ -102,87 +111,37 @@ public:
 protected:
 };
 
-// class Node
-// {
-// public:
-// 	typedef std::vector<Node*> NodeStore;
-// 
-// 	virtual ~Node();
-// 	
-// 	void addChild(Node* node);
-// 	const NodeStore& getChildren();
-// 
-// protected:
-// 
-// 	void setParent(Node* parentNode);
-// 
-// 	Node* mParentNode;
-// 	std::vector<Node*> mChildren;
-// 	
-// 	bool mActive;
-// 	
-// 
-// };
-
 class CaseBase 
 {
 public:
 	typedef std::vector<Action*> ActionStore;
 
-	CaseBase() : mParentCase(0), mIsActive(false), mIsTrue(false) {}
-	virtual ~CaseBase() {
-		cleanVector(mActions);
-		cleanVector(mMatches);
-	}
-	void setParentCase(CaseBase* aCase) {mParentCase = aCase; }
-
-	bool getIsTrue() { return mIsTrue; }
-	bool getIsActive() { return mIsActive;}
-	bool getIsTrueToRoot() {
-		if (!mParentCase) {
-			return mIsTrue;
-		} else {
-			return mIsTrue && mParentCase->getIsTrueToRoot();
-		}
-	}
+	CaseBase();
+	virtual ~CaseBase();
 	
-	void addAction(Action* action) { 
-		mActions.push_back(action);
-		action->setCase(this);
-	}
-	const ActionStore& getActions() { return mActions; };
+	inline void setParentCase(CaseBase* aCase);
+
+	inline bool getIsTrue();
+	inline bool getIsActive();
+	inline bool getIsTrueToRoot();
 	
-	void activateActions()
-	{
-		for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-			(*I)->activate();
-		}
-		mIsActive = true;
-	}
-	void deactivateActions()
-	{
-		for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-			(*I)->deactivate();
-		}
-		mIsActive = false;
-	}
+	void addAction(Action* action);
+	inline const ActionStore& getActions();
+	
+	void activateActions();
+	void deactivateActions();
 
-	void addMatch(MatchBase* match) { 
-		mMatches.push_back(match);
-		//match->setParentCase(this);
-	}
-	const std::vector<MatchBase*>& getMatches() { return mMatches; }
+	void addMatch(MatchBase* match);
+	inline const std::vector<MatchBase*>& getMatches();
 
+	void evaluateChanges();
 protected:
 	ActionStore mActions;
 
 	CaseBase* mParentCase;
 	bool mIsTrue, mIsActive;
 	
-	void setState(bool state) 
-	{
-		mIsTrue = state;
-	}
+	inline void setState(bool state);
 	
 	std::vector<MatchBase*> mMatches;
 	
@@ -196,7 +155,7 @@ public:
 	Case() : mParentMatch(0) {}
 	virtual ~Case() { };
 	
- 	void setParentMatch(TMatch* aMatch) {mParentMatch = aMatch; }
+ 	inline void setParentMatch(TMatch* aMatch);
 
 protected:
 	
@@ -207,48 +166,33 @@ protected:
 class EntityTypeCase : public Case<EntityTypeMatch>
 {
 public:
-	bool testMatch(Eris::Entity* entity)
-	{
-		Eris::TypeInfo* type = entity->getType();
-		for (std::vector<Eris::TypeInfoPtr>::iterator I = mEntityTypes.begin(); I != mEntityTypes.end(); ++I) {
-			if (type->isA(*I)) {
-				setState(true);
-				return true;
-			}
-		}
-		setState(false);
-		return false;
-	}
+	bool testMatch(Eris::Entity* entity);
 	
-	void addEntityType(Eris::TypeInfoPtr typeInfo)
-	{
-		mEntityTypes.push_back(typeInfo);
-	}
+	void addEntityType(Eris::TypeInfoPtr typeInfo);
+	
 protected:
 	std::vector<Eris::TypeInfoPtr> mEntityTypes;
 };
 
+
+
 class AttributeCase : public Case<AttributeMatch>
 {
 public:
-	bool testMatch(const Atlas::Message::Element& attribute)
-	{
-		///TODO: add an implementation abstract class for doing checks for different types of values
-		if (attribute == mValue) {
-			setState(true);
-			return true;
-		}
-		setState(false);
-		return false;
-	}
+	AttributeCase() {};
+	~AttributeCase() {};
+	bool testMatch(const Atlas::Message::Element& attribute);
 	
-	void setAttributeValue(const std::string& value) 
-	{
-		mValue = value;
-	}
+	/**
+	Default to a string comparer.
+	*/
+	void setAttributeValue(const std::string& value);
+	void setAttributeComparerWrapper(AttributeComparers::AttributeComparerWrapper* comparerWrapper);
 protected:
-	std::string mValue;
+	//std::string mValue;
+	std::auto_ptr<AttributeComparers::AttributeComparerWrapper> mComparerWrapper;
 };
+
 
 
 
@@ -259,7 +203,7 @@ public:
 
 	MatchBase() : mParentCase(0) {}
 	virtual ~MatchBase() {}
-	void setParentCase(CaseBase* aCase) { mParentCase = aCase;}
+	inline void setParentCase(CaseBase* aCase);
 
 protected:
 	 CaseBase* mParentCase;
@@ -270,13 +214,13 @@ class AbstractMatch : public MatchBase
 {
 public:
 
-	AbstractMatch()  {}
-	virtual ~AbstractMatch() { cleanVector(mCases); }
+	AbstractMatch();
+	virtual ~AbstractMatch();
 	void addCase(TCase* aCase) {
 		mCases.push_back(aCase); 
-//		aCase->setParentMatch(this);
 		aCase->setParentCase(mParentCase);
 	}
+	std::vector<TCase*>& getCases() { return mCases;}
 
 protected:
 	 std::vector<TCase*> mCases;
@@ -286,12 +230,7 @@ class EntityTypeMatch : public AbstractMatch<EntityTypeCase>
 {
 public:
 
-	void testEntity(Eris::Entity* entity)
-	{
-		for (std::vector<EntityTypeCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
-			(*I)->testMatch(entity);
-		}
-	}
+	void testEntity(Eris::Entity* entity);
 	
 protected:
 
@@ -301,16 +240,11 @@ class AttributeMatch : public AbstractMatch<AttributeCase>
 {
 public:
 
-	AttributeMatch(const std::string& attributeName) : mAttributeName(attributeName) {}
+	AttributeMatch(const std::string& attributeName);
 
-	void testAttribute(const Atlas::Message::Element& attribute)
-	{
-		for (std::vector<AttributeCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
-			(*I)->testMatch(attribute);
-		}
-	}
+	void testAttribute(const Atlas::Message::Element& attribute);
 	
-	const std::string& getAttributeName();
+	inline const std::string& getAttributeName();
 
 protected:
 
@@ -325,74 +259,110 @@ class ModelMapping
 {
 public:
 	typedef std::vector<CaseBase*> CaseBaseStore;
-    ModelMapping(Eris::Entity* entity): mEntity(entity) {
-    }
+	typedef std::vector<AttributeObserver*> AttributeObserverStore;
+    ModelMapping(Eris::Entity* entity);
 
     ~ModelMapping();
     
     EntityTypeMatch& getRootEntityMatch() { return mRootEntityMatch;}
         
-    void evaluateChanges() {
-    	CaseBaseStore::iterator endI = mCases.end();
-    	for (CaseBaseStore::iterator I = mCases.begin(); I != endI; ++I) {
-    		if ((*I)->getIsTrueToRoot()) {
-    			if (!(*I)->getIsActive()) {
-    				(*I)->activateActions();
-    			}
-    		} else {
-    			if ((*I)->getIsActive()) {
-    				(*I)->deactivateActions();
-    			}
-    		}
-    	}
-    }
+    void evaluateChanges();
     
-    void addCase(CaseBase* aCase)
-    {
-    	mCases.push_back(aCase);
-    }
+    void addCase(CaseBase* aCase);
     
-    void initialize()
-    {
-		mRootEntityMatch.testEntity( mEntity);
-		evaluateChanges();
-    }
+    void initialize();
+    
+    void addAttributeObserver(AttributeObserver* observer);
     
 protected:
 
 	EntityTypeMatch mRootEntityMatch;
 	
-	std::map<std::string, std::vector<AttributeMatch*> > mAttributeLookupMap;
+	//std::map<std::string, std::vector<AttributeMatch*> > mAttributeLookupMap;
 
 	Eris::Entity* mEntity;
 	
 	CaseBaseStore mCases;
+	AttributeObserverStore mAttributeObservers;
 };
 
 class AttributeObserver : public sigc::trackable
 {
 public:
 
-	AttributeObserver(Eris::Entity* entity, AttributeMatch* match, ModelMapping& modelMapping) : mMatch(match), mModelMapping(modelMapping)
-	{
-		mSlot = sigc::mem_fun(*this, &AttributeObserver::attributeChanged);
-		entity->observe(match->getAttributeName(), mSlot);
-	}
-
+	AttributeObserver(Eris::Entity* entity, AttributeMatch* match, ModelMapping& modelMapping) ;
+	AttributeObserver(Eris::Entity* entity, AttributeMatch* match, ModelMapping& modelMapping,const std::string& attributeName);
+	
 protected:
 	Eris::Entity::AttrChangedSlot mSlot;
 	
 	ModelMapping& mModelMapping;
 	
-	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
-	{
-		mMatch->testAttribute( attributeValue);
-		mModelMapping.evaluateChanges();
-	}
+	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
+	
 	AttributeMatch* mMatch;
 	
 };
 
+
+void MatchBase::setParentCase(CaseBase* aCase) 
+{ 
+	mParentCase = aCase;
+}
+
+const std::string& AttributeMatch::getAttributeName()
+{
+	return mAttributeName;
+}
+
+
+template <class TMatch>
+void Case<TMatch>::setParentMatch(TMatch* aMatch) 
+{
+	mParentMatch = aMatch;
+}
+
+void CaseBase::setState(bool state) 
+{
+	mIsTrue = state;
+}
+
+const std::vector<MatchBase*>& CaseBase::getMatches() 
+{
+	return mMatches;
+}
+	
+const CaseBase::ActionStore& CaseBase::getActions() 
+{ 
+	return mActions; 
+};
+
+void CaseBase::setParentCase(CaseBase* aCase) {
+	mParentCase = aCase; 
+}
+
+bool CaseBase::getIsTrue() 
+{ 
+	return mIsTrue; 
+}
+
+bool CaseBase::getIsActive() 
+{ 
+	return mIsActive;
+}
+
+bool CaseBase::getIsTrueToRoot() {
+	if (!mParentCase) {
+		return mIsTrue;
+	} else {
+		return mIsTrue && mParentCase->getIsTrueToRoot();
+	}
+}
+	
+void Action::setCase(CaseBase* ownerCase)
+{
+	mOwnerCase = ownerCase;
+}
 
 }
 
