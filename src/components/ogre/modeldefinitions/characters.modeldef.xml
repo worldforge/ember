@@ -10,712 +10,169 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="innerFire.BAKED" weight="1" />
-					<animationpart name="outerFire.BAKED" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="innerFire.BAKED" weight="1.0" />
+						<animationpart name="outerFire.BAKED" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="innerFire.BAKED" weight="1" />
-					<animationpart name="outerFire.BAKED" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="innerFire.BAKED" weight="1.0" />
+						<animationpart name="outerFire.BAKED" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_run">
-				<AnimationParts>
-					<animationpart name="innerFire.BAKED" weight="1" />
-					<animationpart name="outerFire.BAKED" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="innerFire.BAKED" weight="1.0" />
+						<animationpart name="outerFire.BAKED" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>
-	<model name="settler_" usescaleof="height" showcontained="false" renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/alpha_male/models/alpha_male.mesh" >
-				<parts>
-					<part name="Body" show="true" >
-						<subentities>
-							<subentity name="body" />
-						</subentities>
-					</part>      
-					<part name="Eyes" show="true" >
-						<subentities>
-							<subentity name="eyes" />
-						</subentities>
-					</part>      
-					<part name="Head" show="true" >
-						<subentities>
-							<subentity name="head" />
-						</subentities>
-					</part>
-					<part name="Hair" show="true" >
-						<subentities>
-							<subentity name="hair" />
-						</subentities>
-					</part>
-					<part name="Dress1" show="false" >
-						<subentities>
-							<subentity name="dress1" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>
-					<part name="Dress2" show="true" >
-						<subentities>
-							<subentity name="dress2" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>
-					<part name="Boots" show="true" >
-						<subentities>
-							<subentity name="boots" />
-						</subentities>
-					</part>  
-				</parts>      
-			</submodel>
-		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="_ildeBreathing.BAKED" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="_walk.BAKED" weight="1" />
-				</AnimationParts>
-				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-			</Action>
-		</Actions>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RightHand" />
-		</attachpoints>
-	</model>	
-
-	<model name="settler_male" usescaleof="height" scale="1.2" showcontained="false"  renderingdistance="150">
-			<translate x="0.000000" y="0.000000" z="0.000000" />
-			<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
-			<submodels>
-				<submodel mesh="male.mesh">
-					<parts>
-						<part name="main" show="true">
-							<subentities>
-								<subentity index="0" material="/global/creature/humanoid/male" />
-							</subentities>
-						</part>
-					</parts>
-				</submodel>
-			</submodels>
-			<Actions>
-				<Action name="__movement_walk">
-					<AnimationParts>
-						<animationpart name="male_walk" weight="1" />
-					</AnimationParts>
-					<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-				</Action>
-				<Action name="__movement_run">
-					<AnimationParts speed="1.5">
-						<animationpart name="male_run" weight="1" />
-					</AnimationParts>
-					<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-				</Action>
-				<Action name="__movement_swim">
-					<AnimationParts>
-						<animationpart name="male_walk" weight="1" />
-					</AnimationParts>
-				</Action>
-				<Action name="chop">
-					<AnimationParts>
-						<animationpart name="male_couch" weight="1" />
-					</AnimationParts>
-				</Action>
-				<Action name="sharpen">
-					<AnimationParts>
-						<animationpart name="male_couch" weight="1" />
-					</AnimationParts>
-				</Action>
-				<Action name="sharpen">
-					<AnimationParts>
-						<animationpart name="male_couch" weight="1" />
-					</AnimationParts>
-				</Action>
-				<Action name="cut">
-					<AnimationParts>
-						<animationpart name="male_couch" weight="1" />
-					</AnimationParts>
-				</Action>
-			</Actions>
-			<attachpoints>
-				<attachpoint name="right_hand_wield" bone="RIndex1" />
-			</attachpoints>
-		</model>
 	
-		<model name="settler_standard" usescaleof="height"  showcontained="false" renderingdistance="150">
+	<model name="male" usescaleof="height" showcontained="false">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="Alpha_Male.mesh" >
+			<submodel mesh="3d_skeletons/male/male.mesh">
 				<parts>
-					<part name="MiddleLegs" show="false" >
+					<part name="head" show="true">
 						<subentities>
-							<subentity name="am_Body_MidLeg" />
-						</subentities>
-					</part>      
-					<part name="Dress1" show="true" >
-						<subentities>
-							<subentity name="amDress" />
+							<subentity index="0" />
 						</subentities>
 					</part>
-					<part name="Calves" show="false" >
+					<part name="body" show="true">
 						<subentities>
-							<subentity name="am_Body_Calves" />
-						</subentities>
-					</part>      
-					<part name="UpperTorso" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpperTors" />
-						</subentities>
-					</part>      
-					<part name="Face" show="true" >
-						<subentities>
-							<subentity name="am_Body_Face" />
-						</subentities>
-					</part>      
-					<part name="LowerForeArms" show="true" >
-						<subentities>
-							<subentity name="am_Body_LowForeAr" />
-						</subentities>
-					</part>      
-					<part name="Hands" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hand" />
-						</subentities>
-					</part>      
-					<part name="UpperLegs" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpLeg" />
-						</subentities>
-					</part>      
-					<part name="LowerTorso" show="true" >
-						<subentities>
-							<subentity name="am_Body_LowerTors" />
-						</subentities>
-					</part>      
-					<part name="UpperArms" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpperArm" />
-						</subentities>
-					</part>      
-					<part name="Neck" show="true" >
-						<subentities>
-							<subentity name="am_Body_Neck" />
-						</subentities>
-					</part>      
-					<part name="Feet" show="false" >
-						<subentities>
-							<subentity name="am_Body_Foot" />
-						</subentities>
-					</part>      
-					<part name="Hips" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hips" />
-						</subentities>
-					</part>      
-					<part name="UpperForeArms" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpForeArm" />
-						</subentities>
-					</part>      
-					<part name="Hair" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hair" />
+							<subentity index="3" />
 						</subentities>
 					</part>
-				</parts> 
-			</submodel>
-		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="PoseC" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
-				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-			</Action>
-			<Action name="__movement_run">
-				<AnimationParts speed="1.5">
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
-				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-			</Action>
-			<Action name="__movement_swim">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="chop">
-				<AnimationParts>
-					<animationpart name="Bow" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="sharpen">
-				<AnimationParts>
-					<animationpart name="Bow" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="sharpen">
-				<AnimationParts>
-					<animationpart name="Bow" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="cut">
-				<AnimationParts>
-					<animationpart name="Bow" weight="1" />
-				</AnimationParts>
-			</Action>
-		</Actions>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RightHand" />
-		</attachpoints>
-	</model>		
-
-	<model name="settler_____" usescaleof="height"  showcontained="false" renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/alpha_male/models/Alpha_Male.mesh" >
-				<parts>
-					<part name="UpperLegs" show="false" >
+					<part name="footwear/leather_shoes_wrapped_cotton_sides" show="false" group="footwear">
 						<subentities>
-							<subentity name="am_Body_UpLeg" />
-						</subentities>
-					</part>      
-					<part name="Neck" show="true" >
-						<subentities>
-							<subentity name="am_Body_Neck" />
-						</subentities>
-					</part>      
-					<part name="LowerTorso" show="true" >
-						<subentities>
-							<subentity name="am_Body_LowerTors" />
-						</subentities>
-					</part>      
-					<part name="Hips" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hips" />
-						</subentities>
-					</part>      
-					<part name="Feet" show="false" >
-						<subentities>
-							<subentity name="am_Body_Foot" />
-						</subentities>
-					</part>      
-					<part name="MiddleLegs" show="false" >
-						<subentities>
-							<subentity name="am_Body_MidLeg" />
-						</subentities>
-					</part>      
-					<part name="UpperTorso" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpperTors" />
-						</subentities>
-					</part>      
-					<part name="Calves" show="false" >
-						<subentities>
-							<subentity name="am_Body_Calves" />
-						</subentities>
-					</part>      
-					<part name="UpperArms" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpperArm" />
-						</subentities>
-					</part>      
-					<part name="UpperForeArms" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpForeArm" />
-						</subentities>
-					</part>      
-					<part name="LowerForeArms" show="true" >
-						<subentities>
-							<subentity name="am_Body_LowForeAr" />
-						</subentities>
-					</part>      
-					<part name="Hands" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hand" />
-						</subentities>
-					</part>      
-					<part name="Face" show="true" >
-						<subentities>
-							<subentity name="am_Body_Face" />
-						</subentities>
-					</part>      
-					<part name="Hair" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hair" />
+							<subentity index="2" material="/global/clothes/footwear/leather_shoes_wrapped_cotton_sides" />
 						</subentities>
 					</part>
-					<part name="Dress1" show="true" >
+					<part name="footwear/leather_boots" show="true" group="footwear">
 						<subentities>
-							<subentity name="amDress" />
+							<subentity index="2" material="/global/clothes/footwear/leather_boots" />
 						</subentities>
 					</part>
-					<part name="Boots" show="true" >
+					<part name="footwear/metal_shoes" show="false" group="footwear">
 						<subentities>
-							<subentity name="amBoots" />
-						</subentities>
-					</part>  
-				</parts>      
-			</submodel>
-		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="Breathing2" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
-				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-			</Action>
-		</Actions>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RightHand" />
-		</attachpoints>
-	</model>		
-	
-	
-	<model name="settler_working" usescaleof="height"  showcontained="false" renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/alpha_male/models/AlphaMaleMesh.001.mesh" >
-				<parts>
-					<part name="UpperLegs" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpLeg" />
-						</subentities>
-					</part>      
-					<part name="Neck" show="true" >
-						<subentities>
-							<subentity name="am_Body_Neck" />
-						</subentities>
-					</part>      
-					<part name="LowerTorso" show="true" >
-						<subentities>
-							<subentity name="am_Body_LowerTors" />
-						</subentities>
-					</part>      
-					<part name="Hips" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hips" />
-						</subentities>
-					</part>      
-					<part name="Feet" show="false" >
-						<subentities>
-							<subentity name="am_Body_Foot" />
-						</subentities>
-					</part>      
-					<part name="MiddleLegs" show="false" >
-						<subentities>
-							<subentity name="am_Body_MidLeg" />
-						</subentities>
-					</part>      
-					<part name="UpperTorso" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpperTors" />
-						</subentities>
-					</part>      
-					<part name="Calves" show="false" >
-						<subentities>
-							<subentity name="am_Body_Calves" />
-						</subentities>
-					</part>      
-					<part name="UpperArms" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpperArm" />
-						</subentities>
-					</part>      
-					<part name="UpperForeArms" show="false" >
-						<subentities>
-							<subentity name="am_Body_UpForeArm" />
-						</subentities>
-					</part>      
-					<part name="LowerForeArms" show="true" >
-						<subentities>
-							<subentity name="am_Body_LowForeAr" />
-						</subentities>
-					</part>      
-					<part name="Hands" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hand" />
-						</subentities>
-					</part>      
-					<part name="Face" show="true" >
-						<subentities>
-							<subentity name="am_Body_Face" />
-						</subentities>
-					</part>      
-					<part name="Hair" show="true" >
-						<subentities>
-							<subentity name="am_Body_Hair" />
+							<subentity index="2" material="/global/clothes/footwear/metal_shoes" />
 						</subentities>
 					</part>
-					<part name="Dress1" show="true" >
+					<part name="clothes/burlap" show="true" group="clothes">
 						<subentities>
-							<subentity name="amDress" />
+							<subentity index="1" material="/global/clothes/dress/burlap"/>
 						</subentities>
 					</part>
-					<part name="Boots" show="true" >
+					<part name="clothes/ragged" show="false" group="clothes">
 						<subentities>
-							<subentity name="amBoots" />
-						</subentities>
-					</part>  
-				</parts>      
-			</submodel>
-		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="Breathing" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="walk.001" weight="1" />
-				</AnimationParts>
-				<sound repeat="true" name="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" />
-			</Action>
-		</Actions>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RightHand" />
-		</attachpoints>
-	</model>		
-		
-	<model name="butcher" usescaleof="height" showcontained="false"  renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
-				<parts>
-					<part name="Body" show="true" >
-						<subentities>
-							<subentity name="body" />
-						</subentities>
-					</part>      
-					<part name="Eyes" show="true" >
-						<subentities>
-							<subentity name="eyes" />
-						</subentities>
-					</part>      
-					<part name="Head" show="false" >
-						<subentities>
-							<subentity name="head" />
+							<subentity index="1" material="/global/clothes/dress/ragged"/>
 						</subentities>
 					</part>
-					<part name="Head/Brutus" show="true" >
+					<part name="clothes/fine" show="false" group="clothes">
 						<subentities>
-							<subentity name="head/brutus" />
+							<subentity index="1" material="/global/clothes/dress/fine"/>
 						</subentities>
 					</part>
-					<part name="Boxers" show="false" >
+					<part name="clothes/sun" show="true" group="clothes">
 						<subentities>
-							<subentity name="boxers" />
+							<subentity index="1" material="/global/clothes/dress/sun"/>
 						</subentities>
 					</part>
-					<part name="Cloak" show="false" >
+					<part name="clothes/dark_rags" show="true" group="clothes">
 						<subentities>
-							<subentity name="cloak" />
+							<subentity index="1" material="/global/clothes/dress/dark_rags"/>
 						</subentities>
 					</part>
-					<part name="Pants" show="true" >
-						<subentities>
-							<subentity name="pants" />
-						</subentities>
-					</part>      
-					<part name="Shirt" show="false" >
-						<subentities>
-							<subentity name="shirt" />
-						</subentities>
-					</part>  
-					<part name="ShirtTuckedLongSleeve" show="false" >
-						<subentities>
-							<subentity name="shirt/tucked_long_sleeve" />
-						</subentities>
-					</part>      
 				</parts>
 			</submodel>
 		</submodels>
+		<actions>
+			<action name="__movement_idle" speed="1.000000">
+				<animations>
+					<animation iterations="10">
+						<animationpart name="wf_humanoid-idle" weight="1" />
+					</animation>
+					<animation iterations="1">
+						<animationpart name="wf_humanoid-idle_knuckles_crack" weight="1" />
+					</animation>
+					<animation iterations="11">
+						<animationpart name="wf_humanoid-idle" weight="1" />
+					</animation>
+					<animation iterations="1">
+						<animationpart name="wf_humanoid-idle_neck_adjust" weight="1" />
+					</animation>
+					<animation iterations="14">
+						<animationpart name="wf_humanoid-idle" weight="1" />
+					</animation>
+					<animation iterations="1">
+						<animationpart name="idle_back_stretch" weight="1" />
+					</animation> 
+				</animations>
+			</action>
+			<action name="__movement_walk" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-walk" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_swim" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-walk" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_run" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-run" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="pickup" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-pick-up" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="drop" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-pick-up" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="cut" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-offense_punch" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="default_action" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-fletching" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+		</actions>
 		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
+			<attachpoint name="right_hand_wield" bone="RMiddleRoot" />
 		</attachpoints>
-	</model>
-
-	<model name="marshall" usescaleof="height" showcontained="false"  renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
-				<parts>
-					<part name="Body" show="true" >
-						<subentities>
-							<subentity name="body" />
-						</subentities>
-					</part>      
-					<part name="Eyes" show="true" >
-						<subentities>
-							<subentity name="eyes" />
-						</subentities>
-					</part>      
-					<part name="Head" show="true" >
-						<subentities>
-							<subentity name="head" />
-						</subentities>
-					</part>
-					<part name="Head/Brutus" show="false" >
-						<subentities>
-							<subentity name="head/brutus" />
-						</subentities>
-					</part>
-					<part name="Boxers" show="false" >
-						<subentities>
-							<subentity name="boxers" material="/global/clothes/dress/fine" />
-						</subentities>
-					</part>
-					<part name="Cloak" show="true" >
-						<subentities>
-							<subentity name="cloak" material="/global/clothes/dress/fine" />
-						</subentities>
-					</part>
-					<part name="Pants" show="true" >
-						<subentities>
-							<subentity name="pants" material="/global/clothes/dress/fine" />
-						</subentities>
-					</part>      
-					<part name="Shirt" show="false" >
-						<subentities>
-							<subentity name="shirt" material="/global/clothes/dress/fine" />
-						</subentities>
-					</part>  
-					<part name="ShirtTuckedLongSleeve" show="true" >
-						<subentities>
-							<subentity name="shirt/tucked_long_sleeve" material="/global/clothes/dress/fine" />
-						</subentities>
-					</part>      
-				</parts>      
-			</submodel>
-		</submodels>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
-		</attachpoints>
-	</model>
-
-
-	<model name="mercenary" usescaleof="height" showcontained="false"  renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
-				<parts>
-					<part name="Body" show="true" >
-						<subentities>
-							<subentity name="body" />
-						</subentities>
-					</part>      
-					<part name="Eyes" show="true" >
-						<subentities>
-							<subentity name="eyes" />
-						</subentities>
-					</part>      
-					<part name="Head" show="false" >
-						<subentities>
-							<subentity name="head" />
-						</subentities>
-					</part>
-					<part name="Head/Brutus" show="true" >
-						<subentities>
-							<subentity name="head/brutus" />
-						</subentities>
-					</part>
-					<part name="Boxers" show="false" >
-						<subentities>
-							<subentity name="boxers" material="/global/clothes/dress/dark_rags" />
-						</subentities>
-					</part>
-					<part name="Cloak" show="false" >
-						<subentities>
-							<subentity name="cloak" material="/global/clothes/dress/dark_rags" />
-						</subentities>
-					</part>
-					<part name="Pants" show="true" >
-						<subentities>
-							<subentity name="pants" material="/global/clothes/dress/dark_rags" />
-						</subentities>
-					</part>      
-					<part name="Shirt" show="true" >
-						<subentities>
-							<subentity name="shirt" material="/global/clothes/dress/dark_rags" />
-						</subentities>
-					</part>  
-					<part name="ShirtTuckedLongSleeve" show="false" >
-						<subentities>
-							<subentity name="shirt/tucked_long_sleeve" material="/global/clothes/dress/dark_rags" />
-						</subentities>
-					</part>      
-				</parts>      
-			</submodel>
-		</submodels>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
-		</attachpoints>
-	</model>
-	
-	
-	<model name="merchant"  usescaleof="height" showcontained="false"  renderingdistance="150">
-		<submodels>
-			<submodel mesh="3d_skeletons/gen_humanoid/malebuilder/malebuilder.mesh" >
-				<parts>
-					<part name="Body" show="true" >
-						<subentities>
-							<subentity name="body" />
-						</subentities>
-					</part>      
-					<part name="Eyes" show="true" >
-						<subentities>
-							<subentity name="eyes" />
-						</subentities>
-					</part>      
-					<part name="Head" show="true" >
-						<subentities>
-							<subentity name="head" />
-						</subentities>
-					</part>
-					<part name="Head/Brutus" show="false" >
-						<subentities>
-							<subentity name="head/brutus" />
-						</subentities>
-					</part>
-					<part name="Boxers" show="false" >
-						<subentities>
-							<subentity name="boxers" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>
-					<part name="Cloak" show="true" >
-						<subentities>
-							<subentity name="cloak" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>
-					<part name="Pants" show="true" >
-						<subentities>
-							<subentity name="pants" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>      
-					<part name="Shirt" show="false" >
-						<subentities>
-							<subentity name="shirt" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>  
-					<part name="ShirtTuckedLongSleeve" show="true" >
-						<subentities>
-							<subentity name="shirt/tucked_long_sleeve" material="/global/clothes/dress/sun" />
-						</subentities>
-					</part>      
-				</parts>      
-			</submodel>
-		</submodels>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="Bip01 R Hand" />
-		</attachpoints>
-	</model>
+    </model>	
+		
 </models>
+
+

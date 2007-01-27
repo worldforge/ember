@@ -20,7 +20,7 @@
 		</submodels>
 	</model>
 	
-	<model name="oak" usescaleof="height" scale="2" renderingdistance="200">
+	<model name="oak" usescaleof="height" renderingdistance="200">
 		<submodels>
 			<submodel mesh="3d_objects/plants/tree/models/oak_static/old_oak.mesh" >
 				<parts>

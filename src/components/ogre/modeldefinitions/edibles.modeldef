@@ -8,16 +8,7 @@
 			</submodel>
 		</submodels>
 	</model>	
-	<model name="trowel" usescaleof="none" scale="1" >
-		<translate y="0.1" />
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/trowel/trowel.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
+
 	
 	<model name="bread">
 		<submodels>

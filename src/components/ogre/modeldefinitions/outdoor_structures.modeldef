@@ -157,37 +157,10 @@
 			</submodel>
 			<submodel mesh="stylishgrave.mesh" >
 				<parts>
-					<part name="main" show="false" group="main" />
+					<part name="stylish" show="false" group="main" />
 				</parts>
 			</submodel>
 		</submodels>
-        <entitymapping entities="gravestone">
-        	<configurations>
-        	
-				<configuration name="simple">
-					<match property="style">
-						<equals>simple</equals>
-					</match>
-					<partaction part="simple" show="true" />
-				</configuration>
-				
-				<configuration name="rounded">
-					<match property="style">
-						<equals>rounded</equals>
-					</match>
-					<partaction part="rounded" show="true" />
-				</configuration>
-        	
-				<configuration name="stylish">
-					<match property="style">
-						<equals>rounded</equals>
-					</match>
-					<actions>
-						<partaction part="stylish" show="true" />
-					</actions>
-				</configuration>
-        	</configurations>
-        </entitymapping>
-	</model>	
+ 	</model>	
 
 </models>

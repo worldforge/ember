@@ -20,9 +20,11 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Walk" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -36,9 +38,11 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="_Walk_s.BAKED.002" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="_Walk_s.BAKED.002" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -53,29 +57,39 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="Stand" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Stand" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Walk" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_run">
-				<AnimationParts>
-					<animationpart name="Run2" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Run2" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="eat">
-				<AnimationParts>
-					<animationpart name="Eat3" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Eat3" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="jump">
-				<AnimationParts>
-					<animationpart name="Jump" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Jump" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -90,9 +104,11 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Walk" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions> 
 	</model>
@@ -108,22 +124,28 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="WingFold" weight="0.5" />
-					<animationpart name="Peck1" weight="0.5" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="WingFold" weight="0.5" />
+						<animationpart name="Peck1" weight="0.5" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="WingFold" weight="0.5" />
-					<animationpart name="Walk" weight="0.5" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="WingFold" weight="0.5" />
+						<animationpart name="Walk" weight="0.5" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_run">
-				<AnimationParts>
-					<animationpart name="WingFold" weight="0.5" />
-					<animationpart name="Run" weight="0.5" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="WingFold" weight="0.5" />
+						<animationpart name="Run" weight="0.5" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -147,9 +169,11 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Walk" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -167,9 +191,11 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="_Walk_s.BAKED.002" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="_Walk_s.BAKED.002" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -185,14 +211,18 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Walk" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="Stand" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Stand" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -207,15 +237,19 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="Run" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Run" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="SitUp" weight="1" />
-					<animationpart name="LookAround" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="SitUp" weight="1" />
+						<animationpart name="LookAround" weight="1" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -230,14 +264,18 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="walk" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="idle" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="idle" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 	</model>	
@@ -266,29 +304,6 @@
 		</submodels>
 	</model>	
 		
-	<model name="lych" usescaleof="height" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_skeletons/gen_humanoid/skeleton.mesh" >
-				<parts>
-					<part name="Body" show="true" >
-						<subentities>
-							<subentity name="body" />
-						</subentities>
-					</part>      
-					<part name="Eyes" show="true" >
-						<subentities>
-							<subentity name="eyes" />
-						</subentities>
-					</part>      
-					<part name="Cape" show="true" >
-						<subentities>
-							<subentity name="cape" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
 	
 	<model name="arm">
 		<submodels>
@@ -350,49 +365,13 @@
 		<submodels>
 			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
 				<parts>
-					<part name="main" show="true">
+					<part name="main_goblin" show="true" group="main">
 						<subentities>
 							<subentity index="0" material="/global/creature/humanoid/goblin" />
 							<subentity index="1" material="/global/creature/humanoid/goblin" />
 						</subentities>
 					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="idle" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="walk" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="__movement_run">
-				<AnimationParts>
-					<animationpart name="run" weight="1" />
-				</AnimationParts>
-			</Action>
-			<Action name="taunt">
-				<AnimationParts>
-					<animationpart name="taunt" weight="1" />
-				</AnimationParts>
-			</Action>
-		</Actions>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RightHand" />
-		</attachpoints>
-		
-	</model>
-
-	<model name="kobold" usescaleof="height" showcontained="false">
-		<translate x="0" y="0" z="0" />
-		<submodels>
-			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
-				<parts>
-					<part name="main" show="true">
+					<part name="main_kobold" show="false" group="main">
 						<subentities>
 							<subentity index="0" material="/global/creature/humanoid/kobold" />
 							<subentity index="1" material="/global/creature/humanoid/kobold" />
@@ -403,31 +382,46 @@
 		</submodels>
 		<Actions>
 			<Action name="__movement_idle">
-				<AnimationParts>
-					<animationpart name="idle" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="idle" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_walk">
-				<AnimationParts>
-					<animationpart name="walk" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="walk" weight="1.0" />
+					</animation>
+				</animations>
+			</Action>
+			<Action name="__movement_swim">
+				<animations>
+					<animation iterations="1">
+						<animationpart name="walk" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="__movement_run">
-				<AnimationParts>
-					<animationpart name="run" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="run" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 			<Action name="taunt">
-				<AnimationParts>
-					<animationpart name="taunt" weight="1" />
-				</AnimationParts>
+				<animations>
+					<animation iterations="1">
+						<animationpart name="taunt" weight="1.0" />
+					</animation>
+				</animations>
 			</Action>
 		</Actions>
 		<attachpoints>
 			<attachpoint name="right_hand_wield" bone="RightHand" />
 		</attachpoints>
-		
 	</model>
+
 	
 	<model name="horse" usescaleof="none" showcontained="true">
 		<translate x="0.000000" y="2.200000" z="0.000000" />
