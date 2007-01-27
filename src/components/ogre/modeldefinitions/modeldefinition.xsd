@@ -29,6 +29,7 @@
 											<xsd:element name="Part">
 												<xsd:attribute name="Name" type="xsd:string" use="required"/> 
 												<xsd:attribute name="Show" type="xsd:boolean" use="required"/> 
+												<xsd:attribute name="group" type="xsd:string" use="optional"/> 
 												<xsd:complexType>
 													<xsd:element name="SubEntities">
 														<xsd:complexType>
@@ -62,17 +63,17 @@
 					</xsd:sequence>					
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="Actions">
+			<xsd:element name="actions">
 				<xsd:complexType>
 					<xsd:sequence>					
-						<xsd:element name="Action">
+						<xsd:element name="action">
 							<xsd:complexType>
-								<xsd:attribute name="Name" type="xsd:string" use="required"/> 
+								<xsd:attribute name="name" type="xsd:string" use="required"/> 
 								<xsd:attribute name="speed" type="xsd:float" use="optional"/> 
-								<xsd:element name="ActionsParts">
+								<xsd:element name="animations">
 									<xsd:complexType>
 										<xsd:sequence>					
-											<xsd:element name="AnimationPart">
+											<xsd:element name="animationpart">
 												<xsd:attribute name="Name" type="xsd:string" use="required"/> 
 												<xsd:attribute name="Weight" type="xsd:string" use="required"/> 
 											</xsd:element>
