@@ -1,0 +1,420 @@
+<modelmappings>
+	
+<!--
+	templates:
+	
+	<modelmapping name="">
+		<entitymatch>
+			<case equals="">
+				<action type="display-model" modelname="" />
+			</case>
+		</entitymatch>
+	</modelmapping>
+	
+	<automodelmapping name="" />
+	
+	<automodelmapping name="" modelname="" />
+
+-->	
+	
+
+	
+<!-- environment -->	
+<!-- A simple case. We want the model "turnip" to be shown for the entity of type "turnip" -->
+	<modelmapping name="turnip">
+		<entitymatch>
+			<case equals="turnip">
+				<action type="display-model" modelname="turnip" />
+			</case>
+		</entitymatch>
+	</modelmapping> 
+	
+<!-- For convenience we also provide the "automodelmapping" element, which maps a single model to an entity type of the same name. The result of this will be the same structure as the turnip. -->
+	<automodelmapping name="acorn" />
+	
+<!-- The automodelmapping element also has an optional "modelname" attribute, which allows you to select a different model to map to the entity type. -->
+	<automodelmapping name="carrot" modelname="carrot" />
+	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
+	<modelmapping name="boulder">
+		<entitymatch>
+			<case equals="boulder">
+				<action type="display-model" modelname="boulder" />
+				<attributematch attribute="style" >
+					<case equals="a">
+						<action type="display-part" partname="boulderA" />
+					</case>
+					<case equals="b">
+						<action type="display-part" partname="boulderB" />
+					</case>
+					<case equals="c">
+						<action type="display-part" partname="boulderkC" />
+					</case>
+					<case equals="d">
+						<action type="display-part" partname="boulderD" />
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>
+	
+	<!-- An alternative to the previous boulder mapping is to instead have each boulder mesh in its own model file. The mapping would then be like this. -->
+	<!--	<modelmapping name="boulder">
+		<entitymatch>
+			<case equals="boulder">
+				<attributematch attribute="style" >
+					<case equals="a">
+						<action type="display-model" modelname="boulderA" />
+					</case>
+					<case equals="b">
+						<action type="display-model" modelname="boulderB" />
+					</case>
+					<case equals="c">
+						<action type="display-model" modelname="boulderkC" />
+					</case>
+					<case equals="d">
+						<action type="display-model" modelname="boulderD" />
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>
+	-->
+	<automodelmapping name="fire" />
+	<automodelmapping name="lumber" />
+	<automodelmapping name="mushroom" />
+	<automodelmapping name="apple" />
+	<automodelmapping name="pile" />
+	<automodelmapping name="grass" />
+	
+<!-- furniture-->
+	<automodelmapping name="chair" />
+	<automodelmapping name="door" />
+	<automodelmapping name="long_table" />
+	<automodelmapping name="shelf_table" />
+	<automodelmapping name="simple_shelf" />
+	<automodelmapping name="stool" />
+	<automodelmapping name="bed" />
+	<automodelmapping name="table" />
+	
+<!-- items -->
+	<automodelmapping name="barrel" />
+	<automodelmapping name="coin" />
+	<automodelmapping name="torch" />
+	<automodelmapping name="deed" />
+	<automodelmapping name="bottle" />
+	<automodelmapping name="shirt" />
+	<automodelmapping name="pants" />
+	<automodelmapping name="wood" />
+
+<!-- outdoor structures -->
+	<automodelmapping name="palissade" />
+	<automodelmapping name="palissade_earth" />
+	<automodelmapping name="stake" />
+	<automodelmapping name="sty" />
+	<automodelmapping name="stall" />
+	<automodelmapping name="jetty" />
+	<automodelmapping name="campfire" />
+	<automodelmapping name="choppingblock" />
+	<modelmapping name="gravestrone">
+		<entitymatch>
+<!--			<case equals="gravestone_simple,gravestone_stylish,gravestone_rounded">
+				<action type="display-model" modelname="gravestone" />
+				<entitymatch>
+					<case equals="gravestone_rounded">
+						<action type="display-part" partname="rounded" />
+					</case>
+					<case equals="gravestone_stylish">
+						<action type="display-part" partname="stylish" />
+					</case>
+				</entitymatch>
+			</case> -->
+			<case equals="gravestone">
+				<action type="display-model" modelname="gravestone" />
+				<attributematch attribute="style" >
+					<case equals="rounded">
+						<action type="display-part" partname="rounded" />
+					</case>
+					<case equals="stylish">
+						<action type="display-part" partname="stylish" />
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+
+
+	
+<!-- buildings -->
+	<automodelmapping name="castlefoundation" />
+	<automodelmapping name="castle_outer_wall" />
+	<automodelmapping name="armory" />
+	<modelmapping name="bailey">
+		<entitymatch>
+			<case equals="bailey1">
+				<action type="display-model" modelname="bailey1" />
+			</case>
+			<case equals="bailey2">
+				<action type="display-model" modelname="bailey2" />
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	<automodelmapping name="curtain_wall" />
+	<automodelmapping name="don_jon" />
+	<automodelmapping name="gateway" />
+	<automodelmapping name="keep" />
+	<modelmapping name="castle_house">
+		<entitymatch>
+			<case equals="castle_house">
+				<action type="display-model" modelname="cg_house" />
+				<attributematch attribute="roof" >
+					<case equals="shingle">
+						<action type="display-part" partname="roof_shingle" />
+					</case>
+					<case equals="straw">
+						<action type="display-part" partname="roof_straw" />
+					</case>
+					<case equals="shale">
+						<action type="display-part" partname="roof_shale" />
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	<automodelmapping name="inn" />
+	<automodelmapping name="outerwall" />
+	<automodelmapping name="mausoleum" />
+	<automodelmapping name="tower" />
+	<automodelmapping name="gallows" />
+
+	<automodelmapping name="butcher_house" />
+	<automodelmapping name="house3" />
+	
+<!-- tools -->	
+	<automodelmapping name="trowel" />
+	<automodelmapping name="axe" />
+	<automodelmapping name="hammer" />
+	<automodelmapping name="scythe" />
+	<automodelmapping name="bucksaw" />
+	<automodelmapping name="tinderbox" />
+	<automodelmapping name="pickaxe" />
+	<modelmapping name="shovel">
+		<entitymatch>
+			<case equals="shovel,spade">
+				<action type="display-model" modelname="spade" />
+			</case>
+		</entitymatch>
+	</modelmapping> 
+	
+	
+<!-- vehicles -->	
+	<automodelmapping name="boat" />
+
+	<modelmapping name="cart">
+		<entitymatch>
+			<case equals="cart">
+				<action type="display-model" modelname="cart" />
+				<attributematch attribute="style" >
+					<case equals="1">
+						<action type="display-part" partname="1" />
+					</case>
+					<case equals="2">
+						<action type="display-part" partname="2" />
+					</case>
+					<case equals="3">
+						<action type="display-part" partname="3" />
+					</case>
+					<case equals="4">
+						<action type="display-part" partname="4" />
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	
+	<modelmapping name="fir">
+		<entitymatch>
+			<case equals="fir">
+				<action type="display-model" modelname="evergreen_A1" />
+				<attributematch attribute="style" >
+					<case equals="a">
+						<action type="display-model" modelname="evergreen_B1" />
+					</case>
+					<case equals="b">
+						<action type="display-model" modelname="evergreen_B2" />
+					</case>
+					<case equals="c">
+						<action type="display-model" modelname="evergreen_B3" />
+					</case>
+					<case equals="d">
+						<action type="display-model" modelname="evergreen_B4" />
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>
+	
+	<!-- We have three different types of oaks: large, young and saplings. The size (which we for simplicity assumes is a float) determines which of these we should show. Furthermore, the "style" attribute which variant of oak we should show (just as with the boulder).
+		 -->
+	<modelmapping name="oak">
+		<entitymatch>
+			<case equals="oak">
+				<action type="display-model" modelname="oak" />
+				<attributematch type="function" attribute="height">
+					<case lesser="3">
+						<action type="display-model" modelname="oak_sapling" />
+						<attributematch attribute="style" >
+							<case equals="a">
+								<action type="display-part" partname="A" />
+							</case>
+							<case equals="b">
+								<action type="display-part" partname="B" />
+							</case>
+							<case equals="c">
+								<action type="display-part" partname="C" />
+							</case>
+							<case equals="d">
+								<action type="display-part" partname="D" />
+							</case>
+						</attributematch>
+					</case>
+					<case greaterequals="3" lesserequals="6">
+						<action type="display-model" modelname="oak_young" />
+						<attributematch attribute="style" >
+							<case equals="a">
+								<action type="display-part" partname="A" />
+							</case>
+							<case equals="b">
+								<action type="display-part" partname="B" />
+							</case>
+							<case equals="c">
+								<action type="display-part" partname="C" />
+							</case>
+						</attributematch>
+					</case>
+					<case greater="6">
+						<action type="display-model" modelname="oak" />
+						<attributematch attribute="style" >
+							<case equals="a">
+								<action type="display-part" partname="A" />
+							</case>
+							<case equals="b">
+								<action type="display-part" partname="B" />
+							</case>
+							<case equals="c">
+								<action type="display-part" partname="C" />
+							</case>===Parts==
+						</attributematch>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>
+	
+	<automodelmapping name="birch" />
+
+	
+	<!-- We'll use the "male" model for the entities of type "settler" or "butcher". Depending on what kind of entity is outfitted to the torso we'll show a shirt part. The shirts all belongs to the same group in the model, so only one will be shown at the same time.
+		-->
+	<modelmapping name="human">
+		<entitymatch>
+			<case equals="settler,merchant,mercenary,marshall,butcher">
+				<action type="display-model" modelname="male" />
+				<entitymatch>
+					<case equals="settler">
+						<action type="display-part" partname="clothes/burlap" />
+					</case>
+					<case equals="butcher">
+						<action type="display-part" partname="clothes/ragged" />
+					</case>
+					<case equals="mercenary">
+						<action type="display-part" partname="clothes/dark_rags" />
+					</case>
+					<case equals="merchant">
+						<action type="display-part" partname="clothes/sun" />
+					</case>
+					<case equals="marshal">
+						<action type="display-part" partname="clothes/fine" />
+					</case>
+				</entitymatch>
+				<outfitmatch attachment="torso">
+					<case equals="shirt" >
+						<attributematch attribute="style">
+							<case equals="fine">
+								<attributematch attribute="colour">
+									<case equals="red">
+										<action type="display-part" partname="fine_shirt/red" />
+									</case>
+									<case equals="blue">
+										<action type="display-part" partname="fine_shirt/blue" />
+									</case>
+								</attributematch>
+							</case>
+							<case equals="ragged">
+								<attributematch attribute="colour">
+									<case equals="red">
+										<action type="display-part" partname="ragged_shirt/red" />
+									</case>
+									<case equals="blue">
+										<action type="display-part" partname="ragged_shirt/blue" />
+									</case>
+								</attributematch>
+							</case>
+						</attributematch>
+					</case>
+				</outfitmatch>
+			</case>
+		</entitymatch>
+	</modelmapping>
+	<automodelmapping name="creator" />
+
+	<automodelmapping name="fish" />
+	<automodelmapping name="dog" />
+	<automodelmapping name="crab" />
+	<automodelmapping name="deer" />
+	<automodelmapping name="squirrel" />
+	<automodelmapping name="chicken" />
+	<automodelmapping name="pig" />
+	<automodelmapping name="spider" />
+	<automodelmapping name="cow" />
+	<automodelmapping name="rabbit" />
+	<automodelmapping name="wolf" />
+	<modelmapping name="skeleton">
+		<entitymatch>
+			<case equals="skeleton,lych">
+				<action type="display-model" modelname="skeleton" />
+				<entitymatch>
+					<case equals="lych">
+						<action type="display-part" modelname="Cape" />
+					</case>
+				</entitymatch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	<automodelmapping name="arm" />
+	<automodelmapping name="skull" />
+	<automodelmapping name="shin" />
+	<automodelmapping name="pelvis" />
+	<automodelmapping name="ribcage" />
+	<automodelmapping name="thigh" />
+	<modelmapping name="goblin">
+		<entitymatch>
+			<case equals="goblin,kobold">
+				<action type="display-model" modelname="goblin" />
+				<entitymatch>
+					<case equals="kobold">
+						<action type="display-part" modelname="main_kobold" />
+					</case>
+				</entitymatch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	<automodelmapping name="horse" />
+	
+<!-- edibled -->
+	<automodelmapping name="ham" />
+	<automodelmapping name="bread" />
+	<automodelmapping name="breadslice" />
+	<automodelmapping name="bread_cut" />
+
+	
+</modelmappings>
