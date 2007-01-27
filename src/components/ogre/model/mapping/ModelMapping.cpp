@@ -97,9 +97,11 @@ void EntityTypeCase::addEntityType(Eris::TypeInfoPtr typeInfo)
 
 bool AttributeCase::testMatch(const Atlas::Message::Element& attribute)
 {
-	if (mComparerWrapper->testAttribute(attribute)) {
-		setState(true);
-		return true;
+	if (mComparerWrapper.get()) {
+		if (mComparerWrapper->testAttribute(attribute)) {
+			setState(true);
+			return true;
+		}
 	}
 	setState(false);
 	return false;

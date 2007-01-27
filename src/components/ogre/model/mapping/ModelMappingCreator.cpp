@@ -86,7 +86,7 @@ void ModelMappingCreator::setAttributeCaseComparer(AttributeCase* aCase, Attribu
 {
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 	
-	if ((matchType == "") && (matchType == "string")) {
+	if ((matchType == "") || (matchType == "string")) {
 		///default is string comparison
 		const std::string& attributeValue = caseDefinition.getProperties()["equals"];
 		aCase->setAttributeValue(attributeValue);
@@ -125,13 +125,15 @@ AttributeComparers::NumericComparer* ModelMappingCreator::createNumericComparer(
 	}
 	
 	///check if we have both min and max set, and if so we should use a range comparer
-	if (!mMin) {
-		return mMax;
-	} else if (!mMax) {
-		return mMin;
-	} else {
+	if (mMin && mMax) {
 		return new AttributeComparers::NumericRangeComparer(mMin, mMax);
+	} else if (!mMax && mMin) {
+		return mMin;
+	} else if (mMax && !mMin) {
+		return mMax;
 	}
+	///invalid, could not find anything to compare against
+	return 0;
 }
 
 
