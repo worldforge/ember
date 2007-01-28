@@ -43,10 +43,10 @@ void EmberEntityActionCreator::createActions(Model::Mapping::ModelMapping& model
 	CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
-			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getProperties()["partname"]);
+			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
-			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getProperties()["modelname"]);
+			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue());
 			aCase->addAction(action);
 		}
 	}
