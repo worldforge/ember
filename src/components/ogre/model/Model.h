@@ -38,6 +38,32 @@ class Action;
 typedef std::vector<ParticleSystem*> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
 
+class ModelPart
+{
+public:
+	typedef std::vector<SubModelPart*> SubModelPartStore;
+	ModelPart();
+	
+	void addSubModelPart(SubModelPart* part);
+	
+	void hide();
+	void show();
+	
+	bool getVisible() const;
+	void setVisible(bool visible);
+	
+	const std::string& getGroupName() const;
+	void setGroupName(const std::string& groupName);
+	
+protected:
+	bool mShown;
+	bool mVisible;
+	
+	SubModelPartStore mSubModelParts;
+	
+	std::string mGroupName;
+};
+
 /**
  * This is the standard model used in Ember.
  * A model can be made out of different entities, just as long as they share a skeleton.
@@ -62,11 +88,9 @@ public:
 	typedef std::set<SubModel*> SubModelSet;
 	typedef std::set<std::string> StringSet;
 	typedef std::map<std::string, StringSet > SubModelPartMapping;
-	typedef std::vector<SubModelPart*> SubModelPartStore;
-	typedef std::map<std::string, SubModelPartStore> SubModelPartStoreMap;
+	typedef std::map<std::string, ModelPart> ModelPartStore;
 
-	typedef std::map<std::string, std::vector< std::string > > PartGroupStore;
-	typedef std::map<std::string, std::string> PartGroupMap;
+	typedef std::map<std::string, std::vector<std::string > > PartGroupStore;
 	
 	static const Ogre::String sMovableType;
 	
@@ -110,11 +134,13 @@ public:
 	Action* getAction(const std::string& name);	
 	
 
+	ModelPart& getPart(const std::string& partName);
+
 	/**
 	 * hides and shows a certain part of the model
 	 */
 	void showPart(const std::string& partName, bool hideOtherParts = true);
-	void hidePart(const std::string& partName);
+	void hidePart(const std::string& partName, bool dontChangeVisibility = false);
 	void setVisible(bool visible);
 	
 	/**
@@ -137,7 +163,7 @@ public:
 	const ModelDefinition::UseScaleOf getUseScaleOf() const;
 	
 	
-	inline const SubModelPartStoreMap& getSubmodelParts() const;
+// 	inline const SubModelPartStoreMap& getSubmodelParts() const;
 	
 	inline const SubModelSet& getSubmodels() const;
 	
@@ -302,10 +328,11 @@ protected:
 	/**
 	a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	*/
-	SubModelPartStoreMap mSubModelPartMap;
+// 	SubModelPartStoreMap mSubModelPartMap;
+	
+	ModelPartStore mModelParts;
 	
 	PartGroupStore mGroupsToPartMap;
-	PartGroupMap mPartToGroupMap;
 	
 	Ogre::SkeletonInstance* mSkeletonInstance;
 	
@@ -336,10 +363,10 @@ protected:
 
 ModelDefnPtr Model::getDefinition() const { return _masterModel; }
 
-const Model::SubModelPartStoreMap& Model::getSubmodelParts() const
-{
-	return mSubModelPartMap;
-}
+// // const Model::SubModelPartStoreMap& Model::getSubmodelParts() const
+// // {
+// // 	return mSubModelPartMap;
+// // }
 
 const Model::SubModelSet& Model::getSubmodels() const
 {

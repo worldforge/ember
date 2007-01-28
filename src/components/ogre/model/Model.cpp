@@ -194,11 +194,11 @@ bool Model::createFromDefn()
 // //			}
 
 			SubModel* submodel = new SubModel(entity);
-
-			Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
+			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 				
 			for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
 				SubModelPart* part = submodel->createSubModelPart((*I_parts)->getName());
+				std::string groupName("");
 				
 				if ((*I_parts)->getSubEntityDefinitions().size() > 0)
 				{
@@ -226,14 +226,19 @@ bool Model::createFromDefn()
 				}
 				if ((*I_parts)->getGroup() != "") {
 					mGroupsToPartMap[(*I_parts)->getGroup()].push_back((*I_parts)->getName());
-					mPartToGroupMap[(*I_parts)->getName()] = (*I_parts)->getGroup();
+					//mPartToGroupMap[(*I_parts)->getName()] = (*I_parts)->getGroup();
 				}
 				
 				if ((*I_parts)->getShow()) {
 					showPartVector.push_back((*I_parts)->getName());
 				}
+				
+				ModelPart& modelPart = mModelParts[(*I_parts)->getName()];
+				modelPart.addSubModelPart(part);
+				modelPart.setGroupName((*I_parts)->getGroup());
 			}
 			addSubmodel(submodel);
+		
 		} 
 		catch (const Ogre::Exception& e) 
 		{
@@ -359,18 +364,6 @@ bool Model::addSubmodel(SubModel* submodel)
 		}
 	}
 	mSubmodels.insert(submodel);
-	SubModel::SubModelPartMap* submodelMap = submodel->getSubModelPartMap();
-	for (SubModel::SubModelPartMap::const_iterator I = submodelMap->begin(); I != submodelMap->end(); ++I) {
-		SubModelPartStoreMap::iterator I_partmap = mSubModelPartMap.find(I->first);
-		SubModelPartStore* store;
-		if (I_partmap == mSubModelPartMap.end()) {
-			store = &mSubModelPartMap[I->first];
-		} else {
-			store = &I_partmap->second;
-		}
-		store->push_back(I->second);
-		
-	}
 	return true;	
 }
 
@@ -409,41 +402,105 @@ SubModel* Model::getSubModel(size_t index)
 
 }
 
+ModelPart::ModelPart() : mShown(false), mVisible(false)
+{
+}
+
+
+void ModelPart::show()
+{
+	mVisible = true;
+	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
+		(*I)->show();
+	}
+}
+
+void ModelPart::hide()
+{
+	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
+		(*I)->hide();
+	}
+}
+
+bool ModelPart::getVisible() const
+{
+	return mVisible;
+}
+
+void ModelPart::setVisible(bool visible)
+{
+	mVisible = visible;
+}
+
+
+const std::string& ModelPart::getGroupName() const
+{
+	return mGroupName;
+}
+
+void ModelPart::setGroupName(const std::string& groupName)
+{
+	mGroupName = groupName;
+}
+
+void ModelPart::addSubModelPart(SubModelPart* part)
+{
+	mSubModelParts.push_back(part);
+}
+
+
+
 void Model::showPart(const std::string& partName, bool hideOtherParts)
 {
-	SubModelPartStoreMap::iterator I_partmap = mSubModelPartMap.find(partName);
-	if (I_partmap != mSubModelPartMap.end()) {
+	ModelPartStore::iterator I = mModelParts.find(partName);
+	if (I != mModelParts.end()) {
+		ModelPart& modelPart = I->second;
 		if (hideOtherParts) {
+			const std::string& groupName = modelPart.getGroupName();
 			///make sure that all other parts in the same group are hidden
-			PartGroupMap::iterator groupMatchI = mPartToGroupMap.find(partName);
-			if (groupMatchI != mPartToGroupMap.end()) {
-				PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupMatchI->second);
-				if (partBucketI != mGroupsToPartMap.end()) {
-					for (std::vector< std::string >::iterator I = partBucketI->second.begin(); I != partBucketI->second.end(); ++I) {
-						if (*I != partName) {
-							hidePart(*I);
-						}
+			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
+			if (partBucketI != mGroupsToPartMap.end()) {
+				for (std::vector< std::string >::iterator I = partBucketI->second.begin(); I != partBucketI->second.end(); ++I) {
+					if (*I != partName) {
+						hidePart(*I, true);
 					}
 				}
 			}
 		}
 		
-		SubModelPartStore* store = &I_partmap->second;
-		for (SubModelPartStore::iterator I = store->begin(); I != store->end(); ++I) {
-			(*I)->show();
-		}
+		modelPart.show();
 	}
 }
 
-void Model::hidePart(const std::string& partName)
+void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 {
-	SubModelPartStoreMap::iterator I_partmap = mSubModelPartMap.find(partName);
-	if (I_partmap != mSubModelPartMap.end()) {
-		SubModelPartStore* store = &I_partmap->second;
-		for (SubModelPartStore::iterator I = store->begin(); I != store->end(); ++I) {
-			(*I)->hide();
+	ModelPartStore::iterator I = mModelParts.find(partName);
+	if (I != mModelParts.end()) {
+		ModelPart& modelPart = I->second;
+		modelPart.hide();
+		if (!dontChangeVisibility) {
+			modelPart.setVisible(false);
+			const std::string& groupName = modelPart.getGroupName();
+			///if some part that was hidden before now should be visible 
+			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
+			if (partBucketI != mGroupsToPartMap.end()) {
+				for (std::vector< std::string >::iterator J = partBucketI->second.begin(); J != partBucketI->second.end(); ++J) {
+					if (*J != partName) {
+						ModelPartStore::iterator I_modelPart = mModelParts.find(partName);
+						if (I_modelPart != mModelParts.end()) {
+							if (I_modelPart->second.getVisible()) {
+								I_modelPart->second.show();
+								break;
+							}
+						}
+					}
+				}
+			}
+			
 		}
-	}
+	}	
+
+
 }
 
 void Model::setVisible(bool visible) 
@@ -562,7 +619,7 @@ void Model::resetSubmodels()
 		sceneManager->removeEntity(submodel->getEntity());*/
 	}
 	mSubmodels.clear();
-	mSubModelPartMap.clear();
+	mModelParts.clear();
 }
 
 void Model::resetParticles()

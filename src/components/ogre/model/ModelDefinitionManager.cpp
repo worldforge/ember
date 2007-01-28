@@ -103,7 +103,7 @@ void ModelDefinitionManager::loadAreas() {
 	//TODO: this is heinous and should be done in xml or anything not as dumb /ehj
 	ModelDefinition::AreaDefinition def;
 	def.Id = 6; //oak
-	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/low/ground.png";
+	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/medium/ground.png";
 	mAreaDefinitions[def.Id] = def;
 	
 	def = ModelDefinition::AreaDefinition();
@@ -113,9 +113,8 @@ void ModelDefinitionManager::loadAreas() {
 	
 	def = ModelDefinition::AreaDefinition();
 	def.Id = 7; //sty
-	def.TextureName = "sand.png";
+	def.TextureName = "3d_objects/environment/ground/textures/dirt/dirt.png";
 	mAreaDefinitions[def.Id] = def;
-	
 }
 
 const ModelDefinition::AreaDefinition* ModelDefinitionManager::getAreaDefinition(int layer) const
