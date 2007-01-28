@@ -50,11 +50,19 @@ public:
     EntityWorldPickListener();
 
     ~EntityWorldPickListener();
+    
+	virtual void initializePickingContext();
 
+	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+	
+	
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 
 	sigc::signal<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
 	
+protected:
+	float mClosestPickingDistance, mFurthestPickingDistance;
+	EntityPickResult mResult;
 };
 
 }

@@ -73,4 +73,8 @@ void JesusMousePicker::onEventPickedAttachPointNode(AttachPointNode* node, const
 	EventPickedAttachPointNode.emit(node, args);
 }
 
+void JesusMousePicker::initializePickingContext()
+{
+}
+
 }

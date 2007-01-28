@@ -50,6 +50,16 @@ public:
 
 
 /**
+Called at the start of a picking context. This allows the pickers to be reset and to keep state for each picking.
+*/
+virtual void initializePickingContext() {}
+
+/**
+Called when the picking is over, either because one of the processPickResult calls set continuePicking to false, or because there are no more objects to pick.
+*/
+virtual void endPickingContext(const MousePickerArgs& mousePickerArgs) {}
+
+/**
  * Processes the pick result.
  * This will be called for each picked object.
  * @param continuePicking set this to false if you don't want to process any more pick results, or don't want any other IWorldPickListener to process the pick any more

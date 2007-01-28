@@ -43,6 +43,11 @@ public:
     ~JesusMousePicker();
 
 	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
+	virtual void initializePickingContext();
+	/**
+	Called when the picking is over, either because one of the processPickResult calls set continuePicking to false, or because there are no more objects to pick.
+	*/
+	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs) {}
 
 	sigc::signal<void, ModelBlock*, const MousePickerArgs&> EventPickedModelBlock;
 	sigc::signal<void, AttachPointNode*, const MousePickerArgs&> EventPickedAttachPointNode;

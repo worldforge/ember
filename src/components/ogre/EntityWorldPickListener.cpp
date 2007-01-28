@@ -36,6 +36,7 @@
 namespace EmberOgre {
 
 EntityWorldPickListener::EntityWorldPickListener()
+: mClosestPickingDistance(0), mFurthestPickingDistance(0)
 {
 }
 
@@ -44,22 +45,47 @@ EntityWorldPickListener::~EntityWorldPickListener()
 {
 } 
 
+void EntityWorldPickListener::initializePickingContext()
+{
+	mClosestPickingDistance = 0;
+	mFurthestPickingDistance = 0;
+	mResult = EntityPickResult();
+}
+
+void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
+{
+	if (mResult.distance > 0) {
+		std::stringstream ss;
+		ss << mResult.position;
+		S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << mResult.distance);
+		EventPickedEntity(mResult, mousePickerArgs);
+	}
+}
+
+
 void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
 {
 
 	if (entry.worldFragment) {
 		///this is terrain
-		EntityPickResult result;
+// 		EntityPickResult result;
 		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
-			
-		result.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
-		result.position = wf->singleIntersection;
-		result.distance = entry.distance; 
-		std::stringstream ss;
+		if (mFurthestPickingDistance == 0) {
+			mResult.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+			mResult.position = wf->singleIntersection;
+			mResult.distance = entry.distance;
+			continuePicking = false;
+		} else {
+			if (entry.distance < mResult.distance) {
+				mResult.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+				mResult.position = wf->singleIntersection;
+				mResult.distance = entry.distance;
+				continuePicking = false;
+			} 
+		} 
+/*		std::stringstream ss;
 		ss << wf->singleIntersection;
-		S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << result.distance);
-		EventPickedEntity(result, mousePickerArgs);
-		continuePicking = false;
+		S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << mResult.distance);*/
 	
 	} else if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
@@ -78,12 +104,20 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 					result.entity = anUserObject->getEmberEntity();
 					result.position = collisionResult.position;
 					result.distance = collisionResult.distance;
+					if (mFurthestPickingDistance == 0) {
+						///test all objects that fall into this distance
+						mFurthestPickingDistance = (pickedMovable->getParentSceneNode()->getPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
+						mResult = result;
+					} else {
+						if ((pickedMovable->getParentSceneNode()->getPosition() - cameraRay.getOrigin()).length() - pickedMovable->getBoundingRadius() > mFurthestPickingDistance) {
+							continuePicking = false;		
+						} else {
+							if (result.distance < mResult.distance) {
+								mResult = result;
+							}
+						}
+					}
 					
-					std::stringstream ss;
-					ss << result.position;
-					S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << result.distance);
-					EventPickedEntity(result, mousePickerArgs);
-					continuePicking = false;				
 				}
 			}
 			
