@@ -583,7 +583,6 @@ void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 	}
 	
 	if (entityId) {
-		mAttachedEntities.erase(*entityId);
 		if (hasChild(*entityId)) {
 			//we already have the entity, do the detachment
 			EmberEntity* entity = EmberOgre::getSingleton().getEntity(*entityId);
@@ -591,6 +590,7 @@ void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 				entity->detachFromModel();
 			}
 		}
+		mAttachedEntities.erase(*entityId);
 	}
 }
 	
