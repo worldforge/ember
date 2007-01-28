@@ -51,7 +51,7 @@ void EmberEntityPartAction::deactivate()
 {
 	Model::Model* model = mEntity.getModel();
 	if (model) {
-		model->hidePart(mPartName);
+		model->hidePart(mPartName, false);
 	}
 } 
 
