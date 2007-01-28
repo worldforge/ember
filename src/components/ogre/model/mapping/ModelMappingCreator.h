@@ -46,6 +46,8 @@ class IActionCreator;
 class EntityTypeMatch;
 class AttributeMatch;
 class AttributeCase;
+class OutfitMatch;
+class OutfitCase;
 class CaseBase;
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -68,11 +70,15 @@ protected:
 	
 	void addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition);
 	
+	void addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition);
+	
 	void addMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
 	
 	void addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
 
 	void addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
+	
+	void addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
 
 	AttributeComparers::NumericComparer* createNumericComparer(CaseDefinition& caseDefinition);
 	void setAttributeCaseComparer(AttributeCase* aCase, AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition);

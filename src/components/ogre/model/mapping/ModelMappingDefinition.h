@@ -45,10 +45,10 @@ class DefinitionBase
 {
 public:
 	typedef std::map<std::string, std::string> PropertiesMap;
-	PropertiesMap& getProperties() { return mProperties; }
+	PropertiesMap& getProperties();
 
-    const std::string& getType() const { return mType; }
-    void setType(std::string type) { mType = type; }
+    const std::string& getType() const;
+    void setType(std::string type);
 	
 protected:
 	std::map<std::string, std::string> mProperties;
@@ -58,7 +58,11 @@ protected:
 class ActionDefinition : public DefinitionBase
 {
 public:
+    const std::string& getValue() const;
+    void setValue(std::string type);
 protected:
+	std::string mValue;
+
 };
 
 class MatchDefinition  : public DefinitionBase
@@ -66,7 +70,7 @@ class MatchDefinition  : public DefinitionBase
 public:
 	typedef std::vector<CaseDefinition> CaseStore;
 	
-	CaseStore& getCases() { return mCases;}
+	CaseStore& getCases();
 	
 protected:
 	CaseStore mCases;
@@ -78,8 +82,8 @@ public:
 	typedef std::vector<MatchDefinition> MatchStore;
 	typedef std::vector<ActionDefinition> ActionStore;
 
-	MatchStore& getMatches() { return mMatches;}
-	ActionStore& getActions() { return mActions;}
+	MatchStore& getMatches();
+	ActionStore& getActions();
 
 protected:
 	MatchStore mMatches;
@@ -91,20 +95,23 @@ protected:
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class ModelMappingDefinition{
+class ModelMappingDefinition
+{
 public:
     ModelMappingDefinition();
 
     ~ModelMappingDefinition();
     
-    const std::string& getName() const { return mName; }
-    void setName(std::string name) { mName = name; }
+    const std::string& getName() const;
+    void setName(std::string name);
     
-    MatchDefinition& getRoot() { return mRootMatch;}
+    MatchDefinition& getRoot();
 protected:
 	MatchDefinition mRootMatch;
 	std::string mName;
 };
+
+
 
 }
 

@@ -48,7 +48,8 @@
 
 namespace Eris
 {
-class Entity; 
+class Entity;
+class View;
 }
 
 namespace EmberOgre {
@@ -65,6 +66,8 @@ class EntityTypeMatch;
 class EntityTypeCase;
 class AttributeCase;
 class AttributeMatch;
+class OutfitCase;
+class OutfitMatch;
 class ModelMapping;
 class MatchBase;
 class Match;
@@ -115,6 +118,7 @@ class CaseBase
 {
 public:
 	typedef std::vector<Action*> ActionStore;
+	typedef std::vector<MatchBase*> MatchBaseStore;
 
 	CaseBase();
 	virtual ~CaseBase();
@@ -132,9 +136,12 @@ public:
 	void deactivateActions();
 
 	void addMatch(MatchBase* match);
-	inline const std::vector<MatchBase*>& getMatches();
+	inline const MatchBaseStore& getMatches();
 
-	void evaluateChanges();
+	void evaluateChanges(std::vector<CaseBase*>& activateQueue, std::vector<CaseBase*>& deactivateQueue);
+	
+	virtual void setEntity(Eris::Entity* entity);
+	
 protected:
 	ActionStore mActions;
 
@@ -143,7 +150,7 @@ protected:
 	
 	inline void setState(bool state);
 	
-	std::vector<MatchBase*> mMatches;
+	MatchBaseStore mMatches;
 	
 };
 
@@ -156,6 +163,7 @@ public:
 	virtual ~Case() { };
 	
  	inline void setParentMatch(TMatch* aMatch);
+ 	
 
 protected:
 	
@@ -163,7 +171,7 @@ protected:
 	
 };
 
-class EntityTypeCase : public Case<EntityTypeMatch>
+class EntityBaseCase
 {
 public:
 	bool testMatch(Eris::Entity* entity);
@@ -172,6 +180,19 @@ public:
 	
 protected:
 	std::vector<Eris::TypeInfoPtr> mEntityTypes;
+	virtual void _setState(bool state) = 0;
+};
+
+class EntityTypeCase : public Case<EntityTypeMatch>, public EntityBaseCase
+{
+public:
+// 	bool testMatch(Eris::Entity* entity);
+	
+// 	void addEntityType(Eris::TypeInfoPtr typeInfo);
+	
+protected:
+// 	std::vector<Eris::TypeInfoPtr> mEntityTypes;
+	virtual void _setState(bool state);
 };
 
 
@@ -193,7 +214,18 @@ protected:
 	std::auto_ptr<AttributeComparers::AttributeComparerWrapper> mComparerWrapper;
 };
 
-
+class OutfitCase : public Case<OutfitMatch>, public EntityBaseCase
+{
+public:
+	OutfitCase() {};
+	~OutfitCase() {};
+// 	bool testMatch(const Atlas::Message::Element& attribute);
+	
+// 	void addEntityType(Eris::TypeInfoPtr typeInfo);
+protected:
+	virtual void _setState(bool state);
+// 	std::vector<Eris::TypeInfoPtr> mEntityTypes;
+};
 
 
 
@@ -204,6 +236,8 @@ public:
 	MatchBase() : mParentCase(0) {}
 	virtual ~MatchBase() {}
 	inline void setParentCase(CaseBase* aCase);
+	virtual void setEntity(Eris::Entity* entity) = 0;
+	
 
 protected:
 	 CaseBase* mParentCase;
@@ -221,9 +255,25 @@ public:
 		aCase->setParentCase(mParentCase);
 	}
 	std::vector<TCase*>& getCases() { return mCases;}
-
+	virtual void setEntity(Eris::Entity* entity);
+	
+	
 protected:
 	 std::vector<TCase*> mCases;
+};
+
+class AttributeDependentMatch
+{
+public:
+	AttributeDependentMatch();
+	virtual ~AttributeDependentMatch();
+	virtual void testAttribute(const Atlas::Message::Element& attribute) = 0;
+    
+    void setAttributeObserver(AttributeObserver* observer);
+
+protected:
+	
+	std::auto_ptr<AttributeObserver> mAttributeObserver;
 };
 
 class EntityTypeMatch : public AbstractMatch<EntityTypeCase>
@@ -231,24 +281,45 @@ class EntityTypeMatch : public AbstractMatch<EntityTypeCase>
 public:
 
 	void testEntity(Eris::Entity* entity);
+	virtual void setEntity(Eris::Entity* entity);
 	
 protected:
 
 };
 
-class AttributeMatch : public AbstractMatch<AttributeCase>
+class AttributeMatch : public AbstractMatch<AttributeCase>, public AttributeDependentMatch
 {
 public:
 
 	AttributeMatch(const std::string& attributeName);
+	AttributeMatch(const std::string& attributeName, const std::string& internalAttributeName);
 
-	void testAttribute(const Atlas::Message::Element& attribute);
+	virtual void testAttribute(const Atlas::Message::Element& attribute);
 	
 	inline const std::string& getAttributeName();
+	virtual void setEntity(Eris::Entity* entity);
 
 protected:
 
-	std::string mAttributeName;
+	std::string mAttributeName, mInternalAttributeName;
+};
+
+class OutfitMatch : public AbstractMatch<OutfitCase>, public AttributeDependentMatch
+{
+public:
+
+	OutfitMatch(const std::string& outfitName, Eris::View* view);
+
+	virtual void testAttribute(const Atlas::Message::Element& attribute);
+	
+	inline const std::string& getOutfitName();
+	virtual void setEntity(Eris::Entity* entity);
+
+protected:
+
+	void testEntity(Eris::Entity* entity);
+	std::string mOutfitName;
+	Eris::View* mView;
 };
 
 
@@ -272,7 +343,6 @@ public:
     
     void initialize();
     
-    void addAttributeObserver(AttributeObserver* observer);
     
 protected:
 
@@ -283,15 +353,16 @@ protected:
 	Eris::Entity* mEntity;
 	
 	CaseBaseStore mCases;
-	AttributeObserverStore mAttributeObservers;
 };
 
 class AttributeObserver : public sigc::trackable
 {
 public:
 
-	AttributeObserver(Eris::Entity* entity, AttributeMatch* match, ModelMapping& modelMapping) ;
-	AttributeObserver(Eris::Entity* entity, AttributeMatch* match, ModelMapping& modelMapping,const std::string& attributeName);
+	AttributeObserver(AttributeMatch* match, ModelMapping& modelMapping) ;
+	AttributeObserver(AttributeDependentMatch* match, ModelMapping& modelMapping, const std::string& attributeName);
+	
+	void observeEntity(Eris::Entity* entity);
 	
 protected:
 	Eris::Entity::AttrChangedSlot mSlot;
@@ -300,7 +371,9 @@ protected:
 	
 	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
 	
-	AttributeMatch* mMatch;
+	AttributeDependentMatch* mMatch;
+	
+	std::string mAttributeName;
 	
 };
 

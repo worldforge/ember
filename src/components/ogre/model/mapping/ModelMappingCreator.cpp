@@ -52,7 +52,8 @@ ModelMapping* ModelMappingCreator::createMapping() {
 	addEntityTypeCases(&mModelMap->getRootEntityMatch(), mDefinition->getRoot());
 	
 	///since we already have the entity, we can perform a check right away
-	mModelMap->getRootEntityMatch().testEntity(mEntity);
+	mModelMap->getRootEntityMatch().setEntity(mEntity);
+// 	mModelMap->getRootEntityMatch().testEntity(mEntity);
 	return mModelMap;
 }
 
@@ -62,7 +63,7 @@ void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, M
 		if (mTypeService) {
 			EntityTypeCase* aCase = new EntityTypeCase();
 			const std::string& entityName = I->getProperties()["equals"];
-			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, ",", 100);
+			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, "|", 100);
 			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 				aCase->addEntityType(mTypeService->getTypeByName(*J));
 			}
@@ -81,6 +82,34 @@ void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, M
 		}
 	}
 }
+
+void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition)
+{
+	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
+	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
+		if (mTypeService) {
+			OutfitCase* aCase = new OutfitCase();
+			const std::string& entityName = I->getProperties()["equals"];
+			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, "|", 100);
+			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
+				aCase->addEntityType(mTypeService->getTypeByName(*J));
+			}
+			if (mActionCreator) {
+				mActionCreator->createActions(*mModelMap, aCase, *I);
+			}
+
+			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
+			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
+				addMatch(aCase, *J);
+			}
+			match->addCase( aCase);
+			///also add the case to the model map for quick lookup
+			mModelMap->addCase(aCase);
+			aCase->setParentMatch( match);
+		}
+	}
+}
+
 
 void ModelMappingCreator::setAttributeCaseComparer(AttributeCase* aCase, AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition)
 {
@@ -155,22 +184,9 @@ void ModelMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefiniti
 		///also add the case to the model map for quick lookup
 		mModelMap->addCase(aCase);
 		
-		///observe the attribute by the use of an AttributeObserver
-		AttributeObserver* observer(0);
-		const std::string& matchType = matchDefinition.getProperties()["type"];
-		///TODO: make this check better
-		if (matchType == "function") {
-			if (match->getAttributeName() == "height") {
-				observer = new AttributeObserver(mEntity, match, *mModelMap, "bbox");
-			}
-		}
-		if (!observer) {
-			observer = new AttributeObserver(mEntity, match, *mModelMap);
-		}
-		mModelMap->addAttributeObserver(observer);
-	
 		aCase->setParentMatch( match);
 	}
+	
 }
 
 void ModelMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
@@ -178,14 +194,34 @@ void ModelMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefini
 		addAttributeMatch(aCase, matchDefinition);
 	} else if (matchDefinition.getType() == "entitytype") {
 		addEntityTypeMatch(aCase, matchDefinition);
+	} else if (matchDefinition.getType() == "outfit") {
+		addOutfitMatch(aCase, matchDefinition);
 	}
 }
 
 void ModelMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	const std::string& attributeName = matchDefinition.getProperties()["attribute"];
-	AttributeMatch* match = new AttributeMatch(attributeName);
+	
+	std::string internalAttributeName("");
+	const std::string& matchType = matchDefinition.getProperties()["type"];
+	///TODO: make this check better
+	if (matchType == "function") {
+		if (attributeName == "height") {
+			internalAttributeName = "bbox";
+		}
+	}
+	if (internalAttributeName == "") {
+		internalAttributeName = attributeName;
+	}
+	
+	AttributeMatch* match = new AttributeMatch(attributeName, internalAttributeName);
 	aCase->addMatch( match);
+	
+	AttributeObserver* observer = new AttributeObserver(match, *mModelMap, internalAttributeName);
+	match->setAttributeObserver(observer);
+	
 	addAttributeCases(match, matchDefinition);
+	
 }
 
 void ModelMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
@@ -194,8 +230,24 @@ void ModelMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& m
 	addEntityTypeCases(match, matchDefinition);
 	
 	///since we already have the entity, we can perform a check right away
-	match->testEntity(mEntity);
+// 	match->testEntity(mEntity);
 }
+
+void ModelMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition)
+{
+	const std::string& attachmentName = matchDefinition.getProperties()["attachment"];
+	OutfitMatch* match = new OutfitMatch(attachmentName, mEntity->getView());
+	aCase->addMatch( match);
+	
+	addOutfitCases(match, matchDefinition);
+	
+	
+	///observe the attribute by the use of an AttributeObserver
+	AttributeObserver* observer= new AttributeObserver(match, *mModelMap, "outfit");
+	match->setAttributeObserver(observer);
+	
+}
+
 }
 
 }

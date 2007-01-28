@@ -37,6 +37,60 @@ ModelMappingDefinition::~ModelMappingDefinition()
 {
 }
 
+DefinitionBase::PropertiesMap& DefinitionBase::getProperties() 
+{ 
+	return mProperties; 
+}
+
+const std::string& DefinitionBase::getType() const 
+{ 
+	return mType; 
+}
+void DefinitionBase::setType(std::string type) 
+{ 
+	mType = type; 
+}
+
+const std::string& ActionDefinition::getValue() const 
+{ 
+	return mValue; 
+}
+
+void ActionDefinition::setValue(std::string value) 
+{ 
+	mValue = value; 
+}
+
+
+MatchDefinition::CaseStore& MatchDefinition::getCases() 
+{ 
+	return mCases;
+}
+
+CaseDefinition::MatchStore& CaseDefinition::getMatches() 
+{ 
+	return mMatches;
+}
+
+CaseDefinition::ActionStore& CaseDefinition::getActions() 
+{ 
+	return mActions;
+}
+
+const std::string& ModelMappingDefinition::getName() const 
+{ 
+	return mName; 
+}
+void ModelMappingDefinition::setName(std::string name) 
+{ 
+	mName = name; 
+}
+
+MatchDefinition& ModelMappingDefinition::getRoot() 
+{ 
+	return mRootMatch;
+}
+
 
 }
 

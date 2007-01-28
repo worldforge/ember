@@ -95,9 +95,9 @@ void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlD
 			///check if a model name is set
 			const char* tmpModelName = smElem->Attribute("modelname");
 			if (tmpModelName) {
-				actionDef.getProperties()["modelname"] = std::string(tmpModelName);
+				actionDef.setValue(std::string(tmpModelName));
 			} else {
-				actionDef.getProperties()["modelname"] = name;
+				actionDef.setValue(name);
 			}
 			
 			caseDef.getActions().push_back(actionDef);
@@ -124,6 +124,9 @@ void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefiniti
 	
 /*		const char* tmp =  smElem->Attribute("attribute");
 		matchDef.getProperties()["attribute"] = std::string(tmp);*/
+	} else if (std::string(element->Value()) == std::string("outfitmatch")) {
+		matchDef.setType("outfit");
+		caseType = "outfitcase";
 	}
 	
 	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
@@ -179,6 +182,10 @@ void XMLModelMappingDefinitionSerializer::parseActionElement(ModelMappingDefinit
     	actionDef.getProperties()[attribute->Name()] = attribute->Value();
 	}
 	actionDef.setType(element->Attribute("type" ));
+	Ember::TiXmlNode* textNode =  element->FirstChild();
+	if (textNode) {
+		actionDef.setValue(textNode->Value());
+	}
 	
 }
 }
