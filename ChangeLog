@@ -1,3 +1,66 @@
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml: updated definitions
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: bumped the required media version
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: fixed a bug caused by reference to old memory, resulting in Eris::Entity::hasChild(...) returning wrong results
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityPartAction.cpp: fixes for signature change
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityActionCreator.cpp: updated with changes to the format for actions
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOcclusionCameraTraversal.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOcclusionTraversal.cpp: code cleanup
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/mapping/ModelMapping.cpp, src/components/ogre/model/mapping/ModelMapping.h, src/components/ogre/model/mapping/ModelMappingCreator.cpp, src/components/ogre/model/mapping/ModelMappingCreator.h, src/components/ogre/model/mapping/ModelMappingDefinition.cpp, src/components/ogre/model/mapping/ModelMappingDefinition.h, src/components/ogre/model/mapping/ModelMappingManager.cpp, src/components/ogre/model/mapping/XMLModelMappingDefinitionSerializer.cpp: 
+	* refined the xml format to allow for more generic actions
+	* added outfit mapping, which allows for checking arbitrary properties on contained, outfitted entities
+	* changed the activation phase so that all actions that are deactivated are triggered first, with all actions that will be activated triggering afterwards.  
+
+2007-01-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinitionManager.cpp: restructured how grouping is handled. We now use a dedicated ModelPart class which holds the subentities of a part. In addition, when a part is hidden because another part in the same group is shown, the first part is later reactivated when the other part is hidden.
+
+2007-01-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EntityWorldPickListener.cpp, src/components/ogre/EntityWorldPickListener.h, src/components/ogre/IWorldPickListener.h, src/components/ogre/jesus/JesusMousePicker.cpp, src/components/ogre/jesus/JesusMousePicker.h: refactored the way picking is done in order to fix a bug where an entity with a large bounding box would make it impossible to pick smaller entities contained in it. Now, each picking process is done in three steps: first all adapters are initialized, then they are used to process the picking, and finally they are queried for picking results. This allows us to let the adapters better determine if a contained object is picked.
+
+2007-01-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/edibles.modeldef, src/components/ogre/modeldefinitions/outdoor_structures.modeldef, src/components/ogre/modeldefinitions/tools.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml, src/components/ogre/modeldefinitions/vehicles.modeldef: updated model definitions
+
+2007-01-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/modeldefinition.xsd: updated schema 
+
+2007-01-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/modeldefinitions/modelmappings.modelmap.xml: added a model mappings file
+
+2007-01-27 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/mapping/ModelMapping.cpp, src/components/ogre/model/mapping/ModelMappingCreator.cpp: fixed a bug with string attributes not getting a ComparerWrapper created, also added a check for a valid ComparerWrapper in the AttributeCase::testMatch method
+
+2007-01-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: allow for the changing of model
+
+2007-01-24 Erik Hjortsberg  <erik@katastrof.nu>
+
+	* src/components/ogre/model/mapping/AttributeComparers.cpp, src/components/ogre/model/mapping/AttributeComparers.h, src/components/ogre/model/mapping/Makefile.am, src/components/ogre/model/mapping/ModelMapping.cpp, src/components/ogre/model/mapping/ModelMapping.h, src/components/ogre/model/mapping/ModelMappingCreator.cpp, src/components/ogre/model/mapping/ModelMappingCreator.h: updated and revised
+
 2007-01-22 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/Makefile.am, src/components/ogre/manipulation/Makefile.am, configure.ac: added new files and upped the required varconf lib version

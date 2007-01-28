@@ -67,9 +67,29 @@
 		<submodels>
 			<submodel mesh="3d_objects/clothes/dress/models/folded/folded_shirt.mesh">
 				<parts>
-					<part name="main" show="true">
+					<part name="clothes/burlap" show="true" group="main">
 						<subentities>
 							<subentity index="0" material="/global/clothes/dress/burlap" />
+						</subentities>
+					</part>
+					<part name="clothes/ragged" show="false" group="main">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/ragged" />
+						</subentities>
+					</part>
+					<part name="clothes/dark_rags" show="false" group="main">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/dark_rags" />
+						</subentities>
+					</part>
+					<part name="clothes/sun" show="false" group="main">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/sun" />
+						</subentities>
+					</part>
+					<part name="clothes/fine" show="false" group="main">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/fine" />
 						</subentities>
 					</part>
 				</parts>
