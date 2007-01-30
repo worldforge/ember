@@ -1,5 +1,5 @@
 //
-// C++ Interface: XMLModelMappingDefinitionSerializer
+// C++ Interface: ModelMappingDefinition
 //
 // Description: 
 //
@@ -20,17 +20,19 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MODEL_MAPPINGXMLMODELMAPPINGDEFINITIONSERIALIZER_H
-#define EMBEROGRE_MODEL_MAPPINGXMLMODELMAPPINGDEFINITIONSERIALIZER_H
+#ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGDEFINITION_H
+#define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGDEFINITION_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include "framework/tinyxml/tinyxml.h"
-#include "Definitions/ModelMappingDefinition.h"
-#include "ModelMappingManager.h"
+
 
 #include <vector>
+#include <map>
+#include <string>
+
+#include "MatchDefinition.h"
 
 namespace EmberOgre {
 
@@ -38,25 +40,32 @@ namespace Model {
 
 namespace Mapping {
 
+namespace Definitions {
+
+
+
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class XMLModelMappingDefinitionSerializer{
+class ModelMappingDefinition
+{
 public:
-    XMLModelMappingDefinitionSerializer(ModelMappingManager& modelMappingManager);
+    ModelMappingDefinition();
 
-    ~XMLModelMappingDefinitionSerializer();
+    ~ModelMappingDefinition();
     
-    void parseScript(Ember::TiXmlDocument& xmlDocument);
+    const std::string& getName() const;
+    void setName(std::string name);
+    
+    MatchDefinition& getRoot();
 protected:
-	void parseMatchElement(Definitions::ModelMappingDefinition& definition, Definitions::MatchDefinition& matchDef, Ember::TiXmlElement* element);
-	void parseCaseElement(Definitions::ModelMappingDefinition& definition, Definitions::CaseDefinition& caseDef, Ember::TiXmlElement* element);
-	void parseActionElement(Definitions::ModelMappingDefinition& definition, Definitions::ActionDefinition& actionDef, Ember::TiXmlElement* element);
-
-	ModelMappingManager& mModelMappingManager;
-
-
+	MatchDefinition mRootMatch;
+	std::string mName;
 };
+
+
+
+}
 
 }
 

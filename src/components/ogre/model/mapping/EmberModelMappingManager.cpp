@@ -109,15 +109,15 @@ void EmberModelMappingManager::ServerService_GotConnection(Eris::Connection* con
 }
 
 
-void EmberDummyActionCreator::createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition)
-{
-	CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		DummyAction* action = new DummyAction();
-		aCase->addAction(action);
-	}
-	
-}
+// void EmberDummyActionCreator::createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition)
+// {
+// 	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+// 	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+// 		DummyAction* action = new DummyAction();
+// 		aCase->addAction(action);
+// 	}
+// 	
+// }
 
 
 

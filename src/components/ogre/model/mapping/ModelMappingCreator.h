@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 
-#include "ModelMappingDefinition.h"
+#include "Definitions/ModelMappingDefinition.h"
 namespace Eris
 {
 class Entity;
@@ -36,19 +36,27 @@ namespace Model {
 
 namespace Mapping {
 
+namespace Definitions {
+class ModelMappingDefinition;
+}
+
+namespace Matches {
+class EntityTypeMatch;
+class AttributeMatch;
+class OutfitMatch;
+}
+namespace Cases {
+
 namespace AttributeComparers {
 	class NumericComparer;
 }
 
-class ModelMappingDefinition;
-class ModelMapping;
-class IActionCreator;
-class EntityTypeMatch;
-class AttributeMatch;
 class AttributeCase;
-class OutfitMatch;
 class OutfitCase;
 class CaseBase;
+}
+class ModelMapping;
+class IActionCreator;
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
@@ -56,7 +64,7 @@ class CaseBase;
 class ModelMappingCreator
 {
 public:
-	ModelMappingCreator(ModelMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService);
+	ModelMappingCreator( Definitions::ModelMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService);
 	
 	~ModelMappingCreator();
 	
@@ -66,28 +74,28 @@ protected:
 
 	ModelMapping* createMapping();
 	
-	void addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition);
+	void addEntityTypeCases(Matches::EntityTypeMatch* entityTypeMatch, Definitions::MatchDefinition& matchDefinition);
 	
-	void addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition);
+	void addAttributeCases(Matches::AttributeMatch* match, Definitions::MatchDefinition& matchDefinition);
 	
-	void addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition);
+	void addOutfitCases(Matches::OutfitMatch* match, Definitions::MatchDefinition& matchDefinition);
 	
-	void addMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
+	void addMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
 	
-	void addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
+	void addAttributeMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
 
-	void addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
+	void addEntityTypeMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
 	
-	void addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition);
+	void addOutfitMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
 
-	AttributeComparers::NumericComparer* createNumericComparer(CaseDefinition& caseDefinition);
-	void setAttributeCaseComparer(AttributeCase* aCase, AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition);
+	Cases::AttributeComparers::NumericComparer* createNumericComparer(Definitions::CaseDefinition& caseDefinition);
+	void setAttributeCaseComparer(Cases::AttributeCase* aCase, Matches::AttributeMatch* match, Definitions::MatchDefinition& matchDefinition, Definitions::CaseDefinition& caseDefinition);
 
 
 	IActionCreator* mActionCreator;
 	Eris::Entity* mEntity;
 	ModelMapping* mModelMap;
-	ModelMappingDefinition* mDefinition;
+	Definitions::ModelMappingDefinition* mDefinition;
 	Eris::TypeService* mTypeService;
 };
 

@@ -40,7 +40,7 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/Entity.h>
 
-#include "ModelMappingDefinition.h"
+#include "Definitions/ModelMappingDefinition.h"
 #include "ModelMapping.h"
 
 
@@ -51,15 +51,8 @@ namespace Model {
 namespace Mapping {
 
 class ModelMapping;
+class IActionCreator;
 
-class IActionCreator
-{
-public:
-	~IActionCreator() {}
-	
-	virtual void createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition) = 0;
-private:
-};
 
 
 /**
@@ -74,9 +67,9 @@ public:
     inline void setTypeService(Eris::TypeService* typeService);
     
     
-    void addDefinition(ModelMappingDefinition* definition);
+    void addDefinition(Definitions::ModelMappingDefinition* definition);
     
-    ModelMappingDefinition* getDefinitionForType(Eris::TypeInfo* typeInfo);
+    Definitions::ModelMappingDefinition* getDefinitionForType(Eris::TypeInfo* typeInfo);
     
     ModelMapping* createMapping(Eris::Entity* entity, IActionCreator* actionCreator);
     
@@ -86,9 +79,9 @@ protected:
 
 
 	
-	std::map<std::string, ModelMappingDefinition*> mDefinitions;
+	std::map<std::string, Definitions::ModelMappingDefinition*> mDefinitions;
 	
-	std::map<std::string, ModelMappingDefinition*> mEntityTypeMappings;
+	std::map<std::string, Definitions::ModelMappingDefinition*> mEntityTypeMappings;
 
 	Eris::TypeService* mTypeService;
 	

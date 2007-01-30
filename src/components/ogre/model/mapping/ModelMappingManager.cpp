@@ -29,6 +29,8 @@ namespace Model {
 
 namespace Mapping {
 
+using namespace Definitions;
+
 // ModelMappingManager::ModelMappingManager()
 // {
 // }

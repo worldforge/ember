@@ -29,6 +29,8 @@ namespace Model {
 
 namespace Mapping {
 
+using namespace Definitions;
+
 XMLModelMappingDefinitionSerializer::XMLModelMappingDefinitionSerializer(EmberOgre::Model::Mapping::ModelMappingManager& modelMappingManager)
 : mModelMappingManager(modelMappingManager)
 {

@@ -37,12 +37,12 @@ namespace Model {
 
 namespace Mapping {
 
-class EmberDummyActionCreator : public IActionCreator
-{
-public:
-	virtual void createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition);
-
-};
+// class EmberDummyActionCreator : public IActionCreator
+// {
+// public:
+// 	virtual void createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition);
+// 
+// };
 
 
 
