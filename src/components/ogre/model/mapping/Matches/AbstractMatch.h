@@ -25,6 +25,7 @@
 
 #include "MatchBase.h"
 #include <vector>
+#include "../ChangeContext.h"
 
 namespace Eris
 {
@@ -58,9 +59,9 @@ class AbstractMatch : public MatchBase
 {
 public:
 
-AbstractMatch();
+	AbstractMatch();
 
-virtual ~AbstractMatch(); 
+	virtual ~AbstractMatch(); 
 
 /*	AbstractMatch();
 	virtual ~AbstractMatch();*/
@@ -68,6 +69,8 @@ virtual ~AbstractMatch();
 	std::vector<TCase*>& getCases(); 
 	virtual void setEntity(Eris::Entity* entity);
 	
+	void evaluateChanges();
+	virtual void evaluateChanges(ChangeContext& changeContext);
 	
 protected:
 	 std::vector<TCase*> mCases;
@@ -105,6 +108,30 @@ void AbstractMatch<TCase>::addCase(TCase* aCase) {
 	mCases.push_back(aCase); 
 	aCase->setParentCase(mParentCase);
 }
+
+template <class TCase>
+void AbstractMatch<TCase>::evaluateChanges(ChangeContext& changeContext) {
+
+	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
+
+	typename std::vector<TCase*>::iterator endI = mCases.end();
+	for (typename std::vector<TCase*>::iterator I = mCases.begin(); I != endI; ++I) {
+		(*I)->evaluateChanges(changeContext);
+	}
+}
+
+template <class TCase>
+void AbstractMatch<TCase>::evaluateChanges() {
+
+	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
+
+	ChangeContext changeContext;
+	
+	evaluateChanges(changeContext);
+	
+	changeContext.performActions();
+}
+
 
 }
 

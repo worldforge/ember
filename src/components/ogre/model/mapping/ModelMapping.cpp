@@ -46,21 +46,7 @@ Matches::EntityTypeMatch& ModelMapping::getRootEntityMatch()
 
 void ModelMapping::evaluateChanges() {
 
-	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
-
-	std::vector<Cases::CaseBase*> activateQueue;
-	std::vector<Cases::CaseBase*> deactivateQueue;
-	CaseBaseStore::iterator endI = mCases.end();
-	for (CaseBaseStore::iterator I = mCases.begin(); I != endI; ++I) {
-		(*I)->evaluateChanges(activateQueue, deactivateQueue);
-	}
-	
-	for (std::vector<Cases::CaseBase*>::iterator I = deactivateQueue.begin(); I != deactivateQueue.end(); ++I) {
-		(*I)->deactivateActions();
-	} 
-	for (std::vector<Cases::CaseBase*>::iterator I = activateQueue.begin(); I != activateQueue.end(); ++I) {
-		(*I)->activateActions();
-	} 
+	mRootEntityMatch.evaluateChanges();
 }
 void ModelMapping::addCase(Cases::CaseBase* aCase)
 {

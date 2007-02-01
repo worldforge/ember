@@ -60,7 +60,7 @@ public:
 	AttributeMatch(const std::string& attributeName);
 	AttributeMatch(const std::string& attributeName, const std::string& internalAttributeName);
 
-	virtual void testAttribute(const Atlas::Message::Element& attribute);
+	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false);
 	
 	inline const std::string& getAttributeName();
 	virtual void setEntity(Eris::Entity* entity);

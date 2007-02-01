@@ -23,8 +23,6 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPING_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPING_H
 
-#include "AttributeComparers.h"
-
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

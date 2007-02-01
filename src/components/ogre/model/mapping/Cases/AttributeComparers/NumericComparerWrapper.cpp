@@ -40,9 +40,10 @@ NumericComparerWrapper::NumericComparerWrapper(NumericComparer* comparer)
 
 bool NumericComparerWrapper::testAttribute(const Atlas::Message::Element& attribute)
 {
-// 	if (attribute.isNumeric()) {
-		return mNumericComparer->test(attribute.asFloat());
-// 	}
+ 	if (attribute.isNum()) {
+		return mNumericComparer->test(attribute.asNum());
+ 	}
+ 	return false;
 }
 
 

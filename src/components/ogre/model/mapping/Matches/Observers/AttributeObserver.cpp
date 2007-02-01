@@ -38,18 +38,19 @@ namespace Matches {
 
 namespace Observers {
 
-AttributeObserver::AttributeObserver(Matches::AttributeDependentMatch* match, ModelMapping& modelMapping,const std::string& attributeName) : mMatch(match), mModelMapping(modelMapping), mAttributeName(attributeName)
+AttributeObserver::AttributeObserver(Matches::AttributeDependentMatch* match,const std::string& attributeName) 
+: mMatch(match), mAttributeName(attributeName)
 {
 }
 
-AttributeObserver::AttributeObserver(Matches::AttributeMatch* match, Mapping::ModelMapping& modelMapping) :  mMatch(match), mModelMapping(modelMapping), mAttributeName(match->getAttributeName())
+AttributeObserver::AttributeObserver(Matches::AttributeMatch* match) 
+: mMatch(match), mAttributeName(match->getAttributeName())
 {
 }
 
 void AttributeObserver::attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
 {
-	mMatch->testAttribute( attributeValue);
-	mModelMapping.evaluateChanges();
+	mMatch->testAttribute(attributeValue, true);
 }
 
 void AttributeObserver::observeEntity(Eris::Entity* entity)

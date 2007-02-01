@@ -1,5 +1,5 @@
 //
-// C++ Implementation: MatchBase
+// C++ Implementation: ChangeContext
 //
 // Description: 
 //
@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#include "MatchBase.h"
-#include "../ChangeContext.h"
+#include "ChangeContext.h"
+#include "Cases/CaseBase.h"
 
 namespace EmberOgre {
 
@@ -29,12 +29,38 @@ namespace Model {
 
 namespace Mapping {
 
-namespace Matches {
 
 
+ChangeContext::ChangeContext()
+{
+}
 
+
+ChangeContext::~ChangeContext()
+{
+}
+
+void ChangeContext::addCaseToActivate(Cases::CaseBase* aCase)
+{
+	mActivateQueue.push_back(aCase);
+}
+
+void ChangeContext::addCaseToDeactivate(Cases::CaseBase* aCase)
+{
+	mDeactivateQueue.push_back(aCase);
+}
+
+void ChangeContext::performActions()
+{
+	for (CaseStore::iterator I = mDeactivateQueue.begin(); I != mDeactivateQueue.end(); ++I) {
+		(*I)->deactivateActions();
+	} 
+	for (CaseStore::iterator I = mActivateQueue.begin(); I != mActivateQueue.end(); ++I) {
+		(*I)->activateActions();
+	} 
 
 }
+
 
 }
 

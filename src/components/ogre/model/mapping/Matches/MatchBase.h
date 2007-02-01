@@ -49,6 +49,7 @@ public:
 	virtual ~MatchBase() {}
 	inline void setParentCase(Cases::CaseBase* aCase);
 	virtual void setEntity(Eris::Entity* entity) = 0;
+	virtual void evaluateChanges(ChangeContext& changeContext) = 0;
 	
 
 protected:

@@ -42,10 +42,13 @@ AttributeMatch::AttributeMatch(const std::string& attributeName, const std::stri
 }
 
 
-void AttributeMatch::testAttribute(const Atlas::Message::Element& attribute)
+void AttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
 {
 	for (std::vector<Cases::AttributeCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
 		(*I)->testMatch(attribute);
+	}
+	if (triggerEvaluation) {
+		evaluateChanges();
 	}
 }
 
@@ -56,7 +59,9 @@ void AttributeMatch::setEntity(Eris::Entity* entity)
 	mAttributeObserver->observeEntity(entity);
 	if (entity) {
 		if (entity->hasAttr(mInternalAttributeName)) {
-			testAttribute(entity->valueOfAttr(mInternalAttributeName));
+			testAttribute(entity->valueOfAttr(mInternalAttributeName), false);
+		} else {
+			testAttribute(Atlas::Message::Element(), false);
 		}
 	}
 }

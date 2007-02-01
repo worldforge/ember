@@ -48,19 +48,22 @@ void CaseBase::addAction(Actions::Action* action) {
 	action->setCase(this);
 }
 
-void CaseBase::evaluateChanges(std::vector<CaseBase*>& activateQueue, std::vector<CaseBase*>& deactivateQueue) 
+void CaseBase::evaluateChanges(ChangeContext& changeContext) 
 {
 	if (getIsTrueToRoot()) {
 		if (!getIsActive()) {
-			activateQueue.push_back(this);
-// 			activateActions();
+			changeContext.addCaseToActivate(this);
 		}
 	} else {
 		if (getIsActive()) {
-			deactivateQueue.push_back(this);
-// 			deactivateActions();
+			changeContext.addCaseToDeactivate(this);
 		}
 	}
+	MatchBaseStore::iterator I = mMatches.begin();
+	for ( ; I != mMatches.end(); ++I) {
+		(*I)->evaluateChanges(changeContext);
+	}
+
 }
 void CaseBase::activateActions()
 {

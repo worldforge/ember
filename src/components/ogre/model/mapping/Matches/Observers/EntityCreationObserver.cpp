@@ -32,8 +32,8 @@ namespace Matches {
 
 namespace Observers {
 
-EntityCreationObserver::EntityCreationObserver(OutfitMatch& outfitMatch, ModelMapping& modelMapping)
-: mOutfitMatch(outfitMatch), mModelMapping(modelMapping)
+EntityCreationObserver::EntityCreationObserver(OutfitMatch& outfitMatch)
+: mOutfitMatch(outfitMatch)
 {
 }
 EntityCreationObserver::~EntityCreationObserver()
@@ -52,7 +52,6 @@ void EntityCreationObserver::entitySeen(Eris::Entity* entity)
 {
 	mSlot.disconnect();
 	mOutfitMatch.testEntity(entity);
-	mModelMapping.evaluateChanges();
 }
 
 

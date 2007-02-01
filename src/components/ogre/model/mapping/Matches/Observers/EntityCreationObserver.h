@@ -45,15 +45,13 @@ class EntityCreationObserver : public sigc::trackable
 {
 public:
 
-	EntityCreationObserver(OutfitMatch& outfitMatch, ModelMapping& modelMapping);
+	EntityCreationObserver(OutfitMatch& outfitMatch);
 	~EntityCreationObserver();
 	
 	void observeCreation(Eris::View* view, const std::string& entityId);
 
 protected:
 
-	//void setupListening(Eris::View* view, const std::string& entityId);
-	ModelMapping& mModelMapping;
 	OutfitMatch& mOutfitMatch;
 
 	Eris::View::EntitySightSlot mSlot;

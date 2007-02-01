@@ -36,7 +36,7 @@ OutfitMatch::OutfitMatch(const std::string& outfitName, Eris::View* view)
 {
 }
 
-void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute)
+void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
 {
 	if (attribute.isMap()) {
 		Eris::Entity* entity(0);
@@ -56,6 +56,9 @@ void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute)
 			testEntity(entity);
 		}
 	}
+	if (triggerEvaluation) {
+		evaluateChanges();
+	}
 }
 
 void OutfitMatch::setEntity(Eris::Entity* entity)
@@ -71,15 +74,17 @@ void OutfitMatch::setEntityCreationObserver(Observers::EntityCreationObserver* o
 
 void OutfitMatch::testEntity(Eris::Entity* entity)
 {
-	if (entity) {
-		mEntityObserver.release();
-	}
+// 	if (entity) {
+// 		mEntityObserver.release();
+// 	}
 	
 	AbstractMatch<Cases::OutfitCase>::setEntity(entity);	
 	
 	for (std::vector<Cases::OutfitCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
 		(*I)->testMatch(entity);
 	}
+	evaluateChanges();
+	
 }
 
 }

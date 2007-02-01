@@ -25,6 +25,7 @@
 
 #include <sigc++/trackable.h>
 #include "../../ModelMapping.h"
+#include "../AbstractMatch.h"
 
 #include <Eris/Entity.h>
 
@@ -48,15 +49,13 @@ class AttributeObserver : public sigc::trackable
 {
 public:
 
-	AttributeObserver(AttributeMatch* match, ModelMapping& modelMapping) ;
-	AttributeObserver(AttributeDependentMatch* match, ModelMapping& modelMapping, const std::string& attributeName);
+	AttributeObserver(AttributeMatch* match) ;
+	AttributeObserver(AttributeDependentMatch* match, const std::string& attributeName);
 	
 	void observeEntity(Eris::Entity* entity);
 	
 protected:
 	Eris::Entity::AttrChangedSlot mSlot;
-	
-	ModelMapping& mModelMapping;
 	
 	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
 	

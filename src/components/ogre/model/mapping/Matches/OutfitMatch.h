@@ -51,7 +51,7 @@ public:
 
 	OutfitMatch(const std::string& outfitName, Eris::View* view);
 
-	virtual void testAttribute(const Atlas::Message::Element& attribute);
+	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false);
 	
 	inline const std::string& getOutfitName();
 	virtual void setEntity(Eris::Entity* entity);

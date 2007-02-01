@@ -24,6 +24,7 @@
 #define EMBEROGRE_MODEL_MAPPING_CASESCASEBASE_H
 
 #include <vector>
+#include "../ChangeContext.h"
 
 namespace Eris {
 class Entity;
@@ -73,7 +74,7 @@ public:
 	void addMatch(Matches::MatchBase* match);
 	inline const MatchBaseStore& getMatches();
 
-	void evaluateChanges(std::vector<CaseBase*>& activateQueue, std::vector<CaseBase*>& deactivateQueue);
+	void evaluateChanges(ChangeContext& changeContext);
 	
 	virtual void setEntity(Eris::Entity* entity);
 	

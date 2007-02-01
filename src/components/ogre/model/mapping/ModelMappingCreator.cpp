@@ -204,7 +204,7 @@ void ModelMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefiniti
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		AttributeCase* aCase = new AttributeCase();
 		setAttributeCaseComparer(aCase, match, matchDefinition, *I);		
-		//aCase->setAttributeValue( attributeValue);
+		
 		if (mActionCreator) {
 			mActionCreator->createActions(*mModelMap, aCase, *I);
 		}
@@ -250,7 +250,7 @@ void ModelMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& ma
 	AttributeMatch* match = new AttributeMatch(attributeName, internalAttributeName);
 	aCase->addMatch( match);
 	
-	AttributeObserver* observer = new AttributeObserver(match, *mModelMap, internalAttributeName);
+	AttributeObserver* observer = new AttributeObserver(match, internalAttributeName);
 	match->setAttributeObserver(observer);
 	
 	addAttributeCases(match, matchDefinition);
@@ -276,10 +276,10 @@ void ModelMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& match
 	
 	
 	///observe the attribute by the use of an AttributeObserver
-	AttributeObserver* observer= new AttributeObserver(match, *mModelMap, "outfit");
+	AttributeObserver* observer= new AttributeObserver(match, "outfit");
 	match->setAttributeObserver(observer);
 	
-	EntityCreationObserver* entityObserver = new EntityCreationObserver(*match, *mModelMap);
+	EntityCreationObserver* entityObserver = new EntityCreationObserver(*match);
 	match->setEntityCreationObserver(entityObserver);
 
 	

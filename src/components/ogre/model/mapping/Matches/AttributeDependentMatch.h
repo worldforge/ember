@@ -43,7 +43,7 @@ class AttributeDependentMatch
 public:
 	AttributeDependentMatch();
 	virtual ~AttributeDependentMatch();
-	virtual void testAttribute(const Atlas::Message::Element& attribute) = 0;
+	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false) = 0;
     
     void setAttributeObserver(Observers::AttributeObserver* observer);
 
