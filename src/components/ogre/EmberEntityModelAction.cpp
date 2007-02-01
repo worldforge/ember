@@ -37,11 +37,13 @@ EmberEntityModelAction::~EmberEntityModelAction()
 void EmberEntityModelAction::activate()
 {
 	mEntity.setModel(mModelName);
+	S_LOG_VERBOSE("Showing model " << mModelName);
 }
 
 void EmberEntityModelAction::deactivate()
 {
 	mEntity.setModel("");
+	S_LOG_VERBOSE("Hiding model " << mModelName);
 } 
 
 

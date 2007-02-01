@@ -26,8 +26,9 @@
 #include "EmberPhysicalEntity.h"
 
 #include "model/mapping/ModelMapping.h"
-#include "model/mapping/ModelMappingDefinition.h"
+#include "model/mapping/Definitions/ModelMappingDefinition.h"
 #include "model/mapping/ModelMappingManager.h"
+#include "model/mapping/IActionCreator.h"
 
 namespace EmberOgre {
 
@@ -40,7 +41,7 @@ public:
     EmberEntityActionCreator(EmberPhysicalEntity& entity);
 
     ~EmberEntityActionCreator();
-	virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::CaseBase* aCase, Model::Mapping::CaseDefinition& caseDefinition);
+	virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberPhysicalEntity& mEntity;
 

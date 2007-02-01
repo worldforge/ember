@@ -41,14 +41,19 @@ EmberEntityPartAction::~EmberEntityPartAction()
 
 void EmberEntityPartAction::activate()
 {
+	S_LOG_VERBOSE("Showing part " << mPartName);
+
 	Model::Model* model = mEntity.getModel();
 	if (model) {
 		model->showPart(mPartName);
+		
 	}
 }
 
 void EmberEntityPartAction::deactivate()
 {
+	S_LOG_VERBOSE("Hiding part " << mPartName);
+	
 	Model::Model* model = mEntity.getModel();
 	if (model) {
 		model->hidePart(mPartName, false);

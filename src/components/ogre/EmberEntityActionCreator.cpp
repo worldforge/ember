@@ -23,6 +23,7 @@
 #include "EmberEntityActionCreator.h"
 #include "EmberEntityModelAction.h"
 #include "EmberEntityPartAction.h"
+#include "model/mapping/Cases/CaseBase.h"
 
 using namespace EmberOgre::Model::Mapping;
 
@@ -38,10 +39,10 @@ EmberEntityActionCreator::~EmberEntityActionCreator()
 {
 }
 
-void EmberEntityActionCreator::createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::CaseBase* aCase, Model::Mapping::CaseDefinition& caseDefinition)
+void EmberEntityActionCreator::createActions(ModelMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
 {
-	CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
 			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
 			aCase->addAction(action);

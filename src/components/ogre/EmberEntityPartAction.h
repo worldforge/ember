@@ -26,13 +26,14 @@
 #include "EmberPhysicalEntity.h"
 
 #include "model/mapping/ModelMapping.h"
+#include "model/mapping/Actions/Action.h"
 
 namespace EmberOgre {
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class EmberEntityPartAction : public Model::Mapping::Action
+class EmberEntityPartAction : public Model::Mapping::Actions::Action
 {
 public:
 	EmberEntityPartAction(EmberPhysicalEntity& entity, std::string partName);
