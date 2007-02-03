@@ -315,8 +315,8 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 		//TODO: perhaps signal an error?
 		if (!myAvatar) {
 			myAvatar = avatar;
-			GotAvatar.emit(myAvatar);
 			myView = myAvatar->getView();
+			GotAvatar.emit(myAvatar);
 			GotView.emit(myView);
 		}
 		delete mServerAdapter;

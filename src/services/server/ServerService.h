@@ -24,16 +24,7 @@
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Eris/BaseConnection.h>
-// #include <Eris/Connection.h>
-// #include <Eris/Account.h>
-// #include <Eris/Lobby.h>
-// #include <Eris/View.h>
-// #include <Eris/Avatar.h>
 
-// #include <sigc++/object.h>
-// #include <sigc++/signal.h>
-// #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 
 #include "IServerAdapter.h"
