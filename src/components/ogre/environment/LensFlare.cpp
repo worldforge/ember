@@ -152,10 +152,10 @@ void LensFlare::update()
 		return;
 	}
 
-	Vector3 lightToCamera = mCamera->getWorldPosition() - getLightPosition();
+	Vector3 lightToCamera = mCamera->getDerivedPosition() - getLightPosition();
 	
 	Vector3 CameraVect  = lightToCamera.length() * mCamera->getDerivedDirection();
-	CameraVect += mCamera->getWorldPosition();
+	CameraVect += mCamera->getDerivedPosition();
 
 	// The LensFlare effect takes place along this vector.
 	Vector3 LFvect = (CameraVect - getLightPosition());
