@@ -90,6 +90,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 AvatarController::~AvatarController()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
+	delete mAvatarCamera;
 }
 
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
