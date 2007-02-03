@@ -48,28 +48,10 @@ void ModelMapping::evaluateChanges() {
 
 	mRootEntityMatch.evaluateChanges();
 }
-void ModelMapping::addCase(Cases::CaseBase* aCase)
-{
-	mCases.push_back(aCase);
-}
 
 
 void ModelMapping::initialize()
 {
-	///make sure that we evaluate the changes of the root match first
-	
-// 	std::vector<CaseBase*> activateQueue;
-// 	std::vector<CaseBase*> deactivateQueue;
-// 	
-// 	std::vector<EntityTypeCase*>::iterator endI = mRootEntityMatch.getCases().end();
-// 	for (std::vector<EntityTypeCase*>::iterator I = mRootEntityMatch.getCases().begin(); I != endI; ++I) {
-// 		(*I)->evaluateChanges(activateQueue, deactivateQueue);
-// 	}	
-// 	
-// 	for (std::vector<CaseBase*>::iterator I = activateQueue.begin(); I != activateQueue.end(); ++I) {
-// 		(*I)->activateActions();
-// 	} 
-	
 	evaluateChanges();
 }
 

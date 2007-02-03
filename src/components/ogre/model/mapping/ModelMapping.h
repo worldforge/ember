@@ -94,6 +94,15 @@ static void cleanVector(T& theVector)
 
 
 /**
+	Instances of this are connected to Eris::Entity instances, and listen for changes in attributes and contained entities. When a change occurs, a client defined action is activated or deactivated, leading to client side changes. A typucal case is the changing of a model's appearance.
+	
+	The ModelMapping contains three different types of object: Matches, Cases and Actions.
+	A Match tells the framework what needs to be tested. Examples are specific attributes or entity types
+	Each Match has one or many Cases, which defines valid cases of the value that the Match is set to test for. The Cases are not mutually exclusive, so one or many cases can be true at the same time.
+	Each Case can then contain either Actions or more Matches, or both. Actions are client defined, and can be to display a certain model, or to change a texture.
+	
+	These elements are arranged in a node tree structure, contained by the ModelMapping. The ModelMapping is self contained and uses it's own oberservers to watch for changes in the values that will result in changes. At the top of the node tree is an EntityTypeMatch instance, held directly by the ModelMapping. From this instance's Cases the framework determines what ModelMapping to use for a certain Eris::Type.
+
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class ModelMapping
@@ -109,8 +118,6 @@ public:
         
     void evaluateChanges();
     
-    void addCase(Cases::CaseBase* aCase);
-    
     void initialize();
     
     
@@ -119,8 +126,6 @@ protected:
 	Matches::EntityTypeMatch mRootEntityMatch;
 	
 	Eris::Entity* mEntity;
-	
-	CaseBaseStore mCases;
 };
 
 }

@@ -109,8 +109,6 @@ void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, M
 				addMatch(aCase, *J);
 			}
 			entityTypeMatch->addCase( aCase);
-			///also add the case to the model map for quick lookup
-			mModelMap->addCase(aCase);
 			aCase->setParentMatch( entityTypeMatch);
 		}
 	}
@@ -136,8 +134,6 @@ void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& ma
 				addMatch(aCase, *J);
 			}
 			match->addCase( aCase);
-			///also add the case to the model map for quick lookup
-			mModelMap->addCase(aCase);
 			aCase->setParentMatch( match);
 		}
 	}
@@ -214,9 +210,6 @@ void ModelMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefiniti
 			addMatch(aCase, *J);
 		}
 		match->addCase( aCase);
-		///also add the case to the model map for quick lookup
-		mModelMap->addCase(aCase);
-		
 		aCase->setParentMatch( match);
 	}
 	
