@@ -165,16 +165,27 @@ mAvatarController(0),
 mModelDefinitionManager(0),
 mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general"),
 mWindow(0),
-mMaterialEditor(0)
+mMaterialEditor(0),
+mJesus(0)
 {}
 
 EmberOgre::~EmberOgre()
 {
 	
 	delete mMaterialEditor;
+	delete mJesus;
+	delete mMoveManager;
+	
+	///The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
+// 	delete mEmberEntityFactory;
+	delete mAvatarController;
+	delete mAvatar;
 	
 	///start with deleting the eris world, then shut down ogre
 	delete mWorldView;
+
+	delete mMotionManager;
+	delete mTerrainGenerator;
 
 	delete mGUIManager;
 
@@ -189,6 +200,8 @@ EmberOgre::~EmberOgre()
 	}
 	
 	delete mRoot;
+	
+	delete mLogObserver;
 	
 /*	delete mOgreResourceLoader;
 //	mSceneMgr->shutdown();
@@ -455,7 +468,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	EventSceneCreated.emit();
 
 	///this should be in a separate class, a separate plugin even
-	setupJesus();
+	///disable for now, since it's not used
+	//setupJesus();
 
 	/// Back to full rendering
 	mSceneMgr->clearSpecialCaseRenderQueues();
@@ -614,10 +628,10 @@ void EmberOgre::createScene(void)
 
 }
 
-void EmberOgre::connectViewSignals(Eris::View* world)
+void EmberOgre::Server_GotView(Eris::View* view)
 {
-	mWorldView = world;
-    world->registerFactory(mEmberEntityFactory);
+	mWorldView = view;
+	mEmberEntityFactory = new EmberEntityFactory(view, mTerrainGenerator, Ember::EmberServices::getSingletonPtr()->getServerService()->getConnection()->getTypeService());
 }
 
 EmberEntity* EmberOgre::getEntity(const std::string & id) const
@@ -629,7 +643,6 @@ EmberEntity* EmberOgre::getEntity(const std::string & id) const
 
 void EmberOgre::connectedToServer(Eris::Connection* connection) 
 {
-	mEmberEntityFactory = new EmberEntityFactory(mTerrainGenerator, connection->getTypeService());
 	//EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
@@ -784,7 +797,7 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 	S_LOG_INFO("Initializing Server Service");
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::connectViewSignals));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 	
 	Ember::EmberServices::getSingletonPtr()->getServerService()->start();
 

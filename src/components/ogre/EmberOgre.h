@@ -133,7 +133,7 @@ public:
 	 */
 	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
-	void connectViewSignals(Eris::View* world);
+	void Server_GotView(Eris::View* world);
 	void connectedToServer(Eris::Connection* connection);
 
 
@@ -254,13 +254,24 @@ protected:
 	*/
 	Avatar* mAvatar;
 	
-	//This class controls the avatar
+	/**
+	When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
+	*/
 	AvatarController* mAvatarController;
 
-
+	/**
+	The main Ogre root object. All of Ogre is accessed through this.
+	*/
 	Ogre::Root *mRoot;
-//    EmberTerrainSceneManager* mSceneMgr;
+	
+	/**
+	The main scene manager of the world.
+	*/
 	EmberPagingSceneManager* mSceneMgr;
+	
+	/**
+	The main render window. There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
+	*/
 	Ogre::RenderWindow* mWindow;
 	
 	/**
@@ -268,9 +279,14 @@ protected:
 	*/
 	Input mInput;
 	
+	/**
+	An InputCommandMapper that will handle all general input events.
+	*/
 	InputCommandMapper mGeneralCommandMapper;
 
-	
+	/**
+	Main factory for all entities created in the world.
+	*/
 	EmberEntityFactory* mEmberEntityFactory;
 
     /**
@@ -304,22 +320,44 @@ protected:
 	*/
 	void checkForConfigFiles();
 
-   
-//    EmberTerrainPageSource* mPageSource;
+	/**
+	Responsible for handling of terrain.
+	*/
 	TerrainGenerator* mTerrainGenerator;
 	
+	/**
+	Responsible for updating motions and animations of entities.
+	*/
 	MotionManager* mMotionManager;
+	
+	/**
+	Responsible for the GUI.
+	*/
 	GUIManager* mGUIManager;  
+	
+	/**
+	Resonsible for managing all Model definitions;
+	*/
 	Model::ModelDefinitionManager* mModelDefinitionManager;
+	
+	/**
+	Responsible for allowing movement of entities in the world by the user.
+	*/
 	EntityMoveManager* mMoveManager;
 	
 	/**
-	when this is fale the app will exit
+	when this is false the app will exit
 	*/
 	bool mKeepOnRunning;
 	
+	/**
+	main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
+	*/
 	Jesus* mJesus;
 	
+	/**
+	Once connected to a world, this will hold the main world view.
+	*/
 	Eris::View* mWorldView;
 	
 	/**
@@ -328,21 +366,42 @@ protected:
 	bool mPollEris;
 
 	/**
-	The main log observer used for all logging.
+	The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
 	*/
 	OgreLogObserver* mLogObserver;
 	
-	Ember::StreamLogObserver* mStreamLogObserver;
+	/**
+	Patches logging events from the Ember logging framework on to a file writer.
+	*/
+// 	Ember::StreamLogObserver* mStreamLogObserver;
 	
+	/**
+	Helper object that allows for easy Ogre material editing.
+	*/
 	MaterialEditor* mMaterialEditor;
 	
 };
 
-Input& EmberOgre::getInput() { return mInput;}
-EntityMoveManager* EmberOgre::getMoveManager() const {return mMoveManager;}
-Eris::View* const EmberOgre::getMainView() { return mWorldView;}
-Jesus* EmberOgre::getJesus() const { return mJesus; }
-Ogre::RenderWindow* EmberOgre::getRenderWindow() const { return mWindow; }
+Input& EmberOgre::getInput() 
+{ 
+	return mInput;
+}
+EntityMoveManager* EmberOgre::getMoveManager() const 
+{
+	return mMoveManager;
+}
+Eris::View* const EmberOgre::getMainView() 
+{ 
+	return mWorldView;
+}
+Jesus* EmberOgre::getJesus() const 
+{ 
+	return mJesus; 
+}
+Ogre::RenderWindow* EmberOgre::getRenderWindow() const 
+{ 
+	return mWindow; 
+}
 
 
 }
