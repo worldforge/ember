@@ -201,10 +201,10 @@ void AvatarCamera::setMode(Mode mode)
 
 const Ogre::Quaternion& AvatarCamera::getOrientation(bool onlyHorizontal) const {
 	if (!onlyHorizontal) {
-		return getCamera()->getWorldOrientation();
+		return getCamera()->getDerivedOrientation();
 	} else {
 		static Ogre::Quaternion quat;
-		quat = getCamera()->getWorldOrientation();
+		quat = getCamera()->getDerivedOrientation();
 		quat.x = 0;
 		quat.z = 0;
 		return quat;
@@ -213,7 +213,7 @@ const Ogre::Quaternion& AvatarCamera::getOrientation(bool onlyHorizontal) const 
 
 const Ogre::Vector3& AvatarCamera::getPosition() const
 {
-	return mCamera->getWorldPosition();
+	return mCamera->getDerivedPosition();
 }
 
 void AvatarCamera::attach(Ogre::SceneNode* toNode) {
