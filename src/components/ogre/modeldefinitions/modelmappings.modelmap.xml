@@ -13,7 +13,7 @@
 	
 	<automodelmapping name="" />
 	
-	<automodelmapping name="">" />
+	<automodelmapping name="" modelname="" />
 
 -->	
 	
@@ -27,13 +27,14 @@
 				<action type="display-model">turnip</action>
 			</case>
 		</entitymatch>
-	</modelmapping> 
+	</modelmapping>
 	
 <!-- For convenience we also provide the "automodelmapping" element, which maps a single model to an entity type of the same name. The result of this will be the same structure as the turnip. -->
 	<automodelmapping name="acorn" />
 	
 <!-- The automodelmapping element also has an optional "modelname" attribute, which allows you to select a different model to map to the entity type. -->
 	<automodelmapping name="carrot" />
+	
 	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
 	<modelmapping name="boulder">
 		<entitymatch>
@@ -79,6 +80,7 @@
 		</entitymatch>
 	</modelmapping>
 	-->
+	
 	<automodelmapping name="fire" />
 	<automodelmapping name="lumber" />
 	<automodelmapping name="mushroom" />
@@ -103,13 +105,48 @@
 	<automodelmapping name="deed" />
 	<automodelmapping name="bottle" />
 	
-	<modelmapping name="shirt">
+	<!-- This will only work if the trousers and shirt has the same parts defined -->
+	<modelmapping name="clothes">
 		<entitymatch>
-			<case equals="shirt">
-				<action type="display-model">shirt</action>
+			<case equals="shirt|trousers">
+				<entitymatch>
+					<case equals="shirt">
+						<action type="display-model">shirt</action>
+					</case>
+					<case equals="trousers">
+						<action type="display-model">trousers</action>
+					</case>
+				</entitymatch>
 				<attributematch attribute="style">
 					<case equals="burlap">
 						<action type="display-part">clothes/burlap</action>
+						<attributematch attribute="colour">
+							<case equals="grey">
+								<attributematch attribute="trimcolour">
+									<case equals="blue">
+										<action type="display-part">clothes/burlap/grey_blue_trims</action>
+									</case>
+									<case equals="red">
+										<action type="display-part">clothes/burlap/grey_red_trims</action>
+									</case>
+									<case equals="yellow">
+										<action type="display-part">clothes/burlap/grey_yellow_trims</action>
+									</case>
+									<case equals="green">
+										<action type="display-part">clothes/burlap/grey_green_trims</action>
+									</case>
+								</attributematch>
+							</case>
+							<case equals="red">
+								<action type="display-part">clothes/burlap/red</action>
+							</case>
+							<case equals="yellow">
+								<action type="display-part">clothes/burlap/yellow</action>
+							</case>
+							<case equals="green">
+								<action type="display-part">clothes/burlap/green</action>
+							</case>
+						</attributematch>
 					</case>
 					<case equals="ragged">
 						<action type="display-part">clothes/ragged</action>
@@ -128,30 +165,6 @@
 		</entitymatch>
 	</modelmapping>
 	
-	<modelmapping name="trousers">
-		<entitymatch>
-			<case equals="trousers">
-				<action type="display-model">trousers</action>
-				<attributematch attribute="style">
-					<case equals="burlap">
-						<action type="display-part">clothes/burlap</action>
-					</case>
-					<case equals="ragged">
-						<action type="display-part">clothes/ragged</action>
-					</case>
-					<case equals="dark_rags">
-						<action type="display-part">clothes/dark_rags</action>
-					</case>
-					<case equals="sun">
-						<action type="display-part">clothes/sun</action>
-					</case>
-					<case equals="fine">
-						<action type="display-part">clothes/fine</action>
-					</case>
-				</attributematch>
-			</case>
-		</entitymatch>
-	</modelmapping>
 	<automodelmapping name="boots" />
 	<automodelmapping name="wood" />
 
@@ -373,10 +386,38 @@
 				<action type="display-model">male</action>
 				<outfitmatch attachment="body">
 					<case equals="shirt" >
-<!--						<action type="display-part">clothes/fine</action> -->
+						<!-- the default fallback if there's no other more suitable texture -->
+						<action type="display-part">clothes/burlap</action>
 						<attributematch attribute="style">
 							<case equals="burlap">
 								<action type="display-part">clothes/burlap</action>
+								<attributematch attribute="colour">
+									<case equals="grey">
+										<attributematch attribute="trimcolour">
+											<case equals="blue">
+												<action type="display-part">clothes/burlap/grey_blue_trims</action>
+											</case>
+											<case equals="red">
+												<action type="display-part">clothes/burlap/grey_red_trims</action>
+											</case>
+											<case equals="yellow">
+												<action type="display-part">clothes/burlap/grey_yellow_trims</action>
+											</case>
+											<case equals="green">
+												<action type="display-part">clothes/burlap/grey_green_trims</action>
+											</case>
+										</attributematch>
+									</case>
+									<case equals="red">
+										<action type="display-part">clothes/burlap/red</action>
+									</case>
+									<case equals="yellow">
+										<action type="display-part">clothes/burlap/yellow</action>
+									</case>
+									<case equals="green">
+										<action type="display-part">clothes/burlap/green</action>
+									</case>
+								</attributematch>
 							</case>
 							<case equals="ragged">
 								<action type="display-part">clothes/ragged</action>

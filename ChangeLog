@@ -1,3 +1,47 @@
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml: updated mappings
+
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/mapping/ModelMapping.cpp, src/components/ogre/model/mapping/ModelMapping.h, src/components/ogre/model/mapping/ModelMappingCreator.cpp: removed obsolete way of keeping the Cases in a lookup map in the ModelMapping.
+
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: make the background black. It should preferrably have been transparent, but I couldn't get that to work with CEGUI (it always made it grey). 
+
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: make sure that stuff is cleaned up correctly, also changed how the EmberEntityFactory is created.
+
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h: changed a little how it's created and handles the View. Since the Eris::Avatar is created before the Eris::View, we can get the Avatar from the View, instead of listening for different events. Also added more comments and cleaned up code.
+
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreLogObserver.h: better description
+
+2007-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/StreamLogObserver.cpp: disable the output of file name since it's of no use anyway and only makes the log file larger
+
+2007-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/ServerService.cpp, src/services/server/ServerService.h: cleaned up code and made sure that the View is set before the signal for a new avatar is sent, so that listeners can be sure that they have access to the view too.
+
+2007-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.h: this is no longer a part of Ogre, we use EmberEntityUserObject for that, also cleaned up obsolete code
+	
+2007-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp: properly delete camera 
+
+2007-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarEmberEntity.cpp: clean up code
+
 2007-02-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* configure.ac: require eris v. 1.3.12

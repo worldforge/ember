@@ -67,11 +67,52 @@
 							<subentity index="2" material="/global/clothes/footwear/metal_shoes" />
 						</subentities>
 					</part>
+					
+					
 					<part name="clothes/burlap" show="true" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/burlap"/>
 						</subentities>
 					</part>
+					<part name="clothes/burlap/gray_blue_trims" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/gray_blue_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/gray_red_trims" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/gray_red_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/gray_green_trims" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/gray_green_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/gray_yellow_trims" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/gray_yellow_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/red" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/red"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/yellow" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/yellow"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/green" show="true" group="clothes">
+						<subentities>
+							<subentity index="1" material="/global/clothes/dress/burlap/green"/>
+						</subentities>
+					</part>
+					
+					
+					
+					
 					<part name="clothes/ragged" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/ragged"/>
