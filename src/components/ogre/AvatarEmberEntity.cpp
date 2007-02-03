@@ -48,13 +48,6 @@ void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool 
 	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
 	
 
-/*  Ogre::Light* light = mSceneManager->createLight("AvatarLight");
-           light->setType(Ogre::Light::LT_POINT);
-            light->setCastShadows(true);
-            light->setDiffuseColour(0.6,0.6,0.6);
-            //light->setSpecularColour(1, 1, 1);
-            light->setAttenuation(50,1,0.0005,0);
-	getSceneNode()->attachObject(light);*/
 }
 
 void AvatarEmberEntity::onMoved()

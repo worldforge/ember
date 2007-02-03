@@ -331,159 +331,29 @@ void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode 
 	}
 }
 
-// bool AvatarCamera::pickInTerrain(Ogre::Real mouseX, Ogre::Real mouseY, Ogre::Vector3& resultVector)
-// {
-// 	// Start a new ray query 
-// 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-// 	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , ~ EmberEntity::CM_AVATAR); 
-// 	
-// 	
-// 	raySceneQuery->setRay(cameraRay);
-// 	RaySceneQueryResult& qryResult = raySceneQuery->execute();
-// 	RaySceneQueryResult::iterator i = qryResult.begin();
-// 	if (i != qryResult.end() && i->worldFragment)
-// 	{
-// 		SceneQuery::WorldFragment* wf = i->worldFragment;
-// 		resultVector = i->worldFragment->singleIntersection;
-// 		return true;
-// 	} 
-// 	return false;
-// }
 
-// std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(Ogre::Real mouseX, Ogre::Real mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask )
-// {
-// 	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
-// 
-// 	querymask |= Ogre::RSQ_Entities;
-// 	std::vector<Ogre::RaySceneQueryResultEntry> finalResult;
-// 	
-// 	// Start a new ray query 
-// 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-// 
-// 	Ogre::RaySceneQuery *raySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay , querymask); 
-// 	
-// 	raySceneQuery->setSortByDistance(true);
-// 	raySceneQuery->execute(); 
-// 	Ogre::RaySceneQueryResult& result = raySceneQuery->getLastResults(); 
-// 	   
-// 	//T *closestObject = *ptrClosestObject; 
-// 	Ogre::Real closestDistance = mClosestPickingDistance;
-// 	 
-// 	Ogre::RaySceneQueryResult::iterator rayIterator; 
-// 	Ogre::RaySceneQueryResult::iterator rayIterator_end; 
-// 	
-// 	std::vector<Ogre::UserDefinedObject*>::iterator excludeStart = exclude.begin();
-// 	std::vector<Ogre::UserDefinedObject*>::iterator excludeEnd = exclude.end();
-// 
-// 	rayIterator = result.begin( );
-// 	rayIterator_end = result.end( );
-// 	if (rayIterator != rayIterator_end) {
-// 		for ( ; 
-// 			rayIterator != rayIterator_end; 
-// 			rayIterator++ ) {
-// 			///only pick entities that have a userobject attached
-// 
-// 			Ogre::MovableObject* movable = ( *rayIterator ).movable;
-// 			
-// // 			if (movable && movable->getUserObject() != 0 && (movable->getQueryFlags() & ~EmberEntity::CM_AVATAR)) {
-// 			if (movable && movable->isVisible() && movable->getUserObject()) {
-// 				///check that it's not in the exclude list
-// 				bool isExcluded = false;
-// 				std::vector<Ogre::UserDefinedObject*>::iterator excluded = std::find(excludeStart, excludeEnd, movable->getUserObject());
-// 				if (excluded != excludeEnd) {
-// 					isExcluded = true;
-// 				}
-// 				
-// 				if (!isExcluded) {
-// 					if ( ( *rayIterator ).distance < mClosestPickingDistance ) { 
-// 						finalResult.push_back(*rayIterator);
-// 					}
-// 				}
-// 			}
-// 		} 
-// 	}
-// 
-// 	if ( finalResult.size() == 0 ) {    
-// 
-// 		S_LOG_INFO("Picked none.");
-// 	} else { 
-// 		S_LOG_INFO("Picked an entity.");
-// 	} 		
-// 	///this must be destroyed by the scene manager
-// 	EmberOgre::getSingleton().getSceneManager()->destroyQuery(raySceneQuery);
-// 	return finalResult;
-// 	
-// }
 
 
 void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
 {
 	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
-// 	EntityPickResult result;
-// 	result.entity = 0;
-	
-// 	Ogre::MovableObject *closestObject; 
-// 	Ogre::Real closestDistance = mClosestPickingDistance;
-	 
-	
-// 	EmberEntityUserObject* userObject = 0;
-	
-// 	EmberEntity* pickedEntity;
-// 	Ogre::Real pickedDistance = mClosestPickingDistance;
-// 	Ogre::Vector3 pickedPosition;
-// 	Ogre::MovableObject* pickedMovable;
-	
 	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 
-	
-	//Ogre::RaySceneQuery *raySceneQueryTerrain = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( cameraRay, Ogre::RSQ_FirstTerrain); 
-	
-	
 	unsigned long queryMask = Ogre::RSQ_Entities;
 	queryMask |= EmberEntity::CM_AVATAR;
 	queryMask |= EmberEntity::CM_ENTITY;
 	queryMask |= EmberEntity::CM_NATURE;
 	queryMask |= EmberEntity::CM_UNDEFINED;
 	queryMask |= Ogre::RSQ_FirstTerrain;
-	//queryMask |= Ogre::RSQ_AllTerrain;
 	
 	Ogre::RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay, queryMask); 
 	raySceneQuery->setSortByDistance(true);
 
 	raySceneQuery->execute(); 
-//	raySceneQueryEntities->execute(); 
 	
-	///first check the terrain picking
-// 	Ogre::RaySceneQueryResult& queryResult = raySceneQueryTerrain->getLastResults(); 
-// 	
-// 	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( ); 
-// 	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end( );
-// 	if (rayIterator != rayIterator_end) {
-// 		///only need to check the first result since we're using RSQ_FirstTerrain for the terrain picking
-// 		if (rayIterator->worldFragment) {
-// 			SceneQuery::WorldFragment* wf = rayIterator->worldFragment;
-// 			pickedPosition = wf->singleIntersection;
-// 				
-// 			Vector3 distance = cameraRay.getOrigin() - pickedPosition; 
-// 			pickedDistance = distance.length(); 
-// 			pickedEntity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
-// 			
-// 			if (pickedDistance < closestDistance) {
-// 				closestDistance = pickedDistance; 
-// 				result.entity = pickedEntity;
-// 				result.position = pickedPosition;
-// 				std::stringstream ss;
-// 				ss << pickedPosition;
-// 				S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << pickedDistance);
-// 				result.distance = pickedDistance;
-// 			}
-// 					
-// 		} 		
-// 	}
-	   
-	//now check the entity picking
+	///now check the entity picking
 	Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults(); 
 	bool continuePicking = true;
 			
