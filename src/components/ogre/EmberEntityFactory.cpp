@@ -56,42 +56,40 @@
 namespace EmberOgre {
 
 
-EmberEntityFactory::EmberEntityFactory(TerrainGenerator* terrainGenerator, Eris::TypeService* typeService ) 
+EmberEntityFactory::EmberEntityFactory(Eris::View* view, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService)
 : mTerrainGenerator(terrainGenerator)
 , mTypeService(typeService)
+, mView(view)
 , mWorldEntity(0)
 , ShowModels("showmodels", this, "Show or hide models.")
 , DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to the std::out. If no entity id is supplied the current avatar will be used.")
 {
+	mView->registerFactory(this);
+	
 	mTerrainType = mTypeService->getTypeByName("world");
 	Ember::ServerService* serverService = Ember::EmberServices::getSingletonPtr()->getServerService();
 	
-	serverService->GotAvatar.connect(sigc::mem_fun(*this, &EmberEntityFactory::setAvatar));
-	
+	getErisAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
 	
 }
 
 
 
 EmberEntityFactory::~EmberEntityFactory()
-{}
+{
+/// there is no way to deregister the factory from the View, instead the View will delete the factory when deleted
+// 	mView->deregisterFactory(this);
+}
 
 /// create whatever entity the client desires
 Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 	
-//	Ember::ConsoleBackend::getMainConsole()->pushMessage("Adding entity...");
-	Eris::Entity* emberEntity;
-/*    Eris::TypeInfoPtr type = mTypeService->getTypeForAtlas(ge);*/
+	Eris::Entity* emberEntity(0);
 
  	bool isPhysical = Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(type) != 0;
-// 	for (NonPhysicalTypeStore::const_iterator I = mNonPhysicalTypes.begin(); I != mNonPhysicalTypes.end(); ++I) {
-// 		if (type->isA(mTypeService->getTypeByName(*I))) {
-// 			isPhysical = false;
-// 		}
-// 	}
-
-    if (ge->getId() == mAvatar->getId()) {
+    
+    if (ge->getId() == getErisAvatar()->getId()) {
    	
     	AvatarEmberEntity* avatarEntity = createAvatarEntity(ge, type,  w);
     	emberEntity = avatarEntity;
@@ -116,11 +114,6 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	return emberEntity;
 }
 
-
-
-/// Accept is called by the world to test if this factory can instantiate the specified object
-/** Accept is called when an entity must be constructed; this will be called every time
-an object is created, so avoid lengthy processing if possible. */
 bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type)
 {
 	return true;
@@ -130,12 +123,6 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
 	assert(!mWorldEntity);
 	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), mTerrainGenerator);
-      // Extract base points and send to terrain        
-      //TerrainEntity * te = new TerrainEntity(ge,w);
-//	mTerrainGenerator->prepareSegments(-1, -1, 3, true)
-	//buildTerrainAroundAvatar();
-	//mTerrainSource->setHasTerrain(true);
-	//mSceneManager->setViewGeometry("");
     return mWorldEntity;
 }
 
@@ -144,92 +131,38 @@ WorldEmberEntity* EmberEntityFactory::getWorld() const
 	return mWorldEntity;
 }
 
-void EmberEntityFactory::setAvatar(Eris::Avatar* avatar)
-{
-	mAvatar = avatar;	
-	mAvatar->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
-}
-
 void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 {
 	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
 	EmberOgre::getSingleton().getAvatar()->createdAvatarEmberEntity(avatarEntity);
-	//avatarEntity->setAvatar(mAvatar);
    	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
 }
 	
 
-void EmberEntityFactory::buildTerrainAroundAvatar()
-{
-	int size = 4;
-	//for now we'll only build terrain around position 0:0
-	mTerrainGenerator->prepareSegments(-size, -size, (size * 2) + 1, true);
-	
-	
-/*	WFMath::Point<3> point = mAvatar->getEntity()->getPosition();
-	//decide how many segments we need
-    long lowXBound = lrintf(point.x() / TerrainGenerator::segSize) - size,
-         lowYBound = lrintf(point.y() / TerrainGenerator::segSize) - size;
-	mTerrainGenerator->prepareSegments(lowXBound, lowYBound, (size * 2) + 1);
-*/
-}
 
-// Ogre::SceneNode* SetupEntityNodesAndModel(const std::string& id, const std::string& entityType) 
-// {
-// //	Ogre::Vector3 scaler = Ogre::Vector3::UNIT_SCALE;
-// 	Ogre::SceneNode* scaleNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->createSceneNode (id + "_scaleNode"));
-// 
-// 	
-// 	Model::Model* model = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), entityType, id);
-// 
-// 	///if the model definition isn't valid, use a placeholder
-// 	if (!model->getDefinition()->isValid()) {
-// 		S_LOG_FAILURE( "Could not find " << entityType << ", using placeholder.");
-// 		///add a placeholder model
-// 		Model::ModelDefnPtr modelDef = model->getDefinition();
-// 		modelDef->createSubModelDefinition("placeholder.mesh")->createPartDefinition("main")->setShow( true);
-// 		modelDef->setValid( true);
-// 		modelDef->reloadAllInstances();
-// 	}
-// 
-// 	///rotate node to fit with WF space
-// 	///perhaps this is something to put in the model spec instead?
-// //  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-// 	
-// 	scaleNode->attachObject(model);
-// 	return scaleNode;
-// 
-// }
 
 
 
 EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
 	
-// 	const std::string& typeName = mTypeService->getTypeForAtlas(ge)->getName();
-
-// 	Ogre::SceneNode* scaleNode = SetupEntityNodesAndModel(ge->getId(), typeName);
 	EmberPhysicalEntity* entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
 	
 	return entity;
-	
 	
 }
 
 AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
 {
-/*	const std::string& typeName = mTypeService->getTypeForAtlas(ge)->getName();
-
-	Ogre::SceneNode* scaleNode = SetupEntityNodesAndModel(ge->getId(), typeName);*/
-    	
-    return new AvatarEmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager(), mAvatar);
-	
+    return new AvatarEmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager(), getErisAvatar());
 }
 
-/** retrieve this factory's priority level; higher priority factories
-get first chance to process a recieved Atlas entity. The default implementation
-returns one. */
 int EmberEntityFactory::priority() {
 	return 10;
+}
+
+Eris::Avatar* EmberEntityFactory::getErisAvatar()
+{
+	return mView->getAvatar();
 }
 
 const void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
@@ -261,8 +194,8 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 		std::string value = tokeniser.nextToken();
 		if (value == "") {
 			Eris::Entity* entity(0); 
-			if (mAvatar) {
-				dumpAttributesOfEntity(mAvatar->getEntity()->getId());
+			if (getErisAvatar()) {
+				dumpAttributesOfEntity(getErisAvatar()->getEntity()->getId());
 			}
 		} else {
 			dumpAttributesOfEntity(value);
