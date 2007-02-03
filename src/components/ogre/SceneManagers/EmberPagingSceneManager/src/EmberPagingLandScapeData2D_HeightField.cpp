@@ -50,8 +50,9 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 {
 	assert(!mTerrainPage);
 	TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
+	mXDimension = mZDimension = terrainGenerator->getPageSize();
 
-	mMaxArrayPos = terrainGenerator->getPageSize() * terrainGenerator->getPageSize();
+	mMaxArrayPos = mSize * mSize;
 	mHeightData = new Real[mMaxArrayPos];
 	mTerrainPage = terrainGenerator->getTerrainPage(Ogre::Vector2(x,z));
 	//should always return a TerrainPage*
@@ -63,8 +64,6 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 	///make sure it's not 0
 	mMaxheight = std::max<float>(mTerrainPage->getMaxHeight(), 1.0f);
 	mMax = static_cast <unsigned int> (mSize * mTerrainPage->getMaxHeight());
-	mXDimension = terrainGenerator->getPageSize();
-	mZDimension = terrainGenerator->getPageSize();
 	return true;
 }
 
