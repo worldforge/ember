@@ -31,14 +31,17 @@ namespace Mapping {
 
 using namespace Definitions;
 
-// ModelMappingManager::ModelMappingManager()
-// {
-// }
+ModelMappingManager::ModelMappingManager() 
+: mTypeService(0) 
+{
+}
 
 
 ModelMappingManager::~ModelMappingManager()
 {
-	///TODO: delete definitions
+	for (ModelMappingDefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
+		delete I->second;
+	}
 }
 
 

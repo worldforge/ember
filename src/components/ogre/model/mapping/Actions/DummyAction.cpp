@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "DummyAction.h"
+#include <iostream>
 
 namespace EmberOgre {
 
@@ -30,15 +31,15 @@ namespace Mapping {
 
 namespace Actions {
 
-// virtual void DummyAction::activate() 
-// {
-// 	std::cout << "Dummy action activated." << std::endl;
-// };
-// 
-// virtual void DummyAction::deactivate() 
-// {
-// 	std::cout << "Dummy action deactivated." << std::endl;
-// };
+void DummyAction::activate() 
+{
+	std::cout << "Dummy action activated." << std::endl;
+};
+
+void DummyAction::deactivate() 
+{
+	std::cout << "Dummy action deactivated." << std::endl;
+};
 
 
 }

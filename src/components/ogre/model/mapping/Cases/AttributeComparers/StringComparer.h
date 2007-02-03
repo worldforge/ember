@@ -36,12 +36,17 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Tests for string equality. This is case sensitive.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class StringComparer
 {
 public:
 	StringComparer(std::string value);
+	/**
+	Returns true if the supplied value equals the stored value. The comparison is case sensitive.
+	@param value
+	*/
 	virtual bool test(const std::string& value);
 
 protected:

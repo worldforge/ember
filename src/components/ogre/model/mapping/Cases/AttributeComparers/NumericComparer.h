@@ -34,11 +34,16 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Base class for all numeric comparers.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class NumericComparer
 {
 public:
+	/**
+	Test the supplied value.
+	@param value The value to test.
+	*/
 	virtual bool test(float value) = 0;
 
 protected:

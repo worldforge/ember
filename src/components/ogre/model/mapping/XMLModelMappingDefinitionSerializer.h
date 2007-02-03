@@ -39,6 +39,7 @@ namespace Model {
 namespace Mapping {
 
 /**
+	Serialized model definitions from xml files. 
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class XMLModelMappingDefinitionSerializer{
@@ -47,6 +48,10 @@ public:
 
     ~XMLModelMappingDefinitionSerializer();
     
+    /**
+    Parse the xml document and create definitions from the data.
+    @param xmlDocument A valid xml document instance.
+    */
     void parseScript(Ember::TiXmlDocument& xmlDocument);
 protected:
 	void parseMatchElement(Definitions::ModelMappingDefinition& definition, Definitions::MatchDefinition& matchDef, Ember::TiXmlElement* element);

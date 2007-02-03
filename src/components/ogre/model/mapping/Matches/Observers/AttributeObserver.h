@@ -43,6 +43,7 @@ class AttributeDependentMatch;
 namespace Observers {
 
 /**
+	Observes changes to a specific attribute and automatically pass changes on the Match that the observer is attached to.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class AttributeObserver : public sigc::trackable
@@ -52,6 +53,9 @@ public:
 	AttributeObserver(AttributeMatch* match) ;
 	AttributeObserver(AttributeDependentMatch* match, const std::string& attributeName);
 	
+	/**
+	Sets the entity to observe.
+	*/
 	void observeEntity(Eris::Entity* entity);
 	
 protected:

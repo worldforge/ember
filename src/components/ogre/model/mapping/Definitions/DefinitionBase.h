@@ -42,14 +42,21 @@ namespace Definitions {
 
 
 /**
+	Base class for all Definitions.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class DefinitionBase
 {
 public:
 	typedef std::map<std::string, std::string> PropertiesMap;
+	/**
+	Returns a map of arbitrary properties.
+	*/
 	PropertiesMap& getProperties();
 
+	/**
+	Gets the type of this definition.
+	*/
     const std::string& getType() const;
     void setType(std::string type);
 	

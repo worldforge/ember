@@ -48,6 +48,9 @@ class MatchBase;
 namespace Cases {
 
 /**
+	Base class for all Cases.
+	A Case containes zero or many Actions, which will be activated when the Case is activated. A Case also contains zero or many child Matches.
+	A Case is activated when it's true and all it's parent cases, all the way up to the root of the ModelMapping, also are true.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class CaseBase 
@@ -61,21 +64,59 @@ public:
 	
 	inline void setParentCase(CaseBase* aCase);
 
+	/**
+	 * Returns whether this invidivual case is true. 
+	 * @return 
+	 */
 	inline bool getIsTrue();
+	
+	/**
+	 *    Returns whether this case is active.
+	 * @return 
+	 */
 	inline bool getIsActive();
+	
+	/**
+	 * Returns whether this case is true and all of its parent cases, all the way up to the root, also are true.
+	 * @return 
+	 */
 	inline bool getIsTrueToRoot();
 	
+	/**
+	Adds an Action to this case.
+	*/
 	void addAction(Actions::Action* action);
+	/**
+	Gets a list of all the actions contained by this Case.
+	*/
 	inline const ActionStore& getActions();
 	
+	/**
+	Activates all actions in the Case. Also switches the mActive flag.
+	*/
 	void activateActions();
+	/**
+	Deactivates all actions in the Case. Also switches the mActive flag.
+	*/
 	void deactivateActions();
 
+	/**
+	Adds an child Match to this case.
+	*/
 	void addMatch(Matches::MatchBase* match);
+	/**
+	Gets a list of all the Matches contained by this Case.
+	*/
 	inline const MatchBaseStore& getMatches();
 
+	/**
+	Evaluates all changes, and if a change has occurred, adds itself to the supplied ChangeContext instance.
+	*/
 	void evaluateChanges(ChangeContext& changeContext);
 	
+	/**
+	Sets the entity that this Case will attach itself to.
+	*/
 	virtual void setEntity(Eris::Entity* entity);
 	
 protected:

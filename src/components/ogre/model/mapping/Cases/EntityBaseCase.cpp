@@ -34,6 +34,7 @@ namespace Cases {
 
 bool EntityBaseCase::testMatch(Eris::Entity* entity)
 {
+	///Check for entity types recursively for all of the supplied entity parents.
 	if (entity) {
 		Eris::TypeInfo* type = entity->getType();
 		for (std::vector<Eris::TypeInfo*>::iterator I = mEntityTypes.begin(); I != mEntityTypes.end(); ++I) {

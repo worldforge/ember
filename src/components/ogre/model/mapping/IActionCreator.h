@@ -34,11 +34,20 @@ class CaseBase;
 
 class ModelMapping;
 
+/**
+Interface that allows for client specific actions to be created.
+
+Clients that use the Mapping framework are required to implement this interface. This interface is used in ModelMappingManager::createMapping(...)
+*/
 class IActionCreator
 {
 public:
 	~IActionCreator() {}
 	
+	/**
+	Creates actions for the supplied case.
+	Use Cases::CaseBase::addAction(...) to add the actions to the case.
+	*/
 	virtual void createActions(ModelMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition) = 0;
 private:
 };

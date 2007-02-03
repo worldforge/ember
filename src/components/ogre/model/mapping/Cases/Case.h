@@ -33,6 +33,7 @@ namespace Mapping {
 namespace Cases {
 
 /**
+	Base class for all Cases that has a parent Match.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 template <class TMatch>
@@ -40,9 +41,16 @@ class Case : public CaseBase
 {
 public:
 	
-	Case() : mParentMatch(0) {}
-	virtual ~Case() { };
+	Case() 
+	: mParentMatch(0) 
+	{}
 	
+	virtual ~Case() 
+	{}
+	
+	/**
+	Sets the parent Match instance.
+	*/
  	inline void setParentMatch(TMatch* aMatch);
  	
 

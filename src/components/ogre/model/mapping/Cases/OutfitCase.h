@@ -35,6 +35,7 @@ namespace Mapping {
 namespace Cases {
 
 /**
+	A case that is a child of an OutfitMatch.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class OutfitCase : public Case<Matches::OutfitMatch>, public EntityBaseCase
@@ -42,12 +43,8 @@ class OutfitCase : public Case<Matches::OutfitMatch>, public EntityBaseCase
 public:
 	OutfitCase() {};
 	~OutfitCase() {};
-// 	bool testMatch(const Atlas::Message::Element& attribute);
-	
-// 	void addEntityType(Eris::TypeInfoPtr typeInfo);
 protected:
 	virtual void _setState(bool state);
-// 	std::vector<Eris::TypeInfoPtr> mEntityTypes;
 };
 
 }

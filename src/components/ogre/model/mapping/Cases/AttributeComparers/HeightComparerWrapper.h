@@ -44,12 +44,22 @@ namespace AttributeComparers {
 class NumericComparer;
 
 /**
+	Compares the height of an entity. The height is calculated from the bounding box.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class HeightComparerWrapper : public AttributeComparerWrapper
 {
 public:
+	/**
+	* Default constructor. 
+	* @param comparer The NumericComparer to use for comparison.
+	* @param entity 
+	*/
 	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity* entity);
+	
+	/**
+	Test the height. The attribute passed will be ignored.
+	*/
 	virtual bool testAttribute(const Atlas::Message::Element& attribute);
 
 protected:

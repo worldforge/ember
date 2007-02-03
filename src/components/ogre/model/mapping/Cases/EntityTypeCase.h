@@ -49,17 +49,14 @@ namespace Mapping {
 namespace Cases {
 
 /**
+	An entity type triggering case that is a child of an EntityTypeMatch
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EntityTypeCase : public Case<Matches::EntityTypeMatch>, public EntityBaseCase
 {
 public:
-// 	bool testMatch(Eris::Entity* entity);
-	
-// 	void addEntityType(Eris::TypeInfoPtr typeInfo);
 	
 protected:
-// 	std::vector<Eris::TypeInfoPtr> mEntityTypes;
 	virtual void _setState(bool state);
 };
 

@@ -36,11 +36,15 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Abtract base class for an wrapper that compares attributes.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class AttributeComparerWrapper
 {
 public:
+	/**
+	Test the attribute.
+	*/
 	virtual bool testAttribute(const Atlas::Message::Element& attribute) = 0;
 };
 

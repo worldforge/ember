@@ -53,22 +53,18 @@ namespace Cases {
 
 
 /**
+	A child case to an AttributeMatch. This will look for changes to a certain attribute.
+
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class AttributeCase : public Case<Matches::AttributeMatch>
 {
 public:
-	AttributeCase() {};
+	AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper);
 	~AttributeCase() {};
 	bool testMatch(const Atlas::Message::Element& attribute);
-	
-	/**
-	Default to a string comparer.
-	*/
-	void setAttributeValue(const std::string& value);
-	void setAttributeComparerWrapper(AttributeComparers::AttributeComparerWrapper* comparerWrapper);
+
 protected:
-	//std::string mValue;
 	std::auto_ptr<AttributeComparers::AttributeComparerWrapper> mComparerWrapper;
 };
 

@@ -51,18 +51,33 @@ namespace Mapping {
 namespace Matches {
 
 /**
+	A Match that inspects a certain attribute.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class AttributeMatch : public AbstractMatch<Cases::AttributeCase>, public AttributeDependentMatch
 {
 public:
 
+	/**
+	Creates a new instance that watches for changes to the supplied attribute.
+	*/
 	AttributeMatch(const std::string& attributeName);
+	
+	/**
+	Creates a new instance that watches for changes to the supplied attribute. The attribute that is watched differs from the name of the attribute. (Such as when using a function comparer for "height", where the internal attribute watched is "bbox".)
+	*/
 	AttributeMatch(const std::string& attributeName, const std::string& internalAttributeName);
 
 	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false);
 	
+	/**
+	Gets the name of the attribute that is watched. 
+	*/
 	inline const std::string& getAttributeName();
+	
+	/**
+	Sets the Entity to watch.
+	*/
 	virtual void setEntity(Eris::Entity* entity);
 
 protected:

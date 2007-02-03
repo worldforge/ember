@@ -37,18 +37,10 @@ namespace Model {
 
 namespace Mapping {
 
-// class EmberDummyActionCreator : public IActionCreator
-// {
-// public:
-// 	virtual void createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition);
-// 
-// };
-
-
-
-
 
 /**
+	Uses the Ogre::ResourceManager framework to provide managing of model mapping definitions.
+
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EmberModelMappingManager : 
@@ -61,24 +53,38 @@ public:
 
     ~EmberModelMappingManager();
     
+    /**
+    Accessor for the main ModelMappingManager instance.
+    */
     inline ModelMappingManager& getManager();
 
-/*	virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
-		bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
-		const Ogre::NameValuePairList* createParams = 0);*/
-	
+	/**
+	Method called by Ogre. Will parse the script supplied in the stream object.
+	*/
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 
 protected:
+	/**
+	Internal instance of the ModelMappingManager.
+	*/
 	ModelMappingManager mModelMappingManager;
+	
+	/**
+	Serializer for xml.
+	*/
 	XMLModelMappingDefinitionSerializer mXmlSerializer;
 	
+	/**
+	Internal method called by Ogre.
+	*/
 	virtual Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
         const Ogre::NameValuePairList* createParams);
 
+	/**
+	When we get a connection, set the TypeService on the mModelMappingManager instance.
+	*/
 	void ServerService_GotConnection(Eris::Connection* connection);
-// 	EmberDummyActionCreator mActionCreator;
 
 };
 

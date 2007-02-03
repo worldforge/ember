@@ -37,12 +37,16 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Test for numeric equality.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class NumericEqualsComparer : public NumericComparer, private NumericValueHolder
 {
 public:
 	NumericEqualsComparer(float value);
+	/**
+	Returns true if the supplied value is equal to the held value.
+	*/
 	virtual bool test(float value);
 
 protected:

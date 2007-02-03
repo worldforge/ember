@@ -45,6 +45,7 @@ namespace Definitions {
 
 
 /**
+	A definition for a ModelMapping.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class ModelMappingDefinition

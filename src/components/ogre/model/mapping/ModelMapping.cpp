@@ -44,15 +44,10 @@ Matches::EntityTypeMatch& ModelMapping::getRootEntityMatch()
 	return mRootEntityMatch;
 }
 
-void ModelMapping::evaluateChanges() {
-
-	mRootEntityMatch.evaluateChanges();
-}
-
 
 void ModelMapping::initialize()
 {
-	evaluateChanges();
+	mRootEntityMatch.evaluateChanges();
 }
 
 

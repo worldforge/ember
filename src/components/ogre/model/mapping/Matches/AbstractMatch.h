@@ -41,6 +41,9 @@ namespace Mapping {
 namespace Matches {
 
 
+/**
+Utility method for cleaning a std::vector, deleting all instances held.
+*/
 template <typename T>
 static void cleanVector(T& theVector) 
 {
@@ -52,6 +55,7 @@ static void cleanVector(T& theVector)
 } 
 
 /**
+	Base class for all matches which includes templated definitions of the kind of Case it will hold.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 template <class TCase>
@@ -63,13 +67,30 @@ public:
 
 	virtual ~AbstractMatch(); 
 
-/*	AbstractMatch();
-	virtual ~AbstractMatch();*/
+	/**
+	* Adds a child case. 
+	* @param aCase 
+	*/
 	void addCase(TCase* aCase);
-	std::vector<TCase*>& getCases(); 
+	
+	/**
+	Gets all child cases.
+	*/
+	std::vector<TCase*>& getCases();
+	 
+	 /**
+	 Sets the Eris::Entity.
+	 */
 	virtual void setEntity(Eris::Entity* entity);
 	
+	/**
+	Evaluate all changes starting from this Match.
+	*/
 	void evaluateChanges();
+	
+	/**
+	Evaluate all changes and add changed Cases to the supplied ChangeContext.
+	*/
 	virtual void evaluateChanges(ChangeContext& changeContext);
 	
 protected:

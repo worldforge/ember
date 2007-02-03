@@ -40,6 +40,8 @@ namespace Mapping {
 namespace Cases {
 
 /**
+	A Case which triggers on the type of the entity.
+	Entity type matching takes into account inheritance, so for example, if the type Settler is a child of the type Character, and this case is set to be valid for the type Character, it will also be valid for all Settlers. 
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EntityBaseCase
@@ -47,6 +49,9 @@ class EntityBaseCase
 public:
 	bool testMatch(Eris::Entity* entity);
 	
+	/**
+	Adds an entity type to the list of valid entity types for this instance.
+	*/
 	void addEntityType(Eris::TypeInfo* typeInfo);
 	
 protected:

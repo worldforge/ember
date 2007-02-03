@@ -55,6 +55,7 @@ namespace Definitions {
 
 
 /**
+	A definition for a Match.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class MatchDefinition  : public DefinitionBase

@@ -53,6 +53,7 @@ namespace Mapping {
 namespace Definitions {
 
 /**
+	A definition for a Case.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class CaseDefinition : public DefinitionBase

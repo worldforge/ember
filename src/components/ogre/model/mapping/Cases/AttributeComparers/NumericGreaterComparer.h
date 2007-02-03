@@ -38,12 +38,16 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Test for greater.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class NumericGreaterComparer : public NumericComparer, private NumericValueHolder
 {
 public:
 	NumericGreaterComparer(float value);
+	/**
+	Returns true if the supplied value is greater than the held value.
+	*/
 	virtual bool test(float value);
 
 protected:

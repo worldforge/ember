@@ -102,6 +102,8 @@ static void cleanVector(T& theVector)
 	Each Case can then contain either Actions or more Matches, or both. Actions are client defined, and can be to display a certain model, or to change a texture.
 	
 	These elements are arranged in a node tree structure, contained by the ModelMapping. The ModelMapping is self contained and uses it's own oberservers to watch for changes in the values that will result in changes. At the top of the node tree is an EntityTypeMatch instance, held directly by the ModelMapping. From this instance's Cases the framework determines what ModelMapping to use for a certain Eris::Type.
+	
+	Instances of this class are normally not created directly by the application, instead ModelMappingManager::createMapping(...) is used.
 
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
@@ -114,10 +116,14 @@ public:
 
     ~ModelMapping();
     
+    /**
+    Gets the root entity match instance.
+    */
     Matches::EntityTypeMatch& getRootEntityMatch();
         
-    void evaluateChanges();
-    
+    /**
+    Initializes the mapping. Clients are required to call this on all new instances.
+    */
     void initialize();
     
     

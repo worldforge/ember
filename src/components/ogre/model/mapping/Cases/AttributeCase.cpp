@@ -35,6 +35,12 @@ namespace Mapping {
 
 namespace Cases {
 
+AttributeCase::AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper)
+: mComparerWrapper(std::auto_ptr<AttributeComparers::AttributeComparerWrapper>(comparerWrapper))
+{
+}
+
+
 bool AttributeCase::testMatch(const Atlas::Message::Element& attribute)
 {
 	if (mComparerWrapper.get()) {
@@ -45,16 +51,6 @@ bool AttributeCase::testMatch(const Atlas::Message::Element& attribute)
 	}
 	setState(false);
 	return false;
-}
-
-void AttributeCase::setAttributeValue(const std::string& value) 
-{
-	mComparerWrapper = std::auto_ptr<AttributeComparers::AttributeComparerWrapper>(new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(value)));
-}
-
-void AttributeCase::setAttributeComparerWrapper(AttributeComparers::AttributeComparerWrapper* comparerWrapper)
-{
-	mComparerWrapper = std::auto_ptr<AttributeComparers::AttributeComparerWrapper>(comparerWrapper);
 }
 
 }

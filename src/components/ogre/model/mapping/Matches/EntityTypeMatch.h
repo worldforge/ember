@@ -52,6 +52,7 @@ namespace Mapping {
 namespace Matches {
 
 /**
+	Watches for certain entity types.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EntityTypeMatch : public AbstractMatch<Cases::EntityTypeCase>

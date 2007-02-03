@@ -39,6 +39,7 @@ namespace AttributeComparers {
 
 
 /**
+	Wraps a string comparison comparer.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class StringComparerWrapper : public AttributeComparerWrapper

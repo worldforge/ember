@@ -38,6 +38,7 @@ namespace AttributeComparers {
 class NumericComparer;
 
 /**
+	An attribute comparer wrapper that handles numeric values.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class NumericComparerWrapper : public AttributeComparerWrapper

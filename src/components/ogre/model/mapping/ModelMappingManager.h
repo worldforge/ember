@@ -56,32 +56,67 @@ class IActionCreator;
 
 
 /**
+	Handles all ModelMapping instances, as well as creation and setup.
+	
+	Applications are expected to add definitions to the manager through the addDefinition(...) method. Definitions are managed by the manager and will be deleted by this upon destruction.
+	New ModelMapping instances are created by calling createMapping(...). It's up to the application to delete all ModelMapping instances created by the manager.
+
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class ModelMappingManager{
 public:
-    ModelMappingManager() : mTypeService(0) {}
+	typedef std::map<std::string, Definitions::ModelMappingDefinition*> ModelMappingDefinitionStore;
+	
+	/**
+	Default constructor.
+	*/
+    ModelMappingManager();
 
     ~ModelMappingManager();
     
+    /**
+    Sets the type service. Applications are required to set this before calling createMapping(...)
+    @param typeService An Eris::TypeService instance.
+    */
     inline void setTypeService(Eris::TypeService* typeService);
     
-    
+    /**
+    Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
+    @param definition A valid definition.
+    */
     void addDefinition(Definitions::ModelMappingDefinition* definition);
     
+    
+    /**
+    Queries the internal list of definitions and return the defintion that's most suited for the supplied type.
+    @param typeInfo An eris type info instance.
+    */
     Definitions::ModelMappingDefinition* getDefinitionForType(Eris::TypeInfo* typeInfo);
     
+    /**
+    Creates a new ModelMapping instance. This will not be handled by the manager and needs to be deleted by the application when suitable.
+    Remember to call ModelMapping::initialize(...). 
+    @param entity An eris type info instance.
+    @param actionCreator An eris type info instance.
+    */
     ModelMapping* createMapping(Eris::Entity* entity, IActionCreator* actionCreator);
     
-    static std::vector<std::string> splitString( const std::string& str, const std::string& delims, unsigned int maxSplits);
+    /**
+     * Utility method for splitting a string into a vector of strings 
+     * @param str The original string.
+     * @param delims A delimiter
+     * @param maxSplits Maximum number of splits to return.
+     * @return A vector of strings.
+     */
+    static std::vector<std::string> splitString( const std::string& str, const std::string& delims, unsigned int maxSplits = 300);
 
 protected:
 
 
 	
-	std::map<std::string, Definitions::ModelMappingDefinition*> mDefinitions;
+	ModelMappingDefinitionStore mDefinitions;
 	
-	std::map<std::string, Definitions::ModelMappingDefinition*> mEntityTypeMappings;
+	ModelMappingDefinitionStore mEntityTypeMappings;
 
 	Eris::TypeService* mTypeService;
 	

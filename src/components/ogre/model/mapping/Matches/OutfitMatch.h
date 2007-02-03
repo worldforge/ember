@@ -42,6 +42,7 @@ class EntityCreationObserver;
 }
 
 /**
+	Watches for changes to a specific outfit point, such as "body" or "feet". Whenever an entity is outfitted or removed this will trigger.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class OutfitMatch : public AbstractMatch<Cases::OutfitCase>, public AttributeDependentMatch

@@ -34,6 +34,7 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Base class for all comparers that must hold a value.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class NumericValueHolder

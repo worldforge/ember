@@ -140,21 +140,22 @@ void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& ma
 }
 
 
-void ModelMappingCreator::setAttributeCaseComparer(AttributeCase* aCase, AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition)
+Cases::AttributeComparers::AttributeComparerWrapper* ModelMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition)
 {
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 	
 	if ((matchType == "") || (matchType == "string")) {
 		///default is string comparison
 		const std::string& attributeValue = caseDefinition.getProperties()["equals"];
-		aCase->setAttributeValue(attributeValue);
+		return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(attributeValue));
 	} else if (matchType == "numeric") {
-		aCase->setAttributeComparerWrapper(new AttributeComparers::NumericComparerWrapper(createNumericComparer(caseDefinition)));
+		return new AttributeComparers::NumericComparerWrapper(createNumericComparer(caseDefinition));
 	} else if (matchType == "function") {
 		if (match->getAttributeName() == "height") {
-			aCase->setAttributeComparerWrapper(new AttributeComparers::HeightComparerWrapper(createNumericComparer(caseDefinition), mEntity));
+			return new AttributeComparers::HeightComparerWrapper(createNumericComparer(caseDefinition), mEntity);
 		}
 	}
+	return 0;
 	
 }
 
@@ -198,19 +199,21 @@ AttributeComparers::NumericComparer* ModelMappingCreator::createNumericComparer(
 void ModelMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition) {
 	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
-		AttributeCase* aCase = new AttributeCase();
-		setAttributeCaseComparer(aCase, match, matchDefinition, *I);		
-		
-		if (mActionCreator) {
-			mActionCreator->createActions(*mModelMap, aCase, *I);
+		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, *I);
+		if (wrapper) {
+			AttributeCase* aCase = new AttributeCase(wrapper);
+			
+			if (mActionCreator) {
+				mActionCreator->createActions(*mModelMap, aCase, *I);
+			}
+	
+			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
+			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
+				addMatch(aCase, *J);
+			}
+			match->addCase( aCase);
+			aCase->setParentMatch( match);
 		}
-
-		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
-		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
-			addMatch(aCase, *J);
-		}
-		match->addCase( aCase);
-		aCase->setParentMatch( match);
 	}
 	
 }

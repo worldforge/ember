@@ -52,7 +52,6 @@ EmberModelMappingManager::EmberModelMappingManager() : mModelMappingManager(), m
 	
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberModelMappingManager::ServerService_GotConnection));
 	
-//	mModelMappingManager.setActionCreator( &mActionCreator);
 	
 }
 
@@ -60,21 +59,6 @@ EmberModelMappingManager::EmberModelMappingManager() : mModelMappingManager(), m
 EmberModelMappingManager::~EmberModelMappingManager()
 {
 }
-
-// Ogre::ResourcePtr EmberModelMappingManager::create(const Ogre::String& name, const Ogre::String& group, 
-// bool isManual, Ogre::ManualResourceLoader* loader, 
-// const Ogre::NameValuePairList* createParams)
-// {
-// 	Ogre::ResourcePtr ret = getByName(name);
-//     if (ret.isNull())
-//     {
-//     	return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
-//     }
-//     S_LOG_FAILURE("ModelDefinition with name " << name << " already exists.");
-//     return Ogre::ResourcePtr();
-// //    return ret;
-// 
-// }
 
 
 void EmberModelMappingManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
@@ -100,7 +84,6 @@ Ogre::Resource* EmberModelMappingManager::createImpl(const Ogre::String& name, O
     const Ogre::NameValuePairList* createParams)
 {
 	return 0;
-//	return new ModelDefinition(this, name, handle, group, isManual, loader);
 }
 
 
@@ -108,16 +91,6 @@ void EmberModelMappingManager::ServerService_GotConnection(Eris::Connection* con
 	mModelMappingManager.setTypeService(connection->getTypeService());
 }
 
-
-// void EmberDummyActionCreator::createActions(ModelMapping& modelMapping, CaseBase* aCase, CaseDefinition& caseDefinition)
-// {
-// 	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-// 	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-// 		DummyAction* action = new DummyAction();
-// 		aCase->addAction(action);
-// 	}
-// 	
-// }
 
 
 

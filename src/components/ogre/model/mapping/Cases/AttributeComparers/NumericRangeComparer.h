@@ -37,19 +37,21 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
+	Test for values being in a certain range. The range is defined by two different NumericComparer instances.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class NumericRangeComparer : public NumericComparer
 {
 public:
 	NumericRangeComparer(NumericComparer* minComparer, NumericComparer* maxComparer);
+	/**
+	Returns true if the supplied value is true for both the used comparers.
+	*/
 	virtual bool test(float value);
 
 protected:
-	///assume that mValue is the min value
 	std::auto_ptr<NumericComparer> mMinComparer;
 	std::auto_ptr<NumericComparer> mMaxComparer;
-	//float mMaxValue;
 };
 
 }

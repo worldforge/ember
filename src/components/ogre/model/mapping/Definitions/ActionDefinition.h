@@ -38,6 +38,7 @@ namespace Mapping {
 namespace Definitions {
 
 /**
+	A definition for an Action.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class ActionDefinition : public DefinitionBase

@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_MODEL_MAPPING_ACTIONSDUMMYACTION_H
 #define EMBEROGRE_MODEL_MAPPING_ACTIONSDUMMYACTION_H
 
+#include "Action.h"
 namespace EmberOgre {
 
 namespace Model {
@@ -32,17 +33,18 @@ namespace Mapping {
 namespace Actions {
 
 /**
+	Dummy action for testing purposes.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-// class DummyAction : public Action
-// {
-// public:
-// 	virtual void activate();
-// 
-// 	virtual void deactivate();
-// 
-// protected:
-// };
+class DummyAction : public Action
+{
+public:
+	virtual void activate();
+
+	virtual void deactivate();
+
+protected:
+};
 
 }
 

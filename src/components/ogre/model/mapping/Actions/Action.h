@@ -37,6 +37,8 @@ namespace Mapping {
 namespace Actions {
 
 /**
+	Base class for actions. Applications are requested to implement their own subclasses.
+	
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class Action 
@@ -44,10 +46,26 @@ class Action
 public:
 	virtual ~Action() {};
 	
+	/**
+	Activate the action.
+	*/
 	virtual void activate() = 0;
+	
+	/**
+	Deactivate the action.
+	*/
 	virtual void deactivate() = 0;
 	
+	/**
+	Sets the case this action belongs to.
+	*/
 	inline void setCase(Cases::CaseBase* ownerCase);
+	
+	/**
+	 * Gets the case that this action belongs to.
+	 * @return The owner case. 
+	 */
+	inline Cases::CaseBase* getCase() const;
 
 protected:
 	Cases::CaseBase* mOwnerCase;
@@ -56,6 +74,10 @@ protected:
 void Action::setCase(Cases::CaseBase* ownerCase)
 {
 	mOwnerCase = ownerCase;
+}
+Cases::CaseBase* Action::getCase() const
+{
+	return mOwnerCase;
 }
 
 
