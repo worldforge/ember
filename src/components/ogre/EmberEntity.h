@@ -21,42 +21,15 @@
 
 #include "EmberOgrePrerequisites.h"
 
-//#include <OgreNoMemoryMacros.h>
 
-	#include <Atlas/Objects/Entity.h>
-	#include <Atlas/Objects/Operation.h>
-	
-	#include <Eris/Entity.h>
-	//#include <Eris/PollDefault.h>
-	//#include <Eris/Log.h>
-	//#include <Eris/TypeInfo.h>
-//#include <OgreMemoryMacros.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
 
-// #include <sigc++/object.h>
-// #include <sigc++/signal.h>
-// #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
-// #include <sigc++/object_slot.h>
+#include <Eris/Entity.h>
 
 
-
-/*#include <OgreException.h>*/
 #include "terrain/TerrainArea.h"
 
-
-
-
-
-// namespace Atlas
-// {
-// 	namespace Objects
-// 	{
-// 		namespace Operation
-// 		{
-// 			class Action;
-// 		}
-// 	}
-// }
 namespace Ogre
 {
 	class OOBBWireBoundingBox;
@@ -79,7 +52,6 @@ namespace Model {
 }
 
 class EmberEntityFactory;
-//class TerrainArea;
 
 /**
  * A representation of an Eris::Entity, ie. a world entity.
@@ -87,7 +59,7 @@ class EmberEntityFactory;
  * as they will have some sort of physical representation.
  * For things such as boundaries and weather, this is a nice class.
  */
-class EmberEntity : public Eris::Entity, public Ogre::UserDefinedObject {
+class EmberEntity : public Eris::Entity {
 	friend class EmberEntityFactory;
 public:
 
@@ -255,6 +227,9 @@ public:
 	void synchronizeWithServer();
 
 
+	/**
+	Dumps all of this entity's attributes to the supplied outstream.
+	*/
 	void dumpAttributes(std::ostream& outstream, std::ostream& logOutstream) const;
 
 protected: 
@@ -342,6 +317,9 @@ protected:
 	 */
 	Ogre::SceneNode* mOgreNode;
 	
+	/**
+	Gets the scene manager that manages the Ogre scene node held by this.
+	*/
 	Ogre::SceneManager* getSceneManager();
 	
 	/**
