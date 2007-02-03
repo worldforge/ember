@@ -43,7 +43,7 @@ public:
 	int getTotalNumberOfPagesY() const;
 	int getPageOffsetX() const;
 	int getPageOffsetY() const;
-	int pageIndicesSize;
+	void setPageIndicesSize(int size);
 	
 /*	void setNewXMax(int xMax);
 	void setNewXMin(int xMin);
@@ -73,6 +73,8 @@ private:
 // 	int mXmin, mXmax, mYmin, mYmax;
 	WFMath::CoordType mXminBasePoint, mXmaxBasePoint, mYminBasePoint, mYmaxBasePoint;
 	WFMath::CoordType mXminBasePointAdjusted, mXmaxBasePointAdjusted, mYminBasePointAdjusted, mYmaxBasePointAdjusted;
+
+	int mPageIndicesSize;
 
 };
 

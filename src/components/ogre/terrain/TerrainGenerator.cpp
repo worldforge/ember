@@ -60,9 +60,9 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 	registerSceneManagerAdapter( adapter);
 	//new Foliage(EmberOgre::getSingleton().getSceneManager());
 	
-	mTerrainInfo.pageIndicesSize = adapter->getPageSize();
 	
     loadTerrainOptions();
+	mTerrainInfo.setPageIndicesSize(adapter->getPageSize());
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
 
   
@@ -571,7 +571,8 @@ float TerrainGenerator::getHeight(const TerrainPosition& point) const
 		return height;
 	} 
 
-	return 0;
+///make undefined ground be one meter below the water
+	return -1;
 	
 }
 

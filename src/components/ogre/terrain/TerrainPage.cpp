@@ -26,11 +26,7 @@
 
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
-//#include "EmberTerrainRenderable.h"
 #include "TerrainShader.h"
-//#include "EmberSceneManager/include/EmberTerrainPageSource.h"
-//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
-//#include "EmberSceneManager/include/OgreTerrainRenderable.h"
 
 #include "../EmberOgre.h"
 
@@ -59,7 +55,7 @@
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 
-//#include "framework/Exception.h"
+#include "framework/osdir.h"
 
 //#include <fenv.h>
 
@@ -96,10 +92,11 @@ TerrainPage::~TerrainPage()
 
 Mercator::Segment* TerrainPage::getSegment(int x, int y) const
 {
+// 	const TerrainInfo& info = mGenerator->getTerrainInfo();
 	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
 	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
-	//int segmentOffset = segmentsPerAxis / 2;
-	int segmentOffset = 8;
+	//int segmentOffset = static_cast<int>(info.getWorldSizeInSegments(). x() * 0.5);
+	int segmentOffset = segmentsPerAxis;
 	int segX = (int)((mPosition.x() * segmentsPerAxis) + x);
 	int segY = (int)((mPosition.y() * segmentsPerAxis) + y) - segmentOffset;
 	
@@ -235,30 +232,28 @@ unsigned int TerrainPage::getAlphaMapScale() const
 
 void TerrainPage::createHeightData(Ogre::Real* heightData)
 {
-	//since Ogre uses a different coord system than WF, we have to do some conversions here
+	int pageSizeInVertices = getPageSize();
+	int pageSizeInMeters = pageSizeInVertices - 1;
+	
+	///since Ogre uses a different coord system than WF, we have to do some conversions here
 	TerrainPosition origPosition(mPosition);
-	//start in one of the corners...
-	origPosition[0] = (origPosition[0] * (getPageSize() - 1));
-	origPosition[1] = (origPosition[1] * (getPageSize() - 1));
+	///start in one of the corners...
+	origPosition[0] = (mPosition[0] * (pageSizeInMeters));
+	origPosition[1] = (mPosition[1] * (pageSizeInMeters));
+	
+	S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
 	 
 	TerrainPosition position(origPosition);
 	
-		
-		for (int i = 0; i < getPageSize(); ++i) {
-			position = origPosition;
-			position[1] = position[1] - i;
-			//position[1] = position[1] + getPageSize();
-			for (int j = 0; j < getPageSize(); ++j) {
-				position[0] = position[0] + 1;
-				Ogre::Real height = mGenerator->getHeight(position);
-				*(heightData++) = height;
-			}
+	for (int i = 0; i < pageSizeInVertices; ++i) {
+		position = origPosition;
+		position[1] = position[1] - i;
+		for (int j = 0; j < pageSizeInVertices; ++j) {
+			Ogre::Real height = mGenerator->getHeight(position);
+			*(heightData++) = height;
+			position[0] = position[0] + 1;
 		}
-
-		
-		
-
-		
+	}
 	
 }
 
@@ -342,22 +337,24 @@ void TerrainPage::printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const
 //prints the bitmap to a png-image
 //TODO: remove when finished with debugging
 	
-	const Ogre::String extension = "png";
+	std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory();
+	if (!oslink::directory(dir).isExisting()) {
 	
-	Ogre::ImageCodec::ImageData* imgData = new Ogre::ImageCodec::ImageData();
-	imgData->width = width;
-	imgData->height = height;
-	
-	imgData->depth =  1;
-	imgData->format = pixelFormat;	
-	     		
-	Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
-	// Write out
-	Ogre::SharedPtr<Ogre::Codec::CodecData> temp(imgData);
-	
-	//MAKE SURE THAT THE DIRECTORY EXISTS!!!
-	//ELSE YOY'LL GET EVIL RESOURCE ERRORS!!
-	pCodec->codeToFile(dataChunk, Ogre::String("~/.ember/") + name + "." + extension, temp);
+		const Ogre::String extension = "png";
+		
+		Ogre::ImageCodec::ImageData* imgData = new Ogre::ImageCodec::ImageData();
+		imgData->width = width;
+		imgData->height = height;
+		
+		imgData->depth =  1;
+		imgData->format = pixelFormat;	
+					
+		Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
+		// Write out
+		Ogre::SharedPtr<Ogre::Codec::CodecData> temp(imgData);
+		
+		pCodec->codeToFile(dataChunk, dir + "/" + name + "." + extension, temp);
+	}
 	
 }
 

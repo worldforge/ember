@@ -40,8 +40,6 @@
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 
-/*#include <sigc++/object.h>
-#include <sigc++/connection.h>*/
 #include <sigc++/trackable.h>
 
 #include "framework/ConsoleObject.h"
