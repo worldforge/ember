@@ -13,8 +13,7 @@ Summary: Ember is a client for MMORPGs using the Worldforge system. It uses the 
 SoftwareVersion: @VERSION@
 Language: sv
 DisplayName[sv]: Ember - en klient för Worldforge
-Summary[sv]: Ember är en klient för MMORPGs som använder sig av Worldforgesystemet.
-Den använder sig av 3d motorn Ogre tillsammans med CEGUI.
+Summary[sv]: Ember är en klient för MMORPGs som använder sig av Worldforgesystemet. Den använder sig av 3d motorn Ogre tillsammans med CEGUI.
 
 [Description]
 Ember is a fully usable client for the Worldforge system. It can connect to both Cyphesis and Indri servers. The world is presented in full 3d, utilizing modern features such as fragment and vertex shaders. Ember scales to lower end GPU too, but requires at the minimum a Geforce2 or equivalent graphics card.
