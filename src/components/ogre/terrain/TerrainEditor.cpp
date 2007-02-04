@@ -107,7 +107,8 @@ void BasePointUserObject::resetMarking()
 	entity->setMaterialName("BasePointMarkerMaterial");
 }
 
-BasePointPickListener::BasePointPickListener(TerrainEditor* terrainEditor) : mTerrainEditor(terrainEditor)
+BasePointPickListener::BasePointPickListener(TerrainEditor* terrainEditor) 
+: mTerrainEditor(terrainEditor), mPickedUserObject(0)
 {
 
 }
@@ -117,12 +118,24 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
 		if (pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && pickedMovable->getUserObject()->getTypeName() == BasePointUserObject::s_TypeName) {
-			BasePointUserObject* userObject = static_cast<BasePointUserObject*>(pickedMovable->getUserObject());
-			mTerrainEditor->pickedBasePoint(userObject);
+			mPickedUserObject = static_cast<BasePointUserObject*>(pickedMovable->getUserObject());
 			continuePicking = false;
 		}
 	}
 }
+
+void BasePointPickListener::initializePickingContext()
+{
+	mPickedUserObject = 0;
+}
+
+void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
+{
+	if (mPickedUserObject) {
+		mTerrainEditor->pickedBasePoint(mPickedUserObject);
+	}
+}
+
 
 TerrainEditBasePointMovement::TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position)
 : mVerticalMovement(verticalMovement), mPosition(position)

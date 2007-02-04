@@ -40,6 +40,7 @@ namespace EmberOgre {
 class TerrainEditor;
 class TerrainEditBasePointMovement;
 class EmberEntity;
+class BasePointUserObject;
 
 /**
 Allows the user to pick base points.
@@ -49,9 +50,15 @@ class BasePointPickListener : public IWorldPickListener
 public:
 	BasePointPickListener(TerrainEditor* terrainEditor);
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
+	
+	virtual void initializePickingContext();
+
+	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+
 
 private:
 	TerrainEditor* mTerrainEditor;
+	BasePointUserObject* mPickedUserObject;
 };
 
 class BasePointUserObject : public Ogre::UserDefinedObject

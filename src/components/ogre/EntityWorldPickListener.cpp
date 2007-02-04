@@ -50,11 +50,14 @@ void EntityWorldPickListener::initializePickingContext()
 	mClosestPickingDistance = 0;
 	mFurthestPickingDistance = 0;
 	mResult = EntityPickResult();
+	mResult.entity = 0;
+	mResult.position = Ogre::Vector3::ZERO;
+	mResult.distance = 0;
 }
 
 void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
 {
-	if (mResult.distance > 0) {
+	if (mResult.entity) {
 		std::stringstream ss;
 		ss << mResult.position;
 		S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << mResult.distance);
