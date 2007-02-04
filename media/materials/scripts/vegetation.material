@@ -145,9 +145,9 @@ material /global/environment/ground/leaf_covered
   {
     pass
     {
-         texture_unit
+        texture_unit
 		{
-			texture 3d_objects/environment/ground/textures/leaf_covered/low/ground.png
+			texture 3d_objects/environment/ground/textures/leaf_covered/medium/ground.png
 			scale 0.1 0.1
 		}
     }
