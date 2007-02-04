@@ -563,9 +563,12 @@ namespace Ogre
         NumPages = static_cast<unsigned int> (static_cast <Real> (world_height * world_width));
         const unsigned int totalNumTiles = NumPages * (NumTiles*NumTiles) + 1;
     	    
-	    setReal (scale.x, "ScaleX");
-        setReal (scale.y, "ScaleY");
-        setReal (scale.z, "ScaleZ");
+		///EMBER: added for ember, since we never want the scale to be different from the page size
+		scale.x = scale.z = PageSize;
+		scale.y = 1;
+// 	    setReal (scale.x, "ScaleX");
+//         setReal (scale.y, "ScaleY");
+//         setReal (scale.z, "ScaleZ");
 
 	setReal( position.x, "PositionX");
 	setReal( position.y, "PositionY");
