@@ -920,6 +920,19 @@ void EmberOgre::TerrainPage::updateAllShaderTextures()
 void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 {
 
+	
+	///check if at least one surface intersects, else continue
+	bool intersects = false;
+	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+		if (shader->getShader()->checkIntersect(*I->segment)) {
+			intersects = true;
+			break;
+		}
+	}
+	if (!intersects) {
+		return;
+	}	
+	
 	bool found = false;
 	for (std::list<TerrainShader*>::iterator I = mUsedShaders.begin(); I != mUsedShaders.end(); ++I) {
 		if (*I == shader) {
@@ -933,6 +946,7 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 		addShaderToSimpleTechnique(mMaterial->getTechnique(0), shader);
 	} else {
 	
+	
 		//update the alpha texture
 		//we do this by first creating a new, empty data chunk
 		//we fill this chunk with the correct alpha values through the fillAlphaLayer method
@@ -944,32 +958,35 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 		
 		Mercator::Surface* surface;
 		
+		///Create a new image. This image is temporary (since it will be blitted into the hardware memory) and destruction of it will be taken care of by the enveloping DataStreamPtr.
 		Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, true);
+		Ogre::DataStreamPtr dataStreamPtr(splatChunk);
+		Ogre::Image image; ///the image to hold the data
+
+		///make sure we clear the image
+		memset( splatChunk->getPtr(), '\0', splatChunk->size());
 		for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 			Mercator::Segment* segment = I->segment;
-			surface = shader->getSurfaceForSegment(segment);
-			if (surface && surface->isValid()) {
-				
-				int alphaChannel = 0;
-				//use only one channel
-				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
+			if (shader->getShader()->checkIntersect(*segment)) {
+				surface = shader->getSurfaceForSegment(segment);
+				if (surface && surface->isValid()) {
+					
+					int alphaChannel = 0;
+					//use only one channel
+					fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
+				}
 			}
 		}
 		
 		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = texture->getBuffer();
-//		hardwareBuffer->writeData(0, getAlphaTextureSize() * getAlphaTextureSize() * mBytesPerPixel, splatChunk->getPtr());
-
 		
-		Ogre::DataStreamPtr dataStreamPtr(splatChunk);
-		
-		Ogre::Image image;
 		image.loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
 		//image->save(std::string("/home/erik/tempimages/") + texture->getName()  + "_temp" + std::string(".png"));
 		
 		
-		//blit the whole image to the hardware buffer
+		///blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox = image.getPixelBox();
-		Ogre::Box targetBox(0,0, texture->getWidth(), texture->getHeight());
+		//Ogre::Box targetBox(0,0, texture->getWidth(), texture->getHeight());
 		hardwareBuffer->blitFromMemory(sourceBox);
 		
 	}
@@ -994,7 +1011,8 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 	}
 	
 	Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, false);
-
+	
+	memset( splatChunk->getPtr(), '\0', splatChunk->size());
 	
 	///we need an unique name for our alpha texture
 	std::stringstream splatTextureNameSS;
@@ -1005,13 +1023,15 @@ void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* techniq
 /*		SegmentVector::iterator I = segmentI_begin;*/
 	
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-		surface = shader->getSurfaceForSegment(I->segment);
-		if (surface && surface->isValid()) {
-		
-			int alphaChannel = 0;
-			///use only one channel
-			fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
-
+		if (shader->getShader()->checkIntersect(*I->segment)) {
+			surface = shader->getSurfaceForSegment(I->segment);
+			if (surface && surface->isValid()) {
+			
+				int alphaChannel = 0;
+				///use only one channel
+				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
+	
+			}
 		}
 	}
 		
