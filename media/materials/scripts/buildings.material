@@ -178,45 +178,76 @@ material /global/items/building/mausoleum/panel : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/panel.jpg
 }
 
-
+//castle materials
 
 
 
 material /global/items/building/castle/floors/tile_floor : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/floors/low/tile_floor.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/floors/tile_floor.png
 }
 
 material /global/items/building/castle/curtainwall/curtain_wall_straw : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/low/curtain_wall_straw_diffuse.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_straw_diffuse.png
 }
 
 material /global/items/building/castle/curtainwall/curtain_wall_shale : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/low/curtain_wall_shale_diffuse.png
-//    set_texture_alias NormalHeightMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_shale_NM.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/curtainwall/curtain_wall_shale_diffuse.png
 }
 
-material /global/items/building/castle/roof/straw_roof : /base/simple
+
+material /global/items/building/castle/roof/bailey_roof_copper : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/low/straw_roof-rough_1024x512.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/bailey_roof_copper.png
 }
 
-material /global/items/building/castle/roof/shale_roof : /base/simple
+material /global/items/building/castle/roof/bailey_roof_shale : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/low/shale_roof.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/bailey_roof_shale.png
 }
 
-material /global/items/building/castle/inner_walls/inner_walls : /base/simple
+
+material /global/items/building/castle/roof/roof_shale : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/inner_walls/low/inner_walls.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/roof_shale.png
 }
 
-material /global/items/building/castle/foundation/outer_walls : /base/simple
+material /global/items/building/castle/roof/roof_shingle : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/outer_walls/low/outer_walls.png
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/roof_shingle.png
 }
+
+material /global/items/building/castle/roof/roof_straw : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/roof/roof_straw.png
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+}
+
+material /global/items/building/castle/inner_walls/stained : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/inner_walls/inner_walls_stained.png
+}
+
+material /global/items/building/castle/inner_walls : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/inner_walls/inner_walls.png
+}
+
+material /global/items/building/castle/outer_walls : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/building/textures/castle/outer_walls/outer_walls.png
+}
+
+
+
 
 
 material /global/items/wood_weathered/boards : /base/simple

@@ -36,6 +36,11 @@ material /global/environment/ground/grass : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/rabbithill_grass/low/ground.png
 }
 
+material /global/environment/boulder/mossy_boulder : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/mossy_boulder/mossy_boulder.png
+}
+
 
 
 material /global/environment/water/simple
@@ -75,18 +80,23 @@ material /global/environment/ground/ploughed_field
          //the splatting texture, this will be replaced in code
 		 texture_unit 
          { 
-			alpha_op_ex source1 src_texture src_texture
-			colour_op_ex source1 src_current src_current
-            texture splat
-            tex_coord_set 0 
 			tex_address_mode clamp
+			filtering anisotropic anisotropic linear
+			colour_op_ex blend_diffuse_alpha src_current src_texture
+			colour_op_multipass_fallback dest_colour zero
+            texture splat
+			
+// 			alpha_op_ex source1 src_texture src_texture
+// 			colour_op_ex source1 src_current src_current
+             tex_coord_set 0 
+// 			tex_address_mode clamp
          } 
         // Base diffuse texture map 
          texture_unit 
          { 
-				colour_op_ex blend_current_alpha src_texture src_current
+// 				colour_op_ex blend_current_alpha src_texture src_current
            texture 3d_objects/environment/ground/textures/plowed_field/low/plowed_field_diffuse.png
-           tex_coord_set 0 
+            tex_coord_set 0 
     		tex_address_mode wrap
 			scale 0.0025 0.0025
 		} 

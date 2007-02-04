@@ -1,23 +1,55 @@
 
 material /global/plants/tree/fir/branch
 {
-  receive_shadows off
-  technique
-  {
-    pass
-    {
-          //scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
-		alpha_rejection greater_equal 64
-        texture_unit
+	receive_shadows off
+	technique
 	{
-	
-		texture 3d_objects/plants/fir/textures/common_fir/low/fir_branch_normal_01_hh.png
+		pass
+		{
+			//scene_blend alpha_blend 
+			cull_hardware none 
+			cull_software none
+			alpha_rejection greater_equal 64
+			texture_unit
+			{
+				texture 3d_objects/plants/fir/textures/common_fir/low/fir_branch_normal_01_hh.png
+			}
+		}
 	}
+}
 
-    }
-  }
+material /global/plants/tree/evergreen/evergreen_fir : /base/simple/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/evergreen/evergreen_fir.png
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+}
+material /global/plants/tree/evergreen/evergreen_pine : /base/simple/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/evergreen/evergreen_pine.png
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+}
+material /global/plants/tree/evergreen/evergreen_snow : /base/simple/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/evergreen/evergreen_snow.png
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
 }
 
 
@@ -58,8 +90,36 @@ material /global/plants/tree/fir/bark : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/plants/fir/textures/common_fir/low/bark_small.png
 }
 
-material /global/plants/tree/oak
+material /global/plants/tree/oak : /base/simple/nonculled/alpharejected
 {
+	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/oak.png
+}
+
+material /global/plants/tree/oak_
+{
+//	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/gnarly/high/tree.png
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+        // scene_blend alpha_blend 
+		alpha_rejection greater_equal 230
+         cull_hardware none 
+         cull_software none
+         texture_unit
+	{
+//		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
+		texture 3d_objects/plants/tree/textures/oak/oak.png
+	}
+    }
+  }
+}
+
+
+material /global/plants/tree/gnarly : /base/simple/nonculled/alpharejected
+{
+//	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/gnarly/high/tree.png
   receive_shadows off
   technique
   {
@@ -77,7 +137,6 @@ material /global/plants/tree/oak
     }
   }
 }
-
 
 material /global/environment/ground/leaf_covered
 {

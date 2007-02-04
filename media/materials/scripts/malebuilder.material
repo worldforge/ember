@@ -18,17 +18,6 @@ material /global/body_parts/humanoid_head/worksman : /base/simple
   set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_head/textures/worksman/low/head.png
 }
 
-
-material /global/creatures/humanoid/young_male : /base/simple
-{
-  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/young_male/low/young_male.png
-}
-
-material /global/creatures/humanoid/bearded_male : /base/simple
-{
-  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/bearded_male/low/bearded_male.png
-}
-
 material /global/body_parts/humanoid_body/male_pink : /base/simple
 {
   set_texture_alias DiffuseMap 3d_objects/body_parts/humanoid_body/textures/male_pink/low/humanoid_body.png

@@ -29,7 +29,7 @@ material /base/simple/nonculled : /base/simple
   }
 } 
 
-//Just like the /base/simple material, but without culling and with alpha blending.
+//Just like the /base/simple material, but without culling and with alpha blending and alpha rejection.
 //Useful for clothes and leaves.
 material /base/simple/nonculled/alphablended : /base/simple/nonculled
 {
@@ -38,7 +38,19 @@ material /base/simple/nonculled/alphablended : /base/simple/nonculled
     pass Main
     {
      scene_blend alpha_blend 
-     alpha_rejection greater_equal 128
+    }
+  }
+} 
+
+//Just like the /base/simple material, but without culling and with alpha rejection
+//Useful for clothes and leaves.
+material /base/simple/nonculled/alpharejected : /base/simple/nonculled
+{
+  technique General
+  {
+    pass Main
+    {
+     alpha_rejection greater_equal 64
     }
   }
 } 

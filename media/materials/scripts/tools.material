@@ -1,44 +1,36 @@
-material Items/Tool/Head : /base/simple
+material /global/items/tool/rusty_tools/old_tool_handle : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
-  technique General
-  {
-    pass Main
-    {
-      specular 0.449020 0.449020 0.449020 50.000000
-      emissive 0.000000 0.000000 0.000000
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/rusty_tools/old_tool_handle.png
 }
 
-material Items/Tool/Handle : /base/simple
+material /global/items/tool/settler_tools/tool_handle : /base/simple
 {
   set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
-  technique General
-  {
-    pass Main
-    {
-      specular 0.449020 0.449020 0.449020 50.000000
-      emissive 0.000000 0.000000 0.000000
-    }
-  }
 }
 
-material /global/items/tool/settler_tools/head : /base/simple/nonculled
+
+material /global/items/tool/rusty_tools/rusted_tool_head: /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
-  technique General
-  {
-    pass Main
-    {
-      specular 0.449020 0.449020 0.449020 50.000000
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/rusty_tools/rusted_tool_head.png
+// 	technique General
+// 	{
+// 		pass Main
+// 		{
+// 			specular 0.1 0.1 0.1 64
+// 		}
+// 	}
 }
 
-material /global/items/tool/settler_tools/handle : /base/simple
+material /global/items/tool/settler_tools/tool_head : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
+	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
+// 	technique General
+// 	{
+// 		pass Main
+// 		{
+// 			specular 0.1 0.1 0.1 64
+// 		}
+// 	}
 }
 
 material /global/items/saddle/brownleather : /base/simple
@@ -49,6 +41,10 @@ material /global/items/saddle/brownleather : /base/simple
 material /global/items/box/craftsman_wood/box_craftsman_wood : /base/simple
 {
   set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/box_craftsman_wood.png
+}
+material /global/items/box/craftsman_wood/crate_aged : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/crate_aged.png
 }
 
 material /global/items/sheet/parchment/front : /base/simple/nonculled

@@ -5,7 +5,6 @@ material Material/SOLID/placeholder.png
   {
     pass
     {
-      specular 0.500000 0.500000 0.500000 10
       texture_unit
       {
         texture placeholder.png

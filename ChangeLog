@@ -1,5 +1,17 @@
 2007-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* media/materials/base_scripts/base.material, media/materials/scripts/buildings.material, media/materials/scripts/clothing.material, media/materials/scripts/creatures.material, media/materials/scripts/environment.material, media/materials/scripts/malebuilder.material, media/materials/scripts/placeholder.material, media/materials/scripts/tools.material, media/materials/scripts/vegetation.material: update materials
+
+2007-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOptions.cpp: never allow the scaling to be different from the page size
+
+2007-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp: fixed some lingering bugs where the splatting surface wasn't correclty wiped clean upon updates, resulting in random garbage in the texture sometimes
+
+2007-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainShader.cpp: fixed a long standing bug which made the terrain texture be offset by one meter
 
 2007-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

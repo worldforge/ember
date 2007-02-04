@@ -22,6 +22,7 @@ material /global/creature/squirrel/skin : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/simple_squirrel/simple_squirrel_small.png
 }
+//make it alpha blended so that the scales will blend
 material /global/creature/tubular/fish/scaly_brown_white : /base/simple/nonculled/alphablended
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/tubular/textures/scaly_brown_white/low/tubular.png
@@ -55,50 +56,38 @@ material /global/body_parts/skeleton/bone/skeleton : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/body_parts/skeleton/textures/bone/skeleton.png
 }
 
+
+
+//----------------
+//---- Humanoid creatures
+
+material /global/creatures/humanoid/young_male : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/young_male/low/young_male.png
+}
+
+material /global/creatures/humanoid/bearded_male : /base/simple
+{
+  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/bearded_male/bearded_male.png
+}
+
+material /global/creatures/humanoid/humanoid : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/humanoid/humanoid_body.png
+}
+
+
 material /global/creature/humanoid/goblin : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/goblin/low/goblin.png
 }
+
 material /global/creature/humanoid/kobold : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/kobold/low/kobold.png
 }
 
 
-material /global/clothes/footwear/leather_shoes_wrapped_cotton_sides : /base/simple
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/footwear/textures/leather_shoes_wrapped_cotton_sides/footwear.png
-}
-
-material /global/clothes/footwear/leather_boots : /base/simple
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/footwear/textures/leather_boots/leather_boots.png
-}
-
-material /global/clothes/dress/ragged : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/ragged/low/dress.png
-}
-
-material /global/clothes/dress/sun : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/sun/low/dress.png
-}
-
-material /global/clothes/dress/dark_rags : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/dark_rags/low/dress.png
-}
-
-material /global/clothes/dress/fine : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/fine/low/dress.png
-}
-
-material /global/clothes/dress/burlap : /base/simple/nonculled/alphablended
-{
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/burlap/burlap.png
-}
 
 
 
