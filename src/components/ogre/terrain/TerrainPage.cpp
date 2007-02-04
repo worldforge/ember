@@ -368,93 +368,28 @@ inline int  EmberOgre::TerrainPage::getAlphaTextureSize( ) const
 
 void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels) {
 
-// 	if (startX != 64 || startY != 64) {
-// 		return;
-// 	
-// 	}
-
-	//int width = getTerrainOptions().pageSize - 1;
     int width = 64;
  	int finalImageWidth = getAlphaTextureSize( );
-	
-
     long i,j; 
-
-	
 	
     Ogre::uchar* start = finalImagePtr + (numberOfChannels * finalImageWidth * (startY - 1)) + ((startX - 1) * numberOfChannels);
     Ogre::uchar* end = start + (width * finalImageWidth * numberOfChannels) + (width * numberOfChannels);
-	
-	
-//     Ogre::uchar* start = finalImagePtr + ((startX * 4) + ((startY) * finalImageSize * 4));
-//     Ogre::uchar* end = start + (finalImageSize * 4 * 64);//  - (finalImageSize * 4) ;
-
-	
-	
-	
-	
-	
-//	wfImagePtr += 65;
+	///we need to do this to get the alignment correct
+	wfImagePtr += 65;
 	
     Ogre::uchar* tempPtr = end + channel + numberOfChannels;
     for (i = 0; i < width; ++i) {
 	    tempPtr -= (width * numberOfChannels);
 		for (j = 0; j < width; ++j) {
-			//Ogre::uchar alpha = 255 - j;
 			Ogre::uchar alpha = *(wfImagePtr + j);
 			*(tempPtr) = alpha;
-			//advance the number of channels
+			///advance the number of channels
 			tempPtr += numberOfChannels;
-
 			
 		}
 		tempPtr -= (finalImageWidth * numberOfChannels);
 		wfImagePtr += 65;
     }
-
-	return;	
-	
-	
-		
-//     Ogre::uchar* tempPtr = finalImagePtr + ((startX * 4) + (startY * finalImageSize * 4)) + channel;
-//     for (i = 0; i < width; ++i) {
-//     	for (j = 0; j < width; ++j) {
-//         	Ogre::uchar alpha = *(wfImagePtr++);
-//         	*tempPtr++ = alpha;
-// 			tempPtr++;
-//         	tempPtr++;
-//         	tempPtr++;
-//     		
-//     	}
-//     	
-// 		tempPtr += (finalImageSize - width) * 4;
-//     }   
-
-    	//wfImagePtr += 65;
-//position the pointer at the end of data, and starting at the correct channel
-    
-	
-	
-	
-	
-	
-	
-// 	Ogre::uchar* tempPtr = end - (3 - channel);
-//     for (i = 0; i < width; ++i) {
-// 	    tempPtr -= (width * mBytesPerPixel);
-// 		for (j = 0; j < width; ++j) {
-// 			Ogre::uchar alpha = *(wfImagePtr + j);
-// 			*(tempPtr) = alpha;
-// 			//skip four channels
-// 			tempPtr += 4;
-// 
-// 			
-// 		}
-// 		tempPtr -= (finalImageSize * 4);
-//     	wfImagePtr += 65;
-//     	//++chunkPtr;
-//     }
-
 }
 
 void EmberOgre::TerrainPage::showFoliage()
