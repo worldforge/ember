@@ -61,33 +61,68 @@
 		<actions />
 	</model>
 	
-	<model name="shirt" usescaleof="all" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
+	<model name="shirt" usescaleof="width" scale="2.000000" showcontained="true">
+		<translate x="0.000000" y="0.050000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
 			<submodel mesh="3d_objects/clothes/dress/models/folded/folded_shirt.mesh">
 				<parts>
-					<part name="clothes/burlap" show="true" group="main">
+					<part name="clothes/burlap" show="true" group="clothes">
 						<subentities>
-							<subentity index="0" material="/global/clothes/dress/burlap" />
+							<subentity index="0" material="/global/clothes/dress/burlap"/>
 						</subentities>
 					</part>
-					<part name="clothes/ragged" show="false" group="main">
+					<part name="clothes/burlap/grey_blue_trims" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/grey_blue_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/grey_red_trims" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/grey_red_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/grey_green_trims" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/grey_green_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/grey_yellow_trims" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/grey_yellow_trims"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/red" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/red"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/yellow" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/yellow"/>
+						</subentities>
+					</part>
+					<part name="clothes/burlap/green" show="false" group="clothes">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/burlap/green"/>
+						</subentities>
+					</part>
+					<part name="clothes/ragged" group="main" show="false">
 						<subentities>
 							<subentity index="0" material="/global/clothes/dress/ragged" />
 						</subentities>
 					</part>
-					<part name="clothes/dark_rags" show="false" group="main">
+					<part name="clothes/dark_rags" group="main" show="false">
 						<subentities>
 							<subentity index="0" material="/global/clothes/dress/dark_rags" />
 						</subentities>
 					</part>
-					<part name="clothes/sun" show="false" group="main">
+					<part name="clothes/sun" group="main" show="false">
 						<subentities>
 							<subentity index="0" material="/global/clothes/dress/sun" />
 						</subentities>
 					</part>
-					<part name="clothes/fine" show="false" group="main">
+					<part name="clothes/fine" group="main" show="false">
 						<subentities>
 							<subentity index="0" material="/global/clothes/dress/fine" />
 						</subentities>
@@ -98,15 +133,35 @@
 		<actions />
 	</model>
 	
-	<model name="pants" usescaleof="all" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
+	<model name="trousers" usescaleof="width" scale="2.000000" showcontained="true">
+		<translate x="0.000000" y="0.050000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
 			<submodel mesh="3d_objects/clothes/dress/models/folded/folded_pants.mesh">
 				<parts>
-					<part name="main" show="true">
+					<part name="clothes/burlap" group="main" show="true">
 						<subentities>
 							<subentity index="0" material="/global/clothes/dress/burlap" />
+						</subentities>
+					</part>
+					<part name="clothes/ragged" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/ragged" />
+						</subentities>
+					</part>
+					<part name="clothes/dark_rags" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/dark_rags" />
+						</subentities>
+					</part>
+					<part name="clothes/sun" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/sun" />
+						</subentities>
+					</part>
+					<part name="clothes/fine" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/clothes/dress/fine" />
 						</subentities>
 					</part>
 				</parts>
@@ -114,6 +169,24 @@
 		</submodels>
 		<actions />
 	</model>
+	
+	<model name="boots" usescaleof="width" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+		<submodels>
+			<submodel mesh="3d_objects/clothes/footwear/models/tall_boots/tall_boots.mesh">
+				<parts>
+					<part name="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/clothes/footwear/leather_boots" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+		</submodels>
+		<actions />
+	</model>
+	
 	
 	<!-- temporary model for wood; we need a better model which has the grain of the planks in the top and bottom faces -->
 	<model name="wood" usescaleof="all" showcontained="true">

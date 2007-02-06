@@ -113,36 +113,6 @@
         <actions />
     </model>
     
-	<model name="gravestone_simple" usescaleof="height" >
-		<submodels>
-			<submodel mesh="simplegrave.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-			
-	<model name="gravestone_stylish" usescaleof="height" >
-		<submodels>
-			<submodel mesh="stylishgrave.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-	
-	<model name="gravestone_rounded" usescaleof="height" >
-		<submodels>
-			<submodel mesh="roundedgrave.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>		    
-
 	<model name="gravestone" usescaleof="height" >
 		<submodels>
 			<submodel mesh="simplegrave.mesh" >

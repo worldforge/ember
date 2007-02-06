@@ -62,15 +62,49 @@
 		</submodels>
 	</model>	
 	
-	<model name="boulder" >
+	<model name="boulder" usescaleof="all" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="3d_objects/environment/boulder/models/boulder_03/boulder_03.mesh">
+			<submodel mesh="3d_objects/environment/boulder/models/mossy_boulders/mossy_bouldersA.mesh">
 				<parts>
-					<part name="main" show="true" />
+					<part name="boulders_A" group="main" show="true">
+						<subentities>
+							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+			<submodel mesh="3d_objects/environment/boulder/models/mossy_boulders/mossy_bouldersB.mesh">
+				<parts>
+					<part name="boulders_B" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+			<submodel mesh="3d_objects/environment/boulder/models/mossy_boulders/mossy_bouldersC.mesh">
+				<parts>
+					<part name="boulders_C" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+						</subentities>
+					</part>
+				</parts>
+			</submodel>
+			<submodel mesh="3d_objects/environment/boulder/models/mossy_boulders/mossy_bouldersD.mesh">
+				<parts>
+					<part name="boulders_D" group="main" show="false">
+						<subentities>
+							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+						</subentities>
+					</part>
 				</parts>
 			</submodel>
 		</submodels>
-	</model>	
+		<actions />
+    </model>
 	
 	<model name="apple" scale="10">
 		<submodels>
@@ -106,6 +140,18 @@
 			</submodel>
 		</submodels>
 	</model>
+	
+	<model name="sun">
+		<submodels>
+			<submodel mesh="3d_objects/environment/sky/models/sphere/sphere.mesh" >
+				<parts>
+					<part name="main" show="true" />
+				</parts>
+			</submodel>
+		</submodels>
+	</model>
+	
+	
 	
 	<!-- non-physical entities -->
 	<model name="boundary" >

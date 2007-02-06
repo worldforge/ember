@@ -125,6 +125,22 @@
 			</parts>
 			</submodel>
 		</submodels>
-	</model>			
+	</model>		
+    <model name="crate" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/box/models/crate/craftsman_wood_crate_closed.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/box/craftsman_wood/crate_aged" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>		
 </models>
  

@@ -1,13 +1,22 @@
 <models>
-	<model name="axe"  scale="1" >
-		<submodels>
-			<submodel mesh="3d_objects/items/tool/models/axe/Axe.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
+    <model name="axe" usescaleof="all" scale="1.000000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/tool/models/axe/Axe.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/tool/settler_tools/tool_handle" />
+                            <subentity index="1" material="/global/items/tool/rusty_tools/rusted_tool_head" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+	
 	<model name="hammer" >
 		<submodels>
 			<submodel mesh="3d_objects/items/tool/models/hammer/hammer.mesh">
@@ -18,6 +27,23 @@
 		</submodels>
 	</model>
 
+    <model name="sword" usescaleof="none" scale="0.150000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/tool/models/swords/sword_A01.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/tool/rusty_tools/rusted_tool_head" />
+                            <subentity index="1" material="/global/items/tool/rusty_tools/rusted_tool_head" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
 	
 	<model name="scythe" usescaleof="none" scale="1">
 		<submodels>

@@ -259,6 +259,13 @@
 	<automodelmapping name="bucksaw" />
 	<automodelmapping name="tinderbox" />
 	<automodelmapping name="pickaxe" />
+	<modelmapping name="pole">
+		<entitymatch>
+			<case equals="pole">
+				<action type="display-model">lumber</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 
 	<modelmapping name="shovel">
 		<entitymatch>
 			<case equals="shovel|spade">

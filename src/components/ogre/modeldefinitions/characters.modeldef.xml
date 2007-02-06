@@ -67,52 +67,46 @@
 							<subentity index="2" material="/global/clothes/footwear/metal_shoes" />
 						</subentities>
 					</part>
-					
-					
 					<part name="clothes/burlap" show="true" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/burlap"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/gray_blue_trims" show="true" group="clothes">
+					<part name="clothes/burlap/grey_blue_trims" show="false" group="clothes">
 						<subentities>
-							<subentity index="1" material="/global/clothes/dress/burlap/gray_blue_trims"/>
+							<subentity index="1" material="/global/clothes/dress/burlap/grey_blue_trims"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/gray_red_trims" show="true" group="clothes">
+					<part name="clothes/burlap/grey_red_trims" show="false" group="clothes">
 						<subentities>
-							<subentity index="1" material="/global/clothes/dress/burlap/gray_red_trims"/>
+							<subentity index="1" material="/global/clothes/dress/burlap/grey_red_trims"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/gray_green_trims" show="true" group="clothes">
+					<part name="clothes/burlap/grey_green_trims" show="false" group="clothes">
 						<subentities>
-							<subentity index="1" material="/global/clothes/dress/burlap/gray_green_trims"/>
+							<subentity index="1" material="/global/clothes/dress/burlap/grey_green_trims"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/gray_yellow_trims" show="true" group="clothes">
+					<part name="clothes/burlap/grey_yellow_trims" show="false" group="clothes">
 						<subentities>
-							<subentity index="1" material="/global/clothes/dress/burlap/gray_yellow_trims"/>
+							<subentity index="1" material="/global/clothes/dress/burlap/grey_yellow_trims"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/red" show="true" group="clothes">
+					<part name="clothes/burlap/red" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/burlap/red"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/yellow" show="true" group="clothes">
+					<part name="clothes/burlap/yellow" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/burlap/yellow"/>
 						</subentities>
 					</part>
-					<part name="clothes/burlap/green" show="true" group="clothes">
+					<part name="clothes/burlap/green" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/burlap/green"/>
 						</subentities>
 					</part>
-					
-					
-					
-					
 					<part name="clothes/ragged" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/ragged"/>
@@ -123,12 +117,12 @@
 							<subentity index="1" material="/global/clothes/dress/fine"/>
 						</subentities>
 					</part>
-					<part name="clothes/sun" show="true" group="clothes">
+					<part name="clothes/sun" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/sun"/>
 						</subentities>
 					</part>
-					<part name="clothes/dark_rags" show="true" group="clothes">
+					<part name="clothes/dark_rags" show="false" group="clothes">
 						<subentities>
 							<subentity index="1" material="/global/clothes/dress/dark_rags"/>
 						</subentities>
@@ -212,7 +206,7 @@
 		<attachpoints>
 			<attachpoint name="right_hand_wield" bone="RMiddleRoot" />
 		</attachpoints>
-    </model>	
+	</model>
 		
 </models>
 

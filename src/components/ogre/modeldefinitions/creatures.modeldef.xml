@@ -314,15 +314,18 @@
 			</submodel>
 		</submodels>
 	</model>	
-	<model name="skull">
+	<model name="skull" usescaleof="width" showcontained="true">
+		<translate x="0.000000" y="0.000000" z="0.000000" />
+		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="junkyard/models/skeleton/skull.mesh" >
+			<submodel mesh="junkyard/models/skeleton/skull.mesh">
 				<parts>
 					<part name="main" show="true" />
 				</parts>
 			</submodel>
 		</submodels>
-	</model>	
+		<actions />
+	</model>
 	<model name="shin">
 		<submodels>
 			<submodel mesh="junkyard/models/skeleton/shin.mesh" >
@@ -423,8 +426,9 @@
 	</model>
 
 	
-	<model name="horse" usescaleof="none" showcontained="true">
-		<translate x="0.000000" y="2.200000" z="0.000000" />
+	<model name="horse" usescaleof="height" showcontained="true">
+		<translate x="0.000000" y="1.500000" z="0.000000" />
+		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
 			<submodel mesh="3d_objects/creatures/quadruped_v2/models/horse/Horse.mesh">
 				<parts>
@@ -444,5 +448,5 @@
 			</submodel>
 		</submodels>
 		<actions />
-    </model>
+	</model>
 </models>
