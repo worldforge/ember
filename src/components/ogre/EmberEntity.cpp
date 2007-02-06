@@ -167,7 +167,7 @@ void EmberEntity::synchronizeWithServer()
 
 void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
 {
-	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
+	EmberEntity* container = getEmberLocation();
 	if (container == 0) {
 		S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ") \n" )
 
@@ -315,6 +315,19 @@ void EmberEntity::checkVisibility(bool vis)
 
 void EmberEntity::setVisible(bool visible)
 {
+	///when entities are hidden, we detach them from the rendering scene graph altogether. this speeds up Ogre since it doesn't have to calculate visibility for nodes that are hidden anyway
+	if (!visible) {
+		if (getSceneNode()->getParent()) {
+			getSceneNode()->getParent()->removeChild(getSceneNode());
+		}
+	} else {
+		if (getLocation()) {
+			if (!getSceneNode()->getParent()) {
+				getEmberLocation()->getSceneNode()->addChild(getSceneNode());
+			}
+		}
+	}
+	
 	getSceneNode()->setVisible(visible && getLocation(), false);	
 }
 

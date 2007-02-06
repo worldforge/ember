@@ -123,6 +123,15 @@ EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& at
 void EmberPhysicalEntity::setVisible(bool visible)
 {
 	EmberEntity::setVisible(visible);
+// 	if (!visible) {
+// 		if (getScaleNode()->getParent()) {
+// 			mOgreNode->removeChild(getScaleNode());
+// 		}
+// 	} else {
+// 		if (!getScaleNode()->getParent()) {
+// 			mOgreNode->addChild(getScaleNode());
+// 		}
+// 	}
 	getScaleNode()->setVisible(visible && getLocation(), false);	
 	//getModel()->setVisible(visible);
 }
