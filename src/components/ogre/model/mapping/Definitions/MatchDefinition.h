@@ -64,6 +64,7 @@ public:
 	typedef std::vector<CaseDefinition> CaseStore;
 	
 	CaseStore& getCases();
+	const CaseStore& getCases() const;
 	
 protected:
 	CaseStore mCases;

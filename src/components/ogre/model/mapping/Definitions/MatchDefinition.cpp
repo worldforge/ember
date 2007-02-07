@@ -36,6 +36,11 @@ MatchDefinition::CaseStore& MatchDefinition::getCases()
 	return mCases;
 }
 
+const MatchDefinition::CaseStore& MatchDefinition::getCases() const 
+{ 
+	return mCases;
+}
+
 }
 
 }

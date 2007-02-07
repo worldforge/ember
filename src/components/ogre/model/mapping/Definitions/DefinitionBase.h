@@ -53,6 +53,11 @@ public:
 	Returns a map of arbitrary properties.
 	*/
 	PropertiesMap& getProperties();
+	
+	/**
+	Returns a map of arbitrary properties.
+	*/
+	const PropertiesMap& getProperties() const;
 
 	/**
 	Gets the type of this definition.

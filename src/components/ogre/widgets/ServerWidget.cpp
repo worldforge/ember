@@ -25,6 +25,8 @@
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/TypeService.h>
 #include "services/EmberServices.h"
 
 #include "Widget.h"
@@ -46,6 +48,15 @@
 #include <elements/CEGUITabControl.h> 
 
 #include "ModelRenderer.h"
+
+#include "components/ogre/model/mapping/ModelMappingManager.h"
+#include "components/ogre/model/mapping/ModelMapping.h"
+#include "components/ogre/model/mapping/Definitions/ModelMappingDefinition.h"
+#include "components/ogre/model/mapping/Definitions/MatchDefinition.h"
+#include "components/ogre/model/mapping/Definitions/CaseDefinition.h"
+#include "components/ogre/model/mapping/Definitions/ActionDefinition.h"
+#include "components/ogre/model/mapping/EmberModelMappingManager.h"
+
 
 namespace EmberOgre {
 
@@ -310,11 +321,30 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 		mNewChar.type = type;
 		
 		if (mModelPreviewRenderer) {
-			///update the model preview window
-			mModelPreviewRenderer->showModel(type);
-			//mModelPreviewRenderer->showFull();
-			///we want to zoom in a little
-			mModelPreviewRenderer->setCameraDistance(0.7);
+		
+			///we need to get the model mapping definition for this type
+			///once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
+			Eris::TypeService* typeService = Ember::EmberServices::getSingletonPtr()->getServerService()->getConnection()->getTypeService();
+ 			Eris::TypeInfo* erisType = typeService->getTypeByName(type);
+ 			if (erisType) {
+				const Model::Mapping::Definitions::ModelMappingDefinition* definition = Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
+				if (definition) {
+					Model::Mapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
+					if (first != definition->getRoot().getCases().end()) {
+						const Model::Mapping::Definitions::CaseDefinition& firstCase = *first;
+						if (firstCase.getActions().begin() != firstCase.getActions().end()) {
+							const Model::Mapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
+							if (firstAction.getType() == "display-model") {
+								///update the model preview window
+								mModelPreviewRenderer->showModel(firstAction.getValue());
+								//mModelPreviewRenderer->showFull();
+								///we want to zoom in a little
+								mModelPreviewRenderer->setCameraDistance(0.7);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	updateNewCharacter();

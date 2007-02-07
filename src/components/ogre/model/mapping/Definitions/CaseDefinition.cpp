@@ -35,7 +35,17 @@ CaseDefinition::MatchStore& CaseDefinition::getMatches()
 	return mMatches;
 }
 
+const CaseDefinition::MatchStore& CaseDefinition::getMatches() const
+{ 
+	return mMatches;
+}
+
 CaseDefinition::ActionStore& CaseDefinition::getActions() 
+{ 
+	return mActions;
+}
+
+const CaseDefinition::ActionStore& CaseDefinition::getActions() const
 { 
 	return mActions;
 }

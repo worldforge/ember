@@ -53,6 +53,11 @@ MatchDefinition& ModelMappingDefinition::getRoot()
 	return mRootMatch;
 }
 
+const MatchDefinition& ModelMappingDefinition::getRoot() const
+{ 
+	return mRootMatch;
+}
+
 }
 
 }

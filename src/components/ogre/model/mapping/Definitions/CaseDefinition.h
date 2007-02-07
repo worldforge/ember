@@ -63,7 +63,9 @@ public:
 	typedef std::vector<ActionDefinition> ActionStore;
 
 	MatchStore& getMatches();
+	const MatchStore& getMatches() const;
 	ActionStore& getActions();
+	const ActionStore& getActions() const;
 
 protected:
 	MatchStore mMatches;

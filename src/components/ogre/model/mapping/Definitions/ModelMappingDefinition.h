@@ -59,6 +59,7 @@ public:
     void setName(std::string name);
     
     MatchDefinition& getRoot();
+    const MatchDefinition& getRoot() const;
 protected:
 	MatchDefinition mRootMatch;
 	std::string mName;

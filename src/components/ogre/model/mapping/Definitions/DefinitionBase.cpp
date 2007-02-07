@@ -36,6 +36,11 @@ DefinitionBase::PropertiesMap& DefinitionBase::getProperties()
 	return mProperties; 
 }
 
+const DefinitionBase::PropertiesMap& DefinitionBase::getProperties() const 
+{ 
+	return mProperties; 
+}
+
 const std::string& DefinitionBase::getType() const 
 { 
 	return mType; 
