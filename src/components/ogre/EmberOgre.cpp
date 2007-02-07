@@ -166,7 +166,8 @@ mModelDefinitionManager(0),
 mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general"),
 mWindow(0),
 mMaterialEditor(0),
-mJesus(0)
+mJesus(0),
+mAvatar(0)
 {}
 
 EmberOgre::~EmberOgre()

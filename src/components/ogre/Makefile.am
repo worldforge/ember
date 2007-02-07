@@ -1,5 +1,5 @@
 SUBDIRS = environment model SceneManagers input widgets 				carpenter jesus \
-		ogreopcode scripting cegui sound manipulation terrain
+		ogreopcode scripting cegui sound manipulation terrain modeldefinitions
 
 #gamesdir = $(bindir)/games
 bin_PROGRAMS = ember.bin

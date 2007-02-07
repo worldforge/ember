@@ -3,13 +3,13 @@ METASOURCES = AUTO
 
 
 
-ceguifontsdir = $(datadir)/ember/media/gui/cegui/datafiles/fonts
-ceguiimagesetsdir = $(datadir)/ember/media/gui/cegui/datafiles/imagesets
-ceguilayoutsdir = $(datadir)/ember/media/gui/cegui/datafiles/layouts
-ceguischemesdir = $(datadir)/ember/media/gui/cegui/datafiles/schemes
-ceguiconfigdir = $(datadir)/ember/media/gui/cegui/datafiles/configs
-ceguilooknfeeldir = $(datadir)/ember/media/gui/cegui/datafiles/looknfeel
-ceguischemadir = $(datadir)/ember/media/gui
+ceguifontsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/fonts
+ceguiimagesetsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/imagesets
+ceguilayoutsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/layouts
+ceguischemesdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/schemes
+ceguiconfigdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/configs
+ceguilooknfeeldir = $(datadir)/ember/media/shared/gui/cegui/datafiles/looknfeel
+ceguischemadir = $(datadir)/ember/media/shared/gui
 
 
 dist_ceguifonts_DATA = datafiles/fonts/Font.xsd datafiles/fonts/tahoma-14.xml datafiles/fonts/tahoma-10.xml datafiles/fonts/tahoma-8.xml datafiles/fonts/tahoma.ttf datafiles/fonts/vera-sans-14.xml datafiles/fonts/vera-sans-10.xml datafiles/fonts/vera-sans-8.xml datafiles/fonts/Vera.ttf

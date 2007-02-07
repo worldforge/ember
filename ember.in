@@ -53,6 +53,7 @@ echo "According to my calculations Ember should be installed in $prefix"
 exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
 datadir=${prefix}/share/ember
+media_user_dir=${datadir}/media/user
 etcdir=${prefix}/etc/ember
 
 LD_LIBRARY=$prefix/lib/ember:$LD_LIBRARY
@@ -72,6 +73,8 @@ esac
 WFUT_BIN=$bindir/wfut-ember-bin
 WFUT_JAR=$datadir/WFUT.jar
 MEDIA_CHANNEL="ember-media-@MEDIA_VERSION@"
+media_dir="${homedata}/ember-media-@MEDIA_VERSION@"
+
 SERVER=http://amber.worldforge.org/WFUT/
 
 # Create dir if required 
@@ -94,6 +97,11 @@ else
 	fi
 fi
 
+if [ ! -d $media_dir ] ; then
+	echo "Copying dynamic data to user directory"
+	cp -a $media_user_dir $media_dir
+fi
+
 #Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
 echo @VERSION@ > $homedata/latest_version
 
@@ -102,7 +110,7 @@ XTERM=`which xterm`
 #the precompiled wfut is preferrable if available
 if test -x $WFUT_BIN; then
 	echo "Using precompiled WFUT"
-	echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
+	echo "Updating data from the server, this might take some time on a slow connection (circa 70 Mb of data)"
 	if [ $XTERM ] ; then
 		xterm -T "Downloading media..." -e $WFUT_BIN dest $homedata update $MEDIA_CHANNEL
 	else

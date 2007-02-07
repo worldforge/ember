@@ -26,16 +26,17 @@
 
 #include "OgreSetup.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 #ifdef WIN32
 	#include <SDL.h>
 	#include <SDL_syswm.h>
-	#include "services/EmberServices.h"
-	#include "services/config/ConfigService.h"
 #else 
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
+	#include "framework/binreloc.h"
 #endif
-#include "framework/binreloc.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 
 namespace EmberOgre {
@@ -53,10 +54,11 @@ OgreSetup::~OgreSetup()
 
 Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 {
-#ifdef __WIN32__
-		const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
 
-		mRoot = new Ogre::Root(sharePath + "\\plugins.cfg", "ogre.cfg", "ogre.log");
+	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+#ifdef __WIN32__
+
+	mRoot = new Ogre::Root(sharePath + "\\plugins.cfg", "ogre.cfg", "ogre.log");
 #else
 	if (loadOgrePluginsThroughBinreloc) {
 		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
@@ -71,7 +73,7 @@ Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_ParticleFX.so");
 		mRoot->loadPlugin(libDir + "/ember/OGRE/RenderSystem_GL.so");
 	} else {
-		mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "ogre.log");
+		mRoot = new Ogre::Root(sharePath + "/plugins.cfg", "ogre.cfg", "ogre.log");
 	}
 #endif
 	return mRoot;

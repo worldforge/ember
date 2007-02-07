@@ -8,18 +8,18 @@ dist-hook:
 	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.lua` | ( cd $(current); cd $(distdir); tar xf -))
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts/ 
-	mkdir -p $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/lua_scripts/ 
-	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts; tar xf -)
-	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.widget`) | (cd $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts; tar xf -)
-	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.layout`) | (cd $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts; tar xf -)
-	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.lua`) | (cd $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/lua_scripts; tar xf -)
+	mkdir -p $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts/ 
+	mkdir -p $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/lua_scripts/ 
+	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.xml`) | (cd $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts; tar xf -)
+	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.widget`) | (cd $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts; tar xf -)
+	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.layout`) | (cd $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts; tar xf -)
+	(cd $(top_srcdir)/src/components/ogre/widgets; tar cf - `find . -name \*.lua`) | (cd $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/lua_scripts; tar xf -)
 
 uninstall-local:
-	find $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts/ -name  \*.xml | xargs rm
-	find $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts/ -name  \*.widget | xargs rm
-	find $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/layouts/ -name  \*.layout | xargs rm
-	find $(DESTDIR)$(datadir)/ember/media/gui/cegui/datafiles/lua_scripts/ -name  \*.lua | xargs rm
+	find $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts/ -name  \*.xml | xargs rm
+	find $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts/ -name  \*.widget | xargs rm
+	find $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts/ -name  \*.layout | xargs rm
+	find $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/lua_scripts/ -name  \*.lua | xargs rm
 
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
