@@ -106,15 +106,22 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 	CEGUI::Window* chatWindow;
 	ActiveChatWindowMap::iterator I = mActiveChatWindows.find(entity->getId());
 	if (I == mActiveChatWindows.end()) {
-		//there is no chat window for this entity, let's create one
-		chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
-		getMainSheet()->addChildWindow(chatWindow);
+		Ogre::Vector3 entityWorldCoords = entity->getWorldBoundingBox(true).getCenter();
+		Ogre::Vector3 cameraCoords = EmberOgre::getSingletonPtr()->getMainCamera()->getCamera()->getDerivedPosition();
+		Ogre::Vector3 diff = entityWorldCoords - cameraCoords;
 		
-		ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, entity, mWindowManager);
+		if (diff.length() <= distanceShown) {
 		
-		mActiveChatWindows[entity->getId()] = activeWindow;
-		
-		mActiveChatWindows[entity->getId()]->updateText(line);
+			//there is no chat window for this entity, let's create one
+			chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
+			getMainSheet()->addChildWindow(chatWindow);
+			
+			ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, entity, mWindowManager);
+			
+			mActiveChatWindows[entity->getId()] = activeWindow;
+			
+			mActiveChatWindows[entity->getId()]->updateText(line);
+		}
 	} else {
 		I->second->updateText(line);
 	}
