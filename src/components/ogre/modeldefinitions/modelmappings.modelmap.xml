@@ -491,9 +491,15 @@
 	
 <!-- edibled -->
 	<automodelmapping name="ham" />
-	<automodelmapping name="bread" />
 	<automodelmapping name="breadslice" />
 	<automodelmapping name="bread_cut" />
+	<modelmapping name="bread">
+		<entitymatch>
+			<case equals="bread|loaf">
+				<action type="display-model">bread</action>
+			</case>
+		</entitymatch>
+	</modelmapping>	
 
 	
 </modelmappings>
