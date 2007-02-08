@@ -284,12 +284,13 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.12 \
- varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.4 atlascpp-0.6 >= 0.5.98],
+ varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.5 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.5],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
 	],
- AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS)
+ AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
+Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.)
 )
 # AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"

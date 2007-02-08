@@ -1,5 +1,9 @@
 2007-02-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* configure.ac: added a more helpful message when wf libs aren't found
+
+2007-02-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* WFUT.jar: update to 1.1
 	* ember.in: various fixes to the script
 	* make_dist_media.sh.in: various fixes to the script
