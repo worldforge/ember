@@ -110,7 +110,7 @@ XTERM=`which xterm`
 #the precompiled wfut is preferrable if available
 if test -x $WFUT_BIN; then
 	echo "Using precompiled WFUT"
-	echo "Updating data from the server, this might take some time on a slow connection (circa 70 Mb of data)"
+	echo "Updating data from the server."
 	if [ $XTERM ] ; then
 		xterm -T "Downloading media..." -e $WFUT_BIN dest $homedata update $MEDIA_CHANNEL
 	else
@@ -122,15 +122,11 @@ else
 	if [ $JAVA ] ; then
 		# Update
 		echo "Using Java WFUT"
-# 		echo "Updating data from the server, this might take some time on a slow connection (circa 30 Mb of data)"
 		if [ $XTERM ] ; then
 			xterm -T "Downloading media..." -e $JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
 		else
 			$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
 		fi
-	else
-	echo "Java not found in path. Updater cannot be run. For now, that means that you won't get the media necessary, so I will quit right now. In the future this dependecy on java will disappear though."
-	exit
 	fi
 fi
 

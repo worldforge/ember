@@ -60,40 +60,7 @@ cd ${user_dir}
 
 mkdir -p ${user_dir}/modeldefinitions
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar xf -)
-cd ${original_me# mkdir -p ${shared_dir}/common
-# cd ${shared_dir}
-# #try to get the textures needed
-# #don't include lines starting with "/"
-# grep -rIE --no-filename "^[^/].*texture 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/texture 3d_/3d_/g' > common_textures.list
-# grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap 3d_/3d_/g' >> common_textures.list
-# 
-# 
-# #first copy all textures
-# cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures.list ` | ( cd ${shared_dir}/common; tar xf -)
-# 
-# #then convert them to a little lower smaller
-# for filename in `cat ${shared_dir}/common_textures.list `
-# do
-# 	#'512x512>' will only convert if the image is larger in any dimension
-# 	convert ${shared_dir}/common/$filename -adaptive-resize '512x512>' ${shared_dir}/common/$filename
-# 	echo "Converted $filename to max 512x512"
-# done
-# 
-# #copy all meshes in use
-# cd ${shared_dir}
-# grep -orIE --no-filename "mesh=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > common_meshes.list
-# grep -orIE --no-filename "mesh=\"junk.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
-# grep -orIE --no-filename "mesh=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
-# grep -orIE --no-filename "mesh=\"junk.*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
-# cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar xf -)
-# mkdir -p ${shared_dir}/models
-# cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar xf -)
-# #it's harder to find out what skeletons are used, so we'll just copy them all
-# cd ${original_media} ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}; tar xf -)
-# 
-# mkdir -p ${shared_dir}/sounds
-# cd ${original_media}/sounds; tar cf - `find . -iname \*.wav` | ( cd ${shared_dir}/sounds; tar xf -)
-dia}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar xf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar xf -)
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar xf -)
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar xf -)
 

@@ -1,5 +1,11 @@
 2007-02-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* WFUT.jar: update to 1.1
+	* ember.in: various fixes to the script
+	* make_dist_media.sh.in: various fixes to the script
+
+2007-02-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/model/mapping/Definitions/CaseDefinition.cpp, src/components/ogre/model/mapping/Definitions/CaseDefinition.h, src/components/ogre/model/mapping/Definitions/DefinitionBase.cpp, src/components/ogre/model/mapping/Definitions/DefinitionBase.h, src/components/ogre/model/mapping/Definitions/MatchDefinition.cpp, src/components/ogre/model/mapping/Definitions/MatchDefinition.h, src/components/ogre/model/mapping/Definitions/ModelMappingDefinition.cpp, src/components/ogre/model/mapping/Definitions/ModelMappingDefinition.h: added const accessors
 	* src/components/ogre/widgets/ServerWidget.cpp: use the model mapping framework to get the model to show
 
