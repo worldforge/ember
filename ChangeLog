@@ -1,4 +1,8 @@
-2007-02-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+2007-02-08 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/Makefile.am: fixed uninstall problems
+
+2007-02-08 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* configure.ac: added a more helpful message when wf libs aren't found
 
