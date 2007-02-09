@@ -1,5 +1,9 @@
 2007-02-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/model/AnimationSet.cpp: make sure that we don't add time to an animation with zero length, since this will trigger an assert in ogre
+
+2007-02-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/cegui/Makefile.am: removed some old files
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeRenderable.cpp: We've changed the default height of invalid segments to -1, so we'll have to update the LOD calculation fix too
 

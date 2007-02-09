@@ -100,7 +100,10 @@ void Animation::addTime(Ogre::Real timeSlice)
 {
 	AnimationPartSet::iterator I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
-		I->state->addTime(timeSlice);
+		///we'll get an assert error if we try to add time to an animation with zero length
+		if (I->state->getLength() != 0) {
+			I->state->addTime(timeSlice);
+		}
 	}
 }
 
@@ -108,7 +111,10 @@ void Animation::setTime(Ogre::Real time)
 {
 	AnimationPartSet::iterator I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
-		I->state->setTimePosition(time);
+		///we'll get an assert error if we try to add time to an animation with zero length
+		if (I->state->getLength() != 0) {
+			I->state->setTimePosition(time);
+		}
 	}
 }
 
