@@ -928,12 +928,12 @@ namespace Ogre
 
                         t1.redefine(v1, v3, v2);
                         t2.redefine(v2, v3, v4);
-                        //only update the distance if none of the heights are 0.0
+                        //only update the distance if none of the heights are -1.0
                         //this is to allow for invalid Mercator::Segments without messing up the tricount
-                        //the reason is that mercator defines the height of all invald segments to 0.0
+                        //the reason is that Ember will set the height for all invalid segments to -1
                         //if such a segment was to be next to a normal segment, the delta would be way to high, 
                         //resulting in a tile which was always in LOD 0
-                        isInValidVertex = v1.y == 0.0 || v2.y == 0.0 || v3.y == 0.0 || v4.y == 0.0;
+                        isInValidVertex = v1.y == -1.0 || v2.y == -1.0 || v3.y == -1.0 || v4.y == -1.0;
                     }
 
 					if (!isInValidVertex) {
