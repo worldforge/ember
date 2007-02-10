@@ -170,6 +170,7 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 
 		
 	}
+	return true;
 }
 		
 		

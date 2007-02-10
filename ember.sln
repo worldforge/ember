@@ -3,27 +3,31 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ember", "ember.vcproj", "{0
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Atlas", "..\..\libs\Atlas-C++-0.5.96\Atlas.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EmberSetup", "..\EmberSetup\EmberSetup.vdproj", "{DCD56731-247C-4569-9C2C-BC0ACBBF340E}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wfmath", "..\..\libs\wfmath-0.3.4\wfmath.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Atlas", "..\..\libs\Atlas-C++-0.6.0\Atlas.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skstream", "..\..\libs\skstream-0.3.3\skstream.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "varconf", "..\..\libs\varconf-0.6.5\varconf.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eris", "..\..\libs\eris-1.3.7\eris.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eris", "..\..\libs\eris-1.3.12\eris.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "varconf", "..\..\libs\varconf-0.6.3\varconf.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skstream", "..\..\libs\skstream-0.3.6\skstream.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mercator", "..\..\libs\mercator-0.2.4\mercator.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mercator", "..\..\libs\mercator-0.2.5\mercator.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wfmath", "..\..\libs\wfmath-0.3.5\wfmath.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -32,11 +36,15 @@ Global
 		Debug = Debug
 		Release = Release
 	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Debug.ActiveCfg = Debug|Win32
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Debug.Build.0 = Debug|Win32
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Release.ActiveCfg = Release|Win32
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Release.Build.0 = Release|Win32
+		{DCD56731-247C-4569-9C2C-BC0ACBBF340E}.Debug.ActiveCfg = Debug
+		{DCD56731-247C-4569-9C2C-BC0ACBBF340E}.Release.ActiveCfg = Release
 		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Debug.ActiveCfg = Debug|Win32
 		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Debug.Build.0 = Debug|Win32
 		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Release.ActiveCfg = Release|Win32

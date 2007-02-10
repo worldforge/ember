@@ -1,3 +1,16 @@
+2007-02-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp: added a little bit more informative exception message
+	* src/components/ogre/environment/caelum/src/SkyDome.cpp, src/components/ogre/environment/CaelumEnvironment.cpp: added extra checks for fragment and vertex programs
+	* src/components/ogre/terrain/TerrainEditor.cpp: use correct type
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: write to log before trying to create texture
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h: fixed class/struct inconsistency
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp: use correct type
+	* src/components/ogre/jesus/XMLJesusSerializer.cpp: return statement required
+	* src/services/config/ConfigService.cpp: MSVC likes std::string better
+	* Ember.nsi: added Nullsoft installer file for Win32
+	* Ember.bat: updated batch file
+
 2007-02-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/model/AnimationSet.cpp: make sure that we don't add time to an animation with zero length, since this will trigger an assert in ogre

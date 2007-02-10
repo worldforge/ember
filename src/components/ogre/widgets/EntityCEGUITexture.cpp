@@ -41,8 +41,8 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 : mWidth(width), mHeight(height), mCamera(0), mRootNode(0), mSceneManager(0), mRenderTexture(0)
 {
 
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, imageSetName + "_sceneManager");
 	S_LOG_VERBOSE("Creating new EntityCEGUITexture for imageset " << imageSetName  << " with w:" << mWidth << " h:" << mHeight);
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, imageSetName + "_sceneManager");
 
 	mRootNode = mSceneManager->getRootSceneNode();
 	

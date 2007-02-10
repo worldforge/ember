@@ -521,7 +521,7 @@ void EmberOgre::preloadMedia(void)
 		try {
 			Ogre::TextureManager::getSingleton().load(*I, "General");
 		} catch (const Ogre::Exception& e) {
-			S_LOG_FAILURE( "Error when loading texture " << *I );
+			S_LOG_FAILURE( "Error when loading texture " << *I << ".\n\rError message: " << e.getDescription());
 		}
 	}	
 	

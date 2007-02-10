@@ -66,7 +66,7 @@ void ConnectorBase::connect(const std::string & luaMethod)
 template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase::callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3)
 {
 	try {
-		size_t numberOfArguments = mLuaTypeNames.size();
+		int numberOfArguments = static_cast<int>(mLuaTypeNames.size());
 		lua_State* state = EmberOgre::LuaConnector::getState();
 		
 		lua_getglobal(state, mLuaMethod.c_str());

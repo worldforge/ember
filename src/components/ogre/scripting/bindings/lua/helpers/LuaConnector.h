@@ -43,8 +43,8 @@ class Task;
 namespace EmberOgre {
 
 class EmberEntity;
-class EntityPickResult;
-class MousePickerArgs;
+struct EntityPickResult;
+struct MousePickerArgs;
 class EmberEntityFactory;
 class AvatarEmberEntity;
 class Jesus;

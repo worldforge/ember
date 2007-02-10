@@ -44,11 +44,15 @@ class CloudsUpdater : public caelum::CaelumListener {
 			if (tech) {
 				Ogre::Pass* pass = tech->getPass(0);
 				if (pass) {
-					pass->getVertexProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
-					pass->getFragmentProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
-					pass->getFragmentProgramParameters ()->setNamedConstant ("sunColour", sys->getSun ()->getSunColour ());
 					mTime += e.timeSinceLastFrame * 30;
-					pass->getFragmentProgramParameters ()->setNamedConstant ("time", mTime);
+					if (pass->hasVertexProgram()) {
+						pass->getVertexProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
+					}
+					if (pass->hasFragmentProgram()) {
+						pass->getFragmentProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
+						pass->getFragmentProgramParameters ()->setNamedConstant ("sunColour", sys->getSun ()->getSunColour ());
+						pass->getFragmentProgramParameters ()->setNamedConstant ("time", mTime);
+					}
 					return true;
 				}
 			}

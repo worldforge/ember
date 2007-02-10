@@ -574,7 +574,7 @@ void TerrainEditor::updateEntityPositions(const std::set<TerrainPage*>& pagesToU
 void TerrainEditor::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
 {
 	entity->adjustPosition();
-	for (int i = 0; i < entity->numContained(); ++i) {
+	for (unsigned int i = 0; i < entity->numContained(); ++i) {
 		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
 		updateEntityPosition(containedEntity, pagesToUpdate);
 	}
