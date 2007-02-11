@@ -39,7 +39,7 @@ AnimationSet::~AnimationSet()
 
 void AnimationSet::addTime(Ogre::Real timeSlice)
 {
-	bool discardThis;
+	static bool discardThis;
 	addTime(timeSlice, discardThis);
 }
 
@@ -49,24 +49,30 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 	if (mAnimations.size() > 0) {
 		continueAnimation = true;
 		Animation* animation = &mAnimations[mCurrentAnimationSetIndex];
-		///see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
-		if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * animation->getIterations()) {
-			animation->setEnabled(false);
-			mAccumulatedTime = 0;
-			if (mAnimations.size() > (mCurrentAnimationSetIndex + 1)) {
-				++mCurrentAnimationSetIndex;
-				continueAnimation = true;
-			} else {
-				mCurrentAnimationSetIndex = 0;
-				continueAnimation = false;
-			}
-			animation = &mAnimations[mCurrentAnimationSetIndex];
-			animation->setTime(0);
-		}
-		
+		float animationLength = animation->getLengthOfOneIteration();
 		Ogre::Real calculatedTime = timeSlice * mSpeed;
-		animation->setEnabled(true);
-		animation->addTime(calculatedTime);
+		if (animationLength == 0) {
+			///Ogre will throw an assert exception if an animtion with zero length is activated
+		} else {
+			///see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
+			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * animation->getIterations()) {
+				animation->setEnabled(false);
+				mAccumulatedTime = 0;
+				if (mAnimations.size() > (mCurrentAnimationSetIndex + 1)) {
+					++mCurrentAnimationSetIndex;
+					continueAnimation = true;
+				} else {
+					mCurrentAnimationSetIndex = 0;
+					continueAnimation = false;
+				}
+				animation = &mAnimations[mCurrentAnimationSetIndex];
+				animation->setTime(0);
+			}
+			
+			Ogre::Real calculatedTime = timeSlice * mSpeed;
+			animation->setEnabled(true);
+			animation->addTime(calculatedTime);
+		}
 		mAccumulatedTime += calculatedTime;
 	}
 	
@@ -122,8 +128,11 @@ void Animation::setEnabled(bool state)
 {
 	AnimationPartSet::iterator I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
-		if (I->state->getEnabled() != state) {
-			I->state->setEnabled(state);
+		///we'll get an assert error if we try to enable an animation with zero length
+		if (I->state->getLength() != 0) {
+			if (I->state->getEnabled() != state) {
+				I->state->setEnabled(state);
+			}
 		}
 	}
 }
