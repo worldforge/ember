@@ -201,11 +201,16 @@ void SkyDome::updateSkyDomeMaterialTime (SkyColourModel *skyColourModel, float t
 	if (tech) {
 		Ogre::Pass* pass = tech->getPass(0);
 		if (pass) {
-			if (pass->hasVertexProgram() && pass->hasFragmentProgram()) {
-				skyColourModel->updateMaterial (pass->getFragmentProgramParameters (), 
-				pass->getVertexProgramParameters (),
-				time, sun ? sun->getSunDirection () : Ogre::Vector3::UNIT_Y);
+			Ogre::GpuProgramParametersSharedPtr vertexProgramParams, fragmentProgramParams;
+			if (pass->hasVertexProgram()) {
+				vertexProgramParams = pass->getVertexProgramParameters ();
 			}
+			if (pass->hasFragmentProgram()) {
+				fragmentProgramParams = pass->getFragmentProgramParameters ();
+			}
+			skyColourModel->updateMaterial (fragmentProgramParams, 
+				vertexProgramParams,
+				time, sun ? sun->getSunDirection () : Ogre::Vector3::UNIT_Y);
 		}
 	}
 }

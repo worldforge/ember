@@ -1,5 +1,9 @@
 2007-02-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/environment/caelum/src/SkyDome.cpp: fixed excessive checking for vertex and fragment programs
+
+2007-02-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/model/AnimationSet.cpp: Ogre throws an assert if an animation with zero length is activated, so don't allow that. 
 
 2007-02-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
