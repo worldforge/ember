@@ -56,13 +56,15 @@
 			</submodel>
 		</submodels>
 		<Actions>
-			<Action name="__movement_idle">
+<!--
+		<Action name="__movement_idle">
 				<animations>
 					<animation iterations="1">
 						<animationpart name="Stand" weight="1" />
 					</animation>
 				</animations>
 			</Action>
+-->
 			<Action name="__movement_walk">
 				<animations>
 					<animation iterations="1">
