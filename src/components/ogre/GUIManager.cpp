@@ -169,7 +169,7 @@ GUIManager::~GUIManager()
 /*	delete mGuiSystem;
 	mGuiSystem = 0;*/
 	
-	for (std::set<Widget*>::iterator I = mWidgets.begin(); I != mWidgets.end(); ++I) {
+	for (WidgetStore::iterator I = mWidgets.begin(); I != mWidgets.end(); ++I) {
 		delete *I;
 	}
 	
@@ -304,12 +304,15 @@ CEGUI::Window* GUIManager::getMainSheet() const
 
 void GUIManager::removeWidget(Widget* widget)
 {
-	mWidgets.erase(widget);
+	WidgetStore::iterator I = std::find(mWidgets.begin(), mWidgets.end(), widget);
+	if (I != mWidgets.end()) {
+		mWidgets.erase(I);
+	}
 }
 
 void GUIManager::addWidget(Widget* widget)
 {
-	mWidgets.insert(widget);
+	mWidgets.push_back(widget);
 }
 
 
@@ -339,8 +342,8 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	
 	
 	//iterate over all widgets and send them a frameStarted event
-	std::set<Widget*>::iterator I = mWidgets.begin();
-	std::set<Widget*>::iterator I_end = mWidgets.end();
+	WidgetStore::iterator I = mWidgets.begin();
+	WidgetStore::iterator I_end = mWidgets.end();
 	
 	for (; I != I_end; ++I) {
 		Widget* aWidget = *I;

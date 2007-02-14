@@ -67,6 +67,7 @@ public Ember::ConsoleObject
 {
 public:
 
+	typedef std::vector<Widget*> WidgetStore;
 
 	static const std::string SCREENSHOT;
 	static const std::string TOGGLEINPUTMODE;
@@ -235,7 +236,7 @@ protected:
 	/**
 	all loaded widgets are stored here
 	*/
-	std::set<Widget*> mWidgets;
+	WidgetStore mWidgets;
 	
 	std::vector<Ember::IScriptingProvider*> mScriptingProviders;
 
