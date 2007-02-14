@@ -1,3 +1,23 @@
+2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/ogre.cfg: default to full screen
+
+2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: make it a vector to prevent msvc from crashing
+
+2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/creatures.modeldef.xml: removed animation with zero length, even though we've now added checks in the code
+
+2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/ModelDefinitionManager.cpp: fix for MSVC crashes
+
+2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp: fix for black holes on ATI cards on windows
+
 2007-02-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/environment/caelum/src/SkyDome.cpp: fixed excessive checking for vertex and fragment programs
