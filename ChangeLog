@@ -1,5 +1,9 @@
 2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/input/Input.cpp: on windows we need to let the os have some time to do proper input event gathering. This will prevent random input lockups.
+
+2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/ogre.cfg: default to full screen
 
 2007-02-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

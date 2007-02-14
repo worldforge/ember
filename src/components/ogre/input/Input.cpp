@@ -295,6 +295,10 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 
 void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 {
+#if __WIN32__
+	//on windows, we need to let the os have some time to do input gathering
+	SDL_Delay(1);
+#endif
   SDL_Event event;
     while( SDL_PollEvent( &event ) ){
         switch( event.type ){
