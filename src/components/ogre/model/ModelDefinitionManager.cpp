@@ -148,9 +148,13 @@ Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogr
 
 const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 {
-	//std::vector<std::string> meshes;
-	const Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
-	return *meshesVector;
+	std::vector<std::string> meshes;
+	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
+	for (Ogre::StringVector::iterator I = meshesVector->begin(); I != meshesVector->end(); ++I) {
+		meshes.push_back(std::string(*I));
+	}
+	meshesVector.setNull();
+	return meshes;
 }
 
 bool ModelDefinitionManager::getShowModels() const
