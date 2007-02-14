@@ -126,6 +126,9 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 //	window->addListener (mCaelumSystem->createStarfield ("Starfield.jpg"));
 	mCaelumSystem->getStarfield ()->setInclination (::Ogre::Degree (13));
 
+	mCaelumSystem->getSkyDome()->setFarRadius(10000);
+	mCaelumSystem->getStarfield()->setFarRadius(10000);
+
 	// Register all to the render window
 	window->addListener (mCaelumSystem);
 	
