@@ -99,7 +99,7 @@ fi
 
 if [ ! -d $media_dir ] ; then
 	echo "Copying dynamic data to user directory"
-	cp -a $media_user_dir $media_dir
+	cp -dpR $media_user_dir $media_dir
 fi
 
 #Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
@@ -112,7 +112,7 @@ if test -x $WFUT_BIN; then
 	echo "Using precompiled WFUT"
 	echo "Updating data from the server."
 	if [ $XTERM ] ; then
-		xterm -T "Downloading media..." -e $WFUT_BIN dest $homedata update $MEDIA_CHANNEL
+		xterm -T "Downloading media..." -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $WFUT_BIN dest $homedata update $MEDIA_CHANNEL"
 	else
 		$WFUT_BIN dest $homedata update $MEDIA_CHANNEL
 	fi
