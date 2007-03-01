@@ -1,5 +1,9 @@
 2007-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreMesh.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreSubMesh.pkg: updated bindings
+
+2007-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* NEWS: release of 0.4.2
 
 2007-02-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

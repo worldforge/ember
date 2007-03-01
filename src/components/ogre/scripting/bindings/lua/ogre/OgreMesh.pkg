@@ -121,7 +121,7 @@ namespace Ogre {
 
         /** Gets a pointer to the submesh indicated by the index.
         */
-        //Ogre::SubMesh* getSubMesh(unsigned short index) const;
+        Ogre::SubMesh* getSubMesh(unsigned short index) const;
 
 		/** Gets a SubMesh by name
 		*/
