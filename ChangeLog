@@ -1,3 +1,11 @@
+2007-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/IServerAdapter.h: removed inclusion of wgmath.h which always caused a compiler warning
+
+2007-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainEditor.h: added more comments
+
 2007-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreMesh.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreSubMesh.pkg: updated bindings

@@ -26,8 +26,6 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
-#include <wfmath/wfmath.h>
-#include <wfmath/polygon.h>
 #include <wfmath/point.h>
 
 namespace Eris
