@@ -149,26 +149,61 @@ private:
 // 
 // };
 
+/**
+A single editing action. This can affect one or many base points, and can be reversed (uncommitted).
+*/
 class TerrainEditAction
 {
 public:
 
 typedef std::vector<TerrainEditBasePointMovement> MovementStore;
-const MovementStore& getMovements() const {return mMovements;}
-MovementStore& getMovements() {return mMovements;}
+
+/**
+ * Gets all movements contained by this action.
+ * @return 
+ */
+inline const MovementStore& getMovements() const;
+
+/**
+ * Gets all movements contained by this action.
+ * @return 
+ */
+inline MovementStore& getMovements();
 
 private:
 
+/**
+ *Internal store of all movements contained by this action.
+ */
 MovementStore mMovements;
 
 };
 
+const TerrainEditAction::MovementStore& TerrainEditAction::getMovements() const { return mMovements;}
+TerrainEditAction::MovementStore& TerrainEditAction::getMovements() {return mMovements;}
+
+/**
+ *A single height movement of a base point.
+ */
 class TerrainEditBasePointMovement
 {
 public:
+
+/**
+ *Default ctor.
+ @param the vertical movement in meters
+ @param the affected position
+ */
 TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position);
 
+/**
+ * Gets the vertical movement in meters.
+ */
 Ogre::Real getVerticalMovement() const;
+
+/**
+ * Gets the affected position.
+ */
 const TerrainPosition& getPosition() const;
 
 private:
@@ -177,6 +212,7 @@ TerrainPosition mPosition;
 };
 
 /**
+	Provides terrain editing capabilities. Through this class base points in the terrain can be changed, and the changes sent to the server. The editor supports undo and redo functionality.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class TerrainEditor : public IInputAdapter
@@ -209,9 +245,25 @@ public:
 	void pickedBasePoint(BasePointUserObject* userObject);
     
     
+	/**
+	 *    Performs the suppied action on the client terrain. Note that no updates are sent to the server at this point.
+	 *    Undo operations are carried out by calls to this method, with the second parameter set to true.
+	 * @param the action to commit
+	 * @param if true, the action will be undone
+	 * @return 
+	 */
     void commitAction(const TerrainEditAction& action, bool reverse = false);
     
+    /**
+    * Emitted when a base point has been picked by the mouse.
+    * @param The UserObject of the picked base point.
+    */
     sigc::signal<void, BasePointUserObject*> EventPickedBasePoint;
+    
+    /**
+    * Emitted when an TerrainEditAction has been created.
+    * @param The newly created TerrainEditAction
+    */
     sigc::signal<void, const TerrainEditAction*> EventActionCreated;
     
 	/**
@@ -226,7 +278,9 @@ public:
 	 */
 	BasePointUserObject* getCurrentBasePointUserObject() const;
     
-    
+    /**
+     * Sends all changes to the server.
+     */
     void sendChangesToServer();
     
 	/**
@@ -235,6 +289,11 @@ public:
 	 */
 	void createAction(bool alsoCommit);	
 	
+	/**
+	 * Gets the user object at the specified terrain position. If no UserObject can be found, null is returned.
+	 * @param The position in the terrain to get the BasePointUserObject for.
+	 * @returns A valid BasePointUserObject or null if none found.
+	 */
 	BasePointUserObject* getUserObject(const TerrainPosition& terrainIndex);
 	
 	/**
@@ -268,8 +327,14 @@ private:
 
 	BasePointPickListener mPickListener;
 
+	/**
+	 * When moving an entity with the mouse, no other parts of Ember should get input. 
+	 */
 	void catchInput();
 
+	/**
+	 * When finished moving an entity with the mouse, normal input handling should resume. 
+	 */
 	void releaseInput();
 	BasePointUserObject* mCurrentUserObject;
 	typedef std::list<TerrainEditAction> ActionStore;
@@ -279,8 +344,14 @@ private:
 	
 	bool mVisible;
 	
+	/**
+	After a piece of terrain has been updated, the positions of the entities will need to be updated.
+	*/
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 
+	/**
+	Updates the position of a single entity.
+	*/
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 	
 };
