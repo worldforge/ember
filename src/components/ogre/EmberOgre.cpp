@@ -67,6 +67,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
+#include "services/wfut/WfutService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/binreloc.h" //this is needed for binreloc functionality
@@ -132,6 +133,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreSetup.h"
 
 #include "manipulation/MaterialEditor.h"
+#include "MediaUpdater.h"
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
@@ -332,7 +334,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 {
 	S_LOG_INFO("Compiled against ogre version " << OGRE_VERSION);
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 
 	checkForConfigFiles();
 
@@ -356,7 +358,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	ogreResourceLoader.initialize();
 	
 	///check if we should preload the media
-	bool preloadMedia = Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "preloadmedia");
+	bool preloadMedia = Ember::EmberServices::getSingleton().getConfigService()->itemExists("media", "preloadmedia") && (bool)Ember::EmberServices::getSingleton().getConfigService()->getValue("media", "preloadmedia");
+	bool useWfut = configSrv->itemExists("wfut", "enabled") && (bool)configSrv->getValue("wfut", "enabled");
 
 
 	bool carryOn = ogreSetup.configure();
@@ -389,12 +392,28 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;
-	loadingBar.start(mWindow, 2, (preloadMedia ? 2 : 0),  0.7);
+	
+	LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
+	loadingBar.addSection(&wfutSection);
+	WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
+	
+	LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
+	loadingBar.addSection(&resourceGroupSection);
+	unsigned int numberOfSections = ogreResourceLoader.numberOfSections() - 1; ///remove bootstrap since that's already loaded
+	ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
+	
+	loadingBar.start(mWindow);
 	
 	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
 	mSceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_OVERLAY);
 	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_INCLUDE);
+	
+	if (useWfut) {
+		S_LOG_INFO("Updating media.");
+		MediaUpdater updater;
+		updater.performUpdate();
+	}
 	
 	///create the collision manager
 	new OgreOpcode::CollisionManager(mSceneMgr);
@@ -494,9 +513,9 @@ EmberEntity* EmberOgre::getEmberEntity(const std::string & eid) const
 
 void EmberOgre::checkForConfigFiles()
 {
-	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
+	chdir(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
 
-	const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
+	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
 	///make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
@@ -508,7 +527,7 @@ void EmberOgre::preloadMedia(void)
 {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 	
 
 	std::vector<std::string> shaderTextures;
@@ -539,13 +558,13 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::setupJesus()
 {
-	const std::string datadir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory();
+	const std::string datadir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory();
 
 	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
 	mJesus = new Jesus(carpenter);
 	XMLJesusSerializer serializer(mJesus);
 
-	std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/blockspec");
+	std::string dir(Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blockspec");
 
 	std::string filename;
 
@@ -560,7 +579,7 @@ void EmberOgre::setupJesus()
 		}
 	}
 	//load all buildingblockspecs
-	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
+	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
 		{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -570,7 +589,7 @@ void EmberOgre::setupJesus()
 		}
 	}
 	//load all modelmappings
-	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
+	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
 	{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -581,7 +600,7 @@ void EmberOgre::setupJesus()
 	}
 	
 	//load all global blueprints
-	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
+	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
 	{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -599,7 +618,7 @@ void EmberOgre::setupJesus()
 		}
 	}
 	//load all local blueprints
-	dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "carpenter/blueprints";
+	dir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "carpenter/blueprints";
 	{
 		oslink::directory osdir(dir);
 		while (osdir) {
@@ -632,7 +651,7 @@ void EmberOgre::createScene(void)
 void EmberOgre::Server_GotView(Eris::View* view)
 {
 	mWorldView = view;
-	mEmberEntityFactory = new EmberEntityFactory(view, mTerrainGenerator, Ember::EmberServices::getSingletonPtr()->getServerService()->getConnection()->getTypeService());
+	mEmberEntityFactory = new EmberEntityFactory(view, mTerrainGenerator, Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
 }
 
 EmberEntity* EmberOgre::getEntity(const std::string & id) const
@@ -728,18 +747,18 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 	std::cout << "Initializing Ember services" << std::endl;
 
 	new Ember::EmberServices();
-	Ember::LoggingService *logging = Ember::EmberServices::getSingletonPtr()->getLoggingService();
+	Ember::LoggingService *logging = Ember::EmberServices::getSingleton().getLoggingService();
 	
 	/// Initialize the Configuration Service
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->start();
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->setPrefix(prefix);
+	Ember::EmberServices::getSingleton().getConfigService()->start();
+	Ember::EmberServices::getSingleton().getConfigService()->setPrefix(prefix);
 	if (homeDir != "") {
-		Ember::EmberServices::getSingletonPtr()->getConfigService()->setHomeDirectory(homeDir);
+		Ember::EmberServices::getSingleton().getConfigService()->setHomeDirectory(homeDir);
 		std::cout << "Setting home directory to " << homeDir << std::endl;
 	}
 	
 	///output all logging to ember.log
-	std::string filename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/ember.log");
+	std::string filename(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ember.log");
 	static std::ofstream outstream(filename.c_str());
 	
 	///write to the log the version number
@@ -759,7 +778,7 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 
 
 	/// Change working directory
-	const std::string& dirName = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory();
+	const std::string& dirName = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
@@ -771,39 +790,40 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 	}
 	
 	
-	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
+	chdir(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
 
-	const std::string& sharePath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory());
+	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
 	///make sure that there are files 
 	///assureConfigFile("ember.conf", sharePath);
 
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->loadSavedConfig("ember.conf");
+	Ember::EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
 
 #ifndef WIN32
 	/// Initialize the SoundService
-	if (Ember::EmberServices::getSingletonPtr()->getSoundService()->start() == Ember::Service::OK) {
-		Ember::EmberServices::getSingletonPtr()->getSoundService()->registerSoundProvider(new OgreSoundProvider());
+	if (Ember::EmberServices::getSingleton().getSoundService()->start() == Ember::Service::OK) {
+		Ember::EmberServices::getSingleton().getSoundService()->registerSoundProvider(new OgreSoundProvider());
 	}
 #endif
 
 	/// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing MetaServer Service");
 
- 	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->start();
+ 	Ember::EmberServices::getSingleton().getMetaserverService()->start();
 	///hoho, we get linking errors if we don't do some calls to the service
-	Ember::EmberServices::getSingletonPtr()->getMetaserverService()->getMetaServer();
+	Ember::EmberServices::getSingleton().getMetaserverService()->getMetaServer();
 	
 	/// Initialize the Server Service
 	S_LOG_INFO("Initializing Server Service");
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
+	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 	
-	Ember::EmberServices::getSingletonPtr()->getServerService()->start();
+	Ember::EmberServices::getSingleton().getServerService()->start();
 
- 	Ember::EmberServices::getSingletonPtr()->getScriptingService()->start();
+ 	Ember::EmberServices::getSingleton().getScriptingService()->start();
 
+ 	Ember::EmberServices::getSingleton().getWfutService()->start();
 
 }
 

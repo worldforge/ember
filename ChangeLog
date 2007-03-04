@@ -1,6 +1,42 @@
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp: use the MediaUpdater to get new media from wfut, also updated the loading bar usage
+	
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/Makefile.am: update for added files
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/LoadingBar.h: separated the gui code from the loading bar logic and allow for a more modular approach with different sections
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/MediaUpdater.cpp, src/components/ogre/MediaUpdater.h: added new class responsible for initiating wfut updates
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: added settings for wfut
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: bump version and added dependency on libwfut
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/wfut/Makefile.am, src/services/wfut/WfutService.cpp, src/services/wfut/WfutService.h, src/services/wfut/WfutSession.cpp, src/services/wfut/WfutSession.h, src/services/Makefile.am: added a service which interacts with the libwfut library, to allow for media updates
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreResourceLoader.cpp, src/components/ogre/OgreResourceLoader.h: added method for getting the number of sections
+
+2007-03-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/EmberServices.cpp, src/services/EmberServices.h: refactored how the services were handled, removing the need to check for null all the time, and added automatic destruction
+
 2007-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
-	* src/services/server/IServerAdapter.h: removed inclusion of wgmath.h which always caused a compiler warning
+	* src/services/server/IServerAdapter.h: removed inclusion of wfmath.h which always caused a compiler warning
 
 2007-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
