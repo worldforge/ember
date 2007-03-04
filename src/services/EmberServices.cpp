@@ -29,46 +29,37 @@
 #include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
 #include "scripting/ScriptingService.h"
+#include "wfut/WfutService.h"
 
 
 #include "EmberServices.h"
 
 namespace Ember{
 
+
 template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = 0;
 
 
   EmberServices::~EmberServices()
   {
-    // TODO: Free any allocated resources here.
-    delete myConfigService;
-    //delete myGuiService;
-     delete myMetaserverService;
-    delete myServerService;
-    delete myScriptingService;
   }
 
 
-  TestService* EmberServices::getTestService()
-  {
-    // TODO
-    return NULL;
-  }
+//   TestService* EmberServices::getTestService()
+//   {
+//     // TODO
+//     return NULL;
+//   }
 
   LoggingService* EmberServices::getLoggingService()
   {
     return Ember::LoggingService::getInstance();
   }
-  
-  ConfigService* EmberServices::getConfigService()
-  {
-    if (myConfigService == NULL)
-      {
-	myConfigService = new Ember::ConfigService();
-      }
-    
-    return myConfigService;
-  }
+
+	ConfigService* EmberServices::getConfigService()
+	{
+		return mConfigService->getService();
+	}
 
 /*  InputService* EmberServices::getInputService()
   {
@@ -85,42 +76,41 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
     return myGuiService;
   }
 */
-  MetaserverService* EmberServices::getMetaserverService()
-  {
-    if (myMetaserverService == NULL)
-      myMetaserverService = new Ember::MetaserverService();
-    return myMetaserverService;
-  }
+	MetaserverService* EmberServices::getMetaserverService()
+	{
+		return mMetaserverService->getService();
+	}
   
-  ServerService* EmberServices::getServerService()
-  {
-    if (myServerService == NULL)
-      myServerService = new Ember::ServerService();
-    return myServerService;
-  }
+	ServerService* EmberServices::getServerService()
+	{
+		return mServerService->getService();
+	}
 
 	SoundService* EmberServices::getSoundService()
 	{
-		if (mySoundService == NULL)
-		mySoundService = new Ember::SoundService();
-		return mySoundService;
+		return mSoundService->getService();
 	}
 
-  ScriptingService* EmberServices::getScriptingService()
-  {
-    if (myScriptingService == NULL)
-      myScriptingService = new Ember::ScriptingService();
-    return myScriptingService;
-  }
+	ScriptingService* EmberServices::getScriptingService()
+	{
+		return mScriptingService->getService();
+	}
+  
+	Ember::WfutService* EmberServices::getWfutService()
+	{
+		return mWfutService->getService();
+	}
+  
 
-  EmberServices::EmberServices()
-  {
-    myConfigService = NULL;
-    //myGuiService = NULL;
-     myMetaserverService = NULL;
-    myServerService = NULL;
-    mySoundService = NULL;
-    myScriptingService = NULL;
-  }
+	EmberServices::EmberServices()
+	: mWfutService(std::auto_ptr<ServiceContainer<WfutService> >(new ServiceContainer<WfutService>()) )
+	, mConfigService(std::auto_ptr<ServiceContainer<ConfigService> >(new ServiceContainer<ConfigService>()) )
+	, mScriptingService(std::auto_ptr<ServiceContainer<ScriptingService> >(new ServiceContainer<ScriptingService>()) )
+	, mSoundService(std::auto_ptr<ServiceContainer<SoundService> >(new ServiceContainer<SoundService>()) )
+	, mServerService(std::auto_ptr<ServiceContainer<ServerService> >(new ServiceContainer<ServerService>()) )
+	, mMetaserverService(std::auto_ptr<ServiceContainer<MetaserverService> >(new ServiceContainer<MetaserverService>()) )
+	//   , mInputService(std::auto_ptr<ServiceContainer<InputService> >(new ServiceContainer<InputService>()) )
+	{
+	}
 
 }

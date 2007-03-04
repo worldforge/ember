@@ -20,6 +20,7 @@
 #define DIME_SERVICES_H
 
 #include "framework/Singleton.h"
+#include <memory>
 
 
 namespace Ember {
@@ -34,6 +35,84 @@ namespace Ember {
   class SoundService;
   class TestService;
   class ScriptingService;
+  class WfutService;
+  
+
+
+
+template <typename T>
+  class UninitializedInnerServiceContainer;
+  
+template <typename T>
+class IInnerServiceContainer
+{
+public:
+	virtual T* getService() = 0;
+
+};
+
+/**
+A simple container for a service. Upon the first call to getService(), a new instance will be created.
+The main reason for doing it this way is to remove an extra null check every time a service is accessed.
+*/
+template <typename T>
+class ServiceContainer
+{
+public:
+	ServiceContainer()
+	: mInnerContainer(new UninitializedInnerServiceContainer<T>(this))
+	{
+	}
+
+	T* getService()
+	{
+		return mInnerContainer->getService();
+	}
+	
+	void setInnerContainer(IInnerServiceContainer<T>* newContainer)
+	{
+		mInnerContainer = std::auto_ptr<IInnerServiceContainer<T> >(newContainer);
+	}
+private:
+	std::auto_ptr<IInnerServiceContainer<T> > mInnerContainer;
+};
+
+  
+template <typename T>
+class InitializedInnerServiceContainer : public IInnerServiceContainer<T>
+{
+public:
+	InitializedInnerServiceContainer()
+	: mService(new T)
+	{
+	}
+	
+	virtual T* getService()
+	{
+		return mService.get();
+	}
+private:
+	std::auto_ptr<T> mService;
+};  
+  
+template <typename T>
+class UninitializedInnerServiceContainer : public IInnerServiceContainer<T>
+{
+public:
+	UninitializedInnerServiceContainer(ServiceContainer<T>* container): mContainer(container)
+	{
+	}
+
+	virtual T* getService()
+	{
+		mContainer->setInnerContainer(new InitializedInnerServiceContainer<T>());
+		return mContainer->getService();
+	}
+private:
+	ServiceContainer<T>* mContainer;
+};
+
+
 
 /**
  * This is a singleton class that is used to access instances of all the
@@ -56,88 +135,17 @@ namespace Ember {
  */
 class EmberServices : public Ember::Singleton<EmberServices>
 {
-    //======================================================================
-    // Inner Classes
-    //======================================================================
 
 
-    //======================================================================
-    // Public Constants
-    //======================================================================
-    public:
-
-
-    //======================================================================
-    // Private Constants
-    //======================================================================
-    private:
-
-
-    //======================================================================
-    // Private Variables
-    //======================================================================
-    private:
-
-    
-    /**
-     * The instance of the LoggingService
-     */
-    Ember::LoggingService *myLoggingService;
-
-    /**
-     * The instance of the ConfigService
-     */
-    Ember::ConfigService *myConfigService;
-
-    /**
-     * The instance of the InputService
-     */
-    Ember::InputService *myInputService;
-	
-    /**
-     * The instance of the GuiService
-     */
-    //Ember::GuiService *myGuiService;
-
-    /**
-     * The instance of the MetaserverService
-     */
-     Ember::MetaserverService *myMetaserverService;
-
-    /**
-     * The instance of the ServerService
-     */
-    Ember::ServerService *myServerService;
-
-    /**
-     * The instance of the SoundService
-     */
-    Ember::SoundService *mySoundService;
-    
-    Ember::ScriptingService * myScriptingService;
-
-
-    //======================================================================
-    // Public Methods
-    //======================================================================
     public:
 
     EmberServices();
-
-    //----------------------------------------------------------------------
-    // Destructor
 
     /**
      * Deletes a EmberServices instance.
      */
     virtual ~EmberServices();
     
-
-
-
-    //----------------------------------------------------------------------
-    // Getters
-
     /**
      * Returns an instance of the TestService.
      */
@@ -178,27 +186,19 @@ class EmberServices : public Ember::Singleton<EmberServices>
      * Returns an instance of the SoundService
      */
     Ember::SoundService *getSoundService();
-    
+
+    /**
+     * Returns an instance of the ScriptingService
+     */
     Ember::ScriptingService *getScriptingService();
+
+    /**
+     * Returns an instance of the ScriptingService
+     */
+    Ember::WfutService *getWfutService();
 
     //----------------------------------------------------------------------
     // Setters
-
-    //----------------------------------------------------------------------
-    // Other public methods
-
-
-    //======================================================================
-    // Protected Methods
-    //======================================================================
-    protected:
-
-
-    //======================================================================
-    // Private Methods
-    //======================================================================
-    private:
-
 
     //======================================================================
     // Disabled constructors and operators
@@ -215,18 +215,26 @@ class EmberServices : public Ember::Singleton<EmberServices>
     }
 
 
-    /**
-     * Assignment operator not provided.
-     */
-    EmberServices &operator= ( const EmberServices &source )
-    {
-        return *this;
-    }
+	/**
+	* Assignment operator not provided.
+	*/
+	EmberServices &operator= ( const EmberServices &source )
+	{
+		return *this;
+	}
+
+private:
+	
+	std::auto_ptr<ServiceContainer<ScriptingService> > mScriptingService;
+	std::auto_ptr<ServiceContainer<SoundService> > mSoundService;
+	std::auto_ptr<ServiceContainer<ServerService> > mServerService;
+	std::auto_ptr<ServiceContainer<MetaserverService> > mMetaserverService;
+//     std::auto_ptr<ServiceContainer<InputService> > mInputService;
+	std::auto_ptr<ServiceContainer<WfutService> > mWfutService;
+	std::auto_ptr<ServiceContainer<ConfigService> > mConfigService;
 
 
-}; // End of class
-} // End of application namespace
+};
+}
 
 #endif
-
-
