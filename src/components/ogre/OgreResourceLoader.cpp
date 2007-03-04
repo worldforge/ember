@@ -54,9 +54,21 @@ void OgreResourceLoader::initialize()
 // 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
     ///load the resource file
     const std::string configPath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
-    cf.load(configPath);
+    mConfigFile.load(configPath);
 
 }
+
+unsigned int OgreResourceLoader::numberOfSections()
+{
+	unsigned int numberOfSections = 0;
+	Ogre::ConfigFile::SectionIterator I = mConfigFile.getSectionIterator();
+	while (I.hasMoreElements()) {
+		numberOfSections++;
+		I.moveNext();
+	}
+	return numberOfSections - 1;
+}
+
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
@@ -186,7 +198,7 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		S_LOG_VERBOSE("Adding resource section " << sectionName);
 	// 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup(sectionName);
 		
-		Ogre::ConfigFile::SettingsIterator I = cf.getSettingsIterator(sectionName);
+		Ogre::ConfigFile::SettingsIterator I = mConfigFile.getSettingsIterator(sectionName);
 		std::string finalTypename;
 		while (I.hasMoreElements()) {
 			//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
@@ -217,7 +229,7 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 void OgreResourceLoader::loadAllUnloadedSections()
 {
 	S_LOG_VERBOSE("Now loading all unloaded sections.");
-	Ogre::ConfigFile::SectionIterator I = cf.getSectionIterator();
+	Ogre::ConfigFile::SectionIterator I = mConfigFile.getSectionIterator();
 	while (I.hasMoreElements()) {
 		const std::string& sectionName = I.peekNextKey();
 		loadSection(sectionName);

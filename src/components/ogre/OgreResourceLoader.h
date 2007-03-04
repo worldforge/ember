@@ -44,9 +44,11 @@ public:
     
     void preloadMedia();
     
+    unsigned int numberOfSections();
+    
 protected:
 	bool mLoadRecursive;
-	Ogre::ConfigFile cf;
+	Ogre::ConfigFile mConfigFile;
 	
 	void loadSection(const std::string& sectionName);
 	
