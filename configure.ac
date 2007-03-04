@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.4.2, clients@worldforge.org)
+AC_INIT(Ember, 0.4.3, clients@worldforge.org)
 AC_DEFINE(MEDIA_VERSION, "0.4.2", [What media version to use.])
 AC_SUBST(MEDIA_VERSION, "0.4.2")
 
@@ -284,7 +284,7 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.12 \
- varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.5 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.5],
+ varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.5 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.5 libwfut-0.1 >= 0.0.1],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
@@ -416,6 +416,7 @@ AC_CONFIG_FILES([Makefile
 		 src/services/time/Makefile
 		 src/services/bindings/Makefile
 		 src/services/bindings/lua/Makefile
+		 src/services/wfut/Makefile
 		 ember.dox
 		 ember
 		 ember.spec
