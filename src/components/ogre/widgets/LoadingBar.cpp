@@ -22,6 +22,9 @@ the basic resources required for the progress bar and will be loaded automatical
 */
 #include "LoadingBar.h"
 
+#include "services/EmberServices.h"
+#include "services/wfut/WfutService.h"
+
 using namespace Ogre;
 namespace EmberOgre {
 
@@ -39,7 +42,8 @@ namespace EmberOgre {
 	added to a resource group called 'Bootstrap' - this provides the basic 
 	resources required for the progress bar and will be loaded automatically.
 */
-	LoadingBar::LoadingBar() {}
+	LoadingBar::LoadingBar() : mProgress(0) 
+	{}
 	LoadingBar::~LoadingBar(){}
 
 	/** Show the loading bar and start listening.
@@ -50,15 +54,9 @@ namespace EmberOgre {
 		up by initialisation (ie script parsing etc). Defaults to 0.7 since
 		script parsing can often take the majority of the time.
 	*/
-	void LoadingBar::start(RenderWindow* window, 
-		unsigned short numGroupsInit, 
-		unsigned short numGroupsLoad, 
-		Real initProportion)
+	void LoadingBar::start(RenderWindow* window)
 	{
 		mWindow = window;
-		mNumGroupsInit = numGroupsInit;
-		mNumGroupsLoad = numGroupsLoad;
-		mInitProportion = initProportion;
 		// We need to pre-initialise the 'Bootstrap' group so we can use
 		// the basic contents in the loading screen
 		ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
@@ -79,13 +77,11 @@ namespace EmberOgre {
 			mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
 	
 			OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
-			mProgressBarMaxSize = barContainer->getWidth();
-	// 		mProgressBarMaxLeft = barContainer->getLeft();
+			mProgressBarMaxSize = mLoadingBarElement->getWidth();
+	 		mProgressBarMaxLeft = mLoadingBarElement->getLeft();
 			
 			//mLoadingBarElement->setWidth(300);
 	
-			// self is listener
-			ResourceGroupManager::getSingleton().addResourceGroupListener(this);
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Error when creating loading bar. Message: \n" << ex.getFullDescription());
 		}
@@ -102,79 +98,261 @@ namespace EmberOgre {
 			mLoadOverlay->hide();
 		}
 
-		/// Unregister listener
-		ResourceGroupManager::getSingleton().removeResourceGroupListener(this);
-		
 		///we won't be needing the bootstrap resources for some while, so unload them
 		ResourceGroupManager::getSingleton().unloadResourceGroup("Bootstrap");
 
 	}
 
 
+
+	
+	void LoadingBar::addSection(LoadingBarSection* section)
+	{
+		mSections.push_back(section);
+	}
+	
+	void LoadingBar::activateSection(LoadingBarSection* section)
+	{
+		SectionStore::iterator I = std::find(mSections.begin(), mSections.end(), section);
+		if (I != mSections.end()) {
+			mCurrentSection = I;
+			SectionStore::iterator J = I;
+			float totalSize = 0;	
+			for (;J != mSections.begin(); --J) {
+				totalSize += (*J)->getSize();
+			}
+			setProgress(totalSize);
+		}
+	}
+	
+	void LoadingBar::setProgress(float progress) 
+	{
+		///make the black blocking block a little bit smaller and move it to the right
+		mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
+		mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
+		mWindow->update();
+		mProgress = progress;
+	}
+	
+	void LoadingBar::increase(float amount) 
+	{
+		setProgress(mProgress + amount);
+	}
+	
+	void LoadingBar::setCaption(const std::string& caption)
+	{
+		mLoadingCommentElement->setCaption(caption);
+		mWindow->update();
+	}
+
+	
+	
+	
+	
+	
+	
+	LoadingBarSection::LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name)
+	: mName(name), mAccumulatedSize(0), mLoadingBar(loadingBar), mActive(false), mSize(size)
+	{
+	}
+	LoadingBarSection::~LoadingBarSection()
+	{
+	}
+	
+	const std::string& LoadingBarSection::getName() const
+	{
+		return mName;
+	}
+	
+	void LoadingBarSection::setCaption(const std::string& caption)
+	{
+		mLoadingBar.setCaption(caption);
+	}
+	
+	float LoadingBarSection::getSize() const
+	{
+		return mSize;
+	}
+
+	void LoadingBarSection::tick(float tickSize)
+	{
+		if (mAccumulatedSize < 1.0) {
+			mLoadingBar.increase(mSize * tickSize);
+			mAccumulatedSize += tickSize;
+		}
+	}
+	
+	void LoadingBarSection::deactivate()
+	{
+		mActive = false;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	ResourceGroupLoadingBarSection::ResourceGroupLoadingBarSection(LoadingBarSection& section, 
+		unsigned short numGroupsInit,
+		unsigned short numGroupsLoad,
+		Ogre::Real initProportion)
+	: mSection(section), mNumGroupsInit(numGroupsInit), mNumGroupsLoad(numGroupsLoad), mInitProportion(initProportion)
+	{
+		// self is listener
+		ResourceGroupManager::getSingleton().addResourceGroupListener(this);
+	}
+	
+	ResourceGroupLoadingBarSection::~ResourceGroupLoadingBarSection()
+	{
+		ResourceGroupManager::getSingleton().removeResourceGroupListener(this);
+	}
+		
 	/// ResourceGroupListener callbacks
-	void LoadingBar::resourceGroupScriptingStarted(const String& groupName, size_t scriptCount)
+	void ResourceGroupLoadingBarSection::resourceGroupScriptingStarted(const String& groupName, size_t scriptCount)
 	{
-		assert(mNumGroupsInit > 0 && "You stated you were not going to init "
-			"any groups, but you did! Divide by zero would follow...");
-		mProgressBarInc = mProgressBarMaxSize * mInitProportion / (Real)scriptCount;
-		mProgressBarInc /= mNumGroupsInit;
-		mLoadingDescriptionElement->setCaption("Parsing scripts...");
-		mWindow->update();
+		if (mNumGroupsInit == 0) {
+			return; ///avoid divide-by-zero
+		}
+		if (mNumGroupsLoad != 0) {
+			mProgressBarInc = mInitProportion / mNumGroupsInit;
+		} else {
+			mProgressBarInc = 1.0 / mNumGroupsInit;
+		} 
+		
+		if (scriptCount == 0) {
+			///no scripts will be loaded, so we'll have to conclude this group here and now
+			mSection.tick(mProgressBarInc);
+		}
+		
+		mProgressBarInc /= (Real)scriptCount;
+		mSection.setCaption("Parsing scripts...");
 	}
-	void LoadingBar::scriptParseStarted(const String& scriptName)
+	void ResourceGroupLoadingBarSection::scriptParseStarted(const String& scriptName)
 	{
-		mLoadingCommentElement->setCaption(scriptName);
-		mWindow->update();
+		mSection.setCaption(scriptName);
 	}
-	void LoadingBar::scriptParseEnded(void)
-	{
-		///make the black blocking block a little bit smaller and move it to the right
-		mLoadingBarElement->setWidth(
-			mLoadingBarElement->getWidth() - mProgressBarInc);
-		mLoadingBarElement->setLeft(mLoadingBarElement->getLeft() + mProgressBarInc);
-		mWindow->update();
-	}
-	void LoadingBar::resourceGroupScriptingEnded(const String& groupName)
-	{
-	}
-	void LoadingBar::resourceGroupLoadStarted(const String& groupName, size_t resourceCount)
-	{
-		assert(mNumGroupsLoad > 0 && "You stated you were not going to load "
-			"any groups, but you did! Divide by zero would follow...");
-		mProgressBarInc = mProgressBarMaxSize * (1-mInitProportion) / 
-			(Real)resourceCount;
-		mProgressBarInc /= mNumGroupsLoad;
-		mLoadingDescriptionElement->setCaption("Loading resources...");
-		mWindow->update();
-	}
-	void LoadingBar::resourceLoadStarted(const ResourcePtr& resource)
-	{
-		mLoadingCommentElement->setCaption(resource->getName());
-		mWindow->update();
-	}
-	void LoadingBar::resourceLoadEnded(void)
+	void ResourceGroupLoadingBarSection::scriptParseEnded(void)
 	{
 		///make the black blocking block a little bit smaller and move it to the right
-		mLoadingBarElement->setWidth(
-			mLoadingBarElement->getWidth() - mProgressBarInc);
-		mLoadingBarElement->setLeft(mLoadingBarElement->getLeft() + mProgressBarInc);
-		mWindow->update();
+		mSection.tick(mProgressBarInc);
 	}
-	void LoadingBar::worldGeometryStageStarted(const String& description)
+	void ResourceGroupLoadingBarSection::resourceGroupLoadStarted(const String& groupName, size_t resourceCount)
 	{
-		mLoadingCommentElement->setCaption(description);
-		mWindow->update();
+		if (mNumGroupsLoad == 0) {
+			return; ///avoid divide-by-zero
+		}
+		if (mNumGroupsInit) {
+			mProgressBarInc = (1.0-mInitProportion) / 
+				mNumGroupsLoad;
+		} else {
+			mProgressBarInc = 1.0 / mNumGroupsLoad;
+		}
+		
+		if (resourceCount == 0) {
+			///no resources will be loaded, so we'll have to conclude this group here and now
+			mSection.tick(mProgressBarInc);
+		}
+		
+		mProgressBarInc /= (Real)resourceCount;
+		mSection.setCaption("Loading resources...");
 	}
-	void LoadingBar::worldGeometryStageEnded(void)
+	void ResourceGroupLoadingBarSection::resourceLoadStarted(const ResourcePtr& resource)
 	{
-		///make the black blocking block a little bit smaller and move it to the right
-		mLoadingBarElement->setWidth(
-			mLoadingBarElement->getWidth() - mProgressBarInc);
-		mLoadingBarElement->setLeft(mLoadingBarElement->getLeft() + mProgressBarInc);
-		mWindow->update();
+		mSection.setCaption(resource->getName());
 	}
-	void LoadingBar::resourceGroupLoadEnded(const String& groupName)
+	void ResourceGroupLoadingBarSection::resourceLoadEnded(void)
+	{
+		mSection.tick(mProgressBarInc);
+	}
+/*	void ResourceGroupLoadingBarSection::worldGeometryStageStarted(const String& description)
+	{
+		mSection.setCaption(description);
+	}*/
+	void ResourceGroupLoadingBarSection::resourceGroupLoadEnded(const String& groupName)
+	{
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	WfutLoadingBarSection::WfutLoadingBarSection(LoadingBarSection& section) 
+	: mSection(section), mDownloadedSoFar(0), mNumberOfFilesToUpdate(0)
+	{
+		Ember::WfutService* wfutSrv = Ember::EmberServices::getSingleton().getWfutService();
+		wfutSrv->DownloadComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadComplete));
+		wfutSrv->DownloadFailed.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadFailed));
+		wfutSrv->AllDownloadsComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_AllDownloadsComplete));
+		wfutSrv->DownloadingServerList.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadingServerList));
+		wfutSrv->UpdatesCalculated.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_UpdatesCalculated));
+	}
+	WfutLoadingBarSection::~WfutLoadingBarSection()
+	{}
+	
+	void WfutLoadingBarSection::wfutService_DownloadComplete(const std::string& url, const std::string& filename)
+	{
+		mDownloadedSoFar++;
+		std::stringstream ss;
+		ss << "Downloaded " << filename << " (" <<mDownloadedSoFar << " of "<< mNumberOfFilesToUpdate << ")"; 
+		mSection.setCaption(ss.str());
+		if (mNumberOfFilesToUpdate) {
+			mSection.tick(1.0 / mNumberOfFilesToUpdate);
+		}
+	}
+
+	void WfutLoadingBarSection::wfutService_DownloadFailed(const std::string& url, const std::string& filename, const std::string& reason)
+	{
+		mDownloadedSoFar++;
+		std::stringstream ss;
+		ss << "Failed to download " << filename << " (" << mDownloadedSoFar << " of " << mNumberOfFilesToUpdate << ")"; 
+		mSection.setCaption(ss.str());
+		if (mNumberOfFilesToUpdate) {
+			mSection.tick(1.0 / mNumberOfFilesToUpdate);
+		}
+	}
+
+	void WfutLoadingBarSection::wfutService_AllDownloadsComplete()
 	{
 	}
+
+	void WfutLoadingBarSection::wfutService_DownloadingServerList(const std::string& url)
+	{
+		mSection.setCaption("Getting server list from " + url); 
+	}
+	
+	void WfutLoadingBarSection::wfutService_UpdatesCalculated(unsigned int numberOfFilesToUpdate)
+	{
+		mNumberOfFilesToUpdate = numberOfFilesToUpdate;
+	}
+	
+
 }
 

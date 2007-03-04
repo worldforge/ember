@@ -28,6 +28,82 @@ the basic resources required for the progress bar and will be loaded automatical
 
 namespace EmberOgre {
 
+class LoadingBar;
+
+class LoadingBarSection
+{
+friend class LoadingBar;
+public:
+	LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name);
+	virtual ~LoadingBarSection();
+	
+	void activate(int steps);
+	float getSize() const;
+	const std::string& getName() const;
+	void tick(float tickSize);
+	void setCaption(const std::string& caption);
+	
+private:
+	void deactivate();
+	float mSize;
+	LoadingBar& mLoadingBar;
+	float mAccumulatedSize;
+	std::string mName;
+	bool mActive;
+};
+
+class WfutLoadingBarSection : public sigc::trackable
+{
+public:
+	WfutLoadingBarSection(LoadingBarSection& section);
+	virtual ~WfutLoadingBarSection();
+private:
+	
+	void wfutService_DownloadComplete(const std::string& url, const std::string& filename);
+
+	void wfutService_DownloadFailed(const std::string& url, const std::string& filename, const std::string& reason);
+
+	void wfutService_AllDownloadsComplete();
+
+	void wfutService_DownloadingServerList(const std::string& url);
+	
+	void wfutService_UpdatesCalculated(unsigned int numberOfFilesToUpdate);
+	
+	
+	LoadingBarSection& mSection;
+	unsigned int mNumberOfFilesToUpdate, mDownloadedSoFar;
+};
+
+class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener
+{
+public:
+	ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1, 
+		unsigned short numGroupsLoad = 1, 
+		Ogre::Real initProportion = 0.70f);
+	virtual ~ResourceGroupLoadingBarSection();
+
+	// ResourceGroupListener callbacks
+	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount);
+	void scriptParseStarted(const Ogre::String & scriptName);
+	void scriptParseEnded(void);
+	void resourceGroupScriptingEnded(const Ogre::String & groupName) {}
+	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount);
+	void resourceLoadStarted(const Ogre::ResourcePtr& resource);
+	void resourceLoadEnded(void);
+	void worldGeometryStageStarted(const Ogre::String & description) {}
+	void worldGeometryStageEnded(void) {}
+	void resourceGroupLoadEnded(const Ogre::String & groupName);
+
+private:
+	Ogre::Real mInitProportion;
+	unsigned short mNumGroupsInit;
+	unsigned short mNumGroupsLoad;
+	LoadingBarSection& mSection;
+	Ogre::Real mProgressBarInc;
+
+};
+
+
 /** Defines an example loading progress bar which you can use during 
 	startup, level changes etc to display loading progress. 
 @remarks
@@ -42,17 +118,18 @@ namespace EmberOgre {
 	added to a resource group called 'Bootstrap' - this provides the basic 
 	resources required for the progress bar and will be loaded automatically.
 */
-class LoadingBar : public Ogre::ResourceGroupListener
+class LoadingBar 
 {
 protected:
+	typedef std::vector<LoadingBarSection*> SectionStore;
+	SectionStore mSections;
+	SectionStore::iterator mCurrentSection;
+	float mProgress;
+	Ogre::Real mProgressBarMaxSize, mProgressBarMaxLeft;
+	
 	Ogre::RenderWindow* mWindow;
 	Ogre::Overlay* mLoadOverlay;
-	Ogre::Real mInitProportion;
-	unsigned short mNumGroupsInit;
-	unsigned short mNumGroupsLoad;
-	Ogre::Real mProgressBarMaxSize;
 	Ogre::Real mProgressBarScriptSize;
-	Ogre::Real mProgressBarInc;
 	Ogre::OverlayElement* mLoadingBarElement;
 	Ogre::OverlayElement* mLoadingDescriptionElement;
 	Ogre::OverlayElement* mLoadingCommentElement;
@@ -69,27 +146,20 @@ public:
 		up by initialisation (ie script parsing etc). Defaults to 0.7 since
 		script parsing can often take the majority of the time.
 	*/
-	virtual void start(Ogre::RenderWindow* window, 
-		unsigned short numGroupsInit = 1, 
-		unsigned short numGroupsLoad = 1, 
-		Ogre::Real initProportion = 0.70f);
+	virtual void start(Ogre::RenderWindow* window);
 
 	/** Hide the loading bar and stop listening. 
 	*/
 	virtual void finish(void);
 
+	void addSection(LoadingBarSection* section);
+	
+	void activateSection(LoadingBarSection* section);
+	void increase(float amount);
+	void setProgress(float progress); 
+	void setDescription(const std::string& description);
+	void setCaption(const std::string& caption);
 
-	// ResourceGroupListener callbacks
-	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount);
-	void scriptParseStarted(const Ogre::String & scriptName);
-	void scriptParseEnded(void);
-	void resourceGroupScriptingEnded(const Ogre::String & groupName);
-	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount);
-	void resourceLoadStarted(const Ogre::ResourcePtr& resource);
-	void resourceLoadEnded(void);
-	void worldGeometryStageStarted(const Ogre::String & description);
-	void worldGeometryStageEnded(void);
-	void resourceGroupLoadEnded(const Ogre::String & groupName);
 
 };
 
