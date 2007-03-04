@@ -70,19 +70,23 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.a $
 	$(top_builddir)/src/components/ogre/sound/libSound.a \
 	$(top_builddir)/src/services/metaserver/libMetaserverService.a $(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/config/libConfigService.a $(top_builddir)/src/services/server/libServerService.a \
-	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a $(top_builddir)/src/services/time/libTime.la  \
+	$(top_builddir)/src/framework/libFramework.a $(top_builddir)/src/extensions/libExtensions.a \
+	$(top_builddir)/src/services/time/libTime.la  \
+	$(top_builddir)/src/services/wfut/libWfut.la \
 	$(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.a \
-	$(top_builddir)/src/components/ogre/ogreopcode/opcode/libOpcode.a $(EMBER_EXT_LIBS) 
+	$(top_builddir)/src/components/ogre/ogreopcode/opcode/libOpcode.a \
+	$(EMBER_EXT_LIBS) 
         
 
 
-ember_bin_SOURCES = Avatar.cpp ConsoleObjectImpl.cpp AvatarController.cpp \
-									environment/Water.cpp MotionManager.cpp AvatarCamera.cpp 					GUIManager.cpp MousePicker.cpp \
-				EmberEntityFactory.cpp 				EmberOgre.cpp 	EmberPhysicalEntity.cpp EmberEntity.cpp \
-								AvatarEmberEntity.cpp WorldEmberEntity.cpp 	 				EmberEntityUserObject.cpp \
-				GUICEGUIAdapter.cpp 	CameraMount.cpp OgreLogObserver.cpp 			OgreResourceLoader.cpp \
-					EntityWorldPickListener.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp OgreInfo.cpp \
-	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EmberEntityActionCreator.cpp
+ember_bin_SOURCES = 	 					GUIManager.cpp 				EmberEntityUserObject.cpp \
+					EmberOgre.cpp 			OgreResourceLoader.cpp 	CameraMount.cpp 	EmberPhysicalEntity.cpp \
+	Avatar.cpp AvatarCamera.cpp AvatarController.cpp AvatarEmberEntity.cpp \
+	ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp EmberEntityFactory.cpp \
+	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EntityWorldPickListener.cpp \
+	GUICEGUIAdapter.cpp MediaUpdater.cpp MotionManager.cpp MousePicker.cpp OgreInfo.cpp \
+	OgreLogObserver.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp WorldEmberEntity.cpp \
+	environment/Water.cpp
 
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
@@ -91,12 +95,12 @@ confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = EmberOgre.h WorldEmberEntity.h 				 		AvatarEmberEntity.h \
-				EmberPhysicalEntity.h 				EmberOgrePrerequisites.h EmberEntityFactory.h 		EmberEntity.h \
-				Avatar.h environment/Water.h 				 MotionManager.h 		AvatarCamera.h \
-				MathConverter.h 				ConsoleObjectImpl.h 		AvatarController.h GUIManager.h MousePicker.h \
-				EmberEntityUserObject.h 						GUICEGUIAdapter.h CameraMount.h OgreLogObserver.h \
-				OgreResourceLoader.h 			IWorldPickListener.h EntityWorldPickListener.h OgreIncludes.h \
-				OgreSetup.h OpcodeCollisionDetector.h OgreInfo.h EmberEntityModelAction.h \
-	EmberEntityPartAction.h EmberEntityActionCreator.h
+noinst_HEADERS = 				 						GUICEGUIAdapter.h 				ConsoleObjectImpl.h \
+					EmberOgrePrerequisites.h 			IWorldPickListener.h 		AvatarCamera.h 		AvatarController.h \
+			AvatarEmberEntity.h 		EmberEntity.h Avatar.h CameraMount.h EmberEntityActionCreator.h \
+	EmberEntityFactory.h EmberEntityModelAction.h EmberEntityPartAction.h \
+	EmberEntityUserObject.h EmberOgre.h EmberPhysicalEntity.h EntityWorldPickListener.h \
+	GUIManager.h MathConverter.h MediaUpdater.h MotionManager.h MousePicker.h \
+	OgreIncludes.h OgreInfo.h OgreLogObserver.h OgreResourceLoader.h OgreSetup.h \
+	OpcodeCollisionDetector.h WorldEmberEntity.h environment/Water.h
 	
