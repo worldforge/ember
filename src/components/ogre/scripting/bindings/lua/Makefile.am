@@ -4,8 +4,8 @@ METASOURCES = AUTO
 
 #if USE_LUA
 #liblua_scripting_a_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
-noinst_LIBRARIES = liblua_EmberOgre.a
-liblua_EmberOgre_a_SOURCES = lua_EmberOgre.cpp
+noinst_LTLIBRARIES = liblua_EmberOgre.la
+liblua_EmberOgre_la_SOURCES = lua_EmberOgre.cpp
 noinst_HEADERS = required.h
 #endif
 

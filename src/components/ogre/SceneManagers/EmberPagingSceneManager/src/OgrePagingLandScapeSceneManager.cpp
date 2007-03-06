@@ -1016,22 +1016,22 @@ namespace Ogre
 			const Vector2 page = *static_cast < const Vector2 * > (pValue);
 
 			// Reload Data. ALso must reload pages that depend on this
-			mData2DManager->reload (page.x, page.y);
-			mTextureManager->reload(page.x, page.y);
+			mData2DManager->reload (static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y));
+			mTextureManager->reload(static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y));
 			if (page.x > 0)
             {
-                mData2DManager->reload (page.x-1, page.y);
-			    mTextureManager->reload(page.x-1, page.y);
+                mData2DManager->reload (static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y));
+			    mTextureManager->reload(static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y));
             }
 			if (page.y > 0)
             {
-			    mTextureManager->reload(page.x, page.y-1);
-				mData2DManager->reload (page.x, page.y-1);
+			    mTextureManager->reload(static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y-1));
+				mData2DManager->reload (static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y-1));
             }
 			if (page.x > 0 && page.y > 0)
             { 
-				mData2DManager->reload (page.x-1, page.y-1);
-			    mTextureManager->reload(page.x-1, page.y-1);
+				mData2DManager->reload (static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y-1));
+			    mTextureManager->reload(static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y-1));
             }
 
 			// Now reload pages
@@ -1431,7 +1431,7 @@ namespace Ogre
 
 				// get the texture
 				Ogre::PagingLandScapeTexture* texture_ptr =
-					mTextureManager->getTexture(pos->x, pos->z, false);
+					mTextureManager->getTexture(static_cast<unsigned int>(pos->x), static_cast<unsigned int>(pos->z), false);
 
 				// check for valid texture
 				if( texture_ptr )

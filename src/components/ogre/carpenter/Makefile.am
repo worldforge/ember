@@ -16,5 +16,5 @@ uninstall-local:
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_HEADERS = Carpenter.h BluePrint.h
-noinst_LIBRARIES = libCarpenter.a
-libCarpenter_a_SOURCES = Carpenter.cpp BluePrint.cpp
+noinst_LTLIBRARIES = libCarpenter.la
+libCarpenter_la_SOURCES = Carpenter.cpp BluePrint.cpp

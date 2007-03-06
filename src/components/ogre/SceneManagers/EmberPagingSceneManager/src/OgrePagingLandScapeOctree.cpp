@@ -308,7 +308,7 @@ namespace Ogre
 
 #ifdef _DEBUG
             std::cout << "new Child\n";
-#endif _DEBUG
+#endif
 
             PagingLandScapeOctree *newChild = scn->getNewOctree();
             newChild->setParent (this);

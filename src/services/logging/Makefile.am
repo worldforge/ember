@@ -1,5 +1,5 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
-noinst_LIBRARIES = libLoggingService.a
+noinst_LTLIBRARIES = libLoggingService.la
 
-libLoggingService_a_SOURCES = LoggingService.cpp LoggingService.h
+libLoggingService_la_SOURCES = LoggingService.cpp LoggingService.h

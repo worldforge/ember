@@ -1,8 +1,8 @@
 INCLUDES = $(STLPORT_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/components/ogre  -I$(top_builddir)/src -I$(top_srcdir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/include 
 
-noinst_LIBRARIES = libEmberPagingSceneManager.a
+noinst_LTLIBRARIES = libEmberPagingSceneManager.la
 
-libEmberPagingSceneManager_a_SOURCES = \
+libEmberPagingSceneManager_la_SOURCES = \
 						DRGNURBSSurface.cpp \
 						filetutils.cpp \
 						OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.cpp \

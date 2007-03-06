@@ -1793,7 +1793,7 @@ namespace Ogre
                 unsigned int Lod = 0;
                 if (t && t->isLoaded())
                     Lod = t->getRenderable()->getRenderLevel();
-                const Vector3 normalVector = getNormalAt(pageX, pageZ, x, z, Lod);
+                const Vector3 normalVector = getNormalAt(pageX, pageZ, static_cast<unsigned int>(x), static_cast<unsigned int>(z), Lod);
                 const Real slope = 1.0f + normalVector.y;
                 if (slope < 0.001f)
                     return 0.0f;

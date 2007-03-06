@@ -860,7 +860,7 @@ namespace Ogre
 		assert (mNumTexture > 0);
         const size_t heightfiledsize = mParent->getOptions()->PageSize - 1;
         const Real textureScale = mParent->getOptions()->TextureStretchFactor;
-        const unsigned int textureSize = heightfiledsize * textureScale;
+        const unsigned int textureSize = static_cast<unsigned int>(heightfiledsize * textureScale);
         unsigned int curr_image_pos = static_cast <unsigned int>(textureRect.top*textureSize + textureRect.left);
         const unsigned int image_width = static_cast <unsigned int>((textureSize - (textureRect.right - textureRect.left)));
         const Real inv_scale = 1 / textureScale;
@@ -957,10 +957,10 @@ namespace Ogre
 
                 const Real textureScale = mParent->getOptions()->TextureStretchFactor;
 
-                texturerect.left = dataRect.left * textureScale;
-                texturerect.top  = dataRect.top * textureScale;
-                texturerect.right = dataRect.right * textureScale + 1;
-                texturerect.bottom = dataRect.bottom * textureScale + 1;
+                texturerect.left = static_cast<size_t>(dataRect.left * textureScale);
+                texturerect.top  = static_cast<size_t>(dataRect.top * textureScale);
+                texturerect.right = static_cast<size_t>(dataRect.right * textureScale + 1);
+                texturerect.bottom = static_cast<size_t>(dataRect.bottom * textureScale + 1);
 
                 dataRect.right += 1;
                 dataRect.bottom += 1;
@@ -1105,7 +1105,7 @@ namespace Ogre
 
 			// Upload changes         
 			const PixelBox srcBox = mLightImage.getPixelBox();	
-			const unsigned int mTextureSize = mParent->mPageSize * opt->TextureStretchFactor;
+			const unsigned int mTextureSize = static_cast<unsigned int>(mParent->mPageSize * opt->TextureStretchFactor);
 			const Image::Box rect (0, 0, 0, mTextureSize, mTextureSize, 1);
 			const PixelBox lock = mLightBuffer->lock (rect , HardwareBuffer::HBL_DISCARD); 
 			PixelUtil::bulkPixelConversion(srcBox, lock); 

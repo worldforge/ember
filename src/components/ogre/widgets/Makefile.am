@@ -24,8 +24,8 @@ uninstall-local:
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
-noinst_LIBRARIES = libWidgets.a
-libWidgets_a_SOURCES = Widget.cpp ConsoleWidget.cpp 			IngameChatWidget.cpp \
+noinst_LTLIBRARIES = libWidgets.la
+libWidgets_la_SOURCES = Widget.cpp ConsoleWidget.cpp 			IngameChatWidget.cpp \
 	InspectWidget.cpp InventoryWidget.cpp MakeEntityWidget.cpp 			ServerWidget.cpp \
 	WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp IconBase.cpp 			StatusIconBar.cpp \
 	MeshPreview.cpp EntityCEGUITexture.cpp ModelRenderer.cpp 			MovableObjectRenderer.cpp \

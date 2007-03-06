@@ -1,5 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
-noinst_LIBRARIES = libConfigService.a
+noinst_LTLIBRARIES = libConfigService.la
 
-libConfigService_a_SOURCES = ConfigService.cpp ConfigService.h
+libConfigService_la_SOURCES = ConfigService.cpp ConfigService.h
+

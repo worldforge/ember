@@ -2,9 +2,9 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
 SUBDIRS = bindings
 
-noinst_LIBRARIES = libFramework.a
+noinst_LTLIBRARIES = libFramework.la
 
-libFramework_a_SOURCES = Tokeniser.cpp ConsoleBackend.cpp StreamLogObserver.cpp \
+libFramework_la_SOURCES = Tokeniser.cpp ConsoleBackend.cpp StreamLogObserver.cpp \
 		binreloc.c tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp \
 		tinyxml/tinyxmlparser.cpp scrap.c ConsoleCommandWrapper.cpp
 

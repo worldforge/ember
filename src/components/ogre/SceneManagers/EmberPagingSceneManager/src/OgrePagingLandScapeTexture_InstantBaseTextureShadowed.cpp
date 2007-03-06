@@ -127,7 +127,7 @@ namespace Ogre
                                     commonName + "." +
                                     extname, 
                                     groupName); 
-                    const unsigned int mTextureSize = mParent->mPageSize * opt->TextureStretchFactor;//mShadow.getHeight();
+                    const unsigned int mTextureSize = static_cast<unsigned int>(mParent->mPageSize * opt->TextureStretchFactor);//mShadow.getHeight();
                     uchar *lightdata = new uchar [mTextureSize*mTextureSize];
                     mLightImage.loadDynamicImage (lightdata, 
                                             mTextureSize, 
