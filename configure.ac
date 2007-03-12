@@ -401,6 +401,7 @@ AC_MSG_RESULT([
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
+		 src/main/Makefile
 		 src/components/Makefile
 		 src/framework/Makefile
 		 src/framework/bindings/Makefile

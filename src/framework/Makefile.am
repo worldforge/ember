@@ -4,6 +4,7 @@ SUBDIRS = bindings
 
 noinst_LTLIBRARIES = libFramework.la
 
+libFramework_la_LIBADD = bindings/lua/liblua_Framework.la bindings/lua/eris/liblua_Eris.la
 libFramework_la_SOURCES = Tokeniser.cpp ConsoleBackend.cpp StreamLogObserver.cpp \
 		binreloc.c tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp \
 		tinyxml/tinyxmlparser.cpp scrap.c ConsoleCommandWrapper.cpp

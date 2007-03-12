@@ -1,12 +1,13 @@
+INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 SUBDIRS = environment model SceneManagers input widgets carpenter jesus \
 		ogreopcode scripting cegui sound manipulation terrain modeldefinitions
 
 #gamesdir = $(bindir)/games
-bin_PROGRAMS = ember.bin
-
+noinst_LTLIBRARIES = libEmberOgre.la
+#bin_PROGRAMS = ember.bin
 if BUILD_STATIC
 
-ember_bin_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
+#ember_bin_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
 
 EMBER_EXT_LIBS = -L/usr/X11R6/lib \
         /usr/local/lib/liberis-1.3.a \
@@ -48,43 +49,34 @@ EMBER_EXT_LIBS = $(EMBER_LIBS)
 endif
 
 
-#if USE_LUA
-#SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/liblua_scripting.a 
-#else
-SCRIPT_LIBS = $(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.la $(top_builddir)/src/services/bindings/lua/liblua_EmberServices.la $(top_builddir)/src/framework/bindings/lua/liblua_Framework.la  $(top_builddir)/src/framework/bindings/lua/eris/liblua_Eris.la $(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.la $(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la
-#endif
-
-
-ember_bin_LDADD = $(top_builddir)/src/components/ogre/scripting/libScripting.la $(SCRIPT_LIBS) \
-	$(top_builddir)/src/components/ogre/widgets/libWidgets.la \
-	$(top_builddir)/src/components/ogre/terrain/libTerrain.la \
-	$(top_builddir)/src/components/ogre/environment/libEnvironment.la \
-	$(top_builddir)/src/components/ogre/model/libModel.la \
-	$(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
-	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la \
-	$(top_builddir)/src/components/ogre/input/libInput.la \
-	$(top_builddir)/src/components/ogre/carpenter/libCarpenter.la \
-	$(top_builddir)/src/components/ogre/jesus/libJesus.la \
-	$(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
-	$(top_builddir)/src/components/ogre/sound/libSound.la \
-	$(top_builddir)/src/services/libServices.la \
-	$(top_builddir)/src/framework/libFramework.la \
-	$(top_builddir)/src/extensions/libExtensions.la \
-	$(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.la \
+libEmberOgre_la_LIBADD = \
+	scripting/bindings/lua/liblua_EmberOgre.la \
+	scripting/bindings/lua/ogre/liblua_Ogre.la \
+	scripting/bindings/lua/helpers/liblua_Helpers.la \
+	scripting/libScripting.la\
+	widgets/libWidgets.la \
+	terrain/libTerrain.la \
+	environment/libEnvironment.la \
+	model/libModel.la \
+	model/mapping/libMapping.la \
+	SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la \
+	input/libInput.la \
+	carpenter/libCarpenter.la \
+	jesus/libJesus.la \
+	manipulation/libmanipulation.la \
+	sound/libSound.la \
+	ogreopcode/libOgreOpcode.la \
 	$(EMBER_EXT_LIBS) 
         
 
 
-ember_bin_SOURCES = GUIManager.cpp EmberEntityUserObject.cpp \
+libEmberOgre_la_SOURCES = GUIManager.cpp EmberEntityUserObject.cpp \
 	EmberOgre.cpp OgreResourceLoader.cpp CameraMount.cpp EmberPhysicalEntity.cpp \
 	Avatar.cpp AvatarCamera.cpp AvatarController.cpp AvatarEmberEntity.cpp \
 	ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp EmberEntityFactory.cpp \
 	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EntityWorldPickListener.cpp \
 	GUICEGUIAdapter.cpp MediaUpdater.cpp MotionManager.cpp MousePicker.cpp OgreInfo.cpp \
 	OgreLogObserver.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp WorldEmberEntity.cpp
-
-
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
 confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
