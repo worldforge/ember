@@ -11,11 +11,6 @@ Scripts are then loaded through call to the method loadScript(...). Scripts can 
 */
 class ScriptingService 
 {
-    /**
-    Console command for loading scripts.
-    */
-     static const std::string LOADSCRIPT;
-	
 	/**
 	 *    Registers a new scripting provider.
 	 * @param provider 

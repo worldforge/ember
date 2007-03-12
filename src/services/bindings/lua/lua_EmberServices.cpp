@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.6 on Sun May  7 15:07:59 2006.
+** Generated automatically by tolua++-1.0.6 on Mon Mar 12 22:12:27 2007.
 */
 
 #ifndef __cplusplus
@@ -1368,13 +1368,6 @@ static int tolua_set_Ember__ServerService_GotAllCharacters(lua_State* tolua_S)
  return 0;
 }
 
-/* get function: LOADSCRIPT of class  Ember::ScriptingService */
-static int tolua_get_Ember__ScriptingService_LOADSCRIPT(lua_State* tolua_S)
-{
- tolua_pushcppstring(tolua_S,(const char*)Ember::ScriptingService::LOADSCRIPT);
- return 1;
-}
-
 /* method: registerScriptingProvider of class  Ember::ScriptingService */
 static int tolua_EmberServices_Ember_ScriptingService_registerScriptingProvider00(lua_State* tolua_S)
 {
@@ -1835,7 +1828,6 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
  tolua_beginmodule(tolua_S,"Ember");
  tolua_cclass(tolua_S,"ScriptingService","Ember::ScriptingService","",NULL);
  tolua_beginmodule(tolua_S,"ScriptingService");
- tolua_variable(tolua_S,"LOADSCRIPT",tolua_get_Ember__ScriptingService_LOADSCRIPT,NULL);
  tolua_function(tolua_S,"registerScriptingProvider",tolua_EmberServices_Ember_ScriptingService_registerScriptingProvider00);
  tolua_function(tolua_S,"loadScript",tolua_EmberServices_Ember_ScriptingService_loadScript00);
  tolua_function(tolua_S,"executeCode",tolua_EmberServices_Ember_ScriptingService_executeCode00);

@@ -45,17 +45,16 @@ class ScriptingService : public Service, public ConsoleObject
 friend class IScriptingProvider;
 public:
     
-    /**
-    Console command for loading scripts.
-    */
-     static const std::string LOADSCRIPT;
-    
     ScriptingService();
 
     ~ScriptingService();
 
 	virtual Service::Status start();
 	
+    /**
+    Console command for loading scripts.
+    */
+	const Ember::ConsoleCommandWrapper LoadScript;
 	
 	/**
 	 *    Registers a new scripting provider.

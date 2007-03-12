@@ -30,10 +30,9 @@
 #include "framework/Exception.h"
 
 namespace Ember {
-     
-const std::string  ScriptingService::LOADSCRIPT("loadscript");
 
 ScriptingService::ScriptingService()
+: LoadScript("loadscript", this, "Loads a script.")
 {
 }
 
@@ -44,7 +43,6 @@ ScriptingService::~ScriptingService()
 
 Service::Status ScriptingService::start()
 {
-    ConsoleBackend::getMainConsole()->registerCommand(LOADSCRIPT,this);
 	return Service::OK;
 }
 
@@ -129,7 +127,7 @@ IScriptingProvider* ScriptingService::getProviderFor(const std::string &provider
 
 void ScriptingService::runCommand(const std::string &command, const std::string &args)
 {
-    if (command == LOADSCRIPT){
+    if (LoadScript == command){
  		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string script = tokeniser.nextToken();
