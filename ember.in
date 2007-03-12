@@ -70,12 +70,8 @@ case "$1" in
   ;;
 esac
 
-WFUT_BIN=$bindir/wfut-ember-bin
-WFUT_JAR=$datadir/WFUT.jar
-MEDIA_CHANNEL="ember-media-@MEDIA_VERSION@"
 media_dir="${homedata}/ember-media-@MEDIA_VERSION@"
 
-SERVER=http://amber.worldforge.org/WFUT/
 
 # Create dir if required 
 if [ ! -d $homedata ] ; then
@@ -104,31 +100,6 @@ fi
 
 #Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
 echo @VERSION@ > $homedata/latest_version
-
-XTERM=`which xterm`
-
-#the precompiled wfut is preferrable if available
-if test -x $WFUT_BIN; then
-	echo "Using precompiled WFUT"
-	echo "Updating data from the server."
-	if [ $XTERM ] ; then
-		xterm -T "Downloading media..." -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $WFUT_BIN dest $homedata update $MEDIA_CHANNEL"
-	else
-		$WFUT_BIN dest $homedata update $MEDIA_CHANNEL
-	fi
-else 
-	# Determine if java executable exists in path
-	JAVA=`which java`;
-	if [ $JAVA ] ; then
-		# Update
-		echo "Using Java WFUT"
-		if [ $XTERM ] ; then
-			xterm -T "Downloading media..." -e $JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
-		else
-			$JAVA -DserverRoot=$SERVER -jar $WFUT_JAR dest $homedata update $MEDIA_CHANNEL
-		fi
-	fi
-fi
 
 # Execute real ember binary
 echo "Starting Ember...."
