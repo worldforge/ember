@@ -380,6 +380,8 @@ protected:
 	*/
 	MaterialEditor* mMaterialEditor;
 	
+	void Application_ServicesInitialized();
+	
 };
 
 Input& EmberOgre::getInput() 

@@ -135,6 +135,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "manipulation/MaterialEditor.h"
 #include "MediaUpdater.h"
 
+#include "main/Application.h"
+
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
 namespace EmberOgre {
@@ -170,7 +172,9 @@ mWindow(0),
 mMaterialEditor(0),
 mJesus(0),
 mAvatar(0)
-{}
+{
+	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
+}
 
 EmberOgre::~EmberOgre()
 {
@@ -340,6 +344,13 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	///Create a setup object through which we will start up Ogre.
 	OgreSetup ogreSetup;
+
+	mLogObserver = new OgreLogObserver();
+	
+	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
+	new Ogre::LogManager();
+	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
+	Ogre::LogManager::getSingleton().addListener(mLogObserver);
 
 	///We need a root object.
 	mRoot = ogreSetup.createOgreSystem(loadOgrePluginsThroughBinreloc);
@@ -743,228 +754,154 @@ bool EmberOgre::getErisPolling() const
 
 void EmberOgre::initializeEmberServices(const std::string& prefix, const std::string& homeDir)
 {
-	/// Initialize Ember services
-	std::cout << "Initializing Ember services" << std::endl;
-
-	new Ember::EmberServices();
-	Ember::LoggingService *logging = Ember::EmberServices::getSingleton().getLoggingService();
-	
-	/// Initialize the Configuration Service
-	Ember::EmberServices::getSingleton().getConfigService()->start();
-	Ember::EmberServices::getSingleton().getConfigService()->setPrefix(prefix);
-	if (homeDir != "") {
-		Ember::EmberServices::getSingleton().getConfigService()->setHomeDirectory(homeDir);
-		std::cout << "Setting home directory to " << homeDir << std::endl;
-	}
-	
-	///output all logging to ember.log
-	std::string filename(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ember.log");
-	static std::ofstream outstream(filename.c_str());
-	
-	///write to the log the version number
-	outstream << "Ember version " << VERSION << ", using media version " << MEDIA_VERSION << std::endl;
-	
-	mLogObserver = new OgreLogObserver(outstream);
-	logging->addObserver(mLogObserver);
-	
-	///default to INFO, though this can be changed by the config file
- 	mLogObserver->setFilter(Ember::LoggingService::INFO);
- 	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
- 	new Ogre::LogManager();
- 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
- 	Ogre::LogManager::getSingleton().addListener(mLogObserver);
- 	
- 	
-
-
-	/// Change working directory
-	const std::string& dirName = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
-	oslink::directory osdir(dirName);
-
-	if (!osdir) {
-#ifdef WIN32
-		mkdir(dirName.c_str());
-#else
-		mkdir(dirName.c_str(), S_IRWXU);
-#endif
-	}
-	
-	
-	chdir(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
-
-	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
-
-	///make sure that there are files 
-	///assureConfigFile("ember.conf", sharePath);
-
-	Ember::EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
-
-#ifndef WIN32
-	/// Initialize the SoundService
-	if (Ember::EmberServices::getSingleton().getSoundService()->start() == Ember::Service::OK) {
-		Ember::EmberServices::getSingleton().getSoundService()->registerSoundProvider(new OgreSoundProvider());
-	}
-#endif
-
-	/// Initialize and start the Metaserver Service.
-	S_LOG_INFO("Initializing MetaServer Service");
-
- 	Ember::EmberServices::getSingleton().getMetaserverService()->start();
-	///hoho, we get linking errors if we don't do some calls to the service
-	Ember::EmberServices::getSingleton().getMetaserverService()->getMetaServer();
-	
-	/// Initialize the Server Service
-	S_LOG_INFO("Initializing Server Service");
-
-	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
-	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
-	
-	Ember::EmberServices::getSingleton().getServerService()->start();
-
- 	Ember::EmberServices::getSingleton().getScriptingService()->start();
-
- 	Ember::EmberServices::getSingleton().getWfutService()->start();
 
 }
+
+void EmberOgre::Application_ServicesInitialized()
+{
+	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
+	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+}
+
 
 }
 
 /**
 * Main function, just boots the application object
 */
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+// #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+// #define WIN32_LEAN_AND_MEAN
+// #include "windows.h"
 
 
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
-int main(int argc, char **argv)
-#endif
-{
-	bool exit_program = false;
-	bool useBinreloc = false;
-	std::string prefix("");
-	std::string homeDir("");
-#ifndef __WIN32__
-	if (argc > 1) {
-		std::string invoked = std::string((char *)argv[0]);
-		(argv)++;
-		argc--;
-		while (argc > 0)  {
-			std::string arg = std::string((char *)argv[0]);
-			argv++;
-			argc--;
-			if (arg == "-v" || arg == "--version") {
-				std::cout << "Ember version: " << VERSION << std::endl;
-				exit_program = true;
-			} else if (arg == "-b" || arg == "--binrelocloading") {
-				useBinreloc = true;
-			} else if (arg == "-h" || arg == "--help") {
-				std::cout << invoked << " {options}" << std::endl;
-				std::cout << "-h, --help    - display this message" << std::endl;
-				std::cout << "-v, --version - display version info" << std::endl;
-				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg (only valid on *NIX systems)" << std::endl;
-				std::cout << "--home <path>- sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
-				std::cout << "-p <path>, --prefix <path> - sets the prefix to something else than the one set at compilation (only valid on *NIX systems)" << std::endl;
-				exit_program = true;
-			} else if (arg == "-p" || arg == "--prefix") {
-				if (!argc) {
-					std::cout << "You didn't supply a prefix.";
-					exit_program = true;
-				} else {
-					prefix = std::string((char *)argv[0]);
-					argv++;
-					argc--;
-				}
-				
-			} else if (arg == "--home") {
-				if (!argc) {
-					std::cout << "You didn't supply a home directory.";
-					exit_program = true;
-				} else {
-					homeDir = std::string((char *)argv[0]);
-					argv++;
-					argc--;
-				}
-				
-			}
-		}
-	}
-
-	if (exit_program) {
-		if (homeDir != "") {
-			chdir(homeDir.c_str());
-		} else {
-			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
-		}
-		return 0;
-	}
-	
-#ifdef ENABLE_BINRELOC
-    if (prefix == "" && useBinreloc) {
-		BrInitError error;
-	
-		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
-			printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
-			printf ("Will fallback to hardcoded default path.\n");
-		}	
-		
-		char* br_prefixdir = br_find_prefix(PREFIX);
-		const std::string prefixDir(br_prefixdir);
-		free(br_prefixdir);
-		prefix = prefixDir;
-	}
-   
-#endif
-	if (prefix == "") {
-		prefix = PREFIX;
-	}
-	
-#else 
- //  char tmp[64];
-
- //  unsigned int floatSetting = _controlfp( 0, 0 );
-	//sprintf(tmp, "Original: 0x%.4x\n", floatSetting );
- //   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-	//_fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR , _MCW_RC);
-	//floatSetting = _controlfp( 0, 0 );
-	//sprintf(tmp, "New: 0x%.4x\n", floatSetting );
- //   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-
-#endif
-
-    /// Create application object
-    EmberOgre::EmberOgre app;
-    
-    std::cout << "Starting Ember version " << VERSION << std::endl;
-
-	/// Initialize all Ember services needed for this application
-	app.initializeEmberServices(prefix, homeDir);
-
-    try {
-        app.go(useBinreloc);
-    } catch(const Ogre::Exception& e ) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-        fprintf(stderr, "An exception has occured: %s\n",
-                e.getFullDescription().c_str());
-#endif
-    }
-
-
-#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
-		if (homeDir != "") {
-			chdir(homeDir.c_str());
-		} else {
-			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
-		}
-#endif
-    return 0;
-}
+// INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+// #else
+// int main(int argc, char **argv)
+// #endif
+// {
+// 	bool exit_program = false;
+// 	bool useBinreloc = false;
+// 	std::string prefix("");
+// 	std::string homeDir("");
+// #ifndef __WIN32__
+// 	if (argc > 1) {
+// 		std::string invoked = std::string((char *)argv[0]);
+// 		(argv)++;
+// 		argc--;
+// 		while (argc > 0)  {
+// 			std::string arg = std::string((char *)argv[0]);
+// 			argv++;
+// 			argc--;
+// 			if (arg == "-v" || arg == "--version") {
+// 				std::cout << "Ember version: " << VERSION << std::endl;
+// 				exit_program = true;
+// 			} else if (arg == "-b" || arg == "--binrelocloading") {
+// 				useBinreloc = true;
+// 			} else if (arg == "-h" || arg == "--help") {
+// 				std::cout << invoked << " {options}" << std::endl;
+// 				std::cout << "-h, --help    - display this message" << std::endl;
+// 				std::cout << "-v, --version - display version info" << std::endl;
+// 				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg (only valid on *NIX systems)" << std::endl;
+// 				std::cout << "--home <path>- sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
+// 				std::cout << "-p <path>, --prefix <path> - sets the prefix to something else than the one set at compilation (only valid on *NIX systems)" << std::endl;
+// 				exit_program = true;
+// 			} else if (arg == "-p" || arg == "--prefix") {
+// 				if (!argc) {
+// 					std::cout << "You didn't supply a prefix.";
+// 					exit_program = true;
+// 				} else {
+// 					prefix = std::string((char *)argv[0]);
+// 					argv++;
+// 					argc--;
+// 				}
+// 				
+// 			} else if (arg == "--home") {
+// 				if (!argc) {
+// 					std::cout << "You didn't supply a home directory.";
+// 					exit_program = true;
+// 				} else {
+// 					homeDir = std::string((char *)argv[0]);
+// 					argv++;
+// 					argc--;
+// 				}
+// 				
+// 			}
+// 		}
+// 	}
+// 
+// 	if (exit_program) {
+// 		if (homeDir != "") {
+// 			chdir(homeDir.c_str());
+// 		} else {
+// 			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
+// 		}
+// 		return 0;
+// 	}
+// 	
+// #ifdef ENABLE_BINRELOC
+//     if (prefix == "" && useBinreloc) {
+// 		BrInitError error;
+// 	
+// 		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
+// 			printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
+// 			printf ("Will fallback to hardcoded default path.\n");
+// 		}	
+// 		
+// 		char* br_prefixdir = br_find_prefix(PREFIX);
+// 		const std::string prefixDir(br_prefixdir);
+// 		free(br_prefixdir);
+// 		prefix = prefixDir;
+// 	}
+//    
+// #endif
+// 	if (prefix == "") {
+// 		prefix = PREFIX;
+// 	}
+// 	
+// #else 
+//  //  char tmp[64];
+// 
+//  //  unsigned int floatSetting = _controlfp( 0, 0 );
+// 	//sprintf(tmp, "Original: 0x%.4x\n", floatSetting );
+//  //   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+// 	//_fpreset();
+// 	//_controlfp(_PC_64, _MCW_PC);
+// 	//_controlfp(_RC_NEAR , _MCW_RC);
+// 	//floatSetting = _controlfp( 0, 0 );
+// 	//sprintf(tmp, "New: 0x%.4x\n", floatSetting );
+//  //   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+// 
+// #endif
+// 
+//     /// Create application object
+//     EmberOgre::EmberOgre app;
+//     
+//     std::cout << "Starting Ember version " << VERSION << std::endl;
+// 
+// 	/// Initialize all Ember services needed for this application
+// 	app.initializeEmberServices(prefix, homeDir);
+// 
+//     try {
+//         app.go(useBinreloc);
+//     } catch(const Ogre::Exception& e ) {
+// #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+//         MessageBox( 0, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+// #else
+//         fprintf(stderr, "An exception has occured: %s\n",
+//                 e.getFullDescription().c_str());
+// #endif
+//     }
+// 
+// 
+// #if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
+// 		if (homeDir != "") {
+// 			chdir(homeDir.c_str());
+// 		} else {
+// 			chdir((std::string(getenv("HOME")) + "/.ember").c_str());
+// 		}
+// #endif
+//     return 0;
+// }
 
 
 
