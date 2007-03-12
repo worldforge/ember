@@ -34,14 +34,13 @@ A log observer which writes to the Ogre log system.
 This is a combined Ogre::LogListener and a Ember::StreamLogObserver.
 The Ember::StreamLogObserver part does the main work, while the Ogre::LogListener implementation allow us to recieve ogre log events.
 */
-class OgreLogObserver: public Ember::StreamLogObserver, 
-public sigc::trackable, public Ogre::LogListener
+class OgreLogObserver: public Ogre::LogListener
 {
 	public:
 		/**
 		* Creates a new OgreLogObserver using default values.
 		*/
-		OgreLogObserver(std::ostream &out);
+		OgreLogObserver();
 		~OgreLogObserver();
 	virtual void write( const Ogre::String& name,
 		const Ogre::String& message, 
@@ -50,19 +49,7 @@ public sigc::trackable, public Ogre::LogListener
 		
 	protected:
 		
-		/**
-			* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
-			*/
-		void updateFromConfig();
-		
-		
-		/**
-			*          React on changes to the config.
-			* @param section 
-			* @param key 
-			*/
-		void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-		
+	
 		
 };
 

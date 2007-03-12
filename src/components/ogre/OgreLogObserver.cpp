@@ -24,18 +24,15 @@
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
-//#include "services/server/ServerService.h"
-#include "services/config/ConfigService.h"
+
 
 
 namespace EmberOgre {
 
 
 
-OgreLogObserver::OgreLogObserver(std::ostream &out) : Ember::StreamLogObserver(out)
+OgreLogObserver::OgreLogObserver()
 {
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &OgreLogObserver::ConfigService_EventChangedConfigItem));
-
 }
 
 OgreLogObserver::~OgreLogObserver()
@@ -43,43 +40,7 @@ OgreLogObserver::~OgreLogObserver()
 	
 }
 
-/**
-	* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
-	*/
-void OgreLogObserver::updateFromConfig()
-{
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "logginglevel")) {
-		std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "logginglevel"));
-		Ember::LoggingService::MessageImportance importance;
-		if (loggingLevel == "verbose") {
-			importance = Ember::LoggingService::VERBOSE;
-		} else if (loggingLevel == "info") {
-			importance = Ember::LoggingService::INFO;
-		} else if (loggingLevel == "warning") {
-			importance = Ember::LoggingService::WARNING;
-		} else if (loggingLevel == "failure") {
-			importance = Ember::LoggingService::FAILURE;
-		} else if (loggingLevel == "critical") {
-			importance = Ember::LoggingService::CRITICAL;
-		}
-		setFilter(importance);
-	}
-}
 
-
-/**
-	*          React on changes to the config.
-	* @param section 
-	* @param key 
-	*/
-void OgreLogObserver::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
-{
-	if (section == "general") {
-		if (key == "logginglevel") {
-			updateFromConfig();
-		}
-	}
-}
 			
 			
 void OgreLogObserver::write( const Ogre::String& name,
