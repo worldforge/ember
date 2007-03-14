@@ -16,6 +16,8 @@
 #include "config.h"
 #endif
 
+#include <Eris/View.h>
+#include <Eris/PollDefault.h>
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -48,8 +50,16 @@ namespace Ember
 template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleton = 0;
 
 
-Application::Application(const std::string& prefix, const std::string& homeDir, bool useBinReloc)
-: mShouldQuit(false), mPrefix(prefix), mHomeDir(homeDir), mUseBinreloc(useBinReloc), mOgreView(0), mLogObserver(0), mServices(0)
+Application::Application(const std::string prefix, const std::string homeDir, bool useBinReloc)
+: mShouldQuit(false)
+, mPrefix(prefix)
+, mHomeDir(homeDir)
+, mUseBinreloc(useBinReloc)
+, mOgreView(0)
+, mLogObserver(0)
+, mServices(0)
+, mWorldView(0)
+, mPollEris(true)
 {
 
 }
@@ -57,6 +67,7 @@ Application::Application(const std::string& prefix, const std::string& homeDir, 
 
 Application::~Application()
 {
+	delete mWorldView;
 	delete mOgreView;
 	delete mLogObserver;
 	delete mServices;
@@ -70,6 +81,30 @@ void Application::registerComponents()
 
 void Application::mainLoopStep() 
 {
+	if (mPollEris) {
+		EventStartErisPoll.emit();
+		try {
+			Eris::PollDefault::poll(1);
+		} catch (const Ember::Exception& ex) {
+			S_LOG_CRITICAL(ex.getError());
+			throw ex;
+		} catch (const std::exception& ex)
+		{
+			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
+			throw ex;
+		} catch (const std::string& ex)
+		{
+			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+			throw ex;
+		} catch (...)
+		{
+			S_LOG_CRITICAL("Got unknown exception.");
+		}
+		if (mWorldView)
+			mWorldView->update();
+		EventEndErisPoll.emit();
+	}
+	mOgreView->renderOneFrame();
 }
 
 void Application::mainLoop() 
@@ -88,25 +123,25 @@ void Application::initializeServices()
 	/// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
 
-	mServices = new Ember::EmberServices();
-	Ember::LoggingService *logging = Ember::EmberServices::getSingleton().getLoggingService();
+	mServices = new EmberServices();
+	Ember::LoggingService *logging = EmberServices::getSingleton().getLoggingService();
 	
 	/// Initialize the Configuration Service
-	Ember::EmberServices::getSingleton().getConfigService()->start();
-	Ember::EmberServices::getSingleton().getConfigService()->setPrefix(mPrefix);
+	EmberServices::getSingleton().getConfigService()->start();
+	EmberServices::getSingleton().getConfigService()->setPrefix(mPrefix);
 	if (mHomeDir != "") {
-		Ember::EmberServices::getSingleton().getConfigService()->setHomeDirectory(mHomeDir);
+		EmberServices::getSingleton().getConfigService()->setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
 	
 	///output all logging to ember.log
-	std::string filename(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ember.log");
-	static std::ofstream outstream(filename.c_str());
+	std::string filename(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ember.log");
+	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 	
 	///write to the log the version number
-	outstream << "Ember version " << VERSION << ", using media version " << MEDIA_VERSION << std::endl;
+	*mLogOutStream << "Ember version " << VERSION << ", using media version " << MEDIA_VERSION << std::endl;
 	
-	mLogObserver = new LogObserver(outstream);
+	mLogObserver = new LogObserver(*mLogOutStream);
 	logging->addObserver(mLogObserver);
 	
 	///default to INFO, though this can be changed by the config file
@@ -116,7 +151,7 @@ void Application::initializeServices()
 
 
 	/// Change working directory
-	const std::string& dirName = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
+	const std::string& dirName = EmberServices::getSingleton().getConfigService()->getHomeDirectory();
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
@@ -128,47 +163,60 @@ void Application::initializeServices()
 	}
 	
 	
-	chdir(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
+	chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
 
-	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
 	///make sure that there are files 
 	///assureConfigFile("ember.conf", sharePath);
 
-	Ember::EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
+	EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
 
 // #ifndef WIN32
 // 	/// Initialize the SoundService
-// 	if (Ember::EmberServices::getSingleton().getSoundService()->start() == Ember::Service::OK) {
-// 		Ember::EmberServices::getSingleton().getSoundService()->registerSoundProvider(new OgreSoundProvider());
+// 	if (EmberServices::getSingleton().getSoundService()->start() == Ember::Service::OK) {
+// 		EmberServices::getSingleton().getSoundService()->registerSoundProvider(new OgreSoundProvider());
 // 	}
 // #endif
 
 	/// Initialize and start the Metaserver Service.
-	S_LOG_INFO("Initializing MetaServer Service");
+	S_LOG_INFO("Initializing metaserver service");
 
- 	Ember::EmberServices::getSingleton().getMetaserverService()->start();
+ 	EmberServices::getSingleton().getMetaserverService()->start();
 	///hoho, we get linking errors if we don't do some calls to the service
-	Ember::EmberServices::getSingleton().getMetaserverService()->getMetaServer();
+	EmberServices::getSingleton().getMetaserverService()->getMetaServer();
 	
 	/// Initialize the Server Service
-	S_LOG_INFO("Initializing Server Service");
+	S_LOG_INFO("Initializing server service");
+	EmberServices::getSingleton().getServerService()->start();
 
-/*	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &Application::connectedToServer));
-	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));*/
-	
-	Ember::EmberServices::getSingleton().getServerService()->start();
+	S_LOG_INFO("Initializing scripting service");
+ 	EmberServices::getSingleton().getScriptingService()->start();
 
- 	Ember::EmberServices::getSingleton().getScriptingService()->start();
-
- 	Ember::EmberServices::getSingleton().getWfutService()->start();
+	S_LOG_INFO("Initializing wfut service");
+ 	EmberServices::getSingleton().getWfutService()->start();
+ 	
+ 	
+	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
  	
  	EventServicesInitialized.emit();
 }
 
+void Application::Server_GotView(Eris::View* view)
+{
+	mWorldView = view;
+}
+
+Eris::View* Application::getMainView()
+{
+	return mWorldView;
+}
+
 void Application::start()
 {
-	mOgreView->go(mUseBinreloc);
+	mOgreView->setup(mUseBinreloc);
+	mainLoop();
+	//mOgreView->go(mUseBinreloc);
 }
 
 bool Application::shouldQuit() 
@@ -176,6 +224,17 @@ bool Application::shouldQuit()
 	return mShouldQuit;
 }
 
+void Application::requestQuit()
+{
+	bool handled = false;
+	EventRequestQuit.emit(handled);
+	///check it was handled (for example if the gui wants to show a confirmation window)
+	if (!handled) {
+		///it's not handled, quit now
+		quit();
+	}
+
+}
 void Application::quit()
 {
 	mShouldQuit = true;
@@ -183,6 +242,16 @@ void Application::quit()
 
 void Application::runCommand(const std::string& cmd, const std::string& args)
 {
+}
+
+void Application::setErisPolling(bool doPoll)
+{
+	mPollEris = doPoll;
+}
+
+bool Application::getErisPolling() const
+{
+	return mPollEris;
 }
 
 
