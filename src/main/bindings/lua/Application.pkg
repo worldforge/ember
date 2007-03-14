@@ -1,0 +1,92 @@
+/*
+ *  File:       Application.h
+ *  Summary:    The class which initializes the GUI.
+ *  Written by: nikal
+ *
+ *  Copyright (C) 2001, 2002 nikal. 
+ *  This code is distributed under the GPL.
+ *  See file COPYING for details. 
+ *
+ */
+ 
+$#include "required.h"
+
+
+namespace Ember
+{
+
+    class Application
+    {
+        //======================================================================
+        // Inner Classes, Typedefs, and Enums
+        //======================================================================
+    public:
+		static Application& getSingleton( void );
+
+
+        //======================================================================
+        // Public Methods
+        //======================================================================
+       
+        /**
+         * return true if application has received an "exit" command else false.
+         *
+         * @return true if "shouldquit" else false
+         */
+        bool shouldQuit();
+        
+        
+        sigc::signal<void> EventServicesInitialized;
+        
+        
+
+	/**
+	 * Causes the application to quit.
+	 */
+	void quit();
+	   
+		
+	/**
+	 *    Sets whether eris should be polled each frame. Defaults to true.
+	 * @param doPoll 
+	 */
+	void setErisPolling(bool doPoll);
+
+	/**
+	 *    Gets whether eris should be polled each frame.
+	 * @return 
+	 */
+	bool getErisPolling() const;
+	
+	/**
+	 * Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
+	 */ 
+	sigc::signal<void, bool&> EventRequestQuit;
+	
+	/**
+	Emitted before the eris polling is started
+	*/
+	sigc::signal<void> EventStartErisPoll;
+	
+	/**
+	Emitted after the eris polling has finished
+	*/
+	sigc::signal<void> EventEndErisPoll;
+	
+	/**
+	 *    Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
+	 However, if there is no widget etc. handling the request, the application will instantly quit.
+	 */
+	void requestQuit();
+
+	/**
+	 * Accessor for the main eris world view, if any.
+	 */
+	Eris::View* getMainView();
+    
+
+
+};//class Application
+}//namespace Ember
+
+#endif

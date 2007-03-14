@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.6 on Sun Jan  7 21:53:26 2007.
+** Generated automatically by tolua++-1.0.6 on Mon Mar 12 23:20:43 2007.
 */
 
 #ifndef __cplusplus
@@ -304,7 +304,6 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Billboard");
  tolua_usertype(tolua_S,"EmberOgre::GUIManager");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
- tolua_usertype(tolua_S,"sigc::signal<void,bool&>");
  tolua_usertype(tolua_S,"Mercator::BasePoint");
  tolua_usertype(tolua_S,"Ogre::Degree");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::ActionDefinition*>");
@@ -358,7 +357,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinition::AreaDefinition");
  tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
- tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
+ tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"EmberOgre::AvatarController");
  tolua_usertype(tolua_S,"EmberOgre::Model::Model");
  tolua_usertype(tolua_S,"EmberOgre::MousePickerArgs");
@@ -375,30 +374,29 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Mercator::Area");
  tolua_usertype(tolua_S,"EmberOgre::Jesus");
  tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
- tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
+ tolua_usertype(tolua_S,"EmberOgre::TerrainArea");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
- tolua_usertype(tolua_S,"Ogre::RenderWindow");
+ tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
  tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
- tolua_usertype(tolua_S,"Eris::View");
- tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
+ tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
  tolua_usertype(tolua_S,"Carpenter::AttachPair");
  tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
  tolua_usertype(tolua_S,"EmberOgre::Gui::QuaternionAdapter");
- tolua_usertype(tolua_S,"EmberOgre::TerrainArea");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
- tolua_usertype(tolua_S,"Ogre::Vector2");
+ tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
  tolua_usertype(tolua_S,"EmberOgre::ColoredListItem");
+ tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlock");
- tolua_usertype(tolua_S,"Ogre;;ResourceManager");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockDefinition");
  tolua_usertype(tolua_S,"CEGUI::ListboxTextItem");
+ tolua_usertype(tolua_S,"Ogre;;ResourceManager");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
- tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
  tolua_usertype(tolua_S,"EmberOgre::TerrainEditAction");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
@@ -14013,7 +14011,7 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00(lua_State* tolua
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
- !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberOgre",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
  !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -14021,7 +14019,7 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00(lua_State* tolua
  else
 #endif
  {
-  const EmberOgre::EmberOgre* self = (const EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
   const std::string eid = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEmberEntity'",NULL);
@@ -14036,36 +14034,6 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00(lua_State* tolua
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getEmberEntity'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: getMainView of class  EmberOgre::EmberOgre */
-static int tolua_EmberOgre_EmberOgre_EmberOgre_getMainView00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMainView'",NULL);
-#endif
- {
-  Eris::View* tolua_ret = (Eris::View*)  self->getMainView();
- tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::View");
- }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getMainView'.",&tolua_err);
  return 0;
 #endif
 }
@@ -14204,84 +14172,6 @@ static int tolua_set_EmberOgre__EmberOgre_EventCreatedJesus(lua_State* tolua_S)
  tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
   self->EventCreatedJesus = *((sigc::signal<void,EmberOgre::Jesus*>*)  tolua_tousertype(tolua_S,2,0))
-;
- return 0;
-}
-
-/* get function: EventRequestQuit of class  EmberOgre::EmberOgre */
-static int tolua_get_EmberOgre__EmberOgre_EventRequestQuit(lua_State* tolua_S)
-{
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventRequestQuit'",NULL);
-#endif
- tolua_pushusertype(tolua_S,(void*)&self->EventRequestQuit,"sigc::signal<void,bool&>");
- return 1;
-}
-
-/* set function: EventRequestQuit of class  EmberOgre::EmberOgre */
-static int tolua_set_EmberOgre__EmberOgre_EventRequestQuit(lua_State* tolua_S)
-{
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventRequestQuit'",NULL);
- if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,bool&>",0,&tolua_err))
- tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->EventRequestQuit = *((sigc::signal<void,bool&>*)  tolua_tousertype(tolua_S,2,0))
-;
- return 0;
-}
-
-/* get function: EventStartErisPoll of class  EmberOgre::EmberOgre */
-static int tolua_get_EmberOgre__EmberOgre_EventStartErisPoll(lua_State* tolua_S)
-{
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventStartErisPoll'",NULL);
-#endif
- tolua_pushusertype(tolua_S,(void*)&self->EventStartErisPoll,"sigc::signal<void>");
- return 1;
-}
-
-/* set function: EventStartErisPoll of class  EmberOgre::EmberOgre */
-static int tolua_set_EmberOgre__EmberOgre_EventStartErisPoll(lua_State* tolua_S)
-{
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventStartErisPoll'",NULL);
- if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
- tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->EventStartErisPoll = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
-;
- return 0;
-}
-
-/* get function: EventEndErisPoll of class  EmberOgre::EmberOgre */
-static int tolua_get_EmberOgre__EmberOgre_EventEndErisPoll(lua_State* tolua_S)
-{
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventEndErisPoll'",NULL);
-#endif
- tolua_pushusertype(tolua_S,(void*)&self->EventEndErisPoll,"sigc::signal<void>");
- return 1;
-}
-
-/* set function: EventEndErisPoll of class  EmberOgre::EmberOgre */
-static int tolua_set_EmberOgre__EmberOgre_EventEndErisPoll(lua_State* tolua_S)
-{
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventEndErisPoll'",NULL);
- if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
- tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->EventEndErisPoll = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -14508,7 +14398,7 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getEntity00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
- !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberOgre",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
  !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -14516,7 +14406,7 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getEntity00(lua_State* tolua_S)
  else
 #endif
  {
-  const EmberOgre::EmberOgre* self = (const EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
   const std::string id = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEntity'",NULL);
@@ -14531,96 +14421,6 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getEntity00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getEntity'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: requestQuit of class  EmberOgre::EmberOgre */
-static int tolua_EmberOgre_EmberOgre_EmberOgre_requestQuit00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'requestQuit'",NULL);
-#endif
- {
-  self->requestQuit();
- }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'requestQuit'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: setErisPolling of class  EmberOgre::EmberOgre */
-static int tolua_EmberOgre_EmberOgre_EmberOgre_setErisPolling00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
- !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-  bool doPoll = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setErisPolling'",NULL);
-#endif
- {
-  self->setErisPolling(doPoll);
- }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setErisPolling'.",&tolua_err);
- return 0;
-#endif
-}
-
-/* method: getErisPolling of class  EmberOgre::EmberOgre */
-static int tolua_EmberOgre_EmberOgre_EmberOgre_getErisPolling00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
- !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberOgre",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
- goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberOgre* self = (const EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getErisPolling'",NULL);
-#endif
- {
-  bool tolua_ret = (bool)  self->getErisPolling();
- tolua_pushboolean(tolua_S,(bool)tolua_ret);
- }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getErisPolling'.",&tolua_err);
  return 0;
 #endif
 }
@@ -15610,15 +15410,11 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_function(tolua_S,"getMoveManager",tolua_EmberOgre_EmberOgre_EmberOgre_getMoveManager00);
  tolua_function(tolua_S,"getInput",tolua_EmberOgre_EmberOgre_EmberOgre_getInput00);
  tolua_function(tolua_S,"getEmberEntity",tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00);
- tolua_function(tolua_S,"getMainView",tolua_EmberOgre_EmberOgre_EmberOgre_getMainView00);
  tolua_function(tolua_S,"getJesus",tolua_EmberOgre_EmberOgre_EmberOgre_getJesus00);
  tolua_function(tolua_S,"getRenderWindow",tolua_EmberOgre_EmberOgre_EmberOgre_getRenderWindow00);
  tolua_variable(tolua_S,"EventCreatedEmberEntityFactory",tolua_get_EmberOgre__EmberOgre_EventCreatedEmberEntityFactory,tolua_set_EmberOgre__EmberOgre_EventCreatedEmberEntityFactory);
  tolua_variable(tolua_S,"EventCreatedAvatarEntity",tolua_get_EmberOgre__EmberOgre_EventCreatedAvatarEntity,tolua_set_EmberOgre__EmberOgre_EventCreatedAvatarEntity);
  tolua_variable(tolua_S,"EventCreatedJesus",tolua_get_EmberOgre__EmberOgre_EventCreatedJesus,tolua_set_EmberOgre__EmberOgre_EventCreatedJesus);
- tolua_variable(tolua_S,"EventRequestQuit",tolua_get_EmberOgre__EmberOgre_EventRequestQuit,tolua_set_EmberOgre__EmberOgre_EventRequestQuit);
- tolua_variable(tolua_S,"EventStartErisPoll",tolua_get_EmberOgre__EmberOgre_EventStartErisPoll,tolua_set_EmberOgre__EmberOgre_EventStartErisPoll);
- tolua_variable(tolua_S,"EventEndErisPoll",tolua_get_EmberOgre__EmberOgre_EventEndErisPoll,tolua_set_EmberOgre__EmberOgre_EventEndErisPoll);
  tolua_function(tolua_S,"getWorldSceneNode",tolua_EmberOgre_EmberOgre_EmberOgre_getWorldSceneNode00);
  tolua_function(tolua_S,"getRootSceneNode",tolua_EmberOgre_EmberOgre_EmberOgre_getRootSceneNode00);
  tolua_variable(tolua_S,"EventGUIManagerCreated",tolua_get_EmberOgre__EmberOgre_EventGUIManagerCreated,tolua_set_EmberOgre__EmberOgre_EventGUIManagerCreated);
@@ -15628,9 +15424,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
  tolua_variable(tolua_S,"EventAvatarControllerCreated",tolua_get_EmberOgre__EmberOgre_EventAvatarControllerCreated,tolua_set_EmberOgre__EmberOgre_EventAvatarControllerCreated);
  tolua_variable(tolua_S,"EventSceneCreated",tolua_get_EmberOgre__EmberOgre_EventSceneCreated,tolua_set_EmberOgre__EmberOgre_EventSceneCreated);
  tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_EmberOgre_getEntity00);
- tolua_function(tolua_S,"requestQuit",tolua_EmberOgre_EmberOgre_EmberOgre_requestQuit00);
- tolua_function(tolua_S,"setErisPolling",tolua_EmberOgre_EmberOgre_EmberOgre_setErisPolling00);
- tolua_function(tolua_S,"getErisPolling",tolua_EmberOgre_EmberOgre_EmberOgre_getErisPolling00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

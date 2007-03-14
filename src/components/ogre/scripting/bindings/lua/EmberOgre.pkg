@@ -77,9 +77,8 @@ class EmberOgre
 	EntityMoveManager* getMoveManager() const;
 	Input& getInput();
 	
-	EmberEntity* getEmberEntity(const std::string & eid) const;
+	EmberEntity* getEmberEntity(const std::string & eid);
 	
-	Eris::View*  getMainView();
 	
 	Jesus* getJesus() const;
 	
@@ -89,11 +88,6 @@ class EmberOgre
 	sigc::signal<void, EmberOgre::EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	sigc::signal<void, EmberOgre::AvatarEmberEntity*> EventCreatedAvatarEntity;
 	sigc::signal<void, EmberOgre::Jesus*> EventCreatedJesus;
-	sigc::signal<void, bool&> EventRequestQuit;
-	
-	sigc::signal<void> EventStartErisPoll;
-	
-	sigc::signal<void> EventEndErisPoll;
 	
 	Ogre::SceneNode* getWorldSceneNode() const;
 	
@@ -113,21 +107,8 @@ class EmberOgre
 	
 	sigc::signal<void> EventSceneCreated;
 	
-	EmberEntity* getEntity(const std::string & id) const;
+	EmberEntity* getEntity(const std::string & id);
 	
-	void requestQuit();
-
-	/**
-	 *    Sets whether eris should be polled each frame. Defaults to true.
-	 * @param doPoll 
-	 */
-	void setErisPolling(bool doPoll);
-
-	/**
-	 *    Gets whether eris should be polled each frame.
-	 * @return 
-	 */
-	bool getErisPolling() const;
 };
 
 }
