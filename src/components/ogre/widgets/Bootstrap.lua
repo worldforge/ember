@@ -3,6 +3,9 @@
 
 --set up some commonly used objects, these will be available to all scripts
 
+--The main application object
+app = Ember.Application:getSingleton()
+
 --The main CEGUI system. This is the main channel for all CEGUI actions.
 guiSystem = CEGUI.System:getSingleton()
 

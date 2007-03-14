@@ -1,3 +1,43 @@
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/Performance.lua: updated for changes in EmberOgre
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/input/Input.cpp, src/components/ogre/ConsoleObjectImpl.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/widgets/Quit.cpp: moved more functionality to Application
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/manipulation/EntityMoveManager.cpp, src/components/ogre/manipulation/EntityMover.cpp: fixed a crash when the world was being moved
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/bindings/Makefile.am, src/main/bindings/lua/Application.pkg, src/main/bindings/lua/Makefile.am, src/main/bindings/lua/lua_Main.cpp, src/main/bindings/lua/required.h, src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: added lua bindings for the Application class
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp, src/main/Application.h, src/main/Makefile.am, src/main/StateManager.cpp, src/main/StateManager.h, src/main/states.xml: removed some obsolete files and cleaned up the moving of code to Application
+
+2007-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.bat, ember.in: with libwfut there's no longer any need to use the java WFUT tool
+
+2007-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/bindings/lua/ScriptingService.pkg, src/services/bindings/lua/lua_EmberServices.cpp, src/services/scripting/ScriptingService.cpp, src/services/scripting/ScriptingService.h: use a ConsoleCommandWrapper
+
+2007-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp, src/main/Application.h, src/main/Ember.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: moved base functionality to the component neutral main directory
+
+2007-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreLogObserver.cpp, src/components/ogre/OgreLogObserver.h, src/main/LogObserver.cpp, src/main/LogObserver.h: moved the log writing mechanism to its own class and made the Ogre log observer only pass ogre log messages on
+
+2007-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/Makefile.am, src/framework/Makefile.am, src/main/Makefile.am, src/services/Makefile.am, configure.ac: activate the main directory, make the sublibs more contained
+
 2007-03-07 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/carpenter/Makefile.am, src/components/ogre/environment/Makefile.am, src/components/ogre/environment/meshtree/Makefile.am, src/components/ogre/input/Makefile.am, src/components/ogre/jesus/Makefile.am, src/components/ogre/manipulation/Makefile.am, src/components/ogre/model/Makefile.am, src/components/ogre/ogreopcode/Makefile.am, src/components/ogre/ogreopcode/opcode/Makefile.am, src/components/ogre/scripting/Makefile.am, src/components/ogre/scripting/bindings/lua/Makefile.am, src/components/ogre/scripting/bindings/lua/helpers/Makefile.am, src/components/ogre/scripting/bindings/lua/ogre/Makefile.am, src/components/ogre/sound/Makefile.am, src/components/ogre/terrain/Makefile.am, src/components/ogre/widgets/Makefile.am, src/extensions/Makefile.am, src/framework/Makefile.am, src/framework/bindings/lua/Makefile.am, src/framework/bindings/lua/eris/Makefile.am, src/services/Makefile.am, src/services/bindings/lua/Makefile.am, src/services/config/Makefile.am, src/services/logging/Makefile.am, src/services/metaserver/Makefile.am, src/services/scripting/Makefile.am, src/services/server/Makefile.am, src/services/sound/Makefile.am: better structure of the sublibs
