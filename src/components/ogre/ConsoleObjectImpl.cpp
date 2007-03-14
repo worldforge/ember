@@ -32,7 +32,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
-#include "EmberOgre.h"
+#include "main/Application.h"
 // #include <SDL.h>
 
 template<> EmberOgre::ConsoleObjectImpl* Ember::Singleton<EmberOgre::ConsoleObjectImpl>::ms_Singleton = 0;
@@ -57,13 +57,13 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
 		Ember::ConsoleBackend::getMainConsole()->pushMessage("Bye");
 		quit();
 	} else if (ToggleErisPolling == command){
-		EmberOgre::getSingleton().setErisPolling(!EmberOgre::getSingleton().getErisPolling());
+		Ember::Application::getSingleton().setErisPolling(!Ember::Application::getSingleton().getErisPolling());
 	}
 }
 
 void ConsoleObjectImpl::quit()
 {
-	EmberOgre::getSingleton().shutdown();
+	Ember::Application::getSingleton().quit();
 }
 
 }

@@ -124,7 +124,7 @@ public:
      * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      */
     virtual void go(bool loadOgrePluginsThroughBinreloc = false);
-	void shutdown();
+// 	void shutdown();
 
 	/**
 	 * Initialize all Ember services needed for this application
@@ -133,7 +133,7 @@ public:
 	 */
 	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
-	void Server_GotView(Eris::View* world);
+ 	void Server_GotView(Eris::View* world);
 	void connectedToServer(Eris::Connection* connection);
 
 
@@ -153,9 +153,7 @@ public:
 	/**
 	 * Gets the entity with the supplies id from the world.
 	 */
-	EmberEntity* getEmberEntity(const std::string & eid) const;
-	
-	inline Eris::View* const getMainView();
+	EmberEntity* getEmberEntity(const std::string & eid);
 	
 	inline Jesus* getJesus() const;
 	
@@ -165,20 +163,16 @@ public:
 	sigc::signal<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
 	sigc::signal<void, Jesus*> EventCreatedJesus;
-	/**
-	 * Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
-	 */ 
-	sigc::signal<void, bool&> EventRequestQuit;
 	
 	/**
 	Emitted before the eris polling is started
 	*/
-	sigc::signal<void> EventStartErisPoll;
+// 	sigc::signal<void> EventStartErisPoll;
 	
 	/**
 	Emitted after the eris polling has finished
 	*/
-	sigc::signal<void> EventEndErisPoll;
+// 	sigc::signal<void> EventEndErisPoll;
 	
 	/**
 	 * returns the scenenode of the world entity
@@ -225,29 +219,42 @@ public:
 	*/
 	sigc::signal<void> EventSceneCreated;
 	
-	EmberEntity* getEntity(const std::string & id) const;
+	EmberEntity* getEntity(const std::string & id);
 	
 	/**
 	 *    Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
 	 However, if there is no widget etc. handling the request, the application will instantly quit.
 	 */
-	void requestQuit();
+// 	void requestQuit();
 
 	/**
 	 *    Sets whether eris should be polled each frame. Defaults to true.
 	 * @param doPoll 
 	 */
-	void setErisPolling(bool doPoll);
+// 	void setErisPolling(bool doPoll);
 
 	/**
 	 *    Gets whether eris should be polled each frame.
 	 * @return 
 	 */
-	bool getErisPolling() const;
+// 	bool getErisPolling() const;
+	
+	/**
+	Renders one frame.
+	*/
+	bool renderOneFrame();
+
+    /**
+     * Sets up the application - returns false if the user chooses to abandon configuration.
+     * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
+     * @return 
+     */
+    bool setup(bool loadOgrePluginsThroughBinreloc = false);
 
 protected:
 
 	
+	Eris::View* getMainView();
 
 	/**
 	* The main user avatar
@@ -289,13 +296,6 @@ protected:
 	*/
 	EmberEntityFactory* mEmberEntityFactory;
 
-    /**
-     * Sets up the application - returns false if the user chooses to abandon configuration.
-     * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
-     * @return 
-     */
-    virtual bool setup(bool loadOgrePluginsThroughBinreloc = false);
-  
 	/**
 	 *    Creates the basic scene with a single avatar, just for testing purpose.
 	 * NOTE: remove this when going final
@@ -358,12 +358,12 @@ protected:
 	/**
 	Once connected to a world, this will hold the main world view.
 	*/
-	Eris::View* mWorldView;
+// 	Eris::View* mWorldView;
 	
 	/**
 	Controls whether eris should be polled at each frame update.
 	*/
-	bool mPollEris;
+// 	bool mPollEris;
 
 	/**
 	The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
@@ -392,10 +392,7 @@ EntityMoveManager* EmberOgre::getMoveManager() const
 {
 	return mMoveManager;
 }
-Eris::View* const EmberOgre::getMainView() 
-{ 
-	return mWorldView;
-}
+
 Jesus* EmberOgre::getJesus() const 
 { 
 	return mJesus; 

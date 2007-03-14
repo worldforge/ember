@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Quit.h"
-#include "../EmberOgre.h"
+// #include "../EmberOgre.h"
+#include "main/Application.h"
 #include <elements/CEGUIPushButton.h>
 
 #include "framework/ConsoleBackend.h"
@@ -44,7 +45,7 @@ void Quit::buildWidget()
 	
 	loadMainSheet("Quit.widget", "Quit/");
 	
-	EmberOgre::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
+	Ember::Application::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
 	
 	CEGUI::PushButton* yesButton = static_cast<CEGUI::PushButton*>(getWindow("YesButton"));
 	CEGUI::PushButton* noButton = static_cast<CEGUI::PushButton*>(getWindow("NoButton"));
@@ -61,7 +62,7 @@ void Quit::buildWidget()
 
 bool Quit::Yes_Click(const CEGUI::EventArgs& args)
 {
-	EmberOgre::getSingleton().shutdown();
+	Ember::Application::getSingleton().quit();
 	return true;
 }
 
@@ -77,7 +78,7 @@ void Quit::EmberOgre_RequestQuit(bool& handled)
 	handled = true;
 	//if the window system twice requests a quit, do it
 	if (mMainWindow->isVisible()) {
-		EmberOgre::getSingleton().shutdown();
+		Ember::Application::getSingleton().quit();
 	} else {
 		softquit();
 	}

@@ -21,8 +21,10 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Input.h"
-#include "../EmberOgre.h"
+// #include "../EmberOgre.h"
+#include "InputCommandMapper.h"
 
+#include "main/Application.h"
 #include "framework/scrap.h"
 #include "IInputAdapter.h"
 
@@ -308,7 +310,7 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 				keyChanged(event.key);
 				break;
 			case SDL_QUIT:
-				EmberOgre::getSingleton().requestQuit();
+				Ember::Application::getSingleton().requestQuit();
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				if(event.button.button == SDL_BUTTON_WHEELUP) {

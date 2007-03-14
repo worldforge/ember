@@ -54,7 +54,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include Eris header files
 // ------------------------------
-#include <Eris/PollDefault.h>
+/*#include <Eris/PollDefault.h>*/
 #include <Eris/Connection.h>
 
 
@@ -137,6 +137,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "main/Application.h"
 
+#include <SDL/SDL.h>
+
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
 namespace EmberOgre {
@@ -161,13 +163,15 @@ namespace EmberOgre {
 EmberOgre::EmberOgre() :
 mRoot(0),
 mKeepOnRunning(true),
-mWorldView(0),
+// mWorldView(0),
 mGUIManager(0),
 mTerrainGenerator(0),
 mMotionManager(0),
 mAvatarController(0),
 mModelDefinitionManager(0),
-mEmberEntityFactory(0), mPollEris(true), mLogObserver(0), mGeneralCommandMapper("general"),
+mEmberEntityFactory(0), 
+// mPollEris(true), 
+mLogObserver(0), mGeneralCommandMapper("general"),
 mWindow(0),
 mMaterialEditor(0),
 mJesus(0),
@@ -189,7 +193,7 @@ EmberOgre::~EmberOgre()
 	delete mAvatar;
 	
 	///start with deleting the eris world, then shut down ogre
-	delete mWorldView;
+// 	delete mWorldView;
 
 	delete mMotionManager;
 	delete mTerrainGenerator;
@@ -205,6 +209,8 @@ EmberOgre::~EmberOgre()
 	if (mWindow) {
 		mRoot->detachRenderTarget(mWindow);
 	}
+	
+// 	SDL_Quit();
 	
 	delete mRoot;
 	
@@ -242,39 +248,44 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 
 
-	if (mPollEris) {
-		EventStartErisPoll.emit();
-		try {
-			Eris::PollDefault::poll(1);
-		} catch (const Ember::Exception& ex) {
-			S_LOG_CRITICAL(ex.getError());
-			throw ex;
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_CRITICAL(ex.getFullDescription());
-			throw ex;
-	/*	} catch (const CEGUI::Exception& ex) {
-			S_LOG_CRITICAL(ex.getMessage());
-			throw ex;*/
-		} catch (const std::exception& ex)
-		{
-			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-			throw ex;
-		} catch (const std::string& ex)
-		{
-			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-			throw ex;
-		} catch (...)
-		{
-			S_LOG_CRITICAL("Got unknown exception.");
-		}
-		if (mWorldView)
-			mWorldView->update();
-		EventEndErisPoll.emit();
-	}
+// 	if (mPollEris) {
+// 		EventStartErisPoll.emit();
+// 		try {
+// 			Eris::PollDefault::poll(1);
+// 		} catch (const Ember::Exception& ex) {
+// 			S_LOG_CRITICAL(ex.getError());
+// 			throw ex;
+// 		} catch (const Ogre::Exception& ex) {
+// 			S_LOG_CRITICAL(ex.getFullDescription());
+// 			throw ex;
+// 	/*	} catch (const CEGUI::Exception& ex) {
+// 			S_LOG_CRITICAL(ex.getMessage());
+// 			throw ex;*/
+// 		} catch (const std::exception& ex)
+// 		{
+// 			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
+// 			throw ex;
+// 		} catch (const std::string& ex)
+// 		{
+// 			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+// 			throw ex;
+// 		} catch (...)
+// 		{
+// 			S_LOG_CRITICAL("Got unknown exception.");
+// 		}
+// 		if (mWorldView)
+// 			mWorldView->update();
+// 		EventEndErisPoll.emit();
+// 	}
 	
 	if (!mKeepOnRunning)
 		S_LOG_INFO( "Shutting down Ember.");
 	return mKeepOnRunning;
+}
+
+bool EmberOgre::renderOneFrame()
+{
+	return mRoot->renderOneFrame();
 }
 
 
@@ -284,51 +295,51 @@ void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 		return;
 
 // 	try {
-	try {
-		mRoot->startRendering();
-	} catch (const Ember::Exception& ex) {
-		S_LOG_CRITICAL(ex.getError());
-		throw ex;
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_CRITICAL(ex.getFullDescription());
-		throw ex;
-	} catch (const std::string& ex)
-	{
-		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-		throw ex;
-/*	} catch (const CEGUI::Exception& ex) {
-		S_LOG_CRITICAL(ex.getMessage());
-		throw ex;*/
-	} catch (const std::exception& ex)
-	{
-		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-		throw ex;
-	} catch (...)
-	{
-		S_LOG_CRITICAL("Got unknown exception,");
-	}
+// 	try {
+// 		mRoot->startRendering();
+// 	} catch (const Ember::Exception& ex) {
+// 		S_LOG_CRITICAL(ex.getError());
+// 		throw ex;
+// 	} catch (const Ogre::Exception& ex) {
+// 		S_LOG_CRITICAL(ex.getFullDescription());
+// 		throw ex;
+// 	} catch (const std::string& ex)
+// 	{
+// 		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+// 		throw ex;
+// /*	} catch (const CEGUI::Exception& ex) {
+// 		S_LOG_CRITICAL(ex.getMessage());
+// 		throw ex;*/
+// 	} catch (const std::exception& ex)
+// 	{
+// 		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
+// 		throw ex;
+// 	} catch (...)
+// 	{
+// 		S_LOG_CRITICAL("Got unknown exception,");
+// 	}
 // 	} catch (Ogre::Exception e) {
 // 		std::cerr << "Error in Ogre: !\n";
 // 	}
 
 }
 
-void EmberOgre::shutdown()
-{
-	mKeepOnRunning = false;
-}
-
-void EmberOgre::requestQuit()
-{
-	bool handled = false;
-	EventRequestQuit.emit(handled);
-	///check it was handled (for example if the gui wants to show a confirmation window)
-	if (!handled) {
-		///it's not handled, quit now
-		shutdown();
-	}
-
-}
+// void EmberOgre::shutdown()
+// {
+// 	mKeepOnRunning = false;
+// }
+// 
+// void EmberOgre::requestQuit()
+// {
+// 	bool handled = false;
+// 	EventRequestQuit.emit(handled);
+// 	///check it was handled (for example if the gui wants to show a confirmation window)
+// 	if (!handled) {
+// 		///it's not handled, quit now
+// 		shutdown();
+// 	}
+// 
+// }
 
 
     
@@ -515,10 +526,10 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 }
 
 
-EmberEntity* EmberOgre::getEmberEntity(const std::string & eid) const
+EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
 {
-	assert(mWorldView);
-	return static_cast<EmberEntity*>(mWorldView->getEntity(eid));
+	assert(getMainView());
+	return static_cast<EmberEntity*>(getMainView()->getEntity(eid));
 }
 
 
@@ -661,14 +672,14 @@ void EmberOgre::createScene(void)
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {
-	mWorldView = view;
+// 	mWorldView = view;
 	mEmberEntityFactory = new EmberEntityFactory(view, mTerrainGenerator, Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
 }
 
-EmberEntity* EmberOgre::getEntity(const std::string & id) const
+EmberEntity* EmberOgre::getEntity(const std::string & id)
 {
 	///this of course relies upon all entities being created by our factory
-	return static_cast<EmberEntity*>(mWorldView->getEntity(id));
+	return static_cast<EmberEntity*>(getMainView()->getEntity(id));
 }
 
 
@@ -741,15 +752,15 @@ AvatarController* EmberOgre::getAvatarController() const
 	return mAvatarController;
 }
 
-void EmberOgre::setErisPolling(bool doPoll)
-{
-	mPollEris = doPoll;
-}
-
-bool EmberOgre::getErisPolling() const
-{
-	return mPollEris;
-}
+// // void EmberOgre::setErisPolling(bool doPoll)
+// // {
+// // 	mPollEris = doPoll;
+// // }
+// // 
+// // bool EmberOgre::getErisPolling() const
+// // {
+// // 	return mPollEris;
+// // }
 
 
 void EmberOgre::initializeEmberServices(const std::string& prefix, const std::string& homeDir)
@@ -761,6 +772,11 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+}
+
+Eris::View* EmberOgre::getMainView() 
+{ 
+	return Ember::Application::getSingleton().getMainView();
 }
 
 
