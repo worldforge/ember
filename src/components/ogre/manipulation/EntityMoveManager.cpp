@@ -28,6 +28,7 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "../EmberOgre.h"
+#include "../EmberEntity.h"
 
 
 
@@ -51,9 +52,12 @@ void EntityMoveManager::GuiManager_EntityAction(const std::string& action, Ember
 
 void EntityMoveManager::startMove(EmberEntity* entity)
 {
-	EntityMover* mover = new EntityMover(entity);
-	mMoveAdapter.attachToBridge(mover);
-	EventStartMoving.emit(entity);
+	///disallow moving of the root entity
+	if (entity->getLocation()) {
+		EntityMover* mover = new EntityMover(entity);
+		mMoveAdapter.attachToBridge(mover);
+		EventStartMoving.emit(entity);
+	}
 }
 
 void EntityMoveManager::runCommand(const std::string &command, const std::string &args)

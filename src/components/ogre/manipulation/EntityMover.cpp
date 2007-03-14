@@ -77,8 +77,10 @@ void EntityMover::setOrientation(const WFMath::Quaternion& rotation)
 
 void EntityMover::finalizeMovement()
 {
-	///send to server
-	Ember::EmberServices::getSingleton().getServerService()->place(mEntity, mEntity->getLocation(), Ogre2Atlas(mEntity->getSceneNode()->getPosition()), Ogre2Atlas(mEntity->getSceneNode()->getOrientation()));
+	if (mEntity->getLocation()) {
+		///send to server
+		Ember::EmberServices::getSingleton().getServerService()->place(mEntity, mEntity->getLocation(), Ogre2Atlas(mEntity->getSceneNode()->getPosition()), Ogre2Atlas(mEntity->getSceneNode()->getOrientation()));
+	}
 	
 }
 void EntityMover::cancelMovement()
