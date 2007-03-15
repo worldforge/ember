@@ -1,5 +1,25 @@
 2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/GUICEGUIAdapter.cpp: added mappings for control keys which fixes a bug where multiple selections in lists didn't work
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/OgreSetup.cpp, src/components/ogre/OgreSetup.h: restructued for better shut down to avoid segfaults and exceptions at exit
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.lua: fixed a bug where the pick location would be lost due to the vector object being destroyed while still held by lua
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EntityWorldPickListener.cpp: fixed incorrect calculation of near picking distance
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: added lua bindings for main
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/Performance.lua: updated for changes in EmberOgre
 
 2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

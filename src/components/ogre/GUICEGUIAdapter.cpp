@@ -128,7 +128,17 @@ mGuiSystem(system)
 	mKeyMap[SDLK_F10] = CEGUI::Key::F10;
 	mKeyMap[SDLK_F11] = CEGUI::Key::F11;
 	mKeyMap[SDLK_F12] = CEGUI::Key::F12;
-	
+	mKeyMap[SDLK_F13] = CEGUI::Key::F13;
+	mKeyMap[SDLK_F14] = CEGUI::Key::F14;
+	mKeyMap[SDLK_F15] = CEGUI::Key::F15;
+	mKeyMap[SDLK_NUMLOCK] = CEGUI::Key::NumLock;
+	mKeyMap[SDLK_SCROLLOCK] = CEGUI::Key::ScrollLock;
+	mKeyMap[SDLK_RSHIFT] = CEGUI::Key::RightShift;
+	mKeyMap[SDLK_LSHIFT] = CEGUI::Key::LeftShift;
+	mKeyMap[SDLK_RCTRL] = CEGUI::Key::RightControl;
+	mKeyMap[SDLK_LCTRL] = CEGUI::Key::LeftControl;
+	mKeyMap[SDLK_RALT] = CEGUI::Key::RightAlt;
+	mKeyMap[SDLK_LALT] = CEGUI::Key::LeftAlt;
 	
 	
 	///set up the capturing of text selected event for the copy-and-paste functionality
