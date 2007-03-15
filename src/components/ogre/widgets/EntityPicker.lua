@@ -58,7 +58,8 @@ function EntityPicker_pickedEntity(result, args)
 --	debug(args.windowY)
 	
 	EntityPicker.entity = result.entity
-	EntityPicker.position = result.position
+	--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
+	EntityPicker.position = Ogre.Vector3:new_local(result.position)
 	local point = CEGUI.Point:new_local(args.windowX, args.windowY)
 	EntityPicker_showMenu(point)
 	local name
