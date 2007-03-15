@@ -137,8 +137,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "main/Application.h"
 
-#include <SDL/SDL.h>
-
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
 namespace EmberOgre {
@@ -210,9 +208,10 @@ EmberOgre::~EmberOgre()
 		mRoot->detachRenderTarget(mWindow);
 	}
 	
-// 	SDL_Quit();
-	
-	delete mRoot;
+	if (mOgreSetup.get()) {
+		mOgreSetup->shutdown();
+		mOgreSetup.release();
+	}
 	
 	delete mLogObserver;
 	
@@ -354,7 +353,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	checkForConfigFiles();
 
 	///Create a setup object through which we will start up Ogre.
-	OgreSetup ogreSetup;
+	mOgreSetup = std::auto_ptr<OgreSetup>(new OgreSetup);
 
 	mLogObserver = new OgreLogObserver();
 	
@@ -364,7 +363,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	Ogre::LogManager::getSingleton().addListener(mLogObserver);
 
 	///We need a root object.
-	mRoot = ogreSetup.createOgreSystem(loadOgrePluginsThroughBinreloc);
+	mRoot = mOgreSetup->createOgreSystem(loadOgrePluginsThroughBinreloc);
 
 	if (!mRoot) {
 		throw Ember::Exception("There was a problem setting up the Ogre environment, aborting.");
@@ -384,16 +383,16 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	bool useWfut = configSrv->itemExists("wfut", "enabled") && (bool)configSrv->getValue("wfut", "enabled");
 
 
-	bool carryOn = ogreSetup.configure();
+	bool carryOn = mOgreSetup->configure();
 	if (!carryOn) return false;
-	mWindow = ogreSetup.getRenderWindow();
+	mWindow = mOgreSetup->getRenderWindow();
 	
 	
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	ogreResourceLoader.loadBootstrap();
 	
 	
-	mSceneMgr = ogreSetup.chooseSceneManager();
+	mSceneMgr = mOgreSetup->chooseSceneManager();
 	
 	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	Ogre::Camera* camera = mSceneMgr->createCamera("MainCamera");

@@ -71,6 +71,11 @@ public:
      */
     EmberPagingSceneManager* chooseSceneManager();
     
+    /**
+     * Shuts down the ogre system.
+     */
+    void shutdown();
+    
 private:
 
 	/**

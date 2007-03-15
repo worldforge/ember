@@ -97,6 +97,7 @@ class EntityMoveManager;
 
 class MaterialEditor;
 
+class OgreSetup;
 
 /** 
 
@@ -253,6 +254,10 @@ public:
 
 protected:
 
+	/**
+	utility object for setting up and tearing down ogre
+	*/
+	std::auto_ptr<OgreSetup> mOgreSetup;
 	
 	Eris::View* getMainView();
 
