@@ -1,5 +1,9 @@
 2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/outdoor_structures.modeldef: adjusted the gallows
+
+2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/GUICEGUIAdapter.cpp: added mappings for control keys which fixes a bug where multiple selections in lists didn't work
 
 2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

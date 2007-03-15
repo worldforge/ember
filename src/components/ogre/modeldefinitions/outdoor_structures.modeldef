@@ -132,5 +132,16 @@
 			</submodel>
 		</submodels>
  	</model>	
-
+    <model name="gallows" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="2.800000" z="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/gallows/gallows.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
 </models>

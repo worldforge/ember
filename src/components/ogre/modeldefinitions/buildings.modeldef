@@ -266,15 +266,5 @@
 			</submodel>
 		</submodels>
 	</model>			
-	<model name="gallows">
-		<rotation x="1" y="0" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="junkyard/models/gallows/gallows.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
 
 </models>
