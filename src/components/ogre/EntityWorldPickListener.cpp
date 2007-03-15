@@ -109,10 +109,10 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 					result.distance = collisionResult.distance;
 					if (mFurthestPickingDistance == 0) {
 						///test all objects that fall into this distance
-						mFurthestPickingDistance = (pickedMovable->getParentSceneNode()->getPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
+						mFurthestPickingDistance = (pickedMovable->getParentSceneNode()->getWorldPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
 						mResult = result;
 					} else {
-						if ((pickedMovable->getParentSceneNode()->getPosition() - cameraRay.getOrigin()).length() - pickedMovable->getBoundingRadius() > mFurthestPickingDistance) {
+						if ((pickedMovable->getParentSceneNode()->getWorldPosition() - cameraRay.getOrigin()).length() - pickedMovable->getBoundingRadius() > mFurthestPickingDistance) {
 							continuePicking = false;		
 						} else {
 							if (result.distance < mResult.distance) {
