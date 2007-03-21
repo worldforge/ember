@@ -50,6 +50,9 @@
 
 #include "Avatar.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+#include "framework/osdir.h"
 
 
 
@@ -62,7 +65,7 @@ EmberEntityFactory::EmberEntityFactory(Eris::View* view, TerrainGenerator* terra
 , mView(view)
 , mWorldEntity(0)
 , ShowModels("showmodels", this, "Show or hide models.")
-, DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to the std::out. If no entity id is supplied the current avatar will be used.")
+, DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used.")
 {
 	mView->registerFactory(this);
 	
@@ -169,7 +172,24 @@ const void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityI
 {
 	EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 	if (entity) {
-		entity->dumpAttributes(std::cout, std::cout);
+		///make sure the directory exists
+		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
+		
+		if (!oslink::directory(dir).isExisting()) {
+			S_LOG_INFO("Creating directory " << dir);
+#ifdef __WIN32__
+			mkdir(dir.c_str());
+#else 
+			mkdir(dir.c_str(), S_IRWXU);
+#endif
+		}
+		
+		const std::string fileName(dir + entityId + ".atlas");
+		std::fstream exportFile(fileName.c_str(), std::fstream::out);
+	
+		S_LOG_INFO("Dumping attributes to " << fileName);
+		entity->dumpAttributes(exportFile, std::cout);
+		Ember::ConsoleBackend::getMainConsole()->pushMessage(std::string("Dumped attributes to ") + fileName);
 	}
 }
 
