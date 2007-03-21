@@ -46,7 +46,7 @@ using namespace Ogre;
 namespace Ogre {
 
 	/**
-	This is just like a WireBoundBox but not aligned to the axes
+	This is just like a WireBoundBox but not aligned to the axes, hence it will correctly line up according to it's orientation.
 	*/
 	class OOBBWireBoundingBox  : public WireBoundingBox
 	{
@@ -124,10 +124,12 @@ EmberEntity::~EmberEntity()
 	///make sure it's not in the MotionManager
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeEntity(this);
-	//if (mErisEntityBoundingBox)
-	//{
-	//	EmberOgre::getSingleton().getWorldSceneNode()->removeAndDestroyChild(mErisEntityBoundingBox->getParentSceneNode()->getName());
-	//}
+	
+	if (mErisEntityBoundingBox)
+	{
+		getSceneManager()->destroyMovableObject(mErisEntityBoundingBox);
+// 		EmberOgre::getSingleton().getWorldSceneNode()->removeAndDestroyChild(mErisEntityBoundingBox->getParentSceneNode()->getName());
+	}
 	
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
@@ -398,32 +400,32 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	} else {
 		EmberEntity* newLocationEntity = getEmberLocation();
 		
-		const Ogre::Vector3& oldWorldPosition = getSceneNode()->getWorldPosition();
+		const Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+// 		const Ogre::Quaternion oldWorldOrientation = getSceneNode()->getWorldOrientation();
 		
 		if (getSceneNode()->getParentSceneNode()) {
-			//detach from our current object
+			///detach from our current object
 			getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
 		}
 		if (newLocationEntity) { 
-	
-			
-				// add to the new entity
-				newLocationEntity->getSceneNode()->addChild(getSceneNode());
-				S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
-				if (getPosition().isValid()) {
-					///note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated
-					getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
-					adjustPosition();
-					std::stringstream ss;
-					ss << getPredictedPos();
-					S_LOG_VERBOSE("New position for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
-				}
-				if (getOrientation().isValid()) {
-					getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-					std::stringstream ss;
-					ss << getOrientation();
-					S_LOG_VERBOSE("New orientation for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
-				}
+			// add to the new entity
+			newLocationEntity->getSceneNode()->addChild(getSceneNode());
+			S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
+			if (getPosition().isValid()) {
+				///note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated
+				getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+				adjustPosition();
+				std::stringstream ss;
+				ss << getPredictedPos();
+				S_LOG_VERBOSE("New position for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
+			}
+			if (getOrientation().isValid()) {
+				getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+				std::stringstream ss;
+				ss << getOrientation();
+				S_LOG_VERBOSE("New orientation for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
+			}
+//				getSceneNode()->rotate(newLocationEntity->getSceneNode()->getWorldOrientation() - oldWorldOrientation);
 	
 		} else {
 			///the entity has no current parent, and should be placed in limbo (hopefully a more correct parent will be submitted in a future LocationChanged event
@@ -643,10 +645,20 @@ static void dumpElement(const std::string &prefix, const std::string &name, cons
     logOutstream << prefix << name << ": Dumping Map" << std::endl;
     Atlas::Message::MapType::const_iterator itr = e.asMap().begin();
     Atlas::Message::MapType::const_iterator end = e.asMap().end();
+    outstream << prefix << name << ":" << std::endl;
     for (; itr != end; ++itr) {
       dumpElement(prefix + "  ", itr->first, itr->second, outstream, logOutstream);
     }
     logOutstream << prefix << "Finished Dumping Map" << std::endl;
+  } else if (e.isList()) {
+    logOutstream << prefix << name << ": Dumping List" << std::endl;
+    Atlas::Message::ListType::const_iterator itr = e.asList().begin();
+    Atlas::Message::ListType::const_iterator end = e.asList().end();
+    outstream << prefix << name << ":" << std::endl;
+    for (; itr != end; ++itr) {
+      dumpElement(prefix + "  ", "", *itr, outstream, logOutstream);
+    }
+    logOutstream << prefix << "Finished Dumping List" << std::endl;
   } else {
     if (e.isString()) outstream << prefix << name << ": " << e.asString() << std::endl;
     if (e.isNum()) outstream << prefix << name << ": " << e.asNum() << std::endl;
@@ -661,7 +673,7 @@ void EmberEntity::dumpAttributes(std::ostream& outstream, std::ostream& logOutst
   Eris::Entity::AttrMap::const_iterator itr = attribs.begin();
   Eris::Entity::AttrMap::const_iterator end = attribs.end();
   for (; itr != end; ++itr) {
-    dumpElement("  ",itr->first, itr->second, outstream, logOutstream);
+    dumpElement("",itr->first, itr->second, outstream, logOutstream);
   }
 }
 
