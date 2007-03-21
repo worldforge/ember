@@ -67,7 +67,7 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 	mSun->setAttenuation(1000000, 1, 0, 0);
 	
 	//  sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.35));
-	setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+//	setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 	
 	Ogre::Root::getSingleton().addFrameListener(this);
 	mLensFlare.setVisible(true);

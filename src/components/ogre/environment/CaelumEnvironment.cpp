@@ -69,7 +69,7 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderW
 , SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
 //,mLensFlare(camera, sceneMgr)
 {
-		sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+//		sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 //		setupCaelum(root, sceneMgr, window , camera);
 /*		mLensFlare.setNode(mCaelumSystem->getSun()-	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("Could not load caelum. Message: " << ex.getFullDescription());
