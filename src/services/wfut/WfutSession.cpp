@@ -73,7 +73,7 @@ const std::string &systemPath
 {
 	
 	S_LOG_VERBOSE("Channel name: " << channelName);
-	// This is the base path for all files that will be downloaded
+	/// This is the base path for all files that will be downloaded
 	const std::string &local_root = localPath + "/" + channelName + "/";
 	
 	std::string channel(channelName);
@@ -85,7 +85,7 @@ const std::string &systemPath
 	S_LOG_VERBOSE("Local wfut: " << mLocalWfut);
 	if (fileExists(mLocalWfut)) {
 		if (mWfutClient.getLocalList(mLocalWfut, mLocal)) {
-			S_LOG_WARNING("Error reading mLocal wfut.xml file.");
+			S_LOG_WARNING("Error reading local wfut.xml file.");
 		}
 	}
 	
@@ -95,7 +95,7 @@ const std::string &systemPath
 	
 	if (fileExists(tmp_wfut)) {
 		if (mWfutClient.getLocalList(tmp_wfut, mTmplist)) {
-			S_LOG_WARNING("Error reading mLocal tmpwfut.xml file.");
+			S_LOG_WARNING("Error reading local tmpwfut.xml file.");
 		} else {
 			const FileMap &fm = mTmplist.getFiles();
 			FileMap::const_iterator I = fm.begin();
@@ -114,7 +114,7 @@ const std::string &systemPath
 		
 		if (fileExists(system_wfut)) {
 			if (mWfutClient.getLocalList(system_wfut, mSystem)) {
-				S_LOG_WARNING("Error reading mSystem wfut.xml file.");
+				S_LOG_WARNING("Error reading system wfut.xml file.");
 			}
 		}
 	}
@@ -131,7 +131,7 @@ const std::string &systemPath
 	
 	mServerListDownloadingSlot(server_wfut);
 	if (mWfutClient.getFileList(server_wfut, mServer)) {
-		S_LOG_WARNING("Error downloading mServer channel file.");
+		S_LOG_WARNING("Error downloading server channel file.");
 		return;
 	}
 	

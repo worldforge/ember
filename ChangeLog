@@ -1,3 +1,23 @@
+2007-03-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/wfut/WfutSession.cpp: fixed incorrectly renamed file names
+
+2007-03-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/Sun.cpp: let caelum totally control the ambient light
+
+2007-03-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InspectWidget.cpp: clean up
+
+2007-03-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityFactory.cpp: dump attributes to a file instead of stdout
+
+2007-03-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp: better output of attributes, also delete the eris bounding box at deletion
+
 2007-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/outdoor_structures.modeldef: adjusted the gallows
