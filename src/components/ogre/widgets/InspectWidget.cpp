@@ -66,10 +66,6 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 
 
-/*template<> WidgetLoader WidgetLoaderHolder<InspectWidget>::loader("InspectWidget", &createWidgetInstance);*/
-//WidgetLoader Widget::loader("InspectWidget", &createWidgetInstance<InspectWidget>);
-
-
 InspectWidget::InspectWidget() : mCurrentEntity(0), Inspect("inspect", this, "Inspect an entity.")
 {
 
