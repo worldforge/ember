@@ -25,6 +25,7 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+#include "components/ogre/XMLHelper.h"
 
 #include <Eris/Connection.h>
 
@@ -63,20 +64,13 @@ EmberModelMappingManager::~EmberModelMappingManager()
 
 void EmberModelMappingManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
-	Ember::TiXmlDocument _XMLDoc;
-	bool success = _XMLDoc.LoadFile(stream); //load from data stream
-	
-	if (!success) {
-		std::string errorDesc = _XMLDoc.ErrorDesc();
-		int errorLine =  _XMLDoc.ErrorRow();
-		int errorColumn =  _XMLDoc.ErrorCol();
-		std::stringstream ss;
-		ss << "Failed to load model mapping file '" << stream->getName() << "'! Error at column: " << errorColumn << " line: " << errorLine << ". Error message: " << errorDesc;
-		S_LOG_FAILURE(ss.str());
+	Ember::TiXmlDocument xmlDoc;
+	XMLHelper xmlHelper;
+	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;
 	}
 
-	mXmlSerializer.parseScript(_XMLDoc);
+	mXmlSerializer.parseScript(xmlDoc);
 }
 
 Ogre::Resource* EmberModelMappingManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 

@@ -25,6 +25,7 @@
 #include "XMLModelDefinitionSerializer.h"
 #include "ModelDefinition.h"
 #include "Model.h"
+#include "components/ogre/XMLHelper.h"
 
 #include "ModelDefinitionManager.h"
 
@@ -64,20 +65,13 @@ void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& st
 
 void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	Ember::TiXmlDocument _XMLDoc;
-	bool success = _XMLDoc.LoadFile(stream); //load from data stream
-	
-	if (!success) {
-		std::string errorDesc = _XMLDoc.ErrorDesc();
-		int errorLine =  _XMLDoc.ErrorRow();
-		int errorColumn =  _XMLDoc.ErrorCol();
-		std::stringstream ss;
-		ss << "Failed to load modeldefinition file '" << stream->getName() << "'! Error at column: " << errorColumn << " line: " << errorLine << ". Error message: " << errorDesc;
-		S_LOG_FAILURE(ss.str());
+	Ember::TiXmlDocument xmlDoc;
+	XMLHelper xmlHelper;
+	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;
 	}
-	
-	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
+
+	Ember::TiXmlElement* rootElem = xmlDoc.RootElement();
 
 	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
@@ -598,7 +592,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		return;
 	}
 
-	Ember::TiXmlDocument _XMLDoc;
+	Ember::TiXmlDocument xmlDoc;
 	
 	try
 	{
@@ -688,8 +682,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		
 		elem.InsertEndChild(modelElem);
 		
-		_XMLDoc.InsertEndChild(elem);
-		_XMLDoc.SaveFile((dir + filename).c_str());
+		xmlDoc.InsertEndChild(elem);
+		xmlDoc.SaveFile((dir + filename).c_str());
 		S_LOG_INFO("Saved file " << (dir + filename));
 	}
 	catch (...)
