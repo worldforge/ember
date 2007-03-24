@@ -70,24 +70,24 @@ libEmberOgre_la_LIBADD = \
         
 
 
-libEmberOgre_la_SOURCES = GUIManager.cpp EmberEntityUserObject.cpp \
-	EmberOgre.cpp OgreResourceLoader.cpp CameraMount.cpp EmberPhysicalEntity.cpp \
-	Avatar.cpp AvatarCamera.cpp AvatarController.cpp AvatarEmberEntity.cpp \
-	ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp EmberEntityFactory.cpp \
-	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EntityWorldPickListener.cpp \
-	GUICEGUIAdapter.cpp MediaUpdater.cpp MotionManager.cpp MousePicker.cpp OgreInfo.cpp \
-	OgreLogObserver.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp WorldEmberEntity.cpp
+libEmberOgre_la_SOURCES = Avatar.cpp AvatarCamera.cpp AvatarController.cpp \
+	AvatarEmberEntity.cpp CameraMount.cpp ConsoleObjectImpl.cpp EmberEntity.cpp \
+	EmberEntityActionCreator.cpp EmberEntityFactory.cpp EmberEntityModelAction.cpp \
+	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberPhysicalEntity.cpp \
+	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp MediaUpdater.cpp MotionManager.cpp \
+	MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp OgreSetup.cpp \
+	OpcodeCollisionDetector.cpp WorldEmberEntity.cpp XMLHelper.cpp
 
 confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
 
 
-noinst_HEADERS = GUICEGUIAdapter.h ConsoleObjectImpl.h \
-	EmberOgrePrerequisites.h IWorldPickListener.h AvatarCamera.h AvatarController.h \
-	AvatarEmberEntity.h EmberEntity.h Avatar.h CameraMount.h EmberEntityActionCreator.h \
+noinst_HEADERS = Avatar.h AvatarCamera.h AvatarController.h AvatarEmberEntity.h \
+	CameraMount.h ConsoleObjectImpl.h EmberEntity.h EmberEntityActionCreator.h \
 	EmberEntityFactory.h EmberEntityModelAction.h EmberEntityPartAction.h \
-	EmberEntityUserObject.h EmberOgre.h EmberPhysicalEntity.h EntityWorldPickListener.h \
-	GUIManager.h MathConverter.h MediaUpdater.h MotionManager.h MousePicker.h \
-	OgreIncludes.h OgreInfo.h OgreLogObserver.h OgreResourceLoader.h OgreSetup.h \
-	OpcodeCollisionDetector.h WorldEmberEntity.h
+	EmberEntityUserObject.h EmberOgre.h EmberOgrePrerequisites.h EmberPhysicalEntity.h \
+	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h IWorldPickListener.h MathConverter.h \
+	MediaUpdater.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
+	OgreLogObserver.h OgreResourceLoader.h OgreSetup.h OpcodeCollisionDetector.h \
+	WorldEmberEntity.h XMLHelper.h
 	
