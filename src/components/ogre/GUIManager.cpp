@@ -273,10 +273,10 @@ Widget* GUIManager::createWidget(const std::string& name)
 		addWidget(widget);
 		S_LOG_INFO(  "Successfully loaded widget " << name );
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name );
+		S_LOG_FAILURE(  "Error when loading widget " << name << ": " << e.what());
 		return 0;
 	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name );
+		S_LOG_FAILURE(  "Error when loading widget " << name << ": " << e.getMessage().c_str());
 		return 0;
 	}
 	return widget;
