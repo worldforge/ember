@@ -1,3 +1,27 @@
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/tinyxml/tinystr.cpp, src/framework/tinyxml/tinystr.h, src/framework/tinyxml/tinyxml.cpp, src/framework/tinyxml/tinyxml.h, src/framework/tinyxml/tinyxmlerror.cpp, src/framework/tinyxml/tinyxmlparser.cpp, src/framework/tinyxml/readme.txt: upgraded to newer version
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/Makefile.am: include XMLHelper
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/GUIManager.cpp: output error messages
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/mapping/EmberModelMappingManager.cpp: use the XMLHelper class
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/XMLHelper.cpp, src/components/ogre/XMLHelper.h: added a simple helper class for loading tinyxml documents from Ogre resources, so that we don't need to alter the tinyxml core
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* text/public/battleplan.txt, text/public/concept_doc.txt, text/public/features.txt, text/public/index.txt, text/public/news.txt, text/public/developer_doc/architecture.txt, text/public/developer_doc/components.txt, text/public/developer_doc/data_model.txt, text/public/developer_doc/data_model_fw.txt, text/public/developer_doc/design.txt, text/public/developer_doc/development_methodology.txt, text/public/developer_doc/index.txt, text/public/developer_doc/scripting.txt, text/public/developer_doc/services.txt, text/public/working_notes/index.txt, text/public/working_notes/theme_format.txt, text/public/working_notes/ui_story_acorn.txt: removed obsolete Dime documents
+
 2007-03-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/services/wfut/WfutSession.cpp: fixed incorrectly renamed file names
