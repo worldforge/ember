@@ -8,10 +8,10 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "Ember-0.4.2"
+Name "Ember-0.4.3"
 
 ; The file to write
-OutFile "Ember-0.4.2.exe"
+OutFile "Ember-0.4.3.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\Worldforge\Ember
@@ -73,7 +73,7 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Ember"
   CreateShortCut "$SMPROGRAMS\Ember\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Ember\Ember.lnk" "$INSTDIR\Ember.bat" "" "$INSTDIR\ember.ico"
+  CreateShortCut "$SMPROGRAMS\Ember\Ember.lnk" "$INSTDIR\Ember.exe" "" "$INSTDIR\ember.ico"
   
 SectionEnd
 

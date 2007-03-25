@@ -1,5 +1,21 @@
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* Ember.nsi: update for 0.4.3
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src\services\wfut\WfutService.cpp: return a valid value on start
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+	
+	* src\services\EmberServices.h: fixed a bug where an object was deleted while still being used
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src\components\ogre\EmberEntityFactory.cpp, src\main\Application.cpp, src\main\Ember.cpp: update with msvc includes
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/framework/tinyxml/tinystr.cpp, src/framework/tinyxml/tinystr.h, src/framework/tinyxml/tinyxml.cpp, src/framework/tinyxml/tinyxml.h, src/framework/tinyxml/tinyxmlerror.cpp, src/framework/tinyxml/tinyxmlparser.cpp, src/framework/tinyxml/readme.txt: upgraded to newer version
 
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
