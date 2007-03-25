@@ -24,6 +24,8 @@
 #include "WfutService.h"
 #include "WfutSession.h"
 
+#include "services/logging/LoggingService.h"
+
 using namespace WFUT;
 
 namespace Ember {
@@ -73,21 +75,25 @@ int WfutService::poll()
 
 void WfutService::wfutSession_DownloadComplete(const std::string &url, const std::string &filename)
 {
+	S_LOG_INFO("Wfut download of " << filename << " from " << url <<" complete.");
 	DownloadComplete.emit(url, filename);
 }
 
 void WfutService::wfutSession_DownloadFailed(const std::string &url, const std::string &filename, const std::string &reason)
 {
+	S_LOG_WARNING("Wfut download of " << filename << " from " << url <<" failed with reason " << reason << ".");
 	DownloadFailed.emit(url, filename, reason);
 }
 
 void WfutService::wfutSession_ServerListDownloading(const std::string &url)
 {
+	S_LOG_INFO("Wfut downloading of server list from " << url <<".");
 	DownloadingServerList.emit(url);
 }
 
 void WfutService::wfutSession_UpdatesCalculated(unsigned int numberOfFilesToUpdate)
 {
+	S_LOG_INFO("Wfut needs to download " << numberOfFilesToUpdate <<" updates.");
 	UpdatesCalculated.emit(numberOfFilesToUpdate);
 }
 
