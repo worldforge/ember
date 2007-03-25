@@ -105,8 +105,10 @@ public:
 
 	virtual T* getService()
 	{
-		mContainer->setInnerContainer(new InitializedInnerServiceContainer<T>());
-		return mContainer->getService();
+		//since the call to setInnerContainer will result in this current object actually getting deleted, we have to save the reference of the container on the stack, else we'll get segfaults if the memory holding mContainer is claimed by something else
+		ServiceContainer<T>* tempContainer = mContainer;
+		tempContainer->setInnerContainer(new InitializedInnerServiceContainer<T>());
+		return tempContainer->getService();
 	}
 private:
 	ServiceContainer<T>* mContainer;
