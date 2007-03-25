@@ -21,6 +21,21 @@
 #endif
 
 #include "Application.h"
+
+#ifdef WIN32
+	#include <tchar.h>
+	#define snprintf _snprintf
+    #include <io.h> // for _access, Win32 version of stat()
+    #include <direct.h> // for _mkdir
+//	#include <sys/stat.h>
+	
+	#include <iostream>
+	#include <fstream>
+	#include <ostream>
+#else
+	#include <dirent.h>
+#endif
+
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
