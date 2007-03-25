@@ -48,6 +48,7 @@ WfutService::~WfutService()
 Service::Status WfutService::start()
 {
 	mSession->init();
+	return Service::OK;
 }
 
 
