@@ -26,7 +26,7 @@ function Performance_framestarted(timeSinceLastFrame)
 		statString = "FPS: " .. string.format("%i", stats.avgFPS)
 		statString = statString .. "\nTriangle count: " .. string.format("%i", stats.triangleCount)
 		if app:getMainView() ~= nil then
-			statString = statString .. "\nLag: " .. app:getMainView():lookQueueSize()
+			statString = statString .. "\nSightqueue: " .. app:getMainView():lookQueueSize()
 		end
 		local motionInfo = EmberOgre.MotionManager:getSingleton():getInfo()
 		statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
