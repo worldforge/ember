@@ -1,5 +1,33 @@
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/environment/CaelumEnvironment.cpp: set some ambient light, though it still doesn't look good with the terrain at night
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: fixed a crash caused by a character with an active chat window being destroyed
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac, ember.conf: update media to 0.4.3
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/wfut/WfutService.cpp: write actions to log
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Performance.lua: use the slightly better name "sightqueue"
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ModelEdit.lua: handle missing submesh names
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/modeldefinition.xsd, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml, src/components/ogre/modeldefinitions/tools.modeldef: only use lowercase names
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* Ember.nsi: update for 0.4.3
 
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
