@@ -1,5 +1,9 @@
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* Makefile.am: remove the installation of WFUT.jar since it's not needed anymore
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* configure.ac: remove maintainer mode
 
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
