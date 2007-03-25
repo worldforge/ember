@@ -93,10 +93,19 @@ function ModelEdit_fillSubMeshList(part)
 	local numberOfSubmeshes = mesh:getNumSubMeshes()
 	local i = 0
 	while i < numberOfSubmeshes do
-		local item = EmberOgre.ColoredListItem:new(EmberOgre.OgreUtils:getSubMeshName(mesh, i), i)
+		local submeshname = ModelEdit_getSubMeshName(mesh, i)
+		local item = EmberOgre.ColoredListItem:new(submeshname, i)
 		list:addItem(item)
 		i = i + 1
 	end	
+end
+
+function ModelEdit_getSubMeshName(mesh, index)
+	local submeshname = EmberOgre.OgreUtils:getSubMeshName(mesh, index)
+	if submeshname == "" then
+		submeshname = "(index: " .. index .. ")"
+	end
+	return submeshname
 end
 
 function ModelEdit_loadModelDefinition(definitionName)
@@ -576,16 +585,17 @@ function ModelEdit_updateModelContentList()
 					for val = 0, subentities:size() - 1 do
 						local subentity = subentities[val]
 						
-						local name = EmberOgre.OgreUtils:getSubMeshName(mesh, subentity:getSubEntityIndex())
+						local submeshname = ModelEdit_getSubMeshName(mesh, subentity:getSubEntityIndex())
+ 
 						
 						local modelcontentItem = {}
 						modelcontentItem.type = "subentity"
-						modelcontentItem.name = name
+						modelcontentItem.name = submeshname
 						modelcontentItem.subentity = subentity
 						ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 						
 						--prefix subentities with " -- "
-						local item = EmberOgre.ColoredListItem:new(" -- " .. name, table.getn(ModelEdit.modelContentsItems))
+						local item = EmberOgre.ColoredListItem:new(" -- " .. submeshname, table.getn(ModelEdit.modelContentsItems))
 						ModelEdit.modelcontents:addItem(item)
 					end
 				end
