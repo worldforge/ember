@@ -266,7 +266,7 @@
 			</case>
 		</entitymatch>
 	</modelmapping> 
-	<modelmapping name="shovel">
+	<modelmapping name="spade">
 		<entitymatch>
 			<case equals="shovel|spade">
 				<action type="display-model">spade</action>

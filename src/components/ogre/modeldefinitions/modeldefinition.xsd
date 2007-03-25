@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	<xsd:element name="Model">
+	<xsd:element name="model">
 		<xsd:complexType>
 			<xsd:attribute name="name" type="xsd:string" use="required"/> 
 			<xsd:attribute name="rotation" type="xsd:string" use="optional"/> 
@@ -17,38 +17,38 @@
 				<xsd:attribute name="degrees" type="xsd:float" use="optional"/> 
 				<xsd:attribute name="radians" type="xsd:boolean" use="optional"/> 
 			</xsd:element>
-			<xsd:element name="SubModels">
+			<xsd:element name="submodels">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="SubModel">
-							<xsd:attribute name="Mesh" type="xsd:string" use="required"/> 
+						<xsd:element name="submodel">
+							<xsd:attribute name="mesh" type="xsd:string" use="required"/> 
 							<xsd:complexType>
-								<xsd:element name="Parts">
+								<xsd:element name="parts">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="Part">
-												<xsd:attribute name="Name" type="xsd:string" use="required"/> 
-												<xsd:attribute name="Show" type="xsd:boolean" use="required"/> 
+											<xsd:element name="part">
+												<xsd:attribute name="name" type="xsd:string" use="required"/> 
+												<xsd:attribute name="show" type="xsd:boolean" use="required"/> 
 												<xsd:attribute name="group" type="xsd:string" use="optional"/> 
 												<xsd:complexType>
-													<xsd:element name="SubEntities">
+													<xsd:element name="subentities">
 														<xsd:complexType>
 															<xsd:sequence>
-																<xsd:element name="SubEntity">
-																	<xsd:attribute name="Name" type="xsd:string" use="required"/> 
-																	<xsd:attribute name="Material" type="xsd:string" use="optional"/> 
+																<xsd:element name="subentity">
+																	<xsd:attribute name="name" type="xsd:string" use="required"/> 
+																	<xsd:attribute name="material" type="xsd:string" use="optional"/> 
 																</xsd:element>
 															</xsd:sequence>
 														</xsd:complexType>
 													</xsd:element>
-													<xsd:element name="Lights">
+													<xsd:element name="lights">
 														<xsd:complexType>
 															<xsd:sequence>
-																<xsd:element name="Light">
-																	<xsd:attribute name="Name" type="xsd:string" use="required"/> 
-																	<xsd:attribute name="Bone" type="xsd:string" use="required"/> 
+																<xsd:element name="light">
+																	<xsd:attribute name="name" type="xsd:string" use="required"/> 
+																	<xsd:attribute name="bone" type="xsd:string" use="required"/> 
 																	
-																	<xsd:attribute name="Material" type="xsd:string" use="optional"/> 
+																	<xsd:attribute name="material" type="xsd:string" use="optional"/> 
 																</xsd:element>
 															</xsd:sequence>
 														</xsd:complexType>
@@ -74,8 +74,8 @@
 									<xsd:complexType>
 										<xsd:sequence>					
 											<xsd:element name="animationpart">
-												<xsd:attribute name="Name" type="xsd:string" use="required"/> 
-												<xsd:attribute name="Weight" type="xsd:string" use="required"/> 
+												<xsd:attribute name="name" type="xsd:string" use="required"/> 
+												<xsd:attribute name="weight" type="xsd:string" use="required"/> 
 											</xsd:element>
 										</xsd:sequence>					
 									</xsd:complexType>

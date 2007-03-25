@@ -8,32 +8,32 @@
 				</parts>
 			</submodel>
 		</submodels>
-		<Actions>
-			<Action name="__movement_idle">
+		<actions>
+			<action name="__movement_idle">
 				<animations>
 					<animation iterations="1">
 						<animationpart name="innerFire.BAKED" weight="1.0" />
 						<animationpart name="outerFire.BAKED" weight="1.0" />
 					</animation>
 				</animations>
-			</Action>
-			<Action name="__movement_walk">
+			</action>
+			<action name="__movement_walk">
 				<animations>
 					<animation iterations="1">
 						<animationpart name="innerFire.BAKED" weight="1.0" />
 						<animationpart name="outerFire.BAKED" weight="1.0" />
 					</animation>
 				</animations>
-			</Action>
-			<Action name="__movement_run">
+			</action>
+			<action name="__movement_run">
 				<animations>
 					<animation iterations="1">
 						<animationpart name="innerFire.BAKED" weight="1.0" />
 						<animationpart name="outerFire.BAKED" weight="1.0" />
 					</animation>
 				</animations>
-			</Action>
-		</Actions>
+			</action>
+		</actions>
 	</model>
 	
 	<model name="male" usescaleof="height" showcontained="false">

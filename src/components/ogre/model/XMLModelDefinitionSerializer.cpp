@@ -148,7 +148,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		readSubModels(modelDef, elem);
 
 	//actions
-	elem = modelNode->FirstChildElement("Actions");
+	elem = modelNode->FirstChildElement("actions");
 	if (elem)
 		readActions(modelDef, elem);
 
@@ -158,7 +158,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		readAttachPoints(modelDef, elem);
 
 	//attachpoints
-	elem = modelNode->FirstChildElement("ParticleSystems");
+	elem = modelNode->FirstChildElement("particlesystems");
 	if (elem)
 		readParticleSystems(modelDef, elem);
 		
@@ -494,7 +494,7 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 			def.Script = tmp;
 		S_LOG_VERBOSE( "  Add particlescript  : "+ def.Script );
 
-		elem = apElem->FirstChildElement("Bindings");
+		elem = apElem->FirstChildElement("bindings");
 		if (elem)
 			readParticleSystemsBindings(def, elem);
 
