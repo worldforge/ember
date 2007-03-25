@@ -116,7 +116,7 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 			chatWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
 			getMainSheet()->addChildWindow(chatWindow);
 			
-			ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, entity, mWindowManager);
+			ActiveChatWindow* activeWindow = new ActiveChatWindow(chatWindow, entity, mWindowManager, *this);
 			
 			mActiveChatWindows[entity->getId()] = activeWindow;
 			
@@ -169,12 +169,22 @@ void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 	std::vector<std::string>::iterator J_end = windowsToRemove.end();
 	for (;J != J_end; ++J) {
 //		mWindowManager->destroyWindow(mActiveChatWindows[*J].window);
-		delete mActiveChatWindows[*J];
-		mActiveChatWindows.erase(*J);
+		removeWidget(*J);
 	}	
 	
 }
 
+void IngameChatWidget::removeWidget(const std::string& windowName)
+{
+	delete mActiveChatWindows[windowName];
+	mActiveChatWindows.erase(windowName);
+}
+
+// void IngameChatWidget::removeWidget(ActiveChatWindow* window)
+// {
+// 	delete mActiveChatWindows[window];
+// 	mActiveChatWindows.erase(window);
+// }
 
 
 
@@ -269,9 +279,10 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 
 }
 
-EmberOgre::IngameChatWidget::ActiveChatWindow::ActiveChatWindow( CEGUI::Window * window, EmberEntity * entity, CEGUI::WindowManager * windowManager )
- : mWindow(window), mEntity(entity), mWindowManager(windowManager), mElapsedTimeSinceLastUpdate(0.0f)
+EmberOgre::IngameChatWidget::ActiveChatWindow::ActiveChatWindow( CEGUI::Window * window, EmberEntity * entity, CEGUI::WindowManager * windowManager, IngameChatWidget& containerWidget)
+ : mWindow(window), mEntity(entity), mWindowManager(windowManager), mElapsedTimeSinceLastUpdate(0.0f), mContainerWidget(containerWidget)
 {
+	entity->BeingDeleted.connect(sigc::mem_fun(*this, &ActiveChatWindow::entity_BeingDeleted));
 	try {
 		CEGUI::Window* nameWidget = static_cast<CEGUI::Window*>(mWindow->getChild(std::string("IngameChatWidget/") + mEntity->getId() + "/" + "EntityName"));
 		nameWidget->setText(entity->getName());
@@ -288,6 +299,10 @@ EmberOgre::IngameChatWidget::ActiveChatWindow::~ActiveChatWindow()
 	mWindowManager->destroyWindow(mWindow);
 }
 
+void EmberOgre::IngameChatWidget::ActiveChatWindow::entity_BeingDeleted()
+{
+	mContainerWidget.removeWidget(this->getEntity()->getId());
+}
 
 void EmberOgre::IngameChatWidget::ActiveChatWindow::placeWindowOnEntity()
 {

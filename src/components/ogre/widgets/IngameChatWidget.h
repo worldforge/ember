@@ -44,15 +44,15 @@ class IngameChatWidget : public Widget {
 	/**
 	Holds the actual chat window and keeps track of fading, catching clicks etc.
 	*/
-	class ActiveChatWindow
+	class ActiveChatWindow : public sigc::trackable
 	{
 		public:
 			/**
 			
 			*/
-			ActiveChatWindow(CEGUI::Window* window, EmberEntity* entity, CEGUI::WindowManager* windowManager);
+			ActiveChatWindow(CEGUI::Window* window, EmberEntity* entity, CEGUI::WindowManager* windowManager, IngameChatWidget& containerWidget);
 			
-			~ActiveChatWindow();
+			virtual ~ActiveChatWindow();
 
 			/**
 			
@@ -91,9 +91,12 @@ class IngameChatWidget : public Widget {
 			EmberEntity* mEntity;
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
+			IngameChatWidget& mContainerWidget;
 			
 			
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
+			
+			void entity_BeingDeleted();
 		
 	};
 
@@ -103,6 +106,8 @@ public:
     ~IngameChatWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & event);
+	
+	void removeWidget(const std::string& windowName);
 	
 protected:
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
