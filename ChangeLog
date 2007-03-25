@@ -1,5 +1,9 @@
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* configure.ac: remove maintainer mode
+
+2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/environment/CaelumEnvironment.cpp: set some ambient light, though it still doesn't look good with the terrain at night
 
 2007-03-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

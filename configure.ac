@@ -29,11 +29,6 @@ AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 dnl AM_PROG_LEX
 
-# Allow maintainer mode
-AM_MAINTAINER_MODE
-
-
-
 
 # Check for C libraries:
 AC_LANG([C++])
@@ -463,6 +458,10 @@ AC_MSG_RESULT([
 
 		**************************************
 		* Finished.  Run make to compile Ember.
+		* Note that you also need to install the media which is distributed in a separate archive.
+		* The media should be installed to PREFIX/share/ember/media
+		* so that you get PREFIX/share/ember/media/user and PREFIX/share/ember/media/shared.
+		* More information can be found at the Ember page at http://www.worldforge.org
 		**************************************
 
 	])
