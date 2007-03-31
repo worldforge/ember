@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.4.3, clients@worldforge.org)
+AC_INIT(Ember, 0.5.0, clients@worldforge.org)
 AC_DEFINE(MEDIA_VERSION, "0.4.3", [What media version to use.])
 AC_SUBST(MEDIA_VERSION, "0.4.3")
 
@@ -194,18 +194,20 @@ AC_CHECK_LIB(IL, ilInit,
 AC_CHECK_LIB(ILU, iluFlipImage,
 	[
 		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
-		LDFLAGS="$LDFLAGS $ILU_LIBS"
+		LDFLAGS="$LDFLAGS $ILU_LIBS -lILU"
 	]
-	,,-lIL
-
-)
+,AC_MSG_ERROR([
+****************************************************************
+* You do not have DevIL installed.  This is required to build. *
+* You may find it at http://openil.sourceforge.net/.           *
+****************************************************************]))
 
 #AC_DEFINE(LIBSIGC_DISABLE_DEPRECATED, 1, [Don't use deprecated sigc methods.])
 
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
-PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.4,
+PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.5,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
@@ -216,7 +218,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.4,
 
 # Check for OGRE
 # (version 1.2.0 would work, but since there's an optimization issue with gcc 4.1 which causes a segfault with code involved in software skinning we'll just avoid the issue of users getting random crashes by requiring 1.2.1)
-OGRE_VERSION=1.2.1
+OGRE_VERSION=1.4.0
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
@@ -229,23 +231,18 @@ PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 
 #remove this when Ogre includes the CEGUI-OGRE.pc file again
 #LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
-AC_DEFINE(__MemoryManager_H__, 1, [disable Ogre memory manager])
+AC_DEFINE(OGRE_DEBUG_MEMORY_MANAGER, 0, [disable Ogre memory manager])
 
-AC_ARG_ENABLE(use_lua,
-  [  --enable-lua	enable lua scripting [default=no]],
-  [
-    if test "$enableval" = "yes"; then
-      lua_use="true"
-      LDFLAGS="$LDFLAGS -lCEGUILuaScriptModule -lCEGUIluatoluapp"
-    else
-      lua_use="false"
-    fi
-  ],[
-    lua_use="false"
-  ]
-)
-AM_CONDITIONAL(USE_LUA, test x"$lua_use" = xtrue)
-LDFLAGS="$LDFLAGS -lCEGUILuaScriptModule -lCEGUIluatoluapp"
+#check for lua
+PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
+		  p
+[
+	CXXFLAGS="$CXXFLAGS $LUA_CFLAGS"
+	LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
+],
+[
+	AC_MSG_ERROR(Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+])      
 
 # Check for OpenAL
 OPENAL_VERSION=0.0.8
@@ -431,6 +428,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/ogreopcode/opcode/Makefile
 		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/Makefile
+		 src/components/ogre/image/Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
